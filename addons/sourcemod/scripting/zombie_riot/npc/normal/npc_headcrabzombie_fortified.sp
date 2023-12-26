@@ -133,6 +133,7 @@ methodmap FortifiedHeadcrabZombie < CClotBody
 		FortifiedHeadcrabZombie npc = view_as<FortifiedHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "500", ally, false));
 		
 		i_NpcInternalId[npc.index] = FORTIFIED_HEADCRAB_ZOMBIE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -145,7 +146,7 @@ methodmap FortifiedHeadcrabZombie < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FortifiedHeadcrabZombie_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, FortifiedHeadcrabZombie_ClotThink);
 		//IDLE
 		npc.m_flSpeed = 140.0;
@@ -202,7 +203,7 @@ public void FortifiedHeadcrabZombie_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int closest = npc.m_iTarget;
@@ -218,11 +219,11 @@ public void FortifiedHeadcrabZombie_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, closest);
+			NPC_SetGoalEntity(npc.index, closest);
 		}
 		npc.StartPathing();
 		
@@ -295,29 +296,12 @@ public void FortifiedHeadcrabZombie_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleSound();
-}
-
-
-public Action FortifiedHeadcrabZombie_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	//Valid attackers only.
-	if(attacker <= 0)
-		return Plugin_Continue;
-		
-	FortifiedHeadcrabZombie npc = view_as<FortifiedHeadcrabZombie>(victim);
-	
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
-	}
-	return Plugin_Changed;
 }
 
 public void FortifiedHeadcrabZombie_NPCDeath(int entity)
@@ -327,7 +311,6 @@ public void FortifiedHeadcrabZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_OnTakeDamage, FortifiedHeadcrabZombie_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, FortifiedHeadcrabZombie_ClotThink);
 	
 }

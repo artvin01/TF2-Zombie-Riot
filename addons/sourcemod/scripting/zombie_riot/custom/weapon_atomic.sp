@@ -3,16 +3,10 @@
 
 static float Strength[MAXTF2PLAYERS];
 
-#define MAXENTITIES 2048
 // the R
 static int use_id[MAXPLAYERS + 1]               = { 0, ... };
 static int is_currently_boosted[MAXPLAYERS + 1] = { 0, ... };
 
-#define SOUND_BEAMWAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
-
-#define MAX_TARGETS_HIT        10
-#define MAX_SOUND_FILE_LENGTH  80
-#define MAX_EFFECT_NAME_LENGTH 48
 
 static bool  BeamWand_CanUse[MAXTF2PLAYERS];
 static bool  BeamWand_IsUsing[MAXTF2PLAYERS];
@@ -54,10 +48,8 @@ void         Atomic_MapStart()
 // main attack stuff
 public void Weapon_Atomic_Beam(int client, int weapon, bool crit)
 {
-	int     mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if (address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+	int	mana_cost;
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
 	if (mana_cost <= Current_Mana[client])
 	{
@@ -84,9 +76,7 @@ public void Weapon_Atomic_Beam(int client, int weapon, bool crit)
 			
 		}
 
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if (address != Address_Null)
-			Strength[client] *= TF2Attrib_GetValue(address);
+		Strength[client] *= Attributes_Get(weapon, 410, 1.0);
 
 		red   = 255;
 		green = 0;
@@ -111,9 +101,7 @@ public void Weapon_Atomic_Beam_m2(int client, int weapon, bool crit, int slot)
 	{
 
 		int     mana_cost;
-		Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-		if (address != Address_Null)
-			mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+		mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
 		if (mana_cost <= Current_Mana[client])
 		{
@@ -139,15 +127,11 @@ public void Weapon_Atomic_Beam_m2(int client, int weapon, bool crit, int slot)
 				EmitSoundToAll("weapons/bison_main_shot_02.wav", client, SNDCHAN_STATIC, 65, _, 0.45, 100);
 			}
 
-			address = TF2Attrib_GetByDefIndex(weapon, 410);
-			if (address != Address_Null)
-				Strength[client] *= TF2Attrib_GetValue(address);
+			Strength[client] *= Attributes_Get(weapon, 410, 1.0);
 				
 				
 			float cooldown = 0.5;
-			address = TF2Attrib_GetByDefIndex(weapon, 6);
-			if (address != Address_Null)
-				cooldown *= TF2Attrib_GetValue(address);
+			cooldown *= Attributes_Get(weapon, 6, 1.0);
 
 			red   = 0;
 			green = 0;
@@ -258,7 +242,7 @@ static bool BeamWand_TraceUsers(int entity, int contentsMask, int client)
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 
-			if (((!StrContains(classname, "base_boss", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
+			if (((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
 				for (int i = 1; i <= (MAX_TARGETS_HIT - 1); i++)
 				{
@@ -348,7 +332,6 @@ static void TBB_Tick(int client)
 	if (TR_DidHit(trace))
 	{
 		TR_GetEndPosition(endPoint, trace);
-		CloseHandle(trace);
 		ConformLineDistance(endPoint, startPoint, endPoint, float(BeamWand_MaxDistance[client]));
 		float lineReduce = BeamWand_BeamRadius[client] * 2.0 / 3.0;
 		float curDist    = GetVectorDistance(startPoint, endPoint, false);
@@ -374,8 +357,8 @@ static void TBB_Tick(int client)
 		hullMax[2]             = -hullMin[2];
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
-		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BeamWand_TraceUsers, client);    // 1073741824 is CONTENTS_LADDER?
 		delete trace;
+		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BeamWand_TraceUsers, client);    // 1073741824 is CONTENTS_LADDER?
 		FinishLagCompensation_Base_boss();
 		//		int weapon = BeamWand_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
 		/*
@@ -423,6 +406,7 @@ static void TBB_Tick(int client)
 					pack.WriteFloat(playerPos[0]);
 					pack.WriteFloat(playerPos[1]);
 					pack.WriteFloat(playerPos[2]);
+					pack.WriteCell(0);
 					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 
 					BeamWand_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
@@ -455,8 +439,6 @@ static void TBB_Tick(int client)
 		}
 		TE_SendToAll(0.0);
 	}
-	else
-	{
-		delete trace;
-	}
+
+	delete trace;
 }

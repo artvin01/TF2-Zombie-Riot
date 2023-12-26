@@ -32,7 +32,7 @@ static const char g_IdleSounds[][] = {
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
 
-	"npc/metropolice/vo/pickupthatcan2.wav",
+	"npc/metropolice/vo/pickupthecan2.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
 	"npc/metropolice/vo/xray.wav",
@@ -56,7 +56,7 @@ static const char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
 	"npc/metropolice/vo/pickupthecan1.wav",
-	"npc/metropolice/vo/pickupthecan2.wav",
+
 	"npc/metropolice/vo/pickupthecan3.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
@@ -171,8 +171,10 @@ methodmap MedivalAchilles < CClotBody
 	public MedivalAchilles(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalAchilles npc = view_as<MedivalAchilles>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "100000", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = MEDIVAL_ACHILLES;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -186,7 +188,7 @@ methodmap MedivalAchilles < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalAchilles_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalAchilles_ClotThink);
 
 		npc.m_iState = 0;
@@ -280,11 +282,11 @@ public void MedivalAchilles_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 65.0;
+					float damage = 75.0;
 
 					if(Medival_Difficulty_Level > 2.0)
 					{
-						damage = 85.0;
+						damage = 100.0;
 					}
 
 					if(ShouldNpcDealBonusDamage(target))
@@ -319,7 +321,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 				float vecTarget[3];
 				vecTarget = WorldSpaceCenter(npc.m_iTarget);
 
-				if(distance <= Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 8.0, 2.0)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
+				if(distance <= (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
 				{
 					PluginBot_Jump(npc.index, vecTarget);
 				}
@@ -338,11 +340,11 @@ public void MedivalAchilles_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -350,15 +352,15 @@ public void MedivalAchilles_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 12.0, 2.0) && npc.m_flNextRangedAttack < gameTime)
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 18.0) && npc.m_flNextRangedAttack < gameTime)
 		{
 			npc.m_iState = 3; //Throw Spear
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
-		else if(flDistanceToTarget > Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 3.0, 2.0) && flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 6.0, 2.0) && npc.m_flJumpCooldown < gameTime)
+		else if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.5) && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 9.0) && npc.m_flJumpCooldown < gameTime)
 		{
 			npc.m_iState = 2; //Jump
 		}
@@ -447,7 +449,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 
 					if(npc.m_iChanged_WalkCycle != 7) 	
 					{
-						PF_StopPathing(npc.index);
+						NPC_StopPathing(npc.index);
 						npc.m_bPathing = false;
 						npc.m_flSpeed = 0.0;
 						npc.m_bisWalking = false;
@@ -496,7 +498,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 						npc.m_flDoingAnimation = gameTime + 2.0;
 						if(npc.m_iChanged_WalkCycle != 7) 	
 						{
-							PF_StopPathing(npc.index);
+							NPC_StopPathing(npc.index);
 							npc.m_bPathing = false;
 							npc.m_flSpeed = 0.0;
 							npc.m_bisWalking = false;
@@ -513,7 +515,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -521,7 +523,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action MedivalAchilles_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalAchilles_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -548,7 +550,7 @@ public void MedivalAchilles_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalAchilles_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalAchilles_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

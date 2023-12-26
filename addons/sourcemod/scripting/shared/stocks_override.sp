@@ -6,15 +6,7 @@
 void Stock_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, float damage = 0.0, int damageType=DMG_GENERIC, int weapon=-1,const float damageForce[3]=NULL_VECTOR, const float damagePosition[3]=NULL_VECTOR, bool bypassHooks = false, int Zr_damage_custom = 0)
 {
 	i_HexCustomDamageTypes[entity] = Zr_damage_custom;
-	
-	if(IsValidEntity(weapon))
-	{
-		SDKHooks_TakeDamage(entity, inflictor, attacker, damage, damageType, weapon, damageForce, damagePosition, bypassHooks);
-	}
-	else
-	{
-		SDKHooks_TakeDamage(entity, inflictor, attacker, damage, damageType, -1, damageForce, damagePosition, bypassHooks);
-	}
+	SDKHooks_TakeDamage(entity, inflictor, attacker, damage, damageType, IsValidEntity(weapon) ? weapon : -1, damageForce, damagePosition, bypassHooks);
 
 }
 
@@ -37,7 +29,8 @@ bool Stock_IsValidEntity(int entity)
 
 #define IsValidEntity Stock_IsValidEntity
 
-	
+
+#define KillTimer KILLTIMER_DONOTUSE_USE_DELETE
 
 /*
 TODO:
@@ -278,14 +271,13 @@ stock void RemoveAllWeapons(int client)
 	while(found);
 }
 
-
 stock float ZR_GetGameTime(int entity = 0)
 {
 	if(entity == 0)
 	{
 		return GetGameTime();
 	}
-	else
+	else	
 	{
 		return (GetGameTime() - f_StunExtraGametimeDuration[entity]);
 		//This will allow for stuns and other stuff like that. Mainly used for tank and other stuns.
@@ -347,3 +339,133 @@ stock void Custom_SetAbsVelocity(int client, const float viewAngles[3])
 }
 
 #define TeleportEntity Custom_TeleportEntity
+
+
+void Edited_TF2_RegeneratePlayer(int client)
+{
+	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
+#if defined ZR
+	KillDyingGlowEffect(client);
+#endif
+	ForcePlayerCrouch(client, false);
+	//delete at all times, they have no purpose here, you respawn.
+	TF2_RegeneratePlayer(client);
+
+	//player needs to be fully nowmally visible.
+	SetEntityRenderMode(client, RENDER_NORMAL);
+	SetEntityRenderColor(client, 255, 255, 255, 255);
+}
+
+#define TF2_RegeneratePlayer Edited_TF2_RegeneratePlayer
+
+
+void Edited_TF2_RespawnPlayer(int client)
+{
+	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
+
+#if defined ZR
+	KillDyingGlowEffect(client);
+#endif
+	ForcePlayerCrouch(client, false);
+	//delete at all times, they have no purpose here, you respawn.
+	TF2_RespawnPlayer(client);
+
+	//player needs to be fully nowmally visible.
+	SetEntityRenderMode(client, RENDER_NORMAL);
+	SetEntityRenderColor(client, 255, 255, 255, 255);
+}
+
+#define TF2_RespawnPlayer Edited_TF2_RespawnPlayer
+/*
+void SetPlayerClass(int client, TFClassType classType, bool weapons = false, bool persistent = true)
+{
+	if(CurrentClass[client] == WeaponClass[client])
+	{
+		LogStackTrace("%f - Set to %d %d", GetEngineTime(), classType, persistent);
+	}
+	else if(classType == CurrentClass[client])
+	{
+		LogStackTrace("%f - Set to CurrentClass %d", GetEngineTime(), persistent);
+	}
+	else if(classType == WeaponClass[client])
+	{
+		LogStackTrace("%f - Set to WeaponClass %d", GetEngineTime(), persistent);
+	}
+	else
+	{
+		LogStackTrace("%f - Set to %d %d", GetEngineTime(), classType, persistent);
+	}
+
+	TF2_SetPlayerClass_ZR(client, classType, weapons, persistent);
+}
+
+#define TF2_SetPlayerClass_ZR SetPlayerClass*/
+#if !defined UseDownloadTable
+#define AddFileToDownloadsTable UseDownloadsCfgPlzThanks
+#endif
+stock void PrecacheSoundList(const char[][] array, int length)
+{
+    for(int i; i < length; i++)
+    {
+		PrecacheSound(array[i]);
+    }
+}
+
+#define PrecacheSoundArray(%1)        PrecacheSoundList(%1, sizeof(%1))
+
+#if defined ZR
+void Edited_EmitSoundToAll(const char[] sample,
+				 int entity = SOUND_FROM_PLAYER,
+				 int channel = SNDCHAN_AUTO,
+				 int level = SNDLEVEL_NORMAL,
+				 int flags = SND_NOFLAGS,
+				 float volume = SNDVOL_NORMAL,
+				 int pitch = SNDPITCH_NORMAL,
+				 int speakerentity = -1,
+				 const float origin[3] = NULL_VECTOR,
+				 const float dir[3] = NULL_VECTOR,
+				 bool updatePos = true,
+				 float soundtime = 0.0)
+{
+	//# will indicate its for music, reason:
+	/*
+		main issue is that the sounds still go through, but, they do not get played, but saved up,
+		so if it happens too much, sounds gets bugged out, and that leads to an error and all sounds vanish,
+		 reneabling the music slider will play them all at once.
+
+	*/
+	if(sample[0] != '#')
+	{
+
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client) && !IsFakeClient(client))
+			{
+				float volumeedited = volume;
+				if(entity > 0 && b_ThisWasAnNpc[entity])
+				{
+					volumeedited *= (f_ZombieVolumeSetting[client] + 1.0);
+				}
+				if(volumeedited > 0.0)
+					EmitSoundToClient(client, sample,entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
+			}
+		}		
+	}
+	else
+	{
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client) && !IsFakeClient(client) && f_ClientMusicVolume[client] > 0.05)
+			{
+				EmitSoundToClient(client, sample,entity,channel,level,flags,volume,pitch,speakerentity,origin,dir,updatePos,soundtime);
+			}
+		}
+	}
+		
+}
+
+#define EmitSoundToAll Edited_EmitSoundToAll
+#endif	// ZR
+
+#define TF2Attrib_GetByDefIndex OLD_CODE_FIX_IT
+#define TF2Items_SetAttribute OLD_CODE_FIX_IT

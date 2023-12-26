@@ -95,7 +95,8 @@ methodmap Miner_Enemy < CClotBody
 		i_NpcInternalId[npc.index] = MINER_NPC;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+		KillFeed_SetKillIcon(npc.index, "pickaxe");
+
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
@@ -131,7 +132,7 @@ methodmap Miner_Enemy < CClotBody
 
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 		
 		return npc;
@@ -154,7 +155,7 @@ public void Miner_Enemy_ClotThink(int iNPC)
 	}
 	
 
-	npc.m_flNextDelayTime = gameTime;// + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 
@@ -228,11 +229,11 @@ public void Miner_Enemy_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -240,7 +241,7 @@ public void Miner_Enemy_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}

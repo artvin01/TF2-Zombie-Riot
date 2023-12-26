@@ -28,20 +28,16 @@ public Action Remove_All(Handle Timer_Handle, any Null)
 		}
 	}
 	entity = -1;
-	while((entity=FindEntityByClassname(entity, "base_boss")) != -1)
+	while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
 	{
 		if(IsValidEntity(entity))
 		{
 			if(entity != 0)
 			{
-				if(!b_Map_BaseBoss_No_Layers[entity]) //Make sure map base_bosses dont get killed like this, might cause problems.
-				{
-					SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
-					SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
-					SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
-					SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
-				}
-			//	RemoveEntity(entity); Dont remove, cause infinite damage so all the hooks unhook properly.
+				SmiteNpcToDeath(entity);
+				SmiteNpcToDeath(entity);
+				SmiteNpcToDeath(entity);
+				SmiteNpcToDeath(entity);
 			}
 		}
 	}

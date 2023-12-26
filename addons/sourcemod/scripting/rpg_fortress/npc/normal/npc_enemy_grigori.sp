@@ -222,6 +222,7 @@ methodmap EnemyFatherGrigori < CClotBody
 		i_NpcInternalId[npc.index] = FATHER_GRIGORI;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		KillFeed_SetKillIcon(npc.index, "shotgun_soldier");
 		
 		npc.SetActivity("ACT_IDLE");
 
@@ -253,7 +254,7 @@ methodmap EnemyFatherGrigori < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 		
 		return npc;
@@ -276,7 +277,7 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 	}
 	
 
-	npc.m_flNextDelayTime = gameTime;// + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 
 	npc.PlayIdleSound();
 
@@ -391,8 +392,9 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
+						KillFeed_SetKillIcon(npc.index, "club");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-
+						KillFeed_SetKillIcon(npc.index, "shotgun_soldier");
 					}
 				}
 				delete swingTrace;
@@ -474,11 +476,11 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -486,23 +488,23 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
-		else if(flDistanceToTarget > Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0) && npc.m_flNextRangedSpecialAttack < gameTime)
+		else if(!NpcStats_IsEnemySilenced(npc.index) && flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0) && npc.m_flNextRangedSpecialAttack < gameTime)
 		{
 			npc.m_iState = 5; //Deploy shield.
 		}
-		else if(flDistanceToTarget > Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0) && npc.m_flNextTeleport < gameTime && npc.m_iOverlordComboAttack >= 3)
+		else if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0) && npc.m_flNextTeleport < gameTime && npc.m_iOverlordComboAttack >= 3)
 		{
 			npc.m_iState = 3; //holy Light
 		}
-		else if(flDistanceToTarget > Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0) && npc.m_flNextRangedBarrage_Spam < gameTime && npc.m_iOverlordComboAttack >= 2)
+		else if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0) && npc.m_flNextRangedBarrage_Spam < gameTime && npc.m_iOverlordComboAttack >= 2)
 		{
 			npc.m_iState = 4; //Pull
 		}
-		else if(flDistanceToTarget > Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0) && npc.m_flNextRangedAttack < gameTime)
+		else if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0) && npc.m_flNextRangedAttack < gameTime)
 		{
 			if(Can_I_See_Enemy(npc.index, npc.m_iTarget))
 			{
@@ -897,8 +899,9 @@ public void FatherGrigori_IonAttack(Handle &data)
 	int Iondamage = ReadPackCell(data);
 	int client = EntRefToEntIndex(ReadPackCell(data));
 		
-	if(!IsValidEntity(client))
+	if(!IsValidEntity(client) || b_NpcHasDied[client])
 	{
+		delete data;
 		return;
 	}
 		
@@ -978,6 +981,8 @@ public void FatherGrigori_IonAttack(Handle &data)
 			nphi += 5.0;
 	}
 	Iondistance -= 5;
+
+	delete data;
 		
 	Handle nData = CreateDataPack();
 	WritePackFloat(nData, startPosition[0]);
@@ -991,7 +996,7 @@ public void FatherGrigori_IonAttack(Handle &data)
 	ResetPack(nData);
 		
 	if (Iondistance > -50)
-	CreateTimer(0.1, FatherGrigori_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
+	CreateTimer(0.1, FatherGrigori_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE);
 	else
 	{
 		startPosition[2] += 25.0;

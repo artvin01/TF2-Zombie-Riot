@@ -6,47 +6,54 @@ static int how_many_times_fisted[MAXTF2PLAYERS];
 
 public void Fists_of_Kahml(int client, int weapon, const char[] classname, bool &result)
 {
-	
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+		
 	float flPos[3]; // original
 	float flAng[3]; // original
-	
+
 	if(how_many_times_fisted[client] >= 3)
 	{
-		
-		GetAttachment(client, "effect_hand_r", flPos, flAng);
-				
-		int particler = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.25);
-				
-		SetParent(client, particler, "effect_hand_r");
-		
-		GetAttachment(client, "effect_hand_l", flPos, flAng);
-		
-		int particlel = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.25);
-		
-		TF2Attrib_SetByDefIndex(weapon, 1, 3.0);
-				
-		SetParent(client, particlel, "effect_hand_l");		
+		Rogue_OnAbilityUse(weapon);
+		if(IsValidEntity(viewmodelModel))
+		{
+			GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
+					
+			int particler = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.25);
+					
+			SetParent(viewmodelModel, particler, "effect_hand_r");
+			
+			GetAttachment(viewmodelModel, "effect_hand_l", flPos, flAng);
+			
+			int particlel = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.25);
+			
+					
+			SetParent(viewmodelModel, particlel, "effect_hand_l");			
+		}
+		Attributes_Set(weapon, 1, 3.0);
 		
 		CreateTimer(0.2, Apply_cool_effects_kahml, client, TIMER_FLAG_NO_MAPCHANGE);
-		TF2Attrib_SetByDefIndex(weapon, 1, 3.0);
+		Attributes_Set(weapon, 1, 3.0);
 		how_many_times_fisted[client] = 0;
 	}
 	else
 	{
-		
-		GetAttachment(client, "effect_hand_r", flPos, flAng);
+		if(IsValidEntity(viewmodelModel))
+		{
+			GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
+					
+			int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.25);
+					
+			SetParent(viewmodelModel, particler, "effect_hand_r");
+			
+			GetAttachment(viewmodelModel, "effect_hand_l", flPos, flAng);
+			
+			int particlel = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.25);
+					
+			SetParent(viewmodelModel, particlel, "effect_hand_l");	
+		}
 				
-		int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.25);
-				
-		SetParent(client, particler, "effect_hand_r");
-		
-		GetAttachment(client, "effect_hand_l", flPos, flAng);
-		
-		int particlel = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.25);
-				
-		SetParent(client, particlel, "effect_hand_l");	
-				
-		TF2Attrib_SetByDefIndex(weapon, 1, 1.0);
+		Attributes_Set(weapon, 1, 1.0);
 		how_many_times_fisted[client] += 1;
 	}
 }

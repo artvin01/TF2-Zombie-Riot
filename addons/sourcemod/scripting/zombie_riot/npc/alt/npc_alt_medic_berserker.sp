@@ -132,6 +132,7 @@ methodmap AltMedicBerseker < CClotBody
 		AltMedicBerseker npc = view_as<AltMedicBerseker>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.00", "25000", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_MEDIC_BERSERKER;
+		i_NpcWeight[npc.index] = 1;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -150,7 +151,7 @@ methodmap AltMedicBerseker < CClotBody
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, AltMedicBerseker_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, AltMedicBerseker_ClotThink);
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_ubersaw/c_ubersaw.mdl");
@@ -225,7 +226,7 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 	{
 	
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -265,9 +266,9 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 			TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 			TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		} else {
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		
 		//Target close enough to hit
@@ -372,15 +373,22 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 				float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
 				if(Tele_Check > 120.0)
 				{
-					TeleportEntity(npc.index, vPredictedPos, NULL_VECTOR, NULL_VECTOR);
-					npc.PlayTeleportSound();
+					bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
+					if(Succeed)
+					{
+						npc.PlayTeleportSound();
+					}
+					else
+					{
+						npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
+					}
 				}
 			}
 		}
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -388,7 +396,7 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action AltMedicBerseker_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AltMedicBerseker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -417,7 +425,7 @@ public void AltMedicBerseker_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, AltMedicBerseker_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, AltMedicBerseker_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

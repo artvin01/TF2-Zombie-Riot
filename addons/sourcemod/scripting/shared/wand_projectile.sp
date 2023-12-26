@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
-
 static int i_ProjectileIndex;
 
 void WandStocks_Map_Precache()
@@ -10,6 +8,22 @@ void WandStocks_Map_Precache()
 	i_ProjectileIndex = PrecacheModel(ENERGY_BALL_MODEL);
 }
 
+int iref_PropAppliedToRocket[MAXENTITIES];
+//todo:
+//Redo entirely, these projectiles are invis once
+// spawning for some god knows what reason that pisses me the fuck off.
+//somehow make another projectile.
+//for now, we set another model and parent this beacuse fuck this shit.
+
+void WandProjectile_GamedataInit()
+{
+	CEntityFactory EntityFactory = new CEntityFactory("zr_projectile_base", OnCreate_Proj, OnDestroy_Proj);
+	EntityFactory.DeriveFromClass("tf_projectile_rocket");
+	EntityFactory.BeginDataMapDesc()
+	.EndDataMapDesc(); 
+
+	EntityFactory.Install();
+}
 int Wand_Projectile_Spawn(int client,
 float speed,
 float time,
@@ -18,7 +32,8 @@ int WandId,
 int weapon,
 const char[] WandParticle,
 float CustomAng[3] = {0.0,0.0,0.0},
-bool hideprojectile = true) //This will handle just the spawning, the rest like particle effects should be handled within the plugins themselves. hopefully.
+bool hideprojectile = true,
+float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the rest like particle effects should be handled within the plugins themselves. hopefully.
 {
 	float fAng[3], fPos[3];
 	GetClientEyeAngles(client, fAng);
@@ -29,6 +44,12 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 		fAng[0] = CustomAng[0];
 		fAng[1] = CustomAng[1];
 		fAng[2] = CustomAng[2];
+	}
+	if(CustomPos[0] != 0.0 || CustomPos[1] != 0.0)
+	{
+		fPos[0] = CustomPos[0];
+		fPos[1] = CustomPos[1];
+		fPos[2] = CustomPos[2];
 	}
 
 
@@ -55,11 +76,12 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 	fVel[1] = fBuf[1]*speed;
 	fVel[2] = fBuf[2]*speed;
 
-	int entity = CreateEntityByName("tf_projectile_rocket");
+	int entity = CreateEntityByName("zr_projectile_base");
 	if(IsValidEntity(entity))
 	{
 		i_WandOwner[entity] = EntIndexToEntRef(client);
-		i_WandWeapon[entity] = EntIndexToEntRef(weapon);
+		if(IsValidEntity(weapon))
+			i_WandWeapon[entity] = EntIndexToEntRef(weapon);
 		f_WandDamage[entity] = damage;
 		i_WandIdNumber[entity] = WandId;
 		b_EntityIsArrow[entity] = true;
@@ -67,10 +89,17 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 		//Edit: Need owner entity, otheriwse you can actuall hit your own god damn rocket and make a ding sound. (Really annoying.)
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage should be nothing. if it somehow goes boom.
 		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
 		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
 		DispatchSpawn(entity);
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
-
+		SetEntPropVector(entity, Prop_Send, "m_angRotation", fAng); //set it so it can be used
+		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", fVel);
+	//	SetEntProp(entity, Prop_Send, "m_flDestroyableTime", GetGameTime());
+		//make rockets visible on spawn.
+		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", GetGameTime());
+		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
+		
 		SetEntityCollisionGroup(entity, 27);
 		for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
 		{
@@ -97,7 +126,7 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 			i_WandParticle[entity] = EntIndexToEntRef(particle);
 		}
 
-		if(time < 10.0 && time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
+		if(time < 60.0 && time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
 		{
 			DataPack pack;
 			CreateDataTimer(time, Timer_RemoveEntity_CustomProjectileWand, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -141,7 +170,7 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 public void Wand_Base_StartTouch(int entity, int other)
 {
 	int target = Target_Hit_Wand_Detection(entity, other);
-	#if defined ZR
+#if defined ZR
 	switch(i_WandIdNumber[entity])
 	{
 		case 0:
@@ -188,13 +217,75 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Want_CalciumWandTouch(entity, target);
 		}
-		/* Doesnt work, this projectile has noclip, go to DHOOK public bool PassfilterGlobal(int ent1, int ent2, bool result)
+		case WEAPON_LAPPLAND:
+		{
+			Melee_LapplandArkTouch(entity, target);
+		}
+		case 15:
+		{
+			Event_Ark_OnHatTouch(entity, target);
+		}
+		case 17: //Staff of the Skull Servants auto-fire projectiles.
+		{
+			Wand_Skulls_Touch(entity, target);
+		}
+		case 18: //Staff of the Skull Servants launched skull.
+		{
+			Wand_Skulls_Touch_Launched(entity, target);
+		}
+		case 19: //Health Hose particle
+		{
+			Wand_Health_Hose_Touch_World(entity, target);
+		}
+		case 20: //Vampire Knives thrown knife
+		{
+			Vamp_Knife_Touch(entity, target);
+		}
+		case 21: //Vampire Knives thrown cleaver
+		{
+			Vamp_Cleaver_Touch_World(entity, target);
+		}
+		case WEAPON_QUINCY_BOW:
+		{
+			Quincy_Touch(entity, target);
+		}
+		case 23:
+		{
+			Event_GB_OnHatTouch(entity, target);
+		}
+		/*		
+		case WEAPON_LANTEAN:
+		{
+			lantean_Wand_Touch_World(entity, target);
+		}
+
+		 	Doesnt work, this projectile has noclip, go to DHOOK public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		case 11:
 		{
 			
 			Cryo_Touch(entity, target);
 		}
 		*/
+		case WEAPON_GLADIIA:
+		{
+			Gladiia_WandTouch(entity, target);
+		}
+		case WEAPON_GERMAN:
+		{
+			Weapon_German_WandTouch(entity, target);
+		}
+		case WEAPON_SENSAL_SCYTHE:
+		{
+			Weapon_Sensal_WandTouch(entity, target);
+		}
+		case WEAPON_KIT_BLITZKRIEG_CORE:
+		{
+			Blitzkrieg_Kit_Rocket_StartTouch(entity, target);
+		}
+		case WEAPON_QUIBAI:
+		{
+			Melee_QuibaiArkTouch(entity, target);
+		}
 	}
 #else
 	switch(i_WandIdNumber[entity])
@@ -217,4 +308,64 @@ public void Wand_Base_StartTouch(int entity, int other)
 		}	
 	}
 #endif
+}
+
+
+
+static void OnCreate_Proj(CClotBody body)
+{
+	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[body.index]);
+	if(IsValidEntity(extra_index))
+		RemoveEntity(extra_index);
+
+	iref_PropAppliedToRocket[body.index] = INVALID_ENT_REFERENCE;
+	return;
+}
+static void OnDestroy_Proj(CClotBody body)
+{
+	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[body.index]);
+	if(IsValidEntity(extra_index))
+		RemoveEntity(extra_index);
+
+	iref_PropAppliedToRocket[body.index] = INVALID_ENT_REFERENCE;
+	return;
+}
+
+stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, float ModelSize, char[] defaultAnimation)
+{
+	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[rocket]);
+	if(IsValidEntity(extra_index))
+		RemoveEntity(extra_index);
+	
+	int entity = CreateEntityByName("prop_dynamic_override");
+	if(IsValidEntity(entity))
+	{
+		DispatchKeyValue(entity, "targetname", "ApplyCustomModelToWandProjectile");
+		DispatchKeyValue(entity, "model", modelstringname);
+		
+		
+		static float rocketOrigin[3];
+		static float rocketang[3];
+		GetEntPropVector(rocket, Prop_Send, "m_vecOrigin", rocketOrigin);
+		GetEntPropVector(rocket, Prop_Data, "m_angRotation", rocketang);
+		int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
+		TeleportEntity(entity, rocketOrigin, rocketang, NULL_VECTOR);
+		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", GetGameTime());
+		DispatchSpawn(entity);
+		SetEntityCollisionGroup(entity, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
+		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
+		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 12); 
+		SetEntProp(entity, Prop_Data, "m_nSolidType", 6); 
+		SetParent(rocket, entity);
+		iref_PropAppliedToRocket[rocket] = EntIndexToEntRef(entity);
+		
+		if(defaultAnimation[0])
+		{
+			CClotBody npc = view_as<CClotBody>(entity);
+			npc.AddActivityViaSequence(defaultAnimation);
+		}
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", ModelSize);
+		return entity;
+	}
+	return -1;
 }

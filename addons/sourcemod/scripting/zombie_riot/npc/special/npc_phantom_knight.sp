@@ -143,9 +143,11 @@ methodmap PhantomKnight < CClotBody
 	public PhantomKnight(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		PhantomKnight npc = view_as<PhantomKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetLucianHealth(), ally));
-		
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		//Normal sized Miniboss!
 		i_NpcInternalId[npc.index] = PHANTOM_KNIGHT;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -187,7 +189,7 @@ methodmap PhantomKnight < CClotBody
 		
 		
 		SDKHook(npc.index, SDKHook_TraceAttack, PhantomKnight_TraceAttack);
-		SDKHook(npc.index, SDKHook_OnTakeDamage, PhantomKnight_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, PhantomKnight_ClotThink);
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -283,7 +285,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 	if(!npc.m_bisWalking) //Dont move, or path. so that he doesnt rotate randomly.
 	{
 		npc.m_flSpeed = 0.0;
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 	}
 	//No else, We will set the speed and pathing ourselves down below.
@@ -313,6 +315,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
+						KillFeed_SetKillIcon(npc.index, "claidheamohmor");
 						if(!ShouldNpcDealBonusDamage(target))
 						{
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_CLUB);
@@ -332,6 +335,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 	{
 		if(f_AttackHappensAoe[npc.index] < gameTime)
 		{
+			KillFeed_SetKillIcon(npc.index, "tf_generic_bomb");
+				
 			float damage = 200.0;
 			if(b_IsPhantomFake[npc.index]) //Make sure that he wont do damage if its a fake 
 			{
@@ -358,11 +363,11 @@ public void PhantomKnight_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 		
@@ -377,16 +382,16 @@ public void PhantomKnight_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(500.0, 2.0) && npc.m_flNextRangedSpecialAttack < gameTime && !b_IsPhantomFake[npc.index]) //Teleport has first priority, do this!
+		else if(flDistanceToTarget < (500.0 * 500.0) && npc.m_flNextRangedSpecialAttack < gameTime && !b_IsPhantomFake[npc.index]) //Teleport has first priority, do this!
 		{
 			//Fakes cant teleport (would be too much)
 			npc.m_iState = 4; //Do A teleport to behind or atleast close to the enemy! If i get stuck and get teleported back, thats no issue, i will own a clone regardless!
 		}
-		else if(flDistanceToTarget < Pow(150.0, 2.0) && npc.m_flNextRangedAttack < gameTime)
+		else if(flDistanceToTarget < (150.0 * 150.0) && npc.m_flNextRangedAttack < gameTime)
 		{
 			npc.m_iState = 2; //Do Aoe Ranged Attack To everything around him
 		}
-		else if(flDistanceToTarget < Pow(100.0, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < (100.0 * 100.0) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
@@ -394,7 +399,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 		{
 			npc.m_iState = 3; //Stare at the enemy and into their soul.
 		}
-		else if(flDistanceToTarget > Pow(90.0, 2.0))
+		else if(flDistanceToTarget > (90.0 * 90.0))
 		{
 			npc.m_iState = 0; //Walk to target
 		}
@@ -565,7 +570,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 							if(b_thisNpcIsABoss[npc.index]) //If he is a boss, make his clones a boss.
 							{
 								b_thisNpcIsABoss[view_as<int>(fake_spawned)] = true;
-								SetEntProp(view_as<int>(fake_spawned), Prop_Send, "m_bGlowEnabled", true);
+								GiveNpcOutLineLastOrBoss(view_as<int>(fake_spawned), true);
 							}
 							Zombies_Currently_Still_Ongoing += 1;
 							b_IsPhantomFake[view_as<int>(fake_spawned)] = true;
@@ -614,7 +619,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action PhantomKnight_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action PhantomKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -633,25 +638,28 @@ public Action PhantomKnight_TraceAttack(int victim, int& attacker, int& inflicto
 {
 	PhantomKnight npc = view_as<PhantomKnight>(victim);
 
-	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
+	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		if(hitgroup == HITGROUP_HEAD)
+		if(npc.m_flDoingAnimation < GetGameTime(npc.index))
 		{
-			if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+			if(hitgroup == HITGROUP_HEAD)
 			{
-				b_WasAHeadShot[victim] = true;
-				npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 1.0;
-				npc.m_blPlayHurtAnimation = true;
+				if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+				{
+					b_WasAHeadShot[victim] = true;
+					npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 1.0;
+					npc.m_blPlayHurtAnimation = true;
+				}
 			}
-		}
-		else
-		{
-			if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+			else
 			{
-				b_WasAHeadShot[victim] = false;
-				npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 1.0;
-				npc.m_blPlayHurtAnimation = true;
-			}	
+				if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+				{
+					b_WasAHeadShot[victim] = false;
+					npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 1.0;
+					npc.m_blPlayHurtAnimation = true;
+				}	
+			}
 		}
 	}
 	return Plugin_Continue;
@@ -663,7 +671,7 @@ public void PhantomKnight_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, PhantomKnight_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, PhantomKnight_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
@@ -689,7 +697,8 @@ public void PhantomKnight_NPCDeath(int entity)
 		
 //		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
 		DispatchKeyValue(entity_death, "model", COMBINE_CUSTOM_MODEL);
-
+		SetVariantInt(1);
+		AcceptEntityInput(entity_death, "SetBodyGroup");	
 		DispatchSpawn(entity_death);
 		
 

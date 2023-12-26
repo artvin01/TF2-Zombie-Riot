@@ -175,6 +175,7 @@ methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 		NPC_ALT_MEDIC_SUPPERIOR_MAGE npc = view_as<NPC_ALT_MEDIC_SUPPERIOR_MAGE>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.25", "25000", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_MEDIC_SUPPERIOR_MAGE;
+		i_NpcWeight[npc.index] = 3;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -193,7 +194,7 @@ methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink);
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/C_Crossing_Guard/C_Crossing_Guard.mdl");
@@ -242,8 +243,8 @@ methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "Enable");
 		
 		npc.StartPathing();
-		fl_TimebeforeIOC[npc.index] = GetGameTime(npc.index) + 10.0;
-		npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 15.0;
+		fl_TimebeforeIOC[npc.index] = GetGameTime(npc.index) + 5.0;
+		npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 7.5;
 		npc.m_bInKame = false;
 		npc.Anger = false;
 		
@@ -284,7 +285,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 	{
 	
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -324,9 +325,9 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 			TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 			TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		} else {
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		if(flDistanceToTarget < 60000)	//Do laser of hopefully not doom within a 100 hu's, might be too close but who knows.
 		{
@@ -347,10 +348,12 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 		{
 			npc.FaceTowards(vecTarget, 700.0);
 			npc.m_flSpeed = 100.0;
+			f_NpcTurnPenalty[npc.index] = 0.3;
 		}
 		else
 		{
 			npc.m_flSpeed = 300.0;
+			f_NpcTurnPenalty[npc.index] = 1.0;
 		}
 		if(flDistanceToTarget > 60000 && flDistanceToTarget < 120000 && !npc.m_bInKame && fl_TimebeforeIOC[npc.index] < GetGameTime(npc.index))
 		{
@@ -451,7 +454,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -459,7 +462,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -499,7 +502,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_NPCDeath(int entity)
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
@@ -531,7 +534,7 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability_Anger(int client)
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CanUse[client] = true;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client] = 30.0;	//beam dmg 1, 50%<
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarDPT[client] = 17.5;
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_MaxDistance[client] = 2000;
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_MaxDistance[client] = 750;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamRadius[client] = 10;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ColorHex[client] = ParseColor("FFFFFF");
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ChargeUpTime[client] = 33;
@@ -572,7 +575,7 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability_Anger(int client)
 	}
 			
 
-	CreateTimer(5.0, NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(5.0, NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick);
 }
 
@@ -590,7 +593,7 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability(int client)
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CanUse[client] = true;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client] = 20.0;	//beam dmg 2, 50%>
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarDPT[client] = 10.0;
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_MaxDistance[client] = 2000;
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_MaxDistance[client] = 500;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamRadius[client] = 10;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ColorHex[client] = ParseColor("0509FA");
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ChargeUpTime[client] = 33;
@@ -631,13 +634,14 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability(int client)
 	}
 			
 
-	CreateTimer(5.0, NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(5.0, NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick);
 	
 }
 
-public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Timer(Handle timer, int client)
+public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Timer(Handle timer, int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(!IsValidEntity(client))
 		return Plugin_Continue;
 
@@ -660,8 +664,6 @@ public bool NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceWallsOnly(int entity, int con
 {
 	return !entity;
 }
-#define MAX_PLAYERS (MAX_PLAYERS_ARRAY < (MaxClients + 1) ? MAX_PLAYERS_ARRAY : (MaxClients + 1))
-#define MAX_PLAYERS_ARRAY 36
 
 public bool NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
@@ -676,7 +678,7 @@ public bool NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceUsers(int entity, int content
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 			
-			if (!StrContains(classname, "base_boss", true) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
+			if (!StrContains(classname, "zr_base_npc", true) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
 				for(int i=1; i < MAXENTITIES; i++)
 				{
@@ -726,7 +728,6 @@ static void NPC_ALT_MEDIC_SUPPERIOR_MAGE_GetBeamDrawStartPoint(int client, float
 	startPoint[2] += actualBeamOffset[2];
 }
 
-#define MAXTF2PLAYERS	36
 
 public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick(int client)
 {
@@ -779,7 +780,7 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick(int client)
 			{
 				ConformLineDistance(endPoint, startPoint, endPoint, curDist - lineReduce);
 			}
-			for (int i = 1; i < MAXTF2PLAYERS; i++)
+			for (int i = 1; i < MAXENTITIES; i++)
 			{
 				NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_HitDetected[i] = false;
 			}
@@ -794,15 +795,21 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick(int client)
 			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 			delete trace;
 			
-			for (int victim = 1; victim < MaxClients; victim++)
+			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetClientTeam(victim))
+				if (NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
 					float damage = NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client] + (NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarDPT[client]-NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client]) * (distance/NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_MaxDistance[client]);
 					if (damage < 0)
 						damage *= -1.0;
+
+
+					if(ShouldNpcDealBonusDamage(victim))
+					{
+						damage *= 5.0;
+					}
 
 					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
 				}
@@ -835,6 +842,7 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick(int client)
 		{
 			delete trace;
 		}
+		delete trace;
 	}
 	return Plugin_Continue;
 }
@@ -898,8 +906,9 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], con
 		int Iondamage = ReadPackCell(data);
 		int client = EntRefToEntIndex(ReadPackCell(data));
 		
-		if(!IsValidEntity(client))
+		if(!IsValidEntity(client) || b_NpcHasDied[client])
 		{
+			delete data;
 			return;
 		}
 		
@@ -980,6 +989,8 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], con
 		}
 		Iondistance -= 10;
 		
+		delete data;
+
 		Handle nData = CreateDataPack();
 		WritePackFloat(nData, startPosition[0]);
 		WritePackFloat(nData, startPosition[1]);
@@ -992,7 +1003,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], con
 		ResetPack(nData);
 		
 		if (Iondistance > -30)
-		CreateTimer(0.1, NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
+		CreateTimer(0.1, NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE);
 		else
 		{
 			if(!b_Anger[client])

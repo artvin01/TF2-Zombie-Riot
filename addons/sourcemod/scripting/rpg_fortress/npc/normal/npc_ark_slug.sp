@@ -92,6 +92,7 @@ methodmap ArkSlug < CClotBody
 		i_NpcInternalId[npc.index] = ARK_SLUG;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		KillFeed_SetKillIcon(npc.index, "bread_bite");
 		
 		npc.SetActivity("ACT_IDLE");
 
@@ -103,7 +104,7 @@ methodmap ArkSlug < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		npc.m_flNextThinkTime = GetGameTime() + GetRandomFloat(0.0, 1.0);
+		npc.m_flNextThinkTime = GetGameTime() + GetRandomFloat(0.0, 0.5);
 
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
@@ -115,7 +116,7 @@ methodmap ArkSlug < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, ArkSlug_OnTakeDamage);
 		SDKHook(npc.index, SDKHook_Think, ArkSlug_ClotThink);
 		
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 
 		i_NoEntityFoundCount[npc.index] = 6;
@@ -137,7 +138,7 @@ public void ArkSlug_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextDelayTime = gameTime;// + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 
@@ -231,7 +232,6 @@ public void ArkSlug_ClotThink(int iNPC)
 					{
 						npc.PlayMeleeHitSound();
 						
-						int maxhealth = target > MaxClients ? GetEntProp(target, Prop_Data, "m_iMaxHealth") : SDKCall_GetMaxHealth(target);
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 92.5, DMG_CLUB);
 						Stats_AddOriginium(target, 1);
 						// Originium Slug α (50% dmg)
@@ -239,24 +239,6 @@ public void ArkSlug_ClotThink(int iNPC)
 						if(GetEntProp(target, Prop_Data, "m_iHealth") < 1)
 						{
 							npc.PlayKilledEnemySound();
-							
-							// Remove when the golden age comes:
-							float pos[3]; GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
-							float ang[3]; GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-							
-							int entity = Npc_Create(HEADCRAB_ZOMBIE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
-							if(entity > MaxClients)
-							{
-								hFromSpawnerIndex[entity] = hFromSpawnerIndex[npc.index];
-								Level[entity] = Level[target];
-								i_CreditsOnKill[entity] = 0;
-								XP[entity] = 0;
-								b_thisNpcIsABoss[entity] = false;
-								
-								SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-								SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-								Apply_Text_Above_Npc(entity, 0, maxhealth);
-							}
 						}
 					}
 				}
@@ -275,11 +257,11 @@ public void ArkSlug_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -287,7 +269,7 @@ public void ArkSlug_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}

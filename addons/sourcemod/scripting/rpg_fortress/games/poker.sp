@@ -449,7 +449,7 @@ static void PokerMenu(int client)
 			}
 			else
 			{
-				menu.SetTitle("Draw Poker\n%s won the game\nLast Man\n ");
+				menu.SetTitle("Draw Poker\n%s won the game\nLast Man\n ", buffer);
 			}
 
 			if(GameWinner == client)

@@ -119,7 +119,7 @@ public void FarmCow_ClotThink(int iNPC)
 
 		if(npc.m_bPathing)
 		{
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;	
 		}
 	}
@@ -135,7 +135,7 @@ public void FarmCow_ClotThink(int iNPC)
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecTarget);
 
 	float fl_DistanceToOriginalSpawn = GetVectorDistance(vecTarget, f3_PositionArrival[npc.index], true);
-	if(fl_DistanceToOriginalSpawn < Pow(80.0, 2.0)) //We are too far away from our home! return!
+	if(fl_DistanceToOriginalSpawn < (80.0 * 80.0)) //We are too far away from our home! return!
 	{
 		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_MP_STAND_MELEE");
@@ -148,9 +148,9 @@ public void FarmCow_ClotThink(int iNPC)
 	if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 	{
 		//Pick a random goal area
-	//	NavArea RandomArea = PickRandomArea();	
+	//	CNavArea RandomArea = PickRandomArea();	
 			
-	//	if(RandomArea == NavArea_Null) 
+	//	if(RandomArea == NULL_AREA) 
 	//		return;
 
 		float AproxRandomSpaceToWalkTo[3];
@@ -164,8 +164,8 @@ public void FarmCow_ClotThink(int iNPC)
 		AproxRandomSpaceToWalkTo[0] = GetRandomFloat((AproxRandomSpaceToWalkTo[0] - 400.0),(AproxRandomSpaceToWalkTo[0] + 400.0));
 		AproxRandomSpaceToWalkTo[1] = GetRandomFloat((AproxRandomSpaceToWalkTo[1] - 400.0),(AproxRandomSpaceToWalkTo[1] + 400.0));
 		
-		if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
-			return;
+//		if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
+//			return;
 			
 
 		Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
@@ -177,8 +177,8 @@ public void FarmCow_ClotThink(int iNPC)
 
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 
-		PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
-		PF_StartPathing(iNPC);
+		NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+		NPC_StartPathing(iNPC);
 
 		f3_PositionArrival[iNPC][0] = AproxRandomSpaceToWalkTo[0];
 		f3_PositionArrival[iNPC][1] = AproxRandomSpaceToWalkTo[1];

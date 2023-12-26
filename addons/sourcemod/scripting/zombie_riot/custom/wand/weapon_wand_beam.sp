@@ -3,16 +3,11 @@
 
 static float Strength[MAXTF2PLAYERS];
 
-#define MAXENTITIES 2048
-//the R
 static int weapon_id[MAXPLAYERS+1]={0, ...};
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 
 #define SOUND_BEAMWAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
 
-#define MAX_TARGETS_HIT 10
-#define MAX_SOUND_FILE_LENGTH 80
-#define MAX_EFFECT_NAME_LENGTH 48
 
 static bool BeamWand_CanUse[MAXTF2PLAYERS];
 static bool BeamWand_IsUsing[MAXTF2PLAYERS];
@@ -52,9 +47,7 @@ public void BeamWand_m2_ClearAll()
 public void Weapon_Wand_Beam(int client, int weapon, bool crit)
 {
 	int mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
 	if(mana_cost <= Current_Mana[client])
 	{
@@ -70,9 +63,7 @@ public void Weapon_Wand_Beam(int client, int weapon, bool crit)
 
 		Strength[client] = 65.0;
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			Strength[client] *= TF2Attrib_GetValue(address);
+		Strength[client] *= Attributes_Get(weapon, 410, 1.0);
 					
 	//	TBB_Ability(client);
 		TBB_Ability_BeamWand(client);
@@ -90,9 +81,7 @@ public void Weapon_Wand_Beam(int client, int weapon, bool crit)
 public void Weapon_Wand_Beam_pap(int client, int weapon, bool crit)
 {
 	int mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
 	if(mana_cost <= Current_Mana[client])
 	{
@@ -108,9 +97,7 @@ public void Weapon_Wand_Beam_pap(int client, int weapon, bool crit)
 
 		Strength[client] = 65.0;
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			Strength[client] *= TF2Attrib_GetValue(address);
+		Strength[client] *= Attributes_Get(weapon, 410, 1.0);
 			
 					
 	//	TBB_Ability(client);
@@ -147,6 +134,7 @@ public void Weapon_BeamWand_M2(int client, int weapon, bool &result, int slot)
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
+				Rogue_OnAbilityUse(weapon);
 				float speedtime = Actualmana / 100.0 + 5.0;
 				Ability_Apply_Cooldown(client, slot, speedtime);	//Cooldown based on how much mana the player currently has.
 				
@@ -154,11 +142,9 @@ public void Weapon_BeamWand_M2(int client, int weapon, bool &result, int slot)
 				
 				float Original_Atackspeed = 1.0;
 				
-				Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-				if(address != Address_Null)
-					Original_Atackspeed = TF2Attrib_GetValue(address);
+				Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
 				
-				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed * 0.25);
+				Attributes_Set(weapon, 6, Original_Atackspeed * 0.25);
 				
 				EmitSoundToAll(SOUND_BEAMWAND_ATTACKSPEED_ABILITY, client, SNDCHAN_STATIC, 80, _, 0.9);
 				
@@ -216,11 +202,9 @@ public void Weapon_BeamWand_M2_pap(int client, int weapon, bool &result, int slo
 				
 				float Original_Atackspeed = 1.0;
 				
-				Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-				if(address != Address_Null)
-					Original_Atackspeed = TF2Attrib_GetValue(address);
+				Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
 				
-				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed * 0.25);
+				Attributes_Set(weapon, 6, Original_Atackspeed * 0.25);
 				
 				EmitSoundToAll(SOUND_BEAMWAND_ATTACKSPEED_ABILITY, client, SNDCHAN_STATIC, 80, _, 0.9);
 				
@@ -265,11 +249,9 @@ public Action Reset_BeamWand_Attackspeed(Handle cut_timer, int ref)
 	{
 		float Original_Atackspeed;
 
-		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-		if(address != Address_Null)
-			Original_Atackspeed = TF2Attrib_GetValue(address);
+		Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
 
-		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed / 0.25);
+		Attributes_Set(weapon, 6, Original_Atackspeed / 0.25);
 	}
 	return Plugin_Handled;
 }
@@ -402,7 +384,7 @@ static void TBB_Ability_BeamWand_pap(int client)
 	TBB_Tick(client);
 //	SDKHook(client, SDKHook_PreThink, TBB_Tick);
 	
-	CreateTimer(999.9, Timer_RemoveEntity, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+//	CreateTimer(999.9, Timer_RemoveEntity, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 }
 
 static bool BeamWand_TraceWallsOnly(int entity, int contentsMask)
@@ -581,6 +563,7 @@ static void TBB_Tick(int client)
 					pack.WriteFloat(playerPos[0]);
 					pack.WriteFloat(playerPos[1]);
 					pack.WriteFloat(playerPos[2]);
+					pack.WriteCell(0);
 					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 					
 					BeamWand_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;

@@ -109,15 +109,16 @@ void Stats_AddNeuralDamage(int client, int attacker, int damage)
 		if(NeuralDamage[client] >= NERVOUS_IMPAIRMENT)
 		{
 			NeuralDamage[client] = 0;
+			TF2_StunPlayer(client, 5.0, 1.0, TF_STUNFLAGS_BIGBONK, client);
+
 			int health = GetClientHealth(client);
 			if(health > 500)
 			{
-				TF2_StunPlayer(client, 5.0, 1.0, TF_STUNFLAGS_BIGBONK, client);
 				SetEntityHealth(client, health - 500);
 			}
 			else
 			{
-				SDKHooks_TakeDamage(client, attacker, attacker, damage * 10.0, DMG_DROWN);
+				SDKHooks_TakeDamage(client, attacker, attacker, 5000.0, DMG_DROWN);
 			}
 		}
 	}
@@ -148,9 +149,9 @@ stock float Stats_OriginiumPower(int client)
 		return 3.0 - (float(originium - ORIGINIUM_UNSTABLE) / float(ORIGINIUM_UNSTABLE * 3));
 	
 	if(originium >= ORIGINIUM_INFECTED)
-		return float(originium) / float(ORIGINIUM_INFECTED);
+		return float(originium) / float(ORIGINIUM_INFECTED);	// x1.0 - x3.0
 	
-	return float(originium / 2) / float(ORIGINIUM_INFECTED);
+	return float(originium / 2) / float(ORIGINIUM_INFECTED);	// x0.0 - x1.0
 }
 
 static int OriginiumHealth(int client)
@@ -199,6 +200,9 @@ void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
 		
 			case 405:
 				Format(desc, 512, "%s\n%s Max Mana & Mana Regen", desc, CharPercent(value[i]));
+		
+			case 412:
+				Format(desc, 512, "%s\n%s Damage Resistance", desc, CharPercent(1.0 / value[i]));
 
 		}
 	}
@@ -243,13 +247,8 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 		float multi = AgilityMulti(Agility[client]);
 		//Agility code.
 
-		Address address = TF2Attrib_GetByDefIndex(entity, 6);
-		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(address) * multi);
-
-		address = TF2Attrib_GetByDefIndex(entity, 96);
-		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, 96, TF2Attrib_GetValue(address) * multi);
+		Attributes_SetMulti(entity, 6, multi);
+		Attributes_SetMulti(entity, 96, multi);
 	}
 
 	if(slot < TFWeaponSlot_Melee || i_IsWrench[entity])
@@ -257,9 +256,7 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 		int stat = Stats_Dexterity(client);
 		if(stat)
 		{
-			Address address = TF2Attrib_GetByDefIndex(entity, 2);
-			if(address != Address_Null)
-				TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * (1.0 + (stat / 50.0)));
+			Attributes_SetMulti(entity, 2, 1.0 + (stat / 50.0));
 		}
 	}
 	else if(i_IsWandWeapon[entity])
@@ -267,9 +264,7 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 		int stat = Stats_Intelligence(client);
 		if(stat)
 		{
-			Address address = TF2Attrib_GetByDefIndex(entity, 410);
-			if(address != Address_Null)
-				TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(address) * (1.0 + (stat / 50.0)));
+			Attributes_SetMulti(entity, 410, 1.0 + (stat / 50.0));
 		}
 	}
 	else if(slot == TFWeaponSlot_Melee)
@@ -277,9 +272,7 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 		int stat = Stats_Strength(client);
 		if(stat)
 		{
-			Address address = TF2Attrib_GetByDefIndex(entity, 2);
-			if(address != Address_Null)
-				TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * (1.0 + (stat / 50.0)));
+			Attributes_SetMulti(entity, 2, 1.0 + (stat / 50.0));
 		}
 	}
 }
@@ -486,10 +479,12 @@ public Action Stats_ShowStats(int client, int args)
 
 		char buffer[64];
 
+		float vuln = Attributes_FindOnPlayerZR(client, 412, true, 1.0) * 100.0;
+
 		int amount;
 		Stats_BaseHealth(client, amount);
 		int bonus = SDKCall_GetMaxHealth(client) - amount;
-		FormatEx(buffer, sizeof(buffer), "Max Health: %d + %d (%.0f%% resistance)", amount, bonus, 1.0 / Attributes_FindOnPlayer(client, 412, true, 1.0));
+		FormatEx(buffer, sizeof(buffer), "Max Health: %d + %d (%.0f%% melee dmg, %.0f%% ranged dmg)", amount, bonus, vuln * Attributes_FindOnPlayerZR(client, 206, true, 1.0, true, true), vuln * Attributes_FindOnPlayerZR(client, 205, true, 1.0, true, true));
 		menu.AddItem(NULL_STRING, buffer);
 
 		Stats_BaseCarry(client, amount, bonus);

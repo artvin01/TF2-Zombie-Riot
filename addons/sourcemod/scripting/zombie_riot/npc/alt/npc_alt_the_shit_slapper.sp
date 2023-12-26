@@ -138,6 +138,7 @@ methodmap The_Shit_Slapper < CClotBody
 		The_Shit_Slapper npc = view_as<The_Shit_Slapper>(CClotBody(vecPos, vecAng, "models/zombie/classic_torso.mdl", "4.5", "500", ally, false));
 		
 		i_NpcInternalId[npc.index] = ALT_The_Shit_Slapper;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -148,7 +149,7 @@ methodmap The_Shit_Slapper < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, The_Shit_Slapper_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, The_Shit_Slapper_ClotThink);		
 		
 		i_slap[npc.index]=0;
@@ -189,7 +190,7 @@ public void The_Shit_Slapper_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int closest = npc.m_iTarget;
@@ -206,11 +207,11 @@ public void The_Shit_Slapper_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, closest);
+			NPC_SetGoalEntity(npc.index, closest);
 		}
 		npc.StartPathing();
 		
@@ -295,7 +296,7 @@ public void The_Shit_Slapper_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -329,7 +330,7 @@ public void The_Shit_Slapper_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, The_Shit_Slapper_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, The_Shit_Slapper_ClotThink);	
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

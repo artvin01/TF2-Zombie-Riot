@@ -5,6 +5,12 @@ static ArrayList ActiveZones;
 
 void Zones_PluginStart()
 {
+	// Fixes crash when reloading the plugin
+	RequestFrame(Zones_PluginStartFrame);
+}
+
+public void Zones_PluginStartFrame()
+{
 	HookEntityOutput("trigger_multiple", "OnStartTouch", Zones_StartTouch);
 	HookEntityOutput("trigger_multiple", "OnStartTouchAll", Zones_StartTouchAll);
 	HookEntityOutput("trigger_multiple", "OnEndTouch", Zones_EndTouch);
@@ -27,7 +33,7 @@ void Zones_ResetAll()
 	delete ActiveZones;
 	ActiveZones = new ArrayList(ByteCountToCells(32));
 	
-	char name[32];
+	/*char name[32];
 	HookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouchAll);
 	
 	int entity = -1;
@@ -37,7 +43,7 @@ void Zones_ResetAll()
 			AcceptEntityInput(entity, "TouchTest", entity, entity);
 	}
 	
-	UnhookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouchAll);
+	UnhookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouchAll);*/
 }
 
 static void OnEnter(int entity, const char[] name)
@@ -51,6 +57,7 @@ static void OnEnter(int entity, const char[] name)
 		Crafting_ClientEnter(entity, name);
 		Games_ClientEnter(entity, name);
 		Garden_ClientEnter(entity, name);
+		Levels_ClientEnter(entity, name);
 		Music_ZoneEnter(entity, name);
 		Quests_EnableZone(entity, name);
 		Spawns_ClientEnter(entity, name);
@@ -74,10 +81,10 @@ static void OnLeave(int entity, const char[] name)
 
 static void OnActive(int entity, const char[] name)
 {
-	if(!b_NpcHasDied[entity]) //An npc just touched it!
+	/*if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
 	}
-	else
+	else*/
 	{
 		Dungeon_EnableZone(name);
 		Mining_EnableZone(name);
@@ -86,12 +93,12 @@ static void OnActive(int entity, const char[] name)
 	}
 }
 
-static void OnDisable(int entity, const char[] name)
+static void OnDisable(const char[] name)
 {
-	if(!b_NpcHasDied[entity]) //An npc just touched it!
+	/*if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
 	}
-	else
+	else*/
 	{
 		Dungeon_DisableZone(name);
 		Mining_DisableZone(name);
@@ -154,7 +161,7 @@ public Action Zones_EndTouchAll(const char[] output, int entity, int caller, flo
 			if(pos != -1)
 			{
 				ActiveZones.Erase(pos);
-				OnDisable(entity, name);
+				OnDisable(name);
 			}
 		}
 	}

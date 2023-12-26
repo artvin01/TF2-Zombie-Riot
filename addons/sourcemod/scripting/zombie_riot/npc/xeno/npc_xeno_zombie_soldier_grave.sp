@@ -137,6 +137,7 @@ methodmap XenoSoldier < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		i_NpcInternalId[npc.index] = XENO_SOLDIER_ROCKET_ZOMBIE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -145,7 +146,7 @@ methodmap XenoSoldier < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoSoldier_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoSoldier_ClotThink);
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -214,7 +215,7 @@ public void XenoSoldier_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -245,9 +246,9 @@ public void XenoSoldier_ClotThink(int iNPC)
 				
 				
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
 			if(npc.m_flReloadIn && npc.m_flReloadIn<GetGameTime(npc.index))
@@ -282,7 +283,7 @@ public void XenoSoldier_ClotThink(int iNPC)
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
 						npc.m_flReloadIn = GetGameTime(npc.index) + 1.0;
 					}
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 				else
@@ -299,7 +300,7 @@ public void XenoSoldier_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -308,7 +309,7 @@ public void XenoSoldier_ClotThink(int iNPC)
 }
 
 
-public Action XenoSoldier_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoSoldier_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	XenoSoldier npc = view_as<XenoSoldier>(victim);
 		
@@ -332,7 +333,7 @@ public void XenoSoldier_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoSoldier_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoSoldier_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable2))

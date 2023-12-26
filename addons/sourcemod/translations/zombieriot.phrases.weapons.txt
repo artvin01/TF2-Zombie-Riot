@@ -39,7 +39,7 @@
 	"clip"
 	{
 		"en"		"Clip"
-		"ru"		"Магазин"
+		"ru"		"Обойма"
 		"de"		"Klipp"
 		"pt"		"Cartucho"
 		"nl"		"Clip"
@@ -228,7 +228,7 @@
 		"de"		"Aresenals Tripminschicht"
 		"pt"		"Camada de Minas do Aresenal"
 		"nl"		"Aresenal's Explosieve Valmijn legger"
-		//"chi"       "安森尔"
+		"chi"       "兵厂三聚氰胺层"
 	}
 	"Heavy Charge Builder Laser"
 	{
@@ -273,6 +273,7 @@
 		"de"		"Terrorisar Bomben Implantiertes Scharfschützengewehr"
 		"pt"		"Rifle Implantador de Bombas Aterrorizante"
 		"nl"		"Terrorizerende bomplantende Scherpshuttergeweer"
+		"chi"       "恐怖炸弹狙击步枪"
 	}
 	"Rampager Automatic Rifle"
 	{
@@ -837,7 +838,7 @@
 	"Buildable Healing Station"
 	{
 		"en"		"Buildable Healing Station"
-		"ru"		"Возвед. лечеб. станции"
+		"ru"		"Возвед. лечеб. ст-ции"
 		"de"		"Baubare Heilstation"
 		"pt"		"Estação de Cura Construível"
 		"nl"		"Bouwbare genezingsstation"
@@ -1937,9 +1938,7 @@
 	}
 	"Cryo Staff"
 	{
-	     "en"       "Beam Wand"
-		 "ru"       "Жезл луча"
-	     "chi"       "约束神杖"
+	     "en"       "Cryo Staff"
 	}
 	"Atomic Reconstructor"
 	{
@@ -1950,31 +1949,31 @@
 	"Only one allowed, sell to see and buy others."
 	{
 	     "en"       "Only one allowed, sell to see and buy others."
-		 "ru"       "Можно только один, продайте для покупки других."
+		 "ru"       "Только одно, продайте для покупки другого."
 	     "chi"       "只允许装备一个"
 	}
 	"Throwable Armor Grenade"
 	{
 	     "en"       "Throwable Armor Grenade"
-		 "ru"       "Метательная бронебойная граната"
+		 "ru"       "Метат. бронеб. граната"
 	     "chi"       "可投掷装甲掷弹机"
 	}
 	"Experimental Burst Pack"
 	{
 	     "en"       "Experimental Burst Pack"
-		 "ru"       "Экспериментальная разрывная установка"
+		 "ru"       "Эксп. разрывная установка"
 	     "chi"       "试验性爆破装置"
 	}
 	"Throwable Survival Grenade"
 	{
 	     "en"       "Throwable Survival Grenade"
-		 "ru"       "Метательная граната выживания"
+		 "ru"       "Метат. граната выжив."
 	     "chi"       "投掷式救生手榴弹"
 	}
 	"Deployable Quantum Suit"
 	{
 	     "en"       "Deployable Quantum Suit"
-		 "ru"       "Развёртываемый квантовый костюм"
+		 "ru"       "Развёрт. квантовый костюм"
 	     "chi"       "可部署量子套装"
 	}
 	"Primary Builder Weapons"
@@ -2023,13 +2022,13 @@
 	{
 	     "en"       "Bigger Radius"
 		 "ru"       "Увеличенный радиус"
-	     "chi"       "加大影响范围"
+	     "chi"      "加大影响范围"
 	}
 	"Jungle Drums"
 	{
 	     "en"       "Jungle Drums"
 		 "ru"       "Барабаны джунглей"
-	     "chi"       "加快范围内攻击速度"
+	     "chi"      "加快范围内攻击速度"
 	}
 	"Grow Blocker"
 	{
@@ -2040,63 +2039,262 @@
 	"Rebel Active Camo"
 	{
 	     "en"       "Rebel Active Camo"
+		 "ru"       "Активный камуфляж повстанца"
 	     "chi"      "叛军主动迷彩"
 	}
 	"Rebel Mounted Armortable"
 	{
 	     "en"       "Rebel Mounted Armortable"
+		 "ru"       "Верстак брони повстанца"
 	     "chi"      "叛军骑兵护甲柜"
 	}
 	"Rebel Mounted AmmoBox"
 	{
 	     "en"       "Rebel Mounted AmmoBox"
+		 "ru"       "Ящик с боепр. повстанца"
 	     "chi"      "叛军骑兵弹药箱"
 	}
 	"Rebel Mounted Perk Machine"
 	{
 	     "en"       "Rebel Mounted Perk Machine"
+		 "ru"       "Перк-машина повстанца"
 	     "chi"      "叛军骑兵Buff箱"
 	}
 	"Rebel Mounted Pack-a-Punch"
 	{
 	     "en"       "Rebel Mounted Pack-a-Punch"
+		 "ru"       "Улучшайзер повстанца"
 	     "chi"      "叛军骑兵武器工作台"
 	}
 	"Rebel Mounted Healing Station"
 	{
 	     "en"       "Rebel Mounted Healing Station"
+		 "ru"       "Лечеб. станция повстанца"
 	     "chi"      "叛军骑兵治疗机"
 	}
 	"Judgement Of Iberia"
 	{
 		"en"       "Judgement Of Iberia"
 		"ru"       "Суд Иберии"
+		"chi"      "伊比利亚的判决"
 	}
 	"Tornado-Blitz"
 	{
 		"en"		"Tornado-Blitz"
 		"ru"		"Торнадо-Блиц"
+		"chi"       "龙卷风突袭"
 	}
 	"Cosmic Terror"
 	{
 		"en"		"Cosmic Terror"
 		"ru"		"Космический террор"
+		"chi"       "宇宙恐怖"
 	}
 	"Passanger's Device"
 	{
 		"en"	"Passanger's Device"
 		"ru"	"Пассажирское устройство"
+		"chi"   "乘客设备"
 	}
 	"Alchemist Potion"
 	{
 		"en"	"Alchemist Potion"
+		"ru"	"Зелье алхимика"
+		"chi"   "炼金术士药水"
 	}
-	"Builder Extra Gear"
+	"Press your action slot (h) to access an extra menu!"
 	{
-		"en"	"Builder Extra Gear"
+		"en"	"Press your action slot (h) to access an extra menu!"
+		"ru"	"Нажмите на ячейку действия (h) для открытия доп. меню!"
 	}
 	"Buildable Barracks"
 	{
 		"en"	"Buildable Barracks"
+		"ru"	"Возведение казармы"
+		"chi"   "可建造兵营"
+	}
+	"Nearl Silvester Spear"
+	{
+		"en"	"Nearl Silvester Spear"
+		"ru"	"Копьё Нерла Сильвестра"
+		"chi"   "西尔维斯特矛"
+	}
+	"Lapplands Sword"
+	{
+		"en"	"Lapplands Sword"
+		"ru"	"Меч лапландцев"
+	}
+	"Lantean Staff"
+	{
+		"en" 	"Lantean Staff"
+		"ru" 	"Посох Лантеана"
+	}
+	"Chainblade"
+	{
+		"en"	"Chainblade"
+		"ru"	"Цепной клинок"
+		"chi"   "链刃"
+	}
+	"Skilled Chainblade"
+	{
+		"en"	"Skilled Chainblade"
+		"ru"	"Искусный цепной клинок"
+		"chi"   "精通链刃"
+	}
+	"Elite Chainblade"
+	{
+		"en"	"Elite Chainblade"
+		"ru"	"Элитный цепной клинок"
+		"chi"   "精英链刃"
+	}
+	"Elite Skilled Chainblade"
+	{
+		"en"	"Elite Skilled Chainblade"
+		"ru"	"Элитный искусный цепной клинок"
+		"chi"   "精英技能链刃"
+	}
+	"Unchained Blade"
+	{
+		"en"	"Unchained Blade"
+		"ru"	"Клинок без цепи"
+		"chi"   "无链之刃"
+	}
+	"Elite Unchained Blade"
+	{
+		"en"	"Elite Unchained Blade"
+		"ru"	"Элитный клинок без цепи"
+		"chi"   "精英无链之刃"
+	}
+	"Preaching Sword"
+	{
+		"en"	"Preaching Sword"
+		"ru"	"Меч проповедника"
+		"chi"   "传道之剑"
+	}
+	"Ranged Lego Layer"
+	{
+		"en"	"Ranged Lego Layer"
+		"ru"	"Легомёт"
+	}
+	"The Enforcer"
+	{
+		"en"	"The Enforcer"
+		"ru"	"Головорез"
+	}
+	"The Enforcer S1"
+	{
+		"en"	"The Enforcer S1"
+		"ru"	"Головорез S1"
+	}
+	"The Enforcer S2"
+	{
+		"en"	"The Enforcer S2"
+		"ru"	"Головорез S2"
+	}
+	"The Enforcer S3"
+	{
+		"en"	"The Enforcer S3"
+		"ru"	"Головорез S3"
+	}
+	"The Enforcer Lv 4"
+	{
+		"en"	"The Enforcer S4"
+		"ru"	"Головорез S4"
+	}
+	"The Enforcer S5"
+	{
+		"en"	"The Enforcer S5"
+		"ru"	"Головорез S5"
+	}
+	"The Enforcer S6"
+	{
+		"en"	"The Enforcer S6"
+		"ru"	"Головорез S6"
+	}
+	"The Enforcer S7"
+	{
+		"en"	"The Enforcer S7"
+		"ru"	"Головорез S7"
+	}
+	"The Enforcer Mastery 1"
+	{
+		"en"	"The Enforcer Mastery 1"
+		"ru"	"Мастерство головореза 1"
+	}
+	"The Enforcer Mastery 2"
+	{
+		"en"	"The Enforcer Mastery 2"
+		"ru"	"Мастерство головореза 2"
+	}
+	"The Enforcer Mastery 3"
+	{
+		"en"	"The Enforcer Mastery 3"
+		"ru"	"Мастерство головореза 3"
+	}
+	"The Enforcer Mastery 4"
+	{
+		"en"	"The Enforcer Mastery 4"
+		"ru"	"Мастерство головореза 4"
+	}
+	"The Enforcer Mastery 5"
+	{
+		"en"	"The Enforcer Mastery 5"
+		"ru"	"Мастерство головореза 5"
+	}
+	"Quincy's Bow"
+	{
+		"en"	"Quincy's Bow"
+	}
+	"The Standchen"
+	{
+		"en"	"The Ständchen"
+	}
+	"The Standchen Pap"
+	{
+		"en"	"The Ständchen Zugabe"
+	}
+	"Combo Kits"
+	{
+		"en"	"Combo Kits"
+	}
+	"Seaborn Infection"
+	{
+		"en"	"Seaborn Infection"
+	}
+	"Seaborn Claws"
+	{
+		"en"	"Seaborn Claws"
+	}
+	"Seaborn Spines"
+	{
+		"en"	"Seaborn Spines"
+	}
+	"Seaborn Salve"
+	{
+		"en"	"Seaborn Salve"
+	}
+	"The Flagellant"
+	{
+		"en"	"The Flagellant"
+	}
+	"Punish"
+	{
+		"en"	"Punish"
+	}
+	"Deathless"
+	{
+		"en"	"Deathless"
+	}
+	"Ion-Blitz"
+	{
+		"en"	"Ion-Blitz"
+	}
+	"Blitz-Blade"
+	{
+		"en"	"Blitz-Blade"
+	}
+	"Hurricane-Blitz"
+	{
+		"en"	"Hurricane-Blitz"
 	}
 }

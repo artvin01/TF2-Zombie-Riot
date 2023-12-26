@@ -15,9 +15,8 @@ public void Weapon_Arrow_Shoot_Map_Precache()
 public void Weapon_Shoot_Arrow(int client, int weapon, bool crit, int slot)
 {
 	float damage = 100.0;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
+	damage *= Attributes_Get(weapon, 2, 1.0);
+
 		
 	float fAng[3], fPos[3];
 	GetClientEyeAngles(client, fAng);
@@ -116,13 +115,12 @@ public void Weapon_Shoot_Arrow_Ability(int client, int weapon, bool crit, int sl
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
+		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		Client_To_Weapon[client] = weapon;
 		Arrows_Damage[client] = 50.0;
 		Max_Arrows[client] = 10;
-		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			Arrows_Damage[client] *= TF2Attrib_GetValue(address);
+		Arrows_Damage[client] *= Attributes_Get(weapon, 2, 1.0);
 			
 		Arrows_Ability_Shot[client] = 0;
 		CreateTimer(0.1, Timer_Multiple_Arrows, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -145,13 +143,12 @@ public void Weapon_Shoot_Arrow_Ability_Weaker(int client, int weapon, bool crit,
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
+		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		Client_To_Weapon[client] = weapon;
 		Arrows_Damage[client] = 50.0;
 		Max_Arrows[client] = 5;
-		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			Arrows_Damage[client] *= TF2Attrib_GetValue(address);
+		Arrows_Damage[client] *= Attributes_Get(weapon, 2, 1.0);
 			
 		Arrows_Ability_Shot[client] = 0;
 		CreateTimer(0.1, Timer_Multiple_Arrows, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -174,13 +171,12 @@ public void Weapon_Shoot_Arrow_Ability_Weakest(int client, int weapon, bool crit
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
+		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		Client_To_Weapon[client] = weapon;
 		Arrows_Damage[client] = 50.0;
 		Max_Arrows[client] = 2;
-		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			Arrows_Damage[client] *= TF2Attrib_GetValue(address);
+		Arrows_Damage[client] *= Attributes_Get(weapon, 2, 1.0);
 			
 		Arrows_Ability_Shot[client] = 0;
 		CreateTimer(0.1, Timer_Multiple_Arrows, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);

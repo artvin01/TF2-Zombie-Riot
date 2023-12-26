@@ -9,11 +9,7 @@ public void MudrockShieldUnequip(int client)
 	MudrockShield[client] = false;
 	TF2_RemoveCondition(client, TFCond_UberFireResist);
 	
-	if (MudrockShieldHandle[client] == INVALID_HANDLE)
-		return;
-
-	KillTimer(MudrockShieldHandle[client]);
-	MudrockShieldHandle[client] = INVALID_HANDLE;
+	delete MudrockShieldHandle[client];
 }
 
 public void MudrockShieldDisconnect(int client)
@@ -93,11 +89,11 @@ bool Ability_Mudrock_Shield_OnTakeDamage(int victim)
 
 			float PercentageHeal = 0.10;
 			
-			if(Stats_Strength(victim) > 40) //Give melee more
+			if(Stats_Strength(victim) > 30) //Give melee more
 			{
 				PercentageHeal = 0.15;
 			}
-			else if(Stats_Strength(victim) > 60) //Give melee more
+			else if(Stats_Strength(victim) > 45) //Give melee more
 			{
 				PercentageHeal = 0.20;
 			}

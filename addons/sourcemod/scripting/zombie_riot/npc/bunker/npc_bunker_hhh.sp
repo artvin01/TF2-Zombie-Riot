@@ -185,7 +185,7 @@ methodmap BunkerHeadlessHorse < CClotBody
 		npc.m_flSpeed = 300.0;
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BunkerHeadlessHorse_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, BunkerHeadlessHorse_ClotThink);
 		
 		npc.StartPathing();
@@ -208,7 +208,7 @@ public void BunkerHeadlessHorse_ClotThink(int iNPC)
 		npc.AddGesture("ACT_TRANSITION");
 		npc.m_bDoSpawnGesture = false;
 		npc.PlayHeIsAwake();
-		WakeTheFUCKUp[npc.index] = true && GetGameTime(npc.index) + 6.0;
+//		WakeTheFUCKUp[npc.index] = true && GetGameTime(npc.index) + 6.0;
 		npc.m_flRangedArmor = 0.0;
 		npc.m_flMeleeArmor = 0.0;
 	}
@@ -277,7 +277,7 @@ public void BunkerHeadlessHorse_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		npc.StartPathing();
 		//PluginBot_NormalJump(npc.index);
 	}
@@ -295,11 +295,11 @@ public void BunkerHeadlessHorse_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius()) //Predict their pos.
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, closest);
+			NPC_SetGoalEntity(npc.index, closest);
 		}
 		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen) //Target close enough to hit
 		{
@@ -363,7 +363,7 @@ public void BunkerHeadlessHorse_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -391,9 +391,8 @@ public Action BunkerHeadlessHorse_OnTakeDamage(int iNPC, int &attacker, int &inf
 public void BunkerHeadlessHorse_NPCDeath(int entity)
 {
 	BunkerHeadlessHorse npc = view_as<BunkerHeadlessHorse>(entity);
-	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC);
+	SmiteNpcToDeath(entity);
 	npc.PlayDeathScream();
-	SDKUnhook(entity, SDKHook_OnTakeDamage, BunkerHeadlessHorse_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, BunkerHeadlessHorse_ClotThink);
 	
 	int entity_death = CreateEntityByName("prop_dynamic_override");

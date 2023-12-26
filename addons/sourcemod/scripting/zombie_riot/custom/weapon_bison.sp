@@ -3,12 +3,6 @@
 
 static float Strength[MAXTF2PLAYERS];
 
-#define MAXENTITIES 2048
-
-
-#define MAX_TARGETS_HIT 10
-#define MAX_SOUND_FILE_LENGTH 80
-#define MAX_EFFECT_NAME_LENGTH 48
 
 static bool BEAM_CanUse[MAXTF2PLAYERS];
 static bool BEAM_IsUsing[MAXTF2PLAYERS];
@@ -50,13 +44,9 @@ public void Weapon_Bison(int client, int weapon, const char[] classname, bool &r
 	
 	Strength[client] = 18.0;
 				
-	Address address = TF2Attrib_GetByDefIndex(weapon, 1);
-	if(address != Address_Null)
-		Strength[client] *= TF2Attrib_GetValue(address);
+	Strength[client] *= Attributes_Get(weapon, 1, 1.0);
 				
-	address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		Strength[client] *= TF2Attrib_GetValue(address);
+	Strength[client] *= Attributes_Get(weapon, 2, 1.0);
 		
 //	TBB_Ability(client);
 	TBB_Ability_Bison(client);
@@ -100,29 +90,7 @@ static void TBB_Ability_Bison(int client)
 
 	BEAM_IsUsing[client] = true;
 	BEAM_TicksActive[client] = 0;
-	/*
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 80, _, 1.0, 75);
 	
-	switch(GetRandomInt(1, 4))
-	{
-		case 1:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", client, 80, _, _, 1.0);					
-		}
-		case 2:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", client, 80, _, _, 1.0);
-		}
-		case 3:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", client, 80, _, _, 1.0);			
-		}
-		case 4:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", client, 80, _, _, 1.0);
-		}		
-	}
-			*/
 	TBB_Tick(client);
 //	SDKHook(client, SDKHook_PreThink, TBB_Tick);
 	
@@ -205,7 +173,6 @@ static void TBB_Tick(int client)
 	if (TR_DidHit(trace))
 	{
 		TR_GetEndPosition(endPoint, trace);
-		CloseHandle(trace);
 		ConformLineDistance(endPoint, startPoint, endPoint, float(BEAM_MaxDistance[client]));
 		float lineReduce = BEAM_BeamRadius[client] * 2.0 / 3.0;
 		float curDist = GetVectorDistance(startPoint, endPoint, false);
@@ -233,8 +200,8 @@ static void TBB_Tick(int client)
 		hullMax[2] = -hullMin[2];
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
-		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
+		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		FinishLagCompensation_Base_boss();
 		
 		float vecForward[3];
@@ -269,6 +236,7 @@ static void TBB_Tick(int client)
 					pack.WriteFloat(playerPos[0]);
 					pack.WriteFloat(playerPos[1]);
 					pack.WriteFloat(playerPos[2]);
+					pack.WriteCell(0);
 					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 					
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
@@ -295,8 +263,5 @@ static void TBB_Tick(int client)
 		TE_SetupBeamPoints(belowBossEyes, endPoint, Beam_Glow, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.5, glowColor, 0);
 		TE_SendToAll(0.0);
 	}
-	else
-	{
-		delete trace;
-	}
+	delete trace;
 }

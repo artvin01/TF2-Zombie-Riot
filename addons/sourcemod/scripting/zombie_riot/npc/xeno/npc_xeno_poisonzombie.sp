@@ -131,6 +131,7 @@ methodmap XenoPoisonZombie < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		i_NpcInternalId[npc.index] = XENO_POISON_ZOMBIE;
+		i_NpcWeight[npc.index] = 2;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -138,7 +139,7 @@ methodmap XenoPoisonZombie < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoPoisonZombie_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoPoisonZombie_ClotThink);
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -197,7 +198,7 @@ public void XenoPoisonZombie_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -224,9 +225,9 @@ public void XenoPoisonZombie_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
 			//Target close enough to hit
@@ -304,7 +305,7 @@ public void XenoPoisonZombie_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -312,26 +313,28 @@ public void XenoPoisonZombie_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoPoisonZombie_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoPoisonZombie_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
 	XenoPoisonZombie npc = view_as<XenoPoisonZombie>(victim);
-	
-	if(!npc.bXenoInfectedSpecialHurt)
+	if(!NpcStats_IsEnemySilenced(victim))
 	{
-		npc.bXenoInfectedSpecialHurt = true;
-		npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 150, 255, 150, 65);
-		CreateTimer(2.0, XenoPoisonZombie_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(10.0, XenoPoisonZombie_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
-	}
-	if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
-	{
-		damage *= 0.25;
+		if(!npc.bXenoInfectedSpecialHurt)
+		{
+			npc.bXenoInfectedSpecialHurt = true;
+			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 150, 255, 150, 65);
+			CreateTimer(2.0, XenoPoisonZombie_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(10.0, XenoPoisonZombie_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
+		{
+			damage *= 0.25;
+		}
 	}
 	
 	/*
@@ -377,7 +380,7 @@ public void XenoPoisonZombie_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoPoisonZombie_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoPoisonZombie_ClotThink);
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");

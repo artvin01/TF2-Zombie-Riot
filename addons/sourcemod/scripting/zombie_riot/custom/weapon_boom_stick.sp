@@ -4,14 +4,10 @@
 #define HITSCAN_BOOM	  "ambient/explosions/explode_4.wav"
 #define LASER_BOOMSTICK	  "npc/scanner/cbot_energyexplosion1.wav"
 
+#define MAX_BOOMSTICK_LASER_SPREAD 7
+
 static float Strength[MAXTF2PLAYERS];
 static float Accuracy[MAXTF2PLAYERS];
-
-#define MAXENTITIES 2048
-
-#define MAX_TARGETS_HIT 10
-#define MAX_SOUND_FILE_LENGTH 80
-#define MAX_EFFECT_NAME_LENGTH 48
 
 static bool BEAM_CanUse[MAXTF2PLAYERS];
 static bool BEAM_IsUsing[MAXTF2PLAYERS];
@@ -29,9 +25,10 @@ static float BEAM_FarBuildingDPT[MAXTF2PLAYERS];
 static float BEAM_Duration[MAXTF2PLAYERS];
 static float BEAM_BeamOffset[MAXTF2PLAYERS][3];
 static float BEAM_ZOffset[MAXTF2PLAYERS];
-static bool BEAM_HitDetected[MAXTF2PLAYERS];
-static int BEAM_BuildingHit[MAX_TARGETS_HIT];
+static bool BEAM_HitDetected[MAXTF2PLAYERS][MAX_BOOMSTICK_LASER_SPREAD];
+static int BEAM_BuildingHit[MAX_TARGETS_HIT][MAX_BOOMSTICK_LASER_SPREAD];
 static bool BEAM_UseWeapon[MAXTF2PLAYERS];
+int RepeatOnBoomstickLaser;
 
 static float BEAM_Targets_Hit[MAXTF2PLAYERS];
 
@@ -57,7 +54,7 @@ public void Weapon_Boom_Stick(int client, int weapon, const char[] classname, bo
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		float knockback = -400.0;
+		float knockback = -200.0;
 		
 		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
@@ -92,7 +89,7 @@ public void Weapon_Boom_Stick_Louder(int client, int weapon, const char[] classn
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
 		
-		float knockback = -400.0;
+		float knockback = -200.0;
 		
 		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
@@ -121,9 +118,7 @@ public void Weapon_Boom_Stick_Louder(int client, int weapon, const char[] classn
 public void Marksman_boom_rifle(int client, int weapon, const char[] classname, bool &result)
 {
 	float damage = 100.0;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		damage *= RoundToCeil(TF2Attrib_GetValue(address));
+	damage *= RoundToCeil(Attributes_Get(weapon, 2, 1.0));
 		
 	float spawnLoc[3];
 	float eyePos[3];
@@ -156,7 +151,7 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] 
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		float knockback = -400.0;
+		float knockback = -200.0;
 		
 		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
@@ -185,21 +180,15 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] 
 	
 	Strength[client] = 6.0;
 				
-	Address address = TF2Attrib_GetByDefIndex(weapon, 1);
-	if(address != Address_Null)
-		Strength[client] *= TF2Attrib_GetValue(address);
+	Strength[client] *= Attributes_Get(weapon, 1, 1.0);
 					
-	address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		Strength[client] *= TF2Attrib_GetValue(address);
+	Strength[client] *= Attributes_Get(weapon, 2, 1.0);
 		
 	float extra_accuracy = 6.5;
 		
 	Accuracy[client] = extra_accuracy;
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 106);
-	if(address != Address_Null)
-		Accuracy[client] *= TF2Attrib_GetValue(address);
+	Accuracy[client] *= Attributes_Get(weapon, 106, 1.0);
 			
 	TBB_Ability_Boomstick(client);
 }
@@ -208,10 +197,13 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] 
 
 static void TBB_Ability_Boomstick(int client)
 {
-	for (int building = 1; building < MAX_TARGETS_HIT; building++)
+	for (int repeats = 1; repeats <= 6; repeats++)
 	{
-		BEAM_BuildingHit[building] = false;
-		BEAM_Targets_Hit[client] = 0.0;
+		for (int building = 1; building < MAX_TARGETS_HIT; building++)
+		{
+			BEAM_BuildingHit[building][repeats] = false;
+			BEAM_Targets_Hit[client][repeats] = 0.0;
+		}
 	}
 			
 	BEAM_IsUsing[client] = false;
@@ -220,12 +212,12 @@ static void TBB_Ability_Boomstick(int client)
 	BEAM_CanUse[client] = true;
 	BEAM_CloseDPT[client] = 2.0;
 	BEAM_FarDPT[client] = 1.0;
-	BEAM_MaxDistance[client] = 650;
-	BEAM_BeamRadius[client] = 4;
+	BEAM_MaxDistance[client] = 1000;
+	BEAM_BeamRadius[client] = 5;
 	BEAM_ColorHex[client] = ParseColor("FFA500");
 	BEAM_ChargeUpTime[client] = 1;
 	BEAM_CloseBuildingDPT[client] = Strength[client];
-	BEAM_FarBuildingDPT[client] = Strength[client] * 0.85;
+	BEAM_FarBuildingDPT[client] = Strength[client] * 0.75;
 	BEAM_Duration[client] = 2.5;
 	
 	BEAM_BeamOffset[client][0] = 0.0;
@@ -281,9 +273,9 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 		{
 			for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
 			{
-				if(!BEAM_BuildingHit[i])
+				if(!BEAM_BuildingHit[i][RepeatOnBoomstickLaser])
 				{
-					BEAM_BuildingHit[i] = entity;
+					BEAM_BuildingHit[i][RepeatOnBoomstickLaser] = entity;
 					break;
 				}
 			}
@@ -350,6 +342,7 @@ static void TBB_Tick(int client)
 	}
 	for (int repeats = 1; repeats <= 6; repeats++)
 	{
+		RepeatOnBoomstickLaser = repeats;
 		GetClientEyeAngles(client, angles);
 		switch(repeats)
 		{
@@ -384,44 +377,11 @@ static void TBB_Tick(int client)
 				angles[1] += -(Accuracy[client]*2.0);
 			}
 		}
-		/*
-			case 1:
-			{
-				angles[0] += -5.0;
-				angles[1] += 10.0;
-			}
-			case 2:
-			{
-				angles[0] += -5.0;
-				angles[1] += 0.0;
-			}
-			case 3:
-			{
-				angles[0] += -5.0;
-				angles[1] += -10.0;
-			}
-			case 4:
-			{
-				angles[0] += 5.0;
-				angles[1] += 10.0;
-			}
-			case 5:
-			{
-				angles[0] += 5.0;
-				angles[1] += 0.0;
-			}
-			case 6:
-			{
-				angles[0] += 5.0;
-				angles[1] += -10.0;
-			}
-		*/
 		BEAM_Targets_Hit[client] = 0.0;
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, BEAM_TraceWallsOnly);
 		if (TR_DidHit(trace))
 		{
 			TR_GetEndPosition(endPoint, trace);
-			CloseHandle(trace);
 			ConformLineDistance(endPoint, startPoint, endPoint, float(BEAM_MaxDistance[client]));
 			float lineReduce = BEAM_BeamRadius[client] * 2.0 / 3.0;
 			float curDist = GetVectorDistance(startPoint, endPoint, false);
@@ -431,13 +391,13 @@ static void TBB_Tick(int client)
 			}
 			for (int i = 1; i < MAXTF2PLAYERS; i++)
 			{
-				BEAM_HitDetected[i] = false;
+				BEAM_HitDetected[i][repeats] = false;
 			}
 			
 			
 			for (int building = 1; building < MAX_TARGETS_HIT; building++)
 			{
-				BEAM_BuildingHit[building] = false;
+				BEAM_BuildingHit[building][repeats] = false;
 			}
 			
 			
@@ -447,24 +407,9 @@ static void TBB_Tick(int client)
 			hullMax[0] = -hullMin[0];
 			hullMax[1] = -hullMin[1];
 			hullMax[2] = -hullMin[2];
-			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 			delete trace;
-	//		int weapon = BEAM_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
-			/*
-			for (int victim = 1; victim < MaxClients; victim++)
-			{
-				if (BEAM_HitDetected[victim] && BossTeam != GetClientTeam(victim))
-				{
-					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-					float distance = GetVectorDistance(startPoint, playerPos, false);
-					float damage = BEAM_CloseDPT[client] + (BEAM_FarDPT[client]-BEAM_CloseDPT[client]) * (distance/BEAM_MaxDistance[client]);
-					if (damage < 0)
-						damage *= -1.0;
-	
-					TakeDamage(victim, client, client, damage/6, 2048, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
-				}
-			}
-			*/
+			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
+
 			float vecForward[3];
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			
@@ -472,11 +417,11 @@ static void TBB_Tick(int client)
 		//	int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			for (int building = 0; building < MAX_TARGETS_HIT; building++)
 			{
-				if (BEAM_BuildingHit[building])
+				if (BEAM_BuildingHit[building][repeats])
 				{
-					if(IsValidEntity(BEAM_BuildingHit[building]))
+					if(IsValidEntity(BEAM_BuildingHit[building][repeats]))
 					{
-						playerPos = WorldSpaceCenter(BEAM_BuildingHit[building]);
+						playerPos = WorldSpaceCenter(BEAM_BuildingHit[building][repeats]);
 						
 						float distance = GetVectorDistance(startPoint, playerPos, false);
 						float damage = BEAM_CloseBuildingDPT[client] + (BEAM_FarBuildingDPT[client]-BEAM_CloseBuildingDPT[client]) * (distance/BEAM_MaxDistance[client]);
@@ -504,7 +449,7 @@ static void TBB_Tick(int client)
 						BEAM_Targets_Hit[client] *= (LASER_AOE_DAMAGE_FALLOFF + 0.35); //Nerf the pierce by alot
 					}
 					else
-						BEAM_BuildingHit[building] = false;
+						BEAM_BuildingHit[building][repeats] = false;
 				}
 			}
 			
@@ -531,42 +476,43 @@ static void TBB_Tick(int client)
 			TE_SetupBeamPoints(belowBossEyes, endPoint, Beam_Glow, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 			TE_SendToAll(0.0);
 		}
-		else
-		{
-			delete trace;
-		}
+		delete trace;
 	}
 	float vecForward[3];
 	GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 	
 	//Do another loop that does the actual damages!
 	int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	for (int building = 0; building < MAX_TARGETS_HIT; building++)
+	for (int repeats = 1; repeats <= 6; repeats++)
 	{
-		if (BEAM_BuildingHit[building])
+		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
-			if(IsValidEntity(BEAM_BuildingHit[building]))
+			if (BEAM_BuildingHit[building][repeats])
 			{
-				playerPos = WorldSpaceCenter(BEAM_BuildingHit[building]);
-						
-			//	float distance = GetVectorDistance(startPoint, playerPos, false);
-				
-				float damage_force[3];
-				damage_force = CalculateDamageForce(vecForward, 20000.0);
-				DataPack pack = new DataPack();
-				pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
-				pack.WriteCell(EntIndexToEntRef(client));
-				pack.WriteCell(EntIndexToEntRef(client));
-				pack.WriteFloat(Damage_dealt[building]);
-				pack.WriteCell(DMG_PLASMA);
-				pack.WriteCell(EntIndexToEntRef(weapon_active));
-				pack.WriteFloat(damage_force[0]);
-				pack.WriteFloat(damage_force[1]);
-				pack.WriteFloat(damage_force[2]);
-				pack.WriteFloat(playerPos[0]);
-				pack.WriteFloat(playerPos[1]);
-				pack.WriteFloat(playerPos[2]);
-				RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
+				if(IsValidEntity(BEAM_BuildingHit[building][repeats]))
+				{
+					playerPos = WorldSpaceCenter(BEAM_BuildingHit[building][repeats]);
+							
+				//	float distance = GetVectorDistance(startPoint, playerPos, false);
+					
+					float damage_force[3];
+					damage_force = CalculateDamageForce(vecForward, 20000.0);
+					DataPack pack = new DataPack();
+					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building][repeats]));
+					pack.WriteCell(EntIndexToEntRef(client));
+					pack.WriteCell(EntIndexToEntRef(client));
+					pack.WriteFloat(Damage_dealt[building]);
+					pack.WriteCell(DMG_PLASMA);
+					pack.WriteCell(EntIndexToEntRef(weapon_active));
+					pack.WriteFloat(damage_force[0]);
+					pack.WriteFloat(damage_force[1]);
+					pack.WriteFloat(damage_force[2]);
+					pack.WriteFloat(playerPos[0]);
+					pack.WriteFloat(playerPos[1]);
+					pack.WriteFloat(playerPos[2]);
+					pack.WriteCell(0);
+					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
+				}
 			}
 		}
 	}

@@ -162,8 +162,10 @@ methodmap FlyingArmorTiny < CClotBody
 	public FlyingArmorTiny(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		FlyingArmorTiny npc = view_as<FlyingArmorTiny>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.9", "180", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcInternalId[npc.index] = FLYINGARMOR_TINY_ZOMBIE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -185,7 +187,7 @@ methodmap FlyingArmorTiny < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FlyingArmorTiny_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, FlyingArmorTiny_ClotThink);
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
@@ -245,7 +247,7 @@ public void FlyingArmorTiny_ClotThink(int iNPC)
 	{
 	
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -286,9 +288,9 @@ public void FlyingArmorTiny_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
 			//Target close enough to hit
@@ -357,7 +359,7 @@ public void FlyingArmorTiny_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -365,21 +367,13 @@ public void FlyingArmorTiny_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action FlyingArmorTiny_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action FlyingArmorTiny_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
 	FlyingArmorTiny npc = view_as<FlyingArmorTiny>(victim);
-	/*
-	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
-		return Plugin_Continue;
-	*/
-	/*
-	if(npc.m_flCannotBeHurt > GetGameTime(npc.index))
-		return Plugin_Handled;
-	*/
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -398,7 +392,7 @@ public void FlyingArmorTiny_NPCDeath(int entity)
 	}
 
 
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, FlyingArmorTiny_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, FlyingArmorTiny_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

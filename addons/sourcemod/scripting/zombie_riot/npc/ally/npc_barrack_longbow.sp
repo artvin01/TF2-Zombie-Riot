@@ -7,13 +7,14 @@ methodmap BarrackLongbow < BarrackBody
 {
 	public BarrackLongbow(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackLongbow npc = view_as<BarrackLongbow>(BarrackBody(client, vecPos, vecAng, "350"));
-		
+		BarrackLongbow npc = view_as<BarrackLongbow>(BarrackBody(client, vecPos, vecAng, "350",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		i_NpcInternalId[npc.index] = BARRACK_LONGBOW;
+		i_NpcWeight[npc.index] = 1;
+		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackLongbow_ClotThink);
 
-		npc.m_flSpeed = 225.0;
+		npc.m_flSpeed = 275.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bow/c_bow.mdl");
 		SetVariantString("0.6");
@@ -33,9 +34,10 @@ methodmap BarrackLongbow < BarrackBody
 public void BarrackLongbow_ClotThink(int iNPC)
 {
 	BarrackLongbow npc = view_as<BarrackLongbow>(iNPC);
-	if(BarrackBody_ThinkStart(npc.index))
+	float GameTime = GetGameTime(iNPC);
+	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
-		BarrackBody_ThinkTarget(npc.index, true);
+		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 
 		if(npc.m_iTarget > 0)
 		{
@@ -49,7 +51,7 @@ public void BarrackLongbow_ClotThink(int iNPC)
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					//Can we attack right now?
-					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+					if(npc.m_flNextMeleeAttack < GameTime)
 					{
 						npc.m_flSpeed = 0.0;
 						npc.FaceTowards(vecTarget, 30000.0);
@@ -58,14 +60,14 @@ public void BarrackLongbow_ClotThink(int iNPC)
 						
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (3.0 * npc.BonusFireRate);
-						npc.m_flReloadDelay = GetGameTime(npc.index) + (1.0 * npc.BonusFireRate);
+						npc.m_flNextMeleeAttack = GameTime + (3.0 * npc.BonusFireRate);
+						npc.m_flReloadDelay = GameTime + (1.0 * npc.BonusFireRate);
 					}
 				}
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_LONGBOW_IDLE", "ACT_LONGBOW_WALK", 250000.0);
+		BarrackBody_ThinkMove(npc.index, 275.0, "ACT_LONGBOW_IDLE", "ACT_LONGBOW_WALK", 250000.0);
 	}
 }
 
@@ -81,7 +83,7 @@ void BarrackLongbow_HandleAnimEvent(int entity, int event)
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSound();
-			npc.FireArrow(vecTarget, 3750.0 * npc.BonusDamageBonus, 2000.0, _, _, _, GetClientOfUserId(npc.OwnerUserId));
+			npc.FireArrow(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),3750.0, 1), 2000.0, _, _, _, GetClientOfUserId(npc.OwnerUserId));
 		}
 	}
 }

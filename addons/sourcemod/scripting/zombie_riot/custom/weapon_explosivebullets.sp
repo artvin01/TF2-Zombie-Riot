@@ -8,7 +8,6 @@
 #define EXPLOSIVEBULLETS_PARTICLE_1	"ExplosionCore_Wall"
 #define EXPLOSIVEBULLETS_PARTICLE_2	"ExplosionCore_MidAir"
 
-#define SPRITE_SPRITE	"materials/sprites/laserbeam.vmt"
 
 static int LaserSprite;
 
@@ -36,19 +35,15 @@ public void Weapon_ExplosiveBullets(int client, int weapon, const char[] classna
 		
 	float BaseDMG = 5.0; //lets set it to 5
 	
-	Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		BaseDMG *= TF2Attrib_GetValue(address);
+	BaseDMG *= Attributes_Get(weapon, 2, 1.0);
 		
 	float Spread = 1.0;
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 106);
-	if(address != Address_Null)
-		Spread *= TF2Attrib_GetValue(address);
+	Spread *= Attributes_Get(weapon, 106, 1.0);
 	
 	float Radius = EXPLOSION_RADIUS; //base radius
 	
-	float Falloff = Attributes_FindOnWeapon(client, weapon, 117);	//Damage falloff penalty
+	float Falloff = Attributes_Get(weapon, 117, 1.0);	//Damage falloff penalty
 	
 	
 	float spawnLoc[3], eyePos[3], eyeAng[3], randAng[3];

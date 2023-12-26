@@ -162,11 +162,13 @@ enum struct StageEnum
 	char MusicEasy[PLATFORM_MAX_PATH];
 	int MusicEasyTime;
 	float MusicEasyVolume;
+	bool MusicEasyCustom;
 
 	int MusicTier;
 	char MusicHard[PLATFORM_MAX_PATH];
 	int MusicHardTime;
 	float MusicHardVolume;
+	bool MusicHardCustom;
 
 	ArrayList ModList;
 	ArrayList WaveList;
@@ -222,45 +224,37 @@ enum struct StageEnum
 		this.DropTier9 = kv.GetNum("drop_tier_9");
 
 		kv.GetString("music_easy_file", this.MusicEasy, PLATFORM_MAX_PATH);
-		if(this.MusicEasy[0])
-			PrecacheSound(this.MusicEasy);
-		
 		this.MusicEasyTime = kv.GetNum("music_easy_duration");
 		this.MusicEasyVolume = kv.GetFloat("music_easy_volume", 1.0);
-		
-		if(kv.GetNum("music_easy_download"))
+		this.MusicEasyCustom = view_as<bool>(kv.GetNum("music_easy_download"));
+
+		if(this.MusicEasy[0])
 		{
-			Format(buffer, length, "sound/%s", this.MusicEasy);
-			ReplaceString(buffer, length, "#", "");
-			if(FileExists(buffer, true))
+			if(this.MusicEasyCustom)
 			{
-				AddFileToDownloadsTable(buffer);
+				PrecacheSoundCustom(this.MusicEasy, _, this.Level);
 			}
 			else
 			{
-				LogError("'%s' is missing from files", buffer);
+				PrecacheSound(this.MusicEasy);
 			}
 		}
-
-		kv.GetString("music_hard_file", this.MusicHard, PLATFORM_MAX_PATH);
-		if(this.MusicHard[0])
-			PrecacheSound(this.MusicHard);
 		
+		kv.GetString("music_hard_file", this.MusicHard, PLATFORM_MAX_PATH);
 		this.MusicHardTime = kv.GetNum("music_hard_duration");
 		this.MusicHardVolume = kv.GetFloat("music_hard_volume", 1.0);
+		this.MusicHardCustom = view_as<bool>(kv.GetNum("music_hard_download"));
 		this.MusicTier = kv.GetNum("music_hard_cap", 99999);
-		
-		if(kv.GetNum("download"))
+
+		if(this.MusicHard[0])
 		{
-			Format(buffer, length, "sound/%s", this.MusicHard);
-			ReplaceString(buffer, length, "#", "");
-			if(FileExists(buffer, true))
+			if(this.MusicHardCustom)
 			{
-				AddFileToDownloadsTable(buffer);
+				PrecacheSoundCustom(this.MusicHard, _, this.Level);
 			}
 			else
 			{
-				LogError("'%s' is missing from files", buffer);
+				PrecacheSound(this.MusicHard);
 			}
 		}
 
@@ -326,7 +320,7 @@ enum struct StageEnum
 		if(!name[0] || required > tier)
 			return 0.0;
 		
-		if(StrEqual(name, ITEM_XP))
+		if(StrEqual(name, ITEM_XP, false))
 		{
 			if(level > this.MaxLevel || !this.XP)
 				return 0.0;
@@ -335,7 +329,7 @@ enum struct StageEnum
 			return 1.0;
 		}
 		
-		if(StrEqual(name, ITEM_CASH))
+		if(StrEqual(name, ITEM_CASH, false))
 		{
 			Format(name, sizeof(name), "%d Credits", this.Cash * (10 + tier) / 10);
 			return 1.0;
@@ -369,7 +363,7 @@ enum struct StageEnum
 
 			TextStore_AddItemCount(clients[i], ITEM_CASH, this.Cash * (10 + tier) / 10);
 
-			if(Level[clients[i]] <= this.MaxLevel && GetLevelCap(Tier[clients[i]]) != Level[clients[i]])
+			if(XpToLevel(XP[clients[i]]) <= this.MaxLevel)
 				TextStore_AddItemCount(clients[i], ITEM_XP, this.XP * (10 + tier) / 10);
 		}
 
@@ -773,6 +767,7 @@ static void ShowMenu(int client, int page)
 
 				if(AltMenu[client] ==  2)
 				{
+					int level = XpToLevel(XP[client]);
 					int luck;
 					for(int target = 1; target <= MaxClients; target++)
 					{
@@ -780,63 +775,63 @@ static void ShowMenu(int client, int page)
 							luck += Stats_Luck(target);
 					}
 					
-					stage.DropChance1 = stage.GetDropChance(Level[client], luck, tier, stage.DropName1, stage.DropChance1, stage.DropTier1);
+					stage.DropChance1 = stage.GetDropChance(level, luck, tier, stage.DropName1, stage.DropChance1, stage.DropTier1);
 					if(stage.DropChance1)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName1, RoundToFloor(stage.DropChance1 * 100.0));
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					stage.DropChance2 = stage.GetDropChance(Level[client], luck, tier, stage.DropName2, stage.DropChance2, stage.DropTier2);
+					stage.DropChance2 = stage.GetDropChance(level, luck, tier, stage.DropName2, stage.DropChance2, stage.DropTier2);
 					if(stage.DropChance2)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName2, RoundToFloor(stage.DropChance2 * 100.0));
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					stage.DropChance3 = stage.GetDropChance(Level[client], luck, tier, stage.DropName3, stage.DropChance3, stage.DropTier3);
+					stage.DropChance3 = stage.GetDropChance(level, luck, tier, stage.DropName3, stage.DropChance3, stage.DropTier3);
 					if(stage.DropChance3)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName3, RoundToFloor(stage.DropChance3 * 100.0));
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					stage.DropChance4 = stage.GetDropChance(Level[client], luck, tier, stage.DropName4, stage.DropChance4, stage.DropTier4);
+					stage.DropChance4 = stage.GetDropChance(level, luck, tier, stage.DropName4, stage.DropChance4, stage.DropTier4);
 					if(stage.DropChance4)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName4, RoundToFloor(stage.DropChance4 * 100.0));
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					stage.DropChance5 = stage.GetDropChance(Level[client], luck, tier, stage.DropName5, stage.DropChance5, stage.DropTier5);
+					stage.DropChance5 = stage.GetDropChance(level, luck, tier, stage.DropName5, stage.DropChance5, stage.DropTier5);
 					if(stage.DropChance5)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName5, RoundToFloor(stage.DropChance5 * 100.0));
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					stage.DropChance6 = stage.GetDropChance(Level[client], luck, tier, stage.DropName6, stage.DropChance6, stage.DropTier6);
+					stage.DropChance6 = stage.GetDropChance(level, luck, tier, stage.DropName6, stage.DropChance6, stage.DropTier6);
 					if(stage.DropChance6)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName6, RoundToFloor(stage.DropChance6 * 100.0));
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					stage.DropChance7 = stage.GetDropChance(Level[client], luck, tier, stage.DropName7, stage.DropChance7, stage.DropTier7);
+					stage.DropChance7 = stage.GetDropChance(level, luck, tier, stage.DropName7, stage.DropChance7, stage.DropTier7);
 					if(stage.DropChance7)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName7, RoundToFloor(stage.DropChance7 * 100.0));
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					stage.DropChance8 = stage.GetDropChance(Level[client], luck, tier, stage.DropName8, stage.DropChance8, stage.DropTier8);
+					stage.DropChance8 = stage.GetDropChance(level, luck, tier, stage.DropName8, stage.DropChance8, stage.DropTier8);
 					if(stage.DropChance8)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName8, RoundToFloor(stage.DropChance8 * 100.0));
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					stage.DropChance9 = stage.GetDropChance(Level[client], luck, tier, stage.DropName9, stage.DropChance9, stage.DropTier9);
+					stage.DropChance9 = stage.GetDropChance(level, luck, tier, stage.DropName9, stage.DropChance9, stage.DropTier9);
 					if(stage.DropChance9)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName9, RoundToFloor(stage.DropChance9 * 100.0));
@@ -844,7 +839,7 @@ static void ShowMenu(int client, int page)
 					}
 					
 					strcopy(stage.DropName9, sizeof(stage.DropName9), ITEM_XP);
-					stage.DropChance9 = stage.GetDropChance(Level[client], luck, tier, stage.DropName9);
+					stage.DropChance9 = stage.GetDropChance(level, luck, tier, stage.DropName9);
 					if(stage.DropChance9)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - 100%%", stage.DropName9);
@@ -852,7 +847,7 @@ static void ShowMenu(int client, int page)
 					}
 					
 					strcopy(stage.DropName9, sizeof(stage.DropName9), ITEM_CASH);
-					stage.DropChance9 = stage.GetDropChance(Level[client], luck, tier, stage.DropName9);
+					stage.DropChance9 = stage.GetDropChance(level, luck, tier, stage.DropName9);
 					if(stage.DropChance9)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - 100%%", stage.DropName9);
@@ -1280,11 +1275,11 @@ static void StartDungeon(const char[] name)
 				if(stage.MusicTier > tier)
 				{
 					if(stage.MusicEasy[0])
-						Music_SetOverride(clients[c], stage.MusicEasy, stage.MusicEasyTime, stage.MusicEasyVolume);	
+						Music_SetOverride(clients[c], stage.MusicEasy, stage.MusicEasyTime, stage.MusicEasyCustom, stage.MusicEasyVolume);	
 				}
 				else if(stage.MusicHard[0])
 				{
-					Music_SetOverride(clients[c], stage.MusicHard, stage.MusicHardTime, stage.MusicHardVolume);	
+					Music_SetOverride(clients[c], stage.MusicHard, stage.MusicHardTime, stage.MusicHardCustom, stage.MusicHardVolume);	
 				}
 			}
 			
@@ -1344,7 +1339,7 @@ static void CleanDungeon(const char[] name, bool victory)
 						if(victory)
 						{
 							LastResult[client] = 1;
-							Music_SetOverride(client, "misc/your_team_won.mp3", 999, 1.0);
+							Music_SetOverride(client, "misc/your_team_won.mp3", 999, false, 1.0);
 
 							if(IsPlayerAlive(client))
 								TF2_AddCondition(client, TFCond_HalloweenCritCandy, 8.1);
@@ -1355,7 +1350,7 @@ static void CleanDungeon(const char[] name, bool victory)
 						else
 						{
 							LastResult[client] = -1;
-							Music_SetOverride(client, "misc/your_team_lost.mp3", 999, 1.0);
+							Music_SetOverride(client, "misc/your_team_lost.mp3", 999, false, 1.0);
 						}
 					}
 				}
@@ -1373,7 +1368,7 @@ static void CleanDungeon(const char[] name, bool victory)
 			}
 
 			int i = MaxClients + 1;
-			while((i = FindEntityByClassname(i, "base_boss")) != -1)
+			while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 			{
 				if(StrEqual(InDungeon[i], name))
 					NPC_Despawn(i);
@@ -1449,7 +1444,7 @@ public Action Dungeon_Timer(Handle timer)
 
 				int alive;
 				int entity = MaxClients + 1;
-				while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+				while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 				{
 					if(StrEqual(InDungeon[entity], name) && GetEntProp(entity, Prop_Send, "m_iTeamNum") != 2)
 						alive++;
@@ -1749,6 +1744,48 @@ public void Dungeon_Wave_CoreInfection_Grigori(ArrayList list)
 	list.PushArray(wave);
 }
 
+public void Dungeon_Wave_HighRule_RushAll(ArrayList list)
+{
+	int length = list.Length;
+	for(int i; i < length; i++)
+	{
+		static WaveEnum wave;
+		list.GetArray(i, wave);
+		wave.Delay *= 0.75;
+		list.SetArray(i, wave);
+	}
+}
+
+public void Dungeon_Wave_HighRule_ReplaceGiantWithGrigori(ArrayList list)
+{
+	int length = list.Length;
+	for(int i; i < length; i++)
+	{
+		static WaveEnum wave;
+		list.GetArray(i, wave);
+		if(wave.Index == COMBINE_GIANT)
+		{
+			wave.Index = FATHER_GRIGORI;
+			list.SetArray(i, wave);
+		}
+	}
+}
+
+public void Dungeon_Wave_HighRule_ReplaceGiantWithOverlord(ArrayList list)
+{
+	int length = list.Length;
+	for(int i; i < length; i++)
+	{
+		static WaveEnum wave;
+		list.GetArray(i, wave);
+		if(wave.Index == COMBINE_GIANT)
+		{
+			wave.Index = COMBINE_OVERLORD_CC;
+			list.SetArray(i, wave);
+		}
+	}
+}
+
 public void Dungeon_RegenZombie(int entity)
 {
 	CreateTimer(1.0, HpRegenZombie25, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -1879,7 +1916,7 @@ public void Dungeon_GrigoriBuff(int entity)
 
 public void Dungeon_25PercentMoreDamage(int entity)
 {
-	b_DungeonContracts_25PercentMoreDamage[entity] = true; //15% faster zombies.
+	b_DungeonContracts_25PercentMoreDamage[entity] = true;
 }
 
 public void Dungeon_FastZombies15(int entity)
@@ -1957,7 +1994,7 @@ float RpgCC_ContractExtrasPlayerOnTakeDamage(int victim, int attacker, float dam
 	return damage;
 }
 
-float RpgCC_ContractExtrasNpcOnTakeDamage(int victim, int attacker, float damage, int damagetype, int weapon, int weaponslot)
+stock float RpgCC_ContractExtrasNpcOnTakeDamage(int victim, int attacker, float damage, int damagetype, int weapon, int weaponslot)
 {
 	if(!(damagetype & (DMG_SLASH))) // if you want anything to be melee based, just give them this.
 	{

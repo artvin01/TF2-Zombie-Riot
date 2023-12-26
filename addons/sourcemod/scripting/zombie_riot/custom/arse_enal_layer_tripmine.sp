@@ -6,11 +6,10 @@ int Trip_NumMines[MAXPLAYERS+1] = {0, ...};
 int Trip_Owner[MAXENTITIES+1] = {-1, ...};
 float Trip_DMG[MAXPLAYERS+1] = {0.0, ...};
 float Trip_BlastDMG[MAXPLAYERS+1] = {0.0, ...};
-Handle Timer_Trip_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle Timer_Trip_Management[MAXPLAYERS+1] = {null, ...};
+static float f_DeleteAllSpikesDelay[MAXTF2PLAYERS];
 
 float f_TerroriserAntiSpamCd[MAXPLAYERS+1] = {0.0, ...};
-
-#define SPRITE_SPRITE	"materials/sprites/laserbeam.vmt"
 
 static int LaserSprite;
 
@@ -38,6 +37,8 @@ void Aresenal_Weapons_Map_Precache()
 	PrecacheSound(TERRORIZER_BLAST2);
 	PrecacheSound(TERRORIZER_BLAST3);
 	LaserSprite = PrecacheModel(SPRITE_SPRITE, false);
+	
+	Zero(f_DeleteAllSpikesDelay);
 }
 
 
@@ -62,7 +63,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 			TR_GetEndPosition(spawnLoc, trace);
 		} 
 		delete trace;
-		if (GetVectorDistance(eyePos, spawnLoc, true) <= Pow(450.0, 2.0))
+		if (GetVectorDistance(eyePos, spawnLoc, true) <= (450.0 * 450.0))
 		{
 			float Calculate_HP_Spikes = 75.0; 
 		
@@ -70,19 +71,17 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 			
 			float attack_speed;
 		
-			attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+			attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true, true); //Sentry attack speed bonus
 				
-			Bonus_damage = attack_speed * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
-			
-			if (EscapeMode)
-			{
-				Calculate_HP_Spikes *= 3.0;
-			}
+			Bonus_damage = attack_speed * Attributes_GetOnPlayer(client, 287, true, true);			//Sentry damage bonus
+
+			Bonus_damage *= BuildingWeaponDamageModif(1);
 			
 			if (Bonus_damage <= 1.0)
 				Bonus_damage = 1.0;
 				
 			Calculate_HP_Spikes *= Bonus_damage;
+
 		
 			int TripMine = CreateEntityByName("tf_projectile_pipe_remote");
 		  
@@ -114,6 +113,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 				SetEntityModel(TripMine, TRIP_MODEL);
 				DispatchKeyValue(TripMine, "StartDisabled", "false");
 				DispatchSpawn(TripMine);
+				SetEntitySpike(TripMine, 2);
 						
 				SetEntityMoveType(TripMine, MOVETYPE_NONE);
 				SetEntProp(TripMine, Prop_Data, "m_takedamage", 0);
@@ -210,6 +210,95 @@ public void Weapon_Arsenal_Trap_M2(int client, int weapon, const char[] classnam
 					{
 						Trip_Owner[entity] = -1;
 						//ONLY give back ammo IF the Spike has full health.
+						int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+						ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+						ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+						SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1);
+						for(int i; i<Ammo_MAX; i++)
+						{
+							CurrentAmmo[client][i] = GetAmmo(client, i);
+						}	
+						RemoveEntity(entity);
+					}
+				}
+			}
+		}
+	}
+}
+
+public void Spike_Pick_Back_up_Arse(int client, int weapon, const char[] classname, bool &result)
+{
+	static float angles[3];
+	GetClientEyeAngles(client, angles);
+	if(angles[0] < -85.0)
+	{
+		if(f_DeleteAllSpikesDelay[client] > GetGameTime())
+		{
+			bool PlaySound = false;
+			for( int entity = 1; entity <= MAXENTITIES; entity++ ) 
+			{
+				if (IsValidEntity(entity))
+				{
+					static char buffer[64];
+					GetEntityClassname(entity, buffer, sizeof(buffer));
+					if(IsEntitySpikeValue(entity) == 2 && !StrContains(buffer, "tf_projectile_pipe_remote"))
+					{
+						int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+						if(owner == client) //Hardcode to this index.
+						{
+							SetEntitySpike(entity, 0);
+							Trip_Owner[entity] = -1;
+							//ONLY give back ammo IF the Spike has full health.
+							int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+							PlaySound = true;
+							SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1);
+							for(int i; i<Ammo_MAX; i++)
+							{
+								CurrentAmmo[client][i] = GetAmmo(client, i);
+							}	
+							RemoveEntity(entity);
+						}
+					}
+				}
+			}
+			if(PlaySound)
+			{
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Spike Masspickup Done");
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+			}
+			else
+			{
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Spike Masspickup None");
+			}
+			return;
+		}
+		f_DeleteAllSpikesDelay[client] = GetGameTime() + 0.2;
+		
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Spike Masspickup Confirm");
+		return;
+	}
+	int entity = GetClientPointVisible(client);
+	if(entity > 0)
+	{
+		static char buffer[64];
+		if(GetEntityClassname(entity, buffer, sizeof(buffer)))
+		{
+			if(IsEntitySpikeValue(entity) == 2 && !StrContains(buffer, "tf_projectile_pipe_remote"))
+			{
+				if(IsValidEntity(weapon))
+				{
+					int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+					if(owner == client) //Hardcode to this index.
+					{
+						SetEntitySpike(entity, 0);
+						Trip_Owner[entity] = -1;
 						int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
 						ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 						ClientCommand(client, "playgamesound items/ammo_pickup.wav");
@@ -324,9 +413,6 @@ public Action Trip_ArmMine(Handle Trip_ArmMine_Handle, any pack)
 
 public void Trip_TrackPlanted(int client)
 {
-	if (!IsValidMulti(client))
-		return;
-		
 	for(int entitycount; entitycount<i_MaxcountTraps; entitycount++)
 	{
 		int ent = EntRefToEntIndex(i_ObjectsTraps[entitycount]);
@@ -349,7 +435,7 @@ public void Trip_TrackPlanted(int client)
 							//EntLoc2[2] += 20.0;
 							//Add 20 to the height of both locations to prevent the model from blocking the line of sight check
 							
-							if (GetVectorDistance(EntLoc, EntLoc2, true) <= Pow(Trip_BlastRadius, 2.0)/* && HasLineOfSight(ent, ent2, true, EntLoc, EntLoc2)*/)
+							if (GetVectorDistance(EntLoc, EntLoc2, true) <= (Trip_BlastRadius * Trip_BlastRadius))
 							{
 								bool TriggerExplosion = false;
 								
@@ -359,7 +445,7 @@ public void Trip_TrackPlanted(int client)
 									int targ = TR_GetEntityIndex(Trace);
 									char other_classname[32];
 									GetEntityClassname(targ, other_classname, sizeof(other_classname));
-									if ((StrContains(other_classname, "base_boss") != -1) && (GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(targ, Prop_Send, "m_iTeamNum")))
+									if ((StrContains(other_classname, "zr_base_npc") != -1) && (GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(targ, Prop_Send, "m_iTeamNum")))
 									{
 										SDKHooks_TakeDamage(targ, client, client, Trip_DMG[client], DMG_BLAST, -1);
 										EmitSoundToAll(TRIP_ACTIVATED, targ, _, 70);
@@ -462,45 +548,26 @@ public bool Trip_PlayerCrossed(int client, int mask, any data)
 
 public void Enable_Arsenal(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (Timer_Trip_Management[client] != INVALID_HANDLE)
+	if (Timer_Trip_Management[client] != null)
 		return;
 		
 	if(i_AresenalTrap[weapon] > 0)
 	{	
-		Timer_Trip_Management[client] = CreateTimer(0.1, Timer_Management_Trap, client, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-	}
-	else
-	{
-		Kill_Timer_Trap(client);
+		Timer_Trip_Management[client] = CreateTimer(0.1, Timer_Management_Trap, client, TIMER_REPEAT);
 	}
 }
 
 public Action Timer_Management_Trap(Handle timer, int client)
 {
-	if (IsClientInGame(client))
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
 	{
-		if (IsPlayerAlive(client))
-		{
-			Trip_TrackPlanted(client);
-		}
-		else
-			Kill_Timer_Trap(client);
+		Timer_Trip_Management[client] = null;
+		return Plugin_Stop;
 	}
-	else
-		Kill_Timer_Trap(client);
+	Trip_TrackPlanted(client);
 		
 	return Plugin_Continue;
 }
-
-public void Kill_Timer_Trap(int client)
-{
-	if (Timer_Trip_Management[client] != INVALID_HANDLE)
-	{
-		KillTimer(Timer_Trip_Management[client]);
-		Timer_Trip_Management[client] = INVALID_HANDLE;
-	}
-}
-
 
 public void Weapon_Arsenal_Terroriser_M1(int client, int weapon, const char[] classname, bool &result)
 {
@@ -522,16 +589,15 @@ public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] cl
 				{
 					EmitSoundToAll(TRIP_ARMED, npc, _, 85);
 					float damage = 50.0;
-					Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-					if(address != Address_Null)
-						damage *= RoundToCeil(TF2Attrib_GetValue(address));
+					damage *= Attributes_Get(weapon, 2, 1.0);
 
+					int BomsToBoom = i_HowManyBombsOnThisEntity[npc][client];
 					damage *= i_HowManyBombsOnThisEntity[npc][client];
 
 					float EntLoc2[3];
 					
 					EntLoc2 = WorldSpaceCenter(npc);
-
+					i_HowManyBombsHud[npc] -= BomsToBoom;
 					i_HowManyBombsOnThisEntity[npc][client] = 0;
 					Cause_Terroriser_Explosion(client, npc, damage, EntLoc2, true);
 				}
@@ -540,10 +606,10 @@ public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] cl
 	}
 }
 
-int Terroriser_Bomb_Implant_Particle[MAXENTITIES+1] = {-1, ...};
-
 public void Apply_Particle_Teroriser_Indicator(int entity)
 {
+	b_HasBombImplanted[entity] = true;	
+	/*
 	int particle_index;
 	particle_index = EntRefToEntIndex(Terroriser_Bomb_Implant_Particle[entity]);
 	if(!IsValidEntity(particle_index))
@@ -554,6 +620,7 @@ public void Apply_Particle_Teroriser_Indicator(int entity)
 		flPos[2] += 90.0 * GetEntPropFloat(entity, Prop_Data, "m_flModelScale");
 		Terroriser_Bomb_Implant_Particle[entity] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "powerup_icon_supernova_red",entity));
 	}
+	*/
 }
 
 void CleanAllApplied_Aresenal(int entity, bool force = false)
@@ -568,13 +635,7 @@ void CleanAllApplied_Aresenal(int entity, bool force = false)
 	}
 	if(!Anyplayerhasbombsleft || force)
 	{
-		int particle_index;
-		particle_index = EntRefToEntIndex(Terroriser_Bomb_Implant_Particle[entity]);
-
-		if(IsValidEntity(particle_index))
-		{
-			RemoveEntity(particle_index);
-		}		
+		b_HasBombImplanted[entity] = false;	
 	}
 }
 
@@ -602,8 +663,8 @@ void Cause_Terroriser_Explosion(int client, int npc, float damage, float EntLoc2
 	spawnRing_Vectors(EntLoc2, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.25, 6.0, 2.1, 1, radius);	
 	if(allowLagcomp)
 	{
-		StartLagCompensation_Base_Boss(client);
 		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(client);
 
 		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false);
 
@@ -613,6 +674,7 @@ void Cause_Terroriser_Explosion(int client, int npc, float damage, float EntLoc2
 	{
 		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false);
 	}
+	
 	if(!b_NpcHasDied[npc]) //Incase it gets called later.
 	{
 		f_CooldownForHurtHud[client] = 0.0; //So it shows the damage delt by by secondary internal combustion too.

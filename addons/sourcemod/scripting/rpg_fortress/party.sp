@@ -5,11 +5,22 @@
 
 static int PartyLeader[MAXTF2PLAYERS];
 static int PartyInvitedBy[MAXTF2PLAYERS];
+static int PartyOutlineRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 
 void Party_PluginStart()
 {
 	RegConsoleCmd("rpg_party", Party_Command, "Join or create a party");
 	RegConsoleCmd("sm_party", Party_Command, "Join or create a party", FCVAR_HIDDEN);
+}
+
+void Party_PluginEnd()
+{
+	for(int i; i < MAXTF2PLAYERS; i++)
+	{
+		int entity = EntRefToEntIndex(PartyOutlineRef[i]);
+		if(entity != -1)
+			RemoveEntity(entity);
+	}
 }
 
 static bool IsInvitedBy(int client, int leader)
@@ -35,6 +46,55 @@ int Party_GetPartyLeader(int client)
 bool Party_IsClientMember(int client, int target)
 {
 	return (PartyLeader[client] && PartyLeader[client] == PartyLeader[target]);
+}
+
+void Party_PlayerModel(int client, const char[] model)
+{
+	int entity = EntRefToEntIndex(PartyOutlineRef[client]);
+	if(entity != -1)
+		RemoveEntity(entity);
+	
+	entity = CreateEntityByName("tf_taunt_prop");
+	if(IsValidEntity(entity))
+	{
+		SetEntProp(entity, Prop_Data, "m_iInitialTeamNum", 2);
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", 2);
+
+		DispatchSpawn(entity);
+
+		SetEntityModel(entity, model);
+		SetEntPropEnt(entity, Prop_Data, "m_hEffectEntity", client);
+		SetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", client);
+		SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
+		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects")|EF_BONEMERGE|EF_NOSHADOW|EF_NOINTERP);
+
+		SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 990.0);
+		SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 1000.0);	
+		
+		SetVariantString("!activator");
+		AcceptEntityInput(entity, "SetParent", client);
+
+		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(entity, 255, 255, 255, 255);
+		SDKHook(entity, SDKHook_SetTransmit, Party_Transmit);
+
+		PartyOutlineRef[client] = EntIndexToEntRef(entity);
+	}
+}
+
+public Action Party_Transmit(int entity, int client)
+{
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	if(owner == -1)
+	{
+		RemoveEntity(entity);
+	}
+	else if(owner == client || client > MaxClients || !Party_IsClientMember(owner, client))
+	{
+		return Plugin_Handled;
+	}
+	
+	return Plugin_Continue;
 }
 
 void Party_ClientDisconnect(int client)

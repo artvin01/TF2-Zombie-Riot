@@ -102,6 +102,7 @@ methodmap MadChicken < CClotBody
 		i_NpcInternalId[npc.index] = MAD_CHICKEN;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		KillFeed_SetKillIcon(npc.index, "fists");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -143,7 +144,7 @@ methodmap MadChicken < CClotBody
 
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 		
 		return npc;
@@ -166,7 +167,7 @@ public void MadChicken_ClotThink(int iNPC)
 	}
 	
 
-	npc.m_flNextDelayTime = gameTime;// + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 
@@ -240,11 +241,11 @@ public void MadChicken_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -252,7 +253,7 @@ public void MadChicken_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(70.0, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < (70.0 * 70.0) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}

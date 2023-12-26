@@ -46,6 +46,7 @@ void ConVar_PluginStart()
 	
 	ConVar_Add("nb_blind", "1.0"); //for bot
 	ConVar_Add("tf_bot_quota_mode", "normal"); //for bot
+	ConVar_Add("tf_bot_quota", "2");
 	
 	ConVar_Add("sv_quota_stringcmdspersecond", "1000"); //IF FOR SOME REASON THE SERVER LAGS MASIVELY, PUT IT BACK TO 40/100 AT MOST! some cunt is abusing.
 	
@@ -57,12 +58,12 @@ void ConVar_PluginStart()
 	ConVar_Add("nb_last_area_update_tolerance", "2.0"); // default:4
 	ConVar_Add("sv_rollspeed", "2400.0"); // default: idk
 	ConVar_Add("tf_clamp_back_speed", "0.7"); // default: 0.9 Ty to miku for showing me
-	ConVar_Add("sv_visiblemaxplayers", MAX_PLAYER_COUNT_STRING_SLOTS);
-//	ConVar_Add("tf_bot_quota", ); dooesnt do anything anyways.
+	ConVar_Add("mp_waitingforplayers_time", "0.0");
 	
 	#if defined ZR
 	ConVar_Add("mp_disable_respawn_times", "1.0");
 	
+	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "16", "How many players can play at once?", FCVAR_DONTRECORD);
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
 	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "1", "No Panzer will spawn or anything alike", FCVAR_DONTRECORD);
@@ -75,15 +76,22 @@ void ConVar_PluginStart()
 	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "2.0", "How long zombie spawn protection lasts for.");
 	zr_viewshakeonlowhealth = CreateConVar("zr_viewshakeonlowhealth", "1.0", "Enable/Disable viewshake on low health.");
 	zr_disablerandomvillagerspawn = CreateConVar("zr_norandomvillager", "0.0", "Enable/Disable if medival villagers spawn randomly on the map or only on spawnpoints.");
-	
+	zr_waitingtime = CreateConVar("zr_waitingtime", "120.0", "Waiting for players time.");
+	//zr_webhookadmins = CreateConVar("zr_webhookadmins", "", "Webhook channel and key (123456/abcdexf)", FCVAR_PROTECTED);
+
 	// MapSpawnersActive = CreateConVar("zr_spawnersactive", "4", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
 	//CHECK npcs.sp FOR THIS ONE!
 	#endif
+
+	zr_downloadconfig = CreateConVar("zr_downloadconfig", "", "Downloads override config zr/ .cfg already included");
 	
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
-	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "8", "The maximum amount of blue bots allowed for the killfeed and more");
+	//CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "8", "The maximum amount of blue bots allowed for the killfeed and more");
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
+	CvarRerouteToIp = CreateConVar("zr_rerouteip", "", "If the server is full, reroute", FCVAR_DONTRECORD);
+	CvarKickPlayersAt = CreateConVar("zr_kickplayersat", "", "If the server is full, Do reroute or kick", FCVAR_DONTRECORD);
+	CvarRerouteToIpAfk = CreateConVar("zr_rerouteipafk", "", "If the server is full, reroute", FCVAR_DONTRECORD);
 	
 	AutoExecConfig(true, "zombie_riot");
 	

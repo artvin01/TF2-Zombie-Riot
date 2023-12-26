@@ -149,6 +149,7 @@ methodmap CombinePrime < CClotBody
 		CombinePrime npc = view_as<CombinePrime>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_SWORDSMAN;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -164,7 +165,7 @@ methodmap CombinePrime < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		npc.m_bCanIMove = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, CombinePrime_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, CombinePrime_ClotThink);
 	
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -178,6 +179,7 @@ methodmap CombinePrime < CClotBody
 		//Raid logic
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidAllowsBuildings = false;
 		
 		npc.m_bThisNpcIsABoss = true;
 		
@@ -196,6 +198,11 @@ methodmap CombinePrime < CClotBody
 		
 		float amount_of_people = float(CountPlayersOnRed());
 		
+		if(amount_of_people > 12.0)
+		{
+			amount_of_people = 12.0;
+		}
+		
 		amount_of_people *= 0.12;
 		
 		if(amount_of_people < 1.0)
@@ -207,8 +214,7 @@ methodmap CombinePrime < CClotBody
 		
 		//Raid logic
 
-		Citizen_MiniBossSpawn(npc.index);
-		
+		Citizen_MiniBossSpawn();
 		return npc;
 	}
 	
@@ -254,7 +260,7 @@ public void CombinePrime_ClotThink(int iNPC)
 	if(!npc.m_bisWalking) //Dont move, or path. so that he doesnt rotate randomly.
 	{
 		npc.m_flSpeed = 0.0;
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 	}
 	//No else, We will set the speed and pathing ourselves down below.
@@ -317,11 +323,11 @@ public void CombinePrime_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 		
@@ -330,11 +336,11 @@ public void CombinePrime_ClotThink(int iNPC)
 		//Sadly have to respect enemy npcs so lol.
 		//They are too close to us. Engage in Melee attack.
 		//But we also dont want him to engage in this state when he cant even attack like during a cooldown.
-		if(flDistanceToTarget < Pow(100.0, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		if(flDistanceToTarget < (100.0 * 100.0) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
-		else if(flDistanceToTarget > Pow(100.0, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget > (100.0 * 100.0) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
@@ -387,7 +393,7 @@ public void CombinePrime_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action CombinePrime_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action CombinePrime_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -416,7 +422,7 @@ public void CombinePrime_NPCDeath(int entity)
 	
 	RaidBossActive = INVALID_ENT_REFERENCE;	
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CombinePrime_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, CombinePrime_ClotThink);
 	
 	Citizen_MiniBossDeath(entity);

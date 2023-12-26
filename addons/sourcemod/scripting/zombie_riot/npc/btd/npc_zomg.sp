@@ -17,30 +17,24 @@ static const char SoundZomgPop[][] =
 
 static float MoabSpeed()
 {
-	/*if(CurrentRound < 80)
+	if(CurrentRound < 80)
 		return 150.0;
 	
 	if(CurrentRound < 100)
 		return 150.0 * (1.0 + (CurrentRound - 79) * 0.02);
 	
-	return 150.0 * (1.0 + (CurrentRound - 70) * 0.02);*/
-	
-	if(CurrentRound < 60)
-		return 150.0;
-	
-	return 150.0 * (1.0 + (CurrentRound - 50) * 0.02);
+	return 150.0 * (1.0 + (CurrentRound - 70) * 0.02);
 }
 
 static int MoabHealth(bool fortified)
 {
 	float value = 790000.0;	// 200x3x3 + 700x3 + 4000 RGB
-	//if(CurrentRound != 79 && CurrentRound != 99)
-	//	value *= 0.25;
+	value *= 0.5;
 	
 	if(fortified)
 		value *= 2.0;
 	
-	/*if(CurrentRound > 123)
+	if(CurrentRound > 123)
 	{
 		value *= 1.05 + (CurrentRound - 106) * 0.15;
 	}
@@ -51,15 +45,6 @@ static int MoabHealth(bool fortified)
 	else if(CurrentRound > 79)
 	{
 		value *= 1.0 + (CurrentRound - 79) * 0.02;
-	}*/
-	
-	if(CurrentRound > 83)
-	{
-		value *= 1.05 + (CurrentRound - 66) * 0.15;
-	}
-	else if(CurrentRound > 59)
-	{
-		value *= 1.0 + (CurrentRound - 31) * 0.05;
 	}
 	
 	return RoundFloat(value) + (Bloon_Health(fortified, Bloon_Ceramic) * 27);	// 104x3x3x3 RGB
@@ -67,31 +52,12 @@ static int MoabHealth(bool fortified)
 
 void Zomg_MapStart()
 {
-	#if defined FORCE_BLOON_ENABLED
-	char buffer[256];
 	for(int i; i<sizeof(SoundZomgPop); i++)
 	{
-		PrecacheSound(SoundZomgPop[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundZomgPop[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundZomgPop[i]);
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/zomg.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/zomg.dx80.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/zomg.dx90.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/zomg.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/zomg.vvd");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgdamage1diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgdamage1diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgdamage2diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgdamage2diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgdamage3diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgdamage3diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgdamage4diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgdamage4diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgstandarddiffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgstandarddiffuse.vtf");
-	#endif
 }
 
 methodmap Zomg < CClotBody
@@ -110,12 +76,12 @@ methodmap Zomg < CClotBody
 	public void PlayHitSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundMoabHit) - 1);
-		EmitSoundToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayDeathSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundZomgPop) - 1);
-		EmitSoundToAll(SoundZomgPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+		EmitCustomToAll(SoundZomgPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
 	}
 	public int UpdateBloonOnDamage()
 	{
@@ -135,6 +101,8 @@ methodmap Zomg < CClotBody
 		Zomg npc = view_as<Zomg>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/zomg.mdl", "1.0", buffer, ally, false, true));
 		
 		i_NpcInternalId[npc.index] = BTD_ZOMG;
+		i_NpcWeight[npc.index] = 4;
+		KillFeed_SetKillIcon(npc.index, "vehicle");
 		
 		int iActivity = npc.LookupActivity("ACT_FLOAT");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -154,8 +122,9 @@ methodmap Zomg < CClotBody
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
+		npc.m_bDoNotGiveWaveDelay = true;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Zomg_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Zomg_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, Zomg_ClotThink);
 		
@@ -216,74 +185,56 @@ public void Zomg_ClotThink(int iNPC)
 		{
 			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 			
-			PF_SetGoalVector(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
+			NPC_SetGoalVector(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		
-		//Target close enough to hit
 		if(flDistanceToTarget < 20000)
 		{
-		//	npc.FaceTowards(vecTarget, 1000.0);
-			
 			if(npc.m_flNextMeleeAttack < gameTime)
 			{
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
 				
-				Handle swingTrace;
-				if(npc.DoAimbotTrace(swingTrace, PrimaryThreatIndex))
+				if(npc.m_bFortified)
 				{
-					int target = TR_GetEntityIndex(swingTrace);
-					if(target > 0)
+					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 					{
-						float vecHit[3];
-						TR_GetEndPosition(vecHit, swingTrace);
-						
-						if(npc.m_bFortified)
-						{
-							if(!ShouldNpcDealBonusDamage(target))
-							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 40.0, DMG_CLUB, -1, _, vecHit);
-							}
-							else
-							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_CLUB, -1, _, vecHit);
-							}
-						}
-						else
-						{
-							if(!ShouldNpcDealBonusDamage(target))
-							{
-								
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0, DMG_CLUB, -1, _, vecHit);
-							}
-							else
-							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
-							}							
-						}
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 40.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
 					}
-					
-					delete swingTrace;
+					else
+					{
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 300.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+					}
 				}
+				else
+				{
+					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
+					{
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 25.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+					}
+					else
+					{
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 200.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+					}
+				}					
 			}
 		}
-		
 		npc.StartPathing();
 		
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 }
 
-public Action Zomg_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Zomg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -306,7 +257,7 @@ public void Zomg_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Zomg_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Zomg_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Zomg_ClotThink);
 	
 	float pos[3], angles[3];

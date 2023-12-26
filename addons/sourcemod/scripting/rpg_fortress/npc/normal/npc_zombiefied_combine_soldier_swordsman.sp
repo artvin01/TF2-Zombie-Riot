@@ -118,6 +118,9 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 	{
 		ZombiefiedCombineSwordsman npc = view_as<ZombiefiedCombineSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 		
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		i_NpcInternalId[npc.index] = ZOMBIEFIED_COMBINE_SWORDSMAN;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -156,7 +159,7 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 255, 200, 255);	
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 		
 		return npc;
@@ -170,10 +173,10 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 {
 	ZombiefiedCombineSwordsman npc = view_as<ZombiefiedCombineSwordsman>(iNPC);
 
+/*
 	SetVariantInt(1);
 	AcceptEntityInput(iNPC, "SetBodyGroup");
 
-/*
 	if(IsValidEntity(npc.m_iWearable5))
 	{
 		float Rotation[3];
@@ -191,7 +194,7 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 	}
 	
 
-	npc.m_flNextDelayTime = gameTime;// + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 
@@ -233,6 +236,7 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
+						KillFeed_SetKillIcon(npc.index, "sword");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");
@@ -304,7 +308,8 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 				vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 				vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 				NormalizeVector(vecDir, vecDir);
-			
+
+				KillFeed_SetKillIcon(npc.index, "taunt_pyro");
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 				FireBullet(npc.index, npc.index, WorldSpaceCenter(npc.index), vecDir, 20.0, 100.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 			}
@@ -321,11 +326,11 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -337,11 +342,11 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 		{
 			npc.m_iState = 2; //Throw a Shield.
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.5, 2.0) && npc.m_flNextRangedAttack < gameTime)
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5) && npc.m_flNextRangedAttack < gameTime)
 		{
 			npc.m_iState = 3; //Engage in Close Range Destruction.
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
@@ -411,7 +416,7 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 					npc.m_flDoingAnimation = gameTime + 1.2;
 					npc.m_flNextRangedSpecialAttack = gameTime + 10.5;
 					npc.m_bisWalking = false;
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 				else
@@ -438,7 +443,7 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 					npc.m_flNextRangedAttack = gameTime + 7.5;
 
 					npc.m_bisWalking = false;
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 			}

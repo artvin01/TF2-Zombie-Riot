@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/zombie_riot/cof/purnell/huvud_obj_eyeL_lo"
+	"$surfaceprop" "flesh"
+}

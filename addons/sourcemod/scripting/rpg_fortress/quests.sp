@@ -143,8 +143,8 @@ void Quests_EnableZone(int client, const char[] name)
 				//	SetVariantString("solid 2");
 				//	AcceptEntityInput(entity, "AddOutput");
 					AcceptEntityInput(entity, "DisableCollision");
-					SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
-					SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 2000.0);
+					SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", MIN_FADE_DISTANCE);
+					SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", MAX_FADE_DISTANCE);
 
 					int brush = SpawnSeperateCollisionBox(entity);
 					//Just reuse it.
@@ -170,6 +170,8 @@ void Quests_EnableZone(int client, const char[] name)
 					
 					SetVariantString(buffer);
 					AcceptEntityInput(entity, "SetAnimation", entity, entity);
+					
+					SetEntProp(entity, Prop_Data, "m_bSequenceLoops", true);
 					
 					int force_bodygroup;
 
@@ -389,6 +391,8 @@ void Quests_MainMenu(int client, const char[] name)
 
 static void MainMenu(int client)
 {
+	TextStore_DepositBackpack(client, false);
+	
 	SaveKv.Rewind();
 	SaveKv.JumpToKey(CurrentNPC[client], true);
 	
@@ -438,18 +442,6 @@ static void MainMenu(int client)
 						}
 						default:
 						{
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
 							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
 						}
 					}
@@ -639,7 +631,7 @@ static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "
 		QuestKv.GoBack();
 	}
 
-	return canTurnIn;
+	return (canTurnIn || CvarRPGInfiniteLevelAndAmmo.BoolValue);
 }
 
 public int Quests_MenuHandle(Menu menu2, MenuAction action, int client, int choice)

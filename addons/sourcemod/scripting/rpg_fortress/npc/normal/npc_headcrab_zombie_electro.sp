@@ -118,6 +118,7 @@ methodmap HeadcrabZombieElectro < CClotBody
 		i_NpcInternalId[npc.index] = HEADCRAB_ZOMBIE_ELECTRO;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
 	//	npc.SetActivity("ACT_WALK");
 
@@ -141,7 +142,7 @@ methodmap HeadcrabZombieElectro < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 		
 		return npc;
@@ -167,7 +168,7 @@ public void HeadcrabZombieElectro_ClotThink(int iNPC)
 	}
 	
 
-	npc.m_flNextDelayTime = gameTime;// + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 
@@ -209,8 +210,10 @@ public void HeadcrabZombieElectro_ClotThink(int iNPC)
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
+						KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-
+						KillFeed_SetKillIcon(npc.index, "huntsman");
+						
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");
 						
 						if(Health <= 0)
@@ -250,11 +253,11 @@ public void HeadcrabZombieElectro_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -262,11 +265,11 @@ public void HeadcrabZombieElectro_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0) && npc.m_flNextRangedAttack < gameTime)
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0) && npc.m_flNextRangedAttack < gameTime)
 		{
 			npc.m_iState = 2; //Throw a ranged attack.
 		}

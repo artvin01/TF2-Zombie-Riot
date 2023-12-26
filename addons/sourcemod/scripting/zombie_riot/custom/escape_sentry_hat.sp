@@ -6,12 +6,116 @@ static Handle Mount_Building[MAXPLAYERS + 1];
 static int Building_particle[MAXENTITIES];
 static int Building_particle_Owner[MAXENTITIES];
 
+//for strength.
+static int Building_IconType[MAXENTITIES];
+
 public void SentryHat_OnPluginStart()
 {
 	HookEvent("player_builtobject", Event_player_builtobject);
 	HookEvent("object_detonated", Object_Detonated);
 //	AddCommandListener(CancelBuild, "build");			//Cancel out actions
 }
+public void EscapeSentryHat_MapStart()
+{
+	Zero(Building_IconType);
+}
+int BuildingIconType(int client)
+{
+	return Building_IconType[client];
+}
+/*
+void EscapeSentryHat_ApplyBuidingIcon(int client, bool ignore = false)
+{
+	int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
+	if(IsValidEntity(converted_ref) && !LastMann) //Strip icons! they need the haste buff!
+	{
+		if(!BuildingIconShown[client] || ignore)
+		{
+			BuildingIconShown[client] = true;
+			TF2_AddCondition(client, TFCond_RuneStrength, -1.0);
+			//hide powerup icon.
+//			CreateTimer(0.5, RemoveStrengthPowerup, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		float Cooldowntocheck =	Building_Collect_Cooldown[converted_ref][client];
+		bool DoSentryCheck = false;
+		switch(Building_IconType[client])
+		{
+			case 3,4,8,9:
+				DoSentryCheck = true;
+		}
+
+		if(DoSentryCheck) //all non supportive, like sentry and so on.
+		{
+			Cooldowntocheck = f_BuildingIsNotReady[client];
+		}
+		if(Cooldowntocheck < GetGameTime()) //Self indication on if your building is ready!
+		{
+			if(!BuildingIconShownSpecific[client] || ignore)
+			{
+				BuildingIconShownSpecific[client] = true;
+				switch(Building_IconType[client])
+				{
+					case 1:
+					{
+						TF2_AddCondition(client, TFCond_RuneWarlock, -1.0);
+					}
+					case 2:
+					{
+						TF2_AddCondition(client, TFCond_RuneRegen, -1.0);
+					}
+					case 5:
+					{
+						TF2_AddCondition(client, TFCond_KingRune, -1.0);
+					}
+					case 6:
+					{
+						TF2_AddCondition(client, TFCond_RuneKnockout, -1.0);
+					}
+					case 7:
+					{
+						TF2_AddCondition(client, TFCond_RuneVampire, -1.0);
+					}
+					case 8:
+					{
+						TF2_AddCondition(client, TFCond_RuneWarlock, -1.0);
+					}
+					default:
+					{
+						TF2_AddCondition(client, TFCond_RunePrecision, -1.0);
+					}
+				}		
+			}	
+		}
+		else if(BuildingIconShownSpecific[client])
+		{
+			BuildingIconShownSpecific[client] = false;
+			TF2_RemoveCondition(client, TFCond_RuneWarlock);
+			TF2_RemoveCondition(client, TFCond_RuneRegen);
+			TF2_RemoveCondition(client, TFCond_KingRune);
+			TF2_RemoveCondition(client, TFCond_RuneKnockout);
+			TF2_RemoveCondition(client, TFCond_RuneVampire);
+			TF2_RemoveCondition(client, TFCond_RuneWarlock);
+			TF2_RemoveCondition(client, TFCond_RunePrecision);
+		}
+	}
+	else if(BuildingIconShown[client])
+	{
+		BuildingIconShown[client] = false;		
+		TF2_RemoveCondition(client, TFCond_RuneStrength);
+		if(BuildingIconShownSpecific[client])
+		{
+			BuildingIconShownSpecific[client] = false;
+			TF2_RemoveCondition(client, TFCond_RuneWarlock);
+			TF2_RemoveCondition(client, TFCond_RuneRegen);
+			TF2_RemoveCondition(client, TFCond_KingRune);
+			TF2_RemoveCondition(client, TFCond_RuneKnockout);
+			TF2_RemoveCondition(client, TFCond_RuneVampire);
+			TF2_RemoveCondition(client, TFCond_RuneWarlock);
+			TF2_RemoveCondition(client, TFCond_RunePrecision);
+		}
+	}
+}
+*/
 /*
 public Action CancelBuild(int client, const char[] command, int args)
 {
@@ -37,45 +141,27 @@ public Action Object_Detonated(Handle event, const char[] name, bool dontBroadca
 public Action Event_player_builtobject(Handle event, const char[] name, bool dontBroadcast)
 {
 	int entity = GetEventInt(event, "index");
-	int id = GetEventInt(event, "userid");
-	int owner = GetClientOfUserId(id);
+//	int id = GetEventInt(event, "userid");
+//	int owner = GetClientOfUserId(id);
+	f_ClientInvul[entity] = GetGameTime() + 0.1; //Slight invulnerability
 	CClotBody npc = view_as<CClotBody>(entity);
 	npc.bBuildingIsPlaced = true;
 	i_BeingCarried[entity] = false;
-	char classname[64];
-	
-	if (IsValidEntity(entity))
-	{
-		GetEdictClassname(entity, classname, sizeof(classname));
-		if (!strcmp(classname, "obj_sentrygun"))
-		{
-			if(EscapeMode)
-			{
-				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.25);
-				npc.bBuildingIsStacked = true;
-		
-				int particle = CreateEntityByName("info_particle_system");
-				DispatchSpawn(particle);
-				float flPos[3]; // original
-				float flAng[3]; // original
-				GetAttachment(owner, "partyhat", flPos, flAng);
-				
-				TeleportEntity(particle, flPos, flAng, NULL_VECTOR);
-				TeleportEntity(entity, flPos, flAng, NULL_VECTOR);
-				
-				SetParent(owner, particle, "partyhat");
-				
-				SetParent(particle, entity);
-				
-				SetEntProp(entity, Prop_Send, "m_nSolidType", 0);
-				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 0x0004);
-				
-				CreateTimer(0.5, Check_If_Owner_Dead, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-			}
-		}
-	}
 	return Plugin_Continue;
 }
+
+public Action RemoveStrengthPowerup(Handle sentryHud, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if (IsClientConnected(client) && IsPlayerAlive(client))
+	{
+		//SEE IF CRASHES STOPPED!
+		SetVariantString("ParticleEffectStop");
+		AcceptEntityInput(client, "DispatchEffect"); 
+	}
+	return Plugin_Stop;
+}
+
 
 public Action Check_If_Owner_Dead(Handle sentryHud, int ref)
 {
@@ -106,6 +192,50 @@ public Action Check_If_Owner_Dead(Handle sentryHud, int ref)
 }
 
 int i_BuildingSelectedToBeDeleted[MAXPLAYERS + 1];
+int i_BuildingSelectedToBeUnClaimed[MAXPLAYERS + 1];
+
+
+public void Un_ClaimBuildingLookedAt(int client)
+{
+	int entity = GetClientPointVisible(client, _ , true, true);
+	if(entity > MaxClients)
+	{
+		if (IsValidEntity(entity) && BuildingIsSupport(entity))
+		{
+			static char buffer[64];
+			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
+			{
+				if(!StrContains(buffer, "obj_"))
+				{
+					if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
+					{
+						i_BuildingSelectedToBeUnClaimed[client] = EntIndexToEntRef(entity);
+						DataPack pack;
+						CreateDataTimer(0.1, UnclaimBuildingTimer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+						pack.WriteCell(client);
+						pack.WriteCell(EntIndexToEntRef(entity));
+						pack.WriteCell(GetClientUserId(client));
+						Menu menu = new Menu(UnClaimBuildingMenu);
+
+						SetGlobalTransTarget(client);
+						
+						menu.SetTitle("%t", "UnClaim Current Marked Building");
+
+						FormatEx(buffer, sizeof(buffer), "%t", "Yes");
+						menu.AddItem("-1", buffer);
+						FormatEx(buffer, sizeof(buffer), "%t", "No");
+						menu.AddItem("-2", buffer);
+									
+						menu.ExitButton = true;
+						menu.Display(client, MENU_TIME_FOREVER);
+						
+						i_BuildingSelectedToBeUnClaimed[client] = EntIndexToEntRef(entity);
+					}
+				}
+			}
+		}
+	}
+}
 
 public void DeleteBuildingLookedAt(int client)
 {
@@ -173,7 +303,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -189,7 +319,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -205,7 +335,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -221,7 +351,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -237,7 +367,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -253,7 +383,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -269,7 +399,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -285,7 +415,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -301,7 +431,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -329,6 +459,38 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 	else
 	{
 		UnequipDispenser(client);
+	}
+}
+public Action UnclaimBuildingTimer(Handle sentryHud, DataPack pack)
+{
+	pack.Reset();
+	int original_index = pack.ReadCell();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int client = GetClientOfUserId(pack.ReadCell());
+
+	if(IsValidClient(client))
+	{
+		if (IsValidEntity(entity) && entity == EntRefToEntIndex(i_BuildingSelectedToBeUnClaimed[client]))
+		{
+			static float m_vecMaxs[3];
+			static float m_vecMins[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecMins", m_vecMins);
+			GetEntPropVector(entity, Prop_Send, "m_vecMaxs", m_vecMaxs);
+			float fPos[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", fPos);
+			TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({255, 0, 0, 255}));
+			return Plugin_Continue;
+		}
+		else
+		{
+			i_BuildingSelectedToBeUnClaimed[original_index] = -1;
+			return Plugin_Stop;
+		}
+	}
+	else
+	{
+		i_BuildingSelectedToBeUnClaimed[original_index] = -1;
+		return Plugin_Stop;
 	}
 }
 
@@ -365,6 +527,64 @@ public Action DeleteBuildingTimer(Handle sentryHud, DataPack pack)
 	}
 }
 
+public int UnClaimBuildingMenu(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			if(IsValidClient(client))
+			{
+				i_BuildingSelectedToBeUnClaimed[client] = -1;		
+			}
+		}
+		case MenuAction_Cancel:
+		{
+			if(IsValidClient(client))
+			{
+				i_BuildingSelectedToBeUnClaimed[client] = -1;		
+			}
+		}
+		case MenuAction_Select:
+		{
+			char buffer[24];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			int id = StringToInt(buffer);
+			switch(id)
+			{
+				case -1:
+				{
+					if(IsValidClient(client))
+					{
+						int entity = EntRefToEntIndex(i_BuildingSelectedToBeUnClaimed[client]);
+						if (IsValidEntity(entity))
+						{
+							int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+							if(builder_owner == client)
+							{
+								SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
+								if(h_ClaimedBuilding[client][entity] != null)
+									delete h_ClaimedBuilding[client][entity];
+
+								i_SupportBuildingsBuild[client] -= 1;
+								//not enough support slots.
+							}
+						}
+						i_BuildingSelectedToBeUnClaimed[client] = -1;	
+					}
+				}
+				default:
+				{
+					if(IsValidClient(client))
+					{
+						i_BuildingSelectedToBeUnClaimed[client] = -1;		
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
 
 public int DeleteBuildingMenu(Menu menu, MenuAction action, int client, int choice)
 {
@@ -470,7 +690,8 @@ public Action Mount_Building_Timer(Handle sentryHud, DataPack pack)
 				else if (StrEqual(buffer, "zr_summoner"))
 				{
 					EquipDispenser(client, entity, 9);
-				}					
+				}	
+				RemoveBuildingDependency(entity);				
 			}
 		}
 	}
@@ -519,8 +740,19 @@ stock void EquipDispenser(int client, int target, int building_variant)
 		
 		float flPos[3];
 		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+
+//		CreateTimer(0.5, RemoveStrengthPowerup, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+		//hide powerup icon.	
+//		SetVariantString("ParticleEffectStop");
+//		AcceptEntityInput(client, "DispatchEffect"); 
+//		flPos[2] += 90.0;
+//		Building_particle_2[client] = EntIndexToEntRef(ParticleEffectAt_Building_Custom(flPos, "powerup_icon_strength", client));
+//		SDKHook(Building_particle_2[client], SDKHook_SetTransmit, ParticleTransmitSelf);
+//		SDKUnhook(Building_particle_2[client], SDKHook_SetTransmit, ParticleTransmit);
 				
+//		flPos[2] += 20.0;
 		flPos[2] += 100.0;
+		Building_IconType[client] = building_variant;
 		switch(building_variant)
 		{
 			case 1:
@@ -547,52 +779,46 @@ stock void EquipDispenser(int client, int target, int building_variant)
 			{
 				Building_particle[client] = EntIndexToEntRef(ParticleEffectAt_Building_Custom(flPos, "powerup_icon_reflect", client)); // Village
 			}
+			default:
+			{
+				Building_particle[client] = EntIndexToEntRef(ParticleEffectAt_Building_Custom(flPos, "powerup_icon_precision", client)); // Village
+			}
 		}
 		Building_Mounted[client] = EntIndexToEntRef(target);
-		TeleportEntity(target, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
 		i_BeingCarried[target] = true;
 		Player_Mounting_Building[client] = true;
 		Event_ObjectMoved_Custom(target);
+		TeleportEntity(target, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
 		g_CarriedDispenser[client] = EntIndexToEntRef(target);
 	}
 }
 
 public void OnEntityDestroyed_BackPack(int iEntity)
 {
-		char classname[64];
-		GetEntityClassname(iEntity, classname, sizeof(classname));
-		
-		if(!StrContains(classname, "obj_"))
+	if(i_IsABuilding[iEntity])
+	{
+		SetEntProp(iEntity, Prop_Send, "m_bCarried", false);
+		int builder = GetEntPropEnt(iEntity, Prop_Send, "m_hBuilder");
+		if(builder > 0 && builder <= MaxClients && IsClientInGame(builder) && iEntity == EntRefToEntIndex(g_CarriedDispenser[builder]))
 		{
-			SetEntProp(iEntity, Prop_Send, "m_bCarried", false);
-			int builder = GetEntPropEnt(iEntity, Prop_Send, "m_hBuilder");
-			if(builder > 0 && builder <= MaxClients && IsClientInGame(builder) && iEntity == EntRefToEntIndex(g_CarriedDispenser[builder]))
+			if(g_CarriedDispenser[builder] != INVALID_ENT_REFERENCE)
 			{
-				if(g_CarriedDispenser[builder] != INVALID_ENT_REFERENCE)
+				int Dispenser = EntRefToEntIndex(g_CarriedDispenser[builder]);
+				
+				int converted_ref = EntRefToEntIndex(Building_particle[builder]);
+				if(converted_ref > 0 && IsValidEntity(converted_ref))
 				{
-					int Dispenser = EntRefToEntIndex(g_CarriedDispenser[builder]);
-					/*
-					int iLink = GetEntPropEnt(Dispenser, Prop_Send, "m_hEffectEntity");
-					if(IsValidEntity(iLink))
-					{
-						AcceptEntityInput(iLink, "ClearParent");
-						AcceptEntityInput(iLink, "Kill");
-					}
-					*/
-					int converted_ref = EntRefToEntIndex(Building_particle[builder]);
-					if(converted_ref > 0 && IsValidEntity(converted_ref))
-					{
-						SDKUnhook(converted_ref, SDKHook_SetTransmit, ParticleTransmit);
-						AcceptEntityInput(converted_ref, "Stop");
-						AcceptEntityInput(converted_ref, "Kill");
-					}
-					Building_Mounted[builder] = 0;
-					i_BeingCarried[Dispenser] = false;
-					Player_Mounting_Building[builder] = false;
-					g_CarriedDispenser[builder] = INVALID_ENT_REFERENCE;
+					SDKUnhook(converted_ref, SDKHook_SetTransmit, ParticleTransmit);
+					AcceptEntityInput(converted_ref, "Stop");
+					AcceptEntityInput(converted_ref, "Kill");
 				}
+				Building_Mounted[builder] = 0;
+				i_BeingCarried[Dispenser] = false;
+				Player_Mounting_Building[builder] = false;
+				g_CarriedDispenser[builder] = INVALID_ENT_REFERENCE;
 			}
 		}
+	}
 }
 
 stock void DestroyDispenser(int client)
@@ -607,6 +833,7 @@ stock void DestroyDispenser(int client)
 			AcceptEntityInput(iLink, "ClearParent");
 			AcceptEntityInput(iLink, "Kill");
 			*/
+			Building_IconType[client] = 0;
 			int converted_ref = EntRefToEntIndex(Building_particle[client]);
 			if(converted_ref > 0 && IsValidEntity(converted_ref))
 			{
@@ -614,6 +841,15 @@ stock void DestroyDispenser(int client)
 				AcceptEntityInput(converted_ref, "Stop");
 				AcceptEntityInput(converted_ref, "Kill");
 			}
+			/*
+			converted_ref = EntRefToEntIndex(Building_particle_2[client]);
+			if(converted_ref > 0 && IsValidEntity(converted_ref))
+			{
+				SDKUnhook(converted_ref, SDKHook_SetTransmit, ParticleTransmitSelf);
+				AcceptEntityInput(converted_ref, "Stop");
+				AcceptEntityInput(converted_ref, "Kill");
+			}
+			*/
 			SetVariantInt(999999);
 			AcceptEntityInput(Dispenser, "RemoveHealth");
 			Building_Mounted[client] = 0;
@@ -646,7 +882,7 @@ stock int CreateLink(int iClient)
 	int iLink = CreateEntityByName("tf_taunt_prop");
 	DispatchKeyValue(iLink, "targetname", "DispenserLink");
 	DispatchSpawn(iLink); 
-			
+	
 	char strModel[PLATFORM_MAX_PATH];
 	GetEntPropString(iClient, Prop_Data, "m_ModelName", strModel, PLATFORM_MAX_PATH);
 	
@@ -678,7 +914,7 @@ stock void UnequipDispenser(int client)
 		{		
 			if(!StrContains(buffer, "obj_dispenser"))
 			{
-				TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+				TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 				int iBuilder = Spawn_Buildable(client);
 				SetEntProp(iBuilder, Prop_Send, "m_hObjectBeingBuilt", entity); 
@@ -690,15 +926,15 @@ stock void UnequipDispenser(int client)
 				SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
 				SetEntProp(entity, Prop_Send, "m_nSolidType", 2);
 				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 0);
-			//	TF2_SetPlayerClass(client, TFClass_Engineer);
+			//	TF2_SetPlayerClass_ZR(client, TFClass_Engineer);
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 				Spawn_Buildable(client);
-				TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+				TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 				
 			}
 			else if(!StrContains(buffer, "obj_sentrygun"))
 			{
-				TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+				TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 				int iBuilder = Spawn_Buildable(client);
 				SetEntProp(iBuilder, Prop_Send, "m_hObjectBeingBuilt", entity); 
@@ -710,10 +946,10 @@ stock void UnequipDispenser(int client)
 				SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder);
 				SetEntProp(entity, Prop_Send, "m_nSolidType", 2);
 				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 0);				
-			//	TF2_SetPlayerClass(client, TFClass_Engineer);
+			//	TF2_SetPlayerClass_ZR(client, TFClass_Engineer);
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 				Spawn_Buildable(client);
-				TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+				TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 			}	
 			/*
 			int iLink = GetEntPropEnt(entity, Prop_Send, "m_hEffectEntity");
@@ -724,6 +960,8 @@ stock void UnequipDispenser(int client)
 				AcceptEntityInput(iLink, "Kill");
 			}
 			*/
+			Building_IconType[client] = 0;
+
 			int converted_ref = EntRefToEntIndex(Building_particle[client]);
 			if(converted_ref > 0 && IsValidEntity(converted_ref))
 			{
@@ -731,6 +969,15 @@ stock void UnequipDispenser(int client)
 				AcceptEntityInput(converted_ref, "Stop");
 				AcceptEntityInput(converted_ref, "Kill");
 			}
+			/*
+			converted_ref = EntRefToEntIndex(Building_particle_2[client]);
+			if(converted_ref > 0 && IsValidEntity(converted_ref))
+			{
+				SDKUnhook(converted_ref, SDKHook_SetTransmit, ParticleTransmitSelf);
+				AcceptEntityInput(converted_ref, "Stop");
+				AcceptEntityInput(converted_ref, "Kill");
+			}
+			*/
 			Building_Mounted[client] = 0;
 			SetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed", 0.1);
 			i_BeingCarried[entity] = false;
@@ -787,12 +1034,53 @@ public Action ParticleTransmit(int entity, int client)
 
 	if(IsValidEntity(building_attached))
 	{
-		if(Building_Collect_Cooldown[building_attached][client] > GetGameTime())
+		static float Cooldowntocheck;
+		Cooldowntocheck = Building_Collect_Cooldown[building_attached][client];
+		static bool DoSentryCheck;
+		DoSentryCheck = false;
+		switch(Building_IconType[Building_particle_Owner[entity]])
+		{
+			case 3,4,8,9:
+				DoSentryCheck = true;
+		}
+
+		if(DoSentryCheck) //all non supportive, like sentry and so on.
+		{
+			Cooldowntocheck = f_BuildingIsNotReady[Building_particle_Owner[entity]];
+		}
+
+		if(Cooldowntocheck > GetGameTime())
 			return Plugin_Handled;
 	}
 	return Plugin_Continue;
 }
 
+
+public Action ParticleTransmitCitizen(int entity, int client)
+{
+	static int building_attached;
+	building_attached = EntRefToEntIndex(Building_particle_Owner[entity]);
+
+	if(IsValidEntity(building_attached))
+	{
+		static float Cooldowntocheck;
+		Cooldowntocheck = Building_Collect_Cooldown[building_attached][client];
+
+		if(Cooldowntocheck > GetGameTime())
+			return Plugin_Handled;
+	}
+	return Plugin_Continue;
+}
+
+/*
+public Action ParticleTransmitSelf(int entity, int client)
+{
+	if(client == Building_particle_Owner[entity])
+		return Plugin_Handled;
+
+	return Plugin_Continue;
+}
+*/
 public void CleanAllBuildingEscape()
 {
 	Zero(Player_Mounting_Building);

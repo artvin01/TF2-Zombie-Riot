@@ -5,15 +5,13 @@ static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float Smite_Damage[MAXPLAYERS+1]={0.0, ...};
 static float Damage_Reduction[MAXPLAYERS+1]={0.0, ...};
 static int Smite_Cost = 250;
-static float Smite_BaseDMG = 225.0;
+static float Smite_BaseDMG = 200.0;
 static float Smite_DMGMult = 7.5;
 static float Smite_ChargeTime = 0.99;
 static float Smite_ChargeSpan = 0.33;
 static float Smite_Radius = 400.0;
 
-#define SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO "misc/halloween/spell_lightning_ball_cast.wav"
 #define SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE "weapons/vaccinator_charge_tier_03.wav"
-#define SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE	"misc/halloween/spell_mirv_explode_primary.wav"
 
 void Wand_LightningPap_Map_Precache()
 {
@@ -21,7 +19,6 @@ void Wand_LightningPap_Map_Precache()
 	PrecacheSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE);
 	PrecacheSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE);
 }
-#define spirite "spirites/zerogxplode.spr"
 
 public void Lighting_Wand_Pap_ClearAll()
 {
@@ -37,15 +34,14 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				Ability_Apply_Cooldown(client, slot, 15.0);
+				Rogue_OnAbilityUse(weapon);
+				Ability_Apply_Cooldown(client, slot, 20.0);
 				
 				float damage = Smite_BaseDMG;
 				
 				damage *= Smite_DMGMult;
 				
-				Address address = TF2Attrib_GetByDefIndex(weapon, 410);
-				if(address != Address_Null)
-					damage *= TF2Attrib_GetValue(address);
+				damage *= Attributes_Get(weapon, 410, 1.0);
 			
 				Smite_Damage[client] = damage;
 					
@@ -72,8 +68,6 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 				if(TR_DidHit(trace))
 				{   	 
 		   		 	TR_GetEndPosition(vEnd, trace);
-			
-					CloseHandle(trace);
 					
 					Handle pack;
 					CreateDataTimer(Smite_ChargeSpan, Smite_Timer, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -90,6 +84,7 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 					spawnBeam(0.8, 255, 255, 0, 120, "materials/sprites/lgtning.vmt", 8.0, 8.2, _, 5.0, vOrigin, vEnd);
 					spawnRing_Vectors(vEnd, Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 200, 1, Smite_ChargeTime, 6.0, 0.1, 1, 1.0);
 				}
+				delete trace;
 				
 			}
 			else

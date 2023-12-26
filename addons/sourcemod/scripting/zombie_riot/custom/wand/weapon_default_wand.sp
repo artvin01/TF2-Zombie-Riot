@@ -15,16 +15,12 @@ void Wand_Map_Precache()
 public void Weapon_Default_Wand(int client, int weapon, bool crit)
 {
 	int mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
 	if(mana_cost <= Current_Mana[client])
 	{
 		float damage = 65.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 410, 1.0);
 		
 		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 		Mana_Hud_Delay[client] = 0.0;
@@ -34,27 +30,17 @@ public void Weapon_Default_Wand(int client, int weapon, bool crit)
 		delay_hud[client] = 0.0;
 			
 		float speed = 1100.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-	
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-	
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 103, 1.0);
+		
+		speed *= Attributes_Get(weapon, 104, 1.0);
+		
+		speed *= Attributes_Get(weapon, 475, 1.0);
 	
 	
 		float time = 500.0/speed;
-		address = TF2Attrib_GetByDefIndex(weapon, 101);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
-	
-		address = TF2Attrib_GetByDefIndex(weapon, 102);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
+		time *= Attributes_Get(weapon, 101, 1.0);
+		
+		time *= Attributes_Get(weapon, 102, 1.0);
 		
 		char particle[32];
 		
@@ -77,16 +63,12 @@ public void Weapon_Default_Wand(int client, int weapon, bool crit)
 public void Weapon_Default_Wand_pap2(int client, int weapon, bool crit)
 {
 	int mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
 	if(mana_cost <= Current_Mana[client])
 	{
 		float damage = 65.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 410, 1.0);
 		
 		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 		Mana_Hud_Delay[client] = 0.0;
@@ -96,27 +78,17 @@ public void Weapon_Default_Wand_pap2(int client, int weapon, bool crit)
 		delay_hud[client] = 0.0;
 			
 		float speed = 1100.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-	
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-	
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 103, 1.0);
+		
+		speed *= Attributes_Get(weapon, 104, 1.0);
+		
+		speed *= Attributes_Get(weapon, 475, 1.0);
 	
 	
-		float time = 500.0/speed;
-		address = TF2Attrib_GetByDefIndex(weapon, 101);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
+		float time = 500.0/speed;	
+		time *= Attributes_Get(weapon, 101, 1.0);
 	
-		address = TF2Attrib_GetByDefIndex(weapon, 102);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
+		time *= Attributes_Get(weapon, 102, 1.0);
 		
 		char particle[32];
 		

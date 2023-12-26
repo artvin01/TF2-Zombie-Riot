@@ -410,7 +410,7 @@ static void TexasMenu(int client)
 			}
 			else
 			{
-				menu.SetTitle("Texas Hold 'Em\n%s won the game\nLast Man\n%s %s %s %s %s\n ", 
+				menu.SetTitle("Texas Hold 'Em\n%s won the game\nLast Man\n%s %s %s %s %s\n ", buffer,
 					Games_GetCardIcon(GlobalHand[0]), 
 					Games_GetCardIcon(GlobalHand[1]), 
 					Games_GetCardIcon(GlobalHand[2]), 

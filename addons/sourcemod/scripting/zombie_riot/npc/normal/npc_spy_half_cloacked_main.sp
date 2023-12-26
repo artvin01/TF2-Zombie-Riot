@@ -169,6 +169,7 @@ methodmap SpyCloaked < CClotBody
 		SpyCloaked npc = view_as<SpyCloaked>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "18000", ally));
 		
 		i_NpcInternalId[npc.index] = SPY_HALF_CLOACKED;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -183,7 +184,7 @@ methodmap SpyCloaked < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SpyCloaked_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, SpyCloaked_ClotThink);		
 		
 		npc.m_iAttacksTillReload = 6;
@@ -268,7 +269,7 @@ public void SpyCloaked_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -299,7 +300,7 @@ public void SpyCloaked_ClotThink(int iNPC)
 				AcceptEntityInput(npc.m_iWearable1, "Enable");
 				AcceptEntityInput(npc.m_iWearable2, "Disable");
 			//	npc.FaceTowards(vecTarget, 1000.0);
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
 			
@@ -322,9 +323,9 @@ public void SpyCloaked_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 22500 && flDistanceToTarget < 62500 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
@@ -458,7 +459,7 @@ public void SpyCloaked_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -467,7 +468,7 @@ public void SpyCloaked_ClotThink(int iNPC)
 }
 
 
-public Action SpyCloaked_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SpyCloaked_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -493,7 +494,7 @@ public void SpyCloaked_NPCDeath(int entity)
 	}
 	
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SpyCloaked_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SpyCloaked_ClotThink);		
 		
 	if(IsValidEntity(npc.m_iWearable1))

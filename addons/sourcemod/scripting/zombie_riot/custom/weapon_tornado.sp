@@ -60,6 +60,7 @@ public void Weapon_Tornado_Laucher_M2(int client, int weapon, const char[] class
 		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	}
 }
+
 public void Weapon_tornado_launcher_Spam(int client, int weapon, const char[] classname, bool &result)
 {
 	bl_tornado_barrage_mode[client]=false;
@@ -150,21 +151,15 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 		
 		
 		//note: redo attributes for better customizability
-		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			dmgProjectile *= TF2Attrib_GetValue(address);
-			
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speedMult *= TF2Attrib_GetValue(address);
+		dmgProjectile *= Attributes_Get(weapon, 1, 1.0);
+
+		dmgProjectile *= Attributes_Get(weapon, 2, 1.0);
+				
+		speedMult *= Attributes_Get(weapon, 103, 1.0);
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speedMult *= TF2Attrib_GetValue(address);
+		speedMult *= Attributes_Get(weapon, 104, 1.0);
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speedMult *= TF2Attrib_GetValue(address);
+		speedMult *= Attributes_Get(weapon, 475, 1.0);
 			
 		float damage=dmgProjectile;
 		int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
@@ -224,36 +219,39 @@ void BlitzRocket(int client, float speed, float damage, int weapon)
 	fVel[1] = fBuf[1]*speed;
 	fVel[2] = fBuf[2]*speed;
 
-	int entity = CreateEntityByName("tf_projectile_rocket");
+	int entity = CreateEntityByName("zr_projectile_base");
 	if(IsValidEntity(entity))
 	{
 		fl_tornado_dmg[entity]=damage;
-		i_tornado_wep[entity]=weapon;
-		i_tornado_index[entity]=client;
+		i_tornado_wep[entity]=EntIndexToEntRef(weapon);
+		i_tornado_index[entity]=EntIndexToEntRef(client);
 		b_EntityIsArrow[entity] = true;
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
 		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
 		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
 		DispatchSpawn(entity);
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
-		
+		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", GetGameTime());
+		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
 		for(int i; i<4; i++)
 		{
 			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
 		}
-		
+		float ModelSizeAdd = 2.0;
 		if(bl_tornado_barrage_mode[client])	//we make the rocket smaller on barrage mode.
 		{
-			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 2.0);
+			ModelSizeAdd = 2.0;
 		}
 		else
 		{
-			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 3.0);
+			ModelSizeAdd = 3.0;
 		}
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Tornado_RocketExplodePre); //In this case I reused code that was reused due to laziness, I am the ultiamte lazy. *yawn*
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		SDKHook(entity, SDKHook_StartTouch, Tornado_Blitz_StartTouch);
+		ApplyCustomModelToWandProjectile(entity, "models/weapons/w_bullet.mdl", ModelSizeAdd, "");
 	}
 	return;
 }

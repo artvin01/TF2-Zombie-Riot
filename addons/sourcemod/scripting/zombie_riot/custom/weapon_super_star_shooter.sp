@@ -7,8 +7,9 @@ static int Projectile_To_Particle[MAXENTITIES]={0, ...};
 static int SSS_overheat[MAXENTITIES]={0, ...};
 static float starshooter_hud_delay[MAXTF2PLAYERS];
 static int Star_HitTarget[MAXENTITIES][MAXENTITIES];
+static float StarShooterCoolDelay[MAXTF2PLAYERS];
 
-Handle Timer_Starshooter_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle Timer_Starshooter_Management[MAXPLAYERS+1] = {null, ...};
 
 #define COLLISION_DETECTION_MODEL	"models/props_lab/monitor01a.mdl"
 #define SOUND_WAND_SHOT_STAR 	"weapons/gauss/fire1.wav"
@@ -19,6 +20,7 @@ void SSS_Map_Precache()
 	PrecacheSound(SOUND_WAND_SHOT_STAR);
 	PrecacheSound(SOUND_ZAP_STAR);
 	PrecacheModel(COLLISION_DETECTION_MODEL);
+	Zero(StarShooterCoolDelay);
 
 }
 
@@ -27,6 +29,7 @@ void Reset_stats_starshooter()
 {
 	Zero(Timer_Starshooter_Management);
 	Zero(starshooter_hud_delay);
+	Zero(StarShooterCoolDelay);
 }
 /*
 The damage getting lower after having a higher overheat amount now works properly but i am not quite sure how to make a proper counter to make it tick down,
@@ -36,17 +39,17 @@ my current plan was to make it decrease by 1 overheat charge every half a second
 public void Super_Star_Shooter_Main(int client, int weapon, bool crit, int slot)
 {
 	Enable_StarShooter(client, weapon);
-	Ability_Apply_Cooldown(client, slot, 3.0);
-	
+	Ability_Apply_Cooldown(client, slot, 2.0);
+	StarShooterCoolDelay[client] = GetGameTime() + 2.0;
 	SSS_overheat[client] += 1;
 
 	float damage = 1000.0;
 		
-	if(SSS_overheat[client] > 10)
+	if(SSS_overheat[client] > 15)
 	{
 		damage = 750.0;
 	} 
-	if(SSS_overheat[client] > 15)
+	if(SSS_overheat[client] > 18)
 	{
 		damage = 500.0;
 	} 
@@ -60,27 +63,22 @@ public void Super_Star_Shooter_Main(int client, int weapon, bool crit, int slot)
 		SSS_overheat[client] = 25;
 	}
 
-	Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
-
-	float speed = 3500.0;
-	address = TF2Attrib_GetByDefIndex(weapon, 103);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
-	
-	address = TF2Attrib_GetByDefIndex(weapon, 104);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
-	
+	float speed = 1750.0;
 	float time = 5000.0/speed;
-	address = TF2Attrib_GetByDefIndex(weapon, 101);
-	if(address != Address_Null)
-		time *= TF2Attrib_GetValue(address);
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 102);
-	if(address != Address_Null)
-		time *= TF2Attrib_GetValue(address);
+	damage *= Attributes_Get(weapon, 1, 1.0);
+
+	damage *= Attributes_Get(weapon, 2, 1.0);
+			
+	speed *= Attributes_Get(weapon, 103, 1.0);
+	
+	speed *= Attributes_Get(weapon, 104, 1.0);
+	
+	speed *= Attributes_Get(weapon, 475, 1.0);
+	
+	time *= Attributes_Get(weapon, 101, 1.0);
+	
+	time *= Attributes_Get(weapon, 102, 1.0);
 		
 	int iRot = CreateEntityByName("func_door_rotating");
 	if(iRot == -1) return;
@@ -223,7 +221,6 @@ public Action Event_SSS_OnHatTouch(int entity, int other)
 			EmitSoundToAll(SOUND_ZAP_STAR, entity, SNDCHAN_STATIC, 70, _, 0.6);
 			RemoveEntity(particle);
 		}
-
 		RemoveEntity(entity);
 	}
 	return Plugin_Handled;
@@ -233,27 +230,27 @@ public Action Event_SSS_OnHatTouch(int entity, int other)
 
 public void Enable_StarShooter(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (Timer_Starshooter_Management[client] != INVALID_HANDLE)
+	if (Timer_Starshooter_Management[client] != null)
 	{
 		//This timer already exists.
-		if(i_CustomWeaponEquipLogic[weapon] == 2) //2
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_STAR_SHOOTER) //2
 		{
 			//Is the weapon it again?
 			//Yes?
-			KillTimer(Timer_Starshooter_Management[client]);
-			Timer_Starshooter_Management[client] = INVALID_HANDLE;
+			delete Timer_Starshooter_Management[client];
+			Timer_Starshooter_Management[client] = null;
 			DataPack pack;
-			Timer_Starshooter_Management[client] = CreateDataTimer(0.1, Timer_Management_StarShooter, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			Timer_Starshooter_Management[client] = CreateDataTimer(0.1, Timer_Management_StarShooter, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
 		return;
 	}
 		
-	if(i_CustomWeaponEquipLogic[weapon] == 2) //
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_STAR_SHOOTER) //
 	{
 		DataPack pack;
-		Timer_Starshooter_Management[client] = CreateDataTimer(0.1, Timer_Management_StarShooter, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		Timer_Starshooter_Management[client] = CreateDataTimer(0.1, Timer_Management_StarShooter, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -265,74 +262,40 @@ public Action Timer_Management_StarShooter(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				Starshooter_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Timer_Starshooter(client);
-		}
-		else
-			Kill_Timer_Starshooter(client);
-	}
-	else
-		Kill_Timer_Starshooter(client);
+		Timer_Starshooter_Management[client] = null;
+		return Plugin_Stop;
+	}	
+	Starshooter_Cooldown_Logic(client, weapon);
 		
 	return Plugin_Continue;
 }
 
-public void Kill_Timer_Starshooter(int client)
-{
-	if (Timer_Starshooter_Management[client] != INVALID_HANDLE)
-	{
-		KillTimer(Timer_Starshooter_Management[client]);
-		Timer_Starshooter_Management[client] = INVALID_HANDLE;
-	}
-}
 
 
 public void Starshooter_Cooldown_Logic(int client, int weapon)
 {
-	if (!IsValidMulti(client))
-		return;
-		
-	if(IsValidEntity(weapon))
+	//Do your code here :)
+	
+	if (StarShooterCoolDelay[client] < GetGameTime())
 	{
-		if(i_CustomWeaponEquipLogic[weapon] == 2) //Double check to see if its good or bad :(
-		{	
-			//Do your code here :)
-			
-			if (Ability_Check_Cooldown(client, 1/*slot*/) < 0.0)
-			{
-				SSS_overheat[client] -= 1;
-				
-				if(SSS_overheat[client] < 0)
-				{
-					SSS_overheat[client] = 0;
-				}
-			}
-			if(starshooter_hud_delay[client] < GetGameTime())
-			{
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
-				{
-					PrintHintText(client,"Star Shooter Overheat %i%%%", SSS_overheat[client] * 4);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-				}
-				starshooter_hud_delay[client] = GetGameTime() + 0.5;
-			}
-		}
-		else
+		SSS_overheat[client] -= 1;
+		
+		if(SSS_overheat[client] < 0)
 		{
-			Kill_Timer_Starshooter(client);
+			SSS_overheat[client] = 0;
 		}
 	}
-	else
+	if(starshooter_hud_delay[client] < GetGameTime())
 	{
-		Kill_Timer_Starshooter(client);
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+		{
+			PrintHintText(client,"Star Shooter Overheat %i%%%", SSS_overheat[client] * 4);
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		}
+		starshooter_hud_delay[client] = GetGameTime() + 0.5;
 	}
 }

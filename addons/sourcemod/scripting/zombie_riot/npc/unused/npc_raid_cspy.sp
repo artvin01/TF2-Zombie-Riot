@@ -280,6 +280,7 @@ methodmap CorruptedSpyRaid < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidAllowsBuildings = false;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -287,7 +288,7 @@ methodmap CorruptedSpyRaid < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, CorruptedSpyRaid_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, CorruptedSpyRaid_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, CorruptedSpyRaid_ClotDamaged_Post);
 		
@@ -312,7 +313,7 @@ methodmap CorruptedSpyRaid < CClotBody
 		npc.m_bmovedelay = false;
 		npc.g_TimesSummoned = 0;
 		
-		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
+		GiveNpcOutLineLastOrBoss(npc.index, false);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -436,7 +437,7 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 			SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
 			
-			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+			GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 			int entity = EntRefToEntIndex(iNPC);
 			if(IsValidEntity(entity) && entity>MaxClients)
@@ -486,9 +487,9 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 		}
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{	
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		} else {
-			PF_SetGoalEntity(npc.index, closest);
+			NPC_SetGoalEntity(npc.index, closest);
 		}
 		if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 40000 && flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime() && !npc.Anger)
 		{
@@ -678,7 +679,7 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -688,7 +689,7 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 }
 
 
-public Action CorruptedSpyRaid_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action CorruptedSpyRaid_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -714,7 +715,7 @@ public Action CorruptedSpyRaid_ClotDamaged(int victim, int &attacker, int &infli
 		npc.m_flNextRangedAttack = 4.05;
 		npc.m_flNextMeleeAttack = GetGameTime() + 4.05;
 		
-		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
+		GiveNpcOutLineLastOrBoss(npc.index, false);
 		
 		npc.PlayCloakSound();
 		npc.PlayCloakSound();
@@ -854,7 +855,7 @@ public void CorruptedSpyRaid_NPCDeath(int entity)
 	
 	Music_Stop_All_Cspy(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CorruptedSpyRaid_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, CorruptedSpyRaid_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, CorruptedSpyRaid_ClotDamaged_Post);
 	if(IsValidEntity(npc.m_iWearable1))

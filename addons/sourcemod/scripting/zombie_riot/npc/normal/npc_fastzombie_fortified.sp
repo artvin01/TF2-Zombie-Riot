@@ -184,6 +184,7 @@ methodmap FortifiedFastZombie < CClotBody
 		FortifiedFastZombie npc = view_as<FortifiedFastZombie>(CClotBody(vecPos, vecAng, "models/zombie/fast.mdl", "1.15", "300", ally, false));
 		
 		i_NpcInternalId[npc.index] = FORTIFIED_FASTZOMBIE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -196,7 +197,7 @@ methodmap FortifiedFastZombie < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FortifiedFastZombie_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, FortifiedFastZombie_ClotThink);
 		
 		
@@ -242,7 +243,7 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -275,7 +276,7 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 		}
 		if(npc.m_flInJump > GetGameTime(npc.index))
 		{
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.FaceTowards(vecTarget, 1000.0);
 			
@@ -287,11 +288,11 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 			
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		//Target close enough to hit
 		if(flDistanceToTarget < 10000)
@@ -345,7 +346,7 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 				delete swingTrace;
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
 			}
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 		}
 		else
@@ -356,35 +357,12 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
-}
-
-public Action FortifiedFastZombie_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	//Valid attackers only.
-	if(attacker <= 0)
-		return Plugin_Continue;
-		
-	FortifiedFastZombie npc = view_as<FortifiedFastZombie>(victim);
-	
-	
-	/*
-	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
-		return Plugin_Continue;
-	*/
-	
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.PlayHurtSound();
-		
-	}
-	return Plugin_Changed;
 }
 
 public void FortifiedFastZombie_NPCDeath(int entity)
@@ -395,7 +373,7 @@ public void FortifiedFastZombie_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, FortifiedFastZombie_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, FortifiedFastZombie_ClotThink);
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");

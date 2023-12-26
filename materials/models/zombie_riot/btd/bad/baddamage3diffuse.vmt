@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$basetexture" "models/zombie_riot/btd/bad/baddamage3diffuse"
+	"$surfaceprop" "rubber"
+}

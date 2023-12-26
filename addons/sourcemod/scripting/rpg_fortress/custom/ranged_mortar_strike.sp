@@ -2,6 +2,8 @@
 #define MORTAR_BOOM	"beams/beamstart5.wav"
 #define MORTAR_SHOT_INCOMMING	"weapons/mortar/mortar_shell_incomming1.wav"
 
+static int WeaponToFire[MAXENTITIES];
+
 void Mortar_MapStart()
 {
 	PrecacheSound(MORTAR_SHOT);
@@ -54,8 +56,8 @@ public void Ability_MortarRanged(int client, int level, int weapon)
 	else
 	{
 		f_Damage[client] = (damage * 6);
-	}
-
+	}	
+	WeaponToFire[client] = EntIndexToEntRef(weapon);
 	BuildingMortarAction(client);
 }
 	
@@ -145,7 +147,11 @@ public Action MortarFire(Handle timer, int client)
 {
 	if(IsClientInGame(client) && IsPlayerAlive(client))
 	{
-		Explode_Logic_Custom(f_Damage[client], client, client, -1, f_MarkerPosition[client], 350.0, 1.45, _, false);
+		int weapon = EntRefToEntIndex(WeaponToFire[client]);
+		if(IsValidEntity(weapon))
+		{
+			Explode_Logic_Custom(f_Damage[client], client, client, weapon, f_MarkerPosition[client], 350.0, 1.45, _, false);
+		}
 			
 		CreateEarthquake(f_MarkerPosition[client], 0.5, 350.0, 16.0, 255.0);
 		EmitSoundToAll(MORTAR_BOOM, 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, f_MarkerPosition[client]);

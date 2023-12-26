@@ -320,14 +320,14 @@ methodmap BootyExecutioner < CClotBody
 			b_DuoOnePootisDied = false;
 			b_DuoDisableMainPootisTheme = false;
 			b_DuoMainLeaderDied = false;
-			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+			GiveNpcOutLineLastOrBoss(npc.index, true);
 			//b_DuoSandSlayerDied = false;
 			for(int client_clear=1; client_clear<=MaxClients; client_clear++)
 			{
 				fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 			}
 		}
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BootyExecutioner_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, BootyExecutioner_ClotThink);
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -362,7 +362,7 @@ methodmap BootyExecutioner < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		Citizen_MiniBossSpawn(npc.index);
+		Citizen_MiniBossSpawn();
 		
 		return npc;
 	}
@@ -555,7 +555,7 @@ public void BootyExecutioner_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -581,11 +581,11 @@ public void BootyExecutioner_ClotThink(int iNPC)
 		
 			TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 			TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		if(b_ExeLaser[npc.index] && !b_HeavyHo[npc.index] && !b_BootyExplosion[npc.index] && !b_BootyNuke[npc.index])
 		{
@@ -767,7 +767,7 @@ public void BootyExecutioner_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -775,7 +775,7 @@ public void BootyExecutioner_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action BootyExecutioner_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action BootyExecutioner_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	BootyExecutioner npc = view_as<BootyExecutioner>(victim);
 	
@@ -811,7 +811,7 @@ public void BootyExecutioner_NPCDeath(int entity)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, BootyExecutioner_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, BootyExecutioner_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))
@@ -937,9 +937,6 @@ public bool BootyExecutioner_BEAM_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
-#define MAX_PLAYERS (MAX_PLAYERS_ARRAY < (MaxClients + 1) ? MAX_PLAYERS_ARRAY : (MaxClients + 1))
-#define MAX_PLAYERS_ARRAY 36
-
 public bool BootyExecutioner_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	static char classname[64];
@@ -953,7 +950,7 @@ public bool BootyExecutioner_BEAM_TraceUsers(int entity, int contentsMask, int c
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 			
-			if (!StrContains(classname, "base_boss", true) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
+			if (!StrContains(classname, "zr_base_npc", true) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
 				for(int i=1; i <= MAXENTITIES; i++)
 				{
@@ -969,8 +966,6 @@ public bool BootyExecutioner_BEAM_TraceUsers(int entity, int contentsMask, int c
 	}
 	return false;
 }
-
-#define MAXTF2PLAYERS	36
 
 public Action TrueBootyExecutioner_TBB_Tick(int client)
 {

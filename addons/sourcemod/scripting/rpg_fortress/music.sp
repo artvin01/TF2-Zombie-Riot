@@ -6,28 +6,25 @@ enum struct MusicEnum
 	char Sound[PLATFORM_MAX_PATH];
 	int Duration;
 	float Volume;
+	bool Custom;
 
 	void SetupEnum(KeyValues kv)
 	{
 		kv.GetString("sound", this.Sound, PLATFORM_MAX_PATH);
-		if(this.Sound[0])
-			PrecacheSound(this.Sound);
-		
 		this.Duration = kv.GetNum("duration");
 		this.Volume = kv.GetFloat("volume", 1.0);
+		int custom = kv.GetNum("download");
+		this.Custom = view_as<bool>(custom);
 		
-		if(kv.GetNum("download"))
+		if(this.Sound[0])
 		{
-			char buffer[PLATFORM_MAX_PATH];
-			Format(buffer, sizeof(buffer), "sound/%s", this.Sound);
-			ReplaceString(buffer, sizeof(buffer), "#", "");
-			if(FileExists(buffer, true))
+			if(this.Custom)
 			{
-				AddFileToDownloadsTable(buffer);
+				PrecacheSoundCustom(this.Sound, _, custom);
 			}
 			else
 			{
-				LogError("'%s' is missing from files", buffer);
+				PrecacheSound(this.Sound);
 			}
 		}
 	}
@@ -41,6 +38,7 @@ static float FadingOut[MAXTF2PLAYERS];
 static float FadingIn[MAXTF2PLAYERS];
 static char OverrideSong[MAXTF2PLAYERS][PLATFORM_MAX_PATH];
 static int OverrideTime[MAXTF2PLAYERS];
+static bool OverrideCustom[MAXTF2PLAYERS];
 static float OverrideVolume[MAXTF2PLAYERS];
 
 void Music_ConfigSetup(KeyValues map)
@@ -118,7 +116,7 @@ void Music_ClientDisconnect(int client)
 	OverrideSong[client][0] = 0;
 }
 
-void Music_SetOverride(int client, const char[] file = "", int time = 0, float volume = 1.0)
+void Music_SetOverride(int client, const char[] file = "", int time = 0, bool custom = false, float volume = 1.0)
 {
 	FadingOut[client] = GetGameTime();
 	NextSoundIn[client] = 0;
@@ -131,11 +129,16 @@ void Music_SetOverride(int client, const char[] file = "", int time = 0, float v
 
 	strcopy(OverrideSong[client], sizeof(OverrideSong[]), file);
 	OverrideTime[client] = time;
+	OverrideCustom[client] = custom;
 	OverrideVolume[client] = volume;
 }
 
 void Music_PlayerRunCmd(int client)
 {
+	//Do not play anything if the client has no sound.
+	if(f_ClientMusicVolume[client] < 0.05)
+		return;
+
 	if(CurrentSong[client][0] || NextSong[client][0] || OverrideSong[client][0])
 	{
 		bool wasInFade;
@@ -149,7 +152,7 @@ void Music_PlayerRunCmd(int client)
 					float vol = music.Volume - ((GetGameTime() - FadingOut[client]) / 2.0);
 					if(vol > 0.0)
 					{
-						EmitSoundToClient(client, music.Sound, client, SNDCHAN_STATIC, SNDLEVEL_NONE, SND_CHANGEVOL, vol);
+						EmitMusicToClient(client, music.Sound, music.Custom, vol, SND_CHANGEVOL);
 						return;
 					}
 
@@ -171,11 +174,11 @@ void Music_PlayerRunCmd(int client)
 				float vol = ((GetGameTime() - FadingIn[client]) / 2.0);
 				if(vol < music.Volume)
 				{
-					EmitSoundToClient(client, music.Sound, client, SNDCHAN_STATIC, SNDLEVEL_NONE, SND_CHANGEVOL, vol);
+					EmitMusicToClient(client, music.Sound, music.Custom, vol, SND_CHANGEVOL);
 					return;
 				}
 
-				EmitSoundToClient(client, music.Sound, client, SNDCHAN_STATIC, SNDLEVEL_NONE, SND_CHANGEVOL, music.Volume);
+				EmitMusicToClient(client, music.Sound, music.Custom, music.Volume, SND_CHANGEVOL);
 			}
 			
 			FadingIn[client] = 0.0;
@@ -186,7 +189,7 @@ void Music_PlayerRunCmd(int client)
 		{
 			if(OverrideSong[client][0])
 			{
-				EmitSoundToClient(client, OverrideSong[client], client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, OverrideVolume[client]);
+				EmitMusicToClient(client, OverrideSong[client], OverrideCustom[client], OverrideVolume[client]);
 				NextSoundIn[client] = time + OverrideTime[client];
 				CurrentSong[client][0] = 0;
 			}
@@ -194,7 +197,7 @@ void Music_PlayerRunCmd(int client)
 			{
 				if(MusicList.GetArray(NextSong[client], music, sizeof(music)) && music.Sound[0])
 				{
-					EmitSoundToClient(client, music.Sound, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.00001);
+					EmitMusicToClient(client, music.Sound, music.Custom, 0.00001);
 					FadingIn[client] = GetGameTime();
 					
 					NextSoundIn[client] = time + music.Duration;
@@ -214,7 +217,7 @@ void Music_PlayerRunCmd(int client)
 
 			if(OverrideSong[client][0])
 			{
-				EmitSoundToClient(client, OverrideSong[client], client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, OverrideVolume[client]);
+				EmitMusicToClient(client, OverrideSong[client], OverrideCustom[client], OverrideVolume[client]);
 				NextSoundIn[client] = time + OverrideTime[client];
 				CurrentSong[client][0] = 0;
 			}
@@ -222,10 +225,22 @@ void Music_PlayerRunCmd(int client)
 			{
 				if(MusicList.GetArray(CurrentSong[client], music, sizeof(music)) && music.Sound[0])
 				{
-					EmitSoundToClient(client, music.Sound, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, music.Volume);
+					EmitMusicToClient(client, music.Sound, music.Custom, music.Volume);
 					NextSoundIn[client] = time + music.Duration;
 				}
 			}
 		}
+	}
+}
+
+void EmitMusicToClient(int client, const char[] sound, bool custom, float volume, int flags = SND_NOFLAGS)
+{
+	if(custom)
+	{
+		EmitCustomToClient(client, sound, client, SNDCHAN_STATIC, SNDLEVEL_NONE, flags, volume);
+	}
+	else
+	{
+		EmitSoundToClient(client, sound, client, SNDCHAN_STATIC, SNDLEVEL_NONE, flags, volume);
 	}
 }

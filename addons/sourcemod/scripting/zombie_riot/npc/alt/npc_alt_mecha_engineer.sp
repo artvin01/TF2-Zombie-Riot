@@ -133,6 +133,7 @@ methodmap Mecha_Engineer < CClotBody
 		Mecha_Engineer npc = view_as<Mecha_Engineer>(CClotBody(vecPos, vecAng, "models/bots/engineer/bot_engineer.mdl", "1.0", "2500", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_MECHA_ENGINEER;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -147,7 +148,7 @@ methodmap Mecha_Engineer < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Mecha_Engineer_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Mecha_Engineer_ClotThink);
 		
 		//IDLE
@@ -207,7 +208,7 @@ public void Mecha_Engineer_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -234,9 +235,9 @@ public void Mecha_Engineer_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
 			//Target close enough to hit
@@ -304,7 +305,7 @@ public void Mecha_Engineer_ClotThink(int iNPC)
 		}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -312,7 +313,7 @@ public void Mecha_Engineer_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Mecha_Engineer_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Mecha_Engineer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Mecha_Engineer npc = view_as<Mecha_Engineer>(victim);
 		
@@ -336,7 +337,7 @@ public void Mecha_Engineer_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Mecha_Engineer_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Mecha_Engineer_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))

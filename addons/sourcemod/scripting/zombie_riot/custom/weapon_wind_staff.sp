@@ -3,19 +3,15 @@
 
 static float Strength[MAXTF2PLAYERS];
 static float Damage_Projectile[MAXENTITIES]={0.0, ...};
-static float Damage_Reduction[MAXENTITIES]={0.0, ...};
 static float Damage_Tornado[MAXENTITIES]={0.0, ...};
 static float Duration_Tornado[MAXENTITIES]={0.0, ...};
+static float f_TornadoM2CooldownTimer[MAXENTITIES]={0.0, ...};
+static int i_WeaponRefM2[MAXENTITIES]={0, ...};
+static float f_TornadoDamage[MAXENTITIES]={0.0, ...};
+static int i_TornadoManaCost[MAXENTITIES]={0, ...};
 static int Projectile_To_Client[MAXENTITIES]={0, ...};
 static int Projectile_To_Particle[MAXENTITIES]={0, ...};
 static int Projectile_To_Weapon[MAXENTITIES]={0, ...};
-
-#define MAXENTITIES 2048
-
-
-#define MAX_TARGETS_HIT 10
-#define MAX_SOUND_FILE_LENGTH 80
-#define MAX_EFFECT_NAME_LENGTH 48
 
 static float TORNADO_Radius[MAXTF2PLAYERS];
 
@@ -44,6 +40,7 @@ static float BEAM_Targets_Hit[MAXTF2PLAYERS];
 public void WindStaff_ClearAll()
 {
 	Zero(Damage_Tornado);
+	Zero(f_TornadoM2CooldownTimer);
 }
 void Wind_Staff_MapStart()
 {
@@ -87,20 +84,15 @@ public void Weapon_Wind_Laser_Builder_Unused(int client, int weapon, const char[
 	BEAM_Targets_Hit[client] = 0.0;
 	Strength[client] = 400.0 * flMultiplier;
 	
-	Strength[client] *= Attributes_FindOnPlayer(client, 287);
+	Strength[client] *= Attributes_FindOnPlayerZR(client, 287);
 	
-	float Sniper_Sentry_Bonus_Removal = Attributes_FindOnPlayer(client, 344);
+	float Sniper_Sentry_Bonus_Removal = Attributes_FindOnPlayerZR(client, 344);
 			
 	if(Sniper_Sentry_Bonus_Removal >= 1.01) //do 1.01 cus minigun sentry can give abit more then less half range etc
 	{
 		Strength[client] *= 0.5; //Nerf in half as it gives 2x the dmg.
 	}
 		
-	if (EscapeMode)
-	{
-		Strength[client] *= 3.0;
-	}
-			
 	//	TBB_Ability(client);
 	RequestFrame(TBB_Ability_Wind_Staff, client);
 	
@@ -140,14 +132,9 @@ public void Weapon_Wind_Laser_Builder(int client, int weapon, const char[] class
 	
 	float attack_speed;
 		
-	attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+	attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
 				
-	Strength[client] = attack_speed * Strength[client] * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
-		
-	if (EscapeMode)
-	{
-		Strength[client] *= 3.0;
-	}
+	Strength[client] = attack_speed * Strength[client] * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
 	
 	Strength[client] *= 0.5;
 			
@@ -159,9 +146,7 @@ public void Weapon_Wind_Laser_Builder(int client, int weapon, const char[] class
 public void Weapon_Wind_Staff(int client, int weapon, const char[] classname, bool &result)
 {
 	int mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
 	if(mana_cost <= Current_Mana[client])
 	{
@@ -185,9 +170,7 @@ public void Weapon_Wind_Staff(int client, int weapon, const char[] classname, bo
 			}		
 		}
 		float damage = 125.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 410, 1.0);
 		
 		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 		Mana_Hud_Delay[client] = 0.0;
@@ -197,27 +180,17 @@ public void Weapon_Wind_Staff(int client, int weapon, const char[] classname, bo
 		delay_hud[client] = 0.0;
 			
 		float speed = 1100.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-	
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-	
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 103, 1.0);
+		
+		speed *= Attributes_Get(weapon, 104, 1.0);
+		
+		speed *= Attributes_Get(weapon, 475, 1.0);
 	
 	
 		float time = 500.0/speed;
-		address = TF2Attrib_GetByDefIndex(weapon, 101);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
-	
-		address = TF2Attrib_GetByDefIndex(weapon, 102);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
+		time *= Attributes_Get(weapon, 101, 1.0);
+		
+		time *= Attributes_Get(weapon, 102, 1.0);
 			
 		
 		int iRot = CreateEntityByName("func_door_rotating");
@@ -248,6 +221,101 @@ public void Weapon_Wind_Staff(int client, int weapon, const char[] classname, bo
 	}
 }
 
+
+public void Weapon_Wind_StaffM2(int client, int weapon, const char[] classname, bool &result)
+{
+	int mana_cost;
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
+
+	if(mana_cost <= Current_Mana[client])
+	{
+		switch(GetRandomInt(1, 4))
+		{
+			case 1:
+			{
+				EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", client, 80, _, _, 1.0);					
+			}
+			case 2:
+			{
+				EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", client, 80, _, _, 1.0);
+			}
+			case 3:
+			{
+				EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", client, 80, _, _, 1.0);			
+			}
+			case 4:
+			{
+				EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", client, 80, _, _, 1.0);
+			}		
+		}
+		float damage = 125.0;
+		damage *= Attributes_Get(weapon, 410, 1.0);
+
+		i_WeaponRefM2[client] = EntIndexToEntRef(weapon);
+		
+		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		Mana_Hud_Delay[client] = 0.0;
+		i_TornadoManaCost[client] = mana_cost / 8;
+		f_TornadoDamage[client] = damage * 0.25;
+
+		Current_Mana[client] -= mana_cost;
+		
+		delay_hud[client] = 0.0;
+		
+		SDKUnhook(client, SDKHook_PreThink, WindStaffM2_Think);
+		SDKHook(client, SDKHook_PreThink, WindStaffM2_Think);
+	}
+	else
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+	}
+}
+
+public void WindStaffM2_Think(int client)
+{
+	if(GetGameTime() > f_TornadoM2CooldownTimer[client])
+	{
+		f_TornadoM2CooldownTimer[client] = GetGameTime() + 0.1;
+		int buttons = GetClientButtons(client);
+		int weapon = EntRefToEntIndex(i_WeaponRefM2[client]);
+		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon != weapon_active)
+		{
+			SDKUnhook(client, SDKHook_PreThink, WindStaffM2_Think);
+			return;
+		}
+		if (buttons & IN_ATTACK2)
+		{
+			if(i_TornadoManaCost[client] <= Current_Mana[client])
+			{
+				Current_Mana[client] -= i_TornadoManaCost[client];
+				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				Mana_Hud_Delay[client] = 0.0;
+				float TornadoRange = 300.0;
+				Explode_Logic_Custom(f_TornadoDamage[client], client, client, weapon, _, TornadoRange,1.9,_,false);
+				float flCarrierPos[3];//, targPos[3];
+				GetEntPropVector(client, Prop_Send, "m_vecOrigin", flCarrierPos);
+				flCarrierPos[2] += 15.0;
+				TE_SetupBeamRingPoint(flCarrierPos, TornadoRange*2.0, (TornadoRange*2.0)+0.5, Beam_Laser, Beam_Glow, 0, 10, 0.11, 25.0, 0.8, {50, 50, 250, 250}, 10, 0);
+				TE_SendToAll(0.0);
+				return;
+			}
+			else
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", i_TornadoManaCost[client]);
+			}
+		}
+		SDKUnhook(client, SDKHook_PreThink, WindStaffM2_Think);
+		return;
+	}	
+}
+
 void TBB_Precache_Wind_Staff()
 {
 	Beam_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
@@ -271,7 +339,7 @@ void TBB_Ability_Wind_Staff(int client)
 	
 	float sentry_range;
 			
-	sentry_range = Attributes_FindOnPlayer(client, 344, true, 1.0);			//Sentry Range bonus
+	sentry_range = Attributes_FindOnPlayerZR(client, 344, true, 1.0);			//Sentry Range bonus
 	
 	BEAM_MaxDistance[client] = RoundToCeil(1000.0 * sentry_range);
 	BEAM_BeamRadius[client] = 50;
@@ -491,6 +559,7 @@ static void TBB_Tick(int client)
 	{
 		delete trace;
 	}
+	delete trace;
 }
 
 static void Wand_Launch_Tornado(int client, int iRot, float speed, float time, float damage, int weapon)
@@ -529,7 +598,7 @@ static void Wand_Launch_Tornado(int client, int iRot, float speed, float time, f
 	
 	Projectile_To_Client[iCarrier] = client;
 	Damage_Projectile[iCarrier] = damage;
-	Projectile_To_Weapon[iCarrier] = weapon;
+	Projectile_To_Weapon[iCarrier] = EntIndexToEntRef(weapon);
 	float position[3];
 	
 	GetEntPropVector(iCarrier, Prop_Data, "m_vecAbsOrigin", position);
@@ -667,20 +736,22 @@ static void Wand_Create_Tornado(int client, int iCarrier)
 	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);
 	*/
 	
-	TORNADO_Radius[client] = 150.0;
+	TORNADO_Radius[client] = 215.0;
 	
-	float damage = 50.0;
-	Address address = TF2Attrib_GetByDefIndex(Projectile_To_Weapon[iCarrier], 410);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
+	int weapon = EntRefToEntIndex(Projectile_To_Weapon[iCarrier]);
+	if(IsValidEntity(weapon))
+	{
+		float damage = 65.0;
+		damage *= Attributes_Get(weapon, 410, 1.0);
+			
+		Damage_Tornado[iCarrier] = damage;
+		Duration_Tornado[iCarrier] = GetGameTime() + 5.0;
 		
-	Damage_Tornado[iCarrier] = damage;
-	Duration_Tornado[iCarrier] = GetGameTime() + 5.0;
-	
-	TE_SetupBeamRingPoint(flCarrierPos, TORNADO_Radius[client]*2.0, (TORNADO_Radius[client]*2.0)+0.5, Beam_Laser, Beam_Glow, 0, 10, 5.0, 25.0, 0.8, {50, 50, 250, 250}, 10, 0);
-	TE_SendToAll(0.0);
-	
-	CreateTimer(0.5, Timer_Tornado_Think, iCarrier, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+		TE_SetupBeamRingPoint(flCarrierPos, TORNADO_Radius[client]*2.0, (TORNADO_Radius[client]*2.0)+0.5, Beam_Laser, Beam_Glow, 0, 10, 5.0, 25.0, 0.8, {50, 50, 250, 250}, 10, 0);
+		TE_SendToAll(0.0);
+		
+		CreateTimer(0.5, Timer_Tornado_Think, iCarrier, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+	}
 }
 
 public Action Timer_Tornado_Think(Handle timer, int iCarrier)
@@ -701,7 +772,6 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 			RemoveEntity(iCarrier);
 		}
 		
-		KillTimer(timer);
 		return Plugin_Stop;
 	}
 	
@@ -718,40 +788,15 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 			RemoveEntity(iCarrier);
 		}
 		
-		KillTimer(timer);
 		return Plugin_Stop;
 	}
 	
-	float flCarrierPos[3], targPos[3];
+	float flCarrierPos[3];//, targPos[3];
 	GetEntPropVector(iCarrier, Prop_Send, "m_vecOrigin", flCarrierPos);
+
+//	i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_PLASMA_DAMAGE;
 	
-	Damage_Reduction[iCarrier] = 1.0;
-					
-	for(int targ; targ<i_MaxcountNpc; targ++)
-	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-		if (IsValidEntity(baseboss_index))
-		{
-			if(!b_NpcHasDied[baseboss_index])
-			{
-				if (GetEntProp(client, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
-				{
-					GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", targPos);
-					if (GetVectorDistance(flCarrierPos, targPos) <= TORNADO_Radius[client])
-					{
-						float distance_1 = GetVectorDistance(flCarrierPos, targPos);
-						float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.75, Damage_Tornado[iCarrier], TORNADO_Radius[client]+1.0);				
-						damage_1 /= Damage_Reduction[iCarrier];
-						
-						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1, DMG_PLASMA, -1, {0.0, 0.0, 50000.0}, flCarrierPos);
-						
-						Damage_Reduction[iCarrier] *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-						//use blast cus it does its own calculations for that ahahahah im evil (you scare me sometime man)
-					}
-				}
-			}
-		}
-	}
+	Explode_Logic_Custom(Damage_Tornado[iCarrier], client, client, -1, flCarrierPos, TORNADO_Radius[client],2.2,_,false);
 	
 	return Plugin_Continue;
 }

@@ -295,7 +295,7 @@ methodmap Pablo_Gonzales < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Pablo_Gonzales_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Pablo_Gonzales_ClotDamaged_Post);
 		SDKHook(npc.index, SDKHook_Think, Pablo_Gonzales_ClotThink);
 		
@@ -654,11 +654,11 @@ public void Pablo_Gonzales_ClotThink(int iNPC)
 			TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 			TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < 352000 && npc.m_flReloadDelay < GetGameTime(npc.index) && b_FinalGunUsage[npc.index]
 		|| npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < 352000 && npc.m_flReloadDelay < GetGameTime(npc.index) && b_MoreGunUsage[npc.index])
@@ -672,7 +672,7 @@ public void Pablo_Gonzales_ClotThink(int iNPC)
 			else
 			{
 				vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0);
-				//PF_StopPathing(npc.index);
+				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
 				if(b_MoreGunUsage[npc.index])
@@ -868,7 +868,7 @@ public void Pablo_Gonzales_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -961,7 +961,7 @@ public void Pablo_Gonzales_ClotDamaged_Post(int iNPC, int attacker, int inflicto
 	}*/
 }
 
-public Action Pablo_Gonzales_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Pablo_Gonzales_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Pablo_Gonzales npc = view_as<Pablo_Gonzales>(victim);
 		
@@ -995,7 +995,7 @@ public void Pablo_Gonzales_NPCDeath(int entity)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Pablo_Gonzales_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Pablo_Gonzales_ClotDamaged_Post);
 	SDKUnhook(npc.index, SDKHook_Think, Pablo_Gonzales_ClotThink);
 	

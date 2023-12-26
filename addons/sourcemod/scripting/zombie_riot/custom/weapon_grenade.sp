@@ -12,6 +12,7 @@ public void Grenade_Custom_Precache()
 	static char model[PLATFORM_MAX_PATH];
 	model = "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl";
 	g_ProjectileModel = PrecacheModel(model);
+	Zero(Handle_on);
 }
 
 public void Weapon_Grenade(int client, int weapon, const char[] classname, bool &result)
@@ -20,9 +21,10 @@ public void Weapon_Grenade(int client, int weapon, const char[] classname, bool 
 	{
 		weapon_id[client] = weapon;
 		Give_bomb_back[client] = CreateTimer(15.0, Give_Back_Grenade, client, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(15.0, Give_Back_Magic_Restore_Ammo, client, TIMER_FLAG_NO_MAPCHANGE);
 		if(Handle_on[client])
 		{
-			KillTimer(Give_bomb_back[client]);
+			delete Give_bomb_back[client];
 		}
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
@@ -31,6 +33,11 @@ public void Weapon_Grenade(int client, int weapon, const char[] classname, bool 
 		SetAmmo(client, Ammo_Hand_Grenade, 0); //Give ammo back that they just spend like an idiot
 		CurrentAmmo[client][Ammo_Hand_Grenade] = GetAmmo(client, Ammo_Hand_Grenade);
 	}
+}
+
+public void Reset_stats_Grenade_Singular(int client)
+{
+	Handle_on[client] = false;
 }
 
 
@@ -77,27 +84,19 @@ public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, const char[] c
 		float speed = 1500.0;
 		float damage = 100.0;
 			
-		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 1, 1.0);
+
+		damage *= Attributes_Get(weapon, 2, 1.0);
 			
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 103, 1.0);
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 104, 1.0);
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 475, 1.0);
 			
 		float extra_accuracy = 5.0;
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 106);
-		if(address != Address_Null)
-			extra_accuracy *= TF2Attrib_GetValue(address);
+		extra_accuracy *= Attributes_Get(weapon, 106, 1.0);
 			
 		int team = GetClientTeam(client);
 			
@@ -193,27 +192,19 @@ public void Weapon_ShotgunGrenadeLauncher_PAP(int client, int weapon, const char
 		float speed = 1500.0;
 		float damage = 100.0;
 			
-		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 1, 1.0);
+
+		damage *= Attributes_Get(weapon, 2, 1.0);
 			
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 103, 1.0);
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 104, 1.0);
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 475, 1.0);
 			
 		float extra_accuracy = 3.5;
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 106);
-		if(address != Address_Null)
-			extra_accuracy *= TF2Attrib_GetValue(address);
+		extra_accuracy *= Attributes_Get(weapon, 106, 1.0);
 			
 		int team = GetClientTeam(client);
 			

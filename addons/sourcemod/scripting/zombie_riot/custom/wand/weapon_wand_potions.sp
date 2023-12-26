@@ -12,6 +12,7 @@
 
 static Handle BuffTimer[MAXENTITIES];
 static float TonicBuff[MAXTF2PLAYERS];
+static float TonicBuff_CD[MAXTF2PLAYERS];
 
 bool Wands_Potions_HasBuff(int client)
 {
@@ -39,6 +40,7 @@ void Wand_Potions_Precache()
 	PrecacheSound(SOUND_TRANSFORM2);
 	PrecacheSound(SOUND_SHRINK);
 
+	Zero(TonicBuff_CD);
 	Zero(TonicBuff);
 }
 
@@ -106,6 +108,7 @@ static void PotionM2(int client, int weapon, int slot, float cooldown, SDKHookCB
 {
 	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
+		Rogue_OnAbilityUse(weapon);
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
@@ -114,15 +117,16 @@ static void PotionM2(int client, int weapon, int slot, float cooldown, SDKHookCB
 	}
 
 	if(PotionM1(client, weapon, touch, extra))
+	{
+		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, cooldown);
+	}
 }
 
 static bool PotionM1(int client, int weapon, SDKHookCB touch, int extra = 0)
 {
 	int mana_cost = extra;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost += RoundToCeil(TF2Attrib_GetValue(address));
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 	
 	if(Current_Mana[client] < mana_cost)
 	{
@@ -143,14 +147,10 @@ static bool PotionM1(int client, int weapon, SDKHookCB touch, int extra = 0)
 	delay_hud[client] = 0.0;
 
 	float damage = 32.5;
-	address = TF2Attrib_GetByDefIndex(weapon, 410);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
+	damage *= Attributes_Get(weapon, 410, 1.0);
 	
 	float speed = 1000.0;
-	address = TF2Attrib_GetByDefIndex(weapon, 103);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
+	speed *= Attributes_Get(weapon, 103, 1.0);
 	
 	float ang[3];
 	GetClientEyeAngles(client, ang);
@@ -175,40 +175,7 @@ static bool PotionM1(int client, int weapon, SDKHookCB touch, int extra = 0)
 	if(entity != -1)
 		RequestFrame(Weapon_Wand_PotionAnim, EntIndexToEntRef(entity));
 	
-	/*int entity = CreateEntityByName("tf_projectile_jar");
-	if(entity > MaxClients)
-	{
-		float pos[3], ang[3], vel[3];
-		GetClientEyeAngles(client, ang);
-		GetClientEyePosition(client, pos);
 
-		float speed = 1000.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-		
-		vel[0] = Cosine(DegToRad(ang[0])) * Cosine(DegToRad(ang[1])) * speed;
-		vel[1] = Cosine(DegToRad(ang[0])) * Sine(DegToRad(ang[1])) * speed;
-		vel[2] = Sine(DegToRad(ang[0])) * -speed;
-
-		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", 2);
-		SetEntProp(entity, Prop_Send, "m_nSkin", 0);
-		SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
-		SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher", weapon);
-		SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
-
-		int model = GetEntProp(weapon, Prop_Send, "m_iWorldModelIndex");
-		for(int i; i < 4; i++)
-		{
-			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", model, _, i);
-		}
-		
-		DispatchSpawn(entity);
-		TeleportEntity(entity, pos, ang, vel);
-		//IsCustomTfGrenadeProjectile(entity, 1999999.0);	// Block normal explosion
-		SDKHook(entity, SDKHook_StartTouchPost, touch);
-	}*/
 	return true;
 }
 
@@ -290,9 +257,10 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 			}
 			else
 			{
-				Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-				if(address != Address_Null)
-					TF2Attrib_SetByDefIndex(weapon, 6, TF2Attrib_GetValue(address) * 0.8);
+				if(Attributes_Has(weapon,6))
+				{
+					Attributes_Set(weapon, 6, Attributes_Get(weapon, 6, 1.0) * 0.8);
+				}
 			}
 
 			BuffTimer[weapon] = CreateTimer(5.5, Weapon_Wand_PotionBuffRemove, weapon);
@@ -318,9 +286,10 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 						}
 						else
 						{
-							Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-							if(address != Address_Null)
-								TF2Attrib_SetByDefIndex(weapon, 6, TF2Attrib_GetValue(address) * 0.8);
+							if(Attributes_Has(weapon,6))
+							{
+								Attributes_Set(weapon, 6, Attributes_Get(weapon, 6, 1.0) * 0.8);
+							}
 						}
 
 						BuffTimer[weapon] = CreateTimer(5.5, Weapon_Wand_PotionBuffRemove, weapon);
@@ -369,9 +338,11 @@ public void Weapon_Wand_PotionBuffAllTouch(int entity, int target)
 					}
 					else
 					{
-						Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-						if(address != Address_Null)
-							TF2Attrib_SetByDefIndex(weapon, 6, TF2Attrib_GetValue(address) * 0.8);
+					
+						if(Attributes_Has(weapon,6))
+						{
+							Attributes_Set(weapon, 6, Attributes_Get(weapon, 6, 1.0) * 0.8);
+						}
 					}
 
 					BuffTimer[weapon] = CreateTimer(7.5, Weapon_Wand_PotionBuffRemove, weapon);
@@ -418,9 +389,10 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 					}
 					else
 					{
-						Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-						if(address != Address_Null)
-							TF2Attrib_SetByDefIndex(weapon, 6, TF2Attrib_GetValue(address) * 0.8);
+						if(Attributes_Has(weapon,6))
+						{
+							Attributes_Set(weapon, 6, Attributes_Get(weapon, 6, 1.0) * 0.8);
+						}
 					}
 
 					BuffTimer[weapon] = CreateTimer(999.9, Weapon_Wand_PotionBuffRemove, weapon);
@@ -436,9 +408,10 @@ public Action Weapon_Wand_PotionBuffRemove(Handle timer, int entity)
 {
 	if(IsValidEntity(entity))
 	{
-		Address address = TF2Attrib_GetByDefIndex(entity, 6);
-		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(address) / 0.8);
+		if(Attributes_Has(entity,6))
+		{
+			Attributes_Set(entity, 6, Attributes_Get(entity, 6, 1.0) / 0.8);
+		}
 	}
 
 	BuffTimer[entity] = null;
@@ -494,6 +467,7 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 				{
 					f_BombEntityWeaponDamageApplied[i][owner] = damage / 2.0;
 					i_HowManyBombsOnThisEntity[i][owner] += 1;
+					i_HowManyBombsHud[i] += 1;
 					Apply_Particle_Teroriser_Indicator(i);
 				}
 
@@ -518,17 +492,28 @@ public void Weapon_Wand_PotionTransM2(int client, int weapon, bool &crit, int sl
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
 		return;
 	}
-
+	if(TonicBuff_CD[client] > GetGameTime())
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", TonicBuff_CD[client] - GetGameTime());
+		return;
+	}
+	
+	TonicBuff_CD[client] = GetGameTime() + 10.0;
 	Mana_Regen_Delay[client] = GetGameTime() + 10.0;
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
+
+	Rogue_OnAbilityUse(weapon);
 	Ability_Apply_Cooldown(client, slot, 45.0);
 
 	EmitSoundToClient(client, SOUND_TRANSFORM1);
 
-	ApplyTempAttrib(weapon, 6, 0.2, true);
-	ApplyTempAttrib(weapon, 410, 0.5, false);
-	ApplyTempAttrib(weapon, 733, 0.2, false);
+	ApplyTempAttrib(weapon, 6, 0.2, 10.0);
+	ApplyTempAttrib(weapon, 410, 0.5, 10.0);
+	ApplyTempAttrib(weapon, 733, 0.2, 10.0);
 }
 
 public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, int slot)
@@ -541,17 +526,28 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
 		return;
 	}
-
+	if(TonicBuff_CD[client] > GetGameTime())
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", TonicBuff_CD[client] - GetGameTime());
+		return;
+	}
+	
+	TonicBuff_CD[client] = GetGameTime() + 10.0;
 	Mana_Regen_Delay[client] = GetGameTime() + 10.0;
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
+	
+	Rogue_OnAbilityUse(weapon);
 	Ability_Apply_Cooldown(client, slot, 45.0);
 
 	EmitSoundToClient(client, SOUND_TRANSFORM2);
 
-	ApplyTempAttrib(weapon, 6, 0.2, true);
-	ApplyTempAttrib(weapon, 410, 0.5, false);
-	ApplyTempAttrib(weapon, 733, 0.2, false);
+	ApplyTempAttrib(weapon, 6, 0.2, 10.0);
+	ApplyTempAttrib(weapon, 410, 0.5, 10.0);
+	ApplyTempAttrib(weapon, 733, 0.2, 10.0);
 
 	float pos1[3], pos2[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
@@ -569,11 +565,11 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 				int entity = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
 				if(entity != -1)
 				{
-					ApplyTempAttrib(entity, 2, 0.666, false);
-					ApplyTempAttrib(entity, 6, 0.333, true);
-					ApplyTempAttrib(entity, 97, 0.333, false);
-					ApplyTempAttrib(entity, 410, 0.666, false);
-					ApplyTempAttrib(weapon, 733, 0.333, false);
+					ApplyTempAttrib(entity, 2, 0.666, 10.0);
+					ApplyTempAttrib(entity, 6, 0.333, 10.0);
+					ApplyTempAttrib(entity, 97, 0.333, 10.0);
+					ApplyTempAttrib(entity, 410, 0.666, 10.0);
+					ApplyTempAttrib(entity, 733, 0.333, 10.0);
 					EmitSoundToClient(target, SOUND_TRANSFORM2);
 
 					TonicBuff[target] = Mana_Regen_Delay[client];
@@ -584,43 +580,6 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 			}
 		}
 	}
-}
-
-static void ApplyTempAttrib(int entity, int index, float multi, bool force)
-{
-	Address address = TF2Attrib_GetByDefIndex(entity, index);
-	if(address != Address_Null)
-	{
-		TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) * multi);
-	}
-	else if(force)
-	{
-		TF2Attrib_SetByDefIndex(entity, index, multi);
-	}
-	else
-	{
-		return;
-	}
-
-	DataPack pack;
-	CreateDataTimer(10.0, StreetFighter_RestoreAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteCell(index);
-	pack.WriteFloat(multi);
-}
-
-public Action Weapon_Wand_PotionRestoreAttrib(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int entity = EntRefToEntIndex(pack.ReadCell());
-	if(entity != INVALID_ENT_REFERENCE)
-	{
-		int index = pack.ReadCell();
-		Address address = TF2Attrib_GetByDefIndex(entity, index);
-		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) / pack.ReadFloat());
-	}
-	return Plugin_Stop;
 }
 
 public void Weapon_Wand_PotionLeadTouch(int entity, int target)
@@ -764,8 +723,6 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 	ParticleEffectAt(pos1, PARTICLE_SHRINK, 1.0);
 	EmitSoundToAll(SOUND_SHRINK, entity, _, _, _, _, _, _, pos1);
 
-	bool raid = IsValidEntity(EntRefToEntIndex(RaidBossActive));
-
 	int count;
 	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
 	{
@@ -775,40 +732,28 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS * 2))
 			{
-				if(raid)
-				{
-					float time = GetGameTime() + 1.5;
-					if(f_MaimDebuff[i] < time)
-						f_MaimDebuff[i] = time;
-					
-					if(f_CrippleDebuff[i] < time)
-						f_CrippleDebuff[i] = time;
-					
-					break;
-				}
-				
 				float scale = GetEntPropFloat(i, Prop_Send, "m_flModelScale");
-				SetEntPropFloat(i, Prop_Send, "m_flModelScale", scale * 0.35);
+				SetEntPropFloat(i, Prop_Send, "m_flModelScale", scale * 0.5);
 
-				if(b_thisNpcIsABoss[i])
+				if(b_thisNpcIsABoss[i] || b_StaticNPC[i] || b_thisNpcIsARaid[i])
 				{
 					if(!count)
 					{
-						float time = GetGameTime() + 2.0;
-						if(f_MaimDebuff[i] < time)
-							f_MaimDebuff[i] = time;
+						float time = 4.0;
+						if(b_thisNpcIsARaid[i])
+						{
+							time = 3.0;
+						}
+						if(f_PotionShrinkEffect[i] < (GetGameTime() + time))
+							f_PotionShrinkEffect[i] =  (GetGameTime() + time);
 						
-						if(f_CrippleDebuff[i] < time)
-							f_CrippleDebuff[i] = time;
-						
-						CreateTimer(2.0, Weapon_Wand_PotionEndShrink, EntIndexToEntRef(i), TIMER_FLAG_NO_MAPCHANGE);
+						CreateTimer(time, Weapon_Wand_PotionEndShrink, EntIndexToEntRef(i), TIMER_FLAG_NO_MAPCHANGE);
 						break;
 					}
 				}
 				else
 				{
-					f_MaimDebuff[i] = FAR_FUTURE;
-					f_CrippleDebuff[i] = FAR_FUTURE;
+					f_PotionShrinkEffect[i] = FAR_FUTURE;
 				}
 				
 				if(++count > 1)
@@ -820,13 +765,14 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 	RemoveEntity(entity);
 }
 
+
 public Action Weapon_Wand_PotionEndShrink(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
 	if(entity != -1)
 	{
 		float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
-		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale / 0.35);
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale / 0.5);
 	}
 	return Plugin_Continue;
 }

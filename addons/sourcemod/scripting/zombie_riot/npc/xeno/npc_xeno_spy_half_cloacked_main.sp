@@ -175,6 +175,7 @@ methodmap XenoSpyCloaked < CClotBody
 		
 		
 		i_NpcInternalId[npc.index] = XENO_SPY_HALF_CLOACKED;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -186,7 +187,7 @@ methodmap XenoSpyCloaked < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoSpyCloaked_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoSpyCloaked_ClotThink);	
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -275,7 +276,7 @@ public void XenoSpyCloaked_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -291,9 +292,11 @@ public void XenoSpyCloaked_ClotThink(int iNPC)
 					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 					npc.m_bmovedelay = true;
 				}
+				if(IsValidEntity(npc.m_iWearable1))
+					AcceptEntityInput(npc.m_iWearable1, "Disable");
+				if(IsValidEntity(npc.m_iWearable2))
+					AcceptEntityInput(npc.m_iWearable2, "Enable");
 
-				AcceptEntityInput(npc.m_iWearable1, "Disable");
-				AcceptEntityInput(npc.m_iWearable2, "Enable");
 			//	npc.FaceTowards(vecTarget);
 				
 			}
@@ -302,10 +305,12 @@ public void XenoSpyCloaked_ClotThink(int iNPC)
 				int iActivity_melee = npc.LookupActivity("ACT_MP_STAND_SECONDARY");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 				npc.m_bmovedelay = false;
-				AcceptEntityInput(npc.m_iWearable1, "Enable");
-				AcceptEntityInput(npc.m_iWearable2, "Disable");
+				if(IsValidEntity(npc.m_iWearable1))
+					AcceptEntityInput(npc.m_iWearable1, "Enable");
+				if(IsValidEntity(npc.m_iWearable2))
+					AcceptEntityInput(npc.m_iWearable2, "Disable");
 			//	npc.FaceTowards(vecTarget, 1000.0);
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
 			
@@ -328,9 +333,9 @@ public void XenoSpyCloaked_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 22500 && flDistanceToTarget < 62500 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
@@ -349,9 +354,11 @@ public void XenoSpyCloaked_ClotThink(int iNPC)
 						npc.m_bmovedelay = true;
 						npc.m_flSpeed = 260.0;
 					}
-	
-					AcceptEntityInput(npc.m_iWearable1, "Disable");
-					AcceptEntityInput(npc.m_iWearable2, "Enable");
+		
+					if(IsValidEntity(npc.m_iWearable1))
+						AcceptEntityInput(npc.m_iWearable1, "Disable");
+					if(IsValidEntity(npc.m_iWearable2))
+						AcceptEntityInput(npc.m_iWearable2, "Enable");
 				//	npc.FaceTowards(vecTarget, 1000.0);
 					npc.m_fbGunout = false;
 				}
@@ -465,7 +472,7 @@ public void XenoSpyCloaked_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -474,7 +481,7 @@ public void XenoSpyCloaked_ClotThink(int iNPC)
 }
 
 
-public Action XenoSpyCloaked_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoSpyCloaked_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -499,7 +506,7 @@ public void XenoSpyCloaked_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoSpyCloaked_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoSpyCloaked_ClotThink);	
 		
 	if(IsValidEntity(npc.m_iWearable1))

@@ -30,13 +30,6 @@ void OnManglerCreated(int entity)
 
 static float Strength[MAXTF2PLAYERS];
 
-#define MAXENTITIES 2048
-
-
-#define MAX_TARGETS_HIT  10
-#define MAX_SOUND_FILE_LENGTH 80
-#define MAX_EFFECT_NAME_LENGTH 48
-
 static bool BEAM_CanUse[MAXTF2PLAYERS];
 static bool BEAM_IsUsing[MAXTF2PLAYERS];
 static int BEAM_TicksActive[MAXTF2PLAYERS];
@@ -64,17 +57,11 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 {	
 	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	
-	float Energy = GetEntPropFloat(entity, Prop_Send, "m_flEnergy");
-		
-	Energy -= 20.0;
-		
-	SetEntPropFloat(entity, Prop_Send, "m_flEnergy", Energy);
-	
-	if(!EscapeMode)
 	{
 		int new_ammo = GetAmmo(client, 23);
 		if(new_ammo >= 40)
 		{
+			Rogue_OnAbilityUse(entity);
 			new_ammo -= 40;
 			SetAmmo(client, 23, new_ammo);
 			CurrentAmmo[client][23] = GetAmmo(client, 23);
@@ -89,22 +76,19 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 			Client_Shake(client, 0, 50.0, 25.0, 0.5);
 			
 			Strength[client] = 112.0;
-			
-			Strength[client] *= 4.0;
+
+			Strength[client] *= 1.3; //tiny penalty.
+
+			Strength[client] *= Attributes_Get(entity, 335, 1.0);
+
 					
-			Address address = TF2Attrib_GetByDefIndex(entity, 1);
-			if(address != Address_Null)
-				Strength[client] *= TF2Attrib_GetValue(address);
+			Strength[client] *= Attributes_Get(entity, 1, 1.0);
 						
-			address = TF2Attrib_GetByDefIndex(entity, 2);
-			if(address != Address_Null)
-				Strength[client] *= TF2Attrib_GetValue(address);
+			Strength[client] *= Attributes_Get(entity, 2, 1.0);
 	
 			float reverse_attackspeed = 1.0;
 			
-			address = TF2Attrib_GetByDefIndex(entity, 6);
-			if(address != Address_Null)
-				reverse_attackspeed = TF2Attrib_GetValue(address);
+			reverse_attackspeed = Attributes_Get(entity, 6, 1.0);
 			
 			Strength[client] /= reverse_attackspeed;
 			
@@ -116,34 +100,6 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			PrintHintText(client,"%t", "Out of Laser Battery");
 		}
-	}
-	else
-	{
-		BEAM_Targets_Hit[client] = 0.0;
-			
-		Client_Shake(client, 0, 50.0, 25.0, 0.5);
-			
-		Strength[client] = 112.0;
-		
-		Strength[client] *= 4.0;
-				
-		Address address = TF2Attrib_GetByDefIndex(entity, 1);
-		if(address != Address_Null)
-			Strength[client] *= TF2Attrib_GetValue(address);
-					
-		address = TF2Attrib_GetByDefIndex(entity, 2);
-		if(address != Address_Null)
-			Strength[client] *= TF2Attrib_GetValue(address);
-
-		float reverse_attackspeed = 1.0;
-		
-		address = TF2Attrib_GetByDefIndex(entity, 6);
-		if(address != Address_Null)
-			reverse_attackspeed = TF2Attrib_GetValue(address);
-		
-		Strength[client] /= reverse_attackspeed;
-		
-		TBB_Ability_Mangler_2(client);
 	}
 	/*
 	SetEntPropFloat(entity, Prop_Send, "m_flChargeBeginTime", 0.0);
@@ -297,7 +253,6 @@ static void TBB_Tick(int client)
 	if (TR_DidHit(trace))
 	{
 		TR_GetEndPosition(endPoint, trace);
-		CloseHandle(trace);
 		ConformLineDistance(endPoint, startPoint, endPoint, float(BEAM_MaxDistance[client]));
 		float lineReduce = BEAM_BeamRadius[client] * 2.0 / 3.0;
 		float curDist = GetVectorDistance(startPoint, endPoint, false);
@@ -325,8 +280,8 @@ static void TBB_Tick(int client)
 		hullMax[2] = -hullMin[2];
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
-		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
+		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		FinishLagCompensation_Base_boss();
 //		int weapon = BEAM_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
 		/*
@@ -375,6 +330,7 @@ static void TBB_Tick(int client)
 					pack.WriteFloat(playerPos[0]);
 					pack.WriteFloat(playerPos[1]);
 					pack.WriteFloat(playerPos[2]);
+					pack.WriteCell(0);
 					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 					
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
@@ -407,8 +363,5 @@ static void TBB_Tick(int client)
 		TE_SetupBeamPoints(belowBossEyes, endPoint, Beam_Glow, 0, 0, 0, 0.55, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 		TE_SendToAll(0.0);
 	}
-	else
-	{
-		delete trace;
-	}
+	delete trace;
 }

@@ -3,17 +3,6 @@
 
 #define SYRINGE_MODEL	"models/weapons/w_models/w_nail.mdl"
 
-#define SOUND_AUTOAIM_IMPACT_FLESH_1 		"physics/flesh/flesh_impact_bullet1.wav"
-#define SOUND_AUTOAIM_IMPACT_FLESH_2 		"physics/flesh/flesh_impact_bullet2.wav"
-#define SOUND_AUTOAIM_IMPACT_FLESH_3 		"physics/flesh/flesh_impact_bullet3.wav"
-#define SOUND_AUTOAIM_IMPACT_FLESH_4 		"physics/flesh/flesh_impact_bullet4.wav"
-#define SOUND_AUTOAIM_IMPACT_FLESH_5 		"physics/flesh/flesh_impact_bullet5.wav"
-
-#define SOUND_AUTOAIM_IMPACT_CONCRETE_1 		"physics/concrete/concrete_impact_bullet1.wav"
-#define SOUND_AUTOAIM_IMPACT_CONCRETE_2 		"physics/concrete/concrete_impact_bullet2.wav"
-#define SOUND_AUTOAIM_IMPACT_CONCRETE_3 		"physics/concrete/concrete_impact_bullet3.wav"
-#define SOUND_AUTOAIM_IMPACT_CONCRETE_4 		"physics/concrete/concrete_impact_bullet4.wav"
-
 void Nailgun_Map_Precache()
 {
 	PrecacheSound(SOUND_AUTOAIM_IMPACT_FLESH_1);
@@ -35,26 +24,20 @@ public void Weapon_Nailgun(int client, int weapon, bool crit)
 		
 	float attack_speed;
 		
-	attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+	attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true); //Sentry attack speed bonus
 				
-	damage = attack_speed * damage * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
+	damage = attack_speed * damage * Attributes_GetOnPlayer(client, 287, true);			//Sentry damage bonus
 		
 	float sentry_range;
 			
-	sentry_range = Attributes_FindOnPlayer(client, 344, true, 1.0);			//Sentry Range bonus
+	sentry_range = Attributes_GetOnPlayer(client, 344, true);			//Sentry Range bonus
 			
 	float speed = 1100.0;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 103);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
+	speed *= Attributes_Get(weapon, 103, 1.0);
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 104);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
+	speed *= Attributes_Get(weapon, 104, 1.0);
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 475);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
+	speed *= Attributes_Get(weapon, 475, 1.0);
 	
 	speed *= sentry_range;
 		

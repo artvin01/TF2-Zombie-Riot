@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/zombie_riot/cof/wheelchair/BarbedWire"
+	"$alphatest" 1
+}

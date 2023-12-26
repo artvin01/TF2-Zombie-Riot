@@ -1,10 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
-#define SOUND_WAND_SHOT 	"weapons/capper_shoot.wav"
-#define SOUND_ZAP "misc/halloween/spell_lightning_ball_impact.wav"
-
 void Quantum_Gear_Map_Precache()
 {
 	PrecacheSound(SOUND_WAND_SHOT);
@@ -16,7 +12,7 @@ public void Quantum_Repeater_Main_Attack(int client, int weapon, bool crit)
 {
 	float damage = float(CashSpentTotal[client]);
 	damage = Pow(damage, 1.15);
-	damage = damage / 220.0;
+	damage = damage / 120.0;
 			
 	float speed = 3500.0;
 	
@@ -26,6 +22,7 @@ public void Quantum_Repeater_Main_Attack(int client, int weapon, bool crit)
 	EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 	//	CreateTimer(0.1, Timer_HatThrow_Woosh, EntIndexToEntRef(iRot), TIMER_REPEAT);
 	Wand_Projectile_Spawn(client, speed, time, damage, 8/*Default wand*/, weapon, "raygun_projectile_blue_trail");
+
 }
 
 public void Gun_QuantumTouch(int entity, int target)
@@ -70,6 +67,6 @@ public void Quantum_Fists_Main_Attack(int client, int weapon, bool crit)
 {
 	float damageMulti = float(CashSpentTotal[client]);
 	damageMulti = Pow(damageMulti, 1.15);
-	damageMulti = damageMulti / 1550.0;
-	TF2Attrib_SetByDefIndex(weapon, 2, damageMulti);
+	damageMulti = damageMulti / 850.0;
+	Attributes_Set(weapon, 2, damageMulti);
 }

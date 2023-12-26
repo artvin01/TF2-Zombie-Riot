@@ -231,6 +231,7 @@ methodmap FatherGrigori < CClotBody
 		FatherGrigori npc = view_as<FatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
 		
 		i_NpcInternalId[npc.index] = FATHER_GRIGORI;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -243,10 +244,10 @@ methodmap FatherGrigori < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FatherGrigori_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, FatherGrigori_ClotThink);	
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, FatherGrigori_OnTakeDamagePost);
-		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+		GiveNpcOutLineLastOrBoss(npc.index, true);
 					
 		//IDLE
 		npc.m_bThisNpcIsABoss = true;
@@ -346,7 +347,7 @@ public void FatherGrigori_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int closest = npc.m_iTarget;
@@ -362,11 +363,11 @@ public void FatherGrigori_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, closest);
+			NPC_SetGoalEntity(npc.index, closest);
 		}
 		npc.StartPathing();
 		
@@ -529,7 +530,7 @@ public void FatherGrigori_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -571,8 +572,9 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 		int Iondamage = ReadPackCell(data);
 		int client = EntRefToEntIndex(ReadPackCell(data));
 		
-		if(!IsValidEntity(client))
+		if(!IsValidEntity(client) || b_NpcHasDied[client])
 		{
+			delete data;
 			return;
 		}
 		
@@ -652,6 +654,8 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 				nphi += 5.0;
 		}
 		Iondistance -= 5;
+
+		delete data;
 		
 		Handle nData = CreateDataPack();
 		WritePackFloat(nData, startPosition[0]);
@@ -665,7 +669,7 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 		ResetPack(nData);
 		
 		if (Iondistance > -50)
-		CreateTimer(0.1, FatherGrigori_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
+		CreateTimer(0.1, FatherGrigori_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE);
 		else
 		{
 			startPosition[2] += 25.0;
@@ -801,7 +805,7 @@ public void FatherGrigori_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, FatherGrigori_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, FatherGrigori_ClotThink);	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, FatherGrigori_OnTakeDamagePost);
 	if(IsValidEntity(npc.m_iWearable1))

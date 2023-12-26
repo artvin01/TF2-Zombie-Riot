@@ -3,13 +3,6 @@
 
 static float Strength[MAXTF2PLAYERS];
 
-#define MAXENTITIES 2048
-
-
-#define MAX_TARGETS_HIT 10
-#define MAX_SOUND_FILE_LENGTH 80
-#define MAX_EFFECT_NAME_LENGTH 48
-
 static bool BEAM_CanUse[MAXTF2PLAYERS];
 static bool BEAM_IsUsing[MAXTF2PLAYERS];
 static int BEAM_TicksActive[MAXTF2PLAYERS];
@@ -46,14 +39,7 @@ void Mangler_MapStart()
 
 public void Weapon_Mangler(int client, int weapon, const char[] classname, bool &result)
 {
-	if(!EscapeMode)
 	{
-		
-		float Energy = GetEntPropFloat(weapon, Prop_Send, "m_flEnergy");
-		
-		Energy -= 5.0;
-		
-		SetEntPropFloat(weapon, Prop_Send, "m_flEnergy", Energy);
 		
 		int new_ammo = GetAmmo(client, 23);
 		if(new_ammo >= 10)
@@ -69,13 +55,9 @@ public void Weapon_Mangler(int client, int weapon, const char[] classname, bool 
 			
 			Strength[client] = 112.0;
 					
-			Address address = TF2Attrib_GetByDefIndex(weapon, 1);
-			if(address != Address_Null)
-				Strength[client] *= TF2Attrib_GetValue(address);
+			Strength[client] *= Attributes_Get(weapon, 1, 1.0);
 						
-			address = TF2Attrib_GetByDefIndex(weapon, 2);
-			if(address != Address_Null)
-				Strength[client] *= TF2Attrib_GetValue(address);
+			Strength[client] *= Attributes_Get(weapon, 2, 1.0);
 				
 			//TBB_Ability(client);
 			TBB_Ability_Mangler_1(client);
@@ -85,23 +67,6 @@ public void Weapon_Mangler(int client, int weapon, const char[] classname, bool 
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			PrintHintText(client,"You ran out of Laser Battery!");
 		}
-	}
-	else
-	{
-		BEAM_Targets_Hit[client] = 0.0;
-		
-		Strength[client] = 112.0;
-				
-		Address address = TF2Attrib_GetByDefIndex(weapon, 1);
-		if(address != Address_Null)
-			Strength[client] *= TF2Attrib_GetValue(address);
-					
-		address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			Strength[client] *= TF2Attrib_GetValue(address);
-			
-		TBB_Ability_Mangler_1(client);
-//		RequestFrame(TBB_Ability_Mangler_1, client);
 	}
 }
 
@@ -249,7 +214,6 @@ static void TBB_Tick(int client)
 	if (TR_DidHit(trace))
 	{
 		TR_GetEndPosition(endPoint, trace);
-		CloseHandle(trace);
 		ConformLineDistance(endPoint, startPoint, endPoint, float(BEAM_MaxDistance[client]));
 		float lineReduce = BEAM_BeamRadius[client] * 2.0 / 3.0;
 		float curDist = GetVectorDistance(startPoint, endPoint, false);
@@ -277,8 +241,8 @@ static void TBB_Tick(int client)
 		hullMax[2] = -hullMin[2];
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
-		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
+		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		FinishLagCompensation_Base_boss();
 //		int weapon = BEAM_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
 		/*
@@ -329,6 +293,7 @@ static void TBB_Tick(int client)
 					pack.WriteFloat(playerPos[0]);
 					pack.WriteFloat(playerPos[1]);
 					pack.WriteFloat(playerPos[2]);
+					pack.WriteCell(0);
 					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 					
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
@@ -361,8 +326,81 @@ static void TBB_Tick(int client)
 		TE_SetupBeamPoints(belowBossEyes, endPoint, Beam_Glow, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 		TE_SendToAll(0.0);
 	}
+	delete trace;
+}
+
+float AttackDelayBobGun[MAXTF2PLAYERS];
+public void Weapon_BobsGunBullshit(int client, int weapon, const char[] classname, bool &result)
+{
+	AttackDelayBobGun[client] = 0.0;
+	SDKUnhook(client, SDKHook_PreThink, BobsGunM2_PreThink);
+	SDKHook(client, SDKHook_PreThink, BobsGunM2_PreThink);
+}
+
+public void BobsGunM2_PreThink(int client)
+{
+	if(GetClientButtons(client) & IN_ATTACK2)
+	{
+		if(AttackDelayBobGun[client] > GetGameTime())
+		{
+			return;
+		}
+		AttackDelayBobGun[client] = GetGameTime() + 0.05;
+		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_active < 0)
+		{
+			SDKUnhook(client, SDKHook_PreThink, BobsGunM2_PreThink);
+			return;
+		}
+		if(i_CustomWeaponEquipLogic[weapon_active] != WEAPON_BOBS_GUN)
+		{
+			SDKUnhook(client, SDKHook_PreThink, BobsGunM2_PreThink);
+			return;
+		}
+		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(client);
+
+		Handle swingTrace;
+		float vecSwingForward[3];
+		float pos[3];
+		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, true); //infinite range, and ignore walls!
+					
+		TR_GetEndPosition(pos, swingTrace);
+		delete swingTrace;
+		
+		TE_Particle("ExplosionCore_MidAir", pos, NULL_VECTOR, NULL_VECTOR, 
+		_, _, _, _, _, _, _, _, _, _, 0.0);
+
+		float damage = 112.0;
+
+		damage *= 7.0;
+		
+		damage *= Attributes_Get(weapon_active, 1, 1.0);
+						
+		damage *= Attributes_Get(weapon_active, 2, 1.0);
+		switch(GetRandomInt(1,3))
+		{
+			case 1:
+			{
+				EmitAmbientSound("weapons/explode1.wav", pos, _, 85, _,0.9, GetRandomInt(95, 105));
+			}
+			case 2:
+			{
+				EmitAmbientSound("weapons/explode2.wav", pos, _, 85, _,0.9, GetRandomInt(95, 105));
+			}
+			case 3:
+			{
+				EmitAmbientSound("weapons/explode3.wav", pos, _, 85, _,0.9, GetRandomInt(95, 105));
+			}
+		}
+		Explode_Logic_Custom(damage, client, client, weapon_active, pos);
+		EmitSoundToAll("weapons/shotgun/shotgun_fire7.wav", client, SNDCHAN_WEAPON, 80, _, 1.0);
+
+		FinishLagCompensation_Base_boss();
+	}
 	else
 	{
-		delete trace;
+		SDKUnhook(client, SDKHook_PreThink, BobsGunM2_PreThink);
+		return;
 	}
 }

@@ -35,16 +35,13 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
+static bool b_health_stripped[MAXENTITIES];
 
-static float TELEPORT_STRIKE_Usage[MAXENTITIES];
-static bool TELEPORT_STRIKE_Activate[MAXENTITIES];
-static bool TELEPORT_STRIKE_TeleportUsage[MAXENTITIES];
-static bool TempOpener[MAXENTITIES];
-static bool TELEPORT_STRIKEActive[MAXENTITIES];
-static float animation_timer[MAXENTITIES];
+static float fl_teleport_timer[MAXENTITIES];
+static bool b_teleport_recharging[MAXENTITIES];
 
 
-static float TELEPORT_STRIKE_Smite_BaseDMG = 300.0; //Base damage of the effect
+static float TELEPORT_STRIKE_Smite_BaseDMG = 1500.0; //Base damage of the effect
 static float TELEPORT_STRIKE_Smite_Radius = 500.0;//Radius of the effect
 static float TELEPORT_STRIKE_Smite_ChargeTime = 1.33;
 static float TELEPORT_STRIKE_Smite_ChargeSpan = 0.66;
@@ -144,32 +141,42 @@ methodmap Schwertkrieg < CClotBody
 	
 	
 	
-	public Schwertkrieg(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Schwertkrieg(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		Schwertkrieg npc = view_as<Schwertkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_SCHWERTKRIEG;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		
-		
+		g_b_schwert_died=false;	
+
+		g_b_angered=false;
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Schwertkrieg_ClotDamaged);
+		b_health_stripped[npc.index] = false;
+		
 		SDKHook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
-			
 		
 		//IDLE
 		npc.m_flSpeed = Schwertkrieg_Speed;
 		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+
+		bool final = StrContains(data, "raid_ally") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/medic/medic_zombie.mdl");
@@ -184,9 +191,10 @@ methodmap Schwertkrieg < CClotBody
 		
 		float flPos[3]; // original
 		float flAng[3]; // original
-					
+		
 		npc.GetAttachment("eyeglow_L", flPos, flAng);
-		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyeglow_L", {0.0,0.0,15.0});
+		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyeglow_L", {0.0,0.0,0.0});
+		npc.GetAttachment("root", flPos, flAng);
 		
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_das_blutliebhaber/hw2013_das_blutliebhaber.mdl");
 		SetVariantString("1.0");
@@ -201,17 +209,22 @@ methodmap Schwertkrieg < CClotBody
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
 		npc.StartPathing();
+
 		
-		animation_timer[npc.index] = GetGameTime(npc.index) + 2.0;
-		TELEPORT_STRIKE_Usage[npc.index] = GetGameTime(npc.index) + 10.0;
-		TELEPORT_STRIKEActive[npc.index] = false;
-		TempOpener[npc.index] = false;
-		
-		npc.m_flRangedArmor = 1.5;
+		npc.m_flMeleeArmor = 1.5;
+
+		npc.m_bThisNpcIsABoss = true;
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
+
+		fl_teleport_timer[npc.index]=GetGameTime(npc.index)+5.0;
+		b_teleport_recharging[npc.index]=true;
 		
-		
+		TELEPORT_STRIKE_Smite_ChargeTime = 1.33;
+		TELEPORT_STRIKE_Smite_ChargeSpan = 0.66;
+		TELEPORT_STRIKE_Timer = 2.0; //How long it takes to teleport
+		TELEPORT_STRIKE_Reuseable = 30.0; //How long it should be reuseable again
+
 		return npc;
 	}
 	
@@ -223,13 +236,41 @@ methodmap Schwertkrieg < CClotBody
 public void Schwertkrieg_ClotThink(int iNPC)
 {
 	Schwertkrieg npc = view_as<Schwertkrieg>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
 	
+	if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && i_RaidGrantExtra[npc.index] == 1)	//schwertkrieg handles the timer if its the same index
+	{
+		if(RaidModeTime < GameTime)
+		{
+			int entity = CreateEntityByName("game_round_win"); //You loose.
+			DispatchKeyValue(entity, "force_map_reset", "1");
+			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+			DispatchSpawn(entity);
+			AcceptEntityInput(entity, "RoundWin");
+			Music_RoundEnd(entity);
+			RaidBossActive = INVALID_ENT_REFERENCE;
+			SDKUnhook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
+		}
+	}
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	if(RaidBossActive == INVALID_ENT_REFERENCE && !g_b_schwert_died && ZR_GetWaveCount()+1 >=60 && i_RaidGrantExtra[npc.index] == 1)
+	{
+		RaidBossActive=EntIndexToEntRef(npc.index);
+	}
+	else
+	{
+		if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && g_b_schwert_died && i_RaidGrantExtra[npc.index] == 1)
+		{
+			RaidBossActive = INVALID_ENT_REFERENCE;
+		}
+	}
+
+	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 			
@@ -240,46 +281,35 @@ public void Schwertkrieg_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > GameTime)
 	{
 		return;
 	}
-	npc.m_flRangedArmor = 1.5;
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
-	if(TELEPORT_STRIKE_Usage[npc.index] <= GetGameTime(npc.index) && !TELEPORT_STRIKEActive[npc.index] && !TempOpener[npc.index])
+	if(g_b_schwert_died && g_b_item_allowed  && i_RaidGrantExtra[npc.index] == 1)	//Schwertkrieg is mute,
 	{
-		npc.m_flSpeed = 0.0;
-		float vEnd[3];
-		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", vEnd);
-		TELEPORT_STRIKE_Usage[npc.index] = GetGameTime(npc.index) + TELEPORT_STRIKE_Timer;
-		TempOpener[npc.index] = true;
-		//if(IsValidAlly)
-		//{
-		//	EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
-		//	EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
-		//}
-		//if(!IsValidAlly)
-		//{
-		//	EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, _, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
-		//	EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, _, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
-		//}
-		EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, _, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
-		TELEPORT_STRIKE_spawnRing_Vectors(vEnd, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
-		TELEPORT_STRIKE_spawnRing_Vectors(vEnd, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
+		npc.m_flNextThinkTime = 0.0;
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.SetActivity("ACT_MP_CROUCH_MELEE");
+		npc.m_bisWalking = false;
+		if(g_b_donner_died && RaidBossActive == INVALID_ENT_REFERENCE)
+		{
+			if(GetGameTime() > g_f_blitz_dialogue_timesincehasbeenhurt)
+			{
+				npc.m_bDissapearOnDeath = true;	
+				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+			}
+		}			
+		return; //He is trying to help.
 	}
-	if(TELEPORT_STRIKE_Usage[npc.index] <= GetGameTime(npc.index) && !TELEPORT_STRIKEActive[npc.index] && TempOpener[npc.index])
-	{
-		//TELEPORT_STRIKE_Usage[npc.index] = GetGameTime(npc.index) + TELEPORT_STRIKE_Reuseable;
-		TELEPORT_STRIKE_TeleportUsage[npc.index] = true;
-		TELEPORT_STRIKEActive[npc.index] = true;
-		TempOpener[npc.index] = false;
-	}
+	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -304,110 +334,35 @@ public void Schwertkrieg_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			float vOrigin[3];
-			float vEnd[3];
-			vOrigin = GetAbsOrigin(npc.m_iTarget);
-			vEnd = GetAbsOrigin(npc.m_iTarget);
-			if(TELEPORT_STRIKEActive[npc.index])
-			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex, 0.3);
-				static float flVel[3];
-				TELEPORT_STRIKE_Usage[npc.index] = GetGameTime(npc.index) + TELEPORT_STRIKE_Reuseable;
-				
-				if(TELEPORT_STRIKE_TeleportUsage[npc.index])
-				{
-					int color[4];
-					color[0] = 0;
-					color[1] = 255;
-					color[2] = 120;
-					color[3] = 255;
-			
-					int SPRITE_INT = PrecacheModel("materials/sprites/laserbeam.vmt", false);
-					int SPRITE_INT_2 = PrecacheModel("materials/sprites/lgtning.vmt", false);
-					
-					float pos[3], angles[3];
-					GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_angRotation", angles);
-					GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
-			
-					TE_SetupBeamPoints(vecTarget, pos, SPRITE_INT, 0, 0, 0, 0.8, 14.0, 10.2, 1, 1.0, color, 0);
-					TE_SendToAll();
-					TE_SetupBeamPoints(vecTarget, pos, SPRITE_INT_2, 0, 0, 0, 0.8, 22.0, 10.2, 1, 8.0, color, 0);
-					TE_SendToAll();
-					TE_SetupBeamPoints(vecTarget, pos, SPRITE_INT_2, 0, 0, 0, 0.8, 22.0, 10.2, 1, 8.0, color, 0);
-					GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
-					npc.FaceTowards(vecTarget);
-					npc.FaceTowards(vecTarget);
-					float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
-					if(Tele_Check < 100000000 || Tele_Check < 10000000 || Tele_Check < 1000000 || Tele_Check < 100000 || Tele_Check < 10000 || Tele_Check > 100000000 || Tele_Check > 10000000 || Tele_Check > 1000000 || Tele_Check > 100000 || Tele_Check > 10000)
-					{
-						EmitSoundToAll(TELEPORT_STRIKE_TELEPORT, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
-						EmitSoundToAll(TELEPORT_STRIKE_TELEPORT, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
-						TeleportEntity(npc.index, vPredictedPos, NULL_VECTOR, NULL_VECTOR);
-						TELEPORT_STRIKE_Activate[npc.index] = true;
-						TELEPORT_STRIKE_TeleportUsage[npc.index] = false;
-						npc.m_flSpeed = Schwertkrieg_Speed;
-					}
-				}
-				
-				int Enemy_I_See;
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-				
-				if(IsValidEnemy(npc.index, npc.m_iTarget) && npc.m_iTarget == Enemy_I_See && TELEPORT_STRIKE_Activate[npc.index] && !TELEPORT_STRIKE_TeleportUsage[npc.index])
-				{
-					//float vAngles[3];
-					//float vOrigin[3];
-					//float vEnd[3];
-					//vAngles = GetAbsOrigin(npc.m_iTarget);
-					//vOrigin = GetAbsOrigin(npc.m_iTarget);
-					//vEnd = GetAbsOrigin(npc.m_iTarget);
-				
-					Handle pack;
-					CreateDataTimer(TELEPORT_STRIKE_Smite_ChargeSpan, TELEPORT_STRIKE_Smite_Timer, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-					WritePackCell(pack, EntRefToEntIndex(npc.index));
-					WritePackFloat(pack, 0.0);
-					WritePackFloat(pack, vEnd[0]);
-					WritePackFloat(pack, vEnd[1]);
-					WritePackFloat(pack, vEnd[2]);
-					WritePackFloat(pack, TELEPORT_STRIKE_Smite_BaseDMG);
-				
-					TELEPORT_STRIKE_spawnBeam(0.8, 255, 255, 0, 120, "materials/sprites/lgtning.vmt", 8.0, 8.2, _, 5.0, vOrigin, vEnd);
-					//TELEPORT_STRIKE_spawnBeam(320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
-					TELEPORT_STRIKE_spawnRing_Vectors(vEnd, TELEPORT_STRIKE_Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 200, 1, TELEPORT_STRIKE_Smite_ChargeTime, 6.0, 0.1, 1, 1.0);
-					
-					//npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 9.0;
-					TELEPORT_STRIKEActive[npc.index] = false;
-				}
-			}
-			if(flDistanceToTarget > 100000 && (!TELEPORT_STRIKE_Activate || !TempOpener))
-			{
-				Schwertkrieg_Speed=350.0;
-			}
-			else
-				Schwertkrieg_Speed=315.0;
+
+			Schwertkrieg_Teleport_Logic(npc.index, PrimaryThreatIndex, GameTime);
+
 			//Target close enough to hit
+			
+			npc.StartPathing();
 			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
 				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+				if(npc.m_flNextMeleeAttack < GameTime)
 				{
 					//Play attack ani
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
 						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime(npc.index)+0.2;
-						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.35;
+						npc.m_flAttackHappens = GameTime+0.2;
+						npc.m_flAttackHappens_bullshit = GameTime+0.35;
 						npc.m_flAttackHappenswillhappen = true;
 					}
 						
-					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -421,26 +376,39 @@ public void Schwertkrieg_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float meleedmg= 175.0;
+								if(g_b_angered)
+								{
+									meleedmg = 325.0;
+								}	
+									
 								if(target <= MaxClients)
 								{
 									float Bonus_damage = 1.0;
 									int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
 	
-									char classname[32];
-									GetEntityClassname(weapon, classname, 32);
-								
-									int weapon_slot = TF2_GetClassnameSlot(classname);
-								
-									if(weapon_slot != 2 || i_IsWandWeapon[weapon])
+									if(IsValidEntity(weapon))
 									{
-										Bonus_damage = 1.5;
+										char classname[32];
+										GetEntityClassname(weapon, classname, 32);
+									
+										int weapon_slot = TF2_GetClassnameSlot(classname);
+									
+										if(weapon_slot != 2 || i_IsWandWeapon[weapon])
+										{
+											Bonus_damage = 1.5;
+										}
+										meleedmg *= Bonus_damage;
+										SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
 									}
-									meleedmg *= Bonus_damage;
-									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
+									else
+									{
+										SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
+									}
+									
 								}
 								else
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg * 5, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg * 7.5, DMG_CLUB, -1, _, vecHit);
 								}
 								
 								npc.PlayMeleeHitSound();	
@@ -448,43 +416,292 @@ public void Schwertkrieg_ClotThink(int iNPC)
 							} 
 						}
 						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.3;
+						npc.m_flNextMeleeAttack = GameTime + 0.3;
 						npc.m_flAttackHappenswillhappen = false;
 					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					else if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.3;
+						npc.m_flNextMeleeAttack = GameTime + 0.3;
 					}
 				}
-			}
-			else
-			{
-				npc.StartPathing();
-				
 			}
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
 }
+static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float GameTime)
+{
+	Schwertkrieg npc = view_as<Schwertkrieg>(iNPC);
 
-public Action Schwertkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+	if(fl_teleport_timer[npc.index]<=GameTime)
+	{
+		int enemy = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+		if(IsValidEnemy(npc.index, enemy))
+		{
+			npc.m_flDoingAnimation = GameTime+TELEPORT_STRIKE_Timer;
+			fl_teleport_timer[npc.index]= GameTime+9999.0;
+
+			npc.SetPlaybackRate(0.75);	
+			npc.SetCycle(0.0);
+							
+			b_teleport_recharging[npc.index]=false;
+			npc.AddActivityViaSequence("taunt_neck_snap_medic");
+
+			float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index);
+
+			EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
+			EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
+
+			npc.m_flMeleeArmor = 0.5;
+			npc.m_flRangedArmor = 0.5;
+
+			npc_Loc[2]+=10.0;
+			int r, g, b, a;
+			r=145;
+			g=47;
+			b=47;
+			a=255;
+			TELEPORT_STRIKE_spawnRing_Vectors(npc_Loc, 250.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, TELEPORT_STRIKE_Timer, 12.0, 2.0, 1, 1.0);
+
+			if(IsValidEntity(npc.m_iWearable3))
+				RemoveEntity(npc.m_iWearable3);
+		}
+	}
+	if(npc.m_flDoingAnimation < GameTime && fl_teleport_timer[npc.index] > GameTime && !b_teleport_recharging[npc.index])
+	{
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
+		b_teleport_recharging[npc.index]=true;
+		float VecForward[3];
+		float vecRight[3];
+		float vecUp[3];
+		float vecPos[3];
+				
+		GetVectors(PrimaryThreatIndex, VecForward, vecRight, vecUp);
+		vecPos = GetAbsOrigin(PrimaryThreatIndex);
+		vecPos[2] += 5.0;
+				
+		float vecSwingEnd[3];
+		vecSwingEnd[0] = vecPos[0] - VecForward[0] * (100);
+		vecSwingEnd[1] = vecPos[1] - VecForward[1] * (100);
+		vecSwingEnd[2] = vecPos[2];/*+ VecForward[2] * (100);*/
+
+		npc.m_flRangedArmor = 1.0;
+		int enemy = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+		if(IsValidEnemy(npc.index, enemy))
+		{
+			npc.FaceTowards(vecSwingEnd);
+			npc.FaceTowards(vecSwingEnd);
+
+			float start_offset[3], end_offset[3];
+			start_offset = WorldSpaceCenter(npc.index);
+			bool Succeed = NPC_Teleport(npc.index, vecSwingEnd);
+			if(Succeed)
+			{
+				
+				
+				if(g_b_angered)
+				{
+					npc.m_flMeleeArmor = 1.0;
+					fl_teleport_timer[npc.index]= GameTime+(TELEPORT_STRIKE_Reuseable*0.5);
+				}
+				else
+				{
+					npc.m_flMeleeArmor = 1.5;
+					fl_teleport_timer[npc.index]= GameTime+TELEPORT_STRIKE_Reuseable;
+				}
+					
+				
+				Schwertkrieg_Teleport_Boom(npc.index, vecSwingEnd, start_offset);
+				float effect_duration = 0.25;
+			
+				end_offset = vecSwingEnd;
+								
+				//start_offset[2]+= 45;
+				//end_offset[2] += 45.0;
+								
+				for(int help=1 ; help<=8 ; help++)
+				{	
+					Schwert_Teleport_Effect("drg_manmelter_trail_red", effect_duration, start_offset, end_offset);
+									
+					start_offset[2] += 12.5;
+					end_offset[2] += 12.5;
+				}
+			}
+			else
+			{
+				vecSwingEnd[0] = vecPos[0] - VecForward[0] * (-100);
+				vecSwingEnd[1] = vecPos[1] - VecForward[1] * (-100);
+				vecSwingEnd[2] = vecPos[2];/*+ VecForward[2] * (100);*/
+
+				Succeed = NPC_Teleport(npc.index, vecSwingEnd);
+				if(Succeed)
+				{
+				
+					if(g_b_angered)
+					{
+						npc.m_flMeleeArmor = 1.0;
+						fl_teleport_timer[npc.index]= GameTime+(TELEPORT_STRIKE_Reuseable*0.5);
+					}
+					else
+					{
+						npc.m_flMeleeArmor = 1.5;
+						fl_teleport_timer[npc.index]= GameTime+TELEPORT_STRIKE_Reuseable;
+					}
+						
+					
+					Schwertkrieg_Teleport_Boom(npc.index, vecSwingEnd, start_offset);
+					float effect_duration = 0.25;
+				
+					end_offset = vecSwingEnd;
+									
+					//start_offset[2]+= 45;
+					//end_offset[2] += 45.0;
+									
+					for(int help=1 ; help<=8 ; help++)
+					{	
+						Schwert_Teleport_Effect("drg_manmelter_trail_red", effect_duration, start_offset, end_offset);
+										
+						start_offset[2] += 12.5;
+						end_offset[2] += 12.5;
+					}
+				}
+				else
+				{
+					fl_teleport_timer[npc.index]= GameTime+5.0;	//retry in 5 seconds
+					if(g_b_angered)
+					{
+						npc.m_flMeleeArmor = 1.0;
+					}
+					else
+					{
+						npc.m_flMeleeArmor = 1.5;
+					}
+				}
+			}
+		}
+		else
+		{
+			fl_teleport_timer[npc.index]= GameTime+1.0;	//retry in 1 second
+			if(g_b_angered)
+			{
+				npc.m_flMeleeArmor = 1.0;
+			}
+			else
+			{
+				npc.m_flMeleeArmor = 1.5;
+			}
+		}
+	}
+	if(npc.m_flDoingAnimation > GameTime)
+	{
+		npc.m_flSpeed = 0.0;
+	}
+	else
+	{
+		if(g_b_angered)
+			npc.m_flSpeed = Schwertkrieg_Speed*1.35;
+		else
+			npc.m_flSpeed = Schwertkrieg_Speed;
+	}
+}
+static void Schwertkrieg_Teleport_Boom(int iNPC, float vecTarget[3], float pos[3])
+{
+
+	Schwertkrieg npc = view_as<Schwertkrieg>(iNPC);
+	int color[4];
+	color[0] = 145;
+	color[1] = 47;
+	color[2] = 47;
+	color[3] = 255;
+			
+	int SPRITE_INT = PrecacheModel("materials/sprites/laserbeam.vmt", false);
+	int SPRITE_INT_2 = PrecacheModel("materials/sprites/lgtning.vmt", false);
+
+	pos[2]+=45.0;
+	vecTarget[2]+=45.0;
+	TE_SetupBeamPoints(vecTarget, pos, SPRITE_INT, 0, 0, 0, 0.8, 14.0, 10.2, 1, 1.0, color, 0);
+	TE_SendToAll();
+	TE_SetupBeamPoints(vecTarget, pos, SPRITE_INT_2, 0, 0, 0, 0.8, 22.0, 10.2, 1, 8.0, color, 0);
+	TE_SendToAll();
+	TE_SetupBeamPoints(vecTarget, pos, SPRITE_INT_2, 0, 0, 0, 0.8, 22.0, 10.2, 1, 8.0, color, 0);
+
+	EmitSoundToAll(TELEPORT_STRIKE_TELEPORT, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vecTarget);
+	EmitSoundToAll(TELEPORT_STRIKE_TELEPORT, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, pos);
+
+	vecTarget[2]-=45.0;
+	Handle pack;
+	CreateDataTimer(TELEPORT_STRIKE_Smite_ChargeSpan, TELEPORT_STRIKE_Smite_Timer, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	WritePackCell(pack, EntRefToEntIndex(npc.index));
+	WritePackFloat(pack, 0.0);
+	WritePackFloat(pack, vecTarget[0]);
+	WritePackFloat(pack, vecTarget[1]);
+	WritePackFloat(pack, vecTarget[2]);
+	WritePackFloat(pack, TELEPORT_STRIKE_Smite_BaseDMG);
+				
+	TELEPORT_STRIKE_spawnBeam(0.8, 145, 47, 47, 255, "materials/sprites/lgtning.vmt", 8.0, 8.2, _, 5.0, pos, vecTarget);
+	//TELEPORT_STRIKE_spawnBeam(320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
+	float radius = TELEPORT_STRIKE_Smite_Radius;
+	if(g_b_angered)
+	{
+		radius *= 1.25;
+	}
+	TELEPORT_STRIKE_spawnRing_Vectors(vecTarget, radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 6.0, 0.1, 1, 1.0);
+					
+}
+public Action Schwertkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Schwertkrieg npc = view_as<Schwertkrieg>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+		
+	
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+	}
+	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");	//npc becomes imortal when at 1 hp and when its a valid wave	//warp_item
+	if(RoundToCeil(damage)>=Health && ZR_GetWaveCount()+1>=60.0 && i_RaidGrantExtra[npc.index] == 1)
+	{
+		if(g_b_item_allowed)
+		{
+			b_DoNotUnStuck[npc.index] = true;
+			b_CantCollidieAlly[npc.index] = true;
+			b_CantCollidie[npc.index] = true;
+			SetEntityCollisionGroup(npc.index, 24);
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him
+			b_NpcIsInvulnerable[npc.index] = true;
+			RemoveNpcFromEnemyList(npc.index);
+			GiveProgressDelay(20.0);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+			damage = 0.0;
+		}
+		if(!g_b_schwert_died)
+		{
+			g_b_angered=true;
+			g_b_schwert_died=true;
+			if(EntRefToEntIndex(RaidBossActive)==npc.index)
+				RaidBossActive = INVALID_ENT_REFERENCE;
+			RaidModeTime += 22.5;
+			npc.m_bThisNpcIsABoss = false;
+			g_f_blitz_dialogue_timesincehasbeenhurt = GetGameTime(npc.index)+20.0;
+		}
+		return Plugin_Handled;
 	}
 	
 	return Plugin_Changed;
@@ -497,7 +714,17 @@ public void Schwertkrieg_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Schwertkrieg_ClotDamaged);
+	
+	b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
+	b_NpcIsInvulnerable[npc.index] = false;
+			
+	npc.m_bThisNpcIsABoss = false;
+
+	if(EntRefToEntIndex(RaidBossActive)==npc.index)
+	{
+		RaidBossActive = INVALID_ENT_REFERENCE;
+	}
+	
 	SDKUnhook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
@@ -545,16 +772,16 @@ public Action TELEPORT_STRIKE_Smite_Timer(Handle Smite_Logic, DataPack pack)
 		
 		for (int sequential = 1; sequential <= 5; sequential++)
 		{
-			TELEPORT_STRIKE_spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 120, 1, 0.33, 6.0, 0.4, 1, (TELEPORT_STRIKE_Smite_Radius * 5.0)/float(sequential));
+			TELEPORT_STRIKE_spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, 0.33, 6.0, 0.4, 1, (TELEPORT_STRIKE_Smite_Radius * 5.0)/float(sequential));
 			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
 		}
 		
 		//secondLoc[2] = 9999.0;
 		secondLoc[2] = 1500.0;
 		
-		TELEPORT_STRIKE_spawnBeam(0.8, 255, 255, 120, 255, "materials/sprites/laserbeam.vmt", 16.0, 16.2, _, 5.0, secondLoc, spawnLoc);	
-		TELEPORT_STRIKE_spawnBeam(0.8, 255, 255, 120, 200, "materials/sprites/lgtning.vmt", 10.0, 10.2, _, 5.0, secondLoc, spawnLoc);	
-		TELEPORT_STRIKE_spawnBeam(0.8, 255, 255, 120, 200, "materials/sprites/lgtning.vmt", 10.0, 10.2, _, 5.0, secondLoc, spawnLoc);
+		TELEPORT_STRIKE_spawnBeam(0.8, 145, 47, 47, 255, "materials/sprites/laserbeam.vmt", 16.0, 16.2, _, 5.0, secondLoc, spawnLoc);	
+		TELEPORT_STRIKE_spawnBeam(0.8, 145, 47, 47, 255, "materials/sprites/lgtning.vmt", 10.0, 10.2, _, 5.0, secondLoc, spawnLoc);	
+		TELEPORT_STRIKE_spawnBeam(0.8, 145, 47, 47, 255, "materials/sprites/lgtning.vmt", 10.0, 10.2, _, 5.0, secondLoc, spawnLoc);
 		EmitAmbientSound(TELEPORT_STRIKE_HIT, spawnLoc, _, 240);
 		EmitAmbientSound(TELEPORT_STRIKE_HIT, spawnLoc, _, 240);
 		
@@ -583,14 +810,26 @@ public Action TELEPORT_STRIKE_Smite_Timer(Handle Smite_Logic, DataPack pack)
 		pack_boom.WriteCell(0);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, TELEPORT_STRIKE_Smite_Radius * 1.4,_,0.8, true);
+		float radius = TELEPORT_STRIKE_Smite_Radius;
+		if(g_b_angered)
+		{
+			damage *= 1.35;
+			radius *= 1.25;
+		}
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, radius,_,0.8, true);
 		
 		return Plugin_Stop;
 	}
 	else
 	{
 		
-		TELEPORT_STRIKE_spawnRing_Vectors(spawnLoc, TELEPORT_STRIKE_Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
+		float radius = TELEPORT_STRIKE_Smite_Radius;
+		if(g_b_angered)
+		{
+			radius *= 1.25;
+		}
+		
+		TELEPORT_STRIKE_spawnRing_Vectors(spawnLoc, radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, 0.33, 6.0, 0.1, 1, 1.0);
 		EmitAmbientSound(TELEPORT_STRIKE_EXPLOSION, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));
 		EmitAmbientSound(TELEPORT_STRIKE_EXPLOSION, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));
 		
@@ -642,4 +881,25 @@ static void TELEPORT_STRIKE_spawnRing_Vectors(float center[3], float range, floa
 	
 	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
 	TE_SendToAll();
+}
+static void Schwert_Teleport_Effect(char type[255], float duration = 0.0, float start_point[3], float end_point[3])
+{
+	int part1 = CreateEntityByName("info_particle_system");
+	if(IsValidEdict(part1))
+	{
+		TeleportEntity(part1, start_point, NULL_VECTOR, NULL_VECTOR);
+		DispatchKeyValue(part1, "effect_name", type);
+		SetVariantString("!activator");
+		DispatchSpawn(part1);
+		ActivateEntity(part1);
+		AcceptEntityInput(part1, "Start");
+		
+		DataPack pack;
+		CreateDataTimer(0.1, Timer_Move_Particle, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(part1));
+		pack.WriteCell(end_point[0]);
+		pack.WriteCell(end_point[1]);
+		pack.WriteCell(end_point[2]);
+		pack.WriteCell(duration);
+	}
 }

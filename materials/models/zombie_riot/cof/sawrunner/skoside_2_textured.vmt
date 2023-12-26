@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/zombie_riot/cof/sawrunner/skoside_2_textured"
+	"$surfaceprop" "BloodyFlesh"
+}

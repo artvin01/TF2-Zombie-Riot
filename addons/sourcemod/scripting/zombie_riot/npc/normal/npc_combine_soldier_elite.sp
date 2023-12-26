@@ -169,6 +169,7 @@ methodmap CombineElite < CClotBody
 		CombineElite npc = view_as<CombineElite>(CClotBody(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", "1500", ally));
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_ELITE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -182,7 +183,7 @@ methodmap CombineElite < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, CombineElite_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, CombineElite_ClotThink);
 	
 		npc.m_fbGunout = false;
@@ -251,13 +252,13 @@ public void CombineElite_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	if(npc.m_flReloadDelay > GetGameTime(npc.index))
 	{
 		npc.m_flSpeed = 0.0;
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;		
 	}
 	else
@@ -291,7 +292,7 @@ public void CombineElite_ClotThink(int iNPC)
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 				npc.m_bmovedelay = false;
 		//		npc.FaceTowards(vecTarget, 1000.0);
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
 			
@@ -314,9 +315,9 @@ public void CombineElite_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index) && flDistanceToTarget > 62500 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
@@ -465,7 +466,7 @@ public void CombineElite_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -474,7 +475,7 @@ public void CombineElite_ClotThink(int iNPC)
 }
 
 
-public Action CombineElite_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action CombineElite_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -499,7 +500,7 @@ public void CombineElite_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CombineElite_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, CombineElite_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))
