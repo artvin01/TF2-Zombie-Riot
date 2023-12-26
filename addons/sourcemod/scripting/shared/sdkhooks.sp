@@ -1910,44 +1910,47 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 #if defined ZR
-float Replicate_Damage_Medications(int victim, float damage, int damagetype)
+float Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 {
+	float Replicated_Dmg = damage;
 	if(TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeathSilent))
 	{
 		if(!(damagetype & (DMG_CRIT)))
 		{
-			damage *= 1.35; //Remove crit shit from the calcs!, there are no minicrits here, so i dont have to care
+			Replicated_Dmg *= 1.35; //Remove crit shit from the calcs!, there are no minicrits here, so i dont have to care
 		}
 	}
-	if(TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
-	{
-		if(damagetype & (DMG_CRIT))
-		{
-			damage /= 3.0; //Remove crit shit from the calcs!, there are no minicrits here, so i dont have to care
-		}
-		damage *= 0.65;
-	}
+
 	float value;
 
 	if(damagetype & (DMG_CLUB|DMG_SLASH))
 	{
 		value = Attributes_FindOnPlayerZR(victim, 206);	// MELEE damage resitance
 		if(value)
+		{
+			Replicated_Dmg *= value;
 			damage *= value;
+		}
 	}
-	else
+	else if(!(damagetype & DMG_FALL))
 	{
 		value = Attributes_FindOnPlayerZR(victim, 205);	// RANGED damage resistance
 		if(value)
+		{
+			Replicated_Dmg *= value;
 			damage *= value;
-			//Everything else should be counted as ranged reistance probably.
+		}
+		//Everything else should be counted as ranged reistance probably.
 	}
 		
 	value = Attributes_FindOnPlayerZR(victim, 412);	// Overall damage resistance
 	if(value)
-		damage *= value;	
+	{
+		Replicated_Dmg *= value;
+		damage *= value;
+	}	
 		
-	return damage;
+	return Replicated_Dmg;
 }
 #endif	// ZR
 

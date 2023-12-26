@@ -286,6 +286,8 @@ bool b_PlayerIsInAnotherPart[MAXENTITIES];
 float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
 int i_OverrideWeaponSlot[MAXENTITIES]={-1, ...};
 int i_MeleeAttackFrameDelay[MAXENTITIES]={12, ...};
+bool b_MeleeCanHeadshot[MAXENTITIES]={false, ...};
+int i_MeleeHitboxHit[MAXENTITIES]={false, ...};
 //float Check_Standstill_Delay[MAXTF2PLAYERS];
 //bool Check_Standstill_Applied[MAXTF2PLAYERS];
 

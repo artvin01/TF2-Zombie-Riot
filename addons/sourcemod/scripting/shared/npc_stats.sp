@@ -39,6 +39,7 @@ int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES] = {0, ...};
 #endif
 
+int i_SpeechBubbleEntity[MAXENTITIES];
 PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
 static int g_modelArrow;
 
@@ -1616,6 +1617,25 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
+	property int m_iSpeechBubble
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_SpeechBubbleEntity[this.index]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_SpeechBubbleEntity[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_SpeechBubbleEntity[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+
 	property int m_iWearable1
 	{
 		public get()		 
@@ -2997,6 +3017,8 @@ static void OnDestroy(CClotBody body)
 		RemoveEntity(body.m_iFreezeWearable);
 	if(IsValidEntity(body.m_iWearable1))
 		RemoveEntity(body.m_iWearable1);
+	if(IsValidEntity(body.m_iSpeechBubble))
+		RemoveEntity(body.m_iSpeechBubble);
 	if(IsValidEntity(body.m_iWearable2))
 		RemoveEntity(body.m_iWearable2);
 	if(IsValidEntity(body.m_iWearable3))
@@ -3092,6 +3114,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			RemoveEntity(npc.m_iTextEntity4);
 		if(IsValidEntity(npc.m_iFreezeWearable))
 			RemoveEntity(npc.m_iFreezeWearable);
+		if(IsValidEntity(npc.m_iSpeechBubble))
+			RemoveEntity(npc.m_iSpeechBubble);
 		
 #if defined ZR
 		if(!b_IsAlliedNpc[pThis] && !b_DoNotGiveWaveDelay[pThis])
@@ -9284,32 +9308,84 @@ void SaveLastValidPositionEntity(int entity)
 		f3_VecTeleportBackSave_OutOfBounds[entity] = AbsOrigin;		
 	}
 }
-/*
-int i_SpeechBubbleEntity[MAXENTITIES];
+
 char ch_SpeechBubbleTotalText[MAXENTITIES][255];
 int i_SpeechBubbleTotalText_ScrollingPart[MAXENTITIES];
 char ch_SpeechBubbleEndingScroll[MAXENTITIES][10];
 int i_SpeechEndingScroll_ScrollingPart[MAXENTITIES];
+float f_SpeechTickDelay[MAXENTITIES];
+float f_SpeechDeleteAfter[MAXENTITIES];
 
-void NpcSpeechBubble(int entity, const char[] speechtext, int fontsize, int colour[4], int extra_offset, const char[] endingtextscroll)
+void NpcSpeechBubble(int entity, const char[] speechtext, int fontsize, int colour[4], float extra_offset[3], const char[] endingtextscroll)
 {
+	int Text_Entity;
+	Text_Entity = EntRefToEntIndex(i_SpeechBubbleEntity[entity]);
+	if(IsValidEntity(Text_Entity))
+		RemoveEntity(Text_Entity);
 
-	int Text_Entity = SpawnFormattedWorldText("", extra_offset, fontsize,colour, entity);
+	Text_Entity = SpawnFormattedWorldText("", extra_offset, fontsize,colour, entity);
+	
+	DispatchKeyValue(Text_Entity, "font", "9");
+	f_SpeechTickDelay[entity] = 0.0;
+	f_SpeechDeleteAfter[entity] = 0.0;
 
-	DataPack pack;
-	CreateDataTimer(1.0, NpcSpeechBubbleScrolling, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(Text_Entity));
-	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteCell(EntIndexToEntRef(entity));
-	SDKHook(entity, SDKHook_Think, NpcBaseThink);
-
-	return entity;
+	i_SpeechBubbleEntity[entity] = EntIndexToEntRef(Text_Entity);
+	Format(ch_SpeechBubbleTotalText[entity], 255, speechtext);
+	Format(ch_SpeechBubbleEndingScroll[entity], 10, endingtextscroll);
+	i_SpeechBubbleTotalText_ScrollingPart[entity] = 0;
+	i_SpeechEndingScroll_ScrollingPart[entity] = 0;
+	SDKUnhook(entity, SDKHook_Think, NpcSpeechBubbleTalk);
+	SDKHook(entity, SDKHook_Think, NpcSpeechBubbleTalk);
 }
 
-public Action NpcSpeechBubbleScrolling(Handle timer, DataPack pack)
+void NpcSpeechBubbleTalk(int iNPC)
 {
-	pack.Reset();
-	int OwnerEntity = EntRefToEntIndex(pack.ReadCell());
-	int ChildEntity = EntRefToEntIndex(pack.ReadCell());
+	int Text_Entity;
+	Text_Entity = EntRefToEntIndex(i_SpeechBubbleEntity[iNPC]);
+	if(!IsValidEntity(Text_Entity))
+	{
+		SDKUnhook(iNPC, SDKHook_Think, NpcSpeechBubbleTalk);
+		return;
+	}
+	if(f_SpeechTickDelay[iNPC] > GetGameTime())
+		return;
+	
+	f_SpeechTickDelay[iNPC] = GetGameTime() + 0.05;
+	CClotBody npc = view_as<CClotBody>(iNPC);
+	int TotalLength = strlen(ch_SpeechBubbleTotalText[iNPC]);
+
+	if(i_SpeechBubbleTotalText_ScrollingPart[iNPC] >= TotalLength)
+	{
+		if(f_SpeechDeleteAfter[iNPC] != 0.0)
+		{
+			TotalLength = strlen(ch_SpeechBubbleEndingScroll[iNPC]);
+			char TestMax[255];
+			char TestMaxEnd[255];
+			i_SpeechEndingScroll_ScrollingPart[iNPC] += 1;
+			int MaxTextCutoff = i_SpeechEndingScroll_ScrollingPart[iNPC];
+			Format(TestMaxEnd, MaxTextCutoff, ch_SpeechBubbleEndingScroll[iNPC]);
+			f_SpeechTickDelay[iNPC] = GetGameTime() + 0.5;
+			if(i_SpeechEndingScroll_ScrollingPart[iNPC] > TotalLength)
+			{
+				i_SpeechEndingScroll_ScrollingPart[iNPC] = 0;
+			}
+
+			Format(TestMax, sizeof(TestMax), "%s%s",ch_SpeechBubbleTotalText[iNPC],TestMaxEnd);
+			DispatchKeyValue(Text_Entity, "message", TestMax);
+
+
+			if(f_SpeechDeleteAfter[iNPC] < GetGameTime())
+			{
+				SDKUnhook(iNPC, SDKHook_Think, NpcSpeechBubbleTalk);
+				RemoveEntity(Text_Entity);
+			}
+			return;
+		}
+		f_SpeechDeleteAfter[iNPC] = GetGameTime() + 5.0;
+	}
+	i_SpeechBubbleTotalText_ScrollingPart[iNPC] += 1;
+	char TestMax[255];
+	int MaxTextCutoff = i_SpeechBubbleTotalText_ScrollingPart[iNPC];
+	Format(TestMax, MaxTextCutoff, ch_SpeechBubbleTotalText[iNPC]);
+	DispatchKeyValue(Text_Entity, "message", TestMax);
 }
-*/

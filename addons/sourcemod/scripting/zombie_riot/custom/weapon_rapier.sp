@@ -41,8 +41,8 @@ void Weapon_RapierMapChange()
 #define DEFAULT_MELEE_BOUNDS 22.0
 void Rapier_DoSwingTrace(float &CustomMeleeRange, float &CustomMeleeWide)
 {
-		CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.2;
-		CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 0.5;
+	CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.2;
+	CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 0.5;
 }
 
 void RapierEndDuelOnKill(int client,int victim)

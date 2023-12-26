@@ -2042,6 +2042,15 @@ void CleanAllNpcArray()
 stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int zr_custom_damage)
 {
 #if defined ZR
+	//did we hit any headshot ?
+	if(b_MeleeCanHeadshot[weapon])
+	{
+		static int DummyAmmotype = 0; //useless but needed
+		NPC_TraceAttack(victim, attacker, inflictor, damage, damagetype, DummyAmmotype, 0, i_MeleeHitboxHit[attacker]);
+	}
+				
+		
+			
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		case WEAPON_BOUNCING:

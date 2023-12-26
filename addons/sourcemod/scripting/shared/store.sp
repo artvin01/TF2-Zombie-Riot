@@ -114,6 +114,7 @@ enum struct ItemInfo
 	int CustomWeaponOnEquip;
 	int Weapon_Override_Slot;
 	int Melee_AttackDelayFrame;
+	bool Melee_Allows_Headshots;
 	
 #if defined ZR
 	int RougeBuildMax;
@@ -338,6 +339,10 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%smelee_attack_frame_delay", prefix);
 		this.Melee_AttackDelayFrame 		= kv.GetNum(buffer, 12);
+
+		
+		Format(buffer, sizeof(buffer), "%smelee_can_headshot", prefix);
+		this.Melee_Allows_Headshots 		= view_as<bool>(kv.GetNum(buffer, 0));
 		
 		Format(buffer, sizeof(buffer), "%sattack_3_ability_slot", prefix);
 		this.Attack3AbilitySlot			= kv.GetNum(buffer);
@@ -5382,6 +5387,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					}
 					i_OverrideWeaponSlot[entity] = info.Weapon_Override_Slot;
 					i_MeleeAttackFrameDelay[entity] = info.Melee_AttackDelayFrame;
+					b_MeleeCanHeadshot[entity] = info.Melee_Allows_Headshots;
 					
 					if(info.Ammo > 0 && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 					{
