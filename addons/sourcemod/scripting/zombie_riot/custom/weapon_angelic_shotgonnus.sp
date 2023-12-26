@@ -290,7 +290,7 @@ public void Angelic_Shotgun_Cooldown_Logic(int client, int weapon)
 
 
 
-void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int weapon, int enemy)
+void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 {
 	if(b_thisNpcIsARaid[enemy])
 		damage *= 1.10;
@@ -428,7 +428,7 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int weapon
 }
 
 
-void Angelic_Shotgun_Meleetrace_Hit_After(int client, float &damage, int weapon, int enemy)
+void Angelic_Shotgun_Meleetrace_Hit_After(int client, float &damage)
 {
 	switch(i_Current_Pap[client])
 	{

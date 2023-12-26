@@ -84,6 +84,25 @@ methodmap Barrack_Alt_Donnerkrieg < BarrackBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
+		switch(GetRandomInt(0,3))
+		{
+			case 0:
+			{
+				NpcSpeechBubble(this.index, "I wonder what my homeland has been like", 5, {255,255,255,255}, {0.0,0.0,60.0}, "...");
+			}
+			case 1:
+			{
+				NpcSpeechBubble(this.index, "Wheres schwert at?", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+			}
+			case 2:
+			{
+				NpcSpeechBubble(this.index, "Is ruina fine?", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+			}
+			case 3:
+			{
+				NpcSpeechBubble(this.index, "A little nice and quiet.", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+			}
+		}
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
@@ -92,6 +111,25 @@ methodmap Barrack_Alt_Donnerkrieg < BarrackBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
+		switch(GetRandomInt(0,3))
+		{
+			case 0:
+			{
+				NpcSpeechBubble(this.index, "uh oh!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+			}
+			case 1:
+			{
+				NpcSpeechBubble(this.index, "Enemies never stop comming do they?", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+			}
+			case 2:
+			{
+				NpcSpeechBubble(this.index, "Im too tired to cast my main spell here.", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+			}
+			case 3:
+			{
+				NpcSpeechBubble(this.index, "Hey a little assistance here", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+			}
+		}
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
@@ -152,6 +190,8 @@ methodmap Barrack_Alt_Donnerkrieg < BarrackBody
 		i_laser_throttle[npc.index] = 0;
 		ResetAnimBackToNorm[npc.index] = false;
 		AcceptEntityInput(npc.m_iWearable1, "Enable");
+
+		npc.m_flNextIdleSound = GetGameTime(npc.index) + GetRandomFloat(2.0, 3.0);
 		
 		return npc;
 	}

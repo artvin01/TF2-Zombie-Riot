@@ -200,6 +200,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				SeaMelee_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
 			}
+			case WEAPON_RAPIER:
+			{
+				Rapier_DoSwingTrace(CustomMeleeRange, CustomMeleeWide);
+			}
 			case WEAPON_ANGELIC_SHOTGUN:
 			{
 				Angelic_Shotgun_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
@@ -252,7 +256,13 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 	GetAngleVectors(ang, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
 	
 	float vecSwingEnd[3];
+
+	//here is a problem, hull traces kinda go further as a its a box being fired.
+	//this is a problem.
+	//we will modify the ranges for specically these traces in melee to compensate for this lack of sight.
 	float vecSwingEndHull[3];
+	float vecSwingEndHullHeadshot[3];
+	
 
 	if(CustomMeleeRange)
 	{
@@ -260,9 +270,13 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * CustomMeleeRange;
 		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * CustomMeleeRange;
 
-		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2);
-		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2);
-		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2);
+		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.75);
+		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.75);
+		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2.75);
+	
+		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.1);
+		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.1);
+		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2.1);
 	}
 	else
 	{
@@ -270,9 +284,13 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * MELEE_RANGE;
 		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * MELEE_RANGE;
 
-		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2);
-		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2);
-		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2);
+		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.75);
+		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.75);
+		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.75);
+
+		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.1);
+		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.1);
+		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.1);
 	}
 
 	i_EntitiesHitAtOnceMax = enemies_hit_aoe;
@@ -282,19 +300,54 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 		if(!Hit_ally)
 		{
 			// See if we hit anything.
-			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, client );
+			/*
+				Inacse we want to hit, hitboxes.
+			*/
+			i_MeleeHitboxHit[client] = -1;
+
+			if(weapon > 0 && b_MeleeCanHeadshot[weapon])
+			{
+				//can we headshot?
+				//if yes, did we hit an enemy?
+				//if no, resort to normal hit detection.
+				trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEndHullHeadshot, MASK_SHOT, RayType_EndPoint, BulletAndMeleeTrace, client );
+				if ( TR_GetFraction(trace) < 1.0)
+				{
+					int target = TR_GetEntityIndex(trace);	
+					if(target > 0)
+					{
+						i_MeleeHitboxHit[client] = TR_GetHitGroup(trace);
+						return;
+					}
+					else
+					{
+						FinishLagCompensation_Base_boss();
+						b_LagCompNPC_No_Layers = true;
+						StartLagCompensation_Base_Boss(client);
+						delete trace;
+					}
+				}
+				else
+				{
+					FinishLagCompensation_Base_boss();
+					b_LagCompNPC_No_Layers = true;
+					StartLagCompensation_Base_Boss(client);
+					delete trace;
+				}
+			}
+			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, client );
 			if ( TR_GetFraction(trace) >= 1.0)
 			{
 				delete trace;
 				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
 				FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
 			//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
-			}	
+			}
 		}
 		else
 		{
 			// See if we hit anything.
-			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTraceAlly, client );
+			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEndHull, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTraceAlly, client );
 			if ( TR_GetFraction(trace) >= 1.0)
 			{
 				delete trace;
@@ -459,7 +512,11 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		int aoeSwing = 1;
 
 		Handle swingTrace;
-		b_LagCompNPC_No_Layers = true;
+		if(!b_MeleeCanHeadshot[weapon])
+			b_LagCompNPC_No_Layers = true;
+		else
+			b_LagCompNPC_ExtendBoundingBox = true;
+
 		float vecSwingForward[3];
 		StartLagCompensation_Base_Boss(client);
 		DoSwingTrace_Custom(swingTrace, client, vecSwingForward,_,_,_,_,aoeSwing, weapon);
@@ -609,7 +666,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 					{
 						case WEAPON_ANGELIC_SHOTGUN:
 						{
-							Angelic_Shotgun_Meleetrace_Hit_Before(client, damage, weapon, i_EntitiesHitAoeSwing[counter]);
+							Angelic_Shotgun_Meleetrace_Hit_Before(client, damage, i_EntitiesHitAoeSwing[counter]);
 						}
 						default:
 						{
@@ -628,7 +685,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						}
 						case WEAPON_ANGELIC_SHOTGUN:
 						{
-							Angelic_Shotgun_Meleetrace_Hit_After(client, damage, weapon, i_EntitiesHitAoeSwing[counter]);
+							Angelic_Shotgun_Meleetrace_Hit_After(client, damage);
 						}
 						default:
 						{

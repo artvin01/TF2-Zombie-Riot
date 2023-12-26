@@ -434,7 +434,7 @@
 	}
 	"Sawrunner Desc"
 	{
-		"en" 		"The monter from cry of fear, made from pure fear and depression, will go after you. and only you. The xeno infection is having an effect on him, making him even more erratic..."
+		"en" 		"The monter from cry of fear, made from pure fear and depression, will go after you. and only you. The xeno infection is having an effect on him, making him even more erratic...\nRecieves 2x headshot damage."
 	}
 	"True Fusion Warrior Desc"
 	{

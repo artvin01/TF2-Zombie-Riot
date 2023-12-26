@@ -965,15 +965,17 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				{
 					if(LastMann)
 					{
-						PrintToChatAll("You were given extra 30 seconds to prepare for the raidboss... Get ready.");
-						GiveProgressDelay(30.0);
-						f_DelaySpawnsForVariousReasons = GetGameTime() + 30.0;
+						PrintToChatAll("You were given extra 45 seconds to prepare for the raidboss... Get ready.");
+						GiveProgressDelay(45.0);
+						f_DelaySpawnsForVariousReasons = GetGameTime() + 45.0;
+						SpawnTimer(45.0);
 					}
 					else
 					{
-						PrintToChatAll("You were given extra 10 seconds to prepare for the raidboss... Get ready.");
-						GiveProgressDelay(10.0);
-						f_DelaySpawnsForVariousReasons = GetGameTime() + 10.0;
+						PrintToChatAll("You were given extra 30 seconds to prepare for the raidboss... Get ready.");
+						GiveProgressDelay(30.0);
+						f_DelaySpawnsForVariousReasons = GetGameTime() + 30.0;
+						SpawnTimer(30.0);
 					}
 				}
 				Raidboss_Clean_Everyone();

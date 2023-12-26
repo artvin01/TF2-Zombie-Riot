@@ -255,6 +255,25 @@ public void BarrackThorns_ClotThink(int iNPC)
 					npc.m_iWearable3 = ParticleEffectAt_Parent(startPosition, "utaunt_gifts_floorglow_brown", npc.index, "root", {0.0,0.0,0.0});
 					CreateTimer(30.0, Timer_RemoveEntity, EntIndexToEntRef(npc.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
 				}
+				switch(GetRandomInt(0,3))
+				{
+					case 0:
+					{
+						NpcSpeechBubble(npc.index, "Stop moving around. It'll spare all of us the effort.", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+					}
+					case 1:
+					{
+						NpcSpeechBubble(npc.index, "Your attacks are all within my calculations.", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+					}
+					case 2:
+					{
+						NpcSpeechBubble(npc.index, "Futile.", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+					}
+					case 3:
+					{
+						NpcSpeechBubble(npc.index, "Watch carefully, this is the Destreza of Iberia!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+					}
+				}
 			}
 
 

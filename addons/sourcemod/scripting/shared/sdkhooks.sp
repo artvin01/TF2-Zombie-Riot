@@ -399,7 +399,7 @@ public void OnPostThink(int client)
 			}
 			else
 			{
-				healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 50.0, 0.5, 0.0, HEAL_SELFHEAL);	
+				healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 100.0, 0.5, 0.0, HEAL_SELFHEAL);	
 			}
 
 			ApplyHealEvent(client, healing_Amount);
@@ -1312,7 +1312,9 @@ public void OnPreThink(int client)
 */
 
 #if defined ZR
-static float i_WasInUber;
+static float i_WasInUber[MAXTF2PLAYERS];
+static float i_WasInMarkedForDeath[MAXTF2PLAYERS];
+static float i_WasInDefenseBuff[MAXTF2PLAYERS];
 public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(!(damagetype & DMG_DROWN|DMG_FALL))
@@ -1327,16 +1329,44 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 			TeleportBackToLastSavePosition(victim);
 		}
 	}
-	if(i_WasInUber)
+	if(i_WasInUber[victim])
 	{
-		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber);
+		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber[victim]);
 	}
-	i_WasInUber = 0.0;
+	if(i_WasInMarkedForDeath[victim])
+	{
+		TF2_AddCondition(victim, TFCond_MarkedForDeathSilent, i_WasInMarkedForDeath[victim]);
+	}
+	if(i_WasInDefenseBuff[victim])
+	{
+		TF2_AddCondition(victim, TFCond_DefenseBuffed, i_WasInDefenseBuff[victim]);
+	}
+	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
+	i_WasInUber[victim] = 0.0;
+	i_WasInMarkedForDeath[victim] = 0.0;
+	i_WasInDefenseBuff[victim] = 0.0;
 	return Plugin_Continue;
+}
+static void Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim)
+{
+	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+	if(IsValidEntity(Victim_weapon))
+	{
+		switch(i_CustomWeaponEquipLogic[Victim_weapon])
+		{
+			case WEAPON_RED_BLADE:
+			{
+				WeaponRedBlade_OnTakeDamage_Post(victim, Victim_weapon);
+			}
+		}
+	}
 }
 #endif
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	i_WasInUber[victim] = 0.0;
+	i_WasInMarkedForDeath[victim] = 0.0;
+	i_WasInDefenseBuff[victim] = 0.0;
 #if defined ZR
 	if(TeutonType[victim])
 		return Plugin_Handled;
@@ -1354,7 +1384,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		if(TF2_IsPlayerInCondition(victim, TFCond_Ubercharged))
 		{
-			i_WasInUber = TF2Util_GetPlayerConditionDuration(victim, TFCond_Ubercharged);
+			i_WasInUber[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_Ubercharged);
 			TF2_RemoveCondition(victim, TFCond_Ubercharged);
 			damage *= 0.5;
 		}
@@ -1396,7 +1426,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}	
 #if defined ZR
 	float Replicated_Damage;
-	Replicated_Damage = Replicate_Damage_Medications(victim, damage, damagetype);
+	Replicate_Damage_Medications(victim, damage, Replicated_Damage, damagetype);
+	
 #endif
 	
 	if(damagetype & DMG_FALL)
@@ -1910,22 +1941,22 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 #if defined ZR
-float Replicate_Damage_Medications(int victim, float damage, int damagetype)
+void Replicate_Damage_Medications(int victim, float &damage, float &Replicated_Dmg, int damagetype)
 {
+	Replicated_Dmg = damage;
 	if(TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeathSilent))
 	{
-		if(!(damagetype & (DMG_CRIT)))
-		{
-			damage *= 1.35; //Remove crit shit from the calcs!, there are no minicrits here, so i dont have to care
-		}
+		i_WasInMarkedForDeath[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
+		TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
+		damage *= 1.35;
+		Replicated_Dmg *= 1.35;
 	}
 	if(TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 	{
-		if(damagetype & (DMG_CRIT))
-		{
-			damage /= 3.0; //Remove crit shit from the calcs!, there are no minicrits here, so i dont have to care
-		}
+		i_WasInDefenseBuff[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_DefenseBuffed);
+		TF2_RemoveCondition(victim, TFCond_DefenseBuffed);
 		damage *= 0.65;
+		Replicated_Dmg *= 0.65;
 	}
 	float value;
 
@@ -1933,21 +1964,28 @@ float Replicate_Damage_Medications(int victim, float damage, int damagetype)
 	{
 		value = Attributes_FindOnPlayerZR(victim, 206);	// MELEE damage resitance
 		if(value)
+		{
+			Replicated_Dmg *= value;
 			damage *= value;
+		}
 	}
-	else
+	else if(!(damagetype & DMG_FALL))
 	{
 		value = Attributes_FindOnPlayerZR(victim, 205);	// RANGED damage resistance
 		if(value)
+		{
+			Replicated_Dmg *= value;
 			damage *= value;
-			//Everything else should be counted as ranged reistance probably.
+		}
+		//Everything else should be counted as ranged reistance probably.
 	}
 		
 	value = Attributes_FindOnPlayerZR(victim, 412);	// Overall damage resistance
 	if(value)
-		damage *= value;	
-		
-	return damage;
+	{
+		Replicated_Dmg *= value;
+		damage *= value;
+	}	
 }
 #endif	// ZR
 
@@ -2133,6 +2171,14 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		case WEAPON_FLAGELLANT_MELEE, WEAPON_FLAGELLANT_HEAL:
 		{
 			Flagellant_OnTakeDamage(victim, damage);
+		}
+		case WEAPON_RAPIER:
+		{
+			Player_OnTakeDamage_Rapier(victim, attacker, damage);
+		}
+		case WEAPON_RED_BLADE:
+		{
+			WeaponRedBlade_OnTakeDamage(victim, damage);
 		}
 	}
 	return damage;

@@ -286,6 +286,8 @@ bool b_PlayerIsInAnotherPart[MAXENTITIES];
 float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
 int i_OverrideWeaponSlot[MAXENTITIES]={-1, ...};
 int i_MeleeAttackFrameDelay[MAXENTITIES]={12, ...};
+bool b_MeleeCanHeadshot[MAXENTITIES]={false, ...};
+int i_MeleeHitboxHit[MAXENTITIES]={false, ...};
 //float Check_Standstill_Delay[MAXTF2PLAYERS];
 //bool Check_Standstill_Applied[MAXTF2PLAYERS];
 
@@ -450,6 +452,7 @@ float f_MaimDebuff[MAXENTITIES];
 float f_PassangerDebuff[MAXENTITIES];
 float f_CrippleDebuff[MAXENTITIES];
 float f_CudgelDebuff[MAXENTITIES];
+float f_DuelStatus[MAXENTITIES];
 float f_PotionShrinkEffect[MAXENTITIES];
 int BleedAmountCountStack[MAXENTITIES];
 bool b_HasBombImplanted[MAXENTITIES];
@@ -1013,7 +1016,8 @@ int i_AttacksTillMegahit[MAXENTITIES];
 int i_WeaponArchetype[MAXENTITIES];
 int i_WeaponForceClass[MAXENTITIES];
 int i_Viewmodel_PlayerModel[MAXENTITIES];
-int i_Viewmodel_WeaponModel[MAXTF2PLAYERS];
+int i_Worldmodel_WeaponModel[MAXTF2PLAYERS];
+int WeaponRef_viewmodel[MAXTF2PLAYERS];
 
 float fl_NextFlameSound[MAXENTITIES];
 float fl_FlamerActive[MAXENTITIES];
@@ -2454,6 +2458,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_BuffBannerNpcBuff[entity] = 0.0;
 		f_BattilonsNpcBuff[entity] = 0.0;
 		f_AncientBannerNpcBuff[entity] = 0.0;
+		f_DuelStatus[entity] = 0.0;
 		b_BuildingHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
 		b_IsVehicle[entity] = false;

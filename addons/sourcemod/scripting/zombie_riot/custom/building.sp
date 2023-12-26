@@ -2114,13 +2114,13 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					}
 
 					HealEntityGlobal(owner, client, HealAmmount, _, 3.0, _);
-					if(!Rogue_Mode() && owner != -1 && i_Healing_station_money_limit[owner][client] < 10)
+					if(!Rogue_Mode() && owner != -1 && i_Healing_station_money_limit[owner][client] < 20)
 					{
 						if(!Rogue_Mode() && owner != client)
 						{
 							i_Healing_station_money_limit[owner][client] += 1;
-							Resupplies_Supplied[owner] += 4;
-							GiveCredits(owner, 40, true);
+							Resupplies_Supplied[owner] += 2;
+							GiveCredits(owner, 20, true);
 							SetDefaultHudPosition(owner);
 							SetGlobalTransTarget(owner);
 							ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Healing Station Used");
@@ -2370,11 +2370,11 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 
 							if(!Rogue_Mode() && owner != -1 && owner != client)
 							{
-								if(Armor_table_money_limit[owner][client] < 15)
+								if(Armor_table_money_limit[owner][client] < 30)
 								{
-									GiveCredits(owner, 40, true);
+									GiveCredits(owner, 20, true);
 									Armor_table_money_limit[owner][client] += 1;
-									Resupplies_Supplied[owner] += 4;
+									Resupplies_Supplied[owner] += 2;
 									SetDefaultHudPosition(owner);
 									SetGlobalTransTarget(owner);
 									ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Armor Table Used");
