@@ -8,6 +8,7 @@ static int SSS_overheat[MAXENTITIES]={0, ...};
 static float starshooter_hud_delay[MAXTF2PLAYERS];
 static int Star_HitTarget[MAXENTITIES][MAXENTITIES];
 static float StarShooterCoolDelay[MAXTF2PLAYERS];
+static int IsAbilityActive[MAXTF2PLAYERS];
 
 Handle Timer_Starshooter_Management[MAXPLAYERS+1] = {null, ...};
 
@@ -36,31 +37,31 @@ The damage getting lower after having a higher overheat amount now works properl
 my current plan was to make it decrease by 1 overheat charge every half a second after the weapon hasn't been used for a full 2 seconds, just idk how to make a timer for that
 */
 
-public void Super_Star_Shooter_Main(int client, int weapon, bool crit, int slot)
+public void Super_Star_Shooter_Main(int client, int weapon, bool crit, int slot) //stuff that happens when you press m1
 {
 	Enable_StarShooter(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 2.0);
 	StarShooterCoolDelay[client] = GetGameTime() + 2.0;
-	SSS_overheat[client] += 1;
+	SSS_overheat[client] += 4;
 
 	float damage = 1000.0;
 		
-	if(SSS_overheat[client] > 15)
+	if(SSS_overheat[client] >= 50)
 	{
 		damage = 750.0;
 	} 
-	if(SSS_overheat[client] > 18)
+	if(SSS_overheat[client] >= 75)
 	{
 		damage = 500.0;
 	} 
-	if(SSS_overheat[client] > 20)
+	if(SSS_overheat[client] >= 100)
 	{
 		damage = 250.0;
 	}
 			
-	if(SSS_overheat[client] > 25)
+	if(SSS_overheat[client] > 100)
 	{
-		SSS_overheat[client] = 25;
+		SSS_overheat[client] = 100;
 	}
 
 	float speed = 1750.0;
@@ -100,6 +101,119 @@ public void Super_Star_Shooter_Main(int client, int weapon, bool crit, int slot)
 	Wand_Launch(client, iRot, speed, time, damage);
 	
 }
+
+
+public void Super_Star_Shooter_pap1_Main(int client, int weapon, bool crit, int slot) //stuff that happens when you press m1 at the first pap
+{
+	Enable_StarShooter(client, weapon);
+	Ability_Apply_Cooldown(client, slot, 2.0);
+	StarShooterCoolDelay[client] = GetGameTime() + 2.0;
+	SSS_overheat[client] += 3;
+
+	float damage = 1000.0;
+		
+	if(SSS_overheat[client] >= 50)
+	{
+		damage = 750.0;
+	} 
+	if(SSS_overheat[client] >= 75)
+	{
+		damage = 500.0;
+	} 
+	if(SSS_overheat[client] >= 100)
+	{
+		damage = 250.0;
+	}
+			
+	if(SSS_overheat[client] > 100)
+	{
+		SSS_overheat[client] = 100;
+	}
+
+	float speed = 1750.0;
+	float time = 5000.0/speed;
+	
+	damage *= Attributes_Get(weapon, 1, 1.0);
+
+	damage *= Attributes_Get(weapon, 2, 1.0);
+			
+	speed *= Attributes_Get(weapon, 103, 1.0);
+	
+	speed *= Attributes_Get(weapon, 104, 1.0);
+	
+	speed *= Attributes_Get(weapon, 475, 1.0);
+	
+	time *= Attributes_Get(weapon, 101, 1.0);
+	
+	time *= Attributes_Get(weapon, 102, 1.0);
+		
+	int iRot = CreateEntityByName("func_door_rotating");
+	if(iRot == -1) return;
+	
+	float fPos[3];
+	GetClientEyePosition(client, fPos);
+	
+	DispatchKeyValueVector(iRot, "origin", fPos);
+	DispatchKeyValue(iRot, "distance", "99999");
+	DispatchKeyValueFloat(iRot, "speed", speed);
+	DispatchKeyValue(iRot, "spawnflags", "12288"); // passable|silent
+	DispatchSpawn(iRot);
+	SetEntityCollisionGroup(iRot, 27);
+	
+	SetVariantString("!activator");
+	AcceptEntityInput(iRot, "Open");
+//	EmitSoundToAll(SOUND_WAND_SHOT_STAR, client, _, 65, _, 0.7);
+	//	CreateTimer(0.1, Timer_HatThrow_Woosh, EntIndexToEntRef(iRot), TIMER_REPEAT);
+	Wand_Launch(client, iRot, speed, time, damage);
+
+	/*
+	if(IsAbilityActive[client] == 0)
+	{
+		PrintToChatAll("Ability is 0");
+	}
+	if(IsAbilityActive[client] == 1)
+	{
+		PrintToChatAll("Ability is 1");
+	}
+	*/
+}
+
+public void Star_Shooter_Meteor_shower_ability(int client, int weapon, bool crit, int slot)// ability stuff here
+{
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		
+		Rogue_OnAbilityUse(weapon);
+		Ability_Apply_Cooldown(client, slot, 45.0);
+		ClientCommand(client, "playgamesound weapons/cow_mangler_over_charge_shot.wav");
+
+		//PrintToChatAll("test meteor shower");
+		ApplyTempAttrib(weapon, 6, 0.5, 7.5); //applies faster fire rate for the next 7.5 seconds
+		IsAbilityActive[client] = 1; //1 for enabled, 0 for disabled
+		CreateTimer(7.5, Disable_Star_Shooter_Ability, client, TIMER_FLAG_NO_MAPCHANGE);
+
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+	}
+}
+
+public Action Disable_Star_Shooter_Ability(Handle timer, int client)
+{
+	IsAbilityActive[client] = 0; //1 for enabled, 0 for disabled
+	//PrintToChatAll("Ability disabled");
+	return Plugin_Handled;
+}
+
 
 static void Wand_Launch(int client, int iRot, float speed, float time, float damage, int pap = 0)
 {
@@ -281,7 +395,7 @@ public void Starshooter_Cooldown_Logic(int client, int weapon)
 	
 	if (StarShooterCoolDelay[client] < GetGameTime())
 	{
-		SSS_overheat[client] -= 1;
+		SSS_overheat[client] -= 4;
 		
 		if(SSS_overheat[client] < 0)
 		{
@@ -293,9 +407,14 @@ public void Starshooter_Cooldown_Logic(int client, int weapon)
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			PrintHintText(client,"Star Shooter Overheat %i%%%", SSS_overheat[client] * 4);
+			PrintHintText(client,"Star Shooter Overheat %i%%%", SSS_overheat[client]);
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 		}
 		starshooter_hud_delay[client] = GetGameTime() + 0.5;
+	}
+
+	if(IsAbilityActive[client] == 1) //consantly sets overheat to 0 while ability is active, 1 for enabled, 0 for disabled
+	{
+		SSS_overheat[client] = 0;
 	}
 }
