@@ -19,13 +19,24 @@ Heaven's blade - Fantasmal swings but heavily moddified.
 Heaven's barrage - Quincy Hyper barrage
 
 donner:
-Improved Nightmare Cannon:
-	Mirror system:
-		Either schwertkrieg is the mirror. easier to code, not as cool looking, but could be fine anyway
-	Or
-		Several mini npc's spawn that act as anchor mirror points, far harder to code, but way cooler looking
-Heaven Sent Light: Ruina Ion cannon's but modified - They somewhat start out like moonlight
-Heaven's radiance: Jump high into the sky, and spew lasers all around.
+
+Wave 15:
+Improved Nightmare Cannon: Coded!
+
+On Schwert Death:	Coded but might need more refining.
+	Heaven Sent Light: Ruina Ion cannon's but modified - They somewhat start out like moonlight
+
+Wave 30:
+	Heaven's Fall:
+	Several IOC's spawn around the map, creating creep. once the first creep ion's are done, switches to simply damage.
+
+Wave 45:
+	Heaven's radiance: Jump high into the sky, and spew lasers all around.
+
+Wave 45 Ult:
+	Heavens Touch:
+		Moonlight Horizontal Eddition:tm: :)
+
 
 Very descriptive descriptions, I know lmao
 
@@ -90,6 +101,7 @@ static bool b_health_stripped[MAXENTITIES];
 
 
 static int Heavens_Beam;
+static char gExplosive1;
 
 //Logic for duo raidboss
 
@@ -137,6 +149,8 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
 	
 	PrecacheSoundCustom("#zombiesurvival/seaborn/donner_schwert_5.mp3");
+
+	PrecacheSound("misc/halloween/gotohell.wav");
 	
 	Heavens_Beam = PrecacheModel(BLITZLIGHT_SPRITE);
 	
@@ -400,7 +414,9 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		fl_schwertkrieg_sniper_rampage_timer = 0.0;
 		
 		
-		Invoke_Heavens_Light(npc.index);
+		//Invoke_Heavens_Light(npc.index);
+
+		Heavens_Fall(npc);
 		
 		shared_goal = false;
 
@@ -799,11 +815,20 @@ static void GetRandomLoc(Raidboss_Donnerkrieg npc, float Loc[3], int Num)
 
 	CNavArea area = TheNavMesh.GetNearestNavArea(Loc, true);
 	if(area == NULL_AREA)
+	{
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
+		Loc[0] +=GetRandomFloat((-200.0*Num),(200.0*Num));
+		Loc[1]  +=GetRandomFloat((-200.0*Num),(200.0*Num));
 		return;
+	}
+		
 
 	int NavAttribs = area.GetAttributes();
 	if(NavAttribs & NAV_MESH_AVOID)
 	{
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
+		Loc[0] +=GetRandomFloat((-200.0*Num),(200.0*Num));
+		Loc[1]  +=GetRandomFloat((-200.0*Num),(200.0*Num));
 		return;
 	}
 			
@@ -917,52 +942,8 @@ static void Heavens_Full_Charge(Raidboss_Donnerkrieg npc, float GameTime)
 		AddVectors(loc, Direction, loc);
 		
 		Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, loc);
-		
-		for(int client=0 ; client <=MAXTF2PLAYERS ; client++)
-		{
-			if(IsValidClient(client) && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
-			{
-				float client_loc[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", client_loc);
-				float distance = GetVectorDistance(client_loc, loc, true);
-				{
-					if(distance< (fl_heavens_radius * fl_heavens_radius))
-					{
-						float ratio = (1.0 - (distance / (fl_heavens_radius * fl_heavens_radius)));
-						if(ratio<0.4)
-							ratio = 0.4;
-						float fake_damage = fl_heavens_damage*ratio;	//reduce damage if the target just grazed it.
-						SDKHooks_TakeDamage(client, npc.index, npc.index, fake_damage, DMG_CLUB, _, _, loc);
-						Client_Shake(client, 0, 5.0, 15.0, 0.1);
-					}
-				}
-	
-			}
-		}
 
-		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)	// now murder red npc's :)
-		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
-			{
-				float target_vec[3]; target_vec = GetAbsOrigin(ally);
-				float dist=GetVectorDistance(loc, target_vec, true);
-
-				if(dist< (fl_heavens_radius * fl_heavens_radius))
-				{
-					float ratio = (1.0 - (dist / (fl_heavens_radius * fl_heavens_radius)));
-					if(ratio<0.4)
-						ratio = 0.4;	// L + Ratio. :3
-					float fake_damage = fl_heavens_damage*ratio;	//reduce damage if the target just grazed it.
-
-					if(ShouldNpcDealBonusDamage(ally))
-					{
-						fake_damage *=2.0;
-					}
-					SDKHooks_TakeDamage(ally, npc.index, npc.index, fake_damage, DMG_CLUB, _, _, loc);
-				}
-
-			}
-		}
+		Doonerkrieg_Do_AOE_Damage(npc, loc, fl_heavens_damage, fl_heavens_radius, 0.4, 0);
 		
 		fl_Heavens_Loc[i] = loc;
 		
@@ -1086,104 +1067,9 @@ static void Heavens_Spawn8(float startLoc[3], float space, float ratio)
 		
 	}
 }
-/*
-public void Doonerkrieg_Delay_TE_Beam(DataPack pack)
-{
-	pack.Reset();
-	float endLoc[3], size;
-	int color[4];
-	endLoc[0] = pack.ReadCell();
-	endLoc[1] = pack.ReadCell();
-	endLoc[2] = pack.ReadCell();
-	color[0] = pack.ReadCell();
-	color[1] = pack.ReadCell();
-	color[2] = pack.ReadCell();
-	color[3] = pack.ReadCell();
-	size = pack.ReadCell();
-
-	float skyLoc[3], groundLoc[3];
-	skyLoc[0] = endLoc[0];
-	skyLoc[1] = endLoc[1];
-	skyLoc[2] = 9999.0;
-	groundLoc = endLoc;
-	groundLoc[2] -= 200.0;
-
-	TE_SetupBeamPoints(skyLoc, groundLoc, Heavens_Beam, Heavens_Beam, 0, 1, 0.1, size, size, 1, 0.5, color, 1);
-	TE_SendToAll();
-		
-	delete pack;
-}
-public void Doonerkrieg_Delay_TE_Ring(DataPack pack)
-{
-	pack.Reset();
-	float endLoc[3];
-	int color[4];
-	endLoc[0] = pack.ReadCell();
-	endLoc[1] = pack.ReadCell();
-	endLoc[2] = pack.ReadCell();
-	color[0] = pack.ReadCell();
-	color[1] = pack.ReadCell();
-	color[2] = pack.ReadCell();
-	color[3] = pack.ReadCell();
-
-	spawnRing_Vector(endLoc, fl_heavens_radius*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, 0.1, 1.0, 0.1, 1);
-		
-	delete pack;
-}*/
 void Heavens_SpawnBeam(float beamLoc[3], int color[4], float size, bool rings)
 {
-	/*
-	TE_used += 1;
-	if(TE_used > 15)
-	{
-		int DelayFrames = (TE_used / 16)+1;
-		DelayFrames *= 2;
-		DataPack pack_TE = new DataPack();
-		pack_TE.WriteCell(beamLoc[0]);
-		pack_TE.WriteCell(beamLoc[1]);
-		pack_TE.WriteCell(beamLoc[2]);
-		pack_TE.WriteCell(color[0]);
-		pack_TE.WriteCell(color[1]);
-		pack_TE.WriteCell(color[2]);
-		pack_TE.WriteCell(color[3]);
-		pack_TE.WriteCell(size);
-		RequestFrames(Doonerkrieg_Delay_TE_Beam, DelayFrames, pack_TE);
-		//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
-	}
-	else
-	{
-		float skyLoc[3], groundLoc[3];
-		skyLoc[0] = beamLoc[0];
-		skyLoc[1] = beamLoc[1];
-		skyLoc[2] = 9999.0;
-		groundLoc = beamLoc;
-		groundLoc[2] -= 200.0;
 
-
-		TE_SetupBeamPoints(skyLoc, groundLoc, Heavens_Beam, Heavens_Beam, 0, 1, 0.1, size, size, 1, 0.5, color, 1);
-		TE_SendToAll();
-	}
-
-	TE_used += 1;
-	if(TE_used > 15)
-	{
-		int DelayFrames = (TE_used / 16)+1;
-		DelayFrames *= 2;
-		DataPack pack_TE = new DataPack();
-		pack_TE.WriteCell(beamLoc[0]);
-		pack_TE.WriteCell(beamLoc[1]);
-		pack_TE.WriteCell(beamLoc[2]);
-		pack_TE.WriteCell(color[0]);
-		pack_TE.WriteCell(color[1]);
-		pack_TE.WriteCell(color[2]);
-		pack_TE.WriteCell(color[3]);
-		RequestFrames(Doonerkrieg_Delay_TE_Ring, DelayFrames, pack_TE);
-		//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
-	}
-	else
-	{
-		spawnRing_Vector(beamLoc, fl_heavens_radius*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, 0.1, 1.0, 0.1, 1);
-	}*/
 
 	float skyLoc[3], groundLoc[3];
 	skyLoc[0] = beamLoc[0];
@@ -1382,6 +1268,332 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 	}
 }
 
+#define DONNERKRIEG_HEAVENS_FALL_AMT_1 5
+#define DONNERKRIEG_HEAVENS_FALL_AMT_2 5
+#define DONNERKRIEG_HEAVENS_FALL_AMT_3 5
+
+#define DONNERKRIEG_HEAVENS_STAGE_1 500.0
+#define DONNERKRIEG_HEAVENS_STAGE_2 100.0
+#define DONNERKRIEG_HEAVENS_STAGE_3 500.0
+
+
+static float DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[2] = {7.5, 12.5};	//Minimum, Maximum Time
+
+static int TE_used;
+
+static void Heavens_Fall(Raidboss_Donnerkrieg npc, int Infection=0 , bool creep=false)
+{
+	TE_used=0;
+
+
+	float Loc[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
+
+	int SPRITE_INT_2 = PrecacheModel("materials/sprites/lgtning.vmt", false);
+
+	float Range = 150.0;
+
+	float UserLoc[3];
+	UserLoc = GetAbsOrigin(npc.index);
+	UserLoc[2]+=75.0;
+
+	for(int Ion=0 ; Ion < DONNERKRIEG_HEAVENS_FALL_AMT_1 ; Ion++)
+	{
+
+		float tempAngles[3], EndLoc[3];
+		tempAngles[0] = 0.0;
+		tempAngles[1] = (360.0/DONNERKRIEG_HEAVENS_FALL_AMT_1)*Ion;
+		tempAngles[2] = 0.0;
+
+		float Dist = DONNERKRIEG_HEAVENS_STAGE_1;
+		Do_Trace_Heavens_Fall(Loc, tempAngles, EndLoc, Dist);
+
+		for(int Ion2=0 ; Ion2 < DONNERKRIEG_HEAVENS_FALL_AMT_2 ; Ion2++)
+		{
+			float tempAngles2[3], EndLoc2[3];
+			tempAngles2[0] = 0.0;
+			tempAngles2[1] = (360.0/DONNERKRIEG_HEAVENS_FALL_AMT_2)*Ion2;
+			tempAngles2[2] = 0.0;
+
+			float Dist2 = DONNERKRIEG_HEAVENS_STAGE_2;
+			Do_Trace_Heavens_Fall(EndLoc, tempAngles2, EndLoc2, Dist2);
+			
+			for(int Ion3=0 ; Ion3 < DONNERKRIEG_HEAVENS_FALL_AMT_3 ; Ion3++)
+			{
+				float tempAngles3[3], EndLoc3[3];
+				tempAngles3[0] = 0.0;
+				tempAngles3[1] = (360.0/DONNERKRIEG_HEAVENS_FALL_AMT_3)*Ion3;
+				tempAngles3[2] = 0.0;
+
+				float Dist3 = DONNERKRIEG_HEAVENS_STAGE_3;
+				Do_Trace_Heavens_Fall(EndLoc2, tempAngles3, EndLoc3, Dist3);
+
+			//	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, EndLoc3);
+
+				float Time = GetRandomFloat(DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[0], DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[1]);
+				int color[4];
+				color[0] = 240;
+				color[1] = 240;
+				color[2] = 240;
+				color[3] = 175;
+
+				EmitSoundToAll("misc/halloween/gotohell.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, Loc);
+
+				TE_used += 1;
+				if(TE_used > 31)
+				{
+					int DelayFrames = (TE_used / 32);
+					DelayFrames *= 2;
+					DataPack pack_TE = new DataPack();
+					pack_TE.WriteCell(EndLoc3[0]);
+					pack_TE.WriteCell(EndLoc3[1]);
+					pack_TE.WriteCell(EndLoc3[2]);
+					pack_TE.WriteCell(UserLoc[0]);
+					pack_TE.WriteCell(UserLoc[1]);
+					pack_TE.WriteCell(UserLoc[2]);
+					pack_TE.WriteCell(color[0]);
+					pack_TE.WriteCell(color[1]);
+					pack_TE.WriteCell(color[2]);
+					pack_TE.WriteCell(color[3]);
+					pack_TE.WriteCell(SPRITE_INT_2);
+
+					RequestFrames(Doonerkrieg_Delay_TE_Beam2, DelayFrames, pack_TE);
+					//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
+				}
+				else
+				{	
+					TE_SetupBeamPoints(UserLoc, EndLoc3, SPRITE_INT_2, 0, 0, 0, 0.8, 22.0, 10.2, 1, 8.0, color, 0);
+					TE_SendToAll();
+				}
+				
+				Handle data;
+				CreateDataTimer(Time, Smite_Timer_Donner, data, TIMER_FLAG_NO_MAPCHANGE);
+				WritePackFloat(data, EndLoc3[0]);
+				WritePackFloat(data, EndLoc3[1]);
+				WritePackFloat(data, EndLoc3[2]);
+				WritePackCell(data, Range); // Range
+				WritePackCell(data, EntIndexToEntRef(npc.index));
+				WritePackCell(data, Infection);
+				WritePackCell(data, color[0]);
+				WritePackCell(data, color[1]);
+				WritePackCell(data, color[2]);
+				WritePackCell(data, color[3]);
+
+				TE_used += 1;
+				if(TE_used > 31)
+				{
+					int DelayFrames = (TE_used / 32);
+					DelayFrames *= 2;
+					DataPack pack_TE = new DataPack();
+					pack_TE.WriteCell(EndLoc3[0]);
+					pack_TE.WriteCell(EndLoc3[1]);
+					pack_TE.WriteCell(EndLoc3[2]);
+					pack_TE.WriteCell(color[0]);
+					pack_TE.WriteCell(color[1]);
+					pack_TE.WriteCell(color[2]);
+					pack_TE.WriteCell(color[3]);
+					pack_TE.WriteCell(Range);
+					pack_TE.WriteCell(Time);
+					RequestFrames(Doonerkrieg_Delay_TE_Ring, DelayFrames, pack_TE);
+					//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
+				}
+				else
+				{
+					spawnRing_Vectors(EndLoc3, Range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, Time, 6.0, 0.1, 1, 1.0);
+				}
+			}
+		}
+	}
+	TE_used=0;
+}
+
+static void Do_Trace_Heavens_Fall(float startPoint[3], float Angles[3], float Loc[3], float Dist)
+{
+
+	Handle trace = TR_TraceRayFilterEx(startPoint, Angles, 11, RayType_Infinite, DonnerKriegCannon_BEAM_TraceWallsOnly);
+	if (TR_DidHit(trace))
+	{
+		TR_GetEndPosition(Loc, trace);
+		delete trace;
+
+		float distance = GetVectorDistance(startPoint, Loc);
+
+		if(distance>Dist)
+		{
+			Get_Fake_Forward_Vec(Dist, Angles, Loc, startPoint);
+		}
+		
+	}
+	else
+	{
+		delete trace;
+	}
+}
+
+public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
+{
+	ResetPack(data);
+		
+	float startPosition[3];
+	float position[3];
+	startPosition[0] = ReadPackFloat(data);
+	startPosition[1] = ReadPackFloat(data);
+	startPosition[2] = ReadPackFloat(data);
+	float Ionrange = ReadPackCell(data);
+	int client = EntRefToEntIndex(ReadPackCell(data));
+	int Infection = ReadPackCell(data);
+	int Color[4];
+	Color[0] = ReadPackCell(data);
+	Color[1] = ReadPackCell(data);
+	Color[2] = ReadPackCell(data);
+	Color[3] = ReadPackCell(data);
+	
+	
+	if (!IsValidEntity(client))
+	{
+		return Plugin_Stop;
+	}
+				
+	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
+
+	Doonerkrieg_Do_AOE_Damage(npc, startPosition, 100.0, Ionrange, 0.4, Infection);
+
+	TE_used += 1;
+	if(TE_used > 31)
+	{
+		int DelayFrames = (TE_used / 32);
+		DelayFrames *= 2;
+		DataPack pack_TE = new DataPack();
+		pack_TE.WriteCell(startPosition[0]);
+		pack_TE.WriteCell(startPosition[1]);
+		pack_TE.WriteCell(startPosition[2]);
+		RequestFrames(Doonerkrieg_Delay_TE_Explosion, DelayFrames, pack_TE);
+		//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
+	}
+	else
+	{
+		TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
+		TE_SendToAll();
+	}
+
+	
+			
+	position[0] = startPosition[0];
+	position[1] = startPosition[1];
+	position[2] += startPosition[2] + 900.0;
+	startPosition[2] += -200;
+
+	for(int i=0 ; i < 4 ; i ++)
+	{
+		TE_used += 1;
+		if(TE_used > 31)
+		{
+			int DelayFrames = (TE_used / 32);
+			DelayFrames *= 2;
+			DataPack pack_TE = new DataPack();
+			pack_TE.WriteCell(startPosition[0]);
+			pack_TE.WriteCell(startPosition[1]);
+			pack_TE.WriteCell(startPosition[2]);
+			pack_TE.WriteCell(position[0]);
+			pack_TE.WriteCell(position[1]);
+			pack_TE.WriteCell(position[2]);
+			pack_TE.WriteCell(Color[0]);
+			pack_TE.WriteCell(Color[1]);
+			pack_TE.WriteCell(Color[2]);
+			pack_TE.WriteCell(Color[3]);
+			RequestFrames(Doonerkrieg_Delay_TE_Beam, DelayFrames, pack_TE);
+			//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
+		}
+		else
+		{
+			TE_SetupBeamPoints(startPosition, position, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, Color, 3);
+			TE_SendToAll();
+		}
+	}
+	
+	position[2] = startPosition[2] + 50.0;
+	EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
+	return Plugin_Continue;
+}
+
+public void Doonerkrieg_Delay_TE_Ring(DataPack pack)
+{
+	pack.Reset();
+	float endLoc[3];
+	int color[4];
+	endLoc[0] = pack.ReadCell();
+	endLoc[1] = pack.ReadCell();
+	endLoc[2] = pack.ReadCell();
+	color[0] = pack.ReadCell();
+	color[1] = pack.ReadCell();
+	color[2] = pack.ReadCell();
+	color[3] = pack.ReadCell();
+	float Range = pack.ReadCell();
+	float Time = pack.ReadCell();
+
+	spawnRing_Vectors(endLoc, Range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, Time, 6.0, 0.1, 1, 1.0);
+		
+	delete pack;
+}
+
+public void Doonerkrieg_Delay_TE_Beam(DataPack pack)
+{
+	pack.Reset();
+	float endLoc[3], StartLoc[3];
+	int color[4];
+	endLoc[0] = pack.ReadCell();
+	endLoc[1] = pack.ReadCell();
+	endLoc[2] = pack.ReadCell();
+	StartLoc[0] = pack.ReadCell();
+	StartLoc[1] = pack.ReadCell();
+	StartLoc[2] = pack.ReadCell();
+	color[0] = pack.ReadCell();
+	color[1] = pack.ReadCell();
+	color[2] = pack.ReadCell();
+	color[3] = pack.ReadCell();
+
+	TE_SetupBeamPoints(StartLoc, endLoc, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, color, 3);
+	TE_SendToAll();
+		
+	delete pack;
+}
+
+public void Doonerkrieg_Delay_TE_Explosion(DataPack pack)
+{
+	pack.Reset();
+	float endLoc[3];
+	endLoc[0] = pack.ReadCell();
+	endLoc[1] = pack.ReadCell();
+	endLoc[2] = pack.ReadCell();
+
+	TE_SetupExplosion(endLoc, gExplosive1, 10.0, 1, 0, 0, 0);
+	TE_SendToAll();
+		
+	delete pack;
+}
+
+public void Doonerkrieg_Delay_TE_Beam2(DataPack pack)
+{
+	pack.Reset();
+	float endLoc[3], StartLoc[3];
+	int color[4];
+	endLoc[0] = pack.ReadCell();
+	endLoc[1] = pack.ReadCell();
+	endLoc[2] = pack.ReadCell();
+	StartLoc[0] = pack.ReadCell();
+	StartLoc[1] = pack.ReadCell();
+	StartLoc[2] = pack.ReadCell();
+	color[0] = pack.ReadCell();
+	color[1] = pack.ReadCell();
+	color[2] = pack.ReadCell();
+	color[3] = pack.ReadCell();
+	int SPRITE_INT_2 = pack.ReadCell();
+					
+	TE_SetupBeamPoints(StartLoc, endLoc, SPRITE_INT_2, 0, 0, 0, 0.8, 22.0, 10.2, 1, 8.0, color, 0);
+	TE_SendToAll();
+		
+	delete pack;
+}
 
 static Action Donner_Nightmare_Offset(Handle timer, int client)
 {
@@ -1648,7 +1860,7 @@ public Action Donnerkrieg_Laser_Think(int iNPC)
 		TR_GetEndPosition(endPoint, trace);
 		delete trace;
 
-		Donnerkrieg_Laser_Trace(npc, startPoint, endPoint, radius, 15.0*RaidModeScaling, 3);
+		Donnerkrieg_Laser_Trace(npc, startPoint, endPoint, radius, 15.0*RaidModeScaling, 2);
 
 		float diameter = radius *1.0;
 		int r=255, g=255, b=255, a=30;
@@ -1900,7 +2112,7 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 
 					SeaSlider_AddNeuralDamage(victim, npc.index, damage, false);
 				}
-				case 3:
+				case 2:
 				{
 					int damage = RoundToFloor(dps*0.05);
 					if(damage < 8)
@@ -2134,4 +2346,76 @@ static void spawnRing_Vector(float center[3], float range, float modif_X, float 
 	
 	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
 	TE_SendToAll();
+}
+static void Doonerkrieg_Do_AOE_Damage(Raidboss_Donnerkrieg npc, float loc[3], float damage, float Range, float FallOff, int infection = 0)
+{
+	for(int client=0 ; client <=MAXTF2PLAYERS ; client++)
+	{
+		if(IsValidClient(client) && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+		{
+			float client_loc[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", client_loc);
+			float distance = GetVectorDistance(client_loc, loc, true);
+			{
+				if(distance< (Range * Range))
+				{
+					float ratio = (1.0 - (distance / (fl_heavens_radius * fl_heavens_radius)));
+					if(ratio<FallOff)
+						ratio = FallOff;
+					float fake_damage = damage*ratio;	//reduce damage if the target just grazed it.
+
+					switch(infection)
+					{
+						case 0:
+						{
+							SDKHooks_TakeDamage(client, npc.index, npc.index, fake_damage, DMG_CLUB, _, _, loc);
+							Client_Shake(client, 0, 5.0, 15.0, 0.1);
+						}
+						case 1:
+						{
+							SDKHooks_TakeDamage(client, npc.index, npc.index, fake_damage, DMG_CLUB, _, _, loc);
+							Client_Shake(client, 0, 5.0, 15.0, 0.1);
+
+							int neural_damage = RoundToFloor(damage*0.1);
+							if(neural_damage < 4)
+								neural_damage = 4;
+
+							SeaSlider_AddNeuralDamage(client, npc.index, neural_damage, false);
+						}
+						case 3:
+						{
+							int neural_damage = RoundToFloor(damage*0.1);
+							if(neural_damage < 8)
+								neural_damage = 8;
+
+							SeaSlider_AddNeuralDamage(client, npc.index, neural_damage, false);
+						}
+					}	
+				}	
+			}
+		}
+	}
+
+	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)	// now murder red npc's :)
+	{
+		int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+		{
+			float target_vec[3]; target_vec = GetAbsOrigin(ally);
+			float dist=GetVectorDistance(loc, target_vec, true);
+
+			if(dist< (fl_heavens_radius * fl_heavens_radius))
+			{
+				float ratio = (1.0 - (dist / (fl_heavens_radius * fl_heavens_radius)));
+				if(ratio<0.4)
+					ratio = 0.4;	// L + Ratio. :3
+				float fake_damage = damage*ratio;	//reduce damage if the target just grazed it.
+
+				if(ShouldNpcDealBonusDamage(ally))	//kill
+				{
+					fake_damage *=10.0;
+				}
+				SDKHooks_TakeDamage(ally, npc.index, npc.index, fake_damage, DMG_CLUB, _, _, loc);
+			}
+		}
+	}
 }
