@@ -535,28 +535,28 @@ public Action Gravaton_Wand_Tick(int client)
 	int Spam_Amt= 4;
 
 	switch(i_Current_Pap[client])
+	{
+		case 0:
 		{
-			case 0:
-			{
-				Spam_Amt= 1;	//this should never trigger....
-			}
-			case 1:
-			{
-				Spam_Amt = 2;
-			}
-			case 2:
-			{
-				Spam_Amt = 3;
-			}
-			case 3:
-			{
-				Spam_Amt = 4;
-			}
-			case 4:
-			{
-				Spam_Amt = 5;
-			}
+			Spam_Amt= 1;	//this should never trigger....
 		}
+		case 1:
+		{
+			Spam_Amt = 2;
+		}
+		case 2:
+		{
+			Spam_Amt = 3;
+		}
+		case 3:
+		{
+			Spam_Amt = 4;
+		}
+		case 4:
+		{
+			Spam_Amt = 5;
+		}
+	}
 
 	if(fl_gravation_angle[client]>360.0)
 		fl_gravation_angle[client]=0.0;
