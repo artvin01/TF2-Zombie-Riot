@@ -2607,4 +2607,24 @@
 	{
 		"en"	"A pinnacle of blacksmithing. Best of the best of the best. You've earned this, amigo.\nUnpredictable footing: You permanently take 10%% more damage."
 	}
+	"Gravton Wand desc0"
+	{
+		"en"	"A powerfull AOE Spell, M1 summons a timed explosion.\nSlow casting speed."
+	}
+	"Gravton Wand desc1"
+	{
+		"en"	"You can now cast a powerfull Gravaton Shower with M2!\nAsuming you have enough mana and charges."
+	}
+	"Gravton Wand desc2"
+	{
+		"en"	"More damage, higher Mana cost."
+	}
+	"Gravton Wand desc3"
+	{
+		"en"	"More damage, higher Mana cost."
+	}
+	"Gravton Wand desc4"
+	{
+		"en"	"More damage, higher Mana cost."
+	}
 }
