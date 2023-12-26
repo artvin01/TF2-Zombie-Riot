@@ -1936,7 +1936,16 @@ float Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 			Replicated_Dmg *= 1.35; //Remove crit shit from the calcs!, there are no minicrits here, so i dont have to care
 		}
 	}
-
+	if(TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
+	{
+		/*
+		if(damagetype & (DMG_CRIT))
+		{
+			damage /= 3.0; //Remove crit shit from the calcs!, there are no minicrits here, so i dont have to care
+		}
+		*/
+		Replicated_Dmg *= 0.65;
+	}
 	float value;
 
 	if(damagetype & (DMG_CLUB|DMG_SLASH))
