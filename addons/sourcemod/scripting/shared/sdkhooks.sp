@@ -1331,11 +1331,11 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 	{
 		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber);
 	}
-	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim, attacker, inflictor, damage, damagetype, weapon,damagePosition);
+	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
 	i_WasInUber = 0.0;
 	return Plugin_Continue;
 }
-static float Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damagePosition[3])
+static void Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim)
 {
 	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 	if(IsValidEntity(Victim_weapon))
@@ -1348,7 +1348,6 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim, int &att
 			}
 		}
 	}
-	return damage;
 }
 #endif
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -1412,7 +1411,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}	
 #if defined ZR
 	float Replicated_Damage;
-	Replicated_Damage = Replicate_Damage_Medications(victim, damage, damagetype);
+	Replicate_Damage_Medications(victim, damage, Replicated_Damage, damagetype);
+	
 #endif
 	
 	if(damagetype & DMG_FALL)
@@ -1926,9 +1926,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 #if defined ZR
-float Replicate_Damage_Medications(int victim, float &damage, int damagetype)
+void Replicate_Damage_Medications(int victim, float &damage, float &Replicated_Dmg, int damagetype)
 {
-	float Replicated_Dmg = damage;
+	Replicated_Dmg = damage;
 	if(TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeathSilent))
 	{
 		if(!(damagetype & (DMG_CRIT)))
@@ -1974,8 +1974,6 @@ float Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 		Replicated_Dmg *= value;
 		damage *= value;
 	}	
-		
-	return Replicated_Dmg;
 }
 #endif	// ZR
 
@@ -2168,7 +2166,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_RED_BLADE:
 		{
-			WeaponRedBlade_OnTakeDamage(victim, attacker, damage);
+			WeaponRedBlade_OnTakeDamage(victim, damage);
 		}
 	}
 	return damage;

@@ -9351,7 +9351,6 @@ void NpcSpeechBubbleTalk(int iNPC)
 		return;
 	
 	f_SpeechTickDelay[iNPC] = GetGameTime() + 0.05;
-	CClotBody npc = view_as<CClotBody>(iNPC);
 	int TotalLength = strlen(ch_SpeechBubbleTotalText[iNPC]);
 
 	if(i_SpeechBubbleTotalText_ScrollingPart[iNPC] >= TotalLength)

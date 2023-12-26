@@ -192,7 +192,7 @@ void CheckRedBladeBelowHalfHealth(int client, int weapon)
 		MakeBladeBloddy(client, false, weapon);
 	}
 }
-void WeaponRedBlade_OnTakeDamage(int victim, int attacker, float &damage)
+void WeaponRedBlade_OnTakeDamage(int victim, float &damage)
 {
 	if(f_RedBladeChargeDuration[victim] > GetGameTime())
 	{
