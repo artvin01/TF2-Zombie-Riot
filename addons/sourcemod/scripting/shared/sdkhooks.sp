@@ -1313,6 +1313,7 @@ public void OnPreThink(int client)
 
 #if defined ZR
 static float i_WasInUber;
+static float i_WasInMarkedForDeath;
 public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(!(damagetype & DMG_DROWN|DMG_FALL))
@@ -1331,8 +1332,13 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 	{
 		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber);
 	}
+	if(i_WasInMarkedForDeath)
+	{
+		TF2_AddCondition(victim, TFCond_MarkedForDeathSilent, i_WasInMarkedForDeath);
+	}
 	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
 	i_WasInUber = 0.0;
+	i_WasInMarkedForDeath = 0.0;
 	return Plugin_Continue;
 }
 static void Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim)
@@ -1931,10 +1937,10 @@ void Replicate_Damage_Medications(int victim, float &damage, float &Replicated_D
 	Replicated_Dmg = damage;
 	if(TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeathSilent))
 	{
-		if(!(damagetype & (DMG_CRIT)))
-		{
-			Replicated_Dmg *= 1.35; //Remove crit shit from the calcs!, there are no minicrits here, so i dont have to care
-		}
+		i_WasInMarkedForDeath = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
+		TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
+		damage *= 1.35;
+		Replicated_Dmg *= 1.35;
 	}
 	if(TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 	{
