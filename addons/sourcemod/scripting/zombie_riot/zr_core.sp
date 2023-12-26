@@ -148,6 +148,7 @@ enum
 	WEAPON_KIT_BLITZKRIEG_CORE = 77,
 	WEAPON_QUIBAI = 78,
 	WEAPON_ANGELIC_SHOTGUN = 79,
+	WEAPON_RED_BLADE = 80,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -230,8 +231,6 @@ bool b_PlayerWasAirbornKnockbackReduction[MAXTF2PLAYERS];
 bool b_ArkantosBuffItem[MAXENTITIES];
 int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
-float f_HudCooldownAntiSpam[MAXTF2PLAYERS];
-float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -464,6 +463,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_trash_cannon.sp"
 #include "zombie_riot/custom/kit_blitzkrieg.sp"
 #include "zombie_riot/custom/weapon_angelic_shotgonnus.sp"
+#include "zombie_riot/custom/red_blade.sp"
 
 void ZR_PluginLoad()
 {
@@ -682,6 +682,7 @@ void ZR_MapStart()
 	Wand_Impact_Lance_Mapstart();
 	Trash_Cannon_Precache();
 	Kit_Blitzkrieg_Precache();
+	ResetMapStartRedBladeWeapon();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;
