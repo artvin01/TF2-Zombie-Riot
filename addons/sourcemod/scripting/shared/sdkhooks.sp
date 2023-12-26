@@ -1312,8 +1312,9 @@ public void OnPreThink(int client)
 */
 
 #if defined ZR
-static float i_WasInUber;
-static float i_WasInMarkedForDeath;
+static float i_WasInUber[MAXTF2PLAYERS];
+static float i_WasInMarkedForDeath[MAXTF2PLAYERS];
+static float i_WasInDefenseBuff[MAXTF2PLAYERS];
 public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(!(damagetype & DMG_DROWN|DMG_FALL))
@@ -1328,17 +1329,22 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 			TeleportBackToLastSavePosition(victim);
 		}
 	}
-	if(i_WasInUber)
+	if(i_WasInUber[victim])
 	{
-		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber);
+		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber[victim]);
 	}
-	if(i_WasInMarkedForDeath)
+	if(i_WasInMarkedForDeath[victim])
 	{
-		TF2_AddCondition(victim, TFCond_MarkedForDeathSilent, i_WasInMarkedForDeath);
+		TF2_AddCondition(victim, TFCond_MarkedForDeathSilent, i_WasInMarkedForDeath[victim]);
+	}
+	if(i_WasInDefenseBuff[victim])
+	{
+		TF2_AddCondition(victim, TFCond_DefenseBuffed, i_WasInDefenseBuff[victim]);
 	}
 	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
-	i_WasInUber = 0.0;
-	i_WasInMarkedForDeath = 0.0;
+	i_WasInUber[victim] = 0.0;
+	i_WasInMarkedForDeath[victim] = 0.0;
+	i_WasInDefenseBuff[victim] = 0.0;
 	return Plugin_Continue;
 }
 static void Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim)
@@ -1358,6 +1364,9 @@ static void Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim)
 #endif
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	i_WasInUber[victim] = 0.0;
+	i_WasInMarkedForDeath[victim] = 0.0;
+	i_WasInDefenseBuff[victim] = 0.0;
 #if defined ZR
 	if(TeutonType[victim])
 		return Plugin_Handled;
@@ -1375,7 +1384,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		if(TF2_IsPlayerInCondition(victim, TFCond_Ubercharged))
 		{
-			i_WasInUber = TF2Util_GetPlayerConditionDuration(victim, TFCond_Ubercharged);
+			i_WasInUber[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_Ubercharged);
 			TF2_RemoveCondition(victim, TFCond_Ubercharged);
 			damage *= 0.5;
 		}
@@ -1937,19 +1946,16 @@ void Replicate_Damage_Medications(int victim, float &damage, float &Replicated_D
 	Replicated_Dmg = damage;
 	if(TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeathSilent))
 	{
-		i_WasInMarkedForDeath = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
+		i_WasInMarkedForDeath[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
 		TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
 		damage *= 1.35;
 		Replicated_Dmg *= 1.35;
 	}
 	if(TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 	{
-		/*
-		if(damagetype & (DMG_CRIT))
-		{
-			damage /= 3.0; //Remove crit shit from the calcs!, there are no minicrits here, so i dont have to care
-		}
-		*/
+		i_WasInDefenseBuff[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_DefenseBuffed);
+		TF2_RemoveCondition(victim, TFCond_DefenseBuffed);
+		damage *= 0.65;
 		Replicated_Dmg *= 0.65;
 	}
 	float value;

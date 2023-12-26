@@ -8124,8 +8124,15 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun)
 		TimeSinceLastStunSubtract = 0.0;
 	}
 
-	view_as<CClotBody>(npc).Update();
-	
+	CClotBody npcclot = view_as<CClotBody>(npc);
+
+	//Set speed to 0 as its a stun.
+	if(npcclot.IsOnGround())
+	{
+		static float ResetSpeed[3];
+		npcclot.SetVelocity(ResetSpeed);
+	}
+
 	float Duration_Stun_Post = Duration_Stun;
 	if(b_thisNpcIsARaid[npc] && Duration_Stun >= 1.0)
 	{
@@ -8139,6 +8146,7 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun)
 	f_TimeFrozenStill[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];
 	f_TimeSinceLastStunHit[npc] = GameTime + Duration_Stun_Post;
 	f_RaidStunResistance[npc] = GameTime + Duration_Stun;
+	npcclot.Update();
 
 	Npc_DebuffWorldTextUpdate(view_as<CClotBody>(npc));
 
