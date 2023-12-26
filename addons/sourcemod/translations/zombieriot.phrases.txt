@@ -666,16 +666,16 @@
 	}
 	"Armor Table Used"
 	{
-		"en"		"Someone used your armor table, you gain +40 Credits!"
-		"it"		"Qualcuno ha usato la tua cassa di munizioni, hai ricevuto +40 Crediti!"
-		"ru"		"Кто-то воспользовался вашим верстаком брони, получено +40 кредитов!"
-		"pl"		"Ktoś użył twojego pudła z amunicją, otrzymujesz +40 Kredytów!"
-		"es"		"Alguién usó tu caja de munición, ganas 40 dolares"
-		"fr"		"Quelqu'un a utilisé votre boite de munitions, vous gagnez 40 dollars!"
-		"de"		"Jemand hat deinen Rüstungstisch benutzt, Du bekommst +40 Kredits!"
-		"pt"		"Alguém usou sua mesa de armadura, você ganhou +40 Créditos!"
-		"nl"		"Iemand gebruikte net uw SchildTafel, je krijgt hiervoor +40 krediet!"
-		"chi"       "队友使用了你的护甲柜，你获得 40 的现金奖励"
+		"en"		"Someone used your armor table, you gain +20 Credits!"
+		"it"		"Qualcuno ha usato la tua cassa di munizioni, hai ricevuto +20 Crediti!"
+		"ru"		"Кто-то воспользовался вашим верстаком брони, получено +20 кредитов!"
+		"pl"		"Ktoś użył twojego pudła z amunicją, otrzymujesz +20 Kredytów!"
+		"es"		"Alguién usó tu caja de munición, ganas 20 dolares"
+		"fr"		"Quelqu'un a utilisé votre boite de munitions, vous gagnez 20 dollars!"
+		"de"		"Jemand hat deinen Rüstungstisch benutzt, Du bekommst +20 Kredits!"
+		"pt"		"Alguém usou sua mesa de armadura, você ganhou +20 Créditos!"
+		"nl"		"Iemand gebruikte net uw SchildTafel, je krijgt hiervoor +20 krediet!"
+		"chi"       "队友使用了你的护甲柜，你获得 20 的现金奖励"
 	}
 	"Perk Machine Used"
 	{
@@ -1443,12 +1443,12 @@
 	}
 	"Healing Station Used"
 	{
-		"en" 		"Someone used your Healing Station, you gain +40 Credits!"
-		"ru" 		"Кто-то воспользовался вашей лечебной станцией, получено +40 кредитов!"
-		"de"		"Jemand hat deine Heilstation benutzt, du hast +40 Kredit bekommen!"
-		"pt"		"Alguem se curou em sua Estação de Cura, você ganhou +40 créditos!"
-		"nl"		"Iemand gebruikte net uw Genezingsstation, u krijgt +40 krediet!"
-		"chi"       "有人使用了你的医疗站，你获得了40现金"
+		"en" 		"Someone used your Healing Station, you gain +20 Credits!"
+		"ru" 		"Кто-то воспользовался вашей лечебной станцией, получено +20 кредитов!"
+		"de"		"Jemand hat deine Heilstation benutzt, du hast +20 Kredit bekommen!"
+		"pt"		"Alguem se curou em sua Estação de Cura, você ganhou +20 créditos!"
+		"nl"		"Iemand gebruikte net uw Genezingsstation, u krijgt +20 krediet!"
+		"chi"       "有人使用了你的医疗站，你获得了20现金"
 	}
 	"Cant Mount This"
 	{

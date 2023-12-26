@@ -399,7 +399,7 @@ public void OnPostThink(int client)
 			}
 			else
 			{
-				healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 50.0, 0.5, 0.0, HEAL_SELFHEAL);	
+				healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 100.0, 0.5, 0.0, HEAL_SELFHEAL);	
 			}
 
 			ApplyHealEvent(client, healing_Amount);

@@ -9279,3 +9279,32 @@ void SaveLastValidPositionEntity(int entity)
 		f3_VecTeleportBackSave_OutOfBounds[entity] = AbsOrigin;		
 	}
 }
+/*
+int i_SpeechBubbleEntity[MAXENTITIES];
+char ch_SpeechBubbleTotalText[MAXENTITIES][255];
+int i_SpeechBubbleTotalText_ScrollingPart[MAXENTITIES];
+char ch_SpeechBubbleEndingScroll[MAXENTITIES][10];
+int i_SpeechEndingScroll_ScrollingPart[MAXENTITIES];
+
+void NpcSpeechBubble(int entity, const char[] speechtext, int fontsize, int colour[4], int extra_offset, const char[] endingtextscroll)
+{
+
+	int Text_Entity = SpawnFormattedWorldText("", extra_offset, fontsize,colour, entity);
+
+	DataPack pack;
+	CreateDataTimer(1.0, NpcSpeechBubbleScrolling, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(Text_Entity));
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(EntIndexToEntRef(entity));
+	SDKHook(entity, SDKHook_Think, NpcBaseThink);
+
+	return entity;
+}
+
+public Action NpcSpeechBubbleScrolling(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int OwnerEntity = EntRefToEntIndex(pack.ReadCell());
+	int ChildEntity = EntRefToEntIndex(pack.ReadCell());
+}
+*/

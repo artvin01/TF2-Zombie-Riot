@@ -1586,7 +1586,7 @@
 	{
 		"en"	"Hand of the Elite"
 	}
-	"Hand of the Elite"
+	"Hand of the Elite Desc"
 	{
 		"en"	"Such elegance.\n{green}''Kazimierz'' and ''Lord'' weapons gain +75%% damage bonus while over half health"
 	}
