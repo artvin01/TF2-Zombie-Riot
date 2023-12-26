@@ -145,8 +145,8 @@ public void Rogue_HandCaster_Weapon(int entity)
 	if(i_WeaponArchetype[entity] == 21)	// Base Caster
 	{
 		// +100% max mana
-		Attributes_Set(entity, 405, 2.0);
-		Attributes_Set(entity, 6, 0.5);
+		Attributes_SetMulti(entity, 405, 2.0);
+		Attributes_SetMulti(entity, 6, 0.5);
 	}
 }
 

@@ -1183,19 +1183,13 @@ static void QuibaiAbilityM2(int client, int weapon, int slot)
 	{
 		if(i_LappLandHitsDone[client] >= QUIBAI_MAX_HITS_NEEDED)
 		{
-			int viewmodelModel;
-			viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
-				
 			float flPos[3]; // original
-			if(IsValidEntity(viewmodelModel))
-			{
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
-				flPos[2] -= 20.0;
-						
-				int particler = ParticleEffectAt(flPos, "utaunt_snowring_space_parent", 25.0);
-						
-				SetParent(viewmodelModel, particler);
-			}
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+			
+					
+			int particler = ParticleEffectAt(flPos, "utaunt_snowring_space_parent", 25.0);
+					
+			SetParent(client, particler);
 			EmitSoundToAll(SOUND_LAPPLAND_ABILITY, client, _, 90, _, 1.0);
 			i_LappLandHitsDone[client] = 0;
 			MakePlayerGiveResponseVoice(client, 1); //haha!

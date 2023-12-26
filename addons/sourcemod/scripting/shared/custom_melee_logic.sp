@@ -304,8 +304,8 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 				Inacse we want to hit, hitboxes.
 			*/
 			i_MeleeHitboxHit[client] = -1;
-		
-			if(b_MeleeCanHeadshot[weapon])
+
+			if(weapon > 0 && b_MeleeCanHeadshot[weapon])
 			{
 				//can we headshot?
 				//if yes, did we hit an enemy?
@@ -321,11 +321,17 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 					}
 					else
 					{
+						FinishLagCompensation_Base_boss();
+						b_LagCompNPC_No_Layers = true;
+						StartLagCompensation_Base_Boss(client);
 						delete trace;
 					}
 				}
 				else
 				{
+					FinishLagCompensation_Base_boss();
+					b_LagCompNPC_No_Layers = true;
+					StartLagCompensation_Base_Boss(client);
 					delete trace;
 				}
 			}
@@ -508,6 +514,8 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		Handle swingTrace;
 		if(!b_MeleeCanHeadshot[weapon])
 			b_LagCompNPC_No_Layers = true;
+		else
+			b_LagCompNPC_ExtendBoundingBox = true;
 
 		float vecSwingForward[3];
 		StartLagCompensation_Base_Boss(client);
@@ -658,7 +666,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 					{
 						case WEAPON_ANGELIC_SHOTGUN:
 						{
-							Angelic_Shotgun_Meleetrace_Hit_Before(client, damage, weapon, i_EntitiesHitAoeSwing[counter]);
+							Angelic_Shotgun_Meleetrace_Hit_Before(client, damage, i_EntitiesHitAoeSwing[counter]);
 						}
 						default:
 						{
@@ -677,7 +685,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						}
 						case WEAPON_ANGELIC_SHOTGUN:
 						{
-							Angelic_Shotgun_Meleetrace_Hit_After(client, damage, weapon, i_EntitiesHitAoeSwing[counter]);
+							Angelic_Shotgun_Meleetrace_Hit_After(client, damage);
 						}
 						default:
 						{

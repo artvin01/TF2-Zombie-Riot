@@ -1331,8 +1331,24 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 	{
 		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber);
 	}
+	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim, attacker, inflictor, damage, damagetype, weapon,damagePosition);
 	i_WasInUber = 0.0;
 	return Plugin_Continue;
+}
+static float Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damagePosition[3])
+{
+	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+	if(IsValidEntity(Victim_weapon))
+	{
+		switch(i_CustomWeaponEquipLogic[Victim_weapon])
+		{
+			case WEAPON_RED_BLADE:
+			{
+				WeaponRedBlade_OnTakeDamage_Post(victim, Victim_weapon);
+			}
+		}
+	}
+	return damage;
 }
 #endif
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -2140,6 +2156,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		case WEAPON_RAPIER:
 		{
 			Player_OnTakeDamage_Rapier(victim, attacker, damage);
+		}
+		case WEAPON_RED_BLADE:
+		{
+			WeaponRedBlade_OnTakeDamage(victim, attacker, damage);
 		}
 	}
 	return damage;

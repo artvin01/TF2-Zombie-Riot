@@ -1016,7 +1016,8 @@ int i_AttacksTillMegahit[MAXENTITIES];
 int i_WeaponArchetype[MAXENTITIES];
 int i_WeaponForceClass[MAXENTITIES];
 int i_Viewmodel_PlayerModel[MAXENTITIES];
-int i_Viewmodel_WeaponModel[MAXTF2PLAYERS];
+int i_Worldmodel_WeaponModel[MAXTF2PLAYERS];
+int WeaponRef_viewmodel[MAXTF2PLAYERS];
 
 float fl_NextFlameSound[MAXENTITIES];
 float fl_FlamerActive[MAXENTITIES];

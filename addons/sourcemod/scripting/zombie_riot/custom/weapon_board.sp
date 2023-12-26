@@ -586,7 +586,7 @@ public void Enable_WeaponBoard(int client, int weapon) // Enable management, han
 void OnAbilityUseEffect_Board(int client, int active, int FramesActive = 35)
 {
 	int WeaponModel;
-	WeaponModel = EntRefToEntIndex(i_Viewmodel_WeaponModel[client]);
+	WeaponModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
 
 	if(!IsValidEntity(WeaponModel)) //somehow doesnt exist, aboard!
 		return;

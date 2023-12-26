@@ -232,6 +232,8 @@ bool b_PlayerWasAirbornKnockbackReduction[MAXTF2PLAYERS];
 bool b_ArkantosBuffItem[MAXENTITIES];
 int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
+float f_HudCooldownAntiSpam[MAXTF2PLAYERS];
+float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05

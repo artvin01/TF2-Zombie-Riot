@@ -52,7 +52,6 @@ static int HandIndex[11];
 static int PlayerIndex[10];
 static int RobotIndex[10];
 static int HandRef[MAXTF2PLAYERS];
-static int WeaponRef[MAXTF2PLAYERS];
 
 #if defined ZR
 static int TeutonModelIndex;
@@ -154,11 +153,11 @@ void ViewChange_PlayerModel(int client)
 
 void ViewChange_Switch(int client, int active, const char[] buffer = "")
 {
-	int entity = EntRefToEntIndex(WeaponRef[client]);
+	int entity = EntRefToEntIndex(WeaponRef_viewmodel[client]);
 	if(entity > MaxClients)
 		TF2_RemoveWearable(client, entity);
 	
-	entity = EntRefToEntIndex(i_Viewmodel_WeaponModel[client]);
+	entity = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
 	if(entity > MaxClients)
 		TF2_RemoveWearable(client, entity);
 
@@ -217,7 +216,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				SetVariantString("!activator");
 				ActivateEntity(entity);
 
-				WeaponRef[client] = EntIndexToEntRef(entity);
+				WeaponRef_viewmodel[client] = EntIndexToEntRef(entity);
 				SetEntPropFloat(entity, Prop_Send, "m_flPoseParameter", GetEntPropFloat(active, Prop_Send, "m_flPoseParameter"));
 
 				SDKCall_EquipWearable(client, entity);
@@ -285,7 +284,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				SetVariantString("!activator");
 				ActivateEntity(entity);
 
-				i_Viewmodel_WeaponModel[client] = EntIndexToEntRef(entity);
+				i_Worldmodel_WeaponModel[client] = EntIndexToEntRef(entity);
 				SetEntPropFloat(entity, Prop_Send, "m_flPoseParameter", GetEntPropFloat(active, Prop_Send, "m_flPoseParameter"));
 
 				SDKCall_EquipWearable(client, entity);
@@ -324,8 +323,8 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 	}
 	ViewChange_DeleteHands(client);
 	WeaponClass[client] = TFClass_Unknown;
-	WeaponRef[client] = INVALID_ENT_REFERENCE;
-	i_Viewmodel_WeaponModel[client] = INVALID_ENT_REFERENCE;
+	WeaponRef_viewmodel[client] = INVALID_ENT_REFERENCE;
+	i_Worldmodel_WeaponModel[client] = INVALID_ENT_REFERENCE;
 }
 void MedicAdjustModel(int client)
 {
@@ -406,12 +405,12 @@ void HidePlayerWeaponModel(int client, int entity)
 	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 0.0);
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 0.00001);
-	int EntityWeaponModel = EntRefToEntIndex(i_Viewmodel_WeaponModel[client]);
+	int EntityWeaponModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
 	if(IsValidEntity(EntityWeaponModel))
 	{
 		SetEntPropFloat(EntityWeaponModel, Prop_Send, "m_flModelScale", f_WeaponSizeOverride[entity]);
 	}
-	EntityWeaponModel = EntRefToEntIndex(WeaponRef[client]);
+	EntityWeaponModel = EntRefToEntIndex(WeaponRef_viewmodel[client]);
 	if(IsValidEntity(EntityWeaponModel))
 	{
 		SetEntPropFloat(EntityWeaponModel, Prop_Send, "m_flModelScale", f_WeaponSizeOverrideViewmodel[entity]);

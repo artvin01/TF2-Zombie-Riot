@@ -2061,6 +2061,14 @@
 		"ru"	"Способность получает третий заряд, уменьшает время перезарядки и наносит 400%% урона.\nПолучает 10 восст. здоровья, пока не получает урон."
 		"chi"   "技能获得第三次充能，减少充能时间，造成400%%伤害。\n在不受伤害的情况下提供10点生命回复。"
 	}
+	"Preaching Sword Pap 3"
+	{
+		"en"	"Increaces damage and resistances."
+	}
+	"Preaching Sword Pap 4"
+	{
+		"en"	"Entirely changes weapon.\nYou are weak if above half health.\nIf below half health you gain massive power.\nYou recieve 50%% Healing.\nCharge with M2 gain heavy resistances during charge.\nArchetype changes to ''Duelist''."
+	}
 	"Spike Layer Pap 1"
 	{
 		"en"	"Faster Attackspeed, Spike limit increases, damage increases slightly."
