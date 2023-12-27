@@ -60,8 +60,8 @@ public void Red_charge_ability(int client, int weapon, bool crit, int slot) // t
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 		
 	//	ApplyTempAttrib(weapon, 852, 0.5, 5.0);
-		TF2_AddCondition(client, TFCond_Charging, 5.0, client);
-		f_RedBladeChargeDuration[client] = GetGameTime() + 5.0;
+		TF2_AddCondition(client, TFCond_Charging, 2.0, client);
+		f_RedBladeChargeDuration[client] = GetGameTime() + 2.0;
 
 	}
 	else
@@ -144,9 +144,8 @@ void RedBladeHudShow(int client, int weapon)
 				LookAtTarget(client, ChargeEnemy);
 			}
 		}
-		else
+		else if(!TF2_IsPlayerInCondition(client, TFCond_Charging))
 		{
-			TF2_RemoveCondition(client, TFCond_Charging);
 			f_RedBladeChargeDuration[client] = 0.0;
 		}
 	}
@@ -185,14 +184,14 @@ void CheckRedBladeBelowHalfHealth(int client, int weapon)
 	}
 	else if (HALFORNO[client])
 	{
-		PrintHintText(client,"");
+		PrintHintText(client,"Rage Deactivated");
 		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 		HALFORNO[client]=false;
 		DestroyRedBladeEffect(client);
 		MakeBladeBloddy(client, false, weapon);
 	}
 }
-void WeaponRedBlade_OnTakeDamage(int victim, int attacker, float &damage)
+void WeaponRedBlade_OnTakeDamage(int victim, float &damage)
 {
 	if(f_RedBladeChargeDuration[victim] > GetGameTime())
 	{
@@ -200,7 +199,7 @@ void WeaponRedBlade_OnTakeDamage(int victim, int attacker, float &damage)
 	}
 	if(HALFORNO[victim])
 	{
-		damage *= 0.25;
+		damage *= 0.35;
 	}
 }
 void WeaponRedBlade_OnTakeDamage_Post(int victim, int weapon)
