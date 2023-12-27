@@ -321,7 +321,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 	Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(iNPC);
 	
 	if(!b_raidboss_donnerkrieg_alive)	//While This I do need
-		Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(EntRefToEntIndex(i_ally_index), npc.index, false);	//donner first, schwert second
+		Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(false);	//donner first, schwert second
 
 
 	float GameTime = GetGameTime(npc.index);
@@ -585,8 +585,9 @@ public void Raidboss_Schwertkrieg_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-
+	int ally = EntRefToEntIndex(i_ally_index);
+	if(IsValidEntity(ally))
+		b_force_heavens_light[ally]=true;	//force heavens Light!
 	
 	b_raidboss_schwertkrieg_alive = false;
 	

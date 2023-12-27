@@ -24,7 +24,9 @@ Wave 15:
 Improved Nightmare Cannon: Coded!
 
 On Schwert Death:	Coded but might need more refining.
-	Heaven Sent Light: Ruina Ion cannon's but modified - They somewhat start out like moonlight
+	Heavens Light: Ruina Ion cannon's but modified - They somewhat start out like moonlight
+
+On donner spawn: Heavens Light.
 
 Wave 30:
 	Heaven's Fall:
@@ -32,6 +34,7 @@ Wave 30:
 
 Wave 45:
 	Heaven's radiance: Jump high into the sky, and spew lasers all around.
+	Heaves Light natural.
 
 Wave 45 Ult:
 	Heavens Touch:
@@ -95,13 +98,22 @@ static bool DonnerKriegCannon_BEAM_HitDetected[MAXENTITIES];
 
 static int i_AmountProjectiles[MAXENTITIES];
 
-static bool b_health_stripped[MAXENTITIES];
+static float fl_backwards_failsafe[MAXENTITIES];
 
 #define DONNERKRIEG_TE_DURATION 0.07
 
+//Heavens Light
+
+bool b_force_heavens_light[MAXENTITIES];
+static bool Heavens_Light_Active[MAXENTITIES];
+float fl_heavens_light_use_timer[MAXENTITIES];
 
 static int Heavens_Beam;
 static char gExplosive1;
+
+//Heavens Fall
+
+static float fl_heavens_fall_use_timer[MAXENTITIES];
 
 //Logic for duo raidboss
 
@@ -348,7 +360,6 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 			puffed practitioner	"models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl"
 
 		*/
-		b_health_stripped[npc.index] = false;
 		//IDLE
 		npc.m_flSpeed = 300.0;
 		
@@ -404,19 +415,26 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		b_train_line_used[npc.index] = false;
 		b_nightmare_logic[npc.index] = false;
 		fl_nightmare_grace_period[npc.index] = 0.0;
+
+		float GameTime = GetGameTime(npc.index);
 		
 		
-		fl_nightmare_end_timer[npc.index]= GetGameTime(npc.index) + 10.0;
-		fl_cannon_Recharged[npc.index]= GetGameTime(npc.index) + 10.0;
+		fl_nightmare_end_timer[npc.index]= GameTime + 10.0;
+		fl_cannon_Recharged[npc.index]= GameTime + 10.0;
 		
-		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
+		npc.m_flNextRangedBarrage_Spam = GameTime + 15.0;
 		
 		fl_schwertkrieg_sniper_rampage_timer = 0.0;
 		
 		
-		//Invoke_Heavens_Light(npc.index);
+		Heavens_Light_Active[npc.index]=false;
+		fl_heavens_light_use_timer[npc.index] = GameTime + 125.0;
+		b_force_heavens_light[npc.index] = false;
+		Invoke_Heavens_Light(npc, GameTime);
 
-		Heavens_Fall(npc);
+		fl_heavens_fall_use_timer[npc.index] = GameTime + 30.0;
+
+		//Heavens_Fall(npc, GetGameTime(npc.index));
 		
 		shared_goal = false;
 
@@ -429,6 +447,8 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: We have arrived to render judgement");
 		
 		Donnerkrieg_Wings_Create(npc);
+
+		npc.Anger = false;
 		
 		//Reused silvester duo code here
 		
@@ -472,7 +492,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(iNPC);
 	
 	if(b_raidboss_donnerkrieg_alive)	//I don't need this here, but I still added it...
-		Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(npc.index, EntRefToEntIndex(i_ally_index), true);	//donner first, schwert second
+		Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(true);	//donner first, schwert second
 		
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
@@ -515,6 +535,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 
+	int Current_Wave = ZR_GetWaveCount()+1;
 	/*
 
 
@@ -573,7 +594,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 		
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		if(fl_cannon_Recharged[npc.index]<GameTime && !b_nightmare_logic[npc.index])
+		if(fl_cannon_Recharged[npc.index]<GameTime && !b_nightmare_logic[npc.index] && !Heavens_Light_Active[npc.index])
 		{
 			fl_nightmare_end_timer[npc.index] = GameTime + 20.0;
 			Raidboss_Donnerkrieg_Nightmare_Logic(npc.index, PrimaryThreatIndex);
@@ -598,12 +619,27 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 		if(!b_nightmare_logic[npc.index])
 		{	
+			//warp_heave
+			if((Current_Wave>=45 && fl_heavens_light_use_timer[npc.index] < GameTime) || b_force_heavens_light[npc.index])
+			{
+				b_force_heavens_light[npc.index]=false;
+				fl_heavens_light_use_timer[npc.index] = GameTime + 150.0;
+				Heavens_Light_Active[npc.index]=true;
+
+				Invoke_Heavens_Light(npc, GameTime);
+			}
 			if(npc.m_flAttackHappens > GameTime)
 			{
 				npc.FaceTowards(vecTarget, 5000.0);
 			}
 
-			Donner_Movement(npc.index, PrimaryThreatIndex);
+			if(Current_Wave>=30 &&fl_heavens_fall_use_timer[npc.index]< GameTime)
+			{
+				fl_heavens_fall_use_timer[npc.index] = GameTime+1.0;	//retry in 1 seconds if failed, otherwise proper CD.
+				Heavens_Fall(npc, GameTime);
+			}
+
+			Donner_Movement(npc.index, PrimaryThreatIndex, GameTime);
 				
 			if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime && flDistanceToTarget > (110.0 * 110.0) && flDistanceToTarget < (500.0 * 500.0))
 			{	
@@ -612,6 +648,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 				float projectile_speed = 400.0;
 				vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
 
+				
 				npc.FireParticleRocket(vecTarget, 25.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
 						
 					//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
@@ -623,7 +660,10 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 				if (npc.m_iAmountProjectiles >= 15.0)
 				{
 					npc.m_iAmountProjectiles = 0;
-					npc.m_flNextRangedBarrage_Spam = GameTime + 45.0;
+					if(!npc.Anger)
+						npc.m_flNextRangedBarrage_Spam = GameTime + 45.0;
+					else
+						npc.m_flNextRangedBarrage_Spam = GameTime + 25.0;
 				}
 			}
 				
@@ -653,8 +693,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-
-static void Donner_Movement(int client, int PrimaryThreatIndex)
+static void Donner_Movement(int client, int PrimaryThreatIndex, float GameTime)
 {
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
 	
@@ -670,16 +709,25 @@ static void Donner_Movement(int client, int PrimaryThreatIndex)
 		schwert_target = PrimaryThreatIndex;	//if "shared goal" is active both npc's target the same target, the target is set by donnerkrieg
 	}
 
+	if(fl_backwards_failsafe[npc.index] < GameTime)
+	{
+		if(npc.m_bAllowBackWalking)
+			npc.m_bAllowBackWalking=false;
+	}
+
 	if(flDistanceToTarget < (225.0*225.0))
 	{
+		
+
 		int Enemy_I_See;
 				
 		Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 		//Target close enough to hit
 		if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
-		{
+		{		
 			if(flDistanceToTarget < (125.0*125.0))
 			{
+				fl_backwards_failsafe[npc.index] = GameTime+2.5;
 				npc.m_bAllowBackWalking=true;
 				npc.StartPathing();
 				float vBackoffPos[3];
@@ -730,7 +778,7 @@ static void Donner_Movement(int client, int PrimaryThreatIndex)
 	}
 }
 
-public void Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(int donner, int schwert, bool donner_alive)
+public void Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(bool donner_alive)
 {
 	if(RaidModeTime < GetGameTime())
 	{
@@ -743,12 +791,11 @@ public void Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(int donner, int schwert
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		if(donner_alive)
 		{
-			SDKUnhook(donner, SDKHook_Think, Raidboss_Donnerkrieg_ClotThink);
 			CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: You think thats how you fight us two?");
 		}
 		else
 		{
-			SDKUnhook(schwert, SDKHook_Think, Raidboss_Schwertkrieg_ClotThink);
+
 		}
 		
 	}
@@ -836,50 +883,44 @@ static void GetRandomLoc(Raidboss_Donnerkrieg npc, float Loc[3], int Num)
 	area.GetCenter(Loc);
 }
 
-static void Invoke_Heavens_Light(int ref)
+static float fl_heavens_light_duration;
+
+static void Invoke_Heavens_Light(Raidboss_Donnerkrieg npc, float GameTime)
 {
-	float Heavens_Duration, GameTime = GetGameTime();
-	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(ref);
+	float Heavens_Duration;
 	fl_heavens_damage = 100.0;
 	fl_heavens_charge_time = 10.0;
-	Heavens_Duration = 60.0;
+	Heavens_Duration = 30.0;
 	fl_heavens_radius = 150.0;	//This is per individual beam
 	fl_heavens_speed = 2.5;
+
+	fl_heavens_light_duration = GameTime + Heavens_Duration+fl_heavens_charge_time;
 	
 	Zero(i_heavens_target_id);
 	Zero(fl_heavens_rng_loc_timer);
 	fl_Heavens_Angle = 0.0;
-	float time = Heavens_Duration + fl_heavens_charge_time;
 	
 	fl_heavens_charge_gametime = fl_heavens_charge_time + GameTime;
+
+	Heavens_Light_Active[npc.index] = true;
 	
-	CreateTimer(time, Heavens_End_Timer, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(npc.index, SDKHook_Think, Heavens_TBB_Tick);
 }
-public Action Heavens_End_Timer(Handle timer, int ref)
-{
-	int client = EntRefToEntIndex(ref);
-	if(!IsValidEntity(client))
-		return Plugin_Continue;
-	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
 
-	SDKUnhook(npc.index, SDKHook_Think, Heavens_TBB_Tick);
-
-	
-	return Plugin_Continue;
-}
 //static int TE_used;
 public Action Heavens_TBB_Tick(int client)
 {
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
-	
-	if(!IsValidEntity(client))
-	{
-		SDKUnhook(npc.index, SDKHook_Think, Heavens_TBB_Tick);
-		return Plugin_Stop;
-	}
 
 	float GameTime = GetGameTime();
+
+	if(fl_heavens_light_duration<GameTime)
+	{
+		SDKUnhook(npc.index, SDKHook_Think, Heavens_TBB_Tick);
+		Heavens_Light_Active[npc.index] = false;
+
+		return Plugin_Stop;
+	}
 
 	//TE_used=0;
 	
@@ -1267,23 +1308,62 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 		npc.m_flSpeed = 0.0;
 	}
 }
+#define DONNERKRIEG_HEAVENS_FALL_MAX_DIST 500.0
 
-#define DONNERKRIEG_HEAVENS_FALL_AMT_1 5
-#define DONNERKRIEG_HEAVENS_FALL_AMT_2 5
-#define DONNERKRIEG_HEAVENS_FALL_AMT_3 5
+#define DONNERKRIEG_HEAVENS_FALL_MAX_AMT 1
 
-#define DONNERKRIEG_HEAVENS_STAGE_1 500.0
-#define DONNERKRIEG_HEAVENS_STAGE_2 100.0
-#define DONNERKRIEG_HEAVENS_STAGE_3 500.0
+#define DONNERKRIEG_HEAVENS_FALL_AMT_1 1	//ratios
+#define DONNERKRIEG_HEAVENS_FALL_AMT_2 1
+#define DONNERKRIEG_HEAVENS_FALL_AMT_3 1
+
+#define DONNERKRIEG_HEAVENS_FALL_MAX_STAGE 5.0
+
+#define DONNERKRIEG_HEAVENS_STAGE_1 5.0	//ratios
+#define DONNERKRIEG_HEAVENS_STAGE_2 1.0
+#define DONNERKRIEG_HEAVENS_STAGE_3 5.0
 
 
 static float DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[2] = {7.5, 12.5};	//Minimum, Maximum Time
 
 static int TE_used;
 
-static void Heavens_Fall(Raidboss_Donnerkrieg npc, int Infection=0 , bool creep=false)
+static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection=0 , bool creep=false)
 {
+
+	float Base_Dist=0.0;
+	float Distance_Ratios = DONNERKRIEG_HEAVENS_FALL_MAX_DIST/DONNERKRIEG_HEAVENS_FALL_MAX_STAGE;
+	if(!Heavens_Fall_Clearance_Check(npc, Base_Dist, DONNERKRIEG_HEAVENS_FALL_MAX_DIST))
+	{
+		return;
+	}
+
+	float Timer = 80.0 *(Base_Dist/DONNERKRIEG_HEAVENS_FALL_MAX_DIST);
+
+	if(!npc.Anger)
+		fl_heavens_fall_use_timer[npc.index] = GameTime+Timer;
+	else
+		fl_heavens_fall_use_timer[npc.index] = GameTime+Timer*0.5;
+
+
+	int Base_Amt = RoundToFloor((Base_Dist/Distance_Ratios)/DONNERKRIEG_HEAVENS_FALL_MAX_AMT);
+
+	Base_Dist /= DONNERKRIEG_HEAVENS_FALL_MAX_STAGE;
+
+	
+
+	int Amt1, Amt2, Amt3;
+	float Dist1, Dist2, Dist3;
+
+	Dist1 = Base_Dist*DONNERKRIEG_HEAVENS_STAGE_1;
+	Dist2 = Base_Dist*DONNERKRIEG_HEAVENS_STAGE_2;
+	Dist3 = Base_Dist*DONNERKRIEG_HEAVENS_STAGE_3;
+
+	Amt1= Base_Amt*DONNERKRIEG_HEAVENS_FALL_AMT_1;
+	Amt2= Base_Amt*DONNERKRIEG_HEAVENS_FALL_AMT_2;
+	Amt3= Base_Amt*DONNERKRIEG_HEAVENS_FALL_AMT_3;
+
 	TE_used=0;
+
 
 
 	float Loc[3];
@@ -1297,36 +1377,48 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, int Infection=0 , bool creep=
 	UserLoc = GetAbsOrigin(npc.index);
 	UserLoc[2]+=75.0;
 
-	for(int Ion=0 ; Ion < DONNERKRIEG_HEAVENS_FALL_AMT_1 ; Ion++)
+	for(int Ion=0 ; Ion < Amt1 ; Ion++)
 	{
 
 		float tempAngles[3], EndLoc[3];
 		tempAngles[0] = 0.0;
-		tempAngles[1] = (360.0/DONNERKRIEG_HEAVENS_FALL_AMT_1)*Ion;
+		tempAngles[1] = (360.0/Amt1)*Ion;
 		tempAngles[2] = 0.0;
 
-		float Dist = DONNERKRIEG_HEAVENS_STAGE_1;
-		Do_Trace_Heavens_Fall(Loc, tempAngles, EndLoc, Dist);
+		Do_Trace_Heavens_Fall(Loc, tempAngles, EndLoc, Dist1);
 
-		for(int Ion2=0 ; Ion2 < DONNERKRIEG_HEAVENS_FALL_AMT_2 ; Ion2++)
+		float dist_check1 = GetVectorDistance(Loc, EndLoc);
+
+		if(dist_check1<Dist1*0.75)
+			continue;
+
+		for(int Ion2=0 ; Ion2 < Amt2 ; Ion2++)
 		{
 			float tempAngles2[3], EndLoc2[3];
 			tempAngles2[0] = 0.0;
-			tempAngles2[1] = (360.0/DONNERKRIEG_HEAVENS_FALL_AMT_2)*Ion2;
+			tempAngles2[1] = (360.0/Amt2)*Ion2;
 			tempAngles2[2] = 0.0;
 
-			float Dist2 = DONNERKRIEG_HEAVENS_STAGE_2;
 			Do_Trace_Heavens_Fall(EndLoc, tempAngles2, EndLoc2, Dist2);
+
+			float dist_check2 = GetVectorDistance(EndLoc, EndLoc2);
+
+			if(dist_check2<Dist2*0.75)
+				continue;
 			
-			for(int Ion3=0 ; Ion3 < DONNERKRIEG_HEAVENS_FALL_AMT_3 ; Ion3++)
+			for(int Ion3=0 ; Ion3 < Amt3 ; Ion3++)
 			{
 				float tempAngles3[3], EndLoc3[3];
 				tempAngles3[0] = 0.0;
-				tempAngles3[1] = (360.0/DONNERKRIEG_HEAVENS_FALL_AMT_3)*Ion3;
+				tempAngles3[1] = (360.0/Amt3)*Ion3;
 				tempAngles3[2] = 0.0;
 
-				float Dist3 = DONNERKRIEG_HEAVENS_STAGE_3;
 				Do_Trace_Heavens_Fall(EndLoc2, tempAngles3, EndLoc3, Dist3);
+
+				float dist_check3 = GetVectorDistance(EndLoc2, EndLoc3);
+
+				if(dist_check3<Dist3*0.75)
+					continue;
 
 				Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, EndLoc3);
 
@@ -1378,6 +1470,8 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, int Infection=0 , bool creep=
 				WritePackCell(data, color[1]);
 				WritePackCell(data, color[2]);
 				WritePackCell(data, color[3]);
+				WritePackCell(data, creep);
+				
 
 				TE_used += 1;
 				if(TE_used > 31)
@@ -1405,6 +1499,79 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, int Infection=0 , bool creep=
 		}
 	}
 	TE_used=0;
+}
+
+static bool Heavens_Fall_Clearance_Check(Raidboss_Donnerkrieg npc, float &Return_Dist, float Max_Distance)
+{
+	
+	float UserLoc[3], Angles[3];
+	UserLoc = GetAbsOrigin(npc.index);
+	Max_Distance+=Max_Distance*0.1;
+	float distance = Max_Distance;
+	float Distances[361];
+	
+	int Total_Hit = 0;
+	
+	for(int alpha = 1 ; alpha<=360 ; alpha++)
+	{
+		float tempAngles[3], endLoc[3], Direction[3];
+		tempAngles[0] = 0.0;
+		tempAngles[1] = float(alpha);
+		tempAngles[2] = 0.0;
+					
+		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, distance);
+		AddVectors(UserLoc, Direction, endLoc);
+		
+		MakeVectorFromPoints(UserLoc, endLoc, Angles);
+		GetVectorAngles(Angles, Angles);
+		
+		float endPoint[3];
+	
+		Handle trace = TR_TraceRayFilterEx(UserLoc, Angles, 11, RayType_Infinite, DonnerKriegCannon_BEAM_TraceWallsOnly);
+		if(TR_DidHit(trace))
+		{
+			TR_GetEndPosition(endPoint, trace);
+			
+			float flDistanceToTarget = GetVectorDistance(endPoint, UserLoc);
+
+			Distances[alpha] = flDistanceToTarget;
+			
+			if(flDistanceToTarget>250.0)
+			{
+				Total_Hit++;
+				if(flDistanceToTarget>=Max_Distance)
+					Distances[alpha]=Max_Distance;
+			}
+			/*else
+			{
+				int colour[4];
+				colour[0]=150;
+				colour[1]=0;
+				colour[2]=255;
+				colour[3]=125;
+				TE_SetupBeamPoints(endPoint, UserLoc, gLaser1, 0, 0, 0, 0.1, 15.0, 15.0, 0, 0.1, colour, 1);
+				TE_SendToAll();
+			}*/
+				
+		}
+		delete trace;
+	}
+	float Avg=0.0;
+	for(int alpha = 1 ; alpha<=360 ; alpha++)
+	{
+		Avg+=Distances[alpha];
+	}
+	Avg /=360.0;
+	Return_Dist = Avg;
+	if(Total_Hit/360>=0.75)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 static void Do_Trace_Heavens_Fall(float startPoint[3], float Angles[3], float Loc[3], float Dist)
@@ -1447,6 +1614,7 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 	Color[1] = ReadPackCell(data);
 	Color[2] = ReadPackCell(data);
 	Color[3] = ReadPackCell(data);
+	bool creep  = ReadPackCell(data);
 	
 	
 	if (!IsValidEntity(client))
@@ -1457,6 +1625,11 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
 
 	Doonerkrieg_Do_AOE_Damage(npc, startPosition, 100.0, Ionrange, 0.4, Infection);
+
+	if(creep)	//if creep, create the cancer thing.
+	{
+
+	}
 
 	TE_used += 1;
 	if(TE_used > 31)
@@ -1480,8 +1653,15 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 			
 	position[0] = startPosition[0];
 	position[1] = startPosition[1];
-	position[2] += startPosition[2] + 900.0;
+	position[2] += startPosition[2] + 999.0;
 	startPosition[2] += -200;
+
+	float time[4], start[4], end[4];
+	time[0]=2.2; start[0] = 30.0; end[0] = 30.0;
+	time[1]=2.1; start[1] = 50.0; end[1] = 50.0;
+	time[2]=2.0; start[2] = 70.0; end[2] = 70.0;
+	time[3]=1.9; start[3] = 90.0; end[3] = 90.0;
+
 
 	for(int i=0 ; i < 4 ; i ++)
 	{
@@ -1501,12 +1681,15 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 			pack_TE.WriteCell(Color[1]);
 			pack_TE.WriteCell(Color[2]);
 			pack_TE.WriteCell(Color[3]);
+			pack_TE.WriteCell(time[i]);
+			pack_TE.WriteCell(start[i]);
+			pack_TE.WriteCell(end[i]);
 			RequestFrames(Doonerkrieg_Delay_TE_Beam, DelayFrames, pack_TE);
 			//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
 		}
 		else
 		{
-			TE_SetupBeamPoints(startPosition, position, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, Color, 3);
+			TE_SetupBeamPoints(startPosition, position, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, time[i], start[i], end[i], 0, 1.0, Color, 3);
 			TE_SendToAll();
 		}
 	}
@@ -1551,8 +1734,11 @@ public void Doonerkrieg_Delay_TE_Beam(DataPack pack)
 	color[1] = pack.ReadCell();
 	color[2] = pack.ReadCell();
 	color[3] = pack.ReadCell();
+	float time = pack.ReadCell();
+	float start = pack.ReadCell();
+	float end = pack.ReadCell();
 
-	TE_SetupBeamPoints(StartLoc, endLoc, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, color, 3);
+	TE_SetupBeamPoints(StartLoc, endLoc, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, time, start, end, 0, 1.0, color, 3);
 	TE_SendToAll();
 		
 	delete pack;
