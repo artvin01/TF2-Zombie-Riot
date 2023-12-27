@@ -2585,11 +2585,11 @@
 	}
 	"Broken Rapier Desc"
 	{
-		"en"	"A rapier that has been degraded to a state of hopelessness. It's barely usable.\nUnpredictable footing: You permanently take 20%% more damage.\nPin-Point Weakness: This weapon can headshot.\nDestreza: Every 2nd hit speeds you up."
+		"en"	"A rapier that has been degraded to a state of hopelessness. It's barely usable.\nUnpredictable footing: You permanently take 20%% more damage.\nPin-Point Weakness: This weapon can headshot (affected by Daquiri and Affinity).\nDestreza: Every 2nd hit speeds you up."
 	}
 	"Bent Rapier Desc"
 	{
-		"en"	"Dios mio, this is an insult to the blacksmith that conceived this weapon.\nAt least it's not missing it's second half anymore...\nPin-Point Weakness: Damage is increased."
+		"en"	"Dios mio, this is an insult to the blacksmith that conceived this weapon.\nAt least it's not missing it's second half anymore...\nPin-Point Weakness: Headshots now inflict bleed that ignores resistances."
 	}
 	"Shoddy Rapier Desc"
 	{
@@ -2597,7 +2597,7 @@
 	}
 	"Restored Rapier Desc"
 	{
-		"en"	"And so, it has been restored to it's former glory.\nGains a new ability - Duel!\nDuel!: Only usable when facing an enemy. When used, dashes you back and \nmarks both you and the target.\nMarked entities take 50%% more damage from each other."
+		"en"	"And so, it has been restored to it's former glory.\nGains a new ability - Duel!\nDuel!: Only usable when facing an enemy. When used, dashes you back and \nmarks both you and the target.\nMarked entities take more damage from each other."
 	}
 	"Improved Rapier Desc"
 	{
