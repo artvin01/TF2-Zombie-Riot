@@ -44,6 +44,16 @@ Wave 45 Ult:
 Very descriptive descriptions, I know lmao
 
 */
+
+#define DONNERKRIEG_NIGHTMARE_CANNON_BEGIN_SOUND_1 "ambient/levels/citadel/zapper_warmup1.wav"
+#define DONNERKRIEG_NIGHTMARE_CANNON_BEGIN_SOUND_2 "ambient/levels/citadel/zapper_warmup4.wav"
+
+#define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE "npc/combine_gunship/dropship_engine_distant_loop1.wav"
+#define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND "ambient/levels/citadel/zapper_ambient_loop1.wav"
+
+#define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA1 "ambient/levels/citadel/zapper_loop1.wav"
+#define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA2 "ambient/levels/citadel/zapper_loop2.wav"
+
 static const char g_DeathSounds[][] = {
 	"vo/medic_paincrticialdeath01.mp3",
 	"vo/medic_paincrticialdeath02.mp3",
@@ -169,6 +179,25 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	Zero(b_donner_valid_sniper_threats);
 	Zero(fl_donner_sniper_threat_value);
 	Zero(fl_donner_sniper_threat_timer_clean);
+
+	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_BEGIN_SOUND_1, true);
+	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_BEGIN_SOUND_2, true);
+
+	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND, true);
+
+	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA1, true);
+	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA2, true);
+
+	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE, true);
+
+	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
+	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
+	PrecacheSound("weapons/physcannon/superphys_launch3.wav", true);
+	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
+	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
+	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
+
+	PrecacheSound("ambient/energy/whiteflash.wav", true);
 	
 }
 
@@ -430,7 +459,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		Heavens_Light_Active[npc.index]=false;
 		fl_heavens_light_use_timer[npc.index] = GameTime + 125.0;
 		b_force_heavens_light[npc.index] = false;
-		Invoke_Heavens_Light(npc, GameTime);
+		//Invoke_Heavens_Light(npc, GameTime);
 
 		fl_heavens_fall_use_timer[npc.index] = GameTime + 30.0;
 
@@ -1288,6 +1317,41 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 					npc.SetCycle(0.0);
 					
 					EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
+					//EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_BEGIN_SOUND_2);
+					//EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_BEGIN_SOUND_1);
+
+					EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA1, npc.index, SNDCHAN_STATIC, 100, _, 0.25, 75);
+					//EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA1, npc.index, SNDCHAN_STATIC, 100, _, 0.25, 75);
+					EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA2, npc.index, SNDCHAN_STATIC, 100, _, 0.25, 75);
+					//EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA2, npc.index, SNDCHAN_STATIC, 100, _, 0.25, 75);
+
+					EmitSoundToAll("ambient/energy/whiteflash.wav", _, _, _, _, 1.0);
+					EmitSoundToAll("ambient/energy/whiteflash.wav", _, _, _, _, 1.0);
+
+					switch(GetRandomInt(1, 4))
+					{
+						case 1:
+						{
+							EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);
+							EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);			
+						}
+						case 2:
+						{
+							EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
+							EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
+						}
+						case 3:
+						{
+							EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);	
+							EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);			
+						}
+						case 4:
+						{
+							EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
+							EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
+						}		
+					}
+
 
 					CreateTimer(0.75, Donner_Nightmare_Offset, npc.index, TIMER_FLAG_NO_MAPCHANGE);
 				}
@@ -1781,20 +1845,66 @@ public void Doonerkrieg_Delay_TE_Beam2(DataPack pack)
 	delete pack;
 }
 
+static bool b_cannon_sound_created[MAXENTITIES];
+
 static Action Donner_Nightmare_Offset(Handle timer, int client)
 {
 	if(IsValidEntity(client))
 	{
 		Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
+
 		f_NpcTurnPenalty[npc.index] = 0.1;	//:)
 		npc.SetPlaybackRate(0.0);
 		npc.SetCycle(0.227);
 		ParticleEffectAt(WorldSpaceCenter(npc.index), "eyeboss_death_vortex", 1.0);
+		b_cannon_sound_created[npc.index]=false;
 		EmitSoundToAll("mvm/mvm_tank_ping.wav");
 		fl_nightmare_end_timer[npc.index] = GetGameTime(npc.index) + 31.5;
 		Donnerkrieg_Main_Nightmare_Cannon(npc);
 	}
 	return Plugin_Handled;
+}
+/*
+							PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_BEGIN_SOUND_1, true);
+PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_BEGIN_SOUND_2, true);
+
+PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND, true);
+
+PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA1, true);
+PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA2, true);
+*/
+static void Start_Donner_Main_Cannon_Sound(int client)
+{
+	b_cannon_sound_created[client]=true;
+
+	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
+	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
+	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
+	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
+	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
+	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
+
+}
+
+static void Kill_Donner_Main_Cannon_Sound(int client)
+{
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND);
+
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA1);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA1);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA1);
+
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA2);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA2);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA2);
+
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE);
 }
 public Action Raidboss_Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -1867,6 +1977,8 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
+	Kill_Donner_Main_Cannon_Sound(npc.index);
+
 	shared_goal = false;
 	b_raidboss_donnerkrieg_alive = false;
 
@@ -2105,6 +2217,7 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 
 	if(fl_nightmare_end_timer[npc.index]<GameTime)
 	{
+		Kill_Donner_Main_Cannon_Sound(npc.index);
 		npc.m_bInKame=false;
 		SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_Main_Nightmare_Tick);
 		return Plugin_Stop;
@@ -2152,6 +2265,9 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 
 		if(fl_initial_windup[npc.index] < GameTime)
 		{
+
+			if(!b_cannon_sound_created[npc.index])
+				Start_Donner_Main_Cannon_Sound(npc.index);
 
 			Donnerkrieg_Laser_Trace(npc, Start_Loc, endPoint, radius*0.75, 90.0*RaidModeScaling);
 
