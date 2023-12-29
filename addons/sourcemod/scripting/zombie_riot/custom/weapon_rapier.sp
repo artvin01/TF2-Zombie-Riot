@@ -126,7 +126,7 @@ void Rapier_duel_minicrits(int attacker)
 	}
 }
 
-public float NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, int weapon)
+public void NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, int weapon)
 {
 	int pap = i_Current_Pap_Rapier[attacker];
 	switch(pap)
@@ -155,15 +155,13 @@ public float NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, in
 		}
 	}
 	if(i_HasBeenHeadShotted[victim] == true && pap != 0)
-		StartBleedingTimer(victim, attacker, damage * 0.5, 3, weapon, DMG_SLASH);
+		StartBleedingTimer(victim, attacker, damage * 0.05, 3, weapon, DMG_SLASH);
 
 	if(f_DuelStatus[victim] > 0.0 && DuelState_timer[attacker] != INVALID_HANDLE)
 	{
 		Rapier_duel_minicrits(attacker);
-		return (damage * 1.5);
+		damage *= 1.5;
 	}
-
-	return damage;
 }
 
 public void Weapon_Rapier_M2(int client, int weapon, bool crit, int slot)
@@ -325,8 +323,8 @@ public void Rapier_Cooldown_Logic(int client, int weapon)
 		}
 		if(IsValidClient(client) && IsClientInGame(client) && DuelState_timer[client] != INVALID_HANDLE && Health < (MaxHealth/4))
 		{
-			delete DuelState_timer[client];
 			EmitSoundToClient(client, DUEL6, _, _, 80, _, 0.8, 100);
+			delete DuelState_timer[client];
 		}
 		fl_Rapier_hud_delay[client] = GetGameTime() + 0.5;
 	}
