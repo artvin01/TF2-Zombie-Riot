@@ -2534,7 +2534,7 @@
 	}
 	"Impact Lance Desc 5"
 	{
-		"en"	"Pressing R will allow you to throw your lance, Costs 2x primary attack in mana\nThe lance becomes unusable for 2 seconds unless you have a certain god's godly assistance\n5% Melee resistance"
+		"en"	"Using M2 will allow you to throw your lance, Costs 2x primary attack in mana\nThe lance becomes unusable for 2 seconds unless you have a certain god's godly assistance\n5% Melee resistance"
 	}
 	"Impact Lance Desc 6"
 	{
@@ -2611,5 +2611,25 @@
 	"Rapier Desc"
 	{
 		"en"	"A pinnacle of blacksmithing. Best of the best of the best. You've earned this, amigo.\nUnpredictable footing: You permanently take 10%% more damage."
+	}
+	"Gravton Wand desc0"
+	{
+		"en"	"A powerfull AOE Spell, M1 summons a timed explosion.\nSlow casting speed."
+	}
+	"Gravton Wand desc1"
+	{
+		"en"	"You can now cast a powerfull Gravaton Shower with M2!\nAsuming you have enough mana and charges."
+	}
+	"Gravton Wand desc2"
+	{
+		"en"	"More damage, higher Mana cost."
+	}
+	"Gravton Wand desc3"
+	{
+		"en"	"More damage, higher Mana cost."
+	}
+	"Gravton Wand desc4"
+	{
+		"en"	"More damage, higher Mana cost."
 	}
 }

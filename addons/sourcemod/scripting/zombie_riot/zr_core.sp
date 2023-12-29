@@ -150,6 +150,7 @@ enum
 	WEAPON_ANGELIC_SHOTGUN = 79,
 	WEAPON_RAPIER = 80,
 	WEAPON_RED_BLADE = 81,
+	WEAPON_GRAVATON_WAND = 82,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -468,6 +469,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_angelic_shotgonnus.sp"
 #include "zombie_riot/custom/red_blade.sp"
 #include "zombie_riot/custom/weapon_rapier.sp"
+#include "zombie_riot/custom/wand/weapon_wand_gravaton.sp"
 
 void ZR_PluginLoad()
 {
@@ -688,6 +690,7 @@ void ZR_MapStart()
 	Trash_Cannon_Precache();
 	Kit_Blitzkrieg_Precache();
 	ResetMapStartRedBladeWeapon();
+	Gravaton_Wand_MapStart();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;
