@@ -140,17 +140,17 @@ public float NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, in
 	if(f_DuelStatus[victim] > 0.0 && DuelState_timer[attacker] != INVALID_HANDLE)
 	{
 		Rapier_duel_minicrits(attacker);
-		return damage *= 1.5;
+		return (damage * 1.5);
 	}
 
-	return damage *= 1.0;
+	return damage;
 }
 
 public void Weapon_Rapier_M2(int client, int weapon, bool crit, int slot)
 {
 	//PrintToChatAll("Pressed M2");
 	float cooldown = Ability_Check_Cooldown(client, slot);
-	if(cooldown > 0.0 && !CvarInfiniteCash.BoolValue && dieingstate[client] != 0)
+	if(cooldown > 0.0 && !CvarInfiniteCash.BoolValue)
 	{
 		//PrintToChatAll("Didn't trigger Duel");
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
