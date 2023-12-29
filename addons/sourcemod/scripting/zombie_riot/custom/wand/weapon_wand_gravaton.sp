@@ -163,6 +163,7 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		float vecSwingForward[3];
 		StartLagCompensation_Base_Boss(client);
 		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, Range, false, 45.0, true); //infinite range, and ignore walls!
+		FinishLagCompensation_Base_boss();
 
 		float vec[3];
 

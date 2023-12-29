@@ -391,7 +391,6 @@ public void OnPostThink(int client)
 		if (Jesus_Blessing[client] == 1)
 		{	
 			int healing_Amount;
-			ApplyHealEvent(client, healing_Amount);	
 			
 			if(dieingstate[client] > 0)
 			{
@@ -1329,6 +1328,14 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 			TeleportBackToLastSavePosition(victim);
 		}
 	}
+	RegainTf2Buffs(victim);
+
+	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
+
+	return Plugin_Continue;
+}
+void RegainTf2Buffs(int victim)
+{
 	if(i_WasInUber[victim])
 	{
 		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber[victim]);
@@ -1341,11 +1348,9 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 	{
 		TF2_AddCondition(victim, TFCond_DefenseBuffed, i_WasInDefenseBuff[victim]);
 	}
-	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
 	i_WasInUber[victim] = 0.0;
 	i_WasInMarkedForDeath[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
-	return Plugin_Continue;
 }
 static void Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim)
 {
