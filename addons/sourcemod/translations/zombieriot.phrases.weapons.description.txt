@@ -453,6 +453,11 @@
 		"ru"	"Конечно, Мозг, но где ты достанешь достаточно звёзд для этого?\nВремя восст. M1 покажет вам, через какое время она снова будет восстанавливаться.\nБольше перегрев означает меньший урон."
 		"chi"   "当然，兄弟，但你要去哪里弄到足够的星星呢?你射击时，冷却时间会告诉你它多久才会再次冷却。更高的过热意味着更少的伤害。"
 	}
+
+	"Star Shooter Pap 1"
+	{
+		"en"	"Increased damage,reduced overheat gained each shot and gains an ability.\nAbility gives increased attack speed and removes overheat gain from shooting for 7.5 seconds."
+	}
 	
 	"Loose Cannon Pap 1"
 	{
