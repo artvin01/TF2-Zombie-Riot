@@ -216,6 +216,10 @@ methodmap Donnerkrieg < CClotBody
 		else
 		{
 			RaidModeScaling = 10.0;	//just a safety net
+			if(RaidBossActive==INVALID_ENT_REFERENCE)
+				RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidAllowsBuildings = true;
 		}
 		SDKHook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
 			

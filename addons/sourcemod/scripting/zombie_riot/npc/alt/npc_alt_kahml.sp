@@ -247,6 +247,12 @@ methodmap Kahmlstein < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
+
+		if(RaidBossActive==INVALID_ENT_REFERENCE)
+			RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidModeTime = GetGameTime(npc.index) + 9000.0;
+		RaidModeScaling = 69420.0;
+		RaidAllowsBuildings = true;
 		
 		npc.m_bDissapearOnDeath = true;
 		
@@ -923,6 +929,9 @@ public void Kahmlstein_NPCDeath(int entity)
 	npc.PlayDeathSound();	
 	ParticleEffectAt(WorldSpaceCenter(npc.index), "teleported_blue", 0.5);
 	CPrintToChatAll("{blue}Kahmlstein{default}: You're boring me, im leaving.");
+
+	if(npc.index==EntRefToEntIndex(RaidBossActive))
+		RaidBossActive=INVALID_ENT_REFERENCE;
 
 	SDKUnhook(npc.index, SDKHook_Think, Kahmlstein_ClotThink);
 	

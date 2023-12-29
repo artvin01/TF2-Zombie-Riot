@@ -221,6 +221,10 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 			}
 		}
 
+		if(RaidbossIgnoreBuildingsLogic(1))
+			Time /=2.0;
+
+
 		Handle data;
 		CreateDataTimer(Time, Smite_Timer_Gravaton_Wand, data, TIMER_FLAG_NO_MAPCHANGE);
 		WritePackFloat(data, vec[0]);
