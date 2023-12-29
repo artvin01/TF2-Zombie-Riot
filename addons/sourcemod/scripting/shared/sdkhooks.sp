@@ -16,7 +16,9 @@ static const float ViewHeights[] =
 };
 */
 //static int g_offsPlayerPunchAngleVel = -1;
-
+static float i_WasInUber[MAXTF2PLAYERS] = {0.0,0.0,0.0};
+static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
+static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 void SDKHooks_ClearAll()
 {
 #if defined ZR
@@ -27,6 +29,10 @@ void SDKHooks_ClearAll()
 	{
 		i_WhatLevelForHudIsThisClientAt[client] = 2000000000; //two billion
 	}
+	
+	Zero(i_WasInUber);
+	Zero(i_WasInMarkedForDeath);
+	Zero(i_WasInDefenseBuff);
 }
 
 void SDKHook_PluginStart()
@@ -391,7 +397,6 @@ public void OnPostThink(int client)
 		if (Jesus_Blessing[client] == 1)
 		{	
 			int healing_Amount;
-			ApplyHealEvent(client, healing_Amount);	
 			
 			if(dieingstate[client] > 0)
 			{
@@ -1312,9 +1317,6 @@ public void OnPreThink(int client)
 */
 
 #if defined ZR
-static float i_WasInUber[MAXTF2PLAYERS];
-static float i_WasInMarkedForDeath[MAXTF2PLAYERS];
-static float i_WasInDefenseBuff[MAXTF2PLAYERS];
 public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(!(damagetype & DMG_DROWN|DMG_FALL))
@@ -1329,6 +1331,14 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 			TeleportBackToLastSavePosition(victim);
 		}
 	}
+	RegainTf2Buffs(victim);
+
+	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
+
+	return Plugin_Continue;
+}
+void RegainTf2Buffs(int victim)
+{
 	if(i_WasInUber[victim])
 	{
 		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber[victim]);
@@ -1341,11 +1351,9 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 	{
 		TF2_AddCondition(victim, TFCond_DefenseBuffed, i_WasInDefenseBuff[victim]);
 	}
-	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
 	i_WasInUber[victim] = 0.0;
 	i_WasInMarkedForDeath[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
-	return Plugin_Continue;
 }
 static void Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim)
 {

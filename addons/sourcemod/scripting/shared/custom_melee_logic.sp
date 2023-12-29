@@ -177,7 +177,8 @@ public void SepcialBackstabLaughSpy(int attacker)
 
 #define MELEE_RANGE 64.0
 #define MELEE_BOUNDS 22.0
-stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0, bool Hit_ally = false, float CustomMeleeWide = 0.0, bool ignore_walls = false, int &enemies_hit_aoe = 1, int weapon = -1)
+stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0,
+ bool Hit_ally = false, float CustomMeleeWide = 0.0, bool ignore_walls = false, int &enemies_hit_aoe = 1, int weapon = -1)
 {
 #if defined ZR
 	if(weapon > 0)
@@ -336,7 +337,7 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 				}
 			}
 			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, client );
-			if ( TR_GetFraction(trace) >= 1.0)
+			if ( TR_GetFraction(trace) >= 1.0 && enemies_hit_aoe != -1)
 			{
 				delete trace;
 				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );

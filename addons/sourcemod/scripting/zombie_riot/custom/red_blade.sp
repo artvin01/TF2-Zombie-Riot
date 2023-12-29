@@ -3,7 +3,7 @@
 static Handle h_TimerRedBladeWeaponManagement[MAXPLAYERS+1] = {null, ...};
 static float f_RedBladehuddelay[MAXPLAYERS+1]={0.0, ...};
 static bool HALFORNO[MAXPLAYERS];
-static int i_RedBladeFireParticle[MAXPLAYERS+1][2];
+static int i_RedBladeFireParticle[MAXPLAYERS+1];
 static int i_RedBladeNpcToCharge[MAXPLAYERS+1];
 static float f_RedBladeChargeDuration[MAXPLAYERS+1];
 
@@ -199,7 +199,7 @@ void WeaponRedBlade_OnTakeDamage(int victim, float &damage)
 	}
 	if(HALFORNO[victim])
 	{
-		damage *= 0.35;
+		damage *= 0.4;
 	}
 }
 void WeaponRedBlade_OnTakeDamage_Post(int victim, int weapon)
@@ -208,8 +208,6 @@ void WeaponRedBlade_OnTakeDamage_Post(int victim, int weapon)
 }
 void MakeBladeBloddy(int client, bool ignite, int weapon)
 {
-	return;
-	//note: Doesnt work:
 	int Weaponviewmodel = EntRefToEntIndex(WeaponRef_viewmodel[client]);
 	int view_Weaponviewmodel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
 	if(!IsValidEntity(Weaponviewmodel) || !IsValidEntity(view_Weaponviewmodel))
@@ -235,42 +233,47 @@ void CreateRedBladeEffect(int client)
 	DestroyRedBladeEffect(client);
 	
 	float flPos[3];
+	float eyeAng[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
 
 	
-	int particle = ParticleEffectAt(flPos, "utaunt_hellpit_middlebase", 0.0);
+	int particle = ParticleEffectAt(flPos, "utaunt_tarotcard_red_glow", 0.0);
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(client, particle);
 	i_RedBladeFireParticle[client][0] = EntIndexToEntRef(particle);
+	
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
 
-	particle = ParticleEffectAt(flPos, "utaunt_tarotcard_red_glow", 0.0);
-	AddEntityToThirdPersonTransitMode(client, particle);
-	SetParent(client, particle);
-	i_RedBladeFireParticle[client][1] = EntIndexToEntRef(particle);
+	if(IsValidEntity(viewmodelModel))
+	{
+		IgniteTargetEffect(viewmodelModel, FIRSTPERSON, client);
+	}	
+
+	int viewmodelModel_Hand;
+	viewmodelModel_Hand = EntRefToEntIndex(WeaponRef_viewmodel[client]);
+	if(IsValidEntity(viewmodelModel_Hand))
+	{
+		IgniteTargetEffect(viewmodelModel_Hand, THIRDPERSON, client);
+	}	
 }
 
 bool IsRedBladeEffectSpawned(int client)
 {
-	for(int loop = 0; loop<2; loop++)
+	int entity = EntRefToEntIndex(i_RedBladeFireParticle[client]);
+	if(!IsValidEntity(entity))
 	{
-		int entity = EntRefToEntIndex(i_RedBladeFireParticle[client][loop]);
-		if(!IsValidEntity(entity))
-		{
-			return false;
-		}
+		return false;
 	}
 	return true;
 }
 
 void DestroyRedBladeEffect(int client)
 {
-	for(int loop = 0; loop<2; loop++)
+	int entity = EntRefToEntIndex(i_RedBladeFireParticle[client]);
+	if(IsValidEntity(entity))
 	{
-		int entity = EntRefToEntIndex(i_RedBladeFireParticle[client][loop]);
-		if(IsValidEntity(entity))
-		{
-			RemoveEntity(entity);
-		}
-		i_RedBladeFireParticle[client][loop] = INVALID_ENT_REFERENCE;
+		RemoveEntity(entity);
 	}
+	i_RedBladeFireParticle[client] = INVALID_ENT_REFERENCE;
 }

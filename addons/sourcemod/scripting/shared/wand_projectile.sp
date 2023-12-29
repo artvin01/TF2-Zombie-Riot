@@ -286,6 +286,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Melee_QuibaiArkTouch(entity, target);
 		}
+		case WEAPON_GRAVATON_WAND:
+		{
+			Gravaton_WandTouch(entity, target);
+		}
 	}
 #else
 	switch(i_WandIdNumber[entity])

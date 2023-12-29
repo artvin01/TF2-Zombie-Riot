@@ -177,6 +177,14 @@ methodmap Schwertkrieg < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = 1;
 		}
+		else
+		{
+			if(RaidBossActive==INVALID_ENT_REFERENCE)
+				RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidModeScaling = 69.0;
+			RaidAllowsBuildings = true;
+		}
 		
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/medic/medic_zombie.mdl");

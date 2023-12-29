@@ -866,6 +866,7 @@ static int GunType[MAXENTITIES];
 static int GunValue[MAXENTITIES];
 static int GunSeller[MAXENTITIES];
 static int PerkType[MAXENTITIES];
+static bool RebelAggressive[MAXENTITIES];
 static float GunDamage[MAXENTITIES];
 static float GunFireRate[MAXENTITIES];
 static float GunBonusFireRate[MAXENTITIES];
@@ -1006,6 +1007,11 @@ methodmap Citizen < CClotBody
 		public get()		{ return PerkType[this.index]; }
 		public set(int value) 	{ PerkType[this.index] = value; }
 	}
+	property bool m_bRebelAgressive
+	{
+		public get()		{ return RebelAggressive[this.index]; }
+		public set(bool value) 	{ RebelAggressive[this.index] = value; }
+	}
 	property int m_iGunType
 	{
 		public get()		{ return GunType[this.index]; }
@@ -1096,7 +1102,7 @@ methodmap Citizen < CClotBody
 		{
 			this.m_flNextRangedBarrage_Spam = value;
 
-			if(!this.m_bSeakingGeneric && (this.m_iHasPerk == Cit_Pistol || this.m_iHasPerk == Cit_Shotgun || this.m_iHasPerk == Cit_RPG || (this.m_bCamo && this.m_iHasPerk == Cit_Melee)))
+			if(!this.m_bSeakingGeneric && (this.m_iHasPerk == Cit_Pistol || this.m_iHasPerk == Cit_Shotgun || this.m_iHasPerk == Cit_RPG || ((this.m_bRebelAgressive || this.m_bCamo) && this.m_iHasPerk == Cit_Melee)))
 			{
 				fl_Speed[this.index] = value * (this.m_bAlyx ? 1.66 : 1.55);
 			}
@@ -1227,7 +1233,7 @@ methodmap Citizen < CClotBody
 		{
 			this.m_iHasPerk = Cit_None;
 			this.m_bThisEntityIgnored = true;
-			this.m_iReviveTicks = 250;
+			this.m_iReviveTicks = 125;
 			this.SetActivity("ACT_BUSY_SIT_GROUND", 0.0);
 			this.AddGesture("ACT_BUSY_SIT_GROUND_ENTRY");
 			
@@ -1521,7 +1527,9 @@ bool Citizen_GivePerk(int entity, int type)
 	float flPos[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 	flPos[2] += 100.0;
-	
+
+	npc.m_bRebelAgressive = false;
+
 	switch(npc.m_iBuildingType)
 	{
 		case 1:
@@ -1543,6 +1551,11 @@ bool Citizen_GivePerk(int entity, int type)
 		case 7:
 		{
 			npc.m_iWearable2 = ParticleEffectAt_Building_Custom(flPos, "powerup_icon_vampire", npc.index); //ze healing station
+		}
+		case 8:
+		{
+			npc.m_bRebelAgressive = true;
+			npc.m_iWearable2 = ParticleEffectAt_Building_Custom(flPos, "powerup_icon_strength", npc.index); //Power!
 		}
 		default:
 		{
@@ -1774,6 +1787,7 @@ public void Citizen_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.04;
 	npc.Update();
+
 	
 	if(npc.m_nDowned)
 	{
@@ -1796,7 +1810,11 @@ public void Citizen_ClotThink(int iNPC)
 		}
 		return;
 	}
-
+	if(npc.m_bRebelAgressive)
+	{
+		//This heal happens every second on players, for npcs this think happens way more often, subtract.
+		HealEntityGlobal(npc.index, npc.index, 0.04 / (3.0), 0.5, 0.0, HEAL_SELFHEAL);	
+	}
 	if(npc.m_flAttackHappens)
 	{
 		npc.m_iTargetAlly = 0;
@@ -1830,6 +1848,10 @@ public void Citizen_ClotThink(int iNPC)
 						if(npc.m_bCamo)
 						{
 							DamageDeal *= CAMO_REBEL_DMG_PENALTY;
+						}
+						else if (npc.m_bRebelAgressive)
+						{
+							DamageDeal *= 1.15;
 						}
 						SDKHooks_TakeDamage(target, npc.index, GetClientOfUserId(npc.m_iGunSeller), DamageDeal, DMG_SLASH, -1, _, vecHit);
 						
@@ -1879,7 +1901,7 @@ public void Citizen_ClotThink(int iNPC)
 		return;
 	}
 
-	bool autoSeek = (npc.m_bCamo || VIPBuilding_Active());
+	bool autoSeek = (npc.m_bCamo || VIPBuilding_Active() || npc.m_bRebelAgressive);
 
 	// See if our target is still valid
 	if(npc.m_iTarget && (npc.m_iGunType == Cit_None || !IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo)))
@@ -2158,6 +2180,10 @@ public void Citizen_ClotThink(int iNPC)
 							{
 								DamageDeal *= CAMO_REBEL_DMG_PENALTY;
 							}
+							else if (npc.m_bRebelAgressive)
+							{
+								DamageDeal *= 1.15;
+							}
 							FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, DamageDeal, 9000.0, DMG_SLASH, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _, "muzzle");
 							npc.PlayPistolSound();
 							
@@ -2247,6 +2273,10 @@ public void Citizen_ClotThink(int iNPC)
 								{
 									DamageDeal *= CAMO_REBEL_DMG_PENALTY;
 								}
+								else if (npc.m_bRebelAgressive)
+								{
+									DamageDeal *= 1.15;
+								}
 								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, DamageDeal, 9000.0, DMG_SLASH, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _ , "muzzle");
 								npc.PlaySMGSound();
 								
@@ -2332,6 +2362,10 @@ public void Citizen_ClotThink(int iNPC)
 								{
 									DamageDeal *= CAMO_REBEL_DMG_PENALTY;
 								}
+								else if (npc.m_bRebelAgressive)
+								{
+									DamageDeal *= 1.15;
+								}
 								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, DamageDeal, 9000.0, DMG_SLASH, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _ , "muzzle");
 								npc.PlayARSound();
 								
@@ -2414,6 +2448,10 @@ public void Citizen_ClotThink(int iNPC)
 							{
 								DamageDeal *= CAMO_REBEL_DMG_PENALTY;
 							}
+							else if (npc.m_bRebelAgressive)
+							{
+								DamageDeal *= 1.15;
+							}
 							FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, DamageDeal, 9000.0, DMG_SLASH, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _ , "muzzle");
 							npc.PlayShotgunSound();
 							
@@ -2475,6 +2513,10 @@ public void Citizen_ClotThink(int iNPC)
 							if(npc.m_bCamo)
 							{
 								DamageDeal *= CAMO_REBEL_DMG_PENALTY;
+							}
+							else if (npc.m_bRebelAgressive)
+							{
+								DamageDeal *= 1.15;
 							}
 							npc.FireRocket(vecTarget, DamageDeal, 1100.0, _, _, EP_DEALS_SLASH_DAMAGE, _, GetClientOfUserId(npc.m_iGunSeller));
 							npc.PlayRPGSound();
@@ -3234,6 +3276,10 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 		}
 		else
 		{
+			if(npc.m_bRebelAgressive)
+			{
+				damage *= 0.85;
+			}
 			int value = npc.m_iGunValue - npc.m_iArmorErosion;
 			if(value > 10000)
 			{

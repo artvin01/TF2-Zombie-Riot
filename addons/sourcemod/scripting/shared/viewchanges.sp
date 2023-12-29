@@ -51,7 +51,6 @@ static const char RobotModels[][] =
 static int HandIndex[11];
 static int PlayerIndex[10];
 static int RobotIndex[10];
-static int HandRef[MAXTF2PLAYERS];
 
 #if defined ZR
 static int TeutonModelIndex;

@@ -1,5 +1,4 @@
 #pragma semicolon 1
-#pragma newdecls required
 //#pragma dynamic    131072
 //Allah This plugin has so much we need to do this.
 
@@ -4829,4 +4828,105 @@ stock bool AtEdictLimit(int type)
 	}
 
 	return true;
+}
+
+stock int GetParticleEffectIndex(const char[] sEffectName)
+{
+	static int table = INVALID_STRING_TABLE;
+	
+	if (table == INVALID_STRING_TABLE)
+	{
+		table = FindStringTable("ParticleEffectNames");
+	}
+	
+	int iIndex = FindStringIndex(table, sEffectName);
+	if(iIndex != INVALID_STRING_INDEX)
+		return iIndex;
+	
+	// This is the invalid string index
+	return 0;
+}
+
+stock int GetEffectIndex(const char[] sEffectName)
+{
+	static int table = INVALID_STRING_TABLE;
+	
+	if (table == INVALID_STRING_TABLE)
+	{
+		table = FindStringTable("EffectDispatch");
+	}
+	
+	int iIndex = FindStringIndex(table, sEffectName);
+	if(iIndex != INVALID_STRING_INDEX)
+		return iIndex;
+	
+	// This is the invalid string index
+	return 0;
+}
+
+stock TE_SetupParticleEffect(const String:sParticleName[], ParticleAttachment_t:iAttachType, entity)//, const Float:fOrigin[3] = NULL_VECTOR, const Float:fAngles[3] = NULL_VECTOR, const Float:fStart[3] = NULL_VECTOR, iAttachmentPoint = -1, bool:bResetAllParticlesOnEntity = false)
+{
+	TE_Start("EffectDispatch");
+	
+	TE_WriteNum("m_nHitBox", GetParticleEffectIndex(sParticleName));
+	
+	new fFlags;
+	if(entity > 0)
+	{
+		new Float:fEntityOrigin[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", fEntityOrigin);
+		if(GuessSDKVersion() < SOURCE_SDK_CSGO)
+			TE_WriteFloatArray("m_vOrigin[0]", fEntityOrigin, 3);
+		else
+			TE_WriteFloatArray("m_vOrigin.x", fEntityOrigin, 3);
+			
+		if(iAttachType != PATTACH_WORLDORIGIN)
+		{
+			TE_WriteNum("entindex", entity);
+			fFlags |= PARTICLE_DISPATCH_FROM_ENTITY;
+		}
+	}
+	
+	/*if(fOrigin != NULL_VECTOR)
+		TE_WriteFloatArray("m_vOrigin[0]", fOrigin, 3);
+	if(fStart != NULL_VECTOR)
+		TE_WriteFloatArray("m_vStart[0]", fStart, 3);
+	if(fAngles != NULL_VECTOR)
+		TE_WriteVector("m_vAngles", fAngles);*/
+	
+	//if(bResetAllParticlesOnEntity)
+	//	fFlags |= PARTICLE_DISPATCH_RESET_PARTICLES;
+	
+	TE_WriteNum("m_fFlags", fFlags);
+	TE_WriteNum("m_nDamageType", _:iAttachType);
+	TE_WriteNum("m_nAttachmentIndex", -1);
+	
+	TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffect"));
+}
+
+stock PrecacheEffect(const String:sEffectName[])
+{
+	static table = INVALID_STRING_TABLE;
+	
+	if (table == INVALID_STRING_TABLE)
+	{
+		table = FindStringTable("EffectDispatch");
+	}
+	
+	new bool:save = LockStringTables(false);
+	AddToStringTable(table, sEffectName);
+	LockStringTables(save);
+}
+stock PrecacheParticleEffect(const String:sEffectName[])
+{
+	static table = INVALID_STRING_TABLE;
+	
+	if (table == INVALID_STRING_TABLE)
+	{
+		table = FindStringTable("ParticleEffectNames");
+	}
+	
+	new bool:save = LockStringTables(false);
+	AddToStringTable(table, sEffectName);
+	LockStringTables(save);
 }

@@ -6026,6 +6026,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Quibai(client, entity);
 		AngelicShotgun_Enable(client, entity);
 		Enable_RedBladeWeapon(client, entity);
+		Enable_Gravaton_Wand(client, entity);
 #endif
 
 #if defined RPG
