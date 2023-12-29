@@ -2297,4 +2297,8 @@
 	{
 		"en"	"Hurricane-Blitz"
 	}
+	"Gravaton Spell"
+	{
+		"en"	"Gravaton Spell"
+	}
 }

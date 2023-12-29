@@ -453,6 +453,11 @@
 		"ru"	"Конечно, Мозг, но где ты достанешь достаточно звёзд для этого?\nВремя восст. M1 покажет вам, через какое время она снова будет восстанавливаться.\nБольше перегрев означает меньший урон."
 		"chi"   "当然，兄弟，但你要去哪里弄到足够的星星呢?你射击时，冷却时间会告诉你它多久才会再次冷却。更高的过热意味着更少的伤害。"
 	}
+
+	"Star Shooter Pap 1"
+	{
+		"en"	"Increased damage,reduced overheat gained each shot and gains an ability.\nAbility gives increased attack speed and removes overheat gain from shooting for 7.5 seconds."
+	}
 	
 	"Loose Cannon Pap 1"
 	{
@@ -2529,7 +2534,7 @@
 	}
 	"Impact Lance Desc 5"
 	{
-		"en"	"Pressing R will allow you to throw your lance, Costs 2x primary attack in mana\nThe lance becomes unusable for 2 seconds unless you have a certain god's godly assistance\n5% Melee resistance"
+		"en"	"Using M2 will allow you to throw your lance, Costs 2x primary attack in mana\nThe lance becomes unusable for 2 seconds unless you have a certain god's godly assistance\n5% Melee resistance"
 	}
 	"Impact Lance Desc 6"
 	{
@@ -2585,11 +2590,11 @@
 	}
 	"Broken Rapier Desc"
 	{
-		"en"	"A rapier that has been degraded to a state of hopelessness. It's barely usable.\nUnpredictable footing: You permanently take 20%% more damage.\nPin-Point Weakness: This weapon can headshot.\nDestreza: Every 2nd hit speeds you up."
+		"en"	"A rapier that has been degraded to a state of hopelessness. It's barely usable.\nUnpredictable footing: You permanently take 20%% more damage.\nPin-Point Weakness: This weapon can headshot (affected by Daquiri and Affinity).\nDestreza: Every 2nd hit speeds you up."
 	}
 	"Bent Rapier Desc"
 	{
-		"en"	"Dios mio, this is an insult to the blacksmith that conceived this weapon.\nAt least it's not missing it's second half anymore...\nPin-Point Weakness: Damage is increased."
+		"en"	"Dios mio, this is an insult to the blacksmith that conceived this weapon.\nAt least it's not missing it's second half anymore...\nPin-Point Weakness: Headshots now inflict bleed that ignores resistances."
 	}
 	"Shoddy Rapier Desc"
 	{
@@ -2597,7 +2602,7 @@
 	}
 	"Restored Rapier Desc"
 	{
-		"en"	"And so, it has been restored to it's former glory.\nGains a new ability - Duel!\nDuel!: Only usable when facing an enemy. When used, dashes you back and \nmarks both you and the target.\nMarked entities take 50%% more damage from each other."
+		"en"	"And so, it has been restored to it's former glory.\nGains a new ability - Duel!\nDuel!: Only usable when facing an enemy. When used, dashes you back and \nmarks both you and the target.\nMarked entities take more damage from each other."
 	}
 	"Improved Rapier Desc"
 	{
@@ -2606,5 +2611,25 @@
 	"Rapier Desc"
 	{
 		"en"	"A pinnacle of blacksmithing. Best of the best of the best. You've earned this, amigo.\nUnpredictable footing: You permanently take 10%% more damage."
+	}
+	"Gravton Wand desc0"
+	{
+		"en"	"A powerfull AOE Spell, M1 summons a timed explosion.\nSlow casting speed."
+	}
+	"Gravton Wand desc1"
+	{
+		"en"	"You can now cast a powerfull Gravaton Shower with M2!\nAsuming you have enough mana and charges."
+	}
+	"Gravton Wand desc2"
+	{
+		"en"	"More damage, higher Mana cost."
+	}
+	"Gravton Wand desc3"
+	{
+		"en"	"More damage, higher Mana cost."
+	}
+	"Gravton Wand desc4"
+	{
+		"en"	"More damage, higher Mana cost."
 	}
 }

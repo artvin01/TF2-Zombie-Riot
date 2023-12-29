@@ -2176,6 +2176,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			NPC_OnTakeDamage_Rapier(attacker, victim, damage, weapon);
 		}
+		case WEAPON_GRAVATON_WAND:
+		{
+			NPC_OnTakeDmg_Gravaton_Wand(attacker, damagetype);
+		}
 	}
 #endif
 
