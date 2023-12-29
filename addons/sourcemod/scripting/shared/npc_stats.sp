@@ -2949,6 +2949,9 @@ public void NPC_Base_InitGamedata()
 	EntityFactory.Install();
 
 	//for (int i = 0; i < MAXENTITIES; i++) pPath[i] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
+	PrecacheEffect("ParticleEffect");
+	PrecacheEffect("ParticleEffectStop");
+	PrecacheParticleEffect("burningplayer_red");
 }
 
 static void OnCreate(CClotBody body)
@@ -3137,6 +3140,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 #endif		
 		NPC_DeadEffects(pThis); //Do kill attribute stuff
 		RemoveNpcThingsAgain(pThis);
+		ExtinguishTarget(pThis);
 		NPCDeath(pThis);
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
@@ -9395,4 +9399,165 @@ void NpcSpeechBubbleTalk(int iNPC)
 	int MaxTextCutoff = i_SpeechBubbleTotalText_ScrollingPart[iNPC];
 	Format(TestMax, MaxTextCutoff, ch_SpeechBubbleTotalText[iNPC]);
 	DispatchKeyValue(Text_Entity, "message", TestMax);
+}
+
+
+#define PARTICLE_DISPATCH_FROM_ENTITY		(1<<0)
+#define PARTICLE_DISPATCH_RESET_PARTICLES	(1<<1)
+
+#define FIRSTPERSON 1
+#define THIRDPERSON 2
+
+Handle Timer_Ingition_Settings[MAXENTITIES] = {INVALID_HANDLE, ...};
+bool ClientHasSetFire[MAXENTITIES][MAXTF2PLAYERS];
+
+void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClient = 0)
+{
+	if(ViewmodelSetting > 0)
+	{
+		for( int i = 0; i <= MaxClients; i++ ) 
+		{
+			ClientHasSetFire[target][i] = false;
+		}
+		if(Timer_Ingition_Settings[target] != null)
+		{
+			delete Timer_Ingition_Settings[target];
+			Timer_Ingition_Settings[target] = null;
+		}
+		DataPack pack;
+		Timer_Ingition_Settings[target] = CreateDataTimer(0.1, IgniteTimerVisual, pack, TIMER_REPEAT);
+		pack.WriteCell(target);
+		pack.WriteCell(EntIndexToEntRef(target));
+		pack.WriteCell(ViewmodelSetting);
+		pack.WriteCell(viewmodelClient);
+
+	}
+	else
+	{
+		TE_SetupParticleEffect("burningplayer_red", PATTACH_ABSORIGIN_FOLLOW, target);
+		TE_WriteNum("m_bControlPoint1", target);	
+		TE_SendToAll();		
+	}
+}
+
+public Action IgniteTimerVisual(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int targetoriginal = pack.ReadCell();
+	int target = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(target))
+	{
+		Timer_Ingition_Settings[targetoriginal] = null;
+		return Plugin_Stop;
+	}	
+	int InvisMode = pack.ReadCell();
+	int ownerclient = pack.ReadCell();
+	for( int client = 1; client <= MaxClients; client++ ) 
+	{
+		if (IsValidClient(client))
+		{
+			if(b_FirstPersonUsesWorldModel[client])
+			{
+				//always ignited.
+				if(InvisMode == THIRDPERSON)
+				{
+					IngiteTargetClientside(target, client, true);
+				}
+				else
+				{
+					IngiteTargetClientside(target, client, false);
+				}
+				continue;		
+			}
+			if(ownerclient == client)
+			{
+				if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
+				{
+					//we are in third person
+					//its invis in third person
+					if(InvisMode == THIRDPERSON)
+					{
+						IngiteTargetClientside(target, client, false);
+					}
+					else
+					{
+						IngiteTargetClientside(target, client, true);
+					}
+					continue;		
+				}
+				else
+				{
+					if(InvisMode == THIRDPERSON)
+					{
+						IngiteTargetClientside(target, client, true);
+					}
+					else
+					{
+						IngiteTargetClientside(target, client, false);
+					}
+					continue;	
+				}
+			}
+			else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != ownerclient || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
+			{
+				/*
+					is in third person
+				*/
+				if(InvisMode == THIRDPERSON)
+				{
+					IngiteTargetClientside(target, client, false);
+				}
+				else
+				{
+					IngiteTargetClientside(target, client, true);
+				}
+				continue;	
+			}
+			if(InvisMode == THIRDPERSON)
+			{
+				IngiteTargetClientside(target, client, true);
+			}
+			else
+			{
+				IngiteTargetClientside(target, client, false);
+			}
+		}
+	}
+	return Plugin_Continue;
+}
+
+
+void IngiteTargetClientside(int target, int client, bool ingite)
+{
+	if(ingite && !ClientHasSetFire[target][client])
+	{
+		ClientHasSetFire[target][client] = true;
+		TE_SetupParticleEffect("burningplayer_red", PATTACH_ABSORIGIN_FOLLOW, target);
+		TE_WriteNum("m_bControlPoint1", target);	
+		TE_SendToClient(client);
+	}
+	else if(!ingite && ClientHasSetFire[target][client])
+	{
+		ClientHasSetFire[target][client] = false;
+		TE_Start("EffectDispatch");
+		
+		if(target > 0)
+			TE_WriteNum("entindex", target);
+		
+		TE_WriteNum("m_nHitBox", GetParticleEffectIndex("burningplayer_red"));
+		TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
+		TE_SendToClient(client);	
+	}
+
+}
+void ExtinguishTarget(int target)
+{
+	TE_Start("EffectDispatch");
+	
+	if(target > 0)
+		TE_WriteNum("entindex", target);
+	
+	TE_WriteNum("m_nHitBox", GetParticleEffectIndex("burningplayer_red"));
+	TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
+	TE_SendToAll();
 }

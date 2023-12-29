@@ -1018,6 +1018,7 @@ int i_WeaponForceClass[MAXENTITIES];
 int i_Viewmodel_PlayerModel[MAXENTITIES];
 int i_Worldmodel_WeaponModel[MAXTF2PLAYERS];
 int WeaponRef_viewmodel[MAXTF2PLAYERS];
+int HandRef[MAXTF2PLAYERS];
 
 float fl_NextFlameSound[MAXENTITIES];
 float fl_FlamerActive[MAXENTITIES];

@@ -51,12 +51,12 @@ void Rapier_DoSwingTrace(float &CustomMeleeRange, float &CustomMeleeWide)
 	{
 		case true:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.5;
+			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.4;
 			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 0.5;
 		}
 		case false:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
+			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.2;
 			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 0.5;
 		}
 	}
@@ -155,7 +155,7 @@ public float NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, in
 		}
 	}
 	if(i_HasBeenHeadShotted[victim] == true && pap != 0)
-		StartBleedingTimer(victim, attacker, damage * 0.5, 5, weapon, DMG_PLASMA);
+		StartBleedingTimer(victim, attacker, damage * 0.5, 3, weapon, DMG_SLASH);
 
 	if(f_DuelStatus[victim] > 0.0 && DuelState_timer[attacker] != INVALID_HANDLE)
 	{
@@ -317,7 +317,7 @@ public void Rapier_Cooldown_Logic(int client, int weapon)
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
 			i_Current_Pap_Rapier[client] = Rapier_Get_Pap(weapon);
-			TF2_AddCondition(client, TFCond_MarkedForDeathSilent); //reason for not using on_playertakedamage and returining 20% more dmg that way is because this is flashier
+			TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 0.65); //reason for not using on_playertakedamage and returining 20% more dmg that way is because this is flashier
 		}
 		else
 		{
