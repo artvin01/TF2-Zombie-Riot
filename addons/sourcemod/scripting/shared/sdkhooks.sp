@@ -391,7 +391,6 @@ public void OnPostThink(int client)
 		if (Jesus_Blessing[client] == 1)
 		{	
 			int healing_Amount;
-			ApplyHealEvent(client, healing_Amount);	
 			
 			if(dieingstate[client] > 0)
 			{
