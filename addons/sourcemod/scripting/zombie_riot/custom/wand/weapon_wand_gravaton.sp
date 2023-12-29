@@ -19,7 +19,6 @@ static float fl_gravaton_duration[MAXTF2PLAYERS+1];
 #define GRAVATON_WAND_SHOWER_END_SOUND1 "weapons/bumper_car_decelerate.wav"
 
 static int LaserIndex;
-static char gExplosive1;
 
 static const char Spark_Sound[][] = {
 	"ambient/energy/spark1.wav",
@@ -140,7 +139,7 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		float Range = 750.0;
 		float Radius = 250.0;
 		Current_Mana[client] -=mana_cost;
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		Mana_Regen_Delay[client] = GetGameTime() + 3.0;
 		Range *= Attributes_Get(weapon, 103, 1.0);
 		Range *= Attributes_Get(weapon, 104, 1.0);
 		Range *= Attributes_Get(weapon, 475, 1.0);
@@ -158,12 +157,10 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		damage *= Attributes_Get(weapon, 410, 1.0);
 
 		Handle swingTrace;
-		float SpawnLoc[3];
 		b_LagCompNPC_No_Layers = true;
 		float vecSwingForward[3];
 		StartLagCompensation_Base_Boss(client);
 		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, Range, false, 45.0, true); //infinite range, and ignore walls!
-		FinishLagCompensation_Base_boss();
 
 		float vec[3];
 
@@ -174,10 +171,12 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		}
 		else
 		{
+			delete swingTrace;
+			int MaxTargethit = -1;
+			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, Range, false, 45.0, true,MaxTargethit); //infinite range, and ignore walls!
 			TR_GetEndPosition(vec, swingTrace);
 		}
-
-		TR_GetEndPosition(SpawnLoc, swingTrace);
+		FinishLagCompensation_Base_boss();
 		delete swingTrace;
 
 		int color[4];
@@ -251,7 +250,11 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 			if(timer<=0.02)
 				timer=0.02;
 			TE_SetupBeamRingPoint(vec, Radius*0.5, 0.0, LaserIndex, LaserIndex, 0, 1, timer, 6.0, 0.1, color, 1, 0);
-			TE_SendToClient(client);
+
+			if(i == loop_for)
+				TE_SendToAll();
+			else
+				TE_SendToClient(client);
 			vec[2]-=Seperation;
 		}
 	}
@@ -285,11 +288,17 @@ public Action Smite_Timer_Gravaton_Wand(Handle Smite_Logic, DataPack data)
 				
 	i_ExplosiveProjectileHexArray[client] = EP_DEALS_PLASMA_DAMAGE;
 	
-	b_gained_charge[client]=false;
-	Explode_Logic_Custom(damage, client, client, weapon, startPosition, Ionrange);
+	int EnemiesHitMax = (i_Current_Pap[client] + 1) * 2;
 	
-	TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
-	TE_SendToAll();
+	b_gained_charge[client]=false;
+	Explode_Logic_Custom(damage, client, client, weapon, startPosition, Ionrange,_,_,_,EnemiesHitMax);
+	
+	DataPack pack_boom = new DataPack();
+	pack_boom.WriteFloat(startPosition[0]);
+	pack_boom.WriteFloat(startPosition[1]);
+	pack_boom.WriteFloat(startPosition[2]);
+	pack_boom.WriteCell(1);
+	RequestFrame(MakeExplosionFrameLater, pack_boom);
 
 	float sky_Loc[3]; sky_Loc = startPosition;
 	sky_Loc[2]+=200.0;
@@ -313,7 +322,7 @@ public Action Smite_Timer_Gravaton_Wand(Handle Smite_Logic, DataPack data)
 	}
 
 	TE_SetupBeamPoints(startPosition, sky_Loc, LaserIndex, 0, 0, 0, 0.75, 11.0, 1.0, 1, 8.0, color, 0);
-	TE_SendToClient(client);
+	TE_SendToAll();
 
 
 	return Plugin_Continue;
@@ -386,15 +395,12 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 		float Range = 1000.0;
 		float Radius = 300.0;
 		Current_Mana[client] -=mana_cost;
-		Mana_Regen_Delay[client] = GameTime + 1.0;
+		Mana_Regen_Delay[client] = GameTime + 2.0;
 
 
 		EmitSoundToAll(GRAVATON_WAND_SHOWER_CAST_SOUND1, client, _, 65, _, 1.0, SNDPITCH_NORMAL);
 		EmitSoundToAll(GRAVATON_WAND_SHOWER_CAST_SOUND2, client, _, 65, _, 0.5, SNDPITCH_NORMAL);
 		
-
-		//for(int targ; targ<i_MaxcountNpc; targ++)
-		//	fl_gravaton_cooldown[client][targ]=GetGameTime()+GetRandomFloat(0.1, 0.5);
 
 		Range *= Attributes_Get(weapon, 103, 1.0);
 		Range *= Attributes_Get(weapon, 104, 1.0);
@@ -416,7 +422,6 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 		fl_gravaton_radius[client] = Radius;
 
 		Handle swingTrace;
-		float SpawnLoc[3];
 		b_LagCompNPC_No_Layers = true;
 		float vecSwingForward[3];
 		StartLagCompensation_Base_Boss(client);
@@ -431,9 +436,12 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 		}
 		else
 		{
+			delete swingTrace;
+			int MaxTargethit = -1;
+			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, Range, false, 45.0, true,MaxTargethit); //infinite range, and ignore walls!
 			TR_GetEndPosition(vec, swingTrace);
 		}
-		TR_GetEndPosition(SpawnLoc, swingTrace);
+		FinishLagCompensation_Base_boss();
 		delete swingTrace;
 		
 

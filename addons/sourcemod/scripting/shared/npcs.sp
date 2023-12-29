@@ -517,6 +517,7 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 	}
 	else
 	{
+		IgniteTargetEffect(entity);
 		BurnDamage[entity] = value;
 		IgniteId[entity] = EntIndexToEntRef(attacker);
 		if(validWeapon)
@@ -584,6 +585,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				//Also now allows hp gain and other stuff for that reason. pretty cool.
 				if(IgniteFor[entity] == 0)
 				{
+					ExtinguishTarget(entity);
 					IgniteTimer[entity] = null;
 					IgniteFor[entity] = 0;
 					BurnDamage[entity] = 0.0;
@@ -591,6 +593,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				}
 				if(f_NpcImmuneToBleed[entity] > GetGameTime())
 				{
+					ExtinguishTarget(entity);
 					IgniteTimer[entity] = null;
 					IgniteFor[entity] = 0;
 					BurnDamage[entity] = 0.0;

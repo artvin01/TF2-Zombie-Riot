@@ -317,7 +317,7 @@ public void Rapier_Cooldown_Logic(int client, int weapon)
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
 			i_Current_Pap_Rapier[client] = Rapier_Get_Pap(weapon);
-			TF2_AddCondition(client, TFCond_MarkedForDeathSilent); //reason for not using on_playertakedamage and returining 20% more dmg that way is because this is flashier
+			TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 0.65); //reason for not using on_playertakedamage and returining 20% more dmg that way is because this is flashier
 		}
 		else
 		{
