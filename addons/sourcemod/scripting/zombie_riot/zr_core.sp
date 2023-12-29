@@ -1746,6 +1746,8 @@ public Action DeleteEntitiesInHazards(Handle timer)
 			}
 		}
 	}
+	/*
+	no longer need deletion as spikes have a pickup all option.
 	for(int entitycount; entitycount<ZR_MAX_TRAPS; entitycount++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsTraps[entitycount]);
@@ -1774,6 +1776,7 @@ public Action DeleteEntitiesInHazards(Handle timer)
 			}
 		}
 	}
+	*/
 	return Plugin_Handled;
 }
 void ReviveAll(bool raidspawned = false)

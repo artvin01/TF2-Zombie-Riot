@@ -376,7 +376,11 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 									continue;
 								
 								//Just do full damage.
-								SDKHooks_TakeDamage(baseboss_index, client, client, float(Spike_Health[entity]), DMG_BULLET, -1, NULL_VECTOR, Spikepos);
+								float Damage = float(Spike_Health[entity]);
+								if(b_ExpertTrapper[client])
+									Damage *= 6.0;
+
+								SDKHooks_TakeDamage(baseboss_index, client, client, Damage, DMG_BULLET, -1, NULL_VECTOR, Spikepos);
 
 								RemoveEntity(entity);
 								SetEntitySpike(entity, 0);

@@ -414,7 +414,7 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 			if(f_MlynarHurtDuration[client] > GetGameTime())
 			{
 				f_MlynarDmgMultiHurt[client] += 0.01;
-				if(RaidbossIgnoreBuildingsLogic()) //During raids, give power 2x as fast.
+				if(RaidbossIgnoreBuildingsLogic(1)) //During raids, give power 2x as fast.
 				{
 					f_MlynarDmgMultiHurt[client] += 0.01;
 				}

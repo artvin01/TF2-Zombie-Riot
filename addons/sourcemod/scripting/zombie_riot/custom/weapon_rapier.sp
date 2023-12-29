@@ -42,7 +42,7 @@ void Weapon_RapierMapChange()
 void Rapier_DoSwingTrace(float &CustomMeleeRange, float &CustomMeleeWide)
 {
 	bool raidboss_active = false;
-	if(RaidbossIgnoreBuildingsLogic())
+	if(RaidbossIgnoreBuildingsLogic(1))
 	{
 		raidboss_active = true;
 	}

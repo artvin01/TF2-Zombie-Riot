@@ -222,6 +222,10 @@ void OnMapStart_NPC_Base()
 	Zero(f_PredictDuration);
 	Zero2(f_PredictPos);
 	
+	PrecacheEffect("ParticleEffect");
+	PrecacheEffect("ParticleEffectStop");
+	PrecacheParticleEffect("burningplayer_red");
+	
 	NPC_MapStart();
 
 	for (int NpcIndexNumber = 0; NpcIndexNumber < ZR_MAX_NPCS; NpcIndexNumber++)
@@ -2949,9 +2953,6 @@ public void NPC_Base_InitGamedata()
 	EntityFactory.Install();
 
 	//for (int i = 0; i < MAXENTITIES; i++) pPath[i] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
-	PrecacheEffect("ParticleEffect");
-	PrecacheEffect("ParticleEffectStop");
-	PrecacheParticleEffect("burningplayer_red");
 }
 
 static void OnCreate(CClotBody body)

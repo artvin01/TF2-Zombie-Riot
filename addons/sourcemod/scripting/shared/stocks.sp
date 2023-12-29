@@ -4875,11 +4875,11 @@ stock TE_SetupParticleEffect(const String:sParticleName[], ParticleAttachment_t:
 	{
 		new Float:fEntityOrigin[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", fEntityOrigin);
-		if(GuessSDKVersion() < SOURCE_SDK_CSGO)
+		if(GetEngineVersion() < SOURCE_SDK_CSGO)
 			TE_WriteFloatArray("m_vOrigin[0]", fEntityOrigin, 3);
 		else
 			TE_WriteFloatArray("m_vOrigin.x", fEntityOrigin, 3);
-			
+
 		if(iAttachType != PATTACH_WORLDORIGIN)
 		{
 			TE_WriteNum("entindex", entity);

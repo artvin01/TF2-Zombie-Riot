@@ -1388,7 +1388,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 
 #if defined ZR
-	if(RaidbossIgnoreBuildingsLogic())
+	if(RaidbossIgnoreBuildingsLogic(1))
 	{
 		if(TF2_IsPlayerInCondition(victim, TFCond_Ubercharged))
 		{
@@ -1448,7 +1448,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #if defined ZR
 		Replicated_Damage *= 0.45; //Reduce falldmg by passive overall
 		damage *= 0.45;
-		if(RaidbossIgnoreBuildingsLogic())
+		if(RaidbossIgnoreBuildingsLogic(1))
 		{
 			Replicated_Damage *= 0.75;
 			damage *= 0.75;			
@@ -1589,7 +1589,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
 		//It will just return the same damage if nothing is done.
 	
-		if(RaidbossIgnoreBuildingsLogic() && i_HealthBeforeSuit[victim] > 0)
+		if(RaidbossIgnoreBuildingsLogic(1) && i_HealthBeforeSuit[victim] > 0)
 		{
 			Replicated_Damage *= 5.0; //when a raid is alive, make quantum armor 8x as bad at tanking.
 			damage *= 5.0;	
