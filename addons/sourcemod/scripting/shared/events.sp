@@ -104,8 +104,9 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 		int team = event.GetInt("team");
 		switch(team)
 		{
-			case 0,1: //either team ? kill dispenser!
+			case 0,1,3: //either team ? kill dispenser!
 			{
+				RemoveRTSCamera(client);
 				DestroyDispenser(client);
 			}
 		}

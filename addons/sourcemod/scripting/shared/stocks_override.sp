@@ -400,9 +400,9 @@ void SetPlayerClass(int client, TFClassType classType, bool weapons = false, boo
 }
 
 #define TF2_SetPlayerClass_ZR SetPlayerClass*/
-//#if !defined UseDownloadTable
-//#define AddFileToDownloadsTable UseDownloadsCfgPlzThanks
-//#endif
+#if !defined UseDownloadTable
+#define AddFileToDownloadsTable UseDownloadsCfgPlzThanks
+#endif
 stock void PrecacheSoundList(const char[][] array, int length)
 {
     for(int i; i < length; i++)

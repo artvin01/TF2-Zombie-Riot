@@ -1133,6 +1133,7 @@ float f_DelayNextWaveStartAdvancingDeathNpc;
 #include "shared/killfeed.sp"
 #include "shared/npcs.sp"
 #include "shared/npccamera.sp"
+#include "shared/rtscamera_ref.sp"
 #include "shared/sdkcalls.sp"
 #include "shared/sdkhooks.sp"
 #include "shared/stocks.sp"
@@ -1248,6 +1249,7 @@ public void OnPluginStart()
 #endif
 	NPC_Base_InitGamedata();
 	WandProjectile_GamedataInit();
+	SMRTS_OnPluginStart();
 	
 #if defined ZR
 	ZR_PluginStart();
@@ -1414,6 +1416,7 @@ public void OnMapStart()
 	MapStart_CustomMeleePrecache();
 	WandStocks_Map_Precache();
 	MapStartResetNpc();
+	SMRTS_OnMapStart();
 	Zero(f_AntiStuckPhaseThroughFirstCheck);
 	Zero(f_AntiStuckPhaseThrough);
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
@@ -1429,7 +1432,6 @@ public void OnMapEnd()
 	OnRoundEnd(null, NULL_STRING, false);
 	OnMapEndWaves();
 	Spawns_MapEnd();
-	SMRTS_OnMapEnd();
 #endif
 
 #if defined RPG
@@ -1439,6 +1441,7 @@ public void OnMapEnd()
 	ConVar_Disable();
 	FileNetwork_MapEnd();
 	NpcStats_OnMapEnd();
+	SMRTS_OnMapEnd();
 }
 
 public void OnConfigsExecuted()
@@ -1708,6 +1711,7 @@ public void OnClientDisconnect(int client)
 	FileNetwork_ClientDisconnect(client);
 	KillFeed_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
+	SMRTS_OnClientDisconnect(client);
 	
 	i_ClientHasCustomGearEquipped[client] = false;
 	i_EntityToAlwaysMeleeHit[client] = 0;
