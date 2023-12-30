@@ -1296,7 +1296,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		{
 			if(f_HudCooldownAntiSpam[attacker] >= GetGameTime())
 				return;
-
+			
+			f_CooldownForHurtHud_Ally[attacker] = GetGameTime() + 0.4;	
 			f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;
 		}
 		else
@@ -1314,7 +1315,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(f_HudCooldownAntiSpam[attacker] >= GetGameTime())
 			return;
-
+		
+		f_CooldownForHurtHud_Ally[attacker] = GetGameTime() + 0.4;	
 		f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;		
 	}
 
@@ -2042,6 +2044,7 @@ void CleanAllNpcArray()
 {
 	Zero(played_headshotsound_already);
 	Zero(f_CooldownForHurtHud);
+	Zero(f_CooldownForHurtHud_Ally);
 	Zero(f_damageAddedTogetherGametime);
 	Zero(f_HudCooldownAntiSpam);
 	Zero(f_HudCooldownAntiSpamRaid);

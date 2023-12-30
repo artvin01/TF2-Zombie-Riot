@@ -1773,7 +1773,7 @@ void Building_ShowInteractionHud(int client, int entity)
 		{
 			if(b_IsAlliedNpc[entity])
 			{
-				if(f_CooldownForHurtHud[client] < GetGameTime())
+				if(f_CooldownForHurtHud[client] < GetGameTime() && f_CooldownForHurtHud_Ally[client] < GetGameTime())
 				{
 					Calculate_And_Display_hp(client, entity, 0.0, true);
 				}

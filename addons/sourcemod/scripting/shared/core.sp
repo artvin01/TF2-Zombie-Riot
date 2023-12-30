@@ -683,6 +683,7 @@ bool b_IgnoredByPlayerProjectiles[MAXENTITIES];
 
 bool b_IsPlayerABot[MAXPLAYERS+1];
 float f_CooldownForHurtHud[MAXPLAYERS];	
+float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
 int i_PreviousInteractedEntity[MAXENTITIES];
 bool i_PreviousInteractedEntityDo[MAXENTITIES];
 //Otherwise we get kicks if there is too much hurting going on.
