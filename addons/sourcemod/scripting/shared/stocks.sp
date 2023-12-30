@@ -11,7 +11,7 @@ enum ParticleAttachment_t {
 	PATTACH_WORLDORIGIN,
 	PATTACH_ROOTBONE_FOLLOW
 };
-/*
+
 enum SolidFlags_t
 {
 	FSOLID_CUSTOMRAYTEST		= 0x0001,	// Ignore solid type + always call into the entity for ray tests
@@ -27,7 +27,7 @@ enum SolidFlags_t
 	FSOLID_TRIGGER_TOUCH_DEBRIS	= 0x0200,	// This trigger will touch debris objects
 
 	FSOLID_MAX_BITS	= 10
-};*/
+};
 
 stock int abs(int x)
 {
@@ -1242,8 +1242,7 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 //Any and all healing changes or buffs or debuffs dont work that dont affect the weapon directly.
 */
 //this will return the amount of healing it actually did.
-int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES,
-int MaxHealPermitted = 99999999)
+stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES, int MaxHealPermitted = 99999999)
 {
 	/*
 		MaxHealPermitted is used for HealEntityViaFloat
@@ -1662,7 +1661,7 @@ public bool PlayersOnly(int entity, int contentsMask, any iExclude)
 	
 	return !(entity == iExclude);
 }
-/*
+
 stock bool Client_Shake(int client, int command=SHAKE_START, float amplitude=50.0, float frequency=150.0, float duration=3.0)
 {
 	//allow settings for the sick who cant handle screenshake.
@@ -1703,7 +1702,6 @@ stock bool Client_Shake(int client, int command=SHAKE_START, float amplitude=50.
 
 	return true;
 }
-*/
 
 stock void PrintKeyHintText(int client, const char[] format, any ...)
 {
@@ -4536,7 +4534,7 @@ void KillDyingGlowEffect(int client)
 		RemoveEntity(entity);
 }
 #endif	// ZR
-/*
+
 enum g_Collision_Group
 {
     COLLISION_GROUP_NONE  = 0,
@@ -4573,7 +4571,7 @@ enum g_Collision_Group
     TFCOLLISION_GROUP_ROCKET_BUT_NOT_WITH_OTHER_ROCKETS
 	
 };
-*/
+
 float f_HitmarkerSameFrame[MAXTF2PLAYERS];
 
 void DoClientHitmarker(int client)
@@ -4767,10 +4765,7 @@ stock TE_SetupParticleEffect(const String:sParticleName[], ParticleAttachment_t:
 	{
 		new Float:fEntityOrigin[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", fEntityOrigin);
-		if(GetEngineVersion() < SOURCE_SDK_CSGO)
-			TE_WriteFloatArray("m_vOrigin[0]", fEntityOrigin, 3);
-		else
-			TE_WriteFloatArray("m_vOrigin.x", fEntityOrigin, 3);
+		TE_WriteFloatArray("m_vOrigin[0]", fEntityOrigin, 3);
 
 		if(iAttachType != PATTACH_WORLDORIGIN)
 		{

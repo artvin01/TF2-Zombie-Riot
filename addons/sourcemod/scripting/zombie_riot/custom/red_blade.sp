@@ -207,7 +207,7 @@ void WeaponRedBlade_OnTakeDamage_Post(int victim, int weapon)
 {
 	CheckRedBladeBelowHalfHealth(victim, weapon);
 }
-void MakeBladeBloddy(int client, bool ignite, int weapon)
+stock void MakeBladeBloddy(int client, bool ignite, int weapon)
 {
 	int viewmodelModel;
 	viewmodelModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);

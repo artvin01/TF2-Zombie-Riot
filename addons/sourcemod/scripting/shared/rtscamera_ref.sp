@@ -5,8 +5,6 @@
 
 #define LASER_MODEL				"sprites/laserbeam.vmt"
 
-#include <smlib>
-
 #define MOUSE_SENSITIVITY		0.0004
 
 #define CLAMP_MOUSE_MIN_X		0.01
@@ -57,7 +55,33 @@
 #define CURSOR_SELECTABLE		"［ ］"
 #define CURSOR_MOVE				" ◇ "
 
-char g_sScrollCursors[8][5] = {
+#define	HIDEHUD_WEAPONSELECTION		( 1<<0 )	// Hide ammo count & weapon selection
+#define	HIDEHUD_FLASHLIGHT			( 1<<1 )
+#define	HIDEHUD_ALL					( 1<<2 )
+#define HIDEHUD_HEALTH				( 1<<3 )	// Hide health & armor / suit battery
+#define HIDEHUD_PLAYERDEAD			( 1<<4 )	// Hide when local player's dead
+#define HIDEHUD_NEEDSUIT			( 1<<5 )	// Hide when the local player doesn't have the HEV suit
+#define HIDEHUD_MISCSTATUS			( 1<<6 )	// Hide miscellaneous status elements (trains, pickup history, death notices, etc)
+#define HIDEHUD_CHAT				( 1<<7 )	// Hide all communication elements (saytext, voice icon, etc)
+#define	HIDEHUD_CROSSHAIR			( 1<<8 )	// Hide crosshairs
+#define	HIDEHUD_VEHICLE_CROSSHAIR	( 1<<9 )	// Hide vehicle crosshair
+#define HIDEHUD_INVEHICLE			( 1<<10 )
+#define HIDEHUD_BONUS_PROGRESS		( 1<<11 )	// Hide bonus progress display (for bonus map challenges)
+
+enum
+{
+	OBS_MODE_NONE = 0,	// not in spectator mode
+	OBS_MODE_DEATHCAM,	// special mode for death cam animation
+	OBS_MODE_FREEZECAM,	// zooms to a target, and freeze-frames on them
+	OBS_MODE_FIXED,		// view from a fixed camera position
+	OBS_MODE_IN_EYE,	// follow a player in first person view
+	OBS_MODE_CHASE,		// follow a player in third person view
+	OBS_MODE_ROAMING,	// free roaming
+
+	NUM_OBSERVER_MODES
+};
+
+static const char g_sScrollCursors[8][5] = {
 	" ▵ ",
 	" ◸ ",
 	" ◃ ",
@@ -77,7 +101,7 @@ enum struct Commander {
 	bool bHasForceTauntCamProp;
 	bool bBackupForceTauntCam;
 	int hBackupObsTarget;
-	Obs_Mode iBackupObsMode;
+	int iBackupObsMode;
 
 	char sCursor[8];
 
@@ -138,10 +162,10 @@ enum struct Commander {
 		this.GetSelectionVertex(3, vecVectors[3]);
 
 		float vecFocusPos[3];
-		Entity_GetAbsOrigin(EntRefToEntIndex(this.iFocusEntRef), vecFocusPos);
+		GetEntPropVector(EntRefToEntIndex(this.iFocusEntRef), Prop_Send, "m_vecOrigin", vecFocusPos);
 
 		float vecCameraPos[3];
-		Entity_GetAbsOrigin(EntRefToEntIndex(this.iCameraEntRef), vecCameraPos);
+		GetEntPropVector(EntRefToEntIndex(this.iCameraEntRef), Prop_Send, "m_vecOrigin", vecCameraPos);
 
 		AddVectors(vecFocusPos, vecCameraPos, vecCameraPos);
 
@@ -380,19 +404,19 @@ static void SetupClient(
 
 	int iCameraEntity = CreateEntityByName("info_target");
 	if (iCameraEntity == INVALID_ENT_REFERENCE) {
-		Entity_Kill(iFocusEntity);
+		RemoveEntity(iFocusEntity);
 		return;
 	}
 
 	int iViewControl = CreateEntityByName("point_viewcontrol");
 	if (iViewControl == INVALID_ENT_REFERENCE) {
-		Entity_Kill(iFocusEntity);
-		Entity_Kill(iCameraEntity);
+		RemoveEntity(iFocusEntity);
+		RemoveEntity(iCameraEntity);
 		return;
 	}
 
-	Entity_SetParent(iCameraEntity, iFocusEntity);
-	Entity_SetParent(iViewControl, iCameraEntity);
+	SetParent(iCameraEntity, iFocusEntity);
+	SetParent(iViewControl, iCameraEntity);
 
 	Commander eCommander;
 
@@ -431,7 +455,7 @@ static void SetupClient(
 		vecPosFocus = vecPosStartFocus;
 	}
 
-	Entity_SetAbsOrigin(iFocusEntity, vecPosFocus);
+	TeleportEntity(iFocusEntity, vecPosFocus);
 
 	float fInitialDistance = 2*DEFAULT_MIN_ZOOM;
 	GetAngleVectors(DEFAULT_ANGLES, eCommander.vecVector, NULL_VECTOR, NULL_VECTOR);
@@ -453,14 +477,13 @@ static void SetupClient(
 	 * and keep the HUD interface clean while still allowing menu panels to show.
 	 */
 
-// 	Client_SetHideHud(iClient, HIDEHUD_HEALTH | HIDEHUD_WEAPONSELECTION | HIDEHUD_MISCSTATUS);
-	Client_SetHideHud(iClient, HIDEHUD_HEALTH | HIDEHUD_WEAPONSELECTION);
+	SetEntProp(iClient, Prop_Send, "m_iHideHUD", HIDEHUD_HEALTH | HIDEHUD_WEAPONSELECTION);
 
-	eCommander.hBackupObsTarget = Client_GetObserverTarget(iClient);
-	eCommander.iBackupObsMode = Client_GetObserverMode(iClient);
+	eCommander.hBackupObsTarget = GetEntProp(iClient, Prop_Send, "m_hObserverTarget");
+	eCommander.iBackupObsMode = GetEntProp(iClient, Prop_Send, "m_iObserverMode");
 
-	Client_SetObserverTarget(iClient, 0);
-	Client_SetObserverMode(iClient, OBS_MODE_DEATHCAM, false);
+	SetEntProp(iClient, Prop_Send, "m_hObserverTarget", 0);
+	SetEntProp(iClient, Prop_Send, "m_iObserverMode", OBS_MODE_DEATHCAM, false);
 
 	SetEntProp(iClient, Prop_Send, "m_iFOV", eCommander.iFOV);
 	SetEntProp(iClient, Prop_Send, "m_iDefaultFOV", eCommander.iDefaultFOV);
@@ -485,14 +508,14 @@ static void ResetClient(int iClient) {
 
 	int hViewEntity = GetEntPropEnt(iClient, Prop_Data, "m_hViewEntity");
 	if (IsValidEntity(hViewEntity) && hViewEntity != iClient) {
-		Entity_Disable(hViewEntity);
+		AcceptEntityInput(hViewEntity, "Disable", hViewEntity, hViewEntity);
 	}
 
 	SetClientViewEntity(iClient, iClient);
 
 	int iFocusEntity = EntRefToEntIndex(g_eCommander[iClient].iFocusEntRef);
 	if (iFocusEntity && IsValidEntity(iFocusEntity)) {
-		Entity_Kill(iFocusEntity, true); // Removes hierarchy, including camera enitty
+		RemoveEntity(iFocusEntity); // Removes hierarchy, including camera enitty
 	}
 
 	SetEntProp(iClient, Prop_Send, "m_iFOV", g_eCommander[iClient].iFOV);
@@ -502,15 +525,15 @@ static void ResetClient(int iClient) {
 		SetEntProp(iClient, Prop_Send, "m_nForceTauntCam", g_eCommander[iClient].bBackupForceTauntCam);
 	}
 
-	Client_SetObserverMode(iClient, g_eCommander[iClient].iBackupObsMode, false);
+	SetEntProp(iClient, Prop_Send, "m_hObserverMode", g_eCommander[iClient].iBackupObsMode, false);
 
 	if (IsValidEntity(g_eCommander[iClient].hBackupObsTarget)) {
-		Client_SetObserverTarget(iClient, g_eCommander[iClient].hBackupObsTarget);
+		SetEntProp(iClient, Prop_Send, "m_hObserverTarget", g_eCommander[iClient].hBackupObsTarget);
 	} else {
-		Client_SetObserverTarget(iClient, iClient);
+		SetEntProp(iClient, Prop_Send, "m_hObserverTarget", iClient);
 	}
 
-	Client_SetHideHud(iClient, 0);
+	SetEntProp(iClient, Prop_Send, "m_iHideHUD", 0);
 
 	SetEntityFlags(iClient, GetEntityFlags(iClient) & ~(FL_FROZEN | FL_ATCONTROLS));
 	SetEntityMoveType(iClient, MOVETYPE_WALK);
@@ -559,7 +582,7 @@ static void RemoveSelectBeams(int iClient) {
 	for (int i=0; i<4; i++) {
 		int iEnt = EntRefToEntIndex(g_eCommander[iClient].iSelectBeamsEntRef[i]);
 		if (iEnt && IsValidEntity(iEnt)) {
-			Entity_Kill(iEnt);
+			RemoveEntity(iEnt);
 		}
 
 		g_eCommander[iClient].iSelectBeamsEntRef[i] = INVALID_ENT_REFERENCE;
@@ -583,7 +606,7 @@ static void RemoveHealthBeams(UnitSelection eUnitSelection) {
 	for (int i=0; i<sizeof(UnitSelection::iHealthBeamEntRef); i++) {
 		int iEnt = EntRefToEntIndex(eUnitSelection.iHealthBeamEntRef[i]);
 		if (iEnt && IsValidEntity(iEnt)) {
-			Entity_Kill(iEnt);
+			RemoveEntity(iEnt);
 		}
 		eUnitSelection.iHealthBeamEntRef[i] = INVALID_ENT_REFERENCE;
 	}
@@ -632,8 +655,8 @@ static int GetUnitSelectTrace(int iClient, const float vecPos[3], const float ve
 
 static void ProcessCameraControls(int iClient, int iButtons, const int iMouse[2]) {
 	// Prevents changing camera target or mode
-	Client_SetObserverTarget(iClient, 0);
-	Client_SetObserverMode(iClient, OBS_MODE_DEATHCAM, false);
+	SetEntProp(iClient, Prop_Send, "m_hObserverTarget", 0);
+	SetEntProp(iClient, Prop_Send, "m_hObserverMode", OBS_MODE_DEATHCAM, false);
 
 	float fMouse[2];
 	fMouse[0] = g_eCommander[iClient].fMouse[0] + MOUSE_SENSITIVITY * iMouse[0];
@@ -654,10 +677,10 @@ static void ProcessCameraControls(int iClient, int iButtons, const int iMouse[2]
 	int iCameraEntity = EntRefToEntIndex(g_eCommander[iClient].iCameraEntRef);
 
 	float vecFocusPos[3];
-	Entity_GetAbsOrigin(iFocusEntity, vecFocusPos);
+	GetEntPropVector(iFocusEntity, Prop_Send, "m_vecOrigin", vecFocusPos);
 
 	float vecCameraPos[3];
-	Entity_GetAbsOrigin(iCameraEntity, vecCameraPos);  // Relative to parent focus entity
+	GetEntPropVector(iCameraEntity, Prop_Send, "m_vecOrigin", vecCameraPos);  // Relative to parent focus entity
 
 	// Camera rotation
 
@@ -746,7 +769,7 @@ static void ProcessCameraControls(int iClient, int iButtons, const int iMouse[2]
 	bool bZoomingOut = g_eCommander[iClient].bZoomingOut;
 
 	float vecCameraVel[3];
-	Entity_GetLocalVelocity(iCameraEntity, vecCameraVel);
+	GetEntPropVector(iCameraEntity, Prop_Data, "m_vecVelocity", vecCameraVel);
 
 	if (bZoomingIn || bZoomingOut) {
 		vecCameraVel = vecVector;
@@ -779,7 +802,7 @@ static void ProcessCameraControls(int iClient, int iButtons, const int iMouse[2]
 	NormalizeVector(vecRight, vecRight);
 
 	float vecFocusVel[3];
-	Entity_GetLocalVelocity(iFocusEntity, vecFocusVel);
+	GetEntPropVector(iFocusEntity, Prop_Data, "m_vecVelocity", vecFocusVel);
 
 	if (g_eCommander[iClient].bMoveDragging) {
 		vecFocusVel = g_eCommander[iClient].vecMoveDragVel;
@@ -873,11 +896,11 @@ static void ProcessCameraControls(int iClient, int iButtons, const int iMouse[2]
 	// Move focus and camera entities but not while dragging for unit selection
 
 	if (g_eCommander[iClient].bDragging) {
-		Entity_SetLocalVelocity(iFocusEntity, ZERO_VECTOR);
-		Entity_SetLocalVelocity(iCameraEntity, ZERO_VECTOR);
+		SetEntPropVector(iFocusEntity, Prop_Data, "m_vecVelocity", ZERO_VECTOR);
+		SetEntPropVector(iCameraEntity, Prop_Data, "m_vecVelocity", ZERO_VECTOR);
 	} else {
-		Entity_SetLocalVelocity(iFocusEntity, vecFocusVel);
-		Entity_SetLocalVelocity(iCameraEntity, vecCameraVel);
+		SetEntPropVector(iFocusEntity, Prop_Data, "m_vecVelocity", vecFocusVel);
+		SetEntPropVector(iCameraEntity, Prop_Data, "m_vecVelocity", vecCameraVel);
 	}
 
 	// Highlight all selected units
@@ -998,10 +1021,10 @@ static void ProcessCameraControls(int iClient, int iButtons, const int iMouse[2]
 				iEnt3 = EntRefToEntIndex(g_eCommander[iClient].iSelectBeamsEntRef[3]);
 			}
 
-			Entity_SetAbsOrigin(iEnt0, vecBoxC0);
-			Entity_SetAbsOrigin(iEnt1, vecBoxC1);
-			Entity_SetAbsOrigin(iEnt2, vecBoxC2);
-			Entity_SetAbsOrigin(iEnt3, vecBoxC3);
+			TeleportEntity(iEnt0, vecBoxC0);
+			TeleportEntity(iEnt1, vecBoxC1);
+			TeleportEntity(iEnt2, vecBoxC2);
+			TeleportEntity(iEnt3, vecBoxC3);
 
 			g_eCommander[iClient].sCursor = NULL_STRING;
 		} else if (!(g_eCommander[iClient].bMoving || g_eCommander[iClient].bRotating)) {
@@ -1073,7 +1096,7 @@ static void ProcessCameraControls(int iClient, int iButtons, const int iMouse[2]
 				int iUnitEntity;
 				while ((iIndex = UnitEntityIterator(iClient, iIndex, iUnitEntity)) != INVALID_ENT_REFERENCE) {
 					float vecPosUnit[3];
-					Entity_GetAbsOrigin(iUnitEntity, vecPosUnit);
+					GetEntPropVector(iUnitEntity, Prop_Send, "m_vecOrigin", vecPosUnit);
 
 					if (g_eCommander[iClient].SelectionContains(vecPosUnit) && hSelectedUnits.FindValue(EntIndexToEntRef(iUnitEntity)) == -1) {
 						SelectUnit(iClient, iUnitEntity);
@@ -1143,7 +1166,7 @@ static bool DrawUnitHealthBar(int iClient, UnitSelection eUnitSelection) {
 	}
 
 	int iHealth = GetEntProp(iEntity, Prop_Data, "m_iHealth");
-	if (iHealth <= 0.0 || Client_IsValid(iEntity) && !IsPlayerAlive(iEntity)) {
+	if (iHealth <= 0.0 || (iEntity > 0 && iEntity <= MaxClients && !IsPlayerAlive(iEntity))) {
 		if (eUnitSelection.iHealthBeamEntRef[0] != INVALID_ENT_REFERENCE) {
 			RemoveHealthBeams(eUnitSelection);
 			return true;
@@ -1158,21 +1181,21 @@ static bool DrawUnitHealthBar(int iClient, UnitSelection eUnitSelection) {
 	int iCameraEntity = EntRefToEntIndex(g_eCommander[iClient].iCameraEntRef);
 
 	float vecFocusPos[3];
-	Entity_GetAbsOrigin(iFocusEntity, vecFocusPos);
+	GetEntPropVector(iFocusEntity, Prop_Send, "m_vecOrigin", vecFocusPos);
 
 	float vecCameraPos[3];
-	Entity_GetAbsOrigin(iCameraEntity, vecCameraPos); // Relative to parent focus entity
+	GetEntPropVector(iCameraEntity, Prop_Send, "m_vecOrigin", vecCameraPos); // Relative to parent focus entity
 
 	AddVectors(vecFocusPos, vecCameraPos, vecCameraPos); // Now absolute in world coordiates
 
 	float vecCameraAng[3];
-	Entity_GetAbsAngles(iCameraEntity, vecCameraAng);
+	GetEntPropVector(iCameraEntity, Prop_Data, "m_angAbsRotation", vecCameraAng);
 
 	float vecFwd[3], vecRight[3], vecUp[3];
 	GetAngleVectors(vecCameraAng, vecFwd, vecRight, vecUp);
 
 	float vecEntityPos[3];
-	Entity_GetAbsOrigin(iEntity, vecEntityPos);
+	GetEntPropVector(iEntity, Prop_Send, "m_vecOrigin", vecEntityPos);
 
 	// Calculate the center and the highest point at the top
 	// of the bounding box as projected onto the camera plane
@@ -1274,7 +1297,7 @@ static bool DrawUnitHealthBar(int iClient, UnitSelection eUnitSelection) {
 
 		if (iHealth == iMaxHealth) {
 			if (iEnt2 != INVALID_ENT_REFERENCE) {
-				Entity_Kill(iEnt2);
+				RemoveEntity(iEnt2);
 
 				eUnitSelection.iHealthBeamEntRef[2] = INVALID_ENT_REFERENCE;
 
@@ -1291,8 +1314,8 @@ static bool DrawUnitHealthBar(int iClient, UnitSelection eUnitSelection) {
 		}
 	}
 
-	Entity_SetAbsOrigin(iEnt0, vecHorizontalLeftPos);
-	Entity_SetAbsOrigin(iEnt1, vecHorizontalRightPos);
+	TeleportEntity(iEnt0, vecHorizontalLeftPos);
+	TeleportEntity(iEnt1, vecHorizontalRightPos);
 
 	if (iHealth != iMaxHealth) {
 		vecHorizontalLeftPos = vecHorizontalRightPos;
@@ -1301,7 +1324,7 @@ static bool DrawUnitHealthBar(int iClient, UnitSelection eUnitSelection) {
 		ScaleVector(vecHorizontalRightPos, fBarMax);
 		AddVectors(vecHealthBarPos, vecHorizontalRightPos, vecHorizontalRightPos);
 
-		Entity_SetAbsOrigin(iEnt2, vecHorizontalRightPos);
+		TeleportEntity(iEnt2, vecHorizontalRightPos);
 	}
 
 	// Color gradient based on health percentage
@@ -1343,11 +1366,11 @@ static bool DrawUnitHealthBar(int iClient, UnitSelection eUnitSelection) {
 
 static void GetEntityBoundingBoxTop(int iEntity, float vecPoints[4][3]) {
 	float vecMins[3], vecMaxs[3];
-	Entity_GetMinSize(iEntity, vecMins);
-	Entity_GetMaxSize(iEntity, vecMaxs);
+	GetEntPropVector(iEntity, Prop_Send, "m_vecMins", vecMins);
+	GetEntPropVector(iEntity, Prop_Send, "m_vecMaxs", vecMaxs);
 
 	float vecPos[3];
-	Entity_GetAbsOrigin(iEntity, vecPos);
+	GetEntPropVector(iEntity, Prop_Send, "m_vecOrigin", vecPos);
 
 	AddVectors(vecPos, vecMins, vecMins);
 	AddVectors(vecPos, vecMaxs, vecMaxs);
@@ -1501,7 +1524,8 @@ static void MoveUnit(int iClient, int iEntity, float vecMovePos[3], int buttons)
  */
 static int UnitEntityIterator(int iClient, int iIndex=0, int &iEntity=INVALID_ENT_REFERENCE)
 {
-	for(iIndex++; iIndex < MAXENTITIES; iIndex++)
+	iIndex++;
+	for(; iIndex < MAXENTITIES; iIndex++)
 	{
 		BarrackBody npc = view_as<BarrackBody>(iIndex);
 		if(!b_NpcHasDied[iIndex] && npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == iClient)
