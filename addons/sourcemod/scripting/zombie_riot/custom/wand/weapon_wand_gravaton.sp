@@ -139,7 +139,7 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		float Range = 750.0;
 		float Radius = 250.0;
 		Current_Mana[client] -=mana_cost;
-		Mana_Regen_Delay[client] = GetGameTime() + 3.0;
+		Mana_Regen_Delay[client] = GetGameTime() + 2.0;
 		Range *= Attributes_Get(weapon, 103, 1.0);
 		Range *= Attributes_Get(weapon, 104, 1.0);
 		Range *= Attributes_Get(weapon, 475, 1.0);
@@ -362,7 +362,7 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 	}
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
-	mana_cost = RoundToFloor(mana_cost*2.0);
+	mana_cost = RoundToFloor(mana_cost*3.0);
 
 	if(mana_cost <= Current_Mana[client])
 	{
@@ -418,7 +418,7 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 		Radius *= Attributes_Get(weapon, 101, 1.0);
 		Radius *= Attributes_Get(weapon, 102, 1.0);
 
-		float damage = 100.0;
+		float damage = 50.0;
 			
 		damage *= Attributes_Get(weapon, 410, 1.0);
 
