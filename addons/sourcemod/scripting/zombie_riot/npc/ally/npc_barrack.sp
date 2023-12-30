@@ -121,6 +121,8 @@ enum
 	Command_DefensivePlayer,
 	Command_RetreatPlayer,
 	Command_HoldPos,
+	Command_RTSMove,
+	Command_RTSAttack,
 	Command_MAX
 }
 
@@ -605,17 +607,16 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 		if(client)
 		{
 			command = npc.CmdOverride == Command_Default ? Building_GetFollowerCommand(client) : npc.CmdOverride;
-			if(command == Command_HoldPos || command == Command_HoldPosBarracks)
+			switch(command)
 			{
-				npc.m_iTargetAlly = npc.index;
-			}
-			else if(command == Command_DefensivePlayer || command == Command_RetreatPlayer)
-			{
-				npc.m_iTargetAlly = client;
-			}
-			else
-			{
-				npc.m_iTargetAlly = Building_GetFollowerEntity(client);
+				case Command_HoldPos, Command_HoldPosBarracks, Command_RTSMove, Command_RTSAttack:
+					npc.m_iTargetAlly = npc.index;
+			
+				case Command_DefensivePlayer, Command_RetreatPlayer:
+					npc.m_iTargetAlly = client;
+				
+				default:
+					npc.m_iTargetAlly = Building_GetFollowerEntity(client);
 			}
 		}
 		else
@@ -675,19 +676,19 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 		float myPos[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", myPos);
 
-		if(f3_SpawnPosition[client][0] && (command == Command_HoldPosBarracks && command != Command_HoldPos))
+		if(f3_SpawnPosition[client][0] && command == Command_HoldPosBarracks)
 		{
 			f3_SpawnPosition[npc.index] = f3_SpawnPosition[client];
 		}
 		
-		bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer);
+		bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer || command == Command_RTSMove);
 
 		if(IsValidEntity(npc.m_iTarget) && canRetreat > 0.0 && command != Command_HoldPos && !retreating)
 		{
 			float vecTarget[3];
 			GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", vecTarget);
 			float flDistanceToTarget;
-			if(command == Command_HoldPosBarracks)
+			if(command == Command_HoldPosBarracks || command == Command_RTSMove)
 			{
 				flDistanceToTarget = GetVectorDistance(vecTarget, f3_SpawnPosition[npc.index], true);
 			}
@@ -695,7 +696,12 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			{
 				flDistanceToTarget = GetVectorDistance(vecTarget, myPos, true);
 			}
-			if(flDistanceToTarget < canRetreat)
+
+			if(flDistanceToTarget < 5000.0)
+			{
+				command = Command_RTSAttack;
+			}
+			else if(flDistanceToTarget < canRetreat && command != Command_RTSMove)
 			{
 				vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
 				NPC_SetGoalVector(npc.index, vecTarget);
@@ -739,7 +745,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 		
 		if(!pathed && IsValidEntity(npc.m_iTargetAlly) && command != Command_Aggressive)
 		{
-			if(command != Command_HoldPos && command != Command_HoldPosBarracks)
+			if(command != Command_HoldPos && command != Command_HoldPosBarracks && command != Command_RTSMove && command != Command_RTSAttack)
 			{
 				float vecTarget[3];
 				if(npc.m_iTargetAlly <= MaxClients && f3_SpawnPosition[npc.index][0] && npc.m_flComeToMe >= (gameTime + 0.6))

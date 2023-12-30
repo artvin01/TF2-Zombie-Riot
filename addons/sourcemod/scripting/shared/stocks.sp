@@ -11,7 +11,7 @@ enum ParticleAttachment_t {
 	PATTACH_WORLDORIGIN,
 	PATTACH_ROOTBONE_FOLLOW
 };
-
+/*
 enum SolidFlags_t
 {
 	FSOLID_CUSTOMRAYTEST		= 0x0001,	// Ignore solid type + always call into the entity for ray tests
@@ -27,7 +27,7 @@ enum SolidFlags_t
 	FSOLID_TRIGGER_TOUCH_DEBRIS	= 0x0200,	// This trigger will touch debris objects
 
 	FSOLID_MAX_BITS	= 10
-};
+};*/
 
 stock int abs(int x)
 {
@@ -1770,7 +1770,7 @@ public bool PlayersOnly(int entity, int contentsMask, any iExclude)
 	
 	return !(entity == iExclude);
 }
-
+/*
 stock bool Client_Shake(int client, int command=SHAKE_START, float amplitude=50.0, float frequency=150.0, float duration=3.0)
 {
 	//allow settings for the sick who cant handle screenshake.
@@ -1811,7 +1811,7 @@ stock bool Client_Shake(int client, int command=SHAKE_START, float amplitude=50.
 
 	return true;
 }
-
+*/
 
 stock void PrintKeyHintText(int client, const char[] format, any ...)
 {
@@ -4644,7 +4644,7 @@ void KillDyingGlowEffect(int client)
 		RemoveEntity(entity);
 }
 #endif	// ZR
-
+/*
 enum g_Collision_Group
 {
     COLLISION_GROUP_NONE  = 0,
@@ -4681,7 +4681,7 @@ enum g_Collision_Group
     TFCOLLISION_GROUP_ROCKET_BUT_NOT_WITH_OTHER_ROCKETS
 	
 };
-
+*/
 float f_HitmarkerSameFrame[MAXTF2PLAYERS];
 
 void DoClientHitmarker(int client)
