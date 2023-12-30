@@ -307,6 +307,17 @@ public void SpyMainBoss_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
+	float TrueArmor = 1.0;
+	if(npc.m_flDead_Ringer_Invis_bool && !NpcStats_IsEnemySilenced(npc.index))
+	{
+		TrueArmor *= 0.1;
+	}
+	if(npc.Anger)
+	{
+		TrueArmor *= 0.65;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
+
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
@@ -632,26 +643,19 @@ public Action SpyMainBoss_OnTakeDamage(int victim, int &attacker, int &inflictor
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		npc.m_bTeamGlowDefault = false;
 		npc.PlayDeathSound();	
-	}
-	
-	if(!npc.m_flDead_Ringer_Invis_bool)
-	{
-		if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+				
+		float TrueArmor = 1.0;
+		if(!NpcStats_IsEnemySilenced(victim))
 		{
-			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-			npc.m_blPlayHurtAnimation = true;
+			if(fl_TotalArmor[npc.index] != 1.0)
+			{
+				TrueArmor *= 0.1;
+				if(!(damagetype & DMG_SLASH))
+					damage *= 0.1;
+			}
 		}
+		fl_TotalArmor[npc.index] = TrueArmor;
 	}
-	else if(!NpcStats_IsEnemySilenced(npc.index))
-	{
-		damage *= 0.1;
-	}
-	
-	if(npc.Anger)
-	{
-		damage *= 0.65;
-	}
-	
 	
 	return Plugin_Changed;
 }

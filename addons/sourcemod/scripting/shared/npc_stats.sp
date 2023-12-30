@@ -222,6 +222,10 @@ void OnMapStart_NPC_Base()
 	Zero(f_PredictDuration);
 	Zero2(f_PredictPos);
 	
+	PrecacheEffect("ParticleEffect");
+	PrecacheEffect("ParticleEffectStop");
+	PrecacheParticleEffect("burningplayer_red");
+	
 	NPC_MapStart();
 
 	for (int NpcIndexNumber = 0; NpcIndexNumber < ZR_MAX_NPCS; NpcIndexNumber++)
@@ -2949,9 +2953,6 @@ public void NPC_Base_InitGamedata()
 	EntityFactory.Install();
 
 	//for (int i = 0; i < MAXENTITIES; i++) pPath[i] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
-	PrecacheEffect("ParticleEffect");
-	PrecacheEffect("ParticleEffectStop");
-	PrecacheParticleEffect("burningplayer_red");
 }
 
 static void OnCreate(CClotBody body)
@@ -6976,7 +6977,7 @@ stock int Trace_Test(int m_pAttacker, float m_vecSrc[3], float m_vecDirShooting[
 	return enemy;
 }
 
-
+/*
 stock int PrecacheParticleSystem(const char[] particleSystem)
 {
 	static int particleEffectNames = INVALID_STRING_TABLE;
@@ -7019,7 +7020,7 @@ stock int FindStringIndex2(int tableidx, const char[] str)
 	
 	return INVALID_STRING_INDEX;
 }
-
+*/
 void TE_ParticleInt(int iParticleIndex, const float origin[3] = NULL_VECTOR, const float start[3] = NULL_VECTOR, const float angles[3] = NULL_VECTOR, int entindex = -1, int attachtype = -1, int attachpoint = -1, bool resetParticles = true)
 {
 	TE_Start("TFParticleEffect");
@@ -7539,6 +7540,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_PotionShrinkEffect[entity] = 0.0;
 	b_NoKnockbackFromSources[entity] = false;
 	
+	fl_TotalArmor[entity] = 1.0;
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
 	fl_RangedArmor[entity] = 1.0;
 	fl_Extra_MeleeArmor[entity] = 1.0;
@@ -9560,4 +9562,9 @@ void ExtinguishTarget(int target)
 	TE_WriteNum("m_nHitBox", GetParticleEffectIndex("burningplayer_red"));
 	TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
 	TE_SendToAll();
+	if(Timer_Ingition_Settings[target] != null)
+	{
+		delete Timer_Ingition_Settings[target];
+		Timer_Ingition_Settings[target] = null;
+	}
 }

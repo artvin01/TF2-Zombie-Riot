@@ -414,7 +414,7 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 			if(f_MlynarHurtDuration[client] > GetGameTime())
 			{
 				f_MlynarDmgMultiHurt[client] += 0.01;
-				if(RaidbossIgnoreBuildingsLogic()) //During raids, give power 2x as fast.
+				if(RaidbossIgnoreBuildingsLogic(1)) //During raids, give power 2x as fast.
 				{
 					f_MlynarDmgMultiHurt[client] += 0.01;
 				}
@@ -496,7 +496,7 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 		pack.WriteCell(EntIndexToEntRef(victim));
 		pack.WriteCell(EntIndexToEntRef(victim));
 		pack.WriteFloat(damageModif);
-		pack.WriteCell(DMG_CLUB);
+		pack.WriteCell(DMG_SLASH);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		pack.WriteFloat(0.0);
 		pack.WriteFloat(0.0);

@@ -230,7 +230,13 @@ public void AltCombineMage_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
-	
+
+	float TrueArmor = 1.0;
+	if(npc.m_fbRangedSpecialOn)
+		TrueArmor *= 0.75;
+		
+	fl_TotalArmor[npc.index] = TrueArmor;
+
 	//Think throttling
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) {
 		return;
@@ -397,9 +403,6 @@ public Action AltCombineMage_OnTakeDamage(int victim, int &attacker, int &inflic
 		return Plugin_Continue;
 		
 	AltCombineMage npc = view_as<AltCombineMage>(victim);
-		
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{

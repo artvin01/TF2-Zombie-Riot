@@ -143,6 +143,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 					}
 				}
 				Trip_BlastDMG[client] = Calculate_HP_Spikes * 0.45;
+				b_ExpertTrapper[TripMine] = b_ExpertTrapper[client];
 				int r = 0;
 				int b = 0;
 				if (TF2_GetClientTeam(client) == TFTeam_Red)
@@ -478,9 +479,12 @@ public void Trip_TrackPlanted(int client)
 											EmitSoundToAll(TERRORIZER_BLAST3, ent2, _);
 										}
 									}
-									
-									Explode_Logic_Custom(Trip_BlastDMG[client], client, client, -1, EntLoc2,Trip_BlastRadius,_,_,false);
-									Explode_Logic_Custom(Trip_BlastDMG[client], client, client, -1, EntLoc,Trip_BlastRadius,_,_,false);
+									float Damagetrap = Trip_BlastDMG[client];
+									if(b_ExpertTrapper[client] && b_ExpertTrapper[ent2] && b_ExpertTrapper[ent])
+										Damagetrap *= 6.0;
+										
+									Explode_Logic_Custom(Damagetrap, client, client, -1, EntLoc2,Trip_BlastRadius,_,_,false);
+									Explode_Logic_Custom(Damagetrap, client, client, -1, EntLoc,Trip_BlastRadius,_,_,false);
 									
 									RemoveEntity(ent);
 									RemoveEntity(ent2);

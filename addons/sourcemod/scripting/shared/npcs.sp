@@ -1296,7 +1296,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		{
 			if(f_HudCooldownAntiSpam[attacker] >= GetGameTime())
 				return;
-
+			
+			f_CooldownForHurtHud_Ally[attacker] = GetGameTime() + 0.4;	
 			f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;
 		}
 		else
@@ -1314,7 +1315,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(f_HudCooldownAntiSpam[attacker] >= GetGameTime())
 			return;
-
+		
+		f_CooldownForHurtHud_Ally[attacker] = GetGameTime() + 0.4;	
 		f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;		
 	}
 
@@ -1334,8 +1336,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 #if defined RPG
 		if((!b_npcspawnprotection[victim] || i_NpcIsUnderSpawnProtectionInfluence[victim] == 0) && (i_NpcFightOwner[victim] == attacker || Party_IsClientMember(i_NpcFightOwner[victim], attacker)))
-#endif
-#if defined ZR
+#else
 		if(!b_npcspawnprotection[victim])
 #endif
 		{
@@ -1592,14 +1593,15 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	Debuff_added = false;
 
 #if defined ZR
-	if(npc.m_flMeleeArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)) || fl_Extra_MeleeArmor[victim] != 1.0)
+	if(npc.m_flMeleeArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)) || fl_Extra_MeleeArmor[victim] != 1.0 || fl_TotalArmor[victim] != 1.0)
 #else
-	if(npc.m_flMeleeArmor != 1.0 || fl_Extra_MeleeArmor[victim] != 1.0)
+	if(npc.m_flMeleeArmor != 1.0 || fl_Extra_MeleeArmor[victim] != 1.0 || fl_TotalArmor[victim] != 1.0)
 #endif
 	
 	{
 		float percentage = npc.m_flMeleeArmor * 100.0;
 		percentage *= fl_Extra_MeleeArmor[victim];
+		percentage *= fl_TotalArmor[victim];
 		
 #if defined ZR
 		if(!NpcStats_IsEnemySilenced(victim))
@@ -1616,14 +1618,15 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	}
 	
 #if defined ZR
-	if(npc.m_flRangedArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)) || fl_Extra_RangedArmor[victim] != 1.0)
+	if(npc.m_flRangedArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)) || fl_Extra_RangedArmor[victim] != 1.0 || fl_TotalArmor[victim] != 1.0)
 #else
-	if(npc.m_flRangedArmor != 1.0 || fl_Extra_RangedArmor[victim] != 1.0)
+	if(npc.m_flRangedArmor != 1.0 || fl_Extra_RangedArmor[victim] != 1.0 || fl_TotalArmor[victim] != 1.0)
 #endif
 	
 	{
 		float percentage = npc.m_flRangedArmor * 100.0;
 		percentage *= fl_Extra_RangedArmor[victim];
+		percentage *= fl_TotalArmor[victim];
 		
 #if defined ZR
 		if(!NpcStats_IsEnemySilenced(victim))
@@ -1658,6 +1661,10 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 				HudOffset += 0.035;
 			}
 			else if(fl_MeleeArmor[raidboss] != 1.0 || fl_Extra_MeleeArmor[raidboss] != 1.0)
+			{
+				HudOffset += 0.035;
+			}
+			else if(fl_TotalArmor[raidboss] != 1.0)
 			{
 				HudOffset += 0.035;
 			}
@@ -2037,6 +2044,7 @@ void CleanAllNpcArray()
 {
 	Zero(played_headshotsound_already);
 	Zero(f_CooldownForHurtHud);
+	Zero(f_CooldownForHurtHud_Ally);
 	Zero(f_damageAddedTogetherGametime);
 	Zero(f_HudCooldownAntiSpam);
 	Zero(f_HudCooldownAntiSpamRaid);
@@ -2376,6 +2384,7 @@ void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, int &inflictor, fl
 #endif
 		damage *= fl_MeleeArmor[victim];
 		damage *= fl_Extra_MeleeArmor[victim];
+		damage *= fl_TotalArmor[victim];
 	}
 	else if(!(damagetype & DMG_SLASH))
 	{
@@ -2394,6 +2403,24 @@ void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, int &inflictor, fl
 #endif
 		damage *= fl_RangedArmor[victim];
 		damage *= fl_Extra_RangedArmor[victim];
+		damage *= fl_TotalArmor[victim];
+	}
+	else if((damagetype & DMG_SLASH))
+	{
+		if(!b_NpcHasDied[attacker] && i_CurrentEquippedPerk[attacker] == 5)
+		{
+			damage *= 1.25;
+		}
+		if(fl_RangedArmor[victim] > 1.0)
+			damage *= fl_RangedArmor[victim];
+		if(fl_Extra_RangedArmor[victim] > 1.0)
+			damage *= fl_Extra_RangedArmor[victim];
+		if(fl_MeleeArmor[victim] > 1.0)
+			damage *= fl_MeleeArmor[victim];
+		if(fl_Extra_MeleeArmor[victim] > 1.0)
+			damage *= fl_Extra_MeleeArmor[victim];
+		if(fl_TotalArmor[victim] > 1.0)
+			damage *= fl_TotalArmor[victim];
 	}
 	damage *= fl_Extra_Damage[attacker];
 }

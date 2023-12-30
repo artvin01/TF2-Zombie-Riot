@@ -227,6 +227,13 @@ public void AnfuhrerEisenhard_ClotThink(int iNPC)
 		npc.m_flSpeed = 320.0;
 	}
 
+	float TrueArmor = 1.0;
+	if(npc.Anger)
+	{
+		TrueArmor *= 0.65;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
+
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
@@ -275,13 +282,20 @@ public Action AnfuhrerEisenhard_OnTakeDamage(int victim, int &attacker, int &inf
 	//if youre behind him and attack him ,you deal 2x the damage.
 	if(IsBehindAndFacingTarget(attacker, victim))
 	{
+		if(attacker <= MaxClients)
+		{
+			bool PlaySound = false;
+			if(f_MinicritSoundDelay[attacker] < GetGameTime())
+			{
+				PlaySound = true;
+				f_MinicritSoundDelay[attacker] = GetGameTime() + 0.25;
+			}
+			
+			DisplayCritAboveNpc(victim, attacker, PlaySound,_,_,true); //Display crit above head
+		}
 		damage *= 1.5;
 	}
-
-	if(npc.Anger)
-	{
-		damage *= 0.65;
-	}
+	
 	if(npc.m_flArmorCount > 0.0)
 	{
 		if(damagetype & DMG_CLUB)

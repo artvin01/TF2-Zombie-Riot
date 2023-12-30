@@ -300,7 +300,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 
 				bool RaidActive = false;
 
-				if(RaidbossIgnoreBuildingsLogic())
+				if(RaidbossIgnoreBuildingsLogic(1))
 					RaidActive = true;
 
 				int maxhealth = SDKCall_GetMaxHealth(client);

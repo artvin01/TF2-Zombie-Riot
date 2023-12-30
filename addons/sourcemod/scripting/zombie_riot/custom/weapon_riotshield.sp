@@ -71,7 +71,7 @@ public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slo
 
 		bool RaidActive = false;
 
-		if(RaidbossIgnoreBuildingsLogic())
+		if(RaidbossIgnoreBuildingsLogic(1))
 			RaidActive = true;
 
 		for (int enemy_hit = 0; enemy_hit < MAX_TARGETS_HIT; enemy_hit++)

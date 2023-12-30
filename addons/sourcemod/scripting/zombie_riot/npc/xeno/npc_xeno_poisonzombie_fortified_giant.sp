@@ -183,7 +183,15 @@ public void XenoFortifiedGiantPoisonZombie_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
-				
+	
+	float TrueArmor = 1.0;
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
+			TrueArmor *= 0.25;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		if(!npc.m_flAttackHappenswillhappen)
@@ -338,10 +346,17 @@ public Action XenoFortifiedGiantPoisonZombie_OnTakeDamage(int victim, int &attac
 			CreateTimer(2.0, XenoFortifiedGiantPoisonZombie_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(10.0, XenoFortifiedGiantPoisonZombie_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		}
-		if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
+		float TrueArmor = 1.0;
+		if(!NpcStats_IsEnemySilenced(victim))
 		{
-			damage *= 0.25;
+			if(fl_TotalArmor[npc.index] != 1.0)
+			{
+				TrueArmor *= 0.25;
+				if(!(damagetype & DMG_SLASH))
+					damage *= 0.25;
+			}
 		}
+		fl_TotalArmor[npc.index] = TrueArmor;
 	}
 	
 	

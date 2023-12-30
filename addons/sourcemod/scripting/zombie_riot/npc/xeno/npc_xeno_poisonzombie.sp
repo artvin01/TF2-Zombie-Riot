@@ -188,6 +188,14 @@ public void XenoPoisonZombie_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
+	float TrueArmor = 1.0;
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
+			TrueArmor *= 0.25;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
+		
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
@@ -331,10 +339,17 @@ public Action XenoPoisonZombie_OnTakeDamage(int victim, int &attacker, int &infl
 			CreateTimer(2.0, XenoPoisonZombie_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(10.0, XenoPoisonZombie_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		}
-		if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
+		float TrueArmor = 1.0;
+		if(!NpcStats_IsEnemySilenced(victim))
 		{
-			damage *= 0.25;
+			if(fl_TotalArmor[npc.index] != 1.0)
+			{
+				TrueArmor *= 0.25;
+				if(!(damagetype & DMG_SLASH))
+					damage *= 0.25;
+			}
 		}
+		fl_TotalArmor[npc.index] = TrueArmor;
 	}
 	
 	/*

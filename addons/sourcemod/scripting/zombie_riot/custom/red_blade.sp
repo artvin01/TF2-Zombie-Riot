@@ -202,29 +202,45 @@ void WeaponRedBlade_OnTakeDamage(int victim, float &damage)
 		damage *= 0.4;
 	}
 }
+
 void WeaponRedBlade_OnTakeDamage_Post(int victim, int weapon)
 {
 	CheckRedBladeBelowHalfHealth(victim, weapon);
 }
 void MakeBladeBloddy(int client, bool ignite, int weapon)
 {
-	int Weaponviewmodel = EntRefToEntIndex(WeaponRef_viewmodel[client]);
-	int view_Weaponviewmodel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
-	if(!IsValidEntity(Weaponviewmodel) || !IsValidEntity(view_Weaponviewmodel))
-		return;
-		
-	if(ignite)
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
+
+	if(IsValidEntity(viewmodelModel))
 	{
-		SetEntProp(weapon, Prop_Send, "m_bIsBloody", 1);
-		SetEntProp(Weaponviewmodel, Prop_Send, "m_nSkin", 3);
-		SetEntProp(view_Weaponviewmodel, Prop_Send, "m_nSkin", 3);
-	}
-	else
+		if(ignite)
+		{
+			if(Timer_Ingition_Settings[viewmodelModel] == null)
+				IgniteTargetEffect(viewmodelModel, FIRSTPERSON, client);
+		}
+		else
+		{
+			if(Timer_Ingition_Settings[viewmodelModel] != null)
+				ExtinguishTarget(viewmodelModel);
+		}
+	}	
+
+	int viewmodelModel_Hand;
+	viewmodelModel_Hand = EntRefToEntIndex(WeaponRef_viewmodel[client]);
+	if(IsValidEntity(viewmodelModel_Hand))
 	{
-		SetEntProp(weapon, Prop_Send, "m_bIsBloody",0);
-		SetEntProp(Weaponviewmodel, Prop_Send, "m_nSkin", 0);
-		SetEntProp(view_Weaponviewmodel, Prop_Send, "m_nSkin", 0);
-	}
+		if(ignite)
+		{
+			if(Timer_Ingition_Settings[viewmodelModel_Hand] == null)
+				IgniteTargetEffect(viewmodelModel_Hand, THIRDPERSON, client);
+		}
+		else
+		{
+			if(Timer_Ingition_Settings[viewmodelModel_Hand] != null)
+				ExtinguishTarget(viewmodelModel_Hand);
+		}
+	}	
 }
 
 void CreateRedBladeEffect(int client)
@@ -233,7 +249,6 @@ void CreateRedBladeEffect(int client)
 	DestroyRedBladeEffect(client);
 	
 	float flPos[3];
-	float eyeAng[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
 
 	
@@ -241,21 +256,6 @@ void CreateRedBladeEffect(int client)
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(client, particle);
 	i_RedBladeFireParticle[client][0] = EntIndexToEntRef(particle);
-	
-	int viewmodelModel;
-	viewmodelModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
-
-	if(IsValidEntity(viewmodelModel))
-	{
-		IgniteTargetEffect(viewmodelModel, FIRSTPERSON, client);
-	}	
-
-	int viewmodelModel_Hand;
-	viewmodelModel_Hand = EntRefToEntIndex(WeaponRef_viewmodel[client]);
-	if(IsValidEntity(viewmodelModel_Hand))
-	{
-		IgniteTargetEffect(viewmodelModel_Hand, THIRDPERSON, client);
-	}	
 }
 
 bool IsRedBladeEffectSpawned(int client)
@@ -265,6 +265,23 @@ bool IsRedBladeEffectSpawned(int client)
 	{
 		return false;
 	}
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
+
+	if(IsValidEntity(viewmodelModel))
+	{
+		if(Timer_Ingition_Settings[viewmodelModel] == null)
+			return false;
+	}	
+
+	int viewmodelModel_Hand;
+	viewmodelModel_Hand = EntRefToEntIndex(WeaponRef_viewmodel[client]);
+	if(IsValidEntity(viewmodelModel_Hand))
+	{
+		if(Timer_Ingition_Settings[viewmodelModel_Hand] == null)
+			return false;
+	}	
+
 	return true;
 }
 

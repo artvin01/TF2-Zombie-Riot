@@ -180,10 +180,12 @@ methodmap Schwertkrieg < CClotBody
 		else
 		{
 			if(RaidBossActive==INVALID_ENT_REFERENCE)
+			{
 				RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidModeTime = GetGameTime(npc.index) + 9000.0;
-			RaidModeScaling = 69.0;
-			RaidAllowsBuildings = true;
+				RaidModeTime = GetGameTime(npc.index) + 9000.0;
+				RaidModeScaling = 10.0;
+				RaidAllowsBuildings = true;
+			}
 		}
 		
 		
