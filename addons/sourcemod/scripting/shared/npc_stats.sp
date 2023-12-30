@@ -9561,4 +9561,9 @@ void ExtinguishTarget(int target)
 	TE_WriteNum("m_nHitBox", GetParticleEffectIndex("burningplayer_red"));
 	TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
 	TE_SendToAll();
+	if(Timer_Ingition_Settings[target] != null)
+	{
+		delete Timer_Ingition_Settings[target];
+		Timer_Ingition_Settings[target] = null;
+	}
 }
