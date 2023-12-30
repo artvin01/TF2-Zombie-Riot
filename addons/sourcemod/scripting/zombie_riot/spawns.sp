@@ -9,6 +9,7 @@ enum struct SpawnerData
 	bool BaseBoss;
 	bool AllySpawner;
 	char Name[64];
+	bool ignore_disabled;
 
 	float Cooldown;
 	float Points;
@@ -115,7 +116,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 
 		if(!spawn.BaseBoss)
 		{
-			if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled"))	// Map disabled, ignore
+			if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
 				continue;
 
 			nonBossSpawners++;
@@ -370,7 +371,7 @@ int GetRandomActiveSpawner(const char[] name = "")
 			continue;
 		}
 
-		if(!spawn.BaseBoss && GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled"))	// Map disabled, ignore
+		if(!spawn.BaseBoss && GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore
 			continue;
 		
 		return spawn.EntRef;
