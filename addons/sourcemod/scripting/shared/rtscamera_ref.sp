@@ -311,9 +311,22 @@ static Action SDKHookCB_SetTransmit_HealthBeam(int iEntity, int iClient) {
 
 // Commands
 
-static Action cmdRTS(int iClient, int iArgs) {
-	if (g_eCommander[iClient].bEnabled) {
+void RemoveRTSCamera(int client)
+{
+	if (g_eCommander[client].bEnabled) 
+	{
+		ResetClient(client);
+	}	
+}
+static Action cmdRTS(int iClient, int iArgs) 
+{
+	if (g_eCommander[iClient].bEnabled) 
+	{
 		ResetClient(iClient);
+		return Plugin_Handled;
+	}
+	if(GetEntProp(iClient, Prop_Data, "m_iTeamNum") != 2)
+	{
 		return Plugin_Handled;
 	}
 
