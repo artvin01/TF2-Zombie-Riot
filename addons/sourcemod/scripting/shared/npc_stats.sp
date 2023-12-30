@@ -6977,7 +6977,7 @@ stock int Trace_Test(int m_pAttacker, float m_vecSrc[3], float m_vecDirShooting[
 	return enemy;
 }
 
-
+/*
 stock int PrecacheParticleSystem(const char[] particleSystem)
 {
 	static int particleEffectNames = INVALID_STRING_TABLE;
@@ -7020,7 +7020,7 @@ stock int FindStringIndex2(int tableidx, const char[] str)
 	
 	return INVALID_STRING_INDEX;
 }
-
+*/
 void TE_ParticleInt(int iParticleIndex, const float origin[3] = NULL_VECTOR, const float start[3] = NULL_VECTOR, const float angles[3] = NULL_VECTOR, int entindex = -1, int attachtype = -1, int attachpoint = -1, bool resetParticles = true)
 {
 	TE_Start("TFParticleEffect");

@@ -471,6 +471,10 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_rapier.sp"
 #include "zombie_riot/custom/wand/weapon_wand_gravaton.sp"
 
+// TECH DEMO
+#include "zombie_riot/smrts.sp"
+// TECH DEMO
+
 void ZR_PluginLoad()
 {
 	Natives_PluginLoad();
@@ -526,6 +530,8 @@ void ZR_PluginStart()
 	
 	BobTheGod_OnPluginStart();
 	Building_PluginStart();
+
+	SMRTS_OnPluginStart();
 }
 
 void ZR_MapStart()
@@ -711,6 +717,8 @@ void ZR_MapStart()
 	ResetMapStartSensalWeapon();
 	
 	//Store_RandomizeNPCStore(true);
+
+	SMRTS_OnMapStart();
 }
 
 public Action GlobalTimer(Handle timer)
@@ -808,6 +816,8 @@ void ZR_ClientDisconnect(int client)
 			}
 		}
 	}
+
+	SMRTS_OnClientDisconnect(client);
 }
 
 public Action OnReloadCommand(int args)

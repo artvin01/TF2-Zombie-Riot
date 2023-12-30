@@ -1348,6 +1348,8 @@ public void OnPluginEnd()
 		}
 	}
 	*/
+
+	SMRTS_OnPluginEnd();
 }
 
 public void OnMapStart()
@@ -1425,6 +1427,7 @@ public void OnMapEnd()
 	OnRoundEnd(null, NULL_STRING, false);
 	OnMapEndWaves();
 	Spawns_MapEnd();
+	SMRTS_OnMapEnd();
 #endif
 
 #if defined RPG
@@ -3174,6 +3177,8 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 	}
+
+	SMRTS_TF2_OnConditionAdded(client, condition);
 }
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)
