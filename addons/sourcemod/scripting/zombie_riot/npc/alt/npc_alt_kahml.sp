@@ -249,10 +249,12 @@ methodmap Kahmlstein < CClotBody
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
 
 		if(RaidBossActive==INVALID_ENT_REFERENCE)
+		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
-		RaidModeTime = GetGameTime(npc.index) + 9000.0;
-		RaidModeScaling = 69420.0;
-		RaidAllowsBuildings = true;
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidModeScaling = 100.0;
+			RaidAllowsBuildings = true;
+		}
 		
 		npc.m_bDissapearOnDeath = true;
 		

@@ -244,7 +244,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 		f_WeaponDamageCalculated[client] = damage;
 
 		bool raidboss_active = false;
-		if(RaidbossIgnoreBuildingsLogic())
+		if(RaidbossIgnoreBuildingsLogic(1))
 		{
 			raidboss_active = true;
 		}
@@ -502,7 +502,7 @@ public void Npc_Irene_Launch(int iNPC)
 	
 	bool raidboss_active = false;
 	float time_stay_In_sky;
-	if(RaidbossIgnoreBuildingsLogic())
+	if(RaidbossIgnoreBuildingsLogic(1))
 	{
 		raidboss_active = true;
 	}

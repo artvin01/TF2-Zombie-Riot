@@ -2590,7 +2590,7 @@
 	}
 	"Broken Rapier Desc"
 	{
-		"en"	"A rapier that has been degraded to a state of hopelessness. It's barely usable.\nUnpredictable footing: You permanently take 20%% more damage.\nPin-Point Weakness: This weapon can headshot (affected by Daquiri and Affinity).\nDestreza: Every 2nd hit speeds you up."
+		"en"	"A rapier that has been degraded to a state of hopelessness.\nUnpredictable footing: You permanently take 20%% more damage.\nPin-Point Weakness: This weapon can headshot (affected by Daquiri and Affinity).\nDestreza: Every 2nd hit speeds you up."
 	}
 	"Bent Rapier Desc"
 	{

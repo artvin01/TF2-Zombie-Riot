@@ -233,7 +233,6 @@ void CreateRedBladeEffect(int client)
 	DestroyRedBladeEffect(client);
 	
 	float flPos[3];
-	float eyeAng[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
 
 	

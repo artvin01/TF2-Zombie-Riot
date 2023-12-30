@@ -1101,6 +1101,10 @@ float Barracks_UnitExtraDamageCalc(int entity, int client, float damage, int dam
 		client = entity;
 	}
 	float DmgMulti = 1.0;
+	if(b_ExpertTrapper[client])
+	{
+		DmgMulti *= 0.25; 
+	}
 	if(damagetype == 0) //0 means melee
 	{
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_COPPER_SMITH))
