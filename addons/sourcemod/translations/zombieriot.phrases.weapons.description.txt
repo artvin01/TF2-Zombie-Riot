@@ -2639,6 +2639,6 @@
 	}
 	"Expert Trapper Desc"
 	{
-		"en"	"Your building weapons deal 75%% less damage but your traps deal 50%% more damage in total."
+		"en"	"Your building weapons deal 75%% less damage except for trap weapons, but your traps deal 50%% more damage in total."
 	}
 }
