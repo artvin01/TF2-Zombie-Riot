@@ -183,7 +183,7 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		color[0] = 240;
 		color[1] = 240;
 		color[2] = 240;
-		color[3] = 240;
+		color[3] = 120;
 
 		int loop_for = 7;
 		float Seperation = 12.5;
@@ -334,7 +334,7 @@ public Action Smite_Timer_Gravaton_Wand(Handle Smite_Logic, DataPack data)
 	color[0] = 240;
 	color[1] = 240;
 	color[2] = 240;
-	color[3] = 240;
+	color[3] = 120;
 
 	switch(GetRandomInt(1, 2))
 	{
@@ -488,7 +488,7 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 		color[0] = 240;
 		color[1] = 240;
 		color[2] = 240;
-		color[3] = 240;
+		color[3] = 120;
 		
 		TE_SetupBeamRingPoint(vec, Radius*2.0, Radius*2.0+1.0, LaserIndex, LaserIndex, 0, 1, Time, 6.0, 0.1, color, 1, 0);
 		TE_SendToAll();
@@ -628,7 +628,7 @@ static void Gravaton_Point_effects(float EndVec[3], float StartVec[3], float Thr
 	color[0] = 240;
 	color[1] = 240;
 	color[2] = 240;
-	color[3] = 240;
+	color[3] = 120;
 	TE_SetupBeamPoints(StartVec, EndVec, LaserIndex, 0, 0, 0, Throttle_speed, 5.0, 1.0, 1, 4.0, color, 0);
 	TE_SendToAll();
 
