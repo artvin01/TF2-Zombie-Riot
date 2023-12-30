@@ -1334,8 +1334,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 #if defined RPG
 		if((!b_npcspawnprotection[victim] || i_NpcIsUnderSpawnProtectionInfluence[victim] == 0) && (i_NpcFightOwner[victim] == attacker || Party_IsClientMember(i_NpcFightOwner[victim], attacker)))
-#endif
-#if defined ZR
+#else
 		if(!b_npcspawnprotection[victim])
 #endif
 		{
