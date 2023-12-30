@@ -320,6 +320,7 @@ void RemoveRTSCamera(int client)
 }
 static Action cmdRTS(int iClient, int iArgs) 
 {
+	return Plugin_Handled;
 	if (g_eCommander[iClient].bEnabled) 
 	{
 		ResetClient(iClient);
