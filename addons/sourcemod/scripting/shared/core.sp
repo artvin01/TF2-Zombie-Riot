@@ -547,7 +547,7 @@ float f_LeftForDead_Cooldown[MAXTF2PLAYERS];
 bool FinalBuilder[MAXENTITIES];
 bool GlassBuilder[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
-bool b_ExpertTrapper[MAXTF2PLAYERS];
+bool b_ExpertTrapper[MAXENTITIES];
 int Building_Hidden_Prop[MAXENTITIES][2];
 float f_ClientArmorRegen[MAXENTITIES];
 int i_nm_body_client[MAXTF2PLAYERS];
