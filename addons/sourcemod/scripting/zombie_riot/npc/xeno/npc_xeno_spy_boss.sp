@@ -318,6 +318,13 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
+
+	float TrueArmor = 1.0;
+	if(npc.Anger)
+	{
+		TrueArmor *= 0.25;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
@@ -763,13 +770,7 @@ public Action XenoSpyMainBoss_OnTakeDamage(int victim, int &attacker, int &infli
 	{
 		damage = 0.0;
 	}
-	
-	if(npc.Anger)
-	{
-		damage *= 0.65;
-	}
-	
-	
+
 	return Plugin_Changed;
 }
 

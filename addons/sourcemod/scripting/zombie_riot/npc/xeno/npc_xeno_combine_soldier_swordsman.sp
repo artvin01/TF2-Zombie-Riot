@@ -252,7 +252,15 @@ public void XenoCombineSwordsman_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
-				
+
+	float TrueArmor = 1.0;
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		if(npc.m_fbRangedSpecialOn)
+			TrueArmor *= 0.15;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_GESTURE_FLINCH_STOMACH", false);
@@ -457,9 +465,6 @@ public Action XenoCombineSwordsman_OnTakeDamage(int victim, int &attacker, int &
 	
 	if(!NpcStats_IsEnemySilenced(victim))
 	{
-		if(npc.m_fbRangedSpecialOn)
-			damage *= 0.15;
-			
 		if(!npc.bXenoInfectedSpecialHurt)
 		{
 			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 0.5;
@@ -468,7 +473,6 @@ public Action XenoCombineSwordsman_OnTakeDamage(int victim, int &attacker, int &
 			SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		}
 	}
-	
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
 		return Plugin_Continue;

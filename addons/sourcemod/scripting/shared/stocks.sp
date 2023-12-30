@@ -1272,29 +1272,17 @@ int MaxHealPermitted = 99999999)
 	{
 		float HealTotalTimer = HealOverThisDuration / 0.1;
 
-		int flMaxHealth;
-		if(reciever > MaxClients)
-		{
-			flMaxHealth = GetEntProp(reciever, Prop_Data, "m_iMaxHealth");
-		}
-		else
-		{
-			flMaxHealth = SDKCall_GetMaxHealth(reciever);
-		}
-
-		flMaxHealth = RoundToNearest(float(flMaxHealth) * Maxhealth);
-	
 		DataPack pack;
 		CreateDataTimer(0.1, Timer_Healing, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(reciever));
 		pack.WriteFloat(HealTotal / HealTotalTimer);
-		pack.WriteCell(flMaxHealth);
+		pack.WriteCell(Maxhealth);
 		pack.WriteCell(RoundToNearest(HealTotalTimer));		
 		return 0; //this is a timer, we cant really quantify this.
 	}
 }
 
-static float f_IncrementalSmallHeal[MAXENTITIES];
+float f_IncrementalSmallHeal[MAXENTITIES];
 
 public Action Timer_Healing(Handle timer, DataPack pack)
 {
@@ -1317,111 +1305,15 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	{
 		return Plugin_Stop;
 	}
-
-	int lastHealth;
-	if(entity > MaxClients)
-	{
-		lastHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
-	}
-	else
-	{
-		lastHealth = GetClientHealth(entity);
-	}
-	
 	// Our Current Health + Leftover Float Health + New Health Gained
-	float newHealth = float(lastHealth) + f_IncrementalSmallHeal[entity] + pack.ReadFloat();
-	
-	if(pack.ReadCell() && newHealth > 0.0)	// Max Health Cap
-	{
-		float maxHealth;
-		if(entity > MaxClients)
-		{
-			maxHealth = float(GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
-		}
-		else
-		{
-			maxHealth = float(SDKCall_GetMaxHealth(entity));
-		}
-		
-		if(newHealth > maxHealth)
-			newHealth = maxHealth;
-	}
-
-	if(newHealth >= 1.0)
-	{
-		float maxHealth;
-
-		if(entity > MaxClients)
-		{
-			maxHealth = float(GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
-		}
-		else
-		{
-			maxHealth = float(SDKCall_GetMaxHealth(entity));
-		}
-		//TARGET HEAL
-		if(lastHealth < maxHealth)
-		{
-			if(newHealth >= maxHealth)
-			{
-				newHealth = maxHealth;
-			}
-
-			int setHealth = RoundToFloor(newHealth);	// Health to set
-
-			f_IncrementalSmallHeal[entity] = newHealth - float(setHealth);	// New extra health
-			
-			if(entity > MaxClients)
-			{
-				SetEntProp(entity, Prop_Data, "m_iHealth", setHealth);
-			}
-			else
-			{
-				SetEntityHealth(entity, setHealth);
-
-				int difference = setHealth - lastHealth;
-				if(difference != -1)
-					ApplyHealEvent(entity, difference);	// Show healing number
-			}
-		}
-	}
-	else
-	{
-		SDKHooks_TakeDamage(entity, 0, 0, 100.0 - newHealth);
-	}
-	
-	/*
-	int i_TargetHealAmount;
-	//The healing is less then 1 ? Do own logic.
-					
-	if (healing_Amount <= 1.0)
-	{
-		f_IncrementalSmallHeal[healTarget] += healing_Amount;
-						
-		if(f_IncrementalSmallHeal[healTarget] >= 1.0)
-		{
-			f_IncrementalSmallHeal[healTarget] -= 1.0;
-			i_TargetHealAmount = 1;
-		}
-	}
-	else
-	{
-		i_TargetHealAmount = RoundToFloor(healing_Amount);
-						
-		float Decimal_healing = FloatFraction(healing_Amount);
-						
-		f_IncrementalSmallHeal[healTarget] += Decimal_healing;
-						
-		if(f_IncrementalSmallHeal[healTarget] >= 1.0)
-		{
-			f_IncrementalSmallHeal[healTarget] -= 1.0;
-			i_TargetHealAmount += 1;
-		}
-	}
-	*/
+	float HealthToGive = pack.ReadFloat();
+	float HealthMaxPercentage = pack.ReadCell();
+	int HealthHealed = HealEntityViaFloat(entity, HealthToGive, HealthMaxPercentage);
+	if(HealthHealed > 0)
+		ApplyHealEvent(entity, HealthHealed);	// Show healing number
 
 	int current = pack.ReadCell();
-	if(current < 2)
+	if(current <= 1)
 		return Plugin_Stop;
 
 	pack.Position--;

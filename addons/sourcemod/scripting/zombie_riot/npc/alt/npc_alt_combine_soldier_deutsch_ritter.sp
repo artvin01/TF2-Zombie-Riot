@@ -266,7 +266,13 @@ public void Alt_CombineDeutsch_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
+
+	float TrueArmor = 1.0;
+	if(npc.m_fbRangedSpecialOn)
+		TrueArmor *= 0.75;
 	
+	fl_TotalArmor[npc.index] = TrueArmor;
+
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
@@ -455,9 +461,7 @@ public Action Alt_CombineDeutsch_OnTakeDamage(int victim, int &attacker, int &in
 		return Plugin_Continue;
 		
 	Alt_CombineDeutsch npc = view_as<Alt_CombineDeutsch>(victim);
-	
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
+
 	
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))

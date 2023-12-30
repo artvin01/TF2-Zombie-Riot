@@ -208,6 +208,17 @@ public void KazimierzBeserker_ClotThink(int iNPC)
 	{
 		return;
 	}
+
+	float TrueArmor = 1.0;
+	if(npc.m_flPercentageAngry == 1.0)
+	{
+		TrueArmor *= 0.35;
+	}
+	else if(npc.m_flPercentageAngry > 0.5)
+	{
+		TrueArmor *= 0.5;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
 	
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -401,14 +412,6 @@ public Action KazimierzBeserker_OnTakeDamage(int victim, int &attacker, int &inf
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
 		return Plugin_Continue;
 	*/
-	if(npc.m_flPercentageAngry == 1.0)
-	{
-		damage *= 0.35;
-	}
-	else if(npc.m_flPercentageAngry > 0.5)
-	{
-		damage *= 0.5;
-	}
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{

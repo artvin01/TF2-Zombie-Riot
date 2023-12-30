@@ -259,7 +259,15 @@ public void OverlordRogue_ClotThink(int iNPC)
 	{
 		return;
 	}
+		
+	float TrueArmor = 1.0;
+	if(npc.m_flAngerDelay > GetGameTime(npc.index))
+		TrueArmor *= 0.25;
 	
+	if(npc.m_fbRangedSpecialOn)
+		TrueArmor *= 0.15;
+	fl_TotalArmor[npc.index] = TrueArmor;
+
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
@@ -505,12 +513,6 @@ public Action OverlordRogue_OnTakeDamage(int victim, int &attacker, int &inflict
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
-	if(npc.m_flAngerDelay > GetGameTime(npc.index))
-		damage *= 0.25;
-	
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.15;
 	
 	return Plugin_Changed;
 }

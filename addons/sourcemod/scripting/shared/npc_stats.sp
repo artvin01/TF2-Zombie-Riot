@@ -7540,6 +7540,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_PotionShrinkEffect[entity] = 0.0;
 	b_NoKnockbackFromSources[entity] = false;
 	
+	fl_TotalArmor[entity] = 1.0;
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
 	fl_RangedArmor[entity] = 1.0;
 	fl_Extra_MeleeArmor[entity] = 1.0;

@@ -1075,6 +1075,7 @@ float f_CreditsOnKill[MAXENTITIES];
 int i_InSafeZone[MAXENTITIES];
 float fl_MeleeArmor[MAXENTITIES] = {1.0, ...};
 float fl_RangedArmor[MAXENTITIES] = {1.0, ...};
+float fl_TotalArmor[MAXENTITIES] = {1.0, ...};
 
 float fl_Extra_MeleeArmor[MAXENTITIES] = {1.0, ...};
 float fl_Extra_RangedArmor[MAXENTITIES] = {1.0, ...};
