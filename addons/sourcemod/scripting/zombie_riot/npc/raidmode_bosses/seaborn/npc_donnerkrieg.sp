@@ -48,11 +48,47 @@ Very descriptive descriptions, I know lmao
 #define DONNERKRIEG_NIGHTMARE_CANNON_BEGIN_SOUND_1 "ambient/levels/citadel/zapper_warmup1.wav"
 #define DONNERKRIEG_NIGHTMARE_CANNON_BEGIN_SOUND_2 "ambient/levels/citadel/zapper_warmup4.wav"
 
-#define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE "npc/combine_gunship/dropship_engine_distant_loop1.wav"
-#define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND "ambient/levels/citadel/zapper_ambient_loop1.wav"
+#define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE1 "npc/combine_gunship/dropship_engine_distant_loop1.wav"
+#define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE2 "ambient/atmosphere/city_beacon_loop1.wav"
+#define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE3 "ambient/atmosphere/city_rumble_loop1.wav"
+
+
+#define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND1 "mvm/mvm_mothership_loop.wav"
+#define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND2 "ambient/energy/force_field_loop1.wav"
+#define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND3 "hl1/ambience/alien_minddrill.wav"
+#define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND4 "npc/scanner/combat_scan_loop6.wav"
+#define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND5 "npc/scanner/combat_scan_loop4.wav"
+#define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND6 "hl1/ambience/alien_minddrill.wav"
 
 #define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA1 "ambient/levels/citadel/zapper_loop1.wav"
 #define DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA2 "ambient/levels/citadel/zapper_loop2.wav"
+
+/*
+	ambient\energy\force_field_loop1.wav
+	ambient\energy\electric_loop.wav
+	ambient\atmosphere\city_beacon_loop1.wav
+	ambient\atmosphere\city_rumble_loop1.wav
+
+
+	ambient_mp3\halloween\thunder_01.mp3 - 10
+*/
+
+static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
+
+static const char g_nightmare_cannon_core_sound[][] = {
+	"ambient_mp3/halloween/thunder_01.mp3",
+	"ambient_mp3/halloween/thunder_02.mp3",
+	"ambient_mp3/halloween/thunder_03.mp3",
+	"ambient_mp3/halloween/thunder_04.mp3",
+	"ambient_mp3/halloween/thunder_05.mp3",
+	"ambient_mp3/halloween/thunder_06.mp3",
+	"ambient_mp3/halloween/thunder_07.mp3",
+	"ambient_mp3/halloween/thunder_08.mp3",
+	"ambient_mp3/halloween/thunder_09.mp3",
+	"ambient_mp3/halloween/thunder_10.mp3",
+};
+
+
 
 static const char g_DeathSounds[][] = {
 	"vo/medic_paincrticialdeath01.mp3",
@@ -157,6 +193,10 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
+
+	for (int i = 0; i < (sizeof(g_nightmare_cannon_core_sound));   i++) { PrecacheSound(g_nightmare_cannon_core_sound[i]);	}
+
+	Zero(fl_nightmare_cannon_core_sound_timer);
 	
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	DonnerKriegCannon_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
@@ -183,12 +223,20 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_BEGIN_SOUND_1, true);
 	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_BEGIN_SOUND_2, true);
 
-	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND, true);
+	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND1, true);
+	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND2, true);
+	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND3, true);
+	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND4, true);
+	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND5, true);
+	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND6, true);
+
 
 	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA1, true);
 	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA2, true);
 
-	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE, true);
+	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE1, true);
+	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE2, true);
+	PrecacheSound(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE3, true);
 
 	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
 	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
@@ -213,12 +261,24 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		public get()							{ return b_InKame[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_InKame[this.index] = TempValueForProperty; }
 	}
+	public void PlayNightmareSound() {
+		if(fl_nightmare_cannon_core_sound_timer[this.index] > GetGameTime(this.index))
+			return;
+		
+		EmitSoundToAll(g_nightmare_cannon_core_sound[GetRandomInt(0, sizeof(g_nightmare_cannon_core_sound) - 1)]);
+		fl_nightmare_cannon_core_sound_timer[this.index] = GetGameTime(this.index) + 0.1;
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayIdleAlertSound()");
+		#endif
+	}
+
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
+		this.m_flNextIdleSound= GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
@@ -231,7 +291,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
 		
 		
 		#if defined DEBUG_SOUND
@@ -241,7 +301,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
@@ -249,14 +309,14 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -264,14 +324,14 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
 	public void PlayRangedSound() {
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
@@ -1877,21 +1937,26 @@ static void Start_Donner_Main_Cannon_Sound(int client)
 {
 	b_cannon_sound_created[client]=true;
 
-	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
-	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
-	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
-	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
-	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
-	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
+	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND1, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
+	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND2, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
+	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND3, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
+	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND4, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
+	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND5, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
+	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND6, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
+	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE1, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
+	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE2, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
+	EmitSoundToAll(DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE3, client, SNDCHAN_STATIC, 100, _, 1.0, 75);
 
 }
 
 static void Kill_Donner_Main_Cannon_Sound(int client)
 {
-	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND);
-	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND);
-	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND);
-	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND1);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND2);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND3);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND4);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND5);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND6);
 
 	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA1);
 	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA1);
@@ -1901,10 +1966,9 @@ static void Kill_Donner_Main_Cannon_Sound(int client)
 	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA2);
 	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_EXTRA2);
 
-	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE);
-	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE);
-	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE);
-	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE1);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE2);
+	StopSound(client, SNDCHAN_STATIC, DONNERKRIEG_NIGHTMARE_CANNON_LOOP_SOUND_CORE3);
 }
 public Action Raidboss_Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -2201,10 +2265,12 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 }
 static float fl_initial_windup[MAXENTITIES];
 static float fl_spinning_angle[MAXENTITIES];
+static float fl_explosion_thorttle[MAXENTITIES];
 static void Donnerkrieg_Main_Nightmare_Cannon(Raidboss_Donnerkrieg npc)
 {
 	npc.m_bInKame=true;
 	fl_initial_windup[npc.index] = GetGameTime(npc.index)+1.5;
+	fl_explosion_thorttle[npc.index]=0.0;
 	fl_spinning_angle[npc.index]=0.0;
 	SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_Main_Nightmare_Tick);
 	SDKHook(npc.index, SDKHook_Think, Donnerkrieg_Main_Nightmare_Tick);
@@ -2266,6 +2332,8 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 		if(fl_initial_windup[npc.index] < GameTime)
 		{
 
+			//npc.PlayNightmareSound();
+
 			if(!b_cannon_sound_created[npc.index])
 				Start_Donner_Main_Cannon_Sound(npc.index);
 
@@ -2296,6 +2364,15 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 			SetColorRGBA(glowColor, r, g, b, a);
 			TE_SetupBeamPoints(Start_Loc, endPoint, DonnerKriegCannon_BEAM_Glow, 0, 0, 0, DONNERKRIEG_TE_DURATION, ClampBeamWidth(diameter*1.5), ClampBeamWidth(diameter*0.75), 0, 2.5, glowColor, 0);
 			TE_SendToAll(0.0);
+
+			if(fl_explosion_thorttle[npc.index]<GameTime)	//use a particle instead of this for fancyness of fancy
+			{
+				fl_explosion_thorttle[npc.index]=GameTime+0.1;
+				TE_SetupExplosion(endPoint, gExplosive1, 10.0, 1, 0, 0, 0);
+				TE_SendToAll();
+			}
+
+			
 		}
 		else
 		{
