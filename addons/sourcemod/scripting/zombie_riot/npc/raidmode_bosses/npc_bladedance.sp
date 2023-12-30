@@ -174,7 +174,7 @@ methodmap RaidbossBladedance < CClotBody
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
-		Raidboss_Clean_Everyone();
+	//	Raidboss_Clean_Everyone();
 
 		return npc;
 	}
