@@ -1689,28 +1689,20 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		HudOffset += f_HurtHudOffsetX[attacker];
 
 		SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+		char ExtraHudHurt[255];
+
+		//add name and health
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%d / %d",NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+
+		//add debuff
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
+
 		if(!b_NpcIsInvulnerable[victim])
-		{
-			if(!raidboss_active)
-			{
-				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s-%0.f", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
-			}
-			else
-			{
-				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);	
-			}
-		}
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%0.f", ExtraHudHurt, f_damageAddedTogether[attacker]);
 		else
-		{
-			if(!raidboss_active)
-			{
-				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s %t", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, "Invulnerable Npc");
-			}
-			else
-			{
-				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s %t", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, "Invulnerable Npc");	
-			}			
-		}
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s %t", ExtraHudHurt, "Invulnerable Npc");
+			
+		ShowSyncHudText(attacker, SyncHud,"%s",ExtraHudHurt);
 	}
 	else
 	{
@@ -1725,28 +1717,33 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		SetGlobalTransTarget(attacker);
 		SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
 		//todo: better showcase of timer.
-		if(Timer_Show > 800.0)
-		{
-			if(!b_NpcIsInvulnerable[victim])
-			{
-				ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%%]\n%s\n%d / %d \n%s-%0.f","Raidboss", "Power", RaidModeScaling * 100, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);	
-			}
-			else
-			{
-				ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%%]\n%s\n%d / %d \n%s %t","Raidboss", "Power", RaidModeScaling * 100, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, "Invulnerable Npc");		
-			}
-		}
+		char ExtraHudHurt[255];
+
+
+		//what type of boss
+		if(b_thisNpcIsARaid[victim])
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "[%t | %t : ", "Raidboss", "Power");
 		else
-		{
-			if(!b_NpcIsInvulnerable[victim])
-			{
-				ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s-%0.f","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);	
-			}
-			else
-			{
-				ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s %t","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, "Invulnerable Npc");		
-			}		
-		}
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "[%t | %t : ", "Superboss", "Power");
+
+		//time show or not
+		if(Timer_Show > 800.0)
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%%]", ExtraHudHurt, RaidModeScaling * 100.0);
+		else
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%% | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
+			
+		//add name and health
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s\n%d / %d", ExtraHudHurt,NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+
+		//add debuff
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
+
+		if(!b_NpcIsInvulnerable[victim])
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%0.f", ExtraHudHurt, f_damageAddedTogether[attacker]);
+		else
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s %t", ExtraHudHurt, "Invulnerable Npc");
+			
+		ShowSyncHudText(attacker, SyncHudRaid,"%s",ExtraHudHurt);	
 
 	}
 #endif	// ZR

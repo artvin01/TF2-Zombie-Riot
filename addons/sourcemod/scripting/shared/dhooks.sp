@@ -1004,6 +1004,11 @@ things i tried
 				lantean_Wand_Touch(entity1, entity2);
 				return false;
 			}
+			else if (i_WandIdNumber[entity1] == WEAPON_STAR_SHOOTER)
+			{
+				SuperStarShooterOnHit(entity1, entity2);
+				return false;
+			}
 #endif
 			else if(entity2 <= MaxClients && entity2 > 0)
 			{

@@ -290,6 +290,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Gravaton_WandTouch(entity, target);
 		}
+		case WEAPON_STAR_SHOOTER:
+		{
+			SuperStarShooterOnHit(entity, target);
+		}
 	}
 #else
 	switch(i_WandIdNumber[entity])
