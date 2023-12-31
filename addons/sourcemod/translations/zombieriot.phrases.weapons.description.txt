@@ -1388,7 +1388,7 @@
 		"ru"	"2,0-кратная скорость починки."
 		"chi"   "修复建筑生命值提高2.0倍"
 	}
-	"Engineering Repair Handling book"
+	"Engineering Repair Handling book Desc"
 	{
 		"en"	"2.0x Repair Rate"
 		"ru"	"2,0-кратная скорость починки."
