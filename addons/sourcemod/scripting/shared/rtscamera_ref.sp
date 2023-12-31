@@ -320,7 +320,6 @@ void RemoveRTSCamera(int client)
 }
 static Action cmdRTS(int iClient, int iArgs) 
 {
-	return Plugin_Handled;
 	if (g_eCommander[iClient].bEnabled) 
 	{
 		ResetClient(iClient);
@@ -493,10 +492,10 @@ static void SetupClient(
 
 	SetEntProp(iClient, Prop_Send, "m_iHideHUD", HIDEHUD_HEALTH | HIDEHUD_WEAPONSELECTION);
 
-	eCommander.hBackupObsTarget = GetEntProp(iClient, Prop_Send, "m_hObserverTarget");
+	eCommander.hBackupObsTarget = GetEntPropEnt(iClient, Prop_Send, "m_hObserverTarget");
 	eCommander.iBackupObsMode = GetEntProp(iClient, Prop_Send, "m_iObserverMode");
 
-	SetEntProp(iClient, Prop_Send, "m_hObserverTarget", 0);
+	SetEntPropEnt(iClient, Prop_Send, "m_hObserverTarget", -1);
 	SetEntProp(iClient, Prop_Send, "m_iObserverMode", OBS_MODE_DEATHCAM, false);
 
 	SetEntProp(iClient, Prop_Send, "m_iFOV", eCommander.iFOV);
@@ -539,12 +538,12 @@ static void ResetClient(int iClient) {
 		SetEntProp(iClient, Prop_Send, "m_nForceTauntCam", g_eCommander[iClient].bBackupForceTauntCam);
 	}
 
-	SetEntProp(iClient, Prop_Send, "m_hObserverMode", g_eCommander[iClient].iBackupObsMode, false);
+	SetEntProp(iClient, Prop_Send, "m_iObserverMode", g_eCommander[iClient].iBackupObsMode, false);
 
 	if (IsValidEntity(g_eCommander[iClient].hBackupObsTarget)) {
-		SetEntProp(iClient, Prop_Send, "m_hObserverTarget", g_eCommander[iClient].hBackupObsTarget);
+		SetEntPropEnt(iClient, Prop_Send, "m_hObserverTarget", g_eCommander[iClient].hBackupObsTarget);
 	} else {
-		SetEntProp(iClient, Prop_Send, "m_hObserverTarget", iClient);
+		SetEntPropEnt(iClient, Prop_Send, "m_hObserverTarget", iClient);
 	}
 
 	SetEntProp(iClient, Prop_Send, "m_iHideHUD", 0);
@@ -669,8 +668,8 @@ static int GetUnitSelectTrace(int iClient, const float vecPos[3], const float ve
 
 static void ProcessCameraControls(int iClient, int iButtons, const int iMouse[2]) {
 	// Prevents changing camera target or mode
-	SetEntProp(iClient, Prop_Send, "m_hObserverTarget", 0);
-	SetEntProp(iClient, Prop_Send, "m_hObserverMode", OBS_MODE_DEATHCAM, false);
+	SetEntPropEnt(iClient, Prop_Send, "m_hObserverTarget", 0);
+	SetEntProp(iClient, Prop_Send, "m_iObserverMode", OBS_MODE_DEATHCAM, false);
 
 	float fMouse[2];
 	fMouse[0] = g_eCommander[iClient].fMouse[0] + MOUSE_SENSITIVITY * iMouse[0];
