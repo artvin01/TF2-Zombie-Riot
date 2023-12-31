@@ -183,7 +183,7 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		color[0] = 240;
 		color[1] = 240;
 		color[2] = 240;
-		color[3] = 240;
+		color[3] = 120;
 
 		int loop_for = 7;
 		float Seperation = 12.5;
@@ -224,6 +224,28 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		if(RaidbossIgnoreBuildingsLogic(1))
 			Time /=2.0;
 
+		//effect_hand_l
+
+		int viewmodelModel;
+		viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+
+		if(IsValidEntity(viewmodelModel))
+		{
+			float fPos[3], fAng[3];
+			GetAttachment(viewmodelModel, "effect_hand_l", fPos, fAng);
+			TE_SetupBeamPoints(fPos, vec, LaserIndex, 0, 0, 0, 0.25, 2.5, 2.5, 1, 4.0, color, 0);
+			TE_SendToAll();
+		}
+		else
+		{
+			float pos[3];
+			GetClientEyePosition(client, pos);
+			TE_SetupBeamPoints(pos, vec, LaserIndex, 0, 0, 0, 0.25, 2.5, 2.5, 1, 4.0, color, 0);
+			TE_SendToAll();
+		}
+
+		
+
 
 		Handle data;
 		CreateDataTimer(Time, Smite_Timer_Gravaton_Wand, data, TIMER_FLAG_NO_MAPCHANGE);
@@ -247,13 +269,14 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 			}
 		}
 		vec[2]+= Seperation*loop_for+10.0;
+		float thicc = 3.0;
 		float Offset_Time = Time /=loop_for;
 		for(int i = 1 ; i <= loop_for ; i++)
 		{
 			float timer = Offset_Time*i;
 			if(timer<=0.02)
 				timer=0.02;
-			TE_SetupBeamRingPoint(vec, Radius*0.5, 0.0, LaserIndex, LaserIndex, 0, 1, timer, 6.0, 0.1, color, 1, 0);
+			TE_SetupBeamRingPoint(vec, Radius*0.5, 0.0, LaserIndex, LaserIndex, 0, 1, timer, thicc, 0.1, color, 1, 0);
 
 			if(i == loop_for)
 				TE_SendToAll();
@@ -311,7 +334,7 @@ public Action Smite_Timer_Gravaton_Wand(Handle Smite_Logic, DataPack data)
 	color[0] = 240;
 	color[1] = 240;
 	color[2] = 240;
-	color[3] = 240;
+	color[3] = 120;
 
 	switch(GetRandomInt(1, 2))
 	{
@@ -357,7 +380,7 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n[%.1f/%.1f]", fl_gravaton_charges[client], GRAVATON_WAND_GRAVITATION_COLLAPSE_COST);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n\n[%.1f/%.1f]", fl_gravaton_charges[client], GRAVATON_WAND_GRAVITATION_COLLAPSE_COST);
 		return; 
 	}
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
@@ -418,7 +441,7 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 		Radius *= Attributes_Get(weapon, 101, 1.0);
 		Radius *= Attributes_Get(weapon, 102, 1.0);
 
-		float damage = 50.0;
+		float damage = 30.0;
 			
 		damage *= Attributes_Get(weapon, 410, 1.0);
 
@@ -465,10 +488,10 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 		color[0] = 240;
 		color[1] = 240;
 		color[2] = 240;
-		color[3] = 240;
+		color[3] = 120;
 		
 		TE_SetupBeamRingPoint(vec, Radius*2.0, Radius*2.0+1.0, LaserIndex, LaserIndex, 0, 1, Time, 6.0, 0.1, color, 1, 0);
-		TE_SendToClient(client);
+		TE_SendToAll();
 	}
 	else
 	{
@@ -542,7 +565,9 @@ public Action Gravaton_Wand_Tick(int client)
 	float Sky_Loc[3]; Sky_Loc = fl_gravaton_sky_location[client];
 	int weapon = i_gravaton_weapon_index[client];
 
-	fl_gravaton_throttle[client] = GameTime+0.1;
+	float Throttle_speed = 0.2;
+
+	fl_gravaton_throttle[client] = GameTime+Throttle_speed;
 
 
 	int Spam_Amt= 4;
@@ -555,21 +580,27 @@ public Action Gravaton_Wand_Tick(int client)
 		}
 		case 1:
 		{
-			Spam_Amt = 2;
+			Spam_Amt = 1;
 		}
 		case 2:
 		{
-			Spam_Amt = 3;
+			Spam_Amt = 2;
 		}
 		case 3:
 		{
-			Spam_Amt = 4;
+			Spam_Amt = 3;
 		}
 		case 4:
 		{
-			Spam_Amt = 5;
+			Spam_Amt = 4;
 		}
 	}
+
+	//warp
+
+	i_ExplosiveProjectileHexArray[client] = EP_GENERIC;
+	
+	Explode_Logic_Custom(damage, client, client, weapon, Loc, Radius);
 
 	if(fl_gravation_angle[client]>360.0)
 		fl_gravation_angle[client]=0.0;
@@ -585,44 +616,32 @@ public Action Gravaton_Wand_Tick(int client)
 
 		Get_Fake_Forward_Vec(GetRandomFloat(1.0, Radius), tempAngles, EndLoc, Loc);
 
-
-		float vecAngles[3];
-		MakeVectorFromPoints(Sky_Loc, EndLoc, vecAngles);
-		GetVectorAngles(vecAngles, vecAngles);
-		Wand_Projectile_Spawn(client, 1500.0, 2.5, damage, WEAPON_GRAVATON_WAND, weapon, "raygun_projectile_blue_crit", vecAngles, _, Sky_Loc);
+		Gravaton_Point_effects(EndLoc, Sky_Loc, Throttle_speed);
 	}
-
-	/*
-
-	for(int targ; targ<i_MaxcountNpc; targ++)
-	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
-		{
-			static float TargetLocation[3]; 
-			GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation); 
-			float distance = GetVectorDistance(Loc, TargetLocation, true );  
-					
-			if(distance <= (Radius * Radius))
-			{
-				if(fl_gravaton_cooldown[client][targ] < GameTime)
-				{
-					fl_gravaton_cooldown[client][targ] = GameTime+0.3;
-
-					TargetLocation[2]+=50.0;
-
-					float vecAngles[3];
-					MakeVectorFromPoints(Sky_Loc, TargetLocation, vecAngles);
-					GetVectorAngles(vecAngles, vecAngles);
-					Wand_Projectile_Spawn(client, 1500.0, 2.5, damage, WEAPON_GRAVATON_WAND, weapon, "raygun_projectile_blue_crit", vecAngles, _, Sky_Loc);
-
-				}
-			}
-		}
-	}
-*/
 
 	return Plugin_Continue;
+}
+
+static void Gravaton_Point_effects(float EndVec[3], float StartVec[3], float Throttle_speed)
+{
+	int color[4];
+	color[0] = 240;
+	color[1] = 240;
+	color[2] = 240;
+	color[3] = 120;
+	TE_SetupBeamPoints(StartVec, EndVec, LaserIndex, 0, 0, 0, Throttle_speed, 5.0, 1.0, 1, 4.0, color, 0);
+	TE_SendToAll();
+
+	switch(GetRandomInt(1,4)) 
+	{
+		case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_1, 0, SNDCHAN_STATIC, 80, _, 0.9, SNDPITCH_NORMAL, -1, EndVec);
+				
+		case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_2, 0, SNDCHAN_STATIC, 80, _, 0.9, SNDPITCH_NORMAL, -1, EndVec);
+				
+		case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_3, 0, SNDCHAN_STATIC, 80, _, 0.9, SNDPITCH_NORMAL, -1, EndVec);
+			
+		case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, 0, SNDCHAN_STATIC, 80, _, 0.9, SNDPITCH_NORMAL, -1, EndVec);
+	}
 }
 
 static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
@@ -632,63 +651,6 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
 	ScaleVector(Direction, Range);
 	AddVectors(Pos, Direction, Vec_Target);
-}
-
-public void Gravaton_WandTouch(int entity, int target)
-{
-	int particle = EntRefToEntIndex(i_WandParticle[entity]);
-	if (target > 0)	
-	{
-		//Code to do damage position and ragdolls
-		static float angles[3];
-		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
-		float vecForward[3];
-		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenter(target);
-
-		int owner = EntRefToEntIndex(i_WandOwner[entity]);
-		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-
-		SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity], DMG_GENERIC, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?		
-		
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-		switch(GetRandomInt(1,5)) 
-		{
-			case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-			case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-			case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
-			
-			case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
-			
-			case 5:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-	   	}
-		RemoveEntity(entity);
-	}
-	else if(target == 0)
-	{
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-		switch(GetRandomInt(1,4)) 
-		{
-			case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-			case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-			case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
-			
-			case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
-		}
-		RemoveEntity(entity);
-	}
 }
 
 static void Gravaton_Wand_Hud(int client, float GameTime)
