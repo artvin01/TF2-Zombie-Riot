@@ -244,7 +244,15 @@ public void XenoCombineGaint_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
-				
+
+	float TrueArmor = 1.0;
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		if(npc.m_fbRangedSpecialOn)
+			TrueArmor *= 0.15;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
+	
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_GESTURE_FLINCH_STOMACH", false);
@@ -435,12 +443,6 @@ public Action XenoCombineGaint_OnTakeDamage(int victim, int &attacker, int &infl
 		return Plugin_Continue;
 		
 	XenoCombineGaint npc = view_as<XenoCombineGaint>(victim);
-	
-	if(!NpcStats_IsEnemySilenced(victim))
-	{
-		if(npc.m_fbRangedSpecialOn)
-			damage *= 0.15;
-	}
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{

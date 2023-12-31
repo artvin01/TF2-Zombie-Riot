@@ -190,6 +190,14 @@ public void XenoMedicMain_ClotThink(int iNPC)
 	
 	npc.Update();
 	
+	float TrueArmor = 1.0;
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
+			TrueArmor *= 0.25;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
+	
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -338,12 +346,18 @@ public Action XenoMedicMain_OnTakeDamage(int victim, int &attacker, int &inflict
 			CreateTimer(2.0, XenoMedicMain_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(10.0, XenoMedicMain_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		}
-		if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
+		float TrueArmor = 1.0;
+		if(!NpcStats_IsEnemySilenced(victim))
 		{
-			damage *= 0.25;
+			if(fl_TotalArmor[npc.index] != 1.0)
+			{
+				TrueArmor *= 0.25;
+				damage *= 0.25;
+			}
 		}
+		fl_TotalArmor[npc.index] = TrueArmor;
 	}
-	
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;

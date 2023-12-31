@@ -1385,10 +1385,15 @@
 	"Alien Repair Handling book Desc"
 	{
 		"en"	"2.0x Repair Rate"
-		"ru"	"2,5-кратная скорость починки."
-		"chi"   "修复建筑生命值提高2.5倍"
+		"ru"	"2,0-кратная скорость починки."
+		"chi"   "修复建筑生命值提高2.0倍"
 	}
-	
+	"Engineering Repair Handling book"
+	{
+		"en"	"2.0x Repair Rate"
+		"ru"	"2,0-кратная скорость починки."
+		"chi"   "修复建筑生命值提高2.0倍"
+	}
 	"Construction Worker Desc"
 	{
 		"en"	"65%% more building health, increased sentry dmg by 1.4x and increased attack speed by 1.2x, 3 more support buildings added"
@@ -2174,7 +2179,7 @@
 	}
 	"Mlynar Sword Desc"
 	{
-		"en"	"Gain 30%% damage & 50%% less knockback, 10%% slower\nYou cannot attack normally and reflect damage onto enemies depending on your damage\nYou charge damage by standing around, standing near enemies and being hurt.\nWeapon has no damage falloff with more enemies hit."
+		"en"	"Gain 30%% damage & 50%% less knockback, 10%% slower\nYou cannot attack normally and reflect damage onto enemies depending on your damage(deals true damage)\nYou charge damage by standing around, standing near enemies and being hurt.\nWeapon has no damage falloff with more enemies hit."
 		"ru"	"Урон на 30%% и на 50%% меньше, отдача на 10% медл.\nВы не можете нормально атаковать и отражаете урон во врагов в зависимости от своего урона.\nВы накапл. урон, стоя рядом с врагами и получая повреждения.\nУ оружия нет спада урона на расстоянии при большем кол-ве поражённых врагов."
 	}
 	"Mlynar Sword Desc pap"
@@ -2631,5 +2636,9 @@
 	"Gravton Wand desc4"
 	{
 		"en"	"More damage, higher Mana cost."
+	}
+	"Expert Trapper Desc"
+	{
+		"en"	"Your building weapons deal 75%% less damage except for trap weapons, but your traps deal 50%% more damage in total."
 	}
 }

@@ -240,6 +240,7 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classnam
 			Bonus_damage = 1.0;
 			
 		Calculate_HP_Spikes *= Bonus_damage;
+
 		
 		static float ang[3], pos[3], vel[3];
 		int team = GetClientTeam(client);
@@ -255,6 +256,7 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classnam
 		int entity = CreateEntityByName("tf_projectile_pipe_remote");
 		if(IsValidEntity(entity))
 		{
+			b_ExpertTrapper[entity] = b_ExpertTrapper[client];
 			b_StickyIsSticking[entity] = true; //Make them not stick to npcs.
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
@@ -377,7 +379,7 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 								
 								//Just do full damage.
 								float DamageTrap = float(Spike_Health[entity]);
-								if(b_ExpertTrapper[client])
+								if(b_ExpertTrapper[client] && b_ExpertTrapper[entity])
 									DamageTrap *= 6.0;
 
 								SDKHooks_TakeDamage(baseboss_index, client, client, DamageTrap, DMG_BULLET, -1, NULL_VECTOR, Spikepos);

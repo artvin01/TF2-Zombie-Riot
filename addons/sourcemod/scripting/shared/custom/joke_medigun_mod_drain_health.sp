@@ -197,8 +197,6 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 static float medigun_heal_delay[MAXTF2PLAYERS];
 static float medigun_hud_delay[MAXTF2PLAYERS];
 
-static float f_IncrementalSmallHeal[MAXENTITIES];
-
 static int i_targethealedLastBy[MAXENTITIES];
 
 float target_sucked_long[MAXENTITIES]={0.85, ...};
@@ -213,7 +211,6 @@ stock float Target_Sucked_Long_Return(int entity)
 
 public void Medigun_ClearAll()
 {
-	Zero(f_IncrementalSmallHeal); //Do not save the heal across stages of the game.
 	Zero(f_MedigunDelayAttackThink);
 	Zero(medigun_heal_delay);
 	Zero(medigun_hud_delay);

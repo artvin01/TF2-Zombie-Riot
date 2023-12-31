@@ -279,7 +279,18 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
-				
+	
+	float TrueArmor = 1.0;
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		if(npc.m_flAngerDelay > GetGameTime(npc.index))
+			TrueArmor *= 0.25;
+		
+		if(npc.m_fbRangedSpecialOn)
+			TrueArmor *= 0.15;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.m_blPlayHurtAnimation = false;
@@ -569,15 +580,8 @@ public Action XenoCombineOverlord_OnTakeDamage(int victim, int &attacker, int &i
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	if(!NpcStats_IsEnemySilenced(npc.index))
-	{
-		if(npc.m_flAngerDelay > GetGameTime(npc.index))
-			damage *= 0.25;
-		
-		if(npc.m_fbRangedSpecialOn)
-			damage *= 0.15;
-	}
-	
+
+
 	return Plugin_Changed;
 }
 

@@ -169,12 +169,12 @@ methodmap RaidbossBladedance < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		RaidModeScaling = 9999999.99;
-		RaidModeTime = GetGameTime() + ((250.0) * (MultiGlobal * 0.75));
+		RaidModeTime = GetGameTime() + ((300.0) * (MultiGlobal * 0.75));
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "??????????????????????????????????");
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
-		Raidboss_Clean_Everyone();
+	//	Raidboss_Clean_Everyone();
 
 		return npc;
 	}

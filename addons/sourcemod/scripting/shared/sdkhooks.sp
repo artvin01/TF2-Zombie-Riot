@@ -1967,10 +1967,9 @@ void Replicate_Damage_Medications(int victim, float &damage, float &Replicated_D
 		Replicated_Dmg *= 0.65;
 	}
 	float value;
-
 	if(damagetype & (DMG_CLUB|DMG_SLASH))
 	{
-		value = Attributes_FindOnPlayerZR(victim, 206);	// MELEE damage resitance
+		value = Attributes_FindOnPlayerZR(victim, 206, true, 0.0, true, true);	// MELEE damage resitance
 		if(value)
 		{
 			Replicated_Dmg *= value;
@@ -1979,7 +1978,7 @@ void Replicate_Damage_Medications(int victim, float &damage, float &Replicated_D
 	}
 	else if(!(damagetype & DMG_FALL))
 	{
-		value = Attributes_FindOnPlayerZR(victim, 205);	// RANGED damage resistance
+		value = Attributes_FindOnPlayerZR(victim, 205, true, 0.0, true, true);	// RANGED damage resistance
 		if(value)
 		{
 			Replicated_Dmg *= value;
@@ -1988,7 +1987,7 @@ void Replicate_Damage_Medications(int victim, float &damage, float &Replicated_D
 		//Everything else should be counted as ranged reistance probably.
 	}
 		
-	value = Attributes_FindOnPlayerZR(victim, 412);	// Overall damage resistance
+	value = Attributes_FindOnPlayerZR(victim, 412, true);	// Overall damage resistance
 	if(value)
 	{
 		Replicated_Dmg *= value;

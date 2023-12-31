@@ -256,6 +256,14 @@ public void XenoCombineDeutsch_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
+
+	float TrueArmor = 1.0;
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		if(npc.m_fbRangedSpecialOn)
+			TrueArmor *= 0.15;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
 				
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -388,12 +396,6 @@ public Action XenoCombineDeutsch_OnTakeDamage(int victim, int &attacker, int &in
 		return Plugin_Continue;
 		
 	XenoCombineDeutsch npc = view_as<XenoCombineDeutsch>(victim);
-	
-	if(!NpcStats_IsEnemySilenced(victim))
-	{
-		if(npc.m_fbRangedSpecialOn)
-			damage *= 0.15;
-	}
 	
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))

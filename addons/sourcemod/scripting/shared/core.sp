@@ -547,7 +547,7 @@ float f_LeftForDead_Cooldown[MAXTF2PLAYERS];
 bool FinalBuilder[MAXENTITIES];
 bool GlassBuilder[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
-bool b_ExpertTrapper[MAXTF2PLAYERS];
+bool b_ExpertTrapper[MAXENTITIES];
 int Building_Hidden_Prop[MAXENTITIES][2];
 float f_ClientArmorRegen[MAXENTITIES];
 int i_nm_body_client[MAXTF2PLAYERS];
@@ -683,6 +683,7 @@ bool b_IgnoredByPlayerProjectiles[MAXENTITIES];
 
 bool b_IsPlayerABot[MAXPLAYERS+1];
 float f_CooldownForHurtHud[MAXPLAYERS];	
+float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
 int i_PreviousInteractedEntity[MAXENTITIES];
 bool i_PreviousInteractedEntityDo[MAXENTITIES];
 //Otherwise we get kicks if there is too much hurting going on.
@@ -1075,6 +1076,7 @@ float f_CreditsOnKill[MAXENTITIES];
 int i_InSafeZone[MAXENTITIES];
 float fl_MeleeArmor[MAXENTITIES] = {1.0, ...};
 float fl_RangedArmor[MAXENTITIES] = {1.0, ...};
+float fl_TotalArmor[MAXENTITIES] = {1.0, ...};
 
 float fl_Extra_MeleeArmor[MAXENTITIES] = {1.0, ...};
 float fl_Extra_RangedArmor[MAXENTITIES] = {1.0, ...};
@@ -1131,6 +1133,7 @@ float f_DelayNextWaveStartAdvancingDeathNpc;
 #include "shared/killfeed.sp"
 #include "shared/npcs.sp"
 #include "shared/npccamera.sp"
+#include "shared/rtscamera_ref.sp"
 #include "shared/sdkcalls.sp"
 #include "shared/sdkhooks.sp"
 #include "shared/stocks.sp"
@@ -1246,6 +1249,7 @@ public void OnPluginStart()
 #endif
 	NPC_Base_InitGamedata();
 	WandProjectile_GamedataInit();
+	SMRTS_OnPluginStart();
 	
 #if defined ZR
 	ZR_PluginStart();
@@ -1348,6 +1352,8 @@ public void OnPluginEnd()
 		}
 	}
 	*/
+
+	SMRTS_OnPluginEnd();
 }
 
 public void OnMapStart()
@@ -1410,6 +1416,7 @@ public void OnMapStart()
 	MapStart_CustomMeleePrecache();
 	WandStocks_Map_Precache();
 	MapStartResetNpc();
+	SMRTS_OnMapStart();
 	Zero(f_AntiStuckPhaseThroughFirstCheck);
 	Zero(f_AntiStuckPhaseThrough);
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
@@ -1434,6 +1441,7 @@ public void OnMapEnd()
 	ConVar_Disable();
 	FileNetwork_MapEnd();
 	NpcStats_OnMapEnd();
+	SMRTS_OnMapEnd();
 }
 
 public void OnConfigsExecuted()
@@ -1703,6 +1711,7 @@ public void OnClientDisconnect(int client)
 	FileNetwork_ClientDisconnect(client);
 	KillFeed_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
+	SMRTS_OnClientDisconnect(client);
 	
 	i_ClientHasCustomGearEquipped[client] = false;
 	i_EntityToAlwaysMeleeHit[client] = 0;
@@ -3174,6 +3183,8 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 	}
+
+	SMRTS_TF2_OnConditionAdded(client, condition);
 }
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)

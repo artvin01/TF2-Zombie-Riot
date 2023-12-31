@@ -241,6 +241,14 @@ public void CombineCollos_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
+	float TrueArmor = 1.0;
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		if(npc.m_fbRangedSpecialOn)
+			TrueArmor *= 0.15;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
+
 	//Think throttling
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) {
 		return;
@@ -439,12 +447,6 @@ public Action CombineCollos_OnTakeDamage(int victim, int &attacker, int &inflict
 		return Plugin_Continue;
 		
 	CombineCollos npc = view_as<CombineCollos>(victim);
-	
-	if(!NpcStats_IsEnemySilenced(victim))
-	{
-		if(npc.m_fbRangedSpecialOn)
-			damage *= 0.15;
-	}
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{

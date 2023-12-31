@@ -6977,7 +6977,6 @@ stock int Trace_Test(int m_pAttacker, float m_vecSrc[3], float m_vecDirShooting[
 	return enemy;
 }
 
-
 stock int PrecacheParticleSystem(const char[] particleSystem)
 {
 	static int particleEffectNames = INVALID_STRING_TABLE;
@@ -7540,6 +7539,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_PotionShrinkEffect[entity] = 0.0;
 	b_NoKnockbackFromSources[entity] = false;
 	
+	fl_TotalArmor[entity] = 1.0;
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
 	fl_RangedArmor[entity] = 1.0;
 	fl_Extra_MeleeArmor[entity] = 1.0;
@@ -7576,7 +7576,7 @@ public void Raidboss_Clean_Everyone()
 {
 	if(VIPBuilding_Active())
 		return;
-
+		
 	int base_boss;
 	while((base_boss=FindEntityByClassname(base_boss, "zr_base_npc")) != -1)
 	{
@@ -9561,4 +9561,9 @@ void ExtinguishTarget(int target)
 	TE_WriteNum("m_nHitBox", GetParticleEffectIndex("burningplayer_red"));
 	TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
 	TE_SendToAll();
+	if(Timer_Ingition_Settings[target] != null)
+	{
+		delete Timer_Ingition_Settings[target];
+		Timer_Ingition_Settings[target] = null;
+	}
 }
