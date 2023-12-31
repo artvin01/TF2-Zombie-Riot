@@ -286,9 +286,9 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Melee_QuibaiArkTouch(entity, target);
 		}
-		case WEAPON_GRAVATON_WAND:
+		case WEAPON_STAR_SHOOTER:
 		{
-			Gravaton_WandTouch(entity, target);
+			SuperStarShooterOnHit(entity, target);
 		}
 	}
 #else

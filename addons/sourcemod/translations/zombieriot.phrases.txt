@@ -1557,6 +1557,10 @@
 		"pt"		"Invasão Chefe" // i suppose is some sort of bossrush
 		"nl"		"Invalsbaas"
 	}
+	"Superboss"
+	{
+		"en" 		"Superboss"
+	}
 	"Power"
 	{
 		"en" 		"Power"
