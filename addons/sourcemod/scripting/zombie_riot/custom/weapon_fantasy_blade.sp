@@ -477,10 +477,21 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 		Destroy_Halo_And_Wings(client, 3);
 		return;
 	}
+
+	int pap = i_Current_Pap[client];
+
+	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Magia Wings [???]"));	//so the wings don't intefere with one another
+	if(HasWings)
+	{
+		if(pap>=2)
+		{
+			pap=1;
+		}
+	}
 	
 	if(first)
 	{
-		if(i_Current_Pap[client]>=1)
+		if(pap>=1)
 		{
 			bool do_new = false;
 			int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
@@ -490,7 +501,7 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 			if(do_new)
 				Create_Halo(client);
 		}
-		if(i_Current_Pap[client]>=2)
+		if(pap>=2)
 		{
 			bool do_new = false;
 			for(int i=0 ; i < 6 ; i++)
@@ -515,7 +526,7 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 		
 		return;
 	}
-	if(i_Current_Pap[client]>=1)
+	if(pap>=1)
 	{
 		bool do_new = false;
 		int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
@@ -529,7 +540,7 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 		}
 		
 	}
-	if(i_Current_Pap[client]>=2)
+	if(pap>=2)
 	{
 		bool do_new = false;
 		for(int i=0 ; i < 6 ; i++)
