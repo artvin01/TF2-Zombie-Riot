@@ -29,7 +29,7 @@ On Schwert Death:	Coded but might need more refining.
 On donner spawn: Heavens Light.
 
 Wave 30:
-	Heaven's Fall:
+	Heaven's Fall: - Partially done
 	Several IOC's spawn around the map, creating creep. once the first creep ion's are done, switches to simply damage.
 
 Wave 45:
@@ -44,6 +44,8 @@ Wave 45 Ult:
 Very descriptive descriptions, I know lmao
 
 */
+
+//clearly needs more sounds lmao...
 
 #define DONNERKRIEG_NIGHTMARE_CANNON_BEGIN_SOUND_1 "ambient/levels/citadel/zapper_warmup1.wav"
 #define DONNERKRIEG_NIGHTMARE_CANNON_BEGIN_SOUND_2 "ambient/levels/citadel/zapper_warmup4.wav"
@@ -89,6 +91,18 @@ static const char g_nightmare_cannon_core_sound[][] = {
 };
 
 
+static const char g_heavens_fall_strike_sound[][] = {
+	"ambient_mp3/halloween/thunder_01.mp3",
+	"ambient_mp3/halloween/thunder_02.mp3",
+	"ambient_mp3/halloween/thunder_03.mp3",
+	"ambient_mp3/halloween/thunder_04.mp3",
+	"ambient_mp3/halloween/thunder_05.mp3",
+	"ambient_mp3/halloween/thunder_06.mp3",
+	"ambient_mp3/halloween/thunder_07.mp3",
+	"ambient_mp3/halloween/thunder_08.mp3",
+	"ambient_mp3/halloween/thunder_09.mp3",
+	"ambient_mp3/halloween/thunder_10.mp3",
+};
 
 static const char g_DeathSounds[][] = {
 	"vo/medic_paincrticialdeath01.mp3",
@@ -195,6 +209,8 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
 
 	for (int i = 0; i < (sizeof(g_nightmare_cannon_core_sound));   i++) { PrecacheSound(g_nightmare_cannon_core_sound[i]);	}
+
+	for (int i = 0; i < (sizeof(g_heavens_fall_strike_sound));   i++) { PrecacheSound(g_heavens_fall_strike_sound[i]);	}
 
 	Zero(fl_nightmare_cannon_core_sound_timer);
 	
@@ -1422,7 +1438,7 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 						}		
 					}
 
-
+					
 					CreateTimer(0.75, Donner_Nightmare_Offset, npc.index, TIMER_FLAG_NO_MAPCHANGE);
 				}
 			}
@@ -1830,7 +1846,7 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 	
 	position[2] = startPosition[2] + 50.0;
 
-	EmitSoundToAll(g_nightmare_cannon_core_sound[GetRandomInt(0, sizeof(g_nightmare_cannon_core_sound) - 1)], 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
+	EmitSoundToAll(g_heavens_fall_strike_sound[GetRandomInt(0, sizeof(g_heavens_fall_strike_sound) - 1)], 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
 	//EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
 	return Plugin_Continue;
 }
@@ -1932,6 +1948,7 @@ static Action Donner_Nightmare_Offset(Handle timer, int client)
 		b_cannon_sound_created[npc.index]=false;
 		EmitSoundToAll("mvm/mvm_tank_ping.wav");
 		fl_nightmare_end_timer[npc.index] = GetGameTime(npc.index) + 31.5;
+		//Invoke_Heavens_Touch(npc, GetGameTime(npc.index));
 		Donnerkrieg_Main_Nightmare_Cannon(npc);
 	}
 	return Plugin_Handled;
@@ -2541,6 +2558,213 @@ public bool DonnerKriegCannon_BEAM_TraceUsers(int entity, int contentsMask, int 
 	}
 	return false;
 }
+/*
+static float fl_heavens_touch_duration[MAXENTITIES];
+static void Invoke_Heavens_Touch(Raidboss_Donnerkrieg npc, float GameTime)
+{
+	fl_heavens_touch_duration[npc.index] = GameTime + 31.5;
+	fl_spinning_angle[npc.index] = 0.0;
+
+	npc.m_bInKame=true;
+	SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_Heavens_Touch_Tick);
+	SDKHook(npc.index, SDKHook_Think, Donnerkrieg_Heavens_Touch_Tick);
+}
+
+public Action Donnerkrieg_Heavens_Touch_Tick(int iNPC)
+{
+	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
+
+	if(fl_heavens_touch_duration[npc.index]<GameTime)
+	{
+		Kill_Donner_Main_Cannon_Sound(npc.index);
+		npc.m_bInKame=false;
+		SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_Heavens_Touch_Tick);
+		return Plugin_Stop;
+	}
+
+	float angles[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);	//pitch code stolen from fusion. ty artvin
+
+	int iPitch = npc.LookupPoseParameter("body_pitch");
+	if(iPitch < 0)
+		return Plugin_Continue;
+
+	float flPitch = npc.GetPoseParameter(iPitch);
+	flPitch *= -1.0;
+	angles[0] = flPitch;
+
+	float Pos[3];
+	Pos = GetAbsOrigin(npc.index);
+	Pos[2]+=50.0;
+
+
+	fl_spinning_angle[npc.index]+=1.0;
+		
+	if(fl_spinning_angle[npc.index]>=360.0)
+		fl_spinning_angle[npc.index] = 0.0;
+
+	float Start_Loc[3];
+
+	Get_Fake_Forward_Vec(30.0, angles, Start_Loc, Pos);
+
+	float radius = 75.0;
+
+	//	:)
+	//	:)
+	//	:)
+	//	:)
+	//	:)
+	//	:)
+	//	:|
+
+	Handle trace = TR_TraceRayFilterEx(Start_Loc, angles, 11, RayType_Infinite, NightmareCannon_BEAM_TraceWallsOnly);
+	if (TR_DidHit(trace))
+	{
+		float endPoint[3];
+		TR_GetEndPosition(endPoint, trace);
+		delete trace;
+
+		float Dist = GetVectorDistance(Start_Loc, endPoint);
+
+		float Moonlight_Dist[3];
+		Moonlight_Dist[0] = 200.0; Moonlight_Dist[1] = 400.0; Moonlight_Dist[2] = 600.0;
+
+		Neuvellete_Create_Spinning_Beams_ALT_ALT_ALT(npc, Start_Loc, angles, Moonlight_Dist, 50.0);
+
+
+	
+
+
+		if(fl_initial_windup[npc.index] < GameTime)
+		{
+
+			//npc.PlayNightmareSound();
+
+			if(!b_cannon_sound_created[npc.index])
+				Start_Donner_Main_Cannon_Sound(npc.index);
+
+
+			
+		}
+		else
+		{
+			Donnerkrieg_Create_Spinning_Beams(npc, Start_Loc, angles, 7, Dist, false, radius/2.0, -1.0);		//12
+		}
+	}
+	else
+	{
+		delete trace;
+	}
+
+	return Plugin_Continue;
+}
+
+static void Do_Trace_Heavens_Touch(float startPoint[3], float Angles[3], float Loc[3], float &distance, float max_allowed_dist=0.0)
+{
+
+	Handle trace = TR_TraceRayFilterEx(startPoint, Angles, 11, RayType_Infinite, DonnerKriegCannon_BEAM_TraceWallsOnly);
+	if (TR_DidHit(trace))
+	{
+		TR_GetEndPosition(Loc, trace);
+		delete trace;
+
+		distance = GetVectorDistance(startPoint, Loc);
+
+		if(max_allowed_dist!=0.0)
+		{
+			Get_Fake_Forward_Vec(max_allowed_dist, Angles, Loc, startPoint);
+		}
+	}
+	else
+	{
+		delete trace;
+	}
+}
+
+static void Neuvellete_Create_Spinning_Beams_ALT_ALT_ALT(Raidboss_Donnerkrieg npc, float Origin[3], float Angles[3], float distance_base[3], float radius)
+{
+	
+	int loop_for = 5;
+	float angl_multi;
+	float distance;
+	for(int j=0; j<3 ; j++)
+	{
+		switch(j)
+		{
+			case 0:
+			{
+				distance = distance_base[0];
+				angl_multi = 1.0;
+			}
+			case 1:
+			{
+				distance = distance_base[1];
+				angl_multi = -1.0;
+			}
+			case 2:
+			{
+				distance = distance_base[2];
+				angl_multi = 1.0;
+			}
+		}
+			
+		for(int i=1 ; i<=loop_for ; i++)
+		{	
+			float tempAngles[3],Direction[3], endLoc[3], End_Loc[3];
+			tempAngles[0] =	Angles[0];
+			tempAngles[1] = Angles[1];	//has to the same as the beam
+			tempAngles[2] = (fl_spinning_angle[npc.index]+((360.0/loop_for)*float(i)))*angl_multi;	//we use the roll angle vector to make it speeen
+			
+			if(tempAngles[2]>360.0)
+				tempAngles[2] -= 360.0;
+				
+			if(tempAngles[2]<-360.0)
+				tempAngles[2] += 360.0;
+		
+		
+			GetAngleVectors(tempAngles, Direction, NULL_VECTOR, Direction);
+			ScaleVector(Direction, distance);
+			AddVectors(Origin, Direction, endLoc);
+
+			float vecAngles[3];
+
+			MakeVectorFromPoints(Origin, endLoc, vecAngles);
+			GetVectorAngles(vecAngles, vecAngles);
+
+			float Distance;
+
+			Do_Trace_Heavens_Touch(Origin, vecAngles, endLoc, Distance, distance);
+
+			if(Distance<distance*0.75)
+				continue;
+
+			
+			Do_Trace_Heavens_Touch(endLoc, Angles, End_Loc, Distance);
+			
+			int color[4];
+			color[0] = 0;
+			color[1] = 255;
+			color[2] = 135;
+			color[3] = 125;
+
+			Donnerkrieg_Laser_Trace(npc, endLoc, End_Loc, radius, 90.0*RaidModeScaling);
+			
+			TE_SetupBeamPoints(endLoc, End_Loc, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, DONNERKRIEG_TE_DURATION, radius, radius, 1, 0.1, color, 1);
+			TE_SendToAll();
+
+			TE_SetupBeamRingPoint(endLoc, 200.0, 0.0, DonnerKriegCannon_BEAM_Laser, DonnerKriegCannon_BEAM_Laser, 0, 1, 0.33, 5.0, 0.1, color, 1, 0);
+			TE_SendToAll();
+
+			//TE_SetupExplosion(End_Loc, gExplosive1, 10.0, 1, 0, 0, 0);
+			//TE_SendToAll();
+			
+			
+		}
+	}
+}
+*/
 
 #define DONNERKRIEG_PARTICLE_EFFECT_AMT 30
 static int i_donner_particle_index[MAXENTITIES][DONNERKRIEG_PARTICLE_EFFECT_AMT];
