@@ -905,7 +905,7 @@ static float fl_heavens_rng_loc_timer[HEAVENS_LIGHT_MAXIMUM_IONS+1];
 static int i_heavens_target_id[HEAVENS_LIGHT_MAXIMUM_IONS+1];
 static float fl_Heavens_Angle;
 
-static int HeavenLight_GetTarget(int ID, float loc[3])
+static int HeavenLight_GetTarget(int ID, float loc[3])	//get the closest valid target for the heavens light.
 {
 	float Dist = -1.0;
 	int client_id=-1;
@@ -913,30 +913,30 @@ static int HeavenLight_GetTarget(int ID, float loc[3])
 	{
 		if(IsValidClient(client) && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
 		{
-			if(!b_targeted_by_heavens[client] || client==i_heavens_target_id[ID])
+			if(!b_targeted_by_heavens[client] || client==i_heavens_target_id[ID])	//if the player is already targeted, ignore him. UNLESS, we are the ones who are targeting him, then add him to the distance calcs
 			{
 				float client_loc[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", client_loc);
 				float distance = GetVectorDistance(client_loc, loc, true);
 				{
 					if(distance<Dist || Dist==-1.0)
 					{
-						Dist = distance;
+						Dist = distance;	//closest target is best target - idk.
 						client_id = client;
 					}
 				}
 			}
 		}
 	}
-	if(IsValidClient(client_id))
+	if(IsValidClient(client_id))	// if the target is valid, we add a lock onto him
 	{
 		fl_was_targeted[client_id] = GetGameTime()+0.25;
 		b_targeted_by_heavens[client_id]=true;
 		i_heavens_target_id[ID]=client_id;
 	}
-	return client_id;
+	return client_id;	//and then we return the client id. This can often return -1, but thats intended and is dealt with
 }
 
-static void GetRandomLoc(Raidboss_Donnerkrieg npc, float Loc[3], int Num)
+static void GetRandomLoc(Raidboss_Donnerkrieg npc, float Loc[3], int Num)	//directly stolen and modified from villagers building spawn code :3
 {
 
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
@@ -973,6 +973,16 @@ static void GetRandomLoc(Raidboss_Donnerkrieg npc, float Loc[3], int Num)
 }
 
 static float fl_heavens_light_duration;
+
+/*
+ *	Heavens Light 
+ * 	Spawns 3*5 IONS that follow individual players.
+ *  If these ions don't have a vaild target, they just wander around randomly.
+ * 	The ability has a fancy chargeup sequence that resembles holy moonlight/blitzlight from blitzkrieg
+ *  "As the stars shine upon the Heavens, we shall bask in its radiant and glorious light" - J at 5:03 AM... 2023-12-31
+ */
+
+
 
 static void Invoke_Heavens_Light(Raidboss_Donnerkrieg npc, float GameTime)
 {
@@ -1015,14 +1025,14 @@ public Action Heavens_TBB_Tick(int client)
 	
 	if(fl_heavens_charge_gametime>GameTime)
 	{
-		float Ratio =(fl_heavens_charge_gametime - GameTime) / fl_heavens_charge_time;	//L + Ratio
+		float Ratio =(fl_heavens_charge_gametime - GameTime) / fl_heavens_charge_time;	//L + Ratio	//anyway, we get the ratio of how long until game time is caughtup with charge time, once fully caught up ,the ratio is well 0, once its started, the ratio is 1.0
 		Heavens_Light_Charging(npc.index, Ratio);
 	}
 	else
 	{
 		for(int player=0 ; player <=MAXTF2PLAYERS ; player++)
 		{
-			if(fl_was_targeted[player]< GameTime)
+			if(fl_was_targeted[player]< GameTime)	//make it so heavens light doesn't just target 1 singular player making 1 beam of fucking death and destruction thats really bright
 			{
 				b_targeted_by_heavens[player]=false;
 			}
@@ -1040,19 +1050,19 @@ static void Heavens_Full_Charge(Raidboss_Donnerkrieg npc, float GameTime)
 		float loc[3]; loc = fl_Heavens_Loc[i];
 		float Target_Loc[3]; Target_Loc = loc;
 
-		int Target = HeavenLight_GetTarget(i, loc);
+		int Target = HeavenLight_GetTarget(i, loc);	//get a target if we can
 		
 
-		if(IsValidClient(Target))
+		if(IsValidClient(Target))	//we got a target, get his ass's loc so we can roast him
 		{
 			GetEntPropVector(Target, Prop_Data, "m_vecAbsOrigin", Target_Loc);
 			fl_Heavens_Target_Loc[i] = Target_Loc;
 		}
-		else
+		else	//we didn't get a loc, find a random loc to wander to
 		{
 			if(fl_heavens_rng_loc_timer[i] < GameTime)
 			{
-				fl_heavens_rng_loc_timer[i] = GameTime+GetRandomFloat(1.0, 5.0);
+				fl_heavens_rng_loc_timer[i] = GameTime+GetRandomFloat(1.0, 5.0);	//make it so we don't constantly check nav mesh 10 billion times a second
 				GetRandomLoc(npc, Target_Loc, i);
 				fl_Heavens_Target_Loc[i] = Target_Loc;
 			}
@@ -1101,21 +1111,21 @@ static void Heavens_Light_Charging(int ref, float ratio)
 	UserAng[1] = fl_Heavens_Angle;
 	UserAng[2] = 0.0;
 	
-	fl_Heavens_Angle += 1.5*ratio;
+	fl_Heavens_Angle += 1.5*ratio;	//make it so the spining starts to slowdown the more "charged" up the ability becomes until it just stops spinning
 	
 	if(fl_Heavens_Angle>=360.0)
 	{
 		fl_Heavens_Angle = 0.0;
 	}
 	
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 3; i++)	//to make it look nice we have 3 main layers of the charging phase, inner circle, middle circle, and outer circle. aka 0, 1, 3
 	{
 		float distance = 0.0;
 		float angMult = 1.0;
 		
 		switch(i)
 		{
-			case 0:
+			case 0:	//here we modulate their angles/spining direction, speed. and thier distances
 			{
 				distance = Base_Dist;
 			}
@@ -1147,7 +1157,7 @@ static void Heavens_Light_Charging(int ref, float ratio)
 			
 
 			
-			if(ratio <=0.2)
+			if(ratio <=0.2)	//if we are nearing full charge, switch to a singular TE beam alongside a TE ring
 			{
 				int color[4];
 				color[0] = 255;
@@ -1157,14 +1167,14 @@ static void Heavens_Light_Charging(int ref, float ratio)
 
 				Heavens_SpawnBeam(endLoc, color, 7.5, true);
 			}
-			else
+			else	//if we are not near full charge create 2 spining TE beams that also slowly converge with one another
 			{
 				Heavens_Spawn8(endLoc, 150.0*ratio, ratio);
 			}
 			int beam_index = (i*(HEAVENS_LIGHT_MAXIMUM_IONS/3))+j;
 			
-			fl_Heavens_Loc[beam_index] = endLoc;
-			fl_Heavens_Target_Loc[beam_index] = endLoc;
+			fl_Heavens_Loc[beam_index] = endLoc;			//make it so once charging is complete, the independant IONS start at the locations the heavens was charging at.
+			fl_Heavens_Target_Loc[beam_index] = endLoc;		//set the target loc the same so they don't freakout while finidng a vaild target
 		}
 	}
 }
@@ -1187,10 +1197,10 @@ static void Heavens_Spawn8(float startLoc[3], float space, float ratio)
 		ScaleVector(Direction, space);
 		AddVectors(startLoc, Direction, endLoc);
 		int color[4];
-		color[0] = 255;
+		color[0] = 255;									//color is dependant on ratio, starts out white, turns red
 		color[1] = RoundFloat(255.0 * ratio);
 		color[2] = RoundFloat(255.0 * ratio);
-		color[3] = 150;
+		color[3] = 150;	//alpha is a set amt.
 
 		Heavens_SpawnBeam(endLoc, color, 2.0, false);
 
@@ -1434,13 +1444,13 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 }
 #define DONNERKRIEG_HEAVENS_FALL_MAX_DIST 500.0
 
-#define DONNERKRIEG_HEAVENS_FALL_MAX_AMT 1
+#define DONNERKRIEG_HEAVENS_FALL_MAX_AMT 1	//this should always be the highest value of the 3 ones bellow
 
 #define DONNERKRIEG_HEAVENS_FALL_AMT_1 1	//ratios
 #define DONNERKRIEG_HEAVENS_FALL_AMT_2 1
 #define DONNERKRIEG_HEAVENS_FALL_AMT_3 1
 
-#define DONNERKRIEG_HEAVENS_FALL_MAX_STAGE 5.0
+#define DONNERKRIEG_HEAVENS_FALL_MAX_STAGE 5.0	//same thing for this
 
 #define DONNERKRIEG_HEAVENS_STAGE_1 5.0	//ratios
 #define DONNERKRIEG_HEAVENS_STAGE_2 1.0
@@ -1461,7 +1471,7 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 		return;
 	}
 
-	float Timer = 80.0 *(Base_Dist/DONNERKRIEG_HEAVENS_FALL_MAX_DIST);
+	float Timer = 80.0 *(Base_Dist/DONNERKRIEG_HEAVENS_FALL_MAX_DIST);	//the timer is dynamic to the "power" of this attack, the power is determined by the avalable avg distance which is gotten by clearance check
 
 	if(!npc.Anger)
 		fl_heavens_fall_use_timer[npc.index] = GameTime+Timer;
@@ -1471,7 +1481,7 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 
 	int Base_Amt = RoundToFloor((Base_Dist/Distance_Ratios)/DONNERKRIEG_HEAVENS_FALL_MAX_AMT);
 
-	Base_Dist /= DONNERKRIEG_HEAVENS_FALL_MAX_STAGE;
+	Base_Dist /= DONNERKRIEG_HEAVENS_FALL_MAX_STAGE;	//a lot of ratio stuff, this here makes it actually all dynamic, if you wish to modify it, go to the place where these are defined
 
 	
 
@@ -1486,7 +1496,7 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 	Amt2= Base_Amt*DONNERKRIEG_HEAVENS_FALL_AMT_2;
 	Amt3= Base_Amt*DONNERKRIEG_HEAVENS_FALL_AMT_3;
 
-	TE_used=0;
+	TE_used=0;	//set the TE used amt to 0 when we start heavens fall!
 
 
 
@@ -1513,7 +1523,7 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 
 		float dist_check1 = GetVectorDistance(Loc, EndLoc);
 
-		if(dist_check1<Dist1*0.75)
+		if(dist_check1<Dist1*0.75)	//if the distance is less than we expect or want, abort, same for all the other stages!
 			continue;
 
 		for(int Ion2=0 ; Ion2 < Amt2 ; Ion2++)
@@ -1544,16 +1554,16 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 				if(dist_check3<Dist3*0.75)
 					continue;
 
-				Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, EndLoc3);
+				Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, EndLoc3);	//Make it so the ions appear properly on the ground so its nice
 
-				float Time = GetRandomFloat(DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[0], DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[1]);
+				float Time = GetRandomFloat(DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[0], DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[1]);	//make it a bit random so it doesn't all explode at the same time
 				int color[4];
 				color[0] = 240;
 				color[1] = 240;
 				color[2] = 240;
 				color[3] = 175;
 
-				EmitSoundToAll("misc/halloween/gotohell.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, Loc);
+				EmitSoundToAll("misc/halloween/gotohell.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, Loc);	//GO TO HELL, AND TELL THE DEVIL, IM COMIN FOR HIM NEXT
 
 				TE_used += 1;
 				if(TE_used > 31)
@@ -1583,7 +1593,7 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 				}
 				
 				Handle data;
-				CreateDataTimer(Time, Smite_Timer_Donner, data, TIMER_FLAG_NO_MAPCHANGE);
+				CreateDataTimer(Time, Smite_Timer_Donner, data, TIMER_FLAG_NO_MAPCHANGE);	//a basic ion timer
 				WritePackFloat(data, EndLoc3[0]);
 				WritePackFloat(data, EndLoc3[1]);
 				WritePackFloat(data, EndLoc3[2]);
@@ -1622,7 +1632,7 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 			}
 		}
 	}
-	TE_used=0;
+	TE_used=0;	//now that the initial heavens fall has been completed, reset this to 0 for the ions TE.
 }
 
 static bool Heavens_Fall_Clearance_Check(Raidboss_Donnerkrieg npc, float &Return_Dist, float Max_Distance)
@@ -1636,7 +1646,7 @@ static bool Heavens_Fall_Clearance_Check(Raidboss_Donnerkrieg npc, float &Return
 	
 	int Total_Hit = 0;
 	
-	for(int alpha = 1 ; alpha<=360 ; alpha++)
+	for(int alpha = 1 ; alpha<=360 ; alpha++)	//check in a 360 degree angle around the npc, heavy on preformance, but its a raid so I guess its fine..?
 	{
 		float tempAngles[3], endLoc[3], Direction[3];
 		tempAngles[0] = 0.0;
@@ -1661,7 +1671,7 @@ static bool Heavens_Fall_Clearance_Check(Raidboss_Donnerkrieg npc, float &Return
 
 			Distances[alpha] = flDistanceToTarget;
 			
-			if(flDistanceToTarget>250.0)
+			if(flDistanceToTarget>250.0)	//minimum distance we wish to check, if the traces end is beyond, we count this angle as a valid area.
 			{
 				Total_Hit++;
 				if(flDistanceToTarget>=Max_Distance)
@@ -1688,7 +1698,7 @@ static bool Heavens_Fall_Clearance_Check(Raidboss_Donnerkrieg npc, float &Return
 	}
 	Avg /=360.0;
 	Return_Dist = Avg;
-	if(Total_Hit/360>=0.75)
+	if(Total_Hit/360>=0.5)	//has to hit atleast 50% before actually proceeding and saying that we have enough clearance
 	{
 		return true;
 	}
@@ -1819,7 +1829,9 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 	}
 	
 	position[2] = startPosition[2] + 50.0;
-	EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
+
+	EmitSoundToAll(g_nightmare_cannon_core_sound[GetRandomInt(0, sizeof(g_nightmare_cannon_core_sound) - 1)], 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
+	//EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
 	return Plugin_Continue;
 }
 
@@ -2078,6 +2090,8 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable7))	
 		RemoveEntity(npc.m_iWearable7);
 
+		//when 7 wearables isn't enough, get 3 more...
+
 	if(IsValidEntity(EntRefToEntIndex(i_particle_effects[npc.index][0])))	//temp particles
 		RemoveEntity(EntRefToEntIndex(i_particle_effects[npc.index][0]));
 	if(IsValidEntity(EntRefToEntIndex(i_particle_effects[npc.index][1])))	//temp particles
@@ -2089,7 +2103,7 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 	
 }
 static bool b_hit_something;
-static bool Donnerkrieg_Is_Target_Infront(Raidboss_Donnerkrieg npc, float Radius, float &dist=0.0)
+static bool Donnerkrieg_Is_Target_Infront(Raidboss_Donnerkrieg npc, float Radius, float &dist=0.0)	//we only care about finding anything living and an enemy.
 {
 	float startPoint[3], angles[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
@@ -2142,7 +2156,7 @@ static bool Donnerkrieg_Is_Target_Infront(Raidboss_Donnerkrieg npc, float Radius
 
 	return false;
 }
-static bool Check_Target(int entity, int contentsMask, int client)
+static bool Check_Target(int entity, int contentsMask, int client)	//Stupidly basic target check, we don't even check if the thing infront of us is the person we are chasing lmao
 {
 	if (IsEntityAlive(entity))
 	{
@@ -2156,9 +2170,9 @@ static void Donnerkrieg_Normal_Attack(Raidboss_Donnerkrieg npc, float GameTime, 
 {
 	if(npc.m_flNextMeleeAttack < GameTime && !npc.m_flAttackHappenswillhappen)
 	{
-		if(flDistanceToTarget < (2500.0*2500.0))
+		if(flDistanceToTarget < (2500.0*2500.0))	// is the target we wish to delete within range???
 		{
-			if(Donnerkrieg_Is_Target_Infront(npc, 75.0))
+			if(Donnerkrieg_Is_Target_Infront(npc, 75.0))	//only fire the laser if the target is actually infront of us, otherwise just dont
 			{
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 				npc.PlayMeleeSound();
@@ -2168,11 +2182,11 @@ static void Donnerkrieg_Normal_Attack(Raidboss_Donnerkrieg npc, float GameTime, 
 			}
 			else
 			{
-				npc.FaceTowards(vecTarget);
+				npc.FaceTowards(vecTarget);	//turn towards him, menacingly..
 			}
 		}
 	}
-	else if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappenswillhappen)
+	else if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappenswillhappen)	//a slight delay to the actual firing so the animation plays, and who knows, give a 0.2 second chance for the player to doge it lmao
 	{
 		npc.FaceTowards(vecTarget, 20000.0);
 		npc.m_flAttackHappenswillhappen=false;
@@ -2186,7 +2200,7 @@ static void Donnerkrieg_Shoot_Laser(Raidboss_Donnerkrieg npc)
 	SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_Laser_Think);
 	SDKHook(npc.index, SDKHook_Think, Donnerkrieg_Laser_Think);
 }
-public Action Donnerkrieg_Laser_Think(int iNPC)
+public Action Donnerkrieg_Laser_Think(int iNPC)	//A short burst of a laser.
 {
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(iNPC);
 
@@ -2255,7 +2269,7 @@ public Action Donnerkrieg_Laser_Think(int iNPC)
 
 	return Plugin_Continue;
 }
-static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
+static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])	//Why On GODS EARTH DID I MAKE THE INPUT/OUTPUT IN THE WRONG ORDER, LIKE WHY/???????
 {
 	float Direction[3];
 	
@@ -2290,7 +2304,7 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 	}
 
 	float angles[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);	//pitch code stolen from fusion. ty artvin
 
 	int iPitch = npc.LookupPoseParameter("body_pitch");
 	if(iPitch < 0)
@@ -2316,6 +2330,10 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 
 	float radius = 75.0;
 
+	/*
+		This thing happens every tick, oh dear god the sever, but its a raidboss so its FIIIIIIIIIINE... right?
+
+	*/
 	Handle trace = TR_TraceRayFilterEx(Start_Loc, angles, 11, RayType_Infinite, NightmareCannon_BEAM_TraceWallsOnly);
 	if (TR_DidHit(trace))
 	{
@@ -2397,6 +2415,9 @@ static void Donnerkrieg_Create_Spinning_Beams(Raidboss_Donnerkrieg npc, float Or
 		tempAngles[0] = Angles[0];
 		tempAngles[1] = Angles[1];	//has to the same as the beam
 		tempAngles[2] = (fl_spinning_angle[npc.index]+((360.0/loop_for)*float(i)))*ang_multi;	//we use the roll angle vector to make it speeen
+		/*
+			Using this method we can actuall keep proper pitch/yaw angles on the turning, unlike say fantasy blade or mlynar newspaper's special swing thingy.
+		*/
 		
 		if(tempAngles[2]>360.0)
 			tempAngles[2] -= 360.0;
@@ -2538,7 +2559,7 @@ static void Donnerkrieg_Delete_Wings(Raidboss_Donnerkrieg npc)
 	}
 }
 
-static void Donnerkrieg_Wings_Create(Raidboss_Donnerkrieg npc)
+static void Donnerkrieg_Wings_Create(Raidboss_Donnerkrieg npc)	//I wish these wings were real, but allas, Donnerkrieg can't into space
 {
 
 	if(AtEdictLimit(EDICT_RAID))
@@ -2726,6 +2747,16 @@ static void spawnRing_Vector(float center[3], float range, float modif_X, float 
 	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
 	TE_SendToAll();
 }
+/**
+ * Description: A simple AOE damage void, doesn't do a trace or anything like that, probably should lmao, ima add that to the todo list.
+ *
+ * @param npc          clot npc body
+ * @param loc          from where to do the damage. dmg center
+ * @param damage       how much to hurt a person?
+ * @param Range        how far to hurt a person
+ * @param FallOff      minimum damage multi, distance relative.
+ * @param infection    0=normal dmg, 1=normal dmg + cancer, 2=cancer only
+ */
 static void Doonerkrieg_Do_AOE_Damage(Raidboss_Donnerkrieg npc, float loc[3], float damage, float Range, float FallOff, int infection = 0)
 {
 	for(int client=0 ; client <=MAXTF2PLAYERS ; client++)
