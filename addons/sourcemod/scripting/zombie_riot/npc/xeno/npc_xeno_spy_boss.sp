@@ -322,7 +322,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 	float TrueArmor = 1.0;
 	if(npc.Anger)
 	{
-		TrueArmor *= 0.25;
+		TrueArmor *= 0.65;
 	}
 	fl_TotalArmor[npc.index] = TrueArmor;
 	

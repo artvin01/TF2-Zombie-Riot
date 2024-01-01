@@ -355,7 +355,7 @@ public Action XenoFortifiedPoisonZombie_OnTakeDamage(int victim, int &attacker, 
 		float TrueArmor = 1.0;
 		if(!NpcStats_IsEnemySilenced(victim))
 		{
-			if(fl_TotalArmor[npc.index] != 1.0)
+			if(fl_TotalArmor[npc.index] == 1.0)
 			{
 				TrueArmor *= 0.25;
 				if(!(damagetype & DMG_SLASH))

@@ -647,7 +647,7 @@ public Action SpyMainBoss_OnTakeDamage(int victim, int &attacker, int &inflictor
 		float TrueArmor = 1.0;
 		if(!NpcStats_IsEnemySilenced(victim))
 		{
-			if(fl_TotalArmor[npc.index] != 1.0)
+			if(fl_TotalArmor[npc.index] == 1.0)
 			{
 				TrueArmor *= 0.1;
 				if(!(damagetype & DMG_SLASH))
