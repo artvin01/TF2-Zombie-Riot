@@ -365,120 +365,137 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 		
 	}	
+
+	if(RaidBossActive == INVALID_ENT_REFERENCE)
+	{
+		RaidBossActive=EntIndexToEntRef(npc.index);
+	}
+
+	//Set raid to this one incase the previous one has died or somehow vanished
+	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
+	{
+		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+		{
+			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
+			{
+				Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
+			}	
+		}
+	}
 	
 	int PrimaryThreatIndex = Schwertkrieg_Get_Target(npc, GameTime);
 	
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			float npc_Vec[3]; npc_Vec = WorldSpaceCenter(npc.index);
-		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, npc_Vec, true);
-			
-			Schwert_Movement(npc, flDistanceToTarget, PrimaryThreatIndex);
-
-			Schwert_Teleport_Core(npc.index, PrimaryThreatIndex);
-			
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
-			{
-				//Look at target so we hit.
-			//	npc.FaceTowards(vecTarget, 1000.0);
-				
-				//Can we attack right now?
-
-				float Swing_Speed = 1.0;
-				float Swing_Delay = 0.2;
-				if(npc.m_flNextMeleeAttack < GameTime)
-				{
-					//Play attack ani
-					if (!npc.m_flAttackHappenswillhappen)
-					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GameTime+Swing_Delay;
-						npc.m_flAttackHappens_bullshit = GameTime+Swing_Speed;
-						npc.m_flAttackHappenswillhappen = true;
-					}
-						
-					if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
-					{
-						Handle swingTrace;
-						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
-						{
-							int target = TR_GetEntityIndex(swingTrace);	
-							
-							float vecHit[3];
-							TR_GetEndPosition(vecHit, swingTrace);
-							
-							if(target > 0) 
-							{
-								float meleedmg= 25.0*RaidModeScaling;	//schwert hurts like a fucking truck
-								
-								if(target <= MaxClients)
-								{
-									float Bonus_damage = 1.0;
-									int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float npc_Vec[3]; npc_Vec = WorldSpaceCenter(npc.index);
 	
-									char classname[32];
-									GetEntityClassname(weapon, classname, 32);
-								
-									int weapon_slot = TF2_GetClassnameSlot(classname);
-								
-									if(weapon_slot != 2 || i_IsWandWeapon[weapon])
-									{
-										Bonus_damage = 1.5;
-									}
-									meleedmg *= Bonus_damage;
-									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, npc_Vec, true);
+		
+		Schwert_Movement(npc, flDistanceToTarget, PrimaryThreatIndex);
+
+		Schwert_Teleport_Core(npc.index, PrimaryThreatIndex);
+		
+		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+		{
+			//Look at target so we hit.
+		//	npc.FaceTowards(vecTarget, 1000.0);
+			
+			//Can we attack right now?
+
+			float Swing_Speed = 1.0;
+			float Swing_Delay = 0.2;
+			if(npc.m_flNextMeleeAttack < GameTime)
+			{
+				//Play attack ani
+				if (!npc.m_flAttackHappenswillhappen)
+				{
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+					npc.PlayMeleeSound();
+					npc.m_flAttackHappens = GameTime+Swing_Delay;
+					npc.m_flAttackHappens_bullshit = GameTime+Swing_Speed;
+					npc.m_flAttackHappenswillhappen = true;
+				}
+					
+				if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
+				{
+					Handle swingTrace;
+					npc.FaceTowards(vecTarget, 20000.0);
+					if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
+					{
+						int target = TR_GetEntityIndex(swingTrace);	
+						
+						float vecHit[3];
+						TR_GetEndPosition(vecHit, swingTrace);
+						
+						if(target > 0) 
+						{
+							float meleedmg= 25.0*RaidModeScaling;	//schwert hurts like a fucking truck
+							
+							if(target <= MaxClients)
+							{
+								float Bonus_damage = 1.0;
+								int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
+
+								char classname[32];
+								GetEntityClassname(weapon, classname, 32);
+							
+								int weapon_slot = TF2_GetClassnameSlot(classname);
+							
+								if(weapon_slot != 2 || i_IsWandWeapon[weapon])
+								{
+									Bonus_damage = 1.5;
+								}
+								meleedmg *= Bonus_damage;
+								SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
+							}
+							else
+							{
+								SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg * 5, DMG_CLUB, -1, _, vecHit);
+							}
+
+							bool Knocked = false;
+							
+							if(IsValidClient(target))
+							{
+								if (IsInvuln(target))
+								{
+									Knocked = true;
+									Custom_Knockback(npc.index, target, 900.0, true);
+									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 								}
 								else
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg * 5, DMG_CLUB, -1, _, vecHit);
+									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 								}
-
-								bool Knocked = false;
+							}
 								
-								if(IsValidClient(target))
-								{
-									if (IsInvuln(target))
-									{
-										Knocked = true;
-										Custom_Knockback(npc.index, target, 900.0, true);
-										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-									}
-									else
-									{
-										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-									}
-								}
-									
-								if(!Knocked)
-									Custom_Knockback(npc.index, target, 650.0); 
-								
-								npc.PlayMeleeHitSound();	
+							if(!Knocked)
+								Custom_Knockback(npc.index, target, 650.0); 
 							
-							} 
-						}
-						delete swingTrace;
-						npc.m_flNextMeleeAttack = GameTime + Swing_Speed;
-						npc.m_flAttackHappenswillhappen = false;
+							npc.PlayMeleeHitSound();	
+						
+						} 
 					}
-					else if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GameTime + Swing_Speed;
-					}
+					delete swingTrace;
+					npc.m_flNextMeleeAttack = GameTime + Swing_Speed;
+					npc.m_flAttackHappenswillhappen = false;
+				}
+				else if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
+				{
+					npc.m_flAttackHappenswillhappen = false;
+					npc.m_flNextMeleeAttack = GameTime + Swing_Speed;
 				}
 			}
-			else
-			{
-				npc.StartPathing();
-				
-			}
+		}
+		else
+		{
+			npc.StartPathing();
+			
+		}
 	}
 	else
 	{
@@ -591,6 +608,10 @@ public void Raidboss_Schwertkrieg_NPCDeath(int entity)
 	
 	b_raidboss_schwertkrieg_alive = false;
 	
+	if(EntRefToEntIndex(RaidBossActive)==npc.index)
+	{
+		RaidBossActive = INVALID_ENT_REFERENCE;
+	}
 			
 	npc.m_bThisNpcIsABoss = false;
 	

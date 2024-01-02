@@ -36,10 +36,9 @@ Wave 45:
 	Heaven's radiance: Jump high into the sky, and spew lasers all around.
 	Heaves Light natural.
 
-Wave 45 Ult:
-	Heavens Touch:
-		Moonlight Horizontal Eddition:tm: :)
-
+	Crystaline Reflection:
+		Fires a special projectile that donnerkrieg fires his laser at, then this crystal redirects that laser into several directions each one towards every player the crystal can see
+		Fires like an artillery shell, is affected by gravity!. also wherever this shell lands creates creep.
 
 Very descriptive descriptions, I know lmao
 
@@ -198,6 +197,12 @@ bool b_raidboss_donnerkrieg_alive;
 
 static bool b_InKame[MAXENTITIES];
 
+static int g_ProjectileModelRocket;
+static int g_particleImpactTornado;
+
+static bool b_Crystal_active;
+static bool b_Crystal_Thrown;
+
 void Raidboss_Donnerkrieg_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -213,6 +218,9 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_heavens_fall_strike_sound));   i++) { PrecacheSound(g_heavens_fall_strike_sound[i]);	}
 
 	Zero(fl_nightmare_cannon_core_sound_timer);
+
+	g_ProjectileModelRocket = PrecacheModel("models/props_moonbase/moon_gravel_crystal_blue.mdl");
+	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
 	
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	DonnerKriegCannon_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
@@ -285,7 +293,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		fl_nightmare_cannon_core_sound_timer[this.index] = GetGameTime(this.index) + 0.1;
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
+		PrintToServer("CClot::PlayNightmareSound()");
 		#endif
 	}
 
@@ -553,6 +561,9 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		Donnerkrieg_Wings_Create(npc);
 
+		b_Crystal_Thrown=false;
+		b_Crystal_active=false;
+
 		npc.Anger = false;
 		
 		//Reused silvester duo code here
@@ -623,6 +634,11 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 	
+	if(RaidBossActive == INVALID_ENT_REFERENCE)
+	{
+		RaidBossActive=EntIndexToEntRef(npc.index);
+	}
+
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
 		if(npc.m_bInKame)
@@ -702,26 +718,30 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 		if(fl_cannon_Recharged[npc.index]<GameTime && !b_nightmare_logic[npc.index] && !Heavens_Light_Active[npc.index])
 		{
 			fl_nightmare_end_timer[npc.index] = GameTime + 20.0;
-			Raidboss_Donnerkrieg_Nightmare_Logic(npc.index, PrimaryThreatIndex);
+			Raidboss_Donnerkrieg_Nightmare_Logic(npc, PrimaryThreatIndex);
 		}
 
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 
-		int iPitch = npc.LookupPoseParameter("body_pitch");
-		if(iPitch < 0)
-			return;		
-						
-		//Body pitch
-		float v[3], ang[3];
-		SubtractVectors(WorldSpaceCenter(npc.index), vecTarget, v); 
-		NormalizeVector(v, v);
-		GetVectorAngles(v, ang); 
-								
-		float flPitch = npc.GetPoseParameter(iPitch);
-								
-		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+		if(!b_Crystal_active)
+		{
+			int iPitch = npc.LookupPoseParameter("body_pitch");
+			if(iPitch < 0)
+				return;		
+							
+			//Body pitch
+			float v[3], ang[3];
+			SubtractVectors(WorldSpaceCenter(npc.index), vecTarget, v); 
+			NormalizeVector(v, v);
+			GetVectorAngles(v, ang); 
+									
+			float flPitch = npc.GetPoseParameter(iPitch);
+									
+			npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+		}
+
 		if(!b_nightmare_logic[npc.index])
 		{	
 			//warp_heave
@@ -779,7 +799,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 		}
 		else
 		{
-			Raidboss_Donnerkrieg_Nightmare_Logic(npc.index, PrimaryThreatIndex);
+			Raidboss_Donnerkrieg_Nightmare_Logic(npc, PrimaryThreatIndex);
 		}
 		
 	}
@@ -828,7 +848,7 @@ static void Donner_Movement(int client, int PrimaryThreatIndex, float GameTime)
 				
 		Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 		//Target close enough to hit
-		if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+		if(IsValidEnemy(npc.index, Enemy_I_See) && fl_cannon_Recharged[npc.index] > GameTime+2.5) //Check if i can even see.
 		{		
 			if(flDistanceToTarget < (125.0*125.0))
 			{
@@ -1241,16 +1261,16 @@ void Heavens_SpawnBeam(float beamLoc[3], int color[4], float size, bool rings)
 	if(rings)
 		spawnRing_Vector(beamLoc, fl_heavens_radius*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, 0.1, 1.0, 0.1, 1);
 }
-static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
+static void Raidboss_Donnerkrieg_Nightmare_Logic(Raidboss_Donnerkrieg npc, int PrimaryThreatIndex)
 {
+
+	if(npc.m_bAllowBackWalking)
+		npc.m_bAllowBackWalking=false;
 
 	shared_goal=true;	//while using the cannon, schwert attacks the same target that donner is moving towards
 
 	if(shared_goal)
 		schwert_target = PrimaryThreatIndex;	//if "shared goal" is active both npc's target the same target, the target is set by donnerkrieg
-
-	
-	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(ref);
 	
 	//float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 	
@@ -1273,6 +1293,9 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 			//}
 			
 			b_nightmare_logic[npc.index] = true;
+
+			npc.StartPathing();
+			npc.m_bPathing = true;
 
 			npc.m_bAllowBackWalking=false;
 
@@ -1452,7 +1475,10 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 	}
 	else
 	{
-		npc.FaceTowards(vecTarget, 100.0);
+		if(!b_Crystal_active)
+		{
+			npc.FaceTowards(vecTarget, 100.0);
+		}
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flSpeed = 0.0;
@@ -1500,6 +1526,7 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 	Base_Dist /= DONNERKRIEG_HEAVENS_FALL_MAX_STAGE;	//a lot of ratio stuff, this here makes it actually all dynamic, if you wish to modify it, go to the place where these are defined
 
 	
+	
 
 	int Amt1, Amt2, Amt3;
 	float Dist1, Dist2, Dist3;
@@ -1518,6 +1545,10 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 
 	float Loc[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
+
+	EmitSoundToAll("misc/halloween/gotohell.wav");	//GO TO HELL, AND TELL THE DEVIL, IM COMIN FOR HIM NEXT
+	EmitSoundToAll("misc/halloween/gotohell.wav");	//GO TO HELL, AND TELL THE DEVIL, IM COMIN FOR HIM NEXT
+
 
 	int SPRITE_INT_2 = PrecacheModel("materials/sprites/lgtning.vmt", false);
 
@@ -1579,8 +1610,7 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 				color[2] = 240;
 				color[3] = 175;
 
-				EmitSoundToAll("misc/halloween/gotohell.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, Loc);	//GO TO HELL, AND TELL THE DEVIL, IM COMIN FOR HIM NEXT
-
+				
 				TE_used += 1;
 				if(TE_used > 31)
 				{
@@ -1765,6 +1795,9 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 	Color[2] = ReadPackCell(data);
 	Color[3] = ReadPackCell(data);
 	bool creep  = ReadPackCell(data);
+
+	EmitSoundToAll(g_heavens_fall_strike_sound[GetRandomInt(0, sizeof(g_heavens_fall_strike_sound) - 1)], 0, _, _, _, _, _, -1, startPosition);
+	//EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
 	
 	
 	if (!IsValidEntity(client))
@@ -1781,7 +1814,7 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 
 	}
 
-	TE_used += 1;
+	/*TE_used += 1;
 	if(TE_used > 31)
 	{
 		int DelayFrames = (TE_used / 32);
@@ -1797,7 +1830,7 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 	{
 		TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 		TE_SendToAll();
-	}
+	}*/
 
 	
 			
@@ -1844,10 +1877,6 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 		}
 	}
 	
-	position[2] = startPosition[2] + 50.0;
-
-	EmitSoundToAll(g_heavens_fall_strike_sound[GetRandomInt(0, sizeof(g_heavens_fall_strike_sound) - 1)], 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
-	//EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
 	return Plugin_Continue;
 }
 
@@ -1943,7 +1972,7 @@ static Action Donner_Nightmare_Offset(Handle timer, int client)
 
 		f_NpcTurnPenalty[npc.index] = 0.1;	//:)
 		npc.SetPlaybackRate(0.0);
-		npc.SetCycle(0.227);
+		npc.SetCycle(0.23);
 		ParticleEffectAt(WorldSpaceCenter(npc.index), "eyeboss_death_vortex", 1.0);
 		b_cannon_sound_created[npc.index]=false;
 		EmitSoundToAll("mvm/mvm_tank_ping.wav");
@@ -2079,10 +2108,11 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 	
 	RaidModeTime += 2.0; //cant afford to delete it, since duo.
 	//add 2 seconds so if its close, they dont lose to timer.
-	
-	if(b_raidboss_schwertkrieg_alive)	//handover the hud to schwert
+
+
+	if(EntRefToEntIndex(RaidBossActive)==npc.index)
 	{
-		RaidBossActive = EntRefToEntIndex(i_ally_index);
+		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
 	
 	StopSound(entity,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
@@ -2246,7 +2276,7 @@ public Action Donnerkrieg_Laser_Think(int iNPC)	//A short burst of a laser.
 
 	float radius = 25.0;
 
-	Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, NightmareCannon_BEAM_TraceWallsOnly);
+	Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, DonnerKriegCannon_BEAM_TraceWallsOnly);
 	if (TR_DidHit(trace))
 	{
 		float endPoint[3];
@@ -2294,15 +2324,23 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 	ScaleVector(Direction, Range);
 	AddVectors(Pos, Direction, Vec_Target);
 }
+static float fl_end_vec[3];
+static int i_crystal_index;
+static bool b_is_crystal[MAXENTITIES];
 static float fl_initial_windup[MAXENTITIES];
 static float fl_spinning_angle[MAXENTITIES];
 static float fl_explosion_thorttle[MAXENTITIES];
 static void Donnerkrieg_Main_Nightmare_Cannon(Raidboss_Donnerkrieg npc)
 {
 	npc.m_bInKame=true;
+	Zero(b_is_crystal);
+	fl_end_vec = { 0.0, 0.0, 0.0};
+	b_Crystal_active=false;
+	b_Crystal_Thrown=false;
 	fl_initial_windup[npc.index] = GetGameTime(npc.index)+1.5;
 	fl_explosion_thorttle[npc.index]=0.0;
 	fl_spinning_angle[npc.index]=0.0;
+	i_crystal_index=-1;
 	SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_Main_Nightmare_Tick);
 	SDKHook(npc.index, SDKHook_Think, Donnerkrieg_Main_Nightmare_Tick);
 }
@@ -2318,6 +2356,30 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 		npc.m_bInKame=false;
 		SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_Main_Nightmare_Tick);
 		return Plugin_Stop;
+	}
+
+	fl_end_vec = { 0.0, 0.0, 0.0};
+	if(IsValidEntity(i_crystal_index))	//warp_crystal
+	{
+		int crystal = i_crystal_index;
+		float vecNPC[3];
+		GetEntPropVector(crystal, Prop_Data, "m_vecAbsOrigin", vecNPC);
+		npc.FaceTowards(vecNPC, 750.0);
+
+		int iPitch = npc.LookupPoseParameter("body_pitch");
+		if(iPitch < 0)
+			return Plugin_Continue;		
+							
+		//Body pitch
+		float v[3], ang[3];
+		SubtractVectors(WorldSpaceCenter(npc.index), vecNPC, v); 
+		NormalizeVector(v, v);
+		GetVectorAngles(v, ang); 
+									
+		float flPitch = npc.GetPoseParameter(iPitch);
+									
+		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+
 	}
 
 	float angles[3];
@@ -2351,13 +2413,14 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 		This thing happens every tick, oh dear god the sever, but its a raidboss so its FIIIIIIIIIINE... right?
 
 	*/
-	Handle trace = TR_TraceRayFilterEx(Start_Loc, angles, 11, RayType_Infinite, NightmareCannon_BEAM_TraceWallsOnly);
+	Handle trace = TR_TraceRayFilterEx(Start_Loc, angles, 11, RayType_Infinite, DonnerKriegCannon_BEAM_TraceWallsOnly);
 	if (TR_DidHit(trace))
 	{
 		float endPoint[3];
 		TR_GetEndPosition(endPoint, trace);
 		delete trace;
 
+		
 		float Dist = GetVectorDistance(Start_Loc, endPoint);
 
 		Donnerkrieg_Create_Spinning_Beams(npc, Start_Loc, angles, 5, Dist, false, radius, 1.0);			//5
@@ -2367,16 +2430,43 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 		if(fl_initial_windup[npc.index] < GameTime)
 		{
 
+			if(Dist>250.0)
+			{
+				if(!b_Crystal_Thrown)
+					Donnerkrieg_Invoke_Crstaline_Reflection(npc, endPoint);
+			}
+
 			//npc.PlayNightmareSound();
 
 			if(!b_cannon_sound_created[npc.index])
 				Start_Donner_Main_Cannon_Sound(npc.index);
 
-			Donnerkrieg_Laser_Trace(npc, Start_Loc, endPoint, radius*0.75, 90.0*RaidModeScaling);
+			Donnerkrieg_Laser_Trace(npc, Start_Loc, endPoint, radius*0.75, 90.0*RaidModeScaling);	//this technically finds the LOC of the crystal.
 
-			Donnerkrieg_Create_Spinning_Beams(npc, Start_Loc, angles, 7, Dist, true, radius/2.0, -1.0);		//12
+			
 
 			float diameter = radius *0.75;
+
+			if(fl_end_vec[0] != 0.0 || fl_end_vec[1] != 0.0 || fl_end_vec[2] != 0.0)
+			{
+				endPoint=fl_end_vec;
+				Dist = GetVectorDistance(Start_Loc, endPoint);
+
+				for(int client=0 ; client <=MAXTF2PLAYERS ; client++)
+				{
+					if(IsValidClient(client) && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+					{
+						float fPos[3];
+						GetClientEyePosition(client, fPos);
+						TE_SetupBeamPoints(fl_end_vec, fPos, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, DONNERKRIEG_TE_DURATION, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 1.0, {150, 150, 150, 150}, 3);
+						TE_SendToAll(0.0);
+					}
+				}
+			}
+
+			
+
+			Donnerkrieg_Create_Spinning_Beams(npc, Start_Loc, angles, 7, Dist, true, radius/2.0, -1.0);		//12
 
 			int r=100, g=100, b=100, a=60;
 			int colorLayer4[4];
@@ -2403,8 +2493,12 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 			if(fl_explosion_thorttle[npc.index]<GameTime)	//use a particle instead of this for fancyness of fancy
 			{
 				fl_explosion_thorttle[npc.index]=GameTime+0.1;
-				TE_SetupExplosion(endPoint, gExplosive1, 10.0, 1, 0, 0, 0);
-				TE_SendToAll();
+				DataPack pack = new DataPack();
+				pack.WriteFloat(endPoint[0]);
+				pack.WriteFloat(endPoint[1]);
+				pack.WriteFloat(endPoint[2]);
+				pack.WriteCell(1);
+				RequestFrame(MakeExplosionFrameLater, pack);
 			}
 
 			
@@ -2556,7 +2650,199 @@ public bool DonnerKriegCannon_BEAM_TraceUsers(int entity, int contentsMask, int 
 	{
 		DonnerKriegCannon_BEAM_HitDetected[entity] = true;
 	}
+	if(b_is_crystal[entity])
+	{
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", fl_end_vec);
+	}
 	return false;
+}
+
+static float fl_crystal_direct_dmg[MAXENTITIES];
+
+//Crystaline Reflection:
+static void Donnerkrieg_Invoke_Crstaline_Reflection(Raidboss_Donnerkrieg npc, float Target[3])
+{
+	int Crystal = Create_Crystal(npc, Target, 100.0, 1250.0);
+	if(IsValidEntity(Crystal))
+	{
+		b_Crystal_active=true;
+		b_Crystal_Thrown=true;
+		i_crystal_index= Crystal;
+		b_is_crystal[Crystal]=true;
+	}
+}
+static int Create_Crystal(Raidboss_Donnerkrieg npc, float vecTarget[3], float damage, float rocket_speed)
+{
+	float vecForward[3], vecSwingStart[3], vecAngles[3];
+	npc.GetVectors(vecForward, vecSwingStart, vecAngles);
+										
+	vecSwingStart = GetAbsOrigin(npc.index);
+	vecSwingStart[2] += 54.0;
+										
+	MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
+	GetVectorAngles(vecAngles, vecAngles);
+
+						
+										
+	
+	vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
+	vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
+	vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
+
+	vecForward[2]+=1000.0;
+										
+	int entity = CreateEntityByName("zr_projectile_base");
+	if(IsValidEntity(entity))
+	{
+		fl_crystal_direct_dmg[entity] = damage;
+		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
+		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
+		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+										
+		TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
+		DispatchSpawn(entity);
+
+		for(int i; i<4; i++)
+		{
+			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
+		}
+
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 2.0); // ZZZZ i sleep
+
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
+		SetEntityCollisionGroup(entity, 24); //our savior
+		Set_Projectile_Collision(entity); //If red, set to 27
+		See_Projectile_Team(entity);
+
+		//note: redo this so its actually a dynamic jump velocity rather then the hard coded amt I set lmao
+
+//		float vecNPC[3], vecJumpVel[3];
+	//	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", vecNPC);
+
+	//	SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
+		/*
+		vecNPC[2] -= 20.0;
+		float gravity = GetEntPropFloat(entity, Prop_Data, "m_flGravity");
+		if(gravity <= 0.0)
+			gravity = FindConVar("sv_gravity").FloatValue;
+		
+		float flActualHeight = vecTarget[2] - vecNPC[2];
+		float height = flActualHeight;
+		if ( height < 72 )
+		{
+			height = 72.0;
+		}
+		float additionalHeight = 0.0;
+		
+		if ( height < 35 )
+		{
+			additionalHeight = 50.0;
+		}
+		
+		height += additionalHeight;
+		
+		float speed = SquareRoot( 2 * gravity * height );
+		float time = speed / gravity;
+	
+		time += SquareRoot( (2 * additionalHeight) / gravity );
+		
+		// Scale the sideways velocity to get there at the right time
+		SubtractVectors( vecTarget, vecNPC, vecJumpVel );
+		vecJumpVel[0] /= time;
+		vecJumpVel[1] /= time;
+		vecJumpVel[2] /= time;
+	
+		// Speed to offset gravity at the desired height.
+		vecJumpVel[2] = speed;
+		
+		// Don't jump too far/fast.
+		float flJumpSpeed = GetVectorLength(vecJumpVel);
+		float flMaxSpeed = 1250.0;
+		if ( flJumpSpeed > flMaxSpeed )
+		{
+			vecJumpVel[0] *= flMaxSpeed / flJumpSpeed;
+			vecJumpVel[1] *= flMaxSpeed / flJumpSpeed;
+			vecJumpVel[2] *= flMaxSpeed / flJumpSpeed;
+		}
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecJumpVel);*/
+
+		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Donner_Crystal_DHook_RocketExplodePre); //*yawn*
+		
+		SDKHook(entity, SDKHook_StartTouch, Crystal_Donner_StartTouch);
+
+		return entity;
+	}
+	return -1;
+}
+
+public MRESReturn Donner_Crystal_DHook_RocketExplodePre(int entity)
+{
+	return MRES_Supercede;	//Don't even think about it mate
+}
+
+public void Crystal_Donner_StartTouch(int entity, int target)
+{
+	
+	float ProjectileLoc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+	if(target > 0 && target < MAXENTITIES)	//did we hit something???
+	{
+		
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(!IsValidEntity(owner))
+		{
+			owner = 0;
+		}
+
+		float DamageDeal = fl_crystal_direct_dmg[entity];
+		if(ShouldNpcDealBonusDamage(target))
+			DamageDeal *= 2.0;
+
+		i_crystal_index= -1;
+		
+		switch(GetRandomInt(1,5)) 
+		{
+			case 1:EmitSoundToAll(SOUND_BLITZ_IMPACT_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+			case 2:EmitSoundToAll(SOUND_BLITZ_IMPACT_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+			case 3:EmitSoundToAll(SOUND_BLITZ_IMPACT_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			
+			case 4:EmitSoundToAll(SOUND_BLITZ_IMPACT_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			
+			case 5:EmitSoundToAll(SOUND_BLITZ_IMPACT_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+	   	}
+		SDKHooks_TakeDamage(target, owner, owner, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
+
+	}
+	switch(GetRandomInt(1,4)) 
+	{
+		case 1:EmitSoundToAll(SOUND_BLITZ_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			
+		case 2:EmitSoundToAll(SOUND_BLITZ_IMPACT_CONCRETE_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+		case 3:EmitSoundToAll(SOUND_BLITZ_IMPACT_CONCRETE_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
+		
+		case 4:EmitSoundToAll(SOUND_BLITZ_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
+	}
+
+	DataPack pack = new DataPack();
+	pack.WriteFloat(ProjectileLoc[0]);
+	pack.WriteFloat(ProjectileLoc[1]);
+	pack.WriteFloat(ProjectileLoc[2]);
+	pack.WriteCell(1);
+	RequestFrame(MakeExplosionFrameLater, pack);
+	float pos1[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+	TE_ParticleInt(g_particleImpactTornado, pos1);
+	TE_SendToAll();
+
+	i_crystal_index= -1;
+	b_Crystal_active=false;
+
+	RemoveEntity(entity);
 }
 /*
 static float fl_heavens_touch_duration[MAXENTITIES];

@@ -162,6 +162,8 @@ static float BlitzLight_DMG_Radius[MAXENTITIES];
 static float BlitzLight_Radius[MAXENTITIES];
 static float BlitzLight_Angle[MAXENTITIES];
 
+static int g_ProjectileModelRocket;
+
 public void Blitzkrieg_OnMapStart()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);      		}
@@ -177,7 +179,7 @@ public void Blitzkrieg_OnMapStart()
 	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSoundCustom(g_IdleMusic[i]);   }
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
-	
+	g_ProjectileModelRocket = PrecacheModel("models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl");
 	PrecacheSound(SOUND_BLITZ_IMPACT_CONCRETE_1);
 	PrecacheSound(SOUND_BLITZ_IMPACT_CONCRETE_2);
 	PrecacheSound(SOUND_BLITZ_IMPACT_CONCRETE_3);
@@ -933,7 +935,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					if(projectile_speed>=6000.0)
 						projectile_speed = 6000.0;
 						
-					FireBlitzRocket(npc.index, vecTarget, 7.5 * i_HealthScale[npc.index], projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
+					FireBlitzRocket(npc.index, vecTarget, 7.5 * i_HealthScale[npc.index], projectile_speed, 1.0);
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
@@ -987,7 +989,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						float projectile_speed = 500.0*(1.0+(1-(Health/MaxHealth))*1.5);	//Rocket speed, scales on current health.
 						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
 						npc.PlayMeleeSound();
-						FireBlitzRocket(npc.index,vecTarget, fl_rocket_base_dmg[npc.index] * i_HealthScale[npc.index], projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0); //remove the no kb if people cant escape, or just lower the dmg
+						FireBlitzRocket(npc.index,vecTarget, fl_rocket_base_dmg[npc.index] * i_HealthScale[npc.index], projectile_speed, 1.0); //remove the no kb if people cant escape, or just lower the dmg
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + fl_rocket_firerate[npc.index];
 						i_PrimaryRocketsFired[npc.index]++;	//Adds 1 extra rocket to the shoping list for when we go out shoping in the reload store.
 						npc.m_flAttackHappens = 0.0;
@@ -2126,7 +2128,7 @@ static void spawnRing_Vector(float center[3], float range, float modif_X, float 
 }
 static float fl_blitz_rocket_dmg[MAXENTITIES];
 
-static void FireBlitzRocket(int client, float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0) //No defaults, otherwise i cant even judge.
+static void FireBlitzRocket(int client, float vecTarget[3], float rocket_damage, float rocket_speed, float model_scale = 1.0) //No defaults, otherwise i cant even judge.
 {
 	Blitzkrieg npc = view_as<Blitzkrieg>(client);
 	float vecForward[3], vecSwingStart[3], vecAngles[3];
@@ -2155,14 +2157,12 @@ static void FireBlitzRocket(int client, float vecTarget[3], float rocket_damage,
 										
 		TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
 		DispatchSpawn(entity);
-		if(rocket_model[0])
+
+		for(int i; i<4; i++)
 		{
-			int g_ProjectileModelRocket = PrecacheModel(rocket_model);
-			for(int i; i<4; i++)
-			{
-				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
-			}
+			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
 		}
+
 		if(model_scale != 1.0)
 		{
 			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", model_scale); // ZZZZ i sleep
