@@ -193,7 +193,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 			//SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 1);
 			
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
-
+			
 			entity = CreateEntityByName("tf_wearable_vm");
 			if(entity > MaxClients)	// Weapon viewmodel
 			{
@@ -216,7 +216,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				ActivateEntity(entity);
 
 				WeaponRef_viewmodel[client] = EntIndexToEntRef(entity);
-				SetEntPropFloat(entity, Prop_Send, "m_flPoseParameter", GetEntPropFloat(active, Prop_Send, "m_flPoseParameter"));
+			//	SetEntPropFloat(entity, Prop_Send, "m_flPoseParameter", GetEntPropFloat(active, Prop_Send, "m_flPoseParameter"));
 
 				SDKCall_EquipWearable(client, entity);
 
@@ -284,7 +284,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				ActivateEntity(entity);
 
 				i_Worldmodel_WeaponModel[client] = EntIndexToEntRef(entity);
-				SetEntPropFloat(entity, Prop_Send, "m_flPoseParameter", GetEntPropFloat(active, Prop_Send, "m_flPoseParameter"));
+			//	SetEntPropFloat(entity, Prop_Send, "m_flPoseParameter", GetEntPropFloat(active, Prop_Send, "m_flPoseParameter"));
 
 				SDKCall_EquipWearable(client, entity);
 			}
@@ -300,6 +300,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				
 				ViewChange_DeleteHands(client);
 				ViewChange_UpdateHands(client, CurrentClass[client]);
+				
 			}
 
 			#if defined ZR

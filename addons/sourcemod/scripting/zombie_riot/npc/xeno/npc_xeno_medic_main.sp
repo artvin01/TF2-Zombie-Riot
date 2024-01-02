@@ -349,10 +349,11 @@ public Action XenoMedicMain_OnTakeDamage(int victim, int &attacker, int &inflict
 		float TrueArmor = 1.0;
 		if(!NpcStats_IsEnemySilenced(victim))
 		{
-			if(fl_TotalArmor[npc.index] != 1.0)
+			if(fl_TotalArmor[npc.index] == 1.0)
 			{
 				TrueArmor *= 0.25;
-				damage *= 0.25;
+				if(fl_TotalArmor[npc.index] == 1.0)
+					damage *= 0.25;
 			}
 		}
 		fl_TotalArmor[npc.index] = TrueArmor;
