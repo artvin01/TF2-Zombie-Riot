@@ -418,7 +418,7 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 		fl_gravaton_charges[client] -=GRAVATON_WAND_GRAVITATION_COLLAPSE_COST;
 		fl_gravaton_duration[client] =GameTime+Time;
 		fl_gravaton_throttle[client] = 0.0;
-		i_gravaton_weapon_index[client] = weapon;
+		i_gravaton_weapon_index[client] = EntIndexToEntRef(weapon);
 		float Range = 1000.0;
 		float Radius = 300.0;
 		Current_Mana[client] -=mana_cost;
@@ -563,7 +563,8 @@ public Action Gravaton_Wand_Tick(int client)
 	float damage = fl_gravaton_damage[client];
 	float Radius = fl_gravaton_radius[client];
 	float Sky_Loc[3]; Sky_Loc = fl_gravaton_sky_location[client];
-	int weapon = i_gravaton_weapon_index[client];
+	int weapon = EntRefToEntIndex(i_gravaton_weapon_index[client]);
+	
 
 	float Throttle_speed = 0.2;
 
