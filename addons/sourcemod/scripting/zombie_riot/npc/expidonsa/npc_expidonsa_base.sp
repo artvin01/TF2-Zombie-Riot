@@ -29,13 +29,23 @@ void Expidonsa_SetToZero(int iNpc)
 	VausMagicaRemoveShield(iNpc);
 }
 
-
-void VausMagicaShieldLogicNpcOnTakeDamage(int victim, float &damage)
+bool VausMagicaShieldLogicEnabled(int victim)
 {
+	if(i_ExpidonsaShieldCapacity[victim] > 0)
+		return true;
+
+	return false;
+}
+void VausMagicaShieldLogicNpcOnTakeDamage(int victim, float &damage, int damagetype)
+{
+
 	if(i_ExpidonsaShieldCapacity[victim] > 0)
 	{
 		i_ExpidonsaShieldCapacity[victim] -= 1;
-		damage *= 0.25;
+
+		if(!(damagetype & DMG_SLASH))
+			damage *= 0.25;
+			
 		if(i_ExpidonsaShieldCapacity[victim] <= 0)
 		{
 			f_Expidonsa_ShieldBroke[victim] = GetGameTime() + 5.0;

@@ -1035,7 +1035,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			OnTakeDamageNpcBaseArmorLogic(victim, attacker, inflictor, damage, damagetype, weapon);
 
 #if defined ZR
-			VausMagicaShieldLogicNpcOnTakeDamage(victim, damage);
+			VausMagicaShieldLogicNpcOnTakeDamage(victim, damage, damagetype);
 
 			OnTakeDamageWidowsWine(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 
@@ -1592,12 +1592,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	CClotBody npc = view_as<CClotBody>(victim);
 	Debuff_added = false;
 
-#if defined ZR
-	if(npc.m_flMeleeArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)) || fl_Extra_MeleeArmor[victim] != 1.0 || fl_TotalArmor[victim] != 1.0)
-#else
-	if(npc.m_flMeleeArmor != 1.0 || fl_Extra_MeleeArmor[victim] != 1.0 || fl_TotalArmor[victim] != 1.0)
-#endif
-	
+	if(NpcHadArmorType(victim, 2))	
 	{
 		float percentage = npc.m_flMeleeArmor * 100.0;
 		percentage *= fl_Extra_MeleeArmor[victim];
@@ -1612,17 +1607,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			}
 		}
 #endif
+		if(VausMagicaShieldLogicEnabled(victim))
+			percentage *= 0.25;
 		
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
 		Debuff_added = true;
 	}
 	
-#if defined ZR
-	if(npc.m_flRangedArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)) || fl_Extra_RangedArmor[victim] != 1.0 || fl_TotalArmor[victim] != 1.0)
-#else
-	if(npc.m_flRangedArmor != 1.0 || fl_Extra_RangedArmor[victim] != 1.0 || fl_TotalArmor[victim] != 1.0)
-#endif
-	
+	if(NpcHadArmorType(victim, 1))	
 	{
 		float percentage = npc.m_flRangedArmor * 100.0;
 		percentage *= fl_Extra_RangedArmor[victim];
@@ -1637,7 +1629,9 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			}
 		}
 #endif
-		
+		if(VausMagicaShieldLogicEnabled(victim))
+			percentage *= 0.25;
+
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
 		Debuff_added = true;
 	}
@@ -1656,24 +1650,13 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 			int raidboss = EntRefToEntIndex(RaidBossActive);
 			//We have to check if the raidboss has any debuffs.
-			if(fl_RangedArmor[raidboss] != 1.0 || fl_Extra_RangedArmor[raidboss] != 1.0)
+			if(NpcHadArmorType(raidboss, 1))	
 			{
 				HudOffset += 0.035;
 			}
-			else if(fl_MeleeArmor[raidboss] != 1.0 || fl_Extra_MeleeArmor[raidboss] != 1.0)
+			else if(NpcHadArmorType(raidboss, 2))	
 			{
 				HudOffset += 0.035;
-			}
-			else if(fl_TotalArmor[raidboss] != 1.0)
-			{
-				HudOffset += 0.035;
-			}
-			else if(Medival_Difficulty_Level != 0)
-			{
-				if(!NpcStats_IsEnemySilenced(raidboss))
-				{
-					HudOffset += 0.035;
-				}
 			}
 
 			if(DoesNpcHaveHudDebuffOrBuff(raidboss, GameTime))
@@ -1689,28 +1672,20 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		HudOffset += f_HurtHudOffsetX[attacker];
 
 		SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+		char ExtraHudHurt[255];
+
+		//add name and health
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%d / %d",NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+
+		//add debuff
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
+
 		if(!b_NpcIsInvulnerable[victim])
-		{
-			if(!raidboss_active)
-			{
-				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s-%0.f", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
-			}
-			else
-			{
-				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);	
-			}
-		}
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%0.f", ExtraHudHurt, f_damageAddedTogether[attacker]);
 		else
-		{
-			if(!raidboss_active)
-			{
-				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s %t", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, "Invulnerable Npc");
-			}
-			else
-			{
-				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s %t", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, "Invulnerable Npc");	
-			}			
-		}
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s %t", ExtraHudHurt, "Invulnerable Npc");
+			
+		ShowSyncHudText(attacker, SyncHud,"%s",ExtraHudHurt);
 	}
 	else
 	{
@@ -1725,28 +1700,33 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		SetGlobalTransTarget(attacker);
 		SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
 		//todo: better showcase of timer.
-		if(Timer_Show > 800.0)
-		{
-			if(!b_NpcIsInvulnerable[victim])
-			{
-				ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%%]\n%s\n%d / %d \n%s-%0.f","Raidboss", "Power", RaidModeScaling * 100, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);	
-			}
-			else
-			{
-				ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%%]\n%s\n%d / %d \n%s %t","Raidboss", "Power", RaidModeScaling * 100, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, "Invulnerable Npc");		
-			}
-		}
+		char ExtraHudHurt[255];
+
+
+		//what type of boss
+		if(b_thisNpcIsARaid[victim])
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "[%t | %t : ", "Raidboss", "Power");
 		else
-		{
-			if(!b_NpcIsInvulnerable[victim])
-			{
-				ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s-%0.f","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);	
-			}
-			else
-			{
-				ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s %t","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, "Invulnerable Npc");		
-			}		
-		}
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "[%t | %t : ", "Superboss", "Power");
+
+		//time show or not
+		if(Timer_Show > 800.0)
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%%]", ExtraHudHurt, RaidModeScaling * 100.0);
+		else
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%% | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
+			
+		//add name and health
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s\n%d / %d", ExtraHudHurt,NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+
+		//add debuff
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
+
+		if(!b_NpcIsInvulnerable[victim])
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%0.f", ExtraHudHurt, f_damageAddedTogether[attacker]);
+		else
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s %t", ExtraHudHurt, "Invulnerable Npc");
+			
+		ShowSyncHudText(attacker, SyncHudRaid,"%s",ExtraHudHurt);	
 
 	}
 #endif	// ZR
@@ -1775,6 +1755,39 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 #endif
 }
 
+bool NpcHadArmorType(int victim, int type)
+{
+	if(fl_TotalArmor[victim] != 1.0)
+		return true;
+
+	if(Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim))
+		return true;
+
+	if(VausMagicaShieldLogicEnabled(victim))
+		return true;
+
+	CClotBody npc = view_as<CClotBody>(victim);
+	switch(type)
+	{
+		case 1:
+		{
+			if(npc.m_flRangedArmor != 1.0)
+				return true;
+			
+			if(fl_Extra_RangedArmor[victim] != 1.0)
+				return true;
+		}
+		case 2:
+		{
+			if(npc.m_flMeleeArmor != 1.0)
+				return true;
+			
+			if(fl_Extra_MeleeArmor[victim] != 1.0)
+				return true;
+		}
+	}
+	return false;
+}
 #if defined ZR
 void ResetDamageHud(int client)
 {

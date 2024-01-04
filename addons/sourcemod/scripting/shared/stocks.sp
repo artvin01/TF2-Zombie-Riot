@@ -668,9 +668,9 @@ stock void SetAmmo(int client, int type, int ammo)
 	SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, type);
 }
 
-stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count)
+stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count, int custom_classSetting = 0)
 {
-	int weapon = SpawnWeaponBase(client, name, index, level, qual, attrib, value, count);
+	int weapon = SpawnWeaponBase(client, name, index, level, qual, attrib, value, count, custom_classSetting);
 	if(weapon != -1)
 	{
 		HandleAttributes(weapon, attrib, value, count); //Thanks suza! i love my min models
@@ -678,7 +678,7 @@ stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, c
 	return weapon;
 }
 
-stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count)
+stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count, int custom_classSetting = 0)
 {
 	Handle weapon = TF2Items_CreateItem(OVERRIDE_ALL|FORCE_GENERATION|PRESERVE_ATTRIBUTES);
 	if(weapon == INVALID_HANDLE)
@@ -690,7 +690,12 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	TF2Items_SetQuality(weapon, qual);
 	TF2Items_SetNumAttributes(weapon, 0);
 
-	TF2_SetPlayerClass_ZR(client, TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true)), _, false);
+	TFClassType class = TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true));
+	if(custom_classSetting != 0)
+	{
+		class = view_as<TFClassType>(custom_classSetting);
+	}
+	TF2_SetPlayerClass_ZR(client, class, _, false);
 	
 	int entity = TF2Items_GiveNamedItem(client, weapon);
 	delete weapon;

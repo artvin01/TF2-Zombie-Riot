@@ -1388,7 +1388,7 @@
 		"ru"	"2,0-кратная скорость починки."
 		"chi"   "修复建筑生命值提高2.0倍"
 	}
-	"Engineering Repair Handling book"
+	"Engineering Repair Handling book Desc"
 	{
 		"en"	"2.0x Repair Rate"
 		"ru"	"2,0-кратная скорость починки."
@@ -1468,9 +1468,9 @@
 	
 	"Magical Book Desc"
 	{
-		"en"	"60%% More Mage Damage"
-		"ru"	"На 60%% больше урона от магии."
-		"chi"   "提升60%%法术伤害"
+		"en"	"50%% More Mage Damage"
+		"ru"	"На 50%% больше урона от магии."
+		"chi"   "提升50%%法术伤害"
 	}
 	
 	"Hastening Potion Desc"
@@ -1482,8 +1482,8 @@
 	
 	"The Bombinomicon Desc"
 	{
-		"en"	"65%% More Mage Damage"
-		"ru"	"На 65%% больше урона от магии."
+		"en"	"60%% More Mage Damage"
+		"ru"	"На 60%% больше урона от магии."
 		"chi"   "提升60%%法术伤害"
 	}
 	
@@ -1496,16 +1496,16 @@
 	
 	"Master Sorcerer Desc"
 	{
-		"en"	"70%% More Mage Damage"
-		"ru"	"На 70%% больше урона от магии."
-		"chi"   "提升70%%法术伤害"
+		"en"	"65%% More Mage Damage"
+		"ru"	"На 65%% больше урона от магии."
+		"chi"   "提升65%%法术伤害"
 	}
 	
 	"Bob's Magic Desc"
 	{
-		"en"	"75%% More Mage Damage"
-		"ru"	"На 75%% больше урона от магии."
-		"chi"   "提升75%%法术伤害"
+		"en"	"70%% More Mage Damage"
+		"ru"	"На 70%% больше урона от магии."
+		"chi"   "提升70%%法术伤害"
 	}
 	
 	"Body armor Desc"
