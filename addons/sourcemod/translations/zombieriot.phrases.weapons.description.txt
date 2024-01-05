@@ -2641,4 +2641,16 @@
 	{
 		"en"	"Your building weapons deal 75%% less damage except for trap weapons, but your traps deal 50%% more damage in total."
 	}
+	"Heavy Particle Rifle Desc 1"
+	{
+		"en"	"The longer you hold down fire, the more damage your weapon deals\nHowever, you do start with a damage penalty at the beggining of firing!\nYou are also 25% slower then normal, but you take 25% less dmg from front attacks!"
+	}
+	"Heavy Particle Rifle Desc 2"
+	{
+		"en"	"More damage, bigger clip, faster firing, slower reload"
+	}
+	"Heavy Particle Rifle Desc 3"
+	{
+		"en"	"More damage, even bigger clip, faster firing, even slower reload!"
+	}
 }
