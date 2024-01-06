@@ -138,7 +138,7 @@ methodmap RaidbossBladedance < CClotBody
 
 		npc.Anger = false;
 		npc.m_iOverlordComboAttack = 0;
-		npc.m_flMeleeArmor = 1.25;
+	//	npc.m_flMeleeArmor = 1.25;
 		
 		Citizen_MiniBossSpawn();
 		

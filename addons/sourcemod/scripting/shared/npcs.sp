@@ -1675,7 +1675,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		char ExtraHudHurt[255];
 
 		//add name and health
-		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%d / %d",NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%d / %d",NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
 
 		//add debuff
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
@@ -1716,7 +1716,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%% | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
 			
 		//add name and health
-		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s\n%d / %d", ExtraHudHurt,NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%d / %d", ExtraHudHurt,NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
 
 		//add debuff
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);

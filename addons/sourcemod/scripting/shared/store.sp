@@ -6648,8 +6648,16 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 	static Item item;
 	if(StoreWeapon[weapon] < 1)
 		return;
-
+	
 	StoreItems.GetArray(StoreWeapon[weapon], item);
+	ItemInfo info;
+	if(item.GetItemInfo(0, info))
+	{
+		if(info.HasNoClip)
+		{
+			return;
+		}
+	}
 	int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
 	
 	SetEntData(weapon, iAmmoTable, item.CurrentClipSaved[client]);

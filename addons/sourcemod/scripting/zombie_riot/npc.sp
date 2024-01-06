@@ -2391,25 +2391,25 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = NearlSwordAbility(client, vecPos, vecAng, ally);
 		
 		case STALKER_COMBINE:
-			entity = StalkerCombine(client, vecPos, vecAng, false);
+			entity = StalkerCombine(client, vecPos, vecAng, ally);
 		
 		case STALKER_FATHER:
-			entity = StalkerFather(client, vecPos, vecAng, false);
+			entity = StalkerFather(client, vecPos, vecAng, ally);
 		
 		case STALKER_GOGGLES:
-			entity = StalkerGoggles(client, vecPos, vecAng, false);
+			entity = StalkerGoggles(client, vecPos, vecAng, ally);
 		
 		case XENO_RAIDBOSS_SILVESTER:
-			entity = RaidbossSilvester(client, vecPos, vecAng, false, data);
+			entity = RaidbossSilvester(client, vecPos, vecAng, ally, data);
 		
 		case XENO_RAIDBOSS_BLUE_GOGGLES:
-			entity = RaidbossBlueGoggles(client, vecPos, vecAng, false, data);
+			entity = RaidbossBlueGoggles(client, vecPos, vecAng, ally, data);
 		
 		case XENO_RAIDBOSS_SUPERSILVESTER:
-			entity = RaidbossSilvester(client, vecPos, vecAng, false, data);
+			entity = RaidbossSilvester(client, vecPos, vecAng, ally, data);
 		
 		case XENO_RAIDBOSS_NEMESIS:
-			entity = RaidbossNemesis(client, vecPos, vecAng, false, data);
+			entity = RaidbossNemesis(client, vecPos, vecAng, ally, data);
 		
 		case SEARUNNER, SEARUNNER_ALT:
 			entity = SeaRunner(client, vecPos, vecAng, ally, data);
