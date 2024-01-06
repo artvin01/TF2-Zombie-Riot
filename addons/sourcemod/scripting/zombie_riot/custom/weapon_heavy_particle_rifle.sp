@@ -5,9 +5,13 @@ static float f_AniSoundSpam[MAXTF2PLAYERS];
 static int i_shotsfired[MAXTF2PLAYERS];
 static float f_rest_time[MAXTF2PLAYERS];
 static float f_hud_timer[MAXTF2PLAYERS];
+static bool b_fullcharge_sound[MAXTF2PLAYERS];
 
 #define HEAVY_PARTICLE_RIFLE_SHIELD_SOUND1 "weapons/rescue_ranger_charge_01.wav"
 #define HEAVY_PARTICLE_RIFLE_SHIELD_SOUND2 "weapons/rescue_ranger_charge_02.wav"
+#define HEAVY_PARTICLE_RIFLE_FULLPOWER_SOUND "weapons/sentry_upgrading_steam1.wav"
+#define HEAVY_PARTICLE_RIFLE_BEGIN_REACTOR_SOUND "weapons/sentry_wire_connect.wav"
+#define HEAVY_PARTICLE_RIFLE_FIRING_PASSIVE_SOUND		"ambient/energy/weld1.wav"
 
 #define HEAVY_PARTICLE_RIFLE_MAX_DMG_BONUS 2.0
 
@@ -25,8 +29,12 @@ public void Heavy_Particle_Rifle_Mapstart()
 	Zero(f_rest_time);
 	Zero(f_AniSoundSpam);
 	Zero(f_hud_timer);
+	Zero(b_fullcharge_sound);
 	PrecacheSound(HEAVY_PARTICLE_RIFLE_SHIELD_SOUND1, true);
 	PrecacheSound(HEAVY_PARTICLE_RIFLE_SHIELD_SOUND2, true);
+	PrecacheSound(HEAVY_PARTICLE_RIFLE_FULLPOWER_SOUND, true);
+	PrecacheSound(HEAVY_PARTICLE_RIFLE_BEGIN_REACTOR_SOUND, true);
+	PrecacheSound(HEAVY_PARTICLE_RIFLE_FIRING_PASSIVE_SOUND, true);
 	for (int i = 0; i < (sizeof(Spark_Sound));	   i++) { PrecacheSound(Spark_Sound[i]);	   }
 }
 
@@ -58,6 +66,9 @@ public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classna
 	if(f_rest_time[client] < GameTime)
 	{
 		i_shotsfired[client]=0;
+		b_fullcharge_sound[client]=false;
+		EmitSoundToClient(client, HEAVY_PARTICLE_RIFLE_BEGIN_REACTOR_SOUND);
+		EmitSoundToClient(client, HEAVY_PARTICLE_RIFLE_BEGIN_REACTOR_SOUND);
 	}
 	else
 	{
@@ -65,13 +76,28 @@ public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classna
 
 		float ratio =  float(i_shotsfired[client])/float(max_shots);
 
+		int pitch = 25+150-RoundToFloor(100*(ratio/HEAVY_PARTICLE_RIFLE_MAX_DMG_BONUS));
+
+		if(pitch<25)	//just incase it somehow happens
+			pitch=25
+
+		EmitSoundToClient(client, HEAVY_PARTICLE_RIFLE_FIRING_PASSIVE_SOUND ,_, SNDCHAN_STATIC, 100, _, 0.2, pitch);
+
 		if(ratio>=HEAVY_PARTICLE_RIFLE_MAX_DMG_BONUS)
 		{
 			damage*=HEAVY_PARTICLE_RIFLE_MAX_DMG_BONUS;
 			if(f_hud_timer[client]<GameTime)
 			{
 				f_hud_timer[client] = GameTime+0.5;
-				PrintHintText(client, "Particle Power: [FULL POWER]");
+				PrintHintText(client, "Particle Reactor: [FULL POWER]");
+				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			}
+			if(!b_fullcharge_sound[client])
+			{
+				EmitSoundToClient(client, HEAVY_PARTICLE_RIFLE_FULLPOWER_SOUND);
+				EmitSoundToClient(client, HEAVY_PARTICLE_RIFLE_FULLPOWER_SOUND);
+				EmitSoundToClient(client, HEAVY_PARTICLE_RIFLE_FULLPOWER_SOUND);
+				b_fullcharge_sound[client]=true;
 			}
 		}
 		else
@@ -80,7 +106,8 @@ public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classna
 			if(f_hud_timer[client]<GameTime)
 			{
 				f_hud_timer[client] = GameTime+0.5;
-				PrintHintText(client, "Particle Power: [%.1f/%.1f]",ratio,HEAVY_PARTICLE_RIFLE_MAX_DMG_BONUS);
+				PrintHintText(client, "Particle Reactor: [%.1f/%.1f]",ratio,HEAVY_PARTICLE_RIFLE_MAX_DMG_BONUS);
+				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			}
 		}
 	}
