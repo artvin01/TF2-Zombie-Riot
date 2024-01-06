@@ -98,6 +98,8 @@ enum struct ItemInfo
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
 	int Weapon_Bodygroup;
+	float WeaponVolumeStiller;
+	float WeaponVolumeRange;
 	
 	int Attack3AbilitySlot;
 	bool VisualDescOnly;
@@ -287,6 +289,12 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sweapon_custom_size_viewmodel", prefix);
 		this.WeaponSizeOverrideViewmodel			= kv.GetFloat(buffer, 1.0);
+
+		Format(buffer, sizeof(buffer), "%sweapon_volume_stiller", prefix);
+		this.WeaponVolumeStiller			= kv.GetFloat(buffer, 1.0);
+
+		Format(buffer, sizeof(buffer), "%sweapon_volume_range", prefix);
+		this.WeaponVolumeRange		= kv.GetFloat(buffer, 1.0);
 
 		Format(buffer, sizeof(buffer), "%sbackstab_multi_dmg_penalty_bosses", prefix);
 		this.BackstabDmgPentalty			= kv.GetFloat(buffer, 1.0);
@@ -5471,6 +5479,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_WeaponModelIndexOverride[entity] 		= info.WeaponModelIndexOverride;
 					f_WeaponSizeOverride[entity]			= info.WeaponSizeOverride;
 					f_WeaponSizeOverrideViewmodel[entity]	= info.WeaponSizeOverrideViewmodel;
+					f_WeaponVolumeStiller[entity]				= info.WeaponVolumeStiller;
+					f_WeaponVolumeSetRange[entity]				= info.WeaponVolumeRange;
 					f_BackstabBossDmgPenalty[entity]		= info.BackstabDmgPentalty;
 					f_ModifThirdPersonAttackspeed[entity]	= info.ThirdpersonAnimModif;
 					

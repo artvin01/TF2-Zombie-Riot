@@ -2046,6 +2046,26 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 			}
 		}
 	}
+	if(channel == SNDCHAN_WEAPON)
+	{
+		//this is only for other clients.
+		if(entity > 0 && entity <= MaxClients)
+		{
+			bool ChangedSound = false;
+			if(f_WeaponVolumeStiller[entity] != 1.0)
+			{
+				ChangedSound = true;
+				volume *= f_WeaponVolumeStiller[entity];
+			}
+			if(f_WeaponVolumeSetRange[entity] != 1.0)
+			{
+				ChangedSound = true;
+				level = RoundToNearest(float(level) * f_WeaponVolumeSetRange[entity]);	
+			}
+			if(ChangedSound)
+				return Plugin_Changed;
+		}
+	}			
 	if(StrContains(sample, ")weapons/capper_shoot.wav", true) != -1)
 	{
 		volume *= 0.45;

@@ -656,6 +656,8 @@ int i_WeaponVMTExtraSetting[MAXENTITIES];
 int i_WeaponBodygroup[MAXENTITIES];
 float f_WeaponSizeOverride[MAXENTITIES];
 float f_WeaponSizeOverrideViewmodel[MAXENTITIES];
+float f_WeaponVolumeStiller[MAXENTITIES];
+float f_WeaponVolumeSetRange[MAXENTITIES];
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 
@@ -2415,6 +2417,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_WeaponSoundIndexOverride[entity] = 0;
 		f_WeaponSizeOverride[entity] = 1.0;
 		f_WeaponSizeOverrideViewmodel[entity] = 1.0;
+		f_WeaponVolumeStiller[entity] = 1.0;
 		i_WeaponModelIndexOverride[entity] = 0;
 		i_WeaponVMTExtraSetting[entity] = -1;
 		i_WeaponBodygroup[entity] = -1;
