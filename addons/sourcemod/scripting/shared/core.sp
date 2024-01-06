@@ -2175,20 +2175,36 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 #endif
 }
 
-public void Update_Ammo(int  client)
+public void Update_Ammo(DataPack pack)
 {
-#if defined ZR
+	pack.Reset();
+	int client = GetClientOfUserId(pack.ReadCell());
 	if(IsValidClient(client) && i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
-#endif
-#if defined RPG
-	if(IsValidClient(client))
-#endif
 	{
 		for(int i; i<Ammo_MAX; i++)
 		{
 			CurrentAmmo[client][i] = GetAmmo(client, i);
 		}	
 	}
+	else
+	{
+		delete pack;
+		return;
+	}
+	int weapon_ref = pack.ReadCell();
+	if(weapon_ref == -1)
+	{
+		Clip_SaveAllWeaponsClipSizes(client);
+	}
+	else
+	{
+		int weapon = EntRefToEntIndex(weapon_ref);
+		if(IsValidEntity(weapon))
+		{
+			ClipSaveSingle(client, weapon);
+		}
+	}
+	delete pack;
 }
 
 public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname, bool &result)
@@ -2196,7 +2212,10 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 #if defined ZR
 	if(i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
 	{
-		RequestFrame(Update_Ammo, client);
+		DataPack pack = new DataPack();
+		pack.WriteCell(GetClientUserId(client));
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		RequestFrame(Update_Ammo, pack);
 	}
 #endif
 

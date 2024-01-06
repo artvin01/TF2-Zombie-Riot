@@ -124,7 +124,10 @@ void Add_Back_One_Clip_Judge(int entity, int client)
 	AddAmmoClient(client, AmmoType ,-1,1.0, true);
 	ammo += 1;
 	SetEntData(entity, iAmmoTable, ammo, 4, true);
-	Update_Ammo(client);
+	DataPack pack = new DataPack();
+	pack.WriteCell(GetClientUserId(client));
+	pack.WriteCell(EntIndexToEntRef(entity));
+	Update_Ammo(pack);
 	IsAmmoFullJudgeWeapon(ammo, client);
 }
 

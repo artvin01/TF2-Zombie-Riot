@@ -143,7 +143,10 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 		i_MegaShot[attacker] -= 1;
 		ApplyTempAttrib(weapon, 97, 1.2, 3.0);
 		SetEntData(weapon, iAmmoTable, 0, 4, true);
-		Update_Ammo(attacker);
+		DataPack pack = new DataPack();
+		pack.WriteCell(GetClientUserId(attacker));
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		Update_Ammo(pack);
 		Client_Shake(attacker, 0, (((ammo * 3.0)/2.0) + 25.0), 20.0, 0.8);
 		EmitSoundToAll("ambient/explosions/explode_3.wav", attacker, SNDCHAN_STATIC, 70, _, 1.0);
 	}

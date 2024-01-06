@@ -440,7 +440,10 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 #if defined ZR
-	Update_Ammo(client);
+	DataPack pack = new DataPack();
+	pack.WriteCell(GetClientUserId(client));
+	pack.WriteCell(-1);
+	Update_Ammo(pack);
 	Escape_DropItem(client);
 	if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
 	{
