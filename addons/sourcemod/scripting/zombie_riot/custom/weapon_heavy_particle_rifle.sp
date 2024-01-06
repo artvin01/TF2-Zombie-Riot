@@ -79,7 +79,7 @@ public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classna
 		int pitch = 25+150-RoundToFloor(100*(ratio/HEAVY_PARTICLE_RIFLE_MAX_DMG_BONUS));
 
 		if(pitch<25)	//just incase it somehow happens
-			pitch=25
+			pitch=25;
 
 		EmitSoundToClient(client, HEAVY_PARTICLE_RIFLE_FIRING_PASSIVE_SOUND ,_, SNDCHAN_STATIC, 100, _, 0.2, pitch);
 
