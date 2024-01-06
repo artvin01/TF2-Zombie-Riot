@@ -2187,6 +2187,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			WeaponRedBlade_OnTakeDamage(victim, damage);
 		}
+		case WEAPON_HEAVY_PARTICLE_RIFLE:
+		{
+			return Player_OnTakeDamage_Heavy_Particle_Rifle(victim, damage, attacker, equipped_weapon, damagePosition);
+		}
 	}
 	return damage;
 }
