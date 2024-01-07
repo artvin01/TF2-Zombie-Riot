@@ -7026,7 +7026,7 @@ static void SummonerMenu(int client, int viewer)
 	int entity = EntRefToEntIndex(i_HasSentryGunAlive[client]);
 	if(entity == INVALID_ENT_REFERENCE)
 	{
-		CancelClientMenu(viewer);
+		ClientCommand(viewer, "slot10");
 		return;
 	}
 

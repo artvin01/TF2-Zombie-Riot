@@ -1209,6 +1209,12 @@ public void OnPostThink(int client)
 			}
 		}
 		SetEntProp(client, Prop_Send, "m_nCurrency", CurrentCash-CashSpent[client]);
+		/*
+		Event event = CreateEvent("player_currency_changed", true);
+		event.SetInt("currency", CurrentCash-CashSpent[client]);
+		event.FireToClient(client);
+		event.Cancel();
+		*/
 		PrintKeyHintText(client,"%s", HudBuffer);
 #endif	// ZR
 	}

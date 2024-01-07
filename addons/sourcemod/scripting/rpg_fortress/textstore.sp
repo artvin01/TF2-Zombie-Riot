@@ -287,7 +287,7 @@ static void HashCheck()
 				for(int client = 1; client <= MaxClients; client++)
 				{
 					if(IsClientInGame(client))
-						CancelClientMenu(client);
+						ClientCommand(client, "slot10");
 				}
 
 				SPrintToChatAll("The store was reloaded, items and areas were also reloaded!");
@@ -755,7 +755,7 @@ void TextStore_ZoneLeave(int client, const char[] name)
 	{
 		InStore[client][0] = 0;
 		if(!InMenu[client])
-			CancelClientMenu(client);
+			ClientCommand(client, "slot10");
 	}
 }
 
