@@ -1151,7 +1151,7 @@ public void OnPostThink(int client)
 			if(Rogue_Mode() && Rogue_InSetup())
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t\n%t", HudBuffer,
-				"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+				"Credits_Menu_New", (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
 				PerkNames[i_CurrentEquippedPerk[client]],
 				"Australium Ingots", Rogue_GetIngots()
@@ -1160,7 +1160,7 @@ public void OnPostThink(int client)
 			else
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t\n%t", HudBuffer,
-				"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+				"Credits_Menu_New", (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
 				PerkNames[i_CurrentEquippedPerk[client]],
 				"Zombies Left", Zombies_Currently_Still_Ongoing
@@ -1208,6 +1208,7 @@ public void OnPostThink(int client)
 				Format(HudBuffer, sizeof(HudBuffer), "%s%s | %t",HudBuffer,WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);		
 			}
 		}
+		SetEntProp(client, Prop_Send, "m_nCurrency", CurrentCash-CashSpent[client]);
 		PrintKeyHintText(client,"%s", HudBuffer);
 #endif	// ZR
 	}

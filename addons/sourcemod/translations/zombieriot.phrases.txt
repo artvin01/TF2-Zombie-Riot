@@ -91,6 +91,11 @@
 		"nl"		"Krediet: {1} (+{2})"
 		"chi"		"现金: {1} (+{2})"
 	}
+	"Credits_Menu_New"
+	{
+		"#format"	"{1:d}"
+		"en"		"Extra Credits: +{1}"
+	}
 	"Armor Counter"
 	{
 		"#format"	"{1:d}"
