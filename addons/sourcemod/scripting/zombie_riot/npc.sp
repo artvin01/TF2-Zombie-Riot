@@ -2682,7 +2682,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = Pistoleer(client, vecPos, vecAng, ally);
 
 		case EXPIDONSA_DIVERSIONISTICO:
-			entity = Diversionistico(client, vecPos, vecAng, ally);
+			entity = Diversionistico(client, vecPos, vecAng, ally, data);
 
 		case EXPIDONSA_HEAVYPUNUEL:
 			entity = HeavyPunuel(client, vecPos, vecAng, ally);
@@ -2718,7 +2718,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = EnegaKapus(client, vecPos, vecAng, ally);
 
 		case EXPIDONSA_CAPTINOAGENTUS:
-			entity = CaptinoAgentus(client, vecPos, vecAng, ally);
+			entity = CaptinoAgentus(client, vecPos, vecAng, ally, data);
 
 		case RAIDMODE_EXPIDONSA_SENSAL:
 			entity = Sensal(client, vecPos, vecAng, ally, data);

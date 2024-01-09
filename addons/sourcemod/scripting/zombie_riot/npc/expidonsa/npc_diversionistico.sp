@@ -115,7 +115,7 @@ methodmap Diversionistico < CClotBody
 		
 	}
 
-	public Diversionistico(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Diversionistico(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		Diversionistico npc = view_as<Diversionistico>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally, false, false, true));
 		
@@ -143,7 +143,13 @@ methodmap Diversionistico < CClotBody
 		b_TryToAvoidTraverse[npc.index] = true;
 		DiversionSpawnNpcReset(npc.index);
 		
+		bool final = StrContains(data, "spy_duel") != -1;
 		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
+
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
@@ -292,12 +298,21 @@ public Action Diversionistico_OnTakeDamage(int victim, int &attacker, int &infli
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+
+	if(i_RaidGrantExtra[victim])
+	{
+		if(!i_HasBeenBackstabbed[victim])
+		{
+			return Plugin_Handled;
+		}
+	}
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+
 	
 	return Plugin_Changed;
 }
@@ -356,6 +371,13 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.PlayMeleeSound();
+				if(i_RaidGrantExtra[npc.index])
+				{
+					if(Enemy_I_See <= MaxClients && b_FaceStabber[Enemy_I_See])
+					{
+						BackstabDone = true;
+					}
+				}
 				if(IsBehindAndFacingTarget(npc.index, npc.m_iTarget) && !NpcStats_IsEnemySilenced(npc.index))
 				{
 					BackstabDone = true;
@@ -391,8 +413,19 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 
 					if(BackstabDone)
 					{
+						if(i_RaidGrantExtra[npc.index])
+						{
+							if(target <= MaxClients && b_FaceStabber[target])
+							{
+								damageDealt *= 0.5;
+							}
+						}
 						npc.PlayMeleeBackstabSound(target);
 						damageDealt *= 3.0;
+					}
+					else if(i_RaidGrantExtra[npc.index])
+					{
+						damageDealt *= 0.5;
 					}
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);

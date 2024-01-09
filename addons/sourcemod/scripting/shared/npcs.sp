@@ -357,6 +357,11 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					fl_Extra_RangedArmor[entity_Spawner] 	= enemy.ExtraRangedRes;
 					fl_Extra_Speed[entity_Spawner] 			= enemy.ExtraSpeed;
 					fl_Extra_Damage[entity_Spawner] 		= enemy.ExtraDamage;
+					if(enemy.ExtraSize != 1.0)
+					{
+						float scale = GetEntPropFloat(entity_Spawner, Prop_Send, "m_flModelScale");
+						SetEntPropFloat(entity_Spawner, Prop_Send, "m_flModelScale", scale * enemy.ExtraSize);
+					}
 
 					if(enemy.Is_Boss || enemy.Is_Outlined)
 					{

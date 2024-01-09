@@ -5,6 +5,7 @@ enum struct Enemy
 {
 	int Health;
 	int Is_Boss;
+	float ExtraSize;
 	int Is_Outlined;
 	int Is_Health_Scaled;
 	int Does_Not_Scale;
@@ -648,6 +649,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.ExtraRangedRes = kv.GetFloat("extra_ranged_res", 1.0);
 						enemy.ExtraSpeed = kv.GetFloat("extra_speed", 1.0);
 						enemy.ExtraDamage = kv.GetFloat("extra_damage", 1.0);
+						enemy.ExtraSize = kv.GetFloat("extra_size", 1.0);
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						kv.GetString("spawn", enemy.Spawn, sizeof(enemy.Spawn));
