@@ -128,7 +128,7 @@ void Garden_ClientLeave(int client, const char[] zone)
 	{
 		InGarden[client][0] = 0;
 		if(InMenu[client] != -1)
-			ClientCommand(client, "slot10");
+			CancelClientMenu(client);
 	}
 }
 

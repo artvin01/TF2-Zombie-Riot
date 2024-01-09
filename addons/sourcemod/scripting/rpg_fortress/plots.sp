@@ -196,7 +196,7 @@ void Plots_ClientLeave(int client, const char[] name)
 	{
 		InPlot[client][0] = 0;
 		if(InMenu[client])
-			ClientCommand(client, "slot10");
+			CancelClientMenu(client);
 	}
 }
 

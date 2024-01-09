@@ -2807,7 +2807,7 @@ public void Store_Menu(int client)
 		{
 			InShopMenu[client] = false;
 			ClientCommand(client, "slot10");
-		//	CancelClientMenu(client);
+			CancelClientMenu(client);
 			return;
 		}
 		if(ClientTutorialStep(client) == 1)
@@ -3909,7 +3909,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 										{
 											if(GetClientMenu(i) && NPCOnly[i] == NPCOnly[client] && NPCTarget[client] == NPCTarget[i])
 											{
-												ClientCommand(i, "slot10");
+												CancelClientMenu(i);
 												NPCTarget[i] = -1;
 											}
 										}
