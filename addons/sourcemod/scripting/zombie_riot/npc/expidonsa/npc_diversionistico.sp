@@ -303,7 +303,8 @@ public Action Diversionistico_OnTakeDamage(int victim, int &attacker, int &infli
 	{
 		if(!i_HasBeenBackstabbed[victim])
 		{
-			return Plugin_Handled;
+			damage = 0.0;
+			return Plugin_Changed;
 		}
 	}
 
