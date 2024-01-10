@@ -140,6 +140,24 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 #define MAXENTITIES	2048
 #define MAXTF2PLAYERS	36
 
+#define    HIDEHUD_WEAPONSELECTION        ( 1<<0 )    // Hide ammo count & weapon selection
+#define    HIDEHUD_FLASHLIGHT            ( 1<<1 )
+#define    HIDEHUD_ALL                    ( 1<<2 )
+#define HIDEHUD_HEALTH                ( 1<<3 )    // Hide health & armor / suit battery
+#define HIDEHUD_PLAYERDEAD            ( 1<<4 )    // Hide when local player's dead
+#define HIDEHUD_NEEDSUIT            ( 1<<5 )    // Hide when the local player doesn't have the HEV suit
+#define HIDEHUD_MISCSTATUS            ( 1<<6 )    // Hide miscellaneous status elements (trains, pickup history, death notices, etc)
+#define HIDEHUD_CHAT                ( 1<<7 )    // Hide all communication elements (saytext, voice icon, etc)
+#define    HIDEHUD_CROSSHAIR            ( 1<<8 )    // Hide crosshairs
+#define    HIDEHUD_VEHICLE_CROSSHAIR    ( 1<<9 )    // Hide vehicle crosshair
+#define HIDEHUD_INVEHICLE            ( 1<<10 )
+#define HIDEHUD_BONUS_PROGRESS        ( 1<<11 )    // Hide bonus progress display (for bonus map challenges)
+#define HIDEHUD_BUILDING_STATUS        ( 1<<12 )  
+#define HIDEHUD_CLOAK_AND_FEIGN        ( 1<<13 )   
+#define HIDEHUD_PIPES_AND_CHARGE        ( 1<<14 )    
+#define HIDEHUD_METAL        ( 1<<15 )    
+#define HIDEHUD_TARGET_ID        ( 1<<16 )    
+
 #define CONFIG_CFG	CONFIG ... "/%s.cfg"
 
 #define DISPENSER_BLUEPRINT	"models/buildables/dispenser_blueprint.mdl"
@@ -1698,7 +1716,7 @@ public void OnClientPutInServer(int client)
 
 	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
 	QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
-	
+	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN | HIDEHUD_BONUS_PROGRESS); 
 }
 
 #if defined RPG
