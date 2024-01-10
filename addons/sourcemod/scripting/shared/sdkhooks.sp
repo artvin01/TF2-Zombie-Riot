@@ -1209,6 +1209,8 @@ public void OnPostThink(int client)
 			}
 		}
 		SetEntProp(client, Prop_Send, "m_nCurrency", CurrentCash-CashSpent[client]);
+		
+		//Todo: Only update when needed.
 		SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN); 
 		PrintKeyHintText(client,"%s", HudBuffer);
 #endif	// ZR
