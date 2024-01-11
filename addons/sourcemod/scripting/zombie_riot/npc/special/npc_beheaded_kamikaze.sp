@@ -273,6 +273,13 @@ void Kamikaze_DeathExplosion(int entity)
 	BeheadedKamiBoomInternal);
 	SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
 	SmiteNpcToDeath(entity);
+	/*
+
+CTFPlayer::ChangeTeam( 4 ) - invalid team index.
+CTFPlayer::ChangeTeam( 4 ) - invalid team index.
+CTFPlayer::ChangeTeam( 4 ) - invalid team index.
+??
+	*/
 }
 
 float BeheadedKamiBoomInternal(int entity, int victim, float damage, int weapon)
