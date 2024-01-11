@@ -85,7 +85,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
-		npc.m_flSpeed = 650.0;
+		npc.m_flSpeed = 450.0;
 		
 		SDKHook(npc.index, SDKHook_Think, BeheadedKamiKaze_ClotThink);
 		
@@ -124,7 +124,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		fl_KamikazeSpawnDelay = GetGameTime();
 
 		npc.m_bDissapearOnDeath = true;
-		TeleportDiversioToRandLocation(npc.index);
+		TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
 		npc.PlaySpawnSound();
 		float pos[3]; pos = WorldSpaceCenter(npc.index);
 		pos[2] -= 10.0;

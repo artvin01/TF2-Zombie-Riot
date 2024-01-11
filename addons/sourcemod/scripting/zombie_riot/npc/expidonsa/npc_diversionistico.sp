@@ -442,7 +442,7 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 
 
 
-int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false)
+int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, float MaxSpawnDist = 1250.0, float MinSpawnDist = 500.0)
 {
 	if(zr_disablerandomvillagerspawn.BoolValue)
 		return 3;
@@ -468,11 +468,11 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false)
 				float f3_PositionTemp[3];
 				GetEntPropVector(client_check, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
 				float flDistanceToTarget = GetVectorDistance(AproxRandomSpaceToWalkTo, f3_PositionTemp, true);	
-				if(flDistanceToTarget > (1250.0 * 1250.0))
+				if(flDistanceToTarget > (MaxSpawnDist * MaxSpawnDist))
 				{
 					WasTooFarAway += 1;
 				}
-				if(flDistanceToTarget < (500.0 * 500.0))
+				if(flDistanceToTarget < (MinSpawnDist * MinSpawnDist))
 				{
 					DoNotTeleport = true;
 					break;
