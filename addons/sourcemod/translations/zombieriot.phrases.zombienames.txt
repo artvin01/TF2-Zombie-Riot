@@ -1841,4 +1841,9 @@
 	{
 		"en"	"Storm Weaver"
 	}
+	"Beheaded Kamikaze"
+	{
+		"en"	"Beheaded Kamikaze"
+	}
+	
 }
