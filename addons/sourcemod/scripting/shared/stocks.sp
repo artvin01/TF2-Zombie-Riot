@@ -59,6 +59,19 @@ stock float fmax(float n1, float n2)
 	return n1 > n2 ? n1 : n2;
 }
 
+stock float fClamp(float fValue, float fMin, float fMax)
+{
+	if (fValue < fMin) {
+		return fMin;
+	}
+
+	if (fValue > fMax) {
+		return fMax;
+	}
+
+	return fValue;
+}
+
 stock Function ValToFunc(any val)
 {
 	return val;
@@ -4821,4 +4834,43 @@ stock PrecacheParticleEffect(const String:sEffectName[])
 	new bool:save = LockStringTables(false);
 	AddToStringTable(table, sEffectName);
 	LockStringTables(save);
+}
+
+stock void Vector_DegToRad(float vecVector[3])
+{
+	vecVector[0] = DegToRad(vecVector[0]);
+	vecVector[1] = DegToRad(vecVector[1]);
+	vecVector[2] = DegToRad(vecVector[2]);
+}
+
+stock void Matrix_VectorMultiply(float matMatrix[3][3], float vecVector[3], float vecResult[3])
+{
+	vecResult[0] = matMatrix[0][0]*vecVector[0] + matMatrix[0][1]*vecVector[1] + matMatrix[0][2]*vecVector[2];
+	vecResult[1] = matMatrix[1][0]*vecVector[0] + matMatrix[1][1]*vecVector[1] + matMatrix[1][2]*vecVector[2];
+	vecResult[2] = matMatrix[2][0]*vecVector[0] + matMatrix[2][1]*vecVector[1] + matMatrix[2][2]*vecVector[2];
+}
+
+stock void Matrix_Set(float matMatrix[3][3], float f00, float f01, float f02, float f10, float f11, float f12, float f20, float f21, float f22)
+{
+	matMatrix[0][0] = f00;	matMatrix[0][1] = f01;	matMatrix[0][2] = f02;
+	matMatrix[1][0] = f10;	matMatrix[1][1] = f11;	matMatrix[1][2] = f12;
+	matMatrix[2][0] = f20;	matMatrix[2][1] = f21;	matMatrix[2][2] = f22;
+}
+
+stock void Matrix_GetRotationMatrix(float matMatrix[3][3], float fA, float fB, float fG)
+{
+	float fSinA = Sine(fA);
+	float fCosA = Cosine(fA);
+
+	float fSinB = Sine(fB);
+	float fCosB = Cosine(fB);
+
+	float fSinG = Sine(fG);
+	float fCosG = Cosine(fG);
+
+	Matrix_Set(matMatrix,
+		fCosB*fCosG, 	fSinA*fSinB*fCosG - fCosA*fSinG, 	fCosA*fSinB*fCosG + fSinA*fSinG,
+		fCosB*fSinG,	fSinA*fSinB*fSinG + fCosA*fCosG, 	fCosA*fSinB*fSinG - fSinA*fCosG,
+		     -fSinB,		                fSinA*fCosB,	                    fCosA*fCosB
+	);
 }

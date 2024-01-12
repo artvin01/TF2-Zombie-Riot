@@ -6376,7 +6376,7 @@ stock bool makeexplosion(
 }	
 	
 	
-stock void CreateParticle(char[] particle, float pos[3], float ang[3])
+stock void CreateParticle(const char[] particle, const float pos[3], const float ang[3])
 {
 	int tblidx = FindStringTable("ParticleEffectNames");
 	char tmp[256];

@@ -317,6 +317,7 @@ float BeheadedKamiBoomInternal(int entity, int victim, float damage, int weapon)
 	{
 		return 1000000000.0;
 	}
+  
 	return damage;
 }
 

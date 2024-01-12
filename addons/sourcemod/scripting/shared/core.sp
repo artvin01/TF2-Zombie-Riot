@@ -1153,7 +1153,7 @@ float f_DelayNextWaveStartAdvancingDeathNpc;
 #include "shared/killfeed.sp"
 #include "shared/npcs.sp"
 #include "shared/npccamera.sp"
-#include "shared/rtscamera_ref.sp"
+#include "shared/rtscamera.sp"
 #include "shared/sdkcalls.sp"
 #include "shared/sdkhooks.sp"
 #include "shared/stocks.sp"
@@ -1253,6 +1253,7 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.icons"); 
 	LoadTranslations("zombieriot.phrases.rogue"); 
 	LoadTranslations("zombieriot.phrases.item.gift.desc"); 
+	LoadTranslations("realtime.phrases");
 	LoadTranslations("common.phrases");
 	
 	DHook_Setup();
@@ -1269,7 +1270,7 @@ public void OnPluginStart()
 #endif
 	NPC_Base_InitGamedata();
 	WandProjectile_GamedataInit();
-	SMRTS_OnPluginStart();
+	RTSCamera_PluginStart();
 	
 #if defined ZR
 	ZR_PluginStart();
@@ -1355,6 +1356,9 @@ public void OnPluginEnd()
 			OnClientDisconnect(i);
 		}
 	}
+
+	RTSCamera_PluginEnd();
+	
 	/*
 	char classname[256];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
@@ -1372,8 +1376,6 @@ public void OnPluginEnd()
 		}
 	}
 	*/
-
-	SMRTS_OnPluginEnd();
 }
 
 public void OnMapStart()
@@ -1436,7 +1438,7 @@ public void OnMapStart()
 	MapStart_CustomMeleePrecache();
 	WandStocks_Map_Precache();
 	MapStartResetNpc();
-	SMRTS_OnMapStart();
+	RTSCamera_MapStart();
 	Zero(f_AntiStuckPhaseThroughFirstCheck);
 	Zero(f_AntiStuckPhaseThrough);
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
@@ -1461,7 +1463,6 @@ public void OnMapEnd()
 	ConVar_Disable();
 	FileNetwork_MapEnd();
 	NpcStats_OnMapEnd();
-	SMRTS_OnMapEnd();
 }
 
 public void OnConfigsExecuted()
@@ -1719,19 +1720,21 @@ public void OnClientPutInServer(int client)
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN | HIDEHUD_BONUS_PROGRESS); 
 }
 
-#if defined RPG
 public void OnClientCookiesCached(int client)
-{
+{	
+#if defined RPG
 	RPG_ClientCookiesCached(client);
-}
 #endif
+
+	RTSCamera_ClientCookiesCached(client);
+}
 
 public void OnClientDisconnect(int client)
 {
 	FileNetwork_ClientDisconnect(client);
 	KillFeed_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
-	SMRTS_OnClientDisconnect(client);
+	RTSCamera_ClientDisconnect(client);
 	
 	i_ClientHasCustomGearEquipped[client] = false;
 	i_EntityToAlwaysMeleeHit[client] = 0;
@@ -1780,6 +1783,11 @@ public void OnClientDisconnect_Post(int client)
 #if defined RPG
 	RPG_ClientDisconnect_Post();
 #endif
+}
+
+public void OnPlayerRunCmdPre(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
+{
+	RTSCamera_PlayerRunCmdPre(client, buttons, impulse, weapon, mouse);
 }
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
@@ -3223,8 +3231,6 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 	}
-
-	SMRTS_TF2_OnConditionAdded(client, condition);
 }
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)

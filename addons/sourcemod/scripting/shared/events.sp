@@ -106,7 +106,6 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 		{
 			case 0,1,3: //either team ? kill dispenser!
 			{
-				RemoveRTSCamera(client);
 				DestroyDispenser(client);
 			}
 		}
