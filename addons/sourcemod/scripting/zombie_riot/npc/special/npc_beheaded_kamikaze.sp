@@ -32,7 +32,7 @@ void BeheadedKamiKaze_OnMapStart_NPC()
 
 static char[] GetBeheadedKamiKazeHealth()
 {
-	int health = 5;
+	int health = 11;
 
 	float temp_float_hp = float(health);
 	
@@ -113,7 +113,7 @@ methodmap BeheadedKamiKaze < CClotBody
 				//add new kamikazies whenever possible.
 				//this needs to happen every tick!
 				DoGlobalMultiScaling();
-				float SpawnRate = 0.5;
+				float SpawnRate = 0.25;
 				fl_KamikazeSpawnRateDelay = 0.0;
 				SpawnRate /= MultiGlobal;
 				DataPack pack = new DataPack();
