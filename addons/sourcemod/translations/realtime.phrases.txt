@@ -28,6 +28,14 @@
 	{
 		"en"		"Mouse Sensitivity"
 	}
+	"Scroll Speed"
+	{
+		"en"		"Scroll Speed"
+	}
+	"Zoom Speed"
+	{
+		"en"		"Zoom Speed"
+	}
 	"Left-Click"
 	{
 		"en"		"Left-Click"
@@ -56,21 +64,21 @@
 	{
 		"en"		"Clear Selection"
 	}
-	"Move Up"
+	"Scroll Up"
 	{
-		"en"		"Move Up"
+		"en"		"Scroll Up"
 	}
-	"Move Down"
+	"Scroll Down"
 	{
-		"en"		"Move Down"
+		"en"		"Scroll Down"
 	}
-	"Move Left"
+	"Scroll Left"
 	{
-		"en"		"Move Left"
+		"en"		"Scroll Left"
 	}
-	"Move Right"
+	"Scroll Right"
 	{
-		"en"		"Move Right"
+		"en"		"Scroll Right"
 	}
 	"Q (Skill 1)"
 	{

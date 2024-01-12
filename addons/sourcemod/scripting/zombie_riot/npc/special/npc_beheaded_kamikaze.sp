@@ -292,6 +292,8 @@ float BeheadedKamiBoomInternal(int entity, int victim, float damage, int weapon)
 	{
 		return 1000000000.0;
 	}
+
+	return damage;
 }
 
 public Action Kamikaze_Spawn_New(Handle final, any pack)

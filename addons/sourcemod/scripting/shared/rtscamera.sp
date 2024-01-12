@@ -5,13 +5,11 @@
 	https://github.com/geominorai/sm-rts-starter
 */
 
-#define DEFAULT_MIN_ZOOM	300.0
 #define ZERO_VECTOR		{0.0, 0.0, 0.0}
 #define DEFAULT_ANGLES		{45.0, 0.0, 0.0}
+#define HEALTH_BAR_HP_SCALE	0.00025
 #define AXIS_OFFSET		0.196350 // FLOAT_PI/16
-#define ZOOM_SPEED		300.0//3000.0
 #define ZOOM_DECEL_MULTIPLIER	0.9
-#define SCROLL_SPEED		500.0
 #define SCROLL_DECEL_MULTIPLIER	0.9
 #define MOUSE2_DRAG_START_DELAY	0.1
 #define MOUSE2_DRAG_MIN_DIST	0.01
@@ -98,10 +96,10 @@ static const char DisplayKey[Key_MAX][] =
 	"Add To Selection",
 	"Clear Selection",
 
-	"Move Up",
-	"Move Down",
-	"Move Left",
-	"Move Right",
+	"Scroll Up",
+	"Scroll Down",
+	"Scroll Left",
+	"Scroll Right",
 
 	"Q (Skill 1)",
 	"W (Skill 2)",
@@ -126,7 +124,7 @@ static const char DefaultCmd[Key_MAX][] =
 	"invnext",
 #else
 	"+inspect",
-	"+taunt",
+	"+use_action_slot_item",
 #endif
 	"b 2",
 	"b 1",
@@ -206,6 +204,7 @@ static int FocusRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static int CameraRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static int LastFOV[MAXTF2PLAYERS];
 static int LastDefaultFOV[MAXTF2PLAYERS];
+static float MinZoom[MAXTF2PLAYERS];
 static float LastMousePos[MAXTF2PLAYERS][2];
 static float RotateMousePos[MAXTF2PLAYERS][2];
 static float StartDragMousePos[MAXTF2PLAYERS][2];
@@ -224,9 +223,11 @@ static bool HoldPress[MAXTF2PLAYERS][Key_MAX];	// Input being held
 static int NextMoveType[MAXTF2PLAYERS] = {Move_Normal, ...};
 static int BindingKey[MAXTF2PLAYERS] = {-1, ...};
 
-static char KeyBinds[MAXTF2PLAYERS][Key_MAX][16];
+static char KeyBinds[MAXTF2PLAYERS][Key_MAX][32];
 static float AspectRatio[MAXTF2PLAYERS];
 static float MouseSensitivity[MAXTF2PLAYERS];
+static float ScrollSpeed[MAXTF2PLAYERS];
+static float ZoomSpeed[MAXTF2PLAYERS];
 
 void RTSCamera_PluginStart()
 {
@@ -253,8 +254,18 @@ void RTSCamera_PluginStart()
 	}
 }
 
+void RTSCamera_PluginEnd()
+{
+	for(int i; i <= MAXENTITIES; i++)
+	{
+		RemoveSelectBeams(i);
+	}
+}
+
 void RTSCamera_ClientDisconnect(int client)
 {
+	RTSEnabled[client] = false;
+	
 	if(RTSCamera_InCamera(client))
 		DisableCamera(client);
 	
@@ -275,11 +286,13 @@ void RTSCamera_ClientCookiesCached(int client)
 static void SetDefaultValues(int client)
 {
 	AspectRatio[client] = 1.777777;	// 16:9
-	MouseSensitivity[client] = 0.004;
+	MouseSensitivity[client] = 0.0004;
+	ScrollSpeed[client] = 500.0;
+	ZoomSpeed[client] = 600.0;
 
 	for(int i; i < sizeof(KeyBinds[]); i++)
 	{
-		strcopy(KeyBinds[client][i], sizeof(KeyBinds[]), DefaultCmd[i]);
+		strcopy(KeyBinds[client][i], sizeof(KeyBinds[][]), DefaultCmd[i]);
 	}
 }
 
@@ -323,9 +336,9 @@ static void ShowMenu(int client, int page)
 			menu.AddItem("1", buffer, cached ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 			FormatEx(buffer, sizeof(buffer), "%t", "Bind Settings");
-			menu.AddItem("2", buffer, cached ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+			menu.AddItem("9", buffer, cached ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 		}
-		case 1, 2, 3:
+		case 1, 2, 3, 4, 5:
 		{
 			menu.SetTitle("%t\n%t\n ", "Real-Time Camera", "Mouse Settings");
 
@@ -359,6 +372,36 @@ static void ShowMenu(int client, int page)
 				menu.AddItem("3", buffer);
 			}
 
+			FormatEx(buffer, sizeof(buffer), "%t: %.1f", "Scroll Speed", ScrollSpeed[client] / 100.0);
+			if(page == 4)
+			{
+				menu.AddItem("41", "^");
+				menu.AddItem("42", buffer);
+				menu.AddItem("43", "v\n ");
+			}
+			else
+			{
+				if(page == 5)
+					StrCat(buffer, sizeof(buffer), "\n ");
+				
+				menu.AddItem("4", buffer);
+			}
+
+			FormatEx(buffer, sizeof(buffer), "%t: %.1f", "Zoom Speed", ZoomSpeed[client] / 100.0);
+			if(page == 5)
+			{
+				menu.AddItem("51", "^");
+				menu.AddItem("52", buffer);
+				menu.AddItem("53", "v\n ");
+			}
+			else
+			{
+				if(page == 6)
+					StrCat(buffer, sizeof(buffer), "\n ");
+				
+				menu.AddItem("5", buffer);
+			}
+
 			menu.ExitBackButton = true;
 		}
 		case 9:
@@ -372,7 +415,7 @@ static void ShowMenu(int client, int page)
 					int button = StringToInt(KeyBinds[client][i][2]);
 					if(button >= 0 && button < sizeof(ButtonCmd))
 					{
-						strcopy(buffer, sizeof(buffer), ButtonCmd[i]);
+						strcopy(buffer, sizeof(buffer), ButtonCmd[button]);
 					}
 					else
 					{
@@ -448,6 +491,7 @@ public int RTSCamera_ShowMenuH(Menu menu, MenuAction action, int client, int cho
 		case MenuAction_Select:
 		{
 			char buffer[8];
+			menu.GetItem(choice, buffer, sizeof(buffer));
 			int option = StringToInt(buffer);
 			switch(option)
 			{
@@ -463,7 +507,15 @@ public int RTSCamera_ShowMenuH(Menu menu, MenuAction action, int client, int cho
 				}
 				case 22:
 				{
-					MouseSensitivity[client] = 0.0004;
+					if(MouseSensitivity[client] == 0.0004)
+					{
+						MouseSensitivity[client] = -0.0004;
+					}
+					else
+					{
+						MouseSensitivity[client] = 0.0004;
+					}
+
 					SaveMouseCookie(client);
 					option = 2;
 				}
@@ -490,6 +542,58 @@ public int RTSCamera_ShowMenuH(Menu menu, MenuAction action, int client, int cho
 					AspectRatio[client] = (RoundFloat(AspectRatio[client] * 9.0) - 1) / 9.0;
 					SaveMouseCookie(client);
 					option = 3;
+				}
+				case 41:
+				{
+					ScrollSpeed[client] += 10.0;
+					SaveMouseCookie(client);
+					option = 4;
+				}
+				case 42:
+				{
+					if(ScrollSpeed[client] == 500.0)
+					{
+						ScrollSpeed[client] = -500.0;
+					}
+					else
+					{
+						ScrollSpeed[client] = 500.0;
+					}
+					
+					SaveMouseCookie(client);
+					option = 4;
+				}
+				case 43:
+				{
+					ScrollSpeed[client] -= 10.0;
+					SaveMouseCookie(client);
+					option = 4;
+				}
+				case 51:
+				{
+					ZoomSpeed[client] += 10.0;
+					SaveMouseCookie(client);
+					option = 5;
+				}
+				case 52:
+				{
+					if(ZoomSpeed[client] == 600.0)
+					{
+						ZoomSpeed[client] = -600.0;
+					}
+					else
+					{
+						ZoomSpeed[client] = 600.0;
+					}
+
+					SaveMouseCookie(client);
+					option = 5;
+				}
+				case 53:
+				{
+					ZoomSpeed[client] -= 10.0;
+					SaveMouseCookie(client);
+					option = 5;
 				}
 				default:
 				{
@@ -536,10 +640,10 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 	float mouse[2];
 	for(int i; i < sizeof(mouse); i++)
 	{
-		mouse[i] = LastMousePos[client][i] + (rawMouse[1] * MouseSensitivity[client]);
+		mouse[i] = LastMousePos[client][i] + (rawMouse[i] * MouseSensitivity[client]);
 
 		if(!holding[Key_AdjustCamera])
-			mouse[0] = fClamp(mouse[0], 0.02, 0.99);
+			mouse[i] = fClamp(mouse[i], 0.02, 0.99);
 	}
 
 	LastMousePos[client] = mouse;
@@ -617,14 +721,14 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 	if(holding[Key_ZoomIn] ^ holding[Key_ZoomOut])
 	{
 		cameraVel = CameraVector[client];
-		ScaleVector(cameraVel, ZOOM_SPEED * (holding[Key_ZoomIn] ? 1.0 : -1.0));
+		ScaleVector(cameraVel, ZoomSpeed[client] * (holding[Key_ZoomIn] ? 1.0 : -1.0));
 	}
 	else
 	{
 		ScaleVector(cameraVel, ZOOM_DECEL_MULTIPLIER);
 	}
 
-	if(CameraDistance[client] < DEFAULT_MIN_ZOOM && cameraVel[2] < 0.0)
+	if(CameraDistance[client] < MinZoom[client] && cameraVel[2] < 0.0)
 	{
 		cameraVel = ZERO_VECTOR;
 	}
@@ -635,7 +739,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 
 	// Planar scrolling
 
-	float speed = SCROLL_SPEED * CameraDistance[client] / DEFAULT_MIN_ZOOM;
+	float speed = ScrollSpeed[client] * CameraDistance[client] / MinZoom[client];
 
 	float forwardVec[3];
 	forwardVec[0] = CameraVector[client][0];
@@ -741,12 +845,31 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 		SetEntPropVector(camera, Prop_Data, "m_vecVelocity", cameraVel);
 	}
 
+	if(pressed[Key_Escape])
+		delete Selected[client];
+	
 	// Highlight all selected units
 	HighlightSelectedUnits(client);
 
 	if(holding[Key_ZoomIn] || holding[Key_ZoomOut] || holding[Key_AdjustCamera])
 	{
 		return;
+	}
+
+	if(Selected[client])
+	{
+		if(pressed[Key_Attack])
+		{
+			NextMoveType[client] = Move_Attack;
+		}
+		else if(pressed[Key_Stand])
+		{
+			NextMoveType[client] = Move_HoldPos;
+		}
+		else if(pressed[Key_Patrol])
+		{
+			NextMoveType[client] = Move_Patrol;
+		}
 	}
 
 	// Cursor point and rectangle selection through a stationary viewport
@@ -770,6 +893,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 
 				mouse[0] = fClamp(mouse[0], 0.022, 0.989);
 				mouse[1] = fClamp(mouse[1], 0.022, 0.989);
+				LastMousePos[client] = mouse;
 			}
 
 			// Consistency is required for counter-clockwise order of points used in
@@ -830,11 +954,11 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 				}
 			}
 
-			int entity = EntIndexToEntRef(BeamRef[client][3]);
+			int entity = EntRefToEntIndex(BeamRef[client][3]);
 			for(int i; i < sizeof(BeamRef[]); i++)
 			{
 				int target = entity;
-				entity = EntIndexToEntRef(BeamRef[client][i]);
+				entity = EntRefToEntIndex(BeamRef[client][i]);
 
 				if(IsValidEntity(entity))
 				{
@@ -858,17 +982,17 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 	{
 		if(InSelectDrag[client])
 		{
-			delete Selected[client];
+			if(!holding[Key_Ctrl])
+				delete Selected[client];
 
 			if(GetVectorDistance(SelectionVerticies[client][1], SelectionVerticies[client][3], true) > 0.0)
 			{
-				int index;
-				int entity;
+				int entity = MaxClients;
 				float pos[3], vectors[4][3], vertex[3];
-				while((index = UnitEntityIterator(client, index, entity)) != -1)
+				while(UnitEntityIterator(client, entity))
 				{
-					//if(Selected[client].FindValue(EntIndexToEntRef(entity)) != -1)
-					//	continue;
+					if(Selected[client] && Selected[client].FindValue(EntIndexToEntRef(entity)) != -1)
+						continue;
 					
 					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 
@@ -903,7 +1027,9 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 			}
 			else if(selected != INVALID_ENT_REFERENCE)
 			{
-				delete Selected[client];
+				if(!holding[Key_Ctrl])
+					delete Selected[client];
+				
 				SelectUnit(client, selected);
 			}
 
@@ -943,6 +1069,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 			if(!Selected[client] || distance > (MOUSE2_DRAG_MIN_DIST * MOUSE2_DRAG_MIN_DIST))
 			{
 				InMoveDrag[client] = true;
+				NextMoveType[client] = 0;
 			}
 		}
 	}
@@ -952,6 +1079,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 		{
 			InMoveDrag[client] = false;
 			CameraMoveDrag[client] = ZERO_VECTOR;
+			NextMoveType[client] = 0;
 		}
 		else if(!holding[Key_LeftClick])	// Not cancel with Left-Click
 		{
@@ -1014,6 +1142,10 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 		SetHudTextParams(mouse[0]-0.01, mouse[1]-0.02, 0.5, color[0], color[1], color[2], color[3], 0, 0.0, 0.0, 0.0);
 		ShowSyncHudText(client, SyncHud, cursor);
 	}
+	else
+	{
+		ShowSyncHudText(client, SyncHud, "");
+	}
 }
 
 static int GetUnitSelectTrace(int client, const float vecPos[3], const float vecAng[3], float vecEndPos[3])
@@ -1055,6 +1187,8 @@ static void MoveSelectedUnits(int client, const float vecMovePos[3])
 {
 	if(Selected[client])
 	{
+		CreateParticle("ping_circle", vecMovePos, NULL_VECTOR);
+
 		int length = Selected[client].Length;
 		if(length)
 		{
@@ -1068,16 +1202,16 @@ static void MoveSelectedUnits(int client, const float vecMovePos[3])
 			switch(NextMoveType[client])
 			{
 				case Move_Normal:
-					ClientCommand(client, "playgamesoundcoach/coach_go_here.wav");
+					ClientCommand(client, "playgamesound coach/coach_go_here.wav");
 				
 				case Move_Attack:
-					ClientCommand(client, "playgamesoundcoach/coach_attack_here.wav");
+					ClientCommand(client, "playgamesound coach/coach_attack_here.wav");
 				
 				case Move_HoldPos:
-					ClientCommand(client, "playgamesoundcoach/coach_defend_here.wav");
+					ClientCommand(client, "playgamesound coach/coach_defend_here.wav");
 				
 				case Move_Patrol:
-					ClientCommand(client, "playgamesoundcoach/coach_look_here.wav");
+					ClientCommand(client, "playgamesound coach/coach_look_here.wav");
 			}
 		}
 
@@ -1161,16 +1295,16 @@ static void DrawUnitHealthBar(int client, int entity)
 	{
 		float overhealOffset[3];
 		overhealOffset = vecRight;
-		ScaleVector(overhealOffset, 0.0001 * (maxHealth - health));
+		ScaleVector(overhealOffset, HEALTH_BAR_HP_SCALE * (maxHealth - health));
 		AddVectors(hpbarPos, overhealOffset, hpbarPos);
 	}
 
 	float horizontalLeftPos[3];
 	float horizontalRightPos[3];
 
-	float barMin = 0.0001 * maxHealth;
-	float barMax = 0.0001 * maxHealth;
-	float barSplit = 0.0001 * 2.0 * health;
+	float barMin = HEALTH_BAR_HP_SCALE * maxHealth;
+	float barMax = HEALTH_BAR_HP_SCALE * maxHealth;
+	float barSplit = HEALTH_BAR_HP_SCALE * 2.0 * health;
 
 	float vecRightOffset[3], vecLeftOffset[3];
 	vecRightOffset = vecRight;
@@ -1187,8 +1321,8 @@ static void DrawUnitHealthBar(int client, int entity)
 	AddVectors(horizontalLeftPos, horizontalRightPos, horizontalRightPos);
 
 	int beam1 = EntRefToEntIndex(BeamRef[entity][0]);
-	int beam2 = INVALID_ENT_REFERENCE;
-	int target = INVALID_ENT_REFERENCE;
+	int beam2 = -1;
+	int target = -1;
 	if(!IsValidEntity(beam1))
 	{
 		RemoveSelectBeams(entity);
@@ -1199,8 +1333,8 @@ static void DrawUnitHealthBar(int client, int entity)
 			SetEntityModel(beam1, LaserModel);
 			
 			SetEntProp(beam1, Prop_Send, "m_nBeamType", 2);
-			SetEntPropFloat(beam1, Prop_Data, "m_fWidth", 0.1);
-			SetEntPropFloat(beam1, Prop_Data, "m_fEndWidth", 0.1);
+			SetEntPropFloat(beam1, Prop_Data, "m_fWidth", 0.3);
+			SetEntPropFloat(beam1, Prop_Data, "m_fEndWidth", 0.3);
 
 			SetEntPropEnt(beam1, Prop_Data, "m_hOwnerEntity", entity);
 
@@ -1223,8 +1357,8 @@ static void DrawUnitHealthBar(int client, int entity)
 						SetEntityModel(beam2, LaserModel);
 						
 						SetEntProp(beam2, Prop_Send, "m_nBeamType", 2);
-						SetEntPropFloat(beam2, Prop_Data, "m_fWidth", 0.1);
-						SetEntPropFloat(beam2, Prop_Data, "m_fEndWidth", 0.1);
+						SetEntPropFloat(beam2, Prop_Data, "m_fWidth", 0.3);
+						SetEntPropFloat(beam2, Prop_Data, "m_fEndWidth", 0.3);
 
 						SetEntPropEnt(beam2, Prop_Data, "m_hOwnerEntity", entity);
 
@@ -1246,13 +1380,13 @@ static void DrawUnitHealthBar(int client, int entity)
 
 		if(health == maxHealth)
 		{
-			if(beam2 != INVALID_ENT_REFERENCE)
+			if(beam2 != -1)
 			{
 				RemoveEntity(beam2);
 				BeamRef[entity][2] = INVALID_ENT_REFERENCE;
 			}
 		}
-		else if(beam2 == INVALID_ENT_REFERENCE)
+		else if(beam2 == -1)
 		{
 			beam2 = CreateEntityByName("env_beam");
 			if(beam2 != -1)
@@ -1260,8 +1394,8 @@ static void DrawUnitHealthBar(int client, int entity)
 				SetEntityModel(beam2, LaserModel);
 				
 				SetEntProp(beam2, Prop_Send, "m_nBeamType", 2);
-				SetEntPropFloat(beam2, Prop_Data, "m_fWidth", 0.1);
-				SetEntPropFloat(beam2, Prop_Data, "m_fEndWidth", 0.1);
+				SetEntPropFloat(beam2, Prop_Data, "m_fWidth", 0.3);
+				SetEntPropFloat(beam2, Prop_Data, "m_fEndWidth", 0.3);
 
 				SetEntPropEnt(beam2, Prop_Data, "m_hOwnerEntity", entity);
 
@@ -1295,11 +1429,16 @@ static void DrawUnitHealthBar(int client, int entity)
 
 static Action SetTransmit_HealthBeam(int entity, int client)
 {
-	if(client > 0 && client <= MaxClients)
+	if(client > 0 && client <= MaxClients && Selected[client])
 	{
-		if(Selected[client] && Selected[client].FindValue(EntIndexToEntRef(entity)) != -1)
+		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+		if(owner == -1)
 		{
-			//DrawUnitHealthBar(client, entity);
+			RemoveEntity(entity);
+		}
+		else if(Selected[client].FindValue(EntIndexToEntRef(owner)) != -1)
+		{
+			DrawUnitHealthBar(client, entity);
 			return Plugin_Continue;
 		}
 	}
@@ -1376,23 +1515,23 @@ static void GetCursorVector(int client, const float vecVector[3], const float mo
 	float maxX = ArcTangent2(DegToRad(LastDefaultFOV[client] * 0.5), 1.0);
 	float maxY = ArcTangent2(DegToRad(LastDefaultFOV[client] * 0.5 / AspectRatio[client]), 1.0);
 
-	float cursorX = 4*(mouse[0]-0.5)*maxX;
-	float cursorY = 2*AspectRatio[client]*(mouse[1]-0.5)*maxY;
+	float cursorX = 4.0 * (mouse[0] - 0.5) * maxX;
+	float cursorY = 2.0 * AspectRatio[client] * (mouse[1] - 0.5) * maxY;
 
 	float angle[3];
 	GetVectorAngles(vecVector, angle);
 
 	Vector_DegToRad(angle);
 
-	float vecCursor[3];
-	vecCursor[0] = 1.0;
-	vecCursor[1] = -cursorX;
-	vecCursor[2] = -cursorY;
+	float cursor[3];
+	cursor[0] = 1.0;
+	cursor[1] = -cursorX;
+	cursor[2] = -cursorY;
 
 	float matRotation[3][3];
 	Matrix_GetRotationMatrix(matRotation, angle[2], angle[0], angle[1]);
 
-	Matrix_VectorMultiply(matRotation, vecCursor, cursorVector);
+	Matrix_VectorMultiply(matRotation, cursor, cursorVector);
 }
 
 static void EnableCamera(int client)
@@ -1418,11 +1557,12 @@ static void EnableCamera(int client)
 	SetEntityMoveType(camera, MOVETYPE_NOCLIP);
 
 	float pos[3];
-	pos[2] += DEFAULT_MIN_ZOOM;
+	pos[2] += 300.0;
+	MinZoom[client] = pos[2];
 	GetClientEyePosition(client, pos);
 	TeleportEntity(focus, pos);
 
-	CameraDistance[client] = DEFAULT_MIN_ZOOM * -2.0;
+	CameraDistance[client] = MinZoom[client] * -2.0;
 	GetAngleVectors(DEFAULT_ANGLES, CameraVector[client], NULL_VECTOR, NULL_VECTOR);
 
 	pos = CameraVector[client];
@@ -1528,16 +1668,19 @@ stock bool ProcessInputs(int client, int buttons, int impulse, int weapon, bool 
 			if(buttons & (1 << i))
 			{
 				BindKey(client, "b %d", i);
-				break;
+				return false;
 			}
 		}
+
+		if(impulse)
+			BindKey(client, "i %d", impulse);
 
 		return false;
 	}
 
 	for(int i; i < Key_MAX; i++)
 	{
-		if(i == Key_RightClick && HoldPress[client][Key_LeftClick])
+		if(i == Key_RightClick && holding[Key_LeftClick])
 		{
 			// Special rule: Left-Click overrides Right-Click
 			NewPress[client][i] = false;
@@ -1545,7 +1688,7 @@ stock bool ProcessInputs(int client, int buttons, int impulse, int weapon, bool 
 		}
 		else if(StrContains(KeyBinds[client][i], "b ") == 0)
 		{
-			int button = StringToInt(KeyBinds[client][i][2]);
+			int button = 1 << StringToInt(KeyBinds[client][i][2]);
 			if(buttons & button)
 			{
 				if(!HoldPress[client][i])
@@ -1570,11 +1713,14 @@ stock bool ProcessInputs(int client, int buttons, int impulse, int weapon, bool 
 			HoldPress[client][i] = false;
 		}
 
+		//if(HoldPress[client][i])
+		//	PrintToChat(client, "%d - %s", i, DefaultCmd[i]);
+
 		previous[i] = LastPress[client][i];
 		pressed[i] = NewPress[client][i];
 		holding[i] = NewPress[client][i] || HoldPress[client][i];
 
-		LastPress[client][i] = pressed[i];
+		LastPress[client][i] = holding[i];
 		NewPress[client][i] = false;
 	}
 	return true;
@@ -1638,11 +1784,21 @@ static Action OnSingleCommand(int client, const char[] command, int argc)
 
 static void BindKey(int client, const char[] input, any ...)
 {
-	VFormat(KeyBinds[client][BindingKey[client]], sizeof(KeyBinds[][]), input, 2);
+	VFormat(KeyBinds[client][BindingKey[client]], sizeof(KeyBinds[][]), input, 3);
 	FormatInput(KeyBinds[client][BindingKey[client]], sizeof(KeyBinds[][]), KeyBinds[client][BindingKey[client]]);
+
+	for(int i; i < Key_MAX; i++)
+	{
+		if(BindingKey[client] != i && KeyBinds[client][i])
+		{
+			strcopy(KeyBinds[client][i], sizeof(KeyBinds[][]), "<unbound>");
+			break;
+		}
+	}
 
 	BindingKey[client] = -1;
 	SaveKeybinds(client);
+	ShowMenu(client, 9);
 }
 
 static void LoadKeybinds(int client)
@@ -1690,12 +1846,12 @@ static void FormatInput(char[] buffer, int length, const char[] input)
 static int InputToKey(int client, const char[] input, any ...)
 {
 	char buffer[32];
-	VFormat(buffer, sizeof(buffer), input, 2);
+	VFormat(buffer, sizeof(buffer), input, 3);
 	FormatInput(buffer, sizeof(buffer), buffer);
 
 	for(int i; i < Key_MAX; i++)
 	{
-		if(StrEqual(input, KeyBinds[client][i]))
+		if(StrEqual(buffer, KeyBinds[client][i]))
 			return i;
 	}
 
@@ -1738,7 +1894,7 @@ static void SelectUnit(int client, int iSelectedEntity)
 	if(!Selected[client])
 		Selected[client] = new ArrayList();
 
-	Selected[client].Push(iSelectedEntity);
+	Selected[client].Push(EntIndexToEntRef(iSelectedEntity));
 }
 
 /**
@@ -1768,68 +1924,17 @@ static void MoveUnit(int client, int entity, const float vecMovePos[3])
 	}
 }
 
-/**
- * Iterate through controllable units
- * 
- * @param index			Index of a controllable unit starting from 0
- * @param entity			Entity of unit at this index, or INVALID_ENT_REFERENCE if it does not exist
- * @return					Returns the next unit index or -1 if there are no more
- */
-static int UnitEntityIterator(int client, int index=0, int &entity=INVALID_ENT_REFERENCE)
+static bool UnitEntityIterator(int client, int &entity)
 {
-	index++;
-	for(; index < MAXENTITIES; index++)
+	entity++;
+	for(; entity < MAXENTITIES; entity++)
 	{
-		BarrackBody npc = view_as<BarrackBody>(index);
-		if(!b_NpcHasDied[index] && npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
+		BarrackBody npc = view_as<BarrackBody>(entity);
+		if(!b_NpcHasDied[entity] && npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
 		{
-			entity = index;
-			return index;
+			return true;
 		}
 	}
 
-	return -1;
-}
-
-/*
-	Add to stocks.sp below
-*/
-
-stock void Vector_DegToRad(float vecVector[3])
-{
-	vecVector[0] = DegToRad(vecVector[0]);
-	vecVector[1] = DegToRad(vecVector[1]);
-	vecVector[2] = DegToRad(vecVector[2]);
-}
-
-stock void Matrix_VectorMultiply(float matMatrix[3][3], float vecVector[3], float vecResult[3])
-{
-	vecResult[0] = matMatrix[0][0]*vecVector[0] + matMatrix[0][1]*vecVector[1] + matMatrix[0][2]*vecVector[2];
-	vecResult[1] = matMatrix[1][0]*vecVector[0] + matMatrix[1][1]*vecVector[1] + matMatrix[1][2]*vecVector[2];
-	vecResult[2] = matMatrix[2][0]*vecVector[0] + matMatrix[2][1]*vecVector[1] + matMatrix[2][2]*vecVector[2];
-}
-
-stock void Matrix_Set(float matMatrix[3][3], float f00, float f01, float f02, float f10, float f11, float f12, float f20, float f21, float f22)
-{
-	matMatrix[0][0] = f00;	matMatrix[0][1] = f01;	matMatrix[0][2] = f02;
-	matMatrix[1][0] = f10;	matMatrix[1][1] = f11;	matMatrix[1][2] = f12;
-	matMatrix[2][0] = f20;	matMatrix[2][1] = f21;	matMatrix[2][2] = f22;
-}
-
-stock void Matrix_GetRotationMatrix(float matMatrix[3][3], float fA, float fB, float fG)
-{
-	float fSinA = Sine(fA);
-	float fCosA = Cosine(fA);
-
-	float fSinB = Sine(fB);
-	float fCosB = Cosine(fB);
-
-	float fSinG = Sine(fG);
-	float fCosG = Cosine(fG);
-
-	Matrix_Set(matMatrix,
-		fCosB*fCosG, 	fSinA*fSinB*fCosG - fCosA*fSinG, 	fCosA*fSinB*fCosG + fSinA*fSinG,
-		fCosB*fSinG,	fSinA*fSinB*fSinG + fCosA*fCosG, 	fCosA*fSinB*fSinG - fSinA*fCosG,
-		     -fSinB,		                fSinA*fCosB,	                    fCosA*fCosB
-	);
+	return false;
 }
