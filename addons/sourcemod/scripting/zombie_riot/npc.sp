@@ -1505,7 +1505,7 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_ruina_venium",
 	"npc_ruina_magia_anchor",
 	"npc_ruina_storm_weaver",
-	"npc_ruina_storm_weaver_what",
+	"npc_ruina_storm_weaver_bodypart",
 	"npc_beheaded_kami"
 };
 

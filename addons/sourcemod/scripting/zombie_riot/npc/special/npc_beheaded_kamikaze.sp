@@ -32,10 +32,8 @@ void BeheadedKamiKaze_OnMapStart_NPC()
 
 static char[] GetBeheadedKamiKazeHealth()
 {
-	int health = 3;
-	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
-	
+	int health = 5;
+
 	float temp_float_hp = float(health);
 	
 	health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.15));
