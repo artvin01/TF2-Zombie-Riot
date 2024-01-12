@@ -1253,6 +1253,7 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.icons"); 
 	LoadTranslations("zombieriot.phrases.rogue"); 
 	LoadTranslations("zombieriot.phrases.item.gift.desc"); 
+	LoadTranslations("realtime.phrases");
 	LoadTranslations("common.phrases");
 	
 	DHook_Setup();
