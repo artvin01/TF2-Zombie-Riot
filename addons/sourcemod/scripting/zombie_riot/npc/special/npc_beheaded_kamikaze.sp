@@ -32,16 +32,35 @@ void BeheadedKamiKaze_OnMapStart_NPC()
 
 static char[] GetBeheadedKamiKazeHealth()
 {
-	int health = 11;
-
-	float temp_float_hp = float(health);
+	int health = 15;
+	int health_after;
 	
-	health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.15));
-
-	health = health * 3 / 8;
-	
+	if(CurrentRound+1 <= 30)
+	{
+		health_after = ((CurrentRound+1) * health);
+	}
+	else if(CurrentRound+1 <= 45)
+	{
+		health_after = ((CurrentRound+1) * health) * 2;
+	}
+	else if(CurrentRound+1 <= 50)
+	{
+		health_after = ((CurrentRound+1) * health) * 4;
+	}
+	else if(CurrentRound+1 <= 55)
+	{
+		health_after = ((CurrentRound+1) * health) * 8;
+	}
+	else if(CurrentRound+1 <= 60)
+	{
+		health_after = ((CurrentRound+1) * health) * 10;
+	}
+	else
+	{
+		health_after = ((CurrentRound+1) * health) * 12;
+	}
 	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
+	IntToString(health_after, buffer, sizeof(buffer));
 	return buffer;
 }
 
@@ -282,7 +301,7 @@ void Kamikaze_DeathExplosion(int entity)
 
 	int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
 	SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
-	Explode_Logic_Custom(60.0 * npc.m_flWaveScale,
+	Explode_Logic_Custom(90.0 * npc.m_flWaveScale,
 	npc.index,
 	npc.index,
 	-1,
@@ -317,6 +336,8 @@ float BeheadedKamiBoomInternal(int entity, int victim, float damage, int weapon)
 	{
 		return 1000000000.0;
 	}
+	else if(!b_NpcHasDied[entity] && !b_IsAlliedNpc[victim])
+		return damage * 15.0;
   
 	return damage;
 }
