@@ -2604,6 +2604,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
+		else if(!StrContains(classname, "tf_wearable"))
+		{
+			CreateTimer(0.2, Timer_RemoveStrange, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		}
 		else if(!StrContains(classname, "func_brush"))
 		{
 			b_is_a_brush[entity] = true;
@@ -3051,6 +3055,22 @@ public void Delete_FrameLater(int ref) //arck, they are client side...
 	{
 		RemoveEntity(entity);
 	}
+}
+
+public Action Timer_RemoveStrange(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(entity != -1)
+	{
+		char netclass[64];
+		if(GetEntityNetClass(entity, netclass, sizeof(netclass)))
+		{
+			SetEntData(entity, FindSendPropInfo(netclass, "m_iItemIDHigh") - 4, 0);	// m_iItemID
+			SetEntProp(entity, Prop_Send, "m_iItemIDHigh", 0);
+			SetEntProp(entity, Prop_Send, "m_iItemIDLow", 0);
+		}
+	}
+	return Plugin_Continue;
 }
 
 /*

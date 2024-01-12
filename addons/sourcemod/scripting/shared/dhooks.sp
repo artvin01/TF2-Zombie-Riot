@@ -104,6 +104,9 @@ void DHook_Setup()
 
 	DHook_CreateDetour(gamedata, "CTFWeaponBaseMelee::DoSwingTraceInternal", DHook_DoSwingTracePre, _);
 	DHook_CreateDetour(gamedata, "CWeaponMedigun::CreateMedigunShield", DHook_CreateMedigunShieldPre, _);
+
+//	DHook_CreateDetour(gamedata, "EconEntity_OnOwnerKillEaterEventNoPartner", DHook_BlockEcon);
+//	DHook_CreateDetour(gamedata, "EconItemInterface_OnOwnerKillEaterEventNoPartner", DHook_BlockEcon);
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -261,6 +264,7 @@ public MRESReturn DHook_CreateMedigunShieldPre(int entity, DHookReturn returnHoo
 {
 	return MRES_Supercede;
 }
+
 void OnWrenchCreated(int entity) 
 {
 	g_WrenchSmack.HookEntity(Hook_Pre, entity, Wrench_SmackPre);

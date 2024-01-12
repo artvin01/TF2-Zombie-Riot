@@ -608,6 +608,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 			}
 			else
 			{
+				ExtinguishTarget(entity);
 				IgniteTimer[entity] = null;
 				IgniteFor[entity] = 0;
 				BurnDamage[entity] = 0.0;
@@ -616,6 +617,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 		}
 		else
 		{
+			ExtinguishTarget(entity);
 			IgniteTimer[entity] = null;
 			IgniteFor[entity] = 0;
 			BurnDamage[entity] = 0.0;
