@@ -1356,6 +1356,9 @@ public void OnPluginEnd()
 			OnClientDisconnect(i);
 		}
 	}
+
+	RTSCamera_PluginEnd();
+	
 	/*
 	char classname[256];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
