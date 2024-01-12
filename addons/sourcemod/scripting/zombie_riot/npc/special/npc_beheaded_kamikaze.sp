@@ -20,7 +20,7 @@ void BeheadedKamiKaze_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_Spawn));	   i++) { PrecacheSoundCustom(g_Spawn[i]);	   }
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSoundCustom(g_IdleAlertedSounds[i]); }
-	PrecacheModel("models/zombie_riot/serious/kamikaze_3.mdl");
+	PrecacheModel("models/zombie_riot/serious/kamikaze_4.mdl");
 	PrecacheSoundCustom("#zombie_riot/miniboss/kamikaze/sam_rush_2.mp3");
 		
 	fl_KamikazeInitiate = 0.0;
@@ -86,7 +86,7 @@ methodmap BeheadedKamiKaze < CClotBody
 	
 	public BeheadedKamiKaze(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_3.mdl", "1.10", GetBeheadedKamiKazeHealth(), ally));
+		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", GetBeheadedKamiKazeHealth(), ally));
 		
 		i_NpcInternalId[npc.index] = MINI_BEHEADED_KAMI;
 		i_NpcWeight[npc.index] = 2;
