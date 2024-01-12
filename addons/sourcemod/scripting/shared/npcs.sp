@@ -1651,6 +1651,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 		if(raidboss_active)
 		{
+			//there is a raid, then this displays a hud below the raid hud.
 			HudOffset = 0.205;
 
 			int raidboss = EntRefToEntIndex(RaidBossActive);
@@ -1665,6 +1666,10 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			}
 
 			if(DoesNpcHaveHudDebuffOrBuff(raidboss, GameTime))
+			{
+				HudOffset += 0.035;
+			}
+			if(b_NpcIsInvulnerable[victim])
 			{
 				HudOffset += 0.035;
 			}
@@ -1686,7 +1691,12 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
 		if(!b_NpcIsInvulnerable[victim])
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%0.f", ExtraHudHurt, f_damageAddedTogether[attacker]);
+		{
+			if(!raidboss_active)
+			{
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%0.f", ExtraHudHurt, f_damageAddedTogether[attacker]);
+			}
+		}
 		else
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s %t", ExtraHudHurt, "Invulnerable Npc");
 			
@@ -1701,9 +1711,15 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 		if(Timer_Show > 800.0)
 			RaidModeTime = 99999999.9;
+
+		float HudOffset = 0.05;
+		float HudY = -1.0;
+
+		HudY += f_HurtHudOffsetY[attacker];
+		HudOffset += f_HurtHudOffsetX[attacker];
 			
 		SetGlobalTransTarget(attacker);
-		SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+		SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
 		//todo: better showcase of timer.
 		char ExtraHudHurt[255];
 
@@ -1729,7 +1745,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		if(!b_NpcIsInvulnerable[victim])
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%0.f", ExtraHudHurt, f_damageAddedTogether[attacker]);
 		else
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s %t", ExtraHudHurt, "Invulnerable Npc");
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s %t\n-%0.f", ExtraHudHurt, "Invulnerable Npc", f_damageAddedTogether[attacker]);
 			
 		ShowSyncHudText(attacker, SyncHudRaid,"%s",ExtraHudHurt);	
 
