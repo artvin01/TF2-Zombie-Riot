@@ -27,7 +27,11 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
 	char buffer[64];
 	KvGetSectionName(kv, buffer, sizeof(buffer));
-	if(StrEqual(buffer, "+inspect_server", false))
+	if(RTSCamera_ClientCommandKeyValues(client, buffer))
+	{
+		return Plugin_Handled;
+	}
+	else if(StrEqual(buffer, "+inspect_server", false))
 	{
 #if defined ZR
 		b_HoldingInspectWeapon[client] = true;

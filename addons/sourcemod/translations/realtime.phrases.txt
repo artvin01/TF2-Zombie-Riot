@@ -1,0 +1,135 @@
+"Phrases"
+{
+	"Real-Time Camera"
+	{
+		"en"		"Real-Time Camera"
+	}
+	"Disable Camera"
+	{
+		"en"		"Disable Camera"
+	}
+	"Enable Camera"
+	{
+		"en"		"Enable Camera"
+	}
+	"Mouse Settings"
+	{
+		"en"		"Mouse Settings"
+	}
+	"Bind Settings"
+	{
+		"en"		"Bind Settings"
+	}
+	"Screen Aspect Ratio"
+	{
+		"en"		"Screen Aspect Ratio"
+	}
+	"Mouse Sensitivity"
+	{
+		"en"		"Mouse Sensitivity"
+	}
+	"Left-Click"
+	{
+		"en"		"Left-Click"
+	}
+	"Right-Click"
+	{
+		"en"		"Right-Click"
+	}
+	"Adjust Camera"
+	{
+		"en"		"Adjust Camera"
+	}
+	"Zoom In"
+	{
+		"en"		"Zoom In"
+	}
+	"Zoom Out"
+	{
+		"en"		"Zoom Out"
+	}
+	"Add To Selection"
+	{
+		"en"		"Add To Selection"
+	}
+	"Clear Selection"
+	{
+		"en"		"Clear Selection"
+	}
+	"Move Up"
+	{
+		"en"		"Move Up"
+	}
+	"Move Down"
+	{
+		"en"		"Move Down"
+	}
+	"Move Left"
+	{
+		"en"		"Move Left"
+	}
+	"Move Right"
+	{
+		"en"		"Move Right"
+	}
+	"Q (Skill 1)"
+	{
+		"en"		"Q (Skill 1)"
+	}
+	"W (Skill 2)"
+	{
+		"en"		"W (Skill 2)"
+	}
+	"E (Skill 3)"
+	{
+		"en"		"E (Skill 3)"
+	}
+	"R (Skill 4)"
+	{
+		"en"		"R (Skill 4)"
+	}
+	"T (Skill 5)"
+	{
+		"en"		"T (Skill 5)"
+	}
+	"A (Attack Move)"
+	{
+		"en"		"A (Attack Move)"
+	}
+	"S (Stand Ground)"
+	{
+		"en"		"S (Stand Ground)"
+	}
+	"D (Patrol Area)"
+	{
+		"en"		"D (Patrol Area)"
+	}
+	"F (Skill 9)"
+	{
+		"en"		"F (Skill 9)"
+	}
+	"G (Skill 10)"
+	{
+		"en"		"G (Skill 10)"
+	}
+	"Press a key to bind"
+	{
+		"en"		"Press a key to bind"
+	}
+	"Valid Key Info 1"
+	{
+		"en"		"Valid keys include most +/- related keys."
+	}
+	"Valid Key Info 2"
+	{
+		"en"		"impulse works with any number and voicemenu as itself."
+	}
+	"Valid Key Info 3"
+	{
+		"en"		"invprev, invnext, lastinv can also be used."
+	}
+	"Valid Key Info 3 ZR"
+	{
+		"en"		"invprev, invnext, lastinv are not valid in Zombie Riot."
+	}
+}

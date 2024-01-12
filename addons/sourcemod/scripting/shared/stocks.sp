@@ -59,6 +59,19 @@ stock float fmax(float n1, float n2)
 	return n1 > n2 ? n1 : n2;
 }
 
+stock float fClamp(float fValue, float fMin, float fMax)
+{
+	if (fValue < fMin) {
+		return fMin;
+	}
+
+	if (fValue > fMax) {
+		return fMax;
+	}
+
+	return fValue;
+}
+
 stock Function ValToFunc(any val)
 {
 	return val;

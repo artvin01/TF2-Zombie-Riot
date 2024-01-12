@@ -625,7 +625,7 @@ static void RemoveHealthBeams(UnitSelection eUnitSelection) {
 	}
 }
 
-static void GetCursorVector(int iClient, float vecVector[3], float fMouse[2], float vecCursorVector[3]) {
+static void GetCursorVector(int iClient, const float vecVector[3], const float fMouse[2], float vecCursorVector[3]) {
 	int iFOV = g_eCommander[iClient].iDefaultFOV;
 	float fAspectRatio = g_eCommander[iClient].fAspectRatio;
 
