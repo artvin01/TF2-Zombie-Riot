@@ -11,37 +11,33 @@ static const char g_Spawn[][] = {
 };
 
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+static float fl_KamikazeInitiate;
 static float fl_KamikazeSpawnDelay;
+static float fl_KamikazeSpawnRateDelay;
+static float fl_KamikazeSpawnDuration;
+static bool b_KamikazeEvent;
 void BeheadedKamiKaze_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_Spawn));	   i++) { PrecacheSoundCustom(g_Spawn[i]);	   }
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSoundCustom(g_IdleAlertedSounds[i]); }
 	PrecacheModel("models/zombie_riot/serious/kamikaze_3.mdl");
+	PrecacheSoundCustom("#zombie_riot/miniboss/kamikaze/sam_rush_2.mp3");
+		
+	fl_KamikazeInitiate = 0.0;
 	fl_KamikazeSpawnDelay = 0.0;
+	fl_KamikazeSpawnDuration = 0.0;
+	b_KamikazeEvent = false;
 }
 
 
 static char[] GetBeheadedKamiKazeHealth()
 {
-	int health = 3;
-	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
-	
+	int health = 5;
+
 	float temp_float_hp = float(health);
 	
-	if(CurrentRound+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.20));
-	}
-	else if(CurrentRound+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
+	health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.15));
+
 	health = health * 3 / 8;
 	
 	char buffer[16];
@@ -58,14 +54,14 @@ methodmap BeheadedKamiKaze < CClotBody
 			return;
 		
 
-		EmitCustomToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, 65, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, 75, _, BOSS_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetEngineTime() + 0.85;
 		
 	}
 	
 	public void PlaySpawnSound() {
 		
-		EmitCustomToAll(g_Spawn[GetRandomInt(0, sizeof(g_Spawn) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll(g_Spawn[GetRandomInt(0, sizeof(g_Spawn) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 1.5, 100);
 		
 	}
 	
@@ -85,7 +81,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
-		npc.m_flSpeed = 450.0;
+		npc.m_flSpeed = 500.0;
 		
 		SDKHook(npc.index, SDKHook_Think, BeheadedKamiKaze_ClotThink);
 		
@@ -109,22 +105,44 @@ methodmap BeheadedKamiKaze < CClotBody
 
 		npc.m_flWaveScale = wave;
 
-		if(fl_KamikazeSpawnDelay < GetGameTime() + 10.0)
+		if(!ally)
 		{
-			//This is a kamikaze that was newly initiated!
-			//add new kamikazies whenever possible.
-			/*
-			Handle pack;
-			CreateDataTimer(0.1, Kamikaze_Spawn_New, pack, TIMER_FLAG_NO_MAPCHANGE);
-			WritePackCell(pack, EntIndexToEntRef(cam));
-			WritePackCell(pack, EntIndexToEntRef(ent));
-			*/
+			if(fl_KamikazeInitiate < GetGameTime())
+			{
+				//This is a kamikaze that was newly initiated!
+				//add new kamikazies whenever possible.
+				//this needs to happen every tick!
+				DoGlobalMultiScaling();
+				float SpawnRate = 0.5;
+				fl_KamikazeSpawnRateDelay = 0.0;
+				SpawnRate /= MultiGlobal;
+				DataPack pack = new DataPack();
+				pack.WriteFloat(SpawnRate);
+				pack.WriteFloat(GetGameTime() + 10.0); //they took too long to kill that one. Spawn more regardless.
+				pack.WriteCell(EntIndexToEntRef(npc.index));
+				RequestFrame(SpawnBeheadedKamikaze, pack);
+				b_KamikazeEvent = true;
+			}
+
+			fl_KamikazeInitiate = GetGameTime() + 15.0;
+
+			npc.m_bDissapearOnDeath = true;
+			if(!TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0))
+			{
+				//incase their random spawn code fails, they'll spawn here.
+				int Spawner_entity = GetRandomActiveSpawner();
+				if(IsValidEntity(Spawner_entity))
+				{
+					float pos[3];
+					float ang[3];
+					GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+					GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+					TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+				}
+			}
+					
 		}
 
-		fl_KamikazeSpawnDelay = GetGameTime();
-
-		npc.m_bDissapearOnDeath = true;
-		TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
 		npc.PlaySpawnSound();
 		float pos[3]; pos = WorldSpaceCenter(npc.index);
 		pos[2] -= 10.0;
@@ -180,17 +198,24 @@ public void BeheadedKamiKaze_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
-	int PrimaryThreatIndex = npc.m_iTarget;
-	
-	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		npc.StartPathing();
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 		
 	
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 		
-		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		{
+			float vPredictedPos[3];
+			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
+		}
+		else 
+		{
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+		}
 		
 		//Target close enough to hit
 		if(flDistanceToTarget < 9025.0 && !npc.m_flAttackHappenswillhappen)
@@ -253,7 +278,7 @@ void Kamikaze_DeathExplosion(int entity)
 	pack_boom.WriteFloat(startPosition[1]);
 	pack_boom.WriteFloat(startPosition[2]);
 	pack_boom.WriteCell(1);
-	RequestFrame(MakeExplosionFrameLater, pack_boom);
+	RequestFrame(MakeExplosionFrameLaterKami, pack_boom);
 
 	int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
 	SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
@@ -265,10 +290,10 @@ void Kamikaze_DeathExplosion(int entity)
 	150.0,
 	_,
 	_,
-	false,
+	true,
 	99,
 	false,
-	_,
+	5.0,
 	_,
 	BeheadedKamiBoomInternal);
 	SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
@@ -292,22 +317,128 @@ float BeheadedKamiBoomInternal(int entity, int victim, float damage, int weapon)
 	{
 		return 1000000000.0;
 	}
-
+  
 	return damage;
 }
 
-public Action Kamikaze_Spawn_New(Handle final, any pack)
+void SpawnBeheadedKamikaze(DataPack pack)
 {
-	ResetPack(pack);
-	int cam = EntRefToEntIndex(ReadPackCell(pack));
-	int ent = EntRefToEntIndex(ReadPackCell(pack));
-	
-	if (IsValidEntity(cam) && IsValidEntity(ent))
+	if(Waves_InSetup())
 	{
-		DispatchKeyValue(cam, "targetname", "cam"); 
-		DispatchSpawn(cam);
-		ActivateEntity(cam);
-		AcceptEntityInput(cam, "Start");
+		delete pack;
+		return;
 	}
-	return Plugin_Continue;
+
+	ResetPack(pack);
+	float spawndelay = ReadPackFloat(pack);
+	float ForceSpawn_Moretime = ReadPackFloat(pack);
+	int FirstKamiKaze = EntRefToEntIndex(ReadPackCell(pack));
+
+	bool InitiateSpawns = false;
+
+	if(ForceSpawn_Moretime < GetGameTime())
+		InitiateSpawns = true;
+
+	if(!IsValidEntity(FirstKamiKaze))
+	{
+		InitiateSpawns = true;
+	}
+	else
+	{
+		if(b_NpcHasDied[FirstKamiKaze])
+			InitiateSpawns = true;
+	}
+
+	if(!InitiateSpawns)
+	{
+		RequestFrame(SpawnBeheadedKamikaze, pack);
+		return;
+	}
+
+	//This now means we initiate spawns!
+	if(fl_KamikazeSpawnDuration == 0.0)
+	{
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				if(IsValidClient(client))
+				{
+					EmitCustomToClient(client, "#zombie_riot/miniboss/kamikaze/sam_rush_2.mp3", client, SNDCHAN_AUTO, 90, _, 1.0);
+				}
+			}
+		}
+		fl_KamikazeSpawnDelay = GetGameTime() + 5.0;
+		fl_KamikazeSpawnDuration = GetGameTime() + 18.0 + 5.0;
+	}
+
+	//can we still spawn
+	if(fl_KamikazeSpawnDuration > GetGameTime())
+	{
+		if(fl_KamikazeSpawnDelay > GetGameTime())
+		{
+			RequestFrame(SpawnBeheadedKamikaze, pack);
+			return;
+		}
+		if(fl_KamikazeSpawnRateDelay > GetGameTime())
+		{
+			RequestFrame(SpawnBeheadedKamikaze, pack);
+			return;
+		}
+		fl_KamikazeSpawnRateDelay = GetGameTime() + spawndelay;
+		int Kamikazies = 0;
+		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		{
+			int INpc = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+			if (IsValidEntity(INpc))
+			{
+				if(!b_NpcHasDied[INpc] && i_NpcInternalId[INpc] == MINI_BEHEADED_KAMI)
+				{
+					Kamikazies += 1;
+				}
+			}
+		}
+		if(Kamikazies < (MaxEnemiesAllowedSpawnNext()))
+		{
+			//spawn a kamikaze here!
+			int Spawner_entity = GetRandomActiveSpawner();
+			float pos[3];
+			float ang[3];
+			if(IsValidEntity(Spawner_entity))
+			{
+				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+			}
+			Zombies_Currently_Still_Ongoing += 1;
+			Npc_Create(MINI_BEHEADED_KAMI, -1, pos, ang, false); //can only be enemy
+		}
+		RequestFrame(SpawnBeheadedKamikaze, pack);
+		return;
+	}
+	//its over, no more spawning.
+	b_KamikazeEvent = false;
+	fl_KamikazeSpawnDuration = 0.0;
+	delete pack;
+}
+
+bool KamikazeEventHappening()
+{
+	return b_KamikazeEvent;
+}
+
+public void MakeExplosionFrameLaterKami(DataPack pack)
+{
+	pack.Reset();
+	float vec_pos[3];
+	vec_pos[0] = pack.ReadFloat();
+	vec_pos[1] = pack.ReadFloat();
+	vec_pos[2] = pack.ReadFloat();
+	int Do_Sound = pack.ReadCell();
+	
+	if(Do_Sound == 1)
+	{		
+		EmitAmbientSound("ambient/explosions/explode_3.wav", vec_pos, _, 75, _,0.7, GetRandomInt(75, 110));
+	}
+	SpawnSmallExplosionNotRandom(vec_pos);
+	delete pack;
 }

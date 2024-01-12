@@ -214,7 +214,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 			}
 		}
 		//emercency stop. 
-		if(EnemyNpcAlive >= LimitNpcs)
+		if(EnemyNpcAlive >= MaxEnemiesAllowedSpawnNext())
 		{
 			return;
 		}
@@ -3187,4 +3187,15 @@ float MaxEnemyMulti()
 	}
 	return 1.0;
 }
+
+int MaxEnemiesAllowedSpawnNext()
+{
+	int maxenemies = LimitNpcs;
+	if(KamikazeEventHappening())
+	{
+		maxenemies /= 2;
+	}
+	return maxenemies;
+}
 #endif
+
