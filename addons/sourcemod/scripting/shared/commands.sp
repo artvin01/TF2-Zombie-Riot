@@ -27,7 +27,11 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
 	char buffer[64];
 	KvGetSectionName(kv, buffer, sizeof(buffer));
-	if(StrEqual(buffer, "+inspect_server", false))
+	if(RTSCamera_ClientCommandKeyValues(client, buffer))
+	{
+		return Plugin_Handled;
+	}
+	else if(StrEqual(buffer, "+inspect_server", false))
 	{
 #if defined ZR
 		b_HoldingInspectWeapon[client] = true;
@@ -66,7 +70,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	
 //	HINT: there is a - version, which is detected when letting go of the button, its basically a fancy onclientruncmd, although it shouldnt be used really.
 
-	if(StrEqual(buffer, "+use_action_slot_item_server", false))
+	else if(StrEqual(buffer, "+use_action_slot_item_server", false))
 	{
 		BuilderMenu(client);
 		//This is an extra slot, incase you want to use it for anything.
