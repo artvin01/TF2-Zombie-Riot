@@ -325,10 +325,15 @@ void SpawnBeheadedKamikaze(DataPack pack)
 {
 	if(Waves_InSetup())
 	{
+		b_KamikazeEvent = false;
+		fl_KamikazeSpawnDuration = 0.0;
 		delete pack;
 		return;
 	}
 
+	if(f_DelaySpawnsForVariousReasons + 0.15 < GetGameTime())
+		f_DelaySpawnsForVariousReasons = GetGameTime() + 0.15;
+	
 	ResetPack(pack);
 	float spawndelay = ReadPackFloat(pack);
 	float ForceSpawn_Moretime = ReadPackFloat(pack);
