@@ -995,7 +995,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 				SelectionVerticies[client][1][2] != SelectionVerticies[client][3][2])
 			{
 				int entity = MaxClients;
-				float pos[3], vectors[4][3], vertex[3];
+				float pos[3], offset[3], vectors[4][3], vertex[3];
 				while(UnitEntityIterator(client, entity))
 				{
 					if(Selected[client] && Selected[client].FindValue(EntIndexToEntRef(entity)) != -1)
@@ -1003,12 +1003,12 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 					
 					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 
-					AddVectors(focusPos, cameraPos, vectors[3]);
+					AddVectors(focusPos, cameraPos, offset);
 
-					SubtractVectors(SelectionVerticies[client][0], vectors[3], vectors[0]);
-					SubtractVectors(SelectionVerticies[client][1], vectors[3], vectors[1]);
-					SubtractVectors(SelectionVerticies[client][2], vectors[3], vectors[2]);
-					SubtractVectors(SelectionVerticies[client][3], vectors[3], vectors[3]);
+					SubtractVectors(SelectionVerticies[client][0], offset, vectors[0]);
+					SubtractVectors(SelectionVerticies[client][1], offset, vectors[1]);
+					SubtractVectors(SelectionVerticies[client][2], offset, vectors[2]);
+					SubtractVectors(SelectionVerticies[client][3], offset, vectors[3]);
 
 					vertex = vectors[0];
 					GetVectorCrossProduct(vectors[0], vectors[1], vectors[0]);
@@ -1016,7 +1016,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 					GetVectorCrossProduct(vectors[2], vectors[3], vectors[2]);
 					GetVectorCrossProduct(vectors[3], vertex, vectors[3]);
 
-					SubtractVectors(pos, cameraPos, vertex);
+					SubtractVectors(pos, offset, vertex);
 
 					if(GetVectorDotProduct(vertex, vectors[0]) > 0 &&
 						GetVectorDotProduct(vertex, vectors[1]) > 0 &&
