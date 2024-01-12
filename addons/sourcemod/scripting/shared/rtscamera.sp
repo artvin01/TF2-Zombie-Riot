@@ -874,6 +874,10 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 
 	// Cursor point and rectangle selection through a stationary viewport
 
+	b_LagCompNPC_No_Layers = true;
+	b_LagCompNPC_OnlyAllies = true;
+	StartLagCompensation_Base_Boss(client);
+
 	float cameraAbsPos[3];
 	AddVectors(focusPos, cameraPos, cameraAbsPos);
 
@@ -985,7 +989,10 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 			if(!holding[Key_Ctrl])
 				delete Selected[client];
 
-			if(GetVectorDistance(SelectionVerticies[client][1], SelectionVerticies[client][3], true) > 0.0)
+			//if(GetVectorDistance(SelectionVerticies[client][1], SelectionVerticies[client][3], true) > 0.0)
+			if(SelectionVerticies[client][1][0] != SelectionVerticies[client][3][0] ||
+				SelectionVerticies[client][1][1] != SelectionVerticies[client][3][1] ||
+				SelectionVerticies[client][1][2] != SelectionVerticies[client][3][2])
 			{
 				int entity = MaxClients;
 				float pos[3], vectors[4][3], vertex[3];
@@ -996,12 +1003,12 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 					
 					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 
-					AddVectors(focusPos, cameraPos, cameraPos);
+					AddVectors(focusPos, cameraPos, vectors[3]);
 
-					SubtractVectors(SelectionVerticies[client][0], cameraPos, vectors[0]);
-					SubtractVectors(SelectionVerticies[client][1], cameraPos, vectors[1]);
-					SubtractVectors(SelectionVerticies[client][2], cameraPos, vectors[2]);
-					SubtractVectors(SelectionVerticies[client][3], cameraPos, vectors[3]);
+					SubtractVectors(SelectionVerticies[client][0], vectors[3], vectors[0]);
+					SubtractVectors(SelectionVerticies[client][1], vectors[3], vectors[1]);
+					SubtractVectors(SelectionVerticies[client][2], vectors[3], vectors[2]);
+					SubtractVectors(SelectionVerticies[client][3], vectors[3], vectors[3]);
 
 					vertex = vectors[0];
 					GetVectorCrossProduct(vectors[0], vectors[1], vectors[0]);
@@ -1037,6 +1044,8 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 			InSelectDrag[client] = false;
 		}
 	}
+
+	FinishLagCompensation_Base_boss();
 	
 	if(holding[Key_RightClick])	// Holding/Press Right-Click
 	{
