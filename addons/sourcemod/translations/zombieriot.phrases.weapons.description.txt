@@ -1433,11 +1433,14 @@
 	
 	"Ammo Coat Desc"
 	{
-		"en"	"40%% increased Weapon Damage"
-		"ru"	"Увеличение урона от оружия на 40%%"
-		"chi"   "提升40%%武器伤害"
+		"en"	"50%% increased Weapon Damage"
+		"ru"	"Увеличение урона от оружия на 50%%"
+		"chi"   "提升50%%武器伤害"
 	}
-	
+	"Compacted Rounds Desc"
+	{
+		"en"	"15%% faster attackspeed, reload speed and 25%% more max clip."
+	}
 	"Ammo Coat Elite Desc"
 	{
 		"en"	"60%% increased Weapon Damage"

@@ -142,7 +142,7 @@ methodmap CaptinoAgentus < CClotBody
 		EmitSoundToAll(g_ZapAttackSounds[GetRandomInt(0, sizeof(g_ZapAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_PullAttackSounds[GetRandomInt(0, sizeof(g_PullAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public CaptinoAgentus(int client, float vecPos[3], float vecAng[3], bool ally)
+	public CaptinoAgentus(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		CaptinoAgentus npc = view_as<CaptinoAgentus>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally));
 		
@@ -171,6 +171,12 @@ methodmap CaptinoAgentus < CClotBody
 		b_TryToAvoidTraverse[npc.index] = true;
 		DiversionSpawnNpcReset(npc.index);
 		
+		bool final = StrContains(data, "spy_duel") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -391,6 +397,15 @@ public Action CaptinoAgentus_OnTakeDamage(int victim, int &attacker, int &inflic
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
+	if(i_RaidGrantExtra[victim])
+	{
+		if(!i_HasBeenBackstabbed[victim])
+		{
+			damage = 0.0;
+			return Plugin_Changed;
+		}
+	}
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -498,6 +513,13 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.PlayMeleeSound();
+				if(i_RaidGrantExtra[npc.index])
+				{
+					if(Enemy_I_See <= MaxClients && b_FaceStabber[Enemy_I_See])
+					{
+						BackstabDone = true;
+					}
+				}
 				if(IsBehindAndFacingTarget(npc.index, npc.m_iTarget))
 				{
 					BackstabDone = true;
@@ -533,8 +555,19 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 
 					if(BackstabDone)
 					{
+						if(i_RaidGrantExtra[npc.index])
+						{
+							if(target <= MaxClients && b_FaceStabber[target])
+							{
+								damageDealt *= 0.5;
+							}
+						}
 						npc.PlayMeleeBackstabSound(target);
 						damageDealt *= 3.0;
+					}
+					else if(i_RaidGrantExtra[npc.index])
+					{
+						damageDealt *= 0.5;
 					}
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);

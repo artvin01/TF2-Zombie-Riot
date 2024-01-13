@@ -1151,7 +1151,7 @@ public void OnPostThink(int client)
 			if(Rogue_Mode() && Rogue_InSetup())
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t\n%t", HudBuffer,
-				"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+				"Credits_Menu_New", (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
 				PerkNames[i_CurrentEquippedPerk[client]],
 				"Australium Ingots", Rogue_GetIngots()
@@ -1160,7 +1160,7 @@ public void OnPostThink(int client)
 			else
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t\n%t", HudBuffer,
-				"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+				"Credits_Menu_New", (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
 				PerkNames[i_CurrentEquippedPerk[client]],
 				"Zombies Left", Zombies_Currently_Still_Ongoing
@@ -1208,6 +1208,10 @@ public void OnPostThink(int client)
 				Format(HudBuffer, sizeof(HudBuffer), "%s%s | %t",HudBuffer,WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);		
 			}
 		}
+		SetEntProp(client, Prop_Send, "m_nCurrency", CurrentCash-CashSpent[client]);
+		
+		//Todo: Only update when needed.
+		SetEntProp(client, Prop_Send, "m_iHideHUD", GetEntProp(client, Prop_Send, "m_iHideHUD") | HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN);
 		PrintKeyHintText(client,"%s", HudBuffer);
 #endif	// ZR
 	}
@@ -2046,6 +2050,26 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 			}
 		}
 	}
+	if(channel == SNDCHAN_WEAPON)
+	{
+		//this is only for other clients.
+		if(entity > 0 && entity <= MaxClients)
+		{
+			bool ChangedSound = false;
+			if(f_WeaponVolumeStiller[entity] != 1.0)
+			{
+				ChangedSound = true;
+				volume *= f_WeaponVolumeStiller[entity];
+			}
+			if(f_WeaponVolumeSetRange[entity] != 1.0)
+			{
+				ChangedSound = true;
+				level = RoundToNearest(float(level) * f_WeaponVolumeSetRange[entity]);	
+			}
+			if(ChangedSound)
+				return Plugin_Changed;
+		}
+	}			
 	if(StrContains(sample, ")weapons/capper_shoot.wav", true) != -1)
 	{
 		volume *= 0.45;

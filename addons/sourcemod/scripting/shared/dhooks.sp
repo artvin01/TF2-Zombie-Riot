@@ -104,6 +104,9 @@ void DHook_Setup()
 
 	DHook_CreateDetour(gamedata, "CTFWeaponBaseMelee::DoSwingTraceInternal", DHook_DoSwingTracePre, _);
 	DHook_CreateDetour(gamedata, "CWeaponMedigun::CreateMedigunShield", DHook_CreateMedigunShieldPre, _);
+
+//	DHook_CreateDetour(gamedata, "EconEntity_OnOwnerKillEaterEventNoPartner", DHook_BlockEcon);
+//	DHook_CreateDetour(gamedata, "EconItemInterface_OnOwnerKillEaterEventNoPartner", DHook_BlockEcon);
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -136,6 +139,7 @@ void DHook_Setup()
 		SetFailState("Failed to create detour %s", "CBaseCombatWeapon::FinishReload()");
 	}
 	DHookEnableDetour(dtWeaponFinishReload, false, OnWeaponReplenishClipPre);
+	DHookEnableDetour(dtWeaponFinishReload, true, OnWeaponReplenishClipPost);
 	
 	// from https://github.com/shavitush/bhoptimer/blob/b78ae36a0ef72d15620d2b18017bbff18d41b9fc/addons/sourcemod/scripting/shavit-misc.sp
 	
@@ -260,6 +264,7 @@ public MRESReturn DHook_CreateMedigunShieldPre(int entity, DHookReturn returnHoo
 {
 	return MRES_Supercede;
 }
+
 void OnWrenchCreated(int entity) 
 {
 	g_WrenchSmack.HookEntity(Hook_Pre, entity, Wrench_SmackPre);
@@ -2045,14 +2050,27 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	return MRES_Supercede;
 }
 
+MRESReturn OnWeaponReplenishClipPost(int weapon)
+{
+	if(IsValidEntity(weapon))
+	{
+		DataPack pack = new DataPack();
+		int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwner");
+		pack.WriteCell(GetClientUserId(client));
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		Update_Ammo(pack);
+	}
+	return MRES_Ignored;
+}
+
 MRESReturn OnWeaponReplenishClipPre(int weapon) // Not when the player press reload but when the weapon reloads
 {
 	if(IsValidEntity(weapon))
 	{
+		int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwner");
 		Action action = Plugin_Continue;
 		if(EntityFuncReload4[weapon] && EntityFuncReload4[weapon]!=INVALID_FUNCTION)
 		{
-			int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwner");
 			char classname[32];
 			GetEntityClassname(weapon, classname, 32);
 			Call_StartFunction(null, EntityFuncReload4[weapon]);

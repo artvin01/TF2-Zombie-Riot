@@ -712,6 +712,9 @@ void ZR_MapStart()
 	i_RaidMusicLength1 = 0;
 	b_RaidMusicCustom1 = false;
 	ResetMapStartSensalWeapon();
+	//This enables the MVM money hud, looks way better.
+	SetVariantString("ForceEnableUpgrades(2)");
+	AcceptEntityInput(0, "RunScriptCode");
 	
 	//Store_RandomizeNPCStore(true);
 }

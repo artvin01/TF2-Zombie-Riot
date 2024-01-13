@@ -351,9 +351,12 @@ public Action XenoFortifiedGiantPoisonZombie_OnTakeDamage(int victim, int &attac
 		{
 			if(fl_TotalArmor[npc.index] == 1.0)
 			{
-				TrueArmor *= 0.25;
-				if(!(damagetype & DMG_SLASH))
-					damage *= 0.25;
+				if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
+				{
+					TrueArmor *= 0.25;
+					fl_TotalArmor[npc.index] = TrueArmor;
+					OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, true);
+				}
 			}
 		}
 		fl_TotalArmor[npc.index] = TrueArmor;
