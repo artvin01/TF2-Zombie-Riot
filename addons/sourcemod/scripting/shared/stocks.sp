@@ -4084,19 +4084,21 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	int newHealth = flHealth + i_TargetHealAmount;
 	int HealAmount = 0;
 	int MaxHeal = RoundToNearest(float(flMaxHealth) * MaxHealthOverMulti);
-	if(MaxHeal >= newHealth) //allow 1 tick of overheal.
+	if(flHealth < MaxHeal)
 	{
-		if(newHealth >= MaxHeal)
+
+		if(newHealth >= MaxHeal) //allow 1 tick of overheal.
 		{
 			SetEntProp(entity, Prop_Data, "m_iHealth", MaxHeal);
 			newHealth = MaxHeal;
+
+			HealAmount = newHealth - flHealth;
 		}
 		else
 		{
 			SetEntProp(entity, Prop_Data, "m_iHealth", newHealth);
+			HealAmount = newHealth - flHealth;
 		}
-		
-		HealAmount = newHealth - flHealth;
 	}
 	if(newHealth <= 0)
 	{

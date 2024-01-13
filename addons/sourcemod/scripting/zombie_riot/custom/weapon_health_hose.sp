@@ -580,11 +580,12 @@ bool SpawnHealthkit_SyringeGun(int client, float VectorGoal[3])
 		
 	static float hullcheckmaxs_Player[3];
 	static float hullcheckmins_Player[3];
-	hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 1.0 } );
-	hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );	
+	hullcheckmaxs_Player = view_as<float>( { 12.0, 12.0, 12.0 } );
+	hullcheckmins_Player = view_as<float>( { -12.0, -12.0, -12.0 } );	
 	float AbsOrigin_after[3];
 	AbsOrigin_after = VectorGoal;
 	AbsOrigin_after[2] -= 1000.0;
+	VectorGoal[2] += 12.0;
 	TR_TraceHullFilter(VectorGoal, AbsOrigin_after, hullcheckmins_Player, hullcheckmaxs_Player, MASK_PLAYERSOLID_BRUSHONLY, TraceRayHitWorldOnly, client);
 	if(TR_DidHit())
 	{
@@ -602,22 +603,63 @@ bool SpawnHealthkit_SyringeGun(int client, float VectorGoal[3])
 		DispatchKeyValue(prop, "model", HEALTH_MODEL_SMALL);
 		DispatchKeyValue(prop, "modelscale", "1.0");
 		DispatchKeyValue(prop, "StartDisabled", "false");
-		DispatchKeyValue(prop, "Solid", "0");
-		SetEntProp(prop, Prop_Data, "m_nSolidType", 0);
+		DispatchKeyValue(prop, "Solid", "2");
+	//	SetEntProp(prop, Prop_Data, "m_nSolidType", 0);
 		TeleportEntity(prop, VectorGoal, NULL_VECTOR, NULL_VECTOR);
 		DispatchSpawn(prop);
-		SetEntityCollisionGroup(prop, 1);
 		SetVariantString("idle");
 		AcceptEntityInput(prop, "SetAnimation");
 		DispatchKeyValueFloat(prop, "playbackrate", 1.0);
 		SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", client);
+		SetEntityCollisionGroup(prop, 27);
 		f_HealMaxPickup[prop] = HealAmmount;
 		f_HealMaxPickup_Enable[prop] = GetGameTime() + 2.0;
-		CreateTimer(0.1, Timer_Detect_Player_Nearby_healthkit, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		i_WandIdNumber[prop] = 999;
+	//	CreateTimer(0.1, Timer_Detect_Player_Nearby_healthkit, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	}	
 	return true;
 }
+public void TouchHealthKit(int entity, int other)
+{
+	if (other > 0 && other <= MaxClients)	
+	{
+		if(TeutonType[other] != TEUTON_NONE || dieingstate[other] != 0)
+		{
+			return;
+		}
+		float maxhealth = 1.0;
+		float health = float(GetEntProp(other, Prop_Data, "m_iHealth"));
+		maxhealth = float(SDKCall_GetMaxHealth(other));
+		if(RoundToNearest(health) >= (RoundToNearest(maxhealth * 1.15)))
+		{
+			return;
+		}	
+		int Owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+		float GameTime = GetGameTime();
+		float HealingAmount = f_HealMaxPickup[entity];
+		if(f_TimeUntillNormalHeal[other] > GameTime)
+		{
+			HealingAmount /= 2.0;
+		}
+		int healing_done = HealEntityGlobal(Owner, other, HealingAmount, 1.15, _, _);
+		if(healing_done <= 0)
+		{
+			return;
+		}
+		if(IsValidClient(Owner))
+		{
+			Healing_done_in_total[Owner] += healing_done;
+			PrintHintText(Owner, "%t", "You healed for", other, healing_done);
+		}
+		ApplyHealEvent(other, healing_done);
+		ClientCommand(other, "playgamesound items/smallmedkit1.wav");
+		Increaced_Overall_damage_Low[other] = GetGameTime() + 15.0;
+		Resistance_Overall_Low[other] = GetGameTime() + 15.0;
+		RemoveEntity(entity);	
+	}
+}
 
+/*
 public Action Timer_Detect_Player_Nearby_healthkit(Handle timer, any entid)
 {
 	int entity = EntRefToEntIndex(entid);
@@ -635,8 +677,7 @@ public Action Timer_Detect_Player_Nearby_healthkit(Handle timer, any entid)
 			if (IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
 			{
 				GetClientAbsOrigin(client, client_pos);
-				client_pos[2] += 35.0;
-				if (GetVectorDistance(powerup_pos, client_pos, true) <= 2500.0 /*50*/)
+				if (GetVectorDistance(powerup_pos, client_pos, true) <= 4900.0)
 				{
 					float maxhealth = 1.0;
 					float health = float(GetEntProp(client, Prop_Data, "m_iHealth"));
@@ -673,3 +714,4 @@ public Action Timer_Detect_Player_Nearby_healthkit(Handle timer, any entid)
 	}
 	return Plugin_Continue;
 }
+*/

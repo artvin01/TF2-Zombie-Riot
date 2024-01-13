@@ -1917,7 +1917,7 @@
 	}
 	"Crusader Desc Pap 1"
 	{
-		"en"	"Shots become instant and scope charge.\nYour heals overheal to 15%%.\nYour m2 ability allows you to spawn healthkits.\nHealkits provide buffs aswell and do not have an in battle heal penalty.\nThey require a windup of 2 seconds.\nYou can place upto 2 per usage."
+		"en"	"Shots become instant and scope charge.\nYour heals overheal to 15%%.\nYour m2 ability allows you to spawn healthkits.\nHealkits provide buffs aswell and have small in battle heal penalty.\nThey require a windup of 2 seconds.\nYou can place upto 2 per usage."
 	}
 
 	"Buildable Barracks Desc"
