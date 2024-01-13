@@ -5402,6 +5402,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								{
 									if(!info.HasNoClip)
 									{
+									//	PrintToChatAll("test");
 										RequestFrame(Delete_Clip, EntIndexToEntRef(entity));
 										Delete_Clip(EntIndexToEntRef(entity));
 									}
@@ -6661,7 +6662,7 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 	
 	StoreItems.GetArray(StoreWeapon[weapon], item);
 	ItemInfo info;
-	if(item.GetItemInfo(0, info))
+	if(item.GetItemInfo(item.Owned[client]-1, info))
 	{
 		if(info.HasNoClip)
 		{

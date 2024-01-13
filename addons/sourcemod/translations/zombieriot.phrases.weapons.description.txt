@@ -1915,6 +1915,10 @@
 		"ru"	"Немного лечит союзника и накладывает на него эфф. лечебной пушки на 15 секунд, а на себя - на 5 секунд.\nЭффект действует на цели с полным ОЗ."
 		"chi"   "治疗一个盟友一点，并给予他们15秒和你自己5秒的医疗buff。\nBuff适用于满HP目标。"
 	}
+	"Crusader Desc Pap 1"
+	{
+		"en"	"Shots become instant and scope charge.\nYour heals overheal to 15%%.\nYour m2 ability allows you to spawn healthkits.\nHealkits provide buffs aswell and do not have an in battle heal penalty.\nThey require a windup of 2 seconds.\nYou can place upto 2 per usage."
+	}
 
 	"Buildable Barracks Desc"
 	{
