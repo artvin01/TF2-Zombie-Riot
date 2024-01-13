@@ -177,6 +177,8 @@ public void OnPreThinkPost(int client)
 			CvarMpSolidObjects.IntValue = 0;
 		}
 	}
+
+	CvarAirAcclerate.FloatValue = b_AntiSlopeCamp[client] ? 2.0 : 10.0;
 /*
 #if defined ZR
 	if(CvarSvRollagle)
@@ -226,6 +228,14 @@ public void OnPostThink(int client)
 			b_PhaseThroughBuildingsPerma[client] = 0;
 			CvarMpSolidObjects.ReplicateToClient(client, "1"); //set replicate back to normal.
 		}
+	}
+	if(b_AntiSlopeCamp[client])
+	{
+		CvarAirAcclerate.ReplicateToClient(client, "2.0"); //set replicate back to normal.
+	}
+	else
+	{
+		CvarAirAcclerate.ReplicateToClient(client, "10.0"); //set replicate back to normal.
 	}
 		
 #if defined ZR

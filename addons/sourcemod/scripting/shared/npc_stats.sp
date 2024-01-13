@@ -9260,6 +9260,9 @@ void SaveLastValidPositionEntity(int entity)
 		if (!IsPlayerAlive(entity))
 			return;
 		
+		/*
+		additional logic, if they are on a slope, make sure they cant slide on it
+		*/
 		bool SavePosition = true;
 		if (!(GetEntityFlags(entity) & FL_ONGROUND))
 		{
@@ -9277,15 +9280,37 @@ void SaveLastValidPositionEntity(int entity)
 				}
 			}
 		}
-		if(!SavePosition)
-			return;
-
+		
 		float AbsOrigin[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
 		static float hullcheckmaxs_Player[3];
 		static float hullcheckmins_Player[3];
 		hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
-		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
+		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );	
+		b_AntiSlopeCamp[entity] = false;
+		if(!SavePosition)
+		{
+			float AbsOrigin_after[3];
+			AbsOrigin_after = AbsOrigin;
+			AbsOrigin_after[2] -= 5.0;
+			TR_TraceHullFilter(AbsOrigin, AbsOrigin_after, hullcheckmins_Player, hullcheckmaxs_Player, MASK_PLAYERSOLID_BRUSHONLY, TraceRayHitWorldOnly, entity);
+			if(TR_DidHit())
+			{
+				// Gets the normal vector of the surface under the player
+				float vPlane[3];
+				TR_GetPlaneNormal(INVALID_HANDLE, vPlane);
+				
+				// Make sure it's not flat ground and not a surf ramp (1.0 = flat ground, < 0.7 = surf ramp)
+				if(0.7 >= vPlane[2])
+				{
+					b_AntiSlopeCamp[entity] = true;
+				}
+			}
+			return;
+		}
+	
+
+
 		if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
 			return;
 

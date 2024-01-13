@@ -266,6 +266,7 @@ ConVar cvarTimeScale;
 ConVar cvar_nbAvoidObstacle;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 ConVar CvarTfMMMode; // tf_mm_servermode
+ConVar CvarAirAcclerate; //sv_airaccelerate
 ConVar sv_cheats;
 ConVar nav_edit;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
@@ -284,6 +285,7 @@ int g_particleImpactFlesh;
 int g_particleImpactRubber;
 
 bool b_NetworkedCrouch[MAXTF2PLAYERS];	
+bool b_AntiSlopeCamp[MAXTF2PLAYERS];	
 float f_CooldownForHurtParticle[MAXENTITIES];	
 float f_ClientConnectTime[MAXENTITIES];	
 float f_BackstabDmgMulti[MAXENTITIES];
@@ -1231,6 +1233,10 @@ public void OnPluginStart()
 	CvarMpSolidObjects = FindConVar("tf_solidobjects");
 	if(CvarMpSolidObjects)
 		CvarMpSolidObjects.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
+	CvarAirAcclerate = FindConVar("sv_airaccelerate");
+	if(CvarAirAcclerate)
+		CvarAirAcclerate.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	CvarTfMMMode = FindConVar("tf_mm_servermode");
 	if(CvarTfMMMode)
