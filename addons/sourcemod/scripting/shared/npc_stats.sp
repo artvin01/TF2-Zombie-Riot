@@ -30,6 +30,7 @@ int i_Headshots[MAXTF2PLAYERS];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
+char c_NpcCustomNameOverride[MAXENTITIES][255];
 int Shared_BEAM_Laser;
 int Shared_BEAM_Glow;
 #endif
@@ -1406,6 +1407,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		speed_for_return *= this.GetDebuffPercentage();
 
+		if(!b_thisNpcIsARaid[this.index] && XenoExtraLogic(true))
+		{
+			speed_for_return *= 1.1;
+		}
 #if defined ZR
 		if(!b_IsAlliedNpc[this.index])
 		{
@@ -7353,6 +7358,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_TeamGlow[entity] = -1;
 	b_thisNpcHasAnOutline[entity] = false;
 	b_ThisNpcIsImmuneToNuke[entity] = false;
+	FormatEx(c_NpcCustomNameOverride[entity], sizeof(c_NpcCustomNameOverride[]), "");
 	b_ThisNpcIsSawrunner[entity] = false;
 	Expidonsa_SetToZero(entity);
 	f_AvoidObstacleNavTime[entity] = 0.0;

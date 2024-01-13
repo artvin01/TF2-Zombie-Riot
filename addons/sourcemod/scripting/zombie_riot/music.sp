@@ -5,6 +5,7 @@ static int Music_Timer[MAXTF2PLAYERS];
 static int Music_Timer_2[MAXTF2PLAYERS];
 static float Give_Cond_Timer[MAXTF2PLAYERS];
 static bool MusicDisabled;
+static bool XenoMapExtra;
 static float RaidMusicVolume;
 
 #define RANGE_FIRST_MUSIC 6250000
@@ -60,11 +61,32 @@ void Music_MapStart()
 	PrecacheSoundCustom("#zombiesurvival/music_win_1.mp3",_,1);
 
 	MusicDisabled = FindInfoTarget("zr_nomusic");
+	XenoMapExtra = FindInfoTarget("zr_xeno_extras");
+
+	if(XenoMapExtra)
+	{
+		PrecacheSoundCustom("#zombie_riot/abandoned_lab/music/inside_lab.mp3",_,1);
+		PrecacheSoundCustom("#zombie_riot/abandoned_lab/music/outside_wasteland.mp3",_,1);
+	}
 }
 
 bool Music_Disabled()
 {
 	return MusicDisabled;
+}
+
+bool XenoExtraLogic(bool NpcBuffing = false)
+{
+	if(!NpcBuffing)
+		return XenoMapExtra;
+	else
+	{
+		if(XenoMapExtra && (!StrContains(WhatDifficultySetting, "Xeno") || !StrContains(WhatDifficultySetting, "Silvester & Goggles")))
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 void Music_EndLastmann()
@@ -218,6 +240,12 @@ void Music_Stop_All(int client)
 		StopSound(client, SNDCHAN_STATIC, char_RaidMusicSpecial1);
 		StopSound(client, SNDCHAN_STATIC, char_RaidMusicSpecial1);
 	}
+
+	if(XenoExtraLogic())
+	{
+		StopSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/inside_lab.mp3");
+		StopSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/outside_wasteland.mp3");
+	}
 	
 }
 
@@ -363,6 +391,21 @@ void Music_PostThink(int client)
 					}
 					//Make checks to be sure.
 				}
+			}
+			return;
+		}
+		if(XenoExtraLogic())
+		{
+			//This is special code for a map.
+			if(CurrentRound +1 <= 30)
+			{
+				EmitCustomToClient(client, "#zombie_riot/abandoned_lab/music/outside_wasteland.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+				SetMusicTimer(client, GetTime() + 138);	
+			}
+			else
+			{
+				EmitCustomToClient(client, "#zombie_riot/abandoned_lab/music/inside_lab.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.45);
+				SetMusicTimer(client, GetTime() + 151);	
 			}
 			return;
 		}

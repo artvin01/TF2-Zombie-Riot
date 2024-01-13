@@ -1207,6 +1207,10 @@
 		"en"		"Nemesis"
 		"ru"		"Немезид"
 	}
+	"Enraged Nemesis"
+	{
+		"en"		"Enraged Nemesis"
+	}
 	"Shell Sea Runner"
 	{
 		"en"		"Shell Sea Runner"

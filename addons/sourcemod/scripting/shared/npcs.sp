@@ -357,6 +357,10 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					fl_Extra_RangedArmor[entity_Spawner] 	= enemy.ExtraRangedRes;
 					fl_Extra_Speed[entity_Spawner] 			= enemy.ExtraSpeed;
 					fl_Extra_Damage[entity_Spawner] 		= enemy.ExtraDamage;
+					if(!b_thisNpcIsARaid[entity_Spawner] && XenoExtraLogic(true))
+					{
+						fl_Extra_Damage[entity_Spawner] *= 1.1;
+					}
 					if(enemy.ExtraSize != 1.0)
 					{
 						float scale = GetEntPropFloat(entity_Spawner, Prop_Send, "m_flModelScale");
@@ -1039,7 +1043,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #if defined RPG
 			OnTakeDamageRpgAgressionOnHit(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition,damagecustom, GameTime);
 #endif		
-			OnTakeDamageNpcBaseArmorLogic(victim, attacker, inflictor, damage, damagetype, weapon);
+			OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype);
 
 #if defined ZR
 			VausMagicaShieldLogicNpcOnTakeDamage(victim, damage, damagetype);
@@ -1604,7 +1608,10 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		float percentage = npc.m_flMeleeArmor * 100.0;
 		percentage *= fl_Extra_MeleeArmor[victim];
 		percentage *= fl_TotalArmor[victim];
-		
+		if(!b_thisNpcIsARaid[victim] && XenoExtraLogic(true))
+		{
+			percentage *= 0.85;
+		}		
 #if defined ZR
 		if(!NpcStats_IsEnemySilenced(victim))
 		{
@@ -1626,6 +1633,10 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		float percentage = npc.m_flRangedArmor * 100.0;
 		percentage *= fl_Extra_RangedArmor[victim];
 		percentage *= fl_TotalArmor[victim];
+		if(!b_thisNpcIsARaid[victim] && XenoExtraLogic(true))
+		{
+			percentage *= 0.85;
+		}
 		
 #if defined ZR
 		if(!NpcStats_IsEnemySilenced(victim))
@@ -1687,7 +1698,15 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		char ExtraHudHurt[255];
 
 		//add name and health
-		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%d / %d",NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+		
+		if(c_NpcCustomNameOverride[victim][0])
+		{
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%d / %d",c_NpcCustomNameOverride[victim], Health, MaxHealth);
+		}
+		else
+		{
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%d / %d",NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+		}
 
 		//add debuff
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
@@ -1739,7 +1758,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%% | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
 			
 		//add name and health
-		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%d / %d", ExtraHudHurt,NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+		if(c_NpcCustomNameOverride[victim][0])
+		{
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%d / %d",ExtraHudHurt,c_NpcCustomNameOverride[victim], Health, MaxHealth);
+		}
+		else
+		{
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%d / %d",ExtraHudHurt, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+		}
 
 		//add debuff
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
@@ -1808,6 +1834,10 @@ bool NpcHadArmorType(int victim, int type)
 			if(fl_Extra_MeleeArmor[victim] != 1.0)
 				return true;
 		}
+	}
+	if(!b_thisNpcIsARaid[victim] && XenoExtraLogic(true))
+	{
+		return true;
 	}
 	return false;
 }
@@ -2405,60 +2435,80 @@ stock void OnTakeDamageRpgAgressionOnHit(int victim, int &attacker, int &inflict
 }
 #endif
 
-void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int &damagetype, bool trueArmorOnly = false)
 {
 	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
 	{
-#if defined ZR
-		if(!NpcStats_IsEnemySilenced(victim))
+		if(!trueArmorOnly)
 		{
-			if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+#if defined ZR
+			if(!NpcStats_IsEnemySilenced(victim))
 			{
-				damage *= Medival_Difficulty_Level;
+				if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+				{
+					damage *= Medival_Difficulty_Level;
+				}
+			}
+#endif
+			damage *= fl_MeleeArmor[victim];
+			damage *= fl_Extra_MeleeArmor[victim];	
+			if(!b_thisNpcIsARaid[victim] && XenoExtraLogic(true))
+			{
+				damage *= 0.85;
 			}
 		}
-#endif
-		damage *= fl_MeleeArmor[victim];
-		damage *= fl_Extra_MeleeArmor[victim];
 		damage *= fl_TotalArmor[victim];
 	}
 	else if(!(damagetype & DMG_SLASH))
 	{
+		if(!trueArmorOnly)
+		{
 #if defined ZR
-		if(!b_NpcHasDied[attacker] && i_CurrentEquippedPerk[attacker] == 5)
-		{
-			damage *= 1.25;
-		}
-		if(!NpcStats_IsEnemySilenced(victim))
-		{
-			if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+			if(!b_NpcHasDied[attacker] && i_CurrentEquippedPerk[attacker] == 5)
 			{
-				damage *= Medival_Difficulty_Level;
+				damage *= 1.25;
+			}
+			if(!NpcStats_IsEnemySilenced(victim))
+			{
+				if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+				{
+					damage *= Medival_Difficulty_Level;
+				}
+			}
+#endif
+			damage *= fl_RangedArmor[victim];
+			damage *= fl_Extra_RangedArmor[victim];
+			if(!b_thisNpcIsARaid[victim] && XenoExtraLogic(true))
+			{
+				damage *= 0.85;
 			}
 		}
-#endif
-		damage *= fl_RangedArmor[victim];
-		damage *= fl_Extra_RangedArmor[victim];
 		damage *= fl_TotalArmor[victim];
 	}
 	else if((damagetype & DMG_SLASH))
 	{
-		if(!b_NpcHasDied[attacker] && i_CurrentEquippedPerk[attacker] == 5)
+		if(!trueArmorOnly)
 		{
-			damage *= 1.25;
+			if(!b_NpcHasDied[attacker] && i_CurrentEquippedPerk[attacker] == 5)
+			{
+				damage *= 1.25;
+			}
+			if(fl_RangedArmor[victim] > 1.0)
+				damage *= fl_RangedArmor[victim];
+			if(fl_Extra_RangedArmor[victim] > 1.0)
+				damage *= fl_Extra_RangedArmor[victim];
+			if(fl_MeleeArmor[victim] > 1.0)
+				damage *= fl_MeleeArmor[victim];
+			if(fl_Extra_MeleeArmor[victim] > 1.0)
+				damage *= fl_Extra_MeleeArmor[victim];
 		}
-		if(fl_RangedArmor[victim] > 1.0)
-			damage *= fl_RangedArmor[victim];
-		if(fl_Extra_RangedArmor[victim] > 1.0)
-			damage *= fl_Extra_RangedArmor[victim];
-		if(fl_MeleeArmor[victim] > 1.0)
-			damage *= fl_MeleeArmor[victim];
-		if(fl_Extra_MeleeArmor[victim] > 1.0)
-			damage *= fl_Extra_MeleeArmor[victim];
 		if(fl_TotalArmor[victim] > 1.0)
 			damage *= fl_TotalArmor[victim];
 	}
-	damage *= fl_Extra_Damage[attacker];
+	if(!trueArmorOnly)
+	{
+		damage *= fl_Extra_Damage[attacker];
+	}
 }
 #if defined ZR
 void OnTakeDamageWidowsWine(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)

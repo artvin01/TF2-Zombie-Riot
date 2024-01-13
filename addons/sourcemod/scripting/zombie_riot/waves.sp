@@ -1083,6 +1083,14 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
 			CurrentWave = -1;
+			if(CurrentRound != length)
+			{
+				char ExecuteRelayThings[255];
+				//do not during freeplay.
+				FormatEx(ExecuteRelayThings, sizeof(ExecuteRelayThings), "zr_wavefinish_wave_%i",CurrentRound);
+				ExcuteRelay(ExecuteRelayThings);
+				PrintToChatAll("%s  ExecuteRelayThings",ExecuteRelayThings);
+			}
 			
 			delete Enemies;
 			Enemies = new ArrayStack(sizeof(Enemy));
