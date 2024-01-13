@@ -1407,7 +1407,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		speed_for_return *= this.GetDebuffPercentage();
 
-		if(!b_thisNpcIsARaid[this.index] && XenoExtraLogic(true))
+		if(!b_thisNpcIsARaid[this.index] && !b_IsAlliedNpc[this.index] && XenoExtraLogic(true))
 		{
 			speed_for_return *= 1.1;
 		}

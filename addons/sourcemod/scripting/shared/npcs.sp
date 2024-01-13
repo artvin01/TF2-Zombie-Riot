@@ -1608,7 +1608,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		float percentage = npc.m_flMeleeArmor * 100.0;
 		percentage *= fl_Extra_MeleeArmor[victim];
 		percentage *= fl_TotalArmor[victim];
-		if(!b_thisNpcIsARaid[victim] && XenoExtraLogic(true))
+		if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
 		{
 			percentage *= 0.85;
 		}		
@@ -1633,7 +1633,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		float percentage = npc.m_flRangedArmor * 100.0;
 		percentage *= fl_Extra_RangedArmor[victim];
 		percentage *= fl_TotalArmor[victim];
-		if(!b_thisNpcIsARaid[victim] && XenoExtraLogic(true))
+		if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
 		{
 			percentage *= 0.85;
 		}
@@ -1835,7 +1835,7 @@ bool NpcHadArmorType(int victim, int type)
 				return true;
 		}
 	}
-	if(!b_thisNpcIsARaid[victim] && XenoExtraLogic(true))
+	if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
 	{
 		return true;
 	}
@@ -2452,7 +2452,7 @@ void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int
 #endif
 			damage *= fl_MeleeArmor[victim];
 			damage *= fl_Extra_MeleeArmor[victim];	
-			if(!b_thisNpcIsARaid[victim] && XenoExtraLogic(true))
+			if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
 			{
 				damage *= 0.85;
 			}
@@ -2478,7 +2478,7 @@ void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int
 #endif
 			damage *= fl_RangedArmor[victim];
 			damage *= fl_Extra_RangedArmor[victim];
-			if(!b_thisNpcIsARaid[victim] && XenoExtraLogic(true))
+			if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
 			{
 				damage *= 0.85;
 			}

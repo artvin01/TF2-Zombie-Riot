@@ -1089,7 +1089,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				//do not during freeplay.
 				FormatEx(ExecuteRelayThings, sizeof(ExecuteRelayThings), "zr_wavefinish_wave_%i",CurrentRound);
 				ExcuteRelay(ExecuteRelayThings);
-				PrintToChatAll("%s  ExecuteRelayThings",ExecuteRelayThings);
 			}
 			
 			delete Enemies;
