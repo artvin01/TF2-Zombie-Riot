@@ -370,6 +370,7 @@ public Action StalkerFather_Timer(Handle timer)
 	enemy.ExtraRangedRes = 1.0;
 	enemy.ExtraSpeed = 1.0;
 	enemy.ExtraDamage = 1.0;	
+	enemy.ExtraSize = 1.0;	
 	Waves_AddNextEnemy(enemy);
 	return Plugin_Stop;
 }

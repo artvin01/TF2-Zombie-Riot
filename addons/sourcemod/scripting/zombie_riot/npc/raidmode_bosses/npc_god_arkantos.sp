@@ -969,7 +969,8 @@ void GodArkantosSpawnEnemy(int npc_id, int health = 0, int count, bool outline =
 	enemy.ExtraMeleeRes = 1.0;
 	enemy.ExtraRangedRes = 1.0;
 	enemy.ExtraSpeed = 1.0;
-	enemy.ExtraDamage = 1.0;		
+	enemy.ExtraDamage = 1.0;
+	enemy.ExtraSize = 1.0;		
 	for(int i; i<count; i++)
 	{
 		Waves_AddNextEnemy(enemy);
