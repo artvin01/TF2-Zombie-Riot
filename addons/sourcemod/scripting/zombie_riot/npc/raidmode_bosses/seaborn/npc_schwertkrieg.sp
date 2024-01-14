@@ -157,8 +157,6 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		b_raidboss_schwertkrieg_alive = true;
-		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
@@ -604,9 +602,12 @@ public void Raidboss_Schwertkrieg_NPCDeath(int entity)
 	}
 	int ally = EntRefToEntIndex(i_ally_index);
 	if(IsValidEntity(ally))
+	{
+		Raidboss_Donnerkrieg donner = view_as<Raidboss_Donnerkrieg>(ally);
 		b_force_heavens_light[ally]=true;	//force heavens Light!
-	
-	b_raidboss_schwertkrieg_alive = false;
+		donner.Anger=true;
+	}
+		
 	
 	if(EntRefToEntIndex(RaidBossActive)==npc.index)
 	{
