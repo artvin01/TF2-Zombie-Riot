@@ -199,7 +199,7 @@ void WeaponRedBlade_OnTakeDamage(int victim, float &damage)
 	}
 	if(HALFORNO[victim])
 	{
-		damage *= 0.4;
+		damage *= 0.45;
 	}
 }
 

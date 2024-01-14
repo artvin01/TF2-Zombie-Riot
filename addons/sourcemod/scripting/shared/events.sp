@@ -106,7 +106,6 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 		{
 			case 0,1,3: //either team ? kill dispenser!
 			{
-				RemoveRTSCamera(client);
 				DestroyDispenser(client);
 			}
 		}
@@ -440,7 +439,10 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 #if defined ZR
-	Update_Ammo(client);
+	DataPack pack = new DataPack();
+	pack.WriteCell(GetClientUserId(client));
+	pack.WriteCell(-1);
+	Update_Ammo(pack);
 	Escape_DropItem(client);
 	if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
 	{

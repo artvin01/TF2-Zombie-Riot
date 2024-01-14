@@ -415,4 +415,6 @@ void HidePlayerWeaponModel(int client, int entity)
 	{
 		SetEntPropFloat(EntityWeaponModel, Prop_Send, "m_flModelScale", f_WeaponSizeOverrideViewmodel[entity]);
 	}
+	f_WeaponVolumeStiller[client] = f_WeaponVolumeStiller[entity];
+	f_WeaponVolumeSetRange[client] = f_WeaponVolumeSetRange[entity];
 }

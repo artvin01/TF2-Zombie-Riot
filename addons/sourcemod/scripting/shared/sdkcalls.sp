@@ -488,6 +488,7 @@ void Manual_Impulse_101(int client, int health)
 #if defined ZR
 	ClientApplyRageMeterStatus(client);
 	ClientApplyMedigunUber(client);
+	Clip_GiveAllWeaponsClipSizes(client);
 #endif
 
 	if(health > 0)

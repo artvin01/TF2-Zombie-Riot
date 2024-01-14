@@ -1433,11 +1433,14 @@
 	
 	"Ammo Coat Desc"
 	{
-		"en"	"40%% increased Weapon Damage"
-		"ru"	"Увеличение урона от оружия на 40%%"
-		"chi"   "提升40%%武器伤害"
+		"en"	"50%% increased Weapon Damage"
+		"ru"	"Увеличение урона от оружия на 50%%"
+		"chi"   "提升50%%武器伤害"
 	}
-	
+	"Compacted Rounds Desc"
+	{
+		"en"	"15%% faster attackspeed, reload speed and 25%% more max clip."
+	}
 	"Ammo Coat Elite Desc"
 	{
 		"en"	"60%% increased Weapon Damage"
@@ -1911,6 +1914,10 @@
 		"en"	"Heals an ally for a bit and gives them the medigun buff for 15 seconds and yourself for 5 seconds.\nBuff works on full HP targets."
 		"ru"	"Немного лечит союзника и накладывает на него эфф. лечебной пушки на 15 секунд, а на себя - на 5 секунд.\nЭффект действует на цели с полным ОЗ."
 		"chi"   "治疗一个盟友一点，并给予他们15秒和你自己5秒的医疗buff。\nBuff适用于满HP目标。"
+	}
+	"Crusader Desc Pap 1"
+	{
+		"en"	"Shots become instant and scope charge.\nYour heals overheal to 15%%.\nYour m2 ability allows you to spawn healthkits.\nHealkits provide buffs aswell and have small in battle heal penalty.\nThey require a windup of 2 seconds.\nYou can place upto 2 per usage."
 	}
 
 	"Buildable Barracks Desc"
@@ -2640,5 +2647,17 @@
 	"Expert Trapper Desc"
 	{
 		"en"	"Your building weapons deal 75%% less damage except for trap weapons, but your traps deal 50%% more damage in total."
+	}
+	"Heavy Particle Rifle Desc 1"
+	{
+		"en"	"The longer you hold down fire, the more damage your weapon deals\nHowever, you do start with a damage penalty at the beggining of firing!\nYou are also 25% slower then normal, but you take 25% less dmg from front attacks!"
+	}
+	"Heavy Particle Rifle Desc 2"
+	{
+		"en"	"More damage, bigger clip, faster firing, slower reload"
+	}
+	"Heavy Particle Rifle Desc 3"
+	{
+		"en"	"More damage, even bigger clip, faster firing, even slower reload!"
 	}
 }

@@ -140,6 +140,24 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 #define MAXENTITIES	2048
 #define MAXTF2PLAYERS	36
 
+#define    HIDEHUD_WEAPONSELECTION        ( 1<<0 )    // Hide ammo count & weapon selection
+#define    HIDEHUD_FLASHLIGHT            ( 1<<1 )
+#define    HIDEHUD_ALL                    ( 1<<2 )
+#define HIDEHUD_HEALTH                ( 1<<3 )    // Hide health & armor / suit battery
+#define HIDEHUD_PLAYERDEAD            ( 1<<4 )    // Hide when local player's dead
+#define HIDEHUD_NEEDSUIT            ( 1<<5 )    // Hide when the local player doesn't have the HEV suit
+#define HIDEHUD_MISCSTATUS            ( 1<<6 )    // Hide miscellaneous status elements (trains, pickup history, death notices, etc)
+#define HIDEHUD_CHAT                ( 1<<7 )    // Hide all communication elements (saytext, voice icon, etc)
+#define    HIDEHUD_CROSSHAIR            ( 1<<8 )    // Hide crosshairs
+#define    HIDEHUD_VEHICLE_CROSSHAIR    ( 1<<9 )    // Hide vehicle crosshair
+#define HIDEHUD_INVEHICLE            ( 1<<10 )
+#define HIDEHUD_BONUS_PROGRESS        ( 1<<11 )    // Hide bonus progress display (for bonus map challenges)
+#define HIDEHUD_BUILDING_STATUS        ( 1<<12 )  
+#define HIDEHUD_CLOAK_AND_FEIGN        ( 1<<13 )   
+#define HIDEHUD_PIPES_AND_CHARGE        ( 1<<14 )    
+#define HIDEHUD_METAL        ( 1<<15 )    
+#define HIDEHUD_TARGET_ID        ( 1<<16 )    
+
 #define CONFIG_CFG	CONFIG ... "/%s.cfg"
 
 #define DISPENSER_BLUEPRINT	"models/buildables/dispenser_blueprint.mdl"
@@ -248,6 +266,7 @@ ConVar cvarTimeScale;
 ConVar cvar_nbAvoidObstacle;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 ConVar CvarTfMMMode; // tf_mm_servermode
+ConVar CvarAirAcclerate; //sv_airaccelerate
 ConVar sv_cheats;
 ConVar nav_edit;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
@@ -266,6 +285,7 @@ int g_particleImpactFlesh;
 int g_particleImpactRubber;
 
 bool b_NetworkedCrouch[MAXTF2PLAYERS];	
+bool b_AntiSlopeCamp[MAXTF2PLAYERS];	
 float f_CooldownForHurtParticle[MAXENTITIES];	
 float f_ClientConnectTime[MAXENTITIES];	
 float f_BackstabDmgMulti[MAXENTITIES];
@@ -656,6 +676,8 @@ int i_WeaponVMTExtraSetting[MAXENTITIES];
 int i_WeaponBodygroup[MAXENTITIES];
 float f_WeaponSizeOverride[MAXENTITIES];
 float f_WeaponSizeOverrideViewmodel[MAXENTITIES];
+float f_WeaponVolumeStiller[MAXENTITIES];
+float f_WeaponVolumeSetRange[MAXENTITIES];
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 
@@ -1133,7 +1155,7 @@ float f_DelayNextWaveStartAdvancingDeathNpc;
 #include "shared/killfeed.sp"
 #include "shared/npcs.sp"
 #include "shared/npccamera.sp"
-#include "shared/rtscamera_ref.sp"
+#include "shared/rtscamera.sp"
 #include "shared/sdkcalls.sp"
 #include "shared/sdkhooks.sp"
 #include "shared/stocks.sp"
@@ -1212,6 +1234,10 @@ public void OnPluginStart()
 	if(CvarMpSolidObjects)
 		CvarMpSolidObjects.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
+	CvarAirAcclerate = FindConVar("sv_airaccelerate");
+	if(CvarAirAcclerate)
+		CvarAirAcclerate.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
 	CvarTfMMMode = FindConVar("tf_mm_servermode");
 	if(CvarTfMMMode)
 		CvarTfMMMode.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
@@ -1233,6 +1259,7 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.icons"); 
 	LoadTranslations("zombieriot.phrases.rogue"); 
 	LoadTranslations("zombieriot.phrases.item.gift.desc"); 
+	LoadTranslations("realtime.phrases");
 	LoadTranslations("common.phrases");
 	
 	DHook_Setup();
@@ -1249,7 +1276,7 @@ public void OnPluginStart()
 #endif
 	NPC_Base_InitGamedata();
 	WandProjectile_GamedataInit();
-	SMRTS_OnPluginStart();
+	RTSCamera_PluginStart();
 	
 #if defined ZR
 	ZR_PluginStart();
@@ -1335,6 +1362,9 @@ public void OnPluginEnd()
 			OnClientDisconnect(i);
 		}
 	}
+
+	RTSCamera_PluginEnd();
+	
 	/*
 	char classname[256];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
@@ -1352,8 +1382,6 @@ public void OnPluginEnd()
 		}
 	}
 	*/
-
-	SMRTS_OnPluginEnd();
 }
 
 public void OnMapStart()
@@ -1416,7 +1444,7 @@ public void OnMapStart()
 	MapStart_CustomMeleePrecache();
 	WandStocks_Map_Precache();
 	MapStartResetNpc();
-	SMRTS_OnMapStart();
+	RTSCamera_MapStart();
 	Zero(f_AntiStuckPhaseThroughFirstCheck);
 	Zero(f_AntiStuckPhaseThrough);
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
@@ -1441,7 +1469,6 @@ public void OnMapEnd()
 	ConVar_Disable();
 	FileNetwork_MapEnd();
 	NpcStats_OnMapEnd();
-	SMRTS_OnMapEnd();
 }
 
 public void OnConfigsExecuted()
@@ -1696,22 +1723,24 @@ public void OnClientPutInServer(int client)
 
 	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
 	QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
-	
+	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN | HIDEHUD_BONUS_PROGRESS); 
 }
 
-#if defined RPG
 public void OnClientCookiesCached(int client)
-{
+{	
+#if defined RPG
 	RPG_ClientCookiesCached(client);
-}
 #endif
+
+	RTSCamera_ClientCookiesCached(client);
+}
 
 public void OnClientDisconnect(int client)
 {
 	FileNetwork_ClientDisconnect(client);
 	KillFeed_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
-	SMRTS_OnClientDisconnect(client);
+	RTSCamera_ClientDisconnect(client);
 	
 	i_ClientHasCustomGearEquipped[client] = false;
 	i_EntityToAlwaysMeleeHit[client] = 0;
@@ -1760,6 +1789,11 @@ public void OnClientDisconnect_Post(int client)
 #if defined RPG
 	RPG_ClientDisconnect_Post();
 #endif
+}
+
+public void OnPlayerRunCmdPre(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
+{
+	RTSCamera_PlayerRunCmdPre(client, buttons, impulse, weapon, mouse);
 }
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
@@ -2175,20 +2209,36 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 #endif
 }
 
-public void Update_Ammo(int  client)
+public void Update_Ammo(DataPack pack)
 {
-#if defined ZR
+	pack.Reset();
+	int client = GetClientOfUserId(pack.ReadCell());
 	if(IsValidClient(client) && i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
-#endif
-#if defined RPG
-	if(IsValidClient(client))
-#endif
 	{
 		for(int i; i<Ammo_MAX; i++)
 		{
 			CurrentAmmo[client][i] = GetAmmo(client, i);
 		}	
 	}
+	else
+	{
+		delete pack;
+		return;
+	}
+	int weapon_ref = pack.ReadCell();
+	if(weapon_ref == -1)
+	{
+		Clip_SaveAllWeaponsClipSizes(client);
+	}
+	else
+	{
+		int weapon = EntRefToEntIndex(weapon_ref);
+		if(IsValidEntity(weapon))
+		{
+			ClipSaveSingle(client, weapon);
+		}
+	}
+	delete pack;
 }
 
 public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname, bool &result)
@@ -2196,7 +2246,10 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 #if defined ZR
 	if(i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
 	{
-		RequestFrame(Update_Ammo, client);
+		DataPack pack = new DataPack();
+		pack.WriteCell(GetClientUserId(client));
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		RequestFrame(Update_Ammo, pack);
 	}
 #endif
 
@@ -2396,6 +2449,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_WeaponSoundIndexOverride[entity] = 0;
 		f_WeaponSizeOverride[entity] = 1.0;
 		f_WeaponSizeOverrideViewmodel[entity] = 1.0;
+		f_WeaponVolumeStiller[entity] = 1.0;
 		i_WeaponModelIndexOverride[entity] = 0;
 		i_WeaponVMTExtraSetting[entity] = -1;
 		i_WeaponBodygroup[entity] = -1;
@@ -2555,6 +2609,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "tf_projectile_energy_ring"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
+		}
+		else if(!StrContains(classname, "tf_wearable"))
+		{
+			CreateTimer(0.2, Timer_RemoveStrange, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		else if(!StrContains(classname, "func_brush"))
 		{
@@ -3005,6 +3063,22 @@ public void Delete_FrameLater(int ref) //arck, they are client side...
 	}
 }
 
+public Action Timer_RemoveStrange(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(entity != -1)
+	{
+		char netclass[64];
+		if(GetEntityNetClass(entity, netclass, sizeof(netclass)))
+		{
+			SetEntData(entity, FindSendPropInfo(netclass, "m_iItemIDHigh") - 4, 0);	// m_iItemID
+			SetEntProp(entity, Prop_Send, "m_iItemIDHigh", 0);
+			SetEntProp(entity, Prop_Send, "m_iItemIDLow", 0);
+		}
+	}
+	return Plugin_Continue;
+}
+
 /*
 public void Delete_instantly_Laser_ball(int entity)
 {
@@ -3183,8 +3257,6 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 	}
-
-	SMRTS_TF2_OnConditionAdded(client, condition);
 }
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)

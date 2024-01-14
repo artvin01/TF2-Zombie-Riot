@@ -6,13 +6,13 @@ static float fl_hud_timer[MAXPLAYERS+1];
 static float fl_primary_reloading[MAXPLAYERS+1];
 static bool b_primary_lock[MAXPLAYERS+1];
 static int i_ion_charge[MAXPLAYERS+1];
-static float fl_primary_dmg_amt[MAXPLAYERS+1];
 static int i_patten_type[MAXPLAYERS+1];
 static float fl_ammo_efficiency[MAXPLAYERS+1];
 static int i_ion_effects[MAXPLAYERS+1];
 static float fl_ion_timer_recharge[MAXPLAYERS+1];
-static bool b_force_reload[MAXPLAYERS+1];
-static int i_last_ammo[MAXPLAYERS+1];
+static float fl_primary_dmg_amt[MAXTF2PLAYERS+1];
+
+static bool b_was_lastman[MAXPLAYERS+1];
 
 static int g_particleImpactTornado;
 
@@ -42,8 +42,7 @@ public void Kit_Blitzkrieg_Precache()
 	Zero(i_ion_charge);
 	Zero(fl_ammo_efficiency);
 	Zero(fl_ion_timer_recharge);
-	Zero(b_force_reload);
-	Zero(i_last_ammo);
+	Zero(b_was_lastman);
 	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
 	PrecacheModel(BLITZKRIEG_KIT_ROCKET_MODEL);
 	PrecacheSound(BLITZKRIEG_KIT_SHOOT_SOUND1);
@@ -72,7 +71,6 @@ public void Enable_Blitzkrieg_Kit(int client, int weapon)
 			h_TimerKitBlitzkriegManagement[client] = CreateDataTimer(0.1, Timer_Management_KitBlitzkrieg, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			b_force_reload[client]=true;	//force a simulated reload that doesn't add a timer!
 		}
 		return;
 	}
@@ -86,7 +84,7 @@ public void Enable_Blitzkrieg_Kit(int client, int weapon)
 		fl_primary_reloading[client] = 0.0;
 		fl_primary_dmg_amt[client] = 100.0;
 		i_patten_type[client]=0;
-		b_force_reload[client]=true;
+		b_was_lastman[client]=false;
 	}
 }
 
@@ -114,6 +112,25 @@ public Action Timer_Management_KitBlitzkrieg(Handle timer, DataPack pack)
 
 	float GameTime = GetGameTime();
 
+	if(LastMann)	//if lastman triggers and we happen to be reloading, insta reload it!
+	{
+		if(!b_was_lastman[client])
+		{
+			b_was_lastman[client]=true;
+			if(fl_primary_reloading[client]>GameTime)
+			{
+				fl_primary_reloading[client]=0.0;
+			}
+		}
+	}
+	else
+	{
+		if(b_was_lastman[client])
+		{
+			b_was_lastman[client]=false;
+		}
+	}
+
 	switch(Pap(weapon_holding))
 	{
 		case 1: //primary 1
@@ -126,21 +143,6 @@ public Action Timer_Management_KitBlitzkrieg(Handle timer, DataPack pack)
 				{
 					b_primary_lock[client]=false;
 					Attributes_Set(weapon_holding, 821, 0.0);
-				}
-			}
-			if(b_force_reload[client])
-			{
-				b_force_reload[client]=false;
-
-				if(fl_primary_reloading[client]>GameTime)	//if the weapon was still reloading, make sure its lock logic is still valid!
-				{
-					Blitzkrieg_Kit_Simulate_Reload(client, weapon_holding);
-					b_primary_lock[client]=true;
-					Attributes_Set(weapon_holding, 821, 1.0);
-				}
-				else
-				{
-					Blitzkrieg_Kit_Simulate_Reload(client, weapon_holding, false);	//weapon was not reloading, add a reload timer
 				}
 			}
 		}
@@ -250,6 +252,9 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 	if(time>120.0)	//incase somehow it goes insanely high.
 		time=30.0;
 
+	if(LastMann)
+		time /=4.0;
+
 	fl_primary_reloading[client] = GameTime + time;
 
 	//8 is rockets ammo
@@ -267,49 +272,6 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 		int animation = 10;
 		SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
 	}
-}
-static void Blitzkrieg_Kit_Simulate_Reload(int client, int weapon, bool fresh=true)
-{
-	int max_clip = RoundFloat(Attributes_Get(weapon, 868, 40.0));
-
-	int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
-	int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");	//ammo type
-	int reserve_ammo = GetAmmo(client, Ammo_type);							//reserve
-	int ammo = i_last_ammo[client];		
-	//CPrintToChatAll("%i", ammo);							//clip
-	if(reserve_ammo < max_clip)	
-	{
-		return;
-	}
-
-	int amt_reloaded = max_clip-ammo;
-
-	if(!fresh && ammo<max_clip)
-	{
-		float GameTime = GetGameTime();
-		b_primary_lock[client]=true;
-		Attributes_Set(weapon, 821, 1.0);
-		float ratio = 1.0-(float(ammo)/float(max_clip));	//what?
-
-		//CPrintToChatAll("%f", ratio);
-
-		float time = 30.0*ratio;	//30
-
-		time *=Attributes_Get(weapon, 97, 1.0);
-
-		if(time<=2.5)
-			time=2.5;
-		
-		if(time>120.0)	//incase somehow it goes insanely high.
-			time=30.0;
-
-		fl_primary_reloading[client] = GameTime + time;
-	}
-
-	//8 is rockets
-	SetAmmo(client, Ammo_type, reserve_ammo-amt_reloaded);
-	SetEntData(weapon, iAmmoTable, max_clip, 4, true);
-
 }
 public void Blitzkrieg_Kit_Switch_Mode(int client, int weapon, const char[] classname, bool &result)
 {
@@ -366,10 +328,6 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 	{
 		fl_ammo_efficiency[client]+=efficiency;
 	}
-
-	int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
-	int ammo = GetEntData(weapon, iAmmoTable, 4);							//clip
-	i_last_ammo[client] = ammo-1;
 
 	float fPos[3];
 	GetClientEyePosition(client, fPos);
@@ -776,7 +734,7 @@ public void Blitzkrieg_Kit_Custom_Melee_Logic(int client, float &CustomMeleeRang
 	}
 }
 
-public void Blitzkrieg_Kit_Custom_Damage_Calc(int client, int weapon, float &damage)
+public void Blitzkrieg_Kit_OnHitEffect(int client, int weapon, float &damage)
 {
 	float GameTime = GetGameTime();
 
@@ -788,8 +746,17 @@ public void Blitzkrieg_Kit_Custom_Damage_Calc(int client, int weapon, float &dam
 	{
 		damage *=1.25;
 
-		fl_ion_timer_recharge[client] -=BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;
-		fl_primary_reloading[client] -= BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;	//Reduce the cooldowns by a bit if you hit something!
+		if(LastMann)
+		{
+			fl_ion_timer_recharge[client] -=BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION*2.0;
+			fl_primary_reloading[client] -= BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION*2.0;	//Reduce the cooldowns by a bit if you hit something!
+		}
+		else
+		{
+			fl_ion_timer_recharge[client] -=BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;
+			fl_primary_reloading[client] -= BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;	//Reduce the cooldowns by a bit if you hit something!
+		}
+		
 	}
 }
 static void spawnRing_Vector(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location

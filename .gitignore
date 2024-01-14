@@ -3,6 +3,8 @@
 *.smx
 *.inc
 *.vscode
+*.jpg
+*.png
 *.code-workspace
 [Cc]compiled/
 [Dd]esktop.ini

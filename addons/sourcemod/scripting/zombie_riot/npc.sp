@@ -388,6 +388,7 @@ enum
 	RUINA_MAGIA_ANCHOR				= 340,
 	RUINA_STORM_WEAVER				= 341,
 	RUINA_STORM_WEAVER_MID			= 342,
+	MINI_BEHEADED_KAMI				= 343,
 	
 
 	MAX_NPC_TYPES	// Add entries above this line
@@ -759,7 +760,8 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Venium",
 	"Magia Anchor",
 	"Storm Weaver",
-	"Storm Weaver"
+	"Storm Weaver",
+	"Beheaded Kamikaze"
 };
 
 // See items.sp for IDs to names
@@ -1133,7 +1135,8 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	-1,	//RUINA_VENIUM
 	-1,	//RUINA_MAGIA_ANCHOR
 	-1,	//RUINA_STORM_WEAVER
-	-1	//RUINA_STORM_WEAVER_MID
+	-1,	//RUINA_STORM_WEAVER_MID
+	1, //MINI_BEHEADED_KAMI
 };
 
 public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
@@ -1502,7 +1505,8 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_ruina_venium",
 	"npc_ruina_magia_anchor",
 	"npc_ruina_storm_weaver",
-	""
+	"npc_ruina_storm_weaver_bodypart",
+	"npc_beheaded_kami"
 };
 
 void NPC_MapStart()
@@ -1650,6 +1654,7 @@ void NPC_MapStart()
 	Donnerkrieg_OnMapStart_NPC();
 	Schwertkrieg_OnMapStart_NPC();
 	PhantomKnight_OnMapStart_NPC();
+	BeheadedKamiKaze_OnMapStart_NPC();
 	Alt_Medic_Constructor_OnMapStart_NPC();	//3rd alt medic.
 	
 	TheGambler_OnMapStart_NPC();
@@ -2223,7 +2228,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = Schwertkrieg(client, vecPos, vecAng, ally, data);
 		
 		case PHANTOM_KNIGHT:
-			entity = PhantomKnight(client, vecPos, vecAng, ally);
+			entity = PhantomKnight(client, vecPos, vecAng, ally);	
+		
+		case MINI_BEHEADED_KAMI:
+			entity = BeheadedKamiKaze(client, vecPos, vecAng, ally);		
 		
 		case ALT_MEDIC_HEALER_3:	//3 being the 3rd stage of alt waves.
 			entity = Alt_Medic_Constructor(client, vecPos, vecAng, ally);
@@ -2391,25 +2399,25 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = NearlSwordAbility(client, vecPos, vecAng, ally);
 		
 		case STALKER_COMBINE:
-			entity = StalkerCombine(client, vecPos, vecAng, false);
+			entity = StalkerCombine(client, vecPos, vecAng, ally);
 		
 		case STALKER_FATHER:
-			entity = StalkerFather(client, vecPos, vecAng, false);
+			entity = StalkerFather(client, vecPos, vecAng, ally);
 		
 		case STALKER_GOGGLES:
-			entity = StalkerGoggles(client, vecPos, vecAng, false);
+			entity = StalkerGoggles(client, vecPos, vecAng, ally);
 		
 		case XENO_RAIDBOSS_SILVESTER:
-			entity = RaidbossSilvester(client, vecPos, vecAng, false, data);
+			entity = RaidbossSilvester(client, vecPos, vecAng, ally, data);
 		
 		case XENO_RAIDBOSS_BLUE_GOGGLES:
-			entity = RaidbossBlueGoggles(client, vecPos, vecAng, false, data);
+			entity = RaidbossBlueGoggles(client, vecPos, vecAng, ally, data);
 		
 		case XENO_RAIDBOSS_SUPERSILVESTER:
-			entity = RaidbossSilvester(client, vecPos, vecAng, false, data);
+			entity = RaidbossSilvester(client, vecPos, vecAng, ally, data);
 		
 		case XENO_RAIDBOSS_NEMESIS:
-			entity = RaidbossNemesis(client, vecPos, vecAng, false, data);
+			entity = RaidbossNemesis(client, vecPos, vecAng, ally, data);
 		
 		case SEARUNNER, SEARUNNER_ALT:
 			entity = SeaRunner(client, vecPos, vecAng, ally, data);
@@ -2682,7 +2690,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = Pistoleer(client, vecPos, vecAng, ally);
 
 		case EXPIDONSA_DIVERSIONISTICO:
-			entity = Diversionistico(client, vecPos, vecAng, ally);
+			entity = Diversionistico(client, vecPos, vecAng, ally, data);
 
 		case EXPIDONSA_HEAVYPUNUEL:
 			entity = HeavyPunuel(client, vecPos, vecAng, ally);
@@ -2718,7 +2726,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = EnegaKapus(client, vecPos, vecAng, ally);
 
 		case EXPIDONSA_CAPTINOAGENTUS:
-			entity = CaptinoAgentus(client, vecPos, vecAng, ally);
+			entity = CaptinoAgentus(client, vecPos, vecAng, ally, data);
 
 		case RAIDMODE_EXPIDONSA_SENSAL:
 			entity = Sensal(client, vecPos, vecAng, ally, data);
@@ -3204,6 +3212,9 @@ public void NPCDeath(int entity)
 		
 		case PHANTOM_KNIGHT:
 			PhantomKnight_NPCDeath(entity);
+
+		case MINI_BEHEADED_KAMI:
+			BeheadedKamiKaze_NPCDeath(entity);
 		
 		case ALT_MEDIC_HEALER_3:
 			Alt_Medic_Constructor_NPCDeath(entity);
@@ -4179,6 +4190,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case PHANTOM_KNIGHT:
 			PhantomKnight_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case MINI_BEHEADED_KAMI:
+			BeheadedKamiKaze_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case ALT_MEDIC_HEALER_3:
 			Alt_Medic_Constructor_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -4655,6 +4669,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/special/npc_l4d2_tank.sp"
 #include "zombie_riot/npc/special/npc_itstilives.sp"
 #include "zombie_riot/npc/special/npc_phantom_knight.sp"
+#include "zombie_riot/npc/special/npc_beheaded_kamikaze.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"

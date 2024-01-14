@@ -12,6 +12,7 @@ bool b_ToggleTransparency[MAXENTITIES];
 #define HEALTH_MODEL "models/items/medkit_medium.mdl"
 #define HEALTH_SOUND "items/powerup_pickup_strength.wav"
 
+
 #define MONEY_MODEL "models/items/currencypack_large.mdl"
 #define MONEY_SOUND "items/powerup_pickup_crits.wav"
 

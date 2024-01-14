@@ -290,7 +290,7 @@ stock int GetClosestTargetNotAffectedByLightning(float EntityLocation[3])
 }
 
 
-void Passanger_Lightning_Effect(float belowBossEyes[3], float vecHit[3], int Power)
+void Passanger_Lightning_Effect(float belowBossEyes[3], float vecHit[3], int Power, float diameter_override = 0.0, int color[3] = {0,0,0})
 {	
 	
 	int r = 255; //Yellow.
@@ -304,6 +304,16 @@ void Passanger_Lightning_Effect(float belowBossEyes[3], float vecHit[3], int Pow
 	if(Power == 3)
 	{
 		diameter = 25.0;
+	}
+	if(diameter_override != 0.0)
+	{
+		diameter = diameter_override;
+	}
+	if(color[0] != 0)
+	{
+		r = color[0]; //Yellow.
+		g = color[1];
+		b = color[2];
 	}
 	int colorLayer4[4];
 	SetColorRGBA(colorLayer4, r, g, b, 125);

@@ -141,6 +141,18 @@
 		"en" 		"An invasion of the past is accuring!"
 		"ru" 		"Надвигается вторжение прошлого!"
 	}
+	"Beheaded Kami 1"
+	{
+		"en" 		"Maybe its best to leave it alone..."
+	}
+	"Beheaded Kami 2"
+	{
+		"en" 		"Dont take this lightly."
+	}
+	"Beheaded Kami 3"
+	{
+		"en" 		"Screaming..."
+	}
 	"The golden bloon is valueable..."
 	{
 		"en"		"The golden bloon is valueable..."

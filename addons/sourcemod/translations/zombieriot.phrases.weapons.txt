@@ -2301,4 +2301,8 @@
 	{
 		"en"	"Gravaton Spell"
 	}
+	"Heavy Particle Rifle"
+	{
+		"en"	"Heavy Particle Rifle"
+	}
 }

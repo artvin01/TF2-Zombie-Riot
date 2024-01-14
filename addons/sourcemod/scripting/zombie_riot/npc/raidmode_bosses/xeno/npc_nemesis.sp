@@ -94,8 +94,14 @@ float f_NemesisRandomInfectionCycle[MAXENTITIES];
 #define NEMESIS_MODEL "models/zombie_riot/bosses/nemesis_ft1_v6.mdl"
 #define INFECTION_MODEL "models/weapons/w_bugbait.mdl"
 #define INFECTION_RANGE 150.0
-#define INFECTION_DELAY 0.8
 
+float InfectionDelay()
+{
+	if(XenoExtraLogic())
+		return 0.7;
+	
+	return 0.8;
+}
 void RaidbossNemesis_OnMapStart()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);       }
@@ -192,6 +198,10 @@ methodmap RaidbossNemesis < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
+
+		if(XenoExtraLogic())
+			RaidModeTime = GetGameTime(npc.index) + 250.0;
+
 		npc.m_flMeleeArmor = 1.25; 		//Melee should be rewarded for trying to face this monster
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -246,7 +256,15 @@ methodmap RaidbossNemesis < CClotBody
 		i_GunMode[npc.index] = 0;
 		i_GunAmmo[npc.index] = 0;
 		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 25.0;
-		CPrintToChatAll("{green}Nemesis: S.T.A.R.S ...");
+		if(XenoExtraLogic())
+		{
+			FormatEx(c_NpcCustomNameOverride[npc.index], sizeof(c_NpcCustomNameOverride[]), "Enraged Nemesis");
+			CPrintToChatAll("{green}Nemesis: ... NGHRRRRR....");
+		}
+		else
+		{
+			CPrintToChatAll("{green}Nemesis: S.T.A.R.S ...");
+		}
 		
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
@@ -272,11 +290,15 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		SDKUnhook(npc.index, SDKHook_Think, RaidbossNemesis_ClotThink);
 	}
-
+	if(npc.m_flNextRangedAttackHappening && npc.flXenoInfectedSpecialHurtTime - 0.45 < gameTime)
+	{
+		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ 65.0);
+	}
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
+
 
 	npc.Update();
 
@@ -305,7 +327,6 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		//silence doesnt completly delete it, but moreso, nerf it.
 		if(f_NemesisSpecialDeathAnimation[npc.index] + 14.0 > GetGameTime(npc.index))
 		{
-			
 			float ProjLoc[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 			ProjLoc[2] += 70.0;
@@ -316,9 +337,13 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
 			int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3250;
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealByThis);
+			if(XenoExtraLogic())
+			{
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (HealByThis * 2));
+			}
 			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
 			{
+				
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 			}
 		}
@@ -557,41 +582,48 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		{
 			if(npc.m_flNextRangedAttackHappening < gameTime)
 			{
-				i_GrabbedThis[npc.index] = -1;
-				AcceptEntityInput(client_victim, "ClearParent");
-						
-				float flPos[3]; // original
-				float flAng[3]; // original
-						
-						
-				npc.GetAttachment("RightHand", flPos, flAng);
-				TeleportEntity(client_victim, flPos, NULL_VECTOR, {0.0,0.0,0.0});
-						
-				if(client_victim <= MaxClients)
+				if(XenoExtraLogic())
 				{
-					SetEntityMoveType(client_victim, MOVETYPE_WALK); //can move XD
-							
-					TF2_AddCondition(client_victim, TFCond_LostFooting, 1.0);
-					TF2_AddCondition(client_victim, TFCond_AirCurrent, 1.0);
-							
-					if(dieingstate[client_victim] == 0)
-					{
-						SetEntityCollisionGroup(client_victim, 5);
-						b_ThisEntityIgnored[client_victim] = false;
-					}
-					Custom_Knockback(npc.index, client_victim, 3000.0, true, true);
+					ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ 150.0);
 				}
 				else
 				{
-					b_NoGravity[client_victim] = true;
-					b_CannotBeKnockedUp[client_victim] = true;
-					npc.SetVelocity({0.0,0.0,0.0});
+					i_GrabbedThis[npc.index] = -1;
+					AcceptEntityInput(client_victim, "ClearParent");
+							
+					float flPos[3]; // original
+					float flAng[3]; // original
+							
+							
+					npc.GetAttachment("RightHand", flPos, flAng);
+					TeleportEntity(client_victim, flPos, NULL_VECTOR, {0.0,0.0,0.0});
+							
+					if(client_victim <= MaxClients)
+					{
+						SetEntityMoveType(client_victim, MOVETYPE_WALK); //can move XD
+								
+						TF2_AddCondition(client_victim, TFCond_LostFooting, 1.0);
+						TF2_AddCondition(client_victim, TFCond_AirCurrent, 1.0);
+								
+						if(dieingstate[client_victim] == 0)
+						{
+							SetEntityCollisionGroup(client_victim, 5);
+							b_ThisEntityIgnored[client_victim] = false;
+						}
+						Custom_Knockback(npc.index, client_victim, 3000.0, true, true);
+					}
+					else
+					{
+						b_NoGravity[client_victim] = true;
+						b_CannotBeKnockedUp[client_victim] = true;
+						npc.SetVelocity({0.0,0.0,0.0});
+					}
+					npc.m_flNextRangedAttackHappening = 0.0;	
+					SDKHooks_TakeDamage(client_victim, npc.index, npc.index, 10000.0, DMG_CLUB, -1);
+					i_TankAntiStuck[client_victim] = EntIndexToEntRef(npc.index);
+					CreateTimer(0.1, CheckStuckNemesis, EntIndexToEntRef(client_victim), TIMER_FLAG_NO_MAPCHANGE);
+					npc.PlayRangedSpecialSound();
 				}
-				npc.m_flNextRangedAttackHappening = 0.0;	
-				SDKHooks_TakeDamage(client_victim, npc.index, npc.index, 10000.0, DMG_CLUB, -1);
-				i_TankAntiStuck[client_victim] = EntIndexToEntRef(npc.index);
-				CreateTimer(0.1, CheckStuckNemesis, EntIndexToEntRef(client_victim), TIMER_FLAG_NO_MAPCHANGE);
-				npc.PlayRangedSpecialSound();
 			}
 		}
 	}
@@ -619,57 +651,61 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 
 			if(IsValidEnemy(npc.index, npc.m_iTarget) && npc.flXenoInfectedSpecialHurtTime - 0.45 < gameTime)
 			{
-				float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+				if(!XenoExtraLogic())
 				{
-					int Enemy_I_See;
-						
-					Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-
-					//Target close enough to hit
-					if(IsValidEntity(npc.m_iTarget) && IsValidEnemy(npc.index, Enemy_I_See))
+					float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+					float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+					if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
 					{
-						int iActivity = npc.LookupActivity("ACT_FT2_GRABKILL");
-						if(iActivity > 0) npc.StartActivity(iActivity);
-						npc.m_iChanged_WalkCycle = 5;
-						npc.m_bisWalking = false;
-						npc.m_flSpeed = 0.0;
-						NPC_StopPathing(npc.index);
-						npc.m_flDoingAnimation = gameTime + 5.0;
-						npc.m_flNextRangedAttackHappening = gameTime + 3.1;
-						fl_RegainWalkAnim[npc.index] = gameTime + 5.1;
-						npc.PlayRangedSound();
+						int Enemy_I_See;
+							
+						Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", f3_LastValidPosition[Enemy_I_See]);
-						
-						float flPos[3]; // original
-						float flAng[3]; // original
-					
-						npc.GetAttachment("RightHand", flPos, flAng);
-						
-						TeleportEntity(Enemy_I_See, flPos, NULL_VECTOR, {0.0,0.0,0.0});
-						
-						CClotBody npcenemy = view_as<CClotBody>(Enemy_I_See);
+						//Target close enough to hit
+						if(IsValidEntity(npc.m_iTarget) && IsValidEnemy(npc.index, Enemy_I_See))
+						{
+							int iActivity = npc.LookupActivity("ACT_FT2_GRABKILL");
+							if(iActivity > 0) npc.StartActivity(iActivity);
+							npc.m_iChanged_WalkCycle = 5;
+							npc.m_bisWalking = false;
+							npc.m_flSpeed = 0.0;
+							NPC_StopPathing(npc.index);
+							npc.m_flDoingAnimation = gameTime + 5.0;
+							npc.m_flNextRangedAttackHappening = gameTime + 3.1;
+							fl_RegainWalkAnim[npc.index] = gameTime + 5.1;
+							npc.PlayRangedSound();
 
-						if(Enemy_I_See <= MaxClients)
-						{
-							SetEntityMoveType(Enemy_I_See, MOVETYPE_NONE); //Cant move XD
-							SetEntityCollisionGroup(Enemy_I_See, 1);
-							SetParent(npc.index, Enemy_I_See, "RightHand");
+							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", f3_LastValidPosition[Enemy_I_See]);
+							
+							float flPos[3]; // original
+							float flAng[3]; // original
+						
+							npc.GetAttachment("RightHand", flPos, flAng);
+							
+							TeleportEntity(Enemy_I_See, flPos, NULL_VECTOR, {0.0,0.0,0.0});
+							
+							CClotBody npcenemy = view_as<CClotBody>(Enemy_I_See);
+
+							if(Enemy_I_See <= MaxClients)
+							{
+								SetEntityMoveType(Enemy_I_See, MOVETYPE_NONE); //Cant move XD
+								SetEntityCollisionGroup(Enemy_I_See, 1);
+								SetParent(npc.index, Enemy_I_See, "RightHand");
+							}
+							else
+							{
+								b_NoGravity[Enemy_I_See] = true;
+								b_CannotBeKnockedUp[Enemy_I_See] = true;
+								npcenemy.SetVelocity({0.0,0.0,0.0});
+							}
+							f_TankGrabbedStandStill[npcenemy.index] = GetGameTime() + 3.5;
+							TeleportEntity(npcenemy.index, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
+							i_GrabbedThis[npc.index] = EntIndexToEntRef(Enemy_I_See);
+							b_DoNotUnStuck[Enemy_I_See] = true;
+							f_NpcTurnPenalty[npc.index] = 1.0;
 						}
-						else
-						{
-							b_NoGravity[Enemy_I_See] = true;
-							b_CannotBeKnockedUp[Enemy_I_See] = true;
-							npcenemy.SetVelocity({0.0,0.0,0.0});
-						}
-						f_TankGrabbedStandStill[npcenemy.index] = GetGameTime() + 3.5;
-						TeleportEntity(npcenemy.index, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
-						i_GrabbedThis[npc.index] = EntIndexToEntRef(Enemy_I_See);
-						b_DoNotUnStuck[Enemy_I_See] = true;
-						f_NpcTurnPenalty[npc.index] = 1.0;
 					}
+					
 				}
 			}
 			if(npc.m_iChanged_WalkCycle != 5) 
@@ -743,9 +779,18 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							if(iActivity > 0) npc.StartActivity(iActivity);
 							npc.m_iChanged_WalkCycle = 3;
 							npc.m_bisWalking = false;
-							npc.m_flSpeed = 50.0;
-							if(npc.Anger)
-								npc.m_flSpeed = 100.0;
+							if(XenoExtraLogic())
+							{
+								npc.m_flSpeed = 150.0;
+								if(npc.Anger)
+									npc.m_flSpeed = 200.0;
+							}
+							else
+							{
+								npc.m_flSpeed = 50.0;
+								if(npc.Anger)
+									npc.m_flSpeed = 100.0;
+							}
 							npc.StartPathing();
 							f_NpcTurnPenalty[npc.index] = 0.25;
 							npc.PlayMeleeSound();
@@ -841,7 +886,14 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		{
 			case 1:
 			{
-				npc.m_flNextMeleeAttack = gameTime + 5.0;
+				if(XenoExtraLogic())
+				{
+					npc.m_flNextMeleeAttack = gameTime + 3.0;
+				}
+				else
+				{
+					npc.m_flNextMeleeAttack = gameTime + 5.0;
+				}
 				npc.m_flDoingAnimation = gameTime + 2.5;
 				npc.m_flAttackHappens = gameTime + 1.25;
 				float flPos[3]; // original
@@ -863,9 +915,18 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					if(iActivity > 0) npc.StartActivity(iActivity);
 					npc.m_iChanged_WalkCycle = 1;
 					npc.m_bisWalking = false;
-					npc.m_flSpeed = 50.0;
-					if(npc.Anger)
+					if(XenoExtraLogic())
+					{
+						npc.m_flSpeed = 150.0;
+						if(npc.Anger)
+							npc.m_flSpeed = 200.0;
+					}
+					else
+					{
+						npc.m_flSpeed = 50.0;
+						if(npc.Anger)
 							npc.m_flSpeed = 100.0;
+					}
 					npc.StartPathing();
 					f_NpcTurnPenalty[npc.index] = 0.25;
 					npc.PlayMeleeSound();
@@ -1062,8 +1123,16 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		{
 			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING)
 			{
-				Items_GiveNamedItem(client_repat, "Nemesis's Heart Piece");
-				CPrintToChat(client_repat, "{default}You cut its heart to ensure his death and gained: {green}''Nemesis's Heart Piece''{default}!");
+				if(XenoExtraLogic())
+				{
+					Items_GiveNamedItem(client_repat, "Mr. X's Files");
+					CPrintToChat(client_repat, "{default}Something doesnt feel right, you decide to not rip its heart but instead take something else: {green}''Mr. X's Files''{default}!");
+				}
+				else
+				{
+					Items_GiveNamedItem(client_repat, "Nemesis's Heart Piece");
+					CPrintToChat(client_repat, "{default}You cut its heart to ensure his death and gained: {green}''Nemesis's Heart Piece''{default}!");
+				}
 			}
 		}
 	}
@@ -1365,7 +1434,7 @@ void Nemesis_DoInfectionThrow(int entity, int MaxThrowCount)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", Nemesis_Loc);
 
 	Nemesis_Loc[2] += 10.0;
-	spawnRing_Vectors(Nemesis_Loc, INFECTION_RANGE * 3.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 200, 1, INFECTION_DELAY, 5.0, 0.0, 1,1.0);	
+	spawnRing_Vectors(Nemesis_Loc, INFECTION_RANGE * 3.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 200, 1, InfectionDelay(), 5.0, 0.0, 1,1.0);	
 	
 	float Nemesis_Ang[3];
 	Nemesis_Ang = {-90.0,0.0,0.0};
@@ -1373,7 +1442,7 @@ void Nemesis_DoInfectionThrow(int entity, int MaxThrowCount)
 	TeleportEntity(particle, NULL_VECTOR, Nemesis_Ang, NULL_VECTOR);
 
 	DataPack pack;
-	CreateDataTimer(INFECTION_DELAY, Nemesis_DoInfectionThrowInternal, pack, TIMER_FLAG_NO_MAPCHANGE);
+	CreateDataTimer(InfectionDelay(), Nemesis_DoInfectionThrowInternal, pack, TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(entity)); 	//who this attack belongs to
 	pack.WriteCell(MaxThrowCount); 	//who this attack belongs to
 }
@@ -1446,14 +1515,14 @@ public Action Nemesis_DoInfectionThrowInternal(Handle timer, DataPack DataNem)
 			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", VicLoc);
 
 			VicLoc[2] += 10.0;
-			spawnRing_Vectors(VicLoc, INFECTION_RANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 200, 1, INFECTION_DELAY, 5.0, 0.0, 1);	
+			spawnRing_Vectors(VicLoc, INFECTION_RANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 200, 1, InfectionDelay(), 5.0, 0.0, 1);	
 			VicLoc[2] -= 5.0;
-			spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 200, 1, INFECTION_DELAY, 5.0, 0.0, 1,INFECTION_RANGE * 2.0);	
+			spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 200, 1, InfectionDelay(), 5.0, 0.0, 1,INFECTION_RANGE * 2.0);	
 			
 			float damage = 500.0;
 
 			DataPack pack;
-			CreateDataTimer(INFECTION_DELAY, Nemesis_Infection_Throw, pack, TIMER_FLAG_NO_MAPCHANGE);
+			CreateDataTimer(InfectionDelay(), Nemesis_Infection_Throw, pack, TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(EntIndexToEntRef(entity)); 	//who this attack belongs to
 			pack.WriteCell(damage);
 			pack.WriteCell(VicLoc[0]);

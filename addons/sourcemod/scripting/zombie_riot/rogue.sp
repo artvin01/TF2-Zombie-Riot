@@ -1757,6 +1757,7 @@ static void SetClientCamera(int client, const char[] name = "", const char[] sky
 			{
 				Waves_SetSkyName(skyname, client);
 				ForceClientViewOntoEntity(client, entity);
+				SetEntityFlags(client, GetEntityFlags(client)|FL_FROZEN|FL_ATCONTROLS);
 				return;
 			}
 		}
@@ -1768,6 +1769,7 @@ static void SetClientCamera(int client, const char[] name = "", const char[] sky
 	//	TF2_RemoveCondition(client, TFCond_FreezeInput);
 	//}
 	
+	SetEntityFlags(client, GetEntityFlags(client) & ~(FL_FROZEN | FL_ATCONTROLS));
 	SetClientViewEntity(client, client);
 	Thirdperson_PlayerSpawn(client);
 }
@@ -1789,6 +1791,7 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 				{
 					if(IsClientInGame(client) && IsPlayerAlive(client))
 					{
+						SetEntityFlags(client, GetEntityFlags(client)|FL_FROZEN|FL_ATCONTROLS);
 						ForceClientViewOntoEntity(client, entity);
 					//	Animator_ForceCameraView(client, true, entity, 10.0);
 					}
@@ -1803,6 +1806,7 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 	{
 		if(IsClientInGame(client))
 		{
+			SetEntityFlags(client, GetEntityFlags(client) & ~(FL_FROZEN | FL_ATCONTROLS));
 			SetClientViewEntity(client, client);
 			//TF2_RemoveCondition(client, TFCond_FreezeInput);
 			Thirdperson_PlayerSpawn(client);

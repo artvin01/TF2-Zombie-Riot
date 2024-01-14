@@ -442,8 +442,25 @@ methodmap RaidbossSilvester < CClotBody
 
 		//Spawn in the duo raid inside him, i didnt code for duo raids, so if one dies, it will give the timer to the other and vise versa.
 		
-		
 		RequestFrame(Silvester_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
+		if(XenoExtraLogic())
+		{
+			switch(GetRandomInt(1,3))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{gold}Silvester{default}: Is... Is this really where we must change your mind?");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{gold}Silvester{default}: Please just turn away!");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{gold}Silvester{default}: This is already too close, this is too much risk!");
+				}
+			}
+		}
 		SilvesterApplyEffects(npc.index, false);
 		return npc;
 	}
@@ -563,15 +580,24 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				{
 					case 1:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Come here!");
+						if(!XenoExtraLogic())
+							CPrintToChatAll("{gold}Silvester{default}: Come here!");
+						else
+							CPrintToChatAll("{gold}Silvester{default}: Just step away from here!!");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: That's it!");
+						if(!XenoExtraLogic())
+							CPrintToChatAll("{gold}Silvester{default}: That's it!");
+						else
+							CPrintToChatAll("{gold}Silvester{default}: I dont want to get infected again..!!");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Meet your real deal!");
+						if(!XenoExtraLogic())
+							CPrintToChatAll("{gold}Silvester{default}: Meet your real deal!");
+						else
+							CPrintToChatAll("{gold}Silvester{default}: This is one of the most dangerous places, just LEAVE!");
 					}
 				}
 			}
@@ -581,15 +607,24 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				{
 					case 1:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: It's over you little..!");
+						if(!XenoExtraLogic())
+							CPrintToChatAll("{gold}Silvester{default}: It's over you little..!");
+						else
+							CPrintToChatAll("{gold}Silvester{default}: No no no.. i cant not again..");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: If you won't listen, I'll erase you before you become one of them!");
+						if(!XenoExtraLogic())
+							CPrintToChatAll("{gold}Silvester{default}: If you won't listen, I'll erase you before you become one of them!");
+						else
+							CPrintToChatAll("{gold}Silvester{default}: So many keep falling for this!!");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: GO TO HELL YOU MERCS!!!");
+						if(!XenoExtraLogic())
+							CPrintToChatAll("{gold}Silvester{default}: GO TO HELL YOU MERCS!!!");
+						else
+							CPrintToChatAll("{gold}Silvester{default}: ...");
 					}
 				}
 			}
@@ -2123,22 +2158,34 @@ bool SharedGiveupSilvester(int entity, int entity2)
 				case 0:
 				{
 					ReviveAll(true);
-					CPrintToChatAll("{gold}Silvester{default}: We tried to help, this will be painfull for you.");
+					if(!XenoExtraLogic())
+						CPrintToChatAll("{gold}Silvester{default}: We tried to help, this will be painfull for you.");
+					else
+						CPrintToChatAll("{gold}Silvester{default}: You never listen. I will not assist you more.");
 					i_TalkDelayCheck += 1;
 				}
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: There is a far greater enemy then us, we can't beat him.");
+					if(!XenoExtraLogic())
+						CPrintToChatAll("{darkblue}Blue Goggles{default}: There is a far greater enemy then us, we can't beat him.");
+					else
+						CPrintToChatAll("{darkblue}Blue Goggles{default}: It appears like you already know what you get yourself into.");
+
 					i_TalkDelayCheck += 1;
 				}
 				case 2:
 				{
+					
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: I doubt you can defeat him, but if you do, then you will assist greatly in defeating the great chaos.");
 					i_TalkDelayCheck += 1;
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Good luck.");
+					if(!XenoExtraLogic())
+						CPrintToChatAll("{gold}Silvester{default}: Good luck.");
+					else
+						CPrintToChatAll("{gold}Silvester{default}: I REFUSE to let this happen again to us two, don't say i didnt warn you!");
+
 					i_TalkDelayCheck = 5;
 					for (int client = 0; client < MaxClients; client++)
 					{

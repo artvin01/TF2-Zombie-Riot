@@ -151,6 +151,7 @@ enum
 	WEAPON_RAPIER = 80,
 	WEAPON_RED_BLADE = 81,
 	WEAPON_GRAVATON_WAND = 82,
+	WEAPON_HEAVY_PARTICLE_RIFLE = 83,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -470,6 +471,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/red_blade.sp"
 #include "zombie_riot/custom/weapon_rapier.sp"
 #include "zombie_riot/custom/wand/weapon_wand_gravaton.sp"
+#include "zombie_riot/custom/weapon_heavy_particle_rifle.sp"
 
 void ZR_PluginLoad()
 {
@@ -691,6 +693,7 @@ void ZR_MapStart()
 	Kit_Blitzkrieg_Precache();
 	ResetMapStartRedBladeWeapon();
 	Gravaton_Wand_MapStart();
+	Heavy_Particle_Rifle_Mapstart();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;
@@ -709,6 +712,9 @@ void ZR_MapStart()
 	i_RaidMusicLength1 = 0;
 	b_RaidMusicCustom1 = false;
 	ResetMapStartSensalWeapon();
+	//This enables the MVM money hud, looks way better.
+	SetVariantString("ForceEnableUpgrades(2)");
+	AcceptEntityInput(0, "RunScriptCode");
 	
 	//Store_RandomizeNPCStore(true);
 }

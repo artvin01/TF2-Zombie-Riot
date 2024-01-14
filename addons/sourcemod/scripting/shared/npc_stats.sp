@@ -30,6 +30,7 @@ int i_Headshots[MAXTF2PLAYERS];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
+char c_NpcCustomNameOverride[MAXENTITIES][255];
 int Shared_BEAM_Laser;
 int Shared_BEAM_Glow;
 #endif
@@ -1406,6 +1407,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		speed_for_return *= this.GetDebuffPercentage();
 
+		if(!b_thisNpcIsARaid[this.index] && !b_IsAlliedNpc[this.index] && XenoExtraLogic(true))
+		{
+			speed_for_return *= 1.1;
+		}
 #if defined ZR
 		if(!b_IsAlliedNpc[this.index])
 		{
@@ -6376,7 +6381,7 @@ stock bool makeexplosion(
 }	
 	
 	
-stock void CreateParticle(char[] particle, float pos[3], float ang[3])
+stock void CreateParticle(const char[] particle, const float pos[3], const float ang[3])
 {
 	int tblidx = FindStringTable("ParticleEffectNames");
 	char tmp[256];
@@ -7353,6 +7358,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_TeamGlow[entity] = -1;
 	b_thisNpcHasAnOutline[entity] = false;
 	b_ThisNpcIsImmuneToNuke[entity] = false;
+	FormatEx(c_NpcCustomNameOverride[entity], sizeof(c_NpcCustomNameOverride[]), "");
 	b_ThisNpcIsSawrunner[entity] = false;
 	Expidonsa_SetToZero(entity);
 	f_AvoidObstacleNavTime[entity] = 0.0;
@@ -9254,6 +9260,9 @@ void SaveLastValidPositionEntity(int entity)
 		if (!IsPlayerAlive(entity))
 			return;
 		
+		/*
+		additional logic, if they are on a slope, make sure they cant slide on it
+		*/
 		bool SavePosition = true;
 		if (!(GetEntityFlags(entity) & FL_ONGROUND))
 		{
@@ -9271,15 +9280,37 @@ void SaveLastValidPositionEntity(int entity)
 				}
 			}
 		}
-		if(!SavePosition)
-			return;
-
+		
 		float AbsOrigin[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
 		static float hullcheckmaxs_Player[3];
 		static float hullcheckmins_Player[3];
 		hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
-		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
+		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );	
+		b_AntiSlopeCamp[entity] = false;
+		if(!SavePosition)
+		{
+			float AbsOrigin_after[3];
+			AbsOrigin_after = AbsOrigin;
+			AbsOrigin_after[2] -= 5.0;
+			TR_TraceHullFilter(AbsOrigin, AbsOrigin_after, hullcheckmins_Player, hullcheckmaxs_Player, MASK_PLAYERSOLID_BRUSHONLY, TraceRayHitWorldOnly, entity);
+			if(TR_DidHit())
+			{
+				// Gets the normal vector of the surface under the player
+				float vPlane[3];
+				TR_GetPlaneNormal(INVALID_HANDLE, vPlane);
+				
+				// Make sure it's not flat ground and not a surf ramp (1.0 = flat ground, < 0.7 = surf ramp)
+				if(0.7 >= vPlane[2])
+				{
+					b_AntiSlopeCamp[entity] = true;
+				}
+			}
+			return;
+		}
+	
+
+
 		if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
 			return;
 

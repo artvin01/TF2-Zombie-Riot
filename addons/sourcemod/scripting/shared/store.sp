@@ -98,6 +98,8 @@ enum struct ItemInfo
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
 	int Weapon_Bodygroup;
+	float WeaponVolumeStiller;
+	float WeaponVolumeRange;
 	
 	int Attack3AbilitySlot;
 	bool VisualDescOnly;
@@ -287,6 +289,12 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sweapon_custom_size_viewmodel", prefix);
 		this.WeaponSizeOverrideViewmodel			= kv.GetFloat(buffer, 1.0);
+
+		Format(buffer, sizeof(buffer), "%sweapon_volume_stiller", prefix);
+		this.WeaponVolumeStiller			= kv.GetFloat(buffer, 1.0);
+
+		Format(buffer, sizeof(buffer), "%sweapon_volume_range", prefix);
+		this.WeaponVolumeRange		= kv.GetFloat(buffer, 1.0);
 
 		Format(buffer, sizeof(buffer), "%sbackstab_multi_dmg_penalty_bosses", prefix);
 		this.BackstabDmgPentalty			= kv.GetFloat(buffer, 1.0);
@@ -493,6 +501,7 @@ enum struct Item
 	float Cooldown1[MAXTF2PLAYERS];
 	float Cooldown2[MAXTF2PLAYERS];
 	float Cooldown3[MAXTF2PLAYERS];
+	int CurrentClipSaved[MAXTF2PLAYERS];
 	bool BoughtBefore[MAXTF2PLAYERS];
 	int RogueBoughtRecently[MAXTF2PLAYERS];
 	
@@ -1065,13 +1074,13 @@ void Store_ConfigSetup()
 	kv.ImportFromFile(buffer);
 	RequestFrame(DeleteHandle, kv);
 	
-	char blacklist[32][6];
+	char blacklist[6][32];
 	zr_tagblacklist.GetString(buffer, sizeof(buffer));
 	int blackcount;
 	if(buffer[0])
 		blackcount = ExplodeString(buffer, ";", blacklist, sizeof(blacklist), sizeof(blacklist[]));
 	
-	char whitelist[32][6];
+	char whitelist[6][32];
 	zr_tagwhitelist.GetString(buffer, sizeof(buffer));
 	int whitecount;
 	if(buffer[0])
@@ -1567,10 +1576,10 @@ void Store_Reset()
 			item.Cooldown3[c] = 0.0;
 			item.BoughtBefore[c] = false;
 			item.RogueBoughtRecently[c] = 0;
+			item.CurrentClipSaved[c] = 0;
 		}
 		StoreItems.SetArray(i, item);
 	}
-
 	if(StoreBalanceLog)
 	{
 		char buffer[PLATFORM_MAX_PATH];
@@ -4912,6 +4921,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		return; //STOP. BAD!
 	}
+	Clip_SaveAllWeaponsClipSizes(client);
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
 	int entity = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -5218,14 +5228,8 @@ void Delete_Clip(int ref)
 	if(IsValidEntity(entity))
 	{
 		RequestFrame(Delete_Clip_again, ref);
-		int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
-		int ammo = GetEntData(entity, iAmmoTable, 4);
-		
-		if(ammo > 0)
-		{
-			SetEntData(entity, iAmmoTable, 0);
-		}
-		SetEntProp(entity, Prop_Send, "m_iClip1", 0); // weapon clip amount bullets
+		int Owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		Clip_GiveWeaponClipBack(Owner, entity);
 	}
 }
 
@@ -5234,14 +5238,8 @@ void Delete_Clip_again(int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
-		int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
-		int ammo = GetEntData(entity, iAmmoTable, 4);
-		
-		if(ammo > 0)
-		{
-			SetEntData(entity, iAmmoTable, 0);
-		}
-		SetEntProp(entity, Prop_Send, "m_iClip1", 0); // weapon clip amount bullets
+		int Owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		Clip_GiveWeaponClipBack(Owner, entity);
 	}
 }
 
@@ -5404,6 +5402,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								{
 									if(!info.HasNoClip)
 									{
+									//	PrintToChatAll("test");
 										RequestFrame(Delete_Clip, EntIndexToEntRef(entity));
 										Delete_Clip(EntIndexToEntRef(entity));
 									}
@@ -5481,6 +5480,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_WeaponModelIndexOverride[entity] 		= info.WeaponModelIndexOverride;
 					f_WeaponSizeOverride[entity]			= info.WeaponSizeOverride;
 					f_WeaponSizeOverrideViewmodel[entity]	= info.WeaponSizeOverrideViewmodel;
+					f_WeaponVolumeStiller[entity]				= info.WeaponVolumeStiller;
+					f_WeaponVolumeSetRange[entity]				= info.WeaponVolumeRange;
 					f_BackstabBossDmgPenalty[entity]		= info.BackstabDmgPentalty;
 					f_ModifThirdPersonAttackspeed[entity]	= info.ThirdpersonAnimModif;
 					
@@ -6618,3 +6619,59 @@ void GrantCreditsBack(int client)
 	CashSpentGivePostSetup[client] = 0;
 }
 #endif	// ZR
+
+void Clip_SaveAllWeaponsClipSizes(int client)
+{
+	
+	int iea, weapon;
+	while(TF2_GetItem(client, weapon, iea))
+	{
+		ClipSaveSingle(client, weapon);
+	}
+}
+void ClipSaveSingle(int client, int weapon)
+{
+	static Item item;
+	if(StoreWeapon[weapon] < 1)
+	{
+		return;
+	}
+
+	StoreItems.GetArray(StoreWeapon[weapon], item);
+	int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+	int GetClip = GetEntData(weapon, iAmmoTable, 4);
+	item.CurrentClipSaved[client] = GetClip;
+	StoreItems.SetArray(StoreWeapon[weapon], item);
+}
+
+void Clip_GiveAllWeaponsClipSizes(int client)
+{
+	
+	int iea, weapon;
+	while(TF2_GetItem(client, weapon, iea))
+	{
+		Clip_GiveWeaponClipBack(client, weapon);
+	}
+}
+
+void Clip_GiveWeaponClipBack(int client, int weapon)
+{
+	static Item item;
+	if(StoreWeapon[weapon] < 1)
+		return;
+	
+	StoreItems.GetArray(StoreWeapon[weapon], item);
+	ItemInfo info;
+	if(item.GetItemInfo(item.Owned[client]-1, info))
+	{
+		if(info.HasNoClip)
+		{
+			return;
+		}
+	}
+	int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+	
+	SetEntData(weapon, iAmmoTable, item.CurrentClipSaved[client]);
+
+	SetEntProp(weapon, Prop_Send, "m_iClip1", item.CurrentClipSaved[client]); // weapon clip amount bullets
+}
