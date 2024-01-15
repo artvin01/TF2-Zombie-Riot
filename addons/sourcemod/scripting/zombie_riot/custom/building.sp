@@ -2562,7 +2562,7 @@ public Action Building_CheckTimer(Handle timer, int ref)
 					return Plugin_Stop;
 				
 				Store_ConsumeItem(client, StoreWeapon[weapon]);
-				MenuPage(client, StoreWeapon[weapon]);
+				Store_OpenItemThis(client, StoreWeapon[weapon]);
 
 				//TF2_RemoveItem(client, weapon);
 				//TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);

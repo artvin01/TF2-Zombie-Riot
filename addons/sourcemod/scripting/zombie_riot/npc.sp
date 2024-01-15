@@ -341,12 +341,12 @@ enum
 	RUINA_MAGIA					= 295,
 	EXPIDONSA_SEARGENTIDEAL		= 296,
 
-	SEA_RAIDBOSS_SILVESTER		= 297,
-	SEA_RAIDBOSS_GOGGLES		= 298,
+	UNUSED_1			= 297,
+	UNUSED_2			= 298,
 	SEA_RAIDBOSS_DONNERKRIEG	= 299,
 	SEA_RAIDBOSS_SCHWERTKRIEG	= 300,
-	SEA_RAIDBOSS_GOD_ARKANTOS	= 301,
-	BOB_THE_FIRST			= 302,
+	BOB_THE_FIRST			= 301,
+	BOB_THE_FIRST_S			= 302,
 	SEA_ALLY_SILVESTER		= 303,
 	SEA_ALLY_GOGGLES		= 304,
 	SEA_ALLY_DONNERKRIEG		= 305,
@@ -715,17 +715,17 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Magia",
 	"Seargent Ideal",
 
-	"Silvester",
-	"Blue Goggles",
+	"nothing",
+	"nothing",
 	"Donnerkrieg",
 	"Schwertkrieg",
-	"God Arkantos",
-	"Bob",
-	"Seaborn Silvester",
-	"Seaborn Blue Goggles",
-	"Seaborn Donnerkrieg",
-	"Seaborn Schwertkreig",
-	"Seaborn God Arkantos",
+	"?????????????",
+	"Bob the First",
+	"nothing",
+	"nothing",
+	"nothing",
+	"nothing",
+	"nothing",
 	"VIP Building, The Objective",
 	"Rifal Manu",
 	"Siccerino",
@@ -1090,17 +1090,17 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	-1,	// RUINA_MAGIA					= 295,
 	10,	// EXPIDONSA_SEARGENTIDEAL		= 296,
 
-	-1,	// SEA_RAIDBOSS_SILVESTER		= 297,
-	-1,	// SEA_RAIDBOSS_GOGGLES		= 298,
+	-1,	// 		= 297,
+	-1,	// 		= 298,
 	-1,	// SEA_RAIDBOSS_DONNERKRIEG	= 299,
 	-1,	// SEA_RAIDBOSS_SCHWERTKRIEG	= 300,
-	-1,	// SEA_RAIDBOSS_GOD_ARKANTOS	= 301,
-	-1,	// BOB_THE_FIRST			= 302,
-	-1,	// SEA_ALLY_SILVESTER		= 303,
-	-1,	// SEA_ALLY_GOGGLES		= 304,
-	-1,	// SEA_ALLY_DONNERKRIEG		= 305,
-	-1,	// SEA_ALLY_SCHWERTKRIEG		= 306,
-	-1,	// SEA_ALLY_GOD_ARKANTOS		= 307,
+	-1,	// BOB_THE_FIRST		= 301,
+	-1,	// BOB_THE_FIRST_S		= 302,
+	-1,	// 		= 303,
+	-1,	// 		= 304,
+	-1,	// 		= 305,
+	-1,	// 		= 306,
+	-1,	// 		= 307,
 	0,	// VIP_BUILDING			= 308
 	10,	// EXPIDONSA_RIFALMANU		= 309,
 	10,	// EXPIDONSA_SICCERINO			= 310,
@@ -1458,17 +1458,17 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_ruina_magia",
 	"npc_seargent_ideal",
 	
-	"npc_sea_silvester",
-	"npc_sea_goggles",
-	"Donnerkrieg",
-	"Schwertkreig",
-	"God Arkantos",
+	"",
+	"",
+	"npc_sea_donnerkrieg",
+	"npc_sea_schwertkrieg",
 	"npc_bob_the_first_last_savior",
-	"Seaborn Silvester",
-	"Seaborn Blue Goggles",
-	"Seaborn Donnerkrieg",
-	"Seaborn Schwertkreig",
-	"Seaborn God Arkantos",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
 	"npc_vip_building",
 	"npc_rifal_manu",
 	"npc_siccerino",
@@ -1656,7 +1656,7 @@ void NPC_MapStart()
 	PhantomKnight_OnMapStart_NPC();
 	BeheadedKamiKaze_OnMapStart_NPC();
 	Alt_Medic_Constructor_OnMapStart_NPC();	//3rd alt medic.
-	
+	/*
 	TheGambler_OnMapStart_NPC();
 	Pablo_Gonzales_OnMapStart_NPC();
 	Doktor_Medick_OnMapStart_NPC();
@@ -1672,7 +1672,7 @@ void NPC_MapStart()
 	BunkerSkeletonSmall_OnMapStart_NPC();
 	BunkerSkeletonKing_OnMapStart_NPC();
 	BunkerHeadlessHorse_OnMapStart_NPC();
-
+	*/
 	MedivalScout_OnMapStart_NPC();
 	MedivalBuilding_OnMapStart_NPC();
 	MedivalConstruct_OnMapStart_NPC();
@@ -2235,7 +2235,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		
 		case ALT_MEDIC_HEALER_3:	//3 being the 3rd stage of alt waves.
 			entity = Alt_Medic_Constructor(client, vecPos, vecAng, ally);
-		
+		/*
 		case THE_GAMBLER:
 			entity = TheGambler(client, vecPos, vecAng, ally);
 		
@@ -2280,7 +2280,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		
 		case BUNKER_HEADLESSHORSE:
 			entity = BunkerHeadlessHorse(client, vecPos, vecAng, ally);
-		
+		*/
 		case MEDIVAL_SCOUT:
 			entity = MedivalScout(client, vecPos, vecAng, ally);
 		
@@ -2665,11 +2665,11 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			entity = Raidboss_Schwertkrieg(client, vecPos, vecAng, ally);
 		
-		case SEA_ALLY_SILVESTER:
-			entity = SeaAllySilvester(vecPos, vecAng);
+		//case BOB_THE_FIRST:
+		//	entity = RaidbossBobTheFirst(vecPos, vecAng, ally, "");
 		
-		case SEA_ALLY_GOGGLES:
-			entity = SeaAllyGoggles(vecPos, vecAng);
+		//case BOB_THE_FIRST_S:
+		//	entity = RaidbossBobTheFirst(vecPos, vecAng, ally, "S");
 
 		case EXPIDONSA_BENERA:
 			entity = Benera(client, vecPos, vecAng, ally);
@@ -3218,7 +3218,7 @@ public void NPCDeath(int entity)
 		
 		case ALT_MEDIC_HEALER_3:
 			Alt_Medic_Constructor_NPCDeath(entity);
-		
+		/*
 		case THE_GAMBLER:
 			TheGambler_NPCDeath(entity);
 		
@@ -3263,7 +3263,7 @@ public void NPCDeath(int entity)
 		
 		case BUNKER_HEADLESSHORSE:
 			BunkerHeadlessHorse_NPCDeath(entity);
-		
+		*/
 		case MEDIVAL_SCOUT:
 			MedivalScout_NPCDeath(entity);
 		
@@ -3609,12 +3609,6 @@ public void NPCDeath(int entity)
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			Raidboss_Schwertkrieg_NPCDeath(entity);
 		
-		case SEA_ALLY_SILVESTER:
-			SeaAllySilvester_NPCDeath(entity);
-		
-		case SEA_ALLY_GOGGLES:
-			SeaAllyGoggles_NPCDeath(entity);
-
 		case EXPIDONSA_BENERA:
 			Benera_NPCDeath(entity); 
 
@@ -4196,7 +4190,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case ALT_MEDIC_HEALER_3:
 			Alt_Medic_Constructor_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
+		/*
 		case THE_GAMBLER:
 			TheGambler_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
@@ -4241,7 +4235,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case BUNKER_HEADLESSHORSE:
 			BunkerHeadlessHorse_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
+		*/
 		case MEDIVAL_SCOUT:
 			MedivalScout_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
@@ -4783,7 +4777,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/cof/npc_simon.sp"
 
 #include "zombie_riot/npc/bonezone/npc_basicbones.sp"
-
+/*
 #include "zombie_riot/npc/bunker/npc_gambler.sp"
 #include "zombie_riot/npc/bunker/npc_pablo.sp"
 #include "zombie_riot/npc/bunker/npc_dokmedick.sp"
@@ -4799,7 +4793,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/bunker/npc_bunker_small_skeleton.sp"
 #include "zombie_riot/npc/bunker/npc_bunker_king_skeleton.sp"
 #include "zombie_riot/npc/bunker/npc_bunker_hhh.sp"
-
+*/
 #include "zombie_riot/npc/ally/npc_barrack.sp"
 #include "zombie_riot/npc/ally/npc_barrack_militia.sp"
 #include "zombie_riot/npc/ally/npc_barrack_archer.sp"
@@ -4892,8 +4886,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/raidmode_bosses/seaborn/npc_donnerkrieg.sp"
 #include "zombie_riot/npc/raidmode_bosses/seaborn/npc_schwertkrieg.sp"
-#include "zombie_riot/npc/ally/npc_seaally_silvester.sp"
-#include "zombie_riot/npc/ally/npc_seaally_goggles.sp"
+//#include "zombie_riot/npc/raidmode_bosses/seaborn/npc_bob_the_first_last_savior.sp"
 
 #include "zombie_riot/npc/expidonsa/npc_benera.sp"
 #include "zombie_riot/npc/expidonsa/npc_pental.sp"
