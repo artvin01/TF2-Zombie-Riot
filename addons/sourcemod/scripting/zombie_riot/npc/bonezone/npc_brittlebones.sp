@@ -1,6 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define BONES_BRITTLE_SPEED			400.0
+#define BONES_BRITTLE_HP			"250"
+#define BONES_BRITTLE_SCALE			"0.5"
+
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
 };
@@ -10,14 +14,53 @@ static char g_HurtSounds[][] = {
 };
 
 static char g_IdleSounds[][] = {
-	")misc/halloween/skeletons/skelly_medium_01.wav",
-	")misc/halloween/skeletons/skelly_medium_02.wav",
-	")misc/halloween/skeletons/skelly_medium_03.wav",
-	")misc/halloween/skeletons/skelly_medium_04.wav",
+	")misc/halloween/skeletons/skelly_small_01.wav",
+	")misc/halloween/skeletons/skelly_small_02.wav",
+	")misc/halloween/skeletons/skelly_small_03.wav",
+	")misc/halloween/skeletons/skelly_small_04.wav",
+	")misc/halloween/skeletons/skelly_small_05.wav",
+	")misc/halloween/skeletons/skelly_small_06.wav",
+	")misc/halloween/skeletons/skelly_small_07.wav",
+	")misc/halloween/skeletons/skelly_small_08.wav",
+	")misc/halloween/skeletons/skelly_small_09.wav",
+	")misc/halloween/skeletons/skelly_small_10.wav",
+	")misc/halloween/skeletons/skelly_small_11.wav",
+	")misc/halloween/skeletons/skelly_small_12.wav",
+	")misc/halloween/skeletons/skelly_small_13.wav",
+	")misc/halloween/skeletons/skelly_small_14.wav",
+	")misc/halloween/skeletons/skelly_small_15.wav",
+	")misc/halloween/skeletons/skelly_small_16.wav",
+	")misc/halloween/skeletons/skelly_small_17.wav",
+	")misc/halloween/skeletons/skelly_small_18.wav",
+	")misc/halloween/skeletons/skelly_small_19.wav",
+	")misc/halloween/skeletons/skelly_small_20.wav",
+	")misc/halloween/skeletons/skelly_small_21.wav",
+	")misc/halloween/skeletons/skelly_small_22.wav"
 };
 
 static char g_IdleAlertedSounds[][] = {
-	")misc/halloween/skeletons/skelly_medium_05.wav",
+	")misc/halloween/skeletons/skelly_small_01.wav",
+	")misc/halloween/skeletons/skelly_small_02.wav",
+	")misc/halloween/skeletons/skelly_small_03.wav",
+	")misc/halloween/skeletons/skelly_small_04.wav",
+	")misc/halloween/skeletons/skelly_small_05.wav",
+	")misc/halloween/skeletons/skelly_small_06.wav",
+	")misc/halloween/skeletons/skelly_small_07.wav",
+	")misc/halloween/skeletons/skelly_small_08.wav",
+	")misc/halloween/skeletons/skelly_small_09.wav",
+	")misc/halloween/skeletons/skelly_small_10.wav",
+	")misc/halloween/skeletons/skelly_small_11.wav",
+	")misc/halloween/skeletons/skelly_small_12.wav",
+	")misc/halloween/skeletons/skelly_small_13.wav",
+	")misc/halloween/skeletons/skelly_small_14.wav",
+	")misc/halloween/skeletons/skelly_small_15.wav",
+	")misc/halloween/skeletons/skelly_small_16.wav",
+	")misc/halloween/skeletons/skelly_small_17.wav",
+	")misc/halloween/skeletons/skelly_small_18.wav",
+	")misc/halloween/skeletons/skelly_small_19.wav",
+	")misc/halloween/skeletons/skelly_small_20.wav",
+	")misc/halloween/skeletons/skelly_small_21.wav",
+	")misc/halloween/skeletons/skelly_small_22.wav"
 };
 
 static char g_MeleeHitSounds[][] = {
@@ -45,7 +88,7 @@ static char g_GibSounds[][] = {
 
 static bool WakeTheFUCKUp[MAXENTITIES];
 
-public void BasicBones_OnMapStart_NPC()
+public void BrittleBones_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -62,7 +105,7 @@ public void BasicBones_OnMapStart_NPC()
 	PrecacheModel("models/zombie/classic.mdl");
 }
 
-methodmap BasicBones < CClotBody
+methodmap BrittleBones < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -71,7 +114,7 @@ methodmap BasicBones < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CBasicBones::PlayIdleSound()");
+		PrintToServer("CBrittleBones::PlayIdleSound()");
 		#endif
 	}
 	
@@ -84,7 +127,7 @@ methodmap BasicBones < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CBasicBones::PlayHurtSound()");
+		PrintToServer("CBrittleBones::PlayHurtSound()");
 		#endif
 	}
 	
@@ -93,7 +136,7 @@ methodmap BasicBones < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CBasicBones::PlayDeathSound()");
+		PrintToServer("CBrittleBones::PlayDeathSound()");
 		#endif
 	}
 	
@@ -102,7 +145,7 @@ methodmap BasicBones < CClotBody
 		EmitSoundToAll(g_GibSounds[GetRandomInt(0, sizeof(g_GibSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CBasicBones::PlayGibSound()");
+		PrintToServer("CBrittleBones::PlayGibSound()");
 		#endif
 	}
 	
@@ -110,14 +153,14 @@ methodmap BasicBones < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CBasicBones::PlayMeleeHitSound()");
+		PrintToServer("CBrittleBones::PlayMeleeHitSound()");
 		#endif
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CBasicBones::PlayMeleeHitSound()");
+		PrintToServer("CBrittleBones::PlayMeleeHitSound()");
 		#endif
 	}
 
@@ -139,11 +182,11 @@ methodmap BasicBones < CClotBody
 	
 	
 	
-	public BasicBones(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BrittleBones(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BasicBones npc = view_as<BasicBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "1.0", "300", ally, false));
+		BrittleBones npc = view_as<BrittleBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BRITTLE_SCALE, BONES_BRITTLE_HP, ally, false));
 		
-		i_NpcInternalId[npc.index] = BONEZONE_BASICBONES;
+		i_NpcInternalId[npc.index] = BONEZONE_BRITTLEBONES;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -152,7 +195,11 @@ methodmap BasicBones < CClotBody
 		
 		npc.m_bDoSpawnGesture = true;
 		WakeTheFUCKUp[npc.index] = false;
-		DispatchKeyValue(npc.index, "skin", "2");
+		int skin = GetRandomInt(0, 3);
+		char skinChar[16];
+		Format(skinChar, sizeof(skinChar), "%i", skin);
+		
+		DispatchKeyValue(npc.index, "skin", skinChar);
 
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -168,7 +215,7 @@ methodmap BasicBones < CClotBody
 		}
 		
 		
-		SDKHook(npc.index, SDKHook_Think, BasicBones_ClotThink);
+		SDKHook(npc.index, SDKHook_Think, BrittleBones_ClotThink);
 		
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
@@ -180,9 +227,9 @@ methodmap BasicBones < CClotBody
 
 //TODO 
 //Rewrite
-public void BasicBones_ClotThink(int iNPC)
+public void BrittleBones_ClotThink(int iNPC)
 {
-	BasicBones npc = view_as<BasicBones>(iNPC);
+	BrittleBones npc = view_as<BrittleBones>(iNPC);
 	
 //	PrintToChatAll("%.f",GetEntPropFloat(view_as<int>(iNPC), Prop_Data, "m_speed"));
 	
@@ -204,7 +251,7 @@ public void BasicBones_ClotThink(int iNPC)
 	if(WakeTheFUCKUp[npc.index])//this is only there so he can actually move
 	{
 		WakeTheFUCKUp[npc.index] = false;
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = BONES_BRITTLE_SPEED;
 	}
 	
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
@@ -333,13 +380,13 @@ public void BasicBones_ClotThink(int iNPC)
 }
 
 
-public Action BasicBones_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action BrittleBones_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	BasicBones npc = view_as<BasicBones>(victim);
+	BrittleBones npc = view_as<BrittleBones>(victim);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -350,14 +397,14 @@ public Action BasicBones_OnTakeDamage(int victim, int &attacker, int &inflictor,
 	return Plugin_Changed;
 }
 
-public void BasicBones_NPCDeath(int entity)
+public void BrittleBones_NPCDeath(int entity)
 {
-	BasicBones npc = view_as<BasicBones>(entity);
+	BrittleBones npc = view_as<BrittleBones>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_Think, BasicBones_ClotThink);
+	SDKUnhook(entity, SDKHook_Think, BrittleBones_ClotThink);
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
 
