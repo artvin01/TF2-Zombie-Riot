@@ -12,12 +12,6 @@ Behvior:
 Backup - Schwertkrieg runs and protects donnerkrieg when he is using nightmare cannon
 Cover - If Donnerkriegs "sniper threat" value reaches 25% schwert will switch to attacking "sniper" players which are defined by donnerkrieg. if this value reaches 100% schwert WILL murder the snipers, and teleport to them
 Shared Goal - Both have the same PrimaryThreatIndex
-
-schwert:
-Multi-Teleport-Strike.
-Heaven's blade - Fantasmal swings but heavily moddified.
-Heaven's barrage - Quincy Hyper barrage
-
 donner:
 
 Wave 15:
@@ -26,19 +20,25 @@ Improved Nightmare Cannon: Coded!
 On Schwert Death:	Coded but might need more refining.
 	Heavens Light: Ruina Ion cannon's but modified - They somewhat start out like moonlight
 
-On donner spawn: Heavens Light.
+
 
 Wave 30:
-	Heaven's Fall: - Partially done
+	Heaven's Fall: - Done!
 	Several IOC's spawn around the map, creating creep. once the first creep ion's are done, switches to simply damage.
 
 Wave 45:
-	Heaven's radiance: Jump high into the sky, and spew lasers all around.
 	Heaves Light natural.
 
 	Crystaline Reflection:
 		Fires a special projectile that donnerkrieg fires his laser at, then this crystal redirects that laser into several directions each one towards every player the crystal can see
 		Fires like an artillery shell, is affected by gravity!. also wherever this shell lands creates creep.
+
+Final notes:
+
+Heavens Light: needs sounds.
+Crystaline Reflection: add a los check from donner to the crystal.
+Figure out why the fuck donner gives up on life when apparently attacking someone in some weird instance when prepring nightmare cannon???
+Add more text/voice lines in general. also see about just using base tf2 medic voice lines
 
 Very descriptive descriptions, I know lmao
 */
@@ -164,6 +164,8 @@ static bool b_Crystal_Thrown;
 static int i_crystal_index;
 bool donner_sea_created;
 static int i_sea_formed=0;
+
+static bool b_angered_twice[MAXENTITIES];
 
 #define DONNERKRIEG_NIGHTMARE_CANNON_INTRO_LINE 1
 #define DONNERKRIEG_NIGHTMARE_CANNON_FIRE_LINE 2
@@ -354,6 +356,8 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		RaidModeTime = GetGameTime(npc.index) + 500.0;
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
+
+		b_angered_twice[npc.index]=false;
 		
 		
 		
@@ -556,7 +560,7 @@ void Donnerkrieg_SpawnAllyDuoRaid(int ref)
 	}
 }
 
-//static float debug_timer =0.0;
+static float debug_timer =0.0;
 //TODO 
 //Rewrite
 public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
@@ -631,8 +635,8 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 		npc.m_flRangedArmor = 1.0;
 		b_nightmare_logic[npc.index] = false;
 
-		if(shared_goal)
-			shared_goal=false;
+		if(schwert_retreat)
+			schwert_retreat=false;	//schwert goes back to normal
 
 		fl_cannon_Recharged[npc.index] = GameTime + 60.0;
 
@@ -671,8 +675,8 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 		
 	int PrimaryThreatIndex = npc.m_iTarget;
 
-	/*
-	if(debug_timer<GameTime)
+	
+	if(debug_timer<GameTime && fl_cannon_Recharged[npc.index]<GameTime)
 	{
 		CPrintToChatAll("Donner Nightmare Status: %i",b_nightmare_logic[npc.index]);
 		float duration = fl_cannon_Recharged[npc.index] - GameTime;
@@ -690,7 +694,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 		CPrintToChatAll("Donner Kame Status: %i",npc.m_bInKame);
 
 		debug_timer = GameTime +1.0;
-	}*/
+	}
 		
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -740,13 +744,14 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 
 			if(Current_Wave>=30 &&fl_heavens_fall_use_timer[npc.index]< GameTime)
 			{
-				bool sea=false;
-
-				if(!NpcStats_IsEnemySilenced(npc.index))
-				{
-					sea=true;	//The ocean consumes you...
-				}
 				fl_heavens_fall_use_timer[npc.index] = GameTime+1.0;	//retry in 1 seconds if failed, otherwise proper CD.
+
+				bool sea = false;
+				if(donner_sea_created)
+				{
+					donner_sea_created=false;
+					sea=true;
+				}
 
 				int infection=0;
 				if(Current_Wave>=45)
@@ -755,7 +760,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 				{
 					infection=2;
 				}
-				if(!NpcStats_IsEnemySilenced(npc.index))
+				if(NpcStats_IsEnemySilenced(npc.index))
 				{
 					infection=0;
 				}
@@ -1149,7 +1154,7 @@ static void Heavens_Full_Charge(Raidboss_Donnerkrieg npc, float GameTime)
 			color[2] = 235;
 		}
 
-		Doonerkrieg_Do_AOE_Damage(npc, loc, fl_heavens_damage, fl_heavens_radius, 0.4, infection);
+		Doonerkrieg_Do_AOE_Damage(npc, loc, fl_heavens_damage, fl_heavens_radius, infection, false);
 		
 		fl_Heavens_Loc[i] = loc;
 
@@ -1290,10 +1295,7 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(Raidboss_Donnerkrieg npc, int P
 	if(npc.m_bAllowBackWalking)
 		npc.m_bAllowBackWalking=false;
 
-	shared_goal=true;	//while using the cannon, schwert attacks the same target that donner is moving towards
-
-	if(shared_goal)
-		schwert_target = PrimaryThreatIndex;	//if "shared goal" is active both npc's target the same target, the target is set by donnerkrieg
+	schwert_retreat=true;	//while using the cannon, schwert protects donner
 	
 	//float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 	
@@ -1797,15 +1799,14 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 				
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
 
-	Doonerkrieg_Do_AOE_Damage(npc, startPosition, 100.0, Ionrange, 0.4, Infection);
+	Doonerkrieg_Do_AOE_Damage(npc, startPosition, 100.0, Ionrange, Infection);
 
 	if(creep)	//if creep, create the cancer thing.
 	{
-		if(i_sea_formed<10)
+		if(i_sea_formed<5)
 		{
 			i_sea_formed++;
 			SeaFounder_SpawnNethersea(startPosition);
-			donner_sea_created=true;
 		}
 			
 	}
@@ -1988,6 +1989,16 @@ public Action Raidboss_Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &
 		
 	if(attacker < MAXTF2PLAYERS)
 		Donnerkrieg_Set_Sniper_Threat_Value(npc, attacker, damage, weapon);
+
+
+	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+
+	if(!b_angered_twice[npc.index] && Health/MaxHealth<=0.5)
+	{
+		b_angered_twice[npc.index]=true;
+		donner_sea_created=true;
+	}
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -2593,7 +2604,7 @@ static void Crystal_Laser_Move_And_Dmg_Logic(Raidboss_Donnerkrieg npc, int clien
 		TE_SetupBeamPoints(start_loc, current_loc, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, DONNERKRIEG_TE_DURATION, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 0.5, {150, 150, 150, 150}, 3);
 		TE_SendToAll(0.0);
 
-		Donnerkrieg_Laser_Trace(npc, start_loc, current_loc, diameter*0.5, 25.0*RaidModeScaling, infection);	//this technically finds the LOC of the crystal.
+		Donnerkrieg_Laser_Trace(npc, start_loc, current_loc, diameter*0.5, 25.0*RaidModeScaling, infection);
 	}
 }
 static void Donnerkrieg_Create_Spinning_Beams(Raidboss_Donnerkrieg npc, float Origin[3], float Angles[3], int loop_for, float Main_Beam_Dist, bool Type=true, float distance_stuff, float ang_multi)
@@ -2881,7 +2892,7 @@ public void Crystal_Donner_StartTouch(int entity, int target)
 	RemoveEntity(entity);
 }
 
-#define DONNERKRIEG_PARTICLE_EFFECT_AMT 50
+#define DONNERKRIEG_PARTICLE_EFFECT_AMT 30
 static int i_donner_particle_index[MAXENTITIES][DONNERKRIEG_PARTICLE_EFFECT_AMT];
 
 static void Donnerkrieg_Delete_Wings(Raidboss_Donnerkrieg npc)
@@ -3063,107 +3074,6 @@ static void Donnerkrieg_Wings_Create(Raidboss_Donnerkrieg npc)	//I wish these wi
 	i_donner_particle_index[npc.index][26] = EntIndexToEntRef(particle_upper_right_wing_4);
 	i_donner_particle_index[npc.index][27] = EntIndexToEntRef(particle_upper_right_wing_5);
 	i_donner_particle_index[npc.index][28] = EntIndexToEntRef(particle_upper_right_wing_6);
-
-	//lower wings xd
-
-	int particle_left_core = InfoTargetParentAt({0.0, -5.0, -7.5}, "", 0.0);	//6.5
-
-
-	/*
-		X = +Left, -Right
-		Y = -Up, +Down
-		Z = +Backwards, -Forward
-	*/
-
-	int particle_left_wing_1 = InfoTargetParentAt({7.5, -7.5, -2.5}, "", 0.0);		//head
-	int particle_left_wing_2 = InfoTargetParentAt({50.0, 10.0, 20.0}, "", 0.0);		//bottom
-	int particle_left_wing_3 = InfoTargetParentAt({15.5, -22.5, 15.0}, "", 0.0);		//top
-	int particle_left_wing_4 = InfoTargetParentAt({35.0, -15.0, 10.0}, "", 0.0);		//side
-
-	SetParent(particle_left_core, particle_left_wing_1, "",_, true);
-	SetParent(particle_left_core, particle_left_wing_2, "",_, true);
-	SetParent(particle_left_core, particle_left_wing_3, "",_, true);
-	SetParent(particle_left_core, particle_left_wing_4, "",_, true);
-	//SetParent(particle_left_core, particle_2_Wingset_1, "",_, true);
-
-
-
-	Custom_SDKCall_SetLocalOrigin(particle_left_core, flPos);
-	SetEntPropVector(particle_left_core, Prop_Data, "m_angRotation", flAng); 
-	SetParent(ParticleOffsetMain, particle_left_core, "",_);
-
-	start_1 = 2.0;
-	end_1 = 0.5;
-	amp =0.1;
-
-	int laser_left_wing_1 = ConnectWithBeamClient(particle_left_wing_1, particle_left_wing_2, red, green, blue, start_1, end_1, amp, LASERBEAM);
-	int laser_left_wing_2 = ConnectWithBeamClient(particle_left_wing_1, particle_left_wing_3, red, green, blue, start_1, end_1, amp, LASERBEAM);
-	int laser_left_wing_3 = ConnectWithBeamClient(particle_left_wing_1, particle_left_wing_4, red, green, blue, start_1, end_1, amp, LASERBEAM);
-	int laser_left_wing_4 = ConnectWithBeamClient(particle_left_wing_2, particle_left_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM);
-	int laser_left_wing_5 = ConnectWithBeamClient(particle_left_wing_3, particle_left_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM);
-
-	i_donner_particle_index[npc.index][29] = EntIndexToEntRef(ParticleOffsetMain);
-	i_donner_particle_index[npc.index][30] = EntIndexToEntRef(particle_left_core);
-	i_donner_particle_index[npc.index][31] = EntIndexToEntRef(particle_left_wing_1);
-	i_donner_particle_index[npc.index][32] = EntIndexToEntRef(particle_left_wing_3);
-	i_donner_particle_index[npc.index][33] = EntIndexToEntRef(particle_left_wing_4);
-
-	i_donner_particle_index[npc.index][34] = EntIndexToEntRef(laser_left_wing_1);
-	i_donner_particle_index[npc.index][35] = EntIndexToEntRef(laser_left_wing_2);
-	i_donner_particle_index[npc.index][36] = EntIndexToEntRef(laser_left_wing_2);
-	i_donner_particle_index[npc.index][37] = EntIndexToEntRef(laser_left_wing_3);
-	i_donner_particle_index[npc.index][38] = EntIndexToEntRef(laser_left_wing_4);
-	i_donner_particle_index[npc.index][39] = EntIndexToEntRef(laser_left_wing_5);
-
-	//right
-
-	int particle_right_core = InfoTargetParentAt({0.0, -5.0, -7.5}, "", 0.0);
-
-
-	/*
-		X = +Left, -Right
-		Y = -Up, +Down
-		Z = +Backwards, -Forward
-	*/
-
-	int particle_right_wing_1 = InfoTargetParentAt({-7.5, -7.5, -2.5}, "", 0.0);		//head
-	int particle_right_wing_2 = InfoTargetParentAt({-50.0, 10.0, 20.0}, "", 0.0);		//bottom
-	int particle_right_wing_3 = InfoTargetParentAt({-15.5, -22.5, 15.0}, "", 0.0);		//top
-	int particle_right_wing_4 = InfoTargetParentAt({-35.0, -15.0, 10.0}, "", 0.0);		//side
-
-	SetParent(particle_right_core, particle_right_wing_1, "",_, true);
-	SetParent(particle_right_core, particle_right_wing_2, "",_, true);
-	SetParent(particle_right_core, particle_right_wing_3, "",_, true);
-	SetParent(particle_right_core, particle_right_wing_4, "",_, true);
-	//SetParent(particle_left_core, particle_2_Wingset_1, "",_, true);
-
-
-
-	Custom_SDKCall_SetLocalOrigin(particle_right_core, flPos);
-	SetEntPropVector(particle_right_core, Prop_Data, "m_angRotation", flAng); 
-	SetParent(ParticleOffsetMain, particle_right_core, "",_);
-
-	//float start_1 = 2.0;
-	//float end_1 = 0.5;
-	//float amp =0.1;
-
-	int laser_right_wing_1 = ConnectWithBeamClient(particle_right_wing_1, particle_right_wing_2, red, green, blue, start_1, end_1, amp, LASERBEAM);
-	int laser_right_wing_2 = ConnectWithBeamClient(particle_right_wing_1, particle_right_wing_3, red, green, blue, start_1, end_1, amp, LASERBEAM);
-	int laser_right_wing_3 = ConnectWithBeamClient(particle_right_wing_1, particle_right_wing_4, red, green, blue, start_1, end_1, amp, LASERBEAM);
-	int laser_right_wing_4 = ConnectWithBeamClient(particle_right_wing_2, particle_right_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM);
-	int laser_right_wing_5 = ConnectWithBeamClient(particle_right_wing_3, particle_right_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM);
-
-	i_donner_particle_index[npc.index][40] = EntIndexToEntRef(particle_right_core);
-	i_donner_particle_index[npc.index][41] = EntIndexToEntRef(particle_right_wing_1);
-	i_donner_particle_index[npc.index][42] = EntIndexToEntRef(particle_right_wing_2);
-	i_donner_particle_index[npc.index][43] = EntIndexToEntRef(particle_right_wing_3);
-	i_donner_particle_index[npc.index][44] = EntIndexToEntRef(particle_right_wing_4);
-
-	i_donner_particle_index[npc.index][45] = EntIndexToEntRef(laser_right_wing_1);
-	i_donner_particle_index[npc.index][46] = EntIndexToEntRef(laser_right_wing_2);
-	i_donner_particle_index[npc.index][47] = EntIndexToEntRef(laser_right_wing_3);
-	i_donner_particle_index[npc.index][48] = EntIndexToEntRef(laser_right_wing_4);
-	i_donner_particle_index[npc.index][49] = EntIndexToEntRef(laser_right_wing_5);
 }
 static void spawnRing_Vector(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
 {
@@ -3197,82 +3107,73 @@ static void spawnRing_Vector(float center[3], float range, float modif_X, float 
  * @param FallOff      minimum damage multi, distance relative.
  * @param infection    0=normal dmg, 1=normal dmg + cancer, 2=cancer only
  */
-static void Doonerkrieg_Do_AOE_Damage(Raidboss_Donnerkrieg npc, float loc[3], float damage, float Range, float FallOff, int infection = 0)
+static float ion_damage[MAXENTITIES];
+static void Doonerkrieg_Do_AOE_Damage(Raidboss_Donnerkrieg npc, float loc[3], float damage, float Range, int infection = 0, bool shake=true)
 {
-	for(int client=0 ; client <=MAXTF2PLAYERS ; client++)
+	ion_damage[npc.index] = 1.0;
+	switch(infection)
 	{
-		if(IsValidClient(client) && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+		case 0:
 		{
-			float client_loc[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", client_loc);
-			float distance = GetVectorDistance(client_loc, loc, true);
-			{
-				int Enemy_I_See = Check_Line_Of_Sight(client_loc ,npc.index, client);
-				if(Enemy_I_See==client)
-				{
-					if(distance< (Range * Range))
-					{
-						float ratio = (1.0 - (distance / (fl_heavens_radius * fl_heavens_radius)));
-						if(ratio<FallOff)
-							ratio = FallOff;
-						float fake_damage = damage*ratio;	//reduce damage if the target just grazed it.
-
-						switch(infection)
-						{
-							case 0:
-							{
-								SDKHooks_TakeDamage(client, npc.index, npc.index, fake_damage, DMG_CLUB, _, _, loc);
-								Client_Shake(client, 0, 5.0, 15.0, 0.1);
-							}
-							case 1:
-							{
-								SDKHooks_TakeDamage(client, npc.index, npc.index, fake_damage, DMG_CLUB, _, _, loc);
-								Client_Shake(client, 0, 5.0, 15.0, 0.1);
-
-								int neural_damage = RoundToFloor(damage*0.1);
-								if(neural_damage < 4)
-									neural_damage = 4;
-
-								SeaSlider_AddNeuralDamage(client, npc.index, neural_damage, false);
-							}
-							case 3:
-							{
-								int neural_damage = RoundToFloor(damage*0.1);
-								if(neural_damage < 8)
-									neural_damage = 8;
-
-								SeaSlider_AddNeuralDamage(client, npc.index, neural_damage, false);
-							}
-						}	
-					}	
-				}
-			}
+			if(!shake)
+				Explode_Logic_Custom(damage, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 2.5, Donner_Normal_Tweak);
+			else
+				Explode_Logic_Custom(damage, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 2.5);
 		}
-	}
-
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)	// now murder red npc's :)
-	{
-		int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+		case 1:
 		{
-			float target_vec[3]; target_vec = GetAbsOrigin(ally);
-			float dist=GetVectorDistance(loc, target_vec, true);
+			
+			int neural_damage = RoundToFloor(damage*0.1);
+			if(neural_damage < 4)
+				neural_damage = 4;
 
-			if(dist< (fl_heavens_radius * fl_heavens_radius))
-			{
-				float ratio = (1.0 - (dist / (fl_heavens_radius * fl_heavens_radius)));
-				if(ratio<0.4)
-					ratio = 0.4;	// L + Ratio. :3
-				float fake_damage = damage*ratio;	//reduce damage if the target just grazed it.
+			ion_damage[npc.index] = float(neural_damage);
 
-				if(ShouldNpcDealBonusDamage(ally))	//kill
-				{
-					fake_damage *=10.0;
-				}
-				SDKHooks_TakeDamage(ally, npc.index, npc.index, fake_damage, DMG_CLUB, _, _, loc);
-			}
+			if(!shake)
+				Explode_Logic_Custom(damage*0.5, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 2.5, Donner_Neural_Tweak_shake);
+			else
+				Explode_Logic_Custom(damage*0.5, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 2.5, Donner_Neural_Tweak);
+		}
+		case 2:
+		{
+			int neural_damage = RoundToFloor(damage*0.1);
+			if(neural_damage < 8)
+				neural_damage = 8;
+
+			ion_damage[npc.index] = float(neural_damage);
+
+			if(!shake)
+				Explode_Logic_Custom(0.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak_shake);
+			else
+				Explode_Logic_Custom(0.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak);
 		}
 	}
 }
+public void Donner_Normal_Tweak(int entity, int victim, float damage, int weapon)
+{	
+	if(IsValidEntity(victim))
+	{
+		Client_Shake(victim);
+	}
+}
+public void Donner_Neural_Tweak(int entity, int victim, float damage, int weapon)
+{
+	if(IsValidEntity(victim))
+	{
+		int neural_damage = RoundToFloor(ion_damage[entity]);
+		SeaSlider_AddNeuralDamage(victim, entity, neural_damage, false);
+	}
+}
+public void Donner_Neural_Tweak_shake(int entity, int victim, float damage, int weapon)
+{
+	if(IsValidEntity(victim))
+	{
+		int neural_damage = RoundToFloor(ion_damage[entity]);
+		SeaSlider_AddNeuralDamage(victim, entity, neural_damage, false);
+		Client_Shake(victim);
+	}
+}
+
 
 static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
 {
@@ -3296,7 +3197,7 @@ static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
 
 static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 {
-	char name_color[255]; name_color = "aliceblue";
+	char name_color[255]; name_color = "aqua";
 	char text_color[255]; text_color = "snow";
 	char danger_color[255]; danger_color = "crimson";
 
@@ -3360,7 +3261,7 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 		{
 			if(!b_fuck_you_line_used[npc.index] && !b_train_line_used[npc.index])
 			{	
-				switch(GetRandomInt(1,4))
+				switch(GetRandomInt(1,2))
 				{
 					case 1:
 					{
@@ -3371,11 +3272,6 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 					{
 						//CPrintToChatAll("{%s}Donnerkrieg{%s}: {%s}JUDGEMENT BE UPON THEE!", name_color, text_color, danger_color);
 						Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}JUDGEMENT BE UPON THEE!", name_color, text_color, danger_color);
-					}
-					case 3:
-					{
-						//CPrintToChatAll("{%s}Donnerkrieg{%s}: {%s}Ruina CANNON!", name_color, text_color, danger_color);	
-						Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}Ruina CANNON!", name_color, text_color, danger_color);	
 					}
 				}
 			}
