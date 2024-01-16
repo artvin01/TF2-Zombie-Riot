@@ -37,7 +37,9 @@ Final notes:
 
 Heavens Light: needs sounds.
 Crystaline Reflection: add a los check from donner to the crystal.
-Figure out why the fuck donner gives up on life when apparently attacking someone in some weird instance when prepring nightmare cannon???
+Figure out why the fuck donner gives up on life when apparently attacking someone in some weird instance when prepring nightmare cannon??? happens *often* enough to be an issue. add more debug if I can't figure it out.
+guess: it happens in a perfect moment between donner backing up from a target while trying to keep distance? "Donner_Movement" ??
+
 Add more text/voice lines in general. also see about just using base tf2 medic voice lines
 
 Very descriptive descriptions, I know lmao
