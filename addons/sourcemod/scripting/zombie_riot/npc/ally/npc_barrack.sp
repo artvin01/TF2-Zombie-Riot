@@ -121,8 +121,8 @@ enum
 	Command_DefensivePlayer,
 	Command_RetreatPlayer,
 	Command_HoldPos,
-	Command_RTSMove,
-	Command_RTSAttack,
+	Command_RTSMove,	// Move to f3_SpawnPosition, ignore enemies
+	Command_RTSAttack,	// Move to f3_SpawnPosition, attack enemies
 	Command_MAX
 }
 
@@ -593,20 +593,24 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 
 	int client = GetClientOfUserId(npc.OwnerUserId);
 	bool newTarget = npc.m_flGetClosestTargetTime < GameTime;
+	
+	int command = Command_Aggressive;
 
-	if(!newTarget)
+	if(client)
+		command = npc.CmdOverride == Command_Default ? Building_GetFollowerCommand(client) : npc.CmdOverride;
+	
+	bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer || command == Command_RTSMove);
+
+	if(!newTarget && !retreating)
 		newTarget = !IsValidEnemy(npc.index, npc.m_iTarget);
 
-	if(!newTarget)
+	if(!newTarget && !retreating)
 		newTarget = !IsValidEnemy(npc.index, npc.m_iTargetRally);
 
 	if(newTarget)
 	{
-		int command = Command_Aggressive;
-
 		if(client)
 		{
-			command = npc.CmdOverride == Command_Default ? Building_GetFollowerCommand(client) : npc.CmdOverride;
 			switch(command)
 			{
 				case Command_HoldPos, Command_HoldPosBarracks, Command_RTSMove, Command_RTSAttack:
@@ -624,7 +628,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 			npc.m_iTargetAlly = 0;
 		}
 		
-		if(!passive)
+		if(!passive && !retreating)
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo);	
 		}
@@ -650,6 +654,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 					}
 				}
 			}
+
 			if(!passive)
 			{
 				if(npc.m_iTargetRally < 1)
@@ -688,7 +693,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			float vecTarget[3];
 			GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", vecTarget);
 			float flDistanceToTarget;
-			if(command == Command_HoldPosBarracks || command == Command_RTSMove)
+			if(command == Command_HoldPosBarracks)
 			{
 				flDistanceToTarget = GetVectorDistance(vecTarget, f3_SpawnPosition[npc.index], true);
 			}
@@ -697,11 +702,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 				flDistanceToTarget = GetVectorDistance(vecTarget, myPos, true);
 			}
 
-			if(flDistanceToTarget < 5000.0)
-			{
-				command = Command_RTSAttack;
-			}
-			else if(flDistanceToTarget < canRetreat && command != Command_RTSMove)
+			if(flDistanceToTarget < canRetreat)
 			{
 				vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
 				NPC_SetGoalVector(npc.index, vecTarget);
@@ -709,6 +710,10 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 				npc.StartPathing();
 				pathed = true;
 			}
+		}
+		else
+		{
+			npc.m_iTarget = 0;
 		}
 
 		if(!pathed && IsValidEntity(npc.m_iTargetRally) && npc.m_iTargetRally > 0 && command != Command_HoldPos && !retreating)
@@ -816,6 +821,11 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 					NPC_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
 					npc.StartPathing();
 					pathed = true;
+				}
+
+				if(!pathed && command == Command_RTSMove)
+				{
+					command = Command_RTSAttack;
 				}
 			}
 		}
@@ -1054,7 +1064,7 @@ public int BarrackBody_MenuH(Menu menu, MenuAction action, int client, int choic
 					}
 					case 8:
 					{
-						SDKHooks_TakeDamage(npc.index, 0, 0, 9999999.9);
+						SmiteNpcToDeath(npc.index);
 						return 0;
 					}
 				}

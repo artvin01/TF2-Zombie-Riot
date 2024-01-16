@@ -60,12 +60,15 @@ enum
 {
 	Key_LeftClick,
 	Key_RightClick,
+	Key_Ctrl,
+	Key_Escape,
+	Key_SelectAll,
+	Key_IdleWorker,
+	Key_Delete,
+
 	Key_AdjustCamera,
 	Key_ZoomIn,
 	Key_ZoomOut,
-	Key_Ctrl,
-	Key_Escape,
-
 	Key_MoveUp,
 	Key_MoveDown,
 	Key_MoveLeft,
@@ -90,12 +93,15 @@ static const char DisplayKey[Key_MAX][] =
 {
 	"Left-Click",
 	"Right-Click",
+	"Add To Selection",
+	"Clear Selection",
+	"Select All Units",
+	"Select Idle Worker",
+	"Delete Selected",
+
 	"Adjust Camera",
 	"Zoom In",
 	"Zoom Out",
-	"Add To Selection",
-	"Clear Selection",
-
 	"Scroll Up",
 	"Scroll Down",
 	"Scroll Left",
@@ -118,6 +124,17 @@ static const char DefaultCmd[Key_MAX][] =
 {
 	"b 0",
 	"b 11",
+	"b 2",
+	"b 1",
+	"b 16",
+#if defined RTS
+	"+use_action_slot_item",
+	"dropitem",
+#else
+	"<unbound>",
+	"dropitem",
+#endif
+
 	"b 25",
 #if defined RTS
 	"invprev",
@@ -126,13 +143,10 @@ static const char DefaultCmd[Key_MAX][] =
 	"+inspect",
 	"+use_action_slot_item",
 #endif
-	"b 2",
-	"b 1",
-
 	"<unbound>",
 	"<unbound>",
-	"b 7",
-	"b 8",
+	"<unbound>",
+	"<unbound>",
 
 #if defined RTS
 	"lastinv",
@@ -140,7 +154,11 @@ static const char DefaultCmd[Key_MAX][] =
 	"<unbound>",
 #endif
 	"b 3",
+#if defined RTS
 	"voicemenu",
+#else
+	"<unbound>",
+#endif
 	"b 13",
 	"i 201",
 
@@ -174,7 +192,7 @@ static const char ButtonCmd[IN_MAX][] =
 	"+reload",
 	"+alt1",
 	"+alt2",
-	"+score",
+	"+showscores",
 	"+speed",
 	"+walk",
 	"+zoom",
@@ -234,9 +252,10 @@ void RTSCamera_PluginStart()
 	SyncHud = CreateHudSynchronizer();
 
 	MouseCookie = new Cookie("rts_mouse", "RTS Mouse Settings", CookieAccess_Protected);
-	BindCookie = new Cookie("rts_binds", "RTS Binds Settings", CookieAccess_Protected);
+	BindCookie = new Cookie("rts_bind", "RTS Binds Settings", CookieAccess_Protected);
 	
 	AddCommandListener(OnSingleCommand, "-taunt");	// -taunt is called when opening the taunt menu
+	AddCommandListener(OnSingleCommand, "dropitem");
 	AddCommandListener(OnSingleCommand, "voicemenu");
 
 	RegConsoleCmd("sm_rts", RTSCamera_CommandMenu, "RTS Camera Menu");
@@ -847,6 +866,21 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 
 	if(pressed[Key_Escape])
 		delete Selected[client];
+
+	if(Selected[Key_Delete] && Selected[client])
+	{
+		int length = Selected[client].Length;
+		for(int i; i < length; i++)
+		{
+			int entity = EntRefToEntIndex(Selected[client].Get(i));
+			if(entity != -1)
+			{
+				SmiteNpcToDeath(entity);
+				if(!pressed[Key_Ctrl])
+					break;
+			}
+		}
+	}
 	
 	// Highlight all selected units
 	HighlightSelectedUnits(client);
@@ -870,6 +904,41 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 		{
 			NextMoveType[client] = Move_Patrol;
 		}
+	}
+
+	if(pressed[Key_SelectAll])
+	{
+		if(!holding[Key_Ctrl])
+			delete Selected[client];
+		
+		int entity = MaxClients;
+		while(UnitEntityIterator(client, entity))
+		{
+			if(Selected[client] && Selected[client].FindValue(EntIndexToEntRef(entity)) != -1)
+				continue;
+			
+			SelectUnit(client, entity);
+		}
+	}
+
+	if(pressed[Key_IdleWorker])
+	{
+		if(!holding[Key_Ctrl])
+			delete Selected[client];
+		
+#if defined ZR
+		for(int entity = MaxClients + 1; entity < MAXENTITIES; entity++)
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(!b_NpcHasDied[entity] && i_NpcInternalId[entity] == BARRACKS_VILLAGER && npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
+			{
+				if(Selected[client] && Selected[client].FindValue(EntIndexToEntRef(entity)) != -1)
+					continue;
+				
+				SelectUnit(client, entity);
+			}
+		}
+#endif
 	}
 
 	// Cursor point and rectangle selection through a stationary viewport
@@ -1186,9 +1255,20 @@ static void HighlightSelectedUnits(int client)
 		for(int i; i < length; i++)
 		{
 			int entity = EntRefToEntIndex(Selected[client].Get(i));
-			if(entity != -1)
+			if(entity == -1)
+			{
+				Selected[client].Erase(i);
+				i--;
+				length--;
+			}
+			else
+			{
 				DrawUnitHealthBar(client, entity);
+			}
 		}
+
+		if(!length)
+			delete Selected[client];
 	}
 }
 
@@ -1510,11 +1590,16 @@ static void AttachBeam(int entity, int target)
 	SetEntPropEnt(entity, Prop_Send, "m_hAttachEntity", EntIndexToEntRef(target), 1);
 	SetEntProp(entity, Prop_Send, "m_nNumBeamEnts", 2);
 
-	AcceptEntityInput(entity,"TurnOn");
+	AcceptEntityInput(entity, "TurnOn");
 }
 
 static bool CanBeInCamera(int client)
 {
+#if defined ZR
+	if(dieingstate[client] > 0 || TeutonType[client] == TEUTON_DEAD)
+		return false;
+#endif
+
 	return (IsPlayerAlive(client) &&
 		!TF2_IsPlayerInCondition(client, TFCond_Taunting));
 }
@@ -1649,11 +1734,13 @@ static void LoadMouseCookie(int client)
 	MouseCookie.Get(client, buffer, sizeof(buffer));
 	if(buffer[0])
 	{
-		char buffers[2][16];
+		char buffers[4][16];
 		if(ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])))
 		{
 			AspectRatio[client] = StringToFloat(buffers[0]);
 			MouseSensitivity[client] = StringToFloat(buffers[1]);
+			ScrollSpeed[client] = StringToFloat(buffers[2]);
+			ZoomSpeed[client] = StringToFloat(buffers[3]);
 		}
 	}
 }
@@ -1663,7 +1750,7 @@ static void SaveMouseCookie(int client)
 	if(AreClientCookiesCached(client))
 	{
 		char buffer[512];
-		FormatEx(buffer, sizeof(buffer), "%f;%.1f", AspectRatio[client], MouseSensitivity[client]);
+		FormatEx(buffer, sizeof(buffer), "%f;%f;%.0f;%.0f", AspectRatio[client], MouseSensitivity[client], ScrollSpeed[client], ZoomSpeed[client]);
 		MouseCookie.Set(client, buffer);
 	}
 }

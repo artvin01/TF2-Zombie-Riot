@@ -44,6 +44,26 @@
 	{
 		"en"		"Right-Click"
 	}
+	"Add To Selection"
+	{
+		"en"		"Add To Selection"
+	}
+	"Clear Selection"
+	{
+		"en"		"Clear Selection"
+	}
+	"Select All Units"
+	{
+		"en"		"Select All Units"
+	}
+	"Select Idle Worker"
+	{
+		"en"		"Select Idle Worker"
+	}
+	"Delete Selected"
+	{
+		"en"		"Delete Selected"
+	}
 	"Adjust Camera"
 	{
 		"en"		"Adjust Camera"
@@ -55,14 +75,6 @@
 	"Zoom Out"
 	{
 		"en"		"Zoom Out"
-	}
-	"Add To Selection"
-	{
-		"en"		"Add To Selection"
-	}
-	"Clear Selection"
-	{
-		"en"		"Clear Selection"
 	}
 	"Scroll Up"
 	{
