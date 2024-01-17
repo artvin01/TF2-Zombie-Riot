@@ -683,6 +683,10 @@ stock void SetAmmo(int client, int type, int ammo)
 
 stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count, int custom_classSetting = 0)
 {
+	if(custom_classSetting == 11)
+	{
+		custom_classSetting = 0;
+	}
 	int weapon = SpawnWeaponBase(client, name, index, level, qual, attrib, value, count, custom_classSetting);
 	if(weapon != -1)
 	{
