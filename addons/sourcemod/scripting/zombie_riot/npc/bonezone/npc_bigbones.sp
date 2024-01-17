@@ -62,7 +62,6 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode3.wav",
 };
 
-static bool WakeTheFUCKUp[MAXENTITIES];
 static bool b_BonesBuffed[MAXENTITIES];
 
 public void BigBones_OnMapStart_NPC()
@@ -179,7 +178,6 @@ methodmap BigBones < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_bDoSpawnGesture = true;
-		WakeTheFUCKUp[npc.index] = false;
 		DispatchKeyValue(npc.index, "skin", BONES_BIG_SKIN);
 
 		npc.m_flNextMeleeAttack = 0.0;
@@ -189,11 +187,7 @@ methodmap BigBones < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		//IDLE
-		npc.m_flSpeed = 120.0;
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 200.0;
-		}
+		npc.m_flSpeed = (buffed ? BONES_BIG_SPEED_BUFFED : BONES_BIG_SPEED);
 		
 		
 		SDKHook(npc.index, SDKHook_Think, BigBones_ClotThink);
@@ -221,18 +215,11 @@ public void BigBones_ClotThink(int iNPC)
 		npc.AddGesture("ACT_TRANSITION");
 		npc.m_bDoSpawnGesture = false;
 		npc.PlayHeIsAwake();
-//		WakeTheFUCKUp[npc.index] = true && GetGameTime(npc.index) + 4.0 ;
 	}
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
-	}
-	
-	if(WakeTheFUCKUp[npc.index])//this is only there so he can actually move
-	{
-		WakeTheFUCKUp[npc.index] = false;
-		npc.m_flSpeed = (b_BonesBuffed[npc.index] ? BONES_BIG_SPEED_BUFFED : BONES_BIG_SPEED);
 	}
 	
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
