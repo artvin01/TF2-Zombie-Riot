@@ -39,7 +39,6 @@ Heavens Light: needs sounds.
 Crystaline Reflection: add a los check from donner to the crystal.
 Figure out why the fuck donner gives up on life when apparently attacking someone in some weird instance when prepring nightmare cannon??? happens *often* enough to be an issue. add more debug if I can't figure it out.
 guess: it happens in a perfect moment between donner backing up from a target while trying to keep distance? "Donner_Movement" ??
-
 Add more text/voice lines in general. also see about just using base tf2 medic voice lines
 
 Very descriptive descriptions, I know lmao
@@ -421,6 +420,8 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		Music_SetRaidMusic("#zombiesurvival/seaborn/donner_schwert_5.mp3", 290, true);
 		
+		b_thisNpcIsARaid[npc.index] = true;
+		
 		SDKHook(npc.index, SDKHook_Think, Raidboss_Donnerkrieg_ClotThink);
 			
 		
@@ -697,6 +698,12 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 
 		debug_timer = GameTime +1.0;
 	}
+
+	if(!b_nightmare_logic[npc.index])
+	{
+		npc.StartPathing();
+		npc.m_bPathing = true;
+	}
 		
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -897,8 +904,7 @@ static void Donner_Movement(int client, int PrimaryThreatIndex, float GameTime)
 	if(npc.m_bPathing)
 	{
 		if(flDistanceToTarget < npc.GetLeadRadius())
-		{
-						
+		{			
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 						
 			NPC_SetGoalVector(npc.index, vPredictedPos);
@@ -2068,6 +2074,7 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 		RemoveEntity(i_crystal_index);
 	}
 
+	schwert_retreat = false;
 	shared_goal = false;
 	b_raidboss_donnerkrieg_alive = false;
 

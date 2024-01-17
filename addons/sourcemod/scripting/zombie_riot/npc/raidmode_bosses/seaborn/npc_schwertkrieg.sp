@@ -10,6 +10,17 @@
 
 	Wave 45: Frontal Swords.
 
+
+	Notes: 
+
+	Need to add downtime when sprial swords are active so melee's can actually attack schwert.
+
+	Give schwert a speed penalty when retreating.
+
+	Lifeloss:
+		Add a golden orb of types above schwert when doing the animation.
+		Use different sounds.
+
 */
 
 static const char g_DeathSounds[][] = {
@@ -50,13 +61,26 @@ static char g_TeleportSounds[][] = {
 	"weapons/bison_main_shot.wav",
 };
 
+static char g_AngerSounds[][] = {
+	")vo/medic_item_secop_domination01.mp3",
+};
+
+static char g_AngerSoundsPassed[][] = {
+	")vo/medic_laughlong01.mp3",
+};
+
 
 static float fl_teleport_strike_recharge[MAXENTITIES];
 static bool b_teleport_strike_active[MAXENTITIES];
 
 
-#define TELEPORT_STRIKE_INTIALIZE		"misc/halloween/gotohell.wav"
-#define TELEPORT_STRIKE_LOOPS 			"weapons/vaccinator_charge_tier_03.wav"
+
+#define SCHWERT_TELEPORT_STRIKE_INTIALIZE		"misc/halloween/gotohell.wav"
+#define SCHWERT_TELEPORT_STRIKE_LOOPS 			"weapons/vaccinator_charge_tier_03.wav"
+#define SCHWERT_TELEPORT_STRIKE_EXPLOSION		"misc/halloween/spell_mirv_explode_primary.wav"
+
+#define SCHWERTKRIEG_LIGHT_MODEL "models/effects/vol_light256x512.mdl"
+#define SCHWERTKRIEG_BLADE_MODEL "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl"
 
 //Logic for duo raidboss
 
@@ -64,37 +88,60 @@ static int i_ally_index;
 static int LaserIndex;
 static int BeamLaser;
 static float fl_focus_timer[MAXENTITIES];
+static bool b_swords_created[MAXENTITIES];
 
 static bool b_angered_twice[MAXENTITIES];
+static float fl_retreat_timer[MAXENTITIES];
+static bool Schwertkrieg_BEAM_HitDetected[MAXENTITIES];
+static float fl_spinning_angle[MAXENTITIES];
+
+
+#define SCHWERKRIEG_SWORDS_AMT 7	
+
+static int i_dance_of_light_sword_id[MAXENTITIES][SCHWERKRIEG_SWORDS_AMT];
+static float fl_dance_of_light_sword_throttle[MAXENTITIES][SCHWERKRIEG_SWORDS_AMT];
+static float fl_dance_of_light_sound_spam_timer[MAXTF2PLAYERS];
+
 
 void Raidboss_Schwertkrieg_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);  			}
+	PrecacheSoundArray(g_AngerSoundsPassed);
+	PrecacheSoundArray(g_AngerSounds);
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_TeleportSounds);
 	
-	
-	PrecacheSound(TELEPORT_STRIKE_INTIALIZE, true);
+	PrecacheModel(SCHWERTKRIEG_LIGHT_MODEL, true);
+	PrecacheModel(SCHWERTKRIEG_BLADE_MODEL, true);
+
+	PrecacheSound(SCHWERT_TELEPORT_STRIKE_INTIALIZE, true);
+	PrecacheSound(SCHWERT_TELEPORT_STRIKE_LOOPS, true);
+	PrecacheSound(SCHWERT_TELEPORT_STRIKE_EXPLOSION, true);
 
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	BeamLaser = PrecacheModel("materials/sprites/laser.vmt", true);
 
 	PrecacheSound(TELEPORT_STRIKE_TELEPORT, true);
 	PrecacheSound(TELEPORT_STRIKE_HIT, true);
-	PrecacheSound(TELEPORT_STRIKE_LOOPS, true);
 	PrecacheSound(TELEPORT_STRIKE_MISS, true);
+
 	
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("passtime/tv2.wav");
-	PrecacheSound("misc/halloween/spell_mirv_explode_primary.wav");
 
 	Zero(fl_focus_timer);
 	Zero(fl_teleport_strike_recharge);
 	Zero(b_teleport_strike_active);
+	Zero(b_swords_created);
+	Zero(fl_retreat_timer);
+	Zero(fl_dance_of_light_sound_spam_timer);
+	Zero2(fl_dance_of_light_sword_throttle);
+	Zero(Schwertkrieg_BEAM_HitDetected);
+	Zero(fl_spinning_angle);
 
 }
 
@@ -160,12 +207,41 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public void PlayTeleportSound() {
-		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	public void PlayTeleportSound() 
+	{
+		int sound = GetRandomInt(0, sizeof(g_TeleportSounds) - 1);
+		EmitSoundToAll(g_TeleportSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+
+		DataPack pack;
+		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);	//don't mind me, just reusing this...
+		pack.WriteString(g_TeleportSounds[sound]);
+		pack.WriteCell(EntIndexToEntRef(this.index));
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayTeleportSound()");
 		#endif
+	}
+
+	public void PlayAngerSound() {
+	
+		int sound = GetRandomInt(0, sizeof(g_AngerSounds) - 1);
+		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		
+		DataPack pack;
+		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteString(g_AngerSounds[sound]);
+		pack.WriteCell(EntIndexToEntRef(this.index));
+	}
+	public void PlayAngerSoundPassed() {
+	
+		int sound = GetRandomInt(0, sizeof(g_AngerSoundsPassed) - 1);
+		EmitSoundToAll(g_AngerSoundsPassed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		
+		DataPack pack;
+		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteString(g_AngerSoundsPassed[sound]);
+		pack.WriteCell(EntIndexToEntRef(this.index));
+		EmitSoundToAll("mvm/mvm_tele_deliver.wav", this.index, SNDCHAN_STATIC, 80, _, 0.8);
 	}
 	
 	
@@ -197,6 +273,10 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		SDKHook(npc.index, SDKHook_Think, Raidboss_Schwertkrieg_ClotThink);
 
 		RaidModeTime = GetGameTime(npc.index) + 500.0;
+
+		npc.m_flNextChargeSpecialAttack = 0.0;	//used for transformation Logic
+		b_swords_created[npc.index]=false;
+		b_thisNpcIsARaid[npc.index] = true;
 			
 		
 		//IDLE
@@ -275,6 +355,13 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 
 		Schwertkrieg_Create_Wings(npc);
 		Schwert_Impact_Lance_Create(npc.index);
+
+		Delete_Swords(npc.index);
+
+		for(int i=0 ; i < SCHWERKRIEG_SWORDS_AMT ; i++)
+		{
+			i_dance_of_light_sword_id[npc.index][i] = INVALID_ENT_REFERENCE;
+		}
 		
 		
 		return npc;
@@ -404,15 +491,77 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 			}	
 		}
 	}
+
+	if(Schwert_Status(npc, GetGameTime())==0)	//we are in the process of transforming, do stuff. also using a sepereate game time so special effects don't affect the transforming stuff.
+	{
+		f_NpcTurnPenalty[npc.index] = 0.0;	//:)
+		i_NpcWeight[npc.index]=999;	//HE ONE HEAFTY BOI!
+		float Anim_Timer = 8.25;
+		if(npc.m_flNextChargeSpecialAttack < GameTime + Anim_Timer)
+		{
+			npc.SetPlaybackRate(0.0);
+			Schwert_Lifeloss_Logic(npc);
+		}
+		return;
+	}
+	else if(b_NpcIsInvulnerable[npc.index] && b_angered_twice[npc.index])
+	{
+		f_NpcTurnPenalty[npc.index]=1.0;
+		i_NpcWeight[npc.index]=3;
+		b_NpcIsInvulnerable[npc.index]=false;
+		npc.PlayAngerSoundPassed();
+		npc.SetPlaybackRate(1.0);
+
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_flSpeed=330.0;
+		//WARP
+
+		if(IsValidEntity(npc.m_iWearable7))
+			RemoveEntity(npc.m_iWearable7);
+
+		npc.m_iWearable7 = npc.EquipItem("head", "models/player/items/medic/qc_glove.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
+
+		SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", 1);
+
+		CPrintToChatAll("Schwert Reset");
+		
+	}
+		
 	
 	int PrimaryThreatIndex = Schwertkrieg_Get_Target(npc, GameTime);
 
 	int Ally =-1;
 
+	if(!IsValidEnemy(npc.index, PrimaryThreatIndex))
+	{
+		if(npc.m_flNextMeleeAttack < GameTime)
+		{
+			if(npc.m_bAllowBackWalking)
+				npc.m_bAllowBackWalking=false;
+		}
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		return;
+	}
+
 	float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 	float npc_Vec[3]; npc_Vec = WorldSpaceCenter(npc.index);
 
 	float flDistanceToTarget = GetVectorDistance(vecTarget, npc_Vec, true);
+
+	int Blade_Behavior=-1;
+
+	if(b_swords_created[npc.index])
+	{
+		float Loc[3]; Loc = GetAbsOrigin(npc.index); Loc[2]+=50.0;
+		Schwert_Manipulate_Sword_Location(npc, Loc, GameTime, 15.0);
+	}
 
 	if(schwert_retreat)
 	{
@@ -431,28 +580,46 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 	{
 		Schwert_Movement(npc, flDistanceToTarget, PrimaryThreatIndex);
 
+		Schwert_Aggresive_Behavior(npc, PrimaryThreatIndex, GameTime, flDistanceToTarget, vecTarget);
+
 		//Schwert_Teleport_Core(npc, PrimaryThreatIndex);
 	}
-	
-	
-	
-	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+
+	if(b_angered_twice[npc.index])
 	{
-		Schwert_Aggresive_Behavior(npc, PrimaryThreatIndex, GameTime, flDistanceToTarget, vecTarget);
-	}
-	else
-	{
-		if(npc.m_flNextMeleeAttack < GameTime)
+		switch(Blade_Behavior)
 		{
-			if(npc.m_bAllowBackWalking)
-				npc.m_bAllowBackWalking=false;
+			case 1:	//Defenisve.
+			{
+
+			}
+			case 2:	//Aggresive - stay near schwert
+			{
+
+			}
+			case 3: //Aggresive - bommerange.
+			{
+				/*
+					how to do this stupid idea:
+
+					Create a fake circle, then make the sword sprial go around that fake circle, once reaching 75% completion of circle, switches back to default spinning.
+				*/
+			}
 		}
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
+
 	npc.PlayIdleAlertSound();
+}
+static int Schwert_Status(Raidboss_Schwertkrieg npc, float GameTime)
+{
+	if(npc.m_flNextChargeSpecialAttack > GameTime)	//we are transforming
+		return 0;
+
+	if(npc.m_flDoingAnimation > GameTime)	//we are doing an animation.
+		return 1;
+
+	return -1;
+
 }
 static void Schwert_Aggresive_Behavior(Raidboss_Schwertkrieg npc, int PrimaryThreatIndex, float GameTime, float flDistanceToTarget, float vecTarget[3])
 {
@@ -460,29 +627,31 @@ static void Schwert_Aggresive_Behavior(Raidboss_Schwertkrieg npc, int PrimaryThr
 	if(npc.m_bAllowBackWalking)
 		npc.FaceTowards(vecTarget, 20000.0);
 
-	if(npc.m_flNextMeleeAttack > GameTime && !npc.m_flAttackHappenswillhappen)
+	if(fl_retreat_timer[npc.index] > GameTime || (flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*2.0 && npc.m_flNextMeleeAttack > GameTime))
 	{
 		npc.m_bAllowBackWalking=true;
-		npc.StartPathing();
 		float vBackoffPos[3];
 		vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
 		NPC_SetGoalVector(npc.index, vBackoffPos, true);
-
-		npc.StartPathing();
-		npc.m_bPathing = true;
 
 		npc.FaceTowards(vecTarget, 20000.0);
 	}
 	else
 	{
 		npc.m_bAllowBackWalking=false;
+		
 	}
+
+	npc.StartPathing();
+	npc.m_bPathing = true;
 
 	
 	Schwertkrieg_Teleport_Strike(npc, flDistanceToTarget, GameTime, PrimaryThreatIndex);
 	
-	if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+	if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 	{
+		if(Schwert_Status(npc, GameTime)==1)
+			return;
 		//Look at target so we hit.
 	//	npc.FaceTowards(vecTarget, 1000.0);
 		
@@ -504,6 +673,8 @@ static void Schwert_Aggresive_Behavior(Raidboss_Schwertkrieg npc, int PrimaryThr
 				
 			if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 			{
+				fl_retreat_timer[npc.index] = GameTime+(Swing_Speed*0.35);
+
 				Handle swingTrace;
 				npc.FaceTowards(vecTarget, 20000.0);
 				if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
@@ -593,6 +764,7 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 		int enemy = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 		if(IsValidEnemy(npc.index, enemy))
 		{
+			npc.m_flSpeed = 0.0;
 			npc.m_flDoingAnimation = GameTime+2.0;
 			b_teleport_strike_active[npc.index]=true;
 
@@ -605,8 +777,8 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 
 			float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index);
 
-			EmitSoundToAll(TELEPORT_STRIKE_INTIALIZE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
-			EmitSoundToAll(TELEPORT_STRIKE_INTIALIZE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
+			EmitSoundToAll(SCHWERT_TELEPORT_STRIKE_INTIALIZE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
+			EmitSoundToAll(SCHWERT_TELEPORT_STRIKE_INTIALIZE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
 
 			npc.m_flMeleeArmor = 0.5;
 			npc.m_flRangedArmor = 0.5;
@@ -621,8 +793,11 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 
 		}
 	}
-	if(b_teleport_strike_active[npc.index] && npc.m_flDoingAnimation < GameTime)	//warp
+	if(b_teleport_strike_active[npc.index] && npc.m_flDoingAnimation < GameTime)
 	{
+		npc.m_flMeleeArmor = 1.5;
+		npc.m_flRangedArmor = 1.0;
+		npc.m_flSpeed =330.0;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
@@ -673,13 +848,15 @@ static void Schwertkrieg_Teleport_Boom(Raidboss_Schwertkrieg npc, float Location
 {
 	float Boom_Time = 5.0;
 
+	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Location);
+
 	float radius = SCHWERTKRIEG_TELEPORT_STRIKE_RADIUS;
 	if(npc.Anger)
 		radius *= 1.25;	
 
 	int wave = ZR_GetWaveCount()+1;
 	int color[4];
-	color[3] = 75;
+	color[3] = 175;
 
 	if(wave<=15)
 	{
@@ -700,7 +877,9 @@ static void Schwertkrieg_Teleport_Boom(Raidboss_Schwertkrieg npc, float Location
 		color[2] = 235;
 	}
 
-	TE_SetupBeamRingPoint(Location, radius*2.0, 0.0, LaserIndex, LaserIndex, 0, 1, Boom_Time, 3.0, 1.0, color, 1, 0);
+	TE_SetupBeamRingPoint(Location, radius*2.0, 0.0, LaserIndex, LaserIndex, 0, 1, Boom_Time, 15.0, 1.0, color, 1, 0);
+
+	
 
 	Handle pack;
 	CreateDataTimer(Boom_Time, Schwert_Boom, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -739,12 +918,12 @@ static Action Schwert_Ring_Loops(Handle Loop, DataPack pack)
 		spawnLoc[GetVector] = ReadPackFloat(pack);
 	}
 
-	EmitAmbientSound(TELEPORT_STRIKE_LOOPS, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));
-	EmitAmbientSound(TELEPORT_STRIKE_LOOPS, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));
+	EmitAmbientSound(SCHWERT_TELEPORT_STRIKE_LOOPS, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));
+	EmitAmbientSound(SCHWERT_TELEPORT_STRIKE_LOOPS, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));
 
 	int wave = ZR_GetWaveCount()+1;
 	int color[4];
-	color[3] = 75;
+	color[3] = 175;
 
 	if(wave<=15)
 	{
@@ -770,7 +949,8 @@ static Action Schwert_Ring_Loops(Handle Loop, DataPack pack)
 	if(npc.Anger)
 		radius *= 1.25;	
 	
-	TE_SetupBeamRingPoint(spawnLoc, radius*2.0, 0.0, LaserIndex, LaserIndex, 0, 1, 1.0, 3.0, 0.1, color, 1, 0);
+	TE_SetupBeamRingPoint(spawnLoc, radius*2.0, 0.0, LaserIndex, LaserIndex, 0, 1, 1.0, 15.0, 0.1, color, 1, 0);
+	TE_SendToAll();
 
 	Handle pack2;
 	CreateDataTimer(1.0, Schwert_Ring_Loops, pack2, TIMER_FLAG_NO_MAPCHANGE);
@@ -800,13 +980,13 @@ static Action Schwert_Boom(Handle Smite_Logic, DataPack pack)
 		spawnLoc[GetVector] = ReadPackFloat(pack);
 	}
 	
-	float damage = 200.0*RaidModeScaling;
+	float damage = 200.0*RaidModeScaling;	//very deadly!
 	float radius = SCHWERTKRIEG_TELEPORT_STRIKE_RADIUS;
 	int wave = ZR_GetWaveCount()+1;
 	int color[4];
-	color[3] = 75;
-	int loop_for = 15;
-	float height = 1500.0;
+	color[3] = 175;
+	int loop_for = 15;		//15
+	float height = 1500.0;	//1500
 	float sky_loc[3]; sky_loc = spawnLoc; sky_loc[2]+=height;
 
 	if(wave<=15)
@@ -836,12 +1016,16 @@ static Action Schwert_Boom(Handle Smite_Logic, DataPack pack)
 
 	Explode_Logic_Custom(damage, npc.index, npc.index, -1, spawnLoc, radius,_,0.8, true);
 
+	EmitAmbientSound(SCHWERT_TELEPORT_STRIKE_EXPLOSION, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));
+	EmitAmbientSound(SCHWERT_TELEPORT_STRIKE_EXPLOSION, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));
+
 	spawnLoc[2]+=10.0;
 
-	TE_SetupBeamRingPoint(spawnLoc, radius*2.0, 0.0, LaserIndex, LaserIndex, 0, 1, 1.0, 3.0, 1.0, color, 1, 0);
+	TE_SetupBeamRingPoint(spawnLoc, 1.0, radius*2.0, LaserIndex, LaserIndex, 0, 1, 1.0, 15.0, 1.0, color, 1, 0);
+	TE_SendToAll();
 
-	float start = 5.0;
-	float end = 5.0;
+	float start = 15.0;
+	float end = 15.0;
 	TE_SetupBeamPoints(spawnLoc, sky_loc, BeamLaser, 0, 0, 0, 1.0, start, end, 0, 1.0, color, 3);
 	TE_SendToAll();
 
@@ -852,10 +1036,14 @@ static Action Schwert_Boom(Handle Smite_Logic, DataPack pack)
 	float Offset_Time = Time / loop_for;
 	for(int i = 1 ; i <= loop_for ; i++)
 	{
-		float timer = Offset_Time*i;
+		float timer = Offset_Time*i+0.3;
 		if(timer<=0.02)
 			timer=0.02;
-		TE_SetupBeamRingPoint(spawnLoc, radius*((loop_for/i)*0.5), 0.0, LaserIndex, LaserIndex, 0, 1, timer, thicc, 0.1, color, 1, 0);
+		float end_ratio = (((loop_for/2.0)/i));
+		float final_radius = radius*end_ratio;
+		if(final_radius > 4096.0)	//so apperantly there is a max endradius, these are the types of things you only findout if you are dumb enough to even try...
+			final_radius= 4095.0;
+		TE_SetupBeamRingPoint(spawnLoc, 0.0, final_radius, LaserIndex, LaserIndex, 0, 1, timer, thicc, 0.1, color, 1, 0);
 
 		TE_SendToAll();
 		spawnLoc[2]+=Seperation;
@@ -949,11 +1137,32 @@ public Action Raidboss_Schwertkrieg_OnTakeDamage(int victim, int &attacker, int 
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 
-	if(!b_angered_twice[npc.index] && Health/MaxHealth<=0.5)
+	if(npc.m_flNextChargeSpecialAttack > GetGameTime())
+	{
+		damage=0.0;
+		CPrintToChatAll("Damage nulified");
+		return Plugin_Changed;
+	}
+
+	if(!b_angered_twice[npc.index] && Health/MaxHealth<=0.5 && !b_teleport_strike_active[npc.index])
 	{
 		b_angered_twice[npc.index]=true;
 		donner_sea_created=true;
+
+		npc.m_flNextChargeSpecialAttack = GetGameTime()+10.0;
+
+		npc.AddActivityViaSequence("taunt_the_fist_bump");
+		npc.SetPlaybackRate(0.2);	
+		npc.SetCycle(0.0);
+
+		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
+		npc.PlayAngerSound();
+
+		Schwert_Lifeloss_Initialize(npc);
+
+		npc.m_flSpeed=0.0;
 	}
+
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -962,6 +1171,247 @@ public Action Raidboss_Schwertkrieg_OnTakeDamage(int victim, int &attacker, int 
 	}
 	
 	return Plugin_Changed;
+}
+
+static void Schwert_Lifeloss_Initialize(Raidboss_Schwertkrieg npc)
+{
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+
+	npc.m_iWearable7 = npc.EquipItemSeperate("head", SCHWERTKRIEG_LIGHT_MODEL ,_,_,_,300.0);
+	
+}
+static void Schwert_Lifeloss_Logic(Raidboss_Schwertkrieg npc)
+{
+	if(!b_swords_created[npc.index])
+	{
+		b_swords_created[npc.index]=true;
+		CPrintToChatAll("Swords created.");
+
+		float Loc[3];
+		Loc = GetAbsOrigin(npc.index);
+
+		for(int i=0 ; i < SCHWERKRIEG_SWORDS_AMT ; i++)
+		{
+			int sword = Create_Blade(Loc, "2");
+			if(IsValidEntity(sword))
+			{
+				i_dance_of_light_sword_id[npc.index][i]=EntIndexToEntRef(sword);
+			}
+		}
+	}
+	if(b_swords_created[npc.index])
+	{
+		float Duration = npc.m_flNextChargeSpecialAttack - GetGameTime();
+		float Ratio = (Duration/8.0);
+		float Loc[3]; Loc = GetAbsOrigin(npc.index); Loc[2]+=50.0;
+		Loc[2] += 150.0*Ratio;
+		float speed = 30.0 - 25.0*Ratio;
+		Schwert_Manipulate_Sword_Location(npc, Loc, GetGameTime(), speed);
+	}
+}
+static void Schwert_Manipulate_Sword_Location(Raidboss_Schwertkrieg npc, float Loc[3], float GameTime, float spin_speed)
+{
+	fl_spinning_angle[npc.index] +=spin_speed;
+
+	if(fl_spinning_angle[npc.index]>=360.0)
+		fl_spinning_angle[npc.index]=0.0;
+
+	float Range = 175.0;
+
+	float Player_Pos[3]; Player_Pos = Loc;
+
+	for(int i=0 ; i < SCHWERKRIEG_SWORDS_AMT ; i++)
+	{
+		float tempAngles[3], Direction[3], EndLoc[3];
+		tempAngles[0] = 0.0;
+		tempAngles[1] = fl_spinning_angle[npc.index] + (float(i) * (360.0/SCHWERKRIEG_SWORDS_AMT));
+		tempAngles[2] = 0.0;
+			
+		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, Range);
+		AddVectors(Player_Pos, Direction, EndLoc);
+
+		int sword = EntRefToEntIndex(i_dance_of_light_sword_id[npc.index][i]);
+
+		float Ang[3];
+
+		MakeVectorFromPoints(EndLoc, Player_Pos, Ang);
+		GetVectorAngles(Ang, Ang);
+
+		if(IsValidEntity(sword))
+		{
+			float Sword_Loc[3]; Sword_Loc = GetAbsOrigin(sword);
+
+			Schwertkrieg_Move_Entity(sword, EndLoc, Ang);
+			
+			float diameter = 10.0;
+									
+			int color[4];
+			/*color[0]=255;
+			color[1]=255;
+			color[2]=255;
+			color[3]=255;
+			TE_SetupBeamPoints(Player_Pos, Sword_Loc, BeamLaser, 0, 0, 0, BOMBERZV2_TE_DURATION, diameter, diameter, 0, 0.1, color, 3);
+
+			TE_SendToAll();*/
+
+			float Loc2[3];
+
+			float Distance = 100.0;
+
+			MakeVectorFromPoints(Player_Pos, EndLoc, Ang);
+			GetVectorAngles(Ang, Ang);
+			Get_Fake_Forward_Vec(Distance, Ang, Loc2, Sword_Loc);
+
+
+			if(fl_dance_of_light_sword_throttle[npc.index][i] < GameTime)
+			{
+				fl_dance_of_light_sword_throttle[npc.index][i] = GameTime+0.1;
+				Schwertkrieg_Laser_Trace(npc, Sword_Loc, Loc2, 10.0, 5.0 * RaidModeScaling);
+			}
+
+			/*
+			color[0]=75;
+			color[1]=9;
+			color[2]=145;
+			color[3]=255;
+			TE_SetupBeamPoints(Sword_Loc, Loc2, BeamLaser, 0, 0, 0, DONNERKRIEG_TE_DURATION, diameter, diameter, 0, 0.1, color, 3);
+											
+			TE_SendToAll();*/
+		}
+	}
+}
+static void Schwertkrieg_Move_Entity(int entity, float loc[3], float Ang[3])
+{
+	if(IsValidEntity(entity))	
+	{
+		float vecView[3], vecFwd[3], Entity_Loc[3], vecVel[3];
+		
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", Entity_Loc);
+		
+		MakeVectorFromPoints(Entity_Loc, loc, vecView);
+		GetVectorAngles(vecView, vecView);
+		
+		float dist = GetVectorDistance(Entity_Loc, loc);
+
+		GetAngleVectors(vecView, vecFwd, NULL_VECTOR, NULL_VECTOR);
+	
+		Entity_Loc[0]+=vecFwd[0] * dist;
+		Entity_Loc[1]+=vecFwd[1] * dist;
+		Entity_Loc[2]+=vecFwd[2] * dist;
+		
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecFwd);
+		
+		SubtractVectors(Entity_Loc, vecFwd, vecVel);
+		ScaleVector(vecVel, 10.0);
+
+		TeleportEntity(entity, NULL_VECTOR, Ang, vecVel);
+
+		
+	}
+	//TeleportEntity(entity, loc, NULL_VECTOR, NULL_VECTOR);
+	
+}
+static void Schwertkrieg_Laser_Trace(Raidboss_Schwertkrieg npc, float Start_Point[3], float End_Point[3], float Radius, float dps)
+{
+
+	float GameTime = GetGameTime();
+	for (int i = 0; i < MAXENTITIES; i++)
+	{
+		Schwertkrieg_BEAM_HitDetected[i] = false;
+	}
+
+	float hullMin[3], hullMax[3];
+	hullMin[0] = -Radius;
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+	Handle trace = TR_TraceHullFilterEx(Start_Point, End_Point, hullMin, hullMax, 1073741824, Schwertkrieg_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
+	delete trace;
+			
+	for (int victim = 0; victim < MAXTF2PLAYERS; victim++)
+	{
+		if (Schwertkrieg_BEAM_HitDetected[victim] && GetEntProp(npc.index, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		{
+			float playerPos[3];
+			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
+
+			float Dmg = dps;
+
+			SDKHooks_TakeDamage(victim, npc.index, npc.index, Dmg, DMG_PLASMA, -1, NULL_VECTOR, Start_Point);
+				
+			if(victim <= MaxClients)
+				Client_Shake(victim, 0, 8.0, 8.0, 0.1);
+
+		}
+	}
+}
+public bool Schwertkrieg_BEAM_TraceUsers(int entity, int contentsMask, int client)
+{
+	if (IsEntityAlive(entity))
+	{
+		Schwertkrieg_BEAM_HitDetected[entity] = true;
+	}
+	return false;
+}
+static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])	//Why On GODS EARTH DID I MAKE THE INPUT/OUTPUT IN THE WRONG ORDER, LIKE WHY/???????
+{
+	float Direction[3];
+	
+	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(Direction, Range);
+	AddVectors(Pos, Direction, Vec_Target);
+}
+static int Create_Blade(float Loc[3], char size[10])
+{
+	int prop = CreateEntityByName("prop_physics_override");
+	
+	if (IsValidEntity(prop))
+	{
+	
+		DispatchKeyValue(prop, "model", SCHWERTKRIEG_BLADE_MODEL);
+		
+		DispatchKeyValue(prop, "modelscale", size);
+		
+		DispatchKeyValue(prop, "solid", "0"); 
+		
+		DispatchSpawn(prop);
+		
+		ActivateEntity(prop);
+		
+		//SetEntProp(prop, Prop_Send, "m_fEffects", 32); //EF_NODRAW
+		
+		SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12);
+		SetEntProp(prop, Prop_Data, "m_nSolidType", 6);
+		SetEntProp(prop, Prop_Send, "m_CollisionGroup", 1);
+
+		TeleportEntity(prop, Loc, NULL_VECTOR, NULL_VECTOR);
+
+		CPrintToChatAll("Sword created: %i", prop);
+		
+		return prop;
+	}
+	else
+	{
+		return -1;
+	}
+}
+
+static void Delete_Swords(int client)
+{
+	for(int i=0 ; i < SCHWERKRIEG_SWORDS_AMT ; i++)
+	{
+		int sword = EntRefToEntIndex(i_dance_of_light_sword_id[client][i]);
+		if(IsValidEntity(sword))
+		{
+			RemoveEntity(sword);
+			CPrintToChatAll("Removed sword: %i",sword );
+		}
+		i_dance_of_light_sword_id[client][i] = INVALID_ENT_REFERENCE;
+	}
 }
 
 public void Raidboss_Schwertkrieg_NPCDeath(int entity)
@@ -979,6 +1429,7 @@ public void Raidboss_Schwertkrieg_NPCDeath(int entity)
 		donner.Anger=true;
 	}
 		
+	Delete_Swords(npc.index);
 	
 	if(EntRefToEntIndex(RaidBossActive)==npc.index)
 	{
