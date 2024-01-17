@@ -562,6 +562,8 @@ static ArrayList StoreTags;
 static ArrayList ChoosenTags[MAXTF2PLAYERS];
 static bool UsingChoosenTags[MAXTF2PLAYERS];
 static int LastMenuItem[MAXTF2PLAYERS];
+static int CurrentMenuItem[MAXTF2PLAYERS];
+static bool InStoreMenu[MAXTF2PLAYERS];
 #endif	// ZR
 
 #if defined RPG
@@ -2854,6 +2856,11 @@ void Store_OpenGiftStore(int client, int entity, int price, bool barney)
 
 static void MenuPage(int client, int section)
 {
+	if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
+		return;
+	
+	CreateTimer(0.5, Store_RefreshTimer, client);
+	
 	SetGlobalTransTarget(client);
 	
 	Menu menu;
@@ -2867,10 +2874,9 @@ static void MenuPage(int client, int section)
 		CashSpent[client] = 0;
 		starterPlayer = false;
 	}
-
-	if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
-		return;
 	
+	CurrentMenuItem[client] = section;
+
 	BarracksCheckItems(client);
 	
 	if(ClientTutorialStep(client) == 2)
@@ -3100,7 +3106,7 @@ static void MenuPage(int client, int section)
 			}
 			
 			menu.ExitBackButton = true;
-			menu.Display(client, MENU_TIME_FOREVER);
+			InStoreMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
 			return;
 		}
 
@@ -3472,7 +3478,7 @@ static void MenuPage(int client, int section)
 		}
 		
 		menu.ExitBackButton = true;
-		DisplayMenuAtCustom(menu, client, pageItem);
+		InStoreMenu[client] = DisplayMenuAtCustom(menu, client, pageItem);
 		return;
 	}
 
@@ -3532,7 +3538,7 @@ static void MenuPage(int client, int section)
 	}
 
 	menu.ExitBackButton = section != -1;
-	DisplayMenuAtCustom(menu, client, pageItem);
+	InStoreMenu[client] = DisplayMenuAtCustom(menu, client, pageItem);
 }
 /*
 static char[] AddPluses(int amount)
@@ -3559,8 +3565,14 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 		{
 			delete menu;
 		}
+		case MenuAction_Cancel:
+		{
+			InStoreMenu[client] = false;
+		}
 		case MenuAction_Select:
 		{
+			InStoreMenu[client] = false;
+			
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			if(StrEqual(buffer, "_next"))
@@ -3869,6 +3881,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
+			InStoreMenu[client] = false;
+
 			if(choice == MenuCancel_ExitBack)
 			{
 				Item item;
@@ -3885,6 +3899,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
+			InStoreMenu[client] = false;
+			
 			if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
 			{
 				return 0;
@@ -6701,30 +6717,95 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 	SetEntProp(weapon, Prop_Send, "m_iClip1", item.CurrentClipSaved[client]); // weapon clip amount bullets
 }
 
-void DisplayMenuAtCustom(Menu menu, int client, int item)
+public Action Store_RefreshTimer(Handle timer, int client)
 {
+	// InStoreMenu will be false if the client disconnects
+	if(InStoreMenu[client])
+		MenuPage(client, CurrentMenuItem[client]);
+	
+	return Plugin_Stop;
+}
+
+bool DisplayMenuAtCustom(Menu menu, int client, int item)
+{
+	int count = menu.ItemCount;
 	int base = (item / 8 * 8);
 	char buffer[16];
 
-	if(item > 0)
+	if(count > (base + 7))
 	{
 		FormatEx(buffer, sizeof(buffer), "%t", "Next");
-		menu.InsertItem(base + 8, "_next", buffer);
+
+		int pos = base + 8;
+		if(count > pos)
+		{
+			menu.InsertItem(pos, "_next", buffer);
+			count++;
+		}
+		else
+		{
+			while(count < pos)
+			{
+				menu.AddItem("_next", buffer, ITEMDRAW_SPACER);
+				count++;
+			}
+
+			menu.AddItem("_next", buffer);
+			count++;
+		}
 	}
 	
-	if(base > 0 && menu.ItemCount > 0)
+	if(base > 0)
 	{
 		FormatEx(buffer, sizeof(buffer), "%t", "Previous");
-		menu.InsertItem(base + 9, "_previous", buffer);
+
+		int pos = base + 9;
+		if(count > pos)
+		{
+			menu.InsertItem(base + 9, "_previous", buffer);
+		}
+		else
+		{
+			while(count < pos)
+			{
+				menu.AddItem("_previous", buffer, ITEMDRAW_SPACER);
+				count++;
+			}
+
+			menu.AddItem("_previous", buffer);
+		}
 	}
 	else if(menu.ExitBackButton)
 	{
 		FormatEx(buffer, sizeof(buffer), "%t", "Back");
-		menu.InsertItem(base + 9, "_back", buffer);
+
+		int pos = base + 9;
+		if(count > pos)
+		{
+			menu.InsertItem(base + 9, "_back", buffer);
+		}
+		else
+		{
+			while(count < pos)
+			{
+				menu.AddItem("_back", buffer, ITEMDRAW_SPACER);
+				count++;
+			}
+
+			menu.AddItem("_back", buffer);
+		}
+	}
+	else if(count > 7)
+	{
+		while(count < 10)
+		{
+			menu.AddItem("_next", buffer, ITEMDRAW_SPACER);
+			count++;
+		}
 	}
 
 	menu.Pagination = 0;
 	menu.ExitButton = false;
 	menu.ExitBackButton = false;
-	menu.DisplayAt(client, base, MENU_TIME_FOREVER);
+	return menu.DisplayAt(client, base, MENU_TIME_FOREVER);
 }
