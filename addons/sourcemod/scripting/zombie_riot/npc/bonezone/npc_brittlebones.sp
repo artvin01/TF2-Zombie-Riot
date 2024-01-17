@@ -1,9 +1,22 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define BONES_BRITTLE_SPEED			400.0
-#define BONES_BRITTLE_HP			"250"
-#define BONES_BRITTLE_SCALE			"0.5"
+static float BONES_BRITTLE_SPEED = 400.0;
+static float BONES_BRITTLE_SPEED_BUFFED = 500.0;
+
+#define BONES_BRITTLE_HP			"150"
+#define BONES_BRITTLE_HP_BUFFED		"300"
+
+static float BONES_BRITTLE_PLAYERDAMAGE = 10.0;
+static float BONES_BRITTLE_PLAYERDAMAGE_BUFFED = 20.0;
+
+static float BONES_BRITTLE_BUILDINGDAMAGE = 20.0;
+static float BONES_BRITTLE_BUILDINGDAMAGE_BUFFED = 40.0;
+
+static float BONES_BRITTLE_ATTACKINTERVAL = 0.5;
+static float BONES_BRITTLE_ATTACKINTERVAL_BUFFED = 0.33;
+
+#define BONES_BRITTLE_SCALE			"0.7"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -87,6 +100,7 @@ static char g_GibSounds[][] = {
 };
 
 static bool WakeTheFUCKUp[MAXENTITIES];
+static bool b_BonesBuffed[MAXENTITIES];
 
 public void BrittleBones_OnMapStart_NPC()
 {
@@ -182,11 +196,17 @@ methodmap BrittleBones < CClotBody
 	
 	
 	
-	public BrittleBones(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BrittleBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
 	{
-		BrittleBones npc = view_as<BrittleBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BRITTLE_SCALE, BONES_BRITTLE_HP, ally, false));
+		BrittleBones npc = view_as<BrittleBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BRITTLE_SCALE, buffed ? BONES_BRITTLE_HP_BUFFED : BONES_BRITTLE_HP, ally, false));
 		
-		i_NpcInternalId[npc.index] = BONEZONE_BRITTLEBONES;
+		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_BRITTLEBONES : BONEZONE_BRITTLEBONES;
+		b_BonesBuffed[npc.index] = buffed;
+		
+		if (buffed)
+		{
+			Brittle_AttachParticle(npc.index, "superrare_burning2", _, "eyes");
+		}
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -225,6 +245,47 @@ methodmap BrittleBones < CClotBody
 	}
 }
 
+stock void Brittle_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
+{
+	if (IsValidEntity(entity))
+	{
+		int part1 = CreateEntityByName("info_particle_system");
+		if (IsValidEdict(part1))
+		{
+			float pos[3];
+			if (HasEntProp(entity, Prop_Data, "m_vecAbsOrigin"))
+			{
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+			}
+			else if (HasEntProp(entity, Prop_Send, "m_vecOrigin"))
+			{
+				GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+			}
+			
+			if (zTrans != 0.0)
+			{
+				pos[2] += zTrans;
+			}
+			
+			TeleportEntity(part1, pos, NULL_VECTOR, NULL_VECTOR);
+			DispatchKeyValue(part1, "effect_name", type);
+			SetVariantString("!activator");
+			AcceptEntityInput(part1, "SetParent", entity, part1);
+			SetVariantString(point);
+			AcceptEntityInput(part1, "SetParentAttachmentMaintainOffset", part1, part1);
+			DispatchKeyValue(part1, "targetname", "present");
+			DispatchSpawn(part1);
+			ActivateEntity(part1);
+			AcceptEntityInput(part1, "Start");
+			
+			if (duration > 0.0)
+			{
+				CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(part1), TIMER_FLAG_NO_MAPCHANGE);
+			}
+		}
+	}
+}
+
 //TODO 
 //Rewrite
 public void BrittleBones_ClotThink(int iNPC)
@@ -251,7 +312,7 @@ public void BrittleBones_ClotThink(int iNPC)
 	if(WakeTheFUCKUp[npc.index])//this is only there so he can actually move
 	{
 		WakeTheFUCKUp[npc.index] = false;
-		npc.m_flSpeed = BONES_BRITTLE_SPEED;
+		npc.m_flSpeed = (b_BonesBuffed[npc.index] ? BONES_BRITTLE_SPEED_BUFFED : BONES_BRITTLE_SPEED);
 	}
 	
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
@@ -331,22 +392,10 @@ public void BrittleBones_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 						if(target > 0) 
 						{
-							if(EscapeModeForNpc)
-							{
-								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_CLUB, -1, _, vecHit);
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
-							}
+							if(target <= MaxClients)
+								SDKHooks_TakeDamage(target, npc.index, npc.index, b_BonesBuffed[npc.index] ? BONES_BRITTLE_PLAYERDAMAGE_BUFFED : BONES_BRITTLE_PLAYERDAMAGE, DMG_CLUB, -1, _, vecHit);
 							else
-							{
-								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_CLUB, -1, _, vecHit);					
-							}
-							
-							
+								SDKHooks_TakeDamage(target, npc.index, npc.index, b_BonesBuffed[npc.index] ? BONES_BRITTLE_BUILDINGDAMAGE_BUFFED : BONES_BRITTLE_BUILDINGDAMAGE, DMG_CLUB, -1, _, vecHit);						
 								
 							// Hit sound
 							npc.PlayMeleeHitSound();
@@ -357,13 +406,13 @@ public void BrittleBones_ClotThink(int iNPC)
 						}
 					}
 					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BONES_BRITTLE_ATTACKINTERVAL_BUFFED : BONES_BRITTLE_ATTACKINTERVAL);
 					npc.m_flAttackHappenswillhappen = false;
 				}
 				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BONES_BRITTLE_ATTACKINTERVAL_BUFFED : BONES_BRITTLE_ATTACKINTERVAL);
 				}
 			}
 			

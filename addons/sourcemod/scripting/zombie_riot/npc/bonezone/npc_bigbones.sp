@@ -1,23 +1,23 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float BONES_BEEFY_SPEED = 220.0;
-static float BONES_BEEFY_SPEED_BUFFED = 280.0;
+static float BONES_BIG_SPEED = 200.0;
+static float BONES_BIG_SPEED_BUFFED = 250.0;
 
-#define BONES_BEEFY_HP			"800"
-#define BONES_BEEFY_HP_BUFFED	"1600"
+#define BONES_BIG_HP		"3600"
+#define BONES_BIG_HP_BUFFED	"6000"
 
-static float BONES_BEEFY_PLAYERDAMAGE = 80.0;
-static float BONES_BEEFY_PLAYERDAMAGE_BUFFED = 120.0;
+static float BONES_BIG_PLAYERDAMAGE = 120.0;
+static float BONES_BIG_PLAYERDAMAGE_BUFFED = 180.0;
 
-static float BONES_BEEFY_BUILDINGDAMAGE = 90.0;
-static float BONES_BEEFY_BUILDINGDAMAGE_BUFFED = 120.0;
+static float BONES_BIG_BUILDINGDAMAGE = 180.0;
+static float BONES_BIG_BUILDINGDAMAGE_BUFFED = 260.0;
 
-static float BONES_BEEFY_ATTACKINTERVAL = 1.8;
-static float BONES_BEEFY_ATTACKINTERVAL_BUFFED = 1.2;
+static float BONES_BIG_ATTACKINTERVAL = 2.4;
+static float BONES_BIG_ATTACKINTERVAL_BUFFED = 2.2;
 
-#define BONES_BEEFY_SCALE		"1.2"
-#define BONES_BEEFY_SKIN			"0"
+#define BONES_BIG_SCALE		"2.4"
+#define BONES_BIG_SKIN		"3"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -65,7 +65,7 @@ static char g_GibSounds[][] = {
 static bool WakeTheFUCKUp[MAXENTITIES];
 static bool b_BonesBuffed[MAXENTITIES];
 
-public void BeefyBones_OnMapStart_NPC()
+public void BigBones_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -82,7 +82,7 @@ public void BeefyBones_OnMapStart_NPC()
 	PrecacheModel("models/zombie/classic.mdl");
 }
 
-methodmap BeefyBones < CClotBody
+methodmap BigBones < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -91,7 +91,7 @@ methodmap BeefyBones < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CBeefyBones::PlayIdleSound()");
+		PrintToServer("CBigBones::PlayIdleSound()");
 		#endif
 	}
 	
@@ -104,7 +104,7 @@ methodmap BeefyBones < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CBeefyBones::PlayHurtSound()");
+		PrintToServer("CBigBones::PlayHurtSound()");
 		#endif
 	}
 	
@@ -113,7 +113,7 @@ methodmap BeefyBones < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CBeefyBones::PlayDeathSound()");
+		PrintToServer("CBigBones::PlayDeathSound()");
 		#endif
 	}
 	
@@ -122,7 +122,7 @@ methodmap BeefyBones < CClotBody
 		EmitSoundToAll(g_GibSounds[GetRandomInt(0, sizeof(g_GibSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CBeefyBones::PlayGibSound()");
+		PrintToServer("CBigBones::PlayGibSound()");
 		#endif
 	}
 	
@@ -130,14 +130,14 @@ methodmap BeefyBones < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CBeefyBones::PlayMeleeHitSound()");
+		PrintToServer("CBigBones::PlayMeleeHitSound()");
 		#endif
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CBeefyBones::PlayMeleeHitSound()");
+		PrintToServer("CBigBones::PlayMeleeHitSound()");
 		#endif
 	}
 
@@ -159,16 +159,16 @@ methodmap BeefyBones < CClotBody
 	
 	
 	
-	public BeefyBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
+	public BigBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
 	{
-		BeefyBones npc = view_as<BeefyBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BEEFY_SCALE, buffed ? BONES_BEEFY_HP_BUFFED : BONES_BEEFY_HP, ally, false));
+		BigBones npc = view_as<BigBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BIG_SCALE, buffed ? BONES_BIG_HP_BUFFED : BONES_BIG_HP, ally, false, true));
 		
-		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_BEEFYBONES : BONEZONE_BEEFYBONES;
+		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_BIGBONES : BONEZONE_BIGBONES;
 		b_BonesBuffed[npc.index] = buffed;
 		
 		if (buffed)
 		{
-			TE_SetupParticleEffect("utaunt_wispy_parent_p", PATTACH_ABSORIGIN_FOLLOW, npc.index);
+			TE_SetupParticleEffect("utaunt_glowyplayer_orange_parent", PATTACH_ABSORIGIN_FOLLOW, npc.index);
 			TE_WriteNum("m_bControlPoint1", npc.index);	
 			TE_SendToAll();	
 		}
@@ -180,7 +180,7 @@ methodmap BeefyBones < CClotBody
 		
 		npc.m_bDoSpawnGesture = true;
 		WakeTheFUCKUp[npc.index] = false;
-		DispatchKeyValue(npc.index, "skin", BONES_BEEFY_SKIN);
+		DispatchKeyValue(npc.index, "skin", BONES_BIG_SKIN);
 
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -196,7 +196,7 @@ methodmap BeefyBones < CClotBody
 		}
 		
 		
-		SDKHook(npc.index, SDKHook_Think, BeefyBones_ClotThink);
+		SDKHook(npc.index, SDKHook_Think, BigBones_ClotThink);
 		
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
@@ -208,9 +208,9 @@ methodmap BeefyBones < CClotBody
 
 //TODO 
 //Rewrite
-public void BeefyBones_ClotThink(int iNPC)
+public void BigBones_ClotThink(int iNPC)
 {
-	BeefyBones npc = view_as<BeefyBones>(iNPC);
+	BigBones npc = view_as<BigBones>(iNPC);
 	
 //	PrintToChatAll("%.f",GetEntPropFloat(view_as<int>(iNPC), Prop_Data, "m_speed"));
 	
@@ -232,7 +232,7 @@ public void BeefyBones_ClotThink(int iNPC)
 	if(WakeTheFUCKUp[npc.index])//this is only there so he can actually move
 	{
 		WakeTheFUCKUp[npc.index] = false;
-		npc.m_flSpeed = (b_BonesBuffed[npc.index] ? BONES_BEEFY_SPEED_BUFFED : BONES_BEEFY_SPEED);
+		npc.m_flSpeed = (b_BonesBuffed[npc.index] ? BONES_BIG_SPEED_BUFFED : BONES_BIG_SPEED);
 	}
 	
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
@@ -313,9 +313,9 @@ public void BeefyBones_ClotThink(int iNPC)
 						if(target > 0) 
 						{
 							if(target <= MaxClients)
-								SDKHooks_TakeDamage(target, npc.index, npc.index, b_BonesBuffed[npc.index] ? BONES_BEEFY_PLAYERDAMAGE_BUFFED : BONES_BEEFY_PLAYERDAMAGE, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, b_BonesBuffed[npc.index] ? BONES_BIG_PLAYERDAMAGE_BUFFED : BONES_BIG_PLAYERDAMAGE, DMG_CLUB, -1, _, vecHit);
 							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, b_BonesBuffed[npc.index] ? BONES_BEEFY_BUILDINGDAMAGE_BUFFED : BONES_BEEFY_BUILDINGDAMAGE, DMG_CLUB, -1, _, vecHit);					
+								SDKHooks_TakeDamage(target, npc.index, npc.index, b_BonesBuffed[npc.index] ? BONES_BIG_BUILDINGDAMAGE_BUFFED : BONES_BIG_BUILDINGDAMAGE, DMG_CLUB, -1, _, vecHit);					
 							
 							// Hit sound
 							npc.PlayMeleeHitSound();
@@ -326,13 +326,13 @@ public void BeefyBones_ClotThink(int iNPC)
 						}
 					}
 					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BONES_BEEFY_ATTACKINTERVAL_BUFFED : BONES_BEEFY_ATTACKINTERVAL);
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BONES_BIG_ATTACKINTERVAL_BUFFED : BONES_BIG_ATTACKINTERVAL);
 					npc.m_flAttackHappenswillhappen = false;
 				}
 				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BONES_BEEFY_ATTACKINTERVAL_BUFFED : BONES_BEEFY_ATTACKINTERVAL);
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BONES_BIG_ATTACKINTERVAL_BUFFED : BONES_BIG_ATTACKINTERVAL);
 				}
 			}
 			
@@ -349,13 +349,13 @@ public void BeefyBones_ClotThink(int iNPC)
 }
 
 
-public Action BeefyBones_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action BigBones_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	BeefyBones npc = view_as<BeefyBones>(victim);
+	BigBones npc = view_as<BigBones>(victim);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -366,14 +366,14 @@ public Action BeefyBones_OnTakeDamage(int victim, int &attacker, int &inflictor,
 	return Plugin_Changed;
 }
 
-public void BeefyBones_NPCDeath(int entity)
+public void BigBones_NPCDeath(int entity)
 {
-	BeefyBones npc = view_as<BeefyBones>(entity);
+	BigBones npc = view_as<BigBones>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_Think, BeefyBones_ClotThink);
+	SDKUnhook(entity, SDKHook_Think, BigBones_ClotThink);
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
 
