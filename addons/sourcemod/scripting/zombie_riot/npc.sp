@@ -2217,7 +2217,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = BuffBones(client, vecPos, vecAng, ally);
 			
 		case BONEZONE_BRITTLEBONES:
-			entity = BrittlecBones(client, vecPos, vecAng, ally);
+			entity = BrittleBones(client, vecPos, vecAng, ally);
 		
 		case ITSTILIVES:
 			entity = Itstilives(client, vecPos, vecAng);
