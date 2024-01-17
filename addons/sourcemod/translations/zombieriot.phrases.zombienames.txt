@@ -886,6 +886,34 @@
 		"ru"		"Кости"
 		"nl"		"Basis Botten"
 	}
+	"Beefy Bones"
+	{
+		"en"		"Beefy Bones"
+	}
+	"Brittle Bones"
+	{
+		"en"		"Brittle Bones"
+	}
+	"Big Bones"
+	{
+		"en"		"Big Bones"
+	}
+	"Buffed Basic Bones"
+	{
+		"en"		"Buffed Basic Bones"
+	}
+	"Buffed Beefy Bones"
+	{
+		"en"		"Buffed Beefy Bones"
+	}
+	"Buffed Brittle Bones"
+	{
+		"en"		"Buffed Brittle Bones"
+	}
+	"Buffed Big Bones"
+	{
+		"en"		"Buffed Big Bones"
+	}
 	"Mecha Engineer"
 	{
 		"en"		"Mecha Engineer"
@@ -1849,5 +1877,12 @@
 	{
 		"en"	"Beheaded Kamikaze"
 	}
-	
+	"?????????????"
+	{
+		"en"	"?????????????"
+	}
+	"Bob the First"
+	{
+		"en"	"Bob the First"
+	}
 }

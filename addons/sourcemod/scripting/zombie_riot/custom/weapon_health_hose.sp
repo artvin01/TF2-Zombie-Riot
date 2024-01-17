@@ -630,7 +630,7 @@ public void TouchHealthKit(int entity, int other)
 		float maxhealth = 1.0;
 		float health = float(GetEntProp(other, Prop_Data, "m_iHealth"));
 		maxhealth = float(SDKCall_GetMaxHealth(other));
-		if(RoundToNearest(health) >= (RoundToNearest(maxhealth * 1.15)))
+		if(RoundToNearest(health) >= (RoundToNearest(maxhealth)))
 		{
 			return;
 		}	
@@ -641,7 +641,7 @@ public void TouchHealthKit(int entity, int other)
 		{
 			HealingAmount /= 2.0;
 		}
-		int healing_done = HealEntityGlobal(Owner, other, HealingAmount, 1.15, _, _);
+		int healing_done = HealEntityGlobal(Owner, other, HealingAmount, 1.0, _, _);
 		if(healing_done <= 0)
 		{
 			return;
