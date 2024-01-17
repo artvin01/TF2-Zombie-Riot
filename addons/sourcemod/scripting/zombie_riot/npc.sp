@@ -763,7 +763,10 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Magia Anchor",
 	"Storm Weaver",
 	"Storm Weaver",
-	"Beheaded Kamikaze"
+	"Beheaded Kamikaze",
+	
+	"Buff Bones",
+	"Brittle Bones"
 };
 
 // See items.sp for IDs to names
