@@ -2508,6 +2508,10 @@ void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int
 	if(!trueArmorOnly)
 	{
 		damage *= fl_Extra_Damage[attacker];
+		if(f_MultiDamageTaken[victim] != 1.0)
+		{
+			damage *= f_MultiDamageTaken[victim];
+		}
 	}
 }
 #if defined ZR

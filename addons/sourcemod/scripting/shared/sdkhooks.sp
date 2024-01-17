@@ -458,8 +458,76 @@ public void OnPostThink(int client)
 			static bool IsReady;
 			IsReady = false;
 
+			float percentage = 100.0;
+			float percentage_Global = 1.0;
+			float value = 1.0;
+			percentage_Global *= ArmorPlayerReduction(client);
+			value = Attributes_FindOnPlayerZR(client, 412, true);	// Overall damage resistance
+			if(value)
+				percentage_Global *= value;
+
+			if(TF2_IsPlayerInCondition(client, TFCond_MarkedForDeathSilent))
+			{
+				percentage_Global *= 1.35;
+			}
+			if(TF2_IsPlayerInCondition(client, TFCond_DefenseBuffed))
+			{
+				percentage_Global *= 0.65;
+			}
+			if(f_MultiDamageTaken[client] != 1.0)
+			{
+				percentage_Global *= f_MultiDamageTaken[client];
+			}
+			if(f_BattilonsNpcBuff[client] > GameTime)
+			{
+				percentage_Global *= 0.75;
+			}	
+			if(f_HussarBuff[client] > GameTime)
+			{
+				percentage_Global *= 0.90;
+			}	
+			if(f_EmpowerStateOther[client] > GameTime) //Allow stacking.
+			{
+				percentage_Global *= 0.93;
+			}
+			if(f_EmpowerStateSelf[client] > GameTime) //Allow stacking.
+			{
+				percentage_Global *= 0.9;
+			}
+			if(i_CurrentEquippedPerk[client] == 2)
+			{
+				percentage_Global *= 0.85;
+			}
+			if(Resistance_Overall_Low[client] > GameTime)
+			{
+				percentage_Global *= 0.9;
+			}
+			value = Attributes_FindOnPlayerZR(client, 206, true, 0.0, true, true);	// MELEE damage resistance
+			if(value)
+				percentage *= value;
+			//melee res
+			percentage *= percentage_Global;
+			if(percentage != 100.0)
+			{
+				FormatEx(buffer, sizeof(buffer), "%s [♈ %.0f%%]", buffer, percentage);
+				had_An_ability = true;
+			}
+			
+			percentage = 100.0;
+			percentage *= percentage_Global;
+			value = Attributes_FindOnPlayerZR(client, 205, true, 0.0, true, true);	// MELEE damage resistance
+			if(value)
+				percentage *= value;
+
+			if(percentage != 100.0)
+			{
+				FormatEx(buffer, sizeof(buffer), "%s [♐ %.0f%%]", buffer, percentage);
+				had_An_ability = true;
+			}
+
 			if(had_An_ability) //There was a debuff or buff create new inline.
 			{
+				HudY -= 0.035;
 				Format(buffer, sizeof(buffer), "\n%s", buffer);
 			}
 
@@ -1542,6 +1610,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		damage *= difficulty_math + 1.0; //More damage !! only upto double.
 		Replicated_Damage *= difficulty_math + 1.0;
 	}
+	if(f_MultiDamageTaken[victim] != 1.0)
+	{
+		damage *= f_MultiDamageTaken[victim];
+	}
 	//freeplay causes more damage taken.
 	if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
 	{
@@ -1766,34 +1838,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 
 			if(armorEnt == victim)
 			{
-				switch(Armour_Level_Current[victim])
-				{
-					case 1:
-					{
-						damage *= 0.9;
-						Replicated_Damage *= 0.9;
-					}
-					case 2:
-					{
-						damage *= 0.85;
-						Replicated_Damage *= 0.85;
-					}
-					case 3:
-					{
-						damage *= 0.8;
-						Replicated_Damage *= 0.80;
-					}
-					case 4:
-					{
-						damage *= 0.75;
-						Replicated_Damage *= 0.75;
-					}
-					default:
-					{
-						damage *= 1.0;
-						Replicated_Damage *= 1.0;
-					}
-				}
+				float percentage = ArmorPlayerReduction(victim);
+				damage *= percentage;
+				Replicated_Damage *= percentage;
 			}
 			else
 			{
@@ -2339,3 +2386,51 @@ public Action Timer_CauseFadeInAndFadeDelete(Handle timer)
 }
 #endif	// ZR
 
+void IncreaceEntityDamageTakenBy(int entity, float amount, float duration)
+{
+	f_MultiDamageTaken[entity] *= amount;
+	Handle pack;
+	CreateDataTimer(duration, RevertDamageTakenAgain, pack, TIMER_FLAG_NO_MAPCHANGE);
+	WritePackCell(pack, EntIndexToEntRef(entity));
+	WritePackFloat(pack, amount);
+}
+
+public Action RevertDamageTakenAgain(Handle final, any pack)
+{
+	ResetPack(pack);
+	int entity = EntRefToEntIndex(ReadPackCell(pack));
+	float damagemulti = ReadPackFloat(pack);
+	
+	if (IsValidEntity(entity))
+	{
+		f_MultiDamageTaken[entity] /= damagemulti;
+	}
+	return Plugin_Continue;
+}
+
+float ArmorPlayerReduction(int victim)
+{
+	switch(Armor_Level[victim])
+	{
+		case 50:
+		{
+			return 0.9;
+		}
+		case 100:
+		{
+			return 0.85;
+		}
+		case 150:
+		{
+			return 0.8;
+		}
+		case 200:
+		{
+			return 0.75;
+		}
+		default:
+		{
+			return 1.0;
+		}
+	}
+}
