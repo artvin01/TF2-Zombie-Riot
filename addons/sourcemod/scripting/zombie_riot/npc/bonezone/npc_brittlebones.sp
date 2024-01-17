@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float BONES_BRITTLE_SPEED = 400.0;
-static float BONES_BRITTLE_SPEED_BUFFED = 500.0;
+static float BONES_BRITTLE_SPEED = 520.0;
+static float BONES_BRITTLE_SPEED_BUFFED = 750.0;
 
 #define BONES_BRITTLE_HP			"150"
 #define BONES_BRITTLE_HP_BUFFED		"300"
