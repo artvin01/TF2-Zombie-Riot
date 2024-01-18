@@ -914,6 +914,14 @@
 	{
 		"en"		"Buffed Big Bones"
 	}
+	"Skeletal Mage"
+	{
+		"en"		"Skeletal Mage"
+	}
+	"Skeletal Archmage"
+	{
+		"en"		"Skeletal Archmage"
+	}
 	"Mecha Engineer"
 	{
 		"en"		"Mecha Engineer"

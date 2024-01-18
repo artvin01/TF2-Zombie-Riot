@@ -231,7 +231,7 @@ static void SendNextFile(int client)
 		static char filecheck[PLATFORM_MAX_PATH];
 		FormatFileCheck(download, client, filecheck, sizeof(filecheck));
 #if !defined UseDownloadTable
-		FileNet_RequestFile(client, filecheck, FileNetwork_RequestResults, pack);
+		//FileNet_RequestFile(client, filecheck, FileNetwork_RequestResults, pack);
 #endif
 		if(!DeleteFile(filecheck, true))	// There has been some cases where we still have a file (Eg. plugin unload)
 		{
