@@ -4,7 +4,9 @@
 /*
 	Schwert Abilities:
 
-	Wave 15: Teleport strike. Basic teleport
+	Slow melee, when melee swing is on cooldown, retreat.
+
+	Wave 15: Teleport strike, gives 5 sec sword battery. Basic teleport
 
 	Wave 30: Spiral Swords. Advanced Teleport. Group Tele.
 
@@ -13,9 +15,12 @@
 
 	Notes: 
 
-	Need to add downtime when sprial swords are active so melee's can actually attack schwert.
+	
 
 	Give schwert a speed penalty when retreating.
+
+	Swords:
+
 
 	Lifeloss:
 		Add a golden orb of types above schwert when doing the animation.
@@ -94,6 +99,9 @@ static bool b_angered_twice[MAXENTITIES];
 static float fl_retreat_timer[MAXENTITIES];
 static bool Schwertkrieg_BEAM_HitDetected[MAXENTITIES];
 static float fl_spinning_angle[MAXENTITIES];
+static float fl_boomerang_angle[MAXENTITIES];
+static float fl_schwert_armour[MAXENTITIES][2];
+static float fl_schwert_sword_battery[MAXENTITIES];
 
 
 #define SCHWERKRIEG_SWORDS_AMT 7	
@@ -142,6 +150,9 @@ void Raidboss_Schwertkrieg_OnMapStart_NPC()
 	Zero2(fl_dance_of_light_sword_throttle);
 	Zero(Schwertkrieg_BEAM_HitDetected);
 	Zero(fl_spinning_angle);
+	Zero(fl_boomerang_angle);
+	Zero2(fl_schwert_armour);
+	Zero(fl_schwert_sword_battery);
 
 }
 
@@ -277,6 +288,8 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		npc.m_flNextChargeSpecialAttack = 0.0;	//used for transformation Logic
 		b_swords_created[npc.index]=false;
 		b_thisNpcIsARaid[npc.index] = true;
+
+		fl_schwert_sword_battery[npc.index]=0.0;
 			
 		
 		//IDLE
@@ -344,8 +357,8 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		i_schwert_hand_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyeglow_L", {0.0,0.0,0.0}));
 		npc.GetAttachment("root", flPos, flAng);
 
-		
-		npc.m_flMeleeArmor = 1.5;
+		fl_schwert_armour[npc.index][0] = 1.0;	//ranged
+		fl_schwert_armour[npc.index][1] = 1.5;	//melee
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 
@@ -516,7 +529,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_flSpeed=330.0;
-		//WARP
+		
 
 		if(IsValidEntity(npc.m_iWearable7))
 			RemoveEntity(npc.m_iWearable7);
@@ -557,10 +570,41 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 
 	int Blade_Behavior=-1;
 
+	float Sword_Boomerang_Duration = 3.0;
 	if(b_swords_created[npc.index])
 	{
-		float Loc[3]; Loc = GetAbsOrigin(npc.index); Loc[2]+=50.0;
-		Schwert_Manipulate_Sword_Location(npc, Loc, GameTime, 15.0);
+		if(fl_schwert_sword_battery[npc.index] < GameTime-60.0)
+		{
+			fl_schwert_sword_battery[npc.index] = GameTime + 15.0;
+		}
+		Blade_Behavior=2;
+
+		if(schwert_retreat)	//he can only ever use the blades defensively when helping donner
+		{
+			Blade_Behavior=1;
+		}
+
+		if(npc.m_flNextRangedBarrage_Spam < GameTime && flDistanceToTarget < (900.0*900.0))
+		{
+			npc.m_flNextRangedBarrage_Spam = GameTime + Sword_Boomerang_Duration+35.0;
+
+			npc.m_flNextRangedBarrage_Singular = GameTime + Sword_Boomerang_Duration;
+
+			float Ang[3];
+			MakeVectorFromPoints(vecTarget, npc_Vec, Ang);
+			GetVectorAngles(Ang, Ang);
+			fl_boomerang_angle[npc.index]=Ang[1];
+		}
+
+		if(npc.m_flNextRangedBarrage_Singular > GameTime)
+		{
+			Blade_Behavior=3;
+		}
+
+		if(fl_schwert_sword_battery[npc.index]<GameTime && !schwert_retreat)
+		{
+			Blade_Behavior=4;
+		}
 	}
 
 	if(schwert_retreat)
@@ -589,13 +633,33 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 	{
 		switch(Blade_Behavior)
 		{
-			case 1:	//Defenisve.
+			case 1:	//Defenisve. spin around while retracted
 			{
-
+				float Loc2[3]; Loc2 = npc_Vec; Loc2[2]+=175.0;
+				npc_Vec[2]+=50.0;
+				Schwert_Manipulate_Sword_Location(npc, npc_Vec, Loc2, GameTime, 10.0, false, 10.0*RaidModeScaling);
+				if(Schwert_Status(npc, GameTime)!=1)
+				{
+					npc.m_flMeleeArmor = fl_schwert_armour[npc.index][1] - 0.25;
+					npc.m_flRangedArmor = fl_schwert_armour[npc.index][0] - 0.25;
+				}
+				Ally = EntRefToEntIndex(i_ally_index);
+				if(IsValidAlly(npc.index, Ally))
+				{
+					float vecAlly[3];
+					vecAlly = WorldSpaceCenter(Ally);
+					if(GetVectorDistance(vecAlly, npc_Vec, true) < (250.0*250.0) && Can_I_See_Enemy_Only(npc.index, Ally))
+					{
+						NPCStats_RemoveAllDebuffs(Ally);
+						f_NpcImmuneToBleed[Ally] = GetGameTime(Ally) + 1.0;
+						f_BattilonsNpcBuff[Ally] = GetGameTime(Ally) + 2.5;
+					}
+				}
 			}
-			case 2:	//Aggresive - stay near schwert
+			case 2:	//Aggresive - spin around him while extended
 			{
-
+				//npc_Vec[2]+=0.0;
+				Schwert_Manipulate_Sword_Location(npc, npc_Vec, npc_Vec, GameTime, 10.0, true, 10.0*RaidModeScaling);
 			}
 			case 3: //Aggresive - bommerange.
 			{
@@ -604,6 +668,11 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 
 					Create a fake circle, then make the sword sprial go around that fake circle, once reaching 75% completion of circle, switches back to default spinning.
 				*/
+				Schwert_Boomerang_Logic(npc,npc_Vec, vecTarget, GameTime, Sword_Boomerang_Duration);
+			}
+			case 4:	//becomes pseudo wings. neutral state for when the things are "recharging"
+			{
+				Schwert_SwordWings_Logic(npc, npc_Vec);
 			}
 		}
 	}
@@ -652,10 +721,6 @@ static void Schwert_Aggresive_Behavior(Raidboss_Schwertkrieg npc, int PrimaryThr
 	{
 		if(Schwert_Status(npc, GameTime)==1)
 			return;
-		//Look at target so we hit.
-	//	npc.FaceTowards(vecTarget, 1000.0);
-		
-		//Can we attack right now?
 
 		float Swing_Speed = 2.0;
 		float Swing_Delay = 0.2;
@@ -687,6 +752,9 @@ static void Schwert_Aggresive_Behavior(Raidboss_Schwertkrieg npc, int PrimaryThr
 					if(target > 0) 
 					{
 						float meleedmg= 30.0*RaidModeScaling;	//schwert hurts like a fucking truck
+
+						if(fl_schwert_sword_battery[npc.index]> GameTime)
+							fl_schwert_sword_battery[npc.index] +=1.0;
 						
 						if(target <= MaxClients)
 						{
@@ -769,7 +837,7 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 			b_teleport_strike_active[npc.index]=true;
 
 			npc.SetPlaybackRate(0.75);	
-			npc.SetCycle(0.0);
+			npc.SetCycle(0.1);
 
 			npc.AddActivityViaSequence("taunt_neck_snap_medic");
 
@@ -780,8 +848,8 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 			EmitSoundToAll(SCHWERT_TELEPORT_STRIKE_INTIALIZE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
 			EmitSoundToAll(SCHWERT_TELEPORT_STRIKE_INTIALIZE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
 
-			npc.m_flMeleeArmor = 0.5;
-			npc.m_flRangedArmor = 0.5;
+			npc.m_flMeleeArmor = fl_schwert_armour[npc.index][1]-1.0;
+			npc.m_flRangedArmor = fl_schwert_armour[npc.index][0]-0.5;
 
 			npc_Loc[2]+=10.0;
 			int r, g, b, a;
@@ -795,8 +863,8 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 	}
 	if(b_teleport_strike_active[npc.index] && npc.m_flDoingAnimation < GameTime)
 	{
-		npc.m_flMeleeArmor = 1.5;
-		npc.m_flRangedArmor = 1.0;
+		npc.m_flMeleeArmor = fl_schwert_armour[npc.index][1];
+		npc.m_flRangedArmor = fl_schwert_armour[npc.index][0];
 		npc.m_flSpeed =330.0;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -1019,6 +1087,13 @@ static Action Schwert_Boom(Handle Smite_Logic, DataPack pack)
 	EmitAmbientSound(SCHWERT_TELEPORT_STRIKE_EXPLOSION, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));
 	EmitAmbientSound(SCHWERT_TELEPORT_STRIKE_EXPLOSION, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));
 
+	float GameTime = GetGameTime(npc.index);
+	
+	if(fl_schwert_sword_battery[npc.index]< GameTime)
+		fl_schwert_sword_battery[npc.index] = GameTime+5.0;
+	else
+		fl_schwert_sword_battery[npc.index] += 5.0;
+
 	spawnLoc[2]+=10.0;
 
 	TE_SetupBeamRingPoint(spawnLoc, 1.0, radius*2.0, LaserIndex, LaserIndex, 0, 1, 1.0, 15.0, 1.0, color, 1, 0);
@@ -1116,6 +1191,7 @@ static void Schwert_Movement_Ally_Movement(Raidboss_Schwertkrieg npc, float flDi
 			float flDistanceToTarget = GetVectorDistance(Ally_Vec, Vec_Target, true);
 			if(flDistanceToTarget < (500.0*500.0))	//they are to close to my beloved, *Kill them*
 			{
+				flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(npc.index), Vec_Target, true);
 				Schwert_Movement(npc, flDistanceToTarget, target_new);
 				Schwert_Aggresive_Behavior(npc, target_new, GameTime, flDistanceToTarget, Vec_Target);
 			}
@@ -1153,7 +1229,7 @@ public Action Raidboss_Schwertkrieg_OnTakeDamage(int victim, int &attacker, int 
 
 		npc.AddActivityViaSequence("taunt_the_fist_bump");
 		npc.SetPlaybackRate(0.2);	
-		npc.SetCycle(0.0);
+		npc.SetCycle(0.01);
 
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		npc.PlayAngerSound();
@@ -1188,6 +1264,8 @@ static void Schwert_Lifeloss_Logic(Raidboss_Schwertkrieg npc)
 		b_swords_created[npc.index]=true;
 		CPrintToChatAll("Swords created.");
 
+		fl_schwert_sword_battery[npc.index] = GetGameTime() + 30.0;
+
 		float Loc[3];
 		Loc = GetAbsOrigin(npc.index);
 
@@ -1206,11 +1284,111 @@ static void Schwert_Lifeloss_Logic(Raidboss_Schwertkrieg npc)
 		float Ratio = (Duration/8.0);
 		float Loc[3]; Loc = GetAbsOrigin(npc.index); Loc[2]+=50.0;
 		Loc[2] += 150.0*Ratio;
+		float Loc2[3]; Loc2 = GetAbsOrigin(npc.index); Loc2[2]+=25.0;
 		float speed = 30.0 - 25.0*Ratio;
-		Schwert_Manipulate_Sword_Location(npc, Loc, GetGameTime(), speed);
+		Schwert_Manipulate_Sword_Location(npc, Loc, Loc2, GetGameTime(), speed, true, 15.0*RaidModeScaling);
 	}
 }
-static void Schwert_Manipulate_Sword_Location(Raidboss_Schwertkrieg npc, float Loc[3], float GameTime, float spin_speed)
+static void Schwert_SwordWings_Logic(Raidboss_Schwertkrieg npc, float npc_Vec[3])	//warp
+{
+	float angles[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
+	angles[0]=0.0;
+	angles[2]=0.0;
+	float back_vec[3];
+
+	npc_Vec[2]+=15.0;
+
+	Get_Fake_Forward_Vec(-25.0, angles, back_vec, npc_Vec);
+/*
+	float diameter = 10.0;
+									
+	int color[4];
+	color[0]=255;
+	color[1]=255;
+	color[2]=255;
+	color[3]=255;
+	TE_SetupBeamPoints(npc_Vec, back_vec, BeamLaser, 0, 0, 0, DONNERKRIEG_TE_DURATION, diameter, diameter, 0, 0.1, color, 3);
+	TE_SendToAll();*/
+
+	fl_spinning_angle[npc.index] +=15.0;
+
+	if(fl_spinning_angle[npc.index]>=360.0)
+		fl_spinning_angle[npc.index]=0.0;
+
+	float Range = 15.0;
+
+	for(int i=0 ; i < SCHWERKRIEG_SWORDS_AMT ; i++)
+	{
+		float tempAngles[3], Direction[3], EndLoc[3];
+		tempAngles[0] = 0.0;
+		tempAngles[1] = angles[1];
+		tempAngles[2] = fl_spinning_angle[npc.index] + (float(i) * (360.0/SCHWERKRIEG_SWORDS_AMT));
+			
+		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, Direction);
+		ScaleVector(Direction, Range);
+		AddVectors(back_vec, Direction, EndLoc);
+
+		int sword = EntRefToEntIndex(i_dance_of_light_sword_id[npc.index][i]);
+
+		float Ang[3];
+
+		EndLoc[2]+=10.0;
+
+		MakeVectorFromPoints(EndLoc, npc_Vec, Ang);
+		GetVectorAngles(Ang, Ang);	
+
+		if(IsValidEntity(sword))
+		{
+			Schwertkrieg_Move_Entity(sword, EndLoc, Ang);
+		}
+	}
+}
+
+static void Schwert_Boomerang_Logic(Raidboss_Schwertkrieg npc, float npc_Vec[3], float vecTarget[3], float GameTime, float ability_time)
+{
+	float dist = GetVectorDistance(npc_Vec, vecTarget);
+
+	float Ang[3], middle_vec[3];
+	MakeVectorFromPoints(npc_Vec, vecTarget, Ang);
+	GetVectorAngles(Ang, Ang);
+	Get_Fake_Forward_Vec(dist*0.5, Ang, middle_vec, npc_Vec);	
+
+	float tempAngles[3], Direction[3], EndLoc[3];
+	tempAngles[0] = 0.0;
+	tempAngles[1] = fl_boomerang_angle[npc.index];
+	tempAngles[2] = 0.0;
+
+	fl_boomerang_angle[npc.index] += 360.0/ability_time/10.0;
+
+	if(tempAngles[1]>360.0)
+		tempAngles[1]-=360.0;
+		
+	GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(Direction, dist);
+	AddVectors(middle_vec, Direction, EndLoc);
+
+	/*
+	float diameter = 10.0;
+									
+	int color[4];
+	color[0]=255;
+	color[1]=255;
+	color[2]=255;
+	color[3]=255;
+	TE_SetupBeamPoints(middle_vec, EndLoc, BeamLaser, 0, 0, 0, DONNERKRIEG_TE_DURATION, diameter, diameter, 0, 0.1, color, 3);
+	TE_SendToAll();
+
+	TE_SetupBeamPoints(middle_vec, npc_Vec, BeamLaser, 0, 0, 0, DONNERKRIEG_TE_DURATION, diameter, diameter, 0, 0.1, color, 3);
+	TE_SendToAll();
+
+	TE_SetupBeamPoints(middle_vec, vecTarget, BeamLaser, 0, 0, 0, DONNERKRIEG_TE_DURATION, diameter, diameter, 0, 0.1, color, 3);
+	TE_SendToAll();
+	*/
+
+	Schwert_Manipulate_Sword_Location(npc, EndLoc, EndLoc, GameTime, 25.0, true, 20.0*RaidModeScaling);
+}
+static void Schwert_Manipulate_Sword_Location(Raidboss_Schwertkrieg npc, float Loc[3], float Look_Vec[3], float GameTime, float spin_speed, bool damage=true, float dmg)
 {
 	fl_spinning_angle[npc.index] +=spin_speed;
 
@@ -1236,7 +1414,7 @@ static void Schwert_Manipulate_Sword_Location(Raidboss_Schwertkrieg npc, float L
 
 		float Ang[3];
 
-		MakeVectorFromPoints(EndLoc, Player_Pos, Ang);
+		MakeVectorFromPoints(EndLoc, Look_Vec, Ang);
 		GetVectorAngles(Ang, Ang);
 
 		if(IsValidEntity(sword))
@@ -1245,10 +1423,10 @@ static void Schwert_Manipulate_Sword_Location(Raidboss_Schwertkrieg npc, float L
 
 			Schwertkrieg_Move_Entity(sword, EndLoc, Ang);
 			
-			float diameter = 10.0;
+			/*float diameter = 10.0;
 									
 			int color[4];
-			/*color[0]=255;
+			color[0]=255;
 			color[1]=255;
 			color[2]=255;
 			color[3]=255;
@@ -1260,18 +1438,18 @@ static void Schwert_Manipulate_Sword_Location(Raidboss_Schwertkrieg npc, float L
 
 			float Distance = 100.0;
 
-			MakeVectorFromPoints(Player_Pos, EndLoc, Ang);
+			MakeVectorFromPoints(Look_Vec, EndLoc, Ang);
 			GetVectorAngles(Ang, Ang);
 			Get_Fake_Forward_Vec(Distance, Ang, Loc2, Sword_Loc);
 
-
-			if(fl_dance_of_light_sword_throttle[npc.index][i] < GameTime)
+			if(fl_dance_of_light_sword_throttle[npc.index][i] < GameTime && damage)
 			{
 				fl_dance_of_light_sword_throttle[npc.index][i] = GameTime+0.1;
-				Schwertkrieg_Laser_Trace(npc, Sword_Loc, Loc2, 10.0, 5.0 * RaidModeScaling);
+				Schwertkrieg_Laser_Trace(npc, Sword_Loc, Loc2, 10.0, dmg);
 			}
 
 			/*
+			
 			color[0]=75;
 			color[1]=9;
 			color[2]=145;
