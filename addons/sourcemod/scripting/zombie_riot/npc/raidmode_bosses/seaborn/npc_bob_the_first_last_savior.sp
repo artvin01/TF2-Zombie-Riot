@@ -1,59 +1,104 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static char g_IntroStartSounds[][] =
+#define BOB_FIRST_LIGHTNING_RANGE 100.0
+
+#define BOB_CHARGE_TIME 1.5
+#define BOB_CHARGE_SPAN 0.5
+
+static const char g_IntroStartSounds[][] =
 {
 	"npc/combine_soldier/vo/overwatchtargetcontained.wav",
 	"npc/combine_soldier/vo/overwatchtarget1sterilized.wav"
 };
 
-static char g_IntroEndSounds[][] =
+static const char g_IntroEndSounds[][] =
 {
 	"npc/combine_soldier/vo/overwatchreportspossiblehostiles.wav"
 };
 
-static char g_MeleeHitSounds[][] =
+static const char g_SummonSounds[][] =
+{
+	"npc/combine_soldier/vo/overwatchrequestreinforcement.wav"
+};
+
+static const char g_SkyShieldSounds[][] =
+{
+	"npc/combine_soldier/vo/overwatchrequestskyshield.wav"
+};
+
+static const char g_SpeedUpSounds[][] =
+{
+	"npc/combine_soldier/vo/ovewatchorders3ccstimboost.wav"
+};
+
+static const char g_SummonDiedSounds[][] =
+{
+	"npc/combine_soldier/vo/overwatchteamisdown.wav"
+};
+
+static const char PullRandomEnemyAttack[][] =
+{
+	"weapons/physcannon/energy_sing_explosion2.wav"
+};
+
+static const char g_MeleeHitSounds[][] =
 {
 	"weapons/cbar_hitbod1.wav",
 	"weapons/cbar_hitbod2.wav",
 	"weapons/cbar_hitbod3.wav"
 };
 
-static char g_MeleeAttackSounds[][] =
+static const char g_MeleeAttackSounds[][] =
 {
 	"weapons/machete_swing.wav"
 };
 
-static char g_RangedAttackSounds[][] =
+static const char g_RangedAttackSounds[][] =
 {
-	"weapons/bow_shoot.wav"
+	"weapons/physcannon/physcannon_claws_close.wav"
 };
 
-static char g_RangedSpecialAttackSounds[][] =
+static const char g_RangedSpecialAttackSounds[][] =
 {
 	"mvm/sentrybuster/mvm_sentrybuster_spin.wav"
 };
 
-static char g_BoomSounds[][] =
+static const char g_BoomSounds[][] =
 {
 	"mvm/mvm_tank_explode.wav"
 };
 
-static char g_BuffSounds[][] =
+static const char g_BuffSounds[][] =
 {
 	"player/invuln_off_vaccinator.wav"
 };
+
+static const char g_FireRocketHoming[][] =
+{
+	"weapons/cow_mangler_explosion_charge_04.wav",
+	"weapons/cow_mangler_explosion_charge_05.wav",
+	"weapons/cow_mangler_explosion_charge_06.wav",
+};
+
+static int BobHitDetected[MAXENTITIES];
 
 void RaidbossBobTheFirst_OnMapStart()
 {
 	PrecacheSoundArray(g_IntroStartSounds);
 	PrecacheSoundArray(g_IntroEndSounds);
+	PrecacheSoundArray(g_SummonSounds);
+	PrecacheSoundArray(g_SkyShieldSounds);
+	PrecacheSoundArray(g_SpeedUpSounds);
+	PrecacheSoundArray(g_SummonDiedSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheSoundArray(g_RangedSpecialAttackSounds);
 	PrecacheSoundArray(g_BoomSounds);
 	PrecacheSoundArray(g_BuffSounds);
+	PrecacheSoundArray(PullRandomEnemyAttack);
+	PrecacheSoundArray(g_FireRocketHoming);
 	
 	PrecacheSoundCustom("#zombiesurvival/bob_raid/bob.mp3");
 }
@@ -67,6 +112,22 @@ methodmap RaidbossBobTheFirst < CClotBody
 	public void PlayIntroEndSound()
 	{
 		EmitSoundToAll(g_IntroStartSounds[GetRandomInt(0, sizeof(g_IntroStartSounds) - 1)]);
+	}
+	public void PlaySummonSound()
+	{
+		EmitSoundToAll(g_SummonSounds[GetRandomInt(0, sizeof(g_SummonSounds) - 1)]);
+	}
+	public void PlaySkyShieldSound()
+	{
+		EmitSoundToAll(g_SkyShieldSounds[GetRandomInt(0, sizeof(g_SkyShieldSounds) - 1)]);
+	}
+	public void PlaySpeedUpSound()
+	{
+		EmitSoundToAll(g_SpeedUpSounds[GetRandomInt(0, sizeof(g_SpeedUpSounds) - 1)]);
+	}
+	public void PlaySummonDeadSound()
+	{
+		EmitSoundToAll(g_SummonDiedSounds[GetRandomInt(0, sizeof(g_SummonDiedSounds) - 1)]);
 	}
 	public void PlayMeleeSound()
 	{
@@ -92,11 +153,23 @@ methodmap RaidbossBobTheFirst < CClotBody
 	{
 		EmitSoundToAll(g_BuffSounds[GetRandomInt(0, sizeof(g_BuffSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-
+	public void PlayRandomEnemyPullSound()
+	{
+		EmitSoundToAll(PullRandomEnemyAttack[GetRandomInt(0, sizeof(PullRandomEnemyAttack) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayRocketHoming()
+	{
+		EmitSoundToAll(g_FireRocketHoming[GetRandomInt(0, sizeof(g_FireRocketHoming) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
 	property int m_iAttackType
 	{
 		public get()		{	return this.m_iOverlordComboAttack;	}
 		public set(int value) 	{	this.m_iOverlordComboAttack = value;	}
+	}
+	property int m_iPullCount
+	{
+		public get()		{	return this.m_iMedkitAnnoyance;	}
+		public set(int value) 	{	this.m_iMedkitAnnoyance = value;	}
 	}
 	property bool m_bSecondPhase
 	{
@@ -128,7 +201,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		npc.SetActivity("ACT_MUDROCK_RAGE");
-		npc.m_flNextDelayTime = GetGameTime(npc.index) + 10.0;
+	//	npc.m_flNextDelayTime = GetGameTime(npc.index) + 10.0;
 		b_NpcIsInvulnerable[npc.index] = true;
 
 		npc.PlayIntroStartSound();
@@ -173,10 +246,16 @@ methodmap RaidbossBobTheFirst < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
+		npc.m_iPullCount = 0;
 		
 		strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), "??????????????????????????????????");
 		Music_SetRaidMusic("#zombiesurvival/bob_raid/bob.mp3", 697, true, 1.99);
 		npc.StopPathing();
+
+		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_stunbaton.mdl");
+		SetVariantString("1.15");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable1, "Disable");
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
@@ -403,7 +482,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 		if(enemies > 3.0)
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * (enemies + 3.0) / 485.0));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * (enemies + 1.0) / 485.0));
 			return;
 		}
 
@@ -413,6 +492,8 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		npc.m_flRangedArmor = 0.9;
 		npc.m_flMeleeArmor = 1.125;
 
+		npc.PlaySummonDeadSound();
+		
 		npc.Anger = false;
 		npc.m_bSecondPhase = true;
 		c_NpcCustomNameOverride[npc.index][0] = 0;
@@ -474,20 +555,21 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		}
 		else if(healthPoints < 9)
 		{
+			AcceptEntityInput(npc.m_iWearable1, "Disable");
+			
 			GiveOneRevive();
 			RaidModeTime += 260.0;
 
 			npc.Anger = true;
 			npc.SetActivity("ACT_IDLE_ZOMBIE");
 			strcopy(c_NpcCustomNameOverride[npc.index], sizeof(c_NpcCustomNameOverride[]), "??? the First");
+
+			npc.PlaySummonSound();
 			
 			SetupMidWave();
 			return;
 		}
 	}
-
-	if(healthPoints > 2)
-		npc.m_flSpeed = healthPoints < 13 ? 330.0 : 290.0;
 
 	if(npc.m_iTarget > 0 && healthPoints < 20)
 	{
@@ -496,60 +578,44 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 		switch(npc.m_iAttackType)
 		{
-			case 1:	// COMBO1 - Frame 22
-			{
-				if(RowAttack(npc, vecMe, 650.0, 200.0, true))
-				{
-					npc.m_iAttackType = 2;
-					npc.m_flAttackHappens = gameTime + 1.333;
-				}
-			}
 			case 2:	// COMBO1 - Frame 54
 			{
-				if(RowAttack(npc, vecMe, 2350.0, 0.0, false))
+				if(npc.m_flAttackHappens < gameTime)
 				{
+					BobInitiatePunch(npc.index, vecTarget, vecMe, 1.333);
+					
 					npc.m_iAttackType = 0;
-					npc.m_flAttackHappens = gameTime + 1.0;
-				}
-			}
-			case 3:	// COMBO2 - Frame 12
-			{
-				if(RowAttack(npc, vecMe, 325.0, 0.0, false))
-				{
-					npc.m_iAttackType = 4;
-					npc.m_flAttackHappens = gameTime + 0.833;
+					npc.m_flAttackHappens = gameTime + 2.333;
 				}
 			}
 			case 4:	// COMBO2 - Frame 32
 			{
-				if(RowAttack(npc, vecMe, 350.0, 200.0, true))
+				if(npc.m_flAttackHappens < gameTime)
 				{
+					BobInitiatePunch(npc.index, vecTarget, vecMe, 0.833);
+					
 					npc.m_iAttackType = 5;
 					npc.m_flAttackHappens = gameTime + 0.833;
 				}
 			}
 			case 5:	// COMBO2 - Frame 52
 			{
-				if(RowAttack(npc, vecMe, 325.0, 200.0, false))
+				if(npc.m_flAttackHappens < gameTime)
 				{
+					BobInitiatePunch(npc.index, vecTarget, vecMe, 0.833);
+					
 					npc.m_iAttackType = 6;
-					npc.m_flAttackHappens = gameTime + 0.875;
+					npc.m_flAttackHappens = gameTime + 0.833;
 				}
 			}
 			case 6:	// COMBO2 - Frame 73
 			{
-				if(RowAttack(npc, vecMe, 2000.0, 0.0, true))
+				if(npc.m_flAttackHappens < gameTime)
 				{
+					BobInitiatePunch(npc.index, vecTarget, vecMe, 0.875);
+					
 					npc.m_iAttackType = 0;
-					npc.m_flAttackHappens = gameTime + 0.208;
-				}
-			}
-			case 7:	// COMBO3 - Frame 51
-			{
-				if(RowAttack(npc, vecMe, 3000.0, 300.0, true))
-				{
-					npc.m_iAttackType = 0;
-					npc.m_flAttackHappens = gameTime + 1.125;
+					npc.m_flAttackHappens = gameTime + 1.083;
 				}
 			}
 			case 8:	// DEPLOY_MANHACK - Frame 32
@@ -559,8 +625,10 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					npc.m_iAttackType = 0;
 					npc.m_flAttackHappens = gameTime + 0.333;
 
-					int projectile = npc.FireRocket(vecTarget, 3000.0, 200.0, "models/effects/combineball.mdl", 1.0, _, 60.0);
-					
+					int projectile = npc.FireParticleRocket(vecTarget, 3000.0, 200.0, 150.0, "unusual_robot_time_warp", true, 60.0);
+					npc.DispatchParticleEffect(npc.index, "rd_robot_explosion_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+						
+					npc.PlayRocketHoming();
 					float ang_Look[3];
 					GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
 					Initiate_HomingProjectile(projectile,
@@ -589,14 +657,14 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					Handle swingTrace;
 					npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 					delete swingTrace;
-					//bool PlaySound = false;
+					bool PlaySound = false;
 					for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 					{
 						if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
 						{
 							if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
 							{
-								//PlaySound = true;
+								PlaySound = true;
 								int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 								float vecHit[3];
 								vecHit = WorldSpaceCenter(target);
@@ -626,6 +694,9 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							}
 						} 
 					}
+
+					if(PlaySound)
+						npc.PlayMeleeSound();
 
 					KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 				}
@@ -711,40 +782,146 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 				npc.FaceTowards(vecTarget, 2500.0);
 			}
+			case 13, 14:
+			{
+				npc.StopPathing();
+				//npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+				
+				if(npc.m_flAttackHappens < gameTime)
+				{
+					if(npc.m_iAttackType == 13)
+					{
+						npc.m_iAttackType = 14;
+						npc.m_iState = -1;	// Replay the animation regardless
+						npc.SetActivity("ACT_PUSH_PLAYER");
+						npc.SetPlaybackRate(2.0);
+						npc.m_flAttackHappens = gameTime + 0.2;
+					}
+					else
+					{
+						static bool ClientTargeted[MAXENTITIES];
+						static int TotalEnemeisInSight;
+
+
+						//initiate only once per ability
+						UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+						if(npc.m_iPullCount == 0)
+						{
+							Zero(ClientTargeted);
+							TotalEnemeisInSight = 0;
+							int enemy_2[MAXENTITIES];
+							GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false);
+							for(int i; i < sizeof(enemy_2); i++)
+							{
+								if(enemy_2[i])
+								{
+									TotalEnemeisInSight++;
+								}
+							}
+							TotalEnemeisInSight /= 2;
+							if(TotalEnemeisInSight <= 1)
+							{
+								TotalEnemeisInSight = 1;
+							}
+						}
+
+
+						int enemy_2[MAXENTITIES];
+						int EnemyToPull = 0;
+						GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false);
+						for(int i; i < sizeof(enemy_2); i++)
+						{
+							if(enemy_2[i] && !ClientTargeted[enemy_2[i]])
+							{
+								EnemyToPull = enemy_2[i];
+								ClientTargeted[enemy_2[i]] = true;
+								break;
+							}
+						}
+
+						npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+						npc.PlayRandomEnemyPullSound();
+
+						if(npc.m_iPullCount > TotalEnemeisInSight)
+						{
+							// After X pulls, revert to normal
+							npc.m_iAttackType = 0;
+							npc.m_flAttackHappens = gameTime + 0.2;
+						}
+						else
+						{
+							// Play animation delay
+							npc.m_iAttackType = 13;
+							npc.m_flAttackHappens = gameTime + 0.2;
+							npc.m_iPullCount++;
+						}
+
+						if(EnemyToPull)
+						{
+							vecTarget = PredictSubjectPosition(npc, EnemyToPull);
+							npc.FaceTowards(vecTarget, 50000.0);
+							BobPullTarget(npc.index, EnemyToPull);
+							//We succsssfully pulled someone.
+							//Take their old position and nuke it.
+							float vEnd[3];
+					
+							vEnd = GetAbsOrigin(EnemyToPull);
+							Handle pack;
+							CreateDataTimer(BOB_CHARGE_SPAN, Smite_Timer_Bob, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+							WritePackCell(pack, EntIndexToEntRef(npc.index));
+							WritePackFloat(pack, 0.0);
+							WritePackFloat(pack, vEnd[0]);
+							WritePackFloat(pack, vEnd[1]);
+							WritePackFloat(pack, vEnd[2]);
+							WritePackFloat(pack, 1000.0);
+							spawnRing_Vectors(vEnd, BOB_FIRST_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, BOB_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
+						}
+					}
+				}
+			}
 			default:
 			{
 				if(npc.m_flAttackHappens < gameTime)
 				{
 					if(healthPoints < 19 && npc.m_flNextMeleeAttack < gameTime)
 					{
+						AcceptEntityInput(npc.m_iWearable1, "Disable");
+						
 						npc.m_flNextMeleeAttack = gameTime + 10.0;
 						npc.StopPathing();
+						float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
 
 						switch(GetURandomInt() % 3)
 						{
 							case 0:
 							{
 								npc.SetActivity("ACT_COMBO1_BOBPRIME");
-								npc.m_iAttackType = 1;
+								npc.m_iAttackType = 2;
 								npc.m_flAttackHappens = gameTime + 0.916;
+								
+								BobInitiatePunch(npc.index, vecTarget, vecMe, 0.916);
 							}
 							case 1:
 							{
 								npc.SetActivity("ACT_COMBO2_BOBPRIME");
-								npc.m_iAttackType = 3;
+								npc.m_iAttackType = 4;
 								npc.m_flAttackHappens = gameTime + 0.5;
+								
+								BobInitiatePunch(npc.index, vecTarget, vecMe, 0.5);
 							}
 							case 2:
 							{
 								npc.SetActivity("ACT_COMBO3_BOBPRIME");
-								npc.m_iAttackType = 7;
-								npc.m_flAttackHappens = gameTime + 2.125;
+								npc.m_flAttackHappens = gameTime + 3.25;
+								
+								BobInitiatePunch(npc.index, vecTarget, vecMe, 2.125);
 							}
 						}
 					}
 					else if(healthPoints < 17 && npc.m_flNextRangedAttack < gameTime)
 					{
-						npc.m_flNextRangedAttack = gameTime + (healthPoints < 9 ? 5.0 : 11.0);
+						npc.m_flNextRangedAttack = gameTime + (healthPoints < 9 ? 6.0 : 12.0);
+						npc.PlayRangedSound();
 						npc.StopPathing();
 
 						npc.SetActivity("ACT_METROPOLICE_DEPLOY_MANHACK");
@@ -755,10 +932,21 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					{
 						npc.m_flNextRangedSpecialAttack = gameTime + (healthPoints < 7 ? 15.0 : 27.0);
 						npc.StopPathing();
+						npc.PlaySkyShieldSound();
 
 						npc.SetActivity("ACT_METROPOLICE_DEPLOY_MANHACK");
 						npc.m_iAttackType = 10;
 						npc.m_flAttackHappens = gameTime + 1.0;
+					}
+					else if(healthPoints < 15 && npc.m_flNextChargeSpecialAttack < gameTime)
+					{
+						// Start pull attack chain
+						npc.m_flNextChargeSpecialAttack = gameTime + (healthPoints < 7 ? 15.0 : 27.0);
+						npc.StopPathing();
+
+						npc.m_iAttackType = 13;
+						npc.m_iPullCount = 0;
+						//npc.m_flAttackHappens = gameTime + 1.0;
 					}
 					else if(healthPoints < 3)
 					{
@@ -768,12 +956,23 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 						npc.AddGesture("ACT_METROCOP_DEPLOY_PISTOL");
 						
+						if(IsValidEntity(npc.m_iWearable1))
+							RemoveEntity(npc.m_iWearable1);
+						
 						npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_pistol.mdl");
 						SetVariantString("1.15");
 						AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 					}
 					else
 					{
+						float speed = healthPoints < 13 ? 330.0 : 290.0;
+						if(npc.m_flSpeed != speed)
+						{
+							npc.m_flSpeed = speed;
+							if(healthPoints == 12)
+								npc.PlaySpeedUpSound();
+						}
+						
 						float distance = GetVectorDistance(vecTarget, vecMe, true);
 						if(distance < npc.GetLeadRadius()) 
 						{
@@ -786,15 +985,21 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						}
 
 						npc.StartPathing();
-						npc.SetActivity("ACT_RUN_PANICKED");
 						
 						if(distance < 10000.0)	// 100 HU
 						{
 							npc.StopPathing();
 							
-							npc.AddGesture("ACT_SEABORN_ATTACK_TOOL_1");
+							AcceptEntityInput(npc.m_iWearable1, "Enable");
+							
+							npc.SetActivity("ACT_IDLE_BOBPRIME");
+							npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
 							npc.m_iAttackType = 9;
 							npc.m_flAttackHappens = gameTime + 0.667;
+						}
+						else
+						{
+							npc.SetActivity("ACT_RUN_PANICKED");
 						}
 					}
 				}
@@ -803,6 +1008,8 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	}
 	else
 	{
+		AcceptEntityInput(npc.m_iWearable1, "Disable");
+		
 		npc.StopPathing();
 		npc.SetActivity("ACT_IDLE_BOBPRIME");
 	}
@@ -898,8 +1105,8 @@ static void GiveOneRevive()
 
 	CheckAlivePlayers();
 }
-
-static bool RowAttack(RaidbossBobTheFirst npc, const float vecMe[3], float damage, float range, bool kick)
+/*
+static bool RowAttack(RaidbossBobTheFirst npc, const float vecMe[3], float damage, float range, bool kick, float TimeUntillHurt)
 {
 	float vecAngles[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vecAngles);
@@ -917,13 +1124,60 @@ static bool RowAttack(RaidbossBobTheFirst npc, const float vecMe[3], float damag
 
 	npc.FaceTowards(vecTarget, 1000.0);
 
+	if(npc.m_iPullCount == 0)	// First frame
+	{
+		//todo: Make it a trace beacuse thats better
+		//make it a better laser to represent where he will hit, maybe static or something, a box whatever it is.
+		//do a circular around him cus that also hurts
+		//the delay is via frames, and add the delay from initiate to attack here via frames, or convert.
+		
+		float time = GetGameTime(npc.index) -
+		float VectorGive[3];
+		
+		VectorGive = vecMe;
+		BobInitiatePunch(npc.index, WorldSpaceCenter(target), VectorGiveLastStoreMenu);
+	}
+	
+	npc.m_iPullCount++;
+	
 	if(npc.m_flAttackHappens < GetGameTime(npc.index))
 	{
 		KillFeed_SetKillIcon(npc.index, kick ? "mantreads" : "fists");
 
 		if(NpcStats_IsEnemySilenced(npc.index))
 			kick = false;
+		
+		Zero(BobHitDetected);
 
+		Handle trace;
+		trace = TR_TraceHullFilterEx(vecMe, VectorTarget, hullMin, hullMax, 1073741824, Bob_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
+		delete trace;
+				
+		float CloseDamage = 70.0 * RaidModeScaling;
+		float FarDamage = 60.0 * RaidModeScaling;
+		float MaxDistance = 5000.0;
+		float playerPos[3];
+		for(int victim = 1; victim < MAXENTITIES; victim++)
+		{
+			if(SensalHitDetected[victim] && GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+			{
+				GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
+				float distance = GetVectorDistance(VectorStart, playerPos, false);
+				float damage = CloseDamage + (FarDamage-CloseDamage) * (distance/MaxDistance);
+				if (damage < 0)
+					damage *= -1.0;
+
+				
+				if(victim > MaxClients) //make sure barracks units arent bad
+					damage *= 0.5;
+
+				SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
+					
+			}
+		}
+		delete pack;
+
+		
 		for(int victim = 1; victim <= MaxClients; victim++)
 		{
 			if(IsClientInGame(victim) && IsPlayerAlive(victim))
@@ -935,7 +1189,7 @@ static bool RowAttack(RaidbossBobTheFirst npc, const float vecMe[3], float damag
 					{
 						vecTarget[0] = 0.0;
 						vecTarget[1] = 0.0;
-						vecTarget[2] = 400.0;
+						vecTarget[2] = 500.0;//400.0;
 						TeleportEntity(victim, _, _, vecTarget, true);
 
 						TF2_StunPlayer(victim, 1.5, 0.5, TF_STUNFLAGS_NORMALBONK, victim);
@@ -992,6 +1246,19 @@ static bool RowAttack(RaidbossBobTheFirst npc, const float vecMe[3], float damag
 	return false;
 }
 
+static bool Bob_BEAM_TraceUsers(int entity, int contentsMask, int client)
+{
+	if(IsEntityAlive(entity))
+		BobHitDetected[entity] = true;
+	
+	return false;
+}
+
+static bool Bob_TraceWallsOnly(int entity, int contentsMask)
+{
+	return !entity;
+}
+*/
 static bool HitByForward(int entity, const float vecCenter[3], const float vecForward[3], float range)
 {
 	float vecMe[3];
@@ -1021,7 +1288,7 @@ static bool HitByForward(int entity, const float vecCenter[3], const float vecFo
 			return false;
 		
 		// Up/down check
-		if(fabs(vecCenter[2] - vecMe[2]) > 175.0)
+		if(fabs(vecCenter[2] - vecMe[2]) > 250.0)//175.0)
 			return false;
 		
 		return true;
@@ -1183,4 +1450,325 @@ static void GivePlayerItems()
 		}
 	}
 	*/
+}
+
+public Action Smite_Timer_Bob(Handle Smite_Logic, DataPack pack)
+{
+	ResetPack(pack);
+	int entity = EntRefToEntIndex(ReadPackCell(pack));
+	
+	if (!IsValidEntity(entity))
+	{
+		return Plugin_Stop;
+	}
+		
+	float NumLoops = ReadPackFloat(pack);
+	float spawnLoc[3];
+	for (int GetVector = 0; GetVector < 3; GetVector++)
+	{
+		spawnLoc[GetVector] = ReadPackFloat(pack);
+	}
+	
+	float damage = ReadPackFloat(pack);
+	
+	if (NumLoops >= BOB_CHARGE_TIME)
+	{
+		float secondLoc[3];
+		for (int replace = 0; replace < 3; replace++)
+		{
+			secondLoc[replace] = spawnLoc[replace];
+		}
+		
+		for (int sequential = 1; sequential <= 5; sequential++)
+		{
+			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 120, 1, 0.33, 6.0, 0.4, 1, (BOB_FIRST_LIGHTNING_RANGE * 5.0)/float(sequential));
+			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
+		}
+		
+		secondLoc[2] = 1500.0;
+		
+		spawnBeam(0.8, 255, 50, 50, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, secondLoc, spawnLoc);	
+		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, secondLoc, spawnLoc);	
+		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, secondLoc, spawnLoc);	
+		
+		EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, spawnLoc, _, 120);
+		
+		DataPack pack_boom = new DataPack();
+		pack_boom.WriteFloat(spawnLoc[0]);
+		pack_boom.WriteFloat(spawnLoc[1]);
+		pack_boom.WriteFloat(spawnLoc[2]);
+		pack_boom.WriteCell(0);
+		RequestFrame(MakeExplosionFrameLater, pack_boom);
+		 
+		CreateEarthquake(spawnLoc, 1.0, BOB_FIRST_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BOB_FIRST_LIGHTNING_RANGE * 1.4,_,0.8, true);  //Explosion range increace
+	
+		return Plugin_Stop;
+	}
+	else
+	{
+		spawnRing_Vectors(spawnLoc, BOB_FIRST_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
+	//	EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, _, GetRandomInt(80, 110));
+		
+		ResetPack(pack);
+		WritePackCell(pack, EntIndexToEntRef(entity));
+		WritePackFloat(pack, NumLoops + BOB_CHARGE_TIME);
+		WritePackFloat(pack, spawnLoc[0]);
+		WritePackFloat(pack, spawnLoc[1]);
+		WritePackFloat(pack, spawnLoc[2]);
+		WritePackFloat(pack, damage);
+	}
+	
+	return Plugin_Continue;
+}
+
+
+static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
+{
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = a;
+		
+	int SPRITE_INT = PrecacheModel(sprite, false);
+
+	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
+	
+	TE_SendToAll();
+}
+
+static void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
+{
+	center[0] += modif_X;
+	center[1] += modif_Y;
+	center[2] += modif_Z;
+			
+	int ICE_INT = PrecacheModel(sprite);
+		
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = alpha;
+		
+	if (endRange == -69.0)
+	{
+		endRange = range + 0.5;
+	}
+	
+	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
+	TE_SendToAll();
+}
+
+void BobPullTarget(int bobnpc, int enemy)
+{
+	CClotBody npc = view_as<CClotBody>(bobnpc);
+	//pull player
+	float vecMe[3];
+	float vecTarget[3];
+	vecMe = WorldSpaceCenter(npc.index);
+	if(enemy <= MaxClients)
+	{
+		static float angles[3];
+		
+		vecTarget = WorldSpaceCenter(enemy);
+		GetVectorAnglesTwoPoints(vecTarget, vecMe, angles);
+		
+		if(GetEntityFlags(enemy) & FL_ONGROUND)
+			angles[0] = 0.0; // toss out pitch if on ground
+
+		float distance = GetVectorDistance(vecTarget, vecMe, true);
+		static float velocity[3];
+		GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(velocity, Pow(distance, 0.5) * 2.15);
+		
+		// min Z if on ground
+		if(GetEntityFlags(enemy) & FL_ONGROUND)
+			velocity[2] = fmax(400.0, velocity[2]);
+		
+		// apply velocity
+		TeleportEntity(enemy, NULL_VECTOR, NULL_VECTOR, velocity);
+		TF2_AddCondition(enemy, TFCond_LostFooting, 0.5);
+		TF2_AddCondition(enemy, TFCond_AirCurrent, 0.5);	
+	}
+	else
+	{
+		CClotBody npcenemy = view_as<CClotBody>(enemy);
+
+		PluginBot_Jump(npcenemy.index, vecMe);
+	}
+}
+
+static int SensalHitDetected_2[MAXENTITIES];
+
+void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], float TimeUntillHit)
+{
+
+	CClotBody npc = view_as<CClotBody>(entity);
+	npc.FaceTowards(VectorTarget, 20000.0);
+	int FramesUntillHit = RoundToNearest(TimeUntillHit * 66.0);
+
+	float vecForward[3], vecRight[3], Angles[3];
+
+	GetVectorAnglesTwoPoints(VectorStart, VectorTarget, Angles);
+
+	GetAngleVectors(Angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+
+	float VectorTarget_2[3];
+	float VectorForward = 5000.0; //a really high number.
+	
+	VectorTarget_2[0] = VectorStart[0] + vecForward[0] * VectorForward;
+	VectorTarget_2[1] = VectorStart[1] + vecForward[1] * VectorForward;
+	VectorTarget_2[2] = VectorStart[2] + vecForward[2] * VectorForward;
+
+
+	int red = 255;
+	int green = 255;
+	int blue = 255;
+	int Alpha = 255;
+
+	int colorLayer4[4];
+	float diameter = float(25 * 4);
+	SetColorRGBA(colorLayer4, red, green, blue, Alpha);
+	//we set colours of the differnet laser effects to give it more of an effect
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, Alpha);
+	int glowColor[4];
+
+	for(int BeamCube = 0; BeamCube < 4 ; BeamCube++)
+	{
+		float OffsetFromMiddle[3];
+		switch(BeamCube)
+		{
+			case 0:
+			{
+				OffsetFromMiddle = {0.0, 25.0,25.0};
+			}
+			case 1:
+			{
+				OffsetFromMiddle = {0.0, -25.0,-25.0};
+			}
+			case 2:
+			{
+				OffsetFromMiddle = {0.0, 25.0,-25.0};
+			}
+			case 3:
+			{
+				OffsetFromMiddle = {0.0, -25.0,25.0};
+			}
+		}
+		float AnglesEdit[3];
+		AnglesEdit[0] = Angles[0];
+		AnglesEdit[1] = Angles[1];
+		AnglesEdit[2] = Angles[2];
+
+		float VectorStartEdit[3];
+		VectorStartEdit[0] = VectorStart[0];
+		VectorStartEdit[1] = VectorStart[1];
+		VectorStartEdit[2] = VectorStart[2];
+
+		GetBeamDrawStartPoint_Stock(entity, VectorStartEdit,OffsetFromMiddle, AnglesEdit);
+
+		SetColorRGBA(glowColor, red, green, blue, Alpha);
+		TE_SetupBeamPoints(VectorStartEdit, VectorTarget_2, Shared_BEAM_Laser, 0, 0, 0, TimeUntillHit, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.0, glowColor, 0);
+		TE_SendToAll(0.0);
+	}
+	
+	
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteFloat(VectorTarget_2[0]);
+	pack.WriteFloat(VectorTarget_2[1]);
+	pack.WriteFloat(VectorTarget_2[2]);
+	pack.WriteFloat(VectorStart[0]);
+	pack.WriteFloat(VectorStart[1]);
+	pack.WriteFloat(VectorStart[2]);
+	RequestFrames(BobInitiatePunch_DamagePart, FramesUntillHit, pack);
+}
+
+void BobInitiatePunch_DamagePart(DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(entity))
+		entity = 0;
+
+	for (int i = 1; i < MAXENTITIES; i++)
+	{
+		SensalHitDetected_2[i] = false;
+	}
+	float VectorTarget[3];
+	float VectorStart[3];
+	VectorTarget[0] = pack.ReadFloat();
+	VectorTarget[1] = pack.ReadFloat();
+	VectorTarget[2] = pack.ReadFloat();
+	VectorStart[0] = pack.ReadFloat();
+	VectorStart[1] = pack.ReadFloat();
+	VectorStart[2] = pack.ReadFloat();
+
+	int red = 50;
+	int green = 50;
+	int blue = 255;
+	int Alpha = 222;
+	int colorLayer4[4];
+
+	float diameter = float(25 * 4);
+	SetColorRGBA(colorLayer4, red, green, blue, Alpha);
+	//we set colours of the differnet laser effects to give it more of an effect
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, Alpha);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+
+	float hullMin[3];
+	float hullMax[3];
+	hullMin[0] = -float(25);
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+
+	Handle trace;
+	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Sensal_BEAM_TraceUsers_2, entity);	// 1073741824 is CONTENTS_LADDER?
+	delete trace;
+			
+	float CloseDamage = 70.0 * RaidModeScaling;
+	float FarDamage = 60.0 * RaidModeScaling;
+	float MaxDistance = 5000.0;
+	float playerPos[3];
+	for (int victim = 1; victim < MAXENTITIES; victim++)
+	{
+		if (SensalHitDetected_2[victim] && GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		{
+			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
+			float distance = GetVectorDistance(VectorStart, playerPos, false);
+			float damage = CloseDamage + (FarDamage-CloseDamage) * (distance/MaxDistance);
+			if (damage < 0)
+				damage *= -1.0;
+
+			
+			if(victim > MaxClients) //make sure barracks units arent bad
+				damage *= 0.5;
+
+			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
+				
+		}
+	}
+	delete pack;
+}
+
+
+public bool Sensal_BEAM_TraceUsers_2(int entity, int contentsMask, int client)
+{
+	if (IsEntityAlive(entity))
+	{
+		SensalHitDetected_2[entity] = true;
+	}
+	return false;
 }

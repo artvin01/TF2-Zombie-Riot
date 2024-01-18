@@ -189,7 +189,8 @@ public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float
 			Hose_AlreadyHealed[projectile][entity] = false;
 		}
 			
-		SetEntityCollisionGroup(projectile, 1); //Do not collide.
+		SetEntityCollisionGroup(projectile, 27); //Do not collide.
+		SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 		SetEntityGravity(projectile, 0.5);
 	}
@@ -201,8 +202,7 @@ public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float
 }
 
 //If you use SearchDamage (above), convert this timer to a void method and rename it to Cryo_DealDamage:
-
-public void Wand_Health_Hose_Touch_World(int entity, int other)
+public void Hose_Touch(int entity, int other)
 {
 	if (other == 0)	
 	{
@@ -213,10 +213,6 @@ public void Wand_Health_Hose_Touch_World(int entity, int other)
 		}
 		RemoveEntity(entity);
 	}
-}
-
-public void Hose_Touch(int entity, int other)
-{
 	int owner = GetClientOfUserId(Hose_Owner[entity]);
 	
 	if (!IsValidClient(owner))
@@ -611,7 +607,9 @@ bool SpawnHealthkit_SyringeGun(int client, float VectorGoal[3])
 		AcceptEntityInput(prop, "SetAnimation");
 		DispatchKeyValueFloat(prop, "playbackrate", 1.0);
 		SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", client);
+		SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntityCollisionGroup(prop, 27);
+		SDKHook(prop, SDKHook_StartTouch, TouchHealthKit);
 		f_HealMaxPickup[prop] = HealAmmount;
 		f_HealMaxPickup_Enable[prop] = GetGameTime() + 2.0;
 		i_WandIdNumber[prop] = 999;

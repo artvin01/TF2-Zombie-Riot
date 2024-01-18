@@ -933,11 +933,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			}
 #endif
 		}
-		else if (i_WandIdNumber[entity1] == 999)
-		{
-			TouchHealthKit(entity1, entity2);
-			return false;
-		}
 		else if(b_Is_Player_Projectile[entity1])
 		{
 #if defined ZR
@@ -985,41 +980,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-//TODO find better way to collide.
-#if defined ZR
-/*
-things i tried
-
-	SetEntProp(projectile, Prop_Send, "m_nSolidType",(FSOLID_TRIGGER | FSOLID_NOT_SOLID));//FSOLID_TRIGGER && FSOLID_NOT_SOLID
-	All collision groups
-
-*/
 			else if (i_WandIdNumber[entity1] == 19 && !i_IsABuilding[entity2] && !b_Is_Player_Projectile[entity2]) //Health Hose projectiles
 			{
 				Hose_Touch(entity1, entity2);
 				return false;
 			}
-			else if (i_WandIdNumber[entity1] == 21 && !i_IsABuilding[entity2] && !b_Is_Player_Projectile[entity2])
-			{
-				return Vamp_CleaverHit(entity1, entity2);
-			}
-			else if(i_WandIdNumber[entity1] == 11)
-			{
-		//		//Have to use this here, please check wand_projectile for more info!
-				Cryo_Touch(entity1, entity2);
-				return false;
-			}
-			else if (i_WandIdNumber[entity1] == 14)
-			{
-				lantean_Wand_Touch(entity1, entity2);
-				return false;
-			}
-			else if (i_WandIdNumber[entity1] == WEAPON_STAR_SHOOTER)
-			{
-				SuperStarShooterOnHit(entity1, entity2);
-				return false;
-			}
-#endif
 			else if(entity2 <= MaxClients && entity2 > 0)
 			{
 				return false;

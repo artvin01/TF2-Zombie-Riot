@@ -431,9 +431,11 @@ public void OnPostThink(int client)
 		}
 		Armor_regen_delay[client] = GameTime + 1.0;
 	}
-#endif	// ZR
-	
-	if(Mana_Hud_Delay[client] < GameTime)	
+	if(Mana_Hud_Delay[client] < GameTime)
+#else	// ZR
+	else if(Mana_Hud_Delay[client] < GameTime)
+#endif
+
 	{
 		char buffer[255];
 #if defined RPG		
@@ -935,7 +937,7 @@ public void OnPostThink(int client)
 			ShowSyncHudText(client,  SyncHud_WandMana, "%s", buffer);
 		}
 	}
-	if(delay_hud[client] < GameTime)	
+	else if(delay_hud[client] < GameTime)	
 	{
 		delay_hud[client] = GameTime + 0.4;
 
@@ -1295,14 +1297,9 @@ public void OnPostThink(int client)
 		PrintKeyHintText(client,"%s", HudBuffer);
 #endif	// ZR
 	}
-
-		
-#if defined RPG
-		// RPG Level Stuff Here
-#endif	// RPG
 		
 #if defined ZR
-	if(f_DelayLookingAtHud[client] < GameTime)
+	else if(f_DelayLookingAtHud[client] < GameTime)
 	{
 		//Reuse uhh
 		//Doesnt reset often enough, fuck clientside.
@@ -1317,6 +1314,10 @@ public void OnPostThink(int client)
 		{
 			f_DelayLookingAtHud[client] = GameTime + 2.0;
 		}
+	}
+	else
+	{
+		Store_TryRefreshMenu(client);
 	}
 	
 	Music_PostThink(client);
