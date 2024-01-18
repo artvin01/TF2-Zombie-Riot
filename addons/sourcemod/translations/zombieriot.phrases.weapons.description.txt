@@ -1318,9 +1318,9 @@
 	
 	"Copium Desc"
 	{
-		"en"	"25%% melee resistance with melee equipped"
-		"ru"	"25%% сопр. ближнему бою при использ. оружия ближнего боя."
-		"chi"   "使用近战武器时+25%%的近战抵抗"
+		"en"	"15%% melee resistance with melee equipped"
+		"ru"	"15%% сопр. ближнему бою при использ. оружия ближнего боя."
+		"chi"   "使用近战武器时+15%%的近战抵抗"
 	}
 	
 	"Cocain Desc"
@@ -1513,9 +1513,9 @@
 	
 	"Body armor Desc"
 	{
-		"en"	"Increased How much armour you get per use and max cap. +25 HP"
-		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +25 ед. здоровья"
-		"chi"   "提高护甲值,+25生命值"
+		"en"	"Increased How much armour you get per use and max cap. +50 HP"
+		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +50 ед. здоровья"
+		"chi"   "提高护甲值,+50生命值"
 	}
 	
 	"Kevlar Desc"
