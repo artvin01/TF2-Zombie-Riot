@@ -625,7 +625,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					npc.m_iAttackType = 0;
 					npc.m_flAttackHappens = gameTime + 0.333;
 
-					int projectile = npc.FireParticleRocket(vecTarget, 3000.0, 200.0, 150.0, "unusual_robot_time_warp", true, 60.0);
+					int projectile = npc.FireParticleRocket(vecTarget, 3000.0, 200.0, 150.0, "unusual_robot_time_warp", true);
 					npc.DispatchParticleEffect(npc.index, "rd_robot_explosion_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 						
 					npc.PlayRocketHoming();

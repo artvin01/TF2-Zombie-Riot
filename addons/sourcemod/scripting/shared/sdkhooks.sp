@@ -626,6 +626,10 @@ public void OnPostThink(int client)
 			{
 				percentage_Global *= f_MultiDamageTaken[client];
 			}
+			if(f_MultiDamageTaken_Flat[client] != 1.0)
+			{
+				percentage_Global *= f_MultiDamageTaken_Flat[client];
+			}
 			if(f_BattilonsNpcBuff[client] > GameTime)
 			{
 				percentage_Global *= 0.75;
@@ -1617,6 +1621,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		damage *= f_MultiDamageTaken[victim];
 	}
+	if(f_MultiDamageTaken_Flat[victim] != 1.0)
+	{
+		damage *= f_MultiDamageTaken_Flat[victim];
+	}
+	
 	//freeplay causes more damage taken.
 	if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
 	{
@@ -2426,12 +2435,17 @@ public Action Timer_CauseFadeInAndFadeDelete(Handle timer)
 }
 #endif	// ZR
 
-void IncreaceEntityDamageTakenBy(int entity, float amount, float duration)
+void IncreaceEntityDamageTakenBy(int entity, float amount, float duration, bool Flat = false)
 {
-	f_MultiDamageTaken[entity] *= amount;
+	if(!Flat)
+		f_MultiDamageTaken[entity] *= amount;
+	else
+		f_MultiDamageTaken_Flat[entity] += amount;
+
 	Handle pack;
 	CreateDataTimer(duration, RevertDamageTakenAgain, pack, TIMER_FLAG_NO_MAPCHANGE);
 	WritePackCell(pack, EntIndexToEntRef(entity));
+	WritePackCell(pack, Flat);
 	WritePackFloat(pack, amount);
 }
 
@@ -2439,11 +2453,15 @@ public Action RevertDamageTakenAgain(Handle final, any pack)
 {
 	ResetPack(pack);
 	int entity = EntRefToEntIndex(ReadPackCell(pack));
+	bool Flat = ReadPackCell(pack);
 	float damagemulti = ReadPackFloat(pack);
 	
 	if (IsValidEntity(entity))
 	{
-		f_MultiDamageTaken[entity] /= damagemulti;
+		if(!Flat)
+			f_MultiDamageTaken[entity] /= damagemulti;
+		else
+			f_MultiDamageTaken_Flat[entity] -= damagemulti;
 	}
 	return Plugin_Continue;
 }
