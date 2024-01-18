@@ -204,15 +204,16 @@ void WeaponRedBlade_OnTakeDamage(int victim, float &damage)
 }
 float WeaponRedBlade_OnTakeDamage_Hud(int victim)
 {
+	float returndmg = 1.0;
 	if(f_RedBladeChargeDuration[victim] > GetGameTime())
 	{
-		return 0.25;
+		returndmg *= 0.25;
 	}
 	if(HALFORNO[victim])
 	{
-		return 0.45;
+		returndmg *= 0.45;
 	}
-	return 1.0;
+	return returndmg;
 }
 
 void WeaponRedBlade_OnTakeDamage_Post(int victim, int weapon)
