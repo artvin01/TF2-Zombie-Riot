@@ -464,7 +464,7 @@ public void OnPostThink(int client)
 			percentage_Global *= ArmorPlayerReduction(client);
 
 		
-			percentage_Global *= Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(victim, weapon);
+			percentage_Global *= Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(client, weapon);
 			value = Attributes_FindOnPlayerZR(client, 412, true);	// Overall damage resistance
 			if(value)
 				percentage_Global *= value;
@@ -2306,11 +2306,11 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 		}
 		case WEAPON_RAPIER:
 		{
-			return Player_OnTakeDamage_Rapier_Hud(victim, attacker, damage);
+			return Player_OnTakeDamage_Rapier_Hud(victim);
 		}
 		case WEAPON_RED_BLADE:
 		{
-			return WeaponRedBlade_OnTakeDamage_Hud(victim, damage);
+			return WeaponRedBlade_OnTakeDamage_Hud(victim);
 		}
 	}
 	return 1.0;

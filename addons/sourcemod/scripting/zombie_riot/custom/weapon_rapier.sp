@@ -133,7 +133,6 @@ float Player_OnTakeDamage_Rapier_Hud(int victim)
 			return 0.8888; // 20% more damage taken
 		}
 	}
-	return 1.0;
 }
 void Rapier_duel_minicrits(int attacker)
 {
