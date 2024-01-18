@@ -266,6 +266,7 @@ ConVar cvarTimeScale;
 ConVar cvar_nbAvoidObstacle;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 ConVar CvarTfMMMode; // tf_mm_servermode
+ConVar CvarAirAcclerate; //sv_airaccelerate
 ConVar sv_cheats;
 ConVar nav_edit;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
@@ -284,6 +285,7 @@ int g_particleImpactFlesh;
 int g_particleImpactRubber;
 
 bool b_NetworkedCrouch[MAXTF2PLAYERS];	
+bool b_AntiSlopeCamp[MAXTF2PLAYERS];	
 float f_CooldownForHurtParticle[MAXENTITIES];	
 float f_ClientConnectTime[MAXENTITIES];	
 float f_BackstabDmgMulti[MAXENTITIES];
@@ -296,6 +298,7 @@ float f_BackstabBossDmgPenaltyNpcTime[MAXENTITIES][MAXTF2PLAYERS];
 float f_ModifThirdPersonAttackspeed[MAXENTITIES]={1.0, ...};
 float f_AntiStuckPhaseThroughFirstCheck[MAXTF2PLAYERS];
 float f_AntiStuckPhaseThrough[MAXTF2PLAYERS];
+float f_MultiDamageTaken[MAXENTITIES];
 
 bool thirdperson[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
@@ -1232,6 +1235,10 @@ public void OnPluginStart()
 	if(CvarMpSolidObjects)
 		CvarMpSolidObjects.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
+	CvarAirAcclerate = FindConVar("sv_airaccelerate");
+	if(CvarAirAcclerate)
+		CvarAirAcclerate.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
 	CvarTfMMMode = FindConVar("tf_mm_servermode");
 	if(CvarTfMMMode)
 		CvarTfMMMode.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
@@ -1701,6 +1708,7 @@ public void OnClientPutInServer(int client)
 	f_Ruina_Speed_Buff_Amt[client] = 0.0;
 	f_Ruina_Defense_Buff_Amt[client] = 0.0;
 	f_Ruina_Attack_Buff_Amt[client] = 0.0;
+	f_MultiDamageTaken[client] = 1.0;
 	f_ShowHudDelayForServerMessage[client] = GetGameTime() + 50.0;
 	
 #if defined ZR
@@ -2467,6 +2475,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
 		LastHitRef[entity] = -1;
+		f_MultiDamageTaken[entity] = 1.0;
 		DamageBits[entity] = -1;
 		Damage[entity] = 0.0;
 		LastHitWeaponRef[entity] = -1;

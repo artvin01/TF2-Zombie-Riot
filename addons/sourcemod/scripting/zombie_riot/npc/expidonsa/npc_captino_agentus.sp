@@ -520,7 +520,7 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 						BackstabDone = true;
 					}
 				}
-				if(IsBehindAndFacingTarget(npc.index, npc.m_iTarget))
+				if(BackstabDone || IsBehindAndFacingTarget(npc.index, npc.m_iTarget))
 				{
 					BackstabDone = true;
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");	

@@ -1318,9 +1318,9 @@
 	
 	"Copium Desc"
 	{
-		"en"	"25%% melee resistance with melee equipped"
-		"ru"	"25%% сопр. ближнему бою при использ. оружия ближнего боя."
-		"chi"   "使用近战武器时+25%%的近战抵抗"
+		"en"	"15%% melee resistance with melee equipped"
+		"ru"	"15%% сопр. ближнему бою при использ. оружия ближнего боя."
+		"chi"   "使用近战武器时+15%%的近战抵抗"
 	}
 	
 	"Cocain Desc"
@@ -1513,9 +1513,9 @@
 	
 	"Body armor Desc"
 	{
-		"en"	"Increased How much armour you get per use and max cap. +25 HP"
-		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +25 ед. здоровья"
-		"chi"   "提高护甲值,+25生命值"
+		"en"	"Increased How much armour you get per use and max cap. +50 HP"
+		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +50 ед. здоровья"
+		"chi"   "提高护甲值,+50生命值"
 	}
 	
 	"Kevlar Desc"
@@ -1914,6 +1914,10 @@
 		"en"	"Heals an ally for a bit and gives them the medigun buff for 15 seconds and yourself for 5 seconds.\nBuff works on full HP targets."
 		"ru"	"Немного лечит союзника и накладывает на него эфф. лечебной пушки на 15 секунд, а на себя - на 5 секунд.\nЭффект действует на цели с полным ОЗ."
 		"chi"   "治疗一个盟友一点，并给予他们15秒和你自己5秒的医疗buff。\nBuff适用于满HP目标。"
+	}
+	"Crusader Desc Pap 1"
+	{
+		"en"	"Shots become instant and scope charge.\nYour heals overheal to 15%%.\nYour m2 ability allows you to spawn healthkits.\nHealkits provide buffs aswell and have small in battle heal penalty.\nThey require a windup of 2 seconds.\nYou can place upto 2 per usage."
 	}
 
 	"Buildable Barracks Desc"
@@ -2602,7 +2606,7 @@
 	}
 	"Bent Rapier Desc"
 	{
-		"en"	"Dios mio, this is an insult to the blacksmith that conceived this weapon.\nAt least it's not missing it's second half anymore...\nPin-Point Weakness: Headshots now inflict bleed that ignores resistances."
+		"en"	"Dios mio, this is an insult to the blacksmith that conceived this weapon.\nAt least it's not missing it's second half anymore...\nPin-Point Weakness: Headshots now inflict bleed and always speed you up."
 	}
 	"Shoddy Rapier Desc"
 	{
@@ -2614,11 +2618,11 @@
 	}
 	"Improved Rapier Desc"
 	{
-		"en"	"More experience. More improvements. More... Tears shed over the amount of money spent.\nUnpredictable footing: You permanently take 15%% more damage."
+		"en"	"More experience. More improvements. More... Tears shed over the amount of money spent.\nUnpredictable footing: Dmg taken penalty reduced from 20%% to 10%%.\nDuel!: You gain a reward for winning duels."
 	}
 	"Rapier Desc"
 	{
-		"en"	"A pinnacle of blacksmithing. Best of the best of the best. You've earned this, amigo.\nUnpredictable footing: You permanently take 10%% more damage."
+		"en"	"A pinnacle of blacksmithing. Best of the best of the best. You've earned this, amigo.\nUnpredictable footing: Dmg taken penalty removed.\nDuel!: Reward is improved."
 	}
 	"Gravton Wand desc0"
 	{

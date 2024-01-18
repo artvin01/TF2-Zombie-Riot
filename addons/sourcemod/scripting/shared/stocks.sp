@@ -683,6 +683,10 @@ stock void SetAmmo(int client, int type, int ammo)
 
 stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count, int custom_classSetting = 0)
 {
+	if(custom_classSetting == 11)
+	{
+		custom_classSetting = 0;
+	}
 	int weapon = SpawnWeaponBase(client, name, index, level, qual, attrib, value, count, custom_classSetting);
 	if(weapon != -1)
 	{
@@ -4084,19 +4088,21 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	int newHealth = flHealth + i_TargetHealAmount;
 	int HealAmount = 0;
 	int MaxHeal = RoundToNearest(float(flMaxHealth) * MaxHealthOverMulti);
-	if(MaxHeal >= newHealth) //allow 1 tick of overheal.
+	if(flHealth < MaxHeal)
 	{
-		if(newHealth >= MaxHeal)
+
+		if(newHealth >= MaxHeal) //allow 1 tick of overheal.
 		{
 			SetEntProp(entity, Prop_Data, "m_iHealth", MaxHeal);
 			newHealth = MaxHeal;
+
+			HealAmount = newHealth - flHealth;
 		}
 		else
 		{
 			SetEntProp(entity, Prop_Data, "m_iHealth", newHealth);
+			HealAmount = newHealth - flHealth;
 		}
-		
-		HealAmount = newHealth - flHealth;
 	}
 	if(newHealth <= 0)
 	{

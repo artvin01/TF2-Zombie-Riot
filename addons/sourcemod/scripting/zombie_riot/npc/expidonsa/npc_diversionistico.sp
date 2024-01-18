@@ -379,7 +379,7 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 						BackstabDone = true;
 					}
 				}
-				if(IsBehindAndFacingTarget(npc.index, npc.m_iTarget) && !NpcStats_IsEnemySilenced(npc.index))
+				if(BackstabDone || IsBehindAndFacingTarget(npc.index, npc.m_iTarget) && !NpcStats_IsEnemySilenced(npc.index))
 				{
 					BackstabDone = true;
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");	

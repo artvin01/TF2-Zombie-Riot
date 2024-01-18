@@ -30,7 +30,7 @@ void Freeplay_ResetAll()
 {
 	HealthMulti = 1.0;
 	HealthBonus = 0;
-	EnemyChance = 8;
+	EnemyChance = 10;
 	EnemyCount = 5;
 	EnemyBosses = 0;
 	ImmuneNuke = 0;
@@ -63,7 +63,7 @@ int Freeplay_EnemyCount()
 
 bool Freeplay_ShouldAddEnemy()
 {
-	return !(GetURandomInt() % (EnemyChance + GetRandomInt(0,7)));
+	return !(GetURandomInt() % EnemyChance);
 }
 
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
@@ -245,8 +245,8 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 	{
 		case 0:
 		{
-			strcopy(message, sizeof(message), "{red}All enemies have +3000 health");
-			HealthBonus += 3000;
+			strcopy(message, sizeof(message), "{red}All enemies have +30000 health");
+			HealthBonus += 30000;
 		}
 		case 1:
 		{
@@ -260,14 +260,14 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		}
 		case 3:
 		{
-			strcopy(message, sizeof(message), "{yellow}All enemies have {green}-6000 health {yellow}but {red}+20% health");
-			HealthBonus -= 6000;
+			strcopy(message, sizeof(message), "{yellow}All enemies have {green}-60000 health {yellow}but {red}+20% health");
+			HealthBonus -= 60000;
 			HealthMulti *= 1.2;
 		}
 		case 4:
 		{
-			strcopy(message, sizeof(message), "{yellow}All enemies have {red}+6000 health {yellow}but {green}-20% health");
-			HealthBonus += 6000;
+			strcopy(message, sizeof(message), "{yellow}All enemies have {red}+60000 health {yellow}but {green}-20% health");
+			HealthBonus += 60000;
 			HealthMulti /= 1.2;
 		}
 		case 5:

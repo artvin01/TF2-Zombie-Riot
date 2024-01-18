@@ -933,6 +933,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			}
 #endif
 		}
+		else if (i_WandIdNumber[entity1] == 999)
+		{
+			TouchHealthKit(entity1, entity2);
+			return false;
+		}
 		else if(b_Is_Player_Projectile[entity1])
 		{
 #if defined ZR

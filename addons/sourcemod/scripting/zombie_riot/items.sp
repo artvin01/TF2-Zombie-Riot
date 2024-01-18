@@ -418,7 +418,7 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 			{
 				if(LastMenuPage[client] == -1)
 				{
-					MenuPage(client, -1);
+					Store_Menu(client);
 				}
 				else
 				{

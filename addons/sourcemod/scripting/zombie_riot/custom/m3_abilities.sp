@@ -9,7 +9,7 @@ static float f_Duration[MAXENTITIES];
 static bool b_ActivatedDuringLastMann[MAXPLAYERS+1];
 static int g_ProjectileModel;
 static int g_ProjectileModelArmor;
-static int g_BeamIndex_heal = -1;
+int g_BeamIndex_heal = -1;
 static int i_BurstpackUsedThisRound [MAXPLAYERS+1];
 
 static char gExplosive1;

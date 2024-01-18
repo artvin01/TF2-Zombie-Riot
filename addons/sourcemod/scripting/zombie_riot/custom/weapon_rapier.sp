@@ -51,12 +51,12 @@ void Rapier_DoSwingTrace(float &CustomMeleeRange, float &CustomMeleeWide)
 	{
 		case true:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.4;
+			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.45;
 			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 0.5;
 		}
 		case false:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.2;
+			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
 			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 0.5;
 		}
 	}
@@ -66,9 +66,25 @@ void RapierEndDuelOnKill(int client,int victim)
 {
 	if(f_DuelStatus[victim] > 0.0 && DuelState_timer[client] != INVALID_HANDLE)
 	{
-		//b_WonDuel[client] = true;
-		delete DuelState_timer[client];
+		int pap = i_Current_Pap_Rapier[client];
+		float MaxHealth = float(SDKCall_GetMaxHealth(client));
 		EmitSoundToClient(client, DUEL5, _, _, 80, _, 0.8, 100);
+		switch(pap)
+		{
+			case 4: //second highest pap)) :)
+			{
+				HealEntityGlobal(client, client, MaxHealth * 0.05, _, 0.5,HEAL_SELFHEAL);
+				CashRecievedNonWave[client] += 5;
+				CashSpent[client] -= 5;
+			}
+			case 5: //highest pap
+			{
+				HealEntityGlobal(client, client, MaxHealth * 0.07, _, 0.5,HEAL_SELFHEAL);
+				CashRecievedNonWave[client] += 10;
+				CashSpent[client] -= 10;
+			}
+		}
+		delete DuelState_timer[client];
 	}
 }
 
@@ -86,11 +102,11 @@ public float Player_OnTakeDamage_Rapier(int victim, int attacker, float &damage)
 	{
 		case 4:
 		{
-			return damage *= 0.8518; // 15% more damage taken
+			return damage *= 0.8148; // 10% more damage taken
 		}
 		case 5:
 		{
-			return damage *= 0.8148; // 10% more damage taken
+			return damage *= 0.7407; // 0% more damage taken
 		}
 		default:
 		{
@@ -99,6 +115,25 @@ public float Player_OnTakeDamage_Rapier(int victim, int attacker, float &damage)
 	}
 }
 
+float Player_OnTakeDamage_Rapier_Hud(int victim)
+{
+	int pap = i_Current_Pap_Rapier[victim];
+	switch(pap)
+	{
+		case 4:
+		{
+			return 0.8148; // 10% more damage taken
+		}
+		case 5:
+		{
+			return 0.7407; // 0% more damage taken
+		}
+		default:
+		{
+			return 0.8888; // 20% more damage taken
+		}
+	}
+}
 void Rapier_duel_minicrits(int attacker)
 {
 	switch(GetRandomInt(1,5))
@@ -129,12 +164,20 @@ void Rapier_duel_minicrits(int attacker)
 public void NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, int weapon)
 {
 	int pap = i_Current_Pap_Rapier[attacker];
+	if(i_HasBeenHeadShotted[victim] == true)
+	{	
+		damage *= 1.1;
+		i_SpeedBuffCount[attacker]++;
+		//PrintToChatAll("speedbuff from headshot :D");
+		if(pap != 0)
+			StartBleedingTimer(victim, attacker, damage * 0.06, 4, weapon, DMG_SLASH);
+	}
 	switch(pap)
 	{
 		case 0, 1:
 		{
 			i_SpeedBuffCount[attacker]++;
-			if(i_SpeedBuffCount[attacker] == 2)
+			if(i_SpeedBuffCount[attacker] > 1)
 			{
 				//TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.35);
 				ApplyTempAttrib(weapon, 107 , 1.3272, 0.4);
@@ -145,7 +188,7 @@ public void NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, int
 		default:
 		{
 			i_SpeedBuffCount[attacker]++;
-			if(i_SpeedBuffCount[attacker] == 2)
+			if(i_SpeedBuffCount[attacker] > 1)
 			{
 				//TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.7);
 				ApplyTempAttrib(weapon, 107 , 1.3272, 0.8);
@@ -154,13 +197,12 @@ public void NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, int
 			}
 		}
 	}
-	if(i_HasBeenHeadShotted[victim] == true && pap != 0)
-		StartBleedingTimer(victim, attacker, damage * 0.05, 3, weapon, DMG_SLASH);
+	
 
 	if(f_DuelStatus[victim] > 0.0 && DuelState_timer[attacker] != INVALID_HANDLE)
 	{
 		Rapier_duel_minicrits(attacker);
-		damage *= 1.5;
+		damage *= 1.25;
 	}
 }
 
@@ -215,13 +257,13 @@ public void Weapon_Rapier_M2(int client, int weapon, bool crit, int slot)
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		float knockback = -300.0;
+		float knockback = -400.0;
 		// knockback is the overall force with which you be pushed, don't touch other stuff
 		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 			velocity[2] = fmax(velocity[2], 300.0);
 		else
-			velocity[2] += 100.0;    // a little boost to alleviate arcing issues
+			velocity[2] += 125.0;    // a little boost to alleviate arcing issues
 
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 		float time = GetGameTime() + 10.00;

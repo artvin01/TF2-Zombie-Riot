@@ -597,6 +597,15 @@ public float WeaponLeper_OnTakeDamagePlayer(int victim, float &damage, int attac
 	}
 	return damage; //half damage during animations.
 }
+public float WeaponLeper_OnTakeDamagePlayer_Hud(int victim)
+{
+	if (Leper_InAnimation[victim] > GetGameTime())
+	{
+		return 0.5; //half damage during animations.
+	}
+	return 1.0; //half damage during animations.
+}
+
 void WeaponLeper_OnTakeDamage(int attacker, float &damage, int weapon, int zr_damage_custom)
 {
 	if(zr_damage_custom & ZR_DAMAGE_REFLECT_LOGIC)
