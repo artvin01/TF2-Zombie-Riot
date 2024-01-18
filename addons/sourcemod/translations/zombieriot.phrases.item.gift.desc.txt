@@ -578,11 +578,11 @@
 	}
 	"Donnerkrieg Desc"
 	{
-		"en"		"A minnion of Blitzkrieg, he has mastered the art of light and energy\nThanks to those arts he posses an EXTREMELY dangerous ''Nightmare Cannon''\nAvoid line of sight at all costs"
+		"en"		"A minion of Blitzkrieg, he has mastered the art of light and energy\nThanks to those arts he posses an EXTREMELY dangerous ''Nightmare Cannon''\nAvoid line of sight at all costs"
 	}
 	"Schwertkrieg Desc"
 	{
-		"en"		"A minnion of Blitzkrieg, He poses the ability to teleport long distances\nHighly dangerous up close."
+		"en"		"A minion of Blitzkrieg, He poses the ability to teleport long distances\nHighly dangerous up close."
 	}
 	"Phantom Knight Desc"
 	{

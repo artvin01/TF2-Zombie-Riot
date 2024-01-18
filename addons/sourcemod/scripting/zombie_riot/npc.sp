@@ -1074,7 +1074,7 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	9,	// SEABORN_SPECIALIST	= 280,
 	9,	// SEABORN_SUPPORTER	= 281,
 	9,	// ISHARMLA		= 282,
-	9,	// ISHARMLA_TRANS		= 283,
+	-1,	// ISHARMLA_TRANS		= 283,
 
 	-1,	// RUINA_THEOCRACY = 284,
 	10,	// EXPIDONSA_BENERA = 285,
@@ -1092,8 +1092,8 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 
 	-1,	// 		= 297,
 	-1,	// 		= 298,
-	-1,	// SEA_RAIDBOSS_DONNERKRIEG	= 299,
-	-1,	// SEA_RAIDBOSS_SCHWERTKRIEG	= 300,
+	2,	// SEA_RAIDBOSS_DONNERKRIEG	= 299,
+	2,	// SEA_RAIDBOSS_SCHWERTKRIEG	= 300,
 	-1,	// BOB_THE_FIRST		= 301,
 	-1,	// BOB_THE_FIRST_S		= 302,
 	-1,	// 		= 303,
@@ -1792,6 +1792,7 @@ void NPC_MapStart()
 	Sensal_OnMapStart_NPC();
 	Raidboss_Schwertkrieg_OnMapStart_NPC();
 	Raidboss_Donnerkrieg_OnMapStart_NPC();
+	RaidbossBobTheFirst_OnMapStart();
 
 	// Bloon Low Prio
 	Bloon_MapStart();
@@ -2665,11 +2666,8 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			entity = Raidboss_Schwertkrieg(client, vecPos, vecAng, ally);
 		
-		//case BOB_THE_FIRST:
-		//	entity = RaidbossBobTheFirst(vecPos, vecAng, ally, "");
-		
-		//case BOB_THE_FIRST_S:
-		//	entity = RaidbossBobTheFirst(vecPos, vecAng, ally, "S");
+		case BOB_THE_FIRST, BOB_THE_FIRST_S:
+			entity = RaidbossBobTheFirst(vecPos, vecAng, ally, data);
 
 		case EXPIDONSA_BENERA:
 			entity = Benera(client, vecPos, vecAng, ally);
@@ -3609,6 +3607,9 @@ public void NPCDeath(int entity)
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			Raidboss_Schwertkrieg_NPCDeath(entity);
 		
+		case BOB_THE_FIRST, BOB_THE_FIRST_S:
+			RaidbossBobTheFirst_NPCDeath(entity);
+		
 		case EXPIDONSA_BENERA:
 			Benera_NPCDeath(entity); 
 
@@ -4456,7 +4457,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case ISHARMLA:
 			Isharmla_OnTakeDamage(victim, attacker, damage);
-			
 		
 		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA, RUINA_DRONE, RUINA_RURIANA, RUINA_VENIUM, RUINA_MAGIA_ANCHOR, RUINA_STORM_WEAVER, RUINA_STORM_WEAVER_MID:	
 			Ruina_NPC_OnTakeDamage_Override(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -4467,7 +4467,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			Raidboss_Schwertkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
-
+		case BOB_THE_FIRST, BOB_THE_FIRST_S:
+			RaidbossBobTheFirst_OnTakeDamage(victim, attacker, damage);
 
 		case EXPIDONSA_BENERA:
 			Benera_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -4886,7 +4887,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/raidmode_bosses/seaborn/npc_donnerkrieg.sp"
 #include "zombie_riot/npc/raidmode_bosses/seaborn/npc_schwertkrieg.sp"
-//#include "zombie_riot/npc/raidmode_bosses/seaborn/npc_bob_the_first_last_savior.sp"
+#include "zombie_riot/npc/raidmode_bosses/seaborn/npc_bob_the_first_last_savior.sp"
 
 #include "zombie_riot/npc/expidonsa/npc_benera.sp"
 #include "zombie_riot/npc/expidonsa/npc_pental.sp"
