@@ -3347,7 +3347,7 @@ static void MenuPage(int client, int section)
 		else
 		{
 			item.GetItemInfo(0, info);
-			if(UsingChoosenTags[client] || item.ParentKit || info.Cost < 1001 || info.Cost <= CurrentCash)
+//			if(UsingChoosenTags[client] || item.ParentKit)
 			{
 				int style = ITEMDRAW_DEFAULT;
 				IntToString(i, info.Classname, sizeof(info.Classname));
@@ -3536,22 +3536,13 @@ static void MenuPage(int client, int section)
 		FormatEx(buffer, sizeof(buffer), "%t", "Exit");
 
 		int count = menu.ItemCount;
-		if(count > 9)
+		while(count < 9)
 		{
-			menu.InsertItem(9, "_exit", buffer);
+			menu.AddItem("_exit", buffer, ITEMDRAW_SPACER);
 			count++;
 		}
-		else
-		{
-			while(count < 9)
-			{
-				menu.AddItem("_exit", buffer, ITEMDRAW_SPACER);
-				count++;
-			}
 
-			menu.AddItem("_exit", buffer);
-			count++;
-		}
+		menu.AddItem("_exit", buffer);
 
 		menu.Pagination = 0;
 		menu.ExitButton = false;

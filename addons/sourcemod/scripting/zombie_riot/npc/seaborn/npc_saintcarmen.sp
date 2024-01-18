@@ -178,8 +178,15 @@ public void SaintCarmen_ClotThink(int iNPC)
 							damage *= 20.0;
 						
 						KillFeed_SetKillIcon(npc.index, "taunt_spy");
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-						// 1200 x 0.5 x 0.5
+						if(team == GetEntProp(target, Prop_Send, "m_iTeamNum"))
+						{
+							SDKHooks_TakeDamage(target, 0, 0, damage, DMG_CLUB);
+						}
+						else
+						{
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
+							// 1200 x 0.5 x 0.5
+						}
 
 						npc.PlayMeleeHitSound();
 
@@ -188,7 +195,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 							vecHit[0] = 0.0;
 							vecHit[1] = 0.0;
 							vecHit[2] = 1200.0;
-							TeleportEntity(target, _, _, vecHit);
+							TeleportEntity(target, _, _, vecHit, true);
 							EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);
 
 							HealEntityGlobal(npc.index, target, -750.0, 1.0, 0.0, _);
@@ -209,7 +216,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 
 								npc.m_flNextMeleeAttack += 1.0;
 
-								HealEntityGlobal(npc.index, target, team == GetEntProp(target, Prop_Send, "m_iTeamNum") ? -10000.0 : -750.0, 1.0, 0.0, _);
+								HealEntityGlobal(npc.index, target, -750.0, 1.0, 0.0, _);
 							}
 						}
 					}
