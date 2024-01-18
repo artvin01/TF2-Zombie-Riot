@@ -1032,7 +1032,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					They are just too unbalanced.
 					Lets treat each player as just more hp flat.
 				*/
-				if(playercount > 12)
+				if(playercount > 13)
 				{
 					if(ScaleWithHpMore)
 					{
@@ -1480,8 +1480,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			else if(wasLastMann)
 			{
 				Cooldown = GetGameTime() + 30.0;
-				
-				InSetup = true;
 
 				SpawnTimer(30.0);
 				CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
@@ -1512,7 +1510,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 	else
 	{
 		Rounds.GetArray(length, round);
-		if(++CurrentWave < 1)
+		if(++CurrentWave < 9)
 		{
 //			float playercount = float(CountPlayersOnRed());
 			DoGlobalMultiScaling();
@@ -1546,7 +1544,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 			}
 
-			// Note: Artvan remove this, this is freeplay code
+			// Note: Artvin remove this, this is freeplay code
 			if(Freeplay_ShouldMiniBoss() && !rogue) //no miniboss during roguelikes.
 			{
 				panzer_spawn = true;
@@ -1564,6 +1562,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				WaveStart_SubWaveStart();
 				return;
 			}
+
+			CurrentWave = 9;
 		}
 		else if(donotAdvanceRound)
 		{
@@ -1930,4 +1930,12 @@ void DoGlobalMultiScaling()
 	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%	
 	MultiGlobal = multi;
 	MultiGlobalHealth = playercount * 0.2;
+}
+
+void Waves_ForceSetup(float cooldown)
+{
+	Cooldown = GetGameTime() + cooldown;
+	InSetup = true;
+	
+	CreateTimer(cooldown, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 }

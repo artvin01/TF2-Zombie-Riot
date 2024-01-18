@@ -197,7 +197,7 @@ methodmap OverlordRogue < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
 		SDKHook(npc.index, SDKHook_Think, OverlordRogue_ClotThink);

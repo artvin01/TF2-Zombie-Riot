@@ -219,6 +219,26 @@ public float Player_OnTakeDamage_Blemishine(int victim, int attacker, float &dam
 	return damage;
 }
 
+public float Player_OnTakeDamage_Blemishine_Hud(int victim)
+{
+	if(GetGameTime() < f_Blemishine_AbilityActive[victim])
+	{
+		switch(i_BlemishineWhichAbility[victim])
+		{
+			case 1:
+			{
+				return 0.8;
+			}
+			case 2:
+			{
+				return 0.75;
+			}
+		}
+	}
+
+	return 1.0;
+}
+
 public float NPC_OnTakeDamage_Blemishine(int attacker, int victim, float &damage, int weapon)
 {
 	if(f_TimeFrozenStill[victim] > GetGameTime(victim))

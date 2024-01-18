@@ -439,7 +439,7 @@ public void OnPostThink(int client)
 #if defined RPG		
 		float HudY = 0.95;
 #else
-		float HudY = 0.90;
+		float HudY = 0.95;
 #endif
 		float HudX = -1.0;
 	
@@ -457,11 +457,6 @@ public void OnPostThink(int client)
 			had_An_ability = false;
 			static bool IsReady;
 			IsReady = false;
-
-			if(had_An_ability) //There was a debuff or buff create new inline.
-			{
-				Format(buffer, sizeof(buffer), "\n%s", buffer);
-			}
 
 			had_An_ability = false;
 			
@@ -600,6 +595,81 @@ public void OnPostThink(int client)
 				had_An_ability = true;
 			}
 #endif	// ZR
+			if(had_An_ability)
+			{
+				HudY -= 0.035;
+				Format(buffer, sizeof(buffer), "%s\n", buffer);
+			}
+
+			float percentage = 100.0;
+			float percentage_Global = 1.0;
+			float value = 1.0;
+			percentage_Global *= ArmorPlayerReduction(client);
+
+		
+			percentage_Global *= Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(client, weapon);
+			value = Attributes_FindOnPlayerZR(client, 412, true);	// Overall damage resistance
+			if(value)
+				percentage_Global *= value;
+
+			if(TF2_IsPlayerInCondition(client, TFCond_MarkedForDeathSilent))
+			{
+				percentage_Global *= 1.35;
+			}
+			if(TF2_IsPlayerInCondition(client, TFCond_DefenseBuffed))
+			{
+				percentage_Global *= 0.65;
+			}
+			if(f_MultiDamageTaken[client] != 1.0)
+			{
+				percentage_Global *= f_MultiDamageTaken[client];
+			}
+			if(f_BattilonsNpcBuff[client] > GameTime)
+			{
+				percentage_Global *= 0.75;
+			}	
+			if(f_HussarBuff[client] > GameTime)
+			{
+				percentage_Global *= 0.90;
+			}	
+			if(f_EmpowerStateOther[client] > GameTime) //Allow stacking.
+			{
+				percentage_Global *= 0.93;
+			}
+			if(f_EmpowerStateSelf[client] > GameTime) //Allow stacking.
+			{
+				percentage_Global *= 0.9;
+			}
+			if(i_CurrentEquippedPerk[client] == 2)
+			{
+				percentage_Global *= 0.85;
+			}
+			if(Resistance_Overall_Low[client] > GameTime)
+			{
+				percentage_Global *= 0.9;
+			}
+			value = Attributes_FindOnPlayerZR(client, 206, true, 0.0, true, true);	// MELEE damage resistance
+			if(value)
+				percentage *= value;
+			//melee res
+			percentage *= percentage_Global;
+			if(percentage != 100.0)
+			{
+				FormatEx(buffer, sizeof(buffer), "%s [♈ %.0f%%]", buffer, percentage);
+				had_An_ability = true;
+			}
+			
+			percentage = 100.0;
+			percentage *= percentage_Global;
+			value = Attributes_FindOnPlayerZR(client, 205, true, 0.0, true, true);	// MELEE damage resistance
+			if(value)
+				percentage *= value;
+
+			if(percentage != 100.0)
+			{
+				FormatEx(buffer, sizeof(buffer), "%s [♐ %.0f%%]", buffer, percentage);
+				had_An_ability = true;
+			}
 			if(had_An_ability)
 			{
 				HudY -= 0.035;
@@ -1542,6 +1612,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		damage *= difficulty_math + 1.0; //More damage !! only upto double.
 		Replicated_Damage *= difficulty_math + 1.0;
 	}
+	if(f_MultiDamageTaken[victim] != 1.0)
+	{
+		damage *= f_MultiDamageTaken[victim];
+	}
 	//freeplay causes more damage taken.
 	if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
 	{
@@ -1766,34 +1840,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 
 			if(armorEnt == victim)
 			{
-				switch(Armour_Level_Current[victim])
-				{
-					case 1:
-					{
-						damage *= 0.9;
-						Replicated_Damage *= 0.9;
-					}
-					case 2:
-					{
-						damage *= 0.85;
-						Replicated_Damage *= 0.85;
-					}
-					case 3:
-					{
-						damage *= 0.8;
-						Replicated_Damage *= 0.80;
-					}
-					case 4:
-					{
-						damage *= 0.75;
-						Replicated_Damage *= 0.75;
-					}
-					default:
-					{
-						damage *= 1.0;
-						Replicated_Damage *= 1.0;
-					}
-				}
+				float percentage = ArmorPlayerReduction(victim);
+				damage *= percentage;
+				Replicated_Damage *= percentage;
 			}
 			else
 			{
@@ -2229,6 +2278,43 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 	return damage;
 }
 
+
+static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapon)
+{
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_OCEAN, WEAPON_SPECTER:
+		{
+			return Gladiia_OnTakeDamageAlly_Hud(victim);
+		}
+		case WEAPON_GLADIIA:
+		{
+			return Gladiia_OnTakeDamageSelf_Hud(victim);
+		}
+		case WEAPON_BLEMISHINE:
+		{
+			return Player_OnTakeDamage_Blemishine_Hud(victim);
+		}
+		case WEAPON_BOARD:
+		{
+			return Player_OnTakeDamage_Board_Hud(victim);
+		}
+		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
+		{
+			return WeaponLeper_OnTakeDamagePlayer_Hud(victim);
+		}
+		case WEAPON_RAPIER:
+		{
+			return Player_OnTakeDamage_Rapier_Hud(victim);
+		}
+		case WEAPON_RED_BLADE:
+		{
+			return WeaponRedBlade_OnTakeDamage_Hud(victim);
+		}
+	}
+	return 1.0;
+}
+
 //problem: tf2 code lazily made it only work for clients, the server doesnt get this information updated all the time now.
 
 void UpdatePlayerFakeModel(int client)
@@ -2339,3 +2425,51 @@ public Action Timer_CauseFadeInAndFadeDelete(Handle timer)
 }
 #endif	// ZR
 
+void IncreaceEntityDamageTakenBy(int entity, float amount, float duration)
+{
+	f_MultiDamageTaken[entity] *= amount;
+	Handle pack;
+	CreateDataTimer(duration, RevertDamageTakenAgain, pack, TIMER_FLAG_NO_MAPCHANGE);
+	WritePackCell(pack, EntIndexToEntRef(entity));
+	WritePackFloat(pack, amount);
+}
+
+public Action RevertDamageTakenAgain(Handle final, any pack)
+{
+	ResetPack(pack);
+	int entity = EntRefToEntIndex(ReadPackCell(pack));
+	float damagemulti = ReadPackFloat(pack);
+	
+	if (IsValidEntity(entity))
+	{
+		f_MultiDamageTaken[entity] /= damagemulti;
+	}
+	return Plugin_Continue;
+}
+
+float ArmorPlayerReduction(int victim)
+{
+	switch(Armor_Level[victim])
+	{
+		case 50:
+		{
+			return 0.9;
+		}
+		case 100:
+		{
+			return 0.85;
+		}
+		case 150:
+		{
+			return 0.8;
+		}
+		case 200:
+		{
+			return 0.75;
+		}
+		default:
+		{
+			return 1.0;
+		}
+	}
+}

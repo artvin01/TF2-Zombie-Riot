@@ -305,7 +305,15 @@ public void LastKnight_ClotThink(int iNPC)
 							damage *= 1.75;
 						}
 
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
+						if(team == GetEntProp(target, Prop_Send, "m_iTeamNum"))
+						{
+							SDKHooks_TakeDamage(target, 0, 0, damage, DMG_CLUB);
+						}
+						else
+						{
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
+						}
+
 						npc.PlayMeleeHitSound();
 					}
 				}

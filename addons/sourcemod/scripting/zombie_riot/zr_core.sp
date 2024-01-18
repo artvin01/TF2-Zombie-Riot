@@ -1326,7 +1326,7 @@ void CheckAlivePlayersforward(int killed=0)
 void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false)
 {
 	bool rogue = Rogue_Mode();
-	if(!Waves_Started() || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_RoundRunning)
+	if(!Waves_Started() || (!rogue && Waves_InSetup()) || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_RoundRunning)
 	{
 		LastMann = false;
 		CurrentPlayers = 0;
@@ -1344,7 +1344,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	CheckIfAloneOnServer();
 	
 	bool alive;
-	LastMann = !Waves_InSetup();
+	LastMann = true;
 	int players = CurrentPlayers;
 	CurrentPlayers = 0;
 	int GlobalIntencity_Reduntant;
