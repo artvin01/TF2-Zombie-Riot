@@ -517,6 +517,43 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 }
 
 
+public float Player_OnTakeDamage_Board_Hud(int victim)
+{
+	if(Board_Level[victim] == 0) //board
+	{
+		return 0.9;
+	}
+	else if(Board_Level[victim] == 1) //spike
+	{
+		return 0.95;
+	}
+	else if(Board_Level[victim] == 2) //leaf
+	{
+		return 0.85;
+	}
+	else if(Board_Level[victim] == 3) //rookie
+	{
+		return 0.9;
+	}
+	else if(Board_Level[victim] == 4) //punish
+	{
+		return 0.85;
+	}
+	else if(Board_Level[victim] == 5) //ramp
+	{
+		return 0.75;
+	}
+	else if(Board_Level[victim] == 6) //the last one cudgel
+	{
+		return 0.8;
+	}
+	else
+	{
+		return 1.0;
+	}
+}
+
+
 public void WeaponBoard_Cooldown_Logic(int client, int weapon)
 {
 	if(f_WeaponBoardhuddelay[client] < GetGameTime())

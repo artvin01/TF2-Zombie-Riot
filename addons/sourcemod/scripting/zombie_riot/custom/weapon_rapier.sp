@@ -115,6 +115,26 @@ public float Player_OnTakeDamage_Rapier(int victim, int attacker, float &damage)
 	}
 }
 
+float Player_OnTakeDamage_Rapier_Hud(int victim)
+{
+	int pap = i_Current_Pap_Rapier[victim];
+	switch(pap)
+	{
+		case 4:
+		{
+			return 0.8148; // 10% more damage taken
+		}
+		case 5:
+		{
+			return 0.7407; // 0% more damage taken
+		}
+		default:
+		{
+			return 0.8888; // 20% more damage taken
+		}
+	}
+	return 1.0;
+}
 void Rapier_duel_minicrits(int attacker)
 {
 	switch(GetRandomInt(1,5))

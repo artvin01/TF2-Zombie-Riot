@@ -462,6 +462,9 @@ public void OnPostThink(int client)
 			float percentage_Global = 1.0;
 			float value = 1.0;
 			percentage_Global *= ArmorPlayerReduction(client);
+
+		
+			percentage_Global *= Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(victim, weapon);
 			value = Attributes_FindOnPlayerZR(client, 412, true);	// Overall damage resistance
 			if(value)
 				percentage_Global *= value;
@@ -2274,6 +2277,43 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 	}
 	return damage;
+}
+
+
+static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapon)
+{
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_OCEAN, WEAPON_SPECTER:
+		{
+			return Gladiia_OnTakeDamageAlly_Hud(victim);
+		}
+		case WEAPON_GLADIIA:
+		{
+			return Gladiia_OnTakeDamageSelf_Hud(victim);
+		}
+		case WEAPON_BLEMISHINE:
+		{
+			return Player_OnTakeDamage_Blemishine_Hud(victim);
+		}
+		case WEAPON_BOARD:
+		{
+			return Player_OnTakeDamage_Board_Hud(victim);
+		}
+		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
+		{
+			return WeaponLeper_OnTakeDamagePlayer_Hud(victim);
+		}
+		case WEAPON_RAPIER:
+		{
+			return Player_OnTakeDamage_Rapier_Hud(victim, attacker, damage);
+		}
+		case WEAPON_RED_BLADE:
+		{
+			return WeaponRedBlade_OnTakeDamage_Hud(victim, damage);
+		}
+	}
+	return 1.0;
 }
 
 //problem: tf2 code lazily made it only work for clients, the server doesnt get this information updated all the time now.
