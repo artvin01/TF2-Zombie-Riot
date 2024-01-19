@@ -1222,11 +1222,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		if(!this.m_bThisNpcIsABoss)
 		{
-			
-#if defined ZR
-			if(EntRefToEntIndex(RaidBossActive) != this.index)
-#endif
-			
+			if(!b_thisNpcIsARaid[this.index])
 			{
 				Is_Boss = false;
 			}

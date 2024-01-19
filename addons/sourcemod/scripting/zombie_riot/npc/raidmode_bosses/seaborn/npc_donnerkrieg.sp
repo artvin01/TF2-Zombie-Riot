@@ -302,6 +302,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		b_thisNpcIsARaid[npc.index] = true;
 		
 		npc.m_bThisNpcIsABoss = true;
+		npc.m_bDissapearOnDeath = true;
 
 		donner_sea_created=false;
 		

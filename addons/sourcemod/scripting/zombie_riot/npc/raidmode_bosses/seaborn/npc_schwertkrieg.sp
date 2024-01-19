@@ -315,6 +315,8 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		npc.m_flNextChargeSpecialAttack = 0.0;	//used for transformation Logic
 		b_swords_created[npc.index]=false;
 		b_thisNpcIsARaid[npc.index] = true;
+		npc.m_bThisNpcIsABoss = true;
+		npc.m_bDissapearOnDeath = true;
 
 		fl_schwert_sword_battery[npc.index]=0.0;
 			
