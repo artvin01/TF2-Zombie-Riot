@@ -151,7 +151,7 @@ static bool b_angered_twice[MAXENTITIES];
 #define DONNERKRIEG_HEAVENS_LIGHT_LOOP_SOUND "ambient/levels/citadel/zapper_ambient_loop1.wav"
 #define DONNERKRIEG_HEAVENS_LIGHT_TOUCHDOWN_SOUND "mvm/ambient_mp3/mvm_siren.mp3"
 
-#define DONNERKRIEG_NIGHTMARE_CANNON_DURATION 15.0;
+#define DONNERKRIEG_NIGHTMARE_CANNON_DURATION 15.0
 
 void Raidboss_Donnerkrieg_OnMapStart_NPC()
 {
@@ -1321,11 +1321,11 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(Raidboss_Donnerkrieg npc, int P
 		if(!b_Crystal_active)
 		{
 			float Duration = fl_nightmare_end_timer[npc.index] - GameTime;
-			float Ratio = 1.0 - (Duration / DONNERKRIEG_NIGHTMARE_CANNON_DURATION);
+			float Ratio = (1.0 - (Duration / DONNERKRIEG_NIGHTMARE_CANNON_DURATION));
 			if(Ratio<0.1)
-				Ratio=0.1
+				Ratio=0.1;
 
-			float Turn_Speed = 250.0*Ratio;
+			float Turn_Speed = (250.0*Ratio);
 
 			
 			npc.FaceTowards(vecTarget, Turn_Speed);
