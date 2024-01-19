@@ -603,7 +603,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			}
 		}
 
-		if(enemies > 3.0)
+		if(!Waves_IsEmpty())
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * (enemies + 1.0) / 485.0));
 			return;
