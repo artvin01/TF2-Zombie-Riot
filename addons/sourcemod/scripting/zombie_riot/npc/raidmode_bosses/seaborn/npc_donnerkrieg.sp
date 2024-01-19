@@ -3086,7 +3086,7 @@ static void Doonerkrieg_Do_AOE_Damage(Raidboss_Donnerkrieg npc, float loc[3], fl
 }
 public void Donner_Normal_Tweak(int entity, int victim, float damage, int weapon)
 {	
-	if(IsValidEntity(victim))
+	if(IsValidClient(victim))
 	{
 		Client_Shake(victim);
 	}
@@ -3105,7 +3105,8 @@ public void Donner_Neural_Tweak_shake(int entity, int victim, float damage, int 
 	{
 		int neural_damage = RoundToFloor(ion_damage[entity]);
 		SeaSlider_AddNeuralDamage(victim, entity, neural_damage, false);
-		Client_Shake(victim);
+		if(IsValidClient(victim))
+			Client_Shake(victim);
 	}
 }
 
