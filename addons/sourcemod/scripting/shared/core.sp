@@ -299,6 +299,7 @@ float f_ModifThirdPersonAttackspeed[MAXENTITIES]={1.0, ...};
 float f_AntiStuckPhaseThroughFirstCheck[MAXTF2PLAYERS];
 float f_AntiStuckPhaseThrough[MAXTF2PLAYERS];
 float f_MultiDamageTaken[MAXENTITIES];
+float f_MultiDamageTaken_Flat[MAXENTITIES];
 
 bool thirdperson[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
@@ -796,7 +797,7 @@ enum
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define NIKO_PLAYERMODEL		 	"models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
-#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_216.mdl"
+#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_218.mdl"
 #define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.0//0.0151 //Make it 0 for now
@@ -1709,6 +1710,7 @@ public void OnClientPutInServer(int client)
 	f_Ruina_Defense_Buff_Amt[client] = 0.0;
 	f_Ruina_Attack_Buff_Amt[client] = 0.0;
 	f_MultiDamageTaken[client] = 1.0;
+	f_MultiDamageTaken_Flat[client] = 1.0;
 	f_ShowHudDelayForServerMessage[client] = GetGameTime() + 50.0;
 	
 #if defined ZR
@@ -2476,6 +2478,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_IsWrench[entity] = false;
 		LastHitRef[entity] = -1;
 		f_MultiDamageTaken[entity] = 1.0;
+		f_MultiDamageTaken_Flat[entity] = 1.0;
 		DamageBits[entity] = -1;
 		Damage[entity] = 0.0;
 		LastHitWeaponRef[entity] = -1;

@@ -1362,7 +1362,8 @@ public void TrueFusionwarrior_IOC_Invoke(int ref, int enemy)
 	{
 		static float distance=87.0; // /29 for duartion till boom
 		static float IOCDist=250.0;
-		static float IOCdamage=10.0;
+		static float IOCdamage;
+		IOCdamage= (35.0 * RaidModeScaling);
 		
 		float vecTarget[3];
 		GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecTarget);
@@ -1517,10 +1518,10 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 		{
 			startPosition[2] += 25.0;
 			if(!b_Anger[client])
-				makeexplosion(client, client, startPosition, "", RoundToCeil(35.0 * RaidModeScaling), 100);
+				makeexplosion(client, client, startPosition, "", Iondamage, 100);
 				
 			else if(b_Anger[client])
-				makeexplosion(client, client, startPosition, "", RoundToCeil(50.0 * RaidModeScaling), 120);
+				makeexplosion(client, client, startPosition, "", RoundToCeil(float(Iondamage) * 1.25), 120);
 				
 			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);

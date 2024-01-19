@@ -564,7 +564,7 @@ static bool UsingChoosenTags[MAXTF2PLAYERS];
 static int LastMenuPage[MAXTF2PLAYERS];
 static int CurrentMenuPage[MAXTF2PLAYERS];
 static int CurrentMenuItem[MAXTF2PLAYERS];
-static bool InStoreMenu[MAXTF2PLAYERS];
+static float LastStoreMenu[MAXTF2PLAYERS];
 #endif	// ZR
 
 #if defined RPG
@@ -2818,11 +2818,11 @@ public Action Access_StoreViaCommand(int client, int args)
 
 void Store_Menu(int client)
 {
-	if(InStoreMenu[client])
+	if(LastStoreMenu[client])
 	{
 		CancelClientMenu(client);
 		ClientCommand(client, "slot10");
-		InStoreMenu[client] = false;
+		LastStoreMenu[client] = 0.0;
 	}
 	else if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
 	{
@@ -2865,8 +2865,6 @@ static void MenuPage(int client, int section)
 {
 	if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
 		return;
-	
-	CreateTimer(0.5, Store_RefreshTimer, client);
 	
 	SetGlobalTransTarget(client);
 	
@@ -3118,7 +3116,9 @@ static void MenuPage(int client, int section)
 			}
 			
 			menu.ExitBackButton = true;
-			InStoreMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
+			if(menu.Display(client, MENU_TIME_FOREVER))
+				LastStoreMenu[client] = GetGameTime();
+			
 			return;
 		}
 
@@ -3481,7 +3481,9 @@ static void MenuPage(int client, int section)
 		}
 		
 		menu.ExitBackButton = true;
-		InStoreMenu[client] = DisplayMenuAtCustom(menu, client, CurrentMenuPage[client]);
+		if(DisplayMenuAtCustom(menu, client, CurrentMenuPage[client]))
+			LastStoreMenu[client] = GetGameTime();
+		
 		return;
 	}
 	else if(section == -1 && !NPCOnly[client])
@@ -3546,7 +3548,8 @@ static void MenuPage(int client, int section)
 
 		menu.Pagination = 0;
 		menu.ExitButton = false;
-		InStoreMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
+		if(menu.Display(client, MENU_TIME_FOREVER))
+			LastStoreMenu[client] = GetGameTime();
 	}
 	else
 	{
@@ -3557,7 +3560,8 @@ static void MenuPage(int client, int section)
 		}
 
 		menu.ExitBackButton = section != -1;
-		InStoreMenu[client] = DisplayMenuAtCustom(menu, client, CurrentMenuPage[client]);
+		if(DisplayMenuAtCustom(menu, client, CurrentMenuPage[client]))
+			LastStoreMenu[client] = GetGameTime();
 	}
 }
 /*
@@ -3587,11 +3591,11 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
-			InStoreMenu[client] = false;
+			LastStoreMenu[client] = 0.0;
 		}
 		case MenuAction_Select:
 		{
-			InStoreMenu[client] = false;
+			LastStoreMenu[client] = 0.0;
 			
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));
@@ -3906,7 +3910,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
-			InStoreMenu[client] = false;
+			LastStoreMenu[client] = 0.0;
 
 			if(choice == MenuCancel_ExitBack)
 			{
@@ -3924,7 +3928,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
-			InStoreMenu[client] = false;
+			LastStoreMenu[client] = 0.0;
 			
 			if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
 			{
@@ -6742,13 +6746,12 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 	SetEntProp(weapon, Prop_Send, "m_iClip1", item.CurrentClipSaved[client]); // weapon clip amount bullets
 }
 
-public Action Store_RefreshTimer(Handle timer, int client)
+void Store_TryRefreshMenu(int client)
 {
-	// InStoreMenu will be false if the client disconnects
-	if(InStoreMenu[client])
+	if(LastStoreMenu[client] && (LastStoreMenu[client] + 0.5) < GetGameTime())
+	{
 		MenuPage(client, CurrentMenuItem[client]);
-	
-	return Plugin_Stop;
+	}
 }
 
 bool DisplayMenuAtCustom(Menu menu, int client, int item)

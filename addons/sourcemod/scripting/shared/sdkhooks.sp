@@ -431,9 +431,11 @@ public void OnPostThink(int client)
 		}
 		Armor_regen_delay[client] = GameTime + 1.0;
 	}
-#endif	// ZR
-	
-	if(Mana_Hud_Delay[client] < GameTime)	
+	if(Mana_Hud_Delay[client] < GameTime)
+#else	// ZR
+	else if(Mana_Hud_Delay[client] < GameTime)
+#endif
+
 	{
 		char buffer[255];
 #if defined RPG		
@@ -623,6 +625,10 @@ public void OnPostThink(int client)
 			if(f_MultiDamageTaken[client] != 1.0)
 			{
 				percentage_Global *= f_MultiDamageTaken[client];
+			}
+			if(f_MultiDamageTaken_Flat[client] != 1.0)
+			{
+				percentage_Global *= f_MultiDamageTaken_Flat[client];
 			}
 			if(f_BattilonsNpcBuff[client] > GameTime)
 			{
@@ -935,7 +941,7 @@ public void OnPostThink(int client)
 			ShowSyncHudText(client,  SyncHud_WandMana, "%s", buffer);
 		}
 	}
-	if(delay_hud[client] < GameTime)	
+	else if(delay_hud[client] < GameTime)	
 	{
 		delay_hud[client] = GameTime + 0.4;
 
@@ -1295,14 +1301,9 @@ public void OnPostThink(int client)
 		PrintKeyHintText(client,"%s", HudBuffer);
 #endif	// ZR
 	}
-
-		
-#if defined RPG
-		// RPG Level Stuff Here
-#endif	// RPG
 		
 #if defined ZR
-	if(f_DelayLookingAtHud[client] < GameTime)
+	else if(f_DelayLookingAtHud[client] < GameTime)
 	{
 		//Reuse uhh
 		//Doesnt reset often enough, fuck clientside.
@@ -1317,6 +1318,10 @@ public void OnPostThink(int client)
 		{
 			f_DelayLookingAtHud[client] = GameTime + 2.0;
 		}
+	}
+	else
+	{
+		Store_TryRefreshMenu(client);
 	}
 	
 	Music_PostThink(client);
@@ -1616,6 +1621,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		damage *= f_MultiDamageTaken[victim];
 	}
+	if(f_MultiDamageTaken_Flat[victim] != 1.0)
+	{
+		damage *= f_MultiDamageTaken_Flat[victim];
+	}
+	
 	//freeplay causes more damage taken.
 	if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
 	{
@@ -2425,12 +2435,17 @@ public Action Timer_CauseFadeInAndFadeDelete(Handle timer)
 }
 #endif	// ZR
 
-void IncreaceEntityDamageTakenBy(int entity, float amount, float duration)
+void IncreaceEntityDamageTakenBy(int entity, float amount, float duration, bool Flat = false)
 {
-	f_MultiDamageTaken[entity] *= amount;
+	if(!Flat)
+		f_MultiDamageTaken[entity] *= amount;
+	else
+		f_MultiDamageTaken_Flat[entity] += amount;
+
 	Handle pack;
 	CreateDataTimer(duration, RevertDamageTakenAgain, pack, TIMER_FLAG_NO_MAPCHANGE);
 	WritePackCell(pack, EntIndexToEntRef(entity));
+	WritePackCell(pack, Flat);
 	WritePackFloat(pack, amount);
 }
 
@@ -2438,11 +2453,15 @@ public Action RevertDamageTakenAgain(Handle final, any pack)
 {
 	ResetPack(pack);
 	int entity = EntRefToEntIndex(ReadPackCell(pack));
+	bool Flat = ReadPackCell(pack);
 	float damagemulti = ReadPackFloat(pack);
 	
 	if (IsValidEntity(entity))
 	{
-		f_MultiDamageTaken[entity] /= damagemulti;
+		if(!Flat)
+			f_MultiDamageTaken[entity] /= damagemulti;
+		else
+			f_MultiDamageTaken_Flat[entity] -= damagemulti;
 	}
 	return Plugin_Continue;
 }
