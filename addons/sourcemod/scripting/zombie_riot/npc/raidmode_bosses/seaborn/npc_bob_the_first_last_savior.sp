@@ -349,6 +349,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		AcceptEntityInput(npc.m_iWearable1, "Disable");
 		npc.b_SwordIgnition = false;
+		Raidboss_Clean_Everyone();
 		
 		return npc;
 	}
@@ -809,14 +810,24 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 		switch(npc.m_iAttackType)
 		{
-			case 2:	// COMBO1 - Frame 54
+			case 2:	// COMBO1 - Frame 44
 			{
 				if(npc.m_flAttackHappens < gameTime)
 				{
-					BobInitiatePunch(npc.index, vecTarget, vecMe, 1.333, 4000.0, false);
+					BobInitiatePunch(npc.index, vecTarget, vecMe, 0.999, 4000.0, true);
+					
+					npc.m_iAttackType = 3;
+					npc.m_flAttackHappens = gameTime + 0.899;
+				}
+			}
+			case 3:	// COMBO1 - Frame 54
+			{
+				if(npc.m_flAttackHappens < gameTime)
+				{
+					BobInitiatePunch(npc.index, vecTarget, vecMe, 0.5, 2000.0, false);
 					
 					npc.m_iAttackType = 0;
-					npc.m_flAttackHappens = gameTime + 2.333;
+					npc.m_flAttackHappens = gameTime + 1.555;
 				}
 			}
 			case 4:	// COMBO2 - Frame 32
@@ -856,7 +867,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					npc.m_iAttackType = 0;
 					npc.m_flAttackHappens = gameTime + 0.333;
 
-					int projectile = npc.FireParticleRocket(vecTarget, 3000.0, GetRandomFloat(175.0, 225.0), 150.0, "unusual_robot_time_warp", true);
+					int projectile = npc.FireParticleRocket(vecTarget, 3000.0, GetRandomFloat(175.0, 225.0), 150.0, "utaunt_glitter_teamcolor_blue", true);
 					npc.DispatchParticleEffect(npc.index, "rd_robot_explosion_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
 					SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
@@ -956,6 +967,8 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 									else
 									{
 										float VulnerabilityToGive = 0.10;
+										if(npc.m_bFakeClone)
+											VulnerabilityToGive = 0.05;
 										IncreaceEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
 									}	
 	
@@ -963,6 +976,9 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 								else
 								{
 									float VulnerabilityToGive = 0.10;
+									if(npc.m_bFakeClone)
+										VulnerabilityToGive = 0.05;
+
 									IncreaceEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
 								}	
 								if(!Knocked)
@@ -1798,7 +1814,7 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 	npc.FaceTowards(VectorTarget, 20000.0);
 	int FramesUntillHit = RoundToNearest(TimeUntillHit * 66.0);
 
-	float vecForward[3], vecRight[3], Angles[3];
+	float vecForward[3], Angles[3];
 
 	GetVectorAnglesTwoPoints(VectorStart, VectorTarget, Angles);
 
@@ -1959,8 +1975,6 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 					hullMin[1] = 0.0;
 					hullMin[2] = 400.0;
 					TeleportEntity(victim, _, _, hullMin, true);
-
-					TF2_StunPlayer(victim, 1.5, 0.5, TF_STUNFLAGS_NORMALBONK, victim);
 				}
 				else if(!b_NpcHasDied[victim])
 				{

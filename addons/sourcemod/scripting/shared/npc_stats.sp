@@ -3137,8 +3137,9 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		
 		if (EntRefToEntIndex(RaidBossActive) == pThis)
 		{
-			Raidboss_Clean_Everyone();
+			CreateTimer(1.0, Timer_CheckIfRaidIsActive, _, TIMER_FLAG_NO_MAPCHANGE);	
 		}
+		
 		VausMagicaRemoveShield(pThis);
 #endif
 #if defined ZR
@@ -7578,7 +7579,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 }
 
 #if defined ZR
-public void Raidboss_Clean_Everyone()
+void Raidboss_Clean_Everyone(int RevertBack = false)
 {
 	if(VIPBuilding_Active())
 		return;
@@ -7592,7 +7593,10 @@ public void Raidboss_Clean_Everyone()
 			{
 				if(!b_IsAlliedNpc[base_boss]) //Make sure it doesnt actually kill map base_bosses
 				{
-					Change_Npc_Collision(base_boss, 1); //Gives raid collision
+					if(RevertBack)
+						Change_Npc_Collision(base_boss, num_ShouldCollideEnemy);
+					else
+						Change_Npc_Collision(base_boss, 1); 
 				}
 			}
 		}
@@ -9597,4 +9601,14 @@ void ExtinguishTarget(int target)
 		delete Timer_Ingition_Settings[target];
 		Timer_Ingition_Settings[target] = null;
 	}
+}
+
+
+public Action Timer_CheckIfRaidIsActive(Handle timer, any entid)
+{
+	if(!RaidbossIgnoreBuildingsLogic(2))
+	{
+		Raidboss_Clean_Everyone(true);
+	}
+	return Plugin_Handled;
 }

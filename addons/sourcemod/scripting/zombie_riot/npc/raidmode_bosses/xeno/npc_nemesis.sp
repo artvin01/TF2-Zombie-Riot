@@ -199,6 +199,8 @@ methodmap RaidbossNemesis < CClotBody
 		RaidAllowsBuildings = false;
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 
+		Raidboss_Clean_Everyone();
+
 		if(XenoExtraLogic())
 			RaidModeTime = GetGameTime(npc.index) + 250.0;
 
