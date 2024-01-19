@@ -258,7 +258,8 @@ methodmap RaidbossBobTheFirst < CClotBody
 			i_RaidGrantExtra[npc.index] = 1;
 			npc.m_flNextDelayTime = GetGameTime(npc.index) + 10.0;
 			npc.g_TimesSummoned = 0;
-			WaveStart_SubWaveStart(GetGameTime());
+			WaveStart_SubWaveStart(GetGameTime() + 500.0);
+			//this shouldnt ever start, no anti delay here.
 
 			if(StrContains(data, "nobackup") != -1)
 			{
