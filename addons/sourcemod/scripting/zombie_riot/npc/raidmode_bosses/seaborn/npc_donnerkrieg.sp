@@ -151,6 +151,8 @@ static bool b_angered_twice[MAXENTITIES];
 #define DONNERKRIEG_HEAVENS_LIGHT_LOOP_SOUND "ambient/levels/citadel/zapper_ambient_loop1.wav"
 #define DONNERKRIEG_HEAVENS_LIGHT_TOUCHDOWN_SOUND "mvm/ambient_mp3/mvm_siren.mp3"
 
+#define DONNERKRIEG_NIGHTMARE_CANNON_DURATION 15.0;
+
 void Raidboss_Donnerkrieg_OnMapStart_NPC()
 {
 	PrecacheSoundArray(g_DeathSounds);
@@ -575,12 +577,13 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 	if(fl_nightmare_end_timer[npc.index] < GameTime && b_nightmare_logic[npc.index])
 	{	
 		npc.m_flRangedArmor = 1.0;
+		npc.m_flMeleeArmor = 1.0;
 		b_nightmare_logic[npc.index] = false;
 
 		if(schwert_retreat)
 			schwert_retreat=false;	//schwert goes back to normal
 
-		fl_cannon_Recharged[npc.index] = GameTime + 60.0;
+		fl_cannon_Recharged[npc.index] = GameTime + 45.0;
 
 		npc.m_flSpeed = 300.0;
 		
@@ -1244,7 +1247,8 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(Raidboss_Donnerkrieg npc, int P
 					
 					npc.m_bInKame = true;
 					
-					npc.m_flRangedArmor = 0.5;
+					npc.m_flRangedArmor = 0.3;
+					npc.m_flMeleeArmor = 0.3;
 						
 					float flPos[3]; // original
 					float flAng[3]; // original
@@ -1315,7 +1319,15 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(Raidboss_Donnerkrieg npc, int P
 	{
 		if(!b_Crystal_active)
 		{
-			npc.FaceTowards(vecTarget, 100.0);
+			float Duration = fl_nightmare_end_timer[npc.index] - GameTime;
+			float Ratio = 1.0 - (Duration / DONNERKRIEG_NIGHTMARE_CANNON_DURATION);
+			if(Ratio<0.1)
+				Ratio=0.1
+
+			float Turn_Speed = 250.0*Ratio;
+
+			
+			npc.FaceTowards(vecTarget, Turn_Speed);
 		}
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
@@ -1850,8 +1862,6 @@ public void Doonerkrieg_Delay_TE_Beam2(DataPack pack)
 	delete pack;
 }
 
-static bool b_cannon_sound_created[MAXENTITIES];
-
 static Action Donner_Nightmare_Offset(Handle timer, int client)
 {
 	if(IsValidEntity(client))
@@ -1862,10 +1872,9 @@ static Action Donner_Nightmare_Offset(Handle timer, int client)
 		npc.SetPlaybackRate(0.0);
 		npc.SetCycle(0.23);
 		ParticleEffectAt(WorldSpaceCenter(npc.index), "eyeboss_death_vortex", 1.0);
-		b_cannon_sound_created[npc.index]=false;
 		EmitSoundToAll("mvm/mvm_tank_ping.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
 		
-		fl_nightmare_end_timer[npc.index] = GetGameTime(npc.index) + 31.5;
+		fl_nightmare_end_timer[npc.index] = GetGameTime(npc.index) + DONNERKRIEG_NIGHTMARE_CANNON_DURATION+1.5;
 		//Invoke_Heavens_Touch(npc, GetGameTime(npc.index));
 		EmitSoundToAll("vo/medic_sf13_influx_big02.mp3");	//he laughing
 		Donnerkrieg_Main_Nightmare_Cannon(npc);

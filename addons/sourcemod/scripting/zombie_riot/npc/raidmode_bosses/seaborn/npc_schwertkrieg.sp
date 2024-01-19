@@ -807,7 +807,7 @@ static void Schwert_Aggresive_Behavior(Raidboss_Schwertkrieg npc, int PrimaryThr
 		if(Schwert_Status(npc, GameTime)==1)
 			return;
 
-		float Swing_Speed = 2.0;
+		float Swing_Speed = 1.0;
 		float Swing_Delay = 0.2;
 		if(npc.m_flNextMeleeAttack < GameTime)
 		{
@@ -836,7 +836,7 @@ static void Schwert_Aggresive_Behavior(Raidboss_Schwertkrieg npc, int PrimaryThr
 					
 					if(target > 0) 
 					{
-						float meleedmg= 45.0*RaidModeScaling;	//schwert hurts like a fucking truck
+						float meleedmg= 50.0*RaidModeScaling;	//schwert hurts like a fucking truck
 
 						if(npc.Anger)
 							meleedmg*1.25;
@@ -870,27 +870,13 @@ static void Schwert_Aggresive_Behavior(Raidboss_Schwertkrieg npc, int PrimaryThr
 						{
 							SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg * 5, DMG_CLUB, -1, _, vecHit);
 						}
-
-						bool Knocked = false;
 						
 						if(IsValidClient(target))
 						{
-							if (IsInvuln(target))
-							{
-								Knocked = true;
-								Custom_Knockback(npc.index, target, 900.0, true);
-								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-							}
-							else
-							{
-								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-							}
+							Custom_Knockback(npc.index, target, 900.0, true);
+							TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+							TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 						}
-							
-						if(!Knocked)
-							Custom_Knockback(npc.index, target, 650.0); 
 						
 						npc.PlayMeleeHitSound();	
 					
@@ -1377,7 +1363,7 @@ public Action Raidboss_Schwertkrieg_OnTakeDamage(int victim, int &attacker, int 
 
 	int wave = ZR_GetWaveCount()+1;
 
-	if(!b_angered_twice[npc.index] && Health/MaxHealth<=0.5 && !b_teleport_strike_active[npc.index] && (wave >=30 || b_allow_schwert_transformation))
+	if(!b_angered_twice[npc.index] && Health/MaxHealth<=0.8 && !b_teleport_strike_active[npc.index] && (wave >=30 || b_allow_schwert_transformation))
 	{
 		b_angered_twice[npc.index]=true;
 		donner_sea_created=true;
@@ -1723,7 +1709,7 @@ public void Raidboss_Schwertkrieg_NPCDeath(int entity)
 	int wave = ZR_GetWaveCount()+1;
 	if(wave<60)
 	{
-		if(IsValidEntity(ally))
+		if(b_raidboss_donnerkrieg_alive)
 		{
 			switch(GetRandomInt(1,2))	//warp
 			{
