@@ -412,7 +412,7 @@ methodmap CClotBody < CBaseCombatCharacter
 				else
 #endif
 				{
-					Change_Npc_Collision(npc, num_ShouldCollb_thisNpcIsARaideEnemyIngoreBuilding);
+					Change_Npc_Collision(npc, num_ShouldCollideEnemyIngoreBuilding);
 				}
 			}
 			else
