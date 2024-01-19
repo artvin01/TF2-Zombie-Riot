@@ -120,7 +120,7 @@ public void UnderTides_ClotThink(int iNPC)
 
 	float gameTime = GetGameTime();	// You can't stun it
 
-	if(RaidBossActive != INVALID_ENT_REFERENCE && RaidModeTime < gameTime)
+	if(EntRefToEntIndex(RaidBossActive) == npc.index && RaidModeTime < gameTime)
 	{
 		int entity = CreateEntityByName("game_round_win");
 		DispatchKeyValue(entity, "force_map_reset", "1");
