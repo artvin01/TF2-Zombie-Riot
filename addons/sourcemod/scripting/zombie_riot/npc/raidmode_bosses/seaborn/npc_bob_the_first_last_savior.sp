@@ -768,6 +768,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 				SetEntityRenderMode(summon, RENDER_TRANSALPHA);
 				SetEntityRenderColor(summon, 200, 200, 200, 200);
+				Zombies_Currently_Still_Ongoing -= 1;
 			}
 		}
 	}
