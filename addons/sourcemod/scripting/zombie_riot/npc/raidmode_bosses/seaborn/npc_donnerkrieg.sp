@@ -505,7 +505,7 @@ void Donnerkrieg_SpawnAllyDuoRaid(int ref)
 
 		maxhealth = GetEntProp(entity, Prop_Data, "m_iHealth");
 		
-		maxhealth = RoundToFloor(maxhealth*2.5);
+		maxhealth = RoundToFloor(maxhealth*1.5);
 
 		int spawn_index = Npc_Create(SEA_RAIDBOSS_SCHWERTKRIEG, -1, pos, ang, GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2);
 		if(spawn_index > MaxClients)

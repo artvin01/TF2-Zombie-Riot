@@ -878,10 +878,10 @@ static void Schwert_Aggresive_Behavior(Raidboss_Schwertkrieg npc, int PrimaryThr
 					
 					if(target > 0) 
 					{
-						float meleedmg= 30.0*RaidModeScaling;	//schwert hurts like a fucking truck
+						float meleedmg= 45.0*RaidModeScaling;	//schwert hurts like a fucking truck
 
 						if(npc.Anger)
-							meleedmg*1.1;
+							meleedmg*1.25;
 
 						if(fl_schwert_sword_battery[npc.index]> GameTime)
 						{
