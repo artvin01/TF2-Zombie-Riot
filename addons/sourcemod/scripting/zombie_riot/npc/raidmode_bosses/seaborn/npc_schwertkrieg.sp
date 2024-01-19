@@ -416,48 +416,6 @@ public void Schwertkrieg_Set_Ally_Index(int ref)
 {	
 	i_ally_index = EntIndexToEntRef(ref);
 }
-static int Schwertkrieg_Get_Target(Raidboss_Schwertkrieg npc, float GameTime)
-{
-	if(b_schwert_focus_snipers)
-	{
-		if(fl_focus_timer[npc.index] < GameTime)
-		{
-			fl_focus_timer[npc.index] = GameTime + GetRandomFloat(2.5 , 7.5);
-			float loc[3]; loc = GetAbsOrigin(npc.index);
-			float Dist = -1.0;
-			int target=-1;
-			for(int client=0 ; client <=MAXTF2PLAYERS ; client++)	//get the furthest away valid sniper target
-			{
-				if(IsValidClient(client) && b_donner_valid_sniper_threats[client] && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
-				{
-					float client_loc[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", client_loc);
-					float distance = GetVectorDistance(client_loc, loc, true);
-					{
-						if(distance>Dist)
-						{
-							target = client;
-						}
-					}
-				}
-			}
-			if(IsValidEnemy(npc.index, target))
-			{
-				npc.m_iTarget = target;
-				return target;
-			}
-			else
-			{
-				return npc.m_iTarget;
-			}
-		}
-		else
-		{
-			return npc.m_iTarget;
-		}
-	}
-
-	return npc.m_iTarget;
-}
 //TODO 
 //Rewrite
 public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
@@ -581,7 +539,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 	}
 		
 	
-	int PrimaryThreatIndex = Schwertkrieg_Get_Target(npc, GameTime);
+	int PrimaryThreatIndex = npc.m_iTarget;
 
 	int Ally =-1;
 
@@ -878,10 +836,10 @@ static void Schwert_Aggresive_Behavior(Raidboss_Schwertkrieg npc, int PrimaryThr
 					
 					if(target > 0) 
 					{
-						float meleedmg= 30.0*RaidModeScaling;	//schwert hurts like a fucking truck
+						float meleedmg= 45.0*RaidModeScaling;	//schwert hurts like a fucking truck
 
 						if(npc.Anger)
-							meleedmg*1.1;
+							meleedmg*1.25;
 
 						if(fl_schwert_sword_battery[npc.index]> GameTime)
 						{

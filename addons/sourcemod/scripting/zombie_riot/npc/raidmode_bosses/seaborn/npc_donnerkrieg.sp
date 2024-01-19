@@ -122,13 +122,6 @@ static float fl_heavens_fall_use_timer[MAXENTITIES];
 //Logic for duo raidboss
 
 bool schwert_retreat;
-static float fl_donner_sniper_threat_timer_clean[MAXTF2PLAYERS+1];
-#define RAIDBOSS_DONNERKRIEG_SNIPER_CLEAN_TIMER	30.0	//For how long does a "sniper" player have to not attack in "sniper" deffinition for the threat index to be reset
-static float fl_donner_sniper_threat_value[MAXTF2PLAYERS+1];
-bool b_donner_valid_sniper_threats[MAXTF2PLAYERS+1];
-bool b_schwert_focus_snipers;
-float fl_schwertkrieg_sniper_rampage_timer;
-#define RAIDBOSS_DONNERKRIEG_SCHWERTKRIEG_SNIPER_RAMPAGE_REFRESH_TIME 10.0	//tl;dr, if a sniper doesn't attack in 10 seconds, schwertkrieg goes to normal operations
 
 static int i_ally_index;
 
@@ -192,10 +185,6 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	PrecacheSound("vo/medic_sf13_influx_big02.mp3", true);
 	
 	Heavens_Beam = PrecacheModel(BLITZLIGHT_SPRITE);
-	
-	Zero(b_donner_valid_sniper_threats);
-	Zero(fl_donner_sniper_threat_value);
-	Zero(fl_donner_sniper_threat_timer_clean);
 
 	PrecacheSound(DONNERKRIEG_HEAVENS_LIGHT_START_SOUND, true);
 	PrecacheSound(DONNERKRIEG_HEAVENS_LIGHT_LOOP_SOUND, true);
@@ -351,9 +340,6 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 			
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
-			b_donner_valid_sniper_threats[client_check] = false;
-			fl_donner_sniper_threat_value[client_check] = 0.0;
-			fl_donner_sniper_threat_timer_clean[client_check] = 0.0;
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 			{
 				LookAtTarget(client_check, npc.index);
@@ -457,7 +443,6 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		fl_nightmare_end_timer[npc.index]= GameTime + 10.0;
 		fl_cannon_Recharged[npc.index]= GameTime + 10.0;
 		
-		fl_schwertkrieg_sniper_rampage_timer = 0.0;
 		
 		
 		Heavens_Light_Active[npc.index]=false;
@@ -468,8 +453,6 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		fl_heavens_fall_use_timer[npc.index] = GameTime + 30.0;
 
 		//Heavens_Fall(npc, GetGameTime(npc.index));
-
-		b_schwert_focus_snipers = false;
 
 		schwert_retreat = false;
 		
@@ -505,7 +488,7 @@ void Donnerkrieg_SpawnAllyDuoRaid(int ref)
 
 		maxhealth = GetEntProp(entity, Prop_Data, "m_iHealth");
 		
-		maxhealth = RoundToFloor(maxhealth*2.5);
+		maxhealth = RoundToFloor(maxhealth*1.5);
 
 		int spawn_index = Npc_Create(SEA_RAIDBOSS_SCHWERTKRIEG, -1, pos, ang, GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2);
 		if(spawn_index > MaxClients)
@@ -614,23 +597,6 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 			RemoveEntity(EntRefToEntIndex(i_particle_effects[npc.index][2]));
 		
 	}
-	
-	bool target_neutralized = false;	//if all the valid target timers are no more, just forcefully set schwertkrieg to defaul behavior
-	for(int client=0 ; client <MAXTF2PLAYERS ; client++)
-	{
-		if(fl_donner_sniper_threat_timer_clean[client]<GameTime)	//this "sniper" player hasn't attacked donnerkrieg from a far range in 30 seconds, remove them as a valid target for schwertkrieg and remove the threat
-		{
-			target_neutralized = true;	//a target has been neutralized, check
-			fl_donner_sniper_threat_value[client] = 0.0;
-			b_donner_valid_sniper_threats[client] = false; //NOTE: its likely that players might attack from a far just cause they happened to be there, so I should probably make the valid threat either be set to false sooner, or I should add a "Value" system, range vs threat %.
-		}
-		else
-		{
-			target_neutralized = false;
-		}
-	}
-	if(target_neutralized || fl_schwertkrieg_sniper_rampage_timer < GameTime)
-		b_schwert_focus_snipers = false;	//Target neutralized, returning to HQ
 		
 	int PrimaryThreatIndex = npc.m_iTarget;
 
@@ -1913,10 +1879,6 @@ public Action Raidboss_Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
-	if(attacker < MAXTF2PLAYERS)
-		Donnerkrieg_Set_Sniper_Threat_Value(npc, attacker, damage, weapon);
-
 
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
@@ -1934,50 +1896,6 @@ public Action Raidboss_Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &
 	}
 	
 	return Plugin_Changed;
-}
-static void Donnerkrieg_Set_Sniper_Threat_Value(Raidboss_Donnerkrieg npc, int PrimaryThreatIndex, float damage, int weapon)
-{
-	if(!IsValidEntity(weapon))
-		return;
-		
-	float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-	
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-	
-	float GameTime = GetGameTime(npc.index);
-	
-	if(flDistanceToTarget >(2000.0 * 2000.0))
-	{
-		char classname[32];
-		GetEntityClassname(weapon, classname, 32);
-	
-		int weapon_slot = TF2_GetClassnameSlot(classname);
-	
-		if(weapon_slot == 0)	//check if its a primary, primarly checking if the player is using a long range weapon | Ideally if I could I would check if there holding a sniper weapon type, but idk how to do that
-		{
-			float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-			
-			float amt = damage / (MaxHealth/10.0);
-			
-			fl_schwertkrieg_sniper_rampage_timer = GameTime + RAIDBOSS_DONNERKRIEG_SCHWERTKRIEG_SNIPER_RAMPAGE_REFRESH_TIME;
-			fl_donner_sniper_threat_value[PrimaryThreatIndex]+= amt;
-			b_donner_valid_sniper_threats[PrimaryThreatIndex] = true;	//this player is now a valid target for schwert to focus if schwert goes into anti sniper mode
-			fl_donner_sniper_threat_timer_clean[PrimaryThreatIndex] = GameTime + RAIDBOSS_DONNERKRIEG_SNIPER_CLEAN_TIMER;
-		}
-	}
-	
-	float threat_ammount = 0.0;
-	for(int client=0 ; client <MAXTF2PLAYERS ; client++)
-	{
-		threat_ammount += fl_donner_sniper_threat_value[client];
-	}
-		
-	if(threat_ammount>0.25 && !b_schwert_focus_snipers)
-	{
-		b_schwert_focus_snipers = true;
-	}
-	if(threat_ammount<0.25)
-		b_schwert_focus_snipers = false;
 }
 
 public void Raidboss_Donnerkrieg_NPCDeath(int entity)
@@ -2322,6 +2240,7 @@ static bool b_is_crystal[MAXENTITIES];
 static float fl_initial_windup[MAXENTITIES];
 static float fl_spinning_angle[MAXENTITIES];
 static float fl_explosion_thorttle[MAXENTITIES];
+static float fl_force_kill_crystal_timer;
 
 static float Laser_Loc[MAXTF2PLAYERS+1][3];
 static void Donnerkrieg_Main_Nightmare_Cannon(Raidboss_Donnerkrieg npc)
@@ -2334,6 +2253,7 @@ static void Donnerkrieg_Main_Nightmare_Cannon(Raidboss_Donnerkrieg npc)
 	fl_initial_windup[npc.index] = GetGameTime(npc.index)+1.5;
 	fl_explosion_thorttle[npc.index]=0.0;
 	fl_spinning_angle[npc.index]=0.0;
+	fl_force_kill_crystal_timer = GetGameTime() +2.5;
 	i_crystal_index=-1;
 	SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_Main_Nightmare_Tick);
 	SDKHook(npc.index, SDKHook_Think, Donnerkrieg_Main_Nightmare_Tick);
@@ -2359,6 +2279,8 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 	if(IsValidEntity(i_crystal_index))	//warp_crystal
 	{
 		int crystal = i_crystal_index;
+
+		
 		float vecNPC[3];
 		GetEntPropVector(crystal, Prop_Data, "m_vecAbsOrigin", vecNPC);
 
@@ -2377,6 +2299,13 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 		float flPitch = npc.GetPoseParameter(iPitch);
 									
 		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+
+		if(fl_force_kill_crystal_timer < GameTime)
+		{
+			RemoveEntity(i_crystal_index);
+			i_crystal_index= -1;
+			b_Crystal_active=false;
+		}
 
 	}
 
@@ -2591,7 +2520,7 @@ static void Crystal_Laser_Move_And_Dmg_Logic(Raidboss_Donnerkrieg npc, int clien
 		TE_SetupBeamPoints(start_loc, current_loc, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, DONNERKRIEG_TE_DURATION, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 0.5, {150, 150, 150, 150}, 3);
 		TE_SendToAll(0.0);
 
-		Donnerkrieg_Laser_Trace(npc, start_loc, current_loc, diameter*0.5, 25.0*RaidModeScaling, infection);
+		Donnerkrieg_Laser_Trace(npc, start_loc, current_loc, diameter*0.5, 5.5*RaidModeScaling, infection);
 	}
 }
 static void Donnerkrieg_Create_Spinning_Beams(Raidboss_Donnerkrieg npc, float Origin[3], float Angles[3], int loop_for, float Main_Beam_Dist, bool Type=true, float distance_stuff, float ang_multi)
@@ -2746,6 +2675,10 @@ public void Donnerkrieg_Invoke_Crstaline_Reflection(int client, float Target[3],
 		if(IsValidClient(i))
 		{
 			float loc[3] ; loc = GetAbsOrigin(i);
+			loc[0] +=GetRandomFloat(-100.0,100.0);
+			loc[1] +=GetRandomFloat(-100.0,100.0);
+			loc[2] +=GetRandomFloat(-100.0,100.0);
+
 			Laser_Loc[i] = loc;
 		}
 	}
