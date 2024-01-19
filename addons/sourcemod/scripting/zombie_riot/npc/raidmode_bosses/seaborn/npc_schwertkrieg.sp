@@ -391,6 +391,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 
 		b_swords_flying[npc.index]=false;
+		npc.Anger = false;
 
 
 		SetVariantInt(1);
