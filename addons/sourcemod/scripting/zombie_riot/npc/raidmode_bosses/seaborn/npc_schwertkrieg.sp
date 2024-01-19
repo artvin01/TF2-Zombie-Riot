@@ -430,6 +430,12 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 
 	float GameTime = GetGameTime(npc.index);
 
+	if(RaidModeTime < GetGameTime())
+	{
+		SDKUnhook(npc.index, SDKHook_Think, Raidboss_Schwertkrieg_ClotThink);
+		return;
+	}
+
 	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
@@ -1709,7 +1715,7 @@ public void Raidboss_Schwertkrieg_NPCDeath(int entity)
 	}
 
 	int wave = ZR_GetWaveCount()+1;
-	if(wave<60)
+	if(wave<60 && !b_donner_said_win_line)
 	{
 		if(b_raidboss_donnerkrieg_alive)
 		{

@@ -153,6 +153,8 @@ static bool b_angered_twice[MAXENTITIES];
 
 #define DONNERKRIEG_NIGHTMARE_CANNON_DURATION 15.0
 
+bool b_donner_said_win_line;
+
 void Raidboss_Donnerkrieg_OnMapStart_NPC()
 {
 	PrecacheSoundArray(g_DeathSounds);
@@ -284,6 +286,8 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+
+		b_donner_said_win_line = false;
 		
 		
 		/*
@@ -517,10 +521,8 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 
 	if(RaidModeTime < GetGameTime())
 	{
-		if(RaidBossActive != INVALID_ENT_REFERENCE)
-		{
-			Donnerkrieg_Say_Lines(npc, DONNERKRIEG_WIN_LINE);
-		}
+		SDKUnhook(npc.index, SDKHook_Think, Raidboss_Donnerkrieg_ClotThink);
+		return;
 	}
 		
 	float GameTime = GetGameTime(npc.index);
@@ -800,13 +802,28 @@ public void Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(bool donner_alive)
 		AcceptEntityInput(entity, "RoundWin");
 		Music_RoundEnd(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;
+		b_donner_said_win_line = true;
 		if(donner_alive)
 		{
-			
+			char name_color[255]; name_color = "aqua";
+			char text_color[255]; text_color = "snow";
+			char danger_color[255]; danger_color = "crimson";
+
+			char text_lines[255];
+			int ally = EntRefToEntIndex(i_ally_index);
+			if(IsValidEntity(ally))
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: You think thats how you fight us two?", name_color, text_color);
+			}
+			else
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Oh my, how annoying this has become...", name_color, text_color);
+			}
+			CPrintToChatAll(text_lines);
 		}
 		else
 		{
-
+			CPrintToChatAll("{crimson}Schwertkrieg{snow}: Ayaya?");
 		}
 		
 	}
@@ -1926,51 +1943,54 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 
 	int ally = EntRefToEntIndex(i_ally_index);
 	ParticleEffectAt(WorldSpaceCenter(npc.index), "teleported_blue", 0.5);
-	if(wave<60)
+	if(!b_donner_said_win_line)
 	{
-		if(IsValidEntity(ally))
+		if(wave<60)
 		{
-			switch(GetRandomInt(1,2))	//warp
+			if(IsValidEntity(ally))
 			{
-				case 1:
+				switch(GetRandomInt(1,2))	//warp
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Hmph, I'll let {crimson}Schwertkrieg{snow} handle this");
+					case 1:
+					{
+						CPrintToChatAll("{aqua}Donnerkrieg{snow}: Hmph, I'll let {crimson}Schwertkrieg{snow} handle this");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{aqua}Donnerkrieg{snow}: You still have {crimson}Schwertkrieg{snow} to deal with... heh");
+					}
 				}
-				case 2:
+			}
+			else
+			{
+				switch(GetRandomInt(1,2))
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: You still have {crimson}Schwertkrieg{snow} to deal with... heh");
+					case 1:
+					{
+						CPrintToChatAll("{aqua}Donnerkrieg{snow}: Hmph, I'll let this slide,{crimson} for now.");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{aqua}Donnerkrieg{snow}: Fine, we're leaving.{crimson} Until next time that is{snow} heh");
+					}
 				}
 			}
 		}
 		else
 		{
-			switch(GetRandomInt(1,2))
+			switch(GetRandomInt(1,2))	//warp
 			{
 				case 1:
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Hmph, I'll let this slide,{crimson} for now.");
+					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Oh this aint good.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Fine, we're leaving.{crimson} Until next time that is{snow} heh");
+					CPrintToChatAll("{aqua}Donnerkrieg{snow}: AAAGHHHGHHAA.");
 				}
 			}
+			
 		}
-	}
-	else
-	{
-		switch(GetRandomInt(1,2))	//warp
-		{
-			case 1:
-			{
-				CPrintToChatAll("{aqua}Donnerkrieg{snow}: Oh this aint good.");
-			}
-			case 2:
-			{
-				CPrintToChatAll("{aqua}Donnerkrieg{snow}: AAAGHHHGHHAA.");
-			}
-		}
-		
 	}
 
 	SDKUnhook(npc.index, SDKHook_Think, Heavens_TBB_Tick);
@@ -3269,21 +3289,6 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 				}
 				
 			}
-		}
-		case DONNERKRIEG_WIN_LINE: 
-		{
-			int ally = EntRefToEntIndex(i_ally_index);
-			if(IsValidEntity(ally))
-			{
-				Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: You think thats how you fight us two?", name_color, text_color);
-				extra_lines = "HAHAHAHAHAHA";
-			}
-			else
-			{
-				Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Oh my, how annoying this has become...", name_color, text_color);
-				extra_lines = "...";
-			}
-			
 		}
 	}
 	CPrintToChatAll(text_lines);
