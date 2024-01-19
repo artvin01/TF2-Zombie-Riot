@@ -412,7 +412,7 @@ methodmap CClotBody < CBaseCombatCharacter
 				else
 #endif
 				{
-					Change_Npc_Collision(npc, num_ShouldCollideEnemyIngoreBuilding);
+					Change_Npc_Collision(npc, num_ShouldCollb_thisNpcIsARaideEnemyIngoreBuilding);
 				}
 			}
 			else
@@ -1222,11 +1222,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		if(!this.m_bThisNpcIsABoss)
 		{
-			
-#if defined ZR
-			if(EntRefToEntIndex(RaidBossActive) != this.index)
-#endif
-			
+			if(!b_thisNpcIsARaid[this.index])
 			{
 				Is_Boss = false;
 			}
