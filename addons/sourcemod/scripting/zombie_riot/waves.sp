@@ -1727,6 +1727,14 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 	return 0;
 }
 
+bool Waves_IsEmpty()
+{
+	if(!Enemies || Enemies.Empty)
+		return true;
+	
+	return false;
+}
+
 bool Waves_GetNextEnemy(Enemy enemy)
 {
 	if(!Enemies || Enemies.Empty)
