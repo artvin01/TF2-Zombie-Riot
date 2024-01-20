@@ -5,7 +5,7 @@ static float BONES_ARCHMAGE_SPEED = 250.0;
 static float BONES_ARCHMAGE_SPEED_BUFFED = 320.0;
 
 #define BONES_ARCHMAGE_HP				"5000"
-#define BONES_ARCHMAGE_HP_BUFFED		"10000"
+#define BONES_ARCHMAGE_HP_BUFFED		"15000"
 
 static float BONES_ARCHMAGE_PLAYERDAMAGE = 10.0;
 static float BONES_ARCHMAGE_PLAYERDAMAGE_BUFFED = 20.0;
@@ -16,11 +16,16 @@ static float BONES_ARCHMAGE_BUILDINGDAMAGE_BUFFED = 40.0;
 static float BONES_ARCHMAGE_ATTACKINTERVAL = 0.5;
 static float BONES_ARCHMAGE_ATTACKINTERVAL_BUFFED = 0.33;
 
+static float ARCHMAGE_CHARGE_DURATION = 4.0;
+
 #define BONES_ARCHMAGE_SCALE				"1.0"
 #define BONES_ARCHMAGE_BUFFED_SCALE			"1.2"
 
 #define BONES_ARCHMAGE_SKIN						"0"
 #define BONES_ARCHMAGE_BUFFED_SKIN				"1"
+
+#define PARTICLE_ARCHMAGE_FIREBALL			"superrare_burning1"
+#define PARTICLE_ARCHMAGE_FIREBALL_BUFFED	"spell_fireball_small_blue"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -80,6 +85,19 @@ static char g_GibSounds[][] = {
 };
 
 static bool b_BonesBuffed[MAXENTITIES];
+
+enum Archmage_ThrowState
+{
+	THROWSTATE_INACTIVE,
+	THROWSTATE_INTRO,
+	THROWSTATE_CHARGING,
+	THROWSTATE_THROWING
+};
+
+Archmage_ThrowState throwState[MAXENTITIES] = { THROWSTATE_INACTIVE, ... };
+float throwEndTime[MAXENTITIES + 1] = { 0.0, ... };
+float throwThrowTime[MAXENTITIES + 1] = { 0.0, ... };
+int throwParticle[MAXENTITIES + 1] = { -1, ... };
 
 public void ArchmageBones_OnMapStart_NPC()
 {
@@ -185,14 +203,13 @@ methodmap ArchmageBones < CClotBody
 		
 		if (buffed)
 		{
-			TE_SetupParticleEffect("utaunt_auroraglow_purple_parent", PATTACH_ABSORIGIN_FOLLOW, npc.index);
+			TE_SetupParticleEffect(/*"utaunt_auroraglow_purple_parent"*/"utaunt_glowyplayer_purple_parent", PATTACH_ABSORIGIN_FOLLOW, npc.index);
 			TE_WriteNum("m_bControlPoint1", npc.index);	
 			TE_SendToAll();	
 		}
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		//TODO: He needs to have an actual move animation so he doesn't just idly glide.
 		int iActivity = npc.LookupActivity("ACT_ARCHMAGE_IDLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -209,7 +226,7 @@ methodmap ArchmageBones < CClotBody
 		//IDLE
 		npc.m_flSpeed = (buffed ? BONES_ARCHMAGE_SPEED_BUFFED : BONES_ARCHMAGE_SPEED);
 		
-		
+		throwState[npc.index] = THROWSTATE_INACTIVE;
 		SDKHook(npc.index, SDKHook_Think, ArchmageBones_ClotThink);
 		
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
@@ -236,7 +253,7 @@ stock void Archmage_GiveCosmetics(ArchmageBones npc, bool buffed)
 	}
 }
 
-stock void Archmage_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
+stock int Archmage_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
 {
 	if (IsValidEntity(entity))
 	{
@@ -273,12 +290,108 @@ stock void Archmage_AttachParticle(int entity, char type[255], float duration = 
 			{
 				CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(part1), TIMER_FLAG_NO_MAPCHANGE);
 			}
+			
+			return part1;
+		}
+	}
+	
+	return -1;
+}
+
+//TODO: Archmages do not have a melee attack, so their attacks need to be rewritten.
+//All archmage variants will float a short distance above the ground and attempt to keep a distance from survivors.
+//Both variants throw fireballs using the PASSTIME throwing gestures for the animations.
+//Skeletal Mages (the non-buffed variant of the archmage) toss smaller red fireballs which deal 75 damage each and do not explode.
+//Skeletal Archmages toss large blue fireballs which deal a base damage of 300 and DO explode within a small radius, with up to 66% falloff. Archmages need to charge these fireballs, during which they suffer a 50% movement speed penalty.
+
+public void Archmage_CheckThrow(ArchmageBones npc, int closest)
+{
+	if (npc.m_flNextMeleeAttack < GetGameTime(npc.index) && IsValidEnemy(npc.index, closest))
+	{
+		throwState[npc.index] = THROWSTATE_INTRO;
+		npc.m_flAttackHappens = GetGameTime(npc.index) + 0.1;
+		npc.m_flAttackHappenswillhappen = true;
+		
+		//TODO: Play sound, spawn fire particle
+		npc.AddGesture("ACT_MP_PASSTIME_THROW_BEGIN");
+		throwParticle[npc.index] = EntIndexToEntRef(Archmage_AttachParticle(npc.index, b_BonesBuffed[npc.index] ? PARTICLE_ARCHMAGE_FIREBALL_BUFFED : PARTICLE_ARCHMAGE_FIREBALL, _, "handR"));
+	}
+}
+
+public void Archmage_EndIntro(ArchmageBones npc, int closest)
+{
+	if (GetGameTime(npc.index) >= npc.m_flAttackHappens && npc.m_flAttackHappenswillhappen)
+	{
+		if (b_BonesBuffed[npc.index])
+		{
+			npc.AddGesture("ACT_MP_PASSTIME_THROW_MIDDLE", true, ARCHMAGE_CHARGE_DURATION);
+			throwState[npc.index] = THROWSTATE_CHARGING;
+			npc.m_flAttackHappens = GetGameTime(npc.index) + ARCHMAGE_CHARGE_DURATION;
+		}
+		else
+		{
+			Archmage_Throw(npc, closest);
 		}
 	}
 }
 
-//TODO 
-//Rewrite
+public void Archmage_ChargeUp(ArchmageBones npc, int closest)
+{
+	if ((GetGameTime(npc.index) >= npc.m_flAttackHappens && npc.m_flAttackHappenswillhappen) || !IsValidEnemy(npc.index, closest))
+	{
+		Archmage_Throw(npc, closest);
+	}
+}
+
+public void Archmage_Throw(ArchmageBones npc, int closest)
+{
+	float duration;
+	if (IsValidEnemy(npc.index, closest))
+	{
+		npc.AddGesture("ACT_MP_PASSTIME_THROW_END");
+		duration = 0.46;
+		throwThrowTime[npc.index] = GetGameTime(npc.index) + 0.275;
+	}
+	else
+	{
+		npc.AddGesture("ACT_MP_PASSTIME_THROW_CANCEL");
+		npc.m_flAttackHappenswillhappen = false;
+		duration = 0.1;
+		Archmage_RemoveParticle(npc.index);
+	}
+	
+	throwState[npc.index] = THROWSTATE_THROWING;
+	throwEndTime[npc.index] = GetGameTime(npc.index) + duration;
+}
+
+public void Archmage_CheckLaunch(ArchmageBones npc, int closest)
+{
+	if (GetGameTime(npc.index) >= throwThrowTime[npc.index] && npc.m_flAttackHappenswillhappen)
+	{
+		//TODO: Actually throw the fireball
+		npc.m_flAttackHappenswillhappen = false;
+		Archmage_RemoveParticle(npc.index);
+	}
+}
+
+public void Archmage_RemoveParticle(int index)
+{
+	int particle = EntRefToEntIndex(throwParticle[index]);
+	if (IsValidEntity(particle))
+		RemoveEntity(particle);
+}
+
+public void Archmage_EndThrow(ArchmageBones npc, int closest)
+{
+	if (GetGameTime(npc.index) >= throwEndTime[npc.index])
+	{
+		throwState[npc.index] = THROWSTATE_INACTIVE;
+		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BONES_ARCHMAGE_ATTACKINTERVAL_BUFFED : BONES_ARCHMAGE_ATTACKINTERVAL);
+	}
+}
+
+//TODO: Mages need to look in the direction of where they're going to throw their balls.
+//They also need to float above the ground and attempt to keep a distance from enemies.
 public void ArchmageBones_ClotThink(int iNPC)
 {
 	ArchmageBones npc = view_as<ArchmageBones>(iNPC);
@@ -289,6 +402,7 @@ public void ArchmageBones_ClotThink(int iNPC)
 	
 	if(npc.m_bDoSpawnGesture)
 	{
+		//TODO: Archmages need a custom spawn animation so that they don't jarringly transition from walking to floating.
 		npc.AddGesture("ACT_TRANSITION");
 		npc.m_bDoSpawnGesture = false;
 		npc.PlayHeIsAwake();
@@ -307,7 +421,6 @@ public void ArchmageBones_ClotThink(int iNPC)
 		if(!npc.m_flAttackHappenswillhappen)
 			npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
 		npc.PlayHurtSound();
-		
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
@@ -348,7 +461,7 @@ public void ArchmageBones_ClotThink(int iNPC)
 		
 		//Target close enough to hit
 		
-		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+		/*if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 		{
 			//Look at target so we hit.
 		//	npc.FaceTowards(vecTarget, 20000.0);
@@ -400,7 +513,7 @@ public void ArchmageBones_ClotThink(int iNPC)
 				}
 			}
 			
-		}
+		}*/
 	}
 	else
 	{
@@ -409,6 +522,30 @@ public void ArchmageBones_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
+	
+	//TODO: Throwing *technically* works, but they need to actually conjure and throw the fireball.
+	//Throw animations are weird and jittery, the intro stutters a lot.
+	switch(throwState[npc.index])
+	{
+		case THROWSTATE_INACTIVE:
+		{
+			Archmage_CheckThrow(npc, closest);
+		}
+		case THROWSTATE_INTRO:
+		{
+			Archmage_EndIntro(npc, closest);
+		}
+		case THROWSTATE_CHARGING:
+		{
+			Archmage_ChargeUp(npc, closest);
+		}
+		case THROWSTATE_THROWING:
+		{
+			Archmage_CheckLaunch(npc, closest);
+			Archmage_EndThrow(npc, closest);
+		}
+	}
+	
 	npc.PlayIdleSound();
 }
 

@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define BONES_BASIC_HP			"300"
-#define BONES_BASIC_HP_BUFFED	"600"
+#define BONES_BASIC_HP			"500"
+#define BONES_BASIC_HP_BUFFED	"1500"
 
 static float BONES_BASIC_SPEED = 300.0;
 static float BONES_BASIC_SPEED_BUFFED = 350.0;

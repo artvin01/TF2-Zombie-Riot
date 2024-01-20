@@ -1,11 +1,11 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float BONES_BEEFY_SPEED = 220.0;
-static float BONES_BEEFY_SPEED_BUFFED = 280.0;
+static float BONES_BEEFY_SPEED = 240.0;
+static float BONES_BEEFY_SPEED_BUFFED = 300.0;
 
-#define BONES_BEEFY_HP			"800"
-#define BONES_BEEFY_HP_BUFFED	"1600"
+#define BONES_BEEFY_HP			"1500"
+#define BONES_BEEFY_HP_BUFFED	"3000"
 
 static float BONES_BEEFY_PLAYERDAMAGE = 80.0;
 static float BONES_BEEFY_PLAYERDAMAGE_BUFFED = 120.0;
