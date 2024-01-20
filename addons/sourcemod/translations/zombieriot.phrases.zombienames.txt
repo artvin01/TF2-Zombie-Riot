@@ -1869,9 +1869,9 @@
 	{
 		"en"	"Magia Anchor"
 	}
-	"Storm Weaver"
+	"Stellar Weaver"
 	{
-		"en"	"Storm Weaver"
+		"en"	"Stellar Weaver"
 	}
 	"Beheaded Kamikaze"
 	{
