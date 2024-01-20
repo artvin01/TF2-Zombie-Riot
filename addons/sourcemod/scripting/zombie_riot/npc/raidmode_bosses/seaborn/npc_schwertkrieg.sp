@@ -612,7 +612,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 			npc.m_flNextRangedBarrage_Spam = GameTime + 35.0;
 		}
 
-		if(npc.m_flNextRangedBarrage_Spam < GameTime && flDistanceToTarget < (900.0*900.0) && !b_swords_flying[npc.index] && wave >=45)
+		if(npc.m_flNextRangedBarrage_Spam < GameTime && flDistanceToTarget < (900.0*900.0) && !b_swords_flying[npc.index] && (wave >=45 || (npc.Anger && wave >=30 ) ))
 		{
 			npc.m_flNextRangedBarrage_Spam = GameTime + 35.0;
 
@@ -690,14 +690,10 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 					if(tele)
 					{
 						fl_groupteleport_timer[npc.index] = GameTime + 75.0;
-						if(fl_teleport_strike_recharge[npc.index]>GameTime)
-							fl_teleport_strike_recharge[npc.index] +=30.0;
 					}
 					else
 					{
-						fl_groupteleport_timer[npc.index] = GameTime + 30.0;
-						if(fl_teleport_strike_recharge[npc.index]>GameTime)
-							fl_teleport_strike_recharge[npc.index] +=10.0;
+						fl_groupteleport_timer[npc.index] = GameTime + 10.0;
 					}
 						
 				}
@@ -1028,9 +1024,23 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 					npc.PlayTeleportSound();
 					Schwertkrieg_Teleport_Boom(npc, vecSwingEnd);
 					if(npc.Anger)
-					fl_teleport_strike_recharge[npc.index]=GameTime+30.0;
+						fl_teleport_strike_recharge[npc.index]=GameTime+30.0;
 					else
 						fl_teleport_strike_recharge[npc.index]=GameTime+60.0;
+				}
+				else
+				{
+					vecSwingEnd = GetAbsOrigin(PrimaryThreatIndex);
+					vecSwingEnd[2]+=125.0;
+					if(Schwert_Teleport(npc.index, vecSwingEnd, 0.0))
+					{
+						npc.PlayTeleportSound();
+						Schwertkrieg_Teleport_Boom(npc, vecSwingEnd);
+						if(npc.Anger)
+							fl_teleport_strike_recharge[npc.index]=GameTime+30.0;
+						else
+							fl_teleport_strike_recharge[npc.index]=GameTime+60.0;
+					}
 				}
 			}
 		}
