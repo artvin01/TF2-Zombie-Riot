@@ -341,9 +341,9 @@ public void OnPostThink(int client)
 		else
 		{
 			RollAngle_Regen_Delay[client] = GameTime + 5.0;
-			if(ReplicateClient_RollAngle[client] != 0.0)
+			if(ReplicateClient_RollAngle[client] != 0)
 			{
-				ReplicateClient_RollAngle[client] = 0.0;
+				ReplicateClient_RollAngle[client] = 0;
 				CvarSvRollagle.ReplicateToClient(client, "0"); //set replicate back to normal.
 			}
 		}
