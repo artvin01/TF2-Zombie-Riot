@@ -70,7 +70,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 	{
 		Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(CClotBody(vecPos, vecAng, RUINA_STORM_WEAVER_MODEL, RUINA_STORM_WEAVER_MODEL_SIZE, "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_STORM_WEAVER_MID;
+		i_NpcInternalId[npc.index] = RUINA_STELLAR_WEAVER_MID;
 		i_NpcWeight[npc.index] = 999;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -121,6 +121,8 @@ methodmap Storm_Weaver_Mid < CClotBody
 public void Storm_Weaver_Mid_ClotThink(int iNPC)
 {
 	Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(iNPC);
+
+	f_StuckOutOfBoundsCheck[npc.index] = GetGameTime() + 10.0;
 	
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)

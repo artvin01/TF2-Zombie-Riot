@@ -271,10 +271,10 @@ public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &infl
 		case RUINA_MAGIA_ANCHOR:
 			Magia_Anchor_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
-		case RUINA_STORM_WEAVER:
+		case RUINA_STELLAR_WEAVER:
 			Storm_Weaver_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case RUINA_STORM_WEAVER_MID:
+		case RUINA_STELLAR_WEAVER_MID:
 			Storm_Weaver_Mid_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	}
 		
@@ -455,10 +455,10 @@ public void Ruina_NPCDeath_Override(int entity)
 		case RUINA_MAGIA_ANCHOR:
 			Magia_Anchor_NPCDeath(entity);
 
-		case RUINA_STORM_WEAVER:
+		case RUINA_STELLAR_WEAVER:
 			Storm_Weaver_NPCDeath(entity);
 
-		case RUINA_STORM_WEAVER_MID:
+		case RUINA_STELLAR_WEAVER_MID:
 			Storm_Weaver_Mid_NPCDeath(entity);
 			
 		default:

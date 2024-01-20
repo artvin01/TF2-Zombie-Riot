@@ -375,9 +375,9 @@ enum
 	EXPIDONSA_ANFUHREREISENHARD		= 327, //not as many gimmics as everything else has a million gimmics
 	EXPIDONSA_SPEEDUSADIVUS			= 328,
 	WEAPON_SENSAL_AFTERIMAGE		= 329,
-	WEAPON_LEPER_AFTERIMAGE		= 330,
-	OVERLORD_ROGUE	= 331,
-	RAIDBOSS_BLADEDANCE = 332,
+	WEAPON_LEPER_AFTERIMAGE			= 330,
+	OVERLORD_ROGUE					= 331,
+	RAIDBOSS_BLADEDANCE 			= 332,
 	RUINA_STELLA					= 333,
 	RUINA_ASTRIA 					= 334,
 	RUINA_AETHER 					= 335,
@@ -386,8 +386,8 @@ enum
 	RUINA_RURIANA					= 338,
 	RUINA_VENIUM					= 339,
 	RUINA_MAGIA_ANCHOR				= 340,
-	RUINA_STORM_WEAVER				= 341,
-	RUINA_STORM_WEAVER_MID			= 342,
+	RUINA_STELLAR_WEAVER			= 341,
+	RUINA_STELLAR_WEAVER_MID		= 342,
 	MINI_BEHEADED_KAMI				= 343,
 	
 	BONEZONE_BEEFYBONES				= 344,
@@ -767,8 +767,8 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Ruriana",
 	"Venium",
 	"Magia Anchor",
-	"Storm Weaver",
-	"Storm Weaver",
+	"Stellar Weaver",
+	"Stellar Weaver",
 	"Beheaded Kamikaze",
 	
 	"Beefy Bones",
@@ -1150,8 +1150,8 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	-1,	//RUINA_RURIANA
 	-1,	//RUINA_VENIUM
 	-1,	//RUINA_MAGIA_ANCHOR
-	-1,	//RUINA_STORM_WEAVER
-	-1,	//RUINA_STORM_WEAVER_MID
+	-1,	//RUINA_STELLAR_WEAVER
+	-1,	//RUINA_STELLAR_WEAVER_MID
 	1, //MINI_BEHEADED_KAMI
 };
 
@@ -1520,8 +1520,8 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_ruina_ruriana",
 	"npc_ruina_venium",
 	"npc_ruina_magia_anchor",
-	"npc_ruina_storm_weaver",
-	"npc_ruina_storm_weaver_bodypart",
+	"npc_ruina_stellar_weaver",
+	"npc_ruina_stellar_weaver_middle",
 	"npc_beheaded_kami",
 	
 	"npc_beefybones",
@@ -2702,14 +2702,14 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case RUINA_MAGIA_ANCHOR:
 			entity = Magia_Anchor(client, vecPos, vecAng, ally);
 
-		case RUINA_STORM_WEAVER:
+		case RUINA_STELLAR_WEAVER:
 			entity = Storm_Weaver(client, vecPos, vecAng, ally, data);
 
-		case RUINA_STORM_WEAVER_MID:
+		case RUINA_STELLAR_WEAVER_MID:
 			entity = Storm_Weaver_Mid(client, vecPos, vecAng, ally, StringToFloat(data));
 		
 		case SEA_RAIDBOSS_DONNERKRIEG:
-			entity = Raidboss_Donnerkrieg(client, vecPos, vecAng, ally);
+			entity = Raidboss_Donnerkrieg(client, vecPos, vecAng, ally, data);
 			
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			entity = Raidboss_Schwertkrieg(client, vecPos, vecAng, ally);
@@ -3667,7 +3667,7 @@ public void NPCDeath(int entity)
 		case ISHARMLA_TRANS:
 			IsharmlaTrans_NPCDeath(entity);
 			
-		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA, RUINA_DRONE, RUINA_RURIANA, RUINA_VENIUM , RUINA_MAGIA_ANCHOR, RUINA_STORM_WEAVER, RUINA_STORM_WEAVER_MID:
+		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA, RUINA_DRONE, RUINA_RURIANA, RUINA_VENIUM , RUINA_MAGIA_ANCHOR, RUINA_STELLAR_WEAVER, RUINA_STELLAR_WEAVER_MID:
 			Ruina_NPCDeath_Override(entity); //all ruina npc deaths are here
 		
 		case SEA_RAIDBOSS_DONNERKRIEG:
@@ -4548,7 +4548,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case ISHARMLA:
 			Isharmla_OnTakeDamage(victim, attacker, damage);
 		
-		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA, RUINA_DRONE, RUINA_RURIANA, RUINA_VENIUM, RUINA_MAGIA_ANCHOR, RUINA_STORM_WEAVER, RUINA_STORM_WEAVER_MID:	
+		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA, RUINA_DRONE, RUINA_RURIANA, RUINA_VENIUM, RUINA_MAGIA_ANCHOR, RUINA_STELLAR_WEAVER, RUINA_STELLAR_WEAVER_MID:	
 			Ruina_NPC_OnTakeDamage_Override(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 			
 		case SEA_RAIDBOSS_DONNERKRIEG:

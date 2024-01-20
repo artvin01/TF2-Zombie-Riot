@@ -139,9 +139,10 @@ bool b_Crystal_active;
 static bool b_Crystal_Thrown;
 static int i_crystal_index;
 bool donner_sea_created;
-static int i_sea_formed=0;
 
 static bool b_angered_twice[MAXENTITIES];
+
+static float fl_divine_intervention_retry;
 
 #define DONNERKRIEG_NIGHTMARE_CANNON_INTRO_LINE 1
 #define DONNERKRIEG_NIGHTMARE_CANNON_FIRE_LINE 2
@@ -154,6 +155,10 @@ static bool b_angered_twice[MAXENTITIES];
 #define DONNERKRIEG_NIGHTMARE_CANNON_DURATION 15.0
 
 bool b_donner_said_win_line;
+
+static bool b_spawn_bob;
+
+float fl_divine_intervention_active;
 
 void Raidboss_Donnerkrieg_OnMapStart_NPC()
 {
@@ -269,9 +274,11 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	public Raidboss_Donnerkrieg(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Raidboss_Donnerkrieg(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "25000", ally));
+
+		b_spawn_bob = false;
 		
 		i_NpcInternalId[npc.index] = SEA_RAIDBOSS_DONNERKRIEG;
 		i_NpcWeight[npc.index] = 3;
@@ -288,6 +295,10 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		b_donner_said_win_line = false;
+
+		fl_divine_intervention_retry = GetGameTime() + 10.0;
+
+		fl_divine_intervention_active=0.0;
 		
 		
 		/*
@@ -296,9 +307,13 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 			Donnerkrieg is the master raidboss.
 		*/
 
-		b_allow_schwert_transformation = false;
+		bool final = StrContains(data, "final_item") != -1;
+		if(final)
+		{
+			b_spawn_bob=true;
+		}
 
-		i_sea_formed=0;
+		b_allow_schwert_transformation = false;
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
@@ -509,6 +524,42 @@ void Donnerkrieg_SpawnAllyDuoRaid(int ref)
 	}
 }
 
+static float fl_last_ratio;
+
+static void Calculate_Combined_Health(Raidboss_Donnerkrieg npc)
+{
+	if(b_spawn_bob)
+	{
+		int ally = EntRefToEntIndex(i_ally_index);
+		if(IsValidEntity(ally))
+		{
+			float M_Health = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			float C_Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+
+			float M_Health1 = float(GetEntProp(ally, Prop_Data, "m_iMaxHealth"));
+			float C_Health1 = float(GetEntProp(ally, Prop_Data, "m_iHealth"));
+
+			C_Health = C_Health+ C_Health1;
+			M_Health = M_Health+ M_Health1;
+			
+
+			float Ratio = (C_Health/M_Health);
+
+			
+
+			if(Ratio < 0.75 && fl_last_ratio> 0.75)
+			{
+				CPrintToChatAll("SPAWN THE GOD KNOWN AS BOB!!!!");
+			}
+
+			if(fl_last_ratio!=Ratio)
+			{
+				fl_last_ratio = Ratio;
+				CPrintToChatAll("L + Ratio: %f", Ratio);
+			}
+		}
+	}
+}
 
 //TODO 
 //Rewrite
@@ -526,6 +577,9 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 	}
 		
 	float GameTime = GetGameTime(npc.index);
+
+	Calculate_Combined_Health(npc);
+
 	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
@@ -572,6 +626,19 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 	}
 
 	int Current_Wave = ZR_GetWaveCount()+1;
+
+	if(Current_Wave>=60 && !b_nightmare_logic[npc.index])
+	{
+		if(fl_divine_intervention_retry < GameTime)
+		{
+			Invoke_Divine_Intervention(npc, GameTime);
+		}
+	}
+
+	if(fl_divine_intervention_active > GameTime && !b_nightmare_logic[npc.index])
+	{
+		return;
+	}
 	/*
 
 
@@ -677,7 +744,8 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 				}
 				if(NpcStats_IsEnemySilenced(npc.index))
 				{
-					infection=0;
+					if(infection>0)
+						infection--;
 				}
 				Heavens_Fall(npc, GameTime, infection, sea);
 			}
@@ -1065,6 +1133,13 @@ static void Heavens_Full_Charge(Raidboss_Donnerkrieg npc, float GameTime)
 			color[0] = 51;
 			color[1] = 9;
 			color[2] = 235;
+		}
+		else
+		{
+			infection=2;
+			color[0] = 0;
+			color[1] = 250;
+			color[2] = 237;
 		}
 
 		Doonerkrieg_Do_AOE_Damage(npc, loc, fl_heavens_damage, fl_heavens_radius, infection, false);
@@ -1723,12 +1798,7 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 
 	if(creep)	//if creep, create the cancer thing.
 	{
-		if(i_sea_formed<5)
-		{
-			i_sea_formed++;
-			SeaFounder_SpawnNethersea(startPosition);
-		}
-			
+		SeaFounder_SpawnNethersea(startPosition);
 	}
 
 	/*TE_used += 1;
@@ -2215,8 +2285,15 @@ public Action Donnerkrieg_Laser_Think(int iNPC)	//A short burst of a laser.
 			color[1] = 107;
 			color[2] = 250;
 		}
+		else
+		{
+			infection=2;
+			color[0] = 0;
+			color[1] = 250;
+			color[2] = 237;
+		}
 
-		if(NpcStats_IsEnemySilenced(npc.index))
+		if(NpcStats_IsEnemySilenced(npc.index) && wave<60)
 		{
 			if(infection>0)
 				infection--;
@@ -2367,8 +2444,12 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 	{
 		infection=2;
 	}
+	else
+	{
+		infection=2;
+	}
 
-	if(NpcStats_IsEnemySilenced(npc.index))
+	if(NpcStats_IsEnemySilenced(npc.index) && wave < 60)
 	{
 		if(infection>0)
 			infection--;
@@ -2383,6 +2464,13 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 		hover=true;
 		crystal_turn_speed = 4.5;
 	}	
+
+	if(wave>=60)
+	{
+		speed=250.0;
+		hover=true;
+		crystal_turn_speed = 4.5;
+	}
 
 	fl_spinning_angle[npc.index]+=2.0;
 		
@@ -3291,4 +3379,354 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 	}
 	CPrintToChatAll(text_lines);
 	NpcSpeechBubble(npc.index, "", 15, {255,0,0,255}, {0.0,0.0,125.0}, extra_lines);
+}
+
+static bool Divine_Intervention_Check(Raidboss_Donnerkrieg npc, float Min_Dist)
+{
+	float UserLoc[3], Angles[3];
+	UserLoc = GetAbsOrigin(npc.index);
+	
+	int Total_Hit = 0;
+	
+	for(int alpha = 1 ; alpha<=360 ; alpha++)	//check in a 360 degree angle around the npc, heavy on preformance, but its a raid so I guess its fine..?
+	{
+		float tempAngles[3], endLoc[3], Direction[3];
+		tempAngles[0] = 0.0;
+		tempAngles[1] = float(alpha);
+		tempAngles[2] = 0.0;
+					
+		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, Min_Dist+100.0);
+		AddVectors(UserLoc, Direction, endLoc);
+		
+		MakeVectorFromPoints(UserLoc, endLoc, Angles);
+		GetVectorAngles(Angles, Angles);
+		
+		float endPoint[3];
+	
+		Handle trace = TR_TraceRayFilterEx(UserLoc, Angles, 11, RayType_Infinite, DonnerKriegCannon_BEAM_TraceWallsOnly);
+		if(TR_DidHit(trace))
+		{
+			TR_GetEndPosition(endPoint, trace);
+			
+			float flDistanceToTarget = GetVectorDistance(endPoint, UserLoc);
+			
+			if(flDistanceToTarget>Min_Dist)	//minimum distance we wish to check, if the traces end is beyond, we count this angle as a valid area.
+			{
+				Total_Hit++;
+			}
+
+		}
+		delete trace;
+	}
+	if(Total_Hit/360>=0.75)	//has to hit atleast 25% before actually proceeding and saying that we have enough clearance
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+static bool b_weaver_summoned;
+static bool b_stage_one_effects;
+static float fl_anchor_location[3];
+#define DIVINE_INTERVENTION_MAX_SIZE 300.0
+
+#define DIVINE_INTERVENTION_DURATION 20
+static void Invoke_Divine_Intervention(Raidboss_Donnerkrieg npc, float GameTime)
+{
+	if(!Divine_Intervention_Check(npc, DIVINE_INTERVENTION_MAX_SIZE))	//dear lord this ability is HEAVY HEAVY HEAVY HEAVY HEAAAAAVYYYYYYY
+	{
+		fl_divine_intervention_retry = GameTime+0.25;
+		return;
+	}
+
+	fl_divine_intervention_retry = FAR_FUTURE;
+
+	fl_divine_intervention_active = GetGameTime() + DIVINE_INTERVENTION_DURATION;
+
+	b_weaver_summoned=false;
+	b_stage_one_effects=false;
+
+	fl_anchor_location = GetAbsOrigin(npc.index);
+
+	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, fl_anchor_location);
+
+	SDKUnhook(npc.index, SDKHook_Think, Divine_Intervention_Hook);
+	SDKHook(npc.index, SDKHook_Think, Divine_Intervention_Hook);
+}
+static Action Divine_Intervention_Hook(int iNPC)
+{
+	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(iNPC);
+
+	float GameTime = GetGameTime();
+
+	float Duration = fl_divine_intervention_active - GameTime;
+
+	int Ally = EntRefToEntIndex(i_ally_index);
+
+	if(!IsValidEntity(Ally))
+	{
+		SDKUnhook(npc.index, SDKHook_Think, Divine_Intervention_Hook);
+		CPrintToChatAll("SOMETHING HORRIBLE HAPPENED: Divine_Intervention_Hook ALLY CHECK");
+		return Plugin_Stop;
+	}
+
+
+	if(Duration<-1.0)
+	{
+		SDKUnhook(npc.index, SDKHook_Think, Divine_Intervention_Hook);
+		return Plugin_Stop;
+	}
+	float Ally_Vec[3]; Ally_Vec = GetAbsOrigin(Ally);
+	float Npc_Loc[3]; Npc_Loc = GetAbsOrigin(npc.index);
+
+	float Anchoring_Location[3]; Anchoring_Location = fl_anchor_location;
+
+	float Max_Size = DIVINE_INTERVENTION_MAX_SIZE;
+
+	NPC_SetGoalVector(npc.index, Anchoring_Location, true);
+
+	float Dist_To_Schwert = GetVectorDistance(Ally_Vec, Npc_Loc);
+
+	if(Dist_To_Schwert > 250.0)
+	{
+		fl_divine_intervention_active = GameTime + DIVINE_INTERVENTION_DURATION;
+		return Plugin_Continue;
+	}
+
+	Layer_One_Effects(Anchoring_Location, Max_Size);
+
+	if(Duration < 1.0 && !b_weaver_summoned)
+	{
+		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);	//what
+
+		int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+		int spawn_index;
+
+		spawn_index = Npc_Create(RUINA_STELLAR_WEAVER, -1, Npc_Loc, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2, "solo_true");
+		if(spawn_index > MaxClients)
+		{
+			Zombies_Currently_Still_Ongoing += 1;
+			SetEntProp(spawn_index, Prop_Data, "m_iHealth", Health);
+			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", Health);
+			b_weaver_summoned=true;
+		}
+	}
+
+	return Plugin_Continue;
+}
+static void Layer_One_Effects(float Loc[3], float Max_Size)	//WARP
+{
+	if(b_stage_one_effects)
+		return;
+
+	TE_used=0;
+	
+	b_stage_one_effects=true;
+	int spin_amt = 9;
+	float Core_Loc[3]; Core_Loc=Loc;
+
+	int color[4]; color[0] = 1; color[1] = 255; color[2] = 255; color[3] = 255;
+
+	float Last_Loc[3] = {0.0, 0.0, 0.0};
+
+	bool originaled= false;
+	float Original_Loc[3];
+
+	float time = fl_divine_intervention_active - GetGameTime();
+
+	for(int alpha = 0 ; alpha< spin_amt ; alpha++)	//check in a 360 degree angle around the npc, heavy on preformance, but its a raid so I guess its fine..?
+	{
+		float tempAngles[3], endLoc[3], Direction[3];
+		tempAngles[0] = 0.0;
+		tempAngles[1] = (360.0/spin_amt)*alpha;
+		tempAngles[2] = 0.0;
+					
+		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, Max_Size);
+		AddVectors(Core_Loc, Direction, endLoc);
+
+		if(!originaled)
+		{
+			originaled=true;
+			Original_Loc=endLoc;
+		}
+
+		float start = 50.0;
+		float end = 50.0;
+
+		TE_used += 1;
+		if(TE_used > 31)
+		{
+			int DelayFrames = (TE_used / 32);
+			DelayFrames *= 2;
+			DataPack pack_TE = new DataPack();
+			pack_TE.WriteCell(Core_Loc[0]);
+			pack_TE.WriteCell(Core_Loc[1]);
+			pack_TE.WriteCell(Core_Loc[2]);
+			pack_TE.WriteCell(endLoc[0]);
+			pack_TE.WriteCell(endLoc[1]);
+			pack_TE.WriteCell(endLoc[2]);
+			pack_TE.WriteCell(color[0]);
+			pack_TE.WriteCell(color[1]);
+			pack_TE.WriteCell(color[2]);
+			pack_TE.WriteCell(color[3]);
+			pack_TE.WriteCell(0.1);
+			pack_TE.WriteCell(start);
+			pack_TE.WriteCell(end);
+			RequestFrames(Doonerkrieg_Delay_TE_Beam_Special, DelayFrames, pack_TE);
+			//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
+		}
+		else
+		{
+			TE_SetupBeamPoints(Core_Loc, endLoc, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, time, start, end, 0, 0.1, color, 3);
+			TE_SendToAll();
+		}
+
+		start = 75.0;
+		end = 25.0;
+
+		float Sky_Loc[3]; Sky_Loc = endLoc;
+		Sky_Loc[2] += 160.0;
+
+		TE_used += 1;
+		if(TE_used > 31)
+		{
+			int DelayFrames = (TE_used / 32);
+			DelayFrames *= 2;
+			DataPack pack_TE = new DataPack();
+			pack_TE.WriteCell(endLoc[0]);
+			pack_TE.WriteCell(endLoc[1]);
+			pack_TE.WriteCell(endLoc[2]);
+			pack_TE.WriteCell(Sky_Loc[0]);
+			pack_TE.WriteCell(Sky_Loc[1]);
+			pack_TE.WriteCell(Sky_Loc[2]);
+			pack_TE.WriteCell(color[0]);
+			pack_TE.WriteCell(color[1]);
+			pack_TE.WriteCell(color[2]);
+			pack_TE.WriteCell(color[3]);
+			pack_TE.WriteCell(0.01);
+			pack_TE.WriteCell(start);
+			pack_TE.WriteCell(end);
+			RequestFrames(Doonerkrieg_Delay_TE_Beam_Special, DelayFrames, pack_TE);
+			//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
+		}
+		else
+		{
+			TE_SetupBeamPoints(endLoc, Sky_Loc, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, time, start, end, 0, 0.01, color, 3);
+			TE_SendToAll();
+		}
+
+		start = 25.0;
+		end = 25.0;
+
+		if(Last_Loc[0] != 0.0 && Last_Loc[1] != 0.0 && Last_Loc[2] != 0.0)
+		{
+			float Fence_Height[3]; Fence_Height = endLoc;
+			float Fence_2[3]; Fence_2 = Last_Loc;
+			for(int i =0 ; i < 3 ; i ++)
+			{
+				TE_used += 1;
+				if(TE_used > 31)
+				{
+					int DelayFrames = (TE_used / 32);
+					DelayFrames *= 2;
+					DataPack pack_TE = new DataPack();
+					pack_TE.WriteCell(Fence_Height[0]);
+					pack_TE.WriteCell(Fence_Height[1]);
+					pack_TE.WriteCell(Fence_Height[2]);
+					pack_TE.WriteCell(Fence_2[0]);
+					pack_TE.WriteCell(Fence_2[1]);
+					pack_TE.WriteCell(Fence_2[2]);
+					pack_TE.WriteCell(color[0]);
+					pack_TE.WriteCell(color[1]);
+					pack_TE.WriteCell(color[2]);
+					pack_TE.WriteCell(color[3]);
+					pack_TE.WriteCell(1.0);
+					pack_TE.WriteCell(start);
+					pack_TE.WriteCell(end);
+					RequestFrames(Doonerkrieg_Delay_TE_Beam_Special, DelayFrames, pack_TE);
+					//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
+				}
+				else
+				{
+					TE_SetupBeamPoints(Fence_Height, Fence_2, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, time, start, end, 0, 1.0, color, 3);
+					TE_SendToAll();
+				}
+				Fence_Height[2]+=50.0;
+				Fence_2[2]+=50.0;
+			}
+		}
+
+		Last_Loc = endLoc;
+
+	}
+
+
+	float start = 25.0;
+	float end = 25.0;
+
+	float Fence_Height[3]; Fence_Height = Last_Loc;
+	float Fence_2[3]; Fence_2 = Original_Loc;
+	for(int i =0 ; i < 3 ; i ++)
+	{
+		TE_used += 1;
+		if(TE_used > 31)
+		{
+			int DelayFrames = (TE_used / 32);
+			DelayFrames *= 2;
+			DataPack pack_TE = new DataPack();
+			pack_TE.WriteCell(Fence_Height[0]);
+			pack_TE.WriteCell(Fence_Height[1]);
+			pack_TE.WriteCell(Fence_Height[2]);
+			pack_TE.WriteCell(Fence_2[0]);
+			pack_TE.WriteCell(Fence_2[1]);
+			pack_TE.WriteCell(Fence_2[2]);
+			pack_TE.WriteCell(color[0]);
+			pack_TE.WriteCell(color[1]);
+			pack_TE.WriteCell(color[2]);
+			pack_TE.WriteCell(color[3]);
+			pack_TE.WriteCell(1.0);
+			pack_TE.WriteCell(start);
+			pack_TE.WriteCell(end);
+			RequestFrames(Doonerkrieg_Delay_TE_Beam_Special, DelayFrames, pack_TE);
+			//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
+		}
+		else
+		{
+			TE_SetupBeamPoints(Fence_Height, Fence_2, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, time, start, end, 0, 1.0, color, 3);
+			TE_SendToAll();
+		}
+		Fence_Height[2]+=50.0;
+		Fence_2[2]+=50.0;
+	}
+}
+
+public void Doonerkrieg_Delay_TE_Beam_Special(DataPack pack)
+{
+	float time = fl_divine_intervention_active - GetGameTime();
+	pack.Reset();
+	float endLoc[3], StartLoc[3];
+	int color[4];
+	endLoc[0] = pack.ReadCell();
+	endLoc[1] = pack.ReadCell();
+	endLoc[2] = pack.ReadCell();
+	StartLoc[0] = pack.ReadCell();
+	StartLoc[1] = pack.ReadCell();
+	StartLoc[2] = pack.ReadCell();
+	color[0] = pack.ReadCell();
+	color[1] = pack.ReadCell();
+	color[2] = pack.ReadCell();
+	color[3] = pack.ReadCell();
+	float amp = pack.ReadCell();
+	float start = pack.ReadCell();
+	float end = pack.ReadCell();
+
+	TE_SetupBeamPoints(StartLoc, endLoc, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, time, start, end, 0, amp, color, 3);
+	TE_SendToAll();
+		
+	delete pack;
 }
