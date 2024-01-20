@@ -1993,6 +1993,8 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 		}
 	}
 
+	RaidModeTime +=50.0;
+
 	SDKUnhook(npc.index, SDKHook_Think, Heavens_TBB_Tick);
 	Heavens_Light_Active[npc.index] = false;
 
@@ -2010,9 +2012,6 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 	b_raidboss_donnerkrieg_alive = false;
 
 	Donnerkrieg_Delete_Wings(npc);
-	
-	RaidModeTime += 2.0; //cant afford to delete it, since duo.
-	//add 2 seconds so if its close, they dont lose to timer.
 
 
 	if(EntRefToEntIndex(RaidBossActive)==npc.index)

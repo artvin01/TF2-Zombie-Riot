@@ -324,6 +324,14 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		//IDLE
 		fl_schwert_speed = 330.0;
 		npc.m_flSpeed =330.0;
+
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+			
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
+		SetVariantColor(view_as<int>({3, 244, 252, 200}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
 		
 		/*
@@ -1713,6 +1721,8 @@ public void Raidboss_Schwertkrieg_NPCDeath(int entity)
 		b_force_heavens_light[ally]=true;	//force heavens Light!
 		donner.Anger=true;
 	}
+
+	RaidModeTime +=50.0;
 
 	int wave = ZR_GetWaveCount()+1;
 	if(wave<60 && !b_donner_said_win_line)
