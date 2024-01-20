@@ -1695,6 +1695,13 @@ static int Create_Blade(float Loc[3], char size[10])
 
 		//CPrintToChatAll("Sword created: %i", prop);
 		
+		CClotBody npc = view_as<CClotBody>(prop);
+
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+
+		SetVariantColor(view_as<int>({3, 244, 252, 200}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+		
 		return prop;
 	}
 	else
@@ -1710,6 +1717,11 @@ static void Delete_Swords(int client)
 		int sword = EntRefToEntIndex(i_dance_of_light_sword_id[client][i]);
 		if(IsValidEntity(sword))
 		{
+			CClotBody npc = view_as<CClotBody>(sword);
+			if(IsValidEntity(npc.m_iTeamGlow))
+			{
+				RemoveEntity(npc.m_iTeamGlow);
+			}
 			RemoveEntity(sword);
 			//CPrintToChatAll("Removed sword: %i",sword );
 		}
