@@ -1256,7 +1256,7 @@ public void OnPluginStart()
 	//FindConVar("tf_bot_count").Flags &= ~FCVAR_NOTIFY;
 	FindConVar("sv_tags").Flags &= ~FCVAR_NOTIFY;
 
-	sv_cheats.Flags &= ~FCVAR_NOTIFY;
+	sv_cheats.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 	
 	LoadTranslations("zombieriot.phrases");
 	LoadTranslations("zombieriot.phrases.weapons.description");

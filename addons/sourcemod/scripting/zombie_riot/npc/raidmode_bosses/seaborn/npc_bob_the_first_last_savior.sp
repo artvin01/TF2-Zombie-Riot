@@ -1018,7 +1018,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					WritePackFloat(data, vecMe[0]);
 					WritePackFloat(data, vecMe[1]);
 					WritePackFloat(data, vecMe[2]);
-					WritePackCell(data, 47.0); // Distance
+					WritePackCell(data, 95.0); // Distance
 					WritePackFloat(data, 0.0); // nphi
 					WritePackCell(data, 250.0); // Range
 					WritePackCell(data, 1000.0); // Damge
@@ -1028,7 +1028,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 					for(int client = 1; client <= MaxClients; client++)
 					{
-						if(IsClientInGame(client) && IsPlayerAlive(client))
+						if(IsClientInGame(client) && IsPlayerAlive(client) && TeutonType[client] != TEUTON_NONE)
 						{
 							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vecTarget);
 							
@@ -1036,7 +1036,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							WritePackFloat(data, vecTarget[0]);
 							WritePackFloat(data, vecTarget[1]);
 							WritePackFloat(data, vecTarget[2]);
-							WritePackCell(data, 87.0); // Distance
+							WritePackCell(data, 160.0); // Distance
 							WritePackFloat(data, 0.0); // nphi
 							WritePackCell(data, 250.0); // Range
 							WritePackCell(data, 1000.0); // Damge
