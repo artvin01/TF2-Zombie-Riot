@@ -1611,6 +1611,7 @@ public Action Command_ToggleCheats(int client, int args)
 {
 	if(Toggle_sv_cheats)
 	{
+		ResetReplications();
 		Toggle_sv_cheats = false;
 		for(int i=1; i<=MaxClients; i++)
 		{
@@ -1622,6 +1623,7 @@ public Action Command_ToggleCheats(int client, int args)
 	}
 	else
 	{
+		ResetReplications();
 		Toggle_sv_cheats = true;
 		for(int i=1; i<=MaxClients; i++)
 		{
@@ -3613,4 +3615,14 @@ void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons=true,
 	}
 	
 	TF2_SetPlayerClass(client, classType, weapons, persistent);
+}
+
+void ResetReplications()
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		ReplicateClient_Svairaccelerate[client] = -1.0;
+		ReplicateClient_Tfsolidobjects[client] = -1;
+		ReplicateClient_RollAngle[client] = -1;
+	}
 }

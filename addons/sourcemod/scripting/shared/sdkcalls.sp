@@ -473,6 +473,7 @@ void Manual_Impulse_101(int client, int health)
 			}
 		}
 	}
+	ResetReplications();
 	
 	//how quirky.
 	SetAmmo(client, 1, 9999);

@@ -4062,7 +4062,7 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 
 	int i_TargetHealAmount; //Health to actaully apply
 
-	if (healing_Amount <= 1.0)
+	if (healing_Amount <= 1.0 && healing_Amount > 0.0)
 	{
 		f_IncrementalSmallHeal[entity] += healing_Amount;
 			
@@ -4074,18 +4074,25 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	}
 	else
 	{
-		i_TargetHealAmount = RoundToFloor(healing_Amount);
-							
-		float Decimal_healing = FloatFraction(healing_Amount);
-							
-							
-		f_IncrementalSmallHeal[entity] += Decimal_healing;
-							
-		while(f_IncrementalSmallHeal[entity] >= 1.0)
+		if(i_TargetHealAmount < 0.0) //negative heal
 		{
-			f_IncrementalSmallHeal[entity] -= 1.0;
-			i_TargetHealAmount += 1;
+			i_TargetHealAmount = RoundToFloor(healing_Amount);
 		}
+		else
+		{
+			i_TargetHealAmount = RoundToFloor(healing_Amount);
+		
+			float Decimal_healing = FloatFraction(healing_Amount);
+								
+								
+			f_IncrementalSmallHeal[entity] += Decimal_healing;
+								
+			while(f_IncrementalSmallHeal[entity] >= 1.0)
+			{
+				f_IncrementalSmallHeal[entity] -= 1.0;
+				i_TargetHealAmount += 1;
+			}
+		}		
 	}
 	if(i_TargetHealAmount > MaxHealingPermitted)
 	{

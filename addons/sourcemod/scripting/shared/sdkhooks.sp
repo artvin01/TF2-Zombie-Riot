@@ -242,7 +242,7 @@ public void OnPostThink(int client)
 		if(ReplicateClient_Svairaccelerate[client] != 2.0)
 		{
 			ReplicateClient_Svairaccelerate[client] = 2.0;
-			CvarAirAcclerate.ReplicateToClient(client, "2.0"); //set replicate back to normal.
+			CvarAirAcclerate.ReplicateToClient(client, "2.0"); //set down
 		}
 	}
 	else

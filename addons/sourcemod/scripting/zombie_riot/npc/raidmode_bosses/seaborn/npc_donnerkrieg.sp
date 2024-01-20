@@ -2007,7 +2007,7 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 		RemoveEntity(i_crystal_index);
 	}
 
-	b_allow_schwert_transformation = true;
+//	b_allow_schwert_transformation = true;
 	int wave = ZR_GetWaveCount()+1;
 
 	int ally = EntRefToEntIndex(i_ally_index);
