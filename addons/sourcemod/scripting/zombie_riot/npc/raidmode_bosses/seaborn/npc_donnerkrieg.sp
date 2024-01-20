@@ -807,7 +807,6 @@ public void Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(bool donner_alive)
 		{
 			char name_color[255]; name_color = "aqua";
 			char text_color[255]; text_color = "snow";
-			char danger_color[255]; danger_color = "crimson";
 
 			char text_lines[255];
 			int ally = EntRefToEntIndex(i_ally_index);
@@ -3229,7 +3228,7 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 						}				
 						default:
 						{
-							Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Aya, how trouble some{%s}this is{%s}.", name_color, text_color, danger_color, text_color);	
+							Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Aya, how troublesome {%s}this is{%s}.", name_color, text_color, danger_color, text_color);	
 						}
 					}
 				}
