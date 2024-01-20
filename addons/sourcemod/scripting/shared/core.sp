@@ -499,7 +499,7 @@ float f_PullStrength[MAXENTITIES];
 
 float ReplicateClient_Svairaccelerate[MAXTF2PLAYERS];
 int ReplicateClient_Tfsolidobjects[MAXTF2PLAYERS];
-float ReplicateClient_RollAngle[MAXTF2PLAYERS];
+int ReplicateClient_RollAngle[MAXTF2PLAYERS];
 
 bool b_StickyIsSticking[MAXENTITIES];
 
