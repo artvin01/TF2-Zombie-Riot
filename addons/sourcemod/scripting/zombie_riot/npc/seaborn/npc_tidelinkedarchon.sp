@@ -272,11 +272,7 @@ void TidelinkedArchon_OnTakeDamage(int victim, int attacker, float damage)
 			SDKHook(victim, SDKHook_Think, TidelinkedArchon_DownedThink);
 		}
 		
-		if(b_NpcIsInvulnerable[npc.index])
-		{
-			damage = 0.0;
-		}
-		else if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+		if(!b_NpcIsInvulnerable[npc.index] && npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 		{
 			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 			npc.m_blPlayHurtAnimation = true;

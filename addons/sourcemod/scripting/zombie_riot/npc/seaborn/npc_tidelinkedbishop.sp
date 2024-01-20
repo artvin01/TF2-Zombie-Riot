@@ -274,9 +274,6 @@ void TidelinkedBishop_OnTakeDamage(int victim, int attacker, float damage)
 
 			SDKHook(victim, SDKHook_Think, TidelinkedBishop_DownedThink);
 		}
-		
-		if(b_NpcIsInvulnerable[npc.index])
-			damage = 0.0;
 	}
 }
 

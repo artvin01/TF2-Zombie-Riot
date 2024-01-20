@@ -363,6 +363,15 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	
 	float gameTime = GetGameTime(npc.index);
 
+	if(npc.Anger || npc.m_bFakeClone || i_RaidGrantExtra[npc.index] > 1)
+	{
+		b_NpcIsInvulnerable[npc.index] = true;
+	}
+	else
+	{
+		b_NpcIsInvulnerable[npc.index] = false;
+	}
+
 	//Raidmode timer runs out, they lost.
 	if(!npc.m_bFakeClone && npc.m_flNextThinkTime != FAR_FUTURE && RaidModeTime < GetGameTime())
 	{
@@ -575,6 +584,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 								SendConVarValue(client, sv_cheats, "1");
 							}
 						}
+						ResetReplications();
 
 						cvarTimeScale.SetFloat(0.1);
 						CreateTimer(0.5, SetTimeBack);
@@ -1636,6 +1646,7 @@ static Action Bob_DeathCutsceneCheck(Handle timer)
 			SendConVarValue(client, sv_cheats, "1");
 		}
 	}
+	ResetReplications();
 
 	cvarTimeScale.SetFloat(0.1);
 	CreateTimer(0.5, SetTimeBack);

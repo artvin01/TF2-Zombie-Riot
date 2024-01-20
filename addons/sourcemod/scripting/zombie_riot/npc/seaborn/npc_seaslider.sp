@@ -188,7 +188,7 @@ public void SeaSlider_ClotThink(int iNPC)
 			{
 				npc.m_iTarget = target;
 
-				npc.AddGesture("ACT_RANGE_ATTACK1");
+				npc.AddGesture("ACT_MELEE_ATTACK1");
 
 				npc.PlayMeleeSound();
 				

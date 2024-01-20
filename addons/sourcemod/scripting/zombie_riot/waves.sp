@@ -1422,7 +1422,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					{
 						Music_Stop_All(i);
 						if(!rogue)
+						{
 							SendConVarValue(i, sv_cheats, "1");
+						}
 						
 						players[total++] = i;
 
@@ -1433,9 +1435,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						}
 					}
 				}
-
 				if(!rogue)
 				{
+					ResetReplications();
 					cvarTimeScale.SetFloat(0.1);
 					CreateTimer(0.5, SetTimeBack);
 					
