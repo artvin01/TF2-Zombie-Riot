@@ -219,23 +219,39 @@ public void OnPostThink(int client)
 
 	if(b_PhaseThroughBuildingsPerma[client] == 2)
 	{
-		CvarMpSolidObjects.ReplicateToClient(client, "0");
+		if(ReplicateClient_Tfsolidobjects[client] != 0)
+		{
+			ReplicateClient_Tfsolidobjects[client] = 0;
+			CvarMpSolidObjects.ReplicateToClient(client, "0");
+		}
 	}
 	else
 	{
 		if(b_PhaseThroughBuildingsPerma[client] == 1)
 		{
 			b_PhaseThroughBuildingsPerma[client] = 0;
-			CvarMpSolidObjects.ReplicateToClient(client, "1"); //set replicate back to normal.
+			if(ReplicateClient_Tfsolidobjects[client] != 1)
+			{
+				ReplicateClient_Tfsolidobjects[client] = 1;
+				CvarMpSolidObjects.ReplicateToClient(client, "1"); //set replicate back to normal.
+			}
 		}
 	}
 	if(b_AntiSlopeCamp[client])
-	{
-		CvarAirAcclerate.ReplicateToClient(client, "2.0"); //set replicate back to normal.
+	{	
+		if(ReplicateClient_Svairaccelerate[client] != 2.0)
+		{
+			ReplicateClient_Svairaccelerate[client] = 2.0;
+			CvarAirAcclerate.ReplicateToClient(client, "2.0"); //set replicate back to normal.
+		}
 	}
 	else
 	{
-		CvarAirAcclerate.ReplicateToClient(client, "10.0"); //set replicate back to normal.
+		if(ReplicateClient_Svairaccelerate[client] != 10.0)
+		{
+			ReplicateClient_Svairaccelerate[client] = 10.0;
+			CvarAirAcclerate.ReplicateToClient(client, "10.0"); //set replicate back to normal.
+		}
 	}
 		
 #if defined ZR
@@ -300,6 +316,7 @@ public void OnPostThink(int client)
 					PercentageHealth = PercentageHealth - 1.0;
 					PercentageHealth *= -1.0; //convert to positive
 					PercentageHealth *= 125.0; // we want the full number! this only works in big ones. also divitde by 4
+					PercentageHealth *= 0.5;
 					i_SvRollAngle[client] = RoundToCeil(PercentageHealth);
 
 					if(i_SvRollAngle[client] < 0)
@@ -313,16 +330,22 @@ public void OnPostThink(int client)
 				i_SvRollAngle[client] = 0;
 			}
 
-			char RollAngleValue[4];
-
-			IntToString(i_SvRollAngle[client], RollAngleValue, sizeof(RollAngleValue));
-
-			CvarSvRollagle.ReplicateToClient(client, RollAngleValue); //set replicate back to normal.
+			if(ReplicateClient_RollAngle[client] != i_SvRollAngle[client])
+			{
+				ReplicateClient_RollAngle[client] = i_SvRollAngle[client];
+				char RollAngleValue[4];
+				IntToString(i_SvRollAngle[client], RollAngleValue, sizeof(RollAngleValue));
+				CvarSvRollagle.ReplicateToClient(client, RollAngleValue); //set replicate back to normal.
+			}
 		}
 		else
 		{
 			RollAngle_Regen_Delay[client] = GameTime + 5.0;
-			CvarSvRollagle.ReplicateToClient(client, "0"); //set replicate back to normal.
+			if(ReplicateClient_RollAngle[client] != 0.0)
+			{
+				ReplicateClient_RollAngle[client] = 0.0;
+				CvarSvRollagle.ReplicateToClient(client, "0"); //set replicate back to normal.
+			}
 		}
 	}
 #endif	// ZR

@@ -497,6 +497,10 @@ float f_UnstuckTimerCheck[MAXENTITIES];
 int i_PullTowardsTarget[MAXENTITIES];
 float f_PullStrength[MAXENTITIES];
 
+float ReplicateClient_Svairaccelerate[MAXTF2PLAYERS];
+int ReplicateClient_Tfsolidobjects[MAXTF2PLAYERS];
+float ReplicateClient_RollAngle[MAXTF2PLAYERS];
+
 bool b_StickyIsSticking[MAXENTITIES];
 
 RenderMode i_EntityRenderMode[MAXENTITIES]={RENDER_NORMAL, ...};
@@ -1748,6 +1752,9 @@ public void OnClientDisconnect(int client)
 	
 	i_ClientHasCustomGearEquipped[client] = false;
 	i_EntityToAlwaysMeleeHit[client] = 0;
+	ReplicateClient_Svairaccelerate[client] = -1.0;
+	ReplicateClient_Tfsolidobjects[client] = -1;
+	ReplicateClient_RollAngle[client] = -1;
 
 #if defined ZR
 	i_HealthBeforeSuit[client] = 0;

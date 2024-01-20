@@ -522,6 +522,10 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 		Resistance_Overall_Low[client] = GetGameTime() + 5.0;
 		Resistance_Overall_Low[target] = GetGameTime() + 15.0;
 		static float belowBossEyes[3];
+		belowBossEyes[0] = 0.0;
+		belowBossEyes[1] = 0.0;
+		belowBossEyes[2] = 0.0;
+
 		GetBeamDrawStartPoint_Stock(client, belowBossEyes,{0.0,-10.0,-10.0});
 		Passanger_Lightning_Effect(belowBossEyes, WorldSpaceCenter(target), 1, 5.0, {200,50,50});
 	}
@@ -531,6 +535,10 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 		{
 			float spawnLoc[3];
 			static float belowBossEyes[3];
+			belowBossEyes[0] = 0.0;
+			belowBossEyes[1] = 0.0;
+			belowBossEyes[2] = 0.0;
+
 			TR_GetEndPosition(spawnLoc, trace);
 			GetBeamDrawStartPoint_Stock(client, belowBossEyes,{0.0,-10.0,-10.0});
 			Passanger_Lightning_Effect(belowBossEyes, spawnLoc, 1, 5.0, {200,50,50});

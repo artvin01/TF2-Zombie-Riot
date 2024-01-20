@@ -3766,12 +3766,12 @@ stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3] = {0.0,0.
 	if(startPoint[0] == 0.0 && startPoint[1] == 0.0 && startPoint[2] == 0.0)
 	{
 		GetClientEyePosition(client, startPoint);
+		startPoint[2] -= 25.0;
 	}
 	
 	if(Angles[0] == 0.0 && Angles[1] == 0.0 && Angles[2] == 0.0)
 	{
 		GetClientEyeAngles(client, Angles);
-		startPoint[2] -= 25.0;
 	}
 
 	if (0.0 == Beamoffset[0] && 0.0 == Beamoffset[1] && 0.0 == Beamoffset[2])
