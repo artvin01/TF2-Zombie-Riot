@@ -204,6 +204,12 @@ public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float
 //If you use SearchDamage (above), convert this timer to a void method and rename it to Cryo_DealDamage:
 public void Hose_Touch(int entity, int other)
 {
+	if (entity == -1) //Don't accidentally heal the user every time they fire this thing, it would be WAY too good
+		return;
+		
+	if (other == -1) //Don't accidentally heal the user every time they fire this thing, it would be WAY too good
+		return;
+
 	if (other == 0)	
 	{
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
@@ -220,6 +226,7 @@ public void Hose_Touch(int entity, int other)
 		
 	if (other == owner) //Don't accidentally heal the user every time they fire this thing, it would be WAY too good
 		return;
+
 		
 	if (Hose_AlreadyHealed[entity][other])
 		return;

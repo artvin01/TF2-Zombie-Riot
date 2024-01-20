@@ -6729,6 +6729,9 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 	static Item item;
 	if(StoreWeapon[weapon] < 1)
 		return;
+		
+	if(client < 1)
+		return;
 	
 	StoreItems.GetArray(StoreWeapon[weapon], item);
 	ItemInfo info;
