@@ -453,7 +453,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		
 		Heavens_Light_Active[npc.index]=false;
-		fl_heavens_light_use_timer[npc.index] = GameTime + 125.0;
+		fl_heavens_light_use_timer[npc.index] = GameTime + 60.0;
 		b_force_heavens_light[npc.index] = false;
 		//Invoke_Heavens_Light(npc, GameTime);
 
@@ -2281,7 +2281,6 @@ static void Donnerkrieg_Main_Nightmare_Cannon(Raidboss_Donnerkrieg npc)
 	fl_initial_windup[npc.index] = GetGameTime(npc.index)+1.5;
 	fl_explosion_thorttle[npc.index]=0.0;
 	fl_spinning_angle[npc.index]=0.0;
-	fl_force_kill_crystal_timer = GetGameTime() +2.5;
 	i_crystal_index=-1;
 	SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_Main_Nightmare_Tick);
 	SDKHook(npc.index, SDKHook_Think, Donnerkrieg_Main_Nightmare_Tick);
@@ -2698,14 +2697,15 @@ static float fl_crystal_direct_dmg[MAXENTITIES];
 //Crystaline Reflection:
 public void Donnerkrieg_Invoke_Crstaline_Reflection(int client, float Target[3], bool hover, float speed)	//schwert can throw this. :) but I didn't do that.
 {
+	fl_force_kill_crystal_timer = GetGameTime() +3.75;
 	for(int i=0 ; i <=MAXTF2PLAYERS ; i++)
 	{
 		if(IsValidClient(i))
 		{
 			float loc[3] ; loc = GetAbsOrigin(i);
-			loc[0] +=GetRandomFloat(-100.0,100.0);
-			loc[1] +=GetRandomFloat(-100.0,100.0);
-			loc[2] +=GetRandomFloat(-100.0,100.0);
+			loc[0] +=GetRandomFloat(-75.0,75.0);
+			loc[1] +=GetRandomFloat(-75.0,75.0);
+			loc[2] +=GetRandomFloat(-75.0,75.0);
 
 			Laser_Loc[i] = loc;
 		}
