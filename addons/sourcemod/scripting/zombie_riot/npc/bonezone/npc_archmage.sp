@@ -18,14 +18,21 @@ static float BONES_ARCHMAGE_PROJECTILE_VELOCITY_BUFFED = 1400.0;
 static float BONES_ARCHMAGE_PROJECTILE_LIFESPAN = 1.2;
 //No lifespan variable for buffed archmages because their projectiles don't disappear.
 
+static float ARCHMAGE_FIREBALL_BLAST_RADIUS = 200.0;
+static float ARCHMAGE_FIREBALL_FALLOFF_MULTIHIT = 0.8;
+static float ARCHMAGE_FIREBALL_FALLOFF_RADIUS = 0.66;
+static float ARCHMAGE_FIREBALL_ENTITY_MULTIPLIER = 3.0;
+
 static float BONES_ARCHMAGE_ATTACKINTERVAL = 0.5;
 static float BONES_ARCHMAGE_ATTACKINTERVAL_BUFFED = 1.0;
 
-static float ARCHMAGE_HOVER_MINDIST = 450.0;
-static float ARCHMAGE_HOVER_MAXDIST = 750.0;
-static float ARCHMAGE_HOVER_OPTIMALDIST = 600.0;
+static float ARCHMAGE_HOVER_MINDIST = 400.0;
+static float ARCHMAGE_HOVER_MAXDIST = 700.0;
+static float ARCHMAGE_HOVER_OPTIMALDIST = 550.0;
 
 static float ARCHMAGE_CHARGE_DURATION = 3.0;
+
+static float f_ArchmageFireballDMG[2049] = { 0.0, ... };
 
 #define BONES_ARCHMAGE_SCALE				"1.0"
 #define BONES_ARCHMAGE_BUFFED_SCALE			"1.2"
@@ -33,8 +40,10 @@ static float ARCHMAGE_CHARGE_DURATION = 3.0;
 #define BONES_ARCHMAGE_SKIN						"0"
 #define BONES_ARCHMAGE_BUFFED_SKIN				"1"
 
-#define PARTICLE_ARCHMAGE_FIREBALL			"superrare_burning1"
+#define PARTICLE_ARCHMAGE_FIREBALL			"flaregun_trail_red"
 #define PARTICLE_ARCHMAGE_FIREBALL_BUFFED	"spell_fireball_small_blue"
+#define PARTICLE_FIREBALL_HIT				"flaregun_destroyed"
+#define PARTICLE_FIREBALL_EXPLODE			"spell_fireball_tendril_parent_blue"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -114,6 +123,8 @@ int throwParticle[MAXENTITIES + 1] = { -1, ... };
 #define SOUND_SPELL_THROW_BUFFED	"misc/halloween/strongman_fast_whoosh_01.wav"
 #define SOUND_SPELL_CAST			"misc/halloween/spell_meteor_cast.wav"
 #define SOUND_SPELL_CAST_BUFFED		"misc/halloween/spell_meteor_impact.wav"
+#define SOUND_FIREBALL_HIT			"weapons/dragons_fury_impact_bonus_damage.wav"
+#define SOUND_FIREBALL_EXPLODE		"misc/halloween/spell_fireball_impact.wav"
 
 public void ArchmageBones_OnMapStart_NPC()
 {
@@ -135,6 +146,8 @@ public void ArchmageBones_OnMapStart_NPC()
 	PrecacheSound(SOUND_SPELL_THROW_BUFFED);
 	PrecacheSound(SOUND_SPELL_CAST);
 	PrecacheSound(SOUND_SPELL_CAST_BUFFED);
+	PrecacheSound(SOUND_FIREBALL_HIT);
+	PrecacheSound(SOUND_FIREBALL_EXPLODE);
 }
 
 methodmap ArchmageBones < CClotBody
@@ -352,7 +365,7 @@ public void Archmage_EndIntro(ArchmageBones npc, int closest)
 			chargeLoopTime[npc.index] = GetGameTime(npc.index) + 1.8;
 			throwState[npc.index] = THROWSTATE_CHARGING;
 			npc.m_flAttackHappens = GetGameTime(npc.index) + ARCHMAGE_CHARGE_DURATION;
-			EmitSoundToAll(SOUND_SPELL_CHARGEUP, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 10, _, NORMAL_ZOMBIE_VOLUME - 0.25, 90);
+			EmitSoundToAll(SOUND_SPELL_CHARGEUP, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 10, _, NORMAL_ZOMBIE_VOLUME - 0.1, 90);
 		}
 		else
 		{
@@ -414,20 +427,111 @@ public void Archmage_CheckLaunch(ArchmageBones npc, int closest)
 			vicLoc = PredictSubjectPositionForProjectiles(npc, closest, vel);
 		}
 		
-		if (!b_BonesBuffed[npc.index])
-		{
-			int projectile = npc.FireParticleRocket(vicLoc, damage, vel, 100.0, PARTICLE_ARCHMAGE_FIREBALL);
-			CreateTimer(BONES_ARCHMAGE_PROJECTILE_LIFESPAN, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
-		}
-		else
-		{
-			//TODO: Launch a zr_base_projectile which is dhooked to explode on contact.
-		}
+		Archmage_ShootProjectile(npc, vicLoc, vel, damage);
 		
-		EmitSoundToAll(b_BonesBuffed[npc.index] ? SOUND_SPELL_CAST_BUFFED : SOUND_SPELL_CAST, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 20, _, NORMAL_ZOMBIE_VOLUME - 0.35);
+		EmitSoundToAll(b_BonesBuffed[npc.index] ? SOUND_SPELL_CAST_BUFFED : SOUND_SPELL_CAST, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - (b_BonesBuffed[npc.index] ? 15 : 30), _, NORMAL_ZOMBIE_VOLUME - (b_BonesBuffed[npc.index] ? 0.25 : 0.5));
 		npc.m_flAttackHappenswillhappen = false;
 		Archmage_RemoveParticle(npc.index);
 	}
+}
+
+public void Archmage_ShootProjectile(ArchmageBones npc, float vicLoc[3], float vel, float damage)
+{
+	int entity = CreateEntityByName("zr_projectile_base");
+			
+	if (IsValidEntity(entity))
+	{
+		float vecForward[3], vecSwingStart[3], vecAngles[3];
+		npc.GetVectors(vecForward, vecSwingStart, vecAngles);
+
+		vecSwingStart = GetAbsOrigin(npc.index);
+		vecSwingStart[2] += 54.0;
+
+		MakeVectorFromPoints(vecSwingStart, vicLoc, vecAngles);
+		GetVectorAngles(vecAngles, vecAngles);
+		
+		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*vel;
+		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*vel;
+		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-vel;
+		
+		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
+		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
+		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+		
+		f_ArchmageFireballDMG[entity] = damage;
+
+		TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
+		DispatchSpawn(entity);
+		
+		int g_ProjectileModelRocket = PrecacheModel("models/weapons/w_models/w_drg_ball.mdl");
+		for(int i; i<4; i++)
+		{
+			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
+		}
+		
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
+		SetEntityCollisionGroup(entity, 24);
+		Set_Projectile_Collision(entity);
+		See_Projectile_Team(entity);
+		
+		if (b_BonesBuffed[npc.index])
+		{
+			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Archmage_Explode);
+			Archmage_AttachParticle(entity, PARTICLE_ARCHMAGE_FIREBALL_BUFFED, _, "");
+		}
+		else
+		{
+			SDKHook(entity, SDKHook_Touch, Archmage_FireballTouch);
+			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Archmage_DontExplode);
+			Archmage_AttachParticle(entity, PARTICLE_ARCHMAGE_FIREBALL, _, "");
+			CreateTimer(BONES_ARCHMAGE_PROJECTILE_LIFESPAN, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		}
+	}
+}
+
+public Action Archmage_FireballTouch(int entity, int other)
+{
+	if (!IsValidEntity(other))
+		return Plugin_Continue;
+		
+	int team1 = GetEntProp(entity, Prop_Send, "m_iTeamNum");
+	int team2 = GetEntProp(other, Prop_Send, "m_iTeamNum");
+	
+	if (team1 != team2)
+	{
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		SDKHooks_TakeDamage(other, entity, IsValidEntity(owner) ? owner : entity, f_ArchmageFireballDMG[entity]);
+		if (IsValidClient(other))
+			EmitSoundToClient(other, SOUND_FIREBALL_HIT);
+			
+		float position[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+		ParticleEffectAt(position, PARTICLE_FIREBALL_HIT, 2.0);
+	}
+		
+	return Plugin_Continue;
+}
+
+public MRESReturn Archmage_DontExplode(int entity)
+{
+	RemoveEntity(entity);
+	return MRES_Supercede; //DONT.
+}
+
+public MRESReturn Archmage_Explode(int entity)
+{
+	float position[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	ParticleEffectAt(position, PARTICLE_FIREBALL_EXPLODE, 2.0);
+	EmitSoundToAll(SOUND_FIREBALL_EXPLODE, entity, SNDCHAN_STATIC, 80, _, 1.0);
+	
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+	Explode_Logic_Custom(f_ArchmageFireballDMG[entity], IsValidEntity(owner) ? owner : entity, entity, entity, position, ARCHMAGE_FIREBALL_BLAST_RADIUS, ARCHMAGE_FIREBALL_FALLOFF_MULTIHIT, ARCHMAGE_FIREBALL_FALLOFF_RADIUS, isBlue, _, true, ARCHMAGE_FIREBALL_ENTITY_MULTIPLIER);
+	
+	RemoveEntity(entity);
+	return MRES_Supercede; //DONT.
 }
 
 public void Archmage_RemoveParticle(int index)
@@ -459,8 +563,6 @@ public int Archmage_GetOptimalTarget(int ent)
 	{
 		if (!IsValidClient(i))
 			continue;
-		/*if (Can_I_See_Enemy(ent, i, true) != i)
-			continue;*/
 			
 		CClotBody npc = view_as<CClotBody>(i);
 		if (TF2_GetClientTeam(i) != view_as<TFTeam>(GetEntProp(ent, Prop_Send, "m_iTeamNum")) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true))
@@ -485,41 +587,15 @@ public int Archmage_GetOptimalTarget(int ent)
 
 public void Archmage_LookAtPoint(ArchmageBones npc, int closest)
 {
-	/*int iPitch = npc.LookupPoseParameter("body_pitch");
-	int iYaw = npc.LookupPoseParameter("body_yaw");
-	if(iPitch < 0 || iYaw < 0)
-		return;*/
-	
 	if (IsValidEnemy(npc.index, closest))
 	{
-		/*float startLoc[3], targLoc[3], v[3], ang[3];
-		startLoc = WorldSpaceCenter(npc.index);
-		targLoc = WorldSpaceCenter(closest);
-		
-		SubtractVectors(startLoc, targLoc, v); 
-		NormalizeVector(v, v);
-		GetVectorAngles(v, ang); 
-					
-		float flPitch = npc.GetPoseParameter(iPitch);
-		float flYaw = npc.GetPoseParameter(iYaw);
-		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10000.0));
-		npc.SetPoseParameter(iYaw, ApproachAngle(ang[1], flYaw, 10000.0));
-		
-		flPitch = npc.GetPoseParameter(iPitch);
-		flYaw = npc.GetPoseParameter(iYaw);*/
-		
 		float targLoc[3];
 		targLoc = WorldSpaceCenter(closest);
 		npc.FaceTowards(targLoc, 15000.0);
 	}
-	/*else
-	{
-		npc.SetPoseParameter(iPitch, 0.0);
-		npc.SetPoseParameter(iYaw, 0.0);
-	}*/
 }
 
-//TODO: Give Archmages custom throw animations instead of using passtime anims, passtime looks out of place and doesn't transition properly with his anims.
+//TODO: Give the buffed variant custom throw animations instead of using passtime anims, passtime looks out of place for such a big attack.
 public void ArchmageBones_ClotThink(int iNPC)
 {
 	ArchmageBones npc = view_as<ArchmageBones>(iNPC);
