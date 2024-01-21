@@ -914,13 +914,13 @@
 	{
 		"en"		"Buffed Big Bones"
 	}
-	"Skeletal Mage"
+	"Spelleton"
 	{
-		"en"		"Skeletal Mage"
+		"en"		"Spelleton"
 	}
-	"Skeletal Archmage"
+	"Calcified Conjurer"
 	{
-		"en"		"Skeletal Archmage"
+		"en"		"Calcified Conjurer"
 	}
 	"Mecha Engineer"
 	{

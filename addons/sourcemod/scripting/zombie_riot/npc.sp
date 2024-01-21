@@ -779,8 +779,8 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Buffed Beefy Bones",
 	"Buffed Brittle Bones",
 	"Buffed Big Bones",
-	"Skeletal Mage",
-	"Skeletal Archmage"
+	"Spelleton",
+	"Calcified Conjurer"
 };
 
 // See items.sp for IDs to names
