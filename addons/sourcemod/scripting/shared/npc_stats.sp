@@ -63,6 +63,8 @@ static float f_DelayComputingOfPath[MAXENTITIES];
 static float f_PredictPos[MAXENTITIES][3];
 static float f_PredictDuration[MAXENTITIES];
 static float f_UnstuckSuckMonitor[MAXENTITIES];
+static int i_TargetToWalkTo[MAXENTITIES];
+float f_TargetToWalkToDelay[MAXENTITIES];
 
 static int i_WasPathingToHere[MAXENTITIES];
 static float f3_WasPathingToHere[MAXENTITIES][3];
@@ -609,8 +611,21 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	property int m_iTargetAlly
 	{
-		public get()							{ return i_TargetAlly[this.index]; }
-		public set(int TempValueForProperty) 	{ i_TargetAlly[this.index] = TempValueForProperty; }
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_TargetAlly[this.index]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_TargetAlly[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_TargetAlly[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
 	}
 	property bool m_bGetClosestTargetTimeAlly
 	{
@@ -1042,10 +1057,41 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return fl_Speed[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_Speed[this.index] = TempValueForProperty; }
 	}
+	property int m_iTargetWalkTo
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_TargetToWalkTo[this.index]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_TargetToWalkTo[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_TargetToWalkTo[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	property int m_iTarget
 	{
-		public get()							{ return i_Target[this.index]; }
-		public set(int TempValueForProperty) 	{ i_Target[this.index] = TempValueForProperty; }
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_Target[this.index]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_Target[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_Target[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
 	}
 	property int m_iBleedType
 	{
@@ -4479,6 +4525,7 @@ stock int GetClosestTarget(int entity,
 	}
 	if(searcher_team != 2 && !IgnorePlayers)
 	{
+		CClotBody npc1 = view_as<CClotBody>(entity);
 		for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
 		{
 			int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
@@ -4491,7 +4538,7 @@ stock int GetClosestTarget(int entity,
 #if defined ZR
 					if(IsTowerdefense && i_NpcInternalId[entity_close] == VIP_BUILDING)
 					{
-						if(!IsValidEnemy(entity, i_Target[entity], true, true))
+						if(!IsValidEnemy(entity, npc1.m_iTarget, true, true))
 						{
 							return entity_close; //we found a vip building, go after it.
 						}
@@ -4523,7 +4570,8 @@ stock int GetClosestTarget(int entity,
 	}
 	if(IsTowerdefense)
 	{
-		return i_Target[entity];
+		CClotBody npc = view_as<CClotBody>(entity);
+		return npc.m_iTarget;
 	}
 	
 #if defined ZR
@@ -7517,6 +7565,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_CooldownForHurtParticle[entity] = 0.0;
 	f_DelayComputingOfPath[entity] = GetGameTime() + 0.2;
 	f_UnstuckSuckMonitor[entity] = 0.0;
+	i_TargetToWalkTo[entity] = -1;
+	f_TargetToWalkToDelay[entity] = 0.0;
 	i_WasPathingToHere[entity] = 0;
 	f3_WasPathingToHere[entity][0] = 0.0;
 	f3_WasPathingToHere[entity][1] = 0.0;

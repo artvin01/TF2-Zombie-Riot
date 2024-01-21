@@ -282,11 +282,11 @@ public void MedivalAchilles_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 75.0;
+					float damage = 125.0;
 
 					if(Medival_Difficulty_Level > 2.0)
 					{
-						damage = 100.0;
+						damage = 150.0;
 					}
 
 					if(ShouldNpcDealBonusDamage(target))
@@ -429,7 +429,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 					npc.m_flAttackHappens = gameTime + 0.25;
 
 					npc.m_flDoingAnimation = gameTime + 0.25;
-					npc.m_flNextMeleeAttack = gameTime + 0.7;
+					npc.m_flNextMeleeAttack = gameTime + 0.55;
 					npc.m_bisWalking = true;
 				}
 			}
