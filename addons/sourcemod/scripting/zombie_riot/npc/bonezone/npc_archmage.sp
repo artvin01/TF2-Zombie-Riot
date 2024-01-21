@@ -14,7 +14,11 @@ static float BONES_ARCHMAGE_BUILDINGDAMAGE = 20.0;
 static float BONES_ARCHMAGE_BUILDINGDAMAGE_BUFFED = 40.0;
 
 static float BONES_ARCHMAGE_ATTACKINTERVAL = 0.5;
-static float BONES_ARCHMAGE_ATTACKINTERVAL_BUFFED = 0.33;
+static float BONES_ARCHMAGE_ATTACKINTERVAL_BUFFED = 1.0;
+
+static float ARCHMAGE_HOVER_MINDIST = 300.0;
+static float ARCHMAGE_HOVER_MAXDIST = 500.0;
+static float ARCHMAGE_HOVER_OPTIMALDIST = 400.0;
 
 static float ARCHMAGE_CHARGE_DURATION = 4.0;
 
@@ -97,6 +101,7 @@ enum Archmage_ThrowState
 Archmage_ThrowState throwState[MAXENTITIES] = { THROWSTATE_INACTIVE, ... };
 float throwEndTime[MAXENTITIES + 1] = { 0.0, ... };
 float throwThrowTime[MAXENTITIES + 1] = { 0.0, ... };
+float chargeLoopTime[MAXENTITIES + 1] = { 0.0, ... };
 int throwParticle[MAXENTITIES + 1] = { -1, ... };
 
 public void ArchmageBones_OnMapStart_NPC()
@@ -213,7 +218,7 @@ methodmap ArchmageBones < CClotBody
 		int iActivity = npc.LookupActivity("ACT_ARCHMAGE_IDLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		npc.m_bDoSpawnGesture = true;
+		//npc.m_bDoSpawnGesture = true;
 
 		DispatchKeyValue(npc.index, "skin", buffed ? BONES_ARCHMAGE_BUFFED_SKIN : BONES_ARCHMAGE_SKIN);
 
@@ -229,7 +234,7 @@ methodmap ArchmageBones < CClotBody
 		throwState[npc.index] = THROWSTATE_INACTIVE;
 		SDKHook(npc.index, SDKHook_Think, ArchmageBones_ClotThink);
 		
-		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
+		//npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		npc.StartPathing();
 		
@@ -298,9 +303,8 @@ stock int Archmage_AttachParticle(int entity, char type[255], float duration = 0
 	return -1;
 }
 
-//TODO: Archmages do not have a melee attack, so their attacks need to be rewritten.
 //All archmage variants will float a short distance above the ground and attempt to keep a distance from survivors.
-//Both variants throw fireballs using the PASSTIME throwing gestures for the animations.
+//Both variants throw fireballs. 
 //Skeletal Mages (the non-buffed variant of the archmage) toss smaller red fireballs which deal 75 damage each and do not explode.
 //Skeletal Archmages toss large blue fireballs which deal a base damage of 300 and DO explode within a small radius, with up to 66% falloff. Archmages need to charge these fireballs, during which they suffer a 50% movement speed penalty.
 
@@ -308,11 +312,15 @@ public void Archmage_CheckThrow(ArchmageBones npc, int closest)
 {
 	if (npc.m_flNextMeleeAttack < GetGameTime(npc.index) && IsValidEnemy(npc.index, closest))
 	{
+		//Don't try to throw a fireball if the target is too far away.
+		if (GetVectorDistance(WorldSpaceCenter(npc.index), WorldSpaceCenter(closest)) > ARCHMAGE_HOVER_MAXDIST)
+			return;
+			
 		throwState[npc.index] = THROWSTATE_INTRO;
 		npc.m_flAttackHappens = GetGameTime(npc.index) + 0.1;
 		npc.m_flAttackHappenswillhappen = true;
 		
-		//TODO: Play sound, spawn fire particle
+		//TODO: Play sound
 		npc.AddGesture("ACT_MP_PASSTIME_THROW_BEGIN");
 		throwParticle[npc.index] = EntIndexToEntRef(Archmage_AttachParticle(npc.index, b_BonesBuffed[npc.index] ? PARTICLE_ARCHMAGE_FIREBALL_BUFFED : PARTICLE_ARCHMAGE_FIREBALL, _, "handR"));
 	}
@@ -324,9 +332,11 @@ public void Archmage_EndIntro(ArchmageBones npc, int closest)
 	{
 		if (b_BonesBuffed[npc.index])
 		{
-			npc.AddGesture("ACT_MP_PASSTIME_THROW_MIDDLE", true, ARCHMAGE_CHARGE_DURATION);
+			npc.AddGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
+			chargeLoopTime[npc.index] = GetGameTime(npc.index) + 1.8;
 			throwState[npc.index] = THROWSTATE_CHARGING;
 			npc.m_flAttackHappens = GetGameTime(npc.index) + ARCHMAGE_CHARGE_DURATION;
+			//TODO: Play sound(?)
 		}
 		else
 		{
@@ -341,16 +351,24 @@ public void Archmage_ChargeUp(ArchmageBones npc, int closest)
 	{
 		Archmage_Throw(npc, closest);
 	}
+	else if (GetGameTime(npc.index) >= chargeLoopTime[npc.index])
+	{
+		npc.AddGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
+		chargeLoopTime[npc.index] = GetGameTime(npc.index) + 1.8;
+	}
 }
 
 public void Archmage_Throw(ArchmageBones npc, int closest)
 {
+	npc.RemoveGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
+	
 	float duration;
 	if (IsValidEnemy(npc.index, closest))
 	{
 		npc.AddGesture("ACT_MP_PASSTIME_THROW_END");
 		duration = 0.46;
 		throwThrowTime[npc.index] = GetGameTime(npc.index) + 0.275;
+		//TODO: Play sound
 	}
 	else
 	{
@@ -368,7 +386,7 @@ public void Archmage_CheckLaunch(ArchmageBones npc, int closest)
 {
 	if (GetGameTime(npc.index) >= throwThrowTime[npc.index] && npc.m_flAttackHappenswillhappen)
 	{
-		//TODO: Actually throw the fireball
+		//TODO: Actually throw the fireball, play sound
 		npc.m_flAttackHappenswillhappen = false;
 		Archmage_RemoveParticle(npc.index);
 	}
@@ -385,13 +403,86 @@ public void Archmage_EndThrow(ArchmageBones npc, int closest)
 {
 	if (GetGameTime(npc.index) >= throwEndTime[npc.index])
 	{
-		throwState[npc.index] = THROWSTATE_INACTIVE;
 		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BONES_ARCHMAGE_ATTACKINTERVAL_BUFFED : BONES_ARCHMAGE_ATTACKINTERVAL);
+		throwState[npc.index] = THROWSTATE_INACTIVE;
 	}
 }
 
-//TODO: Mages need to look in the direction of where they're going to throw their balls.
-//They also need to float above the ground and attempt to keep a distance from enemies.
+public int Archmage_GetOptimalTarget(int ent)
+{
+	float pos[3], otherPos[3];
+	pos = WorldSpaceCenter(ent);
+	
+	float closestDist = 999999999.0;
+	int closest = -1;
+	
+	//TODO: Ask how to make this include NPCs and buildings
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (!IsValidClient(i))
+			continue;
+		/*if (Can_I_See_Enemy(ent, i, true) != i)
+			continue;*/
+			
+		CClotBody npc = view_as<CClotBody>(i);
+		if (TF2_GetClientTeam(i) != view_as<TFTeam>(GetEntProp(ent, Prop_Send, "m_iTeamNum")) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true))
+		{
+			otherPos = WorldSpaceCenter(ent);
+			
+			float dist = GetVectorDistance(pos, otherPos);
+			float diff = ARCHMAGE_HOVER_OPTIMALDIST - dist;
+			if (diff < 0.0)
+				diff *= -1.0;
+				
+			if (diff < closestDist)
+			{
+				closest = i;
+				closestDist = diff;
+			}
+		}
+	}
+	
+	return closest;
+}
+
+public void Archmage_LookAtPoint(ArchmageBones npc, int closest)
+{
+	/*int iPitch = npc.LookupPoseParameter("body_pitch");
+	int iYaw = npc.LookupPoseParameter("body_yaw");
+	if(iPitch < 0 || iYaw < 0)
+		return;*/
+	
+	if (IsValidEnemy(npc.index, closest))
+	{
+		/*float startLoc[3], targLoc[3], v[3], ang[3];
+		startLoc = WorldSpaceCenter(npc.index);
+		targLoc = WorldSpaceCenter(closest);
+		
+		SubtractVectors(startLoc, targLoc, v); 
+		NormalizeVector(v, v);
+		GetVectorAngles(v, ang); 
+					
+		float flPitch = npc.GetPoseParameter(iPitch);
+		float flYaw = npc.GetPoseParameter(iYaw);
+		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10000.0));
+		npc.SetPoseParameter(iYaw, ApproachAngle(ang[1], flYaw, 10000.0));
+		
+		flPitch = npc.GetPoseParameter(iPitch);
+		flYaw = npc.GetPoseParameter(iYaw);*/
+		
+		float targLoc[3];
+		targLoc = WorldSpaceCenter(closest);
+		npc.FaceTowards(targLoc, 15000.0);
+	}
+	/*else
+	{
+		npc.SetPoseParameter(iPitch, 0.0);
+		npc.SetPoseParameter(iYaw, 0.0);
+	}*/
+}
+
+//TODO: Mages need to float above the ground and attempt to keep a distance from enemies.
+//TODO: Give Archmages custom throw animations instead of using passtime anims, passtime looks out of place and doesn't transition properly with his anims.
 public void ArchmageBones_ClotThink(int iNPC)
 {
 	ArchmageBones npc = view_as<ArchmageBones>(iNPC);
@@ -400,13 +491,13 @@ public void ArchmageBones_ClotThink(int iNPC)
 	
 	npc.Update();
 	
-	if(npc.m_bDoSpawnGesture)
+	/*if(npc.m_bDoSpawnGesture)
 	{
 		//TODO: Archmages need a custom spawn animation so that they don't jarringly transition from walking to floating.
 		npc.AddGesture("ACT_TRANSITION");
 		npc.m_bDoSpawnGesture = false;
 		npc.PlayHeIsAwake();
-	}
+	}*/
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -433,87 +524,57 @@ public void ArchmageBones_ClotThink(int iNPC)
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_iTarget = Archmage_GetOptimalTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
-		npc.StartPathing();
-		//PluginBot_NormalJump(npc.index);
 	}
 	
 	int closest = npc.m_iTarget;
 	
+	//Archmages will always attempt to stay a certain distance away from their target, not too far but not too close.
+	//If they are too far/too close, they will move closer/further as needed.
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
+		float pos[3], targPos[3], optimalPos[3]; 
+		pos = WorldSpaceCenter(npc.index);
+		targPos = WorldSpaceCenter(closest);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-				
-		//Predict their pos.
-		if(flDistanceToTarget < npc.GetLeadRadius())
+		float flDistanceToTarget = GetVectorDistance(targPos, pos);
+					
+		if (flDistanceToTarget < ARCHMAGE_HOVER_MINDIST)
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
-	//		PrintToChatAll("cutoff");
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.StartPathing();
+			optimalPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, closest);
+			NPC_SetGoalVector(npc.index, optimalPos, true);
+		}
+		else if (flDistanceToTarget > ARCHMAGE_HOVER_MAXDIST)
+		{
+			npc.StartPathing();
+			NPC_SetGoalEntity(npc.index, closest);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, closest);
+			npc.StopPathing();
 		}
 		
-		//Target close enough to hit
-		
-		/*if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+		/*float optimalPos[3], ang[3], testAng[3];
+			
+		float diff = flDistanceToTarget - ARCHMAGE_HOVER_OPTIMALDIST;
+			
+		GetAngleToPoint(npc.index, targPos, testAng, ang);
+			
+		if (diff < 0.0)
 		{
-			//Look at target so we hit.
-		//	npc.FaceTowards(vecTarget, 20000.0);
+			ScaleVector(ang, -1.0);
+			diff *= -1.0;
+		}
+				
+		Handle trace = TR_TraceRayFilterEx(pos, ang, MASK_SHOT, RayType_Infinite, Archmage_WorldOnly);
+		TR_GetEndPosition(optimalPos, trace);
+		delete trace;
 			
-			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
-			{
-				//Play attack ani
-				if (!npc.m_flAttackHappenswillhappen)
-				{
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-					npc.PlayMeleeSound();
-					npc.m_flAttackHappens = GetGameTime(npc.index)+0.7;
-					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.83;
-					npc.m_flAttackHappenswillhappen = true;
-				}
-				//Can we attack right now?
-				if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-				{
-					Handle swingTrace;
-					npc.FaceTowards(vecTarget, 20000.0);
-					if(npc.DoSwingTrace(swingTrace, closest))
-					{
-						int target = TR_GetEntityIndex(swingTrace);	
-						float vecHit[3];
-						TR_GetEndPosition(vecHit, swingTrace);
-						if(target > 0) 
-						{
-							if(target <= MaxClients)
-								SDKHooks_TakeDamage(target, npc.index, npc.index, b_BonesBuffed[npc.index] ? BONES_ARCHMAGE_PLAYERDAMAGE_BUFFED : BONES_ARCHMAGE_PLAYERDAMAGE, DMG_CLUB, -1, _, vecHit);
-							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, b_BonesBuffed[npc.index] ? BONES_ARCHMAGE_BUILDINGDAMAGE_BUFFED : BONES_ARCHMAGE_BUILDINGDAMAGE, DMG_CLUB, -1, _, vecHit);						
-								
-							// Hit sound
-							npc.PlayMeleeHitSound();
-						}
-						else
-						{
-							npc.PlayMeleeMissSound();
-						}
-					}
-					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BONES_ARCHMAGE_ATTACKINTERVAL_BUFFED : BONES_ARCHMAGE_ATTACKINTERVAL);
-					npc.m_flAttackHappenswillhappen = false;
-				}
-				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-				{
-					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BONES_ARCHMAGE_ATTACKINTERVAL_BUFFED : BONES_ARCHMAGE_ATTACKINTERVAL);
-				}
-			}
-			
-		}*/
+		Archmage_ConstrainDistance(pos, optimalPos, diff);
+				
+		NPC_SetGoalVector(npc.index, optimalPos);*/
 	}
 	else
 	{
@@ -523,8 +584,6 @@ public void ArchmageBones_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	
-	//TODO: Throwing *technically* works, but they need to actually conjure and throw the fireball.
-	//Throw animations are weird and jittery, the intro stutters a lot.
 	switch(throwState[npc.index])
 	{
 		case THROWSTATE_INACTIVE:
@@ -546,9 +605,44 @@ public void ArchmageBones_ClotThink(int iNPC)
 		}
 	}
 	
+	Archmage_LookAtPoint(npc, closest);
+	
 	npc.PlayIdleSound();
 }
 
+stock float[] Archmage_ConstrainDistance(float startPos[3], float endPos[3], float distance)
+{	
+	if (GetVectorDistance(startPos, endPos, true) >= Pow(distance, 2.0))
+	{
+		float constraint = distance/GetVectorDistance(startPos, endPos);
+		
+		for (int i = 0; i < 3; i++)
+		{
+			endPos[i] = ((endPos[i] - startPos[i]) * constraint) + startPos[i];
+		}
+	}
+	
+	return endPos;
+}
+
+public bool Archmage_WorldOnly(any entity, any contentsMask)
+{
+	if (IsValidClient(entity))
+	{
+		return false;
+	}
+	
+	bool hit = true;
+	
+	if (IsValidEntity(entity))
+	{
+		char entname[255];
+		GetEntityClassname(entity, entname, 255);
+		hit = StrContains(entname, "zr_base_npc") == -1;
+	}
+	
+	return hit;
+}
 
 public Action ArchmageBones_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
