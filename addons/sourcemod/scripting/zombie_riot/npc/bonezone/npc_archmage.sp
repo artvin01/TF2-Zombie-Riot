@@ -7,20 +7,25 @@ static float BONES_ARCHMAGE_SPEED_BUFFED = 320.0;
 #define BONES_ARCHMAGE_HP				"5000"
 #define BONES_ARCHMAGE_HP_BUFFED		"15000"
 
-static float BONES_ARCHMAGE_PLAYERDAMAGE = 10.0;
-static float BONES_ARCHMAGE_PLAYERDAMAGE_BUFFED = 20.0;
+static float BONES_ARCHMAGE_PLAYERDAMAGE = 40.0;
+static float BONES_ARCHMAGE_PLAYERDAMAGE_BUFFED = 300.0;
 
-static float BONES_ARCHMAGE_BUILDINGDAMAGE = 20.0;
-static float BONES_ARCHMAGE_BUILDINGDAMAGE_BUFFED = 40.0;
+static float BONES_ARCHMAGE_BUILDINGDAMAGE = 120.0;
+static float BONES_ARCHMAGE_BUILDINGDAMAGE_BUFFED = 800.0;
+
+static float BONES_ARCHMAGE_PROJECTILE_VELOCITY = 800.0;
+static float BONES_ARCHMAGE_PROJECTILE_VELOCITY_BUFFED = 1400.0;
+static float BONES_ARCHMAGE_PROJECTILE_LIFESPAN = 1.2;
+//No lifespan variable for buffed archmages because their projectiles don't disappear.
 
 static float BONES_ARCHMAGE_ATTACKINTERVAL = 0.5;
 static float BONES_ARCHMAGE_ATTACKINTERVAL_BUFFED = 1.0;
 
-static float ARCHMAGE_HOVER_MINDIST = 300.0;
-static float ARCHMAGE_HOVER_MAXDIST = 500.0;
-static float ARCHMAGE_HOVER_OPTIMALDIST = 400.0;
+static float ARCHMAGE_HOVER_MINDIST = 450.0;
+static float ARCHMAGE_HOVER_MAXDIST = 750.0;
+static float ARCHMAGE_HOVER_OPTIMALDIST = 600.0;
 
-static float ARCHMAGE_CHARGE_DURATION = 4.0;
+static float ARCHMAGE_CHARGE_DURATION = 3.0;
 
 #define BONES_ARCHMAGE_SCALE				"1.0"
 #define BONES_ARCHMAGE_BUFFED_SCALE			"1.2"
@@ -104,6 +109,12 @@ float throwThrowTime[MAXENTITIES + 1] = { 0.0, ... };
 float chargeLoopTime[MAXENTITIES + 1] = { 0.0, ... };
 int throwParticle[MAXENTITIES + 1] = { -1, ... };
 
+#define SOUND_SPELL_CHARGEUP		"items/powerup_pickup_base.wav"
+#define SOUND_SPELL_THROW			"weapons/cleaver_throw.wav"
+#define SOUND_SPELL_THROW_BUFFED	"misc/halloween/strongman_fast_whoosh_01.wav"
+#define SOUND_SPELL_CAST			"misc/halloween/spell_meteor_cast.wav"
+#define SOUND_SPELL_CAST_BUFFED		"misc/halloween/spell_meteor_impact.wav"
+
 public void ArchmageBones_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -118,6 +129,12 @@ public void ArchmageBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 
 	PrecacheModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
+	
+	PrecacheSound(SOUND_SPELL_CHARGEUP);
+	PrecacheSound(SOUND_SPELL_THROW);
+	PrecacheSound(SOUND_SPELL_THROW_BUFFED);
+	PrecacheSound(SOUND_SPELL_CAST);
+	PrecacheSound(SOUND_SPELL_CAST_BUFFED);
 }
 
 methodmap ArchmageBones < CClotBody
@@ -310,7 +327,7 @@ stock int Archmage_AttachParticle(int entity, char type[255], float duration = 0
 
 public void Archmage_CheckThrow(ArchmageBones npc, int closest)
 {
-	if (npc.m_flNextMeleeAttack < GetGameTime(npc.index) && IsValidEnemy(npc.index, closest))
+	if (npc.m_flNextMeleeAttack < GetGameTime(npc.index) && IsValidEnemy(npc.index, closest) && !NpcStats_IsEnemySilenced(npc.index))
 	{
 		//Don't try to throw a fireball if the target is too far away.
 		if (GetVectorDistance(WorldSpaceCenter(npc.index), WorldSpaceCenter(closest)) > ARCHMAGE_HOVER_MAXDIST)
@@ -320,7 +337,6 @@ public void Archmage_CheckThrow(ArchmageBones npc, int closest)
 		npc.m_flAttackHappens = GetGameTime(npc.index) + 0.1;
 		npc.m_flAttackHappenswillhappen = true;
 		
-		//TODO: Play sound
 		npc.AddGesture("ACT_MP_PASSTIME_THROW_BEGIN");
 		throwParticle[npc.index] = EntIndexToEntRef(Archmage_AttachParticle(npc.index, b_BonesBuffed[npc.index] ? PARTICLE_ARCHMAGE_FIREBALL_BUFFED : PARTICLE_ARCHMAGE_FIREBALL, _, "handR"));
 	}
@@ -336,7 +352,7 @@ public void Archmage_EndIntro(ArchmageBones npc, int closest)
 			chargeLoopTime[npc.index] = GetGameTime(npc.index) + 1.8;
 			throwState[npc.index] = THROWSTATE_CHARGING;
 			npc.m_flAttackHappens = GetGameTime(npc.index) + ARCHMAGE_CHARGE_DURATION;
-			//TODO: Play sound(?)
+			EmitSoundToAll(SOUND_SPELL_CHARGEUP, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 10, _, NORMAL_ZOMBIE_VOLUME - 0.25, 90);
 		}
 		else
 		{
@@ -351,7 +367,7 @@ public void Archmage_ChargeUp(ArchmageBones npc, int closest)
 	{
 		Archmage_Throw(npc, closest);
 	}
-	else if (GetGameTime(npc.index) >= chargeLoopTime[npc.index])
+	else if (GetGameTime(npc.index) >= chargeLoopTime[npc.index] || NpcStats_IsEnemySilenced(npc.index))
 	{
 		npc.AddGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
 		chargeLoopTime[npc.index] = GetGameTime(npc.index) + 1.8;
@@ -363,12 +379,12 @@ public void Archmage_Throw(ArchmageBones npc, int closest)
 	npc.RemoveGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
 	
 	float duration;
-	if (IsValidEnemy(npc.index, closest))
+	if (IsValidEnemy(npc.index, closest) && !NpcStats_IsEnemySilenced(npc.index))
 	{
 		npc.AddGesture("ACT_MP_PASSTIME_THROW_END");
 		duration = 0.46;
-		throwThrowTime[npc.index] = GetGameTime(npc.index) + 0.275;
-		//TODO: Play sound
+		throwThrowTime[npc.index] = GetGameTime(npc.index) + 0.1;
+		EmitSoundToAll(b_BonesBuffed[npc.index] ? SOUND_SPELL_THROW_BUFFED : SOUND_SPELL_THROW, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 10, _, NORMAL_ZOMBIE_VOLUME - 0.25);
 	}
 	else
 	{
@@ -386,7 +402,29 @@ public void Archmage_CheckLaunch(ArchmageBones npc, int closest)
 {
 	if (GetGameTime(npc.index) >= throwThrowTime[npc.index] && npc.m_flAttackHappenswillhappen)
 	{
-		//TODO: Actually throw the fireball, play sound
+		float vicLoc[3];
+		vicLoc = WorldSpaceCenter(closest);
+		
+		float vel = b_BonesBuffed[npc.index] ? BONES_ARCHMAGE_PROJECTILE_VELOCITY_BUFFED : BONES_ARCHMAGE_PROJECTILE_VELOCITY;
+		float damage = b_BonesBuffed[npc.index] ? BONES_ARCHMAGE_PLAYERDAMAGE_BUFFED : BONES_ARCHMAGE_PLAYERDAMAGE;
+		
+		//The buffed variant predicts the victim's location, non-buffed does not.
+		if (b_BonesBuffed[npc.index])
+		{
+			vicLoc = PredictSubjectPositionForProjectiles(npc, closest, vel);
+		}
+		
+		if (!b_BonesBuffed[npc.index])
+		{
+			int projectile = npc.FireParticleRocket(vicLoc, damage, vel, 100.0, PARTICLE_ARCHMAGE_FIREBALL);
+			CreateTimer(BONES_ARCHMAGE_PROJECTILE_LIFESPAN, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		else
+		{
+			//TODO: Launch a zr_base_projectile which is dhooked to explode on contact.
+		}
+		
+		EmitSoundToAll(b_BonesBuffed[npc.index] ? SOUND_SPELL_CAST_BUFFED : SOUND_SPELL_CAST, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 20, _, NORMAL_ZOMBIE_VOLUME - 0.35);
 		npc.m_flAttackHappenswillhappen = false;
 		Archmage_RemoveParticle(npc.index);
 	}
@@ -416,7 +454,7 @@ public int Archmage_GetOptimalTarget(int ent)
 	float closestDist = 999999999.0;
 	int closest = -1;
 	
-	//TODO: Ask how to make this include NPCs and buildings
+	//TODO: Ask how to make this include NPCs, Archmages do not intentionally attack buildings so we don't care about them.
 	for (int i = 1; i <= MaxClients; i++)
 	{
 		if (!IsValidClient(i))
@@ -481,7 +519,6 @@ public void Archmage_LookAtPoint(ArchmageBones npc, int closest)
 	}*/
 }
 
-//TODO: Mages need to float above the ground and attempt to keep a distance from enemies.
 //TODO: Give Archmages custom throw animations instead of using passtime anims, passtime looks out of place and doesn't transition properly with his anims.
 public void ArchmageBones_ClotThink(int iNPC)
 {
