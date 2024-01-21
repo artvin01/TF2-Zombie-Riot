@@ -10,8 +10,8 @@ static float BONES_ARCHMAGE_SPEED_BUFFED = 320.0;
 static float BONES_ARCHMAGE_PLAYERDAMAGE = 40.0;
 static float BONES_ARCHMAGE_PLAYERDAMAGE_BUFFED = 300.0;
 
-static float BONES_ARCHMAGE_BUILDINGDAMAGE = 120.0;
-static float BONES_ARCHMAGE_BUILDINGDAMAGE_BUFFED = 800.0;
+//static float BONES_ARCHMAGE_BUILDINGDAMAGE = 120.0;
+//static float BONES_ARCHMAGE_BUILDINGDAMAGE_BUFFED = 800.0;
 
 static float BONES_ARCHMAGE_PROJECTILE_VELOCITY = 800.0;
 static float BONES_ARCHMAGE_PROJECTILE_VELOCITY_BUFFED = 1400.0;
@@ -28,7 +28,7 @@ static float BONES_ARCHMAGE_ATTACKINTERVAL_BUFFED = 1.0;
 
 static float ARCHMAGE_HOVER_MINDIST = 400.0;
 static float ARCHMAGE_HOVER_MAXDIST = 700.0;
-static float ARCHMAGE_HOVER_OPTIMALDIST = 550.0;
+//static float ARCHMAGE_HOVER_OPTIMALDIST = 550.0;
 
 static float ARCHMAGE_CHARGE_DURATION = 3.0;
 
@@ -238,7 +238,7 @@ methodmap ArchmageBones < CClotBody
 		
 		if (buffed)
 		{
-			TE_SetupParticleEffect(/*"utaunt_auroraglow_purple_parent"*/"utaunt_glowyplayer_purple_parent", PATTACH_ABSORIGIN_FOLLOW, npc.index);
+			TE_SetupParticleEffect("utaunt_auroraglow_purple_parent", PATTACH_ABSORIGIN_FOLLOW, npc.index);
 			TE_WriteNum("m_bControlPoint1", npc.index);	
 			TE_SendToAll();	
 		}

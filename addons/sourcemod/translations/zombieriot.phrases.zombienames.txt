@@ -922,6 +922,14 @@
 	{
 		"en"		"Calcified Conjurer"
 	}
+	"Profaned Priest"
+	{
+		"en"		"Profaned Priest"
+	}
+	"Skeletal Saint"
+	{
+		"en"		"Skeletal Saint"
+	}
 	"Mecha Engineer"
 	{
 		"en"		"Mecha Engineer"
