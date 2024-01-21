@@ -333,7 +333,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		
 		if(!npc.m_bFakeClone)
 		{
-			strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), "??????????????????????????????????");
+			strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), "You.");
 			Music_SetRaidMusic("#zombiesurvival/bob_raid/bob.mp3", 697, true, 1.99);
 			npc.StopPathing();
 
@@ -436,6 +436,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		NPC_StopPathing(npc.index);
 		npc.m_flNextThinkTime = FAR_FUTURE;
 		npc.SetActivity("ACT_IDLE_SHIELDZOBIE");
+		RaidModeTime += 1000.0;
 
 		if(XenoExtraLogic())
 		{
@@ -1028,7 +1029,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 					for(int client = 1; client <= MaxClients; client++)
 					{
-						if(IsClientInGame(client) && IsPlayerAlive(client) && TeutonType[client] != TEUTON_NONE)
+						if(IsClientInGame(client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 						{
 							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vecTarget);
 							

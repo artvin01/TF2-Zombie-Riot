@@ -709,11 +709,15 @@ public int Skull_GetClosestTarget(int ent, float range)
 	
 	float DroneLoc[3], TargetLoc[3];
 	GetEntPropVector(ent, Prop_Send, "m_vecOrigin", DroneLoc);
+	int owner = GetEntPropEnt(ent, Prop_Send, "m_hOwnerEntity");
+	
+	if(owner <= 0)
+		return -1;
 	
 	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 	{
 		int i = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-		if(IsValidEntity(i) && !b_NpcHasDied[i])
+		if(IsValidEnemy(i, owner, true, false))
 		{
 			TargetLoc = WorldSpaceCenter(i);
 			float dist = GetVectorDistance(DroneLoc, TargetLoc, true);

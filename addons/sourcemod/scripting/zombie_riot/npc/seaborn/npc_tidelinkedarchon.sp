@@ -152,7 +152,7 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 
 		health += maxhealth / 200;	// 20 seconds
-		if(health > maxhealth)
+		if(health >= maxhealth)
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
 

@@ -142,7 +142,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 
 		health += maxhealth / 100;	// 20 seconds
-		if(health > (maxhealth / 2))
+		if(health >= (maxhealth / 2))
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
 
