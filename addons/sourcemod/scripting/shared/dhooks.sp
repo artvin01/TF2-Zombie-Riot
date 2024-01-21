@@ -370,11 +370,11 @@ public MRESReturn SpeakConceptIfAllowed_Post(int client, Handle hReturn, Handle 
 }
 
 
-//prevent infinite score gain
 MRESReturn Detour_CalcPlayerScore(DHookReturn hReturn, DHookParam hParams)
 {
+	/*
 	int client = hParams.Get(2);
-	
+
 #if defined ZR
 	int iScore = PlayerPoints[client];
 #endif
@@ -384,6 +384,9 @@ MRESReturn Detour_CalcPlayerScore(DHookReturn hReturn, DHookParam hParams)
 #endif
 	
 	hReturn.Value = iScore;
+	*/
+	//make strange point gain not possible
+	hReturn.Value = 0;
 	return MRES_Supercede;
 }
 
