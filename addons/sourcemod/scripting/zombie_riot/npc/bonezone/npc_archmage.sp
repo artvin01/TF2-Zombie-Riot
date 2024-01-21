@@ -245,7 +245,7 @@ methodmap ArchmageBones < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_ARCHMAGE_IDLE");
+		int iActivity = npc.LookupActivity("ACT_WIZARD_IDLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		//npc.m_bDoSpawnGesture = true;
@@ -550,6 +550,7 @@ public void Archmage_EndThrow(ArchmageBones npc, int closest)
 	}
 }
 
+/*
 public int Archmage_GetOptimalTarget(int ent)
 {
 	float pos[3], otherPos[3];
@@ -583,7 +584,7 @@ public int Archmage_GetOptimalTarget(int ent)
 	}
 	
 	return closest;
-}
+}*/
 
 public void Archmage_LookAtPoint(ArchmageBones npc, int closest)
 {
@@ -595,22 +596,11 @@ public void Archmage_LookAtPoint(ArchmageBones npc, int closest)
 	}
 }
 
-//TODO: Give the buffed variant custom throw animations instead of using passtime anims, passtime looks out of place for such a big attack.
 public void ArchmageBones_ClotThink(int iNPC)
 {
 	ArchmageBones npc = view_as<ArchmageBones>(iNPC);
 	
-//	PrintToChatAll("%.f",GetEntPropFloat(view_as<int>(iNPC), Prop_Data, "m_speed"));
-	
 	npc.Update();
-	
-	/*if(npc.m_bDoSpawnGesture)
-	{
-		//TODO: Archmages need a custom spawn animation so that they don't jarringly transition from walking to floating.
-		npc.AddGesture("ACT_TRANSITION");
-		npc.m_bDoSpawnGesture = false;
-		npc.PlayHeIsAwake();
-	}*/
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -637,7 +627,7 @@ public void ArchmageBones_ClotThink(int iNPC)
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = Archmage_GetOptimalTarget(npc.index);
+		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
@@ -645,6 +635,7 @@ public void ArchmageBones_ClotThink(int iNPC)
 	
 	//Archmages will always attempt to stay a certain distance away from their target, not too far but not too close.
 	//If they are too far/too close, they will move closer/further as needed.
+	//They will still, however, always choose the nearest enemy as their target.
 	if(IsValidEnemy(npc.index, closest))
 	{
 		float pos[3], targPos[3], optimalPos[3]; 
