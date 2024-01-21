@@ -343,6 +343,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			RaidModeScaling = 9999999.99;
 
 			Zombies_Currently_Still_Ongoing--;
+			Raidboss_Clean_Everyone();
 		}
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
@@ -351,7 +352,6 @@ methodmap RaidbossBobTheFirst < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		AcceptEntityInput(npc.m_iWearable1, "Disable");
 		npc.b_SwordIgnition = false;
-		Raidboss_Clean_Everyone();
 		
 		return npc;
 	}

@@ -223,7 +223,7 @@ public void SeabornGuard_ClotThink(int iNPC)
 			}
 		}
 
-		if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)
+		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, target))
