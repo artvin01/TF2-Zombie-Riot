@@ -616,7 +616,12 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		public get()		 
 		{ 
-			return EntRefToEntIndex(i_TargetAlly[this.index]); 
+			int returnint = EntRefToEntIndex(i_TargetAlly[this.index]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+			return returnint;
 		}
 		public set(int iInt) 
 		{
@@ -1064,7 +1069,12 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		public get()		 
 		{ 
-			return EntRefToEntIndex(i_TargetToWalkTo[this.index]); 
+			int returnint = EntRefToEntIndex(i_TargetToWalkTo[this.index]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+			return returnint;
 		}
 		public set(int iInt) 
 		{
@@ -1082,7 +1092,12 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		public get()		 
 		{ 
-			return EntRefToEntIndex(i_Target[this.index]); 
+			int returnint = EntRefToEntIndex(i_Target[this.index]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+			return returnint;
 		}
 		public set(int iInt) 
 		{

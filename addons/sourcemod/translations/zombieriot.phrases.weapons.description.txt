@@ -2662,7 +2662,7 @@
 	}
 	"Autoshotgun Pap 1"
 	{
-		"en"	"Your weapon now fully reloads its clip at once and shoots way faster but deals less damage."
+		"en"	"Your weapon now fully reloads its clip at once and shoots way faster but deals less damage.\nEvery second shot doesnt consume ammo."
 	}
 	"Autoshotgun Pap 2"
 	{
@@ -2670,7 +2670,7 @@
 	}
 	"Rapturing Zombies Desc"
 	{
-		"en"	"Rarely zombies feel the tendency to ascend to heaven."
+		"en"	"Rarely do zombies feel the tendency to ascend to heaven."
 	}
 	"Crossbow Pap 1"
 	{
