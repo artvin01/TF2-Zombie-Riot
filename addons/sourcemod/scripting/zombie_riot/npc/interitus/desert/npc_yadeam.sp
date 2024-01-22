@@ -80,7 +80,7 @@ methodmap DesertYadeam < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(1);
+		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 
@@ -108,16 +108,22 @@ methodmap DesertYadeam < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_urinejar.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_xms_urinejar.mdl");
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/sum23_bushman/sum23_bushman.mdl");
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/sniper/fall17_cammy_jammies/fall17_cammy_jammies.mdl");
 
-		npc.m_iWearable4 = npc.EquipItem("head", "mmodels/workshop/player/items/all_class/short2014_lil_moe/short2014_lil_moe_sniper.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/short2014_lil_moe/short2014_lil_moe_sniper.mdl");
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/short2014_all_mercs_mask/short2014_all_mercs_mask_sniper.mdl");
-		
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/short2014_all_mercs_mask_s1/short2014_all_mercs_mask_s1_sniper.mdl");
+	
+		float flPos[3]; // original
+		float flAng[3]; // original
+		npc.GetAttachment("head", flPos, flAng);
+		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "speech_mediccall", npc.index, "head", {0.0,0.0,0.0});
+		npc.m_flNextRangedAttackHappening = GetGameTime() + 5.0;
+
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
@@ -130,6 +136,18 @@ methodmap DesertYadeam < CClotBody
 public void DesertYadeam_ClotThink(int iNPC)
 {
 	DesertYadeam npc = view_as<DesertYadeam>(iNPC);
+	if(npc.m_flNextRangedAttackHappening < GetGameTime())
+	{
+		npc.m_flNextRangedAttackHappening = GetGameTime() + 5.0;
+		if(IsValidEntity(npc.m_iWearable6))
+		{
+			RemoveEntity(npc.m_iWearable6);
+		}
+		float flPos[3]; // original
+		float flAng[3]; // original
+		npc.GetAttachment("head", flPos, flAng);
+		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "speech_mediccall", npc.index, "head", {0.0,0.0,0.0});
+	}
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -161,7 +179,29 @@ public void DesertYadeam_ClotThink(int iNPC)
 			npc.m_iTargetAlly = GetClosestTarget(npc.index);
 		}
 		
-		
+		if(npc.m_iTargetAlly > 0)
+		{
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			
+			if(flDistanceToTarget > (100.0*100.0))
+			{
+				NPC_StartPathing(npc.index);
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTargetAlly);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
+				}
+				else 
+				{
+					NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+				}
+			}
+			else
+			{
+				NPC_StopPathing(npc.index);
+			}
+		}
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
@@ -184,7 +224,6 @@ public void DesertYadeam_ClotThink(int iNPC)
 		DesertYadeamAllyHeal);
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
 	}
-
 	DesertYadeamSelfDefense(npc,GetGameTime(npc.index)); 
 }
 
@@ -201,13 +240,13 @@ void DesertYadeamSelfDefense(DesertYadeam npc, float gameTime)
 	float vecTarget[3]; vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
 
 	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
+	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 30.0))
 	{
 		if(gameTime > npc.m_flNextMeleeAttack)
 		{
-			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
+			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 30.0))
 			{	
-				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1", false);
+				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
 				npc.PlayMeleeSound();
 				//after we fire, we will have a short delay beteween the actual laser, and when it happens
 				//This will predict as its relatively easy to dodge
@@ -220,8 +259,8 @@ void DesertYadeamSelfDefense(DesertYadeam npc, float gameTime)
 				}
 
 				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.5;
-				npc.FireGrenade(vecTarget, 600.0, 50.0, "models/weapons/c_models/c_urinejar.mdl");
+				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.25;
+				npc.FireGrenade(vecTarget, 600.0, 50.0, "models/weapons/c_models/c_xms_urinejar.mdl");
 				npc.PlayIdleAlertSound();
 			}
 		}
@@ -253,6 +292,8 @@ public void DesertYadeam_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
@@ -287,7 +328,7 @@ void DesertYadeamAllyHeal(int entity, int victim, float damage, int weapon)
 	{
 		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients && !Is_a_Medic[victim])
 		{
-			DesertYadeamAllyHealInternal(entity, victim, 10.0);
+			DesertYadeamAllyHealInternal(entity, victim, 20.0);
 		}
 	}
 }
