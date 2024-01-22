@@ -1195,6 +1195,18 @@ methodmap CClotBody < CBaseCombatCharacter
 		public set(bool TempValueForProperty) 	{ b_Frozen[this.index] = TempValueForProperty; }
 	}
 	
+	property bool m_bBoneZoneNaturallyBuffed
+	{
+		public get()				{ return b_BoneZoneNaturallyBuffed[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_BoneZoneNaturallyBuffed[this.index] = TempValueForProperty; }
+	}
+	
+	property Handle g_BoneZoneBuffers
+	{
+		public get()				{ return g_BoneZoneBuffers[this.index]; }
+		public set(Handle TempValueForProperty) 	{ g_BoneZoneBuffers[this.index] = TempValueForProperty; }
+	}
+	
 	property bool m_bAllowBackWalking
 	{
 		public get()				{ return b_AllowBackWalking[this.index]; }
@@ -2059,37 +2071,81 @@ methodmap CClotBody < CBaseCombatCharacter
 	
 	//Turns a non-buffed skeleton into a buffed one, or vice-versa.
 	//TODO: The max health set by this will need to account for later waves where skeletons have higher HP.
-	//TODO: Skeletons which are "naturally buffed" (meaning they spawn in their buffed state) should completely ignore this.
-	//TODO: Add a "buffer" variable which adds the entity providing the buff to a list. When a buff is removed with this method, "buffer" should be removed from
-	//the list, and if the list is empty because of this, we remove the buffed state.
-	public void BoneZone_SetBuffedState(bool buffed)
+	public void BoneZone_SetBuffedState(bool buffed, int buffer)
 	{
-		switch (i_NpcInternalId[this.index])
+		//Skeletons which are already buffed when they spawn are completely ignored by this so that we don't accidentally remove their natural buff.
+		//Maybe we can change this in the future so players can remove buffs via Silence, but for now it stays like this.
+		if (this.m_bBoneZoneNaturallyBuffed)
+			return;
+		
+		bool AllBuffersGone = false;
+		//Add the buffer to the list if we are applying the buffed form: 		
+		if (buffed)
 		{
-			case BONEZONE_BASICBONES:
-				BasicBones_SetBuffed(this.index, buffed);
-			case BONEZONE_BUFFED_BASICBONES:
-				BasicBones_SetBuffed(this.index, buffed);
-			case BONEZONE_BIGBONES:
-				BigBones_SetBuffed(this.index, buffed);
-			case BONEZONE_BUFFED_BIGBONES:
-				BigBones_SetBuffed(this.index, buffed);
-			case BONEZONE_SAINTBONES:
-				SaintBones_SetBuffed(this.index, buffed);
-			case BONEZONE_BUFFED_SAINTBONES:
-				SaintBones_SetBuffed(this.index, buffed);
-			case BONEZONE_ARCHMAGE:
-				ArchmageBones_SetBuffed(this.index, buffed);
-			case BONEZONE_BUFFED_ARCHMAGE:
-				ArchmageBones_SetBuffed(this.index, buffed);
-			case BONEZONE_BEEFYBONES:
-				BeefyBones_SetBuffed(this.index, buffed);
-			case BONEZONE_BUFFED_BEEFYBONES:
-				BeefyBones_SetBuffed(this.index, buffed);
-			case BONEZONE_BRITTLEBONES:
-				BrittleBones_SetBuffed(this.index, buffed);
-			case BONEZONE_BUFFED_BRITTLEBONES:
-				BrittleBones_SetBuffed(this.index, buffed);
+			if (this.g_BoneZoneBuffers == null)
+				this.g_BoneZoneBuffers = CreateArray(16);
+			
+			bool DoNotAdd = false;
+			for (int i = 0; i < GetArraySize(this.g_BoneZoneBuffers) && !DoNotAdd; i++)
+			{
+				int index = EntRefToEntIndex(GetArrayCell(this.g_BoneZoneBuffers, i));
+				if (index == buffer)
+				{
+					DoNotAdd = true;
+				}
+			}
+			
+			if (!DoNotAdd)
+				PushArrayCell(this.g_BoneZoneBuffers, EntIndexToEntRef(buffer));
+		}
+		else if (this.g_BoneZoneBuffers != null)	//Remove the buffer from the list if we are removing the buffed form, and then delete the list if it is empty:
+		{
+			for (int i = 0; i < GetArraySize(this.g_BoneZoneBuffers); i++)
+			{
+				int index = EntRefToEntIndex(GetArrayCell(this.g_BoneZoneBuffers, i));
+				if (index == buffer)
+				{
+					RemoveFromArray(this.g_BoneZoneBuffers, i);
+				}
+			}
+			
+			if (GetArraySize(this.g_BoneZoneBuffers) < 1)
+			{
+				AllBuffersGone = true;
+				delete this.g_BoneZoneBuffers;
+			}
+		}
+		
+		//Add the buff if we are adding one, or remove it if we are trying to remove the buff and the list of buffers is empty:
+		if (buffed || AllBuffersGone)
+		{
+			switch (i_NpcInternalId[this.index])
+			{
+				case BONEZONE_BASICBONES:
+					BasicBones_SetBuffed(this.index, buffed);
+				case BONEZONE_BUFFED_BASICBONES:
+					BasicBones_SetBuffed(this.index, buffed);
+				case BONEZONE_BIGBONES:
+					BigBones_SetBuffed(this.index, buffed);
+				case BONEZONE_BUFFED_BIGBONES:
+					BigBones_SetBuffed(this.index, buffed);
+				case BONEZONE_SAINTBONES:
+					SaintBones_SetBuffed(this.index, buffed);
+				case BONEZONE_BUFFED_SAINTBONES:
+					SaintBones_SetBuffed(this.index, buffed);
+				case BONEZONE_ARCHMAGE:
+					ArchmageBones_SetBuffed(this.index, buffed);
+				case BONEZONE_BUFFED_ARCHMAGE:
+					ArchmageBones_SetBuffed(this.index, buffed);
+				case BONEZONE_BEEFYBONES:
+					BeefyBones_SetBuffed(this.index, buffed);
+				case BONEZONE_BUFFED_BEEFYBONES:
+					BeefyBones_SetBuffed(this.index, buffed);
+				case BONEZONE_BRITTLEBONES:
+					BrittleBones_SetBuffed(this.index, buffed);
+				case BONEZONE_BUFFED_BRITTLEBONES:
+					BrittleBones_SetBuffed(this.index, buffed);
+			}
 		}
 	}
 	

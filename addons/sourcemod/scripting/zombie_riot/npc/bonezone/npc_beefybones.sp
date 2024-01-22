@@ -168,6 +168,7 @@ methodmap BeefyBones < CClotBody
 		
 		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_BEEFYBONES : BONEZONE_BEEFYBONES;
 		b_BonesBuffed[npc.index] = buffed;
+		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		
 		if (buffed)
 		{

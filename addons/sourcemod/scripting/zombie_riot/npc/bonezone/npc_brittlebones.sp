@@ -205,6 +205,7 @@ methodmap BrittleBones < CClotBody
 		
 		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_BRITTLEBONES : BONEZONE_BRITTLEBONES;
 		b_BonesBuffed[npc.index] = buffed;
+		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		
 		if (buffed)
 		{

@@ -235,6 +235,7 @@ methodmap ArchmageBones < CClotBody
 		
 		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_ARCHMAGE : BONEZONE_ARCHMAGE;
 		b_BonesBuffed[npc.index] = buffed;
+		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		
 		Archmage_GiveCosmetics(npc, buffed);
 		
@@ -289,6 +290,7 @@ public void ArchmageBones_SetBuffed(int index, bool buffed)
 		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_ARCHMAGE_SPEED_BUFFED;
 		Archmage_GiveCosmetics(npc, true);
+		DispatchKeyValue(index, "skin", BONES_ARCHMAGE_BUFFED_SKIN);
 		
 		//Apply buffed particle:
 		TE_SetupParticleEffect(BONES_ARCHMAGE_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, index);
@@ -307,6 +309,7 @@ public void ArchmageBones_SetBuffed(int index, bool buffed)
 		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_ARCHMAGE_SPEED;
 		Archmage_GiveCosmetics(npc, false);
+		DispatchKeyValue(index, "skin", BONES_ARCHMAGE_SKIN);
 		
 		//Remove buffed particle:
 		TE_Start("EffectDispatch");
@@ -423,11 +426,12 @@ public void Archmage_EndIntro(ArchmageBones npc, int closest)
 
 public void Archmage_ChargeUp(ArchmageBones npc, int closest)
 {
-	if ((GetGameTime(npc.index) >= npc.m_flAttackHappens && npc.m_flAttackHappenswillhappen) || !IsValidEnemy(npc.index, closest))
+	//If we are ready to throw, or we can't throw the big blue fireball for some reason, stop charging and attempt to throw.
+	if ((GetGameTime(npc.index) >= npc.m_flAttackHappens && npc.m_flAttackHappenswillhappen) || !IsValidEnemy(npc.index, closest) || !b_BonesBuffed[npc.index] || NpcStats_IsEnemySilenced(npc.index))
 	{
 		Archmage_Throw(npc, closest);
 	}
-	else if (GetGameTime(npc.index) >= chargeLoopTime[npc.index] || NpcStats_IsEnemySilenced(npc.index))
+	else if (GetGameTime(npc.index) >= chargeLoopTime[npc.index])
 	{
 		npc.AddGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
 		chargeLoopTime[npc.index] = GetGameTime(npc.index) + 1.8;

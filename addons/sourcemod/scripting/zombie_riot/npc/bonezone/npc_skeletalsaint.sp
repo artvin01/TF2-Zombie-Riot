@@ -15,8 +15,11 @@
 static float BONES_SAINT_SPEED = 300.0;
 static float BONES_SAINT_SPEED_BUFFED = 350.0;
 
-static float SAINTBONES_HEAL_RANGE = 200.0;
-static float SAINTBONES_HEAL_RANGE_BUFFED = 350.0;
+static float SAINTBONES_HEAL_RANGE = 300.0;
+static float SAINTBONES_HEAL_RANGE_BUFFED = 450.0;
+
+static float Priest_EnemyHover_MinDist = 200.0;
+static float Priest_EnemyHover_MaxDist = 400.0;
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -73,6 +76,8 @@ static char g_GibSounds[][] = {
 };
 
 static bool b_BonesBuffed[MAXENTITIES];
+
+static int Priest_OldHealTarget[MAXENTITIES];
 
 public void SaintBones_OnMapStart_NPC()
 {
@@ -177,6 +182,7 @@ methodmap SaintBones < CClotBody
 		
 		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_SAINTBONES : BONEZONE_SAINTBONES;
 		b_BonesBuffed[npc.index] = buffed;
+		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		
 		if (buffed)
 		{
@@ -283,7 +289,14 @@ stock void Saint_GiveCosmetics(CClotBody npc, bool buffed)
 //Profaned Priests (the non-buffed variant) heal a single target. They will prioritize non-buffed skeletons who do not already have a healer. Skeletons being healed by a Profaned Priest are transformed into their buffed variant, and will revert to their normal variant when the healing stops, unless they naturally spawned buffed.
 //Skeletal Saints (the buffed variant) provide healing in a radius. All skeletons being healed by this effect are transformed into their buffed counterpart.
 //Profaned Priests cannot be transformed into Skeletal Saints by either of these effects, though they *can* be buffed by other sources.
-//Neither are capable of attacking.
+//If all valid heal targets are dead (meaning everything that is not a Saint or Priest), they will take on the movement patterns of Skeletal Archmages and fight by casting low-damage lightning bolts.
+
+//TODO: PRIEST HEAL TARGET PRIORITY LIST:
+//	1. Non-buffed skeletons, not including healers.
+//	2. Any skeleton, not including healers.
+//	3. Literally any friendly NPC that is not a healer.
+//	4. No valid heal targets exist, become the senate and start zapping people.
+
 public void SaintBones_ClotThink(int iNPC)
 {
 	SaintBones npc = view_as<SaintBones>(iNPC);
@@ -305,7 +318,6 @@ public void SaintBones_ClotThink(int iNPC)
 		if(!npc.m_flAttackHappenswillhappen)
 			npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
 		npc.PlayHurtSound();
-		
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
@@ -314,50 +326,112 @@ public void SaintBones_ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
-	
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-	{
-		npc.m_iTarget = GetClosestAlly(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
-		npc.StartPathing();
-		//PluginBot_NormalJump(npc.index);
-	}
 	
 	int closest = npc.m_iTarget;
 	
-	if(IsValidAlly(npc.index, closest))
-	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
-			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index));
-				
-		CClotBody targetNPC = view_as<CClotBody>(closest);
-
-		if(flDistanceToTarget <= SAINTBONES_HEAL_RANGE)
-		{
-			npc.StartPathing();
-			NPC_SetGoalEntity(npc.index, closest);
-			npc.FaceTowards(vecTarget);
-			targetNPC.BoneZone_SetBuffedState(true);
-		}
-		else
-		{
-			npc.StopPathing();
-			targetNPC.BoneZone_SetBuffedState(false);
-		}
-	}
+	if (b_BonesBuffed[npc.index])
+		SaintBones_SaintLogic(npc, closest);
 	else
-	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
-	}
+		SaintBones_PriestLogic(npc, closest);
 	
 	npc.PlayIdleSound();
 }
 
+public void SaintBones_PriestLogic(SaintBones npc, int closest)
+{
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index) && !IsValidAlly(npc.index, closest))
+	{
+		npc.m_iTarget = GetClosestAlly(npc.index);	//TODO: This needs to be a custom method which prioritizes non-buffed skeletons, and chooses the nearest enemy if no valid allies are alive
+		closest = npc.m_iTarget;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.StartPathing();
+	}
+	
+	if (!IsValidEntity(closest))
+	{
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.m_flGetClosestTargetTime = 0.0;
+		//npc.m_iTarget = GetClosestTarget(npc.index);
+		
+		return;
+	}
+	
+	float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
+			
+	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index));
+				
+	CClotBody targetNPC = view_as<CClotBody>(closest);
+	
+	npc.FaceTowards(vecTarget, 15000.0);
+	
+	if(IsValidAlly(npc.index, closest))
+	{
+		int currentHealTarget = EntRefToEntIndex(Priest_OldHealTarget[npc.index]);
+		if (closest != currentHealTarget)
+		{
+			if (IsValidEntity(currentHealTarget))
+			{
+				CClotBody oldNPC = view_as<CClotBody>(currentHealTarget);
+				oldNPC.BoneZone_SetBuffedState(false, npc.index);
+			}
+			
+			Priest_OldHealTarget[npc.index] = EntIndexToEntRef(closest);
+		}
+
+		NPC_SetGoalEntity(npc.index, closest);
+
+		if (flDistanceToTarget <= SAINTBONES_HEAL_RANGE * 0.75)
+		{
+			npc.StopPathing();
+		}
+		else
+		{
+			npc.StartPathing();
+		}
+		
+		//TODO: Should write "Priest_StartHeal" and "Priest_StopHeal" methods and then call them in here
+		//TODO: Add a gesture where he has his arm outstretched towards the heal target. Attach the Green Energy unusual particle to his hand, then 
+		//draw a green TE beam from his hand to the heal target's body.
+		if(flDistanceToTarget <= SAINTBONES_HEAL_RANGE)
+		{
+			targetNPC.BoneZone_SetBuffedState(true, npc.index);
+			npc.m_flSpeed = targetNPC.m_flSpeed;
+		}
+		else
+		{
+			targetNPC.BoneZone_SetBuffedState(false, npc.index);
+			npc.m_flSpeed = BONES_SAINT_SPEED;
+		}
+	}
+	else if (IsValidEnemy(npc.index, closest))
+	{
+		float optimalPos[3];
+		
+		if (flDistanceToTarget < Priest_EnemyHover_MinDist)
+		{
+			npc.StartPathing();
+			optimalPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, closest);
+			NPC_SetGoalVector(npc.index, optimalPos, true);
+		}
+		else if (flDistanceToTarget > Priest_EnemyHover_MaxDist)
+		{
+			npc.StartPathing();
+			NPC_SetGoalEntity(npc.index, closest);
+		}
+		else
+		{
+			npc.StopPathing();
+		}
+		
+		//TODO: Make them periodically shoot lightning at the closest enemy
+	}
+}
+
+public void SaintBones_SaintLogic(SaintBones npc, int closest)
+{
+	
+}
 
 public Action SaintBones_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -384,6 +458,17 @@ public void SaintBones_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	SDKUnhook(entity, SDKHook_Think, SaintBones_ClotThink);
+	
+	//TODO: Find a better way of doing this
+	for (int i = 1; i < 2049; i++)
+	{
+		if (!IsValidEntity(i) || i == entity)	
+			continue;
+			
+		CClotBody other = view_as<CClotBody>(i);
+		other.BoneZone_SetBuffedState(false, entity);
+	}
+	
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
 

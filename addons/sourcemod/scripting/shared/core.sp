@@ -497,6 +497,9 @@ float f_PullStrength[MAXENTITIES];
 
 bool b_StickyIsSticking[MAXENTITIES];
 
+Handle g_BoneZoneBuffers[MAXENTITIES];
+bool b_BoneZoneNaturallyBuffed[MAXENTITIES];
+
 RenderMode i_EntityRenderMode[MAXENTITIES]={RENDER_NORMAL, ...};
 int i_EntityRenderColour1[MAXENTITIES]={255, ...};
 int i_EntityRenderColour2[MAXENTITIES]={255, ...};
@@ -3116,6 +3119,7 @@ public void OnEntityDestroyed(int entity)
 			Attributes_EntityDestroyed(entity);
 			i_WandIdNumber[entity] = -1;
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
+			delete g_BoneZoneBuffers[entity];
 			
 #if defined ZR
 			SkyboxProps_OnEntityDestroyed(entity);
