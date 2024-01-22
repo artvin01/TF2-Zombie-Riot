@@ -664,7 +664,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 				float flDistanceToAlly = GetVectorDistance(vecAlly, vecMe, true);
 				Schwert_Movement_Ally_Movement(npc, flDistanceToAlly, Ally, GameTime, PrimaryThreatIndex, flDistanceToTarget, true);	//warp
 				
-				if(GetVectorDistance(vecAlly, vecMe, true) < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, Ally))
+				if(flDistanceToAlly < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, Ally))
 				{
 					CPrintToChatAll("{crimson}Schwertkrieg{snow}: ..!");
 					HealEntityGlobal(npc.index, Ally, float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
