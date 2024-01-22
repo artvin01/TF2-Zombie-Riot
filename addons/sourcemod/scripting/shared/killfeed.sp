@@ -392,14 +392,14 @@ static void ShowNextFeed()
 		KillFeed feedmain, feed;
 		if(highLength)
 		{
-			HighList.GetArray(0, feedmain);
 			HighList.GetArray(0, feed);
+			feedmain = feed;
 			priority = true;
 		}
 		else
 		{
-			LowList.GetArray(0, feedmain);
 			LowList.GetArray(0, feed);
+			feedmain = feed;
 		}
 
 		int victim = GetClientOfUserId(feed.userid);
@@ -466,19 +466,21 @@ static void ShowNextFeed()
 			list.Push(event);
 
 			// Add anything using the same team/name
-			if(HighList.Length)
+			if(!HighList.Length)
+			{
+				if(!LowList.Length)
+				{
+					break;
+				}
+				else
+				{
+					LowList.GetArray(0, feed);
+				}
+			}
+			else
 			{
 				HighList.GetArray(0, feed);
-				continue;
 			}
-			
-			if(LowList.Length)
-			{
-				LowList.GetArray(0, feed);
-				continue;
-			}
-
-			break;
 		}
 		while((!feed.victim_name[0] || (feed.victim_team == feedmain.victim_team && StrEqual(feed.victim_name, feedmain.victim_name))) &&
 			(!feed.attacker_name[0] || (feed.attacker_team == feedmain.attacker_team && StrEqual(feed.attacker_name, feedmain.attacker_name))));

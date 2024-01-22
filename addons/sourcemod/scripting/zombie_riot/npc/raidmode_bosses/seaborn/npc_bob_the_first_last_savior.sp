@@ -564,8 +564,8 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					}
 
 					// Don't lose when everyone dies
-					GiveProgressDelay(1.4);
-					Waves_ForceSetup(1.4);
+					GiveProgressDelay(15.0);
+					Waves_ForceSetup(15.0);
 
 					if(found)
 					{
@@ -1633,8 +1633,8 @@ static Action Bob_DeathCutsceneCheck(Handle timer)
 			SmiteNpcToDeath(victim);
 	}
 	
-	GiveProgressDelay(1.5);
-	Waves_ForceSetup(1.5);
+	GiveProgressDelay(6.0);
+	Waves_ForceSetup(6.0);
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
