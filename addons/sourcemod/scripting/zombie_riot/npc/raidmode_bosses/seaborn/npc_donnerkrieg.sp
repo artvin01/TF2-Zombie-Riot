@@ -41,6 +41,7 @@ Very descriptive descriptions, I know lmao
 */
 
 static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
+static float fl_normal_attack_duration[MAXENTITIES];
 
 static const char g_nightmare_cannon_core_sound[][] = {
 	"zombiesurvival/seaborn/loop_laser.mp3",
@@ -721,7 +722,8 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 			}
 			if(npc.m_flAttackHappens > GameTime)
 			{
-				npc.FaceTowards(vecTarget, 5000.0);
+				if(fl_normal_attack_duration[npc.index] < GetGameTime())
+					npc.FaceTowards(vecTarget, 5000.0);
 			}
 
 			if(Current_Wave>=30 &&fl_heavens_fall_use_timer[npc.index]< GameTime)
@@ -788,7 +790,7 @@ static void Donner_Movement(int client, int PrimaryThreatIndex, float GameTime)
 
 	npc.m_flSpeed = 300.0;
 
-	if(npc.m_bAllowBackWalking)
+	if(npc.m_bAllowBackWalking && fl_normal_attack_duration[npc.index] < GetGameTime())
 		npc.FaceTowards(vecTarget, 20000.0);
 
 	if(fl_backwards_failsafe[npc.index] < GameTime)
@@ -818,8 +820,8 @@ static void Donner_Movement(int client, int PrimaryThreatIndex, float GameTime)
 
 				npc.StartPathing();
 				npc.m_bPathing = true;
-
-				npc.FaceTowards(vecTarget, 20000.0);
+				if(fl_normal_attack_duration[npc.index] < GetGameTime())
+					npc.FaceTowards(vecTarget, 20000.0);
 			}
 			else
 			{
@@ -827,7 +829,8 @@ static void Donner_Movement(int client, int PrimaryThreatIndex, float GameTime)
 				npc.m_bPathing = false;
 				npc.m_bAllowBackWalking=false;
 
-				npc.FaceTowards(vecTarget, 500.0);
+				if(fl_normal_attack_duration[npc.index] < GetGameTime())
+					npc.FaceTowards(vecTarget, 500.0);
 			}
 		}
 		else
@@ -1418,8 +1421,8 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(Raidboss_Donnerkrieg npc, int P
 
 			float Turn_Speed = (250.0*Ratio);
 
-			
-			npc.FaceTowards(vecTarget, Turn_Speed);
+			if(fl_normal_attack_duration[npc.index] < GetGameTime())
+				npc.FaceTowards(vecTarget, Turn_Speed);
 		}
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
@@ -2185,7 +2188,6 @@ static bool Check_Target(int entity, int contentsMask, int client)	//Stupidly ba
 	}
 	return false;
 }
-static float fl_normal_attack_duration[MAXENTITIES];
 static void Donnerkrieg_Normal_Attack(Raidboss_Donnerkrieg npc, float GameTime, float flDistanceToTarget, float vecTarget[3])
 {
 	if(npc.m_flNextMeleeAttack < GameTime && !npc.m_flAttackHappenswillhappen)
@@ -2202,7 +2204,7 @@ static void Donnerkrieg_Normal_Attack(Raidboss_Donnerkrieg npc, float GameTime, 
 			}
 			else
 			{
-				npc.FaceTowards(vecTarget);	//turn towards him, menacingly..
+		//		npc.FaceTowards(vecTarget);	//turn towards him, menacingly..
 			}
 		}
 	}
@@ -2225,9 +2227,11 @@ public Action Donnerkrieg_Laser_Think(int iNPC)	//A short burst of a laser.
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(iNPC);
 
 	float GameTime = GetGameTime(npc.index);
+	f_NpcTurnPenalty[npc.index] = 0.0;
 
 	if(fl_normal_attack_duration[npc.index]<GameTime)
 	{
+		f_NpcTurnPenalty[npc.index] = 1.0;
 		SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_Laser_Think);
 		return Plugin_Stop;
 	}
@@ -2247,7 +2251,7 @@ public Action Donnerkrieg_Laser_Think(int iNPC)	//A short burst of a laser.
 	float startPoint[3];
 	GetAttachment(npc.index, "effect_hand_r", startPoint, flAng);
 
-	float radius = 25.0;
+	float radius = 10.0;
 
 	Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, DonnerKriegCannon_BEAM_TraceWallsOnly);
 	if (TR_DidHit(trace))
@@ -2387,8 +2391,8 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 		
 		float vecNPC[3];
 		GetEntPropVector(crystal, Prop_Data, "m_vecAbsOrigin", vecNPC);
-
-		npc.FaceTowards(vecNPC, 750.0);
+		if(fl_normal_attack_duration[npc.index] < GetGameTime())
+			npc.FaceTowards(vecNPC, 750.0);
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
 		if(iPitch < 0)
@@ -2727,7 +2731,7 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					{
 						Dmg *= 5.0;
 					}
-					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/6), DMG_PLASMA, -1, NULL_VECTOR, Start_Point);
+					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenter(victim));
 				}
 				case 1:
 				{
@@ -2738,7 +2742,7 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					{
 						Dmg *= 5.0;
 					}
-					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/12), DMG_PLASMA, -1, NULL_VECTOR, Start_Point);
+					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/12), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenter(victim));
 
 					int damage = RoundToFloor(dps*0.01);
 					if(damage < 4)

@@ -72,6 +72,11 @@ static char g_TeleportSounds[][] = {
 	"weapons/bison_main_shot.wav",
 };
 
+static char g_BuffSounds[][] =
+{
+	"player/invuln_off_vaccinator.wav"
+};
+
 static char g_AngerSounds[][] = {
 	"mvm/mvm_tank_deploy.wav",
 };
@@ -143,6 +148,7 @@ void Raidboss_Schwertkrieg_OnMapStart_NPC()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheSoundArray(g_Sword_Impact_Sound);
+	PrecacheSoundArray(g_BuffSounds);
 	
 	PrecacheModel(SCHWERTKRIEG_LIGHT_MODEL, true);
 	PrecacheModel(SCHWERTKRIEG_BLADE_MODEL, true);
@@ -256,6 +262,10 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		PrintToServer("CClot::PlayTeleportSound()");
 		#endif
 	}
+	public void PlayBuffSound()
+	{
+		EmitSoundToAll(g_BuffSounds[GetRandomInt(0, sizeof(g_BuffSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
 	public void Emit_Sword_Impact_Sound(float Loc[3])
 	{
 		if(fl_dance_of_light_sound_spam_timer[this.index] > GetGameTime())
@@ -319,6 +329,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		npc.m_bDissapearOnDeath = true;
 
 		fl_schwert_sword_battery[npc.index]=0.0;
+		npc.m_flNextRangedBarrage_Singular = 0.0;
 			
 		
 		//IDLE
@@ -645,7 +656,52 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 			Blade_Behavior=3;
 		}
 	}
+	if(npc.m_flNextRangedBarrage_Singular < GetGameTime())
+	{
+		Ally = EntRefToEntIndex(i_ally_index);
+		if(IsValidAlly(npc.index, Ally))
+		{
+		//	SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
+			
+			int AllyMaxHealth = GetEntProp(Ally, Prop_Data, "m_iMaxHealth");
+			int AllyHealth = GetEntProp(Ally, Prop_Data, "m_iHealth");
+			int SchwertMaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			int SchwertHealth = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
+			if(SchwertHealth > (SchwertMaxHealth / 2) && AllyHealth < (AllyMaxHealth / 4))
+			{
+				float vecAlly[3];
+				float vecMe[3];
+				vecAlly = WorldSpaceCenter(Ally);
+				vecMe = WorldSpaceCenter(npc.index);
+				if(GetVectorDistance(vecAlly, vecMe, true) < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, Ally))
+				{
+					CPrintToChatAll("{aqua}Schwertkrieg{snow}: ..!");
+					HealEntityGlobal(npc.index, Ally, float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
+					HealEntityGlobal(npc.index, npc.index, -float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
+
+					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
+					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
+					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, vecAlly, vecMe);
+
+					GetEntPropVector(Ally, Prop_Data, "m_vecAbsOrigin", vecAlly);
+					
+					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 60.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+
+					NPCStats_RemoveAllDebuffs(Ally);
+					f_NpcImmuneToBleed[Ally] = GetGameTime(Ally) + 5.0;
+					f_HussarBuff[Ally] = GetGameTime(Ally) + 10.0;
+					npc.m_flNextRangedBarrage_Singular = GetGameTime(Ally) + 45.0;
+
+					npc.PlayBuffSound();
+				}	
+			}
+		}
+	}
 	if(schwert_retreat)
 	{
 		Ally = EntRefToEntIndex(i_ally_index);
@@ -2463,4 +2519,19 @@ static bool Can_I_See_Withing_Angles(int projectile, int Target)
 	}
 		
 	return true;
+}
+
+static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
+{
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = a;
+		
+	int SPRITE_INT = PrecacheModel(sprite, false);
+
+	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
+	
+	TE_SendToAll();
 }

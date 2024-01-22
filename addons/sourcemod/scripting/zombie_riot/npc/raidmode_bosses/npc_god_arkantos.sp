@@ -70,8 +70,6 @@ public void GodArkantos_OnMapStart()
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
 }
-static int i_TargetToWalkTo[MAXENTITIES];
-static float f_TargetToWalkToDelay[MAXENTITIES];
 static float f_ArkantosCantDieLimit[MAXENTITIES];
 static bool b_angered_twice[MAXENTITIES];
 static float f_TalkDelayCheck;
@@ -456,34 +454,34 @@ public void GodArkantos_ClotThink(int iNPC)
 	{
 		if(npc.m_flArkantosBuffEffect < GetGameTime(npc.index) && !npc.m_flNextRangedAttackHappening && ZR_GetWaveCount()+1 > 30)
 		{
-			i_TargetToWalkTo[npc.index] = GetClosestAlly(npc.index);	
-			if(i_TargetToWalkTo[npc.index] == -1) //there was no alive ally, we will return to finding an enemy and killing them.
+			npc.m_iTargetWalkTo = GetClosestAlly(npc.index);	
+			if(npc.m_iTargetWalkTo == -1) //there was no alive ally, we will return to finding an enemy and killing them.
 			{
-				i_TargetToWalkTo[npc.index] = GetClosestTarget(npc.index);
+				npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
 			}
 		}
 		else 
 		{
-			i_TargetToWalkTo[npc.index] = GetClosestTarget(npc.index);
+			npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
 		}
 		f_TargetToWalkToDelay[npc.index] = gameTime + 0.5;
 	}	
 	int ActionToTake = -1;
 	bool AllowSelfDefense = true;
 	//This means nothing, we do nothing.
-	if(IsEntityAlive(i_TargetToWalkTo[npc.index]))
+	if(IsEntityAlive(npc.m_iTargetWalkTo))
 	{
 		//Predict their pos.
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(i_TargetToWalkTo[npc.index]);
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetWalkTo);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, i_TargetToWalkTo[npc.index]);
+		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTargetWalkTo);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, i_TargetToWalkTo[npc.index]);
+			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
 		}
 
 		if(npc.m_flNextRangedAttackHappening > GetGameTime(npc.index))
@@ -494,7 +492,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		{
 			ActionToTake = -1;
 		}
-		else if(IsValidEnemy(npc.index, i_TargetToWalkTo[npc.index]))
+		else if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo))
 		{
 			if(flDistanceToTarget < (500.0 * 500.0) && flDistanceToTarget > (250.0 * 250.0) && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 			{
@@ -507,7 +505,7 @@ public void GodArkantos_ClotThink(int iNPC)
 				ActionToTake = 2;
 			}
 		}
-		else if(IsValidAlly(npc.index, i_TargetToWalkTo[npc.index]))
+		else if(IsValidAlly(npc.index, npc.m_iTargetWalkTo))
 		{
 			if(flDistanceToTarget < (125.0* 125.0) && npc.m_flArkantosBuffEffect < GetGameTime(npc.index) && ZR_GetWaveCount()+1 > 30)
 			{
@@ -577,7 +575,7 @@ public void GodArkantos_ClotThink(int iNPC)
 	}
 	else
 	{
-		i_TargetToWalkTo[npc.index] = GetClosestTarget(npc.index);
+		npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
 		f_TargetToWalkToDelay[npc.index] = gameTime + 0.5;		
 	}
 	if(AllowSelfDefense)
@@ -1227,7 +1225,7 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 						int red = 65;
 						int green = 65;
 						int blue = 255;
-						if(EnemyLoop == i_TargetToWalkTo[npc.index])
+						if(EnemyLoop == npc.m_iTargetWalkTo)
 						{
 							red = 220;
 							green = 220;
@@ -1295,7 +1293,7 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 							int red = 65;
 							int green = 65;
 							int blue = 255;
-							if(entity_close == i_TargetToWalkTo[npc.index])
+							if(entity_close == npc.m_iTargetWalkTo)
 							{
 								red = 220;
 								green = 220;
@@ -1370,7 +1368,7 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 					if(Distance < Range)
 					{
 						//only apply the laser if they are near us.
-						if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && EnemyLoop == i_TargetToWalkTo[npc.index])
+						if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && EnemyLoop == npc.m_iTargetWalkTo)
 						{
 							//Pull them.
 							static float angles[3];
@@ -1451,7 +1449,7 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 							//only apply the laser if they are near us.
 							if(Can_I_See_Enemy_Only(npc.index, entity_close) && IsEntityAlive(entity_close))
 							{
-								if(entity_close != i_TargetToWalkTo[npc.index])
+								if(entity_close != npc.m_iTargetWalkTo)
 								{
 									CClotBody npcenemy = view_as<CClotBody>(entity_close);
 									static float flPos_1[3]; 

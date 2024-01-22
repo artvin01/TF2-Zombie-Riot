@@ -413,7 +413,7 @@ void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon
 			if(ratio < 1)
 			{
 				npc.m_iPhase = 2;
-				npc.m_flSpeed = 75.0;
+				npc.m_flSpeed = 350.0;
 				Change_Npc_Collision(npc.index, VIPBuilding_Active() ? num_ShouldCollideEnemyTDIgnoreBuilding : num_ShouldCollideEnemyIngoreBuilding);
 				b_NpcIsInvulnerable[npc.index] = true;
 				npc.AddGesture("ACT_LAST_KNIGHT_REVIVE");

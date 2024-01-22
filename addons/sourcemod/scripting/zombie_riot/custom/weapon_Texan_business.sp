@@ -19,7 +19,6 @@ public void Weapon_TexanBuisness(int attacker, float &damage, int damagetype)
 		{
 			f_TimerForDamageTexan[attacker] = 0.0;
 			damage *= 15.0;
-			damage *= BuildingWeaponDamageModif(1);
 
 			ClientCommand(attacker, "playgamesound weapons/air_burster_explode3.wav");
 			static float anglesB[3];

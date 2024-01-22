@@ -333,7 +333,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		
 		if(!npc.m_bFakeClone)
 		{
-			strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), "??????????????????????????????????");
+			strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), "You.");
 			Music_SetRaidMusic("#zombiesurvival/bob_raid/bob.mp3", 697, true, 1.99);
 			npc.StopPathing();
 
@@ -343,6 +343,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			RaidModeScaling = 9999999.99;
 
 			Zombies_Currently_Still_Ongoing--;
+			Raidboss_Clean_Everyone();
 		}
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
@@ -351,7 +352,6 @@ methodmap RaidbossBobTheFirst < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		AcceptEntityInput(npc.m_iWearable1, "Disable");
 		npc.b_SwordIgnition = false;
-		Raidboss_Clean_Everyone();
 		
 		return npc;
 	}
@@ -436,6 +436,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		NPC_StopPathing(npc.index);
 		npc.m_flNextThinkTime = FAR_FUTURE;
 		npc.SetActivity("ACT_IDLE_SHIELDZOBIE");
+		RaidModeTime += 1000.0;
 
 		if(XenoExtraLogic())
 		{
@@ -1018,7 +1019,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					WritePackFloat(data, vecMe[0]);
 					WritePackFloat(data, vecMe[1]);
 					WritePackFloat(data, vecMe[2]);
-					WritePackCell(data, 47.0); // Distance
+					WritePackCell(data, 95.0); // Distance
 					WritePackFloat(data, 0.0); // nphi
 					WritePackCell(data, 250.0); // Range
 					WritePackCell(data, 1000.0); // Damge
@@ -1028,7 +1029,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 					for(int client = 1; client <= MaxClients; client++)
 					{
-						if(IsClientInGame(client) && IsPlayerAlive(client))
+						if(IsClientInGame(client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 						{
 							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vecTarget);
 							
@@ -1036,7 +1037,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							WritePackFloat(data, vecTarget[0]);
 							WritePackFloat(data, vecTarget[1]);
 							WritePackFloat(data, vecTarget[2]);
-							WritePackCell(data, 87.0); // Distance
+							WritePackCell(data, 160.0); // Distance
 							WritePackFloat(data, 0.0); // nphi
 							WritePackCell(data, 250.0); // Range
 							WritePackCell(data, 1000.0); // Damge

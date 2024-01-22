@@ -177,7 +177,8 @@ bool ShouldCollideEnemyTD_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_L
 
 	if(!b_NpcHasDied[otherindex])
 	{
-		if(i_NpcInternalId[otherindex] == VIP_BUILDING || i_Target[npc] == otherindex)
+		CClotBody npc1 = view_as<CClotBody>(npc);
+		if(i_NpcInternalId[otherindex] == VIP_BUILDING || npc1.m_iTarget == otherindex)
 		{
 			if(extrarules == num_TraverseInverse)
 			{
@@ -230,7 +231,6 @@ public bool ShouldCollideEnemyTDIgnoreBuilding(CBaseNPC_Locomotion loco, int oth
 bool ShouldCollideEnemyTDIgnoreBuilding_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0, int npc = 0)
 { 
 	//entirely ignore players
-	
 	#if defined ZR
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
@@ -242,7 +242,8 @@ bool ShouldCollideEnemyTDIgnoreBuilding_Internal(CBaseNPC_Locomotion loco = view
 	}
 	if(!b_NpcHasDied[otherindex])
 	{
-		if(i_NpcInternalId[otherindex] == VIP_BUILDING || i_Target[npc] == otherindex)
+		CClotBody npc1 = view_as<CClotBody>(npc);
+		if(i_NpcInternalId[otherindex] == VIP_BUILDING || npc1.m_iTarget == otherindex)
 		{
 			if(extrarules == num_TraverseInverse)
 			{
