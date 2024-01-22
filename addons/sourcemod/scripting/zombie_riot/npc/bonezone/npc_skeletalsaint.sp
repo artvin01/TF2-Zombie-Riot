@@ -10,8 +10,13 @@
 #define BONES_SAINT_SCALE		"1.0"
 #define BONES_SAINT_SCALE_BUFFED	"1.2"
 
+#define BONES_SAINTBONES_BUFFPARTICLE	"utaunt_auroraglow_orange_parent"
+
 static float BONES_SAINT_SPEED = 300.0;
 static float BONES_SAINT_SPEED_BUFFED = 350.0;
+
+static float SAINTBONES_HEAL_RANGE = 200.0;
+static float SAINTBONES_HEAL_RANGE_BUFFED = 350.0;
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -175,7 +180,7 @@ methodmap SaintBones < CClotBody
 		
 		if (buffed)
 		{
-			TE_SetupParticleEffect("utaunt_auroraglow_orange_parent", PATTACH_ABSORIGIN_FOLLOW, npc.index);
+			TE_SetupParticleEffect(BONES_SAINTBONES_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, npc.index);
 			TE_WriteNum("m_bControlPoint1", npc.index);	
 			TE_SendToAll();	
 		}
@@ -209,8 +214,55 @@ methodmap SaintBones < CClotBody
 	}
 }
 
-stock void Saint_GiveCosmetics(SaintBones npc, bool buffed)
+public void SaintBones_SetBuffed(int index, bool buffed)
 {
+	CClotBody npc = view_as<CClotBody>(index);
+	if (!b_BonesBuffed[index] && buffed)
+	{
+		//Tell the game the skeleton is buffed:
+		b_BonesBuffed[index] = true;
+		i_NpcInternalId[index] = BONEZONE_BUFFED_SAINTBONES;
+		
+		//Apply buffed stats:
+		DispatchKeyValue(index,	"modelscale", BONES_SAINT_SCALE_BUFFED);
+		int HP = StringToInt(BONES_SAINT_HP_BUFFED);
+		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
+		npc.m_flSpeed = BONES_SAINT_SPEED_BUFFED;
+		Saint_GiveCosmetics(npc, true);
+		DispatchKeyValue(index, "skin", BONES_SAINT_SKIN_BUFFED);
+		
+		//Apply buffed particle:
+		TE_SetupParticleEffect(BONES_SAINTBONES_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, index);
+		TE_WriteNum("m_bControlPoint1", index);	
+		TE_SendToAll();
+	}
+	else if (b_BonesBuffed[index] && !buffed)
+	{
+		//Tell the game the skeleton is no longer buffed:
+		b_BonesBuffed[index] = false;
+		i_NpcInternalId[index] = BONEZONE_SAINTBONES;
+		
+		//Remove buffed stats:
+		DispatchKeyValue(index,	"modelscale", BONES_SAINT_SCALE);
+		int HP = StringToInt(BONES_SAINT_HP);
+		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
+		npc.m_flSpeed = BONES_SAINT_SPEED;
+		Saint_GiveCosmetics(npc, false);
+		DispatchKeyValue(index, "skin", BONES_SAINT_SKIN);
+		
+		//Remove buffed particle:
+		TE_Start("EffectDispatch");
+		TE_WriteNum("entindex", index);
+		TE_WriteNum("m_nHitBox", GetParticleEffectIndex(BONES_SAINTBONES_BUFFPARTICLE));
+		TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
+		TE_SendToAll();
+	}
+}
+
+stock void Saint_GiveCosmetics(CClotBody npc, bool buffed)
+{
+	npc.RemoveAllWearables();
+	
 	if (buffed)
 	{
 		npc.m_iWearable1 = npc.EquipItem("hat", "models/player/items/spy/mbsf_spy.mdl");
@@ -227,7 +279,11 @@ stock void Saint_GiveCosmetics(SaintBones npc, bool buffed)
 }
 
 //TODO 
-//Rewrite
+//Skeletal Saints are buff providers and healers.
+//Profaned Priests (the non-buffed variant) heal a single target. They will prioritize non-buffed skeletons who do not already have a healer. Skeletons being healed by a Profaned Priest are transformed into their buffed variant, and will revert to their normal variant when the healing stops, unless they naturally spawned buffed.
+//Skeletal Saints (the buffed variant) provide healing in a radius. All skeletons being healed by this effect are transformed into their buffed counterpart.
+//Profaned Priests cannot be transformed into Skeletal Saints by either of these effects, though they *can* be buffed by other sources.
+//Neither are capable of attacking.
 public void SaintBones_ClotThink(int iNPC)
 {
 	SaintBones npc = view_as<SaintBones>(iNPC);
@@ -262,7 +318,7 @@ public void SaintBones_ClotThink(int iNPC)
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_iTarget = GetClosestAlly(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 		npc.StartPathing();
 		//PluginBot_NormalJump(npc.index);
@@ -270,22 +326,25 @@ public void SaintBones_ClotThink(int iNPC)
 	
 	int closest = npc.m_iTarget;
 	
-	if(IsValidEnemy(npc.index, closest))
+	if(IsValidAlly(npc.index, closest))
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index));
 				
-		//Predict their pos.
-		if(flDistanceToTarget < npc.GetLeadRadius())
+		CClotBody targetNPC = view_as<CClotBody>(closest);
+
+		if(flDistanceToTarget <= SAINTBONES_HEAL_RANGE)
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
-	//		PrintToChatAll("cutoff");
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.StartPathing();
+			NPC_SetGoalEntity(npc.index, closest);
+			npc.FaceTowards(vecTarget);
+			targetNPC.BoneZone_SetBuffedState(true);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, closest);
+			npc.StopPathing();
+			targetNPC.BoneZone_SetBuffedState(false);
 		}
 	}
 	else
@@ -295,6 +354,7 @@ public void SaintBones_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
+	
 	npc.PlayIdleSound();
 }
 

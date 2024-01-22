@@ -17,7 +17,11 @@ static float BONES_BEEFY_ATTACKINTERVAL = 1.8;
 static float BONES_BEEFY_ATTACKINTERVAL_BUFFED = 1.2;
 
 #define BONES_BEEFY_SCALE		"1.2"
+#define BONES_BEEFY_SCALE_BUFFED		"1.4"
 #define BONES_BEEFY_SKIN			"0"
+#define BONES_BEEFY_SKIN_BUFFED		"0"
+
+#define BONES_BEEFY_BUFFPARTICLE		"utaunt_wispy_parent_p"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -160,14 +164,14 @@ methodmap BeefyBones < CClotBody
 	
 	public BeefyBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
 	{
-		BeefyBones npc = view_as<BeefyBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BEEFY_SCALE, buffed ? BONES_BEEFY_HP_BUFFED : BONES_BEEFY_HP, ally, false));
+		BeefyBones npc = view_as<BeefyBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BEEFY_SCALE_BUFFED : BONES_BEEFY_SCALE, buffed ? BONES_BEEFY_HP_BUFFED : BONES_BEEFY_HP, ally, false));
 		
 		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_BEEFYBONES : BONEZONE_BEEFYBONES;
 		b_BonesBuffed[npc.index] = buffed;
 		
 		if (buffed)
 		{
-			TE_SetupParticleEffect("utaunt_wispy_parent_p", PATTACH_ABSORIGIN_FOLLOW, npc.index);
+			TE_SetupParticleEffect(BONES_BEEFY_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, npc.index);
 			TE_WriteNum("m_bControlPoint1", npc.index);	
 			TE_SendToAll();	
 		}
@@ -178,7 +182,7 @@ methodmap BeefyBones < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_bDoSpawnGesture = true;
-		DispatchKeyValue(npc.index, "skin", BONES_BEEFY_SKIN);
+		DispatchKeyValue(npc.index, "skin", buffed ? BONES_BEEFY_SKIN_BUFFED : BONES_BEEFY_SKIN);
 
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -195,6 +199,49 @@ methodmap BeefyBones < CClotBody
 		npc.StartPathing();
 		
 		return npc;
+	}
+}
+
+public void BeefyBones_SetBuffed(int index, bool buffed)
+{
+	CClotBody npc = view_as<CClotBody>(index);
+	if (!b_BonesBuffed[index] && buffed)
+	{
+		//Tell the game the skeleton is buffed:
+		b_BonesBuffed[index] = true;
+		i_NpcInternalId[index] = BONEZONE_BUFFED_BEEFYBONES;
+		
+		//Apply buffed stats:
+		DispatchKeyValue(index,	"modelscale", BONES_BEEFY_SCALE_BUFFED);
+		int HP = StringToInt(BONES_BEEFY_HP_BUFFED);
+		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
+		npc.m_flSpeed = BONES_BEEFY_SPEED_BUFFED;
+		DispatchKeyValue(index, "skin", BONES_BEEFY_SKIN_BUFFED);
+		
+		//Apply buffed particle:
+		TE_SetupParticleEffect(BONES_BEEFY_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, index);
+		TE_WriteNum("m_bControlPoint1", index);	
+		TE_SendToAll();
+	}
+	else if (b_BonesBuffed[index] && !buffed)
+	{
+		//Tell the game the skeleton is no longer buffed:
+		b_BonesBuffed[index] = false;
+		i_NpcInternalId[index] = BONEZONE_BEEFYBONES;
+		
+		//Remove buffed stats:
+		DispatchKeyValue(index,	"modelscale", BONES_BEEFY_SCALE);
+		int HP = StringToInt(BONES_BEEFY_HP);
+		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
+		npc.m_flSpeed = BONES_BEEFY_SPEED_BUFFED;
+		DispatchKeyValue(index, "skin", BONES_BEEFY_SKIN);
+		
+		//Remove buffed particle:
+		TE_Start("EffectDispatch");
+		TE_WriteNum("entindex", index);
+		TE_WriteNum("m_nHitBox", GetParticleEffectIndex(BONES_BEEFY_BUFFPARTICLE));
+		TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
+		TE_SendToAll();
 	}
 }
 

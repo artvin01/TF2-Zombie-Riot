@@ -16,8 +16,12 @@ static float BONES_BIG_BUILDINGDAMAGE_BUFFED = 260.0;
 static float BONES_BIG_ATTACKINTERVAL = 2.4;
 static float BONES_BIG_ATTACKINTERVAL_BUFFED = 2.2;
 
-#define BONES_BIG_SCALE		"2.4"
+#define BONES_BIG_BUFFPARTICLE		"utaunt_glowyplayer_orange_parent"
+
+#define BONES_BIG_SCALE			"2.0"
+#define BONES_BIG_SCALE_BUFFED	"2.6"
 #define BONES_BIG_SKIN		"3"
+#define BONES_BIG_SKIN_BUFFED	"3"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -160,14 +164,14 @@ methodmap BigBones < CClotBody
 	
 	public BigBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
 	{
-		BigBones npc = view_as<BigBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BIG_SCALE, buffed ? BONES_BIG_HP_BUFFED : BONES_BIG_HP, ally, false, true));
+		BigBones npc = view_as<BigBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BIG_SCALE_BUFFED : BONES_BIG_SCALE, buffed ? BONES_BIG_HP_BUFFED : BONES_BIG_HP, ally, false, true));
 		
 		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_BIGBONES : BONEZONE_BIGBONES;
 		b_BonesBuffed[npc.index] = buffed;
 		
 		if (buffed)
 		{
-			TE_SetupParticleEffect("utaunt_glowyplayer_orange_parent", PATTACH_ABSORIGIN_FOLLOW, npc.index);
+			TE_SetupParticleEffect(BONES_BIG_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, npc.index);
 			TE_WriteNum("m_bControlPoint1", npc.index);	
 			TE_SendToAll();	
 		}
@@ -178,7 +182,7 @@ methodmap BigBones < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_bDoSpawnGesture = true;
-		DispatchKeyValue(npc.index, "skin", BONES_BIG_SKIN);
+		DispatchKeyValue(npc.index, "skin", buffed ? BONES_BIG_SKIN_BUFFED : BONES_BIG_SKIN);
 
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -197,6 +201,49 @@ methodmap BigBones < CClotBody
 		npc.StartPathing();
 		
 		return npc;
+	}
+}
+
+public void BigBones_SetBuffed(int index, bool buffed)
+{
+	CClotBody npc = view_as<CClotBody>(index);
+	if (!b_BonesBuffed[index] && buffed)
+	{
+		//Tell the game the skeleton is buffed:
+		b_BonesBuffed[index] = true;
+		i_NpcInternalId[index] = BONEZONE_BUFFED_BIGBONES;
+		
+		//Apply buffed stats:
+		DispatchKeyValue(index,	"modelscale", BONES_BIG_SCALE_BUFFED);
+		int HP = StringToInt(BONES_BIG_HP_BUFFED);
+		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
+		npc.m_flSpeed = BONES_BIG_SPEED_BUFFED;
+		DispatchKeyValue(index, "skin", BONES_BIG_SKIN_BUFFED);
+		
+		//Apply buffed particle:
+		TE_SetupParticleEffect(BONES_BIG_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, index);
+		TE_WriteNum("m_bControlPoint1", index);	
+		TE_SendToAll();
+	}
+	else if (b_BonesBuffed[index] && !buffed)
+	{
+		//Tell the game the skeleton is no longer buffed:
+		b_BonesBuffed[index] = false;
+		i_NpcInternalId[index] = BONEZONE_BIGBONES;
+		
+		//Remove buffed stats:
+		DispatchKeyValue(index,	"modelscale", BONES_BIG_SCALE);
+		int HP = StringToInt(BONES_BIG_HP);
+		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
+		npc.m_flSpeed = BONES_BIG_SPEED;
+		DispatchKeyValue(index, "skin", BONES_BIG_SKIN);
+		
+		//Remove buffed particle:
+		TE_Start("EffectDispatch");
+		TE_WriteNum("entindex", index);
+		TE_WriteNum("m_nHitBox", GetParticleEffectIndex(BONES_BIG_BUFFPARTICLE));
+		TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
+		TE_SendToAll();
 	}
 }
 

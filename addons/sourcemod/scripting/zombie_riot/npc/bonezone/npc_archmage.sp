@@ -45,6 +45,8 @@ static float f_ArchmageFireballDMG[2049] = { 0.0, ... };
 #define PARTICLE_FIREBALL_HIT				"flaregun_destroyed"
 #define PARTICLE_FIREBALL_EXPLODE			"spell_fireball_tendril_parent_blue"
 
+#define BONES_ARCHMAGE_BUFFPARTICLE			"utaunt_auroraglow_purple_parent"
+
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
 };
@@ -238,7 +240,7 @@ methodmap ArchmageBones < CClotBody
 		
 		if (buffed)
 		{
-			TE_SetupParticleEffect("utaunt_auroraglow_purple_parent", PATTACH_ABSORIGIN_FOLLOW, npc.index);
+			TE_SetupParticleEffect(BONES_ARCHMAGE_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, npc.index);
 			TE_WriteNum("m_bControlPoint1", npc.index);	
 			TE_SendToAll();	
 		}
@@ -272,8 +274,53 @@ methodmap ArchmageBones < CClotBody
 	}
 }
 
-stock void Archmage_GiveCosmetics(ArchmageBones npc, bool buffed)
+public void ArchmageBones_SetBuffed(int index, bool buffed)
 {
+	CClotBody npc = view_as<CClotBody>(index);
+	if (!b_BonesBuffed[index] && buffed)
+	{
+		//Tell the game the skeleton is buffed:
+		b_BonesBuffed[index] = true;
+		i_NpcInternalId[index] = BONEZONE_BUFFED_ARCHMAGE;
+		
+		//Apply buffed stats:
+		DispatchKeyValue(index,	"modelscale", BONES_ARCHMAGE_BUFFED_SCALE);
+		int HP = StringToInt(BONES_ARCHMAGE_HP_BUFFED);
+		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
+		npc.m_flSpeed = BONES_ARCHMAGE_SPEED_BUFFED;
+		Archmage_GiveCosmetics(npc, true);
+		
+		//Apply buffed particle:
+		TE_SetupParticleEffect(BONES_ARCHMAGE_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, index);
+		TE_WriteNum("m_bControlPoint1", index);	
+		TE_SendToAll();
+	}
+	else if (b_BonesBuffed[index] && !buffed)
+	{
+		//Tell the game the skeleton is no longer buffed:
+		b_BonesBuffed[index] = false;
+		i_NpcInternalId[index] = BONEZONE_ARCHMAGE;
+		
+		//Remove buffed stats:
+		DispatchKeyValue(index,	"modelscale", BONES_ARCHMAGE_SCALE);
+		int HP = StringToInt(BONES_ARCHMAGE_HP);
+		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
+		npc.m_flSpeed = BONES_ARCHMAGE_SPEED;
+		Archmage_GiveCosmetics(npc, false);
+		
+		//Remove buffed particle:
+		TE_Start("EffectDispatch");
+		TE_WriteNum("entindex", index);
+		TE_WriteNum("m_nHitBox", GetParticleEffectIndex(BONES_ARCHMAGE_BUFFPARTICLE));
+		TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
+		TE_SendToAll();
+	}
+}
+
+stock void Archmage_GiveCosmetics(CClotBody npc, bool buffed)
+{
+	npc.RemoveAllWearables();
+	
 	if (buffed)
 	{
 		npc.m_iWearable1 = npc.EquipItem("hat", "models/workshop/player/items/sniper/hwn2023_sightseer_style1/hwn2023_sightseer_style1.mdl");

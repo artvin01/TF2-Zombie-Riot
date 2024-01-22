@@ -2033,6 +2033,84 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.GetLocomotionInterface().FaceTowards(vecGoal);
 		this.GetBaseNPC().flMaxYawRate = flPrevValue;
 	}
+	
+	//Returns whether or not the NPC is a buffed skeleton.
+	public bool BoneZone_GetBuffedState()
+	{
+		//There is a much "cleaner" way of doing this, and I know what it is, but it's easier to just do this:
+		switch (i_NpcInternalId[this.index])
+		{
+			case BONEZONE_BUFFED_BASICBONES:
+				return true;
+			case BONEZONE_BUFFED_BEEFYBONES:
+				return true;
+			case BONEZONE_BUFFED_BRITTLEBONES:
+				return true;
+			case BONEZONE_BUFFED_BIGBONES:
+				return true;
+			case BONEZONE_BUFFED_ARCHMAGE:
+				return true;
+			case BONEZONE_BUFFED_SAINTBONES:
+				return true;
+		}
+		
+		return false;
+	}
+	
+	//Turns a non-buffed skeleton into a buffed one, or vice-versa.
+	//TODO: The max health set by this will need to account for later waves where skeletons have higher HP.
+	//TODO: Skeletons which are "naturally buffed" (meaning they spawn in their buffed state) should completely ignore this.
+	//TODO: Add a "buffer" variable which adds the entity providing the buff to a list. When a buff is removed with this method, "buffer" should be removed from
+	//the list, and if the list is empty because of this, we remove the buffed state.
+	public void BoneZone_SetBuffedState(bool buffed)
+	{
+		switch (i_NpcInternalId[this.index])
+		{
+			case BONEZONE_BASICBONES:
+				BasicBones_SetBuffed(this.index, buffed);
+			case BONEZONE_BUFFED_BASICBONES:
+				BasicBones_SetBuffed(this.index, buffed);
+			case BONEZONE_BIGBONES:
+				BigBones_SetBuffed(this.index, buffed);
+			case BONEZONE_BUFFED_BIGBONES:
+				BigBones_SetBuffed(this.index, buffed);
+			case BONEZONE_SAINTBONES:
+				SaintBones_SetBuffed(this.index, buffed);
+			case BONEZONE_BUFFED_SAINTBONES:
+				SaintBones_SetBuffed(this.index, buffed);
+			case BONEZONE_ARCHMAGE:
+				ArchmageBones_SetBuffed(this.index, buffed);
+			case BONEZONE_BUFFED_ARCHMAGE:
+				ArchmageBones_SetBuffed(this.index, buffed);
+			case BONEZONE_BEEFYBONES:
+				BeefyBones_SetBuffed(this.index, buffed);
+			case BONEZONE_BUFFED_BEEFYBONES:
+				BeefyBones_SetBuffed(this.index, buffed);
+			case BONEZONE_BRITTLEBONES:
+				BrittleBones_SetBuffed(this.index, buffed);
+			case BONEZONE_BUFFED_BRITTLEBONES:
+				BrittleBones_SetBuffed(this.index, buffed);
+		}
+	}
+	
+	public void RemoveAllWearables()
+	{
+		if(IsValidEntity(this.m_iWearable1))
+			RemoveEntity(this.m_iWearable1);
+		if(IsValidEntity(this.m_iWearable2))
+			RemoveEntity(this.m_iWearable2);
+		if(IsValidEntity(this.m_iWearable3))
+			RemoveEntity(this.m_iWearable3);
+		if(IsValidEntity(this.m_iWearable4))
+			RemoveEntity(this.m_iWearable4);
+		if(IsValidEntity(this.m_iWearable5))
+			RemoveEntity(this.m_iWearable5);
+		if(IsValidEntity(this.m_iWearable6))
+			RemoveEntity(this.m_iWearable6);
+		if(IsValidEntity(this.m_iWearable7))
+			RemoveEntity(this.m_iWearable7);
+	}
+	
 	/*
 
 		public void FaceTowards(const float vecGoal[3], float turnrate = 250.0)

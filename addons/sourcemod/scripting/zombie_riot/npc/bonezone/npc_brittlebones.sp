@@ -16,7 +16,11 @@ static float BONES_BRITTLE_BUILDINGDAMAGE_BUFFED = 40.0;
 static float BONES_BRITTLE_ATTACKINTERVAL = 0.5;
 static float BONES_BRITTLE_ATTACKINTERVAL_BUFFED = 0.33;
 
+static int Brittle_Particle[MAXENTITIES] = { -1, ... };
+
 #define BONES_BRITTLE_SCALE			"0.7"
+
+#define BONES_BRITTLE_BUFFPARTICLE		"superrare_burning2"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -204,7 +208,7 @@ methodmap BrittleBones < CClotBody
 		
 		if (buffed)
 		{
-			Brittle_AttachParticle(npc.index, "superrare_burning2", _, "eyes");
+			Brittle_Particle[npc.index] = EntIndexToEntRef(Brittle_AttachParticle(npc.index, BONES_BRITTLE_BUFFPARTICLE, _, "eyes"));
 		}
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -239,7 +243,42 @@ methodmap BrittleBones < CClotBody
 	}
 }
 
-stock void Brittle_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
+public void BrittleBones_SetBuffed(int index, bool buffed)
+{
+	CClotBody npc = view_as<CClotBody>(index);
+	if (!b_BonesBuffed[index] && buffed)
+	{
+		//Tell the game the skeleton is buffed:
+		b_BonesBuffed[index] = true;
+		i_NpcInternalId[index] = BONEZONE_BUFFED_BRITTLEBONES;
+		
+		//Apply buffed stats:
+		int HP = StringToInt(BONES_BRITTLE_HP_BUFFED);
+		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
+		npc.m_flSpeed = BONES_BRITTLE_SPEED_BUFFED;
+		
+		//Apply buffed particle:
+		Brittle_Particle[index] = EntIndexToEntRef(Brittle_AttachParticle(npc.index, BONES_BRITTLE_BUFFPARTICLE, _, "eyes"));
+	}
+	else if (b_BonesBuffed[index] && !buffed)
+	{
+		//Tell the game the skeleton is no longer buffed:
+		b_BonesBuffed[index] = false;
+		i_NpcInternalId[index] = BONEZONE_BRITTLEBONES;
+		
+		//Remove buffed stats:
+		int HP = StringToInt(BONES_BRITTLE_HP);
+		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
+		npc.m_flSpeed = BONES_BRITTLE_SPEED;
+		
+		//Remove buffed particle:
+		int particle = EntRefToEntIndex(Brittle_Particle[index]);
+		if (IsValidEntity(particle))
+			RemoveEntity(particle);
+	}
+}
+
+stock int Brittle_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
 {
 	if (IsValidEntity(entity))
 	{
@@ -277,7 +316,11 @@ stock void Brittle_AttachParticle(int entity, char type[255], float duration = 0
 				CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(part1), TIMER_FLAG_NO_MAPCHANGE);
 			}
 		}
+		
+		return part1;
 	}
+	
+	return -1;
 }
 
 //TODO 
