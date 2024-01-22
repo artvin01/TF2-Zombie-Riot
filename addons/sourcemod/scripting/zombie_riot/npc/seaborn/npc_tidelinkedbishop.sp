@@ -109,8 +109,8 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 		int entity = Npc_Create(TIDELINKED_ARCHON, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 		if(entity > MaxClients)
 		{
-			npc.m_iTargetAlly = EntIndexToEntRef(entity);
-			view_as<CClotBody>(entity).m_iTargetAlly = EntIndexToEntRef(npc.index);
+			npc.m_iTargetAlly = entity;
+			view_as<CClotBody>(entity).m_iTargetAlly = npc.index;
 			view_as<CClotBody>(entity).m_bThisNpcIsABoss = npc.m_bThisNpcIsABoss;
 
 			Zombies_Currently_Still_Ongoing++;

@@ -536,7 +536,7 @@ static Action Ikunagae_TBB_Tick(int client)
 					{
 						inflictor=client;
 					}
-					SDKHooks_TakeDamage(victim, client, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1)/6)/BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, client, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1)/6)/BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenter(victim));	// 2048 is DMG_NOGIB?
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
 				}
 			}
@@ -664,7 +664,7 @@ static void DonnerKrieg_Normal_Attack(Barrack_Alt_Donnerkrieg npc)
 					{
 						inflictor=npc.index;
 					}
-					SDKHooks_TakeDamage(victim, npc.index, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1)/6)/BEAM_Targets_Hit[npc.index], DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, npc.index, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1)/6)/BEAM_Targets_Hit[npc.index], DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenter(victim));	// 2048 is DMG_NOGIB?
 					BEAM_Targets_Hit[npc.index] *= LASER_AOE_DAMAGE_FALLOFF;
 				}
 			}
