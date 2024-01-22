@@ -1953,10 +1953,12 @@ void DoGlobalMultiScaling()
 	MultiGlobal = multi;
 	MultiGlobalArkantos = playercount * 0.2;
 
-	if(multi > 4.0)
+	float cap = zr_enemymulticap.FloatValue;
+
+	if(multi > cap)
 	{
-		MultiGlobalHealth = multi / 4.0;
-		MultiGlobalEnemy = 4.0;
+		MultiGlobalHealth = multi / cap;
+		MultiGlobalEnemy = cap;
 	}
 	else
 	{
