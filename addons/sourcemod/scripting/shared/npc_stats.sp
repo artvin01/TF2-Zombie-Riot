@@ -68,6 +68,9 @@ float f_TargetToWalkToDelay[MAXENTITIES];
 
 static int i_WasPathingToHere[MAXENTITIES];
 static float f3_WasPathingToHere[MAXENTITIES][3];
+Function func_NPCDeath[MAXENTITIES];
+Function func_NPCOnTakeDamage[MAXENTITIES];
+Function func_NPCThink[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -3191,6 +3194,9 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		RemoveNpcThingsAgain(pThis);
 		ExtinguishTarget(pThis);
 		NPCDeath(pThis);
+		func_NPCDeath[pThis] = INVALID_FUNCTION;
+		func_NPCOnTakeDamage[pThis] = INVALID_FUNCTION;
+		func_NPCThink[pThis] = INVALID_FUNCTION;
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		SetEntityCollisionGroup(pThis, 1);
@@ -5282,13 +5288,11 @@ public void NpcBaseThink(int iNPC)
 	
 	if(b_EntityInCrouchSpot[iNPC])
 	{
+		if(!b_NpcResizedForCrouch[iNPC])
 		{
-			if(!b_NpcResizedForCrouch[iNPC])
-			{
-				float scale = GetEntPropFloat(iNPC, Prop_Send, "m_flModelScale");
-				SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", scale * 0.5);
-				b_NpcResizedForCrouch[iNPC] = true;
-			}
+			float scale = GetEntPropFloat(iNPC, Prop_Send, "m_flModelScale");
+			SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", scale * 0.5);
+			b_NpcResizedForCrouch[iNPC] = true;
 		}
 	}
 	else //only turn off if outside.
@@ -5419,6 +5423,14 @@ public void NpcBaseThink(int iNPC)
 	//TODO:
 	//Rewrite  ::Update func inside nextbots instead of doing this.
 	// !npc.IsOnGround()  is commented out as sometimes npcs can be inside walls while still retaining isonground
+	Function func = func_NPCThink[iNPC];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(iNPC);
+		Call_Finish();
+		//todo: convert all on death and on take damage to this.
+	}
 	if (/*!npc.IsOnGround() && */!b_DoNotUnStuck[iNPC] && f_DoNotUnstuckDuration[iNPC] < GetGameTime())
 	{
 		if(i_FailedTriesUnstuck[iNPC] == 0)
@@ -5558,7 +5570,7 @@ public void NpcBaseThink(int iNPC)
 		{
 			i_FailedTriesUnstuck[iNPC] = 0;
 		}
-	}
+	}	
 }
 float f3_KnockbackToTake[MAXENTITIES][3];
 

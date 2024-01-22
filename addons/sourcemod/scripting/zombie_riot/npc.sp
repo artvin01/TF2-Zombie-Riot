@@ -397,6 +397,11 @@ enum
 	BONEZONE_BUFFED_BEEFYBONES		= 348,
 	BONEZONE_BUFFED_BRITTLEBONES	= 349,
 	BONEZONE_BUFFED_BIGBONES		= 350,
+	INTERITUS_DESERT_AHIM			= 351,
+	INTERITUS_DESERT_INABDIL		= 352,
+	INTERITUS_DESERT_KHAZAAN		= 353,
+	INTERITUS_DESERT_SAKRATAN		= 354,
+	INTERITUS_DESERT_YADEAM			= 355,
 	
 
 	MAX_NPC_TYPES	// Add entries above this line
@@ -777,7 +782,13 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Buffed Basic Bones",
 	"Buffed Beefy Bones",
 	"Buffed Brittle Bones",
-	"Buffed Big Bones"
+	"Buffed Big Bones",
+
+	"Ahim",
+	"Inabdil",
+	"Khazaan",
+	"Sakratan",
+	"Yadeam"
 };
 
 // See items.sp for IDs to names
@@ -1530,7 +1541,12 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_basicbones",
 	"npc_beefybones",
 	"npc_brittlebones",
-	"npc_bigbones"
+	"npc_bigbones",
+	"npc_ahim",
+	"npc_inabdil",
+	"npc_khazaan",
+	"npc_sakratan",
+	"npc_yadeam"
 };
 
 void NPC_MapStart()
@@ -1791,6 +1807,13 @@ void NPC_MapStart()
 	GiantTankus_OnMapStart_NPC();
 	AnfuhrerEisenhard_OnMapStart_NPC();
 	SpeedusAdivus_OnMapStart_NPC();
+
+//internius
+	DesertAhim_OnMapStart_NPC();
+	DesertInabdil_OnMapStart_NPC();
+	DesertKhazaan_OnMapStart_NPC();
+	DesertSakratan_OnMapStart_NPC();
+	DesertYadeam_OnMapStart_NPC();
 	
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2819,6 +2842,21 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case RAIDBOSS_BLADEDANCE:
 			entity = RaidbossBladedance(client, vecPos, vecAng, ally, data);
 
+		case INTERITUS_DESERT_AHIM:
+			entity = DesertAhim(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_INABDIL:
+			entity = DesertInabdil(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_KHAZAAN:
+			entity = DesertKhazaan(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_SAKRATAN:
+			entity = DesertSakratan(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_YADEAM:
+			entity = DesertYadeam(client, vecPos, vecAng, ally);
+
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
@@ -2854,7 +2892,15 @@ public void NPCDeath(int entity)
 			}
 		}
 	}
-
+	Function func = func_NPCDeath[entity];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(entity);
+		Call_Finish();
+		return;
+		//todo: convert all on death and on take damage to this.
+	}
 	switch(i_NpcInternalId[entity])
 	{
 		case HEADCRAB_ZOMBIE:
@@ -3860,6 +3906,24 @@ public void NPCDeath(int entity)
 
 Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	Function func = func_NPCOnTakeDamage[victim];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(victim);
+		Call_PushCellRef(attacker);
+		Call_PushCellRef(inflictor);
+		Call_PushFloatRef(damage);
+		Call_PushCellRef(damagetype);
+		Call_PushCellRef(weapon);
+		Call_PushArray(damageForce, sizeof(damageForce));
+		Call_PushArray(damagePosition, sizeof(damagePosition));
+		Call_PushCell(damagecustom);
+		Call_Finish();
+		return Plugin_Changed;
+		//todo: convert all on death and on take damage to this.
+	}
+
 	switch(i_NpcInternalId[victim])
 	{
 		case HEADCRAB_ZOMBIE, FORTIFIED_HEADCRAB_ZOMBIE, FASTZOMBIE, FORTIFIED_FASTZOMBIE:
@@ -5017,3 +5081,10 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_vip_building.sp"
 #include "zombie_riot/npc/rogue/npc_overlord_rogue.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_bladedance.sp"
+
+
+#include "zombie_riot/npc/interitus/desert/npc_ahim.sp"
+#include "zombie_riot/npc/interitus/desert/npc_inabdil.sp"
+#include "zombie_riot/npc/interitus/desert/npc_khazaan.sp"
+#include "zombie_riot/npc/interitus/desert/npc_sakratan.sp"
+#include "zombie_riot/npc/interitus/desert/npc_yadeam.sp"

@@ -1031,8 +1031,20 @@ public void OnPostThink(int client)
 		int blue = 0;
 		if(Armor_Charge[armorEnt] < 0)
 		{
-			green = 0;
-			blue = 255;
+			switch(Armor_DebuffType[armorEnt])
+			{
+				case 1:
+				{
+					green = 0;
+					blue = 255;
+				}
+				case 2:
+				{
+					red = 255;
+					green = 69;
+					blue = 25;
+				}
+			}
 		}
 		else if(Armor_Charge[armorEnt] < Armor_Max)
 		{
