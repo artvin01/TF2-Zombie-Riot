@@ -7306,8 +7306,7 @@ stock int TF2_CreateParticle(int iEnt, const char[] attachment, const char[] par
 	return b;
 }
 
-
-stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore_thisAlly = 0)
+stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore_thisAlly = 0,Function ExtraValidityFunction = INVALID_FUNCTION)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 
@@ -7317,6 +7316,17 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore
 		{
 			if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && IsEntityAlive(i, true) && !i_NpcIsABuilding[i] && !b_ThisEntityIgnoredByOtherNpcsAggro[i])  //The is a medic thing is really needed
 			{
+				if(ExtraValidityFunction != INVALID_FUNCTION)
+				{
+					bool WasValid;
+					Call_StartFunction(null, ExtraValidityFunction);
+					Call_PushCell(entity);
+					Call_PushCell(i);
+					Call_Finish(WasValid);
+
+					if(!WasValid)
+						continue;
+				}
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 				GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 

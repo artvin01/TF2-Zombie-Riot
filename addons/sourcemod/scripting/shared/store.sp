@@ -2628,28 +2628,30 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave
 					}
 				}
 			}
-
-			if(addItem == 0)
+			else
 			{
-				item.NPCSeller_First = false;
-				item.NPCSeller = false;
-				if(ResetStore)
+				if(addItem == 0)
 				{
-					item.NPCSeller_WaveStart = 0;
+					item.NPCSeller_First = false;
+					item.NPCSeller = false;
+					if(ResetStore)
+					{
+						item.NPCSeller_WaveStart = 0;
+					}
 				}
-			}
 
-			if(addItem == 99)
-			{
-				if(item.NPCSeller_WaveStart > 0 && subtract_wave > 0)
+				if(addItem == 99)
 				{
-					item.NPCSeller_WaveStart -= 1;
+					if(item.NPCSeller_WaveStart > 0 && subtract_wave > 0)
+					{
+						item.NPCSeller_WaveStart -= 1;
+					}
 				}
+				
+				item.GetItemInfo(0, info);
+				if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost < CurrentCash)
+					indexes[amount++] = i;
 			}
-
-			item.GetItemInfo(0, info);
-			if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost < CurrentCash)
-				indexes[amount++] = i;
 			
 			StoreItems.SetArray(i, item);
 		}
