@@ -648,7 +648,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 			if((Current_Wave>=45 && fl_heavens_light_use_timer[npc.index] < GameTime) || b_force_heavens_light[npc.index])
 			{
 				b_force_heavens_light[npc.index]=false;
-				fl_heavens_light_use_timer[npc.index] = GameTime + 100.0;
+				fl_heavens_light_use_timer[npc.index] = GameTime + 75.0;
 				Heavens_Light_Active[npc.index]=true;
 
 				Invoke_Heavens_Light(npc, GameTime);
