@@ -662,7 +662,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 				vecMe = WorldSpaceCenter(npc.index);
 				if(GetVectorDistance(vecAlly, vecMe, true) < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, Ally))
 				{
-					CPrintToChatAll("{aqua}Schwertkrieg{snow}: ..!");
+					CPrintToChatAll("{crimson}Schwertkrieg{snow}: ..!");
 					HealEntityGlobal(npc.index, Ally, float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
 					HealEntityGlobal(npc.index, npc.index, -float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
 
@@ -696,7 +696,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 			float vecAlly[3]; vecAlly = WorldSpaceCenter(Ally);
 
 			float flDistanceToAlly = GetVectorDistance(vecAlly, npc_Vec, true);
-			Schwert_Movement_Ally_Movement(npc, flDistanceToAlly, Ally, GameTime);
+			Schwert_Movement_Ally_Movement(npc, flDistanceToAlly, Ally, GameTime, PrimaryThreatIndex, flDistanceToTarget);
 
 			//Schwert_Teleport_Core(npc, PrimaryThreatIndex);
 		}
@@ -711,7 +711,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 				float vecAlly[3]; vecAlly = WorldSpaceCenter(Ally);
 
 				float flDistanceToAlly = GetVectorDistance(vecAlly, npc_Vec, true);
-				Schwert_Movement_Ally_Movement(npc, flDistanceToAlly, Ally, GameTime, true);	//warp
+				Schwert_Movement_Ally_Movement(npc, flDistanceToAlly, Ally, GameTime, PrimaryThreatIndex, flDistanceToTarget, true);	//warp
 
 				if(flDistanceToAlly < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*2.0)
 				{
@@ -761,6 +761,9 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 		}
 		else
 		{
+			if(Schwert_Status(npc, GameTime)!=1)
+				npc.m_flSpeed =  fl_schwert_speed;
+				
 			Schwert_Movement(npc, flDistanceToTarget, PrimaryThreatIndex);
 
 			Schwert_Aggresive_Behavior(npc, PrimaryThreatIndex, GameTime, flDistanceToTarget, vecTarget);
@@ -1405,7 +1408,7 @@ static void Schwert_Movement(Raidboss_Schwertkrieg npc, float flDistanceToTarget
 		NPC_SetGoalEntity(npc.index, target);
 	}
 }
-static void Schwert_Movement_Ally_Movement(Raidboss_Schwertkrieg npc, float flDistanceToAlly, int ally, float GameTime, bool block_defense=false)
+static void Schwert_Movement_Ally_Movement(Raidboss_Schwertkrieg npc, float flDistanceToAlly, int ally, float GameTime, int PrimaryThreatIndex_Schwert, float flDistanceToTarget_Schwert, bool block_defense=false)
 {	
 	if(npc.m_bAllowBackWalking)
 		npc.m_bAllowBackWalking=false;
@@ -1413,11 +1416,31 @@ static void Schwert_Movement_Ally_Movement(Raidboss_Schwertkrieg npc, float flDi
 	npc.StartPathing();
 	npc.m_bPathing = true;
 	
+	
+	if(flDistanceToTarget_Schwert < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25)
+	{
+		Schwert_Movement(npc, flDistanceToTarget_Schwert, PrimaryThreatIndex_Schwert);
+		Schwert_Aggresive_Behavior(npc, PrimaryThreatIndex_Schwert, GameTime, flDistanceToTarget_Schwert, WorldSpaceCenter(PrimaryThreatIndex_Schwert));
+		if(Schwert_Status(npc, GameTime)!=1)
+			npc.m_flSpeed =  fl_schwert_speed;
+		return;
+	}
+	
+	
+	if(block_defense)
+	{
+		NPC_SetGoalEntity(npc.index, donner.index);
+		if(Schwert_Status(npc, GameTime)!=1)
+			npc.m_flSpeed =  fl_schwert_speed*2.0;
+		return;
+	}
+	
+	
 	Raidboss_Donnerkrieg donner = view_as<Raidboss_Donnerkrieg>(ally);
-	if(flDistanceToAlly < (450.0*450.0))
+	if(flDistanceToAlly < (1000.0*1000.0))	//stay within a 1000 radius of donner
 	{
 		int target_new = GetClosestTarget(donner.index);
-		if(IsValidEnemy(npc.index, target_new) && !block_defense)
+		if(IsValidEnemy(npc.index, target_new))
 		{
 			float Ally_Vec[3]; Ally_Vec = WorldSpaceCenter(donner.index);
 			float Vec_Target[3]; Vec_Target = WorldSpaceCenter(target_new);
@@ -1427,16 +1450,23 @@ static void Schwert_Movement_Ally_Movement(Raidboss_Schwertkrieg npc, float flDi
 				flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(npc.index), Vec_Target, true);
 				Schwert_Movement(npc, flDistanceToTarget, target_new);
 				Schwert_Aggresive_Behavior(npc, target_new, GameTime, flDistanceToTarget, Vec_Target);
+				if(Schwert_Status(npc, GameTime)!=1)
+					npc.m_flSpeed =  fl_schwert_speed*2.0;
 			}
-		}
-		else
-		{
-			NPC_SetGoalEntity(npc.index, donner.index);
+			else
+			{
+				Schwert_Movement(npc, flDistanceToTarget_Schwert, PrimaryThreatIndex_Schwert);
+				Schwert_Aggresive_Behavior(npc, PrimaryThreatIndex_Schwert, GameTime, flDistanceToTarget_Schwert, WorldSpaceCenter(PrimaryThreatIndex_Schwert));
+				if(Schwert_Status(npc, GameTime)!=1)
+					npc.m_flSpeed =  fl_schwert_speed;
+			}
 		}
 	} 
 	else 
 	{
 		NPC_SetGoalEntity(npc.index, donner.index);
+		if(Schwert_Status(npc, GameTime)!=1)
+			npc.m_flSpeed =  fl_schwert_speed*2.0;
 	}
 }
 
