@@ -2266,6 +2266,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			NPC_OnTakeDmg_Gravaton_Wand(attacker, damagetype);
 		}
+		case WEAPON_RED_BLADE:
+		{
+			WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon);
+		}
 	}
 #endif
 

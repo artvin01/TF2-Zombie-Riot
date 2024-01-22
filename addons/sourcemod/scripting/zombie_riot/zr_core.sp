@@ -1258,13 +1258,6 @@ public Action Timer_Dieing(Handle timer, int client)
 }
 
 
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-
-
 public void Spawn_Bob_Combine(int client)
 {
 	float flPos[3], flAng[3];
@@ -1312,12 +1305,6 @@ public void Spawn_Cured_Grigori()
 		}
 	}
 }
-
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
 
 void CheckAlivePlayersforward(int killed=0)
 {

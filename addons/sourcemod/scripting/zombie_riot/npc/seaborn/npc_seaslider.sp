@@ -245,11 +245,17 @@ void SeaSlider_AddNeuralDamage(int victim, int attacker, int damagebase, bool so
 			{
 				Armor_Charge[victim] = 0;
 
-				TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
+				if(!b_BobsTrueFear[victim])
+					TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
+				else
+					TF2_StunPlayer(victim, 3.0, 0.9, TF_STUNFLAG_SLOWDOWN);
 
 				bool sawrunner = b_ThisNpcIsSawrunner[attacker];
 				b_ThisNpcIsSawrunner[attacker] = true;
-				SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+				if(!b_BobsTrueFear[victim])
+					SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+				else
+					SDKHooks_TakeDamage(victim, attacker, attacker, 400.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
 				b_ThisNpcIsSawrunner[attacker] = sawrunner;
 			}
 			

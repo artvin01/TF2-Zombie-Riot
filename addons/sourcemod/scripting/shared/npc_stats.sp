@@ -3005,16 +3005,19 @@ public void NPC_Base_InitGamedata()
 
 	delete gamedata;
 
+	NextBotActionFactory ActionFactory = new NextBotActionFactory("ZRMainAction");
+	ActionFactory.SetEventCallback(EventResponderType_OnActorEmoted, PluginBot_OnActorEmoted);
+
 	CEntityFactory EntityFactory = new CEntityFactory("zr_base_npc", OnCreate, OnDestroy);
 	EntityFactory.DeriveFromNPC();
+	EntityFactory.SetInitialActionFactory(ActionFactory);
 	EntityFactory.BeginDataMapDesc()
 		.DefineIntField("zr_pPath")
 	
 		//Seargent Ideal Shield Netprops
 		.DefineIntField("zr_iRefSeargentProtect")
 		.DefineFloatField("zr_fSeargentProtectTime")
-	.EndDataMapDesc(); 
-
+	.EndDataMapDesc();
 	EntityFactory.Install();
 
 	//for (int i = 0; i < MAXENTITIES; i++) pPath[i] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
@@ -7364,17 +7367,19 @@ stock bool IsValidAlly(int index, int ally)
 	return false;
 }
 
-public void PluginBot_OnActorEmoted(int bot_entidx, int who, int concept)
+
+public int PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCharacter actor, CBaseCombatCharacter emoter, int emote)
 {
 #if defined ZR
-	switch(i_NpcInternalId[bot_entidx])
+	switch(i_NpcInternalId[actor.index])
 	{
 		case BOB_THE_GOD_OF_GODS:
 		{
-			BobTheGod_PluginBot_OnActorEmoted(bot_entidx, who, concept);
+			BobTheGod_PluginBot_OnActorEmoted(actor.index, emoter.index, emote);
 		}
 	}
 #endif
+	return 0;
 }
 
 stock float ApproachAngle( float target, float value, float speed )

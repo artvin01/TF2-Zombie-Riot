@@ -451,6 +451,11 @@ public void OnPostThink(int client)
 				int healing_Amount = HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);		
 				ApplyHealEvent(client, healing_Amount);			
 			}
+			if(b_NemesisHeart[client])
+			{
+				int healing_Amount = HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);		
+				ApplyHealEvent(client, healing_Amount);			
+			}
 		}
 		Armor_regen_delay[client] = GameTime + 1.0;
 	}

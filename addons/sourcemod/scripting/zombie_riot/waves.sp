@@ -1835,6 +1835,21 @@ void WaveEndLogicExtra()
 	M3_AbilitiesWaveEnd();
 	Specter_AbilitiesWaveEnd();	
 	LeperResetUses();
+	for(int client; client <= MaxClients; client++)
+	{
+		if(IsValidClient(client))
+		{
+			b_BobsCuringHand_Revived[client] += GetRandomInt(1,3);
+			if(Items_HasNamedItem(client, "Bob's Curing Hand"))
+			{
+				b_BobsCuringHand[client] = true;
+			}
+			else
+			{
+				b_BobsCuringHand[client] = false;
+			}
+		}
+	}
 }
 
 void WaveStart_SubWaveStart(float time = 0.0)
