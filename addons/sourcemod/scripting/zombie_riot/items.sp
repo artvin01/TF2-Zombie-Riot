@@ -477,7 +477,7 @@ void Gift_DropChance(int entity)
 	{
 		if(IsValidEntity(entity))
 		{
-			if(b_ForceSpawnNextTime || (GetRandomFloat(0.0, 200.0) < ((GIFT_CHANCE / (MultiGlobal + 0.0001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually))) //Never let it divide by 0
+			if(b_ForceSpawnNextTime || (GetRandomFloat(0.0, 200.0) < ((GIFT_CHANCE / (MultiGlobalEnemy + 0.0001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually))) //Never let it divide by 0
 			{
 				f_IncreaceChanceManually = 1.0;
 				float VecOrigin[3];

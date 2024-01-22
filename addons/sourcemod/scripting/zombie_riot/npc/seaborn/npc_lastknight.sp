@@ -183,7 +183,7 @@ public void LastKnight_ClotThink(int iNPC)
 	if(npc.m_iTarget && !IsValidAlly(npc.index, npc.m_iTarget) && !IsValidEnemy(npc.index, npc.m_iTarget))
 		npc.m_iTarget = 0;
 
-	bool aggressive = (PeaceKnight < 0 && CitizenRunner_WasKilled());
+	bool aggressive = (PeaceKnight == 0 || (PeaceKnight == -1 && CitizenRunner_WasKilled()));
 
 	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
 	{

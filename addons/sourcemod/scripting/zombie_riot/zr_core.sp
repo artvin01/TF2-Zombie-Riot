@@ -172,7 +172,8 @@ ConVar zr_spawnprotectiontime;
 ConVar zr_viewshakeonlowhealth;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
-//ConVar CvarEnablePrivatePlugins;
+ConVar zr_allowfreeplay;
+ConVar zr_enemymulticap;
 int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
@@ -310,7 +311,9 @@ int i_ThisEntityHasAMachineThatBelongsToClient[MAXENTITIES];
 int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
 
 float MultiGlobal = 0.25;
-float MultiGlobalHealth = 0.25;
+float MultiGlobalEnemy = 0.25;
+float MultiGlobalHealth = 1.0;
+float MultiGlobalArkantos = 0.25;
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
 			
 int g_CarriedDispenser[MAXPLAYERS+1];
