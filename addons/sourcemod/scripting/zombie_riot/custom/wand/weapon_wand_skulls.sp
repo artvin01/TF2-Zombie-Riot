@@ -717,6 +717,9 @@ public int Skull_GetClosestTarget(int ent, float range)
 	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 	{
 		int i = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+		if (!IsValidEntity(i))
+			continue;
+			
 		if(IsValidEnemy(owner, i, true, false))
 		{
 			TargetLoc = WorldSpaceCenter(i);
