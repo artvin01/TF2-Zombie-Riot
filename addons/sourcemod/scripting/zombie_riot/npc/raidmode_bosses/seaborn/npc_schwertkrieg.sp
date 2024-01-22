@@ -1458,6 +1458,13 @@ static void Schwert_Movement_Ally_Movement(Raidboss_Schwertkrieg npc, float flDi
 					npc.m_flSpeed =  fl_schwert_speed;
 			}
 		}
+		else
+		{
+			Schwert_Movement(npc, flDistanceToTarget_Schwert, PrimaryThreatIndex_Schwert);
+			Schwert_Aggresive_Behavior(npc, PrimaryThreatIndex_Schwert, GameTime, flDistanceToTarget_Schwert, WorldSpaceCenter(PrimaryThreatIndex_Schwert));
+			if(Schwert_Status(npc, GameTime)!=1)
+				npc.m_flSpeed =  fl_schwert_speed;
+		}
 	} 
 	else 
 	{
