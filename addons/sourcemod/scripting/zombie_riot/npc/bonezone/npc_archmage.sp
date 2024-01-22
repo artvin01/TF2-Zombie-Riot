@@ -824,6 +824,12 @@ public void ArchmageBones_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	SDKUnhook(entity, SDKHook_Think, ArchmageBones_ClotThink);
+	
+	int particle = EntRefToEntIndex(throwParticle[entity]);
+	if (IsValidEntity(particle))
+		RemoveEntity(particle);
+		
+	npc.RemoveAllWearables();
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
 

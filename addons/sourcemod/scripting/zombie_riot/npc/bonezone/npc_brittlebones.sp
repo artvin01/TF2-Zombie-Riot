@@ -485,7 +485,10 @@ public void BrittleBones_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	SDKUnhook(entity, SDKHook_Think, BrittleBones_ClotThink);
-//	AcceptEntityInput(npc.index, "KillHierarchy");
+	
+	int particle = EntRefToEntIndex(Brittle_Particle[entity]);
+	if (IsValidEntity(particle))
+		RemoveEntity(particle);
 }
 
 

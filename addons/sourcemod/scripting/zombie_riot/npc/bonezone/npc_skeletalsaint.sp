@@ -448,7 +448,8 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 
 		NPC_SetGoalEntity(npc.index, closest);
 
-		if (flDistanceToTarget <= SAINTBONES_HEAL_RANGE * 0.75)
+		//Only walk up to half the healing distance away from the target, we don't want to be *too* close to them.
+		if (flDistanceToTarget <= SAINTBONES_HEAL_RANGE * 0.5)
 		{
 			npc.StopPathing();
 		}
@@ -501,7 +502,7 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 			}
 			
 			targetNPC.BoneZone_SetBuffedState(true, npc.index);
-			npc.m_flSpeed = targetNPC.m_flSpeed;
+			npc.m_flSpeed = targetNPC.m_flSpeed * 1.2;	//Move a little faster than the target NPC so we don't lose them.
 		}
 		else
 		{
@@ -578,7 +579,6 @@ public void SaintBones_NPCDeath(int entity)
 	}
 	SDKUnhook(entity, SDKHook_Think, SaintBones_ClotThink);
 	
-	//TODO: Find a better way of doing this
 	for (int i = 1; i < 2049; i++)
 	{
 		if (!IsValidEntity(i) || i == entity)	
@@ -587,6 +587,15 @@ public void SaintBones_NPCDeath(int entity)
 		CClotBody other = view_as<CClotBody>(i);
 		other.BoneZone_SetBuffedState(false, entity);
 	}
+	
+	if (Priest_IsHealing[entity])
+	{
+		Priest_RemoveHealingParticle(entity);
+		npc.RemoveGesture("ACT_PRIEST_HEALING");
+		Priest_IsHealing[entity] = false;
+	}
+	
+	npc.RemoveAllWearables();
 	
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
