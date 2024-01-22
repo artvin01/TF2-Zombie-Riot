@@ -2620,7 +2620,7 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave
 
 				for(int c = 1; c <= MaxClients; c++)
 				{
-					if(item.Owned[c])
+					if(item.Owned[c] || item.BoughtBefore[c])
 					{
 						item.NPCSeller_First = false;
 						item.NPCSeller = false;
