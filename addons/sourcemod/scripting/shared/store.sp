@@ -27,6 +27,7 @@ static const int SlotLimits[] =
 enum struct ItemInfo
 {
 	int Cost;
+	int Cost_Unlock;
 	char Desc[256];
 	char Rogue_Desc[256];
 	char ExtraDesc[256];
@@ -151,7 +152,13 @@ enum struct ItemInfo
 		this.Cost = kv.GetNum(buffer, -1);
 		if(this.Cost < 0)
 			return false;
-		
+
+		Format(buffer, sizeof(buffer), "%scost_unlock", prefix);
+		this.Cost_Unlock = kv.GetNum(buffer, -1);
+		if(this.Cost_Unlock == -1)
+		{
+			this.Cost_Unlock = this.Cost;
+		}
 		Format(buffer, sizeof(buffer), "%sdesc", prefix);
 		kv.GetString(buffer, this.Desc, 256);
 
@@ -564,7 +571,7 @@ static bool UsingChoosenTags[MAXTF2PLAYERS];
 static int LastMenuPage[MAXTF2PLAYERS];
 static int CurrentMenuPage[MAXTF2PLAYERS];
 static int CurrentMenuItem[MAXTF2PLAYERS];
-static bool InStoreMenu[MAXTF2PLAYERS];
+static float LastStoreMenu[MAXTF2PLAYERS];
 #endif	// ZR
 
 #if defined RPG
@@ -1698,6 +1705,7 @@ static bool ItemBuyable(const Item item)
 				return false;
 		}
 	}
+	
 
 	return true;
 }
@@ -1721,7 +1729,11 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 
 				if(info.Cost > 0 && free)
 					return;
-				
+
+				if(info.Cost > 1000 && info.Cost_Unlock > CurrentCash)
+				{
+					break;
+				}
 				if((base < 1001 || CurrentCash >= base) && (CurrentCash - CashSpent[client]) >= info.Cost)
 				{
 					if(Rogue_Mode())
@@ -2616,7 +2628,7 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave
 					item.NPCSeller_WaveStart -= 1;
 				}
 			}
-			if(info.Cost > 0 && info.Cost > (CurrentCash / 3 - 1000) && info.Cost < CurrentCash)
+			if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost < CurrentCash)
 				indexes[amount++] = i;
 			
 			StoreItems.SetArray(i, item);
@@ -2818,11 +2830,11 @@ public Action Access_StoreViaCommand(int client, int args)
 
 void Store_Menu(int client)
 {
-	if(InStoreMenu[client])
+	if(LastStoreMenu[client])
 	{
 		CancelClientMenu(client);
 		ClientCommand(client, "slot10");
-		InStoreMenu[client] = false;
+		LastStoreMenu[client] = 0.0;
 	}
 	else if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
 	{
@@ -2865,8 +2877,6 @@ static void MenuPage(int client, int section)
 {
 	if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
 		return;
-	
-	CreateTimer(0.5, Store_RefreshTimer, client);
 	
 	SetGlobalTransTarget(client);
 	
@@ -3118,7 +3128,9 @@ static void MenuPage(int client, int section)
 			}
 			
 			menu.ExitBackButton = true;
-			InStoreMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
+			if(menu.Display(client, MENU_TIME_FOREVER))
+				LastStoreMenu[client] = GetGameTime();
+			
 			return;
 		}
 
@@ -3398,9 +3410,9 @@ static void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [Lv %d]%s", TranslateItemName(client, item.Name, info.Custom_Name), item.Level, BuildingExtraCounter);
 				}
-				else if(info.Cost > 1000 && info.Cost > CurrentCash)
+				else if(info.Cost > 1000 && info.Cost_Unlock > CurrentCash)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%.0f%%]", TranslateItemName(client, item.Name, info.Custom_Name), float(CurrentCash) * 100.0 / float(info.Cost));
+					FormatEx(buffer, sizeof(buffer), "%s [%.0f%%]", TranslateItemName(client, item.Name, info.Custom_Name), float(CurrentCash) * 100.0 / float(info.Cost_Unlock));
 					style = ITEMDRAW_DISABLED;
 				}
 				else
@@ -3481,7 +3493,9 @@ static void MenuPage(int client, int section)
 		}
 		
 		menu.ExitBackButton = true;
-		InStoreMenu[client] = DisplayMenuAtCustom(menu, client, CurrentMenuPage[client]);
+		if(DisplayMenuAtCustom(menu, client, CurrentMenuPage[client]))
+			LastStoreMenu[client] = GetGameTime();
+		
 		return;
 	}
 	else if(section == -1 && !NPCOnly[client])
@@ -3546,7 +3560,8 @@ static void MenuPage(int client, int section)
 
 		menu.Pagination = 0;
 		menu.ExitButton = false;
-		InStoreMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
+		if(menu.Display(client, MENU_TIME_FOREVER))
+			LastStoreMenu[client] = GetGameTime();
 	}
 	else
 	{
@@ -3557,7 +3572,8 @@ static void MenuPage(int client, int section)
 		}
 
 		menu.ExitBackButton = section != -1;
-		InStoreMenu[client] = DisplayMenuAtCustom(menu, client, CurrentMenuPage[client]);
+		if(DisplayMenuAtCustom(menu, client, CurrentMenuPage[client]))
+			LastStoreMenu[client] = GetGameTime();
 	}
 }
 /*
@@ -3587,11 +3603,11 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
-			InStoreMenu[client] = false;
+			LastStoreMenu[client] = 0.0;
 		}
 		case MenuAction_Select:
 		{
-			InStoreMenu[client] = false;
+			LastStoreMenu[client] = 0.0;
 			
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));
@@ -3906,7 +3922,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
-			InStoreMenu[client] = false;
+			LastStoreMenu[client] = 0.0;
 
 			if(choice == MenuCancel_ExitBack)
 			{
@@ -3924,7 +3940,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
-			InStoreMenu[client] = false;
+			LastStoreMenu[client] = 0.0;
 			
 			if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
 			{
@@ -6725,6 +6741,9 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 	static Item item;
 	if(StoreWeapon[weapon] < 1)
 		return;
+		
+	if(client < 1)
+		return;
 	
 	StoreItems.GetArray(StoreWeapon[weapon], item);
 	ItemInfo info;
@@ -6742,13 +6761,12 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 	SetEntProp(weapon, Prop_Send, "m_iClip1", item.CurrentClipSaved[client]); // weapon clip amount bullets
 }
 
-public Action Store_RefreshTimer(Handle timer, int client)
+void Store_TryRefreshMenu(int client)
 {
-	// InStoreMenu will be false if the client disconnects
-	if(InStoreMenu[client])
+	if(LastStoreMenu[client] && (LastStoreMenu[client] + 0.5) < GetGameTime())
+	{
 		MenuPage(client, CurrentMenuItem[client]);
-	
-	return Plugin_Stop;
+	}
 }
 
 bool DisplayMenuAtCustom(Menu menu, int client, int item)

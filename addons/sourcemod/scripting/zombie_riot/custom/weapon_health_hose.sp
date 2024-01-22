@@ -189,7 +189,8 @@ public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float
 			Hose_AlreadyHealed[projectile][entity] = false;
 		}
 			
-		SetEntityCollisionGroup(projectile, 1); //Do not collide.
+		SetEntityCollisionGroup(projectile, 27); //Do not collide.
+		SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 		SetEntityGravity(projectile, 0.5);
 	}
@@ -201,9 +202,14 @@ public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float
 }
 
 //If you use SearchDamage (above), convert this timer to a void method and rename it to Cryo_DealDamage:
-
-public void Wand_Health_Hose_Touch_World(int entity, int other)
+public void Hose_Touch(int entity, int other)
 {
+	if (entity == -1) //Don't accidentally heal the user every time they fire this thing, it would be WAY too good
+		return;
+		
+	if (other == -1) //Don't accidentally heal the user every time they fire this thing, it would be WAY too good
+		return;
+
 	if (other == 0)	
 	{
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
@@ -213,10 +219,6 @@ public void Wand_Health_Hose_Touch_World(int entity, int other)
 		}
 		RemoveEntity(entity);
 	}
-}
-
-public void Hose_Touch(int entity, int other)
-{
 	int owner = GetClientOfUserId(Hose_Owner[entity]);
 	
 	if (!IsValidClient(owner))
@@ -224,6 +226,7 @@ public void Hose_Touch(int entity, int other)
 		
 	if (other == owner) //Don't accidentally heal the user every time they fire this thing, it would be WAY too good
 		return;
+
 		
 	if (Hose_AlreadyHealed[entity][other])
 		return;
@@ -519,6 +522,10 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 		Resistance_Overall_Low[client] = GetGameTime() + 5.0;
 		Resistance_Overall_Low[target] = GetGameTime() + 15.0;
 		static float belowBossEyes[3];
+		belowBossEyes[0] = 0.0;
+		belowBossEyes[1] = 0.0;
+		belowBossEyes[2] = 0.0;
+
 		GetBeamDrawStartPoint_Stock(client, belowBossEyes,{0.0,-10.0,-10.0});
 		Passanger_Lightning_Effect(belowBossEyes, WorldSpaceCenter(target), 1, 5.0, {200,50,50});
 	}
@@ -528,6 +535,10 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 		{
 			float spawnLoc[3];
 			static float belowBossEyes[3];
+			belowBossEyes[0] = 0.0;
+			belowBossEyes[1] = 0.0;
+			belowBossEyes[2] = 0.0;
+
 			TR_GetEndPosition(spawnLoc, trace);
 			GetBeamDrawStartPoint_Stock(client, belowBossEyes,{0.0,-10.0,-10.0});
 			Passanger_Lightning_Effect(belowBossEyes, spawnLoc, 1, 5.0, {200,50,50});
@@ -611,7 +622,9 @@ bool SpawnHealthkit_SyringeGun(int client, float VectorGoal[3])
 		AcceptEntityInput(prop, "SetAnimation");
 		DispatchKeyValueFloat(prop, "playbackrate", 1.0);
 		SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", client);
+		SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntityCollisionGroup(prop, 27);
+		SDKHook(prop, SDKHook_StartTouch, TouchHealthKit);
 		f_HealMaxPickup[prop] = HealAmmount;
 		f_HealMaxPickup_Enable[prop] = GetGameTime() + 2.0;
 		i_WandIdNumber[prop] = 999;

@@ -63,9 +63,14 @@ static float f_DelayComputingOfPath[MAXENTITIES];
 static float f_PredictPos[MAXENTITIES][3];
 static float f_PredictDuration[MAXENTITIES];
 static float f_UnstuckSuckMonitor[MAXENTITIES];
+static int i_TargetToWalkTo[MAXENTITIES];
+float f_TargetToWalkToDelay[MAXENTITIES];
 
 static int i_WasPathingToHere[MAXENTITIES];
 static float f3_WasPathingToHere[MAXENTITIES][3];
+Function func_NPCDeath[MAXENTITIES];
+Function func_NPCOnTakeDamage[MAXENTITIES];
+Function func_NPCThink[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -609,8 +614,21 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	property int m_iTargetAlly
 	{
-		public get()							{ return i_TargetAlly[this.index]; }
-		public set(int TempValueForProperty) 	{ i_TargetAlly[this.index] = TempValueForProperty; }
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_TargetAlly[this.index]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_TargetAlly[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_TargetAlly[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
 	}
 	property bool m_bGetClosestTargetTimeAlly
 	{
@@ -1042,10 +1060,41 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return fl_Speed[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_Speed[this.index] = TempValueForProperty; }
 	}
+	property int m_iTargetWalkTo
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_TargetToWalkTo[this.index]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_TargetToWalkTo[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_TargetToWalkTo[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	property int m_iTarget
 	{
-		public get()							{ return i_Target[this.index]; }
-		public set(int TempValueForProperty) 	{ i_Target[this.index] = TempValueForProperty; }
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_Target[this.index]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_Target[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_Target[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
 	}
 	property int m_iBleedType
 	{
@@ -1222,11 +1271,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		if(!this.m_bThisNpcIsABoss)
 		{
-			
-#if defined ZR
-			if(EntRefToEntIndex(RaidBossActive) != this.index)
-#endif
-			
+			if(!b_thisNpcIsARaid[this.index])
 			{
 				Is_Boss = false;
 			}
@@ -3137,8 +3182,9 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		
 		if (EntRefToEntIndex(RaidBossActive) == pThis)
 		{
-			Raidboss_Clean_Everyone();
+			CreateTimer(1.0, Timer_CheckIfRaidIsActive, _, TIMER_FLAG_NO_MAPCHANGE);	
 		}
+		
 		VausMagicaRemoveShield(pThis);
 #endif
 #if defined ZR
@@ -3148,6 +3194,9 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		RemoveNpcThingsAgain(pThis);
 		ExtinguishTarget(pThis);
 		NPCDeath(pThis);
+		func_NPCDeath[pThis] = INVALID_FUNCTION;
+		func_NPCOnTakeDamage[pThis] = INVALID_FUNCTION;
+		func_NPCThink[pThis] = INVALID_FUNCTION;
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		SetEntityCollisionGroup(pThis, 1);
@@ -4482,6 +4531,7 @@ stock int GetClosestTarget(int entity,
 	}
 	if(searcher_team != 2 && !IgnorePlayers)
 	{
+		CClotBody npc1 = view_as<CClotBody>(entity);
 		for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
 		{
 			int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
@@ -4494,7 +4544,7 @@ stock int GetClosestTarget(int entity,
 #if defined ZR
 					if(IsTowerdefense && i_NpcInternalId[entity_close] == VIP_BUILDING)
 					{
-						if(!IsValidEnemy(entity, i_Target[entity], true, true))
+						if(!IsValidEnemy(entity, npc1.m_iTarget, true, true))
 						{
 							return entity_close; //we found a vip building, go after it.
 						}
@@ -4526,7 +4576,8 @@ stock int GetClosestTarget(int entity,
 	}
 	if(IsTowerdefense)
 	{
-		return i_Target[entity];
+		CClotBody npc = view_as<CClotBody>(entity);
+		return npc.m_iTarget;
 	}
 	
 #if defined ZR
@@ -5237,13 +5288,11 @@ public void NpcBaseThink(int iNPC)
 	
 	if(b_EntityInCrouchSpot[iNPC])
 	{
+		if(!b_NpcResizedForCrouch[iNPC])
 		{
-			if(!b_NpcResizedForCrouch[iNPC])
-			{
-				float scale = GetEntPropFloat(iNPC, Prop_Send, "m_flModelScale");
-				SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", scale * 0.5);
-				b_NpcResizedForCrouch[iNPC] = true;
-			}
+			float scale = GetEntPropFloat(iNPC, Prop_Send, "m_flModelScale");
+			SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", scale * 0.5);
+			b_NpcResizedForCrouch[iNPC] = true;
 		}
 	}
 	else //only turn off if outside.
@@ -5374,6 +5423,14 @@ public void NpcBaseThink(int iNPC)
 	//TODO:
 	//Rewrite  ::Update func inside nextbots instead of doing this.
 	// !npc.IsOnGround()  is commented out as sometimes npcs can be inside walls while still retaining isonground
+	Function func = func_NPCThink[iNPC];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(iNPC);
+		Call_Finish();
+		//todo: convert all on death and on take damage to this.
+	}
 	if (/*!npc.IsOnGround() && */!b_DoNotUnStuck[iNPC] && f_DoNotUnstuckDuration[iNPC] < GetGameTime())
 	{
 		if(i_FailedTriesUnstuck[iNPC] == 0)
@@ -5513,7 +5570,7 @@ public void NpcBaseThink(int iNPC)
 		{
 			i_FailedTriesUnstuck[iNPC] = 0;
 		}
-	}
+	}	
 }
 float f3_KnockbackToTake[MAXENTITIES][3];
 
@@ -7520,6 +7577,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_CooldownForHurtParticle[entity] = 0.0;
 	f_DelayComputingOfPath[entity] = GetGameTime() + 0.2;
 	f_UnstuckSuckMonitor[entity] = 0.0;
+	i_TargetToWalkTo[entity] = -1;
+	f_TargetToWalkToDelay[entity] = 0.0;
 	i_WasPathingToHere[entity] = 0;
 	f3_WasPathingToHere[entity][0] = 0.0;
 	f3_WasPathingToHere[entity][1] = 0.0;
@@ -7578,7 +7637,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 }
 
 #if defined ZR
-public void Raidboss_Clean_Everyone()
+void Raidboss_Clean_Everyone(int RevertBack = false)
 {
 	if(VIPBuilding_Active())
 		return;
@@ -7592,7 +7651,10 @@ public void Raidboss_Clean_Everyone()
 			{
 				if(!b_IsAlliedNpc[base_boss]) //Make sure it doesnt actually kill map base_bosses
 				{
-					Change_Npc_Collision(base_boss, 1); //Gives raid collision
+					if(RevertBack)
+						Change_Npc_Collision(base_boss, num_ShouldCollideEnemy);
+					else
+						Change_Npc_Collision(base_boss, 1); 
 				}
 			}
 		}
@@ -9597,4 +9659,14 @@ void ExtinguishTarget(int target)
 		delete Timer_Ingition_Settings[target];
 		Timer_Ingition_Settings[target] = null;
 	}
+}
+
+
+public Action Timer_CheckIfRaidIsActive(Handle timer, any entid)
+{
+	if(!RaidbossIgnoreBuildingsLogic(2))
+	{
+		Raidboss_Clean_Everyone(true);
+	}
+	return Plugin_Handled;
 }

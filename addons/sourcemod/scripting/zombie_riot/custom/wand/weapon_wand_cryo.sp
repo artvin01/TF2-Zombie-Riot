@@ -302,7 +302,7 @@ public void Weapon_Wand_Cryo_Shoot(int client, int weapon, bool crit, int slot, 
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 11, weapon, ParticleName, Angles);
 
 			//Remove unused hook.
-			SDKUnhook(projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
+		//	SDKUnhook(projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
 
 			Cryo_IsCryo[projectile] = true;
 			Cryo_SlowType[projectile] = SlowType;
@@ -312,7 +312,7 @@ public void Weapon_Wand_Cryo_Shoot(int client, int weapon, bool crit, int slot, 
 		//		Cryo_AlreadyHit[i][iCarrier] = false; //This will make all rehitable with the same projectile, i doubt thats what you want.
 				Cryo_AlreadyHit[projectile][entity] = false;
 			}
-			SetEntityCollisionGroup(projectile, 1); //Do not collide.
+			SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 
 		//	CreateTimer(0.25, Cryo_Timer, EntIndexToEntRef(projectile), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		}
@@ -341,9 +341,8 @@ public void Weapon_Wand_Cryo_Shoot(int client, int weapon, bool crit, int slot, 
 
 //If you use SearchDamage (above), convert this timer to a void method and rename it to Cryo_DealDamage:
 
-public void Cryo_Touch(int entity, int other)
+public void Cryo_Touch(int entity, int target)
 {
-	int target = Target_Hit_Wand_Detection(entity, other);
 	if (target > 0)	
 	{
 		static float angles[3];

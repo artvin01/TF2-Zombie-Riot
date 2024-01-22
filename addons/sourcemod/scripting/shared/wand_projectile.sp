@@ -235,7 +235,7 @@ public void Wand_Base_StartTouch(int entity, int other)
 		}
 		case 19: //Health Hose particle
 		{
-			Wand_Health_Hose_Touch_World(entity, target);
+			Hose_Touch(entity, target);
 		}
 		case 20: //Vampire Knives thrown knife
 		{
@@ -243,7 +243,7 @@ public void Wand_Base_StartTouch(int entity, int other)
 		}
 		case 21: //Vampire Knives thrown cleaver
 		{
-			Vamp_Cleaver_Touch_World(entity, target);
+			Vamp_CleaverHit(entity, target);
 		}
 		case WEAPON_QUINCY_BOW:
 		{
@@ -253,19 +253,16 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Event_GB_OnHatTouch(entity, target);
 		}
-		/*		
 		case WEAPON_LANTEAN:
 		{
 			lantean_Wand_Touch_World(entity, target);
 		}
-
-		 	Doesnt work, this projectile has noclip, go to DHOOK public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		case 11:
 		{
 			
 			Cryo_Touch(entity, target);
 		}
-		*/
+		
 		case WEAPON_GLADIIA:
 		{
 			Gladiia_WandTouch(entity, target);

@@ -188,7 +188,7 @@ public void SeaSlider_ClotThink(int iNPC)
 			{
 				npc.m_iTarget = target;
 
-				npc.AddGesture("ACT_RANGE_ATTACK1");
+				npc.AddGesture("ACT_MELEE_ATTACK1");
 
 				npc.PlayMeleeSound();
 				
@@ -235,9 +235,9 @@ void SeaSlider_NPCDeath(int entity)
 void SeaSlider_AddNeuralDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
-	
 	if(victim <= MaxClients)
 	{
+		Armor_DebuffType[victim] = 1;
 		if((ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 		{
 			Armor_Charge[victim] -= damage;

@@ -157,6 +157,7 @@ void Music_RoundEnd(int victim, bool music = true)
 			SendConVarValue(i, sv_cheats, "1");
 		}
 	}
+	ResetReplications();
 	cvarTimeScale.SetFloat(0.1);
 	CreateTimer(0.5, SetTimeBack);
 }
@@ -170,6 +171,7 @@ public Action SetTimeBack(Handle timer)
 			SendConVarValue(i, sv_cheats, "0");
 		}
 	}
+	ResetReplications();
 	cvarTimeScale.SetFloat(1.0);
 	return Plugin_Handled;
 }

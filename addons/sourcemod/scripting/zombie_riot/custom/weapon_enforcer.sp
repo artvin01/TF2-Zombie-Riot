@@ -191,7 +191,7 @@ static void AbilityM2(int client, int weapon, int slot, int pushLevel, float pus
 			GetAttachment(client, "effect_hand_l", fPos, fAng);
 			TE_Particle("mvm_soldier_shockwave", fPos, NULL_VECTOR, fAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
 
-			Ability_Apply_Cooldown(client, slot, 40.0);
+			Ability_Apply_Cooldown(client, slot, 20.0);
 			i_SemiAutoWeapon_AmmoCount[weapon] -= ammo;
 
 			Rogue_OnAbilityUse(weapon);

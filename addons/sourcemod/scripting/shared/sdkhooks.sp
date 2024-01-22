@@ -219,23 +219,39 @@ public void OnPostThink(int client)
 
 	if(b_PhaseThroughBuildingsPerma[client] == 2)
 	{
-		CvarMpSolidObjects.ReplicateToClient(client, "0");
+		if(ReplicateClient_Tfsolidobjects[client] != 0)
+		{
+			ReplicateClient_Tfsolidobjects[client] = 0;
+			CvarMpSolidObjects.ReplicateToClient(client, "0");
+		}
 	}
 	else
 	{
 		if(b_PhaseThroughBuildingsPerma[client] == 1)
 		{
 			b_PhaseThroughBuildingsPerma[client] = 0;
-			CvarMpSolidObjects.ReplicateToClient(client, "1"); //set replicate back to normal.
+			if(ReplicateClient_Tfsolidobjects[client] != 1)
+			{
+				ReplicateClient_Tfsolidobjects[client] = 1;
+				CvarMpSolidObjects.ReplicateToClient(client, "1"); //set replicate back to normal.
+			}
 		}
 	}
 	if(b_AntiSlopeCamp[client])
-	{
-		CvarAirAcclerate.ReplicateToClient(client, "2.0"); //set replicate back to normal.
+	{	
+		if(ReplicateClient_Svairaccelerate[client] != 2.0)
+		{
+			ReplicateClient_Svairaccelerate[client] = 2.0;
+			CvarAirAcclerate.ReplicateToClient(client, "2.0"); //set down
+		}
 	}
 	else
 	{
-		CvarAirAcclerate.ReplicateToClient(client, "10.0"); //set replicate back to normal.
+		if(ReplicateClient_Svairaccelerate[client] != 10.0)
+		{
+			ReplicateClient_Svairaccelerate[client] = 10.0;
+			CvarAirAcclerate.ReplicateToClient(client, "10.0"); //set replicate back to normal.
+		}
 	}
 		
 #if defined ZR
@@ -300,6 +316,7 @@ public void OnPostThink(int client)
 					PercentageHealth = PercentageHealth - 1.0;
 					PercentageHealth *= -1.0; //convert to positive
 					PercentageHealth *= 125.0; // we want the full number! this only works in big ones. also divitde by 4
+					PercentageHealth *= 0.5;
 					i_SvRollAngle[client] = RoundToCeil(PercentageHealth);
 
 					if(i_SvRollAngle[client] < 0)
@@ -313,16 +330,22 @@ public void OnPostThink(int client)
 				i_SvRollAngle[client] = 0;
 			}
 
-			char RollAngleValue[4];
-
-			IntToString(i_SvRollAngle[client], RollAngleValue, sizeof(RollAngleValue));
-
-			CvarSvRollagle.ReplicateToClient(client, RollAngleValue); //set replicate back to normal.
+			if(ReplicateClient_RollAngle[client] != i_SvRollAngle[client])
+			{
+				ReplicateClient_RollAngle[client] = i_SvRollAngle[client];
+				char RollAngleValue[4];
+				IntToString(i_SvRollAngle[client], RollAngleValue, sizeof(RollAngleValue));
+				CvarSvRollagle.ReplicateToClient(client, RollAngleValue); //set replicate back to normal.
+			}
 		}
 		else
 		{
 			RollAngle_Regen_Delay[client] = GameTime + 5.0;
-			CvarSvRollagle.ReplicateToClient(client, "0"); //set replicate back to normal.
+			if(ReplicateClient_RollAngle[client] != 0)
+			{
+				ReplicateClient_RollAngle[client] = 0;
+				CvarSvRollagle.ReplicateToClient(client, "0"); //set replicate back to normal.
+			}
 		}
 	}
 #endif	// ZR
@@ -431,9 +454,11 @@ public void OnPostThink(int client)
 		}
 		Armor_regen_delay[client] = GameTime + 1.0;
 	}
-#endif	// ZR
-	
-	if(Mana_Hud_Delay[client] < GameTime)	
+	if(Mana_Hud_Delay[client] < GameTime)
+#else	// ZR
+	else if(Mana_Hud_Delay[client] < GameTime)
+#endif
+
 	{
 		char buffer[255];
 #if defined RPG		
@@ -623,6 +648,10 @@ public void OnPostThink(int client)
 			if(f_MultiDamageTaken[client] != 1.0)
 			{
 				percentage_Global *= f_MultiDamageTaken[client];
+			}
+			if(f_MultiDamageTaken_Flat[client] != 1.0)
+			{
+				percentage_Global *= f_MultiDamageTaken_Flat[client];
 			}
 			if(f_BattilonsNpcBuff[client] > GameTime)
 			{
@@ -935,7 +964,7 @@ public void OnPostThink(int client)
 			ShowSyncHudText(client,  SyncHud_WandMana, "%s", buffer);
 		}
 	}
-	if(delay_hud[client] < GameTime)	
+	else if(delay_hud[client] < GameTime)	
 	{
 		delay_hud[client] = GameTime + 0.4;
 
@@ -1002,8 +1031,20 @@ public void OnPostThink(int client)
 		int blue = 0;
 		if(Armor_Charge[armorEnt] < 0)
 		{
-			green = 0;
-			blue = 255;
+			switch(Armor_DebuffType[armorEnt])
+			{
+				case 1:
+				{
+					green = 0;
+					blue = 255;
+				}
+				case 2:
+				{
+					red = 255;
+					green = 69;
+					blue = 25;
+				}
+			}
 		}
 		else if(Armor_Charge[armorEnt] < Armor_Max)
 		{
@@ -1295,14 +1336,9 @@ public void OnPostThink(int client)
 		PrintKeyHintText(client,"%s", HudBuffer);
 #endif	// ZR
 	}
-
-		
-#if defined RPG
-		// RPG Level Stuff Here
-#endif	// RPG
 		
 #if defined ZR
-	if(f_DelayLookingAtHud[client] < GameTime)
+	else if(f_DelayLookingAtHud[client] < GameTime)
 	{
 		//Reuse uhh
 		//Doesnt reset often enough, fuck clientside.
@@ -1317,6 +1353,10 @@ public void OnPostThink(int client)
 		{
 			f_DelayLookingAtHud[client] = GameTime + 2.0;
 		}
+	}
+	else
+	{
+		Store_TryRefreshMenu(client);
 	}
 	
 	Music_PostThink(client);
@@ -1616,6 +1656,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		damage *= f_MultiDamageTaken[victim];
 	}
+	if(f_MultiDamageTaken_Flat[victim] != 1.0)
+	{
+		damage *= f_MultiDamageTaken_Flat[victim];
+	}
+	
 	//freeplay causes more damage taken.
 	if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
 	{
@@ -2425,12 +2470,17 @@ public Action Timer_CauseFadeInAndFadeDelete(Handle timer)
 }
 #endif	// ZR
 
-void IncreaceEntityDamageTakenBy(int entity, float amount, float duration)
+void IncreaceEntityDamageTakenBy(int entity, float amount, float duration, bool Flat = false)
 {
-	f_MultiDamageTaken[entity] *= amount;
+	if(!Flat)
+		f_MultiDamageTaken[entity] *= amount;
+	else
+		f_MultiDamageTaken_Flat[entity] += amount;
+
 	Handle pack;
 	CreateDataTimer(duration, RevertDamageTakenAgain, pack, TIMER_FLAG_NO_MAPCHANGE);
 	WritePackCell(pack, EntIndexToEntRef(entity));
+	WritePackCell(pack, Flat);
 	WritePackFloat(pack, amount);
 }
 
@@ -2438,11 +2488,15 @@ public Action RevertDamageTakenAgain(Handle final, any pack)
 {
 	ResetPack(pack);
 	int entity = EntRefToEntIndex(ReadPackCell(pack));
+	bool Flat = ReadPackCell(pack);
 	float damagemulti = ReadPackFloat(pack);
 	
 	if (IsValidEntity(entity))
 	{
-		f_MultiDamageTaken[entity] /= damagemulti;
+		if(!Flat)
+			f_MultiDamageTaken[entity] /= damagemulti;
+		else
+			f_MultiDamageTaken_Flat[entity] -= damagemulti;
 	}
 	return Plugin_Continue;
 }

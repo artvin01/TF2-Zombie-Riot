@@ -702,6 +702,7 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 			{
 				SetConVarInt(sv_cheats, 0, false, false);
 			}
+			ResetReplications();
 		
 			startPosition[2] += 25.0;
 			makeexplosion(client, client, startPosition, "", 0, 0);

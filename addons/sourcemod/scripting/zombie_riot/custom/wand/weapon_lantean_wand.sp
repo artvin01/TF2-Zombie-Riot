@@ -463,9 +463,7 @@ float time)
 	{
 		fl_lantean_Wand_Drone_HitSafe[projectile][entity] = GameTimeExtra;
 	}
-	SetEntityCollisionGroup(projectile, 1); //Do not collide.
-	//		SetEntProp(projectile, Prop_Send, "m_nSolidType",(FSOLID_TRIGGER | FSOLID_NOT_SOLID));//FSOLID_TRIGGER && FSOLID_NOT_SOLID
-	SDKUnhook(projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
+	SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 	SDKHook(projectile, SDKHook_Touch, lantean_Wand_Touch_World);//need collisions all the time!
 
 	lantean_Wand_Drone_Count[client] += 1;
@@ -546,9 +544,8 @@ public Action lantean_Wand_Touch_World(int entity, int other)
 	return Plugin_Handled;
 
 }
-public void lantean_Wand_Touch(int entity, int other)
+public void lantean_Wand_Touch(int entity, int target)
 {
-	int target = Target_Hit_Wand_Detection(entity, other);
 	if (target > 0)	
 	{
 		if(fl_lantean_Wand_Drone_HitSafe[entity][target] > GetGameTime())

@@ -220,6 +220,10 @@ public void Weapon_Passanger_Attack(int client, int weapon, bool crit, int slot)
 			delete swingTrace;
 			static float belowBossEyes[3];
 
+			belowBossEyes[0] = 0.0;
+			belowBossEyes[1] = 0.0;
+			belowBossEyes[2] = 0.0;
+
 			float damage = 65.0;
 			damage *= Attributes_Get(weapon, 410, 1.0);
 
@@ -500,6 +504,10 @@ public void Weapon_Passanger_LightningArea(int client, int weapon, bool crit, in
 			{
 				//We have found a victim.
 				static float belowBossEyes[3];
+				belowBossEyes[0] = 0.0;
+				belowBossEyes[1] = 0.0;
+				belowBossEyes[2] = 0.0;
+
 				GetBeamDrawStartPoint_Stock(client, belowBossEyes);
 				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", vecHit);
 				Passanger_Activate_Storm(client, weapon, vecHit);

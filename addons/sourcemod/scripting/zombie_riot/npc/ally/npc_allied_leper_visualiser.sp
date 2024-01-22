@@ -130,6 +130,7 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 		NPC_StopPathing(npc.index);
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
+		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.
 		SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6); 
