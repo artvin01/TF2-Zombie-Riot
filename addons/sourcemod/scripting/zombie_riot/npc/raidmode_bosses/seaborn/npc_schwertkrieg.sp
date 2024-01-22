@@ -1425,7 +1425,7 @@ static void Schwert_Movement_Ally_Movement(Raidboss_Schwertkrieg npc, float flDi
 			npc.m_flSpeed =  fl_schwert_speed;
 		return;
 	}
-	
+	Raidboss_Donnerkrieg donner = view_as<Raidboss_Donnerkrieg>(ally);
 	
 	if(block_defense)
 	{
@@ -1433,10 +1433,7 @@ static void Schwert_Movement_Ally_Movement(Raidboss_Schwertkrieg npc, float flDi
 		if(Schwert_Status(npc, GameTime)!=1)
 			npc.m_flSpeed =  fl_schwert_speed*2.0;
 		return;
-	}
-	
-	
-	Raidboss_Donnerkrieg donner = view_as<Raidboss_Donnerkrieg>(ally);
+	}	
 	if(flDistanceToAlly < (1000.0*1000.0))	//stay within a 1000 radius of donner
 	{
 		int target_new = GetClosestTarget(donner.index);
