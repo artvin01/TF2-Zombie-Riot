@@ -802,7 +802,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 				{
 					float vecAlly[3];
 					vecAlly = WorldSpaceCenter(Ally);
-					if(GetVectorDistance(vecAlly, npc_Vec, true) < (250.0*250.0) && Can_I_See_Enemy_Only(npc.index, Ally))
+					if(GetVectorDistance(vecAlly, npc_Vec, true) < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*5.0 && Can_I_See_Enemy_Only(npc.index, Ally))
 					{
 						NPCStats_RemoveAllDebuffs(Ally);
 						f_NpcImmuneToBleed[Ally] = GetGameTime(Ally) + 1.0;
