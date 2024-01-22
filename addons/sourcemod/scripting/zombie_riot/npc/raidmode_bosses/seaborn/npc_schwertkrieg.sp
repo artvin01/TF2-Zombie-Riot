@@ -660,6 +660,10 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 				float vecMe[3];
 				vecAlly = WorldSpaceCenter(Ally);
 				vecMe = WorldSpaceCenter(npc.index);
+
+				float flDistanceToAlly = GetVectorDistance(vecAlly, vecMe, true);
+				Schwert_Movement_Ally_Movement(npc, flDistanceToAlly, Ally, GameTime, PrimaryThreatIndex, flDistanceToTarget, true);	//warp
+				
 				if(GetVectorDistance(vecAlly, vecMe, true) < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, Ally))
 				{
 					CPrintToChatAll("{crimson}Schwertkrieg{snow}: ..!");
@@ -1434,7 +1438,7 @@ static void Schwert_Movement_Ally_Movement(Raidboss_Schwertkrieg npc, float flDi
 			npc.m_flSpeed =  fl_schwert_speed*2.0;
 		return;
 	}	
-	if(flDistanceToAlly < (1000.0*1000.0))	//stay within a 1000 radius of donner
+	if(flDistanceToAlly < (1500.0*1500.0))	//stay within a 1500 radius of donner
 	{
 		int target_new = GetClosestTarget(donner.index);
 		if(IsValidEnemy(npc.index, target_new))
