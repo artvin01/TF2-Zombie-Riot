@@ -574,6 +574,7 @@ bool FinalBuilder[MAXENTITIES];
 bool GlassBuilder[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
 bool b_ExpertTrapper[MAXENTITIES];
+bool b_RaptureZombie[MAXENTITIES];
 int Building_Hidden_Prop[MAXENTITIES][2];
 float f_ClientArmorRegen[MAXENTITIES];
 int i_nm_body_client[MAXTF2PLAYERS];

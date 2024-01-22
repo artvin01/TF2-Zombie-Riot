@@ -3111,9 +3111,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		Health *= -1;
 		
 		int overkill = RoundToNearest(Damage[pThis] - float(Health));
-		
 		if(client > 0 && client <= MaxClients)
-		{
+		{	
 	//		PlayFakeDeathSound(client);
 #if defined ZR
 			if(i_HasBeenHeadShotted[pThis])
@@ -8950,6 +8949,15 @@ public void MakeEntityRagdollNpc(int pThis)
 		Push[0] = 1.0;
 		Push[1] = 1.0;
 		Push[2] = 1.0;
+	}
+	if(b_RaptureZombie[pThis])
+	{
+		if(GetRandomFloat(0.0, 1.01) > 1.0)
+		{
+			Push[0] = 1.0;
+			Push[1] = 1.0;
+			Push[2] = 99999.0;
+		}
 	}
 
 	SDKCall_BecomeRagdollOnClient(pThis, Push);

@@ -2660,4 +2660,24 @@
 	{
 		"en"	"More damage, even bigger clip, faster firing, even slower reload!"
 	}
+	"Autoshotgun Pap 1"
+	{
+		"en"	"Your weapon now fully reloads its clip at once and shoots way faster but deals less damage."
+	}
+	"Autoshotgun Pap 2"
+	{
+		"en"	"More dmg, more clip, more attackspeed."
+	}
+	"Rapturing Zombies Desc"
+	{
+		"en"	"Rarely zombies feel the tendency to ascend to heaven."
+	}
+	"Crossbow Pap 1"
+	{
+		"en"	"Weapon changes into a crossbow, reloads entire clip at once and fires rapidly.\nYour m2 shoots a huge balista shot."
+	}
+	"Crossbow Pap 2"
+	{
+		"en"	"More dmg, reload, clip and attackspeed.\nBalista is stronger and has less cooldown."
+	}
 }

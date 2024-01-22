@@ -1230,6 +1230,15 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 			SlayNpc = false;
 		}
 	}
+	if(inflictor > 0 && inflictor <= MaxClients)
+	{
+		b_RaptureZombie[victim] = b_RaptureZombie[inflictor];
+	}
+	else if(attacker > 0 && attacker <= MaxClients)
+	{
+		b_RaptureZombie[victim] = b_RaptureZombie[attacker];
+	}
+	
 	if(SlayNpc)
 	{
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);
