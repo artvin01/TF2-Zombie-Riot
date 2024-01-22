@@ -2511,6 +2511,25 @@ stock void GetVectorAnglesTwoPoints(const float startPos[3], const float endPos[
 	GetVectorAngles(tmpVec, angles);
 }
 
+stock void SpawnBeam_Vectors(float StartLoc[3], float EndLoc[3], float beamTiming, int r, int g, int b, int a, int modelIndex, float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, int target = -1)
+{
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = a;
+	
+	TE_SetupBeamPoints(StartLoc, EndLoc, modelIndex, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
+	
+	if (!IsValidClient(target))
+	{
+		TE_SendToAll();
+	}
+	else
+	{
+		TE_SendToClient(target);
+	}
+}
 
 stock int TracePlayerHulls(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {

@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define BONES_SAINT_HP			"2000"
-#define BONES_SAINT_HP_BUFFED	"8000"
+#define BONES_SAINT_HP			"500"
+#define BONES_SAINT_HP_BUFFED	"5000"
 
 #define BONES_SAINT_SKIN		"2"
 #define BONES_SAINT_SKIN_BUFFED	"3"
@@ -12,11 +12,16 @@
 
 #define BONES_SAINTBONES_BUFFPARTICLE	"utaunt_auroraglow_orange_parent"
 
+#define PRIEST_HEALINGPARTICLE		"superrare_greenenergy"
+
 static float BONES_SAINT_SPEED = 300.0;
 static float BONES_SAINT_SPEED_BUFFED = 350.0;
 
 static float SAINTBONES_HEAL_RANGE = 300.0;
 static float SAINTBONES_HEAL_RANGE_BUFFED = 450.0;
+
+static float SAINTBONES_PRIEST_HEALPERCENTAGE = 0.05;
+static int SAINTBONES_PRIEST_MINHEALING = 2;
 
 static float Priest_EnemyHover_MinDist = 200.0;
 static float Priest_EnemyHover_MaxDist = 400.0;
@@ -78,6 +83,9 @@ static char g_GibSounds[][] = {
 static bool b_BonesBuffed[MAXENTITIES];
 
 static int Priest_OldHealTarget[MAXENTITIES];
+static int Priest_HealingParticle[MAXENTITIES];
+static bool Priest_IsHealing[MAXENTITIES];
+static float Priest_LoopHealingGesture[MAXENTITIES];
 
 public void SaintBones_OnMapStart_NPC()
 {
@@ -284,6 +292,58 @@ stock void Saint_GiveCosmetics(CClotBody npc, bool buffed)
 	DispatchKeyValue(npc.m_iWearable2, "skin", "1");
 }
 
+stock int Priest_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
+{
+	if (IsValidEntity(entity))
+	{
+		int part1 = CreateEntityByName("info_particle_system");
+		if (IsValidEdict(part1))
+		{
+			float pos[3];
+			if (HasEntProp(entity, Prop_Data, "m_vecAbsOrigin"))
+			{
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+			}
+			else if (HasEntProp(entity, Prop_Send, "m_vecOrigin"))
+			{
+				GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+			}
+			
+			if (zTrans != 0.0)
+			{
+				pos[2] += zTrans;
+			}
+			
+			TeleportEntity(part1, pos, NULL_VECTOR, NULL_VECTOR);
+			DispatchKeyValue(part1, "effect_name", type);
+			SetVariantString("!activator");
+			AcceptEntityInput(part1, "SetParent", entity, part1);
+			SetVariantString(point);
+			AcceptEntityInput(part1, "SetParentAttachmentMaintainOffset", part1, part1);
+			DispatchKeyValue(part1, "targetname", "present");
+			DispatchSpawn(part1);
+			ActivateEntity(part1);
+			AcceptEntityInput(part1, "Start");
+			
+			if (duration > 0.0)
+			{
+				CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(part1), TIMER_FLAG_NO_MAPCHANGE);
+			}
+			
+			return part1;
+		}
+	}
+	
+	return -1;
+}
+
+public void Priest_RemoveHealingParticle(int index)
+{
+	int particle = EntRefToEntIndex(Priest_HealingParticle[index]);
+	if (IsValidEntity(particle))
+		RemoveEntity(particle);
+}
+
 //TODO 
 //Skeletal Saints are buff providers and healers.
 //Profaned Priests (the non-buffed variant) heal a single target. They will prioritize non-buffed skeletons who do not already have a healer. Skeletons being healed by a Profaned Priest are transformed into their buffed variant, and will revert to their normal variant when the healing stops, unless they naturally spawned buffed.
@@ -354,6 +414,13 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 		npc.m_flGetClosestTargetTime = 0.0;
 		//npc.m_iTarget = GetClosestTarget(npc.index);
 		
+		if (Priest_IsHealing[npc.index])
+		{
+			Priest_RemoveHealingParticle(npc.index);
+			npc.RemoveGesture("ACT_PRIEST_HEALING");
+			Priest_IsHealing[npc.index] = false;
+		}
+		
 		return;
 	}
 	
@@ -389,23 +456,75 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 		{
 			npc.StartPathing();
 		}
-		
-		//TODO: Should write "Priest_StartHeal" and "Priest_StopHeal" methods and then call them in here
+
 		//TODO: Add a gesture where he has his arm outstretched towards the heal target. Attach the Green Energy unusual particle to his hand, then 
 		//draw a green TE beam from his hand to the heal target's body.
 		if(flDistanceToTarget <= SAINTBONES_HEAL_RANGE)
 		{
+			if (!Priest_IsHealing[npc.index])
+			{
+				Priest_HealingParticle[npc.index] = EntIndexToEntRef(Priest_AttachParticle(npc.index, PRIEST_HEALINGPARTICLE, _, "handR"));
+				npc.AddGesture("ACT_PRIEST_HEALING");
+				Priest_LoopHealingGesture[npc.index] = GetGameTime(npc.index) + 0.7;
+				Priest_IsHealing[npc.index] = true;
+			}
+			else
+			{
+				if (GetGameTime(npc.index) >= Priest_LoopHealingGesture[npc.index])
+				{
+					npc.AddGesture("ACT_PRIEST_HEALING");
+					Priest_LoopHealingGesture[npc.index] = GetGameTime(npc.index) + 0.7;
+				}
+			}
+			
+			int particle = EntRefToEntIndex(Priest_HealingParticle[npc.index]);
+			if (IsValidEntity(particle))
+			{
+				float startLoc[3];
+				GetEntPropVector(particle, Prop_Data, "m_vecAbsOrigin", startLoc);	
+				vecTarget[2] += 20.0;
+				SpawnBeam_Vectors(startLoc, vecTarget, 0.1, 20, 255, 20, 255, PrecacheModel("materials/sprites/lgtning.vmt"), _, _, _, 10.0);
+			}
+			
+			float maxHP = float(GetEntProp(targetNPC.index, Prop_Data, "m_iHealth"));
+			int HealingAmount = RoundFloat(maxHP * SAINTBONES_PRIEST_HEALPERCENTAGE);
+			if (HealingAmount < SAINTBONES_PRIEST_MINHEALING)
+				HealingAmount = SAINTBONES_PRIEST_MINHEALING;
+			
+			if(GetEntProp(targetNPC.index, Prop_Data, "m_iHealth") < GetEntProp(targetNPC.index, Prop_Data, "m_iMaxHealth"))
+			{
+				SetEntProp(targetNPC.index, Prop_Data, "m_iHealth", GetEntProp(targetNPC.index, Prop_Data, "m_iHealth") + HealingAmount);
+				if(GetEntProp(targetNPC.index, Prop_Data, "m_iHealth") >= GetEntProp(targetNPC.index, Prop_Data, "m_iMaxHealth"))
+				{
+					SetEntProp(targetNPC.index, Prop_Data, "m_iHealth", GetEntProp(targetNPC.index, Prop_Data, "m_iMaxHealth"));
+				}
+			}
+			
 			targetNPC.BoneZone_SetBuffedState(true, npc.index);
 			npc.m_flSpeed = targetNPC.m_flSpeed;
 		}
 		else
 		{
+			if (Priest_IsHealing[npc.index])
+			{
+				Priest_RemoveHealingParticle(npc.index);
+				npc.RemoveGesture("ACT_PRIEST_HEALING");
+				Priest_IsHealing[npc.index] = false;
+			}
+			
 			targetNPC.BoneZone_SetBuffedState(false, npc.index);
 			npc.m_flSpeed = BONES_SAINT_SPEED;
 		}
 	}
 	else if (IsValidEnemy(npc.index, closest))
 	{
+		if (Priest_IsHealing[npc.index])
+		{
+			Priest_RemoveHealingParticle(npc.index);
+			npc.RemoveGesture("ACT_PRIEST_HEALING");
+			Priest_IsHealing[npc.index] = false;
+		}
+			
 		float optimalPos[3];
 		
 		if (flDistanceToTarget < Priest_EnemyHover_MinDist)
@@ -424,7 +543,7 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 			npc.StopPathing();
 		}
 		
-		//TODO: Make them periodically shoot lightning at the closest enemy
+		//TODO: Make them periodically shoot lightning at the closest enemy.
 	}
 }
 

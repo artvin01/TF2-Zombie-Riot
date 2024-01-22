@@ -4,8 +4,8 @@
 static float BONES_BIG_SPEED = 200.0;
 static float BONES_BIG_SPEED_BUFFED = 250.0;
 
-#define BONES_BIG_HP		"10000"
-#define BONES_BIG_HP_BUFFED	"30000"
+#define BONES_BIG_HP		"3000"
+#define BONES_BIG_HP_BUFFED	"15000"
 
 static float BONES_BIG_PLAYERDAMAGE = 120.0;
 static float BONES_BIG_PLAYERDAMAGE_BUFFED = 180.0;

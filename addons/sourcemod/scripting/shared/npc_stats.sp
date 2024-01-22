@@ -2146,6 +2146,12 @@ methodmap CClotBody < CBaseCombatCharacter
 				case BONEZONE_BUFFED_BRITTLEBONES:
 					BrittleBones_SetBuffed(this.index, buffed);
 			}
+			
+			//Don't let skeletons keep excess health when they lose their buffed state.
+			if (!buffed && GetEntProp(this.index, Prop_Data, "m_iHealth") > GetEntProp(this.index, Prop_Data, "m_iMaxHealth"))
+			{
+				SetEntProp(this.index, Prop_Data, "m_iHealth", GetEntProp(this.index, Prop_Data, "m_iMaxHealth"));
+			}
 		}
 	}
 	
