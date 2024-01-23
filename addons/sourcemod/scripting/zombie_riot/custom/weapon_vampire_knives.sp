@@ -207,6 +207,7 @@ public void Vamp_ThrowKnives(int client, int weapon, int BleedStacks, float DMG_
 		//ParticleName = cleaver ? "blood_trail_red_01_goop" : "peejar_trail_red_glow";
 		ParticleName = cleaver ? "peejar_trail_red_glow" : "stunballtrail_red_crit";
 		int projectile = Wand_Projectile_Spawn(client, Velocity, 0.0, DMG_Final, index, weapon, ParticleName, Angles);
+		SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 		CreateTimer(0.4, Vamp_ApplyGravity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 		
 		if (cleaver)
@@ -481,24 +482,6 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	return Plugin_Continue;
 }
 
-public void Vamp_Cleaver_Touch_World(int entity, int other)
-{
-	if (other == 0)	
-	{
-		float position[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-		EmitSoundToAll(SND_KNIFE_MISS, entity, SNDCHAN_STATIC, 80, _, 1.0);
-		ParticleEffectAt(position, "ExplosionCore_buildings", 1.0);
-		
-		int particle = EntRefToEntIndex(i_WandParticle[entity]);
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-		RemoveEntity(entity);
-	}
-}
-
 public void Vamp_Knife_Touch(int entity, int target)
 {
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);
@@ -543,10 +526,23 @@ public void Vamp_Knife_Touch(int entity, int target)
 	}
 }
 
-public bool Vamp_CleaverHit(int entity, int other)
+public bool Vamp_CleaverHit(int entity, int target)
 {
-	int target = Target_Hit_Wand_Detection(entity, other);
-	
+	if (target == 0)	
+	{
+		float position[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+		EmitSoundToAll(SND_KNIFE_MISS, entity, SNDCHAN_STATIC, 80, _, 1.0);
+		ParticleEffectAt(position, "ExplosionCore_buildings", 1.0);
+		
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		RemoveEntity(entity);
+	}
+
 	if (target <= 0)
 		return true;
 		

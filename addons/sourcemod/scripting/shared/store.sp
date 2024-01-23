@@ -27,6 +27,7 @@ static const int SlotLimits[] =
 enum struct ItemInfo
 {
 	int Cost;
+	int Cost_Unlock;
 	char Desc[256];
 	char Rogue_Desc[256];
 	char ExtraDesc[256];
@@ -54,7 +55,6 @@ enum struct ItemInfo
 	int IsWand;
 	bool IsWrench;
 	bool InternalMeleeTrace;
-	bool GregBlockSell;
 	
 	char Classname[36];
 	char Custom_Name[64];
@@ -151,7 +151,13 @@ enum struct ItemInfo
 		this.Cost = kv.GetNum(buffer, -1);
 		if(this.Cost < 0)
 			return false;
-		
+
+		Format(buffer, sizeof(buffer), "%scost_unlock", prefix);
+		this.Cost_Unlock = kv.GetNum(buffer, -1);
+		if(this.Cost_Unlock == -1)
+		{
+			this.Cost_Unlock = this.Cost;
+		}
 		Format(buffer, sizeof(buffer), "%sdesc", prefix);
 		kv.GetString(buffer, this.Desc, 256);
 
@@ -254,11 +260,6 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sinternal_melee_trace", prefix);
 		this.InternalMeleeTrace	= view_as<bool>(kv.GetNum(buffer, 1));
-
-		Format(buffer, sizeof(buffer), "%sgreg_block_sell", prefix);
-		this.GregBlockSell	= view_as<bool>(kv.GetNum(buffer, 0));
-		
-
 		
 		Format(buffer, sizeof(buffer), "%ssemi_auto_stats_fire_rate", prefix);
 		this.SemiAutoStats_FireRate				= kv.GetFloat(buffer);
@@ -511,6 +512,8 @@ enum struct Item
 	int NPCWeapon;
 	bool NPCWeaponAlways;
 	int GiftId;
+	bool GregBlockSell;
+	int GregOnlySell;
 	
 	bool GetItemInfo(int index, ItemInfo info)
 	{
@@ -561,7 +564,10 @@ static KeyValues StoreBalanceLog;
 static ArrayList StoreTags;
 static ArrayList ChoosenTags[MAXTF2PLAYERS];
 static bool UsingChoosenTags[MAXTF2PLAYERS];
-static int LastMenuItem[MAXTF2PLAYERS];
+static int LastMenuPage[MAXTF2PLAYERS];
+static int CurrentMenuPage[MAXTF2PLAYERS];
+static int CurrentMenuItem[MAXTF2PLAYERS];
+static float LastStoreMenu[MAXTF2PLAYERS];
 #endif	// ZR
 
 #if defined RPG
@@ -889,7 +895,7 @@ void Store_OpenItemPage(int client)
 		//if(ItemBuyable(item))
 		{
 			NPCOnly[client] = 0;
-			LastMenuItem[client] = -1;
+			LastMenuPage[client] = 0;
 			MenuPage(client, StoreWeapon[weapon]);
 		}
 	}
@@ -902,7 +908,7 @@ void Store_OpenItemThis(int client, int index)
 	//if(ItemBuyable(item))
 	{
 		NPCOnly[client] = 0;
-		LastMenuItem[client] = -1;
+		LastMenuPage[client] = 0;
 		MenuPage(client, index);
 	}
 }
@@ -1187,6 +1193,8 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, const char[][
 		item.MaxScaled = kv.GetNum("max_times_scale");
 		item.Special = kv.GetNum("special", -1);
 		item.Slot = kv.GetNum("slot", -1);
+		item.GregBlockSell = view_as<bool>(kv.GetNum("greg_block_sell"));
+		item.GregOnlySell = kv.GetNum("greg_only_sell");
 		item.NPCWeapon = kv.GetNum("npc_type", -1);
 		item.NPCWeaponAlways = item.NPCWeapon > 9;
 		item.ChildKit = hiddenType == 2;
@@ -1695,6 +1703,7 @@ static bool ItemBuyable(const Item item)
 				return false;
 		}
 	}
+	
 
 	return true;
 }
@@ -1718,7 +1727,11 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 
 				if(info.Cost > 0 && free)
 					return;
-				
+
+				if(info.Cost > 1000 && info.Cost_Unlock > CurrentCash)
+				{
+					break;
+				}
 				if((base < 1001 || CurrentCash >= base) && (CurrentCash - CashSpent[client]) >= info.Cost)
 				{
 					if(Rogue_Mode())
@@ -1760,6 +1773,10 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 						item.BuyPrice[client] = info.Cost;
 
 						item.Sell[client] = ItemSell(base, info.Cost);
+						if(item.GregOnlySell == 2)
+						{
+							item.Sell[client] = 0;
+						}
 					}
 					else
 					{
@@ -2238,7 +2255,7 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 						StoreItems.GetArray(item.Section, item);
 				}
 
-				LastMenuItem[client] = -1;
+				LastMenuPage[client] = 0;
 				MenuPage(client, item.Section);
 #else
 				delete menu;
@@ -2542,7 +2559,7 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				default:
 				{
 #if defined ZR
-				LastMenuItem[client] = -1;
+				LastMenuPage[client] = 0;
 				MenuPage(client, -1);
 #else
 				delete menu;
@@ -2591,30 +2608,50 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave
 	
 	static Item item;
 	static ItemInfo info;
-	for(int i; i<length; i++)
+	for(int i; i < length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		item.GetItemInfo(0, info);
-		if(item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !info.GregBlockSell)
+		if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell))
 		{
-			if(addItem == 0)
+			if(item.GregOnlySell == 2)
 			{
-				item.NPCSeller_First = false;
-				item.NPCSeller = false;
-				if(ResetStore)
+				item.NPCSeller_First = true;
+				item.NPCSeller = true;
+
+				for(int c = 1; c <= MaxClients; c++)
 				{
-					item.NPCSeller_WaveStart = 0;
+					if(item.Owned[c] || item.BoughtBefore[c])
+					{
+						item.NPCSeller_First = false;
+						item.NPCSeller = false;
+						break;
+					}
 				}
 			}
-			if(addItem == 99)
+			else
 			{
-				if(item.NPCSeller_WaveStart > 0 && subtract_wave > 0)
+				if(addItem == 0)
 				{
-					item.NPCSeller_WaveStart -= 1;
+					item.NPCSeller_First = false;
+					item.NPCSeller = false;
+					if(ResetStore)
+					{
+						item.NPCSeller_WaveStart = 0;
+					}
 				}
+
+				if(addItem == 99)
+				{
+					if(item.NPCSeller_WaveStart > 0 && subtract_wave > 0)
+					{
+						item.NPCSeller_WaveStart -= 1;
+					}
+				}
+				
+				item.GetItemInfo(0, info);
+				if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost < CurrentCash)
+					indexes[amount++] = i;
 			}
-			if(info.Cost > 0 && info.Cost > (CurrentCash / 3 - 1000) && info.Cost < CurrentCash)
-				indexes[amount++] = i;
 			
 			StoreItems.SetArray(i, item);
 		}
@@ -2807,7 +2844,7 @@ public Action Access_StoreViaCommand(int client, int args)
 		SetGlobalTransTarget(client);
 		PrintToChat(client,"%t", "Opened store via command");
 		NPCOnly[client] = 0;
-		LastMenuItem[client] = -1;
+		LastMenuPage[client] = 0;
 		MenuPage(client, -1);
 	}
 	return Plugin_Continue;
@@ -2815,7 +2852,13 @@ public Action Access_StoreViaCommand(int client, int args)
 
 void Store_Menu(int client)
 {
-	if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
+	if(LastStoreMenu[client])
+	{
+		CancelClientMenu(client);
+		ClientCommand(client, "slot10");
+		LastStoreMenu[client] = 0.0;
+	}
+	else if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
 	{
 		NPCOnly[client] = 0;
 		
@@ -2825,7 +2868,7 @@ void Store_Menu(int client)
 			DoTutorialStep(client, false);	
 		}
 		
-		LastMenuItem[client] = -1;
+		LastMenuPage[client] = 0;
 		MenuPage(client, -1);
 	}
 }
@@ -2835,7 +2878,7 @@ void Store_OpenNPCStore(int client)
 	if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
 	{
 		NPCOnly[client] = 1;
-		LastMenuItem[client] = -1;
+		LastMenuPage[client] = 0;
 		MenuPage(client, -1);
 	}
 }
@@ -2847,13 +2890,16 @@ void Store_OpenGiftStore(int client, int entity, int price, bool barney)
 		NPCOnly[client] = barney ? 3 : 2;
 		NPCTarget[client] = EntIndexToEntRef(entity);
 		NPCCash[client] = price;
-		LastMenuItem[client] = -1;
+		LastMenuPage[client] = 0;
 		MenuPage(client, -1);
 	}
 }
 
 static void MenuPage(int client, int section)
 {
+	if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
+		return;
+	
 	SetGlobalTransTarget(client);
 	
 	Menu menu;
@@ -2867,10 +2913,14 @@ static void MenuPage(int client, int section)
 		CashSpent[client] = 0;
 		starterPlayer = false;
 	}
-
-	if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
-		return;
 	
+	if(CurrentMenuItem[client] != section)
+	{
+		CurrentMenuItem[client] = section;
+		CurrentMenuPage[client] = LastMenuPage[client];
+		LastMenuPage[client] = 0;
+	}
+
 	BarracksCheckItems(client);
 	
 	if(ClientTutorialStep(client) == 2)
@@ -3100,7 +3150,9 @@ static void MenuPage(int client, int section)
 			}
 			
 			menu.ExitBackButton = true;
-			menu.Display(client, MENU_TIME_FOREVER);
+			if(menu.Display(client, MENU_TIME_FOREVER))
+				LastStoreMenu[client] = GetGameTime();
+			
 			return;
 		}
 
@@ -3183,7 +3235,6 @@ static void MenuPage(int client, int section)
 	bool found;
 	char buffer[64];
 	int length = StoreItems.Length;
-	int pageItem = 0;
 	int ClientLevel = Level[client];
 	
 	if(CvarInfiniteCash.BoolValue)
@@ -3197,7 +3248,7 @@ static void MenuPage(int client, int section)
 		//item.GetItemInfo(0, info);
 		if(NPCOnly[client] == 1)
 		{
-			if((!item.NPCSeller && item.NPCSeller_WaveStart == 0) || item.Level > ClientLevel )
+			if((!item.NPCSeller && item.NPCSeller_WaveStart == 0) || item.Level > ClientLevel)
 				continue;
 		}
 		else if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
@@ -3252,6 +3303,12 @@ static void MenuPage(int client, int section)
 		{
 			continue;
 		}
+
+		if(NPCOnly[client] != 1 && item.GregOnlySell)
+		{
+			// Block showing items if only sell
+			continue;
+		}
 		
 		if(item.GiftId != -1 && !Items_HasIdItem(client, item.GiftId))
 			continue;
@@ -3286,6 +3343,7 @@ static void MenuPage(int client, int section)
 				}
 			}
 		}*/
+
 		if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
 		{
 			if(item.ItemInfos)
@@ -3312,11 +3370,8 @@ static void MenuPage(int client, int section)
 					
 					Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 					IntToString(i, info.Classname, sizeof(info.Classname));
-					int index = menu.AddItem(info.Classname, buffer);
+					menu.AddItem(info.Classname, buffer);
 					found = true;
-
-					if(LastMenuItem[client] == i)
-						pageItem = index;
 				}
 			}
 		}
@@ -3326,16 +3381,13 @@ static void MenuPage(int client, int section)
 			Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 			IntToString(i, info.Classname, sizeof(info.Classname));
 			//do not have custom name here, its in the menu and thus the custom names never apear. this isnt even for weapons.
-			int index = menu.AddItem(info.Classname, TranslateItemName(client, item.Name, ""));
+			menu.AddItem(info.Classname, TranslateItemName(client, item.Name, ""));
 			found = true;
-
-			if(LastMenuItem[client] == i)
-				pageItem = index;
 		}
 		else
 		{
 			item.GetItemInfo(0, info);
-			if(UsingChoosenTags[client] || item.ParentKit || info.Cost < 1001 || info.Cost <= CurrentCash)
+//			if(UsingChoosenTags[client] || item.ParentKit)
 			{
 				int style = ITEMDRAW_DEFAULT;
 				IntToString(i, info.Classname, sizeof(info.Classname));
@@ -3386,9 +3438,9 @@ static void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [Lv %d]%s", TranslateItemName(client, item.Name, info.Custom_Name), item.Level, BuildingExtraCounter);
 				}
-				else if(info.Cost > 1000 && info.Cost > CurrentCash)
+				else if(info.Cost > 1000 && info.Cost_Unlock > CurrentCash)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%.0f%%]", TranslateItemName(client, item.Name, info.Custom_Name), float(CurrentCash) * 100.0 / float(info.Cost));
+					FormatEx(buffer, sizeof(buffer), "%s [%.0f%%]", TranslateItemName(client, item.Name, info.Custom_Name), float(CurrentCash) * 100.0 / float(info.Cost_Unlock));
 					style = ITEMDRAW_DISABLED;
 				}
 				else
@@ -3453,11 +3505,8 @@ static void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s {$}", buffer);
 				}
-				int index = menu.AddItem(info.Classname, buffer, style);
+				menu.AddItem(info.Classname, buffer, style);
 				found = true;
-
-				if(LastMenuItem[client] == i)
-					pageItem = index;
 			}
 		}
 	}
@@ -3467,16 +3516,17 @@ static void MenuPage(int client, int section)
 		if(!found)
 		{
 			FormatEx(buffer, sizeof(buffer), "%t", "None");
-			IntToString(LastMenuItem[client], info.Classname, sizeof(info.Classname));
+			IntToString(CurrentMenuItem[client], info.Classname, sizeof(info.Classname));
 			menu.AddItem(info.Classname, buffer, ITEMDRAW_DISABLED);
 		}
 		
 		menu.ExitBackButton = true;
-		DisplayMenuAtCustom(menu, client, pageItem);
+		if(DisplayMenuAtCustom(menu, client, CurrentMenuPage[client]))
+			LastStoreMenu[client] = GetGameTime();
+		
 		return;
 	}
-
-	if(section == -1 && !NPCOnly[client])
+	else if(section == -1 && !NPCOnly[client])
 	{
 		if(Level[client] > STARTER_WEAPON_LEVEL)
 		{
@@ -3524,15 +3574,35 @@ static void MenuPage(int client, int section)
 			FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Credits"); //credits is whatever, put in back.
 			menu.AddItem("-21", buffer);
 		}
-	}
-	else if(!found)
-	{
-		FormatEx(buffer, sizeof(buffer), "%t", "None");
-		menu.AddItem("0", buffer, ITEMDRAW_DISABLED);
-	}
 
-	menu.ExitBackButton = section != -1;
-	DisplayMenuAtCustom(menu, client, pageItem);
+		FormatEx(buffer, sizeof(buffer), "%t", "Exit");
+
+		int count = menu.ItemCount;
+		while(count < 9)
+		{
+			menu.AddItem("_exit", buffer, ITEMDRAW_SPACER);
+			count++;
+		}
+
+		menu.AddItem("_exit", buffer);
+
+		menu.Pagination = 0;
+		menu.ExitButton = false;
+		if(menu.Display(client, MENU_TIME_FOREVER))
+			LastStoreMenu[client] = GetGameTime();
+	}
+	else
+	{
+		if(!found)
+		{
+			FormatEx(buffer, sizeof(buffer), "%t", "None");
+			menu.AddItem("0", buffer, ITEMDRAW_DISABLED);
+		}
+
+		menu.ExitBackButton = section != -1;
+		if(DisplayMenuAtCustom(menu, client, CurrentMenuPage[client]))
+			LastStoreMenu[client] = GetGameTime();
+	}
 }
 /*
 static char[] AddPluses(int amount)
@@ -3559,19 +3629,29 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 		{
 			delete menu;
 		}
+		case MenuAction_Cancel:
+		{
+			LastStoreMenu[client] = 0.0;
+		}
 		case MenuAction_Select:
 		{
+			LastStoreMenu[client] = 0.0;
+			
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			if(StrEqual(buffer, "_next"))
 			{
-				LastMenuItem[client] += 8;
-				MenuPage(client, LastMenuItem[client]);
+				CurrentMenuPage[client] += 7;
+				MenuPage(client, CurrentMenuItem[client]);
 			}
 			else if(StrEqual(buffer, "_previous"))
 			{
-				LastMenuItem[client] -= 8;
-				MenuPage(client, LastMenuItem[client]);
+				CurrentMenuPage[client] -= 7;
+				MenuPage(client, CurrentMenuItem[client]);
+			}
+			else if(StrEqual(buffer, "_exit"))
+			{
+				
 			}
 			else if(StrEqual(buffer, "_back"))
 			{
@@ -3595,13 +3675,14 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						StoreItems.GetArray(item.Section, item);
 				}
 
-				LastMenuItem[client] = item.Section;
 				MenuPage(client, item.Section);
 			}
 			else
 			{
-				LastMenuItem[client] = StringToInt(buffer);
-				switch(LastMenuItem[client])
+				LastMenuPage[client] = CurrentMenuPage[client];
+				CurrentMenuPage[client] = 0;
+				CurrentMenuItem[client] = StringToInt(buffer);
+				switch(CurrentMenuItem[client])
 				{
 					case -23:
 					{
@@ -3850,7 +3931,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					}
 					default:
 					{
-						MenuPage(client, LastMenuItem[client]);
+						MenuPage(client, CurrentMenuItem[client]);
 					}
 				}
 			}
@@ -3869,6 +3950,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
+			LastStoreMenu[client] = 0.0;
+
 			if(choice == MenuCancel_ExitBack)
 			{
 				Item item;
@@ -3885,6 +3968,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
+			LastStoreMenu[client] = 0.0;
+			
 			if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
 			{
 				return 0;
@@ -4022,6 +4107,10 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									item.BuyWave[client] = Rogue_GetRoundScale();
 									item.Equipped[client] = false;
 
+									if(item.GregOnlySell == 2)
+									{
+										item.Sell[client] = 0;
+									}
 									if(!item.BoughtBefore[client])
 									{
 										item.BoughtBefore[client] = true;
@@ -4075,6 +4164,10 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									item.RogueBoughtRecently[client] += 1;
 									item.Sell[client] = ItemSell(base, info.Cost);
 									item.BuyWave[client] = Rogue_GetRoundScale();
+									if(item.GregOnlySell == 2)
+									{
+										item.Sell[client] = 0;
+									}
 									if(info.NoRefundWanted)
 									{
 										item.BuyWave[client] = -1;
@@ -4125,7 +4218,11 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.RogueBoughtRecently[client] += 1;
 								item.Sell[client] = ItemSell(base, info.Cost);
 								item.BuyWave[client] = Rogue_GetRoundScale();
-								if(info.NoRefundWanted)
+								if(item.GregOnlySell == 2)
+								{
+									item.Sell[client] = 0;
+								}
+								else if(info.NoRefundWanted)
 								{
 									item.BuyWave[client] = -1;
 									item.Sell[client] = item.Sell[client] / 2;
@@ -5061,6 +5158,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_AggreviatedSilence[client] = false;
 	b_ProximityAmmo[client] = false;
 	b_ExpertTrapper[client] = false;
+	b_RaptureZombie[client] = false;
 	i_MaxSupportBuildingsLimit[client] = 0;
 	b_PlayerWasAirbornKnockbackReduction[client] = false;
 	BannerOnEntityCreated(client);
@@ -5185,6 +5283,30 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 	*/
 #if defined ZR
+	if(Items_HasNamedItem(client, "Nemesis's Heart Piece"))
+	{
+		b_NemesisHeart[client] = true;
+	}
+	else
+	{
+		b_NemesisHeart[client] = false;
+	}
+	if(Items_HasNamedItem(client, "Overlords Final Wish"))
+	{
+		b_OverlordsFinalWish[client] = true;
+	}
+	else
+	{
+		b_OverlordsFinalWish[client] = false;
+	}
+	if(Items_HasNamedItem(client, "Bob's true fear"))
+	{
+		b_BobsTrueFear[client] = true;
+	}
+	else
+	{
+		b_BobsTrueFear[client] = false;
+	}
 	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
 #endif
@@ -5764,6 +5886,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.SpecialAdditionViaNonAttribute == 11)
 					{
 						b_ExpertTrapper[client] = true;
+					}
+					if(info.SpecialAdditionViaNonAttribute == 12)
+					{
+						b_RaptureZombie[client] = true;
 					}
 
 #endif
@@ -6684,6 +6810,9 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 	static Item item;
 	if(StoreWeapon[weapon] < 1)
 		return;
+		
+	if(client < 1)
+		return;
 	
 	StoreItems.GetArray(StoreWeapon[weapon], item);
 	ItemInfo info;
@@ -6701,30 +6830,125 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 	SetEntProp(weapon, Prop_Send, "m_iClip1", item.CurrentClipSaved[client]); // weapon clip amount bullets
 }
 
-void DisplayMenuAtCustom(Menu menu, int client, int item)
+void Store_TryRefreshMenu(int client)
 {
-	int base = (item / 8 * 8);
-	char buffer[16];
-
-	if(item > 0)
+	if(LastStoreMenu[client] && (LastStoreMenu[client] + 0.5) < GetGameTime())
 	{
-		FormatEx(buffer, sizeof(buffer), "%t", "Next");
-		menu.InsertItem(base + 8, "_next", buffer);
+		MenuPage(client, CurrentMenuItem[client]);
 	}
-	
-	if(base > 0 && menu.ItemCount > 0)
+}
+
+bool DisplayMenuAtCustom(Menu menu, int client, int item)
+{
+	int count = menu.ItemCount;
+	int base = (item / 7 * 7);
+	char data[16], buffer[64];
+	bool next = count > (base + 6);
+	int info;
+
+	// Add a newline to the item before Back/Previous
+	if(menu.GetItem(base + 6, data, sizeof(data), info, buffer, sizeof(buffer)))
+	{
+		StrCat(buffer, sizeof(buffer), "\n ");
+		if(menu.InsertItem(base + 6, data, buffer, info))
+			menu.RemoveItem(base + 7);
+	}
+
+	if(base > 0)
 	{
 		FormatEx(buffer, sizeof(buffer), "%t", "Previous");
-		menu.InsertItem(base + 9, "_previous", buffer);
+
+		int pos = base + 7;
+		if(count > pos)
+		{
+			menu.InsertItem(pos, "_previous", buffer);
+			count++;
+		}
+		else
+		{
+			while(count < pos)
+			{
+				menu.AddItem("_previous", buffer, ITEMDRAW_SPACER);
+				count++;
+			}
+
+			menu.AddItem("_previous", buffer);
+			count++;
+		}
 	}
 	else if(menu.ExitBackButton)
 	{
 		FormatEx(buffer, sizeof(buffer), "%t", "Back");
-		menu.InsertItem(base + 9, "_back", buffer);
+
+		int pos = base + 7;
+		if(count > pos)
+		{
+			menu.InsertItem(pos, "_back", buffer);
+			count++;
+		}
+		else
+		{
+			while(count < pos)
+			{
+				menu.AddItem("_back", buffer, ITEMDRAW_SPACER);
+				count++;
+			}
+
+			menu.AddItem("_back", buffer);
+			count++;
+		}
+	}
+
+	if(next)
+	{
+		FormatEx(buffer, sizeof(buffer), "%t", "Next");
+
+		int pos = base + 8;
+		if(count > pos)
+		{
+			menu.InsertItem(pos, "_next", buffer);
+			count++;
+		}
+		else
+		{
+			while(count < pos)
+			{
+				menu.AddItem("_next", buffer, ITEMDRAW_SPACER);
+				count++;
+			}
+
+			menu.AddItem("_next", buffer);
+			count++;
+		}
+	}
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Exit");
+
+	int pos = base + 9;
+	if(count > pos)
+	{
+		menu.InsertItem(pos, "_exit", buffer);
+	}
+	else
+	{
+		while(count < pos)
+		{
+			menu.AddItem("_exit", buffer, ITEMDRAW_SPACER);
+			count++;
+		}
+
+		menu.AddItem("_exit", buffer);
+	}
+
+	// DisplayAt is bad :(
+	for(int i; i < base; i++)
+	{
+		menu.RemoveItem(0);
 	}
 
 	menu.Pagination = 0;
 	menu.ExitButton = false;
 	menu.ExitBackButton = false;
-	menu.DisplayAt(client, base, MENU_TIME_FOREVER);
+	return menu.Display(client, MENU_TIME_FOREVER);
+	//return menu.DisplayAt(client, base, MENU_TIME_FOREVER);
 }

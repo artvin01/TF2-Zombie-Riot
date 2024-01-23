@@ -1073,6 +1073,7 @@ void Rogue_NextProgress()
 							SendConVarValue(client, sv_cheats, "1");
 						}
 					}
+					ResetReplications();
 
 					cvarTimeScale.SetFloat(0.1);
 					CreateTimer(0.5, SetTimeBack);

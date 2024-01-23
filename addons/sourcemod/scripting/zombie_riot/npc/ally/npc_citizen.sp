@@ -1289,7 +1289,6 @@ methodmap Citizen < CClotBody
 				if(!this.m_bHero)
 				{
 					SetEntityRenderColor(this.index, 255, 255, 255, 255);
-					SetEntityRenderMode(this.index, RENDER_NORMAL);
 				}
 			}
 			else if(client)
@@ -1297,6 +1296,9 @@ methodmap Citizen < CClotBody
 				this.PlaySound(Cit_Found);
 				Items_GiveNPCKill(client, CITIZEN);
 			}
+
+			SetEntityRenderMode(this.index, RENDER_NORMAL);
+			HealEntityGlobal(this.index, client ? client : this.index, 100.0, 1.0, 2.0, HEAL_NO_RULES);
 
 			if(this.m_bHero)
 				this.UpdateModel();
@@ -1813,7 +1815,7 @@ public void Citizen_ClotThink(int iNPC)
 	if(npc.m_bRebelAgressive)
 	{
 		//This heal happens every second on players, for npcs this think happens way more often, subtract.
-		HealEntityGlobal(npc.index, npc.index, 0.04 / (3.0), 0.5, 0.0, HEAL_SELFHEAL);	
+		HealEntityGlobal(npc.index, npc.index, 0.04 / (3.0), 0.5, 0.0, HEAL_SELFHEAL);
 	}
 	if(npc.m_flAttackHappens)
 	{
@@ -1901,7 +1903,8 @@ public void Citizen_ClotThink(int iNPC)
 		return;
 	}
 
-	bool autoSeek = (npc.m_bCamo || VIPBuilding_Active() || npc.m_bRebelAgressive);
+	bool noSafety = (npc.m_bCamo || VIPBuilding_Active());
+	bool autoSeek = (noSafety || npc.m_bRebelAgressive);
 
 	// See if our target is still valid
 	if(npc.m_iTarget && (npc.m_iGunType == Cit_None || !IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo)))
@@ -1916,7 +1919,7 @@ public void Citizen_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
 		if(npc.m_iGunType != Cit_None)
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index, _, autoSeek ? 99999.9 : (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus), npc.m_bCamo, _, _, _, !autoSeek);
+			npc.m_iTarget = GetClosestTarget(npc.index, _, BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus, npc.m_bCamo, _, _, _, !autoSeek);
 			if(npc.m_iTarget > 0 && view_as<CClotBody>(npc.m_iTarget).m_bCamo)
 				npc.PlaySound(Cit_Behind);
 		}
@@ -2106,7 +2109,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else if(reloadStatus == 2)	// We need to reload now
 					{
-						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
+						if(!noSafety && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN", 240.0);
@@ -2116,7 +2119,7 @@ public void Citizen_ClotThink(int iNPC)
 						if(npc.m_iWearable1 > 0)
 							AcceptEntityInput(npc.m_iWearable1, "Disable");
 					}
-					else if(!autoSeek && distance < 22500.0)	// Too close for the Pistol
+					else if(!noSafety && distance < 22500.0)	// Too close for the Pistol
 					{
 						npc.SetActivity("ACT_RUN", 240.0);
 						walkStatus = 3;	// Back off
@@ -2205,7 +2208,7 @@ public void Citizen_ClotThink(int iNPC)
 					bool cooldown = npc.m_flNextRangedAttack > gameTime;
 					if(reloadStatus == 2 && !cooldown)	// We need to reload now
 					{
-						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
+						if(!noSafety && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN_RIFLE", 210.0);
@@ -2214,7 +2217,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else
 					{
-						if(!autoSeek && distance < 150000.0)	// Too close, walk backwards
+						if(!noSafety && distance < 150000.0)	// Too close, walk backwards
 						{
 							npc.SetActivity("ACT_WALK_AIM_RIFLE", 90.0);
 							walkStatus = 2;	// Back off
@@ -2294,7 +2297,7 @@ public void Citizen_ClotThink(int iNPC)
 					bool cooldown = npc.m_flNextRangedAttack > gameTime;
 					if(reloadStatus == 2 && !cooldown)	// We need to reload now
 					{
-						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
+						if(!noSafety && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN_AR2", 210.0);
@@ -2303,7 +2306,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else
 					{
-						if(!autoSeek && distance < 150000.0)	// Too close, walk backwards
+						if(!noSafety && distance < 150000.0)	// Too close, walk backwards
 						{
 							npc.SetActivity("ACT_WALK_AIM_AR2", 90.0);
 							walkStatus = 2;	// Back off
@@ -2388,7 +2391,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else if(reloadStatus == 2)	// We need to reload now
 					{
-						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
+						if(!noSafety && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN_AR2", 210.0);
@@ -2473,14 +2476,14 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else if(reloadStatus == 2)	// We need to reload now
 					{
-						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
+						if(!noSafety && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN_RPG", 240.0);
 							walkStatus = 3;	// Back off
 						}
 					}
-					else if(!autoSeek && distance < 22500.0)	// Too close for the RPG
+					else if(!noSafety && distance < 22500.0)	// Too close for the RPG
 					{
 						npc.SetActivity("ACT_RUN_RPG", 240.0);
 						walkStatus = 3;	// Back off
@@ -2769,7 +2772,7 @@ public void Citizen_ClotThink(int iNPC)
 	}
 
 	// Go to ally players
-	if(!walkStatus)
+	if(!walkStatus && (!combat || !npc.m_bRebelAgressive))
 	{
 		if(npc.m_bGetClosestTargetTimeAlly || !npc.m_iTargetAlly || !IsValidAlly(npc.index, npc.m_iTargetAlly))
 		{

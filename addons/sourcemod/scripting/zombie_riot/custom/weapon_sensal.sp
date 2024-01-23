@@ -170,7 +170,8 @@ public void Sensal_Ability_R_Laser(int client, int weapon, bool crit, int slot) 
 			if(spawn_index > 0)
 			{
 				//this is the damage
-				i_Target[spawn_index] = foundTarget;
+				CClotBody npc = view_as<CClotBody>(spawn_index);
+				npc.m_iTarget = foundTarget;
 				fl_heal_cooldown[spawn_index] = damage;
 				i_Changed_WalkCycle[spawn_index] = EntIndexToEntRef(weapon);
 			}

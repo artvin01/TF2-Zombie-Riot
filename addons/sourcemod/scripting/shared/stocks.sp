@@ -683,6 +683,10 @@ stock void SetAmmo(int client, int type, int ammo)
 
 stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count, int custom_classSetting = 0)
 {
+	if(custom_classSetting == 11)
+	{
+		custom_classSetting = 0;
+	}
 	int weapon = SpawnWeaponBase(client, name, index, level, qual, attrib, value, count, custom_classSetting);
 	if(weapon != -1)
 	{
@@ -3776,12 +3780,19 @@ stock bool AmmoBlacklist(int Ammotype)
 
 #endif
 
-stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3], float Beamoffset[3] = {0.0,0.0,0.0})
+stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3] = {0.0,0.0,0.0}, float Beamoffset[3] = {0.0,0.0,0.0}, float Angles[3] = {0.0,0.0,0.0})
 {
-	GetClientEyePosition(client, startPoint);
-	float angles[3];
-	GetClientEyeAngles(client, angles);
-	startPoint[2] -= 25.0;
+	if(startPoint[0] == 0.0 && startPoint[1] == 0.0 && startPoint[2] == 0.0)
+	{
+		GetClientEyePosition(client, startPoint);
+		startPoint[2] -= 25.0;
+	}
+	
+	if(Angles[0] == 0.0 && Angles[1] == 0.0 && Angles[2] == 0.0)
+	{
+		GetClientEyeAngles(client, Angles);
+	}
+
 	if (0.0 == Beamoffset[0] && 0.0 == Beamoffset[1] && 0.0 == Beamoffset[2])
 	{
 		return;
@@ -3791,7 +3802,7 @@ stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3], float Be
 	tmp[0] = Beamoffset[0];
 	tmp[1] = Beamoffset[1];
 	tmp[2] = 0.0;
-	VectorRotate(tmp, angles, actualBeamOffset);
+	VectorRotate(tmp, Angles, actualBeamOffset);
 	actualBeamOffset[2] = Beamoffset[2];
 	startPoint[0] += actualBeamOffset[0];
 	startPoint[1] += actualBeamOffset[1];
@@ -4070,7 +4081,7 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 
 	int i_TargetHealAmount; //Health to actaully apply
 
-	if (healing_Amount <= 1.0)
+	if (healing_Amount <= 1.0 && healing_Amount > 0.0)
 	{
 		f_IncrementalSmallHeal[entity] += healing_Amount;
 			
@@ -4082,18 +4093,25 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	}
 	else
 	{
-		i_TargetHealAmount = RoundToFloor(healing_Amount);
-							
-		float Decimal_healing = FloatFraction(healing_Amount);
-							
-							
-		f_IncrementalSmallHeal[entity] += Decimal_healing;
-							
-		while(f_IncrementalSmallHeal[entity] >= 1.0)
+		if(i_TargetHealAmount < 0.0) //negative heal
 		{
-			f_IncrementalSmallHeal[entity] -= 1.0;
-			i_TargetHealAmount += 1;
+			i_TargetHealAmount = RoundToFloor(healing_Amount);
 		}
+		else
+		{
+			i_TargetHealAmount = RoundToFloor(healing_Amount);
+		
+			float Decimal_healing = FloatFraction(healing_Amount);
+								
+								
+			f_IncrementalSmallHeal[entity] += Decimal_healing;
+								
+			while(f_IncrementalSmallHeal[entity] >= 1.0)
+			{
+				f_IncrementalSmallHeal[entity] -= 1.0;
+				i_TargetHealAmount += 1;
+			}
+		}		
 	}
 	if(i_TargetHealAmount > MaxHealingPermitted)
 	{

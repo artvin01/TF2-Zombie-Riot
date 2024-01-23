@@ -281,6 +281,8 @@ methodmap CorruptedSpyRaid < CClotBody
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+
+		Raidboss_Clean_Everyone();
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		

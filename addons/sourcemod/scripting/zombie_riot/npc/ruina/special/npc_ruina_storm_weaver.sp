@@ -139,6 +139,8 @@ methodmap Storm_Weaver < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);	//temp raidmode stuff
 		RaidAllowsBuildings = false;
 
+		Raidboss_Clean_Everyone();
+
 		//fl_cantseetimeout[npc.index]=GetGameTime()+RUINA_CANTSEE_TIMEOUT+2.5;
 		fl_teleport_time[npc.index]=0.0;
 		fl_recently_teleported[npc.index]=0.0;

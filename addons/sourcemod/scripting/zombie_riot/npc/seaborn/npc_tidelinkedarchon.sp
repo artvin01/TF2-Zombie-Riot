@@ -119,8 +119,8 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 		int entity = Npc_Create(TIDELINKED_BISHOP, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 		if(entity > MaxClients)
 		{
-			npc.m_iTargetAlly = EntIndexToEntRef(entity);
-			view_as<CClotBody>(entity).m_iTargetAlly = EntIndexToEntRef(npc.index);
+			npc.m_iTargetAlly = entity;
+			view_as<CClotBody>(entity).m_iTargetAlly = npc.index;
 			view_as<CClotBody>(entity).m_bThisNpcIsABoss = npc.m_bThisNpcIsABoss;
 
 			Zombies_Currently_Still_Ongoing++;
@@ -141,7 +141,7 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 	
 	if(b_NpcIsInvulnerable[npc.index])
 	{
-		int entity = EntRefToEntIndex(npc.m_iTargetAlly);
+		int entity = npc.m_iTargetAlly;
 		if(entity == INVALID_ENT_REFERENCE || !IsValidEntity(entity) || b_NpcIsInvulnerable[entity])
 		{
 			SmiteNpcToDeath(npc.index);
@@ -152,7 +152,7 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 
 		health += maxhealth / 200;	// 20 seconds
-		if(health > maxhealth)
+		if(health >= maxhealth)
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
 
@@ -272,11 +272,7 @@ void TidelinkedArchon_OnTakeDamage(int victim, int attacker, float damage)
 			SDKHook(victim, SDKHook_Think, TidelinkedArchon_DownedThink);
 		}
 		
-		if(b_NpcIsInvulnerable[npc.index])
-		{
-			damage = 0.0;
-		}
-		else if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+		if(!b_NpcIsInvulnerable[npc.index] && npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 		{
 			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 			npc.m_blPlayHurtAnimation = true;

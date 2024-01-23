@@ -397,11 +397,18 @@ enum
 	BONEZONE_BUFFED_BEEFYBONES		= 348,
 	BONEZONE_BUFFED_BRITTLEBONES	= 349,
 	BONEZONE_BUFFED_BIGBONES		= 350,
-	BONEZONE_ARCHMAGE				= 351,
-	BONEZONE_BUFFED_ARCHMAGE		= 352,
-	BONEZONE_SAINTBONES				= 353,
-	BONEZONE_BUFFED_SAINTBONES		= 354,
 	
+	INTERITUS_DESERT_AHIM			= 351,
+	INTERITUS_DESERT_INABDIL		= 352,
+	INTERITUS_DESERT_KHAZAAN		= 353,
+	INTERITUS_DESERT_SAKRATAN		= 354,
+	INTERITUS_DESERT_YADEAM			= 355,
+	
+	BONEZONE_ARCHMAGE				= 356,
+	BONEZONE_BUFFED_ARCHMAGE		= 357,
+	BONEZONE_SAINTBONES				= 358,
+	BONEZONE_BUFFED_SAINTBONES		= 359,
+
 	MAX_NPC_TYPES	// Add entries above this line
 }
 
@@ -781,6 +788,13 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Buffed Beefy Bones",
 	"Buffed Brittle Bones",
 	"Buffed Big Bones",
+
+	"Ahim",
+	"Inabdil",
+	"Khazaan",
+	"Sakratan",
+	"Yadeam",
+	
 	"Spelleton",
 	"Calcified Conjurer",
 	"Profaned Priest",
@@ -1097,7 +1111,7 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	9,	// SEABORN_SPECIALIST	= 280,
 	9,	// SEABORN_SUPPORTER	= 281,
 	9,	// ISHARMLA		= 282,
-	9,	// ISHARMLA_TRANS		= 283,
+	-1,	// ISHARMLA_TRANS		= 283,
 
 	-1,	// RUINA_THEOCRACY = 284,
 	10,	// EXPIDONSA_BENERA = 285,
@@ -1115,8 +1129,8 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 
 	-1,	// 		= 297,
 	-1,	// 		= 298,
-	-1,	// SEA_RAIDBOSS_DONNERKRIEG	= 299,
-	-1,	// SEA_RAIDBOSS_SCHWERTKRIEG	= 300,
+	2,	// SEA_RAIDBOSS_DONNERKRIEG	= 299,
+	2,	// SEA_RAIDBOSS_SCHWERTKRIEG	= 300,
 	-1,	// BOB_THE_FIRST		= 301,
 	-1,	// BOB_THE_FIRST_S		= 302,
 	-1,	// 		= 303,
@@ -1538,6 +1552,13 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_beefybones",
 	"npc_brittlebones",
 	"npc_bigbones",
+
+	"npc_ahim",
+	"npc_inabdil",
+	"npc_khazaan",
+	"npc_sakratan",
+	"npc_yadeam",
+	
 	"npc_archmage",
 	"npc_archmage",
 	"npc_skeletalsaint",
@@ -1804,6 +1825,13 @@ void NPC_MapStart()
 	GiantTankus_OnMapStart_NPC();
 	AnfuhrerEisenhard_OnMapStart_NPC();
 	SpeedusAdivus_OnMapStart_NPC();
+
+//internius
+	DesertAhim_OnMapStart_NPC();
+	DesertInabdil_OnMapStart_NPC();
+	DesertKhazaan_OnMapStart_NPC();
+	DesertSakratan_OnMapStart_NPC();
+	DesertYadeam_OnMapStart_NPC();
 	
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1832,6 +1860,7 @@ void NPC_MapStart()
 	Sensal_OnMapStart_NPC();
 	Raidboss_Schwertkrieg_OnMapStart_NPC();
 	Raidboss_Donnerkrieg_OnMapStart_NPC();
+	RaidbossBobTheFirst_OnMapStart();
 
 	// Bloon Low Prio
 	Bloon_MapStart();
@@ -2738,11 +2767,8 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			entity = Raidboss_Schwertkrieg(client, vecPos, vecAng, ally);
 		
-		//case BOB_THE_FIRST:
-		//	entity = RaidbossBobTheFirst(vecPos, vecAng, ally, "");
-		
-		//case BOB_THE_FIRST_S:
-		//	entity = RaidbossBobTheFirst(vecPos, vecAng, ally, "S");
+		case BOB_THE_FIRST, BOB_THE_FIRST_S:
+			entity = RaidbossBobTheFirst(vecPos, vecAng, ally, data);
 
 		case EXPIDONSA_BENERA:
 			entity = Benera(client, vecPos, vecAng, ally);
@@ -2846,6 +2872,21 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case RAIDBOSS_BLADEDANCE:
 			entity = RaidbossBladedance(client, vecPos, vecAng, ally, data);
 
+		case INTERITUS_DESERT_AHIM:
+			entity = DesertAhim(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_INABDIL:
+			entity = DesertInabdil(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_KHAZAAN:
+			entity = DesertKhazaan(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_SAKRATAN:
+			entity = DesertSakratan(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_YADEAM:
+			entity = DesertYadeam(client, vecPos, vecAng, ally);
+
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
@@ -2881,7 +2922,15 @@ public void NPCDeath(int entity)
 			}
 		}
 	}
-
+	Function func = func_NPCDeath[entity];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(entity);
+		Call_Finish();
+		return;
+		//todo: convert all on death and on take damage to this.
+	}
 	switch(i_NpcInternalId[entity])
 	{
 		case HEADCRAB_ZOMBIE:
@@ -3282,7 +3331,7 @@ public void NPCDeath(int entity)
 			
 		case BONEZONE_BUFFED_BIGBONES:
 			BigBones_NPCDeath(entity);
-			
+	
 		case BONEZONE_ARCHMAGE:
 			ArchmageBones_NPCDeath(entity);
 			
@@ -3715,6 +3764,9 @@ public void NPCDeath(int entity)
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			Raidboss_Schwertkrieg_NPCDeath(entity);
 		
+		case BOB_THE_FIRST, BOB_THE_FIRST_S:
+			RaidbossBobTheFirst_NPCDeath(entity);
+		
 		case EXPIDONSA_BENERA:
 			Benera_NPCDeath(entity); 
 
@@ -3896,6 +3948,24 @@ public void NPCDeath(int entity)
 
 Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	Function func = func_NPCOnTakeDamage[victim];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(victim);
+		Call_PushCellRef(attacker);
+		Call_PushCellRef(inflictor);
+		Call_PushFloatRef(damage);
+		Call_PushCellRef(damagetype);
+		Call_PushCellRef(weapon);
+		Call_PushArray(damageForce, sizeof(damageForce));
+		Call_PushArray(damagePosition, sizeof(damagePosition));
+		Call_PushCell(damagecustom);
+		Call_Finish();
+		return Plugin_Changed;
+		//todo: convert all on death and on take damage to this.
+	}
+
 	switch(i_NpcInternalId[victim])
 	{
 		case HEADCRAB_ZOMBIE, FORTIFIED_HEADCRAB_ZOMBIE, FASTZOMBIE, FORTIFIED_FASTZOMBIE:
@@ -4595,7 +4665,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case ISHARMLA:
 			Isharmla_OnTakeDamage(victim, attacker, damage);
-			
 		
 		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA, RUINA_DRONE, RUINA_RURIANA, RUINA_VENIUM, RUINA_MAGIA_ANCHOR, RUINA_STORM_WEAVER, RUINA_STORM_WEAVER_MID:	
 			Ruina_NPC_OnTakeDamage_Override(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -4606,7 +4675,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			Raidboss_Schwertkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
-
+		case BOB_THE_FIRST, BOB_THE_FIRST_S:
+			RaidbossBobTheFirst_OnTakeDamage(victim, attacker, damage);
 
 		case EXPIDONSA_BENERA:
 			Benera_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -5031,7 +5101,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/raidmode_bosses/seaborn/npc_donnerkrieg.sp"
 #include "zombie_riot/npc/raidmode_bosses/seaborn/npc_schwertkrieg.sp"
-//#include "zombie_riot/npc/raidmode_bosses/seaborn/npc_bob_the_first_last_savior.sp"
+#include "zombie_riot/npc/raidmode_bosses/seaborn/npc_bob_the_first_last_savior.sp"
 
 #include "zombie_riot/npc/expidonsa/npc_benera.sp"
 #include "zombie_riot/npc/expidonsa/npc_pental.sp"
@@ -5067,3 +5137,10 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_vip_building.sp"
 #include "zombie_riot/npc/rogue/npc_overlord_rogue.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_bladedance.sp"
+
+
+#include "zombie_riot/npc/interitus/desert/npc_ahim.sp"
+#include "zombie_riot/npc/interitus/desert/npc_inabdil.sp"
+#include "zombie_riot/npc/interitus/desert/npc_khazaan.sp"
+#include "zombie_riot/npc/interitus/desert/npc_sakratan.sp"
+#include "zombie_riot/npc/interitus/desert/npc_yadeam.sp"

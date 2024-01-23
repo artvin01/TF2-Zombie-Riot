@@ -185,13 +185,13 @@ public void SeabornSoldier_ClotThink(int iNPC)
 							fl_Extra_Speed[npc.index] *= 1.25;
 							fl_Extra_Damage[npc.index] *= 1.1;
 
-							for(int i; i < 3; i++)
+							for(int i; i < 10; i++)
 							{
 								int entity = Npc_Create(SEABORN_SOLDIER, -1, pos, ang, ally);
 								if(entity > MaxClients)
 								{
 									if(!ally)
-										Zombies_Currently_Still_Ongoing += 3;
+										Zombies_Currently_Still_Ongoing += 1;
 									
 									SetEntProp(entity, Prop_Data, "m_iHealth", health);
 									SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);

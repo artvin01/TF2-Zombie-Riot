@@ -150,7 +150,7 @@ methodmap KazimierzBeserker < CClotBody
 
 		//how many deaths untill we reach full power?
 		float MaxAlliesDeath = 10.0;
-		MaxAlliesDeath *= MultiGlobal;
+		MaxAlliesDeath *= MultiGlobalEnemy;
 		npc.m_iAlliesMaxDeath = RoundToCeil(MaxAlliesDeath);
 
 		npc.m_flPercentageAngry = 0.0;

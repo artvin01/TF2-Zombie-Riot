@@ -1897,8 +1897,36 @@
 	{
 		"en"	"?????????????"
 	}
+	"??????? First"
+	{
+		"en"	"??????? First"
+	}
+	"??? the First"
+	{
+		"en"	"??? the First"
+	}
 	"Bob the First"
 	{
 		"en"	"Bob the First"
+	}
+	"Ahim"
+	{
+		"en"	"Ahim"
+	}
+	"Inabdil"
+	{
+		"en"	"Inabdil"
+	}
+	"Khazaan"
+	{
+		"en"	"Khazaan"
+	}
+	"Sakratan"
+	{
+		"en"	"Sakratan"
+	}
+	"Yadeam"
+	{
+		"en"	"Yadeam"
 	}
 }

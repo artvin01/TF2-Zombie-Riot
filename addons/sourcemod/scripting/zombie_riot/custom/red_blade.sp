@@ -191,6 +191,17 @@ void CheckRedBladeBelowHalfHealth(int client, int weapon)
 		MakeBladeBloddy(client, false, weapon);
 	}
 }
+
+
+void WeaponRedBlade_OnTakeDamageNpc(int attacker,int victim, int damagetype,int weapon)
+{
+	if(!b_OverlordsFinalWish[attacker])
+		return;
+	
+	if(damagetype & DMG_CLUB)
+		NPC_Ignite(victim, attacker, 3.0, weapon);
+}
+
 void WeaponRedBlade_OnTakeDamage(int victim, float &damage)
 {
 	if(f_RedBladeChargeDuration[victim] > GetGameTime())
@@ -201,6 +212,19 @@ void WeaponRedBlade_OnTakeDamage(int victim, float &damage)
 	{
 		damage *= 0.45;
 	}
+}
+float WeaponRedBlade_OnTakeDamage_Hud(int victim)
+{
+	float returndmg = 1.0;
+	if(f_RedBladeChargeDuration[victim] > GetGameTime())
+	{
+		returndmg *= 0.25;
+	}
+	if(HALFORNO[victim])
+	{
+		returndmg *= 0.45;
+	}
+	return returndmg;
 }
 
 void WeaponRedBlade_OnTakeDamage_Post(int victim, int weapon)

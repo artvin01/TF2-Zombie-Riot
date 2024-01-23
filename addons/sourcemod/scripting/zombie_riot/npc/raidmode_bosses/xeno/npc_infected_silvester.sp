@@ -136,9 +136,6 @@ void Silvester_TBB_Precahce()
 #define EMPOWER_MATERIAL "materials/sprites/laserbeam.vmt"
 #define EMPOWER_WIDTH 5.0
 #define EMPOWER_HIGHT_OFFSET 20.0
-
-static int i_TargetToWalkTo[MAXENTITIES];
-static float f_TargetToWalkToDelay[MAXENTITIES];
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static int i_RaidDuoAllyIndex;
 
@@ -647,23 +644,23 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	{
 		if(npc.m_iInKame == 2)
 		{
-			i_TargetToWalkTo[npc.index] = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
-			if(IsValidEntity(i_TargetToWalkTo[npc.index]))
+			npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
+			if(IsValidEntity(npc.m_iTargetWalkTo))
 			{
-				i_TargetToWalkTo[npc.index] = GetClosestTarget(npc.index);
+				npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
 			}
 		}
 		else
 		{
-			i_TargetToWalkTo[npc.index] = GetClosestTarget(npc.index);
+			npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
 		}
 		f_TargetToWalkToDelay[npc.index] = GetGameTime(npc.index) + 1.0;
 	}
 	if(npc.m_iInKame == 2)
 	{
-		if(IsValidEntity(i_TargetToWalkTo[npc.index]))
+		if(IsValidEntity(npc.m_iTargetWalkTo))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(i_TargetToWalkTo[npc.index]);
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetWalkTo);
 			npc.FaceTowards(vecTarget, 80.0);
 		}
 		NPC_StopPathing(npc.index);
@@ -798,7 +795,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	{
 		if(AllyEntity != -1 && !IsPartnerGivingUpGoggles(AllyEntity))
 		{
-			i_TargetToWalkTo[npc.index] = AllyEntity;
+			npc.m_iTargetWalkTo = AllyEntity;
 			npc.m_flSpeed = 330.0;
 		}
 	}
@@ -806,7 +803,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	{
 		if(AllyEntity != -1 && !b_NoGravity[AllyEntity] && !IsPartnerGivingUpGoggles(AllyEntity))
 		{
-			i_TargetToWalkTo[npc.index] = AllyEntity;
+			npc.m_iTargetWalkTo = AllyEntity;
 			npc.m_flSpeed = 500.0;
 		}
 		else
@@ -942,21 +939,21 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
 		npc.m_flSpeed = 330.0;
 	}
-	if(IsEntityAlive(i_TargetToWalkTo[npc.index]))
+	if(IsEntityAlive(npc.m_iTargetWalkTo))
 	{
 		int ActionToTake = -1;
 
 		//Predict their pos.
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(i_TargetToWalkTo[npc.index]);
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetWalkTo);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, i_TargetToWalkTo[npc.index]);
+		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTargetWalkTo);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, i_TargetToWalkTo[npc.index]);
+			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
 		}
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
@@ -965,7 +962,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			
 		//Body pitch
 		float v[3], ang[3];
-		SubtractVectors(WorldSpaceCenter(npc.index), WorldSpaceCenter(i_TargetToWalkTo[npc.index]), v); 
+		SubtractVectors(WorldSpaceCenter(npc.index), WorldSpaceCenter(npc.m_iTargetWalkTo), v); 
 		NormalizeVector(v, v);
 		GetVectorAngles(v, ang); 
 				
@@ -999,7 +996,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			//pull or push the target away!
 			ActionToTake = 1;
 		}
-		else if(IsValidEnemy(npc.index, i_TargetToWalkTo[npc.index]))
+		else if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo))
 		{
 			if(npc.m_flTimebeforekamehameha < GetGameTime(npc.index))
 			{
@@ -1188,7 +1185,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	}
 	else
 	{
-		i_TargetToWalkTo[npc.index] = GetClosestTarget(npc.index);
+		npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
 		f_TargetToWalkToDelay[npc.index] = GetGameTime(npc.index) + 1.0;
 	}
 	//This is for self defense, incase an enemy is too close, This exists beacuse
@@ -2097,7 +2094,7 @@ public Action Silvester_TBB_Tick(int client)
 						damage *= 3.0; //give 3x dmg to anything
 					}
 
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenter(victim));	// 2048 is DMG_NOGIB?
 				}
 			}
 			

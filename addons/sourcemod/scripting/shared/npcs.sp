@@ -350,8 +350,8 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						npcstats.m_bThisNpcIsABoss = false; //Set to true!
 					}
 					
-					if(enemy.Credits && MultiGlobal)
-						npcstats.m_fCreditsOnKill = enemy.Credits / MultiGlobal;
+					if(enemy.Credits && MultiGlobalEnemy)
+						npcstats.m_fCreditsOnKill = enemy.Credits / MultiGlobalEnemy;
 
 					fl_Extra_MeleeArmor[entity_Spawner] 	= enemy.ExtraMeleeRes;
 					fl_Extra_RangedArmor[entity_Spawner] 	= enemy.ExtraRangedRes;
@@ -1230,6 +1230,15 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 			SlayNpc = false;
 		}
 	}
+	if(inflictor > 0 && inflictor <= MaxClients)
+	{
+		b_RaptureZombie[victim] = b_RaptureZombie[inflictor];
+	}
+	else if(attacker > 0 && attacker <= MaxClients)
+	{
+		b_RaptureZombie[victim] = b_RaptureZombie[attacker];
+	}
+	
 	if(SlayNpc)
 	{
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);
@@ -2257,6 +2266,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			NPC_OnTakeDmg_Gravaton_Wand(attacker, damagetype);
 		}
+		case WEAPON_RED_BLADE:
+		{
+			WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon);
+		}
 	}
 #endif
 
@@ -2508,6 +2521,14 @@ void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int
 	if(!trueArmorOnly)
 	{
 		damage *= fl_Extra_Damage[attacker];
+		if(f_MultiDamageTaken[victim] != 1.0)
+		{
+			damage *= f_MultiDamageTaken[victim];
+		}
+		if(f_MultiDamageTaken_Flat[victim] != 1.0)
+		{
+			damage *= f_MultiDamageTaken_Flat[victim];
+		}
 	}
 }
 #if defined ZR

@@ -993,13 +993,13 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			{
 				if(Is_a_boss == 0)
 				{
-					count = RoundToNearest(float(count)*MultiGlobal);
+					count = RoundToNearest(float(count) * MultiGlobalEnemy);
 				}
 				else
 				{
 					float multiBoss = playercount * 0.25;
 					//If its any boss, then make it scale like old.
-					count = RoundToNearest(float(count)*multiBoss);
+					count = RoundToNearest(float(count) * multiBoss);
 				}
 			}
 			
@@ -1020,7 +1020,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			Is_Health_Scaling = 0;
 			
-			BalanceDropMinimum(MultiGlobal);
+			BalanceDropMinimum(MultiGlobalEnemy);
 			
 			Is_Health_Scaling = wave.EnemyData.Is_Health_Scaled;
 			
@@ -1032,29 +1032,23 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					They are just too unbalanced.
 					Lets treat each player as just more hp flat.
 				*/
-				if(playercount > 12)
+				if(ScaleWithHpMore)
 				{
-					if(ScaleWithHpMore)
-					{
-						multiBoss = playercount * 0.4;
-					}
-				}
-				else
-				{
-					if(ScaleWithHpMore)
-					{
-						multiBoss = playercount * 0.34;
-					}
+					multiBoss = playercount * 0.34;
 				}
 
 				if(!ScaleWithHpMore)
 				{
 					multiBoss = playercount * 0.2;
-					MultiGlobalHealth = multiBoss;
+					MultiGlobalArkantos = multiBoss;
 				}
 				
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multiBoss);
 				wave.EnemyData.Health = Tempomary_Health;
+			}
+			else if(MultiGlobalHealth > 1.0)
+			{
+				wave.EnemyData.Health = RoundToNearest(float(wave.EnemyData.Health) * MultiGlobalHealth);
 			}
 		
 			for(int i; i<count; i++)
@@ -1063,7 +1057,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			
 			if(wave.Delay > 0.0)
-				WaveTimer = CreateTimer(wave.Delay * (MultiGlobal * 0.75), Waves_ProgressTimer);
+				WaveTimer = CreateTimer(wave.Delay * (1.0 + (MultiGlobalEnemy * 0.4)), Waves_ProgressTimer);
 		}
 		else if(donotAdvanceRound)
 		{
@@ -1422,7 +1416,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					{
 						Music_Stop_All(i);
 						if(!rogue)
+						{
 							SendConVarValue(i, sv_cheats, "1");
+						}
 						
 						players[total++] = i;
 
@@ -1436,18 +1432,36 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 				if(!rogue)
 				{
+					ResetReplications();
 					cvarTimeScale.SetFloat(0.1);
 					CreateTimer(0.5, SetTimeBack);
 					
 					EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 
-					Menu menu = new Menu(Waves_FreeplayVote);
-					menu.SetTitle("%t","Victory Menu");
-					menu.AddItem("", "Yes");
-					menu.AddItem("", "No");
-					menu.ExitButton = false;
-					
-					menu.DisplayVote(players, total, 30);
+					if(zr_allowfreeplay.BoolValue)
+					{
+						Menu menu = new Menu(Waves_FreeplayVote);
+						menu.SetTitle("%t","Victory Menu");
+						menu.AddItem("", "Yes");
+						menu.AddItem("", "No");
+						menu.ExitButton = false;
+						
+						menu.DisplayVote(players, total, 30);
+					}
+					else
+					{
+						ConVar roundtime = FindConVar("mp_bonusroundtime");
+						float last = roundtime.FloatValue;
+						roundtime.FloatValue = 20.0;
+
+						int entity = CreateEntityByName("game_round_win"); 
+						DispatchKeyValue(entity, "force_map_reset", "1");
+						SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
+						DispatchSpawn(entity);
+						AcceptEntityInput(entity, "RoundWin");
+
+						roundtime.FloatValue = last;
+					}
 				}
 				
 				char_MusicString1[0] = 0;
@@ -1480,8 +1494,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			else if(wasLastMann)
 			{
 				Cooldown = GetGameTime() + 30.0;
-				
-				InSetup = true;
 
 				SpawnTimer(30.0);
 				CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
@@ -1512,7 +1524,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 	else
 	{
 		Rounds.GetArray(length, round);
-		if(++CurrentWave < 1)
+		if(++CurrentWave < 8)
 		{
 //			float playercount = float(CountPlayersOnRed());
 			DoGlobalMultiScaling();
@@ -1546,7 +1558,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 			}
 
-			// Note: Artvan remove this, this is freeplay code
+			// Note: Artvin remove this, this is freeplay code
 			if(Freeplay_ShouldMiniBoss() && !rogue) //no miniboss during roguelikes.
 			{
 				panzer_spawn = true;
@@ -1564,6 +1576,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				WaveStart_SubWaveStart();
 				return;
 			}
+
+			CurrentWave = 9;
 		}
 		else if(donotAdvanceRound)
 		{
@@ -1727,6 +1741,14 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 	return 0;
 }
 
+bool Waves_IsEmpty()
+{
+	if(!Enemies || Enemies.Empty)
+		return true;
+	
+	return false;
+}
+
 bool Waves_GetNextEnemy(Enemy enemy)
 {
 	if(!Enemies || Enemies.Empty)
@@ -1825,6 +1847,21 @@ void WaveEndLogicExtra()
 	M3_AbilitiesWaveEnd();
 	Specter_AbilitiesWaveEnd();	
 	LeperResetUses();
+	for(int client; client <= MaxClients; client++)
+	{
+		if(IsValidClient(client))
+		{
+			b_BobsCuringHand_Revived[client] += GetRandomInt(1,3);
+			if(Items_HasNamedItem(client, "Bob's Curing Hand"))
+			{
+				b_BobsCuringHand[client] = true;
+			}
+			else
+			{
+				b_BobsCuringHand[client] = false;
+			}
+		}
+	}
 }
 
 void WaveStart_SubWaveStart(float time = 0.0)
@@ -1929,5 +1966,26 @@ void DoGlobalMultiScaling()
 
 	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%	
 	MultiGlobal = multi;
-	MultiGlobalHealth = playercount * 0.2;
+	MultiGlobalArkantos = playercount * 0.2;
+
+	float cap = zr_enemymulticap.FloatValue;
+
+	if(multi > cap)
+	{
+		MultiGlobalHealth = multi / cap;
+		MultiGlobalEnemy = cap;
+	}
+	else
+	{
+		MultiGlobalHealth = 1.0;
+		MultiGlobalEnemy = multi;
+	}
+}
+
+void Waves_ForceSetup(float cooldown)
+{
+	Cooldown = GetGameTime() + cooldown;
+	InSetup = true;
+	
+	CreateTimer(cooldown, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 }

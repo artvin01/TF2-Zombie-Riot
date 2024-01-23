@@ -152,8 +152,10 @@ public void SeabornMedic_ClotThink(int iNPC)
 			}
 		}
 	}
-	
-	NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+	if(npc.m_iTargetAlly > 0)
+	{
+		NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+	}
 
 	npc.PlayIdleSound();
 }

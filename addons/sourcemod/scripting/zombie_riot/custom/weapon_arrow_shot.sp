@@ -308,3 +308,219 @@ public Action Timer_Multiple_Arrows(Handle timer, int client)
 	}
 	return Plugin_Continue;
 }
+
+public void Weapon_Shoot_Arrow_Crossbow_PAP(int client, int weapon, bool crit, int slot)
+{
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+		int Ammo_Currently = GetAmmo(client, Ammo_type);
+		if(Ammo_Currently > 1)
+		{
+			float WeaponDelay = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack");
+			if(WeaponDelay < GetGameTime())
+			{
+				WeaponDelay = GetGameTime();
+			}
+			float PlayerDelay = GetEntPropFloat(client, Prop_Send, "m_flNextAttack");
+			if(PlayerDelay < GetGameTime())
+			{
+				PlayerDelay = GetGameTime();
+			}
+			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", WeaponDelay+0.8);
+			SetEntPropFloat(client, Prop_Send, "m_flNextAttack", PlayerDelay+0.8);
+			SetAmmo(client, Ammo_type, Ammo_Currently-1);
+			
+			for(int i; i<Ammo_MAX; i++)
+			{
+				CurrentAmmo[client][i] = GetAmmo(client, i);
+			}	
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return;
+		}
+			
+		Rogue_OnAbilityUse(weapon);
+		Ability_Apply_Cooldown(client, slot, 15.0);
+		EmitSoundToAll(SOUND_ARROW_SHOOT, client, SNDCHAN_WEAPON, 75, _, 0.8, 100);
+		Client_To_Weapon[client] = weapon;
+		Arrows_Damage[client] = 400.0;
+		Arrows_Damage[client] *= Attributes_Get(weapon, 2, 1.0);
+		Max_Arrows[client] = 2;
+		
+		float speed = 2600.0;
+		float fAng[3], fPos[3];
+		GetClientEyeAngles(client, fAng);
+		GetClientEyePosition(client, fPos);
+		int Arrow = SDKCall_CTFCreateArrow(fPos, fAng, speed, 0.1, 8, client, client);
+		if(IsValidEntity(Arrow))
+		{
+			RequestFrame(See_Projectile_Team, EntIndexToEntRef(Arrow));
+			SetEntityCollisionGroup(Arrow, 27);
+			SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, Arrows_Damage[client], true);	// Damage
+			SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", Client_To_Weapon[client]);
+			SetEntPropEnt(Arrow, Prop_Send, "m_hLauncher", Client_To_Weapon[client]);
+			SetEntProp(Arrow, Prop_Send, "m_bCritical", true);
+			SetEntPropFloat(Arrow, Prop_Send, "m_flModelScale", 2.0);
+		}
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+	}
+}
+
+
+public void Weapon_Shoot_Arrow_Crossbow_PAP_1(int client, int weapon, bool crit, int slot)
+{
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+		int Ammo_Currently = GetAmmo(client, Ammo_type);
+		if(Ammo_Currently > 1)
+		{
+			float WeaponDelay = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack");
+			if(WeaponDelay < GetGameTime())
+			{
+				WeaponDelay = GetGameTime();
+			}
+			float PlayerDelay = GetEntPropFloat(client, Prop_Send, "m_flNextAttack");
+			if(PlayerDelay < GetGameTime())
+			{
+				PlayerDelay = GetGameTime();
+			}
+			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", WeaponDelay+0.7);
+			SetEntPropFloat(client, Prop_Send, "m_flNextAttack", PlayerDelay+0.7);
+			SetAmmo(client, Ammo_type, Ammo_Currently-1);
+			
+			for(int i; i<Ammo_MAX; i++)
+			{
+				CurrentAmmo[client][i] = GetAmmo(client, i);
+			}	
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return;
+		}
+			
+		Rogue_OnAbilityUse(weapon);
+		Ability_Apply_Cooldown(client, slot, 13.0);
+		EmitSoundToAll(SOUND_ARROW_SHOOT, client, SNDCHAN_WEAPON, 75, _, 0.8, 100);
+		Client_To_Weapon[client] = weapon;
+		Arrows_Damage[client] = 500.0;
+		Arrows_Damage[client] *= Attributes_Get(weapon, 2, 1.0);
+		Max_Arrows[client] = 2;
+		
+		float speed = 2600.0;
+		float fAng[3], fPos[3];
+		GetClientEyeAngles(client, fAng);
+		GetClientEyePosition(client, fPos);
+		int Arrow = SDKCall_CTFCreateArrow(fPos, fAng, speed, 0.1, 8, client, client);
+		if(IsValidEntity(Arrow))
+		{
+			RequestFrame(See_Projectile_Team, EntIndexToEntRef(Arrow));
+			SetEntityCollisionGroup(Arrow, 27);
+			SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, Arrows_Damage[client], true);	// Damage
+			SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", Client_To_Weapon[client]);
+			SetEntPropEnt(Arrow, Prop_Send, "m_hLauncher", Client_To_Weapon[client]);
+			SetEntProp(Arrow, Prop_Send, "m_bCritical", true);
+			SetEntPropFloat(Arrow, Prop_Send, "m_flModelScale", 2.0);
+		}
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+	}
+}
+
+
+
+public void Weapon_Shoot_Arrow_Crossbow_PAP_2(int client, int weapon, bool crit, int slot)
+{
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+		int Ammo_Currently = GetAmmo(client, Ammo_type);
+		if(Ammo_Currently > 1)
+		{
+			float WeaponDelay = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack");
+			if(WeaponDelay < GetGameTime())
+			{
+				WeaponDelay = GetGameTime();
+			}
+			float PlayerDelay = GetEntPropFloat(client, Prop_Send, "m_flNextAttack");
+			if(PlayerDelay < GetGameTime())
+			{
+				PlayerDelay = GetGameTime();
+			}
+			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", WeaponDelay+0.6);
+			SetEntPropFloat(client, Prop_Send, "m_flNextAttack", PlayerDelay+0.6);
+			SetAmmo(client, Ammo_type, Ammo_Currently-1);
+			
+			for(int i; i<Ammo_MAX; i++)
+			{
+				CurrentAmmo[client][i] = GetAmmo(client, i);
+			}	
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return;
+		}
+			
+		Rogue_OnAbilityUse(weapon);
+		Ability_Apply_Cooldown(client, slot, 10.0);
+		EmitSoundToAll(SOUND_ARROW_SHOOT, client, SNDCHAN_WEAPON, 75, _, 0.8, 100);
+		Client_To_Weapon[client] = weapon;
+		Arrows_Damage[client] = 700.0;
+		Arrows_Damage[client] *= Attributes_Get(weapon, 2, 1.0);
+		Max_Arrows[client] = 2;
+		
+		float speed = 2600.0;
+		float fAng[3], fPos[3];
+		GetClientEyeAngles(client, fAng);
+		GetClientEyePosition(client, fPos);
+		int Arrow = SDKCall_CTFCreateArrow(fPos, fAng, speed, 0.1, 8, client, client);
+		if(IsValidEntity(Arrow))
+		{
+			RequestFrame(See_Projectile_Team, EntIndexToEntRef(Arrow));
+			SetEntityCollisionGroup(Arrow, 27);
+			SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, Arrows_Damage[client], true);	// Damage
+			SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", Client_To_Weapon[client]);
+			SetEntPropEnt(Arrow, Prop_Send, "m_hLauncher", Client_To_Weapon[client]);
+			SetEntProp(Arrow, Prop_Send, "m_bCritical", true);
+			SetEntPropFloat(Arrow, Prop_Send, "m_flModelScale", 2.0);
+		}
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+	}
+}

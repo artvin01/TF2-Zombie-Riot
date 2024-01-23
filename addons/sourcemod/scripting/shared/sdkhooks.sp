@@ -219,23 +219,39 @@ public void OnPostThink(int client)
 
 	if(b_PhaseThroughBuildingsPerma[client] == 2)
 	{
-		CvarMpSolidObjects.ReplicateToClient(client, "0");
+		if(ReplicateClient_Tfsolidobjects[client] != 0)
+		{
+			ReplicateClient_Tfsolidobjects[client] = 0;
+			CvarMpSolidObjects.ReplicateToClient(client, "0");
+		}
 	}
 	else
 	{
 		if(b_PhaseThroughBuildingsPerma[client] == 1)
 		{
 			b_PhaseThroughBuildingsPerma[client] = 0;
-			CvarMpSolidObjects.ReplicateToClient(client, "1"); //set replicate back to normal.
+			if(ReplicateClient_Tfsolidobjects[client] != 1)
+			{
+				ReplicateClient_Tfsolidobjects[client] = 1;
+				CvarMpSolidObjects.ReplicateToClient(client, "1"); //set replicate back to normal.
+			}
 		}
 	}
 	if(b_AntiSlopeCamp[client])
-	{
-		CvarAirAcclerate.ReplicateToClient(client, "2.0"); //set replicate back to normal.
+	{	
+		if(ReplicateClient_Svairaccelerate[client] != 2.0)
+		{
+			ReplicateClient_Svairaccelerate[client] = 2.0;
+			CvarAirAcclerate.ReplicateToClient(client, "2.0"); //set down
+		}
 	}
 	else
 	{
-		CvarAirAcclerate.ReplicateToClient(client, "10.0"); //set replicate back to normal.
+		if(ReplicateClient_Svairaccelerate[client] != 10.0)
+		{
+			ReplicateClient_Svairaccelerate[client] = 10.0;
+			CvarAirAcclerate.ReplicateToClient(client, "10.0"); //set replicate back to normal.
+		}
 	}
 		
 #if defined ZR
@@ -300,6 +316,7 @@ public void OnPostThink(int client)
 					PercentageHealth = PercentageHealth - 1.0;
 					PercentageHealth *= -1.0; //convert to positive
 					PercentageHealth *= 125.0; // we want the full number! this only works in big ones. also divitde by 4
+					PercentageHealth *= 0.5;
 					i_SvRollAngle[client] = RoundToCeil(PercentageHealth);
 
 					if(i_SvRollAngle[client] < 0)
@@ -313,16 +330,22 @@ public void OnPostThink(int client)
 				i_SvRollAngle[client] = 0;
 			}
 
-			char RollAngleValue[4];
-
-			IntToString(i_SvRollAngle[client], RollAngleValue, sizeof(RollAngleValue));
-
-			CvarSvRollagle.ReplicateToClient(client, RollAngleValue); //set replicate back to normal.
+			if(ReplicateClient_RollAngle[client] != i_SvRollAngle[client])
+			{
+				ReplicateClient_RollAngle[client] = i_SvRollAngle[client];
+				char RollAngleValue[4];
+				IntToString(i_SvRollAngle[client], RollAngleValue, sizeof(RollAngleValue));
+				CvarSvRollagle.ReplicateToClient(client, RollAngleValue); //set replicate back to normal.
+			}
 		}
 		else
 		{
 			RollAngle_Regen_Delay[client] = GameTime + 5.0;
-			CvarSvRollagle.ReplicateToClient(client, "0"); //set replicate back to normal.
+			if(ReplicateClient_RollAngle[client] != 0)
+			{
+				ReplicateClient_RollAngle[client] = 0;
+				CvarSvRollagle.ReplicateToClient(client, "0"); //set replicate back to normal.
+			}
 		}
 	}
 #endif	// ZR
@@ -428,18 +451,25 @@ public void OnPostThink(int client)
 				int healing_Amount = HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);		
 				ApplyHealEvent(client, healing_Amount);			
 			}
+			if(b_NemesisHeart[client])
+			{
+				int healing_Amount = HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);		
+				ApplyHealEvent(client, healing_Amount);			
+			}
 		}
 		Armor_regen_delay[client] = GameTime + 1.0;
 	}
-#endif	// ZR
-	
-	if(Mana_Hud_Delay[client] < GameTime)	
+	if(Mana_Hud_Delay[client] < GameTime)
+#else	// ZR
+	else if(Mana_Hud_Delay[client] < GameTime)
+#endif
+
 	{
 		char buffer[255];
 #if defined RPG		
 		float HudY = 0.95;
 #else
-		float HudY = 0.90;
+		float HudY = 0.95;
 #endif
 		float HudX = -1.0;
 	
@@ -457,11 +487,6 @@ public void OnPostThink(int client)
 			had_An_ability = false;
 			static bool IsReady;
 			IsReady = false;
-
-			if(had_An_ability) //There was a debuff or buff create new inline.
-			{
-				Format(buffer, sizeof(buffer), "\n%s", buffer);
-			}
 
 			had_An_ability = false;
 			
@@ -600,6 +625,85 @@ public void OnPostThink(int client)
 				had_An_ability = true;
 			}
 #endif	// ZR
+			if(had_An_ability)
+			{
+				HudY -= 0.035;
+				Format(buffer, sizeof(buffer), "%s\n", buffer);
+			}
+
+			float percentage = 100.0;
+			float percentage_Global = 1.0;
+			float value = 1.0;
+			percentage_Global *= ArmorPlayerReduction(client);
+
+		
+			percentage_Global *= Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(client, weapon);
+			value = Attributes_FindOnPlayerZR(client, 412, true);	// Overall damage resistance
+			if(value)
+				percentage_Global *= value;
+
+			if(TF2_IsPlayerInCondition(client, TFCond_MarkedForDeathSilent))
+			{
+				percentage_Global *= 1.35;
+			}
+			if(TF2_IsPlayerInCondition(client, TFCond_DefenseBuffed))
+			{
+				percentage_Global *= 0.65;
+			}
+			if(f_MultiDamageTaken[client] != 1.0)
+			{
+				percentage_Global *= f_MultiDamageTaken[client];
+			}
+			if(f_MultiDamageTaken_Flat[client] != 1.0)
+			{
+				percentage_Global *= f_MultiDamageTaken_Flat[client];
+			}
+			if(f_BattilonsNpcBuff[client] > GameTime)
+			{
+				percentage_Global *= 0.75;
+			}	
+			if(f_HussarBuff[client] > GameTime)
+			{
+				percentage_Global *= 0.90;
+			}	
+			if(f_EmpowerStateOther[client] > GameTime) //Allow stacking.
+			{
+				percentage_Global *= 0.93;
+			}
+			if(f_EmpowerStateSelf[client] > GameTime) //Allow stacking.
+			{
+				percentage_Global *= 0.9;
+			}
+			if(i_CurrentEquippedPerk[client] == 2)
+			{
+				percentage_Global *= 0.85;
+			}
+			if(Resistance_Overall_Low[client] > GameTime)
+			{
+				percentage_Global *= 0.9;
+			}
+			value = Attributes_FindOnPlayerZR(client, 206, true, 0.0, true, true);	// MELEE damage resistance
+			if(value)
+				percentage *= value;
+			//melee res
+			percentage *= percentage_Global;
+			if(percentage != 100.0)
+			{
+				FormatEx(buffer, sizeof(buffer), "%s [♈ %.0f%%]", buffer, percentage);
+				had_An_ability = true;
+			}
+			
+			percentage = 100.0;
+			percentage *= percentage_Global;
+			value = Attributes_FindOnPlayerZR(client, 205, true, 0.0, true, true);	// MELEE damage resistance
+			if(value)
+				percentage *= value;
+
+			if(percentage != 100.0)
+			{
+				FormatEx(buffer, sizeof(buffer), "%s [♐ %.0f%%]", buffer, percentage);
+				had_An_ability = true;
+			}
 			if(had_An_ability)
 			{
 				HudY -= 0.035;
@@ -865,7 +969,7 @@ public void OnPostThink(int client)
 			ShowSyncHudText(client,  SyncHud_WandMana, "%s", buffer);
 		}
 	}
-	if(delay_hud[client] < GameTime)	
+	else if(delay_hud[client] < GameTime)	
 	{
 		delay_hud[client] = GameTime + 0.4;
 
@@ -932,8 +1036,20 @@ public void OnPostThink(int client)
 		int blue = 0;
 		if(Armor_Charge[armorEnt] < 0)
 		{
-			green = 0;
-			blue = 255;
+			switch(Armor_DebuffType[armorEnt])
+			{
+				case 1:
+				{
+					green = 0;
+					blue = 255;
+				}
+				case 2:
+				{
+					red = 255;
+					green = 69;
+					blue = 25;
+				}
+			}
 		}
 		else if(Armor_Charge[armorEnt] < Armor_Max)
 		{
@@ -1225,14 +1341,9 @@ public void OnPostThink(int client)
 		PrintKeyHintText(client,"%s", HudBuffer);
 #endif	// ZR
 	}
-
-		
-#if defined RPG
-		// RPG Level Stuff Here
-#endif	// RPG
 		
 #if defined ZR
-	if(f_DelayLookingAtHud[client] < GameTime)
+	else if(f_DelayLookingAtHud[client] < GameTime)
 	{
 		//Reuse uhh
 		//Doesnt reset often enough, fuck clientside.
@@ -1247,6 +1358,10 @@ public void OnPostThink(int client)
 		{
 			f_DelayLookingAtHud[client] = GameTime + 2.0;
 		}
+	}
+	else
+	{
+		Store_TryRefreshMenu(client);
 	}
 	
 	Music_PostThink(client);
@@ -1542,6 +1657,15 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		damage *= difficulty_math + 1.0; //More damage !! only upto double.
 		Replicated_Damage *= difficulty_math + 1.0;
 	}
+	if(f_MultiDamageTaken[victim] != 1.0)
+	{
+		damage *= f_MultiDamageTaken[victim];
+	}
+	if(f_MultiDamageTaken_Flat[victim] != 1.0)
+	{
+		damage *= f_MultiDamageTaken_Flat[victim];
+	}
+	
 	//freeplay causes more damage taken.
 	if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
 	{
@@ -1766,34 +1890,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 
 			if(armorEnt == victim)
 			{
-				switch(Armour_Level_Current[victim])
-				{
-					case 1:
-					{
-						damage *= 0.9;
-						Replicated_Damage *= 0.9;
-					}
-					case 2:
-					{
-						damage *= 0.85;
-						Replicated_Damage *= 0.85;
-					}
-					case 3:
-					{
-						damage *= 0.8;
-						Replicated_Damage *= 0.80;
-					}
-					case 4:
-					{
-						damage *= 0.75;
-						Replicated_Damage *= 0.75;
-					}
-					default:
-					{
-						damage *= 1.0;
-						Replicated_Damage *= 1.0;
-					}
-				}
+				float percentage = ArmorPlayerReduction(victim);
+				damage *= percentage;
+				Replicated_Damage *= percentage;
 			}
 			else
 			{
@@ -2229,6 +2328,43 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 	return damage;
 }
 
+
+static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapon)
+{
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_OCEAN, WEAPON_SPECTER:
+		{
+			return Gladiia_OnTakeDamageAlly_Hud(victim);
+		}
+		case WEAPON_GLADIIA:
+		{
+			return Gladiia_OnTakeDamageSelf_Hud(victim);
+		}
+		case WEAPON_BLEMISHINE:
+		{
+			return Player_OnTakeDamage_Blemishine_Hud(victim);
+		}
+		case WEAPON_BOARD:
+		{
+			return Player_OnTakeDamage_Board_Hud(victim);
+		}
+		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
+		{
+			return WeaponLeper_OnTakeDamagePlayer_Hud(victim);
+		}
+		case WEAPON_RAPIER:
+		{
+			return Player_OnTakeDamage_Rapier_Hud(victim);
+		}
+		case WEAPON_RED_BLADE:
+		{
+			return WeaponRedBlade_OnTakeDamage_Hud(victim);
+		}
+	}
+	return 1.0;
+}
+
 //problem: tf2 code lazily made it only work for clients, the server doesnt get this information updated all the time now.
 
 void UpdatePlayerFakeModel(int client)
@@ -2339,3 +2475,60 @@ public Action Timer_CauseFadeInAndFadeDelete(Handle timer)
 }
 #endif	// ZR
 
+void IncreaceEntityDamageTakenBy(int entity, float amount, float duration, bool Flat = false)
+{
+	if(!Flat)
+		f_MultiDamageTaken[entity] *= amount;
+	else
+		f_MultiDamageTaken_Flat[entity] += amount;
+
+	Handle pack;
+	CreateDataTimer(duration, RevertDamageTakenAgain, pack, TIMER_FLAG_NO_MAPCHANGE);
+	WritePackCell(pack, EntIndexToEntRef(entity));
+	WritePackCell(pack, Flat);
+	WritePackFloat(pack, amount);
+}
+
+public Action RevertDamageTakenAgain(Handle final, any pack)
+{
+	ResetPack(pack);
+	int entity = EntRefToEntIndex(ReadPackCell(pack));
+	bool Flat = ReadPackCell(pack);
+	float damagemulti = ReadPackFloat(pack);
+	
+	if (IsValidEntity(entity))
+	{
+		if(!Flat)
+			f_MultiDamageTaken[entity] /= damagemulti;
+		else
+			f_MultiDamageTaken_Flat[entity] -= damagemulti;
+	}
+	return Plugin_Continue;
+}
+
+float ArmorPlayerReduction(int victim)
+{
+	switch(Armor_Level[victim])
+	{
+		case 50:
+		{
+			return 0.9;
+		}
+		case 100:
+		{
+			return 0.85;
+		}
+		case 150:
+		{
+			return 0.8;
+		}
+		case 200:
+		{
+			return 0.75;
+		}
+		default:
+		{
+			return 1.0;
+		}
+	}
+}

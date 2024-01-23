@@ -3627,7 +3627,7 @@ public Action MortarFire(Handle timer, int client)
 		{
 			float damage = 10.0;
 							
-			damage *= 45.0;
+			damage *= 30.0;
 			
 			float attack_speed;
 			float sentry_range;
@@ -3704,7 +3704,7 @@ static void Railgun_Boom(int client)
 		int BEAM_BeamRadius = 40;
 		float Strength = 10.0;
 							
-		Strength *= 40.0;
+		Strength *= 20.0;
 
 		float attack_speed;
 
@@ -3765,22 +3765,6 @@ static void Railgun_Boom(int client)
 			hullMax[2] = -hullMin[2];
 			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, obj);	// 1073741824 is CONTENTS_LADDER?
 			delete trace;
-	//		int weapon = BEAM_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
-			/*
-			for (int victim = 1; victim < MaxClients; victim++)
-			{
-				if (BEAM_HitDetected[victim] && BossTeam != GetClientTeam(victim))
-				{
-					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-					float distance = GetVectorDistance(startPoint, playerPos, false);
-					float damage = BEAM_CloseDPT[client] + (BEAM_FarDPT[client]-BEAM_CloseDPT[client]) * (distance/BEAM_MaxDistance[client]);
-					if (damage < 0)
-						damage *= -1.0;
-	
-					TakeDamage(victim, client, client, damage/6, 2048, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
-				}
-			}
-			*/
 			float vecForward[3];
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			
@@ -3801,11 +3785,11 @@ static void Railgun_Boom(int client)
 							
 						if(First_Target_Hit)
 						{
-							damage *= 1.65;
+							damage *= 1.55;
 							First_Target_Hit = false;
 						}
 					
-						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), startPoint);	// 2048 is DMG_NOGIB?
+						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), playerPos);	// 2048 is DMG_NOGIB?
 						BEAM_Targets_Hit[obj] *= LASER_AOE_DAMAGE_FALLOFF;
 					}
 					else
@@ -3856,7 +3840,7 @@ static void Railgun_Boom_Client(int client)
 		int BEAM_BeamRadius = 40;
 		float Strength = 10.0;
 							
-		Strength *= 40.0;
+		Strength *= 20.0;
 		float attack_speed;
 		
 		attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true, true); //Sentry attack speed bonus
@@ -3917,22 +3901,7 @@ static void Railgun_Boom_Client(int client)
 			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 			delete trace;
 			FinishLagCompensation_Base_boss();
-	//		int weapon = BEAM_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
-			/*
-			for (int victim = 1; victim < MaxClients; victim++)
-			{
-				if (BEAM_HitDetected[victim] && BossTeam != GetClientTeam(victim))
-				{
-					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-					float distance = GetVectorDistance(startPoint, playerPos, false);
-					float damage = BEAM_CloseDPT[client] + (BEAM_FarDPT[client]-BEAM_CloseDPT[client]) * (distance/BEAM_MaxDistance[client]);
-					if (damage < 0)
-						damage *= -1.0;
-	
-					TakeDamage(victim, client, client, damage/6, 2048, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
-				}
-			}
-			*/
+
 			float vecForward[3];
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			
@@ -3952,11 +3921,11 @@ static void Railgun_Boom_Client(int client)
 							
 						if(First_Target_Hit)
 						{
-							damage *= 1.65;
+							damage *= 1.55;
 							First_Target_Hit = false;
 						}
 	
-						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), startPoint);	// 2048 is DMG_NOGIB?
+						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), WorldSpaceCenter(BEAM_BuildingHit[building]));	// 2048 is DMG_NOGIB?
 						BEAM_Targets_Hit[obj] *= LASER_AOE_DAMAGE_FALLOFF;
 					}
 					else

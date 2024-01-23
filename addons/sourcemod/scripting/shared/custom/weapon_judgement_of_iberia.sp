@@ -110,13 +110,20 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 
 	//todo: If needed, add a delay so it doesnt happen on every swing
 	bool ThereWasSeaborn = false;
-	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+	if(!StrContains(WhatDifficultySetting, "Schwert & Donner") || !StrContains(WhatDifficultySetting, "You."))
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-		if(IsValidEntity(entity) && i_BleedType[entity] == BLEEDTYPE_SEABORN)
+		ThereWasSeaborn = true;
+	}
+	if(!ThereWasSeaborn)
+	{
+		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 		{
-			ThereWasSeaborn = true;
-			break;
+			int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+			if(IsValidEntity(entity) && i_BleedType[entity] == BLEEDTYPE_SEABORN)
+			{
+				ThereWasSeaborn = true;
+				break;
+			}
 		}
 	}
 	if(!ThereWasSeaborn)
@@ -282,7 +289,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 		{
 			int target = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(target) && !b_NpcHasDied[target])
+			if(IsValidEnemy(client, target, true, false))
 			{
 				VicLoc = WorldSpaceCenter(target);
 				
@@ -401,7 +408,7 @@ public void Npc_Irene_Launch_client(int client)
 			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 			{
 				int enemy = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-				if(IsValidEntity(enemy) && !b_NpcHasDied[enemy])
+				if(IsValidEnemy(client, enemy, true, false))
 				{
 					VicLoc = WorldSpaceCenter(enemy);
 					

@@ -79,7 +79,7 @@ public void Super_Star_Shooter_Main(int client, int weapon, bool crit, int slot)
 	time *= Attributes_Get(weapon, 102, 1.0);
 		
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_STAR_SHOOTER, weapon, "powerup_icon_supernova");
-	SetEntityCollisionGroup(projectile, 1); //Do not collide.
+	SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 	for (int entity = 0; entity < MAXENTITIES; entity++)
 	{
 		SSS_AlreadyHit[projectile][entity] = false;
@@ -133,9 +133,9 @@ public void Super_Star_Shooter_pap1_Main(int client, int weapon, bool crit, int 
 	
 	float fPos[3];
 	GetClientEyePosition(client, fPos);
-	
+	//burningplayer_corpse_rainbow_stars
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_STAR_SHOOTER, weapon, "powerup_icon_supernova");
-	SetEntityCollisionGroup(projectile, 1); //Do not collide.
+	SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 	for (int entity = 0; entity < MAXENTITIES; entity++)
 	{
 		SSS_AlreadyHit[projectile][entity] = false;
@@ -179,10 +179,9 @@ public Action Disable_Star_Shooter_Ability(Handle timer, int client)
 }
 
 
-public void SuperStarShooterOnHit(int entity, int other)
+public void SuperStarShooterOnHit(int entity, int target)
 {
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);
-	int target = Target_Hit_Wand_Detection(entity, other);
 	if (target > 0)	
 	{
 		if(SSS_AlreadyHit[entity][target])

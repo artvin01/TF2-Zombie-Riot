@@ -70,8 +70,6 @@ public void GodArkantos_OnMapStart()
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
 }
-static int i_TargetToWalkTo[MAXENTITIES];
-static float f_TargetToWalkToDelay[MAXENTITIES];
 static float f_ArkantosCantDieLimit[MAXENTITIES];
 static bool b_angered_twice[MAXENTITIES];
 static float f_TalkDelayCheck;
@@ -456,34 +454,34 @@ public void GodArkantos_ClotThink(int iNPC)
 	{
 		if(npc.m_flArkantosBuffEffect < GetGameTime(npc.index) && !npc.m_flNextRangedAttackHappening && ZR_GetWaveCount()+1 > 30)
 		{
-			i_TargetToWalkTo[npc.index] = GetClosestAlly(npc.index);	
-			if(i_TargetToWalkTo[npc.index] == -1) //there was no alive ally, we will return to finding an enemy and killing them.
+			npc.m_iTargetWalkTo = GetClosestAlly(npc.index);	
+			if(npc.m_iTargetWalkTo == -1) //there was no alive ally, we will return to finding an enemy and killing them.
 			{
-				i_TargetToWalkTo[npc.index] = GetClosestTarget(npc.index);
+				npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
 			}
 		}
 		else 
 		{
-			i_TargetToWalkTo[npc.index] = GetClosestTarget(npc.index);
+			npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
 		}
 		f_TargetToWalkToDelay[npc.index] = gameTime + 0.5;
 	}	
 	int ActionToTake = -1;
 	bool AllowSelfDefense = true;
 	//This means nothing, we do nothing.
-	if(IsEntityAlive(i_TargetToWalkTo[npc.index]))
+	if(IsEntityAlive(npc.m_iTargetWalkTo))
 	{
 		//Predict their pos.
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(i_TargetToWalkTo[npc.index]);
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetWalkTo);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, i_TargetToWalkTo[npc.index]);
+		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTargetWalkTo);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, i_TargetToWalkTo[npc.index]);
+			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
 		}
 
 		if(npc.m_flNextRangedAttackHappening > GetGameTime(npc.index))
@@ -494,7 +492,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		{
 			ActionToTake = -1;
 		}
-		else if(IsValidEnemy(npc.index, i_TargetToWalkTo[npc.index]))
+		else if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo))
 		{
 			if(flDistanceToTarget < (500.0 * 500.0) && flDistanceToTarget > (250.0 * 250.0) && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 			{
@@ -507,7 +505,7 @@ public void GodArkantos_ClotThink(int iNPC)
 				ActionToTake = 2;
 			}
 		}
-		else if(IsValidAlly(npc.index, i_TargetToWalkTo[npc.index]))
+		else if(IsValidAlly(npc.index, npc.m_iTargetWalkTo))
 		{
 			if(flDistanceToTarget < (125.0* 125.0) && npc.m_flArkantosBuffEffect < GetGameTime(npc.index) && ZR_GetWaveCount()+1 > 30)
 			{
@@ -577,7 +575,7 @@ public void GodArkantos_ClotThink(int iNPC)
 	}
 	else
 	{
-		i_TargetToWalkTo[npc.index] = GetClosestTarget(npc.index);
+		npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
 		f_TargetToWalkToDelay[npc.index] = gameTime + 0.5;		
 	}
 	if(AllowSelfDefense)
@@ -706,7 +704,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 				GodArkantosSpawnEnemy(MEDIVAL_SPEARMEN,_, RoundToCeil(2.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_SCOUT,_, RoundToCeil(2.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_MAN_AT_ARMS,_, RoundToCeil(3.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(MEDIVAL_CONSTRUCT, RoundToCeil(5000.0 * MultiGlobalHealth), 1, true);		
+				GodArkantosSpawnEnemy(MEDIVAL_CONSTRUCT, RoundToCeil(5000.0 * MultiGlobalArkantos), 1, true);		
 			}
 			else
 			{
@@ -714,7 +712,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 				GodArkantosSpawnEnemy(MEDIVAL_SPEARMEN,_, RoundToCeil(5.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_SCOUT,_, RoundToCeil(5.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_MAN_AT_ARMS,_, RoundToCeil(8.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(MEDIVAL_CONSTRUCT, RoundToCeil(10000.0 * MultiGlobalHealth), 1, true);		
+				GodArkantosSpawnEnemy(MEDIVAL_CONSTRUCT, RoundToCeil(10000.0 * MultiGlobalArkantos), 1, true);		
 			}
 		}
 	}
@@ -762,16 +760,16 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
 				GodArkantosSpawnEnemy(MEDIVAL_PIKEMAN,_, RoundToCeil(5.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_CROSSBOW_GIANT,_, RoundToCeil(1.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(5000.0 * MultiGlobalHealth), 1, true);		
-				GodArkantosSpawnEnemy(MEDIVAL_CONSTRUCT, RoundToCeil(10000.0 * MultiGlobalHealth), RoundToCeil(2.0 * MultiGlobal), true);		
+				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(5000.0 * MultiGlobalArkantos), 1, true);		
+				GodArkantosSpawnEnemy(MEDIVAL_CONSTRUCT, RoundToCeil(10000.0 * MultiGlobalArkantos), RoundToCeil(2.0 * MultiGlobal), true);		
 			}
 			else
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 				GodArkantosSpawnEnemy(MEDIVAL_PIKEMAN,_, RoundToCeil(15.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_CROSSBOW_GIANT,_, RoundToCeil(2.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(10000.0 * MultiGlobalHealth), 1, true);		
-				GodArkantosSpawnEnemy(MEDIVAL_CONSTRUCT, RoundToCeil(10000.0 * MultiGlobalHealth), RoundToCeil(2.0 * MultiGlobal), true);				
+				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(10000.0 * MultiGlobalArkantos), 1, true);		
+				GodArkantosSpawnEnemy(MEDIVAL_CONSTRUCT, RoundToCeil(10000.0 * MultiGlobalArkantos), RoundToCeil(2.0 * MultiGlobal), true);				
 			}
 		}
 	}
@@ -820,16 +818,16 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
 				GodArkantosSpawnEnemy(MEDIVAL_HUSSAR,_, RoundToCeil(1.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_OBUCH,_, RoundToCeil(5.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(5000.0 * MultiGlobalHealth), 1);
-				GodArkantosSpawnEnemy(MEDIVAL_ACHILLES, RoundToCeil(75000.0 * MultiGlobalHealth), 1);
+				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(5000.0 * MultiGlobalArkantos), 1);
+				GodArkantosSpawnEnemy(MEDIVAL_ACHILLES, RoundToCeil(75000.0 * MultiGlobalArkantos), 1);
 			}
 			else
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 				GodArkantosSpawnEnemy(MEDIVAL_HUSSAR,_, RoundToCeil(2.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_OBUCH,_, RoundToCeil(8.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(2500.0 * MultiGlobalHealth), 1, true);		
-				GodArkantosSpawnEnemy(MEDIVAL_ACHILLES, RoundToCeil(125000.0 * MultiGlobalHealth), 1, true);					
+				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(2500.0 * MultiGlobalArkantos), 1, true);		
+				GodArkantosSpawnEnemy(MEDIVAL_ACHILLES, RoundToCeil(125000.0 * MultiGlobalArkantos), 1, true);					
 			}
 		}
 	}
@@ -866,7 +864,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			GodArkantosSpawnEnemy(MEDIVAL_ELITE_SKIRMISHER,50000, RoundToCeil(10.0 * MultiGlobal));
 			GodArkantosSpawnEnemy(MEDIVAL_PALADIN,100000, RoundToCeil(10.0 * MultiGlobal));
 			GodArkantosSpawnEnemy(MEDIVAL_SWORDSMAN_GIANT,250000, RoundToCeil(2.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(MEDIVAL_ACHILLES, RoundToCeil(300000.0 * MultiGlobalHealth), 1);
+			GodArkantosSpawnEnemy(MEDIVAL_ACHILLES, RoundToCeil(300000.0 * MultiGlobalArkantos), 1);
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
@@ -878,18 +876,18 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
 				GodArkantosSpawnEnemy(MEDIVAL_HUSSAR,100000, RoundToCeil(1.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_RIDDENARCHER,75000, RoundToCeil(10.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(25000.0 * MultiGlobalHealth), 1);
-				GodArkantosSpawnEnemy(MEDIVAL_SON_OF_OSIRIS, RoundToCeil(750000.0 * MultiGlobalHealth), 1, true);		
-				GodArkantosSpawnEnemy(MEDIVAL_VILLAGER, RoundToCeil(150000.0 * MultiGlobalHealth), 1, true);		
+				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(25000.0 * MultiGlobalArkantos), 1);
+				GodArkantosSpawnEnemy(MEDIVAL_SON_OF_OSIRIS, RoundToCeil(750000.0 * MultiGlobalArkantos), 1, true);		
+				GodArkantosSpawnEnemy(MEDIVAL_VILLAGER, RoundToCeil(150000.0 * MultiGlobalArkantos), 1, true);		
 			}
 			else
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 				GodArkantosSpawnEnemy(MEDIVAL_HUSSAR,100000, RoundToCeil(2.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_RIDDENARCHER,75000, RoundToCeil(20.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(50000.0 * MultiGlobalHealth), 1);
-				GodArkantosSpawnEnemy(MEDIVAL_SON_OF_OSIRIS, RoundToCeil(1500000.0 * MultiGlobalHealth), 1, true);		
-				GodArkantosSpawnEnemy(MEDIVAL_VILLAGER, RoundToCeil(250000.0 * MultiGlobalHealth), 1, true);				
+				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(50000.0 * MultiGlobalArkantos), 1);
+				GodArkantosSpawnEnemy(MEDIVAL_SON_OF_OSIRIS, RoundToCeil(1500000.0 * MultiGlobalArkantos), 1, true);		
+				GodArkantosSpawnEnemy(MEDIVAL_VILLAGER, RoundToCeil(250000.0 * MultiGlobalArkantos), 1, true);				
 			}
 		}
 	}
@@ -1227,7 +1225,7 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 						int red = 65;
 						int green = 65;
 						int blue = 255;
-						if(EnemyLoop == i_TargetToWalkTo[npc.index])
+						if(EnemyLoop == npc.m_iTargetWalkTo)
 						{
 							red = 220;
 							green = 220;
@@ -1295,7 +1293,7 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 							int red = 65;
 							int green = 65;
 							int blue = 255;
-							if(entity_close == i_TargetToWalkTo[npc.index])
+							if(entity_close == npc.m_iTargetWalkTo)
 							{
 								red = 220;
 								green = 220;
@@ -1370,7 +1368,7 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 					if(Distance < Range)
 					{
 						//only apply the laser if they are near us.
-						if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && EnemyLoop == i_TargetToWalkTo[npc.index])
+						if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && EnemyLoop == npc.m_iTargetWalkTo)
 						{
 							//Pull them.
 							static float angles[3];
@@ -1451,7 +1449,7 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 							//only apply the laser if they are near us.
 							if(Can_I_See_Enemy_Only(npc.index, entity_close) && IsEntityAlive(entity_close))
 							{
-								if(entity_close != i_TargetToWalkTo[npc.index])
+								if(entity_close != npc.m_iTargetWalkTo)
 								{
 									CClotBody npcenemy = view_as<CClotBody>(entity_close);
 									static float flPos_1[3]; 
