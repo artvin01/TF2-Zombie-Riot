@@ -710,26 +710,6 @@ public void ArchmageBones_ClotThink(int iNPC)
 		{
 			npc.StopPathing();
 		}
-		
-		/*float optimalPos[3], ang[3], testAng[3];
-			
-		float diff = flDistanceToTarget - ARCHMAGE_HOVER_OPTIMALDIST;
-			
-		GetAngleToPoint(npc.index, targPos, testAng, ang);
-			
-		if (diff < 0.0)
-		{
-			ScaleVector(ang, -1.0);
-			diff *= -1.0;
-		}
-				
-		Handle trace = TR_TraceRayFilterEx(pos, ang, MASK_SHOT, RayType_Infinite, Archmage_WorldOnly);
-		TR_GetEndPosition(optimalPos, trace);
-		delete trace;
-			
-		Archmage_ConstrainDistance(pos, optimalPos, diff);
-				
-		NPC_SetGoalVector(npc.index, optimalPos);*/
 	}
 	else
 	{

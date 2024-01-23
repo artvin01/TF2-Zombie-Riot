@@ -14,8 +14,8 @@
 
 #define PRIEST_HEALINGPARTICLE		"superrare_greenenergy"
 
-static float BONES_SAINT_SPEED = 300.0;
-static float BONES_SAINT_SPEED_BUFFED = 350.0;
+static float BONES_SAINT_SPEED = 350.0;
+static float BONES_SAINT_SPEED_BUFFED = 400.0;
 
 static float SAINTBONES_HEAL_RANGE = 300.0;
 static float SAINTBONES_HEAL_RANGE_BUFFED = 450.0;
@@ -416,14 +416,14 @@ public int Priest_GetTarget(SaintBones npc)
 	//Check 4: We were not able to find ANY valid allies to heal, start zapping survivors.	
 	if (closest <= 0)
 		closest = GetClosestTarget(npc.index);
-		
+	
+	//Check 5: If we are already healing something, compare its priority level to the new target's to determine whether or not we should switch our heal target.
 	if (closest > 0 && Priest_IsHealing[npc.index] && IsValidEntity(npc.m_iTarget))
 	{
 		int current = npc.m_iTarget;
 		CClotBody currentNPC = view_as<CClotBody>(current);
 		CClotBody newNPC = view_as<CClotBody>(closest);
 			
-		//We are already healing a skeleton, check to see if we should abandon it for a new target.
 		if (currentNPC.BoneZone_IsASkeleton())
 		{
 			if (!newNPC.BoneZone_IsASkeleton()) //The new target is not a skeleton, don't change our target.
