@@ -2174,6 +2174,15 @@ methodmap CClotBody < CBaseCombatCharacter
 		return false;
 	}
 	
+	//Retrieves the number of NPCs who are currently providing this skeleton with a buff.
+	public int BoneZone_GetNumBuffers()
+	{
+		if (this.g_BoneZoneBuffers == null || !this.BoneZone_IsASkeleton())
+			return 0;
+			
+		return GetArraySize(this.g_BoneZoneBuffers);
+	}
+	
 	//Turns a non-buffed skeleton into a buffed one, or vice-versa.
 	//TODO: The max health set by this will need to account for later waves where skeletons have higher HP.
 	public void BoneZone_SetBuffedState(bool buffed, int buffer)

@@ -398,8 +398,10 @@ public void SaintBones_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
+//TODO: For some reason, they change their target automatically when they are damaged by an NPC, which causes them to stop healing their heal target and switch to aggro mode.
+//Figure out why this happens and fix it.
 public int Priest_GetTarget(SaintBones npc)
-{
+{	
 	//Check 1: Find the closest non-buffed skeleton.
 	int closest = GetClosestAlly(npc.index, _, _, view_as<Function>(Priest_IsNonBuffedSkeleton));
 	
@@ -414,6 +416,24 @@ public int Priest_GetTarget(SaintBones npc)
 	//Check 4: We were not able to find ANY valid allies to heal, start zapping survivors.	
 	if (closest <= 0)
 		closest = GetClosestTarget(npc.index);
+		
+	if (closest > 0 && Priest_IsHealing[npc.index] && IsValidEntity(npc.m_iTarget))
+	{
+		int current = npc.m_iTarget;
+		CClotBody currentNPC = view_as<CClotBody>(current);
+		CClotBody newNPC = view_as<CClotBody>(closest);
+			
+		//We are already healing a skeleton, check to see if we should abandon it for a new target.
+		if (currentNPC.BoneZone_IsASkeleton())
+		{
+			if (!newNPC.BoneZone_IsASkeleton()) //The new target is not a skeleton, don't change our target.
+				closest = current;
+			else if (newNPC.BoneZone_GetBuffedState() || newNPC.m_bBoneZoneNaturallyBuffed)	//The new target is already buffed, don't change our target.
+				closest = current;
+			else if (!currentNPC.m_bBoneZoneNaturallyBuffed && currentNPC.BoneZone_GetNumBuffers() <= 1)	//The current heal target will lose their buffed form if we change our target, do not change.
+				closest = current;
+		}
+	}
 		
 	return closest;
 }
@@ -459,9 +479,9 @@ public bool Priest_IsNotAHealer(int checker, int target)
 
 public void SaintBones_PriestLogic(SaintBones npc, int closest)
 {
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index) && !IsValidAlly(npc.index, closest))
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = Priest_GetTarget(npc);	//TODO: Priests should drop their current target if a higher-priority target spawns.
+		npc.m_iTarget = Priest_GetTarget(npc);
 		closest = npc.m_iTarget;
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 		npc.StartPathing();
@@ -472,7 +492,6 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
-		//npc.m_iTarget = GetClosestTarget(npc.index);
 		
 		if (Priest_IsHealing[npc.index])
 		{
@@ -518,8 +537,6 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 			npc.StartPathing();
 		}
 
-		//TODO: Add a gesture where he has his arm outstretched towards the heal target. Attach the Green Energy unusual particle to his hand, then 
-		//draw a green TE beam from his hand to the heal target's body.
 		if(flDistanceToTarget <= SAINTBONES_HEAL_RANGE)
 		{
 			if (!Priest_IsHealing[npc.index])
