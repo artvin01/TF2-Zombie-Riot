@@ -1686,6 +1686,11 @@ public void OnClientPostAdminCheck(int client)
 	Database_ClientPostAdminCheck(client);
 #endif
 }
+
+public void OnClientConnected(int client)
+{
+	AdjustBotCount();
+}
 				
 public void OnClientPutInServer(int client)
 {
@@ -1707,7 +1712,6 @@ public void OnClientPutInServer(int client)
 	
 //	f_LeftForDead_Cooldown[client] = GetGameTime() + 100.0;
 	//do cooldown upon connection.
-	AdjustBotCount();
 	WeaponClass[client] = TFClass_Unknown;
 	f_ClientReviveDelay[client] = 0.0;
 	
@@ -1809,6 +1813,8 @@ public void OnClientDisconnect_Post(int client)
 #if defined RPG
 	RPG_ClientDisconnect_Post();
 #endif
+
+	AdjustBotCount();
 }
 
 public void OnPlayerRunCmdPre(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])

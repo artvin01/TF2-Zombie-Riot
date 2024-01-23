@@ -66,7 +66,7 @@ void AdjustBotCount()
 	{
 		if(IsClientInGame(client) && IsFakeClient(client))
 		{
-			if(botcount > 2 || slots >= (MaxClients - 2))
+			if(botcount > 2 || slots >= (MaxClients - 3))
 			{
 				botcount--;
 				slots--;
@@ -75,7 +75,7 @@ void AdjustBotCount()
 		}
 	}
 	
-	while(botcount < 2 && slots < (MaxClients - 3))
+	while(botcount < 2 && slots < (MaxClients - 4))
 	{
 		SpawnBotCustom("bot1", true);
 		botcount++;
