@@ -108,7 +108,7 @@ public void Isharmla_ClotThink(int iNPC)
 	
 	if(npc.m_iTargetAlly != -1)
 	{
-		int entity = EntRefToEntIndex(npc.m_iTargetAlly);
+		int entity = npc.m_iTargetAlly;
 		if(entity != INVALID_ENT_REFERENCE)
 			return;
 		
