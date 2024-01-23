@@ -70,6 +70,7 @@ void AdjustBotCount()
 			{
 				botcount--;
 				slots--;
+				KillFeed_ClientDisconnect(client);
 				KickClient(client);
 			}
 		}
