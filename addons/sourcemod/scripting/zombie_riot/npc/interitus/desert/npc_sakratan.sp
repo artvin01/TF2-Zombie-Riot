@@ -298,7 +298,7 @@ void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sou
 	if(victim <= MaxClients)
 	{
 		Armor_DebuffType[victim] = 2;
-		if((ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
+		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 		{
 			Armor_Charge[victim] -= damage;
 			if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
@@ -327,6 +327,7 @@ void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sou
 				_,
 				SakratanGroupDebuff);
 				SetEntProp(attacker, Prop_Send, "m_iTeamNum", TeamNum);
+				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
 			//	Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
 			}
 			

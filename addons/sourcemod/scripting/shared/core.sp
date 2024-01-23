@@ -582,6 +582,7 @@ int b_BobsCuringHand_Revived[MAXTF2PLAYERS];
 bool b_NemesisHeart[MAXTF2PLAYERS];
 bool b_OverlordsFinalWish[MAXTF2PLAYERS];
 bool b_BobsTrueFear[MAXTF2PLAYERS];
+float f_ArmorCurrosionImmunity[MAXENTITIES];
 int i_nm_body_client[MAXTF2PLAYERS];
 int g_particleMissText;
 Handle g_hRecalculatePlayerBodygroups;

@@ -601,6 +601,7 @@ void ZR_MapStart()
 	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
 	Zero(f_WasRecentlyRevivedViaNonWave);
 	Zero(f_TimeAfterSpawn);
+	Zero(f_ArmorCurrosionImmunity);
 	Reset_stats_Irene_Global();
 	Reset_stats_PHLOG_Global();
 	Irene_Map_Precache();

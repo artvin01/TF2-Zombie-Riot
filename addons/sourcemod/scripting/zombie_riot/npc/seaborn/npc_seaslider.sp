@@ -238,7 +238,7 @@ void SeaSlider_AddNeuralDamage(int victim, int attacker, int damagebase, bool so
 	if(victim <= MaxClients)
 	{
 		Armor_DebuffType[victim] = 1;
-		if((ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
+		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 		{
 			Armor_Charge[victim] -= damage;
 			if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
@@ -257,6 +257,7 @@ void SeaSlider_AddNeuralDamage(int victim, int attacker, int damagebase, bool so
 				else
 					SDKHooks_TakeDamage(victim, attacker, attacker, 400.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
 				b_ThisNpcIsSawrunner[attacker] = sawrunner;
+				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
 			}
 			
 			if(sound || !Armor_Charge[victim])
