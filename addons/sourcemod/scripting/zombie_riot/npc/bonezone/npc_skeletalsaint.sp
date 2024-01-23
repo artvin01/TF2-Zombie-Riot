@@ -40,6 +40,7 @@ static float LIGHTNING_DAMAGE = 30.0;
 static float LIGHTNING_DAMAGE_ENTITYMULT = 3.0;
 static float LIGHTNING_RANGE = 350.0;
 static float LIGHTNING_INTERVAL = 1.0;
+static float LIGHTNING_WIDTH = 20.0;
 
 //THUNDER CLAP: Skeletal Saints use this attack when they cannot find a valid ally to heal.
 //They clap their hands together, triggering an enormous, very deadly blast of thunder at their location.
@@ -584,6 +585,16 @@ public void Priest_Cast(SaintBones npc, int closest)
 
 public bool Priest_OnlyHitWorld(int entity, int mask) { return entity == 0 || b_is_a_brush[entity]; }
 
+static bool Priest_LightningHit[MAXENTITIES];
+
+public bool Priest_LightningTrace(int entity, int contentsMask, int user)
+{
+	if (IsEntityAlive(entity) && entity != user)
+		Priest_LightningHit[entity] = true;
+		
+	return false;
+}
+
 public void Priest_CheckCast(SaintBones npc, int closest)
 {
 	if (GetGameTime(npc.index) >= castTime[npc.index] && npc.m_flAttackHappenswillhappen)
@@ -604,7 +615,37 @@ public void Priest_CheckCast(SaintBones npc, int closest)
 			constrainDistance(center, startLoc, GetVectorDistance(center, startLoc), 20.0);
 			constrainDistance(center, endLoc, GetVectorDistance(center, endLoc), LIGHTNING_RANGE);
 			
-			//TODO: actually deal damage, thanks :)
+			float hullMin[3], hullMax[3];
+			
+			hullMin[0] = -LIGHTNING_WIDTH;
+			hullMin[1] = hullMin[0];
+			hullMin[2] = hullMin[0];
+			hullMax[0] = -hullMin[0];
+			hullMax[1] = -hullMin[1];
+			hullMax[2] = -hullMin[2];
+			
+			//We use center instead of startLoc because otherwise players can avoid the beam by being at point-blank:
+			TR_TraceHullFilter(center, endLoc, hullMin, hullMax, 1073741824, Priest_LightningTrace, npc.index);
+			
+			for (int victim = 1; victim < MAXENTITIES; victim++)
+			{
+				if (Priest_LightningHit[victim])
+				{
+					Priest_LightningHit[victim] = false;
+					
+					if (IsValidEnemy(npc.index, victim))
+					{
+						float damage = LIGHTNING_DAMAGE;
+	
+						if(ShouldNpcDealBonusDamage(victim))
+						{
+							damage *= LIGHTNING_DAMAGE_ENTITYMULT;
+						}
+						
+						SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_PLASMA, _, NULL_VECTOR, WorldSpaceCenter(victim));
+					}
+				}
+			}
 			
 			ParticleEffectAt(startLoc, PARTICLE_GREENBLAST, 2.0);
 			SpawnBeam_Vectors(startLoc, endLoc, 0.25, 20, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 0.0);
