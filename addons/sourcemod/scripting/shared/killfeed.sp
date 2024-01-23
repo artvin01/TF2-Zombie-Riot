@@ -55,7 +55,7 @@ void AdjustBotCount()
 	int botcount = zr_killfeed.BoolValue ? 0 : 99;
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientConnected(client) && !IsFakeClient(client))
+		if(IsClientConnected(client))
 			slots++;
 		
 		if(IsClientInGame(client) && IsFakeClient(client))
