@@ -350,6 +350,7 @@ methodmap CuredFatherGrigori < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		npc.m_flAttackHappenswillhappen = false;
+		BoughtGregHelp = false;
 		
 		return npc;
 	}
