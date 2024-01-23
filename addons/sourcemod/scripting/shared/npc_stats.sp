@@ -2110,15 +2110,45 @@ methodmap CClotBody < CBaseCombatCharacter
 	//Returns whether or not the NPC is a skeleton.
 	public bool BoneZone_IsASkeleton()
 	{
-		int index = view_as<int>(i_NpcInternalId[this.index]);
-		return index == 129 || (index > 343 && index < 355);
+		//There is a much "cleaner" way of doing this, and I know what it is, but it's easier to just do this:
+		switch (i_NpcInternalId[this.index])
+		{
+			case BONEZONE_BASICBONES:
+				return true;
+			case BONEZONE_BUFFED_BASICBONES:
+				return true;
+			case BONEZONE_BEEFYBONES:
+				return true;
+			case BONEZONE_BUFFED_BEEFYBONES:
+				return true;
+			case BONEZONE_BRITTLEBONES:
+				return true;
+			case BONEZONE_BUFFED_BRITTLEBONES:
+				return true;
+			case BONEZONE_BIGBONES:
+				return true;
+			case BONEZONE_BUFFED_BIGBONES:
+				return true;
+			case BONEZONE_ARCHMAGE:
+				return true;
+			case BONEZONE_BUFFED_ARCHMAGE:
+				return true;
+			case BONEZONE_SAINTBONES:
+				return true;
+			case BONEZONE_BUFFED_SAINTBONES:
+				return true;
+		}
+		
+		return false;
+		
+		/*int index = view_as<int>(i_NpcInternalId[this.index]);
+		return index == 129 || (index > 343 && index < 351) || (index > 355 && index < 360);*/
 	}
 	
 	//Returns whether or not the NPC is a Profaned Priest or Skeletal Saint, or any type of medic for that matter.
 	public bool BoneZone_IsASaint()
 	{
-		int index = view_as<int>(i_NpcInternalId[this.index]);
-		return (index == 353 || index == 354) || Is_a_Medic[this.index];
+		return (i_NpcInternalId[this.index] == BONEZONE_SAINTBONES || i_NpcInternalId[this.index] == BONEZONE_BUFFED_SAINTBONES) || Is_a_Medic[this.index];
 	}
 	
 	//Returns whether or not the NPC is a buffed skeleton.

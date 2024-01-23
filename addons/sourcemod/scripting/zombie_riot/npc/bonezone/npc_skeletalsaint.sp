@@ -352,7 +352,7 @@ public void Priest_RemoveHealingParticle(int index)
 //Profaned Priests cannot be transformed into Skeletal Saints by either of these effects, though they *can* be buffed by other sources.
 //If all valid heal targets are dead (meaning everything that is not a Saint or Priest), they will take on the movement patterns of Skeletal Archmages and fight by casting low-damage lightning bolts.
 
-//TODO: PRIEST HEAL TARGET PRIORITY LIST:
+//PRIEST HEAL TARGET PRIORITY LIST:
 //	1. Non-buffed skeletons, not including healers.
 //	2. Any skeleton, not including healers.
 //	3. Literally any friendly NPC that is not a healer.
@@ -461,7 +461,7 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 {
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index) && !IsValidAlly(npc.index, closest))
 	{
-		npc.m_iTarget = Priest_GetTarget(npc);
+		npc.m_iTarget = Priest_GetTarget(npc);	//TODO: Priests should drop their current target if a higher-priority target spawns.
 		closest = npc.m_iTarget;
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 		npc.StartPathing();
@@ -562,7 +562,11 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 			}
 			
 			targetNPC.BoneZone_SetBuffedState(true, npc.index);
-			npc.m_flSpeed = targetNPC.m_flSpeed * 1.2;	//Move a little faster than the target NPC so we don't lose them.
+			
+			//Move a little faster than the target NPC so we don't lose them.
+			float newSpeed = targetNPC.m_flSpeed * 1.2;
+			if (npc.m_flSpeed <= newSpeed)
+				npc.m_flSpeed = newSpeed;
 		}
 		else
 		{
