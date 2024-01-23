@@ -48,7 +48,7 @@ methodmap Isharmla < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		npc.Anger = false;
-		npc.m_iTargetAlly = -1;
+		i_TargetAlly[npc.index] = -1;
 		npc.m_iPoints = 0;
 		npc.m_bSpeed = false;
 
@@ -100,26 +100,26 @@ public void Isharmla_ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
-	if(npc.m_iTargetAlly == -1)
+	if(i_TargetAlly[npc.index] == -1)
 		npc.Update();
 	
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
-	if(npc.m_iTargetAlly != -1)
+	if(i_TargetAlly[npc.index] != -1)
 	{
-		int entity = npc.m_iTargetAlly;
+		int entity = i_TargetAlly[npc.index];
 		if(entity != INVALID_ENT_REFERENCE)
 			return;
 		
-		if(npc.m_iTargetAlly == RaidBossActive)
+		if(i_TargetAlly[npc.index] == RaidBossActive)
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
 
-		npc.m_iTargetAlly = -1;
+		i_TargetAlly[npc.index] = -1;
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 255);
 
@@ -173,7 +173,7 @@ public void Isharmla_ClotThink(int iNPC)
 				RaidBossActive = EntIndexToEntRef(entity);
 			
 			npc.m_bSpeed = false;
-			npc.m_iTargetAlly = EntIndexToEntRef(entity);
+			i_TargetAlly[npc.index] = EntIndexToEntRef(entity);
 			b_NpcIsInvulnerable[npc.index] = true;
 			SetEntityRenderColor(npc.index, 100, 100, 255, 64);
 			SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 64);
