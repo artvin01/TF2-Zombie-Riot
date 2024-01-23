@@ -14,6 +14,12 @@
 
 #define PRIEST_HEALINGPARTICLE		"superrare_greenenergy"
 
+#define PARTICLE_PRIEST_CHARGEUP		"unusual_robot_radioactive"
+#define PARTICLE_PRIEST_CHARGEUP_BUFFED	"unusual_bubble_mess_parent_green"
+#define PARTICLE_GREENBLAST				"merasmus_dazed_explosion"
+#define PARTICLE_NECROBLAST_1			"merasmus_spawn_flash2"
+#define PARTICLE_NECROBLAST_2			"merasmus_spawn_flash"
+
 static float BONES_SAINT_SPEED = 350.0;
 static float BONES_SAINT_SPEED_BUFFED = 400.0;
 
@@ -24,7 +30,26 @@ static float SAINTBONES_PRIEST_HEALPERCENTAGE = 0.05;
 static int SAINTBONES_PRIEST_MINHEALING = 2;
 
 static float Priest_EnemyHover_MinDist = 200.0;
-static float Priest_EnemyHover_MaxDist = 400.0;
+static float Priest_EnemyHover_MaxDist = 300.0;
+
+//NECROTIC BOLT: Profaned Priests use this attack when they cannot find a valid ally to heal.
+//They clap their hands together, casting forth a bolt of necrotic energy which pierces players.
+//They cannot rotate while casting the spell, which gives players a brief window to get out of the way.
+//This attack is blocked if the Profaned Priest is silenced.
+static float LIGHTNING_DAMAGE = 30.0;
+static float LIGHTNING_DAMAGE_ENTITYMULT = 3.0;
+static float LIGHTNING_RANGE = 350.0;
+static float LIGHTNING_INTERVAL = 1.0;
+
+//THUNDER CLAP: Skeletal Saints use this attack when they cannot find a valid ally to heal.
+//They clap their hands together, triggering an enormous, very deadly blast of thunder at their location.
+//They cannot move while charging the spell, which gives players plenty of time to escape its radius and also makes the Skeletal Saint vulnerable.
+//This attack is blocked if the Skeletal Saint is silenced.
+static float THUNDER_DAMAGE = 800.0;
+static float THUNDER_DAMAGE_ENTITYMULT = 3.0;
+static float THUNDER_RADIUS = 400.0;
+static float THUNDER_INTERVAL = 4.0;
+static float THUNDER_CHARGETIME = 4.0;
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -87,6 +112,29 @@ static int Priest_HealingParticle[MAXENTITIES];
 static bool Priest_IsHealing[MAXENTITIES];
 static float Priest_LoopHealingGesture[MAXENTITIES];
 
+#define SOUND_CAST_ACTIVATED		"weapons/physcannon/superphys_launch2.wav"
+#define SOUND_CAST_ACTIVATED_BUFFED	"misc/halloween/spell_lightning_ball_cast.wav"
+#define SOUND_CAST_ACTIVATED_BUFFED_2	"misc/halloween/merasmus_hiding_explode.wav"
+#define SOUND_CAST					"weapons/physcannon/energy_sing_flyby1.wav"
+#define SOUND_CAST_BUFFED			"misc/halloween/strongman_fast_whoosh_01.wav"
+#define SOUND_THUNDER_CHARGEUP		"misc/halloween/gotohell.wav"
+
+static float Priest_BoltAngles[MAXENTITIES][3];
+static float castTime[MAXENTITIES];
+static float castEndTime[MAXENTITIES];
+static int CastParticle_L[MAXENTITIES];
+static int CastParticle_R[MAXENTITIES];
+
+enum Priest_CastState
+{
+	CASTSTATE_INACTIVE,
+	CASTSTATE_INTRO,
+	CASTSTATE_CHARGING,
+	CASTSTATE_CASTING
+};
+
+Priest_CastState castState[MAXENTITIES] = { CASTSTATE_INACTIVE, ... };
+
 public void SaintBones_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -103,6 +151,11 @@ public void SaintBones_OnMapStart_NPC()
 //	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 
 	PrecacheSound("player/flow.wav");
+	PrecacheSound(SOUND_CAST_ACTIVATED);
+	PrecacheSound(SOUND_CAST_ACTIVATED_BUFFED);
+	PrecacheSound(SOUND_CAST);
+	PrecacheSound(SOUND_CAST_BUFFED);
+	PrecacheSound(SOUND_THUNDER_CHARGEUP);
 	PrecacheModel("models/zombie/classic.mdl");
 	PrecacheModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
 }
@@ -345,6 +398,17 @@ public void Priest_RemoveHealingParticle(int index)
 		RemoveEntity(particle);
 }
 
+public void Priest_RemoveThunderParticles(int index)
+{
+	int particle = EntRefToEntIndex(CastParticle_L[index]);
+	if (IsValidEntity(particle))
+		RemoveEntity(particle);
+		
+	particle = EntRefToEntIndex(CastParticle_R[index]);
+	if (IsValidEntity(particle))
+		RemoveEntity(particle);
+}
+
 //TODO 
 //Skeletal Saints are buff providers and healers.
 //Profaned Priests (the non-buffed variant) heal a single target. They will prioritize non-buffed skeletons who do not already have a healer. Skeletons being healed by a Profaned Priest are transformed into their buffed variant, and will revert to their normal variant when the healing stops, unless they naturally spawned buffed.
@@ -395,7 +459,174 @@ public void SaintBones_ClotThink(int iNPC)
 	else
 		SaintBones_PriestLogic(npc, closest);
 	
+	closest = npc.m_iTarget;	
+	switch(castState[npc.index])
+	{
+		case CASTSTATE_INACTIVE:
+			Priest_AttemptCast(npc, closest);
+		case CASTSTATE_INTRO:
+			Priest_EndIntro(npc, closest);
+		case CASTSTATE_CHARGING:
+			Priest_ChargeUp(npc, closest);
+		case CASTSTATE_CASTING:
+		{
+			Priest_CheckCast(npc, closest);
+			Priest_EndCast(npc, closest);
+		}
+	}
+	
 	npc.PlayIdleSound();
+}
+
+public void Priest_AttemptCast(SaintBones npc, int closest)
+{
+	//Do not attack if your next attack is not ready, your target is not a valid enemy, you are silenced, or you are healing.
+	if (npc.m_flNextMeleeAttack >= GetGameTime(npc.index) || !IsValidEnemy(npc.index, closest) || NpcStats_IsEnemySilenced(npc.index) || Priest_IsHealing[npc.index])
+		return;
+		
+	if (b_BonesBuffed[npc.index])
+	{
+		//Do not begin Thunder Clap if the enemy is too far away for it to reasonably hit.
+		if (GetVectorDistance(WorldSpaceCenter(npc.index), WorldSpaceCenter(closest)) > THUNDER_RADIUS * 0.4)
+			return;
+	}
+	else
+	{
+		//Do not begin Lightning Strike if the enemy is out of range.
+		if (GetVectorDistance(WorldSpaceCenter(npc.index), WorldSpaceCenter(closest)) > LIGHTNING_RANGE)
+			return;
+			
+		float dummy[3], start[3], target[3];
+		start = WorldSpaceCenter(npc.index);
+		target = WorldSpaceCenter(closest);
+		start[2] += 20.0;
+		target[2] += 20.0;
+		Priest_GetAngleToPoint(npc.index, start, target, dummy, Priest_BoltAngles[npc.index]);
+	}
+	
+	npc.m_flAttackHappens = GetGameTime(npc.index) + 0.4;
+	castState[npc.index] = CASTSTATE_INTRO;
+	npc.m_flAttackHappenswillhappen = true;
+	npc.AddGesture("ACT_PRIEST_THUNDERBOLT_INTRO");
+	CastParticle_L[npc.index] = EntIndexToEntRef(Priest_AttachParticle(npc.index, b_BonesBuffed[npc.index] ? PARTICLE_PRIEST_CHARGEUP_BUFFED : PARTICLE_PRIEST_CHARGEUP, _, "handL"));
+	CastParticle_R[npc.index] = EntIndexToEntRef(Priest_AttachParticle(npc.index, b_BonesBuffed[npc.index] ? PARTICLE_PRIEST_CHARGEUP_BUFFED : PARTICLE_PRIEST_CHARGEUP, _, "handR"));
+}
+
+void Priest_GetAngleToPoint(int ent, float pos[3], float TargetLoc[3], float DummyAngles[3], const float Output[3])
+{
+	float ang[3], fVecFinal[3], fFinalPos[3];
+
+	GetEntPropVector(ent, Prop_Send, "m_angRotation", ang);		
+
+	AddInFrontOf(TargetLoc, DummyAngles, 7.0, fVecFinal);
+	MakeVectorFromPoints(pos, fVecFinal, fFinalPos);
+
+	GetVectorAngles(fFinalPos, ang);
+
+	Output = ang;
+}
+
+public void Priest_EndIntro(SaintBones npc, int closest)
+{
+	if (GetGameTime(npc.index) >= npc.m_flAttackHappens && npc.m_flAttackHappenswillhappen)
+	{
+		if (b_BonesBuffed[npc.index])
+		{
+			npc.AddGesture("ACT_PRIEST_THUNDERBOLT_CHARGEUP");
+			chargeLoopTime[npc.index] = GetGameTime(npc.index) + 0.9;
+			castState[npc.index] = CASTSTATE_CHARGING;
+			npc.m_flAttackHappens = GetGameTime(npc.index) + THUNDER_CHARGETIME;
+			EmitSoundToAll(SOUND_THUNDER_CHARGEUP, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 10, _, NORMAL_ZOMBIE_VOLUME - 0.1, 90);
+		}
+		else
+		{
+			Priest_Cast(npc, closest);
+		}
+	}
+}
+
+public void Priest_ChargeUp(SaintBones npc, int closest)
+{
+	//If we are ready to throw, or we can't cast our giant lightning bolt for some reason, stop charging.
+	if ((GetGameTime(npc.index) >= npc.m_flAttackHappens && npc.m_flAttackHappenswillhappen) || !IsValidEnemy(npc.index, closest) || !b_BonesBuffed[npc.index] || NpcStats_IsEnemySilenced(npc.index) || Priest_IsHealing[npc.index])
+	{
+		Priest_Cast(npc, closest);
+	}
+	else if (GetGameTime(npc.index) >= chargeLoopTime[npc.index])
+	{
+		npc.AddGesture("ACT_PRIEST_THUNDERBOLT_CHARGEUP");
+		chargeLoopTime[npc.index] = GetGameTime(npc.index) + 0.9;
+	}
+}
+
+public void Priest_Cast(SaintBones npc, int closest)
+{
+	npc.RemoveGesture("ACT_PRIEST_THUNDERBOLT_CHARGEUP");
+	
+	float duration;
+	if (IsValidEnemy(npc.index, closest) && !NpcStats_IsEnemySilenced(npc.index) && !Priest_IsHealing[npc.index])
+	{
+		npc.AddGesture("ACT_PRIEST_THUNDERBOLT_CAST");
+		duration = 0.5;
+		castTime[npc.index] = GetGameTime(npc.index) + 0.1;
+		EmitSoundToAll(b_BonesBuffed[npc.index] ? SOUND_CAST_BUFFED : SOUND_CAST, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 10, _, NORMAL_ZOMBIE_VOLUME - 0.25);
+	}
+	else
+	{
+		npc.m_flAttackHappenswillhappen = false;
+		duration = 0.1;
+		Priest_RemoveThunderParticles(npc.index);
+	}
+	
+	castState[npc.index] = CASTSTATE_CASTING;
+	castEndTime[npc.index] = GetGameTime(npc.index) + duration;
+}
+
+public bool Priest_OnlyHitWorld(int entity, int mask) { return entity == 0 || b_is_a_brush[entity]; }
+
+public void Priest_CheckCast(SaintBones npc, int closest)
+{
+	if (GetGameTime(npc.index) >= castTime[npc.index] && npc.m_flAttackHappenswillhappen)
+	{
+		if (b_BonesBuffed[npc.index])
+		{
+			
+		}
+		else
+		{
+			float startLoc[3], endLoc[3], center[3];
+			center = WorldSpaceCenter(npc.index);
+			center[2] += 20.0;
+			
+			TR_TraceRayFilter(center, Priest_BoltAngles[npc.index], MASK_SHOT, RayType_Infinite, Priest_OnlyHitWorld);
+			TR_GetEndPosition(endLoc);
+			startLoc = endLoc;
+			constrainDistance(center, startLoc, GetVectorDistance(center, startLoc), 20.0);
+			constrainDistance(center, endLoc, GetVectorDistance(center, endLoc), LIGHTNING_RANGE);
+			
+			//TODO: actually deal damage, thanks :)
+			
+			ParticleEffectAt(startLoc, PARTICLE_GREENBLAST, 2.0);
+			SpawnBeam_Vectors(startLoc, endLoc, 0.25, 20, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 0.0);
+			SpawnBeam_Vectors(startLoc, endLoc, 0.25, 20, 255, 20, 255, PrecacheModel("materials/sprites/glow02.vmt"), 12.0, 12.0, _, 0.0);
+			SpawnBeam_Vectors(startLoc, endLoc, 0.25, 20, 255, 120, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 6.0, 6.0, _, 10.0);
+			SpawnBeam_Vectors(startLoc, endLoc, 0.25, 20, 255, 120, 80, PrecacheModel("materials/sprites/lgtning.vmt"), 2.0, 2.0, _, 20.0);
+		}
+		
+		EmitSoundToAll(b_BonesBuffed[npc.index] ? SOUND_CAST_ACTIVATED_BUFFED : SOUND_CAST_ACTIVATED, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL + (b_BonesBuffed[npc.index] ? 0 : 20), _, NORMAL_ZOMBIE_VOLUME);
+		npc.m_flAttackHappenswillhappen = false;
+		Priest_RemoveThunderParticles(npc.index);
+	}
+}
+
+public void Priest_EndCast(SaintBones npc, int closest)
+{
+	if (GetGameTime(npc.index) >= castEndTime[npc.index])
+	{
+		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? THUNDER_INTERVAL : LIGHTNING_INTERVAL);
+		castState[npc.index] = CASTSTATE_INACTIVE;
+		npc.RemoveGesture("ACT_PRIEST_THUNDERBOLT_CAST");
+	}
 }
 
 //TODO: For some reason, they change their target automatically when they are damaged by an NPC, which causes them to stop healing their heal target and switch to aggro mode.
@@ -416,9 +647,8 @@ public int Priest_GetTarget(SaintBones npc)
 	//Check 4: We were not able to find ANY valid allies to heal, start zapping survivors.	
 	if (closest <= 0)
 		closest = GetClosestTarget(npc.index);
-	
 	//Check 5: If we are already healing something, compare its priority level to the new target's to determine whether or not we should switch our heal target.
-	if (closest > 0 && Priest_IsHealing[npc.index] && IsValidEntity(npc.m_iTarget))
+	else if (closest > 0 && Priest_IsHealing[npc.index] && IsValidEntity(npc.m_iTarget))
 	{
 		int current = npc.m_iTarget;
 		CClotBody currentNPC = view_as<CClotBody>(current);
@@ -509,10 +739,9 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 				
 	CClotBody targetNPC = view_as<CClotBody>(closest);
 	
-	npc.FaceTowards(vecTarget, 15000.0);
-	
 	if(IsValidAlly(npc.index, closest))
 	{
+		castState[npc.index] = CASTSTATE_INACTIVE;
 		int currentHealTarget = EntRefToEntIndex(Priest_OldHealTarget[npc.index]);
 		if (closest != currentHealTarget)
 		{
@@ -627,6 +856,12 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 		
 		//TODO: Make them periodically shoot lightning at the closest enemy.
 	}
+	
+	//Only rotate and allow movement if we are not casting our lightning spell.
+	if (castState[npc.index] == CASTSTATE_INACTIVE)
+		npc.FaceTowards(vecTarget, 7500.0);
+	else
+		npc.StopPathing();
 }
 
 public void SaintBones_SaintLogic(SaintBones npc, int closest)
@@ -677,6 +912,7 @@ public void SaintBones_NPCDeath(int entity)
 	}
 	
 	npc.RemoveAllWearables();
+	Priest_RemoveThunderParticles(entity);
 	
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
