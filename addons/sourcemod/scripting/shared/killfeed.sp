@@ -51,7 +51,7 @@ static Handle FeedTimer;
 
 void AdjustBotCount()
 {
-	int botcount = 0;
+	int botcount = zr_killfeed.BoolValue ? 0 : 99;
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client) && IsFakeClient(client))
@@ -64,6 +64,7 @@ void AdjustBotCount()
 			}
 		}
 	}
+	
 	for(int loop = 1; loop <= 20; loop++)
 	{
 		if(botcount < 2)
