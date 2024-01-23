@@ -191,6 +191,7 @@ methodmap SaintBones < CClotBody
 		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_SAINTBONES : BONEZONE_SAINTBONES;
 		b_BonesBuffed[npc.index] = buffed;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
+		Is_a_Medic[npc.index] = true;
 		
 		if (buffed)
 		{
@@ -397,11 +398,70 @@ public void SaintBones_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
+public int Priest_GetTarget(SaintBones npc)
+{
+	//Check 1: Find the closest non-buffed skeleton.
+	int closest = GetClosestAlly(npc.index, _, _, view_as<Function>(Priest_IsNonBuffedSkeleton));
+	
+	//Check 2: There are no non-buffed skeletons, find the closest skeleton.
+	if (closest <= 0)
+		closest = GetClosestAlly(npc.index, _, _, view_as<Function>(Priest_IsASkeleton));
+		
+	//Check 3: There are no skeletons, find the closest ally who is not a healer.
+	if (closest <= 0)
+		closest = GetClosestAlly(npc.index, _, _, view_as<Function>(Priest_IsNotAHealer));
+	
+	//Check 4: We were not able to find ANY valid allies to heal, start zapping survivors.	
+	if (closest <= 0)
+		closest = GetClosestTarget(npc.index);
+		
+	return closest;
+}
+
+public bool Priest_IsNonBuffedSkeleton(int checker, int target)
+{
+	CClotBody npc = view_as<CClotBody>(target);
+	
+	if (npc.BoneZone_GetBuffedState())
+		return false;
+		
+	if (!npc.BoneZone_IsASkeleton())
+		return false;
+		
+	if (npc.BoneZone_IsASaint())
+		return false;
+		
+	return true;
+}
+
+public bool Priest_IsASkeleton(int checker, int target)
+{
+	CClotBody npc = view_as<CClotBody>(target);
+
+	if (!npc.BoneZone_IsASkeleton())
+		return false;
+		
+	if (npc.BoneZone_IsASaint())
+		return false;
+		
+	return true;
+}
+
+public bool Priest_IsNotAHealer(int checker, int target)
+{
+	CClotBody npc = view_as<CClotBody>(target);
+
+	if (npc.BoneZone_IsASaint())
+		return false;
+		
+	return true;
+}
+
 public void SaintBones_PriestLogic(SaintBones npc, int closest)
 {
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index) && !IsValidAlly(npc.index, closest))
 	{
-		npc.m_iTarget = GetClosestAlly(npc.index);	//TODO: This needs to be a custom method which prioritizes non-buffed skeletons, and chooses the nearest enemy if no valid allies are alive
+		npc.m_iTarget = Priest_GetTarget(npc);
 		closest = npc.m_iTarget;
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 		npc.StartPathing();

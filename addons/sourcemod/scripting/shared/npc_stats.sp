@@ -2046,6 +2046,21 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.GetBaseNPC().flMaxYawRate = flPrevValue;
 	}
 	
+	
+	//Returns whether or not the NPC is a skeleton.
+	public bool BoneZone_IsASkeleton()
+	{
+		int index = view_as<int>(i_NpcInternalId[this.index]);
+		return index == 129 || (index > 343 && index < 355);
+	}
+	
+	//Returns whether or not the NPC is a Profaned Priest or Skeletal Saint, or any type of medic for that matter.
+	public bool BoneZone_IsASaint()
+	{
+		int index = view_as<int>(i_NpcInternalId[this.index]);
+		return (index == 353 || index == 354) || Is_a_Medic[this.index];
+	}
+	
 	//Returns whether or not the NPC is a buffed skeleton.
 	public bool BoneZone_GetBuffedState()
 	{
