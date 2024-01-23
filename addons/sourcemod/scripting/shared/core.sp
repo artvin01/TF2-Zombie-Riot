@@ -3620,11 +3620,11 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0)
 				HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.1, 1.0, 1.0, HEAL_ABSOLUTE);
 			if(extralogic)
 			{
-				HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.1, 1.0, 1.0, HEAL_ABSOLUTE);
+				HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 1.0, 1.0, 1.0, HEAL_ABSOLUTE);
 			}
 			else
 			{	
-				HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)), 1.0, 1.0, HEAL_ABSOLUTE);
+				HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)), 0.1, 1.0, HEAL_ABSOLUTE);
 			}
 		}
 		
