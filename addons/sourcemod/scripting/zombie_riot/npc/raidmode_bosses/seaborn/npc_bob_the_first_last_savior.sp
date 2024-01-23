@@ -476,10 +476,12 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					Enemy enemy;
 
 					enemy.Index = XENO_RAIDBOSS_NEMESIS;
-					enemy.Health = 30000000;
+					enemy.Health = 40000000;
 					enemy.Is_Boss = 2;
 					enemy.ExtraSpeed = 1.5;
 					enemy.ExtraDamage = 3.0;
+					enemy.ExtraMeleeRes = 0.5;
+					enemy.ExtraRangedRes = 0.5;
 					enemy.ExtraSize = 1.0;
 
 					Waves_AddNextEnemy(enemy);
