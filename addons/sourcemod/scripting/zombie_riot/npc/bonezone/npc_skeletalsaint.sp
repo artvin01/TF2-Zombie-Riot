@@ -50,11 +50,13 @@ static float LIGHTNING_WIDTH = 20.0;
 //They clap their hands together, triggering an enormous, very deadly blast of thunder at their location.
 //They cannot move while charging the spell, which gives players plenty of time to escape its radius and also makes the Skeletal Saint vulnerable.
 //This attack is blocked if the Skeletal Saint is silenced.
-static float THUNDER_DAMAGE = 600.0;
+static float THUNDER_DAMAGE = 800.0;
 static float THUNDER_DAMAGE_ENTITYMULT = 3.0;
 static float THUNDER_RADIUS = 400.0;
 static float THUNDER_INTERVAL = 4.0;
 static float THUNDER_CHARGETIME = 2.0;
+static float THUNDER_FALLOFF_MULTIHIT = 0.85;
+static float THUNDER_FALLOFF_RADIUS = 0.33;
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -480,6 +482,15 @@ public void SaintBones_ClotThink(int iNPC)
 		}
 	}
 	
+	if (npc.m_flAttackHappenswillhappen && b_BonesBuffed[npc.index])
+	{
+		float position[3];
+		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", position);
+			
+		spawnRing_Vectors(position, THUNDER_RADIUS * 2.0, 0.0, 0.0, 0.0, "materials/sprites/lgtning.vmt", 20, 255, 120, 180, 1, 0.1, 16.0, 2.0, 1);
+		spawnRing_Vectors(position, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 20, 255, 120, 120, 1, 0.33, 8.0, 0.0, 1, THUNDER_RADIUS * 2.0);
+	}
+	
 	npc.PlayIdleSound();
 }
 
@@ -605,7 +616,15 @@ public void Priest_CheckCast(SaintBones npc, int closest)
 	{
 		if (b_BonesBuffed[npc.index])
 		{
+			bool isBlue = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+			float position[3];
+			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", position);
 			
+			Explode_Logic_Custom(THUNDER_DAMAGE, npc.index, npc.index, npc.index, position, THUNDER_RADIUS, THUNDER_FALLOFF_MULTIHIT, THUNDER_FALLOFF_RADIUS, isBlue, _, false, THUNDER_DAMAGE_ENTITYMULT);
+			Priest_AttachParticle(npc.index, PARTICLE_NECROBLAST_1, 2.0, "handL");
+			Priest_AttachParticle(npc.index, PARTICLE_NECROBLAST_2, 2.0, "handL");
+			
+			//TODO: Big flashy sky beams
 		}
 		else
 		{
