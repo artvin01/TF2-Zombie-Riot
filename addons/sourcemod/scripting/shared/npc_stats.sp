@@ -69,6 +69,7 @@ float f_TargetToWalkToDelay[MAXENTITIES];
 static int i_WasPathingToHere[MAXENTITIES];
 static float f3_WasPathingToHere[MAXENTITIES][3];
 Function func_NPCDeath[MAXENTITIES];
+Function func_NPCDeathForward[MAXENTITIES];
 Function func_NPCOnTakeDamage[MAXENTITIES];
 Function func_NPCThink[MAXENTITIES];
 
@@ -3214,6 +3215,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		func_NPCDeath[pThis] = INVALID_FUNCTION;
 		func_NPCOnTakeDamage[pThis] = INVALID_FUNCTION;
 		func_NPCThink[pThis] = INVALID_FUNCTION;
+		func_NPCDeathForward[pThis] = INVALID_FUNCTION;
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		SetEntityCollisionGroup(pThis, 1);
@@ -5785,13 +5787,22 @@ public void NpcJumpThink(int iNPC)
 	SDKUnhook(iNPC, SDKHook_Think, NpcJumpThink);
 }
 
-int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false)
+int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false, float EnemyModifpos[3] = {0.0,0.0,0.0})
 {
 	Handle trace; 
 	float pos_npc[3];
 	float pos_enemy[3];
 	pos_npc = WorldSpaceCenter(attacker);
-	pos_enemy = WorldSpaceCenter(enemy);
+	if(EnemyModifpos[0] == 0.0 && EnemyModifpos[1] == 0.0 && EnemyModifpos[2] == 0.0)
+	{
+		pos_enemy = WorldSpaceCenter(enemy);
+	}
+	else
+	{
+		pos_enemy[0] = EnemyModifpos[0];
+		pos_enemy[1] = EnemyModifpos[1];
+		pos_enemy[2] = EnemyModifpos[2];
+	}
 
 #if defined ZR
 	bool ingore_buildings = (Ignore_Buildings || (RaidbossIgnoreBuildingsLogic(2)));
@@ -7718,6 +7729,10 @@ public void ArrowStartTouch(int arrow, int entity)
 #elseif defined RPG
 			Stats_AddNeuralDamage(entity, owner, i_NervousImpairmentArrowAmount[arrow]);
 #endif
+		}
+		else if(i_ChaosArrowAmount[arrow] > 0)
+		{
+			Sakratan_AddNeuralDamage(entity, owner, i_ChaosArrowAmount[arrow]);
 		}
 		
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);

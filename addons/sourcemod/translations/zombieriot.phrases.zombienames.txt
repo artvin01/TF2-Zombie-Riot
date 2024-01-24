@@ -1917,4 +1917,16 @@
 	{
 		"en"	"Rajul"
 	}
+	"Qanaas"
+	{
+		"en"	"Qanaas"
+	}
+	"Atilla"
+	{
+		"en"	"Atilla"
+	}
+	"Ancient Demon"
+	{
+		"en"	"Ancient Demon"
+	}
 }

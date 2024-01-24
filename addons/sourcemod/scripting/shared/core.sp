@@ -491,6 +491,7 @@ int IgniteId[MAXENTITIES];
 int IgniteRef[MAXENTITIES];
 float BurnDamage[MAXENTITIES];
 int i_NervousImpairmentArrowAmount[MAXENTITIES];
+int i_ChaosArrowAmount[MAXENTITIES];
 float f_KnockbackPullDuration[MAXENTITIES];
 float f_DoNotUnstuckDuration[MAXENTITIES];
 float f_UnstuckTimerCheck[MAXENTITIES];
@@ -2383,6 +2384,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		func_NPCDeath[entity] = INVALID_FUNCTION;
 		func_NPCOnTakeDamage[entity] = INVALID_FUNCTION;
 		func_NPCThink[entity] = INVALID_FUNCTION;
+		func_NPCDeathForward[entity] = INVALID_FUNCTION;
 		f3_VecTeleportBackSave_OutOfBounds[entity][0] = 0.0;
 		f3_VecTeleportBackSave_OutOfBounds[entity][1] = 0.0;
 		f3_VecTeleportBackSave_OutOfBounds[entity][2] = 0.0;
@@ -2501,6 +2503,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_RaidGrantExtra[entity] = 0;
 		i_IsABuilding[entity] = false;
 		i_NervousImpairmentArrowAmount[entity] = 0;
+		i_ChaosArrowAmount[entity] = 0;
 		i_WeaponArchetype[entity] = 0;
 		i_WeaponForceClass[entity] = 0;
 		

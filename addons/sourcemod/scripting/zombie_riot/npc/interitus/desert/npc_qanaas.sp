@@ -2,51 +2,40 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+	"vo/sniper_paincrticialdeath01.mp3",
+	"vo/sniper_paincrticialdeath02.mp3",
+	"vo/sniper_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	")vo/medic_painsharp01.mp3",
-	")vo/medic_painsharp02.mp3",
-	")vo/medic_painsharp03.mp3",
-	")vo/medic_painsharp04.mp3",
-	")vo/medic_painsharp05.mp3",
-	")vo/medic_painsharp06.mp3",
-	")vo/medic_painsharp07.mp3",
-	")vo/medic_painsharp08.mp3",
+	"vo/sniper_painsharp01.mp3",
+	"vo/sniper_painsharp02.mp3",
+	"vo/sniper_painsharp03.mp3",
+	"vo/sniper_painsharp04.mp3",
 };
-
-
 static const char g_IdleAlertedSounds[][] = {
-	")vo/medic_battlecry01.mp3",
-	")vo/medic_battlecry02.mp3",
-	")vo/medic_battlecry03.mp3",
-	")vo/medic_battlecry04.mp3",
+	"vo/sniper_battlecry01.mp3",
+	"vo/sniper_battlecry02.mp3",
+	"vo/sniper_battlecry03.mp3",
+	"vo/sniper_battlecry04.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/knife_swing.wav",
+	"weapons/sniper_rifle_classic_shoot.wav",
 };
 
-static const char g_MeleeHitSounds[][] = {
-	"weapons/airboat/airboat_gun_energy1.wav",
-	"weapons/airboat/airboat_gun_energy2.wav",
-};
 
-void Pental_OnMapStart_NPC()
+void DesertQanaas_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
 }
 
 
-methodmap Pental < CClotBody
+methodmap DesertQanaas < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -76,68 +65,69 @@ methodmap Pental < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-	}
-	public void PlayMeleeHitSound() 
-	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	
-	public Pental(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertQanaas(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Pental npc = view_as<Pental>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "550", ally));
+		DesertQanaas npc = view_as<DesertQanaas>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "550", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_PENTAL;
+		i_NpcInternalId[npc.index] = INTERITUS_DESERT_QANAAS;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		SetVariantInt(1);
+
+		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
+		func_NPCDeath[npc.index] = view_as<Function>(DesertQanaas_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertQanaas_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(DesertQanaas_ClotThink);
 		
-		
+		npc.m_iChanged_WalkCycle = 0;
+
+		if(npc.m_iChanged_WalkCycle != 1)
+		{
+			npc.m_bisWalking = true;
+			npc.m_iChanged_WalkCycle = 1;
+			npc.SetActivity("ACT_MP_RUN_PRIMARY");
+			npc.StartPathing();
+			npc.m_flSpeed = 200.0;
+		}	
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_Think, Pental_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.StartPathing();
-		npc.m_flSpeed = 280.0;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		
-		PentalEffects(npc.index);
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_caber/c_caber.mdl");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/demo/demo_sultan_hat.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_tfc_sniperrifle/c_tfc_sniperrifle.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/sniper/kerch.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/sniper/desert_marauder.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/sum23_bushman/sum23_bushman.mdl");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/sum20_spectre_cles_style2/sum20_spectre_cles_style2_demoman.mdl");
-
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/sum19_dynamite_abs/sum19_dynamite_abs.mdl");
-
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/short2014_all_mercs_mask/short2014_all_mercs_mask_demoman.mdl");
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}
 }
 
-public void Pental_ClotThink(int iNPC)
+public void DesertQanaas_ClotThink(int iNPC)
 {
-	Pental npc = view_as<Pental>(iNPC);
+	DesertQanaas npc = view_as<DesertQanaas>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -160,38 +150,65 @@ public void Pental_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
-	if(IsValidEnemy(npc.index, npc.m_iTarget))
+	if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetWalkTo);
 	
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		int ExtraBehavior = DesertQanaasSelfDefense(npc,GetGameTime(npc.index)); 
+
+		switch(ExtraBehavior)
+		{
+			case 0:
+			{
+				if(npc.m_iChanged_WalkCycle != 1)
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 1;
+					npc.SetActivity("ACT_MP_RUN_PRIMARY");
+					npc.StartPathing();
+					npc.m_flSpeed = 200.0;
+				}	
+			}
+			case 1:
+			{
+				if(npc.m_iChanged_WalkCycle != 2)
+				{
+					npc.m_bisWalking = false;
+					npc.m_iChanged_WalkCycle = 2;
+					npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
+					npc.StopPathing();
+					npc.m_flSpeed = 0.0;
+				}
+			}
+		}
+
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTargetWalkTo);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
 		}
-		PentalSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
 }
 
-public Action Pental_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action DesertQanaas_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Pental npc = view_as<Pental>(victim);
+	DesertQanaas npc = view_as<DesertQanaas>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -205,17 +222,17 @@ public Action Pental_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 
-public void Pental_NPCDeath(int entity)
+public void DesertQanaas_NPCDeath(int entity)
 {
-	Pental npc = view_as<Pental>(entity);
+	DesertQanaas npc = view_as<DesertQanaas>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	ExpidonsaRemoveEffects(entity);
-	SDKUnhook(npc.index, SDKHook_Think, Pental_ClotThink);
 		
 	
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -225,102 +242,96 @@ public void Pental_NPCDeath(int entity)
 
 }
 
-void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
+int DesertQanaasSelfDefense(DesertQanaas npc, float gameTime)
 {
+	if(!npc.m_flAttackHappens)
+	{
+		if(IsValidEnemy(npc.index,npc.m_iTarget))
+		{
+			if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+			{
+				npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,true,_,_,true);
+			}
+		}
+		else
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,true,_,_,true);
+			if(!IsValidEnemy(npc.index,npc.m_iTarget))
+			{
+				return 0;
+			}		
+		}
+		if(!IsValidEnemy(npc.index,npc.m_iTarget))
+		{
+			return 0;
+		}
+	}
+	npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+
+	static float ThrowPos[MAXENTITIES][3];  
+	float origin[3], angles[3];
+	view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
+	if(npc.m_flDoingAnimation > gameTime)
+	{
+		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+		{
+			ThrowPos[npc.index] = WorldSpaceCenter(npc.m_iTarget);
+		}
+	}
+	else
+	{	
+		if(npc.m_flAttackHappens)
+		{
+			float pos_npc[3];
+			pos_npc = WorldSpaceCenter(npc.index);
+			float AngleAim[3];
+			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
+			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+			int Traced_Target = TR_GetEntityIndex(hTrace);
+			if(Traced_Target > 0)
+			{
+				ThrowPos[npc.index] = WorldSpaceCenter(Traced_Target);
+			}
+			else if(TR_DidHit(hTrace))
+			{
+				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
+			}
+		}
+	}
+	if(npc.m_flAttackHappens)
+	{
+		TE_SetupBeamPoints(origin, ThrowPos[npc.index], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, {0,0,255,255}, 3);
+		TE_SendToAll(0.0);
+	}
+			
+	npc.FaceTowards(ThrowPos[npc.index], 15000.0);
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
 			
-			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget,_ ,ThrowPos[npc.index]);
+			ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, ThrowPos[npc.index], false );
+			npc.PlayMeleeSound();
+			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+			if(IsValidEnemy(npc.index, target))
 			{
-							
-				target = TR_GetEntityIndex(swingTrace);	
-				
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-				
-				if(IsValidEnemy(npc.index, target))
-				{
-					float damageDealt = 30.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+				float damageDealt = 50.0;
+				if(ShouldNpcDealBonusDamage(target))
+					damageDealt *= 10.5;
 
-
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-
-					// Hit sound
-					npc.PlayMeleeHitSound();
-				} 
-			}
-			delete swingTrace;
+				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
+			} 
 		}
 	}
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
-		{
-			int Enemy_I_See;
-								
-			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
-			if(IsValidEnemy(npc.index, Enemy_I_See))
-			{
-				npc.m_iTarget = Enemy_I_See;
-				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.2;
-			}
-		}
+		
+		npc.m_flAttackHappens = gameTime + 1.25;
+		npc.m_flDoingAnimation = gameTime + 0.9;
+		npc.m_flNextMeleeAttack = gameTime + 2.5;
 	}
-}
-
-
-void PentalEffects(int iNpc)
-{
-	if(AtEdictLimit(EDICT_NPC))
-		return;
-	
-	float flPos[3];
-	float flAng[3];
-	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);
-
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-
-	
-	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = InfoTargetParentAt({0.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = InfoTargetParentAt({10.0,50.0,0.0}, "", 0.0); //First offset we go by
-	
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(iNpc, particle_1, "effect_hand_r",_);
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, 35, 35, 255, 2.0, 1.0, 1.0, LASERBEAM);
-	
-
-	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
-	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
-	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
-	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_4);
-	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(Laser_1);
-	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(Laser_2);
-	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(Laser_3);
+	return 1;
 }

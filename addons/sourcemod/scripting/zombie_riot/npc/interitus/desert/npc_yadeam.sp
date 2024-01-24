@@ -260,7 +260,7 @@ void DesertYadeamSelfDefense(DesertYadeam npc, float gameTime)
 
 				npc.FaceTowards(vecTarget, 20000.0);
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.25;
-				npc.FireRocket(vecTarget, 600.0, 15.0, "models/weapons/c_models/c_xms_urinejar.mdl");
+				npc.FireRocket(vecTarget, 15.0, 600.0, "models/weapons/c_models/c_xms_urinejar.mdl");
 				npc.PlayIdleAlertSound();
 			}
 		}

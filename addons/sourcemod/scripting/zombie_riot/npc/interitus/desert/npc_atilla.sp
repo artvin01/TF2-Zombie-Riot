@@ -2,40 +2,40 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+	"vo/spy_paincrticialdeath01.mp3",
+	"vo/spy_paincrticialdeath02.mp3",
+	"vo/spy_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	")vo/medic_painsharp01.mp3",
-	")vo/medic_painsharp02.mp3",
-	")vo/medic_painsharp03.mp3",
-	")vo/medic_painsharp04.mp3",
-	")vo/medic_painsharp05.mp3",
-	")vo/medic_painsharp06.mp3",
-	")vo/medic_painsharp07.mp3",
-	")vo/medic_painsharp08.mp3",
+	"vo/spy_painsharp01.mp3",
+	"vo/spy_painsharp02.mp3",
+	"vo/spy_painsharp03.mp3",
+	"vo/spy_painsharp04.mp3",
 };
 
-
 static const char g_IdleAlertedSounds[][] = {
-	")vo/medic_battlecry01.mp3",
-	")vo/medic_battlecry02.mp3",
-	")vo/medic_battlecry03.mp3",
-	")vo/medic_battlecry04.mp3",
+	"vo/spy_battlecry01.mp3",
+	"vo/spy_battlecry02.mp3",
+	"vo/spy_battlecry03.mp3",
+	"vo/spy_battlecry04.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/knife_swing.wav",
+	"weapons/pickaxe_swing1.wav",
+	"weapons/pickaxe_swing2.wav",
+	"weapons/pickaxe_swing3.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/airboat/airboat_gun_energy1.wav",
-	"weapons/airboat/airboat_gun_energy2.wav",
+	"weapons/cleaver_hit_02.wav",
+	"weapons/cleaver_hit_03.wav",
+	"weapons/cleaver_hit_05.wav",
+	"weapons/cleaver_hit_06.wav",
+	"weapons/cleaver_hit_07.wav",
 };
 
-void Pental_OnMapStart_NPC()
+void DesertAtilla_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -46,7 +46,7 @@ void Pental_OnMapStart_NPC()
 }
 
 
-methodmap Pental < CClotBody
+methodmap DesertAtilla < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -85,59 +85,55 @@ methodmap Pental < CClotBody
 	}
 	
 	
-	public Pental(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertAtilla(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Pental npc = view_as<Pental>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.75", "550", ally));
+		DesertAtilla npc = view_as<DesertAtilla>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_PENTAL;
+		i_NpcInternalId[npc.index] = INTERITUS_DESERT_ATILLA;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-		
-		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+
+		func_NPCDeath[npc.index] = view_as<Function>(DesertAtilla_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertAtilla_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(DesertAtilla_ClotThink);
 		
-		SDKHook(npc.index, SDKHook_Think, Pental_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 280.0;
+		npc.m_flSpeed = 300.0;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		
-		PentalEffects(npc.index);
+	
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_acr_hookblade/c_acr_hookblade.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_boston_basher/c_boston_basher.mdl");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2023_demonic_dome/hwn2023_demonic_dome_spy.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/spy/sum23_professionnel_style1/sum23_professionnel_style1.mdl");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/spy/hwn_spy_misc2.mdl");
-
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/spy/sum22_tactical_turtleneck/sum22_tactical_turtleneck.mdl");
-		
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/spy/hwn2018_bandits_boots/hwn2018_bandits_boots.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/spy/dec23_covert_covers/dec23_covert_covers.mdl");
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}
 }
 
-public void Pental_ClotThink(int iNPC)
+public void DesertAtilla_ClotThink(int iNPC)
 {
-	Pental npc = view_as<Pental>(iNPC);
+	DesertAtilla npc = view_as<DesertAtilla>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -179,7 +175,7 @@ public void Pental_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		PentalSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		DesertAtillaSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -189,9 +185,9 @@ public void Pental_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Pental_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action DesertAtilla_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Pental npc = view_as<Pental>(victim);
+	DesertAtilla npc = view_as<DesertAtilla>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -205,15 +201,13 @@ public Action Pental_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 
-public void Pental_NPCDeath(int entity)
+public void DesertAtilla_NPCDeath(int entity)
 {
-	Pental npc = view_as<Pental>(entity);
+	DesertAtilla npc = view_as<DesertAtilla>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	ExpidonsaRemoveEffects(entity);
-	SDKUnhook(npc.index, SDKHook_Think, Pental_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable3))
@@ -225,7 +219,7 @@ public void Pental_NPCDeath(int entity)
 
 }
 
-void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
+void DesertAtillaSelfDefense(DesertAtilla npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -245,11 +239,24 @@ void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 30.0;
+					float damageDealt = 25.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
 
-
+					if(!NpcStats_IsEnemySilenced(npc.index))
+					{
+						if(target > MaxClients)
+						{
+							StartBleedingTimer_Against_Client(target, npc.index, 4.0, 2);
+						}
+						else
+						{
+							if (!IsInvuln(target))
+							{
+								StartBleedingTimer_Against_Client(target, npc.index, 4.0, 2);
+							}
+						}
+					}
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
@@ -272,7 +279,7 @@ void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
@@ -280,47 +287,4 @@ void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
 			}
 		}
 	}
-}
-
-
-void PentalEffects(int iNpc)
-{
-	if(AtEdictLimit(EDICT_NPC))
-		return;
-	
-	float flPos[3];
-	float flAng[3];
-	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);
-
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-
-	
-	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = InfoTargetParentAt({0.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = InfoTargetParentAt({10.0,50.0,0.0}, "", 0.0); //First offset we go by
-	
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(iNpc, particle_1, "effect_hand_r",_);
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, 35, 35, 255, 2.0, 1.0, 1.0, LASERBEAM);
-	
-
-	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
-	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
-	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
-	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_4);
-	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(Laser_1);
-	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(Laser_2);
-	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(Laser_3);
 }
