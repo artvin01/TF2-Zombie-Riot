@@ -12,11 +12,11 @@
 
 #define BONES_SAINTBONES_BUFFPARTICLE	"utaunt_arcane_yellow_parent"//"utaunt_auroraglow_orange_parent"
 
-#define PRIEST_HEALINGPARTICLE		"superrare_greenenergy"
-#define PRIEST_HEALINGPARTICLE_BUFFED	"unusual_breaker_green_parent"
+#define PRIEST_HEALINGPARTICLE			"superrare_greenenergy"
+#define PRIEST_HEALINGPARTICLE_BUFFED	"superrare_greenenergy"
 
-#define PARTICLE_PRIEST_CHARGEUP		"unusual_robot_radioactive"
-#define PARTICLE_PRIEST_CHARGEUP_BUFFED	"unusual_bubble_mess_parent_green"
+#define PARTICLE_PRIEST_CHARGEUP		"superrare_burning2"
+#define PARTICLE_PRIEST_CHARGEUP_BUFFED	"unusual_robot_radioactive"
 #define PARTICLE_GREENBLAST				"merasmus_dazed_explosion"
 #define PARTICLE_NECROBLAST_1			"merasmus_spawn_flash2"
 #define PARTICLE_NECROBLAST_2			"merasmus_spawn_flash"
@@ -598,6 +598,8 @@ public void Priest_Cast(SaintBones npc, int closest)
 	castEndTime[npc.index] = GetGameTime(npc.index) + duration;
 }
 
+public bool Priest_IgnoreAll(int entity, int mask) { return false; }
+
 public bool Priest_OnlyHitWorld(int entity, int mask) { return entity == 0 || b_is_a_brush[entity]; }
 
 static bool Priest_LightningHit[MAXENTITIES];
@@ -616,6 +618,8 @@ public void Priest_CheckCast(SaintBones npc, int closest)
 	{
 		if (b_BonesBuffed[npc.index])
 		{
+			EmitSoundToAll(SOUND_CAST_ACTIVATED_BUFFED_2, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL + 20, _, NORMAL_ZOMBIE_VOLUME);
+			
 			bool isBlue = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
 			float position[3];
 			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", position);
@@ -624,7 +628,22 @@ public void Priest_CheckCast(SaintBones npc, int closest)
 			Priest_AttachParticle(npc.index, PARTICLE_NECROBLAST_1, 2.0, "handL");
 			Priest_AttachParticle(npc.index, PARTICLE_NECROBLAST_2, 2.0, "handL");
 			
-			//TODO: Big flashy sky beams
+			for (float ang = 0.0; ang < 360.0; ang += 45.0)
+			{
+				float groundPos[3], skyPos[3], testAng[3];
+				testAng[0] = 0.0;
+				testAng[1] = ang;
+				testAng[2] = 0.0;
+				
+				GetPointFromAngles(position, testAng, THUNDER_RADIUS, groundPos, Priest_IgnoreAll, MASK_SHOT);
+				skyPos = groundPos;
+				skyPos[2] += 9999.0;
+				
+				ParticleEffectAt(groundPos, PARTICLE_GREENBLAST, 2.0);
+				SpawnBeam_Vectors(skyPos, groundPos, 0.33, 20, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 36.0, 36.0, _, 0.0);
+				SpawnBeam_Vectors(skyPos, groundPos, 0.33, 20, 255, 20, 255, PrecacheModel("materials/sprites/glow02.vmt"), 36.0, 36.0, _, 0.0);
+				SpawnBeam_Vectors(skyPos, groundPos, 0.33, 20, 255, 120, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 36.0, 36.0, _, 20.0);
+			}
 		}
 		else
 		{
@@ -943,7 +962,6 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 		
 		if (Priest_IsHealing[npc.index])
 		{
-			CPrintToChatAll("Exited the healing state");
 			Priest_RemoveHealingParticle(npc.index);
 			npc.RemoveGesture("ACT_PRIEST_HEALING");	//TODO: Saints need custom anims
 			Priest_IsHealing[npc.index] = false;
@@ -1031,7 +1049,6 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 		{
 			if (!Priest_IsHealing[npc.index])
 			{
-				CPrintToChatAll("Entered the healing state");
 				Priest_HealingParticle[npc.index] = EntIndexToEntRef(Priest_AttachParticle(npc.index, PRIEST_HEALINGPARTICLE_BUFFED, _, "handR"));
 				npc.AddGesture("ACT_PRIEST_HEALING");	//TODO: Saints need custom anims
 				Priest_LoopHealingGesture[npc.index] = GetGameTime(npc.index) + 0.7;
@@ -1054,7 +1071,6 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 		{
 			if (Priest_IsHealing[npc.index])
 			{
-				CPrintToChatAll("Exited the healing state");
 				Priest_RemoveHealingParticle(npc.index);
 				npc.RemoveGesture("ACT_PRIEST_HEALING");	//TODO: Saints need custom anims
 				Priest_IsHealing[npc.index] = false;
@@ -1067,7 +1083,6 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 	{
 		if (Priest_IsHealing[npc.index])
 		{
-			CPrintToChatAll("Exited the healing state");
 			Priest_RemoveHealingParticle(npc.index);
 			npc.RemoveGesture("ACT_PRIEST_HEALING");	//TODO: Saints need custom anims
 			Priest_IsHealing[npc.index] = false;
@@ -1128,6 +1143,7 @@ public void SaintBones_NPCDeath(int entity)
 	
 	npc.RemoveAllWearables();
 	Priest_RemoveThunderParticles(entity);
+	Priest_IsHealing[entity] = false;
 	
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

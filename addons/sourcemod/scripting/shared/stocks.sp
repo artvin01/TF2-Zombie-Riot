@@ -3695,6 +3695,15 @@ public Action SDKHook_Settransmit_TextParentedToPlayer(int entity, int client)
 */
 #endif
 
+stock void GetPointFromAngles(float startLoc[3], float angles[3], float distance, float output[3], TraceEntityFilter filter, int traceFlags)
+{
+	float endLoc[3];
+	
+	TR_TraceRayFilter(startLoc, angles, traceFlags, RayType_Infinite, filter);
+	TR_GetEndPosition(endLoc);
+	constrainDistance(startLoc, endLoc, GetVectorDistance(startLoc, endLoc), distance);
+	output = endLoc;
+}
 
 stock void spawnRing_Vectors(float center[3],
  float range,
