@@ -17,8 +17,10 @@ static bool IsRespawning;
 //static bool Disconnecting;
 #endif
 
+#if !defined RTS
 static DynamicHook g_WrenchSmack;
 //DynamicHook g_ObjStartUpgrading;
+#endif
 
 static DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
@@ -111,7 +113,9 @@ void DHook_Setup()
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
 	
+#if !defined RTS
 	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
+#endif
 
 	DHook_CreateDetour(gamedata, "CTFPlayer::SpeakConceptIfAllowed()", SpeakConceptIfAllowed_Pre, SpeakConceptIfAllowed_Post);
 	
@@ -267,6 +271,7 @@ public MRESReturn DHook_CreateMedigunShieldPre(int entity, DHookReturn returnHoo
 	return MRES_Supercede;
 }
 
+#if !defined RTS
 void OnWrenchCreated(int entity) 
 {
 	g_WrenchSmack.HookEntity(Hook_Pre, entity, Wrench_SmackPre);
@@ -307,6 +312,8 @@ public MRESReturn Wrench_SmackPost(int entity, DHookReturn ret, DHookParam param
 	}
 	return MRES_Ignored;
 }
+#endif
+
 //NEVER upgrade buildings, EVER.
 /*
 public MRESReturn ObjStartUpgrading_SmackPre(int entity, DHookReturn ret, DHookParam param)
@@ -463,7 +470,13 @@ public Action SdkHook_StickStickybombToBaseBoss(int entity, int other)
 {
 	if(!GetEntProp(entity, Prop_Send, "m_bTouched"))
 	{
+
+#if defined RTS
+		if(!b_StickyIsSticking[entity] && !b_NpcHasDied[other])
+#else
 		if(!b_StickyIsSticking[entity] && b_Is_Blue_Npc[other])
+#endif
+
 		{
 			//Dont stick if it already has max.
 			for (int i = 0; i < MAXSTICKYCOUNTTONPC; i++)
@@ -923,40 +936,49 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+
+#if defined RTS
+			if(!b_NpcHasDied[entity2])
+#else
 			if(b_Is_Blue_Npc[entity2])
+#endif
 			{
 				return false;
 			}
-			else if(b_Is_Npc_Projectile[entity2])
+			
+			if(b_Is_Npc_Projectile[entity2])
 			{
 				return false;
 			}
+
 #if defined ZR
-			else if(i_IsABuilding[entity2] && IsValidEntity(RaidBossActive))
+			if(i_IsABuilding[entity2] && IsValidEntity(RaidBossActive))
 			{
 				return false;
 			}
 #endif
 		}
+
+#if !defined RTS
 		else if(b_Is_Player_Projectile[entity1])
 		{
-#if defined ZR
+	#if defined ZR
 			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1] && !IsEntitySpike(entity1))
-#else
+	#else
 			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1])
-#endif
+	#endif
 			{
 				int EntityOwner = i_WandOwner[entity2];
 				if(ShieldDeleteProjectileCheck(EntityOwner, entity1))
 				{
-#if defined ZR
+	#if defined ZR
 					if(i_WandIdNumber[entity1] != 0)
 					{
 						//make it act as if it collided with the world.
 						Wand_Base_StartTouch(entity1, 0);
 					}
 					else
-#endif
+	#endif
 					{
 						//force a collision
 						
@@ -987,13 +1009,13 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-#if defined ZR
+	#if defined ZR
 			else if (i_WandIdNumber[entity1] == 19 && !i_IsABuilding[entity2] && !b_Is_Player_Projectile[entity2]) //Health Hose projectiles
 			{
 				Hose_Touch(entity1, entity2);
 				return false;
 			}
-#endif
+	#endif
 			else if(entity2 <= MaxClients && entity2 > 0)
 			{
 				return false;
@@ -1010,7 +1032,13 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 		}
-		else if(b_Is_Blue_Npc[entity1])
+#endif	// Non-RTS
+
+#if defined RTS
+		else if(!b_NpcHasDied[entity2])
+#else
+		else if(b_Is_Blue_Npc[entity2])
+#endif
 		{
 			if(b_ThisEntityIgnored[entity2] && !DoingLagCompensation) //Only Ignore when not shooting/compensating, which is shooting only.
 			{
@@ -1023,7 +1051,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 					return false;
 				}
 			}
+#if defined RTS
+			else if(!b_NpcHasDied[entity2])
+#else
 			else if(b_Is_Blue_Npc[entity2])
+#endif
 			{
 				return false;
 			}

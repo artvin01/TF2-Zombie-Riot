@@ -2492,7 +2492,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		CClotBody npc = view_as<CClotBody>(entity);
 		b_Is_Npc_Projectile[entity] = false;
 		b_Is_Player_Projectile[entity] = false;
-		b_Is_Blue_Npc[entity] = false;
 		EntityFuncAttack[entity] = INVALID_FUNCTION;
 		EntityFuncAttack2[entity] = INVALID_FUNCTION;
 		EntityFuncAttack3[entity] = INVALID_FUNCTION;
@@ -2548,6 +2547,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Armor_Charge[entity] = 0;
 		i_EntityRecievedUpgrades[entity]	 	= ZR_UNIT_UPGRADES_NONE;
 		i_EntityRecievedUpgrades_2[entity] 		= ZR_UNIT_UPGRADES_NONE;
+#endif
+
+
+#if !defined RTS
+		b_Is_Blue_Npc[entity] = false;
 #endif
 
 		KillFeed_EntityCreated(entity);
@@ -2633,10 +2637,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
+#if !defined RTS
 		else if(!StrContains(classname, "tf_weapon_wrench")) //need custom logic here
 		{
 			OnWrenchCreated(entity);
 		}
+#endif
 		/*
 		else if(!StrContains(classname, "zr_base_npc"))
 		{
@@ -2964,6 +2970,8 @@ public void Check_For_Team_Npc(int entity)
 	{
 		CClotBody npcstats = view_as<CClotBody>(entity);
 		b_NpcHasDied[entity] = false;
+
+#if !defined RTS
 		b_IsAlliedNpc[entity] = false;
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
 		{
@@ -2994,9 +3002,10 @@ public void Check_For_Team_Npc(int entity)
 				}
 			}
 			AddEntityToLagCompList(entity);
-			
 		}	
 		else
+#endif	// Non-RTS
+
 		{
 			//This code only exists if a base_boss that gets summoned isnt a boss, and also isnt applied by the plugin, so it will default to a non boss
 			//As a safety measure.
@@ -3020,7 +3029,11 @@ public void Check_For_Team_Npc(int entity)
 			
 			npcstats.bCantCollidie = true;
 			npcstats.bCantCollidieAlly = false;
+
+#if !defined RTS
 			b_Is_Blue_Npc[entity] = true;
+#endif
+
 			for (int i = 0; i < ZR_MAX_NPCS; i++)
 			{
 				if (EntRefToEntIndex(i_ObjectsNpcs[i]) <= 0)

@@ -72,11 +72,11 @@ methodmap UnitBody < CClotBody
 
 	public bool IsAlly(int attacker)
 	{
-		return RTS_IsPlayerAlly(attacker, npc.m_hOwner);
+		return RTS_IsPlayerAlly(attacker, this.m_hOwner);
 	}
 	public bool CanControl(int attacker)
 	{
-		return RTS_CanPlayerControl(attacker, npc.m_hOwner);
+		return RTS_CanPlayerControl(attacker, this.m_hOwner);
 	}
 	
 	public UnitBody(int client, const float vecPos[3], const float vecAng[3],
@@ -92,7 +92,8 @@ methodmap UnitBody < CClotBody
 		npc.m_hOwner = client;
 		npc.m_bBuilding = isBuilding;
 		npc.RemoveAllFlags();
-		HurtAnim[npc.index] = 0;
+		NextGesture[npc.index][0] = 0;
+		delete CommandList[npc.index];
 
 		return npc;
 	}
@@ -100,12 +101,12 @@ methodmap UnitBody < CClotBody
 
 bool UnitBody_IsAlly(int player, int entity)
 {
-	return view_as<UnitBoy>(entity).IsAlly(player);
+	return view_as<UnitBody>(entity).IsAlly(player);
 }
 
 bool UnitBody_CanControl(int player, int entity)
 {
-	return view_as<UnitBoy>(entity).CanControl(player);
+	return view_as<UnitBody>(entity).CanControl(player);
 }
 
 bool UnitBody_ThinkStart(UnitBody npc)

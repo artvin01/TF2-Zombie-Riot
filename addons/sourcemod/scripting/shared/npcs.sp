@@ -2069,7 +2069,9 @@ public void Try_Backstab_Anim_Again(int ref)
 
 void NPC_DeadEffects(int entity)
 {
+#if !defined RTS
 	if(!b_IsAlliedNpc[entity])
+#endif
 	{
 #if defined ZR		
 		Zombies_Currently_Still_Ongoing -= 1;
