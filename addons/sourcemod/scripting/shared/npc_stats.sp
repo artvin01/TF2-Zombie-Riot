@@ -5194,16 +5194,14 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 	}
 	//they have a custom outline.
 	//if !npc.m_bTeamGlowDefault is off, then that means that they have an outline that isnt set with this.
-	if(IsValidEntity(npc.m_iTeamGlow) && !npc.m_bTeamGlowDefault)
+	if((add && IsValidEntity(npc.m_iTeamGlow)) || !npc.m_bTeamGlowDefault)
 	{	
 		return;
 	}
-
 	if(add)
 	{
 		if(!IsValidEntity(npc.m_iTeamGlow))
 		{
-			npc.m_bTeamGlowDefault = true;
 			npc.m_iTeamGlow = TF2_CreateGlow(entity);
 			
 			SetVariantColor(view_as<int>({125, 200, 255, 200}));
@@ -5212,7 +5210,6 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 	}
 	else
 	{
-		npc.m_bTeamGlowDefault = false;
 		if(IsValidEntity(npc.m_iTeamGlow)) 
 		{
 			RemoveEntity(npc.m_iTeamGlow);
@@ -7524,7 +7521,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_DoSpawnGesture[entity] = 0.0;
 	b_isWalking[entity] = true;
 	b_DoNotGiveWaveDelay[entity] = false;
-	b_TeamGlowDefault[entity] = false;
+	b_TeamGlowDefault[entity] = true;
 	i_StepNoiseType[entity] = 0;
 	i_NpcStepVariation[entity] = 0;
 	f_NpcTurnPenalty[entity] = 1.0;
