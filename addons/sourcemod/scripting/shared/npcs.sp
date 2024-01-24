@@ -3036,28 +3036,36 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 			}
 		}
 	}
+	float DamageBuffExtraScaling = 1.0;
+
+	if(attacker <= MaxClients || inflictor <= MaxClients)
+	{
+		if(b_thisNpcIsARaid[victim])
+			DamageBuffExtraScaling = PlayerCountBuffScaling;
+	}
+	
 	if(!NpcStats_IsEnemySilenced(attacker))
 	{
 		if(f_HussarBuff[attacker] > GameTime) //hussar!
 		{
-			damage += BaseDamageBeforeBuffs * 0.1;
+			damage += BaseDamageBeforeBuffs * (0.1 * DamageBuffExtraScaling);
 		}
-		if(f_GodArkantosBuff[victim] > GameTime) //hussar!
+		if(f_GodArkantosBuff[attacker] > GameTime) //hussar!
 		{
-			damage += BaseDamageBeforeBuffs * 0.5; //50% more damage!
+			damage += BaseDamageBeforeBuffs * (0.5 * DamageBuffExtraScaling); //50% more damage!
 		}
 	}
 	if(f_Ocean_Buff_Stronk_Buff[attacker] > GameTime) //hussar!
 	{
-		damage += BaseDamageBeforeBuffs * 0.25;
+		damage += BaseDamageBeforeBuffs * (0.25 * DamageBuffExtraScaling);
 	}
 	else if (f_Ocean_Buff_Weak_Buff[attacker] > GameTime) //hussar!
 	{
-		damage += BaseDamageBeforeBuffs * 0.1;
+		damage += BaseDamageBeforeBuffs * (0.1 * DamageBuffExtraScaling);
 	}
 	if(f_EmpowerStateOther[attacker] > GameTime) //Allow stacking.
 	{
-		damage += BaseDamageBeforeBuffs * 0.1;
+		damage += BaseDamageBeforeBuffs * (0.1 * DamageBuffExtraScaling);
 	}
 	if(f_EmpowerStateSelf[attacker] > GameTime) //Allow stacking.
 	{
@@ -3065,19 +3073,19 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 	}
 	if(f_BuffBannerNpcBuff[attacker] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.25;
+		damage += BaseDamageBeforeBuffs * (0.25 * DamageBuffExtraScaling);
 	}
 	if(f_HighTeslarDebuff[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.35;
+		damage += BaseDamageBeforeBuffs * (0.25 * DamageBuffExtraScaling);
 	}
 	else if(f_LowTeslarDebuff[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.25;
+		damage += BaseDamageBeforeBuffs * (0.2 * DamageBuffExtraScaling);
 	}
 	if(f_PotionShrinkEffect[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.35;
+		damage += BaseDamageBeforeBuffs * (0.35 * DamageBuffExtraScaling);
 	}
 	if(f_Ruina_Attack_Buff[attacker] > GameTime)
 	{
@@ -3087,47 +3095,47 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 	if(f_HighIceDebuff[victim] > GameTime)
 	{
 		if(IsZombieFrozen(victim))
-			damage += BaseDamageBeforeBuffs * 0.30;
+			damage += BaseDamageBeforeBuffs * (0.30 * DamageBuffExtraScaling);
 		else
-			damage += BaseDamageBeforeBuffs * 0.15;
+			damage += BaseDamageBeforeBuffs * (0.15 * DamageBuffExtraScaling);
 	}
 	else if(f_LowIceDebuff[victim] > GameTime)
 	{
 		if(IsZombieFrozen(victim))
-			damage += BaseDamageBeforeBuffs * 0.20;
+			damage += BaseDamageBeforeBuffs * (0.20 * DamageBuffExtraScaling);
 		else
-			damage += BaseDamageBeforeBuffs * 0.10;
+			damage += BaseDamageBeforeBuffs * (0.10 * DamageBuffExtraScaling);
 	}
 	else if(f_VeryLowIceDebuff[victim] > GameTime)
 	{
 		if(IsZombieFrozen(victim))
-			damage += BaseDamageBeforeBuffs * 0.10;
+			damage += BaseDamageBeforeBuffs * (0.10 * DamageBuffExtraScaling);
 		else
-			damage += BaseDamageBeforeBuffs * 0.5;
+			damage += BaseDamageBeforeBuffs * (0.05 * DamageBuffExtraScaling);
 	}
 #endif
 	if(f_BuildingAntiRaid[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.1;
+		damage += BaseDamageBeforeBuffs * (0.1 * DamageBuffExtraScaling);
 	}
 	if(f_WidowsWineDebuff[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.35;
+		damage += BaseDamageBeforeBuffs * (0.35 * DamageBuffExtraScaling);
 	}
 
 	if(Increaced_Overall_damage_Low[attacker] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.25;
+		damage += BaseDamageBeforeBuffs * (0.25 * DamageBuffExtraScaling);
 	}
 	
 	if(f_CrippleDebuff[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.4;
+		damage += BaseDamageBeforeBuffs * (0.3 * DamageBuffExtraScaling);
 	}
 
 	if(f_CudgelDebuff[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.3;
+		damage += BaseDamageBeforeBuffs * (0.3 * DamageBuffExtraScaling);
 	}
 
 	if(f_Ruina_Defense_Buff[victim] > GameTime) //This is a resistance buff, but it works differently, so let it stay here for now.

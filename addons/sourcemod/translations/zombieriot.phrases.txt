@@ -736,6 +736,10 @@
 		"nl"		"Je hebt uw maximale schild berijkt!"
 		"chi"       "你的护甲已达到最大值"
 	}
+	"Armor Max Reached Raid"
+	{
+		"en"		"You cannot use anymore Armortables this Raid Battle!"
+	}
 	"Armor Max Reached Ammo Box"
 	{
 		"en"		"Your armor is maxed out for the ammo box! Please use an armor table to get more."
