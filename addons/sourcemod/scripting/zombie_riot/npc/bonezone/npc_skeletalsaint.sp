@@ -10,9 +10,10 @@
 #define BONES_SAINT_SCALE		"1.0"
 #define BONES_SAINT_SCALE_BUFFED	"1.2"
 
-#define BONES_SAINTBONES_BUFFPARTICLE	"utaunt_auroraglow_orange_parent"
+#define BONES_SAINTBONES_BUFFPARTICLE	"utaunt_arcane_yellow_parent"//"utaunt_auroraglow_orange_parent"
 
 #define PRIEST_HEALINGPARTICLE		"superrare_greenenergy"
+#define PRIEST_HEALINGPARTICLE_BUFFED	"unusual_breaker_green_parent"
 
 #define PARTICLE_PRIEST_CHARGEUP		"unusual_robot_radioactive"
 #define PARTICLE_PRIEST_CHARGEUP_BUFFED	"unusual_bubble_mess_parent_green"
@@ -28,6 +29,9 @@ static float SAINTBONES_HEAL_RANGE_BUFFED = 450.0;
 
 static float SAINTBONES_PRIEST_HEALPERCENTAGE = 0.05;
 static int SAINTBONES_PRIEST_MINHEALING = 2;
+
+static float SAINTBONES_PRIEST_HEALPERCENTAGE_BUFFED = 0.05;
+static int SAINTBONES_PRIEST_MINHEALING_BUFFED = 1;
 
 static float Priest_EnemyHover_MinDist = 200.0;
 static float Priest_EnemyHover_MaxDist = 300.0;
@@ -46,11 +50,11 @@ static float LIGHTNING_WIDTH = 20.0;
 //They clap their hands together, triggering an enormous, very deadly blast of thunder at their location.
 //They cannot move while charging the spell, which gives players plenty of time to escape its radius and also makes the Skeletal Saint vulnerable.
 //This attack is blocked if the Skeletal Saint is silenced.
-static float THUNDER_DAMAGE = 800.0;
+static float THUNDER_DAMAGE = 600.0;
 static float THUNDER_DAMAGE_ENTITYMULT = 3.0;
 static float THUNDER_RADIUS = 400.0;
 static float THUNDER_INTERVAL = 4.0;
-static float THUNDER_CHARGETIME = 4.0;
+static float THUNDER_CHARGETIME = 2.0;
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -782,7 +786,6 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 	
 	if(IsValidAlly(npc.index, closest))
 	{
-		castState[npc.index] = CASTSTATE_INACTIVE;
 		int currentHealTarget = EntRefToEntIndex(Priest_OldHealTarget[npc.index]);
 		if (closest != currentHealTarget)
 		{
@@ -797,8 +800,8 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 
 		NPC_SetGoalEntity(npc.index, closest);
 
-		//Only walk up to half the healing distance away from the target, we don't want to be *too* close to them.
-		if (flDistanceToTarget <= SAINTBONES_HEAL_RANGE * 0.5)
+		//Only walk up to 66% the healing distance away from the target, we don't want to be *too* close to them.
+		if (flDistanceToTarget <= SAINTBONES_HEAL_RANGE * 0.66)
 		{
 			npc.StopPathing();
 		}
@@ -894,8 +897,6 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 		{
 			npc.StopPathing();
 		}
-		
-		//TODO: Make them periodically shoot lightning at the closest enemy.
 	}
 	
 	//Only rotate and allow movement if we are not casting our lightning spell.
@@ -907,7 +908,161 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 
 public void SaintBones_SaintLogic(SaintBones npc, int closest)
 {
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	{
+		npc.m_iTarget = Priest_GetTarget(npc);
+		closest = npc.m_iTarget;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.StartPathing();
+	}
 	
+	if (!IsValidEntity(closest))
+	{
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.m_flGetClosestTargetTime = 0.0;
+		
+		if (Priest_IsHealing[npc.index])
+		{
+			CPrintToChatAll("Exited the healing state");
+			Priest_RemoveHealingParticle(npc.index);
+			npc.RemoveGesture("ACT_PRIEST_HEALING");	//TODO: Saints need custom anims
+			Priest_IsHealing[npc.index] = false;
+		}
+		
+		return;
+	}
+	
+	float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
+			
+	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index));
+	
+	if(IsValidAlly(npc.index, closest))
+	{
+		NPC_SetGoalEntity(npc.index, closest);
+
+		//Only walk up to 80% the healing distance away from the target, we don't want to be *too* close to them.
+		if (flDistanceToTarget <= SAINTBONES_HEAL_RANGE_BUFFED * 0.5)
+		{
+			npc.StopPathing();
+		}
+		else
+		{
+			npc.StartPathing();
+		}
+		
+		bool AtLeastOne = false;
+		float highestSpeed = npc.m_flSpeed;
+		
+		int particle = EntRefToEntIndex(Priest_HealingParticle[npc.index]);
+		float startLoc[3];
+		if (IsValidEntity(particle))
+		{
+			GetEntPropVector(particle, Prop_Data, "m_vecAbsOrigin", startLoc);	
+		}
+		else
+		{
+			startLoc = WorldSpaceCenter(npc.index);
+			startLoc[2] += 90.0;
+		}
+		
+		for (int i = 1; i < MAXENTITIES; i++)
+		{
+			if (!IsValidEntity(i) || i_IsABuilding[i] || i == npc.index)
+				continue;
+				
+			if (!HasEntProp(i, Prop_Send, "m_iTeamNum"))
+				continue;
+				
+			float healPos[3];
+			healPos = WorldSpaceCenter(i);
+			CClotBody healTarget = view_as<CClotBody>(i);
+			if (IsValidAlly(npc.index, i) && GetVectorDistance(WorldSpaceCenter(npc.index), healPos) <= SAINTBONES_HEAL_RANGE_BUFFED)
+			{
+				AtLeastOne = true;
+				
+				float maxHP = float(GetEntProp(healTarget.index, Prop_Data, "m_iHealth"));
+				int HealingAmount = RoundFloat(maxHP * SAINTBONES_PRIEST_HEALPERCENTAGE_BUFFED);
+				if (HealingAmount < SAINTBONES_PRIEST_MINHEALING_BUFFED)
+					HealingAmount = SAINTBONES_PRIEST_MINHEALING_BUFFED;
+				
+				if(GetEntProp(healTarget.index, Prop_Data, "m_iHealth") < GetEntProp(healTarget.index, Prop_Data, "m_iMaxHealth"))
+				{
+					SetEntProp(healTarget.index, Prop_Data, "m_iHealth", GetEntProp(healTarget.index, Prop_Data, "m_iHealth") + HealingAmount);
+					if(GetEntProp(healTarget.index, Prop_Data, "m_iHealth") >= GetEntProp(healTarget.index, Prop_Data, "m_iMaxHealth"))
+					{
+						SetEntProp(healTarget.index, Prop_Data, "m_iHealth", GetEntProp(healTarget.index, Prop_Data, "m_iMaxHealth"));
+					}
+				}
+				
+				healTarget.BoneZone_SetBuffedState(true, npc.index);
+				if (healTarget.m_flSpeed > highestSpeed)
+					highestSpeed = healTarget.m_flSpeed;
+					
+				healPos[2] += 20.0;
+				SpawnBeam_Vectors(startLoc, healPos, 0.1, 20, 255, 20, 255, PrecacheModel("materials/sprites/lgtning.vmt"), _, _, _, 10.0);
+			}
+			else
+			{
+				healTarget.BoneZone_SetBuffedState(false, npc.index);
+			}
+		}
+		
+		if(AtLeastOne)
+		{
+			if (!Priest_IsHealing[npc.index])
+			{
+				CPrintToChatAll("Entered the healing state");
+				Priest_HealingParticle[npc.index] = EntIndexToEntRef(Priest_AttachParticle(npc.index, PRIEST_HEALINGPARTICLE_BUFFED, _, "handR"));
+				npc.AddGesture("ACT_PRIEST_HEALING");	//TODO: Saints need custom anims
+				Priest_LoopHealingGesture[npc.index] = GetGameTime(npc.index) + 0.7;
+				Priest_IsHealing[npc.index] = true;
+			}
+			else
+			{
+				if (GetGameTime(npc.index) >= Priest_LoopHealingGesture[npc.index])
+				{
+					npc.AddGesture("ACT_PRIEST_HEALING");	//TODO: Saints need custom anims
+					Priest_LoopHealingGesture[npc.index] = GetGameTime(npc.index) + 0.7;
+				}
+			}
+			
+			//Move a little faster than the fastest NPC being healed, that way we don't lose the group.
+			if (npc.m_flSpeed < highestSpeed)
+				npc.m_flSpeed = highestSpeed * 1.2;
+		}
+		else
+		{
+			if (Priest_IsHealing[npc.index])
+			{
+				CPrintToChatAll("Exited the healing state");
+				Priest_RemoveHealingParticle(npc.index);
+				npc.RemoveGesture("ACT_PRIEST_HEALING");	//TODO: Saints need custom anims
+				Priest_IsHealing[npc.index] = false;
+			}
+			
+			npc.m_flSpeed = BONES_SAINT_SPEED_BUFFED;
+		}
+	}
+	else if (IsValidEnemy(npc.index, closest))
+	{
+		if (Priest_IsHealing[npc.index])
+		{
+			CPrintToChatAll("Exited the healing state");
+			Priest_RemoveHealingParticle(npc.index);
+			npc.RemoveGesture("ACT_PRIEST_HEALING");	//TODO: Saints need custom anims
+			Priest_IsHealing[npc.index] = false;
+		}
+			
+		npc.StartPathing();
+		NPC_SetGoalEntity(npc.index, closest);
+	}
+	
+	//Only rotate and allow movement if we are not casting our lightning spell.
+	if (castState[npc.index] == CASTSTATE_INACTIVE)
+		npc.FaceTowards(vecTarget, 7500.0);
+	else
+		npc.StopPathing();
 }
 
 public Action SaintBones_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

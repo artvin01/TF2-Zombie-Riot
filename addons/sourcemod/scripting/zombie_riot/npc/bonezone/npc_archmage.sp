@@ -45,7 +45,7 @@ static float f_ArchmageFireballDMG[2049] = { 0.0, ... };
 #define PARTICLE_FIREBALL_HIT				"flaregun_destroyed"
 #define PARTICLE_FIREBALL_EXPLODE			"spell_fireball_tendril_parent_blue"
 
-#define BONES_ARCHMAGE_BUFFPARTICLE			"utaunt_auroraglow_purple_parent"
+#define BONES_ARCHMAGE_BUFFPARTICLE			"utaunt_runeprison_teamcolor_blue"//"utaunt_auroraglow_purple_parent"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
