@@ -3579,7 +3579,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0)
 		}
 		if(extralogic)
 		{
-			b_BobsCuringHand_Revived[target] -= 0;
+			b_BobsCuringHand_Revived[target] = 0;
 		}
 		SetEntityMoveType(target, MOVETYPE_WALK);
 		RequestFrame(Movetype_walk, EntRefToEntIndex(target));
