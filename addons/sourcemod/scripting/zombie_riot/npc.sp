@@ -402,6 +402,7 @@ enum
 	INTERITUS_DESERT_KHAZAAN		= 353,
 	INTERITUS_DESERT_SAKRATAN		= 354,
 	INTERITUS_DESERT_YADEAM			= 355,
+	INTERITUS_DESERT_RAJUL			= 356,
 
 	MAX_NPC_TYPES	// Add entries above this line
 }
@@ -787,7 +788,8 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Inabdil",
 	"Khazaan",
 	"Sakratan",
-	"Yadeam"
+	"Yadeam",
+	"Rajul"
 };
 
 // See items.sp for IDs to names
@@ -1545,7 +1547,8 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_inabdil",
 	"npc_khazaan",
 	"npc_sakratan",
-	"npc_yadeam"
+	"npc_yadeam",
+	"npc_rajul"
 };
 
 void NPC_MapStart()
@@ -1813,6 +1816,7 @@ void NPC_MapStart()
 	DesertKhazaan_OnMapStart_NPC();
 	DesertSakratan_OnMapStart_NPC();
 	DesertYadeam_OnMapStart_NPC();
+	DesertRajul_OnMapStart_NPC();
 	
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2856,6 +2860,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case INTERITUS_DESERT_YADEAM:
 			entity = DesertYadeam(client, vecPos, vecAng, ally);
 
+		case INTERITUS_DESERT_RAJUL:
+			entity = DesertRajul(client, vecPos, vecAng, ally);
+			
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
@@ -5087,3 +5094,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/desert/npc_khazaan.sp"
 #include "zombie_riot/npc/interitus/desert/npc_sakratan.sp"
 #include "zombie_riot/npc/interitus/desert/npc_yadeam.sp"
+#include "zombie_riot/npc/interitus/desert/npc_rajul.sp"
