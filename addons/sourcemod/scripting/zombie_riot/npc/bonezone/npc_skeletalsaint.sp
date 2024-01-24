@@ -51,9 +51,9 @@ static float LIGHTNING_WIDTH = 20.0;
 //They cannot move while charging the spell, which gives players plenty of time to escape its radius and also makes the Skeletal Saint vulnerable.
 //This attack is blocked if the Skeletal Saint is silenced.
 static float THUNDER_DAMAGE = 800.0;
-static float THUNDER_DAMAGE_ENTITYMULT = 3.0;
+static float THUNDER_DAMAGE_ENTITYMULT = 1.0;
 static float THUNDER_RADIUS = 400.0;
-static float THUNDER_INTERVAL = 4.0;
+static float THUNDER_INTERVAL = 2.0;
 static float THUNDER_CHARGETIME = 2.0;
 static float THUNDER_FALLOFF_MULTIHIT = 0.85;
 static float THUNDER_FALLOFF_RADIUS = 0.33;
@@ -552,7 +552,7 @@ public void Priest_EndIntro(SaintBones npc, int closest)
 			chargeLoopTime[npc.index] = GetGameTime(npc.index) + 0.9;
 			castState[npc.index] = CASTSTATE_CHARGING;
 			npc.m_flAttackHappens = GetGameTime(npc.index) + THUNDER_CHARGETIME;
-			EmitSoundToAll(SOUND_THUNDER_CHARGEUP, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 10, _, NORMAL_ZOMBIE_VOLUME - 0.1, 90);
+			EmitSoundToAll(SOUND_THUNDER_CHARGEUP, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL + 20, _, NORMAL_ZOMBIE_VOLUME, 90);
 		}
 		else
 		{
@@ -618,6 +618,7 @@ public void Priest_CheckCast(SaintBones npc, int closest)
 	{
 		if (b_BonesBuffed[npc.index])
 		{
+			EmitSoundToAll(SOUND_CAST_ACTIVATED_BUFFED_2, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL + 20, _, NORMAL_ZOMBIE_VOLUME);
 			EmitSoundToAll(SOUND_CAST_ACTIVATED_BUFFED_2, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL + 20, _, NORMAL_ZOMBIE_VOLUME);
 			
 			bool isBlue = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
