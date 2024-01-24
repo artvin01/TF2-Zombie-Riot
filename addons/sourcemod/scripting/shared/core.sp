@@ -623,6 +623,7 @@ Function EntityFuncReload4[MAXENTITIES];
 float f_ClientMusicVolume[MAXTF2PLAYERS];
 bool b_FirstPersonUsesWorldModel[MAXTF2PLAYERS];
 float f_BegPlayerToSetDuckConvar[MAXTF2PLAYERS];
+float f_BegPlayerToSetRagdollFade[MAXTF2PLAYERS];
 
 #if defined RPG
 int Level[MAXENTITIES];
