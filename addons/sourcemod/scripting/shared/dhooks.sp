@@ -1037,6 +1037,8 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 		}
+
+#if !defined RTS
 		else if(b_IsAlliedNpc[entity1])
 		{
 			if(b_IsAlliedNpc[entity2])
@@ -1048,6 +1050,8 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 		}
+#endif
+
 	}
 	return result;	
 }
@@ -1265,6 +1269,8 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 			}
 		}
 	}
+
+#if !defined RTS
 	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
 	{
 		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
@@ -1276,6 +1282,8 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 			}
 		}
 	}
+#endif
+
 	if(b_LagCompNPC_AwayEnemies)
 	{
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++)
@@ -2076,12 +2084,8 @@ void Hook_DHook_UpdateTransmitState(int entity)
 }
 
 public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) //BLOCK!!
-{   
-	if(b_IsAlliedNpc[entity])
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
-	}
-	else if(b_IsEntityNeverTranmitted[entity])
+{
+	if(b_IsEntityNeverTranmitted[entity])
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_DONTSEND);
 	}
@@ -2089,6 +2093,12 @@ public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) 
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}
+#if !defined RTS
+	else if(b_IsAlliedNpc[entity])
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+	}
+#endif
 #if defined ZR
 	else if(b_thisNpcHasAnOutline[entity])
 	{

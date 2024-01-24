@@ -405,9 +405,13 @@ int i_ObjectsNpcs[ZR_MAX_NPCS];
 
 bool b_DoNotIgnoreDuringLagCompAlly[MAXENTITIES]={false, ...};
 
+#if !defined RTS
 bool b_IsAlliedNpc[MAXENTITIES]={false, ...};
 const int i_MaxcountNpc_Allied = ZR_MAX_NPCS_ALLIED;
 int i_ObjectsNpcs_Allied[ZR_MAX_NPCS_ALLIED];
+
+bool b_Is_Blue_Npc[MAXENTITIES];
+#endif
 
 const int i_MaxcountNpcTotal = ZR_MAX_NPCS;
 int i_ObjectsNpcsTotal[ZR_MAX_NPCS];
@@ -643,7 +647,6 @@ bool b_Is_Npc_Projectile[MAXENTITIES];
 bool b_Is_Player_Projectile[MAXENTITIES];
 bool b_ForceCollisionWithProjectile[MAXENTITIES];
 bool b_Is_Player_Projectile_Through_Npc[MAXENTITIES];
-bool b_Is_Blue_Npc[MAXENTITIES];
 bool b_CannotBeHeadshot[MAXENTITIES];
 bool b_CannotBeBackstabbed[MAXENTITIES];
 bool b_CannotBeStunned[MAXENTITIES];

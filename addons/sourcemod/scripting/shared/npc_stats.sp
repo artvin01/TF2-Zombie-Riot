@@ -4469,7 +4469,11 @@ stock int GetClosestTarget(int entity,
   		float MinimumDistance = 0.0,
   		Function ExtraValidityFunction = INVALID_FUNCTION)
 {
+#if defined RTS
+	int searcher_team = view_as<UnitBoy>(entity).m_hOwner; //do it only once lol
+#else
 	int searcher_team = GetEntProp(entity, Prop_Send, "m_iTeamNum"); //do it only once lol
+#endif
 	if(EntityLocation[2] == 0.0)
 	{
 		GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -4484,6 +4488,7 @@ stock int GetClosestTarget(int entity,
 		4: buildings
 	*/
 
+#if !defined RTS
 	//for tower defense, we need entirely custom logic.
 	//we will only override any non get vector distances, becuase those are pathing
 	//anything using get vector distance means that its a ranged attack, so we leave it alone.
@@ -4535,23 +4540,17 @@ stock int GetClosestTarget(int entity,
 			}
 		}
 	}
-	/*
-	enum TFTeam
-	{
-		TFTeam_Unassigned = 0,
-		TFTeam_Spectator = 1,
-		TFTeam_Red = 2,
-		TFTeam_Blue = 3
-	};
-	*/
-	if(searcher_team != 3 && !IsTowerdefense) 
+#endif	// Non-RTS
+
+#if !defined RTS
+	if(searcher_team != 3 && !IsTowerdefense)
+#endif
 	{
 		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
 		{
 			int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
 			if(IsValidEntity(entity_close) && entity_close != ingore_client)
 			{
-				
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
@@ -4579,6 +4578,8 @@ stock int GetClosestTarget(int entity,
 			}
 		}
 	}
+
+#if !defined RTS
 	if(searcher_team != 2 && !IgnorePlayers)
 	{
 #if defined ZR
@@ -4587,12 +4588,15 @@ stock int GetClosestTarget(int entity,
 		for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
 		{
 			int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
-			if(IsValidEntity(entity_close) && entity_close != ingore_client)
+			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client)
 			{
-				
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
+#if defined RTS
+					if(UnitBody_IsAlly(searcher_team, entity_close))
+#endif
+
 #if defined ZR
 					if(IsTowerdefense && i_NpcInternalId[entity_close] == VIP_BUILDING)
 					{
@@ -4642,7 +4646,7 @@ stock int GetClosestTarget(int entity,
 		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 		{
 			int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-			if(IsValidEntity(entity_close) && entity_close != ingore_client)
+			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
@@ -4671,6 +4675,8 @@ stock int GetClosestTarget(int entity,
 			}
 		}
 	}
+#endif	// Non-RTS
+
 	return GetClosestTarget_Internal(entity, fldistancelimit, fldistancelimitAllyNPC, EntityLocation, UseVectorDistance, MinimumDistance);
 }
 

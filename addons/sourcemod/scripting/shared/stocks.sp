@@ -1404,10 +1404,14 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 #endif
 		
 	}
+	
+#if !defined RTS
 	if(entity > MaxClients && b_IsAlliedNpc[entity])
 	{
 		return false;
 	}
+#endif
+
 	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
 	{
 		return false;
@@ -2599,10 +2603,12 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	{
 		return -1;
 	}
+#if !defined RTS
 	else if(b_IsAlliedNpc[other_entity])
 	{
 		return -1;
 	}
+#endif
 	else if(other_entity <= MaxClients)
 	{
 		return -1;

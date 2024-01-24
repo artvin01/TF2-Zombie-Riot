@@ -15,15 +15,16 @@ static ArrayList CommandList[MAXENTITIES];
 
 methodmap UnitBody < CClotBody
 {
+	// Returns client index, 0 for none
 	property int m_hOwner
 	{
 		public get()
 		{
-			return GetClientOfUserId(OwnerUserId[this.index]);
+			return OwnerUserId[this.index] == -1 ? 0 : GetClientOfUserId(OwnerUserId[this.index]);
 		}
 		public set(int owner)
 		{
-			OwnerUserId[this.index] = GetClientUserId(owner);
+			OwnerUserId[this.index] = owner > 0 ? GetClientUserId(owner) : -1;
 		}
 	}
 
@@ -68,6 +69,15 @@ methodmap UnitBody < CClotBody
 		command.TargetRef = target == -1 ? -1 : EntIndexToEntRef(target);
 		command.Pos = pos;
 	}
+
+	public bool IsAlly(int attacker)
+	{
+		return RTS_IsPlayerAlly(attacker, npc.m_hOwner);
+	}
+	public bool CanControl(int attacker)
+	{
+		return RTS_CanPlayerControl(attacker, npc.m_hOwner);
+	}
 	
 	public UnitBody(int client, const float vecPos[3], const float vecAng[3],
 						const char[] model = COMBINE_CUSTOM_MODEL,
@@ -86,6 +96,16 @@ methodmap UnitBody < CClotBody
 
 		return npc;
 	}
+}
+
+bool UnitBody_IsAlly(int player, int entity)
+{
+	return view_as<UnitBoy>(entity).IsAlly(player);
+}
+
+bool UnitBody_CanControl(int player, int entity)
+{
+	return view_as<UnitBoy>(entity).CanControl(player);
 }
 
 bool UnitBody_ThinkStart(UnitBody npc)
@@ -109,7 +129,7 @@ bool UnitBody_ThinkStart(UnitBody npc)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 	return true;
 }
-
+/*
 int UnitBody_ThinkTarget(int iNPC, bool camo, float gameTime, bool passive = false)
 {
 	UnitBody npc = view_as<UnitBody>(iNPC);
@@ -395,3 +415,4 @@ void UnitBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", const
 		}
 	}
 }
+*/
