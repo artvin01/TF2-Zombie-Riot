@@ -1045,9 +1045,9 @@ public void OnPostThink(int client)
 				}
 				case 2:
 				{
-					red = 255;
-					green = 69;
-					blue = 25;
+					red = 0;
+					green = 255;
+					blue = 255;
 				}
 			}
 		}
