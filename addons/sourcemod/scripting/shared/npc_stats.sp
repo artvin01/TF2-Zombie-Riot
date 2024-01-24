@@ -99,6 +99,8 @@ public Action Command_PetMenu(int client, int args)
 	{
 #if defined RPG
 		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [ally] [level] [damage multi] [speed multi] [ranged armour] [melee armour]");
+#elseif defined RTS
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [ally]");
 #else
 		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [ally] [damage multi] [speed multi] [ranged armour] [melee armour]");
 #endif
@@ -175,8 +177,17 @@ public Action Command_PetMenu(int client, int args)
 		if(args > 8)
 			fl_Extra_MeleeArmor[entity] = GetCmdArgFloat(9);
 	}
-#else
-	Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
+#elseif defined RTS
+	int entity = Npc_Create(GetCmdArgInt(1), ally ? client : 0, flPos, flAng, buffer);
+	if(IsValidEntity(entity))
+	{
+		if(args > 1)
+		{
+			int health = GetCmdArgInt(2);
+			SetEntProp(entity, Prop_Data, "m_iHealth", health);
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		}
+	}
 #endif
 
 	return Plugin_Handled;
@@ -307,6 +318,14 @@ public Action NPCStats_EndTouch(const char[] output, int entity, int caller, flo
 
 methodmap CClotBody < CBaseCombatCharacter
 {
+#if defined RTS
+	public CClotBody(const float vecPos[3], const float vecAng[3],
+						const char[] model,
+						const char[] modelscale = "1.0",
+						const char[] health = "125",
+						bool isGiant = false,
+						const float CustomThreeDimensions[3] = {0.0,0.0,0.0})
+#else
 	public CClotBody(float vecPos[3], float vecAng[3],
 						const char[] model,
 						const char[] modelscale = "1.0",
@@ -319,6 +338,7 @@ methodmap CClotBody < CBaseCombatCharacter
 						float CustomThreeDimensions[3] = {0.0,0.0,0.0},
 						bool Ally_Collideeachother = false,
 						bool ForceNpcClipping = false)
+#endif
 	{
 
 		int npc = CreateEntityByName("zr_base_npc");
@@ -331,6 +351,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		DispatchKeyValue(npc,	   "health",	 health);
 
+#if !defined RTS
 		if(Ally)
 		{
 			b_IsAlliedNpc[npc] = true;
@@ -341,9 +362,11 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntProp(npc, Prop_Send, "m_iTeamNum", TFTeam_Red);
 		}
 		else
+#endif
 		{
 			SetEntProp(npc, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 		}
+
 		b_ThisWasAnNpc[npc] = true;
 		b_NpcHasDied[npc] = false;
 		i_FailedTriesUnstuck[npc] = 0;
@@ -389,25 +412,27 @@ methodmap CClotBody < CBaseCombatCharacter
 		SetEntProp(npc, Prop_Data, "m_bSequenceLoops", true);
 		//potentially newly added ? or might not get set ?
 		//Just set it to true at all times.
+
+#if !defined RTS
 		if(Ally)
 		{
 			SetEntityCollisionGroup(npc, 24);
 		}
 		else
+#endif
 		{
 			AddNpcToAliveList(npc, 0);
 		}
 		
 		b_NpcCollisionType[npc] = 0;
+
+#if !defined RTS
 		if(!Ally)
+#endif
 		{
 #if defined ZR
 			if(IgnoreBuildings || (RaidbossIgnoreBuildingsLogic(2))) //During an active raidboss, make sure that they ignore barricades
-#else
-			if(IgnoreBuildings)
-#endif
 			{
-#if defined ZR
 				if(VIPBuilding_Active())
 				{
 					f_AvoidObstacleNavTime[npc] = FAR_FUTURE;
@@ -415,12 +440,12 @@ methodmap CClotBody < CBaseCombatCharacter
 					Change_Npc_Collision(npc, num_ShouldCollideEnemyTDIgnoreBuilding);
 				}
 				else
-#endif
 				{
 					Change_Npc_Collision(npc, num_ShouldCollideEnemyIngoreBuilding);
 				}
 			}
 			else
+#endif
 			{
 #if defined ZR
 				if(VIPBuilding_Active())
@@ -436,6 +461,7 @@ methodmap CClotBody < CBaseCombatCharacter
 				}
 			}
 		}
+#if !defined RTS
 		else
 		{
 			if(Ally_Invince)
@@ -447,17 +473,23 @@ methodmap CClotBody < CBaseCombatCharacter
 				Change_Npc_Collision(npc, num_ShouldCollideAlly);
 			}
 		}
+#endif
 
 		locomotion.SetCallback(LocomotionCallback_IsEntityTraversable, IsEntityTraversable);
 		view_as<CBaseAnimating>(npc).Hook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
 		
 		//so map makers can choose between NPCs and Clients
 		
-		if(!Ally || ForceNpcClipping)
-			h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody()));
-		else
+#if !defined RTS
+		if(Ally && !ForceNpcClipping)
+		{
 			h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMaskAlly, true, view_as<Address>(baseNPC.GetBody()));
-
+		}
+		else
+#endif
+		{
+			h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody()));
+		}
 
 		SetEntityFlags(npc, FL_NPC);
 		
@@ -529,7 +561,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		SetEntPropVector(npc, Prop_Data, "m_vecMaxsPreScaled", m_vecMaxsNothing);
 		SetEntPropVector(npc, Prop_Send, "m_vecMinsPreScaled", m_vecMinsNothing);
 		SetEntPropVector(npc, Prop_Data, "m_vecMinsPreScaled", m_vecMinsNothing);
-		
 
 
 #if defined ZR
@@ -548,10 +579,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		b_ThisWasAnNpc[npc] = true;
 
+#if defined ZR
 		if(IsRaidBoss)
 		{
 			RemoveAllDamageAddition();
 		}
+#endif
 	
 		return view_as<CClotBody>(npc);
 	}
@@ -1467,11 +1500,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		speed_for_return *= this.GetDebuffPercentage();
 
+#if defined ZR
 		if(!b_thisNpcIsARaid[this.index] && !b_IsAlliedNpc[this.index] && XenoExtraLogic(true))
 		{
 			speed_for_return *= 1.1;
 		}
-#if defined ZR
+
 		if(!b_IsAlliedNpc[this.index])
 		{
 			speed_for_return *= Zombie_DelayExtraSpeed();
@@ -3118,7 +3152,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		//MUST be at top, or else there can be heavy issues regarding infinite loops!
 		b_NpcHasDied[pThis] = true;
 
-
 		//leaving these on can cause crashes.
 		SDKUnhook(pThis, SDKHook_TraceAttack, NPC_TraceAttack);
 		SDKUnhook(pThis, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
@@ -3128,11 +3161,12 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		int Health = GetEntProp(pThis, Prop_Data, "m_iHealth");
 		Health *= -1;
 		
-		int overkill = RoundToNearest(Damage[pThis] - float(Health));
+#if defined ZR
 		if(client > 0 && client <= MaxClients)
 		{	
+			int overkill = RoundToNearest(Damage[pThis] - float(Health));
+
 	//		PlayFakeDeathSound(client);
-#if defined ZR
 			if(i_HasBeenHeadShotted[pThis])
 				i_Headshots[client] += 1; //Award 1 headshot point, only once.
 
@@ -3140,10 +3174,10 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 				i_Backstabs[client] += 1; //Give a backstab count!
 
 			i_KillsMade[client] += 1;
-#endif
 			RemoveHudCooldown(client);
 			Calculate_And_Display_hp(client, pThis, Damage[pThis], true, overkill);
 		}
+#endif
 		
 		for(int entitycount; entitycount<i_MaxcountSticky; entitycount++)
 		{
@@ -3203,8 +3237,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		}
 		
 		VausMagicaRemoveShield(pThis);
-#endif
-#if defined ZR
+
 		CleanAllAppliedEffects_BombImplanter(pThis, true);
 #endif		
 		NPC_DeadEffects(pThis); //Do kill attribute stuff
@@ -4548,7 +4581,9 @@ stock int GetClosestTarget(int entity,
 	}
 	if(searcher_team != 2 && !IgnorePlayers)
 	{
+#if defined ZR
 		CClotBody npc1 = view_as<CClotBody>(entity);
+#endif
 		for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
 		{
 			int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
@@ -5261,7 +5296,13 @@ public void NpcBaseThink(int iNPC)
 		return;
 	}
 	SaveLastValidPositionEntity(iNPC);
+
+#if defined ZR
 	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
+#else
+	npc.GetBaseNPC().flGravity = b_NoGravity[iNPC] ? 0.0 : 800.0;
+#endif
+
 	if(f_KnockbackPullDuration[iNPC] > GetGameTime())
 	{
 		npc.GetBaseNPC().flGravity = 0.0;
@@ -8980,6 +9021,8 @@ public void MakeEntityRagdollNpc(int pThis)
 		Push[1] = 1.0;
 		Push[2] = 1.0;
 	}
+
+#if defined ZR
 	if(b_RaptureZombie[pThis])
 	{
 		if(GetRandomFloat(0.0, 1.01) > 1.0)
@@ -8989,6 +9032,7 @@ public void MakeEntityRagdollNpc(int pThis)
 			Push[2] = 99999.0;
 		}
 	}
+#endif
 
 	SDKCall_BecomeRagdollOnClient(pThis, Push);
 }
@@ -9261,10 +9305,13 @@ void RemoveFromNpcAliveList(int iNpc)
 		EnemyNpcAliveStatic = 0;
 }
 
+#if defined ZR
 bool RaidAllowsBuildings = false;
+#endif
 
-bool RaidbossIgnoreBuildingsLogic(int value = 0)
+stock bool RaidbossIgnoreBuildingsLogic(int value = 0)
 {
+#if defined ZR
 	switch(value)
 	{
 		//if a raidboss exists, but we have a rule to make it still target buildings, set to true!
@@ -9279,7 +9326,6 @@ bool RaidbossIgnoreBuildingsLogic(int value = 0)
 				return true;
 			}
 			//do not ignore
-			return false;
 		}
 		//same as above, but if it has the tower defense mode on, also ignore
 		case 2:
@@ -9292,8 +9338,8 @@ bool RaidbossIgnoreBuildingsLogic(int value = 0)
 				//do ignore
 				return true;
 			}
+
 			//do not ignore
-			return false;
 		}
 		default:
 		{
@@ -9302,9 +9348,10 @@ bool RaidbossIgnoreBuildingsLogic(int value = 0)
 			{
 				return true;
 			}
-			return false;
 		}
 	}
+#endif
+	return false;
 }
 
 void EntityIsInHazard_Teleport(int entity)
@@ -9699,7 +9746,7 @@ void ExtinguishTarget(int target)
 	}
 }
 
-
+#if defined ZR
 public Action Timer_CheckIfRaidIsActive(Handle timer, any entid)
 {
 	if(!RaidbossIgnoreBuildingsLogic(2))
@@ -9708,3 +9755,4 @@ public Action Timer_CheckIfRaidIsActive(Handle timer, any entid)
 	}
 	return Plugin_Handled;
 }
+#endif

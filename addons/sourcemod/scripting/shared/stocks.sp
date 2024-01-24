@@ -426,44 +426,6 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 	return iReturn;
 }
 
-
-stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)
-{
-	float vecOrigin[3], vecAngles[3], vecEndOrigin[3];
-	GetClientEyePosition(iClient, vecOrigin);
-	GetClientEyeAngles(iClient, vecAngles);
-	
-	i_PreviousInteractedEntity[iClient] = 0; //didnt find any
-	
-	if(f_Reviving_This_Client[iClient] < GetGameTime())
-	{
-		i_Reviving_This_Client[iClient] = 0;
-	}
-
-	Handle hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_DontHitAlivePlayer, iClient);
-	TR_GetEndPosition(vecEndOrigin, hTrace);
-	
-	int iReturn = -1;
-	int iHit = TR_GetEntityIndex(hTrace);
-	
-	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
-		iReturn = iHit;
-
-	if(iReturn > 0)
-	{
-		i_Reviving_This_Client[iClient] = iReturn;
-		f_Reviving_This_Client[iClient] = GetGameTime() + 0.35;
-	}
-	else
-	{
-		i_Reviving_This_Client[iClient] = 0;
-		f_Reviving_This_Client[iClient] = 0.0;
-	}
-	
-	delete hTrace;
-	return iReturn;
-}
-
 stock int GetClientPointVisibleOnlyClient(int iClient, float flDistance = 100.0)
 {
 	float vecOrigin[3], vecAngles[3], vecEndOrigin[3];
@@ -1273,8 +1235,10 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 
 	if(!(flag_extrarules & (HEAL_ABSOLUTE)))
 	{
+#if defined ZR
 		if(b_HealthyEssence)
 			HealTotal *= 1.25;
+#endif
 
 		//Extra healing bonuses or penalty for all healing except absolute
 		if(reciever <= MaxClients)
@@ -1554,6 +1518,8 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 	{
 		return false;
 	}
+
+#if defined ZR
 	if(f_Reviving_This_Client[data] > GetGameTime())
 	{
 		if(i_Reviving_This_Client[data] != entity)
@@ -1561,6 +1527,7 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 			return false;
 		}
 	}
+#endif
 	
 	return entity!=data;
 }
@@ -2806,11 +2773,15 @@ int inflictor = 0)
 {
 
 	float damage_reduction = 1.0;
+
+#if !defined RTS
 	if(IsValidEntity(weapon))
 	{
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
 	}
+#endif
+
 	//this should make explosives during raids more usefull.
 	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
 	{ 
@@ -3362,7 +3333,7 @@ public void MakeExplosionFrameLater(DataPack pack)
 		DispatchKeyValue(ent, "spawnflags", "581");
 						
 		DispatchKeyValue(ent, "rendermode", "0");
-		DispatchKeyValue(ent, "fireballsprite", spirite);
+		DispatchKeyValue(ent, "fireballsprite", "spirites/zerogxplode.spr");
 										
 		DispatchKeyValueFloat(ent, "DamageForce", 0.0);								
 		SetEntProp(ent, Prop_Data, "m_iMagnitude", 0); 
@@ -3793,7 +3764,6 @@ stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3] = {0.0,0.
 // Thank you miku:)
 // https://github.com/Mikusch/PropHunt/blob/985808f13d8738945a2c9980db0b75865a20c99c/addons/sourcemod/scripting/prophunt.sp#L332
 
-#if defined ZR
 static bool HazardResult;
 
 bool IsPointHazard(const float pos1[3])
@@ -3859,7 +3829,6 @@ public bool TraceEntityEnumerator_EnumerateTriggers_noBuilds(int entity, int cli
 	
 	return true;
 }
-#endif	// ZR
 
 stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int blue = 34, float duration = 1.01)
 {
@@ -3915,6 +3884,7 @@ public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
 	}
 	return Plugin_Stop;
 }
+
 /*
 void PlayFakeDeathSound(int client)
 {
@@ -4041,7 +4011,6 @@ public Action ThirdersonTransmitEnvLaser(int entity, int client)
 }
 
 
-#if defined ZR
 //bool identified if it went above max health or not.
 
 //No need to delele it, its just 1 ho difference, wow so huge.
@@ -4125,6 +4094,7 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	return HealAmount;
 }
 
+#if defined ZR
 static const char g_ScoutDownedResponse[][] = {
 	"vo/scout_paincrticialdeath01.mp3",
 	"vo/scout_paincrticialdeath02.mp3",
@@ -4893,4 +4863,55 @@ stock void Matrix_GetRotationMatrix(float matMatrix[3][3], float fA, float fB, f
 		fCosB*fSinG,	fSinA*fSinB*fSinG + fCosA*fCosG, 	fCosA*fSinB*fSinG - fSinA*fCosG,
 		     -fSinB,		                fSinA*fCosB,	                    fCosA*fCosB
 	);
+}
+
+stock void ForcePlayerCrouch(int client, bool enable)
+{
+	if(enable)
+	{
+		SetVariantInt(1);
+		AcceptEntityInput(client, "SetForcedTauntCam");
+		SetForceButtonState(client, true, IN_DUCK);
+		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 0);
+		b_NetworkedCrouch[client] = true;
+		SetEntProp(client, Prop_Send, "m_bDucked", true);
+		SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
+	}
+	else
+	{
+		int Buttons = GetEntProp(client, Prop_Data, "m_afButtonForced");
+		if(Buttons & IN_DUCK)
+		{
+			if(thirdperson[client])
+			{
+				SetVariantInt(1);
+				AcceptEntityInput(client, "SetForcedTauntCam");
+			}
+			else
+			{
+				SetVariantInt(0);
+				AcceptEntityInput(client, "SetForcedTauntCam");
+			}
+			SetForceButtonState(client, false, IN_DUCK);
+			b_NetworkedCrouch[client] = false;
+			SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
+			SetEntProp(client, Prop_Send, "m_bDucked", false);
+			SetEntityFlags(client, GetEntityFlags(client)&~FL_DUCKING);	
+		}
+	}
+}
+
+stock void SetForceButtonState(int client, bool apply, int button_flag)
+{
+	int Buttons = GetEntProp(client, Prop_Data, "m_afButtonForced");
+
+	if(apply)
+	{
+		Buttons |= button_flag;
+	}
+	else
+	{
+		Buttons &= ~button_flag;
+	}
+	SetEntProp(client, Prop_Data, "m_afButtonForced", Buttons);
 }

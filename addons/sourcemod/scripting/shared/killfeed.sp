@@ -52,7 +52,13 @@ static Handle FeedTimer;
 void AdjustBotCount()
 {
 	int slots;
+	
+#if defined ZR
 	int botcount = zr_killfeed.BoolValue ? 0 : 99;
+#else
+	int botcount = 0;
+#endif
+
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientConnected(client))

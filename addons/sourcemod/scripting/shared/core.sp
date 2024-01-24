@@ -16,8 +16,7 @@
 #if !defined UseDownloadTable
 #include <filenetwork>
 #endif
-#include <queue>
-#include <profiler>
+//#include <profiler>
 #include <sourcescramble>
 //#include <handledebugger>
 
@@ -242,7 +241,6 @@ public const int RenderColors_RPG[][] =
 	{ 138, 43, 226 , 255},	//wat
 	{0, 0, 0, 255}			//none, black.
 };
-
 
 Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
@@ -1153,15 +1151,26 @@ float f_DelayNextWaveStartAdvancingDeathNpc;
 #include "rpg_fortress/rpg_core.sp"
 #endif
 
+#if defined RTS
+#include "fortress_wars/rts_core.sp"
+#endif
+
 /*
 	Below Are Non-Shared Variables/Defines
 */
+
+#if !defined RTS
+#include "shared/custom_melee_logic.sp"
+#include "shared/thirdperson.sp"
+#include "shared/wand_projectile.sp"
+#include "shared/viewchanges.sp"
+#include "shared/store.sp"
+#endif
 
 #include "shared/attributes.sp"
 #include "shared/commands.sp"
 #include "shared/configs.sp"
 #include "shared/convars.sp"
-#include "shared/custom_melee_logic.sp"
 #include "shared/dhooks.sp"
 #include "shared/events.sp"
 #include "shared/filenetwork.sp"
@@ -1172,10 +1181,6 @@ float f_DelayNextWaveStartAdvancingDeathNpc;
 #include "shared/sdkcalls.sp"
 #include "shared/sdkhooks.sp"
 #include "shared/stocks.sp"
-#include "shared/store.sp"
-#include "shared/thirdperson.sp"
-#include "shared/viewchanges.sp"
-#include "shared/wand_projectile.sp"
 
 #include "shared/baseboss_lagcompensation.sp"
 
@@ -1183,7 +1188,7 @@ public Plugin myinfo =
 {
 	name		=	"NPC Gamemode Core",
 	author		=	"Artvin & Batfoxkid & Mikusch",
-	description	=	"Zombie Riot & RPG Fortress",
+	description	=	"Zombie Riot & Fortress Wars",
 	version		=	"manual"
 };
 
@@ -1192,7 +1197,9 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	MarkNativeAsOptional("FuncToVal");
 	CreateNative("FuncToVal", Native_FuncToVal);
 	
+#if !defined RTS
 	Thirdperson_PluginLoad();
+#endif
 	
 #if defined ZR
 	ZR_PluginLoad();
@@ -1282,13 +1289,11 @@ public void OnPluginStart()
 	NPC_PluginStart();
 	NPCCamera_PluginStart();
 	SDKHook_PluginStart();
-	Thirdperson_PluginStart();
 //	Building_PluginStart();
 #if defined LagCompensation
 	OnPluginStart_LagComp();
 #endif
 	NPC_Base_InitGamedata();
-	WandProjectile_GamedataInit();
 	RTSCamera_PluginStart();
 	
 #if defined ZR
@@ -1298,6 +1303,14 @@ public void OnPluginStart()
 #if defined RPG
 	RPG_PluginStart();
 #endif
+	
+#if defined RTS
+	RTS_PluginStart();
+#else
+	Thirdperson_PluginStart();
+	WandProjectile_GamedataInit();
+#endif
+
 	//Global Hud for huds.
 	SyncHud_Notifaction = CreateHudSynchronizer();
 	SyncHud_WandMana = CreateHudSynchronizer();
@@ -1450,12 +1463,15 @@ public void OnMapStart()
 	RPG_MapStart();
 #endif
 
+#if !defined RTS
+	ViewChange_MapStart();
+	WandStocks_Map_Precache();
+	MapStart_CustomMeleePrecache();
+#endif
+
 	Npc_Sp_Precache();
 	OnMapStart_NPC_Base();
 	SDKHook_MapStart();
-	ViewChange_MapStart();
-	MapStart_CustomMeleePrecache();
-	WandStocks_Map_Precache();
 	MapStartResetNpc();
 	RTSCamera_MapStart();
 	Zero(f_AntiStuckPhaseThroughFirstCheck);
@@ -1760,9 +1776,12 @@ public void OnClientDisconnect(int client)
 {
 	FileNetwork_ClientDisconnect(client);
 	KillFeed_ClientDisconnect(client);
-	Store_ClientDisconnect(client);
 	RTSCamera_ClientDisconnect(client);
-	
+
+#if !defined RTS
+	Store_ClientDisconnect(client);
+#endif
+
 	i_ClientHasCustomGearEquipped[client] = false;
 	i_EntityToAlwaysMeleeHit[client] = 0;
 	ReplicateClient_Svairaccelerate[client] = -1.0;
@@ -2167,6 +2186,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 #endif
 }
 
+#if !defined RTS
 public void Update_Ammo(DataPack pack)
 {
 	pack.Reset();
@@ -2340,6 +2360,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	}
 	return action;
 }
+#endif	// Non-RTS
 
 #if defined ZR
 public void SDKHook_TeamSpawn_SpawnPost(int entity)
@@ -2791,7 +2812,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if (!StrContains(classname, "tf_weapon_medigun")) 
 		{
 			b_IsAMedigun[entity] = true;
+#if defined ZR
 			Medigun_OnEntityCreated(entity);
+#endif
 		}
 #if defined ZR
 		else if (!StrContains(classname, "tf_weapon_particle_cannon")) 
@@ -3075,8 +3098,8 @@ public void RemoveNpcThingsAgain(int entity)
 #if defined ZR
 	CleanAllApplied_Aresenal(entity, true);
 	b_NpcForcepowerupspawn[entity] = 0;	
-#endif
 	CleanAllApplied_Cryo(entity);
+#endif
 	i_HexCustomDamageTypes[entity] = 0;
 }
 
@@ -3519,7 +3542,8 @@ void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons=true,
 {
 	if(classType < TFClass_Scout || classType > TFClass_Engineer)
 	{
-		classType = TFClass_Medic;
+		//classType = TFClass_Medic;
+		ThrowError("Invalid class %d", classType);
 	}
 	
 	TF2_SetPlayerClass(client, classType, weapons, persistent);
@@ -3535,6 +3559,7 @@ void ResetReplications()
 	}
 }
 
+#if defined ZR
 void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0)
 {
 	bool WasClientReviving = true;
@@ -3640,3 +3665,4 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0)
 		MakePlayerGiveResponseVoice(target, 3); //Revived response!
 	}
 }
+#endif	// ZR

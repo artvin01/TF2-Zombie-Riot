@@ -134,12 +134,14 @@ void DHook_Setup()
 	if(!ForceRespawn)
 		LogError("[Gamedata] Could not find CBasePlayer::ForceRespawn");
 	
+#if !defined RTS
 	Handle dtWeaponFinishReload = DHookCreateFromConf(gamedata, "CBaseCombatWeapon::FinishReload()");
 	if (!dtWeaponFinishReload) {
 		SetFailState("Failed to create detour %s", "CBaseCombatWeapon::FinishReload()");
 	}
 	DHookEnableDetour(dtWeaponFinishReload, false, OnWeaponReplenishClipPre);
 	DHookEnableDetour(dtWeaponFinishReload, true, OnWeaponReplenishClipPost);
+#endif
 	
 	// from https://github.com/shavitush/bhoptimer/blob/b78ae36a0ef72d15620d2b18017bbff18d41b9fc/addons/sourcemod/scripting/shavit-misc.sp
 	
@@ -947,12 +949,14 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				int EntityOwner = i_WandOwner[entity2];
 				if(ShieldDeleteProjectileCheck(EntityOwner, entity1))
 				{
+#if defined ZR
 					if(i_WandIdNumber[entity1] != 0)
 					{
 						//make it act as if it collided with the world.
 						Wand_Base_StartTouch(entity1, 0);
 					}
 					else
+#endif
 					{
 						//force a collision
 						
@@ -983,11 +987,13 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+#if defined ZR
 			else if (i_WandIdNumber[entity1] == 19 && !i_IsABuilding[entity2] && !b_Is_Player_Projectile[entity2]) //Health Hose projectiles
 			{
 				Hose_Touch(entity1, entity2);
 				return false;
 			}
+#endif
 			else if(entity2 <= MaxClients && entity2 > 0)
 			{
 				return false;
@@ -2023,6 +2029,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	return MRES_Supercede;
 }
 
+#if !defined RTS
 MRESReturn OnWeaponReplenishClipPost(int weapon)
 {
 	if(IsValidEntity(weapon))
@@ -2056,6 +2063,7 @@ MRESReturn OnWeaponReplenishClipPre(int weapon) // Not when the player press rel
 	return MRES_Ignored;
 	
 }
+#endif
 
 void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 {

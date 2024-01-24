@@ -42,7 +42,7 @@
 #define SOUND_SKULL_IMPACT	"weapons/flare_detonator_explode_world.wav"
 #define SKULL_PARTICLE_IMPACT	"spell_skeleton_goop_green"
 
-Queue Skulls_Queue[MAXPLAYERS+1] = {null, ...};
+ArrayStack Skulls_ArrayStack[MAXPLAYERS+1] = {null, ...};
 float Skulls_OrbitAngle[MAXPLAYERS + 1] = { 0.0, ... };
 
 //Stats based on pap level. Uses arrays for simpler code.
@@ -121,7 +121,7 @@ public void Wand_Skull_Summon_ClearAll()
 
 public void Skulls_PlayerKilled(int client)
 {
-	if (Skulls_Queue[client] != null)
+	if (Skulls_ArrayStack[client] != null)
 	{
 		DeleteAllSkulls(client);
 	}
@@ -155,9 +155,9 @@ public void Skulls_LaunchAll(int client, int weapon, bool crit, int tier)
 		
 		delay_hud[client] = 0.0;
 		
-		while (!Skulls_Queue[client].Empty)
+		while (!Skulls_ArrayStack[client].Empty)
 		{
-			int ent = EntRefToEntIndex(Skulls_Queue[client].Pop());
+			int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Pop());
 			
 			if (IsValidEdict(ent))
 			{
@@ -165,7 +165,7 @@ public void Skulls_LaunchAll(int client, int weapon, bool crit, int tier)
 			}
 		}
 		
-		Skulls_Queue[client] = null;
+		Skulls_ArrayStack[client] = null;
 	}
 	else
 	{
@@ -421,19 +421,19 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					
 					SDKHook(Textentity, SDKHook_SetTransmit, Skulls_Transmit);
 										
-					//Create queue and apply prethink hook if the queue is null:
-					if (Skulls_Queue[client] == null)
+					//Create ArrayStack and apply prethink hook if the ArrayStack is null:
+					if (Skulls_ArrayStack[client] == null)
 					{
 						SDKHook(client, SDKHook_PreThink, Skulls_PreThink);
-						Skulls_Queue[client] = new Queue();
+						Skulls_ArrayStack[client] = new ArrayStack();
 					}
 					
-					//Add the newly-summoned skull to the queue:
-					Skulls_Queue[client].Push(EntIndexToEntRef(prop));
+					//Add the newly-summoned skull to the ArrayStack:
+					Skulls_ArrayStack[client].Push(EntIndexToEntRef(prop));
 					//Launch ALL excess skulls if the player has more than the max:
-					while (Skulls_Queue[client].Length > Skulls_MaxSkulls[tier])
+					while (Skulls_ArrayStack[client].Length > Skulls_MaxSkulls[tier])
 					{
-						int ent = EntRefToEntIndex(Skulls_Queue[client].Pop());
+						int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Pop());
 					
 						if (IsValidEdict(ent))
 						{
@@ -445,7 +445,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					Ability_Apply_Cooldown(client, 2, 5.0);
 					SetDefaultHudPosition(client);
 					//SetGlobalTransTarget(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Skull Servant Summoned", Skulls_Queue[client].Length, Skulls_MaxSkulls[tier]);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Skull Servant Summoned", Skulls_ArrayStack[client].Length, Skulls_MaxSkulls[tier]);
 				}
 			}
 		}
@@ -518,9 +518,9 @@ public Action Skulls_PreThink(int client)
 
 void DeleteAllSkulls(int client)
 {
-	while (!Skulls_Queue[client].Empty)
+	while (!Skulls_ArrayStack[client].Empty)
 	{
-		int ent = EntRefToEntIndex(Skulls_Queue[client].Pop());
+		int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Pop());
 			
 		if (IsValidEdict(ent))
 		{
@@ -528,14 +528,14 @@ void DeleteAllSkulls(int client)
 		}
 	}
 		
-	Skulls_Queue[client] = null;
+	Skulls_ArrayStack[client] = null;
 }
 
 public void Skulls_Management(int client)
 {
 	Skulls_UpdateFollowerPositions(client);
 	
-	Queue Skulls = Skulls_Queue[client].Clone();
+	ArrayStack Skulls = Skulls_ArrayStack[client].Clone();
 	
 	while (!Skulls.Empty)
 	{
@@ -635,7 +635,7 @@ void Skull_AutoFire(int ent, int target, int client)
 		}
 	}
 	
-	int NumSkulls = Skulls_Queue[client].Length;
+	int NumSkulls = Skulls_ArrayStack[client].Length;
 	float penalty = Skulls_ShootPenaltyPerSkull[Skull_Tier[ent]];
 	if (penalty != 0.0)
 	{
@@ -823,14 +823,14 @@ public void Skulls_UpdateFollowerPositions(int client)
 	if (!IsValidMulti(client))
 	return;
 	
-	int ringSize = Skulls_Queue[client].Length;
+	int ringSize = Skulls_ArrayStack[client].Length;
 	
 	float Spacing = 360.0/float(ringSize);
 	int NumSpaced = 0;
 	float mult = 1.0;
 	float HeightMod = 0.0;
 	
-	Queue Skulls = Skulls_Queue[client].Clone();
+	ArrayStack Skulls = Skulls_ArrayStack[client].Clone();
 	
 	while (!Skulls.Empty)
 	{
@@ -899,7 +899,7 @@ bool Skulls_PlayerHasNoSkulls(int client)
 	if (!IsValidClient(client))
 		return true;
 		
-	return (Skulls_Queue[client] == null || Skulls_Queue[client].Empty);
+	return (Skulls_ArrayStack[client] == null || Skulls_ArrayStack[client].Empty);
 }
 
 stock void Skull_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
@@ -971,7 +971,7 @@ public bool Skull_DontHitSkulls(any entity, any contentsMask) //Borrowed from Ap
 	{
 		if (!Skulls_PlayerHasNoSkulls(i))
 		{
-			Queue skulls = Skulls_Queue[i].Clone();
+			ArrayStack skulls = Skulls_ArrayStack[i].Clone();
 			
 			while (!skulls.Empty && hit)
 			{

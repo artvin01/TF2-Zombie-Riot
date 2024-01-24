@@ -325,7 +325,7 @@ public void Weapon_Trash_Cannon_Fire_Pap2(int client, int weapon, bool crit)
 
 public void Trash_Cannon_ChooseNext(int client, int weapon, int tier)
 {
-	Queue scramble = Rand_GenerateScrambledQueue(i_TrashNumEffects);
+	ArrayStack scramble = Rand_GenerateScrambledArrayStack(i_TrashNumEffects);
 	
 	bool success = false;
 	int effect = 0;
@@ -1260,9 +1260,9 @@ public int Trash_GetClosestVictim(float position[3], float radius, bool shock)
 	return closest;
 }
 
-public Queue Rand_GenerateScrambledQueue(int numSlots)
+public ArrayStack Rand_GenerateScrambledArrayStack(int numSlots)
 {
-	Queue scramble = new Queue();
+	ArrayStack scramble = new ArrayStack();
 	Handle genericArray = CreateArray(255);
 	
 	for (int i = 0; i <= numSlots; i++)
