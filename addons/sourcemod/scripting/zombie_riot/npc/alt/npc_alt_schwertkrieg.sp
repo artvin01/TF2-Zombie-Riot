@@ -324,14 +324,14 @@ public void Schwertkrieg_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -464,7 +464,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 			b_teleport_recharging[npc.index]=false;
 			npc.AddActivityViaSequence("taunt_neck_snap_medic");
 
-			float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index);
+			float npc_Loc[3]; npc_Loc = GetAbsOriginOld(npc.index);
 
 			EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
 			EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
@@ -500,7 +500,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 		float vecPos[3];
 				
 		GetVectors(PrimaryThreatIndex, VecForward, vecRight, vecUp);
-		vecPos = GetAbsOrigin(PrimaryThreatIndex);
+		vecPos = GetAbsOriginOld(PrimaryThreatIndex);
 		vecPos[2] += 5.0;
 				
 		float vecSwingEnd[3];
@@ -516,7 +516,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 			npc.FaceTowards(vecSwingEnd);
 
 			float start_offset[3], end_offset[3];
-			start_offset = WorldSpaceCenter(npc.index);
+			start_offset = WorldSpaceCenterOld(npc.index);
 			bool Succeed = NPC_Teleport(npc.index, vecSwingEnd);
 			if(Succeed)
 			{

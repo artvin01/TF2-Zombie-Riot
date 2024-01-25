@@ -600,11 +600,11 @@ public void BunkerKahml_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+		float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{	
@@ -664,7 +664,7 @@ public void BunkerKahml_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1400.0);
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
@@ -691,7 +691,7 @@ public void BunkerKahml_ClotThink(int iNPC)
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);

@@ -139,8 +139,8 @@ public void Barrack_Alt_Berserker_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 			{

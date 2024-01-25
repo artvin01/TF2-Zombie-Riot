@@ -349,7 +349,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		int closestTarget = GetClosestAllyPlayer(npc.index);
 		if(IsValidEntity(closestTarget))
 		{
-			npc.FaceTowards(WorldSpaceCenter(closestTarget), 100.0);
+			npc.FaceTowards(WorldSpaceCenterOld(closestTarget), 100.0);
 		}
 		npc.SetActivity("ACT_IDLE");
 		npc.m_bisWalking = false;
@@ -472,9 +472,9 @@ public void GodArkantos_ClotThink(int iNPC)
 	if(IsEntityAlive(npc.m_iTargetWalkTo))
 	{
 		//Predict their pos.
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetWalkTo);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTargetWalkTo);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetWalkTo);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTargetWalkTo);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			NPC_SetGoalVector(npc.index, vPredictedPos);
@@ -996,7 +996,7 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 			{
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
@@ -1009,7 +1009,7 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 							PlaySound = true;
 							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
-							vecHit = WorldSpaceCenter(target);
+							vecHit = WorldSpaceCenterOld(target);
 										
 							float damage = 20.0;
 							if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
@@ -1058,9 +1058,9 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget)) 
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
 			{

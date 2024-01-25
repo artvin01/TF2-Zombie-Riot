@@ -568,7 +568,7 @@ static bool InVisionRange(const float vecMe[3], BaseSquad npc, int enemy)
 {
 	float eyePitch[3], vecTarget[3], vecDir[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-	vecTarget = WorldSpaceCenter(enemy);
+	vecTarget = WorldSpaceCenterOld(enemy);
 
 	MakeVectorFromPoints(vecMe, vecTarget, vecDir);
 	GetVectorAngles(vecDir, vecDir);
@@ -642,7 +642,7 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 						{
 							if(ally.m_bIsSquad && ally.m_iTargetAttack && IsValidEnemy(npc.index, ally.m_iTargetAttack) && Can_I_See_Enemy(ally.index, ally.m_iTargetAttack))
 							{
-								vecTarget = WorldSpaceCenter(ally.index);
+								vecTarget = WorldSpaceCenterOld(ally.index);
 								if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
 								{
 									npc.m_iTargetAttack = ally.m_iTargetAttack;
@@ -665,7 +665,7 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 				// Players can be above a nav mesh and a "path" is possible
 				// Check if the target is above a place
 
-				vecTarget = WorldSpaceCenter(npc.m_iTargetWalk);
+				vecTarget = WorldSpaceCenterOld(npc.m_iTargetWalk);
 				distance = vecTarget[2] - vecMe[2];
 				if(distance > 100.0 || (distance > 15.0 && distance > length))
 					npc.m_iTargetWalk = 0;
@@ -695,11 +695,11 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3], bool predict = fa
 			if(predict)
 			{
 				float vecTarget[3];
-				vecTarget = WorldSpaceCenter(npc.m_iTargetWalk);
+				vecTarget = WorldSpaceCenterOld(npc.m_iTargetWalk);
 
 				if(GetVectorDistance(vecTarget, vecMe, true) < npc.GetLeadRadius())
 				{
-					vecTarget = PredictSubjectPosition(npc, npc.m_iTargetWalk);
+					vecTarget = PredictSubjectPositionOld(npc, npc.m_iTargetWalk);
 					NPC_SetGoalVector(npc.index, vecTarget);
 				}
 				else

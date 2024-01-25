@@ -109,9 +109,13 @@ bool UnitBody_CanControl(int player, int entity)
 	return view_as<UnitBody>(entity).CanControl(player);
 }
 
-bool UnitBody_ThinkStart(UnitBody npc)
+void UnitBody_AddCommand(int entity, int type, int target = -1, const float pos[3] = NULL_VECTOR)
 {
-	float gameTime = GetGameTime(npc.index);
+	view_as<UnitBody>(entity).AddCommand(type, target, pos);
+}
+
+bool UnitBody_ThinkStart(UnitBody npc, float gameTime)
+{
 	if(npc.m_flNextDelayTime > gameTime)
 		return false;
 	
@@ -130,6 +134,28 @@ bool UnitBody_ThinkStart(UnitBody npc)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 	return true;
 }
+
+void UnitBody_ThinkTarget(UnitBody npc, float gameTime)
+{
+	CommandEnum command;
+
+	if(CommandList[npc.index] && CommandList[npc.index].Length)
+	{
+		CommandList[npc.index].GetArray(0, command);
+	}
+	else
+	{
+		command.Type = Command_Move;
+		GetAbsOrigin(npc.index, command.Pos);
+	}
+
+	if(command.Target > 0)
+	{
+		if(IsValidEnemy(npc.index, npc.m_iTarget))
+			npc.m_iTarget = command.Target;
+	}
+}
+
 /*
 int UnitBody_ThinkTarget(int iNPC, bool camo, float gameTime, bool passive = false)
 {
@@ -179,7 +205,7 @@ int UnitBody_ThinkTarget(int iNPC, bool camo, float gameTime, bool passive = fal
 		
 		if(npc.m_iTargetAlly > 0 && !passive)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
 			npc.m_iTargetRally = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo, _, _, vecTarget, command != Command_Aggressive);
 		}
 		else
@@ -248,7 +274,7 @@ void UnitBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", const
 
 			if(flDistanceToTarget < canRetreat)
 			{
-				vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
+				vecTarget = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
 				NPC_SetGoalVector(npc.index, vecTarget);
 				
 				npc.StartPathing();
@@ -277,7 +303,7 @@ void UnitBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", const
 			if(flDistanceToTarget < npc.GetLeadRadius())
 			{
 				//Predict their pos.
-				vecTarget = PredictSubjectPosition(npc, npc.m_iTargetRally);
+				vecTarget = PredictSubjectPositionOld(npc, npc.m_iTargetRally);
 				NPC_SetGoalVector(npc.index, vecTarget);
 
 				npc.StartPathing();

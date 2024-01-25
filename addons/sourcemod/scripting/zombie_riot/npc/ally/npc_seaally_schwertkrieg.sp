@@ -77,8 +77,8 @@ public void SeaAllyDonnerkrieg_ClotThink(int iNPC)
 
 		if(npc.m_iTarget > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 			//Target close enough to hit
 			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
@@ -115,7 +115,7 @@ public void SeaAllyDonnerkrieg_ClotThink(int iNPC)
 									{
 										FreezeNpcInTime(target, 1.5);
 										
-										vecHit = WorldSpaceCenter(target);
+										vecHit = WorldSpaceCenterOld(target);
 										vecHit[2] += 75.0;
 										PluginBot_Jump(target, vecHit);
 										EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);

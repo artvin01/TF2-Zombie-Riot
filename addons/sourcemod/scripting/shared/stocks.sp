@@ -1133,8 +1133,7 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 		entity = 0;
 
 	float pos[3];
-	
-	pos = WorldSpaceCenter(client);
+	WorldSpaceCenter(client, pos);
 	
 	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_SLASH | DMG_PREVENT_PHYSICS_FORCE, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
@@ -1200,7 +1199,7 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 
 	float pos[3], ang[3];
 	
-	pos = WorldSpaceCenter(entity);
+	WorldSpaceCenter(entity, pos);
 	int damagetype = pack.ReadCell(); //Same damagetype as the weapon.
 	
 	GetClientEyeAngles(client, ang);
@@ -1539,11 +1538,18 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 	return entity!=data;
 }
 
-stock float[] GetAbsOrigin(int client)
+#if defined ZR
+stock float[] GetAbsOriginOld(int client)
 {
 	float v[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
 	return v;
+}
+#endif
+
+stock void GetAbsOrigin(int client, float v[3])
+{
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
 }
 
 public void DeleteHandle(Handle handle)
@@ -1561,9 +1567,10 @@ stock bool IsValidClient( int client)
 	return true; 
 }
 
-stock float[] GetWorldSpaceCenter(int client)
+#if defined ZR
+stock float[] GetWorldSpaceCenterOld(int client)
 {
-	float v[3]; v = GetAbsOrigin(client);
+	float v[3]; v = GetAbsOriginOld(client);
 	
 	float max_space[3];
 	GetEntPropVector(client, Prop_Data, "m_vecMaxs", max_space);
@@ -1571,16 +1578,26 @@ stock float[] GetWorldSpaceCenter(int client)
 	
 	return v;
 }
+#endif
+
+stock void GetWorldSpaceCenter(int client, float v[3])
+{
+	GetAbsOrigin(client, v);
+	
+	float max_space[3];
+	GetEntPropVector(client, Prop_Data, "m_vecMaxs", max_space);
+	v[2] += max_space[2] / 2;
+}
 
 bool IsBehindAndFacingTarget(int owner, int target)
 {
-	float vecToTarget[3];
-	SubtractVectors(GetWorldSpaceCenter(target), GetWorldSpaceCenter(owner), vecToTarget);
+	float vecToTarget[3], vecEyeAngles[3];
+	GetWorldSpaceCenter(target, vecToTarget);
+	GetWorldSpaceCenter(owner, vecEyeAngles);
+	SubtractVectors(vecToTarget, vecEyeAngles, vecToTarget);
 
 	vecToTarget[2] = 0.0;
 	NormalizeVector(vecToTarget, vecToTarget);
-	
-	float vecEyeAngles[3];
 	
 	if(owner <= MaxClients)
 		GetClientEyeAngles(owner, vecEyeAngles);
@@ -2578,7 +2595,7 @@ void TE_SendBeam(int client, float m_vecMins[3], float m_vecMaxs[3], float flDur
 }
 
 /*
-float[] CalculateBulletDamageForce( const float vecBulletDir[3], float flScale )
+float[] CalculateBulletDamageForceOld( const float vecBulletDir[3], float flScale )
 {
 	float vecForce[3]; vecForce = vecBulletDir;
 	NormalizeVector( vecForce, vecForce );
@@ -2624,7 +2641,8 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	return 0;
 }
 
-float[] CalculateDamageForce( const float vecBulletDir[3], float flScale )
+#if defined ZR
+float[] CalculateDamageForceOld( const float vecBulletDir[3], float flScale )
 {
 	float vecForce[3]; vecForce = vecBulletDir;
 	NormalizeVector( vecForce, vecForce );
@@ -2632,8 +2650,17 @@ float[] CalculateDamageForce( const float vecBulletDir[3], float flScale )
 	ScaleVector(vecForce, flScale);
 	return vecForce;
 }
+#endif
 
-float[] CalculateDamageForceSelfCalculated(int client, float flScale )
+void CalculateDamageForce( const float vecBulletDir[3], float flScale, float vecForce[3])
+{
+	vecForce = vecBulletDir;
+	NormalizeVector( vecForce, vecForce );
+	ScaleVector(vecForce, FindConVar("phys_pushscale").FloatValue);
+	ScaleVector(vecForce, flScale);
+}
+
+void CalculateDamageForceSelfCalculated(int client, float flScale, float vec[3])
 {
 	float vecSwingForward[3];
 	float ang[3];
@@ -2641,44 +2668,26 @@ float[] CalculateDamageForceSelfCalculated(int client, float flScale )
 	
 	GetAngleVectors(ang, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
 	
-	return CalculateDamageForce(vecSwingForward, flScale);
+	CalculateDamageForce(vecSwingForward, flScale, vec);
 }
 
 float ImpulseScale( float flTargetMass, float flDesiredSpeed )
 {
 	return (flTargetMass * flDesiredSpeed);
 }
-/*
-float[] CalculateExplosiveDamageForce( const float vecForceOrigin[3],const float vecDir[3], float flScale )
-{
-	info->SetDamagePosition( vecForceOrigin );
 
-	float flClampForce = ImpulseScale( 75, 400 );
-
-	// Calculate an impulse large enough to push a 75kg man 4 in/sec per point of damage
-	float flForceScale = info->GetBaseDamage() * ImpulseScale( 75, 4 );
-
-	if( flForceScale > flClampForce )
-		flForceScale = flClampForce;
-
-	// Fudge blast forces a little bit, so that each
-	// victim gets a slightly different trajectory. 
-	// This simulates features that usually vary from
-	// person-to-person variables such as bodyweight,
-	// which are all indentical for characters using the same model.
-	flForceScale *= random->RandomFloat( 0.85, 1.15 );
-
-	// Calculate the vector and stuff it into the takedamageinfo
-	Vector vecForce = vecDir;
-	VectorNormalize( vecForce );
-	vecForce *= flForceScale;
-	vecForce *= phys_pushscale.GetFloat();
-	vecForce *= flScale;
-	info->SetDamageForce( vecForce );
-}*/
 #define INNER_RADIUS_FRACTION 0.25
 
-float[] CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vecEndPosition[3], float damage_Radius)
+#if defined ZR
+stock float[] CalculateExplosiveDamageForceOld(const float vec_Explosive[3], const float vecEndPosition[3], float damage_Radius)
+{
+	float v[3];
+	CalculateExplosiveDamageForce(vec_Explosive, vecEndPosition, damage_Radius, v);
+	return v;
+}
+#endif
+
+void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vecEndPosition[3], float damage_Radius, float vecForce[3])
 {
 	float flClampForce = ImpulseScale( 75.0, 400.0 );
 
@@ -2717,7 +2726,7 @@ float[] CalculateExplosiveDamageForce(const float vec_Explosive[3], const float 
 	}
 		
 	// Calculate the vector and stuff it into the takedamageinfo
-	float vecForce[3]; vecForce = vecSegment;
+	vecForce = vecSegment;
 	NormalizeVector( vecForce, vecForce );
 	ScaleVector(vecForce, flForceScale);
 	ScaleVector(vecForce, FindConVar("phys_pushscale").FloatValue);
@@ -2726,7 +2735,6 @@ float[] CalculateExplosiveDamageForce(const float vec_Explosive[3], const float 
 	vecForce[0] *= -1.0;
 	vecForce[1] *= -1.0;
 	vecForce[2] *= -1.0;
-	return vecForce;
 }
 
 int CountPlayersOnRed(bool alive = false)
@@ -2904,7 +2912,7 @@ int inflictor = 0)
 		if(!HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom])
 			break;
 		
-		VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] = WorldSpaceCenter(HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]);
+		WorldSpaceCenter(HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom], VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]]);
 		distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] = GetVectorDistance(VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]], spawnLoc, true);
 		//Save their distances.
 	}
@@ -3021,7 +3029,10 @@ int inflictor = 0)
 				//idealy we should fire a trace and see the distance from the trace
 				//ill do it in abit if i dont forget.
 				damage_1 *= Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
-				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
+				
+				float v[3];
+				CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius, v);
+				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1 / damage_reduction, damage_flags, weapon, v, vicpos, false, custom_flags);	
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{
@@ -3255,7 +3266,7 @@ stock void LookAtTarget(int client, int target)
 	}
 	else
 	{
-		targetEyes = WorldSpaceCenter(target);
+		WorldSpaceCenter(target, targetEyes);
 	}
 	MakeVectorFromPoints(targetEyes, clientEyes, resultant); 
 	GetVectorAngles(resultant, angles); 
@@ -3301,7 +3312,7 @@ int Trail_Attach(int entity, char[] trail, int alpha, float lifetime=1.0, float 
 			
 		DispatchSpawn(entIndex);
 		float f_origin[3];
-		f_origin = GetAbsOrigin(entity);
+		GetAbsOrigin(entity, f_origin);
 		TeleportEntity(entIndex, f_origin, NULL_VECTOR, NULL_VECTOR);
 		SetVariantString(strTargetName);
 		AcceptEntityInput(entIndex, "SetParent");
@@ -3433,8 +3444,7 @@ stock int SpawnFormattedWorldText(const char[] format, float origin[3], int text
 		if(entity_parent != -1 && !teleport)
 		{
 			float vector[3];
-
-			vector = GetAbsOrigin(entity_parent);
+			GetAbsOrigin(entity_parent, vector);
 			
 			vector[0] += origin[0];
 			vector[1] += origin[1];
@@ -3473,7 +3483,7 @@ public Action TeleportTextTimer(Handle timer, DataPack pack)
 	if(IsValidEntity(text_entity) && IsValidEntity(parented_entity))
 	{
 		float vector[3];
-		vector = GetAbsOrigin(parented_entity);
+		GetAbsOrigin(parented_entity, vector);
 		
 		vector[0] += vector_offset[0];
 		vector[1] += vector_offset[1];
@@ -3501,8 +3511,7 @@ stock int SpawnSeperateCollisionBox(int entity, float Mins[3] = {-24.0,-24.0,0.0
 	}
 
 	float vector[3];
-
-	vector = GetAbsOrigin(entity);
+	GetAbsOrigin(entity, vector);
 
 	int brush = CreateEntityByName("func_brush");
         

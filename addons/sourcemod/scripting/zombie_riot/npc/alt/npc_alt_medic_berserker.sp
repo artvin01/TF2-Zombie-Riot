@@ -233,7 +233,7 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		if (npc.m_flReloadDelay < GetGameTime(npc.index))
 		{
 			if (npc.m_flmovedelay < GetGameTime(npc.index))
@@ -248,12 +248,12 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 		}
 		
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) {
 			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 		/*	int color[4];
 			color[0] = 255;
@@ -366,7 +366,7 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 				float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 				float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 				float time = 60.0 * (0.40 + (Health / MaxHealth));
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				npc.FaceTowards(vecTarget);
 				npc.FaceTowards(vecTarget);
 				npc.m_flNextTeleport = GetGameTime(npc.index) + time;
