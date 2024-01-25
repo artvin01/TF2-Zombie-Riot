@@ -930,6 +930,14 @@
 	{
 		"en"		"Skeletal Saint"
 	}
+	"Novice Necromancer"
+	{
+		"en"		"Novice Necromancer"
+	}
+	"Bringer of Bones"
+	{
+		"en"		"Bringer of Bones"
+	}
 	"Mecha Engineer"
 	{
 		"en"		"Mecha Engineer"
