@@ -1783,6 +1783,10 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPost(int client, DHookReturn
 {
 	if(GetChargeEffectBeingProvided && !IsInsideManageRegularWeapons)
 	{
+		if(!IsValidClient(client))
+		{
+			return MRES_Ignored;
+		}
 		#if defined NoSendProxyClass
 		TF2_SetPlayerClass_ZR(GetChargeEffectBeingProvided, WeaponClass[GetChargeEffectBeingProvided], false, false);
 		#else
