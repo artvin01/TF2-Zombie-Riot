@@ -1617,7 +1617,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	CClotBody npc = view_as<CClotBody>(victim);
 	Debuff_added = false;
 
-	if(NpcHadArmorType(victim, 2))	
+	if(NpcHadArmorType(victim, 2) && !b_NpcIsInvulnerable[victim])	
 	{
 		float percentage = npc.m_flMeleeArmor * 100.0;
 		percentage *= fl_Extra_MeleeArmor[victim];
@@ -1644,7 +1644,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added = true;
 	}
 	
-	if(NpcHadArmorType(victim, 1))	
+	if(NpcHadArmorType(victim, 1) && !b_NpcIsInvulnerable[victim])	
 	{
 		float percentage = npc.m_flRangedArmor * 100.0;
 		percentage *= fl_Extra_RangedArmor[victim];
@@ -1672,6 +1672,11 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
 		Debuff_added = true;
 	}
+	if(b_NpcIsInvulnerable[victim])
+	{
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s %t", "Invulnerable Npc");
+		Debuff_added = true;		
+	}
 	if(Debuff_added)
 	{
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s\n", Debuff_Adder);
@@ -1688,7 +1693,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 			int raidboss = EntRefToEntIndex(RaidBossActive);
 			//We have to check if the raidboss has any debuffs.
-			if(NpcHadArmorType(raidboss, 1))	
+			if(NpcHadArmorType(raidboss, 1) || b_NpcIsInvulnerable[raidboss]))	
 			{
 				HudOffset += 0.035;
 			}
@@ -1698,10 +1703,6 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			}
 
 			if(DoesNpcHaveHudDebuffOrBuff(raidboss, GameTime))
-			{
-				HudOffset += 0.035;
-			}
-			if(b_NpcIsInvulnerable[victim])
 			{
 				HudOffset += 0.035;
 			}
@@ -1745,15 +1746,10 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
 		ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
 
-		if(!b_NpcIsInvulnerable[victim])
+		if(!raidboss_active)
 		{
-			if(!raidboss_active)
-			{
-				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%s", ExtraHudHurt, c_DmgDelt);
-			}
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%s", ExtraHudHurt, c_DmgDelt);
 		}
-		else
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s %t", ExtraHudHurt, "Invulnerable Npc");
 			
 		ShowSyncHudText(attacker, SyncHud,"%s",ExtraHudHurt);
 	}
@@ -1819,10 +1815,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
 		ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
 
-		if(!b_NpcIsInvulnerable[victim])
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%s", ExtraHudHurt, c_DmgDelt);
-		else
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s %t\n-%s", ExtraHudHurt, "Invulnerable Npc", c_DmgDelt);
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%s", ExtraHudHurt, c_DmgDelt);
 			
 		ShowSyncHudText(attacker, SyncHudRaid,"%s",ExtraHudHurt);	
 
