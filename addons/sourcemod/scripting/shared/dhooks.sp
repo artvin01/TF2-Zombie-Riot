@@ -1035,9 +1035,9 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #endif	// Non-RTS
 
 #if defined RTS
-		else if(!b_NpcHasDied[entity2])
-#else
-		else if(b_Is_Blue_Npc[entity2])
+		else if(!b_NpcHasDied[entity1])
+#else	
+		else if(b_Is_Blue_Npc[entity1])
 #endif
 		{
 			if(b_ThisEntityIgnored[entity2] && !DoingLagCompensation) //Only Ignore when not shooting/compensating, which is shooting only.

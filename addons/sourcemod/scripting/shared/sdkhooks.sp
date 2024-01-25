@@ -468,6 +468,7 @@ public void OnPostThink(int client)
 #endif
 
 	{
+		SetGlobalTransTarget(client);
 		char buffer[255];
 #if defined RPG		
 		float HudY = 0.95;
