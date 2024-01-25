@@ -638,9 +638,30 @@ public void OnPostThink(int client)
 			float percentage_Global = 1.0;
 			float value = 1.0;
 
+
+
 #if defined ZR
 			percentage_Global *= ArmorPlayerReduction(client);
 			percentage_Global *= Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(client, weapon);
+			
+			if(IsInvuln(client, true) || f_ClientInvul[client] > GetGameTime())
+			{
+				percentage_Global = 0.0;
+			}
+			else if(RaidbossIgnoreBuildingsLogic(1))
+			{
+				if(TF2_IsPlayerInCondition(client, TFCond_Ubercharged))
+				{
+					percentage_Global *= 0.5;
+				}
+			}
+			else
+			{
+				if(TF2_IsPlayerInCondition(client, TFCond_Ubercharged))
+				{
+					percentage_Global *= 0.0;
+				}
+			}
 #endif
 
 			value = Attributes_FindOnPlayerZR(client, 412, true);	// Overall damage resistance
@@ -692,7 +713,7 @@ public void OnPostThink(int client)
 				percentage *= value;
 			//melee res
 			percentage *= percentage_Global;
-			if(percentage != 100.0)
+			if(percentage != 100.0 && percentage > 0.0)
 			{
 				FormatEx(buffer, sizeof(buffer), "%s [♈ %.0f%%]", buffer, percentage);
 				had_An_ability = true;
@@ -704,9 +725,14 @@ public void OnPostThink(int client)
 			if(value)
 				percentage *= value;
 
-			if(percentage != 100.0)
+			if(percentage != 100.0 && percentage > 0.0)
 			{
 				FormatEx(buffer, sizeof(buffer), "%s [♐ %.0f%%]", buffer, percentage);
+				had_An_ability = true;
+			}
+			if(percentage_Global <= 0.0)
+			{
+				FormatEx(buffer, sizeof(buffer), "%s %t",buffer, "Invulnerable Npc");
 				had_An_ability = true;
 			}
 			if(had_An_ability)

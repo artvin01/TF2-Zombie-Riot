@@ -1753,19 +1753,33 @@ stock bool IsEven( int iNum )
 	return iNum % 2 == 0;
 } 
 
-stock bool IsInvuln(int client) //Borrowed from Batfoxkid
+stock bool IsInvuln(int client, bool IgnoreNormalUber = false) //Borrowed from Batfoxkid
 {
 	if(!IsValidClient(client))
 		return true;
 
-	return (TF2_IsPlayerInCondition(client, TFCond_Ubercharged) ||
-		TF2_IsPlayerInCondition(client, TFCond_UberchargedCanteen) ||
-		TF2_IsPlayerInCondition(client, TFCond_UberchargedHidden) ||
-		TF2_IsPlayerInCondition(client, TFCond_UberchargedOnTakeDamage) ||
-		TF2_IsPlayerInCondition(client, TFCond_Bonked) ||
-		TF2_IsPlayerInCondition(client, TFCond_HalloweenGhostMode) ||
-		//TF2_IsPlayerInCondition(client, TFCond_MegaHeal) ||
-		!GetEntProp(client, Prop_Data, "m_takedamage"));
+	if(!IgnoreNormalUber)
+	{
+		return (TF2_IsPlayerInCondition(client, TFCond_Ubercharged) ||
+			TF2_IsPlayerInCondition(client, TFCond_UberchargedCanteen) ||
+			TF2_IsPlayerInCondition(client, TFCond_UberchargedHidden) ||
+			TF2_IsPlayerInCondition(client, TFCond_UberchargedOnTakeDamage) ||
+			TF2_IsPlayerInCondition(client, TFCond_Bonked) ||
+			TF2_IsPlayerInCondition(client, TFCond_HalloweenGhostMode) ||
+			//TF2_IsPlayerInCondition(client, TFCond_MegaHeal) ||
+			!GetEntProp(client, Prop_Data, "m_takedamage"));
+
+	}
+	else
+	{
+		return (TF2_IsPlayerInCondition(client, TFCond_UberchargedCanteen) ||
+			TF2_IsPlayerInCondition(client, TFCond_UberchargedHidden) ||
+			TF2_IsPlayerInCondition(client, TFCond_UberchargedOnTakeDamage) ||
+			TF2_IsPlayerInCondition(client, TFCond_Bonked) ||
+			TF2_IsPlayerInCondition(client, TFCond_HalloweenGhostMode) ||
+			//TF2_IsPlayerInCondition(client, TFCond_MegaHeal) ||
+			!GetEntProp(client, Prop_Data, "m_takedamage"));		
+	}
 }
 
 stock void ModelIndexToString(int index, char[] model, int size)

@@ -1674,7 +1674,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	}
 	if(b_NpcIsInvulnerable[victim])
 	{
-		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s %t", "Invulnerable Npc");
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s %t",Debuff_Adder, "Invulnerable Npc");
 		Debuff_added = true;		
 	}
 	if(Debuff_added)
@@ -1693,7 +1693,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 			int raidboss = EntRefToEntIndex(RaidBossActive);
 			//We have to check if the raidboss has any debuffs.
-			if(NpcHadArmorType(raidboss, 1) || b_NpcIsInvulnerable[raidboss]))	
+			if(NpcHadArmorType(raidboss, 1) || b_NpcIsInvulnerable[raidboss])
 			{
 				HudOffset += 0.035;
 			}
