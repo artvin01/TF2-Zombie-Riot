@@ -140,7 +140,7 @@ public Action contact_ground_shockwave(int client)
 		
 		GetVectors(client, client_slammed_forward[client], client_slammed_right[client], vecUp);
 		
-		client_slammed_pos[client] = GetAbsOrigin(client);
+		client_slammed_pos[client] = GetAbsOriginOld(client);
 		client_slammed_pos[client][2] += 5.0;
 		
 		float vecSwingEnd[3];

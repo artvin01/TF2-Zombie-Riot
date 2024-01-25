@@ -76,7 +76,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	float vecMe[3];
-	vecMe = WorldSpaceCenter(npc.index);
+	vecMe = WorldSpaceCenterOld(npc.index);
 	BaseSquad_BaseThinking(npc, vecMe);
 
 	bool canWalk = true;
@@ -84,7 +84,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 	if(npc.m_iTargetAttack)
 	{
 		float vecTarget[3];
-		vecTarget = WorldSpaceCenter(npc.m_iTargetAttack);
+		vecTarget = WorldSpaceCenterOld(npc.m_iTargetAttack);
 
 		float distance = GetVectorDistance(vecTarget, vecMe, true);
 		
@@ -325,7 +325,7 @@ static void BringCombineAlly(CombineOverlord npc, int index)
 				if(ally.m_bIsSquad && i_NpcInternalId[ally.index] == index && !b_NpcIsInADungeon[ally.index])
 				{
 					float vecMe[3];
-					vecMe = WorldSpaceCenter(npc.index);
+					vecMe = WorldSpaceCenterOld(npc.index);
 					TeleportEntity(ally.index, vecMe);
 					break;
 				}

@@ -125,9 +125,9 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level)
 			if(!ST_HitEntitiesTeleportTrace[entity_traced])
 				break;
 
-			VictimPos = WorldSpaceCenter(ST_HitEntitiesTeleportTrace[entity_traced]);
+			VictimPos = WorldSpaceCenterOld(ST_HitEntitiesTeleportTrace[entity_traced]);
 
-			SDKHooks_TakeDamage(ST_HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamageForce(abspos, VictimPos, 5000.0), VictimPos, false);	
+			SDKHooks_TakeDamage(ST_HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamageForceOld(abspos, VictimPos, 5000.0), VictimPos, false);	
 			damage_reduction *= ExplosionDmgMultihitFalloff;
 			Teleport_CD = 4.0;
 		}

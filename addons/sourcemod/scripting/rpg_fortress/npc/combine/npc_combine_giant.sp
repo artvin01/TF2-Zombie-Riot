@@ -54,14 +54,14 @@ public void CombineGiant_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	float vecMe[3];
-	vecMe = WorldSpaceCenter(npc.index);
+	vecMe = WorldSpaceCenterOld(npc.index);
 	BaseSquad_BaseThinking(npc, vecMe);
 
 	bool canWalk = true;
 	if(npc.m_iTargetAttack)
 	{
 		float vecTarget[3];
-		vecTarget = WorldSpaceCenter(npc.m_iTargetAttack);
+		vecTarget = WorldSpaceCenterOld(npc.m_iTargetAttack);
 
 		if(npc.m_bRanged)
 		{
@@ -182,8 +182,8 @@ public Action CombineGiant_TakeDamage(int victim, int &attacker, int &inflictor,
 		else
 		{
 			float vecMe[3], vecTarget[3];
-			vecMe = WorldSpaceCenter(npc.index);
-			vecTarget = WorldSpaceCenter(attacker);
+			vecMe = WorldSpaceCenterOld(npc.index);
+			vecTarget = WorldSpaceCenterOld(attacker);
 			if(GetVectorDistance(vecMe, vecTarget, true) > 30000.0)	// 173 HU
 			{
 				EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);

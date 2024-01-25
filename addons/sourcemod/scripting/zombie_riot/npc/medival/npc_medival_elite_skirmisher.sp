@@ -248,9 +248,9 @@ public void MedivalEliteSkirmisher_ClotThink(int iNPC)
 				if(IsValidEntity(npc.m_iWearable1))
 					AcceptEntityInput(npc.m_iWearable1, "Enable");
 			}
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			if(flDistanceToTarget < 160000)
 			{
@@ -267,7 +267,7 @@ public void MedivalEliteSkirmisher_ClotThink(int iNPC)
 					{
 						float vBackoffPos[3];
 						
-						vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
+						vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
 						
 						NPC_SetGoalVector(npc.index, vBackoffPos, true);
 					}
@@ -310,7 +310,7 @@ public void MedivalEliteSkirmisher_ClotThink(int iNPC)
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				/*
 				int color[4];
 				color[0] = 255;
@@ -354,7 +354,7 @@ public void HandleAnimEvent_MedivalEliteSkirmisher(int entity, int event)
 			if(IsValidEntity(npc.m_iWearable1))
 				AcceptEntityInput(npc.m_iWearable1, "Disable");
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 				
 			npc.FaceTowards(vecTarget, 30000.0);
 			

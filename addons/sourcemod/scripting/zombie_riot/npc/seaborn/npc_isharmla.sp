@@ -73,7 +73,7 @@ methodmap Isharmla < CClotBody
 			RaidAllowsBuildings = true;
 		}
 
-		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
 		vecMe[2] += 500.0;
 		npc.m_iWearable2 = ParticleEffectAt(vecMe, "env_rain_512", -1.0);
 		SetParent(npc.index, npc.m_iWearable2);
@@ -101,7 +101,6 @@ public void Isharmla_ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
-
 	if(i_TargetAlly[npc.index] == -1)
 		npc.Update();
 	
@@ -245,11 +244,11 @@ public void Isharmla_ClotThink(int iNPC)
 				npc.m_flAttackHappens = 0.0;
 				npc.PlayMeleeSound();
 				
-				float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+				float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
 
 				if(IsValidAlly(npc.index, npc.m_iTarget))
 				{
-					float vecAlly[3]; vecAlly = WorldSpaceCenter(npc.m_iTarget);
+					float vecAlly[3]; vecAlly = WorldSpaceCenterOld(npc.m_iTarget);
 
 					int healing = npc.Anger ? 24000 : 16000;
 
@@ -287,7 +286,7 @@ public void Isharmla_ClotThink(int iNPC)
 				int ally = GetClosestAlly(npc.index, _, npc.m_iTarget);
 				if(ally > 0)
 				{
-					float vecAlly[3]; vecAlly = WorldSpaceCenter(ally);
+					float vecAlly[3]; vecAlly = WorldSpaceCenterOld(ally);
 
 					int healing = npc.Anger ? 24000 : 16000;
 
