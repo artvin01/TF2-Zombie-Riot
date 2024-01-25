@@ -237,9 +237,9 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 			{
 				npc.m_flSpeed = 170.0;
 			}
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			
 			if(flDistanceToTarget < 1562500)	//1250 range
@@ -257,7 +257,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 					{
 						float vBackoffPos[3];
 						
-						vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
+						vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
 						
 						NPC_SetGoalVector(npc.index, vBackoffPos, true);
 					}
@@ -292,7 +292,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 								npc.PlayMeleeSound();
 								if(flDistanceToTarget < 1000000)	//doesn't predict over 1000 hu
 								{
-									vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed);
+									vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, speed);
 								}
 								if(ZR_GetWaveCount()<40)
 								{
@@ -306,7 +306,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 							{
 								if(flDistanceToTarget < 562500)	//Doesn't predict over 750 hu
 								{
-									vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed);
+									vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, speed);
 								}
 								if(ZR_GetWaveCount()<40)
 								{
@@ -337,7 +337,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				/*
 				int color[4];
 				color[0] = 255;

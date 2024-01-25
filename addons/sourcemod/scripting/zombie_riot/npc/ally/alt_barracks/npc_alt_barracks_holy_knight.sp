@@ -99,8 +99,8 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			if(fl_barragetimer[npc.index] <= GetGameTime(npc.index) && fl_singularbarrage[npc.index] <= GetGameTime(npc.index))
 			{	
@@ -112,7 +112,7 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 				float Angles[3], distance = 100.0, UserLoc[3];
 				
 				
-				UserLoc = GetAbsOrigin(npc.index);
+				UserLoc = GetAbsOriginOld(npc.index);
 				
 				MakeVectorFromPoints(UserLoc, vecTarget, Angles);
 				GetVectorAngles(Angles, Angles);

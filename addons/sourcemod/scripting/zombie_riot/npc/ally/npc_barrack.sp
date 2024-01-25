@@ -635,7 +635,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 		
 		if(npc.m_iTargetAlly > 0 && !passive)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
 			npc.m_iTargetRally = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo, _, _, vecTarget, command != Command_Aggressive);
 		}
 		else
@@ -704,7 +704,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 
 			if(flDistanceToTarget < canRetreat)
 			{
-				vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
+				vecTarget = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
 				NPC_SetGoalVector(npc.index, vecTarget);
 				
 				npc.StartPathing();
@@ -733,7 +733,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			if(flDistanceToTarget < npc.GetLeadRadius())
 			{
 				//Predict their pos.
-				vecTarget = PredictSubjectPosition(npc, npc.m_iTargetRally);
+				vecTarget = PredictSubjectPositionOld(npc, npc.m_iTargetRally);
 				NPC_SetGoalVector(npc.index, vecTarget);
 
 				npc.StartPathing();

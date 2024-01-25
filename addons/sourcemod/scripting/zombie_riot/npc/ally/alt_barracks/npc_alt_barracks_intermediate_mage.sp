@@ -112,8 +112,8 @@ public void Barrack_Alt_Intermediate_Mage_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 			if(flDistanceToTarget < 400000.0)
 			{
@@ -125,7 +125,7 @@ public void Barrack_Alt_Intermediate_Mage_ClotThink(int iNPC)
 					if(npc.m_flNextMeleeAttack < GameTime)
 					{
 						float speed = 750.0;
-						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed);
+						vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, speed);
 						npc.m_flSpeed = 0.0;
 						npc.FaceTowards(vecTarget, 30000.0);
 						//Play attack anim

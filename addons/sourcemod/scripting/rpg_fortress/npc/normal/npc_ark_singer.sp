@@ -204,7 +204,7 @@ public void ArkSinger_ClotThink(int iNPC)
 		{
 			npc.Anger = true;
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSpecialAttackSecondarySound(vecTarget);
@@ -245,13 +245,13 @@ public void ArkSinger_ClotThink(int iNPC)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 			npc.FaceTowards(vecTarget, 30000.0);
 			if(npc.m_flNextRangedAttackHappening < gameTime)
 			{
 				npc.m_flNextRangedAttackHappening = 0.0;
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 400.0);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 400.0);
 				npc.FireRocket(vPredictedPos, 250.0, 400.0, "models/effects/combineball.mdl");
 				npc.PlayRangedSound();
 				// Scarlet Singer (50% dmg)
@@ -264,13 +264,13 @@ public void ArkSinger_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}

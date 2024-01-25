@@ -571,7 +571,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 					weapon = -1;
 				}
 				
-				pos = WorldSpaceCenter(entity);
+				WorldSpaceCenter(entity, pos);
 				
 				if(value < 0.2)
 				{
@@ -690,8 +690,8 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				float AttackerPos[3];
 				float VictimPos[3];
 				
-				AttackerPos = WorldSpaceCenter(attacker);
-				VictimPos = WorldSpaceCenter(victim);
+				WorldSpaceCenter(attacker, AttackerPos);
+				WorldSpaceCenter(victim, VictimPos);
 
 				float distance = GetVectorDistance(AttackerPos, VictimPos, true);
 				
@@ -2427,7 +2427,9 @@ bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, float &dam
 	CClotBody npcBase = view_as<CClotBody>(victim);
 	if(f_IsThisExplosiveHitscan[attacker] == GameTime)
 	{
-		npcBase.m_vecpunchforce(CalculateDamageForceSelfCalculated(attacker, 10000.0), true);
+		float v[3];
+		CalculateDamageForceSelfCalculated(attacker, 10000.0, v);
+		npcBase.m_vecpunchforce(v, true);
 		damagetype |= DMG_BULLET; //add bullet logic
 		damagetype &= ~DMG_BLAST; //remove blast logic			
 	}
@@ -2594,7 +2596,7 @@ void OnTakeDamageWidowsWine(int victim, int &attacker, int &inflictor, float &da
 		{
 			f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 20.0;
 				
-			float vecVictim[3]; vecVictim = WorldSpaceCenter(victim);
+			float vecVictim[3]; vecVictim = WorldSpaceCenterOld(victim);
 				
 			ParticleEffectAt(vecVictim, "peejar_impact_cloud_milk", 0.5);
 				

@@ -940,8 +940,8 @@ public void TrueZerofuse_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);	
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);	
 		if(npc.m_flJumpCooldown < GetGameTime(npc.index) && npc.m_flInJump < GetGameTime(npc.index) && flDistanceToTarget > 920000 && !b_WrathRage[npc.index] && !b_ForceWrath[npc.index])
 		{
 			int Enemy_I_See;
@@ -969,7 +969,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			/*int color[4];
 			color[0] = 255;
 			color[1] = 255;
@@ -999,11 +999,11 @@ public void TrueZerofuse_ClotThink(int iNPC)
 			{
 				if(b_Lifeloss[npc.index])
 				{
-					vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1200.0);
+					vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1200.0);
 				}
 				else
 				{
-					vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 650.0);
+					vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 650.0);
 				}
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
@@ -1031,7 +1031,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);

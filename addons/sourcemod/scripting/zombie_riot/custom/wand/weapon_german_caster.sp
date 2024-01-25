@@ -178,7 +178,7 @@ public Action Weapon_German_Timer(Handle timer, int client)
 					
 					EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 					int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_GERMAN, weapon, "unusual_tesla_flash");
-					f3_GermanFiredFromHere[projectile] = WorldSpaceCenter(client);
+					f3_GermanFiredFromHere[projectile] = WorldSpaceCenterOld(client);
 					static float ang_Look[3];
 					GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
 					if(target > 0)
@@ -254,7 +254,7 @@ void Weapon_German_WandTouch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenter(target);
+		Entity_Position = WorldSpaceCenterOld(target);
 
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 		
@@ -272,7 +272,7 @@ void Weapon_German_WandTouch(int entity, int target)
 
 		DamageWand *= Pow(WeaponDamageFalloff, (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
 
-		SDKHooks_TakeDamage(target, owner, owner, DamageWand, DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);
+		SDKHooks_TakeDamage(target, owner, owner, DamageWand, DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);
 		
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(particle > MaxClients)

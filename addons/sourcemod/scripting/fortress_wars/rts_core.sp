@@ -13,7 +13,8 @@ enum
 	Flag_Structure,
 	Flag_Unique,
 	Flag_Heroic,
-	Flag_Summoned
+	Flag_Summoned,
+	Flag_Worker
 }
 
 enum

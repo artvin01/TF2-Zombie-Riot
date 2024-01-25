@@ -2273,7 +2273,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
 
 		float VecOrigin[3];
-		VecOrigin = GetAbsOrigin(this.index);
+		GetAbsOrigin(this.index, VecOrigin);
 		VecOrigin[2] += offset;
 
 		TeleportEntity(item, VecOrigin, eyePitch, NULL_VECTOR);
@@ -2329,19 +2329,18 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		float vecForward[3], vecRight[3], vecTarget[3];
 		
-		float WorldSpaceTarget[3];
-
-		WorldSpaceTarget = WorldSpaceCenter(target);
-		vecTarget = WorldSpaceTarget;
+		WorldSpaceCenter(target, vecTarget);
 		if(target <= MaxClients)
 			vecTarget[2] += 10.0; //abit extra as they will most likely always shoot upwards more then downwards
 
-		MakeVectorFromPoints(WorldSpaceCenter(this.index), vecTarget, vecForward);
+		WorldSpaceCenter(this.index, vecForward);
+		MakeVectorFromPoints(vecForward, vecTarget, vecForward);
 		GetVectorAngles(vecForward, vecForward);
 		vecForward[1] = eyePitch[1];
 		GetAngleVectors(vecForward, vecForward, vecRight, vecTarget);
 		
-		float vecSwingStart[3]; vecSwingStart = GetAbsOrigin(this.index);
+		float vecSwingStart[3];
+		GetAbsOrigin(this.index, vecSwingStart);
 		
 		vecSwingStart[2] += vecSwingStartOffset; //default is 55 for a few reasons.
 		
@@ -2383,11 +2382,13 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public bool DoAimbotTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0)
 	{
-		float vecSwingStart[3]; vecSwingStart = GetAbsOrigin(this.index);
+		float vecSwingStart[3];
+		GetAbsOrigin(this.index, vecSwingStart);
 		
 		vecSwingStart[2] += vecSwingStartOffset;
 		
-		float vecSwingEnd[3]; vecSwingEnd = GetAbsOrigin(target);
+		float vecSwingEnd[3];
+		GetAbsOrigin(target, vecSwingEnd);
 		
 		// See if we hit anything.
 		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, this.index );
@@ -2400,7 +2401,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		float vecSwingStart[3];
 		float vecSwingForward[3];
 
-		vecSwingStart = GetAbsOrigin(this.index);
+		GetAbsOrigin(this.index, vecSwingStart);
 		
 		GetAngleVectors(ang, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
 		
@@ -2454,7 +2455,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		this.GetVectors(vecForward, vecSwingStart, vecAngles);
 
-		vecSwingStart = GetAbsOrigin(this.index);
+		GetAbsOrigin(this.index, vecSwingStart);
 		vecSwingStart[2] += 54.0;
 
 		vecSwingStart[2] += offset;
@@ -2512,7 +2513,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		else
 		{
-			vecSwingStart = GetAbsOrigin(this.index);
+			GetAbsOrigin(this.index, vecSwingStart);
 			vecSwingStart[2] += 54.0;
 		}
 		
@@ -2587,7 +2588,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			float vecForward[3], vecSwingStart[3], vecAngles[3];
 			this.GetVectors(vecForward, vecSwingStart, vecAngles);
 	
-			vecSwingStart = GetAbsOrigin(this.index);
+			GetAbsOrigin(this.index, vecSwingStart);
 			vecSwingStart[2] += 90.0;
 	
 			MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
@@ -2626,7 +2627,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			entitytofirefrom = this.index;
 		}
-		vecSwingStart = GetAbsOrigin(entitytofirefrom);
+		GetAbsOrigin(entitytofirefrom, vecSwingStart);
 		vecSwingStart[2] += 54.0;
 
 		vecSwingStart[2] += offset;
@@ -3858,7 +3859,8 @@ stock bool IsLengthGreaterThan(float vector[3], float length)
 
 public float clamp(float a, float b, float c) { return (a > c ? c : (a < b ? b : a)); }
 
-stock float[] WorldSpaceCenter(int entity)
+#if defined ZR
+stock float[] WorldSpaceCenterOld(int entity)
 {
 	//We need to do an exception here, if we detect that we actually make the size bigger via lag comp
 	//then we just get an offset of the abs origin, abit innacurate but it works like a charm.
@@ -3886,6 +3888,34 @@ stock float[] WorldSpaceCenter(int entity)
 	}
 	
 	return vecPos;
+}
+#endif
+
+stock void WorldSpaceCenter(int entity, float vecPos[3])
+{
+	//We need to do an exception here, if we detect that we actually make the size bigger via lag comp
+	//then we just get an offset of the abs origin, abit innacurate but it works like a charm.
+	if(b_LagCompNPC_ExtendBoundingBox)
+	{
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", vecPos);
+		//did you know abs origin only exists for the server? crazy right
+		
+		
+		//This is usually the middle, so this should work out just fine!
+		
+		if(b_IsGiant[entity])
+		{
+			vecPos[2] += 64.0;
+		}
+		else
+		{
+			vecPos[2] += 42.0;
+		}
+	}
+	else
+	{
+		SDKCall(g_hSDKWorldSpaceCenter, entity, vecPos);
+	}
 }
 
 stock CNavArea PickRandomArea()
@@ -4140,10 +4170,9 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 			return true;
 		}
 	}
-#endif	// Non-RTS
 
 	return false; //we let them through, we dont want them to just try to avoid everything!
-
+#endif	// Non-RTS
 }
 static int i_PluginBot_ApproachDelay[MAXENTITIES];
 
@@ -5893,10 +5922,10 @@ int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false, floa
 	Handle trace; 
 	float pos_npc[3];
 	float pos_enemy[3];
-	pos_npc = WorldSpaceCenter(attacker);
+	WorldSpaceCenter(attacker, pos_npc);
 	if(EnemyModifpos[0] == 0.0 && EnemyModifpos[1] == 0.0 && EnemyModifpos[2] == 0.0)
 	{
-		pos_enemy = WorldSpaceCenter(enemy);
+		WorldSpaceCenter(enemy, pos_enemy);
 	}
 	else
 	{
@@ -5929,8 +5958,8 @@ public bool Can_I_See_Enemy_Only(int attacker, int enemy)
 	Handle trace;
 	float pos_npc[3];
 	float pos_enemy[3];
-	pos_npc = WorldSpaceCenter(attacker);
-	pos_enemy = WorldSpaceCenter(enemy);
+	WorldSpaceCenter(attacker, pos_npc);
+	WorldSpaceCenter(enemy, pos_enemy);
 
 	
 	AddEntityToTraceStuckCheck(enemy);
@@ -5953,8 +5982,8 @@ public int Can_I_See_Ally(int attacker, int ally)
 	Handle trace;
 	float pos_npc[3];
 	float pos_enemy[3];
-	pos_npc = WorldSpaceCenter(attacker);
-	pos_enemy = WorldSpaceCenter(ally);
+	WorldSpaceCenter(attacker, pos_npc);
+	WorldSpaceCenter(ally, pos_enemy);
 
 	
 	AddEntityToTraceStuckCheck(ally);
@@ -6497,14 +6526,26 @@ stock int FireBullet(int m_pAttacker, int iWeapon, float m_vecSrc[3], float m_ve
 		if(client > 0)
 		{
 			if(IsValidEnemy(m_pAttacker, hurt_who))
-				SDKHooks_TakeDamage(hurt_who, m_pAttacker, client, m_flDamage, nDamageType, -1, CalculateBulletDamageForce(m_vecDirShooting, 1.0), endpos); //any bullet type will deal 5x the damage, usually
+			{
+				float v[3];
+				CalculateBulletDamageForce(m_vecDirShooting, 1.0, v);
+				SDKHooks_TakeDamage(hurt_who, m_pAttacker, client, m_flDamage, nDamageType, -1, v, endpos); //any bullet type will deal 5x the damage, usually
+			}
 		}
 		else
 		{
 			if(IsValidEnemy(m_pAttacker, hurt_who) && hurt_who <= MaxClients)
-				SDKHooks_TakeDamage(hurt_who, m_pAttacker, m_pAttacker, m_flDamage, nDamageType, -1, CalculateBulletDamageForce(m_vecDirShooting, 1.0), endpos);
+			{
+				float v[3];
+				CalculateBulletDamageForce(m_vecDirShooting, 1.0, v);
+				SDKHooks_TakeDamage(hurt_who, m_pAttacker, m_pAttacker, m_flDamage, nDamageType, -1, vecEnd, endpos);
+			}
 			else if(IsValidEnemy(m_pAttacker, hurt_who) && hurt_who > MaxClients)
-				SDKHooks_TakeDamage(hurt_who, m_pAttacker, m_pAttacker, m_flDamage * bonus_entity_damage, nDamageType, -1, CalculateBulletDamageForce(m_vecDirShooting, 1.0), endpos); //any bullet type will deal 5x the damage, usually
+			{
+				float v[3];
+				CalculateBulletDamageForce(m_vecDirShooting, 1.0, v);
+				SDKHooks_TakeDamage(hurt_who, m_pAttacker, m_pAttacker, m_flDamage * bonus_entity_damage, nDamageType, -1, v, endpos); //any bullet type will deal 5x the damage, usually
+			}
 		}
 		
 	}
@@ -6513,13 +6554,23 @@ stock int FireBullet(int m_pAttacker, int iWeapon, float m_vecSrc[3], float m_ve
 	return hurt_who;
 }
 
-float[] CalculateBulletDamageForce( const float vecBulletDir[3], float flScale )
+#if defined ZR
+stock float[] CalculateBulletDamageForceOld( const float vecBulletDir[3], float flScale )
 {
 	float vecForce[3]; vecForce = vecBulletDir;
 	NormalizeVector( vecForce, vecForce );
 	ScaleVector(vecForce, FindConVar("phys_pushscale").FloatValue);
 	ScaleVector(vecForce, flScale);
 	return vecForce;
+}
+#endif
+
+void CalculateBulletDamageForce(const float vecBulletDir[3], float flScale, float vecForce[3])
+{
+	vecForce = vecBulletDir;
+	NormalizeVector(vecForce, vecForce);
+	ScaleVector(vecForce, FindConVar("phys_pushscale").FloatValue);
+	ScaleVector(vecForce, flScale);
 }
 
 stock bool makeexplosion(
@@ -6705,17 +6756,34 @@ public MRESReturn IBody_GetSolidMaskNone(Address pThis, Handle hReturn, Handle h
 	return MRES_Supercede; 
 }*/
 
-stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lead = 0.0, bool ignore = false)
+#if defined ZR
+stock float[] PredictSubjectPositionOld(CClotBody npc, int subject, float Extra_lead = 0.0, bool ignore = false)
 {
 	if(!ignore && f_PredictDuration[subject] > GetGameTime())
 	{
 		return f_PredictPos[subject];
 	}
-	f_PredictPos[subject] = PredictSubjectPositionInternal(npc, subject, Extra_lead);
+	
+	PredictSubjectPositionInternal(npc, subject, Extra_lead);
 	f_PredictDuration[subject] = GetGameTime() + 0.05;
 	return f_PredictPos[subject];
 }
-stock float[] PredictSubjectPositionInternal(CClotBody npc, int subject, float Extra_lead = 0.0)
+#endif
+
+stock void PredictSubjectPosition(CClotBody npc, int subject, float Extra_lead = 0.0, bool ignore = false, float vec[3])
+{
+	if(!ignore && f_PredictDuration[subject] > GetGameTime())
+	{
+		vec = f_PredictPos[subject];
+		return;
+	}
+
+	PredictSubjectPositionInternal(npc, subject, Extra_lead);
+	f_PredictDuration[subject] = GetGameTime() + 0.05;
+	vec = f_PredictPos[subject];
+}
+
+static void PredictSubjectPositionInternal(CClotBody npc, int subject, float Extra_lead = 0.0)
 {
 	float botPos[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", botPos);
@@ -6730,14 +6798,16 @@ stock float[] PredictSubjectPositionInternal(CClotBody npc, int subject, float E
 	//do not predict if its a building, waste of resources.
 	if(Npc_Is_Targeted_In_Air(npc.index) || i_IsABuilding[subject])
 	{
-		return subjectPos;
+		f_PredictPos[subject] = subjectPos;
+		return;
 	}
 #endif
 	float SubjectAbsVelocity[3];
 	GetEntPropVector(subject, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
 	if(MovementSpreadSpeedTooLow(SubjectAbsVelocity))
 	{
-		return subjectPos;
+		f_PredictPos[subject] = subjectPos;
+		return;
 	}
 	float to[3];
 	SubtractVectors(subjectPos, botPos, to);
@@ -6749,7 +6819,10 @@ stock float[] PredictSubjectPositionInternal(CClotBody npc, int subject, float E
 	float flLeadRadiusSq = npc.GetLeadRadius(); 
 	
 	if ( flRangeSq > flLeadRadiusSq )
-		return subjectPos;
+	{
+		f_PredictPos[subject] = subjectPos;
+		return;
+	}
 	
 	// Normalize in place
 	float range = SquareRoot( flRangeSq );
@@ -6809,7 +6882,8 @@ stock float[] PredictSubjectPositionInternal(CClotBody npc, int subject, float E
 	if (leadArea == NULL_AREA || leadArea.GetZ(pathTarget[0], pathTarget[1]) < pathTarget[2] - npc.GetMaxJumpHeight())
 	{
 		// would fall off a cliff
-		return subjectPos;	
+		f_PredictPos[subject] = subjectPos;
+		return;
 	}
 	
 	//todo: find better code to not clip through very thin walls, but this works for now
@@ -6822,27 +6896,31 @@ stock float[] PredictSubjectPositionInternal(CClotBody npc, int subject, float E
 	}
 	delete trace;
 	
-
 	pathTarget[2] += 5.0; //Clip them up, minimum crouch level preferred, or else the bots get really confused and sometimees go otther ways if the player goes up or down somewhere, very thin stairs break these bots.
-	
-	return pathTarget;
+	f_PredictPos[subject] = pathTarget;
 }
 
 static float f_PickThisDirectionForabit[MAXENTITIES];
 static int i_PickThisDirectionForabit[MAXENTITIES];
 
-stock float[] BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject, float extra_backoff = 64.0)
+#if defined ZR
+stock float[] BackoffFromOwnPositionAndAwayFromEnemyOld(CClotBody npc, int subject, float extra_backoff = 64.0)
+{
+	float v[3];
+	BackoffFromOwnPositionAndAwayFromEnemy(npc, subject, extra_backoff, v);
+	return v;
+}
+#endif
+
+stock void BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject, float extra_backoff = 64.0, float pathTarget[3])
 {
 	float botPos[3];
-	botPos = WorldSpaceCenter(npc.index);
+	WorldSpaceCenter(npc.index, botPos);
 	
 	float subjectPos[3];
-	subjectPos = WorldSpaceCenter(subject);
+	WorldSpaceCenter(subject, subjectPos);
 
-	// compute our desired destination
-	float pathTarget[3];
-	
-		
+	// compute our desired destination	
 	//https://forums.alliedmods.net/showthread.php?t=278691 im too stupid for vectors.
 	
 	float vvector[3], ang[3];
@@ -6858,7 +6936,7 @@ stock float[] BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject,
 	{
 		float vecForward[3], vecRight[3], vecTarget[3];
 			
-		vecTarget = WorldSpaceCenter(subject);
+		WorldSpaceCenter(subject, vecTarget);
 		MakeVectorFromPoints(botPos, vecTarget, vecForward);
 		GetVectorAngles(vecForward, vecForward);
 		vecForward[1] = ang[1];
@@ -6911,7 +6989,7 @@ stock float[] BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject,
 		{
 			float vecForward_2[3], vecRight_2[3], vecTarget_2[3];
 		
-			vecTarget_2 = WorldSpaceCenter(subject);
+			WorldSpaceCenter(subject, vecTarget_2);
 			MakeVectorFromPoints(botPos, vecTarget_2, vecForward_2);
 			GetVectorAngles(vecForward_2, vecForward_2);
 			
@@ -6938,7 +7016,7 @@ stock float[] BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject,
 		{
 			float vecForward_2[3], vecRight_2[3], vecTarget_2[3];
 		
-			vecTarget_2 = WorldSpaceCenter(subject);
+			WorldSpaceCenter(subject, vecTarget_2);
 			MakeVectorFromPoints(botPos, vecTarget_2, vecForward_2);
 			GetVectorAngles(vecForward_2, vecForward_2);
 			
@@ -6979,25 +7057,26 @@ stock float[] BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject,
 	*/
 	
 	pathTarget[2] += 20.0; //Clip them up, minimum crouch level preferred, or else the bots get really confused and sometimees go otther ways if the player goes up or down somewhere, very thin stairs break these bots.
-	
-	return pathTarget;
 }
-/*
-public Action SDKHook_Settransmit_Baseboss(int entity, int client)
+
+#if defined ZR
+stock float[] PredictSubjectPositionForProjectilesOld(CClotBody npc, int subject, float projectile_speed, float offset = 0.0)
 {
-	if(I)
-	return Plugin_Continue;
+	float v[3];
+	PredictSubjectPositionForProjectiles(npc, subject, projectile_speed, offset, v);
+	return v;
 }
-*/
-stock float[] PredictSubjectPositionForProjectiles(CClotBody npc, int subject, float projectile_speed, float offset = 0.0)
+#endif
+
+stock void PredictSubjectPositionForProjectiles(CClotBody npc, int subject, float projectile_speed, float offset = 0.0, float pathTarget[3])
 {
 	float botPos[3];
-	botPos = WorldSpaceCenter(npc.index);
+	WorldSpaceCenter(npc.index, botPos);
 
 	botPos[2] += offset;
 	
 	float subjectPos[3];
-	subjectPos = WorldSpaceCenter(subject);
+	WorldSpaceCenter(subject, subjectPos);
 	
 	float to[3];
 	SubtractVectors(subjectPos, botPos, to);
@@ -7041,7 +7120,6 @@ stock float[] PredictSubjectPositionForProjectiles(CClotBody npc, int subject, f
 	}
 
 	// compute our desired destination
-	float pathTarget[3];
 	AddVectors(subjectPos, lead, pathTarget);
 
 	// validate this destination
@@ -7061,15 +7139,22 @@ stock float[] PredictSubjectPositionForProjectiles(CClotBody npc, int subject, f
 	}
 	*/
 	//replace this with a trace.
-	return pathTarget;
 }
 
-stock float[] PredictSubjectPositionHook(CClotBody npc, int subject)
+#if defined ZR
+stock float[] PredictSubjectPositionHookOld(CClotBody npc, int subject)
+{
+	float v[3];
+	PredictSubjectPositionHook(npc, subject, v);
+	return v;
+}
+#endif
+
+stock void PredictSubjectPositionHook(CClotBody npc, int subject, float subjectPos[3])
 {
 	float botPos[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", botPos);
 	
-	float subjectPos[3];
 	GetEntPropVector(subject, Prop_Data, "m_vecAbsOrigin", subjectPos);
 	
 	float to[3];
@@ -7082,7 +7167,7 @@ stock float[] PredictSubjectPositionHook(CClotBody npc, int subject)
 	float flLeadRadiusSq = npc.GetLeadRadius(); 
 	
 	if ( flRangeSq > flLeadRadiusSq )
-		return subjectPos;
+		return;
 	
 	// Normalize in place
 	float range = SquareRoot( flRangeSq );
@@ -7145,11 +7230,10 @@ stock float[] PredictSubjectPositionHook(CClotBody npc, int subject)
 	if (leadArea == NULL_AREA || leadArea.GetZ(pathTarget[0], pathTarget[1]) < pathTarget[2] - npc.GetMaxJumpHeight())
 	{
 		// would fall off a cliff
-		return subjectPos;	
+		return;	
 	}
 
-	
-	return pathTarget;
+	subjectPos = pathTarget;
 }
 
 
@@ -7351,7 +7435,7 @@ stock int Create_BeamParent(int parented, float f3_PositionTemp[3] = {0.0,0.0,0.
 		}
 		else
 		{
-			f3_PositionTemp = WorldSpaceCenter(parented);
+			WorldSpaceCenter(parented, f3_PositionTemp);
 		
 			TeleportEntity(entity, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
 		}
@@ -7976,7 +8060,7 @@ bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/, bool
 	
 	if(startPos[0] == 0.0)
 	{
-		startPos = GetAbsOrigin(npc);
+		startPos = GetAbsOriginOld(npc);
 		startPos[2] += 25.0;		
 	}
 
@@ -8562,7 +8646,7 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool
 	ref = TR_GetEntityIndex(hTrace);
 	delete hTrace;
 	float pos_player[3];
-	pos_player = WorldSpaceCenter(entity);
+	WorldSpaceCenter(entity, pos_player);
 	float Pos2Test_Higher[3];
 	Pos2Test_Higher = Pos;
 	Pos2Test_Higher[2] += 35.0;
@@ -8816,9 +8900,9 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 		Offset[2] += 95.0;
 
 		Offset[2] *= GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
-
-		Offset[2] += 15.0;
-
+#if defined RPG
+		Offset[2] += 30.0;
+#endif
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 16, HealthColour, npc.index);
 	//	SDKHook(TextEntity, SDKHook_SetTransmit, BarrackBody_Transmit);
 	//	DispatchKeyValue(TextEntity, "font", "1");
