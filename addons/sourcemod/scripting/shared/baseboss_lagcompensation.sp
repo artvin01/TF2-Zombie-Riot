@@ -126,12 +126,15 @@ static bool WantsLagCompensationOnEntity(int entity, int player, const float vie
 	//if ( pEntityTransmitBits && !pEntityTransmitBits.Get( pPlayer.entindex() ) )
 	//	return false;
 
-	if(b_LagCompNPC_OnlyAllies && !b_IsAlliedNpc[entity])
+#if defined RTS
+	bool allied = UnitBody_CanControl(player, entity);
+#else
+	bool allied = b_IsAlliedNpc[entity];
+#endif
+
+	if(b_LagCompNPC_OnlyAllies ^ allied)
 		return false;
 
-	if(!b_LagCompNPC_OnlyAllies && b_IsAlliedNpc[entity])
-		return false;
-	
 	float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos1);
 	float pos2[3];
@@ -199,7 +202,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 		prevOrg = record.m_vecOrigin;
 		multi = true;
 	}
-	
+
 	float frac = 0.0;
 	float ang[3], org[3]; // minsPreScaled[3], maxsPreScaled[3];
 	
@@ -233,7 +236,11 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", EntityRestore[index].m_vecOrigin);
 	GetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[index].m_vecAngles);
 
+#if defined RTS
+	if(!b_LagCompNPC_No_Layers)
+#else
 	if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
+#endif
 	{	
 		EntityRestore[index].m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
 		EntityRestore[index].m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
@@ -242,7 +249,11 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 
 	if(b_LagCompNPC_ExtendBoundingBox)
 	{
+
+#if !defined RTS
 		if(!b_IsAlliedNpc[entity])
+#endif
+		
 		{
 			SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", { 100.0, 100.0, 200.0 });
 			SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", { -100.0, -100.0, 0.0 });
@@ -256,7 +267,11 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	SetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 	SDKCall_SetLocalOrigin(entity, org);
 	
+#if defined RTS
+	if(!b_LagCompNPC_No_Layers)
+#else
 	if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
+#endif
 	{
 		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", record.m_flSimulationTime);
 
@@ -299,7 +314,9 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 
 		////////////////////////
 		// Now do all the layers
+#if !defined RTS
 		if(!b_IsAlliedNpc[entity])
+#endif
 		{
 			CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
 			if(overlay.IsValid())
@@ -378,7 +395,11 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
 		if(IsValidEntity(entity) && WasBackTracked[index])
 		{
+
+#if !defined RTS
 			if(!b_IsAlliedNpc[entity])
+#endif
+
 			{
 				if(b_LagCompNPC_ExtendBoundingBox)
 				{
@@ -424,7 +445,12 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 			SetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[index].m_vecAngles); //See start pos on why we use this instead of the SDKCall
 			SDKCall_SetLocalOrigin(entity, EntityRestore[index].m_vecOrigin);
 			
+#if defined RTS
+			if(!b_LagCompNPC_No_Layers)
+#else
 			if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
+#endif
+
 			{
 				SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", EntityRestore[index].m_flSimulationTime);
 				SetEntProp(entity, Prop_Data, "m_nSequence", EntityRestore[index].m_masterSequence);
@@ -515,7 +541,9 @@ void LagCompensationThink_Forward()
 				GetEntPropVector(entity, Prop_Data, "m_angRotation", record.m_vecAngles);
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", record.m_vecOrigin);
 
+#if !defined RTS
 				if(!b_IsAlliedNpc[entity]) //If its an allied baseboss, make sure to not get layers.
+#endif
 				{
 					record.m_layerRecords = overlay.GetNumAnimOverlays();
 					if(record.m_layerRecords >= sizeof(record.m_sequence))
@@ -534,10 +562,12 @@ void LagCompensationThink_Forward()
 					record.m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
 					record.m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
 				}
+#if !defined RTS
 				else
 				{
 					record.m_layerRecords = 0;
 				}
+#endif
 
 				EntityTrack[index][EntityTrackCount[index]] = record;
 				EntityTrackCount[index]++;

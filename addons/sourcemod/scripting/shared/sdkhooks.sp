@@ -117,23 +117,25 @@ public void SDKHook_ScoreThink(int entity)
 
 void SDKHook_HookClient(int client)
 {
-	SDKUnhook(client, SDKHook_PostThink, OnPostThink);
 	SDKUnhook(client, SDKHook_PreThinkPost, OnPreThinkPost);
+	SDKHook(client, SDKHook_PreThinkPost, OnPreThinkPost);
+
+#if !defined RTS
+	SDKUnhook(client, SDKHook_PostThink, OnPostThink);
 	SDKUnhook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
 	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
-	
 	SDKHook(client, SDKHook_PostThink, OnPostThink);
-	SDKHook(client, SDKHook_PreThinkPost, OnPreThinkPost);
 	SDKHook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
 	SDKHook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
-	
-	#if defined ZR
-	SDKUnhook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
-	SDKHook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
-	#endif
-	
+
 	SDKUnhook(client, SDKHook_PostThinkPost, OnPostThinkPost);
 	SDKHook(client, SDKHook_PostThinkPost, OnPostThinkPost);
+#endif
+
+#if defined ZR
+	SDKUnhook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
+	SDKHook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
+#endif
 }
 
 public void OnPreThinkPost(int client)
@@ -194,6 +196,7 @@ public void OnPreThinkPost(int client)
 #endif
 }
 
+#if !defined RTS
 public void OnPostThink(int client)
 {
 	float GameTime = GetGameTime();
@@ -634,10 +637,12 @@ public void OnPostThink(int client)
 			float percentage = 100.0;
 			float percentage_Global = 1.0;
 			float value = 1.0;
-			percentage_Global *= ArmorPlayerReduction(client);
 
-		
+#if defined ZR
+			percentage_Global *= ArmorPlayerReduction(client);
 			percentage_Global *= Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(client, weapon);
+#endif
+
 			value = Attributes_FindOnPlayerZR(client, 412, true);	// Overall damage resistance
 			if(value)
 				percentage_Global *= value;
@@ -1375,6 +1380,7 @@ public void OnPostThinkPost(int client)
 		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 0);
 	}
 }
+#endif	// Non-RTS
 
 /*
 public void OnPreThink(int client)
@@ -2194,9 +2200,11 @@ public void OnWeaponSwitchPost(int client, int weapon)
 {
 	if(weapon != -1)
 	{
+#if !defined RTS
 		if(EntRefToEntIndex(i_PreviousWeapon[client]) != weapon)
 			OnWeaponSwitchPre(client, EntRefToEntIndex(i_PreviousWeapon[client]));
-		
+#endif
+
 		i_PreviousWeapon[client] = EntIndexToEntRef(weapon);
 		
 		char buffer[36];
@@ -2218,9 +2226,10 @@ public void OnWeaponSwitchPost(int client, int weapon)
 		}
 	}
 
+#if !defined RTS
 	Store_WeaponSwitch(client, weapon);
-
 	RequestFrame(OnWeaponSwitchFrame, GetClientUserId(client));
+#endif
 
 #if defined RPG
 	//Attributes_Set(client, 698, 1.0);
@@ -2229,6 +2238,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 
 }
 
+#if !defined RTS
 public void OnWeaponSwitchFrame(int userid)
 {
 	int client = GetClientOfUserId(userid);
@@ -2262,6 +2272,7 @@ public void OnWeaponSwitchPre(int client, int weapon)
 		}
 	}
 }
+#endif	// Non-RTS
 
 #if defined ZR
 static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3])
@@ -2506,6 +2517,7 @@ public Action RevertDamageTakenAgain(Handle final, any pack)
 	return Plugin_Continue;
 }
 
+#if defined ZR
 float ArmorPlayerReduction(int victim)
 {
 	switch(Armor_Level[victim])
@@ -2532,3 +2544,4 @@ float ArmorPlayerReduction(int victim)
 		}
 	}
 }
+#endif

@@ -2157,61 +2157,46 @@ public Action DeployBannerIconBuff(Handle timer, DataPack pack)
 	return Plugin_Stop;
 }
 
-void SetForceButtonState(int client, bool apply, int button_flag)
-{
-	int Buttons = GetEntProp(client, Prop_Data, "m_afButtonForced");
-
-	if(apply)
-	{
-		Buttons |= button_flag;
-	}
-	else
-	{
-		Buttons &= ~button_flag;
-	}
-	SetEntProp(client, Prop_Data, "m_afButtonForced", Buttons);
-}
-
-void ForcePlayerCrouch(int client, bool enable)
-{
-	if(enable)
-	{
-		SetVariantInt(1);
-		AcceptEntityInput(client, "SetForcedTauntCam");
-		SetForceButtonState(client, true, IN_DUCK);
-		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 0);
-		b_NetworkedCrouch[client] = true;
-		SetEntProp(client, Prop_Send, "m_bDucked", true);
-		SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
-	}
-	else
-	{
-		int Buttons = GetEntProp(client, Prop_Data, "m_afButtonForced");
-		if(Buttons & IN_DUCK)
-		{
-			if(thirdperson[client])
-			{
-				SetVariantInt(1);
-				AcceptEntityInput(client, "SetForcedTauntCam");
-			}
-			else
-			{
-				SetVariantInt(0);
-				AcceptEntityInput(client, "SetForcedTauntCam");
-			}
-			SetForceButtonState(client, false, IN_DUCK);
-			b_NetworkedCrouch[client] = false;
-			SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
-			SetEntProp(client, Prop_Send, "m_bDucked", false);
-			SetEntityFlags(client, GetEntityFlags(client)&~FL_DUCKING);	
-		}
-	}
-}
-
-
 void GrantAllPlayersCredits_Rogue(int cash)
 {
 	cash *= (Rogue_GetRound()+1);
 	CPrintToChatAll("{green}%t","Cash Gained!", cash);
 	CurrentCash += cash;
+}
+
+stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)
+{
+	float vecOrigin[3], vecAngles[3], vecEndOrigin[3];
+	GetClientEyePosition(iClient, vecOrigin);
+	GetClientEyeAngles(iClient, vecAngles);
+	
+	i_PreviousInteractedEntity[iClient] = 0; //didnt find any
+	
+	if(f_Reviving_This_Client[iClient] < GetGameTime())
+	{
+		i_Reviving_This_Client[iClient] = 0;
+	}
+
+	Handle hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_DontHitAlivePlayer, iClient);
+	TR_GetEndPosition(vecEndOrigin, hTrace);
+	
+	int iReturn = -1;
+	int iHit = TR_GetEntityIndex(hTrace);
+	
+	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
+		iReturn = iHit;
+
+	if(iReturn > 0)
+	{
+		i_Reviving_This_Client[iClient] = iReturn;
+		f_Reviving_This_Client[iClient] = GetGameTime() + 0.35;
+	}
+	else
+	{
+		i_Reviving_This_Client[iClient] = 0;
+		f_Reviving_This_Client[iClient] = 0.0;
+	}
+	
+	delete hTrace;
+	return iReturn;
 }

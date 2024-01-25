@@ -1967,6 +1967,7 @@ static int InputToKey(int client, const char[] input, any ...)
  */
 static bool IsSelectableUnitEntity(int client, int entity)
 {
+#if defined ZR
 	if(entity > MaxClients && entity < sizeof(b_NpcHasDied) && !b_NpcHasDied[entity])
 	{
 		BarrackBody npc = view_as<BarrackBody>(entity);
@@ -1975,6 +1976,7 @@ static bool IsSelectableUnitEntity(int client, int entity)
 			return true;
 		}
 	}
+#endif
 
 	return false;
 }
@@ -2002,8 +2004,9 @@ static void SelectUnit(int client, int iSelectedEntity)
  */
 static void MoveUnit(int client, int entity, const float vecMovePos[3])
 {
+#if defined ZR
 	f3_SpawnPosition[entity] = vecMovePos;
-		
+
 	switch(NextMoveType[client])
 	{
 		case Move_Normal:
@@ -2018,10 +2021,12 @@ static void MoveUnit(int client, int entity, const float vecMovePos[3])
 		case Move_Patrol:
 			view_as<BarrackBody>(entity).CmdOverride = Command_RTSAttack;
 	}
+#endif
 }
 
 static bool UnitEntityIterator(int client, int &entity)
 {
+#if defined ZR
 	entity++;
 	for(; entity < MAXENTITIES; entity++)
 	{
@@ -2031,6 +2036,9 @@ static bool UnitEntityIterator(int client, int &entity)
 			return true;
 		}
 	}
+#else
+	
+#endif
 
 	return false;
 }

@@ -1182,6 +1182,8 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	if((Damageaftercalc > 0.0 || b_NpcIsInvulnerable[victim] || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 	{
+
+#if defined ZR
 		if(inflictor > 0 && inflictor <= MaxClients)
 		{
 			GiveRageOnDamage(inflictor, Damageaftercalc);
@@ -1193,7 +1195,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 			Calculate_And_Display_hp(attacker, victim, Damageaftercalc, false);	
 		}
 		OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
-
+#endif
 
 		Event event = CreateEvent("npc_hurt");
 		if(event) 
@@ -1230,6 +1232,8 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 			SlayNpc = false;
 		}
 	}
+
+#if defined ZR
 	if(inflictor > 0 && inflictor <= MaxClients)
 	{
 		b_RaptureZombie[victim] = b_RaptureZombie[inflictor];
@@ -1238,6 +1242,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	{
 		b_RaptureZombie[victim] = b_RaptureZombie[attacker];
 	}
+#endif
 	
 	if(SlayNpc)
 	{
@@ -1280,6 +1285,7 @@ stock void Generic_OnTakeDamage(int victim, int attacker)
 	}
 }
 
+#if !defined RTS
 static float f_damageAddedTogether[MAXTF2PLAYERS];
 static float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
 
@@ -1290,11 +1296,11 @@ stock void RemoveAllDamageAddition()
 	Zero(f_damageAddedTogether);
 	Zero(f_damageAddedTogetherGametime);
 }
+
 void RemoveHudCooldown(int client)
 {
 	f_HudCooldownAntiSpam[client] = 0.0;
 }
-
 
 stock void Calculate_And_Display_HP_Hud(int attacker)
 {
@@ -1330,8 +1336,6 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		}
 	}
 	else
-#endif
-	
 	{
 		if(f_HudCooldownAntiSpam[attacker] >= GetGameTime())
 			return;
@@ -1339,6 +1343,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		f_CooldownForHurtHud_Ally[attacker] = GetGameTime() + 0.4;	
 		f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;		
 	}
+#endif
 
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
@@ -1617,11 +1622,13 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		float percentage = npc.m_flMeleeArmor * 100.0;
 		percentage *= fl_Extra_MeleeArmor[victim];
 		percentage *= fl_TotalArmor[victim];
+
+#if defined ZR
 		if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
 		{
 			percentage *= 0.85;
-		}		
-#if defined ZR
+		}
+		
 		if(!NpcStats_IsEnemySilenced(victim))
 		{
 			if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
@@ -1642,12 +1649,13 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		float percentage = npc.m_flRangedArmor * 100.0;
 		percentage *= fl_Extra_RangedArmor[victim];
 		percentage *= fl_TotalArmor[victim];
+
+#if defined ZR
 		if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
 		{
 			percentage *= 0.85;
 		}
 		
-#if defined ZR
 		if(!NpcStats_IsEnemySilenced(victim))
 		{
 			if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
@@ -1655,9 +1663,11 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 				percentage *= Medival_Difficulty_Level;
 			}
 		}
-#endif
+
 		if(VausMagicaShieldLogicEnabled(victim))
 			percentage *= 0.25;
+
+#endif
 
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
 		Debuff_added = true;
@@ -1842,17 +1852,20 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	ShowSyncHudText(attacker, SyncHud, "%s\n%s\n%d / %d\n%s-%0.f", level, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
 #endif
 }
+#endif	// Non-RTS
 
 bool NpcHadArmorType(int victim, int type)
 {
 	if(fl_TotalArmor[victim] != 1.0)
 		return true;
 
+#if defined ZR
 	if(Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim))
 		return true;
 
 	if(VausMagicaShieldLogicEnabled(victim))
 		return true;
+#endif
 
 	CClotBody npc = view_as<CClotBody>(victim);
 	switch(type)
@@ -1874,10 +1887,14 @@ bool NpcHadArmorType(int victim, int type)
 				return true;
 		}
 	}
+
+#if defined ZR
 	if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
 	{
 		return true;
 	}
+#endif
+
 	return false;
 }
 #if defined ZR
@@ -1886,7 +1903,6 @@ void ResetDamageHud(int client)
 	SetHudTextParams(-1.0, 0.05, 1.0, 0, 0, 0, 255, 0, 0.01, 0.01);
 	ShowSyncHudText(client, SyncHud, "");
 }
-#endif
 
 stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)
 {
@@ -1896,7 +1912,6 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 	bool raidboss_active = false;
 	if(!b_NpcIsInvulnerable[victim])
 	{
-#if defined ZR
 		if(RaidbossIgnoreBuildingsLogic())
 		{
 			raidboss_active = true;
@@ -1909,7 +1924,6 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		{
 			Damage_dealt_in_total[attacker] += overkill; //dont award for overkilling.
 		}
-#endif
 		if(GameTime > f_damageAddedTogetherGametime[attacker])
 		{
 			if(!raidboss_active)
@@ -1927,6 +1941,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		}
 	}
 }
+#endif
 
 stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
 {
@@ -2084,7 +2099,9 @@ public void Try_Backstab_Anim_Again(int ref)
 
 void NPC_DeadEffects(int entity)
 {
+#if !defined RTS
 	if(!b_IsAlliedNpc[entity])
+#endif
 	{
 #if defined ZR		
 		Zombies_Currently_Still_Ongoing -= 1;
@@ -2147,12 +2164,14 @@ stock void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false
 
 void CleanAllNpcArray()
 {
+#if defined ZR
 	Zero(played_headshotsound_already);
 	Zero(f_CooldownForHurtHud);
 	Zero(f_CooldownForHurtHud_Ally);
 	Zero(f_damageAddedTogetherGametime);
 	Zero(f_HudCooldownAntiSpam);
 	Zero(f_HudCooldownAntiSpamRaid);
+#endif
 }
 
 stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int zr_custom_damage)
@@ -2492,13 +2511,14 @@ void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int
 					damage *= Medival_Difficulty_Level;
 				}
 			}
-#endif
-			damage *= fl_MeleeArmor[victim];
-			damage *= fl_Extra_MeleeArmor[victim];	
+
 			if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
 			{
 				damage *= 0.85;
 			}
+#endif
+			damage *= fl_MeleeArmor[victim];
+			damage *= fl_Extra_MeleeArmor[victim];	
 		}
 		damage *= fl_TotalArmor[victim];
 	}
@@ -2521,10 +2541,14 @@ void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int
 #endif
 			damage *= fl_RangedArmor[victim];
 			damage *= fl_Extra_RangedArmor[victim];
+
+#if defined ZR
 			if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
 			{
 				damage *= 0.85;
 			}
+#endif
+
 		}
 		damage *= fl_TotalArmor[victim];
 	}
@@ -2896,10 +2920,13 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 						SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GameTime+(attack_speed));
 					}
 
+#if !defined RTS
 					if(b_BackstabLaugh[weapon])
 					{
 						SepcialBackstabLaughSpy(attacker);
 					}
+#endif
+
 				}
 			}
 		}
