@@ -8865,10 +8865,12 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		Format(HealthText, sizeof(HealthText), "%s?",HealthText);
 	}
+	/*
 	if(IgniteFor[npc.index] > 0)
 	{
 		Format(HealthText, sizeof(HealthText), "%s~",HealthText);
 	}
+	*/
 	if(f_DuelStatus[npc.index] > GetGameTime(npc.index))
 	{
 		Format(HealthText, sizeof(HealthText), "%sVS",HealthText);

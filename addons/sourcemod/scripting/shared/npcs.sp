@@ -1405,14 +1405,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s!%i", Debuff_Adder, i_HowManyBombsOnThisEntity[victim][attacker]);
 	}
-		/*
+		
 	if(IgniteFor[victim] > 0) //burn
 	{
 		Debuff_added = true;
 		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s~", Debuff_Adder);			
 	}
-		*/
+		
 	if(f_HighIceDebuff[victim] > GameTime)
 	{
 		Debuff_added = true;

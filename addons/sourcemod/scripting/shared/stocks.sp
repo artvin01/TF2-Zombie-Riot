@@ -3785,7 +3785,7 @@ stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3] = {0.0,0.
 	float actualBeamOffset[3];
 	tmp[0] = Beamoffset[0];
 	tmp[1] = Beamoffset[1];
-	tmp[2] = 0.0;
+	tmp[2] = Beamoffset[2];
 	VectorRotate(tmp, Angles, actualBeamOffset);
 	actualBeamOffset[2] = Beamoffset[2];
 	startPoint[0] += actualBeamOffset[0];
