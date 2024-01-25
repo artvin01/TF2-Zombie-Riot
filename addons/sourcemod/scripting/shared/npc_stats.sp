@@ -5922,10 +5922,10 @@ int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false, floa
 	Handle trace; 
 	float pos_npc[3];
 	float pos_enemy[3];
-	pos_npc = WorldSpaceCenter(attacker);
+	WorldSpaceCenter(attacker, pos_npc);
 	if(EnemyModifpos[0] == 0.0 && EnemyModifpos[1] == 0.0 && EnemyModifpos[2] == 0.0)
 	{
-		pos_enemy = WorldSpaceCenter(enemy);
+		WorldSpaceCenter(enemy, pos_enemy);
 	}
 	else
 	{
