@@ -811,7 +811,7 @@
 		}
 		"Offsets"
 		{
-			"CBaseEntity::WorldSpaceCenter"		
+			"CBaseEntity::WorldSpaceCenterOld"		
 			{		
 				"windows"	"155"		
 				"linux"		"156"

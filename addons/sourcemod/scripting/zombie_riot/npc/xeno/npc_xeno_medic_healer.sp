@@ -254,9 +254,9 @@ public void XenoMedicHealer_ClotThink(int iNPC)
 		if(IsValidAlly(npc.index, PrimaryThreatIndex))
 		{
 				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 				
 				if(flDistanceToTarget < 250000)
 				{
@@ -294,7 +294,7 @@ public void XenoMedicHealer_ClotThink(int iNPC)
 						SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
 					}
 					
-					npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 2000.0);
+					npc.FaceTowards(WorldSpaceCenterOld(PrimaryThreatIndex), 2000.0);
 				}
 				else
 				{
@@ -352,14 +352,14 @@ public void XenoMedicHealer_ClotThink(int iNPC)
 		
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 		{
-				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 				
 				//Predict their pos.
 				if(flDistanceToTarget < npc.GetLeadRadius()) {
 					
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 					
 				/*	int color[4];
 					color[0] = 255;

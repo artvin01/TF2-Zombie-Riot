@@ -368,9 +368,9 @@ static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
 	{
 		return;
 	}
-	float vecTarget[3]; vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
 
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 	{	
 		//target is within range, attack them
@@ -409,10 +409,10 @@ static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
 				//This will predict as its relatively easy to dodge
 				float projectile_speed = 800.0;
 				//lets pretend we have a projectile.
-				vecTarget = PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
 				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 				{
-					vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+					vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
 				}
 				float DamageDone = 25.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);

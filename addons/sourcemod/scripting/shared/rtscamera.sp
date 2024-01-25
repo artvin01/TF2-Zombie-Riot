@@ -204,6 +204,7 @@ static const char ButtonCmd[IN_MAX][] =
 	"+attack3"
 };
 
+#if defined ZR
 enum
 {
 	Move_Normal = 0,
@@ -211,6 +212,7 @@ enum
 	Move_HoldPos,
 	Move_Patrol,
 }
+#endif
 
 static Cookie MouseCookie;
 static Cookie BindCookie;
@@ -238,7 +240,7 @@ static int BeamRef[MAXENTITIES+1][4];
 static bool NewPress[MAXTF2PLAYERS][Key_MAX];	// Input next frame
 static bool LastPress[MAXTF2PLAYERS][Key_MAX];	// Input last frame
 static bool HoldPress[MAXTF2PLAYERS][Key_MAX];	// Input being held
-static int NextMoveType[MAXTF2PLAYERS] = {Move_Normal, ...};
+static int NextMoveType[MAXTF2PLAYERS];
 static int BindingKey[MAXTF2PLAYERS] = {-1, ...};
 
 static char KeyBinds[MAXTF2PLAYERS][Key_MAX][32];
@@ -892,6 +894,20 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 
 	if(Selected[client])
 	{
+#if defined RTS
+		if(pressed[Key_Attack])
+		{
+			NextMoveType[client] = Command_Attack;
+		}
+		else if(pressed[Key_Stand])
+		{
+			NextMoveType[client] = Command_HoldPos;
+		}
+		else if(pressed[Key_Patrol])
+		{
+			NextMoveType[client] = Command_Patrol;
+		}
+#elseif defined ZR
 		if(pressed[Key_Attack])
 		{
 			NextMoveType[client] = Move_Attack;
@@ -904,6 +920,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 		{
 			NextMoveType[client] = Move_Patrol;
 		}
+#endif
 	}
 
 	if(pressed[Key_SelectAll])
@@ -1191,6 +1208,28 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 		{
 			cursor = CURSOR_MOVE;
 
+#if defined RTS
+			switch(NextMoveType[client])
+			{
+				case Command_Attack:
+				{
+					// Red
+					color[1] = 0;
+					color[2] = 0;
+				}
+				case Command_HoldPos:
+				{
+					// Yellow
+					color[2] = 0;
+				}
+				case Command_Patrol:
+				{
+					// Blue
+					color[0] = 0;
+					color[1] = 0;
+				}
+			}
+#elseif defined ZR
 			switch(NextMoveType[client])
 			{
 				case Move_Attack:
@@ -1211,6 +1250,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 					color[1] = 0;
 				}
 			}
+#endif
 		}
 		else
 		{
@@ -1288,6 +1328,7 @@ static void MoveSelectedUnits(int client, const float vecMovePos[3])
 					MoveUnit(client, entity, vecMovePos);
 			}
 			
+#if defined ZR
 			switch(NextMoveType[client])
 			{
 				case Move_Normal:
@@ -1302,6 +1343,8 @@ static void MoveSelectedUnits(int client, const float vecMovePos[3])
 				case Move_Patrol:
 					ClientCommand(client, "playgamesound coach/coach_look_here.wav");
 			}
+#endif
+
 		}
 
 		NextMoveType[client] = 0;
@@ -1967,16 +2010,21 @@ static int InputToKey(int client, const char[] input, any ...)
  */
 static bool IsSelectableUnitEntity(int client, int entity)
 {
-#if defined ZR
 	if(entity > MaxClients && entity < sizeof(b_NpcHasDied) && !b_NpcHasDied[entity])
 	{
+#if defined RTS
+		if(UnitBody_CanControl(client, entity))
+		{
+			return true;
+		}
+#elseif defined ZR
 		BarrackBody npc = view_as<BarrackBody>(entity);
 		if(npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
 		{
 			return true;
 		}
-	}
 #endif
+	}
 
 	return false;
 }
@@ -2004,7 +2052,13 @@ static void SelectUnit(int client, int iSelectedEntity)
  */
 static void MoveUnit(int client, int entity, const float vecMovePos[3])
 {
-#if defined ZR
+#if defined RTS
+	int type = NextMoveType[client];
+	if(type < Command_Move)
+		type = Command_Move;
+	
+	UnitBody_AddCommand(entity, type, _, vecMovePos);
+#elseif defined ZR
 	f3_SpawnPosition[entity] = vecMovePos;
 
 	switch(NextMoveType[client])
@@ -2026,7 +2080,16 @@ static void MoveUnit(int client, int entity, const float vecMovePos[3])
 
 static bool UnitEntityIterator(int client, int &entity)
 {
-#if defined ZR
+#if defined RTS
+	entity++;
+	for(; entity < MAXENTITIES; entity++)
+	{
+		if(!b_NpcHasDied[entity] && UnitBody_CanControl(client, entity))
+		{
+			return true;
+		}
+	}
+#elseif defined ZR
 	entity++;
 	for(; entity < MAXENTITIES; entity++)
 	{
@@ -2036,8 +2099,6 @@ static bool UnitEntityIterator(int client, int &entity)
 			return true;
 		}
 	}
-#else
-	
 #endif
 
 	return false;

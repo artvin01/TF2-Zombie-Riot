@@ -1811,7 +1811,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			{
 				f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 20.0;
 				
-				float vecVictim[3]; vecVictim = WorldSpaceCenter(victim);
+				float vecVictim[3]; vecVictim = WorldSpaceCenterOld(victim);
 				
 				ParticleEffectAt(vecVictim, "peejar_impact_cloud_milk", 0.5);
 				
@@ -1828,7 +1828,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 						{
 							if (GetEntProp(victim, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
 							{
-								float vecTarget[3]; vecTarget = WorldSpaceCenter(baseboss_index);
+								float vecTarget[3]; vecTarget = WorldSpaceCenterOld(baseboss_index);
 								
 								float flDistanceToTarget = GetVectorDistance(vecVictim, vecTarget, true);
 								if(flDistanceToTarget < 90000)

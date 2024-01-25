@@ -181,15 +181,15 @@ public void DesertYadeam_ClotThink(int iNPC)
 		
 		if(npc.m_iTargetAlly > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			if(flDistanceToTarget > (100.0*100.0))
 			{
 				NPC_StartPathing(npc.index);
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTargetAlly);
+					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTargetAlly);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
@@ -237,9 +237,9 @@ void DesertYadeamSelfDefense(DesertYadeam npc, float gameTime)
 	{
 		return;
 	}
-	float vecTarget[3]; vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
 
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 30.0))
 	{
 		if(gameTime > npc.m_flNextMeleeAttack)
@@ -252,10 +252,10 @@ void DesertYadeamSelfDefense(DesertYadeam npc, float gameTime)
 				//This will predict as its relatively easy to dodge
 				float projectile_speed = 800.0;
 				//lets pretend we have a projectile.
-				vecTarget = PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
 				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 				{
-					vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+					vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
 				}
 
 				npc.FaceTowards(vecTarget, 20000.0);

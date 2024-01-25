@@ -139,10 +139,10 @@ public void StalkerFather_ClotThink(int iNPC)
 		}
 	}
 	
-	float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
 	if(npc.m_bChaseAnger && npc.CanSeeEnemy())
 	{
-		LastKnownPos = WorldSpaceCenter(npc.m_iTarget);
+		LastKnownPos = WorldSpaceCenterOld(npc.m_iTarget);
 		float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 		
 		int state;
@@ -173,7 +173,7 @@ public void StalkerFather_ClotThink(int iNPC)
 				npc.StartPathing();
 				if(distance < npc.GetLeadRadius()) 
 				{
-					LastKnownPos = PredictSubjectPosition(npc, npc.m_iTarget);
+					LastKnownPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 					NPC_SetGoalVector(npc.index, LastKnownPos);
 				}
 				else
