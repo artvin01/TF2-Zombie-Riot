@@ -8684,6 +8684,14 @@ float NavAreaTravelDistance( const Vector &startPos, const Vector &goalPos, Cost
 */
 public void Npc_BossHealthBar(CClotBody npc)
 {
+	if(b_IsEntityNeverTranmitted[npc.index])
+	{
+		if(IsValidEntity(npc.m_iTextEntity5))
+		{
+			RemoveEntity(npc.m_iTextEntity5);
+		}	
+		return;	
+	}
 	int NpcTypeDefine = 0;
 	if(b_thisNpcIsABoss[npc.index])
 	{
@@ -8739,6 +8747,14 @@ public void Npc_BossHealthBar(CClotBody npc)
 
 public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 {
+	if(b_IsEntityNeverTranmitted[npc.index])
+	{
+		if(IsValidEntity(npc.m_iTextEntity4))
+		{
+			RemoveEntity(npc.m_iTextEntity4);
+		}		
+		return;
+	}
 	char HealthText[32];
 	int HealthColour[4];
 
