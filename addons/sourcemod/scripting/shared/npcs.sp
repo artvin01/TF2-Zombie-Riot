@@ -1707,24 +1707,39 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		char ExtraHudHurt[255];
 
 		//add name and health
-		
+		//add name and health
+		char c_Health[255];
+		char c_MaxHealth[255];
+		IntToString(Health,c_Health, sizeof(c_Health));
+		IntToString(MaxHealth,c_MaxHealth, sizeof(c_MaxHealth));
+
+		int offset = Health < 0 ? 1 : 0;
+		ThousandString(c_Health[offset], sizeof(c_Health) - offset);
+		offset = MaxHealth < 0 ? 1 : 0;
+		ThousandString(c_MaxHealth[offset], sizeof(c_MaxHealth) - offset);
+
 		if(c_NpcCustomNameOverride[victim][0])
 		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%d / %d",c_NpcCustomNameOverride[victim], Health, MaxHealth);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%s / %s",c_NpcCustomNameOverride[victim], c_Health, c_MaxHealth);
 		}
 		else
 		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%d / %d",NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%s / %s",NPC_Names[i_NpcInternalId[victim]], c_Health, c_MaxHealth);
 		}
 
 		//add debuff
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
+		char c_DmgDelt[255];
+		IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
+		offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
+		ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
+
 		if(!b_NpcIsInvulnerable[victim])
 		{
 			if(!raidboss_active)
 			{
-				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%0.f", ExtraHudHurt, f_damageAddedTogether[attacker]);
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%s", ExtraHudHurt, c_DmgDelt);
 			}
 		}
 		else
@@ -1767,22 +1782,37 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%% | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
 			
 		//add name and health
+		char c_Health[255];
+		char c_MaxHealth[255];
+		IntToString(Health,c_Health, sizeof(c_Health));
+		IntToString(MaxHealth,c_MaxHealth, sizeof(c_MaxHealth));
+
+		int offset = Health < 0 ? 1 : 0;
+		ThousandString(c_Health[offset], sizeof(c_Health) - offset);
+		offset = MaxHealth < 0 ? 1 : 0;
+		ThousandString(c_MaxHealth[offset], sizeof(c_MaxHealth) - offset);
+
 		if(c_NpcCustomNameOverride[victim][0])
 		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%d / %d",ExtraHudHurt,c_NpcCustomNameOverride[victim], Health, MaxHealth);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%s / %s",ExtraHudHurt,c_NpcCustomNameOverride[victim], c_Health, c_MaxHealth);
 		}
 		else
 		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%d / %d",ExtraHudHurt, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%s / %s",ExtraHudHurt, NPC_Names[i_NpcInternalId[victim]], c_Health, c_MaxHealth);
 		}
 
 		//add debuff
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
+		char c_DmgDelt[255];
+		IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
+		offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
+		ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
+
 		if(!b_NpcIsInvulnerable[victim])
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%0.f", ExtraHudHurt, f_damageAddedTogether[attacker]);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%s", ExtraHudHurt, c_DmgDelt);
 		else
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s %t\n-%0.f", ExtraHudHurt, "Invulnerable Npc", f_damageAddedTogether[attacker]);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s %t\n-%s", ExtraHudHurt, "Invulnerable Npc", c_DmgDelt);
 			
 		ShowSyncHudText(attacker, SyncHudRaid,"%s",ExtraHudHurt);	
 
@@ -3280,3 +3310,31 @@ int MaxEnemiesAllowedSpawnNext()
 }
 #endif
 
+stock void ThousandString(char[] buffer, int length)
+{
+	char[] buffer2 = new char[length];
+
+	int i;
+	int size = strlen(buffer);
+	int when = size%3;
+	if(size <= 3)
+	{
+		return;
+	}
+	for(int a; i<length && a<size; a++)
+	{
+		if(i && a%3 == when)
+		{
+			buffer2[i] = ',';
+			i++;
+		}
+
+		if(i < length)
+		{
+			buffer2[i] = buffer[a];
+			i++;
+		}
+	}
+
+	strcopy(buffer, length, buffer2);
+}

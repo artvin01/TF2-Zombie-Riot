@@ -1687,6 +1687,24 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
+	property int m_iTextEntity5
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_TextEntity[this.index][4]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_TextEntity[this.index][4] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_TextEntity[this.index][4] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	property int m_iSpeechBubble
 	{
 		public get()		 
@@ -3086,6 +3104,8 @@ static void OnDestroy(CClotBody body)
 		RemoveEntity(body.m_iTextEntity3);
 	if(IsValidEntity(body.m_iTextEntity4))
 		RemoveEntity(body.m_iTextEntity4);
+	if(IsValidEntity(body.m_iTextEntity5))
+		RemoveEntity(body.m_iTextEntity5);
 	if(IsValidEntity(body.m_iFreezeWearable))
 		RemoveEntity(body.m_iFreezeWearable);
 	if(IsValidEntity(body.m_iWearable1))
@@ -3184,6 +3204,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			RemoveEntity(npc.m_iTextEntity3);
 		if(IsValidEntity(npc.m_iTextEntity4))
 			RemoveEntity(npc.m_iTextEntity4);
+		if(IsValidEntity(npc.m_iTextEntity5))
+			RemoveEntity(npc.m_iTextEntity5);
 		if(IsValidEntity(npc.m_iFreezeWearable))
 			RemoveEntity(npc.m_iFreezeWearable);
 		if(IsValidEntity(npc.m_iSpeechBubble))
@@ -5271,6 +5293,7 @@ public void NpcBaseThink(int iNPC)
 		NpcDrawWorldLogic(iNPC);
 		f_TextEntityDelay[iNPC] = GetGameTime() + 0.1;
 		Npc_DebuffWorldTextUpdate(npc);
+		Npc_BossHealthBar(npc);
 	}
 
 	if(i_CurrentEquippedPerk[iNPC] == 1 && f_QuickReviveHealing[iNPC] < GetGameTime())
@@ -7659,6 +7682,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_TextEntity[entity][0] = -1;
 	i_TextEntity[entity][1] = -1;
 	i_TextEntity[entity][2] = -1;
+	i_TextEntity[entity][3] = -1;
+	i_TextEntity[entity][4] = -1;
 	i_NpcIsABuilding[entity] = false;
 	b_EntityInCrouchSpot[entity] = false;
 	b_NpcResizedForCrouch[entity] = false;
@@ -8567,7 +8592,60 @@ float NavAreaTravelDistance( const Vector &startPos, const Vector &goalPos, Cost
 
 #endif // _CS_NAV_PATHFIND_H_
 */
+public void Npc_BossHealthBar(CClotBody npc)
+{
+	int NpcTypeDefine = 0;
+	if(b_thisNpcIsABoss[npc.index])
+	{
+		NpcTypeDefine = 1;
+	}
+	if(b_thisNpcIsARaid[npc.index] || EntRefToEntIndex(RaidBossActive) == npc.index)
+	{
+		NpcTypeDefine = 2;
+	}
+	if(NpcTypeDefine == 0)
+		return;
 
+	NpcTypeDefine --;
+
+	char HealthText[32];
+	int HealthColour[4];
+	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	for(int i=0; i<(NpcTypeDefine ? 20 : 10); i++)
+	{
+		if(Health >= MaxHealth*(i*(NpcTypeDefine ? 0.05 : 0.1)))
+		{
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, "|");
+		}
+		else
+		{
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ".");
+		}
+	}
+	HealthColour[3] = 255;
+
+	DisplayRGBHealthValue(Health, MaxHealth, HealthColour[0], HealthColour[1],HealthColour[2]);
+
+	if(IsValidEntity(npc.m_iTextEntity5))
+	{
+		char sColor[32];
+		Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
+		DispatchKeyValue(npc.m_iTextEntity5,     "color", sColor);
+		DispatchKeyValue(npc.m_iTextEntity5, "message", HealthText);
+	}
+	else
+	{
+		float Offset[3];
+
+		Offset[2] += 95.0;
+		Offset[2] *= GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
+		
+		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 17, HealthColour, npc.index);
+		DispatchKeyValue(TextEntity, "font", "1");
+		npc.m_iTextEntity5 = TextEntity;	
+	}
+}
 
 public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 {
@@ -8632,9 +8710,9 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 		Offset[2] += 95.0;
 
 		Offset[2] *= GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
-#if defined RPG
-		Offset[2] += 30.0;
-#endif
+
+		Offset[2] += 15.0;
+
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 16, HealthColour, npc.index);
 	//	SDKHook(TextEntity, SDKHook_SetTransmit, BarrackBody_Transmit);
 	//	DispatchKeyValue(TextEntity, "font", "1");

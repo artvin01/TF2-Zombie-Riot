@@ -1095,7 +1095,7 @@ int i_TargetAlly[MAXENTITIES];
 bool b_GetClosestTargetTimeAlly[MAXENTITIES];
 float fl_Duration[MAXENTITIES];
 int i_OverlordComboAttack[MAXENTITIES];
-int i_TextEntity[MAXENTITIES][4];
+int i_TextEntity[MAXENTITIES][5];
 float f_TextEntityDelay[MAXENTITIES];
 
 int i_Activity[MAXENTITIES];
