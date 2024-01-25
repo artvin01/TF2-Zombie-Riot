@@ -311,7 +311,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 
 		donner_sea_created=false;
 		
-		RaidModeTime = GetGameTime(npc.index) + 250.0;
+		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 
@@ -1995,7 +1995,7 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 		}
 	}
 
-	RaidModeTime +=50.0;
+	RaidModeTime +=25.0;
 
 	SDKUnhook(npc.index, SDKHook_Think, Heavens_TBB_Tick);
 	Heavens_Light_Active[npc.index] = false;

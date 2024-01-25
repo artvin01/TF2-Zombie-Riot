@@ -1050,9 +1050,9 @@ public void OnPostThink(int client)
 				}
 				case 2:
 				{
-					red = 255;
-					green = 69;
-					blue = 25;
+					red = 0;
+					green = 255;
+					blue = 255;
 				}
 			}
 		}
@@ -2524,19 +2524,19 @@ float ArmorPlayerReduction(int victim)
 	{
 		case 50:
 		{
-			return 0.9;
+			return 0.95;
 		}
 		case 100:
 		{
-			return 0.85;
+			return 0.93;
 		}
 		case 150:
 		{
-			return 0.8;
+			return 0.91;
 		}
 		case 200:
 		{
-			return 0.75;
+			return 0.9;
 		}
 		default:
 		{

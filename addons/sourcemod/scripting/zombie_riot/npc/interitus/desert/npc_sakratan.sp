@@ -257,7 +257,7 @@ void DesertSakratanSelfDefense(DesertSakratan npc, float gameTime, int target, f
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					Sakratan_AddNeuralDamage(target, npc.index, 10, true);
+					Sakratan_AddNeuralDamage(target, npc.index, 20, true);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -332,7 +332,7 @@ void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sou
 			}
 			
 			if(sound || !Armor_Charge[victim])
-				ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
+				ClientCommand(victim, "playgamesound friends/friend_online.wav");
 		}
 	}
 }

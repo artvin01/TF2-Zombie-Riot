@@ -174,7 +174,6 @@ ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
 ConVar zr_allowfreeplay;
 ConVar zr_enemymulticap;
-ConVar zr_killfeed;
 int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
@@ -191,6 +190,7 @@ float f_TimerTickCooldownShop = 0.0;
 float f_FreeplayDamageExtra = 1.0;
 int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
+float PlayerCountBuffScaling = 1.0;
 int PlayersAliveScaling;
 int PlayersInGame;
 bool ZombieMusicPlayed;
@@ -238,11 +238,13 @@ int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpam[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
+int i_MaxArmorTableUsed[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
 #define SF2_PLAYER_VIEWBOB_SCALE_Y 0.0
 #define SF2_PLAYER_VIEWBOB_SCALE_Z 0.0
+#define RAID_MAX_ARMOR_TABLE_USE 20
 
 float Armor_regen_delay[MAXTF2PLAYERS];
 
@@ -1116,9 +1118,10 @@ public void OnClientAuthorized(int client)
 	Ammo_Count_Used[client] = 0;
 	CashSpentTotal[client] = 0;
 	f_LeftForDead_Cooldown[client] = 0.0;
-	
+/*	
 	if(CurrentRound)
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.10);
+*/
 }
 
 void ZR_OnClientDisconnect_Post()
@@ -1982,9 +1985,11 @@ void PlayerApplyDefaults(int client)
 	}
 	else if(!IsFakeClient(client))
 	{
+
 		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
 		QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
+		QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		

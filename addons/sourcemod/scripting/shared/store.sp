@@ -583,10 +583,22 @@ void Store_OnCached(int client)
 	if(!CashSpent[client])
 	{
 		if(Items_HasNamedItem(client, "ZR Contest Nominator [???]"))
-			CashSpent[client] = -50;
+		{
+			if(!Store_HasNamedItem(client, "ZR Contest Nominator [???] Cash"))
+			{
+				Store_SetNamedItem(client, "ZR Contest Nominator [???] Cash", 1);
+				CashSpent[client] = -50;
+			}
+		}
 
 		if(Items_HasNamedItem(client, "ZR Content Creator [???]"))
-			CashSpent[client] = -50;
+		{
+			if(!Store_HasNamedItem(client, "ZR Content Creator [???] Cash"))
+			{
+				Store_SetNamedItem(client, "ZR Content Creator [???] Cash", 1);
+				CashSpent[client] = -50;
+			}
+		}
 	}
 }
 #endif
@@ -2852,6 +2864,7 @@ public Action Access_StoreViaCommand(int client, int args)
 
 void Store_Menu(int client)
 {
+	Store_OnCached(client);
 	if(LastStoreMenu[client])
 	{
 		CancelClientMenu(client);

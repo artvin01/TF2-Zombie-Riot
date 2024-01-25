@@ -51,41 +51,30 @@ static Handle FeedTimer;
 
 void AdjustBotCount()
 {
-	int slots;
-	
-#if defined ZR
-	int botcount = zr_killfeed.BoolValue ? 0 : 99;
-#else
 	int botcount = 0;
-#endif
-
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientConnected(client))
-			slots++;
-		
-		if(IsClientInGame(client) && IsFakeClient(client))
-			botcount++;
-	}
-
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client) && IsFakeClient(client))
 		{
-			if(botcount > 2 || slots >= (MaxClients - 3))
+			botcount += 1;
+			if(botcount > 2)
 			{
-				botcount--;
-				slots--;
-				KillFeed_ClientDisconnect(client);
+				botcount -= 1;
 				KickClient(client);
 			}
 		}
 	}
-	
-	while(botcount < 2 && slots < (MaxClients - 4))
+	for(int loop = 1; loop <= 20; loop++)
 	{
-		SpawnBotCustom("bot1", true);
-		botcount++;
+		if(botcount < 2)
+		{
+			SpawnBotCustom("bot1", true);
+			botcount++;	
+		}
+		else
+		{
+			break;
+		}
 	}
 }
 

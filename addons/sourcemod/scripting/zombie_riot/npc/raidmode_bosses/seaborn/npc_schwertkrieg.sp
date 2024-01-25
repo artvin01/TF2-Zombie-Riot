@@ -320,7 +320,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		
 		SDKHook(npc.index, SDKHook_Think, Raidboss_Schwertkrieg_ClotThink);
 
-		RaidModeTime = GetGameTime(npc.index) + 250.0;
+		RaidModeTime = GetGameTime(npc.index) + 200.0;
 
 		npc.m_flNextChargeSpecialAttack = 0.0;	//used for transformation Logic
 		b_swords_created[npc.index]=false;
@@ -1852,7 +1852,7 @@ public void Raidboss_Schwertkrieg_NPCDeath(int entity)
 		donner.Anger=true;
 	}
 
-	RaidModeTime +=50.0;
+	RaidModeTime +=25.0;
 
 	int wave = ZR_GetWaveCount()+1;
 	if(wave<60 && !b_donner_said_win_line)

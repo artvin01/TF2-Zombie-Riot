@@ -1338,10 +1338,13 @@ public Action Timer_HealEventApply(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	Event event = CreateEvent("player_healonhit", true);
-	event.SetInt("entindex", client);
-	event.SetInt("amount", i_HealsDone_Event[clientOriginalIndex]);
-	event.Fire();
+	if(i_HealsDone_Event[clientOriginalIndex] > 0)
+	{
+		Event event = CreateEvent("player_healonhit", true);
+		event.SetInt("entindex", client);
+		event.SetInt("amount", i_HealsDone_Event[clientOriginalIndex]);
+		event.Fire();
+	}
 	i_HealsDone_Event[clientOriginalIndex] = 0;
 	h_Timer_HealEventApply[clientOriginalIndex] = null;
 	return Plugin_Stop;

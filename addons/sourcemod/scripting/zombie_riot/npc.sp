@@ -402,7 +402,10 @@ enum
 	INTERITUS_DESERT_KHAZAAN		= 353,
 	INTERITUS_DESERT_SAKRATAN		= 354,
 	INTERITUS_DESERT_YADEAM			= 355,
-	
+	INTERITUS_DESERT_RAJUL			= 356,
+	INTERITUS_DESERT_QANAAS			= 357,
+	INTERITUS_DESERT_ATILLA			= 358,
+	INTERITUS_DESERT_ANCIENTDEMON	= 359,
 
 	MAX_NPC_TYPES	// Add entries above this line
 }
@@ -788,7 +791,11 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Inabdil",
 	"Khazaan",
 	"Sakratan",
-	"Yadeam"
+	"Yadeam",
+	"Rajul",
+	"Qanaas",
+	"Atilla",
+	"Ancient Demon"
 };
 
 // See items.sp for IDs to names
@@ -1546,7 +1553,11 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_inabdil",
 	"npc_khazaan",
 	"npc_sakratan",
-	"npc_yadeam"
+	"npc_yadeam",
+	"npc_rajul",
+	"npc_qanaas",
+	"npc_atilla",
+	"npc_ancient_demon"
 };
 
 void NPC_MapStart()
@@ -1814,6 +1825,10 @@ void NPC_MapStart()
 	DesertKhazaan_OnMapStart_NPC();
 	DesertSakratan_OnMapStart_NPC();
 	DesertYadeam_OnMapStart_NPC();
+	DesertRajul_OnMapStart_NPC();
+	DesertQanaas_OnMapStart_NPC();
+	DesertAtilla_OnMapStart_NPC();
+	DesertAncientDemon_OnMapStart_NPC();
 	
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2857,6 +2872,18 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case INTERITUS_DESERT_YADEAM:
 			entity = DesertYadeam(client, vecPos, vecAng, ally);
 
+		case INTERITUS_DESERT_RAJUL:
+			entity = DesertRajul(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_QANAAS:
+			entity = DesertQanaas(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_ATILLA:
+			entity = DesertAtilla(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_ANCIENTDEMON:
+			entity = DesertAncientDemon(client, vecPos, vecAng, ally);
+
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
@@ -2883,6 +2910,15 @@ public void NPCDeath(int entity)
 		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 		{
+			Function func = func_NPCDeathForward[baseboss_index];
+			if(func && func != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, func);
+				Call_PushCell(baseboss_index);
+				Call_PushCell(entity);
+				Call_Finish();
+				//todo: convert all on death and on take damage to this.
+			}
 			switch(i_NpcInternalId[baseboss_index])
 			{
 				case SEABORN_KAZIMIERZ_BESERKER:
@@ -5088,3 +5124,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/desert/npc_khazaan.sp"
 #include "zombie_riot/npc/interitus/desert/npc_sakratan.sp"
 #include "zombie_riot/npc/interitus/desert/npc_yadeam.sp"
+#include "zombie_riot/npc/interitus/desert/npc_rajul.sp"
+#include "zombie_riot/npc/interitus/desert/npc_qanaas.sp"
+#include "zombie_riot/npc/interitus/desert/npc_atilla.sp"
+#include "zombie_riot/npc/interitus/desert/npc_ancient_demon.sp"

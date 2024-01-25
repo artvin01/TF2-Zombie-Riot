@@ -1087,7 +1087,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			delete Enemies;
 			Enemies = new ArrayStack(sizeof(Enemy));
-			
+			/*
 			for(int client_Penalise=1; client_Penalise<=MaxClients; client_Penalise++)
 			{
 				if(IsClientInGame(client_Penalise))
@@ -1106,7 +1106,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					}
 				}
 			}
-
+			*/
 			bool music_stop = false;
 			if(round.music_round_outro[0])
 			{
@@ -1847,6 +1847,7 @@ void WaveEndLogicExtra()
 	M3_AbilitiesWaveEnd();
 	Specter_AbilitiesWaveEnd();	
 	LeperResetUses();
+	Zero(i_MaxArmorTableUsed);
 	for(int client; client <= MaxClients; client++)
 	{
 		if(IsValidClient(client))
@@ -1961,6 +1962,10 @@ void DoGlobalMultiScaling()
 	{
 		playercount = 0.70;
 	}
+	else if(playercount < 1.0)
+	{
+		playercount = 0.70;
+	}
 			
 	float multi = Pow(1.08, playercount);
 
@@ -1979,6 +1984,12 @@ void DoGlobalMultiScaling()
 	{
 		MultiGlobalHealth = 1.0;
 		MultiGlobalEnemy = multi;
+	}
+
+	PlayerCountBuffScaling = 4.0 / playercount;
+	if(PlayerCountBuffScaling < 1.0)
+	{
+		PlayerCountBuffScaling = 1.0;
 	}
 }
 

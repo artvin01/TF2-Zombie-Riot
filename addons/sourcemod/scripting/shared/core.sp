@@ -493,6 +493,7 @@ int IgniteId[MAXENTITIES];
 int IgniteRef[MAXENTITIES];
 float BurnDamage[MAXENTITIES];
 int i_NervousImpairmentArrowAmount[MAXENTITIES];
+int i_ChaosArrowAmount[MAXENTITIES];
 float f_KnockbackPullDuration[MAXENTITIES];
 float f_DoNotUnstuckDuration[MAXENTITIES];
 float f_UnstuckTimerCheck[MAXENTITIES];
@@ -625,6 +626,7 @@ Function EntityFuncReload4[MAXENTITIES];
 float f_ClientMusicVolume[MAXTF2PLAYERS];
 bool b_FirstPersonUsesWorldModel[MAXTF2PLAYERS];
 float f_BegPlayerToSetDuckConvar[MAXTF2PLAYERS];
+float f_BegPlayerToSetRagdollFade[MAXTF2PLAYERS];
 
 #if defined RPG
 int Level[MAXENTITIES];
@@ -1094,7 +1096,7 @@ int i_TargetAlly[MAXENTITIES];
 bool b_GetClosestTargetTimeAlly[MAXENTITIES];
 float fl_Duration[MAXENTITIES];
 int i_OverlordComboAttack[MAXENTITIES];
-int i_TextEntity[MAXENTITIES][4];
+int i_TextEntity[MAXENTITIES][5];
 float f_TextEntityDelay[MAXENTITIES];
 
 int i_Activity[MAXENTITIES];
@@ -1705,11 +1707,6 @@ public void OnClientPostAdminCheck(int client)
 	Database_ClientPostAdminCheck(client);
 #endif
 }
-
-public void OnClientConnected(int client)
-{
-	AdjustBotCount();
-}
 				
 public void OnClientPutInServer(int client)
 {
@@ -1731,6 +1728,7 @@ public void OnClientPutInServer(int client)
 	
 //	f_LeftForDead_Cooldown[client] = GetGameTime() + 100.0;
 	//do cooldown upon connection.
+	AdjustBotCount();
 	WeaponClass[client] = TFClass_Unknown;
 	f_ClientReviveDelay[client] = 0.0;
 	
@@ -1835,8 +1833,6 @@ public void OnClientDisconnect_Post(int client)
 #if defined RPG
 	RPG_ClientDisconnect_Post();
 #endif
-
-	AdjustBotCount();
 }
 
 public void OnPlayerRunCmdPre(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
@@ -2412,6 +2408,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		func_NPCDeath[entity] = INVALID_FUNCTION;
 		func_NPCOnTakeDamage[entity] = INVALID_FUNCTION;
 		func_NPCThink[entity] = INVALID_FUNCTION;
+		func_NPCDeathForward[entity] = INVALID_FUNCTION;
 		f3_VecTeleportBackSave_OutOfBounds[entity][0] = 0.0;
 		f3_VecTeleportBackSave_OutOfBounds[entity][1] = 0.0;
 		f3_VecTeleportBackSave_OutOfBounds[entity][2] = 0.0;
@@ -2529,6 +2526,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_RaidGrantExtra[entity] = 0;
 		i_IsABuilding[entity] = false;
 		i_NervousImpairmentArrowAmount[entity] = 0;
+		i_ChaosArrowAmount[entity] = 0;
 		i_WeaponArchetype[entity] = 0;
 		i_WeaponForceClass[entity] = 0;
 		
@@ -3620,7 +3618,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0)
 		}
 		if(extralogic)
 		{
-			b_BobsCuringHand_Revived[target] -= 0;
+			b_BobsCuringHand_Revived[target] = 0;
 		}
 		SetEntityMoveType(target, MOVETYPE_WALK);
 		RequestFrame(Movetype_walk, EntRefToEntIndex(target));

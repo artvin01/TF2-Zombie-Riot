@@ -182,10 +182,10 @@ public void SeabornSoldier_ClotThink(int iNPC)
 							float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 							bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
 
-							fl_Extra_Speed[npc.index] *= 1.25;
-							fl_Extra_Damage[npc.index] *= 1.1;
+							fl_Extra_Speed[npc.index] += 1.1;
+							fl_Extra_Damage[npc.index] += 1.1;
 
-							for(int i; i < 10; i++)
+							for(int i; i < 5; i++)
 							{
 								int entity = Npc_Create(SEABORN_SOLDIER, -1, pos, ang, ally);
 								if(entity > MaxClients)

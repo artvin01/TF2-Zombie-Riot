@@ -63,6 +63,7 @@ methodmap Isharmla < CClotBody
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSALPHA);
+		npc.m_bTeamGlowDefault = true;
 
 		if(!ally && !IsValidEntity(RaidBossActive))
 		{
@@ -100,6 +101,7 @@ public void Isharmla_ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
+
 	if(i_TargetAlly[npc.index] == -1)
 		npc.Update();
 	
@@ -108,8 +110,7 @@ public void Isharmla_ClotThink(int iNPC)
 	
 	if(i_TargetAlly[npc.index] != -1)
 	{
-		int entity = i_TargetAlly[npc.index];
-		if(entity != INVALID_ENT_REFERENCE)
+		if(IsValidEntity(i_TargetAlly[npc.index]))
 			return;
 		
 		if(i_TargetAlly[npc.index] == RaidBossActive)
@@ -125,6 +126,16 @@ public void Isharmla_ClotThink(int iNPC)
 
 		npc.SetActivity("ACT_SKADI_REVERT");
 		npc.m_flNextThinkTime = gameTime + 1.25;
+		npc.m_bTeamGlowDefault = true;
+		b_IsEntityNeverTranmitted[npc.index] = false;
+		GiveNpcOutLineLastOrBoss(npc.index, true);
+		SetEntityCollisionGroup(npc.index, 4); //Dont Touch Anything.
+		SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 8);
+		SetEntProp(npc.index, Prop_Data,"m_nSolidType", 2);
+		i_RaidGrantExtra[npc.index] = -1;
+		b_DoNotUnStuck[npc.index] = false;
+		b_NoKnockbackFromSources[npc.index] = false;
+		b_ThisEntityIgnored[npc.index] = false;
 		
 		// Recover 2% HP
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 50));
@@ -146,6 +157,7 @@ public void Isharmla_ClotThink(int iNPC)
 			RaidModeScaling = 1.0;
 		
 		npc.m_iPoints = 0;
+		npc.SetActivity("ACT_SKADI_WALK");
 		
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
@@ -155,6 +167,19 @@ public void Isharmla_ClotThink(int iNPC)
 		int entity = Npc_Create(ISHARMLA_TRANS, -1, pos, ang, ally);
 		if(entity > MaxClients)
 		{
+			b_IsEntityNeverTranmitted[npc.index] = true;
+			npc.m_bTeamGlowDefault = true;
+			GiveNpcOutLineLastOrBoss(npc.index, false);
+			npc.m_bTeamGlowDefault = false;
+			
+			SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.
+			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12); 
+			SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6);
+			i_RaidGrantExtra[npc.index] = -1;
+			b_DoNotUnStuck[npc.index] = true;
+			b_ThisNpcIsImmuneToNuke[npc.index] = true;
+			b_NoKnockbackFromSources[npc.index] = true;
+			b_ThisEntityIgnored[npc.index] = true;
 			view_as<CClotBody>(entity).m_bThisNpcIsABoss = npc.m_bThisNpcIsABoss;
 			view_as<CClotBody>(entity).Anger = npc.Anger;
 
@@ -175,8 +200,8 @@ public void Isharmla_ClotThink(int iNPC)
 			npc.m_bSpeed = false;
 			i_TargetAlly[npc.index] = EntIndexToEntRef(entity);
 			b_NpcIsInvulnerable[npc.index] = true;
-			SetEntityRenderColor(npc.index, 100, 100, 255, 64);
-			SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 64);
+			SetEntityRenderColor(npc.index, 255, 255, 255, 1);
+			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 			return;
 		}
 	}
