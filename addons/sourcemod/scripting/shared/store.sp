@@ -584,7 +584,7 @@ void Store_OnCached(int client)
 	{
 		if(Items_HasNamedItem(client, "ZR Contest Nominator [???]"))
 		{
-			if(Store_HasNamedItem(client, "ZR Contest Nominator [???] Cash"))
+			if(!Store_HasNamedItem(client, "ZR Contest Nominator [???] Cash"))
 			{
 				Store_SetNamedItem(client, "ZR Contest Nominator [???] Cash", 1);
 				CashSpent[client] = -50;
@@ -593,7 +593,7 @@ void Store_OnCached(int client)
 
 		if(Items_HasNamedItem(client, "ZR Content Creator [???]"))
 		{
-			if(Store_HasNamedItem(client, "ZR Content Creator [???] Cash"))
+			if(!Store_HasNamedItem(client, "ZR Content Creator [???] Cash"))
 			{
 				Store_SetNamedItem(client, "ZR Content Creator [???] Cash", 1);
 				CashSpent[client] = -50;
