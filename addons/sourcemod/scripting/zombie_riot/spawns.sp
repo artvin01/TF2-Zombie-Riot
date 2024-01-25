@@ -41,7 +41,7 @@ bool Spawns_CanSpawnNext(bool rogue)
 		if(LastNamedSpawn > gameTime)
 			return false;
 		
-		LastNamedSpawn = gameTime + (BASE_SPAWNER_COOLDOWN / MultiGlobal);
+		LastNamedSpawn = gameTime + (BASE_SPAWNER_COOLDOWN / MultiGlobalEnemy);
 		return true;
 	}
 
@@ -139,11 +139,11 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 	{
 		if(nonBossSpawners == 1)
 		{
-			spawn.Cooldown = gameTime + (BASE_SPAWNER_COOLDOWN / MultiGlobal);
+			spawn.Cooldown = gameTime + (BASE_SPAWNER_COOLDOWN / MultiGlobalEnemy);
 		}
 		else if(name[0])
 		{
-			float playerSpeedUp = 1.0 + (MultiGlobal * 0.5);
+			float playerSpeedUp = 1.0 + (MultiGlobalEnemy * 0.5);
 			float baseTime = 2.0 + (nonBossSpawners * 0.15);
 
 			spawn.Cooldown = gameTime + (baseTime / playerSpeedUp);
@@ -154,7 +154,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			if(nearSpeedUp < 1.0)
 				nearSpeedUp = 1.0;
 
-			float playerSpeedUp = 1.0 + (MultiGlobal * 0.5);
+			float playerSpeedUp = 1.0 + (MultiGlobalEnemy * 0.5);
 			
 			float baseTime = 2.0 + (nonBossSpawners * 0.15);
 

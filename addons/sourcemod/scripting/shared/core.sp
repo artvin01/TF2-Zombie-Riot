@@ -491,6 +491,7 @@ int IgniteId[MAXENTITIES];
 int IgniteRef[MAXENTITIES];
 float BurnDamage[MAXENTITIES];
 int i_NervousImpairmentArrowAmount[MAXENTITIES];
+int i_ChaosArrowAmount[MAXENTITIES];
 float f_KnockbackPullDuration[MAXENTITIES];
 float f_DoNotUnstuckDuration[MAXENTITIES];
 float f_UnstuckTimerCheck[MAXENTITIES];
@@ -574,8 +575,15 @@ bool FinalBuilder[MAXENTITIES];
 bool GlassBuilder[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
 bool b_ExpertTrapper[MAXENTITIES];
+bool b_RaptureZombie[MAXENTITIES];
 int Building_Hidden_Prop[MAXENTITIES][2];
 float f_ClientArmorRegen[MAXENTITIES];
+bool b_BobsCuringHand[MAXTF2PLAYERS];
+int b_BobsCuringHand_Revived[MAXTF2PLAYERS];
+bool b_NemesisHeart[MAXTF2PLAYERS];
+bool b_OverlordsFinalWish[MAXTF2PLAYERS];
+bool b_BobsTrueFear[MAXTF2PLAYERS];
+float f_ArmorCurrosionImmunity[MAXENTITIES];
 int i_nm_body_client[MAXTF2PLAYERS];
 int g_particleMissText;
 Handle g_hRecalculatePlayerBodygroups;
@@ -616,6 +624,7 @@ Function EntityFuncReload4[MAXENTITIES];
 float f_ClientMusicVolume[MAXTF2PLAYERS];
 bool b_FirstPersonUsesWorldModel[MAXTF2PLAYERS];
 float f_BegPlayerToSetDuckConvar[MAXTF2PLAYERS];
+float f_BegPlayerToSetRagdollFade[MAXTF2PLAYERS];
 
 #if defined RPG
 int Level[MAXENTITIES];
@@ -1086,7 +1095,7 @@ int i_TargetAlly[MAXENTITIES];
 bool b_GetClosestTargetTimeAlly[MAXENTITIES];
 float fl_Duration[MAXENTITIES];
 int i_OverlordComboAttack[MAXENTITIES];
-int i_TextEntity[MAXENTITIES][4];
+int i_TextEntity[MAXENTITIES][5];
 float f_TextEntityDelay[MAXENTITIES];
 
 int i_Activity[MAXENTITIES];
@@ -1809,6 +1818,9 @@ public void OnPlayerRunCmdPre(int client, int buttons, int impulse, const float 
 	RTSCamera_PlayerRunCmdPre(client, buttons, impulse, weapon, mouse);
 }
 
+static bool was_reviving[MAXTF2PLAYERS];
+static int was_reviving_this[MAXTF2PLAYERS];
+
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
 	if(b_IsPlayerABot[client])
@@ -1846,10 +1858,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 	
-#if defined ZR
-	static bool was_reviving[MAXTF2PLAYERS];
-	static int was_reviving_this[MAXTF2PLAYERS];
-#endif
 
 	static int holding[MAXTF2PLAYERS];
 	if(holding[client] & IN_ATTACK)
@@ -2055,74 +2063,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", Injured);
 				if(GetVectorDistance(Healer, Injured) <= 250.0)
 				{
-					SetEntityMoveType(target, MOVETYPE_NONE);
-					was_reviving[client] = true;
-					f_DelayLookingAtHud[client] = GameTime + 0.5;
-					f_DelayLookingAtHud[target] = GameTime + 0.5;
-					PrintCenterText(client, "%t", "Reviving", dieingstate[target]);
-					PrintCenterText(target, "%t", "You're Being Revived.", dieingstate[target]);
-					was_reviving_this[client] = target;
-					f_DisableDyingTimer[target] = GameTime + 0.15;
-					if(i_CurrentEquippedPerk[client] == 1)
-					{
-						dieingstate[target] -= 12 * Rogue_ReviveSpeed();
-					}
-					else
-					{
-						dieingstate[target] -= 6 * Rogue_ReviveSpeed();
-					}
-					
-					if(dieingstate[target] <= 0)
-					{
-						i_Reviving_This_Client[client] = 0;
-						f_Reviving_This_Client[client] = 0.0;
-						SetEntityMoveType(target, MOVETYPE_WALK);
-						RequestFrame(Movetype_walk, EntRefToEntIndex(target));
-						dieingstate[target] = 0;
-						ClientSaveUber(target);
-						ClientSaveRageMeterStatus(target);
-						
-						SetEntPropEnt(target, Prop_Send, "m_hObserverTarget", client);
-						f_WasRecentlyRevivedViaNonWave[target] = GameTime + 1.0;
-						DHook_RespawnPlayer(target);
-						
-						float pos[3], ang[3];
-						GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
-						GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-						ang[2] = 0.0;
-						SetEntProp(target, Prop_Send, "m_bDucked", true);
-						SetEntityFlags(target, GetEntityFlags(target)|FL_DUCKING);
-						CClotBody npc = view_as<CClotBody>(client);
-						npc.m_bThisEntityIgnored = false;
-						TeleportEntity(target, pos, ang, NULL_VECTOR);
-						SetEntityCollisionGroup(target, 5);
-						PrintCenterText(client, "");
-						PrintCenterText(target, "");
-						DoOverlay(target, "", 2);
-						SetEntityHealth(target, 50);
-						RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(target));
-						int entity, i;
-						while(TF2U_GetWearable(target, entity, i))
-						{
-							SetEntityRenderMode(entity, RENDER_NORMAL);
-							SetEntityRenderColor(entity, 255, 255, 255, 255);
-						}
-						if(i_CurrentEquippedPerk[client] == 1)
-						{
-							HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.02, 1.0, 1.0, HEAL_ABSOLUTE);
-							HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(client)) * 0.02, 1.0, 1.0, HEAL_ABSOLUTE);
-						}
-						else
-						{
-							HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.01, 1.0, 1.0, HEAL_ABSOLUTE);
-							HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(client)) * 0.01, 1.0, 1.0, HEAL_ABSOLUTE);
-						}
-						
-						SetEntityRenderMode(target, RENDER_NORMAL);
-						SetEntityRenderColor(target, 255, 255, 255, 255);
-						EmitSoundToAll("mvm/mvm_revive.wav", target, SNDCHAN_AUTO, 90, _, 1.0);
-						MakePlayerGiveResponseVoice(target, 3); //Revived response!
-					}
+					ReviveClientFromOrToEntity(target, client);
 				}
 				else if (was_reviving[client])
 				{
@@ -2440,6 +2381,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 	
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		func_NPCDeath[entity] = INVALID_FUNCTION;
+		func_NPCOnTakeDamage[entity] = INVALID_FUNCTION;
+		func_NPCThink[entity] = INVALID_FUNCTION;
+		func_NPCDeathForward[entity] = INVALID_FUNCTION;
 		f3_VecTeleportBackSave_OutOfBounds[entity][0] = 0.0;
 		f3_VecTeleportBackSave_OutOfBounds[entity][1] = 0.0;
 		f3_VecTeleportBackSave_OutOfBounds[entity][2] = 0.0;
@@ -2558,6 +2503,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_RaidGrantExtra[entity] = 0;
 		i_IsABuilding[entity] = false;
 		i_NervousImpairmentArrowAmount[entity] = 0;
+		i_ChaosArrowAmount[entity] = 0;
 		i_WeaponArchetype[entity] = 0;
 		i_WeaponForceClass[entity] = 0;
 		
@@ -3164,7 +3110,7 @@ public void CheckIfAloneOnServer()
 	{
 		b_IsAloneOnServer = true;	
 	}
-	
+
 #if defined ZR
 	if (players < 4 && players > 0)
 	{
@@ -3184,6 +3130,7 @@ public void CheckIfAloneOnServer()
 		Bob_Exists_Index = -1;
 	}
 #endif
+
 }
 
 /*
@@ -3583,5 +3530,111 @@ void ResetReplications()
 		ReplicateClient_Svairaccelerate[client] = -1.0;
 		ReplicateClient_Tfsolidobjects[client] = -1;
 		ReplicateClient_RollAngle[client] = -1;
+	}
+}
+
+void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0)
+{
+	bool WasClientReviving = true;
+	if(client > MaxClients)
+		WasClientReviving = false;
+
+	float GameTime = GetGameTime();
+
+	SetEntityMoveType(target, MOVETYPE_NONE);
+	if(WasClientReviving)
+	{
+		was_reviving[client] = true;
+		f_DelayLookingAtHud[client] = GameTime + 0.5;
+	}
+	f_DelayLookingAtHud[target] = GameTime + 0.5;
+	if(WasClientReviving)
+		PrintCenterText(client, "%t", "Reviving", dieingstate[target]);
+
+	PrintCenterText(target, "%t", "You're Being Revived.", dieingstate[target]);
+	if(WasClientReviving)
+		was_reviving_this[client] = target;
+
+	f_DisableDyingTimer[target] = GameTime + 0.15;
+	if(WasClientReviving && i_CurrentEquippedPerk[client] == 1)
+	{
+		dieingstate[target] -= 12 * Rogue_ReviveSpeed();
+	}
+	else
+	{
+		if(WasClientReviving)
+			dieingstate[target] -= 6 * Rogue_ReviveSpeed();
+		else
+			dieingstate[target] -= 3 * Rogue_ReviveSpeed();
+	}
+	
+	if(dieingstate[target] <= 0)
+	{
+		if(WasClientReviving)
+		{
+			i_Reviving_This_Client[client] = 0;
+			f_Reviving_This_Client[client] = 0.0;
+		}
+		if(extralogic)
+		{
+			b_BobsCuringHand_Revived[target] = 0;
+		}
+		SetEntityMoveType(target, MOVETYPE_WALK);
+		RequestFrame(Movetype_walk, EntRefToEntIndex(target));
+		dieingstate[target] = 0;
+		ClientSaveUber(target);
+		ClientSaveRageMeterStatus(target);
+		
+		SetEntPropEnt(target, Prop_Send, "m_hObserverTarget", client);
+		f_WasRecentlyRevivedViaNonWave[target] = GameTime + 1.0;
+		DHook_RespawnPlayer(target);
+		
+		float pos[3], ang[3];
+		GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
+		GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
+		ang[2] = 0.0;
+		SetEntProp(target, Prop_Send, "m_bDucked", true);
+		SetEntityFlags(target, GetEntityFlags(target)|FL_DUCKING);
+		CClotBody npc = view_as<CClotBody>(target);
+		npc.m_bThisEntityIgnored = false;
+		TeleportEntity(target, pos, ang, NULL_VECTOR);
+		SetEntityCollisionGroup(target, 5);
+
+		if(WasClientReviving)
+			PrintCenterText(client, "");
+
+		PrintCenterText(target, "");
+		DoOverlay(target, "", 2);
+		SetEntityHealth(target, 50);
+		RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(target));
+		int entity, i;
+		while(TF2U_GetWearable(target, entity, i))
+		{
+			SetEntityRenderMode(entity, RENDER_NORMAL);
+			SetEntityRenderColor(entity, 255, 255, 255, 255);
+		}
+		if(WasClientReviving && i_CurrentEquippedPerk[client] == 1)
+		{
+			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);
+		}
+		else
+		{
+			if(WasClientReviving)
+				HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.1, 1.0, 1.0, HEAL_ABSOLUTE);
+			if(extralogic)
+			{
+				HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 1.0, 1.0, 1.0, HEAL_ABSOLUTE);
+			}
+			else
+			{	
+				HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)), 0.1, 1.0, HEAL_ABSOLUTE);
+			}
+		}
+		
+		SetEntityRenderMode(target, RENDER_NORMAL);
+		SetEntityRenderColor(target, 255, 255, 255, 255);
+		EmitSoundToAll("mvm/mvm_revive.wav", target, SNDCHAN_AUTO, 90, _, 1.0);
+		MakePlayerGiveResponseVoice(target, 3); //Revived response!
 	}
 }

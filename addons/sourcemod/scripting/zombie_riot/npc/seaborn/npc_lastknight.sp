@@ -183,7 +183,7 @@ public void LastKnight_ClotThink(int iNPC)
 	if(npc.m_iTarget && !IsValidAlly(npc.index, npc.m_iTarget) && !IsValidEnemy(npc.index, npc.m_iTarget))
 		npc.m_iTarget = 0;
 
-	bool aggressive = (PeaceKnight < 0 && CitizenRunner_WasKilled());
+	bool aggressive = (PeaceKnight == 0 || (PeaceKnight == -1 && CitizenRunner_WasKilled()));
 
 	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
 	{
@@ -413,7 +413,7 @@ void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon
 			if(ratio < 1)
 			{
 				npc.m_iPhase = 2;
-				npc.m_flSpeed = 350.0;
+				npc.m_flSpeed = 320.0;
 				Change_Npc_Collision(npc.index, VIPBuilding_Active() ? num_ShouldCollideEnemyTDIgnoreBuilding : num_ShouldCollideEnemyIngoreBuilding);
 				b_NpcIsInvulnerable[npc.index] = true;
 				npc.AddGesture("ACT_LAST_KNIGHT_REVIVE");

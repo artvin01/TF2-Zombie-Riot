@@ -326,7 +326,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 
 		donner_sea_created=false;
 		
-		RaidModeTime = GetGameTime(npc.index) + 250.0;
+		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 
@@ -715,7 +715,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 			if((Current_Wave>=45 && fl_heavens_light_use_timer[npc.index] < GameTime) || b_force_heavens_light[npc.index])
 			{
 				b_force_heavens_light[npc.index]=false;
-				fl_heavens_light_use_timer[npc.index] = GameTime + 90.0;
+				fl_heavens_light_use_timer[npc.index] = GameTime + 75.0;
 				Heavens_Light_Active[npc.index]=true;
 
 				Invoke_Heavens_Light(npc, GameTime);
@@ -2065,7 +2065,7 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 		}
 	}
 
-	RaidModeTime +=50.0;
+	RaidModeTime +=25.0;
 
 	SDKUnhook(npc.index, SDKHook_Think, Heavens_TBB_Tick);
 	Heavens_Light_Active[npc.index] = false;

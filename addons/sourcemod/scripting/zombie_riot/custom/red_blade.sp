@@ -191,6 +191,17 @@ void CheckRedBladeBelowHalfHealth(int client, int weapon)
 		MakeBladeBloddy(client, false, weapon);
 	}
 }
+
+
+void WeaponRedBlade_OnTakeDamageNpc(int attacker,int victim, int damagetype,int weapon)
+{
+	if(!b_OverlordsFinalWish[attacker])
+		return;
+	
+	if(damagetype & DMG_CLUB)
+		NPC_Ignite(victim, attacker, 3.0, weapon);
+}
+
 void WeaponRedBlade_OnTakeDamage(int victim, float &damage)
 {
 	if(f_RedBladeChargeDuration[victim] > GetGameTime())

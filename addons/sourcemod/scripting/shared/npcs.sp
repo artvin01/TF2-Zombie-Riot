@@ -350,8 +350,8 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						npcstats.m_bThisNpcIsABoss = false; //Set to true!
 					}
 					
-					if(enemy.Credits && MultiGlobal)
-						npcstats.m_fCreditsOnKill = enemy.Credits / MultiGlobal;
+					if(enemy.Credits && MultiGlobalEnemy)
+						npcstats.m_fCreditsOnKill = enemy.Credits / MultiGlobalEnemy;
 
 					fl_Extra_MeleeArmor[entity_Spawner] 	= enemy.ExtraMeleeRes;
 					fl_Extra_RangedArmor[entity_Spawner] 	= enemy.ExtraRangedRes;
@@ -1230,6 +1230,15 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 			SlayNpc = false;
 		}
 	}
+	if(inflictor > 0 && inflictor <= MaxClients)
+	{
+		b_RaptureZombie[victim] = b_RaptureZombie[inflictor];
+	}
+	else if(attacker > 0 && attacker <= MaxClients)
+	{
+		b_RaptureZombie[victim] = b_RaptureZombie[attacker];
+	}
+	
 	if(SlayNpc)
 	{
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);
@@ -1391,14 +1400,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s!%i", Debuff_Adder, i_HowManyBombsOnThisEntity[victim][attacker]);
 	}
-		
+		/*
 	if(IgniteFor[victim] > 0) //burn
 	{
 		Debuff_added = true;
 		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s~", Debuff_Adder);			
 	}
-		
+		*/
 	if(f_HighIceDebuff[victim] > GameTime)
 	{
 		Debuff_added = true;
@@ -1698,24 +1707,39 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		char ExtraHudHurt[255];
 
 		//add name and health
-		
+		//add name and health
+		char c_Health[255];
+		char c_MaxHealth[255];
+		IntToString(Health,c_Health, sizeof(c_Health));
+		IntToString(MaxHealth,c_MaxHealth, sizeof(c_MaxHealth));
+
+		int offset = Health < 0 ? 1 : 0;
+		ThousandString(c_Health[offset], sizeof(c_Health) - offset);
+		offset = MaxHealth < 0 ? 1 : 0;
+		ThousandString(c_MaxHealth[offset], sizeof(c_MaxHealth) - offset);
+
 		if(c_NpcCustomNameOverride[victim][0])
 		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%d / %d",c_NpcCustomNameOverride[victim], Health, MaxHealth);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%s / %s",c_NpcCustomNameOverride[victim], c_Health, c_MaxHealth);
 		}
 		else
 		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%d / %d",NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%s / %s",NPC_Names[i_NpcInternalId[victim]], c_Health, c_MaxHealth);
 		}
 
 		//add debuff
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
+		char c_DmgDelt[255];
+		IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
+		offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
+		ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
+
 		if(!b_NpcIsInvulnerable[victim])
 		{
 			if(!raidboss_active)
 			{
-				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%0.f", ExtraHudHurt, f_damageAddedTogether[attacker]);
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%s", ExtraHudHurt, c_DmgDelt);
 			}
 		}
 		else
@@ -1758,22 +1782,37 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%% | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
 			
 		//add name and health
+		char c_Health[255];
+		char c_MaxHealth[255];
+		IntToString(Health,c_Health, sizeof(c_Health));
+		IntToString(MaxHealth,c_MaxHealth, sizeof(c_MaxHealth));
+
+		int offset = Health < 0 ? 1 : 0;
+		ThousandString(c_Health[offset], sizeof(c_Health) - offset);
+		offset = MaxHealth < 0 ? 1 : 0;
+		ThousandString(c_MaxHealth[offset], sizeof(c_MaxHealth) - offset);
+
 		if(c_NpcCustomNameOverride[victim][0])
 		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%d / %d",ExtraHudHurt,c_NpcCustomNameOverride[victim], Health, MaxHealth);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%s / %s",ExtraHudHurt,c_NpcCustomNameOverride[victim], c_Health, c_MaxHealth);
 		}
 		else
 		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%d / %d",ExtraHudHurt, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%s / %s",ExtraHudHurt, NPC_Names[i_NpcInternalId[victim]], c_Health, c_MaxHealth);
 		}
 
 		//add debuff
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
+		char c_DmgDelt[255];
+		IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
+		offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
+		ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
+
 		if(!b_NpcIsInvulnerable[victim])
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%0.f", ExtraHudHurt, f_damageAddedTogether[attacker]);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%s", ExtraHudHurt, c_DmgDelt);
 		else
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s %t\n-%0.f", ExtraHudHurt, "Invulnerable Npc", f_damageAddedTogether[attacker]);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s %t\n-%s", ExtraHudHurt, "Invulnerable Npc", c_DmgDelt);
 			
 		ShowSyncHudText(attacker, SyncHudRaid,"%s",ExtraHudHurt);	
 
@@ -2256,6 +2295,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		case WEAPON_GRAVATON_WAND:
 		{
 			NPC_OnTakeDmg_Gravaton_Wand(attacker, damagetype);
+		}
+		case WEAPON_RED_BLADE:
+		{
+			WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon);
 		}
 	}
 #endif
@@ -3023,28 +3066,36 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 			}
 		}
 	}
+	float DamageBuffExtraScaling = 1.0;
+
+	if(attacker <= MaxClients || inflictor <= MaxClients)
+	{
+		if(b_thisNpcIsARaid[victim])
+			DamageBuffExtraScaling = PlayerCountBuffScaling;
+	}
+	
 	if(!NpcStats_IsEnemySilenced(attacker))
 	{
 		if(f_HussarBuff[attacker] > GameTime) //hussar!
 		{
-			damage += BaseDamageBeforeBuffs * 0.1;
+			damage += BaseDamageBeforeBuffs * (0.1 * DamageBuffExtraScaling);
 		}
-		if(f_GodArkantosBuff[victim] > GameTime) //hussar!
+		if(f_GodArkantosBuff[attacker] > GameTime) //hussar!
 		{
-			damage += BaseDamageBeforeBuffs * 0.5; //50% more damage!
+			damage += BaseDamageBeforeBuffs * (0.5 * DamageBuffExtraScaling); //50% more damage!
 		}
 	}
 	if(f_Ocean_Buff_Stronk_Buff[attacker] > GameTime) //hussar!
 	{
-		damage += BaseDamageBeforeBuffs * 0.25;
+		damage += BaseDamageBeforeBuffs * (0.25 * DamageBuffExtraScaling);
 	}
 	else if (f_Ocean_Buff_Weak_Buff[attacker] > GameTime) //hussar!
 	{
-		damage += BaseDamageBeforeBuffs * 0.1;
+		damage += BaseDamageBeforeBuffs * (0.1 * DamageBuffExtraScaling);
 	}
 	if(f_EmpowerStateOther[attacker] > GameTime) //Allow stacking.
 	{
-		damage += BaseDamageBeforeBuffs * 0.1;
+		damage += BaseDamageBeforeBuffs * (0.1 * DamageBuffExtraScaling);
 	}
 	if(f_EmpowerStateSelf[attacker] > GameTime) //Allow stacking.
 	{
@@ -3052,19 +3103,19 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 	}
 	if(f_BuffBannerNpcBuff[attacker] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.25;
+		damage += BaseDamageBeforeBuffs * (0.25 * DamageBuffExtraScaling);
 	}
 	if(f_HighTeslarDebuff[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.35;
+		damage += BaseDamageBeforeBuffs * (0.25 * DamageBuffExtraScaling);
 	}
 	else if(f_LowTeslarDebuff[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.25;
+		damage += BaseDamageBeforeBuffs * (0.2 * DamageBuffExtraScaling);
 	}
 	if(f_PotionShrinkEffect[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.35;
+		damage += BaseDamageBeforeBuffs * (0.35 * DamageBuffExtraScaling);
 	}
 	if(f_Ruina_Attack_Buff[attacker] > GameTime)
 	{
@@ -3074,47 +3125,47 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 	if(f_HighIceDebuff[victim] > GameTime)
 	{
 		if(IsZombieFrozen(victim))
-			damage += BaseDamageBeforeBuffs * 0.30;
+			damage += BaseDamageBeforeBuffs * (0.30 * DamageBuffExtraScaling);
 		else
-			damage += BaseDamageBeforeBuffs * 0.15;
+			damage += BaseDamageBeforeBuffs * (0.15 * DamageBuffExtraScaling);
 	}
 	else if(f_LowIceDebuff[victim] > GameTime)
 	{
 		if(IsZombieFrozen(victim))
-			damage += BaseDamageBeforeBuffs * 0.20;
+			damage += BaseDamageBeforeBuffs * (0.20 * DamageBuffExtraScaling);
 		else
-			damage += BaseDamageBeforeBuffs * 0.10;
+			damage += BaseDamageBeforeBuffs * (0.10 * DamageBuffExtraScaling);
 	}
 	else if(f_VeryLowIceDebuff[victim] > GameTime)
 	{
 		if(IsZombieFrozen(victim))
-			damage += BaseDamageBeforeBuffs * 0.10;
+			damage += BaseDamageBeforeBuffs * (0.10 * DamageBuffExtraScaling);
 		else
-			damage += BaseDamageBeforeBuffs * 0.5;
+			damage += BaseDamageBeforeBuffs * (0.05 * DamageBuffExtraScaling);
 	}
 #endif
 	if(f_BuildingAntiRaid[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.1;
+		damage += BaseDamageBeforeBuffs * (0.1 * DamageBuffExtraScaling);
 	}
 	if(f_WidowsWineDebuff[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.35;
+		damage += BaseDamageBeforeBuffs * (0.35 * DamageBuffExtraScaling);
 	}
 
 	if(Increaced_Overall_damage_Low[attacker] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.25;
+		damage += BaseDamageBeforeBuffs * (0.25 * DamageBuffExtraScaling);
 	}
 	
 	if(f_CrippleDebuff[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.4;
+		damage += BaseDamageBeforeBuffs * (0.3 * DamageBuffExtraScaling);
 	}
 
 	if(f_CudgelDebuff[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.3;
+		damage += BaseDamageBeforeBuffs * (0.3 * DamageBuffExtraScaling);
 	}
 
 	if(f_Ruina_Defense_Buff[victim] > GameTime) //This is a resistance buff, but it works differently, so let it stay here for now.
@@ -3259,3 +3310,31 @@ int MaxEnemiesAllowedSpawnNext()
 }
 #endif
 
+stock void ThousandString(char[] buffer, int length)
+{
+	char[] buffer2 = new char[length];
+
+	int i;
+	int size = strlen(buffer);
+	int when = size%3;
+	if(size <= 3)
+	{
+		return;
+	}
+	for(int a; i<length && a<size; a++)
+	{
+		if(i && a%3 == when)
+		{
+			buffer2[i] = ',';
+			i++;
+		}
+
+		if(i < length)
+		{
+			buffer2[i] = buffer[a];
+			i++;
+		}
+	}
+
+	strcopy(buffer, length, buffer2);
+}

@@ -2,29 +2,31 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+	"vo/demoman_paincrticialdeath01.mp3",
+	"vo/demoman_paincrticialdeath02.mp3",
+	"vo/demoman_paincrticialdeath03.mp3",
+	"vo/demoman_paincrticialdeath04.mp3",
+	"vo/demoman_paincrticialdeath05.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	")vo/medic_painsharp01.mp3",
-	")vo/medic_painsharp02.mp3",
-	")vo/medic_painsharp03.mp3",
-	")vo/medic_painsharp04.mp3",
-	")vo/medic_painsharp05.mp3",
-	")vo/medic_painsharp06.mp3",
-	")vo/medic_painsharp07.mp3",
-	")vo/medic_painsharp08.mp3",
+	"vo/demoman_painsharp01.mp3",
+	"vo/demoman_painsharp02.mp3",
+	"vo/demoman_painsharp03.mp3",
+	"vo/demoman_painsharp04.mp3",
+	"vo/demoman_painsharp05.mp3",
+	"vo/demoman_painsharp06.mp3",
+	"vo/demoman_painsharp07.mp3",
 };
 
 
 static const char g_IdleAlertedSounds[][] = {
-	")vo/medic_battlecry01.mp3",
-	")vo/medic_battlecry02.mp3",
-	")vo/medic_battlecry03.mp3",
-	")vo/medic_battlecry04.mp3",
+	"vo/demoman_battlecry01.mp3",
+	"vo/demoman_battlecry02.mp3",
+	"vo/demoman_battlecry03.mp3",
+	"vo/demoman_battlecry04.mp3",
 };
+
 
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/knife_swing.wav",
@@ -35,7 +37,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/airboat/airboat_gun_energy2.wav",
 };
 
-void Pental_OnMapStart_NPC()
+void DesertSakratan_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -46,7 +48,7 @@ void Pental_OnMapStart_NPC()
 }
 
 
-methodmap Pental < CClotBody
+methodmap DesertSakratan < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -85,19 +87,16 @@ methodmap Pental < CClotBody
 	}
 	
 	
-	public Pental(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertSakratan(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Pental npc = view_as<Pental>(CClotBody(vecPos, vecAng, "models/player/demoman.mdl", "1.0", "550", ally));
+		DesertSakratan npc = view_as<DesertSakratan>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "550", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_PENTAL;
+		i_NpcInternalId[npc.index] = INTERITUS_DESERT_SAKRATAN;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
 		
@@ -107,37 +106,42 @@ methodmap Pental < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_Think, Pental_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 280.0;
-		
+		npc.m_flSpeed = 330.0;
+
+		func_NPCDeath[npc.index] = view_as<Function>(DesertSakratan_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertSakratan_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(DesertSakratan_ClotThink);
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		
-		PentalEffects(npc.index);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_caber/c_caber.mdl");
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/demo/demo_sultan_hat.mdl");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/sum20_spectre_cles_style2/sum20_spectre_cles_style2_demoman.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/sum20_spectre_cles_style2/sum20_spectre_cles_style2_demo.mdl");
 
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/sum19_dynamite_abs/sum19_dynamite_abs.mdl");
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/short2014_all_mercs_mask/short2014_all_mercs_mask_demoman.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/short2014_all_mercs_mask/short2014_all_mercs_mask_demo.mdl");
 		
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		return npc;
 	}
 }
 
-public void Pental_ClotThink(int iNPC)
+public void DesertSakratan_ClotThink(int iNPC)
 {
-	Pental npc = view_as<Pental>(iNPC);
+	DesertSakratan npc = view_as<DesertSakratan>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -179,7 +183,7 @@ public void Pental_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		PentalSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		DesertSakratanSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -189,9 +193,9 @@ public void Pental_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Pental_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action DesertSakratan_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Pental npc = view_as<Pental>(victim);
+	DesertSakratan npc = view_as<DesertSakratan>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -205,17 +209,19 @@ public Action Pental_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 
-public void Pental_NPCDeath(int entity)
+public void DesertSakratan_NPCDeath(int entity)
 {
-	Pental npc = view_as<Pental>(entity);
+	DesertSakratan npc = view_as<DesertSakratan>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	ExpidonsaRemoveEffects(entity);
-	SDKUnhook(npc.index, SDKHook_Think, Pental_ClotThink);
-		
-	
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -225,7 +231,7 @@ public void Pental_NPCDeath(int entity)
 
 }
 
-void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
+void DesertSakratanSelfDefense(DesertSakratan npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -251,6 +257,7 @@ void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+					Sakratan_AddNeuralDamage(target, npc.index, 20, true);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -283,44 +290,80 @@ void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
 }
 
 
-void PentalEffects(int iNpc)
+
+
+void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
-	if(AtEdictLimit(EDICT_NPC))
+	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(victim <= MaxClients)
+	{
+		Armor_DebuffType[victim] = 2;
+		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
+		{
+			Armor_Charge[victim] -= damage;
+			if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+			{
+				Armor_Charge[victim] = 0;
+				float ProjectileLoc[3];
+				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+				ProjectileLoc[2] += 45.0;
+
+				//if server starts crashing out of nowhere, change how to change teamnum
+				EmitSoundToAll("mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+				ParticleEffectAt(ProjectileLoc, "hightower_explosion", 1.0);
+				int TeamNum = GetEntProp(attacker, Prop_Send, "m_iTeamNum");
+				SetEntProp(attacker, Prop_Send, "m_iTeamNum", 4);
+				Explode_Logic_Custom(0.0,
+				attacker,
+				attacker,
+				-1,
+				ProjectileLoc,
+				250.0,
+				_,
+				_,
+				true,
+				99,
+				false,
+				_,
+				SakratanGroupDebuff);
+				SetEntProp(attacker, Prop_Send, "m_iTeamNum", TeamNum);
+				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
+			//	Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
+			}
+			
+			if(sound || !Armor_Charge[victim])
+				ClientCommand(victim, "playgamesound friends/friend_online.wav");
+		}
+	}
+}
+
+
+void SakratanGroupDebuff(int entity, int victim, float damage, int weapon)
+{
+	if(entity == victim)
 		return;
-	
-	float flPos[3];
-	float flAng[3];
-	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);
 
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	if(b_IsAlliedNpc[victim])
+	{
+		SakratanGroupDebuffInternal(victim);
+	}
+	else if(victim <= MaxClients)
+	{
+		SakratanGroupDebuffInternal(victim);
+	}
+}
 
-	
-	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = InfoTargetParentAt({0.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = InfoTargetParentAt({10.0,50.0,0.0}, "", 0.0); //First offset we go by
-	
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
+void SakratanGroupDebuffInternal(int victim)
+{
+	if(!b_BobsTrueFear[victim])
+	{
+		HealEntityGlobal(victim, victim, -250.0, 1.0, 0.0, HEAL_ABSOLUTE);
+		IncreaceEntityDamageTakenBy(victim, 1.25, 10.0);
+	}
+	else
+	{
+		HealEntityGlobal(victim, victim, -200.0, 1.0, 0.0, HEAL_ABSOLUTE);
+		IncreaceEntityDamageTakenBy(victim, 1.18, 8.0);		
+	}
 
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(iNpc, particle_1, "effect_hand_r",_);
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, 35, 35, 255, 2.0, 1.0, 1.0, LASERBEAM);
-	
-
-	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
-	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
-	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
-	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_4);
-	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(Laser_1);
-	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(Laser_2);
-	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(Laser_3);
 }

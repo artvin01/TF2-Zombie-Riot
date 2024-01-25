@@ -1102,6 +1102,43 @@ public Action BuildingSetAlphaClientSideReady_SetTransmitProp_1_Summoner(int ent
 }
 
 
+public Action BuildingSetAlphaClientSideReady_SetTransmitProp_1_Armor(int entity, int client)
+{
+	if(RaidbossIgnoreBuildingsLogic(0))
+	{
+		int building = EntRefToEntIndex(Building_Hidden_Prop_To_Building[entity]);
+		if(!IsValidEntity(building))
+		{
+			RemoveEntity(entity);
+			return Plugin_Handled;
+		}
+		if(i_MaxArmorTableUsed[client] >= RAID_MAX_ARMOR_TABLE_USE)
+		{
+			return Plugin_Continue;
+		}
+	}
+	return BuildingSetAlphaClientSideReady_SetTransmitProp_1(entity, client);
+}
+
+
+public Action BuildingSetAlphaClientSideReady_SetTransmitProp_2_Armor(int entity, int client)
+{
+	if(RaidbossIgnoreBuildingsLogic(0))
+	{
+		int building = EntRefToEntIndex(Building_Hidden_Prop_To_Building[entity]);
+		if(!IsValidEntity(building))
+		{
+			RemoveEntity(entity);
+			return Plugin_Handled;
+		}
+		if(i_MaxArmorTableUsed[client] >= RAID_MAX_ARMOR_TABLE_USE)
+		{
+			return Plugin_Handled;
+		}
+	}
+	return BuildingSetAlphaClientSideReady_SetTransmitProp_2(entity, client);
+}
+
 public Action BuildingSetAlphaClientSideReady_SetTransmitProp_1(int entity, int client)
 {
 	float Gametime = GetGameTime();
@@ -2356,32 +2393,51 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							
 						if(Armor_Charge[client] < Armor_Max)
 						{
-								
-							GiveArmorViaPercentage(client, 0.2, 1.0);
-							
-							Building_Collect_Cooldown[entity][client] = GetGameTime() + 45.0; //small also
-
-							float pos[3];
-							GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-
-							pos[2] += 45.0;
-
-							ParticleEffectAt(pos, "halloween_boss_axe_hit_sparks", 1.0);
-
-							if(!Rogue_Mode() && owner != -1 && owner != client)
+							bool GiveArmor = true;
+							if(RaidbossIgnoreBuildingsLogic(0))
 							{
-								if(Armor_table_money_limit[owner][client] < 30)
+								if(i_MaxArmorTableUsed[client] < RAID_MAX_ARMOR_TABLE_USE)
 								{
-									GiveCredits(owner, 20, true);
-									Armor_table_money_limit[owner][client] += 1;
-									Resupplies_Supplied[owner] += 2;
-									SetDefaultHudPosition(owner);
-									SetGlobalTransTarget(owner);
-									ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Armor Table Used");
+									i_MaxArmorTableUsed[client]++;
 								}
+								else
+									GiveArmor = false;
 							}
-							
-							ClientCommand(client, "playgamesound ambient/machines/machine1_hit2.wav");
+							if(GiveArmor)
+							{
+								GiveArmorViaPercentage(client, 0.2, 1.0);
+								
+								Building_Collect_Cooldown[entity][client] = GetGameTime() + 45.0; //small also
+
+								float pos[3];
+								GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+
+								pos[2] += 45.0;
+
+								ParticleEffectAt(pos, "halloween_boss_axe_hit_sparks", 1.0);
+
+								if(!Rogue_Mode() && owner != -1 && owner != client)
+								{
+									if(Armor_table_money_limit[owner][client] < 30)
+									{
+										GiveCredits(owner, 20, true);
+										Armor_table_money_limit[owner][client] += 1;
+										Resupplies_Supplied[owner] += 2;
+										SetDefaultHudPosition(owner);
+										SetGlobalTransTarget(owner);
+										ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Armor Table Used");
+									}
+								}
+								
+								ClientCommand(client, "playgamesound ambient/machines/machine1_hit2.wav");
+							}
+							else
+							{
+								ClientCommand(client, "playgamesound items/medshotno1.wav");
+								SetDefaultHudPosition(client);
+								SetGlobalTransTarget(client);
+								ShowSyncHudText(client,  SyncHud_Notifaction, "%t" , "Armor Max Reached Raid");
+							}
 						}
 						else
 						{
@@ -3627,7 +3683,7 @@ public Action MortarFire(Handle timer, int client)
 		{
 			float damage = 10.0;
 							
-			damage *= 45.0;
+			damage *= 30.0;
 			
 			float attack_speed;
 			float sentry_range;
@@ -3704,7 +3760,7 @@ static void Railgun_Boom(int client)
 		int BEAM_BeamRadius = 40;
 		float Strength = 10.0;
 							
-		Strength *= 40.0;
+		Strength *= 20.0;
 
 		float attack_speed;
 
@@ -3785,7 +3841,7 @@ static void Railgun_Boom(int client)
 							
 						if(First_Target_Hit)
 						{
-							damage *= 1.65;
+							damage *= 1.55;
 							First_Target_Hit = false;
 						}
 					
@@ -3840,7 +3896,7 @@ static void Railgun_Boom_Client(int client)
 		int BEAM_BeamRadius = 40;
 		float Strength = 10.0;
 							
-		Strength *= 40.0;
+		Strength *= 20.0;
 		float attack_speed;
 		
 		attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true, true); //Sentry attack speed bonus
@@ -3921,7 +3977,7 @@ static void Railgun_Boom_Client(int client)
 							
 						if(First_Target_Hit)
 						{
-							damage *= 1.65;
+							damage *= 1.55;
 							First_Target_Hit = false;
 						}
 	
@@ -6099,7 +6155,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
 					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
-					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
+					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1_Armor);
 				}
 			}
 			
@@ -6132,7 +6188,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
 					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
-					SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
+					SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2_Armor);
 				}
 			}
 			SetEntityModel(Building_Index, "models/props_manor/table_01.mdl");

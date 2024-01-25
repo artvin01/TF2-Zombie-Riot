@@ -1226,9 +1226,9 @@
 	
 	"Texan business Desc"
 	{
-		"en"	"A melee Wrench that scales with builder damage.\nM2 to Lunge and for the next attack to deal 15x the damage.\nYou need to have enough upgrades for this to work."
+		"en"	"A melee Wrench that scales with builder damage.\nM2 to Lunge and for the next attack to deal 12x the damage.\nYou need to have enough upgrades for this to work."
 	//	"ru"	"Гаечный ключ ближнего боя, у которого увеличивается урон с уроном строителя.\nM2 для броска и следующей атаки, наносящей в два раза больше урона.\nВам нужно иметь достаточно улучшений, чтобы это сработало."
-		"chi"   "一个近战扳手，随建造者伤害缩放。\nM2为突刺，下一次攻击将造成15倍伤害。你需要足够的金属才能让它工作。"
+		"chi"   "一个近战扳手，随建造者伤害缩放。\nM2为突刺，下一次攻击将造成12倍伤害。你需要足够的金属才能让它工作。"
 	}
 	
 	"Buildable Elevation Desc"
@@ -2659,5 +2659,25 @@
 	"Heavy Particle Rifle Desc 3"
 	{
 		"en"	"More damage, even bigger clip, faster firing, even slower reload!"
+	}
+	"Autoshotgun Pap 1"
+	{
+		"en"	"Your weapon now fully reloads its clip at once and shoots way faster but deals less damage.\nEvery second shot doesnt consume ammo."
+	}
+	"Autoshotgun Pap 2"
+	{
+		"en"	"More dmg, more clip, more attackspeed."
+	}
+	"Rapturing Zombies Desc"
+	{
+		"en"	"Rarely do zombies feel the tendency to ascend to heaven."
+	}
+	"Crossbow Pap 1"
+	{
+		"en"	"Weapon changes into a crossbow, reloads entire clip at once and fires rapidly.\nYour m2 shoots a huge balista shot."
+	}
+	"Crossbow Pap 2"
+	{
+		"en"	"More dmg, reload, clip and attackspeed.\nBalista is stronger and has less cooldown."
 	}
 }

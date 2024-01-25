@@ -451,6 +451,11 @@ public void OnPostThink(int client)
 				int healing_Amount = HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);		
 				ApplyHealEvent(client, healing_Amount);			
 			}
+			if(b_NemesisHeart[client])
+			{
+				int healing_Amount = HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);		
+				ApplyHealEvent(client, healing_Amount);			
+			}
 		}
 		Armor_regen_delay[client] = GameTime + 1.0;
 	}
@@ -1031,8 +1036,20 @@ public void OnPostThink(int client)
 		int blue = 0;
 		if(Armor_Charge[armorEnt] < 0)
 		{
-			green = 0;
-			blue = 255;
+			switch(Armor_DebuffType[armorEnt])
+			{
+				case 1:
+				{
+					green = 0;
+					blue = 255;
+				}
+				case 2:
+				{
+					red = 0;
+					green = 255;
+					blue = 255;
+				}
+			}
 		}
 		else if(Armor_Charge[armorEnt] < Armor_Max)
 		{
@@ -2495,19 +2512,19 @@ float ArmorPlayerReduction(int victim)
 	{
 		case 50:
 		{
-			return 0.9;
+			return 0.95;
 		}
 		case 100:
 		{
-			return 0.85;
+			return 0.93;
 		}
 		case 150:
 		{
-			return 0.8;
+			return 0.91;
 		}
 		case 200:
 		{
-			return 0.75;
+			return 0.9;
 		}
 		default:
 		{

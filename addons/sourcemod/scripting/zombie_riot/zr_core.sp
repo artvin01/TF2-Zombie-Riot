@@ -172,7 +172,8 @@ ConVar zr_spawnprotectiontime;
 ConVar zr_viewshakeonlowhealth;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
-//ConVar CvarEnablePrivatePlugins;
+ConVar zr_allowfreeplay;
+ConVar zr_enemymulticap;
 int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
@@ -189,6 +190,7 @@ float f_TimerTickCooldownShop = 0.0;
 float f_FreeplayDamageExtra = 1.0;
 int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
+float PlayerCountBuffScaling = 1.0;
 int PlayersAliveScaling;
 int PlayersInGame;
 bool ZombieMusicPlayed;
@@ -236,11 +238,13 @@ int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpam[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
+int i_MaxArmorTableUsed[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
 #define SF2_PLAYER_VIEWBOB_SCALE_Y 0.0
 #define SF2_PLAYER_VIEWBOB_SCALE_Z 0.0
+#define RAID_MAX_ARMOR_TABLE_USE 20
 
 float Armor_regen_delay[MAXTF2PLAYERS];
 
@@ -264,6 +268,7 @@ int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...};
 
 int Armour_Level_Current[MAXTF2PLAYERS];
 int Armor_Charge[MAXENTITIES];
+int Armor_DebuffType[MAXENTITIES];
 
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
@@ -309,7 +314,9 @@ int i_ThisEntityHasAMachineThatBelongsToClient[MAXENTITIES];
 int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
 
 float MultiGlobal = 0.25;
-float MultiGlobalHealth = 0.25;
+float MultiGlobalEnemy = 0.25;
+float MultiGlobalHealth = 1.0;
+float MultiGlobalArkantos = 0.25;
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
 			
 int g_CarriedDispenser[MAXPLAYERS+1];
@@ -597,6 +604,7 @@ void ZR_MapStart()
 	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
 	Zero(f_WasRecentlyRevivedViaNonWave);
 	Zero(f_TimeAfterSpawn);
+	Zero(f_ArmorCurrosionImmunity);
 	Reset_stats_Irene_Global();
 	Reset_stats_PHLOG_Global();
 	Irene_Map_Precache();
@@ -1110,9 +1118,10 @@ public void OnClientAuthorized(int client)
 	Ammo_Count_Used[client] = 0;
 	CashSpentTotal[client] = 0;
 	f_LeftForDead_Cooldown[client] = 0.0;
-	
+/*	
 	if(CurrentRound)
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.10);
+*/
 }
 
 void ZR_OnClientDisconnect_Post()
@@ -1257,13 +1266,6 @@ public Action Timer_Dieing(Handle timer, int client)
 }
 
 
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-
-
 public void Spawn_Bob_Combine(int client)
 {
 	float flPos[3], flAng[3];
@@ -1311,12 +1313,6 @@ public void Spawn_Cured_Grigori()
 		}
 	}
 }
-
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
 
 void CheckAlivePlayersforward(int killed=0)
 {
@@ -1989,9 +1985,11 @@ void PlayerApplyDefaults(int client)
 	}
 	else if(!IsFakeClient(client))
 	{
+
 		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
 		QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
+		QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		

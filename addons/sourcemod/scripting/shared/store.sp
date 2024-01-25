@@ -55,7 +55,6 @@ enum struct ItemInfo
 	int IsWand;
 	bool IsWrench;
 	bool InternalMeleeTrace;
-	bool GregBlockSell;
 	
 	char Classname[36];
 	char Custom_Name[64];
@@ -261,11 +260,6 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sinternal_melee_trace", prefix);
 		this.InternalMeleeTrace	= view_as<bool>(kv.GetNum(buffer, 1));
-
-		Format(buffer, sizeof(buffer), "%sgreg_block_sell", prefix);
-		this.GregBlockSell	= view_as<bool>(kv.GetNum(buffer, 0));
-		
-
 		
 		Format(buffer, sizeof(buffer), "%ssemi_auto_stats_fire_rate", prefix);
 		this.SemiAutoStats_FireRate				= kv.GetFloat(buffer);
@@ -518,6 +512,8 @@ enum struct Item
 	int NPCWeapon;
 	bool NPCWeaponAlways;
 	int GiftId;
+	bool GregBlockSell;
+	int GregOnlySell;
 	
 	bool GetItemInfo(int index, ItemInfo info)
 	{
@@ -587,10 +583,22 @@ void Store_OnCached(int client)
 	if(!CashSpent[client])
 	{
 		if(Items_HasNamedItem(client, "ZR Contest Nominator [???]"))
-			CashSpent[client] = -50;
+		{
+			if(!Store_HasNamedItem(client, "ZR Contest Nominator [???] Cash"))
+			{
+				Store_SetNamedItem(client, "ZR Contest Nominator [???] Cash", 1);
+				CashSpent[client] = -50;
+			}
+		}
 
 		if(Items_HasNamedItem(client, "ZR Content Creator [???]"))
-			CashSpent[client] = -50;
+		{
+			if(!Store_HasNamedItem(client, "ZR Content Creator [???] Cash"))
+			{
+				Store_SetNamedItem(client, "ZR Content Creator [???] Cash", 1);
+				CashSpent[client] = -50;
+			}
+		}
 	}
 }
 #endif
@@ -1197,6 +1205,8 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, const char[][
 		item.MaxScaled = kv.GetNum("max_times_scale");
 		item.Special = kv.GetNum("special", -1);
 		item.Slot = kv.GetNum("slot", -1);
+		item.GregBlockSell = view_as<bool>(kv.GetNum("greg_block_sell"));
+		item.GregOnlySell = kv.GetNum("greg_only_sell");
 		item.NPCWeapon = kv.GetNum("npc_type", -1);
 		item.NPCWeaponAlways = item.NPCWeapon > 9;
 		item.ChildKit = hiddenType == 2;
@@ -1775,6 +1785,10 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 						item.BuyPrice[client] = info.Cost;
 
 						item.Sell[client] = ItemSell(base, info.Cost);
+						if(item.GregOnlySell == 2)
+						{
+							item.Sell[client] = 0;
+						}
 					}
 					else
 					{
@@ -2606,30 +2620,50 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave
 	
 	static Item item;
 	static ItemInfo info;
-	for(int i; i<length; i++)
+	for(int i; i < length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		item.GetItemInfo(0, info);
-		if(item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !info.GregBlockSell)
+		if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell))
 		{
-			if(addItem == 0)
+			if(item.GregOnlySell == 2)
 			{
-				item.NPCSeller_First = false;
-				item.NPCSeller = false;
-				if(ResetStore)
+				item.NPCSeller_First = true;
+				item.NPCSeller = true;
+
+				for(int c = 1; c <= MaxClients; c++)
 				{
-					item.NPCSeller_WaveStart = 0;
+					if(item.Owned[c] || item.BoughtBefore[c])
+					{
+						item.NPCSeller_First = false;
+						item.NPCSeller = false;
+						break;
+					}
 				}
 			}
-			if(addItem == 99)
+			else
 			{
-				if(item.NPCSeller_WaveStart > 0 && subtract_wave > 0)
+				if(addItem == 0)
 				{
-					item.NPCSeller_WaveStart -= 1;
+					item.NPCSeller_First = false;
+					item.NPCSeller = false;
+					if(ResetStore)
+					{
+						item.NPCSeller_WaveStart = 0;
+					}
 				}
+
+				if(addItem == 99)
+				{
+					if(item.NPCSeller_WaveStart > 0 && subtract_wave > 0)
+					{
+						item.NPCSeller_WaveStart -= 1;
+					}
+				}
+				
+				item.GetItemInfo(0, info);
+				if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost < CurrentCash)
+					indexes[amount++] = i;
 			}
-			if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost < CurrentCash)
-				indexes[amount++] = i;
 			
 			StoreItems.SetArray(i, item);
 		}
@@ -2830,6 +2864,7 @@ public Action Access_StoreViaCommand(int client, int args)
 
 void Store_Menu(int client)
 {
+	Store_OnCached(client);
 	if(LastStoreMenu[client])
 	{
 		CancelClientMenu(client);
@@ -3226,7 +3261,7 @@ static void MenuPage(int client, int section)
 		//item.GetItemInfo(0, info);
 		if(NPCOnly[client] == 1)
 		{
-			if((!item.NPCSeller && item.NPCSeller_WaveStart == 0) || item.Level > ClientLevel )
+			if((!item.NPCSeller && item.NPCSeller_WaveStart == 0) || item.Level > ClientLevel)
 				continue;
 		}
 		else if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
@@ -3279,6 +3314,12 @@ static void MenuPage(int client, int section)
 		}
 		else if(item.NPCWeapon > 9)
 		{
+			continue;
+		}
+
+		if(NPCOnly[client] != 1 && item.GregOnlySell)
+		{
+			// Block showing items if only sell
 			continue;
 		}
 		
@@ -4079,6 +4120,10 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									item.BuyWave[client] = Rogue_GetRoundScale();
 									item.Equipped[client] = false;
 
+									if(item.GregOnlySell == 2)
+									{
+										item.Sell[client] = 0;
+									}
 									if(!item.BoughtBefore[client])
 									{
 										item.BoughtBefore[client] = true;
@@ -4132,6 +4177,10 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									item.RogueBoughtRecently[client] += 1;
 									item.Sell[client] = ItemSell(base, info.Cost);
 									item.BuyWave[client] = Rogue_GetRoundScale();
+									if(item.GregOnlySell == 2)
+									{
+										item.Sell[client] = 0;
+									}
 									if(info.NoRefundWanted)
 									{
 										item.BuyWave[client] = -1;
@@ -4182,7 +4231,11 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.RogueBoughtRecently[client] += 1;
 								item.Sell[client] = ItemSell(base, info.Cost);
 								item.BuyWave[client] = Rogue_GetRoundScale();
-								if(info.NoRefundWanted)
+								if(item.GregOnlySell == 2)
+								{
+									item.Sell[client] = 0;
+								}
+								else if(info.NoRefundWanted)
 								{
 									item.BuyWave[client] = -1;
 									item.Sell[client] = item.Sell[client] / 2;
@@ -5118,6 +5171,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_AggreviatedSilence[client] = false;
 	b_ProximityAmmo[client] = false;
 	b_ExpertTrapper[client] = false;
+	b_RaptureZombie[client] = false;
 	i_MaxSupportBuildingsLimit[client] = 0;
 	b_PlayerWasAirbornKnockbackReduction[client] = false;
 	BannerOnEntityCreated(client);
@@ -5242,6 +5296,30 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 	*/
 #if defined ZR
+	if(Items_HasNamedItem(client, "Nemesis's Heart Piece"))
+	{
+		b_NemesisHeart[client] = true;
+	}
+	else
+	{
+		b_NemesisHeart[client] = false;
+	}
+	if(Items_HasNamedItem(client, "Overlords Final Wish"))
+	{
+		b_OverlordsFinalWish[client] = true;
+	}
+	else
+	{
+		b_OverlordsFinalWish[client] = false;
+	}
+	if(Items_HasNamedItem(client, "Bob's true fear"))
+	{
+		b_BobsTrueFear[client] = true;
+	}
+	else
+	{
+		b_BobsTrueFear[client] = false;
+	}
 	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
 #endif
@@ -5821,6 +5899,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.SpecialAdditionViaNonAttribute == 11)
 					{
 						b_ExpertTrapper[client] = true;
+					}
+					if(info.SpecialAdditionViaNonAttribute == 12)
+					{
+						b_RaptureZombie[client] = true;
 					}
 
 #endif

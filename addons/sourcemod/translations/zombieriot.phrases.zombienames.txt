@@ -1893,4 +1893,40 @@
 	{
 		"en"	"Bob the First"
 	}
+	"Ahim"
+	{
+		"en"	"Ahim"
+	}
+	"Inabdil"
+	{
+		"en"	"Inabdil"
+	}
+	"Khazaan"
+	{
+		"en"	"Khazaan"
+	}
+	"Sakratan"
+	{
+		"en"	"Sakratan"
+	}
+	"Yadeam"
+	{
+		"en"	"Yadeam"
+	}
+	"Rajul"
+	{
+		"en"	"Rajul"
+	}
+	"Qanaas"
+	{
+		"en"	"Qanaas"
+	}
+	"Atilla"
+	{
+		"en"	"Atilla"
+	}
+	"Ancient Demon"
+	{
+		"en"	"Ancient Demon"
+	}
 }
