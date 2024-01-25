@@ -1083,7 +1083,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						npc.m_flAttackHappens = gameTime + 0.5;
 						
 						vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0);
-						npc.FireRocket(vecTarget, 400.0, 1200.0, "models/weapons/w_bullet.mdl", 2.0);
+						npc.FireRocket(vecTarget, 600.0, 1500.0, "models/weapons/w_bullet.mdl", 2.0);
 						npc.PlayGunSound();
 
 						if(npc.m_bFakeClone)
@@ -1170,10 +1170,12 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						{
 							vecTarget = PredictSubjectPosition(npc, EnemyToPull);
 							npc.FaceTowards(vecTarget, 50000.0);
+							/*
 							if(!npc.m_bFakeClone)
 							{
 								BobPullTarget(npc.index, EnemyToPull);
 							}
+							*/
 							//We succsssfully pulled someone.
 							//Take their old position and nuke it.
 							float vEnd[3];

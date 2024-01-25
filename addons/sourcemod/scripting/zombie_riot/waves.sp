@@ -1087,7 +1087,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			delete Enemies;
 			Enemies = new ArrayStack(sizeof(Enemy));
-			
+			/*
 			for(int client_Penalise=1; client_Penalise<=MaxClients; client_Penalise++)
 			{
 				if(IsClientInGame(client_Penalise))
@@ -1106,7 +1106,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					}
 				}
 			}
-
+			*/
 			bool music_stop = false;
 			if(round.music_round_outro[0])
 			{
