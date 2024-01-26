@@ -79,6 +79,8 @@ static bool b_angered_twice[MAXENTITIES];
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static int i_RaidDuoAllyIndex = INVALID_ENT_REFERENCE;
 static float f_HurtRecentlyAndRedirected[MAXENTITIES]={-1.0, ...};
+static float f_GogglesHurtTeleport[MAXENTITIES];
+static int i_GogglesHurtTalkMessage[MAXENTITIES];
 
 void RaidbossBlueGoggles_OnMapStart()
 {
@@ -233,6 +235,8 @@ methodmap RaidbossBlueGoggles < CClotBody
 	//	SetEntityRenderColor(npc.m_iWearable4, 65, 65, 255, 255);
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 255, 255);
+		f_GogglesHurtTeleport[npc.index] = 0.0;
+		i_GogglesHurtTalkMessage[npc.index] = 0;
 
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -315,6 +319,70 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 		// Give time to blend our current anim and intro then swap to this idle
 		npc.m_flNextDelayTime = gameTime + 0.4;
+	}
+	int AllyEntity = EntRefToEntIndex(i_RaidDuoAllyIndex);
+	bool alonecheck = !IsEntityAlive(AllyEntity);
+	if(!alonecheck)
+	{
+		float MaxHealthCalc = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		switch(i_GogglesHurtTalkMessage[npc.index])
+		{
+			case 0:
+			{
+				if(f_GogglesHurtTeleport[npc.index] > MaxHealthCalc * 0.20)
+				{
+					i_GogglesHurtTalkMessage[npc.index] = 1;
+					//got hurt by 20% hp.
+					switch(GetRandomInt(1,3))
+					{
+						case 1:
+						{
+							CPrintToChatAll("{gold}Silvester{default}: Stop seperating yourself from me {darkblue}Blue Goggles{default}!!");
+						}
+						case 2:
+						{
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default} get back to me now!");
+						}
+						case 3:
+						{
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default} get here or ill teleport you here!");
+						}
+					}
+				}
+			}
+			case 1:
+			{
+				if(f_GogglesHurtTeleport[npc.index] > MaxHealthCalc * 0.25)
+				{
+					i_GogglesHurtTalkMessage[npc.index] = 2;
+					//got hurt by 20% hp.
+					switch(GetRandomInt(1,3))
+					{
+						case 1:
+						{
+							CPrintToChatAll("{gold}Silvester{default}: God dammit {darkblue}Blue Goggles{default}!");
+						}
+						case 2:
+						{
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default}... NOW!");
+						}
+						case 3:
+						{
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default} here, now STAY NEAR ME!");
+						}
+					}
+					ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
+					EmitSoundToAll("misc/halloween/spell_teleport.wav", npc.index, SNDCHAN_STATIC, 90, _, 0.8);
+					float victimPos1[3];
+					GetEntPropVector(AllyEntity, Prop_Data, "m_vecAbsOrigin", victimPos1); 
+					ParticleEffectAt(WorldSpaceCenterOld(AllyEntity), "teleported_blue", 0.5);
+					TeleportEntity(npc.index, victimPos1, NULL_VECTOR, NULL_VECTOR);
+					npc.m_iTarget = -1;
+					i_GogglesHurtTalkMessage[npc.index] = 0;
+					f_GogglesHurtTeleport[npc.index] = 0.0;
+				}
+			}
+		}
 	}
 
 	if(npc.m_flNextDelayTime > gameTime)
@@ -940,6 +1008,10 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 			SDKHooks_TakeDamage(AllyEntity, attacker, inflictor, damage * 0.75, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 			damage *= 0.25;
 			f_HurtRecentlyAndRedirected[npc.index] = GetGameTime() + 0.15;
+		}
+		else
+		{
+			f_GogglesHurtTeleport[npc.index] += damage;
 		}
 	}
 

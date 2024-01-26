@@ -1347,6 +1347,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;		
 	}
 #endif
+	SetGlobalTransTarget(attacker);
 
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
@@ -1711,7 +1712,6 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			}
 		}
 
-		SetGlobalTransTarget(attacker);
 		float HudY = -1.0;
 
 		HudY += f_HurtHudOffsetY[attacker];
