@@ -493,6 +493,9 @@ void ZR_PluginStart()
 	RegServerCmd("sm_reloadnpcs", OnReloadCommand, "Reload NPCs", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_store", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_shop", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_market", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_weapons", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_walmart", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
 	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person");
