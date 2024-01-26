@@ -139,21 +139,78 @@ void UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 {
 	CommandEnum command;
 
-	if(CommandList[npc.index] && CommandList[npc.index].Length)
+	do
 	{
-		CommandList[npc.index].GetArray(0, command);
-	}
-	else
-	{
-		command.Type = Command_Move;
-		GetAbsOrigin(npc.index, command.Pos);
-	}
+		int actions = CommandList[npc.index] ? CommandList[npc.index].Length : 0;
+		if(actions)
+		{
+			// Oldest command
+			CommandList[npc.index].GetArray(actions - 1, command);
+		}
+		else
+		{
+			// Default behaviour
+			command.Type = Command_Idle;
+			GetAbsOrigin(npc.index, command.Pos);
+			command.TargetRef = -1;
+		}
+		
+		int target = command.TargetRef == -1 ? -1 : EntRefToEntIndex(command.TargetRef);
+		if(target > 0)
+		{
+			if(IsValidEnemy(npc.index, target))	// Following enemy
+			{
+				npc.m_iTarget = target;
+				npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
-	if(command.Target > 0)
-	{
-		if(IsValidEnemy(npc.index, npc.m_iTarget))
-			npc.m_iTarget = command.Target;
+				WorldSpaceCenter(target, command.Pos);
+				command.Type = Command_Attack;	// Force to always attack
+			}
+			else if(IsValidEntity(target))	// Following something
+			{
+				WorldSpaceCenter(target, command.Pos);
+			}
+			else	// Following target is now invalid
+			{
+				// Remove this command
+				CommandList[npc.index].Erase(actions - 1);
+				continue;
+			}
+		}
+		
+		bool canAttack;
+		switch(command.Type)
+		{
+			case Command_Idle:
+			{
+				// Idle, no command
+				canAttack = !npc.HasFlag(Flag_Worker);
+			}
+			case Command_Move:
+			{
+				// Only move, no attack
+				canAttack = false;
+			}
+			case Command_Attack:
+			{
+				// Attack move
+				canAttack = true;
+			}
+			case Command_HoldPos:
+			{
+				// Can attack, later code prevents moving
+				canAttack = !npc.HasFlag(Flag_Worker);
+			}
+			case Command_Patrol:
+			{
+				// Attacks on patrol, workers patrol to auto repair
+				canAttack = !npc.HasFlag(Flag_Worker);
+			}
+		}
+
+		
 	}
+	while(CommandList[npc.index]);
 }
 
 /*

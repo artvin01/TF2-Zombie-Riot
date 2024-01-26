@@ -155,9 +155,10 @@ public void Skulls_LaunchAll(int client, int weapon, bool crit, int tier)
 		
 		delay_hud[client] = 0.0;
 		
-		while (Skulls_ArrayStack[client].Length)
+		int length = Skulls_ArrayStack[client].Length;
+		for(int a; a < length; a++)
 		{
-			int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Get(Skulls_ArrayStack[client].Length - 1));
+			int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Get(a));
 			
 			if (IsValidEdict(ent))
 			{
@@ -165,7 +166,7 @@ public void Skulls_LaunchAll(int client, int weapon, bool crit, int tier)
 			}
 		}
 		
-		Skulls_ArrayStack[client] = null;
+		delete Skulls_ArrayStack[client];
 	}
 	else
 	{
@@ -434,7 +435,8 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					while (Skulls_ArrayStack[client].Length > Skulls_MaxSkulls[tier])
 					{
 						int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Get(Skulls_ArrayStack[client].Length - 1));
-					
+						Skulls_ArrayStack[client].Erase(Skulls_ArrayStack[client].Length - 1);
+
 						if (IsValidEdict(ent))
 						{
 							Skulls_LaunchSkull(ent, weapon, client, tier);
@@ -518,28 +520,28 @@ public Action Skulls_PreThink(int client)
 
 void DeleteAllSkulls(int client)
 {
-	while (Skulls_ArrayStack[client].Length)
+	int length = Skulls_ArrayStack[client].Length;
+	for(int a; a < length; a++)
 	{
-		int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Get(Skulls_ArrayStack[client].Length - 1));
-			
+		int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Get(a));
+		
 		if (IsValidEdict(ent))
 		{
 			RemoveEntity(ent);
 		}
 	}
 		
-	Skulls_ArrayStack[client] = null;
+	delete Skulls_ArrayStack[client];
 }
 
 public void Skulls_Management(int client)
 {
 	Skulls_UpdateFollowerPositions(client);
 	
-	ArrayList Skulls = Skulls_ArrayStack[client].Clone();
-	
-	while (Skulls.Length)
+	int length = Skulls_ArrayStack[client].Length;
+	for(int a; a < length; a++)
 	{
-		int ent = EntRefToEntIndex(Skulls.Get(Skulls.Length - 1));
+		int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Get(a));
 		
 		if (IsValidEdict(ent))
 		{
@@ -572,8 +574,6 @@ public void Skulls_Management(int client)
 			}
 		}
 	}
-	
-	delete Skulls;
 }
 
 public void Skull_AttemptShoot(int ent, int client)
@@ -830,11 +830,10 @@ public void Skulls_UpdateFollowerPositions(int client)
 	float mult = 1.0;
 	float HeightMod = 0.0;
 	
-	ArrayList Skulls = Skulls_ArrayStack[client].Clone();
-	
-	while (Skulls.Length)
+	int length = Skulls_ArrayStack[client].Length;
+	for(int a; a < length; a++)
 	{
-		int ent = EntRefToEntIndex(Skulls.Get(Skulls.Length - 1));
+		int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Get(a));
 		
 		if (IsValidEdict(ent))
 		{
@@ -889,8 +888,6 @@ public void Skulls_UpdateFollowerPositions(int client)
 			}
 		}
 	}
-	
-	delete Skulls;
 }
 
 //Does the player have no summoned skulls?
@@ -971,17 +968,17 @@ public bool Skull_DontHitSkulls(any entity, any contentsMask) //Borrowed from Ap
 	{
 		if (!Skulls_PlayerHasNoSkulls(i))
 		{
-			ArrayList skulls = Skulls_ArrayStack[i].Clone();
-			
-			while (skulls.Length && hit)
+			int length = Skulls_ArrayStack[i].Length;
+			for(int a; a < length; a++)
 			{
-				int ent = EntRefToEntIndex(skulls.Get(skulls.Length - 1));
+				int ent = EntRefToEntIndex(Skulls_ArrayStack[i].Get(a));
 				
 				if (entity == ent)
+				{
 					hit = false;
+					break;
+				}
 			}
-			
-			delete skulls;
 		}
 	}
 	
