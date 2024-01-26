@@ -526,6 +526,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			b_CannotBeKnockedUp[npc.index] = false;
 			b_NoGravity[npc.index] = false;
 			float flPos[3]; // original
+			b_DoNotUnStuck[npc.index] = false;
 				
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 			flPos[2] -= 70.0;
@@ -669,6 +670,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,0.0});
 				SetParent(npcally.index, npc.index, "");
 				b_NoGravity[npc.index] = true;
+				b_DoNotUnStuck[npc.index] = true;
 				b_CannotBeKnockedUp[npc.index] = true;
 				SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0});
 				npc.SetVelocity({0.0,0.0,0.0});
