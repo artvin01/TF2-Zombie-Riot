@@ -967,7 +967,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	
 	if((damagetype & DMG_DROWN))
 	{
+		damage = 0.0;
+		Damageaftercalc = 0.0;
 		TeleportBackToLastSavePosition(victim);
+		return Plugin_Handled;
 	}
 	// if your damage is higher then a million, we give up and let it through, theres multiple reasons why, mainly slaying.
 	if(b_NpcIsInvulnerable[victim] && damage < 9999999.9)
