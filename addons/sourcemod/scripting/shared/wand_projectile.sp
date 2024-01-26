@@ -260,7 +260,7 @@ public void Wand_Base_StartTouch(int entity, int other)
 		}
 		case WEAPON_LANTEAN:
 		{
-			lantean_Wand_Touch_World(entity, target);
+			lantean_Wand_Touch(entity, target);
 		}
 		case 11:
 		{
