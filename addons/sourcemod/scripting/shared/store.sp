@@ -3584,8 +3584,6 @@ static void MenuPage(int client, int section)
 				menu.AddItem("-14", buffer);
 			}
 */
-			FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Credits"); //credits is whatever, put in back.
-			menu.AddItem("-21", buffer);
 		}
 
 		FormatEx(buffer, sizeof(buffer), "%t", "Exit");
@@ -3716,6 +3714,9 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						Menu menu2 = new Menu(Store_MenuPage);
 						menu2.SetTitle("%t", "Help Title?");
 
+						FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Credits"); //credits is whatever, put in back.
+						menu2.AddItem("-21", buffer);
+
 						FormatEx(buffer, sizeof(buffer), "%t", "Buff/Debuff List");
 						menu2.AddItem("-12", buffer);
 						
@@ -3743,9 +3744,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						FormatEx(buffer, sizeof(buffer), "%t", "Extra Buttons Help?");
 						menu2.AddItem("-11", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%t", "Back");
-						menu2.AddItem("-1", buffer);
-						
+						menu2.ExitBackButton = true;
 						menu2.Display(client, MENU_TIME_FOREVER);
 					}
 					case -4:
