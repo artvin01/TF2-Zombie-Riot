@@ -355,7 +355,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				if(f_GogglesHurtTeleport[npc.index] > MaxHealthCalc * 0.25)
 				{
 					i_GogglesHurtTalkMessage[npc.index] = 2;
-					//got hurt by 20% hp.
+					//got hurt by 25% hp.
 					switch(GetRandomInt(1,3))
 					{
 						case 1:
