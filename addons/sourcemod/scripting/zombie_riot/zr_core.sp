@@ -496,6 +496,8 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_market", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_weapons", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_walmart", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_buy", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_guns", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
 	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person");
