@@ -135,17 +135,21 @@ methodmap RaidbossBlueGoggles < CClotBody
 	public void PlayAngerSound()
 	{
 		int sound = GetRandomInt(0, sizeof(g_AngerSounds) - 1);
-		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_AngerSounds[sound]);
+		EmitSoundToAll(g_AngerSounds[sound]);
 	}
 	public void PlayRevengeSound()
 	{
 		char buffer[64];
 		FormatEx(buffer, sizeof(buffer), "vo/sniper_revenge%02d.mp3", (GetURandomInt() % 25) + 1);
 		EmitSoundToAll(buffer);
+		EmitSoundToAll(buffer);
 	}
 	public void PlayHappySound()
 	{
-		EmitSoundToAll(g_HappySounds[GetRandomInt(0, sizeof(g_HappySounds) - 1)]);
+		int sound = GetRandomInt(0, sizeof(g_HappySounds) - 1);
+		EmitSoundToAll(g_HappySounds[sound]);
+		EmitSoundToAll(g_HappySounds[sound]);
 	}
 	public void PlayMeleeHitSound()
 	{
@@ -477,7 +481,47 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 	if(alone && !npc.Anger)
 	{
-		CPrintToChatAll("{darkblue}Blue Goggles{default}: We are trying to give you a warning, listen to us!");
+		if(XenoExtraLogic())
+		{
+			switch(GetURandomInt() % 3)
+			{
+				case 0:
+				{
+					CPrintToChatAll("{darkblue}Blue Goggles{default}: Not here, not with him!");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{darkblue}Blue Goggles{default}: You fight like you want to kill him!");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{darkblue}Blue Goggles{default}: Just you and me asshole!");
+				}
+			}
+		}
+		else
+		{
+			switch(RoundToFloor(GetURandomFloat() * 4.0))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{darkblue}Blue Goggles{default}: You really shouldn't have done that!");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{darkblue}Blue Goggles{default}: You'll pay for picking on him!");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{darkblue}Blue Goggles{default}: Quit this right now!");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{darkblue}Blue Goggles{default}: You little ****!");
+				}
+			}
+		}
+
 		npc.Anger = true;
 		npc.PlayAngerSound();
 	}
