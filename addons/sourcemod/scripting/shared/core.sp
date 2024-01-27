@@ -648,6 +648,7 @@ bool b_DungeonContracts_25PercentMoreDamage[MAXENTITIES];
 bool b_Is_Npc_Projectile[MAXENTITIES];
 bool b_Is_Player_Projectile[MAXENTITIES];
 bool b_ForceCollisionWithProjectile[MAXENTITIES];
+bool b_ProjectileCollideIgnoreWorld[MAXENTITIES];
 bool b_Is_Player_Projectile_Through_Npc[MAXENTITIES];
 bool b_CannotBeHeadshot[MAXENTITIES];
 bool b_CannotBeBackstabbed[MAXENTITIES];
@@ -715,7 +716,7 @@ bool b_Dont_Move_Allied_Npc[MAXENTITIES];
 int b_BoundingBoxVariant[MAXENTITIES];
 bool b_ThisEntityIgnored[MAXENTITIES];
 bool b_ThisEntityIgnoredByOtherNpcsAggro[MAXENTITIES];
-bool b_ThisEntityIgnoredEntirelyFromAllCollisions[MAXENTITIES];
+bool b_ThisEntityIgnoredEntirelyFromAllCollisions[MAXENTITIES]={false, ...};
 bool b_ThisEntityIsAProjectileForUpdateContraints[MAXENTITIES];
 bool b_IgnoredByPlayerProjectiles[MAXENTITIES];
 
@@ -2496,6 +2497,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		EntityFuncAttackInstant[entity] = INVALID_FUNCTION;
 		b_Is_Player_Projectile_Through_Npc[entity] = false;
 		b_ForceCollisionWithProjectile[entity] = false;
+		b_ProjectileCollideIgnoreWorld[entity] = false;
 		i_IsABuilding[entity] = false;
 		i_InSafeZone[entity] = 0;
 		h_NpcCollissionHookType[entity] = 0;

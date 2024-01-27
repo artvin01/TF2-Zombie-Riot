@@ -128,7 +128,7 @@ public void Isharmla_ClotThink(int iNPC)
 		npc.m_bTeamGlowDefault = true;
 		b_IsEntityNeverTranmitted[npc.index] = false;
 		GiveNpcOutLineLastOrBoss(npc.index, true);
-		SetEntityCollisionGroup(npc.index, 4); //Dont Touch Anything.
+		SetEntityCollisionGroup(npc.index, 8); //Dont Touch Anything.
 		SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 8);
 		SetEntProp(npc.index, Prop_Data,"m_nSolidType", 2);
 		i_RaidGrantExtra[npc.index] = -1;

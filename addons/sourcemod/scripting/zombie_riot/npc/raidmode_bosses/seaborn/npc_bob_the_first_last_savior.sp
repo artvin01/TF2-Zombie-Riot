@@ -1783,7 +1783,7 @@ static void spawnRing_Vectors(float center[3], float range, float modif_X, float
 	TE_SendToAll();
 }
 
-static void BobPullTarget(int bobnpc, int enemy)
+stock void BobPullTarget(int bobnpc, int enemy)
 {
 	CClotBody npc = view_as<CClotBody>(bobnpc);
 	//pull player
