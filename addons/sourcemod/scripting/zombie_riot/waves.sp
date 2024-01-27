@@ -1389,6 +1389,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			//This should nullfy anyways if nothings in it
 			RemoveAllCustomMusic();
 
+			strcopy(char_MusicString1, sizeof(char_MusicString1), round.music_round_1);
+			strcopy(char_MusicString2, sizeof(char_MusicString2), round.music_round_2);
+			
 			i_MusicLength1 = round.music_duration_1;
 			i_MusicLength2 = round.music_duration_2;
 
