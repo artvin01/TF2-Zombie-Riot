@@ -178,7 +178,7 @@
 	"Valid Key Info 2"
 	{
 		"en"		"impulse works with any number and voicemenu as itself."
-		"pt"		"impulse funciona com qualquer numero e voicemenu por si só."
+		"pt"		"impulse funciona com qualquer número e voicemenu por si só."
 	}
 	"Valid Key Info 3"
 	{
@@ -188,6 +188,6 @@
 	"Valid Key Info 3 ZR"
 	{
 		"en"		"invprev, invnext, lastinv are not valid in Zombie Riot."
-		"pt"		"invprev, invnext, lastinv não s~so validos no Zombie Riot."
+		"pt"		"invprev, invnext, lastinv não são validos no Zombie Riot."
 	}
 }

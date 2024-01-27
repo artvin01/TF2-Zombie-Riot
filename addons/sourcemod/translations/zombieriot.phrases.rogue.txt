@@ -3,64 +3,77 @@
 	"Missing Rogue Translation"
 	{
 		"en"	"INVALID NAME"
+		"pt"	"NOME INVÁLIDO"
 		"ru"	"НЕДЕЙСТВИТЕЛЬНОЕ ИМЯ"
 	}
 	"Missing Rogue Translation Desc"
 	{
 		"en"	"INVALID DESC"
+		"pt"	"DESCRIÇÃO INVÁLIDA"
 		"ru"	"НЕДЕЙСТВИТЕЛЬНОЕ ОПИСАНИЕ"
 	}
 	"Allies Amongst Chaos"
 	{
 		"en"	"Allies Amongst Chaos"
+		"pt"	"Aliados em meio o Caos"
 		"ru"	"Союзники среди хаоса"
 	}
 	"A Deeper Discovery"
 	{
 		"en"	"A Deeper Discovery"
+		"pt"	"A Descoberta Profunda"
 	}
 	"All Parties Involved"
 	{
 		"en"	"All Parties Involved"
+		"pt"	"Todas as partes envolvidas"
 	}
 	"Nightmares Evolve"
 	{
 		"en"	"Nightmares Evolve"
+		"pt"	"Pesadelos Evolvem"
 	}
 	"Time Stands Still"
 	{
 		"en"	"Time Stands Still"
+		"pt"	"O Tempo Está Parado"
 	}
 	"The Void"
 	{
 		"en"	"The Void"
+		"pt"	"O Vazio"
 	}
 	"Vote for the starting item"
 	{
 		"en"	"Vote for the starting item:"
+		"pt"	"Vote no item inicial:"
 		"ru"	"Голосование за начальный предмет:"
 	}
 	"Vote for the next stage"
 	{
 		"en"	"Vote for the next stage:"
+		"pt"	"Vote na próxima etapa:"
 		"ru"	"Голосование за следующий этап:"
 	}
 	"Additional Starting Ingot"
 	{
 		"#format"	"{1:d},{2:d}"
 		"en"	"Starting Australium Ingots ({1} -> {2})"
+		"pt"	"Lingotes iniciais de Austrálio ({1} -> {2})"
 		"ru"	"Начальные слитки австралия ({1} -> {2})"
 	}
 	"Stage"
 	{
 		"#format"	"{1:d},{2:d}"
 		"en"		"Stage: {1}-{2}"
+		"pt"		"Fase: {1}-{2}"
 		"ru"		"Этап: {1}-{2}"
 	}
 	"New Artifact"
 	{
 		"#format"	"{1:t}"
 		"en"	"Collected Artifact: {yellow}{1}"
+		"pt"	"Artefatos Coletados: {yellow}{1}"
 		"ru"	"Получен артефакт: {yellow}{1}"
 	}
 	"Artifact Info"

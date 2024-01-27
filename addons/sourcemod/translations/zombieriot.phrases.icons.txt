@@ -11,21 +11,25 @@
 	"Silvester And Blue Goggles Arrived."
 	{
 		"en" 		"Silvester And Blue Goggles Arrived."
+		"pt"		"Silvester e Blue Goggles chegou."
 		"ru" 		"Сильвестр и Блу Гогглз прибыли."
 	}
 	"Nemesis Arrived."
 	{
 		"en" 		"Nemesis, the original Xeno infector arrived."
+		"pt"		"Nemesis, o Xeno infector original chegou."
 		"ru" 		"Прибыл Немезид, изначальный ксенозаразитель."
 	}
 	"Arkantos Arrived"
 	{
 		"en" 		"The Atlantean and great leader Arkantos arrived."
+		"pt"		"The Atlantean and great leader Arkantos chegou."
 		"ru" 		"Прибыл Атлант и великий лидер Аркантос."
 	}
 	"Sensal Arrived"
 	{
 		"en" 		"The Expidonsan Sensal reaps."
+		"pt"		"O Expidonsan Sensal colhe."
 	}
 	"Blitzkrieg Spawn"
 	{
@@ -111,70 +115,84 @@
 	"Calamity of the Crimson Troupe, codename Phantom."
 	{
 		"en" 		"Calamity of the Crimson Troupe, codename Phantom."
+		"pt"		"Calamidade da Trupe Carmesim, codinome Fantasma."
 		"ru" 		"Надвигается бедствие из Багровой Труппы, кодовое имя «Фантом»."
 		"chi"       "深红剧团的灾难，代号幽灵"
 	}
 	"A caped Crimson warrior with Ominous Apparitions is appearing..."
 	{
 		"en" 		"An caped Crimson warrior with Ominous Apparitions is apearing..."
+		"pt"		"Um guerreiro Carmesim com capa e aparições sinistras está aparecendo..."
 		"ru" 		"Появляется багровый воин в плаще со зловещими духами..."
 		"chi"       "一个披着斗篷、带着不祥幻影的深红战士出现了……"
 	}
 	"A patch of shadow. It has never once left, nor has it ever truly existed."
 	{
 		"en" 		"A patch of shadow. It has never once left, nor has it ever truly existed."
+		"pt"		"Um pedaço de sombra. Nunca saiu, nem nunca existiu verdadeiramente."
 		"ru" 		"Тень. Оно ни разу не покидало нас и никогда по-настоящему не существовало."
 		"chi"       "一片阴影。它从未离开过，也从未真正存在过。"
 	}
 	"Medival Speech 1"
 	{
 		"en" 		"A king wants to Conquer this land!"
+		"pt"		"Um rei quer conquistar esta terra!"
 		"ru" 		"Король хочет покорить эту землю!"
 	}
 	"Medival Speech 2"
 	{
 		"en" 		"A stray villager has appeared, stop them!"
+		"pt"		"Um aldeão perdido apareceu, pare-o!"
 		"ru" 		"Появился бродячий житель, остановите его!"
 	}
 	"Medival Speech 3"
 	{
 		"en" 		"An invasion of the past is accuring!"
+		"pt"		"Uma invasão do passado está ocorrendo!"
 		"ru" 		"Надвигается вторжение прошлого!"
 	}
 	"Beheaded Kami 1"
 	{
 		"en" 		"Maybe its best to leave it alone..."
+		"pt"		"Talvez seja melhor deixar isso em paz..."
 	}
 	"Beheaded Kami 2"
 	{
 		"en" 		"Dont take this lightly."
+		"pt"		"Não leve isso de ânimo leve."
 	}
 	"Beheaded Kami 3"
 	{
 		"en" 		"Screaming..."
+		"pt"		"Gritaria..."
 	}
 	"The golden bloon is valueable..."
 	{
 		"en"		"The golden bloon is valueable..."
+		"pt"		"O balão dourado é valioso..."
 		"ru"		"Золотой шар имеет ценность..."
 	}
 	"The golden bloon is said to be rich..."
 	{
 		"en"		"The golden bloon is said to be rich..."
+		"pt"		"Dizem que o bloon dourado é rico..."
 		"ru"		"Говорят, что золотой шар ведёт к богатству..."
 	}
 	"The golden bloon is what all monkeys wish to pop..."
 	{
 		"en"		"The golden bloon is what all monkeys wish to pop..."
+		"pt"		"O balão dourado é o que todos os macacos desejam estourar..."
 		"ru"		"Золотой шар - это то, о чём мечтают все обезьяны..."
 	}
 	"Donnerkrieg And Schwertkrieg Spawn"
 	{
 		"en"	"Donnerkrieg And Schwertkrieg Have Returned"	//no clue if this is gonna be the actuall line, mostly just here for translations to work within the plugin
+		"pt"	"Donnerkrieg e Schwertkrieg retornaram."
 	}
 	"Diversionistico Spawn"
 	{
 		"en"	"Diversionistico Spawn"
+		"pt"	"Diversionistico Apareceu."
 	}
 	
 }

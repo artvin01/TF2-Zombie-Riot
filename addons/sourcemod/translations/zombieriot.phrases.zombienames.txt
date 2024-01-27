@@ -3,6 +3,7 @@
 	"nothing"
 	{
 		"en" 		"Example Text!"
+		"pt"		"HUEHUEHUE BR!"
 	}
 	"Headcrab Zombie"
 	{
@@ -655,11 +656,13 @@
 	"Golden Bloon"
 	{
 		"en" 		"Golden Bloon"
+		"pt"		"Balão Dourado"
 		"ru" 		"Золотой шар"
 	}
 	"Bloonarius"
 	{
 		"en" 		"Bloonarius"
+		"pt"		"Balãorista"
 		"ru" 		"Шариус"
 	}
 	"Medic Apprentice Mage"
@@ -882,37 +885,44 @@
 	"Basic Bones"
 	{
 		"en"		"Basic Bones"
-		"pt"		"Ossos Basicos"
+		"pt"		"Ossos Básicos"
 		"ru"		"Кости"
 		"nl"		"Basis Botten"
 	}
 	"Beefy Bones"
 	{
 		"en"		"Beefy Bones"
+		"pt"		"Ossos Carnudos"
 	}
 	"Brittle Bones"
 	{
 		"en"		"Brittle Bones"
+		"pt"		"Ossos Quebradiços"
 	}
 	"Big Bones"
 	{
 		"en"		"Big Bones"
+		"pt"		"Ossos Grandes"
 	}
 	"Buffed Basic Bones"
 	{
 		"en"		"Buffed Basic Bones"
+		"pt"		"Ossos Básicos Polidos"
 	}
 	"Buffed Beefy Bones"
 	{
 		"en"		"Buffed Beefy Bones"
+		"pt"		"Ossos Carnudos Polidos"		
 	}
 	"Buffed Brittle Bones"
 	{
 		"en"		"Buffed Brittle Bones"
+		"pt"		"Ossos Quebradiços Polidos"
 	}
 	"Buffed Big Bones"
 	{
 		"en"		"Buffed Big Bones"
+		"pt"		"Ossos Grandes Polidos"
 	}
 	"Mecha Engineer"
 	{
@@ -952,240 +962,286 @@
 	"Donnerkrieg"
 	{
 		"en"		"Donnerkrieg"
+		"pt"		"Donnerkrieg"
 		"ru"		"Доннеркриг"
 		"nl"		"Donnerkrieg"
 	}
 	"Schwertkrieg"
 	{
 		"en"		"Schwertkrieg"
+		"pt"		"Schwertkrieg"
 		"ru"		"Шверткриг"
 		"nl"		"Schwertkrieg"
 	}
 	"Phantom Knight"
 	{
 		"en"		"Lucian, ''Blood Diamond''"
+		"pt"		"Lucian, ''Diamante de Sangue''"
 		"ru"		"Люциан, «Кровавый алмаз»"
 	}
 	"Medic Constructor"
 	{
 		"en"		"Medic Constructor"
+		"pt"		"Medic Construtor"
 		"ru"		"Медик-строитель"
 	}
 	"Gambler"
 	{
 		"en"	"Gambler"
+		"pt"	"Apostador"
 		"de"	"Gambler" //Not Really needed i just added them just in case others want their lang
 		"ru"	"Азартный игрок"
 	}
 	"Pablo Gonzales"
 	{
 		"en"	"Pablo Gonzales"
+		"pt"	"Pablo Gonzales"
 		"de"	"Pablo Gonzales"
 		"ru"	"Пабло Гонсалес"
 	}
 	"Doktor Medick"
 	{
 		"en"	"Doktor Medick"
+		"pt"	"Doktor Medick"
 		"de"	"Doktor Medick"
 		"ru"	"Доктор Мэдик"
 	}
 	"Eternal Kaptain Heavy"
 	{
 		"en"	"Eternal Kaptain Heavy"
+		"pt"	"Eterno Kapitão Heavy"
 		"de"	"Eternal Kaptain Heavy"
 		"ru"	"Вечный капитан Пулемётчик"
 	}
 	"Booty Executioner"
 	{
 		"en"	"Booty Executioner"
+		"pt"	"Executor de Bundas"
 		"de"	"Booty Executioner"
 		"ru"	"Ягодичный Палач"
 	}
 	"Sandvich Slayer"
 	{
 		"en"	"Sandvich Slayer"
+		"pt"	"Caçador de Sanduíches"
 		"de"	"Sandvich Slayer"
 		"ru"	"Палач Бутербродов"
 	}
 	"Payday Cloaker"
 	{
 		"en"	"Payday Cloaker"
+		"pt"	"Payday Cloaker"
 		"de"	"Payday Cloaker"
 		"ru"	"Клокер из Payday"
 	}
 	"Bunker Kahmlstein"
 	{
 		"en"		"Bunker Kahmlstein"
+		"pt"		"Bunker Kahmlstein"
 		"ru"		"Бункерный Кахмльштайн"
 	}
 	"Zerofuse"
 	{
 		"en"		"Zerofuse"
+		"pt"		"Zerofuse"
 		"ru"		"Зерофуз"
 	}
 	"Bunker Bot Soldier"
 	{
 		"en"		"Bunker Bot Soldier"
+		"pt"		"Soldier Bot do Bunker"
 		"ru"		"Бункерный бот-солдат"
 	}
 	"Bunker Bot Sniper"
 	{
 		"en"		"Bunker Bot Sniper"
+		"pt"		"Sniper Bot do Bunker"
 		"ru"		"Бункерный бот-снайпер"
 	}
 	"Bunker Skeleton"
 	{
 		"en"		"Bunker Skeleton"
+		"pt"		"Esqueleto do Bunker"
 		"ru"		"Бункерный скелет"
 	}
 	"Bunker Small Skeleton"
 	{
 		"en"		"Bunker Small Skeleton"
+		"pt"		"Esqueleto Pequeno do Bunker"
 		"ru"		"Бункерный маленький скелет"
 	}
 	"Bunker Skeleton King"
 	{
 		"en"		"Bunker Skeleton King"
+		"pt"		"Esqueleto Rei do Bunker"
 		"ru"		"Бункерный король скелетов"
 	}
 	"Bunker Headless Horseman"
 	{
 		"en"		"Bunker Headless Horseman"
+		"pt"		"Cavaleiro sem cabeça do Bunker"
 		"ru"		"Бункерный Пеший всадник без головы"
 	}
 	"Gold Bloon"
 	{
 		"en"		"Gold Bloon"
+		"pt"		"Balão de Ouro"
 		"ru"		"Золотой шар"
 	}
 	"Medival Scout"
 	{
 		"en"		"Ridden Scout"
+		"pt"		"Scout Montado"
 		"ru"		"Ездовой разведчик"
 	}
 	"Medival Villager"
 	{
 		"en"		"Villager"
+		"pt"		"Aldeão"
 		"ru"		"Житель"
 	}
 	"Building"
 	{
 		"en"		"Building"
+		"pt"		"Edifício"
 		"ru"		"Постройка"
 	}
 	"Medival Construct"
 	{
 		"en"		"Construct"
+		"pt"		"Construção"
 		"ru"		"Строение"
 	}
 	"Champion"
 	{
 		"en"		"Champion"
+		"pt"		"Campeão"
 		"ru"		"Чемпион"
 	}
 	"Light Cavalry"
 	{
 		"en"		"Light Cavalry"
+		"pt"		"Cavalaria Leve"
 		"ru"		"Лёгкий кавалерист"
 	}
 	"Hussar"
 	{
 		"en"		"Hussar"
+		"pt"		"Hussardo"
 		"ru"		"Гусар"
 	}
 	"Knight"
 	{
 		"en"		"Knight"
+		"pt"		"Cavaleiro"
 		"ru"		"Рыцарь"
 	}
 	"Obuch"
 	{
 		"en"		"Obuch"
+		"pt"		"Obuch"
 		"ru"		"Обух"
 	}
 	"Monk"
 	{
 		"en"		"Monk"
+		"pt"		"Monge"
 		"ru"		"Монах"
 	}
 	"Cavalary"
 	{
 		"en"		"Cavalary"
+		"pt"		"Cavalaria"
 		"ru"		"Кавалерист"
 	}
 	"Paladin"
 	{
 		"en"		"Paladin"
+		"pt"		"Paladino"
 		"ru"		"Паладин"
 	}
 	"Crossbow Giant"
 	{
 		"en"		"Crossbow Giant"
+		"pt"		"Besta Gigante"
 		"ru"		"Гигантский арбалетчик"
 	}
 	"Swordsman Giant"
 	{
 		"en"		"Swordsman Giant"
+		"pt"		"Espadachim Gigante"
 		"ru"		"Гигантский мечник"
 	}
 	"Mounted Archer"
 	{
 		"en"		"Mounted Archer"
+		"pt"		"Arqueiro Montado"
 		"ru"		"Конный лучник"
 	}
 	"Eagle Warrior"
 	{
 		"en"		"Eagle Warrior"
+		"pt"		"Guerreiro da Aguia"
 		"ru"		"Орёл-воин"
 	}
 	"Giant Eagle Warrior"
 	{
 		"en"		"Giant Eagle Warrior"
+		"pt"		"Guerreiro da Aguia Gigante"
 		"ru"		"Гигантский орёл-воин"
 	}
 	"Son Of Osiris"
 	{
 		"en"		"Son Of Osiris"
+		"pt"		"Filho de Osiris"
 		"ru"		"Сын Осириса"
 	}
 	"Achilles"
 	{
 		"en"		"Achilles"
+		"pt"		"Aquiles"
 		"ru"		"Ахилл"
 	}
 	"Medival Abalest"
 	{
 		"en"		"Medieval Arbalest"
+		"pt"		"Arbalest Medieval"
 		"ru"		"Арбалетчик средневековья"
 	}
 	"Medival Brawler"
 	{
 		"en"		"Medieval Brawler"
+		"pt"		"Lutador Medieval"
 		"ru"		"Боец средневековья"
 	}
 	"Medival Longbowmen"
 	{
 		"en"		"Medieval Longbowmen"
+		"pt"		"Arqueiro Medieval"
 		"ru"		"Лучник средневековья"
 	}
 	"Medival Halberdier"
 	{
 		"en"		"Medieval Halberdier"
+		"pt"		"Alabardeiro Medieval"
 		"ru"		"Алебардист средневековья"
 	}
 	"Medival Elite Longbowmen"
 	{
 		"en"		"Medieval Elite Longbowmen"
+		"pt"		"Arqueiro Elite Medieval"
 		"ru"		"Элитный лучник средневековья"
 	}
 	"Trebuchet"
 	{
 		"en"		"Trebuchet"
+		"pt"		"Catapulta"
 		"ru"		"Требушет"
 	}
 	"Ikunagae"
 	{
 		"en"		"Iku Nagae"
+		"pt"		"Iku Nagae"
 		"de"		"Iku Nagae"
 		"ru"		"Ику Нагаэ"
 	}
