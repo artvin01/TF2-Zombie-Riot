@@ -1593,6 +1593,8 @@ void RaidbossBobTheFirst_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+
+	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s",WhatDifficultySetting_Internal);
 	
 	for(int i; i < i_MaxcountNpc; i++)
 	{

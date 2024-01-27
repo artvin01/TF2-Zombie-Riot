@@ -1099,6 +1099,7 @@ void Rogue_NextProgress()
 					SetAllCamera(floor.Camera, floor.Skyname);
 
 					strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), floor.Name);
+					strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), floor.Name);
 
 					bool cursed;
 					if(!(GetURandomInt() % 5))
@@ -1438,7 +1439,7 @@ static void SetNextStage(int id, bool type, const Stage stage, float time = 10.0
 	CurrentType = type;
 
 	strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), stage.Name);
-
+	strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), stage.Name);
 	if(stage.WaveSet[0])	// If a battle, give map over view for 10 seconds
 	{
 		GameState = State_Trans;
