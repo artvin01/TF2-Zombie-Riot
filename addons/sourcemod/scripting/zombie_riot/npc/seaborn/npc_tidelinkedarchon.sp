@@ -80,7 +80,7 @@ methodmap TidelinkedArchon < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.m_iTargetAlly = -1;
+		i_TargetAlly[npc.index] = -1;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
@@ -110,7 +110,7 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTargetAlly == -1)
+	if(i_TargetAlly[npc.index] == -1)
 	{
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
@@ -119,8 +119,8 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 		int entity = Npc_Create(TIDELINKED_BISHOP, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 		if(entity > MaxClients)
 		{
-			npc.m_iTargetAlly = entity;
-			view_as<CClotBody>(entity).m_iTargetAlly = npc.index;
+			i_TargetAlly[npc.index] = EntIndexToEntRef(entity);
+			i_TargetAlly[entity] = EntIndexToEntRef(npc.index);
 			view_as<CClotBody>(entity).m_bThisNpcIsABoss = npc.m_bThisNpcIsABoss;
 
 			Zombies_Currently_Still_Ongoing++;
@@ -141,7 +141,7 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 	
 	if(b_NpcIsInvulnerable[npc.index])
 	{
-		int entity = npc.m_iTargetAlly;
+		int entity = EntRefToEntIndex(i_TargetAlly[npc.index]);
 		if(entity == INVALID_ENT_REFERENCE || !IsValidEntity(entity) || b_NpcIsInvulnerable[entity])
 		{
 			SmiteNpcToDeath(npc.index);
@@ -151,7 +151,7 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 
-		health += maxhealth / 200;	// 20 seconds
+		health += maxhealth / 100;	// 20 seconds
 		if(health >= maxhealth)
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
@@ -178,12 +178,12 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);		
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 

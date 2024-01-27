@@ -134,12 +134,12 @@ public void SeaSlider_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);		
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -238,19 +238,26 @@ void SeaSlider_AddNeuralDamage(int victim, int attacker, int damagebase, bool so
 	if(victim <= MaxClients)
 	{
 		Armor_DebuffType[victim] = 1;
-		if((ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
+		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 		{
 			Armor_Charge[victim] -= damage;
 			if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
 			{
 				Armor_Charge[victim] = 0;
 
-				TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
+				if(!b_BobsTrueFear[victim])
+					TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
+				else
+					TF2_StunPlayer(victim, 3.0, 0.9, TF_STUNFLAG_SLOWDOWN);
 
 				bool sawrunner = b_ThisNpcIsSawrunner[attacker];
 				b_ThisNpcIsSawrunner[attacker] = true;
-				SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+				if(!b_BobsTrueFear[victim])
+					SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+				else
+					SDKHooks_TakeDamage(victim, attacker, attacker, 400.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
 				b_ThisNpcIsSawrunner[attacker] = sawrunner;
+				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
 			}
 			
 			if(sound || !Armor_Charge[victim])

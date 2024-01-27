@@ -476,10 +476,12 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					Enemy enemy;
 
 					enemy.Index = XENO_RAIDBOSS_NEMESIS;
-					enemy.Health = 30000000;
+					enemy.Health = 40000000;
 					enemy.Is_Boss = 2;
 					enemy.ExtraSpeed = 1.5;
 					enemy.ExtraDamage = 3.0;
+					enemy.ExtraMeleeRes = 0.5;
+					enemy.ExtraRangedRes = 0.5;
 					enemy.ExtraSize = 1.0;
 
 					Waves_AddNextEnemy(enemy);
@@ -564,8 +566,8 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					}
 
 					// Don't lose when everyone dies
-					GiveProgressDelay(1.4);
-					Waves_ForceSetup(1.4);
+					GiveProgressDelay(15.0);
+					Waves_ForceSetup(15.0);
 
 					if(found)
 					{
@@ -818,8 +820,8 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 	if(npc.m_iTarget > 0 && healthPoints < 20)
 	{
-		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 
 		switch(npc.m_iAttackType)
 		{
@@ -936,7 +938,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			}
 			case 9:
 			{
-				vecTarget = PredictSubjectPosition(npc, npc.m_iTarget);
+				vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
 				NPC_SetGoalVector(npc.index, vecTarget);
 
 				npc.FaceTowards(vecTarget, 20000.0);
@@ -961,7 +963,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 								PlaySound = true;
 								int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 								float vecHit[3];
-								vecHit = WorldSpaceCenter(target);
+								vecHit = WorldSpaceCenterOld(target);
 
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_CLUB, -1, _, vecHit);	
 								
@@ -1053,7 +1055,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				float distance = GetVectorDistance(vecTarget, vecMe, true);
 				if(distance < npc.GetLeadRadius()) 
 				{
-					vecTarget = PredictSubjectPosition(npc, npc.m_iTarget);
+					vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
 					NPC_SetGoalVector(npc.index, vecTarget);
 				}
 				else
@@ -1080,7 +1082,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						npc.m_iAttackType = 11;
 						npc.m_flAttackHappens = gameTime + 0.5;
 						
-						vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0);
+						vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1200.0);
 						npc.FireRocket(vecTarget, 400.0, 1200.0, "models/weapons/w_bullet.mdl", 2.0);
 						npc.PlayGunSound();
 
@@ -1166,7 +1168,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 						if(EnemyToPull)
 						{
-							vecTarget = PredictSubjectPosition(npc, EnemyToPull);
+							vecTarget = PredictSubjectPositionOld(npc, EnemyToPull);
 							npc.FaceTowards(vecTarget, 50000.0);
 							if(!npc.m_bFakeClone)
 							{
@@ -1176,7 +1178,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							//Take their old position and nuke it.
 							float vEnd[3];
 					
-							vEnd = GetAbsOrigin(EnemyToPull);
+							vEnd = GetAbsOriginOld(EnemyToPull);
 							Handle pack;
 							CreateDataTimer(BOB_CHARGE_SPAN, Smite_Timer_Bob, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 							WritePackCell(pack, EntIndexToEntRef(npc.index));
@@ -1211,7 +1213,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						
 						npc.m_flNextMeleeAttack = gameTime + 10.0;
 						npc.StopPathing();
-						vecMe = WorldSpaceCenter(npc.index);
+						vecMe = WorldSpaceCenterOld(npc.index);
 
 						switch(GetURandomInt() % 3)
 						{
@@ -1314,7 +1316,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						float distance = GetVectorDistance(vecTarget, vecMe, true);
 						if(distance < npc.GetLeadRadius()) 
 						{
-							vecTarget = PredictSubjectPosition(npc, npc.m_iTarget);
+							vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
 							NPC_SetGoalVector(npc.index, vecTarget);
 						}
 						else
@@ -1633,8 +1635,8 @@ static Action Bob_DeathCutsceneCheck(Handle timer)
 			SmiteNpcToDeath(victim);
 	}
 	
-	GiveProgressDelay(1.5);
-	Waves_ForceSetup(1.5);
+	GiveProgressDelay(6.0);
+	Waves_ForceSetup(6.0);
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -1785,12 +1787,12 @@ void BobPullTarget(int bobnpc, int enemy)
 	//pull player
 	float vecMe[3];
 	float vecTarget[3];
-	vecMe = WorldSpaceCenter(npc.index);
+	vecMe = WorldSpaceCenterOld(npc.index);
 	if(enemy <= MaxClients)
 	{
 		static float angles[3];
 		
-		vecTarget = WorldSpaceCenter(enemy);
+		vecTarget = WorldSpaceCenterOld(enemy);
 		GetVectorAnglesTwoPoints(vecTarget, vecMe, angles);
 		
 		if(GetEntityFlags(enemy) & FL_ONGROUND)
@@ -1994,7 +1996,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 				{
 					FreezeNpcInTime(victim, 1.5);
 					
-					hullMin = WorldSpaceCenter(victim);
+					hullMin = WorldSpaceCenterOld(victim);
 					hullMin[2] += 100.0; //Jump up.
 					PluginBot_Jump(victim, hullMin);
 				}

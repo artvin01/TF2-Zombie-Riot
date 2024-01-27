@@ -159,7 +159,7 @@ public Action Items_GiveCmd(int client, int args)
 				}
 				else
 				{
-					Items_GiveIdItem(targets[i], id);
+					Items_GiveIdItem(targets[i], id, true);
 					ReplyToCommand(client, "Gave %N this item", targets[i]);
 				}
 			}
@@ -203,8 +203,11 @@ static bool AddFlagOfLevel(int client, int level, int flag, bool addition)
 		{
 			if(addition || !(owned.Flags & flag))
 			{
-				owned.Flags += flag;
-				OwnedItems.SetArray(i, owned);
+				if(addition)
+				{
+					owned.Flags += flag;
+					OwnedItems.SetArray(i, owned);
+				}
 				return true;
 			}
 
@@ -287,7 +290,7 @@ bool Items_GiveNamedItem(int client, const char[] name)
 			GiftItems.GetArray(i, item);
 			if(StrEqual(item.Name, name, false))
 			{
-				AddFlagOfLevel(client, IdToLevel(i), IdToFlag(i), false);
+				AddFlagOfLevel(client, IdToLevel(i), IdToFlag(i), true);
 				return true;
 			}
 		}
@@ -477,7 +480,7 @@ void Gift_DropChance(int entity)
 	{
 		if(IsValidEntity(entity))
 		{
-			if(b_ForceSpawnNextTime || (GetRandomFloat(0.0, 200.0) < ((GIFT_CHANCE / (MultiGlobal + 0.0001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually))) //Never let it divide by 0
+			if(b_ForceSpawnNextTime || (GetRandomFloat(0.0, 200.0) < ((GIFT_CHANCE / (MultiGlobalEnemy + 0.0001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually))) //Never let it divide by 0
 			{
 				f_IncreaceChanceManually = 1.0;
 				float VecOrigin[3];
@@ -592,11 +595,12 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 								continue;
 							}
 
-							if(Items_GiveIdItem(client, items[i]))	// Gives item, returns true if newly obtained, false if they already have
+							if(Items_GiveIdItem(client, items[i], false))	// Gives item, returns true if newly obtained, false if they already have
 							{
 								static const char Colors[][] = { "default", "green", "blue", "yellow", "darkred" };
 								
 								GiftItems.GetArray(items[i], item);
+								Items_GiveIdItem(client, items[i], true);
 								CPrintToChat(client, "{default}You have found {%s}%s{default}!", Colors[r], item.Name);
 								r = -1;
 								length = 0;

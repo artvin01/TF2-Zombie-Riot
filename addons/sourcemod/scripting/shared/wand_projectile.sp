@@ -52,6 +52,11 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		fPos[2] = CustomPos[2];
 	}
 
+	if(speed >= 3000.0)
+	{
+		speed = 3000.0;
+		//if its too fast, then it can cause projectile devietion
+	}
 
 	float tmp[3];
 	float actualBeamOffset[3];
@@ -255,7 +260,7 @@ public void Wand_Base_StartTouch(int entity, int other)
 		}
 		case WEAPON_LANTEAN:
 		{
-			lantean_Wand_Touch_World(entity, target);
+			lantean_Wand_Touch(entity, target);
 		}
 		case 11:
 		{

@@ -59,14 +59,14 @@ public void CombineElite_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	float vecMe[3];
-	vecMe = WorldSpaceCenter(npc.index);
+	vecMe = WorldSpaceCenterOld(npc.index);
 	BaseSquad_BaseThinking(npc, vecMe);
 
 	bool canWalk = (npc.m_iTargetWalk || !npc.m_iTargetAttack);
 	if(npc.m_iTargetAttack)
 	{
 		float vecTarget[3];
-		vecTarget = WorldSpaceCenter(npc.m_iTargetAttack);
+		vecTarget = WorldSpaceCenterOld(npc.m_iTargetAttack);
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -104,7 +104,7 @@ public void CombineElite_ClotThink(int iNPC)
 				npc.m_flNextRangedSpecialAttackHappens = 0.0;
 
 				// E2 L5 = 280, E2 L10 = 320
-				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTargetAttack, 500.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTargetAttack, 500.0);
 				npc.FireRocket(vecTarget, Level[npc.index] * 8.0, 500.0, "models/effects/combineball.mdl");
 			}
 		}
@@ -228,7 +228,7 @@ public void CombineElite_ClotThink(int iNPC)
 					{
 						if(ally.m_bIsSquad)
 						{
-							vecTarget = WorldSpaceCenter(ally.index);
+							vecTarget = WorldSpaceCenterOld(ally.index);
 							if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
 							{
 								ally.m_flRangedArmor = 0.00001;

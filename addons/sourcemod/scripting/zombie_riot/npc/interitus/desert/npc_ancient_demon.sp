@@ -1,29 +1,29 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+static const char g_DeathSounds[][] =
+{
+	"vo/spy_paincrticialdeath01.mp3",
+	"vo/spy_paincrticialdeath02.mp3",
+	"vo/spy_paincrticialdeath03.mp3"
 };
 
-static const char g_HurtSounds[][] = {
-	")vo/medic_painsharp01.mp3",
-	")vo/medic_painsharp02.mp3",
-	")vo/medic_painsharp03.mp3",
-	")vo/medic_painsharp04.mp3",
-	")vo/medic_painsharp05.mp3",
-	")vo/medic_painsharp06.mp3",
-	")vo/medic_painsharp07.mp3",
-	")vo/medic_painsharp08.mp3",
+static const char g_HurtSounds[][] =
+{
+	"vo/spy_painsharp01.mp3",
+	"vo/spy_painsharp02.mp3",
+	"vo/spy_painsharp03.mp3",
+	"vo/spy_painsharp04.mp3"
 };
 
-
-static const char g_IdleAlertedSounds[][] = {
-	")vo/medic_battlecry01.mp3",
-	")vo/medic_battlecry02.mp3",
-	")vo/medic_battlecry03.mp3",
-	")vo/medic_battlecry04.mp3",
+static const char g_IdleAlertedSounds[][] =
+{
+	"vo/spy_laughshort01.mp3",
+	"vo/spy_laughshort02.mp3",
+	"vo/spy_laughshort03.mp3",
+	"vo/spy_laughshort04.mp3",
+	"vo/spy_laughshort05.mp3",
+	"vo/spy_laughshort06.mp3"
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -31,29 +31,38 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 static const char g_MeleeHitSounds[][] = {
+	"weapons/blade_hit1.wav",
+	"weapons/blade_hit2.wav",
+	"weapons/blade_hit3.wav",
+	"weapons/blade_hit4.wav"
+};
+
+static const char g_RangedAttackSounds[][] = {
 	"weapons/airboat/airboat_gun_energy1.wav",
 	"weapons/airboat/airboat_gun_energy2.wav",
 };
 
-void Pental_OnMapStart_NPC()
+void DesertAncientDemon_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	PrecacheModel("models/props_halloween/eyeball_projectile.mdl");
 }
 
 
-methodmap Pental < CClotBody
+methodmap DesertAncientDemon < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
@@ -65,18 +74,22 @@ methodmap Pental < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 	}
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayRangedSound()
+	{
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -84,20 +97,20 @@ methodmap Pental < CClotBody
 
 	}
 	
-	
-	public Pental(int client, float vecPos[3], float vecAng[3], bool ally)
+	property bool m_bFakeClone
 	{
-		Pental npc = view_as<Pental>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "550", ally));
+		public get()		{	return i_RaidGrantExtra[this.index] < 0;	}
+	}
+	public DesertAncientDemon(int client, float vecPos[3], float vecAng[3], bool ally)
+	{
+		DesertAncientDemon npc = view_as<DesertAncientDemon>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "15000", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_PENTAL;
+		i_NpcInternalId[npc.index] = INTERITUS_DESERT_ANCIENTDEMON;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
 		
@@ -106,20 +119,21 @@ methodmap Pental < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
-		SDKHook(npc.index, SDKHook_Think, Pental_ClotThink);
-		
+		i_RaidGrantExtra[npc.index] = 1;
+
+		func_NPCDeath[npc.index] = view_as<Function>(DesertAncientDemon_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertAncientDemon_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(DesertAncientDemon_ClotThink);
+		func_NPCDeathForward[npc.index] = view_as<Function>(DesertAncientDemon_NPCDeathAlly);
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 280.0;
+		npc.m_flSpeed = 250.0;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		
-		PentalEffects(npc.index);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_acr_hookblade/c_acr_hookblade.mdl");
 		
@@ -130,14 +144,32 @@ methodmap Pental < CClotBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/spy/sum22_tactical_turtleneck/sum22_tactical_turtleneck.mdl");
 		
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/spy/hwn2018_bandits_boots/hwn2018_bandits_boots.mdl");
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 200);
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 200);
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 200);
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 200);
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 200);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 200);
 		
 		return npc;
 	}
 }
 
-public void Pental_ClotThink(int iNPC)
+public void DesertAncientDemon_ClotThink(int iNPC)
 {
-	Pental npc = view_as<Pental>(iNPC);
+	DesertAncientDemon npc = view_as<DesertAncientDemon>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -166,20 +198,20 @@ public void Pental_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		PentalSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		DesertAncientDemonSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -189,9 +221,9 @@ public void Pental_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Pental_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action DesertAncientDemon_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Pental npc = view_as<Pental>(victim);
+	DesertAncientDemon npc = view_as<DesertAncientDemon>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -205,17 +237,19 @@ public Action Pental_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 
-public void Pental_NPCDeath(int entity)
+public void DesertAncientDemon_NPCDeath(int entity)
 {
-	Pental npc = view_as<Pental>(entity);
+	DesertAncientDemon npc = view_as<DesertAncientDemon>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	ExpidonsaRemoveEffects(entity);
-	SDKUnhook(npc.index, SDKHook_Think, Pental_ClotThink);
 		
 	
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -225,8 +259,9 @@ public void Pental_NPCDeath(int entity)
 
 }
 
-void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
+void DesertAncientDemonSelfDefense(DesertAncientDemon npc, float gameTime, int target, float distance)
 {
+
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
@@ -234,7 +269,7 @@ void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
@@ -245,21 +280,71 @@ void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 30.0;
+					int ElementalDamage = 30;
+					float damageDealt = 75.0;
+
+					if(npc.m_bFakeClone)
+					{
+						ElementalDamage = 20;
+						damageDealt = 35.0;
+					}
+
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-
+					Sakratan_AddNeuralDamage(target, npc.index, ElementalDamage, true, true);
+					
 					// Hit sound
 					npc.PlayMeleeHitSound();
 				} 
 			}
 			delete swingTrace;
 		}
+		return;
 	}
 
+	if(npc.m_flNextRangedSpecialAttack)
+	{
+		if(npc.m_flNextRangedSpecialAttack < gameTime)
+		{
+			npc.m_flNextRangedSpecialAttack = 0.0;
+			
+			if(npc.m_iTarget > 0)
+			{	
+				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+				npc.FaceTowards(vecTarget, 15000.0);
+				
+				npc.PlayRangedSound();
+				int ElementalDamage = 20;
+				float damageDealt = 50.0;
+
+				if(npc.m_bFakeClone)
+				{
+					ElementalDamage = 10;
+					damageDealt = 25.0;
+				}
+				int entity = npc.FireArrow(vecTarget, damageDealt, 800.0, "models/props_halloween/eyeball_projectile.mdl");
+				i_ChaosArrowAmount[entity] = ElementalDamage;
+				
+				if(entity != -1)
+				{
+					if(IsValidEntity(f_ArrowTrailParticle[entity]))
+						RemoveEntity(f_ArrowTrailParticle[entity]);
+
+					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+					SetEntityRenderColor(entity, 100, 100, 255, 255);
+					
+					vecTarget = WorldSpaceCenterOld(entity);
+					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "tranq_distortion_trail", 3.0);
+					SetParent(entity, f_ArrowTrailParticle[entity]);
+					f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
+				}
+			}
+		}
+		return;
+	}
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
@@ -272,55 +357,109 @@ void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.2;
+				npc.m_flAttackHappens = gameTime + 0.15;
+				npc.m_flDoingAnimation = gameTime + 0.15;
+				npc.m_flNextMeleeAttack = gameTime + 0.85;
 			}
-		}
+		}		
+	}
+	if(gameTime > npc.m_flNextRangedAttack)
+	{
+		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25) && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
+		{
+			int Enemy_I_See;
+								
+			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+					
+			if(IsValidEnemy(npc.index, Enemy_I_See))
+			{
+				npc.m_iTarget = Enemy_I_See;
+				npc.PlayMeleeSound();
+				npc.AddGesture("ACT_MP_THROW");
+						
+				npc.m_flNextRangedSpecialAttack = gameTime + 0.15;
+				npc.m_flDoingAnimation = gameTime + 0.15;
+				npc.m_flNextRangedAttack = gameTime + 1.85;
+			}
+		}		
 	}
 }
 
 
-void PentalEffects(int iNpc)
+
+public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 {
-	if(AtEdictLimit(EDICT_NPC))
+	DesertAncientDemon npc = view_as<DesertAncientDemon>(self);
+	
+	if(npc.m_bFakeClone)
+	{
+		return;
+	}
+	if(GetEntProp(ally, Prop_Send, "m_iTeamNum") != GetEntProp(self, Prop_Send, "m_iTeamNum"))
+	{
+		return;
+	}
+
+	if(i_NpcInternalId[ally] == INTERITUS_DESERT_ANCIENTDEMON)
+	{
+		return;
+	}
+	if(i_RaidGrantExtra[ally] == 999)
+	{
+		return;
+	}
+	float AllyPos[3];
+	GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", AllyPos);
+	float SelfPos[3];
+	GetEntPropVector(self, Prop_Data, "m_vecAbsOrigin", SelfPos);
+	float flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
+	if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 24.0))
 		return;
 	
-	float flPos[3];
-	float flAng[3];
-	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);
+	float AllyAng[3];
+	GetEntPropVector(ally, Prop_Data, "m_angRotation", AllyAng);
+	int flMaxHealth = GetEntProp(self, Prop_Data, "m_iMaxHealth");
+	int flMaxHealthally = GetEntProp(ally, Prop_Data, "m_iMaxHealth");
+	float pos[3]; 
+	pos = WorldSpaceCenterOld(ally);
+	pos[2] -= 10.0;
+	DesertAncientDemon npc1 = view_as<DesertAncientDemon>(ally);
+	npc1.m_bDissapearOnDeath = true;
+	//they get eaten by the demon
 
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-
-	
-	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = InfoTargetParentAt({0.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = InfoTargetParentAt({10.0,50.0,0.0}, "", 0.0); //First offset we go by
-	
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(iNpc, particle_1, "effect_hand_r",_);
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, 35, 35, 255, 2.0, 1.0, 1.0, LASERBEAM);
-	
-
-	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
-	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
-	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
-	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_4);
-	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(Laser_1);
-	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(Laser_2);
-	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(Laser_3);
+	HealEntityGlobal(self, self, float(flMaxHealthally / 10), 2.0);
+	float ProjLoc[3];
+	GetEntPropVector(self, Prop_Data, "m_vecAbsOrigin", ProjLoc);
+	ProjLoc[2] += 100.0;
+	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	fl_TotalArmor[self] = fl_TotalArmor[self] * 0.985;
+	fl_Extra_Speed[self] = fl_Extra_Speed[self] + 0.01;
+	if(fl_TotalArmor[self] <= 0.35)
+	{
+		fl_TotalArmor[self] = 0.35;
+	}
+	TE_Particle("teleported_blue", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	int NpcSpawnDemon = Npc_Create(INTERITUS_DESERT_ANCIENTDEMON, -1, SelfPos, AllyAng, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2); //can only be enemy
+	i_RaidGrantExtra[ally] = 999;
+	if(IsValidEntity(NpcSpawnDemon))
+	{
+		flMaxHealth /= 20;
+		if(GetEntProp(NpcSpawnDemon, Prop_Send, "m_iTeamNum") != 2)
+		{
+			Zombies_Currently_Still_Ongoing += 1;
+		}
+		i_RaidGrantExtra[NpcSpawnDemon] = -1;
+		SetEntProp(NpcSpawnDemon, Prop_Data, "m_iHealth", flMaxHealth);
+		SetEntProp(NpcSpawnDemon, Prop_Data, "m_iMaxHealth", flMaxHealth);
+		TeleportDiversioToRandLocation(NpcSpawnDemon,_,_, _);
+		float scale = GetEntPropFloat(self, Prop_Send, "m_flModelScale");
+		SetEntPropFloat(NpcSpawnDemon, Prop_Send, "m_flModelScale", scale * 0.7);
+		fl_Extra_MeleeArmor[NpcSpawnDemon] = fl_Extra_MeleeArmor[npc.index];
+		fl_Extra_RangedArmor[NpcSpawnDemon] = fl_Extra_RangedArmor[npc.index];
+		fl_Extra_Speed[NpcSpawnDemon] = fl_Extra_Speed[npc.index];
+		fl_Extra_Damage[NpcSpawnDemon] = fl_Extra_Damage[npc.index];
+		fl_TotalArmor[NpcSpawnDemon] = fl_TotalArmor[npc.index];
+	}
 }

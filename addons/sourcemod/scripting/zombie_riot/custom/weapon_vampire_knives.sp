@@ -421,7 +421,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	
 	float loc[3], vicloc[3], dist;
 	GetClientAbsOrigin(attacker, loc);
-	vicloc = WorldSpaceCenter(victim);
+	vicloc = WorldSpaceCenterOld(victim);
 	dist = GetVectorDistance(loc, vicloc);
 	
 	for (int i = 0; i < 3; i++)
@@ -493,13 +493,13 @@ public void Vamp_Knife_Touch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenter(target);
+		Entity_Position = WorldSpaceCenterOld(target);
 		//Code to do damage position and ragdolls
 		
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -552,7 +552,7 @@ public bool Vamp_CleaverHit(int entity, int target)
 	float vecForward[3];
 	GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 	static float Entity_Position[3];
-	Entity_Position = WorldSpaceCenter(target);
+	Entity_Position = WorldSpaceCenterOld(target);
 	//Code to do damage position and ragdolls
 		
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
@@ -563,13 +563,13 @@ public bool Vamp_CleaverHit(int entity, int target)
 
 	if (dmg >= hp)
 	{
-		SDKHooks_TakeDamage(target, owner, owner, dmg, DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position, false, ZR_DAMAGE_GIB_REGARDLESS);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, dmg, DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, false, ZR_DAMAGE_GIB_REGARDLESS);	// 2048 is DMG_NOGIB?
 		f_WandDamage[entity] *= f_CleaverMultOnKill[entity];
 		return false;
 	}
 	else
 	{
-		SDKHooks_TakeDamage(target, owner, owner, dmg, DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, dmg, DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))

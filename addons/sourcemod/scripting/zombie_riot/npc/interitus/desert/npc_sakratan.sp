@@ -170,13 +170,13 @@ public void DesertSakratan_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -240,7 +240,7 @@ void DesertSakratanSelfDefense(DesertSakratan npc, float gameTime, int target, f
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
@@ -257,7 +257,7 @@ void DesertSakratanSelfDefense(DesertSakratan npc, float gameTime, int target, f
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					Sakratan_AddNeuralDamage(target, npc.index, 10, true);
+					Sakratan_AddNeuralDamage(target, npc.index, 20, true);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -298,7 +298,7 @@ void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sou
 	if(victim <= MaxClients)
 	{
 		Armor_DebuffType[victim] = 2;
-		if((ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
+		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 		{
 			Armor_Charge[victim] -= damage;
 			if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
@@ -327,11 +327,12 @@ void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sou
 				_,
 				SakratanGroupDebuff);
 				SetEntProp(attacker, Prop_Send, "m_iTeamNum", TeamNum);
+				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
 			//	Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
 			}
 			
 			if(sound || !Armor_Charge[victim])
-				ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
+				ClientCommand(victim, "playgamesound friends/friend_online.wav");
 		}
 	}
 }
@@ -354,6 +355,15 @@ void SakratanGroupDebuff(int entity, int victim, float damage, int weapon)
 
 void SakratanGroupDebuffInternal(int victim)
 {
-	HealEntityGlobal(victim, victim, -250.0, 1.0, 0.0, HEAL_ABSOLUTE);
-	IncreaceEntityDamageTakenBy(victim, 1.25, 10.0);
+	if(!b_BobsTrueFear[victim])
+	{
+		HealEntityGlobal(victim, victim, -250.0, 1.0, 0.0, HEAL_ABSOLUTE);
+		IncreaceEntityDamageTakenBy(victim, 1.25, 10.0);
+	}
+	else
+	{
+		HealEntityGlobal(victim, victim, -200.0, 1.0, 0.0, HEAL_ABSOLUTE);
+		IncreaceEntityDamageTakenBy(victim, 1.18, 8.0);		
+	}
+
 }
