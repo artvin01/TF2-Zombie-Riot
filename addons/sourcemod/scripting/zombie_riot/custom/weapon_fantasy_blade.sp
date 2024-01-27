@@ -986,7 +986,11 @@ static void Fantasy_Blade_Damage_Trace(int client, float Vec_1[3], float Vec_2[3
 	{
 		if (Fantasy_Blade_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 		{
-			SDKHooks_TakeDamage(victim, client, client, dmg/BEAM_Targets_Hit[client], DMG_CLUB, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
+			float damage_xd = dmg;
+			if(b_thisNpcIsARaid[victim])
+				damage_xd*= 1.25;
+				
+			SDKHooks_TakeDamage(victim, client, client, damage_xd/BEAM_Targets_Hit[client], DMG_CLUB, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
 			BEAM_Targets_Hit[client] *= FANTASY_BLADE_PENETRATION_FALLOFF;
 		}
 	}

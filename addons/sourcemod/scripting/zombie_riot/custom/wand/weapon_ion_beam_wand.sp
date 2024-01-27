@@ -230,7 +230,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 		Turn_Speed *= 2.0;
 		Pitch_Speed *= 2.0;
 		
-		DamagE *= 1.75;
+		DamagE *= 3.0;
 		
 		Effects |= (1 << 7); //pulse
 	}
