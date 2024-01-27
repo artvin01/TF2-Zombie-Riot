@@ -10,6 +10,8 @@ enum struct CommandEnum
 
 static int OwnerUserId[MAXENTITIES];
 static int UnitFlags[MAXENTITIES];
+static float VisionRange[MAXENTITIES];
+static float EngageRange[MAXENTITIES];
 static char NextGesture[MAXENTITIES][32];
 static ArrayList CommandList[MAXENTITIES];
 
@@ -37,6 +39,32 @@ methodmap UnitBody < CClotBody
 		public set(bool value)
 		{
 			i_NpcIsABuilding[this.index] = value;
+		}
+	}
+
+	// Range at which units can provide vision
+	property float m_flVisionRange
+	{
+		public get()
+		{
+			return VisionRange[this.index];
+		}
+		public set(float value)
+		{
+			VisionRange[this.index] = value;
+		}
+	}
+
+	// Range at which units will target automatically
+	property float m_flEngageRange
+	{
+		public get()
+		{
+			return EngageRange[this.index];
+		}
+		public set(float value)
+		{
+			EngageRange[this.index] = value;
 		}
 	}
 
@@ -68,6 +96,11 @@ methodmap UnitBody < CClotBody
 		command.Type = type;
 		command.TargetRef = target == -1 ? -1 : EntIndexToEntRef(target);
 		command.Pos = pos;
+
+		if(!CommandList[this.index])
+			CommandList[this.index] = new ArrayList(CommandEnum);
+		
+		CommandList[this.index].PushArray(command);
 	}
 
 	public bool IsAlly(int attacker)
@@ -91,6 +124,7 @@ methodmap UnitBody < CClotBody
 		
 		npc.m_hOwner = client;
 		npc.m_bBuilding = isBuilding;
+		npc.m_flVisionRange = 0.0;
 		npc.RemoveAllFlags();
 		NextGesture[npc.index][0] = 0;
 		delete CommandList[npc.index];
@@ -135,7 +169,7 @@ bool UnitBody_ThinkStart(UnitBody npc, float gameTime)
 	return true;
 }
 
-void UnitBody_ThinkTarget(UnitBody npc, float gameTime)
+int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 {
 	CommandEnum command;
 
@@ -153,8 +187,11 @@ void UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 			command.Type = Command_Idle;
 			GetAbsOrigin(npc.index, command.Pos);
 			command.TargetRef = -1;
+
+			npc.AddCommand(command);
 		}
 		
+		bool foundTarget;
 		int target = command.TargetRef == -1 ? -1 : EntRefToEntIndex(command.TargetRef);
 		if(target > 0)
 		{
@@ -163,12 +200,12 @@ void UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 				npc.m_iTarget = target;
 				npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
-				WorldSpaceCenter(target, command.Pos);
 				command.Type = Command_Attack;	// Force to always attack
+				foundTarget = true;
 			}
 			else if(IsValidEntity(target))	// Following something
 			{
-				WorldSpaceCenter(target, command.Pos);
+				
 			}
 			else	// Following target is now invalid
 			{
@@ -208,92 +245,132 @@ void UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 			}
 		}
 
-		
-	}
-	while(CommandList[npc.index]);
-}
-
-/*
-int UnitBody_ThinkTarget(int iNPC, bool camo, float gameTime, bool passive = false)
-{
-	UnitBody npc = view_as<UnitBody>(iNPC);
-
-	int client = GetClientOfUserId(npc.OwnerUserId);
-	bool newTarget = npc.m_flGetClosestTargetTime < gameTime;
-	
-	int command = Command_Aggressive;
-
-	if(client)
-		command = npc.CmdOverride == Command_Default ? Building_GetFollowerCommand(client) : npc.CmdOverride;
-	
-	bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer || command == Command_RTSMove);
-
-	if(!newTarget && !retreating)
-		newTarget = !IsValidEnemy(npc.index, npc.m_iTarget);
-
-	if(!newTarget && !retreating)
-		newTarget = !IsValidEnemy(npc.index, npc.m_iTargetRally);
-
-	if(newTarget)
-	{
-		if(client)
+		if(!foundTarget)
 		{
-			switch(command)
+			target = npc.m_iTarget;
+
+			if(canAttack)	// No existing target and time as passed
+				canAttack = (target < 1 && npc.m_flGetClosestTargetTime < gameTime);
+
+			if(canAttack || !IsValidEnemy(npc.index, target))
 			{
-				case Command_HoldPos, Command_HoldPosBarracks, Command_RTSMove, Command_RTSAttack:
-					npc.m_iTargetAlly = npc.index;
-			
-				case Command_DefensivePlayer, Command_RetreatPlayer:
-					npc.m_iTargetAlly = client;
-				
-				default:
-					npc.m_iTargetAlly = Building_GetFollowerEntity(client);
+				if(canAttack)
+				{
+					target = GetClosestTargetRTS(npc.index, npc.m_flEngageRange);
+				}
+				else
+				{
+					target = -1;
+				}
+
+				npc.m_iTarget = target;
 			}
 		}
-		else
-		{
-			npc.m_iTargetAlly = 0;
-		}
-		
-		if(!passive && !retreating)
-		{
-			npc.m_iTarget = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo);	
-		}
-		
-		if(npc.m_iTargetAlly > 0 && !passive)
-		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
-			npc.m_iTargetRally = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo, _, _, vecTarget, command != Command_Aggressive);
-		}
-		else
-		{
-			npc.m_iTargetRally = 0;
 
-			int entity = MaxClients + 1;
-			while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+		return target;
+	}
+	while(CommandList[npc.index]);
+
+	return -1;	// Should never happen
+}
+
+// Make sure to call UnitBody_ThinkTarget before this
+bool UnitBody_ThinkMove(UnitBody npc, float gameTime)
+{
+	int actions = CommandList[npc.index].Length;
+
+	CommandEnum command;
+	CommandList[npc.index].GetArray(actions - 1, command);
+
+	int taget = npc.m_iTarget;
+	if(target < 1)
+		target = command.TargetRef == -1 ? -1 : EntRefToEntIndex(command.TargetRef);
+	
+	float vecMe[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecMe);
+
+	if(target > 0 && command.Type != Command_HoldPos)
+	{
+		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", command.Pos);
+
+		float distance = GetVectorDistance(vecMe, command.Pos, true);
+		if(distance < npc.GetLeadRadius())
+		{
+			//Predict their pos.
+			PredictSubjectPosition(npc, target);
+			NPC_SetGoalVector(npc.index, vecTarget);
+		}
+		else
+		{
+			NPC_SetGoalEntity(npc.index, target);
+		}
+
+		npc.StartPathing();
+	}
+	else
+	{
+		// Move to location, then idle or move to next command
+		float distance = GetVectorDistance(vecMe, command.Pos, true);
+		if(distance < 2500.0)	// 50 HU
+		{
+			npc.StopPathing();
+
+			bool nextCommand = true;
+			switch(command.Type)
 			{
-				if(BarrackOwner[entity] == BarrackOwner[npc.index] && GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+				case Command_Idle, Command_HoldPos:
 				{
-					UnitBody ally = view_as<UnitBody>(entity);
-					if(ally.m_iTargetRally > 0 && IsValidEnemy(npc.index, ally.m_iTargetRally))
+					// Idle, move to next command if any
+
+					if(actions > 1)
+						nextCommand = true;
+				}
+				case Command_Move, Command_Attack:
+				{
+					// Moving, move to next command or idle
+
+					if(actions > 1)
 					{
-						npc.m_iTargetRally = ally.m_iTargetRally;
+						nextCommand = true;
+					}
+					else
+					{
+						command.Type = Command_Idle;
+						CommandList[npc.index].SetArray(actions - 1, command);
+					}
+				}
+				case Command_Patrol:
+				{
+					// Moving, move to next command and requeue current command
+
+					if(actions > 1)
+					{
+						nextCommand = true;
+						CommandList[npc.index].PushArray(command);
+						actions++;
+					}
+					else
+					{
+						command.Type = Command_Idle;
+						CommandList[npc.index].SetArray(actions - 1, command);
 					}
 				}
 			}
 
-			if(!passive)
-			{
-				if(npc.m_iTargetRally < 1)
-					npc.m_iTargetRally = npc.m_iTarget;
-			}
+			if(nextCommand)
+				CommandList[npc.index].Erase(actions - 1, command);
 		}
-
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+		else
+		{
+			NPC_SetGoalVector(npc.index, command.Pos);
+			npc.StartPathing();
+		}
 	}
-	return client;
+
+	return npc.m_bPathing;
 }
 
+/*
 void UnitBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", const char[] moveAnim = "", float canRetreat = 0.0, bool move = true, bool sound=true)
 {
 	UnitBody npc = view_as<UnitBody>(iNPC);
