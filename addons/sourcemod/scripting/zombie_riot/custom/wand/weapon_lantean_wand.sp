@@ -294,6 +294,7 @@ static void Set_Drones_Noclip(int client)
 	{
 		if(Is_Mine(entity, client))
 		{
+			b_ProjectileCollideIgnoreWorld[entity] = true;
 			SetEntityMoveType(entity, MOVETYPE_NOCLIP);
 			CreateTimer(2.5, Remove_Noclip_Timer, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		}
@@ -302,10 +303,11 @@ static void Set_Drones_Noclip(int client)
 }
 static Action Remove_Noclip_Timer(Handle Timer, int ref)
 {
-	int drone = EntRefToEntIndex(ref);
-	if(IsValidEntity(drone))
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
 	{
-		SetEntityMoveType(drone, MOVETYPE_FLY);
+		SetEntityMoveType(entity, MOVETYPE_FLY);
+		b_ProjectileCollideIgnoreWorld[entity] = false;
 	}
 	return Plugin_Stop;
 }

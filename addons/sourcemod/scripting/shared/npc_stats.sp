@@ -103,7 +103,7 @@ public Action Command_PetMenu(int client, int args)
 #elseif defined RTS
 		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [ally]");
 #else
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [ally] [damage multi] [speed multi] [ranged armour] [melee armour]");
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [ally] [damage multi] [speed multi] [ranged armour] [melee armour] [Extra Size]");
 #endif
 		return Plugin_Handled;
 	}
@@ -151,6 +151,15 @@ public Action Command_PetMenu(int client, int args)
 		
 		if(args > 7)
 			fl_Extra_MeleeArmor[entity] = GetCmdArgFloat(8);
+
+		if(args > 8)
+			fl_Extra_MeleeArmor[entity] = GetCmdArgFloat(9);
+
+		if(args > 9)
+		{
+			float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale * GetCmdArgFloat(10));
+		}
 	}
 #elseif defined RPG
 	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
@@ -176,7 +185,10 @@ public Action Command_PetMenu(int client, int args)
 			fl_Extra_RangedArmor[entity] = GetCmdArgFloat(8);
 		
 		if(args > 8)
-			fl_Extra_MeleeArmor[entity] = GetCmdArgFloat(9);
+		{
+			float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale * GetCmdArgFloat(9));
+		}
 	}
 #elseif defined RTS
 	int entity = Npc_Create(GetCmdArgInt(1), ally ? client : 0, flPos, flAng, buffer);
