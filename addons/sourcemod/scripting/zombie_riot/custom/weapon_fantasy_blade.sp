@@ -849,7 +849,7 @@ static Action Horizontal_Slicer_Tick(int client)
 		H_i_Slicer_Throttle[client] = 0;
 		for(int i=1 ; i<=H_SLICER_AMOUNT ; i++)
 		{
-			Fantasy_Blade_Damage_Trace(client, H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], 2.0, H_fl_damage[client]);
+			Fantasy_Blade_Damage_Trace(client, H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], 20.0, H_fl_damage[client]);
 			
 			TE_SetupBeamPoints(H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], gLaser2, 0, 0, 0, 0.051, 5.0, 5.0, 0, 0.1, colour, 1);
 			TE_SendToAll(0.0);
@@ -954,7 +954,7 @@ static Action Vertical_Slicer_Tick(int client)
 		skyloc = Cur_Vec;
 		skyloc[2] += 150.0;
 		Cur_Vec[2] -= 150.0;
-		Fantasy_Blade_Damage_Trace(client, Cur_Vec, skyloc, 4.0, fl_damage[client]);
+		Fantasy_Blade_Damage_Trace(client, Cur_Vec, skyloc, 40.0, fl_damage[client]);
 		TE_SetupBeamPoints(Cur_Vec, skyloc, gLaser2, 0, 0, 0, 0.051, 5.0, 5.0, 0, 0.1, colour, 1);
 		TE_SendToAll(0.0);
 	}
@@ -978,7 +978,7 @@ static void Fantasy_Blade_Damage_Trace(int client, float Vec_1[3], float Vec_2[3
 	hullMax[0] = -hullMin[0];
 	hullMax[1] = -hullMin[1];
 	hullMax[2] = -hullMin[2];
-	Handle trace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, 1073741824, Fantasy_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
+	Handle trace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, MASK_ALL, Fantasy_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 	
 	
