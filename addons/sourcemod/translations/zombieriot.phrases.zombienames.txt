@@ -1254,104 +1254,123 @@
 	"Nearl Radiant Sword"
 	{
 		"en"		"Nearl Radiant Sword"
+		"pt"		"Espada Quase Radiante"
 		"ru"		"Лучезарный меч Нерл"
 	}
 	"Spawned Combine"
 	{
 		"en"		"Spawned Combine"
+		"pt"		"Combine Gerado"
 		"ru"		"Созданный комбайн"
 	}
 	"Spawned Father Grigori"
 	{
 		"en"		"Spawned Father Grigori"
+		"pt"		"Pai Grigori Gerado"
 		"ru"		"Созданный отец Григорий"
 	}
 	"Spawned Blue Goggles"
 	{
 		"en"		"Spawned Blue Goggles"
+		"pt"		"Blue Goggles Gerado"
 		"ru"		"Созданный Блу Гогглз"
 	}
 	"Silvester"
 	{
 		"en"		"Silvester"
+		"pt"		"Silvester"
 		"ru"		"Сильвестр"
 	}
 	"Blue Goggles"
 	{
 		"en"		"Blue Goggles"
+		"pt"		"Blue Goggles"
 		"ru"		"Блу Гогглз"
 	}
 	"Angeled Silvester"
 	{
 		"en"		"Angeled Silvester"
+		"pt"		"Silvester Angulado"
 		"ru"		"Угловатый Сильвестр"
 	}
 	"Nemesis"
 	{
 		"en"		"Nemesis"
+		"pt"		"Nemesis"
 		"ru"		"Немезид"
 	}
 	"Enraged Nemesis"
 	{
 		"en"		"Enraged Nemesis"
+		"pt"		"Nemesis Enfurecido"
 	}
 	"Shell Sea Runner"
 	{
 		"en"		"Shell Sea Runner"
+		"pt"		"Corredor da Concha do Mar"
 		"ru"		"Морской бегун из ракушек"
 		"chi"		"壳海狂奔者"
 	}
 	"Nourished Runner"
 	{
 		"en"		"Nourished Runner"
+		"pt"		"Corredor Nutrido"
 		"ru"		"Сытый бегун"
 		"chi"		"富营养的狂奔者"
 	}
 	"Deep Sea Slider"
 	{
 		"en"		"Deep Sea Slider"
+		"pt"		"Deslizador do Mar Profundo"
 		"ru"		"Глубоководный ползун"
 		"chi"		"底海滑动者"
 	}
 	"Nourished Slider"
 	{
 		"en"		"Nourished Slider"
+		"pt"		"Deslizador Nutrido"
 		"ru"		"Сытый ползун"
 		"chi"		"富营养的滑动者"
 	}
 	"Ridge Sea Spitter"
 	{
 		"en"		"Ridge Sea Spitter"
+		"pt"		"Cuspidor do Mar da Crista"
 		"ru"		"Хребтовый морской плевальщик"
 		"chi"		"脊海喷吐者"
 	}
 	"Nourished Spitter"
 	{
 		"en"		"Nourished Spitter"
+		"pt"		"Cuspidor Nutrido"
 		"ru"		"Сытый плевальщик"
 		"chi"		"富营养的喷吐者"
 	}
 	"Basin Sea Reaper"
 	{
 		"en"		"Basin Sea Reaper"
+		"pt"		"Ceifador da Bacia do Mar"
 		"ru"		"Бассейновый жнец"
 		"chi"		"钵海收割者"
 	}
 	"Nourished Reaper"
 	{
 		"en"		"Nourished Reaper"
+		"pt"		"Ceifador Nutrido"
 		"ru"		"Сытый жнец"
 		"chi"		"富营养的收割者"
 	}
 	"Pocket Sea Crawler"
 	{
 		"en"		"Pocket Sea Crawler"
+		"pt"		"Rastejante do Mar de Bolso"
 		"ru"		"Карманный морской краулер"
 		"chi"		"囊海爬行者"
 	}
 	"Nourished Crawler"
 	{
 		"en"		"Nourished Crawler"
+		"pt"		"Rastejante Nutrido"
 		"ru"		"Сытый краулер"
 		"chi"		"富营养的爬行者"
 	}
