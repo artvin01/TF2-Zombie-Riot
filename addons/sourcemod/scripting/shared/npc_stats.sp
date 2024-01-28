@@ -8903,11 +8903,15 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	}
 	if(i_HowManyBombsHud[npc.index] > 0)
 	{
-		Format(HealthText, sizeof(HealthText), "%s!%i",HealthText, i_HowManyBombsHud[npc.index]);
+		Format(HealthText, sizeof(HealthText), "%s!(%i)",HealthText, i_HowManyBombsHud[npc.index]);
 	}
 	if(f_TimeFrozenStill[npc.index] > GetGameTime(npc.index))
 	{
 		Format(HealthText, sizeof(HealthText), "%s?",HealthText);
+	}
+	if(VausMagicaShieldLeft(npc.index) > 0)
+	{
+		Format(HealthText, sizeof(HealthText), "%sS(%i)",HealthText,VausMagicaShieldLeft(npc.index));
 	}
 	/*
 	if(IgniteFor[npc.index] > 0)
@@ -8949,6 +8953,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 #if defined RPG
 		Offset[2] += 30.0;
 #endif
+		Offset[2] += 15.0;
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 16, HealthColour, npc.index);
 	//	SDKHook(TextEntity, SDKHook_SetTransmit, BarrackBody_Transmit);
 	//	DispatchKeyValue(TextEntity, "font", "1");

@@ -149,6 +149,12 @@ public void WinterSnoweyGunner_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+	
+	if(npc.m_bAllowBackWalking)
+	{
+		if(IsValidEnemy(npc.index, npc.m_iTarget))
+			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 150.0);
+	}
 
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -174,17 +180,33 @@ public void WinterSnoweyGunner_ClotThink(int iNPC)
 		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 	
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		int SetGoalVectorIndex = 0;
+		SetGoalVectorIndex = WinterSnoweyGunnerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		switch(SetGoalVectorIndex)
 		{
-			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			case 0:
+			{
+				npc.m_bAllowBackWalking = false;
+				//Get the normal prediction code.
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3];
+					vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
+				}
+				else 
+				{
+					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				}
+			}
+			case 1:
+			{
+				npc.m_bAllowBackWalking = true;
+				float vBackoffPos[3];
+				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+			}
 		}
-		else 
-		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
-		}
-		WinterSnoweyGunnerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -231,7 +253,7 @@ public void WinterSnoweyGunner_NPCDeath(int entity)
 
 }
 
-void WinterSnoweyGunnerSelfDefense(WinterSnoweyGunner npc, float gameTime, int target, float distance)
+int WinterSnoweyGunnerSelfDefense(WinterSnoweyGunner npc, float gameTime, int target, float distance)
 {
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
@@ -270,6 +292,53 @@ void WinterSnoweyGunnerSelfDefense(WinterSnoweyGunner npc, float gameTime, int t
 				}
 				delete swingTrace;
 			}
+			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
+			{
+				//target is too far, try to close in
+				return 0;
+			}
+			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
+			{
+				if(Can_I_See_Enemy_Only(npc.index, target))
+				{
+					//target is too close, try to keep distance
+					return 1;
+				}
+			}
+			return 0;
+		}
+		else
+		{
+			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
+			{
+				//target is too far, try to close in
+				return 0;
+			}
+			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
+			{
+				if(Can_I_See_Enemy_Only(npc.index, target))
+				{
+					//target is too close, try to keep distance
+					return 1;
+				}
+			}
 		}
 	}
+	else
+	{
+		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
+		{
+			//target is too far, try to close in
+			return 0;
+		}
+		else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
+		{
+			if(Can_I_See_Enemy_Only(npc.index, target))
+			{
+				//target is too close, try to keep distance
+				return 1;
+			}
+		}
+	}
+	return 0;
 }

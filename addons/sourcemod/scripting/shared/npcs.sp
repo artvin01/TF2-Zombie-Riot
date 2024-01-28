@@ -1049,7 +1049,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype);
 
 #if defined ZR
-			VausMagicaShieldLogicNpcOnTakeDamage(victim, damage, damagetype);
+			VausMagicaShieldLogicNpcOnTakeDamage(victim, damage, damagetype,i_HexCustomDamageTypes[victim]);
 
 			OnTakeDamageWidowsWine(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 
@@ -1401,13 +1401,13 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		Debuff_added = true;
 		Debuff_added_hud = true;
-		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❣%i", Debuff_Adder, BleedAmountCountStack[victim]);			
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❣(%i)", Debuff_Adder, BleedAmountCountStack[victim]);			
 	}
 	if(i_HowManyBombsOnThisEntity[victim][attacker] > 0)
 	{
 		Debuff_added = true;
 		Debuff_added_hud = true;
-		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s!%i", Debuff_Adder, i_HowManyBombsOnThisEntity[victim][attacker]);
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s!(%i)", Debuff_Adder, i_HowManyBombsOnThisEntity[victim][attacker]);
 	}
 		
 	if(IgniteFor[victim] > 0) //burn
@@ -1510,6 +1510,16 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		}
 		Debuff_added = true;
 		Format(Debuff_Adder, sizeof(Debuff_Adder), "⍋%s", Debuff_Adder);
+	}
+	if(VausMagicaShieldLeft(victim) > 0)
+	{
+		if(Debuff_added_hud)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
+			Debuff_added_hud = false;
+		}
+		Debuff_added = true;
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "S(%i)%s",VausMagicaShieldLeft(victim),Debuff_Adder);
 	}
 	if(f_HussarBuff[victim] > GameTime) //hussar!
 	{

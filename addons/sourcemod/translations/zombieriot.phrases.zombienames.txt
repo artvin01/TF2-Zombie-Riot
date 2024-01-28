@@ -1949,4 +1949,8 @@
 	{
 		"en"	"Airborn Explorer"
 	}
+	"Arctic Mage"
+	{
+		"en"	"Arctic Mage"
+	}
 }

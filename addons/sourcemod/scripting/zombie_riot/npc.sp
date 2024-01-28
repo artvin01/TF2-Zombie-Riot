@@ -411,6 +411,7 @@ enum
 	INTERITUS_WINTER_SNOWEY_GUNNER	= 362,
 	INTERITUS_WINTER_FREEZING_CLEANER = 363,
 	INTERITUS_WINTER_AIRBORN_EXPLORER = 364,
+	INTERITUS_WINTER_ARCTIC_MAGE	  = 365,
 
 	MAX_NPC_TYPES	// Add entries above this line
 }
@@ -805,7 +806,8 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Ziberian Miner",
 	"Snowey Gunner",
 	"Freezing Cleaner",
-	"Airborn Explorer"
+	"Airborn Explorer",
+	"Arctic Mage"
 };
 
 // See items.sp for IDs to names
@@ -1572,7 +1574,8 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_ziberian_miner",
 	"npc_snowey_gunner",
 	"npc_freezing_cleaner",
-	"npc_airborn_explorer"
+	"npc_airborn_explorer",
+	"npc_arctic_mage"
 };
 
 void NPC_MapStart()
@@ -1849,6 +1852,7 @@ void NPC_MapStart()
 	WinterSnoweyGunner_OnMapStart_NPC();
 	WinterFreezingCleaner_OnMapStart_NPC();
 	WinterAirbornExplorer_OnMapStart_NPC();
+	WinterArcticMage_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2918,6 +2922,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case INTERITUS_WINTER_AIRBORN_EXPLORER:
 			entity = WinterAirbornExplorer(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_ARCTIC_MAGE:
+			entity = WinterArcticMage(client, vecPos, vecAng, ally);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -5169,3 +5176,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/winter/npc_snowey_gunner.sp"
 #include "zombie_riot/npc/interitus/winter/npc_freezing_cleaner.sp"
 #include "zombie_riot/npc/interitus/winter/npc_airborn_explorer.sp"
+#include "zombie_riot/npc/interitus/winter/npc_arctic_mage.sp"

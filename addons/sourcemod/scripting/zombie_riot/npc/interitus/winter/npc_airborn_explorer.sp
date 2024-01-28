@@ -6,6 +6,11 @@ static const char g_DeathSounds[][] = {
 	"vo/soldier_paincrticialdeath02.mp3",
 	"vo/soldier_paincrticialdeath03.mp3"
 };
+static const char g_JumpSound[][] = {
+	"vo/soldier_laughevil01.mp3",
+	"vo/soldier_laughevil02.mp3",
+	"vo/soldier_laughevil03.mp3",
+};
 
 static const char g_HurtSounds[][] = {
 	"vo/soldier_painsharp01.mp3",
@@ -34,11 +39,7 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/cleaver_hit_02.wav",
-	"weapons/cleaver_hit_03.wav",
-	"weapons/cleaver_hit_05.wav",
-	"weapons/cleaver_hit_06.wav",
-	"weapons/cleaver_hit_07.wav",
+	"mvm/melee_impacts/bat_baseball_hit_robo01.wav",
 };
 
 static const char g_MeleeAttackBackstabSounds[][] = {
@@ -48,6 +49,7 @@ static const char g_MeleeAttackBackstabSounds[][] = {
 void WinterAirbornExplorer_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_JumpSound));	   i++) { PrecacheSound(g_JumpSound[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
@@ -91,6 +93,10 @@ methodmap WinterAirbornExplorer < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
+	public void PlayJumpSound() 
+	{
+		EmitSoundToAll(g_JumpSound[GetRandomInt(0, sizeof(g_JumpSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
 	
 	public void PlayMeleeSound()
 	{
@@ -132,7 +138,7 @@ methodmap WinterAirbornExplorer < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 280.0;
 		
 		
 		int skin = 1;
@@ -279,10 +285,6 @@ void WinterAirbornExplorerSelfDefense(WinterAirbornExplorer npc, float gameTime,
 			static float hullcheckmaxs[3];
 			static float hullcheckmins[3];
 
-			//Defaults:
-			//hullcheckmaxs = view_as<float>( { 24.0, 24.0, 72.0 } );
-			//hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );
-
 			hullcheckmaxs = view_as<float>( { 35.0, 35.0, 200.0 } ); //check if above is free
 			hullcheckmins = view_as<float>( { -35.0, -35.0, 17.0 } );
 		
@@ -301,6 +303,7 @@ void WinterAirbornExplorerSelfDefense(WinterAirbornExplorer npc, float gameTime,
 					flMyPos[0] = flMyPos_2[0];
 					flMyPos[1] = flMyPos_2[1];
 					PluginBot_Jump(npc.index, flMyPos);
+					npc.PlayJumpSound();
 							
 					npc.m_flDoingAnimation = gameTime + 0.15;
 					npc.m_flNextRangedAttack = gameTime + 5.85;

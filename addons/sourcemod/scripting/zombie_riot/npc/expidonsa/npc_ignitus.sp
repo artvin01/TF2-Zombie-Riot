@@ -273,7 +273,7 @@ void IgnitusSelfdefense(Ignitus npc, float gameTime, int target, float distance)
 			
 			Handle swingTrace;
 			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1))//Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
 				target = TR_GetEntityIndex(swingTrace);	
