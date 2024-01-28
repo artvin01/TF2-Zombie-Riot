@@ -21,6 +21,8 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 
 void NPC_MapStart()
 {
+	UnitBody_MapStart();
+	EmpireBody_MapStart();
 }
 
 any Npc_Create(int index, int client, const float vecPos[3], const float vecAng[3], const char[] data = "")
@@ -66,3 +68,6 @@ void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 }
 
 #include "fortress_wars/npc/npc_base.sp"
+
+#include "fortress_wars/npc/empire/npc_base_empire.sp"
+#include "fortress_wars/npc/empire/npc_militia.sp"

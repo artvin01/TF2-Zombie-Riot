@@ -2057,7 +2057,8 @@ static void MoveUnit(int client, int entity, const float vecMovePos[3])
 	if(type < Command_Move)
 		type = Command_Move;
 	
-	UnitBody_AddCommand(entity, type, _, vecMovePos);
+	UnitBody_AddCommand(entity, type, vecMovePos);
+	
 #elseif defined ZR
 	f3_SpawnPosition[entity] = vecMovePos;
 

@@ -111,7 +111,6 @@ static float f_ZombieAntiDelaySpeedUp;
 static int i_ZombieAntiDelaySpeedUp;
 static Handle WaveTimer;
 
-static char LastWaveWas[64];
 static int WaveGiftItem;
 
 public Action Waves_ProgressTimer(Handle timer)
@@ -227,16 +226,8 @@ bool Waves_CallVote(int client)
 			Voting.GetArray(i, vote);
 			vote.Name[0] = CharToUpper(vote.Name[0]);
 			
-			if(vote.Level > 0 && LastWaveWas[0] && StrEqual(vote.Config, LastWaveWas))
-			{
-				Format(vote.Name, sizeof(vote.Name), "%s (Cooldown)", vote.Name);
-				menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
-			}
-			else
-			{
-				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
-				menu.AddItem(vote.Config, vote.Name, (Level[client] < vote.Level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			}
+			Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
+			menu.AddItem(vote.Config, vote.Name, (Level[client] < vote.Level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		}
 		
 		menu.ExitButton = false;
@@ -881,7 +872,6 @@ public Action Waves_EndVote(Handle timer, float time)
 				
 				delete Voting;
 				
-				strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
 				PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
 
 				char buffer[PLATFORM_MAX_PATH];

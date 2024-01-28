@@ -2102,6 +2102,14 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public void SetGoalEntity(int target, bool ignoretime = false)
 	{
+		if(i_IsABuilding[target] || b_IsVehicle[target])
+		{
+			//broken on targetting buildings...?
+			float pos[3]; GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+			this.SetGoalVector(pos, false);
+			return;
+		}
+
 		if(ignoretime || DelayPathing(this.index))
 		{
 			if(IsEntityTowerDefense(this.index))
@@ -3203,11 +3211,9 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		SDKUnhook(pThis, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
 		SDKUnhook(pThis, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 
-		
-		int Health = GetEntProp(pThis, Prop_Data, "m_iHealth");
-		Health *= -1;
-		
 #if defined ZR
+		int Health = -GetEntProp(pThis, Prop_Data, "m_iHealth");
+
 		if(client > 0 && client <= MaxClients)
 		{	
 			int overkill = RoundToNearest(Damage[pThis] - float(Health));
@@ -3840,6 +3846,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	return MRES_Ignored;
 }
 
+#if defined ZR
 void NPC_StartPathing(int entity)
 {
 	view_as<CClotBody>(entity).StartPathing();
@@ -3868,6 +3875,7 @@ void NPC_SetGoalEntity(int entity, int target)
 		view_as<CClotBody>(entity).SetGoalEntity(target);
 	}
 }
+#endif
 
 stock bool IsLengthGreaterThan(float vector[3], float length)
 {
@@ -4557,6 +4565,7 @@ stock int GetClosestTarget(int entity,
 stock int GetClosestTargetRTS(int entity,
   float fldistancelimit = 99999.9,
    bool camoDetection = false,
+	 int ingore_client = -1,
 	 float EntityLocation[3] = {0.0,0.0,0.0},
   		float MinimumDistance = 0.0,
   		Function ExtraValidityFunction = INVALID_FUNCTION)
@@ -4645,11 +4654,14 @@ stock int GetClosestTargetRTS(int entity,
 			if(IsValidEntity(entity_close) && entity_close != ingore_client)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
-				{
 #if defined RTS
+				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
+				{
 					if(UnitBody_IsAlly(searcher_team, entity_close))
 						continue;
+#else
+				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
+				{
 #endif
 
 #if !defined RTS
@@ -4772,7 +4784,11 @@ stock int GetClosestTargetRTS(int entity,
 	}
 #endif	// Non-RTS
 
+#if defined ZR
 	return GetClosestTarget_Internal(entity, fldistancelimit, fldistancelimitAllyNPC, EntityLocation, UseVectorDistance, MinimumDistance);
+#else
+	return GetClosestTarget_Internal(entity, fldistancelimit, EntityLocation, MinimumDistance);
+#endif
 }
 
 void GetClosestTarget_AddTarget(int entity, int type)
