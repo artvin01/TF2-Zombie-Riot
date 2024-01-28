@@ -359,7 +359,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				if(f_GogglesHurtTeleport[npc.index] > MaxHealthCalc * 0.25)
 				{
 					i_GogglesHurtTalkMessage[npc.index] = 2;
-					//got hurt by 25% hp.
+					//got hurt by 20% hp.
 					switch(GetRandomInt(1,3))
 					{
 						case 1:
@@ -495,7 +495,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				}
 				case 2:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: Just you and me asshole!");
+					CPrintToChatAll("{darkblue}Blue Goggles{default}: Just you and me!");
 				}
 			}
 		}
@@ -571,7 +571,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			b_NoGravity[npc.index] = false;
 			float flPos[3]; // original
 			b_DoNotUnStuck[npc.index] = false;
-				
+
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 			flPos[2] -= 70.0;
 			SDKCall_SetLocalOrigin(npc.index, flPos);

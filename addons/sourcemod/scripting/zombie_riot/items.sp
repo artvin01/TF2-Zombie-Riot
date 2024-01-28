@@ -159,7 +159,7 @@ public Action Items_GiveCmd(int client, int args)
 				}
 				else
 				{
-					Items_GiveIdItem(targets[i], id, true);
+					Items_GiveIdItem(targets[i], id);
 					ReplyToCommand(client, "Gave %N this item", targets[i]);
 				}
 			}
@@ -192,7 +192,7 @@ static int GetFlagsOfLevel(int client, int level)
 	return 0;
 }
 
-static bool AddFlagOfLevel(int client, int level, int flag, bool addition)
+static bool AddFlagOfLevel(int client, int level, int flag)
 {
 	static OwnedItem owned;
 	int length = OwnedItems.Length;
@@ -201,22 +201,16 @@ static bool AddFlagOfLevel(int client, int level, int flag, bool addition)
 		OwnedItems.GetArray(i, owned);
 		if(owned.Client == client && owned.Level == level)
 		{
-			if(addition || !(owned.Flags & flag))
+			if(!(owned.Flags & flag))
 			{
-				if(addition)
-				{
-					owned.Flags += flag;
-					OwnedItems.SetArray(i, owned);
-				}
+				owned.Flags += flag;
+				OwnedItems.SetArray(i, owned);
 				return true;
 			}
 
 			return false;
 		}
 	}
-
-	if(!addition)
-		return true;
 		
 	owned.Client = client;
 	owned.Level = level;
@@ -277,9 +271,9 @@ stock void Items_GiveNPCKill(int client, int id)
 	//AddFlagOfLevel(client, -id, 1, true);
 }
 
-bool Items_GiveIdItem(int client, int id, bool addition = false)
+bool Items_GiveIdItem(int client, int id)
 {
-	return AddFlagOfLevel(client, IdToLevel(id), IdToFlag(id), addition);
+	return AddFlagOfLevel(client, IdToLevel(id), IdToFlag(id));
 }
 
 bool Items_GiveNamedItem(int client, const char[] name)
@@ -293,7 +287,7 @@ bool Items_GiveNamedItem(int client, const char[] name)
 			GiftItems.GetArray(i, item);
 			if(StrEqual(item.Name, name, false))
 			{
-				AddFlagOfLevel(client, IdToLevel(i), IdToFlag(i), true);
+				AddFlagOfLevel(client, IdToLevel(i), IdToFlag(i));
 				return true;
 			}
 		}
@@ -598,12 +592,11 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 								continue;
 							}
 
-							if(Items_GiveIdItem(client, items[i], false))	// Gives item, returns true if newly obtained, false if they already have
+							if(Items_GiveIdItem(client, items[i]))	// Gives item, returns true if newly obtained, false if they already have
 							{
 								static const char Colors[][] = { "default", "green", "blue", "yellow", "darkred" };
 								
 								GiftItems.GetArray(items[i], item);
-								Items_GiveIdItem(client, items[i], true);
 								CPrintToChat(client, "{default}You have found {%s}%s{default}!", Colors[r], item.Name);
 								r = -1;
 								length = 0;
@@ -808,9 +801,10 @@ bool Item_ClientHasAllRarity(int client, int rarity)
 			i = -1;
 			continue;
 		}
-		if(Items_GiveIdItem(client, items[i], false))	// Gives item, returns true if newly obtained, false if they already have
+
+		if(!Items_HasIdItem(client, items[i]))
 		{
-			GiftItems.GetArray(items[i], item);
+			//GiftItems.GetArray(items[i], item);
 			length = 0;
 			break;
 		}

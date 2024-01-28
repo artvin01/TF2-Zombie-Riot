@@ -110,7 +110,7 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 
 	//todo: If needed, add a delay so it doesnt happen on every swing
 	bool ThereWasSeaborn = false;
-	if(!StrContains(WhatDifficultySetting, "Schwert & Donner") || !StrContains(WhatDifficultySetting, "You."))
+	if(!StrContains(WhatDifficultySetting_Internal, "Schwert & Donner") || !StrContains(WhatDifficultySetting_Internal, "You."))
 	{
 		ThereWasSeaborn = true;
 	}
