@@ -1929,4 +1929,24 @@
 	{
 		"en"	"Ancient Demon"
 	}
+	"Winter Sniper"
+	{
+		"en"	"Winter Sniper"
+	}
+	"Ziberian Miner"
+	{
+		"en"	"Ziberian Miner"
+	}
+	"Snowey Gunner"
+	{
+		"en"	"Snowey Gunner"
+	}
+	"Freezing Cleaner"
+	{
+		"en"	"Freezing Cleaner"
+	}
+	"Airborn Explorer"
+	{
+		"en"	"Airborn Explorer"
+	}
 }

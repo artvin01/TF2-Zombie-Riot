@@ -2,51 +2,53 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/spy_paincrticialdeath01.mp3",
-	"vo/spy_paincrticialdeath02.mp3",
-	"vo/spy_paincrticialdeath03.mp3",
+	"vo/heavy_paincrticialdeath01.mp3",
+	"vo/heavy_paincrticialdeath02.mp3",
+	"vo/heavy_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/spy_painsharp01.mp3",
-	"vo/spy_painsharp02.mp3",
-	"vo/spy_painsharp03.mp3",
-	"vo/spy_painsharp04.mp3",
+	"vo/heavy_painsharp01.mp3",
+	"vo/heavy_painsharp02.mp3",
+	"vo/heavy_painsharp03.mp3",
+	"vo/heavy_painsharp04.mp3",
+	"vo/heavy_painsharp05.mp3",
 };
 
+
 static const char g_IdleAlertedSounds[][] = {
-	"vo/spy_battlecry01.mp3",
-	"vo/spy_battlecry02.mp3",
-	"vo/spy_battlecry03.mp3",
-	"vo/spy_battlecry04.mp3",
+	"vo/taunts/heavy_taunts16.mp3",
+	"vo/taunts/heavy_taunts18.mp3",
+	"vo/taunts/heavy_taunts19.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/pickaxe_swing1.wav",
-	"weapons/pickaxe_swing2.wav",
-	"weapons/pickaxe_swing3.wav",
+	"vo/heavy_meleeing01.mp3",
+	"vo/heavy_meleeing02.mp3",
+	"vo/heavy_meleeing03.mp3",
+	"vo/heavy_meleeing04.mp3",
+	"vo/heavy_meleeing05.mp3",
+	"vo/heavy_meleeing06.mp3",
+	"vo/heavy_meleeing07.mp3",
+	"vo/heavy_meleeing08.mp3",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/cleaver_hit_02.wav",
-	"weapons/cleaver_hit_03.wav",
-	"weapons/cleaver_hit_05.wav",
-	"weapons/cleaver_hit_06.wav",
-	"weapons/cleaver_hit_07.wav",
+	"weapons/shotgun_shoot.wav",
 };
 
-void DesertAtilla_OnMapStart_NPC()
+
+void WinterSnoweyGunner_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	PrecacheModel("models/player/medic.mdl");
 }
 
 
-methodmap DesertAtilla < CClotBody
+methodmap WinterSnoweyGunner < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -76,7 +78,7 @@ methodmap DesertAtilla < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -85,16 +87,21 @@ methodmap DesertAtilla < CClotBody
 	}
 	
 	
-	public DesertAtilla(int client, float vecPos[3], float vecAng[3], bool ally)
+	public WinterSnoweyGunner(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		DesertAtilla npc = view_as<DesertAtilla>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally));
+		WinterSnoweyGunner npc = view_as<WinterSnoweyGunner>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "2000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_DESERT_ATILLA;
+		i_NpcInternalId[npc.index] = INTERITUS_WINTER_SNOWEY_GUNNER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+		
+		SetVariantInt(0);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+		
+		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -102,38 +109,40 @@ methodmap DesertAtilla < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(DesertAtilla_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertAtilla_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(DesertAtilla_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(WinterSnoweyGunner_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(WinterSnoweyGunner_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(WinterSnoweyGunner_ClotThink);
 		
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 280.0;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-	
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_boston_basher/c_boston_basher.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_shotgun/c_shotgun.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/dec22_heavy_heating_style1/dec22_heavy_heating_style1.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/sbox2014_heavy_camopants/sbox2014_heavy_camopants.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/dec22_lumbercap/dec22_lumbercap_heavy.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/cc_summer2015_el_duderino/cc_summer2015_el_duderino.mdl");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/spy/sum23_professionnel_style1/sum23_professionnel_style1.mdl");
-
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/spy/dec23_covert_covers/dec23_covert_covers.mdl");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}
 }
 
-public void DesertAtilla_ClotThink(int iNPC)
+public void WinterSnoweyGunner_ClotThink(int iNPC)
 {
-	DesertAtilla npc = view_as<DesertAtilla>(iNPC);
+	WinterSnoweyGunner npc = view_as<WinterSnoweyGunner>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -175,7 +184,7 @@ public void DesertAtilla_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		DesertAtillaSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		WinterSnoweyGunnerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -185,9 +194,9 @@ public void DesertAtilla_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action DesertAtilla_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action WinterSnoweyGunner_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	DesertAtilla npc = view_as<DesertAtilla>(victim);
+	WinterSnoweyGunner npc = view_as<WinterSnoweyGunner>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -201,15 +210,18 @@ public Action DesertAtilla_OnTakeDamage(int victim, int &attacker, int &inflicto
 	return Plugin_Changed;
 }
 
-public void DesertAtilla_NPCDeath(int entity)
+public void WinterSnoweyGunner_NPCDeath(int entity)
 {
-	DesertAtilla npc = view_as<DesertAtilla>(entity);
+	WinterSnoweyGunner npc = view_as<WinterSnoweyGunner>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 		
-	
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -219,71 +231,44 @@ public void DesertAtilla_NPCDeath(int entity)
 
 }
 
-void DesertAtillaSelfDefense(DesertAtilla npc, float gameTime, int target, float distance)
+void WinterSnoweyGunnerSelfDefense(WinterSnoweyGunner npc, float gameTime, int target, float distance)
 {
-	if(npc.m_flAttackHappens)
-	{
-		if(npc.m_flAttackHappens < gameTime)
-		{
-			npc.m_flAttackHappens = 0.0;
-			
-			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
-			{
-							
-				target = TR_GetEntityIndex(swingTrace);	
-				
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-				
-				if(IsValidEnemy(npc.index, target))
-				{
-					float damageDealt = 25.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
-
-					if(!NpcStats_IsEnemySilenced(npc.index))
-					{
-						if(target > MaxClients)
-						{
-							StartBleedingTimer_Against_Client(target, npc.index, 4.0, 5);
-						}
-						else
-						{
-							if (!IsInvuln(target))
-							{
-								StartBleedingTimer_Against_Client(target, npc.index, 4.0, 5);
-							}
-						}
-					}
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-
-					// Hit sound
-					npc.PlayMeleeHitSound();
-				} 
-			}
-			delete swingTrace;
-		}
-	}
-
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.5))
 		{
-			int Enemy_I_See;
-								
-			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 					
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
+				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 				npc.m_iTarget = Enemy_I_See;
-				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
+				npc.PlayMeleeHitSound();
+				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+				npc.FaceTowards(vecTarget, 20000.0);
+				Handle swingTrace;
+				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
+				{
+					target = TR_GetEntityIndex(swingTrace);	
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.2;
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					float origin[3], angles[3];
+					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
+					ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
+					npc.m_flNextMeleeAttack = gameTime + 1.0;
+
+					if(IsValidEnemy(npc.index, target))
+					{
+						float damageDealt = 10.0;
+						if(ShouldNpcDealBonusDamage(target))
+							damageDealt *= 3.0;
+
+
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
+					}
+				}
+				delete swingTrace;
 			}
 		}
 	}
