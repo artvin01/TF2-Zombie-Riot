@@ -905,8 +905,8 @@ public Action Waves_EndVote(Handle timer, float time)
 				ExcuteRelay("zr_waveselected", WhatDifficultySetting);
 				
 				vote.Name[0] = CharToUpper(vote.Name[0]);
-        strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), vote.Name);
-        strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), vote.Name);
+				strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), vote.Name);
+				strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), vote.Name);
 				
 				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
 				KeyValues kv = new KeyValues("Waves");
