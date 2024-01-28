@@ -4527,7 +4527,7 @@ stock bool IsValidAllyPlayer(int index, int Ally)
 int GetClosestTarget_EnemiesToCollect[MAXENTITIES];
 int GetClosestTarget_Enemy_Type[MAXENTITIES];
 
-#if defined RTS
+#if defined ZR
 stock int GetClosestTarget(int entity,
  bool IgnoreBuildings = false,
   float fldistancelimit = 99999.9,
@@ -4782,7 +4782,7 @@ void GetClosestTarget_ResetAllTargets()
 	Zero(GetClosestTarget_Enemy_Type);
 }
 
-#if defined RTS
+#if defined ZR
 int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistancelimitAllyNPC, const float EntityLocation[3], bool UseVectorDistance, float MinimumDistance)
 #else
 int GetClosestTarget_Internal(int entity, float fldistancelimit, const float EntityLocation[3], float MinimumDistance)

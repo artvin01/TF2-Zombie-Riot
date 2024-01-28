@@ -876,35 +876,42 @@ public Action Waves_EndVote(Handle timer, float time)
 						highest = i;
 				}
 				
-				//if(votes[highest])
-				{
-					Vote vote;
-					Voting.GetArray(highest, vote);
-					
-					delete Voting;
-					
-					strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
-					PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
+				Vote vote;
+				Voting.GetArray(highest, vote);
+				
+				delete Voting;
+				
+				strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
+				PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
 
-					Queue_DifficultyVoteEnded();
-					Native_OnDifficultySet(highest);
-					
-					if(highest > 3)
-						highest = 3;
-					
-					Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "FireUser%d", highest + 1);
-					ExcuteRelay("zr_waveselected", WhatDifficultySetting);
-					
-					vote.Name[0] = CharToUpper(vote.Name[0]);
-					strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), vote.Name);
-					
-					char buffer[PLATFORM_MAX_PATH];
-					BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
-					KeyValues kv = new KeyValues("Waves");
+				char buffer[PLATFORM_MAX_PATH];
+				if(votes[highest] > 3)
+				{
+					BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "vote_trackedvotes.cfg");
+					KeyValues kv = new KeyValues("TrackedVotes");
 					kv.ImportFromFile(buffer);
-					Waves_SetupWaves(kv, false);
+					kv.SetNum(vote.Name, kv.GetNum(vote.Name) + 1);
+					kv.ExportToFile(buffer);
 					delete kv;
 				}
+
+				Queue_DifficultyVoteEnded();
+				Native_OnDifficultySet(highest);
+				
+				if(highest > 3)
+					highest = 3;
+				
+				Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "FireUser%d", highest + 1);
+				ExcuteRelay("zr_waveselected", WhatDifficultySetting);
+				
+				vote.Name[0] = CharToUpper(vote.Name[0]);
+				strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), vote.Name);
+				
+				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
+				KeyValues kv = new KeyValues("Waves");
+				kv.ImportFromFile(buffer);
+				Waves_SetupWaves(kv, false);
+				delete kv;
 			}
 		}
 		else
