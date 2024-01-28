@@ -134,7 +134,7 @@ void PlayTeamDeadSound()
 	{
 		if(IsClientInGame(client) && !IsFakeClient(client))
 		{
-			EmitSoundToClient(client, g_LastMannAnnouncer[RandomInt], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+			EmitSoundToClient(client, g_LastMannAnnouncer[RandomInt- 1], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 		}
 	}	
 }
@@ -178,6 +178,7 @@ void Music_RoundEnd(int victim, bool music = true)
 	ResetReplications();
 	cvarTimeScale.SetFloat(0.1);
 	CreateTimer(0.5, SetTimeBack);
+	RemoveAllCustomMusic();
 }
 
 public Action SetTimeBack(Handle timer)

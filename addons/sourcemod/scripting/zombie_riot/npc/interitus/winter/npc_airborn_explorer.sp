@@ -165,6 +165,15 @@ methodmap WinterAirbornExplorer < CClotBody
 public void WinterAirbornExplorer_ClotThink(int iNPC)
 {
 	WinterAirbornExplorer npc = view_as<WinterAirbornExplorer>(iNPC);
+	if (!npc.IsOnGround())
+	{
+		npc.m_flRangedArmor = 2.0;
+	}
+	else
+	{
+		npc.m_flRangedArmor = 1.0;
+	}
+	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;

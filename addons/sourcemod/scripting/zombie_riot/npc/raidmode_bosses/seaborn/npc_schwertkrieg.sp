@@ -337,6 +337,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		npc.m_flSpeed =330.0;
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 			
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -1806,6 +1807,7 @@ static int Create_Blade(float Loc[3], char size[10])
 		CClotBody npc = view_as<CClotBody>(prop);
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 
 		SetVariantColor(view_as<int>({3, 244, 252, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");

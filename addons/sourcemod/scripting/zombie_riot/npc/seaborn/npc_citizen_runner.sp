@@ -38,6 +38,7 @@ methodmap CitizenRunner < CClotBody
 		npc.m_flFlamerActive = GetGameTime() + 3.0;
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 		SetVariantColor(view_as<int>({255, 200, 0, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 

@@ -1091,6 +1091,7 @@ void Rogue_NextProgress()
 					SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
 					DispatchSpawn(entity);
 					AcceptEntityInput(entity, "RoundWin");
+					RemoveAllCustomMusic();
 				}
 				else
 				{

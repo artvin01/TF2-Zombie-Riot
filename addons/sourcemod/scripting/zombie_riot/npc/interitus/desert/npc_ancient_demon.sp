@@ -445,7 +445,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 	i_RaidGrantExtra[ally] = 999;
 	if(IsValidEntity(NpcSpawnDemon))
 	{
-		flMaxHealth /= 20;
+		flMaxHealth /= 40;
 		if(GetEntProp(NpcSpawnDemon, Prop_Send, "m_iTeamNum") != 2)
 		{
 			Zombies_Currently_Still_Ongoing += 1;

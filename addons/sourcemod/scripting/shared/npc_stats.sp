@@ -1914,7 +1914,24 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
-	
+	property int m_iInvulWearable
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_InvincibleParticle[this.index]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_InvincibleParticle[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_InvincibleParticle[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	public int GetTeam()  { return GetEntProp(this.index, Prop_Send, "m_iTeamNum"); }
 	
 	public PathFollower GetPathFollower()
@@ -3167,6 +3184,8 @@ static void OnDestroy(CClotBody body)
 		RemoveEntity(body.m_iTextEntity5);
 	if(IsValidEntity(body.m_iFreezeWearable))
 		RemoveEntity(body.m_iFreezeWearable);
+	if(IsValidEntity(body.m_iInvulWearable))
+		RemoveEntity(body.m_iInvulWearable);
 	if(IsValidEntity(body.m_iWearable1))
 		RemoveEntity(body.m_iWearable1);
 	if(IsValidEntity(body.m_iSpeechBubble))
@@ -3267,6 +3286,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			RemoveEntity(npc.m_iTextEntity5);
 		if(IsValidEntity(npc.m_iFreezeWearable))
 			RemoveEntity(npc.m_iFreezeWearable);
+		if(IsValidEntity(npc.m_iInvulWearable))
+			RemoveEntity(npc.m_iInvulWearable);
 		if(IsValidEntity(npc.m_iSpeechBubble))
 			RemoveEntity(npc.m_iSpeechBubble);
 		
@@ -5429,6 +5450,7 @@ public void NpcBaseThink(int iNPC)
 		f_TextEntityDelay[iNPC] = GetGameTime() + 0.1;
 		Npc_DebuffWorldTextUpdate(npc);
 		Npc_BossHealthBar(npc);
+		IsEntityInvincible_Shield(iNPC);
 	}
 
 	if(i_CurrentEquippedPerk[iNPC] == 1 && f_QuickReviveHealing[iNPC] < GetGameTime())
@@ -7709,6 +7731,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Wearable[entity][5] = -1;
 	i_Wearable[entity][6] = -1;
 	i_FreezeWearable[entity] = -1;
+	i_InvincibleParticle[entity] = -1;
 	f3_SpawnPosition[entity][0] = 0.0;
 	f3_SpawnPosition[entity][1] = 0.0;
 	f3_SpawnPosition[entity][2] = 0.0;
@@ -8816,6 +8839,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 		}	
 		return;	
 	}
+	
 #if defined RTS
 	int NpcTypeDefine = 1;
 #else
@@ -10050,3 +10074,45 @@ public Action Timer_CheckIfRaidIsActive(Handle timer, any entid)
 	return Plugin_Handled;
 }
 #endif
+
+
+
+void IsEntityInvincible_Shield(int entity)
+{
+	if(!b_NpcIsInvulnerable[entity] || b_ThisEntityIgnored[entity])
+	{
+		IsEntityInvincible_ShieldRemove(entity);
+		return;
+	}
+	if(IsValidEntity(i_InvincibleParticle[entity]))
+	{
+		int Shield = EntRefToEntIndex(i_InvincibleParticle[entity]);
+		SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(Shield, 0, 255, 0, 255);
+		return;
+	}
+
+	CClotBody npc = view_as<CClotBody>(entity);
+	int Shield = npc.EquipItem("root", "models/effects/resist_shield/resist_shield.mdl");
+	if(b_IsGiant[entity])
+		SetVariantString("1.38");
+	else
+		SetVariantString("1.05");
+
+	AcceptEntityInput(Shield, "SetModelScale");
+	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
+	
+	SetEntityRenderColor(Shield, 0, 255, 0, 255);
+	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
+
+	i_InvincibleParticle[entity] = EntIndexToEntRef(Shield);
+}
+
+void IsEntityInvincible_ShieldRemove(int entity)
+{
+	if(!IsValidEntity(i_InvincibleParticle[entity]))
+		return;
+
+	RemoveEntity(EntRefToEntIndex(i_InvincibleParticle[entity]));
+	i_InvincibleParticle[entity] = INVALID_ENT_REFERENCE;
+}

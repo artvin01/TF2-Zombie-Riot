@@ -1953,4 +1953,12 @@
 	{
 		"en"	"Arctic Mage"
 	}
+	"Frost Hunter"
+	{
+		"en"	"Frost Hunter"
+	}
+	"Skin Hunter"
+	{
+		"en"	"Skin Hunter"
+	}
 }

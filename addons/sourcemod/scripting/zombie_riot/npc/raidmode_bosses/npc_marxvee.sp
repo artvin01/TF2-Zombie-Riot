@@ -65,6 +65,7 @@ methodmap Marxvee < CClotBody
 		npc.m_bThisNpcIsABoss = true;
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 		SetVariantColor(view_as<int>({200, 40, 200, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 

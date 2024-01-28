@@ -87,6 +87,7 @@ methodmap GodArkantos < CClotBody
 		public get()							{ return fl_GrappleCooldown[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_GrappleCooldown[this.index] = TempValueForProperty; }
 	}
+	/*
 	public void ArkantosFakeDeathState(int state)
 	{
 		if(state == 1)
@@ -137,6 +138,7 @@ methodmap GodArkantos < CClotBody
 			}
 		}
 	}
+	*/
 	public void PlayIdleAlertSound()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -249,6 +251,7 @@ methodmap GodArkantos < CClotBody
 		i_TalkDelayCheck = 0;
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 		b_angered_twice[npc.index] = false;
 
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
@@ -261,6 +264,7 @@ methodmap GodArkantos < CClotBody
 		}
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		npc.Anger = false;
 
 		npc.m_flArkantosBuffEffect = GetGameTime() + 25.0;
 		npc.m_flRangedSpecialDelay = GetGameTime() + 10.0;
@@ -368,21 +372,43 @@ public void GodArkantos_ClotThink(int iNPC)
 		}
 		return;
 	}
+	if(npc.m_flSpeed == 320.0)
+	{
+		if(f_GodArkantosBuff[npc.index] > gameTime)
+		{
+			npc.m_flSpeed = 220.0;
+		}
+	}
+	else if(npc.m_flSpeed == 220.0)
+	{
+		if(f_GodArkantosBuff[npc.index] < gameTime)
+		{
+			npc.m_flSpeed = 320.0;
+		}		
+	}
 	if(npc.m_flNextDelayTime > gameTime)
 	{
 		return;
 	}
-
-	if(npc.m_flDoingSpecial < gameTime)
+	if(npc.Anger)
 	{
-		npc.m_flRangedArmor = 1.0;
-		npc.m_flMeleeArmor = 1.25;
+		npc.m_flRangedArmor = 0.3;
+		npc.m_flMeleeArmor = 0.35;
 	}
 	else
 	{
-		npc.m_flRangedArmor = 0.75;
-		npc.m_flMeleeArmor = 0.9;
+		if(npc.m_flDoingSpecial < gameTime)
+		{
+			npc.m_flRangedArmor = 1.0;
+			npc.m_flMeleeArmor = 1.25;
+		}
+		else
+		{
+			npc.m_flRangedArmor = 0.5;
+			npc.m_flMeleeArmor = 0.65;
+		}		
 	}
+
 
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
@@ -393,6 +419,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
+	/*
 	if(npc.m_flReviveArkantosTime)
 	{
 		if(npc.m_flReviveArkantosTime < gameTime)
@@ -426,7 +453,6 @@ public void GodArkantos_ClotThink(int iNPC)
 	}
 	if(b_ThisEntityIgnored[npc.index])
 	{
-
 		int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4000;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealByThis);
 		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
@@ -447,6 +473,35 @@ public void GodArkantos_ClotThink(int iNPC)
 			npc.ArkantosFakeDeathState(0);
 		}
 		return;
+	}
+	*/
+	if(npc.g_TimesSummoned == 4)
+	{
+		bool allyAlive = false;
+		for(int targ; targ<i_MaxcountNpc; targ++)
+		{
+			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != RAIDMODE_GOD_ARKANTOS)
+			{
+				allyAlive = true;
+			}
+		}
+		if(!Waves_IsEmpty())
+			allyAlive = true;
+			
+		if(allyAlive)
+		{
+			b_NpcIsInvulnerable[npc.index] = true;
+		}
+		else
+		{
+			if(!npc.Anger)
+			{
+				ArkantosSayWordsAngry();
+				npc.Anger = true;
+				b_NpcIsInvulnerable[npc.index] = false;
+			}
+		}
 	}
 	npc.PlayIdleAlertSound();
 
@@ -492,7 +547,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		{
 			ActionToTake = -1;
 		}
-		else if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo))
+		else if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo) && !(ZR_GetWaveCount()+1 > 30 && npc.Anger && npc.m_flArkantosBuffEffect < GetGameTime(npc.index)))
 		{
 			if(flDistanceToTarget < (500.0 * 500.0) && flDistanceToTarget > (250.0 * 250.0) && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 			{
@@ -505,9 +560,9 @@ public void GodArkantos_ClotThink(int iNPC)
 				ActionToTake = 2;
 			}
 		}
-		else if(IsValidAlly(npc.index, npc.m_iTargetWalkTo))
+		else if(IsValidAlly(npc.index, npc.m_iTargetWalkTo) || npc.Anger)
 		{
-			if(flDistanceToTarget < (125.0* 125.0) && npc.m_flArkantosBuffEffect < GetGameTime(npc.index) && ZR_GetWaveCount()+1 > 30)
+			if((npc.Anger || flDistanceToTarget < (125.0* 125.0)) && npc.m_flArkantosBuffEffect < GetGameTime(npc.index) && ZR_GetWaveCount()+1 > 30)
 			{
 				//can only be above wave 15.
 				ActionToTake = -1;
@@ -544,18 +599,24 @@ public void GodArkantos_ClotThink(int iNPC)
 					npc.SetActivity("ACT_JUMP");
 					npc.m_bisWalking = false;
 					npc.SetPlaybackRate(1.0);
+					npc.m_iTarget = -1;
 				}
-
+				
 				npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 1.5;
+				if(npc.Anger)
+					npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 1.0;
+
 				if(npc.g_TimesSummoned == 4)
 				{
 					npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 10.0;
-
 				}
 				else
 				{
 					npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 20.0;
 				}
+				if(npc.Anger)
+					npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 7.0;
+
 				npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0; //lets not intiate any new ability for a second.
 				npc.m_fbRangedSpecialOn = true;
 				//just jump at them.
@@ -570,6 +631,14 @@ public void GodArkantos_ClotThink(int iNPC)
 				npc.m_flNextRangedAttackHappening = GetGameTime(npc.index) + 3.0; //3 seconds to prepare.
 				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 20.0;
 				npc.m_flDoingAnimation = GetGameTime(npc.index) + 4.5; //lets not intiate any new ability for a second.
+				if(npc.Anger)
+				{
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 10.0;
+					npc.m_flNextRangedAttackHappening = GetGameTime(npc.index) + 1.5; //1.5 seconds to prepare.
+					npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.5; //lets not intiate any new ability for a second.
+				}
+
+				
 			}
 		}
 	}
@@ -610,27 +679,19 @@ public Action GodArkantos_OnTakeDamage(int victim, int &attacker, int &inflictor
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	bool allyAlive = false;
-	for(int targ; targ<i_MaxcountNpc; targ++)
+	if(!npc.Anger)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != RAIDMODE_GOD_ARKANTOS)
+		int health = GetEntProp(victim, Prop_Data, "m_iHealth") - RoundToCeil(damage);
+		if(health < 1)
 		{
-			allyAlive = true;
+			SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+			damage = 0.0;
+			return Plugin_Handled;
 		}
 	}
-	int health = GetEntProp(victim, Prop_Data, "m_iHealth") - RoundToFloor(damage);
-	if(health < 1 && (allyAlive || npc.g_TimesSummoned != 4 || f_ArkantosCantDieLimit[npc.index] > GetGameTime()))
-	{
-		npc.ArkantosFakeDeathState(1);
-		SetEntProp(victim, Prop_Data, "m_iHealth", 1);
-		damage = 0.0;
-		return Plugin_Handled;
-	}
-
 	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
-		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+		if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 			b_angered_twice[npc.index] = true;
@@ -685,7 +746,6 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
 			npc.g_TimesSummoned = 3;
-			ArkantosSayWords();
 			RaidModeTime += 5.0;
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			npc.PlaySummonSound();
@@ -695,6 +755,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4);
+			ArkantosSayWords();
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
@@ -742,7 +804,6 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
 			npc.g_TimesSummoned = 3;
-			ArkantosSayWords();
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
@@ -752,6 +813,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4);
+			ArkantosSayWords();
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
@@ -800,7 +863,6 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
 			npc.g_TimesSummoned = 3;
-			ArkantosSayWords();
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
@@ -810,6 +872,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4);
+			ArkantosSayWords();
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
@@ -857,7 +921,6 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
 			npc.g_TimesSummoned = 3;
-			ArkantosSayWords();
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
@@ -868,6 +931,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4);
+			ArkantosSayWords();
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
@@ -980,8 +1045,11 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 {
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index);
+			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		}
 	}
 	
 	//This code is only here so they defend themselves incase any enemy is too close to them. otherwise it is completly disconnected from any other logic.
@@ -1080,13 +1148,25 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 
 					npc.m_flDoingAnimation = gameTime + 0.25;
 					npc.m_flNextMeleeAttack = gameTime + 0.65;
+					if(npc.Anger)
+					{
+						npc.m_flAttackHappens = gameTime + 0.125;
+						npc.m_flDoingAnimation = gameTime + 0.125;
+						npc.m_flNextMeleeAttack = gameTime + 0.35;
+						int layerCount = CBaseAnimatingOverlay(npc.index).GetNumAnimOverlays();
+						for(int i; i < layerCount; i++)
+						{
+							view_as<CClotBody>(npc.index).SetLayerPlaybackRate(i, 2.0);
+						}
+					}
 				}
 			}
 		}
 		else
 		{
 			npc.m_flGetClosestTargetTime = 0.0;
-			npc.m_iTarget = GetClosestTarget(npc.index);
+			if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
+				npc.m_iTarget = GetClosestTarget(npc.index);
 		}	
 	}
 }
@@ -1096,13 +1176,16 @@ void GodArkantosJumpSpecial(GodArkantos npc, float gameTime)
 	if(npc.m_flNextRangedSpecialAttackHappens)
 	{
 		static float ThrowPos[3]; 
-		int TargetToLungeTo = GetClosestTarget(npc.index,_,_,_,_,_,_,true); //only visible targets!
+		if(!IsValidEnemy(npc.index,npc.m_iTarget))
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,true); //only visible targets!
+		}
 		float Range = 150.0;
 		
-		if(IsValidEnemy(npc.index,TargetToLungeTo))
+		if(IsValidEnemy(npc.index,npc.m_iTarget))
 		{
 			static float enemypos[3]; 
-			GetEntPropVector(TargetToLungeTo, Prop_Data, "m_vecAbsOrigin", enemypos);
+			GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", enemypos);
 			enemypos[2] += 45.0;
 			if(npc.m_flNextRangedSpecialAttackHappens > gameTime + 0.5 && npc.m_fbRangedSpecialOn)
 			{
@@ -1172,14 +1255,14 @@ void GodArkantosJumpSpecial(GodArkantos npc, float gameTime)
 			TE_SetupBeamPoints(selfpos, ThrowPos, FusionWarrior_BEAM_Glow, 0, 0, 0, 0.6, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 			TE_SendToAll(0.0);
 			spawnRing_Vectors(ThrowPos, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 220, 220, 255, 200, 1, /*duration*/ 0.5, 5.0, 0.0, 1,Range * 2.0 * zr_smallmapbalancemulti.FloatValue);	
-			float damage = 300.0;
+			float damage = 600.0;
 			if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
 			{
-				damage = 250.0; //nerf
+				damage = 500.0; //nerf
 			}
 			else if(ZR_GetWaveCount()+1 > 55)
 			{
-				damage = 230.5; //nerf
+				damage = 465.5; //nerf
 			}
 				
 			Explode_Logic_Custom(damage * zr_smallmapbalancemulti.FloatValue, 0, npc.index, -1, ThrowPos,Range * zr_smallmapbalancemulti.FloatValue, 1.0, _, true, 20);
@@ -1512,6 +1595,9 @@ void GodArkantosAOEBuff(GodArkantos npc, float gameTime, bool mute = false)
 				}
 			}
 		}
+		if(npc.Anger)
+			buffed_anyone = true;
+
 		if(buffed_anyone)
 		{
 			npc.m_flArkantosBuffEffect = gameTime + 10.0;
@@ -1579,6 +1665,29 @@ void ArkantosSayWords()
 		case 3:
 		{
 			CPrintToChatAll("{lightblue}God Arkantos{default}: Together for Atlantis! As one and for all!");
+		}
+	}
+}
+
+void ArkantosSayWordsAngry()
+{
+	switch(GetRandomInt(0,3))
+	{
+		case 0:
+		{
+			CPrintToChatAll("{lightblue}God Arkantos{default}: You fool, you think my army believed in me for no reason?!");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{lightblue}God Arkantos{default}: I will aveage those you have sought to destroy!");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{lightblue}God Arkantos{default}: Just like my allies said, you never listen!");
+		}
+		case 3:
+		{
+			CPrintToChatAll("{lightblue}God Arkantos{default}: {crimson}FOR ATLANTIS!!!!!!!!!");
 		}
 	}
 }

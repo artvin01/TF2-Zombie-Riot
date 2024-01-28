@@ -517,6 +517,7 @@ bool b_RocketBoomEffect[MAXENTITIES]={false, ...};
 //6 wearables
 int i_Wearable[MAXENTITIES][7];
 int i_FreezeWearable[MAXENTITIES];
+int i_InvincibleParticle[MAXENTITIES];
 float f_WidowsWineDebuff[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXENTITIES];
 float f_SpecterDyingDebuff[MAXENTITIES];

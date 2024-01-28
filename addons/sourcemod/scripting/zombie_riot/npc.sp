@@ -412,6 +412,8 @@ enum
 	INTERITUS_WINTER_FREEZING_CLEANER = 363,
 	INTERITUS_WINTER_AIRBORN_EXPLORER = 364,
 	INTERITUS_WINTER_ARCTIC_MAGE	  = 365,
+	INTERITUS_WINTER_FROST_HUNTER	  = 366,
+	INTERITUS_WINTER_SKIN_HUNTER	  = 367,
 
 	MAX_NPC_TYPES	// Add entries above this line
 }
@@ -807,7 +809,9 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Snowey Gunner",
 	"Freezing Cleaner",
 	"Airborn Explorer",
-	"Arctic Mage"
+	"Arctic Mage",
+	"Frost Hunter",
+	"Skin Hunter"
 };
 
 // See items.sp for IDs to names
@@ -1575,7 +1579,9 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_snowey_gunner",
 	"npc_freezing_cleaner",
 	"npc_airborn_explorer",
-	"npc_arctic_mage"
+	"npc_arctic_mage",
+	"npc_frost_hunter",
+	"npc_skin_hunter"
 };
 
 void NPC_MapStart()
@@ -1853,6 +1859,8 @@ void NPC_MapStart()
 	WinterFreezingCleaner_OnMapStart_NPC();
 	WinterAirbornExplorer_OnMapStart_NPC();
 	WinterArcticMage_OnMapStart_NPC();
+	WinterFrostHunter_OnMapStart_NPC();
+	WinterSkinHunter_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2925,6 +2933,13 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case INTERITUS_WINTER_ARCTIC_MAGE:
 			entity = WinterArcticMage(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_FROST_HUNTER:
+			entity = WinterFrostHunter(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_SKIN_HUNTER:
+			entity = WinterSkinHunter(client, vecPos, vecAng, ally);
+
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -5177,3 +5192,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/winter/npc_freezing_cleaner.sp"
 #include "zombie_riot/npc/interitus/winter/npc_airborn_explorer.sp"
 #include "zombie_riot/npc/interitus/winter/npc_arctic_mage.sp"
+#include "zombie_riot/npc/interitus/winter/npc_skin_hunter.sp"
+#include "zombie_riot/npc/interitus/winter/npc_frost_hunter.sp"

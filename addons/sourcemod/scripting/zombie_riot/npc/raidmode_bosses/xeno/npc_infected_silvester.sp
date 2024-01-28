@@ -410,6 +410,7 @@ methodmap RaidbossSilvester < CClotBody
 		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 			
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");

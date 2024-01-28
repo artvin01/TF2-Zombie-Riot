@@ -299,6 +299,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
