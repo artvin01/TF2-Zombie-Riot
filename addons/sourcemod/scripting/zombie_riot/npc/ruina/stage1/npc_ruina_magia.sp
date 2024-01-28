@@ -270,9 +270,9 @@ public void Magia_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 		if(flDistanceToTarget < 100000)
 		{
@@ -328,7 +328,7 @@ public void Magia_ClotThink(int iNPC)
 						
 					float projectile_speed = 1000.0;
 					float target_vec[3];
-					target_vec = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
+					target_vec = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
 		
 					npc.FireParticleRocket(target_vec, 50.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
 						

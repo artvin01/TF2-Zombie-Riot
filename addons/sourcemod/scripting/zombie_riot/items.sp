@@ -192,7 +192,7 @@ static int GetFlagsOfLevel(int client, int level)
 	return 0;
 }
 
-static bool AddFlagOfLevel(int client, int level, int flag, bool addition)
+static bool AddFlagOfLevel(int client, int level, int flag)
 {
 	static OwnedItem owned;
 	int length = OwnedItems.Length;
@@ -201,7 +201,7 @@ static bool AddFlagOfLevel(int client, int level, int flag, bool addition)
 		OwnedItems.GetArray(i, owned);
 		if(owned.Client == client && owned.Level == level)
 		{
-			if(addition || !(owned.Flags & flag))
+			if(!(owned.Flags & flag))
 			{
 				owned.Flags += flag;
 				OwnedItems.SetArray(i, owned);
@@ -211,7 +211,7 @@ static bool AddFlagOfLevel(int client, int level, int flag, bool addition)
 			return false;
 		}
 	}
-
+		
 	owned.Client = client;
 	owned.Level = level;
 	owned.Flags = flag;
@@ -271,9 +271,9 @@ stock void Items_GiveNPCKill(int client, int id)
 	//AddFlagOfLevel(client, -id, 1, true);
 }
 
-bool Items_GiveIdItem(int client, int id, bool addition = false)
+bool Items_GiveIdItem(int client, int id)
 {
-	return AddFlagOfLevel(client, IdToLevel(id), IdToFlag(id), addition);
+	return AddFlagOfLevel(client, IdToLevel(id), IdToFlag(id));
 }
 
 bool Items_GiveNamedItem(int client, const char[] name)
@@ -287,7 +287,7 @@ bool Items_GiveNamedItem(int client, const char[] name)
 			GiftItems.GetArray(i, item);
 			if(StrEqual(item.Name, name, false))
 			{
-				AddFlagOfLevel(client, IdToLevel(i), IdToFlag(i), false);
+				AddFlagOfLevel(client, IdToLevel(i), IdToFlag(i));
 				return true;
 			}
 		}
@@ -801,9 +801,10 @@ bool Item_ClientHasAllRarity(int client, int rarity)
 			i = -1;
 			continue;
 		}
-		if(Items_GiveIdItem(client, items[i], false))	// Gives item, returns true if newly obtained, false if they already have
+
+		if(!Items_HasIdItem(client, items[i]))
 		{
-			GiftItems.GetArray(items[i], item);
+			//GiftItems.GetArray(items[i], item);
 			length = 0;
 			break;
 		}

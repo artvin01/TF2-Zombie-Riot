@@ -876,35 +876,43 @@ public Action Waves_EndVote(Handle timer, float time)
 						highest = i;
 				}
 				
-				//if(votes[highest])
-				{
-					Vote vote;
-					Voting.GetArray(highest, vote);
-					
-					delete Voting;
-					
-					strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
-					PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
+				Vote vote;
+				Voting.GetArray(highest, vote);
+				
+				delete Voting;
+				
+				strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
+				PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
 
-					Queue_DifficultyVoteEnded();
-					Native_OnDifficultySet(highest);
-					
-					if(highest > 3)
-						highest = 3;
-					
-					Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "FireUser%d", highest + 1);
-					ExcuteRelay("zr_waveselected", WhatDifficultySetting);
-					
-					vote.Name[0] = CharToUpper(vote.Name[0]);
-					strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), vote.Name);
-					
-					char buffer[PLATFORM_MAX_PATH];
-					BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
-					KeyValues kv = new KeyValues("Waves");
+				char buffer[PLATFORM_MAX_PATH];
+				if(votes[highest] > 3)
+				{
+					BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "vote_trackedvotes.cfg");
+					KeyValues kv = new KeyValues("TrackedVotes");
 					kv.ImportFromFile(buffer);
-					Waves_SetupWaves(kv, false);
+					kv.SetNum(vote.Name, kv.GetNum(vote.Name) + 1);
+					kv.ExportToFile(buffer);
 					delete kv;
 				}
+
+				Queue_DifficultyVoteEnded();
+				Native_OnDifficultySet(highest);
+				
+				if(highest > 3)
+					highest = 3;
+				
+				Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "FireUser%d", highest + 1);
+				ExcuteRelay("zr_waveselected", WhatDifficultySetting);
+				
+				vote.Name[0] = CharToUpper(vote.Name[0]);
+				strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), vote.Name);
+				strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), vote.Name);
+				
+				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
+				KeyValues kv = new KeyValues("Waves");
+				kv.ImportFromFile(buffer);
+				Waves_SetupWaves(kv, false);
+				delete kv;
 			}
 		}
 		else
@@ -1326,30 +1334,50 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			//MUSIC LOGIC
 			
-			bool RoundHasCustomMusic = false;
+			bool RoundHadCustomMusic = false;
 		
 			if(char_MusicString1[0])
-				RoundHasCustomMusic = true;
+				RoundHadCustomMusic = true;
 					
 			if(char_MusicString2[0])
-				RoundHasCustomMusic = true;
+				RoundHadCustomMusic = true;
 
 			if(char_RaidMusicSpecial1[0])
 			{
-				RoundHasCustomMusic = true;
+				RoundHadCustomMusic = true;
 			}
 
-			if(RoundHasCustomMusic) //only do it when there was actually custom music previously
+			if(RoundHadCustomMusic) //only do it when there was actually custom music previously
 			{	
 				bool ReplaceMusic = false;
-				if(!StrEqual(char_MusicString1, round.music_round_1))
+				if(!round.music_round_1[0] && char_MusicString1[0])
 				{
 					ReplaceMusic = true;
 				}
-				if(!StrEqual(char_MusicString2, round.music_round_2))
+				if(round.music_round_1[0])
+				{
+					if(!StrEqual(char_MusicString1, round.music_round_1))
+					{
+						ReplaceMusic = true;
+					}
+				}
+				//there was music the previous round, but there is none now.
+				if(!round.music_round_2[0] && char_MusicString2[0])
 				{
 					ReplaceMusic = true;
 				}
+				//they are different, cancel out.
+				if(round.music_round_1[0])
+				{
+					if(!StrEqual(char_MusicString2, round.music_round_2))
+					{
+						ReplaceMusic = true;
+					}
+				}
+
+				//if it had raid music, replace anyways.
+				if(char_RaidMusicSpecial1[0])
+					ReplaceMusic = true;
 				
 				if(ReplaceMusic)
 				{
@@ -1365,10 +1393,11 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 
 			//This should nullfy anyways if nothings in it
+			RemoveAllCustomMusic();
+
 			strcopy(char_MusicString1, sizeof(char_MusicString1), round.music_round_1);
 			strcopy(char_MusicString2, sizeof(char_MusicString2), round.music_round_2);
-			char_RaidMusicSpecial1[0] = 0;
-
+			
 			i_MusicLength1 = round.music_duration_1;
 			i_MusicLength2 = round.music_duration_2;
 
@@ -1775,6 +1804,15 @@ void Waves_ClearWave()
 	else
 	{
 		CurrentWave = 999;
+	}
+}
+
+void Waves_ClearWaveCurrentSpawningEnemies()
+{
+	Enemy enemy;
+	while(Waves_GetNextEnemy(enemy))
+	{
+		Zombies_Currently_Still_Ongoing--;
 	}
 }
 

@@ -17,8 +17,10 @@ static bool IsRespawning;
 //static bool Disconnecting;
 #endif
 
+#if !defined RTS
 static DynamicHook g_WrenchSmack;
 //DynamicHook g_ObjStartUpgrading;
+#endif
 
 static DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
@@ -111,7 +113,9 @@ void DHook_Setup()
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
 	
+#if !defined RTS
 	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
+#endif
 
 	DHook_CreateDetour(gamedata, "CTFPlayer::SpeakConceptIfAllowed()", SpeakConceptIfAllowed_Pre, SpeakConceptIfAllowed_Post);
 	
@@ -134,12 +138,14 @@ void DHook_Setup()
 	if(!ForceRespawn)
 		LogError("[Gamedata] Could not find CBasePlayer::ForceRespawn");
 	
+#if !defined RTS
 	Handle dtWeaponFinishReload = DHookCreateFromConf(gamedata, "CBaseCombatWeapon::FinishReload()");
 	if (!dtWeaponFinishReload) {
 		SetFailState("Failed to create detour %s", "CBaseCombatWeapon::FinishReload()");
 	}
 	DHookEnableDetour(dtWeaponFinishReload, false, OnWeaponReplenishClipPre);
 	DHookEnableDetour(dtWeaponFinishReload, true, OnWeaponReplenishClipPost);
+#endif
 	
 	// from https://github.com/shavitush/bhoptimer/blob/b78ae36a0ef72d15620d2b18017bbff18d41b9fc/addons/sourcemod/scripting/shavit-misc.sp
 	
@@ -265,6 +271,7 @@ public MRESReturn DHook_CreateMedigunShieldPre(int entity, DHookReturn returnHoo
 	return MRES_Supercede;
 }
 
+#if !defined RTS
 void OnWrenchCreated(int entity) 
 {
 	g_WrenchSmack.HookEntity(Hook_Pre, entity, Wrench_SmackPre);
@@ -305,6 +312,8 @@ public MRESReturn Wrench_SmackPost(int entity, DHookReturn ret, DHookParam param
 	}
 	return MRES_Ignored;
 }
+#endif
+
 //NEVER upgrade buildings, EVER.
 /*
 public MRESReturn ObjStartUpgrading_SmackPre(int entity, DHookReturn ret, DHookParam param)
@@ -461,7 +470,13 @@ public Action SdkHook_StickStickybombToBaseBoss(int entity, int other)
 {
 	if(!GetEntProp(entity, Prop_Send, "m_bTouched"))
 	{
+
+#if defined RTS
+		if(!b_StickyIsSticking[entity] && !b_NpcHasDied[other])
+#else
 		if(!b_StickyIsSticking[entity] && b_Is_Blue_Npc[other])
+#endif
+
 		{
 			//Dont stick if it already has max.
 			for (int i = 0; i < MAXSTICKYCOUNTTONPC; i++)
@@ -834,8 +849,7 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
-	//if(IsValidEntity(ent1) && IsValidEntity(ent2))
-	if(ent1 > 0 && ent1 <= MAXENTITIES && ent2 > 0 && ent2 <= MAXENTITIES)
+	if(ent1 >= 0 && ent1 <= MAXENTITIES && ent2 >= 0 && ent2 <= MAXENTITIES)
 	{
 		result = PassfilterGlobal(ent1, ent2, true);
 		if(result)
@@ -883,28 +897,12 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			entity1 = ent2;
 			entity2 = ent1;			
 		}
-		/*
-		if(!b_NpcHasDied[entity1]) //they ignore brushes.
-		{	
-			if(b_is_a_brush[entity2]) //Dont ignore brushes.
-			{
-			//	
-			//		enum BrushSolidities_e {
-			//		BRUSHSOLID_TOGGLE = 0,
-			//		BRUSHSOLID_NEVER  = 1,
-			//		BRUSHSOLID_ALWAYS = 2,
-			//	};
-				
-				int solidity_type = GetEntProp(entity2, Prop_Data, "m_iSolidity");
-				bool SolidOrNot = view_as<bool>(GetEntProp(entity2, Prop_Data, "m_bSolidBsp"));
 
-				PrintToChatAll("%b",SolidOrNot);
-				if(solidity_type == 2 || (SolidOrNot && solidity_type == 0))
-					return true;
-			}
-		}
-		*/
 #if defined ZR
+		if(b_ProjectileCollideIgnoreWorld[entity1])
+		{
+			Wand_Base_StartTouch(entity1, entity2);
+		}
 		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
 			if(entity2 <= MaxClients && entity2 > 0)
@@ -921,38 +919,49 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+
+#if defined RTS
+			if(!b_NpcHasDied[entity2])
+#else
 			if(b_Is_Blue_Npc[entity2])
+#endif
 			{
 				return false;
 			}
-			else if(b_Is_Npc_Projectile[entity2])
+			
+			if(b_Is_Npc_Projectile[entity2])
 			{
 				return false;
 			}
+
 #if defined ZR
-			else if(i_IsABuilding[entity2] && IsValidEntity(RaidBossActive))
+			if(i_IsABuilding[entity2] && IsValidEntity(RaidBossActive))
 			{
 				return false;
 			}
 #endif
 		}
+
+#if !defined RTS
 		else if(b_Is_Player_Projectile[entity1])
 		{
-#if defined ZR
+	#if defined ZR
 			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1] && !IsEntitySpike(entity1))
-#else
+	#else
 			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1])
-#endif
+	#endif
 			{
 				int EntityOwner = i_WandOwner[entity2];
 				if(ShieldDeleteProjectileCheck(EntityOwner, entity1))
 				{
+	#if defined ZR
 					if(i_WandIdNumber[entity1] != 0)
 					{
 						//make it act as if it collided with the world.
 						Wand_Base_StartTouch(entity1, 0);
 					}
 					else
+	#endif
 					{
 						//force a collision
 						
@@ -983,11 +992,13 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+	#if defined ZR
 			else if (i_WandIdNumber[entity1] == 19 && !i_IsABuilding[entity2] && !b_Is_Player_Projectile[entity2]) //Health Hose projectiles
 			{
 				Hose_Touch(entity1, entity2);
 				return false;
 			}
+	#endif
 			else if(entity2 <= MaxClients && entity2 > 0)
 			{
 				return false;
@@ -1004,7 +1015,13 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 		}
+#endif	// Non-RTS
+
+#if defined RTS
+		else if(!b_NpcHasDied[entity1])
+#else	
 		else if(b_Is_Blue_Npc[entity1])
+#endif
 		{
 			if(b_ThisEntityIgnored[entity2] && !DoingLagCompensation) //Only Ignore when not shooting/compensating, which is shooting only.
 			{
@@ -1017,7 +1034,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 					return false;
 				}
 			}
+#if defined RTS
+			else if(!b_NpcHasDied[entity2])
+#else
 			else if(b_Is_Blue_Npc[entity2])
+#endif
 			{
 				return false;
 			}
@@ -1031,6 +1052,8 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 		}
+
+#if !defined RTS
 		else if(b_IsAlliedNpc[entity1])
 		{
 			if(b_IsAlliedNpc[entity2])
@@ -1042,6 +1065,8 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 		}
+#endif
+
 	}
 	return result;	
 }
@@ -1259,6 +1284,8 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 			}
 		}
 	}
+
+#if !defined RTS
 	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
 	{
 		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
@@ -1270,6 +1297,8 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 			}
 		}
 	}
+#endif
+
 	if(b_LagCompNPC_AwayEnemies)
 	{
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++)
@@ -1737,6 +1766,10 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPost(int client, DHookReturn
 {
 	if(GetChargeEffectBeingProvided && !IsInsideManageRegularWeapons)
 	{
+		if(!IsValidClient(client))
+		{
+			return MRES_Ignored;
+		}
 		#if defined NoSendProxyClass
 		TF2_SetPlayerClass_ZR(GetChargeEffectBeingProvided, WeaponClass[GetChargeEffectBeingProvided], false, false);
 		#else
@@ -2023,6 +2056,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	return MRES_Supercede;
 }
 
+#if !defined RTS
 MRESReturn OnWeaponReplenishClipPost(int weapon)
 {
 	if(IsValidEntity(weapon))
@@ -2056,6 +2090,7 @@ MRESReturn OnWeaponReplenishClipPre(int weapon) // Not when the player press rel
 	return MRES_Ignored;
 	
 }
+#endif
 
 void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 {
@@ -2068,12 +2103,8 @@ void Hook_DHook_UpdateTransmitState(int entity)
 }
 
 public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) //BLOCK!!
-{   
-	if(b_IsAlliedNpc[entity])
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
-	}
-	else if(b_IsEntityNeverTranmitted[entity])
+{
+	if(b_IsEntityNeverTranmitted[entity])
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_DONTSEND);
 	}
@@ -2081,6 +2112,12 @@ public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) 
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}
+#if !defined RTS
+	else if(b_IsAlliedNpc[entity])
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+	}
+#endif
 #if defined ZR
 	else if(b_thisNpcHasAnOutline[entity])
 	{

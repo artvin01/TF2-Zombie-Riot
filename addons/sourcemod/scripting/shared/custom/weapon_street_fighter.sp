@@ -591,7 +591,7 @@ public void SF_KnockupThink(int target)
 	SDKUnhook(target, SDKHook_Think, SF_KnockupThink);
 
 	float pos[3];
-	pos = WorldSpaceCenter(target);
+	pos = WorldSpaceCenterOld(target);
 	pos[2] += 100.0;
 	PluginBot_Jump(target, pos);
 }

@@ -156,9 +156,9 @@ public void DesertQanaas_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetWalkTo);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetWalkTo);
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		int ExtraBehavior = DesertQanaasSelfDefense(npc,GetGameTime(npc.index)); 
 
 		switch(ExtraBehavior)
@@ -190,7 +190,7 @@ public void DesertQanaas_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTargetWalkTo);
+			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTargetWalkTo);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -266,7 +266,7 @@ int DesertQanaasSelfDefense(DesertQanaas npc, float gameTime)
 			return 0;
 		}
 	}
-	npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+	npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
 
 	static float ThrowPos[MAXENTITIES][3];  
 	float origin[3], angles[3];
@@ -275,7 +275,7 @@ int DesertQanaasSelfDefense(DesertQanaas npc, float gameTime)
 	{
 		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 		{
-			ThrowPos[npc.index] = WorldSpaceCenter(npc.m_iTarget);
+			ThrowPos[npc.index] = WorldSpaceCenterOld(npc.m_iTarget);
 		}
 	}
 	else
@@ -283,14 +283,14 @@ int DesertQanaasSelfDefense(DesertQanaas npc, float gameTime)
 		if(npc.m_flAttackHappens)
 		{
 			float pos_npc[3];
-			pos_npc = WorldSpaceCenter(npc.index);
+			pos_npc = WorldSpaceCenterOld(npc.index);
 			float AngleAim[3];
 			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
 			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
 			int Traced_Target = TR_GetEntityIndex(hTrace);
 			if(Traced_Target > 0)
 			{
-				ThrowPos[npc.index] = WorldSpaceCenter(Traced_Target);
+				ThrowPos[npc.index] = WorldSpaceCenterOld(Traced_Target);
 			}
 			else if(TR_DidHit(hTrace))
 			{

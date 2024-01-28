@@ -406,9 +406,9 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 		&& GetEntPropEnt(npc.m_iTargetWalkTo, Prop_Data, "m_hVehicle") == -1)
 		{
 			//walk to client.
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetWalkTo);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetWalkTo);
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			if(flDistanceToTarget < (70.0*70.0))
 			{
 				//slowly revive
@@ -455,15 +455,15 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 						
 	if((BoughtGregHelp || CurrentPlayers <= 4) && IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -542,7 +542,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 					float vecDirShooting[3], vecRight[3], vecUp[3];
 					
 					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -561,7 +561,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 					{
 						DamageDelt = 75.0;
 					}
-					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, DamageDelt, 9000.0, DMG_BULLET, "bullet_tracer01_red", Owner , _ , "0");
+					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, DamageDelt, 9000.0, DMG_BULLET, "bullet_tracer01_red", Owner , _ , "0");
 
 					npc.PlayRangedSound();
 					
@@ -674,9 +674,9 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 		if(IsValidAllyPlayer(npc.index, npc.m_iTargetAlly))
 		{
 			npc.m_bWasSadAlready = false;
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			if(flDistanceToTarget > 250000) //500 units
 			{
 				if(npc.m_iChanged_WalkCycle != 2) 	

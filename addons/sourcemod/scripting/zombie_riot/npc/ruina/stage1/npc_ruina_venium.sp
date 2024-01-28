@@ -279,8 +279,8 @@ public void Venium_ClotThink(int iNPC)
 		fl_ruina_battery_timer[npc.index] = GameTime+30.0;	//A set timeout for rebuild an anchor.
 		float Anchor_Loc[3], Npc_Loc[3];
 
-		Anchor_Loc = WorldSpaceCenter(Anchor);
-		Npc_Loc = WorldSpaceCenter(npc.index);
+		Anchor_Loc = WorldSpaceCenterOld(Anchor);
+		Npc_Loc = WorldSpaceCenterOld(npc.index);
 
 		float dist = GetVectorDistance(Anchor_Loc, Npc_Loc, true);
 
@@ -351,9 +351,9 @@ public void Venium_ClotThink(int iNPC)
 			npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 			npc.m_iChanged_WalkCycle = 0;
 		}
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 		if(flDistanceToTarget < (2000.0*2000.0))
 		{
@@ -488,7 +488,7 @@ static void Venium_Build_Anchor(Venium npc)
 	AproxRandomSpaceToWalkTo[2] += 18.0;
 	AproxRandomSpaceToWalkTo[2] += 18.0;
 		
-	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceCenter(npc.index), true);
+	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceCenterOld(npc.index), true);
 		
 	if(flDistanceToBuild < (2000.0 * 2000.0) && i_failsafe[npc.index] <= RUINA_ANCHOR_FAILSAFE_AMMOUNT)
 	{
@@ -519,9 +519,9 @@ static void Venium_Post_Bult_Logic(Venium npc, int PrimaryThreatIndex, float Gam
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.5)
 		{

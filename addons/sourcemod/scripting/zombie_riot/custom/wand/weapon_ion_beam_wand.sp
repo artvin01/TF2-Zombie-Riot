@@ -88,7 +88,7 @@ public void Ion_Beam_Wand_MapStart()
 #define NEUVELLETE_BASELINE_ION_DMG 750.0
 #define NEUVELLETE_BASELINE_ION_RANGE 15.0
 
-#define NEUVELLETE_BASELINE_DAMAGE 100.0
+#define NEUVELLETE_BASELINE_DAMAGE 150.0
 #define NEUVELLETE_BASELINE_RANGE 1000.0				//how far the laser can reach
 #define NEUVELLETE_BASELINE_TURN_SPEED 1.75	
 #define NEUVELLETE_BASELINE_PITCH_SPEED 0.8
@@ -230,7 +230,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 		Turn_Speed *= 2.0;
 		Pitch_Speed *= 2.0;
 		
-		DamagE *= 1.75;
+		DamagE *= 3.0;
 		
 		Effects |= (1 << 7); //pulse
 	}
@@ -640,7 +640,7 @@ static Action Hexagon_Witchery_Tick(int client)
 		int target = TR_GetEntityIndex(swingTrace);	
 		if(IsValidEnemy(client, target))
 		{
-			vec = WorldSpaceCenter(target);
+			vec = WorldSpaceCenterOld(target);
 			
 		}
 		else
@@ -1087,7 +1087,9 @@ public Action Neuvellete_tick(int client)
 			PosEffects[2] -= 35.0;
 			Pos[2] -= 35.0;
 		}
-		
+
+		if(flags & FLAG_NEUVELLETE_PAP_5_PULSE_CANNON)
+			Beam_Angles = Angles;
 		
 		
 		Handle trace = TR_TraceRayFilterEx(Pos, Beam_Angles, 11, RayType_Infinite, BeamWand_TraceWallsOnly);
@@ -1590,11 +1592,11 @@ static void Beam_Wand_Laser_Attack(int client, float playerPos[3], float endVec_
 					if(IsValidEntity(BEAM_BuildingHit[building]))
 					{
 						float trg_loc[3];
-						trg_loc = WorldSpaceCenter(BEAM_BuildingHit[building]);
+						trg_loc = WorldSpaceCenterOld(BEAM_BuildingHit[building]);
 						
 						
 						float damage_force[3];
-						damage_force = CalculateDamageForce(vecForward, 10000.0);
+						damage_force = CalculateDamageForceOld(vecForward, 10000.0);
 						DataPack pack = new DataPack();
 						pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
 						pack.WriteCell(EntIndexToEntRef(client));

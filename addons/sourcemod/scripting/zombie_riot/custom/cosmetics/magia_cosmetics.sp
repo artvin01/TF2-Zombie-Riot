@@ -54,7 +54,7 @@ void ApplyExtraMagiaCosmeticEffects(int client, bool remove = false)
 }
 public void EnableMagiaCosmetic(int client) 
 {
-	if(TeutonType[client] != TEUTON_NONE)
+	if(TeutonType[client] != TEUTON_NONE || TeutonType[client] == TEUTON_NONE)
 		return;
 		
 	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Magia Wings [???]"));
