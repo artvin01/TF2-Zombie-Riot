@@ -2089,11 +2089,16 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public void StopPathing()
 	{
-		f_DelayComputingOfPath[this.index] = 0.0; //find new target instantly.
-		this.GetPathFollower().Invalidate();
-		this.GetLocomotion().Stop();
+#if defined RTS
+		if(this.m_bPathing)
+#endif
+		{
+			f_DelayComputingOfPath[this.index] = 0.0; //find new target instantly.
+			this.GetPathFollower().Invalidate();
+			this.GetLocomotion().Stop();
 
-		this.m_bPathing = false;
+			this.m_bPathing = false;
+		}
 	}
 	public void SetGoalEntity(int target, bool ignoretime = false)
 	{
@@ -4534,6 +4539,7 @@ stock bool IsValidAllyPlayer(int index, int Ally)
 int GetClosestTarget_EnemiesToCollect[MAXENTITIES];
 int GetClosestTarget_Enemy_Type[MAXENTITIES];
 
+#if defined ZR
 stock int GetClosestTarget(int entity,
  bool IgnoreBuildings = false,
   float fldistancelimit = 99999.9,
@@ -4547,6 +4553,14 @@ stock int GetClosestTarget(int entity,
 	   bool UseVectorDistance = false,
   		float MinimumDistance = 0.0,
   		Function ExtraValidityFunction = INVALID_FUNCTION)
+#else
+stock int GetClosestTargetRTS(int entity,
+  float fldistancelimit = 99999.9,
+   bool camoDetection = false,
+	 float EntityLocation[3] = {0.0,0.0,0.0},
+  		float MinimumDistance = 0.0,
+  		Function ExtraValidityFunction = INVALID_FUNCTION)
+#endif
 {
 #if defined RTS
 	int searcher_team = view_as<UnitBody>(entity).m_hOwner; //do it only once lol
@@ -4638,11 +4652,13 @@ stock int GetClosestTarget(int entity,
 						continue;
 #endif
 
+#if !defined RTS
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, entity_close))
 							continue;
 					}
+#endif
 
 					if(ExtraValidityFunction != INVALID_FUNCTION)
 					{
@@ -4778,10 +4794,15 @@ void GetClosestTarget_ResetAllTargets()
 	Zero(GetClosestTarget_Enemy_Type);
 }
 
+#if defined ZR
 int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistancelimitAllyNPC, const float EntityLocation[3], bool UseVectorDistance, float MinimumDistance)
+#else
+int GetClosestTarget_Internal(int entity, float fldistancelimit, const float EntityLocation[3], float MinimumDistance)
+#endif
 {
 	int ClosestTarget = -1; 
 
+#if !defined RTS
 	if(!b_NpcHasDied[entity] && !UseVectorDistance)
 	{
 		f_DelayComputingOfPath[entity] = 0.0;
@@ -4906,6 +4927,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		}
 	}
 	else
+#endif	// Non-RTS
 	{
 		float TargetDistance = 0.0;
 		int target;
@@ -4935,6 +4957,9 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 				4: buildings
 			*/
 
+#if defined RTS
+			float distance_limit = fldistancelimit;
+#else
 			float distance_limit;
 			switch(GetClosestTarget_Enemy_Type[i])
 			{
@@ -4959,6 +4984,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 					distance_limit = 99999.9;
 				}
 			}
+#endif
 
 			distance_limit *= distance_limit;
 
@@ -7933,11 +7959,13 @@ public void ArrowStartTouch(int arrow, int entity)
 			Stats_AddNeuralDamage(entity, owner, i_NervousImpairmentArrowAmount[arrow]);
 #endif
 		}
+#if defined ZR
 		else if(i_ChaosArrowAmount[arrow] > 0)
 		{
 			Sakratan_AddNeuralDamage(entity, owner, i_ChaosArrowAmount[arrow]);
 		}
-		
+#endif
+
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
 		if(IsValidEntity(arrow_particle))
 		{
@@ -8788,6 +8816,9 @@ public void Npc_BossHealthBar(CClotBody npc)
 		}	
 		return;	
 	}
+#if defined RTS
+	int NpcTypeDefine = 1;
+#else
 	int NpcTypeDefine = 0;
 	if(b_thisNpcIsABoss[npc.index])
 	{
@@ -8797,6 +8828,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 	{
 		NpcTypeDefine = 2;
 	}
+#endif
 	if(NpcTypeDefine == 0)
 		return;
 

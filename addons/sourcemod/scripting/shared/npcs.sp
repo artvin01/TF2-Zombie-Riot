@@ -3093,12 +3093,14 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 	}
 	float DamageBuffExtraScaling = 1.0;
 
+#if defined ZR
 	if(attacker <= MaxClients || inflictor <= MaxClients)
 	{
 		if(b_thisNpcIsARaid[victim])
 			DamageBuffExtraScaling = PlayerCountBuffScaling;
 	}
-	
+#endif
+
 	if(!NpcStats_IsEnemySilenced(attacker))
 	{
 		if(f_HussarBuff[attacker] > GameTime) //hussar!
