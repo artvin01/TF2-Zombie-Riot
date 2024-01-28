@@ -477,7 +477,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	if(fl_divine_intervention_active > GetGameTime() && !b_teleport_strike_active[npc.index])
+	/*if(fl_divine_intervention_active > GetGameTime() && !b_teleport_strike_active[npc.index])
 	{
 		int Ally = EntRefToEntIndex(i_ally_index);
 		if(IsValidAlly(npc.index, Ally))
@@ -489,7 +489,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 		{
 			CPrintToChatAll("Something CATASTROPHIC HAPPENED, OH GOD");
 		}	
-	}
+	}*/
 
 	if(schwert_retreat && Schwert_Status(npc, GameTime)==1 && b_teleport_strike_active[npc.index])
 	{

@@ -143,7 +143,7 @@ bool donner_sea_created;
 
 static bool b_angered_twice[MAXENTITIES];
 
-static float fl_divine_intervention_retry;
+//static float fl_divine_intervention_retry;
 
 #define DONNERKRIEG_NIGHTMARE_CANNON_INTRO_LINE 1
 #define DONNERKRIEG_NIGHTMARE_CANNON_FIRE_LINE 2
@@ -157,9 +157,9 @@ static float fl_divine_intervention_retry;
 
 bool b_donner_said_win_line;
 
-static bool b_spawn_bob;
+//static bool b_spawn_bob;
 
-float fl_divine_intervention_active;
+//float fl_divine_intervention_active;
 
 void Raidboss_Donnerkrieg_OnMapStart_NPC()
 {
@@ -279,7 +279,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 	{
 		Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "25000", ally));
 
-		b_spawn_bob = false;
+		//b_spawn_bob = false;
 		
 		i_NpcInternalId[npc.index] = SEA_RAIDBOSS_DONNERKRIEG;
 		i_NpcWeight[npc.index] = 3;
@@ -297,9 +297,9 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 
 		b_donner_said_win_line = false;
 
-		fl_divine_intervention_retry = GetGameTime() + 10.0;
+		//fl_divine_intervention_retry = GetGameTime() + 10.0;
 
-		fl_divine_intervention_active=0.0;
+		//fl_divine_intervention_active=0.0;
 		
 		
 		/*
@@ -308,11 +308,12 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 			Donnerkrieg is the master raidboss.
 		*/
 
+		/*
 		bool final = StrContains(data, "final_item") != -1;
 		if(final)
 		{
 			b_spawn_bob=true;
-		}
+		}*/
 
 		b_allow_schwert_transformation = false;
 		
@@ -524,7 +525,7 @@ void Donnerkrieg_SpawnAllyDuoRaid(int ref)
 		}
 	}
 }
-
+/*
 static float fl_last_ratio;
 
 static void Calculate_Combined_Health(Raidboss_Donnerkrieg npc)
@@ -560,7 +561,7 @@ static void Calculate_Combined_Health(Raidboss_Donnerkrieg npc)
 			}
 		}
 	}
-}
+}*/
 
 //TODO 
 //Rewrite
@@ -579,7 +580,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 		
 	float GameTime = GetGameTime(npc.index);
 
-	Calculate_Combined_Health(npc);
+	//Calculate_Combined_Health(npc);
 
 	if(npc.m_flNextDelayTime > GameTime)
 	{
@@ -627,7 +628,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 	}
 
 	int Current_Wave = ZR_GetWaveCount()+1;
-
+	/*
 	if(Current_Wave>=60 && !b_nightmare_logic[npc.index])
 	{
 		if(fl_divine_intervention_retry < GameTime)
@@ -639,11 +640,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 	if(fl_divine_intervention_active > GameTime && !b_nightmare_logic[npc.index])
 	{
 		return;
-	}
-	/*
-
-
-	*/
+	}*/
 	
 	if(fl_nightmare_end_timer[npc.index] < GameTime && b_nightmare_logic[npc.index])
 	{	
@@ -3432,7 +3429,7 @@ static bool Divine_Intervention_Check(Raidboss_Donnerkrieg npc, float Min_Dist)
 		return false;
 	}
 }
-
+	/*
 static bool b_weaver_summoned;
 static bool b_stage_one_effects;
 static float fl_anchor_location[3];
@@ -3733,4 +3730,4 @@ public void Doonerkrieg_Delay_TE_Beam_Special(DataPack pack)
 	TE_SendToAll();
 		
 	delete pack;
-}
+}*/

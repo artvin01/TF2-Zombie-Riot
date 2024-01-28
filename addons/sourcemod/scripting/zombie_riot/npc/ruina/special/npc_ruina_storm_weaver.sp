@@ -632,12 +632,6 @@ public void Storm_Weaver_Restore_Collisions(int iNPC)
 	SetEntProp(npc.index, Prop_Data, "m_nSolidType", 2); 
 	SetEntityCollisionGroup(npc.index, 6);
 }
-
-/*
-	core.sp - line 700
-	npc_stats.sp - line 2800, 2903, 6468
-*/
-
 //TODO 
 //Rewrite
 public void Storm_Weaver_ClotThink(int iNPC)
@@ -663,6 +657,12 @@ public void Storm_Weaver_ClotThink(int iNPC)
 	{
 		return;
 	}
+
+	if(RaidBossActive == INVALID_ENT_REFERENCE)
+	{
+		RaidBossActive=EntIndexToEntRef(npc.index);
+	}
+
 
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
