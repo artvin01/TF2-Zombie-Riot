@@ -339,7 +339,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						AddNpcToAliveList(entity_Spawner, 1);
 					}
 					
-					if(enemy.Is_Boss == 1)
+					if(enemy.Is_Boss > 0)
 					{
 					//	npcstats.RemovePather(entity_Spawner);
 					//	npcstats.CreatePather(16.0, npcstats.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID, 150.0, 0.1, 1.75); //Global.

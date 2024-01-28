@@ -1059,6 +1059,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		npc.PlayDeathSound();
 	}
 	int client = EntRefToEntIndex(i_GrabbedThis[npc.index]);
+	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s",WhatDifficultySetting_Internal);
 	
 	if(IsValidEntity(client))
 	{

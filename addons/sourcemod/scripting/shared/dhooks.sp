@@ -849,8 +849,7 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
-	//if(IsValidEntity(ent1) && IsValidEntity(ent2))
-	if(ent1 > 0 && ent1 <= MAXENTITIES && ent2 > 0 && ent2 <= MAXENTITIES)
+	if(ent1 >= 0 && ent1 <= MAXENTITIES && ent2 >= 0 && ent2 <= MAXENTITIES)
 	{
 		result = PassfilterGlobal(ent1, ent2, true);
 		if(result)
@@ -898,28 +897,12 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			entity1 = ent2;
 			entity2 = ent1;			
 		}
-		/*
-		if(!b_NpcHasDied[entity1]) //they ignore brushes.
-		{	
-			if(b_is_a_brush[entity2]) //Dont ignore brushes.
-			{
-			//	
-			//		enum BrushSolidities_e {
-			//		BRUSHSOLID_TOGGLE = 0,
-			//		BRUSHSOLID_NEVER  = 1,
-			//		BRUSHSOLID_ALWAYS = 2,
-			//	};
-				
-				int solidity_type = GetEntProp(entity2, Prop_Data, "m_iSolidity");
-				bool SolidOrNot = view_as<bool>(GetEntProp(entity2, Prop_Data, "m_bSolidBsp"));
 
-				PrintToChatAll("%b",SolidOrNot);
-				if(solidity_type == 2 || (SolidOrNot && solidity_type == 0))
-					return true;
-			}
-		}
-		*/
 #if defined ZR
+		if(b_ProjectileCollideIgnoreWorld[entity1])
+		{
+			Wand_Base_StartTouch(entity1, entity2);
+		}
 		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
 			if(entity2 <= MaxClients && entity2 > 0)

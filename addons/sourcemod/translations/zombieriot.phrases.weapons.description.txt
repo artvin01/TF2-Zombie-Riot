@@ -2007,7 +2007,7 @@
 	}
 	"Lantean Staff Desc"
 	{
-		"en" 	"Wherever you look, the drones fly\nGoing over 10 drones makes the wand go into overcharge meaning they do less damage, and are harder to control"
+		"en" 	"Wherever you look, the drones fly\nGoing over 10 drones makes the wand go into overcharge meaning they do less damage, and are harder to control\nM2: Fire several drones at once\nR: Your drones noclip for 2.5 seconds"
 		"ru" 	"Куда бы вы ни посмотрели, туда полетят дроны\nПри превышении 10 дронов жезл перегружается, что означает, что они наносят меньше урона, и их труднее контролировать."
 		"chi"   "无论你往哪里看，无人机都在飞。超过10架无人机会让魔杖过度充电，这意味着它们造成的伤害更小，也更难控制"
 	}

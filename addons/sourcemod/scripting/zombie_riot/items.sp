@@ -212,6 +212,9 @@ static bool AddFlagOfLevel(int client, int level, int flag)
 		}
 	}
 
+	if(!addition)
+		return true;
+		
 	owned.Client = client;
 	owned.Level = level;
 	owned.Flags = flag;

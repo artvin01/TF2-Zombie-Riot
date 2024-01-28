@@ -1519,6 +1519,10 @@ void GodArkantosAOEBuff(GodArkantos npc, float gameTime, bool mute = false)
 			{
 				f_GodArkantosBuff[npc.index] = GetGameTime() + 5.0; //the buff for arkantos himself is half the time.
 			}
+			else
+			{
+				f_GodArkantosBuff[npc.index] = GetGameTime() + 3.0; //the buff for arkantos himself is half the time.
+			}
 			static int r;
 			static int g;
 			static int b ;
