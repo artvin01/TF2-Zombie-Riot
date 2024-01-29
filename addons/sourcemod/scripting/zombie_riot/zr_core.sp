@@ -152,7 +152,7 @@ enum
 	WEAPON_RED_BLADE = 81,
 	WEAPON_GRAVATON_WAND = 82,
 	WEAPON_HEAVY_PARTICLE_RIFLE = 83,
-}
+	}
 
 //int Bob_To_Player[MAXENTITIES];
 bool Bob_Exists = false;
@@ -480,6 +480,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_rapier.sp"
 #include "zombie_riot/custom/wand/weapon_wand_gravaton.sp"
 #include "zombie_riot/custom/weapon_heavy_particle_rifle.sp"
+#include "zombie_riot/custom/weapon_railcannon.sp"
 
 void ZR_PluginLoad()
 {
@@ -710,6 +711,7 @@ void ZR_MapStart()
 	ResetMapStartRedBladeWeapon();
 	Gravaton_Wand_MapStart();
 	Heavy_Particle_Rifle_Mapstart();
+	Precache_Railcannon();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;
