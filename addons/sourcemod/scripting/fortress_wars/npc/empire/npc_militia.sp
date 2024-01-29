@@ -51,6 +51,8 @@ methodmap Militia < EmpireBody
 		
 		npc.SetActivity("ACT_IDLE");
 		npc.m_flSpeed = 90.0;
+		npc.m_flVisionRange = 300.0;
+		npc.m_flEngageRange = 300.0;
 
 		npc.m_flHeadshotCooldown = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -84,26 +86,15 @@ static void ClotThink(int entity)
 		{
 			if(npc.m_flAttackHappens < gameTime)
 			{
-				float vecTarget[3];
-				WorldSpaceCenter(target, vecTarget);
-				npc.FaceTowards(vecTarget, 20000.0);
-
-				Handle swingTrace;
-				if(npc.DoSwingTrace(swingTrace, target))
+				if(IsValidEnemy(npc.index,npc.m_iTarget))
 				{
-					target = TR_GetEntityIndex(swingTrace);	
+					float vecTarget[3];
+					WorldSpaceCenter(npc.m_iTarget, vecTarget);
+					npc.FaceTowards(vecTarget, 20000.0);
 					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					
-					if(target > 0) 
-					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 4.0, DMG_CLUB, -1, _, vecHit);
-						npc.PlayMeleeHitSound();
-					} 
+					SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 4.0, DMG_CLUB, -1, _, vecTarget);
+					npc.PlayMeleeHitSound();
 				}
-
-				delete swingTrace;
 
 				npc.m_flAttackHappens = 0.0;
 			}
@@ -119,6 +110,7 @@ static void ClotThink(int entity)
 			{
 				npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
 				npc.PlayMeleeSound();
+				npc.m_iTarget = target;
 
 				npc.m_flAttackHappens = gameTime + 0.4;
 				npc.m_flReloadDelay = gameTime + 0.9;

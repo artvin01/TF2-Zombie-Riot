@@ -1301,10 +1301,6 @@ static void HighlightSelectedUnits(int client)
 				i--;
 				length--;
 			}
-			else
-			{
-				DrawUnitHealthBar(client, entity);
-			}
 		}
 
 		if(!length)
@@ -1316,7 +1312,10 @@ static void MoveSelectedUnits(int client, const float vecMovePos[3])
 {
 	if(Selected[client])
 	{
-		CreateParticle("ping_circle", vecMovePos, NULL_VECTOR);
+		float PingRange[3]; 
+		PingRange = vecMovePos;
+		PingRange[2] += 5.0;
+		CreateParticle("ping_circle", PingRange, NULL_VECTOR, client);
 
 		int length = Selected[client].Length;
 		if(length)
@@ -1324,8 +1323,47 @@ static void MoveSelectedUnits(int client, const float vecMovePos[3])
 			for(int i; i < length; i++)
 			{
 				int entity = EntRefToEntIndex(Selected[client].Get(i));
-				if(entity != -1)
-					MoveUnit(client, entity, vecMovePos);
+#if defined RTS
+				if(entity == -1 || !UnitBody_CanControl(client, entity))
+#else
+				if(entity == -1)
+#endif
+				{
+					Selected[client].Erase(i);
+					i--;
+					length--;
+				}
+				else
+				{
+#if defined RTS
+					int type = NextMoveType[client];
+					if(type < Command_Move)
+						type = Command_Move;
+					
+					UnitBody_AddCommand(entity, true, type, vecMovePos);
+
+					if(i == 0)
+						UnitBody_PlaySound(entity, client, Sound_Move);
+					
+#elseif defined ZR
+					f3_SpawnPosition[entity] = vecMovePos;
+
+					switch(NextMoveType[client])
+					{
+						case Move_Normal:
+							view_as<BarrackBody>(entity).CmdOverride = Command_RTSMove;
+						
+						case Move_Attack:
+							view_as<BarrackBody>(entity).CmdOverride = Command_RTSAttack;
+						
+						case Move_HoldPos:
+							view_as<BarrackBody>(entity).CmdOverride = Command_HoldPos;
+						
+						case Move_Patrol:
+							view_as<BarrackBody>(entity).CmdOverride = Command_RTSAttack;
+					}
+#endif
+				}
 			}
 			
 #if defined ZR
@@ -1349,233 +1387,6 @@ static void MoveSelectedUnits(int client, const float vecMovePos[3])
 
 		NextMoveType[client] = 0;
 	}
-}
-
-static void DrawUnitHealthBar(int client, int entity)
-{
-	int health = GetEntProp(entity, Prop_Data, "m_iHealth");
-	if(health < 1)
-	{
-		RemoveSelectBeams(entity);
-		return;
-	}
-
-	int maxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
-
-	int focus = EntRefToEntIndex(FocusRef[client]);
-	int camera = EntRefToEntIndex(CameraRef[client]);
-
-	float focusPos[3];
-	GetEntPropVector(focus, Prop_Send, "m_vecOrigin", focusPos);
-
-	float cameraPos[3];
-	GetEntPropVector(camera, Prop_Send, "m_vecOrigin", cameraPos); // Relative to parent focus entity
-
-	AddVectors(focusPos, cameraPos, cameraPos); // Now absolute in world coordiates
-
-	float cameraAng[3];
-	GetEntPropVector(camera, Prop_Data, "m_angAbsRotation", cameraAng);
-
-	float vecRight[3], vecUp[3];
-	GetAngleVectors(cameraAng, NULL_VECTOR, vecRight, vecUp);
-
-	//float entityPos[3];
-	//GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entityPos);
-
-	// Calculate the center and the highest point at the top
-	// of the bounding box as projected onto the camera plane
-
-	float bBoxTop[4][3];
-	float heights[4];
-	GetEntityBoundingBoxTop(entity, bBoxTop);
-
-	float centerPos[3];
-	int highest;
-	float maxHeight = -FAR_FUTURE;
-	float shiftUp[3];
-
-	for(int i; i < sizeof(bBoxTop); i++)
-	{
-		SubtractVectors(bBoxTop[i], cameraPos, shiftUp);
-		NormalizeVector(shiftUp, shiftUp);
-
-		// Sum total for average calcuation
-		AddVectors(centerPos, shiftUp, centerPos);
-
-		heights[i] = GetVectorDotProduct(shiftUp, vecUp);
-		if (heights[i] > maxHeight) {
-			maxHeight = heights[i];
-			highest = i;
-		}
-	}
-
-	// Divide by 4 for average
-	ScaleVector(centerPos, 0.25);
-
-	shiftUp = vecUp;
-	ScaleVector(shiftUp, heights[highest] - GetVectorDotProduct(centerPos, vecUp));
-	AddVectors(centerPos, shiftUp, centerPos);
-	NormalizeVector(centerPos, centerPos);
-
-	float hpbarPos[3];
-	hpbarPos = centerPos;
-	ScaleVector(hpbarPos, 50.0);
-	AddVectors(cameraPos, hpbarPos, hpbarPos);
-
-	// Move center to the left to offset for bar extending due to overheal
-	if(health > maxHealth)
-	{
-		float overhealOffset[3];
-		overhealOffset = vecRight;
-		ScaleVector(overhealOffset, HEALTH_BAR_HP_SCALE * (maxHealth - health));
-		AddVectors(hpbarPos, overhealOffset, hpbarPos);
-	}
-
-	float horizontalLeftPos[3];
-	float horizontalRightPos[3];
-
-	float barMin = HEALTH_BAR_HP_SCALE * maxHealth;
-	float barMax = HEALTH_BAR_HP_SCALE * maxHealth;
-	float barSplit = HEALTH_BAR_HP_SCALE * 2.0 * health;
-
-	float vecRightOffset[3], vecLeftOffset[3];
-	vecRightOffset = vecRight;
-	ScaleVector(vecRightOffset, 50.0);
-	vecLeftOffset = vecRightOffset;
-	ScaleVector(vecLeftOffset, -1.0);
-
-	horizontalLeftPos = vecLeftOffset;
-	ScaleVector(horizontalLeftPos, barMin);
-	AddVectors(hpbarPos, horizontalLeftPos, horizontalLeftPos);
-
-	horizontalRightPos = vecRightOffset;
-	ScaleVector(horizontalRightPos, barSplit);
-	AddVectors(horizontalLeftPos, horizontalRightPos, horizontalRightPos);
-
-	int beam1 = EntRefToEntIndex(BeamRef[entity][0]);
-	int beam2 = -1;
-	int target = -1;
-	if(!IsValidEntity(beam1))
-	{
-		RemoveSelectBeams(entity);
-
-		beam1 = CreateEntityByName("env_beam");
-		if(beam1 != -1)
-		{
-			SetEntityModel(beam1, LaserModel);
-			
-			SetEntProp(beam1, Prop_Send, "m_nBeamType", 2);
-			SetEntPropFloat(beam1, Prop_Data, "m_fWidth", 0.3);
-			SetEntPropFloat(beam1, Prop_Data, "m_fEndWidth", 0.3);
-
-			SetEntPropEnt(beam1, Prop_Data, "m_hOwnerEntity", entity);
-
-			DispatchSpawn(beam1);
-
-			BeamRef[entity][0] = EntIndexToEntRef(beam1);
-			SDKHook(beam1, SDKHook_SetTransmit, SetTransmit_HealthBeam);
-
-			target = CreateEntityByName("info_target");
-			if(target != -1)
-			{
-				AttachBeam(beam1, target);
-				BeamRef[entity][1] = EntIndexToEntRef(target);
-
-				if(health != maxHealth)
-				{
-					beam2 = CreateEntityByName("env_beam");
-					if(beam2 != -1)
-					{
-						SetEntityModel(beam2, LaserModel);
-						
-						SetEntProp(beam2, Prop_Send, "m_nBeamType", 2);
-						SetEntPropFloat(beam2, Prop_Data, "m_fWidth", 0.3);
-						SetEntPropFloat(beam2, Prop_Data, "m_fEndWidth", 0.3);
-
-						SetEntPropEnt(beam2, Prop_Data, "m_hOwnerEntity", entity);
-
-						DispatchSpawn(beam2);
-
-						BeamRef[entity][2] = EntIndexToEntRef(beam2);
-						SDKHook(beam2, SDKHook_SetTransmit, SetTransmit_HealthBeam);
-
-						AttachBeam(beam2, target);
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		target = EntRefToEntIndex(BeamRef[entity][1]);
-		beam2 = EntRefToEntIndex(BeamRef[entity][2]);
-
-		if(health == maxHealth)
-		{
-			if(beam2 != -1)
-			{
-				RemoveEntity(beam2);
-				BeamRef[entity][2] = INVALID_ENT_REFERENCE;
-			}
-		}
-		else if(beam2 == -1)
-		{
-			beam2 = CreateEntityByName("env_beam");
-			if(beam2 != -1)
-			{
-				SetEntityModel(beam2, LaserModel);
-				
-				SetEntProp(beam2, Prop_Send, "m_nBeamType", 2);
-				SetEntPropFloat(beam2, Prop_Data, "m_fWidth", 0.3);
-				SetEntPropFloat(beam2, Prop_Data, "m_fEndWidth", 0.3);
-
-				SetEntPropEnt(beam2, Prop_Data, "m_hOwnerEntity", entity);
-
-				DispatchSpawn(beam2);
-
-				BeamRef[entity][2] = EntIndexToEntRef(beam2);
-				SDKHook(beam2, SDKHook_SetTransmit, SetTransmit_HealthBeam);
-
-				AttachBeam(beam2, target);
-			}
-		}
-	}
-
-	TeleportEntity(beam1, horizontalLeftPos);
-	TeleportEntity(target, horizontalRightPos);
-
-	if(health != maxHealth)
-	{
-		horizontalLeftPos = horizontalRightPos;
-
-		horizontalRightPos = vecRightOffset;
-		ScaleVector(horizontalRightPos, barMax);
-		AddVectors(hpbarPos, horizontalRightPos, horizontalRightPos);
-
-		TeleportEntity(beam2, horizontalRightPos);
-	}
-
-	// Team Color
-	SetEntityRenderColor(beam1, 255, 0, 0, 255);
-}
-
-static Action SetTransmit_HealthBeam(int entity, int client)
-{
-	if(client > 0 && client <= MaxClients && Selected[client])
-	{
-		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
-		if(owner == -1)
-		{
-			RemoveEntity(entity);
-		}
-		else if(Selected[client].FindValue(EntIndexToEntRef(owner)) != -1)
-		{
-			DrawUnitHealthBar(client, entity);
-			return Plugin_Continue;
-		}
-	}
-
-	return Plugin_Handled;
 }
 
 static void RemoveSelectBeams(int owner)
@@ -2041,42 +1852,6 @@ static void SelectUnit(int client, int iSelectedEntity)
 		Selected[client] = new ArrayList();
 
 	Selected[client].Push(EntIndexToEntRef(iSelectedEntity));
-}
-
-/**
- * Called to move a selected unit
- * 
- * @param client			Commander who is moving the unit
- * @param entity			Entity of unit being moved
- * @param vecMovePos		Coordinates to move the unit to
- */
-static void MoveUnit(int client, int entity, const float vecMovePos[3])
-{
-#if defined RTS
-	int type = NextMoveType[client];
-	if(type < Command_Move)
-		type = Command_Move;
-	
-	UnitBody_AddCommand(true, entity, type, vecMovePos);
-	
-#elseif defined ZR
-	f3_SpawnPosition[entity] = vecMovePos;
-
-	switch(NextMoveType[client])
-	{
-		case Move_Normal:
-			view_as<BarrackBody>(entity).CmdOverride = Command_RTSMove;
-		
-		case Move_Attack:
-			view_as<BarrackBody>(entity).CmdOverride = Command_RTSAttack;
-		
-		case Move_HoldPos:
-			view_as<BarrackBody>(entity).CmdOverride = Command_HoldPos;
-		
-		case Move_Patrol:
-			view_as<BarrackBody>(entity).CmdOverride = Command_RTSAttack;
-	}
-#endif
 }
 
 static bool UnitEntityIterator(int client, int &entity)

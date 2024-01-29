@@ -121,11 +121,19 @@ methodmap UnitBody < CClotBody
 
 	public bool IsAlly(int attacker)
 	{
-		return RTS_IsPlayerAlly(attacker, this.m_hOwner);
+		int owner = attacker;
+		if(owner > MaxClients)
+			owner = view_as<UnitBody>(owner).m_hOwner;
+		
+		return RTS_IsPlayerAlly(owner, this.m_hOwner);
 	}
 	public bool CanControl(int attacker)
 	{
-		return RTS_CanPlayerControl(attacker, this.m_hOwner);
+		int owner = attacker;
+		if(owner > MaxClients)
+			owner = view_as<UnitBody>(owner).m_hOwner;
+		
+		return RTS_CanPlayerControl(owner, this.m_hOwner);
 	}
 	
 	public UnitBody(int client, const float vecPos[3], const float vecAng[3],
@@ -154,14 +162,14 @@ methodmap UnitBody < CClotBody
 	}
 }
 
-bool UnitBody_IsAlly(int player, int entity)
+bool UnitBody_IsAlly(int attacker, int entity)
 {
-	return view_as<UnitBody>(entity).IsAlly(player);
+	return view_as<UnitBody>(entity).IsAlly(attacker);
 }
 
-bool UnitBody_CanControl(int player, int entity)
+bool UnitBody_CanControl(int attacker, int entity)
 {
-	return view_as<UnitBody>(entity).CanControl(player);
+	return view_as<UnitBody>(entity).CanControl(attacker);
 }
 
 void UnitBody_AddCommand(int entity, bool override, int type, const float pos[3], int target = -1)
@@ -224,7 +232,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 			GetAbsOrigin(npc.index, command.Pos);
 			command.TargetRef = -1;
 
-			npc.AddCommand(true, command.Type, command.Pos, command.TargetRef);
+			npc.AddCommand(false, command.Type, command.Pos, command.TargetRef);
 		}
 		
 		bool foundTarget;
@@ -233,7 +241,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 		{
 			if(IsValidEnemy(npc.index, target))	// Following enemy
 			{
-				npc.m_iTarget = target;
+				npc.m_iTargetWalkTo = target;
 				npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
 				command.Type = Command_Attack;	// Force to always attack
@@ -283,7 +291,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 
 		if(!foundTarget)
 		{
-			target = npc.m_iTarget;
+			target = npc.m_iTargetWalkTo;
 
 			if(canAttack)	// No existing target and time as passed
 				canAttack = (target < 1 && npc.m_flGetClosestTargetTime < gameTime);
@@ -299,7 +307,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 					target = -1;
 				}
 
-				npc.m_iTarget = target;
+				npc.m_iTargetWalkTo = target;
 				npc.m_flGetClosestTargetTime = gameTime + 1.0;
 			}
 		}
@@ -316,7 +324,7 @@ stock bool UnitBody_ThinkMove(UnitBody npc, float gameTime)
 	CommandEnum command;
 	CommandList[npc.index].GetArray(0, command);
 
-	int target = npc.m_iTarget;
+	int target = npc.m_iTargetWalkTo;
 	if(target < 1)
 		target = command.TargetRef == -1 ? -1 : EntRefToEntIndex(command.TargetRef);
 	

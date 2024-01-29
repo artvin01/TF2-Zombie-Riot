@@ -77,7 +77,8 @@ static const char SelectSounds[][] =
 	"npc/metropolice/vo/therehegoeshesat.wav",
 	"npc/metropolice/vo/unitis10-65.wav",
 	"npc/metropolice/vo/unitis10-8standingby.wav",
-	"npc/metropolice/vo/unitisonduty10-8.wav"
+	"npc/metropolice/vo/unitisonduty10-8.wav",
+	"npc/metropolice/vo/wehavea10-108.wav",
 };
 
 static const char MoveSounds[][] =
@@ -90,7 +91,6 @@ static const char MoveSounds[][] =
 	"npc/metropolice/vo/movingtohardpoint.wav",
 	"npc/metropolice/vo/movingtohardpoint2.wav",
 	"npc/metropolice/vo/rodgerthat.wav",
-	"npc/metropolice/vo/wehavea10-108.wav",
 	"npc/metropolice/vo/youknockeditover.wav",
 	"npc/metropolice/vo/youwantamalcomplianceverdict.wav"
 };

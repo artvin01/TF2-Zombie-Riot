@@ -4468,10 +4468,6 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		
 		if(enemy <= MaxClients || !b_NpcHasDied[enemy])
 		{
-			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
-			{
-				return false;
-			}
 			if(b_NpcIsInvulnerable[enemy] && !target_invul)
 			{
 				return false;
@@ -4486,6 +4482,19 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
+
+#if defined RTS
+			if(UnitBody_IsAlly(index, enemy))
+			{
+				return false;
+			}
+#else
+			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
+			{
+				return false;
+			}
+#endif
+
 #if defined ZR
 			if(Saga_EnemyDoomed(enemy) && index > MaxClients && !b_Is_Player_Projectile[index])
 			{
@@ -6673,7 +6682,7 @@ stock bool makeexplosion(
 }	
 	
 	
-stock void CreateParticle(const char[] particle, const float pos[3], const float ang[3])
+stock void CreateParticle(const char[] particle, const float pos[3], const float ang[3], int client = -1)
 {
 	int tblidx = FindStringTable("ParticleEffectNames");
 	char tmp[256];
@@ -6698,7 +6707,14 @@ stock void CreateParticle(const char[] particle, const float pos[3], const float
 	TE_WriteNum("m_iParticleSystemIndex", stridx);
 	TE_WriteNum("entindex", -1);
 	TE_WriteNum("m_iAttachType", 5);	//Dont associate with any entity
-	TE_SendToAll();
+	if(client > 1)
+	{
+		TE_SendToClient(client);
+	}
+	else
+	{
+		TE_SendToAll();
+	}
 }
 
 stock void ShootLaser(int weapon, const char[] strParticle, float flStartPos[3], float flEndPos[3], bool bResetParticles = false)
