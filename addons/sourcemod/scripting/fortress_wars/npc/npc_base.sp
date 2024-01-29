@@ -103,8 +103,11 @@ methodmap UnitBody < CClotBody
 		FuncSound[this.index][type] = func;
 	}
 
-	public void AddCommand(int type, const float pos[3], int target = -1)
+	public void AddCommand(bool override, int type, const float pos[3], int target = -1)
 	{
+		if(override)
+			delete CommandList[this.index];
+		
 		CommandEnum command;
 		command.Type = type;
 		command.TargetRef = target == -1 ? -1 : EntIndexToEntRef(target);
@@ -161,9 +164,9 @@ bool UnitBody_CanControl(int player, int entity)
 	return view_as<UnitBody>(entity).CanControl(player);
 }
 
-void UnitBody_AddCommand(int entity, int type, const float pos[3], int target = -1)
+void UnitBody_AddCommand(int entity, bool override, int type, const float pos[3], int target = -1)
 {
-	view_as<UnitBody>(entity).AddCommand(type, pos, target);
+	view_as<UnitBody>(entity).AddCommand(override, type, pos, target);
 }
 
 void UnitBody_PlaySound(int entity, int client, int type)
@@ -222,7 +225,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 			GetAbsOrigin(npc.index, command.Pos);
 			command.TargetRef = -1;
 
-			npc.AddCommand(command.Type, command.Pos, command.TargetRef);
+			npc.AddCommand(true, command.Type, command.Pos, command.TargetRef);
 		}
 		
 		bool foundTarget;
