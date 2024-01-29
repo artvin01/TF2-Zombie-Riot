@@ -246,7 +246,7 @@ public void Skulls_LaunchSkull(int ent, int weapon, int client, int tier)
 		TeleportEntity(projectile, pos, NULL_VECTOR, NULL_VECTOR);
 		
 		SetEntityModel(projectile, SKULL_MODEL);
-		DispatchKeyValue(projectile, "modelscale", "1.33");
+		DispatchKeyValue(projectile, "modelscale", "1.25");
 		
 		switch(tier)
 		{
@@ -356,7 +356,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					
 					SetEntityModel(Drone, SKULL_MODEL);
 					
-					DispatchKeyValue(Drone, "modelscale", "1.33");
+					DispatchKeyValue(Drone, "modelscale", "1.25");
 					DispatchKeyValue(Drone, "StartDisabled", "false");
 		
 					DispatchKeyValue(prop, "Health", "9999999999");
@@ -434,8 +434,9 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					//Launch ALL excess skulls if the player has more than the max:
 					while (Skulls_ArrayStack[client].Length > Skulls_MaxSkulls[tier])
 					{
-						int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Get(Skulls_ArrayStack[client].Length - 1));
-						Skulls_ArrayStack[client].Erase(Skulls_ArrayStack[client].Length - 1);
+						//FIXED: It's supposed to launch skulls in order of oldest to newest, this was backwards.
+						int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Get(0));
+						Skulls_ArrayStack[client].Erase(0);
 
 						if (IsValidEdict(ent))
 						{
@@ -538,8 +539,8 @@ public void Skulls_Management(int client)
 {
 	Skulls_UpdateFollowerPositions(client);
 	
-	int length = Skulls_ArrayStack[client].Length;
-	for(int a; a < length; a++)
+	//int length = Skulls_ArrayStack[client].Length;
+	for(int a; a < Skulls_ArrayStack[client].Length; a++)
 	{
 		int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Get(a));
 		
@@ -562,6 +563,8 @@ public void Skulls_Management(int client)
 
 			if (GetGameTime() >= Skull_LifetimeEnd[ent])	//Skulls auto-launch themselves after a certain time period. This is to prevent players from buying this wand, getting a bunch of skulls, then selling it but keeping the skulls.
 			{
+				//FIXED: Auto-launched skulls are supposed to be removed from the list when they launch themselves. The ArrayList change did not do this, so they were still counted as being summoned, blocking new skulls from being summoned.
+				Skulls_ArrayStack[client].Erase(a);
 				Skulls_LaunchSkull(ent, EntRefToEntIndex(Skull_Weapon[ent]), client, Skull_Tier[ent]);
 			}
 			else
