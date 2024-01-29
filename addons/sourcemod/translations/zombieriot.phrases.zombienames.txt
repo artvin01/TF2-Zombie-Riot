@@ -1290,7 +1290,7 @@
 	"Angeled Silvester"
 	{
 		"en"		"Angeled Silvester"
-		"pt"		"Silvester Angulado"
+		"pt"		"Silvester Angelical"
 		"ru"		"Угловатый Сильвестр"
 	}
 	"Nemesis"
@@ -1377,54 +1377,63 @@
 	"Primal Sea Piercer"
 	{
 		"en"		"Primal Sea Piercer"
+		"pt"		"Perfurador Marítimo Primordial"
 		"ru"		"Первобытный морской пронзатель"
 		"chi"		"始海穿刺者"
 	}
 	"Nourished Piercer"
 	{
 		"en"		"Nourished Piercer"
+		"pt"		"Perfurador Nutrido"
 		"ru"		"Сытый пронзатель"
 		"chi"		"富营养的穿刺者"
 	}
 	"The First To Talk"
 	{
 		"en"		"The First To Talk"
+		"pt"		"Primeiro a Falar"
 		"ru"		"Первый говорящий"
 		"chi"		"首言者"
 	}
 	"Sal Viento Bishop Quintus"
 	{
 		"en"		"Sal Viento Bishop Quintus"
+		"pt"		"Sal Viento Quinto Bispo"
 		"ru"		"Сал Вьенто Епископ Квинт"
 		"chi"		"盐风主教昆图斯"
 	}
 	"Armorless Union Knight"
 	{
 		"en"		"Armorless Union Knight"
+		"pt"		"Cavaleiro da União dos Sem Armadura"
 		"ru"		"Рыцарь из «Союза без брони»"
 		"chi"		"无名独立骑士"
 	}
 	"Roar Knightclub Trainee"
 	{
 		"en"		"Roar Knightclub Trainee"
+		"pt"		"Estagiário Roar do Knightclub"
 		"ru"		"Ученик из «Рыцарского клуба \"Рев\"»"
 		"chi"		"呼啸骑士团学徒"
 	}
 	"Bloodboil Knightclub Trainee"
 	{
 		"en"		"Bloodboil Knightclub Trainee"
+		"pt"		"Estagiário Bloodboil do Knightclub"
 		"ru"		"Ученик из «Рыцарского клуба \"Кровавый котёл\"»"
 		"chi"		"沸血骑士团学徒"
 	}
 	"Armorless Union Cleanup Squad"
 	{
 		"en"		"Armorless Union Cleanup Squad"
+		"pt"		"Esquadrão de Limpeza da União dos Sem Armadura"
 		"ru"		"Отряд зачистки из «Союза без брони»"
 		"chi"		"无胄盟清扫小队"
 	}
 	"Consumable Remains"
 	{
 		"en"		"Consumable Remains"
+		"pt"		"Consumível Restante"
 		"ru"		"Потребляемые остатки"
 	}
 	"The Endspeaker, Will of We Many"
