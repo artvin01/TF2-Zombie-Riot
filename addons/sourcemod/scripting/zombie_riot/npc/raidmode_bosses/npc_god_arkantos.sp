@@ -488,7 +488,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		}
 		if(!Waves_IsEmpty())
 			allyAlive = true;
-			
+
 		if(allyAlive)
 		{
 			b_NpcIsInvulnerable[npc.index] = true;
@@ -1675,15 +1675,15 @@ void ArkantosSayWordsAngry()
 	{
 		case 0:
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: You fool, you think my army believed in me for no reason?!");
+			CPrintToChatAll("{lightblue}God Arkantos{default}: {crimson}FOR THE PEOPLE!!!!!!!!!!");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: I will aveage those you have sought to destroy!");
+			CPrintToChatAll("{lightblue}God Arkantos{default}: {crimson}FOR ALL THAT IS FORSAKEN!!!!!!!");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: Just like my allies said, you never listen!");
+			CPrintToChatAll("{lightblue}God Arkantos{default}: {crimson}FOR THE FUTURE!!!!!!!");
 		}
 		case 3:
 		{

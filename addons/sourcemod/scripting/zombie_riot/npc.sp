@@ -414,6 +414,7 @@ enum
 	INTERITUS_WINTER_ARCTIC_MAGE	  = 365,
 	INTERITUS_WINTER_FROST_HUNTER	  = 366,
 	INTERITUS_WINTER_SKIN_HUNTER	  = 367,
+	INTERITUS_WINTER_IRRITATED_PERSON = 368,
 
 	MAX_NPC_TYPES	// Add entries above this line
 }
@@ -811,7 +812,8 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Airborn Explorer",
 	"Arctic Mage",
 	"Frost Hunter",
-	"Skin Hunter"
+	"Skin Hunter",
+	"Irritated Person"
 };
 
 // See items.sp for IDs to names
@@ -1581,7 +1583,8 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_airborn_explorer",
 	"npc_arctic_mage",
 	"npc_frost_hunter",
-	"npc_skin_hunter"
+	"npc_skin_hunter",
+	"npc_irritated_person"
 };
 
 void NPC_MapStart()
@@ -1861,6 +1864,7 @@ void NPC_MapStart()
 	WinterArcticMage_OnMapStart_NPC();
 	WinterFrostHunter_OnMapStart_NPC();
 	WinterSkinHunter_OnMapStart_NPC();
+	WinterIrritatedPerson_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2939,6 +2943,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case INTERITUS_WINTER_SKIN_HUNTER:
 			entity = WinterSkinHunter(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_IRRITATED_PERSON:
+			entity = WinterIrritatedPerson(client, vecPos, vecAng, ally);
 
 
 		default:
@@ -5194,3 +5201,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/winter/npc_arctic_mage.sp"
 #include "zombie_riot/npc/interitus/winter/npc_skin_hunter.sp"
 #include "zombie_riot/npc/interitus/winter/npc_frost_hunter.sp"
+#include "zombie_riot/npc/interitus/winter/npc_irritated_person.sp"

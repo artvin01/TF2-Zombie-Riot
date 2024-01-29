@@ -1961,4 +1961,8 @@
 	{
 		"en"	"Skin Hunter"
 	}
+	"Irritated Person"
+	{
+		"en"	"Irritated Person"
+	}
 }
