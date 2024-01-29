@@ -2422,17 +2422,15 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 }
 
 //problem: tf2 code lazily made it only work for clients, the server doesnt get this information updated all the time now.
+#define SKIN_ZOMBIE			5
+#define SKIN_ZOMBIE_SPY		SKIN_ZOMBIE + 18
 
 void UpdatePlayerFakeModel(int client)
 {
 	int PlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(PlayerModel > 0)
-	{
-		//setclass to actual class
-	//	TF2_SetPlayerClass_ZR(client, CurrentClass[client]);
+	{	
 		SDKCall_RecalculatePlayerBodygroups(client);
-		//set back to simulate viewmodel
-	//	TF2_SetPlayerClass_ZR(client, WeaponClass[client]);
 		i_nm_body_client[client] = GetEntProp(client, Prop_Data, "m_nBody");
 		SetEntProp(PlayerModel, Prop_Send, "m_nBody", i_nm_body_client[client]);
 	}

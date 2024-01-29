@@ -1041,6 +1041,7 @@ stock int GiveWearable(int client, int index)
 		SetEntProp(entity, Prop_Send, "m_iEntityQuality", 1);
 		SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
+		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 		
 		DispatchSpawn(entity);
 		SDKCall_EquipWearable(client, entity);
