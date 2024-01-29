@@ -212,11 +212,10 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 
 	for(;;)
 	{
-		int actions = CommandList[npc.index] ? CommandList[npc.index].Length : 0;
-		if(actions)
+		if(CommandList[npc.index] && CommandList[npc.index].Length)
 		{
 			// Oldest command
-			CommandList[npc.index].GetArray(actions - 1, command);
+			CommandList[npc.index].GetArray(0, command);
 		}
 		else
 		{
@@ -247,7 +246,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 			else	// Following target is now invalid
 			{
 				// Remove this command
-				CommandList[npc.index].Erase(actions - 1);
+				CommandList[npc.index].Erase(0);
 				continue;
 			}
 		}
@@ -315,7 +314,7 @@ stock bool UnitBody_ThinkMove(UnitBody npc, float gameTime)
 	int actions = CommandList[npc.index].Length;
 
 	CommandEnum command;
-	CommandList[npc.index].GetArray(actions - 1, command);
+	CommandList[npc.index].GetArray(0, command);
 
 	int target = npc.m_iTarget;
 	if(target < 1)
@@ -371,7 +370,7 @@ stock bool UnitBody_ThinkMove(UnitBody npc, float gameTime)
 					else
 					{
 						command.Type = Command_Idle;
-						CommandList[npc.index].SetArray(actions - 1, command);
+						CommandList[npc.index].SetArray(0, command);
 					}
 				}
 				case Command_Patrol:
@@ -387,13 +386,13 @@ stock bool UnitBody_ThinkMove(UnitBody npc, float gameTime)
 					else
 					{
 						command.Type = Command_Idle;
-						CommandList[npc.index].SetArray(actions - 1, command);
+						CommandList[npc.index].SetArray(0, command);
 					}
 				}
 			}
 
 			if(nextCommand)
-				CommandList[npc.index].Erase(actions - 1);
+				CommandList[npc.index].Erase(0);
 		}
 		else
 		{
