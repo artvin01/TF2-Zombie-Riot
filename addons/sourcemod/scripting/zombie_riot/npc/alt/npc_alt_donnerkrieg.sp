@@ -501,14 +501,14 @@ public void Donnerkrieg_ClotThink(int iNPC)
 		if(!b_nightmare_logic[npc.index])
 		{	
 	
-				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 				
 				//Predict their pos.
 				if(flDistanceToTarget < npc.GetLeadRadius()) {
 					
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 					
 				/*	int color[4];
 					color[0] = 255;
@@ -534,7 +534,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 						
 					//Body pitch
 					float v[3], ang[3];
-					SubtractVectors(WorldSpaceCenter(npc.index), WorldSpaceCenter(PrimaryThreatIndex), v); 
+					SubtractVectors(WorldSpaceCenterOld(npc.index), WorldSpaceCenterOld(PrimaryThreatIndex), v); 
 					NormalizeVector(v, v);
 					GetVectorAngles(v, ang); 
 							
@@ -547,7 +547,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 
 					npc.FaceTowards(vecTarget);
 					float projectile_speed = 400.0;
-					vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
+					vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
 					if(g_b_angered)
 					{
 						npc.FireParticleRocket(vecTarget, 125.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
@@ -647,11 +647,11 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 				
 	Donnerkrieg npc = view_as<Donnerkrieg>(ref);
 	
-	//float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+	//float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 	
-	float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
-	//float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(PrimaryThreatIndex), true);
+	//float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(PrimaryThreatIndex), true);
 	
 	float GameTime = GetGameTime(npc.index);
 	if(!npc.m_bInKame)
@@ -722,7 +722,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 			{
 				npc.StartPathing();
 				float vBackoffPos[3];
-				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
+				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true);
 				
 				if(fl_nightmare_grace_period[npc.index]<GameTime)
@@ -812,7 +812,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 						
 			//Body pitch
 			float v[3], ang[3];
-			SubtractVectors(WorldSpaceCenter(npc.index), WorldSpaceCenter(PrimaryThreatIndex), v); 
+			SubtractVectors(WorldSpaceCenterOld(npc.index), WorldSpaceCenterOld(PrimaryThreatIndex), v); 
 			NormalizeVector(v, v);
 			GetVectorAngles(v, ang); 
 							
@@ -827,11 +827,11 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 		
 		if(g_b_angered)
 		{
-			npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 150.0);
+			npc.FaceTowards(WorldSpaceCenterOld(PrimaryThreatIndex), 150.0);
 		}
 		else
 		{
-			npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 5.0);
+			npc.FaceTowards(WorldSpaceCenterOld(PrimaryThreatIndex), 5.0);
 		}
 		
 		NPC_StopPathing(npc.index);
@@ -1032,7 +1032,7 @@ void NightmareCannon_TBB_Ability(int client)
 		NightmareCannon_BEAM_BuildingHit[building] = false;
 	}
 	
-	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
+	ParticleEffectAt(WorldSpaceCenterOld(client), "eyeboss_death_vortex", 2.0);
 	EmitSoundToAll("mvm/mvm_tank_ping.wav");
 			
 	NightmareCannon_BEAM_IsUsing[client] = false;
@@ -1137,7 +1137,7 @@ static void NightmareCannon_GetBeamDrawStartPoint(int client, float startPoint[3
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOrigin(client);
+	startPoint = GetAbsOriginOld(client);
 	startPoint[2] += 50.0;
 	
 	Donnerkrieg npc = view_as<Donnerkrieg>(client);
@@ -1147,7 +1147,7 @@ static void NightmareCannon_GetBeamDrawStartPoint(int client, float startPoint[3
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOrigin(client);
+	startPoint = GetAbsOriginOld(client);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == NightmareCannon_BEAM_BeamOffset[client][0] && 0.0 == NightmareCannon_BEAM_BeamOffset[client][1] && 0.0 == NightmareCannon_BEAM_BeamOffset[client][2])
@@ -1204,7 +1204,7 @@ public Action NightmareCannon_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOrigin(client);
+		startPoint = GetAbsOriginOld(client);
 		startPoint[2] += 50.0;
 		
 		if(!b_nightmare_logic[npc.index])
@@ -1235,7 +1235,7 @@ public Action NightmareCannon_TBB_Tick(int client)
 				int PrimaryThreatIndex = npc.m_iTarget;
 				if(IsValidEnemy(npc.index, PrimaryThreatIndex) &&  !b_nightmare_logic[npc.index])
 				{
-					float target_vec[3]; target_vec = GetAbsOrigin(PrimaryThreatIndex);
+					float target_vec[3]; target_vec = GetAbsOriginOld(PrimaryThreatIndex);
 					endPoint[2] = target_vec[2];
 				}
 			}
@@ -1263,7 +1263,7 @@ public Action NightmareCannon_TBB_Tick(int client)
 					{
 						damage *= 5.0;
 					}
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
 				}
 			}
 			static float belowBossEyes[3];

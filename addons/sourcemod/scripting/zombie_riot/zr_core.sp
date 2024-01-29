@@ -172,7 +172,8 @@ ConVar zr_spawnprotectiontime;
 ConVar zr_viewshakeonlowhealth;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
-//ConVar CvarEnablePrivatePlugins;
+ConVar zr_allowfreeplay;
+ConVar zr_enemymulticap;
 int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
@@ -189,6 +190,7 @@ float f_TimerTickCooldownShop = 0.0;
 float f_FreeplayDamageExtra = 1.0;
 int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
+float PlayerCountBuffScaling = 1.0;
 int PlayersAliveScaling;
 int PlayersInGame;
 bool ZombieMusicPlayed;
@@ -220,6 +222,7 @@ int CurrentRound;
 int CurrentWave = -1;
 int StartCash;
 float RoundStartTime;
+char WhatDifficultySetting_Internal[21];
 char WhatDifficultySetting[21];
 float healing_cooldown[MAXTF2PLAYERS];
 float Damage_dealt_in_total[MAXTF2PLAYERS];
@@ -236,11 +239,13 @@ int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpam[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
+int i_MaxArmorTableUsed[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
 #define SF2_PLAYER_VIEWBOB_SCALE_Y 0.0
 #define SF2_PLAYER_VIEWBOB_SCALE_Z 0.0
+#define RAID_MAX_ARMOR_TABLE_USE 20
 
 float Armor_regen_delay[MAXTF2PLAYERS];
 
@@ -264,6 +269,7 @@ int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...};
 
 int Armour_Level_Current[MAXTF2PLAYERS];
 int Armor_Charge[MAXENTITIES];
+int Armor_DebuffType[MAXENTITIES];
 
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
@@ -309,7 +315,9 @@ int i_ThisEntityHasAMachineThatBelongsToClient[MAXENTITIES];
 int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
 
 float MultiGlobal = 0.25;
-float MultiGlobalHealth = 0.25;
+float MultiGlobalEnemy = 0.25;
+float MultiGlobalHealth = 1.0;
+float MultiGlobalArkantos = 0.25;
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
 			
 int g_CarriedDispenser[MAXPLAYERS+1];
@@ -486,6 +494,11 @@ void ZR_PluginStart()
 	RegServerCmd("sm_reloadnpcs", OnReloadCommand, "Reload NPCs", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_store", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_shop", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_market", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_weapons", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_walmart", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_buy", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_guns", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
 	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person");
@@ -519,6 +532,7 @@ void ZR_PluginStart()
 	Waves_PluginStart();
 	Rogue_PluginStart();
 	Spawns_PluginStart();
+	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
 	for (int ent = -1; (ent = FindEntityByClassname(ent, "info_player_teamspawn")) != -1;) 
@@ -537,6 +551,7 @@ void ZR_MapStart()
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
+	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	RoundStartTime = 0.0;
 	cvarTimeScale.SetFloat(1.0);
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
@@ -597,6 +612,7 @@ void ZR_MapStart()
 	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
 	Zero(f_WasRecentlyRevivedViaNonWave);
 	Zero(f_TimeAfterSpawn);
+	Zero(f_ArmorCurrosionImmunity);
 	Reset_stats_Irene_Global();
 	Reset_stats_PHLOG_Global();
 	Irene_Map_Precache();
@@ -1110,9 +1126,10 @@ public void OnClientAuthorized(int client)
 	Ammo_Count_Used[client] = 0;
 	CashSpentTotal[client] = 0;
 	f_LeftForDead_Cooldown[client] = 0.0;
-	
+/*	
 	if(CurrentRound)
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.10);
+*/
 }
 
 void ZR_OnClientDisconnect_Post()
@@ -1257,13 +1274,6 @@ public Action Timer_Dieing(Handle timer, int client)
 }
 
 
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-
-
 public void Spawn_Bob_Combine(int client)
 {
 	float flPos[3], flAng[3];
@@ -1311,12 +1321,6 @@ public void Spawn_Cured_Grigori()
 		}
 	}
 }
-
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
 
 void CheckAlivePlayersforward(int killed=0)
 {
@@ -1421,6 +1425,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			if(!applied_lastmann_buffs_once)
 			{
 				CauseFadeInAndFadeOut(0,1.0,1.0,1.0);
+				PlayTeamDeadSound();
 				Zero(delay_hud); //Allow the hud to immedietly update
 			}
 
@@ -1989,9 +1994,11 @@ void PlayerApplyDefaults(int client)
 	}
 	else if(!IsFakeClient(client))
 	{
+
 		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
 		QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
+		QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		
@@ -2159,61 +2166,46 @@ public Action DeployBannerIconBuff(Handle timer, DataPack pack)
 	return Plugin_Stop;
 }
 
-void SetForceButtonState(int client, bool apply, int button_flag)
-{
-	int Buttons = GetEntProp(client, Prop_Data, "m_afButtonForced");
-
-	if(apply)
-	{
-		Buttons |= button_flag;
-	}
-	else
-	{
-		Buttons &= ~button_flag;
-	}
-	SetEntProp(client, Prop_Data, "m_afButtonForced", Buttons);
-}
-
-void ForcePlayerCrouch(int client, bool enable)
-{
-	if(enable)
-	{
-		SetVariantInt(1);
-		AcceptEntityInput(client, "SetForcedTauntCam");
-		SetForceButtonState(client, true, IN_DUCK);
-		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 0);
-		b_NetworkedCrouch[client] = true;
-		SetEntProp(client, Prop_Send, "m_bDucked", true);
-		SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
-	}
-	else
-	{
-		int Buttons = GetEntProp(client, Prop_Data, "m_afButtonForced");
-		if(Buttons & IN_DUCK)
-		{
-			if(thirdperson[client])
-			{
-				SetVariantInt(1);
-				AcceptEntityInput(client, "SetForcedTauntCam");
-			}
-			else
-			{
-				SetVariantInt(0);
-				AcceptEntityInput(client, "SetForcedTauntCam");
-			}
-			SetForceButtonState(client, false, IN_DUCK);
-			b_NetworkedCrouch[client] = false;
-			SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
-			SetEntProp(client, Prop_Send, "m_bDucked", false);
-			SetEntityFlags(client, GetEntityFlags(client)&~FL_DUCKING);	
-		}
-	}
-}
-
-
 void GrantAllPlayersCredits_Rogue(int cash)
 {
 	cash *= (Rogue_GetRound()+1);
 	CPrintToChatAll("{green}%t","Cash Gained!", cash);
 	CurrentCash += cash;
+}
+
+stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)
+{
+	float vecOrigin[3], vecAngles[3], vecEndOrigin[3];
+	GetClientEyePosition(iClient, vecOrigin);
+	GetClientEyeAngles(iClient, vecAngles);
+	
+	i_PreviousInteractedEntity[iClient] = 0; //didnt find any
+	
+	if(f_Reviving_This_Client[iClient] < GetGameTime())
+	{
+		i_Reviving_This_Client[iClient] = 0;
+	}
+
+	Handle hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_DontHitAlivePlayer, iClient);
+	TR_GetEndPosition(vecEndOrigin, hTrace);
+	
+	int iReturn = -1;
+	int iHit = TR_GetEntityIndex(hTrace);
+	
+	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
+		iReturn = iHit;
+
+	if(iReturn > 0)
+	{
+		i_Reviving_This_Client[iClient] = iReturn;
+		f_Reviving_This_Client[iClient] = GetGameTime() + 0.35;
+	}
+	else
+	{
+		i_Reviving_This_Client[iClient] = 0;
+		f_Reviving_This_Client[iClient] = 0.0;
+	}
+	
+	delete hTrace;
+	return iReturn;
 }

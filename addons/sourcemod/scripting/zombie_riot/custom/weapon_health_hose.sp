@@ -527,7 +527,7 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 		belowBossEyes[2] = 0.0;
 
 		GetBeamDrawStartPoint_Stock(client, belowBossEyes,{0.0,-10.0,-10.0});
-		Passanger_Lightning_Effect(belowBossEyes, WorldSpaceCenter(target), 1, 5.0, {200,50,50});
+		Passanger_Lightning_Effect(belowBossEyes, WorldSpaceCenterOld(target), 1, 5.0, {200,50,50});
 	}
 	else
 	{

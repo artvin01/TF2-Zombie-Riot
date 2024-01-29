@@ -153,7 +153,9 @@ public void Star_Shooter_Meteor_shower_ability(int client, int weapon, bool crit
 
 		//PrintToChatAll("test meteor shower");
 		ApplyTempAttrib(weapon, 6, 0.5, 7.5); //applies faster fire rate for the next 7.5 seconds
+		ApplyTempAttrib(weapon, 2, 0.6, 7.5); //Nerf damage down as its way too strong otherwise, it already has no cooldown.
 		IsAbilityActive[client] = 1; //1 for enabled, 0 for disabled
+		SSS_overheat[client] = 0;
 		CreateTimer(7.5, Disable_Star_Shooter_Ability, client, TIMER_FLAG_NO_MAPCHANGE);
 
 	}
@@ -194,12 +196,12 @@ public void SuperStarShooterOnHit(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenter(target);
+		Entity_Position = WorldSpaceCenterOld(target);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 
 		EmitSoundToAll(SOUND_ZAP_STAR, target, SNDCHAN_STATIC, 70, _, 0.6);
 		

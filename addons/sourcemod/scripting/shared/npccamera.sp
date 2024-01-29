@@ -44,6 +44,7 @@ public Action NPCCamera_SpecNext(int client, const char[] command, int args)
 		}
 	}
 
+#if !defined RTS
 	for(int i; i < i_MaxcountNpc_Allied; i++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
@@ -59,6 +60,7 @@ public Action NPCCamera_SpecNext(int client, const char[] command, int args)
 			}
 		}
 	}
+#endif
 	
 	if(bestEntity == MAXENTITIES)
 	{
@@ -109,6 +111,7 @@ public Action NPCCamera_SpecPrev(int client, const char[] command, int args)
 		}
 	}
 
+#if !defined RTS
 	for(int i = i_MaxcountNpc_Allied - 1; i >= 0; i--)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
@@ -124,6 +127,7 @@ public Action NPCCamera_SpecPrev(int client, const char[] command, int args)
 			}
 		}
 	}
+#endif
 
 	if(bestEntity == 0)
 	{

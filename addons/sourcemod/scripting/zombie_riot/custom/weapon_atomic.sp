@@ -360,21 +360,6 @@ static void TBB_Tick(int client)
 		delete trace;
 		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BeamWand_TraceUsers, client);    // 1073741824 is CONTENTS_LADDER?
 		FinishLagCompensation_Base_boss();
-		//		int weapon = BeamWand_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
-		/*
-		for (int victim = 1; victim < MaxClients; victim++)
-		{
-		    if (BeamWand_HitDetected[victim] && BossTeam != GetClientTeam(victim))
-		    {
-		        GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-		        float distance = GetVectorDistance(startPoint, playerPos, false);
-		        float damage = BeamWand_CloseDPT[client] + (BeamWand_FarDPT[client]-BeamWand_CloseDPT[client]) * (distance/BeamWand_MaxDistance[client]);
-		        if (damage < 0)
-		            damage *= -1.0;
-		        TakeDamage(victim, client, client, damage/6, 2048, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
-		    }
-		}
-		*/
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		BeamWand_Targets_Hit[client] = 1.0;
@@ -385,14 +370,14 @@ static void TBB_Tick(int client)
 			{
 				if (IsValidEntity(BeamWand_BuildingHit[building]))
 				{
-					playerPos      = WorldSpaceCenter(BeamWand_BuildingHit[building]);
+					playerPos      = WorldSpaceCenterOld(BeamWand_BuildingHit[building]);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
 					float damage   = BeamWand_CloseBuildingDPT[client] + (BeamWand_FarBuildingDPT[client] - BeamWand_CloseBuildingDPT[client]) * (distance / BeamWand_MaxDistance[client]);
 					if (damage < 0)
 						damage *= -1.0;
 
 					float damage_force[3];
-					damage_force  = CalculateDamageForce(vecForward, 10000.0);
+					damage_force  = CalculateDamageForceOld(vecForward, 10000.0);
 					DataPack pack = new DataPack();
 					pack.WriteCell(EntIndexToEntRef(BeamWand_BuildingHit[building]));
 					pack.WriteCell(EntIndexToEntRef(client));

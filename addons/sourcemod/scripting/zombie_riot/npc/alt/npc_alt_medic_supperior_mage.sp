@@ -292,7 +292,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		if (npc.m_flReloadDelay < GetGameTime(npc.index))
 		{
 			if (npc.m_flmovedelay < GetGameTime(npc.index))
@@ -307,12 +307,12 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 		}
 		
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) {
 			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 		/*	int color[4];
 			color[0] = 255;
@@ -699,7 +699,7 @@ static void NPC_ALT_MEDIC_SUPPERIOR_MAGE_GetBeamDrawStartPoint(int client, float
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOrigin(client);
+	startPoint = GetAbsOriginOld(client);
 	startPoint[2] += 50.0;
 	
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE npc = view_as<NPC_ALT_MEDIC_SUPPERIOR_MAGE>(client);
@@ -709,7 +709,7 @@ static void NPC_ALT_MEDIC_SUPPERIOR_MAGE_GetBeamDrawStartPoint(int client, float
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOrigin(client);
+	startPoint = GetAbsOriginOld(client);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamOffset[client][0] && 0.0 == NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamOffset[client][1] && 0.0 == NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamOffset[client][2])
@@ -765,7 +765,7 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOrigin(client);
+		startPoint = GetAbsOriginOld(client);
 		startPoint[2] += 50.0;
 
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceWallsOnly);
@@ -811,7 +811,7 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick(int client)
 						damage *= 5.0;
 					}
 
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
 				}
 			}
 			

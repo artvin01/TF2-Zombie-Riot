@@ -655,8 +655,8 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			{
 				if(!XenoExtraLogic())
 				{
-					float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-					float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+					float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+					float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 					if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
 					{
 						int Enemy_I_See;
@@ -755,8 +755,8 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			{
 				if(IsValidEnemy(npc.index, npc.m_iTarget))
 				{
-					float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-					float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+					float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+					float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 					if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0))
 					{
 
@@ -824,14 +824,14 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		//Predict their pos.
 		if(fl_OverrideWalkDest[npc.index] < gameTime)
 		{
 			if(flDistanceToTarget < npc.GetLeadRadius()) 
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} 
 			else 
@@ -959,7 +959,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				npc.m_flJumpStartTime = gameTime + 0.1;
 				npc.FaceTowards(vecTarget, 99999.9);
 
-				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1300.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1300.0);
 				float VecSave[3];
 				VecSave = vecTarget;
 
@@ -1059,6 +1059,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		npc.PlayDeathSound();
 	}
 	int client = EntRefToEntIndex(i_GrabbedThis[npc.index]);
+	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s",WhatDifficultySetting_Internal);
 	
 	if(IsValidEntity(client))
 	{
@@ -1221,7 +1222,7 @@ void Nemesis_TryDodgeAttack(int entity)
 				fl_OverrideWalkDest[npc.index] = GetGameTime(npc.index) + 1.5;
 				if(IsValidEntity(npc.m_iTarget))
 				{
-					float vecTarget[3]; vecTarget = WorldSpaceCenter(ref);
+					float vecTarget[3]; vecTarget = WorldSpaceCenterOld(ref);
 					npc.FaceTowards(vecTarget);
 				}
 				NPC_SetGoalVector(npc.index, PosToDodgeTo);
@@ -1378,7 +1379,7 @@ public Action CheckStuckNemesis(Handle timer, any entid)
 stock float[] Nemesis_DodgeToDirection(CClotBody npc, float extra_backoff = 64.0, float Angle = -90.0)
 {
 	float botPos[3];
-	botPos = WorldSpaceCenter(npc.index);
+	botPos = WorldSpaceCenterOld(npc.index);
 	
 	// compute our desired destination
 	float pathTarget[3];

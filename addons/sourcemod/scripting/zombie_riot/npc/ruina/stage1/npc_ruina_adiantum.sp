@@ -270,9 +270,9 @@ public void Adiantum_ClotThink(int iNPC)
 			
 		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
 			
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 		if(npc.m_flNextRangedBarrage_Spam < GameTime)
 		{
@@ -377,7 +377,7 @@ static void Adiantum_Destroy_Wings(int client)
 }
 static void Adiantum_Summon_Ion_Barrage(int client, float vecTarget[3])
 {
-	float current_loc[3]; current_loc=GetAbsOrigin(client);
+	float current_loc[3]; current_loc=GetAbsOriginOld(client);
 	float vecAngles[3], Direction[3], endLoc[3];
 	
 	
@@ -408,7 +408,7 @@ public void Adiantum_Ion_Invoke(int ref, float vecTarget[3], float Time)
 		
 		int color[4] = {1, 175, 255, 255};
 		float UserLoc[3];
-		UserLoc = GetAbsOrigin(entity);
+		UserLoc = GetAbsOriginOld(entity);
 		
 		UserLoc[2]+=75.0;
 		

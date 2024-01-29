@@ -1893,4 +1893,76 @@
 	{
 		"en"	"Bob the First"
 	}
+	"Ahim"
+	{
+		"en"	"Ahim"
+	}
+	"Inabdil"
+	{
+		"en"	"Inabdil"
+	}
+	"Khazaan"
+	{
+		"en"	"Khazaan"
+	}
+	"Sakratan"
+	{
+		"en"	"Sakratan"
+	}
+	"Yadeam"
+	{
+		"en"	"Yadeam"
+	}
+	"Rajul"
+	{
+		"en"	"Rajul"
+	}
+	"Qanaas"
+	{
+		"en"	"Qanaas"
+	}
+	"Atilla"
+	{
+		"en"	"Atilla"
+	}
+	"Ancient Demon"
+	{
+		"en"	"Ancient Demon"
+	}
+	"Winter Sniper"
+	{
+		"en"	"Winter Sniper"
+	}
+	"Ziberian Miner"
+	{
+		"en"	"Ziberian Miner"
+	}
+	"Snowey Gunner"
+	{
+		"en"	"Snowey Gunner"
+	}
+	"Freezing Cleaner"
+	{
+		"en"	"Freezing Cleaner"
+	}
+	"Airborn Explorer"
+	{
+		"en"	"Airborn Explorer"
+	}
+	"Arctic Mage"
+	{
+		"en"	"Arctic Mage"
+	}
+	"Frost Hunter"
+	{
+		"en"	"Frost Hunter"
+	}
+	"Skin Hunter"
+	{
+		"en"	"Skin Hunter"
+	}
+	"Irritated Person"
+	{
+		"en"	"Irritated Person"
+	}
 }

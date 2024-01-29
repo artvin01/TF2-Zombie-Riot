@@ -42,7 +42,7 @@
 #define SOUND_SKULL_IMPACT	"weapons/flare_detonator_explode_world.wav"
 #define SKULL_PARTICLE_IMPACT	"spell_skeleton_goop_green"
 
-Queue Skulls_Queue[MAXPLAYERS+1] = {null, ...};
+ArrayList Skulls_ArrayStack[MAXPLAYERS+1] = {null, ...};
 float Skulls_OrbitAngle[MAXPLAYERS + 1] = { 0.0, ... };
 
 //Stats based on pap level. Uses arrays for simpler code.
@@ -121,7 +121,7 @@ public void Wand_Skull_Summon_ClearAll()
 
 public void Skulls_PlayerKilled(int client)
 {
-	if (Skulls_Queue[client] != null)
+	if (Skulls_ArrayStack[client] != null)
 	{
 		DeleteAllSkulls(client);
 	}
@@ -155,9 +155,10 @@ public void Skulls_LaunchAll(int client, int weapon, bool crit, int tier)
 		
 		delay_hud[client] = 0.0;
 		
-		while (!Skulls_Queue[client].Empty)
+		int length = Skulls_ArrayStack[client].Length;
+		for(int a; a < length; a++)
 		{
-			int ent = EntRefToEntIndex(Skulls_Queue[client].Pop());
+			int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Get(a));
 			
 			if (IsValidEdict(ent))
 			{
@@ -165,7 +166,7 @@ public void Skulls_LaunchAll(int client, int weapon, bool crit, int tier)
 			}
 		}
 		
-		Skulls_Queue[client] = null;
+		delete Skulls_ArrayStack[client];
 	}
 	else
 	{
@@ -421,20 +422,21 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					
 					SDKHook(Textentity, SDKHook_SetTransmit, Skulls_Transmit);
 										
-					//Create queue and apply prethink hook if the queue is null:
-					if (Skulls_Queue[client] == null)
+					//Create ArrayList and apply prethink hook if the ArrayList is null:
+					if (Skulls_ArrayStack[client] == null)
 					{
 						SDKHook(client, SDKHook_PreThink, Skulls_PreThink);
-						Skulls_Queue[client] = new Queue();
+						Skulls_ArrayStack[client] = new ArrayList();
 					}
 					
-					//Add the newly-summoned skull to the queue:
-					Skulls_Queue[client].Push(EntIndexToEntRef(prop));
+					//Add the newly-summoned skull to the ArrayList:
+					Skulls_ArrayStack[client].Push(EntIndexToEntRef(prop));
 					//Launch ALL excess skulls if the player has more than the max:
-					while (Skulls_Queue[client].Length > Skulls_MaxSkulls[tier])
+					while (Skulls_ArrayStack[client].Length > Skulls_MaxSkulls[tier])
 					{
-						int ent = EntRefToEntIndex(Skulls_Queue[client].Pop());
-					
+						int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Get(Skulls_ArrayStack[client].Length - 1));
+						Skulls_ArrayStack[client].Erase(Skulls_ArrayStack[client].Length - 1);
+
 						if (IsValidEdict(ent))
 						{
 							Skulls_LaunchSkull(ent, weapon, client, tier);
@@ -445,7 +447,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					Ability_Apply_Cooldown(client, 2, 5.0);
 					SetDefaultHudPosition(client);
 					//SetGlobalTransTarget(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Skull Servant Summoned", Skulls_Queue[client].Length, Skulls_MaxSkulls[tier]);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Skull Servant Summoned", Skulls_ArrayStack[client].Length, Skulls_MaxSkulls[tier]);
 				}
 			}
 		}
@@ -518,28 +520,28 @@ public Action Skulls_PreThink(int client)
 
 void DeleteAllSkulls(int client)
 {
-	while (!Skulls_Queue[client].Empty)
+	int length = Skulls_ArrayStack[client].Length;
+	for(int a; a < length; a++)
 	{
-		int ent = EntRefToEntIndex(Skulls_Queue[client].Pop());
-			
+		int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Get(a));
+		
 		if (IsValidEdict(ent))
 		{
 			RemoveEntity(ent);
 		}
 	}
 		
-	Skulls_Queue[client] = null;
+	delete Skulls_ArrayStack[client];
 }
 
 public void Skulls_Management(int client)
 {
 	Skulls_UpdateFollowerPositions(client);
 	
-	Queue Skulls = Skulls_Queue[client].Clone();
-	
-	while (!Skulls.Empty)
+	int length = Skulls_ArrayStack[client].Length;
+	for(int a; a < length; a++)
 	{
-		int ent = EntRefToEntIndex(Skulls.Pop());
+		int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Get(a));
 		
 		if (IsValidEdict(ent))
 		{
@@ -572,8 +574,6 @@ public void Skulls_Management(int client)
 			}
 		}
 	}
-	
-	delete Skulls;
 }
 
 public void Skull_AttemptShoot(int ent, int client)
@@ -590,7 +590,7 @@ void Skull_AutoFire(int ent, int target, int client)
 	float pos[3], ang[3], TargetLoc[3], DummyAngles[3];
 	GetEntPropVector(ent, Prop_Send, "m_vecOrigin", pos);
 	GetEntPropVector(target, Prop_Send, "m_angRotation", DummyAngles);
-	TargetLoc = WorldSpaceCenter(target);
+	TargetLoc = WorldSpaceCenterOld(target);
 
 
 	float dist = GetVectorDistance(pos, TargetLoc, true);
@@ -613,7 +613,7 @@ void Skull_AutoFire(int ent, int target, int client)
 	if(dist < (Skull_ShootRange[ent] * 0.5)) //If at half range, try to predict.
 	{
 		CClotBody npc = view_as<CClotBody>(ent);
-		TargetLoc = PredictSubjectPositionForProjectiles(npc, target, velocity);
+		TargetLoc = PredictSubjectPositionForProjectilesOld(npc, target, velocity);
 	}
 
 	GetAngleToPoint(ent, TargetLoc, DummyAngles, ang);
@@ -635,7 +635,7 @@ void Skull_AutoFire(int ent, int target, int client)
 		}
 	}
 	
-	int NumSkulls = Skulls_Queue[client].Length;
+	int NumSkulls = Skulls_ArrayStack[client].Length;
 	float penalty = Skulls_ShootPenaltyPerSkull[Skull_Tier[ent]];
 	if (penalty != 0.0)
 	{
@@ -722,7 +722,7 @@ public int Skull_GetClosestTarget(int ent, float range)
 			
 		if(IsValidEnemy(owner, i, true, false))
 		{
-			TargetLoc = WorldSpaceCenter(i);
+			TargetLoc = WorldSpaceCenterOld(i);
 			float dist = GetVectorDistance(DroneLoc, TargetLoc, true);
 			if(dist <= range)
 			{	
@@ -826,18 +826,17 @@ public void Skulls_UpdateFollowerPositions(int client)
 	if (!IsValidMulti(client))
 	return;
 	
-	int ringSize = Skulls_Queue[client].Length;
+	int ringSize = Skulls_ArrayStack[client].Length;
 	
 	float Spacing = 360.0/float(ringSize);
 	int NumSpaced = 0;
 	float mult = 1.0;
 	float HeightMod = 0.0;
 	
-	Queue Skulls = Skulls_Queue[client].Clone();
-	
-	while (!Skulls.Empty)
+	int length = Skulls_ArrayStack[client].Length;
+	for(int a; a < length; a++)
 	{
-		int ent = EntRefToEntIndex(Skulls.Pop());
+		int ent = EntRefToEntIndex(Skulls_ArrayStack[client].Get(a));
 		
 		if (IsValidEdict(ent))
 		{
@@ -892,8 +891,6 @@ public void Skulls_UpdateFollowerPositions(int client)
 			}
 		}
 	}
-	
-	delete Skulls;
 }
 
 //Does the player have no summoned skulls?
@@ -902,7 +899,7 @@ bool Skulls_PlayerHasNoSkulls(int client)
 	if (!IsValidClient(client))
 		return true;
 		
-	return (Skulls_Queue[client] == null || Skulls_Queue[client].Empty);
+	return (Skulls_ArrayStack[client] == null || !Skulls_ArrayStack[client].Length);
 }
 
 stock void Skull_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
@@ -974,17 +971,17 @@ public bool Skull_DontHitSkulls(any entity, any contentsMask) //Borrowed from Ap
 	{
 		if (!Skulls_PlayerHasNoSkulls(i))
 		{
-			Queue skulls = Skulls_Queue[i].Clone();
-			
-			while (!skulls.Empty && hit)
+			int length = Skulls_ArrayStack[i].Length;
+			for(int a; a < length; a++)
 			{
-				int ent = EntRefToEntIndex(skulls.Pop());
+				int ent = EntRefToEntIndex(Skulls_ArrayStack[i].Get(a));
 				
 				if (entity == ent)
+				{
 					hit = false;
+					break;
+				}
 			}
-			
-			delete skulls;
 		}
 	}
 	
@@ -1028,13 +1025,13 @@ public void Wand_Skulls_Touch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenter(target);
+		Entity_Position = WorldSpaceCenterOld(target);
 		//Code to do damage position and ragdolls
 		
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -1067,7 +1064,7 @@ public void Wand_Skulls_Touch_Launched(int entity, int target)
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-	//SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+	//SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
 	if(IsValidEntity(particle))
 	{
 		RemoveEntity(particle);

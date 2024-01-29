@@ -155,13 +155,13 @@ public void Benera_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -225,7 +225,7 @@ void BeneraSelfDefense(Benera npc, float gameTime, int target, float distance)
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", false);
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				float vecTarget[3]; vecTarget = WorldSpaceCenter(target);
+				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
 				npc.FaceTowards(vecTarget, 20000.0);
 				Handle swingTrace;
 				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))

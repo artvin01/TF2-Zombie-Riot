@@ -212,7 +212,7 @@ public void Doctor_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _, 1))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -243,8 +243,8 @@ public void Doctor_ClotThink(int iNPC)
 	{
 		if(npc.m_iTarget > 0)	// We have a target
 		{
-			float vecPos[3]; vecPos = WorldSpaceCenter(npc.index);
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+			float vecPos[3]; vecPos = WorldSpaceCenterOld(npc.index);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 			
 			float distance = GetVectorDistance(vecTarget, vecPos, true);
 			if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)	// Close at any time: Melee
@@ -286,7 +286,7 @@ public void Doctor_ClotThink(int iNPC)
 							npc.m_flNextRangedAttack = gameTime + 1.0;
 							npc.m_iAttacksTillReload--;
 							
-							vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 700.0);
+							vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 700.0);
 							npc.FireRocket(vecTarget, 80.0, 700.0, "models/weapons/w_bullet.mdl", 2.0);
 							
 							npc.PlayShootSound();
@@ -377,7 +377,7 @@ public void Doctor_ClotThink(int iNPC)
 			if(!npc.m_flRangedSpecialDelay)	// Reload anyways timer
 				npc.m_flRangedSpecialDelay = gameTime + 4.0;
 			
-			float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
+			float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vBackoffPos);
 			
 			if(!npc.m_bPathing)

@@ -876,35 +876,43 @@ public Action Waves_EndVote(Handle timer, float time)
 						highest = i;
 				}
 				
-				//if(votes[highest])
-				{
-					Vote vote;
-					Voting.GetArray(highest, vote);
-					
-					delete Voting;
-					
-					strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
-					PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
+				Vote vote;
+				Voting.GetArray(highest, vote);
+				
+				delete Voting;
+				
+				strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
+				PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
 
-					Queue_DifficultyVoteEnded();
-					Native_OnDifficultySet(highest);
-					
-					if(highest > 3)
-						highest = 3;
-					
-					Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "FireUser%d", highest + 1);
-					ExcuteRelay("zr_waveselected", WhatDifficultySetting);
-					
-					vote.Name[0] = CharToUpper(vote.Name[0]);
-					strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), vote.Name);
-					
-					char buffer[PLATFORM_MAX_PATH];
-					BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
-					KeyValues kv = new KeyValues("Waves");
+				char buffer[PLATFORM_MAX_PATH];
+				if(votes[highest] > 3)
+				{
+					BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "vote_trackedvotes.cfg");
+					KeyValues kv = new KeyValues("TrackedVotes");
 					kv.ImportFromFile(buffer);
-					Waves_SetupWaves(kv, false);
+					kv.SetNum(vote.Name, kv.GetNum(vote.Name) + 1);
+					kv.ExportToFile(buffer);
 					delete kv;
 				}
+
+				Queue_DifficultyVoteEnded();
+				Native_OnDifficultySet(highest);
+				
+				if(highest > 3)
+					highest = 3;
+				
+				Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "FireUser%d", highest + 1);
+				ExcuteRelay("zr_waveselected", WhatDifficultySetting);
+				
+				vote.Name[0] = CharToUpper(vote.Name[0]);
+				strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), vote.Name);
+				strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), vote.Name);
+				
+				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
+				KeyValues kv = new KeyValues("Waves");
+				kv.ImportFromFile(buffer);
+				Waves_SetupWaves(kv, false);
+				delete kv;
 			}
 		}
 		else
@@ -993,13 +1001,13 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			{
 				if(Is_a_boss == 0)
 				{
-					count = RoundToNearest(float(count)*MultiGlobal);
+					count = RoundToNearest(float(count) * MultiGlobalEnemy);
 				}
 				else
 				{
 					float multiBoss = playercount * 0.25;
 					//If its any boss, then make it scale like old.
-					count = RoundToNearest(float(count)*multiBoss);
+					count = RoundToNearest(float(count) * multiBoss);
 				}
 			}
 			
@@ -1020,7 +1028,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			Is_Health_Scaling = 0;
 			
-			BalanceDropMinimum(MultiGlobal);
+			BalanceDropMinimum(MultiGlobalEnemy);
 			
 			Is_Health_Scaling = wave.EnemyData.Is_Health_Scaled;
 			
@@ -1032,29 +1040,23 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					They are just too unbalanced.
 					Lets treat each player as just more hp flat.
 				*/
-				if(playercount > 13)
+				if(ScaleWithHpMore)
 				{
-					if(ScaleWithHpMore)
-					{
-						multiBoss = playercount * 0.4;
-					}
-				}
-				else
-				{
-					if(ScaleWithHpMore)
-					{
-						multiBoss = playercount * 0.34;
-					}
+					multiBoss = playercount * 0.34;
 				}
 
 				if(!ScaleWithHpMore)
 				{
 					multiBoss = playercount * 0.2;
-					MultiGlobalHealth = multiBoss;
+					MultiGlobalArkantos = multiBoss;
 				}
 				
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multiBoss);
 				wave.EnemyData.Health = Tempomary_Health;
+			}
+			else if(MultiGlobalHealth > 1.0)
+			{
+				wave.EnemyData.Health = RoundToNearest(float(wave.EnemyData.Health) * MultiGlobalHealth);
 			}
 		
 			for(int i; i<count; i++)
@@ -1063,7 +1065,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			
 			if(wave.Delay > 0.0)
-				WaveTimer = CreateTimer(wave.Delay * (MultiGlobal * 0.75), Waves_ProgressTimer);
+				WaveTimer = CreateTimer(wave.Delay * (1.0 + (MultiGlobalEnemy * 0.4)), Waves_ProgressTimer);
 		}
 		else if(donotAdvanceRound)
 		{
@@ -1093,7 +1095,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			delete Enemies;
 			Enemies = new ArrayStack(sizeof(Enemy));
-			
+			/*
 			for(int client_Penalise=1; client_Penalise<=MaxClients; client_Penalise++)
 			{
 				if(IsClientInGame(client_Penalise))
@@ -1112,7 +1114,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					}
 				}
 			}
-
+			*/
 			bool music_stop = false;
 			if(round.music_round_outro[0])
 			{
@@ -1332,30 +1334,50 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			//MUSIC LOGIC
 			
-			bool RoundHasCustomMusic = false;
+			bool RoundHadCustomMusic = false;
 		
 			if(char_MusicString1[0])
-				RoundHasCustomMusic = true;
+				RoundHadCustomMusic = true;
 					
 			if(char_MusicString2[0])
-				RoundHasCustomMusic = true;
+				RoundHadCustomMusic = true;
 
 			if(char_RaidMusicSpecial1[0])
 			{
-				RoundHasCustomMusic = true;
+				RoundHadCustomMusic = true;
 			}
 
-			if(RoundHasCustomMusic) //only do it when there was actually custom music previously
+			if(RoundHadCustomMusic) //only do it when there was actually custom music previously
 			{	
 				bool ReplaceMusic = false;
-				if(!StrEqual(char_MusicString1, round.music_round_1))
+				if(!round.music_round_1[0] && char_MusicString1[0])
 				{
 					ReplaceMusic = true;
 				}
-				if(!StrEqual(char_MusicString2, round.music_round_2))
+				if(round.music_round_1[0])
+				{
+					if(!StrEqual(char_MusicString1, round.music_round_1))
+					{
+						ReplaceMusic = true;
+					}
+				}
+				//there was music the previous round, but there is none now.
+				if(!round.music_round_2[0] && char_MusicString2[0])
 				{
 					ReplaceMusic = true;
 				}
+				//they are different, cancel out.
+				if(round.music_round_1[0])
+				{
+					if(!StrEqual(char_MusicString2, round.music_round_2))
+					{
+						ReplaceMusic = true;
+					}
+				}
+
+				//if it had raid music, replace anyways.
+				if(char_RaidMusicSpecial1[0])
+					ReplaceMusic = true;
 				
 				if(ReplaceMusic)
 				{
@@ -1371,10 +1393,11 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 
 			//This should nullfy anyways if nothings in it
+			RemoveAllCustomMusic();
+
 			strcopy(char_MusicString1, sizeof(char_MusicString1), round.music_round_1);
 			strcopy(char_MusicString2, sizeof(char_MusicString2), round.music_round_2);
-			char_RaidMusicSpecial1[0] = 0;
-
+			
 			i_MusicLength1 = round.music_duration_1;
 			i_MusicLength2 = round.music_duration_2;
 
@@ -1435,6 +1458,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						}
 					}
 				}
+
 				if(!rogue)
 				{
 					ResetReplications();
@@ -1442,14 +1466,33 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					CreateTimer(0.5, SetTimeBack);
 					
 					EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
-
-					Menu menu = new Menu(Waves_FreeplayVote);
-					menu.SetTitle("%t","Victory Menu");
-					menu.AddItem("", "Yes");
-					menu.AddItem("", "No");
-					menu.ExitButton = false;
 					
-					menu.DisplayVote(players, total, 30);
+
+					if(zr_allowfreeplay.BoolValue)
+					{
+						Menu menu = new Menu(Waves_FreeplayVote);
+						menu.SetTitle("%t","Victory Menu");
+						menu.AddItem("", "Yes");
+						menu.AddItem("", "No");
+						menu.ExitButton = false;
+						
+						menu.DisplayVote(players, total, 30);
+					}
+					else
+					{
+						ConVar roundtime = FindConVar("mp_bonusroundtime");
+						float last = roundtime.FloatValue;
+						roundtime.FloatValue = 20.0;
+
+						int entity = CreateEntityByName("game_round_win"); 
+						DispatchKeyValue(entity, "force_map_reset", "1");
+						SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
+						DispatchSpawn(entity);
+						AcceptEntityInput(entity, "RoundWin");
+
+						roundtime.FloatValue = last;
+					}
+					RemoveAllCustomMusic();
 				}
 				
 				char_MusicString1[0] = 0;
@@ -1512,7 +1555,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 	else
 	{
 		Rounds.GetArray(length, round);
-		if(++CurrentWave < 9)
+		if(++CurrentWave < 8)
 		{
 //			float playercount = float(CountPlayersOnRed());
 			DoGlobalMultiScaling();
@@ -1766,6 +1809,15 @@ void Waves_ClearWave()
 	}
 }
 
+void Waves_ClearWaveCurrentSpawningEnemies()
+{
+	Enemy enemy;
+	while(Waves_GetNextEnemy(enemy))
+	{
+		Zombies_Currently_Still_Ongoing--;
+	}
+}
+
 bool Waves_Started()
 {
 	if(Rogue_Mode())
@@ -1835,6 +1887,22 @@ void WaveEndLogicExtra()
 	M3_AbilitiesWaveEnd();
 	Specter_AbilitiesWaveEnd();	
 	LeperResetUses();
+	Zero(i_MaxArmorTableUsed);
+	for(int client; client <= MaxClients; client++)
+	{
+		if(IsValidClient(client))
+		{
+			b_BobsCuringHand_Revived[client] += GetRandomInt(1,3);
+			if(Items_HasNamedItem(client, "Bob's Curing Hand"))
+			{
+				b_BobsCuringHand[client] = true;
+			}
+			else
+			{
+				b_BobsCuringHand[client] = false;
+			}
+		}
+	}
 }
 
 void WaveStart_SubWaveStart(float time = 0.0)
@@ -1934,12 +2002,35 @@ void DoGlobalMultiScaling()
 	{
 		playercount = 0.70;
 	}
+	else if(playercount < 1.0)
+	{
+		playercount = 0.70;
+	}
 			
 	float multi = Pow(1.08, playercount);
 
 	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%	
 	MultiGlobal = multi;
-	MultiGlobalHealth = playercount * 0.2;
+	MultiGlobalArkantos = playercount * 0.2;
+
+	float cap = zr_enemymulticap.FloatValue;
+
+	if(multi > cap)
+	{
+		MultiGlobalHealth = multi / cap;
+		MultiGlobalEnemy = cap;
+	}
+	else
+	{
+		MultiGlobalHealth = 1.0;
+		MultiGlobalEnemy = multi;
+	}
+
+	PlayerCountBuffScaling = 4.0 / playercount;
+	if(PlayerCountBuffScaling < 1.0)
+	{
+		PlayerCountBuffScaling = 1.0;
+	}
 }
 
 void Waves_ForceSetup(float cooldown)

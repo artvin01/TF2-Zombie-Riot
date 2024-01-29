@@ -273,13 +273,13 @@ public void Lanius_ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 		if(npc.m_flNextTeleport < GameTime && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (500.0 * 500.0))
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			static float flVel[3];
 			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
 		
@@ -288,11 +288,11 @@ public void Lanius_ClotThink(int iNPC)
 				npc.FaceTowards(vPredictedPos);
 				npc.FaceTowards(vPredictedPos);
 				npc.m_flNextTeleport = GameTime + 30.0;
-				float Tele_Check = GetVectorDistance(WorldSpaceCenter(npc.index), vPredictedPos);
+				float Tele_Check = GetVectorDistance(WorldSpaceCenterOld(npc.index), vPredictedPos);
 					
 					
 				float start_offset[3], end_offset[3];
-				start_offset = WorldSpaceCenter(npc.index);
+				start_offset = WorldSpaceCenterOld(npc.index);
 					
 				if(Tele_Check > 200.0)
 				{
@@ -303,7 +303,7 @@ public void Lanius_ClotThink(int iNPC)
 							
 						float effect_duration = 0.25;
 	
-						end_offset = WorldSpaceCenter(npc.index);
+						end_offset = WorldSpaceCenterOld(npc.index);
 							
 						start_offset[2]-= 25.0;
 						end_offset[2] -= 25.0;

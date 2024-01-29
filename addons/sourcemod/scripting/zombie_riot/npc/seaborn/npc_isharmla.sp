@@ -48,7 +48,7 @@ methodmap Isharmla < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		npc.Anger = false;
-		npc.m_iTargetAlly = -1;
+		i_TargetAlly[npc.index] = -1;
 		npc.m_iPoints = 0;
 		npc.m_bSpeed = false;
 
@@ -63,6 +63,7 @@ methodmap Isharmla < CClotBody
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSALPHA);
+		npc.m_bTeamGlowDefault = true;
 
 		if(!ally && !IsValidEntity(RaidBossActive))
 		{
@@ -72,7 +73,7 @@ methodmap Isharmla < CClotBody
 			RaidAllowsBuildings = true;
 		}
 
-		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
 		vecMe[2] += 500.0;
 		npc.m_iWearable2 = ParticleEffectAt(vecMe, "env_rain_512", -1.0);
 		SetParent(npc.index, npc.m_iWearable2);
@@ -100,31 +101,40 @@ public void Isharmla_ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
-	if(npc.m_iTargetAlly == -1)
+	if(i_TargetAlly[npc.index] == -1)
 		npc.Update();
 	
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
-	if(npc.m_iTargetAlly != -1)
+	if(i_TargetAlly[npc.index] != -1)
 	{
-		int entity = EntRefToEntIndex(npc.m_iTargetAlly);
-		if(entity != INVALID_ENT_REFERENCE)
+		if(IsValidEntity(i_TargetAlly[npc.index]))
 			return;
 		
-		if(npc.m_iTargetAlly == RaidBossActive)
+		if(i_TargetAlly[npc.index] == RaidBossActive)
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
 
-		npc.m_iTargetAlly = -1;
+		i_TargetAlly[npc.index] = -1;
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 255);
 
 		npc.SetActivity("ACT_SKADI_REVERT");
 		npc.m_flNextThinkTime = gameTime + 1.25;
+		npc.m_bTeamGlowDefault = true;
+		b_IsEntityNeverTranmitted[npc.index] = false;
+		GiveNpcOutLineLastOrBoss(npc.index, true);
+		SetEntityCollisionGroup(npc.index, 8); //Dont Touch Anything.
+		SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 8);
+		SetEntProp(npc.index, Prop_Data,"m_nSolidType", 2);
+		i_RaidGrantExtra[npc.index] = -1;
+		b_DoNotUnStuck[npc.index] = false;
+		b_NoKnockbackFromSources[npc.index] = false;
+		b_ThisEntityIgnored[npc.index] = false;
 		
 		// Recover 2% HP
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 50));
@@ -146,6 +156,7 @@ public void Isharmla_ClotThink(int iNPC)
 			RaidModeScaling = 1.0;
 		
 		npc.m_iPoints = 0;
+		npc.SetActivity("ACT_SKADI_WALK");
 		
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
@@ -155,6 +166,19 @@ public void Isharmla_ClotThink(int iNPC)
 		int entity = Npc_Create(ISHARMLA_TRANS, -1, pos, ang, ally);
 		if(entity > MaxClients)
 		{
+			b_IsEntityNeverTranmitted[npc.index] = true;
+			npc.m_bTeamGlowDefault = true;
+			GiveNpcOutLineLastOrBoss(npc.index, false);
+			npc.m_bTeamGlowDefault = false;
+			
+			SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.
+			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12); 
+			SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6);
+			i_RaidGrantExtra[npc.index] = -1;
+			b_DoNotUnStuck[npc.index] = true;
+			b_ThisNpcIsImmuneToNuke[npc.index] = true;
+			b_NoKnockbackFromSources[npc.index] = true;
+			b_ThisEntityIgnored[npc.index] = true;
 			view_as<CClotBody>(entity).m_bThisNpcIsABoss = npc.m_bThisNpcIsABoss;
 			view_as<CClotBody>(entity).Anger = npc.Anger;
 
@@ -173,10 +197,10 @@ public void Isharmla_ClotThink(int iNPC)
 				RaidBossActive = EntIndexToEntRef(entity);
 			
 			npc.m_bSpeed = false;
-			npc.m_iTargetAlly = EntIndexToEntRef(entity);
+			i_TargetAlly[npc.index] = EntIndexToEntRef(entity);
 			b_NpcIsInvulnerable[npc.index] = true;
-			SetEntityRenderColor(npc.index, 100, 100, 255, 64);
-			SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 64);
+			SetEntityRenderColor(npc.index, 255, 255, 255, 1);
+			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 			return;
 		}
 	}
@@ -220,11 +244,11 @@ public void Isharmla_ClotThink(int iNPC)
 				npc.m_flAttackHappens = 0.0;
 				npc.PlayMeleeSound();
 				
-				float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+				float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
 
 				if(IsValidAlly(npc.index, npc.m_iTarget))
 				{
-					float vecAlly[3]; vecAlly = WorldSpaceCenter(npc.m_iTarget);
+					float vecAlly[3]; vecAlly = WorldSpaceCenterOld(npc.m_iTarget);
 
 					int healing = npc.Anger ? 24000 : 16000;
 
@@ -262,7 +286,7 @@ public void Isharmla_ClotThink(int iNPC)
 				int ally = GetClosestAlly(npc.index, _, npc.m_iTarget);
 				if(ally > 0)
 				{
-					float vecAlly[3]; vecAlly = WorldSpaceCenter(ally);
+					float vecAlly[3]; vecAlly = WorldSpaceCenterOld(ally);
 
 					int healing = npc.Anger ? 24000 : 16000;
 

@@ -118,7 +118,7 @@ methodmap LastKnight < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
-		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
 		vecMe[2] += 100.0;
 
 		npc.m_iWearable5 = ParticleEffectAt(vecMe, "powerup_icon_reflect", -1.0);
@@ -183,7 +183,7 @@ public void LastKnight_ClotThink(int iNPC)
 	if(npc.m_iTarget && !IsValidAlly(npc.index, npc.m_iTarget) && !IsValidEnemy(npc.index, npc.m_iTarget))
 		npc.m_iTarget = 0;
 
-	bool aggressive = (PeaceKnight < 0 && CitizenRunner_WasKilled());
+	bool aggressive = (PeaceKnight == 0 || (PeaceKnight == -1 && CitizenRunner_WasKilled()));
 
 	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
 	{
@@ -258,8 +258,8 @@ public void LastKnight_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);		
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -361,7 +361,7 @@ public void LastKnight_ClotThink(int iNPC)
 		{
 			if(distance < npc.GetLeadRadius())
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 

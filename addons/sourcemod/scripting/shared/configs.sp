@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#if !defined RTS
 enum struct WeaponData
 {
 	char Classname[36];
@@ -16,6 +17,7 @@ enum struct WeaponData
 }
 
 static ArrayList WeaponList;
+#endif
 
 void Configs_ConfigsExecuted()
 {
@@ -89,6 +91,7 @@ void Configs_ConfigsExecuted()
 
 	delete kv;
 
+#if !defined RTS
 	delete WeaponList;
 	WeaponList = new ArrayList(sizeof(WeaponData));
 	
@@ -115,7 +118,8 @@ void Configs_ConfigsExecuted()
 		}
 	} while(kv.GotoNextKey());
 	delete kv;
-	
+#endif
+
 	ConVar_Enable();
 	
 	for(int client=1; client<=MaxClients; client++)
@@ -125,7 +129,7 @@ void Configs_ConfigsExecuted()
 	}
 }
 
-
+#if !defined RTS
 stock float Config_GetDPSOfEntity(int entity)
 {
 	static char classname[36];
@@ -508,6 +512,7 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 	if(Archetype[0])
 		Format(buffer, length, "%s\n%t", buffer, Archetype);
 }
+#endif	// Non-RTS
 
 #if defined ZR
 bool Config_CreateNPCStats(const char[] classname, const int[] attrib, const float[] value, int attribs, WeaponData data)

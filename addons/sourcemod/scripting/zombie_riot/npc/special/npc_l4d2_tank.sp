@@ -311,22 +311,22 @@ public void L4D2_Tank_ClotThink(int iNPC)
 		{
 			I_Wanna_Throw_ally = true;
 			NPC_SetGoalEntity(npc.index, EntRefToEntIndex(i_IWantToThrowHim[npc.index]));
-			vecTarget = WorldSpaceCenter(EntRefToEntIndex(i_IWantToThrowHim[npc.index]));
-			flDistanceToTarget  = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			vecTarget = WorldSpaceCenterOld(EntRefToEntIndex(i_IWantToThrowHim[npc.index]));
+			flDistanceToTarget  = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
-			vecTarget_OnRun = WorldSpaceCenter(closest);
-			flDistanceToTarget_OnRun = GetVectorDistance(vecTarget_OnRun, WorldSpaceCenter(npc.index), true);
+			vecTarget_OnRun = WorldSpaceCenterOld(closest);
+			flDistanceToTarget_OnRun = GetVectorDistance(vecTarget_OnRun, WorldSpaceCenterOld(npc.index), true);
 			
 		}
 		if(!I_Wanna_Throw_ally)
 		{
-			vecTarget = WorldSpaceCenter(closest);
+			vecTarget = WorldSpaceCenterOld(closest);
 			vecTarget_OnRun = vecTarget;
-			flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius())
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
 		//		PrintToChatAll("cutoff");
 				NPC_SetGoalVector(npc.index, vPredictedPos);	
 			}
@@ -364,7 +364,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 								
 								SDKCall_SetLocalOrigin(client, flPos);
 								
-								float vecTarget_closest[3]; vecTarget_closest = WorldSpaceCenter(Closest_non_grabbed_player);
+								float vecTarget_closest[3]; vecTarget_closest = WorldSpaceCenterOld(Closest_non_grabbed_player);
 								npc.FaceTowards(vecTarget_closest, 20000.0);
 								PluginBot_Jump(client, vecTarget_closest);
 								RequestFrame(ApplySdkHookTankThrow, EntIndexToEntRef(client));
@@ -419,7 +419,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 		
 							if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See) && Closest_non_grabbed_player == Enemy_I_See)
 							{
-								float vecTarget_closest[3]; vecTarget_closest = WorldSpaceCenter(Closest_non_grabbed_player);
+								float vecTarget_closest[3]; vecTarget_closest = WorldSpaceCenterOld(Closest_non_grabbed_player);
 								npc.FaceTowards(vecTarget_closest, 20000.0);
 								if(client > MaxClients && !b_NpcHasDied[client])
 								{
@@ -794,7 +794,7 @@ public Action contact_throw_tank(int client)
 	{
 		char classname[60];
 		
-		chargerPos = WorldSpaceCenter(client);
+		chargerPos = WorldSpaceCenterOld(client);
 		for(int entity=1; entity <= MAXENTITIES; entity++)
 		{
 			
@@ -803,7 +803,7 @@ public Action contact_throw_tank(int client)
 				GetEntityClassname(entity, classname, sizeof(classname));
 				if (!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
 				{
-					targPos = WorldSpaceCenter(entity);
+					targPos = WorldSpaceCenterOld(entity);
 					if (GetVectorDistance(chargerPos, targPos, true) <= (125.0* 125.0))
 					{
 						if (!b_AlreadyHitTankThrow[entity] && entity != client && i_TankThrewThis[client] != entity)
@@ -862,7 +862,7 @@ public Action contact_throw_tank_entity(int client)
 	else
 	{
 		char classname[60];
-		chargerPos = WorldSpaceCenter(client);
+		chargerPos = WorldSpaceCenterOld(client);
 		for(int entity=1; entity <= MAXENTITIES; entity++)
 		{
 			if (IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
@@ -870,7 +870,7 @@ public Action contact_throw_tank_entity(int client)
 				GetEntityClassname(entity, classname, sizeof(classname));
 				if (!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
 				{
-					targPos = WorldSpaceCenter(entity);
+					targPos = WorldSpaceCenterOld(entity);
 					if (GetVectorDistance(chargerPos, targPos, true) <= (125.0* 125.0))
 					{
 						if (!b_AlreadyHitTankThrow[entity] && entity != client && i_TankThrewThis[client] != entity)

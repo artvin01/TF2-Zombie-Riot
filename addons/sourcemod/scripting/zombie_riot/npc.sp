@@ -397,7 +397,24 @@ enum
 	BONEZONE_BUFFED_BEEFYBONES		= 348,
 	BONEZONE_BUFFED_BRITTLEBONES	= 349,
 	BONEZONE_BUFFED_BIGBONES		= 350,
-	
+	INTERITUS_DESERT_AHIM			= 351,
+	INTERITUS_DESERT_INABDIL		= 352,
+	INTERITUS_DESERT_KHAZAAN		= 353,
+	INTERITUS_DESERT_SAKRATAN		= 354,
+	INTERITUS_DESERT_YADEAM			= 355,
+	INTERITUS_DESERT_RAJUL			= 356,
+	INTERITUS_DESERT_QANAAS			= 357,
+	INTERITUS_DESERT_ATILLA			= 358,
+	INTERITUS_DESERT_ANCIENTDEMON	= 359,
+	INTERITUS_WINTER_SNIPER			= 360,
+	INTERITUS_WINTER_ZIBERIANMINER 	= 361,
+	INTERITUS_WINTER_SNOWEY_GUNNER	= 362,
+	INTERITUS_WINTER_FREEZING_CLEANER = 363,
+	INTERITUS_WINTER_AIRBORN_EXPLORER = 364,
+	INTERITUS_WINTER_ARCTIC_MAGE	  = 365,
+	INTERITUS_WINTER_FROST_HUNTER	  = 366,
+	INTERITUS_WINTER_SKIN_HUNTER	  = 367,
+	INTERITUS_WINTER_IRRITATED_PERSON = 368,
 
 	MAX_NPC_TYPES	// Add entries above this line
 }
@@ -777,7 +794,26 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Buffed Basic Bones",
 	"Buffed Beefy Bones",
 	"Buffed Brittle Bones",
-	"Buffed Big Bones"
+	"Buffed Big Bones",
+
+	"Ahim",
+	"Inabdil",
+	"Khazaan",
+	"Sakratan",
+	"Yadeam",
+	"Rajul",
+	"Qanaas",
+	"Atilla",
+	"Ancient Demon",
+	"Winter Sniper",
+	"Ziberian Miner",
+	"Snowey Gunner",
+	"Freezing Cleaner",
+	"Airborn Explorer",
+	"Arctic Mage",
+	"Frost Hunter",
+	"Skin Hunter",
+	"Irritated Person"
 };
 
 // See items.sp for IDs to names
@@ -1530,7 +1566,25 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_basicbones",
 	"npc_beefybones",
 	"npc_brittlebones",
-	"npc_bigbones"
+	"npc_bigbones",
+	"npc_ahim",
+	"npc_inabdil",
+	"npc_khazaan",
+	"npc_sakratan",
+	"npc_yadeam",
+	"npc_rajul",
+	"npc_qanaas",
+	"npc_atilla",
+	"npc_ancient_demon",
+	"npc_winter_sniper",
+	"npc_ziberian_miner",
+	"npc_snowey_gunner",
+	"npc_freezing_cleaner",
+	"npc_airborn_explorer",
+	"npc_arctic_mage",
+	"npc_frost_hunter",
+	"npc_skin_hunter",
+	"npc_irritated_person"
 };
 
 void NPC_MapStart()
@@ -1791,7 +1845,27 @@ void NPC_MapStart()
 	GiantTankus_OnMapStart_NPC();
 	AnfuhrerEisenhard_OnMapStart_NPC();
 	SpeedusAdivus_OnMapStart_NPC();
-	
+
+//internius
+	DesertAhim_OnMapStart_NPC();
+	DesertInabdil_OnMapStart_NPC();
+	DesertKhazaan_OnMapStart_NPC();
+	DesertSakratan_OnMapStart_NPC();
+	DesertYadeam_OnMapStart_NPC();
+	DesertRajul_OnMapStart_NPC();
+	DesertQanaas_OnMapStart_NPC();
+	DesertAtilla_OnMapStart_NPC();
+	DesertAncientDemon_OnMapStart_NPC();
+	WinterSniper_OnMapStart_NPC();
+	WinterZiberianMiner_OnMapStart_NPC();
+	WinterSnoweyGunner_OnMapStart_NPC();
+	WinterFreezingCleaner_OnMapStart_NPC();
+	WinterAirbornExplorer_OnMapStart_NPC();
+	WinterArcticMage_OnMapStart_NPC();
+	WinterFrostHunter_OnMapStart_NPC();
+	WinterSkinHunter_OnMapStart_NPC();
+	WinterIrritatedPerson_OnMapStart_NPC();
+
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();
@@ -2819,6 +2893,61 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case RAIDBOSS_BLADEDANCE:
 			entity = RaidbossBladedance(client, vecPos, vecAng, ally, data);
 
+		case INTERITUS_DESERT_AHIM:
+			entity = DesertAhim(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_INABDIL:
+			entity = DesertInabdil(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_KHAZAAN:
+			entity = DesertKhazaan(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_SAKRATAN:
+			entity = DesertSakratan(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_YADEAM:
+			entity = DesertYadeam(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_RAJUL:
+			entity = DesertRajul(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_QANAAS:
+			entity = DesertQanaas(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_ATILLA:
+			entity = DesertAtilla(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_ANCIENTDEMON:
+			entity = DesertAncientDemon(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_SNIPER:
+			entity = WinterSniper(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_ZIBERIANMINER:
+			entity = WinterZiberianMiner(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_SNOWEY_GUNNER:
+			entity = WinterSnoweyGunner(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_FREEZING_CLEANER:
+			entity = WinterFreezingCleaner(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_AIRBORN_EXPLORER:
+			entity = WinterAirbornExplorer(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_ARCTIC_MAGE:
+			entity = WinterArcticMage(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_FROST_HUNTER:
+			entity = WinterFrostHunter(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_SKIN_HUNTER:
+			entity = WinterSkinHunter(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_IRRITATED_PERSON:
+			entity = WinterIrritatedPerson(client, vecPos, vecAng, ally);
+
+
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
@@ -2845,6 +2974,15 @@ public void NPCDeath(int entity)
 		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 		{
+			Function func = func_NPCDeathForward[baseboss_index];
+			if(func && func != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, func);
+				Call_PushCell(baseboss_index);
+				Call_PushCell(entity);
+				Call_Finish();
+				//todo: convert all on death and on take damage to this.
+			}
 			switch(i_NpcInternalId[baseboss_index])
 			{
 				case SEABORN_KAZIMIERZ_BESERKER:
@@ -2854,7 +2992,15 @@ public void NPCDeath(int entity)
 			}
 		}
 	}
-
+	Function func = func_NPCDeath[entity];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(entity);
+		Call_Finish();
+		return;
+		//todo: convert all on death and on take damage to this.
+	}
 	switch(i_NpcInternalId[entity])
 	{
 		case HEADCRAB_ZOMBIE:
@@ -3860,6 +4006,24 @@ public void NPCDeath(int entity)
 
 Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	Function func = func_NPCOnTakeDamage[victim];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(victim);
+		Call_PushCellRef(attacker);
+		Call_PushCellRef(inflictor);
+		Call_PushFloatRef(damage);
+		Call_PushCellRef(damagetype);
+		Call_PushCellRef(weapon);
+		Call_PushArray(damageForce, sizeof(damageForce));
+		Call_PushArray(damagePosition, sizeof(damagePosition));
+		Call_PushCell(damagecustom);
+		Call_Finish();
+		return Plugin_Changed;
+		//todo: convert all on death and on take damage to this.
+	}
+
 	switch(i_NpcInternalId[victim])
 	{
 		case HEADCRAB_ZOMBIE, FORTIFIED_HEADCRAB_ZOMBIE, FASTZOMBIE, FORTIFIED_FASTZOMBIE:
@@ -5017,3 +5181,24 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_vip_building.sp"
 #include "zombie_riot/npc/rogue/npc_overlord_rogue.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_bladedance.sp"
+
+
+#include "zombie_riot/npc/interitus/desert/npc_ahim.sp"
+#include "zombie_riot/npc/interitus/desert/npc_inabdil.sp"
+#include "zombie_riot/npc/interitus/desert/npc_khazaan.sp"
+#include "zombie_riot/npc/interitus/desert/npc_sakratan.sp"
+#include "zombie_riot/npc/interitus/desert/npc_yadeam.sp"
+#include "zombie_riot/npc/interitus/desert/npc_rajul.sp"
+#include "zombie_riot/npc/interitus/desert/npc_qanaas.sp"
+#include "zombie_riot/npc/interitus/desert/npc_atilla.sp"
+#include "zombie_riot/npc/interitus/desert/npc_ancient_demon.sp"
+
+#include "zombie_riot/npc/interitus/winter/npc_winter_sniper.sp"
+#include "zombie_riot/npc/interitus/winter/npc_ziberian_miner.sp"
+#include "zombie_riot/npc/interitus/winter/npc_snowey_gunner.sp"
+#include "zombie_riot/npc/interitus/winter/npc_freezing_cleaner.sp"
+#include "zombie_riot/npc/interitus/winter/npc_airborn_explorer.sp"
+#include "zombie_riot/npc/interitus/winter/npc_arctic_mage.sp"
+#include "zombie_riot/npc/interitus/winter/npc_skin_hunter.sp"
+#include "zombie_riot/npc/interitus/winter/npc_frost_hunter.sp"
+#include "zombie_riot/npc/interitus/winter/npc_irritated_person.sp"

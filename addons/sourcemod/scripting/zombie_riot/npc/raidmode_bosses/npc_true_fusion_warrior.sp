@@ -389,6 +389,7 @@ methodmap TrueFusionWarrior < CClotBody
 		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 			
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -447,7 +448,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		npc.m_flNextThinkTime = 0.0;
 		int enemyGet = GetClosestAllyPlayer(npc.index);
 		if(IsValidEntity(enemyGet))
-			npc.FaceTowards(WorldSpaceCenter(enemyGet), 100.0);
+			npc.FaceTowards(WorldSpaceCenterOld(enemyGet), 100.0);
 			
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
@@ -574,11 +575,11 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest, true))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
 		
 			//Body pitch
 	//		if(flDistanceToTarget < Pow(110.0,2.0))
@@ -589,7 +590,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			
 				//Body pitch
 				float v[3], ang[3];
-				SubtractVectors(WorldSpaceCenter(npc.index), WorldSpaceCenter(closest), v); 
+				SubtractVectors(WorldSpaceCenterOld(npc.index), WorldSpaceCenterOld(closest), v); 
 				NormalizeVector(v, v);
 				GetVectorAngles(v, ang); 
 				
@@ -1036,7 +1037,7 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 
 void TrueFusionWarrior_TBB_Ability_Anger(int client)
 {
-	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
+	ParticleEffectAt(WorldSpaceCenterOld(client), "eyeboss_death_vortex", 2.0);
 	
 	FusionWarrior_BEAM_IsUsing[client] = false;
 	FusionWarrior_BEAM_TicksActive[client] = 0;
@@ -1098,7 +1099,7 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 
 void TrueFusionWarrior_TBB_Ability(int client)
 {
-	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
+	ParticleEffectAt(WorldSpaceCenterOld(client), "eyeboss_death_vortex", 2.0);
 			
 	FusionWarrior_BEAM_IsUsing[client] = false;
 	FusionWarrior_BEAM_TicksActive[client] = 0;
@@ -1196,7 +1197,7 @@ static void FusionWarrior_GetBeamDrawStartPoint(int client, float startPoint[3])
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOrigin(client);
+	startPoint = GetAbsOriginOld(client);
 	startPoint[2] += 50.0;
 	
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(client);
@@ -1206,7 +1207,7 @@ static void FusionWarrior_GetBeamDrawStartPoint(int client, float startPoint[3])
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOrigin(client);
+	startPoint = GetAbsOriginOld(client);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == FusionWarrior_BEAM_BeamOffset[client][0] && 0.0 == FusionWarrior_BEAM_BeamOffset[client][1] && 0.0 == FusionWarrior_BEAM_BeamOffset[client][2])
@@ -1261,7 +1262,7 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOrigin(client);
+		startPoint = GetAbsOriginOld(client);
 		startPoint[2] += 50.0;
 
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, FusionWarrior_BEAM_TraceWallsOnly);
@@ -1306,7 +1307,7 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 						damage *= 3.0; //give 3x dmg to anything
 					}
 
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
 				}
 			}
 			
@@ -1593,7 +1594,7 @@ void TrueFusionSelfDefense(TrueFusionWarrior npc, float gameTime)
 			{
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 20000.0);
+				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 20000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
@@ -1606,7 +1607,7 @@ void TrueFusionSelfDefense(TrueFusionWarrior npc, float gameTime)
 							PlaySound = true;
 							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
-							vecHit = WorldSpaceCenter(target);
+							vecHit = WorldSpaceCenterOld(target);
 
 							float damage = 24.0;
 							float damage_rage = 28.0;
@@ -1666,9 +1667,9 @@ void TrueFusionSelfDefense(TrueFusionWarrior npc, float gameTime)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget)) 
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
 			{

@@ -325,7 +325,7 @@ public void Weapon_Trash_Cannon_Fire_Pap2(int client, int weapon, bool crit)
 
 public void Trash_Cannon_ChooseNext(int client, int weapon, int tier)
 {
-	Queue scramble = Rand_GenerateScrambledQueue(i_TrashNumEffects);
+	ArrayStack scramble = Rand_GenerateScrambledArrayStack(i_TrashNumEffects);
 	
 	bool success = false;
 	int effect = 0;
@@ -533,7 +533,7 @@ public void Shock_ChainToVictim(int inflictor, int client, int weapon, float dam
 	if (IsValidEntity(victim))
 	{
 		float vicLoc[3];
-		vicLoc = WorldSpaceCenter(victim);
+		vicLoc = WorldSpaceCenterOld(victim);
 		SDKHooks_TakeDamage(victim, inflictor, client, damage, DMG_BLAST | DMG_ALWAYSGIB, weapon);
 		
 		if (f_PassangerDebuff[victim] < gt)
@@ -1245,7 +1245,7 @@ public int Trash_GetClosestVictim(float position[3], float radius, bool shock)
 		if (IsValidEntity(ent) && !b_NpcHasDied[ent] && (!shock || f_NextShockTime[ent] <= GetGameTime()))
 		{
 			float vicLoc[3];  
-			vicLoc = WorldSpaceCenter(ent);
+			vicLoc = WorldSpaceCenterOld(ent);
 			
 			float targDist = GetVectorDistance(position, vicLoc, true);  
 				
@@ -1260,9 +1260,9 @@ public int Trash_GetClosestVictim(float position[3], float radius, bool shock)
 	return closest;
 }
 
-public Queue Rand_GenerateScrambledQueue(int numSlots)
+public ArrayStack Rand_GenerateScrambledArrayStack(int numSlots)
 {
-	Queue scramble = new Queue();
+	ArrayStack scramble = new ArrayStack();
 	Handle genericArray = CreateArray(255);
 	
 	for (int i = 0; i <= numSlots; i++)

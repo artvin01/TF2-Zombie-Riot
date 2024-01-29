@@ -1289,7 +1289,6 @@ methodmap Citizen < CClotBody
 				if(!this.m_bHero)
 				{
 					SetEntityRenderColor(this.index, 255, 255, 255, 255);
-					SetEntityRenderMode(this.index, RENDER_NORMAL);
 				}
 			}
 			else if(client)
@@ -1297,6 +1296,9 @@ methodmap Citizen < CClotBody
 				this.PlaySound(Cit_Found);
 				Items_GiveNPCKill(client, CITIZEN);
 			}
+
+			SetEntityRenderMode(this.index, RENDER_NORMAL);
+			HealEntityGlobal(this.index, client ? client : this.index, 100.0, 1.0, 2.0, HEAL_NO_RULES);
 
 			if(this.m_bHero)
 				this.UpdateModel();
@@ -1659,7 +1661,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	if(info.Attrib[0] == 99999)
 	{
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_crowbar.mdl");
-		ParticleEffectAt_Parent(WorldSpaceCenter(npc.index), "raygun_projectile_red_crit", npc.index, "anim_attachment_RH");
+		ParticleEffectAt_Parent(WorldSpaceCenterOld(npc.index), "raygun_projectile_red_crit", npc.index, "anim_attachment_RH");
 	}
 	else
 	{
@@ -1711,14 +1713,14 @@ void Citizen_SetupStart()
 			{
 				int found;
 				float distance = FAR_FUTURE;
-				float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+				float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
 				float vecTarget[3];
 				int entity = MaxClients + 1;
 				while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 				{
 					if(i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 7)
 					{
-						vecTarget = WorldSpaceCenter(entity);
+						vecTarget = WorldSpaceCenterOld(entity);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(!found || dist < distance)
 						{
@@ -1735,7 +1737,7 @@ void Citizen_SetupStart()
 					GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 					if(!StrContains(buffer, "zr_packapunch"))
 					{
-						vecTarget = WorldSpaceCenter(entity);
+						vecTarget = WorldSpaceCenterOld(entity);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(!found || dist < distance)
 						{
@@ -1755,7 +1757,7 @@ void Citizen_SetupStart()
 							GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 							if(!StrContains(buffer, "zr_packapunch"))
 							{
-								vecTarget = WorldSpaceCenter(client);
+								vecTarget = WorldSpaceCenterOld(client);
 								float dist = GetVectorDistance(vecTarget, vecMe, true);
 								if(!found || dist < distance)
 								{
@@ -1813,7 +1815,7 @@ public void Citizen_ClotThink(int iNPC)
 	if(npc.m_bRebelAgressive)
 	{
 		//This heal happens every second on players, for npcs this think happens way more often, subtract.
-		HealEntityGlobal(npc.index, npc.index, 0.04 / (3.0), 0.5, 0.0, HEAL_SELFHEAL);	
+		HealEntityGlobal(npc.index, npc.index, 0.04 / (3.0), 0.5, 0.0, HEAL_SELFHEAL);
 	}
 	if(npc.m_flAttackHappens)
 	{
@@ -1833,7 +1835,7 @@ public void Citizen_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 2))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -1880,7 +1882,7 @@ public void Citizen_ClotThink(int iNPC)
 		else
 		{
 			if(IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo))
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 500.0);
+				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 500.0);
 			
 			return;
 		}
@@ -1901,7 +1903,8 @@ public void Citizen_ClotThink(int iNPC)
 		return;
 	}
 
-	bool autoSeek = (npc.m_bCamo || VIPBuilding_Active() || npc.m_bRebelAgressive);
+	bool noSafety = (npc.m_bCamo || VIPBuilding_Active());
+	bool autoSeek = (noSafety || npc.m_bRebelAgressive);
 
 	// See if our target is still valid
 	if(npc.m_iTarget && (npc.m_iGunType == Cit_None || !IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo)))
@@ -1916,7 +1919,7 @@ public void Citizen_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
 		if(npc.m_iGunType != Cit_None)
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index, _, autoSeek ? 99999.9 : (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus), npc.m_bCamo, _, _, _, !autoSeek);
+			npc.m_iTarget = GetClosestTarget(npc.index, _, BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus, npc.m_bCamo, _, _, _, !autoSeek);
 			if(npc.m_iTarget > 0 && view_as<CClotBody>(npc.m_iTarget).m_bCamo)
 				npc.PlaySound(Cit_Behind);
 		}
@@ -1951,7 +1954,7 @@ public void Citizen_ClotThink(int iNPC)
 	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 	bool injured = (health < 60) || (health < (maxhealth / 5));
 	float distance = 100000000.0;
-	float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
 
 	int walkStatus;
 	int reloadStatus;
@@ -1989,7 +1992,7 @@ public void Citizen_ClotThink(int iNPC)
 				i_NpcInternalId[entity] == BOB_THE_GOD_OF_GODS &&
 				HealingCooldown[entity] < gameTime)
 			{
-				vecTarget = WorldSpaceCenter(entity);
+				vecTarget = WorldSpaceCenterOld(entity);
 				float dist = GetVectorDistance(vecTarget, vecMe, true);
 				if(dist < distance)
 				{
@@ -2007,7 +2010,7 @@ public void Citizen_ClotThink(int iNPC)
 				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 				if(!StrContains(buffer, "zr_healingstation"))
 				{
-					vecTarget = WorldSpaceCenter(entity);
+					vecTarget = WorldSpaceCenterOld(entity);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2028,7 +2031,7 @@ public void Citizen_ClotThink(int iNPC)
 					GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 					if(!StrContains(buffer, "zr_healingstation"))
 					{
-						vecTarget = WorldSpaceCenter(client);
+						vecTarget = WorldSpaceCenterOld(client);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(dist < distance)
 						{
@@ -2044,7 +2047,7 @@ public void Citizen_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo))
 	{
 		npc.m_flidle_talk = FAR_FUTURE;
-		vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 		distance = GetVectorDistance(vecTarget, vecMe, true);
 		//todo, rewrite npcs so itdoes this code outside of this, i filtered out invinceable enemies.
 		if(RunFromNPC(npc.m_iTarget) && view_as<SawRunner>(npc.m_iTarget).m_iTarget == npc.index && distance < 250000.0)
@@ -2106,7 +2109,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else if(reloadStatus == 2)	// We need to reload now
 					{
-						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
+						if(!noSafety && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN", 240.0);
@@ -2116,7 +2119,7 @@ public void Citizen_ClotThink(int iNPC)
 						if(npc.m_iWearable1 > 0)
 							AcceptEntityInput(npc.m_iWearable1, "Disable");
 					}
-					else if(!autoSeek && distance < 22500.0)	// Too close for the Pistol
+					else if(!noSafety && distance < 22500.0)	// Too close for the Pistol
 					{
 						npc.SetActivity("ACT_RUN", 240.0);
 						walkStatus = 3;	// Back off
@@ -2127,7 +2130,7 @@ public void Citizen_ClotThink(int iNPC)
 					else	// Try to shoot
 					{
 						float npc_pos[3];
-						npc_pos = GetAbsOrigin(npc.index);
+						npc_pos = GetAbsOriginOld(npc.index);
 							
 						npc_pos[2] += 30.0;
 						
@@ -2205,7 +2208,7 @@ public void Citizen_ClotThink(int iNPC)
 					bool cooldown = npc.m_flNextRangedAttack > gameTime;
 					if(reloadStatus == 2 && !cooldown)	// We need to reload now
 					{
-						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
+						if(!noSafety && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN_RIFLE", 210.0);
@@ -2214,7 +2217,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else
 					{
-						if(!autoSeek && distance < 150000.0)	// Too close, walk backwards
+						if(!noSafety && distance < 150000.0)	// Too close, walk backwards
 						{
 							npc.SetActivity("ACT_WALK_AIM_RIFLE", 90.0);
 							walkStatus = 2;	// Back off
@@ -2228,7 +2231,7 @@ public void Citizen_ClotThink(int iNPC)
 						if(!cooldown)
 						{
 							float npc_pos[3];
-							npc_pos = GetAbsOrigin(npc.index);
+							npc_pos = GetAbsOriginOld(npc.index);
 								
 							npc_pos[2] += 30.0;
 							
@@ -2294,7 +2297,7 @@ public void Citizen_ClotThink(int iNPC)
 					bool cooldown = npc.m_flNextRangedAttack > gameTime;
 					if(reloadStatus == 2 && !cooldown)	// We need to reload now
 					{
-						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
+						if(!noSafety && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN_AR2", 210.0);
@@ -2303,7 +2306,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else
 					{
-						if(!autoSeek && distance < 150000.0)	// Too close, walk backwards
+						if(!noSafety && distance < 150000.0)	// Too close, walk backwards
 						{
 							npc.SetActivity("ACT_WALK_AIM_AR2", 90.0);
 							walkStatus = 2;	// Back off
@@ -2317,7 +2320,7 @@ public void Citizen_ClotThink(int iNPC)
 						if(!cooldown)
 						{
 							float npc_pos[3];
-							npc_pos = GetAbsOrigin(npc.index);
+							npc_pos = GetAbsOriginOld(npc.index);
 								
 							npc_pos[2] += 30.0;
 							
@@ -2388,7 +2391,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else if(reloadStatus == 2)	// We need to reload now
 					{
-						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
+						if(!noSafety && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN_AR2", 210.0);
@@ -2398,7 +2401,7 @@ public void Citizen_ClotThink(int iNPC)
 					else	// Try to shoot
 					{
 						float npc_pos[3];
-						npc_pos = GetAbsOrigin(npc.index);
+						npc_pos = GetAbsOriginOld(npc.index);
 							
 						npc_pos[2] += 30.0;
 						
@@ -2473,14 +2476,14 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else if(reloadStatus == 2)	// We need to reload now
 					{
-						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
+						if(!noSafety && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN_RPG", 240.0);
 							walkStatus = 3;	// Back off
 						}
 					}
-					else if(!autoSeek && distance < 22500.0)	// Too close for the RPG
+					else if(!noSafety && distance < 22500.0)	// Too close for the RPG
 					{
 						npc.SetActivity("ACT_RUN_RPG", 240.0);
 						walkStatus = 3;	// Back off
@@ -2488,7 +2491,7 @@ public void Citizen_ClotThink(int iNPC)
 					else	// Try to shoot
 					{
 						float npc_pos[3];
-						npc_pos = GetAbsOrigin(npc.index);
+						npc_pos = GetAbsOriginOld(npc.index);
 							
 						npc_pos[2] += 30.0;
 						
@@ -2588,7 +2591,7 @@ public void Citizen_ClotThink(int iNPC)
 		}
 		else if(npc.m_bSeakingMedic || npc.m_bSeakingGeneric)	// Go up to building
 		{
-			vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
+			vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
 
 			distance = GetVectorDistance(vecTarget, vecMe, true);
 			if(distance < 7000.0)
@@ -2622,7 +2625,7 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			npc.m_iTargetAlly = healingTarget;
 			npc.m_bSeakingMedic = true;
-			vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
+			vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
 			walkStatus = 5;	// Run to ally (activity handled)
 		}
 	}
@@ -2636,7 +2639,7 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			if(i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 5 && HealingCooldown[entity] < gameTime)
 			{
-				vecTarget = WorldSpaceCenter(entity);
+				vecTarget = WorldSpaceCenterOld(entity);
 				float dist = GetVectorDistance(vecTarget, vecMe, true);
 				if(dist < distance)
 				{
@@ -2655,7 +2658,7 @@ public void Citizen_ClotThink(int iNPC)
 				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 				if(!StrContains(buffer, "zr_perkmachine"))
 				{
-					vecTarget = WorldSpaceCenter(entity);
+					vecTarget = WorldSpaceCenterOld(entity);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2677,7 +2680,7 @@ public void Citizen_ClotThink(int iNPC)
 					GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 					if(!StrContains(buffer, "zr_perkmachine"))
 					{
-						vecTarget = WorldSpaceCenter(client);
+						vecTarget = WorldSpaceCenterOld(client);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(dist < distance)
 						{
@@ -2692,7 +2695,7 @@ public void Citizen_ClotThink(int iNPC)
 
 		if(npc.m_bSeakingGeneric)
 		{
-			vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
+			vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
 			walkStatus = 5;	// Run to ally (activity handled)
 			npc.m_iHasPerk = npc.m_iGunType;
 		}
@@ -2706,7 +2709,7 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			if(i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 1 && HealingCooldown[entity] < gameTime)
 			{
-				vecTarget = WorldSpaceCenter(entity);
+				vecTarget = WorldSpaceCenterOld(entity);
 				float dist = GetVectorDistance(vecTarget, vecMe, true);
 				if(dist < distance)
 				{
@@ -2725,7 +2728,7 @@ public void Citizen_ClotThink(int iNPC)
 				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 				if(!StrContains(buffer, "zr_armortable"))
 				{
-					vecTarget = WorldSpaceCenter(entity);
+					vecTarget = WorldSpaceCenterOld(entity);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2747,7 +2750,7 @@ public void Citizen_ClotThink(int iNPC)
 					GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 					if(!StrContains(buffer, "zr_armortable"))
 					{
-						vecTarget = WorldSpaceCenter(client);
+						vecTarget = WorldSpaceCenterOld(client);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(dist < distance)
 						{
@@ -2762,14 +2765,14 @@ public void Citizen_ClotThink(int iNPC)
 
 		if(npc.m_bSeakingGeneric)
 		{
-			vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
+			vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
 			walkStatus = 5;	// Run to ally (activity handled)
 			npc.m_iArmorErosion = 0;
 		}
 	}
 
 	// Go to ally players
-	if(!walkStatus)
+	if(!walkStatus && (!combat || !npc.m_bRebelAgressive))
 	{
 		if(npc.m_bGetClosestTargetTimeAlly || !npc.m_iTargetAlly || !IsValidAlly(npc.index, npc.m_iTargetAlly))
 		{
@@ -2782,7 +2785,7 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				if(!IgnorePlayer[client] && IsClientInGame(client) && IsEntityAlive(client))
 				{
-					vecTarget = WorldSpaceCenter(client);
+					vecTarget = WorldSpaceCenterOld(client);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2795,7 +2798,7 @@ public void Citizen_ClotThink(int iNPC)
 		
 		if(npc.m_iTargetAlly > 0)
 		{
-			vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
+			vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
 			distance = GetVectorDistance(vecTarget, vecMe, true);
 			if(distance > 200000.0 || (combat && distance > 60000.0))
 			{
@@ -2811,7 +2814,7 @@ public void Citizen_ClotThink(int iNPC)
 				{
 					if(i_NpcInternalId[entity] == CITIZEN)
 					{
-						vecTarget2 = WorldSpaceCenter(entity);
+						vecTarget2 = WorldSpaceCenterOld(entity);
 						distance = GetVectorDistance(vecTarget2, vecMe, true);
 						if(distance < 6000.0 && !combat)
 						{
@@ -2847,7 +2850,7 @@ public void Citizen_ClotThink(int iNPC)
 
 			npc.m_bAllowBackWalking = true;
 			
-			vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
+			vecTarget = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
@@ -2931,7 +2934,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_flidle_talk = FAR_FUTURE;
 			npc.m_bAllowBackWalking = false;
 			
-			vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
+			vecTarget = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
@@ -2942,7 +2945,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_flidle_talk = FAR_FUTURE;
 			npc.m_bAllowBackWalking = true;
 			
-			vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
+			vecTarget = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
@@ -2959,7 +2962,7 @@ public void Citizen_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPosition(npc, npc.m_iTarget);
+				vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
 				NPC_SetGoalVector(npc.index, vecTarget);
 			}
 			
@@ -3049,7 +3052,7 @@ public void Citizen_ClotThink(int iNPC)
 				{
 					if(i_NpcInternalId[i] == CITIZEN && i != npc.index && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
 					{
-						vecTarget = WorldSpaceCenter(i);
+						vecTarget = WorldSpaceCenterOld(i);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(dist < 60000.0)
 						{
@@ -3067,7 +3070,7 @@ public void Citizen_ClotThink(int iNPC)
 				int client = GetClosestAllyPlayer(npc.index);
 				if(client > 0)
 				{
-					vecTarget = WorldSpaceCenter(client);
+					vecTarget = WorldSpaceCenterOld(client);
 					if(GetVectorDistance(vecTarget, vecMe, true) < distance)
 						talkingTo = client;
 				}
@@ -3075,7 +3078,7 @@ public void Citizen_ClotThink(int iNPC)
 				if(talkingTo)
 				{
 					if(talkingTo > MaxClients)
-						vecTarget = WorldSpaceCenter(talkingTo);
+						vecTarget = WorldSpaceCenterOld(talkingTo);
 					
 					npc.SlowTurn(vecTarget);
 					
@@ -3136,13 +3139,13 @@ void Citizen_MiniBossDeath(int entity)
 	int talkingTo;
 	float distance;
 	
-	float vecMe[3]; vecMe = WorldSpaceCenter(entity);
+	float vecMe[3]; vecMe = WorldSpaceCenterOld(entity);
 	float vecTarget[3];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 	{
 		if(i_NpcInternalId[i] == CITIZEN && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
 		{
-			vecTarget = WorldSpaceCenter(i);
+			vecTarget = WorldSpaceCenterOld(i);
 			float dist = GetVectorDistance(vecTarget, vecMe, true);
 			if(!talkingTo || dist < distance)
 			{
@@ -3164,13 +3167,13 @@ void Citizen_LiveCitizenReaction(int entity)
 	int talkingTo;
 	float distance = 60000.0;
 	
-	float vecMe[3]; vecMe = WorldSpaceCenter(entity);
+	float vecMe[3]; vecMe = WorldSpaceCenterOld(entity);
 	float vecTarget[3];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 	{
 		if(i_NpcInternalId[i] == CITIZEN && i != entity && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
 		{
-			vecTarget = WorldSpaceCenter(i);
+			vecTarget = WorldSpaceCenterOld(i);
 			float dist = GetVectorDistance(vecTarget, vecMe, true);
 			if(dist < 60000.0)
 			{
@@ -3188,7 +3191,7 @@ void Citizen_LiveCitizenReaction(int entity)
 	int client = GetClosestAllyPlayer(entity);
 	if(client > 0)
 	{
-		vecTarget = WorldSpaceCenter(client);
+		vecTarget = WorldSpaceCenterOld(client);
 		if(GetVectorDistance(vecTarget, vecMe, true) < distance)
 			talkingTo = client;
 	}
@@ -3197,7 +3200,7 @@ void Citizen_LiveCitizenReaction(int entity)
 	{
 		if(talkingTo > MaxClients)
 		{
-			vecTarget = WorldSpaceCenter(talkingTo);
+			vecTarget = WorldSpaceCenterOld(talkingTo);
 			view_as<Citizen>(talkingTo).SlowTurn(vecMe);
 			view_as<Citizen>(talkingTo).m_flidle_talk += 35.0;
 			CreateTimer(3.0, Citizen_ReactionTimer, EntIndexToEntRef(talkingTo), TIMER_FLAG_NO_MAPCHANGE);
@@ -3230,7 +3233,7 @@ void Citizen_PlayerDeath(int client)
 		int talker, talkingTo;
 		float distance = 10000000.0;
 		
-		float vecMe[3]; vecMe = WorldSpaceCenter(client);
+		float vecMe[3]; vecMe = WorldSpaceCenterOld(client);
 		float vecTarget[3];
 		for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 		{
@@ -3238,7 +3241,7 @@ void Citizen_PlayerDeath(int client)
 			{
 				view_as<Citizen>(i).m_flidle_talk = FAR_FUTURE;
 				
-				vecTarget = WorldSpaceCenter(i);
+				vecTarget = WorldSpaceCenterOld(i);
 				float dist = GetVectorDistance(vecTarget, vecMe, true);
 				if(view_as<Citizen>(i).CanTalk() && dist < distance)
 				{

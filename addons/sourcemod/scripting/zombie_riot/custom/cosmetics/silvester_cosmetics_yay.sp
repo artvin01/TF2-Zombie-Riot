@@ -59,9 +59,10 @@ void ApplyExtraSilvesterCosmeticEffects(int client, bool remove = false)
 
 public void EnableSilvesterCosmetic(int client) 
 {
-	if(TeutonType[client] != TEUTON_NONE)
+	//for now block
+	if(TeutonType[client] != TEUTON_NONE || TeutonType[client] == TEUTON_NONE)
 		return;
-		
+
 	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Silvester Wings [???]"));
 	if (h_SilvesterCosmeticEffectManagement[client] != null)
 	{

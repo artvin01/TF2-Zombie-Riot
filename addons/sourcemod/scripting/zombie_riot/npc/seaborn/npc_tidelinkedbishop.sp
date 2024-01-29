@@ -63,7 +63,6 @@ methodmap TidelinkedBishop < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.m_iTargetAlly = -1;
 
 		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/player/items/medic/medic_blighted_beak.mdl");
 		SetVariantString("1.15");
@@ -78,7 +77,7 @@ methodmap TidelinkedBishop < CClotBody
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
 
-		npc.m_iTargetAlly = -1;
+		i_TargetAlly[npc.index] = -1;
 
 		return npc;
 	}
@@ -100,7 +99,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTargetAlly == -1)
+	if(i_TargetAlly[npc.index] == -1)
 	{
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
@@ -109,8 +108,8 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 		int entity = Npc_Create(TIDELINKED_ARCHON, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 		if(entity > MaxClients)
 		{
-			npc.m_iTargetAlly = EntIndexToEntRef(entity);
-			view_as<CClotBody>(entity).m_iTargetAlly = EntIndexToEntRef(npc.index);
+			i_TargetAlly[npc.index] = EntIndexToEntRef(entity);
+			i_TargetAlly[entity] = EntIndexToEntRef(npc.index);
 			view_as<CClotBody>(entity).m_bThisNpcIsABoss = npc.m_bThisNpcIsABoss;
 
 			Zombies_Currently_Still_Ongoing++;
@@ -131,7 +130,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 
 	if(b_NpcIsInvulnerable[npc.index])
 	{
-		int entity = EntRefToEntIndex(npc.m_iTargetAlly);
+		int entity = EntRefToEntIndex(i_TargetAlly[npc.index]);
 		if(entity == INVALID_ENT_REFERENCE || !IsValidEntity(entity) ||  b_NpcIsInvulnerable[entity])
 		{
 			SmiteNpcToDeath(npc.index);
@@ -141,7 +140,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 
-		health += maxhealth / 100;	// 20 seconds
+		health += maxhealth / 200;	// 20 seconds
 		if(health >= (maxhealth / 2))
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
@@ -168,8 +167,8 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -177,7 +176,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 				
-				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 900.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 900.0);
 				npc.FaceTowards(vecTarget, 15000.0);
 
 				npc.PlayMeleeSound();
@@ -192,7 +191,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(entity, 100, 100, 255, 255);
 					
-					vecTarget = WorldSpaceCenter(entity);
+					vecTarget = WorldSpaceCenterOld(entity);
 					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "rockettrail_bubbles", 3.0);
 					SetParent(entity, f_ArrowTrailParticle[entity]);
 					f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
@@ -232,7 +231,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 		{
 			if(distance < npc.GetLeadRadius())
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 

@@ -562,14 +562,14 @@ public void BootyExecutioner_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			
 			/*int color[4];
 			color[0] = 255;
@@ -826,7 +826,7 @@ void BootyExecutioner_TBB_Ability(int client)
 		BootyExecutioner_BEAM_BuildingHit[building] = false;
 	}
 	
-	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
+	ParticleEffectAt(WorldSpaceCenterOld(client), "eyeboss_death_vortex", 2.0);
 	
 	BootyExecutioner_BEAM_IsUsing[client] = false;
 	BootyExecutioner_BEAM_TicksActive[client] = 0;
@@ -904,7 +904,7 @@ static void BootyExecutioner_GetBeamDrawStartPoint(int client, float startPoint[
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOrigin(client);
+	startPoint = GetAbsOriginOld(client);
 	startPoint[2] += 50.0;
 	
 	BootyExecutioner npc = view_as<BootyExecutioner>(client);
@@ -914,7 +914,7 @@ static void BootyExecutioner_GetBeamDrawStartPoint(int client, float startPoint[
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOrigin(client);
+	startPoint = GetAbsOriginOld(client);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == BootyExecutioner_BEAM_BeamOffset[client][0] && 0.0 == BootyExecutioner_BEAM_BeamOffset[client][1] && 0.0 == BootyExecutioner_BEAM_BeamOffset[client][2])
@@ -1005,7 +1005,7 @@ public Action TrueBootyExecutioner_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOrigin(client);
+		startPoint = GetAbsOriginOld(client);
 		startPoint[2] += 50.0;
 
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, BootyExecutioner_BEAM_TraceWallsOnly);
@@ -1044,7 +1044,7 @@ public Action TrueBootyExecutioner_TBB_Tick(int client)
 					if (damage < 0)
 						damage *= -1.0;
 
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
 				}
 			}
 			
