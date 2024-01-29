@@ -481,7 +481,7 @@ public void Trip_TrackPlanted(int client)
 									}
 									float Damagetrap = Trip_BlastDMG[client];
 									if(b_ExpertTrapper[client] && b_ExpertTrapper[ent2] && b_ExpertTrapper[ent])
-										Damagetrap *= 6.0;
+										Damagetrap *= 5.0;
 										
 									Explode_Logic_Custom(Damagetrap, client, client, -1, EntLoc2,Trip_BlastRadius,_,_,false);
 									Explode_Logic_Custom(Damagetrap, client, client, -1, EntLoc,Trip_BlastRadius,_,_,false);

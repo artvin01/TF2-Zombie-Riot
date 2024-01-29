@@ -3076,10 +3076,10 @@ void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor, floa
 		{
 			damage *= 0.90;
 		}
-		if(f_GodArkantosBuff[victim] > GameTime) //hussar!
-		{
-			damage *= 0.75;
-		}
+	}
+	if(f_GodArkantosBuff[victim] > GameTime) //hussar!
+	{
+		damage *= 0.75;
 	}
 	if(attacker > 0)
 	{
@@ -3129,10 +3129,10 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 		{
 			damage += BaseDamageBeforeBuffs * (0.1 * DamageBuffExtraScaling);
 		}
-		if(f_GodArkantosBuff[attacker] > GameTime) //hussar!
-		{
-			damage += BaseDamageBeforeBuffs * (0.5 * DamageBuffExtraScaling); //50% more damage!
-		}
+	}
+	if(f_GodArkantosBuff[attacker] > GameTime) //hussar!
+	{
+		damage += BaseDamageBeforeBuffs * (0.5 * DamageBuffExtraScaling); //50% more damage!
 	}
 	if(f_Ocean_Buff_Stronk_Buff[attacker] > GameTime) //hussar!
 	{
@@ -3195,17 +3195,17 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 #endif
 	if(f_BuildingAntiRaid[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * (0.1 * DamageBuffExtraScaling);
+		damage += BaseDamageBeforeBuffs * ((DMG_ANTI_RAID - 1.0)* DamageBuffExtraScaling);
 	}
 	if(f_WidowsWineDebuff[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * (0.35 * DamageBuffExtraScaling);
+		damage += BaseDamageBeforeBuffs * ((DMG_WIDOWS_WINE - 1.0) * DamageBuffExtraScaling);
 	}
 
 	if(Increaced_Overall_damage_Low[attacker] > GameTime)
 	{
 		//this doesnt get applied in groups.
-		damage += BaseDamageBeforeBuffs * 0.25;
+		damage += BaseDamageBeforeBuffs * (DMG_MEDIGUN_LOW - 1.0);
 	}
 	
 	if(f_CrippleDebuff[victim] > GameTime)
