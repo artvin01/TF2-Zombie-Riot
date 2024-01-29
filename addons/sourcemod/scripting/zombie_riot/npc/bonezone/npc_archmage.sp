@@ -392,8 +392,11 @@ public void Archmage_CheckThrow(ArchmageBones npc, int closest)
 {
 	if (npc.m_flNextMeleeAttack < GetGameTime(npc.index) && IsValidEnemy(npc.index, closest) && !NpcStats_IsEnemySilenced(npc.index))
 	{
+		float userLoc[3], targLoc[3];
+		WorldSpaceCenter(npc.index, userLoc);
+		WorldSpaceCenter(closest, targLoc);
 		//Don't try to throw a fireball if the target is too far away.
-		if (GetVectorDistance(WorldSpaceCenter(npc.index), WorldSpaceCenter(closest)) > ARCHMAGE_HOVER_MAXDIST)
+		if (GetVectorDistance(userLoc, targLoc) > ARCHMAGE_HOVER_MAXDIST)
 			return;
 			
 		throwState[npc.index] = THROWSTATE_INTRO;
@@ -467,7 +470,7 @@ public void Archmage_CheckLaunch(ArchmageBones npc, int closest)
 	if (GetGameTime(npc.index) >= throwThrowTime[npc.index] && npc.m_flAttackHappenswillhappen)
 	{
 		float vicLoc[3];
-		vicLoc = WorldSpaceCenter(closest);
+		WorldSpaceCenter(closest, vicLoc);
 		
 		float vel = b_BonesBuffed[npc.index] ? BONES_ARCHMAGE_PROJECTILE_VELOCITY_BUFFED : BONES_ARCHMAGE_PROJECTILE_VELOCITY;
 		float damage = b_BonesBuffed[npc.index] ? BONES_ARCHMAGE_PLAYERDAMAGE_BUFFED : BONES_ARCHMAGE_PLAYERDAMAGE;
@@ -475,7 +478,7 @@ public void Archmage_CheckLaunch(ArchmageBones npc, int closest)
 		//The buffed variant predicts the victim's location, non-buffed does not.
 		if (b_BonesBuffed[npc.index])
 		{
-			vicLoc = PredictSubjectPositionForProjectiles(npc, closest, vel);
+			PredictSubjectPositionForProjectiles(npc, closest, vel, _, vicLoc);
 		}
 		
 		Archmage_ShootProjectile(npc, vicLoc, vel, damage);
@@ -495,7 +498,7 @@ public void Archmage_ShootProjectile(ArchmageBones npc, float vicLoc[3], float v
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		npc.GetVectors(vecForward, vecSwingStart, vecAngles);
 
-		vecSwingStart = GetAbsOrigin(npc.index);
+		GetAbsOrigin(npc.index, vecSwingStart);
 		vecSwingStart[2] += 54.0;
 
 		MakeVectorFromPoints(vecSwingStart, vicLoc, vecAngles);
@@ -642,7 +645,7 @@ public void Archmage_LookAtPoint(ArchmageBones npc, int closest)
 	if (IsValidEnemy(npc.index, closest))
 	{
 		float targLoc[3];
-		targLoc = WorldSpaceCenter(closest);
+		WorldSpaceCenter(closest, targLoc);
 		npc.FaceTowards(targLoc, 15000.0);
 	}
 }
@@ -690,15 +693,15 @@ public void ArchmageBones_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, closest))
 	{
 		float pos[3], targPos[3], optimalPos[3]; 
-		pos = WorldSpaceCenter(npc.index);
-		targPos = WorldSpaceCenter(closest);
+		WorldSpaceCenter(npc.index, pos);
+		WorldSpaceCenter(closest, targPos);
 			
 		float flDistanceToTarget = GetVectorDistance(targPos, pos);
 					
 		if (flDistanceToTarget < ARCHMAGE_HOVER_MINDIST)
 		{
 			npc.StartPathing();
-			optimalPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, closest);
+			BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
 			NPC_SetGoalVector(npc.index, optimalPos, true);
 		}
 		else if (flDistanceToTarget > ARCHMAGE_HOVER_MAXDIST)

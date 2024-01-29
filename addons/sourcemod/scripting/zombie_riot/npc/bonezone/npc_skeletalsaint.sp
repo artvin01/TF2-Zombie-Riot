@@ -500,21 +500,25 @@ public void Priest_AttemptCast(SaintBones npc, int closest)
 	if (npc.m_flNextMeleeAttack >= GetGameTime(npc.index) || !IsValidEnemy(npc.index, closest) || NpcStats_IsEnemySilenced(npc.index) || Priest_IsHealing[npc.index])
 		return;
 		
+	float userLoc[3], otherLoc[3];
+	WorldSpaceCenter(npc.index, userLoc);
+	WorldSpaceCenter(closest, otherLoc);
+	
 	if (b_BonesBuffed[npc.index])
 	{
 		//Do not begin Thunder Clap if the enemy is too far away for it to reasonably hit.
-		if (GetVectorDistance(WorldSpaceCenter(npc.index), WorldSpaceCenter(closest)) > THUNDER_RADIUS * 0.4)
+		if (GetVectorDistance(userLoc, otherLoc) > THUNDER_RADIUS * 0.4)
 			return;
 	}
 	else
 	{
 		//Do not begin Lightning Strike if the enemy is out of range.
-		if (GetVectorDistance(WorldSpaceCenter(npc.index), WorldSpaceCenter(closest)) > LIGHTNING_RANGE)
+		if (GetVectorDistance(userLoc, otherLoc) > LIGHTNING_RANGE)
 			return;
 			
 		float dummy[3], start[3], target[3];
-		start = WorldSpaceCenter(npc.index);
-		target = WorldSpaceCenter(closest);
+		WorldSpaceCenter(npc.index, start);
+		WorldSpaceCenter(closest, target);
 		start[2] += 20.0;
 		target[2] += 20.0;
 		Priest_GetAngleToPoint(npc.index, start, target, dummy, Priest_BoltAngles[npc.index]);
@@ -648,8 +652,8 @@ public void Priest_CheckCast(SaintBones npc, int closest)
 		}
 		else
 		{
-			float startLoc[3], endLoc[3], center[3];
-			center = WorldSpaceCenter(npc.index);
+			float startLoc[3], endLoc[3], center[3], vicLoc[3];
+			WorldSpaceCenter(npc.index, center);
 			center[2] += 20.0;
 			
 			TR_TraceRayFilter(center, Priest_BoltAngles[npc.index], MASK_SHOT, RayType_Infinite, Priest_OnlyHitWorld);
@@ -685,7 +689,8 @@ public void Priest_CheckCast(SaintBones npc, int closest)
 							damage *= LIGHTNING_DAMAGE_ENTITYMULT;
 						}
 						
-						SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_PLASMA, _, NULL_VECTOR, WorldSpaceCenter(victim));
+						WorldSpaceCenter(victim, vicLoc);
+						SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_PLASMA, _, NULL_VECTOR, vicLoc);
 					}
 				}
 			}
@@ -817,9 +822,11 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 		return;
 	}
 	
-	float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
+	float vecTarget[3], userLoc[3];
+	WorldSpaceCenter(closest, vecTarget);
+	WorldSpaceCenter(npc.index, userLoc);
 			
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index));
+	float flDistanceToTarget = GetVectorDistance(vecTarget, userLoc);
 				
 	CClotBody targetNPC = view_as<CClotBody>(closest);
 	
@@ -924,7 +931,7 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 		if (flDistanceToTarget < Priest_EnemyHover_MinDist)
 		{
 			npc.StartPathing();
-			optimalPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, closest);
+			BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
 			NPC_SetGoalVector(npc.index, optimalPos, true);
 		}
 		else if (flDistanceToTarget > Priest_EnemyHover_MaxDist)
@@ -971,9 +978,11 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 		return;
 	}
 	
-	float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
+	float vecTarget[3], userLoc[3];
+	WorldSpaceCenter(closest, vecTarget);
+	WorldSpaceCenter(npc.index, userLoc);
 			
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index));
+	float flDistanceToTarget = GetVectorDistance(vecTarget, userLoc);
 	
 	if(IsValidAlly(npc.index, closest))
 	{
@@ -1000,7 +1009,7 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 		}
 		else
 		{
-			startLoc = WorldSpaceCenter(npc.index);
+			WorldSpaceCenter(npc.index, startLoc);
 			startLoc[2] += 90.0;
 		}
 		
@@ -1012,10 +1021,11 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 			if (!HasEntProp(i, Prop_Send, "m_iTeamNum"))
 				continue;
 				
-			float healPos[3];
-			healPos = WorldSpaceCenter(i);
+			float healPos[3], userPos[3];
+			WorldSpaceCenter(i, healPos);
+			WorldSpaceCenter(npc.index, userPos);
 			CClotBody healTarget = view_as<CClotBody>(i);
-			if (IsValidAlly(npc.index, i) && GetVectorDistance(WorldSpaceCenter(npc.index), healPos) <= SAINTBONES_HEAL_RANGE_BUFFED)
+			if (IsValidAlly(npc.index, i) && GetVectorDistance(userPos, healPos) <= SAINTBONES_HEAL_RANGE_BUFFED)
 			{
 				AtLeastOne = true;
 				

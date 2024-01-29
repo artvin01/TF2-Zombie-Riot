@@ -2224,6 +2224,10 @@ methodmap CClotBody < CBaseCombatCharacter
 				return true;
 			case BONEZONE_BUFFED_SAINTBONES:
 				return true;
+			case BONEZONE_NECROMANCER:
+				return true;
+			case BONEZONE_BUFFED_NECROMANCER:
+				return true;
 		}
 		
 		return false;
@@ -2256,6 +2260,8 @@ methodmap CClotBody < CBaseCombatCharacter
 				return true;
 			case BONEZONE_BUFFED_SAINTBONES:
 				return true;
+			case BONEZONE_BUFFED_NECROMANCER:
+				return true;
 		}
 		
 		return false;
@@ -2275,7 +2281,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	public void BoneZone_SetBuffedState(bool buffed, int buffer)
 	{
 		//Skeletons which are already buffed when they spawn are completely ignored by this so that we don't accidentally remove their natural buff.
-		//Maybe we can change this in the future so players can remove buffs via Silence, but for now it stays like this.
+		//Maybe we can change this in the future so players can remove buffs via Silence, but that may be way too strong, so for now it stays like this.
 		if (this.m_bBoneZoneNaturallyBuffed)
 			return;
 		
@@ -2346,6 +2352,10 @@ methodmap CClotBody < CBaseCombatCharacter
 					BrittleBones_SetBuffed(this.index, buffed);
 				case BONEZONE_BUFFED_BRITTLEBONES:
 					BrittleBones_SetBuffed(this.index, buffed);
+				case BONEZONE_NECROMANCER:
+					NecromancerBones_SetBuffed(this.index, buffed);
+				case BONEZONE_BUFFED_NECROMANCER:
+					NecromancerBones_SetBuffed(this.index, buffed);
 			}
 			
 			//Don't let skeletons keep excess health when they lose their buffed state.

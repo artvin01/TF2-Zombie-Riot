@@ -16,7 +16,7 @@ static float BONES_NECROMANCER_ATTACKINTERVAL_BUFFED = 1.0;
 #define BONES_NECROMANCER_SKIN						"0"
 #define BONES_NECROMANCER_BUFFED_SKIN				"1"
 
-#define BONES_NECROMANCER_BUFFPARTICLE			"utaunt_auroraglow_purple_parent"
+#define BONES_NECROMANCER_BUFFPARTICLE			"utaunt_hands_teamcolor_red"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -267,12 +267,18 @@ stock void Necromancer_GiveCosmetics(CClotBody npc, bool buffed)
 	
 	if (buffed)
 	{
+		//TODO: Choose a different hat
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2020_misfortune_fedora/hwn2020_misfortune_fedora_sniper.mdl");
+		npc.m_iWearable2 = npc.EquipItem("spine3", "models/workshop/player/items/soldier/hwn2023_warlocks_warcloak/hwn2023_warlocks_warcloak.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2019_horrible_horns/hwn2019_horrible_horns_sniper.mdl");
+		
 		//DispatchKeyValue(npc.m_iWearable1, "skin", "1");
 		//DispatchKeyValue(npc.m_iWearable2, "skin", "1");
 	}
 	else
 	{
-		
+		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/demo/demo_bonehat.mdl");
+		npc.m_iWearable2 = npc.EquipItem("spine3", "models/workshop/player/items/demo/hw2013_demo_cape/hw2013_demo_cape.mdl");
 	}
 }
 
@@ -361,8 +367,8 @@ public void NecromancerBones_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, closest))
 	{
 		float pos[3], targPos[3]; 
-		pos = WorldSpaceCenter(npc.index);
-		targPos = WorldSpaceCenter(closest);
+		WorldSpaceCenter(npc.index, pos);
+		WorldSpaceCenter(closest, targPos);
 			
 		float flDistanceToTarget = GetVectorDistance(targPos, pos);
 		
