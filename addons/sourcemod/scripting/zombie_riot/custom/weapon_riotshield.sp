@@ -360,11 +360,11 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 	{
 		if(b_thisNpcIsARaid[attacker] || b_thisNpcIsABoss[attacker])
 		{
-			damage *= 0.65; //35% res instead of 61%, too op against singular.
+			damage *= 0.7; //35% res instead of 61%, too op against singular.
 		}
 		else
 		{
-			damage *= 0.39;
+			damage *= 0.5;
 		}
 		if(f_AniSoundSpam[victim] < GetGameTime())
 		{

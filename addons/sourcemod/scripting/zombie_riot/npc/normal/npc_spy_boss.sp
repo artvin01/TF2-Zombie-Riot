@@ -365,8 +365,8 @@ public void SpyMainBoss_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 	{
 	
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		if (npc.m_flReloadDelay < GetGameTime(npc.index) && flDistanceToTarget < 40000 || flDistanceToTarget > 90000 && npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime(npc.index))
 		{
 			if (!npc.m_bmovedelay)
@@ -413,7 +413,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			
 		/*	int color[4];
 			color[0] = 255;
@@ -452,14 +452,14 @@ public void SpyMainBoss_ClotThink(int iNPC)
 			float vecDirShooting[3], vecRight[3], vecUp[3];
 			
 			vecTarget[2] += 15.0;
-			MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+			MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 			GetVectorAngles(vecDirShooting, vecDirShooting);
 			vecDirShooting[1] = eyePitch[1];
 			GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 			
 			float m_vecSrc[3];
 			
-			m_vecSrc = WorldSpaceCenter(npc.index);
+			m_vecSrc = WorldSpaceCenterOld(npc.index);
 			
 			float vecEnd[3];
 			vecEnd[0] = m_vecSrc[0] + vecDirShooting[0] * 9000; 
@@ -493,7 +493,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 			vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 			NormalizeVector(vecDir, vecDir);
 			
-			FireBullet(npc.index, npc.m_iWearable5, WorldSpaceCenter(npc.index), vecDir, 60.0, 9000.0, DMG_BULLET, "bullet_tracer01_blue");
+			FireBullet(npc.index, npc.m_iWearable5, WorldSpaceCenterOld(npc.index), vecDir, 60.0, 9000.0, DMG_BULLET, "bullet_tracer01_blue");
 			
 			npc.PlayRangedSound();
 		}
@@ -501,7 +501,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 		{		
 			npc.FaceTowards(vecTarget, 20000.0);
 			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.3;
 			npc.m_iAttacksTillReload -= 1;

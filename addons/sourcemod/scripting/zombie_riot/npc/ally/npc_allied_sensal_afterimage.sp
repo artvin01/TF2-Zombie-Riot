@@ -136,7 +136,7 @@ public void AlliedSensalAbility_ClotThink(int iNPC)
 			npc.m_flAttackHappens_2 = 0.0;
 			if(IsValidEnemy(npc.index, npc.m_iTarget, true, true))
 			{
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 30000.0);
+				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 30000.0);
 				AlliedSensalFireLaser(npc.m_iTarget, npc);
 			}
 			else
@@ -146,7 +146,7 @@ public void AlliedSensalAbility_ClotThink(int iNPC)
 				npc.m_iTarget = GetClosestEnemyToAttack;
 				if(npc.m_iTarget > 0)
 				{
-					npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 30000.0);
+					npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 30000.0);
 					AlliedSensalFireLaser(npc.m_iTarget, npc);
 				}
 			}
@@ -275,7 +275,7 @@ void Allied_Sensal_InitiateLaserAttack(int owner, int entity, float VectorTarget
 				float damage = fl_heal_cooldown[entity];
 
 				SensalCauseKnockback(npc.index, SensalAllied_BEAM_BuildingHit[building]);		
-				SDKHooks_TakeDamage(SensalAllied_BEAM_BuildingHit[building], owner, owner, damage / DamageFallOff, DMG_CLUB, Weapon, NULL_VECTOR, WorldSpaceCenter(SensalAllied_BEAM_BuildingHit[building]), _ , ZR_DAMAGE_REFLECT_LOGIC);	// 2048 is DMG_NOGIB?
+				SDKHooks_TakeDamage(SensalAllied_BEAM_BuildingHit[building], owner, owner, damage / DamageFallOff, DMG_CLUB, Weapon, NULL_VECTOR, WorldSpaceCenterOld(SensalAllied_BEAM_BuildingHit[building]), _ , ZR_DAMAGE_REFLECT_LOGIC);	// 2048 is DMG_NOGIB?
 				DamageFallOff *= LASER_AOE_DAMAGE_FALLOFF;	
 				EnemiesHit += 1;
 				if(EnemiesHit >= 5)
@@ -308,7 +308,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int iExclude)
 void AlliedSensalFireLaser(int target, AlliedSensalAbility npc)
 {
 	int owner = GetEntPropEnt(npc.index, Prop_Data, "m_hOwnerEntity");
-	Allied_Sensal_InitiateLaserAttack(owner, npc.index, WorldSpaceCenter(target), WorldSpaceCenter(npc.index), npc);
+	Allied_Sensal_InitiateLaserAttack(owner, npc.index, WorldSpaceCenterOld(target), WorldSpaceCenterOld(npc.index), npc);
 }
 
 public bool AlliedSensal_TraceWallsOnly(int entity, int contentsMask)

@@ -205,7 +205,7 @@ void CryoWandHitM2(int entity, int victim, float damage, int weapon)
 		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", VicLoc);
 		CreateTimer(0.1, Cryo_Unfreeze, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		EmitSoundToAll(SOUND_WAND_CRYO_SHATTER, victim);
-		SDKHooks_TakeDamage(victim, weapon, entity, damage * Cryo_M2_FreezeMult_Pap2, DMG_PLASMA, -1, CalculateExplosiveDamageForce(UserLoc, VicLoc, 1500.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(victim, weapon, entity, damage * Cryo_M2_FreezeMult_Pap2, DMG_PLASMA, -1, CalculateExplosiveDamageForceOld(UserLoc, VicLoc, 1500.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
 	}
 	else
 	{
@@ -353,7 +353,7 @@ public void Cryo_Touch(int entity, int target)
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 		if(!Cryo_AlreadyHit[entity][target])
 		{
-			VicLoc = WorldSpaceCenter(target);
+			VicLoc = WorldSpaceCenterOld(target);
 			//Code to do damage position and ragdolls
 			//Code to do damage position and ragdolls
 			switch (Cryo_SlowType[entity])
@@ -395,7 +395,7 @@ public void Cryo_Touch(int entity, int target)
 				RemoveEntity(entity);
 			}
 
-			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 0.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
+			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 0.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
 			
 			float Health_After_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
 			

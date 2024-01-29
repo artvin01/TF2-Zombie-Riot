@@ -74,7 +74,7 @@ public void CombineTurtle_ClotThink(int iNPC)
 
 	Npc_Base_Thinking(npc.index, 400.0, "walk", "idle", 80.0, gameTime, true, true);
 
-	float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
 
 	if(npc.m_flAttackHappens)
 	{
@@ -118,13 +118,13 @@ public void CombineTurtle_ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, vecMe, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
@@ -209,7 +209,7 @@ void CombineTurtle_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	
-	float pos[3]; pos = WorldSpaceCenter(npc.index);
+	float pos[3]; pos = WorldSpaceCenterOld(npc.index);
 	pos[2] -= 10.0;
 
 	TE_Particle("teleported_blue", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);

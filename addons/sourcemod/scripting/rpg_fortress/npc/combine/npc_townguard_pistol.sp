@@ -74,7 +74,7 @@ public void TownGuardPistol_ClotThink(int iNPC)
 	bool forceWalk = view_as<bool>(npc.m_iTargetAttack);
 
 	float vecMe[3];
-	vecMe = WorldSpaceCenter(npc.index);
+	vecMe = WorldSpaceCenterOld(npc.index);
 	BaseSquad_BaseThinking(npc, vecMe, true);
 
 	// Due to animation bug, we force switch our idle anim
@@ -84,7 +84,7 @@ public void TownGuardPistol_ClotThink(int iNPC)
 	if(npc.m_iTargetAttack)
 	{
 		float vecTarget[3];
-		vecTarget = WorldSpaceCenter(npc.m_iTargetAttack);
+		vecTarget = WorldSpaceCenterOld(npc.m_iTargetAttack);
 
 		if(npc.m_flNextRangedAttack < gameTime)
 		{

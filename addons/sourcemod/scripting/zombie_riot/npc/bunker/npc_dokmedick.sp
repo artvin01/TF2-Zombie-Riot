@@ -634,12 +634,12 @@ public void Doktor_Medick_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 		/*	int color[4];
 			color[0] = 255;
 			color[1] = 255;
@@ -658,12 +658,12 @@ public void Doktor_Medick_ClotThink(int iNPC)
 		}
 		float vOrigin[3];
 		float vEnd[3];
-		vOrigin = GetAbsOrigin(npc.m_iTarget);
-		vEnd = GetAbsOrigin(npc.m_iTarget);
+		vOrigin = GetAbsOriginOld(npc.m_iTarget);
+		vEnd = GetAbsOriginOld(npc.m_iTarget);
 		//if(b_OverDoseActive[npc.index] && npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 		if(b_OverDoseActive[npc.index])
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex, 0.3);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex, 0.3);
 			static float flVel[3];
 			f_OverDose_Usage[npc.index] = GetGameTime(npc.index) + Overdose_Reuseable;
 			
@@ -710,9 +710,9 @@ public void Doktor_Medick_ClotThink(int iNPC)
 				//float vAngles[3];
 				//float vOrigin[3];
 				//float vEnd[3];
-				//vAngles = GetAbsOrigin(npc.m_iTarget);
-				//vOrigin = GetAbsOrigin(npc.m_iTarget);
-				//vEnd = GetAbsOrigin(npc.m_iTarget);
+				//vAngles = GetAbsOriginOld(npc.m_iTarget);
+				//vOrigin = GetAbsOriginOld(npc.m_iTarget);
+				//vEnd = GetAbsOriginOld(npc.m_iTarget);
 			
 				Handle pack;
 				CreateDataTimer(Overdose_Smite_ChargeSpan, Overdose_Smite_Timer, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -750,7 +750,7 @@ public void Doktor_Medick_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1400.0);
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
@@ -769,7 +769,7 @@ public void Doktor_Medick_ClotThink(int iNPC)
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -792,7 +792,7 @@ public void Doktor_Medick_ClotThink(int iNPC)
 				
 				npc.FireArrow(vecTarget, Chemical_Warfare_Damage, 1400.0, "models/weapons/w_models/w_syringe_proj.mdl", 1.5);
 				
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
+				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 				//npc.PlayRangedSound();
 			}
 		}
@@ -1247,7 +1247,7 @@ void MoonLight_Beams(int entity, bool charging = true)
 		return;
 	
 	float UserLoc[3], UserAng[3];
-	UserLoc = GetAbsOrigin(entity);
+	UserLoc = GetAbsOriginOld(entity);
 	
 	UserAng[0] = 0.0;
 	UserAng[1] = MoonLight_Angle[npc.index];
@@ -1390,7 +1390,7 @@ public void MoonLight_DealDamage(int entity)
 	if(MoonLightDamage_throttle[npc.index] < GetGameTime(npc.index))
 	{
 		float beamLoc[3];
-		beamLoc = GetAbsOrigin(entity);
+		beamLoc = GetAbsOriginOld(entity);
 		MoonLightDamage_throttle[npc.index] = GetGameTime(npc.index) + 0.5;	//funny throttle due to me being dumb and not knowing to how do damage any other way.
 		Explode_Logic_Custom(MoonLight_DMG[npc.index], entity, entity, -1, beamLoc, MoonLight_DMG_Radius[npc.index] , _, _, true);
 		//CPrintToChatAll("Damage: %.1f%", MoonLight_DMG[npc.index]);

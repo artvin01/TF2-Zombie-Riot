@@ -260,11 +260,11 @@ static void Spin_To_Win_attack(int client, float endVec[3], float endVec_2[3], i
 				if(IsValidEntity(BEAM_BuildingHit[building]))
 				{
 					
-					playerPos = WorldSpaceCenter(BEAM_BuildingHit[building]);
+					playerPos = WorldSpaceCenterOld(BEAM_BuildingHit[building]);
 					
 					
 					float damage_force[3];
-					damage_force = CalculateDamageForce(vecForward, 10000.0);
+					damage_force = CalculateDamageForceOld(vecForward, 10000.0);
 					DataPack pack = new DataPack();
 					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
 					pack.WriteCell(EntIndexToEntRef(client));
@@ -478,7 +478,7 @@ public Action Yamato_StartTouch(int entity, int other)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenter(target);
+		Entity_Position = WorldSpaceCenterOld(target);
 		
 		int owner = EntRefToEntIndex(i_yamato_index[entity]);
 		int weapon =EntRefToEntIndex(i_yamato_wep[entity]);
@@ -488,7 +488,7 @@ public Action Yamato_StartTouch(int entity, int other)
 		TE_ParticleInt(g_particleImpactTornado, pos1);
 		TE_SendToAll();
 
-		SDKHooks_TakeDamage(target, owner, owner, f_projectile_dmg[entity], DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, f_projectile_dmg[entity], DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		fl_Yamato_Motivation[owner] += YAMATO_RAINSWORD_GAIN;
 		

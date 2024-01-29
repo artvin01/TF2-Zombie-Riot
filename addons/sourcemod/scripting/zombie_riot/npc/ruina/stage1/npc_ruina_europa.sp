@@ -250,9 +250,9 @@ public void Europa_ClotThink(int iNPC)
 		int Anchor_Id=-1;
 		Ruina_Independant_Long_Range_Npc_Logic(npc.index, PrimaryThreatIndex, GameTime, Anchor_Id); //handles movement
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 		if(!IsValidEntity(Anchor_Id))
 		{
@@ -394,9 +394,9 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 	{
 		return;
 	}
-	float vecTarget[3]; vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
 
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 	if(flDistanceToTarget < (1000.0*1000.0))
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
@@ -409,10 +409,10 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 			float projectile_speed = 500.0;
 			//lets pretend we have a projectile.
 			if(flDistanceToTarget < 1250.0*1250.0)
-				vecTarget = PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
 			if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 			{
-				vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+				vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
 			}
 			float DamageDone = 50.0;
 			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
@@ -431,11 +431,11 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 			if(IsValidEnemy(npc.index,target))
 			{
 				GetClosestEnemyToAttack = target;
-				vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+				vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
 
 				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
 
-				flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+				flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 				if(gameTime > npc.m_flNextRangedAttack)
 				{
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
@@ -445,10 +445,10 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 					float projectile_speed = 500.0;
 					//lets pretend we have a projectile.
 					if(flDistanceToTarget < 1250.0*1250.0)
-						vecTarget = PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+						vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
 					if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 					{
-						vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+						vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
 					}
 					float DamageDone = 25.0;
 					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);

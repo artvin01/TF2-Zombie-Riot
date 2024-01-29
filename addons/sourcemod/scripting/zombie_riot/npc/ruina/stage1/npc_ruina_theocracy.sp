@@ -336,9 +336,9 @@ public void Theocracy_ClotThink(int iNPC)
 				b_rally_active[npc.index] = false;
 			}
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			if(npc.m_flNextRangedBarrage_Spam < GameTime)
 			{	
@@ -476,7 +476,7 @@ static Action Theocracy_Barrage_Anim(Handle timer, int ref)
 			dmg = THEOCRACY_BARRAGE_DMG;
 		}
 		
-		float npc_vec[3]; npc_vec = GetAbsOrigin(client); npc_vec[2] += 45.0;
+		float npc_vec[3]; npc_vec = GetAbsOriginOld(client); npc_vec[2] += 45.0;
 		Explode_Logic_Custom(dmg*2.5, client, client, -1, npc_vec, 300.0);
 		float flPos[3]; // original
 		float flAng[3]; // original
@@ -488,7 +488,7 @@ static Action Theocracy_Barrage_Anim(Handle timer, int ref)
 		{
 			if(IsValidClient(player) && IsClientInGame(player) && GetClientTeam(player)==2 && IsPlayerAlive(player) && TeutonType[player] == TEUTON_NONE && dieingstate[player] == 0)	//filter out: offline, blue/spec, dead, teuton, downed players!
 			{
-				float target_vec[3]; target_vec = GetAbsOrigin(player);
+				float target_vec[3]; target_vec = GetAbsOriginOld(player);
 				
 				target_vec[2] += 45.0;
 				
@@ -496,7 +496,7 @@ static Action Theocracy_Barrage_Anim(Handle timer, int ref)
 				
 				npc.FireParticleRocket(target_vec, dmg , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);	//shot 1 at where there going, 1 at where they are exactly
 				
-				target_vec = PredictSubjectPositionForProjectiles(npc, player, projectile_speed);
+				target_vec = PredictSubjectPositionForProjectilesOld(npc, player, projectile_speed);
 				
 				npc.FireParticleRocket(target_vec, dmg , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
 			}
@@ -506,7 +506,7 @@ static Action Theocracy_Barrage_Anim(Handle timer, int ref)
 			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
 			{
-				float target_vec[3]; target_vec = GetAbsOrigin(ally);
+				float target_vec[3]; target_vec = GetAbsOriginOld(ally);
 					
 				target_vec[2] += 45.0;
 				
@@ -514,7 +514,7 @@ static Action Theocracy_Barrage_Anim(Handle timer, int ref)
 				
 				npc.FireParticleRocket(target_vec, dmg , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
 				
-				target_vec = PredictSubjectPositionForProjectiles(npc, ally, projectile_speed);
+				target_vec = PredictSubjectPositionForProjectilesOld(npc, ally, projectile_speed);
 				
 				npc.FireParticleRocket(target_vec, dmg , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
 	
@@ -554,7 +554,7 @@ static void Theocracy_Melee_Hit(int ref, int enemy, float vecHit[3])
 		{
 			if(IsValidClient(player) && IsClientInGame(player) && GetClientTeam(player)==2 && IsPlayerAlive(player) && TeutonType[player] == TEUTON_NONE && dieingstate[player] == 0)	//filter out: offline, blue/spec, dead, teuton, downed players!
 			{
-				float target_vec[3]; target_vec = GetAbsOrigin(player);
+				float target_vec[3]; target_vec = GetAbsOriginOld(player);
 				float dist=GetVectorDistance(npc_loc, target_vec, true);
 				
 				if(dist<=range)
@@ -573,7 +573,7 @@ static void Theocracy_Melee_Hit(int ref, int enemy, float vecHit[3])
 			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
 			{
-				float target_vec[3]; target_vec = GetAbsOrigin(ally);
+				float target_vec[3]; target_vec = GetAbsOriginOld(ally);
 				float dist=GetVectorDistance(npc_loc, target_vec, true);
 				
 				if(dist<=range)

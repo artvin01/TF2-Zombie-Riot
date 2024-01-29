@@ -84,15 +84,15 @@ public void MedivalTrebuchet_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -132,8 +132,8 @@ public void MedivalTrebuchet_ClotThink(int iNPC)
 						}
 					}
 					float vEnd[3];
-					vEnd = GetAbsOrigin(npc.m_iTarget);
-					spawnBeam(0.15, 255, 255, 255, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vEnd, WorldSpaceCenter(npc.index));	
+					vEnd = GetAbsOriginOld(npc.m_iTarget);
+					spawnBeam(0.15, 255, 255, 255, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vEnd, WorldSpaceCenterOld(npc.index));	
 						
 					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{

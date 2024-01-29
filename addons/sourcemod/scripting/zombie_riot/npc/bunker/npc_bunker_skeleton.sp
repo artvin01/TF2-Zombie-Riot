@@ -285,9 +285,9 @@ public void BunkerSkeleton_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		if(npc.m_flJumpCooldown < GetGameTime(npc.index) && npc.m_flInJump < GetGameTime(npc.index) && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
 		{
@@ -317,7 +317,7 @@ public void BunkerSkeleton_ClotThink(int iNPC)
 		
 		if(flDistanceToTarget < npc.GetLeadRadius()) //Predict their pos.
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else

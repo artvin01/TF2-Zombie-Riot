@@ -1102,6 +1102,43 @@ public Action BuildingSetAlphaClientSideReady_SetTransmitProp_1_Summoner(int ent
 }
 
 
+public Action BuildingSetAlphaClientSideReady_SetTransmitProp_1_Armor(int entity, int client)
+{
+	if(RaidbossIgnoreBuildingsLogic(0))
+	{
+		int building = EntRefToEntIndex(Building_Hidden_Prop_To_Building[entity]);
+		if(!IsValidEntity(building))
+		{
+			RemoveEntity(entity);
+			return Plugin_Handled;
+		}
+		if(i_MaxArmorTableUsed[client] >= RAID_MAX_ARMOR_TABLE_USE)
+		{
+			return Plugin_Continue;
+		}
+	}
+	return BuildingSetAlphaClientSideReady_SetTransmitProp_1(entity, client);
+}
+
+
+public Action BuildingSetAlphaClientSideReady_SetTransmitProp_2_Armor(int entity, int client)
+{
+	if(RaidbossIgnoreBuildingsLogic(0))
+	{
+		int building = EntRefToEntIndex(Building_Hidden_Prop_To_Building[entity]);
+		if(!IsValidEntity(building))
+		{
+			RemoveEntity(entity);
+			return Plugin_Handled;
+		}
+		if(i_MaxArmorTableUsed[client] >= RAID_MAX_ARMOR_TABLE_USE)
+		{
+			return Plugin_Handled;
+		}
+	}
+	return BuildingSetAlphaClientSideReady_SetTransmitProp_2(entity, client);
+}
+
 public Action BuildingSetAlphaClientSideReady_SetTransmitProp_1(int entity, int client)
 {
 	float Gametime = GetGameTime();
@@ -2356,32 +2393,51 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							
 						if(Armor_Charge[client] < Armor_Max)
 						{
-								
-							GiveArmorViaPercentage(client, 0.2, 1.0);
-							
-							Building_Collect_Cooldown[entity][client] = GetGameTime() + 45.0; //small also
-
-							float pos[3];
-							GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-
-							pos[2] += 45.0;
-
-							ParticleEffectAt(pos, "halloween_boss_axe_hit_sparks", 1.0);
-
-							if(!Rogue_Mode() && owner != -1 && owner != client)
+							bool GiveArmor = true;
+							if(RaidbossIgnoreBuildingsLogic(0))
 							{
-								if(Armor_table_money_limit[owner][client] < 30)
+								if(i_MaxArmorTableUsed[client] < RAID_MAX_ARMOR_TABLE_USE)
 								{
-									GiveCredits(owner, 20, true);
-									Armor_table_money_limit[owner][client] += 1;
-									Resupplies_Supplied[owner] += 2;
-									SetDefaultHudPosition(owner);
-									SetGlobalTransTarget(owner);
-									ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Armor Table Used");
+									i_MaxArmorTableUsed[client]++;
 								}
+								else
+									GiveArmor = false;
 							}
-							
-							ClientCommand(client, "playgamesound ambient/machines/machine1_hit2.wav");
+							if(GiveArmor)
+							{
+								GiveArmorViaPercentage(client, 0.2, 1.0);
+								
+								Building_Collect_Cooldown[entity][client] = GetGameTime() + 45.0; //small also
+
+								float pos[3];
+								GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+
+								pos[2] += 45.0;
+
+								ParticleEffectAt(pos, "halloween_boss_axe_hit_sparks", 1.0);
+
+								if(!Rogue_Mode() && owner != -1 && owner != client)
+								{
+									if(Armor_table_money_limit[owner][client] < 30)
+									{
+										GiveCredits(owner, 20, true);
+										Armor_table_money_limit[owner][client] += 1;
+										Resupplies_Supplied[owner] += 2;
+										SetDefaultHudPosition(owner);
+										SetGlobalTransTarget(owner);
+										ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Armor Table Used");
+									}
+								}
+								
+								ClientCommand(client, "playgamesound ambient/machines/machine1_hit2.wav");
+							}
+							else
+							{
+								ClientCommand(client, "playgamesound items/medshotno1.wav");
+								SetDefaultHudPosition(client);
+								SetGlobalTransTarget(client);
+								ShowSyncHudText(client,  SyncHud_Notifaction, "%t" , "Armor Max Reached Raid");
+							}
 						}
 						else
 						{
@@ -3789,7 +3845,7 @@ static void Railgun_Boom(int client)
 							First_Target_Hit = false;
 						}
 					
-						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), playerPos);	// 2048 is DMG_NOGIB?
+						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), playerPos);	// 2048 is DMG_NOGIB?
 						BEAM_Targets_Hit[obj] *= LASER_AOE_DAMAGE_FALLOFF;
 					}
 					else
@@ -3925,7 +3981,7 @@ static void Railgun_Boom_Client(int client)
 							First_Target_Hit = false;
 						}
 	
-						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), WorldSpaceCenter(BEAM_BuildingHit[building]));	// 2048 is DMG_NOGIB?
+						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), WorldSpaceCenterOld(BEAM_BuildingHit[building]));	// 2048 is DMG_NOGIB?
 						BEAM_Targets_Hit[obj] *= LASER_AOE_DAMAGE_FALLOFF;
 					}
 					else
@@ -6099,7 +6155,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
 					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
-					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
+					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1_Armor);
 				}
 			}
 			
@@ -6132,7 +6188,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
 					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
-					SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
+					SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2_Armor);
 				}
 			}
 			SetEntityModel(Building_Index, "models/props_manor/table_01.mdl");
@@ -7815,15 +7871,15 @@ void Barracks_BuildingThink(int client)
 			
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICS)
 			{
-				vecTarget = PredictSubjectPositionForProjectiles(mounted ? playerclient : npc, ValidEnemyToTarget, projectile_speed, 55.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(mounted ? playerclient : npc, ValidEnemyToTarget, projectile_speed, 55.0);
 				if(!Can_I_See_Enemy_Only(mounted ? playerclient.index : npc.index, ValidEnemyToTarget)) //cant see enemy in the predicted position, we will instead just attack normally
 				{
-					vecTarget = WorldSpaceCenter(ValidEnemyToTarget);
+					vecTarget = WorldSpaceCenterOld(ValidEnemyToTarget);
 				}
 			}
 			else
 			{
-				vecTarget = WorldSpaceCenter(ValidEnemyToTarget);
+				vecTarget = WorldSpaceCenterOld(ValidEnemyToTarget);
 			}
 
 

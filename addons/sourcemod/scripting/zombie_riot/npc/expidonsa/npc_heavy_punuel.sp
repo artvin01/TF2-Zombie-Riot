@@ -221,13 +221,13 @@ public void HeavyPunuel_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -329,7 +329,7 @@ void HeavyPunuelSelfDefense(HeavyPunuel npc, float gameTime, int target, float d
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							

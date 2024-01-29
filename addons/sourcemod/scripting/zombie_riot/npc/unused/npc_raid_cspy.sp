@@ -422,9 +422,9 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest, true))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest, 0.3);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest, 0.3);
 		
 		if(npc.m_flDead_Ringer_Invis < GetGameTime() && npc.m_flDead_Ringer_Invis_bool)
 		{
@@ -509,14 +509,14 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 			float vecDirShooting[3], vecRight[3], vecUp[3];
 			
 			vecTarget[2] += 15.0;
-			MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+			MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 			GetVectorAngles(vecDirShooting, vecDirShooting);
 			vecDirShooting[1] = eyePitch[1];
 			GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 			
 			float m_vecSrc[3];
 			
-			m_vecSrc = WorldSpaceCenter(npc.index);
+			m_vecSrc = WorldSpaceCenterOld(npc.index);
 			
 			float vecEnd[3];
 			vecEnd[0] = m_vecSrc[0] + vecDirShooting[0] * 9000; 
@@ -643,8 +643,8 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 	}
 	if(npc.m_flNextTeleport < GetGameTime())
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest, 0.3);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
+		float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest, 0.3);
 		static float flVel[3];
 		GetEntPropVector(closest, Prop_Data, "m_vecVelocity", flVel);
 		if (!npc.Anger)

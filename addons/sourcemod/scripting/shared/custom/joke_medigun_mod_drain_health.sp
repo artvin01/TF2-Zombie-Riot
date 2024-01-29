@@ -286,7 +286,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						flDrainRate *= target_sucked_long[healTarget];
 						
 						static float Entity_Position[3];
-						Entity_Position = WorldSpaceCenter(healTarget);
+						Entity_Position = WorldSpaceCenterOld(healTarget);
 						
 						SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime() * 3.0, DMG_PLASMA, medigun, _, Entity_Position);
 					}
@@ -309,7 +309,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						flDrainRate *= target_sucked_long[healTarget];
 						
 						static float Entity_Position[3];
-						Entity_Position = WorldSpaceCenter(healTarget);
+						Entity_Position = WorldSpaceCenterOld(healTarget);
 						
 						SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
 					}
@@ -645,7 +645,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					flDrainRate *= target_sucked_long[healTarget];
 						
 					static float Entity_Position[3];
-					Entity_Position = WorldSpaceCenter(healTarget);
+					Entity_Position = WorldSpaceCenterOld(healTarget);
 						
 					SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
 				}

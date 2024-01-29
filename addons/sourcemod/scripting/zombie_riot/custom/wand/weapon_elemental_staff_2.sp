@@ -51,7 +51,7 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 				float vecUp[3];
 				
 				GetVectors(client, client_slammed_forward[client], client_slammed_right[client], vecUp); //Sorry i dont know any other way with this :(
-				client_slammed_pos[client] = GetAbsOrigin(client);
+				client_slammed_pos[client] = GetAbsOriginOld(client);
 				client_slammed_pos[client][2] += 5.0;
 				
 				float vecSwingEnd[3];
@@ -422,7 +422,7 @@ public void Passanger_Cooldown_Logic(int client, int weapon)
 		{
 			b_PassangerExtraCharge[client] = true;
 			float ClientPos[3];
-			ClientPos = WorldSpaceCenter(client);
+			ClientPos = WorldSpaceCenterOld(client);
 			TR_EnumerateEntitiesSphere(ClientPos, 100.0, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Passanger, client);
 
 			if(b_PassangerExtraCharge[client])
@@ -575,9 +575,9 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 	}
 	if(Firstlightning)
 	{
-		Passanger_Lightning_Effect(StartLightningPos, WorldSpaceCenter(target), 1);
+		Passanger_Lightning_Effect(StartLightningPos, WorldSpaceCenterOld(target), 1);
 	}
-	StartLightningPos = WorldSpaceCenter(target);
+	StartLightningPos = WorldSpaceCenterOld(target);
 	f_PassangerDebuff[target] = GetGameTime() + 0.3;
 	SDKHooks_TakeDamage(target, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);	//BURNING TO THE GROUND!!!
 	f_CooldownForHurtHud[client] = 0.0;
@@ -597,8 +597,8 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 			SDKHooks_TakeDamage(enemy, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);		
 			f_CooldownForHurtHud[client] = 0.0;
 			GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecHit);
-			Passanger_Lightning_Effect(StartLightningPos, WorldSpaceCenter(enemy), 3);
-			StartLightningPos = WorldSpaceCenter(enemy);
+			Passanger_Lightning_Effect(StartLightningPos, WorldSpaceCenterOld(enemy), 3);
+			StartLightningPos = WorldSpaceCenterOld(enemy);
 		}
 		else
 		{

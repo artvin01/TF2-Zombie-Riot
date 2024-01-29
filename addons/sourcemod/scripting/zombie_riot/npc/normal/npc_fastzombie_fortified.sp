@@ -250,9 +250,9 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);		
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
 		
 		if(npc.m_flJumpCooldown < GetGameTime(npc.index) && npc.m_flInJump < GetGameTime(npc.index) && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
 		{
@@ -286,7 +286,7 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 			//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) {
 			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}

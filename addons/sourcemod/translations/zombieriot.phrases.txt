@@ -736,6 +736,10 @@
 		"nl"		"Je hebt uw maximale schild berijkt!"
 		"chi"       "你的护甲已达到最大值"
 	}
+	"Armor Max Reached Raid"
+	{
+		"en"		"You cannot use anymore Armortables this Raid Battle!"
+	}
 	"Armor Max Reached Ammo Box"
 	{
 		"en"		"Your armor is maxed out for the ammo box! Please use an armor table to get more."
@@ -2252,6 +2256,10 @@
 		"en"		"If you wish for Grigori to not half mute your game volume when he talks, set ''snd_ducktovolume'' to 1 in the console!"
 		"ru"		"Если вы хотите, чтобы Григорий не отключал наполовину громкость вашей игры, когда он говорит, установите «snd_ducktovolume» на 1 в консоли!"
 		"chi"		"如果你希望Grigori说话的时候不会把你的游戏音量调成半静音，那就在控制台输入“snd_ducktovolume 1”吧!"
+	}
+	"Show Ragdoll Hint Message"
+	{
+		"en"		"Please set, set ''g_ragdoll_fadespeed'' to NOT 0, in the console! any value higher then 0 works (1 is good enough, 600 is default)! If you dont do this, you WILL crash!"
 	}
 	"Redirect to different ZR server"
 	{

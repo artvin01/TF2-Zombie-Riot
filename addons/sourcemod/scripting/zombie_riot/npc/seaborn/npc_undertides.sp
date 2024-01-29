@@ -94,7 +94,7 @@ methodmap UnderTides < CClotBody
 			Citizen_MiniBossSpawn();
 		}
 
-		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
 		vecMe[2] += 500.0;
 		npc.m_iWearable1 = ParticleEffectAt(vecMe, "env_rain_512", -1.0);
 		SetParent(npc.index, npc.m_iWearable1);
@@ -197,7 +197,7 @@ public void UnderTides_ClotThink(int iNPC)
 			{
 				if(enemy[i])
 				{
-					vecTarget = WorldSpaceCenter(enemy[i]);
+					vecTarget = WorldSpaceCenterOld(enemy[i]);
 
 					ParticleEffectAt(vecTarget, "water_bulletsplash01", 3.0);
 
@@ -218,7 +218,7 @@ public void UnderTides_ClotThink(int iNPC)
 			npc.m_flNextRangedSpecialAttack = gameTime + 30.0;
 			npc.m_flNextMeleeAttack = gameTime + 6.0;
 
-			ParticleEffectAt(WorldSpaceCenter(npc.index), "hammer_bell_ring_shockwave2", 4.0);
+			ParticleEffectAt(WorldSpaceCenterOld(npc.index), "hammer_bell_ring_shockwave2", 4.0);
 		}
 		else if(npc.m_flNextRangedAttack < gameTime)	// Collapse
 		{
@@ -231,7 +231,7 @@ public void UnderTides_ClotThink(int iNPC)
 			{
 				if(enemy[i])
 				{
-					vecTarget = PredictSubjectPositionForProjectiles(npc, enemy[i], 1300.0);
+					vecTarget = PredictSubjectPositionForProjectilesOld(npc, enemy[i], 1300.0);
 
 					npc.FireArrow(vecTarget, 57.0, 1300.0);
 					// 380 * 0.15
@@ -264,7 +264,7 @@ public void UnderTides_ClotThink(int iNPC)
 			{
 				if(enemy[i])
 				{
-					vecTarget = PredictSubjectPositionForProjectiles(npc, enemy[i], 1200.0);
+					vecTarget = PredictSubjectPositionForProjectilesOld(npc, enemy[i], 1200.0);
 
 					int entity = npc.FireArrow(vecTarget, 57.0, 1200.0, "models/weapons/w_bugbait.mdl");
 					// 380 * 0.15
@@ -283,7 +283,7 @@ public void UnderTides_ClotThink(int iNPC)
 						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(entity, 100, 100, 255, 255);
 						
-						vecTarget = WorldSpaceCenter(entity);
+						vecTarget = WorldSpaceCenterOld(entity);
 						f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "rockettrail_bubbles", 3.0);
 						SetParent(entity, f_ArrowTrailParticle[entity]);
 						f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
@@ -322,7 +322,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 	float Pos1[3];
 	if(RangeLimit > 0.0)
 	{
-		Pos1 = WorldSpaceCenter(TraceEntity);
+		Pos1 = WorldSpaceCenterOld(TraceEntity);
 	}
 
 	for(int client = 1; client <= MaxClients; client++)
@@ -334,7 +334,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 				
 			if(RangeLimit > 0.0)
 			{
-				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(client), Pos1, true);
+				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenterOld(client), Pos1, true);
 				if(flDistanceToTarget > RangeLimit)
 					continue;
 			}
@@ -404,7 +404,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 
 					if(RangeLimit > 0.0)
 					{
-						float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(entity), Pos1, true);
+						float flDistanceToTarget = GetVectorDistance(WorldSpaceCenterOld(entity), Pos1, true);
 						if(flDistanceToTarget > RangeLimit)
 							continue;
 					}
@@ -448,7 +448,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 						
 					if(RangeLimit > 0.0)
 					{
-						float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(entity), Pos1, true);
+						float flDistanceToTarget = GetVectorDistance(WorldSpaceCenterOld(entity), Pos1, true);
 						if(flDistanceToTarget > RangeLimit)
 							continue;
 					}

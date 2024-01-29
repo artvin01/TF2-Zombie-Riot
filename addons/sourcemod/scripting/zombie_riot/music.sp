@@ -33,8 +33,18 @@ void Music_SetRaidMusic(const char[] MusicPath, int duration, bool isCustom, flo
 
 }
 
+static const char g_LastMannAnnouncer[][] =
+{
+	"vo/announcer_am_lastmanalive01.mp3",
+	"vo/announcer_am_lastmanalive02.mp3",
+	"vo/announcer_am_lastmanalive03.mp3",
+	"vo/announcer_am_lastmanalive04.mp3",
+};
+
+
 void Music_MapStart()
 {
+	PrecacheSoundArray(g_LastMannAnnouncer);
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/1.mp3",_,0);
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/2.mp3",_,0);
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/3.mp3",_,0);
@@ -81,7 +91,7 @@ bool XenoExtraLogic(bool NpcBuffing = false)
 		return XenoMapExtra;
 	else
 	{
-		if(XenoMapExtra && (!StrContains(WhatDifficultySetting, "Xeno") || !StrContains(WhatDifficultySetting, "Silvester & Goggles")))
+		if(XenoMapExtra && (!StrContains(WhatDifficultySetting_Internal, "Xeno") || !StrContains(WhatDifficultySetting_Internal, "Silvester & Goggles")))
 		{
 			return true;
 		}
@@ -91,9 +101,6 @@ bool XenoExtraLogic(bool NpcBuffing = false)
 
 void Music_EndLastmann()
 {
-//	if(MusicDisabled)   Does this even matter? You might aswell keep it in yknow...
-//		return;
-
 	if(LastMann)
 	{
 		for(int client=1; client<=MaxClients; client++)
@@ -120,6 +127,17 @@ void Music_EndLastmann()
 	}
 }
 
+void PlayTeamDeadSound()
+{
+	int RandomInt = GetRandomInt(0,sizeof(g_LastMannAnnouncer));
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && !IsFakeClient(client))
+		{
+			EmitSoundToClient(client, g_LastMannAnnouncer[RandomInt- 1], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+		}
+	}	
+}
 void Music_RoundEnd(int victim, bool music = true)
 {
 	ExcuteRelay("zr_gamelost");
@@ -160,6 +178,7 @@ void Music_RoundEnd(int victim, bool music = true)
 	ResetReplications();
 	cvarTimeScale.SetFloat(0.1);
 	CreateTimer(0.5, SetTimeBack);
+	RemoveAllCustomMusic();
 }
 
 public Action SetTimeBack(Handle timer)
@@ -258,7 +277,21 @@ public void ConVarCallback_Plugin_message(QueryCookie cookie, int client, ConVar
 	if(result == ConVarQuery_Okay)
 		f_ClientServerShowMessages[client] = view_as<bool>(StringToInt(cvarValue));
 }
-
+public void ConVarCallback_g_ragdoll_fadespeed(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
+{
+	if(result == ConVarQuery_Okay)
+	{
+		if(f_BegPlayerToSetRagdollFade[client] < GetGameTime())
+		{
+			f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 30.0;
+			if(StringToInt(cvarValue) == 0)
+			{
+				SetGlobalTransTarget(client);
+				PrintToChat(client,"%t", "Show Ragdoll Hint Message");
+			}
+		}
+	}
+}
 //TODO: This music just breaks and cuts off earlier and plays earlier, i really dont know why. I hate it! Find a fix!
 
 void Music_PostThink(int client)
@@ -398,7 +431,7 @@ void Music_PostThink(int client)
 			}
 			return;
 		}
-		if(XenoExtraLogic())
+		if(XenoExtraLogic() && !LastMann)
 		{
 			//This is special code for a map.
 			if(CurrentRound +1 <= 30)
@@ -622,4 +655,12 @@ void Music_ClearAll()
 	Zero(Give_Cond_Timer);
 	Zero(f_ClientMusicVolume);
 	Zero(f_BegPlayerToSetDuckConvar);
+	Zero(f_BegPlayerToSetRagdollFade);
+}
+
+void RemoveAllCustomMusic()
+{
+	char_MusicString1[0] = 0;	
+	char_MusicString2[0] = 0;	
+	char_RaidMusicSpecial1[0] = 0;	
 }

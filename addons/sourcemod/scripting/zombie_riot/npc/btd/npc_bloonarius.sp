@@ -440,8 +440,8 @@ public void Bloonarius_ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);			
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);			
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 		NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		npc.StartPathing();
@@ -533,6 +533,8 @@ public void Bloonarius_NPCDeath(int entity)
 {
 	Bloonarius npc = view_as<Bloonarius>(entity);
 	npc.PlayDeathSound();
+
+	Waves_ClearWaveCurrentSpawningEnemies();
 
 	StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.mp3");
 	StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.mp3");

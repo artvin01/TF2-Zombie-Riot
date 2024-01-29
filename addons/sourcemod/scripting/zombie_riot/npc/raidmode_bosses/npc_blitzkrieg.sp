@@ -474,6 +474,7 @@ methodmap Blitzkrieg < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 			
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -774,11 +775,11 @@ public void Blitzkrieg_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
@@ -987,7 +988,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						//Play attack anim
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 						float projectile_speed = 500.0*(1.0+(1-(Health/MaxHealth))*1.5);	//Rocket speed, scales on current health.
-						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
+						vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
 						npc.PlayMeleeSound();
 						FireBlitzRocket(npc.index,vecTarget, fl_rocket_base_dmg[npc.index] * i_HealthScale[npc.index], projectile_speed, 1.0); //remove the no kb if people cant escape, or just lower the dmg
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + fl_rocket_firerate[npc.index];
@@ -1025,9 +1026,9 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
-	float vecTarget[3]; vecTarget = WorldSpaceCenter(attacker);
+	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(attacker);
 	
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 	
 	if(flDistanceToTarget > 1000000 && fl_blitz_ioc_punish_timer[npc.index][attacker] < GetGameTime(npc.index) && IsPlayerAlive(attacker) && TeutonType[attacker] == TEUTON_NONE && dieingstate[attacker] == 0)	//Basically we "punish(ment)" players who are too far from blitz.
 	{
@@ -1460,7 +1461,7 @@ public void Blitzkrieg_Punishment_Invoke(int ref, int enemy, float dist)
 		
 		float Range = 200.0;
 		float vecTarget[3];
-		vecTarget = WorldSpaceCenter(enemy);
+		vecTarget = WorldSpaceCenterOld(enemy);
 		vecTarget[2] += 1.0;
 		
 		if(dist > 4000000 && !b_BlitzLight[entity])
@@ -1483,7 +1484,7 @@ public void Blitzkrieg_Punishment_Invoke(int ref, int enemy, float dist)
 		color[2] = 47;
 		color[3] = 255;
 		float UserLoc[3];
-		UserLoc = GetAbsOrigin(entity);
+		UserLoc = GetAbsOriginOld(entity);
 		
 		UserLoc[2]+=75.0;
 		
@@ -1933,7 +1934,7 @@ void BlitzLight_Beams(int entity, bool charging = true)
 		return;
 		
 	float UserLoc[3], UserAng[3];
-	UserLoc = GetAbsOrigin(entity);
+	UserLoc = GetAbsOriginOld(entity);
 	
 	UserAng[0] = 0.0;
 	UserAng[1] = BlitzLight_Angle[npc.index];
@@ -2080,7 +2081,7 @@ public void BlitzLight_DealDamage(int entity)
 			return;
 
 	float beamLoc[3];
-	beamLoc = GetAbsOrigin(entity);
+	beamLoc = GetAbsOriginOld(entity);
 	
 		
 	if(i_BlitzLight_dmg_throttle[npc.index] > 2)	//do damage 10 times a second.
@@ -2134,7 +2135,7 @@ static void FireBlitzRocket(int client, float vecTarget[3], float rocket_damage,
 	float vecForward[3], vecSwingStart[3], vecAngles[3];
 	npc.GetVectors(vecForward, vecSwingStart, vecAngles);
 										
-	vecSwingStart = GetAbsOrigin(npc.index);
+	vecSwingStart = GetAbsOriginOld(npc.index);
 	vecSwingStart[2] += 54.0;
 										
 	MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
@@ -2256,7 +2257,7 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 			{
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 20000.0);
+				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 20000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
@@ -2269,7 +2270,7 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 							PlaySound = true;
 							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
-							vecHit = WorldSpaceCenter(target);
+							vecHit = WorldSpaceCenterOld(target);
 							float meleedmg;
 							meleedmg = 12.5 * i_HealthScale[npc.index];
 							SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);	
@@ -2308,9 +2309,9 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget)) 
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
 			{

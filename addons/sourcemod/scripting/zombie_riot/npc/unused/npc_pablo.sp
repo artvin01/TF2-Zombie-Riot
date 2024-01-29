@@ -440,13 +440,13 @@ public void PabloGonzalos_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		if(flDistanceToTarget < npc.GetLeadRadius()) //Predict their pos.
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
@@ -504,7 +504,7 @@ public void PabloGonzalos_ClotThink(int iNPC)
 					float vecDirShooting[3], vecRight[3], vecUp[3];
 					
 					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -530,11 +530,11 @@ public void PabloGonzalos_ClotThink(int iNPC)
 					
 					if(EscapeModeForNpc)
 					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					}
 					else
 					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 300.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 300.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					}
 					npc.PlayRangedSound();
 				}

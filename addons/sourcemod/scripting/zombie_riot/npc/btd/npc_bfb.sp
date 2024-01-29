@@ -173,16 +173,16 @@ public void Bfb_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 													
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			
-			NPC_SetGoalVector(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
+			NPC_SetGoalVector(npc.index, PredictSubjectPositionOld(npc, PrimaryThreatIndex));
 		}
 		else
 		{
@@ -198,22 +198,22 @@ public void Bfb_ClotThink(int iNPC)
 				{
 					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 30.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 30.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
 					}
 					else
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 100.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 100.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
 					}
 				}
 				else
 				{
 					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 20.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 20.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
 					}
 					else
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 80.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 80.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
 					}
 				}					
 			}

@@ -110,7 +110,7 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 
 	//todo: If needed, add a delay so it doesnt happen on every swing
 	bool ThereWasSeaborn = false;
-	if(!StrContains(WhatDifficultySetting, "Schwert & Donner") || !StrContains(WhatDifficultySetting, "You."))
+	if(!StrContains(WhatDifficultySetting_Internal, "Schwert & Donner") || !StrContains(WhatDifficultySetting_Internal, "You."))
 	{
 		ThereWasSeaborn = true;
 	}
@@ -291,7 +291,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 			int target = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
 			if(IsValidEnemy(client, target, true, false))
 			{
-				VicLoc = WorldSpaceCenter(target);
+				VicLoc = WorldSpaceCenterOld(target);
 				
 				if (GetVectorDistance(UserLoc, VicLoc,true) <= IRENE_JUDGEMENT_MAXRANGE_SQUARED)
 				{
@@ -410,7 +410,7 @@ public void Npc_Irene_Launch_client(int client)
 				int enemy = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
 				if(IsValidEnemy(client, enemy, true, false))
 				{
-					VicLoc = WorldSpaceCenter(enemy);
+					VicLoc = WorldSpaceCenterOld(enemy);
 					
 					if (GetVectorDistance(UserLoc, VicLoc,true) <= IRENE_JUDGEMENT_MAXRANGE_SQUARED) //respect max range.
 					{
@@ -436,7 +436,7 @@ public void Npc_Irene_Launch_client(int client)
 			float VicLoc[3];
 
 			//poisition of the enemy we random decide to shoot.
-			VicLoc = WorldSpaceCenter(target);
+			VicLoc = WorldSpaceCenterOld(target);
 
 			LookAtTarget(client, target);
 
@@ -501,7 +501,7 @@ public void Npc_Irene_Launch(int iNPC)
 	if(b_IreneNpcWasShotUp[iNPC])
 	{
 		float VicLoc[3];
-		VicLoc = WorldSpaceCenter(iNPC);
+		VicLoc = WorldSpaceCenterOld(iNPC);
 		VicLoc[2] += 250.0; //Jump up.
 		PluginBot_Jump(iNPC, VicLoc);
 	}

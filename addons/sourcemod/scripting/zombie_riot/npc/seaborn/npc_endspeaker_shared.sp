@@ -185,7 +185,7 @@ methodmap EndSpeaker < CClotBody
 
 			for(int b; b < count; b++)
 			{
-				vecTarget = WorldSpaceCenter(remain[b]);
+				vecTarget = WorldSpaceCenterOld(remain[b]);
 
 				float dist = GetVectorDistance(SpawnPos, vecTarget, true);
 				if(dist < distance)
@@ -198,11 +198,11 @@ methodmap EndSpeaker < CClotBody
 
 			if(entity)
 			{
-				vecTarget = WorldSpaceCenter(entity);
+				vecTarget = WorldSpaceCenterOld(entity);
 
 				for(int b; b < count; b++)
 				{
-					vecOther = WorldSpaceCenter(remain[b]);
+					vecOther = WorldSpaceCenterOld(remain[b]);
 
 					if(remain[b] != entity)
 					{
@@ -245,7 +245,7 @@ methodmap EndSpeaker < CClotBody
 			SmiteNpcToDeath(remain[i]);
 		}
 
-		vecTarget = WorldSpaceCenter(this.index);
+		vecTarget = WorldSpaceCenterOld(this.index);
 		vecTarget[2] += 80.0;
 
 		if(this.m_hBuffs & BUFF_FOUNDER)
@@ -455,7 +455,7 @@ bool EndSpeaker_GetPos(float pos[3])
 			i_NpcInternalId[entity] <= ENDSPEAKER_4 &&
 			IsEntityAlive(entity))
 		{
-			pos = WorldSpaceCenter(entity);
+			pos = WorldSpaceCenterOld(entity);
 			return HardMode;
 		}
 	}

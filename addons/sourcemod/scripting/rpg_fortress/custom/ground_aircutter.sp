@@ -132,7 +132,7 @@ public void Npc_AirCutter_Launch(int iNPC)
 	if(b_AirCutterNpcWasShotUp[iNPC])
 	{
 		float VicLoc[3];
-		VicLoc = WorldSpaceCenter(iNPC);
+		VicLoc = WorldSpaceCenterOld(iNPC);
 		VicLoc[2] += 350.0; //Jump up.
 		PluginBot_Jump(iNPC, VicLoc);
 	}

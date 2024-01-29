@@ -38,6 +38,7 @@ methodmap CitizenRunner < CClotBody
 		npc.m_flFlamerActive = GetGameTime() + 3.0;
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 		SetVariantColor(view_as<int>({255, 200, 0, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
@@ -85,8 +86,8 @@ public void CitizenRunner_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 		if(distance < 10000.0)
 		{

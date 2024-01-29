@@ -116,7 +116,7 @@ public Action Flagellant_HealerTimer(Handle timer, DataPack pack)
 				color[0] = validAlly ? 50 : 200;
 
 				if(validAlly)
-					pos = GetAbsOrigin(target);
+					pos = GetAbsOriginOld(target);
 				
 				pos[2] += 10.0;
 
@@ -168,7 +168,7 @@ public Action Flagellant_DamagerTimer(Handle timer, DataPack pack)
 				color[1] = validEnemy ? 50 : 200;
 
 				if(validEnemy)
-					pos = GetAbsOrigin(target);
+					pos = GetAbsOriginOld(target);
 				
 				pos[2] += 10.0;
 

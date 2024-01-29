@@ -675,7 +675,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						}
 					}
 #endif
-					SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), playerPos);
+					SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalculateDamageForceOld(vecSwingForward, 20000.0), playerPos);
 					
 #if defined ZR
 					switch(i_CustomWeaponEquipLogic[weapon])
@@ -709,7 +709,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		// 	This doesnt work sadly and i dont have the power/patience to make it work, just do a custom check with some big shit, im sorry.
 			
 				
-			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), vecHit);	
+			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalculateDamageForceOld(vecSwingForward, 20000.0), vecHit);	
 		}
 		else if(target > -1 && Item_Index == 214)
 		{

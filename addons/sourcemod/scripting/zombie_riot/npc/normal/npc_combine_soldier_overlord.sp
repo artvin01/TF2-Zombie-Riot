@@ -280,7 +280,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			if (npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				if (npc.m_flmovedelay < GetGameTime(npc.index) && npc.m_flAngerDelay < GetGameTime(npc.index))
@@ -313,12 +313,12 @@ public void CombineOverlord_ClotThink(int iNPC)
 			
 		//	npc.FaceTowards(vecTarget, 1000.0);
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -391,7 +391,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 					//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
 					
 					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -405,7 +405,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 					
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
-					FireBullet(npc.index, npc.index, WorldSpaceCenter(npc.index), vecDir, 100.0, 150.0, DMG_BULLET, "bullet_tracer02_blue");
+					FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 100.0, 150.0, DMG_BULLET, "bullet_tracer02_blue");
 				}
 			}
 			

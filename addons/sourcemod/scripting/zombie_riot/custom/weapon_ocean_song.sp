@@ -70,7 +70,7 @@ void ConnectTwoEntitiesWithMedibeam(int owner, int target)
 	}
 	float vecTarget[3];
 	
-	vecTarget = WorldSpaceCenter(target);
+	vecTarget = WorldSpaceCenterOld(target);
 
 	int particle = ParticleEffectAtOcean(vecTarget, "medicgun_beam_red", 0.0 , _, false);
 	
@@ -80,7 +80,7 @@ void ConnectTwoEntitiesWithMedibeam(int owner, int target)
 
 	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 	
-	vecTarget = WorldSpaceCenter(OldParticle2);
+	vecTarget = WorldSpaceCenterOld(OldParticle2);
 
 	int particle2 = ParticleEffectAtOcean(vecTarget, "medicgun_beam_red", 0.0 , particle, false);
 	SetParent(OldParticle2, particle2, "", _, true);

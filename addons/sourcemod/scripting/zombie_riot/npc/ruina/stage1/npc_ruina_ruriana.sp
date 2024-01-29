@@ -248,9 +248,9 @@ public void Ruriana_ClotThink(int iNPC)
 
 		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		int status=0;
 		Ruina_Generic_Melee_Self_Defense(npc.index, PrimaryThreatIndex, flDistanceToTarget, NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25, 45.0, 200.0, "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", 0.6, 0.35, 20000.0, GameTime, status);

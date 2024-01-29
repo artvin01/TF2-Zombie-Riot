@@ -178,8 +178,8 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
 		SetVariantString("");
 	  	AcceptEntityInput(client, "SetCustomModel");
-	  	
-	  	
+
+#if !defined RTS
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 		ViewChange_DeleteHands(client);
 		ViewChange_UpdateHands(client, CurrentClass[client]);
@@ -204,7 +204,8 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		}
 		*/
 		//doesnt work, can cause client crashes?
-		
+#endif
+
 #if defined ZR
 		//DEFAULTS
 		if(dieingstate[client] == 0)
@@ -407,7 +408,9 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		Waves_PlayerSpawn(client);
 #endif
 
+#if !defined RTS
 		Thirdperson_PlayerSpawn(client);
+#endif
 
 		// Resets the hand/arm pos for melee weapons 
 		//it doesnt do it on its own, and weapon such as the song of the ocean due to this
@@ -481,8 +484,10 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	UpdateLevelAbovePlayerText(client, true);
 #endif
 
+#if !defined RTS
 	Store_WeaponSwitch(client, -1);
 	RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
+#endif
 
 	event.BroadcastDisabled = true;
 	return Plugin_Changed;

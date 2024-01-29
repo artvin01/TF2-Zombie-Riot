@@ -59,12 +59,12 @@ public void EndSpeaker1_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			vecTarget = PredictSubjectPosition(npc, npc.m_iTarget);
+			vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 		}
 		else 

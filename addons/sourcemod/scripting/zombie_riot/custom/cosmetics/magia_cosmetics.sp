@@ -1,5 +1,5 @@
 
-#define MAX_MAGIA_COSMETIC_ENERGY_EFFECTS 22
+#define MAX_MAGIA_COSMETIC_ENERGY_EFFECTS 21
 static int i_MagiaCosmeticEffect[MAXENTITIES][MAX_MAGIA_COSMETIC_ENERGY_EFFECTS];
 static Handle h_MagiaCosmeticEffectManagement[MAXPLAYERS+1] = {null, ...};
 
@@ -54,7 +54,7 @@ void ApplyExtraMagiaCosmeticEffects(int client, bool remove = false)
 }
 public void EnableMagiaCosmetic(int client) 
 {
-	if(TeutonType[client] != TEUTON_NONE)
+	if(TeutonType[client] != TEUTON_NONE || TeutonType[client] == TEUTON_NONE)
 		return;
 		
 	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Magia Wings [???]"));
@@ -250,7 +250,7 @@ void MagiaCosmeticEffects(int entity, int wearable)	//Magia Wings [???]
 
 	i_MagiaCosmeticEffect[entity][16] = EntIndexToEntRef(laser_right_wing_1);
 	i_MagiaCosmeticEffect[entity][17] = EntIndexToEntRef(laser_right_wing_2);
-	i_MagiaCosmeticEffect[entity][19] = EntIndexToEntRef(laser_right_wing_3);
-	i_MagiaCosmeticEffect[entity][20] = EntIndexToEntRef(laser_right_wing_4);
-	i_MagiaCosmeticEffect[entity][21] = EntIndexToEntRef(laser_right_wing_5);
+	i_MagiaCosmeticEffect[entity][18] = EntIndexToEntRef(laser_right_wing_3);
+	i_MagiaCosmeticEffect[entity][19] = EntIndexToEntRef(laser_right_wing_4);
+	i_MagiaCosmeticEffect[entity][20] = EntIndexToEntRef(laser_right_wing_5);
 }

@@ -2,40 +2,49 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+	"vo/heavy_paincrticialdeath01.mp3",
+	"vo/heavy_paincrticialdeath02.mp3",
+	"vo/heavy_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	")vo/medic_painsharp01.mp3",
-	")vo/medic_painsharp02.mp3",
-	")vo/medic_painsharp03.mp3",
-	")vo/medic_painsharp04.mp3",
-	")vo/medic_painsharp05.mp3",
-	")vo/medic_painsharp06.mp3",
-	")vo/medic_painsharp07.mp3",
-	")vo/medic_painsharp08.mp3",
+	"vo/heavy_painsharp01.mp3",
+	"vo/heavy_painsharp02.mp3",
+	"vo/heavy_painsharp03.mp3",
+	"vo/heavy_painsharp04.mp3",
+	"vo/heavy_painsharp05.mp3",
 };
 
 
 static const char g_IdleAlertedSounds[][] = {
-	")vo/medic_battlecry01.mp3",
-	")vo/medic_battlecry02.mp3",
-	")vo/medic_battlecry03.mp3",
-	")vo/medic_battlecry04.mp3",
+	"vo/taunts/heavy_taunts16.mp3",
+	"vo/taunts/heavy_taunts18.mp3",
+	"vo/taunts/heavy_taunts19.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/knife_swing.wav",
+	"vo/heavy_meleeing01.mp3",
+	"vo/heavy_meleeing02.mp3",
+	"vo/heavy_meleeing03.mp3",
+	"vo/heavy_meleeing04.mp3",
+	"vo/heavy_meleeing05.mp3",
+	"vo/heavy_meleeing06.mp3",
+	"vo/heavy_meleeing07.mp3",
+	"vo/heavy_meleeing08.mp3",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/airboat/airboat_gun_energy1.wav",
-	"weapons/airboat/airboat_gun_energy2.wav",
+	"weapons/cbar_hitbod1.wav",
+	"weapons/cbar_hitbod2.wav",
+	"weapons/cbar_hitbod3.wav",
 };
 
-void Pental_OnMapStart_NPC()
+
+static float RajulHealAlly[MAXENTITIES];
+static float RajulHealAllyCooldownAntiSpam[MAXENTITIES];
+static int RajulHealAllyDone[MAXENTITIES];
+
+void DesertRajul_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -46,7 +55,7 @@ void Pental_OnMapStart_NPC()
 }
 
 
-methodmap Pental < CClotBody
+methodmap DesertRajul < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -85,55 +94,56 @@ methodmap Pental < CClotBody
 	}
 	
 	
-	public Pental(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertRajul(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Pental npc = view_as<Pental>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "550", ally));
+		DesertRajul npc = view_as<DesertRajul>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "3500", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_PENTAL;
+		i_NpcInternalId[npc.index] = INTERITUS_DESERT_RAJUL;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-		
-		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
+		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
-		SDKHook(npc.index, SDKHook_Think, Pental_ClotThink);
+		RajulHealAlly[npc.index] = 0.0;
+		RajulHealAllyCooldownAntiSpam[npc.index] = 0.0;
+
+		func_NPCDeath[npc.index] = view_as<Function>(DesertRajul_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertRajul_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(DesertRajul_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 280.0;
+		npc.m_flSpeed = 250.0;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
-		PentalEffects(npc.index);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/heavy/sbox2014_heavy_gunshow/sbox2014_heavy_gunshow.mdl");
-		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop_partner/player/items/all_class/tr_jungle_booty/tr_jungle_booty_heavy.mdl");
-
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/sum23_brother_mann_style1/sum23_brother_mann_style1.mdl");
 		
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+
 		return npc;
 	}
 }
 
-public void Pental_ClotThink(int iNPC)
+public void DesertRajul_ClotThink(int iNPC)
 {
-	Pental npc = view_as<Pental>(iNPC);
+	DesertRajul npc = view_as<DesertRajul>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -162,20 +172,20 @@ public void Pental_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		PentalSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		DesertRajulSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -185,9 +195,9 @@ public void Pental_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Pental_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action DesertRajul_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Pental npc = view_as<Pental>(victim);
+	DesertRajul npc = view_as<DesertRajul>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -197,19 +207,45 @@ public Action Pental_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+	DesertRajulHealRandomAlly(victim, damage);
 	
 	return Plugin_Changed;
 }
 
-public void Pental_NPCDeath(int entity)
+void DesertRajulHealRandomAlly(int victim, float damage)
 {
-	Pental npc = view_as<Pental>(entity);
+	RajulHealAlly[victim] += (damage * 0.15);
+	if(RajulHealAllyCooldownAntiSpam[victim] < GetGameTime())
+	{
+		RajulHealAllyDone[victim] = 0;
+		RajulHealAllyCooldownAntiSpam[victim] = GetGameTime() + 0.5;
+		int TeamNum = GetEntProp(victim, Prop_Send, "m_iTeamNum");
+		SetEntProp(victim, Prop_Send, "m_iTeamNum", 4);
+		Explode_Logic_Custom(0.0,
+		victim,
+		victim,
+		-1,
+		_,
+		150.0,
+		_,
+		_,
+		true,
+		99,
+		false,
+		_,
+		DesertRajulAllyHeal);
+		SetEntProp(victim, Prop_Send, "m_iTeamNum", TeamNum);	
+		RajulHealAlly[victim] = 0.0;
+	}
+}
+
+public void DesertRajul_NPCDeath(int entity)
+{
+	DesertRajul npc = view_as<DesertRajul>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	ExpidonsaRemoveEffects(entity);
-	SDKUnhook(npc.index, SDKHook_Think, Pental_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable3))
@@ -221,7 +257,7 @@ public void Pental_NPCDeath(int entity)
 
 }
 
-void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
+void DesertRajulSelfDefense(DesertRajul npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -230,8 +266,8 @@ void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1))//Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
 				target = TR_GetEntityIndex(swingTrace);	
@@ -241,9 +277,9 @@ void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 30.0;
+					float damageDealt = 75.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+						damageDealt *= 2.5;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
@@ -258,7 +294,7 @@ void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;
 								
@@ -272,51 +308,64 @@ void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.2;
+				npc.m_flNextMeleeAttack = gameTime + 1.0;
 			}
 		}
 	}
 }
 
 
-void PentalEffects(int iNpc)
+void DesertRajulAllyHeal(int entity, int victim, float damage, int weapon)
 {
-	if(AtEdictLimit(EDICT_NPC))
+	if(entity == victim)
 		return;
-	
-	float flPos[3];
-	float flAng[3];
-	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);
 
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	if(b_IsAlliedNpc[entity])
+	{
+		if (RajulHealAllyDone[entity] <= 2 && b_IsAlliedNpc[victim])
+		{
+			RajulHealAllyDone[entity] += 1;
+			DesertRajulAllyHealInternal(entity, victim, RajulHealAlly[entity]);
+		}
+	}
+	else
+	{
+		if (RajulHealAllyDone[entity] <= 2 && !b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients && i_NpcInternalId[victim] != INTERITUS_DESERT_RAJUL)
+		{
+			RajulHealAllyDone[entity] += 1;
+			DesertRajulAllyHealInternal(entity, victim, RajulHealAlly[entity]);
+		}
+	}
+}
 
-	
-	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = InfoTargetParentAt({0.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = InfoTargetParentAt({10.0,50.0,0.0}, "", 0.0); //First offset we go by
-	
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
+void DesertRajulAllyHealInternal(int entity, int victim, float heal)
+{
+	HealEntityGlobal(entity, victim, heal, 99.0,_,_);
+	int flHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
+	int flMaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(iNpc, particle_1, "effect_hand_r",_);
+	if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
+	{
+		//bosses and raids need much more overheal to get this insanely strong buff!
+		flMaxHealth = RoundToCeil(float(flMaxHealth) * 1.5);
+	}
+	else
+	{
+		flMaxHealth = RoundToCeil(float(flMaxHealth) * 1.15);
+	}
+	//silence disables this superbuff accuring.
+	if(!NpcStats_IsEnemySilenced(entity) && !NpcStats_IsEnemySilenced(victim))
+	{
+		if(flHealth > flMaxHealth)
+		{
+			//super power!
+			f_BuffBannerNpcBuff[victim] = FAR_FUTURE;
+			f_BattilonsNpcBuff[victim] = FAR_FUTURE;
+		}
+	}
 
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, 35, 35, 255, 2.0, 1.0, 1.0, LASERBEAM);
-	
-
-	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
-	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
-	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
-	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_4);
-	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(Laser_1);
-	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(Laser_2);
-	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(Laser_3);
+	float ProjLoc[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
+	ProjLoc[2] += 100.0;
+	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }

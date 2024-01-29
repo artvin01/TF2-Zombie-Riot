@@ -60,7 +60,7 @@ public void CombineAR2_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	float vecMe[3];
-	vecMe = WorldSpaceCenter(npc.index);
+	vecMe = WorldSpaceCenterOld(npc.index);
 	BaseSquad_BaseThinking(npc, vecMe);
 
 	bool canWalk = (npc.m_iTargetWalk || !npc.m_iTargetAttack);
@@ -68,7 +68,7 @@ public void CombineAR2_ClotThink(int iNPC)
 	if(npc.m_iTargetAttack)
 	{
 		float vecTarget[3];
-		vecTarget = WorldSpaceCenter(npc.m_iTargetAttack);
+		vecTarget = WorldSpaceCenterOld(npc.m_iTargetAttack);
 
 		float distance = GetVectorDistance(vecTarget, vecMe, true);
 
@@ -141,7 +141,7 @@ public void CombineAR2_ClotThink(int iNPC)
 				npc.m_flNextRangedSpecialAttackHappens = 0.0;
 				
 				// E2 L5 = 280, E2 L10 = 320
-				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTargetAttack, 800.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTargetAttack, 800.0);
 				npc.FireGrenade(vecTarget, 800.0, Level[npc.index] * 6.5, "models/weapons/w_grenade.mdl");
 			}
 		}

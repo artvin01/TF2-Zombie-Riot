@@ -415,8 +415,8 @@ public void MedivalBuilding_ClotThink(int iNPC)
 			{
 				float vecTarget[3];
 				float projectile_speed = 1200.0;
-			//	vecTarget = PredictSubjectPositionForProjectiles(npc, Target, projectile_speed, 75.0);
-				vecTarget = WorldSpaceCenter(Target);
+			//	vecTarget = PredictSubjectPositionForProjectilesOld(npc, Target, projectile_speed, 75.0);
+				vecTarget = WorldSpaceCenterOld(Target);
 
 				npc.PlayMeleeSound();
 
@@ -434,8 +434,8 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				{
 					float vecTarget[3];
 					float projectile_speed = 1200.0;
-				//	vecTarget = PredictSubjectPositionForProjectiles(npc, Target, projectile_speed, 75.0);
-					vecTarget = WorldSpaceCenter(Target);
+				//	vecTarget = PredictSubjectPositionForProjectilesOld(npc, Target, projectile_speed, 75.0);
+					vecTarget = WorldSpaceCenterOld(Target);
 
 					npc.PlayMeleeSound();
 

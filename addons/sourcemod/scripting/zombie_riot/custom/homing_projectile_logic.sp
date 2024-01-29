@@ -125,7 +125,7 @@ void HomingProjectile_TurnToTarget_NonPerfect(int projectile, int Target)
 	GetEntPropVector(projectile, Prop_Send, "m_vecOrigin", rocketOrigin);
 
 	float pos1[3];
-	pos1 = WorldSpaceCenter(Target);
+	pos1 = WorldSpaceCenterOld(Target);
 	GetRayAngles(rocketOrigin, pos1, tmpAngles);
 	
 	// Thanks to mikusch for pointing out this function to use instead
@@ -165,7 +165,7 @@ bool HomingProjectile_ValidTargetCheck(int projectile, int Target)
 	float pos1[3];
 	float pos2[3];
 	GetEntPropVector(projectile, Prop_Send, "m_vecOrigin", pos2);
-	pos1 = WorldSpaceCenter(Target);
+	pos1 = WorldSpaceCenterOld(Target);
 	GetVectorAnglesTwoPoints(pos2, pos1, ang3);
 
 	// fix all angles

@@ -224,7 +224,7 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -256,7 +256,7 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 			npc.FaceTowards(vecTarget, 30000.0);
 			if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 			{
@@ -271,7 +271,7 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 			npc.FaceTowards(vecTarget, 30000.0);
 			if(npc.m_flNextRangedAttackHappening < gameTime)
 			{
@@ -297,7 +297,7 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 				//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
 					
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -311,20 +311,20 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 
 				KillFeed_SetKillIcon(npc.index, "taunt_pyro");
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				FireBullet(npc.index, npc.index, WorldSpaceCenter(npc.index), vecDir, 20.0, 100.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+				FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 20.0, 100.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 			}
 		}
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}

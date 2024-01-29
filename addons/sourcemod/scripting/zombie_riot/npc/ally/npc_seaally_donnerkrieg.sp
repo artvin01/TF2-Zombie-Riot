@@ -68,8 +68,8 @@ public void SeaAllyDonnerkrieg_ClotThink(int iNPC)
 		{
 			NpcStats_SilenceEnemy(npc.m_iTarget, 6.0);
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 			if(flDistanceToTarget < 170000.0)
 			{

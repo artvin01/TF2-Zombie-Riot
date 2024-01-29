@@ -239,14 +239,14 @@ public void Diversionistico_ClotThink(int iNPC)
 	{
 		int AntiCheeseReply = 0;
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
 			b_TryToAvoidTraverse[npc.index] = false;
-			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			vPredictedPos = GetBehindTarget(npc.m_iTarget, 40.0 ,vPredictedPos);
 			AntiCheeseReply = DiversionAntiCheese(npc.m_iTarget, npc.index, vPredictedPos);
 			b_TryToAvoidTraverse[npc.index] = true;
@@ -342,7 +342,7 @@ public void Diversionistico_NPCDeath(int entity)
 }
 void DiversionisticoSelfDefenseRanged(Diversionistico npc, float gameTime, int target)
 {
-	npc.FaceTowards(WorldSpaceCenter(target), 15000.0);
+	npc.FaceTowards(WorldSpaceCenterOld(target), 15000.0);
 	if(gameTime > npc.m_flNextRangedAttack)
 	{
 		npc.PlayZapSound();
@@ -350,7 +350,7 @@ void DiversionisticoSelfDefenseRanged(Diversionistico npc, float gameTime, int t
 		npc.m_flDoingAnimation = gameTime + 0.25;
 		npc.m_flNextRangedAttack = gameTime + 1.2;
 		float damageDealt = 85.0;
-		SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, WorldSpaceCenter(target));
+		SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, WorldSpaceCenterOld(target));
 		if(IsValidEntity(npc.m_iWearable5))
 			RemoveEntity(npc.m_iWearable5);
 
@@ -368,7 +368,7 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 			int Enemy_I_See;					
 			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			
-			npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.PlayMeleeSound();

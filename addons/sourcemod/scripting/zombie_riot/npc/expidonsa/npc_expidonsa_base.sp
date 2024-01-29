@@ -36,16 +36,19 @@ bool VausMagicaShieldLogicEnabled(int victim)
 
 	return false;
 }
-void VausMagicaShieldLogicNpcOnTakeDamage(int victim, float &damage, int damagetype)
+int VausMagicaShieldLeft(int victim)
 {
-
-	if(i_ExpidonsaShieldCapacity[victim] > 0)
+	return i_ExpidonsaShieldCapacity[victim];
+}
+void VausMagicaShieldLogicNpcOnTakeDamage(int victim, float &damage, int damagetype, int ZrDamageType)
+{
+	if(i_ExpidonsaShieldCapacity[victim] > 0 && (!(ZrDamageType & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)))
 	{
 		i_ExpidonsaShieldCapacity[victim] -= 1;
 
 		if(!(damagetype & DMG_SLASH))
 			damage *= 0.25;
-			
+
 		if(i_ExpidonsaShieldCapacity[victim] <= 0)
 		{
 			f_Expidonsa_ShieldBroke[victim] = GetGameTime() + 5.0;
@@ -60,13 +63,12 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int victim, float &damage, int damaget
 
 void VausMagicaGiveShield(int entity, int amount)
 {
-	i_ExpidonsaShieldCapacity[entity] += amount;
 	int MaxShieldCapacity = 5;
 	if(b_thisNpcIsABoss[entity])
 	{
 		MaxShieldCapacity = 10;
 	}
-	else if(b_thisNpcIsARaid[entity])
+	if(b_thisNpcIsARaid[entity])
 	{
 		MaxShieldCapacity = 999;
 	}
@@ -74,6 +76,7 @@ void VausMagicaGiveShield(int entity, int amount)
 	{
 		return; //do not give shield.
 	}
+	i_ExpidonsaShieldCapacity[entity] += amount;
 	if(i_ExpidonsaShieldCapacity[entity] >= MaxShieldCapacity)
 	{
 		i_ExpidonsaShieldCapacity[entity] = MaxShieldCapacity;

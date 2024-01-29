@@ -141,8 +141,8 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			if(b_we_are_reloading[npc.index])
 			{
 				
@@ -172,7 +172,7 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 						//Play attack anim
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1200.0);
+						vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1200.0);
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.PlayRangedSound();
 						//npc.FireRocket(vecTarget, 500.0 * npc.BonusDamageBonus, 1200.0, _, _, _, _, GetClientOfUserId(npc.OwnerUserId));

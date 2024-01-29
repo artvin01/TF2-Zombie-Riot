@@ -81,7 +81,7 @@ methodmap SeaSwarmcaller < CClotBody
 
 		if(carrier)
 		{
-			float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+			float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
 			vecMe[2] += 100.0;
 
 			npc.m_iWearable1 = ParticleEffectAt(vecMe, "powerup_icon_agility", -1.0);
@@ -140,13 +140,13 @@ public void SeaSwarmcaller_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 		float distance = GetVectorDistance(vecTarget, vecMe, true);		
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 

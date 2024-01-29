@@ -103,15 +103,15 @@ public void BarrackBuilding_ClotThink(int iNPC)
 					
 					if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICS)
 					{
-						vecTarget = PredictSubjectPositionForProjectiles(npc, ValidEnemyToTarget, projectile_speed, 40.0);
+						vecTarget = PredictSubjectPositionForProjectilesOld(npc, ValidEnemyToTarget, projectile_speed, 40.0);
 						if(!Can_I_See_Enemy_Only(npc.index, ValidEnemyToTarget)) //cant see enemy in the predicted position, we will instead just attack normally
 						{
-							vecTarget = WorldSpaceCenter(ValidEnemyToTarget);
+							vecTarget = WorldSpaceCenterOld(ValidEnemyToTarget);
 						}
 					}
 					else
 					{
-						vecTarget = WorldSpaceCenter(ValidEnemyToTarget);
+						vecTarget = WorldSpaceCenterOld(ValidEnemyToTarget);
 					}
 
 

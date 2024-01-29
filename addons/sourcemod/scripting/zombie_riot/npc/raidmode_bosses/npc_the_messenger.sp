@@ -355,6 +355,7 @@ methodmap Sensal < CClotBody
 
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 
 		SetVariantColor(view_as<int>({35, 35, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
@@ -409,7 +410,7 @@ public void Sensal_ClotThink(int iNPC)
 	if(npc.m_bAllowBackWalking)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
-			npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 150.0);
+			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 150.0);
 	}
 
 	if(npc.m_blPlayHurtAnimation)
@@ -435,8 +436,8 @@ public void Sensal_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		int SetGoalVectorIndex = 0;
 		SetGoalVectorIndex = SensalSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 
@@ -449,7 +450,7 @@ public void Sensal_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3];
-					vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+					vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
@@ -461,7 +462,7 @@ public void Sensal_ClotThink(int iNPC)
 			{
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
-				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
+				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
 			}
 		}
@@ -527,7 +528,7 @@ public void Sensal_NPCDeath(int entity)
 
 	*/
 	
-	ParticleEffectAt(WorldSpaceCenter(npc.index), "teleported_blue", 0.5);
+	ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
 	npc.PlayDeathSound();	
 
 	RaidBossActive = INVALID_ENT_REFERENCE;
@@ -778,7 +779,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			{
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
@@ -791,7 +792,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 							PlaySound = true;
 							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
-							vecHit = WorldSpaceCenter(targetTrace);
+							vecHit = WorldSpaceCenterOld(targetTrace);
 
 							float damage = 24.0;
 							damage *= 1.15;
@@ -958,7 +959,7 @@ void SensalThrowScythes(Sensal npc)
 	float DelaybewteenPillars = 0.5;
 	float ang_Look[3];
 	float pos[3];
-	pos = WorldSpaceCenter(npc.index);
+	pos = WorldSpaceCenterOld(npc.index);
 	
 	if(ZR_GetWaveCount()+1 >= 60)
 		MaxCount = 2;
@@ -1153,11 +1154,11 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		
 		if(IsValidEntity(npc.m_iTarget))
 		{
-			FloatVector = WorldSpaceCenter(npc.m_iTarget);
+			FloatVector = WorldSpaceCenterOld(npc.m_iTarget);
 		}
 		else
 		{
-			FloatVector = WorldSpaceCenter(entity);
+			FloatVector = WorldSpaceCenterOld(entity);
 		}
 
 		int Projectile = npc.FireParticleRocket(FloatVector, damage , 400.0 , 100.0 , "",_,_,true,origin_altered,_,_,_,false);
@@ -1502,7 +1503,7 @@ bool SensalMassLaserAttack(Sensal npc)
 				if(enemy[i])
 				{
 					foundEnemy = true;
-					SensalInitiateLaserAttack(npc.index, WorldSpaceCenter(enemy[i]), flPos);
+					SensalInitiateLaserAttack(npc.index, WorldSpaceCenterOld(enemy[i]), flPos);
 				}
 			}
 			if(foundEnemy)
@@ -1603,7 +1604,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 					break;
 					
 				Foundenemies = true;
-				int Projectile = npc.FireParticleRocket(WorldSpaceCenter(enemy[i]), SENSAL_BASE_RANGED_SCYTHE_DAMGAE * RaidModeScaling , 400.0 , 100.0 , "",_,_,true, flMyPos,_,_,_,false);
+				int Projectile = npc.FireParticleRocket(WorldSpaceCenterOld(enemy[i]), SENSAL_BASE_RANGED_SCYTHE_DAMGAE * RaidModeScaling , 400.0 , 100.0 , "",_,_,true, flMyPos,_,_,_,false);
 				SensalEffects(Projectile,view_as<int>(npc.Anger),"");
 				b_RageProjectile[Projectile] = npc.Anger;
 
