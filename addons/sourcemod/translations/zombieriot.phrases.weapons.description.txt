@@ -709,7 +709,7 @@
 	
 	"The Battalion's Backup Desc"
 	{
-		"en"	"Give Resistance (25%%) to everyone after dealing enough damage, receive +50 Extra HP"
+		"en"	"Give Resistance (20%%) to everyone after dealing enough damage, receive +50 Extra HP"
 	}
 	
 	"P15t0l Desc"

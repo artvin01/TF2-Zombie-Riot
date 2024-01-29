@@ -153,7 +153,9 @@ public void Star_Shooter_Meteor_shower_ability(int client, int weapon, bool crit
 
 		//PrintToChatAll("test meteor shower");
 		ApplyTempAttrib(weapon, 6, 0.5, 7.5); //applies faster fire rate for the next 7.5 seconds
+		ApplyTempAttrib(weapon, 2, 0.6, 7.5); //Nerf damage down as its way too strong otherwise, it already has no cooldown.
 		IsAbilityActive[client] = 1; //1 for enabled, 0 for disabled
+		SSS_overheat[client] = 0;
 		CreateTimer(7.5, Disable_Star_Shooter_Ability, client, TIMER_FLAG_NO_MAPCHANGE);
 
 	}

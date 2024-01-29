@@ -1636,6 +1636,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		float percentage = npc.m_flMeleeArmor * 100.0;
 		percentage *= fl_Extra_MeleeArmor[victim];
 		percentage *= fl_TotalArmor[victim];
+		int testvalue = 1;
+		OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
 
 #if defined ZR
 		if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
@@ -1663,6 +1665,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		float percentage = npc.m_flRangedArmor * 100.0;
 		percentage *= fl_Extra_RangedArmor[victim];
 		percentage *= fl_TotalArmor[victim];
+		int testvalue = 1;
+		OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
 
 #if defined ZR
 		if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
@@ -1872,6 +1876,11 @@ bool NpcHadArmorType(int victim, int type)
 	if(VausMagicaShieldLogicEnabled(victim))
 		return true;
 #endif
+	float DamageTest = 1.0;
+	int testvalue = 1;
+	OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, DamageTest, testvalue, testvalue, GetGameTime());
+	if(DamageTest != 1.0)
+		return true;
 
 	CClotBody npc = view_as<CClotBody>(victim);
 	switch(type)
@@ -3072,17 +3081,20 @@ void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor, floa
 			damage *= 0.75;
 		}
 	}
-	if(f_PotionShrinkEffect[attacker] > GameTime || (IsValidEntity(inflictor) && f_PotionShrinkEffect[attacker] > GameTime))
+	if(attacker > 0)
 	{
-		damage *= 0.5; //half the damage when small.
+		if(f_PotionShrinkEffect[attacker] > GameTime || (IsValidEntity(inflictor) && f_PotionShrinkEffect[attacker] > GameTime))
+		{
+			damage *= 0.5; //half the damage when small.
+		}
 	}
 	if(f_BattilonsNpcBuff[victim] > GameTime)
 	{
-		damage *= 0.75;
+		damage *= RES_BATTILONS;
 	}		
 	if(Resistance_Overall_Low[victim] > GameTime)
 	{
-		damage *= 0.9;
+		damage *= RES_MEDIGUN_LOW;
 	}
 }
 void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
@@ -3192,7 +3204,8 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 
 	if(Increaced_Overall_damage_Low[attacker] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * (0.25 * DamageBuffExtraScaling);
+		//this doesnt get applied in groups.
+		damage += BaseDamageBeforeBuffs * 0.25;
 	}
 	
 	if(f_CrippleDebuff[victim] > GameTime)

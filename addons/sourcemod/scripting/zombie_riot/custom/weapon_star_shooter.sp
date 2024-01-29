@@ -98,7 +98,7 @@ void TBB_Ability_Star_Shooter(int client)
 	BEAM_ColorHex[client] = ParseColor("800080");
 	BEAM_ChargeUpTime[client] = 1;
 	BEAM_CloseBuildingDPT[client] = Strength[client];
-	BEAM_FarBuildingDPT[client] = Strength[client] * 3.0;
+	BEAM_FarBuildingDPT[client] = Strength[client] * 2.0;
 	BEAM_Duration[client] = 2.5;
 	
 	BEAM_BeamOffset[client][0] = 0.0;

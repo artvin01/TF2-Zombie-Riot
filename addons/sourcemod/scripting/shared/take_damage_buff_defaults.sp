@@ -1,0 +1,2 @@
+#define RES_BATTILONS 0.8
+#define RES_MEDIGUN_LOW 0.9
