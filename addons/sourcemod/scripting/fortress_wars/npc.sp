@@ -4,6 +4,7 @@
 enum
 {
 	NOTHING	= 0,
+	MILITIA = 1,
 
 	// Add entries above this line
 	MAX_NPC_TYPES
@@ -11,25 +12,25 @@ enum
 
 public const char NPC_Names[MAX_NPC_TYPES][] =
 {
-	"nothing"
-};
-
-public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
-{
-	"npc_nothing"
+	"nothing",
+	"Militia"
 };
 
 void NPC_MapStart()
 {
 	UnitBody_MapStart();
 	EmpireBody_MapStart();
+	Militia_MapStart();
 }
 
-any Npc_Create(int index, int client, const float vecPos[3], const float vecAng[3], const char[] data = "")
+stock any Npc_Create(int index, int client, const float vecPos[3], const float vecAng[3], const char[] data = "")
 {
 	any entity = -1;
 	switch(index)
 	{
+		case MILITIA:
+			entity = Militia(client, vecPos, vecAng);
+
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%d] Is not a valid npc!", index);
 	}

@@ -40,16 +40,14 @@ methodmap Militia < EmpireBody
 		EmitSoundToAll(MeleeMissSounds[GetRandomInt(0, sizeof(MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public Militia(int client, float vecPos[3], float vecAng[3])
+	public Militia(int client, const float vecPos[3], const float vecAng[3])
 	{
 		Militia npc = view_as<Militia>(EmpireBody(client, vecPos, vecAng, _, _, "50"));
 
 		i_NpcInternalId[npc.index] = MILITIA;
 		i_NpcWeight[npc.index] = 1;
 
-		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCThink[npc.index] = ClotThink;
-		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
 		
 		npc.SetActivity("ACT_IDLE");
 		npc.m_flSpeed = 90.0;
@@ -86,6 +84,8 @@ static void ClotThink(int entity)
 		{
 			if(npc.m_flAttackHappens < gameTime)
 			{
+				float vecTarget[3];
+				WorldSpaceCenter(target, vecTarget);
 				npc.FaceTowards(vecTarget, 20000.0);
 
 				Handle swingTrace;
@@ -108,7 +108,7 @@ static void ClotThink(int entity)
 				npc.m_flAttackHappens = 0.0;
 			}
 		}
-		else
+		else if(npc.m_flNextMeleeAttack < gameTime)
 		{
 			float vecMe[3], vecTarget[3];
 			WorldSpaceCenter(target, vecMe);
@@ -125,6 +125,12 @@ static void ClotThink(int entity)
 				npc.m_flNextMeleeAttack = gameTime + 2.0;
 			}
 		}
+
+		npc.PlayIdleAlertSound();
+	}
+	else
+	{
+		npc.PlayIdleSound();
 	}
 	
 	bool moving;
@@ -146,30 +152,4 @@ static void ClotThink(int entity)
 	{
 		npc.SetActivity("ACT_IDLE");
 	}
-}
-
-static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	// TODO: Move this into npc_base_empire
-	if(attacker > 0)
-	{
-		Militia npc = view_as<Militia>(victim);
-
-		if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-		{
-			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-
-			npc.PlayHurtSound();
-			npc.AddNextGesture("ACT_GESTURE_FLINCH_HEAD");
-		}
-	}
-}
-
-static void ClotDeath(int entity)
-{
-	// TODO: Move this into npc_base_empire
-	Militia npc = view_as<Militia>(entity);
-	
-	if(!npc.m_bGib)
-		npc.PlayDeathSound();
 }

@@ -207,7 +207,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 {
 	CommandEnum command;
 
-	do
+	for(;;)
 	{
 		int actions = CommandList[npc.index] ? CommandList[npc.index].Length : 0;
 		if(actions)
@@ -304,13 +304,10 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 
 		return target;
 	}
-	while(CommandList[npc.index]);
-
-	//return -1;
 }
 
 // Make sure to call UnitBody_ThinkTarget before this
-bool UnitBody_ThinkMove(UnitBody npc, float gameTime)
+stock bool UnitBody_ThinkMove(UnitBody npc, float gameTime)
 {
 	int actions = CommandList[npc.index].Length;
 

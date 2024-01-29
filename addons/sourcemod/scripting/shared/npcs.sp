@@ -631,6 +631,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 	return Plugin_Stop;
 }
 
+#if !defined RTS
 int GetIndexByPluginName(const char[] name)
 {
 	for(int i; i<sizeof(NPC_Plugin_Names_Converted); i++)
@@ -640,6 +641,7 @@ int GetIndexByPluginName(const char[] name)
 	}
 	return 0;
 }
+#endif
 
 public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
 {

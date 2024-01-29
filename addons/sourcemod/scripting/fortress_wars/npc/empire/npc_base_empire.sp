@@ -193,9 +193,36 @@ methodmap EmpireBody < UnitBody
 		npc.SetSoundFunc(Sound_Move, PlayMoveSound);
 		npc.SetSoundFunc(Sound_Attack, PlayAttackSound);
 		npc.SetSoundFunc(Sound_CombatAlert, PlayCombatAlertSound);
+		
+		func_NPCDeath[npc.index] = EmpireBody_Death;
+		func_NPCOnTakeDamage[npc.index] = EmpireBody_TakeDamage;
 
 		return npc;
 	}
+}
+
+void EmpireBody_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	if(attacker > 0)
+	{
+		EmpireBody npc = view_as<EmpireBody>(victim);
+
+		if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+		{
+			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+
+			npc.PlayHurtSound();
+			npc.AddNextGesture("ACT_GESTURE_FLINCH_HEAD");
+		}
+	}
+}
+
+void EmpireBody_Death(int entity)
+{
+	EmpireBody npc = view_as<EmpireBody>(entity);
+	
+	if(!npc.m_bGib)
+		npc.PlayDeathSound();
 }
 
 static void PlaySelectSound(int client)
