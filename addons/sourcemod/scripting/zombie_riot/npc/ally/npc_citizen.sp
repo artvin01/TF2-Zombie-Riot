@@ -1919,7 +1919,7 @@ public void Citizen_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
 		if(npc.m_iGunType != Cit_None)
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index, _, BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus, npc.m_bCamo, _, _, _, !autoSeek);
+			npc.m_iTarget = GetClosestTarget(npc.index, _, autoSeek ? FAR_FUTURE : BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus, npc.m_bCamo, _, _, _, !autoSeek);
 			if(npc.m_iTarget > 0 && view_as<CClotBody>(npc.m_iTarget).m_bCamo)
 				npc.PlaySound(Cit_Behind);
 		}
@@ -2107,106 +2107,122 @@ public void Citizen_ClotThink(int iNPC)
 						if(npc.m_iWearable1 > 0)
 							AcceptEntityInput(npc.m_iWearable1, "Enable");
 					}
-					else if(reloadStatus == 2)	// We need to reload now
+					else
 					{
-						if(!noSafety && healingTarget != -1 && distance < 150000.0)
-						{
-							// Too close to safely reload
-							npc.SetActivity("ACT_RUN", 240.0);
-							walkStatus = 3;	// Back off
-						}
+						bool outOfRange = (autoSeek && distance > (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus));
 
-						if(npc.m_iWearable1 > 0)
-							AcceptEntityInput(npc.m_iWearable1, "Disable");
-					}
-					else if(!noSafety && distance < 22500.0)	// Too close for the Pistol
-					{
-						npc.SetActivity("ACT_RUN", 240.0);
-						walkStatus = 3;	// Back off
-						
-						if(npc.m_iWearable1 > 0)
-							AcceptEntityInput(npc.m_iWearable1, "Disable");
-					}
-					else	// Try to shoot
-					{
-						float npc_pos[3];
-						npc_pos = GetAbsOriginOld(npc.index);
-							
-						npc_pos[2] += 30.0;
-						
-						Handle trace = TR_TraceRayFilterEx(npc_pos, vecTarget, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, npc.index);
-						
-						int enemy = TR_GetEntityIndex(trace);
-						delete trace;
-						
-						if(IsValidEnemy(npc.index, enemy, true))	// We can see a target
+						if(reloadStatus == 2 || (outOfRange && reloadStatus == 1))	// We need to reload now
 						{
-							KillFeed_SetKillIcon(npc.index, "pistol");
-							npc.FaceTowards(vecTarget, 15000.0);
-							npc.SetActivity("ACT_RANGE_ATTACK_PISTOL", 0.0);
-							walkStatus = -1;	// Don't move
-							
-							if(npc.m_iWearable1 > 0)
-								AcceptEntityInput(npc.m_iWearable1, "Enable");
-							
-							npc.m_iState = -1;
-							npc.AddGesture("ACT_RANGE_ATTACK_PISTOL");
-							
-							float vecSpread = 0.1;
-								
-							float eyePitch[3];
-							GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-							
-							float x, y;
-							x = GetRandomFloat( -0.1, 0.1 );
-							y = GetRandomFloat( -0.1, 0.1 );
-							
-							float vecDirShooting[3], vecRight[3], vecUp[3];
-							
-							vecTarget[2] += 15.0;
-							MakeVectorFromPoints(npc_pos, vecTarget, vecDirShooting);
-							GetVectorAngles(vecDirShooting, vecDirShooting);
-							vecDirShooting[1] = eyePitch[1];
-							GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-							
-							npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
-							npc.m_iAttacksTillReload--;
-							
-							//add the spray
-							float vecDir[3];
-							vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
-							vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
-							vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
-							NormalizeVector(vecDir, vecDir);
-							float DamageDeal = npc.m_fGunDamage;
-							if(npc.m_bCamo)
+							if(!noSafety && healingTarget != -1 && distance < 150000.0)
 							{
-								DamageDeal *= CAMO_REBEL_DMG_PENALTY;
+								// Too close to safely reload
+								npc.SetActivity("ACT_RUN", 240.0);
+								walkStatus = 3;	// Back off
 							}
-							else if (npc.m_bRebelAgressive)
-							{
-								DamageDeal *= 1.15;
-							}
-							FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, DamageDeal, 9000.0, DMG_SLASH, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _, "muzzle");
-							npc.PlayPistolSound();
-							
-							if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk() && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
-							{
-								npc.m_bFirstBlood = true;
-								npc.PlaySound(Cit_FirstBlood);
-							}
-						}
-						else
-						{
+
 							if(npc.m_iWearable1 > 0)
 								AcceptEntityInput(npc.m_iWearable1, "Disable");
+						}
+						else if(outOfRange)
+						{
+							// Too far away, walk up
+							npc.SetActivity("ACT_RUN", 240.0);
+							walkStatus = 1;
+							
+							if(npc.m_iWearable1 > 0)
+								AcceptEntityInput(npc.m_iWearable1, "Disable");
+						}
+						else if(!noSafety && distance < 22500.0)	// Too close for the Pistol
+						{
+							npc.SetActivity("ACT_RUN", 240.0);
+							walkStatus = 3;	// Back off
+							
+							if(npc.m_iWearable1 > 0)
+								AcceptEntityInput(npc.m_iWearable1, "Disable");
+						}
+						else	// Try to shoot
+						{
+							float npc_pos[3];
+							npc_pos = GetAbsOriginOld(npc.index);
+								
+							npc_pos[2] += 30.0;
+							
+							Handle trace = TR_TraceRayFilterEx(npc_pos, vecTarget, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, npc.index);
+							
+							int enemy = TR_GetEntityIndex(trace);
+							delete trace;
+							
+							if(IsValidEnemy(npc.index, enemy, true))	// We can see a target
+							{
+								KillFeed_SetKillIcon(npc.index, "pistol");
+								npc.FaceTowards(vecTarget, 15000.0);
+								npc.SetActivity("ACT_RANGE_ATTACK_PISTOL", 0.0);
+								walkStatus = -1;	// Don't move
+								
+								if(npc.m_iWearable1 > 0)
+									AcceptEntityInput(npc.m_iWearable1, "Enable");
+								
+								npc.m_iState = -1;
+								npc.AddGesture("ACT_RANGE_ATTACK_PISTOL");
+								
+								float vecSpread = 0.1;
+									
+								float eyePitch[3];
+								GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+								
+								float x, y;
+								x = GetRandomFloat( -0.1, 0.1 );
+								y = GetRandomFloat( -0.1, 0.1 );
+								
+								float vecDirShooting[3], vecRight[3], vecUp[3];
+								
+								vecTarget[2] += 15.0;
+								MakeVectorFromPoints(npc_pos, vecTarget, vecDirShooting);
+								GetVectorAngles(vecDirShooting, vecDirShooting);
+								vecDirShooting[1] = eyePitch[1];
+								GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+								
+								npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
+								npc.m_iAttacksTillReload--;
+								
+								//add the spray
+								float vecDir[3];
+								vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
+								vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
+								vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
+								NormalizeVector(vecDir, vecDir);
+								float DamageDeal = npc.m_fGunDamage;
+								if(npc.m_bCamo)
+								{
+									DamageDeal *= CAMO_REBEL_DMG_PENALTY;
+								}
+								else if (npc.m_bRebelAgressive)
+								{
+									DamageDeal *= 1.15;
+								}
+								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, DamageDeal, 9000.0, DMG_SLASH, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _, "muzzle");
+								npc.PlayPistolSound();
+								
+								if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk() && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
+								{
+									npc.m_bFirstBlood = true;
+									npc.PlaySound(Cit_FirstBlood);
+								}
+							}
+							else
+							{
+								if(npc.m_iWearable1 > 0)
+									AcceptEntityInput(npc.m_iWearable1, "Disable");
+							}
 						}
 					}
 				}
 				case Cit_SMG:
 				{
 					bool cooldown = npc.m_flNextRangedAttack > gameTime;
-					if(reloadStatus == 2 && !cooldown)	// We need to reload now
+					bool outOfRange = (!cooldown && autoSeek && distance > (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus));
+					
+					if(!cooldown && (reloadStatus == 2 || (reloadStatus == 1 && outOfRange)))	// We need to reload now
 					{
 						if(!noSafety && healingTarget != -1 && distance < 150000.0)
 						{
@@ -2214,6 +2230,12 @@ public void Citizen_ClotThink(int iNPC)
 							npc.SetActivity("ACT_RUN_RIFLE", 210.0);
 							walkStatus = 3;	// Back off
 						}
+					}
+					else if(outOfRange)
+					{
+						// Too far away, walk up
+						npc.SetActivity("ACT_RUN_RIFLE", 210.0);
+						walkStatus = 1;
 					}
 					else
 					{
@@ -2295,7 +2317,9 @@ public void Citizen_ClotThink(int iNPC)
 				case Cit_AR:
 				{
 					bool cooldown = npc.m_flNextRangedAttack > gameTime;
-					if(reloadStatus == 2 && !cooldown)	// We need to reload now
+					bool outOfRange = (!cooldown && autoSeek && distance > (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus));
+					
+					if(!cooldown && (reloadStatus == 2 || (reloadStatus == 1 && outOfRange)))	// We need to reload now
 					{
 						if(!noSafety && healingTarget != -1 && distance < 150000.0)
 						{
@@ -2303,6 +2327,12 @@ public void Citizen_ClotThink(int iNPC)
 							npc.SetActivity("ACT_RUN_AR2", 210.0);
 							walkStatus = 3;	// Back off
 						}
+					}
+					else if(outOfRange)
+					{
+						// Too far away, walk up
+						npc.SetActivity("ACT_RUN_AR2", 210.0);
+						walkStatus = 1;
 					}
 					else
 					{
@@ -2389,79 +2419,90 @@ public void Citizen_ClotThink(int iNPC)
 						npc.SetActivity("ACT_IDLE_ANGRY_AR2", 0.0);
 						walkStatus = -1;	// Don't move
 					}
-					else if(reloadStatus == 2)	// We need to reload now
+					else
 					{
-						if(!noSafety && healingTarget != -1 && distance < 150000.0)
+						bool outOfRange = (autoSeek && distance > (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus));
+						
+						if(reloadStatus == 2 || (reloadStatus == 1 && outOfRange))	// We need to reload now
 						{
-							// Too close to safely reload
-							npc.SetActivity("ACT_RUN_AR2", 210.0);
-							walkStatus = 3;	// Back off
+							if(!noSafety && healingTarget != -1 && distance < 150000.0)
+							{
+								// Too close to safely reload
+								npc.SetActivity("ACT_RUN_AR2", 210.0);
+								walkStatus = 3;	// Back off
+							}
 						}
-					}
-					else	// Try to shoot
-					{
-						float npc_pos[3];
-						npc_pos = GetAbsOriginOld(npc.index);
-							
-						npc_pos[2] += 30.0;
-						
-						Handle trace = TR_TraceRayFilterEx(npc_pos, vecTarget, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, npc.index);
-						
-						int enemy = TR_GetEntityIndex(trace);
-						delete trace;
-						
-						if(IsValidEnemy(npc.index, enemy, true))	// We can see a target
+						else if(outOfRange)
 						{
-							KillFeed_SetKillIcon(npc.index, "shotgun_primary");
-							npc.FaceTowards(vecTarget, 15000.0);
-							npc.SetActivity("ACT_IDLE_ANGRY_AR2", 0.0);
-							walkStatus = -1;	// Don't move
-							
-							npc.m_iState = -1;
-							npc.AddGesture("ACT_RANGE_ATTACK_SHOTGUN");
-							
-							float vecSpread = 0.1;
+							// Too far away, walk up
+							npc.SetActivity("ACT_RUN_AR2", 210.0);
+							walkStatus = 1;
+						}
+						else	// Try to shoot
+						{
+							float npc_pos[3];
+							npc_pos = GetAbsOriginOld(npc.index);
 								
-							float eyePitch[3];
-							GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+							npc_pos[2] += 30.0;
 							
-							float x, y;
-							x = GetRandomFloat( -0.25, 0.25 );
-							y = GetRandomFloat( -0.25, 0.25 );
+							Handle trace = TR_TraceRayFilterEx(npc_pos, vecTarget, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, npc.index);
 							
-							float vecDirShooting[3], vecRight[3], vecUp[3];
+							int enemy = TR_GetEntityIndex(trace);
+							delete trace;
 							
-							vecTarget[2] += 15.0;
-							MakeVectorFromPoints(npc_pos, vecTarget, vecDirShooting);
-							GetVectorAngles(vecDirShooting, vecDirShooting);
-							vecDirShooting[1] = eyePitch[1];
-							GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-							
-							npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
-							npc.m_iAttacksTillReload--;
-							
-							//add the spray
-							float vecDir[3];
-							vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
-							vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
-							vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
-							NormalizeVector(vecDir, vecDir);
-							float DamageDeal = npc.m_fGunDamage;
-							if(npc.m_bCamo)
+							if(IsValidEnemy(npc.index, enemy, true))	// We can see a target
 							{
-								DamageDeal *= CAMO_REBEL_DMG_PENALTY;
-							}
-							else if (npc.m_bRebelAgressive)
-							{
-								DamageDeal *= 1.15;
-							}
-							FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, DamageDeal, 9000.0, DMG_SLASH, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _ , "muzzle");
-							npc.PlayShotgunSound();
-							
-							if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk() && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
-							{
-								npc.m_bFirstBlood = true;
-								npc.PlaySound(Cit_FirstBlood);
+								KillFeed_SetKillIcon(npc.index, "shotgun_primary");
+								npc.FaceTowards(vecTarget, 15000.0);
+								npc.SetActivity("ACT_IDLE_ANGRY_AR2", 0.0);
+								walkStatus = -1;	// Don't move
+								
+								npc.m_iState = -1;
+								npc.AddGesture("ACT_RANGE_ATTACK_SHOTGUN");
+								
+								float vecSpread = 0.1;
+									
+								float eyePitch[3];
+								GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+								
+								float x, y;
+								x = GetRandomFloat( -0.25, 0.25 );
+								y = GetRandomFloat( -0.25, 0.25 );
+								
+								float vecDirShooting[3], vecRight[3], vecUp[3];
+								
+								vecTarget[2] += 15.0;
+								MakeVectorFromPoints(npc_pos, vecTarget, vecDirShooting);
+								GetVectorAngles(vecDirShooting, vecDirShooting);
+								vecDirShooting[1] = eyePitch[1];
+								GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+								
+								npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
+								npc.m_iAttacksTillReload--;
+								
+								//add the spray
+								float vecDir[3];
+								vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
+								vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
+								vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
+								NormalizeVector(vecDir, vecDir);
+								float DamageDeal = npc.m_fGunDamage;
+								if(npc.m_bCamo)
+								{
+									DamageDeal *= CAMO_REBEL_DMG_PENALTY;
+								}
+								else if (npc.m_bRebelAgressive)
+								{
+									DamageDeal *= 1.15;
+								}
+								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, DamageDeal, 9000.0, DMG_SLASH, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _ , "muzzle");
+								npc.PlayShotgunSound();
+								
+								if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk() && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
+								{
+									npc.m_bFirstBlood = true;
+									npc.PlaySound(Cit_FirstBlood);
+								}
 							}
 						}
 					}
@@ -2474,55 +2515,66 @@ public void Citizen_ClotThink(int iNPC)
 						npc.SetActivity("ACT_IDLE_ANGRY_RPG", 0.0);
 						walkStatus = -1;	// Don't move
 					}
-					else if(reloadStatus == 2)	// We need to reload now
+					else
 					{
-						if(!noSafety && healingTarget != -1 && distance < 150000.0)
+						bool outOfRange = (autoSeek && distance > (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus));
+						
+						if(reloadStatus == 2 || (reloadStatus == 1 && outOfRange))	// We need to reload now
 						{
-							// Too close to safely reload
+							if(!noSafety && healingTarget != -1 && distance < 150000.0)
+							{
+								// Too close to safely reload
+								npc.SetActivity("ACT_RUN_RPG", 240.0);
+								walkStatus = 3;	// Back off
+							}
+						}
+						else if(outOfRange)
+						{
+							// Too far away, walk up
+							npc.SetActivity("ACT_RUN_RPG", 240.0);
+							walkStatus = 1;
+						}
+						else if(!noSafety && distance < 22500.0)	// Too close for the RPG
+						{
 							npc.SetActivity("ACT_RUN_RPG", 240.0);
 							walkStatus = 3;	// Back off
 						}
-					}
-					else if(!noSafety && distance < 22500.0)	// Too close for the RPG
-					{
-						npc.SetActivity("ACT_RUN_RPG", 240.0);
-						walkStatus = 3;	// Back off
-					}
-					else	// Try to shoot
-					{
-						float npc_pos[3];
-						npc_pos = GetAbsOriginOld(npc.index);
-							
-						npc_pos[2] += 30.0;
-						
-						Handle trace = TR_TraceRayFilterEx(npc_pos, vecTarget, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, npc.index);
-						
-						int enemy = TR_GetEntityIndex(trace);
-						delete trace;
-						
-						if(IsValidEnemy(npc.index, enemy, true))	// We can see a target
+						else	// Try to shoot
 						{
-							KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
-							npc.FaceTowards(vecTarget, 15000.0);
-							npc.SetActivity("ACT_IDLE_ANGRY_RPG", 0.0);
-							walkStatus = -1;	// Don't move
+							float npc_pos[3];
+							npc_pos = GetAbsOriginOld(npc.index);
+								
+							npc_pos[2] += 30.0;
 							
-							npc.m_iState = -1;
-							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_RPG");
+							Handle trace = TR_TraceRayFilterEx(npc_pos, vecTarget, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, npc.index);
+							
+							int enemy = TR_GetEntityIndex(trace);
+							delete trace;
+							
+							if(IsValidEnemy(npc.index, enemy, true))	// We can see a target
+							{
+								KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+								npc.FaceTowards(vecTarget, 15000.0);
+								npc.SetActivity("ACT_IDLE_ANGRY_RPG", 0.0);
+								walkStatus = -1;	// Don't move
+								
+								npc.m_iState = -1;
+								npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_RPG");
 
-							npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
-							npc.m_iAttacksTillReload--;
-							float DamageDeal = npc.m_fGunDamage;
-							if(npc.m_bCamo)
-							{
-								DamageDeal *= CAMO_REBEL_DMG_PENALTY;
+								npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
+								npc.m_iAttacksTillReload--;
+								float DamageDeal = npc.m_fGunDamage;
+								if(npc.m_bCamo)
+								{
+									DamageDeal *= CAMO_REBEL_DMG_PENALTY;
+								}
+								else if (npc.m_bRebelAgressive)
+								{
+									DamageDeal *= 1.15;
+								}
+								npc.FireRocket(vecTarget, DamageDeal, 1100.0, _, _, EP_DEALS_SLASH_DAMAGE, _, GetClientOfUserId(npc.m_iGunSeller));
+								npc.PlayRPGSound();
 							}
-							else if (npc.m_bRebelAgressive)
-							{
-								DamageDeal *= 1.15;
-							}
-							npc.FireRocket(vecTarget, DamageDeal, 1100.0, _, _, EP_DEALS_SLASH_DAMAGE, _, GetClientOfUserId(npc.m_iGunSeller));
-							npc.PlayRPGSound();
 						}
 					}
 				}
