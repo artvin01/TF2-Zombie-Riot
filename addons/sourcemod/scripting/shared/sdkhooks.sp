@@ -1352,9 +1352,10 @@ public void OnPostThink(int client)
 				
 			}
 
-			if(f_LeftForDead_Cooldown[client] > GameTime)
+			if(b_LeftForDead[client])
 			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer, "Down Cooldown", f_LeftForDead_Cooldown[client] - GameTime);	
+				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
+					"Downs left", downsleft ? 1 : 0);
 			}
 			else
 			{
@@ -2024,7 +2025,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 			
 			i_AmountDowned[victim] += 1;
-			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim] && f_LeftForDead_Cooldown[victim] < GameTime) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim] && f_LeftForDead_Cooldown[victim] < GameTime))
+			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
 			{
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
@@ -2041,10 +2042,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				}
 				else
 				{
-					if(!SpecterCheckIfAutoRevive(victim)) //only if they dont get revived via this perk
-					{
-						f_LeftForDead_Cooldown[victim] = GameTime + 300.0;
-					}
 					dieingstate[victim] = 500;
 				}
 				ForcePlayerCrouch(victim, true);
