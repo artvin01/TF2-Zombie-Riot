@@ -5522,7 +5522,14 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				}
 
 #if defined ZR
-				StoreWeapon[entity] = index;
+				if(item.Hidden)
+				{
+					StoreWeapon[entity] = -1;
+				}
+				else
+				{
+					StoreWeapon[entity] = index;
+				}
 #endif
 				
 				i_CustomWeaponEquipLogic[entity] = 0;
