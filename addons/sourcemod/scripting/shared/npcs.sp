@@ -3229,7 +3229,7 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		
 	if(i_HasBeenBackstabbed[victim])
 	{
-		BackstabNpcInternalModifExtra(weapon, attacker, victim, 2.0);
+		BackstabNpcInternalModifExtra(weapon, attacker, victim, 1.0);
 	}
 
 	switch(i_CustomWeaponEquipLogic[weapon])
