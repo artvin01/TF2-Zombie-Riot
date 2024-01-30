@@ -901,7 +901,7 @@ void Store_OpenItemPage(int client)
 	{
 		static Item item;
 		StoreItems.GetArray(StoreWeapon[weapon], item);
-		//if(ItemBuyable(item))
+		if(item.Owned[client])
 		{
 			NPCOnly[client] = 0;
 			LastMenuPage[client] = 0;
