@@ -12,8 +12,8 @@ void Events_PluginStart()
 	HookEvent("player_team", OnPlayerTeam, EventHookMode_Pre);
 	HookEvent("player_connect_client", OnPlayerConnect, EventHookMode_Pre);
 	HookEvent("player_disconnect", OnPlayerConnect, EventHookMode_Pre);
+	HookEvent("deploy_buff_banner", OnBannerDeploy, EventHookMode_Pre);
 //	HookEvent("nav_blocked", NavBlocked, EventHookMode_Pre);
-	
 #if defined ZR
 	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_PostNoCopy);
 	HookEvent("teamplay_setup_finished", OnSetupFinished, EventHookMode_PostNoCopy);
@@ -119,7 +119,10 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 	event.BroadcastDisabled = true;
 	return Plugin_Changed;
 }
-
+public Action OnBannerDeploy(Event event, const char[] name, bool dontBroadcast)
+{
+	return Plugin_Handled;
+}
 public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast)
 {
 	if(!event.GetBool("bot"))

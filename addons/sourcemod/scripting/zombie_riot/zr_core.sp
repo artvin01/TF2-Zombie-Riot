@@ -546,6 +546,7 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+	Dhooks_BannerMapstart();
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
 	Ammo_Count_Ready = 0;
