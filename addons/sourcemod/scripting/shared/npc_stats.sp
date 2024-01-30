@@ -8876,7 +8876,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 	int NpcTypeDefine = 1;
 #else
 	int NpcTypeDefine = 0;
-	if(b_thisNpcIsABoss[npc.index])
+	if(b_thisNpcIsABoss[npc.index] || i_NpcInternalId[npc.index] == CITIZEN)
 	{
 		NpcTypeDefine = 1;
 	}
