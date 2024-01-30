@@ -80,26 +80,28 @@ static void ClotThink(int entity)
 	
 	int target = npc.ThinkTarget(gameTime);
 	
-	if(target > 0)
+	if(npc.m_flAttackHappens)
 	{
-		if(npc.m_flAttackHappens)
+		if(npc.m_flAttackHappens < gameTime)
 		{
-			if(npc.m_flAttackHappens < gameTime)
-			{
-				if(IsValidEnemy(npc.index,npc.m_iTarget))
-				{
-					float vecTarget[3];
-					WorldSpaceCenter(npc.m_iTarget, vecTarget);
-					npc.FaceTowards(vecTarget, 20000.0);
-					
-					SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 4.0, DMG_CLUB, -1, _, vecTarget);
-					npc.PlayMeleeHitSound();
-				}
+			target = npc.m_iTarget;
 
-				npc.m_flAttackHappens = 0.0;
+			if(IsValidEnemy(npc.index, target))
+			{
+				float vecTarget[3];
+				WorldSpaceCenter(target, vecTarget);
+				npc.FaceTowards(vecTarget, 20000.0);
+				
+				SDKHooks_TakeDamage(target, npc.index, npc.index, 4.0, DMG_CLUB, -1, _, vecTarget);
+				npc.PlayMeleeHitSound();
 			}
+
+			npc.m_flAttackHappens = 0.0;
 		}
-		else if(npc.m_flNextMeleeAttack < gameTime)
+	}
+	else if(target > 0)
+	{
+		if(npc.m_flNextMeleeAttack < gameTime)
 		{
 			float vecMe[3], vecTarget[3];
 			WorldSpaceCenter(npc.index, vecMe);
