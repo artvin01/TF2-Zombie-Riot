@@ -70,7 +70,7 @@ methodmap WinterSkinHunter < CClotBody
 	
 	public WinterSkinHunter(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		WinterSkinHunter npc = view_as<WinterSkinHunter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "3500", ally));
+		WinterSkinHunter npc = view_as<WinterSkinHunter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "7000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_WINTER_SKIN_HUNTER;
 		i_NpcWeight[npc.index] = 1;
