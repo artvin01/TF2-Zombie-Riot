@@ -1404,7 +1404,8 @@ static void RemoveSelectBeams(int owner)
 	}
 }
 
-static void GetEntityBoundingBoxTop(int entity, float vecPoints[4][3])
+/*
+static stock void GetEntityBoundingBoxTop(int entity, float vecPoints[4][3])
 {
 	float vecMins[3], vecMaxs[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecMins", vecMins);
@@ -1432,6 +1433,7 @@ static void GetEntityBoundingBoxTop(int entity, float vecPoints[4][3])
 	vecPoints[3][1] = vecMaxs[1];
 	vecPoints[3][2] = vecMaxs[2];
 }
+*/
 
 static Action SetTransmit_Beam(int entity, int client)
 {
