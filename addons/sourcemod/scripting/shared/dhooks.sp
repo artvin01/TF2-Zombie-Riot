@@ -196,6 +196,7 @@ void DHook_Setup()
 	delete edictgamedata;
 }
 
+
 void DHook_EntityDestoryed()
 {
 	RequestFrame(DHook_EntityDestoryedFrame);
@@ -2208,7 +2209,6 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 	return MRES_Ignored;
 }
 
-#define BANNER_DURATION_FIX_FLOAT 0.25
 stock void DelayEffectOnHorn(int ref)
 {
 	//i do not trust banner durations.
@@ -2254,24 +2254,62 @@ stock void DelayEffectOnHorn(int ref)
 
 	//"Expidonsan Battery Device"
 }
+
+int BannerWearable[MAXTF2PLAYERS];
+int BannerWearableModelIndex[3];
+void Dhooks_BannerMapstart()
+{
+	BannerWearableModelIndex[0]= PrecacheModel("models/weapons/c_models/c_buffbanner/c_buffbanner.mdl", true);
+	BannerWearableModelIndex[1]= PrecacheModel("models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl", true);
+	BannerWearableModelIndex[2]= PrecacheModel("models/weapons/c_models/c_shogun_warbanner/c_shogun_warbanner.mdl", true);
+}
+
 public Action TimerGrantBannerDuration(Handle timer, int ref)
 {
 	int client = EntRefToEntIndex(ref);
 	if(!IsValidClient(client))
 		return Plugin_Stop;
 
+	int entity;
 	if(!GetEntProp(client, Prop_Send, "m_bRageDraining"))
 	{
 		//banner is over, delete.
+		entity = EntRefToEntIndex(BannerWearable[client]);
+		if(entity > MaxClients)
+			TF2_RemoveWearable(client, entity);
+
 		return Plugin_Stop;
 	}
-	
-	f_BannerDurationActive[client] = GetGameTime() + 0.35;
-	Event event = CreateEvent("deploy_buff_banner", true);
-	event.SetInt("buff_type", 1);
-	event.SetInt("buff_owner", GetClientUserId(client));
-	event.Fire();
 
+	f_BannerDurationActive[client] = GetGameTime() + 0.35;
+
+	if(IsValidEntity(BannerWearable[client]))
+	{
+		return Plugin_Continue;
+	}
+	if(ClientHasBannersWithCD(client) == 0)
+		return Plugin_Continue;
+
+	entity = CreateEntityByName("tf_wearable");
+	if(entity > MaxClients)	// Weapon worldmodel
+	{
+		int team = GetClientTeam(client);
+		SetEntProp(entity, Prop_Send, "m_nModelIndex", BannerWearableModelIndex[ClientHasBannersWithCD(client) -1]);
+
+		SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+		SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
+		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
+		SetEntityCollisionGroup(entity, 11);
+		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
+		
+		DispatchSpawn(entity);
+		SetVariantString("!activator");
+		ActivateEntity(entity);
+
+		BannerWearable[client] = EntIndexToEntRef(entity);
+		SDKCall_EquipWearable(client, entity);
+	}	
 	return Plugin_Continue;
 }
 
