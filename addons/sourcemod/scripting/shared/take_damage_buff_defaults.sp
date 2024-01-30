@@ -6,3 +6,7 @@
 #define DMG_MEDIGUN_LOW 1.25
 #define DMG_WIDOWS_WINE 1.35
 #define DMG_ANTI_RAID 1.1
+
+
+
+#define BANNER_DURATION_FIX_FLOAT 0.25

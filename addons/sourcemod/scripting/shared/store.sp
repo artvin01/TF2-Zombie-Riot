@@ -5141,6 +5141,8 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		Attributes_Set(ViewmodelPlayerModel, 816, 1.0);
 		Attributes_Set(ViewmodelPlayerModel, 671, 1.0);
 		Attributes_Set(ViewmodelPlayerModel, 34, 999.0);
+		TF2Attrib_SetByDefIndex(ViewmodelPlayerModel, 319, BANNER_DURATION_FIX_FLOAT);
+		//do not save this.
 		i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(ViewmodelPlayerModel);
 	}
 	

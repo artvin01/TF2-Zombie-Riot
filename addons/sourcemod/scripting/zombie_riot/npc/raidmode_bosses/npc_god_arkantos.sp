@@ -511,23 +511,6 @@ public void GodArkantos_ClotThink(int iNPC)
 		}
 	}
 	npc.PlayIdleAlertSound();
-
-	if(f_TargetToWalkToDelay[npc.index] < gameTime)
-	{
-		if(npc.m_flArkantosBuffEffect < GetGameTime(npc.index) && !npc.m_flNextRangedAttackHappening && ZR_GetWaveCount()+1 > 30)
-		{
-			npc.m_iTargetWalkTo = GetClosestAlly(npc.index);	
-			if(npc.m_iTargetWalkTo == -1) //there was no alive ally, we will return to finding an enemy and killing them.
-			{
-				npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
-			}
-		}
-		else 
-		{
-			npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
-		}
-		f_TargetToWalkToDelay[npc.index] = gameTime + 0.5;
-	}	
 	if(b_IsAlliedNpc[npc.index])
 	{
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))
@@ -547,6 +530,23 @@ public void GodArkantos_ClotThink(int iNPC)
 			f_TargetToWalkToDelay[npc.index] = gameTime + 0.5;	
 		}	
 	}
+	
+	if(f_TargetToWalkToDelay[npc.index] < gameTime)
+	{
+		if(npc.m_flArkantosBuffEffect < GetGameTime(npc.index) && !npc.m_flNextRangedAttackHappening && ZR_GetWaveCount()+1 > 30)
+		{
+			npc.m_iTargetWalkTo = GetClosestAlly(npc.index);	
+			if(npc.m_iTargetWalkTo == -1) //there was no alive ally, we will return to finding an enemy and killing them.
+			{
+				npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
+			}
+		}
+		else 
+		{
+			npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
+		}
+		f_TargetToWalkToDelay[npc.index] = gameTime + 0.5;
+	}	
 	int ActionToTake = -1;
 	bool AllowSelfDefense = true;
 	//This means nothing, we do nothing.
@@ -1061,6 +1061,10 @@ void GodArkantosSpawnEnemy(int arkantos, int npc_id, int health = 0, int count, 
 			if(summon > MaxClients)
 			{
 				fl_Extra_Damage[summon] = 10.0;
+				if(!health)
+				{
+					health = GetEntProp(summon, Prop_Data, "m_iMaxHealth");
+				}
 				SetEntProp(summon, Prop_Data, "m_iHealth", health / 4);
 				SetEntProp(summon, Prop_Data, "m_iMaxHealth", health / 4);
 			}

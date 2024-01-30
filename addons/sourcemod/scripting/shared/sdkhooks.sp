@@ -483,13 +483,13 @@ public void OnPostThink(int client)
 		HudY += f_WeaponHudOffsetX[client];
 
 		Mana_Hud_Delay[client] = GameTime + 0.4;
+		static bool had_An_ability;
 
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		
 		if(IsValidEntity(weapon))
 		{
 			static float cooldown_time;
-			static bool had_An_ability;
 			had_An_ability = false;
 			static bool IsReady;
 			IsReady = false;
@@ -747,6 +747,22 @@ public void OnPostThink(int client)
 				HudY -= 0.035;
 				Format(buffer, sizeof(buffer), "%s\n", buffer);
 			}
+			had_An_ability = false;
+			switch(ClientHasBannersWithCD(client))
+			{
+				case BuffBanner,Battilons,AncientBanner:
+				{
+					had_An_ability = true;
+					if(GetEntProp(client, Prop_Send, "m_bRageDraining"))
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [⚐ %.1fs]", buffer, f_BannerAproxDur[client] - GetGameTime());
+					}
+					else
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [⚐ %.0f%%]", buffer, GetEntPropFloat(client, Prop_Send, "m_flRageMeter"));
+					}
+				}
+			}
 		}
 		 
 		int red = 200;
@@ -758,6 +774,11 @@ public void OnPostThink(int client)
 			red = 255;
 			green = 0;
 			blue = 255;
+			if(had_An_ability)
+			{
+				HudY -= 0.035;
+				Format(buffer, sizeof(buffer), "%s\n", buffer);
+			}
 			
 			if(Current_Mana[client] < max_mana[client])
 			{
@@ -813,7 +834,6 @@ public void OnPostThink(int client)
 			Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
 		}
 
-		static bool had_An_ability;
 		had_An_ability = false;
 		char bufferbuffs[64];
 		//BUFFS!

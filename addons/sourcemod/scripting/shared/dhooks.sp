@@ -1766,7 +1766,7 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPost(int client, DHookReturn
 {
 	if(GetChargeEffectBeingProvided && !IsInsideManageRegularWeapons)
 	{
-		if(!IsValidClient(client))
+		if(!IsValidClient(GetChargeEffectBeingProvided))
 		{
 			return MRES_Ignored;
 		}
@@ -2208,6 +2208,7 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 	return MRES_Ignored;
 }
 
+#define BANNER_DURATION_FIX_FLOAT 0.25
 stock void DelayEffectOnHorn(int ref)
 {
 	//i do not trust banner durations.
@@ -2236,19 +2237,20 @@ stock void DelayEffectOnHorn(int ref)
 		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 6.0, 6.1, 1);
 	}
 #endif
-
-	if(ExtendDuration <= 10.0)
+	f_BannerAproxDur[client] = GetGameTime() + ExtendDuration;
+	f_BannerDurationActive[client] = GetGameTime() + 0.35;
+	CreateTimer(0.15, TimerGrantBannerDuration, EntIndexToEntRef(client), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	if(ExtendDuration <= (10.0 * BANNER_DURATION_FIX_FLOAT))
 	{
 		return;
 	}
-	ExtendDuration -= 9.0;
+	ExtendDuration -= (9.0 * BANNER_DURATION_FIX_FLOAT);
 
 	DataPack pack;
 	CreateDataTimer(0.1, TimerSetBannerExtraDuration, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(client));
 	pack.WriteFloat(ExtendDuration + GetGameTime());
 	
-	CreateTimer(0.25, TimerGrantBannerDuration, EntIndexToEntRef(client), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 
 	//"Expidonsan Battery Device"
 }
@@ -2259,7 +2261,10 @@ public Action TimerGrantBannerDuration(Handle timer, int ref)
 		return Plugin_Stop;
 
 	if(!GetEntProp(client, Prop_Send, "m_bRageDraining"))
+	{
+		//banner is over, delete.
 		return Plugin_Stop;
+	}
 	
 	f_BannerDurationActive[client] = GetGameTime() + 0.35;
 	Event event = CreateEvent("deploy_buff_banner", true);

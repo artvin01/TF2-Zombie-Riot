@@ -6,6 +6,8 @@ int i_SetBannerType[MAXPLAYERS+1];
 bool b_ClientHasAncientBanner[MAXENTITIES];
 bool b_EntityRecievedBuff[MAXENTITIES];
 Handle Timer_AncientBanner = null;
+Handle Timer_Banner_Management_2[MAXPLAYERS+1] = {null, ...};
+Handle Timer_Banner_Management_1[MAXPLAYERS+1] = {null, ...};
 
 float BannerDefaultRange(int client)
 {
@@ -32,6 +34,17 @@ enum
 	AncientBanner = 3
 }
 
+int ClientHasBannersWithCD(int client)
+{
+	if(Timer_Banner_Management_1[client] != null)
+		return BuffBanner;
+	if(Timer_Banner_Management_2[client] != null)
+		return Battilons;
+	if(b_ClientHasAncientBanner[client])
+		return AncientBanner;
+
+	return 0;
+}
 public void Enable_Management_Banner(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
 	if (Timer_Banner_Management[client] != null)
@@ -105,7 +118,6 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 
 
 
-Handle Timer_Banner_Management_1[MAXPLAYERS+1] = {null, ...};
 
 public void Enable_Management_Banner_1(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
@@ -187,7 +199,6 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 
 
 
-Handle Timer_Banner_Management_2[MAXPLAYERS+1] = {null, ...};
 
 public void Enable_Management_Banner_2(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
