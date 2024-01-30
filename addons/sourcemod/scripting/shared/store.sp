@@ -901,7 +901,7 @@ void Store_OpenItemPage(int client)
 	{
 		static Item item;
 		StoreItems.GetArray(StoreWeapon[weapon], item);
-		if(!item.Hidden || item.ChildKit)
+		if(item.Owned[client])
 		{
 			NPCOnly[client] = 0;
 			LastMenuPage[client] = 0;
@@ -3256,18 +3256,21 @@ static void MenuPage(int client, int section)
 	{
 		StoreItems.GetArray(i, item);
 		//item.GetItemInfo(0, info);
-		if(NPCOnly[client] == 1)
+		if(NPCOnly[client] == 1)	// Greg Store Menu
 		{
 			if((!item.NPCSeller && item.NPCSeller_WaveStart == 0) || item.Level > ClientLevel)
 				continue;
 		}
-		else if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
+		else if(NPCOnly[client] == 2 || NPCOnly[client] == 3)	// Rebel Store Menu
 		{
 			if(item.Level > ClientLevel)
 				continue;
 		}
-		else if(UsingChoosenTags[client])
+		else if(UsingChoosenTags[client])	// Tag Search Menu
 		{
+			if(item.Hidden || item.Level > ClientLevel)
+				continue;
+			
 			int a;
 			int length2 = ChoosenTags[client].Length;
 			for(; a < length2; a++)

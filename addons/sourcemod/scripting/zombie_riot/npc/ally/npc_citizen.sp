@@ -1919,7 +1919,7 @@ public void Citizen_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
 		if(npc.m_iGunType != Cit_None)
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index, _, autoSeek ? FAR_FUTURE : BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus, npc.m_bCamo, _, _, _, !autoSeek);
+			npc.m_iTarget = GetClosestTarget(npc.index, _, autoSeek ? FAR_FUTURE : (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus), npc.m_bCamo, _, _, _, !autoSeek);
 			if(npc.m_iTarget > 0 && view_as<CClotBody>(npc.m_iTarget).m_bCamo)
 				npc.PlaySound(Cit_Behind);
 		}
@@ -2109,7 +2109,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else
 					{
-						bool outOfRange = (autoSeek && distance > (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus));
+						bool outOfRange = (autoSeek && distance > ((BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus) * (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus)));
 
 						if(reloadStatus == 2 || (outOfRange && reloadStatus == 1))	// We need to reload now
 						{
@@ -2220,7 +2220,7 @@ public void Citizen_ClotThink(int iNPC)
 				case Cit_SMG:
 				{
 					bool cooldown = npc.m_flNextRangedAttack > gameTime;
-					bool outOfRange = (!cooldown && autoSeek && distance > (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus));
+					bool outOfRange = (!cooldown && autoSeek && distance > ((BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus) * (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus)));
 					
 					if(!cooldown && (reloadStatus == 2 || (reloadStatus == 1 && outOfRange)))	// We need to reload now
 					{
@@ -2317,7 +2317,7 @@ public void Citizen_ClotThink(int iNPC)
 				case Cit_AR:
 				{
 					bool cooldown = npc.m_flNextRangedAttack > gameTime;
-					bool outOfRange = (!cooldown && autoSeek && distance > (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus));
+					bool outOfRange = (!cooldown && autoSeek && distance > ((BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus) * (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus)));
 					
 					if(!cooldown && (reloadStatus == 2 || (reloadStatus == 1 && outOfRange)))	// We need to reload now
 					{
@@ -2421,7 +2421,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else
 					{
-						bool outOfRange = (autoSeek && distance > (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus));
+						bool outOfRange = (autoSeek && distance > ((BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus) * (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus)));
 						
 						if(reloadStatus == 2 || (reloadStatus == 1 && outOfRange))	// We need to reload now
 						{
@@ -2517,7 +2517,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else
 					{
-						bool outOfRange = (autoSeek && distance > (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus));
+						bool outOfRange = (autoSeek && distance > ((BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus) * (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus)));
 						
 						if(reloadStatus == 2 || (reloadStatus == 1 && outOfRange))	// We need to reload now
 						{
