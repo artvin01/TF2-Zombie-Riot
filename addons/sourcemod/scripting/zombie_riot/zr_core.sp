@@ -1125,7 +1125,6 @@ public void OnClientAuthorized(int client)
 {
 	Ammo_Count_Used[client] = 0;
 	CashSpentTotal[client] = 0;
-	f_LeftForDead_Cooldown[client] = 0.0;
 /*	
 	if(CurrentRound)
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.10);

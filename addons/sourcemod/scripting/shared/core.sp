@@ -573,7 +573,6 @@ bool b_AggreviatedSilence[MAXTF2PLAYERS];
 bool b_ProximityAmmo[MAXTF2PLAYERS];
 bool b_LeftForDead[MAXTF2PLAYERS];
 bool b_StickyExtraGrenades[MAXTF2PLAYERS];
-float f_LeftForDead_Cooldown[MAXTF2PLAYERS];
 bool FinalBuilder[MAXENTITIES];
 bool GlassBuilder[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
@@ -1729,7 +1728,6 @@ public void OnClientPutInServer(int client)
 	FileNetwork_ClientPutInServer(client);
 	SDKHook_HookClient(client);
 	
-//	f_LeftForDead_Cooldown[client] = GetGameTime() + 100.0;
 	//do cooldown upon connection.
 	AdjustBotCount();
 	WeaponClass[client] = TFClass_Unknown;
@@ -1799,8 +1797,7 @@ public void OnClientDisconnect(int client)
 	f_MedicCallIngore[client] = 0.0;
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
-	//Needed to reset attackspeed stuff.
-	f_LeftForDead_Cooldown[client] = 0.0;
+	//Needed to reset attackspeed stuff
 	f_IlligalStuck_ClientDelayCheck[client] = 0.0;
 	for(int Count; Count<MAX_STUCK_PAST_CHECK; Count++)
 	{
