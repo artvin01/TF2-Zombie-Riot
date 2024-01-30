@@ -359,6 +359,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		Citizen_MiniBossSpawn();
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 			
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");

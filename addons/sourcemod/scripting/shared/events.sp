@@ -160,7 +160,6 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
 	CurrentGame = 0;
-	RemoveAllCustomMusic();
 }
 #endif
 

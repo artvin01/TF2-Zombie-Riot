@@ -1456,6 +1456,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					CreateTimer(0.5, SetTimeBack);
 					
 					EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+					
 
 					if(zr_allowfreeplay.BoolValue)
 					{
@@ -1481,6 +1482,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 						roundtime.FloatValue = last;
 					}
+					RemoveAllCustomMusic();
 				}
 				
 				char_MusicString1[0] = 0;

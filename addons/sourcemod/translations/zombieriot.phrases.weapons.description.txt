@@ -709,7 +709,7 @@
 	
 	"The Battalion's Backup Desc"
 	{
-		"en"	"Give Resistance (25%%) to everyone after dealing enough damage, receive +50 Extra HP"
+		"en"	"Give Resistance (20%%) to everyone after dealing enough damage, receive +50 Extra HP"
 	}
 	
 	"P15t0l Desc"
@@ -854,9 +854,7 @@
 	}
 	"Kunai Pap 2"
 	{
-		"en"	"Increased damage and attackspeed, backstabbing gives more health, backstabs have no cooldown and make you laugh."
-		"ru"	"Увеличенный урон и скорость атаки, удары в спину дают больше здоровья, удары в спину не имеют задержки и заставляют вас смеяться."
-		"chi"   "增加伤害和攻击速度，背刺增加生命值，背刺没有冷却时间，让你开怀大笑。"
+		"en"	"Increased damage and attackspeed, backstabbing gives more health, backstabs have no cooldown and make you laugh.\nYou are a professional at backstabbing and such, backstabs are easier to hit."
 	}
 	
 	"Fractured Ark Desc"

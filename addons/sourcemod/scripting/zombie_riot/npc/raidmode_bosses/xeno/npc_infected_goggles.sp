@@ -220,6 +220,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_ice", npc.index, "head", {0.0,0.0,0.0});
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 			
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");

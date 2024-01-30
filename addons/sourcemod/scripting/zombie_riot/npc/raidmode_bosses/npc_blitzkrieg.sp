@@ -474,6 +474,7 @@ methodmap Blitzkrieg < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 			
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");

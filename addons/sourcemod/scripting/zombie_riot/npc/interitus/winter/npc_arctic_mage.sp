@@ -23,20 +23,15 @@ static const char g_IdleAlertedSounds[][] = {
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"vo/heavy_meleeing01.mp3",
-	"vo/heavy_meleeing02.mp3",
-	"vo/heavy_meleeing03.mp3",
-	"vo/heavy_meleeing04.mp3",
-	"vo/heavy_meleeing05.mp3",
-	"vo/heavy_meleeing06.mp3",
-	"vo/heavy_meleeing07.mp3",
-	"vo/heavy_meleeing08.mp3",
+	"weapons/pickaxe_swing1.wav",
+	"weapons/pickaxe_swing2.wav",
+	"weapons/pickaxe_swing3.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/cbar_hitbod1.wav",
-	"weapons/cbar_hitbod2.wav",
-	"weapons/cbar_hitbod3.wav",
+	"mvm/melee_impacts/cbar_hitbod_robo01.wav",
+	"mvm/melee_impacts/cbar_hitbod_robo02.wav",
+	"mvm/melee_impacts/cbar_hitbod_robo03.wav",
 };
 
 
@@ -44,7 +39,7 @@ static float RajulHealAlly[MAXENTITIES];
 static float RajulHealAllyCooldownAntiSpam[MAXENTITIES];
 static int RajulHealAllyDone[MAXENTITIES];
 
-void DesertRajul_OnMapStart_NPC()
+void WinterArcticMage_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -55,7 +50,7 @@ void DesertRajul_OnMapStart_NPC()
 }
 
 
-methodmap DesertRajul < CClotBody
+methodmap WinterArcticMage < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -94,15 +89,15 @@ methodmap DesertRajul < CClotBody
 	}
 	
 	
-	public DesertRajul(int client, float vecPos[3], float vecAng[3], bool ally)
+	public WinterArcticMage(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		DesertRajul npc = view_as<DesertRajul>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "3500", ally, false, true));
+		WinterArcticMage npc = view_as<WinterArcticMage>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "15000", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_DESERT_RAJUL;
+		i_NpcInternalId[npc.index] = INTERITUS_WINTER_ARCTIC_MAGE;
 		i_NpcWeight[npc.index] = 2;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -114,9 +109,9 @@ methodmap DesertRajul < CClotBody
 		RajulHealAlly[npc.index] = 0.0;
 		RajulHealAllyCooldownAntiSpam[npc.index] = 0.0;
 
-		func_NPCDeath[npc.index] = view_as<Function>(DesertRajul_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertRajul_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(DesertRajul_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(WinterArcticMage_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(WinterArcticMage_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(WinterArcticMage_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -129,33 +124,40 @@ methodmap DesertRajul < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/heavy/sbox2014_heavy_gunshow/sbox2014_heavy_gunshow.mdl");
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop_partner/player/items/all_class/tr_jungle_booty/tr_jungle_booty_heavy.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/sum23_brother_mann_style1/sum23_brother_mann_style1.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/xms_sniper_commandobackpack/xms_sniper_commandobackpack.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/dec18_paka_parka/dec18_paka_parka.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/sum23_hog_heels/sum23_hog_heels.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/spr17_warhood/spr17_warhood.mdl");
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 
 		return npc;
 	}
 }
 
-public void DesertRajul_ClotThink(int iNPC)
+public void WinterArcticMage_ClotThink(int iNPC)
 {
-	DesertRajul npc = view_as<DesertRajul>(iNPC);
+	WinterArcticMage npc = view_as<WinterArcticMage>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+	
 
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
-		npc.PlayHurtSound();
+		npc.PlayHurtSound();	
+		if(!VausMagicaShieldLogicEnabled(npc.index))
+			VausMagicaGiveShield(npc.index, 1); 
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
@@ -185,7 +187,7 @@ public void DesertRajul_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		DesertRajulSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		WinterArcticMageSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -195,9 +197,9 @@ public void DesertRajul_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action DesertRajul_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action WinterArcticMage_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	DesertRajul npc = view_as<DesertRajul>(victim);
+	WinterArcticMage npc = view_as<WinterArcticMage>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -207,12 +209,14 @@ public Action DesertRajul_OnTakeDamage(int victim, int &attacker, int &inflictor
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	DesertRajulHealRandomAlly(victim, damage);
+	//grand 1 shield every time he is hurt if the CD is up.
+
+	WinterArcticMageHealRandomAlly(victim, damage);
 	
 	return Plugin_Changed;
 }
 
-void DesertRajulHealRandomAlly(int victim, float damage)
+void WinterArcticMageHealRandomAlly(int victim, float damage)
 {
 	RajulHealAlly[victim] += (damage * 0.15);
 	if(RajulHealAllyCooldownAntiSpam[victim] < GetGameTime())
@@ -233,21 +237,24 @@ void DesertRajulHealRandomAlly(int victim, float damage)
 		99,
 		false,
 		_,
-		DesertRajulAllyHeal);
+		WinterArcticMageAllyHeal);
 		SetEntProp(victim, Prop_Send, "m_iTeamNum", TeamNum);	
 		RajulHealAlly[victim] = 0.0;
 	}
 }
 
-public void DesertRajul_NPCDeath(int entity)
+public void WinterArcticMage_NPCDeath(int entity)
 {
-	DesertRajul npc = view_as<DesertRajul>(entity);
+	WinterArcticMage npc = view_as<WinterArcticMage>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 		
-	
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -257,7 +264,7 @@ public void DesertRajul_NPCDeath(int entity)
 
 }
 
-void DesertRajulSelfDefense(DesertRajul npc, float gameTime, int target, float distance)
+void WinterArcticMageSelfDefense(WinterArcticMage npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -267,7 +274,7 @@ void DesertRajulSelfDefense(DesertRajul npc, float gameTime, int target, float d
 			
 			Handle swingTrace;
 			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1))//Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
 				target = TR_GetEntityIndex(swingTrace);	
@@ -277,12 +284,13 @@ void DesertRajulSelfDefense(DesertRajul npc, float gameTime, int target, float d
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 75.0;
+					float damageDealt = 125.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.5;
+						damageDealt *= 3.5;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+					Sakratan_AddNeuralDamage(target, npc.index, 40);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -304,7 +312,7 @@ void DesertRajulSelfDefense(DesertRajul npc, float gameTime, int target, float d
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
@@ -315,7 +323,7 @@ void DesertRajulSelfDefense(DesertRajul npc, float gameTime, int target, float d
 }
 
 
-void DesertRajulAllyHeal(int entity, int victim, float damage, int weapon)
+void WinterArcticMageAllyHeal(int entity, int victim, float damage, int weapon)
 {
 	if(entity == victim)
 		return;
@@ -325,20 +333,20 @@ void DesertRajulAllyHeal(int entity, int victim, float damage, int weapon)
 		if (RajulHealAllyDone[entity] <= 2 && b_IsAlliedNpc[victim])
 		{
 			RajulHealAllyDone[entity] += 1;
-			DesertRajulAllyHealInternal(entity, victim, RajulHealAlly[entity]);
+			WinterArcticMageAllyHealInternal(entity, victim, RajulHealAlly[entity]);
 		}
 	}
 	else
 	{
-		if (RajulHealAllyDone[entity] <= 2 && !b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients && i_NpcInternalId[victim] != INTERITUS_DESERT_RAJUL)
+		if (RajulHealAllyDone[entity] <= 2 && !b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients && i_NpcInternalId[victim] != INTERITUS_WINTER_ARCTIC_MAGE)
 		{
 			RajulHealAllyDone[entity] += 1;
-			DesertRajulAllyHealInternal(entity, victim, RajulHealAlly[entity]);
+			WinterArcticMageAllyHealInternal(entity, victim, RajulHealAlly[entity]);
 		}
 	}
 }
 
-void DesertRajulAllyHealInternal(int entity, int victim, float heal)
+void WinterArcticMageAllyHealInternal(int entity, int victim, float heal)
 {
 	HealEntityGlobal(entity, victim, heal, 99.0,_,_);
 	int flHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
@@ -368,4 +376,6 @@ void DesertRajulAllyHealInternal(int entity, int victim, float heal)
 	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 	ProjLoc[2] += 100.0;
 	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	VausMagicaGiveShield(victim, 1);
+	//yippie reuse
 }

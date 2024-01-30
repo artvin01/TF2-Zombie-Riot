@@ -172,7 +172,7 @@ enum struct ItemInfo
 		
 		Format(buffer, sizeof(buffer), "%sclassname", prefix);
 		kv.GetString(buffer, this.Classname, 36);
-		
+
 		Format(buffer, sizeof(buffer), "%sindex", prefix);
 		this.Index = kv.GetNum(buffer);
 
@@ -5132,19 +5132,18 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	/*
 	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_pda_engineer_destroy", 26, 100, 5, "671 ; 1"));
 	*/
-
-	int watch_entity_attribs = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
-	if(watch_entity_attribs != INVALID_ENT_REFERENCE)
-		TF2_RemoveWearable(client, watch_entity_attribs);
-
-	watch_entity_attribs = GiveWearable(client, 0);
-	Attributes_Set(watch_entity_attribs, 221, -99.0);
-	Attributes_Set(watch_entity_attribs, 160, 1.0);
-	Attributes_Set(watch_entity_attribs, 35, 0.0);
-	Attributes_Set(watch_entity_attribs, 816, 1.0);
-	Attributes_Set(watch_entity_attribs, 671, 1.0);
-	Attributes_Set(watch_entity_attribs, 34, 999.0);
-	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(watch_entity_attribs);
+	int ViewmodelPlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(IsValidEntity(ViewmodelPlayerModel))
+	{
+		Attributes_Set(ViewmodelPlayerModel, 221, -99.0);
+		Attributes_Set(ViewmodelPlayerModel, 160, 1.0);
+		Attributes_Set(ViewmodelPlayerModel, 35, 0.0);
+		Attributes_Set(ViewmodelPlayerModel, 816, 1.0);
+		Attributes_Set(ViewmodelPlayerModel, 671, 1.0);
+		Attributes_Set(ViewmodelPlayerModel, 34, 999.0);
+		i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(ViewmodelPlayerModel);
+	}
+	
 	
 #if defined ZR
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.

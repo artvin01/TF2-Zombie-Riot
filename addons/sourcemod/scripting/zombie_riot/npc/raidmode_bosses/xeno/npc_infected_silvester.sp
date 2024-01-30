@@ -410,6 +410,7 @@ methodmap RaidbossSilvester < CClotBody
 		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 			
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -1485,7 +1486,7 @@ public Action contact_throw_Silvester_entity(int client)
 	float flVel[3];
 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", flVel);
 	bool EndThrow = false;
-	if (IsValidClient(client) && IsPlayerAlive(client) && dieingstate[client] != 0 && TeutonType[client] == TEUTON_NONE)
+	if (IsValidClient(client) && IsPlayerAlive(client) && dieingstate[client] == 0 && TeutonType[client] == TEUTON_NONE)
 	{
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 		{
@@ -1532,6 +1533,9 @@ public Action contact_throw_Silvester_entity(int client)
 					{
 						if (!b_AlreadyHitTankThrow[client][entity] && entity != client)
 						{		
+							if(!b_NpcHasDied[entity] && i_NpcInternalId[entity] >= XENO_RAIDBOSS_SILVESTER && i_NpcInternalId[entity] <= XENO_RAIDBOSS_SUPERSILVESTER)
+								continue;
+								
 							int damage = GetEntProp(client, Prop_Data, "m_iMaxHealth") / 3;
 							
 							if(damage > 2000)

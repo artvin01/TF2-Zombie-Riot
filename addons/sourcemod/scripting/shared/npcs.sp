@@ -1051,7 +1051,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype);
 
 #if defined ZR
-			VausMagicaShieldLogicNpcOnTakeDamage(victim, damage, damagetype);
+			VausMagicaShieldLogicNpcOnTakeDamage(victim, damage, damagetype,i_HexCustomDamageTypes[victim]);
 
 			OnTakeDamageWidowsWine(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 
@@ -1403,13 +1403,13 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		Debuff_added = true;
 		Debuff_added_hud = true;
-		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❣%i", Debuff_Adder, BleedAmountCountStack[victim]);			
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❣(%i)", Debuff_Adder, BleedAmountCountStack[victim]);			
 	}
 	if(i_HowManyBombsOnThisEntity[victim][attacker] > 0)
 	{
 		Debuff_added = true;
 		Debuff_added_hud = true;
-		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s!%i", Debuff_Adder, i_HowManyBombsOnThisEntity[victim][attacker]);
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s!(%i)", Debuff_Adder, i_HowManyBombsOnThisEntity[victim][attacker]);
 	}
 		
 	if(IgniteFor[victim] > 0) //burn
@@ -1512,6 +1512,16 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		}
 		Debuff_added = true;
 		Format(Debuff_Adder, sizeof(Debuff_Adder), "⍋%s", Debuff_Adder);
+	}
+	if(VausMagicaShieldLeft(victim) > 0)
+	{
+		if(Debuff_added_hud)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
+			Debuff_added_hud = false;
+		}
+		Debuff_added = true;
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "S(%i)%s",VausMagicaShieldLeft(victim),Debuff_Adder);
 	}
 	if(f_HussarBuff[victim] > GameTime) //hussar!
 	{
@@ -1628,6 +1638,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		float percentage = npc.m_flMeleeArmor * 100.0;
 		percentage *= fl_Extra_MeleeArmor[victim];
 		percentage *= fl_TotalArmor[victim];
+		int testvalue = 1;
+		OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
 
 #if defined ZR
 		if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
@@ -1655,6 +1667,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		float percentage = npc.m_flRangedArmor * 100.0;
 		percentage *= fl_Extra_RangedArmor[victim];
 		percentage *= fl_TotalArmor[victim];
+		int testvalue = 1;
+		OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
 
 #if defined ZR
 		if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
@@ -1864,6 +1878,11 @@ bool NpcHadArmorType(int victim, int type)
 	if(VausMagicaShieldLogicEnabled(victim))
 		return true;
 #endif
+	float DamageTest = 1.0;
+	int testvalue = 1;
+	OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, DamageTest, testvalue, testvalue, GetGameTime());
+	if(DamageTest != 1.0)
+		return true;
 
 	CClotBody npc = view_as<CClotBody>(victim);
 	switch(type)
@@ -2803,7 +2822,7 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 	{
 		if(damagetype & DMG_CLUB && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)) //Use dmg slash for any npc that shouldnt be scaled.
 		{
-			if(IsBehindAndFacingTarget(attacker, victim) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
+			if(IsBehindAndFacingTarget(attacker, victim, weapon) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
 			{
 				int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
 				int melee = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
@@ -3059,22 +3078,25 @@ void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor, floa
 		{
 			damage *= 0.90;
 		}
-		if(f_GodArkantosBuff[victim] > GameTime) //hussar!
-		{
-			damage *= 0.75;
-		}
 	}
-	if(f_PotionShrinkEffect[attacker] > GameTime || (IsValidEntity(inflictor) && f_PotionShrinkEffect[attacker] > GameTime))
+	if(f_GodArkantosBuff[victim] > GameTime) //hussar!
 	{
-		damage *= 0.5; //half the damage when small.
+		damage *= 0.75;
+	}
+	if(attacker > 0)
+	{
+		if(f_PotionShrinkEffect[attacker] > GameTime || (IsValidEntity(inflictor) && f_PotionShrinkEffect[attacker] > GameTime))
+		{
+			damage *= 0.5; //half the damage when small.
+		}
 	}
 	if(f_BattilonsNpcBuff[victim] > GameTime)
 	{
-		damage *= 0.75;
+		damage *= RES_BATTILONS;
 	}		
 	if(Resistance_Overall_Low[victim] > GameTime)
 	{
-		damage *= 0.9;
+		damage *= RES_MEDIGUN_LOW;
 	}
 }
 void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
@@ -3109,10 +3131,10 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 		{
 			damage += BaseDamageBeforeBuffs * (0.1 * DamageBuffExtraScaling);
 		}
-		if(f_GodArkantosBuff[attacker] > GameTime) //hussar!
-		{
-			damage += BaseDamageBeforeBuffs * (0.5 * DamageBuffExtraScaling); //50% more damage!
-		}
+	}
+	if(f_GodArkantosBuff[attacker] > GameTime) //hussar!
+	{
+		damage += BaseDamageBeforeBuffs * (0.5 * DamageBuffExtraScaling); //50% more damage!
 	}
 	if(f_Ocean_Buff_Stronk_Buff[attacker] > GameTime) //hussar!
 	{
@@ -3175,16 +3197,17 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 #endif
 	if(f_BuildingAntiRaid[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * (0.1 * DamageBuffExtraScaling);
+		damage += BaseDamageBeforeBuffs * ((DMG_ANTI_RAID - 1.0)* DamageBuffExtraScaling);
 	}
 	if(f_WidowsWineDebuff[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * (0.35 * DamageBuffExtraScaling);
+		damage += BaseDamageBeforeBuffs * ((DMG_WIDOWS_WINE - 1.0) * DamageBuffExtraScaling);
 	}
 
 	if(Increaced_Overall_damage_Low[attacker] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * (0.25 * DamageBuffExtraScaling);
+		//this doesnt get applied in groups.
+		damage += BaseDamageBeforeBuffs * (DMG_MEDIGUN_LOW - 1.0);
 	}
 	
 	if(f_CrippleDebuff[victim] > GameTime)

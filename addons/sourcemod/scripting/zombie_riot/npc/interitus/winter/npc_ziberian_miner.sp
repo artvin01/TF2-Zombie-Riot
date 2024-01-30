@@ -2,23 +2,27 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/spy_paincrticialdeath01.mp3",
-	"vo/spy_paincrticialdeath02.mp3",
-	"vo/spy_paincrticialdeath03.mp3",
+	"vo/engineer_paincrticialdeath01.mp3",
+	"vo/engineer_paincrticialdeath02.mp3",
+	"vo/engineer_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/spy_painsharp01.mp3",
-	"vo/spy_painsharp02.mp3",
-	"vo/spy_painsharp03.mp3",
-	"vo/spy_painsharp04.mp3",
+	"vo/engineer_painsharp01.mp3",
+	"vo/engineer_painsharp02.mp3",
+	"vo/engineer_painsharp03.mp3",
+	"vo/engineer_painsharp04.mp3",
+	"vo/engineer_painsharp05.mp3",
+	"vo/engineer_painsharp06.mp3",
+	"vo/engineer_painsharp07.mp3",
+	"vo/engineer_painsharp08.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/spy_battlecry01.mp3",
-	"vo/spy_battlecry02.mp3",
-	"vo/spy_battlecry03.mp3",
-	"vo/spy_battlecry04.mp3",
+	"vo/engineer_battlecry01.mp3",
+	"vo/engineer_battlecry03.mp3",
+	"vo/engineer_battlecry04.mp3",
+	"vo/engineer_battlecry05.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -35,7 +39,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cleaver_hit_07.wav",
 };
 
-void DesertAtilla_OnMapStart_NPC()
+void WinterZiberianMiner_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -46,7 +50,7 @@ void DesertAtilla_OnMapStart_NPC()
 }
 
 
-methodmap DesertAtilla < CClotBody
+methodmap WinterZiberianMiner < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -85,15 +89,15 @@ methodmap DesertAtilla < CClotBody
 	}
 	
 	
-	public DesertAtilla(int client, float vecPos[3], float vecAng[3], bool ally)
+	public WinterZiberianMiner(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		DesertAtilla npc = view_as<DesertAtilla>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally));
+		WinterZiberianMiner npc = view_as<WinterZiberianMiner>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "2000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_DESERT_ATILLA;
+		i_NpcInternalId[npc.index] = INTERITUS_WINTER_ZIBERIANMINER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -102,9 +106,9 @@ methodmap DesertAtilla < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(DesertAtilla_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertAtilla_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(DesertAtilla_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(WinterZiberianMiner_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(WinterZiberianMiner_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(WinterZiberianMiner_ClotThink);
 		
 		
 		//IDLE
@@ -118,22 +122,28 @@ methodmap DesertAtilla < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_boston_basher/c_boston_basher.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_pickaxe/c_pickaxe_s2.mdl");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/spy/sum23_professionnel_style1/sum23_professionnel_style1.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/engineer/mining_hat.mdl");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/spy/dec23_covert_covers/dec23_covert_covers.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/engineer/dec22_underminers_style1/dec22_underminers_style1.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/engineer/sbox2014_scotch_saver/sbox2014_scotch_saver.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/engineer/eotl_winter_pants/eotl_winter_pants.mdl");
+		
+		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}
 }
 
-public void DesertAtilla_ClotThink(int iNPC)
+public void WinterZiberianMiner_ClotThink(int iNPC)
 {
-	DesertAtilla npc = view_as<DesertAtilla>(iNPC);
+	WinterZiberianMiner npc = view_as<WinterZiberianMiner>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -175,7 +185,7 @@ public void DesertAtilla_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		DesertAtillaSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		WinterZiberianMinerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -185,9 +195,9 @@ public void DesertAtilla_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action DesertAtilla_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action WinterZiberianMiner_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	DesertAtilla npc = view_as<DesertAtilla>(victim);
+	WinterZiberianMiner npc = view_as<WinterZiberianMiner>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -201,15 +211,19 @@ public Action DesertAtilla_OnTakeDamage(int victim, int &attacker, int &inflicto
 	return Plugin_Changed;
 }
 
-public void DesertAtilla_NPCDeath(int entity)
+public void WinterZiberianMiner_NPCDeath(int entity)
 {
-	DesertAtilla npc = view_as<DesertAtilla>(entity);
+	WinterZiberianMiner npc = view_as<WinterZiberianMiner>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 		
 	
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -219,7 +233,7 @@ public void DesertAtilla_NPCDeath(int entity)
 
 }
 
-void DesertAtillaSelfDefense(DesertAtilla npc, float gameTime, int target, float distance)
+void WinterZiberianMinerSelfDefense(WinterZiberianMiner npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -239,24 +253,10 @@ void DesertAtillaSelfDefense(DesertAtilla npc, float gameTime, int target, float
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 25.0;
+					float damageDealt = 40.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+						damageDealt *= 5.0;
 
-					if(!NpcStats_IsEnemySilenced(npc.index))
-					{
-						if(target > MaxClients)
-						{
-							StartBleedingTimer_Against_Client(target, npc.index, 4.0, 5);
-						}
-						else
-						{
-							if (!IsInvuln(target))
-							{
-								StartBleedingTimer_Against_Client(target, npc.index, 4.0, 5);
-							}
-						}
-					}
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
@@ -279,7 +279,7 @@ void DesertAtillaSelfDefense(DesertAtilla npc, float gameTime, int target, float
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;

@@ -19,6 +19,7 @@ static const float ViewHeights[] =
 static float i_WasInUber[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
+static float i_WasInJarate[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 void SDKHooks_ClearAll()
 {
 #if defined ZR
@@ -33,6 +34,7 @@ void SDKHooks_ClearAll()
 	Zero(i_WasInUber);
 	Zero(i_WasInMarkedForDeath);
 	Zero(i_WasInDefenseBuff);
+	Zero(i_WasInJarate);
 }
 
 void SDKHook_PluginStart()
@@ -673,6 +675,10 @@ public void OnPostThink(int client)
 			{
 				percentage_Global *= 1.35;
 			}
+			if(TF2_IsPlayerInCondition(client, TFCond_Jarated))
+			{
+				percentage_Global *= 1.35;
+			}
 			if(TF2_IsPlayerInCondition(client, TFCond_DefenseBuffed))
 			{
 				percentage_Global *= 0.65;
@@ -687,7 +693,7 @@ public void OnPostThink(int client)
 			}
 			if(f_BattilonsNpcBuff[client] > GameTime)
 			{
-				percentage_Global *= 0.75;
+				percentage_Global *= RES_BATTILONS;
 			}	
 			if(f_HussarBuff[client] > GameTime)
 			{
@@ -707,7 +713,7 @@ public void OnPostThink(int client)
 			}
 			if(Resistance_Overall_Low[client] > GameTime)
 			{
-				percentage_Global *= 0.9;
+				percentage_Global *= RES_MEDIGUN_LOW;
 			}
 			value = Attributes_FindOnPlayerZR(client, 206, true, 0.0, true, true);	// MELEE damage resistance
 			if(value)
@@ -1510,6 +1516,10 @@ void RegainTf2Buffs(int victim)
 	{
 		TF2_AddCondition(victim, TFCond_MarkedForDeathSilent, i_WasInMarkedForDeath[victim]);
 	}
+	if(i_WasInJarate[victim])
+	{
+		TF2_AddCondition(victim, TFCond_Jarated, i_WasInJarate[victim]);
+	}
 	if(i_WasInDefenseBuff[victim])
 	{
 		TF2_AddCondition(victim, TFCond_DefenseBuffed, i_WasInDefenseBuff[victim]);
@@ -1517,6 +1527,7 @@ void RegainTf2Buffs(int victim)
 	i_WasInUber[victim] = 0.0;
 	i_WasInMarkedForDeath[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
+	i_WasInJarate[victim] = 0.0;
 }
 static void Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim)
 {
@@ -1752,8 +1763,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 		if(f_BattilonsNpcBuff[victim] > GameTime)
 		{
-			damage *= 0.75;
-			Replicated_Damage *= 0.75;
+			damage *= 0.8;
+			Replicated_Damage *= 0.8;
 		}	
 		damage *= fl_Extra_Damage[attacker];
 		Replicated_Damage *= fl_Extra_Damage[attacker];
@@ -1876,10 +1887,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			
 #if defined ZR
-			Replicated_Damage *= 0.9;
+			Replicated_Damage *= RES_MEDIGUN_LOW;
 #endif
 			
-			damage *= 0.9;
+			damage *= RES_MEDIGUN_LOW;
 		}
 #if defined ZR
 		if(i_HealthBeforeSuit[victim] == 0)
@@ -2099,6 +2110,13 @@ void Replicate_Damage_Medications(int victim, float &damage, float &Replicated_D
 	{
 		i_WasInMarkedForDeath[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
 		TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
+		damage *= 1.35;
+		Replicated_Dmg *= 1.35;
+	}
+	if(TF2_IsPlayerInCondition(victim, TFCond_Jarated))
+	{
+		i_WasInJarate[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_Jarated);
+		TF2_RemoveCondition(victim, TFCond_Jarated);
 		damage *= 1.35;
 		Replicated_Dmg *= 1.35;
 	}
@@ -2401,17 +2419,15 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 }
 
 //problem: tf2 code lazily made it only work for clients, the server doesnt get this information updated all the time now.
+#define SKIN_ZOMBIE			5
+#define SKIN_ZOMBIE_SPY		SKIN_ZOMBIE + 18
 
 void UpdatePlayerFakeModel(int client)
 {
 	int PlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(PlayerModel > 0)
-	{
-		//setclass to actual class
-	//	TF2_SetPlayerClass_ZR(client, CurrentClass[client]);
+	{	
 		SDKCall_RecalculatePlayerBodygroups(client);
-		//set back to simulate viewmodel
-	//	TF2_SetPlayerClass_ZR(client, WeaponClass[client]);
 		i_nm_body_client[client] = GetEntProp(client, Prop_Data, "m_nBody");
 		SetEntProp(PlayerModel, Prop_Send, "m_nBody", i_nm_body_client[client]);
 	}

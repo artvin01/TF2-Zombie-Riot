@@ -577,11 +577,11 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 					SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", i_WeaponSoundIndexOverride[weapon]);
 
 				SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
+
 				if(i_WeaponSoundIndexOverride[weapon] > 0)
 					SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", Item_Index);
 
 				EmitGameSoundToAll(SoundStringToPlay, client);
-					
 			}
 		}
 

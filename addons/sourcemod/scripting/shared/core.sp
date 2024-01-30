@@ -517,6 +517,7 @@ bool b_RocketBoomEffect[MAXENTITIES]={false, ...};
 //6 wearables
 int i_Wearable[MAXENTITIES][7];
 int i_FreezeWearable[MAXENTITIES];
+int i_InvincibleParticle[MAXENTITIES];
 float f_WidowsWineDebuff[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXENTITIES];
 float f_SpecterDyingDebuff[MAXENTITIES];
@@ -1139,6 +1140,7 @@ float f_DelayNextWaveStartAdvancingDeathNpc;
 	Below Are Shared Overrides
 */
 
+#include "shared/take_damage_buff_defaults.sp"
 #include "shared/stocks_override.sp"
 #include "shared/npc_stats.sp"	// NPC Stats is required here due to important methodmap
 #include "shared/npc_collision_logic.sp"	// NPC collisions are sepearted for ease

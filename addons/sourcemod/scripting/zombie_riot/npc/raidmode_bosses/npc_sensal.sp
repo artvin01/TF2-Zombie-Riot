@@ -367,7 +367,7 @@ methodmap Sensal < CClotBody
 
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
-
+		npc.m_bTeamGlowDefault = false;
 		SetVariantColor(view_as<int>({35, 35, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
@@ -734,6 +734,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			SensalThrowScythes(npc);
 			npc.m_flDoingAnimation = gameTime + 0.45;
 			npc.m_flNextRangedSpecialAttackHappens = gameTime + 7.5;
+			VausMagicaGiveShield(npc.index, CountPlayersOnRed());
 
 			if(ZR_GetWaveCount()+1 >= 15)
 				npc.m_flNextRangedSpecialAttackHappens = gameTime + 4.0;
@@ -1184,7 +1185,7 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		Initiate_HomingProjectile(Projectile,
 		 npc.index,
 		 	70.0,			// float lockonAngleMax,
-		   	10.0,				//float homingaSec,
+		   	9.0,				//float homingaSec,
 			true,				// bool LockOnlyOnce,
 			true,				// bool changeAngles,
 			  ang_Look);// float AnglesInitiate[3]);
@@ -1631,7 +1632,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 				Initiate_HomingProjectile(Projectile,
 				npc.index,
 					70.0,			// float lockonAngleMax,
-					10.0,				//float homingaSec,
+					9.0,				//float homingaSec,
 					true,				// bool LockOnlyOnce,
 					true,				// bool changeAngles,
 					ang_Look,			

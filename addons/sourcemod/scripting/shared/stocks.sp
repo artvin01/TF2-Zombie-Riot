@@ -1041,6 +1041,7 @@ stock int GiveWearable(int client, int index)
 		SetEntProp(entity, Prop_Send, "m_iEntityQuality", 1);
 		SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
+		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 		
 		DispatchSpawn(entity);
 		SDKCall_EquipWearable(client, entity);
@@ -1589,7 +1590,7 @@ stock void GetWorldSpaceCenter(int client, float v[3])
 	v[2] += max_space[2] / 2;
 }
 
-bool IsBehindAndFacingTarget(int owner, int target)
+bool IsBehindAndFacingTarget(int owner, int target, int weapon = -1)
 {
 	float vecToTarget[3], vecEyeAngles[3];
 	GetWorldSpaceCenter(target, vecToTarget);
@@ -1622,7 +1623,26 @@ bool IsBehindAndFacingTarget(int owner, int target)
 	float flPosVsTargetViewDot = GetVectorDotProduct(vecToTarget, vecTargetForward);
 	float flPosVsOwnerViewDot = GetVectorDotProduct(vecToTarget, vecOwnerForward);
 	float flViewAnglesDot = GetVectorDotProduct(vecTargetForward, vecOwnerForward);
-	
+	if(weapon > 0)
+	{
+		if(b_BackstabLaugh[weapon])
+		{
+			int AllCorrect = 0;
+			if(flPosVsTargetViewDot > -0.6)
+				AllCorrect++;
+
+			if(flPosVsOwnerViewDot > 0.5)
+				AllCorrect++;
+				
+			if(flViewAnglesDot > -0.8)
+				AllCorrect++;
+			
+			if(AllCorrect >= 3)
+				return true;
+			else
+				return false;
+		}
+	}
 	return ( flPosVsTargetViewDot > 0.0 && flPosVsOwnerViewDot > 0.5 && flViewAnglesDot > -0.3 );
 }
 

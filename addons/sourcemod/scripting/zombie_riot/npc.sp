@@ -406,6 +406,15 @@ enum
 	INTERITUS_DESERT_QANAAS			= 357,
 	INTERITUS_DESERT_ATILLA			= 358,
 	INTERITUS_DESERT_ANCIENTDEMON	= 359,
+	INTERITUS_WINTER_SNIPER			= 360,
+	INTERITUS_WINTER_ZIBERIANMINER 	= 361,
+	INTERITUS_WINTER_SNOWEY_GUNNER	= 362,
+	INTERITUS_WINTER_FREEZING_CLEANER = 363,
+	INTERITUS_WINTER_AIRBORN_EXPLORER = 364,
+	INTERITUS_WINTER_ARCTIC_MAGE	  = 365,
+	INTERITUS_WINTER_FROST_HUNTER	  = 366,
+	INTERITUS_WINTER_SKIN_HUNTER	  = 367,
+	INTERITUS_WINTER_IRRITATED_PERSON = 368,
 
 	MAX_NPC_TYPES	// Add entries above this line
 }
@@ -795,7 +804,16 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Rajul",
 	"Qanaas",
 	"Atilla",
-	"Ancient Demon"
+	"Ancient Demon",
+	"Winter Sniper",
+	"Ziberian Miner",
+	"Snowey Gunner",
+	"Freezing Cleaner",
+	"Airborn Explorer",
+	"Arctic Mage",
+	"Frost Hunter",
+	"Skin Hunter",
+	"Irritated Person"
 };
 
 // See items.sp for IDs to names
@@ -1557,7 +1575,16 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_rajul",
 	"npc_qanaas",
 	"npc_atilla",
-	"npc_ancient_demon"
+	"npc_ancient_demon",
+	"npc_winter_sniper",
+	"npc_ziberian_miner",
+	"npc_snowey_gunner",
+	"npc_freezing_cleaner",
+	"npc_airborn_explorer",
+	"npc_arctic_mage",
+	"npc_frost_hunter",
+	"npc_skin_hunter",
+	"npc_irritated_person"
 };
 
 void NPC_MapStart()
@@ -1829,7 +1856,16 @@ void NPC_MapStart()
 	DesertQanaas_OnMapStart_NPC();
 	DesertAtilla_OnMapStart_NPC();
 	DesertAncientDemon_OnMapStart_NPC();
-	
+	WinterSniper_OnMapStart_NPC();
+	WinterZiberianMiner_OnMapStart_NPC();
+	WinterSnoweyGunner_OnMapStart_NPC();
+	WinterFreezingCleaner_OnMapStart_NPC();
+	WinterAirbornExplorer_OnMapStart_NPC();
+	WinterArcticMage_OnMapStart_NPC();
+	WinterFrostHunter_OnMapStart_NPC();
+	WinterSkinHunter_OnMapStart_NPC();
+	WinterIrritatedPerson_OnMapStart_NPC();
+
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();
@@ -2883,6 +2919,34 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case INTERITUS_DESERT_ANCIENTDEMON:
 			entity = DesertAncientDemon(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_SNIPER:
+			entity = WinterSniper(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_ZIBERIANMINER:
+			entity = WinterZiberianMiner(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_SNOWEY_GUNNER:
+			entity = WinterSnoweyGunner(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_FREEZING_CLEANER:
+			entity = WinterFreezingCleaner(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_AIRBORN_EXPLORER:
+			entity = WinterAirbornExplorer(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_ARCTIC_MAGE:
+			entity = WinterArcticMage(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_FROST_HUNTER:
+			entity = WinterFrostHunter(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_SKIN_HUNTER:
+			entity = WinterSkinHunter(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_IRRITATED_PERSON:
+			entity = WinterIrritatedPerson(client, vecPos, vecAng, ally);
+
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -5128,3 +5192,13 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/desert/npc_qanaas.sp"
 #include "zombie_riot/npc/interitus/desert/npc_atilla.sp"
 #include "zombie_riot/npc/interitus/desert/npc_ancient_demon.sp"
+
+#include "zombie_riot/npc/interitus/winter/npc_winter_sniper.sp"
+#include "zombie_riot/npc/interitus/winter/npc_ziberian_miner.sp"
+#include "zombie_riot/npc/interitus/winter/npc_snowey_gunner.sp"
+#include "zombie_riot/npc/interitus/winter/npc_freezing_cleaner.sp"
+#include "zombie_riot/npc/interitus/winter/npc_airborn_explorer.sp"
+#include "zombie_riot/npc/interitus/winter/npc_arctic_mage.sp"
+#include "zombie_riot/npc/interitus/winter/npc_skin_hunter.sp"
+#include "zombie_riot/npc/interitus/winter/npc_frost_hunter.sp"
+#include "zombie_riot/npc/interitus/winter/npc_irritated_person.sp"
