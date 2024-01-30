@@ -64,6 +64,9 @@ public void SwagMeter(int victim, int weapon) //so that parrying 2 enemies at on
 {
 	if (Board_Ability_1[victim] == true)
 	{
+		if(dieingstate[victim] > 0)
+			return;
+
 		float MaxHealth = float(SDKCall_GetMaxHealth(victim));
 		if (MaxHealth > 2000.0)
 		{
@@ -719,6 +722,9 @@ void PlayParrySoundBoard(int client)
 
 public void PassiveBoardHeal(int client)
 {
+	if(dieingstate[client] > 0)
+		return;
+
 	float MaxHealth = float(SDKCall_GetMaxHealth(client));
 	if (MaxHealth > 2000.0)
 	{
