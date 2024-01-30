@@ -2980,32 +2980,24 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 }
 void BackstabNpcInternalModifExtra(int weapon, int attacker, int victim, float multi)
 {
-	float heal_amount = float(i_BackstabHealEachTick[weapon]);
-	float heal_ticks = float(i_BackstabHealTicks[weapon]);
-	if(heal_amount && heal_ticks)
+	if(dieingstate[attacker] > 0)
+		return;
+
+	float HealTime = f_BackstabHealOverThisDuration[weapon];
+	float HealTotal = f_BackstabHealTotal[weapon];
+	if(HealTotal <= 0.0)
+		return;
+	//If against raids, heal more and damage more.
+	if(b_thisNpcIsARaid[victim])
 	{
-		//If against raids, heal more and damage more.
-		if(b_thisNpcIsARaid[victim])
-		{
-			heal_amount *= 2.0;
-		}
-		heal_amount *= multi;
-		if(b_FaceStabber[attacker])
-		{
-			heal_amount *= 0.25;
-			heal_ticks	*= 0.25;
-			if(heal_amount < 1.0)
-			{
-				heal_amount = 1.0;
-			}
-			if(heal_ticks < 1.0)
-			{
-				heal_ticks = 1.0;
-			}
-		}
-		heal_amount *= heal_ticks;
-		HealEntityGlobal(attacker, attacker, heal_amount, 1.0, 1.0, HEAL_SELFHEAL);
+		HealTotal *= 2.0;
 	}
+	HealTotal *= multi;
+	if(b_FaceStabber[attacker])
+	{
+		HealTotal *= 0.25;
+	}
+	HealEntityGlobal(attacker, attacker, HealTotal, 1.0, HealTime, HEAL_SELFHEAL);
 }
 
 bool OnTakeDamageBuildingBonusDamage(int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)

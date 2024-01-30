@@ -77,8 +77,8 @@ enum struct ItemInfo
 
 	float BackstabCD;
 	float BackstabDMGMulti;
-	int BackstabHealPerTick;
-	int BackstabHealTicks;
+	float BackstabHealOverThisTime;
+	float BackstabHealTotal;
 	bool BackstabLaugh;
 	bool NoRefundWanted;
 	float BackstabDmgPentalty;
@@ -194,11 +194,11 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sbackstab_dmg_multi", prefix);
 		this.BackstabDMGMulti		= kv.GetFloat(buffer, 0.0);
 		
-		Format(buffer, sizeof(buffer), "%sbackstab_heal_per_tick", prefix);
-		this.BackstabHealPerTick		= kv.GetNum(buffer, 0);
+		Format(buffer, sizeof(buffer), "%sheal_over_this_time", prefix);
+		this.BackstabHealOverThisTime		= kv.GetFloat(buffer, 0.0);
 
-		Format(buffer, sizeof(buffer), "%sbackstab_heal_ticks", prefix);
-		this.BackstabHealTicks		= kv.GetNum(buffer, 0);
+		Format(buffer, sizeof(buffer), "%sbackstab_total_heal", prefix);
+		this.BackstabHealTotal		= kv.GetFloat(buffer, 0.0);
 
 		Format(buffer, sizeof(buffer), "%sbackstab_laugh", prefix);
 		this.BackstabLaugh		= view_as<bool>(kv.GetNum(buffer, 0));
@@ -5677,8 +5677,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					}
 					f_BackstabCooldown[entity] 					= info.BackstabCD;
 					f_BackstabDmgMulti[entity] 					= info.BackstabDMGMulti;
-					i_BackstabHealEachTick[entity] 				= info.BackstabHealPerTick;
-					i_BackstabHealTicks[entity] 				= info.BackstabHealTicks;
+					f_BackstabHealOverThisDuration[entity] 				= info.BackstabHealOverThisTime;
+					f_BackstabHealTotal[entity] 				= info.BackstabHealTotal;
 					b_BackstabLaugh[entity] 					= info.BackstabLaugh;
 
 

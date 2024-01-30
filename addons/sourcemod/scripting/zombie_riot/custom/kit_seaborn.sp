@@ -250,7 +250,7 @@ public void Weapon_SeaHealing_M1(int client, int weapon, bool crit, int slot)
 				ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 
 
-				float cooldown = float(health) / 5.0;
+				float cooldown = float(healing) / 5.0;
 				if(cooldown < 1.0)
 					cooldown = 1.0;
 				

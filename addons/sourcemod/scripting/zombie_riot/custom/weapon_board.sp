@@ -738,7 +738,7 @@ public void PassiveBoardHeal(int client)
 		}
 		default:
 		{
-			HealEntityGlobal(client, client, MaxHealth * 0.03, _, 0.3,HEAL_SELFHEAL);
+			HealEntityGlobal(client, client, MaxHealth * 0.02, _, 0.0,HEAL_SELFHEAL);
 		}
 	}
 }
