@@ -901,7 +901,7 @@ void Store_OpenItemPage(int client)
 	{
 		static Item item;
 		StoreItems.GetArray(StoreWeapon[weapon], item);
-		//if(ItemBuyable(item))
+		if(!item.Hidden || item.ChildKit)
 		{
 			NPCOnly[client] = 0;
 			LastMenuPage[client] = 0;
@@ -5524,14 +5524,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				}
 
 #if defined ZR
-				if(item.Hidden)
-				{
-					StoreWeapon[entity] = -1;
-				}
-				else
-				{
-					StoreWeapon[entity] = index;
-				}
+				StoreWeapon[entity] = index;
 #endif
 				
 				i_CustomWeaponEquipLogic[entity] = 0;

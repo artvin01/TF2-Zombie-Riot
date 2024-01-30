@@ -214,7 +214,12 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 
 public void Weapon_SeaHealing_M1(int client, int weapon, bool crit, int slot)
 {
-	if(dieingstate[client] != 0 || Ability_Check_Cooldown(client, slot) > 0.0)
+	if(dieingstate[client] != 0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
+	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -272,6 +277,11 @@ public void Weapon_SeaHealing_M1(int client, int weapon, bool crit, int slot)
 
 public void Weapon_SeaHealing_M2(int client, int weapon, bool crit, int slot)
 {
+	if(dieingstate[client] != 0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
 	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -297,7 +307,7 @@ public void Weapon_SeaHealing_M2(int client, int weapon, bool crit, int slot)
 		if(healing > ammo)
 			healing = ammo;
 		
-		SetEntityHealth(client, health + healing);
+		HealEntityGlobal(client, client, float(healing), 1.0, 0.0, _);
 		
 		ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 
