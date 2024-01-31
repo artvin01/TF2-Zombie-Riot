@@ -192,7 +192,7 @@ static void Ability_Railcannon(int client, int pap)
 		case 2:
 			EmitSoundToAll(RAILCANNONPAP2_BOOM, client, SNDCHAN_STATIC, 85, _, 0.66);
 		default:
-			EmitSoundToAll(RAILCANNON_BOOM, client, SNDCHAN_STATIC, 85, _, 1.0);
+			EmitSoundToAll(RAILCANNON_BOOM, client, SNDCHAN_STATIC, 90, _, 1.0);
 	}
 	
 	Railcannon_Tick(client, pap);
