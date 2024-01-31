@@ -2771,17 +2771,42 @@ void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vec
 	vecForce[2] *= -1.0;
 }
 
-int CountPlayersOnRed(bool alive = false)
+int CountPlayersOnRed(int alive = 0)
 {
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
 #if defined ZR
-		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && (!alive || (TeutonType[client] != TEUTON_NONE && dieingstate[client] > 0)))
+		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+		{
+			if(!alive)
+			{
+				amount++;
+			}
+			else
+			{
+				if(alive == 1) //check if just not teuton
+				{
+					if(TeutonType[client] == TEUTON_NONE)
+					{
+						amount++;
+					}
+				}
+				else if(alive == 2) //check if downed too
+				{
+					if(TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+					{
+						amount++;
+					}
+				}
+			}
+
 #else
 		if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client) == 2 && (!alive || IsPlayerAlive(client)))
+		{
 #endif
 			amount++;
+		}
 	}
 	
 	return amount;
@@ -3979,7 +4004,6 @@ stock bool ShouldNpcDealBonusDamage(int entity, int attacker = -1)
 	return i_IsABuilding[entity];
 }
 
-int i_OwnerEntityEnvLaser[MAXENTITIES];
 
 stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
 							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt", int ClientToHideFirstPerson = 0)

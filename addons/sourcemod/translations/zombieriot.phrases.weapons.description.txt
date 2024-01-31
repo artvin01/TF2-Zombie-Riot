@@ -2678,6 +2678,14 @@
 	{
 		"en"	"More dmg, reload, clip and attackspeed.\nBalista is stronger and has less cooldown."
 	}
+	"Medigun Desc Pap 1"
+	{
+		"en"	"Medigun gives more overheal."
+	}
+	"Medigun Desc Pap 2"
+	{
+		"en"	"Medigun now gives armor aswell."
+	}
 	"Outlaw Railcannon Desc"
 	{
 		"en"	"Hand portable cannon that charges to\nfire TAU particles at incredible speeds.\nDoes more damage while airborne.\nDissipates quickly over distance."

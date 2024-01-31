@@ -20,6 +20,11 @@ static float i_WasInUber[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInJarate[MAXTF2PLAYERS] = {0.0,0.0,0.0};
+
+int Armor_Wearable[MAXTF2PLAYERS];
+bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
+int Armor_WearableModelIndex;
+
 void SDKHooks_ClearAll()
 {
 #if defined ZR
@@ -35,6 +40,7 @@ void SDKHooks_ClearAll()
 	Zero(i_WasInMarkedForDeath);
 	Zero(i_WasInDefenseBuff);
 	Zero(i_WasInJarate);
+	Zero(Client_Had_ArmorDebuff);
 }
 
 void SDKHook_PluginStart()
@@ -52,10 +58,12 @@ void SDKHook_PluginStart()
 
 void SDKHook_MapStart()
 {
+	Armor_WearableModelIndex = PrecacheModel("models/effects/resist_shield/resist_shield.mdl", true);
 	int entity = FindEntityByClassname(MaxClients+1, "tf_player_manager");
 	if(entity != -1)
 		SDKHook(entity, SDKHook_ThinkPost, SDKHook_ScoreThink);
 }
+
 
 public void SDKHook_ScoreThink(int entity)
 {
@@ -1126,6 +1134,7 @@ public void OnPostThink(int client)
 		{
 			blue = 255;
 		}
+		ArmorDisplayClient(client);
 		char buffer[64];
 		int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
 		if(IsValidEntity(converted_ref))
@@ -1523,6 +1532,7 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 	RegainTf2Buffs(victim);
 
 	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
+	ArmorDisplayClient(victim);
 
 	return Plugin_Continue;
 }
@@ -2605,3 +2615,141 @@ float ArmorPlayerReduction(int victim)
 	}
 }
 #endif
+
+
+void ArmorDisplayClient(int client, bool deleteOverride = false)
+{
+	int ShieldLogicDo;
+	if(Armor_Charge[client] > 0)
+	{
+		ShieldLogicDo = 1;
+	}
+	if(Armor_Charge[client] < 0)
+	{
+		ShieldLogicDo = 2;
+	}
+
+	if(TeutonType[client] != TEUTON_NONE)
+	{
+		ShieldLogicDo = 0;
+	}
+
+	if(dieingstate[client] != 0)
+	{
+		ShieldLogicDo = 0;
+	}
+
+	if(!IsPlayerAlive(client))
+	{
+		ShieldLogicDo = 0;
+	}
+	int entity;
+	if(deleteOverride)
+	{
+		if(IsValidEntity(Armor_Wearable[client]))
+		{
+			entity = EntRefToEntIndex(Armor_Wearable[client]);
+			if(entity > MaxClients)
+				TF2_RemoveWearable(client, entity);
+		}
+		return;
+	}
+	if(ShieldLogicDo == 2)
+	{
+		TF2_AddCondition(client, TFCond_Milked, 1.0);
+		Client_Had_ArmorDebuff[client] = true;
+		return;
+	}
+	if(Client_Had_ArmorDebuff[client])
+	{
+		Client_Had_ArmorDebuff[client] = false;
+		TF2_RemoveCondition(client, TFCond_Milked);
+	}
+
+	if(ShieldLogicDo == 1)
+	{
+		if(IsValidEntity(Armor_Wearable[client]))
+		{
+			ArmorDisplayClientColor(client, EntRefToEntIndex(Armor_Wearable[client]));
+			return;
+		}
+		entity = CreateEntityByName("tf_wearable");
+		if(entity > MaxClients)
+		{
+			int team = GetClientTeam(client);
+			SetEntProp(entity, Prop_Send, "m_nModelIndex", Armor_WearableModelIndex);
+
+		//	SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+			SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
+			SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
+			SetEntityCollisionGroup(entity, 11);
+			SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
+			
+			DispatchSpawn(entity);
+			SetVariantString("!activator");
+			ActivateEntity(entity);
+
+			Armor_Wearable[client] = EntIndexToEntRef(entity);
+			SDKCall_EquipWearable(client, entity);
+
+			SetEntProp(entity, Prop_Send, "m_fEffects", 0);
+			SetVariantString("!activator");
+			AcceptEntityInput(entity, "SetParent", client);
+		//	SDKCall_SetLocalOrigin(entity, {0.0,0.0,0.0});
+
+			ArmorDisplayClientColor(client, entity);
+			i_OwnerEntityEnvLaser[entity] = EntIndexToEntRef(client);
+			SDKHook(entity, SDKHook_SetTransmit, ShieldSetTransmit);
+		}	
+	}
+	else
+	{
+		if(IsValidEntity(Armor_Wearable[client]))
+		{
+			entity = EntRefToEntIndex(Armor_Wearable[client]);
+			if(entity > MaxClients)
+				TF2_RemoveWearable(client, entity);
+		}
+	}
+}
+
+public Action ShieldSetTransmit(int entity, int client)
+{
+	if(client > 0 && client <= MaxClients)
+	{
+		int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
+		if(owner == client)
+		{
+			return Plugin_Stop;
+		}
+	}
+	return Plugin_Continue;
+}
+
+void ArmorDisplayClientColor(int client, int armor)
+{
+	int Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
+	float Percentage = float(Armor_Charge[client]) / float(Armor_Max);
+
+	Percentage *= 14.0;
+	int Alpha = RoundToCeil(Percentage * Percentage);
+
+	if(Alpha > 200)
+	{
+		Alpha = 200;
+	}
+	if(Alpha <= 30)
+	{
+		Alpha = 30;
+	}
+	int green = 0;
+	int blue = 0;
+	if(Percentage >= 13.95)
+	{
+		green = 125;
+	}
+
+	SetEntityRenderMode(armor, RENDER_TRANSCOLOR);
+	SetEntityRenderColor(armor, green, green, blue, Alpha);
+}
