@@ -2706,16 +2706,4 @@
 	{
 		"en"	"Higher capacity capacitors allow for incredibly fast particles.\nParticles split in the air, resulting in increased damage further away."
 	}
-	"Outlaw Railcannon Desc"
-	{
-		"en"	"Hand portable cannon that charges to\nfire TAU particles at incredible speeds.\nDoes more damage while airborne.\nDissipates quickly over distance."
-	}
-	"Outlaw Railcannon Desc Pap 1"
-	{
-		"en"	"Higher quality capacitors allows for shooting at lower charges.\nLess DPS than counterpart, but can fire when bar is 1/3rd full."
-	}
-	"Outlaw Railcannon Desc Pap 2"
-	{
-		"en"	"Higher capacity capacitors allow for incredibly fast particles.\nParticles split in the air, resulting in increased damage further away."
-	}
 }
