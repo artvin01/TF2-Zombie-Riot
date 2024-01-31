@@ -2685,5 +2685,13 @@
 	"Medigun Desc Pap 2"
 	{
 		"en"	"Medigun now gives armor aswell.\nScales with medigun upgrades."
+  }
+	"Flash Grenade Desc"
+	{
+		"en"	"Massively decreased damage but stuns and silences enemies for 3 seconds."
+	}
+	"Flash Grenade Pap Desc"
+	{
+		"en"	"Stun now lasts 5 seconds and silence lasts 10 seconds."
 	}
 }
