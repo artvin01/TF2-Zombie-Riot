@@ -288,8 +288,8 @@ float f_CooldownForHurtParticle[MAXENTITIES];
 float f_ClientConnectTime[MAXENTITIES];	
 float f_BackstabDmgMulti[MAXENTITIES];
 float f_BackstabCooldown[MAXENTITIES];
-int i_BackstabHealEachTick[MAXENTITIES];
-int i_BackstabHealTicks[MAXENTITIES];
+float f_BackstabHealOverThisDuration[MAXENTITIES];
+float f_BackstabHealTotal[MAXENTITIES];
 bool b_BackstabLaugh[MAXENTITIES];
 float f_BackstabBossDmgPenalty[MAXENTITIES];
 float f_BackstabBossDmgPenaltyNpcTime[MAXENTITIES][MAXTF2PLAYERS];
@@ -469,6 +469,7 @@ float f_GodArkantosBuff[MAXENTITIES];
 float f_Ocean_Buff_Weak_Buff[MAXENTITIES];
 float f_Ocean_Buff_Stronk_Buff[MAXENTITIES];
 float f_BannerDurationActive[MAXENTITIES];
+float f_BannerAproxDur[MAXENTITIES];
 float f_BuffBannerNpcBuff[MAXENTITIES];
 float f_AncientBannerNpcBuff[MAXENTITIES];
 float f_BattilonsNpcBuff[MAXENTITIES];
@@ -573,7 +574,6 @@ bool b_AggreviatedSilence[MAXTF2PLAYERS];
 bool b_ProximityAmmo[MAXTF2PLAYERS];
 bool b_LeftForDead[MAXTF2PLAYERS];
 bool b_StickyExtraGrenades[MAXTF2PLAYERS];
-float f_LeftForDead_Cooldown[MAXTF2PLAYERS];
 bool FinalBuilder[MAXENTITIES];
 bool GlassBuilder[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
@@ -1729,7 +1729,6 @@ public void OnClientPutInServer(int client)
 	FileNetwork_ClientPutInServer(client);
 	SDKHook_HookClient(client);
 	
-//	f_LeftForDead_Cooldown[client] = GetGameTime() + 100.0;
 	//do cooldown upon connection.
 	AdjustBotCount();
 	WeaponClass[client] = TFClass_Unknown;
@@ -1799,8 +1798,7 @@ public void OnClientDisconnect(int client)
 	f_MedicCallIngore[client] = 0.0;
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
-	//Needed to reset attackspeed stuff.
-	f_LeftForDead_Cooldown[client] = 0.0;
+	//Needed to reset attackspeed stuff
 	f_IlligalStuck_ClientDelayCheck[client] = 0.0;
 	for(int Count; Count<MAX_STUCK_PAST_CHECK; Count++)
 	{
@@ -2507,6 +2505,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		SetDefaultValuesToZeroNPC(entity);
 		i_SemiAutoWeapon[entity] = false;
 		f_BannerDurationActive[entity] = 0.0;
+		f_BannerAproxDur[entity] = 0.0;
 		f_BuffBannerNpcBuff[entity] = 0.0;
 		f_BattilonsNpcBuff[entity] = 0.0;
 		f_AncientBannerNpcBuff[entity] = 0.0;

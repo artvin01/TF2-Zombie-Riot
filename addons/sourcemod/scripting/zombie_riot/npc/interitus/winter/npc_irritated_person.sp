@@ -103,7 +103,7 @@ methodmap WinterIrritatedPerson < CClotBody
 		WinterIrritatedPerson npc = view_as<WinterIrritatedPerson>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.1", "60000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_WINTER_IRRITATED_PERSON;
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -188,6 +188,7 @@ public void WinterIrritatedPerson_ClotThink(int iNPC)
 		flMyPos[2] += 15.0;
 		Explode_Logic_Custom(damageDealt, 0, npc.index, -1, flMyPos,100.0, 1.0, _, true, 20);
 		TE_Particle("asplode_hoodoo", flMyPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, flMyPos);
 		EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, flMyPos);
 		npc.m_bisWalking = true;
 	}

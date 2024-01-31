@@ -111,7 +111,7 @@ methodmap WinterAirbornExplorer < CClotBody
 	
 	public WinterAirbornExplorer(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		WinterAirbornExplorer npc = view_as<WinterAirbornExplorer>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1000", ally));
+		WinterAirbornExplorer npc = view_as<WinterAirbornExplorer>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "2500", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_WINTER_AIRBORN_EXPLORER;
 		i_NpcWeight[npc.index] = 1;

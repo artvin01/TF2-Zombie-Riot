@@ -26,6 +26,16 @@ enum
 	Command_Patrol
 }
 
+enum
+{
+	Sound_Select,
+	Sound_Move,
+	Sound_Attack,
+	Sound_CombatAlert,
+	
+	Sound_MAX
+}
+
 #include "fortress_wars/npc.sp"	// Global NPC List
 
 static bool AlliedPlayer[MAXTF2PLAYERS][MAXTF2PLAYERS];

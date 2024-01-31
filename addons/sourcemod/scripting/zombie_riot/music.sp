@@ -129,12 +129,12 @@ void Music_EndLastmann()
 
 void PlayTeamDeadSound()
 {
-	int RandomInt = GetRandomInt(0,sizeof(g_LastMannAnnouncer));
+	int RandomInt = GetRandomInt(0,sizeof(g_LastMannAnnouncer)- 1);
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && !IsFakeClient(client))
 		{
-			EmitSoundToClient(client, g_LastMannAnnouncer[RandomInt- 1], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+			EmitSoundToClient(client, g_LastMannAnnouncer[RandomInt], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 		}
 	}	
 }

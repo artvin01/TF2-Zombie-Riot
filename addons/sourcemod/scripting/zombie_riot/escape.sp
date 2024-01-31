@@ -34,15 +34,12 @@ public Action Remove_All(Handle Timer_Handle, any Null)
 		{
 			if(entity != 0)
 			{
-				RemoveEntity(entity);
-				/*
 				b_DissapearOnDeath[entity] = true;
 				b_DoGibThisNpc[entity] = true;
 				SmiteNpcToDeath(entity);
 				SmiteNpcToDeath(entity);
 				SmiteNpcToDeath(entity);
 				SmiteNpcToDeath(entity);
-				*/
 			}
 		}
 	}

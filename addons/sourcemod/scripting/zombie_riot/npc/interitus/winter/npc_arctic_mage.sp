@@ -91,10 +91,10 @@ methodmap WinterArcticMage < CClotBody
 	
 	public WinterArcticMage(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		WinterArcticMage npc = view_as<WinterArcticMage>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "10000", ally, false, true));
+		WinterArcticMage npc = view_as<WinterArcticMage>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "15000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_WINTER_ARCTIC_MAGE;
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 2;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");

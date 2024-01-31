@@ -510,7 +510,6 @@ public void Database_LocalClientSetup(Database db, int userid, int numQueries, D
 				CashSpent[client] = results[0].FetchInt(2);
 				CashSpentTotal[client] = results[0].FetchInt(3);
 				Ammo_Count_Used[client] = results[0].FetchInt(4);
-				f_LeftForDead_Cooldown[client] = results[0].FetchFloat(5);
 
 				Transaction tr = new Transaction();
 					
@@ -610,7 +609,7 @@ void Database_SaveGameData(int client)
 			CashSpent[client],
 			CashSpentTotal[client],
 			Ammo_Count_Used[client],
-			f_LeftForDead_Cooldown[client] + 30.0,
+			0.0,
 			id);
 			
 

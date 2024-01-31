@@ -89,7 +89,7 @@ methodmap WinterFreezingCleaner < CClotBody
 	
 	public WinterFreezingCleaner(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		WinterFreezingCleaner npc = view_as<WinterFreezingCleaner>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "2000", ally));
+		WinterFreezingCleaner npc = view_as<WinterFreezingCleaner>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "3000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_WINTER_FREEZING_CLEANER;
 		i_NpcWeight[npc.index] = 1;
