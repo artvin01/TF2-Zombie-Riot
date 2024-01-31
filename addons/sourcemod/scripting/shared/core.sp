@@ -787,6 +787,7 @@ float f_TraceAttackWasTriggeredSameFrame[MAXENTITIES];
 
 enum
 {
+	STEPTYPE_NONE = 0,
 	STEPTYPE_NORMAL = 1,	
 	STEPTYPE_COMBINE = 2,	
 	STEPTYPE_PANZER = 3,
@@ -3364,8 +3365,6 @@ public any Native_FuncToVal(Handle plugin, int numParams)
 	return GetNativeCell(1);
 }
 
-//#file "Zombie Riot" broke in sm 1.11
-
 static void MapStartResetAll()
 {
 	Zero(f_MinicritSoundDelay);
@@ -3412,6 +3411,10 @@ static void MapStartResetAll()
 
 public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, Handle &item)
 {
+#if defined RTS
+	if(!RTS_InSetup(client))
+		return Plugin_Stop;
+#else
 	if(!StrContains(classname, "tf_wear"))
 	{
 		switch(index)
@@ -3431,6 +3434,7 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 	{
 		return Plugin_Stop;
 	}
+#endif
 	return Plugin_Continue;
 }
 

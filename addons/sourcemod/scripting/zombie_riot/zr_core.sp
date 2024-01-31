@@ -391,7 +391,6 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_fusion_melee.sp"
 #include "zombie_riot/custom/spike_layer.sp"
 #include "zombie_riot/custom/weapon_grenade.sp"
-#include "zombie_riot/custom/weapon_pipebomb.sp"
 #include "zombie_riot/custom/wand/weapon_default_wand.sp"
 #include "zombie_riot/custom/wand/weapon_wand_increace_attack.sp"
 #include "zombie_riot/custom/wand/weapon_fire_wand.sp"
@@ -638,7 +637,6 @@ void ZR_MapStart()
 	Bison_MapStart();
 	Pomson_MapStart();
 	Mangler_MapStart();
-	Pipebomb_MapStart();
 	Wand_Map_Precache();
 	Wand_Skulls_Precache();
 	Wand_Attackspeed_Map_Precache();
