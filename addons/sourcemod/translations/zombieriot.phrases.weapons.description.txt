@@ -2680,10 +2680,10 @@
 	}
 	"Medigun Desc Pap 1"
 	{
-		"en"	"Medigun gives more overheal."
+		"en"	"Medigun gives more overheal.\nFrom 25%% to 45%% for players and from 50%% to 75%% for npcs."
 	}
 	"Medigun Desc Pap 2"
 	{
-		"en"	"Medigun now gives armor aswell."
+		"en"	"Medigun now gives armor aswell.\nScales with medigun upgrades."
 	}
 }
