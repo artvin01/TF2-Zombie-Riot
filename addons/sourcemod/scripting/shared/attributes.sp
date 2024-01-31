@@ -313,6 +313,17 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		value = Attributes_Get(weapon, 366, 0.0);	// mod stun waist high airborne
 		if(value)
 		{
+			if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
+			{
+				value /= 2.0;
+			}
+
+			if(b_thisNpcIsARaid[victim])
+			{
+				if(value > 1.5)
+					value = 1.5;
+			}
+			
 			FreezeNpcInTime(victim, value);
 		}
 
