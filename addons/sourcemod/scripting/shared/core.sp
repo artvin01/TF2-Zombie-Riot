@@ -958,7 +958,7 @@ char g_TankStepSound[][] = {
 
 float f_ArrowDamage[MAXENTITIES];
 int h_ArrowInflictorRef[MAXENTITIES];
-Function i_ProjectileExtraFunction[MAXENTITIES];
+Function i_ProjectileExtraFunction[MAXENTITIES] = {INVALID_FUNCTION, ...};
 float h_BonusDmgToSpecialArrow[MAXENTITIES];
 int f_ArrowTrailParticle[MAXENTITIES]={INVALID_ENT_REFERENCE, ...};
 bool b_IsEntityAlwaysTranmitted[MAXENTITIES];
