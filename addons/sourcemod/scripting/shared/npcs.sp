@@ -1051,7 +1051,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype);
 
 #if defined ZR
-			VausMagicaShieldLogicNpcOnTakeDamage(victim, damage, damagetype,i_HexCustomDamageTypes[victim]);
+			VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage, damagetype,i_HexCustomDamageTypes[victim]);
 
 			OnTakeDamageWidowsWine(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 
