@@ -1,7 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define RAILCANNON_BOOM 	"beams/beamstart5.wav"
+#define RAILCANNON_BOOM 	"weapons/physcannon/superphys_launch2.wav"
+#define RAILCANNONPAP2_BOOM 	"beams/beamstart5.wav"
 
 static float Strength[MAXTF2PLAYERS];
 
@@ -31,11 +32,27 @@ static float BEAM_Targets_Hit[MAXTF2PLAYERS];
 void Precache_Railcannon()
 {
 	PrecacheSound(RAILCANNON_BOOM);
+	PrecacheSound(RAILCANNONPAP2_BOOM);
 	Beam_Laser = PrecacheModel("materials/sprites/physbeam.vmt", false);
 	Beam_Glow = PrecacheModel("sprites/glow02.vmt", true);
 }
 
 public void Weapon_Railcannon(int client, int weapon, const char[] classname, bool &result)
+{
+	Check_Railcannon(client, weapon, 0);
+}
+
+public void Weapon_Railcannon_Pap1(int client, int weapon, const char[] classname, bool &result)
+{
+	Check_Railcannon(client, weapon, 1);
+}
+
+public void Weapon_Railcannon_Pap2(int client, int weapon, const char[] classname, bool &result)
+{
+	Check_Railcannon(client, weapon, 2);
+}
+
+static void Check_Railcannon(int client, int weapon, int pap)
 {
 	if(weapon >= MaxClients)
 	{
@@ -51,26 +68,28 @@ public void Weapon_Railcannon(int client, int weapon, const char[] classname, bo
 			if(Attributes_Has(weapon,466))
 				base_chargetime[client] = Attributes_Get(weapon, 466, 1.0);
 			
-			float flMultiplier = GetGameTime(); // 4.0 is the default one
+			float flMultiplier = GetRailcannonPercentage(weapon, client);
 			
-			if (HasEntProp(weapon, Prop_Send, "m_flChargeBeginTime"))
+			switch(pap)
 			{
-				flMultiplier -= GetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime");
-				flMultiplier /= base_chargetime[client];
-				if (flMultiplier<3.85)
-				{
-					SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+1);
-					return;
-				}
-			}
-			else 
-			{
-				flMultiplier -= GetEntPropFloat(weapon, Prop_Send, "m_flDetonateTime");
-				if (flMultiplier<-0.05)
-				{
-					SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+1);
-					return;
-				}
+				case 1:
+					if (flMultiplier<1.33)
+					{
+						SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+1);
+						return;
+					}
+				case 2:
+					if (flMultiplier<3.925)
+					{
+						SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+1);
+						return;
+					}
+				default:
+					if (flMultiplier<3.85)
+					{
+						SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+1);
+						return;
+					}
 			}
 		}
 		BEAM_Targets_Hit[client] = 0.0;
@@ -80,25 +99,42 @@ public void Weapon_Railcannon(int client, int weapon, const char[] classname, bo
 		Strength[client] *= Attributes_Get(weapon, 1, 1.0);
 					
 		Strength[client] *= Attributes_Get(weapon, 2, 1.0);
-			
-		Ability_Railcannon(client);
+
+		float flMultiplier = GetRailcannonPercentage(weapon, client);
+		Strength[client] *= (flMultiplier/4);
+		
+		if (pap == 1)
+		{
+			Knockback_Railcannon(client, weapon, true);
+		}
+		else
+		{
+			Knockback_Railcannon(client, weapon, false);
+		}
+
+		Ability_Railcannon(client, pap);
 	}
 }
 
-static void Ability_Railcannon(int client)
+static void Knockback_Railcannon(int client, int weapon, bool analogue)
 {
-	for (int building = 1; building < MAX_TARGETS_HIT; building++)
-	{
-		BEAM_BuildingHit[building] = false;
-		BEAM_Targets_Hit[client] = 0.0;
-	}
 	if(!TF2_IsPlayerInCondition(client, TFCond_RuneHaste))
 	{
 		static float anglesB[3];
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		float knockback = -300.0;
+		float knockback;
+		if (analogue == true)
+		{
+			float flMultiplier = GetRailcannonPercentage(weapon, client);
+
+			knockback = -100.0 * (flMultiplier/4);
+		}
+		else
+		{
+			knockback = -100.0;
+		}
 		
 		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
@@ -121,12 +157,21 @@ static void Ability_Railcannon(int client)
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	}
 	Client_Shake(client, 0, 35.0, 20.0, 0.8);
+}
+
+static void Ability_Railcannon(int client, int pap)
+{
+	for (int building = 1; building < MAX_TARGETS_HIT; building++)
+	{
+		BEAM_BuildingHit[building] = false;
+		BEAM_Targets_Hit[client] = 0.0;
+	}
 			
 	BEAM_IsUsing[client] = false;
 	BEAM_TicksActive[client] = 0;
 
 	BEAM_CanUse[client] = true;
-	BEAM_MaxDistance[client] = 1500;
+	BEAM_MaxDistance[client] = 4096;
 	BEAM_BeamRadius[client] = 1;
 	BEAM_ColorHex[client] = ParseColor("00FFFF");
 	BEAM_ChargeUpTime[client] = 1;
@@ -142,9 +187,15 @@ static void Ability_Railcannon(int client)
 	BEAM_IsUsing[client] = true;
 	BEAM_TicksActive[client] = 0;
 
-	EmitSoundToAll(RAILCANNON_BOOM, client, SNDCHAN_STATIC, 85, _, 1.0);
+	switch (pap)
+	{
+		case 2:
+			EmitSoundToAll(RAILCANNONPAP2_BOOM, client, SNDCHAN_STATIC, 85, _, 0.66);
+		default:
+			EmitSoundToAll(RAILCANNON_BOOM, client, SNDCHAN_STATIC, 85, _, 1.0);
+	}
 	
-	Railcannon_Tick(client);
+	Railcannon_Tick(client, pap);
 }
 
 static bool BEAM_TraceWallsOnly(int entity, int contentsMask)
@@ -195,7 +246,7 @@ static void GetBeamDrawStartPoint(int client, float startPoint[3])
 	startPoint[2] += actualBeamOffset[2];
 }
 
-static void Railcannon_Tick(int client)
+static void Railcannon_Tick(int client, int pap)
 {
 	if(!IsValidClient(client))
 	{
@@ -265,19 +316,34 @@ static void Railcannon_Tick(int client)
 				if(IsValidEntity(BEAM_BuildingHit[building]))
 				{
 					playerPos = WorldSpaceCenterOld(BEAM_BuildingHit[building]);
-					
+					float distance = GetVectorDistance(startPoint, playerPos, false);
 					float damage;
 					if (!(GetEntityFlags(client) & FL_ONGROUND))
 					{
-						damage = Strength[client] * 1.5;
+						damage = Strength[client] * 1.2;
 					}
 					else
 					{
 						damage = Strength[client] * 1.0;
 					}
 					if (damage < 0)
+					{
 						damage *= -1.0;
-					
+					}
+					if (pap == 2)
+					{
+						float criticalDistance = 3000.0;
+						float maxDistanceMultiplier = 2.0;
+						damage *= (1.0 + (fClamp(distance / criticalDistance, 0.0, criticalDistance) * (maxDistanceMultiplier - 1.0)));
+					}
+					else
+					{
+						float minFalloffDistance = 100.0;
+						float maxFalloffDistance = 1000.0;
+						float minDamageMultiplier = 0.05;
+						damage *= (1.0 - (fClamp(((distance - minFalloffDistance) / maxFalloffDistance), 0.0, (1 - minDamageMultiplier))));
+					}
+
 					float damage_force[3];
 					damage_force = CalculateDamageForceOld(vecForward, 10000.0);
 					DataPack pack = new DataPack();
@@ -299,7 +365,9 @@ static void Railcannon_Tick(int client)
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
 				}
 				else
+				{
 					BEAM_BuildingHit[building] = false;
+				}
 			}
 		}
 		
@@ -321,4 +389,12 @@ static void Railcannon_Tick(int client)
 		TE_SendToAll(0.0);
 	}
 	delete trace;
+}
+
+static float GetRailcannonPercentage(int weapon, int client)
+{
+	float flMultiplier = GetGameTime();
+	flMultiplier -= GetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime");
+	flMultiplier /= base_chargetime[client];
+	return flMultiplier;
 }
