@@ -1639,7 +1639,8 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 	
 }
 
-stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti)
+float f_IncrementalSmallArmor[MAXENTITIES];
+stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti, bool flat = false)
 {
 	int Armor_Max;
 	
@@ -1652,11 +1653,52 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti)
 	*/
 	if(Armor_Charge[client] < Armor_Max)
 	{
-		int ArmorToGive;
+		float ArmorToGive;
 
-		ArmorToGive = RoundToCeil(float(Armor_Max) * multiplyier);
-		
-		Armor_Charge[client] += ArmorToGive;
+		if(flat)
+		{
+			int i_TargetHealAmount; //Health to actaully apply
+
+			if (multiplyier <= 1.0 && multiplyier > 0.0)
+			{
+				f_IncrementalSmallArmor[client] += multiplyier;
+					
+				if(f_IncrementalSmallArmor[client] >= 1.0)
+				{
+					f_IncrementalSmallArmor[client] -= 1.0;
+					i_TargetHealAmount = 1;
+				}
+			}
+			else
+			{
+				if(i_TargetHealAmount < 0.0) //negative heal
+				{
+					i_TargetHealAmount = RoundToFloor(multiplyier);
+				}
+				else
+				{
+					i_TargetHealAmount = RoundToFloor(multiplyier);
+				
+					float Decimal_healing = FloatFraction(multiplyier);
+										
+										
+					f_IncrementalSmallArmor[client] += Decimal_healing;
+										
+					while(f_IncrementalSmallArmor[client] >= 1.0)
+					{
+						f_IncrementalSmallArmor[client] -= 1.0;
+						i_TargetHealAmount += 1;
+					}
+				}		
+			}
+			ArmorToGive = float(i_TargetHealAmount);
+				
+		}
+		else
+		{
+			ArmorToGive = float(Armor_Max) * multiplyier;
+		}
+		Armor_Charge[client] += RoundToNearest(ArmorToGive);
 
 		if(Armor_Charge[client] >= Armor_Max)
 		{

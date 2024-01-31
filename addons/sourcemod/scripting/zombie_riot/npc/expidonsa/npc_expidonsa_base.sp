@@ -46,7 +46,7 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damag
 {
 	if(i_ExpidonsaShieldCapacity[victim] > 0 && (!(ZrDamageType & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)))
 	{
-		if(TeutonType[attacker] != TEUTON_NONE)
+		if(attacker <=MaxClients && TeutonType[attacker] != TEUTON_NONE)
 		{
 			i_ExpidonsaShieldCapacity_Mini[victim]++;
 			if(i_ExpidonsaShieldCapacity_Mini[victim] <= 1)

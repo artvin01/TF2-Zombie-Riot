@@ -2291,7 +2291,7 @@ public Action TimerGrantBannerDuration(Handle timer, int ref)
 		return Plugin_Continue;
 
 	entity = CreateEntityByName("tf_wearable");
-	if(entity > MaxClients)	// Weapon worldmodel
+	if(entity > MaxClients)
 	{
 		int team = GetClientTeam(client);
 		SetEntProp(entity, Prop_Send, "m_nModelIndex", BannerWearableModelIndex[ClientHasBannersWithCD(client) -1]);

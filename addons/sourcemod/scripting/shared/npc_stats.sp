@@ -8876,7 +8876,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 	int NpcTypeDefine = 1;
 #else
 	int NpcTypeDefine = 0;
-	if(b_thisNpcIsABoss[npc.index] || i_NpcInternalId[npc.index] == CITIZEN)
+	if(b_thisNpcIsABoss[npc.index] || (i_NpcInternalId[npc.index] == CITIZEN && !b_IsCamoNPC[npc.index] && !b_ThisEntityIgnored[npc.index]))
 	{
 		NpcTypeDefine = 1;
 	}
@@ -8886,7 +8886,13 @@ public void Npc_BossHealthBar(CClotBody npc)
 	}
 #endif
 	if(NpcTypeDefine == 0)
+	{
+		if(IsValidEntity(npc.m_iTextEntity5))
+		{
+			RemoveEntity(npc.m_iTextEntity5);
+		}
 		return;
+	}
 
 	NpcTypeDefine --;
 

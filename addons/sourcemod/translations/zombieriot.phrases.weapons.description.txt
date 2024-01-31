@@ -2678,6 +2678,14 @@
 	{
 		"en"	"More dmg, reload, clip and attackspeed.\nBalista is stronger and has less cooldown."
 	}
+	"Medigun Desc Pap 1"
+	{
+		"en"	"Medigun gives more overheal.\nFrom 25%% to 45%% for players and from 50%% to 75%% for npcs."
+	}
+	"Medigun Desc Pap 2"
+	{
+		"en"	"Medigun now gives armor aswell.\nScales with medigun upgrades."
+  }
 	"Flash Grenade Desc"
 	{
 		"en"	"Massively decreased damage but stuns and silences enemies for 3 seconds."

@@ -16,7 +16,7 @@ void Stock_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, float
 
 bool Stock_IsValidEntity(int entity)
 {
-	if(entity == 0)
+	if(entity == 0 || entity == -1)
 	{
 		return false;
 	}
