@@ -152,7 +152,7 @@ enum
 	WEAPON_RED_BLADE = 81,
 	WEAPON_GRAVATON_WAND = 82,
 	WEAPON_HEAVY_PARTICLE_RIFLE = 83,
-	}
+}
 
 //int Bob_To_Player[MAXENTITIES];
 bool Bob_Exists = false;
