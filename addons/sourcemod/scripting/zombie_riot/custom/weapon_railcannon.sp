@@ -333,7 +333,7 @@ static void Railcannon_Tick(int client, int pap)
 					if (pap == 2)
 					{
 						float criticalDistance = 3000.0;
-						float maxDistanceMultiplier = 2.0;
+						float maxDistanceMultiplier = 1.7;
 						damage *= (1.0 + (fClamp(distance / criticalDistance, 0.0, criticalDistance) * (maxDistanceMultiplier - 1.0)));
 					}
 					else

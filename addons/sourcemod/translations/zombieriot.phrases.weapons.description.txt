@@ -2684,7 +2684,7 @@
 	}
 	"Outlaw Railcannon Desc Pap 1"
 	{
-		"en"	"Higher quality capacitors allows for shooting at lower charges.\nLess DPS, but can fire when bar is 1/3rd full."
+		"en"	"Higher quality capacitors allows for shooting at lower charges.\nLess DPS than counterpart, but can fire when bar is 1/3rd full."
 	}
 	"Outlaw Railcannon Desc Pap 2"
 	{
