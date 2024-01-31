@@ -1803,10 +1803,13 @@ stock void BobPullTarget(int bobnpc, int enemy)
 		if(GetEntityFlags(enemy) & FL_ONGROUND)
 			angles[0] = 0.0; // toss out pitch if on ground
 
-		float distance = GetVectorDistance(vecTarget, vecMe, true);
+		float distance = GetVectorDistance(vecTarget, vecMe);
+		if(distance > 500.0)
+			distance = 500.0;
+
 		static float velocity[3];
 		GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(velocity, Pow(distance, 0.5) * 2.15);
+		ScaleVector(velocity, distance * 2.0);
 		
 		// min Z if on ground
 		if(GetEntityFlags(enemy) & FL_ONGROUND)

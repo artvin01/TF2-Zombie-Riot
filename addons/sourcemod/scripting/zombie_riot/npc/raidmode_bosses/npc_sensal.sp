@@ -323,6 +323,7 @@ methodmap Sensal < CClotBody
 		}
 		else if(ZR_GetWaveCount()+1 > 55)
 		{
+			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.7;
 		}
 		
@@ -1843,11 +1844,15 @@ void SensalGiveShield(int sensal, int shieldcount)
 	{
 		shieldcount *= 2;
 	}
+	else if(ZR_GetWaveCount()+1 >= 30)
+	{
+		shieldcount = RoundToNearest(float(shieldcount) * 1.5);
+	}
 	if(npc.Anger)
 	{
-		shieldcount *= 2;
+		shieldcount = RoundToNearest(float(shieldcount) * 1.5);
 	}
-	
+
 	if(LastMann)
 		shieldcount /= 2;
 
