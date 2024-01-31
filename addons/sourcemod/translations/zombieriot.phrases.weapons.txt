@@ -2305,4 +2305,12 @@
 	{
 		"en"	"Heavy Particle Rifle"
 	}
+	"Flash Grenade"
+	{
+		"en"	"Flash Grenade"
+	}
+	"Flashier Grenade"
+	{
+		"en"	"Flashier Grenade"
+	}
 }

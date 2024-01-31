@@ -119,10 +119,12 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 	event.BroadcastDisabled = true;
 	return Plugin_Changed;
 }
+
 public Action OnBannerDeploy(Event event, const char[] name, bool dontBroadcast)
 {
 	return Plugin_Handled;
 }
+
 public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast)
 {
 	if(!event.GetBool("bot"))
@@ -177,12 +179,15 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 		ForcePlayerCrouch(client, false);
+
+#if defined RTS
+		RTS_PlayerResupply(client);
+#else
 		TF2_RemoveAllWeapons(client); //Remove all weapons. No matter what.
 		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
 		SetVariantString("");
 	  	AcceptEntityInput(client, "SetCustomModel");
 
-#if !defined RTS
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 		ViewChange_DeleteHands(client);
 		ViewChange_UpdateHands(client, CurrentClass[client]);

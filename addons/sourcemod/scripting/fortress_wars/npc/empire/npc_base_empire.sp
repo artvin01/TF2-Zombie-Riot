@@ -113,6 +113,51 @@ static const char CombatAlertSounds[][] =
 	"npc/metropolice/vo/wehavea10-108.wav"
 };
 
+static const char CreatedSounds[][] =
+{
+	"friends/friend_online.wav"
+};
+
+static const char SiegeDeathSounds[][] =
+{
+	"physics/wood/wood_crate_break1.wav",
+	"physics/wood/wood_crate_break2.wav",
+	"physics/wood/wood_crate_break3.wav",
+	"physics/wood/wood_crate_break4.wav",
+	"physics/wood/wood_crate_break5.wav"
+};
+
+static const char SiegeHurtSounds[][] =
+{
+	"physics/wood/wood_crate_impact_hard1.wav",
+	"physics/wood/wood_crate_impact_hard2.wav",
+	"physics/wood/wood_crate_impact_hard3.wav",
+	"physics/wood/wood_crate_impact_hard4.wav",
+	"physics/wood/wood_crate_impact_hard5.wav"
+};
+
+static const char SiegeSelectSounds[][] =
+{
+	"ambient/lightsoff.wav"	
+};
+
+static const char SiegeMoveSounds[][] =
+{
+	"ambient/lightson.wav"	
+};
+
+static const char BuildingSelectSounds[][] =
+{
+	"ambient/machines/machine1_hit1.wav",
+	"ambient/machines/machine1_hit2.wav",
+};
+
+static const char BuildingCombatAlertSounds[][] =
+{
+	"npc/overwatch/radiovoice/socialfractureinprogress.wav",
+	"npc/overwatch/radiovoice/threattoproperty51b.wav"
+};
+
 void EmpireBody_MapStart()
 {
 	PrecacheSoundArray(DeathSounds);
@@ -123,6 +168,13 @@ void EmpireBody_MapStart()
 	PrecacheSoundArray(MoveSounds);
 	PrecacheSoundArray(AttackSounds);
 	PrecacheSoundArray(CombatAlertSounds);
+	PrecacheSoundArray(CreatedSounds);
+	PrecacheSoundArray(SiegeDeathSounds);
+	PrecacheSoundArray(SiegeHurtSounds);
+	PrecacheSoundArray(SiegeSelectSounds);
+	PrecacheSoundArray(SiegeMoveSounds);
+	PrecacheSoundArray(BuildingSelectSounds);
+	PrecacheSoundArray(BuildingCombatAlertSounds);
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
 
@@ -149,12 +201,27 @@ methodmap EmpireBody < UnitBody
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(HurtSounds[GetURandomInt() % sizeof(HurtSounds)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		if(this.HasFlag(Flag_Mechanical))
+		{
+			EmitSoundToAll(SiegeHurtSounds[GetURandomInt() % sizeof(SiegeHurtSounds)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		}
+		else
+		{
+			EmitSoundToAll(HurtSounds[GetURandomInt() % sizeof(HurtSounds)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		}
+		
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
 	public void PlayDeathSound()
 	{
-		EmitSoundToAll(DeathSounds[GetURandomInt() % sizeof(DeathSounds)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		if(this.HasFlag(Flag_Mechanical))
+		{
+			EmitSoundToAll(SiegeDeathSounds[GetURandomInt() % sizeof(SiegeDeathSounds)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		}
+		else
+		{
+			EmitSoundToAll(DeathSounds[GetURandomInt() % sizeof(DeathSounds)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		}
 	}
 
 	public bool ThinkStart(float gameTime)
@@ -176,7 +243,8 @@ methodmap EmpireBody < UnitBody
 						const char[] health = "125",
 						bool isBuilding = false,
 						bool isGiant = false,
-						const float CustomThreeDimensions[3] = {0.0,0.0,0.0})
+						const float CustomThreeDimensions[3] = {0.0,0.0,0.0},
+						int type = 0)
 	{
 		EmpireBody npc = view_as<EmpireBody>(UnitBody(client, vecPos, vecAng, model, modelscale, health, isBuilding, isGiant, CustomThreeDimensions));
 		
@@ -185,14 +253,52 @@ methodmap EmpireBody < UnitBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
+		if(isBuilding)
+		{
+			npc.m_iBleedType = BLEEDTYPE_METAL;
+			npc.m_iNpcStepVariation = STEPTYPE_NONE;
 
-		npc.SetSoundFunc(Sound_Select, PlaySelectSound);
-		npc.SetSoundFunc(Sound_Move, PlayMoveSound);
-		npc.SetSoundFunc(Sound_Attack, PlayAttackSound);
-		npc.SetSoundFunc(Sound_CombatAlert, PlayCombatAlertSound);
+			npc.SetSoundFunc(Sound_Select, PlayBuildingSelectSound);
+			npc.SetSoundFunc(Sound_CombatAlert, PlayBuildingCombatAlertSound);
+		}
+		else
+		{
+			switch(type)
+			{
+				case 0:	// Ground Unit
+				{
+					npc.m_iBleedType = BLEEDTYPE_NORMAL;
+					npc.m_iStepNoiseType = isGiant ? STEPSOUND_GIANT : STEPSOUND_NORMAL;
+					npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
+
+					npc.SetSoundFunc(Sound_Select, PlaySelectSound);
+					npc.SetSoundFunc(Sound_Move, PlayMoveSound);
+					npc.SetSoundFunc(Sound_Attack, PlayAttackSound);
+					npc.SetSoundFunc(Sound_CombatAlert, PlayCombatAlertSound);
+				}
+				case 1:	// Mounted Unit
+				{
+					npc.m_iBleedType = BLEEDTYPE_NORMAL;
+					npc.m_iStepNoiseType = isGiant ? STEPSOUND_GIANT : STEPSOUND_NORMAL;
+					npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+
+					npc.SetSoundFunc(Sound_Select, PlaySelectSound);
+					npc.SetSoundFunc(Sound_Move, PlayMoveSound);
+					npc.SetSoundFunc(Sound_Attack, PlayAttackSound);
+					npc.SetSoundFunc(Sound_CombatAlert, PlayCombatAlertSound);
+				}
+				case 2:	// Siege Unit
+				{
+					npc.m_iBleedType = BLEEDTYPE_METAL;
+					npc.m_iNpcStepVariation = STEPTYPE_NONE;
+
+					npc.SetSoundFunc(Sound_Select, PlaySiegeSelectSound);
+					npc.SetSoundFunc(Sound_Move, PlaySiegeMoveSound);
+					npc.SetSoundFunc(Sound_Attack, PlaySiegeMoveSound);
+					npc.SetSoundFunc(Sound_CombatAlert, PlayCombatAlertSound);
+				}
+			}
+		}
 		
 		func_NPCDeath[npc.index] = EmpireBody_Death;
 		func_NPCOnTakeDamage[npc.index] = EmpireBody_TakeDamage;
@@ -212,7 +318,9 @@ void EmpireBody_TakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 
 			npc.PlayHurtSound();
-			npc.AddNextGesture("ACT_GESTURE_FLINCH_HEAD");
+
+			if(!this.HasFlag(Flag_Mechanical))
+				npc.AddNextGesture("ACT_GESTURE_FLINCH_HEAD");
 		}
 	}
 }
@@ -230,9 +338,24 @@ static void PlaySelectSound(int client)
 	EmitSoundToClient(client, SelectSounds[GetURandomInt() % sizeof(SelectSounds)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
 }
 
+static void PlaySiegeSelectSound(int client)
+{
+	EmitSoundToClient(client, SiegeSelectSounds[GetURandomInt() % sizeof(SiegeSelectSounds)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
+}
+
+static void PlayBuildingSelectSound(int client)
+{
+	EmitSoundToClient(client, BuildingSelectSounds[GetURandomInt() % sizeof(BuildingSelectSounds)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
+}
+
 static void PlayMoveSound(int client)
 {
 	EmitSoundToClient(client, MoveSounds[GetURandomInt() % sizeof(MoveSounds)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
+}
+
+static void PlaySiegeMoveSound(int client)
+{
+	EmitSoundToClient(client, SiegeMoveSounds[GetURandomInt() % sizeof(SiegeMoveSounds)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
 }
 
 static void PlayAttackSound(int client)
@@ -243,4 +366,9 @@ static void PlayAttackSound(int client)
 static void PlayCombatAlertSound(int client)
 {
 	EmitSoundToClient(client, CombatAlertSounds[GetURandomInt() % sizeof(CombatAlertSounds)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
+}
+
+static void PlayBuildingCombatAlertSound(int client)
+{
+	EmitSoundToClient(client, BuildingCombatAlertSounds[GetURandomInt() % sizeof(BuildingCombatAlertSounds)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
 }
