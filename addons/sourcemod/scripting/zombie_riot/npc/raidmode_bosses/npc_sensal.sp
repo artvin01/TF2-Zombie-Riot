@@ -705,7 +705,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.SetCycle(0.01);
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
-			SensalGiveShield(npc.index, CountPlayersOnRed() * 2); //Give self a shield
+			SensalGiveShield(npc.index, CountPlayersOnRed() * 3); //Give self a shield
 
 			SensalThrowScythes(npc);
 			npc.m_flDoingAnimation = gameTime + 0.45;
