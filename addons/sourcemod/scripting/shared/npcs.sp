@@ -631,6 +631,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 	return Plugin_Stop;
 }
 
+#if !defined RTS
 int GetIndexByPluginName(const char[] name)
 {
 	for(int i; i<sizeof(NPC_Plugin_Names_Converted); i++)
@@ -640,6 +641,7 @@ int GetIndexByPluginName(const char[] name)
 	}
 	return 0;
 }
+#endif
 
 public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
 {
@@ -2820,7 +2822,7 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 	{
 		if(damagetype & DMG_CLUB && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)) //Use dmg slash for any npc that shouldnt be scaled.
 		{
-			if(IsBehindAndFacingTarget(attacker, victim) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
+			if(IsBehindAndFacingTarget(attacker, victim, weapon) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
 			{
 				int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
 				int melee = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
@@ -2978,32 +2980,24 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 }
 void BackstabNpcInternalModifExtra(int weapon, int attacker, int victim, float multi)
 {
-	float heal_amount = float(i_BackstabHealEachTick[weapon]);
-	float heal_ticks = float(i_BackstabHealTicks[weapon]);
-	if(heal_amount && heal_ticks)
+	if(dieingstate[attacker] > 0)
+		return;
+
+	float HealTime = f_BackstabHealOverThisDuration[weapon];
+	float HealTotal = f_BackstabHealTotal[weapon];
+	if(HealTotal <= 0.0)
+		return;
+	//If against raids, heal more and damage more.
+	if(b_thisNpcIsARaid[victim])
 	{
-		//If against raids, heal more and damage more.
-		if(b_thisNpcIsARaid[victim])
-		{
-			heal_amount *= 2.0;
-		}
-		heal_amount *= multi;
-		if(b_FaceStabber[attacker])
-		{
-			heal_amount *= 0.25;
-			heal_ticks	*= 0.25;
-			if(heal_amount < 1.0)
-			{
-				heal_amount = 1.0;
-			}
-			if(heal_ticks < 1.0)
-			{
-				heal_ticks = 1.0;
-			}
-		}
-		heal_amount *= heal_ticks;
-		HealEntityGlobal(attacker, attacker, heal_amount, 1.0, 1.0, HEAL_SELFHEAL);
+		HealTotal *= 2.0;
 	}
+	HealTotal *= multi;
+	if(b_FaceStabber[attacker])
+	{
+		HealTotal *= 0.25;
+	}
+	HealEntityGlobal(attacker, attacker, HealTotal, 1.0, HealTime, HEAL_SELFHEAL);
 }
 
 bool OnTakeDamageBuildingBonusDamage(int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
@@ -3235,7 +3229,7 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		
 	if(i_HasBeenBackstabbed[victim])
 	{
-		BackstabNpcInternalModifExtra(weapon, attacker, victim, 2.0);
+		BackstabNpcInternalModifExtra(weapon, attacker, victim, 1.0);
 	}
 
 	switch(i_CustomWeaponEquipLogic[weapon])

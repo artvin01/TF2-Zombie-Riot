@@ -8,12 +8,20 @@ enum struct CommandEnum
 	int TargetRef;
 }
 
+static float SoundCooldown[MAXTF2PLAYERS];
+
 static int OwnerUserId[MAXENTITIES];
 static int UnitFlags[MAXENTITIES];
 static float VisionRange[MAXENTITIES];
 static float EngageRange[MAXENTITIES];
 static char NextGesture[MAXENTITIES][32];
 static ArrayList CommandList[MAXENTITIES];
+static Function FuncSound[MAXENTITIES][Sound_MAX];
+
+void UnitBody_MapStart()
+{
+	Zero(SoundCooldown);
+}
 
 methodmap UnitBody < CClotBody
 {
@@ -90,26 +98,42 @@ methodmap UnitBody < CClotBody
 		strcopy(NextGesture[this.index], sizeof(NextGesture[]), anim);
 	}
 
-	public void AddCommand(int type, int target = -1, const float pos[3] = NULL_VECTOR)
+	public void SetSoundFunc(int type, Function func)
 	{
+		FuncSound[this.index][type] = func;
+	}
+
+	public void AddCommand(bool override, int type, const float pos[3], int target = -1)
+	{
+		if(override)
+			delete CommandList[this.index];
+		
 		CommandEnum command;
 		command.Type = type;
 		command.TargetRef = target == -1 ? -1 : EntIndexToEntRef(target);
 		command.Pos = pos;
 
 		if(!CommandList[this.index])
-			CommandList[this.index] = new ArrayList(CommandEnum);
+			CommandList[this.index] = new ArrayList(sizeof(CommandEnum));
 		
 		CommandList[this.index].PushArray(command);
 	}
 
 	public bool IsAlly(int attacker)
 	{
-		return RTS_IsPlayerAlly(attacker, this.m_hOwner);
+		int owner = attacker;
+		if(owner > MaxClients)
+			owner = view_as<UnitBody>(owner).m_hOwner;
+		
+		return RTS_IsPlayerAlly(owner, this.m_hOwner);
 	}
 	public bool CanControl(int attacker)
 	{
-		return RTS_CanPlayerControl(attacker, this.m_hOwner);
+		int owner = attacker;
+		if(owner > MaxClients)
+			owner = view_as<UnitBody>(owner).m_hOwner;
+		
+		return RTS_CanPlayerControl(owner, this.m_hOwner);
 	}
 	
 	public UnitBody(int client, const float vecPos[3], const float vecAng[3],
@@ -129,23 +153,44 @@ methodmap UnitBody < CClotBody
 		NextGesture[npc.index][0] = 0;
 		delete CommandList[npc.index];
 
+		for(int i; i < Sound_MAX; i++)
+		{
+			npc.SetSoundFunc(i, INVALID_FUNCTION);
+		}
+
 		return npc;
 	}
 }
 
-bool UnitBody_IsAlly(int player, int entity)
+bool UnitBody_IsAlly(int attacker, int entity)
 {
-	return view_as<UnitBody>(entity).IsAlly(player);
+	return view_as<UnitBody>(entity).IsAlly(attacker);
 }
 
-bool UnitBody_CanControl(int player, int entity)
+bool UnitBody_CanControl(int attacker, int entity)
 {
-	return view_as<UnitBody>(entity).CanControl(player);
+	return view_as<UnitBody>(entity).CanControl(attacker);
 }
 
-void UnitBody_AddCommand(int entity, int type, int target = -1, const float pos[3] = NULL_VECTOR)
+void UnitBody_AddCommand(int entity, bool override, int type, const float pos[3], int target = -1)
 {
-	view_as<UnitBody>(entity).AddCommand(type, target, pos);
+	view_as<UnitBody>(entity).AddCommand(override, type, pos, target);
+}
+
+void UnitBody_PlaySound(int entity, int client, int type)
+{
+	float gameTime = GetGameTime();
+	if(SoundCooldown[client] > gameTime)
+		return;
+	
+	if(FuncSound[entity][type] != INVALID_FUNCTION)
+	{
+		SoundCooldown[client] = gameTime + 1.5;
+		
+		Call_StartFunction(null, FuncSound[entity][type]);
+		Call_PushCell(client);
+		Call_Finish();
+	}
 }
 
 bool UnitBody_ThinkStart(UnitBody npc, float gameTime)
@@ -173,13 +218,12 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 {
 	CommandEnum command;
 
-	do
+	for(;;)
 	{
-		int actions = CommandList[npc.index] ? CommandList[npc.index].Length : 0;
-		if(actions)
+		if(CommandList[npc.index] && CommandList[npc.index].Length)
 		{
 			// Oldest command
-			CommandList[npc.index].GetArray(actions - 1, command);
+			CommandList[npc.index].GetArray(0, command);
 		}
 		else
 		{
@@ -188,7 +232,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 			GetAbsOrigin(npc.index, command.Pos);
 			command.TargetRef = -1;
 
-			npc.AddCommand(command);
+			npc.AddCommand(false, command.Type, command.Pos, command.TargetRef);
 		}
 		
 		bool foundTarget;
@@ -197,7 +241,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 		{
 			if(IsValidEnemy(npc.index, target))	// Following enemy
 			{
-				npc.m_iTarget = target;
+				npc.m_iTargetWalkTo = target;
 				npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
 				command.Type = Command_Attack;	// Force to always attack
@@ -210,7 +254,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 			else	// Following target is now invalid
 			{
 				// Remove this command
-				CommandList[npc.index].Erase(actions - 1);
+				CommandList[npc.index].Erase(0);
 				continue;
 			}
 		}
@@ -247,7 +291,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 
 		if(!foundTarget)
 		{
-			target = npc.m_iTarget;
+			target = npc.m_iTargetWalkTo;
 
 			if(canAttack)	// No existing target and time as passed
 				canAttack = (target < 1 && npc.m_flGetClosestTargetTime < gameTime);
@@ -263,26 +307,24 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 					target = -1;
 				}
 
-				npc.m_iTarget = target;
+				npc.m_iTargetWalkTo = target;
+				npc.m_flGetClosestTargetTime = gameTime + 1.0;
 			}
 		}
 
 		return target;
 	}
-	while(CommandList[npc.index]);
-
-	return -1;	// Should never happen
 }
 
 // Make sure to call UnitBody_ThinkTarget before this
-bool UnitBody_ThinkMove(UnitBody npc, float gameTime)
+stock bool UnitBody_ThinkMove(UnitBody npc, float gameTime)
 {
 	int actions = CommandList[npc.index].Length;
 
 	CommandEnum command;
-	CommandList[npc.index].GetArray(actions - 1, command);
+	CommandList[npc.index].GetArray(0, command);
 
-	int taget = npc.m_iTarget;
+	int target = npc.m_iTargetWalkTo;
 	if(target < 1)
 		target = command.TargetRef == -1 ? -1 : EntRefToEntIndex(command.TargetRef);
 	
@@ -297,12 +339,12 @@ bool UnitBody_ThinkMove(UnitBody npc, float gameTime)
 		if(distance < npc.GetLeadRadius())
 		{
 			//Predict their pos.
-			PredictSubjectPosition(npc, target);
-			NPC_SetGoalVector(npc.index, vecTarget);
+			PredictSubjectPosition(npc, target, _, _, command.Pos);
+			npc.SetGoalVector(command.Pos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, target);
+			npc.SetGoalEntity(target);
 		}
 
 		npc.StartPathing();
@@ -336,7 +378,7 @@ bool UnitBody_ThinkMove(UnitBody npc, float gameTime)
 					else
 					{
 						command.Type = Command_Idle;
-						CommandList[npc.index].SetArray(actions - 1, command);
+						CommandList[npc.index].SetArray(0, command);
 					}
 				}
 				case Command_Patrol:
@@ -352,228 +394,20 @@ bool UnitBody_ThinkMove(UnitBody npc, float gameTime)
 					else
 					{
 						command.Type = Command_Idle;
-						CommandList[npc.index].SetArray(actions - 1, command);
+						CommandList[npc.index].SetArray(0, command);
 					}
 				}
 			}
 
 			if(nextCommand)
-				CommandList[npc.index].Erase(actions - 1, command);
+				CommandList[npc.index].Erase(0);
 		}
 		else
 		{
-			NPC_SetGoalVector(npc.index, command.Pos);
+			npc.SetGoalVector(command.Pos);
 			npc.StartPathing();
 		}
 	}
 
 	return npc.m_bPathing;
 }
-
-/*
-void UnitBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", const char[] moveAnim = "", float canRetreat = 0.0, bool move = true, bool sound=true)
-{
-	UnitBody npc = view_as<UnitBody>(iNPC);
-
-	bool pathed;
-	float gameTime = GetGameTime(npc.index);
-	if(move && npc.m_flReloadDelay < gameTime)
-	{
-		int client = GetClientOfUserId(npc.OwnerUserId);
-		int command = client ? (npc.CmdOverride == Command_Default ? Building_GetFollowerCommand(client) : npc.CmdOverride) : Command_Aggressive;
-
-		float myPos[3];
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", myPos);
-
-		if(f3_SpawnPosition[client][0] && command == Command_HoldPosBarracks)
-		{
-			f3_SpawnPosition[npc.index] = f3_SpawnPosition[client];
-		}
-		
-		bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer || command == Command_RTSMove);
-
-		if(IsValidEntity(npc.m_iTarget) && canRetreat > 0.0 && command != Command_HoldPos && !retreating)
-		{
-			float vecTarget[3];
-			GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", vecTarget);
-			float flDistanceToTarget;
-			if(command == Command_HoldPosBarracks)
-			{
-				flDistanceToTarget = GetVectorDistance(vecTarget, f3_SpawnPosition[npc.index], true);
-			}
-			else
-			{
-				flDistanceToTarget = GetVectorDistance(vecTarget, myPos, true);
-			}
-
-			if(flDistanceToTarget < canRetreat)
-			{
-				vecTarget = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
-				NPC_SetGoalVector(npc.index, vecTarget);
-				
-				npc.StartPathing();
-				pathed = true;
-			}
-		}
-		else
-		{
-			npc.m_iTarget = 0;
-		}
-
-		if(!pathed && IsValidEntity(npc.m_iTargetRally) && npc.m_iTargetRally > 0 && command != Command_HoldPos && !retreating)
-		{
-			float vecTarget[3];
-			GetEntPropVector(npc.m_iTargetRally, Prop_Data, "m_vecAbsOrigin", vecTarget);
-
-			float flDistanceToTarget;
-			if(command == Command_HoldPosBarracks)
-			{
-				flDistanceToTarget = GetVectorDistance(vecTarget, f3_SpawnPosition[npc.index], true);
-			}
-			else
-			{
-				flDistanceToTarget = GetVectorDistance(vecTarget, myPos, true);
-			}
-			if(flDistanceToTarget < npc.GetLeadRadius())
-			{
-				//Predict their pos.
-				vecTarget = PredictSubjectPositionOld(npc, npc.m_iTargetRally);
-				NPC_SetGoalVector(npc.index, vecTarget);
-
-				npc.StartPathing();
-				pathed = true;
-			}
-			else
-			{
-				NPC_SetGoalEntity(npc.index, npc.m_iTargetRally);
-
-				npc.StartPathing();
-				pathed = true;
-			}
-		}
-		
-		if(!pathed && IsValidEntity(npc.m_iTargetAlly) && command != Command_Aggressive)
-		{
-			if(command != Command_HoldPos && command != Command_HoldPosBarracks && command != Command_RTSMove && command != Command_RTSAttack)
-			{
-				float vecTarget[3];
-				if(npc.m_iTargetAlly <= MaxClients && f3_SpawnPosition[npc.index][0] && npc.m_flComeToMe >= (gameTime + 0.6))
-				{
-					GetEntPropVector(npc.m_iTargetAlly, Prop_Data, "m_vecAbsOrigin", vecTarget);
-					if(GetVectorDistance(myPos, vecTarget, true) > (100.0 * 100.0))
-					{
-						// Too far away from the mounter
-						npc.m_flComeToMe = gameTime + 0.5;
-					}
-				}
-
-				if(npc.m_flComeToMe < gameTime)
-				{
-					npc.m_flComeToMe = gameTime + 0.5;
-
-					float originalVec[3];
-					GetEntPropVector(npc.m_iTargetAlly, Prop_Data, "m_vecAbsOrigin", originalVec);
-					vecTarget = originalVec;
-
-					if(npc.m_iTargetAlly <= MaxClients)
-					{
-						vecTarget[0] += GetRandomFloat(-50.0, 50.0);
-						vecTarget[1] += GetRandomFloat(-50.0, 50.0);
-					}
-					else
-					{
-						vecTarget[0] += GetRandomFloat(-300.0, 300.0);
-						vecTarget[1] += GetRandomFloat(-300.0, 300.0);
-					}
-					vecTarget[2] += 50.0;
-					Handle trace = TR_TraceRayFilterEx(vecTarget, view_as<float>({90.0, 0.0, 0.0}), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
-					TR_GetEndPosition(vecTarget, trace);
-					delete trace;
-					vecTarget[2] += 18.0;
-					static float hullcheckmaxs[3];
-					static float hullcheckmins[3];
-							
-					hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
-					hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
-					if(!IsSpaceOccupiedRTSBuilding(vecTarget, hullcheckmins, hullcheckmaxs, npc.index))
-					{
-						if(!IsPointHazard(vecTarget))
-						{
-							if(GetVectorDistance(originalVec, vecTarget, true) <= (npc.m_iTargetAlly <= MaxClients ? (100.0 * 100.0) : (350.0 * 350.0)) && GetVectorDistance(originalVec, vecTarget, true) > (30.0 * 30.0))
-							{
-								npc.m_flComeToMe = gameTime + 10.0;
-								f3_SpawnPosition[npc.index] = vecTarget;
-							}
-						}
-					}
-				}
-			}
-			
-			if(f3_SpawnPosition[npc.index][0])
-			{
-				if(command == Command_HoldPosBarracks && !pathed)
-				{
-					if(GetVectorDistance(f3_SpawnPosition[npc.index], myPos, true) > (50.0 * 50.0))
-					{
-						NPC_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
-						npc.StartPathing();
-						pathed = true;
-					}
-				}
-				else if(GetVectorDistance(f3_SpawnPosition[npc.index], myPos, true) > (25.0 * 25.0))
-				{
-					NPC_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
-					npc.StartPathing();
-					pathed = true;
-				}
-
-				if(!pathed && command == Command_RTSMove)
-				{
-					command = Command_RTSAttack;
-				}
-			}
-		}
-	}
-	
-	if(pathed)
-	{
-		if(npc.m_iChanged_WalkCycle != 5)
-		{
-			npc.m_iChanged_WalkCycle = 5;
-			npc.m_bisWalking = true;
-			npc.m_flSpeed = speed;
-			
-			if(moveAnim[0])
-				npc.SetActivity(moveAnim);
-		}
-	}
-	else
-	{
-		if(npc.m_iChanged_WalkCycle != 4)
-		{
-			npc.m_iChanged_WalkCycle = 4;
-			npc.m_bisWalking = false;
-			npc.m_flSpeed = 0.0;
-
-			if(idleAnim[0])
-				npc.SetActivity(idleAnim);
-			
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
-			b_WalkToPosition[npc.index] = false;
-		}
-	}
-
-	if(sound)
-	{
-		if(npc.m_iTarget > 0)
-		{
-			npc.PlayIdleAlertSound();
-		}
-		else
-		{
-			npc.PlayIdleSound();
-		}
-	}
-}
-*/

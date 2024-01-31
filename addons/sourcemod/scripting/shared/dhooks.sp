@@ -196,6 +196,7 @@ void DHook_Setup()
 	delete edictgamedata;
 }
 
+
 void DHook_EntityDestoryed()
 {
 	RequestFrame(DHook_EntityDestoryedFrame);
@@ -1766,7 +1767,7 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPost(int client, DHookReturn
 {
 	if(GetChargeEffectBeingProvided && !IsInsideManageRegularWeapons)
 	{
-		if(!IsValidClient(client))
+		if(!IsValidClient(GetChargeEffectBeingProvided))
 		{
 			return MRES_Ignored;
 		}
@@ -2236,37 +2237,79 @@ stock void DelayEffectOnHorn(int ref)
 		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 6.0, 6.1, 1);
 	}
 #endif
-
-	if(ExtendDuration <= 10.0)
+	f_BannerAproxDur[client] = GetGameTime() + ExtendDuration;
+	f_BannerDurationActive[client] = GetGameTime() + 0.35;
+	CreateTimer(0.15, TimerGrantBannerDuration, EntIndexToEntRef(client), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	if(ExtendDuration <= (10.0 * BANNER_DURATION_FIX_FLOAT))
 	{
 		return;
 	}
-	ExtendDuration -= 9.0;
+	ExtendDuration -= (9.0 * BANNER_DURATION_FIX_FLOAT);
 
 	DataPack pack;
 	CreateDataTimer(0.1, TimerSetBannerExtraDuration, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(client));
 	pack.WriteFloat(ExtendDuration + GetGameTime());
 	
-	CreateTimer(0.25, TimerGrantBannerDuration, EntIndexToEntRef(client), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 
 	//"Expidonsan Battery Device"
 }
+
+int BannerWearable[MAXTF2PLAYERS];
+int BannerWearableModelIndex[3];
+void Dhooks_BannerMapstart()
+{
+	BannerWearableModelIndex[0]= PrecacheModel("models/weapons/c_models/c_buffbanner/c_buffbanner.mdl", true);
+	BannerWearableModelIndex[1]= PrecacheModel("models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl", true);
+	BannerWearableModelIndex[2]= PrecacheModel("models/weapons/c_models/c_shogun_warbanner/c_shogun_warbanner.mdl", true);
+}
+
 public Action TimerGrantBannerDuration(Handle timer, int ref)
 {
 	int client = EntRefToEntIndex(ref);
 	if(!IsValidClient(client))
 		return Plugin_Stop;
 
+	int entity;
 	if(!GetEntProp(client, Prop_Send, "m_bRageDraining"))
-		return Plugin_Stop;
-	
-	f_BannerDurationActive[client] = GetGameTime() + 0.35;
-	Event event = CreateEvent("deploy_buff_banner", true);
-	event.SetInt("buff_type", 1);
-	event.SetInt("buff_owner", GetClientUserId(client));
-	event.Fire();
+	{
+		//banner is over, delete.
+		entity = EntRefToEntIndex(BannerWearable[client]);
+		if(entity > MaxClients)
+			TF2_RemoveWearable(client, entity);
 
+		return Plugin_Stop;
+	}
+
+	f_BannerDurationActive[client] = GetGameTime() + 0.35;
+
+	if(IsValidEntity(BannerWearable[client]))
+	{
+		return Plugin_Continue;
+	}
+	if(ClientHasBannersWithCD(client) == 0)
+		return Plugin_Continue;
+
+	entity = CreateEntityByName("tf_wearable");
+	if(entity > MaxClients)	// Weapon worldmodel
+	{
+		int team = GetClientTeam(client);
+		SetEntProp(entity, Prop_Send, "m_nModelIndex", BannerWearableModelIndex[ClientHasBannersWithCD(client) -1]);
+
+		SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+		SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
+		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
+		SetEntityCollisionGroup(entity, 11);
+		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
+		
+		DispatchSpawn(entity);
+		SetVariantString("!activator");
+		ActivateEntity(entity);
+
+		BannerWearable[client] = EntIndexToEntRef(entity);
+		SDKCall_EquipWearable(client, entity);
+	}	
 	return Plugin_Continue;
 }
 

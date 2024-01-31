@@ -483,13 +483,13 @@ public void OnPostThink(int client)
 		HudY += f_WeaponHudOffsetX[client];
 
 		Mana_Hud_Delay[client] = GameTime + 0.4;
+		static bool had_An_ability;
 
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		
 		if(IsValidEntity(weapon))
 		{
 			static float cooldown_time;
-			static bool had_An_ability;
 			had_An_ability = false;
 			static bool IsReady;
 			IsReady = false;
@@ -747,6 +747,22 @@ public void OnPostThink(int client)
 				HudY -= 0.035;
 				Format(buffer, sizeof(buffer), "%s\n", buffer);
 			}
+			had_An_ability = false;
+			switch(ClientHasBannersWithCD(client))
+			{
+				case BuffBanner,Battilons,AncientBanner:
+				{
+					had_An_ability = true;
+					if(GetEntProp(client, Prop_Send, "m_bRageDraining"))
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [⚐ %.1fs]", buffer, f_BannerAproxDur[client] - GetGameTime());
+					}
+					else
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [⚐ %.0f%%]", buffer, GetEntPropFloat(client, Prop_Send, "m_flRageMeter"));
+					}
+				}
+			}
 		}
 		 
 		int red = 200;
@@ -758,6 +774,11 @@ public void OnPostThink(int client)
 			red = 255;
 			green = 0;
 			blue = 255;
+			if(had_An_ability)
+			{
+				HudY -= 0.035;
+				Format(buffer, sizeof(buffer), "%s\n", buffer);
+			}
 			
 			if(Current_Mana[client] < max_mana[client])
 			{
@@ -813,7 +834,6 @@ public void OnPostThink(int client)
 			Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
 		}
 
-		static bool had_An_ability;
 		had_An_ability = false;
 		char bufferbuffs[64];
 		//BUFFS!
@@ -1332,9 +1352,10 @@ public void OnPostThink(int client)
 				
 			}
 
-			if(f_LeftForDead_Cooldown[client] > GameTime)
+			if(b_LeftForDead[client])
 			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer, "Down Cooldown", f_LeftForDead_Cooldown[client] - GameTime);	
+				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
+					"Downs left", downsleft ? 1 : 0);
 			}
 			else
 			{
@@ -2004,7 +2025,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 			
 			i_AmountDowned[victim] += 1;
-			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim] && f_LeftForDead_Cooldown[victim] < GameTime) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim] && f_LeftForDead_Cooldown[victim] < GameTime))
+			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
 			{
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
@@ -2021,10 +2042,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				}
 				else
 				{
-					if(!SpecterCheckIfAutoRevive(victim)) //only if they dont get revived via this perk
-					{
-						f_LeftForDead_Cooldown[victim] = GameTime + 300.0;
-					}
 					dieingstate[victim] = 500;
 				}
 				ForcePlayerCrouch(victim, true);
@@ -2422,17 +2439,15 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 }
 
 //problem: tf2 code lazily made it only work for clients, the server doesnt get this information updated all the time now.
+#define SKIN_ZOMBIE			5
+#define SKIN_ZOMBIE_SPY		SKIN_ZOMBIE + 18
 
 void UpdatePlayerFakeModel(int client)
 {
 	int PlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(PlayerModel > 0)
-	{
-		//setclass to actual class
-	//	TF2_SetPlayerClass_ZR(client, CurrentClass[client]);
+	{	
 		SDKCall_RecalculatePlayerBodygroups(client);
-		//set back to simulate viewmodel
-	//	TF2_SetPlayerClass_ZR(client, WeaponClass[client]);
 		i_nm_body_client[client] = GetEntProp(client, Prop_Data, "m_nBody");
 		SetEntProp(PlayerModel, Prop_Send, "m_nBody", i_nm_body_client[client]);
 	}

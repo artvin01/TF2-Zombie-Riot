@@ -781,7 +781,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			{
 				Zombies_Currently_Still_Ongoing++;
 				fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index] * 0.5;
-				fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index] * 0.5;
+				fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index] * 0.75;
 
 				SetEntityRenderMode(summon, RENDER_TRANSALPHA);
 				SetEntityRenderColor(summon, 200, 200, 200, 200);
@@ -1171,12 +1171,12 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						{
 							vecTarget = PredictSubjectPositionOld(npc, EnemyToPull);
 							npc.FaceTowards(vecTarget, 50000.0);
-							/*
+							
 							if(!npc.m_bFakeClone)
 							{
 								BobPullTarget(npc.index, EnemyToPull);
 							}
-							*/
+							
 							//We succsssfully pulled someone.
 							//Take their old position and nuke it.
 							float vEnd[3];
@@ -1194,7 +1194,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 								WritePackFloat(pack, 1000.0);
 							}
 							else
-								WritePackFloat(pack, 200.0);
+								WritePackFloat(pack, 650.0);
 								
 							spawnRing_Vectors(vEnd, BOB_FIRST_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, BOB_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
 						}
@@ -1816,6 +1816,8 @@ stock void BobPullTarget(int bobnpc, int enemy)
 		TeleportEntity(enemy, NULL_VECTOR, NULL_VECTOR, velocity);
 		TF2_AddCondition(enemy, TFCond_LostFooting, 0.5);
 		TF2_AddCondition(enemy, TFCond_AirCurrent, 0.5);	
+		IncreaceEntityDamageTakenBy(enemy, 0.5, 0.5);
+		//give 50% res for 0.5 seconds
 	}
 	else
 	{

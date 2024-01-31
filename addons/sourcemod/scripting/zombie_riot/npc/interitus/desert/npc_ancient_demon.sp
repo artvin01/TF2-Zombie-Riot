@@ -106,7 +106,7 @@ methodmap DesertAncientDemon < CClotBody
 		DesertAncientDemon npc = view_as<DesertAncientDemon>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "15000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_DESERT_ANCIENTDEMON;
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
