@@ -1536,8 +1536,16 @@ public Action contact_throw_Silvester_entity(int client)
 							if(!b_NpcHasDied[entity] && i_NpcInternalId[entity] >= XENO_RAIDBOSS_SILVESTER && i_NpcInternalId[entity] <= XENO_RAIDBOSS_SUPERSILVESTER)
 								continue;
 								
-							int damage = GetEntProp(client, Prop_Data, "m_iMaxHealth") / 3;
-							
+							int damage;
+							if(client <= MaxClients)
+							{
+								damage = SDKCall_GetMaxHealth(client) / 3;
+
+							}
+							else
+							{
+								damage = GetEntProp(client, Prop_Data, "m_iMaxHealth") / 3;
+							}
 							if(damage > 2000)
 							{
 								damage = 2000;
