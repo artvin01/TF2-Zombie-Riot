@@ -403,7 +403,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 	{
 		if (TF2_GetClientTeam(npc.m_iTargetWalkTo)==view_as<TFTeam>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")) && 
 		b_BobsCuringHand[npc.m_iTargetWalkTo] && b_BobsCuringHand_Revived[npc.m_iTargetWalkTo] >= 20 && TeutonType[npc.m_iTargetWalkTo] == TEUTON_NONE && dieingstate[npc.m_iTargetWalkTo] > 0 
-		&& GetEntPropEnt(npc.m_iTargetWalkTo, Prop_Data, "m_hVehicle") == -1)
+		&& GetEntPropEnt(npc.m_iTargetWalkTo, Prop_Data, "m_hVehicle") == -1 && !b_LeftForDead[npc.m_iTargetWalkTo])
 		{
 			//walk to client.
 			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetWalkTo);
@@ -787,7 +787,7 @@ static int GetClosestAllyPlayerGreg(int entity)
 	{
 		if (IsValidClient(i))
 		{
-			if (TF2_GetClientTeam(i)==view_as<TFTeam>(GetEntProp(entity, Prop_Send, "m_iTeamNum")) && b_BobsCuringHand[i] && b_BobsCuringHand_Revived[i] >= 20 && TeutonType[i] == TEUTON_NONE && dieingstate[i] > 0 && GetEntPropEnt(i, Prop_Data, "m_hVehicle") == -1) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+			if (TF2_GetClientTeam(i)==view_as<TFTeam>(GetEntProp(entity, Prop_Send, "m_iTeamNum")) && b_BobsCuringHand[i] && b_BobsCuringHand_Revived[i] >= 20 && TeutonType[i] == TEUTON_NONE && dieingstate[i] > 0 && GetEntPropEnt(i, Prop_Data, "m_hVehicle") == -1 && !b_LeftForDead[i]) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 

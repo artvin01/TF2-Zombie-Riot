@@ -1135,6 +1135,7 @@ char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
 float f_ExplodeDamageVulnerabilityNpc[MAXENTITIES];
 #if defined ZR
 float f_DelayNextWaveStartAdvancingDeathNpc;
+int Armor_Wearable[MAXTF2PLAYERS];
 #endif
 
 /*
@@ -3659,6 +3660,9 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0)
 		int entity, i;
 		while(TF2U_GetWearable(target, entity, i))
 		{
+			if(entity == EntRefToEntIndex(Armor_Wearable[target]))
+				continue;
+
 			SetEntityRenderMode(entity, RENDER_NORMAL);
 			SetEntityRenderColor(entity, 255, 255, 255, 255);
 		}
