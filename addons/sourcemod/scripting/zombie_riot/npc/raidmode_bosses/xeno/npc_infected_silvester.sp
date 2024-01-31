@@ -1143,6 +1143,9 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 
 				float DelayPillars = 3.0;
 				float DelaybewteenPillars = 0.2;
+				npc.AddActivityViaSequence("taunt_the_fist_bump");
+				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
+				npc.SetPlaybackRate(0.5);
 				if(ZR_GetWaveCount()+1 > 29)
 				{
 					npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.5;
@@ -1154,6 +1157,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					{
 						view_as<CClotBody>(npc.index).SetLayerPlaybackRate(i, 1.15);
 					}
+					npc.SetPlaybackRate(0.6);
 				}
 				if(ZR_GetWaveCount()+1 >= 60)
 				{
@@ -1166,12 +1170,8 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					{
 						view_as<CClotBody>(npc.index).SetLayerPlaybackRate(i, 2.0);
 					}
+					npc.SetPlaybackRate(2.0);
 				}
-				npc.AddActivityViaSequence("taunt_the_fist_bump");
-				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
-			//	npc.AddGesture("ACT_");
-			//	npc.AddActivityViaSequence("taunt_the_");
-				npc.SetPlaybackRate(0.5);
 				npc.SetCycle(0.05);
 				npc.m_bisWalking = false;
 				npc.PlayTeleportSound();
