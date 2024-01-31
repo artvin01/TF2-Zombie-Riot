@@ -1192,9 +1192,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				int entity = CreateEntityByName("env_fog_controller");
 				if(entity != -1)
 				{
-					char name[64];
-					FormatEx(name, sizeof(name), "rpg_fortress_envfog_%d", CurrentRound);
-
 					DispatchKeyValue(entity, "fogblend", round.FogBlend);
 					DispatchKeyValue(entity, "fogcolor", round.FogColor1);
 					DispatchKeyValue(entity, "fogcolor2", round.FogColor2);
@@ -1202,7 +1199,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					DispatchKeyValueFloat(entity, "fogend", round.FogEnd);
 					DispatchKeyValueFloat(entity, "fogmaxdensity", round.FogDesnity);
 
-					DispatchKeyValue(entity, "targetname", name);
+					DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
 					DispatchKeyValue(entity, "fogenable", "1");
 					DispatchKeyValue(entity, "spawnflags", "1");
 					DispatchSpawn(entity);
