@@ -128,7 +128,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		limit = RoundToNearest(float(limit) * MaxEnemyMulti());
 
 		float f_limit = Pow(1.115, float(CountPlayersOnRed()));
-		float f_limit_alive = Pow(1.115, float(CountPlayersOnRed(true)));
+		float f_limit_alive = Pow(1.115, float(CountPlayersOnRed(2)));
 
 		f_limit *= float(limit);
 		f_limit_alive *= float(limit);
