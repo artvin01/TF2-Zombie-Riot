@@ -1838,11 +1838,11 @@ void SensalGiveShield(int sensal, int shieldcount)
 	Sensal npc = view_as<Sensal>(sensal);
 	if(ZR_GetWaveCount()+1 >= 60)
 	{
-		shieldcount *= 3;
+		shieldcount *= 2;
 	}
 	else if(ZR_GetWaveCount()+1 >= 45)
 	{
-		shieldcount *= 2;
+		shieldcount = RoundToNearest(float(shieldcount) * 1.85);
 	}
 	else if(ZR_GetWaveCount()+1 >= 30)
 	{
@@ -1852,9 +1852,6 @@ void SensalGiveShield(int sensal, int shieldcount)
 	{
 		shieldcount = RoundToNearest(float(shieldcount) * 1.5);
 	}
-
-	if(LastMann)
-		shieldcount /= 2;
 
 	VausMagicaGiveShield(sensal, shieldcount); //Give self a shield
 }
