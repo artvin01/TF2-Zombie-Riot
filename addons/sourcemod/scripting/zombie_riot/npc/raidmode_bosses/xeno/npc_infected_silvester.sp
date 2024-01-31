@@ -1101,6 +1101,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				if(ZR_GetWaveCount()+1 >= 60)
 				{
 					ang_Look[1] -= 30.0;
+					ang_Look[1] -= 30.0;
 					for(int Repeat; Repeat <= 2; Repeat++)
 					{
 						ang_Look[1] += 30.0;
