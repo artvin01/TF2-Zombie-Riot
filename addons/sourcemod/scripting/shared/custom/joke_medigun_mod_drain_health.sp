@@ -125,7 +125,7 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 			return MRES_Supercede;	
 		}
 #endif
-		if(What_type_Heal == 1.0)
+		if(What_type_Heal == 1.0 || What_type_Heal == 5.0 || What_type_Heal == 6.0)
 		{
 		//	bool is_uber_activated=view_as<bool>(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"));
 #if defined ZR
@@ -484,7 +484,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
-		else if(What_type_Heal == 1.0)
+		else if(What_type_Heal == 1.0 || What_type_Heal == 5.0 || What_type_Heal == 6.0)
 		{
 			int new_ammo = GetAmmo(owner, 21);
 			if((IsValidClient(healTarget) && healTarget<=MaxClients && GetAmmo(owner, 21) > 0) || (IsValidEntity(healTarget) && b_IsAlliedNpc[healTarget]) && GetAmmo(owner, 21) > 0)
@@ -520,7 +520,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					{
 						healing_Amount *= 0.25;
 					}	
-					i_targethealedLastBy[healTarget] = owner;
 
 					if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
 					{
@@ -534,16 +533,51 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					//The healing is less then 1 ? Do own logic.
 					if(!Is_Allied_Npc)
 					{
-#if defined RPG
-						flMaxHealth = 1.1;
-#else
-						flMaxHealth = 1.5;
-#endif
+						if(What_type_Heal != 5.0)
+							flMaxHealth = 1.5;
+						else
+							flMaxHealth = 1.75;
 					}
 					else
 					{
-						flMaxHealth = 1.25;
+						if(What_type_Heal != 5.0)
+							flMaxHealth = 1.25;
+						else
+							flMaxHealth = 1.45;
 					}
+
+					if(What_type_Heal == 6.0)
+					{
+						float Healing_GiveArmor = 0.35;
+
+						if(healTarget <= MaxClients)
+						{
+							Healing_GiveArmor *= Healing_Value;
+
+							if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
+							{
+								Healing_GiveArmor *= 0.25;
+							}
+							if(i_targethealedLastBy[healTarget] != owner) //If youre healing someone thats already being healed, then the healing amount will be heavily reduced.
+							{
+								Healing_GiveArmor *= 0.25;
+							}	
+							GiveArmorViaPercentage(healTarget, Healing_GiveArmor, 1.0, true);
+						}
+
+						
+						Healing_GiveArmor = 0.35;
+
+						Healing_GiveArmor *= Healing_Value;
+
+						if(f_TimeUntillNormalHeal[owner] > GetGameTime())
+						{
+							Healing_GiveArmor *= 0.25;
+						}
+						GiveArmorViaPercentage(owner, Healing_GiveArmor, 1.0, true);
+					}
+
+					i_targethealedLastBy[healTarget] = owner;
 					//self heal
 					int ammoSubtract;
 					ammoSubtract = HealEntityGlobal(owner, owner, healing_Amount_Self, 1.0, 0.0, _, new_ammo);
@@ -560,6 +594,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					}
 					else //is a player probably.
 					{
+
 						ApplyHealEvent(healTarget, ammoSubtract);
 					}
 					

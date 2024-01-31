@@ -1149,6 +1149,11 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					npc.m_flReloadDelay = GetGameTime(npc.index) + 2.5;
 					DelayPillars = 2.5;
 					DelaybewteenPillars = 0.1;
+					int layerCount = CBaseAnimatingOverlay(npc.index).GetNumAnimOverlays();
+					for(int i; i < layerCount; i++)
+					{
+						view_as<CClotBody>(npc.index).SetLayerPlaybackRate(i, 1.15);
+					}
 				}
 				if(ZR_GetWaveCount()+1 >= 60)
 				{
@@ -1156,6 +1161,11 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					npc.m_flReloadDelay = GetGameTime(npc.index) + 1.5;
 					DelayPillars = 1.5;
 					DelaybewteenPillars = 0.1;
+					int layerCount = CBaseAnimatingOverlay(npc.index).GetNumAnimOverlays();
+					for(int i; i < layerCount; i++)
+					{
+						view_as<CClotBody>(npc.index).SetLayerPlaybackRate(i, 2.0);
+					}
 				}
 				npc.AddActivityViaSequence("taunt_the_fist_bump");
 				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");

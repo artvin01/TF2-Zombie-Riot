@@ -4004,7 +4004,6 @@ stock bool ShouldNpcDealBonusDamage(int entity, int attacker = -1)
 	return i_IsABuilding[entity];
 }
 
-int i_OwnerEntityEnvLaser[MAXENTITIES];
 
 stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
 							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt", int ClientToHideFirstPerson = 0)
