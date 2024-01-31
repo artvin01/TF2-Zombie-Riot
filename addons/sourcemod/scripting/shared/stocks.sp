@@ -2782,6 +2782,7 @@ int CountPlayersOnRed(int alive = 0)
 			if(!alive)
 			{
 				amount++;
+				continue;
 			}
 			else
 			{
@@ -2790,6 +2791,7 @@ int CountPlayersOnRed(int alive = 0)
 					if(TeutonType[client] == TEUTON_NONE)
 					{
 						amount++;
+						continue;
 					}
 				}
 				else if(alive == 2) //check if downed too
@@ -2797,16 +2799,19 @@ int CountPlayersOnRed(int alive = 0)
 					if(TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
 					{
 						amount++;
+						continue;
 					}
 				}
 			}
+		}
 
 #else
 		if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client) == 2 && (!alive || IsPlayerAlive(client)))
 		{
-#endif
 			amount++;
+			continue;
 		}
+#endif
 	}
 	
 	return amount;
