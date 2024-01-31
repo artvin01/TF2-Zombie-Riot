@@ -834,6 +834,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 								npc.m_flAttackHappens = gameTime + 0.25;
 								npc.m_flSwitchCooldown = gameTime + 1.0;
 								npc.m_flNextMeleeAttack = gameTime + 1.0;
+								if(ZR_GetWaveCount()+1 >= 60)
+								{
+									npc.m_flNextMeleeAttack = gameTime + 0.55;
+								}
 							}
 						}
 					}
@@ -858,6 +862,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							npc.FireArrow(vecTarget, (65.0 + (float(tier) * 4.0)) * RaidModeScaling, 1500.0);
 							
 							npc.m_flNextMeleeAttack = gameTime + 1.5;
+							if(ZR_GetWaveCount()+1 >= 60)
+							{
+								npc.m_flNextMeleeAttack = gameTime + 1.0;
+							}
 						}
 						/*else
 						{
@@ -909,6 +917,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						if(npc.Anger)
 						{
 							damage *= 2.5;
+						}
+						if(ZR_GetWaveCount()+1 >= 60)
+						{
+							damage *= 2.0;
 						}
 						FireBullet(npc.index, npc.m_iWearable3, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer01_red");
 					}

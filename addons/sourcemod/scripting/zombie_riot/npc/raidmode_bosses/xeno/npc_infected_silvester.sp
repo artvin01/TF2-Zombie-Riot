@@ -1098,13 +1098,31 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					MaxCount = 1;
 				}
 				Silvester_TE_Used = 0;
-				Silvester_Damaging_Pillars_Ability(npc.index,
-				25.0 * RaidModeScaling,				 	//damage
-				MaxCount, 	//how many
-				DelayPillars,									//Delay untill hit
-				DelaybewteenPillars,									//Extra delay between each
-				ang_Look 								/*2 dimensional plane*/,
-				pos);
+				if(ZR_GetWaveCount()+1 >= 60)
+				{
+					ang_Look[1] -= 30.0;
+					for(int Repeat; Repeat <= 2; Repeat++)
+					{
+						ang_Look[1] += 30.0;
+						Silvester_Damaging_Pillars_Ability(npc.index,
+						25.0 * RaidModeScaling,				 	//damage
+						MaxCount, 	//how many
+						DelayPillars,									//Delay untill hit
+						DelaybewteenPillars,									//Extra delay between each
+						ang_Look 								/*2 dimensional plane*/,
+						pos);
+					}	
+				}
+				else
+				{
+					Silvester_Damaging_Pillars_Ability(npc.index,
+					25.0 * RaidModeScaling,				 	//damage
+					MaxCount, 	//how many
+					DelayPillars,									//Delay untill hit
+					DelaybewteenPillars,									//Extra delay between each
+					ang_Look 								/*2 dimensional plane*/,
+					pos);					
+				}
 
 				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
 				if(npc.Anger)
@@ -1127,7 +1145,16 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				float DelaybewteenPillars = 0.2;
 				if(ZR_GetWaveCount()+1 > 29)
 				{
+					npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.5;
+					npc.m_flReloadDelay = GetGameTime(npc.index) + 2.5;
 					DelayPillars = 2.5;
+					DelaybewteenPillars = 0.1;
+				}
+				if(ZR_GetWaveCount()+1 >= 60)
+				{
+					npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.5;
+					npc.m_flReloadDelay = GetGameTime(npc.index) + 1.5;
+					DelayPillars = 1.5;
 					DelaybewteenPillars = 0.1;
 				}
 				npc.AddActivityViaSequence("taunt_the_fist_bump");
@@ -1849,10 +1876,6 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			Range += (float(count) * 10.0);
 			
 			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range),_,_,_,false);
-			
-			SpawnParticlePos[2] += 80.0;
-			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range),_,_,_,false);
-			SpawnParticlePos[2] -= 80.0;
 	//		InfoTargetParentAt(SpawnParticlePos, "medic_resist_fire", 1.0);
 			if(volume == 0.25)
 			{
