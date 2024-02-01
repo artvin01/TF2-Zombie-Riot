@@ -2313,4 +2313,8 @@
 	{
 		"en"	"Flashier Grenade"
 	}
+	"Energized Riot Gun"
+	{
+		"en"	"Energized Riot Gun"
+	}
 }
