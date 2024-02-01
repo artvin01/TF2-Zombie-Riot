@@ -263,11 +263,11 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 
 						if(vote.Desc[0] && TranslationPhraseExists(vote.Desc))
 						{
-							CPrintToChat("%s: %t", vote.Name, vote.Desc);
+							CPrintToChat(client, "%s: %t", vote.Name, vote.Desc);
 						}
 						else
 						{
-							CPrintToChat("%s: %s", vote.Name, vote.Desc);
+							CPrintToChat(client, "%s: %s", vote.Name, vote.Desc);
 						}
 
 						Waves_CallVote(client, true);
@@ -883,7 +883,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				CanReVote = false;
 				VoteEndTime = GetGameTime() + 30.0;
 				CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
-				PrintHintText("Vote for the top %d options!", Voting.Length);
+				PrintHintTextToAll("Vote for the top %d options!", Voting.Length);
 			}
 			else
 			{

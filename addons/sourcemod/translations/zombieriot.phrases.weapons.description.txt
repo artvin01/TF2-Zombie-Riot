@@ -736,9 +736,7 @@
 	}
 	"Riot Gun Pap 1"
 	{
-		"en"	"Boosts resistance, including melee. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nPress M2 Nearby enemies to stun them and gain massively increased attackspeed and damage for upto 10 hit targets"
-		"ru"	"Усиливает сопр., в том числе в ближнем бою. Оружие стреляет 3 пулями одновременно. Становится основным оружием.\nНажмите М2 вблизи врагов для оглушения и увеличения скорость атаки и урона до 10 целей."
-		"chi"   "增加抵抗，包括近战。武器一次发射3发子弹。成为主要武器。\n按M2击晕附近的敌人，并获得大量提高攻击速度和伤害，最多可击中10个目标"
+		"en"	"Boosts melee resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now stuns longer and has a decreased cooldown."
 	}
 	"Buff Banner Desc"
 	{
@@ -2705,5 +2703,9 @@
 	"Outlaw Railcannon Desc Pap 2"
 	{
 		"en"	"Higher capacity capacitors allow for incredibly fast particles.\nParticles split in the air, resulting in increased damage further away."
+	}
+	"Energized Riot Gun Desc"
+	{
+		"en"	"Boosts ranged resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now becomes slower multi-hit shotgun.\nGetting hit reduces ability cooldowns of yourself and a nearby ally by 0.5 seconds."
 	}
 }
