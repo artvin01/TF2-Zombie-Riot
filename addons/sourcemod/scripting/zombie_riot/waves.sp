@@ -1211,7 +1211,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					{
 						if(IsClientInGame(client))
 						{
-							SetVariantString(name);
+							SetVariantString("rpg_fortress_envfog");
 							AcceptEntityInput(client, "SetFogController");
 						}
 					}
