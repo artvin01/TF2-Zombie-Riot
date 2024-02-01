@@ -2659,7 +2659,7 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave
 				}
 				
 				item.GetItemInfo(0, info);
-				if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost < CurrentCash)
+				if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost_Unlock < CurrentCash)
 					indexes[amount++] = i;
 			}
 			
