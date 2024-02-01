@@ -1784,6 +1784,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 						item.Sell[client] = ItemSell(base, info.Cost);
 						if(item.GregOnlySell == 2)
 						{
+							item.BuyPrice[client] = 0;
 							item.Sell[client] = 0;
 						}
 					}
