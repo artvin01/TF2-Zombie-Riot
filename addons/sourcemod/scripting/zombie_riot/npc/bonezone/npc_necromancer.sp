@@ -7,8 +7,32 @@ static float BONES_NECROMANCER_SPEED_BUFFED = 220.0;
 #define BONES_NECROMANCER_HP				"5000"
 #define BONES_NECROMANCER_HP_BUFFED			"25000"
 
-static float BONES_NECROMANCER_ATTACKINTERVAL = 0.5;
-static float BONES_NECROMANCER_ATTACKINTERVAL_BUFFED = 1.0;
+static float BONES_NECROMANCER_ATTACKINTERVAL = 0.0;
+static float BONES_NECROMANCER_ATTACKINTERVAL_BUFFED = 0.0;
+
+static float Necromancer_Hover_MinDist = 300.0;
+static float Necromancer_Hover_MaxDist = 600.0;
+
+static float Necromancer_AttackRange = 800.0;
+static float Necromancer_AttackRange_Buffed = 1000.0;
+
+static float BOLT_RADIUS = 175.0;
+static float BOLT_RADIUS_BUFFED = 250.0;
+
+static float BOLT_DELAY = 2.0;
+static float BOLT_DELAY_BUFFED = 2.0;
+
+static float BOLT_DAMAGE = 60.0;
+static float BOLT_DAMAGE_BUFFED = 120.0;
+
+static float BOLT_FALLOFF_MULTIHIT = 0.66;
+static float BOLT_FALLOFF_MULTIHIT_BUFFED = 0.85;
+
+static float BOLT_FALLOFF_RADIUS = 0.66;
+static float BOLT_FALLOFF_RADIUS_BUFFED = 0.66;
+
+static float BOLT_DAMAGE_ENTITYMULT = 3.0;
+static float BOLT_DAMAGE_ENTITYMULT_BUFFED = 4.0;
 
 #define BONES_NECROMANCER_SCALE					"1.0"
 #define BONES_NECROMANCER_BUFFED_SCALE			"1.2"
@@ -16,7 +40,13 @@ static float BONES_NECROMANCER_ATTACKINTERVAL_BUFFED = 1.0;
 #define BONES_NECROMANCER_SKIN						"0"
 #define BONES_NECROMANCER_BUFFED_SKIN				"1"
 
-#define BONES_NECROMANCER_BUFFPARTICLE			"utaunt_hands_teamcolor_red"
+#define BONES_NECROMANCER_BUFFPARTICLE			"utaunt_cremation_purple_parent"
+
+#define PARTICLE_NECROMANCER_CAST_BUFFED		""
+#define PARTICLE_NECROMANCER_CAST				""
+
+#define SOUND_BOLT_IMPACT		"misc/halloween/spell_spawn_boss.wav"
+#define SOUND_BOLT_CAST			"misc/halloween/spell_mirv_cast.wav"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -75,7 +105,23 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode3.wav",
 };
 
+enum Necromancer_CastState
+{
+	NECRO_CASTSTATE_INACTIVE,
+	NECRO_CASTSTATE_INTRO,
+	NECRO_CASTSTATE_CASTING
+};
+
 static bool b_BonesBuffed[MAXENTITIES];
+Necromancer_CastState NecroCastState[MAXENTITIES] = { NECRO_CASTSTATE_INACTIVE };
+
+static int cast_Target[MAXENTITIES];
+static int castParticle[MAXENTITIES];
+
+static float Necro_TargetLoc[MAXENTITIES][3];
+static float castTime[MAXENTITIES];
+static float currentRadius[MAXENTITIES];
+static float currentDelay[MAXENTITIES];
 
 public void NecromancerBones_OnMapStart_NPC()
 {
@@ -91,6 +137,9 @@ public void NecromancerBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 
 	PrecacheModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
+	
+	PrecacheSound(SOUND_BOLT_IMPACT);
+	PrecacheSound(SOUND_BOLT_CAST);
 }
 
 methodmap NecromancerBones < CClotBody
@@ -172,7 +221,7 @@ methodmap NecromancerBones < CClotBody
 	
 	public NecromancerBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
 	{
-		NecromancerBones npc = view_as<NecromancerBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_NECROMANCER_BUFFED_SCALE : BONES_NECROMANCER_SCALE, buffed ? BONES_NECROMANCER_HP_BUFFED : BONES_NECROMANCER_HP, ally, false));
+		NecromancerBones npc = view_as<NecromancerBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_NECROMANCER_BUFFED_SCALE : BONES_NECROMANCER_SCALE, buffed ? BONES_NECROMANCER_HP_BUFFED : BONES_NECROMANCER_HP, ally, false, false, true));
 		
 		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_NECROMANCER : BONEZONE_NECROMANCER;
 		b_BonesBuffed[npc.index] = buffed;
@@ -267,13 +316,8 @@ stock void Necromancer_GiveCosmetics(CClotBody npc, bool buffed)
 	
 	if (buffed)
 	{
-		//TODO: Choose a different hat
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2020_misfortune_fedora/hwn2020_misfortune_fedora_sniper.mdl");
-		npc.m_iWearable2 = npc.EquipItem("spine3", "models/workshop/player/items/soldier/hwn2023_warlocks_warcloak/hwn2023_warlocks_warcloak.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2019_horrible_horns/hwn2019_horrible_horns_sniper.mdl");
-		
-		//DispatchKeyValue(npc.m_iWearable1, "skin", "1");
-		//DispatchKeyValue(npc.m_iWearable2, "skin", "1");
+		npc.m_iWearable1 = npc.EquipItem("spine3", "models/workshop/player/items/soldier/hwn2023_warlocks_warcloak/hwn2023_warlocks_warcloak.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2019_horrible_horns/hwn2019_horrible_horns_sniper.mdl");
 	}
 	else
 	{
@@ -327,6 +371,101 @@ stock int Necromancer_AttachParticle(int entity, char type[255], float duration 
 	return -1;
 }
 
+public void Necromancer_SeekTarget(NecromancerBones npc, int closest)
+{
+	if (npc.m_flNextMeleeAttack < GetGameTime(npc.index) && IsValidEnemy(npc.index, closest) && !NpcStats_IsEnemySilenced(npc.index))
+	{
+		float userLoc[3], targLoc[3];
+		WorldSpaceCenter(npc.index, userLoc);
+		WorldSpaceCenter(closest, targLoc);
+
+		if (GetVectorDistance(userLoc, targLoc) > (b_BonesBuffed[npc.index] ? Necromancer_AttackRange_Buffed : Necromancer_AttackRange))
+			return;
+			
+		NecroCastState[npc.index] = NECRO_CASTSTATE_INTRO;
+		cast_Target[npc.index] = EntIndexToEntRef(closest);
+		npc.m_flAttackHappens = GetGameTime(npc.index) + 0.1;
+		npc.m_flAttackHappenswillhappen = true;
+		
+		//TODO: Need a different set of animations for Necromancers.
+		npc.AddGesture("ACT_MP_PASSTIME_THROW_BEGIN");
+		castParticle[npc.index] = EntIndexToEntRef(Necromancer_AttachParticle(npc.index, b_BonesBuffed[npc.index] ? PARTICLE_NECROMANCER_CAST_BUFFED : PARTICLE_NECROMANCER_CAST, _, "handR"));
+	}
+}
+
+public void Necromancer_WaitForCast(NecromancerBones npc, int closest)
+{
+	if (GetGameTime(npc.index) >= npc.m_flAttackHappens && npc.m_flAttackHappenswillhappen)
+	{
+		if (IsValidEntity(closest))
+		{
+			GetAbsOrigin(closest, Necro_TargetLoc[npc.index]);
+			
+			float startLoc[3], ang[3], endLoc[3];
+			WorldSpaceCenter(npc.index, startLoc);
+			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			startLoc[2] += 20.0;
+			GetPointFromAngles(startLoc, ang, 20.0, endLoc, Priest_IgnoreAll, MASK_SHOT);
+			
+			SpawnBeam_Vectors(endLoc, Necro_TargetLoc[npc.index], 0.33, 20, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 0.0);
+			SpawnBeam_Vectors(endLoc, Necro_TargetLoc[npc.index], 0.33, 20, 255, 20, 255, PrecacheModel("materials/sprites/glow02.vmt"), 12.0, 12.0, _, 0.0);
+			SpawnBeam_Vectors(endLoc, Necro_TargetLoc[npc.index], 0.33, 20, 255, 120, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 20.0);
+			spawnRing_Vectors(Necro_TargetLoc[npc.index], 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 20, 255, 120, 120, 1, 0.33, 8.0, 0.0, 1, (b_BonesBuffed[npc.index] ? BOLT_RADIUS_BUFFED : BOLT_RADIUS) * 2.0);
+			
+			EmitSoundToAll(SOUND_BOLT_CAST, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+			
+			castTime[npc.index] = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BOLT_DELAY_BUFFED : BOLT_DELAY);
+			NecroCastState[npc.index] = NECRO_CASTSTATE_CASTING;
+			currentRadius[npc.index] = (b_BonesBuffed[npc.index] ? BOLT_RADIUS_BUFFED : BOLT_RADIUS);
+			currentDelay[npc.index] = (b_BonesBuffed[npc.index] ? BOLT_DELAY_BUFFED : BOLT_DELAY);
+		}
+		else
+		{
+			npc.m_flAttackHappenswillhappen = false;
+			NecroCastState[npc.index] = NECRO_CASTSTATE_INACTIVE;
+		}
+	}
+}
+
+public void Necromancer_WaitForBolt(NecromancerBones npc)
+{
+	if (NpcStats_IsEnemySilenced(npc.index))	//We have been silenced, cancel the bolt.
+	{
+		NecroCastState[npc.index] = NECRO_CASTSTATE_INACTIVE;
+		npc.m_flAttackHappenswillhappen = false;
+	}
+	else if (GetGameTime(npc.index) < castTime[npc.index])	//The bolt is not ready yet, draw a ring indicator.
+	{
+		float timeUntil = castTime[npc.index] - GetGameTime(npc.index);
+		float multiplier = timeUntil / currentDelay[npc.index];
+		
+		spawnRing_Vectors(Necro_TargetLoc[npc.index], currentRadius[npc.index] * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 20, 255, 120, 60, 1, 0.33, 8.0, 0.0, 1);
+		spawnRing_Vectors(Necro_TargetLoc[npc.index], currentRadius[npc.index] * multiplier * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 20, 255, 120, 255, 1, 0.1, 8.0, 0.0, 1);
+	}
+	else	//The bolt is ready, cast it and summon skeletons.
+	{
+		float skyLoc[3];
+		skyLoc = Necro_TargetLoc[npc.index];
+		skyLoc[2] += 9999.0;
+		
+		SpawnBeam_Vectors(skyLoc, Necro_TargetLoc[npc.index], 0.33, 20, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 0.0);
+		SpawnBeam_Vectors(skyLoc, Necro_TargetLoc[npc.index], 0.33, 20, 255, 20, 255, PrecacheModel("materials/sprites/glow02.vmt"), 12.0, 12.0, _, 0.0);
+		SpawnBeam_Vectors(skyLoc, Necro_TargetLoc[npc.index], 0.33, 20, 255, 120, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 20.0);
+		ParticleEffectAt(Necro_TargetLoc[npc.index], PARTICLE_GREENBLAST, 2.0);
+		
+		bool isBlue = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);	
+		Explode_Logic_Custom((b_BonesBuffed[npc.index] ? BOLT_DAMAGE_BUFFED : BOLT_DAMAGE), npc.index, npc.index, npc.index, Necro_TargetLoc[npc.index], currentRadius[npc.index], (b_BonesBuffed[npc.index] ? BOLT_FALLOFF_MULTIHIT_BUFFED : BOLT_FALLOFF_MULTIHIT), (b_BonesBuffed[npc.index] ? BOLT_FALLOFF_RADIUS_BUFFED : BOLT_FALLOFF_RADIUS), isBlue, _, false, (b_BonesBuffed[npc.index] ? BOLT_DAMAGE_ENTITYMULT_BUFFED : BOLT_DAMAGE_ENTITYMULT));
+		
+		EmitSoundToAll(SOUND_BOLT_IMPACT, _, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 110), _, Necro_TargetLoc[npc.index]);
+		
+		//TODO: Summon skeletons
+		
+		NecroCastState[npc.index] = NECRO_CASTSTATE_INACTIVE;
+		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BONES_NECROMANCER_ATTACKINTERVAL_BUFFED : BONES_NECROMANCER_ATTACKINTERVAL);
+		npc.m_flAttackHappenswillhappen = false;
+	}
+}
+
 public void NecromancerBones_ClotThink(int iNPC)
 {
 	NecromancerBones npc = view_as<NecromancerBones>(iNPC);
@@ -366,14 +505,28 @@ public void NecromancerBones_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float pos[3], targPos[3]; 
+		float pos[3], targPos[3], optimalPos[3]; 
 		WorldSpaceCenter(npc.index, pos);
 		WorldSpaceCenter(closest, targPos);
 			
 		float flDistanceToTarget = GetVectorDistance(targPos, pos);
 		
-		npc.StartPathing();
-		NPC_SetGoalEntity(npc.index, closest);
+		if (flDistanceToTarget < Necromancer_Hover_MinDist)
+		{
+			npc.StartPathing();
+			BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
+			NPC_SetGoalVector(npc.index, optimalPos, true);
+		}
+		else if (flDistanceToTarget > Necromancer_Hover_MaxDist)
+		{
+			npc.StartPathing();
+			NPC_SetGoalEntity(npc.index, closest);
+		}
+		else
+		{
+			npc.StopPathing();
+		}
+		
 		npc.FaceTowards(targPos, 15000.0);
 	}
 	else
@@ -382,6 +535,27 @@ public void NecromancerBones_ClotThink(int iNPC)
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
+	}
+	
+	if (NecroCastState[npc.index] == NECRO_CASTSTATE_INTRO)
+		npc.m_flSpeed = 0.0;
+	else
+		npc.m_flSpeed = (b_BonesBuffed[npc.index] ? BONES_NECROMANCER_SPEED_BUFFED : BONES_NECROMANCER_SPEED);
+	
+	switch(NecroCastState[npc.index])
+	{
+		case NECRO_CASTSTATE_INACTIVE:
+		{
+			Necromancer_SeekTarget(npc, closest);
+		}
+		case NECRO_CASTSTATE_INTRO:
+		{
+			Necromancer_WaitForCast(npc, EntRefToEntIndex(cast_Target[npc.index]));
+		}
+		case NECRO_CASTSTATE_CASTING:
+		{
+			Necromancer_WaitForBolt(npc);
+		}
 	}
 	
 	npc.PlayIdleSound();

@@ -59,57 +59,57 @@ static float THUNDER_FALLOFF_MULTIHIT = 0.85;
 static float THUNDER_FALLOFF_RADIUS = 0.33;
 
 static char g_DeathSounds[][] = {
-	")misc/halloween/skeleton_break.wav",
+	")misc/halloween/skeleton_break.wav", 
 };
 
 static char g_HurtSounds[][] = {
-	"npc/fast_zombie/wake1.wav",
+	"npc/fast_zombie/wake1.wav", 
 };
 
 static char g_IdleSounds[][] = {
-	")misc/halloween/skeletons/skelly_medium_01.wav",
-	")misc/halloween/skeletons/skelly_medium_02.wav",
-	")misc/halloween/skeletons/skelly_medium_03.wav",
-	")misc/halloween/skeletons/skelly_medium_04.wav",
+	")misc/halloween/skeletons/skelly_medium_01.wav", 
+	")misc/halloween/skeletons/skelly_medium_02.wav", 
+	")misc/halloween/skeletons/skelly_medium_03.wav", 
+	")misc/halloween/skeletons/skelly_medium_04.wav", 
 };
 
 static char g_IdleSounds_Buffed[][] = {
-	")misc/halloween/skeletons/skelly_giant_01.wav",
-	")misc/halloween/skeletons/skelly_giant_02.wav",
+	")misc/halloween/skeletons/skelly_giant_01.wav", 
+	")misc/halloween/skeletons/skelly_giant_02.wav", 
 	")misc/halloween/skeletons/skelly_giant_03.wav"
 };
 
 static char g_IdleAlertedSounds_Buffed[][] = {
-	")misc/halloween/skeletons/skelly_giant_01.wav",
-	")misc/halloween/skeletons/skelly_giant_02.wav",
+	")misc/halloween/skeletons/skelly_giant_01.wav", 
+	")misc/halloween/skeletons/skelly_giant_02.wav", 
 	")misc/halloween/skeletons/skelly_giant_03.wav"
 };
 
 static char g_IdleAlertedSounds[][] = {
-	")misc/halloween/skeletons/skelly_medium_05.wav",
+	")misc/halloween/skeletons/skelly_medium_05.wav", 
 };
 
 static char g_MeleeHitSounds[][] = {
-	")weapons/grappling_hook_impact_flesh.wav",
+	")weapons/grappling_hook_impact_flesh.wav", 
 };
 
 static char g_MeleeAttackSounds[][] = {
-	"player/cyoa_pda_fly_swoosh.wav",
+	"player/cyoa_pda_fly_swoosh.wav", 
 };
 
 static char g_MeleeMissSounds[][] = {
-	"misc/blank.wav",
+	"misc/blank.wav", 
 };
 
 static char g_HeIsAwake[][] = {
-	"physics/concrete/concrete_break2.wav",
-	"physics/concrete/concrete_break3.wav",
+	"physics/concrete/concrete_break2.wav", 
+	"physics/concrete/concrete_break3.wav", 
 };
 
 static char g_GibSounds[][] = {
-	"items/pumpkin_explode1.wav",
-	"items/pumpkin_explode2.wav",
-	"items/pumpkin_explode3.wav",
+	"items/pumpkin_explode1.wav", 
+	"items/pumpkin_explode2.wav", 
+	"items/pumpkin_explode3.wav", 
 };
 
 static bool b_BonesBuffed[MAXENTITIES];
@@ -120,7 +120,7 @@ static bool Priest_IsHealing[MAXENTITIES];
 static float Priest_LoopHealingGesture[MAXENTITIES];
 
 #define SOUND_CAST_ACTIVATED		"weapons/physcannon/superphys_launch2.wav"
-#define SOUND_CAST_ACTIVATED_BUFFED	"misc/halloween/spell_lightning_ball_cast.wav"
+#define SOUND_CAST_ACTIVATED_BUFFED	"misc/halloween_eyeball/book_exit.wav"
 #define SOUND_CAST_ACTIVATED_BUFFED_2	"misc/halloween/merasmus_hiding_explode.wav"
 #define SOUND_CAST					"weapons/physcannon/energy_sing_flyby1.wav"
 #define SOUND_CAST_BUFFED			"misc/halloween/strongman_fast_whoosh_01.wav"
@@ -134,9 +134,9 @@ static int CastParticle_R[MAXENTITIES];
 
 enum Priest_CastState
 {
-	CASTSTATE_INACTIVE,
-	CASTSTATE_INTRO,
-	CASTSTATE_CHARGING,
+	CASTSTATE_INACTIVE, 
+	CASTSTATE_INTRO, 
+	CASTSTATE_CHARGING, 
 	CASTSTATE_CASTING
 };
 
@@ -144,19 +144,19 @@ Priest_CastState castState[MAXENTITIES] = { CASTSTATE_INACTIVE, ... };
 
 public void SaintBones_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_DeathSounds)); i++) { PrecacheSound(g_DeathSounds[i]); }
+	for (int i = 0; i < (sizeof(g_HurtSounds)); i++) { PrecacheSound(g_HurtSounds[i]); }
+	for (int i = 0; i < (sizeof(g_IdleSounds)); i++) { PrecacheSound(g_IdleSounds[i]); }
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_IdleSounds_Buffed));		i++) { PrecacheSound(g_IdleSounds_Buffed[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleSounds_Buffed)); i++) { PrecacheSound(g_IdleSounds_Buffed[i]); }
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds_Buffed)); i++) { PrecacheSound(g_IdleAlertedSounds_Buffed[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
-
-//	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeMissSounds)); i++) { PrecacheSound(g_MeleeMissSounds[i]); }
+	for (int i = 0; i < (sizeof(g_GibSounds)); i++) { PrecacheSound(g_GibSounds[i]); }
+	
+	//	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	
 	PrecacheSound("player/flow.wav");
 	PrecacheSound(SOUND_CAST_ACTIVATED);
 	PrecacheSound(SOUND_CAST_ACTIVATED_BUFFED);
@@ -170,7 +170,7 @@ public void SaintBones_OnMapStart_NPC()
 methodmap SaintBones < CClotBody
 {
 	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
+		if (this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(b_BonesBuffed[this.index] ? g_IdleSounds_Buffed[GetRandomInt(0, sizeof(g_IdleSounds_Buffed) - 1)] : g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
@@ -181,9 +181,9 @@ methodmap SaintBones < CClotBody
 	}
 	
 	public void PlayHurtSound() {
-		if(this.m_flNextHurtSound > GetGameTime(this.index))
+		if (this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
+		
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -194,7 +194,7 @@ methodmap SaintBones < CClotBody
 	}
 	
 	public void PlayDeathSound() {
-	
+		
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
@@ -203,7 +203,7 @@ methodmap SaintBones < CClotBody
 	}
 	
 	public void PlayGibSound() {
-	
+		
 		EmitSoundToAll(g_GibSounds[GetRandomInt(0, sizeof(g_GibSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
@@ -225,7 +225,7 @@ methodmap SaintBones < CClotBody
 		PrintToServer("CSaintBones::PlayMeleeHitSound()");
 		#endif
 	}
-
+	
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
@@ -256,8 +256,8 @@ methodmap SaintBones < CClotBody
 		if (buffed)
 		{
 			TE_SetupParticleEffect(BONES_SAINTBONES_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, npc.index);
-			TE_WriteNum("m_bControlPoint1", npc.index);	
-			TE_SendToAll();	
+			TE_WriteNum("m_bControlPoint1", npc.index);
+			TE_SendToAll();
 		}
 		
 		Saint_GiveCosmetics(npc, buffed);
@@ -265,15 +265,15 @@ methodmap SaintBones < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_ARCHMAGE_IDLE");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		if (iActivity > 0)npc.StartActivity(iActivity);
 		
 		npc.m_bDoSpawnGesture = true;
 		DispatchKeyValue(npc.index, "skin", buffed ? BONES_SAINT_SKIN_BUFFED : BONES_SAINT_SKIN);
-
+		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_SKELETON;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		//IDLE
@@ -299,7 +299,7 @@ public void SaintBones_SetBuffed(int index, bool buffed)
 		i_NpcInternalId[index] = BONEZONE_BUFFED_SAINTBONES;
 		
 		//Apply buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_SAINT_SCALE_BUFFED);
+		DispatchKeyValue(index, "modelscale", BONES_SAINT_SCALE_BUFFED);
 		int HP = StringToInt(BONES_SAINT_HP_BUFFED);
 		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_SAINT_SPEED_BUFFED;
@@ -308,7 +308,7 @@ public void SaintBones_SetBuffed(int index, bool buffed)
 		
 		//Apply buffed particle:
 		TE_SetupParticleEffect(BONES_SAINTBONES_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, index);
-		TE_WriteNum("m_bControlPoint1", index);	
+		TE_WriteNum("m_bControlPoint1", index);
 		TE_SendToAll();
 	}
 	else if (b_BonesBuffed[index] && !buffed)
@@ -318,7 +318,7 @@ public void SaintBones_SetBuffed(int index, bool buffed)
 		i_NpcInternalId[index] = BONEZONE_SAINTBONES;
 		
 		//Remove buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_SAINT_SCALE);
+		DispatchKeyValue(index, "modelscale", BONES_SAINT_SCALE);
 		int HP = StringToInt(BONES_SAINT_HP);
 		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_SAINT_SPEED;
@@ -410,7 +410,7 @@ public void Priest_RemoveThunderParticles(int index)
 	int particle = EntRefToEntIndex(CastParticle_L[index]);
 	if (IsValidEntity(particle))
 		RemoveEntity(particle);
-		
+	
 	particle = EntRefToEntIndex(CastParticle_R[index]);
 	if (IsValidEntity(particle))
 		RemoveEntity(particle);
@@ -433,26 +433,26 @@ public void SaintBones_ClotThink(int iNPC)
 {
 	SaintBones npc = view_as<SaintBones>(iNPC);
 	
-//	PrintToChatAll("%.f",GetEntPropFloat(view_as<int>(iNPC), Prop_Data, "m_speed"));
+	//	PrintToChatAll("%.f",GetEntPropFloat(view_as<int>(iNPC), Prop_Data, "m_speed"));
 	
 	npc.Update();
 	
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	if (npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
-	if(npc.m_blPlayHurtAnimation)
+	if (npc.m_blPlayHurtAnimation)
 	{
 		npc.m_blPlayHurtAnimation = false;
-		if(!npc.m_flAttackHappenswillhappen)
+		if (!npc.m_flAttackHappenswillhappen)
 			npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if (npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
@@ -466,15 +466,15 @@ public void SaintBones_ClotThink(int iNPC)
 	else
 		SaintBones_PriestLogic(npc, closest);
 	
-	closest = npc.m_iTarget;	
-	switch(castState[npc.index])
+	closest = npc.m_iTarget;
+	switch (castState[npc.index])
 	{
 		case CASTSTATE_INACTIVE:
-			Priest_AttemptCast(npc, closest);
+		Priest_AttemptCast(npc, closest);
 		case CASTSTATE_INTRO:
-			Priest_EndIntro(npc, closest);
+		Priest_EndIntro(npc, closest);
 		case CASTSTATE_CHARGING:
-			Priest_ChargeUp(npc, closest);
+		Priest_ChargeUp(npc, closest);
 		case CASTSTATE_CASTING:
 		{
 			Priest_CheckCast(npc, closest);
@@ -486,7 +486,7 @@ public void SaintBones_ClotThink(int iNPC)
 	{
 		float position[3];
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", position);
-			
+		
 		spawnRing_Vectors(position, THUNDER_RADIUS * 2.0, 0.0, 0.0, 0.0, "materials/sprites/lgtning.vmt", 20, 255, 120, 180, 1, 0.1, 16.0, 2.0, 1);
 		spawnRing_Vectors(position, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 20, 255, 120, 120, 1, 0.33, 8.0, 0.0, 1, THUNDER_RADIUS * 2.0);
 	}
@@ -499,7 +499,7 @@ public void Priest_AttemptCast(SaintBones npc, int closest)
 	//Do not attack if your next attack is not ready, your target is not a valid enemy, you are silenced, or you are healing.
 	if (npc.m_flNextMeleeAttack >= GetGameTime(npc.index) || !IsValidEnemy(npc.index, closest) || NpcStats_IsEnemySilenced(npc.index) || Priest_IsHealing[npc.index])
 		return;
-		
+	
 	float userLoc[3], otherLoc[3];
 	WorldSpaceCenter(npc.index, userLoc);
 	WorldSpaceCenter(closest, otherLoc);
@@ -515,7 +515,7 @@ public void Priest_AttemptCast(SaintBones npc, int closest)
 		//Do not begin Lightning Strike if the enemy is out of range.
 		if (GetVectorDistance(userLoc, otherLoc) > LIGHTNING_RANGE)
 			return;
-			
+		
 		float dummy[3], start[3], target[3];
 		WorldSpaceCenter(npc.index, start);
 		WorldSpaceCenter(closest, target);
@@ -535,14 +535,14 @@ public void Priest_AttemptCast(SaintBones npc, int closest)
 void Priest_GetAngleToPoint(int ent, float pos[3], float TargetLoc[3], float DummyAngles[3], const float Output[3])
 {
 	float ang[3], fVecFinal[3], fFinalPos[3];
-
-	GetEntPropVector(ent, Prop_Send, "m_angRotation", ang);		
-
+	
+	GetEntPropVector(ent, Prop_Send, "m_angRotation", ang);
+	
 	AddInFrontOf(TargetLoc, DummyAngles, 7.0, fVecFinal);
 	MakeVectorFromPoints(pos, fVecFinal, fFinalPos);
-
+	
 	GetVectorAngles(fFinalPos, ang);
-
+	
 	Output = ang;
 }
 
@@ -612,7 +612,7 @@ public bool Priest_LightningTrace(int entity, int contentsMask, int user)
 {
 	if (IsEntityAlive(entity) && entity != user)
 		Priest_LightningHit[entity] = true;
-		
+	
 	return false;
 }
 
@@ -683,8 +683,8 @@ public void Priest_CheckCast(SaintBones npc, int closest)
 					if (IsValidEnemy(npc.index, victim))
 					{
 						float damage = LIGHTNING_DAMAGE;
-	
-						if(ShouldNpcDealBonusDamage(victim))
+						
+						if (ShouldNpcDealBonusDamage(victim))
 						{
 							damage *= LIGHTNING_DAMAGE_ENTITYMULT;
 						}
@@ -721,14 +721,14 @@ public void Priest_EndCast(SaintBones npc, int closest)
 //TODO: For some reason, they change their target automatically when they are damaged by an NPC, which causes them to stop healing their heal target and switch to aggro mode.
 //Figure out why this happens and fix it.
 public int Priest_GetTarget(SaintBones npc)
-{	
+{
 	//Check 1: Find the closest non-buffed skeleton.
 	int closest = GetClosestAlly(npc.index, _, _, view_as<Function>(Priest_IsNonBuffedSkeleton));
 	
 	//Check 2: There are no non-buffed skeletons, find the closest skeleton.
 	if (closest <= 0)
 		closest = GetClosestAlly(npc.index, _, _, view_as<Function>(Priest_IsASkeleton));
-		
+	
 	//Check 3: There are no skeletons, find the closest ally who is not a healer.
 	if (closest <= 0)
 		closest = GetClosestAlly(npc.index, _, _, view_as<Function>(Priest_IsNotAHealer));
@@ -742,18 +742,18 @@ public int Priest_GetTarget(SaintBones npc)
 		int current = npc.m_iTarget;
 		CClotBody currentNPC = view_as<CClotBody>(current);
 		CClotBody newNPC = view_as<CClotBody>(closest);
-			
+		
 		if (currentNPC.BoneZone_IsASkeleton())
 		{
 			if (!newNPC.BoneZone_IsASkeleton()) //The new target is not a skeleton, don't change our target.
 				closest = current;
-			else if (newNPC.BoneZone_GetBuffedState() || newNPC.m_bBoneZoneNaturallyBuffed)	//The new target is already buffed, don't change our target.
+			else if (newNPC.BoneZone_GetBuffedState() || newNPC.m_bBoneZoneNaturallyBuffed) //The new target is already buffed, don't change our target.
 				closest = current;
-			else if (!currentNPC.m_bBoneZoneNaturallyBuffed && currentNPC.BoneZone_GetNumBuffers() <= 1)	//The current heal target will lose their buffed form if we change our target, do not change.
+			else if (!currentNPC.m_bBoneZoneNaturallyBuffed && currentNPC.BoneZone_GetNumBuffers() <= 1) //The current heal target will lose their buffed form if we change our target, do not change.
 				closest = current;
 		}
 	}
-		
+	
 	return closest;
 }
 
@@ -763,42 +763,42 @@ public bool Priest_IsNonBuffedSkeleton(int checker, int target)
 	
 	if (npc.BoneZone_GetBuffedState())
 		return false;
-		
+	
 	if (!npc.BoneZone_IsASkeleton())
 		return false;
-		
+	
 	if (npc.BoneZone_IsASaint())
 		return false;
-		
+	
 	return true;
 }
 
 public bool Priest_IsASkeleton(int checker, int target)
 {
 	CClotBody npc = view_as<CClotBody>(target);
-
+	
 	if (!npc.BoneZone_IsASkeleton())
 		return false;
-		
+	
 	if (npc.BoneZone_IsASaint())
 		return false;
-		
+	
 	return true;
 }
 
 public bool Priest_IsNotAHealer(int checker, int target)
 {
 	CClotBody npc = view_as<CClotBody>(target);
-
+	
 	if (npc.BoneZone_IsASaint())
 		return false;
-		
+	
 	return true;
 }
 
 public void SaintBones_PriestLogic(SaintBones npc, int closest)
 {
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if (npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = Priest_GetTarget(npc);
 		closest = npc.m_iTarget;
@@ -825,12 +825,12 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 	float vecTarget[3], userLoc[3];
 	WorldSpaceCenter(closest, vecTarget);
 	WorldSpaceCenter(npc.index, userLoc);
-			
+	
 	float flDistanceToTarget = GetVectorDistance(vecTarget, userLoc);
-				
+	
 	CClotBody targetNPC = view_as<CClotBody>(closest);
 	
-	if(IsValidAlly(npc.index, closest))
+	if (IsValidAlly(npc.index, closest))
 	{
 		int currentHealTarget = EntRefToEntIndex(Priest_OldHealTarget[npc.index]);
 		if (closest != currentHealTarget)
@@ -843,9 +843,9 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 			
 			Priest_OldHealTarget[npc.index] = EntIndexToEntRef(closest);
 		}
-
+		
 		NPC_SetGoalEntity(npc.index, closest);
-
+		
 		//Only walk up to 66% the healing distance away from the target, we don't want to be *too* close to them.
 		if (flDistanceToTarget <= SAINTBONES_HEAL_RANGE * 0.66)
 		{
@@ -855,8 +855,8 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 		{
 			npc.StartPathing();
 		}
-
-		if(flDistanceToTarget <= SAINTBONES_HEAL_RANGE)
+		
+		if (flDistanceToTarget <= SAINTBONES_HEAL_RANGE)
 		{
 			if (!Priest_IsHealing[npc.index])
 			{
@@ -878,7 +878,7 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 			if (IsValidEntity(particle))
 			{
 				float startLoc[3];
-				GetEntPropVector(particle, Prop_Data, "m_vecAbsOrigin", startLoc);	
+				GetEntPropVector(particle, Prop_Data, "m_vecAbsOrigin", startLoc);
 				vecTarget[2] += 20.0;
 				SpawnBeam_Vectors(startLoc, vecTarget, 0.1, 20, 255, 20, 255, PrecacheModel("materials/sprites/lgtning.vmt"), _, _, _, 10.0);
 			}
@@ -888,10 +888,10 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 			if (HealingAmount < SAINTBONES_PRIEST_MINHEALING)
 				HealingAmount = SAINTBONES_PRIEST_MINHEALING;
 			
-			if(GetEntProp(targetNPC.index, Prop_Data, "m_iHealth") < GetEntProp(targetNPC.index, Prop_Data, "m_iMaxHealth"))
+			if (GetEntProp(targetNPC.index, Prop_Data, "m_iHealth") < GetEntProp(targetNPC.index, Prop_Data, "m_iMaxHealth"))
 			{
 				SetEntProp(targetNPC.index, Prop_Data, "m_iHealth", GetEntProp(targetNPC.index, Prop_Data, "m_iHealth") + HealingAmount);
-				if(GetEntProp(targetNPC.index, Prop_Data, "m_iHealth") >= GetEntProp(targetNPC.index, Prop_Data, "m_iMaxHealth"))
+				if (GetEntProp(targetNPC.index, Prop_Data, "m_iHealth") >= GetEntProp(targetNPC.index, Prop_Data, "m_iMaxHealth"))
 				{
 					SetEntProp(targetNPC.index, Prop_Data, "m_iHealth", GetEntProp(targetNPC.index, Prop_Data, "m_iMaxHealth"));
 				}
@@ -925,7 +925,7 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 			npc.RemoveGesture("ACT_PRIEST_HEALING");
 			Priest_IsHealing[npc.index] = false;
 		}
-			
+		
 		float optimalPos[3];
 		
 		if (flDistanceToTarget < Priest_EnemyHover_MinDist)
@@ -954,7 +954,7 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 
 public void SaintBones_SaintLogic(SaintBones npc, int closest)
 {
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if (npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = Priest_GetTarget(npc);
 		closest = npc.m_iTarget;
@@ -971,7 +971,7 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 		if (Priest_IsHealing[npc.index])
 		{
 			Priest_RemoveHealingParticle(npc.index);
-			npc.RemoveGesture("ACT_PRIEST_HEALING");	//TODO: Saints need custom anims
+			npc.RemoveGesture("ACT_PRIEST_HEALING"); //TODO: Saints need custom anims
 			Priest_IsHealing[npc.index] = false;
 		}
 		
@@ -981,13 +981,13 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 	float vecTarget[3], userLoc[3];
 	WorldSpaceCenter(closest, vecTarget);
 	WorldSpaceCenter(npc.index, userLoc);
-			
+	
 	float flDistanceToTarget = GetVectorDistance(vecTarget, userLoc);
 	
-	if(IsValidAlly(npc.index, closest))
+	if (IsValidAlly(npc.index, closest))
 	{
 		NPC_SetGoalEntity(npc.index, closest);
-
+		
 		//Only walk up to 80% the healing distance away from the target, we don't want to be *too* close to them.
 		if (flDistanceToTarget <= SAINTBONES_HEAL_RANGE_BUFFED * 0.5)
 		{
@@ -1005,7 +1005,7 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 		float startLoc[3];
 		if (IsValidEntity(particle))
 		{
-			GetEntPropVector(particle, Prop_Data, "m_vecAbsOrigin", startLoc);	
+			GetEntPropVector(particle, Prop_Data, "m_vecAbsOrigin", startLoc);
 		}
 		else
 		{
@@ -1017,10 +1017,10 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 		{
 			if (!IsValidEntity(i) || i_IsABuilding[i] || i == npc.index)
 				continue;
-				
+			
 			if (!HasEntProp(i, Prop_Send, "m_iTeamNum"))
 				continue;
-				
+			
 			float healPos[3], userPos[3];
 			WorldSpaceCenter(i, healPos);
 			WorldSpaceCenter(npc.index, userPos);
@@ -1034,10 +1034,10 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 				if (HealingAmount < SAINTBONES_PRIEST_MINHEALING_BUFFED)
 					HealingAmount = SAINTBONES_PRIEST_MINHEALING_BUFFED;
 				
-				if(GetEntProp(healTarget.index, Prop_Data, "m_iHealth") < GetEntProp(healTarget.index, Prop_Data, "m_iMaxHealth"))
+				if (GetEntProp(healTarget.index, Prop_Data, "m_iHealth") < GetEntProp(healTarget.index, Prop_Data, "m_iMaxHealth"))
 				{
 					SetEntProp(healTarget.index, Prop_Data, "m_iHealth", GetEntProp(healTarget.index, Prop_Data, "m_iHealth") + HealingAmount);
-					if(GetEntProp(healTarget.index, Prop_Data, "m_iHealth") >= GetEntProp(healTarget.index, Prop_Data, "m_iMaxHealth"))
+					if (GetEntProp(healTarget.index, Prop_Data, "m_iHealth") >= GetEntProp(healTarget.index, Prop_Data, "m_iMaxHealth"))
 					{
 						SetEntProp(healTarget.index, Prop_Data, "m_iHealth", GetEntProp(healTarget.index, Prop_Data, "m_iMaxHealth"));
 					}
@@ -1046,7 +1046,7 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 				healTarget.BoneZone_SetBuffedState(true, npc.index);
 				if (healTarget.m_flSpeed > highestSpeed)
 					highestSpeed = healTarget.m_flSpeed;
-					
+				
 				healPos[2] += 20.0;
 				SpawnBeam_Vectors(startLoc, healPos, 0.1, 20, 255, 20, 255, PrecacheModel("materials/sprites/lgtning.vmt"), _, _, _, 10.0);
 			}
@@ -1056,12 +1056,12 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 			}
 		}
 		
-		if(AtLeastOne)
+		if (AtLeastOne)
 		{
 			if (!Priest_IsHealing[npc.index])
 			{
 				Priest_HealingParticle[npc.index] = EntIndexToEntRef(Priest_AttachParticle(npc.index, PRIEST_HEALINGPARTICLE_BUFFED, _, "handR"));
-				npc.AddGesture("ACT_PRIEST_HEALING");	//TODO: Saints need custom anims
+				npc.AddGesture("ACT_PRIEST_HEALING"); //TODO: Saints need custom anims
 				Priest_LoopHealingGesture[npc.index] = GetGameTime(npc.index) + 0.7;
 				Priest_IsHealing[npc.index] = true;
 			}
@@ -1069,7 +1069,7 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 			{
 				if (GetGameTime(npc.index) >= Priest_LoopHealingGesture[npc.index])
 				{
-					npc.AddGesture("ACT_PRIEST_HEALING");	//TODO: Saints need custom anims
+					npc.AddGesture("ACT_PRIEST_HEALING"); //TODO: Saints need custom anims
 					Priest_LoopHealingGesture[npc.index] = GetGameTime(npc.index) + 0.7;
 				}
 			}
@@ -1083,7 +1083,7 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 			if (Priest_IsHealing[npc.index])
 			{
 				Priest_RemoveHealingParticle(npc.index);
-				npc.RemoveGesture("ACT_PRIEST_HEALING");	//TODO: Saints need custom anims
+				npc.RemoveGesture("ACT_PRIEST_HEALING"); //TODO: Saints need custom anims
 				Priest_IsHealing[npc.index] = false;
 			}
 			
@@ -1095,10 +1095,10 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 		if (Priest_IsHealing[npc.index])
 		{
 			Priest_RemoveHealingParticle(npc.index);
-			npc.RemoveGesture("ACT_PRIEST_HEALING");	//TODO: Saints need custom anims
+			npc.RemoveGesture("ACT_PRIEST_HEALING"); //TODO: Saints need custom anims
 			Priest_IsHealing[npc.index] = false;
 		}
-			
+		
 		npc.StartPathing();
 		NPC_SetGoalEntity(npc.index, closest);
 	}
@@ -1113,9 +1113,9 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 public Action SaintBones_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
-	if(attacker <= 0)
+	if (attacker <= 0)
 		return Plugin_Continue;
-
+	
 	SaintBones npc = view_as<SaintBones>(victim);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -1123,24 +1123,24 @@ public Action SaintBones_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-//	
+	//	
 	return Plugin_Changed;
 }
 
 public void SaintBones_NPCDeath(int entity)
 {
 	SaintBones npc = view_as<SaintBones>(entity);
-	if(!npc.m_bGib)
+	if (!npc.m_bGib)
 	{
-		npc.PlayDeathSound();	
+		npc.PlayDeathSound();
 	}
 	SDKUnhook(entity, SDKHook_Think, SaintBones_ClotThink);
 	
 	for (int i = 1; i < 2049; i++)
 	{
-		if (!IsValidEntity(i) || i == entity)	
+		if (!IsValidEntity(i) || i == entity)
 			continue;
-			
+		
 		CClotBody other = view_as<CClotBody>(i);
 		other.BoneZone_SetBuffedState(false, entity);
 	}
@@ -1156,7 +1156,7 @@ public void SaintBones_NPCDeath(int entity)
 	Priest_RemoveThunderParticles(entity);
 	Priest_IsHealing[entity] = false;
 	
-//	AcceptEntityInput(npc.index, "KillHierarchy");
+	//	AcceptEntityInput(npc.index, "KillHierarchy");
 }
 
 
