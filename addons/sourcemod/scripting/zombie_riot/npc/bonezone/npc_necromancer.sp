@@ -412,7 +412,7 @@ public void Necromancer_WaitForCast(NecromancerBones npc, int closest)
 			SpawnBeam_Vectors(endLoc, Necro_TargetLoc[npc.index], 0.33, 20, 255, 120, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 20.0);
 			spawnRing_Vectors(Necro_TargetLoc[npc.index], 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 20, 255, 120, 120, 1, 0.33, 8.0, 0.0, 1, (b_BonesBuffed[npc.index] ? BOLT_RADIUS_BUFFED : BOLT_RADIUS) * 2.0);
 			
-			EmitSoundToAll(SOUND_BOLT_CAST, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+			EmitSoundToAll(SOUND_BOLT_CAST, 0, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL - 30, _, NORMAL_ZOMBIE_VOLUME - 0.1, GetRandomInt(80, 110), -1, endLoc);
 			
 			castTime[npc.index] = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BOLT_DELAY_BUFFED : BOLT_DELAY);
 			NecroCastState[npc.index] = NECRO_CASTSTATE_CASTING;
@@ -456,7 +456,7 @@ public void Necromancer_WaitForBolt(NecromancerBones npc)
 		bool isBlue = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);	
 		Explode_Logic_Custom((b_BonesBuffed[npc.index] ? BOLT_DAMAGE_BUFFED : BOLT_DAMAGE), npc.index, npc.index, npc.index, Necro_TargetLoc[npc.index], currentRadius[npc.index], (b_BonesBuffed[npc.index] ? BOLT_FALLOFF_MULTIHIT_BUFFED : BOLT_FALLOFF_MULTIHIT), (b_BonesBuffed[npc.index] ? BOLT_FALLOFF_RADIUS_BUFFED : BOLT_FALLOFF_RADIUS), isBlue, _, false, (b_BonesBuffed[npc.index] ? BOLT_DAMAGE_ENTITYMULT_BUFFED : BOLT_DAMAGE_ENTITYMULT));
 		
-		EmitSoundToAll(SOUND_BOLT_IMPACT, _, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 110), _, Necro_TargetLoc[npc.index]);
+		EmitSoundToAll(SOUND_BOLT_IMPACT, 0, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL - 20, _, NORMAL_ZOMBIE_VOLUME - 0.1, GetRandomInt(80, 110), -1, Necro_TargetLoc[npc.index]);
 		
 		//TODO: Summon skeletons
 		
