@@ -580,6 +580,7 @@ bool GlassBuilder[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
 bool b_ExpertTrapper[MAXENTITIES];
 bool b_RaptureZombie[MAXENTITIES];
+bool b_ArmorVisualiser[MAXENTITIES];
 int Building_Hidden_Prop[MAXENTITIES][2];
 float f_ClientArmorRegen[MAXENTITIES];
 bool b_BobsCuringHand[MAXTF2PLAYERS];
@@ -697,6 +698,7 @@ float f_WeaponSizeOverride[MAXENTITIES];
 float f_WeaponSizeOverrideViewmodel[MAXENTITIES];
 float f_WeaponVolumeStiller[MAXENTITIES];
 float f_WeaponVolumeSetRange[MAXENTITIES];
+char c_WeaponSoundOverrideString[MAXENTITIES][255];
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 
@@ -2431,6 +2433,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		StoreWeapon[entity] = -1;
 		b_SentryIsCustom[entity] = false;
 		Building_Mounted[entity] = -1;
+		EntitySpawnToDefaultSiccerino(entity);
 #endif
 		i_WeaponSoundIndexOverride[entity] = 0;
 		f_WeaponSizeOverride[entity] = 1.0;

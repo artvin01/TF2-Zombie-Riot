@@ -2720,6 +2720,10 @@ public Action ShieldSetTransmit(int entity, int client)
 {
 	if(client > 0 && client <= MaxClients)
 	{
+		if(!b_ArmorVisualiser[client])
+		{
+			return Plugin_Stop;
+		}
 		int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
 		if(owner == client)
 		{
