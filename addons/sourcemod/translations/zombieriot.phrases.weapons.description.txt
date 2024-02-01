@@ -2688,11 +2688,11 @@
   }
 	"Flash Grenade Desc"
 	{
-		"en"	"Massively decreased damage but stuns and silences enemies for 3 seconds."
+		"en"	"Massively decreased damage but briefly stuns and silences enemies."
 	}
 	"Flash Grenade Pap Desc"
 	{
-		"en"	"Stun now lasts 5 seconds and silence lasts 10 seconds."
+		"en"	"Stun now lasts 2 seconds and silence lasts 4 seconds."
 	}
 	"Outlaw Railcannon Desc"
 	{
