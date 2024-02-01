@@ -101,7 +101,7 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 			h_TimerFantasyManagement[client] = null;
 			i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 			
-			Create_Halo_And_Wings(client, true);
+		//	Create_Halo_And_Wings(client, true);
 			DataPack pack;
 			h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
@@ -114,7 +114,7 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 	{
 		i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 		
-		Create_Halo_And_Wings(client, true);
+	//	Create_Halo_And_Wings(client, true);
 		DataPack pack;
 		h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT);
 		pack.WriteCell(client);

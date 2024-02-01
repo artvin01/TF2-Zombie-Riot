@@ -32,6 +32,9 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 
 		while(TF2U_GetWearable(client, entity, i, "tf_wearable"))
 		{
+			if(entity == EntRefToEntIndex(Armor_Wearable[client]))
+				continue;
+
 			ModelIndex = GetEntProp(entity, Prop_Data, "m_nModelIndex");
 			if(ModelIndex < 0)
 			{

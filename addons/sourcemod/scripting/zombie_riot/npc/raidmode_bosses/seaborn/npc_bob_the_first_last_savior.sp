@@ -1389,6 +1389,9 @@ static void GiveOneRevive()
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
+					if(entity == EntRefToEntIndex(Armor_Wearable[client]))
+						continue;
+
 					SetEntityRenderMode(entity, RENDER_NORMAL);
 					SetEntityRenderColor(entity, 255, 255, 255, 255);
 				}
@@ -1430,6 +1433,9 @@ static void GiveOneRevive()
 					int entity, i;
 					while(TF2U_GetWearable(client, entity, i))
 					{
+						if(entity == EntRefToEntIndex(Armor_Wearable[client]))
+							continue;
+
 						SetEntityRenderMode(entity, RENDER_NORMAL);
 						SetEntityRenderColor(entity, 255, 255, 255, 255);
 					}

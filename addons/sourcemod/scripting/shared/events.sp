@@ -578,6 +578,9 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 						int entity_wearable, i;
 						while(TF2U_GetWearable(client, entity_wearable, i))
 						{
+							if(entity == EntRefToEntIndex(Armor_Wearable[client]))
+								continue;
+
 							SetEntityRenderMode(entity_wearable, RENDER_NORMAL);
 							SetEntityRenderColor(entity_wearable, 255, 255, 255, 255);
 						}

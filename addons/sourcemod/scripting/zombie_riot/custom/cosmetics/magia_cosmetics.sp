@@ -54,7 +54,7 @@ void ApplyExtraMagiaCosmeticEffects(int client, bool remove = false)
 }
 public void EnableMagiaCosmetic(int client) 
 {
-	if(TeutonType[client] != TEUTON_NONE || TeutonType[client] == TEUTON_NONE)
+	if(TeutonType[client] != TEUTON_NONE)
 		return;
 		
 	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Magia Wings [???]"));
@@ -63,8 +63,6 @@ public void EnableMagiaCosmetic(int client)
 		//This timer already exists.
 		if(HasWings)
 		{
-			MagiaCosmeticRemoveEffects(client);
-			ApplyExtraMagiaCosmeticEffects(client,_);
 			//Is the weapon it again?
 			//Yes?
 			delete h_MagiaCosmeticEffectManagement[client];
@@ -78,8 +76,6 @@ public void EnableMagiaCosmetic(int client)
 	
 	if(HasWings)
 	{
-		MagiaCosmeticRemoveEffects(client);
-		ApplyExtraMagiaCosmeticEffects(client,_);
 		DataPack pack;
 		h_MagiaCosmeticEffectManagement[client] = CreateDataTimer(0.1, TimerMagiaCosmetic, pack, TIMER_REPEAT);
 		pack.WriteCell(client);

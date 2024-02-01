@@ -717,6 +717,9 @@ static void TriggerDeathDoor(int client, int &healing)
 		int entity, i;
 		while(TF2U_GetWearable(client, entity, i))
 		{
+			if(entity == EntRefToEntIndex(Armor_Wearable[client]))
+				continue;
+
 			SetEntityRenderMode(entity, RENDER_NORMAL);
 			SetEntityRenderColor(entity, 255, 255, 255, 255);
 		}
@@ -724,6 +727,7 @@ static void TriggerDeathDoor(int client, int &healing)
 		SetEntityRenderColor(client, 255, 255, 255, 255);
 		SetEntityCollisionGroup(client, 5);
 		DoOverlay(client, "", 2);
+		SetEntityMoveType(client, MOVETYPE_WALK);
 
 		int health = 50;
 		if(health > healing)

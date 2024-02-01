@@ -954,7 +954,7 @@ public void Enable_FusionWeapon(int client, int weapon) // Enable management, ha
 		//This timer already exists.
 		if(IsFusionWeapon(i_CustomWeaponEquipLogic[weapon]))
 		{
-			ApplyExtraFusionWeaponEffects(client,_ ,weapon);
+		//	ApplyExtraFusionWeaponEffects(client,_ ,weapon);
 			//Is the weapon it again?
 			//Yes?
 			delete h_TimerFusionWeaponManagement[client];
@@ -969,7 +969,7 @@ public void Enable_FusionWeapon(int client, int weapon) // Enable management, ha
 		
 	if(IsFusionWeapon(i_CustomWeaponEquipLogic[weapon]))
 	{
-		ApplyExtraFusionWeaponEffects(client,_ ,weapon);
+	//	ApplyExtraFusionWeaponEffects(client,_ ,weapon);
 		DataPack pack;
 		h_TimerFusionWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_FusionWeapon, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
