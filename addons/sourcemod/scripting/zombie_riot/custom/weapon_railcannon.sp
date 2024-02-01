@@ -3,6 +3,7 @@
 
 #define RAILCANNON_BOOM 	"weapons/physcannon/superphys_launch2.wav"
 #define RAILCANNONPAP2_BOOM 	"beams/beamstart5.wav"
+#define RAILCANNONPAP3_BOOM 	"weapons/gauss/fire1.wav"
 
 static float Strength[MAXTF2PLAYERS];
 
@@ -21,13 +22,15 @@ static float BEAM_ZOffset[MAXTF2PLAYERS];
 static bool BEAM_HitDetected[MAXTF2PLAYERS];
 static int BEAM_BuildingHit[MAX_TARGETS_HIT];
 static bool BEAM_UseWeapon[MAXTF2PLAYERS];
+static float BEAM_Targets_Hit[MAXTF2PLAYERS];
 
 static bool Handle_on[MAXPLAYERS+1]={false, ...};
 static int weapon_id[MAXPLAYERS+1]={0, ...};
 static Handle Revert_Weapon_Back_Timer[MAXPLAYERS+1];
 static float base_chargetime[MAXPLAYERS+1]={-1.0, ...};
 
-static float BEAM_Targets_Hit[MAXTF2PLAYERS];
+static bool Zoom_Active[MAXTF2PLAYERS] = {false, ...};
+static int Zoom_Default[MAXTF2PLAYERS] = {90, ...};
 
 void Precache_Railcannon()
 {
@@ -35,21 +38,75 @@ void Precache_Railcannon()
 	PrecacheSound(RAILCANNONPAP2_BOOM);
 	Beam_Laser = PrecacheModel("materials/sprites/physbeam.vmt", false);
 	Beam_Glow = PrecacheModel("sprites/glow02.vmt", true);
+	HookEvent("player_death", OnPlayerDeath, EventHookMode_Post);
 }
 
+//no pap
 public void Weapon_Railcannon(int client, int weapon, const char[] classname, bool &result)
 {
 	Check_Railcannon(client, weapon, 0);
 }
-
+//1
 public void Weapon_Railcannon_Pap1(int client, int weapon, const char[] classname, bool &result)
 {
 	Check_Railcannon(client, weapon, 1);
 }
-
+//2
 public void Weapon_Railcannon_Pap2(int client, int weapon, const char[] classname, bool &result)
 {
 	Check_Railcannon(client, weapon, 2);
+}
+
+public void Weapon_Railcannon_Pap2_Zoom(int client, int weapon, const char[] classname, bool &result)
+{
+	Zoom_Railcannon(client);
+}
+//3
+public void Weapon_Railcannon_Pap3(int client, int weapon, const char[] classname, bool &result)
+{
+	Check_Railcannon(client, weapon, 3);
+}
+//4
+public void Weapon_Railcannon_Pap4(int client, int weapon, const char[] classname, bool &result)
+{
+	Check_Railcannon(client, weapon, 4);
+}
+
+public void Weapon_Railcannon_Pap4_Zoom(int client, int weapon, const char[] classname, bool &result)
+{
+	Zoom_Railcannon(client);
+}
+
+public void Weapon_Railcannon_Pap4_Ability(int client, int weapon, const char[] classname, bool &result)
+{
+
+}
+
+public void Weapon_Railcannon_Pap4_Holster(int client, int weapon, const char[] classname, bool &result)
+{
+	SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 1);
+	SetEntProp(client, Prop_Send, "m_iFOV", 90);
+}
+
+
+static void Zoom_Railcannon(int client)
+{
+	int ZoomFOV = 30;
+	if (Zoom_Active[client] == false)
+	{
+		Zoom_Default[client] = GetEntProp(client, Prop_Send, "m_iFOV");
+		Zoom_Active[client] = true;
+		SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 0);
+		SetEntProp(client, Prop_Send, "m_iFOV", ZoomFOV);
+	}
+	else
+	{
+		Zoom_Active[client] = false;
+		SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 1);
+		if (Zoom_Default[client] == ZoomFOV)
+			Zoom_Default[client] = 90;
+		SetEntProp(client, Prop_Send, "m_iFOV", Zoom_Default[client]);
+	}
 }
 
 static void Check_Railcannon(int client, int weapon, int pap)
@@ -72,6 +129,12 @@ static void Check_Railcannon(int client, int weapon, int pap)
 			
 			switch(pap)
 			{
+				case 0:
+					if (flMultiplier<3.85)
+					{
+						SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+1);
+						return;
+					}
 				case 1:
 					if (flMultiplier<1.33)
 					{
@@ -79,19 +142,15 @@ static void Check_Railcannon(int client, int weapon, int pap)
 						return;
 					}
 				case 2:
-					if (flMultiplier<3.925)
-					{
-						SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+1);
-						return;
-					}
-				default:
-					if (flMultiplier<3.85)
+					if (flMultiplier<3.925) //increased value due to compensate for longer charge time
 					{
 						SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+1);
 						return;
 					}
 			}
 		}
+
+		//pre-beam damage
 		BEAM_Targets_Hit[client] = 0.0;
 		
 		Strength[client] = 150.0;
@@ -101,9 +160,18 @@ static void Check_Railcannon(int client, int weapon, int pap)
 		Strength[client] *= Attributes_Get(weapon, 2, 1.0);
 
 		float flMultiplier = GetRailcannonPercentage(weapon, client);
-		Strength[client] *= (flMultiplier/4);
-		
-		if (pap == 1)
+		if (pap == 3)
+		{
+			//Reduced charge damage for TAU cannon
+			Strength[client] *= 1 + (flMultiplier/8);
+		}
+		else
+		{
+			Strength[client] *= (flMultiplier/4);
+		}
+
+		//knockback
+		if (pap == 1 || pap == 3)
 		{
 			Knockback_Railcannon(client, weapon, true);
 		}
@@ -124,11 +192,11 @@ static void Knockback_Railcannon(int client, int weapon, bool analogue)
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
+
+		float flMultiplier = GetRailcannonPercentage(weapon, client);
 		float knockback;
 		if (analogue == true)
 		{
-			float flMultiplier = GetRailcannonPercentage(weapon, client);
-
 			knockback = -100.0 * (flMultiplier/4);
 		}
 		else
@@ -141,8 +209,10 @@ static void Knockback_Railcannon(int client, int weapon, bool analogue)
 			velocity[2] = fmax(velocity[2], 300.0);
 		else
 			velocity[2] += 100.0; // a little boost to alleviate arcing issues
-			
-			
+		
+		if (analogue == true)
+			velocity[2] *= (flMultiplier/4);
+		
 		float newVel[3];
 		
 		newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
@@ -173,7 +243,14 @@ static void Ability_Railcannon(int client, int pap)
 	BEAM_CanUse[client] = true;
 	BEAM_MaxDistance[client] = 4096;
 	BEAM_BeamRadius[client] = 1;
-	BEAM_ColorHex[client] = ParseColor("00FFFF");
+	if (pap == 4)
+	{
+		BEAM_ColorHex[client] = ParseColor("00FFFF");
+	}
+	else
+	{
+		BEAM_ColorHex[client] = ParseColor("00FFFF");
+	}
 	BEAM_ChargeUpTime[client] = 1;
 	BEAM_Duration[client] = 2.5;
 	
@@ -191,6 +268,8 @@ static void Ability_Railcannon(int client, int pap)
 	{
 		case 2:
 			EmitSoundToAll(RAILCANNONPAP2_BOOM, client, SNDCHAN_STATIC, 85, _, 0.66);
+		case 3:
+			EmitSoundToAll(RAILCANNONPAP3_BOOM, client, SNDCHAN_STATIC, 85, _, 1.0);
 		default:
 			EmitSoundToAll(RAILCANNON_BOOM, client, SNDCHAN_STATIC, 90, _, 1.0);
 	}

@@ -2704,6 +2704,10 @@
 	}
 	"Outlaw Railcannon Desc Pap 2"
 	{
-		"en"	"Higher capacity capacitors allow for incredibly fast particles.\nParticles split in the air, resulting in increased damage further away."
+		"en"	"Higher capacity capacitors allow for incredibly fast particles.\nParticles split in the air, resulting in increased damage further away.\nCan zoom in with M2."
+	}
+	"Outlaw Railcannon Desc Pap 3"
+	{
+		"en"	"We found this left behind on an old rusty mad max car.\nSeems to have had significant use."
 	}
 }
