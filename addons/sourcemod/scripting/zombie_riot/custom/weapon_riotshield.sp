@@ -121,7 +121,7 @@ static void Weapon_RiotShield_M2_Base(int client, int weapon, int slot, int pap)
 			if(pap == 2)
 			{
 				ApplyTempAttrib(weapon, 2, 1.35, 5.0);
-				ApplyTempAttrib(weapon, 5, 2.0, 5.0);
+				ApplyTempAttrib(weapon, 6, 2.0, 5.0);
 				ApplyTempAttrib(weapon, 45, 3.0, 5.0);
 			}
 			else
