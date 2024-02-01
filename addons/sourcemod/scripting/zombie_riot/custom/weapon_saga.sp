@@ -48,12 +48,27 @@ void Saga_DeadEffects(int victim, int attacker, int weapon)
 		Saga_ChargeReduction(attacker, weapon, SagaCrippled[victim]);
 }
 
+public bool Saga_ChargeValidityFunction(int provider, int entity)
+{
+	if(entity <= MaxClients)
+	{
+		int i, weapon;
+		while(TF2_GetItem(entity, weapon, i))
+		{
+			if(Saga_IsChargeWeapon(entity, weapon))
+				return true;
+		}
+	}
+
+	return false;
+}
+
 bool Saga_IsChargeWeapon(int client, int weapon)
 {
 	if(!IsValidEntity(weapon))
 		return false;
 
-	if(f_UberOnHitWeapon[weapon])
+	if(f_UberOnHitWeapon[weapon] > 0.01)
 		return true;
 	
 	if(Passanger_HasCharge(client))
