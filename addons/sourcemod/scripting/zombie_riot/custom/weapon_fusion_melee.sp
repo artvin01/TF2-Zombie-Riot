@@ -1332,11 +1332,11 @@ void DrawBigSiccerinoSiccors(float Angles[3], int client, float belowBossEyes[3]
 					playerPos = WorldSpaceCenterOld(BEAM_BuildingHit[building]);
 
 					f_SiccerinoExtraDamage[client][BEAM_BuildingHit[building]] += 0.35;
-					DataPack pack;
-					CreateDataTimer(10.0, Siccerino_revert_damageBonus, pack, TIMER_FLAG_NO_MAPCHANGE);
-					pack.WriteCell(EntIndexToEntRef(client));
-					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));		
-					pack.WriteFloat(0.35);	
+					DataPack pack1;
+					CreateDataTimer(10.0, Siccerino_revert_damageBonus, pack1, TIMER_FLAG_NO_MAPCHANGE);
+					pack1.WriteCell(EntIndexToEntRef(client));
+					pack1.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));		
+					pack1.WriteFloat(0.35);	
 					float damage_force[3];
 					damage_force = CalculateDamageForceOld(vecForward, 10000.0);
 					DataPack pack = new DataPack();

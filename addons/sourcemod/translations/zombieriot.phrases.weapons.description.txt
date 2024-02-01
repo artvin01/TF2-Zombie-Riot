@@ -2707,7 +2707,7 @@
 	"Energized Riot Gun Desc"
 	{
 		"en"	"Boosts ranged resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now becomes slower multi-hit shotgun.\nGetting hit reduces ability cooldowns of yourself and a nearby ally by 0.5 seconds."
-  }
+	}
 	"Armor Visualiser Desc"
 	{
 		"en"	"You can now see the armor of fellow allies via their shield."
