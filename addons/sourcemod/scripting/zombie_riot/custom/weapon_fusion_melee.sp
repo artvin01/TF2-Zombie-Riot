@@ -9,6 +9,7 @@ static Handle h_TimerFusionWeaponManagement[MAXPLAYERS+1] = {null, ...};
 
 #define SICCERINO_FAST_ATTACK_SOUND "items/powerup_pickup_agility.wav"
 #define SICCERINO_PREPARE_SICCORS_SOUND "mvm/mvm_tele_activate.wav"
+#define SICCERINO_DEBUFF_FADE 6.5
 static const char g_Siccerino_snapSound[][] = {
 	"physics/metal/sawblade_stick1.wav",
 	"physics/metal/sawblade_stick2.wav",
@@ -1157,7 +1158,7 @@ public float Npc_OnTakeDamage_Siccerino(int attacker, int victim, float damage, 
 	
 	f_SiccerinoExtraDamage[attacker][victim] += SICCERINO_BONUS_DAMAGE;
 	DataPack pack;
-	CreateDataTimer(10.0, Siccerino_revert_damageBonus, pack, TIMER_FLAG_NO_MAPCHANGE);
+	CreateDataTimer(SICCERINO_DEBUFF_FADE, Siccerino_revert_damageBonus, pack, TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(attacker));
 	pack.WriteCell(EntIndexToEntRef(victim));		
 	pack.WriteFloat(SICCERINO_BONUS_DAMAGE);		
@@ -1333,7 +1334,7 @@ void DrawBigSiccerinoSiccors(float Angles[3], int client, float belowBossEyes[3]
 
 					f_SiccerinoExtraDamage[client][BEAM_BuildingHit[building]] += 0.35;
 					DataPack pack1;
-					CreateDataTimer(10.0, Siccerino_revert_damageBonus, pack1, TIMER_FLAG_NO_MAPCHANGE);
+					CreateDataTimer(SICCERINO_DEBUFF_FADE, Siccerino_revert_damageBonus, pack1, TIMER_FLAG_NO_MAPCHANGE);
 					pack1.WriteCell(EntIndexToEntRef(client));
 					pack1.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));		
 					pack1.WriteFloat(0.35);	
