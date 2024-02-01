@@ -122,6 +122,7 @@ static float Priest_LoopHealingGesture[MAXENTITIES];
 #define SOUND_CAST_ACTIVATED		"weapons/physcannon/superphys_launch2.wav"
 #define SOUND_CAST_ACTIVATED_BUFFED	"misc/halloween_eyeball/book_exit.wav"
 #define SOUND_CAST_ACTIVATED_BUFFED_2	"misc/halloween/merasmus_hiding_explode.wav"
+#define SOUND_CAST_ACTIVATED_BUFFED_3	"misc/halloween/spell_lightning_ball_cast.wav"
 #define SOUND_CAST					"weapons/physcannon/energy_sing_flyby1.wav"
 #define SOUND_CAST_BUFFED			"misc/halloween/strongman_fast_whoosh_01.wav"
 #define SOUND_THUNDER_CHARGEUP		"misc/halloween/gotohell.wav"
@@ -160,6 +161,8 @@ public void SaintBones_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheSound(SOUND_CAST_ACTIVATED);
 	PrecacheSound(SOUND_CAST_ACTIVATED_BUFFED);
+	PrecacheSound(SOUND_CAST_ACTIVATED_BUFFED_2);
+	PrecacheSound(SOUND_CAST_ACTIVATED_BUFFED_3);
 	PrecacheSound(SOUND_CAST);
 	PrecacheSound(SOUND_CAST_BUFFED);
 	PrecacheSound(SOUND_THUNDER_CHARGEUP);
@@ -623,7 +626,9 @@ public void Priest_CheckCast(SaintBones npc, int closest)
 		if (b_BonesBuffed[npc.index])
 		{
 			EmitSoundToAll(SOUND_CAST_ACTIVATED_BUFFED_2, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL + 20, _, NORMAL_ZOMBIE_VOLUME);
-			EmitSoundToAll(SOUND_CAST_ACTIVATED_BUFFED_2, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL + 20, _, NORMAL_ZOMBIE_VOLUME);
+			//EmitSoundToAll(SOUND_CAST_ACTIVATED_BUFFED_2, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL + 20, _, NORMAL_ZOMBIE_VOLUME);
+			EmitSoundToAll(SOUND_CAST_ACTIVATED_BUFFED, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL + 20, _, NORMAL_ZOMBIE_VOLUME);
+			EmitSoundToAll(SOUND_CAST_ACTIVATED_BUFFED, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL + 20, _, NORMAL_ZOMBIE_VOLUME);
 			
 			bool isBlue = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
 			float position[3];
@@ -702,7 +707,7 @@ public void Priest_CheckCast(SaintBones npc, int closest)
 			SpawnBeam_Vectors(startLoc, endLoc, 0.25, 20, 255, 120, 80, PrecacheModel("materials/sprites/lgtning.vmt"), 2.0, 2.0, _, 20.0);
 		}
 		
-		EmitSoundToAll(b_BonesBuffed[npc.index] ? SOUND_CAST_ACTIVATED_BUFFED : SOUND_CAST_ACTIVATED, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL + (b_BonesBuffed[npc.index] ? 0 : 20), _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(b_BonesBuffed[npc.index] ? SOUND_CAST_ACTIVATED_BUFFED_3 : SOUND_CAST_ACTIVATED, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL + (b_BonesBuffed[npc.index] ? 0 : 20), _, NORMAL_ZOMBIE_VOLUME);
 		npc.m_flAttackHappenswillhappen = false;
 		Priest_RemoveThunderParticles(npc.index);
 	}
