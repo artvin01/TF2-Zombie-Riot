@@ -1160,6 +1160,7 @@ public float Npc_OnTakeDamage_Siccerino(int attacker, int victim, float damage, 
 	CreateDataTimer(10.0, Siccerino_revert_damageBonus, pack, TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(attacker));
 	pack.WriteCell(EntIndexToEntRef(victim));		
+	pack.WriteFloat(SICCERINO_BONUS_DAMAGE);		
 
 	return damage;
 }
@@ -1169,9 +1170,10 @@ public Action Siccerino_revert_damageBonus(Handle timer, DataPack pack)
 	pack.Reset();
 	int client = EntRefToEntIndex(pack.ReadCell());
 	int enemy = EntRefToEntIndex(pack.ReadCell());
+	float number = pack.ReadFloat();
 	if(IsValidClient(client) && IsValidEntity(enemy))
 	{
-		f_SiccerinoExtraDamage[client][enemy] -= SICCERINO_BONUS_DAMAGE;
+		f_SiccerinoExtraDamage[client][enemy] -= number;
 		if(f_SiccerinoExtraDamage[client][enemy] <= 1.0)
 		{
 			f_SiccerinoExtraDamage[client][enemy] = 1.0;
@@ -1298,6 +1300,7 @@ void DrawBigSiccerinoSiccors(float Angles[3], int client, float belowBossEyes[3]
 
 	if(AngleDeviation == 0.0)
 	{
+		
 		EmitSoundToAll(g_Siccerino_snapSound[GetRandomInt(0, sizeof(g_Siccerino_snapSound) - 1)],
 		 client, SNDCHAN_STATIC, 90, _, 1.0);
 		for (int building = 1; building < MAX_TARGETS_HIT; building++)
@@ -1316,7 +1319,7 @@ void DrawBigSiccerinoSiccors(float Angles[3], int client, float belowBossEyes[3]
 		delete trace;
 		BEAM_Targets_Hit[client] = 1.0;
 		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		float damage = 250.0;
+		float damage = 350.0;
 		damage *= Attributes_Get(weapon_active, 2, 1.0);
 		float playerPos[3];
 
@@ -1328,7 +1331,12 @@ void DrawBigSiccerinoSiccors(float Angles[3], int client, float belowBossEyes[3]
 				{
 					playerPos = WorldSpaceCenterOld(BEAM_BuildingHit[building]);
 
-						
+					f_SiccerinoExtraDamage[client][BEAM_BuildingHit[building]] += 0.35;
+					DataPack pack;
+					CreateDataTimer(10.0, Siccerino_revert_damageBonus, pack, TIMER_FLAG_NO_MAPCHANGE);
+					pack.WriteCell(EntIndexToEntRef(client));
+					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));		
+					pack.WriteFloat(0.35);	
 					float damage_force[3];
 					damage_force = CalculateDamageForceOld(vecForward, 10000.0);
 					DataPack pack = new DataPack();
