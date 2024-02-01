@@ -272,11 +272,12 @@ public void Activate_Neuvellete(int client, int weapon)
 			h_TimerNeuvellete_Management[client] = CreateDataTimer(0.1, Timer_Management_Neuvellete, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			
+			/*
 			if(!IsValidEntity(EntRefToEntIndex(i_hand_particle[client][0])))
 			{
 				Create_Hand_Particle(client);
 			}
+			*/
 		}
 		return;
 	}

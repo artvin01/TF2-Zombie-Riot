@@ -405,8 +405,7 @@ public Action RaidbossBladedance_OnTakeDamage(int victim, int &attacker, int &in
 
 public void RaidbossBladedance_NPCDeath(int entity)
 {
-	if(!Waves_IsEmpty())
-		Waves_ClearWave();
+	Waves_ClearWave();
 
 	RaidbossBladedance npc = view_as<RaidbossBladedance>(entity);
 	if(!npc.m_bGib)

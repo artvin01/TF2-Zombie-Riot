@@ -21,7 +21,6 @@ static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInJarate[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 
-int Armor_Wearable[MAXTF2PLAYERS];
 bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 int Armor_WearableModelIndex;
 
@@ -2095,6 +2094,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				int i;
 				while(TF2U_GetWearable(victim, entity, i))
 				{
+					if(entity == EntRefToEntIndex(Armor_Wearable[victim]))
+						continue;
+
 					if(!autoRevive)
 					{
 						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
@@ -2718,6 +2720,10 @@ public Action ShieldSetTransmit(int entity, int client)
 {
 	if(client > 0 && client <= MaxClients)
 	{
+		if(!b_ArmorVisualiser[client])
+		{
+			return Plugin_Stop;
+		}
 		int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
 		if(owner == client)
 		{

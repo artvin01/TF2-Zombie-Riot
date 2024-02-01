@@ -1632,8 +1632,10 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	
 	CClotBody npc = view_as<CClotBody>(victim);
 	Debuff_added = false;
+	
+	int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
 
-	if(NpcHadArmorType(victim, 2) && !b_NpcIsInvulnerable[victim])	
+	if(NpcHadArmorType(victim, 2, weapon, attacker) && !b_NpcIsInvulnerable[victim])	
 	{
 		float percentage = npc.m_flMeleeArmor * 100.0;
 		percentage *= fl_Extra_MeleeArmor[victim];
@@ -1657,6 +1659,9 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 #endif
 		if(VausMagicaShieldLogicEnabled(victim))
 			percentage *= 0.25;
+		
+		if(weapon > 0 && attacker > 0)
+			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
 		
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
 		Debuff_added = true;
@@ -1866,7 +1871,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 }
 #endif	// Non-RTS
 
-bool NpcHadArmorType(int victim, int type)
+bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 0)
 {
 	if(fl_TotalArmor[victim] != 1.0)
 		return true;
@@ -1901,6 +1906,9 @@ bool NpcHadArmorType(int victim, int type)
 				return true;
 			
 			if(fl_Extra_MeleeArmor[victim] != 1.0)
+				return true;
+
+			if(weapon > 0 && attacker > 0 && Siccerino_Melee_DmgBonus(victim, attacker, weapon) != 1.0)
 				return true;
 		}
 	}
@@ -2335,6 +2343,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		case WEAPON_RED_BLADE:
 		{
 			WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon);
+		}
+		case WEAPON_SICCERINO: //pap fusion
+		{
+			return Npc_OnTakeDamage_Siccerino(attacker, victim, damage, weapon);
 		}
 	}
 #endif

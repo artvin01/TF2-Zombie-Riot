@@ -203,12 +203,12 @@ public Action Waves_RevoteCmd(int client, int args)
 	return Plugin_Handled;
 }
 
-bool Waves_CallVote(int client)
+bool Waves_CallVote(int client, bool force = false)
 {
 	if(Rogue_Mode())
 		return Rogue_CallVote(client);
 	
-	if(Voting && !VotedFor[client])
+	if(Voting && (force || !VotedFor[client]))
 	{
 		Menu menu = new Menu(Waves_CallVoteH);
 		
@@ -247,10 +247,35 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
-			VotedFor[client] = choice;
-			if(VotedFor[client] == 0)
-				VotedFor[client] = -1;
-			
+			if(Voting)
+			{
+				if(!choice || VotedFor[client] != choice)
+				{
+					VotedFor[client] = choice;
+					if(VotedFor[client] == 0)
+					{
+						VotedFor[client] = -1;
+					}
+					else
+					{
+						Vote vote;
+						Voting.GetArray(choice - 1, vote);
+
+						if(vote.Desc[0] && TranslationPhraseExists(vote.Desc))
+						{
+							CPrintToChat(client, "%s: %t", vote.Name, vote.Desc);
+						}
+						else
+						{
+							CPrintToChat(client, "%s: %s", vote.Name, vote.Desc);
+						}
+
+						Waves_CallVote(client, true);
+						return 0;
+					}
+				}
+			}
+
 			Store_Menu(client);
 		}
 	}
@@ -401,6 +426,7 @@ void Waves_SetupVote(KeyValues map)
 	{
 		kv.GetSectionName(vote.Name, sizeof(vote.Name));
 		kv.GetString("file", vote.Config, sizeof(vote.Config));
+		kv.GetString("desc", vote.Desc, sizeof(vote.Desc));
 		vote.Level = kv.GetNum("level");
 		Voting.PushArray(vote);
 	} while(kv.GotoNextKey());
@@ -857,6 +883,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				CanReVote = false;
 				VoteEndTime = GetGameTime() + 30.0;
 				CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+				PrintHintTextToAll("Vote for the top %d options!", Voting.Length);
 			}
 			else
 			{
@@ -1192,9 +1219,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				int entity = CreateEntityByName("env_fog_controller");
 				if(entity != -1)
 				{
-					char name[64];
-					FormatEx(name, sizeof(name), "rpg_fortress_envfog_%d", CurrentRound);
-
 					DispatchKeyValue(entity, "fogblend", round.FogBlend);
 					DispatchKeyValue(entity, "fogcolor", round.FogColor1);
 					DispatchKeyValue(entity, "fogcolor2", round.FogColor2);
@@ -1202,7 +1226,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					DispatchKeyValueFloat(entity, "fogend", round.FogEnd);
 					DispatchKeyValueFloat(entity, "fogmaxdensity", round.FogDesnity);
 
-					DispatchKeyValue(entity, "targetname", name);
+					DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
 					DispatchKeyValue(entity, "fogenable", "1");
 					DispatchKeyValue(entity, "spawnflags", "1");
 					DispatchSpawn(entity);
@@ -1214,7 +1238,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					{
 						if(IsClientInGame(client))
 						{
-							SetVariantString(name);
+							SetVariantString("rpg_fortress_envfog");
 							AcceptEntityInput(client, "SetFogController");
 						}
 					}

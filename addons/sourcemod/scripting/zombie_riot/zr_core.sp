@@ -152,6 +152,7 @@ enum
 	WEAPON_RED_BLADE = 81,
 	WEAPON_GRAVATON_WAND = 82,
 	WEAPON_HEAVY_PARTICLE_RIFLE = 83,
+	WEAPON_SICCERINO = 84,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -1182,6 +1183,9 @@ public Action Timer_Dieing(Handle timer, int client)
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
+					if(entity == EntRefToEntIndex(Armor_Wearable[client]))
+						continue;
+
 					SetEntityRenderMode(entity, RENDER_NORMAL);
 					SetEntityRenderColor(entity, 255, 255, 255, 255);
 				}
@@ -1444,6 +1448,9 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							int entity, i;
 							while(TF2U_GetWearable(client, entity, i))
 							{
+								if(entity == EntRefToEntIndex(Armor_Wearable[client]))
+									continue;
+
 								SetEntityRenderMode(entity, RENDER_NORMAL);
 								SetEntityRenderColor(entity, 255, 255, 255, 255);
 							}
@@ -1859,6 +1866,9 @@ void ReviveAll(bool raidspawned = false)
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
+					if(entity == EntRefToEntIndex(Armor_Wearable[client]))
+						continue;
+
 					SetEntityRenderMode(entity, RENDER_NORMAL);
 					SetEntityRenderColor(entity, 255, 255, 255, 255);
 				}
@@ -1893,6 +1903,8 @@ void ReviveAll(bool raidspawned = false)
 					{
 						dieingstate[client] = 0;
 					}
+					
+
 					Store_ApplyAttribs(client);
 					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 					int entity, i;
