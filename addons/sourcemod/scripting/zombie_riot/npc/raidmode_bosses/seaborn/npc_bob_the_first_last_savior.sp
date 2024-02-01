@@ -362,6 +362,8 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 {
 	RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(iNPC);
 	
+
+	Zombies_Currently_Still_Ongoing = CountPlayersOnRed(1);
 	float gameTime = GetGameTime(npc.index);
 
 	if(npc.Anger || npc.m_bFakeClone || i_RaidGrantExtra[npc.index] > 1)
@@ -1514,8 +1516,6 @@ static void AddBobEnemy(int id, int count, int boss = 0)
 	{
 		Waves_AddNextEnemy(enemy);
 	}
-
-	Zombies_Currently_Still_Ongoing += count;
 }
 
 Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, float &damage)
@@ -1597,6 +1597,7 @@ void RaidbossBobTheFirst_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_Think, RaidbossBobTheFirst_ClotThink);
 	
 	Zombies_Currently_Still_Ongoing++;	// Because it was decreased before
+	Zombies_Currently_Still_Ongoing = 0;
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
