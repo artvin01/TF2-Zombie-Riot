@@ -5173,6 +5173,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_ProximityAmmo[client] = false;
 	b_ExpertTrapper[client] = false;
 	b_RaptureZombie[client] = false;
+	b_ArmorVisualiser[client] = false;
 	i_MaxSupportBuildingsLimit[client] = 0;
 	b_PlayerWasAirbornKnockbackReduction[client] = false;
 	BannerOnEntityCreated(client);
@@ -5904,6 +5905,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.SpecialAdditionViaNonAttribute == 12)
 					{
 						b_RaptureZombie[client] = true;
+					}
+					if(info.SpecialAdditionViaNonAttribute == 13)
+					{
+						b_ArmorVisualiser[client] = true;
 					}
 
 #endif

@@ -580,6 +580,7 @@ bool GlassBuilder[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
 bool b_ExpertTrapper[MAXENTITIES];
 bool b_RaptureZombie[MAXENTITIES];
+bool b_ArmorVisualiser[MAXENTITIES];
 int Building_Hidden_Prop[MAXENTITIES][2];
 float f_ClientArmorRegen[MAXENTITIES];
 bool b_BobsCuringHand[MAXTF2PLAYERS];
