@@ -3807,7 +3807,7 @@ static void Railgun_Boom(int client)
 			}
 			
 			
-			for (int building = 1; building < MAX_TARGETS_HIT; building++)
+			for (int building = 0; building < MAX_TARGETS_HIT; building++)
 			{
 				BEAM_BuildingHit[building] = false;
 			}
@@ -3941,7 +3941,7 @@ static void Railgun_Boom_Client(int client)
 			}
 			
 			
-			for (int building = 1; building < MAX_TARGETS_HIT; building++)
+			for (int building = 0; building < MAX_TARGETS_HIT; building++)
 			{
 				BEAM_BuildingHit[building] = false;
 			}

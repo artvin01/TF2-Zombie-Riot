@@ -164,7 +164,7 @@ static void TBB_Precahce_BeamWand()
 // don't know
 static void TBB_Ability_BeamWand(int client)
 {
-	for (int building = 1; building < MAX_TARGETS_HIT; building++)
+	for (int building = 0; building < MAX_TARGETS_HIT; building++)
 	{
 		BeamWand_BuildingHit[building] = false;
 		BeamWand_Targets_Hit[client]   = 0.0;
@@ -344,7 +344,7 @@ static void TBB_Tick(int client)
 			BeamWand_HitDetected[i] = false;
 		}
 
-		for (int building = 1; building < MAX_TARGETS_HIT; building++)
+		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			BeamWand_BuildingHit[building] = false;
 		}

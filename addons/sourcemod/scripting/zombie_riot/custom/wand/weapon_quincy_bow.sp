@@ -1227,7 +1227,7 @@ static void Penetrating_Shot(int client, float radius, float damage, float range
 		}
 		
 		
-		for (int building = 1; building < MAX_TARGETS_HIT; building++)
+		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			BeamWand_BuildingHit[building] = false;
 		}

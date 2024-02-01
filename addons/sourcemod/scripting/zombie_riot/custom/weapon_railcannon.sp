@@ -161,7 +161,7 @@ static void Knockback_Railcannon(int client, int weapon, bool analogue)
 
 static void Ability_Railcannon(int client, int pap)
 {
-	for (int building = 1; building < MAX_TARGETS_HIT; building++)
+	for (int building = 0; building < MAX_TARGETS_HIT; building++)
 	{
 		BEAM_BuildingHit[building] = false;
 		BEAM_Targets_Hit[client] = 0.0;
@@ -287,7 +287,7 @@ static void Railcannon_Tick(int client, int pap)
 		}
 		
 		
-		for (int building = 1; building < MAX_TARGETS_HIT; building++)
+		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			BEAM_BuildingHit[building] = false;
 		}
