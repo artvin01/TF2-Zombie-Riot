@@ -1201,7 +1201,7 @@ public void Siccerino_ability_R(int client, int weapon, bool crit, int slot)
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0); //Semi long cooldown, this is a strong buff.
 
-		EmitSoundToAll(SICCERINO_PREPARE_SICCORS_SOUND, client, SNDCHAN_STATIC, 90, _, 0.6);
+		EmitSoundToAll(SICCERINO_PREPARE_SICCORS_SOUND, client, SNDCHAN_STATIC, 70, _, 0.6);
 		f_SuperSliceTimeUntillAttack[client] = GetGameTime() + 1.5;
 		f_SuperSliceTimeUntillAttack_CD[client] = GetGameTime();
 		SDKUnhook(client, SDKHook_PreThink, Siccerino_SuperSlice);
@@ -1222,11 +1222,11 @@ public void Siccerino_ability_R(int client, int weapon, bool crit, int slot)
 }
 
 static int BEAM_BuildingHit[MAX_TARGETS_HIT];
-static float BEAM_Targets_Hit[MAX_TARGETS_HIT];
+static float BEAM_Targets_Hit[MAXTF2PLAYERS];
 
 static void Siccerino_SuperSlice(int client)
 {
-	if (!IsEntityAlive(client))
+	if (!IsPlayerAlive(client))
 	{
 		SDKUnhook(client, SDKHook_PreThink, Siccerino_SuperSlice);
 		return;
@@ -1304,10 +1304,9 @@ void DrawBigSiccerinoSiccors(float Angles[3], int client, float belowBossEyes[3]
 		
 		EmitSoundToAll(g_Siccerino_snapSound[GetRandomInt(0, sizeof(g_Siccerino_snapSound) - 1)],
 		 client, SNDCHAN_STATIC, 90, _, 1.0);
-		for (int building = 1; building < MAX_TARGETS_HIT; building++)
+		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			BEAM_BuildingHit[building] = false;
-			BEAM_Targets_Hit[client] = 0.0;
 		}
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);

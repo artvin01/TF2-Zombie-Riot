@@ -1660,7 +1660,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		if(VausMagicaShieldLogicEnabled(victim))
 			percentage *= 0.25;
 		
-		percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
+		if(weapon > 0 && attacker > 0)
+			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
 		
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
 		Debuff_added = true;
@@ -1907,7 +1908,7 @@ bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 0)
 			if(fl_Extra_MeleeArmor[victim] != 1.0)
 				return true;
 
-			if(Siccerino_Melee_DmgBonus(victim, attacker, weapon) != 1.0)
+			if(weapon > 0 && attacker > 0 && Siccerino_Melee_DmgBonus(victim, attacker, weapon) != 1.0)
 				return true;
 		}
 	}

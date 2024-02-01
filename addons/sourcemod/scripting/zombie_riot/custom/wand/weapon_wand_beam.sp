@@ -258,7 +258,7 @@ public Action Reset_BeamWand_Attackspeed(Handle cut_timer, int ref)
 
 static void TBB_Ability_BeamWand(int client)
 {
-	for (int building = 1; building < MAX_TARGETS_HIT; building++)
+	for (int building = 0; building < MAX_TARGETS_HIT; building++)
 	{
 		BeamWand_BuildingHit[building] = false;
 		BeamWand_Targets_Hit[client] = 0.0;
@@ -323,7 +323,7 @@ static void TBB_Ability_BeamWand(int client)
 }
 static void TBB_Ability_BeamWand_pap(int client)
 {
-	for (int building = 1; building < MAX_TARGETS_HIT; building++)
+	for (int building = 0; building < MAX_TARGETS_HIT; building++)
 	{
 		BeamWand_BuildingHit[building] = false;
 		BeamWand_Targets_Hit[client] = 0.0;
@@ -500,7 +500,7 @@ static void TBB_Tick(int client)
 		}
 		
 		
-		for (int building = 1; building < MAX_TARGETS_HIT; building++)
+		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			BeamWand_BuildingHit[building] = false;
 		}
