@@ -95,6 +95,7 @@ enum struct ItemInfo
 	float WeaponSizeOverride;
 	float WeaponSizeOverrideViewmodel;
 	char WeaponModelOverride[128];
+	char WeaponSoundOverrideString[255];
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
 	int Weapon_Bodygroup;
@@ -273,6 +274,9 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sweapon_sound_index_override", prefix);
 		this.WeaponSoundIndexOverride	= view_as<bool>(kv.GetNum(buffer, 0));
 
+		Format(buffer, sizeof(buffer), "%ssound_weapon_override_string", prefix);
+		kv.GetString(buffer, this.WeaponSoundOverrideString, sizeof(buffer));
+
 		Format(buffer, sizeof(buffer), "%smodel_weapon_override", prefix);
 		kv.GetString(buffer, this.WeaponModelOverride, sizeof(buffer));
 		
@@ -309,7 +313,11 @@ enum struct ItemInfo
 			this.WeaponModelIndexOverride = 0;
 		}
 
-
+		if(this.WeaponSoundOverrideString[0])
+		{
+			//precache the sound!
+			PrecacheSound(this.WeaponSoundOverrideString, true);
+		}
 	
 		
 		Format(buffer, sizeof(buffer), "%sfunc_attack", prefix);
@@ -2659,7 +2667,7 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave
 				}
 				
 				item.GetItemInfo(0, info);
-				if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost < CurrentCash)
+				if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost_Unlock < CurrentCash)
 					indexes[amount++] = i;
 			}
 			
@@ -5173,6 +5181,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_ProximityAmmo[client] = false;
 	b_ExpertTrapper[client] = false;
 	b_RaptureZombie[client] = false;
+	b_ArmorVisualiser[client] = false;
 	i_MaxSupportBuildingsLimit[client] = 0;
 	b_PlayerWasAirbornKnockbackReduction[client] = false;
 	BannerOnEntityCreated(client);
@@ -5639,6 +5648,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_WeaponForceClass[entity] 				= info.WeaponForceClass;
 					i_WeaponSoundIndexOverride[entity] 		= info.WeaponSoundIndexOverride;
 					i_WeaponModelIndexOverride[entity] 		= info.WeaponModelIndexOverride;
+					Format(c_WeaponSoundOverrideString[entity],sizeof(c_WeaponSoundOverrideString[]),"%s",info.WeaponSoundOverrideString);	
 					f_WeaponSizeOverride[entity]			= info.WeaponSizeOverride;
 					f_WeaponSizeOverrideViewmodel[entity]	= info.WeaponSizeOverrideViewmodel;
 					f_WeaponVolumeStiller[entity]				= info.WeaponVolumeStiller;
@@ -5904,6 +5914,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.SpecialAdditionViaNonAttribute == 12)
 					{
 						b_RaptureZombie[client] = true;
+					}
+					if(info.SpecialAdditionViaNonAttribute == 13)
+					{
+						b_ArmorVisualiser[client] = true;
 					}
 
 #endif
