@@ -2710,4 +2710,12 @@
 	{
 		"en"	"You can now see the armor of fellow allies via their shield."
 	}
+	"Siccerino Pap 2"
+	{
+		"en"	"Your attacks will debuff the enemy so you deal 5% more damage with each hit you do upto a cap.\nM2 ability changes into a rapidly fast attacking melee."
+	}
+	"Siccerino Pap 3"
+	{
+		"en"	"More damage and attackspeed.\nYour R now summons a giant pair of siccors to siccor the enemy."
+	}
 }
