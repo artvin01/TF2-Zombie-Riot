@@ -37,6 +37,7 @@ static bool Zoom_Active[MAXTF2PLAYERS] = {false, ...};
 static int Zoom_Default[MAXTF2PLAYERS] = {90, ...};
 static Handle ORC_Timer[MAXTF2PLAYERS];
 static Handle ORC_BeepTimer[MAXTF2PLAYERS];
+static bool ORC_Charging[MAXTF2PLAYERS] = {false, ...};
 
 void Precache_Railcannon()
 {
@@ -102,6 +103,7 @@ public void Weapon_Railcannon_Pap4_Ability(int client, int weapon, bool crit, in
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
+			ORC_Charging[client] = true;
 			Ability_Apply_Cooldown(client, slot, cooldown);
 			EmitSoundToAll(RAILCANNONPAP4_ABILITY, client, SNDCHAN_STATIC, 90, _, 1.0, 40);
 			SetEntityMoveType(client, MOVETYPE_NONE);
@@ -132,6 +134,7 @@ public void Weapon_Railcannon_Pap4_Ability(int client, int weapon, bool crit, in
 
 public void Weapon_Railcannon_Pap4_Holster(int client, int weapon, const char[] classname, bool &result)
 {
+	ORC_Charging[client] = false;
 	SetEntityMoveType(client, MOVETYPE_WALK);
 	int ZoomFOV = 30;
 	Zoom_Active[client] = false;
@@ -163,6 +166,7 @@ static void Ability_ORC(Handle timer, DataPack pack)
 	pack.Reset();
 	client = pack.ReadCell();
 	weapon = pack.ReadCell();
+	ORC_Charging[client] = false;
 	ORC_Timer[client] = null;
 
 	Strength[client] = 750.0;
@@ -196,7 +200,7 @@ static void Zoom_Railcannon(int client)
 
 static void Check_Railcannon(int client, int weapon, int pap)
 {
-	if(weapon >= MaxClients)
+	if(weapon >= MaxClients && !ORC_Charging[client])
 	{
 		weapon_id[client] = weapon;
 		if(Handle_on[client])
