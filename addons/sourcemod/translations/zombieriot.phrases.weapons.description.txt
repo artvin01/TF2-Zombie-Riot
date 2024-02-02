@@ -2710,7 +2710,7 @@
 	}
 	"Outlaw Railcannon Desc Pap 4"
 	{
-		"en"	"I won't miss.\nBy default, weapon is in low output mode.\nR to disable all movement and charge to fire in MAXIMUM OUTPUT.\nDoes true damage."
+		"en"	"I won't miss.\nBy default, weapon is in low output mode.\nR to disable all movement and charge to fire in MAXIMUM OUTPUT.\nMAXIMUM OUTPUT does true damage."
 	}
 	"Energized Riot Gun Desc"
 	{
