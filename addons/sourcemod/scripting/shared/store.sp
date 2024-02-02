@@ -989,7 +989,8 @@ void Store_SwapItems(int client)
 		int length = GetMaxWeapons(client);
 		for(int i; i < length; i++)
 		{
-			if(GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i) == active)
+			int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+			if(weapon == active)	// Active weapon is highest up in our slot
 			{
 				int lowestI, nextI;
 				int lowestE = -1;
@@ -1048,8 +1049,9 @@ void Store_SwapItems(int client)
 					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", nextE, switchI);
 					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", switchE, nextI);
 					
-					GetEntityClassname(nextE, buffer, sizeof(buffer));
-					FakeClientCommand(client, "use %s", buffer);
+					//GetEntityClassname(nextE, buffer, sizeof(buffer));
+					//FakeClientCommand(client, "use %s", buffer);
+					TF2Util_SetPlayerActiveWeapon(nextE);
 					//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
 					//SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + );
 					
@@ -1058,6 +1060,15 @@ void Store_SwapItems(int client)
 					//	SetEntPropFloat(client, Prop_Send, "m_flNextAttack", time);
 				}
 				break;
+			}
+			else if(weapon != -1)	// Another weapon is highest up in our slot
+			{
+				GetEntityClassname(weapon, buffer, sizeof(buffer));
+				if(TF2_GetClassnameSlot(buffer) == slot)
+				{
+					TF2Util_SetPlayerActiveWeapon(weapon);
+					break;
+				}
 			}
 		}
 	}
