@@ -728,16 +728,6 @@
 		"ru"	"Оружие теперь делает, чёрт возьми всё, что ему вздумается."
 		"chi"   "武器现在可以发射更多类型"
 	}
-	"Riot Gun Desc"
-	{
-		"en"	"Press M2 Nearby enemies to stun them and gain massively increased attackspeed and damage for upto 10 hit targets.\nTake less damage from attacks you look at, bosses and raids pierce it by half.\nSpeedcola reduces ability cooldown."
-		"ru"	"Нажав М2 вблизи врагов, вы оглушите их и получ. увелич. скорость атаки и нанесёте урон 10 целям.\nПолучайте меньше урона от атак, на которые вы смотрите, боссы и рейды пробивают его наполовину.\nБыстрокола уменьш. время восст. способн."
-		"chi"   "按M2击晕附近的敌人，并为最多10个命中的目标大幅提高攻击速度和伤害。\n从你看到的攻击中受到更少的伤害，boss和突袭穿透它一半。极速可乐减少技能冷却时间。"
-	}
-	"Riot Gun Pap 1"
-	{
-		"en"	"Boosts melee resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now stuns longer and has a decreased cooldown."
-	}
 	"Buff Banner Desc"
 	{
 		"en"	"Extra 25%% damage to all allies after dealing enough damage"
@@ -2704,9 +2694,17 @@
 	{
 		"en"	"Higher capacity capacitors allow for incredibly fast particles.\nParticles split in the air, resulting in increased damage further away."
 	}
+	"Riot Gun Desc"
+	{
+		"en"	"While you have armor, provides 60% (from bosses 35%) damage resistance from attacks in front of you.\nAbility stuns up to 10 enemies in front of you and greatly increases attack speed.\nSpeed-Cola reduces ability cooldown."
+	}
+	"Riot Gun Pap 1"
+	{
+		"en"	"Provides 10%% melee resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now stuns longer and has a decreased cooldown."
+	}
 	"Energized Riot Gun Desc"
 	{
-		"en"	"Boosts ranged resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now becomes slower multi-hit shotgun.\nGetting hit reduces ability cooldowns of yourself and a nearby ally by 0.5 seconds."
+		"en"	"Provides 10%% ranged resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now becomes slower multi-hit shotgun.\nGetting hit with your shield reduces ability cooldowns of yourself and a nearby ally by 0.5 seconds."
 	}
 	"Armor Visualiser Desc"
 	{
