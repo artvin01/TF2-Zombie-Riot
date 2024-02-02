@@ -1618,7 +1618,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			if(Enemies.Empty)
 			{
 				CurrentWave++;
-				WaveStart_SubWaveStart();
+				Waves_Progress();
 				return;
 			}
 
@@ -1626,7 +1626,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		}
 		else if(donotAdvanceRound)
 		{
-			CurrentWave = 0;
+			CurrentWave = 9;
 		}
 		else
 		{
