@@ -387,13 +387,11 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 	// now it's a simple check
 	if ((yawOffset >= MINYAW_RAID_SHIELD && yawOffset <= MAXYAW_RAID_SHIELD) || BlockAnyways)
 	{
-		if(b_thisNpcIsARaid[attacker] || b_thisNpcIsABoss[attacker])
+		float resist = (b_thisNpcIsARaid[attacker] || b_thisNpcIsABoss[attacker]) ? 0.6 : 0.3;
+		int halfArmor = MaxArmorCalculation(Armor_Level[client], client, 0.5);
+		if(armor < halfArmor)
 		{
-			damage *= 0.65; //35% res instead of 61%, too op against singular.
-		}
-		else
-		{
-			damage *= 0.4;
+			resist *= 1.0 - (float(armor) / float(halfArmor));
 		}
 		
 		if(f_AniSoundSpam[victim] < GetGameTime())
