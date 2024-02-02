@@ -6,7 +6,7 @@
 #define RAILCANNONPAP3_BOOM 		"weapons/gauss/fire1.wav"
 #define RAILCANNONPAP4_ABILITY_BOOM "weapons/sniper_railgun_charged_shot_01.wav"
 #define RAILCANNONPAP4_ABILITY		"weapons/loose_cannon_charge.wav"
-#define RAILCANNONPAP4_BEEP			"misc/rd_finale_beep01.wav"
+#define RAILCANNONPAP4_BEEP			"weapons/sentry_spot.wav"
 #define RAILCANNONPAP4_HIT			"physics/glass/glass_largesheet_break1.wav"
 
 static float Strength[MAXTF2PLAYERS];
@@ -37,6 +37,8 @@ static bool Zoom_Active[MAXTF2PLAYERS] = {false, ...};
 static int Zoom_Default[MAXTF2PLAYERS] = {90, ...};
 static Handle ORC_Timer[MAXTF2PLAYERS];
 static Handle ORC_BeepTimer[MAXTF2PLAYERS];
+static bool ORC_Charging[MAXTF2PLAYERS] = {false, ...};
+static float ORC_LastFireTime[MAXTF2PLAYERS] = {0.0, ...};
 
 void Precache_Railcannon()
 {
@@ -46,7 +48,6 @@ void Precache_Railcannon()
 	PrecacheSound(RAILCANNONPAP4_ABILITY);
 	Beam_Laser = PrecacheModel("materials/sprites/physbeam.vmt", false);
 	Beam_Glow = PrecacheModel("sprites/glow02.vmt", true);
-	HookEvent("player_death", OnPlayerDeath, EventHookMode_Post);
 }
 
 //no pap
@@ -102,6 +103,7 @@ public void Weapon_Railcannon_Pap4_Ability(int client, int weapon, bool crit, in
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
+			ORC_Charging[client] = true;
 			Ability_Apply_Cooldown(client, slot, cooldown);
 			EmitSoundToAll(RAILCANNONPAP4_ABILITY, client, SNDCHAN_STATIC, 90, _, 1.0, 40);
 			SetEntityMoveType(client, MOVETYPE_NONE);
@@ -110,7 +112,7 @@ public void Weapon_Railcannon_Pap4_Ability(int client, int weapon, bool crit, in
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(client));
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			ORC_BeepTimer[client] = CreateTimer(9.15, Beep_ORC, client);
+			ORC_BeepTimer[client] = CreateTimer(9.15, Beep_ORC, EntIndexToEntRef(client));
 		}
 		else
 		{
@@ -133,29 +135,31 @@ public void Weapon_Railcannon_Pap4_Ability(int client, int weapon, bool crit, in
 
 public void Weapon_Railcannon_Pap4_Holster(int client, int weapon, const char[] classname, bool &result)
 {
+	ORC_Charging[client] = false;
+
 	SetEntityMoveType(client, MOVETYPE_WALK);
+	
 	int ZoomFOV = 30;
 	Zoom_Active[client] = false;
 	SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 1);
 	if (Zoom_Default[client] == ZoomFOV)
 		Zoom_Default[client] = 90;
 	SetEntProp(client, Prop_Send, "m_iFOV", Zoom_Default[client]);
+
 	StopSound(client, SNDCHAN_STATIC, RAILCANNONPAP4_ABILITY);
+
 	if (ORC_Timer[client])
-	{
 		delete ORC_Timer[client];
-	}
 	if (ORC_BeepTimer[client])
-	{
 		delete ORC_BeepTimer[client];
-	}
 }
 
-static Action Beep_ORC(Handle timer, int client)
+static Action Beep_ORC(Handle timer, int clientref)
 {
+	int client = EntRefToEntIndex(clientref);
 	ORC_BeepTimer[client] = null;
 	if(IsValidClient(client))
-		EmitSoundToAll(RAILCANNONPAP4_BEEP, client, SNDCHAN_STATIC, 00, _, 1.0, 200);
+		EmitSoundToAll(RAILCANNONPAP4_BEEP, client, SNDCHAN_STATIC, 87, _, 1.0, 40);
 
 	return Plugin_Stop;
 }
@@ -172,13 +176,12 @@ static Action Ability_ORC(Handle timer, DataPack pack)
 	ORC_Timer[orignal_client] = null;
 	if(IsValidClient(client) && IsValidEntity(weapon))
 	{	
+		ORC_Charging[client] = false;
+		ORC_LastFireTime[client] = GetGameTime();
 		Strength[client] = 750.0;
 		Strength[client] *= Attributes_Get(weapon, 1, 1.0);
 		Strength[client] *= Attributes_Get(weapon, 2, 1.0);
-
-
 		Attack_Railcannon(client, 4, true);
-
 		SetEntityMoveType(client, MOVETYPE_WALK);
 	}
 
@@ -244,11 +247,14 @@ static void Check_Railcannon(int client, int weapon, int pap)
 						return;
 					}
 				case 4:
-					if (flMultiplier<3.925) //increased value due to compensate for longer charge time
+				{
+					float LastChargeTime = GetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime");
+					if (flMultiplier<3.95 || LastChargeTime < ORC_LastFireTime[client] || ORC_Charging[client])
 					{
 						SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+1);
 						return;
 					}
+				}
 			}
 		}
 
@@ -288,6 +294,7 @@ static void Check_Railcannon(int client, int weapon, int pap)
 
 static void Knockback_Railcannon(int client, int weapon, bool analogue)
 {
+	float flMultiplier = GetRailcannonPercentage(weapon, client);
 	if(!TF2_IsPlayerInCondition(client, TFCond_RuneHaste))
 	{
 		static float anglesB[3];
@@ -295,7 +302,6 @@ static void Knockback_Railcannon(int client, int weapon, bool analogue)
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
 
-		float flMultiplier = GetRailcannonPercentage(weapon, client);
 		float knockback;
 		if (analogue == true)
 		{
@@ -328,7 +334,9 @@ static void Knockback_Railcannon(int client, int weapon, bool analogue)
 		
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	}
-	Client_Shake(client, 0, 35.0, 20.0, 0.8);
+	float shakiness = 1.0;
+	shakiness *= (flMultiplier/4);
+	Client_Shake(client, 0, 35.0 * shakiness, 20.0, 0.8);
 }
 
 static void Attack_Railcannon(int client, int pap, bool supercharged)
@@ -371,7 +379,7 @@ static void Attack_Railcannon(int client, int pap, bool supercharged)
 		case 2:
 			EmitSoundToAll(RAILCANNONPAP2_BOOM, client, SNDCHAN_STATIC, 85, _, 1.0);
 		case 3:
-			EmitSoundToAll(RAILCANNONPAP3_BOOM, client, SNDCHAN_STATIC, 85, _, 1.0);
+			EmitSoundToAll(RAILCANNONPAP3_BOOM, client, SNDCHAN_STATIC, 80, _, 1.0);
 		case 4:
 			if (supercharged)
 				EmitSoundToAll(RAILCANNONPAP4_ABILITY_BOOM, client, SNDCHAN_STATIC, 90, _, 1.0);
