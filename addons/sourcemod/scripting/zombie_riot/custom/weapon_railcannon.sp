@@ -159,7 +159,7 @@ static Action Beep_ORC(Handle timer, int clientref)
 	int client = EntRefToEntIndex(clientref);
 	ORC_BeepTimer[client] = null;
 	if(IsValidClient(client))
-		EmitSoundToAll(RAILCANNONPAP4_BEEP, client, SNDCHAN_STATIC, 80, _, 1.0, 40);
+		EmitSoundToAll(RAILCANNONPAP4_BEEP, client, SNDCHAN_STATIC, 87, _, 1.0, 40);
 
 	return Plugin_Stop;
 }
