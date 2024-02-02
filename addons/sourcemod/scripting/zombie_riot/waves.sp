@@ -1900,6 +1900,7 @@ void WaveEndLogicExtra()
 	SeaFounder_ClearnNethersea();
 	M3_AbilitiesWaveEnd();
 	Specter_AbilitiesWaveEnd();	
+	Rapier_CashWaveEnd();
 	LeperResetUses();
 	Zero(i_MaxArmorTableUsed);
 	for(int client; client <= MaxClients; client++)
