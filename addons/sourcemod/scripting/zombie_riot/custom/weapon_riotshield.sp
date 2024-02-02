@@ -391,7 +391,7 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 		int halfArmor = MaxArmorCalculation(Armor_Level[client], client, 0.5);
 		if(armor < halfArmor)
 		{
-			resist *= 1.0 - (float(armor) / float(halfArmor));
+			resist *= float(armor) / float(halfArmor);
 		}
 
 		damage *= resist;
