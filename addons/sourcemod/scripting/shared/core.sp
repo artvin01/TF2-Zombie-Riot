@@ -1193,6 +1193,7 @@ int Armor_Wearable[MAXTF2PLAYERS];
 #include "shared/rtscamera.sp"
 #include "shared/sdkcalls.sp"
 #include "shared/sdkhooks.sp"
+#include "shared/teuton_sound_override.sp"
 #include "shared/stocks.sp"
 
 #include "shared/baseboss_lagcompensation.sp"

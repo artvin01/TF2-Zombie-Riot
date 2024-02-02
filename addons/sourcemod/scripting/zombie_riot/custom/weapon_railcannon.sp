@@ -47,7 +47,6 @@ void Precache_Railcannon()
 	PrecacheSound(RAILCANNONPAP4_ABILITY);
 	Beam_Laser = PrecacheModel("materials/sprites/physbeam.vmt", false);
 	Beam_Glow = PrecacheModel("sprites/glow02.vmt", true);
-	HookEvent("player_death", OnPlayerDeath, EventHookMode_Post);
 }
 
 //no pap
@@ -231,6 +230,7 @@ static void Check_Railcannon(int client, int weapon, int pap)
 						return;
 					}
 				case 2:
+					if (flMultiplier<3.925) //increased value due to compensate for longer charge time
 					if (flMultiplier<3.925) //increased value due to compensate for longer charge time
 					{
 						SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+1);

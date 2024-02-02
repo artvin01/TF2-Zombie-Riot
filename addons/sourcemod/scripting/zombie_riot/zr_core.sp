@@ -547,6 +547,7 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+	TeutonSoundOverrideMapStart();
 	Dhooks_BannerMapstart();
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
