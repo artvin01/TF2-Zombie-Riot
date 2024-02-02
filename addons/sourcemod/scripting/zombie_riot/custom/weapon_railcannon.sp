@@ -165,7 +165,7 @@ static void Ability_ORC(Handle timer, DataPack pack)
 	weapon = pack.ReadCell();
 	ORC_Timer[client] = null;
 
-	Strength[client] = 1200.0;
+	Strength[client] = 750.0;
 	Strength[client] *= Attributes_Get(weapon, 1, 1.0);
 	Strength[client] *= Attributes_Get(weapon, 2, 1.0);
 
