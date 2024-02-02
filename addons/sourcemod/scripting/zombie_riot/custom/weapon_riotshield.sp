@@ -121,7 +121,7 @@ static void Weapon_RiotShield_M2_Base(int client, int weapon, int slot, int pap)
 			if(pap == 2)
 			{
 				ApplyTempAttrib(weapon, 2, 1.35, 5.0);
-				ApplyTempAttrib(weapon, 5, 2.0, 5.0);
+				ApplyTempAttrib(weapon, 6, 2.0, 5.0);
 				ApplyTempAttrib(weapon, 45, 3.0, 5.0);
 			}
 			else
@@ -229,6 +229,7 @@ public void Weapon_RiotShield_Deploy(int client, int weapon)
 			
 			DispatchSpawn(entity);
 			SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 			
 			WearableRef[client] = EntIndexToEntRef(entity);
 			SDKCall_EquipWearable(client, entity);
@@ -244,6 +245,8 @@ public void Weapon_RiotShield_Deploy(int client, int weapon)
 			ang[1] = 180.0;
 			ang[2] = 1.5;
 			TeleportEntity(entity, pos, ang, NULL_VECTOR);
+
+			SDKHook(entity, SDKHook_SetTransmit, ThirdPersonTransmit);
 		}
 	}
 }
@@ -269,12 +272,41 @@ public Action FirstPersonTransmit(int entity, int client)
 	if(client > 0 && client <= MaxClients)
 	{
 		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(owner == client)
+		if(owner == -1)
+		{
+			RemoveEntity(owner);
+			return Plugin_Stop;
+		}
+
+		if(Armor_Charge[owner] < 1)
+		{
+			return Plugin_Stop;
+		}
+		else if(owner == client)
 		{
 			if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
 				return Plugin_Stop;
 		}
 		else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != owner || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
+		{
+			return Plugin_Stop;
+		}
+	}
+	return Plugin_Continue;
+}
+
+public Action ThirdPersonTransmit(int entity, int client)
+{
+	if(client > 0 && client <= MaxClients)
+	{
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(owner == -1)
+		{
+			RemoveEntity(owner);
+			return Plugin_Stop;
+		}
+
+		if(Armor_Charge[owner] < 1)
 		{
 			return Plugin_Stop;
 		}
@@ -311,6 +343,10 @@ static bool Shield_TraceTargets(int entity, int contentsMask, int client)
 //taken and edited from ff2_sarysapub3
 public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
 {
+	// Require armor charge
+	if(Armor_Charge[victim] < 1)
+		return damage;
+	
 	// need position of either the inflictor or the attacker
 	float actualDamagePos[3];
 	float victimPos[3];
@@ -351,14 +387,14 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 	// now it's a simple check
 	if ((yawOffset >= MINYAW_RAID_SHIELD && yawOffset <= MAXYAW_RAID_SHIELD) || BlockAnyways)
 	{
-		if(b_thisNpcIsARaid[attacker] || b_thisNpcIsABoss[attacker])
+		float resist = (b_thisNpcIsARaid[attacker] || b_thisNpcIsABoss[attacker]) ? 0.6 : 0.3;
+		int halfArmor = MaxArmorCalculation(Armor_Level[victim], victim, 0.5);
+		if(Armor_Charge[victim] < halfArmor)
 		{
-			damage *= 0.7; //35% res instead of 61%, too op against singular.
+			resist *= float(Armor_Charge[victim]) / float(halfArmor);
 		}
-		else
-		{
-			damage *= 0.5;
-		}
+
+		damage *= resist;
 		
 		if(f_AniSoundSpam[victim] < GetGameTime())
 		{
