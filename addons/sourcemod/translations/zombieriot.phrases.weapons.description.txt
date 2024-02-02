@@ -2308,31 +2308,23 @@
 	}
 	"Old Wooden Board Desc"
 	{
-		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nPassively heals you, gets interrupted when taking damage/switching weapons.\nDefence rating: ★✬☆☆☆"
+		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nPassively heals you, gets interrupted when taking damage/switching weapons.\nDefence rating: 10%%"
 	}
 	"Spike Shield Desc"
 	{
-		"en"	"A weapon pretending to be a shield - Parrying boasts higher damage.\nDefence rating: ★☆☆☆☆"
-	}
-	"Leaf Shield Desc"
-	{
-		"en"	"A shield that was born - Healing comes back faster after taking damage.\nDefence rating: ★★★☆☆"
+		"en"	"A weapon pretending to be a shield - Parrying boasts higher damage.\nDefence rating: 5%%"
 	}
 	"Rookie Shield Desc"
 	{
-		"en"	"A regular shield - Parries and lets you switch weapons faster.\nDefence rating: ★★☆☆☆"
+		"en"	"A regular shield - Parries and lets you switch weapons faster.\nDefence rating: 10%%"
 	}
 	"Punishment Desc"
 	{
-		"en"	"A weapon and a shield, given form - Parrying becomes AOE.\nDefence rating: ★★★☆☆\nArchetype changes to ''Crusher''"
-	}
-	"Rampart Desc"
-	{
-		"en"	"An abomination, given life. You can feel it's breath - Parrying heals you for 5% of your HP.\nDefence rating: ★★★★★"
+		"en"	"A weapon and a shield, given form - Parrying becomes AOE.\nDefence rating: 10%%\nArchetype changes to ''Crusher''"
 	}
 	"Cudgel Desc"
 	{
-		"en"	"A standard issue shield, given purpose - Parrying debuffs the enemy.\nDefence rating: ★★★★☆"
+		"en"	"A standard issue shield, given purpose - Parrying debuffs the enemy.\nDefence rating: 15%%"
 	}
 	"The Standchen Desc"
 	{

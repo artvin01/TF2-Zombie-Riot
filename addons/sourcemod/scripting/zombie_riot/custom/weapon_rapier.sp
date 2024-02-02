@@ -13,6 +13,7 @@ static Handle DuelState_timer[MAXPLAYERS+1];
 
 static int i_SpeedBuffCount[MAXPLAYERS+1]={0, ...};
 static int i_Current_Pap_Rapier[MAXTF2PLAYERS+1];
+static int i_CashLimit[MAXTF2PLAYERS+1];
 
 static bool b_WonDuel[MAXTF2PLAYERS];
 
@@ -62,6 +63,11 @@ void Rapier_DoSwingTrace(float &CustomMeleeRange, float &CustomMeleeWide)
 	}
 }
 
+void Rapier_CashWaveEnd()
+{
+	Zero(i_CashLimit);
+}
+
 void RapierEndDuelOnKill(int client,int victim)
 {
 	if(f_DuelStatus[victim] > 0.0 && DuelState_timer[client] != INVALID_HANDLE)
@@ -74,14 +80,22 @@ void RapierEndDuelOnKill(int client,int victim)
 			case 4: //second highest pap)) :)
 			{
 				HealEntityGlobal(client, client, MaxHealth * 0.05, _, 0.5,HEAL_SELFHEAL);
-				CashRecievedNonWave[client] += 5;
-				CashSpent[client] -= 5;
+				i_CashLimit[client]++;
+				if(i_CashLimit[client] < 11)
+				{
+					CashRecievedNonWave[client] += 15;
+					CashSpent[client] -= 15;
+				}
 			}
 			case 5: //highest pap
 			{
 				HealEntityGlobal(client, client, MaxHealth * 0.07, _, 0.5,HEAL_SELFHEAL);
-				CashRecievedNonWave[client] += 10;
-				CashSpent[client] -= 10;
+				i_CashLimit[client]++;
+				if(i_CashLimit[client] < 11)
+				{
+					CashRecievedNonWave[client] += 30;
+					CashSpent[client] -= 30;
+				}
 			}
 		}
 		delete DuelState_timer[client];
