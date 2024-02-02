@@ -109,7 +109,8 @@ public void Weapon_Railcannon_Pap4_Ability(int client, int weapon, bool crit, in
 			DataPack pack;
 			ORC_Timer[client] = CreateDataTimer(10.0, Ability_ORC, pack);
 			pack.WriteCell(client);
-			pack.WriteCell(weapon);
+			pack.WriteCell(EntIndexToEntRef(client));
+			pack.WriteCell(EntIndexToEntRef(weapon));
 			ORC_BeepTimer[client] = CreateTimer(9.15, Beep_ORC, client);
 		}
 		else
@@ -152,29 +153,35 @@ public void Weapon_Railcannon_Pap4_Holster(int client, int weapon, const char[] 
 	}
 }
 
-static void Beep_ORC(Handle timer, int client)
+static Action Beep_ORC(Handle timer, int client)
 {
 	ORC_BeepTimer[client] = null;
-	EmitSoundToAll(RAILCANNONPAP4_BEEP, client, SNDCHAN_STATIC, 00, _, 1.0, 200);
+	if(IsValidClient(client))
+		EmitSoundToAll(RAILCANNONPAP4_BEEP, client, SNDCHAN_STATIC, 00, _, 1.0, 200);
+
+	return Plugin_Stop;
 }
 
-static void Ability_ORC(Handle timer, DataPack pack)
+static Action Ability_ORC(Handle timer, DataPack pack)
 {
 	int client;
 	int weapon;
 	pack.Reset();
-	client = pack.ReadCell();
-	weapon = pack.ReadCell();
-	ORC_Charging[client] = false;
-	ORC_Timer[client] = null;
+	int orignal_client = pack.ReadCell();
+	//needed because of array.
+	client = EntRefToEntIndex(pack.ReadCell());
+	weapon = EntRefToEntIndex(pack.ReadCell());
+	ORC_Timer[orignal_client] = null;
+	if(IsValidClient(client) && IsValidEntity(weapon))
+	{	
+		Strength[client] = 750.0;
+		Strength[client] *= Attributes_Get(weapon, 1, 1.0);
+		Strength[client] *= Attributes_Get(weapon, 2, 1.0);
+		Attack_Railcannon(client, 4, true);
+		SetEntityMoveType(client, MOVETYPE_WALK);
+	}
 
-	Strength[client] = 750.0;
-	Strength[client] *= Attributes_Get(weapon, 1, 1.0);
-	Strength[client] *= Attributes_Get(weapon, 2, 1.0);
-
-	Attack_Railcannon(client, 4, true);
-
-	SetEntityMoveType(client, MOVETYPE_WALK);
+	return Plugin_Stop;
 }
 
 static void Zoom_Railcannon(int client)
@@ -230,7 +237,6 @@ static void Check_Railcannon(int client, int weapon, int pap)
 						return;
 					}
 				case 2:
-					if (flMultiplier<3.925) //increased value due to compensate for longer charge time
 					if (flMultiplier<3.925) //increased value due to compensate for longer charge time
 					{
 						SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+1);
