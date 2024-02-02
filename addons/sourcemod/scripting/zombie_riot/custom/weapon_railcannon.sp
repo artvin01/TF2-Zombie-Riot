@@ -174,6 +174,7 @@ static Action Ability_ORC(Handle timer, DataPack pack)
 	ORC_Timer[orignal_client] = null;
 	if(IsValidClient(client) && IsValidEntity(weapon))
 	{	
+		ORC_Charging[client] = false;
 		Strength[client] = 750.0;
 		Strength[client] *= Attributes_Get(weapon, 1, 1.0);
 		Strength[client] *= Attributes_Get(weapon, 2, 1.0);
