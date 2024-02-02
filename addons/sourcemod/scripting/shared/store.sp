@@ -968,7 +968,7 @@ void Store_SwapToItem(int client, int swap)
 		}
 	}
 
-	FakeClientCommand(client, "use %s", classname);
+	TF2Util_SetPlayerActiveWeapon(client, swap);
 }
 
 #if defined ZR
@@ -977,7 +977,7 @@ void Store_SwapItems(int client)
 	//int suit = GetEntProp(client, Prop_Send, "m_bWearingSuit");
 	//if(!suit)
 	//	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
-	
+
 	int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(active > MaxClients)
 	{
@@ -1001,7 +1001,7 @@ void Store_SwapItems(int client)
 				{
 					if(a != i)
 					{
-						int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", a);
+						weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", a);
 						if(weapon > MaxClients)
 						{
 							GetEntityClassname(weapon, buffer, sizeof(buffer));
@@ -1051,7 +1051,7 @@ void Store_SwapItems(int client)
 					
 					//GetEntityClassname(nextE, buffer, sizeof(buffer));
 					//FakeClientCommand(client, "use %s", buffer);
-					TF2Util_SetPlayerActiveWeapon(nextE);
+					TF2Util_SetPlayerActiveWeapon(client, nextE);
 					//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
 					//SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + );
 					
@@ -1066,7 +1066,7 @@ void Store_SwapItems(int client)
 				GetEntityClassname(weapon, buffer, sizeof(buffer));
 				if(TF2_GetClassnameSlot(buffer) == slot)
 				{
-					TF2Util_SetPlayerActiveWeapon(weapon);
+					TF2Util_SetPlayerActiveWeapon(client, weapon);
 					break;
 				}
 			}
