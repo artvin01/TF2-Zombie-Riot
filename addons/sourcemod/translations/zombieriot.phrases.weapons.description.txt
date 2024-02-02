@@ -2708,6 +2708,10 @@
 	{
 		"en"	"We found this left behind on an old rusty mad max car.\nSeems to have had significant use."
 	}
+	"Outlaw Railcannon Desc Pap 4"
+	{
+		"en"	"I won't miss.\nBy default, weapon is in low output mode.\nR to disable all movement and charge to fire in MAXIMUM OUTPUT.\nDoes true damage."
+	}
 	"Energized Riot Gun Desc"
 	{
 		"en"	"Boosts ranged resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now becomes slower multi-hit shotgun.\nGetting hit reduces ability cooldowns of yourself and a nearby ally by 0.5 seconds."
