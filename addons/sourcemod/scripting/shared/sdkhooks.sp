@@ -2233,10 +2233,26 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 			{
 				return Plugin_Handled;
 			}
+			if(TeutonType[entity] != TEUTON_NONE)
+			{
+				bool Changed = TeutonSoundOverride(numClients, sample, 
+				entity, channel, volume, level, pitch, flags,seed);
+				
+				if(Changed)
+				{
+					return Plugin_Changed;
+				}
+				else
+				{
+					return Plugin_Handled;
+				}
+				
+			}
 			if(b_IsPlayerNiko[entity])
 			{
 				return Plugin_Handled;
 			}
+		
 		}
 	}
 	if(channel == SNDCHAN_WEAPON)

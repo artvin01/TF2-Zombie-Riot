@@ -397,8 +397,9 @@ public Action OnTeutonHealth(int client, int &health)
 {
 	if(TeutonType[client])
 	{
-		SetEntityHealth(client, 0);
-		return Plugin_Continue;
+		SetEntityHealth(client, 1);
+		health = 1;
+		return Plugin_Changed;
 	}
 	
 	SDKUnhook(client, SDKHook_GetMaxHealth, OnTeutonHealth);
