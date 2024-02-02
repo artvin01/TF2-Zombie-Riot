@@ -38,6 +38,7 @@ static int Zoom_Default[MAXTF2PLAYERS] = {90, ...};
 static Handle ORC_Timer[MAXTF2PLAYERS];
 static Handle ORC_BeepTimer[MAXTF2PLAYERS];
 static bool ORC_Charging[MAXTF2PLAYERS] = {false, ...};
+static float ORC_LastFireTime[MAXTF2PLAYERS] = {0.0, ...};
 
 void Precache_Railcannon()
 {
@@ -175,6 +176,7 @@ static Action Ability_ORC(Handle timer, DataPack pack)
 	if(IsValidClient(client) && IsValidEntity(weapon))
 	{	
 		ORC_Charging[client] = false;
+		ORC_LastFireTime[client] = GetGameTime();
 		Strength[client] = 750.0;
 		Strength[client] *= Attributes_Get(weapon, 1, 1.0);
 		Strength[client] *= Attributes_Get(weapon, 2, 1.0);
@@ -207,7 +209,7 @@ static void Zoom_Railcannon(int client)
 
 static void Check_Railcannon(int client, int weapon, int pap)
 {
-	if(weapon >= MaxClients && !ORC_Charging[client])
+	if(weapon >= MaxClients)
 	{
 		weapon_id[client] = weapon;
 		if(Handle_on[client])
@@ -244,11 +246,14 @@ static void Check_Railcannon(int client, int weapon, int pap)
 						return;
 					}
 				case 4:
-					if (flMultiplier<3.925) //increased value due to compensate for longer charge time
+				{
+					float LastChargeTime = GetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime");
+					if (flMultiplier<3.95 || LastChargeTime < ORC_LastFireTime[client] || ORC_Charging[client])
 					{
 						SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+1);
 						return;
 					}
+				}
 			}
 		}
 
