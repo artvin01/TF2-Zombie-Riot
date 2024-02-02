@@ -3664,7 +3664,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0)
 		int entity, i;
 		while(TF2U_GetWearable(target, entity, i))
 		{
-			if(entity == EntRefToEntIndex(Armor_Wearable[target]))
+			if(entity == EntRefToEntIndex(Armor_Wearable[target]) || i_WeaponVMTExtraSetting[entity] != -1)
 				continue;
 
 			SetEntityRenderMode(entity, RENDER_NORMAL);

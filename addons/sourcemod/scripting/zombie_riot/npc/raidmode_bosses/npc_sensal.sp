@@ -842,7 +842,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 							}
 										
 							if(!Knocked)
-								Custom_Knockback(npc.index, targetTrace, 650.0); 
+								Custom_Knockback(npc.index, targetTrace, 450.0, true); 
 						} 
 					}
 				}

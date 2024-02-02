@@ -1162,7 +1162,7 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 							}
 										
 							if(!Knocked)
-								Custom_Knockback(npc.index, target, 350.0); 
+								Custom_Knockback(npc.index, target, 150.0, true); 
 						}
 					}
 				}

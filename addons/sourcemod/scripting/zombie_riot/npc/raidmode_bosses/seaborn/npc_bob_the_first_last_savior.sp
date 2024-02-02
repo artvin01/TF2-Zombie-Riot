@@ -1000,7 +1000,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 									IncreaceEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
 								}	
 								if(!Knocked)
-									Custom_Knockback(npc.index, target, 750.0);
+									Custom_Knockback(npc.index, target, 150.0, true);
 							}
 						} 
 					}
@@ -1391,7 +1391,7 @@ static void GiveOneRevive()
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
-					if(entity == EntRefToEntIndex(Armor_Wearable[client]))
+					if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
 						continue;
 
 					SetEntityRenderMode(entity, RENDER_NORMAL);
@@ -1435,7 +1435,7 @@ static void GiveOneRevive()
 					int entity, i;
 					while(TF2U_GetWearable(client, entity, i))
 					{
-						if(entity == EntRefToEntIndex(Armor_Wearable[client]))
+						if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
 							continue;
 
 						SetEntityRenderMode(entity, RENDER_NORMAL);

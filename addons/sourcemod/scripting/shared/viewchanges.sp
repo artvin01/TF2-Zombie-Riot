@@ -222,7 +222,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 
 				if(i_WeaponVMTExtraSetting[active] != -1)
 				{
-					
+					i_WeaponVMTExtraSetting[entity] = i_WeaponVMTExtraSetting[active];
 #if defined ZR
 					if(IsSensalWeapon(i_CustomWeaponEquipLogic[active]))
 					{
@@ -253,7 +253,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				
 				if(i_WeaponVMTExtraSetting[active] != -1)
 				{
-
+					i_WeaponVMTExtraSetting[entity] = i_WeaponVMTExtraSetting[active];
 #if defined ZR
 					if(IsSensalWeapon(i_CustomWeaponEquipLogic[active]))
 					{

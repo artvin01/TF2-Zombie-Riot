@@ -2094,7 +2094,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				int i;
 				while(TF2U_GetWearable(victim, entity, i))
 				{
-					if(entity == EntRefToEntIndex(Armor_Wearable[victim]))
+					if(entity == EntRefToEntIndex(Armor_Wearable[victim]) || i_WeaponVMTExtraSetting[entity] != -1)
 						continue;
 
 					if(!autoRevive)
@@ -2383,11 +2383,11 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_MLYNAR: // weapon_ark
 		{
-			return Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon);
+			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon);
 		}
 		case WEAPON_MLYNAR_PAP: // weapon_ark
 		{
-			return Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1);
+			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1);
 		}
 		case WEAPON_OCEAN, WEAPON_SPECTER:
 		{

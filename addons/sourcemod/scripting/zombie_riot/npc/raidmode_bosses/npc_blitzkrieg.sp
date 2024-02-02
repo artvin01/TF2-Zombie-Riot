@@ -2293,7 +2293,7 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 							}
 								
 							if(!Knocked)
-								Custom_Knockback(npc.index, target, 650.0); 
+								Custom_Knockback(npc.index, target, 450.0, true); 
 						}
 					}
 				}
