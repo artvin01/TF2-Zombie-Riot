@@ -181,7 +181,7 @@ static Action Ability_ORC(Handle timer, DataPack pack)
 
 		SetEntityMoveType(client, MOVETYPE_WALK);
 	}
-	
+
 	return Plugin_Stop;
 }
 
