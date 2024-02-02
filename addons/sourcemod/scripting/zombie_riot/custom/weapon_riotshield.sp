@@ -393,6 +393,8 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 		{
 			resist *= 1.0 - (float(armor) / float(halfArmor));
 		}
+
+		damage *= resist;
 		
 		if(f_AniSoundSpam[victim] < GetGameTime())
 		{
