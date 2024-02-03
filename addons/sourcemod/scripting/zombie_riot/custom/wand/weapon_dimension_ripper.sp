@@ -142,12 +142,12 @@ public void Wand_DimensionTouch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenter(target);
+		Entity_Position = WorldSpaceCenterOld(target);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position, false);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, false);	// 2048 is DMG_NOGIB?
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -189,7 +189,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(HEADCRAB_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -203,7 +203,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(FORTIFIED_HEADCRAB_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.10);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -217,7 +217,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(FASTZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 0.9);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -231,7 +231,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(FORTIFIED_FASTZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -245,7 +245,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(TORSOLESS_HEADCRAB_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -259,7 +259,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(FORTIFIED_GIANT_POISON_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.15);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -273,7 +273,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(POISON_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -287,7 +287,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(FORTIFIED_POISON_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -301,7 +301,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(FATHER_GRIGORI, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -315,7 +315,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(COMBINE_POLICE_PISTOL, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -329,7 +329,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(COMBINE_SOLDIER_AR2, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -343,7 +343,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(COMBINE_SOLDIER_SHOTGUN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -357,7 +357,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(COMBINE_POLICE_SMG, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -371,7 +371,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(COMBINE_SOLDIER_SWORDSMAN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.05);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -385,7 +385,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(COMBINE_SOLDIER_ELITE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -399,7 +399,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(COMBINE_SOLDIER_GIANT_SWORDSMAN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -413,7 +413,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(COMBINE_SOLDIER_DDT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -427,7 +427,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(COMBINE_SOLDIER_COLLOSS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -441,7 +441,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(COMBINE_OVERLORD, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -513,7 +513,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(HEADCRAB_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -527,7 +527,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(FORTIFIED_HEADCRAB_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.10);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -541,7 +541,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(FASTZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 0.9);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -555,7 +555,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(FORTIFIED_FASTZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -569,7 +569,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(TORSOLESS_HEADCRAB_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -583,7 +583,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(FORTIFIED_GIANT_POISON_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.15);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -597,7 +597,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(POISON_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -611,7 +611,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(FORTIFIED_POISON_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -625,7 +625,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(FATHER_GRIGORI, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -639,7 +639,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(COMBINE_POLICE_PISTOL, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -653,7 +653,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(COMBINE_SOLDIER_AR2, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -667,7 +667,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(COMBINE_SOLDIER_SHOTGUN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -681,7 +681,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(COMBINE_POLICE_SMG, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -695,7 +695,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(COMBINE_SOLDIER_SWORDSMAN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.05);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -709,7 +709,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(COMBINE_SOLDIER_ELITE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -723,7 +723,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(COMBINE_SOLDIER_GIANT_SWORDSMAN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -737,7 +737,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(COMBINE_SOLDIER_DDT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -751,7 +751,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(COMBINE_SOLDIER_COLLOSS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -765,7 +765,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(COMBINE_OVERLORD, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -779,7 +779,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(SCOUT_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -793,7 +793,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(ENGINEER_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -807,7 +807,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(HEAVY_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -821,7 +821,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(KAMIKAZE_DEMO, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -835,7 +835,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(MEDIC_HEALER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -849,7 +849,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(HEAVY_ZOMBIE_GIANT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -863,7 +863,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(SPY_FACESTABBER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -877,7 +877,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(SOLDIER_ROCKET_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -891,7 +891,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(SOLDIER_ZOMBIE_MINION, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -905,7 +905,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(SPY_THIEF, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -919,7 +919,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(SPY_TRICKSTABBER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -933,7 +933,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(SPY_HALF_CLOACKED, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -947,7 +947,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(SNIPER_MAIN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -961,7 +961,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(DEMO_MAIN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -975,7 +975,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(BATTLE_MEDIC_MAIN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -989,7 +989,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(GIANT_PYRO_MAIN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1003,7 +1003,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(COMBINE_DEUTSCH_RITTER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1076,7 +1076,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_COMBINE_MAGE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1090,7 +1090,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_MEDIC_APPRENTICE_MAGE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1104,7 +1104,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_MEDIC_CHARGER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1118,7 +1118,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_MEDIC_BERSERKER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1132,7 +1132,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1146,7 +1146,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_SNIPER_RAILGUNNER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1160,7 +1160,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_SOLDIER_BARRAGER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1174,7 +1174,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_The_Shit_Slapper, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1188,7 +1188,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_MECHA_ENGINEER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1202,7 +1202,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_MECHA_HEAVY, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1216,7 +1216,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_MECHA_SCOUT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1230,7 +1230,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_MECHASOLDIER_BARRAGER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1244,7 +1244,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_MECHA_HEAVYGIANT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1258,7 +1258,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_MECHA_PYROGIANT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1272,7 +1272,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1286,7 +1286,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1300,7 +1300,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 						int entity = Npc_Create(ALT_MEDIC_HEALER_3, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1373,7 +1373,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 						int entity = Npc_Create(ALT_COMBINE_MAGE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1387,7 +1387,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 						int entity = Npc_Create(ALT_MEDIC_APPRENTICE_MAGE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1401,7 +1401,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 						int entity = Npc_Create(ALT_MEDIC_CHARGER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1415,7 +1415,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 						int entity = Npc_Create(ALT_MEDIC_BERSERKER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1429,7 +1429,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 						int entity = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1443,7 +1443,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 						int entity = Npc_Create(ALT_SNIPER_RAILGUNNER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1457,7 +1457,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 						int entity = Npc_Create(ALT_SOLDIER_BARRAGER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1471,7 +1471,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 						int entity = Npc_Create(ALT_The_Shit_Slapper, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1485,7 +1485,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 						int entity = Npc_Create(ALT_MECHA_ENGINEER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1499,7 +1499,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 						int entity = Npc_Create(ALT_MECHA_HEAVY, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1513,7 +1513,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 						int entity = Npc_Create(ALT_MECHA_SCOUT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1527,7 +1527,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 						int entity = Npc_Create(ALT_MECHASOLDIER_BARRAGER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1600,7 +1600,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_HEADCRAB_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1614,7 +1614,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_FORTIFIED_HEADCRAB_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1628,7 +1628,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_FASTZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 0.9);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1642,7 +1642,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_FORTIFIED_FASTZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1656,7 +1656,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_TORSOLESS_HEADCRAB_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1670,7 +1670,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_FORTIFIED_GIANT_POISON_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1684,7 +1684,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_POISON_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1698,7 +1698,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_FORTIFIED_POISON_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1712,7 +1712,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_COMBINE_POLICE_PISTOL, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1726,7 +1726,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_COMBINE_POLICE_SMG, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1740,7 +1740,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_COMBINE_SOLDIER_AR2, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1754,7 +1754,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_COMBINE_SOLDIER_SHOTGUN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1768,7 +1768,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_COMBINE_SOLDIER_SWORDSMAN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1782,7 +1782,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_COMBINE_SOLDIER_ELITE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.05);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1796,7 +1796,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_COMBINE_SOLDIER_GIANT_SWORDSMAN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1810,7 +1810,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_COMBINE_SOLDIER_DDT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1824,7 +1824,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_COMBINE_SOLDIER_COLLOSS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1838,7 +1838,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_SCOUT_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1852,7 +1852,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_ENGINEER_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1866,7 +1866,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_HEAVY_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1880,7 +1880,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_KAMIKAZE_DEMO, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1894,7 +1894,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_SPY_FACESTABBER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1908,7 +1908,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_SOLDIER_ROCKET_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1922,7 +1922,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_SPY_THIEF, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1936,7 +1936,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_SPY_TRICKSTABBER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1950,7 +1950,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_SPY_HALF_CLOACKED, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1964,7 +1964,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_SNIPER_MAIN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1978,7 +1978,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_DEMO_MAIN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2051,7 +2051,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_HEADCRAB_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2065,7 +2065,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_FORTIFIED_HEADCRAB_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2079,7 +2079,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_FASTZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 0.9);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2093,7 +2093,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_FORTIFIED_FASTZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2107,7 +2107,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_TORSOLESS_HEADCRAB_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2121,7 +2121,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_FORTIFIED_GIANT_POISON_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2135,7 +2135,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_POISON_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2149,7 +2149,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_FORTIFIED_POISON_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2163,7 +2163,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_COMBINE_POLICE_PISTOL, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2177,7 +2177,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_COMBINE_POLICE_SMG, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2191,7 +2191,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_COMBINE_SOLDIER_AR2, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2205,7 +2205,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_COMBINE_SOLDIER_SHOTGUN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2219,7 +2219,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_COMBINE_SOLDIER_SWORDSMAN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2233,7 +2233,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_COMBINE_SOLDIER_ELITE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.05);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2247,7 +2247,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_COMBINE_SOLDIER_GIANT_SWORDSMAN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2261,7 +2261,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_COMBINE_SOLDIER_DDT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2275,7 +2275,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_COMBINE_SOLDIER_COLLOSS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2289,7 +2289,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_SCOUT_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2303,7 +2303,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_ENGINEER_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2317,7 +2317,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_HEAVY_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2331,7 +2331,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_KAMIKAZE_DEMO, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2345,7 +2345,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_SPY_FACESTABBER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2359,7 +2359,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_SOLDIER_ROCKET_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2373,7 +2373,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_SPY_THIEF, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2387,7 +2387,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_SPY_TRICKSTABBER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2401,7 +2401,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_SPY_HALF_CLOACKED, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2415,7 +2415,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_SNIPER_MAIN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2429,7 +2429,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_DEMO_MAIN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2443,7 +2443,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_COMBINE_OVERLORD, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2457,7 +2457,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_FATHER_GRIGORI, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2471,7 +2471,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_MEDIC_HEALER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2485,7 +2485,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_BATTLE_MEDIC_MAIN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2499,7 +2499,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_GIANT_PYRO_MAIN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2513,7 +2513,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_COMBINE_DEUTSCH_RITTER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2527,7 +2527,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_SPY_MAIN_BOSS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2600,7 +2600,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_MILITIA, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2614,7 +2614,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_ARCHER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.10);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2628,7 +2628,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_MAN_AT_ARMS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 0.9);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2642,7 +2642,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_SWORDSMAN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2656,7 +2656,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_TWOHANDED_SWORDSMAN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2670,7 +2670,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_CROSSBOW_MAN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2684,7 +2684,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_SPEARMEN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2698,7 +2698,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_HANDCANNONEER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2712,7 +2712,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_ELITE_SKIRMISHER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2726,7 +2726,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_EAGLE_SCOUT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2740,7 +2740,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_SAMURAI, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2754,7 +2754,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_CHAMPION, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2768,7 +2768,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_LIGHT_CAV, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2782,7 +2782,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_BRAWLER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.05);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2796,7 +2796,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_EAGLE_WARRIOR, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2810,7 +2810,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_CAVALARY, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2824,7 +2824,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_HALB, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2838,7 +2838,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_LONGBOWMEN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2852,7 +2852,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_ARBALEST, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2866,7 +2866,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_ELITE_LONGBOWMEN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2880,7 +2880,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_PALADIN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2894,7 +2894,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 						int entity = Npc_Create(MEDIVAL_RIDDENARCHER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2967,7 +2967,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_MILITIA, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2981,7 +2981,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_ARCHER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.10);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2995,7 +2995,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_MAN_AT_ARMS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 0.9);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3009,7 +3009,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_SWORDSMAN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3023,7 +3023,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_TWOHANDED_SWORDSMAN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3037,7 +3037,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_CROSSBOW_MAN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3051,7 +3051,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_SPEARMEN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3065,7 +3065,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_HANDCANNONEER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3079,7 +3079,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_ELITE_SKIRMISHER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3093,7 +3093,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_EAGLE_SCOUT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3107,7 +3107,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_SAMURAI, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3121,7 +3121,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_CHAMPION, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3135,7 +3135,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_LIGHT_CAV, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3149,7 +3149,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_BRAWLER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.05);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3163,7 +3163,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_EAGLE_WARRIOR, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3177,7 +3177,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_CAVALARY, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3191,7 +3191,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_HALB, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3205,7 +3205,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_LONGBOWMEN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3219,7 +3219,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_ARBALEST, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3233,7 +3233,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_ELITE_LONGBOWMEN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3247,7 +3247,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_PALADIN, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3261,7 +3261,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_RIDDENARCHER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3275,7 +3275,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_CONSTRUCT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3289,7 +3289,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_RAM, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3303,7 +3303,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_SCOUT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3317,7 +3317,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_HUSSAR, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3331,7 +3331,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_OBUCH, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3345,7 +3345,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_MONK, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 0.9);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3359,7 +3359,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_CROSSBOW_GIANT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3373,7 +3373,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_SWORDSMAN_GIANT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3387,7 +3387,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_EAGLE_GIANT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3401,7 +3401,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_ACHILLES, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3415,7 +3415,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 						int entity = Npc_Create(MEDIVAL_SON_OF_OSIRIS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3489,7 +3489,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 						int entity = Npc_Create(SEARUNNER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3503,7 +3503,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 						int entity = Npc_Create(SEASLIDER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.10);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3517,7 +3517,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 						int entity = Npc_Create(SEASPITTER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 0.9);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3531,7 +3531,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 						int entity = Npc_Create(SEAREAPER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3545,7 +3545,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 						int entity = Npc_Create(SEACRAWLER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3559,7 +3559,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 						int entity = Npc_Create(SEAPIERCER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3573,7 +3573,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 						int entity = Npc_Create(SEAPREDATOR, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3587,7 +3587,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 						int entity = Npc_Create(SEASPEWER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3601,7 +3601,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 						int entity = Npc_Create(SEASWARMCALLER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3615,7 +3615,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 						int entity = Npc_Create(SEAREEFBREAKER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3688,7 +3688,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEARUNNER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3702,7 +3702,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEASLIDER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.10);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3716,7 +3716,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEASPITTER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 0.9);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3730,7 +3730,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEAREAPER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3744,7 +3744,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEACRAWLER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3758,7 +3758,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEAPIERCER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3772,7 +3772,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEAPREDATOR, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3786,7 +3786,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEASPEWER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3800,7 +3800,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEASWARMCALLER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3814,7 +3814,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEAREEFBREAKER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3828,7 +3828,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_KAZIMIERZ_KNIGHT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3842,7 +3842,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_KAZIMIERZ_KNIGHT_ARCHER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3856,7 +3856,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_KAZIMIERZ_BESERKER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3870,7 +3870,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_KAZIMIERZ_LONGARCHER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3884,7 +3884,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_KAZIMIERZ_ASSASIN_MELEE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3898,7 +3898,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_SCOUT, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3912,7 +3912,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_PYRO, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3926,7 +3926,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_DEMO, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3940,7 +3940,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_HEAVY, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3954,7 +3954,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_ENGINEER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3968,7 +3968,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_MEDIC, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 0.9);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3982,7 +3982,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_SNIPER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -3996,7 +3996,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_SPY, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4010,7 +4010,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_GUARD, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4024,7 +4024,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_DEFENDER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4038,7 +4038,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_CASTER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4052,7 +4052,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 						int entity = Npc_Create(SEABORN_SPECIALIST, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4125,7 +4125,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 						int entity = Npc_Create(EXPIDONSA_BENERA, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4139,7 +4139,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 						int entity = Npc_Create(EXPIDONSA_PENTAL, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.10);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4153,7 +4153,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 						int entity = Npc_Create(EXPIDONSA_DEFANDA, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 0.9);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4167,7 +4167,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 						int entity = Npc_Create(EXPIDONSA_SELFAM_IRE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4181,7 +4181,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 						int entity = Npc_Create(EXPIDONSA_VAUSMAGICA, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4195,7 +4195,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 						int entity = Npc_Create(EXPIDONSA_PISTOLEER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4209,7 +4209,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 						int entity = Npc_Create(EXPIDONSA_DIVERSIONISTICO, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4223,7 +4223,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 						int entity = Npc_Create(EXPIDONSA_RIFALMANU, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4237,7 +4237,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 						int entity = Npc_Create(EXPIDONSA_SICCERINO, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4251,7 +4251,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 						int entity = Npc_Create(EXPIDONSA_SOLDINE_PROTOTYPE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4265,7 +4265,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 						int entity = Npc_Create(EXPIDONSA_PROTECTA, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4279,7 +4279,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 						int entity = Npc_Create(EXPIDONSA_EGABUNAR, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4293,7 +4293,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 						int entity = Npc_Create(EXPIDONSA_ENEGAKAPUS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4307,7 +4307,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 						int entity = Npc_Create(EXPIDONSA_VAUSTECHICUS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4380,7 +4380,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_BENERA, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4394,7 +4394,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_PENTAL, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.10);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4408,7 +4408,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_DEFANDA, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 0.9);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4422,7 +4422,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_SELFAM_IRE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4436,7 +4436,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_VAUSMAGICA, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4450,7 +4450,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_PISTOLEER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4464,7 +4464,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_DIVERSIONISTICO, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4478,7 +4478,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_RIFALMANU, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4492,7 +4492,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_SICCERINO, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4506,7 +4506,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_SOLDINE_PROTOTYPE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4520,7 +4520,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_PROTECTA, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4534,7 +4534,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_EGABUNAR, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4548,7 +4548,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_ENEGAKAPUS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4562,7 +4562,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_VAUSTECHICUS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4576,7 +4576,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_HEAVYPUNUEL, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4590,7 +4590,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_SNIPONEER, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 0.9);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4604,7 +4604,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_DUALREA, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4618,7 +4618,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_GUARDUS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4632,7 +4632,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_MINIGUNASSISA, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4646,7 +4646,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_IGNITUS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.1);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4660,7 +4660,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_HELENA, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4674,7 +4674,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_ERASUS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4688,7 +4688,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_GIANTTANKUS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4702,7 +4702,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_SPEEDUSADIVUS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4716,7 +4716,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_SOLDINE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -4730,7 +4730,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 						int entity = Npc_Create(EXPIDONSA_SEARGENTIDEAL, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = Attributes_Get(weapon, 410, 1.0);
+							int maxhealth = int(Attributes_Get(weapon, 410, 1.0));
 							maxhealth = RoundFloat(float(maxhealth) * 1.2);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
