@@ -1181,7 +1181,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3])
 {
-	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+	if(!b_NpcIsTeamkiller[attacker] && GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 		return;
 		
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
@@ -1532,6 +1532,16 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		}
 		Debuff_added = true;
 		Format(Debuff_Adder, sizeof(Debuff_Adder), "ᐩ%s", Debuff_Adder);
+	}
+	if(b_PernellBuff[victim]) //hussar!
+	{
+		if(Debuff_added_hud)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
+			Debuff_added_hud = false;
+		}
+		Debuff_added = true;
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "P%s", Debuff_Adder);
 	}
 	if(f_GodArkantosBuff[victim] > GameTime)
 	{
@@ -2006,6 +2016,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
 		return true;
 	else if(f_HussarBuff[npc] > GameTime)
 		return true;
+	else if(b_PernellBuff[npc])
+		return true;
 	else if(f_PotionShrinkEffect[npc] > GameTime)
 		return true;
 	else if(f_GodArkantosBuff[npc] > GameTime)
@@ -2418,7 +2430,7 @@ bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &dam
 		}
 	}
 #endif
-//	if(b_NpcHasDied[attacker] || b_NpcHasDied[victim])
+	if(!b_NpcIsTeamkiller[attacker])
 	{
 		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum")) //should be entirely ignored
 		{
@@ -3083,6 +3095,10 @@ void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor, floa
 			damage *= 0.90;
 		}
 	}
+	if(b_PernellBuff[victim])
+	{
+		damage *= 0.6;
+	}
 	if(f_GodArkantosBuff[victim] > GameTime) //hussar!
 	{
 		damage *= 0.75;
@@ -3135,6 +3151,10 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 		{
 			damage += BaseDamageBeforeBuffs * (0.1 * DamageBuffExtraScaling);
 		}
+	}
+	if(b_PernellBuff[attacker])
+	{
+		damage += BaseDamageBeforeBuffs * (0.5 * DamageBuffExtraScaling); //50% more damage!
 	}
 	if(f_GodArkantosBuff[attacker] > GameTime) //hussar!
 	{

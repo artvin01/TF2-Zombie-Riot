@@ -57,10 +57,6 @@ methodmap Simon < CClotBody
 	{
 		EmitCustomToAll("cof/simon/shoot.mp3", this.index);
 	}
-	public void PlayBuffSound(int entity)
-	{
-		EmitCustomToAll("cof/purnell/buff.mp3", entity);
-	}
 	
 	public Simon(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
@@ -175,7 +171,6 @@ public void Simon_ClotThink(int iNPC)
 				{
 					ally.m_bLostHalfHealth = true;
 					ally.m_flSpeed *= 1.15;
-					npc.PlayBuffSound(target);
 				}
 			}
 		}

@@ -514,7 +514,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		if(	i_GunMode[npc.index] != 0)
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
-			if(npc.m_iTarget == -1)
+			if(npc.m_iTarget < 1)
 			{
 				npc.m_iTarget = GetClosestTarget(npc.index);
 			}
@@ -1280,6 +1280,7 @@ void Nemesis_AreaAttack(int entity, float damage, float m_vecMins_1[3], float m_
 			{
 				f_NemesisEnemyHitCooldown[i_NemesisEntitiesHitAoeSwing[counter]] = GetGameTime() + 0.15;
 				SDKHooks_TakeDamage(i_NemesisEntitiesHitAoeSwing[counter], npc.index, npc.index, damage, DMG_CLUB, -1);
+				Custom_Knockback(entity, i_NemesisEntitiesHitAoeSwing[counter], 1000.0, true); 
 				npc.PlayMeleeHitSound();
 			}
 		}

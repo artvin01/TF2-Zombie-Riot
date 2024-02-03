@@ -415,6 +415,7 @@ enum
 	INTERITUS_WINTER_FROST_HUNTER	  = 366,
 	INTERITUS_WINTER_SKIN_HUNTER	  = 367,
 	INTERITUS_WINTER_IRRITATED_PERSON = 368,
+	THEDOCTOR_MINIBOSS				  = 369,
 
 	MAX_NPC_TYPES	// Add entries above this line
 }
@@ -813,7 +814,8 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Arctic Mage",
 	"Frost Hunter",
 	"Skin Hunter",
-	"Irritated Person"
+	"Irritated Person",
+	"The Doctor"
 };
 
 // See items.sp for IDs to names
@@ -1584,7 +1586,8 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_arctic_mage",
 	"npc_frost_hunter",
 	"npc_skin_hunter",
-	"npc_irritated_person"
+	"npc_irritated_person",
+	"npc_doctor_special"
 };
 
 void NPC_MapStart()
@@ -2947,6 +2950,8 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case INTERITUS_WINTER_IRRITATED_PERSON:
 			entity = WinterIrritatedPerson(client, vecPos, vecAng, ally);
 
+		case THEDOCTOR_MINIBOSS:
+			entity = SpecialDoctor(client, vecPos, vecAng, ally,data);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -4919,6 +4924,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/special/npc_itstilives.sp"
 #include "zombie_riot/npc/special/npc_phantom_knight.sp"
 #include "zombie_riot/npc/special/npc_beheaded_kamikaze.sp"
+#include "zombie_riot/npc/special/npc_doctor.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"

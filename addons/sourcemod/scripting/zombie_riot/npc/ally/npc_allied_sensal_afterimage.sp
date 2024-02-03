@@ -50,7 +50,7 @@ methodmap AlliedSensalAbility < CClotBody
 		while(TF2U_GetWearable(client, entity, i, "tf_wearable"))
 		{
 
-			if(entity == EntRefToEntIndex(Armor_Wearable[client]))
+			if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
 				continue;
 				
 			ModelIndex = GetEntProp(entity, Prop_Data, "m_nModelIndex");

@@ -16,8 +16,9 @@ static char g_KillSounds[][] =
 	"cof/purnell/kill3.mp3",
 	"cof/purnell/kill4.mp3"
 };
-
-void Doctor_MapStart()
+static float i_ClosestAllyCDTarget[MAXENTITIES];
+/*
+void SpecialDoctor_MapStart()
 {
 	for (int i = 0; i < (sizeof(g_HurtSounds));	   i++) { PrecacheSoundCustom(g_HurtSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_KillSounds));	   i++) { PrecacheSoundCustom(g_KillSounds[i]);	   }
@@ -31,8 +32,37 @@ void Doctor_MapStart()
 
 	PrecacheModel("models/zombie_riot/cof/doctor_purnell.mdl");
 }
+*/
 
-methodmap Doctor < CClotBody
+
+static char[] GetPanzerHealth()
+{
+	int health = 110;
+	
+	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	
+	float temp_float_hp = float(health);
+	
+	if(ZR_GetWaveCount()+1 < 30)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
+	}
+	else if(ZR_GetWaveCount()+1 < 45)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
+	}
+	else
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+	}
+	
+	health /= 2;
+	
+	char buffer[16];
+	IntToString(health, buffer, sizeof(buffer));
+	return buffer;
+}
+methodmap SpecialDoctor < CClotBody
 {
 	public void PlayHurtSound()
 	{
@@ -48,39 +78,39 @@ methodmap Doctor < CClotBody
 	}
 	public void PlayIntroSound()
 	{
-		EmitCustomToAll("cof/purnell/intro.mp3", _, _, _, _, 2.0);
+		EmitCustomToAll("cof/purnell/intro.mp3", _, _, _, _, 3.0);
 	}
 	public void PlayFriendlySound()
 	{
-		EmitCustomToAll("cof/purnell/converted.mp3", _, _, _, _, 2.0);
+		EmitCustomToAll("cof/purnell/converted.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0);
 	}
 	public void PlayReloadSound()
 	{
-		EmitCustomToAll("cof/purnell/reload.mp3", this.index, _, _, _, 2.0);
+		EmitCustomToAll("cof/purnell/reload.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0);
 	}
 	public void PlayShootSound()
 	{
-		EmitCustomToAll("cof/purnell/shoot.mp3", this.index);
+		EmitCustomToAll("cof/purnell/shoot.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 4.0);
 	}
 	public void PlayMeleeSound()
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
-		EmitCustomToAll("cof/purnell/shove.mp3", this.index, SNDCHAN_VOICE);
+		EmitCustomToAll("cof/purnell/shove.mp3", this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0);
 	}
 	public void PlayHitSound()
 	{
-		EmitCustomToAll("cof/purnell/meleehit.mp3", this.index);
+		EmitCustomToAll("cof/purnell/meleehit.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0);
 	}
 	public void PlayKillSound()
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 2.0;
 		EmitCustomToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_VOICE);
 	}
-	
-	public Doctor(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+
+	public SpecialDoctor(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		Doctor npc = view_as<Doctor>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/doctor_purnell.mdl", "1.15", data[0] == 'f' ? "200000" : "30000", ally, false, false, true));
-		i_NpcInternalId[npc.index] = THEDOCTOR;
+		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/doctor_purnell.mdl", "1.15", GetPanzerHealth(), ally));
+		i_NpcInternalId[npc.index] = THEDOCTOR_MINIBOSS;
 		i_NpcWeight[npc.index] = 3;
 		
 		npc.m_iState = -1;
@@ -99,15 +129,14 @@ methodmap Doctor < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Doctor_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, Doctor_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamagePost, SpecialDoctor_ClotDamagedPost);
 		
 		npc.m_iInjuredLevel = 0;
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_bDissapearOnDeath = false;
-		npc.m_iInjuredLevel = 0;
+		i_ClosestAllyCDTarget[npc.index] = 0.0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -115,10 +144,16 @@ methodmap Doctor < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iAttacksTillReload = 5;
 		npc.m_flReloadDelay = GetGameTime(npc.index) + 0.8;
+
+		float wave = float(ZR_GetWaveCount()+1);
+		wave *= 0.1;
+		npc.m_flWaveScale = wave;
 		
 		npc.m_flNextRangedSpecialAttack = 0.0;
-		
-		npc.m_bLostHalfHealth = view_as<bool>(data[0]);
+
+
+		func_NPCDeath[npc.index] = view_as<Function>(SpecialDoctor_NPCDeath);
+		func_NPCThink[npc.index] = view_as<Function>(SpecialDoctor_ClotThink);
 
 		Citizen_MiniBossSpawn();
 		return npc;
@@ -141,9 +176,9 @@ methodmap Doctor < CClotBody
 	}
 }
 
-public void Doctor_ClotThink(int iNPC)
+public void SpecialDoctor_ClotThink(int iNPC)
 {
-	Doctor npc = view_as<Doctor>(iNPC);
+	SpecialDoctor npc = view_as<SpecialDoctor>(iNPC);
 	
 	SetVariantInt(npc.m_iInjuredLevel);
 	AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -157,22 +192,13 @@ public void Doctor_ClotThink(int iNPC)
 	
 	if(npc.m_flNextRangedSpecialAttack < gameTime)
 	{
-		if(npc.m_bLostHalfHealth)
-		{
-			npc.m_flNextRangedSpecialAttack = gameTime + 0.25;
-		}
-		else
-		{
-			npc.m_flNextRangedSpecialAttack = gameTime + 2.0;
-		}
+		npc.m_flNextRangedSpecialAttack = gameTime + 0.25;
 		
-		int target = GetClosestAlly(npc.index, 40000.0);
+		int target = GetClosestAlly(npc.index, (150.0 * 150.0), _,DoctorBuffAlly);
 		if(target)
 		{
-			CClotBody ally = view_as<CClotBody>(target);
-			if(!ally.m_bLostHalfHealth)
+			if(!b_PernellBuff[target])
 			{
-				ally.m_bLostHalfHealth = true;
 				b_PernellBuff[target] = true;
 				npc.AddGesture("ACT_SIGNAL");
 			}
@@ -187,11 +213,48 @@ public void Doctor_ClotThink(int iNPC)
 		npc.m_iTarget = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 	}
-	
+
+	if(!IsValidAlly(npc.index, npc.m_iTargetAlly))
+	{
+		if(i_ClosestAllyCDTarget[npc.index] < GetGameTime(npc.index))
+		{
+			npc.m_iTargetAlly = GetClosestAlly(npc.index, _, _,DoctorBuffAlly);
+			i_ClosestAllyCDTarget[npc.index] = GetGameTime(npc.index) + 1.0;
+		}
+	}
+	else
+	{
+		i_ClosestAllyCDTarget[npc.index] = GetGameTime(npc.index) + 0.0;
+	}
+
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
 		npc.m_iTarget = GetClosestTarget(npc.index, true);
+	}
+	if(IsValidAlly(npc.index, npc.m_iTargetAlly) && IsValidEnemy(npc.index, npc.m_iTarget))
+	{
+		float vecTargetally[3]; vecTargetally = WorldSpaceCenterOld(npc.m_iTargetAlly);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecPos[3]; vecPos = WorldSpaceCenterOld(npc.index);
+		
+		float distanceToAlly = GetVectorDistance(vecTargetally, vecPos, true);
+		float distanceToEnemy = GetVectorDistance(vecTarget, vecTargetally, true);
+		if(distanceToAlly > (140.0 * 140.0) && npc.m_iTargetWalkTo < (50.0 * 50.0)) //get close to ally but not too close
+		{
+			npc.m_iTargetWalkTo = npc.m_iTargetAlly;
+		}
+		else
+		{
+			if(distanceToEnemy < (200.0 * 200.0)) //enemy is too close to friend, follow enemy
+			{
+				npc.m_iTargetWalkTo = npc.m_iTargetAlly;
+			}
+		}
+	}
+	else
+	{
+		npc.m_iTargetWalkTo = npc.m_iTarget;
 	}
 	
 	int behavior = -1;
@@ -207,7 +270,7 @@ public void Doctor_ClotThink(int iNPC)
 			{
 				Handle swingTrace;
 				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _, 1))
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
@@ -216,11 +279,14 @@ public void Doctor_ClotThink(int iNPC)
 					
 					if(target > 0) 
 					{
-						if(target <= MaxClients)
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_CLUB, -1, _, vecHit);
+						float damage = 50.0;
+											
+											
+						if(!ShouldNpcDealBonusDamage(target))
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
 						else
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 800.0, DMG_CLUB, -1, _, vecHit);	
-							
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 3.0 * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
+
 						Custom_Knockback(npc.index, target, 500.0);
 						npc.m_iAttacksTillReload++;
 						npc.PlayHitSound();
@@ -235,7 +301,7 @@ public void Doctor_ClotThink(int iNPC)
 	
 	if(behavior == -1)
 	{
-		if(npc.m_iTarget > 0)	// We have a target
+		if(npc.m_iTarget > 0 && npc.m_iTargetWalkTo > 0)	// We have a target
 		{
 			float vecPos[3]; vecPos = WorldSpaceCenterOld(npc.index);
 			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
@@ -281,7 +347,9 @@ public void Doctor_ClotThink(int iNPC)
 							npc.m_iAttacksTillReload--;
 							
 							vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 700.0);
-							npc.FireRocket(vecTarget, 80.0, 700.0, "models/weapons/w_bullet.mdl", 2.0);
+							float damage = 50.0;
+
+							npc.FireRocket(vecTarget, damage * 0.9 * npc.m_flWaveScale, 700.0, "models/weapons/w_bullet.mdl", 2.0);
 							
 							npc.PlayShootSound();
 						}
@@ -346,20 +414,20 @@ public void Doctor_ClotThink(int iNPC)
 		case 1:	// Move After the Player
 		{
 			npc.SetActivity("ACT_RUN");
-			npc.m_flSpeed = 100.0;
+			npc.m_flSpeed = 200.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
 		case 2:	// Sprint After the Player
 		{
 			npc.SetActivity("ACT_RUN");
-			npc.m_flSpeed = 150.0;
+			npc.m_flSpeed = 250.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
@@ -371,7 +439,7 @@ public void Doctor_ClotThink(int iNPC)
 			if(!npc.m_flRangedSpecialDelay)	// Reload anyways timer
 				npc.m_flRangedSpecialDelay = gameTime + 4.0;
 			
-			float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+			float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTargetWalkTo);
 			NPC_SetGoalVector(npc.index, vBackoffPos);
 			
 			if(!npc.m_bPathing)
@@ -396,28 +464,36 @@ public void Doctor_ClotThink(int iNPC)
 	}
 }
 
-public void Doctor_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
+public void SpecialDoctor_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
 	if(damage > 0.0)
 	{
-		Doctor npc = view_as<Doctor>(victim);
+		SpecialDoctor npc = view_as<SpecialDoctor>(victim);
 		npc.m_iInjuredLevel = 4 - (GetEntProp(victim, Prop_Data, "m_iHealth") * 5 / GetEntProp(victim, Prop_Data, "m_iMaxHealth"));
 		
 		npc.PlayHurtSound();
 	}
 }
 
-public void Doctor_NPCDeath(int entity)
+public void SpecialDoctor_NPCDeath(int entity)
 {
-	Doctor npc = view_as<Doctor>(entity);
+	SpecialDoctor npc = view_as<SpecialDoctor>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Doctor_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_Think, Doctor_ClotThink);
-	
-	NPC_StopPathing(npc.index);
-	npc.m_bPathing = false;
+	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, SpecialDoctor_ClotDamagedPost);
 	
 	npc.PlayDeathSound();
 
 	Citizen_MiniBossDeath(entity);
+}
+
+
+public bool DoctorBuffAlly(int provider, int entity)
+{
+	if(entity <= MaxClients)
+	{
+		if(!b_PernellBuff[entity])
+			return true;
+	}
+
+	return true;
 }

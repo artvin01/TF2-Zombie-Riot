@@ -921,7 +921,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			}
 		}
 	}
-	else if(ZR_GetWaveCount()+1 <= 60)
+	else
 	{
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
@@ -1162,7 +1162,7 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 							}
 										
 							if(!Knocked)
-								Custom_Knockback(npc.index, target, 350.0); 
+								Custom_Knockback(npc.index, target, 150.0, true); 
 						}
 					}
 				}

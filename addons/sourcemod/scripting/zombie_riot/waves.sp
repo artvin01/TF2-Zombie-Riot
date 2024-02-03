@@ -1618,7 +1618,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			if(Enemies.Empty)
 			{
 				CurrentWave++;
-				WaveStart_SubWaveStart();
+				Waves_Progress();
 				return;
 			}
 
@@ -1626,7 +1626,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		}
 		else if(donotAdvanceRound)
 		{
-			CurrentWave = 0;
+			CurrentWave = 9;
 		}
 		else
 		{
@@ -1900,6 +1900,7 @@ void WaveEndLogicExtra()
 	SeaFounder_ClearnNethersea();
 	M3_AbilitiesWaveEnd();
 	Specter_AbilitiesWaveEnd();	
+	Rapier_CashWaveEnd();
 	LeperResetUses();
 	Zero(i_MaxArmorTableUsed);
 	for(int client; client <= MaxClients; client++)

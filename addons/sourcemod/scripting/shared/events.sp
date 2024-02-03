@@ -579,7 +579,7 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 						int entity_wearable, i;
 						while(TF2U_GetWearable(client, entity_wearable, i))
 						{
-							if(entity == EntRefToEntIndex(Armor_Wearable[client]))
+							if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity_wearable] != -1)
 								continue;
 
 							SetEntityRenderMode(entity_wearable, RENDER_NORMAL);

@@ -499,7 +499,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 	{
 		//PrintToChatAll("damage resist");
 		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
-		return damage * 0.85;
+		return damage * 0.9;
 	}
 	else if(Board_Level[victim] == 5) //ramp
 	{
@@ -511,7 +511,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 	{
 		//PrintToChatAll("damage resist");
 		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
-		return damage * 0.8;
+		return damage * 0.85;
 	}
 	else
 	{

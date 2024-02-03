@@ -787,7 +787,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 										}
 										
 										if(!Knocked)
-											Custom_Knockback(npc.index, target, 550.0); 
+											Custom_Knockback(npc.index, target, 450.0, true);  
 
 										npc.m_flSwitchCooldown = 0.0;
 									}

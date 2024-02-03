@@ -709,7 +709,7 @@
 	
 	"The Battalion's Backup Desc"
 	{
-		"en"	"Give Resistance (20%%) to everyone after dealing enough damage, receive +50 Extra HP"
+		"en"	"Give Resistance (15%%) to everyone after dealing enough damage, receive +50 Extra HP"
 	}
 	
 	"P15t0l Desc"
@@ -727,16 +727,6 @@
 		"en"	"Weapon does whatever the fuck it wants now."
 		"ru"	"Оружие теперь делает, чёрт возьми всё, что ему вздумается."
 		"chi"   "武器现在可以发射更多类型"
-	}
-	"Riot Gun Desc"
-	{
-		"en"	"Press M2 Nearby enemies to stun them and gain massively increased attackspeed and damage for upto 10 hit targets.\nTake less damage from attacks you look at, bosses and raids pierce it by half.\nSpeedcola reduces ability cooldown."
-		"ru"	"Нажав М2 вблизи врагов, вы оглушите их и получ. увелич. скорость атаки и нанесёте урон 10 целям.\nПолучайте меньше урона от атак, на которые вы смотрите, боссы и рейды пробивают его наполовину.\nБыстрокола уменьш. время восст. способн."
-		"chi"   "按M2击晕附近的敌人，并为最多10个命中的目标大幅提高攻击速度和伤害。\n从你看到的攻击中受到更少的伤害，boss和突袭穿透它一半。极速可乐减少技能冷却时间。"
-	}
-	"Riot Gun Pap 1"
-	{
-		"en"	"Boosts melee resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now stuns longer and has a decreased cooldown."
 	}
 	"Buff Banner Desc"
 	{
@@ -2318,31 +2308,23 @@
 	}
 	"Old Wooden Board Desc"
 	{
-		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nPassively heals you, gets interrupted when taking damage/switching weapons.\nDefence rating: ★✬☆☆☆"
+		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nPassively heals you, gets interrupted when taking damage/switching weapons.\nDefence rating: 10%%"
 	}
 	"Spike Shield Desc"
 	{
-		"en"	"A weapon pretending to be a shield - Parrying boasts higher damage.\nDefence rating: ★☆☆☆☆"
-	}
-	"Leaf Shield Desc"
-	{
-		"en"	"A shield that was born - Healing comes back faster after taking damage.\nDefence rating: ★★★☆☆"
+		"en"	"A weapon pretending to be a shield - Parrying boasts higher damage.\nDefence rating: 5%%"
 	}
 	"Rookie Shield Desc"
 	{
-		"en"	"A regular shield - Parries and lets you switch weapons faster.\nDefence rating: ★★☆☆☆"
+		"en"	"A regular shield - Parries and lets you switch weapons faster.\nDefence rating: 10%%"
 	}
 	"Punishment Desc"
 	{
-		"en"	"A weapon and a shield, given form - Parrying becomes AOE.\nDefence rating: ★★★☆☆\nArchetype changes to ''Crusher''"
-	}
-	"Rampart Desc"
-	{
-		"en"	"An abomination, given life. You can feel it's breath - Parrying heals you for 5% of your HP.\nDefence rating: ★★★★★"
+		"en"	"A weapon and a shield, given form - Parrying becomes AOE.\nDefence rating: 10%%\nArchetype changes to ''Crusher''"
 	}
 	"Cudgel Desc"
 	{
-		"en"	"A standard issue shield, given purpose - Parrying debuffs the enemy.\nDefence rating: ★★★★☆"
+		"en"	"A standard issue shield, given purpose - Parrying debuffs the enemy.\nDefence rating: 15%%"
 	}
 	"The Standchen Desc"
 	{
@@ -2712,9 +2694,17 @@
 	{
 		"en"	"I won't miss.\nBy default, weapon is in low output mode.\nPress R to charge the weapon for 10 second to fire a MAXIMUM OUTPUT shot.\nMAXIMUM OUTPUT stuns and does a portion as true damage."
 	}
+	"Riot Gun Desc"
+	{
+		"en"	"While you have armor, provides 60% (from bosses 35%) damage resistance from attacks in front of you.\nAbility stuns up to 10 enemies in front of you and greatly increases attack speed.\nSpeed-Cola reduces ability cooldown."
+	}
+	"Riot Gun Pap 1"
+	{
+		"en"	"Provides 10%% melee resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now stuns longer and has a decreased cooldown."
+	}
 	"Energized Riot Gun Desc"
 	{
-		"en"	"Boosts ranged resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now becomes slower multi-hit shotgun.\nGetting hit reduces ability cooldowns of yourself and a nearby ally by 0.5 seconds."
+		"en"	"Provides 10%% ranged resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now becomes slower multi-hit shotgun.\nGetting hit with your shield reduces ability cooldowns of yourself and a nearby ally by 0.5 seconds."
 	}
 	"Armor Visualiser Desc"
 	{

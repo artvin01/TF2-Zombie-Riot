@@ -35,29 +35,29 @@ static char[] GetBeheadedKamiKazeHealth()
 	int health = 15;
 	int health_after;
 	
-	if(CurrentRound+1 <= 30)
+	if(ZR_GetWaveCount()+1 <= 30)
 	{
-		health_after = ((CurrentRound+1) * health);
+		health_after = ((ZR_GetWaveCount()+1) * health);
 	}
-	else if(CurrentRound+1 <= 45)
+	else if(ZR_GetWaveCount()+1 <= 45)
 	{
-		health_after = ((CurrentRound+1) * health) * 2;
+		health_after = ((ZR_GetWaveCount()+1) * health) * 2;
 	}
-	else if(CurrentRound+1 <= 50)
+	else if(ZR_GetWaveCount()+1 <= 50)
 	{
-		health_after = ((CurrentRound+1) * health) * 4;
+		health_after = ((ZR_GetWaveCount()+1) * health) * 4;
 	}
-	else if(CurrentRound+1 <= 55)
+	else if(ZR_GetWaveCount()+1 <= 55)
 	{
-		health_after = ((CurrentRound+1) * health) * 8;
+		health_after = ((ZR_GetWaveCount()+1) * health) * 8;
 	}
-	else if(CurrentRound+1 <= 60)
+	else if(ZR_GetWaveCount()+1 <= 60)
 	{
-		health_after = ((CurrentRound+1) * health) * 10;
+		health_after = ((ZR_GetWaveCount()+1) * health) * 10;
 	}
 	else
 	{
-		health_after = ((CurrentRound+1) * health) * 12;
+		health_after = ((ZR_GetWaveCount()+1) * health) * 12;
 	}
 	char buffer[16];
 	IntToString(health_after, buffer, sizeof(buffer));
