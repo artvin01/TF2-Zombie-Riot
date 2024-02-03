@@ -552,6 +552,8 @@ bool BarrackBody_ThinkStart(int iNPC, float GameTime, float offsetHealth = 0.0)
 	if(npc.m_flNextThinkTime > GameTime)
 		return false;
 		
+	npc.m_flNextThinkTime = GameTime + 0.1;
+		
 
 	BarrackBody_HealthHud(npc,offsetHealth);
 	if(f_NextHealTime[npc.index] < GameTime && !i_NpcIsABuilding[npc.index])
@@ -583,7 +585,6 @@ bool BarrackBody_ThinkStart(int iNPC, float GameTime, float offsetHealth = 0.0)
 		}
 			
 	}
-	npc.m_flNextThinkTime = GameTime + 0.1;
 	return true;
 }
 
