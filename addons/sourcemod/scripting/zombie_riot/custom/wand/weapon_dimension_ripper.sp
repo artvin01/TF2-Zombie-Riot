@@ -14,7 +14,6 @@ void Wand_Dimension_Map_Precache()
 {
 	PrecacheSound(SOUND_WAND_SHOT_DIM);
 	PrecacheSound(SOUND_DIM_IMPACT);
-	Zero(i_DimLandHitsDone);
 }
 
 public void Enable_Dimension_Wand(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
@@ -22,7 +21,7 @@ public void Enable_Dimension_Wand(int client, int weapon) // Enable management, 
 	if (h_TimerDimensionWeaponManagement[client] != null)
 	{
 		//This timer already exists.
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_WEAPON_DIMENSION_RIPPER)
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_DIMENSION_RIPPER)
 		{
 			//Is the weapon it again?
 			//Yes?
@@ -178,6 +177,9 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 			if(mana_cost <= Current_Mana[client])
 			{
 				Rogue_OnAbilityUse(weapon);
+				float pos1[3], ang[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
+				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				int particle = ParticleEffectAt(Dimension_Loc, "ghost_appearation", 1.0);
@@ -499,6 +501,9 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 			if(mana_cost <= Current_Mana[client])
 			{
 				Rogue_OnAbilityUse(weapon);
+				float pos1[3], ang[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
+				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				int particle = ParticleEffectAt(Dimension_Loc, "ghost_appearation", 1.0);
@@ -1059,6 +1064,9 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 			if(mana_cost <= Current_Mana[client])
 			{
 				Rogue_OnAbilityUse(weapon);
+				float pos1[3], ang[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
+				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				int particle = ParticleEffectAt(Dimension_Loc, "eyeboss_tp_player", 1.0);
@@ -1353,6 +1361,9 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 			if(mana_cost <= Current_Mana[client])
 			{
 				Rogue_OnAbilityUse(weapon);
+				float pos1[3], ang[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
+				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				int particle = ParticleEffectAt(Dimension_Loc, "eyeboss_tp_player", 1.0);
@@ -1577,6 +1588,9 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 			if(mana_cost <= Current_Mana[client])
 			{
 				Rogue_OnAbilityUse(weapon);
+				float pos1[3], ang[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
+				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				int particle = ParticleEffectAt(Dimension_Loc, "utaunt_krakenmouth_green_parent", 1.0);
@@ -2025,6 +2039,9 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 			if(mana_cost <= Current_Mana[client])
 			{
 				Rogue_OnAbilityUse(weapon);
+				float pos1[3], ang[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
+				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				int particle = ParticleEffectAt(Dimension_Loc, "utaunt_krakenmouth_green_parent", 1.0);
@@ -2571,6 +2588,9 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 			if(mana_cost <= Current_Mana[client])
 			{
 				Rogue_OnAbilityUse(weapon);
+				float pos1[3], ang[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
+				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				int particle = ParticleEffectAt(Dimension_Loc, "npc_boss_bomb_alert", 1.0);
@@ -2935,6 +2955,9 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 			if(mana_cost <= Current_Mana[client])
 			{
 				Rogue_OnAbilityUse(weapon);
+				float pos1[3], ang[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
+				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				int particle = ParticleEffectAt(Dimension_Loc, "npc_boss_bomb_alert", 1.0);
@@ -3454,6 +3477,9 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 			if(mana_cost <= Current_Mana[client])
 			{
 				Rogue_OnAbilityUse(weapon);
+				float pos1[3], ang[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
+				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				int particle = ParticleEffectAt(Dimension_Loc, "utaunt_constellations_blue_base", 1.0);
@@ -3650,6 +3676,9 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 			if(mana_cost <= Current_Mana[client])
 			{
 				Rogue_OnAbilityUse(weapon);
+				float pos1[3], ang[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
+				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				int particle = ParticleEffectAt(Dimension_Loc, "utaunt_constellations_blue_base", 1.0);
@@ -4084,6 +4113,9 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 			if(mana_cost <= Current_Mana[client])
 			{
 				Rogue_OnAbilityUse(weapon);
+				float pos1[3], ang[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
+				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				int particle = ParticleEffectAt(Dimension_Loc, "eyeboss_death_vortex", 1.5);
@@ -4336,6 +4368,9 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 			if(mana_cost <= Current_Mana[client])
 			{
 				Rogue_OnAbilityUse(weapon);
+				float pos1[3], ang[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
+				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				int particle = ParticleEffectAt(Dimension_Loc, "eyeboss_death_vortex", 1.5);
