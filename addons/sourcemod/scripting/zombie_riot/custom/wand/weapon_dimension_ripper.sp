@@ -17,7 +17,7 @@ void Wand_Dimension_Map_Precache()
 	Zero(i_DimLandHitsDone);
 }
 
-public void Enable_Dimension_Ripper(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
+public void Enable_Dimension_Wand(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
 	if (h_TimerDimensionWeaponManagement[client] != null)
 	{
