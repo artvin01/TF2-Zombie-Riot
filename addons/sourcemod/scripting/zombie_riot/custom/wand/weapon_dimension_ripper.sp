@@ -6,10 +6,15 @@
 #define MAX_DIMENSION_CHARGE 15
 static Handle h_TimerDimensionWeaponManagement[MAXPLAYERS+1]={null, ...};
 static int how_many_times_swinged[MAXTF2PLAYERS];
-static float f_WeaponArkhuddelay[MAXPLAYERS+1]={0.0, ...};
 static float f_DIMAbilityActive[MAXPLAYERS+1]={0.0, ...};
 static float f_DIMhuddelay[MAXPLAYERS+1]={0.0, ...};
 
+
+void ResetMapStartDimWeapon()
+{
+	Zero(f_DIMhuddelay);
+	Wand_Dimension_Map_Precache();
+}
 void Wand_Dimension_Map_Precache()
 {
 	PrecacheSound(SOUND_WAND_SHOT_DIM);
