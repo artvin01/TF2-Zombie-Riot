@@ -483,7 +483,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				ParticleEffectAt(Dimension_Loc, "ghost_appearation", 1.0);
-				switch(GetRandomInt(1, 35))
+				switch(GetRandomInt(1, 36))
 				{
 					case 1:
 					{
@@ -942,7 +942,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
-					case 35:
+					case 36:
 					{
 						int entity = Npc_Create(COMBINE_DEUTSCH_RITTER, client, pos1, ang, true);
 						if(entity > MaxClients)
