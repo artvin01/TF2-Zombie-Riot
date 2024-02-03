@@ -213,7 +213,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 						int entity = Npc_Create(FASTZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)200.0);
+							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*200.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 1.0);
