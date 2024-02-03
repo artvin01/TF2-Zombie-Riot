@@ -601,9 +601,11 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 	
 	bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer || command == Command_RTSMove);
 
+	// Only retarget when can we had an existing target before
 	if(!newTarget && !retreating && i_Target[npc.index] != -1)
 		newTarget = !IsValidEnemy(npc.index, npc.m_iTarget);
 
+	// Only retarget when can we had an existing target before
 	if(!newTarget && !retreating && npc.m_iTargetRally > 0)
 		newTarget = !IsValidEnemy(npc.index, npc.m_iTargetRally);
 
