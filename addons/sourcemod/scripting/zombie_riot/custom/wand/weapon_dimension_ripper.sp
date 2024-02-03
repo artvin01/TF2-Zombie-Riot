@@ -75,7 +75,6 @@ public void Dimension_Cooldown_Logic(int client, int weapon)
 			}
 			else
 			{
-				float TimeLeft = f_DIMAbilityActive[client] - GetGameTime();
 				PrintHintText(client,"Summon Ready");
 			}
 			
@@ -182,7 +181,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				int particle = ParticleEffectAt(Dimension_Loc, "ghost_appearation", 1.0);
+				ParticleEffectAt(Dimension_Loc, "ghost_appearation", 1.0);
 				switch(GetRandomInt(1, 19))
 				{
 					case 1:
@@ -506,7 +505,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				int particle = ParticleEffectAt(Dimension_Loc, "ghost_appearation", 1.0);
+				ParticleEffectAt(Dimension_Loc, "ghost_appearation", 1.0);
 				switch(GetRandomInt(1, 35))
 				{
 					case 1:
@@ -1069,7 +1068,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				int particle = ParticleEffectAt(Dimension_Loc, "eyeboss_tp_player", 1.0);
+				ParticleEffectAt(Dimension_Loc, "eyeboss_tp_player", 1.0);
 				switch(GetRandomInt(1, 17))
 				{
 					case 1:
@@ -1366,7 +1365,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				int particle = ParticleEffectAt(Dimension_Loc, "eyeboss_tp_player", 1.0);
+				ParticleEffectAt(Dimension_Loc, "eyeboss_tp_player", 1.0);
 				switch(GetRandomInt(1, 12))
 				{
 					case 1:
@@ -1593,7 +1592,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				int particle = ParticleEffectAt(Dimension_Loc, "utaunt_krakenmouth_green_parent", 1.0);
+				ParticleEffectAt(Dimension_Loc, "utaunt_krakenmouth_green_parent", 1.0);
 				switch(GetRandomInt(1, 28))
 				{
 					case 1:
@@ -2044,7 +2043,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				int particle = ParticleEffectAt(Dimension_Loc, "utaunt_krakenmouth_green_parent", 1.0);
+				ParticleEffectAt(Dimension_Loc, "utaunt_krakenmouth_green_parent", 1.0);
 				switch(GetRandomInt(1, 36))
 				{
 					case 1:
@@ -2593,7 +2592,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				int particle = ParticleEffectAt(Dimension_Loc, "npc_boss_bomb_alert", 1.0);
+				ParticleEffectAt(Dimension_Loc, "npc_boss_bomb_alert", 1.0);
 				switch(GetRandomInt(1, 22))
 				{
 					case 1:
@@ -2960,7 +2959,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				int particle = ParticleEffectAt(Dimension_Loc, "npc_boss_bomb_alert", 1.0);
+				ParticleEffectAt(Dimension_Loc, "npc_boss_bomb_alert", 1.0);
 				switch(GetRandomInt(1,33))
 				{
 					case 1:
@@ -3482,7 +3481,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				int particle = ParticleEffectAt(Dimension_Loc, "utaunt_constellations_blue_base", 1.0);
+				ParticleEffectAt(Dimension_Loc, "utaunt_constellations_blue_base", 1.0);
 				switch(GetRandomInt(1, 10))
 				{
 					case 1:
@@ -3681,7 +3680,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				int particle = ParticleEffectAt(Dimension_Loc, "utaunt_constellations_blue_base", 1.0);
+				ParticleEffectAt(Dimension_Loc, "utaunt_constellations_blue_base", 1.0);
 				switch(GetRandomInt(1, 27))
 				{
 					case 1:
@@ -4118,7 +4117,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				int particle = ParticleEffectAt(Dimension_Loc, "eyeboss_death_vortex", 1.5);
+				ParticleEffectAt(Dimension_Loc, "eyeboss_death_vortex", 1.5);
 				switch(GetRandomInt(1, 14))
 				{
 					case 1:
@@ -4373,7 +4372,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				int particle = ParticleEffectAt(Dimension_Loc, "eyeboss_death_vortex", 1.5);
+				ParticleEffectAt(Dimension_Loc, "eyeboss_death_vortex", 1.5);
 				switch(GetRandomInt(1, 26))
 				{
 					case 1:
