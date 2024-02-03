@@ -65,13 +65,12 @@ static float fl_ThrowPlayerImmenent[MAXENTITIES];
 static bool b_ThrowPlayerImmenent[MAXENTITIES];
 static int i_GrabbedThis[MAXENTITIES];
 
-static bool b_AlreadyHitTankThrow[MAXENTITIES];
+static bool b_AlreadyHitTankThrow[MAXENTITIES][MAXENTITIES];
+static float fl_ThrowDelay[MAXENTITIES];
 static int i_TankThrewThis[MAXENTITIES];
 
 static bool i_ThrowAlly[MAXENTITIES];
 static int i_IWantToThrowHim[MAXENTITIES];
-
-static float fl_ThrowDelay[MAXENTITIES];
 
 static float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
 
@@ -354,8 +353,12 @@ public void L4D2_Tank_ClotThink(int iNPC)
 		
 							if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See) && Closest_non_grabbed_player == Enemy_I_See)
 							{
-								Zero(b_AlreadyHitTankThrow);
+								for(int entity=1; entity < MAXENTITIES; entity++)
+								{
+									b_AlreadyHitTankThrow[client][entity] = false;
+								}
 								i_TankThrewThis[client] = npc.index;
+								fl_ThrowDelay[client] = GetGameTime() + 0.1;
 								float flPos[3]; // original
 								float flAng[3]; // original
 								
@@ -407,7 +410,10 @@ public void L4D2_Tank_ClotThink(int iNPC)
 						
 						
 						b_DoNotUnStuck[client] = false;
-						Zero(b_AlreadyHitTankThrow);
+						for(int entity=1; entity < MAXENTITIES; entity++)
+						{
+							b_AlreadyHitTankThrow[client][entity] = false;
+						}
 						i_TankThrewThis[client] = npc.index;
 						int Closest_non_grabbed_player = GetClosestTarget(npc.index,_,_,_,_, client);
 						
@@ -432,6 +438,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 						}
 						if(client <= MaxClients)
 						{
+							fl_ThrowDelay[client] = GetGameTime() + 0.1;
 							SDKHook(client, SDKHook_PreThink, contact_throw_tank);	
 							i_TankAntiStuck[client] = EntIndexToEntRef(npc.index);
 							CreateTimer(0.1, CheckStuckTank, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -477,10 +484,32 @@ public void L4D2_Tank_ClotThink(int iNPC)
 								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2.0 * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 4.0 * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
 								
 								
-									
+								for(int entity=1; entity < MAXENTITIES; entity++)
+								{
+									b_AlreadyHitTankThrow[target][entity] = false;
+								}
+								i_TankThrewThis[target] = npc.index;
+								if(!ShouldNpcDealBonusDamage(target))
+								{
+									if(target > MaxClients)
+									{
+										RequestFrame(ApplySdkHookTankThrow, EntIndexToEntRef(target));
+										Custom_Knockback(npc.index, target, 1000.0, true, true);
+										i_TankAntiStuck[target] = EntIndexToEntRef(npc.index);
+									}
+									else
+									{
+										fl_ThrowDelay[target] = GetGameTime() + 0.1;
+										TF2_AddCondition(target, TFCond_LostFooting, 0.35);
+										TF2_AddCondition(target, TFCond_AirCurrent, 0.35);
+										SDKHook(target, SDKHook_PreThink, contact_throw_tank);	
+										i_TankAntiStuck[target] = EntIndexToEntRef(npc.index);
+										Custom_Knockback(npc.index, target, 1000.0, true, true);										
+									}
+								}
 								// Hit sound
 								npc.PlayMeleeHitSound();
 							}
@@ -774,6 +803,10 @@ void Music_Stop_All_Tank(int entity)
 
 public Action contact_throw_tank(int client)
 {
+	if (fl_ThrowDelay[client] > GetGameTime())
+	{
+		return Plugin_Continue;
+	}
 	float targPos[3];
 	float chargerPos[3];
 	float flVel[3];
@@ -781,12 +814,18 @@ public Action contact_throw_tank(int client)
 	if (IsValidClient(client) && IsPlayerAlive(client) && dieingstate[client] != 0 && TeutonType[client] == TEUTON_NONE)
 	{
 		
-		Zero(b_AlreadyHitTankThrow);
+		for(int entity=1; entity < MAXENTITIES; entity++)
+		{
+			b_AlreadyHitTankThrow[client][entity] = false;
+		}
 		SDKUnhook(client, SDKHook_PreThink, contact_throw_tank);	
 	}
 	if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 	{
-		Zero(b_AlreadyHitTankThrow);
+		for(int entity=1; entity < MAXENTITIES; entity++)
+		{
+			b_AlreadyHitTankThrow[client][entity] = false;
+		}
 		SDKUnhook(client, SDKHook_PreThink, contact_throw_tank);	
 		return Plugin_Continue;
 	}
@@ -806,7 +845,7 @@ public Action contact_throw_tank(int client)
 					targPos = WorldSpaceCenterOld(entity);
 					if (GetVectorDistance(chargerPos, targPos, true) <= (125.0* 125.0))
 					{
-						if (!b_AlreadyHitTankThrow[entity] && entity != client && i_TankThrewThis[client] != entity)
+						if (!b_AlreadyHitTankThrow[client][entity] && entity != client && i_TankThrewThis[client] != entity)
 						{		
 							int damage = SDKCall_GetMaxHealth(client) / 3;
 							
@@ -821,7 +860,7 @@ public Action contact_throw_tank(int client)
 							
 							SDKHooks_TakeDamage(entity, 0, 0, float(damage), DMG_GENERIC, -1, NULL_VECTOR, targPos);
 							EmitSoundToAll("weapons/physcannon/energy_disintegrate5.wav", entity, SNDCHAN_STATIC, 80, _, 0.8);
-							b_AlreadyHitTankThrow[entity] = true;
+							b_AlreadyHitTankThrow[client][entity] = true;
 							if(entity <= MaxClients)
 							{
 								float newVel[3];
@@ -855,7 +894,10 @@ public Action contact_throw_tank_entity(int client)
 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", flVel);
 	if (npc.IsOnGround() && fl_ThrowDelay[client] < GetGameTime(npc.index))
 	{
-		Zero(b_AlreadyHitTankThrow);
+		for(int entity=1; entity < MAXENTITIES; entity++)
+		{
+			b_AlreadyHitTankThrow[client][entity] = false;
+		}
 		SDKUnhook(client, SDKHook_Think, contact_throw_tank_entity);	
 		return Plugin_Continue;
 	}
@@ -873,7 +915,7 @@ public Action contact_throw_tank_entity(int client)
 					targPos = WorldSpaceCenterOld(entity);
 					if (GetVectorDistance(chargerPos, targPos, true) <= (125.0* 125.0))
 					{
-						if (!b_AlreadyHitTankThrow[entity] && entity != client && i_TankThrewThis[client] != entity)
+						if (!b_AlreadyHitTankThrow[client][entity] && entity != client && i_TankThrewThis[client] != entity)
 						{		
 							int damage = GetEntProp(client, Prop_Data, "m_iMaxHealth") / 3;
 							
@@ -889,7 +931,7 @@ public Action contact_throw_tank_entity(int client)
 							
 							SDKHooks_TakeDamage(entity, 0, 0, float(damage), DMG_GENERIC, -1, NULL_VECTOR, targPos);
 							EmitSoundToAll("weapons/physcannon/energy_disintegrate5.wav", entity, SNDCHAN_STATIC, 80, _, 0.8);
-							b_AlreadyHitTankThrow[entity] = true;
+							b_AlreadyHitTankThrow[client][entity] = true;
 							if(entity <= MaxClients)
 							{
 								float newVel[3];
@@ -903,6 +945,10 @@ public Action contact_throw_tank_entity(int client)
 									flVel[i] += newVel[i];
 								}				
 								TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, flVel); 
+							}
+							else
+							{
+								
 							}
 						}
 					}

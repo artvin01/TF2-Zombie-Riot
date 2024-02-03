@@ -1355,7 +1355,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}	
 		if(b_PernellBuff[this.index])
 		{
-			speed_for_return *= 1.15;
+			speed_for_return *= 1.25;
 		}
 		if(f_HussarBuff[this.index] > Gametime)
 		{
@@ -5857,7 +5857,7 @@ stock void Custom_Knockback(int attacker,
 		{
 			if (!(GetEntityFlags(enemy) & FL_ONGROUND))
 			{
-				knockback *= 0.5; //Dont do as much knockback if they are in the air
+				knockback *= 0.85; //Dont do as much knockback if they are in the air
 				if(attacker > MaxClients) //npcs have no angles up, help em.
 				{
 					if(PullDuration == 0.0)
@@ -5877,7 +5877,7 @@ stock void Custom_Knockback(int attacker,
 			CClotBody npc = view_as<CClotBody>(enemy);
 			if (!npc.IsOnGround())
 			{
-				knockback *= 0.5; //Dont do as much knockback if they are in the air
+				knockback *= 0.85; //Dont do as much knockback if they are in the air
 				if(attacker > MaxClients) //npcs have no angles up, help em.
 				{
 					if(PullDuration == 0.0)
