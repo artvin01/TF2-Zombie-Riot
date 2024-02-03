@@ -4,7 +4,7 @@
 #define SOUND_WAND_SHOT_DIM	"misc/doomsday_lift_stop.wav"
 #define SOUND_DIM_IMPACT "weapons/cow_mangler_explosion_normal_01.wav"
 #define MAX_DIMENSION_CHARGE 15
-static Handle h_TimerDimensionWeaponManagement[MAXPLAYERS+1] = {null, ...};
+static Handle h_TimerDimensionWeaponManagement[MAXPLAYERS+1]={null, ...};
 static int how_many_times_swinged[MAXTF2PLAYERS];
 static float f_WeaponArkhuddelay[MAXPLAYERS+1]={0.0, ...};
 static float f_DIMAbilityActive[MAXPLAYERS+1]={0.0, ...};
@@ -54,17 +54,14 @@ public Action Timer_Management_Dimension(Handle timer, DataPack pack)
 	{
 		h_TimerDimensionWeaponManagement[client] = null;
 		return Plugin_Stop;
-	}	
-
+	}
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
-	{
+	{	
 		Dimension_Cooldown_Logic(client, weapon);
-	}
-		
+	}	
 	return Plugin_Continue;
 }
-
 
 public void Dimension_Cooldown_Logic(int client, int weapon)
 {
@@ -136,7 +133,6 @@ public void Weapon_Dimension_Wand(int client, int weapon, bool crit)
 	}
 }
 
-
 public void Wand_DimensionTouch(int entity, int target)
 {
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);
@@ -183,8 +179,8 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 			{
 				Rogue_OnAbilityUse(weapon);
 				float Dimension_Loc[3];
-    			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-    			int particle = ParticleEffectAt(Dimension_Loc, "ghost_appearation", 1.0);
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
+				int particle = ParticleEffectAt(Dimension_Loc, "ghost_appearation", 1.0);
 				switch(GetRandomInt(1, 19))
 				{
 					case 1:
@@ -504,8 +500,8 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 			{
 				Rogue_OnAbilityUse(weapon);
 				float Dimension_Loc[3];
-    			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-    			int particle = ParticleEffectAt(Dimension_Loc, "ghost_appearation", 1.0);
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
+				int particle = ParticleEffectAt(Dimension_Loc, "ghost_appearation", 1.0);
 				switch(GetRandomInt(1, 35))
 				{
 					case 1:
@@ -1064,8 +1060,8 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 			{
 				Rogue_OnAbilityUse(weapon);
 				float Dimension_Loc[3];
-    			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-    			int particle = ParticleEffectAt(Dimension_Loc, "eyeboss_tp_player", 1.0);
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
+				int particle = ParticleEffectAt(Dimension_Loc, "eyeboss_tp_player", 1.0);
 				switch(GetRandomInt(1, 17))
 				{
 					case 1:
@@ -1358,8 +1354,8 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 			{
 				Rogue_OnAbilityUse(weapon);
 				float Dimension_Loc[3];
-    			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-    			int particle = ParticleEffectAt(Dimension_Loc, "eyeboss_tp_player", 1.0);
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
+				int particle = ParticleEffectAt(Dimension_Loc, "eyeboss_tp_player", 1.0);
 				switch(GetRandomInt(1, 12))
 				{
 					case 1:
@@ -1582,8 +1578,8 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 			{
 				Rogue_OnAbilityUse(weapon);
 				float Dimension_Loc[3];
-    			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-    			int particle = ParticleEffectAt(Dimension_Loc, "utaunt_krakenmouth_green_parent", 1.0);
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
+				int particle = ParticleEffectAt(Dimension_Loc, "utaunt_krakenmouth_green_parent", 1.0);
 				switch(GetRandomInt(1, 28))
 				{
 					case 1:
@@ -2030,8 +2026,8 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 			{
 				Rogue_OnAbilityUse(weapon);
 				float Dimension_Loc[3];
-    			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-    			int particle = ParticleEffectAt(Dimension_Loc, "utaunt_krakenmouth_green_parent", 1.0);
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
+				int particle = ParticleEffectAt(Dimension_Loc, "utaunt_krakenmouth_green_parent", 1.0);
 				switch(GetRandomInt(1, 36))
 				{
 					case 1:
@@ -2576,8 +2572,8 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 			{
 				Rogue_OnAbilityUse(weapon);
 				float Dimension_Loc[3];
-    			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-    			int particle = ParticleEffectAt(Dimension_Loc, "npc_boss_bomb_alert", 1.0);
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
+				int particle = ParticleEffectAt(Dimension_Loc, "npc_boss_bomb_alert", 1.0);
 				switch(GetRandomInt(1, 22))
 				{
 					case 1:
@@ -2940,8 +2936,8 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 			{
 				Rogue_OnAbilityUse(weapon);
 				float Dimension_Loc[3];
-    			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-    			int particle = ParticleEffectAt(Dimension_Loc, "npc_boss_bomb_alert", 1.0);
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
+				int particle = ParticleEffectAt(Dimension_Loc, "npc_boss_bomb_alert", 1.0);
 				switch(GetRandomInt(1,33))
 				{
 					case 1:
@@ -3459,8 +3455,8 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 			{
 				Rogue_OnAbilityUse(weapon);
 				float Dimension_Loc[3];
-    			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-    			int particle = ParticleEffectAt(Dimension_Loc, "utaunt_constellations_blue_base", 1.0);
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
+				int particle = ParticleEffectAt(Dimension_Loc, "utaunt_constellations_blue_base", 1.0);
 				switch(GetRandomInt(1, 10))
 				{
 					case 1:
@@ -3655,8 +3651,8 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 			{
 				Rogue_OnAbilityUse(weapon);
 				float Dimension_Loc[3];
-    			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-    			int particle = ParticleEffectAt(Dimension_Loc, "utaunt_constellations_blue_base", 1.0);
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
+				int particle = ParticleEffectAt(Dimension_Loc, "utaunt_constellations_blue_base", 1.0);
 				switch(GetRandomInt(1, 27))
 				{
 					case 1:
@@ -4089,8 +4085,8 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 			{
 				Rogue_OnAbilityUse(weapon);
 				float Dimension_Loc[3];
-    			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-    			int particle = ParticleEffectAt(Dimension_Loc, "eyeboss_death_vortex", 1.5);
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
+				int particle = ParticleEffectAt(Dimension_Loc, "eyeboss_death_vortex", 1.5);
 				switch(GetRandomInt(1, 14))
 				{
 					case 1:
@@ -4341,8 +4337,8 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 			{
 				Rogue_OnAbilityUse(weapon);
 				float Dimension_Loc[3];
-    			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-    			int particle = ParticleEffectAt(Dimension_Loc, "eyeboss_death_vortex", 1.5);
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
+				int particle = ParticleEffectAt(Dimension_Loc, "eyeboss_death_vortex", 1.5);
 				switch(GetRandomInt(1, 26))
 				{
 					case 1:
