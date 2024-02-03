@@ -713,7 +713,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 						int entity = Npc_Create(COMBINE_SOLDIER_COLLOSS, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*500.0)
+							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*500.0);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
