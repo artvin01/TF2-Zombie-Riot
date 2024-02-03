@@ -5472,7 +5472,7 @@ public void NpcBaseThink(int iNPC)
 	if(f_TextEntityDelay[iNPC] < GetGameTime())
 	{
 		NpcDrawWorldLogic(iNPC);
-		f_TextEntityDelay[iNPC] = GetGameTime() + 0.1;
+		f_TextEntityDelay[iNPC] = GetGameTime() + 0.25;
 		Npc_DebuffWorldTextUpdate(npc);
 		Npc_BossHealthBar(npc);
 		IsEntityInvincible_Shield(iNPC);
@@ -5550,7 +5550,7 @@ public void NpcBaseThink(int iNPC)
 		}
 		if(!b_DoNotUnStuck[iNPC] && f_CheckIfStuckPlayerDelay[iNPC] < GameTime)
 		{
-			f_CheckIfStuckPlayerDelay[iNPC] = GameTime + 0.1;
+			f_CheckIfStuckPlayerDelay[iNPC] = GameTime + 0.5;
 			//This is a tempomary fix. find a better one for players getting stuck.
 			static float hullcheckmaxs_Player[3];
 			static float hullcheckmins_Player[3];

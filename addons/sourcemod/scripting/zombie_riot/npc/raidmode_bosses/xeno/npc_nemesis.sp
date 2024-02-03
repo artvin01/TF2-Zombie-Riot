@@ -514,7 +514,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		if(	i_GunMode[npc.index] != 0)
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
-			if(npc.m_iTarget == -1)
+			if(npc.m_iTarget < 1)
 			{
 				npc.m_iTarget = GetClosestTarget(npc.index);
 			}

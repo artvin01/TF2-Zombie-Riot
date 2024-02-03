@@ -7033,7 +7033,7 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 	}
 	if(f_VillageSavingResources[client] < GetGameTime())
 	{
-		f_VillageSavingResources[client] = GetGameTime() + 10.0;
+		f_VillageSavingResources[client] = GetGameTime() + 0.25;
 		BarracksSaveResources(client);
 	}
 }

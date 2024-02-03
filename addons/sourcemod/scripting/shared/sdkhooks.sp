@@ -20,6 +20,7 @@ static float i_WasInUber[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInJarate[MAXTF2PLAYERS] = {0.0,0.0,0.0};
+static float f_EntityHazardCheckDelay[MAXTF2PLAYERS];
 
 bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 int Armor_WearableModelIndex;
@@ -34,6 +35,7 @@ void SDKHooks_ClearAll()
 	{
 		i_WhatLevelForHudIsThisClientAt[client] = 2000000000; //two billion
 	}
+	Zero(f_EntityHazardCheckDelay);
 	
 	Zero(i_WasInUber);
 	Zero(i_WasInMarkedForDeath);
@@ -212,7 +214,11 @@ public void OnPostThink(int client)
 
 	if(dieingstate[client] != 0 || TeutonType[client] != TEUTON_NONE)
 	{
-		EntityIsInHazard_Teleport(client);
+		if(f_EntityHazardCheckDelay[client] < GetGameTime())
+		{
+			EntityIsInHazard_Teleport(client);
+			f_EntityHazardCheckDelay[client] = GetGameTime() + 0.25;
+		}
 	}
 	SaveLastValidPositionEntity(client);
 	if(b_DisplayDamageHud[client])

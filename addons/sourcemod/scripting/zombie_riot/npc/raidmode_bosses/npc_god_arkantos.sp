@@ -921,7 +921,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			}
 		}
 	}
-	else if(ZR_GetWaveCount()+1 <= 60)
+	else
 	{
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
