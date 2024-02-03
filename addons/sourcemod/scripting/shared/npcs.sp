@@ -1181,7 +1181,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3])
 {
-	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+	if(!b_NpcIsTeamkiller[attacker] && GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 		return;
 		
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
@@ -2418,7 +2418,7 @@ bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &dam
 		}
 	}
 #endif
-//	if(b_NpcHasDied[attacker] || b_NpcHasDied[victim])
+	if(!b_NpcIsTeamkiller[attacker])
 	{
 		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum")) //should be entirely ignored
 		{

@@ -408,6 +408,7 @@ bool b_DoNotIgnoreDuringLagCompAlly[MAXENTITIES]={false, ...};
 
 #if !defined RTS
 bool b_IsAlliedNpc[MAXENTITIES]={false, ...};
+bool b_NpcIsTeamkiller[MAXENTITIES]={false, ...};
 const int i_MaxcountNpc_Allied = ZR_MAX_NPCS_ALLIED;
 int i_ObjectsNpcs_Allied[ZR_MAX_NPCS_ALLIED];
 
@@ -2435,6 +2436,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_SentryIsCustom[entity] = false;
 		Building_Mounted[entity] = -1;
 		EntitySpawnToDefaultSiccerino(entity);
+		b_NpcIsTeamkiller[entity] = false;
 #endif
 		i_WeaponSoundIndexOverride[entity] = 0;
 		f_WeaponSizeOverride[entity] = 1.0;

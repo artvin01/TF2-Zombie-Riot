@@ -313,6 +313,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 					{
 						f_AncientBannerNpcBuff[ally] = GetGameTime() + 0.5;
+						i_ExtraPlayerPoints[client] += 1;
 					}
 				}
 			}
@@ -325,6 +326,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 					{
 						f_AncientBannerNpcBuff[ally] = GetGameTime() + 0.5;
+						i_ExtraPlayerPoints[client] += 1;
 					}
 				}
 			}

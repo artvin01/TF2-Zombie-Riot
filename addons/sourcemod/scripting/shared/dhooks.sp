@@ -903,6 +903,15 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		if(b_ProjectileCollideIgnoreWorld[entity1])
 		{
 			Wand_Base_StartTouch(entity1, entity2);
+			return false;
+		}
+		if(i_WhatBuilding[entity1] == BuildingSentrygun)
+		{
+			//buildings cannot touch eachother
+			if(i_WhatBuilding[entity2] != 0)
+			{
+				return false;
+			}
 		}
 		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
