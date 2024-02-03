@@ -2432,7 +2432,7 @@
 	}
 	"Dim pap1"
 	{
-		"en" "Spawn Stronger Npcs"
+		"en" "Spawn Stronger Npcs. Also slight increase in damage"
 	}
 	"Seaborn Infection Desc"
 	{

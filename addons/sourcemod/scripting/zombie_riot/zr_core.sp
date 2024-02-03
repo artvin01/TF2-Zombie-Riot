@@ -153,6 +153,7 @@ enum
 	WEAPON_GRAVATON_WAND = 82,
 	WEAPON_HEAVY_PARTICLE_RIFLE = 83,
 	WEAPON_SICCERINO = 84,
+	WEAPON_DIMENSION_RIPPER = 85,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -481,6 +482,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_wand_gravaton.sp"
 #include "zombie_riot/custom/weapon_heavy_particle_rifle.sp"
 #include "zombie_riot/custom/weapon_railcannon.sp"
+#include "zombie_riot/custom/wand/weapon_dimension_ripper.sp"
 
 void ZR_PluginLoad()
 {

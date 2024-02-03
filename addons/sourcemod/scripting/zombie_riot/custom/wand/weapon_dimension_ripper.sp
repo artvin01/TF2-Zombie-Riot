@@ -4,6 +4,7 @@
 #define SOUND_WAND_SHOT_DIM	"misc/doomsday_lift_stop.wav"
 #define SOUND_DIM_IMPACT "weapons/cow_mangler_explosion_normal_01.wav"
 #define MAX_DIMENSION_CHARGE 15
+static Handle h_TimerDimensionWeaponManagement[MAXPLAYERS+1] = {null, ...};
 static int how_many_times_swinged[MAXTF2PLAYERS];
 static float f_WeaponArkhuddelay[MAXPLAYERS+1]={0.0, ...};
 static float f_DIMAbilityActive[MAXPLAYERS+1]={0.0, ...};
@@ -15,6 +16,55 @@ void Wand_Dimension_Map_Precache()
 	PrecacheSound(SOUND_DIM_IMPACT);
 	Zero(i_DimLandHitsDone);
 }
+
+public void Enable_Dimension_Ripper(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
+{
+	if (h_TimerDimensionWeaponManagement[client] != null)
+	{
+		//This timer already exists.
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_WEAPON_DIMENSION_RIPPER)
+		{
+			//Is the weapon it again?
+			//Yes?
+			delete h_TimerDimensionWeaponManagement[client];
+			h_TimerDimensionWeaponManagement[client] = null;
+			DataPack pack;
+			h_TimerDimensionWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_Dimension, pack, TIMER_REPEAT);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
+		return;
+	}
+		
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_DIMENSION_RIPPER)
+	{
+		DataPack pack;
+		h_TimerDimensionWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_Dimension, pack, TIMER_REPEAT);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
+}
+
+public Action Timer_Management_Dimension(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	{
+		h_TimerDimensionWeaponManagement[client] = null;
+		return Plugin_Stop;
+	}	
+
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+	{
+		Dimension_Cooldown_Logic(client, weapon);
+	}
+		
+	return Plugin_Continue;
+}
+
 
 public void Dimension_Cooldown_Logic(int client, int weapon)
 {
