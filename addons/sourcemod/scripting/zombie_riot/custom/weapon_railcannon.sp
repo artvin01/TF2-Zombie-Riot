@@ -6,7 +6,6 @@
 #define RAILCANNONPAP3_BOOM 		"weapons/gauss/fire1.wav"
 #define RAILCANNONPAP4_ABILITY_BOOM "weapons/sniper_railgun_charged_shot_01.wav"
 #define RAILCANNONPAP4_ABILITY		"weapons/loose_cannon_charge.wav"
-#define RAILCANNONPAP4_BEEP			"weapons/sentry_spot.wav"
 #define RAILCANNONPAP4_HIT			"physics/glass/glass_largesheet_break1.wav"
 
 static float Strength[MAXTF2PLAYERS];
@@ -46,6 +45,8 @@ void Precache_Railcannon()
 	PrecacheSound(RAILCANNONPAP2_BOOM);
 	PrecacheSound(RAILCANNONPAP3_BOOM);
 	PrecacheSound(RAILCANNONPAP4_ABILITY);
+	PrecacheSound(RAILCANNONPAP4_ABILITY_BOOM);
+	PrecacheSound(RAILCANNONPAP4_HIT);
 	Beam_Laser = PrecacheModel("materials/sprites/physbeam.vmt", false);
 	Beam_Glow = PrecacheModel("sprites/glow02.vmt", true);
 }
@@ -99,20 +100,35 @@ public void Weapon_Railcannon_Pap4_Zoom(int client, int weapon, const char[] cla
 public void Weapon_Railcannon_Pap4_Ability(int client, int weapon, bool crit, int slot)
 {
 	float cooldown = 100.0;
-	if ((GetEntityFlags(client) & FL_ONGROUND) != 0)
+	if ((GetEntityFlags(client) & FL_ONGROUND) == 0 || !(GetClientButtons(client) & IN_DUCK))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch on ground for ability");
+	}
+	else
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
 			ORC_Charging[client] = true;
 			Ability_Apply_Cooldown(client, slot, cooldown);
+
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, {0.0, 0.0, 0.0});
+			
 			EmitSoundToAll(RAILCANNONPAP4_ABILITY, client, SNDCHAN_STATIC, 90, _, 1.0, 40);
+
 			SetEntityMoveType(client, MOVETYPE_NONE);
+			
 			DataPack pack;
 			ORC_Timer[client] = CreateDataTimer(10.0, Ability_ORC, pack);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(client));
 			pack.WriteCell(EntIndexToEntRef(weapon));
+
 			ORC_BeepTimer[client] = CreateTimer(9.15, Beep_ORC, EntIndexToEntRef(client));
+
+			CreateTimer(cooldown, Railcannon_Charged, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		else
 		{
@@ -126,10 +142,6 @@ public void Weapon_Railcannon_Pap4_Ability(int client, int weapon, bool crit, in
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		}
-	}
-	else
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
 	}
 }
 
@@ -154,12 +166,25 @@ public void Weapon_Railcannon_Pap4_Holster(int client, int weapon, const char[] 
 		delete ORC_BeepTimer[client];
 }
 
+public Action Railcannon_Charged(Handle cut_timer, int clientref)
+{
+	int client = EntRefToEntIndex(clientref);
+	if (IsValidClient(client))
+	{
+		ClientCommand(client, "playgamesound items/gunpickup2.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Railcannon Charged");
+	}
+	return Plugin_Stop;
+}
+
 static Action Beep_ORC(Handle timer, int clientref)
 {
 	int client = EntRefToEntIndex(clientref);
 	ORC_BeepTimer[client] = null;
 	if(IsValidClient(client))
-		EmitSoundToAll(RAILCANNONPAP4_BEEP, client, SNDCHAN_STATIC, 87, _, 1.0, 40);
+		ClientCommand(client, "playgamesound player/crit_hit.wav");
 
 	return Plugin_Stop;
 }
@@ -178,7 +203,7 @@ static Action Ability_ORC(Handle timer, DataPack pack)
 	{	
 		ORC_Charging[client] = false;
 		ORC_LastFireTime[client] = GetGameTime();
-		Strength[client] = 750.0;
+		Strength[client] = 500.0;
 		Strength[client] *= Attributes_Get(weapon, 1, 1.0);
 		Strength[client] *= Attributes_Get(weapon, 2, 1.0);
 		Attack_Railcannon(client, 4, true);
@@ -379,10 +404,10 @@ static void Attack_Railcannon(int client, int pap, bool supercharged)
 		case 2:
 			EmitSoundToAll(RAILCANNONPAP2_BOOM, client, SNDCHAN_STATIC, 85, _, 1.0);
 		case 3:
-			EmitSoundToAll(RAILCANNONPAP3_BOOM, client, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll(RAILCANNONPAP3_BOOM, client, SNDCHAN_STATIC, 75, _, 1.0);
 		case 4:
 			if (supercharged)
-				EmitSoundToAll(RAILCANNONPAP4_ABILITY_BOOM, client, SNDCHAN_STATIC, 90, _, 1.0);
+				EmitSoundToAll(RAILCANNONPAP4_ABILITY_BOOM, client, SNDCHAN_STATIC, 100, _, 1.0);
 			else
 				EmitSoundToAll(RAILCANNONPAP3_BOOM, client, SNDCHAN_STATIC, 85, _, 1.0);
 		default:
@@ -544,28 +569,23 @@ static void Railcannon_Tick(int client, int pap, bool supercharged)
 							float minDamageMultiplier = 0.05;
 							damage *= (1.0 - (fClamp(((distance - minFalloffDistance) / maxFalloffDistance), 0.0, (1 - minDamageMultiplier))));
 						}
+						damage /= BEAM_Targets_Hit[client];
 
 						float damage_force[3];
 						damage_force = CalculateDamageForceOld(vecForward, 10000.0);
-						DataPack pack = new DataPack();
-						pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
-						pack.WriteCell(EntIndexToEntRef(client));
-						pack.WriteCell(EntIndexToEntRef(client));
-						pack.WriteFloat(damage/BEAM_Targets_Hit[client]);
+
+						float trueDamagePercentage = 0.4;
+						float stunDuration = 5.0;
 						if (supercharged)
-							pack.WriteCell(DMG_SLASH);
+						{
+							FreezeNpcInTime(BEAM_BuildingHit[building], stunDuration);
+							Damage_Railgun(BEAM_BuildingHit[building], client, (damage - (trueDamagePercentage * damage)), DMG_PLASMA, weapon_active, damage_force, playerPos);
+							Damage_Railgun(BEAM_BuildingHit[building], client, (damage * trueDamagePercentage), DMG_SLASH, weapon_active, damage_force, playerPos);
+						}
 						else
-							pack.WriteCell(DMG_PLASMA);
-						pack.WriteCell(EntIndexToEntRef(weapon_active));
-						pack.WriteFloat(damage_force[0]);
-						pack.WriteFloat(damage_force[1]);
-						pack.WriteFloat(damage_force[2]);
-						pack.WriteFloat(playerPos[0]);
-						pack.WriteFloat(playerPos[1]);
-						pack.WriteFloat(playerPos[2]);
-						pack.WriteCell(0);
-						RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
-						
+						{
+							Damage_Railgun(BEAM_BuildingHit[building], client, damage, DMG_PLASMA, weapon_active, damage_force, playerPos);
+						}
 						BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
 					}
 				}
@@ -594,6 +614,25 @@ static void Railcannon_Tick(int client, int pap, bool supercharged)
 		TE_SendToAll(0.0);
 	}
 	delete trace;
+}
+
+static void Damage_Railgun(int hitEnt, int client, float damage, int damageType, int weapon, float force[3], float playerPos[3])
+{
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(hitEnt));
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteFloat(damage);
+	pack.WriteCell(damageType);
+	pack.WriteCell(EntIndexToEntRef(weapon));
+	pack.WriteFloat(force[0]);
+	pack.WriteFloat(force[1]);
+	pack.WriteFloat(force[2]);
+	pack.WriteFloat(playerPos[0]);
+	pack.WriteFloat(playerPos[1]);
+	pack.WriteFloat(playerPos[2]);
+	pack.WriteCell(0);
+	RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 }
 
 static float GetRailcannonPercentage(int weapon, int client)
