@@ -1251,6 +1251,11 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 				HealTotal *= Attributes_GetOnPlayer(reciever, 734, true, false);
 		}
 	}
+	if(healer != reciever)
+	{
+		if(healer > 0 && healer <= MaxClients)
+			Healing_done_in_total[healer] += HealTotal;
+	}
 	if(HealOverThisDuration == 0.0)
 		return HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
 	else

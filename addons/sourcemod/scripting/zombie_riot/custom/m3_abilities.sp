@@ -465,9 +465,7 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 									Healing_Amount = 10.0;
 								}
 								EmitSoundToClient(target, SOUND_HEAL_BEAM, target, _, 90, _, 1.0);
-								HealEntityGlobal(client, target, Healing_Amount, _, 1.0);
-								
-								Healing_done_in_total[client] += RoundToCeil(Healing_Amount);		
+								HealEntityGlobal(client, target, Healing_Amount, _, 1.0);	
 							}
 						}
 					}

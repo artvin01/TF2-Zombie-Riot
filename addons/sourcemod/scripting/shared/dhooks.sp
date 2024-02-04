@@ -2040,10 +2040,6 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 
 			HealEntityGlobal(owner, target, float(ammo_amount_left), 1.0, 1.0, _);
 			
-#if defined ZR
-			Healing_done_in_total[owner] += ammo_amount_left;
-#endif
-			
 			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
 			ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
 			ClientCommand(target, "playgamesound items/smallmedkit1.wav");

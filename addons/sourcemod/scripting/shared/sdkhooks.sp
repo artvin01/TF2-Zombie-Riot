@@ -212,19 +212,22 @@ public void OnPostThink(int client)
 {
 	float GameTime = GetGameTime();
 
-	if(dieingstate[client] != 0 || TeutonType[client] != TEUTON_NONE)
+	if(GetEntProp(client, Prop_Send, "m_iTeamNum") == 2)
 	{
-		if(f_EntityHazardCheckDelay[client] < GetGameTime())
+		if(dieingstate[client] != 0 || TeutonType[client] == TEUTON_NONE)
 		{
-			EntityIsInHazard_Teleport(client);
-			f_EntityHazardCheckDelay[client] = GetGameTime() + 0.25;
+			if(f_EntityHazardCheckDelay[client] < GetGameTime())
+			{
+				EntityIsInHazard_Teleport(client);
+				f_EntityHazardCheckDelay[client] = GetGameTime() + 0.25;
+			}
 		}
-	}
-	SaveLastValidPositionEntity(client);
-	if(b_DisplayDamageHud[client])
-	{
-		b_DisplayDamageHud[client] = false;
-		Calculate_And_Display_HP_Hud(client);
+		SaveLastValidPositionEntity(client);
+		if(b_DisplayDamageHud[client])
+		{
+			b_DisplayDamageHud[client] = false;
+			Calculate_And_Display_HP_Hud(client);
+		}
 	}
 #if !defined NoSendProxyClass
 	if(WeaponClass[client]!=TFClass_Unknown)
