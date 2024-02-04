@@ -2976,6 +2976,14 @@
 	{
 		"en"	"Clear Whitelist"
 	}
+	"Crouch on ground for ability"
+	{
+		"en"	"Crouch on ground for ability"
+	}
+	"Railcannon Charged"
+	{
+		"en"	"Railcannon is fully charged"
+	}
 	"Default Desc"
 	{
 		"en"	"Fight against the classic zombies and combine!"

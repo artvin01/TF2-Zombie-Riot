@@ -2676,15 +2676,15 @@
 	}
 	"Outlaw Railcannon Desc"
 	{
-		"en"	"Hand portable cannon that charges to\nfire TAU particles at incredible speeds.\nDoes more damage while airborne.\nDissipates quickly over distance."
+		"en"	"Hand portable cannon that charges tofire TAU particles at incredible speeds.\nDoes more damage while airborne, but dissipates quickly over distance.\nSuffers mid-late game."
 	}
 	"Outlaw Railcannon Desc Pap 1"
 	{
-		"en"	"Higher quality capacitors allows for shooting at lower charges.\nLess DPS than counterpart, but can fire when bar is 1/3rd full."
+		"en"	"Higher quality capacitors allows for shooting at lower charges.\nLess DPS than counterpart, but can fire when bar is 1/3rd full.\nIdeal for cramped maps."
 	}
 	"Outlaw Railcannon Desc Pap 2"
 	{
-		"en"	"Higher capacity capacitors allow for incredibly fast particles.\nParticles split in the air, resulting in increased damage further away.\nCan zoom in with M2."
+		"en"	"Higher capacity capacitors allow for incredibly fast particles.\nParticles split in the air, resulting in inverted damage falloff.\nCan zoom in with M2.\nIdeal for large open spaces."
 	}
 	"Outlaw Railcannon Desc Pap 3"
 	{
@@ -2692,7 +2692,7 @@
 	}
 	"Outlaw Railcannon Desc Pap 4"
 	{
-		"en"	"I won't miss.\nBy default, weapon is in low output mode.\nR to disable all movement and charge to fire in MAXIMUM OUTPUT.\nMAXIMUM OUTPUT does true damage."
+		"en"	"I won't miss.\nBy default, weapon is in low output mode.\nPress R to charge the weapon for 10 second to fire a MAXIMUM OUTPUT shot.\nMAXIMUM OUTPUT stuns and does a portion as true damage."
 	}
 	"Riot Gun Desc"
 	{
