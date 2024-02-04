@@ -249,6 +249,7 @@ void OnMapStart_NPC_Base()
 	Zero(b_EntityInCrouchSpot);
 	Zero(b_NpcResizedForCrouch);
 	Zero(b_PlayerIsInAnotherPart);
+	Zero(b_EntityIsStairAbusing);
 	Zero(f_PredictDuration);
 	Zero2(f_PredictPos);
 	
@@ -302,6 +303,10 @@ public Action NPCStats_StartTouch(const char[] output, int entity, int caller, f
 			{
 				b_PlayerIsInAnotherPart[caller] = true;
 			}
+			if(StrEqual(name, "zr_anti_stair_abuse"))
+			{
+				b_EntityIsStairAbusing[caller] = true;
+			}
 		}
 	}
 	return Plugin_Continue;
@@ -322,6 +327,10 @@ public Action NPCStats_EndTouch(const char[] output, int entity, int caller, flo
 			if(StrEqual(name, "zr_spawner_scaler"))
 			{
 				b_PlayerIsInAnotherPart[caller] = false;
+			}
+			if(StrEqual(name, "zr_anti_stair_abuse"))
+			{
+				b_EntityIsStairAbusing[caller] = false;
 			}
 		}
 	}

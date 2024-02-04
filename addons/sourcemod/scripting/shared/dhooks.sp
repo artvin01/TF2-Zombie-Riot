@@ -908,7 +908,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		if(i_WhatBuilding[entity1] == BuildingSentrygun)
 		{
 			//buildings cannot touch eachother
-			if(i_WhatBuilding[entity2] != 0)
+			if(i_WhatBuilding[entity2] != 0 || b_IsAlliedNpc[entity2])
 			{
 				return false;
 			}

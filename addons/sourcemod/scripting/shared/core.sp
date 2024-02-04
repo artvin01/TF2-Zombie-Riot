@@ -303,6 +303,8 @@ int i_OwnerEntityEnvLaser[MAXENTITIES];
 bool thirdperson[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
 bool b_PlayerIsInAnotherPart[MAXENTITIES];
+bool b_EntityIsStairAbusing[MAXENTITIES];
+float f_EntityIsStairAbusing[MAXENTITIES];
 
 float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
 int i_OverrideWeaponSlot[MAXENTITIES]={-1, ...};
@@ -436,6 +438,8 @@ bool b_NoKillFeed[MAXENTITIES];
 float f_TimeUntillNormalHeal[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZone[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneDamage[MAXENTITIES]={0.0, ...};
+float f_ClientWasTooLongInsideHurtZoneStairs[MAXENTITIES]={0.0, ...};
+float f_ClientWasTooLongInsideHurtZoneDamageStairs[MAXENTITIES]={0.0, ...};
 bool f_ClientServerShowMessages[MAXTF2PLAYERS];
 
 //Needs to be global.
@@ -554,6 +558,7 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 #define ZR_DAMAGE_REFLECT_LOGIC					(1 << 6)
 #define ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS		(1 << 7)
 #define ZR_SLAY_DAMAGE							(1 << 8)
+#define ZR_STAIR_ANTI_ABUSE_DAMAGE				(1 << 9)
 
 #define HEAL_NO_RULES	            0     	 
 //Nothing special.
@@ -3387,6 +3392,8 @@ static void MapStartResetAll()
 	Zero(f_TimeUntillNormalHeal);
 	Zero(f_ClientWasTooLongInsideHurtZone);
 	Zero(f_ClientWasTooLongInsideHurtZoneDamage);
+	Zero(f_ClientWasTooLongInsideHurtZoneStairs);
+	Zero(f_ClientWasTooLongInsideHurtZoneDamageStairs);
 	Zero(Mana_Regen_Delay);
 	Zero(RollAngle_Regen_Delay);
 	Zero(Mana_Hud_Delay);

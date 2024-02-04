@@ -2245,6 +2245,10 @@
 		"ru"		"Выйдите из зоны застревания NPC. Вы будете получать это сообщение каждые 0,5 секунды, если останетесь в ней."
 		"chi"		"离开npc卡住的区域。如果你待在里面，每0.5秒你就会收到这条信息。"
 	}
+	"Npc Stuck Spot Warning Stairs"
+	{
+		"en"		"Dont be on ladders too long or use them too much. you will receive this message every 0.5 seconds if you stay in it."
+	}
 	"Show Plugin Messages Hint"
 	{
 		"en"		"If you wish to see the wave counter in a better way, set ''cl_showpluginmessages'' to 1 in the console!"
