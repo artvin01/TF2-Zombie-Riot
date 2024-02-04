@@ -214,7 +214,7 @@ public void OnPostThink(int client)
 
 	if(GetEntProp(client, Prop_Send, "m_iTeamNum") == 2)
 	{
-		if(dieingstate[client] != 0 || TeutonType[client] == TEUTON_NONE)
+		if(dieingstate[client] != 0 || TeutonType[client] != TEUTON_NONE)
 		{
 			if(f_EntityHazardCheckDelay[client] < GetGameTime())
 			{
