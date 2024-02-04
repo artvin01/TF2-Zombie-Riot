@@ -1992,6 +1992,12 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 						if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false) && (StrEqual(buffer, "zr_ammobox") || StrEqual(buffer, "zr_armortable") || StrEqual(buffer, "zr_perkmachine") || StrEqual(buffer, "zr_packapunch")))
 						{
+							if(MaxSupportBuildingsAllowed(client, false) <= 1 && i_WhatBuilding[entity] == BuildingPackAPunch)
+							{
+								ClientCommand(client, "playgamesound items/medshotno1.wav");
+								PrintToChat(client,"You do not own enough builder upgrades to own a pack a punch.");
+								return true;
+							}
 							if(h_ClaimedBuilding[client][entity] != null)
 								delete h_ClaimedBuilding[client][entity];
 
