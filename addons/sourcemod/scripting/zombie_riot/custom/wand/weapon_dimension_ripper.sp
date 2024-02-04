@@ -1582,7 +1582,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 						int entity = Npc_Create(XENO_POISON_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.5.0);
+							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.5);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
@@ -2006,7 +2006,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 						int entity = Npc_Create(XENO_POISON_ZOMBIE, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.5.0);
+							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.5);
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
