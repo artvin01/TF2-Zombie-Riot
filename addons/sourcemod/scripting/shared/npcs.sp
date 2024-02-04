@@ -2354,7 +2354,7 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		}
 		case WEAPON_RED_BLADE:
 		{
-			WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon);
+			WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon, damage);
 		}
 		case WEAPON_SICCERINO: //pap fusion
 		{

@@ -1139,12 +1139,20 @@ static Action Siccerino_revert_toNormal(Handle ringTracker, int ref)
 
 #define SICCERINO_BONUS_DAMAGE 0.025
 #define SICCERINO_BONUS_DAMAGE_MAX 2.0
+#define SICCERINO_BONUS_DAMAGE_MAX_RAID 1.5
 
 float Siccerino_Melee_DmgBonus(int victim, int attacker, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SICCERINO)
 	{
-		if(f_SiccerinoExtraDamage[attacker][victim] >= SICCERINO_BONUS_DAMAGE_MAX)
+		if(b_thisNpcIsARaid[victim])
+		{
+			if(f_SiccerinoExtraDamage[attacker][victim] >= SICCERINO_BONUS_DAMAGE_MAX_RAID)
+			{
+				return SICCERINO_BONUS_DAMAGE_MAX_RAID;
+			}
+		}
+		else if(f_SiccerinoExtraDamage[attacker][victim] >= SICCERINO_BONUS_DAMAGE_MAX)
 		{
 			return SICCERINO_BONUS_DAMAGE_MAX;
 		}

@@ -946,10 +946,6 @@ public Action contact_throw_tank_entity(int client)
 								}				
 								TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, flVel); 
 							}
-							else
-							{
-								
-							}
 						}
 					}
 				}

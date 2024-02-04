@@ -8015,7 +8015,7 @@ public void ArrowStartTouch(int arrow, int entity)
 #endif
 		}
 #if defined ZR
-		else if(i_ChaosArrowAmount[arrow] > 0)
+		if(i_ChaosArrowAmount[arrow] > 0)
 		{
 			Sakratan_AddNeuralDamage(entity, owner, i_ChaosArrowAmount[arrow]);
 		}
