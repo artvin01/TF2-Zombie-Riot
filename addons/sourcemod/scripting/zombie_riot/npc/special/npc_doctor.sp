@@ -70,7 +70,7 @@ methodmap SpecialDoctor < CClotBody
 			return;
 		
 		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
-		EmitCustomToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE);
+		EmitCustomToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0);
 	}
 	public void PlayDeathSound()
 	{
@@ -86,25 +86,25 @@ methodmap SpecialDoctor < CClotBody
 	}
 	public void PlayReloadSound()
 	{
-		EmitCustomToAll("cof/purnell/reload.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0);
+		EmitCustomToAll("cof/purnell/reload.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 1.75);
 	}
 	public void PlayShootSound()
 	{
-		EmitCustomToAll("cof/purnell/shoot.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 4.0);
+		EmitCustomToAll("cof/purnell/shoot.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.7);
 	}
 	public void PlayMeleeSound()
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
-		EmitCustomToAll("cof/purnell/shove.mp3", this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0);
+		EmitCustomToAll("cof/purnell/shove.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0);
 	}
 	public void PlayHitSound()
 	{
-		EmitCustomToAll("cof/purnell/meleehit.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0);
+		EmitCustomToAll("cof/purnell/meleehit.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0);
 	}
 	public void PlayKillSound()
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 2.0;
-		EmitCustomToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_VOICE);
+		EmitCustomToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0);
 	}
 
 	public SpecialDoctor(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
@@ -194,7 +194,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 	{
 		npc.m_flNextRangedSpecialAttack = gameTime + 0.25;
 		
-		int target = GetClosestAlly(npc.index, (150.0 * 150.0), _,DoctorBuffAlly);
+		int target = GetClosestAlly(npc.index, (250.0 * 250.0), _,DoctorBuffAlly);
 		if(target)
 		{
 			if(!b_PernellBuff[target])
@@ -489,11 +489,8 @@ public void SpecialDoctor_NPCDeath(int entity)
 
 public bool DoctorBuffAlly(int provider, int entity)
 {
-	if(entity <= MaxClients)
-	{
-		if(!b_PernellBuff[entity])
-			return true;
-	}
+	if(b_PernellBuff[entity])
+		return false;
 
 	return true;
 }
