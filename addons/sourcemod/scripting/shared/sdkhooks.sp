@@ -223,11 +223,12 @@ public void OnPostThink(int client)
 			}
 		}
 		SaveLastValidPositionEntity(client);
-		if(b_DisplayDamageHud[client])
-		{
-			b_DisplayDamageHud[client] = false;
-			Calculate_And_Display_HP_Hud(client);
-		}
+	
+	}
+	if(b_DisplayDamageHud[client])
+	{
+		b_DisplayDamageHud[client] = false;
+		Calculate_And_Display_HP_Hud(client);
 	}
 #if !defined NoSendProxyClass
 	if(WeaponClass[client]!=TFClass_Unknown)
@@ -2242,6 +2243,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 			{
 				return Plugin_Handled;
 			}
+#if defined ZR
 			if(TeutonType[entity] != TEUTON_NONE)
 			{
 				bool Changed = TeutonSoundOverride(numClients, sample, 
@@ -2257,6 +2259,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 				}
 				
 			}
+#endif
 			if(b_IsPlayerNiko[entity])
 			{
 				return Plugin_Handled;
@@ -2641,7 +2644,6 @@ float ArmorPlayerReduction(int victim)
 		}
 	}
 }
-#endif
 
 
 void ArmorDisplayClient(int client, bool deleteOverride = false)
@@ -2784,3 +2786,4 @@ void ArmorDisplayClientColor(int client, int armor)
 	SetEntityRenderMode(armor, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(armor, green, green, blue, Alpha);
 }
+#endif

@@ -3419,7 +3419,7 @@ static void MapStartResetAll()
 public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, Handle &item)
 {
 #if defined RTS
-	if(!RTS_InSetup(client))
+	if(!RTS_InSetup())
 		return Plugin_Stop;
 #else
 	if(!StrContains(classname, "tf_wear"))

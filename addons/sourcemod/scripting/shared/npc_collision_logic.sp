@@ -22,6 +22,7 @@ bool ShouldCollideAlly_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Loco
 	{
 		return true;
 	}
+#if defined ZR
 	if(extrarules == 1 && npc != 0 && b_NpcIsTeamkiller[npc])
 	{
 		if(otherindex == npc)
@@ -31,6 +32,7 @@ bool ShouldCollideAlly_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Loco
 		return true;
 	}
 	else
+#endif
 	{
 		if(b_CantCollidieAlly[otherindex])
 		{
@@ -69,6 +71,7 @@ bool ShouldCollideAllyInvince_Internal(CBaseNPC_Locomotion loco = view_as<CBaseN
 			return false;
 		}
 	}
+#if defined ZR
 	if(extrarules == 1 && npc != 0 && b_NpcIsTeamkiller[npc])
 	{
 		if(otherindex == npc)
@@ -78,6 +81,7 @@ bool ShouldCollideAllyInvince_Internal(CBaseNPC_Locomotion loco = view_as<CBaseN
 		return true;
 	}
 	else
+#endif
 	{
 		if(b_CantCollidieAlly[otherindex]) 
 		{
@@ -118,6 +122,7 @@ bool ShouldCollideEnemy_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Loc
 	{
 		return true;
 	} 
+#if defined ZR
 	if(extrarules == 1 && npc != 0 && b_NpcIsTeamkiller[npc])
 	{
 		if(otherindex == npc)
@@ -127,6 +132,7 @@ bool ShouldCollideEnemy_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Loc
 		return true;
 	}
 	else
+#endif
 	{
 		if(b_CantCollidie[otherindex]) //no change in performance..., almost.
 		{
@@ -167,6 +173,7 @@ bool ShouldCollideEnemyIngoreBuilding_Internal(CBaseNPC_Locomotion loco = view_a
 		return true;
 	}
 
+#if defined ZR
 	if(extrarules == 1 && npc != 0 && b_NpcIsTeamkiller[npc])
 	{
 		if(otherindex == npc)
@@ -176,6 +183,7 @@ bool ShouldCollideEnemyIngoreBuilding_Internal(CBaseNPC_Locomotion loco = view_a
 		return true;
 	}
 	else
+#endif
 	{
 		if(b_CantCollidie[otherindex])
 		{

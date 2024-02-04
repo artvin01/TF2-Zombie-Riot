@@ -49,12 +49,13 @@ void RTS_PluginStart()
 
 void RTS_PlayerResupply(int client)
 {
-	if(!RTS_InSetup(client))
+	if(!RTS_InSetup())
 	{
-		SpawnWeapon(client, "tf_weapon_shotgun_primary", 199, 1, 0, {128, 301, 821, 2}, {1.0, 1.0, 1.0, 0.0});
-		SpawnWeapon(client, "tf_weapon_pistol", 209, 1, 0, {128, 301, 821, 2}, {1.0, 1.0, 1.0, 0.0});
-		SpawnWeapon(client, "tf_weapon_wrench", 197, 1, 0, {128, 821, 2}, {1.0, 1.0, 0.0});
-		SpawnWeapon(client, "tf_weapon_pda_engineer_build", 737, 1, 0, {81}, {0.0});
+		TF2_RemoveAllWeapons(client);
+		SpawnWeapon(client, "tf_weapon_shotgun_primary", 199, 1, 0, {128, 301, 821, 2}, {1.0, 1.0, 1.0, 0.0}, 4);
+		SpawnWeapon(client, "tf_weapon_pistol", 209, 1, 0, {128, 301, 821, 2}, {1.0, 1.0, 1.0, 0.0}, 4);
+		SpawnWeapon(client, "tf_weapon_wrench", 197, 1, 0, {128, 821, 2}, {1.0, 1.0, 0.0}, 3);
+		SpawnWeapon(client, "tf_weapon_pda_engineer_build", 737, 1, 0, {81}, {0.0}, 1);
 	}
 }
 

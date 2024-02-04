@@ -2292,6 +2292,7 @@ public Action TimerGrantBannerDuration(Handle timer, int ref)
 	{
 		return Plugin_Continue;
 	}
+#if defined ZR
 	if(ClientHasBannersWithCD(client) == 0)
 		return Plugin_Continue;
 
@@ -2315,6 +2316,7 @@ public Action TimerGrantBannerDuration(Handle timer, int ref)
 		BannerWearable[client] = EntIndexToEntRef(entity);
 		SDKCall_EquipWearable(client, entity);
 	}	
+#endif
 	return Plugin_Continue;
 }
 

@@ -1181,8 +1181,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3])
 {
+#if defined ZR
 	if(!b_NpcIsTeamkiller[attacker] && GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 		return;
+#endif
 		
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	if((Damageaftercalc > 0.0 || b_NpcIsInvulnerable[victim] || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
@@ -1918,8 +1920,10 @@ bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 0)
 			if(fl_Extra_MeleeArmor[victim] != 1.0)
 				return true;
 
+#if defined ZR
 			if(weapon > 0 && attacker > 0 && Siccerino_Melee_DmgBonus(victim, attacker, weapon) != 1.0)
 				return true;
+#endif
 		}
 	}
 
@@ -2429,7 +2433,6 @@ bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &dam
 			return true;
 		}
 	}
-#endif
 	if(!b_NpcIsTeamkiller[attacker])
 	{
 		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum")) //should be entirely ignored
@@ -2437,6 +2440,7 @@ bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &dam
 			return true;
 		}
 	}
+#endif
 	return false;
 }
 
@@ -3004,9 +3008,11 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 }
 void BackstabNpcInternalModifExtra(int weapon, int attacker, int victim, float multi)
 {
+#if defined ZR
 	if(dieingstate[attacker] > 0)
 		return;
 
+#endif
 	float HealTime = f_BackstabHealOverThisDuration[weapon];
 	float HealTotal = f_BackstabHealTotal[weapon];
 	if(HealTotal <= 0.0)
