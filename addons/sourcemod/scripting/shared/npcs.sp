@@ -3381,12 +3381,19 @@ float MaxEnemyMulti()
 	return 1.0;
 }
 
-int MaxEnemiesAllowedSpawnNext()
+int MaxEnemiesAllowedSpawnNext(int ExtraRules = 0)
 {
 	int maxenemies = LimitNpcs;
 	if(KamikazeEventHappening())
 	{
 		maxenemies /= 2;
+	}
+	switch(ExtraRules)
+	{
+		case 1:
+		{
+			maxenemies = RoundToCeil(float(maxenemies) * 1.25);
+		}
 	}
 	return maxenemies;
 }

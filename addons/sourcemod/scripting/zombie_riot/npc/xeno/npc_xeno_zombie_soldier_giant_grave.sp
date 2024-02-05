@@ -392,6 +392,14 @@ public void XenoSoldierGiant_ClotDamagedPost(int victim, int attacker, int infli
 			maxhealth /= 7;
 			for(int i; i<1; i++)
 			{
+				if(MaxEnemiesAllowedSpawnNext(1) <= EnemyNpcAlive)
+				{
+					fl_TotalArmor[npc.index] = 0.5;
+					//grrr i cant spawn!!!!
+					//become fat.
+					return;
+				}
+				fl_TotalArmor[npc.index] = 1.0;
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 				
@@ -404,6 +412,10 @@ public void XenoSoldierGiant_ClotDamagedPost(int victim, int attacker, int infli
 				}
 			}
 		}
+	}
+	else
+	{
+		fl_TotalArmor[npc.index] = 1.0;
 	}
 }
 
