@@ -2676,7 +2676,7 @@
 	}
 	"Outlaw Railcannon Desc"
 	{
-		"en"	"Hand portable cannon that charges tofire TAU particles at incredible speeds.\nDoes more damage while airborne, but dissipates quickly over distance.\nSuffers mid-late game."
+		"en"	"Hand portable cannon that charges tofire TAU particles at incredible speeds.\nDoes more damage while airborne, but dissipates quickly over distance.\nSuffers mid-game, but becomes a solid weapon late-game."
 	}
 	"Outlaw Railcannon Desc Pap 1"
 	{
