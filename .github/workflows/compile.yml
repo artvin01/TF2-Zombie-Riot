@@ -1,4 +1,4 @@
-name: Compile FW
+name: Compile
 
 on: [push, pull_request]
 
@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sm-version: ['1.12.X']
+        sm-version: ['1.12.7053']
     
     steps:
       - name: Install Checkout
@@ -72,5 +72,12 @@ jobs:
       
       - name: Compile ${{ matrix.sm-version }}
         run: |
+          spcomp -E -O2 -v2 -i "include" -o zombie_riot.smx zombie_riot.sp
           spcomp -O2 -v2 -i "include" -o fortress_wars.smx fortress_wars.sp
         working-directory: ${{ env.SCRIPTS_PATH }}
+      
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@master
+        with:
+          name: zombie_riot.smx
+          path: addons/sourcemod/scripting/zombie_riot.smx
