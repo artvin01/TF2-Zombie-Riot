@@ -2332,7 +2332,8 @@ public void OnWeaponSwitchPost(int client, int weapon)
 #if defined ZR
 		Building_WeaponSwitchPost(client, weapon, buffer);
 #endif
-		
+
+#if !defined RTS	
 		if(i_SemiAutoWeapon[weapon])
 		{
 			char classname[64];
@@ -2343,6 +2344,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 				Attributes_Set(weapon, 821, 0.0);
 			}
 		}
+#endif
 	}
 
 #if !defined RTS

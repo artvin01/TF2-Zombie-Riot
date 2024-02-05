@@ -67,7 +67,6 @@ void DHook_Setup()
 	
 	DHook_CreateDetour(gamedata, "CTFPlayer::CanAirDash", DHook_CanAirDashPre);
 
-	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	//https://github.com/Wilzzu/testing/blob/18a3680a9a1c8bdabc30c504bbf9467ac6e7d7b4/samu/addons/sourcemod/scripting/shavit-replay.sp
 	
 	if (!(gH_MaintainBotQuota = DHookCreateDetour(Address_Null, CallConv_THISCALL, ReturnType_Void, ThisPointer_Address)))
@@ -82,13 +81,15 @@ void DHook_Setup()
 
 	gH_MaintainBotQuota.Enable(Hook_Pre, Detour_MaintainBotQuota);
 	
-	
+#if !defined RTS
+	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre, DHook_ManageRegularWeaponsPost);
+	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
+	DHook_CreateDetour(gamedata, "CTFPlayer::Taunt", DHook_TauntPre, DHook_TauntPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
+#endif
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::FindTarget", DHook_SentryFind_Target, _);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::Fire", DHook_SentryFire_Pre, DHook_SentryFire_Post);
-	DHook_CreateDetour(gamedata, "CTFPlayer::Taunt", DHook_TauntPre, DHook_TauntPost);
-	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
 
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
@@ -115,10 +116,8 @@ void DHook_Setup()
 	
 #if !defined RTS
 	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
-#endif
-
 	DHook_CreateDetour(gamedata, "CTFPlayer::SpeakConceptIfAllowed()", SpeakConceptIfAllowed_Pre, SpeakConceptIfAllowed_Post);
-	
+#endif
 	g_detour_CTFGrenadePipebombProjectile_PipebombTouch = CheckedDHookCreateFromConf(gamedata, "CTFGrenadePipebombProjectile::PipebombTouch");
 	
 	
@@ -328,6 +327,7 @@ public MRESReturn ObjStartUpgrading_SmackPre(int entity, DHookReturn ret, DHookP
 
 //Thanks to rafradek#0936 on the allied modders discord for pointing this function out!
 //This changes player classes to the correct one.
+#if !defined RTS
 public MRESReturn SpeakConceptIfAllowed_Pre(int client, Handle hReturn, Handle hParams)
 {
 	for(int client_2=1; client_2<=MaxClients; client_2++)
@@ -378,7 +378,7 @@ public MRESReturn SpeakConceptIfAllowed_Post(int client, Handle hReturn, Handle 
 	}
 	return MRES_Ignored;
 }
-
+#endif
 
 MRESReturn Detour_CalcPlayerScore(DHookReturn hReturn, DHookParam hParams)
 {
@@ -1210,7 +1210,9 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 	
 	if(b_LagCompNPC_BlockInteral)
 	{
+#if !defined RTS
 		TF2_SetPlayerClass_ZR(Compensator, TFClass_Scout, false, false); //Make sure they arent a medic during this! Reason: Mediguns lag comping, need both to be a medic and have a medigun
+#endif
 		LagCompMovePlayersExceptYou(Compensator);
 	}
 	
@@ -1221,11 +1223,13 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
 {
 	int Compensator = param.Get(1);
+#if !defined RTS
 	if(b_LagCompNPC_BlockInteral)
 	{
 		TF2_SetPlayerClass_ZR(Compensator, WeaponClass[Compensator], false, false); 
 	//	return MRES_Supercede;
 	}
+#endif
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TeamBeforeChange)); //Hardcode to red as there will be no blue players.
@@ -1573,7 +1577,8 @@ public MRESReturn DHook_ForceRespawn(int client)
 	
 	TeutonType[client] = (!IsRespawning && !Waves_InSetup()) ? TEUTON_DEAD : TEUTON_NONE;
 #endif
-	
+
+#if !defined RTS	
 	CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 	if(!CurrentClass[client])
 	{
@@ -1581,8 +1586,10 @@ public MRESReturn DHook_ForceRespawn(int client)
 		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Scout);
 	}
 	
-	DoOverlay(client, "", 2);
 	WeaponClass[client] = TFClass_Unknown;
+#endif
+	
+	DoOverlay(client, "", 2);
 	
 #if defined ZR
 	if(!WaitingInQueue[client] && !GameRules_GetProp("m_bInWaitingForPlayers"))
@@ -1762,6 +1769,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 	return Plugin_Stop;
 }
 
+#if !defined RTS
 public MRESReturn DHook_GetChargeEffectBeingProvidedPre(int client, DHookReturn ret)
 {
 	if(IsClientInGame(client) && !IsInsideManageRegularWeapons)
@@ -1790,60 +1798,6 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPost(int client, DHookReturn
 	return MRES_Ignored;
 }
 
-public MRESReturn DHook_GetMaxAmmoPre(int client, DHookReturn ret, DHookParam param)
-{
-	int type = param.Get(1);
-	switch(type)
-	{
-		case Ammo_Metal, Ammo_Flame, Ammo_Minigun:
-			ret.Value = 2000;
-		
-		case Ammo_Pistol:
-			ret.Value = 360;
-		
-		case Ammo_Rocket:
-			ret.Value = 200;
-		
-		case Ammo_Flare, Ammo_Grenade:
-			ret.Value = 160;
-		
-		case Ammo_Sticky, Ammo_Revolver:
-			ret.Value = 240;
-		
-		case Ammo_Bolt:
-			ret.Value = 375;
-		
-		case Ammo_Syringe:
-			ret.Value = 1500;
-		
-		case Ammo_Sniper:
-			ret.Value = 250;
-		
-		case Ammo_Arrow:
-			ret.Value = 125;
-		
-		case Ammo_SMG:
-			ret.Value = 750;
-		
-		case Ammo_Shotgun:
-			ret.Value = 320;
-		
-		default:
-			return MRES_Ignored;
-	}
-	return MRES_Supercede;
-}
-#if !defined NoSendProxyClass
-public MRESReturn DHook_IsPlayerClassPre(int client, DHookReturn ret, DHookParam param)
-{
-	if(!IsPlayerClass)
-		return MRES_Ignored;
-
-	ret.Value = true;
-	return MRES_Supercede;
-}
-#endif
-
 bool WasMedicPreRegen[MAXTF2PLAYERS];
 
 public MRESReturn DHook_RegenThinkPre(int client, DHookParam param)
@@ -1869,6 +1823,7 @@ public MRESReturn DHook_RegenThinkPost(int client, DHookParam param)
 	WasMedicPreRegen[client] = false;
 	return MRES_Ignored;
 }
+#endif	// Non-RTS
 
 #if defined ZR
 static int LastTeam;
@@ -1919,6 +1874,7 @@ public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPost(int client, DHookPar
 }
 #endif
 
+#if !defined RTS
 public MRESReturn DHook_TauntPre(int client, DHookParam param)
 {
 	//Dont allow taunting if disguised or cloaked
@@ -1957,6 +1913,7 @@ public MRESReturn DHook_TauntPost(int client, DHookParam param)
 	#endif
 	return MRES_Ignored;
 }
+#endif
 
 // g_bWarnedAboutMaxplayersInMVM
 /*
@@ -1974,6 +1931,8 @@ public MRESReturn PreClientUpdatePost(Handle hParams)
 	return MRES_Ignored;
 }
 */
+
+#if !defined RTS
 public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams) {
 	int originalLauncher = GetEntPropEnt(healingBolt, Prop_Send, "m_hOriginalLauncher");
 	if (!IsValidEntity(originalLauncher)) {
@@ -2062,7 +2021,6 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	return MRES_Supercede;
 }
 
-#if !defined RTS
 MRESReturn OnWeaponReplenishClipPost(int weapon)
 {
 	if(IsValidEntity(weapon))
@@ -2096,7 +2054,7 @@ MRESReturn OnWeaponReplenishClipPre(int weapon) // Not when the player press rel
 	return MRES_Ignored;
 	
 }
-#endif
+#endif	// Non-RTS
 
 void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 {
@@ -2356,6 +2314,7 @@ public MRESReturn DHookGiveDefaultItems_Post(int client, Handle hParams)
 }
 */
 
+#if !defined RTS
 public MRESReturn DHook_ManageRegularWeaponsPre(int client, DHookParam param)
 {
 	// Gives our desired class's wearables
@@ -2372,6 +2331,8 @@ public MRESReturn DHook_ManageRegularWeaponsPost(int client, DHookParam param)
 	IsInsideManageRegularWeapons = false;
 	return MRES_Ignored;
 }
+#endif
+
 #define MAX_YAW_SHIELD_DELETE_SIDEWAY 25.0
 bool ShieldDeleteProjectileCheck(int owner, int enemy)
 {

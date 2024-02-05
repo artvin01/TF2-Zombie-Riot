@@ -72,5 +72,11 @@ jobs:
       
       - name: Compile ${{ matrix.sm-version }}
         run: |
-          spcomp -E -O2 -v2 -i "include" zombie_riot.sp
+          spcomp -E -O2 -v2 -i "include" -o zombie_riot.smx zombie_riot.sp
         working-directory: ${{ env.SCRIPTS_PATH }}
+      
+      - name: Upload Update
+        uses: actions/upload-artifact@master
+        with:
+          name: zombie_riot.smx
+          path: addons/sourcemod/scripting/zombie_riot.smx
