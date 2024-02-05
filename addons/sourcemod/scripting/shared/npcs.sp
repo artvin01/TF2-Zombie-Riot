@@ -679,15 +679,16 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		i_HasBeenHeadShotted[victim] = false;
 		if(damagetype & DMG_BULLET)
 		{
+#if !defined RTS
 			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
 			{
 
-#if defined ZR
+	#if defined ZR
 				if(b_ProximityAmmo[attacker])
 				{
 					damage *= 1.15;
 				}
-#endif
+	#endif
 
 				float AttackerPos[3];
 				float VictimPos[3];
@@ -705,17 +706,21 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				float WeaponDamageFalloff = i_WeaponDamageFalloff[weapon];
 
-#if defined ZR
+	#if defined ZR
 				if(b_ProximityAmmo[attacker])
 				{
 					WeaponDamageFalloff *= 0.8;
 				}
-#endif
+	#endif
 
 				damage *= Pow(WeaponDamageFalloff, (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
 			}
+#endif
 		}
+
+#if !defined RTS
 		if(!i_WeaponCannotHeadshot[weapon])
+#endif
 		{
 			bool Blitzed_By_Riot = false;
 			if(f_TargetWasBlitzedByRiotShield[victim][weapon] > GetGameTime())
@@ -876,7 +881,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		
 //Otherwise we get kicks if there is too much hurting going on.
 
-public void Func_Breakable_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
+public void Func_Breakable_Post(int victim, int attacker, int inflictor, float damage, int damagetype)
 {
 	if(attacker < 1 || attacker > MaxClients)
 		return;
@@ -2603,10 +2608,12 @@ void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int
 	{
 		if(!trueArmorOnly)
 		{
+#if defined ZR
 			if(!b_NpcHasDied[attacker] && i_CurrentEquippedPerk[attacker] == 5)
 			{
 				damage *= 1.25;
 			}
+#endif
 			if(fl_RangedArmor[victim] > 1.0)
 				damage *= fl_RangedArmor[victim];
 			if(fl_Extra_RangedArmor[victim] > 1.0)
@@ -3128,6 +3135,8 @@ void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor, floa
 void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {
 	float BaseDamageBeforeBuffs = damage;
+
+#if defined ZR
 	if(inflictor > 0)
 	{
 		if(b_ThisWasAnNpc[inflictor])
@@ -3141,6 +3150,8 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 			}
 		}
 	}
+#endif
+
 	float DamageBuffExtraScaling = 1.0;
 
 #if defined ZR

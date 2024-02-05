@@ -117,6 +117,14 @@ methodmap UnitBody < CClotBody
 			CommandList[this.index] = new ArrayList(sizeof(CommandEnum));
 		
 		CommandList[this.index].PushArray(command);
+
+		if(override && type == Command_Patrol)
+		{
+			// Keep our current position when starting a patrol
+			command.TargetRef = -1;
+			GetEntPropVector(this.index, Prop_Data, "m_vecAbsOrigin", command.Pos);
+			CommandList[this.index].PushArray(command);
+		}
 	}
 
 	public bool IsAlly(int attacker)
@@ -170,6 +178,16 @@ bool UnitBody_IsAlly(int attacker, int entity)
 bool UnitBody_CanControl(int attacker, int entity)
 {
 	return view_as<UnitBody>(entity).CanControl(attacker);
+}
+
+bool UnitBody_HasFlag(int entity, int flag)
+{
+	return view_as<UnitBody>(entity).HasFlag(flag);
+}
+
+int UnitBody_GetOwner(int entity)
+{
+	return view_as<UnitBody>(entity).m_hOwner;
 }
 
 void UnitBody_AddCommand(int entity, bool override, int type, const float pos[3], int target = -1)
@@ -293,10 +311,10 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 		{
 			target = npc.m_iTargetWalkTo;
 
-			if(canAttack)	// No existing target and time as passed
-				canAttack = (target < 1 && npc.m_flGetClosestTargetTime < gameTime);
+			if(canAttack)	// Had an existing target or time as passed
+				canAttack = (i_TargetToWalkTo[npc.index] != -1 || npc.m_flGetClosestTargetTime < gameTime);
 
-			if(canAttack || !IsValidEnemy(npc.index, target))
+			if(canAttack)
 			{
 				if(canAttack)
 				{

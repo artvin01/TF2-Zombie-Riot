@@ -904,13 +904,6 @@ public void OnPostThink(int client)
 			Format(bufferbuffs, sizeof(bufferbuffs), "⌇%s", bufferbuffs);
 		}
 
-/*
-#define VILLAGE_000	(1 << 0)	// Projectile Speed
-#define VILLAGE_200	(1 << 2)	// Fire Rate Bonus
-#define VILLAGE_030	(1 << 8)	// MIB
-#define VILLAGE_040	(1 << 9)	// Call of Arms
-#define VILLAGE_050	(1 << 10)	// Homeland Defense
-*/
 		static int VillageBuffs;
 		VillageBuffs = Building_GetClientVillageFlags(client);
 
@@ -2332,7 +2325,8 @@ public void OnWeaponSwitchPost(int client, int weapon)
 #if defined ZR
 		Building_WeaponSwitchPost(client, weapon, buffer);
 #endif
-		
+
+#if !defined RTS	
 		if(i_SemiAutoWeapon[weapon])
 		{
 			char classname[64];
@@ -2343,6 +2337,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 				Attributes_Set(weapon, 821, 0.0);
 			}
 		}
+#endif
 	}
 
 #if !defined RTS

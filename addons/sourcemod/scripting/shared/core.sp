@@ -322,6 +322,7 @@ int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
 
 //bool Wand_Fired;
 
+#if !defined RTS
 TFClassType CurrentClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 TFClassType WeaponClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
@@ -336,6 +337,7 @@ int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 int i_CurrentEquippedPerk[MAXENTITIES];
 int Building_Max_Health[MAXENTITIES]={0, ...};
 int Building_Repair_Health[MAXENTITIES]={0, ...};
+#endif
 
 //only used in zr, however, can also be used for other gamemodes incase theres a limit.
 bool b_EnemyNpcWasIndexed[MAXENTITIES][2];
@@ -445,6 +447,7 @@ bool f_ClientServerShowMessages[MAXTF2PLAYERS];
 //Needs to be global.
 bool b_IsABow[MAXENTITIES];
 bool b_IsAMedigun[MAXENTITIES];
+float flNpcCreationTime[MAXENTITIES];
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 int i_HowManyBombsHud[MAXENTITIES];
 float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
@@ -1230,6 +1233,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnPluginStart()
 {
+#if !defined RTS
 	CurrentAmmo[0] = { 1, 1, 1, 200, 1, 1, 1,
 	48,
 	24,
@@ -1250,6 +1254,7 @@ public void OnPluginStart()
 	100,
 	1,
 	1};
+#endif
 	
 	Commands_PluginStart();
 	Events_PluginStart();
@@ -1335,6 +1340,7 @@ public void OnPluginStart()
 	SyncHud_Notifaction = CreateHudSynchronizer();
 	SyncHud_WandMana = CreateHudSynchronizer();
 
+#if !defined RTS
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
@@ -1342,6 +1348,7 @@ public void OnPluginStart()
 			CurrentClass[client] = TF2_GetPlayerClass(client);
 		}
 	}
+#endif
 
 	int entity = -1;
 	while((entity = FindEntityByClassname(entity, "*")) != -1)
@@ -1743,7 +1750,9 @@ public void OnClientPutInServer(int client)
 	
 	//do cooldown upon connection.
 	AdjustBotCount();
+#if !defined RTS
 	WeaponClass[client] = TFClass_Unknown;
+#endif
 	f_ClientReviveDelay[client] = 0.0;
 	
 	CClotBody npc = view_as<CClotBody>(client);
@@ -1822,7 +1831,10 @@ public void OnClientDisconnect(int client)
 #endif
 
 	b_DisplayDamageHud[client] = false;
+
+#if !defined RTS
 	WeaponClass[client] = TFClass_Unknown;
+#endif
 
 #if defined RPG
 	RPG_ClientDisconnect(client);
@@ -1850,7 +1862,7 @@ public void OnClientDisconnect_Post(int client)
 
 public void OnPlayerRunCmdPre(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
 {
-	RTSCamera_PlayerRunCmdPre(client, buttons, impulse, weapon, mouse);
+	RTSCamera_PlayerRunCmdPre(client, buttons, impulse, vel, weapon, mouse);
 }
 
 static bool was_reviving[MAXTF2PLAYERS];
@@ -1865,12 +1877,17 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 #endif
 
-#if defined ZR
+#if defined RTS
+	if(RTS_PlayerRunCmd(client, weapon))
+		return Plugin_Changed;
+	
+#else
+	#if defined ZR
 	Escape_PlayerRunCmd(client);
 	
 	//tutorial stuff.
 	Tutorial_MakeClientNotMove(client);
-#endif
+	#endif
 
 	if(buttons & IN_ATTACK)
 	{
@@ -1878,9 +1895,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		if(entity > MaxClients)
 		{
 			
-#if defined ZR
+	#if defined ZR
 			f_Actualm_flNextPrimaryAttack[entity] = GetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack");
-#endif
+	#endif
 			
 			bool cancel_attack = false;
 			cancel_attack = Attributes_Fire(entity);
@@ -1931,9 +1948,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		holding[client] |= IN_ATTACK2;
 		
-#if defined ZR
+	#if defined ZR
 		b_IgnoreWarningForReloadBuidling[client] = false;
-#endif
+	#endif
 		
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding != -1)
@@ -1951,7 +1968,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				Call_Finish(action);
 			}
 			
-			#if defined ZR
+	#if defined ZR
 			char classname[36];
 			GetEntityClassname(weapon_holding, classname, sizeof(classname));
 			
@@ -1963,7 +1980,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					Pickup_Building_M2(client, weapon, false);
 				}
 			}
-			#endif
+	#endif
 		}
 		
 		StartPlayerOnlyLagComp(client, true);
@@ -1988,7 +2005,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	//	CheckAlivePlayers(0, 0, true);
 		
 		
-		#if defined ZR
+	#if defined ZR
 		if(angles[0] < -70.0)
 		{
 			int entity = EntRefToEntIndex(Building_Mounted[client]);
@@ -1998,7 +2015,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 		}
 		else
-		#endif
+	#endif
 		{
 			int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			
@@ -2038,7 +2055,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		holding[client] |= IN_SCORE;
 		
-#if defined ZR
+	#if defined ZR
 		if(dieingstate[client] == 0)
 		{
 			if(WaitingInQueue[client])
@@ -2055,15 +2072,14 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 
 		}
-#endif
+	#endif
 		
-#if defined RPG
+	#if defined RPG
 		FakeClientCommandEx(client, "sm_store");
-#endif
+	#endif
 	}
 	
-#if defined ZR
-
+	#if defined ZR
 	if(holding[client] & IN_ATTACK3)
 	{
 		if(!(buttons & IN_ATTACK3))
@@ -2169,9 +2185,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 	
-//	Building_PlayerRunCmd(client, buttons);
-#endif	// ZR
-
+	#endif	// ZR
+#endif	// Non-RTS
 	return Plugin_Continue;
 }
 
@@ -2432,7 +2447,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_DoNotUnstuckDuration[entity] = 0.0;
 		i_PullTowardsTarget[entity] = 0;
 		f_PullStrength[entity] = 0.0;
+#if !defined RTS
 		i_CustomWeaponEquipLogic[entity] = 0;
+#endif
 		b_ThisWasAnNpc[entity] = false;
 #if defined ZR
 		SetEntitySpike(entity, false);
@@ -2452,8 +2469,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_WeaponBodygroup[entity] = -1;
 		f_PotionShrinkEffect[entity] = 0.0; //here because inflictor can have it (arrows)
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
+#if !defined RTS
 		f_DelayAttackspeedPreivous[entity] = 1.0;
 		f_DelayAttackspeedPanicAttack[entity] = -1.0;
+#endif
 		f_HussarBuff[entity] = 0.0;
 		f_Ruina_Speed_Buff[entity] = 0.0;
 		f_Ruina_Defense_Buff[entity] = 0.0;
@@ -2466,7 +2485,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_Ocean_Buff_Stronk_Buff[entity] = 0.0;
 		b_NoKnockbackFromSources[entity] = false;
 		f_Ocean_Buff_Weak_Buff[entity] = 0.0;
+#if !defined RTS
 		i_CurrentEquippedPerk[entity] = 0;
+#endif
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
 		LastHitRef[entity] = -1;
@@ -2517,7 +2538,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 		h_NpcCollissionHookType[entity] = 0;
 		h_NpcSolidHookType[entity] = 0;
 		SetDefaultValuesToZeroNPC(entity);
+
+#if !defined RTS
 		i_SemiAutoWeapon[entity] = false;
+#endif
+
 		f_BannerDurationActive[entity] = 0.0;
 		f_BannerAproxDur[entity] = 0.0;
 		f_BuffBannerNpcBuff[entity] = 0.0;
@@ -3379,8 +3404,11 @@ public any Native_FuncToVal(Handle plugin, int numParams)
 
 static void MapStartResetAll()
 {
-	Zero(f_MinicritSoundDelay);
+#if !defined RTS
 	Zero(i_CustomWeaponEquipLogic);
+#endif
+
+	Zero(f_MinicritSoundDelay);
 	Zero(b_IsAGib);
 	Zero(i_Hex_WeaponUsesTheseAbilities);
 	Zero(f_WidowsWineDebuffPlayerCooldown);
