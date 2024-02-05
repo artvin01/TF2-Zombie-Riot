@@ -96,7 +96,7 @@ public void Weapon_Dimension_Wand(int client, int weapon, bool crit)
 
 	if(mana_cost <= Current_Mana[client])
 	{
-		float damage = 65.0;
+		float damage = 100.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
 		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
@@ -106,7 +106,7 @@ public void Weapon_Dimension_Wand(int client, int weapon, bool crit)
 		
 		delay_hud[client] = 0.0;
 			
-		float speed = 1100.0;
+		float speed = 1000.0;
 		speed *= Attributes_Get(weapon, 103, 1.0);
 		
 		speed *= Attributes_Get(weapon, 104, 1.0);
@@ -1494,7 +1494,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				ParticleEffectAt(Dimension_Loc, "utaunt_krakenmouth_green_parent", 1.0);
+				ParticleEffectAt(Dimension_Loc, "utaunt_smoke_floor1_green", 1.0);
 				switch(GetRandomInt(1, 28))
 				{
 					case 1:
@@ -1918,7 +1918,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				ParticleEffectAt(Dimension_Loc, "utaunt_krakenmouth_green_parent", 1.0);
+				ParticleEffectAt(Dimension_Loc, "utaunt_smoke_floor1_green", 1.0);
 				switch(GetRandomInt(1, 36))
 				{
 					case 1:
@@ -3460,7 +3460,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				ParticleEffectAt(Dimension_Loc, "utaunt_constellations_blue_base", 1.0);
-				switch(GetRandomInt(1, 27))
+				switch(GetRandomInt(1, 26))
 				{
 					case 1:
 					{
@@ -3711,19 +3711,6 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 20:
 					{
-						int entity = Npc_Create(SEABORN_ENGINEER, client, pos1, ang, true);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-						}
-					}
-					case 21:
-					{
 						int entity = Npc_Create(SEABORN_MEDIC, client, pos1, ang, true);
 						if(entity > MaxClients)
 						{
@@ -3735,7 +3722,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
-					case 22:
+					case 21:
 					{
 						int entity = Npc_Create(SEABORN_SNIPER, client, pos1, ang, true);
 						if(entity > MaxClients)
@@ -3748,7 +3735,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
-					case 23:
+					case 22:
 					{
 						int entity = Npc_Create(SEABORN_SPY, client, pos1, ang, true);
 						if(entity > MaxClients)
@@ -3761,7 +3748,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
-					case 24:
+					case 23:
 					{
 						int entity = Npc_Create(SEABORN_GUARD, client, pos1, ang, true);
 						if(entity > MaxClients)
@@ -3775,7 +3762,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
-					case 25:
+					case 24:
 					{
 						int entity = Npc_Create(SEABORN_DEFENDER, client, pos1, ang, true);
 						if(entity > MaxClients)
@@ -3789,7 +3776,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
-					case 26:
+					case 25:
 					{
 						int entity = Npc_Create(SEABORN_CASTER, client, pos1, ang, true);
 						if(entity > MaxClients)
@@ -3802,7 +3789,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
-					case 27:
+					case 26:
 					{
 						int entity = Npc_Create(SEABORN_SPECIALIST, client, pos1, ang, true);
 						if(entity > MaxClients)
