@@ -59,6 +59,7 @@ void SDKHook_PluginStart()
 
 void SDKHook_MapStart()
 {
+	Zero(f_EntityIsStairAbusing);
 	Armor_WearableModelIndex = PrecacheModel("models/effects/resist_shield/resist_shield.mdl", true);
 	int entity = FindEntityByClassname(MaxClients+1, "tf_player_manager");
 	if(entity != -1)
@@ -212,15 +213,34 @@ public void OnPostThink(int client)
 {
 	float GameTime = GetGameTime();
 
-	if(dieingstate[client] != 0 || TeutonType[client] != TEUTON_NONE)
+	if(b_EntityIsStairAbusing[client])
 	{
-		if(f_EntityHazardCheckDelay[client] < GetGameTime())
+		//damage is 50 to simulate a normal trigger hurt.
+		if(f_EntityIsStairAbusing[client] < GetGameTime())
 		{
-			EntityIsInHazard_Teleport(client);
-			f_EntityHazardCheckDelay[client] = GetGameTime() + 0.25;
+			f_EntityIsStairAbusing[client] = GetGameTime() + 0.5;
+			float damageTrigger = 5.0;
+			NpcStuckZoneWarning(client, damageTrigger, 1);	
+			if(damageTrigger > 1.0)
+			{
+				SDKHooks_TakeDamage(client, 0, 0, damageTrigger, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE, -1,_,_,_,ZR_STAIR_ANTI_ABUSE_DAMAGE);
+			}
 		}
 	}
-	SaveLastValidPositionEntity(client);
+
+	if(GetEntProp(client, Prop_Send, "m_iTeamNum") == 2)
+	{
+		if(dieingstate[client] != 0 || TeutonType[client] != TEUTON_NONE)
+		{
+			if(f_EntityHazardCheckDelay[client] < GetGameTime())
+			{
+				EntityIsInHazard_Teleport(client);
+				f_EntityHazardCheckDelay[client] = GetGameTime() + 0.25;
+			}
+		}
+		SaveLastValidPositionEntity(client);
+	
+	}
 	if(b_DisplayDamageHud[client])
 	{
 		b_DisplayDamageHud[client] = false;
@@ -1538,6 +1558,7 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 
 	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
 	ArmorDisplayClient(victim);
+	i_HexCustomDamageTypes[victim] = 0;
 
 	return Plugin_Continue;
 }
@@ -1698,7 +1719,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif
 	
 #if defined ZR
-	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
+	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker] && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
 	{
 		if(!b_ThisNpcIsSawrunner[attacker])
 		{
@@ -2239,6 +2260,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 			{
 				return Plugin_Handled;
 			}
+#if defined ZR
 			if(TeutonType[entity] != TEUTON_NONE)
 			{
 				bool Changed = TeutonSoundOverride(numClients, sample, 
@@ -2254,6 +2276,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 				}
 				
 			}
+#endif
 			if(b_IsPlayerNiko[entity])
 			{
 				return Plugin_Handled;
@@ -2425,7 +2448,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_RED_BLADE:
 		{
-			WeaponRedBlade_OnTakeDamage(victim, damage);
+			WeaponRedBlade_OnTakeDamage(attacker, victim, damage);
 		}
 		case WEAPON_HEAVY_PARTICLE_RIFLE:
 		{
@@ -2487,24 +2510,44 @@ void UpdatePlayerFakeModel(int client)
 	}
 }
 
-void NpcStuckZoneWarning(int client, float &damage)
+void NpcStuckZoneWarning(int client, float &damage, int TypeOfAbuse = 0)
 {
 	SetGlobalTransTarget(client);
-	PrintToChat(client, "%t", "Npc Stuck Spot Warning");
-	f_TimeUntillNormalHeal[client] = GetGameTime() + 4.0;
-	//deduct healing already.
-	//first recorded instance of getting stuck after 2 seconds of nnot being stuck.
-	damage = 0.0;
-	if(f_ClientWasTooLongInsideHurtZone[client] < GetGameTime())
+	switch(TypeOfAbuse)
 	{
-		f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 5.0;
-		f_ClientWasTooLongInsideHurtZoneDamage[client] = float(SDKCall_GetMaxHealth(client)) * 0.025;
-	}
-	else if(f_ClientWasTooLongInsideHurtZone[client] <= GetGameTime() + 3.0)
-	{
-		f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 3.0;
-		f_ClientWasTooLongInsideHurtZoneDamage[client] *= 2.0;
-		damage = f_ClientWasTooLongInsideHurtZoneDamage[client];
+		case 0:
+		{
+			f_TimeUntillNormalHeal[client] = GetGameTime() + 4.0;
+			PrintToChat(client, "%t", "Npc Stuck Spot Warning");
+			damage = 0.0;
+			if(f_ClientWasTooLongInsideHurtZone[client] < GetGameTime())
+			{
+				f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 5.0;
+				f_ClientWasTooLongInsideHurtZoneDamage[client] = float(SDKCall_GetMaxHealth(client)) * 0.025;
+			}
+			else if(f_ClientWasTooLongInsideHurtZone[client] <= GetGameTime() + 3.0)
+			{
+				f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 3.0;
+				damage = f_ClientWasTooLongInsideHurtZoneDamage[client];
+				f_ClientWasTooLongInsideHurtZoneDamage[client] *= 2.0;
+			}
+		}
+		case 1:
+		{
+			PrintToChat(client, "%t", "Npc Stuck Spot Warning Stairs");
+			damage = 0.0;
+			if(f_ClientWasTooLongInsideHurtZoneStairs[client] < GetGameTime())
+			{
+				f_ClientWasTooLongInsideHurtZoneStairs[client] = GetGameTime() + 5.0;
+				f_ClientWasTooLongInsideHurtZoneDamageStairs[client] = float(SDKCall_GetMaxHealth(client)) * 0.025;
+			}
+			else if(f_ClientWasTooLongInsideHurtZoneStairs[client] <= GetGameTime() + 3.0)
+			{
+				f_ClientWasTooLongInsideHurtZoneStairs[client] = GetGameTime() + 3.0;
+				damage = f_ClientWasTooLongInsideHurtZoneDamageStairs[client];
+				f_ClientWasTooLongInsideHurtZoneDamageStairs[client] *= 2.0;
+			}
+		}
 	}
 }
 
@@ -2638,7 +2681,6 @@ float ArmorPlayerReduction(int victim)
 		}
 	}
 }
-#endif
 
 
 void ArmorDisplayClient(int client, bool deleteOverride = false)
@@ -2781,3 +2823,4 @@ void ArmorDisplayClientColor(int client, int armor)
 	SetEntityRenderMode(armor, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(armor, green, green, blue, Alpha);
 }
+#endif

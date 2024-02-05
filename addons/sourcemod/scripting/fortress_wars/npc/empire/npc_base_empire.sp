@@ -319,7 +319,7 @@ void EmpireBody_TakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 			npc.PlayHurtSound();
 
-			if(!this.HasFlag(Flag_Mechanical))
+			if(!npc.HasFlag(Flag_Mechanical))
 				npc.AddNextGesture("ACT_GESTURE_FLINCH_HEAD");
 		}
 	}

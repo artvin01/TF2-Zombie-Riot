@@ -159,6 +159,7 @@ enum struct ItemInfo
 		{
 			this.Cost_Unlock = this.Cost;
 		}
+		
 		Format(buffer, sizeof(buffer), "%sdesc", prefix);
 		kv.GetString(buffer, this.Desc, 256);
 
@@ -3135,7 +3136,7 @@ static void MenuPage(int client, int section)
 					}
 
 					//We shall allow unequipping again.
-					if(item.Equipped[client])
+					if(item.Equipped[client] && item.GregOnlySell != 2)
 					{
 						FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
 						menu.AddItem(buffer2, buffer, item.ChildKit ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);	// 2
@@ -4322,7 +4323,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 				}
 				case 2:	// Unequip
 				{
-					if(item.Owned[client] && item.Equipped[client])
+					if(item.Owned[client] && item.Equipped[client] && item.GregOnlySell != 2)
 					{
 						int active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 

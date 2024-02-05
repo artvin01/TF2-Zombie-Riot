@@ -316,10 +316,6 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 					int healingdone = HealEntityGlobal(client, ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0,_,_);
 					if(healingdone > 0)
 					{
-						if(client < MaxClients)
-						{
-							Healing_done_in_total[client] += healingdone;
-						}
 						ApplyHealEvent(ally, healingdone);
 					}
 				}
@@ -354,7 +350,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 					flHealMutli_Calc = flHealMulti;
 				} 
 				flHealMutli_Calc *= extra_heal;
-				int healingdone = HealEntityGlobal(client, ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0,_,_);
+				HealEntityGlobal(client, ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0,_,_);
 				if(!HordingsBuff)
 				{
 					if(f_OceanBuffAbility[client] > GetGameTime())
@@ -365,10 +361,6 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 					{
 						f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.21;
 					}
-				}
-				if(client < MaxClients)
-				{
-					Healing_done_in_total[client] += healingdone;
 				}
 			}
 		}

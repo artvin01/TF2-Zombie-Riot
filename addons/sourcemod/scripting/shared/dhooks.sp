@@ -908,7 +908,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		if(i_WhatBuilding[entity1] == BuildingSentrygun)
 		{
 			//buildings cannot touch eachother
-			if(i_WhatBuilding[entity2] != 0)
+			if(i_WhatBuilding[entity2] != 0 || b_IsAlliedNpc[entity2])
 			{
 				return false;
 			}
@@ -2040,10 +2040,6 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 
 			HealEntityGlobal(owner, target, float(ammo_amount_left), 1.0, 1.0, _);
 			
-#if defined ZR
-			Healing_done_in_total[owner] += ammo_amount_left;
-#endif
-			
 			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
 			ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
 			ClientCommand(target, "playgamesound items/smallmedkit1.wav");
@@ -2296,6 +2292,7 @@ public Action TimerGrantBannerDuration(Handle timer, int ref)
 	{
 		return Plugin_Continue;
 	}
+#if defined ZR
 	if(ClientHasBannersWithCD(client) == 0)
 		return Plugin_Continue;
 
@@ -2319,6 +2316,7 @@ public Action TimerGrantBannerDuration(Handle timer, int ref)
 		BannerWearable[client] = EntIndexToEntRef(entity);
 		SDKCall_EquipWearable(client, entity);
 	}	
+#endif
 	return Plugin_Continue;
 }
 

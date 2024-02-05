@@ -238,7 +238,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			}
 		}
 
-		RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(CClotBody(pos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "20000000", ally, _, _, true, true));
+		RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(CClotBody(pos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "20000000", ally, _, _, true, false));
 		
 		i_NpcInternalId[npc.index] = BOB_THE_FIRST;
 		i_NpcWeight[npc.index] = 4;
@@ -283,6 +283,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			b_ThisNpcIsImmuneToNuke[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
+			b_thisNpcIsARaid[npc.index] = true;
 		}
 		else
 		{
@@ -317,6 +318,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			npc.m_bThisNpcIsABoss = true;
 			b_thisNpcIsARaid[npc.index] = true;
 			npc.m_flMeleeArmor = 1.25;
+			RemoveAllDamageAddition();
 		}
 
 		npc.Anger = false;

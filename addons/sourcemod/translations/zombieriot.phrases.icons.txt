@@ -188,5 +188,4 @@
 	{
 		"en" 		"His motivating speech enables enemies."
 	}
-	
 }
