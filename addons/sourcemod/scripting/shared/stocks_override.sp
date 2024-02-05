@@ -277,9 +277,20 @@ stock float ZR_GetGameTime(int entity = 0)
 	{
 		return GetGameTime();
 	}
-	else	
+	else
 	{
-		return (GetGameTime() - f_StunExtraGametimeDuration[entity]);
+		float gameTime = GetGameTime();
+
+#if defined RTS
+		float speed = RTS_GameSpeed();
+		if(speed != 1.0)
+		{
+			float lifetime = flNpcCreationTime[entity] - gameTime;
+			gameTime += lifetime * (speed - 1.0);
+		}
+#endif
+
+		return gameTime - f_StunExtraGametimeDuration[entity];
 		//This will allow for stuns and other stuff like that. Mainly used for tank and other stuns.
 		//We will treat the tank stun as such.
 	}
@@ -343,7 +354,9 @@ stock void Custom_SetAbsVelocity(int client, const float viewAngles[3])
 
 void Edited_TF2_RegeneratePlayer(int client)
 {
+#if !defined RTS
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
+#endif
 #if defined ZR
 	KillDyingGlowEffect(client);
 #endif
@@ -361,7 +374,9 @@ void Edited_TF2_RegeneratePlayer(int client)
 
 void Edited_TF2_RespawnPlayer(int client)
 {
+#if !defined RTS
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
+#endif
 
 #if defined ZR
 	KillDyingGlowEffect(client);

@@ -50,7 +50,7 @@ methodmap Militia < EmpireBody
 		func_NPCThink[npc.index] = ClotThink;
 		
 		npc.SetActivity("ACT_IDLE");
-		npc.m_flSpeed = 90.0;
+		npc.m_flSpeed = 180.0;
 		npc.m_flVisionRange = 300.0;
 		npc.m_flEngageRange = 300.0;
 
@@ -114,9 +114,9 @@ static void ClotThink(int entity)
 				npc.PlayMeleeSound();
 				npc.m_iTarget = target;
 
-				npc.m_flAttackHappens = gameTime + 0.4;
-				npc.m_flReloadDelay = gameTime + 0.9;
-				npc.m_flNextMeleeAttack = gameTime + 2.0;
+				npc.m_flAttackHappens = gameTime + 0.2;
+				npc.m_flReloadDelay = gameTime + 0.45;
+				npc.m_flNextMeleeAttack = gameTime + 1.0;
 			}
 		}
 

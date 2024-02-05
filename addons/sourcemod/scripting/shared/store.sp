@@ -3472,6 +3472,10 @@ static void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [Lv %d]%s", TranslateItemName(client, item.Name, info.Custom_Name), item.Level, BuildingExtraCounter);
 				}
+				else if(info.Cost >= 999999 && !CvarInfiniteCash.BoolValue)
+				{
+					continue;
+				}
 				else if(info.Cost > 1000 && info.Cost_Unlock > CurrentCash)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [%.0f%%]", TranslateItemName(client, item.Name, info.Custom_Name), float(CurrentCash) * 100.0 / float(info.Cost_Unlock));
@@ -6224,6 +6228,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		AngelicShotgun_Enable(client, entity);
 		Enable_RedBladeWeapon(client, entity);
 		Enable_Gravaton_Wand(client, entity);
+		Enable_Dimension_Wand(client, entity);
 #endif
 
 #if defined RPG

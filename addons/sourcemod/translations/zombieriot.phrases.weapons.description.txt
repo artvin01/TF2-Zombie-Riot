@@ -2426,6 +2426,14 @@
 	{
 		"en"	"Hold MOUSE2 while pressing RELOAD on a pap to gain access to a skill point alocation system"
 	}
+	"Dim pap0"
+	{
+		"en" "Disrupt the peace in the multiverse. Bring the Chaos\nMouse 1 attack to deal ranged magic damage.\nMouse 2 when full charge to summon helpful summons"
+	}
+	"Dim pap1"
+	{
+		"en" "Spawn Stronger Npcs. Also slight increase in damage"
+	}
 	"Seaborn Infection Desc"
 	{
 		"en"	"Becoming a seaborn, yet resisting We Many.\nProvides an AOE long-range melee, an high-damage crossbow, and a stronger Medi-Kit.\nEffected by Ranged and Melee upgrades."
@@ -2676,7 +2684,7 @@
 	}
 	"Outlaw Railcannon Desc"
 	{
-		"en"	"Hand portable cannon that charges tofire TAU particles at incredible speeds.\nDoes more damage while airborne, but dissipates quickly over distance.\nSuffers mid-late game."
+		"en"	"Hand portable cannon that charges tofire TAU particles at incredible speeds.\nDoes more damage while airborne, but dissipates quickly over distance.\nSuffers mid-game, but becomes a solid weapon late-game."
 	}
 	"Outlaw Railcannon Desc Pap 1"
 	{

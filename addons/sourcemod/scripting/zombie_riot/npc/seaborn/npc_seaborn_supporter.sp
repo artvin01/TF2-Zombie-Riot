@@ -191,20 +191,27 @@ public void SeabornSupporter_ClotThink(int iNPC)
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
 
-			int entity = Npc_Create(SEARUNNER_ALT, -1, pos, ang, ally);
-			if(entity > MaxClients)
+			if(MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
 			{
-				if(!ally)
-					Zombies_Currently_Still_Ongoing++;
-				
-				SetEntProp(entity, Prop_Data, "m_iHealth", health);
-				SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-				
-				fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
-				fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
-				fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index] * 0.85;
-				fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 2.0;
-				view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
+				int entity = Npc_Create(SEARUNNER_ALT, -1, pos, ang, ally);
+				if(entity > MaxClients)
+				{
+					if(!ally)
+						Zombies_Currently_Still_Ongoing++;
+					
+					SetEntProp(entity, Prop_Data, "m_iHealth", health);
+					SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+					
+					fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
+					fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
+					fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index] * 0.85;
+					fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 2.0;
+					view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
+				}
+			}
+			else
+			{
+				npc.m_flNextRangedAttack = 0.0;
 			}
 		}
 	}

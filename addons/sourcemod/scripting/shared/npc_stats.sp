@@ -63,7 +63,7 @@ static float f_DelayComputingOfPath[MAXENTITIES];
 static float f_PredictPos[MAXENTITIES][3];
 static float f_PredictDuration[MAXENTITIES];
 static float f_UnstuckSuckMonitor[MAXENTITIES];
-static int i_TargetToWalkTo[MAXENTITIES];
+int i_TargetToWalkTo[MAXENTITIES];
 float f_TargetToWalkToDelay[MAXENTITIES];
 
 static int i_WasPathingToHere[MAXENTITIES];
@@ -251,6 +251,7 @@ void OnMapStart_NPC_Base()
 	Zero(b_PlayerIsInAnotherPart);
 	Zero(b_EntityIsStairAbusing);
 	Zero(f_PredictDuration);
+	Zero(flNpcCreationTime);
 	Zero2(f_PredictPos);
 	
 	PrecacheEffect("ParticleEffect");
@@ -392,6 +393,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		b_ThisWasAnNpc[npc] = true;
 		b_NpcHasDied[npc] = false;
 		i_FailedTriesUnstuck[npc] = 0;
+		flNpcCreationTime[npc] = GetGameTime();
 		DispatchSpawn(npc); //Do this at the end :)
 		Hook_DHook_UpdateTransmitState(npc);
 		Check_For_Team_Npc(npc);
@@ -1326,15 +1328,19 @@ methodmap CClotBody < CBaseCombatCharacter
 		float GametimeNpc = GetGameTime(this.index);
 		speed_for_return *= fl_Extra_Speed[this.index];
 		
+#if defined RTS
+		speed_for_return *= RTS_GameSpeed();
+#endif
+
 		bool Is_Boss = true;
 #if defined ZR
 		if(IS_MusicReleasingRadio() && !b_IsAlliedNpc[this.index])
 			speed_for_return *= 0.9;
-#endif
 		if(i_CurrentEquippedPerk[this.index] == 4)
 		{
 			speed_for_return *= 1.25;
 		}
+#endif
 		if(b_npcspawnprotection[this.index])
 		{
 			speed_for_return *= 1.35;
@@ -5483,10 +5489,15 @@ public void NpcBaseThink(int iNPC)
 		NpcDrawWorldLogic(iNPC);
 		f_TextEntityDelay[iNPC] = GetGameTime() + 0.25;
 		Npc_DebuffWorldTextUpdate(npc);
-		Npc_BossHealthBar(npc);
 		IsEntityInvincible_Shield(iNPC);
+#if defined RTS
+		RTS_NPCHealthBar(npc);
+#else
+		Npc_BossHealthBar(npc);
+#endif
 	}
 
+#if defined ZR
 	if(i_CurrentEquippedPerk[iNPC] == 1 && f_QuickReviveHealing[iNPC] < GetGameTime())
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
@@ -5515,7 +5526,8 @@ public void NpcBaseThink(int iNPC)
 			}
 		}
 	}
-	
+#endif
+
 	if(b_EntityInCrouchSpot[iNPC])
 	{
 		if(!b_NpcResizedForCrouch[iNPC])
@@ -8870,6 +8882,8 @@ float NavAreaTravelDistance( const Vector &startPos, const Vector &goalPos, Cost
 
 #endif // _CS_NAV_PATHFIND_H_
 */
+
+#if !defined RTS
 public void Npc_BossHealthBar(CClotBody npc)
 {
 	if(b_IsEntityNeverTranmitted[npc.index])
@@ -8881,9 +8895,6 @@ public void Npc_BossHealthBar(CClotBody npc)
 		return;	
 	}
 	
-#if defined RTS
-	int NpcTypeDefine = 1;
-#else
 	int NpcTypeDefine = 0;
 	if(b_thisNpcIsABoss[npc.index] || (i_NpcInternalId[npc.index] == CITIZEN && !b_IsCamoNPC[npc.index] && !b_ThisEntityIgnored[npc.index]))
 	{
@@ -8893,7 +8904,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 	{
 		NpcTypeDefine = 2;
 	}
-#endif
+
 	if(NpcTypeDefine == 0)
 	{
 		if(IsValidEntity(npc.m_iTextEntity5))
@@ -8943,6 +8954,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 		npc.m_iTextEntity5 = TextEntity;	
 	}
 }
+#endif	// Non-RTS
 
 public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 {
