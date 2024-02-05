@@ -1723,6 +1723,7 @@ void ArkantosSayWords()
 
 void ArkantosSayWordsAngry()
 {
+	RaidModeTime += 30.0;
 	switch(GetRandomInt(0,3))
 	{
 		case 0:
