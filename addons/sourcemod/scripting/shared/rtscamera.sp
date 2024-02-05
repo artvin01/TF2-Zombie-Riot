@@ -874,7 +874,13 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 		for(int i; i < length; i++)
 		{
 			int entity = EntRefToEntIndex(Selected[client].Get(i));
+
+#if defined RTS
 			if(entity != -1 && UnitBody_CanControl(client, entity))
+#else
+			if(entity != -1)
+#endif
+
 			{
 				SmiteNpcToDeath(entity);
 				if(!holding[Key_Ctrl])
@@ -1197,12 +1203,15 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 		{
 			cursor = CURSOR_SELECTABLE;
 
+#if defined RTS
 			if(UnitBody_CanControl(client, HoveringOver[client]))
+#endif
 			{
 				// Green, Your's
 				color[0] = 0;
 				color[2] = 0;
 			}
+#if defined RTS
 			else if(UnitBody_IsAlly(client, HoveringOver[client]))
 			{
 				// Yellow, Ally's
@@ -1214,6 +1223,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 				color[1] = 0;
 				color[2] = 0;
 			}
+#endif
 		}
 		else if(Selected[client] && NextMoveType[client])	// Has selected units
 		{
@@ -1319,7 +1329,7 @@ static void HighlightSelectedUnits(int client)
 	}
 }
 
-static void MoveSelectedUnits(int client, const float vecMovePos[3], int target)
+static stock void MoveSelectedUnits(int client, const float vecMovePos[3], int target)
 {
 	if(Selected[client])
 	{
@@ -1888,7 +1898,7 @@ static int InputToKey(int client, const char[] input, any ...)
 	return -1;
 }
 
-bool RTSCamera_IsUnitSelectedBy(int entity, int client)
+stock bool RTSCamera_IsUnitSelectedBy(int entity, int client)
 {
 	return HoveringOver[client] == entity || (Selected[client] && Selected[client].FindValue(EntIndexToEntRef(entity)) != -1);
 }
@@ -1920,14 +1930,17 @@ static void SelectUnit(int client, int entity)
 	{
 		Selected[client] = new ArrayList();
 
+#if defined RTS
 		if(UnitBody_CanControl(client, entity))
 			UnitBody_PlaySound(entity, client, Sound_Select);
+#endif
+
 	}
 
 	Selected[client].Push(EntIndexToEntRef(entity));
 }
 
-static bool UnitEntityIterator(int client, int &entity, bool villagers)
+static stock bool UnitEntityIterator(int client, int &entity, bool villagers)
 {
 	entity++;
 	for(; entity < MAXENTITIES; entity++)
