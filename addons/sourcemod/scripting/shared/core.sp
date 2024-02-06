@@ -1187,6 +1187,7 @@ int Armor_Wearable[MAXTF2PLAYERS];
 #include "shared/wand_projectile.sp"
 #include "shared/viewchanges.sp"
 #include "shared/store.sp"
+#include "shared/teuton_sound_override.sp"
 #endif
 
 #include "shared/attributes.sp"
@@ -1202,7 +1203,6 @@ int Armor_Wearable[MAXTF2PLAYERS];
 #include "shared/rtscamera.sp"
 #include "shared/sdkcalls.sp"
 #include "shared/sdkhooks.sp"
-#include "shared/teuton_sound_override.sp"
 #include "shared/stocks.sp"
 
 #include "shared/baseboss_lagcompensation.sp"
@@ -1802,7 +1802,9 @@ public void OnClientDisconnect(int client)
 	KillFeed_ClientDisconnect(client);
 	RTSCamera_ClientDisconnect(client);
 
-#if !defined RTS
+#if defined RTS
+	RTS_ClientDisconnect(client);
+#else
 	Store_ClientDisconnect(client);
 #endif
 
@@ -1878,9 +1880,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 #endif
 
 #if defined RTS
-	if(RTS_PlayerRunCmd(client, weapon))
-		return Plugin_Changed;
-	
+	RTS_PlayerRunCmd(client);
 #else
 	#if defined ZR
 	Escape_PlayerRunCmd(client);
