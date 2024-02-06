@@ -1161,9 +1161,13 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 				SelectUnit(client, HoveringOver[client]);
 			}
 
-			RTS_UpdateMenu(client);
 			RemoveSelectBeams(client);
 			InSelectDrag[client] = false;
+
+#if defined RTS
+			RTS_UpdateMenu(client);
+#endif
+
 		}
 	}
 
