@@ -285,7 +285,7 @@ stock float ZR_GetGameTime(int entity = 0)
 		float speed = RTS_GameSpeed();
 		if(speed != 1.0)
 		{
-			float lifetime = flNpcCreationTime[entity] - gameTime;
+			float lifetime = gameTime - flNpcCreationTime[entity];
 			gameTime += lifetime * (speed - 1.0);
 		}
 #endif

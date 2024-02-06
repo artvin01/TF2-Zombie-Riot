@@ -89,6 +89,10 @@ void Configs_ConfigsExecuted()
 	LoadSoundScript(buffer);
 #endif
 
+#if defined RTS
+	RTS_ConfigsSetup();
+#endif
+
 	delete kv;
 
 #if !defined RTS

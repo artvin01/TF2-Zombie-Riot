@@ -1117,8 +1117,13 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					
 					damagetype &= ~DMG_CRIT;
 				}
-			}	
+			}
 		}
+		
+#if defined RTS
+		UnitBody_TakeDamage(victim, damage, damagetype);
+#endif
+
 		NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 		{
@@ -1133,6 +1138,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				}
 			}
 #endif
+
 			if(attacker <= MaxClients && attacker > 0)
 			{
 				if(WeaponWasValid)
@@ -1143,7 +1149,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 		}
 	}
-
 
 	OnTakeDamageBleedNpc(victim, attacker, inflictor, damage, damagetype, weapon, damagePosition, GameTime);
 	npcBase.m_vecpunchforce(damageForce, true);

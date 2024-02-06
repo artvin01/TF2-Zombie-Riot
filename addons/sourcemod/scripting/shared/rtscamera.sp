@@ -311,7 +311,7 @@ public Action RTSCamera_CommandMenu(int client, int args)
 {
 	if(client)
 	{
-		ShowMenu(client, 0);
+		RTSCamera_ShowMenu(client, 0);
 	}
 	return Plugin_Handled;
 }
@@ -325,7 +325,7 @@ public Action RTSCamera_CommandToggle(int client, int args)
 	return Plugin_Handled;
 }
 
-static void ShowMenu(int client, int page)
+void RTSCamera_ShowMenu(int client, int page)
 {
 	SetGlobalTransTarget(client);
 	Menu menu = new Menu(RTSCamera_ShowMenuH);
@@ -465,11 +465,7 @@ static void ShowMenu(int client, int page)
 				FormatEx(buffer, sizeof(buffer), "%t", "Valid Key Info 2");
 				menu.AddItem("-1", buffer, ITEMDRAW_DISABLED);
 
-#if defined RTS
 				FormatEx(buffer, sizeof(buffer), "%t", "Valid Key Info 3");
-#else
-				FormatEx(buffer, sizeof(buffer), "%t", "Valid Key Info 3 ZR");
-#endif
 				menu.AddItem("-1", buffer, ITEMDRAW_DISABLED);
 
 				menu.ExitBackButton = true;
@@ -497,7 +493,7 @@ public int RTSCamera_ShowMenuH(Menu menu, MenuAction action, int client, int cho
 		{
 			BindingKey[client] = -1;
 			if(choice == MenuCancel_ExitBack)
-				ShowMenu(client, 0);
+				RTSCamera_ShowMenu(client, 0);
 		}
 		case MenuAction_Select:
 		{
@@ -613,7 +609,7 @@ public int RTSCamera_ShowMenuH(Menu menu, MenuAction action, int client, int cho
 				}
 			}
 
-			ShowMenu(client, option);
+			RTSCamera_ShowMenu(client, option);
 		}
 	}
 
@@ -858,17 +854,25 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 
 	if(pressed[Key_Escape])
 	{
+#if defined RTS
+		if(NextMoveType[client] || BuildMode[client])
+		{
+			NextMoveType[client] = 0;
+			BuildMode[client] = 0;
+			RTS_UpdateMenu(client);
+		}
+#else
 		if(NextMoveType[client])
 		{
 			NextMoveType[client] = 0;
 		}
+#endif
 		else
 		{
-			delete Selected[client];
+			ClearSelected(client);
 		}
 	}
-
-	if(pressed[Key_Delete] && Selected[client])
+	else if(pressed[Key_Delete] && Selected[client])
 	{
 		int length = Selected[client].Length;
 		for(int i; i < length; i++)
@@ -892,6 +896,11 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 	// Highlight all selected units
 	HighlightSelectedUnits(client);
 
+#if defined RTS
+	if(pressed[Key_Delete] && Selected[client])
+		RTS_UpdateMenu(client);
+#endif
+
 	if(holding[Key_ZoomIn] || holding[Key_ZoomOut] || holding[Key_AdjustCamera])
 	{
 		return;
@@ -900,17 +909,44 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 	if(Selected[client])
 	{
 #if defined RTS
-		if(pressed[Key_Attack])
+		for(int a = Key_Skill1; a <= Key_Alt5; a++)
 		{
-			NextMoveType[client] = Command_Attack;
-		}
-		else if(pressed[Key_Stand])
-		{
-			NextMoveType[client] = Command_HoldPos;
-		}
-		else if(pressed[Key_Patrol])
-		{
-			NextMoveType[client] = Command_Patrol;
+			if(pressed[a])
+			{
+				bool triggered;
+				int length = Selected[client].Length;
+				for(int b; b < length; b++)
+				{
+					int entity = EntRefToEntIndex(Selected[client].Get(b));
+					if(entity != -1 && UnitBody_CanControl(client, entity))
+					{
+						triggered = UnitBody_TriggerSkill(entity, client, a);
+						if(triggered)
+							break;
+					}
+				}
+
+				if(triggered)
+				{
+					RTS_UpdateMenu(client);
+				}
+				else
+				{
+					switch(a)
+					{
+						case Key_Attack:
+							NextMoveType[client] = Command_Attack;
+						
+						case Key_Stand:
+							NextMoveType[client] = Command_HoldPos;
+						
+						case Key_Patrol:
+							NextMoveType[client] = Command_Patrol;
+					}
+				}
+
+				break;
+			}
 		}
 #elseif defined ZR
 		if(pressed[Key_Attack])
@@ -931,14 +967,11 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 	if(pressed[Key_SelectAll])
 	{
 		if(!holding[Key_Ctrl])
-			delete Selected[client];
+			ClearSelected(client);
 		
 		int entity = MaxClients;
 		while(UnitEntityIterator(client, entity, false))
 		{
-			if(Selected[client] && Selected[client].FindValue(EntIndexToEntRef(entity)) != -1)
-				continue;
-			
 			SelectUnit(client, entity);
 		}
 	}
@@ -946,7 +979,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 	if(pressed[Key_IdleWorker])
 	{
 		if(!holding[Key_Ctrl])
-			delete Selected[client];
+			ClearSelected(client);
 		
 #if defined ZR
 		for(int entity = MaxClients + 1; entity < MAXENTITIES; entity++)
@@ -954,9 +987,6 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(!b_NpcHasDied[entity] && i_NpcInternalId[entity] == BARRACKS_VILLAGER && npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
 			{
-				if(Selected[client] && Selected[client].FindValue(EntIndexToEntRef(entity)) != -1)
-					continue;
-				
 				SelectUnit(client, entity);
 			}
 		}
@@ -1078,7 +1108,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 		if(InSelectDrag[client])
 		{
 			if(!holding[Key_Ctrl])
-				delete Selected[client];
+				ClearSelected(client);
 
 			//if(GetVectorDistance(SelectionVerticies[client][1], SelectionVerticies[client][3], true) > 0.0)
 			if(SelectionVerticies[client][1][0] != SelectionVerticies[client][3][0] ||
@@ -1126,11 +1156,12 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 			else if(HoveringOver[client] != INVALID_ENT_REFERENCE)
 			{
 				if(!holding[Key_Ctrl])
-					delete Selected[client];
+					ClearSelected(client);
 				
 				SelectUnit(client, HoveringOver[client]);
 			}
 
+			RTS_UpdateMenu(client);
 			RemoveSelectBeams(client);
 			InSelectDrag[client] = false;
 		}
@@ -1212,7 +1243,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 				color[2] = 0;
 			}
 #if defined RTS
-			else if(UnitBody_IsAlly(client, HoveringOver[client]))
+			else if(UnitBody_IsEntAlly(client, HoveringOver[client]))
 			{
 				// Yellow, Ally's
 				color[2] = 0;
@@ -1325,7 +1356,7 @@ static void HighlightSelectedUnits(int client)
 		}
 
 		if(!length)
-			delete Selected[client];
+			ClearSelected(client);
 	}
 }
 
@@ -1588,7 +1619,7 @@ static void DisableCamera(int client)
 	FocusRef[client] = INVALID_ENT_REFERENCE;
 
 	RemoveSelectBeams(client);
-	delete Selected[client];
+	ClearSelected(client);
 	HoveringOver[client] = -1;
 
 	//SetEntProp(client, Prop_Send, "m_iFOV", LastFOV[client]);
@@ -1829,7 +1860,7 @@ static void BindKey(int client, const char[] input, any ...)
 
 	for(int i; i < Key_MAX; i++)
 	{
-		if(BindingKey[client] != i && KeyBinds[client][i])
+		if(BindingKey[client] != i && StrEqual(KeyBinds[client][i], KeyBinds[client][BindingKey[client]]))
 		{
 			strcopy(KeyBinds[client][i], sizeof(KeyBinds[][]), "<unbound>");
 			break;
@@ -1838,7 +1869,7 @@ static void BindKey(int client, const char[] input, any ...)
 
 	BindingKey[client] = -1;
 	SaveKeybinds(client);
-	ShowMenu(client, 9);
+	RTSCamera_ShowMenu(client, 9);
 }
 
 static void LoadKeybinds(int client)
@@ -1898,12 +1929,38 @@ static int InputToKey(int client, const char[] input, any ...)
 	return -1;
 }
 
+static void ClearSelected(int client)
+{
+	delete Selected[client];
+
+#if defined RTS
+	BuildMode[client] = 0;
+	RTS_UpdateMenu(client);
+#endif
+}
+
 stock bool RTSCamera_IsUnitSelectedBy(int entity, int client)
 {
 	return HoveringOver[client] == entity || (Selected[client] && Selected[client].FindValue(EntIndexToEntRef(entity)) != -1);
 }
 
-static bool IsSelectableUnitEntity(int client, int entity)
+stock bool RTSCamera_HoldingCtrl(int client)
+{
+	return HoldPress[client][Key_Ctrl];
+}
+
+stock ArrayList RTSCamera_GetSelected(int client)
+{
+	return Selected[client];
+}
+
+stock void RTSCamera_SetSelected(int client, ArrayList list)
+{
+	delete Selected[client];
+	Selected[client] = list;
+}
+
+static stock bool IsSelectableUnitEntity(int client, int entity)
 {
 	if(entity > MaxClients && entity < sizeof(b_NpcHasDied) && !b_NpcHasDied[entity])
 	{
@@ -1926,6 +1983,9 @@ static bool IsSelectableUnitEntity(int client, int entity)
 
 static void SelectUnit(int client, int entity)
 {
+	if(Selected[client] && Selected[client].FindValue(EntIndexToEntRef(entity)) != -1)
+		return;
+	
 	if(!Selected[client])
 	{
 		Selected[client] = new ArrayList();

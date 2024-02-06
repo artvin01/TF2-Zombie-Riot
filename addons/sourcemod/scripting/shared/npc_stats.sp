@@ -120,7 +120,11 @@ public Action Command_PetMenu(int client, int args)
 	char buffer[64];
 	GetCmdArg(3, buffer, sizeof(buffer));
 
-	bool ally;
+#if defined RTS
+	bool ally = true;
+#else
+	bool ally = false;
+#endif
 	if(args > 3)	//data
 		ally = view_as<bool>(GetCmdArgInt(4));
 	
@@ -4520,7 +4524,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			}
 
 #if defined RTS
-			if(UnitBody_IsAlly(index, enemy))
+			if(UnitBody_IsEntAlly(index, enemy))
 			{
 				return false;
 			}
@@ -4616,9 +4620,7 @@ stock int GetClosestTargetRTS(int entity,
   		Function ExtraValidityFunction = INVALID_FUNCTION)
 #endif
 {
-#if defined RTS
-	int searcher_team = view_as<UnitBody>(entity).m_hOwner; //do it only once lol
-#else
+#if !defined RTS
 	int searcher_team = GetEntProp(entity, Prop_Send, "m_iTeamNum"); //do it only once lol
 #endif
 	if(EntityLocation[2] == 0.0)
@@ -4702,7 +4704,7 @@ stock int GetClosestTargetRTS(int entity,
 #if defined RTS
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
-					if(UnitBody_IsAlly(searcher_team, entity_close))
+					if(UnitBody_IsEntAlly(entity, entity_close))
 						continue;
 #else
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
@@ -4990,6 +4992,10 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, const float Ent
 	else
 #endif	// Non-RTS
 	{
+#if defined RTS
+		float distance_limit = fldistancelimit * fldistancelimit;
+#endif
+
 		float TargetDistance = 0.0;
 		int target;
 		static float TargetLocation[3]; 
@@ -5018,10 +5024,8 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, const float Ent
 				4: buildings
 			*/
 
-#if defined RTS
+#if !defined RTS
 			float distance_limit = fldistancelimit;
-#else
-			float distance_limit;
 			switch(GetClosestTarget_Enemy_Type[i])
 			{
 				case 1:
@@ -5045,9 +5049,9 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, const float Ent
 					distance_limit = 99999.9;
 				}
 			}
-#endif
 
 			distance_limit *= distance_limit;
+#endif	// Non-RTS
 
 			if(distanceVector < distance_limit && MinimumDistance < distanceVector)
 			{

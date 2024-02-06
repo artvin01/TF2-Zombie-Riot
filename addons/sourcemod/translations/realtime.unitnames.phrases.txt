@@ -1,0 +1,11 @@
+"Phrases"
+{
+	"nothing"
+	{
+		"en" 		"Example Text!"
+	}
+	"Militia"
+	{
+		"en" 		"Militia"
+	}
+}

@@ -54,6 +54,11 @@ methodmap Militia < EmpireBody
 		npc.m_flVisionRange = 300.0;
 		npc.m_flEngageRange = 300.0;
 
+		StatEnum stats;
+		stats.Damage = 4;
+		stats.RangeArmor = 1;
+		npc.SetStats(stats);
+
 		npc.m_flHeadshotCooldown = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -92,7 +97,7 @@ static void ClotThink(int entity)
 				WorldSpaceCenter(target, vecTarget);
 				npc.FaceTowards(vecTarget, 20000.0);
 				
-				SDKHooks_TakeDamage(target, npc.index, npc.index, 4.0, DMG_CLUB, -1, _, vecTarget);
+				npc.DealDamage(target, _, DMG_CLUB, _, vecTarget);
 				npc.PlayMeleeHitSound();
 			}
 
