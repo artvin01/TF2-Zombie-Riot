@@ -275,7 +275,7 @@
 	{
 		"en" 		"Combine Deutsch Ritter"
 		"ru" 		"Немецкий комбайн-рыцарь"
-		"pt"		"Deutch Ritter da Combine"
+		"pt"		"Deutsch Ritter da Combine"
 		"nl"		"Combine Duitse Ridder"
 	}
 	"X10 Spy Main"
