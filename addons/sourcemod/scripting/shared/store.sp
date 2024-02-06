@@ -3120,6 +3120,10 @@ static void MenuPage(int client, int section)
 					
 					bool fullSell = (item.BuyWave[client] == Waves_GetRound());
 					bool canSell = (!item.ChildKit && item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client] > 0));
+					if(item.GregOnlySell == 2)
+					{
+						canSell = false;
+					}
 					if(item.Equipped[client] && info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
 					{
 						int cost = AmmoData[info.Ammo][0] * 10;
@@ -4141,6 +4145,11 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									item.BuyPrice[client] = info.Cost;
 									item.RogueBoughtRecently[client] += 1;
 									item.Sell[client] = ItemSell(base, info.Cost);
+									if(item.GregOnlySell == 2)
+									{
+										item.BuyPrice[client] = 0;
+										item.Sell[client] = 0;
+									}
 									item.BuyWave[client] = Rogue_GetRoundScale();
 									item.Equipped[client] = false;
 
