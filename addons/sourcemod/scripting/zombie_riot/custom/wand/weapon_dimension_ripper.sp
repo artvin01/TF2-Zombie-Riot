@@ -3,7 +3,8 @@
 
 #define SOUND_WAND_SHOT_DIM	"misc/doomsday_lift_stop.wav"
 #define SOUND_DIM_IMPACT "weapons/cow_mangler_explosion_normal_01.wav"
-#define MAX_DIMENSION_CHARGE 15
+#define SOUND_ABILITY "misc/rd_points_return01.wav"
+#define MAX_DIMENSION_CHARGE 20
 static Handle h_TimerDimensionWeaponManagement[MAXPLAYERS+1]={null, ...};
 static int how_many_times_swinged[MAXTF2PLAYERS];
 static float f_DIMAbilityActive[MAXPLAYERS+1]={0.0, ...};
@@ -19,6 +20,7 @@ void Wand_Dimension_Map_Precache()
 {
 	PrecacheSound(SOUND_WAND_SHOT_DIM);
 	PrecacheSound(SOUND_DIM_IMPACT);
+	PrecacheSound(SOUND_ABILITY);
 }
 
 public void Enable_Dimension_Wand(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
@@ -76,11 +78,18 @@ public void Dimension_Cooldown_Logic(int client, int weapon)
 		{
 			if(f_DIMAbilityActive[client] < GetGameTime())
 			{
-				PrintHintText(client,"Dimension power [%i%/%i]", how_many_times_swinged[client], MAX_DIMENSION_CHARGE);
+				if(how_many_times_swinged[client] <= MAX_DIMENSION_CHARGE)
+				{
+					PrintHintText(client,"Dimension power [%i%/%i]", how_many_times_swinged[client], MAX_DIMENSION_CHARGE);
+				}
+				else
+				{
+					PrintHintText(client,"Summon Ready");
+				}
 			}
 			else
 			{
-				PrintHintText(client,"Summon Ready");
+				PrintHintText(client,"Hi ;D");
 			}
 			
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
@@ -187,6 +196,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				ParticleEffectAt(Dimension_Loc, "ghost_appearation", 1.0);
+				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
 				switch(GetRandomInt(1, 19))
 				{
 					case 1:
@@ -198,7 +208,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 2:
@@ -210,7 +220,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 3:
@@ -222,7 +232,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 4:
@@ -234,7 +244,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 5:
@@ -247,7 +257,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 6:
@@ -260,7 +270,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 7:
@@ -273,7 +283,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 8:
@@ -286,7 +296,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 9:
@@ -299,7 +309,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.23);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 10:
@@ -312,7 +322,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 11:
@@ -325,7 +335,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 12:
@@ -338,7 +348,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 13:
@@ -351,7 +361,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 14:
@@ -364,7 +374,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 15:
@@ -377,7 +387,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.215);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 16:
@@ -390,7 +400,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 17:
@@ -403,7 +413,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 18:
@@ -416,7 +426,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 19:
@@ -429,7 +439,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					default: //This should not happen
@@ -488,6 +498,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				ParticleEffectAt(Dimension_Loc, "ghost_appearation", 1.0);
+				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
 				switch(GetRandomInt(1, 36))
 				{
 					case 1:
@@ -499,7 +510,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 2:
@@ -511,7 +522,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 3:
@@ -523,7 +534,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 4:
@@ -535,7 +546,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 5:
@@ -548,7 +559,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 6:
@@ -561,7 +572,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 7:
@@ -574,7 +585,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 8:
@@ -587,7 +598,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 9:
@@ -600,7 +611,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.23);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 10:
@@ -613,7 +624,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 11:
@@ -626,7 +637,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 12:
@@ -639,7 +650,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 13:
@@ -652,7 +663,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 14:
@@ -665,7 +676,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 15:
@@ -678,7 +689,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.215);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 16:
@@ -691,7 +702,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 17:
@@ -704,7 +715,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 18:
@@ -717,7 +728,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 19:
@@ -730,7 +741,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 20:
@@ -743,7 +754,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 21:
@@ -756,7 +767,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 22:
@@ -769,7 +780,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 23:
@@ -782,7 +793,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.25);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 24:
@@ -795,7 +806,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 25:
@@ -808,7 +819,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 26:
@@ -821,7 +832,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 27:
@@ -834,7 +845,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 28:
@@ -847,7 +858,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 29:
@@ -860,7 +871,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 30:
@@ -873,7 +884,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 31:
@@ -886,7 +897,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 32:
@@ -899,7 +910,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 33:
@@ -912,7 +923,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 34:
@@ -925,7 +936,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 35:
@@ -938,7 +949,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 36:
@@ -951,7 +962,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					default: //This should not happen
@@ -1011,6 +1022,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				ParticleEffectAt(Dimension_Loc, "eyeboss_tp_player", 1.0);
+				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
 				switch(GetRandomInt(1, 16))
 				{
 					case 1:
@@ -1023,7 +1035,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 2:
@@ -1036,7 +1048,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 3:
@@ -1049,7 +1061,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 4:
@@ -1062,7 +1074,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 1.15);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 5:
@@ -1075,7 +1087,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 1.15);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 6:
@@ -1088,7 +1100,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 1.2);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 7:
@@ -1101,7 +1113,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 1.15);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 8:
@@ -1115,7 +1127,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 9:
@@ -1128,7 +1140,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 10:
@@ -1141,7 +1153,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) *0.15);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 11:
@@ -1154,7 +1166,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 12:
@@ -1167,7 +1179,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.25);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 13:
@@ -1180,7 +1192,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 14:
@@ -1193,7 +1205,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 15:
@@ -1206,7 +1218,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 16:
@@ -1219,7 +1231,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					default: //This should not happen
@@ -1279,6 +1291,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				ParticleEffectAt(Dimension_Loc, "eyeboss_tp_player", 1.0);
+				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
 				switch(GetRandomInt(1, 12))
 				{
 					case 1:
@@ -1291,7 +1304,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 2:
@@ -1304,7 +1317,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 3:
@@ -1317,7 +1330,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 4:
@@ -1330,7 +1343,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.25);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 5:
@@ -1343,7 +1356,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.25);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 6:
@@ -1356,7 +1369,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.2);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 7:
@@ -1369,7 +1382,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.115);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 8:
@@ -1383,7 +1396,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 9:
@@ -1396,7 +1409,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 10:
@@ -1409,7 +1422,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 11:
@@ -1422,7 +1435,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 12:
@@ -1435,7 +1448,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.23);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					default: //This should not happen
@@ -1495,6 +1508,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				ParticleEffectAt(Dimension_Loc, "utaunt_smoke_floor1_green", 1.0);
+				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
 				switch(GetRandomInt(1, 28))
 				{
 					case 1:
@@ -1507,7 +1521,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 2:
@@ -1520,7 +1534,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 3:
@@ -1534,7 +1548,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 4:
@@ -1547,7 +1561,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 5:
@@ -1560,7 +1574,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 6:
@@ -1573,7 +1587,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 7:
@@ -1586,7 +1600,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 8:
@@ -1599,7 +1613,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 9:
@@ -1612,7 +1626,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 10:
@@ -1625,7 +1639,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 11:
@@ -1638,7 +1652,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 12:
@@ -1651,7 +1665,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 13:
@@ -1664,7 +1678,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 14:
@@ -1677,7 +1691,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 15:
@@ -1690,7 +1704,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 16:
@@ -1703,7 +1717,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 17:
@@ -1716,7 +1730,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 18:
@@ -1729,7 +1743,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 19:
@@ -1742,7 +1756,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 20:
@@ -1755,7 +1769,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 21:
@@ -1768,7 +1782,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.2);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 22:
@@ -1781,7 +1795,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 23:
@@ -1794,7 +1808,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 24:
@@ -1807,7 +1821,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 25:
@@ -1820,7 +1834,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 26:
@@ -1833,7 +1847,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 27:
@@ -1846,7 +1860,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 28:
@@ -1859,7 +1873,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					default: //This should not happen
@@ -1919,6 +1933,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				ParticleEffectAt(Dimension_Loc, "utaunt_smoke_floor1_green", 1.0);
+				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
 				switch(GetRandomInt(1, 36))
 				{
 					case 1:
@@ -1931,7 +1946,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 2:
@@ -1944,7 +1959,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 3:
@@ -1958,7 +1973,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 4:
@@ -1971,7 +1986,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 5:
@@ -1984,7 +1999,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 6:
@@ -1997,7 +2012,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 7:
@@ -2010,7 +2025,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 8:
@@ -2023,7 +2038,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 9:
@@ -2036,7 +2051,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 10:
@@ -2049,7 +2064,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 11:
@@ -2062,7 +2077,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 12:
@@ -2075,7 +2090,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 13:
@@ -2088,7 +2103,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 14:
@@ -2101,7 +2116,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 15:
@@ -2114,7 +2129,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 16:
@@ -2127,7 +2142,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 17:
@@ -2140,7 +2155,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 18:
@@ -2153,7 +2168,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 19:
@@ -2166,7 +2181,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 20:
@@ -2179,7 +2194,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 21:
@@ -2192,7 +2207,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.2);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 22:
@@ -2205,7 +2220,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 23:
@@ -2218,7 +2233,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 24:
@@ -2231,7 +2246,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 25:
@@ -2244,7 +2259,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 26:
@@ -2257,7 +2272,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 27:
@@ -2270,7 +2285,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 28:
@@ -2283,7 +2298,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 29:
@@ -2296,7 +2311,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 30:
@@ -2309,7 +2324,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 31:
@@ -2322,7 +2337,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 32:
@@ -2335,7 +2350,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 33:
@@ -2349,7 +2364,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 34:
@@ -2362,7 +2377,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 35:
@@ -2375,7 +2390,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					default: //This should not happen
@@ -2435,6 +2450,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				ParticleEffectAt(Dimension_Loc, "npc_boss_bomb_alert", 1.0);
+				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
 				switch(GetRandomInt(1, 22))
 				{
 					case 1:
@@ -2447,7 +2463,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 2:
@@ -2460,7 +2476,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 3:
@@ -2473,7 +2489,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 4:
@@ -2486,7 +2502,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 5:
@@ -2499,7 +2515,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 6:
@@ -2512,7 +2528,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 7:
@@ -2525,7 +2541,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 8:
@@ -2538,7 +2554,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 9:
@@ -2551,7 +2567,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 10:
@@ -2564,7 +2580,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 11:
@@ -2577,7 +2593,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 12:
@@ -2590,7 +2606,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 13:
@@ -2603,7 +2619,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 14:
@@ -2617,7 +2633,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 15:
@@ -2630,7 +2646,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 16:
@@ -2643,7 +2659,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 17:
@@ -2656,7 +2672,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 18:
@@ -2669,7 +2685,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 19:
@@ -2682,7 +2698,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 20:
@@ -2695,7 +2711,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.125);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 21:
@@ -2708,7 +2724,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 22:
@@ -2721,7 +2737,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					default: //This should not happen
@@ -2781,6 +2797,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				ParticleEffectAt(Dimension_Loc, "npc_boss_bomb_alert", 1.0);
+				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
 				switch(GetRandomInt(1,33))
 				{
 					case 1:
@@ -2793,7 +2810,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 2:
@@ -2806,7 +2823,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 3:
@@ -2819,7 +2836,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 4:
@@ -2832,7 +2849,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 5:
@@ -2845,7 +2862,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 6:
@@ -2858,7 +2875,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 7:
@@ -2871,7 +2888,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 8:
@@ -2884,7 +2901,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 9:
@@ -2897,7 +2914,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 10:
@@ -2910,7 +2927,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 11:
@@ -2923,7 +2940,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 12:
@@ -2936,7 +2953,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 13:
@@ -2949,7 +2966,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 14:
@@ -2963,7 +2980,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 15:
@@ -2976,7 +2993,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 16:
@@ -2989,7 +3006,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 17:
@@ -3002,7 +3019,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 18:
@@ -3015,7 +3032,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 19:
@@ -3028,7 +3045,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 20:
@@ -3041,7 +3058,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.225);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 21:
@@ -3054,7 +3071,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 22:
@@ -3067,7 +3084,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 23:
@@ -3080,7 +3097,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 24:
@@ -3093,7 +3110,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 25:
@@ -3106,7 +3123,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 26:
@@ -3119,7 +3136,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 27:
@@ -3132,7 +3149,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 28:
@@ -3145,7 +3162,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 29:
@@ -3158,7 +3175,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 30:
@@ -3171,7 +3188,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 31:
@@ -3184,7 +3201,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 32:
@@ -3197,7 +3214,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 33:
@@ -3210,7 +3227,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					default: //This should not happen
@@ -3271,6 +3288,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				ParticleEffectAt(Dimension_Loc, "utaunt_constellations_blue_base", 1.0);
+				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
 				switch(GetRandomInt(1, 10))
 				{
 					case 1:
@@ -3283,7 +3301,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 2:
@@ -3296,7 +3314,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 3:
@@ -3309,7 +3327,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 4:
@@ -3322,7 +3340,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 5:
@@ -3335,7 +3353,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 6:
@@ -3348,7 +3366,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 7:
@@ -3361,7 +3379,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 8:
@@ -3374,7 +3392,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 9:
@@ -3387,7 +3405,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 10:
@@ -3400,7 +3418,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					default: //This should not happen
@@ -3460,6 +3478,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				ParticleEffectAt(Dimension_Loc, "utaunt_constellations_blue_base", 1.0);
+				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
 				switch(GetRandomInt(1, 26))
 				{
 					case 1:
@@ -3472,7 +3491,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 2:
@@ -3485,7 +3504,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 3:
@@ -3498,7 +3517,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 4:
@@ -3511,7 +3530,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 5:
@@ -3524,7 +3543,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 6:
@@ -3537,7 +3556,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 7:
@@ -3550,7 +3569,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 8:
@@ -3563,7 +3582,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 9:
@@ -3576,7 +3595,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 10:
@@ -3589,7 +3608,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 11:
@@ -3602,7 +3621,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 12:
@@ -3615,7 +3634,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 13:
@@ -3628,7 +3647,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 14:
@@ -3641,7 +3660,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 15:
@@ -3654,7 +3673,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 16:
@@ -3667,7 +3686,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 17:
@@ -3680,7 +3699,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 18:
@@ -3693,7 +3712,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.25);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 19:
@@ -3706,7 +3725,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 20:
@@ -3719,7 +3738,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 21:
@@ -3732,7 +3751,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 22:
@@ -3745,7 +3764,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 23:
@@ -3759,7 +3778,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 24:
@@ -3773,7 +3792,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 25:
@@ -3786,7 +3805,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 26:
@@ -3799,7 +3818,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					default: //This should not happen
@@ -3859,6 +3878,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				ParticleEffectAt(Dimension_Loc, "eyeboss_death_vortex", 1.5);
+				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
 				switch(GetRandomInt(1, 14))
 				{
 					case 1:
@@ -3871,7 +3891,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 2:
@@ -3884,7 +3904,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 3:
@@ -3897,7 +3917,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 4:
@@ -3910,7 +3930,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 5:
@@ -3923,7 +3943,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 6:
@@ -3936,7 +3956,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 7:
@@ -3949,7 +3969,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 8:
@@ -3962,7 +3982,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 9:
@@ -3975,7 +3995,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 10:
@@ -3988,7 +4008,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 11:
@@ -4001,7 +4021,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 12:
@@ -4014,7 +4034,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 13:
@@ -4027,7 +4047,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 14:
@@ -4040,7 +4060,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					default: //This should not happen
@@ -4100,6 +4120,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 				float Dimension_Loc[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				ParticleEffectAt(Dimension_Loc, "eyeboss_death_vortex", 1.5);
+				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
 				switch(GetRandomInt(1, 26))
 				{
 					case 1:
@@ -4112,7 +4133,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 2:
@@ -4125,7 +4146,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 3:
@@ -4138,7 +4159,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 4:
@@ -4151,7 +4172,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 5:
@@ -4164,7 +4185,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 6:
@@ -4177,7 +4198,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 7:
@@ -4190,7 +4211,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 8:
@@ -4203,7 +4224,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 9:
@@ -4216,7 +4237,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 10:
@@ -4229,7 +4250,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 11:
@@ -4242,7 +4263,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 12:
@@ -4255,7 +4276,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 13:
@@ -4268,7 +4289,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 14:
@@ -4281,7 +4302,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 15:
@@ -4295,7 +4316,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 16:
@@ -4308,7 +4329,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 17:
@@ -4321,7 +4342,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 18:
@@ -4334,7 +4355,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 19:
@@ -4347,7 +4368,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 20:
@@ -4360,7 +4381,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 21:
@@ -4373,7 +4394,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 22:
@@ -4386,7 +4407,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 23:
@@ -4399,7 +4420,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 24:
@@ -4412,7 +4433,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 25:
@@ -4425,7 +4446,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					case 26:
@@ -4438,7 +4459,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(70.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					default: //This should not happen
