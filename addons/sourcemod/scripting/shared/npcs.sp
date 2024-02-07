@@ -1053,7 +1053,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #if defined RPG
 			OnTakeDamageRpgAgressionOnHit(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition,damagecustom, GameTime);
 #endif		
-			OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype);
+			OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, _,weapon);
 
 #if defined ZR
 			VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage, damagetype,i_HexCustomDamageTypes[victim]);
@@ -2554,7 +2554,7 @@ stock void OnTakeDamageRpgAgressionOnHit(int victim, int &attacker, int &inflict
 }
 #endif
 
-void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int &damagetype, bool trueArmorOnly = false)
+void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int &damagetype, bool trueArmorOnly = false, int weapon = 0)
 {
 	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
 	{
@@ -2574,8 +2574,20 @@ void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int
 				damage *= 0.85;
 			}
 #endif
-			damage *= fl_MeleeArmor[victim];
-			damage *= fl_Extra_MeleeArmor[victim];	
+			float TotalMeleeRes = 1.0;
+			TotalMeleeRes *= fl_MeleeArmor[victim];
+			TotalMeleeRes *= fl_Extra_MeleeArmor[victim];	
+			if(IsValidEntity(weapon))
+			{
+				if(i_CustomWeaponEquipLogic[weapon] == WEAPON_TEUTON_DEAD)
+				{
+					if(TotalMeleeRes > 1.0)
+					{
+						TotalMeleeRes = 1.0;
+					}
+				}
+			}
+			damage *= TotalMeleeRes;
 		}
 		damage *= fl_TotalArmor[victim];
 	}
