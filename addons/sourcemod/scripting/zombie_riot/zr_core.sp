@@ -1638,7 +1638,7 @@ stock void UpdatePlayerPoints(int client)
 {
 	int Points;
 	
-	Points += Healing_done_in_total[client] / 3;
+	Points += Healing_done_in_total[client] / 4;
 	
 	Points += RoundToCeil(Damage_dealt_in_total[client]) / 200;
 
@@ -1648,7 +1648,7 @@ stock void UpdatePlayerPoints(int client)
 	
 	Points += i_BarricadeHasBeenDamaged[client] / 65;
 
-	Points += i_PlayerDamaged[client] / 20;
+	Points += i_PlayerDamaged[client] / 5;
 	
 	Points += i_ExtraPlayerPoints[client] / 2;
 	

@@ -1256,14 +1256,20 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		}
 	}
 #if defined ZR
-	if(healer != reciever)
+	if(healer != reciever && HealOverThisDuration != 0.0)
 	{
 		if(healer > 0 && healer <= MaxClients)
 			Healing_done_in_total[healer] += RoundToNearest(HealTotal);
 	}
 #endif
 	if(HealOverThisDuration == 0.0)
-		return HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
+	{
+		int HealingDoneInt;
+		HealingDoneInt = HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
+		if(healer != reciever)
+			Healing_done_in_total[healer] += HealingDoneInt;
+		return HealingDoneInt;
+	}
 	else
 	{
 		float HealTotalTimer = HealOverThisDuration / 0.1;
