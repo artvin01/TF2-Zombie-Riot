@@ -1244,6 +1244,12 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 #if defined ZR
 		if(b_HealthyEssence)
 			HealTotal *= 1.25;
+		bool RegrowthBlock,camoblock;
+ 		Building_CamoOrRegrowBlocker(healer, camoblock, RegrowthBlock);
+		if(RegrowthBlock)
+		{
+			HealTotal *= 0.5;
+		}
 #endif
 
 		//Extra healing bonuses or penalty for all healing except absolute
