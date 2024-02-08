@@ -489,7 +489,7 @@ float f_TimeSinceLastInfraction;
 
 bool Stock_AcceptEntityInput(int dest, const char[] input, int activator=-1, int caller=-1, int outputid=0)
 {
-	if(!IsValidEntity(dest))
+	if(!IsValidEntity(dest) && dest != 0)
 	{
 		if(f_TimeSinceLastInfraction > GetEngineTime())
 		{

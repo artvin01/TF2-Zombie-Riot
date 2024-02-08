@@ -33,6 +33,7 @@ bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 char c_NpcCustomNameOverride[MAXENTITIES][255];
 int Shared_BEAM_Laser;
 int Shared_BEAM_Glow;
+int i_NpcOverrideAttacker[MAXENTITIES];
 #endif
 
 #if defined RPG
@@ -7767,6 +7768,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 #if defined ZR
 	i_SpawnProtectionEntity[entity] = -1;
 	i_TeamGlow[entity] = -1;
+	i_NpcOverrideAttacker[entity] = 0;
 	b_thisNpcHasAnOutline[entity] = false;
 	b_ThisNpcIsImmuneToNuke[entity] = false;
 	FormatEx(c_NpcCustomNameOverride[entity], sizeof(c_NpcCustomNameOverride[]), "");

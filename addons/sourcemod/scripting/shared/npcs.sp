@@ -2457,6 +2457,11 @@ bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &dam
 bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {
 	//we list off all on hit things that are neccecary, or absolute damage resistances that apply no matter what.
+	int AttackerOverride = EntRefToEntIndex(i_NpcOverrideAttacker[attacker]);
+	if(AttackerOverride > 0)
+	{
+		attacker = AttackerOverride;
+	}
 	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 	i_HasBeenBackstabbed[victim] = false;
 	if(f_TraceAttackWasTriggeredSameFrame[victim] != GameTime)
