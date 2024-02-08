@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define MELEE_RANGE_SQR	6500.0
+
 enum struct CommandEnum
 {
 	int Type;

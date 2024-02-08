@@ -1418,6 +1418,10 @@ public void OnPluginEnd()
 
 	RTSCamera_PluginEnd();
 	
+#if defined RTS
+	RTS_PluginEnd();
+#endif
+
 	/*
 	char classname[256];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
@@ -1490,7 +1494,9 @@ public void OnMapStart()
 	RPG_MapStart();
 #endif
 
-#if !defined RTS
+#if defined RTS
+	RTS_MapStart();
+#else
 	ViewChange_MapStart();
 	WandStocks_Map_Precache();
 	MapStart_CustomMeleePrecache();
@@ -3454,8 +3460,8 @@ static void MapStartResetAll()
 public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, Handle &item)
 {
 #if defined RTS
-	if(!RTS_InSetup())
-		return Plugin_Stop;
+	//if(!RTS_InSetup())
+	//	return Plugin_Stop;
 #else
 	if(!StrContains(classname, "tf_wear"))
 	{
