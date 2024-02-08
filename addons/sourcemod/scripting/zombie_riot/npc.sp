@@ -417,6 +417,8 @@ enum
 	INTERITUS_WINTER_IRRITATED_PERSON = 368,
 	THEDOCTOR_MINIBOSS				  = 369,
 
+	INTERITUS_ANARCHY_RANSACKER		  = 370,
+
 	MAX_NPC_TYPES	// Add entries above this line
 }
 
@@ -815,7 +817,8 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Frost Hunter",
 	"Skin Hunter",
 	"Irritated Person",
-	"The Doctor"
+	"The Doctor",
+	"Ransacker"
 };
 
 // See items.sp for IDs to names
@@ -1587,7 +1590,8 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_frost_hunter",
 	"npc_skin_hunter",
 	"npc_irritated_person",
-	"npc_doctor_special"
+	"npc_doctor_special",
+	"npc_ransacker"
 };
 
 void NPC_MapStart()
@@ -1868,6 +1872,7 @@ void NPC_MapStart()
 	WinterFrostHunter_OnMapStart_NPC();
 	WinterSkinHunter_OnMapStart_NPC();
 	WinterIrritatedPerson_OnMapStart_NPC();
+	AnarchyRansacker_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2952,6 +2957,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case THEDOCTOR_MINIBOSS:
 			entity = SpecialDoctor(client, vecPos, vecAng, ally,data);
+
+		case INTERITUS_ANARCHY_RANSACKER:
+			entity = AnarchyRansacker(client, vecPos, vecAng, ally);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -5208,3 +5216,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/winter/npc_skin_hunter.sp"
 #include "zombie_riot/npc/interitus/winter/npc_frost_hunter.sp"
 #include "zombie_riot/npc/interitus/winter/npc_irritated_person.sp"
+
+#include "zombie_riot/npc/interitus/anarchy/npc_ransacker.sp"
