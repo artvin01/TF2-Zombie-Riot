@@ -1051,7 +1051,14 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	{
 		damage *= 1.10;
 	}
-	
+	if(f_MultiDamageTaken[entity] != 1.0)
+	{
+		damage *= f_MultiDamageTaken[entity];
+	}
+	if(f_MultiDamageTaken_Flat[entity] != 1.0)
+	{
+		damage *= f_MultiDamageTaken_Flat[entity];
+	}
 	if(b_thisNpcIsABoss[attacker])
 	{
 		damage *= 1.5;

@@ -1662,6 +1662,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		float percentage = npc.m_flMeleeArmor * 100.0;
 		percentage *= fl_Extra_MeleeArmor[victim];
 		percentage *= fl_TotalArmor[victim];
+		if(f_MultiDamageTaken[victim] != 1.0)
+		{
+			percentage *= f_MultiDamageTaken[victim];
+		}
+		if(f_MultiDamageTaken_Flat[victim] != 1.0)
+		{
+			percentage *= f_MultiDamageTaken_Flat[victim];
+		}
 		int testvalue = 1;
 		OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
 
@@ -1694,6 +1702,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		float percentage = npc.m_flRangedArmor * 100.0;
 		percentage *= fl_Extra_RangedArmor[victim];
 		percentage *= fl_TotalArmor[victim];
+		if(f_MultiDamageTaken[victim] != 1.0)
+		{
+			percentage *= f_MultiDamageTaken[victim];
+		}
+		if(f_MultiDamageTaken_Flat[victim] != 1.0)
+		{
+			percentage *= f_MultiDamageTaken_Flat[victim];
+		}
 		int testvalue = 1;
 		OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
 
@@ -1905,6 +1921,14 @@ bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 0)
 	if(VausMagicaShieldLogicEnabled(victim))
 		return true;
 #endif
+	if(f_MultiDamageTaken[victim] != 1.0)
+	{
+		return true;
+	}
+	if(f_MultiDamageTaken_Flat[victim] != 1.0)
+	{
+		return true;
+	}	
 	float DamageTest = 1.0;
 	int testvalue = 1;
 	OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, DamageTest, testvalue, testvalue, GetGameTime());
