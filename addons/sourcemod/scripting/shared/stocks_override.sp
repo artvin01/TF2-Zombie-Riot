@@ -527,6 +527,11 @@ bool Stock_AcceptEntityInput(int dest, const char[] input, int activator=-1, int
 				}
 			}
 			LogStackTrace("We failed, man! Please look into this eventually!");
+			CPrintToChatAll("{crimson}[Zombie-Riot] UN-RECOVEABLE ERROR!!! All Enemies have been slain to prevent major issues, Raids will not give rewards!");
+			CPrintToChatAll("{crimson}[Zombie-Riot] UN-RECOVEABLE ERROR!!! All Enemies have been slain to prevent major issues, Raids will not give rewards!");
+			CPrintToChatAll("{crimson}[Zombie-Riot] UN-RECOVEABLE ERROR!!! All Enemies have been slain to prevent major issues, Raids will not give rewards!");
+			CPrintToChatAll("{crimson}[Zombie-Riot] UN-RECOVEABLE ERROR!!! All Enemies have been slain to prevent major issues, Raids will not give rewards!");
+			MaxInfractionsAcceptEntityInput = 0;
 		}
 		return false;
 	}

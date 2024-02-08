@@ -2285,7 +2285,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 
 		DispatchSpawn(item);
-		
 		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES);
 		SetEntityMoveType(item, MOVETYPE_NONE);
 		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);
@@ -2313,6 +2312,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		SetEntityCollisionGroup(item, 1);
 		SetEntProp(item, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntProp(item, Prop_Data, "m_nSolidType", 6); 
+
+		return item;
 	}
 
 	public int EquipItemSeperate(
