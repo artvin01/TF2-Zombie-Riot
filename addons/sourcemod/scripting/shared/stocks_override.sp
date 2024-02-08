@@ -29,7 +29,6 @@ bool Stock_IsValidEntity(int entity)
 
 #define IsValidEntity Stock_IsValidEntity
 
-
 #define KillTimer KILLTIMER_DONOTUSE_USE_DELETE
 
 /*
@@ -484,3 +483,54 @@ void Edited_EmitSoundToAll(const char[] sample,
 
 #define TF2Attrib_GetByDefIndex OLD_CODE_FIX_IT
 #define TF2Items_SetAttribute OLD_CODE_FIX_IT
+
+int MaxInfractionsAcceptEntityInput;
+float f_TimeSinceLastInfraction;
+
+bool Stock_AcceptEntityInput(int dest, const char[] input, int activator=-1, int caller=-1, int outputid=0)
+{
+	if(!IsValidEntity(dest))
+	{
+		if(f_TimeSinceLastInfraction > GetEngineTime())
+		{
+			MaxInfractionsAcceptEntityInput++;
+		}
+		else
+		{
+			MaxInfractionsAcceptEntityInput = 0;
+		}
+		f_TimeSinceLastInfraction = GetEngineTime() + 0.5;
+
+		if(MaxInfractionsAcceptEntityInput > 10)
+		{		
+			/*
+				too many infractions. slay all npcs no matter what, but do not grant bonuses if it was a raid.
+				this is an emergency, it might actually spam this very very often. In this case, we nuke all npcs immediently.
+				There is a rare bug where it sometimes just doesnt spawn the entity. such as NPC wearables.
+				too many infractions. slay all npcs no matter what, but do not grant bonuses if it was a raid.
+			*/
+			int entity = -1;
+			while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+			{
+				if(IsValidEntity(entity) && !b_IsAlliedNpc[entity])
+				{
+					if(entity != 0)
+					{
+						i_RaidGrantExtra[entity] = 0;
+						b_DissapearOnDeath[entity] = true;
+						b_DoGibThisNpc[entity] = true;
+						SmiteNpcToDeath(entity);
+						SmiteNpcToDeath(entity);
+						SmiteNpcToDeath(entity);
+						SmiteNpcToDeath(entity);
+					}
+				}
+			}
+			LogStackTrace("We failed, man! Please look into this eventually!");
+		}
+		return false;
+	}
+	return AcceptEntityInput(dest, input, activator, caller, outputid);
+}
+
+#define AcceptEntityInput Stock_AcceptEntityInput

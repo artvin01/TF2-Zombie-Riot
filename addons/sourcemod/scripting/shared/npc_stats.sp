@@ -2261,6 +2261,18 @@ methodmap CClotBody < CBaseCombatCharacter
 	float model_size = 1.0)
 	{
 		int item = CreateEntityByName("prop_dynamic_override");
+		if(!IsValidEntity(item))
+		{
+			//warning, warning!!!
+			//infinite loop this untill it works!
+			//Tf2 has a very very very low chance to fail to spawn a prop, because reasons!
+			return this.EquipItem(
+			attachment,
+			model,
+			anim,
+			skin,
+			model_size);
+		}
 		DispatchKeyValue(item, "model", model);
 
 		if(model_size == 1.0)
@@ -2301,8 +2313,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		SetEntityCollisionGroup(item, 1);
 		SetEntProp(item, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntProp(item, Prop_Data, "m_nSolidType", 6); 
-
-		return item;
 	}
 
 	public int EquipItemSeperate(
