@@ -4790,7 +4790,7 @@ public Action Dimension_KillNPC(Handle timer, int ref)
 
 
 
-float Npc_OnTakeDamage_DimensionalRipper(float damage ,int attacker, int victim)
+void Npc_OnTakeDamage_DimensionalRipper(int attacker, int victim)
 {
 	/*
 		++ add charge code xd
@@ -4803,5 +4803,4 @@ float Npc_OnTakeDamage_DimensionalRipper(float damage ,int attacker, int victim)
 	{
 		how_many_times_swinged[attacker] += 1;
 	}
-	return damage;
 }
