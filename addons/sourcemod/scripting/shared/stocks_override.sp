@@ -512,7 +512,11 @@ bool Stock_AcceptEntityInput(int dest, const char[] input, int activator=-1, int
 			int entity = -1;
 			while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
 			{
+#if defined ZR
 				if(IsValidEntity(entity) && !b_IsAlliedNpc[entity])
+#else
+				if(IsValidEntity(entity))
+#endif
 				{
 					if(entity != 0)
 					{

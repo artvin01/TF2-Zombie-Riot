@@ -1194,8 +1194,12 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 #if defined ZR
 	if(!b_NpcIsTeamkiller[attacker] && GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 		return;
+	int AttackerOverride = EntRefToEntIndex(i_NpcOverrideAttacker[attacker]);
+	if(AttackerOverride > 0)
+	{
+		attacker = AttackerOverride;
+	}		
 #endif
-		
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	if((Damageaftercalc > 0.0 || b_NpcIsInvulnerable[victim] || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 	{
@@ -2481,11 +2485,6 @@ bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &dam
 bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {
 	//we list off all on hit things that are neccecary, or absolute damage resistances that apply no matter what.
-	int AttackerOverride = EntRefToEntIndex(i_NpcOverrideAttacker[attacker]);
-	if(AttackerOverride > 0)
-	{
-		attacker = AttackerOverride;
-	}
 	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 	i_HasBeenBackstabbed[victim] = false;
 	if(f_TraceAttackWasTriggeredSameFrame[victim] != GameTime)
@@ -2606,6 +2605,7 @@ void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int
 			float TotalMeleeRes = 1.0;
 			TotalMeleeRes *= fl_MeleeArmor[victim];
 			TotalMeleeRes *= fl_Extra_MeleeArmor[victim];	
+#if defined ZR
 			if(IsValidEntity(weapon))
 			{
 				if(i_CustomWeaponEquipLogic[weapon] == WEAPON_TEUTON_DEAD)
@@ -2616,6 +2616,7 @@ void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int
 					}
 				}
 			}
+#endif
 			damage *= TotalMeleeRes;
 		}
 		damage *= fl_TotalArmor[victim];

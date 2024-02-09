@@ -1274,8 +1274,10 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 	{
 		int HealingDoneInt;
 		HealingDoneInt = HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
+#if defined ZR
 		if(healer != reciever && healer <= MaxClients)
 			Healing_done_in_total[healer] += HealingDoneInt;
+#endif
 		return HealingDoneInt;
 	}
 	else
