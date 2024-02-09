@@ -11,6 +11,8 @@
 // 140 * 140
 #define GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED 22500.0
 
+#define RAIDITEM_INDEX_WIN_COND 9999
+
 static float f_FactionCreditGain;
 static float f_FactionCreditGainReduction[MAXTF2PLAYERS];
 
@@ -2980,6 +2982,23 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 	
 	return entity;
 }	
+public void ZR_NpcTauntWin()
+{
+	for(int targ; targ<i_MaxcountNpc; targ++)
+	{
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		{
+			Function func = func_NPCFuncWin[baseboss_index];
+			if(func && func != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, func);
+				Call_PushCell(baseboss_index);
+				Call_Finish();
+			}
+		}
+	}
+}
 public void NPCDeath(int entity)
 {
 	for(int targ; targ<i_MaxcountNpc; targ++)

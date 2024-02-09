@@ -90,7 +90,8 @@ static bool b_RageAnimated[MAXENTITIES];
 static bool b_angered_twice[MAXENTITIES];
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
-
+bool AlreadySaidWin;
+bool AlreadySaidLastmann;
 
 static int Silvester_TE_Used;
 public void RaidbossSilvester_OnMapStart()
@@ -295,7 +296,9 @@ methodmap RaidbossSilvester < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
+		AlreadySaidWin = false;
+		AlreadySaidLastmann = false;
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Shared_Xeno_Duo);
 		
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -323,7 +326,7 @@ methodmap RaidbossSilvester < CClotBody
 		
 		npc.m_bThisNpcIsABoss = true;
 		
-		RaidModeTime = GetGameTime(npc.index) + 200.0;
+		RaidModeTime = GetGameTime(npc.index) + 10.0;
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		f_TalkDelayCheck = 0.0;
@@ -471,6 +474,50 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(iNPC);
 	
 	//Raidmode timer runs out, they lost.
+	if(LastMann && !AlreadySaidLastmann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			AlreadySaidLastmann = true;
+			npc.m_fbGunout = true;
+			if(!XenoExtraLogic())
+			{
+				switch(GetRandomInt(0,2))
+				{
+					case 0:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Give up and turn yourself in.");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Ready to listen?");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Maybe you just hate us?");
+					}
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,2))
+				{
+					case 0:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Death may be your only choice from here on out!");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: You're probably already infected, should kill you instead!");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Listening is too hard for you ******* isnt it?");
+					}
+				}				
+			}
+		}
+	}
 	if(RaidModeTime < GetGameTime())
 	{
 		int entity = CreateEntityByName("game_round_win"); 
@@ -480,6 +527,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		AcceptEntityInput(entity, "RoundWin");
 		Music_RoundEnd(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;
+		SharedTimeLossSilvesterDuo(npc.index);
 		SDKUnhook(npc.index, SDKHook_Think, RaidbossSilvester_ClotThink);
 	}
 
@@ -2671,4 +2719,79 @@ int IsSilvesterTransforming(int silvester)
 	}
 
 	return 3;
+}
+
+public void Raidmode_Shared_Xeno_Duo(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+	SDKUnhook(entity, SDKHook_Think, RaidbossSilvester_ClotThink);
+	SDKUnhook(entity, SDKHook_Think, RaidbossBlueGoggles_ClotThink);
+	if(AlreadySaidWin)
+		return;
+
+	AlreadySaidWin = true;
+
+	switch(i_NpcInternalId[entity])
+	{
+		case XENO_RAIDBOSS_SILVESTER:
+		{
+			if(XenoExtraLogic())
+			{
+				CPrintToChatAll("{gold}Silvester{default}: Maybe killing you off is better as listening aint your thing.");
+			}
+			else
+			{
+				CPrintToChatAll("{gold}Silvester{default}: Thats it! You're comming with us!");
+			}
+		}
+
+		case XENO_RAIDBOSS_SUPERSILVESTER:
+		{
+			if(XenoExtraLogic())
+			{
+				CPrintToChatAll("{gold}Silvester{default}: You're too stubborn.");
+			}
+			else
+			{
+				CPrintToChatAll("{gold}Silvester{default}: Maybe we should have thought of a better way to warn them.");
+			}
+		}
+
+		case XENO_RAIDBOSS_BLUE_GOGGLES:
+		{
+			if(XenoExtraLogic())
+			{
+				CPrintToChatAll("{darkblue}Blue Goggles{default}: Too far.");
+			}
+			else
+			{
+				CPrintToChatAll("{darkblue}Blue Goggles{default}: Way better then to die to {green}Him.");
+			}
+		}
+	}
+}
+
+void SharedTimeLossSilvesterDuo(int entity)
+{
+	float SelfPos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", SelfPos);
+	float AllyAng[3];
+	GetEntPropVector(entity, Prop_Data, "m_angRotation", AllyAng);
+	int Spawner_entity = GetRandomActiveSpawner();
+	if(IsValidEntity(Spawner_entity))
+	{
+		GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", SelfPos);
+		GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", AllyAng);
+	}
+	int SensalSpawn = Npc_Create(RAIDMODE_EXPIDONSA_SENSAL, -1, SelfPos, AllyAng, GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2, "duo_cutscene"); //can only be enemy
+	if(IsValidEntity(SensalSpawn))
+	{
+		if(GetEntProp(SensalSpawn, Prop_Send, "m_iTeamNum") != 2)
+		{
+			Zombies_Currently_Still_Ongoing += 1;
+		}
+		SetEntProp(SensalSpawn, Prop_Data, "m_iHealth", 100000000);
+		SetEntProp(SensalSpawn, Prop_Data, "m_iMaxHealth", 100000000);
+		CPrintToChatAll("{blue}Sensal{default}: Stop fighting, now. What is going on here?");
+	}
 }

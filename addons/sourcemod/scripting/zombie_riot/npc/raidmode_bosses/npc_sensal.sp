@@ -279,6 +279,11 @@ methodmap Sensal < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = 1;
 		}
+		bool cutscene = StrContains(data, "duo_cutscene") != -1;
+		if(cutscene)
+		{
+			i_RaidGrantExtra[npc.index] = 50;
+		}
 		
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -326,13 +331,17 @@ methodmap Sensal < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.7;
 		}
-		
-		Raidboss_Clean_Everyone();
-		Music_SetRaidMusic("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3", 218, true);
+		if(!cutscene)
+		{
+			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
+			Raidboss_Clean_Everyone();
+			Music_SetRaidMusic("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3", 218, true);
+		}
 		npc.m_iChanged_WalkCycle = -1;
 
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		npc.m_fbGunout = false;
 
 	//	Weapon
 	//	npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_rocketlauncher/c_rocketlauncher.mdl");
@@ -385,10 +394,70 @@ public void Sensal_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-	
+	if(i_RaidGrantExtra[npc.index] == 50)
+	{
+		npc.m_flSpeed = 660.0;
+		BlockLoseSay = true;
+		if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+		{
+			npc.m_iTarget = GetClosestAlly(npc.index);
+			npc.m_flGetClosestTargetTime = GetRandomRetargetTime();
+		}
+		if(IsValidAlly(npc.index, npc.m_iTarget))
+		{
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			if(flDistanceToTarget < npc.GetLeadRadius()) 
+			{
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+			}
+			else 
+			{
+				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				npc.StartPathing();
+			}
+		}
+		else
+		{
+			npc.m_flGetClosestTargetTime = 0.0;
+		}
+		return;
+	}
 	if(SensalTalkPostWin(npc))
 		return;
 
+	if(LastMann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			npc.m_fbGunout = true;
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{blue}Sensal{default}: You are the last one.");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{blue}Sensal{default}: None of you criminals are of any importants infront of {gold}Expidonsa{default}.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{blue}Sensal{default}: All your friends are gone. Submit to {gold}Expidonsa{default}.");
+				}
+			}
+		}
+	}
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		npc.AddActivityViaSequence("selectionMenu_Idle");
+		npc.SetCycle(0.01);
+		SDKUnhook(npc.index, SDKHook_Think, Sensal_ClotThink);
+		
+		CPrintToChatAll("{blue}Sensal{default}: Refusing to collaborate or even reason with {gold}Expidonsa{default} will result in termination.");
+		return;
+	}
 	if(RaidModeTime < GetGameTime())
 	{
 		int entity = CreateEntityByName("game_round_win"); //You loose.
@@ -397,8 +466,11 @@ public void Sensal_ClotThink(int iNPC)
 		DispatchSpawn(entity);
 		AcceptEntityInput(entity, "RoundWin");
 		Music_RoundEnd(entity);
+		npc.AddActivityViaSequence("selectionMenu_Idle");
+		npc.SetCycle(0.01);
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		SDKUnhook(npc.index, SDKHook_Think, Sensal_ClotThink);
+		CPrintToChatAll("{blue}Sensal{default}: You are under arrest. The Expidonsan elite forces will take you now.");
 		BlockLoseSay = true;
 	}
 
@@ -531,6 +603,10 @@ public Action Sensal_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 	return Plugin_Changed;
 }
+public void Raidmode_Expidonsa_Sensal_Win(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+}
 
 public void Sensal_NPCDeath(int entity)
 {
@@ -569,7 +645,15 @@ public void Sensal_NPCDeath(int entity)
 			RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
 		}					
 	}
-	
+	if(i_RaidGrantExtra[npc.index] == 50)
+	{
+		if(XenoExtraLogic())
+			CPrintToChatAll("{blue}Sensal{default}: This area is restricted for all of you.");
+		else
+			CPrintToChatAll("{blue}Sensal{default}: You all are comming with me.");
+			
+		return;
+	}
 	if(BlockLoseSay)
 		return;
 

@@ -63,6 +63,11 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	
 	Escape_RoundStart();
 	Waves_RoundStart();
+	if(event.GetInt("team") == 3)
+	{
+		//enemy team won due to timer or something else.
+		ZR_NpcTauntWin();
+	}
 #endif
 
 #if defined RPG

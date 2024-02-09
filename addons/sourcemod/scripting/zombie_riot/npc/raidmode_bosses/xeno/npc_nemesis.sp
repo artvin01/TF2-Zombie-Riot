@@ -183,6 +183,7 @@ methodmap RaidbossNemesis < CClotBody
 		//model originally from Roach, https://steamcommunity.com/sharedfiles/filedetails/?id=2053348633&searchtext=nemesis
 
 		//wave 75 xeno raidboss,should be extreamly hard, but still fair, that will be hard to do.
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Nemesis_Win);
 
 		i_NpcInternalId[npc.index] = XENO_RAIDBOSS_NEMESIS;
 		i_NpcWeight[npc.index] = 5;
@@ -279,7 +280,14 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	RaidbossNemesis npc = view_as<RaidbossNemesis>(iNPC);
 	
 	float gameTime = GetGameTime(npc.index);
-	
+	if(LastMann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			npc.m_fbGunout = true;
+			CPrintToChatAll("{green} The infection got all your friends... Run while you can.");
+		}
+	}
 	if(RaidModeTime < GetGameTime())
 	{
 		i_RaidGrantExtra[npc.index] = 0;
@@ -290,7 +298,9 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		AcceptEntityInput(entity, "RoundWin");
 		Music_RoundEnd(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;
+		CPrintToChatAll("{green} The infection proves too strong for you to resist as you join his side...");
 		SDKUnhook(npc.index, SDKHook_Think, RaidbossNemesis_ClotThink);
+		return;
 	}
 	if(npc.m_flNextRangedAttackHappening && npc.flXenoInfectedSpecialHurtTime - 0.45 < gameTime)
 	{
@@ -1665,4 +1675,19 @@ public Action Timer_Nemesis_Infect_Allies(Handle timer, DataPack pack)
 	pack.Position--;
 	pack.WriteCell(bleed_count-1, false);
 	return Plugin_Continue;
+}
+
+
+public void Raidmode_Nemesis_Win(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+	SDKUnhook(entity, SDKHook_Think, RaidbossNemesis_ClotThink);
+	if(XenoExtraLogic())
+	{
+		CPrintToChatAll("{snow}???{default}: That was too close, they cant get further, i trust you nemesis to annihilate anyone else left.");
+	}
+	else
+	{
+		CPrintToChatAll("{snow}???{default}: Good job nemesis, head back to the lab.");
+	}
 }

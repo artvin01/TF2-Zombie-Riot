@@ -2439,6 +2439,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		func_NPCOnTakeDamage[entity] = INVALID_FUNCTION;
 		func_NPCThink[entity] = INVALID_FUNCTION;
 		func_NPCDeathForward[entity] = INVALID_FUNCTION;
+		func_NPCFuncWin[entity] = INVALID_FUNCTION;
 		f3_VecTeleportBackSave_OutOfBounds[entity][0] = 0.0;
 		f3_VecTeleportBackSave_OutOfBounds[entity][1] = 0.0;
 		f3_VecTeleportBackSave_OutOfBounds[entity][2] = 0.0;
