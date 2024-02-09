@@ -1965,4 +1965,28 @@
 	{
 		"en"	"Irritated Person"
 	}
+	"Archosauria"
+	{
+		"en"	"Archosauria"
+	}
+	"Aslan"
+	{
+		"en"	"Aslan"
+	}
+	"Perro"
+	{
+		"en"	"Perro"
+	}
+	"Caprinae"
+	{
+		"en"	"Caprinae"
+	}
+	"Liberi"
+	{
+		"en"	"Liberi"
+	}
+	"Ursus"
+	{
+		"en"	"Ursus"
+	}
 }

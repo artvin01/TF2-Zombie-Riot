@@ -1289,4 +1289,28 @@
 	{
 		"en"		"A servant of The Scourge" 	//NEED DESC
 	}
+	"Archosauria Desc"
+	{
+		"en"	"A hunter sniper that's silent and fires darts that inflict Jarate and Chaos."
+	}
+	"Aslan Desc"
+	{
+		"en"	"A fast scout that can pin players in place with attacks when not silenced."
+	}
+	"Perro Desc"
+	{
+		"en"	"A soldier that gets faster (can be silenced) and deals more damage with less health."
+	}
+	"Caprinae Desc"
+	{
+		"en"	"A magical demoman that summons clone of itself, explodes on death.\nClones can be silenced to prevent summoning more clones."
+	}
+	"Liberi Desc"
+	{
+		"en"	"A medic that provides invulnerability to an ally.\nCertain debuffs stops this ability from starting."
+	}
+	"Ursus Desc"
+	{
+		"en"	"A heavy with hits that debuff a large amount of Chaos."
+	}
 }
