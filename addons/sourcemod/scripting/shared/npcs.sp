@@ -2398,9 +2398,13 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon, damage);
 		}
-		case WEAPON_SICCERINO: //pap fusion
+		case WEAPON_SICCERINO:
 		{
 			return Npc_OnTakeDamage_Siccerino(attacker, victim, damage, weapon);
+		}
+		case WEAPON_DIMENSION_RIPPER:
+		{
+			Npc_OnTakeDamage_DimensionalRipper(attacker, victim);
 		}
 	}
 #endif
