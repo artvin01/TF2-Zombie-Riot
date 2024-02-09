@@ -171,7 +171,6 @@ public void Archosauria_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
 	}
-	npc.PlayIdleAlertSound();
 }
 
 public Action Archosauria_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
