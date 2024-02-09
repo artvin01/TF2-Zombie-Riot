@@ -126,11 +126,34 @@ public void Weapon_Dimension_Wand(int client, int weapon, bool crit)
 		time *= Attributes_Get(weapon, 101, 1.0);
 		
 		time *= Attributes_Get(weapon, 102, 1.0);
+		
 
-			
 		EmitSoundToAll(SOUND_WAND_SHOT_DIM, client, SNDCHAN_WEAPON, 65, _, 0.45, 100);
 		//This spawns the projectile, this is a return int, if you want, you can do extra stuff with it, otherwise, it can be used as a void.
-		Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_blue_trail");
+		switch(GetRandomInt(1, 4))
+		{
+			case 1:
+			{
+				Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_blue_trail");
+			}
+			case 2:
+			{
+				Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_blue_crit_trail");
+			}
+			case 3:
+			{
+				Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_red_trail");
+			}
+			case 4:
+			{
+				Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_red_crit_trail");
+			}
+			default: //This should not happen
+			{
+				ShowSyncHudText(client,  SyncHud_Notifaction, "An error occured. Scream at devs");//none
+			}
+		}
+
 	}
 	else
 	{
