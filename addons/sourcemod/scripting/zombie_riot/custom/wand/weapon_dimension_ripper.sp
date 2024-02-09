@@ -127,10 +127,6 @@ public void Weapon_Dimension_Wand(int client, int weapon, bool crit)
 		
 		time *= Attributes_Get(weapon, 102, 1.0);
 
-		if(how_many_times_swinged[client] <= MAX_DIMENSION_CHARGE)
-		{
-			how_many_times_swinged[client] += 1;
-		}
 			
 		EmitSoundToAll(SOUND_WAND_SHOT_DIM, client, SNDCHAN_WEAPON, 65, _, 0.45, 100);
 		//This spawns the projectile, this is a return int, if you want, you can do extra stuff with it, otherwise, it can be used as a void.
@@ -209,6 +205,8 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 2:
@@ -221,6 +219,8 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 3:
@@ -233,6 +233,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 4:
@@ -245,6 +246,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 5:
@@ -258,6 +260,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 6:
@@ -271,6 +274,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 7:
@@ -284,6 +288,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 8:
@@ -297,6 +302,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 9:
@@ -310,6 +316,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.23);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 10:
@@ -323,6 +330,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 11:
@@ -336,6 +344,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 12:
@@ -349,6 +358,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 13:
@@ -362,6 +372,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 14:
@@ -375,6 +386,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 15:
@@ -388,6 +400,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.215);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 16:
@@ -401,6 +414,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 17:
@@ -414,6 +428,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 18:
@@ -427,6 +442,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 19:
@@ -440,6 +456,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					default: //This should not happen
@@ -511,6 +528,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 2:
@@ -523,6 +541,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 3:
@@ -535,6 +554,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 4:
@@ -547,6 +567,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 5:
@@ -560,6 +581,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 6:
@@ -573,6 +595,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 7:
@@ -586,6 +609,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 8:
@@ -599,6 +623,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 9:
@@ -612,6 +637,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.23);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 10:
@@ -625,6 +651,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 11:
@@ -638,6 +665,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 12:
@@ -651,6 +679,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 13:
@@ -664,6 +693,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 14:
@@ -677,6 +707,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 15:
@@ -690,6 +721,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.215);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 16:
@@ -703,6 +735,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 17:
@@ -716,6 +749,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 18:
@@ -729,6 +763,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 19:
@@ -742,6 +777,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 20:
@@ -755,6 +791,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 21:
@@ -768,6 +805,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 22:
@@ -781,6 +819,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 23:
@@ -794,6 +833,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.25);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 24:
@@ -807,6 +847,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 25:
@@ -820,6 +861,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 26:
@@ -833,6 +875,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 27:
@@ -846,6 +889,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 28:
@@ -859,6 +903,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 29:
@@ -872,6 +917,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 30:
@@ -885,6 +931,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 31:
@@ -898,6 +945,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 32:
@@ -911,6 +959,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 33:
@@ -924,6 +973,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 34:
@@ -937,6 +987,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 35:
@@ -950,6 +1001,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 36:
@@ -963,6 +1015,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					default: //This should not happen
@@ -1036,6 +1089,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 2:
@@ -1049,6 +1103,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 3:
@@ -1062,6 +1117,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 4:
@@ -1075,6 +1131,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 1.15);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 5:
@@ -1088,6 +1145,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 1.15);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 6:
@@ -1101,6 +1159,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 1.2);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 7:
@@ -1114,6 +1173,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 1.15);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 8:
@@ -1128,6 +1188,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 9:
@@ -1141,6 +1202,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 10:
@@ -1154,6 +1216,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) *0.15);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 11:
@@ -1167,6 +1230,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 12:
@@ -1180,6 +1244,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.25);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 13:
@@ -1193,6 +1258,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 14:
@@ -1206,6 +1272,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 15:
@@ -1219,6 +1286,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 16:
@@ -1232,6 +1300,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					default: //This should not happen
@@ -1305,6 +1374,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 2:
@@ -1318,6 +1388,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 3:
@@ -1331,6 +1402,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 4:
@@ -1344,6 +1416,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.25);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 5:
@@ -1357,6 +1430,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.25);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 6:
@@ -1370,6 +1444,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.2);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 7:
@@ -1383,6 +1458,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.115);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 8:
@@ -1397,6 +1473,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 9:
@@ -1410,6 +1487,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 10:
@@ -1423,6 +1501,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 11:
@@ -1436,6 +1515,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 12:
@@ -1449,6 +1529,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.23);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					default: //This should not happen
@@ -1522,6 +1603,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 2:
@@ -1535,6 +1617,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 3:
@@ -1549,6 +1632,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 4:
@@ -1562,6 +1646,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 5:
@@ -1575,6 +1660,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 6:
@@ -1588,6 +1674,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 7:
@@ -1601,6 +1688,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 8:
@@ -1614,6 +1702,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 9:
@@ -1627,6 +1716,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 10:
@@ -1640,6 +1730,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 11:
@@ -1653,6 +1744,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 12:
@@ -1666,6 +1758,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 13:
@@ -1679,6 +1772,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 14:
@@ -1692,6 +1786,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 15:
@@ -1705,6 +1800,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 16:
@@ -1718,6 +1814,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 17:
@@ -1731,6 +1828,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 18:
@@ -1744,6 +1842,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 19:
@@ -1757,6 +1856,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 20:
@@ -1770,6 +1870,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 21:
@@ -1783,6 +1884,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.2);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 22:
@@ -1796,6 +1898,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 23:
@@ -1809,6 +1912,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 24:
@@ -1822,6 +1926,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 25:
@@ -1835,6 +1940,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 26:
@@ -1848,6 +1954,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 27:
@@ -1861,6 +1968,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 28:
@@ -1874,6 +1982,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					default: //This should not happen
@@ -1947,6 +2056,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 2:
@@ -1960,6 +2070,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 3:
@@ -1974,6 +2085,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 4:
@@ -1987,6 +2099,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 5:
@@ -2000,6 +2113,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 6:
@@ -2013,6 +2127,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 7:
@@ -2026,6 +2141,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 8:
@@ -2039,6 +2155,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 9:
@@ -2052,6 +2169,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 10:
@@ -2065,6 +2183,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 11:
@@ -2078,6 +2197,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 12:
@@ -2091,6 +2211,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 13:
@@ -2104,6 +2225,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 14:
@@ -2117,6 +2239,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 15:
@@ -2130,6 +2253,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 16:
@@ -2143,6 +2267,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 17:
@@ -2156,6 +2281,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 18:
@@ -2169,6 +2295,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 19:
@@ -2182,6 +2309,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 20:
@@ -2195,6 +2323,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 21:
@@ -2208,6 +2337,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.2);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 22:
@@ -2221,6 +2351,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 23:
@@ -2234,6 +2365,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 24:
@@ -2247,6 +2379,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 25:
@@ -2260,6 +2393,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 26:
@@ -2273,6 +2407,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 27:
@@ -2286,6 +2421,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 28:
@@ -2299,6 +2435,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 29:
@@ -2312,6 +2449,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 30:
@@ -2325,6 +2463,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 31:
@@ -2338,6 +2477,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 32:
@@ -2351,6 +2491,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 33:
@@ -2365,6 +2506,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 34:
@@ -2378,6 +2520,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 35:
@@ -2391,6 +2534,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					default: //This should not happen
@@ -2464,6 +2608,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 2:
@@ -2477,6 +2622,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 3:
@@ -2490,6 +2636,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 4:
@@ -2503,6 +2650,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 5:
@@ -2516,6 +2664,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 6:
@@ -2529,6 +2678,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 7:
@@ -2542,6 +2692,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 8:
@@ -2555,6 +2706,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 9:
@@ -2568,6 +2720,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 10:
@@ -2581,6 +2734,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 11:
@@ -2594,6 +2748,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 12:
@@ -2607,6 +2762,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 13:
@@ -2620,6 +2776,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 14:
@@ -2633,6 +2790,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 15:
@@ -2646,6 +2804,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 16:
@@ -2659,6 +2818,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 17:
@@ -2672,6 +2832,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 18:
@@ -2685,6 +2846,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 19:
@@ -2698,6 +2860,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 20:
@@ -2711,6 +2874,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.225);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 21:
@@ -2724,6 +2888,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 22:
@@ -2737,6 +2902,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					default: //This should not happen
@@ -2810,6 +2976,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 2:
@@ -2823,6 +2990,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 3:
@@ -2836,6 +3004,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 4:
@@ -2849,6 +3018,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 5:
@@ -2862,6 +3032,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 6:
@@ -2875,6 +3046,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 7:
@@ -2888,6 +3060,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 8:
@@ -2901,6 +3074,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 9:
@@ -2914,6 +3088,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 10:
@@ -2927,6 +3102,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 11:
@@ -2940,6 +3116,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 12:
@@ -2953,6 +3130,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 13:
@@ -2966,6 +3144,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 14:
@@ -2980,6 +3159,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 15:
@@ -2993,6 +3173,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 16:
@@ -3006,6 +3187,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 17:
@@ -3019,6 +3201,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 18:
@@ -3032,6 +3215,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 19:
@@ -3045,6 +3229,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 20:
@@ -3058,6 +3243,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.225);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 21:
@@ -3071,6 +3257,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 22:
@@ -3084,6 +3271,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 23:
@@ -3097,6 +3285,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 24:
@@ -3110,6 +3299,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 25:
@@ -3123,6 +3313,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 26:
@@ -3136,6 +3327,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 27:
@@ -3149,6 +3341,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 28:
@@ -3162,6 +3355,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 29:
@@ -3175,6 +3369,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 30:
@@ -3188,6 +3383,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 31:
@@ -3201,6 +3397,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 32:
@@ -3214,6 +3411,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 33:
@@ -3227,6 +3425,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					default: //This should not happen
@@ -3301,6 +3500,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 2:
@@ -3314,6 +3514,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 3:
@@ -3327,6 +3528,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 4:
@@ -3340,6 +3542,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 5:
@@ -3353,6 +3556,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 6:
@@ -3366,6 +3570,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 7:
@@ -3379,6 +3584,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 8:
@@ -3392,6 +3598,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 9:
@@ -3405,6 +3612,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 10:
@@ -3418,6 +3626,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					default: //This should not happen
@@ -3491,6 +3700,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 2:
@@ -3504,6 +3714,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 3:
@@ -3517,6 +3728,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 4:
@@ -3530,6 +3742,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 5:
@@ -3543,6 +3756,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 6:
@@ -3556,6 +3770,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 7:
@@ -3569,6 +3784,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 8:
@@ -3582,6 +3798,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 9:
@@ -3595,6 +3812,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 10:
@@ -3608,6 +3826,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 11:
@@ -3621,6 +3840,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 12:
@@ -3634,6 +3854,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 13:
@@ -3647,6 +3868,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 14:
@@ -3660,6 +3882,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 15:
@@ -3673,6 +3896,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 16:
@@ -3686,6 +3910,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 17:
@@ -3699,6 +3924,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 18:
@@ -3712,6 +3938,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.25);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 19:
@@ -3725,6 +3952,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 20:
@@ -3738,6 +3966,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 21:
@@ -3751,6 +3980,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 22:
@@ -3764,6 +3994,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 23:
@@ -3778,6 +4009,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 24:
@@ -3792,6 +4024,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 25:
@@ -3805,6 +4038,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 26:
@@ -3818,6 +4052,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					default: //This should not happen
@@ -3891,6 +4126,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 2:
@@ -3904,6 +4140,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 3:
@@ -3917,6 +4154,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 4:
@@ -3930,6 +4168,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 5:
@@ -3943,6 +4182,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 6:
@@ -3956,6 +4196,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 7:
@@ -3969,6 +4210,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 8:
@@ -3982,6 +4224,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 9:
@@ -3995,6 +4238,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 10:
@@ -4008,6 +4252,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 11:
@@ -4021,6 +4266,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 12:
@@ -4034,6 +4280,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 13:
@@ -4047,6 +4294,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 14:
@@ -4060,6 +4308,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					default: //This should not happen
@@ -4133,6 +4382,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 2:
@@ -4146,6 +4396,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 3:
@@ -4159,6 +4410,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 4:
@@ -4172,6 +4424,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 5:
@@ -4185,6 +4438,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 6:
@@ -4198,6 +4452,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 7:
@@ -4211,6 +4466,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 8:
@@ -4224,6 +4480,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 9:
@@ -4237,6 +4494,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 10:
@@ -4250,6 +4508,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 11:
@@ -4263,6 +4522,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 12:
@@ -4276,6 +4536,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 13:
@@ -4289,6 +4550,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 14:
@@ -4302,6 +4564,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 15:
@@ -4316,6 +4579,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 16:
@@ -4329,6 +4593,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 17:
@@ -4342,6 +4607,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 18:
@@ -4355,6 +4621,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 19:
@@ -4368,6 +4635,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 20:
@@ -4381,6 +4649,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 21:
@@ -4394,6 +4663,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 22:
@@ -4407,6 +4677,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 23:
@@ -4420,6 +4691,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 24:
@@ -4433,6 +4705,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 25:
@@ -4446,6 +4719,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					case 26:
@@ -4459,6 +4733,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 							
 							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
 							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 						}
 					}
 					default: //This should not happen
@@ -4511,4 +4786,22 @@ public Action Dimension_KillNPC(Handle timer, int ref)
 	}
 	
 	return Plugin_Stop;
+}
+
+
+
+float Npc_OnTakeDamage_DimensionalRipper(float damage ,int attacker, int damagetype, int inflictor, int victim)
+{
+	/*
+		++ add charge code xd
+	*/
+	if(how_many_times_swinged[attacker] <= MAX_DIMENSION_CHARGE)
+	{
+		how_many_times_swinged[attacker] += 1;
+	}
+	if(b_thisNpcIsARaid[victim])
+	{
+		how_many_times_swinged[attacker] += 1;
+	}
+	return damage;
 }

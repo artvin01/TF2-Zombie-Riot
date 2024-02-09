@@ -2364,6 +2364,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			return Npc_OnTakeDamage_Siccerino(attacker, victim, damage, weapon);
 		}
+		case WEAPON_DIMENSION_RIPPER: //pap ark alt
+		{
+			return Npc_OnTakeDamage_DimensionalRipper(damage, attacker, damagetype, inflictor, victim);
+		}
 	}
 #endif
 
