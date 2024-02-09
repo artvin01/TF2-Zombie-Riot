@@ -3011,6 +3011,18 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 	
 	return entity;
 }	
+
+public void ZR_NpcTauntWinClear()
+{
+	for(int targ; targ<i_MaxcountNpc; targ++)
+	{
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		{
+			func_NPCFuncWin[baseboss_index] = INVALID_FUNCTION;
+		}
+	}
+}
 public void ZR_NpcTauntWin()
 {
 	for(int targ; targ<i_MaxcountNpc; targ++)

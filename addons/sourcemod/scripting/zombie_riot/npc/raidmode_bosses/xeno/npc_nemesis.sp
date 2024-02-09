@@ -290,6 +290,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	}
 	if(RaidModeTime < GetGameTime())
 	{
+		ZR_NpcTauntWinClear();
 		i_RaidGrantExtra[npc.index] = 0;
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");

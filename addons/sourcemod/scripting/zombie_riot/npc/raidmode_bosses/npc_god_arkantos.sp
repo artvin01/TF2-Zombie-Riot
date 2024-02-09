@@ -363,6 +363,7 @@ public void GodArkantos_ClotThink(int iNPC)
 	}
 	if(!b_IsAlliedNpc[npc.index] && RaidModeTime < GetGameTime())
 	{
+		ZR_NpcTauntWinClear();
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");
 		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
