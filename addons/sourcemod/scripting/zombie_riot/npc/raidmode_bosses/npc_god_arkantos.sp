@@ -363,7 +363,17 @@ public void GodArkantos_ClotThink(int iNPC)
 	}
 	if(!b_IsAlliedNpc[npc.index] && RaidModeTime < GetGameTime())
 	{
+		DeleteAndRemoveAllNpcs = 15.0;
 		ZR_NpcTauntWinClear();
+		for(int targ; targ<i_MaxcountNpc; targ++)
+		{
+			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+			if (IsValidEntity(baseboss_index) && !b_IsAlliedNpc[baseboss_index])
+			{
+				b_IsAlliedNpc[baseboss_index] = true;
+				Change_Npc_Collision(baseboss_index, num_ShouldCollideAlly);
+			}
+		}
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");
 		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
@@ -372,7 +382,27 @@ public void GodArkantos_ClotThink(int iNPC)
 		Music_RoundEnd(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		SDKUnhook(npc.index, SDKHook_Think, GodArkantos_ClotThink);
-		CPrintToChatAll("{lightblue}God Arkantos{default}: Your chances of winning are none, My army and me will swarm everyone who dares to threaten Atlantis.");
+		CPrintToChatAll("{lightblue}God Arkantos{default}: No.. No No!! They are comming, prepare to fight together NOW!!!");
+		for(int i; i<32; i++)
+		{
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			int Spawner_entity = GetRandomActiveSpawner();
+			if(IsValidEntity(Spawner_entity))
+			{
+				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+			}
+			int spawn_index = Npc_Create(SEACRAWLER, -1, pos, ang, false);
+			if(spawn_index > MaxClients)
+			{
+				Zombies_Currently_Still_Ongoing += 1;
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
+				fl_ExtraDamage[spawn_index] = 100.0;
+				fl_Extra_Speed[spawn_index] = 2.0;
+			}
+		}
 		npc.m_bDissapearOnDeath = true;
 		BlockLoseSay = true;
 		return;

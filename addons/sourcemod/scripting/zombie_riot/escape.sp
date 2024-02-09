@@ -1,8 +1,8 @@
 static int Carrying[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static bool Waiting;
-
 void Escape_RoundStart()
 {
+	DeleteAndRemoveAllNpcs = 5.0;
 	Waiting = true;
 }
 
@@ -11,7 +11,7 @@ void Escape_RoundEnd()
 {
 	//Just delete, dont wanna risk anything staying and that causing the server to lag like in the case of serious sam.
 //	RequestFrames(Remove_All, 300);
-	CreateTimer(5.0, Remove_All, _, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(DeleteAndRemoveAllNpcs, Remove_All, _, TIMER_FLAG_NO_MAPCHANGE);
 }
 
 public Action Remove_All(Handle Timer_Handle, any Null)

@@ -256,6 +256,7 @@ bool IsInsideManageRegularWeapons;
 float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
 int i_EntityToAlwaysMeleeHit[MAXTF2PLAYERS];
+float DeleteAndRemoveAllNpcs = 5.0;
 //int Dont_Crouch[MAXENTITIES]={0, ...};
 
 bool b_IsAloneOnServer = false;
