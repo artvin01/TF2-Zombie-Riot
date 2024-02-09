@@ -221,4 +221,13 @@
 		"#format"	"{1:t},{2:s}"
 		"en"		"vs {1}: {2}"
 	}
+	"Spectating"
+	{
+		"en"		"Spectating"
+	}
+	"Resource Of"
+	{
+		"#format"	"{1:s}"
+		"en"		"Resource: {1}"
+	}
 }

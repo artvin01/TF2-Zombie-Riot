@@ -18,14 +18,14 @@ static const char MeleeMissSounds[][] =
 	"weapons/cbar_miss1.wav",
 };
 
-void Militia_MapStart()
+void Villager_MapStart()
 {
 	PrecacheSoundArray(MeleeHitSounds);
 	PrecacheSoundArray(MeleeAttackSounds);
 	PrecacheSoundArray(MeleeMissSounds);
 }
 
-methodmap Militia < EmpireBody
+methodmap Villager < EmpireBody
 {
 	public void PlayMeleeSound()
 	{
@@ -40,25 +40,26 @@ methodmap Militia < EmpireBody
 		EmitSoundToAll(MeleeMissSounds[GetRandomInt(0, sizeof(MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public Militia(int client, const float vecPos[3], const float vecAng[3])
+	public Villager(int client, const float vecPos[3], const float vecAng[3])
 	{
-		Militia npc = view_as<Militia>(EmpireBody(client, vecPos, vecAng, _, _, "40"));
+		Villager npc = view_as<Villager>(EmpireBody(client, vecPos, vecAng, _, _, "25"));
 
-		i_NpcInternalId[npc.index] = MILITIA;
+		i_NpcInternalId[npc.index] = VILLAGER;
 		i_NpcWeight[npc.index] = 1;
 
 		func_NPCThink[npc.index] = ClotThink;
 		
-		npc.SetActivity("ACT_IDLE");
-		npc.m_flSpeed = 180.0;
+		npc.SetActivity("ACT_VILLAGER_IDLE");
+		npc.m_flSpeed = 160.0;
 		npc.m_flVisionRange = 400.0;
 		npc.m_flEngageRange = 300.0;
-
+		
 		npc.AddFlag(Flag_Biological);
+		npc.AddFlag(Flag_Worker);
 
 		StatEnum stats;
-		stats.Damage = 4;
-		stats.RangeArmor = 1;
+		stats.Damage = 3;
+		stats.ExtraDamage[Flag_Structure] = 3;
 		npc.SetStats(stats);
 
 		npc.m_flHeadshotCooldown = 0.0;
@@ -66,20 +67,22 @@ methodmap Militia < EmpireBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flReloadDelay = 0.0;
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_boston_basher/c_boston_basher.mdl");
-		SetVariantString("1.0");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_sledgehammer/c_sledgehammer.mdl");
+		SetVariantString("0.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/sniper/spr17_archers_sterling/spr17_archers_sterling.mdl");
+		AcceptEntityInput(npc.m_iWearable1, "Disable");
+
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_pickaxe/c_pickaxe.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		
 		return npc;
 	}
 }
 
 static void ClotThink(int entity)
 {
-	Militia npc = view_as<Militia>(entity);
+	Villager npc = view_as<Villager>(entity);
 	float gameTime = GetGameTime(npc.index);
 	
 	if(!npc.ThinkStart(gameTime))
@@ -97,7 +100,7 @@ static void ClotThink(int entity)
 			npc.m_flAttackHappens = 0.0;
 			npc.m_flReloadDelay = 0.0;
 			npc.m_flNextMeleeAttack = 0.0;
-			npc.RemoveGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
+			npc.RemoveGesture("ACT_VILLAGER_ATTACK");
 		}
 		else if(npc.m_flAttackHappens < gameTime)
 		{
@@ -113,6 +116,9 @@ static void ClotThink(int entity)
 	}
 	else if(target > 0)
 	{
+		AcceptEntityInput(npc.m_iWearable1, "Disable");
+		AcceptEntityInput(npc.m_iWearable2, "Enable");
+
 		if(npc.m_flNextMeleeAttack < gameTime)
 		{
 			float vecMe[3], vecTarget[3];
@@ -122,12 +128,12 @@ static void ClotThink(int entity)
 			float distance = GetVectorDistance(vecMe, vecTarget, true);
 			if(distance < MELEE_RANGE_SQR)
 			{
-				npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
+				npc.AddGesture("ACT_VILLAGER_ATTACK");
 				npc.PlayMeleeSound();
 				npc.m_iTarget = target;
 
-				npc.m_flAttackHappens = gameTime + 0.2;
-				npc.m_flReloadDelay = gameTime + 0.45;
+				npc.m_flAttackHappens = gameTime + 0.3;
+				npc.m_flReloadDelay = gameTime + 0.6;
 				npc.m_flNextMeleeAttack = gameTime + 1.0;
 			}
 		}
@@ -152,10 +158,10 @@ static void ClotThink(int entity)
 	
 	if(moving)
 	{
-		npc.SetActivity("ACT_WALK");
+		npc.SetActivity("ACT_VILLAGER_RUN");
 	}
 	else
 	{
-		npc.SetActivity("ACT_IDLE");
+		npc.SetActivity("ACT_VILLAGER_IDLE");
 	}
 }

@@ -418,8 +418,13 @@ enum
 	INTERITUS_WINTER_SKIN_HUNTER	  = 367,
 	INTERITUS_WINTER_IRRITATED_PERSON = 368,
 	THEDOCTOR_MINIBOSS				  = 369,
-
+  
 	INTERITUS_ANARCHY_RANSACKER		  = 370,
+  
+	INTERITUS_FOREST_SNIPER = 371,
+	INTERITUS_FOREST_SCOUT = 372,
+	INTERITUS_FOREST_SOLDIER = 373,
+	INTERITUS_FOREST_DEMOMAN = 374,
 
 	MAX_NPC_TYPES	// Add entries above this line
 }
@@ -820,7 +825,11 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Skin Hunter",
 	"Irritated Person",
 	"The Doctor",
-	"Ransacker"
+	"Ransacker",
+	"Archosauria",
+	"Aslan",
+	"Perro",
+	"Caprinae"
 };
 
 // See items.sp for IDs to names
@@ -1195,7 +1204,11 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	-1,	//RUINA_MAGIA_ANCHOR
 	-1,	//RUINA_STORM_WEAVER
 	-1,	//RUINA_STORM_WEAVER_MID
-	1, //MINI_BEHEADED_KAMI
+	1,
+	-1,
+	-1,
+	-1,
+	-1
 };
 
 public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
@@ -1593,7 +1606,11 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_skin_hunter",
 	"npc_irritated_person",
 	"npc_doctor_special",
-	"npc_ransacker"
+	"npc_ransacker",
+	"npc_archosauria",
+	"npc_alsan",
+	"npc_perro",
+	"npc_caprinae"
 };
 
 void NPC_MapStart()
@@ -2959,9 +2976,21 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case THEDOCTOR_MINIBOSS:
 			entity = SpecialDoctor(client, vecPos, vecAng, ally,data);
-
+     
 		case INTERITUS_ANARCHY_RANSACKER:
 			entity = AnarchyRansacker(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_SNIPER:
+			entity = Archosauria(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_SCOUT:
+			entity = Aslan(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_SOLDIER:
+			entity = Perro(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_DEMOMAN:
+			entity = Caprinae(client, vecPos, vecAng, ally, data);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -5237,3 +5266,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/winter/npc_irritated_person.sp"
 
 #include "zombie_riot/npc/interitus/anarchy/npc_ransacker.sp"
+
+#include "zombie_riot/npc/interitus/forest/npc_archosauria.sp"
+#include "zombie_riot/npc/interitus/forest/npc_aslan.sp"
+#include "zombie_riot/npc/interitus/forest/npc_perro.sp"
+#include "zombie_riot/npc/interitus/forest/npc_caprinae.sp"
