@@ -859,7 +859,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 		{
 			NextMoveType[client] = 0;
 			BuildMode[client] = 0;
-			RTS_UpdateMenu(client);
+			RTSMenu_Update(client);
 		}
 #else
 		if(NextMoveType[client])
@@ -898,7 +898,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 
 #if defined RTS
 	if(pressed[Key_Delete] && Selected[client])
-		RTS_UpdateMenu(client);
+		RTSMenu_Update(client);
 #endif
 
 	if(holding[Key_ZoomIn] || holding[Key_ZoomOut] || holding[Key_AdjustCamera])
@@ -928,7 +928,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 
 				if(triggered)
 				{
-					RTS_UpdateMenu(client);
+					RTSMenu_Update(client);
 				}
 				else
 				{
@@ -1165,7 +1165,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 			InSelectDrag[client] = false;
 
 #if defined RTS
-			RTS_UpdateMenu(client);
+			RTSMenu_Update(client);
 #endif
 
 		}
@@ -1247,7 +1247,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 				color[2] = 0;
 			}
 #if defined RTS
-			else if(UnitBody_IsEntAlly(client, HoveringOver[client]))
+			else if(IsObject(HoveringOver[client]) || UnitBody_IsEntAlly(client, HoveringOver[client]))
 			{
 				// Yellow, Ally's
 				color[2] = 0;
@@ -1939,7 +1939,7 @@ static void ClearSelected(int client)
 
 #if defined RTS
 	BuildMode[client] = 0;
-	RTS_UpdateMenu(client);
+	RTSMenu_Update(client);
 #endif
 }
 
@@ -1966,18 +1966,21 @@ stock void RTSCamera_SetSelected(int client, ArrayList list)
 
 static stock bool IsSelectableUnitEntity(int client, int entity)
 {
-	if(entity > MaxClients && entity < sizeof(b_NpcHasDied) && !b_NpcHasDied[entity])
+	if(entity > MaxClients && entity < MAXENTITIES)
 	{
 #if defined RTS
-		//if(UnitBody_CanControl(client, entity))
+		if(!b_NpcHasDied[entity] || IsObject(entity))
 		{
 			return true;
 		}
 #elseif defined ZR
-		BarrackBody npc = view_as<BarrackBody>(entity);
-		if(npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
+		if(!b_NpcHasDied[entity])
 		{
-			return true;
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
+			{
+				return true;
+			}
 		}
 #endif
 	}
@@ -2010,7 +2013,7 @@ static stock bool UnitEntityIterator(int client, int &entity, bool villagers)
 	for(; entity < MAXENTITIES; entity++)
 	{
 #if defined RTS
-		if(!b_NpcHasDied[entity] && UnitBody_CanControl(client, entity))
+		if(!b_NpcHasDied[entity] && (RTS_IsSpectating(client) || UnitBody_CanControl(client, entity)))
 		{
 			if(UnitBody_HasFlag(entity, Flag_Structure))
 				continue;

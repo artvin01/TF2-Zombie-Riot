@@ -8,4 +8,8 @@
 	{
 		"en" 		"Militia"
 	}
+	"Dead Tree"
+	{
+		"en"		"Dead Tree"
+	}
 }
