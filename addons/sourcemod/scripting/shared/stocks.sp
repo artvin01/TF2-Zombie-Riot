@@ -5023,3 +5023,14 @@ stock void SetForceButtonState(int client, bool apply, int button_flag)
 	}
 	SetEntProp(client, Prop_Data, "m_afButtonForced", Buttons);
 }
+
+stock int Team(int entity)
+{
+
+#if defined ZR
+	if(entity && entity <= MaxClients)
+		return GetClientTeam(entity);
+#endif
+
+	return TeamNumber[entity];
+}

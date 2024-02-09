@@ -27,6 +27,14 @@
 #define CHAR_PARTEMPTY	"▒"
 #define CHAR_EMPTY	"░"
 
+#define TFTeam			int
+#define TFTeam_Unassigned 	0
+#define TFTeam_Spectator 	2
+#define TFTeam_Red 		2
+#define TFTeam_Blue		3
+#define TF2_GetClientTeam	GetClientTeam
+#define TF2_ChangeClientTeam	ChangeClientTeam
+
 #define NPC_HARD_LIMIT 40 
 #define ZR_MAX_NPCS (NPC_HARD_LIMIT*6)
 #define ZR_MAX_NPCS_ALLIED 40 //Never need more.
@@ -301,6 +309,7 @@ float f_AntiStuckPhaseThrough[MAXTF2PLAYERS];
 float f_MultiDamageTaken[MAXENTITIES];
 float f_MultiDamageTaken_Flat[MAXENTITIES];
 int i_OwnerEntityEnvLaser[MAXENTITIES];
+int TeamNumber[MAXENTITIES];
 
 bool thirdperson[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
@@ -412,14 +421,7 @@ int i_ObjectsNpcs[ZR_MAX_NPCS];
 
 bool b_DoNotIgnoreDuringLagCompAlly[MAXENTITIES]={false, ...};
 
-#if !defined RTS
-bool b_IsAlliedNpc[MAXENTITIES]={false, ...};
 bool b_NpcIsTeamkiller[MAXENTITIES]={false, ...};
-const int i_MaxcountNpc_Allied = ZR_MAX_NPCS_ALLIED;
-int i_ObjectsNpcs_Allied[ZR_MAX_NPCS_ALLIED];
-
-bool b_Is_Blue_Npc[MAXENTITIES];
-#endif
 
 const int i_MaxcountNpcTotal = ZR_MAX_NPCS;
 int i_ObjectsNpcsTotal[ZR_MAX_NPCS];
