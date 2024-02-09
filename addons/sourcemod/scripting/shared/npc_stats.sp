@@ -4506,6 +4506,13 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			return false;
 		}
 		
+#if defined RTS
+		if(IsObject(enemy))
+		{
+			return true;
+		}
+#endif
+
 		if(enemy <= MaxClients || !b_NpcHasDied[enemy])
 		{
 			if(b_NpcIsInvulnerable[enemy] && !target_invul)
@@ -4740,7 +4747,23 @@ stock int GetClosestTargetRTS(int entity,
 		}
 	}
 
-#if !defined RTS
+#if defined RTS
+	if(ExtraValidityFunction != INVALID_FUNCTION)
+	{
+		int target = -1;
+		while((target = FindEntityByClassname(target, "prop_resource")) != -1)
+		{
+			bool valid;
+			Call_StartFunction(null, ExtraValidityFunction);
+			Call_PushCell(entity);
+			Call_PushCell(target);
+			Call_Finish(valid);
+
+			if(valid)
+				GetClosestTarget_AddTarget(target, 4);
+		}
+	}
+#else
 	if(searcher_team != 2 && !IgnorePlayers)
 	{
 		for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.

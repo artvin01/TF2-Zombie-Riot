@@ -42,7 +42,7 @@ methodmap Militia < EmpireBody
 	
 	public Militia(int client, const float vecPos[3], const float vecAng[3])
 	{
-		Militia npc = view_as<Militia>(EmpireBody(client, vecPos, vecAng, _, _, "50"));
+		Militia npc = view_as<Militia>(EmpireBody(client, vecPos, vecAng, _, _, "40"));
 
 		i_NpcInternalId[npc.index] = MILITIA;
 		i_NpcWeight[npc.index] = 1;

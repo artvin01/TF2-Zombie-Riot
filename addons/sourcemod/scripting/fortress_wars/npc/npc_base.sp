@@ -317,7 +317,7 @@ bool UnitBody_ThinkStart(UnitBody npc, float gameTime)
 	return true;
 }
 
-int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
+int UnitBody_ThinkTarget(UnitBody npc, float gameTime, Function closestTargetFunction = INVALID_FUNCTION)
 {
 	CommandEnum command;
 
@@ -342,7 +342,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 		int target = command.TargetRef == -1 ? -1 : EntRefToEntIndex(command.TargetRef);
 		if(target > 0)
 		{
-			if(IsValidEnemy(npc.index, target))	// Following enemy
+			if(IsValidEnemy(npc.index, target, true))	// Following enemy
 			{
 				npc.m_iTargetWalkTo = target;
 				npc.m_flGetClosestTargetTime = gameTime + 1.0;
@@ -396,14 +396,14 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 		{
 			if(canAttack)
 			{
-				if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo))
+				if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo, true))
 				{
 
 				}
 				else if(i_TargetToWalkTo[npc.index] != -1 || npc.m_flGetClosestTargetTime < gameTime)
 				{
 					// Had an existing target or time as passed
-					target = GetClosestTargetRTS(npc.index, npc.m_flEngageRange);
+					target = GetClosestTargetRTS(npc.index, npc.m_flEngageRange, _, _, _, _, closestTargetFunction);
 					npc.m_flGetClosestTargetTime = gameTime + 1.0;
 				}
 				else

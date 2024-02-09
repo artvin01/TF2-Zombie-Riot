@@ -59,6 +59,7 @@ methodmap Villager < EmpireBody
 
 		StatEnum stats;
 		stats.Damage = 3;
+		stats.ExtraDamage[Flag_Structure] = 3;
 		npc.SetStats(stats);
 
 		npc.m_flHeadshotCooldown = 0.0;
