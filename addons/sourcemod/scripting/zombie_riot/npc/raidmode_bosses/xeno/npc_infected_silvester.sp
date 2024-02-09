@@ -521,6 +521,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	if(RaidModeTime < GetGameTime())
 	{
 		DeleteAndRemoveAllNpcs = 8.0;
+		mp_bonusroundtime.IntValue = (10 * 2);
 		ZR_NpcTauntWinClear();
 		int entity = CreateEntityByName("game_round_win"); 
 		DispatchKeyValue(entity, "force_map_reset", "1");

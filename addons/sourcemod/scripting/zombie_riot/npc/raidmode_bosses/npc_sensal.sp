@@ -461,6 +461,7 @@ public void Sensal_ClotThink(int iNPC)
 	if(RaidModeTime < GetGameTime())
 	{
 		DeleteAndRemoveAllNpcs = 10.0;
+		mp_bonusroundtime.IntValue = (12 * 2);
 		ZR_NpcTauntWinClear();
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");

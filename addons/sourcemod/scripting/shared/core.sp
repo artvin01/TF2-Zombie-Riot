@@ -268,6 +268,7 @@ ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar CvarAirAcclerate; //sv_airaccelerate
 ConVar sv_cheats;
 ConVar nav_edit;
+ConVar mp_bonusroundtime;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_AwayEnemies;

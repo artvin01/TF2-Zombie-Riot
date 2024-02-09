@@ -3,9 +3,9 @@ static bool Waiting;
 void Escape_RoundStart()
 {
 	DeleteAndRemoveAllNpcs = 5.0;
+	mp_bonusroundtime.IntValue = 15;
 	Waiting = true;
 }
-
 
 void Escape_RoundEnd()
 {
@@ -43,6 +43,8 @@ public Action Remove_All(Handle Timer_Handle, any Null)
 			}
 		}
 	}
+	DeleteAndRemoveAllNpcs = 5.0;
+	mp_bonusroundtime.IntValue = 15;
 	return Plugin_Handled;
 }
 
