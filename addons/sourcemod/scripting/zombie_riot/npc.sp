@@ -3025,6 +3025,7 @@ public void ZR_NpcTauntWin()
 				Call_PushCell(baseboss_index);
 				Call_Finish();
 			}
+			func_NPCFuncWin[baseboss_index] = INVALID_FUNCTION;
 		}
 	}
 }
