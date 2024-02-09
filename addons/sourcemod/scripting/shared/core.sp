@@ -27,13 +27,13 @@
 #define CHAR_PARTEMPTY	"▒"
 #define CHAR_EMPTY	"░"
 
-#define TFTeam			int
+#define TFTeam			PLZUSE_int
 #define TFTeam_Unassigned 	0
 #define TFTeam_Spectator 	2
 #define TFTeam_Red 		2
 #define TFTeam_Blue		3
-#define TF2_GetClientTeam	GetClientTeam
-#define TF2_ChangeClientTeam	ChangeClientTeam
+#define TF2_GetClientTeam	PLZUSE_GetClientTeam
+#define TF2_ChangeClientTeam	PLZUSE_ChangeClientTeam
 
 #define NPC_HARD_LIMIT 40 
 #define ZR_MAX_NPCS (NPC_HARD_LIMIT*6)
