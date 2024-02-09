@@ -8056,9 +8056,11 @@ public void ArrowStartTouch(int arrow, int entity)
 			f_ArrowDamage[arrow] *= 3.0;
 		}
 
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(owner == -1)
-			owner = arrow;
+		int owner = GetEntPropEnt(arrow, Prop_Send, "m_hOwnerEntity");
+		if(!IsValidEntity(owner))
+		{
+			owner = 0;
+		}
 
 		int inflictor = h_ArrowInflictorRef[arrow];
 		if(inflictor != -1)
@@ -8066,7 +8068,6 @@ public void ArrowStartTouch(int arrow, int entity)
 
 		if(inflictor == -1)
 			inflictor = owner;
-
 
 		SDKHooks_TakeDamage(entity, owner, inflictor, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
 		if(i_NervousImpairmentArrowAmount[arrow] > 0)

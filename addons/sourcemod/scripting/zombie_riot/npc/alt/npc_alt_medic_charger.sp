@@ -289,7 +289,7 @@ public void AltMedicCharger_ClotThink(int iNPC)
 								{
 									dmg=50.0;
 								}
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, dmg, DMG_CLUB, -1, _, vecHit);
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, dmg*1.25, DMG_CLUB, -1, _, vecHit);
