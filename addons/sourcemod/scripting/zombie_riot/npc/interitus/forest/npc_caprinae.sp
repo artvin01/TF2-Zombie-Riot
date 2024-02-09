@@ -180,7 +180,7 @@ static void ClotThink(int iNPC)
 				{
 					npc.PlayMeleeHitSound();
 
-					int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 10;
+					int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 10;
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 					bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;

@@ -144,8 +144,8 @@ static void ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 
-	int maxhealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
-	int health = GetEntProp(entity, Prop_Data, "m_iHealth");
+	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	int minhealth = maxhealth / 4;
 	if(health < minhealth)
 		health = minhealth;
