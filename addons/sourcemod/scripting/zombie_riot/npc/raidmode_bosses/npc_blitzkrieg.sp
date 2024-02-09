@@ -638,6 +638,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
 		SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
+		b_timer_lose[npc.index] = true;
 		
 		CPrintToChatAll("{crimson}Blitzkrieg: Annhilated.");
 		return;
