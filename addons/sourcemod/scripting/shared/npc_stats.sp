@@ -32,6 +32,7 @@ bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int Shared_BEAM_Laser;
 int Shared_BEAM_Glow;
+int i_NpcOverrideAttacker[MAXENTITIES];
 #endif
 
 #if defined RPG
@@ -2261,6 +2262,18 @@ methodmap CClotBody < CBaseCombatCharacter
 	float model_size = 1.0)
 	{
 		int item = CreateEntityByName("prop_dynamic_override");
+		if(!IsValidEntity(item))
+		{
+			//warning, warning!!!
+			//infinite loop this untill it works!
+			//Tf2 has a very very very low chance to fail to spawn a prop, because reasons!
+			return this.EquipItem(
+			attachment,
+			model,
+			anim,
+			skin,
+			model_size);
+		}
 		DispatchKeyValue(item, "model", model);
 
 		if(model_size == 1.0)
@@ -2273,7 +2286,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 
 		DispatchSpawn(item);
-		
 		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES);
 		SetEntityMoveType(item, MOVETYPE_NONE);
 		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);
@@ -7779,6 +7791,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 #if defined ZR
 	i_SpawnProtectionEntity[entity] = -1;
 	i_TeamGlow[entity] = -1;
+	i_NpcOverrideAttacker[entity] = 0;
 	b_thisNpcHasAnOutline[entity] = false;
 	b_ThisNpcIsImmuneToNuke[entity] = false;
 	FormatEx(c_NpcCustomNameOverride[entity], sizeof(c_NpcCustomNameOverride[]), "");

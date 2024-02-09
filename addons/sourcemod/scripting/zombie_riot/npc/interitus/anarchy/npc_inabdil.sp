@@ -2,50 +2,54 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+	"vo/demoman_paincrticialdeath01.mp3",
+	"vo/demoman_paincrticialdeath02.mp3",
+	"vo/demoman_paincrticialdeath03.mp3",
+	"vo/demoman_paincrticialdeath04.mp3",
+	"vo/demoman_paincrticialdeath05.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	")vo/medic_painsharp01.mp3",
-	")vo/medic_painsharp02.mp3",
-	")vo/medic_painsharp03.mp3",
-	")vo/medic_painsharp04.mp3",
-	")vo/medic_painsharp05.mp3",
-	")vo/medic_painsharp06.mp3",
-	")vo/medic_painsharp07.mp3",
-	")vo/medic_painsharp08.mp3",
+	"vo/demoman_painsharp01.mp3",
+	"vo/demoman_painsharp02.mp3",
+	"vo/demoman_painsharp03.mp3",
+	"vo/demoman_painsharp04.mp3",
+	"vo/demoman_painsharp05.mp3",
+	"vo/demoman_painsharp06.mp3",
+	"vo/demoman_painsharp07.mp3",
 };
 
 
 static const char g_IdleAlertedSounds[][] = {
-	")vo/medic_battlecry01.mp3",
-	")vo/medic_battlecry02.mp3",
-	")vo/medic_battlecry03.mp3",
-	")vo/medic_battlecry04.mp3",
+	"vo/demoman_battlecry01.mp3",
+	"vo/demoman_battlecry02.mp3",
+	"vo/demoman_battlecry03.mp3",
+	"vo/demoman_battlecry04.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/knife_swing.wav",
+	"weapons/demo_sword_swing1.wav",
+	"weapons/demo_sword_swing2.wav",
+	"weapons/demo_sword_swing3.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/airboat/airboat_gun_energy1.wav",
-	"weapons/airboat/airboat_gun_energy2.wav",
+	"weapons/blade_slice_2.wav",
+	"weapons/blade_slice_3.wav",
+	"weapons/blade_slice_4.wav",
 };
 
-void Protecta_OnMapStart_NPC()
+void DesertInabdil_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	PrecacheModel("models/player/medic.mdl");
 }
 
-methodmap Protecta < CClotBody
+
+methodmap DesertInabdil < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -84,18 +88,18 @@ methodmap Protecta < CClotBody
 	}
 	
 	
-	public Protecta(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertInabdil(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Protecta npc = view_as<Protecta>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "2500", ally));
+		DesertInabdil npc = view_as<DesertInabdil>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_PROTECTA;
+		i_NpcInternalId[npc.index] = INTERITUS_DESERT_INABDIL;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(1);
+		SetVariantInt(0);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
@@ -105,36 +109,44 @@ methodmap Protecta < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+
+		func_NPCDeath[npc.index] = view_as<Function>(DesertInabdil_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertInabdil_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(DesertInabdil_ClotThink);
 		
-		SDKHook(npc.index, SDKHook_Think, Protecta_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 220.0;
+		npc.m_flSpeed = 200.0;
+		npc.m_flNextRangedAttack = GetGameTime();
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
-		ProtectaEffects(npc.index);
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/jul13_positive_pressure_veil/jul13_positive_pressure_veil.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/xms2013_medic_robe/xms2013_medic_robe.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/short2014_all_mercs_mask/short2014_all_mercs_mask_demo.mdl");
+
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/sf14_demo_cyborg/sf14_demo_cyborg.mdl");
+
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl");
+
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+
 		return npc;
 	}
 }
 
-public void Protecta_ClotThink(int iNPC)
+public void DesertInabdil_ClotThink(int iNPC)
 {
-	Protecta npc = view_as<Protecta>(iNPC);
+	DesertInabdil npc = view_as<DesertInabdil>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -160,6 +172,34 @@ public void Protecta_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
+	float TrueArmor = 1.0;
+
+	float TimeMultiplier = 1.0;
+	TimeMultiplier = GetGameTime(npc.index) - npc.m_flNextRangedAttack;
+
+	TimeMultiplier *= 0.40;
+
+	if(TimeMultiplier > 2.0)
+	{
+		if(!NpcStats_IsEnemySilenced(npc.index))
+		{
+			TrueArmor *= 0.5;
+		}
+		TimeMultiplier = 2.0;
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 3);
+	}
+	else
+	{
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
+	}
+	if(TimeMultiplier < 1.0)
+	{
+		TimeMultiplier = 1.0;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
+
+	npc.m_flSpeed = (200.0 * TimeMultiplier);
+
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
@@ -175,7 +215,7 @@ public void Protecta_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		ProtectaSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		DesertInabdilSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -185,9 +225,9 @@ public void Protecta_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Protecta_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action DesertInabdil_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Protecta npc = view_as<Protecta>(victim);
+	DesertInabdil npc = view_as<DesertInabdil>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -201,20 +241,13 @@ public Action Protecta_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	return Plugin_Changed;
 }
 
-public void Protecta_NPCDeath(int entity)
+public void DesertInabdil_NPCDeath(int entity)
 {
-	Protecta npc = view_as<Protecta>(entity);
+	DesertInabdil npc = view_as<DesertInabdil>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	//when dying, cause a heal explosion!
-	if(!NpcStats_IsEnemySilenced(npc.index))
-	{
-		ExpidonsaGroupHeal(npc.index, 150.0, 99, 200.0, 1.0, true);
-	}
-	ExpidonsaRemoveEffects(entity);
-	SDKUnhook(npc.index, SDKHook_Think, Protecta_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable4))
@@ -228,11 +261,11 @@ public void Protecta_NPCDeath(int entity)
 
 }
 
-void ProtectaSelfDefense(Protecta npc, float gameTime, int target, float distance)
+void DesertInabdilSelfDefense(DesertInabdil npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
-		if(npc.m_flAttackHappens < GetGameTime(npc.index))
+		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
 			
@@ -248,37 +281,32 @@ void ProtectaSelfDefense(Protecta npc, float gameTime, int target, float distanc
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 70.0;
+					float damageDealt = 40.0;
+					float TimeMultiplier = 1.0;
+					TimeMultiplier = GetGameTime(npc.index) - npc.m_flNextRangedAttack;
+					TimeMultiplier *= 0.40;
+
+					if(TimeMultiplier > 2.0)
+					{
+						damageDealt * 2.0;
+					}
+
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 3.0;
+						damageDealt *= 1.5;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+
 					// Hit sound
 					npc.PlayMeleeHitSound();
-
-					if(target <= MaxClients)
-					{
-						if (IsInvuln(target))
-						{
-							ExpidonsaGroupHeal(npc.index, 150.0, 5, 100.0, 1.0, true);
-						}
-						else
-						{
-							ExpidonsaGroupHeal(npc.index, 150.0, 5, 200.0, 1.0, true);
-						}
-					}
-					else
-					{
-						ExpidonsaGroupHeal(npc.index, 150.0, 5, 100.0, 1.0, true);
-					}
 				} 
 			}
 			delete swingTrace;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index);
 		}
 	}
 
-	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
+	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
 		{
@@ -290,7 +318,7 @@ void ProtectaSelfDefense(Protecta npc, float gameTime, int target, float distanc
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
+				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
@@ -298,37 +326,4 @@ void ProtectaSelfDefense(Protecta npc, float gameTime, int target, float distanc
 			}
 		}
 	}
-}
-
-
-void ProtectaEffects(int iNpc)
-{
-	if(AtEdictLimit(EDICT_NPC))
-		return;
-	
-	float flPos[3];
-	float flAng[3];
-	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);
-
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-
-	
-	int particle_2 = InfoTargetParentAt({0.0,0.0,20.0}, "", 0.0); //First offset we go by
-	int particle_3 = ParticleEffectAt({0.0,0.0,-40.0}, "eyeboss_projectile", 0.0); //First offset we go by
-	
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(iNpc, particle_1, "effect_hand_r",_);
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 25, 25, 240, 3.0, 1.0, 1.0, LASERBEAM);
-	
-
-	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
-	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
-	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
-	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(Laser_1);
 }

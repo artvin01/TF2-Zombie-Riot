@@ -416,7 +416,9 @@ enum
 	INTERITUS_WINTER_SKIN_HUNTER	  = 367,
 	INTERITUS_WINTER_IRRITATED_PERSON = 368,
 	THEDOCTOR_MINIBOSS				  = 369,
-
+  
+	INTERITUS_ANARCHY_RANSACKER		  = 370,
+  
 	INTERITUS_FOREST_SNIPER = 371,
 	INTERITUS_FOREST_SCOUT = 372,
 	INTERITUS_FOREST_SOLDIER = 373,
@@ -1887,6 +1889,7 @@ void NPC_MapStart()
 	WinterFrostHunter_OnMapStart_NPC();
 	WinterSkinHunter_OnMapStart_NPC();
 	WinterIrritatedPerson_OnMapStart_NPC();
+	AnarchyRansacker_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2971,6 +2974,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case THEDOCTOR_MINIBOSS:
 			entity = SpecialDoctor(client, vecPos, vecAng, ally,data);
+     
+		case INTERITUS_ANARCHY_RANSACKER:
+			entity = AnarchyRansacker(client, vecPos, vecAng, ally);
 
 		case INTERITUS_FOREST_SNIPER:
 			entity = Archosauria(client, vecPos, vecAng, ally);

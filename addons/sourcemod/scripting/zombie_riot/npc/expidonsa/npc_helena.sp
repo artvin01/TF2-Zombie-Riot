@@ -267,17 +267,14 @@ public void Helena_ClotThink(int iNPC)
 						npc.m_bnew_target = true;
 					}
 
-					bool regrow = true;
-					Building_CamoOrRegrowBlocker(PrimaryThreatIndex, _, regrow);
-					if(regrow && !NpcStats_IsEnemySilenced(npc.index))
+					if(!NpcStats_IsEnemySilenced(npc.index))
 					{
-						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
-						SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") + 200);
-						if(GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") >= GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"))
+						if(IsValidEntity(npc.m_iWearable4))
 						{
-							SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"));
+							SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+							SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
 						}
+						HealEntityGlobal(npc.index, PrimaryThreatIndex, 200.0, 1.0);
 					}
 					else
 					{

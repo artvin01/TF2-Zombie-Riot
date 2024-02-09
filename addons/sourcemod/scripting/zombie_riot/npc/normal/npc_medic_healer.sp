@@ -264,20 +264,14 @@ public void MedicHealer_ClotThink(int iNPC)
 						npc.m_bnew_target = true;
 					}
 
-					bool regrow = true;
-					Building_CamoOrRegrowBlocker(PrimaryThreatIndex, _, regrow);
-					if(regrow && !NpcStats_IsEnemySilenced(npc.index))
+					if(!NpcStats_IsEnemySilenced(npc.index))
 					{
 						if(IsValidEntity(npc.m_iWearable4))
 						{
 							SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 							SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
 						}
-						SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") + 50);
-						if(GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") >= GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"))
-						{
-							SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"));
-						}
+						HealEntityGlobal(npc.index, PrimaryThreatIndex, 50.0, 1.0);
 					}
 					else
 					{
