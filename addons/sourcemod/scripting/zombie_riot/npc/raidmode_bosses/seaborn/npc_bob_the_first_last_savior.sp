@@ -255,6 +255,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		
 		if(StrContains(data, "final_item") != -1)
 		{
+			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_BobFirst_Win);
 			i_RaidGrantExtra[npc.index] = 1;
 			npc.m_flNextDelayTime = GetGameTime(npc.index) + 10.0;
 			npc.g_TimesSummoned = 0;
@@ -377,11 +378,43 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		b_NpcIsInvulnerable[npc.index] = false;
 	}
 
+	if(!npc.m_bFakeClone && LastMann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			char buffer[64];
+			if(c_NpcCustomNameOverride[npc.index][0])
+			{
+				strcopy(buffer, sizeof(buffer), c_NpcCustomNameOverride[npc.index]);
+			}
+			else
+			{
+				strcopy(buffer, sizeof(buffer), NPC_Names[i_NpcInternalId[npc.index]]);
+			}
+			npc.m_fbGunout = true;
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{white}%s{default}: One Sea creature left.", buffer);
+				}
+				case 1:
+				{
+					CPrintToChatAll("{white}%s{default}: This nightare ends soon.", buffer);
+				}
+				case 3:
+				{
+					CPrintToChatAll("{white}%s{default}: Last. Creature. Left.", buffer);
+				}
+			}
+		}
+	}
 	//Raidmode timer runs out, they lost.
 	if(!npc.m_bFakeClone && npc.m_flNextThinkTime != FAR_FUTURE && RaidModeTime < GetGameTime())
 	{
 		if(RaidBossActive != INVALID_ENT_REFERENCE)
 		{
+			ZR_NpcTauntWinClear();
 			int entity = CreateEntityByName("game_round_win"); 
 			DispatchKeyValue(entity, "force_map_reset", "1");
 			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
@@ -2091,4 +2124,11 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 		}
 	}
 	RemoveEntity(entity);
+}
+
+public void Raidmode_BobFirst_Win(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+	SDKUnhook(entity, SDKHook_Think, RaidbossBobTheFirst_ClotThink);
+	CPrintToChatAll("{white}Bob the First{default}: Deep sea threat cleaned, finally at peace...");
 }

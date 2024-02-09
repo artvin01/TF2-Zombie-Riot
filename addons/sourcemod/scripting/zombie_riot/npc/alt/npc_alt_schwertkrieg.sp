@@ -391,24 +391,31 @@ public void Schwertkrieg_ClotThink(int iNPC)
 									meleedmg = 325.0;
 								}	
 									
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 								{
-									float Bonus_damage = 1.0;
-									int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
-	
-									if(IsValidEntity(weapon))
+									if(target <= MaxClients)
 									{
-										char classname[32];
-										GetEntityClassname(weapon, classname, 32);
-									
-										int weapon_slot = TF2_GetClassnameSlot(classname);
-									
-										if(weapon_slot != 2 || i_IsWandWeapon[weapon])
+										float Bonus_damage = 1.0;
+										int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
+		
+										if(IsValidEntity(weapon))
 										{
-											Bonus_damage = 1.5;
+											char classname[32];
+											GetEntityClassname(weapon, classname, 32);
+										
+											int weapon_slot = TF2_GetClassnameSlot(classname);
+										
+											if(weapon_slot != 2 || i_IsWandWeapon[weapon])
+											{
+												Bonus_damage = 1.5;
+											}
+											meleedmg *= Bonus_damage;
+											SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
 										}
-										meleedmg *= Bonus_damage;
-										SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
+										else
+										{
+											SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
+										}	
 									}
 									else
 									{

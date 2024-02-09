@@ -30,9 +30,9 @@ int i_Headshots[MAXTF2PLAYERS];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
-char c_NpcCustomNameOverride[MAXENTITIES][255];
 int Shared_BEAM_Laser;
 int Shared_BEAM_Glow;
+int i_NpcOverrideAttacker[MAXENTITIES];
 #endif
 
 #if defined RPG
@@ -40,6 +40,7 @@ int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES] = {0, ...};
 #endif
 
+char c_NpcCustomNameOverride[MAXENTITIES][255];
 int i_SpeechBubbleEntity[MAXENTITIES];
 PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
 static int g_modelArrow;
@@ -72,6 +73,7 @@ Function func_NPCDeath[MAXENTITIES];
 Function func_NPCDeathForward[MAXENTITIES];
 Function func_NPCOnTakeDamage[MAXENTITIES];
 Function func_NPCThink[MAXENTITIES];
+Function func_NPCFuncWin[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -120,7 +122,11 @@ public Action Command_PetMenu(int client, int args)
 	char buffer[64];
 	GetCmdArg(3, buffer, sizeof(buffer));
 
-	bool ally;
+#if defined RTS
+	bool ally = true;
+#else
+	bool ally = false;
+#endif
 	if(args > 3)	//data
 		ally = view_as<bool>(GetCmdArgInt(4));
 	
@@ -2257,6 +2263,18 @@ methodmap CClotBody < CBaseCombatCharacter
 	float model_size = 1.0)
 	{
 		int item = CreateEntityByName("prop_dynamic_override");
+		if(!IsValidEntity(item))
+		{
+			//warning, warning!!!
+			//infinite loop this untill it works!
+			//Tf2 has a very very very low chance to fail to spawn a prop, because reasons!
+			return this.EquipItem(
+			attachment,
+			model,
+			anim,
+			skin,
+			model_size);
+		}
 		DispatchKeyValue(item, "model", model);
 
 		if(model_size == 1.0)
@@ -2269,7 +2287,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 
 		DispatchSpawn(item);
-		
 		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES);
 		SetEntityMoveType(item, MOVETYPE_NONE);
 		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);
@@ -3338,6 +3355,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		func_NPCOnTakeDamage[pThis] = INVALID_FUNCTION;
 		func_NPCThink[pThis] = INVALID_FUNCTION;
 		func_NPCDeathForward[pThis] = INVALID_FUNCTION;
+		func_NPCFuncWin[pThis] = INVALID_FUNCTION;
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		SetEntityCollisionGroup(pThis, 1);
@@ -4502,6 +4520,13 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			return false;
 		}
 		
+#if defined RTS
+		if(IsObject(enemy))
+		{
+			return true;
+		}
+#endif
+
 		if(enemy <= MaxClients || !b_NpcHasDied[enemy])
 		{
 			if(b_NpcIsInvulnerable[enemy] && !target_invul)
@@ -4520,7 +4545,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			}
 
 #if defined RTS
-			if(UnitBody_IsAlly(index, enemy))
+			if(UnitBody_IsEntAlly(index, enemy))
 			{
 				return false;
 			}
@@ -4616,9 +4641,7 @@ stock int GetClosestTargetRTS(int entity,
   		Function ExtraValidityFunction = INVALID_FUNCTION)
 #endif
 {
-#if defined RTS
-	int searcher_team = view_as<UnitBody>(entity).m_hOwner; //do it only once lol
-#else
+#if !defined RTS
 	int searcher_team = GetEntProp(entity, Prop_Send, "m_iTeamNum"); //do it only once lol
 #endif
 	if(EntityLocation[2] == 0.0)
@@ -4702,7 +4725,7 @@ stock int GetClosestTargetRTS(int entity,
 #if defined RTS
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
-					if(UnitBody_IsAlly(searcher_team, entity_close))
+					if(UnitBody_IsEntAlly(entity, entity_close))
 						continue;
 #else
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
@@ -4738,7 +4761,23 @@ stock int GetClosestTargetRTS(int entity,
 		}
 	}
 
-#if !defined RTS
+#if defined RTS
+	if(ExtraValidityFunction != INVALID_FUNCTION)
+	{
+		int target = -1;
+		while((target = FindEntityByClassname(target, "prop_resource")) != -1)
+		{
+			bool valid;
+			Call_StartFunction(null, ExtraValidityFunction);
+			Call_PushCell(entity);
+			Call_PushCell(target);
+			Call_Finish(valid);
+
+			if(valid)
+				GetClosestTarget_AddTarget(target, 4);
+		}
+	}
+#else
 	if(searcher_team != 2 && !IgnorePlayers)
 	{
 		for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
@@ -4990,6 +5029,10 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, const float Ent
 	else
 #endif	// Non-RTS
 	{
+#if defined RTS
+		float distance_limit = fldistancelimit * fldistancelimit;
+#endif
+
 		float TargetDistance = 0.0;
 		int target;
 		static float TargetLocation[3]; 
@@ -5018,10 +5061,8 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, const float Ent
 				4: buildings
 			*/
 
-#if defined RTS
+#if !defined RTS
 			float distance_limit = fldistancelimit;
-#else
-			float distance_limit;
 			switch(GetClosestTarget_Enemy_Type[i])
 			{
 				case 1:
@@ -5045,9 +5086,9 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, const float Ent
 					distance_limit = 99999.9;
 				}
 			}
-#endif
 
 			distance_limit *= distance_limit;
+#endif	// Non-RTS
 
 			if(distanceVector < distance_limit && MinimumDistance < distanceVector)
 			{
@@ -7752,6 +7793,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 #if defined ZR
 	i_SpawnProtectionEntity[entity] = -1;
 	i_TeamGlow[entity] = -1;
+	i_NpcOverrideAttacker[entity] = 0;
 	b_thisNpcHasAnOutline[entity] = false;
 	b_ThisNpcIsImmuneToNuke[entity] = false;
 	FormatEx(c_NpcCustomNameOverride[entity], sizeof(c_NpcCustomNameOverride[]), "");
@@ -8014,9 +8056,11 @@ public void ArrowStartTouch(int arrow, int entity)
 			f_ArrowDamage[arrow] *= 3.0;
 		}
 
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(owner == -1)
-			owner = arrow;
+		int owner = GetEntPropEnt(arrow, Prop_Send, "m_hOwnerEntity");
+		if(!IsValidEntity(owner))
+		{
+			owner = 0;
+		}
 
 		int inflictor = h_ArrowInflictorRef[arrow];
 		if(inflictor != -1)
@@ -8024,7 +8068,6 @@ public void ArrowStartTouch(int arrow, int entity)
 
 		if(inflictor == -1)
 			inflictor = owner;
-
 
 		SDKHooks_TakeDamage(entity, owner, inflictor, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
 		if(i_NervousImpairmentArrowAmount[arrow] > 0)

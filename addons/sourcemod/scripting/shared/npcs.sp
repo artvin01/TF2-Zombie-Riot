@@ -1053,7 +1053,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #if defined RPG
 			OnTakeDamageRpgAgressionOnHit(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition,damagecustom, GameTime);
 #endif		
-			OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype);
+			OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, _,weapon);
 
 #if defined ZR
 			VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage, damagetype,i_HexCustomDamageTypes[victim]);
@@ -1117,8 +1117,13 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					
 					damagetype &= ~DMG_CRIT;
 				}
-			}	
+			}
 		}
+		
+#if defined RTS
+		UnitBody_TakeDamage(victim, damage, damagetype);
+#endif
+
 		NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 		{
@@ -1133,6 +1138,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				}
 			}
 #endif
+
 			if(attacker <= MaxClients && attacker > 0)
 			{
 				if(WeaponWasValid)
@@ -1143,7 +1149,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 		}
 	}
-
 
 	OnTakeDamageBleedNpc(victim, attacker, inflictor, damage, damagetype, weapon, damagePosition, GameTime);
 	npcBase.m_vecpunchforce(damageForce, true);
@@ -1189,8 +1194,12 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 #if defined ZR
 	if(!b_NpcIsTeamkiller[attacker] && GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 		return;
+	int AttackerOverride = EntRefToEntIndex(i_NpcOverrideAttacker[attacker]);
+	if(AttackerOverride > 0)
+	{
+		attacker = AttackerOverride;
+	}		
 #endif
-		
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	if((Damageaftercalc > 0.0 || b_NpcIsInvulnerable[victim] || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 	{
@@ -1657,6 +1666,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		float percentage = npc.m_flMeleeArmor * 100.0;
 		percentage *= fl_Extra_MeleeArmor[victim];
 		percentage *= fl_TotalArmor[victim];
+		if(f_MultiDamageTaken[victim] != 1.0)
+		{
+			percentage *= f_MultiDamageTaken[victim];
+		}
+		if(f_MultiDamageTaken_Flat[victim] != 1.0)
+		{
+			percentage *= f_MultiDamageTaken_Flat[victim];
+		}
 		int testvalue = 1;
 		OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
 
@@ -1689,6 +1706,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		float percentage = npc.m_flRangedArmor * 100.0;
 		percentage *= fl_Extra_RangedArmor[victim];
 		percentage *= fl_TotalArmor[victim];
+		if(f_MultiDamageTaken[victim] != 1.0)
+		{
+			percentage *= f_MultiDamageTaken[victim];
+		}
+		if(f_MultiDamageTaken_Flat[victim] != 1.0)
+		{
+			percentage *= f_MultiDamageTaken_Flat[victim];
+		}
 		int testvalue = 1;
 		OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
 
@@ -1900,6 +1925,14 @@ bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 0)
 	if(VausMagicaShieldLogicEnabled(victim))
 		return true;
 #endif
+	if(f_MultiDamageTaken[victim] != 1.0)
+	{
+		return true;
+	}
+	if(f_MultiDamageTaken_Flat[victim] != 1.0)
+	{
+		return true;
+	}	
 	float DamageTest = 1.0;
 	int testvalue = 1;
 	OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, DamageTest, testvalue, testvalue, GetGameTime());
@@ -2365,9 +2398,13 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon, damage);
 		}
-		case WEAPON_SICCERINO: //pap fusion
+		case WEAPON_SICCERINO:
 		{
 			return Npc_OnTakeDamage_Siccerino(attacker, victim, damage, weapon);
+		}
+		case WEAPON_DIMENSION_RIPPER:
+		{
+			Npc_OnTakeDamage_DimensionalRipper(attacker, victim);
 		}
 	}
 #endif
@@ -2549,7 +2586,7 @@ stock void OnTakeDamageRpgAgressionOnHit(int victim, int &attacker, int &inflict
 }
 #endif
 
-void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int &damagetype, bool trueArmorOnly = false)
+void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int &damagetype, bool trueArmorOnly = false, int weapon = 0)
 {
 	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
 	{
@@ -2569,8 +2606,22 @@ void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int
 				damage *= 0.85;
 			}
 #endif
-			damage *= fl_MeleeArmor[victim];
-			damage *= fl_Extra_MeleeArmor[victim];	
+			float TotalMeleeRes = 1.0;
+			TotalMeleeRes *= fl_MeleeArmor[victim];
+			TotalMeleeRes *= fl_Extra_MeleeArmor[victim];	
+#if defined ZR
+			if(IsValidEntity(weapon))
+			{
+				if(i_CustomWeaponEquipLogic[weapon] == WEAPON_TEUTON_DEAD)
+				{
+					if(TotalMeleeRes > 1.0)
+					{
+						TotalMeleeRes = 1.0;
+					}
+				}
+			}
+#endif
+			damage *= TotalMeleeRes;
 		}
 		damage *= fl_TotalArmor[victim];
 	}

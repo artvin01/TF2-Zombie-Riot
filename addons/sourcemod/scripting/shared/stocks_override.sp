@@ -29,7 +29,6 @@ bool Stock_IsValidEntity(int entity)
 
 #define IsValidEntity Stock_IsValidEntity
 
-
 #define KillTimer KILLTIMER_DONOTUSE_USE_DELETE
 
 /*
@@ -285,7 +284,7 @@ stock float ZR_GetGameTime(int entity = 0)
 		float speed = RTS_GameSpeed();
 		if(speed != 1.0)
 		{
-			float lifetime = flNpcCreationTime[entity] - gameTime;
+			float lifetime = gameTime - flNpcCreationTime[entity];
 			gameTime += lifetime * (speed - 1.0);
 		}
 #endif
@@ -484,3 +483,63 @@ void Edited_EmitSoundToAll(const char[] sample,
 
 #define TF2Attrib_GetByDefIndex OLD_CODE_FIX_IT
 #define TF2Items_SetAttribute OLD_CODE_FIX_IT
+
+int MaxInfractionsAcceptEntityInput;
+float f_TimeSinceLastInfraction;
+
+bool Stock_AcceptEntityInput(int dest, const char[] input, int activator=-1, int caller=-1, int outputid=0)
+{
+	if(!IsValidEntity(dest) && dest != 0)
+	{
+		if(f_TimeSinceLastInfraction > GetEngineTime())
+		{
+			MaxInfractionsAcceptEntityInput++;
+		}
+		else
+		{
+			MaxInfractionsAcceptEntityInput = 0;
+		}
+		f_TimeSinceLastInfraction = GetEngineTime() + 0.5;
+
+		if(MaxInfractionsAcceptEntityInput > 10)
+		{		
+			/*
+				too many infractions. slay all npcs no matter what, but do not grant bonuses if it was a raid.
+				this is an emergency, it might actually spam this very very often. In this case, we nuke all npcs immediently.
+				There is a rare bug where it sometimes just doesnt spawn the entity. such as NPC wearables.
+				too many infractions. slay all npcs no matter what, but do not grant bonuses if it was a raid.
+			*/
+			int entity = -1;
+			while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+			{
+#if defined ZR
+				if(IsValidEntity(entity) && !b_IsAlliedNpc[entity])
+#else
+				if(IsValidEntity(entity))
+#endif
+				{
+					if(entity != 0)
+					{
+						i_RaidGrantExtra[entity] = 0;
+						b_DissapearOnDeath[entity] = true;
+						b_DoGibThisNpc[entity] = true;
+						SmiteNpcToDeath(entity);
+						SmiteNpcToDeath(entity);
+						SmiteNpcToDeath(entity);
+						SmiteNpcToDeath(entity);
+					}
+				}
+			}
+			LogStackTrace("We failed, man! Please look into this eventually!");
+			CPrintToChatAll("{crimson}[Zombie-Riot] UN-RECOVEABLE ERROR!!! All Enemies have been slain to prevent major issues, Raids will not give rewards!");
+			CPrintToChatAll("{crimson}[Zombie-Riot] UN-RECOVEABLE ERROR!!! All Enemies have been slain to prevent major issues, Raids will not give rewards!");
+			CPrintToChatAll("{crimson}[Zombie-Riot] UN-RECOVEABLE ERROR!!! All Enemies have been slain to prevent major issues, Raids will not give rewards!");
+			CPrintToChatAll("{crimson}[Zombie-Riot] UN-RECOVEABLE ERROR!!! All Enemies have been slain to prevent major issues, Raids will not give rewards!");
+			MaxInfractionsAcceptEntityInput = 0;
+		}
+		return false;
+	}
+	return AcceptEntityInput(dest, input, activator, caller, outputid);
+}
+
+#define AcceptEntityInput Stock_AcceptEntityInput

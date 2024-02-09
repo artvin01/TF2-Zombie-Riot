@@ -290,6 +290,22 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	float gameTime = GetGameTime(npc.index);
 
 	//Raidmode timer runs out, they lost.
+	if(LastMann && !AlreadySaidLastmann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			AlreadySaidLastmann = true;
+			npc.m_fbGunout = true;
+			if(!XenoExtraLogic())
+			{
+				CPrintToChatAll("{darkblue}Blue Goggles{default}: Here or not, infections are no joke.");
+			}
+			else
+			{
+				CPrintToChatAll("{darkblue}Blue Goggles{default}: Giving up saves your life.");		
+			}
+		}
+	}
 	if(npc.m_flNextThinkTime != FAR_FUTURE && RaidModeTime < GetGameTime())
 	{
 		if(IsEntityAlive(EntRefToEntIndex(i_RaidDuoAllyIndex)))
@@ -303,12 +319,14 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 		if(RaidBossActive != INVALID_ENT_REFERENCE)
 		{
+			ZR_NpcTauntWinClear();
 			int entity = CreateEntityByName("game_round_win"); 
 			DispatchKeyValue(entity, "force_map_reset", "1");
 			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
 			DispatchSpawn(entity);
 			AcceptEntityInput(entity, "RoundWin");
 			Music_RoundEnd(entity);
+			SharedTimeLossSilvesterDuo(npc.index);
 			RaidBossActive = INVALID_ENT_REFERENCE;
 		}
 
@@ -920,7 +938,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						}
 						if(ZR_GetWaveCount()+1 >= 60)
 						{
-							damage *= 2.0;
+							damage *= 1.5;
 						}
 						FireBullet(npc.index, npc.m_iWearable3, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer01_red");
 					}

@@ -576,6 +576,14 @@ static void Railcannon_Tick(int client, int pap, bool supercharged)
 
 						float trueDamagePercentage = 0.4;
 						float stunDuration = 5.0;
+						if(b_thisNpcIsARaid[BEAM_BuildingHit[building]])
+						{
+							stunDuration *= 0.3; //They take half knockback
+						}
+						else if(b_thisNpcIsABoss[BEAM_BuildingHit[building]])
+						{
+							stunDuration *= 0.6; //They take half knockback
+						}
 						if (supercharged)
 						{
 							FreezeNpcInTime(BEAM_BuildingHit[building], stunDuration);

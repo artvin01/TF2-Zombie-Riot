@@ -42,7 +42,7 @@ methodmap Militia < EmpireBody
 	
 	public Militia(int client, const float vecPos[3], const float vecAng[3])
 	{
-		Militia npc = view_as<Militia>(EmpireBody(client, vecPos, vecAng, _, _, "50"));
+		Militia npc = view_as<Militia>(EmpireBody(client, vecPos, vecAng, _, _, "40"));
 
 		i_NpcInternalId[npc.index] = MILITIA;
 		i_NpcWeight[npc.index] = 1;
@@ -51,8 +51,15 @@ methodmap Militia < EmpireBody
 		
 		npc.SetActivity("ACT_IDLE");
 		npc.m_flSpeed = 180.0;
-		npc.m_flVisionRange = 300.0;
+		npc.m_flVisionRange = 400.0;
 		npc.m_flEngageRange = 300.0;
+
+		npc.AddFlag(Flag_Biological);
+
+		StatEnum stats;
+		stats.Damage = 4;
+		stats.RangeArmor = 1;
+		npc.SetStats(stats);
 
 		npc.m_flHeadshotCooldown = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -82,20 +89,25 @@ static void ClotThink(int entity)
 	
 	if(npc.m_flAttackHappens)
 	{
-		if(npc.m_flAttackHappens < gameTime)
+		target = npc.m_iTarget;
+
+		if(!IsValidEnemy(npc.index, target))
 		{
-			target = npc.m_iTarget;
-
-			if(IsValidEnemy(npc.index, target))
-			{
-				float vecTarget[3];
-				WorldSpaceCenter(target, vecTarget);
-				npc.FaceTowards(vecTarget, 20000.0);
-				
-				SDKHooks_TakeDamage(target, npc.index, npc.index, 4.0, DMG_CLUB, -1, _, vecTarget);
-				npc.PlayMeleeHitSound();
-			}
-
+			// Cancel the attack
+			npc.m_flAttackHappens = 0.0;
+			npc.m_flReloadDelay = 0.0;
+			npc.m_flNextMeleeAttack = 0.0;
+			npc.RemoveGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
+		}
+		else if(npc.m_flAttackHappens < gameTime)
+		{
+			float vecTarget[3];
+			WorldSpaceCenter(target, vecTarget);
+			npc.FaceTowards(vecTarget, 20000.0);
+			
+			npc.DealDamage(target, _, DMG_CLUB, _, vecTarget);
+			npc.PlayMeleeHitSound();
+			
 			npc.m_flAttackHappens = 0.0;
 		}
 	}
@@ -108,7 +120,7 @@ static void ClotThink(int entity)
 			WorldSpaceCenter(target, vecTarget);
 			
 			float distance = GetVectorDistance(vecMe, vecTarget, true);
-			if(distance < 10000.0)
+			if(distance < MELEE_RANGE_SQR)
 			{
 				npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
 				npc.PlayMeleeSound();

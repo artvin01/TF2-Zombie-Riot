@@ -569,6 +569,8 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 //Most healing debuffs shouldnt work with this.
 #define HEAL_ABSOLUTE				(1 << 2) 
 //Any and all healing changes or buffs or debuffs dont work that dont affect the weapon directly.
+#define HEAL_SILENCEABLE				(1 << 3) 
+//Silence Entirely nukes this heal
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -1187,6 +1189,7 @@ int Armor_Wearable[MAXTF2PLAYERS];
 #include "shared/wand_projectile.sp"
 #include "shared/viewchanges.sp"
 #include "shared/store.sp"
+#include "shared/teuton_sound_override.sp"
 #endif
 
 #include "shared/attributes.sp"
@@ -1202,7 +1205,6 @@ int Armor_Wearable[MAXTF2PLAYERS];
 #include "shared/rtscamera.sp"
 #include "shared/sdkcalls.sp"
 #include "shared/sdkhooks.sp"
-#include "shared/teuton_sound_override.sp"
 #include "shared/stocks.sp"
 
 #include "shared/baseboss_lagcompensation.sp"
@@ -1418,6 +1420,10 @@ public void OnPluginEnd()
 
 	RTSCamera_PluginEnd();
 	
+#if defined RTS
+	RTS_PluginEnd();
+#endif
+
 	/*
 	char classname[256];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
@@ -1490,7 +1496,9 @@ public void OnMapStart()
 	RPG_MapStart();
 #endif
 
-#if !defined RTS
+#if defined RTS
+	RTS_MapStart();
+#else
 	ViewChange_MapStart();
 	WandStocks_Map_Precache();
 	MapStart_CustomMeleePrecache();
@@ -1802,7 +1810,9 @@ public void OnClientDisconnect(int client)
 	KillFeed_ClientDisconnect(client);
 	RTSCamera_ClientDisconnect(client);
 
-#if !defined RTS
+#if defined RTS
+	RTS_ClientDisconnect(client);
+#else
 	Store_ClientDisconnect(client);
 #endif
 
@@ -1878,9 +1888,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 #endif
 
 #if defined RTS
-	if(RTS_PlayerRunCmd(client, weapon))
-		return Plugin_Changed;
-	
+	RTS_PlayerRunCmd(client);
 #else
 	#if defined ZR
 	Escape_PlayerRunCmd(client);
@@ -2437,6 +2445,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		func_NPCOnTakeDamage[entity] = INVALID_FUNCTION;
 		func_NPCThink[entity] = INVALID_FUNCTION;
 		func_NPCDeathForward[entity] = INVALID_FUNCTION;
+		func_NPCFuncWin[entity] = INVALID_FUNCTION;
 		f3_VecTeleportBackSave_OutOfBounds[entity][0] = 0.0;
 		f3_VecTeleportBackSave_OutOfBounds[entity][1] = 0.0;
 		f3_VecTeleportBackSave_OutOfBounds[entity][2] = 0.0;
@@ -3454,8 +3463,8 @@ static void MapStartResetAll()
 public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, Handle &item)
 {
 #if defined RTS
-	if(!RTS_InSetup())
-		return Plugin_Stop;
+	//if(!RTS_InSetup())
+	//	return Plugin_Stop;
 #else
 	if(!StrContains(classname, "tf_wear"))
 	{

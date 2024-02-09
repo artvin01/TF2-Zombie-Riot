@@ -310,7 +310,7 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 							{
 								damage=damage/2;
 							}
-							if(target <= MaxClients)
+							if(!ShouldNpcDealBonusDamage(target))
 								SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 							else
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);

@@ -253,6 +253,8 @@ methodmap EmpireBody < UnitBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
+		SetEntityRenderColor(npc.index, TeamColor[TeamNumber[client]][0], TeamColor[TeamNumber[client]][1], TeamColor[TeamNumber[client]][2], 255);
+		
 		if(isBuilding)
 		{
 			npc.m_iBleedType = BLEEDTYPE_METAL;

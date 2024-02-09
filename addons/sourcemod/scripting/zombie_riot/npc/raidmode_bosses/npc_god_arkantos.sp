@@ -207,6 +207,7 @@ methodmap GodArkantos < CClotBody
 		
 		i_NpcInternalId[npc.index] = RAIDMODE_GOD_ARKANTOS;
 		i_NpcWeight[npc.index] = 4;
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Arkantos_Win);
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -338,8 +339,31 @@ public void GodArkantos_ClotThink(int iNPC)
 	
 	float gameTime = GetGameTime(npc.index);
 
+	if(!b_IsAlliedNpc[npc.index] && LastMann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			npc.m_fbGunout = true;
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}God Arkantos{default}: You have no chance alone!");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}God Arkantos{default}: Your weaponry frails in comaprison to Atlantis!!");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{lightblue}God Arkantos{default}: Concider surrendering?!");
+				}
+			}
+		}
+	}
 	if(!b_IsAlliedNpc[npc.index] && RaidModeTime < GetGameTime())
 	{
+		ZR_NpcTauntWinClear();
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");
 		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
@@ -348,8 +372,10 @@ public void GodArkantos_ClotThink(int iNPC)
 		Music_RoundEnd(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		SDKUnhook(npc.index, SDKHook_Think, GodArkantos_ClotThink);
+		CPrintToChatAll("{lightblue}God Arkantos{default}: Your chances of winning are none, My army and me will swarm everyone who dares to threaten Atlantis.");
 		npc.m_bDissapearOnDeath = true;
 		BlockLoseSay = true;
+		return;
 	}
 	if(b_angered_twice[npc.index])
 	{
@@ -1723,6 +1749,7 @@ void ArkantosSayWords()
 
 void ArkantosSayWordsAngry()
 {
+	RaidModeTime += 30.0;
 	switch(GetRandomInt(0,3))
 	{
 		case 0:
@@ -1789,4 +1816,28 @@ bool ArkantosForceTalk()
 		}
 	}
 	return false;
+}
+public void Raidmode_Arkantos_Win(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+	SDKUnhook(entity, SDKHook_Think, GodArkantos_ClotThink);
+	switch(GetRandomInt(0,3))
+	{
+		case 0:
+		{
+			CPrintToChatAll("{lightblue}God Arkantos{default}: Atlantis will never fall!");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{lightblue}God Arkantos{default}: I still have to take care of the {blue}deep sea{default}...");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{lightblue}God Arkantos{default}: Threaten our livelyhood and you pay!");
+		}
+		case 3:
+		{
+			CPrintToChatAll("{lightblue}God Arkantos{default}: I have to inform {blue}Sensal{default} about this.");
+		}
+	}
 }

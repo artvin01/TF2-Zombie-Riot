@@ -3,7 +3,6 @@
 
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float Necro_Damage[MAXPLAYERS+1]={0.0, ...};
-static bool Delete_Flame[MAXPLAYERS+1]={false, ...};
 
 public void Wand_Calcium_Spell_ClearAll()
 {

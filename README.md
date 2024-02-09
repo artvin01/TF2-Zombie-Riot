@@ -3,16 +3,6 @@
 You fight against AI enemies/Zombies with allies and try to win/suvive as long as possible, You buy weapons and or upgrade them from previous ones. Stay together and beat them
 Compile zombie_riot.sp for this.
 
-# TF2 RPG Fortress
-
-Still currently in development. Not recommended to use.
-Compile rpg_fortress.sp for this.
-
-We will also not support anyone using RPG fortress, or help with debugging.
-Feel free to use this, but know what youre doing.
-
-DO NOT HAVE BOTH ON THE SERVER.
-
 ## Information
 
 THIS CODE IS COMPRISED OF MULTIPLE CODERS JUST ADDING THEIR THINGS!
@@ -113,8 +103,7 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [CollisionHookFIX](https://github.com/SlidyBat/CollisionHook) THIS IS A GAMEDATA FIX FOR...
 - [CollisionHook](https://github.com/Adrianilloo/Collisionhook)
 - [TFEconData](https://github.com/nosoop/SM-TFEconData)
-- [CBaseNpc](https://github.com/TF2-DMB/CBaseNPC) 
-~~- [lambda](https://github.com/Batfoxkid/lambda)~~ currently is kown to cause crashes. do not use. and its not used currently either.
+- [CBaseNpc](https://github.com/TF2-DMB/CBaseNPC)
 - [Timescale Windows Fix](https://forums.alliedmods.net/showthread.php?t=324264) Not needed if you are on linux.
 - [TF2Utils](https://github.com/nosoop/SM-TFUtils)
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)

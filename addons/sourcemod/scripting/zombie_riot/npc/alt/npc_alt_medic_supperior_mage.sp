@@ -407,7 +407,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 							{
 								damage=damage/1.75;
 							}
-							if(target <= MaxClients)
+							if(!ShouldNpcDealBonusDamage(target))
 								SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 							else
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);

@@ -319,8 +319,8 @@ public void LastKnight_ClotThink(int iNPC)
 			{
 				if(distance < 8000.0)
 				{
-					int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					if(IsValidEnemy(npc.index, target, true))
+					int target = Can_I_See_Enemy_Only(npc.index, npc.m_iTarget);
+					if(IsValidEntity(target))
 					{
 						npc.m_iTarget = target;
 						npc.m_flNextMeleeAttack = gameTime;

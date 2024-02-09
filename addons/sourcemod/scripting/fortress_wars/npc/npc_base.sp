@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define MELEE_RANGE_SQR	6500.0
+
 enum struct CommandEnum
 {
 	int Type;
@@ -10,13 +12,14 @@ enum struct CommandEnum
 
 static float SoundCooldown[MAXTF2PLAYERS];
 
-static int OwnerUserId[MAXENTITIES];
 static int UnitFlags[MAXENTITIES];
 static float VisionRange[MAXENTITIES];
 static float EngageRange[MAXENTITIES];
 static char NextGesture[MAXENTITIES][32];
 static ArrayList CommandList[MAXENTITIES];
 static Function FuncSound[MAXENTITIES][Sound_MAX];
+static Function FuncSkills[MAXENTITIES];
+static StatEnum Stats[MAXENTITIES];
 
 void UnitBody_MapStart()
 {
@@ -25,16 +28,15 @@ void UnitBody_MapStart()
 
 methodmap UnitBody < CClotBody
 {
-	// Returns client index, 0 for none
-	property int m_hOwner
+	property int m_iTeamNumber
 	{
 		public get()
 		{
-			return OwnerUserId[this.index] == -1 ? 0 : GetClientOfUserId(OwnerUserId[this.index]);
+			return TeamNumber[this.index];
 		}
-		public set(int owner)
+		public set(int team)
 		{
-			OwnerUserId[this.index] = owner > 0 ? GetClientUserId(owner) : -1;
+			TeamNumber[this.index] = team;
 		}
 	}
 
@@ -102,6 +104,19 @@ methodmap UnitBody < CClotBody
 	{
 		FuncSound[this.index][type] = func;
 	}
+	public void SetSkillFunc(Function func)
+	{
+		FuncSkills[this.index] = func;
+	}
+
+	public void GetStats(StatEnum stats)
+	{
+		stats = Stats[this.index];
+	}
+	public void SetStats(const StatEnum stats = {})
+	{
+		Stats[this.index] = stats;
+	}
 
 	public void AddCommand(bool override, int type, const float pos[3], int target = -1)
 	{
@@ -126,22 +141,27 @@ methodmap UnitBody < CClotBody
 			CommandList[this.index].PushArray(command);
 		}
 	}
+	public void DealDamage(int victim, float multi = 1.0, int damageType = DMG_GENERIC, const float damageForce[3] = NULL_VECTOR, const float damagePosition[3] = NULL_VECTOR)
+	{
+		int damage = RoundFloat(Stats[this.index].Damage * multi) + Stats[this.index].DamageBonus;
 
-	public bool IsAlly(int attacker)
-	{
-		int owner = attacker;
-		if(owner > MaxClients)
-			owner = view_as<UnitBody>(owner).m_hOwner;
-		
-		return RTS_IsPlayerAlly(owner, this.m_hOwner);
+		// Check for extra damage vs flags
+		for(int i; i < Flag_MAX; i++)
+		{
+			if((Stats[this.index].ExtraDamage[i] || Stats[this.index].ExtraDamageBonus[i]) && view_as<UnitBody>(victim).HasFlag(i))
+				damage += RoundFloat(Stats[this.index].ExtraDamage[i] * multi) + Stats[this.index].ExtraDamageBonus[i];
+		}
+
+		SDKHooks_TakeDamage(victim, this.index, this.index, float(damage), damageType, _, damageForce, damagePosition);
 	}
-	public bool CanControl(int attacker)
+
+	public bool IsAlly(int team)
 	{
-		int owner = attacker;
-		if(owner > MaxClients)
-			owner = view_as<UnitBody>(owner).m_hOwner;
-		
-		return RTS_CanPlayerControl(owner, this.m_hOwner);
+		return RTS_IsTeamAlly(team, this.m_iTeamNumber);
+	}
+	public bool CanControl(int team)
+	{
+		return RTS_CanTeamControl(team, this.m_iTeamNumber);
 	}
 	
 	public UnitBody(int client, const float vecPos[3], const float vecAng[3],
@@ -154,12 +174,14 @@ methodmap UnitBody < CClotBody
 	{
 		UnitBody npc = view_as<UnitBody>(CClotBody(vecPos, vecAng, model, modelscale, health, isGiant, CustomThreeDimensions));
 		
-		npc.m_hOwner = client;
+		npc.m_iTeamNumber = TeamNumber[client];
 		npc.m_bBuilding = isBuilding;
 		npc.m_flVisionRange = 0.0;
 		npc.RemoveAllFlags();
 		NextGesture[npc.index][0] = 0;
 		delete CommandList[npc.index];
+		npc.SetStats();
+		npc.SetSkillFunc(INVALID_FUNCTION);
 
 		for(int i; i < Sound_MAX; i++)
 		{
@@ -170,14 +192,14 @@ methodmap UnitBody < CClotBody
 	}
 }
 
-bool UnitBody_IsAlly(int attacker, int entity)
+bool UnitBody_IsEntAlly(int attacker, int entity)
 {
-	return view_as<UnitBody>(entity).IsAlly(attacker);
+	return view_as<UnitBody>(entity).IsAlly(TeamNumber[attacker]);
 }
 
 bool UnitBody_CanControl(int attacker, int entity)
 {
-	return view_as<UnitBody>(entity).CanControl(attacker);
+	return view_as<UnitBody>(entity).CanControl(TeamNumber[attacker]);
 }
 
 bool UnitBody_HasFlag(int entity, int flag)
@@ -185,14 +207,39 @@ bool UnitBody_HasFlag(int entity, int flag)
 	return view_as<UnitBody>(entity).HasFlag(flag);
 }
 
-int UnitBody_GetOwner(int entity)
-{
-	return view_as<UnitBody>(entity).m_hOwner;
-}
-
 void UnitBody_AddCommand(int entity, bool override, int type, const float pos[3], int target = -1)
 {
 	view_as<UnitBody>(entity).AddCommand(override, type, pos, target);
+}
+
+void UnitBody_GetStats(int entity, StatEnum stats)
+{
+	view_as<UnitBody>(entity).GetStats(stats);
+}
+
+void UnitBody_TakeDamage(int victim, float &damage, int damagetype)
+{
+	int dmg = RoundFloat(damage);
+
+	if(dmg > 0)
+	{
+		if(damagetype & DMG_SLASH)
+		{
+		}
+		else if(damagetype & DMG_CLUB)
+		{
+			dmg -= Stats[victim].MeleeArmor + Stats[victim].MeleeArmorBonus;
+		}
+		else
+		{
+			dmg -= Stats[victim].RangeArmor + Stats[victim].RangeArmorBonus;
+		}
+
+		if(dmg < 1)
+			dmg = 1;
+	}
+
+	damage = float(dmg);
 }
 
 void UnitBody_PlaySound(int entity, int client, int type)
@@ -209,6 +256,44 @@ void UnitBody_PlaySound(int entity, int client, int type)
 		Call_PushCell(client);
 		Call_Finish();
 	}
+}
+
+bool UnitBody_GetSkill(int entity, int client, int type, SkillEnum skill)
+{
+	bool result;
+
+	if(FuncSkills[entity] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, FuncSkills[entity]);
+		Call_PushCell(entity);
+		Call_PushCell(client);
+		Call_PushCell(type);
+		Call_PushCell(false);
+		Call_PushArrayEx(skill, sizeof(skill), SM_PARAM_COPYBACK);
+		Call_Finish(result);
+	}
+
+	return result;
+}
+
+bool UnitBody_TriggerSkill(int entity, int client, int type)
+{
+	bool result;
+
+	if(FuncSkills[entity] != INVALID_FUNCTION)
+	{
+		SkillEnum skill;
+
+		Call_StartFunction(null, FuncSkills[entity]);
+		Call_PushCell(entity);
+		Call_PushCell(client);
+		Call_PushCell(type);
+		Call_PushCell(true);
+		Call_PushArrayEx(skill, sizeof(skill), 0);
+		Call_Finish(result);
+	}
+
+	return result;
 }
 
 bool UnitBody_ThinkStart(UnitBody npc, float gameTime)
@@ -232,7 +317,7 @@ bool UnitBody_ThinkStart(UnitBody npc, float gameTime)
 	return true;
 }
 
-int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
+int UnitBody_ThinkTarget(UnitBody npc, float gameTime, Function closestTargetFunction = INVALID_FUNCTION)
 {
 	CommandEnum command;
 
@@ -257,7 +342,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 		int target = command.TargetRef == -1 ? -1 : EntRefToEntIndex(command.TargetRef);
 		if(target > 0)
 		{
-			if(IsValidEnemy(npc.index, target))	// Following enemy
+			if(IsValidEnemy(npc.index, target, true))	// Following enemy
 			{
 				npc.m_iTargetWalkTo = target;
 				npc.m_flGetClosestTargetTime = gameTime + 1.0;
@@ -309,25 +394,29 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime)
 
 		if(!foundTarget)
 		{
-			target = npc.m_iTargetWalkTo;
-
-			if(canAttack)	// Had an existing target or time as passed
-				canAttack = (i_TargetToWalkTo[npc.index] != -1 || npc.m_flGetClosestTargetTime < gameTime);
-
 			if(canAttack)
 			{
-				if(canAttack)
+				if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo, true))
 				{
-					target = GetClosestTargetRTS(npc.index, npc.m_flEngageRange);
+
+				}
+				else if(i_TargetToWalkTo[npc.index] != -1 || npc.m_flGetClosestTargetTime < gameTime)
+				{
+					// Had an existing target or time as passed
+					target = GetClosestTargetRTS(npc.index, npc.m_flEngageRange, _, _, _, _, closestTargetFunction);
+					npc.m_flGetClosestTargetTime = gameTime + 1.0;
 				}
 				else
 				{
 					target = -1;
 				}
-
-				npc.m_iTargetWalkTo = target;
-				npc.m_flGetClosestTargetTime = gameTime + 1.0;
 			}
+			else
+			{
+				target = -1;
+			}
+
+			npc.m_iTargetWalkTo = target;
 		}
 
 		return target;

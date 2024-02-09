@@ -4,6 +4,12 @@
 #define MIN_FADE_DISTANCE	9999.9
 #define MAX_FADE_DISTANCE	9999.9
 
+#define HELP_HINT_COUNT	4
+#define TIP_HINT_COUNT	8
+
+#define MAX_TEAMS	17
+#define MAX_SKILLS	10
+
 enum
 {
 	Flag_Light = 0,
@@ -14,7 +20,9 @@ enum
 	Flag_Unique,
 	Flag_Heroic,
 	Flag_Summoned,
-	Flag_Worker
+	Flag_Worker,
+
+	Flag_MAX
 }
 
 public const char FlagName[][] =
@@ -28,6 +36,22 @@ public const char FlagName[][] =
 	"Heroic",
 	"Summoned",
 	"Worker"
+};
+
+enum
+{
+	Resource_None = 0,
+	Resource_Wood = 1,
+	Resource_Gold = 2,
+	Resource_Food = 3
+}
+
+public const char ResourceName[][] =
+{
+	"None",
+	"Wood",
+	"Gold",
+	"Food"
 };
 
 enum
@@ -49,50 +73,121 @@ enum
 	Sound_MAX
 }
 
+public const int TeamColor[][] =
+{
+	{255, 255, 255, 255},	// 0 = White
+	{0, 0, 255, 255},	// 1 = Blue
+	{255, 0, 0, 255},	// 2 = Red
+	{0, 255, 0, 255},	// 3 = Green
+	{255, 255, 0, 255},	// 4 = Yellow
+	{0, 255, 255, 255},	// 5 = Cyan
+	{255, 0, 255, 255},	// 6 = Pink
+	{127, 127, 127, 255},	// 7 = Gray
+	{255, 127, 0, 255},	// 8 = Orange
+	{127, 255, 0, 255},	// 9 = Lime
+	{127, 0, 255, 255},	// 10 = Purple
+	{0, 127, 255, 255},	// 11 = Light Blue
+	{255, 0, 127, 255},	// 12 = Light Pink
+	{0, 255, 127, 255},	// 13 = Light Green
+	{255, 127, 127, 255},	// 14
+	{127, 255, 127, 255},	// 15
+	{127, 127, 255, 255},	// 16
+};
+
+enum struct StatEnum
+{
+	int RangeArmor;
+	int RangeArmorBonus;
+	int MeleeArmor;
+	int MeleeArmorBonus;
+	int Damage;
+	int DamageBonus;
+	int ExtraDamage[Flag_MAX];
+	int ExtraDamageBonus[Flag_MAX];
+}
+
+enum struct SkillEnum
+{
+	char Name[32];
+	float Cooldown;
+	int Count;
+	bool Auto;
+}
+
+int TeamNumber[MAXENTITIES];
+int BuildMode[MAXTF2PLAYERS];
+
+#include "fortress_wars/object.sp"
 #include "fortress_wars/npc.sp"	// Global NPC List
+#include "fortress_wars/menu.sp"
 
 static bool InSetup;
-static bool AlliedPlayer[MAXTF2PLAYERS][MAXTF2PLAYERS];
-static bool AllowControl[MAXTF2PLAYERS][MAXTF2PLAYERS];
-static int TeamColor[MAXTF2PLAYERS][3];
+static int AlliedTeams[MAX_TEAMS];
+static int AllowControls[MAX_TEAMS];
+static bool Defeated[MAX_TEAMS];
 static float GameSpeed = 0.5;
 
 void RTS_PluginStart()
 {
-	for(int i; i < sizeof(TeamColor); i++)
+	Defeated[0] = true;
+	
+	RegAdminCmd("rts_setspeed", CommandSetSpeed, ADMFLAG_RCON, "Set the game speed");
+
+	LoadTranslations("realtime.unitnames.phrases");
+
+	Object_PluginStart();
+}
+
+void RTS_MapStart()
+{
+	Object_MapStart();
+}
+
+void RTS_PluginEnd()
+{
+	Object_PluginEnd();
+}
+
+void RTS_ClientDisconnect(int client)
+{
+	RTSMenu_ClientDisconnect(client);
+
+	TeamNumber[client] = 0;
+	BuildMode[client] = 0;
+}
+
+void RTS_ConfigsSetup()
+{
+	// DEBUG
+	for(int client = 1; client <= MaxClients; client++)
 	{
-		TeamColor[i][0] = 255;
-		TeamColor[i][1] = 255;
-		TeamColor[i][2] = 255;
+		if(IsClientInGame(client))
+			TeamNumber[client] = (client % MAX_TEAMS);
 	}
+	// DEBUG
 }
 
 void RTS_PlayerResupply(int client)
 {
+	// DEBUG
+	TeamNumber[client] = (client % MAX_TEAMS);
+	// DEBUG
+/*
 	if(!RTS_InSetup())
 	{
 		TF2_RemoveAllWeapons(client);
-		SpawnWeapon(client, "tf_weapon_shotgun_primary", 199, 1, 0, {128, 301, 821, 2}, {1.0, 1.0, 1.0, 0.0}, 4);
 		int active = SpawnWeapon(client, "tf_weapon_pistol", 209, 1, 0, {128, 301, 821, 2}, {1.0, 1.0, 1.0, 0.0}, 4);
-		SpawnWeapon(client, "tf_weapon_wrench", 197, 1, 0, {128, 821, 2}, {1.0, 1.0, 0.0}, 3);
-		int last = SpawnWeapon(client, "tf_weapon_pda_engineer_build", 737, 1, 0, {81}, {0.0}, 1);
+		int last = SpawnWeapon(client, "tf_weapon_wrench", 197, 1, 0, {128, 821, 2}, {1.0, 1.0, 0.0}, 3);
 
 		TF2Util_SetPlayerActiveWeapon(client, active);
 		SetEntPropEnt(client, Prop_Send, "m_hLastWeapon", last);
 	}
+*/
 }
 
-bool RTS_PlayerRunCmd(int client, int &weapon)
+void RTS_PlayerRunCmd(int client)
 {
-	SetEntPropEnt(client, Prop_Send, "m_hLastWeapon", GetPlayerWeaponSlot(client, TFWeaponSlot_Grenade));
-	
-	if(weapon && weapon != GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary))
-	{
-		weapon = 0;
-		return true;
-	}
-
-	return false;
+	RTSMenu_PlayerRunCmd(client);
 }
 
 bool RTS_InSetup()
@@ -105,14 +200,19 @@ float RTS_GameSpeed()
 	return GameSpeed;
 }
 
-bool RTS_IsPlayerAlly(int attacker, int target)
+bool RTS_IsSpectating(int client)
 {
-	return attacker == target || AlliedPlayer[attacker][target];
+	return Defeated[TeamNumber[client]];
 }
 
-bool RTS_CanPlayerControl(int attacker, int target)
+bool RTS_IsTeamAlly(int team1, int team2)
 {
-	return attacker == target || AllowControl[attacker][target];
+	return team1 == team2 || (AlliedTeams[team1] & (1 << team2));
+}
+
+bool RTS_CanTeamControl(int team1, int team2)
+{
+	return team1 == team2 || (AllowControls[team1] & (1 << team2));
 }
 
 void RTS_NPCHealthBar(CClotBody npc)
@@ -160,16 +260,7 @@ void RTS_NPCHealthBar(CClotBody npc)
 		float offset[3];
 		offset[2] += 95.0 * GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
 		
-		int owner = UnitBody_GetOwner(npc.index);
-		if(owner < 0 || owner > MaxClients)
-			owner = 0;
-
-		static int color[4] = {255, 255, 255, 255};
-		color[0] = TeamColor[owner][0];
-		color[1] = TeamColor[owner][1];
-		color[2] = TeamColor[owner][2];
-
-		textEntity = SpawnFormattedWorldText(display, offset, 17, color, npc.index);
+		textEntity = SpawnFormattedWorldText(display, offset, 34, TeamColor[TeamNumber[npc.index]], npc.index);
 		DispatchKeyValue(textEntity, "font", "1");
 		SetEntPropEnt(textEntity, Prop_Send, "m_hOwnerEntity", npc.index);
 		SDKHook(textEntity, SDKHook_SetTransmit, HealthBarTransmit);
@@ -186,4 +277,19 @@ static Action HealthBarTransmit(int entity, int client)
 	}
 
 	return Plugin_Continue;
+}
+
+static Action CommandSetSpeed(int client, int args)
+{
+	if(args == 1)
+	{
+		GameSpeed = GetCmdArgFloat(1);
+		ReplyToCommand(client, "Set the game speed to %.2f", GameSpeed);
+	}
+	else
+	{
+		ReplyToCommand(client, "[SM] Usage: rts_setspeed <timescale>");
+	}
+
+	return Plugin_Handled;
 }
