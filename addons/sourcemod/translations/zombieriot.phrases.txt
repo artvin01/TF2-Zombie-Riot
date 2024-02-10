@@ -2245,6 +2245,10 @@
 		"ru"		"Выйдите из зоны застревания NPC. Вы будете получать это сообщение каждые 0,5 секунды, если останетесь в ней."
 		"chi"		"离开npc卡住的区域。如果你待在里面，每0.5秒你就会收到这条信息。"
 	}
+	"Npc Stuck Spot Warning Stairs"
+	{
+		"en"		"Dont be on ladders too long or use them too much. you will receive this message every 0.5 seconds if you stay in it."
+	}
 	"Show Plugin Messages Hint"
 	{
 		"en"		"If you wish to see the wave counter in a better way, set ''cl_showpluginmessages'' to 1 in the console!"
@@ -2975,5 +2979,65 @@
 	"Clear Whitelist"
 	{
 		"en"	"Clear Whitelist"
+	}
+	"Crouch on ground for ability"
+	{
+		"en"	"Crouch on ground for ability"
+	}
+	"Railcannon Charged"
+	{
+		"en"	"Railcannon is fully charged"
+	}
+	"Default Desc"
+	{
+		"en"	"Fight against the classic zombies and combine!"
+	}
+	"True Fusion Warrior Desc"
+	{
+		"en"	"Raids appear at the end of every 15 waves, they get more stronger with more abilities!"
+	}
+	"Alternative Desc"
+	{
+		"en"	"Fight with a new twist on the classic with magical new enemies!"
+	}
+	"Blitzkrieg Desc"
+	{
+		"en"	"The machine that rapidly fires rockets and zaps players outside his range!"
+	}
+	"Xeno Desc"
+	{
+		"en"	"The Xeno infection has arrived, mutating enemies with new abilities!"
+	}
+	"Silvester Goggles Desc"
+	{
+		"en"	"Silvester fights with his laser and rock attacks while Blue Goggles snipes from a distance!"
+	}
+	"Xeno Hard Desc"
+	{
+		"en"	"You enter the source of the Xeno infection, they're much stronger here, beware..."
+	}
+	"Medieval Desc"
+	{
+		"en"	"Fight against the middle-age with their armor to counter melee or ranged attacks!"
+	}
+	"God Arkantos Desc"
+	{
+		"en"	"Fight him and his rapidly spawning army, kill the army first whenever they show up!"
+	}
+	"Expidonsa Desc"
+	{
+		"en"	"Hold back against the advanced underground city, watch out for their self-healing and surprise attacks!"
+	}
+	"Sensal Desc"
+	{
+		"en"	"The scouting party operative which rapidly summons homing scythes and laser attacks!"
+	}
+	"Deep Sea Desc"
+	{
+		"en"	"The Seaborn infection has arrived, Armor Corrosion attacks will infect your armor, cure it with armor tables!"
+	}
+	"Schwert Donner Desc"
+	{
+		"en"	"Schwertkrieg charges you down with his sword while Donnerkrieg fires laser attacks!"
 	}
 }

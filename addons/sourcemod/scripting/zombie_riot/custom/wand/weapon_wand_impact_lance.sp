@@ -563,8 +563,8 @@ public void Enable_Impact_Lance(int client, int weapon)
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_IMPACT_LANCE)
 		{
 			i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
-			Impact_Lance_CosmeticRemoveEffects(client);
-			ApplyExtra_Impact_Lance_CosmeticEffects(client,_);
+		//	Impact_Lance_CosmeticRemoveEffects(client);
+		//	ApplyExtra_Impact_Lance_CosmeticEffects(client,_);
 			//Is the weapon it again?
 			//Yes?
 			delete h_Impact_Lance_CosmeticEffectManagement[client];
@@ -580,8 +580,8 @@ public void Enable_Impact_Lance(int client, int weapon)
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_IMPACT_LANCE)
 	{
 		i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
-		Impact_Lance_CosmeticRemoveEffects(client);
-		ApplyExtra_Impact_Lance_CosmeticEffects(client,_);
+	//	Impact_Lance_CosmeticRemoveEffects(client);
+	//	ApplyExtra_Impact_Lance_CosmeticEffects(client,_);
 		DataPack pack;
 		h_Impact_Lance_CosmeticEffectManagement[client] = CreateDataTimer(0.1, Timer_Impact_Lance_Cosmetic, pack, TIMER_REPEAT);
 		pack.WriteCell(client);

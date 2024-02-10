@@ -238,7 +238,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			}
 		}
 
-		RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(CClotBody(pos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "20000000", ally, _, _, true, true));
+		RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(CClotBody(pos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "20000000", ally, _, _, true, false));
 		
 		i_NpcInternalId[npc.index] = BOB_THE_FIRST;
 		i_NpcWeight[npc.index] = 4;
@@ -255,6 +255,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		
 		if(StrContains(data, "final_item") != -1)
 		{
+			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_BobFirst_Win);
 			i_RaidGrantExtra[npc.index] = 1;
 			npc.m_flNextDelayTime = GetGameTime(npc.index) + 10.0;
 			npc.g_TimesSummoned = 0;
@@ -283,6 +284,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			b_ThisNpcIsImmuneToNuke[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
+			b_thisNpcIsARaid[npc.index] = true;
 		}
 		else
 		{
@@ -299,6 +301,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
@@ -316,6 +319,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			npc.m_bThisNpcIsABoss = true;
 			b_thisNpcIsARaid[npc.index] = true;
 			npc.m_flMeleeArmor = 1.25;
+			RemoveAllDamageAddition();
 		}
 
 		npc.Anger = false;
@@ -361,6 +365,8 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 {
 	RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(iNPC);
 	
+
+	Zombies_Currently_Still_Ongoing = CountPlayersOnRed(1);
 	float gameTime = GetGameTime(npc.index);
 
 	if(npc.Anger || npc.m_bFakeClone || i_RaidGrantExtra[npc.index] > 1)
@@ -372,11 +378,43 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		b_NpcIsInvulnerable[npc.index] = false;
 	}
 
+	if(!npc.m_bFakeClone && LastMann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			char buffer[64];
+			if(c_NpcCustomNameOverride[npc.index][0])
+			{
+				strcopy(buffer, sizeof(buffer), c_NpcCustomNameOverride[npc.index]);
+			}
+			else
+			{
+				strcopy(buffer, sizeof(buffer), NPC_Names[i_NpcInternalId[npc.index]]);
+			}
+			npc.m_fbGunout = true;
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{white}%s{default}: One Sea creature left.", buffer);
+				}
+				case 1:
+				{
+					CPrintToChatAll("{white}%s{default}: This nightare ends soon.", buffer);
+				}
+				case 3:
+				{
+					CPrintToChatAll("{white}%s{default}: Last. Creature. Left.", buffer);
+				}
+			}
+		}
+	}
 	//Raidmode timer runs out, they lost.
 	if(!npc.m_bFakeClone && npc.m_flNextThinkTime != FAR_FUTURE && RaidModeTime < GetGameTime())
 	{
 		if(RaidBossActive != INVALID_ENT_REFERENCE)
 		{
+			ZR_NpcTauntWinClear();
 			int entity = CreateEntityByName("game_round_win"); 
 			DispatchKeyValue(entity, "force_map_reset", "1");
 			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
@@ -780,7 +818,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			{
 				Zombies_Currently_Still_Ongoing++;
 				fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index] * 0.5;
-				fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index] * 0.5;
+				fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index] * 0.75;
 
 				SetEntityRenderMode(summon, RENDER_TRANSALPHA);
 				SetEntityRenderColor(summon, 200, 200, 200, 200);
@@ -997,7 +1035,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 									IncreaceEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
 								}	
 								if(!Knocked)
-									Custom_Knockback(npc.index, target, 750.0);
+									Custom_Knockback(npc.index, target, 150.0, true);
 							}
 						} 
 					}
@@ -1170,12 +1208,12 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						{
 							vecTarget = PredictSubjectPositionOld(npc, EnemyToPull);
 							npc.FaceTowards(vecTarget, 50000.0);
-							/*
+							
 							if(!npc.m_bFakeClone)
 							{
 								BobPullTarget(npc.index, EnemyToPull);
 							}
-							*/
+							
 							//We succsssfully pulled someone.
 							//Take their old position and nuke it.
 							float vEnd[3];
@@ -1193,7 +1231,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 								WritePackFloat(pack, 1000.0);
 							}
 							else
-								WritePackFloat(pack, 200.0);
+								WritePackFloat(pack, 650.0);
 								
 							spawnRing_Vectors(vEnd, BOB_FIRST_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, BOB_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
 						}
@@ -1388,6 +1426,9 @@ static void GiveOneRevive()
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
+					if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+						continue;
+
 					SetEntityRenderMode(entity, RENDER_NORMAL);
 					SetEntityRenderColor(entity, 255, 255, 255, 255);
 				}
@@ -1429,6 +1470,9 @@ static void GiveOneRevive()
 					int entity, i;
 					while(TF2U_GetWearable(client, entity, i))
 					{
+						if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+							continue;
+
 						SetEntityRenderMode(entity, RENDER_NORMAL);
 						SetEntityRenderColor(entity, 255, 255, 255, 255);
 					}
@@ -1507,8 +1551,6 @@ static void AddBobEnemy(int id, int count, int boss = 0)
 	{
 		Waves_AddNextEnemy(enemy);
 	}
-
-	Zombies_Currently_Still_Ongoing += count;
 }
 
 Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, float &damage)
@@ -1590,6 +1632,7 @@ void RaidbossBobTheFirst_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_Think, RaidbossBobTheFirst_ClotThink);
 	
 	Zombies_Currently_Still_Ongoing++;	// Because it was decreased before
+	Zombies_Currently_Still_Ongoing = 0;
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -1802,10 +1845,13 @@ stock void BobPullTarget(int bobnpc, int enemy)
 		if(GetEntityFlags(enemy) & FL_ONGROUND)
 			angles[0] = 0.0; // toss out pitch if on ground
 
-		float distance = GetVectorDistance(vecTarget, vecMe, true);
+		float distance = GetVectorDistance(vecTarget, vecMe);
+		if(distance > 500.0)
+			distance = 500.0;
+
 		static float velocity[3];
 		GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(velocity, Pow(distance, 0.5) * 2.15);
+		ScaleVector(velocity, distance * 2.0);
 		
 		// min Z if on ground
 		if(GetEntityFlags(enemy) & FL_ONGROUND)
@@ -1815,6 +1861,8 @@ stock void BobPullTarget(int bobnpc, int enemy)
 		TeleportEntity(enemy, NULL_VECTOR, NULL_VECTOR, velocity);
 		TF2_AddCondition(enemy, TFCond_LostFooting, 0.5);
 		TF2_AddCondition(enemy, TFCond_AirCurrent, 0.5);	
+		IncreaceEntityDamageTakenBy(enemy, 0.5, 0.5);
+		//give 50% res for 0.5 seconds
 	}
 	else
 	{
@@ -2076,4 +2124,11 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 		}
 	}
 	RemoveEntity(entity);
+}
+
+public void Raidmode_BobFirst_Win(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+	SDKUnhook(entity, SDKHook_Think, RaidbossBobTheFirst_ClotThink);
+	CPrintToChatAll("{white}Bob the First{default}: Deep sea threat cleaned, finally at peace...");
 }

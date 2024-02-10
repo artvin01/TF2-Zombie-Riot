@@ -162,7 +162,7 @@ public void Activate_Quincy_Bow(int client, int weapon)
 			//Yes?
 			delete h_TimerQuincy_BowManagement[client];
 			h_TimerQuincy_BowManagement[client] = null;			
-			Create_Quincy_Weapon(client, true);
+		//	Create_Quincy_Weapon(client, true);
 			
 			
 			int pap = Get_Quincy_Pap(weapon);
@@ -185,7 +185,7 @@ public void Activate_Quincy_Bow(int client, int weapon)
 		i_quincy_pap[client] = pap;
 
 		
-		Create_Quincy_Weapon(client, true);
+	//	Create_Quincy_Weapon(client, true);
 		
 		DataPack pack;
 		h_TimerQuincy_BowManagement[client] = CreateDataTimer(0.1, Timer_Management_Quincy_Bow, pack, TIMER_REPEAT);
@@ -1227,7 +1227,7 @@ static void Penetrating_Shot(int client, float radius, float damage, float range
 		}
 		
 		
-		for (int building = 1; building < MAX_TARGETS_HIT; building++)
+		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			BeamWand_BuildingHit[building] = false;
 		}

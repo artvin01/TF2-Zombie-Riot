@@ -270,6 +270,7 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		i_NpcInternalId[npc.index] = RAIDMODE_TRUE_FUSION_WARRIOR;
 		i_NpcWeight[npc.index] = 4;
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Fusion_Warrior_Win);
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -389,6 +390,7 @@ methodmap TrueFusionWarrior < CClotBody
 		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 			
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -420,8 +422,38 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 {
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(iNPC);
 	
+	if(LastMann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			npc.m_fbGunout = true;
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{gold}True Fusion Warrior{default}: Run... Away...");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{gold}True Fusion Warrior{default}: Help...");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{gold}True Fusion Warrior{crimson}: AGHHRRR!!!");
+				}
+			}
+		}
+	}
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
+		
+		CPrintToChatAll("{gold}True Fusion Warrior{default}: New... victims to infect...");
+		return;
+	}
 	if(RaidModeTime < GetGameTime())
 	{
+		ZR_NpcTauntWinClear();
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");
 		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
@@ -429,7 +461,9 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		AcceptEntityInput(entity, "RoundWin");
 		Music_RoundEnd(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;
+		CPrintToChatAll("{gold}True Fusion Warrior{default}: {green}Xeno{default} virus too strong... to resist.. {crimson}join...{default}");
 		SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
+		return;
 	}
 
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -521,7 +555,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		if(npc.m_bInKame)
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
-			if(npc.m_iTarget == -1)
+			if(npc.m_iTarget < 1)
 			{
 				npc.m_iTarget = GetClosestTarget(npc.index);
 			}
@@ -1650,7 +1684,7 @@ void TrueFusionSelfDefense(TrueFusionWarrior npc, float gameTime)
 							}
 							
 							if(!Knocked)
-								Custom_Knockback(npc.index, target, 650.0); 
+								Custom_Knockback(npc.index, target, 450.0, true); 
 						}
 					}
 				}
@@ -1840,4 +1874,9 @@ void FusionApplyEffectsForm2(int entity)
 	i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(Laser_1_1);
 	i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_2_1);
 	i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);
+}
+
+public void Raidmode_Fusion_Warrior_Win(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 }

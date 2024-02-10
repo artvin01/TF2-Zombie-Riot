@@ -709,7 +709,7 @@
 	
 	"The Battalion's Backup Desc"
 	{
-		"en"	"Give Resistance (25%%) to everyone after dealing enough damage, receive +50 Extra HP"
+		"en"	"Give Resistance (15%%) to everyone after dealing enough damage, receive +50 Extra HP"
 	}
 	
 	"P15t0l Desc"
@@ -727,18 +727,6 @@
 		"en"	"Weapon does whatever the fuck it wants now."
 		"ru"	"Оружие теперь делает, чёрт возьми всё, что ему вздумается."
 		"chi"   "武器现在可以发射更多类型"
-	}
-	"Riot Gun Desc"
-	{
-		"en"	"Press M2 Nearby enemies to stun them and gain massively increased attackspeed and damage for upto 10 hit targets.\nTake less damage from attacks you look at, bosses and raids pierce it by half.\nSpeedcola reduces ability cooldown."
-		"ru"	"Нажав М2 вблизи врагов, вы оглушите их и получ. увелич. скорость атаки и нанесёте урон 10 целям.\nПолучайте меньше урона от атак, на которые вы смотрите, боссы и рейды пробивают его наполовину.\nБыстрокола уменьш. время восст. способн."
-		"chi"   "按M2击晕附近的敌人，并为最多10个命中的目标大幅提高攻击速度和伤害。\n从你看到的攻击中受到更少的伤害，boss和突袭穿透它一半。极速可乐减少技能冷却时间。"
-	}
-	"Riot Gun Pap 1"
-	{
-		"en"	"Boosts resistance, including melee. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nPress M2 Nearby enemies to stun them and gain massively increased attackspeed and damage for upto 10 hit targets"
-		"ru"	"Усиливает сопр., в том числе в ближнем бою. Оружие стреляет 3 пулями одновременно. Становится основным оружием.\nНажмите М2 вблизи врагов для оглушения и увеличения скорость атаки и урона до 10 целей."
-		"chi"   "增加抵抗，包括近战。武器一次发射3发子弹。成为主要武器。\n按M2击晕附近的敌人，并获得大量提高攻击速度和伤害，最多可击中10个目标"
 	}
 	"Buff Banner Desc"
 	{
@@ -854,9 +842,7 @@
 	}
 	"Kunai Pap 2"
 	{
-		"en"	"Increased damage and attackspeed, backstabbing gives more health, backstabs have no cooldown and make you laugh."
-		"ru"	"Увеличенный урон и скорость атаки, удары в спину дают больше здоровья, удары в спину не имеют задержки и заставляют вас смеяться."
-		"chi"   "增加伤害和攻击速度，背刺增加生命值，背刺没有冷却时间，让你开怀大笑。"
+		"en"	"Increased damage and attackspeed, backstabbing gives more health, backstabs have no cooldown and make you laugh.\nYou are a professional at backstabbing and such, backstabs are easier to hit."
 	}
 	
 	"Fractured Ark Desc"
@@ -2322,31 +2308,23 @@
 	}
 	"Old Wooden Board Desc"
 	{
-		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nPassively heals you, gets interrupted when taking damage/switching weapons.\nDefence rating: ★✬☆☆☆"
+		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nPassively heals you, gets interrupted when taking damage/switching weapons.\nDefence rating: 10%%"
 	}
 	"Spike Shield Desc"
 	{
-		"en"	"A weapon pretending to be a shield - Parrying boasts higher damage.\nDefence rating: ★☆☆☆☆"
-	}
-	"Leaf Shield Desc"
-	{
-		"en"	"A shield that was born - Healing comes back faster after taking damage.\nDefence rating: ★★★☆☆"
+		"en"	"A weapon pretending to be a shield - Parrying boasts higher damage.\nDefence rating: 5%%"
 	}
 	"Rookie Shield Desc"
 	{
-		"en"	"A regular shield - Parries and lets you switch weapons faster.\nDefence rating: ★★☆☆☆"
+		"en"	"A regular shield - Parries and lets you switch weapons faster.\nDefence rating: 10%%"
 	}
 	"Punishment Desc"
 	{
-		"en"	"A weapon and a shield, given form - Parrying becomes AOE.\nDefence rating: ★★★☆☆\nArchetype changes to ''Crusher''"
-	}
-	"Rampart Desc"
-	{
-		"en"	"An abomination, given life. You can feel it's breath - Parrying heals you for 5% of your HP.\nDefence rating: ★★★★★"
+		"en"	"A weapon and a shield, given form - Parrying becomes AOE.\nDefence rating: 10%%\nArchetype changes to ''Crusher''"
 	}
 	"Cudgel Desc"
 	{
-		"en"	"A standard issue shield, given purpose - Parrying debuffs the enemy.\nDefence rating: ★★★★☆"
+		"en"	"A standard issue shield, given purpose - Parrying debuffs the enemy.\nDefence rating: 15%%"
 	}
 	"The Standchen Desc"
 	{
@@ -2447,6 +2425,14 @@
 	"Skill Point Info"
 	{
 		"en"	"Hold MOUSE2 while pressing RELOAD on a pap to gain access to a skill point alocation system"
+	}
+	"Dim pap0"
+	{
+		"en" "Disrupt the peace in the multiverse. Bring the Chaos\nMouse 1 attack to deal ranged magic damage.\nMouse 2 when full charge to summon helpful summons"
+	}
+	"Dim pap1"
+	{
+		"en" "Spawn Stronger Npcs. Also slight increase in damage"
 	}
 	"Seaborn Infection Desc"
 	{
@@ -2570,7 +2556,7 @@
 	}
 	"Blitz Kit Desc"
 	{
-		"en"	"You have 3 weapons, a rocket launcher that shoots fast.\nA secondary that fires an ION if you have enough charge, you get that from hitting npc's with your primary\nAnd a melee that becomes stronger when your primary is reloading
+		"en"	"You have 3 weapons, a rocket launcher that shoots fast.\nA secondary that fires an ION if you have enough charge, you get that from hitting npc's with your primary\nAnd a melee that becomes stronger when your primary is reloading"
 	}
 	"Hurricane Blitz desc 2"
 	{
@@ -2679,5 +2665,65 @@
 	"Crossbow Pap 2"
 	{
 		"en"	"More dmg, reload, clip and attackspeed.\nBalista is stronger and has less cooldown."
+	}
+	"Medigun Desc Pap 1"
+	{
+		"en"	"Medigun gives more overheal.\nFrom 25%% to 45%% for players and from 50%% to 75%% for npcs."
+	}
+	"Medigun Desc Pap 2"
+	{
+		"en"	"Medigun now gives armor aswell.\nScales with medigun upgrades."
+	}
+	"Flash Grenade Desc"
+	{
+		"en"	"Massively decreased damage but silences enemies for 4 seconds."
+	}
+	"Flash Grenade Pap Desc"
+	{
+		"en"	"Now also briefly stuns enemies."
+	}
+	"Outlaw Railcannon Desc"
+	{
+		"en"	"Hand portable cannon that charges tofire TAU particles at incredible speeds.\nDoes more damage while airborne, but dissipates quickly over distance.\nSuffers mid-game, but becomes a solid weapon late-game."
+	}
+	"Outlaw Railcannon Desc Pap 1"
+	{
+		"en"	"Higher quality capacitors allows for shooting at lower charges.\nLess DPS than counterpart, but can fire when bar is 1/3rd full.\nIdeal for cramped maps."
+	}
+	"Outlaw Railcannon Desc Pap 2"
+	{
+		"en"	"Higher capacity capacitors allow for incredibly fast particles.\nParticles split in the air, resulting in inverted damage falloff.\nCan zoom in with M2.\nIdeal for large open spaces."
+	}
+	"Outlaw Railcannon Desc Pap 3"
+	{
+		"en"	"We found this left behind on an old rusty mad max car.\nSeems to have had significant use."
+	}
+	"Outlaw Railcannon Desc Pap 4"
+	{
+		"en"	"I won't miss.\nBy default, weapon is in low output mode.\nPress R to charge the weapon for 10 second to fire a MAXIMUM OUTPUT shot.\nMAXIMUM OUTPUT stuns and does a portion as true damage."
+	}
+	"Riot Gun Desc"
+	{
+		"en"	"While you have armor, provides 60% (from bosses 35%) damage resistance from attacks in front of you.\nAbility stuns up to 10 enemies in front of you and greatly increases attack speed.\nSpeed-Cola reduces ability cooldown."
+	}
+	"Riot Gun Pap 1"
+	{
+		"en"	"Provides 10%% melee resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now stuns longer and has a decreased cooldown."
+	}
+	"Energized Riot Gun Desc"
+	{
+		"en"	"Provides 10%% ranged resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now becomes slower multi-hit shotgun.\nGetting hit with your shield reduces ability cooldowns of yourself and a nearby ally by 0.5 seconds."
+	}
+	"Armor Visualiser Desc"
+	{
+		"en"	"You can now see the armor of fellow allies via their shield."
+	}
+	"Siccerino Pap 2"
+	{
+		"en"	"Your attacks will debuff the enemy so you deal 5% more damage with each hit you do upto a cap.\nM2 ability changes into a rapidly fast attacking melee."
+	}
+	"Siccerino Pap 3"
+	{
+		"en"	"More damage and attackspeed.\nYour R now summons a giant pair of siccors to siccor the enemy."
 	}
 }

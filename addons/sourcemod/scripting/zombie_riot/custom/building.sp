@@ -1051,7 +1051,14 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	{
 		damage *= 1.10;
 	}
-	
+	if(f_MultiDamageTaken[entity] != 1.0)
+	{
+		damage *= f_MultiDamageTaken[entity];
+	}
+	if(f_MultiDamageTaken_Flat[entity] != 1.0)
+	{
+		damage *= f_MultiDamageTaken_Flat[entity];
+	}
 	if(b_thisNpcIsABoss[attacker])
 	{
 		damage *= 1.5;
@@ -1992,6 +1999,12 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 						if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false) && (StrEqual(buffer, "zr_ammobox") || StrEqual(buffer, "zr_armortable") || StrEqual(buffer, "zr_perkmachine") || StrEqual(buffer, "zr_packapunch")))
 						{
+							if(MaxSupportBuildingsAllowed(client, false) <= 1 && i_WhatBuilding[entity] == BuildingPackAPunch)
+							{
+								ClientCommand(client, "playgamesound items/medshotno1.wav");
+								PrintToChat(client,"You do not own enough builder upgrades to own a pack a punch.");
+								return true;
+							}
 							if(h_ClaimedBuilding[client][entity] != null)
 								delete h_ClaimedBuilding[client][entity];
 
@@ -3807,7 +3820,7 @@ static void Railgun_Boom(int client)
 			}
 			
 			
-			for (int building = 1; building < MAX_TARGETS_HIT; building++)
+			for (int building = 0; building < MAX_TARGETS_HIT; building++)
 			{
 				BEAM_BuildingHit[building] = false;
 			}
@@ -3941,7 +3954,7 @@ static void Railgun_Boom_Client(int client)
 			}
 			
 			
-			for (int building = 1; building < MAX_TARGETS_HIT; building++)
+			for (int building = 0; building < MAX_TARGETS_HIT; building++)
 			{
 				BEAM_BuildingHit[building] = false;
 			}
@@ -7033,7 +7046,7 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 	}
 	if(f_VillageSavingResources[client] < GetGameTime())
 	{
-		f_VillageSavingResources[client] = GetGameTime() + 10.0;
+		f_VillageSavingResources[client] = GetGameTime() + 0.25;
 		BarracksSaveResources(client);
 	}
 }

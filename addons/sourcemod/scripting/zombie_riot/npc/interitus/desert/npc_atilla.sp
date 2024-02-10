@@ -247,13 +247,13 @@ void DesertAtillaSelfDefense(DesertAtilla npc, float gameTime, int target, float
 					{
 						if(target > MaxClients)
 						{
-							StartBleedingTimer_Against_Client(target, npc.index, 4.0, 2);
+							StartBleedingTimer_Against_Client(target, npc.index, 4.0, 5);
 						}
 						else
 						{
 							if (!IsInvuln(target))
 							{
-								StartBleedingTimer_Against_Client(target, npc.index, 4.0, 2);
+								StartBleedingTimer_Against_Client(target, npc.index, 4.0, 5);
 							}
 						}
 					}

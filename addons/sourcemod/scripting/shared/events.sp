@@ -12,8 +12,8 @@ void Events_PluginStart()
 	HookEvent("player_team", OnPlayerTeam, EventHookMode_Pre);
 	HookEvent("player_connect_client", OnPlayerConnect, EventHookMode_Pre);
 	HookEvent("player_disconnect", OnPlayerConnect, EventHookMode_Pre);
+	HookEvent("deploy_buff_banner", OnBannerDeploy, EventHookMode_Pre);
 //	HookEvent("nav_blocked", NavBlocked, EventHookMode_Pre);
-	
 #if defined ZR
 	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_PostNoCopy);
 	HookEvent("teamplay_setup_finished", OnSetupFinished, EventHookMode_PostNoCopy);
@@ -120,6 +120,11 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 	return Plugin_Changed;
 }
 
+public Action OnBannerDeploy(Event event, const char[] name, bool dontBroadcast)
+{
+	return Plugin_Handled;
+}
+
 public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast)
 {
 	if(!event.GetBool("bot"))
@@ -160,7 +165,11 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
 	CurrentGame = 0;
-	RemoveAllCustomMusic();
+	if(event.GetInt("team") == 3)
+	{
+		//enemy team won due to timer or something else.
+		ZR_NpcTauntWin();
+	}
 }
 #endif
 
@@ -175,12 +184,15 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 		ForcePlayerCrouch(client, false);
+
+#if defined RTS
+		RTS_PlayerResupply(client);
+#else
 		TF2_RemoveAllWeapons(client); //Remove all weapons. No matter what.
 		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
 		SetVariantString("");
 	  	AcceptEntityInput(client, "SetCustomModel");
 
-#if !defined RTS
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 		ViewChange_DeleteHands(client);
 		ViewChange_UpdateHands(client, CurrentClass[client]);
@@ -390,8 +402,9 @@ public Action OnTeutonHealth(int client, int &health)
 {
 	if(TeutonType[client])
 	{
-		SetEntityHealth(client, 0);
-		return Plugin_Continue;
+		SetEntityHealth(client, 1);
+		health = 1;
+		return Plugin_Changed;
 	}
 	
 	SDKUnhook(client, SDKHook_GetMaxHealth, OnTeutonHealth);
@@ -434,7 +447,9 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	if(!client)
 		return Plugin_Continue;
 	
+#if !defined RTS
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
+#endif
 
 #if defined ZR
 	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), dieingstate[client] ? -69 : 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
@@ -443,6 +458,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 #if defined ZR
+	ArmorDisplayClient(client, true);
 	DataPack pack = new DataPack();
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(-1);
@@ -570,6 +586,9 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 						int entity_wearable, i;
 						while(TF2U_GetWearable(client, entity_wearable, i))
 						{
+							if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity_wearable] != -1)
+								continue;
+
 							SetEntityRenderMode(entity_wearable, RENDER_NORMAL);
 							SetEntityRenderColor(entity_wearable, 255, 255, 255, 255);
 						}

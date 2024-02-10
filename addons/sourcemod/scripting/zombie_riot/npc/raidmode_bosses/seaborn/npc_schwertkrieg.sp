@@ -337,6 +337,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		npc.m_flSpeed =330.0;
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 			
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -511,7 +512,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 		if(IsValidAlly(npc.index, EntRefToEntIndex(i_ally_index)))	//schwert will always prefer attacking enemies who are near donnerkrieg.
 		{
 			npc.m_iTarget = GetClosestTarget(EntRefToEntIndex(i_ally_index),_,_,_,_,_,_,true);
-			if(npc.m_iTarget == -1)
+			if(npc.m_iTarget < 1)
 			{
 				npc.m_iTarget = GetClosestTarget(EntRefToEntIndex(i_ally_index));
 			}
@@ -1820,6 +1821,7 @@ static int Create_Blade(float Loc[3], char size[10])
 		CClotBody npc = view_as<CClotBody>(prop);
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 
 		SetVariantColor(view_as<int>({3, 244, 252, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");

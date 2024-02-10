@@ -129,7 +129,7 @@ void Music_EndLastmann()
 
 void PlayTeamDeadSound()
 {
-	int RandomInt = GetRandomInt(0,sizeof(g_LastMannAnnouncer));
+	int RandomInt = GetRandomInt(0,sizeof(g_LastMannAnnouncer)- 1);
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && !IsFakeClient(client))
@@ -178,6 +178,7 @@ void Music_RoundEnd(int victim, bool music = true)
 	ResetReplications();
 	cvarTimeScale.SetFloat(0.1);
 	CreateTimer(0.5, SetTimeBack);
+	RemoveAllCustomMusic();
 }
 
 public Action SetTimeBack(Handle timer)

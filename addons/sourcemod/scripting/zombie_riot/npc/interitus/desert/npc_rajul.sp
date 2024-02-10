@@ -99,7 +99,7 @@ methodmap DesertRajul < CClotBody
 		DesertRajul npc = view_as<DesertRajul>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "3500", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_DESERT_RAJUL;
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 2;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -267,7 +267,7 @@ void DesertRajulSelfDefense(DesertRajul npc, float gameTime, int target, float d
 			
 			Handle swingTrace;
 			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1))//Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
 				target = TR_GetEntityIndex(swingTrace);	
@@ -294,7 +294,7 @@ void DesertRajulSelfDefense(DesertRajul npc, float gameTime, int target, float d
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;
 								

@@ -176,5 +176,16 @@
 	{
 		"en"	"Diversionistico Spawn"
 	}
-	
+	"The Doctor Speech 1"
+	{
+		"en" 		"Take him out before its too late!"
+	}
+	"The Doctor Speech 2"
+	{
+		"en" 		"His therapy session will be the least of your worries."
+	}
+	"The Doctor Speech 3"
+	{
+		"en" 		"His motivating speech enables enemies."
+	}
 }

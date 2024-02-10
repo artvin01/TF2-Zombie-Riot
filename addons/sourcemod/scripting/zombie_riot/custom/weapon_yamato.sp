@@ -226,7 +226,7 @@ static void Spin_To_Win_attack(int client, float endVec[3], float endVec_2[3], i
 		}
 		
 		
-		for (int building = 1; building < MAX_TARGETS_HIT; building++)
+		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			BEAM_BuildingHit[building] = false;
 		}

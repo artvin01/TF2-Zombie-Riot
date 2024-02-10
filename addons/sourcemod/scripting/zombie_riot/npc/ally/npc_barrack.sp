@@ -552,7 +552,8 @@ bool BarrackBody_ThinkStart(int iNPC, float GameTime, float offsetHealth = 0.0)
 	if(npc.m_flNextThinkTime > GameTime)
 		return false;
 		
-
+	npc.m_flNextThinkTime = GameTime + 0.1;
+	
 	BarrackBody_HealthHud(npc,offsetHealth);
 	if(f_NextHealTime[npc.index] < GameTime && !i_NpcIsABuilding[npc.index])
 	{
@@ -583,7 +584,6 @@ bool BarrackBody_ThinkStart(int iNPC, float GameTime, float offsetHealth = 0.0)
 		}
 			
 	}
-	npc.m_flNextThinkTime = GameTime + 0.1;
 	return true;
 }
 
@@ -601,10 +601,12 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 	
 	bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer || command == Command_RTSMove);
 
-	if(!newTarget && !retreating)
+	// Only retarget when can we had an existing target before
+	if(!newTarget && !retreating && i_Target[npc.index] != -1)
 		newTarget = !IsValidEnemy(npc.index, npc.m_iTarget);
 
-	if(!newTarget && !retreating)
+	// Only retarget when can we had an existing target before
+	if(!newTarget && !retreating && npc.m_iTargetRally > 0)
 		newTarget = !IsValidEnemy(npc.index, npc.m_iTargetRally);
 
 	if(newTarget)
@@ -631,6 +633,10 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 		if(!passive && !retreating)
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo);	
+		}
+		else
+		{
+			npc.m_iTarget = -1;
 		}
 		
 		if(npc.m_iTargetAlly > 0 && !passive)

@@ -133,7 +133,7 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 
 	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, _, _, true);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, _, false);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 	

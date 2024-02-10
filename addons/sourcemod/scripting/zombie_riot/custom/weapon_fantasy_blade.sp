@@ -101,7 +101,7 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 			h_TimerFantasyManagement[client] = null;
 			i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 			
-			Create_Halo_And_Wings(client, true);
+		//	Create_Halo_And_Wings(client, true);
 			DataPack pack;
 			h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
@@ -114,7 +114,7 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 	{
 		i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 		
-		Create_Halo_And_Wings(client, true);
+	//	Create_Halo_And_Wings(client, true);
 		DataPack pack;
 		h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
@@ -159,7 +159,7 @@ public void Fantasy_Blade_m2(int client, int weapon, bool crit, int slot)
 				{
 					if(fl_Shard_Ammount[client]>=3)
 					{
-						float damage = 500.0;
+						float damage = 200.0;
 						damage *= Attributes_Get(weapon, 2, 1.0);
 							
 						float time = Fantasy_Blade_Tele(client, weapon, damage, 1000.0);
@@ -188,7 +188,7 @@ public void Fantasy_Blade_m2(int client, int weapon, bool crit, int slot)
 				float time = 3.5;
 				time *= Attributes_Get(weapon, 6, 1.0);
 
-				float damage = 100.0;
+				float damage = 110.0;
 				damage *= Attributes_Get(weapon, 2, 1.0);
 
 				fl_blade_swing_reload_time[client] = GameTime + time + 0.5;
@@ -228,7 +228,7 @@ static void Fantasy_Blade_Loop_Logic(int client, int weapon)
 				float time = 1.75;
 				time *= Attributes_Get(weapon, 6, 1.0);
 					
-				float damage = 75.0;
+				float damage = 85.0;
 				damage *= Attributes_Get(weapon, 2, 1.0);
 				fl_blade_swing_reload_time[client] = GameTime + time + 0.5;
 				float look_vec[3];
@@ -953,8 +953,8 @@ static Action Vertical_Slicer_Tick(int client)
 		i_Slicer_Throttle[client] = 0;
 		skyloc = Cur_Vec;
 		skyloc[2] += 150.0;
-		Cur_Vec[2] -= 150.0;
 		Fantasy_Blade_Damage_Trace(client, Cur_Vec, skyloc, 40.0, fl_damage[client]);
+		Cur_Vec[2] -= 150.0;
 		TE_SetupBeamPoints(Cur_Vec, skyloc, gLaser2, 0, 0, 0, 0.051, 5.0, 5.0, 0, 0.1, colour, 1);
 		TE_SendToAll(0.0);
 	}

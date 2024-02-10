@@ -101,6 +101,7 @@ methodmap LastKnight < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		npc.m_iPhase = 0;
+		b_NpcIsTeamkiller[npc.index] = true;
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
 		SetVariantString("5.0");
@@ -236,7 +237,7 @@ public void LastKnight_ClotThink(int iNPC)
 			}
 		}
 
-		npc.m_iTarget = GetClosestTarget(npc.index, npc.m_iPhase == 2, 500.0, true, _, _, _, _, 125.0);
+		npc.m_iTarget = GetClosestTarget(npc.index, npc.m_iPhase == 2, 500.0, false, _, _, _, _, 125.0);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
 		if(npc.m_iTarget < 1)
@@ -247,7 +248,7 @@ public void LastKnight_ClotThink(int iNPC)
 
 		// Won't attack runners, find players
 		if(npc.m_iTarget < 1 || i_NpcInternalId[npc.m_iTarget] == CITIZEN_RUNNER)
-			npc.m_iTarget = GetClosestTarget(npc.index, npc.m_iPhase == 2, _, true, true);
+			npc.m_iTarget = GetClosestTarget(npc.index, npc.m_iPhase == 2, _, false, true);
 	}
 
 	if(aggressive)
@@ -270,12 +271,9 @@ public void LastKnight_ClotThink(int iNPC)
 				npc.m_flAttackHappens = 0.0;
 				
 				int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
-				SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 0);
 
 				Handle swingTrace;
 				bool result = npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _);
-
-				SetEntProp(npc.index, Prop_Send, "m_iTeamNum", team);
 
 				if(result)
 				{
@@ -305,14 +303,7 @@ public void LastKnight_ClotThink(int iNPC)
 							damage *= 1.75;
 						}
 
-						if(team == GetEntProp(target, Prop_Send, "m_iTeamNum"))
-						{
-							SDKHooks_TakeDamage(target, 0, 0, damage, DMG_CLUB);
-						}
-						else
-						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-						}
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
 						npc.PlayMeleeHitSound();
 					}
@@ -326,10 +317,10 @@ public void LastKnight_ClotThink(int iNPC)
 		{
 			if(npc.m_iPhase == 2)
 			{
-				if(distance < 5000.0)
+				if(distance < 8000.0)
 				{
-					int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					if(IsValidEnemy(npc.index, target, true))
+					int target = Can_I_See_Enemy_Only(npc.index, npc.m_iTarget);
+					if(IsValidEntity(target))
 					{
 						npc.m_iTarget = target;
 						npc.m_flNextMeleeAttack = gameTime;

@@ -112,7 +112,7 @@ methodmap BarrackThorns < BarrackBody
 		npc.m_flSpeed = 250.0;
 
 		if(elite)
-			npc.BonusDamageBonus *= 1.5;
+			npc.BonusDamageBonus *= 2.0;
 
 		ThornsDecidedOnAttack[npc.index] = 0;
 		ThornsAbilityAttackTimes[npc.index] = 0;
@@ -156,7 +156,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 				if(ThornsHasElite[npc.index])
 				{
 					ThornsLevelAt[npc.index] = 1;
-					npc.BonusDamageBonus *= 1.5;
+					npc.BonusDamageBonus *= 2.0;
 					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth",GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 2);
 				}
 			}

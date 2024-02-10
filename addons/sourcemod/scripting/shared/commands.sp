@@ -165,7 +165,7 @@ public Action OnSayCommand(int client, const char[] command, int args)
 #if defined ZR
 public Action Command_Voicemenu(int client, const char[] command, int args)
 {
-	if(client && args == 2 && TeutonType[client] == TEUTON_NONE && IsPlayerAlive(client))
+	if(client && args == 2 && IsPlayerAlive(client))
 	{
 		char arg[4];
 		GetCmdArg(1, arg, sizeof(arg));
@@ -174,6 +174,9 @@ public Action Command_Voicemenu(int client, const char[] command, int args)
 			GetCmdArg(2, arg, sizeof(arg));
 			if(arg[0] == '0')
 			{
+				if(TeutonType[client] != TEUTON_NONE)
+					return Plugin_Handled;
+
 				if(f_MedicCallIngore[client] < GetGameTime())
 				{
 					bool has_been_done = BuildingCustomCommand(client);

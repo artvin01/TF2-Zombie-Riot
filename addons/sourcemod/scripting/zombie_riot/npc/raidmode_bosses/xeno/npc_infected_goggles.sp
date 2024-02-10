@@ -220,6 +220,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_ice", npc.index, "head", {0.0,0.0,0.0});
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 			
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -289,6 +290,22 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	float gameTime = GetGameTime(npc.index);
 
 	//Raidmode timer runs out, they lost.
+	if(LastMann && !AlreadySaidLastmann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			AlreadySaidLastmann = true;
+			npc.m_fbGunout = true;
+			if(!XenoExtraLogic())
+			{
+				CPrintToChatAll("{darkblue}Blue Goggles{default}: Here or not, infections are no joke.");
+			}
+			else
+			{
+				CPrintToChatAll("{darkblue}Blue Goggles{default}: Giving up saves your life.");		
+			}
+		}
+	}
 	if(npc.m_flNextThinkTime != FAR_FUTURE && RaidModeTime < GetGameTime())
 	{
 		if(IsEntityAlive(EntRefToEntIndex(i_RaidDuoAllyIndex)))
@@ -302,12 +319,14 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 		if(RaidBossActive != INVALID_ENT_REFERENCE)
 		{
+			ZR_NpcTauntWinClear();
 			int entity = CreateEntityByName("game_round_win"); 
 			DispatchKeyValue(entity, "force_map_reset", "1");
 			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
 			DispatchSpawn(entity);
 			AcceptEntityInput(entity, "RoundWin");
 			Music_RoundEnd(entity);
+			SharedTimeLossSilvesterDuo(npc.index);
 			RaidBossActive = INVALID_ENT_REFERENCE;
 		}
 
@@ -786,7 +805,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 										}
 										
 										if(!Knocked)
-											Custom_Knockback(npc.index, target, 550.0); 
+											Custom_Knockback(npc.index, target, 450.0, true);  
 
 										npc.m_flSwitchCooldown = 0.0;
 									}
@@ -833,6 +852,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 								npc.m_flAttackHappens = gameTime + 0.25;
 								npc.m_flSwitchCooldown = gameTime + 1.0;
 								npc.m_flNextMeleeAttack = gameTime + 1.0;
+								if(ZR_GetWaveCount()+1 >= 60)
+								{
+									npc.m_flNextMeleeAttack = gameTime + 0.55;
+								}
 							}
 						}
 					}
@@ -857,6 +880,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							npc.FireArrow(vecTarget, (65.0 + (float(tier) * 4.0)) * RaidModeScaling, 1500.0);
 							
 							npc.m_flNextMeleeAttack = gameTime + 1.5;
+							if(ZR_GetWaveCount()+1 >= 60)
+							{
+								npc.m_flNextMeleeAttack = gameTime + 1.0;
+							}
 						}
 						/*else
 						{
@@ -908,6 +935,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						if(npc.Anger)
 						{
 							damage *= 2.5;
+						}
+						if(ZR_GetWaveCount()+1 >= 60)
+						{
+							damage *= 1.5;
 						}
 						FireBullet(npc.index, npc.m_iWearable3, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer01_red");
 					}

@@ -88,7 +88,7 @@ public void Ion_Beam_Wand_MapStart()
 #define NEUVELLETE_BASELINE_ION_DMG 750.0
 #define NEUVELLETE_BASELINE_ION_RANGE 15.0
 
-#define NEUVELLETE_BASELINE_DAMAGE 150.0
+#define NEUVELLETE_BASELINE_DAMAGE 125.0
 #define NEUVELLETE_BASELINE_RANGE 1000.0				//how far the laser can reach
 #define NEUVELLETE_BASELINE_TURN_SPEED 1.75	
 #define NEUVELLETE_BASELINE_PITCH_SPEED 0.8
@@ -230,7 +230,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 		Turn_Speed *= 2.0;
 		Pitch_Speed *= 2.0;
 		
-		DamagE *= 3.0;
+		DamagE *= 2.0;
 		
 		Effects |= (1 << 7); //pulse
 	}
@@ -272,11 +272,12 @@ public void Activate_Neuvellete(int client, int weapon)
 			h_TimerNeuvellete_Management[client] = CreateDataTimer(0.1, Timer_Management_Neuvellete, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			
+			/*
 			if(!IsValidEntity(EntRefToEntIndex(i_hand_particle[client][0])))
 			{
 				Create_Hand_Particle(client);
 			}
+			*/
 		}
 		return;
 	}

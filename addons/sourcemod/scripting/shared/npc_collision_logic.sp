@@ -12,7 +12,7 @@ public bool ShouldCollideAlly(CBaseNPC_Locomotion loco, int otherindex)
 { 
 	return ShouldCollideAlly_Internal(loco, otherindex); 
 }
-bool ShouldCollideAlly_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex)
+bool ShouldCollideAlly_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0, int npc = 0)
 {
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
@@ -22,9 +22,22 @@ bool ShouldCollideAlly_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Loco
 	{
 		return true;
 	}
-	if(b_CantCollidieAlly[otherindex])
+#if defined ZR
+	if(extrarules == 1 && npc != 0 && b_NpcIsTeamkiller[npc])
 	{
-		return false;
+		if(otherindex == npc)
+		{
+			return false;
+		}
+		return true;
+	}
+	else
+#endif
+	{
+		if(b_CantCollidieAlly[otherindex])
+		{
+			return false;
+		}
 	}
 	if(b_IsVehicle[otherindex])
 	{
@@ -40,7 +53,7 @@ public bool ShouldCollideAllyInvince(CBaseNPC_Locomotion loco, int otherindex)
 	return ShouldCollideAllyInvince_Internal(loco, otherindex); 
 }
 
-bool ShouldCollideAllyInvince_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0)
+bool ShouldCollideAllyInvince_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0, int npc = 0)
 { 
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
@@ -58,9 +71,22 @@ bool ShouldCollideAllyInvince_Internal(CBaseNPC_Locomotion loco = view_as<CBaseN
 			return false;
 		}
 	}
-	if(b_CantCollidieAlly[otherindex]) 
+#if defined ZR
+	if(extrarules == 1 && npc != 0 && b_NpcIsTeamkiller[npc])
 	{
-		return false;
+		if(otherindex == npc)
+		{
+			return false;
+		}
+		return true;
+	}
+	else
+#endif
+	{
+		if(b_CantCollidieAlly[otherindex]) 
+		{
+			return false;
+		}
 	}
 	if(b_IsVehicle[otherindex])
 	{
@@ -79,7 +105,7 @@ public bool ShouldCollideEnemy(CBaseNPC_Locomotion loco, int otherindex)
 	return ShouldCollideEnemy_Internal(loco, otherindex);
 }
 
-bool ShouldCollideEnemy_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex)
+bool ShouldCollideEnemy_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0, int npc = 0)
 { 
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
@@ -96,9 +122,22 @@ bool ShouldCollideEnemy_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Loc
 	{
 		return true;
 	} 
-	if(b_CantCollidie[otherindex]) //no change in performance..., almost.
+#if defined ZR
+	if(extrarules == 1 && npc != 0 && b_NpcIsTeamkiller[npc])
 	{
-		return false;
+		if(otherindex == npc)
+		{
+			return false;
+		}
+		return true;
+	}
+	else
+#endif
+	{
+		if(b_CantCollidie[otherindex]) //no change in performance..., almost.
+		{
+			return false;
+		}
 	}
 	if(b_IsVehicle[otherindex])
 	{
@@ -116,7 +155,7 @@ public bool ShouldCollideEnemyIngoreBuilding(CBaseNPC_Locomotion loco, int other
 	return ShouldCollideEnemyIngoreBuilding_Internal(loco, otherindex);
 }
 
-bool ShouldCollideEnemyIngoreBuilding_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex)
+bool ShouldCollideEnemyIngoreBuilding_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0, int npc = 0)
 { 
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
@@ -133,18 +172,32 @@ bool ShouldCollideEnemyIngoreBuilding_Internal(CBaseNPC_Locomotion loco = view_a
 	{
 		return true;
 	}
-	 
-	if(b_CantCollidie[otherindex])
+
+#if defined ZR
+	if(extrarules == 1 && npc != 0 && b_NpcIsTeamkiller[npc])
 	{
-		return false;
-	}
-	if(b_CantCollidieAlly[otherindex])
-	{
-		if(i_IsABuilding[otherindex])
+		if(otherindex == npc)
 		{
 			return false;
 		}
+		return true;
 	}
+	else
+#endif
+	{
+		if(b_CantCollidie[otherindex])
+		{
+			return false;
+		}
+		if(b_CantCollidieAlly[otherindex])
+		{
+			if(i_IsABuilding[otherindex])
+			{
+				return false;
+			}
+		}		
+	}
+
 	if(b_IsVehicle[otherindex])
 	{
 		return true;
@@ -164,7 +217,6 @@ public bool ShouldCollideEnemyTD(CBaseNPC_Locomotion loco, int otherindex)
 bool ShouldCollideEnemyTD_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0, int npc = 0)
 { 
 	//entirely ignore players
-	#if defined ZR
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
 		return false;
@@ -219,7 +271,6 @@ bool ShouldCollideEnemyTD_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_L
 	if(loco != view_as<CBaseNPC_Locomotion>(0))
 		NpcStartTouch(loco,otherindex);
 
-	#endif
 	return true;
 }
 
@@ -231,7 +282,6 @@ public bool ShouldCollideEnemyTDIgnoreBuilding(CBaseNPC_Locomotion loco, int oth
 bool ShouldCollideEnemyTDIgnoreBuilding_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0, int npc = 0)
 { 
 	//entirely ignore players
-	#if defined ZR
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
 		return false;
@@ -277,7 +327,6 @@ bool ShouldCollideEnemyTDIgnoreBuilding_Internal(CBaseNPC_Locomotion loco = view
 	if(loco != view_as<CBaseNPC_Locomotion>(0))
 		NpcStartTouch(loco, otherindex);
 
-	#endif
 	return true;
 }
 #endif
@@ -330,19 +379,19 @@ bool NpcCollisionCheck(int npc, int other, int extrarules = 0)
 	{
 		case 1:
 		{
-			return ShouldCollideEnemyIngoreBuilding_Internal(_,other);
+			return ShouldCollideEnemyIngoreBuilding_Internal(_,other,extrarules, npc);
 		}
 		case 2:
 		{
-			return ShouldCollideEnemy_Internal(_,other);
+			return ShouldCollideEnemy_Internal(_,other,extrarules, npc);
 		}
 		case 3:
 		{
-			return ShouldCollideAllyInvince_Internal(_,other,extrarules);
+			return ShouldCollideAllyInvince_Internal(_,other,extrarules, npc);
 		}
 		case 4:
 		{
-			return ShouldCollideAlly_Internal(_,other);
+			return ShouldCollideAlly_Internal(_,other,extrarules, npc);
 		}
 
 #if defined ZR

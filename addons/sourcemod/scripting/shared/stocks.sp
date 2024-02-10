@@ -669,12 +669,14 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	TF2Items_SetQuality(weapon, qual);
 	TF2Items_SetNumAttributes(weapon, 0);
 
+#if !defined RTS
 	TFClassType class = TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true));
 	if(custom_classSetting != 0)
 	{
 		class = view_as<TFClassType>(custom_classSetting);
 	}
 	TF2_SetPlayerClass_ZR(client, class, _, false);
+#endif
 	
 	int entity = TF2Items_GiveNamedItem(client, weapon);
 	delete weapon;
@@ -718,7 +720,9 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 	}
 
+#if !defined RTS
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], _, false);
+#endif
 	return entity;
 }
 //										 info.Attribs, info.Value, info.Attribs);
@@ -1041,6 +1045,7 @@ stock int GiveWearable(int client, int index)
 		SetEntProp(entity, Prop_Send, "m_iEntityQuality", 1);
 		SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
+		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 		
 		DispatchSpawn(entity);
 		SDKCall_EquipWearable(client, entity);
@@ -1223,6 +1228,8 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 //Most healing debuffs shouldnt work with this.
 #define HEAL_ABSOLUTE				(1 << 2) 
 //Any and all healing changes or buffs or debuffs dont work that dont affect the weapon directly.
+#define HEAL_SILENCEABLE				(1 << 3) 
+//Silence Entirely nukes this heal
 */
 //this will return the amount of healing it actually did.
 stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES, int MaxHealPermitted = 99999999)
@@ -1237,6 +1244,12 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 #if defined ZR
 		if(b_HealthyEssence)
 			HealTotal *= 1.25;
+		bool RegrowthBlock,camoblock;
+ 		Building_CamoOrRegrowBlocker(healer, camoblock, RegrowthBlock);
+		if(RegrowthBlock)
+		{
+			HealTotal *= 0.5;
+		}
 #endif
 
 		//Extra healing bonuses or penalty for all healing except absolute
@@ -1250,8 +1263,23 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 				HealTotal *= Attributes_GetOnPlayer(reciever, 734, true, false);
 		}
 	}
+#if defined ZR
+	if(healer != reciever && HealOverThisDuration != 0.0)
+	{
+		if(healer > 0 && healer <= MaxClients)
+			Healing_done_in_total[healer] += RoundToNearest(HealTotal);
+	}
+#endif
 	if(HealOverThisDuration == 0.0)
-		return HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
+	{
+		int HealingDoneInt;
+		HealingDoneInt = HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
+#if defined ZR
+		if(healer != reciever && healer <= MaxClients)
+			Healing_done_in_total[healer] += HealingDoneInt;
+#endif
+		return HealingDoneInt;
+	}
 	else
 	{
 		float HealTotalTimer = HealOverThisDuration / 0.1;
@@ -1589,7 +1617,7 @@ stock void GetWorldSpaceCenter(int client, float v[3])
 	v[2] += max_space[2] / 2;
 }
 
-bool IsBehindAndFacingTarget(int owner, int target)
+bool IsBehindAndFacingTarget(int owner, int target, int weapon = -1)
 {
 	float vecToTarget[3], vecEyeAngles[3];
 	GetWorldSpaceCenter(target, vecToTarget);
@@ -1622,7 +1650,26 @@ bool IsBehindAndFacingTarget(int owner, int target)
 	float flPosVsTargetViewDot = GetVectorDotProduct(vecToTarget, vecTargetForward);
 	float flPosVsOwnerViewDot = GetVectorDotProduct(vecToTarget, vecOwnerForward);
 	float flViewAnglesDot = GetVectorDotProduct(vecTargetForward, vecOwnerForward);
-	
+	if(weapon > 0)
+	{
+		if(b_BackstabLaugh[weapon])
+		{
+			int AllCorrect = 0;
+			if(flPosVsTargetViewDot > -0.6)
+				AllCorrect++;
+
+			if(flPosVsOwnerViewDot > 0.5)
+				AllCorrect++;
+				
+			if(flViewAnglesDot > -0.8)
+				AllCorrect++;
+			
+			if(AllCorrect >= 3)
+				return true;
+			else
+				return false;
+		}
+	}
 	return ( flPosVsTargetViewDot > 0.0 && flPosVsOwnerViewDot > 0.5 && flViewAnglesDot > -0.3 );
 }
 
@@ -2751,17 +2798,47 @@ void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vec
 	vecForce[2] *= -1.0;
 }
 
-int CountPlayersOnRed(bool alive = false)
+int CountPlayersOnRed(int alive = 0)
 {
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
 #if defined ZR
-		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && (!alive || (TeutonType[client] != TEUTON_NONE && dieingstate[client] > 0)))
+		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+		{
+			if(!alive)
+			{
+				amount++;
+				continue;
+			}
+			else
+			{
+				if(alive == 1) //check if just not teuton
+				{
+					if(TeutonType[client] == TEUTON_NONE)
+					{
+						amount++;
+						continue;
+					}
+				}
+				else if(alive == 2) //check if downed too
+				{
+					if(TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+					{
+						amount++;
+						continue;
+					}
+				}
+			}
+		}
+
 #else
 		if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client) == 2 && (!alive || IsPlayerAlive(client)))
-#endif
+		{
 			amount++;
+			continue;
+		}
+#endif
 	}
 	
 	return amount;
@@ -3959,7 +4036,6 @@ stock bool ShouldNpcDealBonusDamage(int entity, int attacker = -1)
 	return i_IsABuilding[entity];
 }
 
-int i_OwnerEntityEnvLaser[MAXENTITIES];
 
 stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
 							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt", int ClientToHideFirstPerson = 0)

@@ -355,7 +355,8 @@ methodmap Blitzkrieg < CClotBody
 		
 		i_NpcInternalId[npc.index] = RAIDMODE_BLITZKRIEG;
 		i_NpcWeight[npc.index] = 4;
-		
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Blitzkrieg_Win);
+
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
@@ -474,6 +475,7 @@ methodmap Blitzkrieg < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 			
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -611,8 +613,39 @@ public void Blitzkrieg_ClotThink(int iNPC)
 {
 	Blitzkrieg npc = view_as<Blitzkrieg>(iNPC);
 
+	if(LastMann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			npc.m_fbGunout = true;
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: You alone? How amusing.");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: Machines win once more... You're the last...");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: You are hopeless.");
+				}
+			}
+		}
+	}
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		SDKUnhook(npc.index, SDKHook_Think, Blitzkrieg_ClotThink);
+		b_timer_lose[npc.index] = true;
+		
+		CPrintToChatAll("{crimson}Blitzkrieg: Annhilated.");
+		return;
+	}
 	if(RaidModeTime < GetGameTime())
 	{
+		ZR_NpcTauntWinClear();
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");
 		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
@@ -637,6 +670,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				CPrintToChatAll("{crimson}Blitzkrieg{default}: You all will make {crimson}excellent{default} additions to my army...");
 			}
 		}
+		return;
 	}
 	
 	if(!IsValidEntity(npc.m_iWearable6))
@@ -2292,7 +2326,7 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 							}
 								
 							if(!Knocked)
-								Custom_Knockback(npc.index, target, 650.0); 
+								Custom_Knockback(npc.index, target, 450.0, true); 
 						}
 					}
 				}
@@ -2332,4 +2366,8 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 			}
 		}
 	}
+}		
+public void Raidmode_Blitzkrieg_Win(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 }

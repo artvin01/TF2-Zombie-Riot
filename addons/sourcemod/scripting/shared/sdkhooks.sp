@@ -19,6 +19,12 @@ static const float ViewHeights[] =
 static float i_WasInUber[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
+static float i_WasInJarate[MAXTF2PLAYERS] = {0.0,0.0,0.0};
+static float f_EntityHazardCheckDelay[MAXTF2PLAYERS];
+
+bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
+int Armor_WearableModelIndex;
+
 void SDKHooks_ClearAll()
 {
 #if defined ZR
@@ -29,10 +35,13 @@ void SDKHooks_ClearAll()
 	{
 		i_WhatLevelForHudIsThisClientAt[client] = 2000000000; //two billion
 	}
+	Zero(f_EntityHazardCheckDelay);
 	
 	Zero(i_WasInUber);
 	Zero(i_WasInMarkedForDeath);
 	Zero(i_WasInDefenseBuff);
+	Zero(i_WasInJarate);
+	Zero(Client_Had_ArmorDebuff);
 }
 
 void SDKHook_PluginStart()
@@ -50,10 +59,13 @@ void SDKHook_PluginStart()
 
 void SDKHook_MapStart()
 {
+	Zero(f_EntityIsStairAbusing);
+	Armor_WearableModelIndex = PrecacheModel("models/effects/resist_shield/resist_shield.mdl", true);
 	int entity = FindEntityByClassname(MaxClients+1, "tf_player_manager");
 	if(entity != -1)
 		SDKHook(entity, SDKHook_ThinkPost, SDKHook_ScoreThink);
 }
+
 
 public void SDKHook_ScoreThink(int entity)
 {
@@ -201,11 +213,34 @@ public void OnPostThink(int client)
 {
 	float GameTime = GetGameTime();
 
-	if(dieingstate[client] != 0 || TeutonType[client] != TEUTON_NONE)
+	if(b_EntityIsStairAbusing[client])
 	{
-		EntityIsInHazard_Teleport(client);
+		//damage is 50 to simulate a normal trigger hurt.
+		if(f_EntityIsStairAbusing[client] < GetGameTime())
+		{
+			f_EntityIsStairAbusing[client] = GetGameTime() + 0.5;
+			float damageTrigger = 5.0;
+			NpcStuckZoneWarning(client, damageTrigger, 1);	
+			if(damageTrigger > 1.0)
+			{
+				SDKHooks_TakeDamage(client, 0, 0, damageTrigger, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE, -1,_,_,_,ZR_STAIR_ANTI_ABUSE_DAMAGE);
+			}
+		}
 	}
-	SaveLastValidPositionEntity(client);
+
+	if(GetEntProp(client, Prop_Send, "m_iTeamNum") == 2)
+	{
+		if(dieingstate[client] != 0 || TeutonType[client] != TEUTON_NONE)
+		{
+			if(f_EntityHazardCheckDelay[client] < GetGameTime())
+			{
+				EntityIsInHazard_Teleport(client);
+				f_EntityHazardCheckDelay[client] = GetGameTime() + 0.25;
+			}
+		}
+		SaveLastValidPositionEntity(client);
+	
+	}
 	if(b_DisplayDamageHud[client])
 	{
 		b_DisplayDamageHud[client] = false;
@@ -481,13 +516,13 @@ public void OnPostThink(int client)
 		HudY += f_WeaponHudOffsetX[client];
 
 		Mana_Hud_Delay[client] = GameTime + 0.4;
+		static bool had_An_ability;
 
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		
 		if(IsValidEntity(weapon))
 		{
 			static float cooldown_time;
-			static bool had_An_ability;
 			had_An_ability = false;
 			static bool IsReady;
 			IsReady = false;
@@ -673,6 +708,10 @@ public void OnPostThink(int client)
 			{
 				percentage_Global *= 1.35;
 			}
+			if(TF2_IsPlayerInCondition(client, TFCond_Jarated))
+			{
+				percentage_Global *= 1.35;
+			}
 			if(TF2_IsPlayerInCondition(client, TFCond_DefenseBuffed))
 			{
 				percentage_Global *= 0.65;
@@ -687,7 +726,7 @@ public void OnPostThink(int client)
 			}
 			if(f_BattilonsNpcBuff[client] > GameTime)
 			{
-				percentage_Global *= 0.75;
+				percentage_Global *= RES_BATTILONS;
 			}	
 			if(f_HussarBuff[client] > GameTime)
 			{
@@ -707,7 +746,7 @@ public void OnPostThink(int client)
 			}
 			if(Resistance_Overall_Low[client] > GameTime)
 			{
-				percentage_Global *= 0.9;
+				percentage_Global *= RES_MEDIGUN_LOW;
 			}
 			value = Attributes_FindOnPlayerZR(client, 206, true, 0.0, true, true);	// MELEE damage resistance
 			if(value)
@@ -741,6 +780,22 @@ public void OnPostThink(int client)
 				HudY -= 0.035;
 				Format(buffer, sizeof(buffer), "%s\n", buffer);
 			}
+			had_An_ability = false;
+			switch(ClientHasBannersWithCD(client))
+			{
+				case BuffBanner,Battilons,AncientBanner:
+				{
+					had_An_ability = true;
+					if(GetEntProp(client, Prop_Send, "m_bRageDraining"))
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [⚐ %.1fs]", buffer, f_BannerAproxDur[client] - GetGameTime());
+					}
+					else
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [⚐ %.0f%%]", buffer, GetEntPropFloat(client, Prop_Send, "m_flRageMeter"));
+					}
+				}
+			}
 		}
 		 
 		int red = 200;
@@ -752,6 +807,11 @@ public void OnPostThink(int client)
 			red = 255;
 			green = 0;
 			blue = 255;
+			if(had_An_ability)
+			{
+				HudY -= 0.035;
+				Format(buffer, sizeof(buffer), "%s\n", buffer);
+			}
 			
 			if(Current_Mana[client] < max_mana[client])
 			{
@@ -807,7 +867,6 @@ public void OnPostThink(int client)
 			Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
 		}
 
-		static bool had_An_ability;
 		had_An_ability = false;
 		char bufferbuffs[64];
 		//BUFFS!
@@ -845,13 +904,6 @@ public void OnPostThink(int client)
 			Format(bufferbuffs, sizeof(bufferbuffs), "⌇%s", bufferbuffs);
 		}
 
-/*
-#define VILLAGE_000	(1 << 0)	// Projectile Speed
-#define VILLAGE_200	(1 << 2)	// Fire Rate Bonus
-#define VILLAGE_030	(1 << 8)	// MIB
-#define VILLAGE_040	(1 << 9)	// Call of Arms
-#define VILLAGE_050	(1 << 10)	// Homeland Defense
-*/
 		static int VillageBuffs;
 		VillageBuffs = Building_GetClientVillageFlags(client);
 
@@ -1100,6 +1152,7 @@ public void OnPostThink(int client)
 		{
 			blue = 255;
 		}
+		ArmorDisplayClient(client);
 		char buffer[64];
 		int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
 		if(IsValidEntity(converted_ref))
@@ -1326,9 +1379,10 @@ public void OnPostThink(int client)
 				
 			}
 
-			if(f_LeftForDead_Cooldown[client] > GameTime)
+			if(b_LeftForDead[client])
 			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer, "Down Cooldown", f_LeftForDead_Cooldown[client] - GameTime);	
+				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
+					"Downs left", downsleft ? 1 : 0);
 			}
 			else
 			{
@@ -1496,6 +1550,8 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 	RegainTf2Buffs(victim);
 
 	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
+	ArmorDisplayClient(victim);
+	i_HexCustomDamageTypes[victim] = 0;
 
 	return Plugin_Continue;
 }
@@ -1509,6 +1565,10 @@ void RegainTf2Buffs(int victim)
 	{
 		TF2_AddCondition(victim, TFCond_MarkedForDeathSilent, i_WasInMarkedForDeath[victim]);
 	}
+	if(i_WasInJarate[victim])
+	{
+		TF2_AddCondition(victim, TFCond_Jarated, i_WasInJarate[victim]);
+	}
 	if(i_WasInDefenseBuff[victim])
 	{
 		TF2_AddCondition(victim, TFCond_DefenseBuffed, i_WasInDefenseBuff[victim]);
@@ -1516,6 +1576,7 @@ void RegainTf2Buffs(int victim)
 	i_WasInUber[victim] = 0.0;
 	i_WasInMarkedForDeath[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
+	i_WasInJarate[victim] = 0.0;
 }
 static void Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim)
 {
@@ -1651,7 +1712,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif
 	
 #if defined ZR
-	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
+	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker] && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
 	{
 		if(!b_ThisNpcIsSawrunner[attacker])
 		{
@@ -1751,8 +1812,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 		if(f_BattilonsNpcBuff[victim] > GameTime)
 		{
-			damage *= 0.75;
-			Replicated_Damage *= 0.75;
+			damage *= 0.8;
+			Replicated_Damage *= 0.8;
 		}	
 		damage *= fl_Extra_Damage[attacker];
 		Replicated_Damage *= fl_Extra_Damage[attacker];
@@ -1875,10 +1936,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			
 #if defined ZR
-			Replicated_Damage *= 0.9;
+			Replicated_Damage *= RES_MEDIGUN_LOW;
 #endif
 			
-			damage *= 0.9;
+			damage *= RES_MEDIGUN_LOW;
 		}
 #if defined ZR
 		if(i_HealthBeforeSuit[victim] == 0)
@@ -1993,7 +2054,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 			
 			i_AmountDowned[victim] += 1;
-			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim] && f_LeftForDead_Cooldown[victim] < GameTime) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim] && f_LeftForDead_Cooldown[victim] < GameTime))
+			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
 			{
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
@@ -2010,10 +2071,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				}
 				else
 				{
-					if(!SpecterCheckIfAutoRevive(victim)) //only if they dont get revived via this perk
-					{
-						f_LeftForDead_Cooldown[victim] = GameTime + 300.0;
-					}
 					dieingstate[victim] = 500;
 				}
 				ForcePlayerCrouch(victim, true);
@@ -2057,6 +2114,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				int i;
 				while(TF2U_GetWearable(victim, entity, i))
 				{
+					if(entity == EntRefToEntIndex(Armor_Wearable[victim]) || i_WeaponVMTExtraSetting[entity] != -1)
+						continue;
+
 					if(!autoRevive)
 					{
 						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
@@ -2102,6 +2162,13 @@ void Replicate_Damage_Medications(int victim, float &damage, float &Replicated_D
 	{
 		i_WasInMarkedForDeath[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
 		TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
+		damage *= 1.35;
+		Replicated_Dmg *= 1.35;
+	}
+	if(TF2_IsPlayerInCondition(victim, TFCond_Jarated))
+	{
+		i_WasInJarate[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_Jarated);
+		TF2_RemoveCondition(victim, TFCond_Jarated);
 		damage *= 1.35;
 		Replicated_Dmg *= 1.35;
 	}
@@ -2186,10 +2253,28 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 			{
 				return Plugin_Handled;
 			}
+#if defined ZR
+			if(TeutonType[entity] != TEUTON_NONE)
+			{
+				bool Changed = TeutonSoundOverride(numClients, sample, 
+				entity, channel, volume, level, pitch, flags,seed);
+				
+				if(Changed)
+				{
+					return Plugin_Changed;
+				}
+				else
+				{
+					return Plugin_Handled;
+				}
+				
+			}
+#endif
 			if(b_IsPlayerNiko[entity])
 			{
 				return Plugin_Handled;
 			}
+		
 		}
 	}
 	if(channel == SNDCHAN_WEAPON)
@@ -2240,7 +2325,8 @@ public void OnWeaponSwitchPost(int client, int weapon)
 #if defined ZR
 		Building_WeaponSwitchPost(client, weapon, buffer);
 #endif
-		
+
+#if !defined RTS	
 		if(i_SemiAutoWeapon[weapon])
 		{
 			char classname[64];
@@ -2251,6 +2337,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 				Attributes_Set(weapon, 821, 0.0);
 			}
 		}
+#endif
 	}
 
 #if !defined RTS
@@ -2320,11 +2407,11 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_MLYNAR: // weapon_ark
 		{
-			return Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon);
+			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon);
 		}
 		case WEAPON_MLYNAR_PAP: // weapon_ark
 		{
-			return Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1);
+			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1);
 		}
 		case WEAPON_OCEAN, WEAPON_SPECTER:
 		{
@@ -2356,7 +2443,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_RED_BLADE:
 		{
-			WeaponRedBlade_OnTakeDamage(victim, damage);
+			WeaponRedBlade_OnTakeDamage(attacker, victim, damage);
 		}
 		case WEAPON_HEAVY_PARTICLE_RIFLE:
 		{
@@ -2404,40 +2491,58 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 }
 
 //problem: tf2 code lazily made it only work for clients, the server doesnt get this information updated all the time now.
+#define SKIN_ZOMBIE			5
+#define SKIN_ZOMBIE_SPY		SKIN_ZOMBIE + 18
 
 void UpdatePlayerFakeModel(int client)
 {
 	int PlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(PlayerModel > 0)
-	{
-		//setclass to actual class
-	//	TF2_SetPlayerClass_ZR(client, CurrentClass[client]);
+	{	
 		SDKCall_RecalculatePlayerBodygroups(client);
-		//set back to simulate viewmodel
-	//	TF2_SetPlayerClass_ZR(client, WeaponClass[client]);
 		i_nm_body_client[client] = GetEntProp(client, Prop_Data, "m_nBody");
 		SetEntProp(PlayerModel, Prop_Send, "m_nBody", i_nm_body_client[client]);
 	}
 }
 
-void NpcStuckZoneWarning(int client, float &damage)
+void NpcStuckZoneWarning(int client, float &damage, int TypeOfAbuse = 0)
 {
 	SetGlobalTransTarget(client);
-	PrintToChat(client, "%t", "Npc Stuck Spot Warning");
-	f_TimeUntillNormalHeal[client] = GetGameTime() + 4.0;
-	//deduct healing already.
-	//first recorded instance of getting stuck after 2 seconds of nnot being stuck.
-	damage = 0.0;
-	if(f_ClientWasTooLongInsideHurtZone[client] < GetGameTime())
+	switch(TypeOfAbuse)
 	{
-		f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 5.0;
-		f_ClientWasTooLongInsideHurtZoneDamage[client] = float(SDKCall_GetMaxHealth(client)) * 0.025;
-	}
-	else if(f_ClientWasTooLongInsideHurtZone[client] <= GetGameTime() + 3.0)
-	{
-		f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 3.0;
-		f_ClientWasTooLongInsideHurtZoneDamage[client] *= 2.0;
-		damage = f_ClientWasTooLongInsideHurtZoneDamage[client];
+		case 0:
+		{
+			f_TimeUntillNormalHeal[client] = GetGameTime() + 4.0;
+			PrintToChat(client, "%t", "Npc Stuck Spot Warning");
+			damage = 0.0;
+			if(f_ClientWasTooLongInsideHurtZone[client] < GetGameTime())
+			{
+				f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 5.0;
+				f_ClientWasTooLongInsideHurtZoneDamage[client] = float(SDKCall_GetMaxHealth(client)) * 0.025;
+			}
+			else if(f_ClientWasTooLongInsideHurtZone[client] <= GetGameTime() + 3.0)
+			{
+				f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 3.0;
+				damage = f_ClientWasTooLongInsideHurtZoneDamage[client];
+				f_ClientWasTooLongInsideHurtZoneDamage[client] *= 2.0;
+			}
+		}
+		case 1:
+		{
+			PrintToChat(client, "%t", "Npc Stuck Spot Warning Stairs");
+			damage = 0.0;
+			if(f_ClientWasTooLongInsideHurtZoneStairs[client] < GetGameTime())
+			{
+				f_ClientWasTooLongInsideHurtZoneStairs[client] = GetGameTime() + 5.0;
+				f_ClientWasTooLongInsideHurtZoneDamageStairs[client] = float(SDKCall_GetMaxHealth(client)) * 0.025;
+			}
+			else if(f_ClientWasTooLongInsideHurtZoneStairs[client] <= GetGameTime() + 3.0)
+			{
+				f_ClientWasTooLongInsideHurtZoneStairs[client] = GetGameTime() + 3.0;
+				damage = f_ClientWasTooLongInsideHurtZoneDamageStairs[client];
+				f_ClientWasTooLongInsideHurtZoneDamageStairs[client] *= 2.0;
+			}
+		}
 	}
 }
 
@@ -2570,5 +2675,147 @@ float ArmorPlayerReduction(int victim)
 			return 1.0;
 		}
 	}
+}
+
+
+void ArmorDisplayClient(int client, bool deleteOverride = false)
+{
+	int ShieldLogicDo;
+	if(Armor_Charge[client] > 0)
+	{
+		ShieldLogicDo = 1;
+	}
+	if(Armor_Charge[client] < 0)
+	{
+		ShieldLogicDo = 2;
+	}
+
+	if(TeutonType[client] != TEUTON_NONE)
+	{
+		ShieldLogicDo = 0;
+	}
+
+	if(dieingstate[client] != 0)
+	{
+		ShieldLogicDo = 0;
+	}
+
+	if(!IsPlayerAlive(client))
+	{
+		ShieldLogicDo = 0;
+	}
+	int entity;
+	if(deleteOverride)
+	{
+		if(IsValidEntity(Armor_Wearable[client]))
+		{
+			entity = EntRefToEntIndex(Armor_Wearable[client]);
+			if(entity > MaxClients)
+				TF2_RemoveWearable(client, entity);
+		}
+		return;
+	}
+	if(ShieldLogicDo == 2)
+	{
+		TF2_AddCondition(client, TFCond_Milked, 1.0);
+		Client_Had_ArmorDebuff[client] = true;
+		return;
+	}
+	if(Client_Had_ArmorDebuff[client])
+	{
+		Client_Had_ArmorDebuff[client] = false;
+		TF2_RemoveCondition(client, TFCond_Milked);
+	}
+
+	if(ShieldLogicDo == 1)
+	{
+		if(IsValidEntity(Armor_Wearable[client]))
+		{
+			ArmorDisplayClientColor(client, EntRefToEntIndex(Armor_Wearable[client]));
+			return;
+		}
+		entity = CreateEntityByName("tf_wearable");
+		if(entity > MaxClients)
+		{
+			int team = GetClientTeam(client);
+			SetEntProp(entity, Prop_Send, "m_nModelIndex", Armor_WearableModelIndex);
+
+		//	SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+			SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
+			SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
+			SetEntityCollisionGroup(entity, 11);
+			SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
+			
+			DispatchSpawn(entity);
+			SetVariantString("!activator");
+			ActivateEntity(entity);
+
+			Armor_Wearable[client] = EntIndexToEntRef(entity);
+			SDKCall_EquipWearable(client, entity);
+
+			SetEntProp(entity, Prop_Send, "m_fEffects", 0);
+			SetVariantString("!activator");
+			AcceptEntityInput(entity, "SetParent", client);
+		//	SDKCall_SetLocalOrigin(entity, {0.0,0.0,0.0});
+
+			ArmorDisplayClientColor(client, entity);
+			i_OwnerEntityEnvLaser[entity] = EntIndexToEntRef(client);
+			SDKHook(entity, SDKHook_SetTransmit, ShieldSetTransmit);
+		}	
+	}
+	else
+	{
+		if(IsValidEntity(Armor_Wearable[client]))
+		{
+			entity = EntRefToEntIndex(Armor_Wearable[client]);
+			if(entity > MaxClients)
+				TF2_RemoveWearable(client, entity);
+		}
+	}
+}
+
+public Action ShieldSetTransmit(int entity, int client)
+{
+	if(client > 0 && client <= MaxClients)
+	{
+		if(!b_ArmorVisualiser[client])
+		{
+			return Plugin_Stop;
+		}
+		int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
+		if(owner == client)
+		{
+			return Plugin_Stop;
+		}
+	}
+	return Plugin_Continue;
+}
+
+void ArmorDisplayClientColor(int client, int armor)
+{
+	int Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
+	float Percentage = float(Armor_Charge[client]) / float(Armor_Max);
+
+	Percentage *= 14.0;
+	int Alpha = RoundToCeil(Percentage * Percentage);
+
+	if(Alpha > 200)
+	{
+		Alpha = 200;
+	}
+	if(Alpha <= 30)
+	{
+		Alpha = 30;
+	}
+	int green = 0;
+	int blue = 0;
+	if(Percentage >= 13.95)
+	{
+		green = 125;
+	}
+
+	SetEntityRenderMode(armor, RENDER_TRANSCOLOR);
+	SetEntityRenderColor(armor, green, green, blue, Alpha);
 }
 #endif

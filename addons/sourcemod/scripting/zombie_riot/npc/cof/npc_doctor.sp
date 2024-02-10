@@ -28,7 +28,6 @@ void Doctor_MapStart()
 	PrecacheSoundCustom("cof/purnell/shoot.mp3");
 	PrecacheSoundCustom("cof/purnell/shove.mp3");
 	PrecacheSoundCustom("cof/purnell/meleehit.mp3");
-	PrecacheSoundCustom("cof/purnell/buff.mp3");
 
 	PrecacheModel("models/zombie_riot/cof/doctor_purnell.mdl");
 }
@@ -76,10 +75,6 @@ methodmap Doctor < CClotBody
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 2.0;
 		EmitCustomToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_VOICE);
-	}
-	public void PlayBuffSound(int entity)
-	{
-		EmitCustomToAll("cof/purnell/buff.mp3", entity);
 	}
 	
 	public Doctor(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
@@ -179,7 +174,6 @@ public void Doctor_ClotThink(int iNPC)
 			{
 				ally.m_bLostHalfHealth = true;
 				b_PernellBuff[target] = true;
-				npc.PlayBuffSound(target);
 				npc.AddGesture("ACT_SIGNAL");
 			}
 		}
