@@ -256,6 +256,7 @@ bool IsInsideManageRegularWeapons;
 float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
 int i_EntityToAlwaysMeleeHit[MAXTF2PLAYERS];
+float DeleteAndRemoveAllNpcs = 5.0;
 //int Dont_Crouch[MAXENTITIES]={0, ...};
 
 bool b_IsAloneOnServer = false;
@@ -267,6 +268,7 @@ ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar CvarAirAcclerate; //sv_airaccelerate
 ConVar sv_cheats;
 ConVar nav_edit;
+ConVar mp_bonusroundtime;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_AwayEnemies;

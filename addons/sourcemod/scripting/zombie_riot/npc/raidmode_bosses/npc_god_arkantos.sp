@@ -363,16 +363,76 @@ public void GodArkantos_ClotThink(int iNPC)
 	}
 	if(!b_IsAlliedNpc[npc.index] && RaidModeTime < GetGameTime())
 	{
+		DeleteAndRemoveAllNpcs = 8.0;
+		mp_bonusroundtime.IntValue = (9 * 2);
+		
 		ZR_NpcTauntWinClear();
+		for(int targ; targ<i_MaxcountNpc; targ++)
+		{
+			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+			if (IsValidEntity(baseboss_index) && !b_IsAlliedNpc[baseboss_index])
+			{
+				b_IsAlliedNpc[baseboss_index] = true;
+				b_Is_Blue_Npc[baseboss_index] = false;
+				SetEntProp(baseboss_index, Prop_Send, "m_iTeamNum", TFTeam_Red);
+				SetEntityCollisionGroup(baseboss_index, 24);
+				Change_Npc_Collision(baseboss_index, num_ShouldCollideAlly);
+				if(h_NpcSolidHookType[baseboss_index] != 0)
+				{
+					if(!DHookRemoveHookID(h_NpcSolidHookType[baseboss_index]))
+					{
+						PrintToConsoleAll("Somehow Failed to unhook h_NpcSolidHookType");
+					}
+				}
+				CBaseNPC baseNPC = view_as<CClotBody>(baseboss_index).GetBaseNPC();
+				h_NpcSolidHookType[baseboss_index] = DHookRaw(g_hGetSolidMaskAlly, true, view_as<Address>(baseNPC.GetBody()));
+			}
+		}
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");
 		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
 		DispatchSpawn(entity);
 		AcceptEntityInput(entity, "RoundWin");
 		Music_RoundEnd(entity);
+		CPrintToChatAll("{lightblue}God Arkantos{default}: No.. No No!! They are comming, prepare to fight together NOW!!!");
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		SDKUnhook(npc.index, SDKHook_Think, GodArkantos_ClotThink);
-		CPrintToChatAll("{lightblue}God Arkantos{default}: Your chances of winning are none, My army and me will swarm everyone who dares to threaten Atlantis.");
+		for(int i; i<32; i++)
+		{
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			int Spawner_entity = GetRandomActiveSpawner();
+			if(IsValidEntity(Spawner_entity))
+			{
+				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+			}
+			int spawn_index = Npc_Create(SEASLIDER, -1, pos, ang, false);
+			if(spawn_index > MaxClients)
+			{
+				Zombies_Currently_Still_Ongoing += 1;
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
+				fl_ExtraDamage[spawn_index] = 25.0;
+				fl_Extra_Speed[spawn_index] = 1.5;
+			}
+		}
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+		int Spawner_entity = GetRandomActiveSpawner();
+		if(IsValidEntity(Spawner_entity))
+		{
+			GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+		}
+		int spawn_index = Npc_Create(ISHARMLA, -1, pos, ang, false);
+		if(spawn_index > MaxClients)
+		{
+			Zombies_Currently_Still_Ongoing += 1;
+			SetEntProp(spawn_index, Prop_Data, "m_iHealth", 100000000);
+			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 100000000);
+			fl_ExtraDamage[spawn_index] = 25.0;
+			fl_Extra_Speed[spawn_index] = 1.5;
+		}
 		npc.m_bDissapearOnDeath = true;
 		BlockLoseSay = true;
 		return;

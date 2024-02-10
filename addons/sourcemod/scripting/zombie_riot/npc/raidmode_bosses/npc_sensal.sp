@@ -460,6 +460,8 @@ public void Sensal_ClotThink(int iNPC)
 	}
 	if(RaidModeTime < GetGameTime())
 	{
+		DeleteAndRemoveAllNpcs = 10.0;
+		mp_bonusroundtime.IntValue = (12 * 2);
 		ZR_NpcTauntWinClear();
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");
@@ -472,6 +474,19 @@ public void Sensal_ClotThink(int iNPC)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		SDKUnhook(npc.index, SDKHook_Think, Sensal_ClotThink);
 		CPrintToChatAll("{blue}Sensal{default}: You are under arrest. The Expidonsan elite forces will take you now.");
+		for(int i; i<32; i++)
+		{
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			
+			int spawn_index = Npc_Create(EXPIDONSA_DIVERSIONISTICO, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			if(spawn_index > MaxClients)
+			{
+				Zombies_Currently_Still_Ongoing += 1;
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
+			}
+		}
 		BlockLoseSay = true;
 	}
 
