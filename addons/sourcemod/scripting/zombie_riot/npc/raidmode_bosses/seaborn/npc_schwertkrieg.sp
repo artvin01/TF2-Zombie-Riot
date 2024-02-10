@@ -939,7 +939,7 @@ static void Schwert_Aggresive_Behavior(Raidboss_Schwertkrieg npc, int PrimaryThr
 								fl_schwert_sword_battery[npc.index] +=1.0;
 						}
 						
-						if(target <= MaxClients)
+						if(!ShouldNpcDealBonusDamage(target))
 						{
 							float Bonus_damage = 1.0;
 							int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
