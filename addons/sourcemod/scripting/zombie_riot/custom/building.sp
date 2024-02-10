@@ -6842,9 +6842,9 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 					HasupgradeVillager = true;
 					if(BARRACKS_VILLAGER == GetSData(CivType[owner], TrainingIndex[owner], NPCIndex))
 					{
-						for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+						for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 						{
-							int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+							int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 
 							if(IsValidEntity(entity_close) && i_NpcInternalId[entity_close] == BARRACKS_VILLAGER)
 							{
@@ -7280,9 +7280,9 @@ static void SummonerMenu(int client, int viewer)
 					HasupgradeVillager = true;
 					if(BARRACKS_VILLAGER == GetSData(CivType[client], TrainingIndex[client], NPCIndex))
 					{
-						for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+						for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 						{
-							int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+							int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 
 							if(IsValidEntity(entity_close) && i_NpcInternalId[entity_close] == BARRACKS_VILLAGER)
 							{
@@ -7366,7 +7366,7 @@ static void SummonerMenu(int client, int viewer)
 				}
 				else
 				{
-					for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 					{
 						int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 

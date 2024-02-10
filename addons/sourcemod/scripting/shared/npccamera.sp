@@ -80,7 +80,7 @@ public Action NPCCamera_SpecPrev(int client, const char[] command, int args)
 	for(int i = i_MaxcountNpcTotal - 1; i >= 0; i--)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && (GetTeam == TFTeam_Red || b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_StaticNPC[entity]) && IsEntityAlive(entity))
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && (GetTeam(entity) == TFTeam_Red || b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_StaticNPC[entity]) && IsEntityAlive(entity))
 		{
 			if(entity < maxEntity && entity > bestEntity)
 			{

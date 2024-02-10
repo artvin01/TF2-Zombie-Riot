@@ -228,9 +228,9 @@ methodmap RaidbossBobTheFirst < CClotBody
 		float pos[3];
 		pos = vecPos;
 		
-		for(int i; i < i_MaxcountNpc; i++)
+		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			if(entity != INVALID_ENT_REFERENCE && (i_NpcInternalId[entity] == SEA_RAIDBOSS_DONNERKRIEG || i_NpcInternalId[entity] == SEA_RAIDBOSS_SCHWERTKRIEG) && IsEntityAlive(entity))
 			{
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
@@ -643,10 +643,10 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	{
 		float enemies = float(Zombies_Currently_Still_Ongoing);
 
-		for(int i; i < i_MaxcountNpc; i++)
+		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int victim = EntRefToEntIndex(i_ObjectsNpcs[i]);
-			if(victim != INVALID_ENT_REFERENCE && victim != npc.index && IsEntityAlive(victim))
+			int victim = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(victim != INVALID_ENT_REFERENCE && victim != npc.index && IsEntityAlive(victim) && GetTeam(victim) != TFTeam_Red)
 			{
 				int maxhealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 				if(maxhealth)
@@ -725,14 +725,14 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 	if(npc.m_bFakeClone)
 	{
-		for(int i; i < i_MaxcountNpc; i++)
+		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcs[i]);
+			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			if(other != INVALID_ENT_REFERENCE && other != npc.index)
 			{
 				if(i_NpcInternalId[other] == BOB_THE_FIRST || i_NpcInternalId[other] == BOB_THE_FIRST_S)
 				{
-					if(!view_as<RaidbossBobTheFirst>(other).m_bFakeClone && IsEntityAlive(other))
+					if(!view_as<RaidbossBobTheFirst>(other).m_bFakeClone && IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
 					{
 						if(view_as<RaidbossBobTheFirst>(other).Anger)
 						{
@@ -745,34 +745,6 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						}
 						
 						break;
-					}
-				}
-			}
-		}
-
-		if(healthPoints == 20)
-		{
-			for(int i; i < i_MaxcountNpc_Allied; i++)
-			{
-				int other = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
-				if(other != INVALID_ENT_REFERENCE && other != npc.index)
-				{
-					if(i_NpcInternalId[other] == BOB_THE_FIRST || i_NpcInternalId[other] == BOB_THE_FIRST_S)
-					{
-						if(!view_as<RaidbossBobTheFirst>(other).m_bFakeClone && IsEntityAlive(other))
-						{
-							if(view_as<RaidbossBobTheFirst>(other).Anger)
-							{
-								healthPoints = 19;	// During combine summons
-								npc.m_flNextMeleeAttack = gameTime + 10.0;
-							}
-							else
-							{
-								healthPoints = GetEntProp(other, Prop_Data, "m_iHealth") * 20 / GetEntProp(other, Prop_Data, "m_iMaxHealth");
-							}
-							
-							break;
-						}
 					}
 				}
 			}
@@ -1588,29 +1560,14 @@ Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, float &damage
 			GiveProgressDelay(30.0);
 			damage = 0.0;
 			
-			for(int i; i < i_MaxcountNpc; i++)
+			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int other = EntRefToEntIndex(i_ObjectsNpcs[i]);
+				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 				if(other != INVALID_ENT_REFERENCE && other != npc.index)
 				{
 					if(i_NpcInternalId[other] == BOB_THE_FIRST || i_NpcInternalId[other] == BOB_THE_FIRST_S)
 					{
-						if(IsEntityAlive(other))
-						{
-							SmiteNpcToDeath(other);
-						}
-					}
-				}
-			}
-
-			for(int i; i < i_MaxcountNpc_Allied; i++)
-			{
-				int other = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
-				if(other != INVALID_ENT_REFERENCE && other != npc.index)
-				{
-					if(i_NpcInternalId[other] == BOB_THE_FIRST || i_NpcInternalId[other] == BOB_THE_FIRST_S)
-					{
-						if(IsEntityAlive(other))
+						if(IsEntityAlive(other) && GetTeam(npc.index) == GetTeam(other))
 						{
 							SmiteNpcToDeath(other);
 						}
@@ -1636,30 +1593,15 @@ void RaidbossBobTheFirst_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s",WhatDifficultySetting_Internal);
-	
-	for(int i; i < i_MaxcountNpc; i++)
-	{
-		int other = EntRefToEntIndex(i_ObjectsNpcs[i]);
-		if(other != INVALID_ENT_REFERENCE && other != npc.index)
-		{
-			if(i_NpcInternalId[other] == BOB_THE_FIRST || i_NpcInternalId[other] == BOB_THE_FIRST_S)
-			{
-				if(IsEntityAlive(other))
-				{
-					SmiteNpcToDeath(other);
-				}
-			}
-		}
-	}
 
-	for(int i; i < i_MaxcountNpc_Allied; i++)
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int other = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
+		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(other != INVALID_ENT_REFERENCE && other != npc.index)
 		{
 			if(i_NpcInternalId[other] == BOB_THE_FIRST || i_NpcInternalId[other] == BOB_THE_FIRST_S)
 			{
-				if(IsEntityAlive(other))
+				if(IsEntityAlive(other) && GetTeam(npc.index) == GetTeam(other))
 				{
 					SmiteNpcToDeath(other);
 				}
@@ -1673,10 +1615,10 @@ static Action Bob_DeathCutsceneCheck(Handle timer)
 	if(!LastMann)
 		return Plugin_Continue;
 	
-	for(int i; i < i_MaxcountNpc; i++)
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int victim = EntRefToEntIndex(i_ObjectsNpcs[i]);
-		if(victim != INVALID_ENT_REFERENCE && IsEntityAlive(victim))
+		int victim = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(victim != INVALID_ENT_REFERENCE && IsEntityAlive(victim) && GetTeam(victim) != TFTeam_Red)
 			SmiteNpcToDeath(victim);
 	}
 	

@@ -1248,14 +1248,14 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			//Loop through all the still alive enemies that are indexed!
 			int Zombies_alive_still = 0;
 
-			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int npc_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-				if (IsValidEntity(npc_index) && npc_index != 0)
+				int npc_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				if (IsValidEntity(npc_index))
 				{
 					if(!b_NpcHasDied[npc_index])
 					{
-						if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+						if(GetTeam(npc_index) != TFTeam_Red)
 						{
 							Zombies_alive_still += 1;
 						}

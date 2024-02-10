@@ -361,10 +361,10 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 				float targPos[3];
 				float Spikepos[3];
 				
-				for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 				{
-					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-					if (IsValidEntity(baseboss_index))
+					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+					if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 					{
 						if(!b_NpcHasDied[baseboss_index])
 						{

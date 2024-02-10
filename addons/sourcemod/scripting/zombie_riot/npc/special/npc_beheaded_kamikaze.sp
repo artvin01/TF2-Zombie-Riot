@@ -413,9 +413,9 @@ void SpawnBeheadedKamikaze(DataPack pack)
 		}
 		fl_KamikazeSpawnRateDelay = GetGameTime() + spawndelay;
 		int Kamikazies = 0;
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int INpc = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+			int INpc = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 			if (IsValidEntity(INpc))
 			{
 				if(!b_NpcHasDied[INpc] && i_NpcInternalId[INpc] == MINI_BEHEADED_KAMI)

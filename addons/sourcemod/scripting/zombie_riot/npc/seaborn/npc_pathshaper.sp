@@ -227,23 +227,24 @@ void Pathshaper_NPCDeath(int entityy)
 	SDKUnhook(npc.index, SDKHook_Think, Pathshaper_ClotThink);
 
 	int team = GetTeam(entityy);
-	for(int i; i < i_MaxcountNpc; i++)
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PATHSHAPER_FRACTAL && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
-			RequestFrame(KillNpc, i_ObjectsNpcs[i]);
+			RequestFrame(KillNpc, i_ObjectsNpcsTotal[i]);
 		}
 	}
 }
 
 void Pathshaper_SpawnFractal(CClotBody npc, int health, int limit)
 {
+	int team = GetTeam(npc.index);
 	int count;
-	for(int i; i < i_MaxcountNpc; i++)
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PATHSHAPER_FRACTAL && IsEntityAlive(entity))
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PATHSHAPER_FRACTAL && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
 			if(++count == limit)
 				return;

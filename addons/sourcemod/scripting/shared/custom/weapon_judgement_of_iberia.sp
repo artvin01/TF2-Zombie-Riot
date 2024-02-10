@@ -405,9 +405,9 @@ public void Npc_Irene_Launch_client(int client)
 			b_LagCompNPC_No_Layers = true;
 			StartLagCompensation_Base_Boss(client);	
 
-			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int enemy = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+				int enemy = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEnemy(client, enemy, true, false))
 				{
 					VicLoc = WorldSpaceCenterOld(enemy);

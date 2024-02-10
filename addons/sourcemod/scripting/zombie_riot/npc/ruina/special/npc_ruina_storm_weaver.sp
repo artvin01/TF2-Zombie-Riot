@@ -465,9 +465,9 @@ static int Storm_Weaver_Health()
 static void Find_Anchors(int array[RUINA_ANCHOR_HARD_LIMIT+1])
 {
 	int anchor_current=0;
-	for(int targ; targ<i_MaxcountNpc; targ++)
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 		{
 			if(i_NpcInternalId[baseboss_index] == RUINA_MAGIA_ANCHOR)

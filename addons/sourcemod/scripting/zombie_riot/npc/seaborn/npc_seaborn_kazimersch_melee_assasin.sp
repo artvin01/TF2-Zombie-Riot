@@ -445,13 +445,13 @@ public bool KazimierzMeleeAssasinRange(KazimierzKnightAssasin npc, float range)
 			}
 		}
 	}
-	for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 	{
-		int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+		int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 		if(IsValidEntity(entity_close))
 		{
 			CClotBody npcenemy = view_as<CClotBody>(entity_close);
-			if(!npcenemy.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !b_NpcIsInvulnerable[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
+			if(!npcenemy.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !b_NpcIsInvulnerable[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close] && GetTeam(entity_close) == TFTeam_Red) //Check if dead or even targetable
 			{
 				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", AllyPos);
 				float flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);

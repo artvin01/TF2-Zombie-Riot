@@ -584,10 +584,10 @@ public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] cl
 	{
 		f_TerroriserAntiSpamCd[client] = GetGameTime() + 0.25;
 		
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int npc = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if (IsValidEntity(npc) && !b_NpcHasDied[npc])
+			int npc = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			if (IsValidEntity(npc) && !b_NpcHasDied[npc] && GetTeam(npc) != TFTeam_Red)
 			{
 				if(i_HowManyBombsOnThisEntity[npc][client] > 0)
 				{

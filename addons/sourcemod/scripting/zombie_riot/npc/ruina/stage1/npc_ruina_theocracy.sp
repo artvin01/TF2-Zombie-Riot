@@ -501,10 +501,10 @@ static Action Theocracy_Barrage_Anim(Handle timer, int ref)
 				npc.FireParticleRocket(target_vec, dmg , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
 			}
 		}
-		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) != GetTeam(client))
 			{
 				float target_vec[3]; target_vec = GetAbsOriginOld(ally);
 					
@@ -568,10 +568,10 @@ static void Theocracy_Melee_Hit(int ref, int enemy, float vecHit[3])
 				}
 			}
 		}
-		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) != GetTeam(client))
 			{
 				float target_vec[3]; target_vec = GetAbsOriginOld(ally);
 				float dist=GetVectorDistance(npc_loc, target_vec, true);

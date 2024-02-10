@@ -624,10 +624,10 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 	if(AlliedUnit)
 	{
 		BarrackBody npc = view_as<BarrackBody>(Monk);
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK)
+			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK && GetTeam(entity_close) != TFTeam_Red)
 			{
 				static float pos2[3];
 				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
@@ -644,10 +644,10 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 	{
 		if(!NpcStats_IsEnemySilenced(Monk))
 		{
-			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 			{
-				int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-				if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK && i_NpcInternalId[entity_close] != RAIDMODE_GOD_ARKANTOS)
+				int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK && i_NpcInternalId[entity_close] != RAIDMODE_GOD_ARKANTOS && GetTeam(entity_close) != TFTeam_Red)
 				{
 					bool regrow = true;
 					Building_CamoOrRegrowBlocker(entity_close, _, regrow);
@@ -688,14 +688,14 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 				}
 			}
 		}
-		for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
-			if(IsValidEntity(entity_close))
+			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			if(IsValidEntity(entity_close) && GetTeam(entity_close) == TFTeam_Red)
 			{
 				static float pos2[3];
 				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
-				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
+				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE) )
 				{
 					SDKHooks_TakeDamage(entity_close, Monk, Monk, damage, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceCenterOld(entity_close));	
 				}

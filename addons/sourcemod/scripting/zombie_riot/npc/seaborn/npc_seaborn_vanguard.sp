@@ -129,9 +129,9 @@ void SeabornVanguard_SpeedBuff(CClotBody npc, float &speed)
 		{
 			SpeedCache = 1.0;
 
-			for(int i; i < i_MaxcountNpc; i++)
+			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 				if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == SEABORN_VANGUARD && !view_as<CClotBody>(entity).m_bThisEntityIgnored && IsEntityAlive(entity))
 				{
 					SpeedCache *= 1.05;

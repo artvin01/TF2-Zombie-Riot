@@ -402,7 +402,7 @@ methodmap CClotBody < CBaseCombatCharacter
 
 			SetEntProp(npc, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 		}
-		AddEntityToLagCompList(entity);
+		AddEntityToLagCompList(npc);
 
 		b_ThisWasAnNpc[npc] = true;
 		b_NpcHasDied[npc] = false;
@@ -410,7 +410,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		flNpcCreationTime[npc] = GetGameTime();
 		DispatchSpawn(npc); //Do this at the end :)
 		Hook_DHook_UpdateTransmitState(npc);
-		Check_For_Team_Npc(npc);
+		SDKHook(npc, SDKHook_TraceAttack, NPC_TraceAttack);
+		SDKHook(npc, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
+		SDKHook(npc, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
+		SetEntProp(npc, Prop_Send, "m_bGlowEnabled", false);
 
 		CClotBody npcstats = view_as<CClotBody>(npc);
 
@@ -3051,17 +3054,6 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		return !!GetEntProp(this.index, Prop_Data, "m_bSequenceFinished");
 	}
-	public void SetDefaultStatsZombieRiot(int Team)
-	{
-		CClotBody npc = view_as<CClotBody>(this.index);
-		npc.m_bThisNpcGotDefaultStats_INVERTED = true;
-		if(Team == view_as<int>(TFTeam_Red)) //ANY NPC THATS AN ALLY AND THAT HAS NO DEFAULT STATS WILL GET THIS.
-		{
-			npc.m_bThisEntityIgnored = false;
-			npc.m_bThisNpcIsABoss = false;
-			npc.bCantCollidie = false;
-		}
-	}
 }
 
 //Trash below!
@@ -3158,6 +3150,7 @@ public void NPC_Base_InitGamedata()
 
 /*
 	GetTeam(i) != TFTeam_Red
+	GetTeam(ally) == TFTeam_Red
 	This is just here for me to quickly copypaste
 	incase i forget to delete
 	delete it for me
@@ -4175,7 +4168,7 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 #if defined RTS
 	return !b_NpcHasDied[other_entidx];
 #else
-	if(b_IsAlliedNpc[bot_entidx]) //ally!
+	if(GetTeam(bot_entidx) == TFTeam_Red) //ally!
 	{
 		if(b_IsCamoNPC[bot_entidx])
 		{
@@ -4640,7 +4633,7 @@ stock int GetClosestTargetRTS(int entity,
 #endif
 {
 #if !defined RTS
-	int searcher_team = GetTeam(entity); //do it only once lol
+	int SearcherNpcTeam = GetTeam(entity); //do it only once lol
 #endif
 	if(EntityLocation[2] == 0.0)
 	{
@@ -4669,14 +4662,16 @@ stock int GetClosestTargetRTS(int entity,
 		}
 	}
 	
-	if(searcher_team != 2 && !IgnorePlayers && !IsTowerdefense)
+	//This code: if the npc is not on player team, make them attack players.
+	//This doesnt work if they ignore players or tower defense mode is enabled.
+	if(SearcherNpcTeam != TFTeam_Red && !IgnorePlayers && !IsTowerdefense)
 	{
 		for( int i = 1; i <= MaxClients; i++ ) 
 		{
 			if (IsValidClient(i) && i != ingore_client)
 			{
 				CClotBody npc = view_as<CClotBody>(i);
-				if (GetTeam(i) != searcher_team && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+				if (GetTeam(i) != SearcherNpcTeam && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true))
 				{
 					if(CanSee)
 					{
@@ -4710,14 +4705,16 @@ stock int GetClosestTargetRTS(int entity,
 	}
 #endif	// Non-RTS
 
+	//This is for Player sided NPCS.
+	//They have pretty much infinite range when targetting other npcs!
 #if !defined RTS
-	if(searcher_team != 3 && !IsTowerdefense)
+	if(SearcherNpcTeam == TFTeam_Red && !IsTowerdefense)
 #endif
 	{
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(entity_close) && entity_close != ingore_client)
+			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client && GetTeam(entity_close) != GetTeam(entity))
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
 #if defined RTS
@@ -4776,12 +4773,16 @@ stock int GetClosestTargetRTS(int entity,
 		}
 	}
 #else
-	if(searcher_team != 2 && !IgnorePlayers)
+	/*
+		The npc is not on the player team, it will target players first
+		other enemy npcs are preffered only when too close.
+	*/
+	if(SearcherNpcTeam != TFTeam_Red && !IgnorePlayers)
 	{
-		for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
-			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client)
+			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client && GetTeam(entity_close) != GetTeam(entity))
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
@@ -4825,12 +4826,13 @@ stock int GetClosestTargetRTS(int entity,
 		return npc.m_iTarget;
 	}
 	
-	#if defined ZR
+	//If the team searcher is not on red, target buildings, buildings can only be on the player team.
+#if defined ZR
 	CClotBody npcSearch = view_as<CClotBody>(entity);
-	if(searcher_team != 2 && !RaidbossIgnoreBuildingsLogic(1) && !IgnoreBuildings && ((npcSearch.m_iTarget > 0 && i_IsABuilding[npcSearch.m_iTarget]) || IgnorePlayers)) //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
-	#else
-	if(!IgnoreBuildings && searcher_team != 2)
-	#endif
+	if(SearcherNpcTeam != TFTeam_Red && !RaidbossIgnoreBuildingsLogic(1) && !IgnoreBuildings && ((npcSearch.m_iTarget > 0 && i_IsABuilding[npcSearch.m_iTarget]) || IgnorePlayers)) //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
+#else
+	if(!IgnoreBuildings && SearcherNpcTeam != TFTeam_Red)
+#endif
 	{
 		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 		{
@@ -5663,7 +5665,7 @@ public void NpcBaseThink(int iNPC)
 	}
 
 #if !defined RTS
-	else if(b_IsAlliedNpc[iNPC] && !i_NpcIsABuilding[iNPC])
+	else if(GetTeam(iNPC) == TFTeam_Red && !i_NpcIsABuilding[iNPC])
 	{
 		float GameTime = GetGameTime();
 		if(f_StuckOutOfBoundsCheck[iNPC] < GameTime)
@@ -9478,14 +9480,14 @@ void RemoveNpcFromEnemyList(int npc, bool ingoresetteam = false)
 		SetEntProp(npc, Prop_Send, "m_iTeamNum",view_as<int>(TFTeam_Red));
 		
 	//set to red just incase!
-	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
+	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 	{
-		int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+		int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 		if(IsValidEntity(npc))
 		{
 			if(npc == entity_close)
 			{
-				i_ObjectsNpcs[entitycount] = -1; //remove from the list
+				i_ObjectsNpcsTotal[entitycount] = -1; //remove from the list
 				break;
 			}
 		}
@@ -9669,11 +9671,6 @@ void MapStartResetNpc()
 		b_StaticNPC[i] = false;
 		b_EnemyNpcWasIndexed[i][0] = false;
 		b_EnemyNpcWasIndexed[i][1] = false;
-
-#if !defined RTS
-		b_IsAlliedNpc[i] = false;
-#endif
-
 	}
 	EnemyNpcAlive = 0;
 	EnemyNpcAliveStatic = 0;

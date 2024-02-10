@@ -1549,9 +1549,9 @@ static void StartStage(const Stage stage)
 			TeleportEntity(client, pos, ang, NULL_VECTOR);
 	}
 	
-	for(int i; i < i_MaxcountNpc; i++)
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
 			if(GetTeam(entity) == TFTeam_Red)
@@ -1628,9 +1628,9 @@ static void TeleportToSpawn()
 		}
 	}
 	
-	for(int i; i < i_MaxcountNpc; i++)
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
 			if(GetTeam(entity) == TFTeam_Red)
@@ -2063,9 +2063,9 @@ void Rogue_GiveNamedArtifact(const char[] name, bool silent = false)
 
 				if(artifact.FuncAlly != INVALID_FUNCTION)
 				{
-					for(int a; a < i_MaxcountNpc; a++)
+					for(int a; a < i_MaxcountNpcTotal; a++)
 					{
-						int entity = EntRefToEntIndex(i_ObjectsNpcs[a]);
+						int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
 						if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Red)
 						{
 							Call_StartFunction(null, artifact.FuncAlly);

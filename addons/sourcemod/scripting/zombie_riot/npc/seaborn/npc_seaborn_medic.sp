@@ -133,9 +133,9 @@ public void SeabornMedic_ClotThink(int iNPC)
 			}
 		}
 
-		for(int i; i < i_MaxcountNpc_Allied; i++)
+		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team)
 			{
 				f_HussarBuff[entity] = gameTime;

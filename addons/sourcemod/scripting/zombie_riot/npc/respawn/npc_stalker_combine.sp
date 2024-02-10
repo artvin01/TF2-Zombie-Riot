@@ -293,9 +293,9 @@ public void StalkerCombine_ClotThink(int iNPC)
 		// Hunt down the Father on Wave 16
 		if(Waves_GetRound() > 14 && (npc.m_iTarget < 1 || i_NpcInternalId[npc.m_iTarget] != CURED_FATHER_GRIGORI))
 		{
-			for(int i; i < i_MaxcountNpc_Allied; i++)
+			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 				if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == CURED_FATHER_GRIGORI)
 				{
 					float EntityLocation[3], TargetLocation[3]; 

@@ -367,9 +367,9 @@ public void GodArkantos_ClotThink(int iNPC)
 		mp_bonusroundtime.IntValue = (9 * 2);
 		
 		ZR_NpcTauntWinClear();
-		for(int targ; targ<i_MaxcountNpc; targ++)
+		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 			if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 			{
 				SetEntProp(baseboss_index, Prop_Send, "m_iTeamNum", TFTeam_Red);
@@ -566,10 +566,10 @@ public void GodArkantos_ClotThink(int iNPC)
 	if(npc.g_TimesSummoned == 4)
 	{
 		bool allyAlive = false;
-		for(int targ; targ<i_MaxcountNpc; targ++)
+		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != RAIDMODE_GOD_ARKANTOS)
+			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != RAIDMODE_GOD_ARKANTOS && GetTeam(npc.index) == GetTeam(baseboss_index))
 			{
 				allyAlive = true;
 			}
@@ -1495,9 +1495,9 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 				}						
 			}
 		}
-		for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity_close))
 			{
 				if(IsValidEnemy(npc.index, entity_close))
@@ -1654,9 +1654,9 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 					}
 				}
 			}
-			for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 			{
-				int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+				int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity_close))
 				{
 					if(IsValidEnemy(npc.index, entity_close))

@@ -166,9 +166,9 @@ methodmap EndSpeaker < CClotBody
 		int count;
 		int[] remain = new int[i_MaxcountNpc];
 
-		for(int i; i < i_MaxcountNpc; i++)
+		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == REMAINS && IsEntityAlive(entity))
 			{
 				remain[count++] = entity;
@@ -447,9 +447,9 @@ public void EndSpeaker_BurrowAnim(const char[] output, int caller, int activator
 
 bool EndSpeaker_GetPos(float pos[3])
 {
-	for(int i; i < i_MaxcountNpc; i++)
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE &&
 			i_NpcInternalId[entity] >= ENDSPEAKER_1 &&
 			i_NpcInternalId[entity] <= ENDSPEAKER_4 &&

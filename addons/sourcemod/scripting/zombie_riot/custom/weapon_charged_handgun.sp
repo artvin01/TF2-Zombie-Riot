@@ -606,10 +606,10 @@ public Action Timer_Electric_Think_PAP(Handle timer, int ref)
 	
 	Damage_Reduction[iCarrier] = 1.0;
 					
-	for(int targ; targ<i_MaxcountNpc; targ++)
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-		if (IsValidEntity(baseboss_index))
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 		{
 			if(!b_NpcHasDied[baseboss_index])
 			{
@@ -794,10 +794,10 @@ public Action Timer_Electric_Think(Handle timer, int ref)
 	
 	Damage_Reduction[iCarrier] = 1.0;
 					
-	for(int targ; targ<i_MaxcountNpc; targ++)
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-		if (IsValidEntity(baseboss_index))
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 		{
 			if(!b_NpcHasDied[baseboss_index])
 			{

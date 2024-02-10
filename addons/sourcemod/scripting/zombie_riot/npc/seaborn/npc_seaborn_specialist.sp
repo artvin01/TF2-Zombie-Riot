@@ -87,10 +87,10 @@ methodmap SeabornSpecialist < CClotBody
 		if(!ally)
 		{
 			float lowest = 1.0;
-			for(int i; i < i_MaxcountNpc; i++)
+			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-				if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && IsEntityAlive(entity))
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && IsEntityAlive(entity) && GetTeam(entity) != TFTeam_Red)
 				{
 					float ratio = float(GetEntProp(entity, Prop_Data, "m_iHealth") + 2) / float(GetEntProp(entity, Prop_Data, "m_iMaxHealth") + 1);
 					if(ratio < lowest)
