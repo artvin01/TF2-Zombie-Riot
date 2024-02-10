@@ -660,7 +660,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.Is_Health_Scaled = kv.GetNum("is_health_scaling");
 						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
 						enemy.Is_Static = view_as<bool>(kv.GetNum("is_static"));
-						enemy.Team = kv.GetNum("friendly") ? TFTeam_Red : TFTeam_Blue;
+						enemy.Team = kv.GetNum("team_npc", 3);
 						enemy.Credits = kv.GetFloat("cash");
 						enemy.ExtraMeleeRes = kv.GetFloat("extra_melee_res", 1.0);
 						enemy.ExtraRangedRes = kv.GetFloat("extra_ranged_res", 1.0);

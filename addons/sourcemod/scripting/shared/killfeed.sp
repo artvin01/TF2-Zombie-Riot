@@ -174,8 +174,15 @@ int KillFeed_GetBotTeam(int client)
 
 void KillFeed_SetBotTeam(int client, int team)
 {
-	ForceTeam[client] = team;
-	ChangeClientTeam(client, team);
+	int teamSet = team;
+
+	if(teamSet < TFTeam_Unassigned)
+		teamSet = TFTeam_Unassigned;
+	if(teamSet > TFTeam_Blue)
+		teamSet = TFTeam_Blue;
+	ForceTeam[client] = teamSet;
+	
+	ChangeClientTeam(client, teamSet);
 }
 
 #if defined ZR

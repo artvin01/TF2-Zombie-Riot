@@ -13,7 +13,7 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 	
 	public AlliedLeperVisualiserAbility(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		AlliedLeperVisualiserAbility npc = view_as<AlliedLeperVisualiserAbility>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "100", true, true));
+		AlliedLeperVisualiserAbility npc = view_as<AlliedLeperVisualiserAbility>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "100", TFTeam_Red, true));
 		
 		i_NpcInternalId[npc.index] = WEAPON_LEPER_AFTERIMAGE;
 		i_NpcWeight[npc.index] = 999;

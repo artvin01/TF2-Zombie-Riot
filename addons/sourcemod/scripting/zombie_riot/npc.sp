@@ -2201,7 +2201,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 			entity = NaziPanzer(client, vecPos, vecAng, ally);
 		
 		case BOB_THE_GOD_OF_GODS:
-			entity = BobTheGod(client, vecPos, vecAng);
+			entity = BobTheGod(client, vecPos, vecAng, ally);
 		
 		case NECRO_COMBINE:
 			entity = NecroCombine(client, vecPos, vecAng, StringToFloat(data));
@@ -2210,7 +2210,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 			entity = NecroCalcium(client, vecPos, vecAng, StringToFloat(data));
 		
 		case CURED_FATHER_GRIGORI:
-			entity = CuredFatherGrigori(client, vecPos, vecAng);
+			entity = CuredFatherGrigori(client, vecPos, vecAng, ally);
 		
 		case ALT_COMBINE_MAGE:
 			entity = AltCombineMage(client, vecPos, vecAng, ally);

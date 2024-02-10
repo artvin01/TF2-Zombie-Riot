@@ -40,6 +40,8 @@ int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES] = {0, ...};
 #endif
 
+int TeamFreeForAll = 50;
+
 char c_NpcCustomNameOverride[MAXENTITIES][255];
 int i_SpeechBubbleEntity[MAXENTITIES];
 PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
@@ -388,13 +390,15 @@ methodmap CClotBody < CBaseCombatCharacter
 		else
 #endif
 		{
-			Ally += 3;
-#if defined RTS
-			TeamNumber[npc] = 0;
-#else
-			TeamNumber[npc] = Ally;
-#endif
-			SetTeam(npc, Ally);
+			if(Ally == 999)
+			{
+				//setting it to 999 will just keep adding 1 so its a free for all!
+				SetTeam(npc, TeamFreeForAll++);
+			}
+			else
+			{
+				SetTeam(npc, Ally);
+			}
 		}
 		AddEntityToLagCompList(npc);
 

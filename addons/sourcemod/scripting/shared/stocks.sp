@@ -4925,7 +4925,6 @@ stock void SetForceButtonState(int client, bool apply, int button_flag)
 
 stock int GetTeam(int entity)
 {
-
 	if(entity > 0 && entity <= MAXENTITIES)
 	{
 #if defined ZR

@@ -302,9 +302,9 @@ methodmap CuredFatherGrigori < CClotBody
 		#endif
 	}
 	
-	public CuredFatherGrigori(int client, float vecPos[3], float vecAng[3])
+	public CuredFatherGrigori(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		CuredFatherGrigori npc = view_as<CuredFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", true, true, false));
+		CuredFatherGrigori npc = view_as<CuredFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally, true, false));
 		
 		i_NpcInternalId[npc.index] = CURED_FATHER_GRIGORI;
 		i_NpcWeight[npc.index] = 999;

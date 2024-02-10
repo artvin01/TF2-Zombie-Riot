@@ -2619,6 +2619,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
+		else if(!StrContains(classname, "tf_player_manager"))
+		{
+			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
+		}
 		else if(!StrContains(classname, "tf_ammo_pack"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);

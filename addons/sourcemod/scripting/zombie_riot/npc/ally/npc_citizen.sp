@@ -908,7 +908,7 @@ methodmap Citizen < CClotBody
 			Citizen_GenerateModel(seed, female, Cit_Unarmed, buffer, sizeof(buffer));
 		}
 		
-		Citizen npc = view_as<Citizen>(CClotBody(vecPos, vecAng, buffer, "1.15", "150", true, true));
+		Citizen npc = view_as<Citizen>(CClotBody(vecPos, vecAng, buffer, "1.15", "150", TFTeam_Red, true));
 		i_NpcInternalId[npc.index] = CITIZEN;
 		i_NpcWeight[npc.index] = 1;
 		

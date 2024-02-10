@@ -175,7 +175,15 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		if(b_CantCollidieAlly[otherindex])
 			return false;
 	}	
-
+	if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
+	{
+		CClotBody npc = view_as<CClotBody>(bot_entidx);
+		if(npc.m_iTarget == otherindex)
+		{
+			return true;
+		}
+		return false;
+	}
 	//No matter what, if they are on the same team, then they will not collide at all as of now.
 	if(GetTeam(bot_entidx) == GetTeam(otherindex))
 	{
@@ -189,6 +197,10 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	//the collided index is a player.
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
+		if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
+		{
+			return false;
+		}
 		//this player has some type of logic to prevent collisions, ignore.
 		if(b_ThisEntityIgnored[otherindex])
 		{
@@ -200,6 +212,11 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	}
 	if(i_IsABuilding[otherindex])
 	{
+		if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
+		{
+			NpcStartTouch(bot_entidx,otherindex);
+			return true;
+		}
 		if(RaidbossIgnoreBuildingsLogic(2) || b_NpcIgnoresbuildings[bot_entidx])
 		{
 			return false;
@@ -209,7 +226,22 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	//always collide with vehicles if on opesite teams.
 	if(b_IsVehicle[otherindex])
 	{
+		NpcStartTouch(bot_entidx,otherindex);
 		return true;
+	}
+	//other entity is an npc
+	if(!b_NpcHasDied[otherindex])
+	{
+		//we are ignoring them, skip them, but only during traces.
+		if(b_ThisEntityIgnored[bot_entidx] && extrarules == 0)
+		{
+			return false;
+		}
+	}
+	//the other index is ingored, ignore.
+	if(b_ThisEntityIgnored[otherindex])
+	{
+		return false;
 	}
 	//They have collided with something, try to change the target.
 	NpcStartTouch(bot_entidx,otherindex);

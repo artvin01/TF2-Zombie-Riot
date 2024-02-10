@@ -408,7 +408,7 @@ methodmap BarrackBody < CClotBody
 	  int steptype = STEPTYPE_COMBINE_METRO, const char[] size_of_npc = "0.575",
 	   float ExtraOffset = 0.0, const char[] ParticleModelPath = "models/pickups/pickup_powerup_supernova.mdl", bool IsInvuln = false)
 	{
-		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, modelpath, size_of_npc, health, true, IsInvuln, .Ally_Collideeachother = !IsInvuln));
+		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, modelpath, size_of_npc, health, TFTeam_Red, IsInvuln, .Ally_Collideeachother = !IsInvuln));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
