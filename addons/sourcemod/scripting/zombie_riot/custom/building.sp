@@ -7368,7 +7368,7 @@ static void SummonerMenu(int client, int viewer)
 				{
 					for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
 					{
-						int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+						int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 
 						if(IsValidEntity(entity_close) && i_NpcInternalId[entity_close] == BARRACKS_VILLAGER)
 						{
@@ -7899,10 +7899,8 @@ void Barracks_BuildingThink(int client)
 			EmitSoundToAll("weapons/bow_shoot.wav", mounted ? playerclient.index : npc.index, _, 70, _, 0.9, 100);
 
 			//npc.m_flDoingSpecial is damage, see above.
-			b_IsAlliedNpc[npc.index] = true;
 			int arrow = npc.FireArrow(vecTarget, npc.m_flDoingSpecial, projectile_speed,_,_, 55.0, client, mounted ? client : -1);
 			npc.m_iOverlordComboAttack -= 1;
-			b_IsAlliedNpc[npc.index] = false;
 
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CRENELLATIONS)
 			{

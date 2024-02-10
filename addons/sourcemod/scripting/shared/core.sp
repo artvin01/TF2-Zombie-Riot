@@ -417,7 +417,6 @@ float Mana_Hud_Delay[MAXTF2PLAYERS];
 bool b_NpcHasDied[MAXENTITIES]={true, ...};
 bool b_BuildingHasDied[MAXENTITIES]={true, ...};
 const int i_MaxcountNpc = ZR_MAX_NPCS;
-int i_ObjectsNpcs[ZR_MAX_NPCS];
 
 bool b_DoNotIgnoreDuringLagCompAlly[MAXENTITIES]={false, ...};
 
@@ -662,11 +661,9 @@ bool b_DungeonContracts_25PercentMoreDamage[MAXENTITIES];
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
-
-bool b_Is_Npc_Projectile[MAXENTITIES];
-bool b_Is_Player_Projectile[MAXENTITIES];
 bool b_ForceCollisionWithProjectile[MAXENTITIES];
 bool b_ProjectileCollideIgnoreWorld[MAXENTITIES];
+bool b_IsAProjectile[MAXENTITIES];
 bool b_Is_Player_Projectile_Through_Npc[MAXENTITIES];
 bool b_CannotBeHeadshot[MAXENTITIES];
 bool b_CannotBeBackstabbed[MAXENTITIES];
@@ -1367,12 +1364,12 @@ public void OnPluginStart()
 		}
 	}
 }
-
+/*
 public void OnAllPluginsLoaded()
 {
 	NPC_OnAllPluginsLoaded();
 }
-
+*/
 public Action Timer_Temp(Handle timer)
 {
 	if(CvarDisableThink.BoolValue)
@@ -2536,8 +2533,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_EntityIgnoredByShield[entity] = false;
 		i_WandIdNumber[entity] = -1;
 		CClotBody npc = view_as<CClotBody>(entity);
-		b_Is_Npc_Projectile[entity] = false;
-		b_Is_Player_Projectile[entity] = false;
 		EntityFuncAttack[entity] = INVALID_FUNCTION;
 		EntityFuncAttack2[entity] = INVALID_FUNCTION;
 		EntityFuncAttack3[entity] = INVALID_FUNCTION;
@@ -2621,6 +2616,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 		TextStore_EntityCreated(entity);
 #endif
 
+		b_IsAProjectile[entity] = false;
+
+		if(!StrContains(classname, "projectile"))
+		{
+			b_IsAProjectile[entity] = true;
+		}
+
 		if(!StrContains(classname, "env_entity_dissolver"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
@@ -2675,8 +2677,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		//	ApplyExplosionDhook_Rocket(entity);
 			//SDKHook_SpawnPost doesnt work
@@ -2724,8 +2725,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			
 		}
 		else if(!StrContains(classname, "tf_projectile_flare"))
 		{
@@ -2733,8 +2733,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			
 		}
 		else if(!StrContains(classname, "tf_projectile_healing_bolt"))
 		{
@@ -2753,7 +2752,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_SpawnPost, PipeApplyDamageCustom);
 			ApplyExplosionDhook_Pipe(entity, true);
@@ -2765,9 +2763,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			
 			//SDKHook_SpawnPost doesnt work
 		}
 		else if(!StrContains(classname, "prop_dynamic"))
@@ -2790,7 +2787,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			b_Is_Player_Projectile[entity] = true; //Pretend its a player projectile for now.
+			
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
@@ -2810,15 +2807,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "func_door_rotating"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			b_Is_Player_Projectile[entity] = true; //Pretend its a player projectile for now.
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
 		else if(!StrContains(classname, "prop_physics"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
-			b_Is_Player_Projectile[entity] = true; //Pretend its a player projectile for now.
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
@@ -2828,7 +2822,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 			ApplyExplosionDhook_Pipe(entity, false);
 			SDKHook(entity, SDKHook_SpawnPost, PipeApplyDamageCustom);
 			
@@ -2837,7 +2830,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 			
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			
 			//SDKHook_SpawnPost doesnt work
 		}
 		else if(!StrContains(classname, "tf_projectile_rocket"))
@@ -2847,9 +2840,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			
 		}
 		else if(!StrContains(classname, "zr_projectile_base"))
 		{
@@ -2858,9 +2850,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			
 		}
 		else if (!StrContains(classname, "tf_weapon_handgun_scout_primary")) 
 		{
@@ -3020,7 +3011,6 @@ public void Check_For_Team_Npc(int entity)
 		b_NpcHasDied[entity] = false;
 
 #if !defined RTS
-		b_IsAlliedNpc[entity] = false;
 		if(GetTeam(entity) == TFTeam_Red)
 		{
 		//	SDKHook(entity, SDKHook_TraceAttack, NPC_TraceAttack);
@@ -3028,7 +3018,6 @@ public void Check_For_Team_Npc(int entity)
 			SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 			npcstats.bCantCollidieAlly = true;
 			npcstats.bCantCollidie = false;
-			b_IsAlliedNpc[entity] = true;
 			if(!npcstats.m_bThisNpcGotDefaultStats_INVERTED) //IF THIS IS FALSE, then that means that a baseboss spawned without getting default stats.
 			{
 				npcstats.SetDefaultStatsZombieRiot(view_as<int>(TFTeam_Red));
@@ -3077,16 +3066,6 @@ public void Check_For_Team_Npc(int entity)
 			
 			npcstats.bCantCollidie = true;
 			npcstats.bCantCollidieAlly = false;
-
-			for (int i = 0; i < ZR_MAX_NPCS; i++)
-			{
-				if (EntRefToEntIndex(i_ObjectsNpcs[i]) <= 0)
-				{
-					i_ObjectsNpcs[i] = EntIndexToEntRef(entity);
-					i = ZR_MAX_NPCS;
-				}
-			}
-			AddEntityToLagCompList(entity);
 		}
 	}
 }

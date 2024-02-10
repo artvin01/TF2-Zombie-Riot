@@ -2768,7 +2768,6 @@ static int Create_Crystal(int client, float vecTarget[3], float damage, float ro
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
 		SetEntityCollisionGroup(entity, 24); //our savior
 		Set_Projectile_Collision(entity); //If red, set to 27
-		See_Projectile_Team(entity);
 
 
 

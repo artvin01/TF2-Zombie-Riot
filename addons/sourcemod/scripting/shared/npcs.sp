@@ -140,9 +140,9 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		}
 		if(CheckOutline)
 		{
-			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
+			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
 				if(IsValidEntity(entity))
 				{
 					if(GetTeam(entity) != TFTeam_Red)

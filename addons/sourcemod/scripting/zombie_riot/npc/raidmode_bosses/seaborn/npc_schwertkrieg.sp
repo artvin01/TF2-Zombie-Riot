@@ -2381,7 +2381,6 @@ static int Schwert_Create_Invis_Proj(Raidboss_Schwertkrieg npc, float rocket_spe
 		
 		SetEntProp(entity, Prop_Data, "m_nSolidType", 6);
 		SetEntProp(entity, Prop_Send, "m_CollisionGroup", 1);
-		See_Projectile_Team(entity);
 
 		SetEntityMoveType(entity, MOVETYPE_NOCLIP);
 

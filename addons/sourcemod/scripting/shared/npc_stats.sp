@@ -402,6 +402,7 @@ methodmap CClotBody < CBaseCombatCharacter
 
 			SetEntProp(npc, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 		}
+		AddEntityToLagCompList(entity);
 
 		b_ThisWasAnNpc[npc] = true;
 		b_NpcHasDied[npc] = false;
@@ -2573,7 +2574,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
-			See_Projectile_Team(entity);
 		}
 		return entity;
 	}
@@ -2648,7 +2648,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
-			See_Projectile_Team(entity);
 			
 			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre); //*yawn*
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
@@ -2747,7 +2746,7 @@ methodmap CClotBody < CBaseCombatCharacter
 					int trail;
 
 #if !defined RTS
-					if(b_IsAlliedNpc[this.index])
+					if(GetTeam(this.index) == TFTeam_Red)
 					{
 						trail = Trail_Attach(entity, ARROW_TRAIL_RED, 255, 0.3, 3.0, 3.0, 5);
 					}
@@ -2772,7 +2771,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
-			See_Projectile_Team(entity);
 			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Arrow_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
 	//		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, ArrowStartTouch);
@@ -3158,6 +3156,12 @@ public void NPC_Base_InitGamedata()
 	//for (int i = 0; i < MAXENTITIES; i++) pPath[i] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
 }
 
+/*
+	GetTeam(i) != TFTeam_Red
+	This is just here for me to quickly copypaste
+	incase i forget to delete
+	delete it for me
+*/
 static void OnCreate(CClotBody body)
 {
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
@@ -3201,10 +3205,6 @@ static void OnDestroy(CClotBody body)
 	b_ThisWasAnNpc[body.index] = false;
 	b_NpcHasDied[body.index] = true;
 	b_StaticNPC[body.index] = false;
-
-#if !defined RTS
-	b_IsAlliedNpc[body.index] = false;
-#endif
 
 	
 #if defined ZR
@@ -3369,10 +3369,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	//Do not remove pather here.
 		RemoveNpcFromEnemyList(pThis, true);
 		b_StaticNPC[pThis] = false;
-
-#if !defined RTS
-		b_IsAlliedNpc[pThis] = false;
-#endif
 
 		if(!npc.m_bDissapearOnDeath)
 		{
@@ -4211,7 +4207,7 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 			}
 			return true;
 		}
-		if(GetTeam(victim) != TFTeam_Red)
+		if(GetTeam(other_entidx) != TFTeam_Red)
 		{
 			return true;
 			//return false;
@@ -4541,7 +4537,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 				return false;
 			}
 			
-			if((b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && index > MaxClients && !b_Is_Player_Projectile[index]))
+			if((b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && index > MaxClients && !b_IsAProjectile[index]))
 			{
 				return false;
 			}
@@ -4559,7 +4555,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 #endif
 
 #if defined ZR
-			if(Saga_EnemyDoomed(enemy) && index > MaxClients && !b_Is_Player_Projectile[index])
+			if(Saga_EnemyDoomed(enemy) && index > MaxClients && !b_IsAProjectile[index])
 			{
 				return false;
 			}
@@ -5125,7 +5121,7 @@ stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
 		if (IsValidClient(i))
 		{
 			CClotBody npc = view_as<CClotBody>(i);
-			if (GetTeam(i)==view_as<TFTeam>(GetTeam(entity)) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true) && GetEntPropEnt(i, Prop_Data, "m_hVehicle") == -1) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+			if (GetTeam(i)== GetTeam(entity) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true) && GetEntPropEnt(i, Prop_Data, "m_hVehicle") == -1) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 

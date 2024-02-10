@@ -1254,7 +1254,7 @@ public bool TraceRayHitProjectilesOnly(int entity,int mask,any data)
 	{
 		return false;
 	}
-	if(b_Is_Player_Projectile[entity])
+	if(b_IsAProjectile[entity] && GetTeam(entity) == TFTeam_Red)
 	{
 		return true;
 	}

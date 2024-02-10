@@ -65,7 +65,6 @@ public void Weapon_Shoot_Arrow(int client, int weapon, bool crit, int slot)
 	int Arrow = SDKCall_CTFCreateArrow(fPos, fAng, speed, 0.1, 8, client, client);
 	if(IsValidEntity(Arrow))
 	{
-		RequestFrame(See_Projectile_Team, EntIndexToEntRef(Arrow));
 		SetEntityCollisionGroup(Arrow, 27);
 		SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, damage, true);	// Damage
 		SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", weapon);
@@ -78,7 +77,6 @@ public void Weapon_Shoot_Arrow(int client, int weapon, bool crit, int slot)
 		Arrow = SDKCall_CTFCreateArrow(fPos, fAng, speed, 0.1, 8, client, client);
 		if(IsValidEntity(Arrow))
 		{
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(Arrow));
 			SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, damage, true);	// Damage
 			SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", weapon);
 			SetEntPropEnt(Arrow, Prop_Send, "m_hLauncher", weapon);
@@ -90,7 +88,6 @@ public void Weapon_Shoot_Arrow(int client, int weapon, bool crit, int slot)
 			Arrow = SDKCall_CTFCreateArrow(fPos, storedAngle_2, speed, 0.1, 8, client, client);
 			if(IsValidEntity(Arrow))
 			{
-				RequestFrame(See_Projectile_Team, EntIndexToEntRef(Arrow));
 				SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, damage, true);	// Damage
 				SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", weapon);
 				SetEntPropEnt(Arrow, Prop_Send, "m_hLauncher", weapon);
@@ -251,7 +248,7 @@ public Action Timer_Multiple_Arrows(Handle timer, int client)
 					int Arrow = SDKCall_CTFCreateArrow(fPos, fAng, speed, 0.1, 8, client, client);
 					if(IsValidEntity(Arrow))
 					{
-						RequestFrame(See_Projectile_Team, EntIndexToEntRef(Arrow));
+						
 						SetEntityCollisionGroup(Arrow, 27);
 						SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, Arrows_Damage[client], true);	// Damage
 						SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", Client_To_Weapon[client]);
@@ -264,7 +261,7 @@ public Action Timer_Multiple_Arrows(Handle timer, int client)
 						Arrow = SDKCall_CTFCreateArrow(fPos, fAng, speed, 0.1, 8, client, client);
 						if(IsValidEntity(Arrow))
 						{
-							RequestFrame(See_Projectile_Team, EntIndexToEntRef(Arrow));
+							
 							SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, Arrows_Damage[client], true);	// Damage
 							SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", Client_To_Weapon[client]);
 							SetEntPropEnt(Arrow, Prop_Send, "m_hLauncher", Client_To_Weapon[client]);
@@ -276,7 +273,7 @@ public Action Timer_Multiple_Arrows(Handle timer, int client)
 							Arrow = SDKCall_CTFCreateArrow(fPos, storedAngle_2, speed, 0.1, 8, client, client);
 							if(IsValidEntity(Arrow))
 							{
-								RequestFrame(See_Projectile_Team, EntIndexToEntRef(Arrow));
+								
 								SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, Arrows_Damage[client], true);	// Damage
 								SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", Client_To_Weapon[client]);
 								SetEntPropEnt(Arrow, Prop_Send, "m_hLauncher", Client_To_Weapon[client]);
@@ -357,7 +354,7 @@ public void Weapon_Shoot_Arrow_Crossbow_PAP(int client, int weapon, bool crit, i
 		int Arrow = SDKCall_CTFCreateArrow(fPos, fAng, speed, 0.1, 8, client, client);
 		if(IsValidEntity(Arrow))
 		{
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(Arrow));
+			
 			SetEntityCollisionGroup(Arrow, 27);
 			SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, Arrows_Damage[client], true);	// Damage
 			SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", Client_To_Weapon[client]);
@@ -429,7 +426,7 @@ public void Weapon_Shoot_Arrow_Crossbow_PAP_1(int client, int weapon, bool crit,
 		int Arrow = SDKCall_CTFCreateArrow(fPos, fAng, speed, 0.1, 8, client, client);
 		if(IsValidEntity(Arrow))
 		{
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(Arrow));
+			
 			SetEntityCollisionGroup(Arrow, 27);
 			SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, Arrows_Damage[client], true);	// Damage
 			SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", Client_To_Weapon[client]);
@@ -502,7 +499,7 @@ public void Weapon_Shoot_Arrow_Crossbow_PAP_2(int client, int weapon, bool crit,
 		int Arrow = SDKCall_CTFCreateArrow(fPos, fAng, speed, 0.1, 8, client, client);
 		if(IsValidEntity(Arrow))
 		{
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(Arrow));
+			
 			SetEntityCollisionGroup(Arrow, 27);
 			SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, Arrows_Damage[client], true);	// Damage
 			SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", Client_To_Weapon[client]);

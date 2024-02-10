@@ -227,10 +227,10 @@ void Expidonsa_AllyHealInternal(int HealerNpc, int victim, float heal)
 	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 	ProjLoc[2] += 100.0;
 	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-	Function func = func_Expidonsa_Heal_After[HealerNpc];
-	if(func && func != INVALID_FUNCTION)
+	Function func2 = func_Expidonsa_Heal_After[HealerNpc];
+	if(func2 && func2 != INVALID_FUNCTION)
 	{
-		Call_StartFunction(null, func);
+		Call_StartFunction(null, func2);
 		Call_PushCell(HealerNpc);
 		Call_PushCell(victim);
 		Call_Finish();

@@ -372,8 +372,6 @@ public void GodArkantos_ClotThink(int iNPC)
 			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
 			if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 			{
-				b_IsAlliedNpc[baseboss_index] = true;
-				b_Is_Blue_Npc[baseboss_index] = false;
 				SetEntProp(baseboss_index, Prop_Send, "m_iTeamNum", TFTeam_Red);
 				SetEntityCollisionGroup(baseboss_index, 24);
 				Change_Npc_Collision(baseboss_index, num_ShouldCollideAlly);
@@ -1751,7 +1749,7 @@ void GodArkantosAOEBuff(GodArkantos npc, float gameTime, bool mute = false)
 			static int g;
 			static int b ;
 			static int a = 255;
-			if(b_Is_Blue_Npc[npc.index])
+			if(GetTeam(npc.index) != TFTeam_Red)
 			{
 				r = 220;
 				g = 220;

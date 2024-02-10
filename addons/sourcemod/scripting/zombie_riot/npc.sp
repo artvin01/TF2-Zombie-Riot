@@ -2352,10 +2352,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 			
 		case BONEZONE_BUFFED_BIGBONES:
 			entity = BigBones(client, vecPos, vecAng, ally, true);
-		
-		case ITSTILIVES:
-			entity = Itstilives(client, vecPos, vecAng);
-		
+			
 		case ALT_MECHA_ENGINEER:
 			entity = Mecha_Engineer(client, vecPos, vecAng, ally);
 		

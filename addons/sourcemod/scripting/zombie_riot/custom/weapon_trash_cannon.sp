@@ -506,9 +506,9 @@ public MRESReturn Shock_Explode(int entity)
 	float damage = f_ShockDMG[tier] * Attributes_Get(weapon, 2, 1.0);
 	float radius = f_ShockRadius[tier];
 
-	for (int i = 0; i < i_MaxcountNpc; i++)
+	for (int i = 0; i < i_MaxcountNpcTotal; i++)
 	{
-		int ent = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		int ent = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		
 		if (IsValidEntity(ent) && !b_NpcHasDied[ent])
 		{
@@ -600,7 +600,7 @@ public void Trash_Arrows(int client, int weapon, int tier)
 		int arrow = SDKCall_CTFCreateArrow(pos, ang, vel, 0.1, 8, client, client);
 		if (IsValidEntity(arrow))
 		{
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(arrow));
+			
 			SetEntityCollisionGroup(arrow, 27);
 			SetEntDataFloat(arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, damage, true);	// Damage
 			SetEntPropEnt(arrow, Prop_Send, "m_hOriginalLauncher", weapon);
@@ -1152,7 +1152,6 @@ int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocit
 			
 	if (IsValidEntity(prop))
 	{
-		b_Is_Player_Projectile[prop] = true;
 		DispatchKeyValue(prop, "targetname", "trash_projectile"); 
 				
 		SetEntDataFloat(prop, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
@@ -1238,11 +1237,11 @@ public int Trash_GetClosestVictim(float position[3], float radius, bool shock)
 	int closest = -1;
 	float dist = 999999999.0;
 	
-	for (int i = 0; i < i_MaxcountNpc; i++)
+	for (int i = 0; i < i_MaxcountNpcTotal; i++)
 	{
-		int ent = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		int ent = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		
-		if (IsValidEntity(ent) && !b_NpcHasDied[ent] && (!shock || f_NextShockTime[ent] <= GetGameTime()))
+		if (IsValidEntity(ent) && GetTeam(ent) != TFTeam_Red && !b_NpcHasDied[ent] && (!shock || f_NextShockTime[ent] <= GetGameTime()))
 		{
 			float vicLoc[3];  
 			vicLoc = WorldSpaceCenterOld(ent);

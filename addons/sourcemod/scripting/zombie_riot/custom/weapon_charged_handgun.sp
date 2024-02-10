@@ -365,8 +365,6 @@ static void Wand_Launch(int client, int iRot, float speed, float time, float dam
 	
 	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetClientTeam(client));
 	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetClientTeam(client));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iCarrier));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iRot));
 	
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
@@ -467,9 +465,6 @@ static void Wand_Launch_IEM(int client, int iRot, float speed, float time, float
 	
 	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetClientTeam(client));
 	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetClientTeam(client));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iCarrier));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iRot));
-	
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
 	SetEntityCollisionGroup(iCarrier, 27);
@@ -1191,8 +1186,6 @@ stock int CreateWandCutterProjectile(int client, float flSpeed, float flPos[3], 
 	
 	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetTeam(client));
 	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetTeam(client));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iCarrier));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iRot));
 	
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);

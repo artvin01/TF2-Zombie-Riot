@@ -287,9 +287,9 @@ public MRESReturn Wrench_SmackPre(int entity, DHookReturn ret, DHookParam param)
 	int Compensator = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	LagCompEntitiesThatAreIntheWay(Compensator);
 
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
 		if (IsValidEntity(baseboss_index_allied))
 		{
 			GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", f_TeleportedPosWrenchSmack[baseboss_index_allied]);
@@ -302,9 +302,9 @@ public MRESReturn Wrench_SmackPre(int entity, DHookReturn ret, DHookParam param)
 public MRESReturn Wrench_SmackPost(int entity, DHookReturn ret, DHookParam param)
 {	
 	FinishLagCompMoveBack();
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
 		if (IsValidEntity(baseboss_index_allied))
 		{
 			SDKCall_SetLocalOrigin(baseboss_index_allied, f_TeleportedPosWrenchSmack[baseboss_index_allied]);
@@ -421,27 +421,7 @@ void PipeApplyDamageCustom(int entity)
 	f_CustomGrenadeDamage[entity] = GetEntPropFloat(entity, Prop_Send, "m_flDamage");
 }
 
-void See_Projectile_Team(int entity)
-{
-	if (entity < 0 || entity > 2048)
-	{
-		entity = EntRefToEntIndex(entity);
-	}
-	if (IsValidEntity(entity))
-	{
-		if(GetTeam(entity) == view_as<int>(TFTeam_Red))
-		{
-			b_Is_Player_Projectile[entity] = true;	 //try this
-			//Update: worked! Will now pass through players/teammates
-			//Nice.
-		}	
-		else if(GetTeam(entity) == view_as<int>(TFTeam_Blue))
-		{
-			b_Is_Npc_Projectile[entity] = true; 
-		}
-	}
-	
-}
+
 
 void See_Projectile_Team_Player(int entity)
 {
@@ -459,13 +439,6 @@ void See_Projectile_Team_Player(int entity)
 		}	
 	}
 }
-
-/*
-#define MAXSTICKYCOUNTTONPC 12
-const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
-int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
-*/
-
 
 public Action SdkHook_StickStickybombToBaseBoss(int entity, int other)
 {
@@ -917,27 +890,16 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			return false;
 		}
 #endif
-		if(b_Is_Npc_Projectile[entity1])
+		if(b_IsAProjectile[entity1] && GetTeam(entity1) != TFTeam_Red)
 		{
 			if(b_ThisEntityIgnored[entity2])
 			{
 				return false;
 			}
-
-#if defined RTS
-			if(!b_NpcHasDied[entity2])
-#else
-			if(b_Is_Blue_Npc[entity2])
-#endif
+			if(b_IsAProjectile[entity2] && GetTeam(entity1) == GetTeam(entity2))
 			{
 				return false;
 			}
-			
-			if(b_Is_Npc_Projectile[entity2])
-			{
-				return false;
-			}
-
 #if defined ZR
 			if(i_IsABuilding[entity2] && IsValidEntity(RaidBossActive))
 			{
@@ -947,13 +909,13 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 
 #if !defined RTS
-		else if(b_Is_Player_Projectile[entity1])
+		else if(b_IsAProjectile[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
-	#if defined ZR
+#if defined ZR
 			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1] && !IsEntitySpike(entity1))
-	#else
+#else
 			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1])
-	#endif
+#endif
 			{
 				int EntityOwner = i_WandOwner[entity2];
 				if(ShieldDeleteProjectileCheck(EntityOwner, entity1))
@@ -992,12 +954,12 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-			else if(b_Is_Player_Projectile[entity2])
+			else if(b_IsAProjectile[entity2] && GetTeam(entity2) == GetTeam(entity1))
 			{
 				return false;
 			}
 	#if defined ZR
-			else if (i_WandIdNumber[entity1] == 19 && !i_IsABuilding[entity2] && !b_Is_Player_Projectile[entity2]) //Health Hose projectiles
+			else if (i_WandIdNumber[entity1] == 19 && !i_IsABuilding[entity2] && !b_IsAProjectile[entity2]) //Health Hose projectiles
 			{
 				Hose_Touch(entity1, entity2);
 				return false;
@@ -1014,7 +976,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 		else if (b_Is_Player_Projectile_Through_Npc[entity1])
 		{
-			if(b_Is_Blue_Npc[entity2])
+			if(!b_NpcHasDied[entity2] && GetTeam(entity2) != TFTeam_Red)
 			{
 				return false;
 			}
@@ -1024,7 +986,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #if defined RTS
 		else if(!b_NpcHasDied[entity1])
 #else	
-		else if(b_Is_Blue_Npc[entity1])
+		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) != TFTeam_Red)
 #endif
 		{
 			if(b_ThisEntityIgnored[entity2] && !DoingLagCompensation) //Only Ignore when not shooting/compensating, which is shooting only.
@@ -1041,7 +1003,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #if defined RTS
 			else if(!b_NpcHasDied[entity2])
 #else
-			else if(b_Is_Blue_Npc[entity2])
+			else if(!b_NpcHasDied[entity2] && GetTeam(entity2) != TFTeam_Red)
 #endif
 			{
 				return false;
@@ -1058,9 +1020,9 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 
 #if !defined RTS
-		else if(GetTeam(entity1) == TFTeam_Red)
+		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
-			if(GetTeam(entity2) == TFTeam_Red)
+			if(!b_NpcHasDied[entity2] && GetTeam(entity2) == TFTeam_Red)
 			{	
 				return false;
 			}
@@ -1294,10 +1256,10 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 	}
 
 #if !defined RTS
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied))
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+		if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TFTeam_Red)
 		{
 			if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
 			{
@@ -1309,10 +1271,10 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 
 	if(b_LagCompNPC_AwayEnemies)
 	{
-		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++)
+		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++)
 		{
-			int baseboss = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-			if (IsValidEntity(baseboss))
+			int baseboss = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+			if (IsValidEntity(baseboss) && GetTeam(baseboss) != TFTeam_Red)
 			{
 				b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss] = true;
 			}

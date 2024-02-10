@@ -424,7 +424,7 @@ void HussarAOEBuff(MedivalHussar npc, float gameTime, bool mute = false)
 			static int g;
 			static int b ;
 			static int a = 255;
-			if(b_Is_Blue_Npc[npc.index])
+			if(GetTeam(npc.index) != TFTeam_Red)
 			{
 				r = 125;
 				g = 125;

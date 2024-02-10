@@ -1318,8 +1318,6 @@ static void Orb_Launched(int iNPC, int iRot, float speed, float time, float dama
 	
 	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", npc.index);
 	SetEntProp(iRot, Prop_Send, "m_iTeamNum", npc.index);
-	//RequestFrame(See_Projectile_Team, EntIndexToEntRef(iCarrier));
-	//RequestFrame(See_Projectile_Team, EntIndexToEntRef(iRot));
 	
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
