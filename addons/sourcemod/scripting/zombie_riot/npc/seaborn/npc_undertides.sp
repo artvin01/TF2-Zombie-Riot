@@ -397,7 +397,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 			int entity = EntRefToEntIndex(i_ObjectsNpcs[a]);
 			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
 			{
-				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && GetTeam(client) != team && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
+				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && GetTeam(entity) != team && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
 				{
 					if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, entity))
 						continue;

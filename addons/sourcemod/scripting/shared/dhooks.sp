@@ -471,13 +471,7 @@ public Action SdkHook_StickStickybombToBaseBoss(int entity, int other)
 {
 	if(!GetEntProp(entity, Prop_Send, "m_bTouched"))
 	{
-
-#if defined RTS
 		if(!b_StickyIsSticking[entity] && !b_NpcHasDied[other])
-#else
-		if(!b_StickyIsSticking[entity] && b_Is_Blue_Npc[other])
-#endif
-
 		{
 			//Dont stick if it already has max.
 			for (int i = 0; i < MAXSTICKYCOUNTTONPC; i++)

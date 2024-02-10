@@ -139,17 +139,16 @@ int i_Expidonsa_HealingCount[MAXENTITIES];
 float f_Expidonsa_HealingOverheal[MAXENTITIES];
 bool b_Expidonsa_Selfheal[MAXENTITIES];
 Function func_Expidonsa_Heal_After[MAXENTITIES] = {INVALID_FUNCTION, ...};
-
+Function func_Expidonsa_Heal_Before[MAXENTITIES] = {INVALID_FUNCTION, ...};
 void ExpidonsaGroupHeal(int HealingNpc, float RangeDistance, int MaxAlliesHealed, float HealingAmmount,
- float Expidonsa_HealingOverheal, bool Selfheal, Function Function_HealAfter = INVALID_FUNCTION)
+ float Expidonsa_HealingOverheal, bool Selfheal, Function Function_HealBefore = INVALID_FUNCTION , Function Function_HealAfter = INVALID_FUNCTION)
 {
 	b_Expidonsa_Selfheal[HealingNpc] = Selfheal;
 	i_Expidonsa_HealingCount[HealingNpc] = MaxAlliesHealed;
 	f_Expidonsa_HealingAmmount[HealingNpc] = HealingAmmount;
 	f_Expidonsa_HealingOverheal[HealingNpc] = Expidonsa_HealingOverheal;
+	func_Expidonsa_Heal_Before[HealingNpc] = Function_HealBefore;
 	func_Expidonsa_Heal_After[HealingNpc] = Function_HealAfter;
-
-
 
 	int TeamNum = GetEntProp(HealingNpc, Prop_Data, "m_iTeamNum");
 	SetEntProp(HealingNpc, Prop_Data, "m_iTeamNum", 4);
@@ -207,6 +206,18 @@ void Expidonsa_AllyHeal(int HealerNpc, int victim, float damage, int weapon)
 
 void Expidonsa_AllyHealInternal(int HealerNpc, int victim, float heal)
 {
+	bool CancelHeal = false;
+	Function func = func_Expidonsa_Heal_Before[HealerNpc];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(HealerNpc);
+		Call_PushCell(victim);
+		Call_Finish(CancelHeal);
+	}
+	if(CancelHeal)
+		return;
+
 	int HealingDone = HealEntityGlobal(HealerNpc, victim, heal, f_Expidonsa_HealingOverheal[HealerNpc],_,_);
 	if(HealingDone <= 0)
 		return;
@@ -216,7 +227,7 @@ void Expidonsa_AllyHealInternal(int HealerNpc, int victim, float heal)
 	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 	ProjLoc[2] += 100.0;
 	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-	Function func = func_Expidonsa_Heal_After[victim];
+	Function func = func_Expidonsa_Heal_After[HealerNpc];
 	if(func && func != INVALID_FUNCTION)
 	{
 		Call_StartFunction(null, func);
@@ -224,4 +235,11 @@ void Expidonsa_AllyHealInternal(int HealerNpc, int victim, float heal)
 		Call_PushCell(victim);
 		Call_Finish();
 	}
+}
+bool Expidonsa_DontHealSameIndex(int entity, int victim)
+{
+	if(i_NpcInternalId[entity] == i_NpcInternalId[victim])
+		return true;
+
+	return false;
 }

@@ -2602,11 +2602,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_EntityRecievedUpgrades_2[entity] 		= ZR_UNIT_UPGRADES_NONE;
 #endif
 
-
-#if !defined RTS
-		b_Is_Blue_Npc[entity] = false;
-#endif
-
 		KillFeed_EntityCreated(entity);
 
 
@@ -3083,10 +3078,6 @@ public void Check_For_Team_Npc(int entity)
 			npcstats.bCantCollidie = true;
 			npcstats.bCantCollidieAlly = false;
 
-#if !defined RTS
-			b_Is_Blue_Npc[entity] = true;
-#endif
-
 			for (int i = 0; i < ZR_MAX_NPCS; i++)
 			{
 				if (EntRefToEntIndex(i_ObjectsNpcs[i]) <= 0)
@@ -3344,7 +3335,7 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 			{
 
-				if (b_Is_Blue_Npc[entity])
+				if (GetTeam(entity) != TFTeam_Red)
 					return false;
 					
 				if(Building_Interact(client, entity, Is_Reload_Button))
@@ -3368,7 +3359,7 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				if(Is_Reload_Button && BarrackBody_Interact(client, entity))
 					return true;
 				
-				if (b_Is_Blue_Npc[entity])
+				if (GetTeam(entity) != TFTeam_Red)
 					return false;
 			}
 #endif

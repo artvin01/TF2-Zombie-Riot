@@ -207,7 +207,7 @@ public void DesertYadeam_ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.25;
-		ExpidonsaGroupHeal(npc.index, 20.0, 99, 150.0, 1.0, false);
+		ExpidonsaGroupHeal(npc.index, 20.0, 99, 150.0, 1.0, false,Expidonsa_DontHealSameIndex);
 	}
 	DesertYadeamSelfDefense(npc,GetGameTime(npc.index)); 
 }

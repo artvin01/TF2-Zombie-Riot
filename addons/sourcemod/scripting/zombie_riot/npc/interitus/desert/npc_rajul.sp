@@ -219,22 +219,7 @@ void DesertRajulHealRandomAlly(int victim, float damage)
 	{
 		RajulHealAllyDone[victim] = 0;
 		RajulHealAllyCooldownAntiSpam[victim] = GetGameTime() + 0.5;
-		int TeamNum = GetTeam(victim);
-		SetEntProp(victim, Prop_Send, "m_iTeamNum", 4);
-		Explode_Logic_Custom(0.0,
-		victim,
-		victim,
-		-1,
-		_,
-		150.0,
-		_,
-		_,
-		true,
-		99,
-		false,
-		_,
-		DesertRajulAllyHeal);
-		SetEntProp(victim, Prop_Send, "m_iTeamNum", TeamNum);	
+		ExpidonsaGroupHeal(victim, RajulHealAlly[victim] * 0.5, 3, 150.0, 99.0, false,Expidonsa_DontHealSameIndex, DesertRajulAllyHealInternal);
 		RajulHealAlly[victim] = 0.0;
 	}
 }
@@ -314,33 +299,8 @@ void DesertRajulSelfDefense(DesertRajul npc, float gameTime, int target, float d
 	}
 }
 
-
-void DesertRajulAllyHeal(int entity, int victim, float damage, int weapon)
+void DesertRajulAllyHealInternal(int entity, int victim)
 {
-	if(entity == victim)
-		return;
-
-	if(GetTeam(entity) == TFTeam_Red)
-	{
-		if (RajulHealAllyDone[entity] <= 2 && b_IsAlliedNpc[victim])
-		{
-			RajulHealAllyDone[entity] += 1;
-			DesertRajulAllyHealInternal(entity, victim, RajulHealAlly[entity]);
-		}
-	}
-	else
-	{
-		if (RajulHealAllyDone[entity] <= 2 && GetTeam(victim) != TFTeam_Red && !i_IsABuilding[victim] && victim > MaxClients && i_NpcInternalId[victim] != INTERITUS_DESERT_RAJUL)
-		{
-			RajulHealAllyDone[entity] += 1;
-			DesertRajulAllyHealInternal(entity, victim, RajulHealAlly[entity]);
-		}
-	}
-}
-
-void DesertRajulAllyHealInternal(int entity, int victim, float heal)
-{
-	HealEntityGlobal(entity, victim, heal, 99.0,_,_);
 	int flHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int flMaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 
@@ -363,9 +323,4 @@ void DesertRajulAllyHealInternal(int entity, int victim, float heal)
 			f_BattilonsNpcBuff[victim] = FAR_FUTURE;
 		}
 	}
-
-	float ProjLoc[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-	ProjLoc[2] += 100.0;
-	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }

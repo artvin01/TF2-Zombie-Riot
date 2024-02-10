@@ -2125,7 +2125,7 @@ public void Try_Backstab_Anim_Again(int ref)
 void NPC_DeadEffects(int entity)
 {
 #if !defined RTS
-	if(GetTeam(victim) != TFTeam_Red)
+	if(GetTeam(entity) != TFTeam_Red)
 #endif
 	{
 #if defined ZR		
@@ -2740,7 +2740,7 @@ bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflictor, f
 	}
 	if(IsValidEntity(inflictor))
 	{
-		if(b_IsAlliedNpc[inflictor]) 
+		if(GetTeam(inflictor) == TFTeam_Red) 
 		{
 			CClotBody npc = view_as<CClotBody>(inflictor);
 			if(npc.m_bScalesWithWaves)

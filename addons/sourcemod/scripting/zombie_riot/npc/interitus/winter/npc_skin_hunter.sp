@@ -206,22 +206,7 @@ public void WinterSkinHunter_ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.25;
-		int TeamNum = GetTeam(npc.index);
-		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
-		Explode_Logic_Custom(0.0,
-		npc.index,
-		npc.index,
-		-1,
-		_,
-		150.0,
-		_,
-		_,
-		true,
-		5,
-		false,
-		_,
-		WinterSkinHunterAllyHeal);
-		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
+		ExpidonsaGroupHeal(npc.index, 40.0, 99, 150.0, 1.0, false,Expidonsa_DontHealSameIndex);
 	}
 	WinterSkinHunterSelfDefense(npc,GetGameTime(npc.index)); 
 }
@@ -304,40 +289,4 @@ public void WinterSkinHunter_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 
-}
-
-
-void WinterSkinHunterAllyHeal(int entity, int victim, float damage, int weapon)
-{
-	if(entity == victim)
-		return;
-
-	if(GetTeam(entity) == TFTeam_Red)
-	{
-		if(victim <= MaxClients)
-		{
-			WinterSkinHunterAllyHealInternal(entity, victim, 5.0);
-		}
-		else if (b_IsAlliedNpc[victim])
-		{
-			WinterSkinHunterAllyHealInternal(entity, victim, 5.0);
-		}
-	}
-	else
-	{
-		if (GetTeam(victim) != TFTeam_Red && !i_IsABuilding[victim] && victim > MaxClients && !Is_a_Medic[victim])
-		{
-			WinterSkinHunterAllyHealInternal(entity, victim, 40.0);
-		}
-	}
-}
-
-void WinterSkinHunterAllyHealInternal(int entity, int victim, float heal)
-{
-	HealEntityGlobal(entity, victim, heal, 1.0,_,_);
-	float ProjLoc[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-	ProjLoc[2] += 100.0;
-	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-	f_HussarBuff[victim] = GetGameTime() + 0.5;
 }

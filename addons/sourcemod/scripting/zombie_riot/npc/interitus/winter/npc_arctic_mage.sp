@@ -223,7 +223,7 @@ void WinterArcticMageHealRandomAlly(int victim, float damage)
 	{
 		RajulHealAllyDone[victim] = 0;
 		RajulHealAllyCooldownAntiSpam[victim] = GetGameTime() + 0.5;
-		ExpidonsaGroupHeal(npc.index, RajulHealAlly[victim] * 0.5, 3, 150.0, 1.3, false, WinterArcticMageAllyHealInternal);
+		ExpidonsaGroupHeal(victim, RajulHealAlly[victim] * 0.5, 3, 150.0, 99.0, false,Expidonsa_DontHealSameIndex, WinterArcticMageAllyHealInternal);
 		RajulHealAlly[victim] = 0.0;
 	}
 }
@@ -307,9 +307,9 @@ void WinterArcticMageSelfDefense(WinterArcticMage npc, float gameTime, int targe
 	}
 }
 
-void WinterArcticMageAllyHealInternal(int entity, int victim, float heal)
+
+void WinterArcticMageAllyHealInternal(int entity, int victim)
 {
-	HealEntityGlobal(entity, victim, heal, 99.0,_,_);
 	int flHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int flMaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 
