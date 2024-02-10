@@ -3186,9 +3186,9 @@ static void Doonerkrieg_Do_AOE_Damage(Raidboss_Donnerkrieg npc, float loc[3], fl
 			ion_damage[npc.index] = float(neural_damage);
 
 			if(shake)
-				Explode_Logic_Custom(0.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak_shake);
+				Explode_Logic_Custom(1.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak_shake);
 			else
-				Explode_Logic_Custom(0.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak);
+				Explode_Logic_Custom(1.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak);
 		}
 	}
 }
