@@ -3325,7 +3325,7 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 	if(damage < 9999999.0)
 	{
 		Citizen npc = view_as<Citizen>(victim);
-		if(npc.m_nDowned || (attacker > 0 && GetEntProp(victim, Prop_Send, "m_iTeamNum") == GetEntProp(attacker, Prop_Send, "m_iTeamNum")))
+		if(npc.m_nDowned || (attacker > 0 && GetTeam(victim) == GetEntProp(attacker, Prop_Send, "m_iTeamNum")))
 		{
 			damage = 0.0;
 		}

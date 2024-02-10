@@ -625,7 +625,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 				if(spawn_index > MaxClients)
 				{
 					i_BuildingRef[iNPC] = EntIndexToEntRef(spawn_index);
-					if(!b_IsAlliedNpc[iNPC])
+					if(GetTeam(iNPC) != TFTeam_Red)
 					{
 						Zombies_Currently_Still_Ongoing += 1;
 					}

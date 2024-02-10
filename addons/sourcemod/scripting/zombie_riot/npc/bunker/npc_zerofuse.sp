@@ -500,7 +500,7 @@ methodmap TrueZerofuse < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		i_ExplosiveProjectileHexArray[npc.index] = EP_NO_KNOCKBACK;
 		
-		if(!b_IsAlliedNpc[npc.index])//idk why you would even allow him to be an ally...
+		if(GetTeam(npc.index) != TFTeam_Red)//idk why you would even allow him to be an ally...
 		{
 			RaidBossActive = EntRefToEntIndex(npc.index);
 			
@@ -620,7 +620,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(!b_IsAlliedNpc[npc.index])//Don't allow the ally version to fuck over the round
+	if(GetTeam(npc.index) != TFTeam_Red)//Don't allow the ally version to fuck over the round
 	{
 		if(RaidModeTime < GetGameTime())
 		{
@@ -1335,7 +1335,7 @@ public void TrueZerofuse_NPCDeath(int entity)
 	TrueZerofuse npc = view_as<TrueZerofuse>(entity);
 	
 	npc.PlayDeathSound();
-	if(!b_IsAlliedNpc[npc.index])//ally shouldn't kill the music if the original pablo is there still nor killing the raid index either
+	if(GetTeam(npc.index) != TFTeam_Red)//ally shouldn't kill the music if the original pablo is there still nor killing the raid index either
 	{
 		Music_Stop_Zerofuse_Theme(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;

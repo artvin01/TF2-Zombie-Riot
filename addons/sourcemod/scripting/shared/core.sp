@@ -32,7 +32,7 @@
 #define TFTeam_Spectator 	2
 #define TFTeam_Red 		2
 #define TFTeam_Blue		3
-#define GetTeam	PLZUSE_GetClientTeam
+#define TF2_GetClientTeam	PLZUSE_GetClientTeam
 #define TF2_ChangeClientTeam	PLZUSE_ChangeClientTeam
 
 #define NPC_HARD_LIMIT 40 
@@ -1749,7 +1749,7 @@ public void OnClientPutInServer(int client)
 	b_IsPlayerABot[client] = false;
 	if(IsFakeClient(client))
 	{
-		TF2_ChangeClientTeam(client, TFTeam_Blue);
+		ChangeClientTeam(client, TFTeam_Blue);
 		DHook_HookClient(client);
 		b_IsPlayerABot[client] = true;
 		return;
@@ -3026,7 +3026,7 @@ public void Check_For_Team_Npc(int entity)
 
 #if !defined RTS
 		b_IsAlliedNpc[entity] = false;
-		if(GetTeam(entity) == view_as<int>(TFTeam_Red))
+		if(GetTeam(entity) == TFTeam_Red)
 		{
 		//	SDKHook(entity, SDKHook_TraceAttack, NPC_TraceAttack);
 			SDKHook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);

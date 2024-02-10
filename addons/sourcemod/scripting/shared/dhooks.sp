@@ -908,7 +908,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		if(i_WhatBuilding[entity1] == BuildingSentrygun)
 		{
 			//buildings cannot touch eachother
-			if(i_WhatBuilding[entity2] != 0 || b_IsAlliedNpc[entity2])
+			if(i_WhatBuilding[entity2] != 0 || (GetTeam(entity2) == TFTeam_Red))
 			{
 				return false;
 			}
@@ -1013,7 +1013,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-			else if(b_IsAlliedNpc[entity2])
+			else if(GetTeam(entity2) == TFTeam_Red)
 			{
 				return false;
 			}
@@ -1064,9 +1064,9 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 
 #if !defined RTS
-		else if(b_IsAlliedNpc[entity1])
+		else if(GetTeam(entity1) == TFTeam_Red)
 		{
-			if(b_IsAlliedNpc[entity2])
+			if(GetTeam(entity2) == TFTeam_Red)
 			{	
 				return false;
 			}
@@ -1831,7 +1831,7 @@ public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPre(int client, DHookPara
 {
 //	if(!Disconnecting)
 	{
-		LastTeam = GetEntProp(client, Prop_Send, "m_iTeamNum");
+		LastTeam = GetTeam(client);
 		GameRules_SetProp("m_bPlayingMannVsMachine", true);
 		SetEntProp(client, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 	}
@@ -2077,7 +2077,7 @@ public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) 
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}
 #if !defined RTS
-	else if(b_IsAlliedNpc[entity])
+	else if(GetTeam(entity) == TFTeam_Red)
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}

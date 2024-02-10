@@ -1436,7 +1436,7 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 	}
 	
 #if !defined RTS
-	if(entity > MaxClients && b_IsAlliedNpc[entity])
+	if(entity > MaxClients && GetTeam(entity) == TFTeam_Red)
 	{
 		return false;
 	}
@@ -1503,7 +1503,7 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 				return entity!=data;
 			}
 		}
-		else if(b_IsAlliedNpc[entity])
+		else if(GetTeam(entity) == TFTeam_Red)
 		{
 			if(i_PreviousInteractedEntity[data] != entity || !i_PreviousInteractedEntityDo[data])
 			{

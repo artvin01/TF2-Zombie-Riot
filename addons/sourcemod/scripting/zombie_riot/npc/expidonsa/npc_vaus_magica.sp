@@ -328,16 +328,16 @@ void VausMagicaShield(int entity, int victim, float damage, int weapon)
 	if(entity == victim)
 		return;
 
-	if(b_IsAlliedNpc[entity])
+	if(GetTeam(entity) == TFTeam_Red)
 	{
-		if (b_IsAlliedNpc[victim])
+		if (GetTeam(victim) == TFTeam_Red && !b_NpcHasDied[victim])
 		{
 			VausMagicaShieldInternal(entity,victim);
 		}
 	}
 	else
 	{
-		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
+		if (GetTeam(victim) != TFTeam_Red && !i_IsABuilding[victim] && victim > MaxClients)
 		{
 			VausMagicaShieldInternal(entity,victim);
 		}

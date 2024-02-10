@@ -493,7 +493,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if(team)
 				{
 					bool Is_Allied_Npc = false;
-					if(b_IsAlliedNpc[healTarget]) //Give uber
+					if(!b_NpcHasDied[healTarget]) //Give uber
 					{
 #if defined ZR
 						float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");

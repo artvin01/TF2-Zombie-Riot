@@ -2114,7 +2114,7 @@ static bool Check_Target(int entity, int contentsMask, int client)	//Stupidly ba
 {
 	if (IsEntityAlive(entity))
 	{
-		if(GetEntProp(client, Prop_Send, "m_iTeamNum") != GetTeam(entity))
+		if(GetTeam(client) != GetTeam(entity))
 			b_hit_something=true;
 	}
 	return false;
@@ -2629,7 +2629,7 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 			
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (DonnerKriegCannon_BEAM_HitDetected[victim] && GetTeam(npc.index) != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		if (DonnerKriegCannon_BEAM_HitDetected[victim] && GetTeam(npc.index) != GetTeam(victim))
 		{
 			float playerPos[3];
 			switch(infection)

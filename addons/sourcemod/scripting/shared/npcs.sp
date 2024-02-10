@@ -145,7 +145,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 				int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
 				if(IsValidEntity(entity))
 				{
-					if(!b_IsAlliedNpc[entity])
+					if(GetTeam(entity) != TFTeam_Red)
 					{
 						CClotBody npcstats = view_as<CClotBody>(entity);
 						if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity])
@@ -599,7 +599,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		return Plugin_Continue;
 
 	/*
-	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetTeam(victim))
 	{
 		damage = 0.0;
 		return Plugin_Handled;
@@ -942,7 +942,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 
 #if defined ZR
-	if(Rogue_Mode() && !b_IsAlliedNpc[victim])
+	if(Rogue_Mode() && GetTeam(victim) != TFTeam_Red)
 	{
 		int scale = Rogue_GetRoundScale();
 		if(scale < 2)
@@ -1138,7 +1138,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3])
 {
 #if defined ZR
-	if(!b_NpcIsTeamkiller[attacker] && GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+	if(!b_NpcIsTeamkiller[attacker] && GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetTeam(victim))
 		return;
 	int AttackerOverride = EntRefToEntIndex(i_NpcOverrideAttacker[attacker]);
 	if(AttackerOverride > 0)
@@ -1624,14 +1624,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
 
 #if defined ZR
-		if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
+		if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
 		{
 			percentage *= 0.85;
 		}
 		
 		if(!NpcStats_IsEnemySilenced(victim))
 		{
-			if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+			if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
 			{
 				percentage *= Medival_Difficulty_Level;
 			}
@@ -1664,14 +1664,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
 
 #if defined ZR
-		if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
+		if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
 		{
 			percentage *= 0.85;
 		}
 		
 		if(!NpcStats_IsEnemySilenced(victim))
 		{
-			if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+			if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
 			{
 				percentage *= Medival_Difficulty_Level;
 			}
@@ -1912,7 +1912,7 @@ bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 0)
 	}
 
 #if defined ZR
-	if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
+	if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
 	{
 		return true;
 	}
@@ -2125,7 +2125,7 @@ public void Try_Backstab_Anim_Again(int ref)
 void NPC_DeadEffects(int entity)
 {
 #if !defined RTS
-	if(!b_IsAlliedNpc[entity])
+	if(GetTeam(victim) != TFTeam_Red)
 #endif
 	{
 #if defined ZR		
@@ -2423,7 +2423,7 @@ bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &dam
 	}
 	if(!b_NpcIsTeamkiller[attacker])
 	{
-		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum")) //should be entirely ignored
+		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetTeam(victim)) //should be entirely ignored
 		{
 			return true;
 		}
@@ -2445,7 +2445,7 @@ bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, float &dam
 		damage *= 0.25;
 		
 #if defined ZR
-	if(b_IsAlliedNpc[victim])
+	if(GetTeam(victim) == TFTeam_Red)
 	{
 		if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
 		{
@@ -2519,7 +2519,7 @@ stock void OnTakeDamageRpgDungeonLogic(int victim, int &attacker, int &inflictor
 
 stock void OnTakeDamageRpgAgressionOnHit(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
 {
-	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum")!=GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum")!=GetTeam(victim))
 	{
 		CClotBody npcBase = view_as<CClotBody>(victim);
 		npcBase.m_flGetClosestTargetNoResetTime = GetGameTime(npcBase.index) + 5.0; //make them angry for 5 seconds if they are too far away.
@@ -2541,13 +2541,13 @@ void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int
 #if defined ZR
 			if(!NpcStats_IsEnemySilenced(victim))
 			{
-				if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
 				{
 					damage *= Medival_Difficulty_Level;
 				}
 			}
 
-			if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
+			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
 			{
 				damage *= 0.85;
 			}
@@ -2582,7 +2582,7 @@ void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int
 			}
 			if(!NpcStats_IsEnemySilenced(victim))
 			{
-				if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
 				{
 					damage *= Medival_Difficulty_Level;
 				}
@@ -2592,7 +2592,7 @@ void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int
 			damage *= fl_Extra_RangedArmor[victim];
 
 #if defined ZR
-			if(!b_thisNpcIsARaid[victim] && !b_IsAlliedNpc[victim] && XenoExtraLogic(true))
+			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
 			{
 				damage *= 0.85;
 			}

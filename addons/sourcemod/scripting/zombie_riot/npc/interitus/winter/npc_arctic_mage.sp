@@ -223,22 +223,7 @@ void WinterArcticMageHealRandomAlly(int victim, float damage)
 	{
 		RajulHealAllyDone[victim] = 0;
 		RajulHealAllyCooldownAntiSpam[victim] = GetGameTime() + 0.5;
-		int TeamNum = GetEntProp(victim, Prop_Send, "m_iTeamNum");
-		SetEntProp(victim, Prop_Send, "m_iTeamNum", 4);
-		Explode_Logic_Custom(0.0,
-		victim,
-		victim,
-		-1,
-		_,
-		150.0,
-		_,
-		_,
-		true,
-		99,
-		false,
-		_,
-		WinterArcticMageAllyHeal);
-		SetEntProp(victim, Prop_Send, "m_iTeamNum", TeamNum);	
+		ExpidonsaGroupHeal(npc.index, RajulHealAlly[victim] * 0.5, 3, 150.0, 1.3, false, WinterArcticMageAllyHealInternal);
 		RajulHealAlly[victim] = 0.0;
 	}
 }
@@ -322,30 +307,6 @@ void WinterArcticMageSelfDefense(WinterArcticMage npc, float gameTime, int targe
 	}
 }
 
-
-void WinterArcticMageAllyHeal(int entity, int victim, float damage, int weapon)
-{
-	if(entity == victim)
-		return;
-
-	if(b_IsAlliedNpc[entity])
-	{
-		if (RajulHealAllyDone[entity] <= 2 && b_IsAlliedNpc[victim])
-		{
-			RajulHealAllyDone[entity] += 1;
-			WinterArcticMageAllyHealInternal(entity, victim, RajulHealAlly[entity]);
-		}
-	}
-	else
-	{
-		if (RajulHealAllyDone[entity] <= 2 && !b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients && i_NpcInternalId[victim] != INTERITUS_WINTER_ARCTIC_MAGE)
-		{
-			RajulHealAllyDone[entity] += 1;
-			WinterArcticMageAllyHealInternal(entity, victim, RajulHealAlly[entity]);
-		}
-	}
-}
-
 void WinterArcticMageAllyHealInternal(int entity, int victim, float heal)
 {
 	HealEntityGlobal(entity, victim, heal, 99.0,_,_);
@@ -371,11 +332,7 @@ void WinterArcticMageAllyHealInternal(int entity, int victim, float heal)
 			f_BattilonsNpcBuff[victim] = FAR_FUTURE;
 		}
 	}
-
-	float ProjLoc[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-	ProjLoc[2] += 100.0;
-	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	
 	VausMagicaGiveShield(victim, 1);
 	//yippie reuse
 }

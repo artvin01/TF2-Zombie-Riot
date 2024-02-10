@@ -365,7 +365,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 					ApplyTempAttrib(weapon, 412, 0.60, 10.0); //Less damage taken from all sources decreaced by 40%
 				}
 
-				int spawn_index = Npc_Create(NEARL_SWORD, -1, fPos, fAng, GetEntProp(client, Prop_Send, "m_iTeamNum"));
+				int spawn_index = Npc_Create(NEARL_SWORD, -1, fPos, fAng, GetTeam(client));
 				if(spawn_index > MaxClients)
 				{
 

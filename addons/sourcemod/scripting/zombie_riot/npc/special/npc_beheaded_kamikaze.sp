@@ -336,7 +336,7 @@ float BeheadedKamiBoomInternal(int entity, int victim, float damage, int weapon)
 	{
 		return 1000000000.0;
 	}
-	else if(!b_NpcHasDied[victim] && !b_IsAlliedNpc[victim])
+	else if(!b_NpcHasDied[victim] && GetTeam(victim) != TFTeam_Red)
 		return damage * 15.0;
   
 	return damage;

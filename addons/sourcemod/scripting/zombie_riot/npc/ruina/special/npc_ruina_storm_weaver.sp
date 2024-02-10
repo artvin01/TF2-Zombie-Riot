@@ -432,7 +432,7 @@ static void Storm_Weaver_Force_Spawn_Anchors(Storm_Weaver npc)
 	int spawn_index = Npc_Create(RUINA_MAGIA_ANCHOR, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(spawn_index > MaxClients)
 	{
-		if(!b_IsAlliedNpc[npc.index])
+		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			Zombies_Currently_Still_Ongoing += 1;
 		}

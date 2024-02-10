@@ -332,7 +332,7 @@ methodmap Doktor_Medick < CClotBody
 		npc.m_bThisNpcIsABoss = true;
 		
 		i_ExplosiveProjectileHexArray[npc.index] = EP_NO_KNOCKBACK;
-		if(!b_IsAlliedNpc[npc.index])
+		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -400,7 +400,7 @@ public void Doktor_Medick_ClotThink(int iNPC)
 {
 	Doktor_Medick npc = view_as<Doktor_Medick>(iNPC);
 	
-	if(!b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		if(RaidModeTime < GetGameTime())
 		{

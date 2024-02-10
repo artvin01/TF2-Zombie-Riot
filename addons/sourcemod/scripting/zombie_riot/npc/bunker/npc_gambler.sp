@@ -324,7 +324,7 @@ methodmap TheGambler < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		if(!b_IsAlliedNpc[npc.index])
+		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			RaidBossActive = EntRefToEntIndex(npc.index);
 			for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -1265,7 +1265,7 @@ public void TheGambler_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}*/
 	npc.PlayDeathSound();
-	if(!b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}

@@ -312,7 +312,7 @@ void WinterSkinHunterAllyHeal(int entity, int victim, float damage, int weapon)
 	if(entity == victim)
 		return;
 
-	if(b_IsAlliedNpc[entity])
+	if(GetTeam(entity) == TFTeam_Red)
 	{
 		if(victim <= MaxClients)
 		{
@@ -325,7 +325,7 @@ void WinterSkinHunterAllyHeal(int entity, int victim, float damage, int weapon)
 	}
 	else
 	{
-		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients && !Is_a_Medic[victim])
+		if (GetTeam(victim) != TFTeam_Red && !i_IsABuilding[victim] && victim > MaxClients && !Is_a_Medic[victim])
 		{
 			WinterSkinHunterAllyHealInternal(entity, victim, 40.0);
 		}

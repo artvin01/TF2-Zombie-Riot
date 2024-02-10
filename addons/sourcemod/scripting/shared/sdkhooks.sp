@@ -228,7 +228,7 @@ public void OnPostThink(int client)
 		}
 	}
 
-	if(GetEntProp(client, Prop_Send, "m_iTeamNum") == 2)
+	if(GetTeam(client) == 2)
 	{
 		if(dieingstate[client] != 0 || TeutonType[client] != TEUTON_NONE)
 		{
@@ -1914,7 +1914,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					{
 						if(!b_NpcHasDied[baseboss_index])
 						{
-							if (GetEntProp(victim, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
+							if (GetTeam(victim)!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
 							{
 								float vecTarget[3]; vecTarget = WorldSpaceCenterOld(baseboss_index);
 								

@@ -262,7 +262,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 		if(npc.m_flAttackHappens < GetGameTime(npc.index)) //spawn enemy!
 		{
 			int npc_current_count;
-			if(!b_IsAlliedNpc[iNPC])
+			if(GetTeam(iNPC) != TFTeam_Red)
 			{
 				for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
 				{
@@ -289,7 +289,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 
 			IncreaceSpawnRates /= (Pow(1.14, f_PlayerScalingBuilding));
 
-			if((!b_IsAlliedNpc[iNPC] && npc_current_count < LimitNpcs) || (b_IsAlliedNpc[iNPC] && npc_current_count < 6))
+			if((GetTeam(iNPC) != TFTeam_Red && npc_current_count < LimitNpcs) || (GetTeam(iNPC) == TFTeam_Red && npc_current_count < 6))
 			{
 				float AproxRandomSpaceToWalkTo[3];
 				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
@@ -299,7 +299,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				int EnemyToSpawn = MEDIVAL_MILITIA;
 				bool Construct = false;
 
-				if(b_IsAlliedNpc[iNPC])
+				if(GetTeam(iNPC) == TFTeam_Red)
 				{
 					IncreaceSpawnRates *= 5.0; //way slower.
 				}
@@ -361,7 +361,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				{
 					npc.PlayMeleeMissSound();
 					npc.PlayMeleeMissSound();
-					if(!b_IsAlliedNpc[iNPC])
+					if(GetTeam(iNPC) != TFTeam_Red)
 					{
 						Zombies_Currently_Still_Ongoing += 1;
 					}
@@ -451,7 +451,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 	else
 	{
 		bool villagerexists = false;
-		if(!b_IsAlliedNpc[iNPC])
+		if(GetTeam(iNPC) != TFTeam_Red)
 		{
 			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
 			{

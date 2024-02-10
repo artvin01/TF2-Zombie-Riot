@@ -618,7 +618,7 @@ public Action Timer_Electric_Think_PAP(Handle timer, int ref)
 		{
 			if(!b_NpcHasDied[baseboss_index])
 			{
-				if (GetEntProp(client, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
+				if (GetTeam(client)!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
 				{
 					targPos = WorldSpaceCenterOld(baseboss_index);
 					if (GetVectorDistance(flCarrierPos, targPos) <= TORNADO_Radius[client])
@@ -806,7 +806,7 @@ public Action Timer_Electric_Think(Handle timer, int ref)
 		{
 			if(!b_NpcHasDied[baseboss_index])
 			{
-				if (GetEntProp(client, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
+				if (GetTeam(client)!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
 				{
 					targPos = WorldSpaceCenterOld(baseboss_index);
 					if (GetVectorDistance(flCarrierPos, targPos) <= TORNADO_Radius[client])
@@ -1189,8 +1189,8 @@ stock int CreateWandCutterProjectile(int client, float flSpeed, float flPos[3], 
 	TeleportEntity(iCarrier, flPos, NULL_VECTOR, fVel);
 	SetEntityMoveType(iCarrier, MOVETYPE_FLY);
 	
-	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
-	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetTeam(client));
+	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetTeam(client));
 	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iCarrier));
 	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iRot));
 	

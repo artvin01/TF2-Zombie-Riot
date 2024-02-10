@@ -406,7 +406,7 @@ void SniponeerInitiateLaserAttack_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (SniponeerHitDetected[victim] && GetTeam(entity) != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		if (SniponeerHitDetected[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float distance = GetVectorDistance(VectorStart, playerPos, false);

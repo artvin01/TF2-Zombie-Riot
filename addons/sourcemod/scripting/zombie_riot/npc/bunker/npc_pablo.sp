@@ -256,7 +256,7 @@ methodmap Pablo_Gonzales < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		i_ExplosiveProjectileHexArray[npc.index] = EP_NO_KNOCKBACK;
 		
-		if(!b_IsAlliedNpc[npc.index])//idk why you would even allow him to be an ally...
+		if(GetTeam(npc.index) != TFTeam_Red)//idk why you would even allow him to be an ally...
 		{
 			RaidBossActive = EntRefToEntIndex(npc.index);
 			
@@ -349,7 +349,7 @@ public void Pablo_Gonzales_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(!b_IsAlliedNpc[npc.index])//Don't allow the ally version to fuck over the round
+	if(GetTeam(npc.index) != TFTeam_Red)//Don't allow the ally version to fuck over the round
 	{
 		if(RaidModeTime < GetGameTime())
 		{
@@ -501,7 +501,7 @@ public void Pablo_Gonzales_ClotThink(int iNPC)
 						SetHudTextParams(-1.0, 0.25, 3.01, 34, 139, 34, 255);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client, SyncHud_Notifaction, "WARNING!\nPablo is about to EXPLODE the Area.");
-						if(!b_IsAlliedNpc[npc.index])
+						if(GetTeam(npc.index) != TFTeam_Red)
 						{
 							SetVariantString("HalloweenLongFall");
 							AcceptEntityInput(client, "SpeakResponseConcept");
@@ -605,7 +605,7 @@ public void Pablo_Gonzales_ClotThink(int iNPC)
 		fl_FastAsHellKnife[npc.index] = gameTime + 5.0;
 		b_AbilityFastKnife[npc.index] = true;
 		npc.m_flSpeed = fl_LifelossSpeed*2;
-		if(!b_IsAlliedNpc[npc.index])//again if he somehow is an ally remove this ability for the ally
+		if(GetTeam(npc.index) != TFTeam_Red)//again if he somehow is an ally remove this ability for the ally
 		{
 			for(int i=1; i<=MaxClients; i++)
 			{
@@ -901,7 +901,7 @@ public void Pablo_Gonzales_ClotDamaged_Post(int iNPC, int attacker, int inflicto
 		npc.m_flSpeed = fl_LifelossSpeed;
 		npc.m_flRangedArmor = 0.0;
 		npc.m_flMeleeArmor = 0.0;
-		if(!b_IsAlliedNpc[npc.index])//again if he is an ally somehow give him this
+		if(GetTeam(npc.index) != TFTeam_Red)//again if he is an ally somehow give him this
 		{
 			Music_Stop_MainPablo_Theme(iNPC);
 			fl_PabloMusic[npc.index] = GetGameTime(npc.index) + 0.01;
@@ -982,7 +982,7 @@ public void Pablo_Gonzales_NPCDeath(int entity)
 	Pablo_Gonzales npc = view_as<Pablo_Gonzales>(entity);
 	
 	npc.PlayDeathSound();
-	if(!b_IsAlliedNpc[npc.index])//ally shouldn't kill the music if the original pablo is there still nor killing the raid index either
+	if(GetTeam(npc.index) != TFTeam_Red)//ally shouldn't kill the music if the original pablo is there still nor killing the raid index either
 	{
 		if(!b_Lifeloss[npc.index])
 		{

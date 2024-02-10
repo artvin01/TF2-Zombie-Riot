@@ -311,7 +311,7 @@ methodmap BootyExecutioner < CClotBody
 		npc.m_bThisNpcIsABoss = true;
 		
 		i_ExplosiveProjectileHexArray[npc.index] = EP_NO_KNOCKBACK;
-		if(!b_IsAlliedNpc[npc.index])
+		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			Music_Stop_Beat_Ten(client);
@@ -377,7 +377,7 @@ public void BootyExecutioner_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(!b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		if(fl_DuoExecuteCustomPootisTheme <= GetGameTime(npc.index) && !b_DuoOnePootisDied && !b_DuoDisableMainPootisTheme && !b_DuoMainLeaderDied && !b_DuoSandSlayerDied)
 		{
@@ -795,7 +795,7 @@ public void BootyExecutioner_NPCDeath(int entity)
 {
 	BootyExecutioner npc = view_as<BootyExecutioner>(entity);
 	npc.PlayDeathSound();	
-	if(!b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		Music_Stop_Main_Theme(entity);
 		Music_Stop_Death_Theme(entity);
@@ -950,7 +950,7 @@ public bool BootyExecutioner_BEAM_TraceUsers(int entity, int contentsMask, int c
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 			
-			if (!StrContains(classname, "zr_base_npc", true) && (GetTeam(entity) != GetEntProp(client, Prop_Send, "m_iTeamNum")))
+			if (!StrContains(classname, "zr_base_npc", true) && (GetTeam(entity) != GetTeam(client)))
 			{
 				for(int i=1; i <= MAXENTITIES; i++)
 				{
@@ -1036,7 +1036,7 @@ public Action TrueBootyExecutioner_TBB_Tick(int client)
 			
 			for (int victim = 1; victim < MaxClients; victim++)
 			{
-				if (BootyExecutioner_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetClientTeam(victim))
+				if (BootyExecutioner_BEAM_HitDetected[victim] && GetTeam(client) != GetClientTeam(victim))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);

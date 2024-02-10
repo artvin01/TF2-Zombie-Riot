@@ -1342,8 +1342,9 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		bool Is_Boss = true;
 #if defined ZR
-		if(IS_MusicReleasingRadio() && !b_IsAlliedNpc[this.index])
+		if(IS_MusicReleasingRadio() && GetTeam(this.index) != TFTeam_Red)
 			speed_for_return *= 0.9;
+
 		if(i_CurrentEquippedPerk[this.index] == 4)
 		{
 			speed_for_return *= 1.25;
@@ -1537,16 +1538,16 @@ methodmap CClotBody < CBaseCombatCharacter
 		speed_for_return *= this.GetDebuffPercentage();
 
 #if defined ZR
-		if(!b_thisNpcIsARaid[this.index] && !b_IsAlliedNpc[this.index] && XenoExtraLogic(true))
+		if(!b_thisNpcIsARaid[this.index] && GetTeam(this.index) != TFTeam_Red && XenoExtraLogic(true))
 		{
 			speed_for_return *= 1.1;
 		}
 
-		if(!b_IsAlliedNpc[this.index])
+		if(GetTeam(this.index) != TFTeam_Red)
 		{
 			speed_for_return *= Zombie_DelayExtraSpeed();
 		}
-		if(b_IsAlliedNpc[this.index])
+		else
 		{
 			if(VIPBuilding_Active())
 				speed_for_return *= 2.0;
@@ -2993,7 +2994,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			this.GetBaseNPC().SetBodyMins({0.0,0.0,0.0});
 		}
 #if defined ZR
-		if(VIPBuilding_Active() && !b_IsAlliedNpc[this.index])
+		if(VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red)
 		{
 			if(f_UnstuckSuckMonitor[this.index] < GetGameTime())
 			{
@@ -3191,7 +3192,7 @@ static void OnDestroy(CClotBody body)
 	{
 		RemoveFromNpcPathList(body);
 #if defined ZR
-		if(!b_IsAlliedNpc[body.index])
+		if(GetTeam(body.index) != TFTeam_Red)
 		{
 			Zombies_Currently_Still_Ongoing -= 1;
 		}
@@ -3332,7 +3333,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			RemoveEntity(npc.m_iSpeechBubble);
 		
 #if defined ZR
-		if(!b_IsAlliedNpc[pThis] && !b_DoNotGiveWaveDelay[pThis])
+		if(GetTeam(pThis) != TFTeam_Red && !b_DoNotGiveWaveDelay[pThis])
 		{
 			if(f_DelayNextWaveStartAdvancingDeathNpc < GetGameTime() + 1.5)
 			{
@@ -4210,7 +4211,7 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 			}
 			return true;
 		}
-		if(!b_IsAlliedNpc[bot_entidx])
+		if(GetTeam(victim) != TFTeam_Red)
 		{
 			return true;
 			//return false;
@@ -4241,10 +4242,9 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 			}
 			return true;
 		}
-		if(!b_IsAlliedNpc[bot_entidx])
+		if(GetTeam(bot_entidx) != TFTeam_Red)
 		{
 			return true;
-		//	return false;
 		}
 		if(b_CantCollidieAlly[other_entidx])
 		{
@@ -4680,7 +4680,7 @@ stock int GetClosestTargetRTS(int entity,
 			if (IsValidClient(i) && i != ingore_client)
 			{
 				CClotBody npc = view_as<CClotBody>(i);
-				if (GetTeam(i)!=view_as<TFTeam>(searcher_team) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+				if (GetTeam(i) != searcher_team && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 				{
 					if(CanSee)
 					{
@@ -5160,7 +5160,7 @@ stock bool IsSpaceOccupiedWorldOnly(const float pos[3], const float mins[3], con
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayHitWorldOnly, entity);
 	}
 #if !defined RTS
-	else if(b_IsAlliedNpc[entity])
+	else if(GetTeam(entity) == TFTeam_Red)
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayHitWorldOnly, entity);
 	}
@@ -5183,7 +5183,7 @@ stock bool IsSpaceOccupiedWorldandBuildingsOnly(const float pos[3], const float 
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayHitWorldAndBuildingsOnly, entity);
 	}
 #if !defined RTS
-	else if(b_IsAlliedNpc[entity])
+	else if(GetTeam(entity) == TFTeam_Red)
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayHitWorldAndBuildingsOnly, entity);
 	}
@@ -5206,7 +5206,7 @@ stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3],
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
 	}
 #if !defined RTS
-	else if(b_IsAlliedNpc[entity])
+	else if(GetTeam(entity) == TFTeam_Red)
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
 	}
@@ -5229,7 +5229,7 @@ stock bool IsSpaceOccupiedDontIgnorePlayers(const float pos[3], const float mins
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayHitPlayersOnly, entity);	
 	}
 #if !defined RTS
-	else if(b_IsAlliedNpc[entity])
+	else if(GetTeam(entity) == TFTeam_Red)
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayHitPlayersOnly, entity);	
 	}
@@ -5416,7 +5416,7 @@ void NpcDrawWorldLogic(int entity)
 	}
 #endif
 #if !defined RTS
-	else if(b_IsAlliedNpc[entity])
+	else if(GetTeam(entity) == TFTeam_Red)
 	{
 		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_ALWAYS));
 	}
@@ -5595,7 +5595,7 @@ public void NpcBaseThink(int iNPC)
 #if defined RTS
 	if(!i_NpcIsABuilding[iNPC])
 #else
-	if(!IsEntityTowerDefense(iNPC) && !b_IsAlliedNpc[iNPC] && !i_NpcIsABuilding[iNPC])
+	if(!IsEntityTowerDefense(iNPC) && GetTeam(iNPC) != TFTeam_Red && !i_NpcIsABuilding[iNPC])
 #endif
 
 	{
@@ -5812,7 +5812,7 @@ public void NpcBaseThink(int iNPC)
 				npc.SetVelocity(vec3Origin);
 
 #if defined ZR
-				if(!b_IsAlliedNpc[npc.index])
+				if(GetTeam(npc.index) != TFTeam_Red)
 				{
 					//This was an enemy.
 					int Spawner_entity = GetRandomActiveSpawner();
@@ -6742,7 +6742,7 @@ stock bool makeexplosion(
 		{
 
 #if !defined RTS
-			if(!b_IsAlliedNpc[attacker])
+			if(GetTeam(attacker) != TFTeam_Red)
 #endif
 
 			{
@@ -8035,7 +8035,7 @@ void Raidboss_Clean_Everyone(int RevertBack = false)
 		{
 			if(GetEntProp(base_boss, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 			{
-				if(!b_IsAlliedNpc[base_boss]) //Make sure it doesnt actually kill map base_bosses
+				if(GetTeam(base_boss) != TFTeam_Red) //Make sure it doesnt actually kill map base_bosses
 				{
 					if(RevertBack)
 						Change_Npc_Collision(base_boss, num_ShouldCollideEnemy);
@@ -8792,7 +8792,7 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool
 	}
 
 #if !defined RTS
-	else if(b_IsAlliedNpc[entity])
+	else if(GetTeam(entity) == TFTeam_Red)
 	{
 		SolidityFlags = MASK_NPCSOLID | MASK_PLAYERSOLID;
 	}
@@ -8836,7 +8836,7 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool
 		}
 
 #if !defined RTS
-		else if(b_IsAlliedNpc[entity])
+		else if(GetTeam(entity) == TFTeam_Red)
 		{
 			hTrace = TR_TraceHullFilterEx(Pos2Test, Pos2Test, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, BulletAndMeleeTrace, entity);
 		}

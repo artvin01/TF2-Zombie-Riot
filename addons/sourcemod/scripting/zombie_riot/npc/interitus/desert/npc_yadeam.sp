@@ -207,22 +207,7 @@ public void DesertYadeam_ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.25;
-		int TeamNum = GetTeam(npc.index);
-		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
-		Explode_Logic_Custom(0.0,
-		npc.index,
-		npc.index,
-		-1,
-		_,
-		150.0,
-		_,
-		_,
-		true,
-		5,
-		false,
-		_,
-		DesertYadeamAllyHeal);
-		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
+		ExpidonsaGroupHeal(npc.index, 20.0, 99, 150.0, 1.0, false);
 	}
 	DesertYadeamSelfDefense(npc,GetGameTime(npc.index)); 
 }
@@ -305,39 +290,4 @@ public void DesertYadeam_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 
-}
-
-
-void DesertYadeamAllyHeal(int entity, int victim, float damage, int weapon)
-{
-	if(entity == victim)
-		return;
-
-	if(b_IsAlliedNpc[entity])
-	{
-		if(victim <= MaxClients)
-		{
-			DesertYadeamAllyHealInternal(entity, victim, 5.0);
-		}
-		else if (b_IsAlliedNpc[victim])
-		{
-			DesertYadeamAllyHealInternal(entity, victim, 5.0);
-		}
-	}
-	else
-	{
-		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients && !Is_a_Medic[victim])
-		{
-			DesertYadeamAllyHealInternal(entity, victim, 20.0);
-		}
-	}
-}
-
-void DesertYadeamAllyHealInternal(int entity, int victim, float heal)
-{
-	HealEntityGlobal(entity, victim, heal, 1.0,_,_);
-	float ProjLoc[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-	ProjLoc[2] += 100.0;
-	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }

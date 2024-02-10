@@ -485,7 +485,7 @@ void MonkSelfDefense(MedivalMonk npc, float gameTime)
 			pack.WriteFloat(f3_PlaceLocated[npc.index][0]);
 			pack.WriteFloat(f3_PlaceLocated[npc.index][1]);
 			pack.WriteFloat(f3_PlaceLocated[npc.index][2]);
-			pack.WriteCell(b_IsAlliedNpc[npc.index]);
+			pack.WriteCell(GetTeam(npc.index) == TFTeam_Red);
 			pack.WriteCell(EntIndexToEntRef(npc.index));
 		}
 	}

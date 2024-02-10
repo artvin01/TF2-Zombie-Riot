@@ -339,7 +339,7 @@ public void GodArkantos_ClotThink(int iNPC)
 	
 	float gameTime = GetGameTime(npc.index);
 
-	if(!b_IsAlliedNpc[npc.index] && LastMann)
+	if(GetTeam(npc.index) != TFTeam_Red && LastMann)
 	{
 		if(!npc.m_fbGunout)
 		{
@@ -361,7 +361,7 @@ public void GodArkantos_ClotThink(int iNPC)
 			}
 		}
 	}
-	if(!b_IsAlliedNpc[npc.index] && RaidModeTime < GetGameTime())
+	if(GetTeam(npc.index) != TFTeam_Red && RaidModeTime < GetGameTime())
 	{
 		DeleteAndRemoveAllNpcs = 8.0;
 		mp_bonusroundtime.IntValue = (9 * 2);
@@ -370,7 +370,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		for(int targ; targ<i_MaxcountNpc; targ++)
 		{
 			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-			if (IsValidEntity(baseboss_index) && !b_IsAlliedNpc[baseboss_index])
+			if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 			{
 				b_IsAlliedNpc[baseboss_index] = true;
 				b_Is_Blue_Npc[baseboss_index] = false;
@@ -579,7 +579,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		if(!Waves_IsEmpty())
 			allyAlive = true;
 
-		if(b_IsAlliedNpc[npc.index])
+		if(GetTeam(npc.index) == TFTeam_Red)
 			allyAlive = false;
 
 		if(allyAlive)
@@ -597,7 +597,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		}
 	}
 	npc.PlayIdleAlertSound();
-	if(b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) == TFTeam_Red)
 	{
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))
 		{
@@ -801,7 +801,7 @@ public Action GodArkantos_OnTakeDamage(int victim, int &attacker, int &inflictor
 			return Plugin_Handled;
 		}
 	}
-	if(!b_IsAlliedNpc[npc.index] && ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
+	if(GetTeam(npc.index) != TFTeam_Red && ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
@@ -1132,7 +1132,7 @@ public void GodArkantos_NPCDeath(int entity)
 
 void GodArkantosSpawnEnemy(int arkantos, int npc_id, int health = 0, int count, bool outline = false)
 {
-	if(b_IsAlliedNpc[arkantos])
+	if(GetTeam(arkantos) == TFTeam_Red)
 	{
 		count /= 2;
 		if(count < 1)

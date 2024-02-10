@@ -343,7 +343,7 @@ void SakratanGroupDebuff(int entity, int victim, float damage, int weapon)
 	if(entity == victim)
 		return;
 
-	if(b_IsAlliedNpc[victim])
+	if(GetTeam(victim) == TFTeam_Red)
 	{
 		SakratanGroupDebuffInternal(victim);
 	}

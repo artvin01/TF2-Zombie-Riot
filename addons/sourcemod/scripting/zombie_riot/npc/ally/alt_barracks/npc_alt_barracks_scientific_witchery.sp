@@ -519,7 +519,7 @@ static void Scientific_Witchery_Ability(int client, float Vec_1[3], float Vec_2[
 			
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (Scientific_Witchery_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+				if (Scientific_Witchery_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
 				{
 					int inflictor = GetClientOfUserId(npc.OwnerUserId);
 					if(inflictor==-1)

@@ -564,7 +564,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 						//If its wave 60 or above, he can spawn 10 instead
 
 						//spawn fakes!
-						int fake_spawned = view_as<int>(PhantomKnight(1, vecPos_Npc, vecAng_Npc, b_IsAlliedNpc[npc.index]));
+						int fake_spawned = view_as<int>(PhantomKnight(1, vecPos_Npc, vecAng_Npc, GetTeam(npc.index) == TFTeam_Red));
 						if(IsValidEntity(view_as<int>(fake_spawned)))
 						{
 							if(b_thisNpcIsABoss[npc.index]) //If he is a boss, make his clones a boss.

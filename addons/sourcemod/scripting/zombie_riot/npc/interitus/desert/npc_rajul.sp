@@ -219,7 +219,7 @@ void DesertRajulHealRandomAlly(int victim, float damage)
 	{
 		RajulHealAllyDone[victim] = 0;
 		RajulHealAllyCooldownAntiSpam[victim] = GetGameTime() + 0.5;
-		int TeamNum = GetEntProp(victim, Prop_Send, "m_iTeamNum");
+		int TeamNum = GetTeam(victim);
 		SetEntProp(victim, Prop_Send, "m_iTeamNum", 4);
 		Explode_Logic_Custom(0.0,
 		victim,
@@ -320,7 +320,7 @@ void DesertRajulAllyHeal(int entity, int victim, float damage, int weapon)
 	if(entity == victim)
 		return;
 
-	if(b_IsAlliedNpc[entity])
+	if(GetTeam(entity) == TFTeam_Red)
 	{
 		if (RajulHealAllyDone[entity] <= 2 && b_IsAlliedNpc[victim])
 		{
@@ -330,7 +330,7 @@ void DesertRajulAllyHeal(int entity, int victim, float damage, int weapon)
 	}
 	else
 	{
-		if (RajulHealAllyDone[entity] <= 2 && !b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients && i_NpcInternalId[victim] != INTERITUS_DESERT_RAJUL)
+		if (RajulHealAllyDone[entity] <= 2 && GetTeam(victim) != TFTeam_Red && !i_IsABuilding[victim] && victim > MaxClients && i_NpcInternalId[victim] != INTERITUS_DESERT_RAJUL)
 		{
 			RajulHealAllyDone[entity] += 1;
 			DesertRajulAllyHealInternal(entity, victim, RajulHealAlly[entity]);

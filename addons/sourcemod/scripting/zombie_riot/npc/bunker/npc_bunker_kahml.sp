@@ -280,7 +280,7 @@ methodmap BunkerKahml < CClotBody
 		
 		i_NpcInternalId[npc.index] = BUNKER_KAHML_VTWO;
 		
-		if(!b_IsAlliedNpc[npc.index])//check if he isn't an ally so he can gain the raid properties
+		if(GetTeam(npc.index) != TFTeam_Red)//check if he isn't an ally so he can gain the raid properties
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			Music_Stop_Beat_Ten9(client);
@@ -365,7 +365,7 @@ methodmap BunkerKahml < CClotBody
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
 		
-		if(!b_IsAlliedNpc[npc.index])
+		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			skin = 1;
 			SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -395,7 +395,7 @@ public void BunkerKahml_ClotThink(int iNPC)
 	{
 		return;
 	}
-	if(!b_IsAlliedNpc[npc.index])//really hate myself repeating the same thing
+	if(GetTeam(npc.index) != TFTeam_Red)//really hate myself repeating the same thing
 	{
 		if(RaidModeTime < GetGameTime())
 		{
@@ -1114,7 +1114,7 @@ public void BunkerKahml_NPCDeath(int entity)
 {
 	BunkerKahml npc = view_as<BunkerKahml>(entity);
 	npc.PlayDeathSound();
-	if(!b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		Music_Stop_KahmlTheme(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;

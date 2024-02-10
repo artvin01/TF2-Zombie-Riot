@@ -212,7 +212,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 			return;
 		
 		feed.userid = GetClientUserId(Bots[botNum]);
-		feed.victim_team = GetEntProp(victim, Prop_Send, "m_iTeamNum");
+		feed.victim_team = GetTeam(victim);
 		strcopy(feed.victim_name, sizeof(feed.victim_name), NPC_Names[i_NpcInternalId[victim]]);
 		
 		botNum++;
@@ -243,7 +243,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 			return;
 		
 		feed.userid = GetClientUserId(Bots[botNum]);
-		feed.victim_team = GetEntProp(victim, Prop_Send, "m_iTeamNum");
+		feed.victim_team = GetTeam(victim);
 		botNum++;
 
 		priority = true;

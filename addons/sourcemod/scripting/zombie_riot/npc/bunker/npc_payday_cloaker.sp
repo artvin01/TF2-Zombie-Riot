@@ -153,7 +153,7 @@ methodmap Payday_Cloaker < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		if(!b_IsAlliedNpc[npc.index])
+		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			fl_CloakerTheme = GetGameTime(npc.index) + 5.0;
@@ -204,7 +204,7 @@ public void Payday_Cloaker_ClotThink(int iNPC)
 	{
 		return;
 	}
-	if(!b_IsAlliedNpc[npc.index])//Mainly if art/bat wants to use them as a body guard
+	if(GetTeam(npc.index) != TFTeam_Red)//Mainly if art/bat wants to use them as a body guard
 	{
 		if(fl_CloakerTheme <= GetGameTime(npc.index))
 		{
@@ -496,7 +496,7 @@ public void Payday_Cloaker_NPCDeath(int entity)
 	Payday_Cloaker npc = view_as<Payday_Cloaker>(entity);
 	npc.PlayDeathSound();	
 
-	if(!b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		Music_Stop_Main_Theme4(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;

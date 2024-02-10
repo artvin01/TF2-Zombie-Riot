@@ -513,7 +513,7 @@ bool Stock_AcceptEntityInput(int dest, const char[] input, int activator=-1, int
 			while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
 			{
 #if defined ZR
-				if(IsValidEntity(entity) && !b_IsAlliedNpc[entity])
+				if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
 #else
 				if(IsValidEntity(entity))
 #endif

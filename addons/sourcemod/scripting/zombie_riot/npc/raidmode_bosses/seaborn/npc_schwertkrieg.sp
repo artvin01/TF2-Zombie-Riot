@@ -1744,7 +1744,7 @@ static void Schwertkrieg_Laser_Trace(Raidboss_Schwertkrieg npc, float Start_Poin
 			
 	for (int victim = 0; victim < MAXTF2PLAYERS; victim++)
 	{
-		if (Schwertkrieg_BEAM_HitDetected[victim] && GetTeam(npc.index) != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		if (Schwertkrieg_BEAM_HitDetected[victim] && GetTeam(npc.index) != GetTeam(victim))
 		{
 			float playerPos[3];
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);

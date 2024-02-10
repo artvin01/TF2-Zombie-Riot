@@ -502,7 +502,7 @@ static void Venium_Build_Anchor(Venium npc)
 	if(spawn_index > MaxClients)
 	{
 		i_anchor_id[npc.index] = EntIndexToEntRef(spawn_index);
-		if(!b_IsAlliedNpc[npc.index])
+		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			Zombies_Currently_Still_Ongoing += 1;
 		}

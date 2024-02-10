@@ -175,7 +175,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 
 						npc.m_iTowerLinked = spawn_index;
 						player.m_iTowerLinked = spawn_index;
-						if(!b_IsAlliedNpc[iNPC])
+						if(GetTeam(iNPC) != TFTeam_Red)
 						{
 							Zombies_Currently_Still_Ongoing += 1;
 						}

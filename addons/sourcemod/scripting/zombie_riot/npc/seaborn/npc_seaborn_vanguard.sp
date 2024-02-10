@@ -123,7 +123,7 @@ methodmap SeabornVanguard < CClotBody
 
 void SeabornVanguard_SpeedBuff(CClotBody npc, float &speed)
 {
-	if(!b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		if(!SpeedCache)
 		{

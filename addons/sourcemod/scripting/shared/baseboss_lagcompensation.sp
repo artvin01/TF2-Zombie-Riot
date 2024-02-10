@@ -129,7 +129,7 @@ static bool WantsLagCompensationOnEntity(int entity, int player, const float vie
 #if defined RTS
 	bool allied = UnitBody_CanControl(player, entity);
 #else
-	bool allied = b_IsAlliedNpc[entity];
+	bool allied = GetTeam(entity) == TFTeam_Red;
 #endif
 
 	if(b_LagCompNPC_OnlyAllies ^ allied)
@@ -239,7 +239,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 #if defined RTS
 	if(!b_LagCompNPC_No_Layers)
 #else
-	if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
+	if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
 #endif
 	{	
 		EntityRestore[index].m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
@@ -251,7 +251,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	{
 
 #if !defined RTS
-		if(!b_IsAlliedNpc[entity])
+		if(GetTeam(entity) != TFTeam_Red)
 #endif
 		
 		{
@@ -270,7 +270,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 #if defined RTS
 	if(!b_LagCompNPC_No_Layers)
 #else
-	if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
+	if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
 #endif
 	{
 		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", record.m_flSimulationTime);
@@ -315,7 +315,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 		////////////////////////
 		// Now do all the layers
 #if !defined RTS
-		if(!b_IsAlliedNpc[entity])
+		if(GetTeam(entity) != TFTeam_Red)
 #endif
 		{
 			CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
@@ -397,7 +397,7 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 		{
 
 #if !defined RTS
-			if(!b_IsAlliedNpc[entity])
+			if(GetTeam(entity) != TFTeam_Red)
 #endif
 
 			{
@@ -448,7 +448,7 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 #if defined RTS
 			if(!b_LagCompNPC_No_Layers)
 #else
-			if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
+			if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
 #endif
 
 			{
@@ -542,7 +542,7 @@ void LagCompensationThink_Forward()
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", record.m_vecOrigin);
 
 #if !defined RTS
-				if(!b_IsAlliedNpc[entity]) //If its an allied baseboss, make sure to not get layers.
+				if(GetTeam(entity) != TFTeam_Red) //If its an allied baseboss, make sure to not get layers.
 #endif
 				{
 					record.m_layerRecords = overlay.GetNumAnimOverlays();
