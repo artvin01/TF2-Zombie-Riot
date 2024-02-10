@@ -216,7 +216,7 @@ methodmap GodArkantos < CClotBody
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
-		RaidModeTime = GetGameTime(npc.index) + 10.0;
+		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		if(ZR_GetWaveCount()+1 >= 59)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 300.0;
