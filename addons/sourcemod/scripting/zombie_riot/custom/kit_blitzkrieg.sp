@@ -75,7 +75,7 @@ public void Enable_Blitzkrieg_Kit(int client, int weapon)
 			if(fl_primary_reloading[client]>GetGameTime())
 			{
 				b_primary_lock[client]=true;
-				Attributes_Set(weapon_holding, 821, 1.0);
+				Attributes_Set(weapon, 821, 1.0);
 			}
 		}
 		return;
