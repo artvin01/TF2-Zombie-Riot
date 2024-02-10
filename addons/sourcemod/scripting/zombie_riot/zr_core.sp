@@ -721,6 +721,7 @@ void ZR_MapStart()
 	Heavy_Particle_Rifle_Mapstart();
 	Precache_Railcannon();
 	ResetMapStartDimWeapon();
+	Hell_Hoe_MapStart();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;
