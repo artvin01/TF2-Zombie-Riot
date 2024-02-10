@@ -3040,4 +3040,39 @@
 	{
 		"en"	"Schwertkrieg charges you down with his sword while Donnerkrieg fires laser attacks!"
 	}
+	"Wait for power"
+	{
+		"#format"	"{1:.1f}"
+		"en" "You need to rest: [{1}]"
+	}
+	"Stop playing with"
+	{
+		"en" "Stop playing with death"
+	}
+	"Not Enough Health"
+	{
+		"#format"	"{1:d}"
+		"en" "Not Enough Health, you need: [{1}] hp"
+	}
+	"Let the beast sleeps"
+	{
+		"#format"	"{1:.1f}"
+		"en" "Let the beast sleeps: {1:.1f}"
+	}
+	"Angel hoe on"
+	{
+		"en" "Angel Transformation: On"
+	}
+	"Angel hoe off"
+	{
+		"en" "Angel Transformation: Off"
+	}
+	"Evil hoe on"
+	{
+		"en" "Blood pact: On"
+	}
+	"Evil hoe off"
+	{
+		"en" "Blood pact: Off"
+	}
 }

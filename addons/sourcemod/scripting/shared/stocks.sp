@@ -1239,6 +1239,11 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		Good for ammo based healing.
 	*/
 
+#if defined ZR
+	if(isPlayerMad(reciever) && !(flag_extrarules & HEAL_SELFHEAL)) // You can't be healed
+		return 0;
+#endif
+
 	if(!(flag_extrarules & (HEAL_ABSOLUTE)))
 	{
 #if defined ZR
@@ -5022,4 +5027,26 @@ stock void SetForceButtonState(int client, bool apply, int button_flag)
 		Buttons &= ~button_flag;
 	}
 	SetEntProp(client, Prop_Data, "m_afButtonForced", Buttons);
+}
+
+stock bool isPlayerMad(client) {
+
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding == -1)
+		return false;
+	
+	if (i_CustomWeaponEquipLogic[weapon_holding] == WEAPON_HELL_HOE_3) {
+
+		int clientMaxHp = SDKCall_GetMaxHealth(client);
+		int health = GetClientHealth(client);
+		if (health >= clientMaxHp/2)
+			return false;
+
+		return true;
+	}
+	else if (i_CustomWeaponEquipLogic[weapon_holding] == WEAPON_HELL_HOE_2) {
+		return g_isPlayerInDeathMarch_HellHoe[client];
+	}
+	
+	return false;
 }
