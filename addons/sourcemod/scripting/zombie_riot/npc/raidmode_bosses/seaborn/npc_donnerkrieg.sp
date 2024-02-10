@@ -3382,11 +3382,11 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 	CPrintToChatAll(text_lines);
 	NpcSpeechBubble(npc.index, "", 15, {255,0,0,255}, {0.0,0.0,125.0}, extra_lines);
 }
-
+/*
 static bool Divine_Intervention_Check(Raidboss_Donnerkrieg npc, float Min_Dist)
 {
 	float UserLoc[3], Angles[3];
-	UserLoc = GetAbsOrigin(npc.index);
+	UserLoc = GetAbsOriginOld(npc.index);
 	
 	int Total_Hit = 0;
 	
@@ -3430,7 +3430,7 @@ static bool Divine_Intervention_Check(Raidboss_Donnerkrieg npc, float Min_Dist)
 		return false;
 	}
 }
-	/*
+
 static bool b_weaver_summoned;
 static bool b_stage_one_effects;
 static float fl_anchor_location[3];
