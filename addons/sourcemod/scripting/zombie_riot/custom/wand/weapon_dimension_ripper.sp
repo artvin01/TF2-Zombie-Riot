@@ -221,7 +221,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 				{
 					case 1:
 					{
-						int entity = Npc_Create(HEADCRAB_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -235,7 +235,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 2:
 					{
-						int entity = Npc_Create(FORTIFIED_HEADCRAB_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(FORTIFIED_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)* 13.0);
@@ -249,7 +249,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 3:
 					{
-						int entity = Npc_Create(FASTZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(FASTZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*11.5);
@@ -262,7 +262,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 4:
 					{
-						int entity = Npc_Create(FORTIFIED_FASTZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(FORTIFIED_FASTZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -275,7 +275,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 5:
 					{
-						int entity = Npc_Create(TORSOLESS_HEADCRAB_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(TORSOLESS_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -289,7 +289,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 6:
 					{
-						int entity = Npc_Create(FORTIFIED_GIANT_POISON_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(FORTIFIED_GIANT_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -303,7 +303,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 7:
 					{
-						int entity = Npc_Create(POISON_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -317,7 +317,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 8:
 					{
-						int entity = Npc_Create(FORTIFIED_POISON_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(FORTIFIED_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -331,7 +331,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 9:
 					{
-						int entity = Npc_Create(FATHER_GRIGORI, client, pos1, ang, true);
+						int entity = Npc_Create(FATHER_GRIGORI, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*25.0);
@@ -345,7 +345,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 10:
 					{
-						int entity = Npc_Create(COMBINE_POLICE_PISTOL, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_POLICE_PISTOL, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -359,7 +359,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 11:
 					{
-						int entity = Npc_Create(COMBINE_SOLDIER_AR2, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_SOLDIER_AR2, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -373,7 +373,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 12:
 					{
-						int entity = Npc_Create(COMBINE_SOLDIER_SHOTGUN, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_SOLDIER_SHOTGUN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
@@ -387,7 +387,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 13:
 					{
-						int entity = Npc_Create(COMBINE_POLICE_SMG, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_POLICE_SMG, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
@@ -401,7 +401,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 14:
 					{
-						int entity = Npc_Create(COMBINE_SOLDIER_SWORDSMAN, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_SOLDIER_SWORDSMAN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -415,7 +415,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 15:
 					{
-						int entity = Npc_Create(COMBINE_SOLDIER_ELITE, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_SOLDIER_ELITE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
@@ -429,7 +429,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 16:
 					{
-						int entity = Npc_Create(COMBINE_SOLDIER_GIANT_SWORDSMAN, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_SOLDIER_GIANT_SWORDSMAN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
@@ -443,7 +443,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 17:
 					{
-						int entity = Npc_Create(COMBINE_SOLDIER_DDT, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_SOLDIER_DDT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -457,7 +457,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 18:
 					{
-						int entity = Npc_Create(COMBINE_SOLDIER_COLLOSS, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_SOLDIER_COLLOSS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*27.0);
@@ -471,7 +471,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 					}
 					case 19:
 					{
-						int entity = Npc_Create(COMBINE_OVERLORD, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_OVERLORD, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*30);
@@ -545,7 +545,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 				{
 					case 1:
 					{
-						int entity = Npc_Create(HEADCRAB_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -559,7 +559,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 2:
 					{
-						int entity = Npc_Create(FORTIFIED_HEADCRAB_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(FORTIFIED_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)* 13.0);
@@ -573,7 +573,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 3:
 					{
-						int entity = Npc_Create(FASTZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(FASTZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*11.5);
@@ -586,7 +586,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 4:
 					{
-						int entity = Npc_Create(FORTIFIED_FASTZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(FORTIFIED_FASTZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -599,7 +599,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 5:
 					{
-						int entity = Npc_Create(TORSOLESS_HEADCRAB_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(TORSOLESS_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -613,7 +613,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 6:
 					{
-						int entity = Npc_Create(FORTIFIED_GIANT_POISON_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(FORTIFIED_GIANT_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -627,7 +627,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 7:
 					{
-						int entity = Npc_Create(POISON_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -641,7 +641,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 8:
 					{
-						int entity = Npc_Create(FORTIFIED_POISON_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(FORTIFIED_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -655,7 +655,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 9:
 					{
-						int entity = Npc_Create(FATHER_GRIGORI, client, pos1, ang, true);
+						int entity = Npc_Create(FATHER_GRIGORI, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*25.0);
@@ -669,7 +669,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 10:
 					{
-						int entity = Npc_Create(COMBINE_POLICE_PISTOL, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_POLICE_PISTOL, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -683,7 +683,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 11:
 					{
-						int entity = Npc_Create(COMBINE_SOLDIER_AR2, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_SOLDIER_AR2, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -697,7 +697,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 12:
 					{
-						int entity = Npc_Create(COMBINE_SOLDIER_SHOTGUN, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_SOLDIER_SHOTGUN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
@@ -711,7 +711,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 13:
 					{
-						int entity = Npc_Create(COMBINE_POLICE_SMG, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_POLICE_SMG, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
@@ -725,7 +725,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 14:
 					{
-						int entity = Npc_Create(COMBINE_SOLDIER_SWORDSMAN, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_SOLDIER_SWORDSMAN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -739,7 +739,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 15:
 					{
-						int entity = Npc_Create(COMBINE_SOLDIER_ELITE, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_SOLDIER_ELITE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
@@ -753,7 +753,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 16:
 					{
-						int entity = Npc_Create(COMBINE_SOLDIER_GIANT_SWORDSMAN, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_SOLDIER_GIANT_SWORDSMAN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
@@ -767,7 +767,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 17:
 					{
-						int entity = Npc_Create(COMBINE_SOLDIER_DDT, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_SOLDIER_DDT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -781,7 +781,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 18:
 					{
-						int entity = Npc_Create(COMBINE_SOLDIER_COLLOSS, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_SOLDIER_COLLOSS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*27.0);
@@ -795,7 +795,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 19:
 					{
-						int entity = Npc_Create(COMBINE_OVERLORD, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_OVERLORD, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*30);
@@ -809,7 +809,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 20:
 					{
-						int entity = Npc_Create(SPY_MAIN_BOSS, client, pos1, ang, true);
+						int entity = Npc_Create(SPY_MAIN_BOSS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*31);
@@ -823,7 +823,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 21:
 					{
-						int entity = Npc_Create(ENGINEER_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(ENGINEER_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -837,7 +837,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 22:
 					{
-						int entity = Npc_Create(HEAVY_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(HEAVY_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -851,7 +851,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 23:
 					{
-						int entity = Npc_Create(KAMIKAZE_DEMO, client, pos1, ang, true);
+						int entity = Npc_Create(KAMIKAZE_DEMO, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -865,7 +865,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 24:
 					{
-						int entity = Npc_Create(MEDIC_HEALER, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIC_HEALER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -879,7 +879,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 25:
 					{
-						int entity = Npc_Create(HEAVY_ZOMBIE_GIANT, client, pos1, ang, true);
+						int entity = Npc_Create(HEAVY_ZOMBIE_GIANT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
@@ -893,7 +893,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 26:
 					{
-						int entity = Npc_Create(SPY_FACESTABBER, client, pos1, ang, true);
+						int entity = Npc_Create(SPY_FACESTABBER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -907,7 +907,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 27:
 					{
-						int entity = Npc_Create(SOLDIER_ROCKET_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(SOLDIER_ROCKET_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -921,7 +921,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 28:
 					{
-						int entity = Npc_Create(SOLDIER_ZOMBIE_MINION, client, pos1, ang, true);
+						int entity = Npc_Create(SOLDIER_ZOMBIE_MINION, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -935,7 +935,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 29:
 					{
-						int entity = Npc_Create(SPY_THIEF, client, pos1, ang, true);
+						int entity = Npc_Create(SPY_THIEF, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -949,7 +949,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 30:
 					{
-						int entity = Npc_Create(SPY_TRICKSTABBER, client, pos1, ang, true);
+						int entity = Npc_Create(SPY_TRICKSTABBER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -963,7 +963,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 31:
 					{
-						int entity = Npc_Create(SPY_HALF_CLOACKED, client, pos1, ang, true);
+						int entity = Npc_Create(SPY_HALF_CLOACKED, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -977,7 +977,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 32:
 					{
-						int entity = Npc_Create(SNIPER_MAIN, client, pos1, ang, true);
+						int entity = Npc_Create(SNIPER_MAIN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -991,7 +991,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 33:
 					{
-						int entity = Npc_Create(DEMO_MAIN, client, pos1, ang, true);
+						int entity = Npc_Create(DEMO_MAIN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -1005,7 +1005,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 34:
 					{
-						int entity = Npc_Create(BATTLE_MEDIC_MAIN, client, pos1, ang, true);
+						int entity = Npc_Create(BATTLE_MEDIC_MAIN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*21.0);
@@ -1019,7 +1019,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 35:
 					{
-						int entity = Npc_Create(GIANT_PYRO_MAIN, client, pos1, ang, true);
+						int entity = Npc_Create(GIANT_PYRO_MAIN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
@@ -1033,7 +1033,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 					}
 					case 36:
 					{
-						int entity = Npc_Create(COMBINE_DEUTSCH_RITTER, client, pos1, ang, true);
+						int entity = Npc_Create(COMBINE_DEUTSCH_RITTER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 10.0)*22);
@@ -1108,7 +1108,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 				{
 					case 1:
 					{
-						int entity = Npc_Create(ALT_COMBINE_MAGE, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_COMBINE_MAGE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 250.0)*11.0);
@@ -1122,7 +1122,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 2:
 					{
-						int entity = Npc_Create(ALT_MEDIC_APPRENTICE_MAGE, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MEDIC_APPRENTICE_MAGE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*11.0);
@@ -1136,7 +1136,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 3:
 					{
-						int entity = Npc_Create(ALT_MEDIC_CHARGER, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MEDIC_CHARGER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -1150,7 +1150,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 4:
 					{
-						int entity = Npc_Create(ALT_MEDIC_BERSERKER, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MEDIC_BERSERKER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.0);
@@ -1164,7 +1164,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 5:
 					{
-						int entity = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*20.5);
@@ -1178,7 +1178,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 6:
 					{
-						int entity = Npc_Create(ALT_SNIPER_RAILGUNNER, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_SNIPER_RAILGUNNER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*9.0);
@@ -1192,7 +1192,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 7:
 					{
-						int entity = Npc_Create(ALT_SOLDIER_BARRAGER, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_SOLDIER_BARRAGER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.5);
@@ -1206,7 +1206,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 8:
 					{
-						int entity = Npc_Create(ALT_The_Shit_Slapper, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_The_Shit_Slapper, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.5);
@@ -1221,7 +1221,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 9:
 					{
-						int entity = Npc_Create(ALT_MECHA_ENGINEER, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MECHA_ENGINEER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
@@ -1235,7 +1235,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 10:
 					{
-						int entity = Npc_Create(ALT_MECHA_HEAVY, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MECHA_HEAVY, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16);
@@ -1249,7 +1249,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 11:
 					{
-						int entity = Npc_Create(ALT_MECHA_SCOUT, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MECHA_SCOUT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.5);
@@ -1263,7 +1263,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 12:
 					{
-						int entity = Npc_Create(ALT_MECHASOLDIER_BARRAGER, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MECHASOLDIER_BARRAGER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
@@ -1277,7 +1277,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 13:
 					{
-						int entity = Npc_Create(ALT_MECHA_HEAVYGIANT, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MECHA_HEAVYGIANT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.5);
@@ -1291,7 +1291,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 14:
 					{
-						int entity = Npc_Create(ALT_MECHA_PYROGIANT, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MECHA_PYROGIANT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.5);
@@ -1305,7 +1305,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 15:
 					{
-						int entity = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.0);
@@ -1319,7 +1319,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 16:
 					{
-						int entity = Npc_Create(ALT_MEDIC_HEALER_3, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MEDIC_HEALER_3, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -1333,7 +1333,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 17:
 					{
-						int entity = Npc_Create(ALT_SCHWERTKRIEG, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_SCHWERTKRIEG, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*30.0);
@@ -1408,7 +1408,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 				{
 					case 1:
 					{
-						int entity = Npc_Create(ALT_COMBINE_MAGE, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_COMBINE_MAGE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 250.0)*12.0);
@@ -1422,7 +1422,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 					}
 					case 2:
 					{
-						int entity = Npc_Create(ALT_MEDIC_APPRENTICE_MAGE, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MEDIC_APPRENTICE_MAGE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -1436,7 +1436,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 					}
 					case 3:
 					{
-						int entity = Npc_Create(ALT_MEDIC_CHARGER, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MEDIC_CHARGER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.0);
@@ -1450,7 +1450,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 					}
 					case 4:
 					{
-						int entity = Npc_Create(ALT_MEDIC_BERSERKER, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MEDIC_BERSERKER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*20.0);
@@ -1464,7 +1464,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 					}
 					case 5:
 					{
-						int entity = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
@@ -1478,7 +1478,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 					}
 					case 6:
 					{
-						int entity = Npc_Create(ALT_SNIPER_RAILGUNNER, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_SNIPER_RAILGUNNER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
@@ -1492,7 +1492,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 					}
 					case 7:
 					{
-						int entity = Npc_Create(ALT_SOLDIER_BARRAGER, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_SOLDIER_BARRAGER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.5);
@@ -1506,7 +1506,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 					}
 					case 8:
 					{
-						int entity = Npc_Create(ALT_The_Shit_Slapper, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_The_Shit_Slapper, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
@@ -1521,7 +1521,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 					}
 					case 9:
 					{
-						int entity = Npc_Create(ALT_MECHA_ENGINEER, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MECHA_ENGINEER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.5);
@@ -1535,7 +1535,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 					}
 					case 10:
 					{
-						int entity = Npc_Create(ALT_MECHA_HEAVY, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MECHA_HEAVY, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17);
@@ -1549,7 +1549,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 					}
 					case 11:
 					{
-						int entity = Npc_Create(ALT_MECHA_SCOUT, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MECHA_SCOUT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
@@ -1563,7 +1563,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 					}
 					case 12:
 					{
-						int entity = Npc_Create(ALT_MECHASOLDIER_BARRAGER, client, pos1, ang, true);
+						int entity = Npc_Create(ALT_MECHASOLDIER_BARRAGER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.5);
@@ -1638,7 +1638,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 				{
 					case 1:
 					{
-						int entity = Npc_Create(XENO_HEADCRAB_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -1652,7 +1652,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 2:
 					{
-						int entity = Npc_Create(XENO_FORTIFIED_HEADCRAB_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_FORTIFIED_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
@@ -1666,7 +1666,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 3:
 					{
-						int entity = Npc_Create(XENO_FASTZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_FASTZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 11.5));
@@ -1681,7 +1681,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 4:
 					{
-						int entity = Npc_Create(XENO_FORTIFIED_FASTZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_FORTIFIED_FASTZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -1695,7 +1695,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 5:
 					{
-						int entity = Npc_Create(XENO_TORSOLESS_HEADCRAB_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_TORSOLESS_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
@@ -1709,7 +1709,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 6:
 					{
-						int entity = Npc_Create(XENO_FORTIFIED_GIANT_POISON_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_FORTIFIED_GIANT_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -1723,7 +1723,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 7:
 					{
-						int entity = Npc_Create(XENO_POISON_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
@@ -1737,7 +1737,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 8:
 					{
-						int entity = Npc_Create(XENO_FORTIFIED_POISON_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_FORTIFIED_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -1751,7 +1751,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 9:
 					{
-						int entity = Npc_Create(XENO_COMBINE_POLICE_PISTOL, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_POLICE_PISTOL, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -1765,7 +1765,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 10:
 					{
-						int entity = Npc_Create(XENO_COMBINE_POLICE_SMG, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_POLICE_SMG, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
@@ -1779,7 +1779,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 11:
 					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_AR2, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_SOLDIER_AR2, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
@@ -1793,7 +1793,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 12:
 					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_SHOTGUN, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_SOLDIER_SHOTGUN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
@@ -1807,7 +1807,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 13:
 					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_SWORDSMAN, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_SOLDIER_SWORDSMAN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -1821,7 +1821,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 14:
 					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_ELITE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_SOLDIER_ELITE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
@@ -1835,7 +1835,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 15:
 					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_GIANT_SWORDSMAN, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_SOLDIER_GIANT_SWORDSMAN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
@@ -1849,7 +1849,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 16:
 					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_DDT, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_SOLDIER_DDT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.5);
@@ -1863,7 +1863,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 17:
 					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_COLLOSS, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_SOLDIER_COLLOSS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*27.0);
@@ -1877,7 +1877,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 18:
 					{
-						int entity = Npc_Create(XENO_SCOUT_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_SCOUT_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
@@ -1891,7 +1891,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 19:
 					{
-						int entity = Npc_Create(XENO_ENGINEER_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_ENGINEER_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -1905,7 +1905,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 20:
 					{
-						int entity = Npc_Create(XENO_HEAVY_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_HEAVY_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -1919,7 +1919,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 21:
 					{
-						int entity = Npc_Create(XENO_KAMIKAZE_DEMO, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_KAMIKAZE_DEMO, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -1933,7 +1933,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 22:
 					{
-						int entity = Npc_Create(XENO_SPY_FACESTABBER, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_SPY_FACESTABBER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -1947,7 +1947,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 23:
 					{
-						int entity = Npc_Create(XENO_SOLDIER_ROCKET_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_SOLDIER_ROCKET_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
@@ -1961,7 +1961,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 24:
 					{
-						int entity = Npc_Create(XENO_SPY_THIEF, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_SPY_THIEF, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -1975,7 +1975,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 25:
 					{
-						int entity = Npc_Create(XENO_SPY_TRICKSTABBER, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_SPY_TRICKSTABBER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -1989,7 +1989,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 26:
 					{
-						int entity = Npc_Create(XENO_SPY_HALF_CLOACKED, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_SPY_HALF_CLOACKED, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -2003,7 +2003,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 27:
 					{
-						int entity = Npc_Create(XENO_SNIPER_MAIN, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_SNIPER_MAIN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -2017,7 +2017,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 					}
 					case 28:
 					{
-						int entity = Npc_Create(XENO_DEMO_MAIN, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_DEMO_MAIN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -2092,7 +2092,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 				{
 					case 1:
 					{
-						int entity = Npc_Create(XENO_HEADCRAB_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -2106,7 +2106,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 2:
 					{
-						int entity = Npc_Create(XENO_FORTIFIED_HEADCRAB_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_FORTIFIED_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
@@ -2120,7 +2120,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 3:
 					{
-						int entity = Npc_Create(XENO_FASTZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_FASTZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 11.5));
@@ -2135,7 +2135,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 4:
 					{
-						int entity = Npc_Create(XENO_FORTIFIED_FASTZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_FORTIFIED_FASTZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -2149,7 +2149,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 5:
 					{
-						int entity = Npc_Create(XENO_TORSOLESS_HEADCRAB_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_TORSOLESS_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
@@ -2163,7 +2163,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 6:
 					{
-						int entity = Npc_Create(XENO_FORTIFIED_GIANT_POISON_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_FORTIFIED_GIANT_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -2177,7 +2177,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 7:
 					{
-						int entity = Npc_Create(XENO_POISON_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
@@ -2191,7 +2191,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 8:
 					{
-						int entity = Npc_Create(XENO_FORTIFIED_POISON_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_FORTIFIED_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -2205,7 +2205,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 9:
 					{
-						int entity = Npc_Create(XENO_COMBINE_POLICE_PISTOL, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_POLICE_PISTOL, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -2219,7 +2219,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 10:
 					{
-						int entity = Npc_Create(XENO_COMBINE_POLICE_SMG, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_POLICE_SMG, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
@@ -2233,7 +2233,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 11:
 					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_AR2, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_SOLDIER_AR2, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
@@ -2247,7 +2247,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 12:
 					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_SHOTGUN, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_SOLDIER_SHOTGUN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
@@ -2261,7 +2261,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 13:
 					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_SWORDSMAN, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_SOLDIER_SWORDSMAN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -2275,7 +2275,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 14:
 					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_ELITE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_SOLDIER_ELITE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
@@ -2289,7 +2289,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 15:
 					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_GIANT_SWORDSMAN, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_SOLDIER_GIANT_SWORDSMAN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
@@ -2303,7 +2303,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 16:
 					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_DDT, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_SOLDIER_DDT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.5);
@@ -2317,7 +2317,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 17:
 					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_COLLOSS, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_SOLDIER_COLLOSS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*27.0);
@@ -2331,7 +2331,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 18:
 					{
-						int entity = Npc_Create(XENO_SCOUT_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_SCOUT_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
@@ -2345,7 +2345,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 19:
 					{
-						int entity = Npc_Create(XENO_ENGINEER_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_ENGINEER_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -2359,7 +2359,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 20:
 					{
-						int entity = Npc_Create(XENO_HEAVY_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_HEAVY_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -2373,7 +2373,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 21:
 					{
-						int entity = Npc_Create(XENO_KAMIKAZE_DEMO, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_KAMIKAZE_DEMO, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -2387,7 +2387,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 22:
 					{
-						int entity = Npc_Create(XENO_SPY_FACESTABBER, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_SPY_FACESTABBER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -2401,7 +2401,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 23:
 					{
-						int entity = Npc_Create(XENO_SOLDIER_ROCKET_ZOMBIE, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_SOLDIER_ROCKET_ZOMBIE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
@@ -2415,7 +2415,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 24:
 					{
-						int entity = Npc_Create(XENO_SPY_THIEF, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_SPY_THIEF, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -2429,7 +2429,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 25:
 					{
-						int entity = Npc_Create(XENO_SPY_TRICKSTABBER, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_SPY_TRICKSTABBER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -2443,7 +2443,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 26:
 					{
-						int entity = Npc_Create(XENO_SPY_HALF_CLOACKED, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_SPY_HALF_CLOACKED, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -2457,7 +2457,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 27:
 					{
-						int entity = Npc_Create(XENO_SNIPER_MAIN, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_SNIPER_MAIN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -2471,7 +2471,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 28:
 					{
-						int entity = Npc_Create(XENO_DEMO_MAIN, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_DEMO_MAIN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -2485,7 +2485,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 29:
 					{
-						int entity = Npc_Create(XENO_COMBINE_OVERLORD, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_OVERLORD, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*30);
@@ -2499,7 +2499,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 30:
 					{
-						int entity = Npc_Create(XENO_FATHER_GRIGORI, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_FATHER_GRIGORI, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*30);
@@ -2513,7 +2513,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 31:
 					{
-						int entity = Npc_Create(XENO_MEDIC_HEALER, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_MEDIC_HEALER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12);
@@ -2527,7 +2527,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 32:
 					{
-						int entity = Npc_Create(XENO_BATTLE_MEDIC_MAIN, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_BATTLE_MEDIC_MAIN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*21.0);
@@ -2541,7 +2541,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 33:
 					{
-						int entity = Npc_Create(XENO_GIANT_PYRO_MAIN, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_GIANT_PYRO_MAIN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*25.0);
@@ -2556,7 +2556,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 34:
 					{
-						int entity = Npc_Create(XENO_COMBINE_DEUTSCH_RITTER, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_COMBINE_DEUTSCH_RITTER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.0);
@@ -2570,7 +2570,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 					}
 					case 35:
 					{
-						int entity = Npc_Create(XENO_SPY_MAIN_BOSS, client, pos1, ang, true);
+						int entity = Npc_Create(XENO_SPY_MAIN_BOSS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*31);
@@ -2645,7 +2645,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 				{
 					case 1:
 					{
-						int entity = Npc_Create(MEDIVAL_MILITIA, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_MILITIA, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -2659,7 +2659,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 2:
 					{
-						int entity = Npc_Create(MEDIVAL_ARCHER, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_ARCHER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -2673,7 +2673,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 3:
 					{
-						int entity = Npc_Create(MEDIVAL_MAN_AT_ARMS, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_MAN_AT_ARMS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -2687,7 +2687,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 4:
 					{
-						int entity = Npc_Create(MEDIVAL_SWORDSMAN, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_SWORDSMAN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -2701,7 +2701,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 5:
 					{
-						int entity = Npc_Create(MEDIVAL_TWOHANDED_SWORDSMAN, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_TWOHANDED_SWORDSMAN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.0);
@@ -2715,7 +2715,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 6:
 					{
-						int entity = Npc_Create(MEDIVAL_CROSSBOW_MAN, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_CROSSBOW_MAN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
@@ -2729,7 +2729,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 7:
 					{
-						int entity = Npc_Create(MEDIVAL_SPEARMEN, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_SPEARMEN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -2743,7 +2743,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 8:
 					{
-						int entity = Npc_Create(MEDIVAL_HANDCANNONEER, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_HANDCANNONEER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -2757,7 +2757,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 9:
 					{
-						int entity = Npc_Create(MEDIVAL_ELITE_SKIRMISHER, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_ELITE_SKIRMISHER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -2771,7 +2771,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 10:
 					{
-						int entity = Npc_Create(MEDIVAL_EAGLE_SCOUT, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_EAGLE_SCOUT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -2785,7 +2785,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 11:
 					{
-						int entity = Npc_Create(MEDIVAL_SAMURAI, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_SAMURAI, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -2799,7 +2799,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 12:
 					{
-						int entity = Npc_Create(MEDIVAL_CHAMPION, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_CHAMPION, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.0);
@@ -2813,7 +2813,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 13:
 					{
-						int entity = Npc_Create(MEDIVAL_LIGHT_CAV, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_LIGHT_CAV, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -2827,7 +2827,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 14:
 					{
-						int entity = Npc_Create(MEDIVAL_BRAWLER, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_BRAWLER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -2841,7 +2841,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 15:
 					{
-						int entity = Npc_Create(MEDIVAL_EAGLE_WARRIOR, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_EAGLE_WARRIOR, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.5);
@@ -2855,7 +2855,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 16:
 					{
-						int entity = Npc_Create(MEDIVAL_CAVALARY, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_CAVALARY, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.0);
@@ -2869,7 +2869,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 17:
 					{
-						int entity = Npc_Create(MEDIVAL_HALB, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_HALB, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*21.0);
@@ -2883,7 +2883,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 18:
 					{
-						int entity = Npc_Create(MEDIVAL_LONGBOWMEN, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_LONGBOWMEN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -2897,7 +2897,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 19:
 					{
-						int entity = Npc_Create(MEDIVAL_ARBALEST, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_ARBALEST, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.5);
@@ -2911,7 +2911,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 20:
 					{
-						int entity = Npc_Create(MEDIVAL_ELITE_LONGBOWMEN, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_ELITE_LONGBOWMEN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.0);
@@ -2925,7 +2925,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 21:
 					{
-						int entity = Npc_Create(MEDIVAL_PALADIN, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_PALADIN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.0);
@@ -2939,7 +2939,7 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 					}
 					case 22:
 					{
-						int entity = Npc_Create(MEDIVAL_RIDDENARCHER, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_RIDDENARCHER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -3014,7 +3014,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 				{
 					case 1:
 					{
-						int entity = Npc_Create(MEDIVAL_MILITIA, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_MILITIA, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -3028,7 +3028,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 2:
 					{
-						int entity = Npc_Create(MEDIVAL_ARCHER, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_ARCHER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -3042,7 +3042,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 3:
 					{
-						int entity = Npc_Create(MEDIVAL_MAN_AT_ARMS, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_MAN_AT_ARMS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -3056,7 +3056,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 4:
 					{
-						int entity = Npc_Create(MEDIVAL_SWORDSMAN, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_SWORDSMAN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -3070,7 +3070,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 5:
 					{
-						int entity = Npc_Create(MEDIVAL_TWOHANDED_SWORDSMAN, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_TWOHANDED_SWORDSMAN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.0);
@@ -3084,7 +3084,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 6:
 					{
-						int entity = Npc_Create(MEDIVAL_CROSSBOW_MAN, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_CROSSBOW_MAN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
@@ -3098,7 +3098,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 7:
 					{
-						int entity = Npc_Create(MEDIVAL_SPEARMEN, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_SPEARMEN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -3112,7 +3112,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 8:
 					{
-						int entity = Npc_Create(MEDIVAL_HANDCANNONEER, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_HANDCANNONEER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -3126,7 +3126,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 9:
 					{
-						int entity = Npc_Create(MEDIVAL_ELITE_SKIRMISHER, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_ELITE_SKIRMISHER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -3140,7 +3140,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 10:
 					{
-						int entity = Npc_Create(MEDIVAL_EAGLE_SCOUT, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_EAGLE_SCOUT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -3154,7 +3154,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 11:
 					{
-						int entity = Npc_Create(MEDIVAL_SAMURAI, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_SAMURAI, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -3168,7 +3168,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 12:
 					{
-						int entity = Npc_Create(MEDIVAL_CHAMPION, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_CHAMPION, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.0);
@@ -3182,7 +3182,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 13:
 					{
-						int entity = Npc_Create(MEDIVAL_LIGHT_CAV, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_LIGHT_CAV, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -3196,7 +3196,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 14:
 					{
-						int entity = Npc_Create(MEDIVAL_BRAWLER, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_BRAWLER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -3210,7 +3210,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 15:
 					{
-						int entity = Npc_Create(MEDIVAL_EAGLE_WARRIOR, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_EAGLE_WARRIOR, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.5);
@@ -3224,7 +3224,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 16:
 					{
-						int entity = Npc_Create(MEDIVAL_CAVALARY, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_CAVALARY, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.0);
@@ -3238,7 +3238,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 17:
 					{
-						int entity = Npc_Create(MEDIVAL_HALB, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_HALB, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*21.0);
@@ -3252,7 +3252,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 18:
 					{
-						int entity = Npc_Create(MEDIVAL_LONGBOWMEN, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_LONGBOWMEN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -3266,7 +3266,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 19:
 					{
-						int entity = Npc_Create(MEDIVAL_ARBALEST, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_ARBALEST, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.5);
@@ -3280,7 +3280,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 20:
 					{
-						int entity = Npc_Create(MEDIVAL_ELITE_LONGBOWMEN, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_ELITE_LONGBOWMEN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.0);
@@ -3294,7 +3294,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 21:
 					{
-						int entity = Npc_Create(MEDIVAL_PALADIN, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_PALADIN, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.0);
@@ -3308,7 +3308,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 22:
 					{
-						int entity = Npc_Create(MEDIVAL_RIDDENARCHER, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_RIDDENARCHER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -3322,7 +3322,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 23:
 					{
-						int entity = Npc_Create(MEDIVAL_CONSTRUCT, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_CONSTRUCT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*29.5);
@@ -3336,7 +3336,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 24:
 					{
-						int entity = Npc_Create(MEDIVAL_RAM, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_RAM, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -3350,7 +3350,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 25:
 					{
-						int entity = Npc_Create(MEDIVAL_SCOUT, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_SCOUT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -3364,7 +3364,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 26:
 					{
-						int entity = Npc_Create(MEDIVAL_HUSSAR, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_HUSSAR, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.0);
@@ -3378,7 +3378,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 27:
 					{
-						int entity = Npc_Create(MEDIVAL_OBUCH, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_OBUCH, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)* 23.0);
@@ -3392,7 +3392,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 28:
 					{
-						int entity = Npc_Create(MEDIVAL_MONK, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_MONK, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 12.0 );
@@ -3406,7 +3406,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 29:
 					{
-						int entity = Npc_Create(MEDIVAL_CROSSBOW_GIANT, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_CROSSBOW_GIANT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 27.0);
@@ -3420,7 +3420,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 30:
 					{
-						int entity = Npc_Create(MEDIVAL_SWORDSMAN_GIANT, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_SWORDSMAN_GIANT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 27.0);
@@ -3434,7 +3434,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 31:
 					{
-						int entity = Npc_Create(MEDIVAL_EAGLE_GIANT, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_EAGLE_GIANT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 27.0);
@@ -3448,7 +3448,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 32:
 					{
-						int entity = Npc_Create(MEDIVAL_ACHILLES, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_ACHILLES, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 30);
@@ -3462,7 +3462,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 					}
 					case 33:
 					{
-						int entity = Npc_Create(MEDIVAL_SON_OF_OSIRIS, client, pos1, ang, true);
+						int entity = Npc_Create(MEDIVAL_SON_OF_OSIRIS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 31);
@@ -3538,7 +3538,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 				{
 					case 1:
 					{
-						int entity = Npc_Create(SEARUNNER, client, pos1, ang, true);
+						int entity = Npc_Create(SEARUNNER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -3552,7 +3552,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 					}
 					case 2:
 					{
-						int entity = Npc_Create(SEASLIDER, client, pos1, ang, true);
+						int entity = Npc_Create(SEASLIDER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -3566,7 +3566,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 					}
 					case 3:
 					{
-						int entity = Npc_Create(SEASPITTER, client, pos1, ang, true);
+						int entity = Npc_Create(SEASPITTER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -3580,7 +3580,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 					}
 					case 4:
 					{
-						int entity = Npc_Create(SEAREAPER, client, pos1, ang, true);
+						int entity = Npc_Create(SEAREAPER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*21.0);
@@ -3594,7 +3594,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 					}
 					case 5:
 					{
-						int entity = Npc_Create(SEACRAWLER, client, pos1, ang, true);
+						int entity = Npc_Create(SEACRAWLER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
@@ -3608,7 +3608,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 					}
 					case 6:
 					{
-						int entity = Npc_Create(SEAPIERCER, client, pos1, ang, true);
+						int entity = Npc_Create(SEAPIERCER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -3622,7 +3622,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 					}
 					case 7:
 					{
-						int entity = Npc_Create(SEAPREDATOR, client, pos1, ang, true);
+						int entity = Npc_Create(SEAPREDATOR, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*10.0);
@@ -3636,7 +3636,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 					}
 					case 8:
 					{
-						int entity = Npc_Create(SEASPEWER, client, pos1, ang, true);
+						int entity = Npc_Create(SEASPEWER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -3650,7 +3650,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 					}
 					case 9:
 					{
-						int entity = Npc_Create(SEASWARMCALLER, client, pos1, ang, true);
+						int entity = Npc_Create(SEASWARMCALLER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.0);
@@ -3664,7 +3664,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 					}
 					case 10:
 					{
-						int entity = Npc_Create(SEAREEFBREAKER, client, pos1, ang, true);
+						int entity = Npc_Create(SEAREEFBREAKER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*20.0);
@@ -3739,7 +3739,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 				{
 					case 1:
 					{
-						int entity = Npc_Create(SEARUNNER, client, pos1, ang, true);
+						int entity = Npc_Create(SEARUNNER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -3753,7 +3753,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 2:
 					{
-						int entity = Npc_Create(SEASLIDER, client, pos1, ang, true);
+						int entity = Npc_Create(SEASLIDER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -3767,7 +3767,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 3:
 					{
-						int entity = Npc_Create(SEASPITTER, client, pos1, ang, true);
+						int entity = Npc_Create(SEASPITTER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -3781,7 +3781,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 4:
 					{
-						int entity = Npc_Create(SEAREAPER, client, pos1, ang, true);
+						int entity = Npc_Create(SEAREAPER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*21.0);
@@ -3795,7 +3795,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 5:
 					{
-						int entity = Npc_Create(SEACRAWLER, client, pos1, ang, true);
+						int entity = Npc_Create(SEACRAWLER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
@@ -3809,7 +3809,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 6:
 					{
-						int entity = Npc_Create(SEAPIERCER, client, pos1, ang, true);
+						int entity = Npc_Create(SEAPIERCER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -3823,7 +3823,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 7:
 					{
-						int entity = Npc_Create(SEAPREDATOR, client, pos1, ang, true);
+						int entity = Npc_Create(SEAPREDATOR, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*10.0);
@@ -3837,7 +3837,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 8:
 					{
-						int entity = Npc_Create(SEASPEWER, client, pos1, ang, true);
+						int entity = Npc_Create(SEASPEWER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -3851,7 +3851,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 9:
 					{
-						int entity = Npc_Create(SEASWARMCALLER, client, pos1, ang, true);
+						int entity = Npc_Create(SEASWARMCALLER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.0);
@@ -3865,7 +3865,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 10:
 					{
-						int entity = Npc_Create(SEAREEFBREAKER, client, pos1, ang, true);
+						int entity = Npc_Create(SEAREEFBREAKER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*20.0);
@@ -3879,7 +3879,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 11:
 					{
-						int entity = Npc_Create(SEABORN_KAZIMIERZ_KNIGHT, client, pos1, ang, true);
+						int entity = Npc_Create(SEABORN_KAZIMIERZ_KNIGHT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -3893,7 +3893,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 12:
 					{
-						int entity = Npc_Create(SEABORN_KAZIMIERZ_KNIGHT_ARCHER, client, pos1, ang, true);
+						int entity = Npc_Create(SEABORN_KAZIMIERZ_KNIGHT_ARCHER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
@@ -3907,7 +3907,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 13:
 					{
-						int entity = Npc_Create(SEABORN_KAZIMIERZ_LONGARCHER, client, pos1, ang, true);
+						int entity = Npc_Create(SEABORN_KAZIMIERZ_LONGARCHER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -3921,7 +3921,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 14:
 					{
-						int entity = Npc_Create(SEABORN_KAZIMIERZ_ASSASIN_MELEE, client, pos1, ang, true);
+						int entity = Npc_Create(SEABORN_KAZIMIERZ_ASSASIN_MELEE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.0);
@@ -3935,7 +3935,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 15:
 					{
-						int entity = Npc_Create(SEABORN_SCOUT, client, pos1, ang, true);
+						int entity = Npc_Create(SEABORN_SCOUT, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -3949,7 +3949,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 16:
 					{
-						int entity = Npc_Create(SEABORN_PYRO, client, pos1, ang, true);
+						int entity = Npc_Create(SEABORN_PYRO, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -3963,7 +3963,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 17:
 					{
-						int entity = Npc_Create(SEABORN_DEMO, client, pos1, ang, true);
+						int entity = Npc_Create(SEABORN_DEMO, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -3977,7 +3977,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 18:
 					{
-						int entity = Npc_Create(SEABORN_HEAVY, client, pos1, ang, true);
+						int entity = Npc_Create(SEABORN_HEAVY, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -3991,7 +3991,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 19:
 					{
-						int entity = Npc_Create(SEABORN_MEDIC, client, pos1, ang, true);
+						int entity = Npc_Create(SEABORN_MEDIC, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
@@ -4005,7 +4005,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 20:
 					{
-						int entity = Npc_Create(SEABORN_SNIPER, client, pos1, ang, true);
+						int entity = Npc_Create(SEABORN_SNIPER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -4019,7 +4019,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 21:
 					{
-						int entity = Npc_Create(SEABORN_SPY, client, pos1, ang, true);
+						int entity = Npc_Create(SEABORN_SPY, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -4033,7 +4033,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 22:
 					{
-						int entity = Npc_Create(SEABORN_GUARD, client, pos1, ang, true);
+						int entity = Npc_Create(SEABORN_GUARD, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.0);
@@ -4048,7 +4048,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 23:
 					{
-						int entity = Npc_Create(SEABORN_DEFENDER, client, pos1, ang, true);
+						int entity = Npc_Create(SEABORN_DEFENDER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
@@ -4063,7 +4063,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 24:
 					{
-						int entity = Npc_Create(SEABORN_CASTER, client, pos1, ang, true);
+						int entity = Npc_Create(SEABORN_CASTER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -4077,7 +4077,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 					}
 					case 25:
 					{
-						int entity = Npc_Create(SEABORN_SPECIALIST, client, pos1, ang, true);
+						int entity = Npc_Create(SEABORN_SPECIALIST, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -4152,7 +4152,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 				{
 					case 1:
 					{
-						int entity = Npc_Create(EXPIDONSA_BENERA, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_BENERA, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -4166,7 +4166,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 					}
 					case 2:
 					{
-						int entity = Npc_Create(EXPIDONSA_PENTAL, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_PENTAL, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -4180,7 +4180,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 					}
 					case 3:
 					{
-						int entity = Npc_Create(EXPIDONSA_DEFANDA, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_DEFANDA, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -4194,7 +4194,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 					}
 					case 4:
 					{
-						int entity = Npc_Create(EXPIDONSA_SELFAM_IRE, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_SELFAM_IRE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.5);
@@ -4208,7 +4208,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 					}
 					case 5:
 					{
-						int entity = Npc_Create(EXPIDONSA_VAUSMAGICA, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_VAUSMAGICA, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -4222,7 +4222,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 					}
 					case 6:
 					{
-						int entity = Npc_Create(EXPIDONSA_PISTOLEER, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_PISTOLEER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -4236,7 +4236,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 					}
 					case 7:
 					{
-						int entity = Npc_Create(EXPIDONSA_DIVERSIONISTICO, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_DIVERSIONISTICO, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -4250,7 +4250,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 					}
 					case 8:
 					{
-						int entity = Npc_Create(EXPIDONSA_RIFALMANU, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_RIFALMANU, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -4264,7 +4264,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 					}
 					case 9:
 					{
-						int entity = Npc_Create(EXPIDONSA_SICCERINO, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_SICCERINO, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -4278,7 +4278,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 					}
 					case 10:
 					{
-						int entity = Npc_Create(EXPIDONSA_SOLDINE_PROTOTYPE, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_SOLDINE_PROTOTYPE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
@@ -4292,7 +4292,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 					}
 					case 11:
 					{
-						int entity = Npc_Create(EXPIDONSA_PROTECTA, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_PROTECTA, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -4306,7 +4306,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 					}
 					case 12:
 					{
-						int entity = Npc_Create(EXPIDONSA_EGABUNAR, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_EGABUNAR, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -4320,7 +4320,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 					}
 					case 13:
 					{
-						int entity = Npc_Create(EXPIDONSA_ENEGAKAPUS, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_ENEGAKAPUS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
@@ -4334,7 +4334,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 					}
 					case 14:
 					{
-						int entity = Npc_Create(EXPIDONSA_VAUSTECHICUS, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_VAUSTECHICUS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -4409,7 +4409,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 				{
 					case 1:
 					{
-						int entity = Npc_Create(EXPIDONSA_BENERA, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_BENERA, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -4423,7 +4423,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 2:
 					{
-						int entity = Npc_Create(EXPIDONSA_PENTAL, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_PENTAL, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -4437,7 +4437,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 3:
 					{
-						int entity = Npc_Create(EXPIDONSA_DEFANDA, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_DEFANDA, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -4451,7 +4451,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 4:
 					{
-						int entity = Npc_Create(EXPIDONSA_SELFAM_IRE, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_SELFAM_IRE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.5);
@@ -4465,7 +4465,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 5:
 					{
-						int entity = Npc_Create(EXPIDONSA_VAUSMAGICA, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_VAUSMAGICA, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
@@ -4479,7 +4479,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 6:
 					{
-						int entity = Npc_Create(EXPIDONSA_PISTOLEER, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_PISTOLEER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
@@ -4493,7 +4493,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 7:
 					{
-						int entity = Npc_Create(EXPIDONSA_DIVERSIONISTICO, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_DIVERSIONISTICO, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -4507,7 +4507,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 8:
 					{
-						int entity = Npc_Create(EXPIDONSA_RIFALMANU, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_RIFALMANU, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
@@ -4521,7 +4521,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 9:
 					{
-						int entity = Npc_Create(EXPIDONSA_SICCERINO, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_SICCERINO, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -4535,7 +4535,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 10:
 					{
-						int entity = Npc_Create(EXPIDONSA_SOLDINE_PROTOTYPE, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_SOLDINE_PROTOTYPE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
@@ -4549,7 +4549,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 11:
 					{
-						int entity = Npc_Create(EXPIDONSA_PROTECTA, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_PROTECTA, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -4563,7 +4563,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 12:
 					{
-						int entity = Npc_Create(EXPIDONSA_EGABUNAR, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_EGABUNAR, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -4577,7 +4577,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 13:
 					{
-						int entity = Npc_Create(EXPIDONSA_ENEGAKAPUS, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_ENEGAKAPUS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
@@ -4591,7 +4591,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 14:
 					{
-						int entity = Npc_Create(EXPIDONSA_VAUSTECHICUS, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_VAUSTECHICUS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
@@ -4605,7 +4605,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 15:
 					{
-						int entity = Npc_Create(EXPIDONSA_HEAVYPUNUEL, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_HEAVYPUNUEL, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*27.0);
@@ -4620,7 +4620,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 16:
 					{
-						int entity = Npc_Create(EXPIDONSA_SNIPONEER, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_SNIPONEER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 15.0);
@@ -4634,7 +4634,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 17:
 					{
-						int entity = Npc_Create(EXPIDONSA_DUALREA, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_DUALREA, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
@@ -4648,7 +4648,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 18:
 					{
-						int entity = Npc_Create(EXPIDONSA_GUARDUS, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_GUARDUS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 27.0);
@@ -4662,7 +4662,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 19:
 					{
-						int entity = Npc_Create(EXPIDONSA_MINIGUNASSISA, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_MINIGUNASSISA, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 21.0);
@@ -4676,7 +4676,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 20:
 					{
-						int entity = Npc_Create(EXPIDONSA_IGNITUS, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_IGNITUS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 26.0);
@@ -4690,7 +4690,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 21:
 					{
-						int entity = Npc_Create(EXPIDONSA_HELENA, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_HELENA, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 14.5);
@@ -4704,7 +4704,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 22:
 					{
-						int entity = Npc_Create(EXPIDONSA_ERASUS, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_ERASUS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 21.0);
@@ -4718,7 +4718,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 23:
 					{
-						int entity = Npc_Create(EXPIDONSA_GIANTTANKUS, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_GIANTTANKUS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 27.5);
@@ -4732,7 +4732,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 24:
 					{
-						int entity = Npc_Create(EXPIDONSA_SPEEDUSADIVUS, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_SPEEDUSADIVUS, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 17.0);
@@ -4746,7 +4746,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 25:
 					{
-						int entity = Npc_Create(EXPIDONSA_SOLDINE, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_SOLDINE, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 30);
@@ -4760,7 +4760,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 					}
 					case 26:
 					{
-						int entity = Npc_Create(EXPIDONSA_SEARGENTIDEAL, client, pos1, ang, true);
+						int entity = Npc_Create(EXPIDONSA_SEARGENTIDEAL, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 31);

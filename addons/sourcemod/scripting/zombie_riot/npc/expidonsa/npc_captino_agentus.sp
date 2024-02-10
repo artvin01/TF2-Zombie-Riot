@@ -314,10 +314,10 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 							float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 							float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 							
-							int spawn_index = Npc_Create(EXPIDONSA_DIVERSIONISTICO, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+							int spawn_index = Npc_Create(EXPIDONSA_DIVERSIONISTICO, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"));
 							if(spawn_index > MaxClients)
 							{
-								Zombies_Currently_Still_Ongoing += 1;
+								Zombies_Currently_Still_Ongoing += 1; // FIXME
 								TeleportEntity(spawn_index, pos, ang);
 								SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 								SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);

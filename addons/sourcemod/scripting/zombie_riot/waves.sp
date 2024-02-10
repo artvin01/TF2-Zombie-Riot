@@ -11,7 +11,7 @@ enum struct Enemy
 	int Does_Not_Scale;
 	int Is_Immune_To_Nuke;
 	bool Is_Static;
-	bool Friendly;
+	int Team;
 	int Index;
 	float Credits;
 	char Data[64];
@@ -660,7 +660,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.Is_Health_Scaled = kv.GetNum("is_health_scaling");
 						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
 						enemy.Is_Static = view_as<bool>(kv.GetNum("is_static"));
-						enemy.Friendly = view_as<bool>(kv.GetNum("friendly"));
+						enemy.Team = kv.GetNum("friendly") ? TFTeam_Red : TFTeam_Blue;
 						enemy.Credits = kv.GetFloat("cash");
 						enemy.ExtraMeleeRes = kv.GetFloat("extra_melee_res", 1.0);
 						enemy.ExtraRangedRes = kv.GetFloat("extra_ranged_res", 1.0);
@@ -1035,7 +1035,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			if(count > 150) //So its always less then 150.
 				count = 150;
 			
-			if(!wave.EnemyData.Friendly)
+			if(wave.EnemyData.Team != TFTeam_Red)
 			{
 				Zombies_Currently_Still_Ongoing += count;
 			}

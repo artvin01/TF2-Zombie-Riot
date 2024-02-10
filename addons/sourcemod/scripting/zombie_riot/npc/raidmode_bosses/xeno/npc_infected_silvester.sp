@@ -1698,13 +1698,13 @@ void Silvester_SpawnAllyDuoRaid(int ref)
 			
 		maxhealth -= (maxhealth / 4);
 
-		int spawn_index = Npc_Create(XENO_RAIDBOSS_BLUE_GOGGLES, -1, pos, ang, GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2);
+		int spawn_index = Npc_Create(XENO_RAIDBOSS_BLUE_GOGGLES, -1, pos, ang, GetEntProp(entity, Prop_Send, "m_iTeamNum"));
 		if(spawn_index > MaxClients)
 		{
 			i_RaidGrantExtra[spawn_index] = i_RaidGrantExtra[entity];
 			i_RaidDuoAllyIndex = EntIndexToEntRef(spawn_index);
 			Goggles_SetRaidPartner(entity);
-			Zombies_Currently_Still_Ongoing += 1;
+			Zombies_Currently_Still_Ongoing += 1;	// FIXME
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 		}
@@ -2786,7 +2786,7 @@ void SharedTimeLossSilvesterDuo(int entity)
 		GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", SelfPos);
 		GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", AllyAng);
 	}
-	int SensalSpawn = Npc_Create(RAIDMODE_EXPIDONSA_SENSAL, -1, SelfPos, AllyAng, GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2, "duo_cutscene"); //can only be enemy
+	int SensalSpawn = Npc_Create(RAIDMODE_EXPIDONSA_SENSAL, -1, SelfPos, AllyAng, GetEntProp(entity, Prop_Send, "m_iTeamNum"), "duo_cutscene"); //can only be enemy
 	if(IsValidEntity(SensalSpawn))
 	{
 		if(GetEntProp(SensalSpawn, Prop_Send, "m_iTeamNum") != 2)

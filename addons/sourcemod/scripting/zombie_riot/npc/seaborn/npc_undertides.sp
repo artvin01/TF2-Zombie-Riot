@@ -327,7 +327,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetClientTeam(client) != team && IsEntityAlive(client) && Can_I_See_Enemy_Only(npc.index, client))
+		if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetTeam(client) != team && IsEntityAlive(client) && Can_I_See_Enemy_Only(npc.index, client))
 		{
 			if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, client))
 				continue;
@@ -390,14 +390,14 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 		}
 	}
 
-	if(team != 3 && !player_only)
+	if(!player_only)
 	{
 		for(int a; a < i_MaxcountNpc; a++)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcs[a]);
 			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
 			{
-				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
+				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && GetTeam(client) != team && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
 				{
 					if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, entity))
 						continue;
@@ -422,50 +422,6 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 						if(f_BattilonsNpcBuff[entity] > gameTime)
 							defense += 4;
 
-						if(enemy[i] && def[i] < defense)
-							continue;
-
-						AddToList(entity, i, enemy, count);
-						AddToList(defense, i, def, count);
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	if(team != 2 && !player_only)
-	{
-		for(int a; a < i_MaxcountNpc_Allied; a++)
-		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[a]);
-			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
-			{
-				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
-				{
-					if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, entity))
-						continue;
-						
-					if(RangeLimit > 0.0)
-					{
-						float flDistanceToTarget = GetVectorDistance(WorldSpaceCenterOld(entity), Pos1, true);
-						if(flDistanceToTarget > RangeLimit)
-							continue;
-					}
-
-					for(int i; i < count; i++)
-					{
-						int defense = b_npcspawnprotection[entity] ? 8 : 0;
-						
-						if(fl_RangedArmor[entity] < 1.0)
-							defense += 10 - RoundToFloor(fl_RangedArmor[entity] * 10.0);
-
-						if(Resistance_Overall_Low[entity] > gameTime)
-							defense += 2;
-						
-						if(f_BattilonsNpcBuff[entity] > gameTime)
-							defense += 4;
-						
 						if(i_NpcInternalId[entity] == CITIZEN)
 						{
 							Citizen cit = view_as<Citizen>(entity);

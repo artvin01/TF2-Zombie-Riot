@@ -813,16 +813,14 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			summon = Npc_Create(BOB_THE_FIRST, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2, "fake");
+			summon = Npc_Create(BOB_THE_FIRST, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"), "fake");
 			if(summon > MaxClients)
 			{
-				Zombies_Currently_Still_Ongoing++;
 				fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index] * 0.5;
 				fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index] * 0.75;
 
 				SetEntityRenderMode(summon, RENDER_TRANSALPHA);
 				SetEntityRenderColor(summon, 200, 200, 200, 200);
-				Zombies_Currently_Still_Ongoing -= 1;
 			}
 		}
 	}

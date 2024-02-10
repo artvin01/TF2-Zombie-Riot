@@ -387,7 +387,7 @@ int SetCameraEffectLeperHew(int client, int &ModelToDelete)
 	vabsAngles[0] = 0.0;
 	SetVariantInt(0);
 	AcceptEntityInput(client, "SetForcedTauntCam");	
-	int spawn_index = Npc_Create(WEAPON_LEPER_AFTERIMAGE, client, vabsOrigin, vabsAngles, GetEntProp(client, Prop_Send, "m_iTeamNum") == 2);
+	int spawn_index = Npc_Create(WEAPON_LEPER_AFTERIMAGE, client, vabsOrigin, vabsAngles, GetEntProp(client, Prop_Send, "m_iTeamNum"));
 	if(spawn_index > 0)
 	{
 		i_AttacksTillReload[spawn_index] = 0;
@@ -480,7 +480,7 @@ int SetCameraEffectLeperSolemny(int client, int &ModelToDelete)
 	vabsAngles[0] = 0.0;
 	SetVariantInt(0);
 	AcceptEntityInput(client, "SetForcedTauntCam");	
-	int spawn_index = Npc_Create(WEAPON_LEPER_AFTERIMAGE, client, vabsOrigin, vabsAngles, GetEntProp(client, Prop_Send, "m_iTeamNum") == 2);
+	int spawn_index = Npc_Create(WEAPON_LEPER_AFTERIMAGE, client, vabsOrigin, vabsAngles, GetEntProp(client, Prop_Send, "m_iTeamNum"));
 	if(spawn_index > 0)
 	{
 		i_AttacksTillReload[spawn_index] = 1;

@@ -150,7 +150,7 @@ public void DevSpawner_ClotThink(int iNPC)
 				enemy.ExtraRangedRes = fl_Extra_RangedArmor[npc.index];
 				enemy.ExtraSpeed = fl_Extra_Speed[npc.index];
 				enemy.ExtraDamage = fl_Extra_Damage[npc.index];	
-				enemy.Friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+				enemy.Team = GetTeam(npc.index);
 				
 				Waves_AddNextEnemy(enemy);
 			}
@@ -161,12 +161,11 @@ public void DevSpawner_ClotThink(int iNPC)
 
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-				bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
 				
-				int entity = Npc_Create(npc.m_iNPCIndex, -1, pos, ang, ally, data);
+				int entity = Npc_Create(npc.m_iNPCIndex, -1, pos, ang, GetTeam(npc.index), data);
 				if(entity > MaxClients)
 				{
-					if(!ally)
+					if(GetTeam(npc.index) != TFTeam_Red)
 						Zombies_Currently_Still_Ongoing++;
 					
 					if(npc.m_iSpawnHealth > 0)

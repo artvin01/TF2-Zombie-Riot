@@ -441,7 +441,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 		fl_TotalArmor[self] = 0.35;
 	}
 	TE_Particle("teleported_blue", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-	int NpcSpawnDemon = Npc_Create(INTERITUS_DESERT_ANCIENTDEMON, -1, SelfPos, AllyAng, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2); //can only be enemy
+	int NpcSpawnDemon = Npc_Create(INTERITUS_DESERT_ANCIENTDEMON, -1, SelfPos, AllyAng, GetEntProp(npc.index, Prop_Send, "m_iTeamNum")); //can only be enemy
 	i_RaidGrantExtra[ally] = 999;
 	if(IsValidEntity(NpcSpawnDemon))
 	{

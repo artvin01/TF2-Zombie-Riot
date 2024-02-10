@@ -121,7 +121,8 @@ public void SeabornMedic_ClotThink(int iNPC)
 
 	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		if(GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2)
+		int team = GetTeam(npc.index);
+		if(team == 2)
 		{
 			for(int client = 1; client <= MaxClients; client++)
 			{
@@ -130,25 +131,14 @@ public void SeabornMedic_ClotThink(int iNPC)
 					f_HussarBuff[client] = gameTime;
 				}
 			}
-
-			for(int i; i < i_MaxcountNpc_Allied; i++)
-			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-				if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-				{
-					f_HussarBuff[entity] = gameTime;
-				}
-			}
 		}
-		else
+
+		for(int i; i < i_MaxcountNpc_Allied; i++)
 		{
-			for(int i; i < i_MaxcountNpc; i++)
+			int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-				if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-				{
-					f_HussarBuff[entity] = gameTime;
-				}
+				f_HussarBuff[entity] = gameTime;
 			}
 		}
 	}

@@ -164,7 +164,7 @@ methodmap UnitBody < CClotBody
 		return RTS_CanTeamControl(team, this.m_iTeamNumber);
 	}
 	
-	public UnitBody(int client, const float vecPos[3], const float vecAng[3],
+	public UnitBody(int team, const float vecPos[3], const float vecAng[3],
 						const char[] model = COMBINE_CUSTOM_MODEL,
 						const char[] modelscale = "1.0",
 						const char[] health = "125",
@@ -174,7 +174,7 @@ methodmap UnitBody < CClotBody
 	{
 		UnitBody npc = view_as<UnitBody>(CClotBody(vecPos, vecAng, model, modelscale, health, isGiant, CustomThreeDimensions));
 		
-		npc.m_iTeamNumber = TeamNumber[client];
+		npc.m_iTeamNumber = team;
 		npc.m_bBuilding = isBuilding;
 		npc.m_flVisionRange = 0.0;
 		npc.RemoveAllFlags();

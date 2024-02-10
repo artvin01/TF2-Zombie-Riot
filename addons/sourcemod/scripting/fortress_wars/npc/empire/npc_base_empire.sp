@@ -237,7 +237,7 @@ methodmap EmpireBody < UnitBody
 		return UnitBody_ThinkMove(this, gameTime);
 	}
 	
-	public EmpireBody(int client, const float vecPos[3], const float vecAng[3],
+	public EmpireBody(int team, const float vecPos[3], const float vecAng[3],
 						const char[] model = COMBINE_CUSTOM_MODEL,
 						const char[] modelscale = "1.0",
 						const char[] health = "125",
@@ -246,14 +246,14 @@ methodmap EmpireBody < UnitBody
 						const float CustomThreeDimensions[3] = {0.0,0.0,0.0},
 						int type = 0)
 	{
-		EmpireBody npc = view_as<EmpireBody>(UnitBody(client, vecPos, vecAng, model, modelscale, health, isBuilding, isGiant, CustomThreeDimensions));
+		EmpireBody npc = view_as<EmpireBody>(UnitBody(team, vecPos, vecAng, model, modelscale, health, isBuilding, isGiant, CustomThreeDimensions));
 		
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		SetEntityRenderColor(npc.index, TeamColor[TeamNumber[client]][0], TeamColor[TeamNumber[client]][1], TeamColor[TeamNumber[client]][2], 255);
+		SetEntityRenderColor(npc.index, TeamColor[team][0], TeamColor[team][1], TeamColor[team][2], 255);
 		
 		if(isBuilding)
 		{

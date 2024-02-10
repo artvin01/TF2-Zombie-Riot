@@ -45,60 +45,6 @@ void NPC_PluginStart()
 	SyncHud = CreateHudSynchronizer();
 	
 }
-void NPC_OnAllPluginsLoaded()
-{
-	return;
-//	LF_HookSpawn("", NPC_OnCreatePre, false);
-//	LF_HookSpawn("", NPC_OnCreatePost, true);
-}
-
-/*
-public Action LF_OnMakeNPC(char[] classname, int &entity)
-{
-	int index = StringToInt(classname);
-	if(!index)
-		index = GetIndexByPluginName(classname);
-	
-	entity = Npc_Create(index, -1, NULL_VECTOR, NULL_VECTOR, false);
-	if(entity == -1)
-		return Plugin_Continue;
-	
-	return Plugin_Handled;
-}
-public Action NPC_OnCreatePre(char[] classname)
-{
-	if(!StrContains(classname, "npc_") && !StrEqual(classname, "npc_maker"))
-	{
-		strcopy(classname, 64, "zr_base_npc");
-		return Plugin_Changed;
-	}
-	return Plugin_Continue;
-}
-
-public void NPC_OnCreatePost(const char[] classname, int entity)
-{
-	if(!StrContains(classname, "npc_") && !StrEqual(classname, "npc_maker"))
-	{
-		strcopy(LastClassname[entity], sizeof(LastClassname[]), classname);
-		SDKHook(entity, SDKHook_SpawnPost, NPC_EntitySpawned);
-	}
-}
-
-public void NPC_EntitySpawned(int entity)
-{
-	int index = GetIndexByPluginName(LastClassname[entity]);
-	if(index)
-	{
-		float pos[3], ang[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
-		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
-		
-		RemoveEntity(entity);
-		
-		Npc_Create(index, -1, pos, ang, false);
-	}
-}
-*/
 
 #if defined ZR
 public void NPC_SpawnNext(bool panzer, bool panzer_warning)
@@ -312,7 +258,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		{
 			if(Spawns_GetNextPos(pos, ang, enemy.Spawn))
 			{
-				int entity_Spawner = Npc_Create(enemy.Index, -1, pos, ang, enemy.Friendly, enemy.Data);
+				int entity_Spawner = Npc_Create(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data);
 				if(entity_Spawner != -1)
 				{
 					if(enemy.Is_Outlined)
@@ -334,7 +280,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					CClotBody npcstats = view_as<CClotBody>(entity_Spawner);
 					
 					npcstats.m_bStaticNPC = enemy.Is_Static;
-					if(enemy.Is_Static && !enemy.Friendly)
+					if(enemy.Is_Static && enemy.Team != TFTeam_Red)
 					{
 						AddNpcToAliveList(entity_Spawner, 1);
 					}
@@ -451,7 +397,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 	int forcepowerup = pack.ReadCell();
 	float healthmulti = pack.ReadFloat();
 	
-	int entity = Npc_Create(index, -1, pos, ang, false);
+	int entity = Npc_Create(index, -1, pos, ang, TFTeam_Blue);
 	if(entity != -1)
 	{
 		Zombies_Currently_Still_Ongoing += 1;

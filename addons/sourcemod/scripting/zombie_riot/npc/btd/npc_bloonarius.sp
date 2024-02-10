@@ -511,7 +511,7 @@ public Action Bloonarius_SpawnBloonTimer(Handle timer, bool elite)
 		float pos[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_angRotation", ang);
 		
-		int spawn_index = Npc_Create(BloonHigh[tier], -1, pos, ang, false, BloonHighData[tier]);
+		int spawn_index = Npc_Create(BloonHigh[tier], -1, pos, ang, TFTeam_Blue, BloonHighData[tier]);
 		if(spawn_index > MaxClients)
 		{
 			Zombies_Currently_Still_Ongoing++;

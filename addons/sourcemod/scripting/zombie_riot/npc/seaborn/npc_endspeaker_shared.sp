@@ -164,11 +164,11 @@ methodmap EndSpeaker < CClotBody
 		KillFeed_SetKillIcon(this.index, "crocodile");
 
 		int count;
-		int[] remain = new int[i_MaxcountNpc_Allied];
+		int[] remain = new int[i_MaxcountNpc];
 
-		for(int i; i < i_MaxcountNpc_Allied; i++)
+		for(int i; i < i_MaxcountNpc; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
+			int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
 			if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == REMAINS && IsEntityAlive(entity))
 			{
 				remain[count++] = entity;

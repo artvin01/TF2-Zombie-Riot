@@ -406,7 +406,7 @@ public void GodArkantos_ClotThink(int iNPC)
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 			}
-			int spawn_index = Npc_Create(SEASLIDER, -1, pos, ang, false);
+			int spawn_index = Npc_Create(SEASLIDER, -1, pos, ang, TFTeam_Blue);
 			if(spawn_index > MaxClients)
 			{
 				Zombies_Currently_Still_Ongoing += 1;
@@ -424,7 +424,7 @@ public void GodArkantos_ClotThink(int iNPC)
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 		}
-		int spawn_index = Npc_Create(ISHARMLA, -1, pos, ang, false);
+		int spawn_index = Npc_Create(ISHARMLA, -1, pos, ang, TFTeam_Blue);
 		if(spawn_index > MaxClients)
 		{
 			Zombies_Currently_Still_Ongoing += 1;
@@ -1143,7 +1143,7 @@ void GodArkantosSpawnEnemy(int arkantos, int npc_id, int health = 0, int count, 
 		{
 			float pos[3]; GetEntPropVector(arkantos, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(arkantos, Prop_Data, "m_angRotation", ang);
-			int summon = Npc_Create(npc_id, -1, pos, ang, GetEntProp(arkantos, Prop_Send, "m_iTeamNum") == 2);
+			int summon = Npc_Create(npc_id, -1, pos, ang, GetEntProp(arkantos, Prop_Send, "m_iTeamNum"));
 			if(summon > MaxClients)
 			{
 				fl_Extra_Damage[summon] = 10.0;
@@ -1176,7 +1176,7 @@ void GodArkantosSpawnEnemy(int arkantos, int npc_id, int health = 0, int count, 
 	{
 		Waves_AddNextEnemy(enemy);
 	}
-	Zombies_Currently_Still_Ongoing += count;
+	Zombies_Currently_Still_Ongoing += count;	// FIXME
 }
 
 void GodArkantosSelfDefense(GodArkantos npc, float gameTime)

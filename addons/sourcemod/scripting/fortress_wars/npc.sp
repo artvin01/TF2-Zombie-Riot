@@ -26,16 +26,16 @@ void NPC_MapStart()
 	Villager_MapStart();
 }
 
-stock any Npc_Create(int index, int client, const float vecPos[3], const float vecAng[3], const char[] data = "")
+stock any Npc_Create(int index, int team, const float vecPos[3], const float vecAng[3], const char[] data = "")
 {
 	any entity = -1;
 	switch(index)
 	{
 		case MILITIA:
-			entity = Militia(client, vecPos, vecAng);
+			entity = Militia(team, vecPos, vecAng);
 
 		case VILLAGER:
-			entity = Villager(client, vecPos, vecAng);
+			entity = Villager(team, vecPos, vecAng);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%d] Is not a valid npc!", index);

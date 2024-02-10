@@ -116,14 +116,14 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 5;
 		
-		int entity = Npc_Create(TIDELINKED_BISHOP, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+		int entity = Npc_Create(TIDELINKED_BISHOP, -1, pos, ang, GetTeam(npc.index));
 		if(entity > MaxClients)
 		{
 			i_TargetAlly[npc.index] = EntIndexToEntRef(entity);
 			i_TargetAlly[entity] = EntIndexToEntRef(npc.index);
 			view_as<CClotBody>(entity).m_bThisNpcIsABoss = npc.m_bThisNpcIsABoss;
 
-			Zombies_Currently_Still_Ongoing++;
+			Zombies_Currently_Still_Ongoing++;	// FIXME
 			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 			

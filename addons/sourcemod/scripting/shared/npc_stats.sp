@@ -103,9 +103,9 @@ public Action Command_PetMenu(int client, int args)
 #if defined RPG
 		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [ally] [level] [damage multi] [speed multi] [ranged armour] [melee armour]");
 #elseif defined RTS
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [ally]");
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [team]");
 #else
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [ally] [damage multi] [speed multi] [ranged armour] [melee armour] [Extra Size]");
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [team] [damage multi] [speed multi] [ranged armour] [melee armour] [Extra Size]");
 #endif
 		return Plugin_Handled;
 	}
@@ -123,15 +123,15 @@ public Action Command_PetMenu(int client, int args)
 	GetCmdArg(3, buffer, sizeof(buffer));
 
 #if defined RTS
-	bool ally = true;
+	int team = TeamNumber[client];
 #else
-	bool ally = false;
+	int team = TFTeam_Blue;
 #endif
 	if(args > 3)	//data
-		ally = view_as<bool>(GetCmdArgInt(4));
+		team = view_as<bool>(GetCmdArgInt(4));
 	
 #if defined ZR
-	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
+	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, team, buffer);
 	if(IsValidEntity(entity))
 	{
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
@@ -197,7 +197,7 @@ public Action Command_PetMenu(int client, int args)
 		}
 	}
 #elseif defined RTS
-	int entity = Npc_Create(GetCmdArgInt(1), ally ? client : 0, flPos, flAng, buffer);
+	int entity = Npc_Create(GetCmdArgInt(1), team, flPos, flAng, buffer);
 	if(IsValidEntity(entity))
 	{
 		if(args > 1)
@@ -383,7 +383,7 @@ methodmap CClotBody < CBaseCombatCharacter
 #if !defined RTS
 		if(Ally)
 		{
-			b_IsAlliedNpc[npc] = true;
+			TeamNumber[npc] = TFTeam_Red;
 			if(Ally_Invince)
 			{
 				b_ThisEntityIgnored[npc] = true;
@@ -393,6 +393,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		else
 #endif
 		{
+
+#if defined RTS
+			TeamNumber[npc] = 0;
+#else
+			TeamNumber[npc] = TFTeam_Blue;
+#endif
+
 			SetEntProp(npc, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 		}
 
@@ -445,15 +452,10 @@ methodmap CClotBody < CBaseCombatCharacter
 
 #if !defined RTS
 		if(Ally)
-		{
 			SetEntityCollisionGroup(npc, 24);
-		}
-		else
 #endif
-		{
-			AddNpcToAliveList(npc, 0);
-		}
-		
+
+		AddNpcToAliveList(npc, 0);
 		b_NpcCollisionType[npc] = 0;
 
 #if !defined RTS

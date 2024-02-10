@@ -1414,7 +1414,7 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		
-		entity = Npc_Create(CITIZEN, client, pos, ang, true, data);
+		entity = Npc_Create(CITIZEN, client, pos, ang, TFTeam_Red, data);
 		
 		if(IsValidEntity(entity))
 		{

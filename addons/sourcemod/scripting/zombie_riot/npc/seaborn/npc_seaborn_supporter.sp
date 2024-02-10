@@ -189,14 +189,13 @@ public void SeabornSupporter_ClotThink(int iNPC)
 
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
-
+			
 			if(MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
 			{
-				int entity = Npc_Create(SEARUNNER_ALT, -1, pos, ang, ally);
+				int entity = Npc_Create(SEARUNNER_ALT, -1, pos, ang, GetTeam(npc.index));
 				if(entity > MaxClients)
 				{
-					if(!ally)
+					if(GetTeam(npc.index) != TFTeam_Red)
 						Zombies_Currently_Still_Ongoing++;
 					
 					SetEntProp(entity, Prop_Data, "m_iHealth", health);

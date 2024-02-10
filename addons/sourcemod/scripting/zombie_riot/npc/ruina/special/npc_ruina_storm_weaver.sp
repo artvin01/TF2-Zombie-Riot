@@ -250,12 +250,12 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 	char buffer[16];
 	IntToString(follow_ID, buffer, sizeof(buffer));
 
-	spawn_index = Npc_Create(RUINA_STORM_WEAVER_MID, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2, buffer);
+	spawn_index = Npc_Create(RUINA_STORM_WEAVER_MID, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"), buffer);
 	i_segment_id[npc.index][Section] = EntIndexToEntRef(spawn_index);
 	if(spawn_index > MaxClients)
 	{
 		b_storm_weaver_noclip[spawn_index]=false;
-		Zombies_Currently_Still_Ongoing += 1;
+		Zombies_Currently_Still_Ongoing += 1;	// FIXME
 		CClotBody tail = view_as<CClotBody>(spawn_index);
 		tail.m_flNextRangedAttack = GetGameTime(tail.index)+1.0+(Section/10.0);
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", Health);
@@ -429,7 +429,7 @@ static void Storm_Weaver_Force_Spawn_Anchors(Storm_Weaver npc)
 
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"))+1.0;
 	Health *=0.25;
-	int spawn_index = Npc_Create(RUINA_MAGIA_ANCHOR, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+	int spawn_index = Npc_Create(RUINA_MAGIA_ANCHOR, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"));
 	if(spawn_index > MaxClients)
 	{
 		if(!b_IsAlliedNpc[npc.index])

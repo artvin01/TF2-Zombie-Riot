@@ -499,12 +499,12 @@ void Donnerkrieg_SpawnAllyDuoRaid(int ref)
 		
 		maxhealth = RoundToFloor(maxhealth*1.5);
 
-		int spawn_index = Npc_Create(SEA_RAIDBOSS_SCHWERTKRIEG, -1, pos, ang, GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2);
+		int spawn_index = Npc_Create(SEA_RAIDBOSS_SCHWERTKRIEG, -1, pos, ang, GetEntProp(entity, Prop_Send, "m_iTeamNum"));
 		if(spawn_index > MaxClients)
 		{
 			i_ally_index = EntIndexToEntRef(spawn_index);
 			Schwertkrieg_Set_Ally_Index(entity);
-			Zombies_Currently_Still_Ongoing += 1;
+			Zombies_Currently_Still_Ongoing += 1;	// FIXME
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 		}

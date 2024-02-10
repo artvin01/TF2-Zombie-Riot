@@ -798,16 +798,16 @@ public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflic
 					amount_of_people += 1;
 				}
 			}
-			bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+			int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
 			for(int i; i<amount_of_people; i++)
 			{
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 				
-				int spawn_index = Npc_Create(XENO_SPY_TRICKSTABBER, -1, pos, ang, ally);
+				int spawn_index = Npc_Create(XENO_SPY_TRICKSTABBER, -1, pos, ang, team);
 				if(spawn_index > MaxClients)
 				{
-					Zombies_Currently_Still_Ongoing += 1;
+					Zombies_Currently_Still_Ongoing += 1;	// FIXME
 					XenoSpyMainBoss npc_minion = view_as<XenoSpyMainBoss>(spawn_index);
 					TeleportEntity(spawn_index, NULL_VECTOR, ang, NULL_VECTOR);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/10);

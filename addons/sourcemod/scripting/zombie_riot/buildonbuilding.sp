@@ -148,10 +148,10 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 		}
 	}
 
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	for(int entitycount_again; entitycount_again<i_MaxcountNpc; entitycount_again++)
 	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied))
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again]);
+		if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TFTeam_Red)
 		{
 			b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = true;
 		}
