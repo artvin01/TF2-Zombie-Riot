@@ -1391,7 +1391,7 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 			int entity = i_ObjectsSpawners[i];
 			if(IsValidEntity(entity))
 			{
-				if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") == 2)
+				if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetTeam(entity) == 2)
 					list[count++] = entity;
 			}
 		}

@@ -361,7 +361,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		int entity = -1;
 		while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
-			if(entity != npc.index && npc.m_bStaticNPC == view_as<CClotBody>(entity).m_bStaticNPC && !view_as<CClotBody>(entity).m_bThisNpcIsABoss && !b_ThisNpcIsImmuneToNuke[entity] && GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			if(entity != npc.index && npc.m_bStaticNPC == view_as<CClotBody>(entity).m_bStaticNPC && !view_as<CClotBody>(entity).m_bThisNpcIsABoss && !b_ThisNpcIsImmuneToNuke[entity] && GetTeam(entity) != view_as<int>(TFTeam_Red))
 			{
 				SmiteNpcToDeath(entity);
 				SmiteNpcToDeath(entity);

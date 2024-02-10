@@ -651,7 +651,7 @@ static void DonnerKrieg_Normal_Attack(Barrack_Alt_Donnerkrieg npc)
 			BEAM_Targets_Hit[npc.index] = 1.0;
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (Ikunagae_BEAM_HitDetected[victim] && GetEntProp(npc.index, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+				if (Ikunagae_BEAM_HitDetected[victim] && GetTeam(npc.index) != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);

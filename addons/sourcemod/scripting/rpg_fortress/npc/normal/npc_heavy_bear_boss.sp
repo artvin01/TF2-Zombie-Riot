@@ -363,7 +363,7 @@ public void HeavyBearBoss_OnTakeDamagePost(int victim, int attacker, int inflict
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			int spawn_index = Npc_Create(HEAVY_BEAR_MINION, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			int spawn_index = Npc_Create(HEAVY_BEAR_MINION, -1, pos, ang, GetTeam(npc.index) == 2);
 			if(spawn_index > MaxClients)
 			{
 				Level[spawn_index] = Level[victim];

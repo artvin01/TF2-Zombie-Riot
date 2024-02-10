@@ -93,7 +93,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 				color[2] = 0;
 				color[3] = 255;
 												
-				if (TF2_GetClientTeam(client) == TFTeam_Blue)
+				if (GetTeam(client) == TFTeam_Blue)
 				{
 					color[2] = 255;
 					color[0] = 0;
@@ -106,7 +106,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 				TE_SetupBeamPoints(GunPos, spawnLoc, LaserSprite, 0, 0, 0, life, 2.0, 2.2, 1, amp, color, 0);
 				TE_SendToAll();
 				SetEntPropEnt(TripMine, Prop_Send, "m_hOwnerEntity", client);
-				SetEntProp(TripMine, Prop_Send, "m_iTeamNum", TF2_GetClientTeam(client));
+				SetEntProp(TripMine, Prop_Send, "m_iTeamNum", GetTeam(client));
 				SetEntProp(TripMine, Prop_Send, "m_bCritical", false); 	//No crits, causes particles which cause FPS DEATH!! Crits in tf2 cause immensive lag from what i know from ff2.
 																	//Might also just be cosmetics, eitherways, dont use this, litterally no reason to!
 				SetEntProp(TripMine, Prop_Send, "m_iType", 1);
@@ -146,7 +146,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 				b_ExpertTrapper[TripMine] = b_ExpertTrapper[client];
 				int r = 0;
 				int b = 0;
-				if (TF2_GetClientTeam(client) == TFTeam_Red)
+				if (GetTeam(client) == TFTeam_Red)
 				{
 					r = 255;
 				}
@@ -367,7 +367,7 @@ public Action OnPlayerRunCmd(int client, int &buttons)
 			
 			int r = 0;
 			int b = 0;
-			if (TF2_GetClientTeam(client) == TFTeam_Red)
+			if (GetTeam(client) == TFTeam_Red)
 			{
 				r = 255;
 			}
@@ -398,7 +398,7 @@ public Action Trip_ArmMine(Handle Trip_ArmMine_Handle, any pack)
 		
 		int r = 0;
 		int b = 0;
-		if (TF2_GetClientTeam(client) == TFTeam_Red)
+		if (GetTeam(client) == TFTeam_Red)
 		{
 			r = 255;
 		}
@@ -498,7 +498,7 @@ public void Trip_TrackPlanted(int client)
 								color[2] = 0;
 								color[3] = 255;
 									
-								if (TF2_GetClientTeam(client) == TFTeam_Blue)
+								if (GetTeam(client) == TFTeam_Blue)
 								{
 									color[2] = 255;
 									color[0] = 0;

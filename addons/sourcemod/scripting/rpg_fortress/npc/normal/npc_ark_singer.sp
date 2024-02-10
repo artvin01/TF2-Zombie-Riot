@@ -222,11 +222,11 @@ public void ArkSinger_ClotThink(int iNPC)
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
 
-			int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
+			int team = GetTeam(npc.index);
 			int entity = -1;
 			while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 			{
-				if(entity != npc.index && !b_NpcHasDied[entity] && GetEntProp(entity, Prop_Send, "m_iTeamNum") != team)
+				if(entity != npc.index && !b_NpcHasDied[entity] && GetTeam(entity) != team)
 				{
 					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 					if(GetVectorDistance(pos, vecTarget, true) < 600000.0)	// 775 HU

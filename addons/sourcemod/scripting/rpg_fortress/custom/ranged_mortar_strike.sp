@@ -87,7 +87,7 @@ public void BuildingMortarAction(int client)
 	color[2] = 0;
 	color[3] = 255;
 									
-	if (TF2_GetClientTeam(client) == TFTeam_Blue)
+	if (GetTeam(client) == TFTeam_Blue)
 	{
 		color[2] = 255;
 		color[0] = 0;

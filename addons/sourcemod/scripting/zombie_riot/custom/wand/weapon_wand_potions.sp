@@ -193,7 +193,7 @@ public void Weapon_Wand_PotionBasicTouch(int entity, int target)
 		if(target <= MaxClients)
 			return;
 		
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(target) == 2)
 			return;
 	}
 
@@ -233,7 +233,7 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 
 	if(target)
 	{
-		if(target == owner || GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		if(target == owner || GetTeam(target) != 2)
 			return;
 	}
 
@@ -309,7 +309,7 @@ public void Weapon_Wand_PotionBuffAllTouch(int entity, int target)
 	
 	if(target)
 	{
-		if(target == owner || GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		if(target == owner || GetTeam(target) != 2)
 			return;
 	}
 
@@ -360,7 +360,7 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 	
 	if(target)
 	{
-		if(target == owner || GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		if(target == owner || GetTeam(target) != 2)
 			return;
 	}
 
@@ -425,7 +425,7 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 		if(target <= MaxClients)
 			return;
 		
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(target) == 2)
 			return;
 	}
 
@@ -589,7 +589,7 @@ public void Weapon_Wand_PotionLeadTouch(int entity, int target)
 		if(target <= MaxClients)
 			return;
 		
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(target) == 2)
 			return;
 	}
 
@@ -647,7 +647,7 @@ public void Weapon_Wand_PotionGoldTouch(int entity, int target)
 		if(target <= MaxClients)
 			return;
 		
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(target) == 2)
 			return;
 	}
 
@@ -712,7 +712,7 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 		if(target <= MaxClients)
 			return;
 		
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(target) == 2)
 			return;
 	}
 

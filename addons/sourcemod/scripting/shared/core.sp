@@ -32,7 +32,7 @@
 #define TFTeam_Spectator 	2
 #define TFTeam_Red 		2
 #define TFTeam_Blue		3
-#define TF2_GetClientTeam	PLZUSE_GetClientTeam
+#define GetTeam	PLZUSE_GetClientTeam
 #define TF2_ChangeClientTeam	PLZUSE_ChangeClientTeam
 
 #define NPC_HARD_LIMIT 40 
@@ -2416,7 +2416,7 @@ public void SDKHook_TeamSpawn_SpawnPost(int entity)
 		{
 			bool Allyspawn = false;
 
-			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") == 2)
+			if(GetTeam(entity) == 2)
 				Allyspawn = true;
 
 			Spawns_AddToArray(entity,_, Allyspawn);
@@ -2979,13 +2979,13 @@ public void SDKHook_SafeSpot_EndTouch(int entity, int target)
 
 public void SDKHook_RespawnRoom_StartTouch(int entity, int target)
 {
-	if(target > 0 && target < sizeof(i_InSafeZone) && GetEntProp(entity, Prop_Send, "m_iTeamNum") == GetEntProp(target, Prop_Send, "m_iTeamNum"))
+	if(target > 0 && target < sizeof(i_InSafeZone) && GetTeam(entity) == GetTeam(target))
 		i_InSafeZone[target]++;
 }
 
 public void SDKHook_RespawnRoom_EndTouch(int entity, int target)
 {
-	if(target > 0 && target < sizeof(i_InSafeZone) && GetEntProp(entity, Prop_Send, "m_iTeamNum") == GetEntProp(target, Prop_Send, "m_iTeamNum"))
+	if(target > 0 && target < sizeof(i_InSafeZone) && GetTeam(entity) == GetTeam(target))
 		i_InSafeZone[target]--;
 }
 
@@ -3010,7 +3010,7 @@ public Action SDKHook_Regenerate_Touch(int entity, int target)
 
 public void Set_Projectile_Collision(int entity)
 {
-	if(IsValidEntity(entity) && GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Blue))
+	if(IsValidEntity(entity) && GetTeam(entity) != view_as<int>(TFTeam_Blue))
 	{
 		SetEntityCollisionGroup(entity, 27);
 	}
@@ -3026,7 +3026,7 @@ public void Check_For_Team_Npc(int entity)
 
 #if !defined RTS
 		b_IsAlliedNpc[entity] = false;
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
+		if(GetTeam(entity) == view_as<int>(TFTeam_Red))
 		{
 		//	SDKHook(entity, SDKHook_TraceAttack, NPC_TraceAttack);
 			SDKHook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);

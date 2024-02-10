@@ -651,7 +651,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 			int entity = MaxClients + 1;
 			while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 			{
-				if(BarrackOwner[entity] == BarrackOwner[npc.index] && GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+				if(BarrackOwner[entity] == BarrackOwner[npc.index] && GetTeam(entity) == 2)
 				{
 					BarrackBody ally = view_as<BarrackBody>(entity);
 					if(ally.m_iTargetRally > 0 && IsValidEnemy(npc.index, ally.m_iTargetRally))

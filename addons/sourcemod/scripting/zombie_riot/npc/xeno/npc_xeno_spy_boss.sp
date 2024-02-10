@@ -798,7 +798,7 @@ public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflic
 					amount_of_people += 1;
 				}
 			}
-			int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
+			int team = GetTeam(npc.index);
 			for(int i; i<amount_of_people; i++)
 			{
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);

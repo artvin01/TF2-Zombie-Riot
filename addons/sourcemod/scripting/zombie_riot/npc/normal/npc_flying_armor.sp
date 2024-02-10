@@ -402,7 +402,7 @@ public void FlyingArmor_NPCDeath(int entity)
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			int spawn_index = Npc_Create(FLYINGARMOR_TINY_ZOMBIE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"));
+			int spawn_index = Npc_Create(FLYINGARMOR_TINY_ZOMBIE, -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
 				Zombies_Currently_Still_Ongoing += 1;	// FIXME

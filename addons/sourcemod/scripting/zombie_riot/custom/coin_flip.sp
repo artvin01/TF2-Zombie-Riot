@@ -450,7 +450,7 @@ stock void Do_Coin_calc(int victim)
 					int target = TR_GetEntityIndex();	
 					static char classname_baseboss_extra[36];
 					GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
-					if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetEntProp(target, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum")))
+					if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetEntProp(victim, Prop_Send, "m_iTeamNum")))
 					{
 						if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1) //You got one second.
 						{
@@ -491,7 +491,7 @@ stock void Do_Coin_calc(int victim)
 								int target = TR_GetEntityIndex();	
 								static char classname_baseboss_extra[36];
 								GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
-								if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetEntProp(target, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum")))
+								if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetEntProp(victim, Prop_Send, "m_iTeamNum")))
 								{
 									if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1.0) //You got one second.
 									{
@@ -554,7 +554,7 @@ stock void Do_Coin_calc(int victim)
 							int target = TR_GetEntityIndex();	
 							static char classname_baseboss_extra[36];
 							GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
-							if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetEntProp(target, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum")))
+							if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetEntProp(victim, Prop_Send, "m_iTeamNum")))
 							{
 								if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1.0) //You got one second.
 								{
@@ -672,7 +672,7 @@ stock int GetClosestTarget_Coin(int entity)
 		{
 			static char classname[36];
 			GetEntityClassname(new_entity, classname, sizeof(classname));
-			if (!b_npcspawnprotection[new_entity] && !b_NpcIsInvulnerable[new_entity] && !StrContains(classname, "zr_base_npc", false) && (GetEntProp(new_entity, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum")) && entity != new_entity)
+			if (!b_npcspawnprotection[new_entity] && !b_NpcIsInvulnerable[new_entity] && !StrContains(classname, "zr_base_npc", false) && (GetEntProp(new_entity, Prop_Send, "m_iTeamNum") != GetTeam(entity)) && entity != new_entity)
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -720,7 +720,7 @@ public bool WorldOnly(int entity, int contentsMask, any iExclude)
 	{
 		return false;
 	}
-	else if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	else if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetTeam(entity))
 		return false;
 	
 	return !(entity == iExclude);

@@ -416,7 +416,7 @@ public void Simon_ClotThink(int iNPC)
 				int entity = i_ObjectsSpawners[entitycount];
 				if(IsValidEntity(entity) && entity != 0)
 				{
-					if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
+					if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetTeam(entity) != 2)
 					{
 						GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 						float distance = GetVectorDistance( vecPos, TargetLocation, true); 

@@ -134,7 +134,7 @@ public Action Command_PetMenu(int client, int args)
 	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, team, buffer);
 	if(IsValidEntity(entity))
 	{
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+		if(GetTeam(entity) != view_as<int>(TFTeam_Red))
 		{
 			Zombies_Currently_Still_Ongoing += 1;
 		}
@@ -4297,12 +4297,12 @@ public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
 	{
 		return false;
 	}
-	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") != GetTeam(entity))
 		return false;
 
 	else if(!b_NpcHasDied[entity])
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetTeam(entity))
 		{
 			return !(entity == iExclude);
 			
@@ -4323,7 +4323,7 @@ public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
 		return false;
 	}	
 	
-	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetTeam(entity))
 		return !(entity == iExclude);
 
 
@@ -4644,7 +4644,7 @@ stock int GetClosestTargetRTS(int entity,
 #endif
 {
 #if !defined RTS
-	int searcher_team = GetEntProp(entity, Prop_Send, "m_iTeamNum"); //do it only once lol
+	int searcher_team = GetTeam(entity); //do it only once lol
 #endif
 	if(EntityLocation[2] == 0.0)
 	{
@@ -4680,7 +4680,7 @@ stock int GetClosestTargetRTS(int entity,
 			if (IsValidClient(i) && i != ingore_client)
 			{
 				CClotBody npc = view_as<CClotBody>(i);
-				if (TF2_GetClientTeam(i)!=view_as<TFTeam>(searcher_team) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+				if (GetTeam(i)!=view_as<TFTeam>(searcher_team) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 				{
 					if(CanSee)
 					{
@@ -5125,7 +5125,7 @@ stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
 		if (IsValidClient(i))
 		{
 			CClotBody npc = view_as<CClotBody>(i);
-			if (TF2_GetClientTeam(i)==view_as<TFTeam>(GetEntProp(entity, Prop_Send, "m_iTeamNum")) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true) && GetEntPropEnt(i, Prop_Data, "m_hVehicle") == -1) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+			if (GetTeam(i)==view_as<TFTeam>(GetTeam(entity)) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true) && GetEntPropEnt(i, Prop_Data, "m_hVehicle") == -1) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -5304,7 +5304,7 @@ public bool TraceRayDontHitRTSAlliedNpc(int entity,int mask,any data)
 	
 	//if anything else is team
 	
-	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	if(GetTeam(data) == GetTeam(entity))
 		return false;
 	
 	if(b_is_a_brush[entity])
@@ -7667,7 +7667,7 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore
 	{
 		if (IsValidEntity(i) && i != entity && i != ingore_thisAlly && (i <= MaxClients || !b_NpcHasDied[i]))
 		{
-			if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && IsEntityAlive(i, true) && !i_NpcIsABuilding[i] && !b_ThisEntityIgnoredByOtherNpcsAggro[i])  //The is a medic thing is really needed
+			if(GetTeam(entity) == GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && IsEntityAlive(i, true) && !i_NpcIsABuilding[i] && !b_ThisEntityIgnoredByOtherNpcsAggro[i])  //The is a medic thing is really needed
 			{
 				if(ExtraValidityFunction != INVALID_FUNCTION)
 				{
@@ -8554,7 +8554,7 @@ bool Resize_TracePlayersAndBuildings(int entity, int contentsMask)
 		GetEntityClassname(entity, classname, sizeof(classname));
 		if ((StrContains(classname, "obj_") == 0) || (strcmp(classname, "prop_dynamic") == 0) || (strcmp(classname, "func_door") == 0) || (strcmp(classname, "func_physbox") == 0) || (strcmp(classname, "zr_base_npc") == 0) || (strcmp(classname, "func_breakable") == 0))
 		{
-			if(!b_ThisEntityIgnored[entity] && ResizeMyTeam != GetEntProp(entity, Prop_Data, "m_iTeamNum"))
+			if(!b_ThisEntityIgnored[entity] && ResizeMyTeam != GetTeam(entity))
 			{
 				ResizeTraceFailed = true;
 			}

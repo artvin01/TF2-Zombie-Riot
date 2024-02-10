@@ -1396,27 +1396,27 @@ static void Ikunagae_Spawn_Minnions(int client, int hp_multi)
 			{
 				case 1:
 				{
-					spawn_index = Npc_Create(ALT_MEDIC_BERSERKER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"));
+					spawn_index = Npc_Create(ALT_MEDIC_BERSERKER, -1, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 1.2);
 				}
 				case 2:
 				{
-					spawn_index = Npc_Create(ALT_MEDIC_CHARGER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"));
+					spawn_index = Npc_Create(ALT_MEDIC_CHARGER, -1, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 1.2);
 				}
 				case 3:
 				{
-					spawn_index = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"));
+					spawn_index = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 0.8);
 				}
 				case 4:
 				{
-					spawn_index = Npc_Create(ALT_SNIPER_RAILGUNNER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"));
+					spawn_index = Npc_Create(ALT_SNIPER_RAILGUNNER, -1, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 1.1);
 				}
 				case 5:
 				{
-					spawn_index = Npc_Create(ALT_MECHASOLDIER_BARRAGER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"));
+					spawn_index = Npc_Create(ALT_MECHASOLDIER_BARRAGER, -1, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 1.1);
 				}
 			}

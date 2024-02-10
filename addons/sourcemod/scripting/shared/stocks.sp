@@ -1715,7 +1715,7 @@ public bool PlayersOnly(int entity, int contentsMask, any iExclude)
 		return false;
 	}
 	
-	else if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	else if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") != GetTeam(entity))
 		return false;
 		
 	
@@ -1966,7 +1966,7 @@ public bool Base_Boss_Hit(int entity, int contentsMask, any iExclude)
 	
 	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun")))
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetTeam(entity))
 		{
 			return true;
 		}
@@ -1999,7 +1999,7 @@ public bool IngorePlayersAndBuildings(int entity, int contentsMask, any iExclude
 	}
 	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun") || StrEqual(class, "zr_base_npc"))) //include baseboss so it goesthru
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetTeam(entity))
 		{
 			return false;
 		}
@@ -2025,7 +2025,7 @@ public bool Detect_BaseBoss(int entity, int contentsMask, any iExclude)
 	
 	if(entity != iExclude && StrEqual(class, "zr_base_npc"))
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetTeam(entity))
 		{
 			return false;
 		}
@@ -2046,7 +2046,7 @@ stock int GetClosestTarget_BaseBoss(int entity)
 	int i = MaxClients + 1;
 	while ((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
-		if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(i, Prop_Send, "m_iTeamNum") && !b_NpcHasDied[i]) 
+		if (GetTeam(entity)!=GetEntProp(i, Prop_Send, "m_iTeamNum") && !b_NpcHasDied[i]) 
 		{
 			float EntityLocation[3], TargetLocation[3]; 
 			GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -2085,7 +2085,7 @@ stock int GetClosestTarget_BaseBoss_Pos(float pos[3],int entity)
 		{
 			if(!b_NpcHasDied[baseboss_index])
 			{
-				if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
+				if (GetTeam(entity)!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
 				{
 					float TargetLocation[3]; 
 					GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
@@ -2525,7 +2525,7 @@ stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, boo
 	
 	if (checkTeam) //Do we want to check the client's team?
 	{
-		if (TF2_GetClientTeam(client) != team) //If they aren't on the desired team, return false.
+		if (GetTeam(client) != team) //If they aren't on the desired team, return false.
 		{
 			return false;
 		}

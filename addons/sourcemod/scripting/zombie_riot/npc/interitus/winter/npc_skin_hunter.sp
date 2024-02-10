@@ -206,7 +206,7 @@ public void WinterSkinHunter_ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.25;
-		int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
+		int TeamNum = GetTeam(npc.index);
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
 		Explode_Logic_Custom(0.0,
 		npc.index,

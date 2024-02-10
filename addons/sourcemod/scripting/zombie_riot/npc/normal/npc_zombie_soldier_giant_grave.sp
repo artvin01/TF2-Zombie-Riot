@@ -401,7 +401,7 @@ public void SoldierGiant_ClotDamaged_Post(int victim, int attacker, int inflicto
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 				
-				int spawn_index = Npc_Create(SOLDIER_ZOMBIE_MINION, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"));
+				int spawn_index = Npc_Create(SOLDIER_ZOMBIE_MINION, -1, pos, ang, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
 					Zombies_Currently_Still_Ongoing += 1;	// FIXME

@@ -1371,14 +1371,14 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		maxhealth=RoundToNearest((heck/10)*zr_smallmapbalancemulti.FloatValue);
 		if(i_currentwave[npc.index]==45)	//Only spwans if the wave is 45.
 		{
-			spawn_index = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"));
+			spawn_index = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetTeam(npc.index));
 			Zombies_Currently_Still_Ongoing += 1;	// FIXME
 			if(spawn_index > MaxClients)
 			{
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
-			spawn_index = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"));
+			spawn_index = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, -1, pos, ang, GetTeam(npc.index));
 			Zombies_Currently_Still_Ongoing += 1;	// FIXME
 			if(spawn_index > MaxClients)
 			{
@@ -1391,7 +1391,7 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		{
 			CPrintToChatAll("{crimson}Blitzkrieg{default}: The brothers have been reborn.");
 			maxhealth=RoundToNearest((heck/5)*zr_smallmapbalancemulti.FloatValue);	//mid squishy
-			spawn_index = Npc_Create(ALT_DONNERKRIEG, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"), "raid_ally");
+			spawn_index = Npc_Create(ALT_DONNERKRIEG, -1, pos, ang, GetTeam(npc.index), "raid_ally");
 			Zombies_Currently_Still_Ongoing += 1;	// FIXME
 			if(spawn_index > MaxClients)
 			{
@@ -1400,7 +1400,7 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
 			maxhealth=RoundToNearest((heck/2)*zr_smallmapbalancemulti.FloatValue);	//the tankiest
-			spawn_index = Npc_Create(ALT_SCHWERTKRIEG, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"), "raid_ally");
+			spawn_index = Npc_Create(ALT_SCHWERTKRIEG, -1, pos, ang, GetTeam(npc.index), "raid_ally");
 			Zombies_Currently_Still_Ongoing += 1;	// FIXME
 			if(spawn_index > MaxClients)
 			{
@@ -2186,7 +2186,7 @@ static void FireBlitzRocket(int client, float vecTarget[3], float rocket_damage,
 		fl_blitz_rocket_dmg[entity] = rocket_damage;
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetTeam(npc.index)));
 		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
 										
 		TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);

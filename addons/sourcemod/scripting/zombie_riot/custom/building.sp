@@ -3620,7 +3620,7 @@ public void BuildingMortarAction(int client, int mortar)
 	color[2] = 0;
 	color[3] = 255;
 									
-	if (TF2_GetClientTeam(client) == TFTeam_Blue)
+	if (GetTeam(client) == TFTeam_Blue)
 	{
 		color[2] = 255;
 		color[0] = 0;
@@ -4050,7 +4050,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 			
-			if (((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
+			if (((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
 				for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
 				{
@@ -4760,7 +4760,7 @@ void Building_CamoOrRegrowBlocker(int entity, bool &camo = false, bool &regrow =
 {
 	if(camo || regrow)
 	{
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != 2)
+		if(GetTeam(entity) != 2)
 		{
 			static float pos1[3];
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
@@ -7668,7 +7668,7 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 	int entity = MaxClients + 1;
 	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 	{
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(entity) == 2)
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId == userid)

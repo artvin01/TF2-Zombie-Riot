@@ -498,7 +498,7 @@ static void Venium_Build_Anchor(Venium npc)
 	//Retry.
 
 
-	int spawn_index = Npc_Create(RUINA_MAGIA_ANCHOR, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"));
+	int spawn_index = Npc_Create(RUINA_MAGIA_ANCHOR, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(spawn_index > MaxClients)
 	{
 		i_anchor_id[npc.index] = EntIndexToEntRef(spawn_index);

@@ -1619,7 +1619,7 @@ public Action contact_throw_Silvester_entity(int client)
 				if (!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
 				{
 					targPos = WorldSpaceCenterOld(entity);
-					if (GetVectorDistance(chargerPos, targPos, true) <= (250.0* 250.0) && GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(client, Prop_Send, "m_iTeamNum"))
+					if (GetVectorDistance(chargerPos, targPos, true) <= (250.0* 250.0) && GetTeam(entity)!=GetEntProp(client, Prop_Send, "m_iTeamNum"))
 					{
 						if (!b_AlreadyHitTankThrow[client][entity] && entity != client)
 						{		
@@ -1698,7 +1698,7 @@ void Silvester_SpawnAllyDuoRaid(int ref)
 			
 		maxhealth -= (maxhealth / 4);
 
-		int spawn_index = Npc_Create(XENO_RAIDBOSS_BLUE_GOGGLES, -1, pos, ang, GetEntProp(entity, Prop_Send, "m_iTeamNum"));
+		int spawn_index = Npc_Create(XENO_RAIDBOSS_BLUE_GOGGLES, -1, pos, ang, GetTeam(entity));
 		if(spawn_index > MaxClients)
 		{
 			i_RaidGrantExtra[spawn_index] = i_RaidGrantExtra[entity];
@@ -2786,7 +2786,7 @@ void SharedTimeLossSilvesterDuo(int entity)
 		GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", SelfPos);
 		GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", AllyAng);
 	}
-	int SensalSpawn = Npc_Create(RAIDMODE_EXPIDONSA_SENSAL, -1, SelfPos, AllyAng, GetEntProp(entity, Prop_Send, "m_iTeamNum"), "duo_cutscene"); //can only be enemy
+	int SensalSpawn = Npc_Create(RAIDMODE_EXPIDONSA_SENSAL, -1, SelfPos, AllyAng, GetTeam(entity), "duo_cutscene"); //can only be enemy
 	if(IsValidEntity(SensalSpawn))
 	{
 		if(GetEntProp(SensalSpawn, Prop_Send, "m_iTeamNum") != 2)

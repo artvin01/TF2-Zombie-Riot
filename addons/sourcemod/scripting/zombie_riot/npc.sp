@@ -1749,7 +1749,6 @@ void NPC_MapStart()
 	BeefyBones_OnMapStart_NPC();
 	BrittleBones_OnMapStart_NPC();
 	BigBones_OnMapStart_NPC();
-	Itstilives_MapStart();
 	AlliedLeperVisualiserAbility_OnMapStart_NPC();
 	
 	Mecha_Engineer_OnMapStart_NPC();
@@ -3000,7 +2999,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 
 	if(entity > 0)
 	{
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(entity) == 2)
 		{
 			Rogue_AllySpawned(entity);
 		}
@@ -4991,7 +4990,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/special/npc_panzer.sp"
 #include "zombie_riot/npc/special/npc_sawrunner.sp"
 #include "zombie_riot/npc/special/npc_l4d2_tank.sp"
-#include "zombie_riot/npc/special/npc_itstilives.sp"
 #include "zombie_riot/npc/special/npc_phantom_knight.sp"
 #include "zombie_riot/npc/special/npc_beheaded_kamikaze.sp"
 #include "zombie_riot/npc/special/npc_doctor.sp"

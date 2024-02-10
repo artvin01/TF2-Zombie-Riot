@@ -499,7 +499,7 @@ void Donnerkrieg_SpawnAllyDuoRaid(int ref)
 		
 		maxhealth = RoundToFloor(maxhealth*1.5);
 
-		int spawn_index = Npc_Create(SEA_RAIDBOSS_SCHWERTKRIEG, -1, pos, ang, GetEntProp(entity, Prop_Send, "m_iTeamNum"));
+		int spawn_index = Npc_Create(SEA_RAIDBOSS_SCHWERTKRIEG, -1, pos, ang, GetTeam(entity));
 		if(spawn_index > MaxClients)
 		{
 			i_ally_index = EntIndexToEntRef(spawn_index);
@@ -2114,7 +2114,7 @@ static bool Check_Target(int entity, int contentsMask, int client)	//Stupidly ba
 {
 	if (IsEntityAlive(entity))
 	{
-		if(GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetEntProp(client, Prop_Send, "m_iTeamNum") != GetTeam(entity))
 			b_hit_something=true;
 	}
 	return false;
@@ -2629,7 +2629,7 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 			
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (DonnerKriegCannon_BEAM_HitDetected[victim] && GetEntProp(npc.index, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		if (DonnerKriegCannon_BEAM_HitDetected[victim] && GetTeam(npc.index) != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 		{
 			float playerPos[3];
 			switch(infection)
@@ -2749,7 +2749,7 @@ static int Create_Crystal(int client, float vecTarget[3], float damage, float ro
 		fl_crystal_direct_dmg[entity] = damage;
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetTeam(npc.index)));
 		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
 										
 		TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);

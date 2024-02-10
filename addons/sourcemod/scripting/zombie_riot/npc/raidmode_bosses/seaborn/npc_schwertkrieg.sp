@@ -1744,7 +1744,7 @@ static void Schwertkrieg_Laser_Trace(Raidboss_Schwertkrieg npc, float Start_Poin
 			
 	for (int victim = 0; victim < MAXTF2PLAYERS; victim++)
 	{
-		if (Schwertkrieg_BEAM_HitDetected[victim] && GetEntProp(npc.index, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		if (Schwertkrieg_BEAM_HitDetected[victim] && GetTeam(npc.index) != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 		{
 			float playerPos[3];
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
@@ -2354,7 +2354,7 @@ static int Schwert_Create_Invis_Proj(Raidboss_Schwertkrieg npc, float rocket_spe
 	{
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetTeam(npc.index)));
 		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
 										
 		TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);

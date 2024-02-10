@@ -1146,7 +1146,7 @@ public bool IEM_Cutter_TraceUsers(int entity, int contentsMask, int carrier)
 		return false;
 		
 	int client = Projectile_To_Client[carrier];
-	if (GetEntProp(carrier, Prop_Send, "m_iTeamNum")==GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	if (GetEntProp(carrier, Prop_Send, "m_iTeamNum")==GetTeam(entity))
 		return false;
 		
 	SDKHooks_TakeDamage(entity, client, client, Damage_Reduction[carrier]*Damage_Tornado[carrier], DMG_PLASMA, -1);

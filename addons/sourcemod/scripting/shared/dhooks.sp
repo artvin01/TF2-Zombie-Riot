@@ -429,13 +429,13 @@ void See_Projectile_Team(int entity)
 	}
 	if (IsValidEntity(entity))
 	{
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
+		if(GetTeam(entity) == view_as<int>(TFTeam_Red))
 		{
 			b_Is_Player_Projectile[entity] = true;	 //try this
 			//Update: worked! Will now pass through players/teammates
 			//Nice.
 		}	
-		else if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue))
+		else if(GetTeam(entity) == view_as<int>(TFTeam_Blue))
 		{
 			b_Is_Npc_Projectile[entity] = true; 
 		}
@@ -451,7 +451,7 @@ void See_Projectile_Team_Player(int entity)
 	}
 	if (IsValidEntity(entity))
 	{
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
+		if(GetTeam(entity) == view_as<int>(TFTeam_Red))
 		{
 			b_Is_Player_Projectile_Through_Npc[entity] = true;	 //try this
 			//Update: worked! Will now pass through players/teammates
@@ -695,7 +695,7 @@ void DoGrenadeExplodeLogic(int entity)
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
 			
 			//Important, make them not act as an ai if its on red, or else they are BUSTED AS FUCK.
-			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			if(GetTeam(entity) != view_as<int>(TFTeam_Red))
 			{
 				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
 			}
@@ -778,7 +778,7 @@ public MRESReturn DHook_RocketExplodePre(int entity)
 			{
 				inflictor = 0;
 			}
-			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			if(GetTeam(entity) != view_as<int>(TFTeam_Red))
 			{
 				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true,_,_,_,_,_,inflictor);	
 			}
@@ -816,7 +816,7 @@ public MRESReturn DHook_RocketExplodePre(int entity)
 			{
 				inflictor = 0;
 			}
-			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			if(GetTeam(entity) != view_as<int>(TFTeam_Red))
 			{
 				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true,_,_,_,_,_,inflictor);	
 			}

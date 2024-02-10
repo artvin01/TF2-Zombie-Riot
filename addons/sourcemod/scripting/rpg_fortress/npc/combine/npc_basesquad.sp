@@ -631,7 +631,7 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 				}
 				else
 				{
-					bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+					bool friendly = GetTeam(npc.index) == 2;
 					int count = friendly ? i_MaxcountNpc_Allied : i_MaxcountNpc;
 
 					// Ask our squad members if they can see them

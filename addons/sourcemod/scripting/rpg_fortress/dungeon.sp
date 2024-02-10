@@ -1446,7 +1446,7 @@ public Action Dungeon_Timer(Handle timer)
 				int entity = MaxClients + 1;
 				while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 				{
-					if(StrEqual(InDungeon[entity], name) && GetEntProp(entity, Prop_Send, "m_iTeamNum") != 2)
+					if(StrEqual(InDungeon[entity], name) && GetTeam(entity) != 2)
 						alive++;
 				}
 

@@ -119,7 +119,7 @@ static bool WantsLagCompensationOnEntity(int entity, int player, const float vie
 {
 	// Team members shouldn't be adjusted unless friendly fire is on.
 	/*
-	if(!mp_friendlyfire.BoolValue && GetClientTeam(player) == GetEntProp(entity, Prop_Data, "m_iTeamNum"))
+	if(!mp_friendlyfire.BoolValue && GetClientTeam(player) == GetTeam(entity))
 		return false;
 	*/
 	// If this entity hasn't been transmitted to us and acked, then don't bother lag compensating it.

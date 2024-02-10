@@ -260,7 +260,7 @@ void MedivalRam_NPCDeath(int entity)
 	
 	if(Garrison[entity])
 	{
-		bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+		bool friendly = GetTeam(npc.index) == 2;
 		
 		float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		

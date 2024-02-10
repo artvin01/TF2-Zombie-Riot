@@ -264,7 +264,7 @@ void VausMagicaShieldGiving(VausMagica npc, float gameTime)
 	if(gameTime > npc.m_flNextRangedSpecialAttack)
 	{
 		npc.m_flNextRangedSpecialAttack = gameTime + 1.0; //Retry in 1 second.
-		int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
+		int TeamNum = GetTeam(npc.index);
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
 		Explode_Logic_Custom(0.0,
 		npc.index,

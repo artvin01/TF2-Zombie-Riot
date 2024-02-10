@@ -267,7 +267,7 @@ public void Weapon_SupplyDropElite(int client, int weapon, bool &result, int slo
 		int target = MaxClients + 1;
 		while((target = FindEntityByClassname(target, "zr_base_npc")) != -1)
 		{
-			if(!b_NpcHasDied[target] && b_NpcForcepowerupspawn[target] != 2 && GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+			if(!b_NpcHasDied[target] && b_NpcForcepowerupspawn[target] != 2 && GetTeam(target) != 2)
 				break;
 		}
 		

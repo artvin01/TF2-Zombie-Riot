@@ -299,7 +299,7 @@ void Kamikaze_DeathExplosion(int entity)
 	pack_boom.WriteCell(1);
 	RequestFrame(MakeExplosionFrameLaterKami, pack_boom);
 
-	int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
+	int TeamNum = GetTeam(npc.index);
 	SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
 	Explode_Logic_Custom(90.0 * npc.m_flWaveScale,
 	npc.index,

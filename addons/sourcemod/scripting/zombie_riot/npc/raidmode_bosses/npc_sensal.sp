@@ -479,7 +479,7 @@ public void Sensal_ClotThink(int iNPC)
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			int spawn_index = Npc_Create(EXPIDONSA_DIVERSIONISTICO, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"));
+			int spawn_index = Npc_Create(EXPIDONSA_DIVERSIONISTICO, -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
 				Zombies_Currently_Still_Ongoing += 1;	// FIXME
@@ -1898,7 +1898,7 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (SensalHitDetected[victim] && GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		if (SensalHitDetected[victim] && GetTeam(entity) != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float distance = GetVectorDistance(VectorStart, playerPos, false);

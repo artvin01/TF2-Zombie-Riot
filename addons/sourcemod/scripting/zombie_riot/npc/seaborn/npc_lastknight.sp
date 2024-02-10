@@ -270,7 +270,7 @@ public void LastKnight_ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 				
-				int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
+				int team = GetTeam(npc.index);
 
 				Handle swingTrace;
 				bool result = npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _);
@@ -292,7 +292,7 @@ public void LastKnight_ClotThink(int iNPC)
 							if(ShouldNpcDealBonusDamage(target))
 								damage *= 20.0;
 							
-							if(team == GetEntProp(target, Prop_Send, "m_iTeamNum"))
+							if(team == GetTeam(target))
 								damage *= 10.0;
 
 							if(f_TimeFrozenStill[target] > gameTime)

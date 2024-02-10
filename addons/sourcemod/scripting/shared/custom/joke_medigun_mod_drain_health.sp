@@ -164,7 +164,7 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 					GetEntityClassname(target, buffer, sizeof(buffer));
 					if(!StrContains(buffer, "zr_base_npc", true))
 					{
-						bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(target, Prop_Send, "m_iTeamNum");
+						bool team = GetTeam(owner)==GetTeam(target);
 						if(drains && !team)
 						{
 							DHookSetReturn(hReturn, true);
@@ -178,7 +178,7 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 					GetEntityClassname(target, buffer, sizeof(buffer));
 					if(!StrContains(buffer, "obj_", true))
 					{
-						bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(target, Prop_Send, "m_iTeamNum");
+						bool team = GetTeam(owner)==GetTeam(target);
 						if((heals && team) || (drains && !team))
 						{
 							DHookSetReturn(hReturn, true);
@@ -240,7 +240,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			int new_ammo = GetAmmo(owner, 22);
 			if(IsValidEntity(healTarget) && healTarget>MaxClients && GetAmmo(owner, 22) > 0)
 			{
-				bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(healTarget, Prop_Send, "m_iTeamNum");
+				bool team = GetTeam(owner)==GetEntProp(healTarget, Prop_Send, "m_iTeamNum");
 				float flDrainRate = 500.0;
 				
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
@@ -352,7 +352,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			
 			if(IsValidEntity(healTarget) && healTarget>MaxClients && GetAmmo(owner, 3) > 0)
 			{
-				bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(healTarget, Prop_Send, "m_iTeamNum");
+				bool team = GetTeam(owner)==GetEntProp(healTarget, Prop_Send, "m_iTeamNum");
 		//		float flDrainRate = 100.0;
 				
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
@@ -636,7 +636,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 		{
 			if(IsValidEntity(healTarget) && healTarget>MaxClients)
 			{
-				bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(healTarget, Prop_Send, "m_iTeamNum");
+				bool team = GetTeam(owner)==GetEntProp(healTarget, Prop_Send, "m_iTeamNum");
 				float flDrainRate = 500.0;
 				
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");

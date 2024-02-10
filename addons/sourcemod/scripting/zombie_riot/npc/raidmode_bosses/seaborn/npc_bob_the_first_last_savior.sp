@@ -813,7 +813,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			summon = Npc_Create(BOB_THE_FIRST, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum"), "fake");
+			summon = Npc_Create(BOB_THE_FIRST, -1, pos, ang, GetTeam(npc.index), "fake");
 			if(summon > MaxClients)
 			{
 				fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index] * 0.5;
@@ -2023,7 +2023,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (SensalHitDetected_2[victim] && GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		if (SensalHitDetected_2[victim] && GetTeam(entity) != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float damage = damagedata;

@@ -316,7 +316,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 	{
 		TraceEntity = TraceFrom;
 	}
-	int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
+	int team = GetTeam(npc.index);
 	int[] def = new int[count];
 	float gameTime = GetGameTime();
 	float Pos1[3];
