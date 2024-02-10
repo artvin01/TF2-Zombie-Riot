@@ -159,7 +159,7 @@ methodmap CombineCollos < CClotBody
 	}
 	
 	
-	public CombineCollos(int client, float vecPos[3], float vecAng[3], bool ally)
+	public CombineCollos(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineCollos npc = view_as<CombineCollos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.85", "30000", ally, false, true));
 		

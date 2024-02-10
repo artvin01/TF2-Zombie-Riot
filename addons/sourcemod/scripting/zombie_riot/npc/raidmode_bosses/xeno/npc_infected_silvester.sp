@@ -282,7 +282,7 @@ methodmap RaidbossSilvester < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public RaidbossSilvester(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public RaidbossSilvester(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossSilvester npc = view_as<RaidbossSilvester>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
@@ -356,7 +356,6 @@ methodmap RaidbossSilvester < CClotBody
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		Raidboss_Clean_Everyone();
 		
 		SDKHook(npc.index, SDKHook_Think, RaidbossSilvester_ClotThink);
 		
@@ -2789,7 +2788,7 @@ void SharedTimeLossSilvesterDuo(int entity)
 	int SensalSpawn = Npc_Create(RAIDMODE_EXPIDONSA_SENSAL, -1, SelfPos, AllyAng, GetTeam(entity), "duo_cutscene"); //can only be enemy
 	if(IsValidEntity(SensalSpawn))
 	{
-		if(GetEntProp(SensalSpawn, Prop_Send, "m_iTeamNum") != 2)
+		if(GetTeam(SensalSpawn) != TFTeam_Red)
 		{
 			Zombies_Currently_Still_Ongoing += 1;
 		}

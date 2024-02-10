@@ -5,7 +5,7 @@
 
 methodmap BarrackLongbow < BarrackBody
 {
-	public BarrackLongbow(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackLongbow(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackLongbow npc = view_as<BarrackLongbow>(BarrackBody(client, vecPos, vecAng, "350",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		i_NpcInternalId[npc.index] = BARRACK_LONGBOW;

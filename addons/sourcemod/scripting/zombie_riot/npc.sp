@@ -1951,7 +1951,7 @@ void NPC_MapStart()
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], int team, const char[] data="") //dmg mult only used for summonings
 {
 	any entity = -1;
-	bool ally = team == TFTeam_Red;
+	int ally = team;
 	switch(Index_Of_Npc)
 	{
 		case HEADCRAB_ZOMBIE:

@@ -229,7 +229,7 @@ methodmap NaziPanzer < CClotBody
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 20.0, true);	// Damage
 			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 2.0);
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+			SetTeam(entity,GetTeam(this.index));
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
 			DispatchSpawn(entity);
 			SetEntityModel(entity, "models/weapons/w_bullet.mdl");
@@ -255,7 +255,7 @@ methodmap NaziPanzer < CClotBody
 		}
 	}
 	
-	public NaziPanzer(int client, float vecPos[3], float vecAng[3], bool ally)
+	public NaziPanzer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		NaziPanzer npc = view_as<NaziPanzer>(CClotBody(vecPos, vecAng, "models/zombie_riot/cod_zombies/panzer_soldat_2.mdl", "1.15", GetPanzerHealth(), ally, false, true));
 		

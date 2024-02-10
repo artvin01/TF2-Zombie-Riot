@@ -66,7 +66,7 @@ methodmap BarrackThorns < BarrackBody
 		EmitSoundToAll(g_ThornsDeath[GetRandomInt(0, sizeof(g_ThornsDeath) - 1)],
 		this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
-	public BarrackThorns(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackThorns(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		bool elite = view_as<bool>(Store_HasNamedItem(client, "Construction Master"));
 		bool MaxPot = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));

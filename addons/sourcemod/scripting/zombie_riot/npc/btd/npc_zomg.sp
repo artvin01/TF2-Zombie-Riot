@@ -91,7 +91,7 @@ methodmap Zomg < CClotBody
 		
 		SetEntProp(this.index, Prop_Send, "m_nSkin", type);
 	}
-	public Zomg(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Zomg(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool fortified = StrContains(data, "f") != -1;
 		

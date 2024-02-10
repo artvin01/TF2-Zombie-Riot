@@ -223,7 +223,7 @@ public Action flip_extra(Handle timer, int client)
 			Coin_flip[client] = EntIndexToEntRef(entity);
 			mb_coin[entity] = true;
 			
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Red);
+			SetTeam(entity, TFTeam_Red);
 			
 			SDKHook(entity, SDKHook_OnTakeDamage, Coin_HookDamaged);
 			
@@ -342,7 +342,7 @@ public Action coin_got_rioceted(Handle timer, int client)
 
 public Action Coin_HookDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(GetTeam(victim) != GetEntProp(attacker, Prop_Send, "m_iTeamNum"))
+	if(GetTeam(victim) != GetTeam(attacker))
 		return Plugin_Continue;
 		
 	//Valid attackers only.
@@ -476,7 +476,7 @@ stock void Do_Coin_calc(int victim)
 					static char classname_baseboss[36];
 					GetEntityClassname(Closest_entity, classname_baseboss, sizeof(classname_baseboss));
 					
-					if (!StrContains(classname_baseboss, "zr_base_npc", true) && (GetEntProp(Closest_entity, Prop_Send, "m_iTeamNum") != GetTeam(victim)))
+					if (!StrContains(classname_baseboss, "zr_base_npc", true) && (GetTeam(Closest_entity) != GetTeam(victim)))
 					{
 						GetEntPropVector(Closest_entity, Prop_Data, "m_vecAbsOrigin", targPos);
 						targPos[2] += 35;
@@ -539,7 +539,7 @@ stock void Do_Coin_calc(int victim)
 			{
 				static char classname_baseboss[36];
 				GetEntityClassname(Closest_entity, classname_baseboss, sizeof(classname_baseboss));
-				if (!StrContains(classname_baseboss, "zr_base_npc", true) && (GetEntProp(Closest_entity, Prop_Send, "m_iTeamNum") != GetTeam(victim)))
+				if (!StrContains(classname_baseboss, "zr_base_npc", true) && (GetTeam(Closest_entity) != GetTeam(victim)))
 				{
 					GetEntPropVector(Closest_entity, Prop_Data, "m_vecAbsOrigin", targPos);
 					targPos[2] += 35;
@@ -671,7 +671,7 @@ stock int GetClosestTarget_Coin(int entity)
 		{
 			static char classname[36];
 			GetEntityClassname(new_entity, classname, sizeof(classname));
-			if (!b_npcspawnprotection[new_entity] && !b_NpcIsInvulnerable[new_entity] && !StrContains(classname, "zr_base_npc", false) && (GetEntProp(new_entity, Prop_Send, "m_iTeamNum") != GetTeam(entity)) && entity != new_entity)
+			if (!b_npcspawnprotection[new_entity] && !b_NpcIsInvulnerable[new_entity] && !StrContains(classname, "zr_base_npc", false) && (GetTeam(new_entity) != GetTeam(entity)) && entity != new_entity)
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -719,7 +719,7 @@ public bool WorldOnly(int entity, int contentsMask, any iExclude)
 	{
 		return false;
 	}
-	else if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetTeam(entity))
+	else if(GetTeam(iExclude) == GetTeam(entity))
 		return false;
 	
 	return !(entity == iExclude);

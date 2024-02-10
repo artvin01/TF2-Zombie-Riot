@@ -3,7 +3,7 @@
 
 methodmap BarrackLastKnight < BarrackBody
 {
-	public BarrackLastKnight(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackLastKnight(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackLastKnight npc = view_as<BarrackLastKnight>(BarrackBody(client, vecPos, vecAng, "3000", _, _, "0.75",_,"models/pickups/pickup_powerup_regen.mdl"));
 		

@@ -64,7 +64,7 @@ methodmap LastKnight < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public LastKnight(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public LastKnight(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		if(data[0] == 'R' || data[0] == 'F')
 		{
@@ -405,7 +405,6 @@ void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon
 			{
 				npc.m_iPhase = 2;
 				npc.m_flSpeed = 350.0;
-				Change_Npc_Collision(npc.index, VIPBuilding_Active() ? num_ShouldCollideEnemyTDIgnoreBuilding : num_ShouldCollideEnemyIngoreBuilding);
 				b_NpcIsInvulnerable[npc.index] = true;
 				npc.AddGesture("ACT_LAST_KNIGHT_REVIVE");
 				npc.m_flNextThinkTime = gameTime + 8.3;

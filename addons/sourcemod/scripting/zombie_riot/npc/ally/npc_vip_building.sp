@@ -105,7 +105,7 @@ void VIPBuilding_OnTakeDamagePost(int victim, int attacker)
 	if(attacker < 1)
 		return;
 		
-	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetTeam(victim))
+	if(GetTeam(attacker) == GetTeam(victim))
 		return;
 
 	VIPBuilding npc = view_as<VIPBuilding>(victim);

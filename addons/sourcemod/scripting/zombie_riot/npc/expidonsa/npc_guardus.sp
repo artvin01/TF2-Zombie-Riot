@@ -85,7 +85,7 @@ methodmap Guardus < CClotBody
 	}
 	
 	
-	public Guardus(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Guardus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Guardus npc = view_as<Guardus>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "20000", ally, false, true));
 		//lower health due to masssive hp gain on attack

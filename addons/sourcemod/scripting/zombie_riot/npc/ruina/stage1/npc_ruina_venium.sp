@@ -148,7 +148,7 @@ methodmap Venium < CClotBody
 	}
 	
 	
-	public Venium(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Venium(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Venium npc = view_as<Venium>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		

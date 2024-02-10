@@ -145,7 +145,7 @@ methodmap MedivalEliteLongbowmen < CClotBody
 		#endif
 	}
 	
-	public MedivalEliteLongbowmen(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalEliteLongbowmen(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalEliteLongbowmen npc = view_as<MedivalEliteLongbowmen>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "17500", ally));
 		SetVariantInt(1);

@@ -145,7 +145,7 @@ methodmap Payday_Cloaker < CClotBody
 		#endif
 	}
 	
-	public Payday_Cloaker(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Payday_Cloaker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Payday_Cloaker npc = view_as<Payday_Cloaker>(CClotBody(vecPos, vecAng, CLOAKERMODEL, "1.0", "150000", ally, false, true));
 		

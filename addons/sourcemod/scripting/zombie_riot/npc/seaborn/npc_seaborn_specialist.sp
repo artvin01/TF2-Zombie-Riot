@@ -79,12 +79,12 @@ methodmap SeabornSpecialist < CClotBody
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornSpecialist(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornSpecialist(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		bool teleported;
 
 		float vecPos2[3], vecAng2[3];
-		if(!ally)
+		if(ally != TFTeam_Red)
 		{
 			float lowest = 1.0;
 			for(int i; i < i_MaxcountNpcTotal; i++)

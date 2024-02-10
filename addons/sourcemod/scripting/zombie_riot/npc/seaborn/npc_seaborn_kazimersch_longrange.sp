@@ -82,7 +82,7 @@ methodmap KazimierzLongArcher < CClotBody
 	}
 
 	
-	public KazimierzLongArcher(int client, float vecPos[3], float vecAng[3], bool ally)
+	public KazimierzLongArcher(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		KazimierzLongArcher npc = view_as<KazimierzLongArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "17500", ally));
 		SetVariantInt(4);

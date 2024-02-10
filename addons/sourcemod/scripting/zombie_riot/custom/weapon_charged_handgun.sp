@@ -363,8 +363,8 @@ static void Wand_Launch(int client, int iRot, float speed, float time, float dam
 	TeleportEntity(iCarrier, fPos, NULL_VECTOR, fVel);
 	SetEntityMoveType(iCarrier, MOVETYPE_FLY);
 	
-	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetClientTeam(client));
-	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetClientTeam(client));
+	SetTeam(iCarrier, GetClientTeam(client));
+	SetTeam(iRot, GetClientTeam(client));
 	
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
@@ -463,8 +463,8 @@ static void Wand_Launch_IEM(int client, int iRot, float speed, float time, float
 	TeleportEntity(iCarrier, fPos, NULL_VECTOR, fVel);
 	SetEntityMoveType(iCarrier, MOVETYPE_FLY);
 	
-	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetClientTeam(client));
-	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetClientTeam(client));
+	SetTeam(iCarrier, GetClientTeam(client));
+	SetTeam(iRot, GetClientTeam(client));
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
 	SetEntityCollisionGroup(iCarrier, 27);
@@ -613,7 +613,7 @@ public Action Timer_Electric_Think_PAP(Handle timer, int ref)
 		{
 			if(!b_NpcHasDied[baseboss_index])
 			{
-				if (GetTeam(client)!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
+				if (GetTeam(client)!=GetTeam(baseboss_index)) 
 				{
 					targPos = WorldSpaceCenterOld(baseboss_index);
 					if (GetVectorDistance(flCarrierPos, targPos) <= TORNADO_Radius[client])
@@ -801,7 +801,7 @@ public Action Timer_Electric_Think(Handle timer, int ref)
 		{
 			if(!b_NpcHasDied[baseboss_index])
 			{
-				if (GetTeam(client)!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
+				if (GetTeam(client)!=GetTeam(baseboss_index)) 
 				{
 					targPos = WorldSpaceCenterOld(baseboss_index);
 					if (GetVectorDistance(flCarrierPos, targPos) <= TORNADO_Radius[client])
@@ -1141,7 +1141,7 @@ public bool IEM_Cutter_TraceUsers(int entity, int contentsMask, int carrier)
 		return false;
 		
 	int client = Projectile_To_Client[carrier];
-	if (GetEntProp(carrier, Prop_Send, "m_iTeamNum")==GetTeam(entity))
+	if (GetTeam(carrier)==GetTeam(entity))
 		return false;
 		
 	SDKHooks_TakeDamage(entity, client, client, Damage_Reduction[carrier]*Damage_Tornado[carrier], DMG_PLASMA, -1);
@@ -1184,8 +1184,8 @@ stock int CreateWandCutterProjectile(int client, float flSpeed, float flPos[3], 
 	TeleportEntity(iCarrier, flPos, NULL_VECTOR, fVel);
 	SetEntityMoveType(iCarrier, MOVETYPE_FLY);
 	
-	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetTeam(client));
-	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetTeam(client));
+	SetTeam(iCarrier, GetTeam(client));
+	SetTeam(iRot, GetTeam(client));
 	
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);

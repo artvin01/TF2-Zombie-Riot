@@ -87,58 +87,6 @@ methodmap GodArkantos < CClotBody
 		public get()							{ return fl_GrappleCooldown[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_GrappleCooldown[this.index] = TempValueForProperty; }
 	}
-	/*
-	public void ArkantosFakeDeathState(int state)
-	{
-		if(state == 1)
-		{
-			if(this.m_iChanged_WalkCycle != 5)
-			{
-				SetEntityRenderColor(this.index, 255, 255, 255, 200);
-				SetEntityRenderMode(this.index, RENDER_TRANSCOLOR);
-				SetEntityRenderColor(this.m_iWearable1, 255, 255, 255, 200);
-				SetEntityRenderMode(this.m_iWearable1, RENDER_TRANSCOLOR);
-				SetEntityRenderColor(this.m_iWearable2, 255, 255, 255, 200);
-				SetEntityRenderMode(this.m_iWearable2, RENDER_TRANSCOLOR);
-				Change_Npc_Collision(this.index, 3);
-				this.g_TimesSummoned = 3;
-				this.m_bWasSadAlready = true;
-				GodArkantos_OnTakeDamagePost(this.index, 0, 0, 55.0, 1);
-				this.m_iChanged_WalkCycle = 5;
-				b_ThisEntityIgnored[this.index] = true;
-				b_DoNotUnStuck[this.index] = true;
-				this.SetActivity("ACT_BUSY_SIT_GROUND");
-				this.m_flSpeed = 0.0;
-				this.m_bisWalking = false;
-				this.SetPlaybackRate(2.0);
-				this.m_flReviveArkantosTime = GetGameTime(this.index) + 16.0;
-
-				ArkantosSayWords();
-
-				if(this.m_bPathing)
-				{
-					NPC_StopPathing(this.index);
-					this.m_bPathing = false;
-				}
-			}
-		}
-		else
-		{
-			if(this.m_iChanged_WalkCycle != 6)
-			{
-				this.g_TimesSummoned = 4;
-				this.m_bWasSadAlready = true;
-				Change_Npc_Collision(this.index, 1);
-				this.m_flSpeed = 0.0;
-				this.m_bisWalking = false;
-				this.m_iChanged_WalkCycle = 6;
-				this.m_flReviveArkantosTime = GetGameTime(this.index) + 1.0;
-				this.SetActivity("ACT_BUSY_SIT_GROUND_EXIT");
-				this.SetPlaybackRate(2.0);
-			}
-		}
-	}
-	*/
 	public void PlayIdleAlertSound()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -201,7 +149,7 @@ methodmap GodArkantos < CClotBody
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public GodArkantos(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public GodArkantos(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		GodArkantos npc = view_as<GodArkantos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "25000", ally, false, false, true,true)); //giant!
 		
@@ -221,7 +169,7 @@ methodmap GodArkantos < CClotBody
 		{
 			RaidModeTime = GetGameTime(npc.index) + 300.0;
 		}
-		if(ally)
+		if(ally == TFTeam_Red)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 9999.0;
 			RaidAllowsBuildings = true;
@@ -302,7 +250,6 @@ methodmap GodArkantos < CClotBody
 			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		Raidboss_Clean_Everyone();
 		
 		SDKHook(npc.index, SDKHook_Think, GodArkantos_ClotThink);
 		
@@ -372,18 +319,8 @@ public void GodArkantos_ClotThink(int iNPC)
 			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 			if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 			{
-				SetEntProp(baseboss_index, Prop_Send, "m_iTeamNum", TFTeam_Red);
+				SetTeam(baseboss_index, TFTeam_Red);
 				SetEntityCollisionGroup(baseboss_index, 24);
-				Change_Npc_Collision(baseboss_index, num_ShouldCollideAlly);
-				if(h_NpcSolidHookType[baseboss_index] != 0)
-				{
-					if(!DHookRemoveHookID(h_NpcSolidHookType[baseboss_index]))
-					{
-						PrintToConsoleAll("Somehow Failed to unhook h_NpcSolidHookType");
-					}
-				}
-				CBaseNPC baseNPC = view_as<CClotBody>(baseboss_index).GetBaseNPC();
-				h_NpcSolidHookType[baseboss_index] = DHookRaw(g_hGetSolidMaskAlly, true, view_as<Address>(baseNPC.GetBody()));
 			}
 		}
 		int entity = CreateEntityByName("game_round_win"); //You loose.

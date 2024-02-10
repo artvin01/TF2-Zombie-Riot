@@ -198,7 +198,7 @@ methodmap Bloonarius < CClotBody
 		if(GetEntProp(this.index, Prop_Data, "m_iHealth") < (GetEntProp(this.index, Prop_Data, "m_iMaxHealth") / 2))
 			SetEntProp(this.index, Prop_Send, "m_nSkin", 1);
 	}
-	public Bloonarius(int clien, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Bloonarius(int clien, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		if(IsValidEntity(RaidBossActive))	// Bloon raids fail if another can't spawn
 		{
@@ -273,7 +273,6 @@ methodmap Bloonarius < CClotBody
 		Music_SetRaidMusic("#zombie_riot/btd/musicbossbloonarius.mp3", 198, true);
 		
 		RaidModeTime = (elite ? 0.0 : GetGameTime() + 200.0);
-		Raidboss_Clean_Everyone();
 
 		i_PlayMusicSound = 0;
 		ToggleMapMusic(false);

@@ -223,7 +223,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		public get()		{	return i_RaidGrantExtra[this.index] < 0;	}
 	}
 
-	public RaidbossBobTheFirst(float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public RaidbossBobTheFirst(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		float pos[3];
 		pos = vecPos;
@@ -347,7 +347,6 @@ methodmap RaidbossBobTheFirst < CClotBody
 			RaidModeScaling = 9999999.99;
 
 			Zombies_Currently_Still_Ongoing--;
-			Raidboss_Clean_Everyone();
 		}
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");

@@ -146,7 +146,7 @@ methodmap MedivalSonOfOsiris < CClotBody
 		#endif
 	}
 	
-	public MedivalSonOfOsiris(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalSonOfOsiris(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalSonOfOsiris npc = view_as<MedivalSonOfOsiris>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "750000", ally));
 		SetVariantInt(1);

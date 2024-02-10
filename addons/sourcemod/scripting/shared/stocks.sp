@@ -916,37 +916,6 @@ public void RequestFramesCallback(DataPack pack)
 	}
 }
 
-/*
-int TF2_CreateGlow(int entity, const char[] model, int owner, int color[4])
-{
-	int prop = CreateEntityByName("tf_taunt_prop");
-	if(IsValidEntity(prop))
-	{
-		DispatchSpawn(prop);
-
-		SetEntityModel(prop, model);
-		SetEntPropEnt(prop, Prop_Data, "m_hEffectEntity", owner);
-		SetEntProp(prop, Prop_Send, "m_bGlowEnabled", true);
-		SetEntProp(prop, Prop_Send, "m_fEffects", GetEntProp(prop, Prop_Send, "m_fEffects")|EF_BONEMERGE|EF_NOSHADOW|EF_NOINTERP);
-
-		SetVariantString("!activator");
-		AcceptEntityInput(prop, "SetParent", entity);
-
-		SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(prop, color[0], color[1], color[2], color[3]);
-		SDKHook(prop, SDKHook_SetTransmit, GlowTransmit);
-	}
-	return prop;
-}
-
-public Action GlowTransmit(int entity, int target)
-{
-	if(GetEntPropEnt(entity, Prop_Data, "m_hEffectEntity") == target)
-		return Plugin_Continue;
-
-	return Plugin_Handled;
-}
-*/
 
 stock int TF2_CreateGlow(int iEnt)
 {
@@ -1715,7 +1684,7 @@ public bool PlayersOnly(int entity, int contentsMask, any iExclude)
 		return false;
 	}
 	
-	else if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") != GetTeam(entity))
+	else if(GetTeam(iExclude) != GetTeam(entity))
 		return false;
 		
 	
@@ -1966,7 +1935,7 @@ public bool Base_Boss_Hit(int entity, int contentsMask, any iExclude)
 	
 	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun")))
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetTeam(entity))
+		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return true;
 		}
@@ -1999,7 +1968,7 @@ public bool IngorePlayersAndBuildings(int entity, int contentsMask, any iExclude
 	}
 	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun") || StrEqual(class, "zr_base_npc"))) //include baseboss so it goesthru
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetTeam(entity))
+		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return false;
 		}
@@ -2025,7 +1994,7 @@ public bool Detect_BaseBoss(int entity, int contentsMask, any iExclude)
 	
 	if(entity != iExclude && StrEqual(class, "zr_base_npc"))
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetTeam(entity))
+		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return false;
 		}
@@ -4957,10 +4926,49 @@ stock void SetForceButtonState(int client, bool apply, int button_flag)
 stock int GetTeam(int entity)
 {
 
+	if(entity > 0 && entity <= MAXENTITIES)
+	{
 #if defined ZR
-	if(entity && entity <= MaxClients)
-		return GetClientTeam(entity);
+		if(entity && entity <= MaxClients)
+			return GetClientTeam(entity);
 #endif
 
-	return TeamNumber[entity];
+		if(TeamNumber[entity] == -1)
+		{
+			TeamNumber[entity] = GetEntProp(entity, Prop_Send, "m_iTeamNum");
+		}
+		return TeamNumber[entity];
+			
+	}
+	return GetEntProp(entity, Prop_Send, "m_iTeamNum");
+}
+
+stock void SetTeam(int entity, int teamSet)
+{
+	if(entity > 0 && entity <= MAXENTITIES)
+	{
+		TeamNumber[entity] = teamSet;
+		if(teamSet <= TFTeam_Red)
+		{
+#if defined ZR
+			if(entity && entity <= MaxClients)
+				ChangeClientTeam(entity, teamSet);
+			else
+#endif
+			{
+				SetEntProp(entity, Prop_Send, "m_iTeamNum", teamSet);
+			}
+		}
+		else if(teamSet > TFTeam_Red)
+		{
+			if(entity && entity <= MaxClients)
+				ChangeClientTeam(entity, TFTeam_Blue);
+			else	
+				SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+		}
+	}
+	else
+	{
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", teamSet);
+	}
 }

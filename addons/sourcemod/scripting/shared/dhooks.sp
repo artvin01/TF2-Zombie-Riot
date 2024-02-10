@@ -901,7 +901,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 #if defined ZR
-			if(i_IsABuilding[entity2] && IsValidEntity(RaidBossActive))
+			if(i_IsABuilding[entity2] && RaidbossIgnoreBuildingsLogic(2))
 			{
 				return false;
 			}
@@ -1044,45 +1044,7 @@ static DynamicHook DHook_CreateVirtual(GameData gamedata, const char[] name)
 	
 	return hook;
 }
-/*
-static void CreateDynamicDetour(GameData gamedata, const char[] name, DHookCallback callbackPre = INVALID_FUNCTION, DHookCallback callbackPost = INVALID_FUNCTION)
-{
-	DynamicDetour detour = DynamicDetour.FromConf(gamedata, name);
-	if (detour)
-	{
-		if (callbackPre != INVALID_FUNCTION)
-			detour.Enable(Hook_Pre, callbackPre);
-		
-		if (callbackPost != INVALID_FUNCTION)
-			detour.Enable(Hook_Post, callbackPost);
-	}
-	else
-	{
-		LogError("Failed to create detour setup handle for %s", name);
-	}
-}
-*/
-/*
-hopefully fixes 0x2f2388
-I suspect that somehow someone got disgusied and thus the sendproxy regarding classes broke as there is no blue player, and maybe it bugs out with base_boss
-i will keep it updated incase this didnt work.
 
-*/
-
-//LAG COMP SECTION! Kinda VERY important.
-
-/*
-public MRESReturn StartLagCompensation_Pre(Address manager, DHookParam param)
-{
-	int Compensator = param.Get(1);
-	PrintToChatAll("StartLagCompensation_Pre %i",Compensator);
-	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation. 
-	{
-		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Spectator))
-	}
-	return MRES_Ignored;
-}
-*/
 public void StartLagCompResetValues()
 {
 	Dont_Move_Building = false;
@@ -2033,7 +1995,7 @@ public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) 
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}
 #if !defined RTS
-	else if(GetTeam(entity) == TFTeam_Red)
+	else if(!b_ThisEntityIgnored_NoTeam[entity] && GetTeam(entity) == TFTeam_Red)
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}
@@ -2217,7 +2179,7 @@ public Action TimerGrantBannerDuration(Handle timer, int ref)
 		SetEntProp(entity, Prop_Send, "m_nModelIndex", BannerWearableModelIndex[ClientHasBannersWithCD(client) -1]);
 
 		SetEntProp(entity, Prop_Send, "m_fEffects", 129);
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+		SetTeam(entity);
 		SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
 		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
 		SetEntityCollisionGroup(entity, 11);

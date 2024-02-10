@@ -64,7 +64,6 @@ public void CitizenRunner_ClotThink(int iNPC)
 
 	if(!npc.Anger)
 	{
-		Change_Npc_Collision(npc.index, 3); //they go through enemy npcs
 		npc.Anger = true;
 	}
 	

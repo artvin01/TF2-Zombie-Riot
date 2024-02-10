@@ -303,7 +303,7 @@ public Action Timer_Detect_Player_Near_Nuke(Handle timer, any entid)
 					{
 						if(IsValidEntity(base_boss) && base_boss > 0)
 						{
-							if(GetEntProp(base_boss, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+							if(GetTeam(base_boss) != TFTeam_Red)
 							{
 								CClotBody npcstats = view_as<CClotBody>(base_boss);
 								if(!npcstats.m_bThisNpcIsABoss && !b_ThisNpcIsImmuneToNuke[base_boss] && RaidBossActive != base_boss) //Make sure it doesnt actually kill map base_bosses

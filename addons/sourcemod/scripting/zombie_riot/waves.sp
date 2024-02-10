@@ -1005,7 +1005,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						SpawnTimer(30.0);
 					}
 				}
-				Raidboss_Clean_Everyone();
 				Music_EndLastmann();
 				ReviveAll(true);
 				CheckAlivePlayers();

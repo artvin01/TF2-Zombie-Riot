@@ -140,7 +140,7 @@ methodmap SawRunner < CClotBody
 	}
 	
 	
-	public SawRunner(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SawRunner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_2.mdl", "1.5", GetSawRunnerHealth(), ally, false, false, true));
 		

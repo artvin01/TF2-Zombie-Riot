@@ -336,7 +336,7 @@ public Action FireMultipleFireBalls(Handle Timer, int ref)
 				{
 					SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 					SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-					SetEntProp(entity, Prop_Send, "m_iTeamNum", GetTeam(client));
+					SetTeam(entity, GetTeam(client));
 					TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
 					DispatchSpawn(entity);
 					TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);

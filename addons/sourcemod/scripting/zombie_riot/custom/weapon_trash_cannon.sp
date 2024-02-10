@@ -642,7 +642,7 @@ public void Trash_Pyre(int client, int weapon, int tier)
 	
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetTeam(client));
+		SetTeam(entity, GetTeam(client));
 		
 		DispatchSpawn(entity);
 		
@@ -1155,7 +1155,7 @@ int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocit
 		DispatchKeyValue(prop, "targetname", "trash_projectile"); 
 				
 		SetEntDataFloat(prop, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-		SetEntProp(prop, Prop_Send, "m_iTeamNum", GetTeam(client));
+		SetTeam(prop, GetTeam(client));
 				
 		DispatchSpawn(prop);
 				

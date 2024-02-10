@@ -6,7 +6,7 @@
 
 methodmap BarrackArcher < BarrackBody
 {
-	public BarrackArcher(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackArcher(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackArcher npc = view_as<BarrackArcher>(BarrackBody(client, vecPos, vecAng, "110",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

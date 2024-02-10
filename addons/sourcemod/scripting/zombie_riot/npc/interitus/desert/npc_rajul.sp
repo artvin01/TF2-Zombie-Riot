@@ -94,7 +94,7 @@ methodmap DesertRajul < CClotBody
 	}
 	
 	
-	public DesertRajul(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertRajul(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertRajul npc = view_as<DesertRajul>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "3500", ally, false, true));
 		

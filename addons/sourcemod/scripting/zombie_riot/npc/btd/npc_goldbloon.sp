@@ -92,7 +92,7 @@ methodmap GoldBloon < CClotBody
 	{
 		EmitCustomToAll("zombie_riot/btd/popgolden.wav", this.index, SNDCHAN_AUTO, 80, _, 2.0);
 	}
-	public GoldBloon(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public GoldBloon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		/*int range = CurrentRound / 10;
 		

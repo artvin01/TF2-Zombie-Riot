@@ -138,7 +138,7 @@ methodmap SeargentIdeal < CClotBody
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public SeargentIdeal(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeargentIdeal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeargentIdeal npc = view_as<SeargentIdeal>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "25000", ally));
 		

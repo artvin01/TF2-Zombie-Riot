@@ -158,7 +158,7 @@ methodmap BeefyBones < CClotBody
 	
 	
 	
-	public BeefyBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
+	public BeefyBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		BeefyBones npc = view_as<BeefyBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BEEFY_SCALE, buffed ? BONES_BEEFY_HP_BUFFED : BONES_BEEFY_HP, ally, false));
 		

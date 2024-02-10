@@ -106,7 +106,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 				TE_SetupBeamPoints(GunPos, spawnLoc, LaserSprite, 0, 0, 0, life, 2.0, 2.2, 1, amp, color, 0);
 				TE_SendToAll();
 				SetEntPropEnt(TripMine, Prop_Send, "m_hOwnerEntity", client);
-				SetEntProp(TripMine, Prop_Send, "m_iTeamNum", GetTeam(client));
+				SetTeam(TripMine, GetTeam(client));
 				SetEntProp(TripMine, Prop_Send, "m_bCritical", false); 	//No crits, causes particles which cause FPS DEATH!! Crits in tf2 cause immensive lag from what i know from ff2.
 																	//Might also just be cosmetics, eitherways, dont use this, litterally no reason to!
 				SetEntProp(TripMine, Prop_Send, "m_iType", 1);
@@ -446,7 +446,7 @@ public void Trip_TrackPlanted(int client)
 									int targ = TR_GetEntityIndex(Trace);
 									char other_classname[32];
 									GetEntityClassname(targ, other_classname, sizeof(other_classname));
-									if ((StrContains(other_classname, "zr_base_npc") != -1) && (GetTeam(client) != GetEntProp(targ, Prop_Send, "m_iTeamNum")))
+									if ((StrContains(other_classname, "zr_base_npc") != -1) && (GetTeam(client) != GetTeam(targ)))
 									{
 										SDKHooks_TakeDamage(targ, client, client, Trip_DMG[client], DMG_BLAST, -1);
 										EmitSoundToAll(TRIP_ACTIVATED, targ, _, 70);

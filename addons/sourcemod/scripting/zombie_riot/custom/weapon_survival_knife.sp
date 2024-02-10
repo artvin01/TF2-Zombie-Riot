@@ -546,8 +546,8 @@ static void Wand_Launch(int client, int iRot, float speed, float time, float dam
 	TeleportEntity(iCarrier, fPos, NULL_VECTOR, fVel);
 	SetEntityMoveType(iCarrier, MOVETYPE_FLY);
 	
-	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetClientTeam(client));
-	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetClientTeam(client));
+	SetTeam(iCarrier, GetClientTeam(client));
+	SetTeam(iRot, GetClientTeam(client));
 
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);

@@ -107,7 +107,7 @@ methodmap SpecialDoctor < CClotBody
 		EmitCustomToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0);
 	}
 
-	public SpecialDoctor(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SpecialDoctor(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/doctor_purnell.mdl", "1.15", GetPanzerHealth(), ally));
 		i_NpcInternalId[npc.index] = THEDOCTOR_MINIBOSS;
@@ -116,7 +116,7 @@ methodmap SpecialDoctor < CClotBody
 		npc.m_iState = -1;
 		npc.SetActivity("ACT_SPAWN");
 		
-		if(ally)
+		if(ally == TFTeam_Red)
 		{
 			npc.PlayFriendlySound();
 		}

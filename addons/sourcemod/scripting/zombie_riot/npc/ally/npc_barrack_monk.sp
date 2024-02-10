@@ -8,7 +8,7 @@ methodmap BarrackMonk < BarrackBody
 		return;
 	//	EmitSoundToAll("ambient/rottenburg/tunneldoor_open.wav", this.index, _, 60, _, 0.4, 60);
 	}
-	public BarrackMonk(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackMonk(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackMonk npc = view_as<BarrackMonk>(BarrackBody(client, vecPos, vecAng, "750",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

@@ -163,7 +163,7 @@ methodmap MedivalBrawler < CClotBody
 		#endif
 	}
 	
-	public MedivalBrawler(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalBrawler(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalBrawler npc = view_as<MedivalBrawler>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "4500", ally));
 		SetVariantInt(1);

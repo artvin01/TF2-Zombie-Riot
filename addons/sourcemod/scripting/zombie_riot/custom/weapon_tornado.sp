@@ -228,7 +228,7 @@ void BlitzRocket(int client, float speed, float damage, int weapon)
 		b_EntityIsArrow[entity] = true;
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetTeam(client));
+		SetTeam(entity, GetTeam(client));
 		int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
 		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
 		DispatchSpawn(entity);

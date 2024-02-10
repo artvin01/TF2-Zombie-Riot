@@ -173,7 +173,7 @@ methodmap XenoFlyingArmor < CClotBody
 	}
 	
 	
-	public XenoFlyingArmor(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoFlyingArmor(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoFlyingArmor npc = view_as<XenoFlyingArmor>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000", ally));
 		SetVariantInt(1);

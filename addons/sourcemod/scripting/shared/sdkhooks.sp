@@ -2741,7 +2741,7 @@ void ArmorDisplayClient(int client, bool deleteOverride = false)
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", Armor_WearableModelIndex);
 
 		//	SetEntProp(entity, Prop_Send, "m_fEffects", 129);
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+			SetTeam(entity);
 			SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
 			SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
 			SetEntityCollisionGroup(entity, 11);

@@ -38,7 +38,7 @@ methodmap TidelinkedBishop < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public TidelinkedBishop(int client, float vecPos[3], float vecAng[3], bool ally)
+	public TidelinkedBishop(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		TidelinkedBishop npc = view_as<TidelinkedBishop>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.6", "40000", ally, false, true));
 		// 40000 x 1.0

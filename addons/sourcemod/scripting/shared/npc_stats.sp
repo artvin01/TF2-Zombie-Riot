@@ -53,7 +53,6 @@ float f_AvoidObstacleNavTime[MAXENTITIES];
 float f_LayerSpeedFrozeRestore[MAXENTITIES];
 bool b_AvoidObstacleType[MAXENTITIES];
 int i_FailedTriesUnstuck[MAXENTITIES];
-int b_NpcCollisionType[MAXENTITIES];
 bool b_should_explode[MAXENTITIES];
 bool b_rocket_particle_from_blue_npc[MAXENTITIES];
 static int g_rocket_particle;
@@ -100,9 +99,7 @@ public Action Command_PetMenu(int client, int args)
 	
 	if(args < 1)
 	{
-#if defined RPG
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [ally] [level] [damage multi] [speed multi] [ranged armour] [melee armour]");
-#elseif defined RTS
+#if defined RTS
 		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [team]");
 #else
 		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [team] [damage multi] [speed multi] [ranged armour] [melee armour] [Extra Size]");
@@ -129,7 +126,6 @@ public Action Command_PetMenu(int client, int args)
 #endif
 	if(args > 3)	//data
 		team = view_as<bool>(GetCmdArgInt(4));
-	
 #if defined ZR
 	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, team, buffer);
 	if(IsValidEntity(entity))
@@ -359,7 +355,7 @@ methodmap CClotBody < CBaseCombatCharacter
 						const char[] model,
 						const char[] modelscale = "1.0",
 						const char[] health = "125",
-						bool Ally = false,
+						int Ally = false,
 						bool Ally_Invince = false,
 						bool isGiant = false,
 						bool IgnoreBuildings = false,
@@ -381,26 +377,24 @@ methodmap CClotBody < CBaseCombatCharacter
 		DispatchKeyValue(npc,	   "health",	 health);
 
 #if !defined RTS
-		if(Ally)
+		if(Ally == TFTeam_Red)
 		{
-			TeamNumber[npc] = TFTeam_Red;
 			if(Ally_Invince)
 			{
 				b_ThisEntityIgnored[npc] = true;
 			}
-			SetEntProp(npc, Prop_Send, "m_iTeamNum", TFTeam_Red);
+			SetTeam(npc, TFTeam_Red);
 		}
 		else
 #endif
 		{
-
+			Ally += 3;
 #if defined RTS
 			TeamNumber[npc] = 0;
 #else
-			TeamNumber[npc] = TFTeam_Blue;
+			TeamNumber[npc] = Ally;
 #endif
-
-			SetEntProp(npc, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+			SetTeam(npc, Ally);
 		}
 		AddEntityToLagCompList(npc);
 
@@ -408,6 +402,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		b_NpcHasDied[npc] = false;
 		i_FailedTriesUnstuck[npc] = 0;
 		flNpcCreationTime[npc] = GetGameTime();
+		b_NpcIgnoresbuildings[npc] = IgnoreBuildings;
 		DispatchSpawn(npc); //Do this at the end :)
 		Hook_DHook_UpdateTransmitState(npc);
 		SDKHook(npc, SDKHook_TraceAttack, NPC_TraceAttack);
@@ -441,7 +436,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		baseNPC.flDeathDropHeight = 999999.0;
 
 #if defined ZR
-		if(!Ally && VIPBuilding_Active())
+		if(Ally != TFTeam_Red && VIPBuilding_Active())
 		{
 			baseNPC.flAcceleration = 90000.0;
 			baseNPC.flFrictionSideways = 90.0;
@@ -455,77 +450,16 @@ methodmap CClotBody < CBaseCombatCharacter
 		//Just set it to true at all times.
 
 #if !defined RTS
-		if(Ally)
+		if(Ally == TFTeam_Red)
 			SetEntityCollisionGroup(npc, 24);
 #endif
 
 		AddNpcToAliveList(npc, 0);
-		b_NpcCollisionType[npc] = 0;
-
-#if !defined RTS
-		if(!Ally)
-#endif
-		{
-#if defined ZR
-			if(IgnoreBuildings || (RaidbossIgnoreBuildingsLogic(2))) //During an active raidboss, make sure that they ignore barricades
-			{
-				if(VIPBuilding_Active())
-				{
-					f_AvoidObstacleNavTime[npc] = FAR_FUTURE;
-					b_AvoidObstacleType[npc] = true;
-					Change_Npc_Collision(npc, num_ShouldCollideEnemyTDIgnoreBuilding);
-				}
-				else
-				{
-					Change_Npc_Collision(npc, num_ShouldCollideEnemyIngoreBuilding);
-				}
-			}
-			else
-#endif
-			{
-#if defined ZR
-				if(VIPBuilding_Active())
-				{
-					f_AvoidObstacleNavTime[npc] = FAR_FUTURE;
-					b_AvoidObstacleType[npc] = true;
-					Change_Npc_Collision(npc, num_ShouldCollideEnemyTD);
-				}
-				else
-#endif
-				{
-					Change_Npc_Collision(npc, num_ShouldCollideEnemy);
-				}
-			}
-		}
-#if !defined RTS
-		else
-		{
-			if(Ally_Invince)
-			{
-				Change_Npc_Collision(npc, num_ShouldCollideAllyInvince);
-			}
-			else
-			{
-				Change_Npc_Collision(npc, num_ShouldCollideAlly);
-			}
-		}
-#endif
-
+		locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollide_NpcLoco);
 		locomotion.SetCallback(LocomotionCallback_IsEntityTraversable, IsEntityTraversable);
 		view_as<CBaseAnimating>(npc).Hook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
 		
-		//so map makers can choose between NPCs and Clients
-		
-#if !defined RTS
-		if(Ally && !ForceNpcClipping)
-		{
-			h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMaskAlly, true, view_as<Address>(baseNPC.GetBody()));
-		}
-		else
-#endif
-		{
-			h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody()));
-		}
+		h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody()));
 
 		SetEntityFlags(npc, FL_NPC);
 		
@@ -564,7 +498,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			m_vecMins[1] = -f3_CustomMinMaxBoundingBox[npc][1];
 			m_vecMins[2] = 0.0;
 		}
-		
 		//Fix collisions
 		
 		static float m_vecMaxs_Body[3];
@@ -600,7 +533,7 @@ methodmap CClotBody < CBaseCombatCharacter
 
 
 #if defined ZR
-		if(Ally && !Ally_Collideeachother)
+		if(Ally == TFTeam_Red && !Ally_Collideeachother)
 		{
 			npcstats.m_iTeamGlow = TF2_CreateGlow(npc);
 			
@@ -608,7 +541,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			AcceptEntityInput(npcstats.m_iTeamGlow, "SetGlowColor");
 		}
 #endif
-		
+
 		SDKHook(npc, SDKHook_Think, NpcBaseThink);
 		SDKHook(npc, SDKHook_ThinkPost, NpcBaseThinkPost);
 //		SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
@@ -1960,7 +1893,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
-	public int GetTeam()  { return GetEntProp(this.index, Prop_Send, "m_iTeamNum"); }
 	
 	public PathFollower GetPathFollower()
 	{
@@ -2557,7 +2489,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			i_ExplosiveProjectileHexArray[entity] = flags;
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, rocket_damage, true);	// Damage
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(this.index, Prop_Send, "m_iTeamNum")));
+			SetTeam(entity, GetTeam(this.index));
 			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
 
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
@@ -2618,7 +2550,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(this.index, Prop_Send, "m_iTeamNum")));
+			SetTeam(entity, GetTeam(this.index));
 			
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
 			DispatchSpawn(entity);
@@ -2686,7 +2618,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
 			f_CustomGrenadeDamage[entity] = damage;	
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+			SetTeam(entity, GetTeam(this.index));
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
 			DispatchSpawn(entity);
 			SetEntityModel(entity, model);
@@ -2727,7 +2659,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(this.index, Prop_Send, "m_iTeamNum"));
+			SetTeam(entity, GetTeam(this.index));
 			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
 			DispatchSpawn(entity);
@@ -3118,9 +3050,6 @@ public void NPC_Base_InitGamedata()
 
 
 	g_hGetSolidMask			= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
-	g_hGetSolidMaskAlly		= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMaskAlly);
-	//g_hGetSolidMaskNone		= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMaskNone);	//warp
-
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "LookupSequence");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
@@ -3332,11 +3261,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			{
 				f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 1.5;
 			}
-		}
-		
-		if (EntRefToEntIndex(RaidBossActive) == pThis)
-		{
-			CreateTimer(1.0, Timer_CheckIfRaidIsActive, _, TIMER_FLAG_NO_MAPCHANGE);	
 		}
 		
 		VausMagicaRemoveShield(pThis);
@@ -4159,12 +4083,12 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 	{
 		return true;
 	}
-
+	/*
 	if(b_NpcCollisionType[bot_entidx] == num_ShouldCollideEnemyTD || b_NpcCollisionType[bot_entidx] == num_ShouldCollideEnemyTDIgnoreBuilding) //for tower defense, we need entirely custom logic.
 	{
 		return (!NpcCollisionCheck(bot_entidx, other_entidx, num_TraverseInverse));
 	}
-
+	*/
 #if defined RTS
 	return !b_NpcHasDied[other_entidx];
 #else
@@ -4286,12 +4210,12 @@ public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
 	{
 		return false;
 	}
-	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") != GetTeam(entity))
+	if(GetTeam(iExclude) != GetTeam(entity))
 		return false;
 
 	else if(!b_NpcHasDied[entity])
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetTeam(entity))
+		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return !(entity == iExclude);
 			
@@ -4312,7 +4236,7 @@ public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
 		return false;
 	}	
 	
-	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetTeam(entity))
+	if(GetTeam(iExclude) == GetTeam(entity))
 		return !(entity == iExclude);
 
 
@@ -4541,7 +4465,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 				return false;
 			}
 #else
-			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
+			if(GetTeam(index) == GetTeam(enemy))
 			{
 				return false;
 			}
@@ -4567,7 +4491,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			}
 #endif
 
-			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
+			if(GetTeam(index) == GetTeam(enemy))
 			{
 				return false;
 			}
@@ -4589,7 +4513,7 @@ stock bool IsValidAllyPlayer(int index, int Ally)
 {
 	if(IsValidClient(Ally))
 	{
-		if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(Ally, Prop_Send, "m_iTeamNum"))
+		if(GetTeam(index) == GetTeam(Ally))
 		{
 			if(b_ThisEntityIgnored[Ally])
 			{
@@ -4814,7 +4738,10 @@ stock int GetClosestTargetRTS(int entity,
 					}
 					if (!npc.m_bCamo || camoDetection)
 					{
-						GetClosestTarget_AddTarget(entity_close, 3);
+						if(GetTeam(entity_close) == TFTeam_Red)
+							GetClosestTarget_AddTarget(entity_close, 3);
+						else
+							GetClosestTarget_AddTarget(entity_close, 2);
 					}
 				}
 			}
@@ -6886,29 +6813,18 @@ bool SetTeleportEndPoint(int client, float Position[3])
 
 public MRESReturn IBody_GetSolidMask(Address pThis, Handle hReturn, Handle hParams)			  
 { 
-/*	DHookSetReturn(hReturn, view_as<CClotBody>(view_as<INextBotComponent>(pThis).GetBot().GetEntity()).GetSolidMask()); 
-	//causes crashes, and its unnceccacary?
-*/
-	DHookSetReturn(hReturn, (MASK_NPCSOLID)); 
-	return MRES_Supercede; 
-}
-public MRESReturn IBody_GetSolidMaskAlly(Address pThis, Handle hReturn, Handle hParams)			  
-{ 
-/*	DHookSetReturn(hReturn, view_as<CClotBody>(view_as<INextBotComponent>(pThis).GetBot().GetEntity()).GetSolidMaskAlly());
-	//causes crashes, and its unnceccacary?
-*/
-	DHookSetReturn(hReturn, (MASK_NPCSOLID|MASK_PLAYERSOLID)); 
-	return MRES_Supercede; 
-}
-/*
-public MRESReturn IBody_GetSolidMaskNone(Address pThis, Handle hReturn, Handle hParams)	//warp	  
-{ 
-	//DHookSetReturn(hReturn, view_as<CClotBody>(view_as<INextBotComponent>(pThis).GetBot().GetEntity()).GetSolidMaskAlly());
-	//causes crashes, and its unnceccacary?
+	int EntitySolidMask = view_as<int>(view_as<INextBotComponent>(pThis).GetBot().GetEntity());
 
-	DHookSetReturn(hReturn, 0); 
+	int Solidity;
+	if(GetTeam(EntitySolidMask) == TFTeam_Red)
+		Solidity = (MASK_NPCSOLID|MASK_PLAYERSOLID);
+	else
+		Solidity = (MASK_NPCSOLID);
+
+	DHookSetReturn(hReturn, Solidity); 
+
 	return MRES_Supercede; 
-}*/
+}
 
 #if defined ZR
 stock float[] PredictSubjectPositionOld(CClotBody npc, int subject, float Extra_lead = 0.0, bool ignore = false)
@@ -7665,7 +7581,7 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore
 	{
 		if (IsValidEntity(i) && i != entity && i != ingore_thisAlly && (i <= MaxClients || !b_NpcHasDied[i]))
 		{
-			if(GetTeam(entity) == GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && IsEntityAlive(i, true) && !i_NpcIsABuilding[i] && !b_ThisEntityIgnoredByOtherNpcsAggro[i])  //The is a medic thing is really needed
+			if(GetTeam(entity) == GetTeam(i) && !Is_a_Medic[i] && IsEntityAlive(i, true) && !i_NpcIsABuilding[i] && !b_ThisEntityIgnoredByOtherNpcsAggro[i])  //The is a medic thing is really needed
 			{
 				if(ExtraValidityFunction != INVALID_FUNCTION)
 				{
@@ -7719,7 +7635,7 @@ stock bool IsValidAlly(int index, int ally)
 			return false;
 		}
 
-		if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(ally, Prop_Send, "m_iTeamNum") && (ally <= MaxClients || !b_NpcHasDied[ally]) && IsEntityAlive(ally, true)) 
+		if(GetTeam(index) == GetTeam(ally) && (ally <= MaxClients || !b_NpcHasDied[ally]) && IsEntityAlive(ally, true)) 
 		{
 			return true;
 		}
@@ -8020,31 +7936,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	FormatEx(c_HeadPlaceAttachmentGibName[entity], sizeof(c_HeadPlaceAttachmentGibName[]), "");
 }
 
-#if defined ZR
-void Raidboss_Clean_Everyone(int RevertBack = false)
-{
-	if(VIPBuilding_Active())
-		return;
-		
-	int base_boss;
-	while((base_boss=FindEntityByClassname(base_boss, "zr_base_npc")) != -1)
-	{
-		if(IsValidEntity(base_boss) && !b_NpcHasDied[base_boss])
-		{
-			if(GetEntProp(base_boss, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
-			{
-				if(GetTeam(base_boss) != TFTeam_Red) //Make sure it doesnt actually kill map base_bosses
-				{
-					if(RevertBack)
-						Change_Npc_Collision(base_boss, num_ShouldCollideEnemy);
-					else
-						Change_Npc_Collision(base_boss, 1); 
-				}
-			}
-		}
-	}
-}
-#endif
 
 public void ArrowStartTouch(int arrow, int entity)
 {
@@ -8360,7 +8251,7 @@ static int ResizeMyTeam;
 bool IsSpotSafe(int npc, float playerPos[3], float sizeMultiplier)
 {
 	ResizeTraceFailed = false;
-	ResizeMyTeam = GetEntProp(npc, Prop_Data, "m_iTeamNum");
+	ResizeMyTeam = GetTeam(npc);
 	static float mins[3];
 	static float maxs[3];
 	mins[0] = -24.0 * sizeMultiplier;
@@ -9385,17 +9276,13 @@ float GetRandomRetargetTime()
 	return GetRandomFloat(3.0, 4.0);
 }
 
-void NpcStartTouch(CBaseNPC_Locomotion pThis, int target, bool DoNotLoop = false, int TouchedTarget = 0)
+void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 {
 	int entity = TouchedTarget;
-	if(TouchedTarget == 0)
-	{
-		entity = pThis.GetBot().GetNextBotCombatCharacter();
-	}
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(!DoNotLoop && !b_NpcHasDied[target] && !IsEntityTowerDefense(target)) //If one entity touches me, then i touch them
 	{
-		NpcStartTouch(view_as<CBaseNPC_Locomotion>(0), entity, true, target);
+		NpcStartTouch(target, entity, true);
 	}
 
 	if(fl_GetClosestTargetTimeTouch[entity] < GetGameTime() && f_TimeFrozenStill[entity] < GetGameTime(npc.index))
@@ -9477,7 +9364,7 @@ public MRESReturn CTFBaseBoss_Ragdoll(int pThis, Handle hReturn, Handle hParams)
 void RemoveNpcFromEnemyList(int npc, bool ingoresetteam = false)
 {
 	if(!ingoresetteam)
-		SetEntProp(npc, Prop_Send, "m_iTeamNum",view_as<int>(TFTeam_Red));
+		SetTeam(npc, TFTeam_Red);
 		
 	//set to red just incase!
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
@@ -10161,16 +10048,6 @@ void ExtinguishTarget(int target)
 	}
 }
 
-#if defined ZR
-public Action Timer_CheckIfRaidIsActive(Handle timer, any entid)
-{
-	if(!RaidbossIgnoreBuildingsLogic(2))
-	{
-		Raidboss_Clean_Everyone(true);
-	}
-	return Plugin_Handled;
-}
-#endif
 
 
 

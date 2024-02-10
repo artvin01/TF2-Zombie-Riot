@@ -1141,12 +1141,10 @@ methodmap Citizen < CClotBody
 	{
 		if(state)
 		{
-			Change_Npc_Collision(this.index, 3);
 			this.bCantCollidie = true;
 		}
 		else
 		{
-			Change_Npc_Collision(this.index, 4);
 			this.bCantCollidie = false;
 		}
 	}
@@ -3325,7 +3323,7 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 	if(damage < 9999999.0)
 	{
 		Citizen npc = view_as<Citizen>(victim);
-		if(npc.m_nDowned || (attacker > 0 && GetTeam(victim) == GetEntProp(attacker, Prop_Send, "m_iTeamNum")))
+		if(npc.m_nDowned || (attacker > 0 && GetTeam(victim) == GetTeam(attacker)))
 		{
 			damage = 0.0;
 		}

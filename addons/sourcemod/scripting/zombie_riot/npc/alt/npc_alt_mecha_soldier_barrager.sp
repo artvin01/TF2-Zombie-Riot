@@ -148,7 +148,7 @@ methodmap MechaSoldier_Barrager < CClotBody
 		#endif
 	}
 	
-	public MechaSoldier_Barrager(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MechaSoldier_Barrager(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MechaSoldier_Barrager npc = view_as<MechaSoldier_Barrager>(CClotBody(vecPos, vecAng, ALTBOTSOLDIERMODEL, "1.0", "2000", ally));
 		

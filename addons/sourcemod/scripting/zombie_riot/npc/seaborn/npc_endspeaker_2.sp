@@ -3,7 +3,7 @@
 
 methodmap EndSpeaker2 < EndSpeakerSmall
 {
-	public EndSpeaker2(bool ally)
+	public EndSpeaker2(int ally)
 	{
 		float vecPos[3], vecAng[3];
 		view_as<EndSpeaker>(0).GetSpawn(vecPos, vecAng);

@@ -1324,7 +1324,7 @@ public void Warp_Non_Combat_Npcs_Near(int iNPC, int type, int Target)
 				{
 					if(i_npc_type[baseboss_index]==type || type==2)	//same type of npc, or a global type
 					{
-						if(GetEntProp(baseboss_index, Prop_Data, "m_iTeamNum") == GetEntProp(npc.index, Prop_Data, "m_iTeamNum") && IsEntityAlive(baseboss_index))
+						if(GetTeam(baseboss_index) == GetTeam(npc.index) && IsEntityAlive(baseboss_index))
 						{
 							CClotBody npc2 = view_as<CClotBody>(baseboss_index);
 							int PrimrayThreatIndex = npc2.m_iTarget;
@@ -1418,7 +1418,7 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 			{
 				if(i_npc_type[baseboss_index]==i_master_attracts[npc.index] || (i_master_attracts[npc.index]==3 || Override))	//same type of npc, or a global type
 				{
-					if(GetEntProp(baseboss_index, Prop_Data, "m_iTeamNum") == GetEntProp(npc.index, Prop_Data, "m_iTeamNum") && IsEntityAlive(baseboss_index))
+					if(GetTeam(baseboss_index) == GetTeam(npc.index) && IsEntityAlive(baseboss_index))
 					{
 						static float pos2[3];
 						GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", pos2);

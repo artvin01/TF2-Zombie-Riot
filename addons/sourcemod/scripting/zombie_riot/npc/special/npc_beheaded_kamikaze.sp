@@ -84,7 +84,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		
 	}
 	
-	public BeheadedKamiKaze(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BeheadedKamiKaze(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", GetBeheadedKamiKazeHealth(), ally));
 		
@@ -124,7 +124,7 @@ methodmap BeheadedKamiKaze < CClotBody
 
 		npc.m_flWaveScale = wave;
 
-		if(!ally)
+		if(ally != TFTeam_Red)
 		{
 			if(fl_KamikazeInitiate < GetGameTime())
 			{

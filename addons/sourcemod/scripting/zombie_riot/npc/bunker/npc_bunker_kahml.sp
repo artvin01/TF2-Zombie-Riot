@@ -272,7 +272,7 @@ methodmap BunkerKahml < CClotBody
 		#endif
 	}
 	
-	public BunkerKahml(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BunkerKahml(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BunkerKahml npc = view_as<BunkerKahml>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "55000000", ally, false, true));
 		

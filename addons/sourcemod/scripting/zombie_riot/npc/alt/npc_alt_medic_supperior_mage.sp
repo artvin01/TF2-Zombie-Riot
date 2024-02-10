@@ -170,7 +170,7 @@ methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 	}
 	
 	
-	public NPC_ALT_MEDIC_SUPPERIOR_MAGE(int client, float vecPos[3], float vecAng[3], bool ally)
+	public NPC_ALT_MEDIC_SUPPERIOR_MAGE(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		NPC_ALT_MEDIC_SUPPERIOR_MAGE npc = view_as<NPC_ALT_MEDIC_SUPPERIOR_MAGE>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.25", "25000", ally));
 		

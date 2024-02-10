@@ -101,7 +101,7 @@ methodmap DesertAncientDemon < CClotBody
 	{
 		public get()		{	return i_RaidGrantExtra[this.index] < 0;	}
 	}
-	public DesertAncientDemon(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertAncientDemon(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertAncientDemon npc = view_as<DesertAncientDemon>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "15000", ally));
 		
@@ -397,7 +397,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 	{
 		return;
 	}
-	if(GetEntProp(ally, Prop_Send, "m_iTeamNum") != GetEntProp(self, Prop_Send, "m_iTeamNum"))
+	if(GetTeam(ally) != GetTeam(self))
 	{
 		return;
 	}
@@ -446,7 +446,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 	if(IsValidEntity(NpcSpawnDemon))
 	{
 		flMaxHealth /= 40;
-		if(GetEntProp(NpcSpawnDemon, Prop_Send, "m_iTeamNum") != 2)
+		if(GetTeam(NpcSpawnDemon) != TFTeam_Red)
 		{
 			Zombies_Currently_Still_Ongoing += 1;
 		}

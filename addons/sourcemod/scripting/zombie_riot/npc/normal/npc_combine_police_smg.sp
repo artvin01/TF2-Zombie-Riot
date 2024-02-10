@@ -165,7 +165,7 @@ methodmap CombinePoliceSmg < CClotBody
 	}
 	
 	
-	public CombinePoliceSmg(int client, float vecPos[3], float vecAng[3], bool ally)
+	public CombinePoliceSmg(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		CombinePoliceSmg npc = view_as<CombinePoliceSmg>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "700", ally));
 		

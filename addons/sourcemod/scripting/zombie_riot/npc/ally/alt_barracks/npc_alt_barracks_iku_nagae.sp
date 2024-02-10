@@ -100,7 +100,7 @@ methodmap Barrack_Alt_Ikunagae < BarrackBody
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	public Barrack_Alt_Ikunagae(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Barrack_Alt_Ikunagae(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barrack_Alt_Ikunagae npc = view_as<Barrack_Alt_Ikunagae>(BarrackBody(client, vecPos, vecAng, "450", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

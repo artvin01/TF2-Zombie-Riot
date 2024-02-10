@@ -60,7 +60,7 @@ methodmap UnderTides < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public UnderTides(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public UnderTides(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		UnderTides npc = view_as<UnderTides>(CClotBody(vecPos, vecAng, "models/synth.mdl", "1.0", "15000", ally, false, true, _, _, {30.0, 30.0, 100.0}));
 		// 100,000 x 0.15

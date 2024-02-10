@@ -54,7 +54,7 @@ methodmap SeabornSupporter < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornSupporter(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornSupporter(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornSupporter npc = view_as<SeabornSupporter>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "45000", ally, false));
 

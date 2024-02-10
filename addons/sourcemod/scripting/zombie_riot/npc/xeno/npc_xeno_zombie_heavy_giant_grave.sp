@@ -130,7 +130,7 @@ methodmap XenoHeavyGiant < CClotBody
 	}
 	
 	
-	public XenoHeavyGiant(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoHeavyGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoHeavyGiant npc = view_as<XenoHeavyGiant>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "15000", ally, false, true));
 		

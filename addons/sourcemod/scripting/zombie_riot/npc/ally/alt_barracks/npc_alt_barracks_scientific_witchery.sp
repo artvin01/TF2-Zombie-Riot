@@ -90,7 +90,7 @@ methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	public Barrack_Alt_Scientific_Witchery(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Barrack_Alt_Scientific_Witchery(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(BarrackBody(client, vecPos, vecAng, "1300", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_crit.mdl"));
 		

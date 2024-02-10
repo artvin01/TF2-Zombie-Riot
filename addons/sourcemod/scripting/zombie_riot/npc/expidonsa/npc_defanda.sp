@@ -85,7 +85,7 @@ methodmap Defanda < CClotBody
 	}
 	
 	
-	public Defanda(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Defanda(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Defanda npc = view_as<Defanda>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		

@@ -72,7 +72,7 @@ methodmap SeabornSoldier < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornSoldier(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornSoldier(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornSoldier npc = view_as<SeabornSoldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "4000", ally));
 		

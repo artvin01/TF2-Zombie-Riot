@@ -69,7 +69,7 @@ methodmap BarrackVillager < BarrackBody
 			}
 		}
 	}
-	public BarrackVillager(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackVillager(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackVillager npc = view_as<BarrackVillager>(BarrackBody(client, vecPos, vecAng, "1000",_,_,_,_,"models/pickups/pickup_powerup_king.mdl"));
 		

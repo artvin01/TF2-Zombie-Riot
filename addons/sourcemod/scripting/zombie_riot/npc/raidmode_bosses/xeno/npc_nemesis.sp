@@ -176,7 +176,7 @@ methodmap RaidbossNemesis < CClotBody
 	{
 		EmitSoundToAll(g_BuffSounds[GetRandomInt(0, sizeof(g_BuffSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public RaidbossNemesis(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public RaidbossNemesis(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossNemesis npc = view_as<RaidbossNemesis>(CClotBody(vecPos, vecAng, NEMESIS_MODEL, "1.75", "20000000", ally, false, true, true,true)); //giant!
 		
@@ -200,7 +200,6 @@ methodmap RaidbossNemesis < CClotBody
 		RaidAllowsBuildings = false;
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 
-		Raidboss_Clean_Everyone();
 
 		if(XenoExtraLogic())
 			RaidModeTime = GetGameTime(npc.index) + 250.0;

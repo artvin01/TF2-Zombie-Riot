@@ -430,6 +430,7 @@ int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
 bool i_IsABuilding[MAXENTITIES];
 
 bool i_NpcIsABuilding[MAXENTITIES];
+bool b_NpcIgnoresbuildings[MAXENTITIES];
 
 const int i_MaxcountBreakable = ZR_MAX_BREAKBLES;
 int i_ObjectsBreakable[ZR_MAX_BREAKBLES];
@@ -730,6 +731,7 @@ bool b_BlockLagCompInternal[MAXENTITIES];
 bool b_Dont_Move_Building[MAXENTITIES];
 bool b_Dont_Move_Allied_Npc[MAXENTITIES];
 int b_BoundingBoxVariant[MAXENTITIES];
+bool b_ThisEntityIgnored_NoTeam[MAXENTITIES];
 bool b_ThisEntityIgnored[MAXENTITIES];
 bool b_ThisEntityIgnoredByOtherNpcsAggro[MAXENTITIES];
 bool b_ThisEntityIgnoredEntirelyFromAllCollisions[MAXENTITIES]={false, ...};
@@ -774,7 +776,6 @@ Handle g_hGetBonePosition;
 
 //PluginBot SDKCalls
 Handle g_hGetSolidMask;
-Handle g_hGetSolidMaskAlly;
 //Handle g_hGetSolidMaskNone;
 //DHooks
 //Handle g_hGetCurrencyValue;
@@ -1611,23 +1612,6 @@ public Action Command_PlayViewmodelAnim(int client, int args)
 		}
 	}
 	
-	return Plugin_Handled;
-}
-
-public Action Command_ChangeCollision(int client, int args)
-{
-	char buf[12];
-	GetCmdArg(1, buf, sizeof(buf));
-	int Collision = StringToInt(buf); 
-	
-	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
-	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-		if (IsValidEntity(baseboss_index))
-		{
-			Change_Npc_Collision(baseboss_index, Collision);
-		}
-	}
 	return Plugin_Handled;
 }
 
@@ -2542,6 +2526,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_ForceCollisionWithProjectile[entity] = false;
 		b_ProjectileCollideIgnoreWorld[entity] = false;
 		i_IsABuilding[entity] = false;
+		b_NpcIgnoresbuildings[entity] = false;
 		i_InSafeZone[entity] = 0;
 		h_NpcCollissionHookType[entity] = 0;
 		h_NpcSolidHookType[entity] = 0;
@@ -2564,6 +2549,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
 		b_IsAGib[entity] = false;
 		b_ThisEntityIgnored[entity] = false;
+		b_ThisEntityIgnored_NoTeam[entity] = false;
 		b_ThisEntityIgnoredByOtherNpcsAggro[entity] = false;
 		b_IgnoredByPlayerProjectiles[entity] = false;
 		b_DoNotUnStuck[entity] = false;
@@ -2579,6 +2565,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_ChaosArrowAmount[entity] = 0;
 		i_WeaponArchetype[entity] = 0;
 		i_WeaponForceClass[entity] = 0;
+		TeamNumber[entity] = -1;
 		
 		fl_Extra_MeleeArmor[entity] 		= 1.0;
 		fl_Extra_RangedArmor[entity] 		= 1.0;
@@ -2618,7 +2605,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 		b_IsAProjectile[entity] = false;
 
-		if(!StrContains(classname, "projectile"))
+		if(StrContains(classname, "projectile") != -1)
 		{
 			b_IsAProjectile[entity] = true;
 		}
@@ -2630,6 +2617,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "instanced_scripted_scene"))
 		{
 			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
 		else if(!StrContains(classname, "tf_ammo_pack"))
 		{
@@ -2792,10 +2780,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "monster_resource")) //npcs think they cant go past this sometimes, lol
 		{
 			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
 		else if(!StrContains(classname, "water_lod_control")) //npcs think they cant go past this sometimes, lol
 		{
 			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
 		else if(!StrContains(classname, "func_door_rotating"))
 		{
@@ -2906,23 +2896,28 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			Hook_DHook_UpdateTransmitState(entity);
 			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
 		else if(!StrContains(classname, "info_particle_system"))
 		{
 			Hook_DHook_UpdateTransmitState(entity);
 			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
 		else if(!StrContains(classname, "info_target"))
 		{
 			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
 		else if(!StrContains(classname, "info_teleport_destination"))
 		{
 			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
 		else if(!StrContains(classname, "env_beam"))
 		{
 			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
 		else if(!StrContains(classname, "func_regenerate"))
 		{

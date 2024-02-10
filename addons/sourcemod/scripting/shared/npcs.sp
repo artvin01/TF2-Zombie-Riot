@@ -598,13 +598,6 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 	if(inflictor < 1 || inflictor > MaxClients)
 		return Plugin_Continue;
 
-	/*
-	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetTeam(victim))
-	{
-		damage = 0.0;
-		return Plugin_Handled;
-	}
-	*/
 	
 	if((damagetype & (DMG_BLAST))) //make sure any hitscan boom type isnt actually boom
 	{
@@ -1138,7 +1131,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3])
 {
 #if defined ZR
-	if(!b_NpcIsTeamkiller[attacker] && GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetTeam(victim))
+	if(!b_NpcIsTeamkiller[attacker] && GetTeam(attacker) == GetTeam(victim))
 		return;
 	int AttackerOverride = EntRefToEntIndex(i_NpcOverrideAttacker[attacker]);
 	if(AttackerOverride > 0)
@@ -2423,7 +2416,7 @@ bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &dam
 	}
 	if(!b_NpcIsTeamkiller[attacker])
 	{
-		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetTeam(victim)) //should be entirely ignored
+		if(GetTeam(attacker) == GetTeam(victim)) //should be entirely ignored
 		{
 			return true;
 		}
@@ -2519,7 +2512,7 @@ stock void OnTakeDamageRpgDungeonLogic(int victim, int &attacker, int &inflictor
 
 stock void OnTakeDamageRpgAgressionOnHit(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
 {
-	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum")!=GetTeam(victim))
+	if(GetTeam(attacker)!=GetTeam(victim))
 	{
 		CClotBody npcBase = view_as<CClotBody>(victim);
 		npcBase.m_flGetClosestTargetNoResetTime = GetGameTime(npcBase.index) + 5.0; //make them angry for 5 seconds if they are too far away.

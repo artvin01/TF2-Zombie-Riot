@@ -73,7 +73,7 @@ methodmap Sniponeer < CClotBody
 	}
 	
 	
-	public Sniponeer(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Sniponeer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Sniponeer npc = view_as<Sniponeer>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1000", ally));
 		

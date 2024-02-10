@@ -226,7 +226,7 @@ methodmap Sensal < CClotBody
 	}
 	
 	
-	public Sensal(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Sensal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Sensal npc = view_as<Sensal>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		
@@ -334,7 +334,6 @@ methodmap Sensal < CClotBody
 		if(!cutscene)
 		{
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
-			Raidboss_Clean_Everyone();
 			Music_SetRaidMusic("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3", 218, true);
 		}
 		npc.m_iChanged_WalkCycle = -1;

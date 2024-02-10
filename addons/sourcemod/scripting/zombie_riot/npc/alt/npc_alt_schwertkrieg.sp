@@ -141,7 +141,7 @@ methodmap Schwertkrieg < CClotBody
 	
 	
 	
-	public Schwertkrieg(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Schwertkrieg(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Schwertkrieg npc = view_as<Schwertkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		

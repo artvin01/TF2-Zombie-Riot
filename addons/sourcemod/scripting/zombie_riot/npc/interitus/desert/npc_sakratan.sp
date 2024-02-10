@@ -87,7 +87,7 @@ methodmap DesertSakratan < CClotBody
 	}
 	
 	
-	public DesertSakratan(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertSakratan(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertSakratan npc = view_as<DesertSakratan>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "550", ally));
 		
@@ -311,7 +311,7 @@ void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sou
 				//if server starts crashing out of nowhere, change how to change teamnum
 				EmitSoundToAll("mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 				ParticleEffectAt(ProjectileLoc, "hightower_explosion", 1.0);
-				int TeamNum = GetEntProp(attacker, Prop_Send, "m_iTeamNum");
+				int TeamNum = GetTeam(attacker);
 				SetEntProp(attacker, Prop_Send, "m_iTeamNum", 4);
 				Explode_Logic_Custom(0.0,
 				attacker,

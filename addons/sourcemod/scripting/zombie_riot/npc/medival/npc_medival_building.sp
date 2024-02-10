@@ -161,7 +161,7 @@ methodmap MedivalBuilding < CClotBody
 		
 	}
 	
-	public MedivalBuilding(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public MedivalBuilding(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}));
 		
@@ -188,7 +188,7 @@ methodmap MedivalBuilding < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
-		if(!ally)
+		if(ally != TFTeam_Red)
 		{
 			b_thisNpcIsABoss[npc.index] = true;
 		}

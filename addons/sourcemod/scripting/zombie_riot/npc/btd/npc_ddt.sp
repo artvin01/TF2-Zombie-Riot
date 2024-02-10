@@ -101,7 +101,7 @@ methodmap DDT < CClotBody
 		
 		SetEntProp(this.index, Prop_Send, "m_nSkin", type);
 	}
-	public DDT(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public DDT(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool fortified = StrContains(data, "f") != -1;
 		
@@ -337,7 +337,7 @@ public void DDT_NPCDeath(int entity)
 		SetEntityCollisionGroup(entity_death, 2);
 		SetVariantString("death");
 		AcceptEntityInput(entity_death, "SetAnimation");
-		SetEntProp(entity_death, Prop_Send, "m_iTeamNum", GetTeam(npc.index));
+		SetTeam(entity_death, GetTeam(npc.index));
 		
 		pos[2] += 20.0;
 		

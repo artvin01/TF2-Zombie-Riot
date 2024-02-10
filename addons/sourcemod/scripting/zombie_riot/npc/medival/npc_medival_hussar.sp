@@ -165,7 +165,7 @@ methodmap MedivalHussar < CClotBody
 		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 85, _, 0.8, 100);
 	}
 	
-	public MedivalHussar(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalHussar(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalHussar npc = view_as<MedivalHussar>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "75000", ally));
 		SetVariantInt(1);
@@ -400,7 +400,7 @@ void HussarAOEBuff(MedivalHussar npc, float gameTime, bool mute = false)
 		{
 			if(IsValidEntity(entitycount) && entitycount != npc.index && (entitycount <= MaxClients || !b_NpcHasDied[entitycount])) //Cannot buff self like this.
 			{
-				if(GetEntProp(entitycount, Prop_Data, "m_iTeamNum") == GetEntProp(npc.index, Prop_Data, "m_iTeamNum") && IsEntityAlive(entitycount))
+				if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
 				{
 					static float pos2[3];
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);

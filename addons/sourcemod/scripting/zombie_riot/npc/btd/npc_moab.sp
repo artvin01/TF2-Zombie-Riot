@@ -98,7 +98,7 @@ methodmap Moab < CClotBody
 		
 		SetEntProp(this.index, Prop_Send, "m_nSkin", type);
 	}
-	public Moab(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Moab(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool fortified = StrContains(data, "f") != -1;
 		

@@ -101,7 +101,7 @@ methodmap RaidbossBladedance < CClotBody
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[rand], this.index, SNDCHAN_AUTO, 130, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public RaidbossBladedance(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public RaidbossBladedance(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossBladedance npc = view_as<RaidbossBladedance>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "1500000", ally, false));
 		
@@ -174,7 +174,6 @@ methodmap RaidbossBladedance < CClotBody
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
-	//	Raidboss_Clean_Everyone();
 
 		return npc;
 	}

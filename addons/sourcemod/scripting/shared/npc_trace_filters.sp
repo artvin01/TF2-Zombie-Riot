@@ -23,7 +23,7 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	else if(!b_NpcHasDied[entity])
 	{
 #if defined ZR
-		if(!b_NpcIsTeamkiller[iExclude] && GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetTeam(entity))
+		if(!b_NpcIsTeamkiller[iExclude] && GetTeam(iExclude) == GetTeam(entity))
 		{
 			return false;
 		}
@@ -47,7 +47,7 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		return false;
 	}	
 #if defined ZR
-	if(!b_NpcIsTeamkiller[iExclude] && GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetTeam(entity))
+	if(!b_NpcIsTeamkiller[iExclude] && GetTeam(iExclude) == GetTeam(entity))
 	{
 		return false;
 	}

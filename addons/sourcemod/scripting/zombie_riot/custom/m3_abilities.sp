@@ -200,6 +200,7 @@ public void PlaceableTempomaryArmorGrenade(int client)
 				
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", team, 1);
+			
 			SetEntProp(entity, Prop_Send, "m_nSkin", (team-2));
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
 			SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);

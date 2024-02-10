@@ -89,7 +89,7 @@ methodmap WinterArcticMage < CClotBody
 	}
 	
 	
-	public WinterArcticMage(int client, float vecPos[3], float vecAng[3], bool ally)
+	public WinterArcticMage(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterArcticMage npc = view_as<WinterArcticMage>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "15000", ally, false, true));
 		

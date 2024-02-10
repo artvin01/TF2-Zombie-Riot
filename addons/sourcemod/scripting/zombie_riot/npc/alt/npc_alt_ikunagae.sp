@@ -168,7 +168,7 @@ methodmap Ikunagae < CClotBody
 		#endif
 	}
 	//static bool b_scaramouche_used[MAXENTITIES] = { false, ... };
-	public Ikunagae(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Ikunagae(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Ikunagae npc = view_as<Ikunagae>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "13500", ally));
 		

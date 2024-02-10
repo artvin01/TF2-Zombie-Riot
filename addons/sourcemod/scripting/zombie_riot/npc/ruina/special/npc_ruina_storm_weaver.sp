@@ -101,7 +101,7 @@ methodmap Storm_Weaver < CClotBody
 		#endif
 	}
 	
-	public Storm_Weaver(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Storm_Weaver(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Storm_Weaver npc = view_as<Storm_Weaver>(CClotBody(vecPos, vecAng, RUINA_STORM_WEAVER_HEAD_MODEL, RUINA_STORM_WEAVER_MODEL_SIZE, "1250", ally));
 		
@@ -111,7 +111,7 @@ methodmap Storm_Weaver < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
 
-		if(!ally)
+		if(ally != TFTeam_Red)
 		{
 			b_thisNpcIsABoss[npc.index] = true;
 		}
@@ -139,7 +139,6 @@ methodmap Storm_Weaver < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);	//temp raidmode stuff
 		RaidAllowsBuildings = false;
 
-		Raidboss_Clean_Everyone();
 
 		//fl_cantseetimeout[npc.index]=GetGameTime()+RUINA_CANTSEE_TIMEOUT+2.5;
 		fl_teleport_time[npc.index]=0.0;

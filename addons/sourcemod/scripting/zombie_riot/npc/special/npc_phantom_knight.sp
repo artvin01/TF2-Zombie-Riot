@@ -140,7 +140,7 @@ methodmap PhantomKnight < CClotBody
 	}
 	
 	
-	public PhantomKnight(int client, float vecPos[3], float vecAng[3], bool ally)
+	public PhantomKnight(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		PhantomKnight npc = view_as<PhantomKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetLucianHealth(), ally));
 		SetVariantInt(3);

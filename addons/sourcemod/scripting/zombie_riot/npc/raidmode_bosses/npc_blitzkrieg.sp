@@ -349,7 +349,7 @@ methodmap Blitzkrieg < CClotBody
 		PrintToServer("CClot::PlayPullSound()");
 		#endif
 	}
-	public Blitzkrieg(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Blitzkrieg(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Blitzkrieg npc = view_as<Blitzkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.4", "25000", ally, false, true, true, true)); //giant!
 		
@@ -446,7 +446,6 @@ methodmap Blitzkrieg < CClotBody
 			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		Raidboss_Clean_Everyone();
 		
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -2186,7 +2185,7 @@ static void FireBlitzRocket(int client, float vecTarget[3], float rocket_damage,
 		fl_blitz_rocket_dmg[entity] = rocket_damage;
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetTeam(npc.index)));
+		SetTeam(entity, GetTeam(npc.index));
 		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
 										
 		TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);

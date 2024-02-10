@@ -145,7 +145,7 @@ methodmap Theocracy < CClotBody
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
-	public Theocracy(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Theocracy(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Theocracy npc = view_as<Theocracy>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "15000", ally));
 		

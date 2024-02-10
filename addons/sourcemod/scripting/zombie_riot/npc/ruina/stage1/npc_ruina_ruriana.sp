@@ -116,7 +116,7 @@ methodmap Ruriana < CClotBody
 	
 	
 	
-	public Ruriana(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Ruriana(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Ruriana npc = view_as<Ruriana>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		

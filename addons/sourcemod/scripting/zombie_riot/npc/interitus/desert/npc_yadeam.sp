@@ -69,7 +69,7 @@ methodmap DesertYadeam < CClotBody
 	}
 	
 	
-	public DesertYadeam(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertYadeam(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertYadeam npc = view_as<DesertYadeam>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "2500", ally));
 		

@@ -4599,7 +4599,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 	int i = MaxClients + 1;
 	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
-		if(GetEntProp(i, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(i) == TFTeam_Red)
 		{
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < range)

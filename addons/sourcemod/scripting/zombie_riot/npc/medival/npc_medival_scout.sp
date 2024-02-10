@@ -163,7 +163,7 @@ methodmap MedivalScout < CClotBody
 		#endif
 	}
 	
-	public MedivalScout(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalScout(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalScout npc = view_as<MedivalScout>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "500", ally));
 		SetVariantInt(1);

@@ -176,7 +176,7 @@ methodmap MedivalVillager < CClotBody
 		#endif
 	}
 	
-	public MedivalVillager(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalVillager(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetVillagerHealth(), ally));
 		SetVariantInt(1);
@@ -276,7 +276,7 @@ methodmap MedivalVillager < CClotBody
 
 							inverting_score_calc = ( distance / 100000000.0);
 
-							if(ally)
+							if(ally == TFTeam_Red)
 							{
 								inverting_score_calc -= 1;
 

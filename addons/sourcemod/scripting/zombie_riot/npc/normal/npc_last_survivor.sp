@@ -226,7 +226,7 @@ methodmap FatherGrigori < CClotBody
 		#endif
 	}
 	
-	public FatherGrigori(int client, float vecPos[3], float vecAng[3], bool ally)
+	public FatherGrigori(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		FatherGrigori npc = view_as<FatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
 		

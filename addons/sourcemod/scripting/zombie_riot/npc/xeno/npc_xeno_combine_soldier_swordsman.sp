@@ -175,7 +175,7 @@ methodmap XenoCombineSwordsman < CClotBody
 	}
 	
 	
-	public XenoCombineSwordsman(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoCombineSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineSwordsman npc = view_as<XenoCombineSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1750", ally));
 		SetVariantInt(1);

@@ -82,7 +82,7 @@ methodmap VausMagica < CClotBody
 		EmitSoundToAll(g_ShieldAttackSounds[GetRandomInt(0, sizeof(g_ShieldAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public VausMagica(int client, float vecPos[3], float vecAng[3], bool ally)
+	public VausMagica(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		VausMagica npc = view_as<VausMagica>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "5000", ally));
 		

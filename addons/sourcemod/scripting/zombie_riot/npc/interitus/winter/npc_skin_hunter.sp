@@ -68,7 +68,7 @@ methodmap WinterSkinHunter < CClotBody
 	}
 	
 	
-	public WinterSkinHunter(int client, float vecPos[3], float vecAng[3], bool ally)
+	public WinterSkinHunter(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterSkinHunter npc = view_as<WinterSkinHunter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "7000", ally));
 		
