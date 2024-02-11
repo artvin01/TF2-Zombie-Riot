@@ -261,7 +261,6 @@ void CreateDimEffect(int client, int weapon, int particle, int entity)
 	int pap = 0;
 	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
 
-	int particle;
 	if(pap == 1.0) //Only show if the weapon is actually in your hand right now.
 	{
 		particle = ParticleEffectAt(flPos, Effect_Normal , 0.0);
