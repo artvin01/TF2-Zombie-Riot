@@ -9,6 +9,8 @@ static Handle h_TimerDimensionWeaponManagement[MAXPLAYERS+1]={null, ...};
 static int how_many_times_swinged[MAXTF2PLAYERS];
 static float f_DIMAbilityActive[MAXPLAYERS+1]={0.0, ...};
 static float f_DIMhuddelay[MAXPLAYERS+1]={0.0, ...};
+static int i_DimParticle[MAXPLAYERS+1];
+
 
 
 void ResetMapStartDimWeapon()
@@ -48,6 +50,11 @@ public void Enable_Dimension_Wand(int client, int weapon) // Enable management, 
 		h_TimerDimensionWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_Dimension, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
+
+	if(!IsDimEffectSpawned(client))
+	{
+		CreateDimEffect(client);
 	}
 }
 
@@ -237,12 +244,6 @@ void Npc_OnTakeDamage_DimensionalRipper(int attacker, int victim)
 	}
 }
 
-static int Get_Pap(int weapon)
-{
-	int pap = 0;
-	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
-	return pap;
-}
 void CreateDimEffect(int client)
 {
 	
@@ -250,6 +251,10 @@ void CreateDimEffect(int client)
 	
 	float flPos[3];
 	GetEntPropVector(client, Prop_Data, "effect_hand_l", flPos);
+
+	int pap = 0;
+	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	return pap;
 
 	if(pap == 1.0) //Only show if the weapon is actually in your hand right now.
 	{
@@ -281,6 +286,18 @@ void CreateDimEffect(int client)
 	}
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(client, particle);
+	i_DimParticle[client][0] = EntIndexToEntRef(particle);
+}
+
+bool IsDimEffectSpawned(int client)
+{
+	int entity = EntRefToEntIndex(i_DimParticle[client]);
+	if(!IsValidEntity(entity))
+	{
+		return false;
+	}
+
+	return true;
 }
 
 void DestroyDimEffect(int client)
