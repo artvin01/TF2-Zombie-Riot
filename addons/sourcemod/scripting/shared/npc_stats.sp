@@ -463,6 +463,7 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		if(Ally != TFTeam_Red)
 			AddNpcToAliveList(npc, 0);
+			
 		locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollide_NpcLoco);
 		locomotion.SetCallback(LocomotionCallback_IsEntityTraversable, IsEntityTraversable);
 		view_as<CBaseAnimating>(npc).Hook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
