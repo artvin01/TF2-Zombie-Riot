@@ -244,7 +244,7 @@ void Npc_OnTakeDamage_DimensionalRipper(int attacker, int victim)
 	}
 }
 
-void CreateDimEffect(int client)
+void CreateDimEffect(int client, int weapon, int particle, int entity)
 {
 	
 	DestroyDimEffect(client);
