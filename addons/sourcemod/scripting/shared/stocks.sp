@@ -4934,12 +4934,12 @@ stock int GetTeam(int entity)
 
 		if(TeamNumber[entity] == -1)
 		{
-			TeamNumber[entity] = GetEntProp(entity, Prop_Send, "m_iTeamNum");
+			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
 		}
 		return TeamNumber[entity];
 			
 	}
-	return GetEntProp(entity, Prop_Send, "m_iTeamNum");
+	return GetEntProp(entity, Prop_Data, "m_iTeamNum");
 }
 
 stock void SetTeam(int entity, int teamSet)
@@ -4955,7 +4955,7 @@ stock void SetTeam(int entity, int teamSet)
 			else
 #endif
 			{
-				SetEntProp(entity, Prop_Send, "m_iTeamNum", teamSet);
+				SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
 			}
 		}
 		else if(teamSet > TFTeam_Red)
@@ -4963,11 +4963,11 @@ stock void SetTeam(int entity, int teamSet)
 			if(entity && entity <= MaxClients)
 				ChangeClientTeam(entity, TFTeam_Blue);
 			else	
-				SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+				SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
 		}
 	}
 	else
 	{
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", teamSet);
+		SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
 	}
 }

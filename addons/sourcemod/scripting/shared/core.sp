@@ -2398,7 +2398,7 @@ public void SDKHook_TeamSpawn_SpawnPost(int entity)
 		{
 			bool Allyspawn = false;
 
-			if(GetTeam(entity) == 2)
+			if(GetTeam(entity) == TFTeam_Red)
 				Allyspawn = true;
 
 			Spawns_AddToArray(entity,_, Allyspawn);
