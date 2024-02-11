@@ -896,7 +896,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-			if(b_IsAProjectile[entity2] && GetTeam(entity1) == GetTeam(entity2))
+			if(b_IsAProjectile[entity2])
 			{
 				return false;
 			}
