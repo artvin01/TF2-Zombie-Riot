@@ -225,6 +225,10 @@ void Npc_OnTakeDamage_DimensionalRipper(int attacker, int victim)
 	{
 		how_many_times_swinged[attacker] += 1;
 	}
+	if(how_many_times_swinged[attacker] >= MAX_DIMENSION_CHARGE)
+	{
+		how_many_times_swinged[attacker] = MAX_DIMENSION_CHARGE;
+	}
 }
 
 
@@ -831,6 +835,7 @@ void Dimension_Summon_Npc(int client, int NpcId, int weapon, float HealthMulti, 
 			int mana_cost = 150;
 			if(mana_cost <= Current_Mana[client])
 			{
+				how_many_times_swinged[client] = 0;
 				Rogue_OnAbilityUse(weapon);
 				float pos1[3], ang[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
