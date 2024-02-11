@@ -330,7 +330,7 @@ void VausMagicaShield(int entity, int victim, float damage, int weapon)
 
 	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
 	{
-		VausTechicusShieldInternal(entity,victim);
+		VausMagicaShieldInternal(entity,victim);
 	}
 }
 
