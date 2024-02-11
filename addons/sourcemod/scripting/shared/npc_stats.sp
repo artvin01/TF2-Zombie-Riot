@@ -2968,13 +2968,6 @@ methodmap CClotBody < CBaseCombatCharacter
 	
 		return (iActivity == this.m_iActivity);
 	}
-
-	//return the bot's collision mask
-	/*public int GetSolidMaskNothing()
-	{
-		//What to collide with
-		return 0;
-	}*/
 	public void RestartMainSequence()
 	{
 		SetEntPropFloat(this.index, Prop_Data, "m_flAnimTime", GetGameTime());
@@ -3050,6 +3043,7 @@ public void NPC_Base_InitGamedata()
 
 
 	g_hGetSolidMask			= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
+
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "LookupSequence");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
@@ -6821,6 +6815,11 @@ int GetSolidMask(int npc)
 	if(b_IgnorePlayerCollisionNPC[npc])
 	{
 		Solidity = (MASK_NPCSOLID);
+	}
+	//this npc ignores all collisions.
+	if(b_IgnoreAllCollisionNPC[npc])
+	{
+		Solidity = (0);	//uhh?
 	}
 	return Solidity;
 }
