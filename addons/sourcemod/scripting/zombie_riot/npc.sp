@@ -3883,7 +3883,8 @@ public void NPCDeath(int entity)
 		
 		case ISHARMLA_TRANS:
 			IsharmlaTrans_NPCDeath(entity);
-			
+	
+		//TODO: Redo this so it uses the new system.
 		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA, RUINA_DRONE, RUINA_RURIANA, RUINA_VENIUM , RUINA_MAGIA_ANCHOR, RUINA_STELLAR_WEAVER, RUINA_STELLAR_WEAVER_MID:
 			Ruina_NPCDeath_Override(entity); //all ruina npc deaths are here
 		
@@ -4782,7 +4783,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case ISHARMLA:
 			Isharmla_OnTakeDamage(victim, attacker, damage);
-		
+		//TODO: Redo this so it uses the new system.
 		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA, RUINA_DRONE, RUINA_RURIANA, RUINA_VENIUM, RUINA_MAGIA_ANCHOR, RUINA_STELLAR_WEAVER, RUINA_STELLAR_WEAVER_MID:	
 			Ruina_NPC_OnTakeDamage_Override(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 			
