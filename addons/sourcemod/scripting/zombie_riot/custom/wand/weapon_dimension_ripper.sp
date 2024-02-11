@@ -12,7 +12,6 @@ static float f_DIMhuddelay[MAXPLAYERS+1]={0.0, ...};
 static int i_DimParticle[MAXPLAYERS+1];
 
 
-
 void ResetMapStartDimWeapon()
 {
 	Zero(f_DIMhuddelay);
@@ -254,31 +253,30 @@ void CreateDimEffect(int client, int weapon, int particle, int entity)
 
 	int pap = 0;
 	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
-	return pap;
 
 	if(pap == 1.0) //Only show if the weapon is actually in your hand right now.
 	{
-		string DimPart = "hwn_skeleton_glow_red";
+		DimPart = "hwn_skeleton_glow_red";
 	}
 	if(pap == 2.0) //Only show if the weapon is actually in your hand right now.
 	{
-		string DimPart = "burningplayer_blueglow";
+		DimPart = "burningplayer_blueglow";
 	}
 	if(pap == 3.0) //Only show if the weapon is actually in your hand right now.
 	{
-		string DimPart = "unusual_aura_green_smoke";
+		DimPart = "unusual_aura_green_smoke";
 	}
 	if(pap == 4.0) //Only show if the weapon is actually in your hand right now.
 	{
-		string DimPart = "contract_score_bonus_sparkle";
+		DimPart = "contract_score_bonus_sparkle";
 	}
 	if(pap == 5.0) //Only show if the weapon is actually in your hand right now.
 	{
-		string DimPart = "unusual_sapper_teamcolor_blue";
+		DimPart = "unusual_sapper_teamcolor_blue";
 	}
 	if(pap == 6.0) //Only show if the weapon is actually in your hand right now.
 	{
-		string DimPart = "utaunt_glowyplayer_purple_parent";
+		DimPart = "utaunt_glowyplayer_purple_parent";
 	}
 	else //Only show if the weapon is actually in your hand right now.
 	{
