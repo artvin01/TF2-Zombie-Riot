@@ -1710,11 +1710,7 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPost(int client, DHookReturn
 		{
 			return MRES_Ignored;
 		}
-		#if defined NoSendProxyClass
 		TF2_SetPlayerClass_ZR(GetChargeEffectBeingProvided, WeaponClass[GetChargeEffectBeingProvided], false, false);
-		#else
-		TF2_SetPlayerClass_ZR(GetChargeEffectBeingProvided, CurrentClass[GetChargeEffectBeingProvided], false, false);
-		#endif
 		GetChargeEffectBeingProvided = 0;
 	}
 	return MRES_Ignored;

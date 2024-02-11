@@ -2077,4 +2077,12 @@
 	{
 		"en"	"Ursus"
 	}
+	"Ransacker"
+	{
+		"en"	"Ransacker"
+	}
+	"Stellar Weaver"
+	{
+		"en"	"Stellar Weaver"
+	}
 }

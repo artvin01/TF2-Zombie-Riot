@@ -1746,7 +1746,7 @@ public void OnClientPutInServer(int client)
 	//do cooldown upon connection.
 	AdjustBotCount();
 #if !defined RTS
-	WeaponClass[client] = TFClass_Unknown;
+	WeaponClass[client] = TFClass_Scout;
 #endif
 	f_ClientReviveDelay[client] = 0.0;
 	
@@ -1830,7 +1830,7 @@ public void OnClientDisconnect(int client)
 	b_DisplayDamageHud[client] = false;
 
 #if !defined RTS
-	WeaponClass[client] = TFClass_Unknown;
+	WeaponClass[client] = TFClass_Scout;
 #endif
 
 #if defined RPG
@@ -3522,8 +3522,8 @@ void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons=true,
 {
 	if(classType < TFClass_Scout || classType > TFClass_Engineer)
 	{
-		//classType = TFClass_Medic;
-		ThrowError("Invalid class %d", classType);
+		classType = TFClass_Scout;
+		LogError("Invalid class %d", classType);
 	}
 	
 	TF2_SetPlayerClass(client, classType, weapons, persistent);
