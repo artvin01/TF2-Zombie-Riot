@@ -187,7 +187,7 @@ methodmap Diversionistico < CClotBody
 		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 350.0);
 		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 500.0);
 
-		if(ally == TFTeam_Red)
+		if(ally != TFTeam_Red)
 		{
 			if(LastSpawnDiversio < GetGameTime())
 			{

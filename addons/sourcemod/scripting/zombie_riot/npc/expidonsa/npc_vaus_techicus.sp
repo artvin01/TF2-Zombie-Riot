@@ -354,7 +354,7 @@ void VausTechicusShield(int entity, int victim, float damage, int weapon)
 
 	if(GetTeam(entity) == TFTeam_Red)
 	{
-		if (!b_NpcHasDied[victim])
+		if (GetTeam(victim) == TFTeam_Red && !b_NpcHasDied[victim])
 		{
 			VausTechicusShieldInternal(entity,victim);
 		}
