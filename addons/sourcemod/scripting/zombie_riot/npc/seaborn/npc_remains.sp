@@ -41,7 +41,7 @@ methodmap Remains < CClotBody
 		if(type < 0 || type >= sizeof(RemainModels))
 			return view_as<Remains>(-1);
 
-		Remains npc = view_as<Remains>(CClotBody(vecPos, vecAng, RemainModels[type], "1.0", "100", true, true));
+		Remains npc = view_as<Remains>(CClotBody(vecPos, vecAng, RemainModels[type], "1.0", "100", TFTeam_Red, true));
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 2);
 

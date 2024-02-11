@@ -900,6 +900,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+			if(GetTeam(entity2) == GetTeam(entity1))
+			{
+				return false;
+			}
 #if defined ZR
 			if(i_IsABuilding[entity2] && RaidbossIgnoreBuildingsLogic(2))
 			{
