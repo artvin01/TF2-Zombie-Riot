@@ -300,7 +300,7 @@ void Kamikaze_DeathExplosion(int entity)
 	RequestFrame(MakeExplosionFrameLaterKami, pack_boom);
 
 	int TeamNum = GetTeam(npc.index);
-	SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
+	SetTeam(npc.index, 999);
 	Explode_Logic_Custom(90.0 * npc.m_flWaveScale,
 	npc.index,
 	npc.index,
@@ -315,7 +315,7 @@ void Kamikaze_DeathExplosion(int entity)
 	5.0,
 	_,
 	BeheadedKamiBoomInternal);
-	SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
+	SetTeam(npc.index, TeamNum);
 	SmiteNpcToDeath(entity);
 	/*
 
