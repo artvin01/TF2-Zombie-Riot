@@ -21,7 +21,7 @@ methodmap BarrackBuilding < BarrackBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 	}
-	public BarrackBuilding(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackBuilding(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackBuilding npc = view_as<BarrackBuilding>(BarrackBody(client, vecPos, vecAng, "4000", TOWER_MODEL, _, TOWER_SIZE_BARRACKS, 80.0,"models/pickups/pickup_powerup_resistance.mdl"));
 		

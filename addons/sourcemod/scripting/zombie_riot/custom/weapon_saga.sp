@@ -331,7 +331,6 @@ void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon, in
 		SetEntityRenderMode(victim, RENDER_TRANSCOLOR, false, 1, false, true);
 		SetEntityRenderColor(victim, 255, 65, 65, 125, false, false, true);
 		b_ThisEntityIgnoredByOtherNpcsAggro[victim] = true;
-		Change_Npc_Collision(victim, 3);
 		SetEntityCollisionGroup(victim, 17);
 		b_DoNotUnStuck[victim] = true;
 		CClotBody npc = view_as<CClotBody>(victim);

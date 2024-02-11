@@ -124,7 +124,7 @@ methodmap Mecha_PyroGiant < CClotBody
 	}
 	
 	
-	public Mecha_PyroGiant(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Mecha_PyroGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Mecha_PyroGiant npc = view_as<Mecha_PyroGiant>(CClotBody(vecPos, vecAng, "models/bots/pyro/bot_pyro.mdl", "1.5", "75000", ally, false, true));
 		

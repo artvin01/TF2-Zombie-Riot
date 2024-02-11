@@ -171,7 +171,7 @@ methodmap XenoCombineCollos < CClotBody
 	}
 	
 	
-	public XenoCombineCollos(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoCombineCollos(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineCollos npc = view_as<XenoCombineCollos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.85", "30000", ally, false, true));
 		SetVariantInt(1);

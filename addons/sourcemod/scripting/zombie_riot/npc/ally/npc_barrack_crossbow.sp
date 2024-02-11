@@ -6,7 +6,7 @@
 
 methodmap BarrackCrossbow < BarrackBody
 {
-	public BarrackCrossbow(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackCrossbow(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackCrossbow npc = view_as<BarrackCrossbow>(BarrackBody(client, vecPos, vecAng, "160",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

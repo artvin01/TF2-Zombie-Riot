@@ -94,7 +94,7 @@ methodmap DesertAhim < CClotBody
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public DesertAhim(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertAhim(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertAhim npc = view_as<DesertAhim>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "550", ally));
 		

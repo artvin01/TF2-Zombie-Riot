@@ -145,7 +145,7 @@ methodmap MedivalArcher < CClotBody
 		#endif
 	}
 	
-	public MedivalArcher(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalArcher(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalArcher npc = view_as<MedivalArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400", ally));
 		SetVariantInt(1);

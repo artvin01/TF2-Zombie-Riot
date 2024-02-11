@@ -54,7 +54,7 @@ methodmap SeabornSupporter < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornSupporter(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornSupporter(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornSupporter npc = view_as<SeabornSupporter>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "45000", ally, false));
 
@@ -189,14 +189,13 @@ public void SeabornSupporter_ClotThink(int iNPC)
 
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
-
+			
 			if(MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
 			{
-				int entity = Npc_Create(SEARUNNER_ALT, -1, pos, ang, ally);
+				int entity = Npc_Create(SEARUNNER_ALT, -1, pos, ang, GetTeam(npc.index));
 				if(entity > MaxClients)
 				{
-					if(!ally)
+					if(GetTeam(npc.index) != TFTeam_Red)
 						Zombies_Currently_Still_Ongoing++;
 					
 					SetEntProp(entity, Prop_Data, "m_iHealth", health);

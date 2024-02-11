@@ -1,3 +1,4 @@
+/*
 enum
 {
 	num_ShouldCollideEnemyIngoreBuilding = 1,
@@ -149,14 +150,110 @@ bool ShouldCollideEnemy_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Loc
 	return true;
 }
 
-
-public bool ShouldCollideEnemyIngoreBuilding(CBaseNPC_Locomotion loco, int otherindex)
+*/
+public bool ShouldCollide_NpcLoco(CBaseNPC_Locomotion loco, int otherindex)
 { 
-	return ShouldCollideEnemyIngoreBuilding_Internal(loco, otherindex);
+	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
+	return ShouldCollide_NpcLoco_Internal(bot_entidx, otherindex);
 }
 
+bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarules = 0)
+{ 
+	//bots will always collide with brushes, and not ignored.
+	if(b_is_a_brush[otherindex])
+	{
+		return true;
+	}
+	//Any entity designated as "cant collide" Will be countes not collideable.
+	if(b_CantCollidie[otherindex])
+	{
+		return false;
+	}
+	//if the bots team is player team, then they cant collide with any entities that have this flag.
+	if(GetTeam(bot_entidx) == TFTeam_Red)
+	{
+		if(b_CantCollidieAlly[otherindex])
+			return false;
+	}	
+	if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
+	{
+		CClotBody npc = view_as<CClotBody>(bot_entidx);
+		if(npc.m_iTarget == otherindex)
+		{
+			return true;
+		}
+		if(i_IsABuilding[otherindex])
+		{
+			if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
+			{
+				NpcStartTouch(bot_entidx,otherindex);
+				return true;
+			}
+		}
+		return false;
+	}
+	//No matter what, if they are on the same team, then they will not collide at all as of now.
+	if(GetTeam(bot_entidx) == GetTeam(otherindex))
+	{
+		//This is a trace, and the initator is a team killer, allow collisions via trace like this.
+		if(extrarules == 1 && b_NpcIsTeamkiller[bot_entidx])
+		{
+			return true;
+		}
+		return false;
+	}
+	//the collided index is a player.
+	if(otherindex > 0 && otherindex <= MaxClients)
+	{
+		//this player has some type of logic to prevent collisions, ignore.
+		if(b_ThisEntityIgnored[otherindex])
+		{
+			return false;
+		}
+		//we collided with a player, change target.
+		NpcStartTouch(bot_entidx,otherindex);
+		return true;
+	}
+	if(i_IsABuilding[otherindex])
+	{
+		if(RaidbossIgnoreBuildingsLogic(2) || b_NpcIgnoresbuildings[bot_entidx])
+		{
+			return false;
+		}
+		return true;
+	}
+	//always collide with vehicles if on opesite teams.
+	if(b_IsVehicle[otherindex])
+	{
+		NpcStartTouch(bot_entidx,otherindex);
+		return true;
+	}
+	//other entity is an npc
+	if(!b_NpcHasDied[otherindex])
+	{
+		//we are ignoring them, skip them, but only during traces.
+		if(b_IgnorePlayerCollisionNPC[bot_entidx])
+		{
+			return false;
+		}
+		if(b_ThisEntityIgnored[bot_entidx] && extrarules == 0)
+		{
+			return false;
+		}
+	}
+	//the other index is ingored, ignore.
+	if(b_ThisEntityIgnored[otherindex])
+	{
+		return false;
+	}
+	//They have collided with something, try to change the target.
+	NpcStartTouch(bot_entidx,otherindex);
+	return true;
+}
+/*
 bool ShouldCollideEnemyIngoreBuilding_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0, int npc = 0)
 { 
+
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
 		if(b_ThisEntityIgnored[otherindex])
@@ -330,92 +427,22 @@ bool ShouldCollideEnemyTDIgnoreBuilding_Internal(CBaseNPC_Locomotion loco = view
 	return true;
 }
 #endif
-
-public void Change_Npc_Collision(int npc, int CollisionType)
-{
-	if(IsValidEntity(npc))
-	{
-		CBaseNPC baseNPC = view_as<CClotBody>(npc).GetBaseNPC();
-		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
-		b_NpcCollisionType[npc] = CollisionType;
-		switch(CollisionType)
-		{
-			case 1:
-			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemyIngoreBuilding);
-			}
-			case 2:
-			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemy);
-			}
-			case 3:
-			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAllyInvince);
-			}
-			case 4:
-			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAlly);
-			}
-
-#if defined ZR
-			case 5:
-			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemyTD);
-			}
-			case 6:
-			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemyTDIgnoreBuilding);
-			}
-#endif
-
-		}
-	}
-}
-
-
+*/
 bool NpcCollisionCheck(int npc, int other, int extrarules = 0)
 {
-	switch(b_NpcCollisionType[npc])
-	{
-		case 1:
-		{
-			return ShouldCollideEnemyIngoreBuilding_Internal(_,other,extrarules, npc);
-		}
-		case 2:
-		{
-			return ShouldCollideEnemy_Internal(_,other,extrarules, npc);
-		}
-		case 3:
-		{
-			return ShouldCollideAllyInvince_Internal(_,other,extrarules, npc);
-		}
-		case 4:
-		{
-			return ShouldCollideAlly_Internal(_,other,extrarules, npc);
-		}
-
-#if defined ZR
-		case 5:
-		{
-			return ShouldCollideEnemyTD_Internal(_,other,extrarules, npc);
-		}
-		case 6:
-		{
-			return ShouldCollideEnemyTDIgnoreBuilding_Internal(_,other,extrarules, npc);
-		}
-#endif
-
-	}
-	return true; //somehow nothing happens collide with whatever it was!
+	return ShouldCollide_NpcLoco_Internal(npc, other, extrarules);
 }
 
 
 
 bool IsEntityTowerDefense(int entity)
 {
-	if(b_NpcCollisionType[entity] == num_ShouldCollideEnemyTD || b_NpcCollisionType[entity] == num_ShouldCollideEnemyTDIgnoreBuilding)
+#if defined ZR
+	if(GetTeam(entity) != TFTeam_Red)
 	{
-		return true;
+		if(VIPBuilding_Active())
+			return true;
 	}
+#endif
 	return false;
 }

@@ -127,7 +127,7 @@ methodmap XenoFortifiedHeadcrabZombie < CClotBody
 	
 	
 	
-	public XenoFortifiedHeadcrabZombie(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoFortifiedHeadcrabZombie(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoFortifiedHeadcrabZombie npc = view_as<XenoFortifiedHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "650", ally));
 		

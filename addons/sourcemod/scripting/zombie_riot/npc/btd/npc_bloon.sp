@@ -445,7 +445,7 @@ methodmap Bloon < CClotBody
 			}
 		}
 	}
-	public Bloon(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Bloon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool camo, regrow, fortified;
 		int type = GetBloonTypeOfData(data, camo, fortified, regrow);

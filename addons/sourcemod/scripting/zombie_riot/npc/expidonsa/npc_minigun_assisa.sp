@@ -89,7 +89,7 @@ methodmap MinigunAssisa < CClotBody
 		}
 	}
 
-	public MinigunAssisa(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MinigunAssisa(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MinigunAssisa npc = view_as<MinigunAssisa>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "10000", ally));
 		

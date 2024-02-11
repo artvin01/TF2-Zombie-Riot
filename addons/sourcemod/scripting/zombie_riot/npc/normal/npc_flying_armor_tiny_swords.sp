@@ -159,7 +159,7 @@ methodmap FlyingArmorTiny < CClotBody
 	}
 	
 	
-	public FlyingArmorTiny(int client, float vecPos[3], float vecAng[3], bool ally)
+	public FlyingArmorTiny(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		FlyingArmorTiny npc = view_as<FlyingArmorTiny>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.9", "180", ally));
 		SetVariantInt(1);

@@ -3,50 +3,62 @@
 	"nothing Desc"
 	{
 		"en" 		"Example Text!"
+		"pt"		"Texto de Exemplo."
 	}
 	"Allies"
 	{
 		"en" 		"Allies"
+		"pt"		"Aliados"
 	}
 	"Raid Bosses"
 	{
 		"en" 		"Raid Bosses"
+		"pt"		"Chefes de Invasão"
 	}
 	"Special Enemies"
 	{
 		"en" 		"Special Enemies"
+		"pt"		"Inimigos Especiais"
 	}
 	"Common Infection"
 	{
 		"en" 		"Common Infection"
+		"pt"		"Infectados Comuns"
 	}
 	"Blitz Controlled"
 	{
 		"en" 		"Blitz Controlled"
+		"pt"		"Controlados por Blitz"
 	}
 	"Xeno Infection"
 	{
 		"en" 		"Xeno Infection"
+		"pt"		"Xeno Infecção"
 	}
 	"Medieval Empire"
 	{
 		"en" 		"Medieval Empire"
+		"pt"		"Império Medieval"
 	}
 	"Seaborn Infection"
 	{
 		"en" 		"Seaborn Infection"
+		"pt"		"Infecção do Mar"
 	}
 	"Bloons"
 	{
 		"en" 		"Bloons"
+		"pt"		"Balões"
 	}
 	"Cry of Fear"
 	{
 		"en" 		"Cry of Fear"
+		"pt"		"Cry of Fear"
 	}
 	"Expidonsa"
 	{
 		"en" 		"Expidonsa"
+		"pt"		"Expidonsa"
 	}
 	"Headcrab Zombie Desc"
 	{
@@ -1288,5 +1300,29 @@
 	"Storm Weaver Desc"
 	{
 		"en"		"A servant of The Scourge" 	//NEED DESC
+	}
+	"Archosauria Desc"
+	{
+		"en"	"A hunter sniper that's silent and fires darts that inflict Jarate and Chaos."
+	}
+	"Aslan Desc"
+	{
+		"en"	"A fast scout that can pin players in place with attacks when not silenced."
+	}
+	"Perro Desc"
+	{
+		"en"	"A soldier that gets faster (can be silenced) and deals more damage with less health."
+	}
+	"Caprinae Desc"
+	{
+		"en"	"A magical demoman that summons clone of itself, explodes on death.\nClones can be silenced to prevent summoning more clones."
+	}
+	"Liberi Desc"
+	{
+		"en"	"A medic that provides invulnerability to an ally.\nCertain debuffs stops this ability from starting."
+	}
+	"Ursus Desc"
+	{
+		"en"	"A heavy with hits that debuff a large amount of Chaos."
 	}
 }

@@ -154,7 +154,7 @@ methodmap BasicBones < CClotBody
 	
 	
 	
-	public BasicBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
+	public BasicBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		BasicBones npc = view_as<BasicBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "1.0", buffed ? BONES_BASIC_HP_BUFFED : BONES_BASIC_HP, ally, false));
 		

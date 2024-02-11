@@ -70,7 +70,7 @@ methodmap RifalManu < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public RifalManu(int client, float vecPos[3], float vecAng[3], bool ally)
+	public RifalManu(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		RifalManu npc = view_as<RifalManu>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "1000", ally));
 		

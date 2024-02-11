@@ -141,7 +141,7 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 				return MRES_Supercede;
 			}
 #endif
-			else if(b_IsAlliedNpc[target])
+			else if(GetTeam(target) == TFTeam_Red)
 			{
 				DHookSetReturn(hReturn, true);
 				return MRES_Supercede;
@@ -164,7 +164,7 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 					GetEntityClassname(target, buffer, sizeof(buffer));
 					if(!StrContains(buffer, "zr_base_npc", true))
 					{
-						bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(target, Prop_Send, "m_iTeamNum");
+						bool team = GetTeam(owner)==GetTeam(target);
 						if(drains && !team)
 						{
 							DHookSetReturn(hReturn, true);
@@ -178,7 +178,7 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 					GetEntityClassname(target, buffer, sizeof(buffer));
 					if(!StrContains(buffer, "obj_", true))
 					{
-						bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(target, Prop_Send, "m_iTeamNum");
+						bool team = GetTeam(owner)==GetTeam(target);
 						if((heals && team) || (drains && !team))
 						{
 							DHookSetReturn(hReturn, true);
@@ -240,7 +240,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			int new_ammo = GetAmmo(owner, 22);
 			if(IsValidEntity(healTarget) && healTarget>MaxClients && GetAmmo(owner, 22) > 0)
 			{
-				bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(healTarget, Prop_Send, "m_iTeamNum");
+				bool team = GetTeam(owner)==GetEntProp(healTarget, Prop_Send, "m_iTeamNum");
 				float flDrainRate = 500.0;
 				
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
@@ -352,7 +352,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			
 			if(IsValidEntity(healTarget) && healTarget>MaxClients && GetAmmo(owner, 3) > 0)
 			{
-				bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(healTarget, Prop_Send, "m_iTeamNum");
+				bool team = GetTeam(owner)==GetEntProp(healTarget, Prop_Send, "m_iTeamNum");
 		//		float flDrainRate = 100.0;
 				
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
@@ -487,13 +487,13 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 		else if(What_type_Heal == 1.0 || What_type_Heal == 5.0 || What_type_Heal == 6.0)
 		{
 			int new_ammo = GetAmmo(owner, 21);
-			if((IsValidClient(healTarget) && healTarget<=MaxClients && GetAmmo(owner, 21) > 0) || (IsValidEntity(healTarget) && b_IsAlliedNpc[healTarget]) && GetAmmo(owner, 21) > 0)
+			if((IsValidClient(healTarget) && healTarget<=MaxClients && GetAmmo(owner, 21) > 0) || (IsValidEntity(healTarget) && GetTeam(healTarget) == TFTeam_Red) && GetAmmo(owner, 21) > 0)
 			{
 				bool team = GetEntProp(owner, Prop_Data, "m_iTeamNum")==GetEntProp(healTarget, Prop_Data, "m_iTeamNum");
 				if(team)
 				{
 					bool Is_Allied_Npc = false;
-					if(b_IsAlliedNpc[healTarget]) //Give uber
+					if(!b_NpcHasDied[healTarget]) //Give uber
 					{
 #if defined ZR
 						float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
@@ -588,7 +588,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					ammoSubtract = HealEntityGlobal(owner, healTarget, healing_Amount, flMaxHealth, 0.0, _, new_ammo);
 					new_ammo -= ammoSubtract;
 
-					if(b_IsAlliedNpc[healTarget])
+					if(!b_NpcHasDied[healTarget])
 					{
 						Calculate_And_Display_hp(owner, healTarget, 0.0, true);
 					}
@@ -636,7 +636,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 		{
 			if(IsValidEntity(healTarget) && healTarget>MaxClients)
 			{
-				bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(healTarget, Prop_Send, "m_iTeamNum");
+				bool team = GetTeam(owner)==GetEntProp(healTarget, Prop_Send, "m_iTeamNum");
 				float flDrainRate = 500.0;
 				
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");

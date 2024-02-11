@@ -167,7 +167,7 @@ methodmap MedivalManAtArms < CClotBody
 		#endif
 	}
 	
-	public MedivalManAtArms(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalManAtArms(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalManAtArms npc = view_as<MedivalManAtArms>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250", ally));
 		SetVariantInt(1);

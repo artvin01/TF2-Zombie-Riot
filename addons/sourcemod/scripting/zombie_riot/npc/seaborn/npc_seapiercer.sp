@@ -69,7 +69,7 @@ methodmap SeaPiercer < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
-	public SeaPiercer(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeaPiercer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeaPiercer npc = view_as<SeaPiercer>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "2.3", data[0] ? "1875" : "1350", ally, false, true));
 		// 9000 x 0.15

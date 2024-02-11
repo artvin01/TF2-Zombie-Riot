@@ -145,7 +145,7 @@ methodmap Lanius < CClotBody
 	}
 	
 	
-	public Lanius(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Lanius(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Lanius npc = view_as<Lanius>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		

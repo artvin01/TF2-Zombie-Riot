@@ -161,7 +161,7 @@ methodmap MedivalBuilding < CClotBody
 		
 	}
 	
-	public MedivalBuilding(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public MedivalBuilding(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}));
 		
@@ -188,7 +188,7 @@ methodmap MedivalBuilding < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
-		if(!ally)
+		if(ally != TFTeam_Red)
 		{
 			b_thisNpcIsABoss[npc.index] = true;
 		}
@@ -262,26 +262,12 @@ public void MedivalBuilding_ClotThink(int iNPC)
 		if(npc.m_flAttackHappens < GetGameTime(npc.index)) //spawn enemy!
 		{
 			int npc_current_count;
-			if(!b_IsAlliedNpc[iNPC])
+			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 			{
-				for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+				if(IsValidEntity(entity) && GetTeam(iNPC) == GetTeam(entity))
 				{
-					int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-					if(IsValidEntity(entity))
-					{
-						npc_current_count += 1;
-					}
-				}
-			}
-			else
-			{
-				for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc_Allied; entitycount_again_2++) //Check for npcs
-				{
-					int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again_2]);
-					if(IsValidEntity(entity) && AllyIsBoundToVillage[entity])
-					{
-						npc_current_count += 1;
-					}
+					npc_current_count += 1;
 				}
 			}
 			//emercency stop. 
@@ -289,7 +275,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 
 			IncreaceSpawnRates /= (Pow(1.14, f_PlayerScalingBuilding));
 
-			if((!b_IsAlliedNpc[iNPC] && npc_current_count < LimitNpcs) || (b_IsAlliedNpc[iNPC] && npc_current_count < 6))
+			if((GetTeam(iNPC) != TFTeam_Red && npc_current_count < LimitNpcs) || (GetTeam(iNPC) == TFTeam_Red && npc_current_count < 6))
 			{
 				float AproxRandomSpaceToWalkTo[3];
 				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
@@ -299,7 +285,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				int EnemyToSpawn = MEDIVAL_MILITIA;
 				bool Construct = false;
 
-				if(b_IsAlliedNpc[iNPC])
+				if(GetTeam(iNPC) == TFTeam_Red)
 				{
 					IncreaceSpawnRates *= 5.0; //way slower.
 				}
@@ -356,12 +342,12 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				if(Rogue_Mode())
 					IncreaceSpawnRates *= 3.0;
 
-				int spawn_index = Npc_Create(EnemyToSpawn, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+				int spawn_index = Npc_Create(EnemyToSpawn, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
 					npc.PlayMeleeMissSound();
 					npc.PlayMeleeMissSound();
-					if(!b_IsAlliedNpc[iNPC])
+					if(GetTeam(iNPC) != TFTeam_Red)
 					{
 						Zombies_Currently_Still_Ongoing += 1;
 					}
@@ -451,26 +437,12 @@ public void MedivalBuilding_ClotThink(int iNPC)
 	else
 	{
 		bool villagerexists = false;
-		if(!b_IsAlliedNpc[iNPC])
+		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 		{
-			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+			if (IsValidEntity(entity) && i_NpcInternalId[entity] == MEDIVAL_VILLAGER && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-				if (IsValidEntity(entity) && i_NpcInternalId[entity] == MEDIVAL_VILLAGER && !b_NpcHasDied[entity])
-				{
-					villagerexists = true;
-				}
-			}
-		}
-		else
-		{
-			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc_Allied; entitycount_again_2++) //Check for npcs
-			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again_2]);
-				if (IsValidEntity(entity) && i_NpcInternalId[entity] == MEDIVAL_VILLAGER && !b_NpcHasDied[entity])
-				{
-					villagerexists = true;
-				}
+				villagerexists = true;
 			}
 		}
 		if(!villagerexists)

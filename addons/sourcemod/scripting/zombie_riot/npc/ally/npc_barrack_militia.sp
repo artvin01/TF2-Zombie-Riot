@@ -5,7 +5,7 @@
 
 methodmap BarrackMilitia < BarrackBody
 {
-	public BarrackMilitia(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackMilitia(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackMilitia npc = view_as<BarrackMilitia>(BarrackBody(client, vecPos, vecAng, "165",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		

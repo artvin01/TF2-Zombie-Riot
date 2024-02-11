@@ -169,7 +169,7 @@ methodmap AltCombineMage < CClotBody
 		#endif
 	}
 	
-	public AltCombineMage(int client, float vecPos[3], float vecAng[3], bool ally)
+	public AltCombineMage(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		AltCombineMage npc = view_as<AltCombineMage>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "200", ally));
 		SetVariantInt(1);

@@ -571,11 +571,9 @@ static void Wand_Launch_Tornado(int client, int iRot, float speed, float time, f
 	TeleportEntity(iCarrier, fPos, NULL_VECTOR, fVel);
 	SetEntityMoveType(iCarrier, MOVETYPE_FLY);	
 	
-	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetClientTeam(client));
-	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetClientTeam(client));
+	SetTeam(iRot, GetClientTeam(client));
+	SetTeam(iCarrier, GetClientTeam(client));
 
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iCarrier));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iRot));
 	
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);

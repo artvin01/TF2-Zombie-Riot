@@ -68,7 +68,7 @@ methodmap DesertQanaas < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public DesertQanaas(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertQanaas(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertQanaas npc = view_as<DesertQanaas>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "550", ally));
 		

@@ -200,6 +200,7 @@ public void PlaceableTempomaryArmorGrenade(int client)
 				
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", team, 1);
+			
 			SetEntProp(entity, Prop_Send, "m_nSkin", (team-2));
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
 			SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
@@ -470,10 +471,10 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 						}
 					}
 				}
-				for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+				for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 				{
-					int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-					if (IsValidEntity(baseboss_index_allied))
+					int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+					if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TFTeam_Red)
 					{
 						if(!b_ThisEntityIgnored[baseboss_index_allied])
 						{

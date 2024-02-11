@@ -77,7 +77,7 @@ methodmap Doctor < CClotBody
 		EmitCustomToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_VOICE);
 	}
 	
-	public Doctor(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Doctor(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Doctor npc = view_as<Doctor>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/doctor_purnell.mdl", "1.15", data[0] == 'f' ? "200000" : "30000", ally, false, false, true));
 		i_NpcInternalId[npc.index] = THEDOCTOR;
@@ -86,7 +86,7 @@ methodmap Doctor < CClotBody
 		npc.m_iState = -1;
 		npc.SetActivity("ACT_SPAWN");
 		
-		if(ally)
+		if(ally == TFTeam_Red)
 		{
 			npc.PlayFriendlySound();
 		}

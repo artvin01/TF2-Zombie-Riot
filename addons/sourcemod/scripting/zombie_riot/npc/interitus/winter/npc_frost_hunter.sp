@@ -94,7 +94,7 @@ methodmap WinterFrostHunter < CClotBody
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public WinterFrostHunter(int client, float vecPos[3], float vecAng[3], bool ally)
+	public WinterFrostHunter(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterFrostHunter npc = view_as<WinterFrostHunter>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1000", ally));
 		

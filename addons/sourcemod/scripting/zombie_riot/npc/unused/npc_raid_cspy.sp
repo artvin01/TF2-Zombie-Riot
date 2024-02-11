@@ -270,7 +270,7 @@ methodmap CorruptedSpyRaid < CClotBody
 		this.m_flPlayMusicSound = GetEngineTime() + 210.0;
 	}
 
-	public CorruptedSpyRaid(int client, float vecPos[3], float vecAng[3], bool ally)
+	public CorruptedSpyRaid(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		CorruptedSpyRaid npc = view_as<CorruptedSpyRaid>(CClotBody(vecPos, vecAng, "models/freak_fortress_2/corruptedspy/corruptedspy_animated_funny_1.mdl", "1.35", "500000", ally, false, true, true, true));
 		
@@ -282,7 +282,6 @@ methodmap CorruptedSpyRaid < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 
-		Raidboss_Clean_Everyone();
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -308,7 +307,6 @@ methodmap CorruptedSpyRaid < CClotBody
 		{
 			RaidModeScaling *= 0.34;
 		}
-		Raidboss_Clean_Everyone();
 		
 		npc.m_fbGunout = false;
 		npc.m_bmovedelay_gun = false;
@@ -797,10 +795,10 @@ public void CorruptedSpyRaid_ClotDamaged_Post(int victim, int attacker, int infl
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			int spawn_index = Npc_Create(CORRUPTEDSPYMINION, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			int spawn_index = Npc_Create(CORRUPTEDSPYMINION, -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
-				Zombies_Currently_Still_Ongoing += 1;
+				Zombies_Currently_Still_Ongoing += 1;	// FIXME
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}

@@ -87,7 +87,7 @@ methodmap WinterFreezingCleaner < CClotBody
 		}
 	}
 	
-	public WinterFreezingCleaner(int client, float vecPos[3], float vecAng[3], bool ally)
+	public WinterFreezingCleaner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterFreezingCleaner npc = view_as<WinterFreezingCleaner>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "3000", ally));
 		

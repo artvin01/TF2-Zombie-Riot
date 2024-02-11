@@ -31,7 +31,7 @@ methodmap Archosauria < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public Archosauria(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Archosauria(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Archosauria npc = view_as<Archosauria>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "10000", ally));
 		

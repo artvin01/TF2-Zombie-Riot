@@ -168,7 +168,7 @@ methodmap Ikunagae < CClotBody
 		#endif
 	}
 	//static bool b_scaramouche_used[MAXENTITIES] = { false, ... };
-	public Ikunagae(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Ikunagae(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Ikunagae npc = view_as<Ikunagae>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "13500", ally));
 		
@@ -1323,7 +1323,7 @@ static Action Ikunagae_TBB_Tick(int client)
 			
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (Ikunagae_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+				if (Ikunagae_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
@@ -1396,27 +1396,27 @@ static void Ikunagae_Spawn_Minnions(int client, int hp_multi)
 			{
 				case 1:
 				{
-					spawn_index = Npc_Create(ALT_MEDIC_BERSERKER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+					spawn_index = Npc_Create(ALT_MEDIC_BERSERKER, -1, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 1.2);
 				}
 				case 2:
 				{
-					spawn_index = Npc_Create(ALT_MEDIC_CHARGER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+					spawn_index = Npc_Create(ALT_MEDIC_CHARGER, -1, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 1.2);
 				}
 				case 3:
 				{
-					spawn_index = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+					spawn_index = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 0.8);
 				}
 				case 4:
 				{
-					spawn_index = Npc_Create(ALT_SNIPER_RAILGUNNER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+					spawn_index = Npc_Create(ALT_SNIPER_RAILGUNNER, -1, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 1.1);
 				}
 				case 5:
 				{
-					spawn_index = Npc_Create(ALT_MECHASOLDIER_BARRAGER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+					spawn_index = Npc_Create(ALT_MECHASOLDIER_BARRAGER, -1, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 1.1);
 				}
 			}

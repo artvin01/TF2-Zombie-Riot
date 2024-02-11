@@ -28,9 +28,9 @@ methodmap AlliedSensalAbility < CClotBody
 	}
 
 	
-	public AlliedSensalAbility(int client, float vecPos[3], float vecAng[3], bool ally)
+	public AlliedSensalAbility(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		AlliedSensalAbility npc = view_as<AlliedSensalAbility>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "100", true, true));
+		AlliedSensalAbility npc = view_as<AlliedSensalAbility>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "100", TFTeam_Red, true));
 		
 		i_NpcInternalId[npc.index] = WEAPON_SENSAL_AFTERIMAGE;
 		i_NpcWeight[npc.index] = 999;

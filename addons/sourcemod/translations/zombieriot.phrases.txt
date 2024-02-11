@@ -95,6 +95,7 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"Extra Credits: +{1}"
+		"pt"		"Crédito Extra: +{1}"
 	}
 	"Armor Counter"
 	{
@@ -203,6 +204,7 @@
 	"XP Loading"
 	{
 		"en"		"Loading your levels..."
+		"pt"		"Carregando seus níveis..."
 		"ru"		"Загрузка уровней..."
 		"chi"       "加载你的等级中..."
 	}
@@ -274,6 +276,7 @@
 	"Buy Scrap" //Its a currency
 	{
 		"en"		"Buy with scrap"
+		"pt"		"Comprar com sucata"
 		"ru"		"Куп. за металл"
 		"nl"		"Koop met scrap"
 		"chi"       "使用废料购买"
@@ -498,7 +501,7 @@
 		"es"		"Tornillo personalizado"
 		"fr"		"boulon personnalisé"
 		"de"		"Benutzerdefinierte Schraube"
-		"pt"		"Flechas personalizadas" // need to check onto where this line shows up later
+		"pt"		"Projetéis personalizados"
 		"nl"		"Op maat gemaakte Kogel"
 		"chi"       "钉子"
 	}
@@ -654,6 +657,7 @@
 	{
 		"#format"	"{1:.1f}"
 		"en"		"You right now feel sick from drinking too many perks and would vomit, try again in {1} seconds."
+		"pt"		"Você agora está enjoado de tantas bebidas, tente novamente em {1} segundos."
 		"chi"       "你现在因为喝了太多的饮料而感到恶心，并且会呕吐，{1}秒后再试一次。"
 	}
 	"Ammo Box Used"
@@ -702,12 +706,14 @@
 	}
 	"Pap Machine Used But Another"
 	{
-		"en"		"Someone used your Pack-A-Punch Machine, you gain +100 Credits!\nAnother builder has more advanced tech then you, and gained the rest."
+		"en"		"Someone used your Pack-A-Punch Machine, you gain +100 Credits!\nAnother builder has more advanced tech then you, and gained the rest"
+		"pt"		"Alguém usou sua maquina de Pack-a-Punch, você ganhou +100 Créditos!\nOutro construtor tem tecnologia mais avançada que você, e recebeu o resto"
         "ru"		"Кто-то воспользовался вашим улучшайзером, получено +100 кредитов!\nДругой строитель имеет более продвинутые технологии, чем ваши, и получил остальное."
 	}
 	"Pap Machine Used Me"
 	{
 		"en"		"A Pack-A-Punch was used that wasnt yours, but your tech is more advanced! You gain 300+ Credits."
+		"pt"		"Uma maquina de Pack-A-Punch foi usada que não era sua, mas sua tecnologia é mais avançada! você ganha +300 Créditos."
 		"ru"		"Был использован улучшайзер, который не принадлежал вам, но ваша техника более совершенна! Получено 300+ кредитов."
 	}
 	"Equip Melee To Use"
@@ -739,6 +745,7 @@
 	"Armor Max Reached Raid"
 	{
 		"en"		"You cannot use anymore Armortables this Raid Battle!"
+		"pt"		"Você não pode usar mais mesas de armaduras durante essa Batalha!"
 	}
 	"Armor Max Reached Ammo Box"
 	{
@@ -790,6 +797,7 @@
 	{
 		"#format"	"{1:d}"
 		"en" 		"Gained {1} cash!"
+		"pt"		"Ganhou {1} dinheiro!"
 	}
 	"Cash Gained This Wave Village"
 	{
@@ -827,6 +835,7 @@
 	"Spike Limit Reached Global"
 	{
 		"en" 		"There are too many Spikes on the map! Placement Failed."
+		"pt"		"Tem muitos espinhos no mapa! Falha ao posicionar."
 		"ru" 		"На карте слишком много шипов! Размещение не удалось."
 	}
 	"Threw Grenade"
@@ -928,6 +937,7 @@
 	"Crouch for ability"
 	{
 		"en" 		"Crouch to use this ability!"
+		"pt"		"Se abaixe pra usar essa habilidade!"
 	}
 	"Gamemode Credits"
 	{
@@ -1051,12 +1061,14 @@
 	"Recycle Poire"
 	{
 		"en" 		"Perk: Recycle Poiré"
+		"pt"		"Perk: Pêra Reciclada"
 		"ru" 		"Перк: Переработка пуаре"
 	}
 
 	"Quick Revive Recieved"
 	{
 		"en" 		"QUICK REVIVE! 2x Revive speed and 15%% more healing speed and 2x Health on revive"
+		"pt"		"RÁPIDA RESSUREIÇÃO! 2x velocidade de ressureição e cura 15%% a mais e x2 mais vida ao reviver"
 		"ru" 		"РЕАНИМАТОР! 2x скорость оживления и на 15%% быстрее скорость лечения и 2x здоровье при оживлении"
 	}
 	"Juggernog Recieved"
@@ -1072,7 +1084,7 @@
 	{
 		"en" 		"DOUBLE TAP! 1.15x Extra attack speed and Building Damage"
 		"ru" 		"ПИФ-ПАФ! 1.15x дополнительной скорости атаки и урона у построек"
-		"pt"		"TOQUE DUPLO! 1.15 Velocidade de Ataque extra e Dano com construções"
+		"pt"		"TOQUE DUPLO! 1.15x Velocidade de Ataque extra e Dano com construções"
 		"nl"		"DUBBELTIKKEN! 1.15 Extra Aanvalssnelheid en Gebouwsschade"
 		"chi" 		"精神强化:攻击速度提升、建筑伤害提升"
 	}	
@@ -1087,6 +1099,7 @@
 	"Deadshot Daiquiri Recieved"
 	{
 		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
+		"pt"		"TIRO MORTO DE DAIQUIRI! 1.35x Precisão de armas e 1.25x dano extra em tiros na cabeça e backstabs\n 1.2x velocidade de projetil."
 		"chi"       "死神射击:提升1.35倍的武器精准度+1.25倍背刺和爆头伤害+1.2倍射速"
 	}
 	"Widows Wine Recieved"
@@ -1100,6 +1113,7 @@
 	"Recycle Poire Recieved"
 	{
 		"en" 		"RECYCLE POIRÉ! 33%% More ammo from all non shop sources, and 50%% more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
+		"pt"		"PÊRA RECICLADA! 1.33x Munição de todas as fontes que não são a loja, e 1.5x mais ganho e armadura máxima\nVocê ganha 2x mais munição de suprimentos"
 		"chi"		"超级回收:所有非商店弹药增加33%%+最大护甲值和护甲增益增加50%%+2倍弹药补给"
 	}
 	"Nuke Activated"
@@ -1123,22 +1137,26 @@
 	"Max Health Activated"
 	{
 		"en" 		"Extra Health!"
+		"pt"		"Vida Extra!"
 		"ru" 		"Дополнительное здоровье!"
 		"chi"       "额外的血量!"
 	}
 	"Max Money Activated"
 	{
 		"en" 		"Extra Cash!"
+		"pt"		"Dinheiro Extra!"
 		"ru" 		"Дополнительные деньги!"
 		"chi"       "额外的现金!"
 	}
 	"Grigori Shop Extra Activated"
 	{
 		"en" 		"Extra Super Sale!"
+		"pt"		"Super Desconto Extra!"
 	}
 	"Help?"
 	{
 		"en" 		"Help/FAQ"
+		"pt"		"Ajuda/FAQ"
 		"ru" 		"Помощь/ЧАВО"
 		"chi"       "帮助/问题"
 	}
@@ -1183,7 +1201,7 @@
 		"en" 		"Level Help?"
 		"ru" 		"Уров. игрока?"
 		"de"		"Level Hilfe?"
-		"pt"		"Ajuda com níveis?"
+		"pt"		"Ajuda com Níveis?"
 		"nl"		"Help over levels?"
 		"chi"       "等级帮助"
 	}
@@ -1210,7 +1228,7 @@
 		"en" 		"Building Help?"
 		"ru" 		"Постройки?"
 		"de"		"Gebäude Hilfe?"
-		"pt"		"Ajuda construindo?"
+		"pt"		"Ajuda Construindo?"
 		"nl"		"Hulp met gebouwen?"
 		"chi"       "建筑物帮助"
 	}
@@ -1240,11 +1258,13 @@
 	"Show Debuffs"
 	{
 		"en" 		"Show Debuffs"
+		"pt"		"Exibir Debuffs"
 		"ru" 		"Негат. эфф."
 	}
 	"Show Buffs"
 	{
 		"en" 		"Show Buffs"
+		"pt"		"Exibir Buffs"
 		"ru" 		"Полож. эфф."
 	}
 	"Debuff/Buff Explain 2"
@@ -1282,6 +1302,7 @@
 	"Special Zombies Explained"
 	{
 		"en" 		"These are mini-bosses that spawn randomly after wave 12.\nRaids:\nRaids take 25%% more explosive damage, and usually 25% more melee damage.\nSome weapons deal extra damage againt raids, see desc if they do."
+		// "pt"		"Tem alguns mini-chefes que aparecem aleatoriamente na onda 12.\nRaids:\n
 	}
 	"Revival Zombies Explained"
 	{

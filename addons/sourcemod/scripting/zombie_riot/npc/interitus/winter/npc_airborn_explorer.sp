@@ -109,7 +109,7 @@ methodmap WinterAirbornExplorer < CClotBody
 	}
 	
 	
-	public WinterAirbornExplorer(int client, float vecPos[3], float vecAng[3], bool ally)
+	public WinterAirbornExplorer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterAirbornExplorer npc = view_as<WinterAirbornExplorer>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "2500", ally));
 		

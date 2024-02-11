@@ -19,7 +19,7 @@ methodmap SeabornDemo < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(2.0, 3.0);
 	}
 	
-	public SeabornDemo(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornDemo(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornDemo npc = view_as<SeabornDemo>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "750", ally));
 		

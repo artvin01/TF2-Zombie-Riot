@@ -87,7 +87,7 @@ methodmap Erasus < CClotBody
 	}
 	
 	
-	public Erasus(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Erasus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Erasus npc = view_as<Erasus>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "10000", ally));
 		
