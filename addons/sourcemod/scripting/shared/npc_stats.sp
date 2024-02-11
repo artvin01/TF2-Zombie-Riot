@@ -7791,6 +7791,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_AttackHappensMaximum[entity] = 0.0;
 	b_AttackHappenswillhappen[entity] = false;
 	b_thisNpcIsABoss[entity] = false;
+	b_ShowNpcHealthbar[entity] = false;
 	b_thisNpcIsARaid[entity] = false;
 	b_TryToAvoidTraverse[entity] = false;
 	b_NPCVelocityCancel[entity] = false;
@@ -8835,7 +8836,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 	}
 	
 	int NpcTypeDefine = 0;
-	if(b_thisNpcIsABoss[npc.index] || (i_NpcInternalId[npc.index] == CITIZEN && !b_IsCamoNPC[npc.index] && !b_ThisEntityIgnored[npc.index]))
+	if(b_thisNpcIsABoss[npc.index] || b_ShowNpcHealthbar[npc.index] || (i_NpcInternalId[npc.index] == CITIZEN && !b_IsCamoNPC[npc.index] && !b_ThisEntityIgnored[npc.index]))
 	{
 		NpcTypeDefine = 1;
 	}

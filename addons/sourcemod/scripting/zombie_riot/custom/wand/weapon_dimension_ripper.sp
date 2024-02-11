@@ -4,12 +4,11 @@
 #define SOUND_WAND_SHOT_DIM	"misc/doomsday_lift_stop.wav"
 #define SOUND_DIM_IMPACT "weapons/cow_mangler_explosion_normal_01.wav"
 #define SOUND_ABILITY "misc/rd_points_return01.wav"
-#define MAX_DIMENSION_CHARGE 30
+#define MAX_DIMENSION_CHARGE 40
 static Handle h_TimerDimensionWeaponManagement[MAXPLAYERS+1]={null, ...};
 static int how_many_times_swinged[MAXTF2PLAYERS];
 static float f_DIMAbilityActive[MAXPLAYERS+1]={0.0, ...};
 static float f_DIMhuddelay[MAXPLAYERS+1]={0.0, ...};
-#define WEAPON_EXTRA_DAMAGE_MODIF 2.0
 
 
 void ResetMapStartDimWeapon()
@@ -856,8 +855,13 @@ void Dimension_Summon_Npc(int client, int NpcId, int weapon, float HealthMulti, 
 					ExtraDamage *= DamageMulti;
 					fl_Extra_Damage[entity] *= ExtraDamage;
 					CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(3.0, Dimension_GiveStrength, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(4.0, Dimension_GiveStrength, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 					i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
+					b_thisNpcIsABoss[entity] = false;
+					b_thisNpcIsARaid[entity] = false;
+					b_ShowNpcHealthbar[entity] = true;
+					if(EntRefToEntIndex(RaidBossActive) == entity)
+						RaidBossActive = INVALID_ENT_REFERENCE;
 				}
 			}
 			else
