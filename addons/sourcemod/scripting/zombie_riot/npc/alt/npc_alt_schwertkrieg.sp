@@ -186,7 +186,7 @@ methodmap Schwertkrieg < CClotBody
 		}
 		else
 		{
-			if(RaidBossActive==INVALID_ENT_REFERENCE && !ally)
+			if(RaidBossActive==INVALID_ENT_REFERENCE && ally != TFTeam_Red)
 			{
 				RaidBossActive = EntIndexToEntRef(npc.index);
 				RaidModeTime = GetGameTime(npc.index) + 9000.0;
