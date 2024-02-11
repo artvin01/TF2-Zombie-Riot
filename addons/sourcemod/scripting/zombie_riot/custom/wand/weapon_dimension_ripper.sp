@@ -258,32 +258,33 @@ void CreateDimEffect(int client, int weapon, int particle, int entity)
 
 	if(pap == 1.0) //Only show if the weapon is actually in your hand right now.
 	{
-		int particle = ParticleEffectAt(flPos, "hwn_skeleton_glow_red", 0.0);
+		string DimPart = "hwn_skeleton_glow_red"
 	}
 	if(pap == 2.0) //Only show if the weapon is actually in your hand right now.
 	{
-		int particle = ParticleEffectAt(flPos, "burningplayer_blueglow", 0.0);
+		string DimPart = "burningplayer_blueglow"
 	}
 	if(pap == 3.0) //Only show if the weapon is actually in your hand right now.
 	{
-		int particle = ParticleEffectAt(flPos, "unusual_aura_green_smoke", 0.0);
+		string DimPart = "unusual_aura_green_smoke"
 	}
 	if(pap == 4.0) //Only show if the weapon is actually in your hand right now.
 	{
-		int particle = ParticleEffectAt(flPos, "contract_score_bonus_sparkle", 0.0);
+		string DimPart = "contract_score_bonus_sparkle"
 	}
 	if(pap == 5.0) //Only show if the weapon is actually in your hand right now.
 	{
-		int particle = ParticleEffectAt(flPos, "unusual_sapper_teamcolor_blue", 0.0);
+		string DimPart = "unusual_sapper_teamcolor_blue"
 	}
 	if(pap == 6.0) //Only show if the weapon is actually in your hand right now.
 	{
-		int particle = ParticleEffectAt(flPos, "utaunt_glowyplayer_purple_parent", 0.0);
+		string DimPart = "utaunt_glowyplayer_purple_parent"
 	}
 	else //Only show if the weapon is actually in your hand right now.
 	{
 		ShowSyncHudText(client,  SyncHud_Notifaction, "An error occured. Scream at devs");//none
 	}
+	int particle = ParticleEffectAt(flPos, "DimPart", 0.0);
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(client, particle);
 	i_DimParticle[client][0] = EntIndexToEntRef(particle);
@@ -300,7 +301,7 @@ bool IsDimEffectSpawned(int client)
 	return true;
 }
 
-void DestroyDimEffect(int client)
+void DestroyDimEffect(int entity)
 {
 	if(IsValidEntity(entity))
 	{
