@@ -621,7 +621,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 				//Timeout
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
 
-				int spawn_index = Npc_Create(MEDIVAL_BUILDING, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index) == 2);
+				int spawn_index = Npc_Create(MEDIVAL_BUILDING, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
 					i_BuildingRef[iNPC] = EntIndexToEntRef(spawn_index);

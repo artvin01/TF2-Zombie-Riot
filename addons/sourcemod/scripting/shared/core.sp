@@ -2398,7 +2398,7 @@ public void SDKHook_TeamSpawn_SpawnPost(int entity)
 		{
 			bool Allyspawn = false;
 
-			if(GetTeam(entity) == 2)
+			if(GetTeam(entity) == TFTeam_Red)
 				Allyspawn = true;
 
 			Spawns_AddToArray(entity,_, Allyspawn);
@@ -2611,10 +2611,14 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			b_IsAProjectile[entity] = true;
 		}
-
 		if(!StrContains(classname, "env_entity_dissolver"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
+		}
+		if(!StrContains(classname, "tf_objective_resource"))
+		{
+			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
 		else if(!StrContains(classname, "instanced_scripted_scene"))
 		{

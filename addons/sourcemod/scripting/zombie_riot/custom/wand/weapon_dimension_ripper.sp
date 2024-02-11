@@ -4841,3 +4841,97 @@ void Npc_OnTakeDamage_DimensionalRipper(int attacker, int victim)
 		how_many_times_swinged[attacker] += 1;
 	}
 }
+
+
+
+public void Weapon_Dimension_Summon_Non_Pap(int client, int weapon, bool &result, int slot, int pap_logic)
+{
+	switch(GetRandomInt(1, 26))
+	{
+		case 1:
+			Dimension_Summon_Npc(client, HEADCRAB_ZOMBIE ,weapon, 0.85, 0.85, "eyeboss_tp_player");
+		case 2:
+			Dimension_Summon_Npc(client, FORTIFIED_HEADCRAB_ZOMBIE ,weapon, 0.9, 0.9, "eyeboss_tp_player");
+	}
+}
+
+public void Weapon_Dimension_Summon_Non_Pap_1(int client, int weapon, bool &result, int slot, int pap_logic)
+{
+	switch(GetRandomInt(1, 26))
+	{
+		case 1:
+			Dimension_Summon_Npc(client, XENO_HEADCRAB_ZOMBIE ,weapon, 0.85, 0.85, "eyeboss_tp_player");
+		case 2:
+			Dimension_Summon_Npc(client, XENO_FORTIFIED_HEADCRAB_ZOMBIE ,weapon, 0.9, 0.9, "eyeboss_tp_player");
+	}
+}
+
+
+void Dimension_Summon_Npc(int client, int NpcId, int weapon, float HealthMulti, float DamageMulti, char[] ParticleEffect)
+{
+	
+	if(weapon >= MaxClients)
+	{
+		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE)
+		{
+			int mana_cost = 150;
+			if(mana_cost <= Current_Mana[client])
+			{
+				Rogue_OnAbilityUse(weapon);
+				float pos1[3], ang[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
+				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
+				float Dimension_Loc[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
+				if(ParticleEffect[0])
+					ParticleEffectAt(Dimension_Loc, ParticleEffect, 1.5);
+				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
+				int entity = Npc_Create(NpcId, client, pos1, ang, TFTeam_Red);
+				if(entity > MaxClients)
+				{
+					//30 as a starting value.
+					
+					float f_MaxHealth = 30.0;
+					f_MaxHealth *= Attributes_Get(weapon, 410, 1.0);
+					f_MaxHealth *= HealthMulti;
+					SetEntProp(entity, Prop_Data, "m_iHealth", RoundToNearest(f_MaxHealth));
+					SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToNearest(f_MaxHealth));
+					
+					float ExtraDamage = Attributes_Get(weapon, 410, 1.0);
+					ExtraDamage *= DamageMulti;
+					fl_Extra_Damage[entity] *= ExtraDamage;
+					CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(3.0, Dimension_GiveStrength, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+					i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
+				}
+			}
+			else
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+			}
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Not enough Charges");
+		}
+	}
+}
+
+public Action Dimension_GiveStrength(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity) && !b_NpcHasDied[entity])
+	{
+		fl_Extra_MeleeArmor[entity] *= 0.75;
+		fl_Extra_RangedArmor[entity] *= 0.75;	
+		fl_Extra_Damage[entity] *= 1.25;	
+	}
+	
+	return Plugin_Stop;
+}

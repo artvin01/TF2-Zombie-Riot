@@ -158,7 +158,7 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 	}
 	for(int entity=1; entity<=MAXENTITIES; entity++)
 	{
-		if (IsValidEntity(entity) && (IsEntitySpike(entity) || (!b_ThisEntityIgnored_NoTeam[entity] && GetTeam(entity) == TFTeam_Red)))
+		if (IsValidEntity(entity) && (IsEntitySpike(entity) || b_IsAProjectile[entity])/* || (!b_ThisEntityIgnored_NoTeam[entity] && GetTeam(entity) == TFTeam_Red))*/)
 		{
 			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
 		}

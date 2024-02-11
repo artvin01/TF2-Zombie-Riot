@@ -191,13 +191,18 @@ void Expidonsa_AllyHeal(int HealerNpc, int victim, float damage, int weapon)
 	{
 		return;
 	}
-	if(GetTeam(HealerNpc) == TFTeam_Red)
+	//cant heal enemies.
+	if(GetTeam(HealerNpc) != GetTeam(victim))
+		return;
+
+	//team red, npc or 
+	if(GetTeam(HealerNpc) == TFTeam_Red && (!b_NpcHasDied[victim] || victim <= MaxClients))
 	{
 		Expidonsa_AllyHealInternal(HealerNpc, victim, f_Expidonsa_HealingAmmount[HealerNpc] * 0.05);
 	}
 	else
 	{
-		if (GetTeam(victim) != TFTeam_Red && !i_IsABuilding[victim] && victim > MaxClients)
+		if (!i_IsABuilding[victim] && !b_NpcHasDied[victim])
 		{
 			Expidonsa_AllyHealInternal(HealerNpc, victim, f_Expidonsa_HealingAmmount[HealerNpc]);
 		}

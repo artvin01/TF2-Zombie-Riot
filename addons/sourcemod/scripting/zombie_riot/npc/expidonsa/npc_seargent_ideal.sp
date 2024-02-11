@@ -424,25 +424,15 @@ void SeargentIdealShieldAffected(int entity, int victim, float damage, int weapo
 	if(entity == victim)
 		return;
 
-	if(GetTeam(entity) == TFTeam_Red)
+	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
 	{
-		if (GetTeam(victim) == TFTeam_Red && !b_NpcHasDied[victim])
-		{
-			SeargentIdealShieldInternal(entity, victim);
-		}
-	}
-	else
-	{
-		if (GetTeam(victim) != TFTeam_Red && !i_IsABuilding[victim] && victim > MaxClients)
-		{
-			SeargentIdealShieldInternal(entity, victim);
-		}
+		SeargentIdealShieldInternal(entity, victim);
 	}
 }
 
 void SeargentIdealShieldInternal(int shielder, int victim)
 {
-	if(i_NpcInternalId[victim] != EXPIDONSA_DIVERSIONISTICO) //do not shield diversios.
+	if(i_NpcInternalId[victim] != EXPIDONSA_DIVERSIONISTICO && !b_NpcHasDied[victim]) //do not shield diversios.
 	{
 		SeargentIdeal npc = view_as<SeargentIdeal>(victim);
 		npc.m_iGetSeargentProtector = shielder;

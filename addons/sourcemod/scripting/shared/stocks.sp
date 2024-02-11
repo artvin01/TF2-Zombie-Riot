@@ -1405,7 +1405,7 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 	}
 	
 #if !defined RTS
-	if(entity > MaxClients && GetTeam(entity) == TFTeam_Red)
+	if(entity > MaxClients && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Red)
 	{
 		return false;
 	}
@@ -1472,7 +1472,7 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 				return entity!=data;
 			}
 		}
-		else if(GetTeam(entity) == TFTeam_Red)
+		else if(!b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Red)
 		{
 			if(i_PreviousInteractedEntity[data] != entity || !i_PreviousInteractedEntityDo[data])
 			{
@@ -4934,12 +4934,12 @@ stock int GetTeam(int entity)
 
 		if(TeamNumber[entity] == -1)
 		{
-			TeamNumber[entity] = GetEntProp(entity, Prop_Send, "m_iTeamNum");
+			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
 		}
 		return TeamNumber[entity];
 			
 	}
-	return GetEntProp(entity, Prop_Send, "m_iTeamNum");
+	return GetEntProp(entity, Prop_Data, "m_iTeamNum");
 }
 
 stock void SetTeam(int entity, int teamSet)
@@ -4955,7 +4955,7 @@ stock void SetTeam(int entity, int teamSet)
 			else
 #endif
 			{
-				SetEntProp(entity, Prop_Send, "m_iTeamNum", teamSet);
+				SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
 			}
 		}
 		else if(teamSet > TFTeam_Red)
@@ -4963,11 +4963,11 @@ stock void SetTeam(int entity, int teamSet)
 			if(entity && entity <= MaxClients)
 				ChangeClientTeam(entity, TFTeam_Blue);
 			else	
-				SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+				SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
 		}
 	}
 	else
 	{
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", teamSet);
+		SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
 	}
 }
