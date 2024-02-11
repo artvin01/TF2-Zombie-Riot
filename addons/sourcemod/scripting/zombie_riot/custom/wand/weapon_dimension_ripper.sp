@@ -31,6 +31,53 @@ void Wand_Dimension_Map_Precache()
 	PrecacheSound(SOUND_ABILITY);
 }
 
+void CreateDimEffect(int client, int weapon, int particle, int entity)
+{
+	
+	DestroyDimEffect(client);
+	
+	float flPos[3];
+	GetEntPropVector(client, Prop_Data, "effect_hand_l", flPos);
+
+	int pap = 0;
+	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+
+	if(pap == 0.0) //Only show if the weapon is actually in your hand right now.
+	{
+	}
+	if(pap == 1.0) //Only show if the weapon is actually in your hand right now.
+	{
+		particle = ParticleEffectAt(flPos, Effect_Normal , 0.0);
+	}
+	if(pap == 2.0) //Only show if the weapon is actually in your hand right now.
+	{
+		particle = ParticleEffectAt(flPos, Effect_Blitz , 0.0);	
+	}
+	if(pap == 3.0) //Only show if the weapon is actually in your hand right now.
+	{
+		particle = ParticleEffectAt(flPos, Effect_Xeno , 0.0);	
+	}
+	if(pap == 4.0) //Only show if the weapon is actually in your hand right now.
+	{
+		particle = ParticleEffectAt(flPos, Effect_Medieval , 0.0);	
+	}
+	if(pap == 5.0) //Only show if the weapon is actually in your hand right now.
+	{
+		particle = ParticleEffectAt(flPos, Effect_Deepsea , 0.0);	
+	}
+	if(pap == 6.0) //Only show if the weapon is actually in your hand right now.
+	{
+		particle = ParticleEffectAt(flPos, Effect_Expidonsa , 0.0);	
+	}
+	else //Only show if the weapon is actually in your hand right now.
+	{
+		ShowSyncHudText(client,  SyncHud_Notifaction, "An error occured. Scream at devs");//none
+	}
+	AddEntityToThirdPersonTransitMode(client, particle);
+	SetParent(client, particle);
+	i_DimParticle[client][0] = EntIndexToEntRef(particle);
+}
+
 public void Enable_Dimension_Wand(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
 	if (h_TimerDimensionWeaponManagement[client] != null)
@@ -248,50 +295,6 @@ void Npc_OnTakeDamage_DimensionalRipper(int attacker, int victim)
 	{
 		how_many_times_swinged[attacker] = MAX_DIMENSION_CHARGE;
 	}
-}
-
-void CreateDimEffect(int client, int weapon, int particle, int entity)
-{
-	
-	DestroyDimEffect(client);
-	
-	float flPos[3];
-	GetEntPropVector(client, Prop_Data, "effect_hand_l", flPos);
-
-	int pap = 0;
-	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
-
-	if(pap == 1.0) //Only show if the weapon is actually in your hand right now.
-	{
-		particle = ParticleEffectAt(flPos, Effect_Normal , 0.0);
-	}
-	if(pap == 2.0) //Only show if the weapon is actually in your hand right now.
-	{
-		particle = ParticleEffectAt(flPos, Effect_Blitz , 0.0);	
-	}
-	if(pap == 3.0) //Only show if the weapon is actually in your hand right now.
-	{
-		particle = ParticleEffectAt(flPos, Effect_Xeno , 0.0);	
-	}
-	if(pap == 4.0) //Only show if the weapon is actually in your hand right now.
-	{
-		particle = ParticleEffectAt(flPos, Effect_Medieval , 0.0);	
-	}
-	if(pap == 5.0) //Only show if the weapon is actually in your hand right now.
-	{
-		particle = ParticleEffectAt(flPos, Effect_Deepsea , 0.0);	
-	}
-	if(pap == 6.0) //Only show if the weapon is actually in your hand right now.
-	{
-		particle = ParticleEffectAt(flPos, Effect_Expidonsa , 0.0);	
-	}
-	else //Only show if the weapon is actually in your hand right now.
-	{
-		ShowSyncHudText(client,  SyncHud_Notifaction, "An error occured. Scream at devs");//none
-	}
-	AddEntityToThirdPersonTransitMode(client, particle);
-	SetParent(client, particle);
-	i_DimParticle[client][0] = EntIndexToEntRef(particle);
 }
 
 bool IsDimEffectSpawned(int client)
