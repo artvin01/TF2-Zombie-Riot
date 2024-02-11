@@ -788,7 +788,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 						vecTarget[1] += GetRandomFloat(-300.0, 300.0);
 					}
 					vecTarget[2] += 50.0;
-					Handle trace = TR_TraceRayFilterEx(vecTarget, view_as<float>({90.0, 0.0, 0.0}), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
+					Handle trace = TR_TraceRayFilterEx(vecTarget, view_as<float>({90.0, 0.0, 0.0}), GetSolidMask(npc.index), RayType_Infinite, BulletAndMeleeTrace, npc.index);
 					TR_GetEndPosition(vecTarget, trace);
 					delete trace;
 					vecTarget[2] += 18.0;

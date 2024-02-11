@@ -673,6 +673,7 @@ bool b_CannotBeKnockedUp[MAXENTITIES];
 bool b_CannotBeSlowed[MAXENTITIES];
 float f_NpcTurnPenalty[MAXENTITIES];
 bool b_IsInUpdateGroundConstraintLogic;
+bool b_IgnorePlayerCollisionNPC[MAXENTITIES];
 
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
 int h_NpcCollissionHookType[MAXENTITIES];
@@ -2523,6 +2524,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		EntityFuncReload4[entity] = INVALID_FUNCTION;
 		EntityFuncAttackInstant[entity] = INVALID_FUNCTION;
 		b_Is_Player_Projectile_Through_Npc[entity] = false;
+		b_IgnorePlayerCollisionNPC[entity] = false;
 		b_ForceCollisionWithProjectile[entity] = false;
 		b_ProjectileCollideIgnoreWorld[entity] = false;
 		i_IsABuilding[entity] = false;

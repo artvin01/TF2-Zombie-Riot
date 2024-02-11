@@ -388,7 +388,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetTeam(npc, TFTeam_Red);
 		}
 		else
-#endif
 		{
 			if(Ally == 999)
 			{
@@ -400,13 +399,17 @@ methodmap CClotBody < CBaseCombatCharacter
 				SetTeam(npc, Ally);
 			}
 		}
+		b_NpcIgnoresbuildings[npc] = IgnoreBuildings;
+#else
+		SetTeam(npc, 5);
+
+#endif
 		AddEntityToLagCompList(npc);
 
 		b_ThisWasAnNpc[npc] = true;
 		b_NpcHasDied[npc] = false;
 		i_FailedTriesUnstuck[npc] = 0;
 		flNpcCreationTime[npc] = GetGameTime();
-		b_NpcIgnoresbuildings[npc] = IgnoreBuildings;
 		DispatchSpawn(npc); //Do this at the end :)
 		Hook_DHook_UpdateTransmitState(npc);
 		SDKHook(npc, SDKHook_TraceAttack, NPC_TraceAttack);
@@ -2968,17 +2971,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		//What to collide with
 		return 0;
 	}*/
-	public int GetSolidMask()
-	{
-		//What to collide with
-		return (MASK_NPCSOLID);
-	}
-	public int GetSolidMaskAlly()
-	{
-		//What to collide with
-		return (MASK_NPCSOLID|MASK_PLAYERSOLID);
-	}
-	
 	public void RestartMainSequence()
 	{
 		SetEntPropFloat(this.index, Prop_Data, "m_flAnimTime", GetGameTime());
@@ -6814,19 +6806,25 @@ bool SetTeleportEndPoint(int client, float Position[3])
 	return true;
 }
 
-
-public MRESReturn IBody_GetSolidMask(Address pThis, Handle hReturn, Handle hParams)			  
-{ 
-	int EntitySolidMask = view_as<int>(view_as<INextBotComponent>(pThis).GetBot().GetEntity());
-
+int GetSolidMask(int npc)
+{
 	int Solidity;
-	if(GetTeam(EntitySolidMask) == TFTeam_Red)
+	if(GetTeam(npc) == TFTeam_Red)
 		Solidity = (MASK_NPCSOLID|MASK_PLAYERSOLID);
 	else
 		Solidity = (MASK_NPCSOLID);
 
-	DHookSetReturn(hReturn, Solidity); 
+	if(b_IgnorePlayerCollisionNPC[npc])
+	{
+		Solidity = (MASK_NPCSOLID);
+	}
+	return Solidity;
+}
 
+public MRESReturn IBody_GetSolidMask(Address pThis, Handle hReturn, Handle hParams)			  
+{ 
+	int EntitySolidMask = view_as<int>(view_as<INextBotComponent>(pThis).GetBot().GetEntity());
+	DHookSetReturn(hReturn, GetSolidMask(EntitySolidMask)); 
 	return MRES_Supercede; 
 }
 

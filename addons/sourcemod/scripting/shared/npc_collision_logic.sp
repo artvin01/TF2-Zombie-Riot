@@ -182,6 +182,14 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		{
 			return true;
 		}
+		if(i_IsABuilding[otherindex])
+		{
+			if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
+			{
+				NpcStartTouch(bot_entidx,otherindex);
+				return true;
+			}
+		}
 		return false;
 	}
 	//No matter what, if they are on the same team, then they will not collide at all as of now.
@@ -197,10 +205,6 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	//the collided index is a player.
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
-		if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
-		{
-			return false;
-		}
 		//this player has some type of logic to prevent collisions, ignore.
 		if(b_ThisEntityIgnored[otherindex])
 		{
@@ -212,11 +216,6 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	}
 	if(i_IsABuilding[otherindex])
 	{
-		if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
-		{
-			NpcStartTouch(bot_entidx,otherindex);
-			return true;
-		}
 		if(RaidbossIgnoreBuildingsLogic(2) || b_NpcIgnoresbuildings[bot_entidx])
 		{
 			return false;
@@ -233,6 +232,10 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	if(!b_NpcHasDied[otherindex])
 	{
 		//we are ignoring them, skip them, but only during traces.
+		if(b_IgnorePlayerCollisionNPC[bot_entidx])
+		{
+			return false;
+		}
 		if(b_ThisEntityIgnored[bot_entidx] && extrarules == 0)
 		{
 			return false;
@@ -434,10 +437,12 @@ bool NpcCollisionCheck(int npc, int other, int extrarules = 0)
 
 bool IsEntityTowerDefense(int entity)
 {
+#if defined ZR
 	if(GetTeam(entity) != TFTeam_Red)
 	{
 		if(VIPBuilding_Active())
 			return true;
 	}
+#endif
 	return false;
 }

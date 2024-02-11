@@ -19,7 +19,7 @@ methodmap CitizenRunner < CClotBody
 
 		int seed = GetURandomInt();
 		Citizen_GenerateModel(seed, view_as<bool>(seed % 2), Cit_Unarmed, buffer, sizeof(buffer));
-		CitizenRunner npc = view_as<CitizenRunner>(CClotBody(vecPos, vecAng, buffer, "1.15", "500", true, false,_,_,_,_,_,true));
+		CitizenRunner npc = view_as<CitizenRunner>(CClotBody(vecPos, vecAng, buffer, "1.15", "500", TFTeam_Red, false,_,_,_,_,_,true));
 		
 		i_NpcInternalId[npc.index] = CITIZEN_RUNNER;
 		i_NpcWeight[npc.index] = 1;
@@ -64,6 +64,7 @@ public void CitizenRunner_ClotThink(int iNPC)
 
 	if(!npc.Anger)
 	{
+		b_IgnorePlayerCollisionNPC[npc.index] = true;
 		npc.Anger = true;
 	}
 	
