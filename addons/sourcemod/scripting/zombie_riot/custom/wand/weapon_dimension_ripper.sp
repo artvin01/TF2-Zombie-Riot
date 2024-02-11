@@ -1206,7 +1206,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 					}
 					case 8:
 					{
-						int entity = Npc_Create(ALT_The_Shit_Slapper, client, pos1, ang, TFTeam_Red);
+						int entity = Npc_Create(ALT_THE_SHIT_SLAPPER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.5);
@@ -1506,7 +1506,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 					}
 					case 8:
 					{
-						int entity = Npc_Create(ALT_The_Shit_Slapper, client, pos1, ang, TFTeam_Red);
+						int entity = Npc_Create(ALT_THE_SHIT_SLAPPER, client, pos1, ang, TFTeam_Red);
 						if(entity > MaxClients)
 						{
 							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);

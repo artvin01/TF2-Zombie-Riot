@@ -159,7 +159,7 @@ enum
 	
 	MEDIVAL_RAM	= 126,
 	ALT_SOLDIER_BARRAGER = 127,
-	ALT_The_Shit_Slapper = 128,
+	ALT_THE_SHIT_SLAPPER = 128,
 	
 	BONEZONE_BASICBONES = 129,
 	
@@ -975,7 +975,7 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 
 	7,	// MEDIVAL_RAM	= 126,
 	4,	// ALT_SOLDIER_BARRAGER = 127,
-	4,	// ALT_The_Shit_Slapper = 128,
+	4,	// ALT_THE_SHIT_SLAPPER = 128,
 
 	0,	// BONEZONE_BASICBONES = 129,
 
@@ -2326,7 +2326,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 		case ALT_SOLDIER_BARRAGER:
 			entity = Soldier_Barrager(client, vecPos, vecAng, ally);
 		
-		case ALT_The_Shit_Slapper:
+		case ALT_THE_SHIT_SLAPPER:
 			entity = The_Shit_Slapper(client, vecPos, vecAng, ally);
 		
 		case BONEZONE_BASICBONES:
@@ -3446,7 +3446,7 @@ public void NPCDeath(int entity)
 		case ALT_SOLDIER_BARRAGER:
 			Soldier_Barrager_NPCDeath(entity);
 		
-		case ALT_The_Shit_Slapper:
+		case ALT_THE_SHIT_SLAPPER:
 			The_Shit_Slapper_NPCDeath(entity);
 		
 		case BONEZONE_BASICBONES:
@@ -4461,7 +4461,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case ALT_SOLDIER_BARRAGER:
 			Soldier_Barrager_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case ALT_The_Shit_Slapper:
+		case ALT_THE_SHIT_SLAPPER:
 			The_Shit_Slapper_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case BONEZONE_BASICBONES:
