@@ -260,13 +260,13 @@ void MedivalRam_NPCDeath(int entity)
 	
 	if(Garrison[entity])
 	{
-		bool friendly = GetTeam(npc.index) == 2;
+		int Team = GetTeam(npc.index);
 		
 		float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		
 		for(int i; i < 6; i++)
 		{
-			Npc_Create(Garrison[entity], -1, pos, ang, friendly);
+			Npc_Create(Garrison[entity], -1, pos, ang, Team);
 		}
 	}
 }
