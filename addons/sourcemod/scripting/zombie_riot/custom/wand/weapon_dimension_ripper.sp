@@ -5,6 +5,13 @@
 #define SOUND_DIM_IMPACT "weapons/cow_mangler_explosion_normal_01.wav"
 #define SOUND_ABILITY "misc/rd_points_return01.wav"
 #define MAX_DIMENSION_CHARGE 40
+#define Effect_Normal "hwn_skeleton_glow_red"
+#define Effect_Blitz "burningplayer_blueglow"
+#define Effect_Xeno "unusual_aura_green_smoke"
+#define Effect_Medieval "contract_score_bonus_sparkle"
+#define Effect_Deepsea "unusual_sapper_teamcolor_blue"
+#define Effect_Expidonsa "utaunt_glowyplayer_purple_parent"
+
 static Handle h_TimerDimensionWeaponManagement[MAXPLAYERS+1]={null, ...};
 static int how_many_times_swinged[MAXTF2PLAYERS];
 static float f_DIMAbilityActive[MAXPLAYERS+1]={0.0, ...};
@@ -256,33 +263,32 @@ void CreateDimEffect(int client, int weapon, int particle, int entity)
 
 	if(pap == 1.0) //Only show if the weapon is actually in your hand right now.
 	{
-		DimPart = "hwn_skeleton_glow_red";
+		int particle = ParticleEffectAt(flPos, Effect_Normal , 0.0);
 	}
 	if(pap == 2.0) //Only show if the weapon is actually in your hand right now.
 	{
-		DimPart = "burningplayer_blueglow";
+		int particle = ParticleEffectAt(flPos, Effect_Blitz , 0.0);	
 	}
 	if(pap == 3.0) //Only show if the weapon is actually in your hand right now.
 	{
-		DimPart = "unusual_aura_green_smoke";
+		int particle = ParticleEffectAt(flPos, Effect_Xeno , 0.0);	
 	}
 	if(pap == 4.0) //Only show if the weapon is actually in your hand right now.
 	{
-		DimPart = "contract_score_bonus_sparkle";
+		int particle = ParticleEffectAt(flPos, Effect_Medieval , 0.0);	
 	}
 	if(pap == 5.0) //Only show if the weapon is actually in your hand right now.
 	{
-		DimPart = "unusual_sapper_teamcolor_blue";
+		int particle = ParticleEffectAt(flPos, Effect_Deepsea , 0.0);	
 	}
 	if(pap == 6.0) //Only show if the weapon is actually in your hand right now.
 	{
-		DimPart = "utaunt_glowyplayer_purple_parent";
+		int particle = ParticleEffectAt(flPos, Effect_Expidonsa , 0.0);	
 	}
 	else //Only show if the weapon is actually in your hand right now.
 	{
 		ShowSyncHudText(client,  SyncHud_Notifaction, "An error occured. Scream at devs");//none
 	}
-	int particle = ParticleEffectAt(flPos, "DimPart", 0.0);
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(client, particle);
 	i_DimParticle[client][0] = EntIndexToEntRef(particle);
