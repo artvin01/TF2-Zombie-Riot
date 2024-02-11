@@ -105,7 +105,7 @@ public void Weapon_Dimension_Wand(int client, int weapon, bool crit)
 
 	if(mana_cost <= Current_Mana[client])
 	{
-		float damage = 100.0;
+		float damage = 65.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
 		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
@@ -853,8 +853,9 @@ void Dimension_Summon_Npc(int client, int NpcId, int weapon, float HealthMulti, 
 					
 					float ExtraDamage = Attributes_Get(weapon, 410, 1.0);
 					ExtraDamage *= DamageMulti;
+					ExtraDamage *= 1.25;
 					fl_Extra_Damage[entity] *= ExtraDamage;
-					CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(60.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 					CreateTimer(4.0, Dimension_GiveStrength, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 					i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 					b_thisNpcIsABoss[entity] = false;
