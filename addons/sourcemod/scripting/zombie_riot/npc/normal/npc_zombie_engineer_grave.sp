@@ -131,7 +131,7 @@ methodmap Engineer < CClotBody
 	}
 	
 	
-	public Engineer(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Engineer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Engineer npc = view_as<Engineer>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "2500", ally));
 		

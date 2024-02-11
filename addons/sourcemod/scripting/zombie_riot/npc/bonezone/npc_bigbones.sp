@@ -158,7 +158,7 @@ methodmap BigBones < CClotBody
 	
 	
 	
-	public BigBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
+	public BigBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		BigBones npc = view_as<BigBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BIG_SCALE, buffed ? BONES_BIG_HP_BUFFED : BONES_BIG_HP, ally, false, true));
 		

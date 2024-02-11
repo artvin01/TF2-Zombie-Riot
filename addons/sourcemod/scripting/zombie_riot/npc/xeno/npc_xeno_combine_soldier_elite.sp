@@ -176,7 +176,7 @@ methodmap XenoCombineElite < CClotBody
 	}
 	
 	
-	public XenoCombineElite(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoCombineElite(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineElite npc = view_as<XenoCombineElite>(CClotBody(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", "1750", ally));
 		

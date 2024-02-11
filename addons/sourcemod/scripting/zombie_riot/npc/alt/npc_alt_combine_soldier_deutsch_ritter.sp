@@ -171,7 +171,7 @@ methodmap Alt_CombineDeutsch < CClotBody
 	}
 	
 	
-	public Alt_CombineDeutsch(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Alt_CombineDeutsch(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Alt_CombineDeutsch npc = view_as<Alt_CombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000", ally));
 		SetVariantInt(1);

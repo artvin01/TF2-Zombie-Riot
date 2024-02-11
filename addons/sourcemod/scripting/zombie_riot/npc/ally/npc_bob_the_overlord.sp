@@ -204,10 +204,10 @@ methodmap BobTheGod < CClotBody
 	}
 
 
-	public BobTheGod(int client, float vecPos[3], float vecAng[3])
+	public BobTheGod(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		
-		BobTheGod npc = view_as<BobTheGod>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.7", "9999999", true, true));
+		BobTheGod npc = view_as<BobTheGod>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.7", "9999999", ally, true));
 		
 		i_NpcInternalId[npc.index] = BOB_THE_GOD_OF_GODS;
 		i_NpcWeight[npc.index] = 999;

@@ -85,7 +85,7 @@ methodmap Defanda < CClotBody
 	}
 	
 	
-	public Defanda(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Defanda(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Defanda npc = view_as<Defanda>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
@@ -252,40 +252,23 @@ void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
-					int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
-					SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
 					// Hit sound
 					npc.PlayMeleeHitSound();
-					//on hit, we heal all allies around us
 					if(target <= MaxClients)
 					{
 						if (IsInvuln(target))
 						{
-							b_ExpidonsaWasAttackingNonPlayer = true;
+							ExpidonsaGroupHeal(npc.index, 150.0, 5, 50.0, 1.0, true);
 						}
 						else
 						{
-							b_ExpidonsaWasAttackingNonPlayer = false;
+							ExpidonsaGroupHeal(npc.index, 150.0, 5, 100.0, 1.0, true);
 						}
 					}
 					else
 					{
-						b_ExpidonsaWasAttackingNonPlayer = true;
+						ExpidonsaGroupHeal(npc.index, 150.0, 5, 50.0, 1.0, true);
 					}
-					Explode_Logic_Custom(0.0,
-					npc.index,
-					npc.index,
-					-1,
-					_,
-					150.0,
-					_,
-					_,
-					true,
-					5,
-					false,
-					_,
-					DefandaAllyHeal);
-					SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
 				} 
 			}
 			delete swingTrace;
@@ -345,42 +328,4 @@ void DefandaEffects(int iNpc)
 	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
 	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
 	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(Laser_1);
-}
-
-
-void DefandaAllyHeal(int entity, int victim, float damage, int weapon)
-{
-	if(entity == victim)
-		return;
-
-	if(b_IsAlliedNpc[entity])
-	{
-		if(victim <= MaxClients)
-		{
-			DefandaAllyHealInternal(entity, victim, 50.0);
-		}
-		else if (b_IsAlliedNpc[victim])
-		{
-			DefandaAllyHealInternal(entity, victim, 50.0);
-		}
-	}
-	else
-	{
-		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
-		{
-			DefandaAllyHealInternal(entity, victim, 100.0);
-		}
-	}
-}
-
-void DefandaAllyHealInternal(int entity, int victim, float heal)
-{
-	if(b_ExpidonsaWasAttackingNonPlayer)
-		heal *= 0.5;
-
-	HealEntityGlobal(entity, victim, heal, 1.0,_,_);
-	float ProjLoc[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-	ProjLoc[2] += 100.0;
-	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }

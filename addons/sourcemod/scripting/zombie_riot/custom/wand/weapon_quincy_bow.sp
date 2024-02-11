@@ -162,7 +162,7 @@ public void Activate_Quincy_Bow(int client, int weapon)
 			//Yes?
 			delete h_TimerQuincy_BowManagement[client];
 			h_TimerQuincy_BowManagement[client] = null;			
-			Create_Quincy_Weapon(client, true);
+		//	Create_Quincy_Weapon(client, true);
 			
 			
 			int pap = Get_Quincy_Pap(weapon);
@@ -185,7 +185,7 @@ public void Activate_Quincy_Bow(int client, int weapon)
 		i_quincy_pap[client] = pap;
 
 		
-		Create_Quincy_Weapon(client, true);
+	//	Create_Quincy_Weapon(client, true);
 		
 		DataPack pack;
 		h_TimerQuincy_BowManagement[client] = CreateDataTimer(0.1, Timer_Management_Quincy_Bow, pack, TIMER_REPEAT);
@@ -1152,7 +1152,7 @@ static bool Quincy_Blade_BEAM_HitDetected[MAXENTITIES];
 			
 		for (int victim = 1; victim < MAXENTITIES; victim++)
 		{
-			if (Quincy_Blade_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+			if (Quincy_Blade_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
 			{
 				SDKHooks_TakeDamage(victim, client, client, dmg, DMG_PLASMA, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
 			}
@@ -1227,7 +1227,7 @@ static void Penetrating_Shot(int client, float radius, float damage, float range
 		}
 		
 		
-		for (int building = 1; building < MAX_TARGETS_HIT; building++)
+		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			BeamWand_BuildingHit[building] = false;
 		}
@@ -1359,7 +1359,7 @@ static void Quincy_Rocket_Launch(int client, int weapon, float startVec[3], floa
 		b_EntityIsArrow[entity] = true;
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		SetTeam(entity, GetTeam(client));
 		TeleportEntity(entity, startVec, Angles, NULL_VECTOR);
 		DispatchSpawn(entity);
 		int particle = 0;

@@ -11,7 +11,7 @@ bool Attribute_ServerSide(int attribute)
 		{
 			return true;
 		}
-		case 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122,225, 224,205,206, 412:
+		case 218, 366, 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122,225, 224,205,206, 412:
 		{
 			return true;
 		}
@@ -173,11 +173,9 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 
 		if(!(damagetype & DMG_SLASH)) //Exclude itself so it doesnt do inf repeats! no weapon uses slash so we will use slash for any debuffs onto zombies that stacks
 		{
-			float value;
 			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 			{
-
-				value = Attributes_Get(weapon, 16, 0.0) +
+				float value = Attributes_Get(weapon, 16, 0.0) +
 					Attributes_Get(weapon, 98, 0.0) +
 					Attributes_Get(weapon, 110, 0.0) +
 					Attributes_Get(weapon, 111, 0.0);	// add_onhit_addhealth
@@ -312,6 +310,29 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 			} 
 		}
 		
+		value = Attributes_Get(weapon, 366, 0.0);	// mod stun waist high airborne
+		if(value)
+		{
+			if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
+			{
+				value /= 2.0;
+			}
+
+			if(b_thisNpcIsARaid[victim])
+			{
+				if(value > 1.5)
+					value = 1.5;
+			}
+			
+			FreezeNpcInTime(victim, value);
+		}
+
+		value = Attributes_Get(weapon, 218, 0.0);	// mark for death
+		if(value)
+		{
+			NpcStats_SilenceEnemy(victim, value);
+		}
+
 		/*
 		if(Attributes_GetOnPlayer(client, weapon, 2067))	// attack_minicrits_and_consumes_burning
 		{

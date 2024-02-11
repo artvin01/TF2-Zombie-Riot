@@ -101,7 +101,7 @@ methodmap RaidbossBladedance < CClotBody
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[rand], this.index, SNDCHAN_AUTO, 130, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public RaidbossBladedance(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public RaidbossBladedance(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossBladedance npc = view_as<RaidbossBladedance>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "1500000", ally, false));
 		
@@ -174,7 +174,6 @@ methodmap RaidbossBladedance < CClotBody
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
-	//	Raidboss_Clean_Everyone();
 
 		return npc;
 	}
@@ -273,11 +272,11 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
 
-			int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
+			int team = GetTeam(npc.index);
 			int entity = -1;
 			while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 			{
-				if(entity != npc.index && !b_NpcHasDied[entity] && GetEntProp(entity, Prop_Send, "m_iTeamNum") != team)
+				if(entity != npc.index && !b_NpcHasDied[entity] && GetTeam(entity) != team)
 				{
 					f_GodArkantosBuff[entity] = GetGameTime() + 16.0;
 					ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
@@ -410,6 +409,8 @@ public void RaidbossBladedance_NPCDeath(int entity)
 	RaidbossBladedance npc = view_as<RaidbossBladedance>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
+
+	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s",WhatDifficultySetting_Internal);
 	
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_RoundRunning)
 	{

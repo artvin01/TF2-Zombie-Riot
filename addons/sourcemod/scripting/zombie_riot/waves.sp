@@ -11,7 +11,7 @@ enum struct Enemy
 	int Does_Not_Scale;
 	int Is_Immune_To_Nuke;
 	bool Is_Static;
-	bool Friendly;
+	int Team;
 	int Index;
 	float Credits;
 	char Data[64];
@@ -111,7 +111,6 @@ static float f_ZombieAntiDelaySpeedUp;
 static int i_ZombieAntiDelaySpeedUp;
 static Handle WaveTimer;
 
-static char LastWaveWas[64];
 static int WaveGiftItem;
 
 public Action Waves_ProgressTimer(Handle timer)
@@ -204,12 +203,12 @@ public Action Waves_RevoteCmd(int client, int args)
 	return Plugin_Handled;
 }
 
-bool Waves_CallVote(int client)
+bool Waves_CallVote(int client, bool force = false)
 {
 	if(Rogue_Mode())
 		return Rogue_CallVote(client);
 	
-	if(Voting && !VotedFor[client])
+	if(Voting && (force || !VotedFor[client]))
 	{
 		Menu menu = new Menu(Waves_CallVoteH);
 		
@@ -227,16 +226,8 @@ bool Waves_CallVote(int client)
 			Voting.GetArray(i, vote);
 			vote.Name[0] = CharToUpper(vote.Name[0]);
 			
-			if(vote.Level > 0 && LastWaveWas[0] && StrEqual(vote.Config, LastWaveWas))
-			{
-				Format(vote.Name, sizeof(vote.Name), "%s (Cooldown)", vote.Name);
-				menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
-			}
-			else
-			{
-				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
-				menu.AddItem(vote.Config, vote.Name, (Level[client] < vote.Level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			}
+			Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
+			menu.AddItem(vote.Config, vote.Name, (Level[client] < vote.Level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		}
 		
 		menu.ExitButton = false;
@@ -256,10 +247,35 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
-			VotedFor[client] = choice;
-			if(VotedFor[client] == 0)
-				VotedFor[client] = -1;
-			
+			if(Voting)
+			{
+				if(!choice || VotedFor[client] != choice)
+				{
+					VotedFor[client] = choice;
+					if(VotedFor[client] == 0)
+					{
+						VotedFor[client] = -1;
+					}
+					else
+					{
+						Vote vote;
+						Voting.GetArray(choice - 1, vote);
+
+						if(vote.Desc[0] && TranslationPhraseExists(vote.Desc))
+						{
+							CPrintToChat(client, "%s: %t", vote.Name, vote.Desc);
+						}
+						else
+						{
+							CPrintToChat(client, "%s: %s", vote.Name, vote.Desc);
+						}
+
+						Waves_CallVote(client, true);
+						return 0;
+					}
+				}
+			}
+
 			Store_Menu(client);
 		}
 	}
@@ -410,6 +426,7 @@ void Waves_SetupVote(KeyValues map)
 	{
 		kv.GetSectionName(vote.Name, sizeof(vote.Name));
 		kv.GetString("file", vote.Config, sizeof(vote.Config));
+		kv.GetString("desc", vote.Desc, sizeof(vote.Desc));
 		vote.Level = kv.GetNum("level");
 		Voting.PushArray(vote);
 	} while(kv.GotoNextKey());
@@ -643,7 +660,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.Is_Health_Scaled = kv.GetNum("is_health_scaling");
 						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
 						enemy.Is_Static = view_as<bool>(kv.GetNum("is_static"));
-						enemy.Friendly = view_as<bool>(kv.GetNum("friendly"));
+						enemy.Team = kv.GetNum("team_npc", 3);
 						enemy.Credits = kv.GetFloat("cash");
 						enemy.ExtraMeleeRes = kv.GetFloat("extra_melee_res", 1.0);
 						enemy.ExtraRangedRes = kv.GetFloat("extra_ranged_res", 1.0);
@@ -866,6 +883,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				CanReVote = false;
 				VoteEndTime = GetGameTime() + 30.0;
 				CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+				PrintHintTextToAll("Vote for the top %d options!", Voting.Length);
 			}
 			else
 			{
@@ -876,35 +894,42 @@ public Action Waves_EndVote(Handle timer, float time)
 						highest = i;
 				}
 				
-				//if(votes[highest])
-				{
-					Vote vote;
-					Voting.GetArray(highest, vote);
-					
-					delete Voting;
-					
-					strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
-					PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
+				Vote vote;
+				Voting.GetArray(highest, vote);
+				
+				delete Voting;
+				
+				PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
 
-					Queue_DifficultyVoteEnded();
-					Native_OnDifficultySet(highest);
-					
-					if(highest > 3)
-						highest = 3;
-					
-					Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "FireUser%d", highest + 1);
-					ExcuteRelay("zr_waveselected", WhatDifficultySetting);
-					
-					vote.Name[0] = CharToUpper(vote.Name[0]);
-					strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), vote.Name);
-					
-					char buffer[PLATFORM_MAX_PATH];
-					BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
-					KeyValues kv = new KeyValues("Waves");
+				char buffer[PLATFORM_MAX_PATH];
+				if(votes[highest] > 3)
+				{
+					BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "vote_trackedvotes.cfg");
+					KeyValues kv = new KeyValues("TrackedVotes");
 					kv.ImportFromFile(buffer);
-					Waves_SetupWaves(kv, false);
+					kv.SetNum(vote.Name, kv.GetNum(vote.Name) + 1);
+					kv.ExportToFile(buffer);
 					delete kv;
 				}
+
+				Queue_DifficultyVoteEnded();
+				Native_OnDifficultySet(highest);
+				
+				if(highest > 3)
+					highest = 3;
+				
+				Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "FireUser%d", highest + 1);
+				ExcuteRelay("zr_waveselected", WhatDifficultySetting);
+				
+				vote.Name[0] = CharToUpper(vote.Name[0]);
+				strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), vote.Name);
+				strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), vote.Name);
+				
+				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
+				KeyValues kv = new KeyValues("Waves");
+				kv.ImportFromFile(buffer);
+				Waves_SetupWaves(kv, false);
+				delete kv;
 			}
 		}
 		else
@@ -980,7 +1005,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						SpawnTimer(30.0);
 					}
 				}
-				Raidboss_Clean_Everyone();
 				Music_EndLastmann();
 				ReviveAll(true);
 				CheckAlivePlayers();
@@ -1010,7 +1034,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			if(count > 150) //So its always less then 150.
 				count = 150;
 			
-			if(!wave.EnemyData.Friendly)
+			if(wave.EnemyData.Team != TFTeam_Red)
 			{
 				Zombies_Currently_Still_Ongoing += count;
 			}
@@ -1194,9 +1218,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				int entity = CreateEntityByName("env_fog_controller");
 				if(entity != -1)
 				{
-					char name[64];
-					FormatEx(name, sizeof(name), "rpg_fortress_envfog_%d", CurrentRound);
-
 					DispatchKeyValue(entity, "fogblend", round.FogBlend);
 					DispatchKeyValue(entity, "fogcolor", round.FogColor1);
 					DispatchKeyValue(entity, "fogcolor2", round.FogColor2);
@@ -1204,7 +1225,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					DispatchKeyValueFloat(entity, "fogend", round.FogEnd);
 					DispatchKeyValueFloat(entity, "fogmaxdensity", round.FogDesnity);
 
-					DispatchKeyValue(entity, "targetname", name);
+					DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
 					DispatchKeyValue(entity, "fogenable", "1");
 					DispatchKeyValue(entity, "spawnflags", "1");
 					DispatchSpawn(entity);
@@ -1216,7 +1237,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					{
 						if(IsClientInGame(client))
 						{
-							SetVariantString(name);
+							SetVariantString("rpg_fortress_envfog");
 							AcceptEntityInput(client, "SetFogController");
 						}
 					}
@@ -1226,14 +1247,14 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			//Loop through all the still alive enemies that are indexed!
 			int Zombies_alive_still = 0;
 
-			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int npc_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-				if (IsValidEntity(npc_index) && npc_index != 0)
+				int npc_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				if (IsValidEntity(npc_index))
 				{
 					if(!b_NpcHasDied[npc_index])
 					{
-						if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+						if(GetTeam(npc_index) != TFTeam_Red)
 						{
 							Zombies_alive_still += 1;
 						}
@@ -1326,30 +1347,50 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			//MUSIC LOGIC
 			
-			bool RoundHasCustomMusic = false;
+			bool RoundHadCustomMusic = false;
 		
 			if(char_MusicString1[0])
-				RoundHasCustomMusic = true;
+				RoundHadCustomMusic = true;
 					
 			if(char_MusicString2[0])
-				RoundHasCustomMusic = true;
+				RoundHadCustomMusic = true;
 
 			if(char_RaidMusicSpecial1[0])
 			{
-				RoundHasCustomMusic = true;
+				RoundHadCustomMusic = true;
 			}
 
-			if(RoundHasCustomMusic) //only do it when there was actually custom music previously
+			if(RoundHadCustomMusic) //only do it when there was actually custom music previously
 			{	
 				bool ReplaceMusic = false;
-				if(!StrEqual(char_MusicString1, round.music_round_1))
+				if(!round.music_round_1[0] && char_MusicString1[0])
 				{
 					ReplaceMusic = true;
 				}
-				if(!StrEqual(char_MusicString2, round.music_round_2))
+				if(round.music_round_1[0])
+				{
+					if(!StrEqual(char_MusicString1, round.music_round_1))
+					{
+						ReplaceMusic = true;
+					}
+				}
+				//there was music the previous round, but there is none now.
+				if(!round.music_round_2[0] && char_MusicString2[0])
 				{
 					ReplaceMusic = true;
 				}
+				//they are different, cancel out.
+				if(round.music_round_1[0])
+				{
+					if(!StrEqual(char_MusicString2, round.music_round_2))
+					{
+						ReplaceMusic = true;
+					}
+				}
+
+				//if it had raid music, replace anyways.
+				if(char_RaidMusicSpecial1[0])
+					ReplaceMusic = true;
 				
 				if(ReplaceMusic)
 				{
@@ -1365,10 +1406,11 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 
 			//This should nullfy anyways if nothings in it
+			RemoveAllCustomMusic();
+
 			strcopy(char_MusicString1, sizeof(char_MusicString1), round.music_round_1);
 			strcopy(char_MusicString2, sizeof(char_MusicString2), round.music_round_2);
-			char_RaidMusicSpecial1[0] = 0;
-
+			
 			i_MusicLength1 = round.music_duration_1;
 			i_MusicLength2 = round.music_duration_2;
 
@@ -1437,6 +1479,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					CreateTimer(0.5, SetTimeBack);
 					
 					EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+					
 
 					if(zr_allowfreeplay.BoolValue)
 					{
@@ -1462,6 +1505,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 						roundtime.FloatValue = last;
 					}
+					RemoveAllCustomMusic();
 				}
 				
 				char_MusicString1[0] = 0;
@@ -1573,7 +1617,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			if(Enemies.Empty)
 			{
 				CurrentWave++;
-				WaveStart_SubWaveStart();
+				Waves_Progress();
 				return;
 			}
 
@@ -1581,7 +1625,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		}
 		else if(donotAdvanceRound)
 		{
-			CurrentWave = 0;
+			CurrentWave = 9;
 		}
 		else
 		{
@@ -1778,6 +1822,15 @@ void Waves_ClearWave()
 	}
 }
 
+void Waves_ClearWaveCurrentSpawningEnemies()
+{
+	Enemy enemy;
+	while(Waves_GetNextEnemy(enemy))
+	{
+		Zombies_Currently_Still_Ongoing--;
+	}
+}
+
 bool Waves_Started()
 {
 	if(Rogue_Mode())
@@ -1846,6 +1899,7 @@ void WaveEndLogicExtra()
 	SeaFounder_ClearnNethersea();
 	M3_AbilitiesWaveEnd();
 	Specter_AbilitiesWaveEnd();	
+	Rapier_CashWaveEnd();
 	LeperResetUses();
 	Zero(i_MaxArmorTableUsed);
 	for(int client; client <= MaxClients; client++)

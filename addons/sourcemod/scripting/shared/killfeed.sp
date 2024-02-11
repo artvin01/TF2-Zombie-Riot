@@ -174,8 +174,15 @@ int KillFeed_GetBotTeam(int client)
 
 void KillFeed_SetBotTeam(int client, int team)
 {
-	ForceTeam[client] = team;
-	ChangeClientTeam(client, team);
+	int teamSet = team;
+
+	if(teamSet < TFTeam_Unassigned)
+		teamSet = TFTeam_Unassigned;
+	if(teamSet > TFTeam_Blue)
+		teamSet = TFTeam_Blue;
+	ForceTeam[client] = teamSet;
+	
+	ChangeClientTeam(client, teamSet);
 }
 
 #if defined ZR
@@ -212,7 +219,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 			return;
 		
 		feed.userid = GetClientUserId(Bots[botNum]);
-		feed.victim_team = GetEntProp(victim, Prop_Send, "m_iTeamNum");
+		feed.victim_team = GetTeam(victim);
 		strcopy(feed.victim_name, sizeof(feed.victim_name), NPC_Names[i_NpcInternalId[victim]]);
 		
 		botNum++;
@@ -243,7 +250,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 			return;
 		
 		feed.userid = GetClientUserId(Bots[botNum]);
-		feed.victim_team = GetEntProp(victim, Prop_Send, "m_iTeamNum");
+		feed.victim_team = GetTeam(victim);
 		botNum++;
 
 		priority = true;
@@ -273,7 +280,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 				return;
 			
 			feed.attacker = GetClientUserId(Bots[botNum]);
-			feed.attacker_team = GetEntProp(attacker, Prop_Send, "m_iTeamNum");
+			feed.attacker_team = GetTeam(attacker);
 			strcopy(feed.attacker_name, sizeof(feed.attacker_name), NPC_Names[i_NpcInternalId[attacker]]);
 			
 			botNum++;

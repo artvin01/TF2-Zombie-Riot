@@ -115,7 +115,7 @@ methodmap NearlSwordAbility < CClotBody
 		
 	}
 	
-	public NearlSwordAbility(int client, float vecPos[3], float vecAng[3], bool ally)
+	public NearlSwordAbility(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		NearlSwordAbility npc = view_as<NearlSwordAbility>(CClotBody(vecPos, vecAng, "models/weapons/w_models/w_drg_ball.mdl", "1.0", "100", ally));
 		

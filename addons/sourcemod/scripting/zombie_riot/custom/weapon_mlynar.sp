@@ -466,6 +466,10 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 {
 	f_MlynarHurtDuration[victim] = GetGameTime() + 1.0;
 	//insert reflect code.
+	if(b_thisNpcIsARaid[attacker])
+	{
+		damage *= 1.15;
+	}
 	if(f_MlynarReflectCooldown[victim][attacker] < GetGameTime())
 	{
 		f_MlynarReflectCooldown[victim][attacker] = GetGameTime() + 0.35;

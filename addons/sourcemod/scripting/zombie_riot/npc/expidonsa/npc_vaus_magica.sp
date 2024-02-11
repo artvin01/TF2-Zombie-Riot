@@ -82,7 +82,7 @@ methodmap VausMagica < CClotBody
 		EmitSoundToAll(g_ShieldAttackSounds[GetRandomInt(0, sizeof(g_ShieldAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public VausMagica(int client, float vecPos[3], float vecAng[3], bool ally)
+	public VausMagica(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		VausMagica npc = view_as<VausMagica>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "5000", ally));
 		
@@ -264,7 +264,7 @@ void VausMagicaShieldGiving(VausMagica npc, float gameTime)
 	if(gameTime > npc.m_flNextRangedSpecialAttack)
 	{
 		npc.m_flNextRangedSpecialAttack = gameTime + 1.0; //Retry in 1 second.
-		int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
+		int TeamNum = GetTeam(npc.index);
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
 		Explode_Logic_Custom(0.0,
 		npc.index,
@@ -328,16 +328,16 @@ void VausMagicaShield(int entity, int victim, float damage, int weapon)
 	if(entity == victim)
 		return;
 
-	if(b_IsAlliedNpc[entity])
+	if(GetTeam(entity) == TFTeam_Red)
 	{
-		if (b_IsAlliedNpc[victim])
+		if (GetTeam(victim) == TFTeam_Red && !b_NpcHasDied[victim])
 		{
 			VausMagicaShieldInternal(entity,victim);
 		}
 	}
 	else
 	{
-		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
+		if (GetTeam(victim) != TFTeam_Red && !i_IsABuilding[victim] && victim > MaxClients)
 		{
 			VausMagicaShieldInternal(entity,victim);
 		}

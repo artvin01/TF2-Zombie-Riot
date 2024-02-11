@@ -145,7 +145,7 @@ methodmap MedivalArbalest < CClotBody
 		#endif
 	}
 	
-	public MedivalArbalest(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalArbalest(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalArbalest npc = view_as<MedivalArbalest>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "5000", ally));
 		SetVariantInt(1);

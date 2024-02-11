@@ -58,7 +58,7 @@ methodmap PathshaperFractal < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
 	}
 	
-	public PathshaperFractal(int client, float vecPos[3], float vecAng[3], bool ally)
+	public PathshaperFractal(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		PathshaperFractal npc = view_as<PathshaperFractal>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "1.3", "20000", ally));
 		// 20000 x 1.0

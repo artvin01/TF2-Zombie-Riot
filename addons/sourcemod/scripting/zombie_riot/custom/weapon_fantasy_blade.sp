@@ -101,7 +101,7 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 			h_TimerFantasyManagement[client] = null;
 			i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 			
-			Create_Halo_And_Wings(client, true);
+		//	Create_Halo_And_Wings(client, true);
 			DataPack pack;
 			h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
@@ -114,7 +114,7 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 	{
 		i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 		
-		Create_Halo_And_Wings(client, true);
+	//	Create_Halo_And_Wings(client, true);
 		DataPack pack;
 		h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
@@ -159,7 +159,7 @@ public void Fantasy_Blade_m2(int client, int weapon, bool crit, int slot)
 				{
 					if(fl_Shard_Ammount[client]>=3)
 					{
-						float damage = 500.0;
+						float damage = 200.0;
 						damage *= Attributes_Get(weapon, 2, 1.0);
 							
 						float time = Fantasy_Blade_Tele(client, weapon, damage, 1000.0);
@@ -188,7 +188,7 @@ public void Fantasy_Blade_m2(int client, int weapon, bool crit, int slot)
 				float time = 3.5;
 				time *= Attributes_Get(weapon, 6, 1.0);
 
-				float damage = 100.0;
+				float damage = 110.0;
 				damage *= Attributes_Get(weapon, 2, 1.0);
 
 				fl_blade_swing_reload_time[client] = GameTime + time + 0.5;
@@ -228,7 +228,7 @@ static void Fantasy_Blade_Loop_Logic(int client, int weapon)
 				float time = 1.75;
 				time *= Attributes_Get(weapon, 6, 1.0);
 					
-				float damage = 75.0;
+				float damage = 85.0;
 				damage *= Attributes_Get(weapon, 2, 1.0);
 				fl_blade_swing_reload_time[client] = GameTime + time + 0.5;
 				float look_vec[3];
@@ -849,10 +849,10 @@ static Action Horizontal_Slicer_Tick(int client)
 		H_i_Slicer_Throttle[client] = 0;
 		for(int i=1 ; i<=H_SLICER_AMOUNT ; i++)
 		{
-				Fantasy_Blade_Damage_Trace(client, H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], 2.0, H_fl_damage[client]);
-				
-				TE_SetupBeamPoints(H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], gLaser2, 0, 0, 0, 0.051, 5.0, 5.0, 0, 0.1, colour, 1);
-				TE_SendToAll(0.0);
+			Fantasy_Blade_Damage_Trace(client, H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], 20.0, H_fl_damage[client]);
+			
+			TE_SetupBeamPoints(H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], gLaser2, 0, 0, 0, 0.051, 5.0, 5.0, 0, 0.1, colour, 1);
+			TE_SendToAll(0.0);
 			
 		}
 	}
@@ -953,7 +953,7 @@ static Action Vertical_Slicer_Tick(int client)
 		i_Slicer_Throttle[client] = 0;
 		skyloc = Cur_Vec;
 		skyloc[2] += 150.0;
-		Fantasy_Blade_Damage_Trace(client, Cur_Vec, skyloc, 4.0, fl_damage[client]);
+		Fantasy_Blade_Damage_Trace(client, Cur_Vec, skyloc, 40.0, fl_damage[client]);
 		Cur_Vec[2] -= 150.0;
 		TE_SetupBeamPoints(Cur_Vec, skyloc, gLaser2, 0, 0, 0, 0.051, 5.0, 5.0, 0, 0.1, colour, 1);
 		TE_SendToAll(0.0);
@@ -964,35 +964,36 @@ static Action Vertical_Slicer_Tick(int client)
 
 static void Fantasy_Blade_Damage_Trace(int client, float Vec_1[3], float Vec_2[3], float radius, float dmg)
 {
+	static float hullMin[3];
+	static float hullMax[3];
+
+	for (int i = 1; i < MAXENTITIES; i++)
+	{
+		Fantasy_Blade_BEAM_HitDetected[i] = false;
+	}
+	
+	hullMin[0] = -radius;
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+	Handle trace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, MASK_ALL, Fantasy_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
+	delete trace;
 	
 	
-			static float hullMin[3];
-			static float hullMax[3];
-
-			for (int i = 1; i < MAXENTITIES; i++)
-			{
-				Fantasy_Blade_BEAM_HitDetected[i] = false;
-			}
-			
-			hullMin[0] = -radius;
-			hullMin[1] = hullMin[0];
-			hullMin[2] = hullMin[0];
-			hullMax[0] = -hullMin[0];
-			hullMax[1] = -hullMin[1];
-			hullMax[2] = -hullMin[2];
-			Handle trace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, 1073741824, Fantasy_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-			delete trace;
-			
-			
-			for (int victim = 1; victim < MAXENTITIES; victim++)
-			{
-				if (Fantasy_Blade_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
-				{
-					SDKHooks_TakeDamage(victim, client, client, dmg/BEAM_Targets_Hit[client], DMG_CLUB, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
-					BEAM_Targets_Hit[client] *= FANTASY_BLADE_PENETRATION_FALLOFF;
-				}
-			}
-
+	for (int victim = 1; victim < MAXENTITIES; victim++)
+	{
+		if (Fantasy_Blade_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
+		{
+			float damage_xd = dmg;
+			if(b_thisNpcIsARaid[victim])
+				damage_xd*= 1.25;
+				
+			SDKHooks_TakeDamage(victim, client, client, damage_xd/BEAM_Targets_Hit[client], DMG_CLUB, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
+			BEAM_Targets_Hit[client] *= FANTASY_BLADE_PENETRATION_FALLOFF;
+		}
+	}
 }
 static bool Fantasy_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {

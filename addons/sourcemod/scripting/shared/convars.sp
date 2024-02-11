@@ -95,7 +95,8 @@ void ConVar_PluginStart()
 	CvarKickPlayersAt = CreateConVar("zr_kickplayersat", "", "If the server is full, Do reroute or kick", FCVAR_DONTRECORD);
 	CvarRerouteToIpAfk = CreateConVar("zr_rerouteipafk", "", "If the server is full, reroute", FCVAR_DONTRECORD);
 	
-	FindConVar("mp_bonusroundtime").SetBounds(ConVarBound_Upper, false);
+	mp_bonusroundtime = FindConVar("mp_bonusroundtime");
+	mp_bonusroundtime.SetBounds(ConVarBound_Upper, false);
 
 	AutoExecConfig(true, "zombie_riot");
 	

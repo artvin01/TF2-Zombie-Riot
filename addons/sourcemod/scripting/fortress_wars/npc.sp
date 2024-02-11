@@ -4,6 +4,8 @@
 enum
 {
 	NOTHING	= 0,
+	MILITIA = 1,
+	VILLAGER = 2,
 
 	// Add entries above this line
 	MAX_NPC_TYPES
@@ -11,23 +13,30 @@ enum
 
 public const char NPC_Names[MAX_NPC_TYPES][] =
 {
-	"nothing"
-};
-
-public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
-{
-	"npc_nothing"
+	"nothing",
+	"Militia",
+	"Villager"
 };
 
 void NPC_MapStart()
 {
+	UnitBody_MapStart();
+	EmpireBody_MapStart();
+	Militia_MapStart();
+	Villager_MapStart();
 }
 
-any Npc_Create(int index, int client, const float vecPos[3], const float vecAng[3], const char[] data = "")
+stock any Npc_Create(int index, int team, const float vecPos[3], const float vecAng[3], const char[] data = "")
 {
 	any entity = -1;
 	switch(index)
 	{
+		case MILITIA:
+			entity = Militia(team, vecPos, vecAng);
+
+		case VILLAGER:
+			entity = Villager(team, vecPos, vecAng);
+
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%d] Is not a valid npc!", index);
 	}
@@ -66,3 +75,7 @@ void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 }
 
 #include "fortress_wars/npc/npc_base.sp"
+
+#include "fortress_wars/npc/empire/npc_base_empire.sp"
+#include "fortress_wars/npc/empire/npc_militia.sp"
+#include "fortress_wars/npc/empire/npc_villager.sp"

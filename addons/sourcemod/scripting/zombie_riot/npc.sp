@@ -11,6 +11,8 @@
 // 140 * 140
 #define GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED 22500.0
 
+#define RAIDITEM_INDEX_WIN_COND 9999
+
 static float f_FactionCreditGain;
 static float f_FactionCreditGainReduction[MAXTF2PLAYERS];
 
@@ -406,6 +408,23 @@ enum
 	INTERITUS_DESERT_QANAAS			= 357,
 	INTERITUS_DESERT_ATILLA			= 358,
 	INTERITUS_DESERT_ANCIENTDEMON	= 359,
+	INTERITUS_WINTER_SNIPER			= 360,
+	INTERITUS_WINTER_ZIBERIANMINER 	= 361,
+	INTERITUS_WINTER_SNOWEY_GUNNER	= 362,
+	INTERITUS_WINTER_FREEZING_CLEANER = 363,
+	INTERITUS_WINTER_AIRBORN_EXPLORER = 364,
+	INTERITUS_WINTER_ARCTIC_MAGE	  = 365,
+	INTERITUS_WINTER_FROST_HUNTER	  = 366,
+	INTERITUS_WINTER_SKIN_HUNTER	  = 367,
+	INTERITUS_WINTER_IRRITATED_PERSON = 368,
+	THEDOCTOR_MINIBOSS				  = 369,
+  
+	INTERITUS_ANARCHY_RANSACKER		  = 370,
+  
+	INTERITUS_FOREST_SNIPER = 371,
+	INTERITUS_FOREST_SCOUT = 372,
+	INTERITUS_FOREST_SOLDIER = 373,
+	INTERITUS_FOREST_DEMOMAN = 374,
 
 	MAX_NPC_TYPES	// Add entries above this line
 }
@@ -795,7 +814,22 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Rajul",
 	"Qanaas",
 	"Atilla",
-	"Ancient Demon"
+	"Ancient Demon",
+	"Winter Sniper",
+	"Ziberian Miner",
+	"Snowey Gunner",
+	"Freezing Cleaner",
+	"Airborn Explorer",
+	"Arctic Mage",
+	"Frost Hunter",
+	"Skin Hunter",
+	"Irritated Person",
+	"The Doctor",
+	"Ransacker",
+	"Archosauria",
+	"Aslan",
+	"Perro",
+	"Caprinae"
 };
 
 // See items.sp for IDs to names
@@ -1170,7 +1204,11 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	-1,	//RUINA_MAGIA_ANCHOR
 	-1,	//RUINA_STORM_WEAVER
 	-1,	//RUINA_STORM_WEAVER_MID
-	1, //MINI_BEHEADED_KAMI
+	1,
+	-1,
+	-1,
+	-1,
+	-1
 };
 
 public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
@@ -1557,7 +1595,22 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_rajul",
 	"npc_qanaas",
 	"npc_atilla",
-	"npc_ancient_demon"
+	"npc_ancient_demon",
+	"npc_winter_sniper",
+	"npc_ziberian_miner",
+	"npc_snowey_gunner",
+	"npc_freezing_cleaner",
+	"npc_airborn_explorer",
+	"npc_arctic_mage",
+	"npc_frost_hunter",
+	"npc_skin_hunter",
+	"npc_irritated_person",
+	"npc_doctor_special",
+	"npc_ransacker",
+	"npc_archosauria",
+	"npc_alsan",
+	"npc_perro",
+	"npc_caprinae"
 };
 
 void NPC_MapStart()
@@ -1696,7 +1749,6 @@ void NPC_MapStart()
 	BeefyBones_OnMapStart_NPC();
 	BrittleBones_OnMapStart_NPC();
 	BigBones_OnMapStart_NPC();
-	Itstilives_MapStart();
 	AlliedLeperVisualiserAbility_OnMapStart_NPC();
 	
 	Mecha_Engineer_OnMapStart_NPC();
@@ -1829,7 +1881,17 @@ void NPC_MapStart()
 	DesertQanaas_OnMapStart_NPC();
 	DesertAtilla_OnMapStart_NPC();
 	DesertAncientDemon_OnMapStart_NPC();
-	
+	WinterSniper_OnMapStart_NPC();
+	WinterZiberianMiner_OnMapStart_NPC();
+	WinterSnoweyGunner_OnMapStart_NPC();
+	WinterFreezingCleaner_OnMapStart_NPC();
+	WinterAirbornExplorer_OnMapStart_NPC();
+	WinterArcticMage_OnMapStart_NPC();
+	WinterFrostHunter_OnMapStart_NPC();
+	WinterSkinHunter_OnMapStart_NPC();
+	WinterIrritatedPerson_OnMapStart_NPC();
+	AnarchyRansacker_OnMapStart_NPC();
+
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();
@@ -1886,9 +1948,10 @@ void NPC_MapStart()
 	RaidbossBladedance_MapStart();
 }
 
-any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
+any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], int team, const char[] data="") //dmg mult only used for summonings
 {
 	any entity = -1;
+	int ally = team;
 	switch(Index_Of_Npc)
 	{
 		case HEADCRAB_ZOMBIE:
@@ -2138,7 +2201,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = NaziPanzer(client, vecPos, vecAng, ally);
 		
 		case BOB_THE_GOD_OF_GODS:
-			entity = BobTheGod(client, vecPos, vecAng);
+			entity = BobTheGod(client, vecPos, vecAng, ally);
 		
 		case NECRO_COMBINE:
 			entity = NecroCombine(client, vecPos, vecAng, StringToFloat(data));
@@ -2147,7 +2210,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = NecroCalcium(client, vecPos, vecAng, StringToFloat(data));
 		
 		case CURED_FATHER_GRIGORI:
-			entity = CuredFatherGrigori(client, vecPos, vecAng);
+			entity = CuredFatherGrigori(client, vecPos, vecAng, ally);
 		
 		case ALT_COMBINE_MAGE:
 			entity = AltCombineMage(client, vecPos, vecAng, ally);
@@ -2289,10 +2352,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			
 		case BONEZONE_BUFFED_BIGBONES:
 			entity = BigBones(client, vecPos, vecAng, ally, true);
-		
-		case ITSTILIVES:
-			entity = Itstilives(client, vecPos, vecAng);
-		
+			
 		case ALT_MECHA_ENGINEER:
 			entity = Mecha_Engineer(client, vecPos, vecAng, ally);
 		
@@ -2884,6 +2944,51 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case INTERITUS_DESERT_ANCIENTDEMON:
 			entity = DesertAncientDemon(client, vecPos, vecAng, ally);
 
+		case INTERITUS_WINTER_SNIPER:
+			entity = WinterSniper(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_ZIBERIANMINER:
+			entity = WinterZiberianMiner(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_SNOWEY_GUNNER:
+			entity = WinterSnoweyGunner(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_FREEZING_CLEANER:
+			entity = WinterFreezingCleaner(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_AIRBORN_EXPLORER:
+			entity = WinterAirbornExplorer(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_ARCTIC_MAGE:
+			entity = WinterArcticMage(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_FROST_HUNTER:
+			entity = WinterFrostHunter(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_SKIN_HUNTER:
+			entity = WinterSkinHunter(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_IRRITATED_PERSON:
+			entity = WinterIrritatedPerson(client, vecPos, vecAng, ally);
+
+		case THEDOCTOR_MINIBOSS:
+			entity = SpecialDoctor(client, vecPos, vecAng, ally,data);
+     
+		case INTERITUS_ANARCHY_RANSACKER:
+			entity = AnarchyRansacker(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_SNIPER:
+			entity = Archosauria(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_SCOUT:
+			entity = Aslan(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_SOLDIER:
+			entity = Perro(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_DEMOMAN:
+			entity = Caprinae(client, vecPos, vecAng, ally, data);
+
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
@@ -2891,7 +2996,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 	if(entity > 0)
 	{
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(entity) == 2)
 		{
 			Rogue_AllySpawned(entity);
 		}
@@ -2903,11 +3008,41 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 	
 	return entity;
 }	
+
+public void ZR_NpcTauntWinClear()
+{
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	{
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		{
+			func_NPCFuncWin[baseboss_index] = INVALID_FUNCTION;
+		}
+	}
+}
+public void ZR_NpcTauntWin()
+{
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	{
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		{
+			Function func = func_NPCFuncWin[baseboss_index];
+			if(func && func != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, func);
+				Call_PushCell(baseboss_index);
+				Call_Finish();
+			}
+			func_NPCFuncWin[baseboss_index] = INVALID_FUNCTION;
+		}
+	}
+}
 public void NPCDeath(int entity)
 {
-	for(int targ; targ<i_MaxcountNpc; targ++)
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 		{
 			Function func = func_NPCDeathForward[baseboss_index];
@@ -4852,9 +4987,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/special/npc_panzer.sp"
 #include "zombie_riot/npc/special/npc_sawrunner.sp"
 #include "zombie_riot/npc/special/npc_l4d2_tank.sp"
-#include "zombie_riot/npc/special/npc_itstilives.sp"
 #include "zombie_riot/npc/special/npc_phantom_knight.sp"
 #include "zombie_riot/npc/special/npc_beheaded_kamikaze.sp"
+#include "zombie_riot/npc/special/npc_doctor.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"
@@ -5128,3 +5263,20 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/desert/npc_qanaas.sp"
 #include "zombie_riot/npc/interitus/desert/npc_atilla.sp"
 #include "zombie_riot/npc/interitus/desert/npc_ancient_demon.sp"
+
+#include "zombie_riot/npc/interitus/winter/npc_winter_sniper.sp"
+#include "zombie_riot/npc/interitus/winter/npc_ziberian_miner.sp"
+#include "zombie_riot/npc/interitus/winter/npc_snowey_gunner.sp"
+#include "zombie_riot/npc/interitus/winter/npc_freezing_cleaner.sp"
+#include "zombie_riot/npc/interitus/winter/npc_airborn_explorer.sp"
+#include "zombie_riot/npc/interitus/winter/npc_arctic_mage.sp"
+#include "zombie_riot/npc/interitus/winter/npc_skin_hunter.sp"
+#include "zombie_riot/npc/interitus/winter/npc_frost_hunter.sp"
+#include "zombie_riot/npc/interitus/winter/npc_irritated_person.sp"
+
+#include "zombie_riot/npc/interitus/anarchy/npc_ransacker.sp"
+
+#include "zombie_riot/npc/interitus/forest/npc_archosauria.sp"
+#include "zombie_riot/npc/interitus/forest/npc_aslan.sp"
+#include "zombie_riot/npc/interitus/forest/npc_perro.sp"
+#include "zombie_riot/npc/interitus/forest/npc_caprinae.sp"

@@ -669,12 +669,14 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	TF2Items_SetQuality(weapon, qual);
 	TF2Items_SetNumAttributes(weapon, 0);
 
+#if !defined RTS
 	TFClassType class = TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true));
 	if(custom_classSetting != 0)
 	{
 		class = view_as<TFClassType>(custom_classSetting);
 	}
 	TF2_SetPlayerClass_ZR(client, class, _, false);
+#endif
 	
 	int entity = TF2Items_GiveNamedItem(client, weapon);
 	delete weapon;
@@ -718,7 +720,9 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 	}
 
+#if !defined RTS
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], _, false);
+#endif
 	return entity;
 }
 //										 info.Attribs, info.Value, info.Attribs);
@@ -912,37 +916,6 @@ public void RequestFramesCallback(DataPack pack)
 	}
 }
 
-/*
-int TF2_CreateGlow(int entity, const char[] model, int owner, int color[4])
-{
-	int prop = CreateEntityByName("tf_taunt_prop");
-	if(IsValidEntity(prop))
-	{
-		DispatchSpawn(prop);
-
-		SetEntityModel(prop, model);
-		SetEntPropEnt(prop, Prop_Data, "m_hEffectEntity", owner);
-		SetEntProp(prop, Prop_Send, "m_bGlowEnabled", true);
-		SetEntProp(prop, Prop_Send, "m_fEffects", GetEntProp(prop, Prop_Send, "m_fEffects")|EF_BONEMERGE|EF_NOSHADOW|EF_NOINTERP);
-
-		SetVariantString("!activator");
-		AcceptEntityInput(prop, "SetParent", entity);
-
-		SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(prop, color[0], color[1], color[2], color[3]);
-		SDKHook(prop, SDKHook_SetTransmit, GlowTransmit);
-	}
-	return prop;
-}
-
-public Action GlowTransmit(int entity, int target)
-{
-	if(GetEntPropEnt(entity, Prop_Data, "m_hEffectEntity") == target)
-		return Plugin_Continue;
-
-	return Plugin_Handled;
-}
-*/
 
 stock int TF2_CreateGlow(int iEnt)
 {
@@ -1041,6 +1014,7 @@ stock int GiveWearable(int client, int index)
 		SetEntProp(entity, Prop_Send, "m_iEntityQuality", 1);
 		SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
+		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 		
 		DispatchSpawn(entity);
 		SDKCall_EquipWearable(client, entity);
@@ -1223,6 +1197,8 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 //Most healing debuffs shouldnt work with this.
 #define HEAL_ABSOLUTE				(1 << 2) 
 //Any and all healing changes or buffs or debuffs dont work that dont affect the weapon directly.
+#define HEAL_SILENCEABLE				(1 << 3) 
+//Silence Entirely nukes this heal
 */
 //this will return the amount of healing it actually did.
 stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES, int MaxHealPermitted = 99999999)
@@ -1237,6 +1213,12 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 #if defined ZR
 		if(b_HealthyEssence)
 			HealTotal *= 1.25;
+		bool RegrowthBlock,camoblock;
+ 		Building_CamoOrRegrowBlocker(healer, camoblock, RegrowthBlock);
+		if(RegrowthBlock)
+		{
+			HealTotal *= 0.5;
+		}
 #endif
 
 		//Extra healing bonuses or penalty for all healing except absolute
@@ -1250,8 +1232,23 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 				HealTotal *= Attributes_GetOnPlayer(reciever, 734, true, false);
 		}
 	}
+#if defined ZR
+	if(healer != reciever && HealOverThisDuration != 0.0)
+	{
+		if(healer > 0 && healer <= MaxClients)
+			Healing_done_in_total[healer] += RoundToNearest(HealTotal);
+	}
+#endif
 	if(HealOverThisDuration == 0.0)
-		return HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
+	{
+		int HealingDoneInt;
+		HealingDoneInt = HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
+#if defined ZR
+		if(healer != reciever && healer <= MaxClients)
+			Healing_done_in_total[healer] += HealingDoneInt;
+#endif
+		return HealingDoneInt;
+	}
 	else
 	{
 		float HealTotalTimer = HealOverThisDuration / 0.1;
@@ -1408,7 +1405,7 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 	}
 	
 #if !defined RTS
-	if(entity > MaxClients && b_IsAlliedNpc[entity])
+	if(entity > MaxClients && GetTeam(entity) == TFTeam_Red)
 	{
 		return false;
 	}
@@ -1475,7 +1472,7 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 				return entity!=data;
 			}
 		}
-		else if(b_IsAlliedNpc[entity])
+		else if(GetTeam(entity) == TFTeam_Red)
 		{
 			if(i_PreviousInteractedEntity[data] != entity || !i_PreviousInteractedEntityDo[data])
 			{
@@ -1589,7 +1586,7 @@ stock void GetWorldSpaceCenter(int client, float v[3])
 	v[2] += max_space[2] / 2;
 }
 
-bool IsBehindAndFacingTarget(int owner, int target)
+bool IsBehindAndFacingTarget(int owner, int target, int weapon = -1)
 {
 	float vecToTarget[3], vecEyeAngles[3];
 	GetWorldSpaceCenter(target, vecToTarget);
@@ -1622,7 +1619,26 @@ bool IsBehindAndFacingTarget(int owner, int target)
 	float flPosVsTargetViewDot = GetVectorDotProduct(vecToTarget, vecTargetForward);
 	float flPosVsOwnerViewDot = GetVectorDotProduct(vecToTarget, vecOwnerForward);
 	float flViewAnglesDot = GetVectorDotProduct(vecTargetForward, vecOwnerForward);
-	
+	if(weapon > 0)
+	{
+		if(b_BackstabLaugh[weapon])
+		{
+			int AllCorrect = 0;
+			if(flPosVsTargetViewDot > -0.6)
+				AllCorrect++;
+
+			if(flPosVsOwnerViewDot > 0.5)
+				AllCorrect++;
+				
+			if(flViewAnglesDot > -0.8)
+				AllCorrect++;
+			
+			if(AllCorrect >= 3)
+				return true;
+			else
+				return false;
+		}
+	}
 	return ( flPosVsTargetViewDot > 0.0 && flPosVsOwnerViewDot > 0.5 && flViewAnglesDot > -0.3 );
 }
 
@@ -1668,7 +1684,7 @@ public bool PlayersOnly(int entity, int contentsMask, any iExclude)
 		return false;
 	}
 	
-	else if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	else if(GetTeam(iExclude) != GetTeam(entity))
 		return false;
 		
 	
@@ -1919,7 +1935,7 @@ public bool Base_Boss_Hit(int entity, int contentsMask, any iExclude)
 	
 	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun")))
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return true;
 		}
@@ -1952,7 +1968,7 @@ public bool IngorePlayersAndBuildings(int entity, int contentsMask, any iExclude
 	}
 	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun") || StrEqual(class, "zr_base_npc"))) //include baseboss so it goesthru
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return false;
 		}
@@ -1978,7 +1994,7 @@ public bool Detect_BaseBoss(int entity, int contentsMask, any iExclude)
 	
 	if(entity != iExclude && StrEqual(class, "zr_base_npc"))
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return false;
 		}
@@ -1999,7 +2015,7 @@ stock int GetClosestTarget_BaseBoss(int entity)
 	int i = MaxClients + 1;
 	while ((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
-		if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(i, Prop_Send, "m_iTeamNum") && !b_NpcHasDied[i]) 
+		if (GetTeam(entity)!=GetEntProp(i, Prop_Send, "m_iTeamNum") && !b_NpcHasDied[i]) 
 		{
 			float EntityLocation[3], TargetLocation[3]; 
 			GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -2021,76 +2037,6 @@ stock int GetClosestTarget_BaseBoss(int entity)
 				TargetDistance = distance;
 			}				
 		}
-	}
-	return ClosestTarget; 
-}
-
-bool b_WasAlreadyCalculatedToBeClosest[MAXENTITIES]; //should be false by default...
-
-stock int GetClosestTarget_BaseBoss_Pos(float pos[3],int entity)
-{
-	float TargetDistance = 0.0; 
-	int ClosestTarget = -1; 
-	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
-	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-		if (IsValidEntity(baseboss_index) && !b_WasAlreadyCalculatedToBeClosest[baseboss_index])
-		{
-			if(!b_NpcHasDied[baseboss_index])
-			{
-				if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
-				{
-					float TargetLocation[3]; 
-					GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-					
-					float distance = GetVectorDistance( pos, TargetLocation, true ); 
-					if( TargetDistance ) 
-					{
-						if( distance < TargetDistance ) 
-						{
-							ClosestTarget = baseboss_index; 
-							TargetDistance = distance;		  
-						}
-					} 
-					else 
-					{
-						ClosestTarget = baseboss_index; 
-						TargetDistance = distance;
-					}				
-				}
-			}
-		}
-	}
-	for(int entitycount; entitycount<i_MaxcountBreakable; entitycount++)
-	{
-		int breakable_entity = EntRefToEntIndex(i_ObjectsBreakable[entitycount]);
-		if(IsValidEntity(breakable_entity))
-		{
-			if (GetEntProp(breakable_entity, Prop_Send, "m_iTeamNum")!=GetEntProp(breakable_entity, Prop_Send, "m_iTeamNum")) 
-			{
-				float TargetLocation[3]; 
-				GetEntPropVector( breakable_entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-				
-				float distance = GetVectorDistance( pos, TargetLocation, true ); 
-				if( TargetDistance ) 
-				{
-					if( distance < TargetDistance ) 
-					{
-						ClosestTarget = breakable_entity; 
-						TargetDistance = distance;		  
-					}
-				} 
-				else 
-				{
-					ClosestTarget = breakable_entity; 
-					TargetDistance = distance;
-				}				
-			}
-		}
-	}
-	if(IsValidEntity(ClosestTarget))
-	{
-		b_WasAlreadyCalculatedToBeClosest[ClosestTarget] = true;
 	}
 	return ClosestTarget; 
 }
@@ -2457,7 +2403,7 @@ public bool TraceRayOnlyNpc(int entity, any contentsMask, any data)
 	return !(entity == data);
 }
 
-stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, bool checkTeam=false, TFTeam team=TFTeam_Red, bool send=false) //An extension of IsValidClient that also checks for boss status, alive-ness, and optionally a team. Send is used for debug purposes to inform the programmer when and why this stock returns false.
+stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, bool checkTeam=false, int team=TFTeam_Red, bool send=false) //An extension of IsValidClient that also checks for boss status, alive-ness, and optionally a team. Send is used for debug purposes to inform the programmer when and why this stock returns false.
 {
 	if (!IsValidClient(client)) //Self-explanatory
 	{
@@ -2478,7 +2424,7 @@ stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, boo
 	
 	if (checkTeam) //Do we want to check the client's team?
 	{
-		if (TF2_GetClientTeam(client) != team) //If they aren't on the desired team, return false.
+		if (GetTeam(client) != team) //If they aren't on the desired team, return false.
 		{
 			return false;
 		}
@@ -2638,7 +2584,7 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 		return -1;
 	}
 #if !defined RTS
-	else if(b_IsAlliedNpc[other_entity])
+	else if(GetTeam(other_entity) == TFTeam_Red)
 	{
 		return -1;
 	}
@@ -2751,17 +2697,47 @@ void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vec
 	vecForce[2] *= -1.0;
 }
 
-int CountPlayersOnRed(bool alive = false)
+int CountPlayersOnRed(int alive = 0)
 {
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
 #if defined ZR
-		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && (!alive || (TeutonType[client] != TEUTON_NONE && dieingstate[client] > 0)))
+		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+		{
+			if(!alive)
+			{
+				amount++;
+				continue;
+			}
+			else
+			{
+				if(alive == 1) //check if just not teuton
+				{
+					if(TeutonType[client] == TEUTON_NONE)
+					{
+						amount++;
+						continue;
+					}
+				}
+				else if(alive == 2) //check if downed too
+				{
+					if(TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+					{
+						amount++;
+						continue;
+					}
+				}
+			}
+		}
+
 #else
 		if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client) == 2 && (!alive || IsPlayerAlive(client)))
-#endif
+		{
 			amount++;
+			continue;
+		}
+#endif
 	}
 	
 	return amount;
@@ -3959,7 +3935,6 @@ stock bool ShouldNpcDealBonusDamage(int entity, int attacker = -1)
 	return i_IsABuilding[entity];
 }
 
-int i_OwnerEntityEnvLaser[MAXENTITIES];
 
 stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
 							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt", int ClientToHideFirstPerson = 0)
@@ -4946,4 +4921,53 @@ stock void SetForceButtonState(int client, bool apply, int button_flag)
 		Buttons &= ~button_flag;
 	}
 	SetEntProp(client, Prop_Data, "m_afButtonForced", Buttons);
+}
+
+stock int GetTeam(int entity)
+{
+	if(entity > 0 && entity <= MAXENTITIES)
+	{
+#if defined ZR
+		if(entity && entity <= MaxClients)
+			return GetClientTeam(entity);
+#endif
+
+		if(TeamNumber[entity] == -1)
+		{
+			TeamNumber[entity] = GetEntProp(entity, Prop_Send, "m_iTeamNum");
+		}
+		return TeamNumber[entity];
+			
+	}
+	return GetEntProp(entity, Prop_Send, "m_iTeamNum");
+}
+
+stock void SetTeam(int entity, int teamSet)
+{
+	if(entity > 0 && entity <= MAXENTITIES)
+	{
+		TeamNumber[entity] = teamSet;
+		if(teamSet <= TFTeam_Red)
+		{
+#if defined ZR
+			if(entity && entity <= MaxClients)
+				ChangeClientTeam(entity, teamSet);
+			else
+#endif
+			{
+				SetEntProp(entity, Prop_Send, "m_iTeamNum", teamSet);
+			}
+		}
+		else if(teamSet > TFTeam_Red)
+		{
+			if(entity && entity <= MaxClients)
+				ChangeClientTeam(entity, TFTeam_Blue);
+			else	
+				SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+		}
+	}
+	else
+	{
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", teamSet);
+	}
 }

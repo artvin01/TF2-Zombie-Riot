@@ -113,7 +113,7 @@ methodmap HeavyPunuel < CClotBody
 	}
 	
 	
-	public HeavyPunuel(int client, float vecPos[3], float vecAng[3], bool ally)
+	public HeavyPunuel(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		HeavyPunuel npc = view_as<HeavyPunuel>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "1000", ally, false, true));
 		

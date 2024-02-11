@@ -138,7 +138,7 @@ methodmap XenoSoldierMinion < CClotBody
 	}
 	
 	
-	public XenoSoldierMinion(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoSoldierMinion(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSoldierMinion npc = view_as<XenoSoldierMinion>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "10", ally));
 		

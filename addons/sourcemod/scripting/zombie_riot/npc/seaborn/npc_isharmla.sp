@@ -25,7 +25,7 @@ methodmap Isharmla < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public Isharmla(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Isharmla(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Isharmla npc = view_as<Isharmla>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000", ally, false));
 		// 90000 x 1.0
@@ -128,7 +128,7 @@ public void Isharmla_ClotThink(int iNPC)
 		npc.m_bTeamGlowDefault = true;
 		b_IsEntityNeverTranmitted[npc.index] = false;
 		GiveNpcOutLineLastOrBoss(npc.index, true);
-		SetEntityCollisionGroup(npc.index, 4); //Dont Touch Anything.
+		SetEntityCollisionGroup(npc.index, 8); //Dont Touch Anything.
 		SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 8);
 		SetEntProp(npc.index, Prop_Data,"m_nSolidType", 2);
 		i_RaidGrantExtra[npc.index] = -1;
@@ -161,9 +161,8 @@ public void Isharmla_ClotThink(int iNPC)
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3;
-		bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
 		
-		int entity = Npc_Create(ISHARMLA_TRANS, -1, pos, ang, ally);
+		int entity = Npc_Create(ISHARMLA_TRANS, -1, pos, ang, GetTeam(npc.index));
 		if(entity > MaxClients)
 		{
 			b_IsEntityNeverTranmitted[npc.index] = true;
@@ -182,7 +181,7 @@ public void Isharmla_ClotThink(int iNPC)
 			view_as<CClotBody>(entity).m_bThisNpcIsABoss = npc.m_bThisNpcIsABoss;
 			view_as<CClotBody>(entity).Anger = npc.Anger;
 
-			if(!ally)
+			if(GetTeam(npc.index) != TFTeam_Red)
 				Zombies_Currently_Still_Ongoing++;
 			
 			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);

@@ -130,7 +130,7 @@ methodmap XenoHeavyGiant < CClotBody
 	}
 	
 	
-	public XenoHeavyGiant(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoHeavyGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoHeavyGiant npc = view_as<XenoHeavyGiant>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "15000", ally, false, true));
 		
@@ -351,10 +351,10 @@ public void XenoHeavyGiant_NPCDeath(int entity)
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			int spawn_index = Npc_Create(XENO_HEAVY_ZOMBIE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			int spawn_index = Npc_Create(XENO_HEAVY_ZOMBIE, -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
-				Zombies_Currently_Still_Ongoing += 1;
+				Zombies_Currently_Still_Ongoing += 1;	// FIXME
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}

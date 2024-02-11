@@ -19,7 +19,7 @@ methodmap CitizenRunner < CClotBody
 
 		int seed = GetURandomInt();
 		Citizen_GenerateModel(seed, view_as<bool>(seed % 2), Cit_Unarmed, buffer, sizeof(buffer));
-		CitizenRunner npc = view_as<CitizenRunner>(CClotBody(vecPos, vecAng, buffer, "1.15", "500", true, false,_,_,_,_,_,true));
+		CitizenRunner npc = view_as<CitizenRunner>(CClotBody(vecPos, vecAng, buffer, "1.15", "500", TFTeam_Red, false,_,_,_,_,_,true));
 		
 		i_NpcInternalId[npc.index] = CITIZEN_RUNNER;
 		i_NpcWeight[npc.index] = 1;
@@ -38,6 +38,7 @@ methodmap CitizenRunner < CClotBody
 		npc.m_flFlamerActive = GetGameTime() + 3.0;
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 		SetVariantColor(view_as<int>({255, 200, 0, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
@@ -63,7 +64,7 @@ public void CitizenRunner_ClotThink(int iNPC)
 
 	if(!npc.Anger)
 	{
-		Change_Npc_Collision(npc.index, 3); //they go through enemy npcs
+		b_IgnorePlayerCollisionNPC[npc.index] = true;
 		npc.Anger = true;
 	}
 	
@@ -127,7 +128,7 @@ void CitizenRunner_NPCDeath(int entit)
 
 		static const int RandomInfection[] = { SEAPREDATOR_ALT, SEAPREDATOR_ALT, SEAFOUNDER_ALT, SEASPEWER_ALT, SEASWARMCALLER_ALT };
 
-		int entity = Npc_Create(RandomInfection[GetURandomInt() % sizeof(RandomInfection)], -1, pos, angles, false);
+		int entity = Npc_Create(RandomInfection[GetURandomInt() % sizeof(RandomInfection)], -1, pos, angles, TFTeam_Blue);
 		if(entity > MaxClients)
 		{
 			Zombies_Currently_Still_Ongoing++;

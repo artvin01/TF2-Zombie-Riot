@@ -167,7 +167,7 @@ methodmap MedivalSpearMan < CClotBody
 		#endif
 	}
 	
-	public MedivalSpearMan(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalSpearMan(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalSpearMan npc = view_as<MedivalSpearMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400", ally));
 		SetVariantInt(1);

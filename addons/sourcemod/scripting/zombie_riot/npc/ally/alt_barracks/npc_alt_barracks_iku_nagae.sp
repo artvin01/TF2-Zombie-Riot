@@ -100,7 +100,7 @@ methodmap Barrack_Alt_Ikunagae < BarrackBody
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	public Barrack_Alt_Ikunagae(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Barrack_Alt_Ikunagae(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barrack_Alt_Ikunagae npc = view_as<Barrack_Alt_Ikunagae>(BarrackBody(client, vecPos, vecAng, "450", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
@@ -463,7 +463,7 @@ static Action Ikunagae_TBB_Tick(int client)
 			BEAM_Targets_Hit[client] = 1.0;
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (Ikunagae_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+				if (Ikunagae_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);

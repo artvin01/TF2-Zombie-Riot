@@ -132,7 +132,7 @@ methodmap AnfuhrerEisenhard < CClotBody
 	}
 	
 	
-	public AnfuhrerEisenhard(int client, float vecPos[3], float vecAng[3], bool ally)
+	public AnfuhrerEisenhard(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		AnfuhrerEisenhard npc = view_as<AnfuhrerEisenhard>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "500000", ally));
 		
@@ -404,6 +404,8 @@ void AnfuhrerEisenhardSelfDefense(AnfuhrerEisenhard npc, float gameTime, int tar
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+					IncreaceEntityDamageTakenBy(target, 0.15, 5.0, true);
+					//give 15% dmg vul with each hit for 5 secs
 
 					// Hit sound
 					npc.PlayMeleeHitSound();

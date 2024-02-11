@@ -222,7 +222,7 @@ methodmap Vader < CClotBody
 		#endif
 	}
 	
-	public Vader(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Vader(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Vader npc = view_as<Vader>(CClotBody(vecPos, vecAng, "models/freak_fortress_2/dark_vader/vader_but_cool_final_4.mdl", "1.0", "50000", ally, false, true, true ,true));
 		
@@ -248,7 +248,6 @@ methodmap Vader < CClotBody
 		{
 			RaidModeScaling *= 0.40;
 		}
-		Raidboss_Clean_Everyone();
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	

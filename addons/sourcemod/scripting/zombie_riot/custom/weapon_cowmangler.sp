@@ -78,7 +78,7 @@ static void TBB_Precahce_Mangler_1()
 
 static void TBB_Ability_Mangler_1(int client)
 {
-	for (int building = 1; building < MAX_TARGETS_HIT; building++)
+	for (int building = 0; building < MAX_TARGETS_HIT; building++)
 	{
 		BEAM_BuildingHit[building] = false;
 		BEAM_Targets_Hit[client] = 0.0;
@@ -227,7 +227,7 @@ static void TBB_Tick(int client)
 		}
 		
 		
-		for (int building = 1; building < MAX_TARGETS_HIT; building++)
+		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			BEAM_BuildingHit[building] = false;
 		}

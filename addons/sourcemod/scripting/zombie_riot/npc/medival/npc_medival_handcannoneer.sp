@@ -145,7 +145,7 @@ methodmap MedivalHandCannoneer < CClotBody
 		#endif
 	}
 	
-	public MedivalHandCannoneer(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalHandCannoneer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "12500", ally));
 		SetVariantInt(1);

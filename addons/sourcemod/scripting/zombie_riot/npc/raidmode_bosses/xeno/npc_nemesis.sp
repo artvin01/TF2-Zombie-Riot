@@ -176,13 +176,14 @@ methodmap RaidbossNemesis < CClotBody
 	{
 		EmitSoundToAll(g_BuffSounds[GetRandomInt(0, sizeof(g_BuffSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public RaidbossNemesis(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public RaidbossNemesis(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossNemesis npc = view_as<RaidbossNemesis>(CClotBody(vecPos, vecAng, NEMESIS_MODEL, "1.75", "20000000", ally, false, true, true,true)); //giant!
 		
 		//model originally from Roach, https://steamcommunity.com/sharedfiles/filedetails/?id=2053348633&searchtext=nemesis
 
 		//wave 75 xeno raidboss,should be extreamly hard, but still fair, that will be hard to do.
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Nemesis_Win);
 
 		i_NpcInternalId[npc.index] = XENO_RAIDBOSS_NEMESIS;
 		i_NpcWeight[npc.index] = 5;
@@ -199,7 +200,6 @@ methodmap RaidbossNemesis < CClotBody
 		RaidAllowsBuildings = false;
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 
-		Raidboss_Clean_Everyone();
 
 		if(XenoExtraLogic())
 			RaidModeTime = GetGameTime(npc.index) + 250.0;
@@ -279,9 +279,17 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	RaidbossNemesis npc = view_as<RaidbossNemesis>(iNPC);
 	
 	float gameTime = GetGameTime(npc.index);
-	
+	if(LastMann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			npc.m_fbGunout = true;
+			CPrintToChatAll("{green} The infection got all your friends... Run while you can.");
+		}
+	}
 	if(RaidModeTime < GetGameTime())
 	{
+		ZR_NpcTauntWinClear();
 		i_RaidGrantExtra[npc.index] = 0;
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");
@@ -290,7 +298,9 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		AcceptEntityInput(entity, "RoundWin");
 		Music_RoundEnd(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;
+		CPrintToChatAll("{green} The infection proves too strong for you to resist as you join his side...");
 		SDKUnhook(npc.index, SDKHook_Think, RaidbossNemesis_ClotThink);
+		return;
 	}
 	if(npc.m_flNextRangedAttackHappening && npc.flXenoInfectedSpecialHurtTime - 0.45 < gameTime)
 	{
@@ -514,7 +524,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		if(	i_GunMode[npc.index] != 0)
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
-			if(npc.m_iTarget == -1)
+			if(npc.m_iTarget < 1)
 			{
 				npc.m_iTarget = GetClosestTarget(npc.index);
 			}
@@ -1059,6 +1069,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		npc.PlayDeathSound();
 	}
 	int client = EntRefToEntIndex(i_GrabbedThis[npc.index]);
+	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s",WhatDifficultySetting_Internal);
 	
 	if(IsValidEntity(client))
 	{
@@ -1242,7 +1253,7 @@ public bool TraceRayHitProjectilesOnly(int entity,int mask,any data)
 	{
 		return false;
 	}
-	if(b_Is_Player_Projectile[entity])
+	if(b_IsAProjectile[entity] && GetTeam(entity) == TFTeam_Red)
 	{
 		return true;
 	}
@@ -1279,6 +1290,7 @@ void Nemesis_AreaAttack(int entity, float damage, float m_vecMins_1[3], float m_
 			{
 				f_NemesisEnemyHitCooldown[i_NemesisEntitiesHitAoeSwing[counter]] = GetGameTime() + 0.15;
 				SDKHooks_TakeDamage(i_NemesisEntitiesHitAoeSwing[counter], npc.index, npc.index, damage, DMG_CLUB, -1);
+				Custom_Knockback(entity, i_NemesisEntitiesHitAoeSwing[counter], 1000.0, true); 
 				npc.PlayMeleeHitSound();
 			}
 		}
@@ -1480,9 +1492,9 @@ public Action Nemesis_DoInfectionThrowInternal(Handle timer, DataPack DataNem)
 			}
 		}
 	}
-	for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++)
+	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
-		int enemy = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+		int enemy = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 		if(IsValidEntity(enemy) && IsValidEnemy(entity, enemy, false, false))
 		{
 			bool Hit_something = Can_I_See_Enemy_Only(entity, enemy);
@@ -1663,4 +1675,19 @@ public Action Timer_Nemesis_Infect_Allies(Handle timer, DataPack pack)
 	pack.Position--;
 	pack.WriteCell(bleed_count-1, false);
 	return Plugin_Continue;
+}
+
+
+public void Raidmode_Nemesis_Win(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+	SDKUnhook(entity, SDKHook_Think, RaidbossNemesis_ClotThink);
+	if(XenoExtraLogic())
+	{
+		CPrintToChatAll("{snow}???{default}: That was too close, they cant get further, i trust you nemesis to annihilate anyone else left.");
+	}
+	else
+	{
+		CPrintToChatAll("{snow}???{default}: Good job nemesis, head back to the lab.");
+	}
 }

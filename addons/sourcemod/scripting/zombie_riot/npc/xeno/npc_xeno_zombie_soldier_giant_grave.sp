@@ -148,7 +148,7 @@ methodmap XenoSoldierGiant < CClotBody
 	}
 	
 	
-	public XenoSoldierGiant(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoSoldierGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSoldierGiant npc = view_as<XenoSoldierGiant>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.5", "200000", ally, false, true));
 		
@@ -392,18 +392,30 @@ public void XenoSoldierGiant_ClotDamagedPost(int victim, int attacker, int infli
 			maxhealth /= 7;
 			for(int i; i<1; i++)
 			{
+				if(MaxEnemiesAllowedSpawnNext(1) <= EnemyNpcAlive)
+				{
+					fl_TotalArmor[npc.index] = 0.5;
+					//grrr i cant spawn!!!!
+					//become fat.
+					return;
+				}
+				fl_TotalArmor[npc.index] = 1.0;
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 				
-				int spawn_index = Npc_Create(XENO_SOLDIER_ZOMBIE_MINION, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+				int spawn_index = Npc_Create(XENO_SOLDIER_ZOMBIE_MINION, -1, pos, ang, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
-					Zombies_Currently_Still_Ongoing += 1;
+					Zombies_Currently_Still_Ongoing += 1;	// FIXME
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 				}
 			}
 		}
+	}
+	else
+	{
+		fl_TotalArmor[npc.index] = 1.0;
 	}
 }
 

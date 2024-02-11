@@ -48,12 +48,27 @@ void Saga_DeadEffects(int victim, int attacker, int weapon)
 		Saga_ChargeReduction(attacker, weapon, SagaCrippled[victim]);
 }
 
+public bool Saga_ChargeValidityFunction(int provider, int entity)
+{
+	if(entity <= MaxClients)
+	{
+		int i, weapon;
+		while(TF2_GetItem(entity, weapon, i))
+		{
+			if(Saga_IsChargeWeapon(entity, weapon))
+				return true;
+		}
+	}
+
+	return false;
+}
+
 bool Saga_IsChargeWeapon(int client, int weapon)
 {
 	if(!IsValidEntity(weapon))
 		return false;
 
-	if(f_UberOnHitWeapon[weapon])
+	if(f_UberOnHitWeapon[weapon] > 0.01)
 		return true;
 	
 	if(Passanger_HasCharge(client))
@@ -316,7 +331,6 @@ void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon, in
 		SetEntityRenderMode(victim, RENDER_TRANSCOLOR, false, 1, false, true);
 		SetEntityRenderColor(victim, 255, 65, 65, 125, false, false, true);
 		b_ThisEntityIgnoredByOtherNpcsAggro[victim] = true;
-		Change_Npc_Collision(victim, 3);
 		SetEntityCollisionGroup(victim, 17);
 		b_DoNotUnStuck[victim] = true;
 		CClotBody npc = view_as<CClotBody>(victim);

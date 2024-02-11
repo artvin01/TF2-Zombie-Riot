@@ -69,7 +69,7 @@ methodmap KazimierzKnightArcher < CClotBody
 	}
 	
 	
-	public KazimierzKnightArcher(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public KazimierzKnightArcher(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		KazimierzKnightArcher npc = view_as<KazimierzKnightArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "4000", ally));
 		

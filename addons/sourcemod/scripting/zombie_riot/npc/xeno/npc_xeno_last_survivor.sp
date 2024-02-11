@@ -229,7 +229,7 @@ methodmap XenoFatherGrigori < CClotBody
 		#endif
 	}
 	
-	public XenoFatherGrigori(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoFatherGrigori(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
 		

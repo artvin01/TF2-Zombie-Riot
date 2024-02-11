@@ -62,7 +62,7 @@ methodmap SaintCarmen < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public SaintCarmen(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SaintCarmen(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SaintCarmen npc = view_as<SaintCarmen>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, false));
 		// 50000 x 1.0
@@ -77,10 +77,11 @@ methodmap SaintCarmen < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
+		b_NpcIsTeamkiller[npc.index] = true;
 		
 		SDKHook(npc.index, SDKHook_Think, SaintCarmen_ClotThink);
 		
-		npc.m_flSpeed = 125.0;	// 0.5 x 250
+		npc.m_flSpeed = 250.0;	// 0.5 x 250
 		npc.m_flMeleeArmor = 0.5;
 		npc.m_flRangedArmor = 1.25;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -156,13 +157,8 @@ public void SaintCarmen_ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 				
-				int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
-				SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 0);
-
 				Handle swingTrace;
 				bool result = npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _);
-
-				SetEntProp(npc.index, Prop_Send, "m_iTeamNum", team);
 
 				if(result)
 				{
@@ -178,15 +174,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 							damage *= 20.0;
 						
 						KillFeed_SetKillIcon(npc.index, "taunt_spy");
-						if(team == GetEntProp(target, Prop_Send, "m_iTeamNum"))
-						{
-							SDKHooks_TakeDamage(target, 0, 0, damage, DMG_CLUB);
-						}
-						else
-						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-							// 1200 x 0.5 x 0.5
-						}
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
 						npc.PlayMeleeHitSound();
 
@@ -194,13 +182,11 @@ public void SaintCarmen_ClotThink(int iNPC)
 						{
 							vecHit[0] = 0.0;
 							vecHit[1] = 0.0;
-							vecHit[2] = 1200.0;
+							vecHit[2] = 500.0;
 							TeleportEntity(target, _, _, vecHit, true);
 							EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);
 
 							HealEntityGlobal(npc.index, target, -750.0, 1.0, 0.0, HEAL_ABSOLUTE);
-
-							npc.m_flNextMeleeAttack += 1.0;
 							npc.m_flDoingAnimation = gameTime + 0.35;
 						}
 						else if(!b_NpcHasDied[target])
@@ -214,11 +200,10 @@ public void SaintCarmen_ClotThink(int iNPC)
 								PluginBot_Jump(target, vecHit);
 								EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);
 
-								npc.m_flNextMeleeAttack += 1.0;
-
 								HealEntityGlobal(npc.index, target, -750.0, 1.0, 0.0, _);
 							}
 						}
+						npc.m_iTarget = 0;
 					}
 				}
 

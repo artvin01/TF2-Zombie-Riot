@@ -64,6 +64,9 @@ public void SwagMeter(int victim, int weapon) //so that parrying 2 enemies at on
 {
 	if (Board_Ability_1[victim] == true)
 	{
+		if(dieingstate[victim] > 0)
+			return;
+
 		float MaxHealth = float(SDKCall_GetMaxHealth(victim));
 		if (MaxHealth > 2000.0)
 		{
@@ -496,7 +499,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 	{
 		//PrintToChatAll("damage resist");
 		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
-		return damage * 0.85;
+		return damage * 0.9;
 	}
 	else if(Board_Level[victim] == 5) //ramp
 	{
@@ -508,7 +511,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 	{
 		//PrintToChatAll("damage resist");
 		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
-		return damage * 0.8;
+		return damage * 0.85;
 	}
 	else
 	{
@@ -719,6 +722,9 @@ void PlayParrySoundBoard(int client)
 
 public void PassiveBoardHeal(int client)
 {
+	if(dieingstate[client] > 0)
+		return;
+
 	float MaxHealth = float(SDKCall_GetMaxHealth(client));
 	if (MaxHealth > 2000.0)
 	{
@@ -732,7 +738,7 @@ public void PassiveBoardHeal(int client)
 		}
 		default:
 		{
-			HealEntityGlobal(client, client, MaxHealth * 0.03, _, 0.3,HEAL_SELFHEAL);
+			HealEntityGlobal(client, client, MaxHealth * 0.02, _, 0.0,HEAL_SELFHEAL);
 		}
 	}
 }

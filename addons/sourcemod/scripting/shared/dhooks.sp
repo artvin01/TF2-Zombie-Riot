@@ -67,7 +67,6 @@ void DHook_Setup()
 	
 	DHook_CreateDetour(gamedata, "CTFPlayer::CanAirDash", DHook_CanAirDashPre);
 
-	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	//https://github.com/Wilzzu/testing/blob/18a3680a9a1c8bdabc30c504bbf9467ac6e7d7b4/samu/addons/sourcemod/scripting/shavit-replay.sp
 	
 	if (!(gH_MaintainBotQuota = DHookCreateDetour(Address_Null, CallConv_THISCALL, ReturnType_Void, ThisPointer_Address)))
@@ -82,13 +81,15 @@ void DHook_Setup()
 
 	gH_MaintainBotQuota.Enable(Hook_Pre, Detour_MaintainBotQuota);
 	
-	
+#if !defined RTS
+	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre, DHook_ManageRegularWeaponsPost);
+	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
+	DHook_CreateDetour(gamedata, "CTFPlayer::Taunt", DHook_TauntPre, DHook_TauntPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
+#endif
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::FindTarget", DHook_SentryFind_Target, _);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::Fire", DHook_SentryFire_Pre, DHook_SentryFire_Post);
-	DHook_CreateDetour(gamedata, "CTFPlayer::Taunt", DHook_TauntPre, DHook_TauntPost);
-	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
 
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
@@ -115,10 +116,8 @@ void DHook_Setup()
 	
 #if !defined RTS
 	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
-#endif
-
 	DHook_CreateDetour(gamedata, "CTFPlayer::SpeakConceptIfAllowed()", SpeakConceptIfAllowed_Pre, SpeakConceptIfAllowed_Post);
-	
+#endif
 	g_detour_CTFGrenadePipebombProjectile_PipebombTouch = CheckedDHookCreateFromConf(gamedata, "CTFGrenadePipebombProjectile::PipebombTouch");
 	
 	
@@ -195,6 +194,7 @@ void DHook_Setup()
 	}
 	delete edictgamedata;
 }
+
 
 void DHook_EntityDestoryed()
 {
@@ -287,9 +287,9 @@ public MRESReturn Wrench_SmackPre(int entity, DHookReturn ret, DHookParam param)
 	int Compensator = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	LagCompEntitiesThatAreIntheWay(Compensator);
 
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
 		if (IsValidEntity(baseboss_index_allied))
 		{
 			GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", f_TeleportedPosWrenchSmack[baseboss_index_allied]);
@@ -302,9 +302,9 @@ public MRESReturn Wrench_SmackPre(int entity, DHookReturn ret, DHookParam param)
 public MRESReturn Wrench_SmackPost(int entity, DHookReturn ret, DHookParam param)
 {	
 	FinishLagCompMoveBack();
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
 		if (IsValidEntity(baseboss_index_allied))
 		{
 			SDKCall_SetLocalOrigin(baseboss_index_allied, f_TeleportedPosWrenchSmack[baseboss_index_allied]);
@@ -327,6 +327,7 @@ public MRESReturn ObjStartUpgrading_SmackPre(int entity, DHookReturn ret, DHookP
 
 //Thanks to rafradek#0936 on the allied modders discord for pointing this function out!
 //This changes player classes to the correct one.
+#if !defined RTS
 public MRESReturn SpeakConceptIfAllowed_Pre(int client, Handle hReturn, Handle hParams)
 {
 	for(int client_2=1; client_2<=MaxClients; client_2++)
@@ -377,7 +378,7 @@ public MRESReturn SpeakConceptIfAllowed_Post(int client, Handle hReturn, Handle 
 	}
 	return MRES_Ignored;
 }
-
+#endif
 
 MRESReturn Detour_CalcPlayerScore(DHookReturn hReturn, DHookParam hParams)
 {
@@ -420,27 +421,7 @@ void PipeApplyDamageCustom(int entity)
 	f_CustomGrenadeDamage[entity] = GetEntPropFloat(entity, Prop_Send, "m_flDamage");
 }
 
-void See_Projectile_Team(int entity)
-{
-	if (entity < 0 || entity > 2048)
-	{
-		entity = EntRefToEntIndex(entity);
-	}
-	if (IsValidEntity(entity))
-	{
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
-		{
-			b_Is_Player_Projectile[entity] = true;	 //try this
-			//Update: worked! Will now pass through players/teammates
-			//Nice.
-		}	
-		else if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue))
-		{
-			b_Is_Npc_Projectile[entity] = true; 
-		}
-	}
-	
-}
+
 
 void See_Projectile_Team_Player(int entity)
 {
@@ -450,7 +431,7 @@ void See_Projectile_Team_Player(int entity)
 	}
 	if (IsValidEntity(entity))
 	{
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
+		if(GetTeam(entity) == view_as<int>(TFTeam_Red))
 		{
 			b_Is_Player_Projectile_Through_Npc[entity] = true;	 //try this
 			//Update: worked! Will now pass through players/teammates
@@ -459,24 +440,11 @@ void See_Projectile_Team_Player(int entity)
 	}
 }
 
-/*
-#define MAXSTICKYCOUNTTONPC 12
-const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
-int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
-*/
-
-
 public Action SdkHook_StickStickybombToBaseBoss(int entity, int other)
 {
 	if(!GetEntProp(entity, Prop_Send, "m_bTouched"))
 	{
-
-#if defined RTS
 		if(!b_StickyIsSticking[entity] && !b_NpcHasDied[other])
-#else
-		if(!b_StickyIsSticking[entity] && b_Is_Blue_Npc[other])
-#endif
-
 		{
 			//Dont stick if it already has max.
 			for (int i = 0; i < MAXSTICKYCOUNTTONPC; i++)
@@ -694,7 +662,7 @@ void DoGrenadeExplodeLogic(int entity)
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
 			
 			//Important, make them not act as an ai if its on red, or else they are BUSTED AS FUCK.
-			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			if(GetTeam(entity) != view_as<int>(TFTeam_Red))
 			{
 				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
 			}
@@ -777,7 +745,7 @@ public MRESReturn DHook_RocketExplodePre(int entity)
 			{
 				inflictor = 0;
 			}
-			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			if(GetTeam(entity) != view_as<int>(TFTeam_Red))
 			{
 				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true,_,_,_,_,_,inflictor);	
 			}
@@ -815,7 +783,7 @@ public MRESReturn DHook_RocketExplodePre(int entity)
 			{
 				inflictor = 0;
 			}
-			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			if(GetTeam(entity) != view_as<int>(TFTeam_Red))
 			{
 				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true,_,_,_,_,_,inflictor);	
 			}
@@ -849,8 +817,7 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
-	//if(IsValidEntity(ent1) && IsValidEntity(ent2))
-	if(ent1 > 0 && ent1 <= MAXENTITIES && ent2 > 0 && ent2 <= MAXENTITIES)
+	if(ent1 >= 0 && ent1 <= MAXENTITIES && ent2 >= 0 && ent2 <= MAXENTITIES)
 	{
 		result = PassfilterGlobal(ent1, ent2, true);
 		if(result)
@@ -898,28 +865,21 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			entity1 = ent2;
 			entity2 = ent1;			
 		}
-		/*
-		if(!b_NpcHasDied[entity1]) //they ignore brushes.
-		{	
-			if(b_is_a_brush[entity2]) //Dont ignore brushes.
-			{
-			//	
-			//		enum BrushSolidities_e {
-			//		BRUSHSOLID_TOGGLE = 0,
-			//		BRUSHSOLID_NEVER  = 1,
-			//		BRUSHSOLID_ALWAYS = 2,
-			//	};
-				
-				int solidity_type = GetEntProp(entity2, Prop_Data, "m_iSolidity");
-				bool SolidOrNot = view_as<bool>(GetEntProp(entity2, Prop_Data, "m_bSolidBsp"));
 
-				PrintToChatAll("%b",SolidOrNot);
-				if(solidity_type == 2 || (SolidOrNot && solidity_type == 0))
-					return true;
+#if defined ZR
+		if(b_ProjectileCollideIgnoreWorld[entity1])
+		{
+			Wand_Base_StartTouch(entity1, entity2);
+			return false;
+		}
+		if(i_WhatBuilding[entity1] == BuildingSentrygun)
+		{
+			//buildings cannot touch eachother
+			if(i_WhatBuilding[entity2] != 0 || (GetTeam(entity2) == TFTeam_Red))
+			{
+				return false;
 			}
 		}
-		*/
-#if defined ZR
 		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
 			if(entity2 <= MaxClients && entity2 > 0)
@@ -930,29 +890,18 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			return false;
 		}
 #endif
-		if(b_Is_Npc_Projectile[entity1])
+		if(b_IsAProjectile[entity1] && GetTeam(entity1) != TFTeam_Red)
 		{
 			if(b_ThisEntityIgnored[entity2])
 			{
 				return false;
 			}
-
-#if defined RTS
-			if(!b_NpcHasDied[entity2])
-#else
-			if(b_Is_Blue_Npc[entity2])
-#endif
+			if(b_IsAProjectile[entity2] && GetTeam(entity1) == GetTeam(entity2))
 			{
 				return false;
 			}
-			
-			if(b_Is_Npc_Projectile[entity2])
-			{
-				return false;
-			}
-
 #if defined ZR
-			if(i_IsABuilding[entity2] && IsValidEntity(RaidBossActive))
+			if(i_IsABuilding[entity2] && RaidbossIgnoreBuildingsLogic(2))
 			{
 				return false;
 			}
@@ -960,13 +909,13 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 
 #if !defined RTS
-		else if(b_Is_Player_Projectile[entity1])
+		else if(b_IsAProjectile[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
-	#if defined ZR
+#if defined ZR
 			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1] && !IsEntitySpike(entity1))
-	#else
+#else
 			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1])
-	#endif
+#endif
 			{
 				int EntityOwner = i_WandOwner[entity2];
 				if(ShieldDeleteProjectileCheck(EntityOwner, entity1))
@@ -1005,12 +954,12 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-			else if(b_Is_Player_Projectile[entity2])
+			else if(b_IsAProjectile[entity2] && GetTeam(entity2) == GetTeam(entity1))
 			{
 				return false;
 			}
 	#if defined ZR
-			else if (i_WandIdNumber[entity1] == 19 && !i_IsABuilding[entity2] && !b_Is_Player_Projectile[entity2]) //Health Hose projectiles
+			else if (i_WandIdNumber[entity1] == 19 && !i_IsABuilding[entity2] && !b_IsAProjectile[entity2]) //Health Hose projectiles
 			{
 				Hose_Touch(entity1, entity2);
 				return false;
@@ -1020,14 +969,14 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-			else if(b_IsAlliedNpc[entity2])
+			else if(GetTeam(entity2) == TFTeam_Red)
 			{
 				return false;
 			}
 		}
 		else if (b_Is_Player_Projectile_Through_Npc[entity1])
 		{
-			if(b_Is_Blue_Npc[entity2])
+			if(!b_NpcHasDied[entity2] && GetTeam(entity2) != TFTeam_Red)
 			{
 				return false;
 			}
@@ -1037,7 +986,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #if defined RTS
 		else if(!b_NpcHasDied[entity1])
 #else	
-		else if(b_Is_Blue_Npc[entity1])
+		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) != TFTeam_Red)
 #endif
 		{
 			if(b_ThisEntityIgnored[entity2] && !DoingLagCompensation) //Only Ignore when not shooting/compensating, which is shooting only.
@@ -1054,7 +1003,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #if defined RTS
 			else if(!b_NpcHasDied[entity2])
 #else
-			else if(b_Is_Blue_Npc[entity2])
+			else if(!b_NpcHasDied[entity2] && GetTeam(entity2) != TFTeam_Red)
 #endif
 			{
 				return false;
@@ -1071,9 +1020,9 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 
 #if !defined RTS
-		else if(b_IsAlliedNpc[entity1])
+		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
-			if(b_IsAlliedNpc[entity2])
+			if(!b_NpcHasDied[entity2] && GetTeam(entity2) == TFTeam_Red)
 			{	
 				return false;
 			}
@@ -1095,45 +1044,7 @@ static DynamicHook DHook_CreateVirtual(GameData gamedata, const char[] name)
 	
 	return hook;
 }
-/*
-static void CreateDynamicDetour(GameData gamedata, const char[] name, DHookCallback callbackPre = INVALID_FUNCTION, DHookCallback callbackPost = INVALID_FUNCTION)
-{
-	DynamicDetour detour = DynamicDetour.FromConf(gamedata, name);
-	if (detour)
-	{
-		if (callbackPre != INVALID_FUNCTION)
-			detour.Enable(Hook_Pre, callbackPre);
-		
-		if (callbackPost != INVALID_FUNCTION)
-			detour.Enable(Hook_Post, callbackPost);
-	}
-	else
-	{
-		LogError("Failed to create detour setup handle for %s", name);
-	}
-}
-*/
-/*
-hopefully fixes 0x2f2388
-I suspect that somehow someone got disgusied and thus the sendproxy regarding classes broke as there is no blue player, and maybe it bugs out with base_boss
-i will keep it updated incase this didnt work.
 
-*/
-
-//LAG COMP SECTION! Kinda VERY important.
-
-/*
-public MRESReturn StartLagCompensation_Pre(Address manager, DHookParam param)
-{
-	int Compensator = param.Get(1);
-	PrintToChatAll("StartLagCompensation_Pre %i",Compensator);
-	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation. 
-	{
-		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Spectator))
-	}
-	return MRES_Ignored;
-}
-*/
 public void StartLagCompResetValues()
 {
 	Dont_Move_Building = false;
@@ -1217,7 +1128,9 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 	
 	if(b_LagCompNPC_BlockInteral)
 	{
+#if !defined RTS
 		TF2_SetPlayerClass_ZR(Compensator, TFClass_Scout, false, false); //Make sure they arent a medic during this! Reason: Mediguns lag comping, need both to be a medic and have a medigun
+#endif
 		LagCompMovePlayersExceptYou(Compensator);
 	}
 	
@@ -1228,11 +1141,13 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
 {
 	int Compensator = param.Get(1);
+#if !defined RTS
 	if(b_LagCompNPC_BlockInteral)
 	{
 		TF2_SetPlayerClass_ZR(Compensator, WeaponClass[Compensator], false, false); 
 	//	return MRES_Supercede;
 	}
+#endif
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TeamBeforeChange)); //Hardcode to red as there will be no blue players.
@@ -1303,10 +1218,10 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 	}
 
 #if !defined RTS
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied))
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+		if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TFTeam_Red)
 		{
 			if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
 			{
@@ -1318,10 +1233,10 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 
 	if(b_LagCompNPC_AwayEnemies)
 	{
-		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++)
+		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++)
 		{
-			int baseboss = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-			if (IsValidEntity(baseboss))
+			int baseboss = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+			if (IsValidEntity(baseboss) && GetTeam(baseboss) != TFTeam_Red)
 			{
 				b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss] = true;
 			}
@@ -1580,7 +1495,8 @@ public MRESReturn DHook_ForceRespawn(int client)
 	
 	TeutonType[client] = (!IsRespawning && !Waves_InSetup()) ? TEUTON_DEAD : TEUTON_NONE;
 #endif
-	
+
+#if !defined RTS	
 	CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 	if(!CurrentClass[client])
 	{
@@ -1588,8 +1504,10 @@ public MRESReturn DHook_ForceRespawn(int client)
 		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Scout);
 	}
 	
-	DoOverlay(client, "", 2);
 	WeaponClass[client] = TFClass_Unknown;
+#endif
+	
+	DoOverlay(client, "", 2);
 	
 #if defined ZR
 	if(!WaitingInQueue[client] && !GameRules_GetProp("m_bInWaitingForPlayers"))
@@ -1769,6 +1687,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 	return Plugin_Stop;
 }
 
+#if !defined RTS
 public MRESReturn DHook_GetChargeEffectBeingProvidedPre(int client, DHookReturn ret)
 {
 	if(IsClientInGame(client) && !IsInsideManageRegularWeapons)
@@ -1783,7 +1702,7 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPost(int client, DHookReturn
 {
 	if(GetChargeEffectBeingProvided && !IsInsideManageRegularWeapons)
 	{
-		if(!IsValidClient(client))
+		if(!IsValidClient(GetChargeEffectBeingProvided))
 		{
 			return MRES_Ignored;
 		}
@@ -1796,60 +1715,6 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPost(int client, DHookReturn
 	}
 	return MRES_Ignored;
 }
-
-public MRESReturn DHook_GetMaxAmmoPre(int client, DHookReturn ret, DHookParam param)
-{
-	int type = param.Get(1);
-	switch(type)
-	{
-		case Ammo_Metal, Ammo_Flame, Ammo_Minigun:
-			ret.Value = 2000;
-		
-		case Ammo_Pistol:
-			ret.Value = 360;
-		
-		case Ammo_Rocket:
-			ret.Value = 200;
-		
-		case Ammo_Flare, Ammo_Grenade:
-			ret.Value = 160;
-		
-		case Ammo_Sticky, Ammo_Revolver:
-			ret.Value = 240;
-		
-		case Ammo_Bolt:
-			ret.Value = 375;
-		
-		case Ammo_Syringe:
-			ret.Value = 1500;
-		
-		case Ammo_Sniper:
-			ret.Value = 250;
-		
-		case Ammo_Arrow:
-			ret.Value = 125;
-		
-		case Ammo_SMG:
-			ret.Value = 750;
-		
-		case Ammo_Shotgun:
-			ret.Value = 320;
-		
-		default:
-			return MRES_Ignored;
-	}
-	return MRES_Supercede;
-}
-#if !defined NoSendProxyClass
-public MRESReturn DHook_IsPlayerClassPre(int client, DHookReturn ret, DHookParam param)
-{
-	if(!IsPlayerClass)
-		return MRES_Ignored;
-
-	ret.Value = true;
-	return MRES_Supercede;
-}
-#endif
 
 bool WasMedicPreRegen[MAXTF2PLAYERS];
 
@@ -1876,6 +1741,7 @@ public MRESReturn DHook_RegenThinkPost(int client, DHookParam param)
 	WasMedicPreRegen[client] = false;
 	return MRES_Ignored;
 }
+#endif	// Non-RTS
 
 #if defined ZR
 static int LastTeam;
@@ -1883,7 +1749,7 @@ public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPre(int client, DHookPara
 {
 //	if(!Disconnecting)
 	{
-		LastTeam = GetEntProp(client, Prop_Send, "m_iTeamNum");
+		LastTeam = GetTeam(client);
 		GameRules_SetProp("m_bPlayingMannVsMachine", true);
 		SetEntProp(client, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 	}
@@ -1926,6 +1792,7 @@ public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPost(int client, DHookPar
 }
 #endif
 
+#if !defined RTS
 public MRESReturn DHook_TauntPre(int client, DHookParam param)
 {
 	//Dont allow taunting if disguised or cloaked
@@ -1964,6 +1831,7 @@ public MRESReturn DHook_TauntPost(int client, DHookParam param)
 	#endif
 	return MRES_Ignored;
 }
+#endif
 
 // g_bWarnedAboutMaxplayersInMVM
 /*
@@ -1981,6 +1849,8 @@ public MRESReturn PreClientUpdatePost(Handle hParams)
 	return MRES_Ignored;
 }
 */
+
+#if !defined RTS
 public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams) {
 	int originalLauncher = GetEntPropEnt(healingBolt, Prop_Send, "m_hOriginalLauncher");
 	if (!IsValidEntity(originalLauncher)) {
@@ -2047,10 +1917,6 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 
 			HealEntityGlobal(owner, target, float(ammo_amount_left), 1.0, 1.0, _);
 			
-#if defined ZR
-			Healing_done_in_total[owner] += ammo_amount_left;
-#endif
-			
 			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
 			ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
 			ClientCommand(target, "playgamesound items/smallmedkit1.wav");
@@ -2073,7 +1939,6 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	return MRES_Supercede;
 }
 
-#if !defined RTS
 MRESReturn OnWeaponReplenishClipPost(int weapon)
 {
 	if(IsValidEntity(weapon))
@@ -2107,7 +1972,7 @@ MRESReturn OnWeaponReplenishClipPre(int weapon) // Not when the player press rel
 	return MRES_Ignored;
 	
 }
-#endif
+#endif	// Non-RTS
 
 void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 {
@@ -2130,7 +1995,7 @@ public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) 
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}
 #if !defined RTS
-	else if(b_IsAlliedNpc[entity])
+	else if(!b_ThisEntityIgnored_NoTeam[entity] && GetTeam(entity) == TFTeam_Red)
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}
@@ -2253,37 +2118,81 @@ stock void DelayEffectOnHorn(int ref)
 		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 6.0, 6.1, 1);
 	}
 #endif
-
-	if(ExtendDuration <= 10.0)
+	f_BannerAproxDur[client] = GetGameTime() + ExtendDuration;
+	f_BannerDurationActive[client] = GetGameTime() + 0.35;
+	CreateTimer(0.15, TimerGrantBannerDuration, EntIndexToEntRef(client), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	if(ExtendDuration <= (10.0 * BANNER_DURATION_FIX_FLOAT))
 	{
 		return;
 	}
-	ExtendDuration -= 9.0;
+	ExtendDuration -= (9.0 * BANNER_DURATION_FIX_FLOAT);
 
 	DataPack pack;
 	CreateDataTimer(0.1, TimerSetBannerExtraDuration, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(client));
 	pack.WriteFloat(ExtendDuration + GetGameTime());
 	
-	CreateTimer(0.25, TimerGrantBannerDuration, EntIndexToEntRef(client), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 
 	//"Expidonsan Battery Device"
 }
+
+int BannerWearable[MAXTF2PLAYERS];
+int BannerWearableModelIndex[3];
+void Dhooks_BannerMapstart()
+{
+	BannerWearableModelIndex[0]= PrecacheModel("models/weapons/c_models/c_buffbanner/c_buffbanner.mdl", true);
+	BannerWearableModelIndex[1]= PrecacheModel("models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl", true);
+	BannerWearableModelIndex[2]= PrecacheModel("models/weapons/c_models/c_shogun_warbanner/c_shogun_warbanner.mdl", true);
+}
+
 public Action TimerGrantBannerDuration(Handle timer, int ref)
 {
 	int client = EntRefToEntIndex(ref);
 	if(!IsValidClient(client))
 		return Plugin_Stop;
 
+	int entity;
 	if(!GetEntProp(client, Prop_Send, "m_bRageDraining"))
-		return Plugin_Stop;
-	
-	f_BannerDurationActive[client] = GetGameTime() + 0.35;
-	Event event = CreateEvent("deploy_buff_banner", true);
-	event.SetInt("buff_type", 1);
-	event.SetInt("buff_owner", GetClientUserId(client));
-	event.Fire();
+	{
+		//banner is over, delete.
+		entity = EntRefToEntIndex(BannerWearable[client]);
+		if(entity > MaxClients)
+			TF2_RemoveWearable(client, entity);
 
+		return Plugin_Stop;
+	}
+
+	f_BannerDurationActive[client] = GetGameTime() + 0.35;
+
+	if(IsValidEntity(BannerWearable[client]))
+	{
+		return Plugin_Continue;
+	}
+#if defined ZR
+	if(ClientHasBannersWithCD(client) == 0)
+		return Plugin_Continue;
+
+	entity = CreateEntityByName("tf_wearable");
+	if(entity > MaxClients)
+	{
+		int team = GetClientTeam(client);
+		SetEntProp(entity, Prop_Send, "m_nModelIndex", BannerWearableModelIndex[ClientHasBannersWithCD(client) -1]);
+
+		SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+		SetTeam(entity, team);
+		SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
+		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
+		SetEntityCollisionGroup(entity, 11);
+		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
+		
+		DispatchSpawn(entity);
+		SetVariantString("!activator");
+		ActivateEntity(entity);
+
+		BannerWearable[client] = EntIndexToEntRef(entity);
+		SDKCall_EquipWearable(client, entity);
+	}	
+#endif
 	return Plugin_Continue;
 }
 
@@ -2323,6 +2232,7 @@ public MRESReturn DHookGiveDefaultItems_Post(int client, Handle hParams)
 }
 */
 
+#if !defined RTS
 public MRESReturn DHook_ManageRegularWeaponsPre(int client, DHookParam param)
 {
 	// Gives our desired class's wearables
@@ -2339,6 +2249,8 @@ public MRESReturn DHook_ManageRegularWeaponsPost(int client, DHookParam param)
 	IsInsideManageRegularWeapons = false;
 	return MRES_Ignored;
 }
+#endif
+
 #define MAX_YAW_SHIELD_DELETE_SIDEWAY 25.0
 bool ShieldDeleteProjectileCheck(int owner, int enemy)
 {

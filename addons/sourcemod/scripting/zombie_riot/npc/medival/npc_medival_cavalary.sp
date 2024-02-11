@@ -151,7 +151,7 @@ methodmap MedivalCavalary < CClotBody
 		#endif
 	}
 	
-	public MedivalCavalary(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalCavalary(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalCavalary npc = view_as<MedivalCavalary>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "12500", ally));
 		SetVariantInt(1);

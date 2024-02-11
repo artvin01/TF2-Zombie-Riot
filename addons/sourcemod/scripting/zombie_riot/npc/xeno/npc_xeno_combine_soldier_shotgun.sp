@@ -170,7 +170,7 @@ methodmap XenoCombineSoldierShotgun < CClotBody
 	}
 	
 	
-	public XenoCombineSoldierShotgun(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoCombineSoldierShotgun(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineSoldierShotgun npc = view_as<XenoCombineSoldierShotgun>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "800", ally));
 		

@@ -91,7 +91,7 @@ methodmap EndSpeaker < CClotBody
 	{
 		EmitSoundToAll(DigUp[GetRandomInt(0, sizeof(DigUp) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public EndSpeaker(int client, float vecPos[3], float vecAng[3], bool ally)
+	public EndSpeaker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		FreeplayStage++;
 		switch(FreeplayStage)
@@ -164,11 +164,11 @@ methodmap EndSpeaker < CClotBody
 		KillFeed_SetKillIcon(this.index, "crocodile");
 
 		int count;
-		int[] remain = new int[i_MaxcountNpc_Allied];
+		int[] remain = new int[i_MaxcountNpc];
 
-		for(int i; i < i_MaxcountNpc_Allied; i++)
+		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == REMAINS && IsEntityAlive(entity))
 			{
 				remain[count++] = entity;
@@ -434,7 +434,6 @@ public Action EndSpeaker_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		{
 			npc.m_flMeleeArmor /= 4.0;
 			npc.m_bIgnoreBuildings = true;
-			Change_Npc_Collision(npc.index, 1);	// Ignore buildings
 		}
 	}
 	return Plugin_Changed;
@@ -447,9 +446,9 @@ public void EndSpeaker_BurrowAnim(const char[] output, int caller, int activator
 
 bool EndSpeaker_GetPos(float pos[3])
 {
-	for(int i; i < i_MaxcountNpc; i++)
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE &&
 			i_NpcInternalId[entity] >= ENDSPEAKER_1 &&
 			i_NpcInternalId[entity] <= ENDSPEAKER_4 &&

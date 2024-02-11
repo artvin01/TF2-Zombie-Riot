@@ -164,7 +164,7 @@ static void TBB_Precahce_BeamWand()
 // don't know
 static void TBB_Ability_BeamWand(int client)
 {
-	for (int building = 1; building < MAX_TARGETS_HIT; building++)
+	for (int building = 0; building < MAX_TARGETS_HIT; building++)
 	{
 		BeamWand_BuildingHit[building] = false;
 		BeamWand_Targets_Hit[client]   = 0.0;
@@ -242,7 +242,7 @@ static bool BeamWand_TraceUsers(int entity, int contentsMask, int client)
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 
-			if (((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
+			if (((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
 			{
 				for (int i = 1; i <= (MAX_TARGETS_HIT - 1); i++)
 				{
@@ -344,7 +344,7 @@ static void TBB_Tick(int client)
 			BeamWand_HitDetected[i] = false;
 		}
 
-		for (int building = 1; building < MAX_TARGETS_HIT; building++)
+		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			BeamWand_BuildingHit[building] = false;
 		}

@@ -66,7 +66,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 		#endif
 	}
 	
-	public Storm_Weaver_Mid(int client, float vecPos[3], float vecAng[3], bool ally, float in_line_id)
+	public Storm_Weaver_Mid(int client, float vecPos[3], float vecAng[3], int ally, float in_line_id)
 	{
 		Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(CClotBody(vecPos, vecAng, RUINA_STORM_WEAVER_MODEL, RUINA_STORM_WEAVER_MODEL_SIZE, "1250", ally));
 		
@@ -79,7 +79,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 		i_following_id[npc.index] = EntIndexToEntRef(RoundToFloor(in_line_id));
 
 
-		if(!ally)
+		if(ally != TFTeam_Red)
 		{
 			b_thisNpcIsABoss[npc.index] = true;
 		}

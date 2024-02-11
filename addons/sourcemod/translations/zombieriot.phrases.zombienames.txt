@@ -2017,4 +2017,64 @@
 	{
 		"en"	"Ancient Demon"
 	}
+	"Winter Sniper"
+	{
+		"en"	"Winter Sniper"
+	}
+	"Ziberian Miner"
+	{
+		"en"	"Ziberian Miner"
+	}
+	"Snowey Gunner"
+	{
+		"en"	"Snowey Gunner"
+	}
+	"Freezing Cleaner"
+	{
+		"en"	"Freezing Cleaner"
+	}
+	"Airborn Explorer"
+	{
+		"en"	"Airborn Explorer"
+	}
+	"Arctic Mage"
+	{
+		"en"	"Arctic Mage"
+	}
+	"Frost Hunter"
+	{
+		"en"	"Frost Hunter"
+	}
+	"Skin Hunter"
+	{
+		"en"	"Skin Hunter"
+	}
+	"Irritated Person"
+	{
+		"en"	"Irritated Person"
+	}
+	"Archosauria"
+	{
+		"en"	"Archosauria"
+	}
+	"Aslan"
+	{
+		"en"	"Aslan"
+	}
+	"Perro"
+	{
+		"en"	"Perro"
+	}
+	"Caprinae"
+	{
+		"en"	"Caprinae"
+	}
+	"Liberi"
+	{
+		"en"	"Liberi"
+	}
+	"Ursus"
+	{
+		"en"	"Ursus"
+	}
 }

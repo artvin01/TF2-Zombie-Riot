@@ -144,7 +144,7 @@ methodmap CombinePrime < CClotBody
 		public set(bool TempValueForProperty) 	{ b_WasSadAlready[this.index] = TempValueForProperty; }
 	}
 	
-	public CombinePrime(int client, float vecPos[3], float vecAng[3], bool ally)
+	public CombinePrime(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		CombinePrime npc = view_as<CombinePrime>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
 		
@@ -210,7 +210,6 @@ methodmap CombinePrime < CClotBody
 			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		Raidboss_Clean_Everyone();
 		
 		//Raid logic
 

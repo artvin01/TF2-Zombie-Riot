@@ -20,21 +20,25 @@ static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 
 static int i_lantean_max_penetration[MAXENTITIES];	//how many npc's the drone will penetrate before commiting die
 static float fl_lantean_penetration_dmg_penatly[MAXENTITIES];	
-static float fl_lantean_overcharge_dmg_penalty[MAXENTITIES];	
+static float fl_lantean_overcharge_dmg_penalty[MAXENTITIES];
+static float fl_targetshit[MAXENTITIES];	//
+static bool b_is_lantean[MAXENTITIES];
 
 
 #define LANTEAN_MAX_ACTIVE_DRONES 20
 
+static float fl_lantean_drone_life[MAXENTITIES];
+
 #define LANTEEN_PAP_0_PENETRATION 						3
-#define LANTEEN_PAP_0_PENETRATION_DMG_FALLFOFF 			1.3
+#define LANTEEN_PAP_0_PENETRATION_DMG_FALLFOFF 			1.6
 #define LANTEEN_PAP_0_PENETRATION_OVERCHARGE_FALLFOFF 	1.8
 
 #define LANTEEN_PAP_1_PENETRATION 						7
-#define LANTEEN_PAP_1_PENETRATION_DMG_FALLFOFF 			1.2
+#define LANTEEN_PAP_1_PENETRATION_DMG_FALLFOFF 			1.5
 #define LANTEEN_PAP_1_PENETRATION_OVERCHARGE_FALLFOFF 	1.4
 
 #define LANTEEN_PAP_2_PENETRATION 						17
-#define LANTEEN_PAP_2_PENETRATION_DMG_FALLFOFF 			1.0
+#define LANTEEN_PAP_2_PENETRATION_DMG_FALLFOFF 			1.3
 #define LANTEEN_PAP_2_PENETRATION_OVERCHARGE_FALLFOFF 	1.0
 
 
@@ -47,6 +51,9 @@ public void Weapon_lantean_Wand_ClearAll()
 	Zero(fl_lantean_Wand_Drone_Life);
 	Zero(fl_overcharge);
 	Zero2(fl_lantean_Wand_Drone_HitSafe);
+	Zero(fl_lantean_drone_life);
+	Zero(fl_targetshit);
+	Zero(b_is_lantean);
 }
 
 #define LANTEAN_WAND_SHOT_1 	"weapons/physcannon/energy_sing_flyby1.wav"
@@ -58,384 +65,305 @@ void Weapon_lantean_Wand_Map_Precache()
 	PrecacheSound(LANTEAN_WAND_SHOT_2);
 	Zero(lantean_Wand_Drone_Count);
 }
-/*
-public void Reset_Stats_Lantean_Weapon(int client)
-{
 
-}
-*/
-public void Weapon_lantean_Wand_m1(int client, int weapon, bool crit, int slot)
+public void Weapon_Lantean_Mouse1(int client, int weapon, bool crit, int slot)
 {
-	if(lantean_Wand_Drone_Count[client]>=LANTEAN_MAX_ACTIVE_DRONES)	//block if drone count too high due to people being too stupid and just holding m1...
+	int mana_cost;
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
+
+	if(lantean_Wand_Drone_Count[client]>=LANTEAN_MAX_ACTIVE_DRONES)	//nuking a drone costs more mana!
+	{
+		mana_cost *= 2;
+	}
+
+	if(mana_cost <= Current_Mana[client])
+	{
+		int pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		Current_Mana[client] -= mana_cost;
+		Mana_Hud_Delay[client] = 0.0;
+		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		delay_hud[client] = 0.0;
+
+		float damage = 65.0;
+		damage *= Attributes_Get(weapon, 410, 1.0);
+					
+		float speed = 1100.0;
+		speed *= Attributes_Get(weapon, 103, 1.0);
+		
+		speed *= Attributes_Get(weapon, 104, 1.0);
+		
+		speed *= Attributes_Get(weapon, 475, 1.0);
+					
+			
+		float time = 500.0/speed;
+		time *= Attributes_Get(weapon, 101, 1.0);
+
+		time *= Attributes_Get(weapon, 102, 1.0);
+
+		switch(pap)
+		{
+			case 0:
+			{
+				particle_type[client]="flaregun_energyfield_red";
+				Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_0_PENETRATION, LANTEEN_PAP_0_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_0_PENETRATION_OVERCHARGE_FALLFOFF,
+				damage,speed,time);
+			}
+			case 1:
+			{
+				particle_type[client]="flaregun_energyfield_blue";
+				Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_1_PENETRATION, LANTEEN_PAP_1_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_1_PENETRATION_OVERCHARGE_FALLFOFF,
+				damage,speed,time);
+			}
+			case 2:
+			{
+				particle_type[client]="flaregun_energyfield_blue";
+				Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_2_PENETRATION, LANTEEN_PAP_2_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_2_PENETRATION_OVERCHARGE_FALLFOFF,
+				damage,speed,time);
+			}
+			default:
+			{
+				particle_type[client]="flaregun_energyfield_red";
+				Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_0_PENETRATION, LANTEEN_PAP_0_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_0_PENETRATION_OVERCHARGE_FALLFOFF,
+				damage,speed,time);
+			}
+		}
+		
+	}
+	else
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Too Many Drones");
-	}
-	else
-	{	
-		int mana_cost;
-		mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
-	
-		if(mana_cost <= Current_Mana[client])
-		{
-			particle_type[client]="flaregun_energyfield_red";
-			Current_Mana[client] -= mana_cost;
-			Mana_Hud_Delay[client] = 0.0;
-			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-			delay_hud[client] = 0.0;
-	
-			float damage = 65.0;
-			damage *= Attributes_Get(weapon, 410, 1.0);
-						
-			float speed = 1100.0;
-			speed *= Attributes_Get(weapon, 103, 1.0);
-			
-			speed *= Attributes_Get(weapon, 104, 1.0);
-			
-			speed *= Attributes_Get(weapon, 475, 1.0);
-						
-				
-			float time = 500.0/speed;
-			time *= Attributes_Get(weapon, 101, 1.0);
-
-			time *= Attributes_Get(weapon, 102, 1.0);
-	
-			Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_0_PENETRATION, LANTEEN_PAP_0_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_0_PENETRATION_OVERCHARGE_FALLFOFF,
-			damage,speed,time);
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-		}
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 	}
 }
 
-public void Weapon_lantean_Wand_pap_m1(int client, int weapon, bool crit, int slot)
+public void Lantean_Reload_Ability(int client, int weapon, bool crit, int slot)
 {
-	if(lantean_Wand_Drone_Count[client]>=LANTEAN_MAX_ACTIVE_DRONES)	//block if drone count too high due to people being too stupid and just holding m1...
+	int mana_cost;
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
+	
+	mana_cost *=2;
+
+	if(mana_cost <= Current_Mana[client])
+	{
+		if (Ability_Check_Cooldown(client, slot) < 0.0)
+		{
+			Rogue_OnAbilityUse(weapon);
+			Ability_Apply_Cooldown(client, slot, 5.0);
+
+			Current_Mana[client] -=mana_cost;
+
+			Set_Drones_Noclip(client);
+		}
+		else
+		{
+			float Ability_CD = Ability_Check_Cooldown(client, slot);
+			
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+				
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		}
+	}
+	else
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Too Many Drones");
-	}
-	else
-	{	
-		int mana_cost;
-		mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
-			
-		if(mana_cost <= Current_Mana[client])
-		{
-			particle_type[client]="flaregun_energyfield_blue";
-			Current_Mana[client] -= mana_cost;
-			Mana_Hud_Delay[client] = 0.0;
-			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-			delay_hud[client] = 0.0;
-	
-			float damage = 65.0;
-			damage *= Attributes_Get(weapon, 410, 1.0);
-						
-			float speed = 1100.0;
-			speed *= Attributes_Get(weapon, 103, 1.0);
-			
-			speed *= Attributes_Get(weapon, 104, 1.0);
-			
-			speed *= Attributes_Get(weapon, 475, 1.0);
-						
-				
-			float time = 500.0/speed;
-			time *= Attributes_Get(weapon, 101, 1.0);
-			
-			time *= Attributes_Get(weapon, 102, 1.0);
-	
-			Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_1_PENETRATION, LANTEEN_PAP_1_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_1_PENETRATION_OVERCHARGE_FALLFOFF,
-			damage,speed,time);
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-		}
-	}
-}
-
-public void Weapon_lantean_Wand_pap2_m1(int client, int weapon, bool crit, int slot)
-{
-	
-	if(lantean_Wand_Drone_Count[client]>=LANTEAN_MAX_ACTIVE_DRONES)	//block if drone count too high due to people being too stupid and just holding m1...
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Too Many Drones");
-	}
-	else
-	{			
-		int mana_cost;
-		mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
-			
-		if(mana_cost <= Current_Mana[client])
-		{
-			particle_type[client]="flaregun_energyfield_blue";
-			Current_Mana[client] -= mana_cost;
-			Mana_Hud_Delay[client] = 0.0;
-			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-			delay_hud[client] = 0.0;
-	
-			float damage = 65.0;
-			damage *= Attributes_Get(weapon, 410, 1.0);
-						
-			float speed = 1100.0;
-			speed *= Attributes_Get(weapon, 103, 1.0);
-			
-			speed *= Attributes_Get(weapon, 104, 1.0);
-			
-			speed *= Attributes_Get(weapon, 475, 1.0);
-						
-				
-			float time = 500.0/speed;
-			time *= Attributes_Get(weapon, 101, 1.0);
-			
-			time *= Attributes_Get(weapon, 102, 1.0);
-	
-			Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_2_PENETRATION, LANTEEN_PAP_2_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_2_PENETRATION_OVERCHARGE_FALLFOFF,
-			damage,speed,time);
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-		}
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 	}
 }
 
 public void Weapon_lantean_Wand_m2(int client, int weapon, bool crit, int slot)
 {
-	if(lantean_Wand_Drone_Count[client]>=LANTEAN_MAX_ACTIVE_DRONES)	//block if drone count too high due to people being too stupid and just holding m1...
+	int pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+
+	int mana_cost;
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
+
+	switch(pap)
 	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Too Many Drones");
-	}
-	else
-	{	
-		
-		int mana_cost;
-		mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
-		
-		mana_cost *= 7;
-		if(mana_cost <= Current_Mana[client])
+		case 0:
 		{
-			if (Ability_Check_Cooldown(client, slot) < 0.0)
-			{
-				Rogue_OnAbilityUse(weapon);
-				Ability_Apply_Cooldown(client, slot, 30.0);
-		
-				particle_type[client]="scorchshot_trail_crit_red";
-				Current_Mana[client] -= mana_cost;
-				Mana_Hud_Delay[client] = 0.0;
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-				delay_hud[client] = 0.0;
-		
-				float damage = 65.0;
-				damage *= Attributes_Get(weapon, 410, 1.0);
-							
-				float speed = 1100.0;
-				speed *= Attributes_Get(weapon, 103, 1.0);
-				
-				speed *= Attributes_Get(weapon, 104, 1.0);
-				
-				speed *= Attributes_Get(weapon, 475, 1.0);
-							
-					
-				float time = 500.0/speed;
-				time *= Attributes_Get(weapon, 101, 1.0);
-				
-				time *= Attributes_Get(weapon, 102, 1.0);
+			mana_cost *= 5;
+		}
+		case 1:
+		{
+			mana_cost *= 10;
+		}
+		case 2:
+		{
+			mana_cost *= 8;
+		}
+	}
+
+	if(lantean_Wand_Drone_Count[client]>=LANTEAN_MAX_ACTIVE_DRONES)	
+	{
+		mana_cost *=2;
+	}
 	
-				for(int i=1 ; i<=5 ; i++)
-				{
-					Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_0_PENETRATION, LANTEEN_PAP_0_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_0_PENETRATION_OVERCHARGE_FALLFOFF,
-					damage,speed,time);
-				}
-			}
-			else
-			{
-				float Ability_CD = Ability_Check_Cooldown(client, slot);
+	
+	if(mana_cost <= Current_Mana[client])
+	{
+		if (Ability_Check_Cooldown(client, slot) < 0.0)
+		{
+			Rogue_OnAbilityUse(weapon);
+			Ability_Apply_Cooldown(client, slot, 30.0);
+
+			Current_Mana[client] -= mana_cost;
+			Mana_Hud_Delay[client] = 0.0;
+			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+			delay_hud[client] = 0.0;
+	
+			float damage = 65.0;
+			damage *= Attributes_Get(weapon, 410, 1.0);
+						
+			float speed = 1100.0;
+			speed *= Attributes_Get(weapon, 103, 1.0);
+			
+			speed *= Attributes_Get(weapon, 104, 1.0);
+			
+			speed *= Attributes_Get(weapon, 475, 1.0);
+						
 				
-				if(Ability_CD <= 0.0)
-					Ability_CD = 0.0;
-					
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+			float time = 500.0/speed;
+			time *= Attributes_Get(weapon, 101, 1.0);
+			
+			time *= Attributes_Get(weapon, 102, 1.0);
+
+			switch(pap)
+			{
+				case 0:
+				{
+					particle_type[client]="scorchshot_trail_crit_red";
+					for(int i=1 ; i<=5 ; i++)
+					{
+						Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_0_PENETRATION, LANTEEN_PAP_0_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_0_PENETRATION_OVERCHARGE_FALLFOFF,
+						damage,speed,time);
+					}
+				}
+				case 1:
+				{
+					particle_type[client]="scorchshot_trail_crit_blue";
+					for(int i=1 ; i<=10 ; i++)
+					{
+						Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_1_PENETRATION, LANTEEN_PAP_1_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_1_PENETRATION_OVERCHARGE_FALLFOFF,
+						damage,speed,time);
+					}
+				}
+				case 2:
+				{
+					particle_type[client]="scorchshot_trail_crit_blue";
+					for(int i=1 ; i<=10 ; i++)
+					{
+						Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_2_PENETRATION, LANTEEN_PAP_2_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_2_PENETRATION_OVERCHARGE_FALLFOFF,
+						damage,speed,time);
+					}
+				}
 			}
 		}
 		else
 		{
+			float Ability_CD = Ability_Check_Cooldown(client, slot);
+			
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+				
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		}
+	}
+	else
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+	}
+
+}
+static void Set_Drones_Noclip(int client)
+{
+	for (int entity = 0; entity < MAXENTITIES; entity++)
+	{
+		if(Is_Mine(entity, client))
+		{
+			b_ProjectileCollideIgnoreWorld[entity] = true;
+			SetEntityMoveType(entity, MOVETYPE_NOCLIP);
+			CreateTimer(2.5, Remove_Noclip_Timer, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		}
+	}
+	
+}
+static Action Remove_Noclip_Timer(Handle Timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
+	{
+		SetEntityMoveType(entity, MOVETYPE_FLY);
+		b_ProjectileCollideIgnoreWorld[entity] = false;
+	}
+	return Plugin_Stop;
+}
+static bool Is_Mine(int entity, int client)
+{
+	if(IsValidEntity(entity))
+	{
+		if(b_is_lantean[entity])
+		{
+			int owner = EntRefToEntIndex(i_WandOwner[entity]);
+			if(IsValidClient(owner))
+			{
+				if(owner==client)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
 	}
 }
-
-public void Weapon_lantean_Wand_pap_m2(int client, int weapon, bool crit, int slot)
+static void Nuke_Old_Drone(int client)
 {
-	if(lantean_Wand_Drone_Count[client]>=LANTEAN_MAX_ACTIVE_DRONES)	//block if drone count too high due to people being too stupid and just holding m1...
+	float lowest = GetGameTime();
+	int lowest_id = -1;
+	for (int entity = 0; entity < MAXENTITIES; entity++)
 	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Too Many Drones");
-	}
-	else
-	{		
-		int mana_cost;
-		mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
-		
-		mana_cost *= 12;
-		if(mana_cost <= Current_Mana[client])
+		if(Is_Mine(entity, client))
 		{
-			if (Ability_Check_Cooldown(client, slot) < 0.0)
+			if(lowest > fl_lantean_drone_life[entity])
 			{
-				Rogue_OnAbilityUse(weapon);
-				Ability_Apply_Cooldown(client, slot, 30.0);
-		
-				particle_type[client]="scorchshot_trail_crit_blue";
-				Current_Mana[client] -= mana_cost;
-				Mana_Hud_Delay[client] = 0.0;
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-				delay_hud[client] = 0.0;
-		
-				float damage = 65.0;
-				damage *= Attributes_Get(weapon, 410, 1.0);
-							
-				float speed = 1100.0;
-				speed *= Attributes_Get(weapon, 103, 1.0);
-				
-				speed *= Attributes_Get(weapon, 104, 1.0);
-				
-				speed *= Attributes_Get(weapon, 475, 1.0);
-							
-					
-				float time = 500.0/speed;
-				time *= Attributes_Get(weapon, 101, 1.0);
-				
-				time *= Attributes_Get(weapon, 102, 1.0);
-	
-				for(int i=1 ; i<=10 ; i++)
-				{
-					Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_1_PENETRATION, LANTEEN_PAP_1_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_1_PENETRATION_OVERCHARGE_FALLFOFF,
-					damage,speed,time);
-				
-				}
-			}
-			else
-			{
-				float Ability_CD = Ability_Check_Cooldown(client, slot);
-				
-				if(Ability_CD <= 0.0)
-					Ability_CD = 0.0;
-					
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+				lowest = fl_lantean_drone_life[entity];
+				lowest_id = entity;
 			}
 		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-		}
 	}
-}
-
-public void Weapon_lantean_Wand_pap_3_m2(int client, int weapon, bool crit, int slot)
-{
-	if(lantean_Wand_Drone_Count[client]>=LANTEAN_MAX_ACTIVE_DRONES)	//block if drone count too high due to people being too stupid and just holding m1...
+	if(IsValidEntity(lowest_id))
 	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Too Many Drones");
-	}
-	else
-	{			
-		int mana_cost;
-		mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
-		
-		mana_cost *= 12;
-		if(mana_cost <= Current_Mana[client])
-		{
-			if (Ability_Check_Cooldown(client, slot) < 0.0)
-			{
-				Rogue_OnAbilityUse(weapon);
-				Ability_Apply_Cooldown(client, slot, 30.0);
-		
-				particle_type[client]="scorchshot_trail_crit_blue";
-				Current_Mana[client] -= mana_cost;
-				Mana_Hud_Delay[client] = 0.0;
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-				delay_hud[client] = 0.0;
-		
-				float damage = 65.0;
-				damage *= Attributes_Get(weapon, 410, 1.0);
-							
-				float speed = 1100.0;
-				speed *= Attributes_Get(weapon, 103, 1.0);
-				
-				speed *= Attributes_Get(weapon, 104, 1.0);
-				
-				speed *= Attributes_Get(weapon, 475, 1.0);
-							
-					
-				float time = 500.0/speed;
-				time *= Attributes_Get(weapon, 101, 1.0);
-				
-				time *= Attributes_Get(weapon, 102, 1.0);
-	
-				for(int i=1 ; i<=10 ; i++)
-				{
-					Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_2_PENETRATION, LANTEEN_PAP_2_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_2_PENETRATION_OVERCHARGE_FALLFOFF,
-					damage,speed,time);
-				}
-			}
-			else
-			{
-				float Ability_CD = Ability_Check_Cooldown(client, slot);
-				
-				if(Ability_CD <= 0.0)
-					Ability_CD = 0.0;
-					
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
-			}
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-		}
+		lantean_Wand_Drone_Count[client] -= 1;
+		b_is_lantean[lowest_id] = false;
+		RemoveEntity(lowest_id);
 	}
 }
 
@@ -445,9 +373,17 @@ float damage,
 float speed,
 float time)
 {
+	if(lantean_Wand_Drone_Count[client]>=LANTEAN_MAX_ACTIVE_DRONES)	//nuking a drone costs more mana!
+	{
+		Nuke_Old_Drone(client);
+	}
 	//sanity check, make sure it despawns eventually if smth goes wrong!
 	int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_LANTEAN, weapon, particle_type[client]);
 
+	b_is_lantean[projectile]=true;
+	fl_lantean_drone_life[projectile] = GetGameTime();
+
+	fl_targetshit[projectile]=1.0;
 
 	//30 sec, own respawnlogic.
 	int particle = EntRefToEntIndex(i_WandParticle[projectile]);
@@ -503,6 +439,7 @@ public Action Timer_RemoveEntity_CustomProjectileWand_Lanteen(Handle timer, Data
 	if(IsValidEntity(Projectile))
 	{
 		lantean_Wand_Drone_Count[clientindex] -= 1;
+		b_is_lantean[Projectile]=false;
 		RemoveEntity(Projectile);
 	}
 	if(IsValidEntity(Particle))
@@ -535,6 +472,7 @@ public Action lantean_Wand_Touch_World(int entity, int other)
 				case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
 			}
 			RemoveEntity(entity);
+			b_is_lantean[entity]=false;
 			lantean_Wand_Drone_Count[owner] -= 1;
 		}
 	}
@@ -569,6 +507,7 @@ public void lantean_Wand_Touch(int entity, int target)
 			int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 			
 			i_drone_targets_penetrated[entity]++;
+			float Wand_Dmg = f_WandDamage[entity] / fl_targetshit[entity];
 			
 			float dmg_penalty = 1.0;
 			
@@ -577,8 +516,8 @@ public void lantean_Wand_Touch(int entity, int target)
 				dmg_penalty=(lantean_Wand_Drone_Count[owner]/10)*fl_lantean_overcharge_dmg_penalty[entity];
 			}
 			
-			SDKHooks_TakeDamage(target, entity, owner, (f_WandDamage[entity]/(i_drone_targets_penetrated[entity]*fl_lantean_penetration_dmg_penatly[entity]))/dmg_penalty, DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
-		
+			SDKHooks_TakeDamage(target, entity, owner, (Wand_Dmg / dmg_penalty), DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+			fl_targetshit[entity] *=fl_lantean_penetration_dmg_penatly[entity];
 			
 			switch(GetRandomInt(1,5)) 
 			{
@@ -596,6 +535,7 @@ public void lantean_Wand_Touch(int entity, int target)
 			if(i_drone_targets_penetrated[entity] >= i_lantean_max_penetration[entity])
 			{
 				RemoveEntity(entity);
+				b_is_lantean[entity]=false;
 				lantean_Wand_Drone_Count[owner] -= 1;
 				if(IsValidEntity(particle))
 				{
@@ -671,6 +611,7 @@ static void LanternFindVecToBotTo(int client)
 	else
 	{
 		TR_GetEndPosition(vec, swingTrace);
+		vec[2]+=50.0;	//a bandaid sollution.
 	}
 	f3_Vector_To_Aimbot_To[client] = vec;
 			

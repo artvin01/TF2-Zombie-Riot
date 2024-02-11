@@ -226,7 +226,7 @@ static void Spin_To_Win_attack(int client, float endVec[3], float endVec_2[3], i
 		}
 		
 		
-		for (int building = 1; building < MAX_TARGETS_HIT; building++)
+		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			BEAM_BuildingHit[building] = false;
 		}
@@ -427,7 +427,7 @@ static void Yamato_Rocket_Launch(int client, int weapon, float startVec[3], floa
 		b_EntityIsArrow[entity] = true;
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		SetTeam(entity, GetTeam(client));
 		TeleportEntity(entity, startVec, Angles, NULL_VECTOR);
 		DispatchSpawn(entity);
 		int particle = 0;

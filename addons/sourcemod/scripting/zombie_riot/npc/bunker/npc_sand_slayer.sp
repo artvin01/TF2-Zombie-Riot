@@ -214,7 +214,7 @@ methodmap SandvichSlayer < CClotBody
 		#endif
 	}
 	
-	public SandvichSlayer(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SandvichSlayer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SandvichSlayer npc = view_as<SandvichSlayer>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.25", "15000", ally, false, true));
 		
@@ -222,7 +222,7 @@ methodmap SandvichSlayer < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		if(!b_IsAlliedNpc[npc.index])
+		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			Music_Stop_Beat_Ten(client);
@@ -283,7 +283,7 @@ public void SandvichSlayer_ClotThink(int iNPC)
 	{
 		return;
 	}
-	if(!b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		if(fl_DuoExecuteCustomPootisTheme <= GetGameTime(npc.index) && b_DuoOnePootisDied && b_DuoDisableMainPootisTheme && b_DuoMainLeaderDied)
 		{
@@ -647,7 +647,7 @@ public void SandvichSlayer_NPCDeath(int entity)
 	SandvichSlayer npc = view_as<SandvichSlayer>(entity);
 	npc.PlayDeathSound();	
 	
-	if(!b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		//Music_Stop_Main_Theme2(entity);
 		Music_Stop_Death_Theme2(entity);

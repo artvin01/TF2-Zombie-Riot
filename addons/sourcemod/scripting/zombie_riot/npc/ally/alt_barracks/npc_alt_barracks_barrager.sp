@@ -61,7 +61,7 @@ methodmap Barrack_Alt_Barrager < BarrackBody
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
-	public Barrack_Alt_Barrager(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Barrack_Alt_Barrager(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barrack_Alt_Barrager npc = view_as<Barrack_Alt_Barrager>(BarrackBody(client, vecPos, vecAng, "250", "models/player/Soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

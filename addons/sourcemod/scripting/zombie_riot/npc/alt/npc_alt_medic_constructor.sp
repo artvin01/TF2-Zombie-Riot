@@ -107,7 +107,7 @@ methodmap Alt_Medic_Constructor < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public Alt_Medic_Constructor(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Alt_Medic_Constructor(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Alt_Medic_Constructor npc = view_as<Alt_Medic_Constructor>(CClotBody(vecPos, vecAng, "models/bots/medic/bot_medic.mdl", "1.0", "3500", ally));
 		
@@ -267,17 +267,14 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 						npc.m_bnew_target = true;
 					}
 					
-					bool regrow = true;
-					Building_CamoOrRegrowBlocker(PrimaryThreatIndex, _, regrow);
-					if(regrow && !NpcStats_IsEnemySilenced(npc.index))
+					if(!NpcStats_IsEnemySilenced(npc.index))
 					{
-						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
-						SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") + 60);
-						if(GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") >= GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"))
+						if(IsValidEntity(npc.m_iWearable4))
 						{
-							SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"));
+							SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+							SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
 						}
+						HealEntityGlobal(npc.index, PrimaryThreatIndex, 60.0, 1.0);
 					}
 					else
 					{
@@ -400,7 +397,7 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 								if(target > 0) 
 								{
 									
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_CLUB, -1, _, vecHit);
 									else
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 400.0, DMG_CLUB, -1, _, vecHit);

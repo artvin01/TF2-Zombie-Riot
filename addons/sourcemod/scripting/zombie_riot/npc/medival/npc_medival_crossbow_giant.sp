@@ -133,7 +133,7 @@ methodmap MedivalCrossbowGiant < CClotBody
 		#endif
 	}
 	
-	public MedivalCrossbowGiant(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalCrossbowGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalCrossbowGiant npc = view_as<MedivalCrossbowGiant>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "20000", ally, false, true));
 		SetVariantInt(1);

@@ -131,7 +131,7 @@ methodmap Mecha_Scout < CClotBody
 	}
 	
 	
-	public Mecha_Scout(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Mecha_Scout(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Mecha_Scout npc = view_as<Mecha_Scout>(CClotBody(vecPos, vecAng, "models/bots/scout/bot_scout.mdl", "1.0", "1250", ally));
 		
@@ -271,7 +271,7 @@ public void Mecha_Scout_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_CLUB, -1, _, vecHit);

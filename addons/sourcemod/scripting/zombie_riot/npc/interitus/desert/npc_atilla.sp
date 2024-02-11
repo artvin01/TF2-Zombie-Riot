@@ -85,7 +85,7 @@ methodmap DesertAtilla < CClotBody
 	}
 	
 	
-	public DesertAtilla(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertAtilla(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertAtilla npc = view_as<DesertAtilla>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally));
 		
@@ -247,13 +247,13 @@ void DesertAtillaSelfDefense(DesertAtilla npc, float gameTime, int target, float
 					{
 						if(target > MaxClients)
 						{
-							StartBleedingTimer_Against_Client(target, npc.index, 4.0, 2);
+							StartBleedingTimer_Against_Client(target, npc.index, 4.0, 5);
 						}
 						else
 						{
 							if (!IsInvuln(target))
 							{
-								StartBleedingTimer_Against_Client(target, npc.index, 4.0, 2);
+								StartBleedingTimer_Against_Client(target, npc.index, 4.0, 5);
 							}
 						}
 					}

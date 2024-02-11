@@ -127,7 +127,7 @@ methodmap AltMedicBerseker < CClotBody
 	}
 	
 	
-	public AltMedicBerseker(int client, float vecPos[3], float vecAng[3], bool ally)
+	public AltMedicBerseker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		AltMedicBerseker npc = view_as<AltMedicBerseker>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.00", "25000", ally));
 		
@@ -310,7 +310,7 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 							{
 								damage=damage/2;
 							}
-							if(target <= MaxClients)
+							if(!ShouldNpcDealBonusDamage(target))
 								SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 							else
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);

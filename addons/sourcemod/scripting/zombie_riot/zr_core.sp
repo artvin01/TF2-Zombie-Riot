@@ -152,6 +152,8 @@ enum
 	WEAPON_RED_BLADE = 81,
 	WEAPON_GRAVATON_WAND = 82,
 	WEAPON_HEAVY_PARTICLE_RIFLE = 83,
+	WEAPON_SICCERINO = 84,
+	WEAPON_DIMENSION_RIPPER = 85,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -222,6 +224,7 @@ int CurrentRound;
 int CurrentWave = -1;
 int StartCash;
 float RoundStartTime;
+char WhatDifficultySetting_Internal[21];
 char WhatDifficultySetting[21];
 float healing_cooldown[MAXTF2PLAYERS];
 float Damage_dealt_in_total[MAXTF2PLAYERS];
@@ -390,7 +393,6 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_fusion_melee.sp"
 #include "zombie_riot/custom/spike_layer.sp"
 #include "zombie_riot/custom/weapon_grenade.sp"
-#include "zombie_riot/custom/weapon_pipebomb.sp"
 #include "zombie_riot/custom/wand/weapon_default_wand.sp"
 #include "zombie_riot/custom/wand/weapon_wand_increace_attack.sp"
 #include "zombie_riot/custom/wand/weapon_fire_wand.sp"
@@ -479,6 +481,8 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_rapier.sp"
 #include "zombie_riot/custom/wand/weapon_wand_gravaton.sp"
 #include "zombie_riot/custom/weapon_heavy_particle_rifle.sp"
+#include "zombie_riot/custom/weapon_railcannon.sp"
+#include "zombie_riot/custom/wand/weapon_dimension_ripper.sp"
 
 void ZR_PluginLoad()
 {
@@ -502,6 +506,7 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
 	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person");
 	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
+	RegAdminCmd("sm_set_xp", Command_SetXp, ADMFLAG_ROOT, "Set XP to the Person");
 	RegAdminCmd("sm_give_cash_all", Command_GiveCashAll, ADMFLAG_ROOT, "Give Cash to All");
 	RegAdminCmd("sm_tutorial_test", Command_TestTutorial, ADMFLAG_ROOT, "Test The Tutorial");
 	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
@@ -531,6 +536,7 @@ void ZR_PluginStart()
 	Waves_PluginStart();
 	Rogue_PluginStart();
 	Spawns_PluginStart();
+	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
 	for (int ent = -1; (ent = FindEntityByClassname(ent, "info_player_teamspawn")) != -1;) 
@@ -544,11 +550,14 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+	TeutonSoundOverrideMapStart();
+	Dhooks_BannerMapstart();
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
+	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	RoundStartTime = 0.0;
 	cvarTimeScale.SetFloat(1.0);
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
@@ -633,7 +642,6 @@ void ZR_MapStart()
 	Bison_MapStart();
 	Pomson_MapStart();
 	Mangler_MapStart();
-	Pipebomb_MapStart();
 	Wand_Map_Precache();
 	Wand_Skulls_Precache();
 	Wand_Attackspeed_Map_Precache();
@@ -707,6 +715,8 @@ void ZR_MapStart()
 	ResetMapStartRedBladeWeapon();
 	Gravaton_Wand_MapStart();
 	Heavy_Particle_Rifle_Mapstart();
+	Precache_Railcannon();
+	ResetMapStartDimWeapon();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;
@@ -1009,6 +1019,43 @@ public Action Command_GiveScrap(int client, int args)
 }
 
 
+public Action Command_SetXp(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_set_xp <target> <cash>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[12];
+	GetCmdArg(2, buf, sizeof(buf));
+	int money = StringToInt(buf); 
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		if(money > 0)
+		{
+			PrintToChat(targets[target], "Your XP got set to %i from the admin %N!", money, client);
+			XP[targets[target]] = money;
+		}
+	}
+	
+	return Plugin_Handled;
+}
 public Action Command_GiveXp(int client, int args)
 {
 	//What are you.
@@ -1122,7 +1169,6 @@ public void OnClientAuthorized(int client)
 {
 	Ammo_Count_Used[client] = 0;
 	CashSpentTotal[client] = 0;
-	f_LeftForDead_Cooldown[client] = 0.0;
 /*	
 	if(CurrentRound)
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.10);
@@ -1179,6 +1225,9 @@ public Action Timer_Dieing(Handle timer, int client)
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
+					if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+						continue;
+
 					SetEntityRenderMode(entity, RENDER_NORMAL);
 					SetEntityRenderColor(entity, 255, 255, 255, 255);
 				}
@@ -1277,7 +1326,7 @@ public void Spawn_Bob_Combine(int client)
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	flAng[2] = 0.0;
-	int bob = Npc_Create(BOB_THE_GOD_OF_GODS, client, flPos, flAng, true);
+	int bob = Npc_Create(BOB_THE_GOD_OF_GODS, client, flPos, flAng, TFTeam_Red);
 	Bob_Exists = true;
 	Bob_Exists_Index = EntIndexToEntRef(bob);
 	Items_GiveNPCKill(client, BOB_THE_GOD_OF_GODS);
@@ -1306,7 +1355,7 @@ public void Spawn_Cured_Grigori()
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	flAng[2] = 0.0;
-	int entity = Npc_Create(CURED_FATHER_GRIGORI, client, flPos, flAng, true);
+	int entity = Npc_Create(CURED_FATHER_GRIGORI, client, flPos, flAng, TFTeam_Red);
 	SalesmanAlive = EntIndexToEntRef(entity);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_grigori");
 	
@@ -1422,6 +1471,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			if(!applied_lastmann_buffs_once)
 			{
 				CauseFadeInAndFadeOut(0,1.0,1.0,1.0);
+				PlayTeamDeadSound();
 				Zero(delay_hud); //Allow the hud to immedietly update
 			}
 
@@ -1440,6 +1490,9 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							int entity, i;
 							while(TF2U_GetWearable(client, entity, i))
 							{
+								if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+									continue;
+
 								SetEntityRenderMode(entity, RENDER_NORMAL);
 								SetEntityRenderColor(entity, 255, 255, 255, 255);
 							}
@@ -1585,7 +1638,7 @@ stock void UpdatePlayerPoints(int client)
 {
 	int Points;
 	
-	Points += Healing_done_in_total[client] / 3;
+	Points += Healing_done_in_total[client] / 4;
 	
 	Points += RoundToCeil(Damage_dealt_in_total[client]) / 200;
 
@@ -1595,7 +1648,7 @@ stock void UpdatePlayerPoints(int client)
 	
 	Points += i_BarricadeHasBeenDamaged[client] / 65;
 
-	Points += i_PlayerDamaged[client] / 20;
+	Points += i_PlayerDamaged[client] / 5;
 	
 	Points += i_ExtraPlayerPoints[client] / 2;
 	
@@ -1637,7 +1690,8 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 	
 }
 
-stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti)
+float f_IncrementalSmallArmor[MAXENTITIES];
+stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti, bool flat = false)
 {
 	int Armor_Max;
 	
@@ -1650,11 +1704,52 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti)
 	*/
 	if(Armor_Charge[client] < Armor_Max)
 	{
-		int ArmorToGive;
+		float ArmorToGive;
 
-		ArmorToGive = RoundToCeil(float(Armor_Max) * multiplyier);
-		
-		Armor_Charge[client] += ArmorToGive;
+		if(flat)
+		{
+			int i_TargetHealAmount; //Health to actaully apply
+
+			if (multiplyier <= 1.0 && multiplyier > 0.0)
+			{
+				f_IncrementalSmallArmor[client] += multiplyier;
+					
+				if(f_IncrementalSmallArmor[client] >= 1.0)
+				{
+					f_IncrementalSmallArmor[client] -= 1.0;
+					i_TargetHealAmount = 1;
+				}
+			}
+			else
+			{
+				if(i_TargetHealAmount < 0.0) //negative heal
+				{
+					i_TargetHealAmount = RoundToFloor(multiplyier);
+				}
+				else
+				{
+					i_TargetHealAmount = RoundToFloor(multiplyier);
+				
+					float Decimal_healing = FloatFraction(multiplyier);
+										
+										
+					f_IncrementalSmallArmor[client] += Decimal_healing;
+										
+					while(f_IncrementalSmallArmor[client] >= 1.0)
+					{
+						f_IncrementalSmallArmor[client] -= 1.0;
+						i_TargetHealAmount += 1;
+					}
+				}		
+			}
+			ArmorToGive = float(i_TargetHealAmount);
+				
+		}
+		else
+		{
+			ArmorToGive = float(Armor_Max) * multiplyier;
+		}
+		Armor_Charge[client] += RoundToNearest(ArmorToGive);
 
 		if(Armor_Charge[client] >= Armor_Max)
 		{
@@ -1813,6 +1908,9 @@ void ReviveAll(bool raidspawned = false)
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
+					if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+						continue;
+
 					SetEntityRenderMode(entity, RENDER_NORMAL);
 					SetEntityRenderColor(entity, 255, 255, 255, 255);
 				}
@@ -1847,11 +1945,16 @@ void ReviveAll(bool raidspawned = false)
 					{
 						dieingstate[client] = 0;
 					}
+					
+
 					Store_ApplyAttribs(client);
 					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 					int entity, i;
 					while(TF2U_GetWearable(client, entity, i))
 					{
+						if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+							continue;
+							
 						SetEntityRenderMode(entity, RENDER_NORMAL);
 						SetEntityRenderColor(entity, 255, 255, 255, 255);
 					}

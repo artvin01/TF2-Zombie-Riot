@@ -108,7 +108,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 	}
 	else if(FriendlyDay)
 	{
-		enemy.Friendly = true;
+		enemy.Team = TFTeam_Red;
 		count /= 10;
 		FriendlyDay = false;
 	}
