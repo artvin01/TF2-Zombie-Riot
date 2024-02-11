@@ -674,6 +674,7 @@ bool b_CannotBeSlowed[MAXENTITIES];
 float f_NpcTurnPenalty[MAXENTITIES];
 bool b_IsInUpdateGroundConstraintLogic;
 bool b_IgnorePlayerCollisionNPC[MAXENTITIES];
+bool b_IgnoreAllCollisionNPC[MAXENTITIES];		//for npc's that noclip
 
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
 int h_NpcCollissionHookType[MAXENTITIES];
@@ -777,7 +778,6 @@ Handle g_hGetBonePosition;
 
 //PluginBot SDKCalls
 Handle g_hGetSolidMask;
-Handle g_hGetSolidMaskNone;
 //DHooks
 //Handle g_hGetCurrencyValue;
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
@@ -2525,6 +2525,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		EntityFuncAttackInstant[entity] = INVALID_FUNCTION;
 		b_Is_Player_Projectile_Through_Npc[entity] = false;
 		b_IgnorePlayerCollisionNPC[entity] = false;
+		b_IgnoreAllCollisionNPC[entity] = false;
 		b_ForceCollisionWithProjectile[entity] = false;
 		b_ProjectileCollideIgnoreWorld[entity] = false;
 		i_IsABuilding[entity] = false;

@@ -35,8 +35,6 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
-static bool b_health_stripped[MAXENTITIES];
-
 static float fl_teleport_timer[MAXENTITIES];
 static bool b_teleport_recharging[MAXENTITIES];
 static bool b_schwert_is_ally[MAXENTITIES];
@@ -154,20 +152,23 @@ methodmap Schwertkrieg < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		if(!ally)
+		if(ally != TFTeam_Red)
 		{
 			g_b_schwert_died=false;	
 
 			g_b_angered=false;
+			b_schwert_is_ally[npc.index] = false;	//if schwert is blue do normal stuff
+		}
+		else
+		{
+			b_schwert_is_ally[npc.index] = true;	//if schwert is red, block all the raidboss angered logic!
 		}
 		
-		b_schwert_is_ally[npc.index] = ally;	//if schwert is red, block all the raidboss angered logic!
+		
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
-		b_health_stripped[npc.index] = false;
 		
 		SDKHook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
 		

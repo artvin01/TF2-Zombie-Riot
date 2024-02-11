@@ -2966,13 +2966,6 @@ methodmap CClotBody < CBaseCombatCharacter
 	
 		return (iActivity == this.m_iActivity);
 	}
-
-	//return the bot's collision mask
-	/*public int GetSolidMaskNothing()
-	{
-		//What to collide with
-		return 0;
-	}*/
 	public void RestartMainSequence()
 	{
 		SetEntPropFloat(this.index, Prop_Data, "m_flAnimTime", GetGameTime());
@@ -3048,10 +3041,6 @@ public void NPC_Base_InitGamedata()
 
 
 	g_hGetSolidMask			= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
-
-#if defined ZR
-	g_hGetSolidMaskNone		= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMaskNone);	//warp
-#endif
 
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "LookupSequence");
@@ -6825,6 +6814,11 @@ int GetSolidMask(int npc)
 	{
 		Solidity = (MASK_NPCSOLID);
 	}
+	//this npc ignores all collisions.
+	if(b_IgnoreAllCollisionNPC[npc])
+	{
+		Solidity = (0);	//uhh?
+	}
 	return Solidity;
 }
 
@@ -6836,15 +6830,6 @@ public MRESReturn IBody_GetSolidMask(Address pThis, Handle hReturn, Handle hPara
 }
 
 #if defined ZR
-
-public MRESReturn IBody_GetSolidMaskNone(Address pThis, Handle hReturn, Handle hParams)	//warp	  
-{ 
-	//DHookSetReturn(hReturn, view_as<CClotBody>(view_as<INextBotComponent>(pThis).GetBot().GetEntity()).GetSolidMaskAlly());
-	//causes crashes, and its unnceccacary?
-
-	DHookSetReturn(hReturn, 0); 
-	return MRES_Supercede; 
-}
 stock float[] PredictSubjectPositionOld(CClotBody npc, int subject, float Extra_lead = 0.0, bool ignore = false)
 {
 	if(!ignore && f_PredictDuration[subject] > GetGameTime())

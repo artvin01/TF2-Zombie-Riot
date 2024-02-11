@@ -217,6 +217,10 @@ public Action Storm_Weaver_Mid_OnTakeDamage(int victim, int &attacker, int &infl
 
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health());
 	}
+	else if(b_stellar_weaver_true_solo)
+	{
+		Stellar_Weaver_Share_Damage_With_All(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+	}
 
 	damage=0.0;	//storm weaver doesn't really take any damage, his "health bar" is just the combined health of all the towers
 	
