@@ -424,19 +424,9 @@ void SeargentIdealShieldAffected(int entity, int victim, float damage, int weapo
 	if(entity == victim)
 		return;
 
-	if(GetTeam(entity) == TFTeam_Red)
+	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
 	{
-		if (GetTeam(victim) == TFTeam_Red && !b_NpcHasDied[victim])
-		{
-			SeargentIdealShieldInternal(entity, victim);
-		}
-	}
-	else
-	{
-		if (GetTeam(victim) != TFTeam_Red && !i_IsABuilding[victim] && victim > MaxClients)
-		{
-			SeargentIdealShieldInternal(entity, victim);
-		}
+		SeargentIdealShieldInternal(entity, victim);
 	}
 }
 

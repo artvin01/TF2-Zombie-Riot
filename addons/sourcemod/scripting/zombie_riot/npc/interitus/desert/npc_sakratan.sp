@@ -343,14 +343,9 @@ void SakratanGroupDebuff(int entity, int victim, float damage, int weapon)
 	if(entity == victim)
 		return;
 
-	if(GetTeam(victim) == TFTeam_Red)
-	{
+	if (GetTeam(victim) != GetTeam(entity))
 		SakratanGroupDebuffInternal(victim);
-	}
-	else if(victim <= MaxClients)
-	{
-		SakratanGroupDebuffInternal(victim);
-	}
+		
 }
 
 void SakratanGroupDebuffInternal(int victim)

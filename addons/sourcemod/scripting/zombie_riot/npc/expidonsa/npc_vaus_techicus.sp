@@ -352,19 +352,9 @@ void VausTechicusShield(int entity, int victim, float damage, int weapon)
 	if(entity == victim)
 		return;
 
-	if(GetTeam(entity) == TFTeam_Red)
+	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
 	{
-		if (GetTeam(victim) == TFTeam_Red && !b_NpcHasDied[victim])
-		{
-			VausTechicusShieldInternal(entity,victim);
-		}
-	}
-	else
-	{
-		if (GetTeam(victim) != TFTeam_Red && !i_IsABuilding[victim] && victim > MaxClients)
-		{
-			VausTechicusShieldInternal(entity,victim);
-		}
+		VausTechicusShieldInternal(entity,victim);
 	}
 }
 
