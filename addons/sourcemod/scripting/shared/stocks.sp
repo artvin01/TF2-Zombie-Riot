@@ -916,37 +916,6 @@ public void RequestFramesCallback(DataPack pack)
 	}
 }
 
-/*
-int TF2_CreateGlow(int entity, const char[] model, int owner, int color[4])
-{
-	int prop = CreateEntityByName("tf_taunt_prop");
-	if(IsValidEntity(prop))
-	{
-		DispatchSpawn(prop);
-
-		SetEntityModel(prop, model);
-		SetEntPropEnt(prop, Prop_Data, "m_hEffectEntity", owner);
-		SetEntProp(prop, Prop_Send, "m_bGlowEnabled", true);
-		SetEntProp(prop, Prop_Send, "m_fEffects", GetEntProp(prop, Prop_Send, "m_fEffects")|EF_BONEMERGE|EF_NOSHADOW|EF_NOINTERP);
-
-		SetVariantString("!activator");
-		AcceptEntityInput(prop, "SetParent", entity);
-
-		SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(prop, color[0], color[1], color[2], color[3]);
-		SDKHook(prop, SDKHook_SetTransmit, GlowTransmit);
-	}
-	return prop;
-}
-
-public Action GlowTransmit(int entity, int target)
-{
-	if(GetEntPropEnt(entity, Prop_Data, "m_hEffectEntity") == target)
-		return Plugin_Continue;
-
-	return Plugin_Handled;
-}
-*/
 
 stock int TF2_CreateGlow(int iEnt)
 {
@@ -1441,7 +1410,7 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 	}
 	
 #if !defined RTS
-	if(entity > MaxClients && b_IsAlliedNpc[entity])
+	if(entity > MaxClients && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Red)
 	{
 		return false;
 	}
@@ -1508,7 +1477,7 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 				return entity!=data;
 			}
 		}
-		else if(b_IsAlliedNpc[entity])
+		else if(!b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Red)
 		{
 			if(i_PreviousInteractedEntity[data] != entity || !i_PreviousInteractedEntityDo[data])
 			{
@@ -1720,7 +1689,7 @@ public bool PlayersOnly(int entity, int contentsMask, any iExclude)
 		return false;
 	}
 	
-	else if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	else if(GetTeam(iExclude) != GetTeam(entity))
 		return false;
 		
 	
@@ -1971,7 +1940,7 @@ public bool Base_Boss_Hit(int entity, int contentsMask, any iExclude)
 	
 	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun")))
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return true;
 		}
@@ -2004,7 +1973,7 @@ public bool IngorePlayersAndBuildings(int entity, int contentsMask, any iExclude
 	}
 	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun") || StrEqual(class, "zr_base_npc"))) //include baseboss so it goesthru
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return false;
 		}
@@ -2030,7 +1999,7 @@ public bool Detect_BaseBoss(int entity, int contentsMask, any iExclude)
 	
 	if(entity != iExclude && StrEqual(class, "zr_base_npc"))
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return false;
 		}
@@ -2051,7 +2020,7 @@ stock int GetClosestTarget_BaseBoss(int entity)
 	int i = MaxClients + 1;
 	while ((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
-		if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(i, Prop_Send, "m_iTeamNum") && !b_NpcHasDied[i]) 
+		if (GetTeam(entity)!=GetEntProp(i, Prop_Send, "m_iTeamNum") && !b_NpcHasDied[i]) 
 		{
 			float EntityLocation[3], TargetLocation[3]; 
 			GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -2073,76 +2042,6 @@ stock int GetClosestTarget_BaseBoss(int entity)
 				TargetDistance = distance;
 			}				
 		}
-	}
-	return ClosestTarget; 
-}
-
-bool b_WasAlreadyCalculatedToBeClosest[MAXENTITIES]; //should be false by default...
-
-stock int GetClosestTarget_BaseBoss_Pos(float pos[3],int entity)
-{
-	float TargetDistance = 0.0; 
-	int ClosestTarget = -1; 
-	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
-	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-		if (IsValidEntity(baseboss_index) && !b_WasAlreadyCalculatedToBeClosest[baseboss_index])
-		{
-			if(!b_NpcHasDied[baseboss_index])
-			{
-				if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
-				{
-					float TargetLocation[3]; 
-					GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-					
-					float distance = GetVectorDistance( pos, TargetLocation, true ); 
-					if( TargetDistance ) 
-					{
-						if( distance < TargetDistance ) 
-						{
-							ClosestTarget = baseboss_index; 
-							TargetDistance = distance;		  
-						}
-					} 
-					else 
-					{
-						ClosestTarget = baseboss_index; 
-						TargetDistance = distance;
-					}				
-				}
-			}
-		}
-	}
-	for(int entitycount; entitycount<i_MaxcountBreakable; entitycount++)
-	{
-		int breakable_entity = EntRefToEntIndex(i_ObjectsBreakable[entitycount]);
-		if(IsValidEntity(breakable_entity))
-		{
-			if (GetEntProp(breakable_entity, Prop_Send, "m_iTeamNum")!=GetEntProp(breakable_entity, Prop_Send, "m_iTeamNum")) 
-			{
-				float TargetLocation[3]; 
-				GetEntPropVector( breakable_entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-				
-				float distance = GetVectorDistance( pos, TargetLocation, true ); 
-				if( TargetDistance ) 
-				{
-					if( distance < TargetDistance ) 
-					{
-						ClosestTarget = breakable_entity; 
-						TargetDistance = distance;		  
-					}
-				} 
-				else 
-				{
-					ClosestTarget = breakable_entity; 
-					TargetDistance = distance;
-				}				
-			}
-		}
-	}
-	if(IsValidEntity(ClosestTarget))
-	{
-		b_WasAlreadyCalculatedToBeClosest[ClosestTarget] = true;
 	}
 	return ClosestTarget; 
 }
@@ -2509,7 +2408,7 @@ public bool TraceRayOnlyNpc(int entity, any contentsMask, any data)
 	return !(entity == data);
 }
 
-stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, bool checkTeam=false, TFTeam team=TFTeam_Red, bool send=false) //An extension of IsValidClient that also checks for boss status, alive-ness, and optionally a team. Send is used for debug purposes to inform the programmer when and why this stock returns false.
+stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, bool checkTeam=false, int team=TFTeam_Red, bool send=false) //An extension of IsValidClient that also checks for boss status, alive-ness, and optionally a team. Send is used for debug purposes to inform the programmer when and why this stock returns false.
 {
 	if (!IsValidClient(client)) //Self-explanatory
 	{
@@ -2530,7 +2429,7 @@ stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, boo
 	
 	if (checkTeam) //Do we want to check the client's team?
 	{
-		if (TF2_GetClientTeam(client) != team) //If they aren't on the desired team, return false.
+		if (GetTeam(client) != team) //If they aren't on the desired team, return false.
 		{
 			return false;
 		}
@@ -2690,7 +2589,7 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 		return -1;
 	}
 #if !defined RTS
-	else if(b_IsAlliedNpc[other_entity])
+	else if(GetTeam(other_entity) == TFTeam_Red)
 	{
 		return -1;
 	}
@@ -5029,24 +4928,52 @@ stock void SetForceButtonState(int client, bool apply, int button_flag)
 	SetEntProp(client, Prop_Data, "m_afButtonForced", Buttons);
 }
 
-stock bool isPlayerMad(client) {
 
-	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon_holding == -1)
-		return false;
-	
-	if (i_CustomWeaponEquipLogic[weapon_holding] == WEAPON_HELL_HOE_3) {
+stock int GetTeam(int entity)
+{
+	if(entity > 0 && entity <= MAXENTITIES)
+	{
+#if defined ZR
+		if(entity && entity <= MaxClients)
+			return GetClientTeam(entity);
+#endif
 
-		int clientMaxHp = SDKCall_GetMaxHealth(client);
-		int health = GetClientHealth(client);
-		if (health >= clientMaxHp/2)
-			return false;
-
-		return true;
+		if(TeamNumber[entity] == -1)
+		{
+			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
+		}
+		return TeamNumber[entity];
+			
 	}
-	else if (i_CustomWeaponEquipLogic[weapon_holding] == WEAPON_HELL_HOE_2) {
-		return g_isPlayerInDeathMarch_HellHoe[client];
+	return GetEntProp(entity, Prop_Data, "m_iTeamNum");
+}
+
+stock void SetTeam(int entity, int teamSet)
+{
+	if(entity > 0 && entity <= MAXENTITIES)
+	{
+		TeamNumber[entity] = teamSet;
+		if(teamSet <= TFTeam_Red)
+		{
+#if defined ZR
+			if(entity && entity <= MaxClients)
+				ChangeClientTeam(entity, teamSet);
+			else
+#endif
+			{
+				SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
+			}
+		}
+		else if(teamSet > TFTeam_Red)
+		{
+			if(entity && entity <= MaxClients)
+				ChangeClientTeam(entity, TFTeam_Blue);
+			else	
+				SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+		}
 	}
-	
-	return false;
+	else
+	{
+		SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
+	}
 }

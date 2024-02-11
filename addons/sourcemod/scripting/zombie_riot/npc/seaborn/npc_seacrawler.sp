@@ -54,7 +54,7 @@ methodmap SeaCrawler < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
 	}
 	
-	public SeaCrawler(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeaCrawler(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeaCrawler npc = view_as<SeaCrawler>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.75", data[0] ? "5250" : "3750", ally, false, true));
 		// 25000 x 0.15

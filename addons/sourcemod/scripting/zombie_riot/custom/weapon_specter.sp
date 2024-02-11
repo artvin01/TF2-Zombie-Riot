@@ -332,10 +332,10 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 					//Bleed sucks but thats on purpose
 
 					float vecTarget[3];
-					for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 					{
-						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-						if (IsValidEntity(baseboss_index))
+						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+						if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 						{
 							vecTarget = WorldSpaceCenterOld(baseboss_index);
 							

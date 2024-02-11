@@ -92,7 +92,7 @@ methodmap AltMedicCharger < CClotBody
 		PrintToServer("CClot::PlayHurtSound()");
 		#endif
 	}
-	public AltMedicCharger(int client, float vecPos[3], float vecAng[3], bool ally)
+	public AltMedicCharger(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		AltMedicCharger npc = view_as<AltMedicCharger>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "13500", ally));
 		

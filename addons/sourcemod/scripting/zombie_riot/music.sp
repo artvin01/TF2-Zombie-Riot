@@ -449,10 +449,10 @@ void Music_PostThink(int client)
 		float f_intencity;
 		float targPos[3];
 		float chargerPos[3];
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(entity) && !b_NpcHasDied[entity])
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 			{
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
 				GetClientAbsOrigin(client, chargerPos);

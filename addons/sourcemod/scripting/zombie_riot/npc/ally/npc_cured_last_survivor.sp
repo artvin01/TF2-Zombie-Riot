@@ -302,9 +302,9 @@ methodmap CuredFatherGrigori < CClotBody
 		#endif
 	}
 	
-	public CuredFatherGrigori(int client, float vecPos[3], float vecAng[3])
+	public CuredFatherGrigori(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		CuredFatherGrigori npc = view_as<CuredFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", true, true, false));
+		CuredFatherGrigori npc = view_as<CuredFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally, true, false));
 		
 		i_NpcInternalId[npc.index] = CURED_FATHER_GRIGORI;
 		i_NpcWeight[npc.index] = 999;
@@ -401,7 +401,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 	}
 	if(npc.m_iTargetWalkTo > 0)
 	{
-		if (TF2_GetClientTeam(npc.m_iTargetWalkTo)==view_as<TFTeam>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")) && 
+		if (GetTeam(npc.m_iTargetWalkTo)==GetTeam(npc.index) && 
 		b_BobsCuringHand[npc.m_iTargetWalkTo] && b_BobsCuringHand_Revived[npc.m_iTargetWalkTo] >= 20 && TeutonType[npc.m_iTargetWalkTo] == TEUTON_NONE && dieingstate[npc.m_iTargetWalkTo] > 0 
 		&& GetEntPropEnt(npc.m_iTargetWalkTo, Prop_Data, "m_hVehicle") == -1 && !b_LeftForDead[npc.m_iTargetWalkTo])
 		{
@@ -776,7 +776,7 @@ static int GetClosestAllyPlayerGreg(int entity)
 	{
 		if (IsValidClient(i))
 		{
-			if (TF2_GetClientTeam(i)==view_as<TFTeam>(GetEntProp(entity, Prop_Send, "m_iTeamNum")) && b_BobsCuringHand[i] && b_BobsCuringHand_Revived[i] >= 20 && TeutonType[i] == TEUTON_NONE && dieingstate[i] > 0 && GetEntPropEnt(i, Prop_Data, "m_hVehicle") == -1 && !b_LeftForDead[i]) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+			if (GetTeam(i) == GetTeam(entity) && b_BobsCuringHand[i] && b_BobsCuringHand_Revived[i] >= 20 && TeutonType[i] == TEUTON_NONE && dieingstate[i] > 0 && GetEntPropEnt(i, Prop_Data, "m_hVehicle") == -1 && !b_LeftForDead[i]) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 

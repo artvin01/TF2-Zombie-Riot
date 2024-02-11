@@ -167,7 +167,7 @@ methodmap MedivalChampion < CClotBody
 		#endif
 	}
 	
-	public MedivalChampion(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalChampion(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalChampion npc = view_as<MedivalChampion>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "25000", ally));
 		SetVariantInt(1);

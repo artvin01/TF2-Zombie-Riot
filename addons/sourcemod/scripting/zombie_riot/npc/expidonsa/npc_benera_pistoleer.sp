@@ -73,7 +73,7 @@ methodmap Pistoleer < CClotBody
 	}
 	
 	
-	public Pistoleer(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Pistoleer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Pistoleer npc = view_as<Pistoleer>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "600", ally));
 		
@@ -409,7 +409,7 @@ void PistoleerInitiateLaserAttack_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (PistoleerHitDetected[victim] && GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		if (PistoleerHitDetected[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float distance = GetVectorDistance(VectorStart, playerPos, false);

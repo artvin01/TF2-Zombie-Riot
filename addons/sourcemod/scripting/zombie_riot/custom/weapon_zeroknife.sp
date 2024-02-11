@@ -91,10 +91,10 @@ public Action ASX_Timer5(Handle timer, int client)
 				b_LagCompNPC_No_Layers = true;
 				StartLagCompensation_Base_Boss(client);
 				
-				for(int entitycount_2; entitycount_2<i_MaxcountNpc; entitycount_2++)
+				for(int entitycount_2; entitycount_2<i_MaxcountNpcTotal; entitycount_2++)
 				{
-					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount_2]);
-					if (IsValidEntity(baseboss_index))
+					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_2]);
+					if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 					{
 						if(!b_NpcHasDied[baseboss_index])
 						{
@@ -178,10 +178,10 @@ public Action ASX_Timer5_pap(Handle timer, int client)
 				b_LagCompNPC_No_Layers = true;
 				StartLagCompensation_Base_Boss(client);
 				
-				for(int entitycount_2; entitycount_2<i_MaxcountNpc; entitycount_2++)
+				for(int entitycount_2; entitycount_2<i_MaxcountNpcTotal; entitycount_2++)
 				{
-					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount_2]);
-					if (IsValidEntity(baseboss_index))
+					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_2]);
+					if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 					{
 						if(!b_NpcHasDied[baseboss_index])
 						{

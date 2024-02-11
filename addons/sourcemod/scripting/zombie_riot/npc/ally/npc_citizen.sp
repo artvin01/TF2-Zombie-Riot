@@ -908,7 +908,7 @@ methodmap Citizen < CClotBody
 			Citizen_GenerateModel(seed, female, Cit_Unarmed, buffer, sizeof(buffer));
 		}
 		
-		Citizen npc = view_as<Citizen>(CClotBody(vecPos, vecAng, buffer, "1.15", "150", true, true));
+		Citizen npc = view_as<Citizen>(CClotBody(vecPos, vecAng, buffer, "1.15", "150", TFTeam_Red, true));
 		i_NpcInternalId[npc.index] = CITIZEN;
 		i_NpcWeight[npc.index] = 1;
 		
@@ -1141,12 +1141,10 @@ methodmap Citizen < CClotBody
 	{
 		if(state)
 		{
-			Change_Npc_Collision(this.index, 3);
 			this.bCantCollidie = true;
 		}
 		else
 		{
-			Change_Npc_Collision(this.index, 4);
 			this.bCantCollidie = false;
 		}
 	}
@@ -1391,7 +1389,7 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 			int entity = i_ObjectsSpawners[i];
 			if(IsValidEntity(entity))
 			{
-				if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") == 2)
+				if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetTeam(entity) == 2)
 					list[count++] = entity;
 			}
 		}
@@ -1414,7 +1412,7 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		
-		entity = Npc_Create(CITIZEN, client, pos, ang, true, data);
+		entity = Npc_Create(CITIZEN, client, pos, ang, TFTeam_Red, data);
 		
 		if(IsValidEntity(entity))
 		{
@@ -3325,7 +3323,7 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 	if(damage < 9999999.0)
 	{
 		Citizen npc = view_as<Citizen>(victim);
-		if(npc.m_nDowned || (attacker > 0 && GetEntProp(victim, Prop_Send, "m_iTeamNum") == GetEntProp(attacker, Prop_Send, "m_iTeamNum")))
+		if(npc.m_nDowned || (attacker > 0 && GetTeam(victim) == GetTeam(attacker)))
 		{
 			damage = 0.0;
 		}

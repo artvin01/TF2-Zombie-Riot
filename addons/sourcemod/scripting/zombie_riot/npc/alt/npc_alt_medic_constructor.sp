@@ -107,7 +107,7 @@ methodmap Alt_Medic_Constructor < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public Alt_Medic_Constructor(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Alt_Medic_Constructor(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Alt_Medic_Constructor npc = view_as<Alt_Medic_Constructor>(CClotBody(vecPos, vecAng, "models/bots/medic/bot_medic.mdl", "1.0", "3500", ally));
 		

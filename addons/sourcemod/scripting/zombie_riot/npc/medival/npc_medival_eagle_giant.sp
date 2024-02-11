@@ -155,7 +155,7 @@ methodmap MedivalEagleGiant < CClotBody
 		#endif
 	}
 	
-	public MedivalEagleGiant(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalEagleGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalEagleGiant npc = view_as<MedivalEagleGiant>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "12000", ally, false, true));
 		SetVariantInt(1);

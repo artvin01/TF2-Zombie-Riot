@@ -42,7 +42,7 @@ methodmap MedivalRam < CClotBody
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public MedivalRam(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public MedivalRam(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, NPCModel, "0.8", "30000", ally, false, true));
 		i_NpcInternalId[npc.index] = MEDIVAL_RAM;
@@ -260,13 +260,13 @@ void MedivalRam_NPCDeath(int entity)
 	
 	if(Garrison[entity])
 	{
-		bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+		int Team = GetTeam(npc.index);
 		
 		float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		
 		for(int i; i < 6; i++)
 		{
-			Npc_Create(Garrison[entity], -1, pos, ang, friendly);
+			Npc_Create(Garrison[entity], -1, pos, ang, Team);
 		}
 	}
 }

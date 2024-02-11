@@ -12,7 +12,7 @@ methodmap MedivalTrebuchet < CClotBody
 		EmitSoundToAll("weapons/mortar/mortar_fire1.wav", this.index, _, 130, _, 1.0, 100);
 	}
 	
-	public MedivalTrebuchet(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalTrebuchet(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalTrebuchet npc = view_as<MedivalTrebuchet>(CClotBody(vecPos, vecAng, NPCModel, "1.35", "5000", ally));
 		i_NpcInternalId[npc.index] = MEDIVAL_TREBUCHET;

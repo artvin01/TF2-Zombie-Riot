@@ -128,7 +128,7 @@ methodmap HeavyGiant < CClotBody
 	}
 	
 	
-	public HeavyGiant(int client, float vecPos[3], float vecAng[3], bool ally)
+	public HeavyGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		HeavyGiant npc = view_as<HeavyGiant>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "15000", ally, false, true));
 		

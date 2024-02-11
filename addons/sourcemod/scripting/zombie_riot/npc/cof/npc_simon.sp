@@ -58,7 +58,7 @@ methodmap Simon < CClotBody
 		EmitCustomToAll("cof/simon/shoot.mp3", this.index);
 	}
 	
-	public Simon(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Simon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool newSimon = data[0] == 's';
 		
@@ -416,7 +416,7 @@ public void Simon_ClotThink(int iNPC)
 				int entity = i_ObjectsSpawners[entitycount];
 				if(IsValidEntity(entity) && entity != 0)
 				{
-					if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
+					if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetTeam(entity) != 2)
 					{
 						GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 						float distance = GetVectorDistance( vecPos, TargetLocation, true); 

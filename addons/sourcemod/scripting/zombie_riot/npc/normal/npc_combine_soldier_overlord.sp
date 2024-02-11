@@ -175,7 +175,7 @@ methodmap CombineOverlord < CClotBody
 		#endif
 	}
 	
-	public CombineOverlord(int client, float vecPos[3], float vecAng[3], bool ally)
+	public CombineOverlord(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineOverlord npc = view_as<CombineOverlord>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "35000", ally));
 		SetVariantInt(3);

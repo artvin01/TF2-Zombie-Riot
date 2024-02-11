@@ -228,7 +228,7 @@ public void OnPostThink(int client)
 		}
 	}
 
-	if(GetEntProp(client, Prop_Send, "m_iTeamNum") == 2)
+	if(GetTeam(client) == 2)
 	{
 		if(dieingstate[client] != 0 || TeutonType[client] != TEUTON_NONE)
 		{
@@ -1907,14 +1907,14 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				
 				Replicated_Damage *= 0.25;
 				damage *= 0.25;
-				for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 				{
-					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 					if (IsValidEntity(baseboss_index))
 					{
 						if(!b_NpcHasDied[baseboss_index])
 						{
-							if (GetEntProp(victim, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
+							if (GetTeam(victim)!=GetTeam(baseboss_index)) 
 							{
 								float vecTarget[3]; vecTarget = WorldSpaceCenterOld(baseboss_index);
 								
@@ -2741,7 +2741,7 @@ void ArmorDisplayClient(int client, bool deleteOverride = false)
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", Armor_WearableModelIndex);
 
 		//	SetEntProp(entity, Prop_Send, "m_fEffects", 129);
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+			SetTeam(entity, team);
 			SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
 			SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
 			SetEntityCollisionGroup(entity, 11);

@@ -124,7 +124,7 @@ methodmap PyroGiant < CClotBody
 	}
 	
 	
-	public PyroGiant(int client, float vecPos[3], float vecAng[3], bool ally)
+	public PyroGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		PyroGiant npc = view_as<PyroGiant>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.5", "75000", ally, false, true));
 		

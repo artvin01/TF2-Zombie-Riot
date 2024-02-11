@@ -115,7 +115,7 @@ methodmap Diversionistico < CClotBody
 		
 	}
 
-	public Diversionistico(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Diversionistico(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Diversionistico npc = view_as<Diversionistico>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally, false, false, true));
 		
@@ -187,7 +187,7 @@ methodmap Diversionistico < CClotBody
 		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 350.0);
 		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 500.0);
 
-		if(!ally)
+		if(ally != TFTeam_Red)
 		{
 			if(LastSpawnDiversio < GetGameTime())
 			{

@@ -161,7 +161,7 @@ methodmap MedivalConstruct < CClotBody
 		#endif
 	}
 	
-	public MedivalConstruct(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalConstruct(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalConstruct npc = view_as<MedivalConstruct>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.85", "20000", ally, false, true));
 		SetVariantInt(1);

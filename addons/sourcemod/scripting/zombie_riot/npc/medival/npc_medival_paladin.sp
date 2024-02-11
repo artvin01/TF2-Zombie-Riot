@@ -151,7 +151,7 @@ methodmap MedivalPaladin < CClotBody
 		#endif
 	}
 	
-	public MedivalPaladin(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalPaladin(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalPaladin npc = view_as<MedivalPaladin>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "30000", ally));
 		SetVariantInt(1);

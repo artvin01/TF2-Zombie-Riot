@@ -163,7 +163,7 @@ methodmap MedivalLightCav < CClotBody
 		#endif
 	}
 	
-	public MedivalLightCav(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalLightCav(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalLightCav npc = view_as<MedivalLightCav>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
 		SetVariantInt(1);

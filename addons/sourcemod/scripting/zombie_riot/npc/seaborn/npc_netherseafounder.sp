@@ -56,7 +56,7 @@ methodmap SeaFounder < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeaFounder(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeaFounder(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];
@@ -639,55 +639,50 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 		}
 	}
 	
-	for(int a; a < i_MaxcountNpc; a++)
+	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs[a]);
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
 		if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
 		{
 			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 
 			// Find entities touching infected tiles
-			CNavArea nav = TheNavMesh.GetNavArea(pos, 5.0);
-			if(nav != NULL_AREA && NavList.FindValue(nav) != -1)
+			if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_SEABORN)
 			{
-				NervousTouching[entity] = NervousTouching[0];
-				NervousLastTouch[entity] = NULL_AREA;
+				CNavArea nav = TheNavMesh.GetNavArea(pos, 5.0);
+				if(nav != NULL_AREA && NavList.FindValue(nav) != -1)
+				{
+					NervousTouching[entity] = NervousTouching[0];
+					NervousLastTouch[entity] = NULL_AREA;
+				}
+			}
+			else
+			{
+				NervousLastTouch[entity] = TheNavMesh.GetNavArea(pos, 5.0);
+				if(NervousLastTouch[entity] != NULL_AREA && NavList.FindValue(NervousLastTouch[entity]) != -1)
+				{
+					SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, _, _, pos);
+					// 120 x 0.25 x 0.2
+
+					SeaSlider_AddNeuralDamage(entity, 0, 1, false);
+					// 20 x 0.25 x 0.2
+		/*	
+					bool resist = Building_NeatherseaReduced(entity);
+
+					SDKHooks_TakeDamage(entity, 0, 0, resist ? 1.2 : 6.0, DMG_BULLET);
+					// 120 x 0.25 x 0.2
+
+					if(!resist)
+						SeaSlider_AddNeuralDamage(entity, 0, 1);
+						// 20 x 0.25 x 0.2
+						*/
+
+					NervousTouching[entity] = NervousTouching[0];
+				}
 			}
 		}
 	}
 	
-	for(int a; a < i_MaxcountNpc_Allied; a++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[a]);
-		if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
-		{
-			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-
-			// Find entities touching infected tiles
-			NervousLastTouch[entity] = TheNavMesh.GetNavArea(pos, 5.0);
-			if(NervousLastTouch[entity] != NULL_AREA && NavList.FindValue(NervousLastTouch[entity]) != -1)
-			{
-				SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, _, _, pos);
-				// 120 x 0.25 x 0.2
-
-				SeaSlider_AddNeuralDamage(entity, 0, 1, false);
-				// 20 x 0.25 x 0.2
-	/*	
-				bool resist = Building_NeatherseaReduced(entity);
-
-				SDKHooks_TakeDamage(entity, 0, 0, resist ? 1.2 : 6.0, DMG_BULLET);
-				// 120 x 0.25 x 0.2
-
-				if(!resist)
-					SeaSlider_AddNeuralDamage(entity, 0, 1);
-					// 20 x 0.25 x 0.2
-					*/
-
-				NervousTouching[entity] = NervousTouching[0];
-			}
-		}
-	}
-
 	for(int a; a < i_MaxcountBuilding; a++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);

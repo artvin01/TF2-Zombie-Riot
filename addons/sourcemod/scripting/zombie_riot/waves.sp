@@ -11,7 +11,7 @@ enum struct Enemy
 	int Does_Not_Scale;
 	int Is_Immune_To_Nuke;
 	bool Is_Static;
-	bool Friendly;
+	int Team;
 	int Index;
 	float Credits;
 	char Data[64];
@@ -660,7 +660,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.Is_Health_Scaled = kv.GetNum("is_health_scaling");
 						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
 						enemy.Is_Static = view_as<bool>(kv.GetNum("is_static"));
-						enemy.Friendly = view_as<bool>(kv.GetNum("friendly"));
+						enemy.Team = kv.GetNum("team_npc", 3);
 						enemy.Credits = kv.GetFloat("cash");
 						enemy.ExtraMeleeRes = kv.GetFloat("extra_melee_res", 1.0);
 						enemy.ExtraRangedRes = kv.GetFloat("extra_ranged_res", 1.0);
@@ -1005,7 +1005,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						SpawnTimer(30.0);
 					}
 				}
-				Raidboss_Clean_Everyone();
 				Music_EndLastmann();
 				ReviveAll(true);
 				CheckAlivePlayers();
@@ -1035,7 +1034,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			if(count > 150) //So its always less then 150.
 				count = 150;
 			
-			if(!wave.EnemyData.Friendly)
+			if(wave.EnemyData.Team != TFTeam_Red)
 			{
 				Zombies_Currently_Still_Ongoing += count;
 			}
@@ -1248,14 +1247,14 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			//Loop through all the still alive enemies that are indexed!
 			int Zombies_alive_still = 0;
 
-			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int npc_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-				if (IsValidEntity(npc_index) && npc_index != 0)
+				int npc_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				if (IsValidEntity(npc_index))
 				{
 					if(!b_NpcHasDied[npc_index])
 					{
-						if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+						if(GetTeam(npc_index) != TFTeam_Red)
 						{
 							Zombies_alive_still += 1;
 						}

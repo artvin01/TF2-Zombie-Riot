@@ -149,7 +149,7 @@ methodmap L4D2_Tank < CClotBody
 		
 	}
 	
-	public L4D2_Tank(int client, float vecPos[3], float vecAng[3], bool ally)
+	public L4D2_Tank(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		L4D2_Tank npc = view_as<L4D2_Tank>(CClotBody(vecPos, vecAng, "models/infected/hulk_2.mdl", "1.45", GetTankHealth(), ally, false, true));
 		

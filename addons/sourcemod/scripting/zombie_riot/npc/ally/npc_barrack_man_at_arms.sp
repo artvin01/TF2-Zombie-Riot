@@ -6,7 +6,7 @@
 
 methodmap BarrackManAtArms < BarrackBody
 {
-	public BarrackManAtArms(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackManAtArms(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackManAtArms npc = view_as<BarrackManAtArms>(BarrackBody(client, vecPos, vecAng, "225",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		

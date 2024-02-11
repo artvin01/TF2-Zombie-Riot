@@ -148,7 +148,7 @@ methodmap Venium < CClotBody
 	}
 	
 	
-	public Venium(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Venium(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Venium npc = view_as<Venium>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
@@ -437,7 +437,7 @@ static void Venium_Build_Anchor(Venium npc)
 	AproxRandomSpaceToWalkTo[0] = GetRandomFloat((AproxRandomSpaceToWalkTo[0] - 800.0),(AproxRandomSpaceToWalkTo[0] + 800.0));
 	AproxRandomSpaceToWalkTo[1] = GetRandomFloat((AproxRandomSpaceToWalkTo[1] - 800.0),(AproxRandomSpaceToWalkTo[1] + 800.0));
 
-	Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
+	Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), GetSolidMask(npc.index), RayType_Infinite, BulletAndMeleeTrace, npc.index);
 		
 	TR_GetEndPosition(AproxRandomSpaceToWalkTo, ToGroundTrace);
 	delete ToGroundTrace;
@@ -498,11 +498,11 @@ static void Venium_Build_Anchor(Venium npc)
 	//Retry.
 
 
-	int spawn_index = Npc_Create(RUINA_MAGIA_ANCHOR, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+	int spawn_index = Npc_Create(RUINA_MAGIA_ANCHOR, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(spawn_index > MaxClients)
 	{
 		i_anchor_id[npc.index] = EntIndexToEntRef(spawn_index);
-		if(!b_IsAlliedNpc[npc.index])
+		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			Zombies_Currently_Still_Ongoing += 1;
 		}

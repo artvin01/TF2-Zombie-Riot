@@ -87,7 +87,7 @@ methodmap WinterSnoweyGunner < CClotBody
 	}
 	
 	
-	public WinterSnoweyGunner(int client, float vecPos[3], float vecAng[3], bool ally)
+	public WinterSnoweyGunner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterSnoweyGunner npc = view_as<WinterSnoweyGunner>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "2000", ally));
 		

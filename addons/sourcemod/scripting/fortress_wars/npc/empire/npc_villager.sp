@@ -40,9 +40,9 @@ methodmap Villager < EmpireBody
 		EmitSoundToAll(MeleeMissSounds[GetRandomInt(0, sizeof(MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public Villager(int client, const float vecPos[3], const float vecAng[3])
+	public Villager(int team, const float vecPos[3], const float vecAng[3])
 	{
-		Villager npc = view_as<Villager>(EmpireBody(client, vecPos, vecAng, _, _, "25"));
+		Villager npc = view_as<Villager>(EmpireBody(team, vecPos, vecAng, _, _, "25"));
 
 		i_NpcInternalId[npc.index] = VILLAGER;
 		i_NpcWeight[npc.index] = 1;

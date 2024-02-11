@@ -108,7 +108,7 @@ methodmap Europa < CClotBody
 	}
 	
 	
-	public Europa(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Europa(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Europa npc = view_as<Europa>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "1250", ally));
 		
@@ -350,12 +350,12 @@ static void Europa_Spawn_Minnions(Europa npc)
 			
 			int spawn_index;
 			
-			spawn_index = Npc_Create(RUINA_DRONE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			spawn_index = Npc_Create(RUINA_DRONE, -1, pos, ang, GetTeam(npc.index));
 			maxhealth = RoundToNearest(maxhealth * 0.45);
 
 			if(spawn_index > MaxClients)
 			{
-				Zombies_Currently_Still_Ongoing += 1;
+				Zombies_Currently_Still_Ongoing += 1;	// FIXME
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
@@ -374,12 +374,12 @@ static void Europa_Spawn_Self(Europa npc)
 			
 	int spawn_index;
 			
-	spawn_index = Npc_Create(RUINA_EUROPA, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+	spawn_index = Npc_Create(RUINA_EUROPA, -1, pos, ang, GetTeam(npc.index));
 	maxhealth = RoundToNearest(maxhealth * 0.75);
 
 	if(spawn_index > MaxClients)
 	{
-		Zombies_Currently_Still_Ongoing += 1;
+		Zombies_Currently_Still_Ongoing += 1;	// FIXME
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 	}

@@ -43,7 +43,9 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/machete_swing.wav",
 };
 
-methodmap Aslan < CClotBody
+static float LeberiBuff[MAXENTITES];
+
+methodmap Leberi < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -70,43 +72,39 @@ methodmap Aslan < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Aslan(int client, float vecPos[3], float vecAng[3], int ally)
+	public Leberi(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Aslan npc = view_as<Aslan>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "12500", ally));
+		Leberi npc = view_as<Leberi>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "17500", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_SCOUT;
+		i_NpcInternalId[npc.index] = INTERITUS_FOREST_MEDIC;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-		KillFeed_SetKillIcon(npc.index, "prinny_machete");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SetVariantInt(31);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
 		
-		npc.m_flSpeed = 340.0;
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flAttackHappens = 0.0;
+		Is_a_Medic[npc.index] = true;
+		npc.m_flSpeed = 300.0;
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_prinny_knife/c_prinny_knife.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_picket/c_picket.mdl");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/fall17_aztec_warrior/fall17_aztec_warrior_scout.mdl");
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/medic/medic_blighted_beak.mdl");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop_partner/player/items/scout/tw2_cheetah_robe/tw2_cheetah_robe.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/medic/archimedes.mdl");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/scout/sum21_meal_dealer/sum21_meal_dealer.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_purity_wings/sf14_purity_wings.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
+
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/sum23_medical_emergency/sum23_medical_emergency.mdl");
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 
 		return npc;
 	}
@@ -114,7 +112,7 @@ methodmap Aslan < CClotBody
 
 static void ClotThink(int iNPC)
 {
-	Aslan npc = view_as<Aslan>(iNPC);
+	Leberi npc = view_as<Leberi>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -135,15 +133,18 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	int target = npc.m_iTarget;
-	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
-		i_Target[npc.index] = -1;
-	
-	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
+	int target = npc.m_iTargetAlly;
+	if(!IsValidAlly(npc.index, target))
 	{
 		target = GetClosestTarget(npc.index);
-		npc.m_iTarget = target;
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+		if(target < 1)
+		{
+			LastHitRef[npc.index] = -1;
+			SmiteNpcToDeath(npc.index);
+			return;
+		}
+
+		npc.m_iTargetAlly = target;
 	}
 
 	if(target > 0)
@@ -151,60 +152,23 @@ static void ClotThink(int iNPC)
 		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
 		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
 		
-		if(distance < npc.GetLeadRadius())
+		if(distance < 40000.0)
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, target);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.StopPathing();
+
+			LeberiBuff[target] = GetGameTime() + 0.2;
+
+			if(!NpcStats_IsEnemySilenced(npc.index))
+			{
+				b_NpcIsInvulnerable[target] = true;
+				SDKUnhook(target, SDKHook_ThinkPost, LeberiBuffThink);
+				SDKHook(target, SDKHook_ThinkPost, LeberiBuffThink);
+			}
 		}
-		else 
+		else
 		{
+			npc.StartPathing();
 			NPC_SetGoalEntity(npc.index, target);
-		}
-
-		npc.StartPathing();
-		
-		if(npc.m_flAttackHappens)
-		{
-			if(npc.m_flAttackHappens < gameTime)
-			{
-				npc.m_flAttackHappens = 0.0;
-				
-				Handle swingTrace;
-				npc.FaceTowards(vecTarget, 15000.0);
-				if(npc.DoSwingTrace(swingTrace, target, _, _, _, _))
-				{
-					target = TR_GetEntityIndex(swingTrace);
-					if(target > 0)
-					{
-						float damage = 80.0;
-						if(ShouldNpcDealBonusDamage(target))
-							damage *= 4.0;
-
-						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
-						if(target <= MaxClients)
-							TF2_StunPlayer(target, 0.6, 0.9, TF_STUNFLAG_SLOWDOWN);
-					}
-				}
-
-				delete swingTrace;
-			}
-		}
-
-		if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)
-		{
-			target = Can_I_See_Enemy(npc.index, target);
-			if(IsValidEnemy(npc.index, target))
-			{
-				npc.m_iTarget = target;
-				npc.m_flGetClosestTargetTime = gameTime + 1.0;
-
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
-				npc.PlayMeleeSound();
-				
-				npc.m_flAttackHappens = gameTime + 0.35;
-				npc.m_flNextMeleeAttack = gameTime + 0.55;
-			}
 		}
 	}
 	else
@@ -215,9 +179,18 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
+static void LeberiBuffThink(int entity)
+{
+	if(GetGameTime() > LeberiBuff[entity])
+	{
+		b_NpcIsInvulnerable[entity] = false;
+		SDKUnhook(entity, SDKHook_ThinkPost, LeberiBuffThink);
+	}
+}
+
 static void ClotDeath(int entity)
 {
-	Aslan npc = view_as<Aslan>(entity);
+	Leberi npc = view_as<Leberi>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
@@ -232,4 +205,7 @@ static void ClotDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
+	
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 }

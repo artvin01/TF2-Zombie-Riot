@@ -128,7 +128,7 @@ methodmap GiantTankus < CClotBody
 	}
 	
 	
-	public GiantTankus(int client, float vecPos[3], float vecAng[3], bool ally)
+	public GiantTankus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		GiantTankus npc = view_as<GiantTankus>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", "85000", ally, false, true));
 		

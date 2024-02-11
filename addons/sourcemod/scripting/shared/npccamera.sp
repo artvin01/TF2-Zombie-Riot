@@ -27,11 +27,11 @@ public Action NPCCamera_SpecNext(int client, const char[] command, int args)
 			}
 		}
 	}
-
-	for(int i; i < i_MaxcountNpc; i++)
+	
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-		if(entity != INVALID_ENT_REFERENCE && (b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_StaticNPC[entity]) && IsEntityAlive(entity))
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && (GetTeam(entity) == TFTeam_Red || b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_StaticNPC[entity]))
 		{
 			if(entity > minEntity && entity < bestEntity)
 			{
@@ -43,24 +43,6 @@ public Action NPCCamera_SpecNext(int client, const char[] command, int args)
 			}
 		}
 	}
-
-#if !defined RTS
-	for(int i; i < i_MaxcountNpc_Allied; i++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-		{
-			if(entity > minEntity && entity < bestEntity)
-			{
-				bestEntity = entity;
-			}
-			else if(entity < worseEntity)
-			{
-				worseEntity = entity;
-			}
-		}
-	}
-#endif
 	
 	if(bestEntity == MAXENTITIES)
 	{
@@ -95,10 +77,10 @@ public Action NPCCamera_SpecPrev(int client, const char[] command, int args)
 		}
 	}
 
-	for(int i = i_MaxcountNpc - 1; i >= 0; i--)
+	for(int i = i_MaxcountNpcTotal - 1; i >= 0; i--)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-		if(entity != INVALID_ENT_REFERENCE && (b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_StaticNPC[entity]) && IsEntityAlive(entity))
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && (GetTeam(entity) == TFTeam_Red || b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_StaticNPC[entity]) && IsEntityAlive(entity))
 		{
 			if(entity < maxEntity && entity > bestEntity)
 			{
@@ -110,24 +92,6 @@ public Action NPCCamera_SpecPrev(int client, const char[] command, int args)
 			}
 		}
 	}
-
-#if !defined RTS
-	for(int i = i_MaxcountNpc_Allied - 1; i >= 0; i--)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-		{
-			if(entity < maxEntity && entity > bestEntity)
-			{
-				bestEntity = entity;
-			}
-			else if(entity > worseEntity)
-			{
-				worseEntity = entity;
-			}
-		}
-	}
-#endif
 
 	if(bestEntity == 0)
 	{

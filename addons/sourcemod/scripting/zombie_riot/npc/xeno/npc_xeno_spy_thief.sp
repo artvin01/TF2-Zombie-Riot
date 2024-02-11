@@ -131,7 +131,7 @@ methodmap XenoSpyThief < CClotBody
 	
 	
 	
-	public XenoSpyThief(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoSpyThief(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSpyThief npc = view_as<XenoSpyThief>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "8500", ally));
 		

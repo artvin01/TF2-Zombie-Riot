@@ -91,7 +91,7 @@ methodmap Bad < CClotBody
 		
 		SetEntProp(this.index, Prop_Send, "m_nSkin", type);
 	}
-	public Bad(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Bad(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool fortified = StrContains(data, "f") != -1;
 		
@@ -260,14 +260,14 @@ public void Bad_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_Think, Bad_ClotThink);
 	
-	int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
+	int team = GetTeam(entity);
 	
 	float pos[3], angles[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 	for(int i; i<3; i++)
 	{
-		int spawn_index = Npc_Create(BTD_DDT, -1, pos, angles, team == 2, npc.m_bFortified ? "f" : "");
+		int spawn_index = Npc_Create(BTD_DDT, -1, pos, angles, team, npc.m_bFortified ? "f" : "");
 		if(spawn_index > MaxClients)
 			Zombies_Currently_Still_Ongoing++;
 	}
@@ -308,7 +308,7 @@ public void Bad_PostDeath(const char[] output, int caller, int activator, float 
 	
 	for(int i; i<2; i++)
 	{
-		int spawn_index = Npc_Create(BTD_ZOMG, -1, pos, angles, GetEntProp(caller, Prop_Send, "m_iTeamNum") == 2);
+		int spawn_index = Npc_Create(BTD_ZOMG, -1, pos, angles, GetTeam(caller));
 		if(spawn_index > MaxClients)
 			Zombies_Currently_Still_Ongoing++;
 	}
@@ -325,7 +325,7 @@ public void Bad_PostFortifiedDeath(const char[] output, int caller, int activato
 	
 	for(int i; i<2; i++)
 	{
-		int spawn_index = Npc_Create(BTD_ZOMG, -1, pos, angles, GetEntProp(caller, Prop_Send, "m_iTeamNum") == 2, "f");
+		int spawn_index = Npc_Create(BTD_ZOMG, -1, pos, angles, GetTeam(caller), "f");
 		if(spawn_index > MaxClients)
 			Zombies_Currently_Still_Ongoing++;
 	}

@@ -132,7 +132,7 @@ methodmap AnfuhrerEisenhard < CClotBody
 	}
 	
 	
-	public AnfuhrerEisenhard(int client, float vecPos[3], float vecAng[3], bool ally)
+	public AnfuhrerEisenhard(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		AnfuhrerEisenhard npc = view_as<AnfuhrerEisenhard>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "500000", ally));
 		

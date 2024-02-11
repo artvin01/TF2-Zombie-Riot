@@ -134,7 +134,7 @@ methodmap BunkerBotSoldier < CClotBody
 		#endif
 	}
 	
-	public BunkerBotSoldier(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BunkerBotSoldier(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BunkerBotSoldier npc = view_as<BunkerBotSoldier>(CClotBody(vecPos, vecAng, "models/bots/soldier/bot_soldier.mdl", "1.0", "2000", ally));
 		

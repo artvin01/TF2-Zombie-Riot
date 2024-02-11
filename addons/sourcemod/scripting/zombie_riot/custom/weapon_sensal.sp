@@ -166,7 +166,7 @@ public void Sensal_Ability_R_Laser(int client, int weapon, bool crit, int slot) 
 			}
 			FinishLagCompensation_Base_boss();
 
-			int spawn_index = Npc_Create(WEAPON_SENSAL_AFTERIMAGE, client, flPos, fAng, GetEntProp(client, Prop_Send, "m_iTeamNum") == 2);
+			int spawn_index = Npc_Create(WEAPON_SENSAL_AFTERIMAGE, client, flPos, fAng, GetTeam(client));
 			if(spawn_index > 0)
 			{
 				//this is the damage

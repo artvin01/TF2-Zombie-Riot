@@ -171,7 +171,7 @@ methodmap NecroCalcium < CClotBody
 	
 	public NecroCalcium(int client, float vecPos[3], float vecAng[3], float damage_multiplier = 1.0)
 	{
-		NecroCalcium npc = view_as<NecroCalcium>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "0.8", "1250", true, true));
+		NecroCalcium npc = view_as<NecroCalcium>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "0.8", "1250", TFTeam_Red, true));
 		
 		i_NpcInternalId[npc.index] = NECRO_CALCIUM;
 		i_NpcWeight[npc.index] = 1;

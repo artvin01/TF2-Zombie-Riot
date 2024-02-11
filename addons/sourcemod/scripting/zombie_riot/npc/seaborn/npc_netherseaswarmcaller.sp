@@ -45,7 +45,7 @@ methodmap SeaSwarmcaller < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public SeaSwarmcaller(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeaSwarmcaller(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];

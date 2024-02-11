@@ -131,7 +131,7 @@ methodmap XenoSniperMain < CClotBody
 	
 	
 	
-	public XenoSniperMain(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoSniperMain(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSniperMain npc = view_as<XenoSniperMain>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "22500", ally));
 		

@@ -1331,7 +1331,7 @@ public void Spawn_Bob_Combine(int client)
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	flAng[2] = 0.0;
-	int bob = Npc_Create(BOB_THE_GOD_OF_GODS, client, flPos, flAng, true);
+	int bob = Npc_Create(BOB_THE_GOD_OF_GODS, client, flPos, flAng, TFTeam_Red);
 	Bob_Exists = true;
 	Bob_Exists_Index = EntIndexToEntRef(bob);
 	Items_GiveNPCKill(client, BOB_THE_GOD_OF_GODS);
@@ -1360,7 +1360,7 @@ public void Spawn_Cured_Grigori()
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	flAng[2] = 0.0;
-	int entity = Npc_Create(CURED_FATHER_GRIGORI, client, flPos, flAng, true);
+	int entity = Npc_Create(CURED_FATHER_GRIGORI, client, flPos, flAng, TFTeam_Red);
 	SalesmanAlive = EntIndexToEntRef(entity);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_grigori");
 	

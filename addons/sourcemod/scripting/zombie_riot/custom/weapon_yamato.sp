@@ -427,7 +427,7 @@ static void Yamato_Rocket_Launch(int client, int weapon, float startVec[3], floa
 		b_EntityIsArrow[entity] = true;
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		SetTeam(entity, GetTeam(client));
 		TeleportEntity(entity, startVec, Angles, NULL_VECTOR);
 		DispatchSpawn(entity);
 		int particle = 0;

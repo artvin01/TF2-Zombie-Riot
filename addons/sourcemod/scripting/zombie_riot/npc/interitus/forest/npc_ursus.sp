@@ -3,45 +3,47 @@
 
 static const char g_DeathSounds[][] =
 {
-	"vo/soldier_paincrticialdeath01.mp3",
-	"vo/soldier_paincrticialdeath02.mp3",
-	"vo/soldier_paincrticialdeath03.mp3"
+	"vo/scout_paincrticialdeath01.mp3",
+	"vo/scout_paincrticialdeath02.mp3",
+	"vo/scout_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSounds[][] =
 {
-	"vo/soldier_painsharp01.mp3",
-	"vo/soldier_painsharp02.mp3",
-	"vo/soldier_painsharp03.mp3",
-	"vo/soldier_painsharp04.mp3",
-	"vo/soldier_painsharp05.mp3",
-	"vo/soldier_painsharp06.mp3",
-	"vo/soldier_painsharp07.mp3",
-	"vo/soldier_painsharp08.mp3"
+	"vo/scout_painsharp01.mp3",
+	"vo/scout_painsharp02.mp3",
+	"vo/scout_painsharp03.mp3",
+	"vo/scout_painsharp04.mp3",
+	"vo/scout_painsharp05.mp3",
+	"vo/scout_painsharp06.mp3",
+	"vo/scout_painsharp07.mp3",
+	"vo/scout_painsharp08.mp3"
 };
 
 static const char g_IdleAlertedSounds[][] =
 {
-	"vo/taunts/soldier_taunts19.mp3",
-	"vo/taunts/soldier_taunts20.mp3",
-	"vo/taunts/soldier_taunts21.mp3",
-	"vo/taunts/soldier_taunts18.mp3"
+	"vo/scout_battlecry01.mp3",
+	"vo/scout_battlecry02.mp3",
+	"vo/scout_battlecry03.mp3",
+	"vo/scout_battlecry04.mp3",
+	"vo/scout_battlecry05.mp3"
 };
 
 static const char g_MeleeHitSounds[][] =
 {
-	"weapons/cbar_hit1.wav",
-	"weapons/cbar_hit2.wav"
+	"weapons/cleaver_hit_02.wav",
+	"weapons/cleaver_hit_03.wav",
+	"weapons/cleaver_hit_05.wav",
+	"weapons/cleaver_hit_06.wav",
+	"weapons/cleaver_hit_07.wav"
 };
 
 static const char g_MeleeAttackSounds[][] =
 {
-	"weapons/pickaxe_swing1.wav",
-	"weapons/pickaxe_swing2.wav",
-	"weapons/pickaxe_swing3.wav"
+	"weapons/machete_swing.wav",
 };
 
-methodmap Perro < CClotBody
+methodmap Ursus < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -68,14 +70,14 @@ methodmap Perro < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Perro(int client, float vecPos[3], float vecAng[3], int ally)
+	public Ursus(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Perro npc = view_as<Perro>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "15000", ally));
+		Ursus npc = view_as<Ursus>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "30000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_SOLDIER;
-		i_NpcWeight[npc.index] = 3;
+		i_NpcInternalId[npc.index] = INTERITUS_FOREST_HEAVY;
+		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
-		KillFeed_SetKillIcon(npc.index, "pickaxe");
+		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -87,23 +89,23 @@ methodmap Perro < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
 		
-		npc.m_flSpeed = 175.0;
+		npc.m_flSpeed = 280.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_pickaxe/c_pickaxe.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_bear_claw/c_bear_claw.mdl");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/fall17_attack_packs/fall17_attack_packs.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/jul13_bear_necessitys/jul13_bear_necessitys.mdl");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/coldfront_curbstompers/coldfront_curbstompers.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/dec22_battle_bear_style1/dec22_battle_bear_style1_heavy.mdl");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/sum23_stealth_bomber_style1/sum23_stealth_bomber_style1.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/jul13_border_armor/jul13_border_armor.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/hwn2021_war_dog/hwn2021_war_dog.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/sum23_brother_mann_style3/sum23_brother_mann_style3.mdl");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 
 		return npc;
@@ -112,7 +114,7 @@ methodmap Perro < CClotBody
 
 static void ClotThink(int iNPC)
 {
-	Perro npc = view_as<Perro>(iNPC);
+	Ursus npc = view_as<Ursus>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -144,17 +146,6 @@ static void ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-	int minhealth = maxhealth / 4;
-	if(health < minhealth)
-		health = minhealth;
-	
-	float hpRatio = float(maxhealth) / float(health);
-
-	if(!NpcStats_IsEnemySilenced(npc.index))
-		npc.m_flSpeed = 100.0 + (hpRatio * 75.0);
-	
 	if(target > 0)
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
@@ -185,12 +176,13 @@ static void ClotThink(int iNPC)
 					target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						float damage = 65.0 * hpRatio;
+						float damage = 100.0;
 						if(ShouldNpcDealBonusDamage(target))
-							damage *= 6.0;
+							damage *= 1.5;
 
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
+						Sakratan_AddNeuralDamage(target, npc.index, 300);
 					}
 				}
 
@@ -210,7 +202,7 @@ static void ClotThink(int iNPC)
 				npc.PlayMeleeSound();
 				
 				npc.m_flAttackHappens = gameTime + 0.35;
-				npc.m_flNextMeleeAttack = gameTime + 0.95;
+				npc.m_flNextMeleeAttack = gameTime + 0.85;
 			}
 		}
 	}
@@ -224,7 +216,7 @@ static void ClotThink(int iNPC)
 
 static void ClotDeath(int entity)
 {
-	Perro npc = view_as<Perro>(entity);
+	Ursus npc = view_as<Ursus>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
