@@ -176,7 +176,7 @@ methodmap RaidbossNemesis < CClotBody
 	{
 		EmitSoundToAll(g_BuffSounds[GetRandomInt(0, sizeof(g_BuffSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public RaidbossNemesis(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public RaidbossNemesis(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossNemesis npc = view_as<RaidbossNemesis>(CClotBody(vecPos, vecAng, NEMESIS_MODEL, "1.75", "20000000", ally, false, true, true,true)); //giant!
 		
@@ -200,7 +200,6 @@ methodmap RaidbossNemesis < CClotBody
 		RaidAllowsBuildings = false;
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 
-		Raidboss_Clean_Everyone();
 
 		if(XenoExtraLogic())
 			RaidModeTime = GetGameTime(npc.index) + 250.0;
@@ -1254,7 +1253,7 @@ public bool TraceRayHitProjectilesOnly(int entity,int mask,any data)
 	{
 		return false;
 	}
-	if(b_Is_Player_Projectile[entity])
+	if(b_IsAProjectile[entity] && GetTeam(entity) == TFTeam_Red)
 	{
 		return true;
 	}
@@ -1493,9 +1492,9 @@ public Action Nemesis_DoInfectionThrowInternal(Handle timer, DataPack DataNem)
 			}
 		}
 	}
-	for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++)
+	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
-		int enemy = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+		int enemy = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 		if(IsValidEntity(enemy) && IsValidEnemy(entity, enemy, false, false))
 		{
 			bool Hit_something = Can_I_See_Enemy_Only(entity, enemy);

@@ -116,9 +116,9 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 	}
 	if(!ThereWasSeaborn)
 	{
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity) && i_BleedType[entity] == BLEEDTYPE_SEABORN)
 			{
 				ThereWasSeaborn = true;
@@ -286,9 +286,9 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int target = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+			int target = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEnemy(client, target, true, false))
 			{
 				VicLoc = WorldSpaceCenterOld(target);
@@ -405,9 +405,9 @@ public void Npc_Irene_Launch_client(int client)
 			b_LagCompNPC_No_Layers = true;
 			StartLagCompensation_Base_Boss(client);	
 
-			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int enemy = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+				int enemy = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEnemy(client, enemy, true, false))
 				{
 					VicLoc = WorldSpaceCenterOld(enemy);

@@ -123,7 +123,7 @@ methodmap XenoFortifiedGiantPoisonZombie < CClotBody
 	
 	
 	
-	public XenoFortifiedGiantPoisonZombie(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoFortifiedGiantPoisonZombie(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoFortifiedGiantPoisonZombie npc = view_as<XenoFortifiedGiantPoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.75", "3000", ally, false, true));
 		

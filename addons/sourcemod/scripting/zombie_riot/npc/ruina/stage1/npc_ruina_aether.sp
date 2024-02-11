@@ -112,7 +112,7 @@ methodmap Aether < CClotBody
 	}
 	
 	
-	public Aether(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Aether(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Aether npc = view_as<Aether>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "1250", ally));
 		

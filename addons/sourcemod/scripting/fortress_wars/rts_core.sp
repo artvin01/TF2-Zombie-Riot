@@ -114,7 +114,6 @@ enum struct SkillEnum
 	bool Auto;
 }
 
-int TeamNumber[MAXENTITIES];
 int BuildMode[MAXTF2PLAYERS];
 
 #include "fortress_wars/object.sp"

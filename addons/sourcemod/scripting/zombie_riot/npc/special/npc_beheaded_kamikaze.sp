@@ -84,7 +84,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		
 	}
 	
-	public BeheadedKamiKaze(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BeheadedKamiKaze(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", GetBeheadedKamiKazeHealth(), ally));
 		
@@ -124,7 +124,7 @@ methodmap BeheadedKamiKaze < CClotBody
 
 		npc.m_flWaveScale = wave;
 
-		if(!ally)
+		if(ally != TFTeam_Red)
 		{
 			if(fl_KamikazeInitiate < GetGameTime())
 			{
@@ -299,7 +299,7 @@ void Kamikaze_DeathExplosion(int entity)
 	pack_boom.WriteCell(1);
 	RequestFrame(MakeExplosionFrameLaterKami, pack_boom);
 
-	int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
+	int TeamNum = GetTeam(npc.index);
 	SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
 	Explode_Logic_Custom(90.0 * npc.m_flWaveScale,
 	npc.index,
@@ -336,7 +336,7 @@ float BeheadedKamiBoomInternal(int entity, int victim, float damage, int weapon)
 	{
 		return 1000000000.0;
 	}
-	else if(!b_NpcHasDied[victim] && !b_IsAlliedNpc[victim])
+	else if(!b_NpcHasDied[victim] && GetTeam(victim) != TFTeam_Red)
 		return damage * 15.0;
   
 	return damage;
@@ -413,9 +413,9 @@ void SpawnBeheadedKamikaze(DataPack pack)
 		}
 		fl_KamikazeSpawnRateDelay = GetGameTime() + spawndelay;
 		int Kamikazies = 0;
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int INpc = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+			int INpc = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 			if (IsValidEntity(INpc))
 			{
 				if(!b_NpcHasDied[INpc] && i_NpcInternalId[INpc] == MINI_BEHEADED_KAMI)
@@ -436,7 +436,7 @@ void SpawnBeheadedKamikaze(DataPack pack)
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 			}
 			Zombies_Currently_Still_Ongoing += 1;
-			Npc_Create(MINI_BEHEADED_KAMI, -1, pos, ang, false); //can only be enemy
+			Npc_Create(MINI_BEHEADED_KAMI, -1, pos, ang, TFTeam_Blue); //can only be enemy
 		}
 		RequestFrame(SpawnBeheadedKamikaze, pack);
 		return;

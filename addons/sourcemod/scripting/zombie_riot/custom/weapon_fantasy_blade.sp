@@ -984,7 +984,7 @@ static void Fantasy_Blade_Damage_Trace(int client, float Vec_1[3], float Vec_2[3
 	
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (Fantasy_Blade_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		if (Fantasy_Blade_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
 		{
 			float damage_xd = dmg;
 			if(b_thisNpcIsARaid[victim])

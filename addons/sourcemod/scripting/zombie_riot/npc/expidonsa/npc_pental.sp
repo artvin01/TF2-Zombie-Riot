@@ -85,7 +85,7 @@ methodmap Pental < CClotBody
 	}
 	
 	
-	public Pental(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Pental(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Pental npc = view_as<Pental>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "500", ally));
 		

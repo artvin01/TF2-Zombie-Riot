@@ -64,7 +64,7 @@ methodmap LastKnight < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public LastKnight(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public LastKnight(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		if(data[0] == 'R' || data[0] == 'F')
 		{
@@ -192,10 +192,10 @@ public void LastKnight_ClotThink(int iNPC)
 		{
 			bool found;
 
-			for(int i; i < i_MaxcountNpc; i++)
+			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-				if(entity != INVALID_ENT_REFERENCE && entity != npc.index && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				if(entity != INVALID_ENT_REFERENCE && entity != npc.index && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && GetTeam(entity) != TFTeam_Red)
 				{
 					found = true;
 					break;
@@ -225,7 +225,7 @@ public void LastKnight_ClotThink(int iNPC)
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
-				int ally = Npc_Create(BARRACK_LASTKNIGHT, owner, pos, ang, true);
+				int ally = Npc_Create(BARRACK_LASTKNIGHT, owner, pos, ang, TFTeam_Red);
 				view_as<BarrackBody>(ally).BonusDamageBonus = 1.0;
 				view_as<BarrackBody>(ally).BonusFireRate = 1.0;
 				view_as<BarrackBody>(ally).m_iSupplyCount = 0;
@@ -270,7 +270,7 @@ public void LastKnight_ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 				
-				int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
+				int team = GetTeam(npc.index);
 
 				Handle swingTrace;
 				bool result = npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _);
@@ -292,7 +292,7 @@ public void LastKnight_ClotThink(int iNPC)
 							if(ShouldNpcDealBonusDamage(target))
 								damage *= 20.0;
 							
-							if(team == GetEntProp(target, Prop_Send, "m_iTeamNum"))
+							if(team == GetTeam(target))
 								damage *= 10.0;
 
 							if(f_TimeFrozenStill[target] > gameTime)
@@ -405,7 +405,6 @@ void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon
 			{
 				npc.m_iPhase = 2;
 				npc.m_flSpeed = 350.0;
-				Change_Npc_Collision(npc.index, VIPBuilding_Active() ? num_ShouldCollideEnemyTDIgnoreBuilding : num_ShouldCollideEnemyIngoreBuilding);
 				b_NpcIsInvulnerable[npc.index] = true;
 				npc.AddGesture("ACT_LAST_KNIGHT_REVIVE");
 				npc.m_flNextThinkTime = gameTime + 8.3;

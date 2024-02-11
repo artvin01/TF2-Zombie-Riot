@@ -1134,9 +1134,7 @@
 	
 	"Throwable Survival Grenade Desc"
 	{
-		"en"	"Throw a grenade that heals over time and slowly revives teammates, must still manually revive.\nUpgraded with certificates with a medigun equipped."
-		"ru"	"Бросает гранату, которая лечит со временем и медленно оживляет союзников.\nУлучшается с помощью сертификатов при наличии медицинской пушки."
-		"chi"   "投掷手榴弹，随着时间缓慢的治疗队友和拉起倒地的队友\n升级证书与治疗装备可以提高作用。"
+		"en"	"Throw a grenade that heals over time and slowly revives teammates, must still manually revive.\nHeals Allied npcs aswell.\nUpgraded with certificates with a medigun equipped."
 	}
 	
 	"Deployable Quantum Suit Desc"

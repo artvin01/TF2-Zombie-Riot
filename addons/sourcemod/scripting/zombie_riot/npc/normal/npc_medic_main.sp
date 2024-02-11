@@ -108,7 +108,7 @@ methodmap MedicMain < CClotBody
 	
 	
 	
-	public MedicMain(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedicMain(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedicMain npc = view_as<MedicMain>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		

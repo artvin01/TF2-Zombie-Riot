@@ -1815,7 +1815,7 @@ void Building_ShowInteractionHud(int client, int entity)
 		}
 		else if(StrEqual(buffer, "zr_base_npc"))
 		{
-			if(b_IsAlliedNpc[entity])
+			if(GetTeam(entity) == TFTeam_Red)
 			{
 				if(f_CooldownForHurtHud[client] < GetGameTime() && f_CooldownForHurtHud_Ally[client] < GetGameTime())
 				{
@@ -3620,7 +3620,7 @@ public void BuildingMortarAction(int client, int mortar)
 	color[2] = 0;
 	color[3] = 255;
 									
-	if (TF2_GetClientTeam(client) == TFTeam_Blue)
+	if (GetTeam(client) == TFTeam_Blue)
 	{
 		color[2] = 255;
 		color[0] = 0;
@@ -4050,7 +4050,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 			
-			if (((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
+			if (((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
 			{
 				for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
 				{
@@ -4599,7 +4599,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 	int i = MaxClients + 1;
 	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
-		if(GetEntProp(i, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(i) == TFTeam_Red)
 		{
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < range)
@@ -4760,7 +4760,7 @@ void Building_CamoOrRegrowBlocker(int entity, bool &camo = false, bool &regrow =
 {
 	if(camo || regrow)
 	{
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != 2)
+		if(GetTeam(entity) != 2)
 		{
 			static float pos1[3];
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
@@ -6842,9 +6842,9 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 					HasupgradeVillager = true;
 					if(BARRACKS_VILLAGER == GetSData(CivType[owner], TrainingIndex[owner], NPCIndex))
 					{
-						for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+						for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 						{
-							int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+							int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 
 							if(IsValidEntity(entity_close) && i_NpcInternalId[entity_close] == BARRACKS_VILLAGER)
 							{
@@ -6900,7 +6900,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						GetEntPropVector(mounted ? owner : entity, Prop_Data, "m_angRotation", ang);
 						
 						view_as<BarrackBody>(mounted ? owner : entity).PlaySpawnSound();
-						int npc = Npc_Create(GetSData(CivType[owner], TrainingIndex[owner], NPCIndex), owner, pos, ang, true);
+						int npc = Npc_Create(GetSData(CivType[owner], TrainingIndex[owner], NPCIndex), owner, pos, ang, TFTeam_Red);
 						view_as<BarrackBody>(npc).m_iSupplyCount = GetSData(CivType[owner], TrainingIndex[owner], SupplyCost);
 						Barracks_UpdateEntityUpgrades(owner, npc, true, true); //make sure upgrades if spawned, happen on full health!
 
@@ -7280,9 +7280,9 @@ static void SummonerMenu(int client, int viewer)
 					HasupgradeVillager = true;
 					if(BARRACKS_VILLAGER == GetSData(CivType[client], TrainingIndex[client], NPCIndex))
 					{
-						for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+						for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 						{
-							int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+							int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 
 							if(IsValidEntity(entity_close) && i_NpcInternalId[entity_close] == BARRACKS_VILLAGER)
 							{
@@ -7366,9 +7366,9 @@ static void SummonerMenu(int client, int viewer)
 				}
 				else
 				{
-					for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 					{
-						int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+						int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 
 						if(IsValidEntity(entity_close) && i_NpcInternalId[entity_close] == BARRACKS_VILLAGER)
 						{
@@ -7668,7 +7668,7 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 	int entity = MaxClients + 1;
 	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 	{
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(entity) == 2)
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId == userid)
@@ -7899,10 +7899,8 @@ void Barracks_BuildingThink(int client)
 			EmitSoundToAll("weapons/bow_shoot.wav", mounted ? playerclient.index : npc.index, _, 70, _, 0.9, 100);
 
 			//npc.m_flDoingSpecial is damage, see above.
-			b_IsAlliedNpc[npc.index] = true;
 			int arrow = npc.FireArrow(vecTarget, npc.m_flDoingSpecial, projectile_speed,_,_, 55.0, client, mounted ? client : -1);
 			npc.m_iOverlordComboAttack -= 1;
-			b_IsAlliedNpc[npc.index] = false;
 
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CRENELLATIONS)
 			{

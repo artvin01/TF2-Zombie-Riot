@@ -162,7 +162,7 @@ methodmap CombineGaint < CClotBody
 	}
 	
 	
-	public CombineGaint(int client, float vecPos[3], float vecAng[3], bool ally)
+	public CombineGaint(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineGaint npc = view_as<CombineGaint>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "5000", ally, false, true));
 		

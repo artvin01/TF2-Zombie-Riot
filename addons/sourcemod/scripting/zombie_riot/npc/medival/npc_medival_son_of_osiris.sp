@@ -146,7 +146,7 @@ methodmap MedivalSonOfOsiris < CClotBody
 		#endif
 	}
 	
-	public MedivalSonOfOsiris(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalSonOfOsiris(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalSonOfOsiris npc = view_as<MedivalSonOfOsiris>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "750000", ally));
 		SetVariantInt(1);
@@ -268,7 +268,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 						
 					if(distance <= (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 9.5)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
 					{
-						SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 550.0, b_IsAlliedNpc[npc.index]);
+						SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 550.0, GetTeam(npc.index) == TFTeam_Red);
 					}
 				}
 			}
@@ -546,10 +546,10 @@ stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(int traceentity , f
 	int ClosestTarget = 0; 
 	if(ally)
 	{
-		for(int targ; targ<i_MaxcountNpc; targ++)
+		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && !b_EntityHitByLightning[baseboss_index])
+			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && !b_EntityHitByLightning[baseboss_index] && GetTeam(baseboss_index) != TFTeam_Red)
 			{
 				float TargetLocation[3]; 
 				GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
@@ -580,10 +580,10 @@ stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(int traceentity , f
 	}
 	else
 	{
-		for(int targ; targ<i_MaxcountNpc_Allied; targ++)
+		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs_Allied[targ]);
-			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && !b_EntityHitByLightning[baseboss_index])
+			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && !b_EntityHitByLightning[baseboss_index] && GetTeam(baseboss_index) == TFTeam_Red)
 			{
 				float TargetLocation[3]; 
 				GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 

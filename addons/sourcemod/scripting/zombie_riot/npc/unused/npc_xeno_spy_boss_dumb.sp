@@ -204,7 +204,7 @@ methodmap XenoSpyMainBoss < CClotBody
 		#endif
 	}
 	
-	public XenoSpyMainBoss(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoSpyMainBoss(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSpyMainBoss npc = view_as<XenoSpyMainBoss>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "500000", ally));
 		
@@ -815,7 +815,7 @@ public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflic
 					amount_of_people += 1;
 				}
 			}
-			bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+			bool ally = GetTeam(npc.index) == 2;
 			for(int i; i<amount_of_people; i++)
 			{
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);

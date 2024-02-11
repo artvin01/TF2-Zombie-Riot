@@ -70,7 +70,7 @@ methodmap IsharmlaTrans < CClotBody
 		EmitSoundToAll("ui/halloween_boss_summoned_fx.wav");
 	}
 	
-	public IsharmlaTrans(int client, float vecPos[3], float vecAng[3], bool ally)
+	public IsharmlaTrans(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		IsharmlaTrans npc = view_as<IsharmlaTrans>(CClotBody(vecPos, vecAng, "models/bots/headless_hatman.mdl", "1.5", "45000", ally, false, true));
 		

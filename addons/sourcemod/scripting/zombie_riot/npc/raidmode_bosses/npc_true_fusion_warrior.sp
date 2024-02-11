@@ -264,7 +264,7 @@ methodmap TrueFusionWarrior < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public TrueFusionWarrior(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public TrueFusionWarrior(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
@@ -336,7 +336,6 @@ methodmap TrueFusionWarrior < CClotBody
 			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		Raidboss_Clean_Everyone();
 		
 		SDKHook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
 		
@@ -1327,7 +1326,7 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 			
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (FusionWarrior_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+				if (FusionWarrior_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);

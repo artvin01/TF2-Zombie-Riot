@@ -145,7 +145,7 @@ methodmap Magia < CClotBody
 	}
 	
 	
-	public Magia(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Magia(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Magia npc = view_as<Magia>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		

@@ -89,7 +89,7 @@ methodmap WinterZiberianMiner < CClotBody
 	}
 	
 	
-	public WinterZiberianMiner(int client, float vecPos[3], float vecAng[3], bool ally)
+	public WinterZiberianMiner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterZiberianMiner npc = view_as<WinterZiberianMiner>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "2000", ally));
 		

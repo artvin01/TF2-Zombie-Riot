@@ -282,7 +282,7 @@ methodmap RaidbossSilvester < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public RaidbossSilvester(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public RaidbossSilvester(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossSilvester npc = view_as<RaidbossSilvester>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
@@ -356,7 +356,6 @@ methodmap RaidbossSilvester < CClotBody
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		Raidboss_Clean_Everyone();
 		
 		SDKHook(npc.index, SDKHook_Think, RaidbossSilvester_ClotThink);
 		
@@ -1619,7 +1618,7 @@ public Action contact_throw_Silvester_entity(int client)
 				if (!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
 				{
 					targPos = WorldSpaceCenterOld(entity);
-					if (GetVectorDistance(chargerPos, targPos, true) <= (250.0* 250.0) && GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(client, Prop_Send, "m_iTeamNum"))
+					if (GetVectorDistance(chargerPos, targPos, true) <= (250.0* 250.0) && GetTeam(entity)!=GetTeam(client))
 					{
 						if (!b_AlreadyHitTankThrow[client][entity] && entity != client)
 						{		
@@ -1698,13 +1697,13 @@ void Silvester_SpawnAllyDuoRaid(int ref)
 			
 		maxhealth -= (maxhealth / 4);
 
-		int spawn_index = Npc_Create(XENO_RAIDBOSS_BLUE_GOGGLES, -1, pos, ang, GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2);
+		int spawn_index = Npc_Create(XENO_RAIDBOSS_BLUE_GOGGLES, -1, pos, ang, GetTeam(entity));
 		if(spawn_index > MaxClients)
 		{
 			i_RaidGrantExtra[spawn_index] = i_RaidGrantExtra[entity];
 			i_RaidDuoAllyIndex = EntIndexToEntRef(spawn_index);
 			Goggles_SetRaidPartner(entity);
-			Zombies_Currently_Still_Ongoing += 1;
+			Zombies_Currently_Still_Ongoing += 1;	// FIXME
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 		}
@@ -2185,7 +2184,7 @@ public Action Silvester_TBB_Tick(int client)
 			
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (Silvester_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+				if (Silvester_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
@@ -2786,10 +2785,10 @@ void SharedTimeLossSilvesterDuo(int entity)
 		GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", SelfPos);
 		GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", AllyAng);
 	}
-	int SensalSpawn = Npc_Create(RAIDMODE_EXPIDONSA_SENSAL, -1, SelfPos, AllyAng, GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2, "duo_cutscene"); //can only be enemy
+	int SensalSpawn = Npc_Create(RAIDMODE_EXPIDONSA_SENSAL, -1, SelfPos, AllyAng, GetTeam(entity), "duo_cutscene"); //can only be enemy
 	if(IsValidEntity(SensalSpawn))
 	{
-		if(GetEntProp(SensalSpawn, Prop_Send, "m_iTeamNum") != 2)
+		if(GetTeam(SensalSpawn) != TFTeam_Red)
 		{
 			Zombies_Currently_Still_Ongoing += 1;
 		}

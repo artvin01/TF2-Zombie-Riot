@@ -153,7 +153,7 @@ methodmap Astria < CClotBody
 	}
 	
 	
-	public Astria(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Astria(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Astria npc = view_as<Astria>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.5", "1250", ally));
 		

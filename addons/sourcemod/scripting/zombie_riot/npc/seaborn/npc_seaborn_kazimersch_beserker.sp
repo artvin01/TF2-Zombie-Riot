@@ -115,7 +115,7 @@ methodmap KazimierzBeserker < CClotBody
 	}
 	
 	
-	public KazimierzBeserker(int client, float vecPos[3], float vecAng[3], bool ally)
+	public KazimierzBeserker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		KazimierzBeserker npc = view_as<KazimierzBeserker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "20000", false, true));
 		
@@ -448,7 +448,7 @@ public void KazimierzBeserker_AllyDeath(int ally, int self)
 {
 	KazimierzBeserker npc = view_as<KazimierzBeserker>(self);
 
-	if(GetEntProp(ally, Prop_Send, "m_iTeamNum") != GetEntProp(self, Prop_Send, "m_iTeamNum"))
+	if(GetTeam(ally) != GetTeam(self))
 	{
 		return;
 	}

@@ -97,10 +97,10 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 			}
 		}
 	}
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
-		int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 		{
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
@@ -174,10 +174,10 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 				}
 			}
 		}
-		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
@@ -254,10 +254,10 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 				}
 			}
 		}
-		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
@@ -317,10 +317,10 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 					}
 				}
 			}
-			for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+			for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 			{
-				int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-				if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+				int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+				if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 				{
 					GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
@@ -349,10 +349,10 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 				}
 			}
 		}
-		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				if(f_AncientBannerNpcBuff[ally] > GetGameTime())
 				{
@@ -374,10 +374,10 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 				ModifyEntityAncientBuff(ally, 1, 0.8, false, 1.2);
 			}
 		}
-		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				ModifyEntityAncientBuff(ally, 2, 0.8, false, 1.2);
 			}

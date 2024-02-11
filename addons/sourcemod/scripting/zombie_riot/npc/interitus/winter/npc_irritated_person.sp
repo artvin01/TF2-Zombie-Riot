@@ -98,7 +98,7 @@ methodmap WinterIrritatedPerson < CClotBody
 	}
 	
 	
-	public WinterIrritatedPerson(int client, float vecPos[3], float vecAng[3], bool ally)
+	public WinterIrritatedPerson(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterIrritatedPerson npc = view_as<WinterIrritatedPerson>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.1", "60000", ally));
 		

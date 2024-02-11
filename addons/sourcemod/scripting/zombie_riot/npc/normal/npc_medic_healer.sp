@@ -109,7 +109,7 @@ methodmap MedicHealer < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public MedicHealer(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedicHealer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedicHealer npc = view_as<MedicHealer>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "3500", ally));
 		

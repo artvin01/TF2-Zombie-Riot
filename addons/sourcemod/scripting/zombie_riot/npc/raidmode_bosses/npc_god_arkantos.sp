@@ -87,58 +87,6 @@ methodmap GodArkantos < CClotBody
 		public get()							{ return fl_GrappleCooldown[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_GrappleCooldown[this.index] = TempValueForProperty; }
 	}
-	/*
-	public void ArkantosFakeDeathState(int state)
-	{
-		if(state == 1)
-		{
-			if(this.m_iChanged_WalkCycle != 5)
-			{
-				SetEntityRenderColor(this.index, 255, 255, 255, 200);
-				SetEntityRenderMode(this.index, RENDER_TRANSCOLOR);
-				SetEntityRenderColor(this.m_iWearable1, 255, 255, 255, 200);
-				SetEntityRenderMode(this.m_iWearable1, RENDER_TRANSCOLOR);
-				SetEntityRenderColor(this.m_iWearable2, 255, 255, 255, 200);
-				SetEntityRenderMode(this.m_iWearable2, RENDER_TRANSCOLOR);
-				Change_Npc_Collision(this.index, 3);
-				this.g_TimesSummoned = 3;
-				this.m_bWasSadAlready = true;
-				GodArkantos_OnTakeDamagePost(this.index, 0, 0, 55.0, 1);
-				this.m_iChanged_WalkCycle = 5;
-				b_ThisEntityIgnored[this.index] = true;
-				b_DoNotUnStuck[this.index] = true;
-				this.SetActivity("ACT_BUSY_SIT_GROUND");
-				this.m_flSpeed = 0.0;
-				this.m_bisWalking = false;
-				this.SetPlaybackRate(2.0);
-				this.m_flReviveArkantosTime = GetGameTime(this.index) + 16.0;
-
-				ArkantosSayWords();
-
-				if(this.m_bPathing)
-				{
-					NPC_StopPathing(this.index);
-					this.m_bPathing = false;
-				}
-			}
-		}
-		else
-		{
-			if(this.m_iChanged_WalkCycle != 6)
-			{
-				this.g_TimesSummoned = 4;
-				this.m_bWasSadAlready = true;
-				Change_Npc_Collision(this.index, 1);
-				this.m_flSpeed = 0.0;
-				this.m_bisWalking = false;
-				this.m_iChanged_WalkCycle = 6;
-				this.m_flReviveArkantosTime = GetGameTime(this.index) + 1.0;
-				this.SetActivity("ACT_BUSY_SIT_GROUND_EXIT");
-				this.SetPlaybackRate(2.0);
-			}
-		}
-	}
-	*/
 	public void PlayIdleAlertSound()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -201,7 +149,7 @@ methodmap GodArkantos < CClotBody
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public GodArkantos(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public GodArkantos(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		GodArkantos npc = view_as<GodArkantos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "25000", ally, false, false, true,true)); //giant!
 		
@@ -221,7 +169,7 @@ methodmap GodArkantos < CClotBody
 		{
 			RaidModeTime = GetGameTime(npc.index) + 300.0;
 		}
-		if(ally)
+		if(ally == TFTeam_Red)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 9999.0;
 			RaidAllowsBuildings = true;
@@ -302,7 +250,6 @@ methodmap GodArkantos < CClotBody
 			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		Raidboss_Clean_Everyone();
 		
 		SDKHook(npc.index, SDKHook_Think, GodArkantos_ClotThink);
 		
@@ -339,7 +286,7 @@ public void GodArkantos_ClotThink(int iNPC)
 	
 	float gameTime = GetGameTime(npc.index);
 
-	if(!b_IsAlliedNpc[npc.index] && LastMann)
+	if(GetTeam(npc.index) != TFTeam_Red && LastMann)
 	{
 		if(!npc.m_fbGunout)
 		{
@@ -361,31 +308,19 @@ public void GodArkantos_ClotThink(int iNPC)
 			}
 		}
 	}
-	if(!b_IsAlliedNpc[npc.index] && RaidModeTime < GetGameTime())
+	if(GetTeam(npc.index) != TFTeam_Red && RaidModeTime < GetGameTime())
 	{
 		DeleteAndRemoveAllNpcs = 8.0;
 		mp_bonusroundtime.IntValue = (9 * 2);
 		
 		ZR_NpcTauntWinClear();
-		for(int targ; targ<i_MaxcountNpc; targ++)
+		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-			if (IsValidEntity(baseboss_index) && !b_IsAlliedNpc[baseboss_index])
+			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+			if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 			{
-				b_IsAlliedNpc[baseboss_index] = true;
-				b_Is_Blue_Npc[baseboss_index] = false;
-				SetEntProp(baseboss_index, Prop_Send, "m_iTeamNum", TFTeam_Red);
+				SetTeam(baseboss_index, TFTeam_Red);
 				SetEntityCollisionGroup(baseboss_index, 24);
-				Change_Npc_Collision(baseboss_index, num_ShouldCollideAlly);
-				if(h_NpcSolidHookType[baseboss_index] != 0)
-				{
-					if(!DHookRemoveHookID(h_NpcSolidHookType[baseboss_index]))
-					{
-						PrintToConsoleAll("Somehow Failed to unhook h_NpcSolidHookType");
-					}
-				}
-				CBaseNPC baseNPC = view_as<CClotBody>(baseboss_index).GetBaseNPC();
-				h_NpcSolidHookType[baseboss_index] = DHookRaw(g_hGetSolidMaskAlly, true, view_as<Address>(baseNPC.GetBody()));
 			}
 		}
 		int entity = CreateEntityByName("game_round_win"); //You loose.
@@ -406,7 +341,7 @@ public void GodArkantos_ClotThink(int iNPC)
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 			}
-			int spawn_index = Npc_Create(SEASLIDER, -1, pos, ang, false);
+			int spawn_index = Npc_Create(SEASLIDER, -1, pos, ang, TFTeam_Blue);
 			if(spawn_index > MaxClients)
 			{
 				Zombies_Currently_Still_Ongoing += 1;
@@ -424,7 +359,7 @@ public void GodArkantos_ClotThink(int iNPC)
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 		}
-		int spawn_index = Npc_Create(ISHARMLA, -1, pos, ang, false);
+		int spawn_index = Npc_Create(ISHARMLA, -1, pos, ang, TFTeam_Blue);
 		if(spawn_index > MaxClients)
 		{
 			Zombies_Currently_Still_Ongoing += 1;
@@ -568,10 +503,10 @@ public void GodArkantos_ClotThink(int iNPC)
 	if(npc.g_TimesSummoned == 4)
 	{
 		bool allyAlive = false;
-		for(int targ; targ<i_MaxcountNpc; targ++)
+		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != RAIDMODE_GOD_ARKANTOS)
+			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != RAIDMODE_GOD_ARKANTOS && GetTeam(npc.index) == GetTeam(baseboss_index))
 			{
 				allyAlive = true;
 			}
@@ -579,7 +514,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		if(!Waves_IsEmpty())
 			allyAlive = true;
 
-		if(b_IsAlliedNpc[npc.index])
+		if(GetTeam(npc.index) == TFTeam_Red)
 			allyAlive = false;
 
 		if(allyAlive)
@@ -597,7 +532,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		}
 	}
 	npc.PlayIdleAlertSound();
-	if(b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) == TFTeam_Red)
 	{
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))
 		{
@@ -801,7 +736,7 @@ public Action GodArkantos_OnTakeDamage(int victim, int &attacker, int &inflictor
 			return Plugin_Handled;
 		}
 	}
-	if(!b_IsAlliedNpc[npc.index] && ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
+	if(GetTeam(npc.index) != TFTeam_Red && ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
@@ -1132,7 +1067,7 @@ public void GodArkantos_NPCDeath(int entity)
 
 void GodArkantosSpawnEnemy(int arkantos, int npc_id, int health = 0, int count, bool outline = false)
 {
-	if(b_IsAlliedNpc[arkantos])
+	if(GetTeam(arkantos) == TFTeam_Red)
 	{
 		count /= 2;
 		if(count < 1)
@@ -1143,7 +1078,7 @@ void GodArkantosSpawnEnemy(int arkantos, int npc_id, int health = 0, int count, 
 		{
 			float pos[3]; GetEntPropVector(arkantos, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(arkantos, Prop_Data, "m_angRotation", ang);
-			int summon = Npc_Create(npc_id, -1, pos, ang, GetEntProp(arkantos, Prop_Send, "m_iTeamNum") == 2);
+			int summon = Npc_Create(npc_id, -1, pos, ang, GetEntProp(arkantos, Prop_Send, "m_iTeamNum"));
 			if(summon > MaxClients)
 			{
 				fl_Extra_Damage[summon] = 10.0;
@@ -1176,7 +1111,7 @@ void GodArkantosSpawnEnemy(int arkantos, int npc_id, int health = 0, int count, 
 	{
 		Waves_AddNextEnemy(enemy);
 	}
-	Zombies_Currently_Still_Ongoing += count;
+	Zombies_Currently_Still_Ongoing += count;	// FIXME
 }
 
 void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
@@ -1497,9 +1432,9 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 				}						
 			}
 		}
-		for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity_close))
 			{
 				if(IsValidEnemy(npc.index, entity_close))
@@ -1656,9 +1591,9 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 					}
 				}
 			}
-			for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 			{
-				int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+				int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity_close))
 				{
 					if(IsValidEnemy(npc.index, entity_close))
@@ -1751,7 +1686,7 @@ void GodArkantosAOEBuff(GodArkantos npc, float gameTime, bool mute = false)
 			static int g;
 			static int b ;
 			static int a = 255;
-			if(b_Is_Blue_Npc[npc.index])
+			if(GetTeam(npc.index) != TFTeam_Red)
 			{
 				r = 220;
 				g = 220;

@@ -107,7 +107,7 @@ methodmap AltMedicApprenticeMage < CClotBody
 	
 	
 	
-	public AltMedicApprenticeMage(int client, float vecPos[3], float vecAng[3], bool ally)
+	public AltMedicApprenticeMage(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		AltMedicApprenticeMage npc = view_as<AltMedicApprenticeMage>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		

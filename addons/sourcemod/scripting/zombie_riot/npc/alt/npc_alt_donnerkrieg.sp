@@ -187,7 +187,7 @@ methodmap Donnerkrieg < CClotBody
 	
 	
 	
-	public Donnerkrieg(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Donnerkrieg(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Donnerkrieg npc = view_as<Donnerkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "25000", ally));
 		
@@ -1251,7 +1251,7 @@ public Action NightmareCannon_TBB_Tick(int client)
 			
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (NightmareCannon_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+				if (NightmareCannon_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);

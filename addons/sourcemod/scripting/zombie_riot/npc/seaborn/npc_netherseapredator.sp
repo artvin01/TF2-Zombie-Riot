@@ -56,7 +56,7 @@ methodmap SeaPredator < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeaPredator(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeaPredator(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];
@@ -143,13 +143,11 @@ public void SeaPredator_ClotThink(int iNPC)
 			if(!SeaFounder_TouchingNethersea(npc.index))
 			{
 				npc.Anger = false;
-				Change_Npc_Collision(npc.index, VIPBuilding_Active() ? num_ShouldCollideEnemyTD : num_ShouldCollideEnemy);
 			}
 		}
 		else if(SeaFounder_TouchingNethersea(npc.index))
 		{
 			npc.Anger = true;
-			Change_Npc_Collision(npc.index, VIPBuilding_Active() ? num_ShouldCollideEnemyTDIgnoreBuilding : num_ShouldCollideEnemyIngoreBuilding);
 		}
 
 		npc.m_iTarget = GetClosestTarget(npc.index, npc.Anger);

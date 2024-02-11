@@ -40,9 +40,9 @@ methodmap Militia < EmpireBody
 		EmitSoundToAll(MeleeMissSounds[GetRandomInt(0, sizeof(MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public Militia(int client, const float vecPos[3], const float vecAng[3])
+	public Militia(int team, const float vecPos[3], const float vecAng[3])
 	{
-		Militia npc = view_as<Militia>(EmpireBody(client, vecPos, vecAng, _, _, "40"));
+		Militia npc = view_as<Militia>(EmpireBody(team, vecPos, vecAng, _, _, "40"));
 
 		i_NpcInternalId[npc.index] = MILITIA;
 		i_NpcWeight[npc.index] = 1;

@@ -66,7 +66,7 @@ methodmap SeabornHeavy < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornHeavy(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornHeavy(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornHeavy npc = view_as<SeabornHeavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "6000", ally));
 		

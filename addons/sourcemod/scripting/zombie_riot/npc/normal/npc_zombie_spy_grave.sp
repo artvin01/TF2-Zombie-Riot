@@ -130,7 +130,7 @@ methodmap Spy < CClotBody
 	}
 	
 	
-	public Spy(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Spy(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Spy npc = view_as<Spy>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "4000", ally));
 		

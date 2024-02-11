@@ -68,7 +68,7 @@ methodmap Perro < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Perro(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Perro(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Perro npc = view_as<Perro>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "15000", ally));
 		

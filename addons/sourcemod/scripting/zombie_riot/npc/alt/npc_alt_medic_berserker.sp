@@ -127,7 +127,7 @@ methodmap AltMedicBerseker < CClotBody
 	}
 	
 	
-	public AltMedicBerseker(int client, float vecPos[3], float vecAng[3], bool ally)
+	public AltMedicBerseker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		AltMedicBerseker npc = view_as<AltMedicBerseker>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.00", "25000", ally));
 		

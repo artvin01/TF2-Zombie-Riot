@@ -127,7 +127,7 @@ methodmap Soldier < CClotBody
 		#endif
 	}
 	
-	public Soldier(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Soldier(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Soldier npc = view_as<Soldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "2000", ally));
 		

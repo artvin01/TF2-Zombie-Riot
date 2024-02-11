@@ -66,7 +66,7 @@ methodmap Caprinae < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Caprinae(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Caprinae(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Caprinae npc = view_as<Caprinae>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "66000", ally));
 		
@@ -183,12 +183,11 @@ static void ClotThink(int iNPC)
 					int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 10;
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-					bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
-
-					int entity = Npc_Create(INTERITUS_FOREST_DEMOMAN, -1, pos, ang, ally, "EX");
+					
+					int entity = Npc_Create(INTERITUS_FOREST_DEMOMAN, -1, pos, ang, GetTeam(npc.index), "EX");
 					if(entity > MaxClients)
 					{
-						if(!ally)
+						if(GetTeam(npc.index) != TFTeam_Red)
 							Zombies_Currently_Still_Ongoing++;
 						
 						SetEntProp(entity, Prop_Data, "m_iHealth", health);

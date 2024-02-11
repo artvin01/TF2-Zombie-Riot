@@ -106,7 +106,7 @@ public Action Flagellant_HealerTimer(Handle timer, DataPack pack)
 				}
 				else if(!b_NpcHasDied[target])
 				{
-					if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2 && !Citizen_ThatIsDowned(target))
+					if(GetTeam(target) == 2 && !Citizen_ThatIsDowned(target))
 					{
 						validAlly = true;
 					}
@@ -157,7 +157,7 @@ public Action Flagellant_DamagerTimer(Handle timer, DataPack pack)
 				}
 				else if(!b_NpcHasDied[target])
 				{
-					if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+					if(GetTeam(target) != 2)
 					{
 						if(!b_NpcIsInvulnerable[target])
 							validEnemy = true;
@@ -304,7 +304,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 	}
 	else if(!b_NpcHasDied[target])
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2 && !b_NpcIsInvulnerable[target] && !Citizen_ThatIsDowned(target))
+		if(GetTeam(target) == 2 && !b_NpcIsInvulnerable[target] && !Citizen_ThatIsDowned(target))
 		{
 			validAlly = true;
 		}
@@ -432,7 +432,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 	}
 	else if(!b_NpcHasDied[target])
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		if(GetTeam(target) != 2)
 		{
 			if(!b_NpcIsInvulnerable[target])
 				validEnemy = true;
@@ -514,7 +514,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 	}
 	else if(!b_NpcHasDied[target])
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2 && !b_NpcIsInvulnerable[target])
+		if(GetTeam(target) == 2 && !b_NpcIsInvulnerable[target])
 		{
 			validAlly = true;
 		}
@@ -622,7 +622,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 	}
 	else if(!b_NpcHasDied[target])
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		if(GetTeam(target) != 2)
 		{
 			if(!b_NpcIsInvulnerable[target])
 				validEnemy = true;

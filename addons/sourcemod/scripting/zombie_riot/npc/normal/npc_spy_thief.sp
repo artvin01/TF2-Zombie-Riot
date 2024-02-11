@@ -129,7 +129,7 @@ methodmap SpyThief < CClotBody
 	
 	
 	
-	public SpyThief(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SpyThief(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SpyThief npc = view_as<SpyThief>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "7500", ally));
 		

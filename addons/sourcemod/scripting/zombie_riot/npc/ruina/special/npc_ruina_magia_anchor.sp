@@ -162,7 +162,7 @@ methodmap Magia_Anchor < CClotBody
 		
 	}
 	
-	public Magia_Anchor(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Magia_Anchor(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Magia_Anchor npc = view_as<Magia_Anchor>(CClotBody(vecPos, vecAng, RUINA_TOWER_CORE_MODEL, RUINA_TOWER_CORE_MODEL_SIZE, "10000", ally, false,true,_,_,{30.0,30.0,350.0}));
 		
@@ -192,7 +192,7 @@ methodmap Magia_Anchor < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
-		if(!ally)
+		if(ally != TFTeam_Red)
 		{
 			b_thisNpcIsABoss[npc.index] = true;
 		}

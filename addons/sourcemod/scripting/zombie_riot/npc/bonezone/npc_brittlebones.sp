@@ -195,7 +195,7 @@ methodmap BrittleBones < CClotBody
 	
 	
 	
-	public BrittleBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
+	public BrittleBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		BrittleBones npc = view_as<BrittleBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BRITTLE_SCALE, buffed ? BONES_BRITTLE_HP_BUFFED : BONES_BRITTLE_HP, ally, false));
 		

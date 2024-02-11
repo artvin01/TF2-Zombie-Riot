@@ -90,7 +90,7 @@ methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	public Barrack_Alt_Scientific_Witchery(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Barrack_Alt_Scientific_Witchery(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(BarrackBody(client, vecPos, vecAng, "1300", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_crit.mdl"));
 		
@@ -519,7 +519,7 @@ static void Scientific_Witchery_Ability(int client, float Vec_1[3], float Vec_2[
 			
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (Scientific_Witchery_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+				if (Scientific_Witchery_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
 				{
 					int inflictor = GetClientOfUserId(npc.OwnerUserId);
 					if(inflictor==-1)
