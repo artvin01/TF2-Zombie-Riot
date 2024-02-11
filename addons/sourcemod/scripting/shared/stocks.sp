@@ -1405,7 +1405,7 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 	}
 	
 #if !defined RTS
-	if(entity > MaxClients && GetTeam(entity) == TFTeam_Red)
+	if(entity > MaxClients && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Red)
 	{
 		return false;
 	}
@@ -1472,7 +1472,7 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 				return entity!=data;
 			}
 		}
-		else if(GetTeam(entity) == TFTeam_Red)
+		else if(!b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Red)
 		{
 			if(i_PreviousInteractedEntity[data] != entity || !i_PreviousInteractedEntityDo[data])
 			{

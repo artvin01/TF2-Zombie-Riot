@@ -1228,6 +1228,10 @@
 		"ru"	"Каждая волна увеличивает её стоимость, одновременно можно построить только 4 баррикады."
 		"chi"   "每一波都会增加它的价格，你最多只能建造4个路障。"
 	}
+	"There Can Be Only One Desc"
+	{
+		"en"	"Buy grigori some ammo and ontop of that, refesh the store!"
+	}
 	
 	"Buildable Barricade Desc Rogue"
 	{
