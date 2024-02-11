@@ -4,7 +4,7 @@
 #define SOUND_WAND_SHOT_DIM	"misc/doomsday_lift_stop.wav"
 #define SOUND_DIM_IMPACT "weapons/cow_mangler_explosion_normal_01.wav"
 #define SOUND_ABILITY "misc/rd_points_return01.wav"
-#define MAX_DIMENSION_CHARGE 20
+#define MAX_DIMENSION_CHARGE 30
 static Handle h_TimerDimensionWeaponManagement[MAXPLAYERS+1]={null, ...};
 static int how_many_times_swinged[MAXTF2PLAYERS];
 static float f_DIMAbilityActive[MAXPLAYERS+1]={0.0, ...};
