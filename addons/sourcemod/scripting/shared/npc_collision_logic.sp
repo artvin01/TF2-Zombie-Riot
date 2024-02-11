@@ -34,7 +34,8 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		{
 			if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
 			{
-				NpcStartTouch(bot_entidx,otherindex);
+				if(extrarules == 0)
+					NpcStartTouch(bot_entidx,otherindex);
 				return true;
 			}
 		}
@@ -59,7 +60,8 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 			return false;
 		}
 		//we collided with a player, change target.
-		NpcStartTouch(bot_entidx,otherindex);
+		if(extrarules == 0)
+			NpcStartTouch(bot_entidx,otherindex);
 		return true;
 	}
 	if(i_IsABuilding[otherindex])
@@ -68,13 +70,15 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		{
 			return false;
 		}
-		NpcStartTouch(bot_entidx,otherindex);
+		if(extrarules == 0)
+			NpcStartTouch(bot_entidx,otherindex);
 		return true;
 	}
 	//always collide with vehicles if on opesite teams.
 	if(b_IsVehicle[otherindex])
 	{
-		NpcStartTouch(bot_entidx,otherindex);
+		if(extrarules == 0)
+			NpcStartTouch(bot_entidx,otherindex);
 		return true;
 	}
 	//other entity is an npc
@@ -96,7 +100,8 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		return false;
 	}
 	//They have collided with something, try to change the target.
-	NpcStartTouch(bot_entidx,otherindex);
+	if(extrarules == 0)
+		NpcStartTouch(bot_entidx,otherindex);
 	return true;
 }
 
