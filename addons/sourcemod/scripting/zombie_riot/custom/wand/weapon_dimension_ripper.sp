@@ -59,13 +59,19 @@ public Action Timer_Management_Dimension(Handle timer, DataPack pack)
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		h_TimerDimensionWeaponManagement[client] = null;
+		DestroyDimEffect(client);
 		return Plugin_Stop;
 	}
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{	
 		Dimension_Cooldown_Logic(client, weapon);
+		CreateDimEffect(client, weapon);
 	}	
+	else
+	{
+		DestroyDimEffect(client);
+	}
 	return Plugin_Continue;
 }
 
@@ -275,30 +281,6 @@ void CreateDimEffect(int client)
 	}
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(client, particle);
-}
-
-public Action Timer_Management_Dimension(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int client = pack.ReadCell();
-	int weapon = EntRefToEntIndex(pack.ReadCell());
-	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
-	{
-		DestroyDimEffect(client);
-		return Plugin_Stop;
-	}	
-
-	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
-	{
-		CreateDimEffect(client, weapon);
-	}
-	else
-	{
-		DestroyDimEffect(client);
-	}
-		
-	return Plugin_Continue;
 }
 
 void DestroyDimEffect(int client)
