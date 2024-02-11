@@ -231,7 +231,83 @@ void Npc_OnTakeDamage_DimensionalRipper(int attacker, int victim)
 	}
 }
 
+static int Get_Pap(int weapon)
+{
+	int pap = 0;
+	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	return pap;
+}
+void CreateDimEffect(int client)
+{
+	
+	DestroyDimEffect(client);
+	
+	float flPos[3];
+	GetEntPropVector(client, Prop_Data, "effect_hand_l", flPos);
 
+	if(pap == 1.0) //Only show if the weapon is actually in your hand right now.
+	{
+		int particle = ParticleEffectAt(flPos, "hwn_skeleton_glow_red", 0.0);
+	}
+	if(pap == 2.0) //Only show if the weapon is actually in your hand right now.
+	{
+		int particle = ParticleEffectAt(flPos, "burningplayer_blueglow", 0.0);
+	}
+	if(pap == 3.0) //Only show if the weapon is actually in your hand right now.
+	{
+		int particle = ParticleEffectAt(flPos, "unusual_aura_green_smoke", 0.0);
+	}
+	if(pap == 4.0) //Only show if the weapon is actually in your hand right now.
+	{
+		int particle = ParticleEffectAt(flPos, "contract_score_bonus_sparkle", 0.0);
+	}
+	if(pap == 5.0) //Only show if the weapon is actually in your hand right now.
+	{
+		int particle = ParticleEffectAt(flPos, "unusual_sapper_teamcolor_blue", 0.0);
+	}
+	if(pap == 6.0) //Only show if the weapon is actually in your hand right now.
+	{
+		int particle = ParticleEffectAt(flPos, "utaunt_glowyplayer_purple_parent", 0.0);
+	}
+	else //Only show if the weapon is actually in your hand right now.
+	{
+		ShowSyncHudText(client,  SyncHud_Notifaction, "An error occured. Scream at devs");//none
+	}
+	AddEntityToThirdPersonTransitMode(client, particle);
+	SetParent(client, particle);
+}
+
+public Action Timer_Management_Dimension(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	{
+		DestroyDimEffect(client);
+		return Plugin_Stop;
+	}	
+
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+	{
+		CreateDimEffect(client, weapon);
+	}
+	else
+	{
+		DestroyDimEffect(client);
+	}
+		
+	return Plugin_Continue;
+}
+
+void DestroyDimEffect(int client)
+{
+	if(IsValidEntity(entity))
+	{
+		RemoveEntity(entity);
+	}
+}
 
 public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result, int slot, int pap_logic)
 {
@@ -344,7 +420,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 	switch(GetRandomInt(1, 12))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, ALT_COMBINE_MAGE ,weapon, 1.1, 1.15, "eyeboss_tp_player");
+			Dimension_Summon_Npc(client, ALT_COMBINE_MAGE ,weapon, 1.15, 1.15, "eyeboss_tp_player");
 		case 2:
 			Dimension_Summon_Npc(client, ALT_MEDIC_APPRENTICE_MAGE ,weapon, 1.1, 1.15, "eyeboss_tp_player");
 		case 3:
@@ -727,7 +803,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 		case 17:
 			Dimension_Summon_Npc(client, SEABORN_GUARD ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
 		case 18:
-			Dimension_Summon_Npc(client, SEABORN_DEFENDER ,weapon, 1.5, 1.1, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEABORN_DEFENDER ,weapon, 0.6, 1.1, "utaunt_constellations_blue_base");
 		case 19:
 			Dimension_Summon_Npc(client, SEABORN_CASTER ,weapon, 1.1, 1.3, "utaunt_constellations_blue_base");
 		case 20:
