@@ -116,7 +116,7 @@ public void Weapon_Dimension_Wand(int client, int weapon, bool crit)
 		
 		delay_hud[client] = 0.0;
 			
-		float speed = 1000.0;
+		float speed = 1200.0;
 		speed *= Attributes_Get(weapon, 103, 1.0);
 		
 		speed *= Attributes_Get(weapon, 104, 1.0);
@@ -200,4620 +200,6 @@ public void Wand_DimensionTouch(int entity, int target)
 	}
 }
 
-public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result, int slot)
-{
-	if(weapon >= MaxClients)
-	{
-		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE)
-		{
-			int mana_cost = 100;
-			if(mana_cost <= Current_Mana[client])
-			{
-				Rogue_OnAbilityUse(weapon);
-				float pos1[3], ang[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
-				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-				float Dimension_Loc[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				ParticleEffectAt(Dimension_Loc, "ghost_appearation", 1.0);
-				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
-				switch(GetRandomInt(1, 19))
-				{
-					case 1:
-					{
-						int entity = Npc_Create(HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 2:
-					{
-						int entity = Npc_Create(FORTIFIED_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)* 13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 3:
-					{
-						int entity = Npc_Create(FASTZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*11.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.30 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 4:
-					{
-						int entity = Npc_Create(FORTIFIED_FASTZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.30 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 5:
-					{
-						int entity = Npc_Create(TORSOLESS_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.30 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 6:
-					{
-						int entity = Npc_Create(FORTIFIED_GIANT_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 7:
-					{
-						int entity = Npc_Create(POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 8:
-					{
-						int entity = Npc_Create(FORTIFIED_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 9:
-					{
-						int entity = Npc_Create(FATHER_GRIGORI, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*25.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.33 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 10:
-					{
-						int entity = Npc_Create(COMBINE_POLICE_PISTOL, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 11:
-					{
-						int entity = Npc_Create(COMBINE_SOLDIER_AR2, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 12:
-					{
-						int entity = Npc_Create(COMBINE_SOLDIER_SHOTGUN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 13:
-					{
-						int entity = Npc_Create(COMBINE_POLICE_SMG, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 14:
-					{
-						int entity = Npc_Create(COMBINE_SOLDIER_SWORDSMAN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 15:
-					{
-						int entity = Npc_Create(COMBINE_SOLDIER_ELITE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 16:
-					{
-						int entity = Npc_Create(COMBINE_SOLDIER_GIANT_SWORDSMAN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 17:
-					{
-						int entity = Npc_Create(COMBINE_SOLDIER_DDT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 18:
-					{
-						int entity = Npc_Create(COMBINE_SOLDIER_COLLOSS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*27.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 19:
-					{
-						int entity = Npc_Create(COMBINE_OVERLORD, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*30);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					default: //This should not happen
-					{
-						ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
-					}
-				}
-				
-				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "13 ; 9999");
-				Attributes_Set(client, 178, 0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-				FakeClientCommand(client, "use tf_weapon_spellbook");
-				Attributes_Set(client, 698, 1.0);
-				Delete_Flame[client] = true;
-				
-				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
-				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
-					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-				Mana_Hud_Delay[client] = 0.0;
-				
-				Current_Mana[client] -= mana_cost;
-					
-				delay_hud[client] = 0.0;
-				how_many_times_swinged[client] = 0;
-			}
-			else
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-			}
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Not enough Charges");
-		}
-	}
-}
-
-public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &result, int slot)
-{
-	if(weapon >= MaxClients)
-	{
-		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE)
-		{
-			int mana_cost = 100;
-			if(mana_cost <= Current_Mana[client])
-			{
-				Rogue_OnAbilityUse(weapon);
-				float pos1[3], ang[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
-				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-				float Dimension_Loc[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				ParticleEffectAt(Dimension_Loc, "ghost_appearation", 1.0);
-				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
-				switch(GetRandomInt(1, 36))
-				{
-					case 1:
-					{
-						int entity = Npc_Create(HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 2:
-					{
-						int entity = Npc_Create(FORTIFIED_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)* 13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 3:
-					{
-						int entity = Npc_Create(FASTZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*11.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 4:
-					{
-						int entity = Npc_Create(FORTIFIED_FASTZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 5:
-					{
-						int entity = Npc_Create(TORSOLESS_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 6:
-					{
-						int entity = Npc_Create(FORTIFIED_GIANT_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 7:
-					{
-						int entity = Npc_Create(POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 8:
-					{
-						int entity = Npc_Create(FORTIFIED_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 9:
-					{
-						int entity = Npc_Create(FATHER_GRIGORI, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*25.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 10:
-					{
-						int entity = Npc_Create(COMBINE_POLICE_PISTOL, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 11:
-					{
-						int entity = Npc_Create(COMBINE_SOLDIER_AR2, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 12:
-					{
-						int entity = Npc_Create(COMBINE_SOLDIER_SHOTGUN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 13:
-					{
-						int entity = Npc_Create(COMBINE_POLICE_SMG, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 14:
-					{
-						int entity = Npc_Create(COMBINE_SOLDIER_SWORDSMAN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 15:
-					{
-						int entity = Npc_Create(COMBINE_SOLDIER_ELITE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 16:
-					{
-						int entity = Npc_Create(COMBINE_SOLDIER_GIANT_SWORDSMAN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 17:
-					{
-						int entity = Npc_Create(COMBINE_SOLDIER_DDT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 18:
-					{
-						int entity = Npc_Create(COMBINE_SOLDIER_COLLOSS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*27.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 19:
-					{
-						int entity = Npc_Create(COMBINE_OVERLORD, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*30);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 20:
-					{
-						int entity = Npc_Create(SPY_MAIN_BOSS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*31);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.39 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 21:
-					{
-						int entity = Npc_Create(ENGINEER_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 22:
-					{
-						int entity = Npc_Create(HEAVY_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 23:
-					{
-						int entity = Npc_Create(KAMIKAZE_DEMO, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 24:
-					{
-						int entity = Npc_Create(MEDIC_HEALER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 25:
-					{
-						int entity = Npc_Create(HEAVY_ZOMBIE_GIANT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 26:
-					{
-						int entity = Npc_Create(SPY_FACESTABBER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 27:
-					{
-						int entity = Npc_Create(SOLDIER_ROCKET_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 28:
-					{
-						int entity = Npc_Create(SOLDIER_ZOMBIE_MINION, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 29:
-					{
-						int entity = Npc_Create(SPY_THIEF, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 30:
-					{
-						int entity = Npc_Create(SPY_TRICKSTABBER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 31:
-					{
-						int entity = Npc_Create(SPY_HALF_CLOACKED, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 32:
-					{
-						int entity = Npc_Create(SNIPER_MAIN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.37 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 33:
-					{
-						int entity = Npc_Create(DEMO_MAIN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.37 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 34:
-					{
-						int entity = Npc_Create(BATTLE_MEDIC_MAIN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*21.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.37 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 35:
-					{
-						int entity = Npc_Create(GIANT_PYRO_MAIN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.37 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 36:
-					{
-						int entity = Npc_Create(COMBINE_DEUTSCH_RITTER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 10.0)*22);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					default: //This should not happen
-					{
-						ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
-					}
-				}
-				
-				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "13 ; 9999");
-				Attributes_Set(client, 178, 0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-				FakeClientCommand(client, "use tf_weapon_spellbook");
-				Attributes_Set(client, 698, 1.0);
-				Delete_Flame[client] = true;
-				
-				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
-				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
-					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-				Mana_Hud_Delay[client] = 0.0;
-				
-				Current_Mana[client] -= mana_cost;
-					
-				delay_hud[client] = 0.0;
-
-				how_many_times_swinged[client] = 0;
-			}
-			else
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-			}
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Not enough Charges");
-		}
-	}
-}
-
-public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &result, int slot)
-{
-	if(weapon >= MaxClients)
-	{
-		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE)
-		{
-			int mana_cost = 100;
-			if(mana_cost <= Current_Mana[client])
-			{
-				Rogue_OnAbilityUse(weapon);
-				float pos1[3], ang[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
-				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-				float Dimension_Loc[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				ParticleEffectAt(Dimension_Loc, "eyeboss_tp_player", 1.0);
-				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
-				switch(GetRandomInt(1, 17))
-				{
-					case 1:
-					{
-						int entity = Npc_Create(ALT_COMBINE_MAGE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 250.0)*11.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 2:
-					{
-						int entity = Npc_Create(ALT_MEDIC_APPRENTICE_MAGE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*11.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 3:
-					{
-						int entity = Npc_Create(ALT_MEDIC_CHARGER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.35 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 4:
-					{
-						int entity = Npc_Create(ALT_MEDIC_BERSERKER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.35 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 5:
-					{
-						int entity = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*20.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.33 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 6:
-					{
-						int entity = Npc_Create(ALT_SNIPER_RAILGUNNER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*9.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.33 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 7:
-					{
-						int entity = Npc_Create(ALT_SOLDIER_BARRAGER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.33 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 8:
-					{
-						int entity = Npc_Create(ALT_The_Shit_Slapper, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.5);
-							maxhealth = RoundFloat(float(maxhealth) * 1.1);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.35 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 9:
-					{
-						int entity = Npc_Create(ALT_MECHA_ENGINEER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 10:
-					{
-						int entity = Npc_Create(ALT_MECHA_HEAVY, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) *0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 11:
-					{
-						int entity = Npc_Create(ALT_MECHA_SCOUT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 12:
-					{
-						int entity = Npc_Create(ALT_MECHASOLDIER_BARRAGER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.35 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 13:
-					{
-						int entity = Npc_Create(ALT_MECHA_HEAVYGIANT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 14:
-					{
-						int entity = Npc_Create(ALT_MECHA_PYROGIANT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 15:
-					{
-						int entity = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 16:
-					{
-						int entity = Npc_Create(ALT_MEDIC_HEALER_3, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 17:
-					{
-						int entity = Npc_Create(ALT_SCHWERTKRIEG, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*30.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					default: //This should not happen
-					{
-						ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
-					}
-				}
-				
-				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "13 ; 9999");
-				Attributes_Set(client, 178, 0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-				FakeClientCommand(client, "use tf_weapon_spellbook");
-				Attributes_Set(client, 698, 1.0);
-				Delete_Flame[client] = true;
-				
-				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
-				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
-					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-				Mana_Hud_Delay[client] = 0.0;
-				
-				Current_Mana[client] -= mana_cost;
-					
-				delay_hud[client] = 0.0;
-
-				how_many_times_swinged[client] = 0;
-			}
-			else
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-			}
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Not enough Charges");
-		}
-	}
-}
-
-public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, int slot)
-{
-	if(weapon >= MaxClients)
-	{
-		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE)
-		{
-			int mana_cost = 100;
-			if(mana_cost <= Current_Mana[client])
-			{
-				Rogue_OnAbilityUse(weapon);
-				float pos1[3], ang[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
-				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-				float Dimension_Loc[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				ParticleEffectAt(Dimension_Loc, "eyeboss_tp_player", 1.0);
-				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
-				switch(GetRandomInt(1, 12))
-				{
-					case 1:
-					{
-						int entity = Npc_Create(ALT_COMBINE_MAGE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 250.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 2:
-					{
-						int entity = Npc_Create(ALT_MEDIC_APPRENTICE_MAGE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 3:
-					{
-						int entity = Npc_Create(ALT_MEDIC_CHARGER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 4:
-					{
-						int entity = Npc_Create(ALT_MEDIC_BERSERKER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*20.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.33 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 5:
-					{
-						int entity = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.33 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 6:
-					{
-						int entity = Npc_Create(ALT_SNIPER_RAILGUNNER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.33 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 7:
-					{
-						int entity = Npc_Create(ALT_SOLDIER_BARRAGER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.33 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 8:
-					{
-						int entity = Npc_Create(ALT_The_Shit_Slapper, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
-							maxhealth = RoundFloat(float(maxhealth) * 1.1);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 9:
-					{
-						int entity = Npc_Create(ALT_MECHA_ENGINEER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 10:
-					{
-						int entity = Npc_Create(ALT_MECHA_HEAVY, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) *0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 11:
-					{
-						int entity = Npc_Create(ALT_MECHA_SCOUT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 12:
-					{
-						int entity = Npc_Create(ALT_MECHASOLDIER_BARRAGER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.35 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					default: //This should not happen
-					{
-						ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
-					}
-				}
-				
-				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "13 ; 9999");
-				Attributes_Set(client, 178, 0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-				FakeClientCommand(client, "use tf_weapon_spellbook");
-				Attributes_Set(client, 698, 1.0);
-				Delete_Flame[client] = true;
-				
-				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
-				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
-					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-				Mana_Hud_Delay[client] = 0.0;
-				
-				Current_Mana[client] -= mana_cost;
-					
-				delay_hud[client] = 0.0;
-
-				how_many_times_swinged[client] = 0;
-			}
-			else
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-			}
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Not enough Charges");
-		}
-	}
-}
-
-public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, int slot)
-{
-	if(weapon >= MaxClients)
-	{
-		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE)
-		{
-			int mana_cost = 150;
-			if(mana_cost <= Current_Mana[client])
-			{
-				Rogue_OnAbilityUse(weapon);
-				float pos1[3], ang[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
-				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-				float Dimension_Loc[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				ParticleEffectAt(Dimension_Loc, "utaunt_smoke_floor1_green", 1.0);
-				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
-				switch(GetRandomInt(1, 28))
-				{
-					case 1:
-					{
-						int entity = Npc_Create(XENO_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 2:
-					{
-						int entity = Npc_Create(XENO_FORTIFIED_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 3:
-					{
-						int entity = Npc_Create(XENO_FASTZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 11.5));
-							maxhealth = RoundFloat(float(maxhealth) * 0.9);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 4:
-					{
-						int entity = Npc_Create(XENO_FORTIFIED_FASTZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 5:
-					{
-						int entity = Npc_Create(XENO_TORSOLESS_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 6:
-					{
-						int entity = Npc_Create(XENO_FORTIFIED_GIANT_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 7:
-					{
-						int entity = Npc_Create(XENO_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 8:
-					{
-						int entity = Npc_Create(XENO_FORTIFIED_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 9:
-					{
-						int entity = Npc_Create(XENO_COMBINE_POLICE_PISTOL, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 10:
-					{
-						int entity = Npc_Create(XENO_COMBINE_POLICE_SMG, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 11:
-					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_AR2, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 12:
-					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_SHOTGUN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 13:
-					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_SWORDSMAN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 14:
-					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_ELITE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 15:
-					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_GIANT_SWORDSMAN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 16:
-					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_DDT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 17:
-					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_COLLOSS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*27.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 18:
-					{
-						int entity = Npc_Create(XENO_SCOUT_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 19:
-					{
-						int entity = Npc_Create(XENO_ENGINEER_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 20:
-					{
-						int entity = Npc_Create(XENO_HEAVY_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 21:
-					{
-						int entity = Npc_Create(XENO_KAMIKAZE_DEMO, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.35 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 22:
-					{
-						int entity = Npc_Create(XENO_SPY_FACESTABBER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 23:
-					{
-						int entity = Npc_Create(XENO_SOLDIER_ROCKET_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 24:
-					{
-						int entity = Npc_Create(XENO_SPY_THIEF, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 25:
-					{
-						int entity = Npc_Create(XENO_SPY_TRICKSTABBER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 26:
-					{
-						int entity = Npc_Create(XENO_SPY_HALF_CLOACKED, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 27:
-					{
-						int entity = Npc_Create(XENO_SNIPER_MAIN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 28:
-					{
-						int entity = Npc_Create(XENO_DEMO_MAIN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					default: //This should not happen
-					{
-						ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
-					}
-				}
-				
-				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "13 ; 9999");
-				Attributes_Set(client, 178, 0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-				FakeClientCommand(client, "use tf_weapon_spellbook");
-				Attributes_Set(client, 698, 1.0);
-				Delete_Flame[client] = true;
-				
-				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
-				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
-					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-				Mana_Hud_Delay[client] = 0.0;
-				
-				Current_Mana[client] -= mana_cost;
-					
-				delay_hud[client] = 0.0;
-
-				how_many_times_swinged[client] = 0;
-			}
-			else
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-			}
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Not enough Charges");
-		}
-	}
-}
-
-public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &result, int slot)
-{
-	if(weapon >= MaxClients)
-	{
-		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE)
-		{
-			int mana_cost = 150;
-			if(mana_cost <= Current_Mana[client])
-			{
-				Rogue_OnAbilityUse(weapon);
-				float pos1[3], ang[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
-				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-				float Dimension_Loc[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				ParticleEffectAt(Dimension_Loc, "utaunt_smoke_floor1_green", 1.0);
-				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
-				switch(GetRandomInt(1, 36))
-				{
-					case 1:
-					{
-						int entity = Npc_Create(XENO_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 2:
-					{
-						int entity = Npc_Create(XENO_FORTIFIED_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 3:
-					{
-						int entity = Npc_Create(XENO_FASTZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 11.5));
-							maxhealth = RoundFloat(float(maxhealth) * 0.9);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 4:
-					{
-						int entity = Npc_Create(XENO_FORTIFIED_FASTZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 5:
-					{
-						int entity = Npc_Create(XENO_TORSOLESS_HEADCRAB_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 6:
-					{
-						int entity = Npc_Create(XENO_FORTIFIED_GIANT_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 7:
-					{
-						int entity = Npc_Create(XENO_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 8:
-					{
-						int entity = Npc_Create(XENO_FORTIFIED_POISON_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 9:
-					{
-						int entity = Npc_Create(XENO_COMBINE_POLICE_PISTOL, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 10:
-					{
-						int entity = Npc_Create(XENO_COMBINE_POLICE_SMG, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 11:
-					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_AR2, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 12:
-					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_SHOTGUN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 13:
-					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_SWORDSMAN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 14:
-					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_ELITE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 15:
-					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_GIANT_SWORDSMAN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 16:
-					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_DDT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 17:
-					{
-						int entity = Npc_Create(XENO_COMBINE_SOLDIER_COLLOSS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*27.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 18:
-					{
-						int entity = Npc_Create(XENO_SCOUT_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 19:
-					{
-						int entity = Npc_Create(XENO_ENGINEER_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 20:
-					{
-						int entity = Npc_Create(XENO_HEAVY_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 21:
-					{
-						int entity = Npc_Create(XENO_KAMIKAZE_DEMO, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.35 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 22:
-					{
-						int entity = Npc_Create(XENO_SPY_FACESTABBER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 23:
-					{
-						int entity = Npc_Create(XENO_SOLDIER_ROCKET_ZOMBIE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 24:
-					{
-						int entity = Npc_Create(XENO_SPY_THIEF, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 25:
-					{
-						int entity = Npc_Create(XENO_SPY_TRICKSTABBER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 26:
-					{
-						int entity = Npc_Create(XENO_SPY_HALF_CLOACKED, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 27:
-					{
-						int entity = Npc_Create(XENO_SNIPER_MAIN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 28:
-					{
-						int entity = Npc_Create(XENO_DEMO_MAIN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 29:
-					{
-						int entity = Npc_Create(XENO_COMBINE_OVERLORD, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*30);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 30:
-					{
-						int entity = Npc_Create(XENO_FATHER_GRIGORI, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*30);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 31:
-					{
-						int entity = Npc_Create(XENO_MEDIC_HEALER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.21);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 32:
-					{
-						int entity = Npc_Create(XENO_BATTLE_MEDIC_MAIN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*21.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 33:
-					{
-						int entity = Npc_Create(XENO_GIANT_PYRO_MAIN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*25.0);
-
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 34:
-					{
-						int entity = Npc_Create(XENO_COMBINE_DEUTSCH_RITTER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 35:
-					{
-						int entity = Npc_Create(XENO_SPY_MAIN_BOSS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*31);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					default: //This should not happen
-					{
-						ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
-					}
-				}
-				
-				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "13 ; 9999");
-				Attributes_Set(client, 178, 0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-				FakeClientCommand(client, "use tf_weapon_spellbook");
-				Attributes_Set(client, 698, 1.0);
-				Delete_Flame[client] = true;
-				
-				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
-				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
-					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-				Mana_Hud_Delay[client] = 0.0;
-				
-				Current_Mana[client] -= mana_cost;
-					
-				delay_hud[client] = 0.0;
-
-				how_many_times_swinged[client] = 0;
-			}
-			else
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-			}
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Not enough Charges");
-		}
-	}
-}
-
-public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &result, int slot)
-{
-	if(weapon >= MaxClients)
-	{
-		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE)
-		{
-			int mana_cost = 150;
-			if(mana_cost <= Current_Mana[client])
-			{
-				Rogue_OnAbilityUse(weapon);
-				float pos1[3], ang[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
-				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-				float Dimension_Loc[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				ParticleEffectAt(Dimension_Loc, "npc_boss_bomb_alert", 1.0);
-				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
-				switch(GetRandomInt(1, 22))
-				{
-					case 1:
-					{
-						int entity = Npc_Create(MEDIVAL_MILITIA, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 2:
-					{
-						int entity = Npc_Create(MEDIVAL_ARCHER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 3:
-					{
-						int entity = Npc_Create(MEDIVAL_MAN_AT_ARMS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 4:
-					{
-						int entity = Npc_Create(MEDIVAL_SWORDSMAN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 5:
-					{
-						int entity = Npc_Create(MEDIVAL_TWOHANDED_SWORDSMAN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 6:
-					{
-						int entity = Npc_Create(MEDIVAL_CROSSBOW_MAN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 7:
-					{
-						int entity = Npc_Create(MEDIVAL_SPEARMEN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 8:
-					{
-						int entity = Npc_Create(MEDIVAL_HANDCANNONEER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 9:
-					{
-						int entity = Npc_Create(MEDIVAL_ELITE_SKIRMISHER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 10:
-					{
-						int entity = Npc_Create(MEDIVAL_EAGLE_SCOUT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 11:
-					{
-						int entity = Npc_Create(MEDIVAL_SAMURAI, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 12:
-					{
-						int entity = Npc_Create(MEDIVAL_CHAMPION, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 13:
-					{
-						int entity = Npc_Create(MEDIVAL_LIGHT_CAV, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 14:
-					{
-						int entity = Npc_Create(MEDIVAL_BRAWLER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 15:
-					{
-						int entity = Npc_Create(MEDIVAL_EAGLE_WARRIOR, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 16:
-					{
-						int entity = Npc_Create(MEDIVAL_CAVALARY, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 17:
-					{
-						int entity = Npc_Create(MEDIVAL_HALB, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*21.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 18:
-					{
-						int entity = Npc_Create(MEDIVAL_LONGBOWMEN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 19:
-					{
-						int entity = Npc_Create(MEDIVAL_ARBALEST, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 20:
-					{
-						int entity = Npc_Create(MEDIVAL_ELITE_LONGBOWMEN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 21:
-					{
-						int entity = Npc_Create(MEDIVAL_PALADIN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 22:
-					{
-						int entity = Npc_Create(MEDIVAL_RIDDENARCHER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					default: //This should not happen
-					{
-						ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
-					}
-				}
-				
-				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "13 ; 9999");
-				Attributes_Set(client, 178, 0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-				FakeClientCommand(client, "use tf_weapon_spellbook");
-				Attributes_Set(client, 698, 1.0);
-				Delete_Flame[client] = true;
-				
-				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
-				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
-					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-				Mana_Hud_Delay[client] = 0.0;
-				
-				Current_Mana[client] -= mana_cost;
-					
-				delay_hud[client] = 0.0;
-
-				how_many_times_swinged[client] = 0;
-			}
-			else
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-			}
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Not enough Charges");
-		}
-	}
-}
-
-public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &result, int slot)
-{
-	if(weapon >= MaxClients)
-	{
-		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE)
-		{
-			int mana_cost = 150;
-			if(mana_cost <= Current_Mana[client])
-			{
-				Rogue_OnAbilityUse(weapon);
-				float pos1[3], ang[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
-				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-				float Dimension_Loc[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				ParticleEffectAt(Dimension_Loc, "npc_boss_bomb_alert", 1.0);
-				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
-				switch(GetRandomInt(1,33))
-				{
-					case 1:
-					{
-						int entity = Npc_Create(MEDIVAL_MILITIA, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 2:
-					{
-						int entity = Npc_Create(MEDIVAL_ARCHER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 3:
-					{
-						int entity = Npc_Create(MEDIVAL_MAN_AT_ARMS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 4:
-					{
-						int entity = Npc_Create(MEDIVAL_SWORDSMAN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 5:
-					{
-						int entity = Npc_Create(MEDIVAL_TWOHANDED_SWORDSMAN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 6:
-					{
-						int entity = Npc_Create(MEDIVAL_CROSSBOW_MAN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 7:
-					{
-						int entity = Npc_Create(MEDIVAL_SPEARMEN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 8:
-					{
-						int entity = Npc_Create(MEDIVAL_HANDCANNONEER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 9:
-					{
-						int entity = Npc_Create(MEDIVAL_ELITE_SKIRMISHER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 10:
-					{
-						int entity = Npc_Create(MEDIVAL_EAGLE_SCOUT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 11:
-					{
-						int entity = Npc_Create(MEDIVAL_SAMURAI, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 12:
-					{
-						int entity = Npc_Create(MEDIVAL_CHAMPION, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 13:
-					{
-						int entity = Npc_Create(MEDIVAL_LIGHT_CAV, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 14:
-					{
-						int entity = Npc_Create(MEDIVAL_BRAWLER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 15:
-					{
-						int entity = Npc_Create(MEDIVAL_EAGLE_WARRIOR, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 16:
-					{
-						int entity = Npc_Create(MEDIVAL_CAVALARY, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 17:
-					{
-						int entity = Npc_Create(MEDIVAL_HALB, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*21.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 18:
-					{
-						int entity = Npc_Create(MEDIVAL_LONGBOWMEN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 19:
-					{
-						int entity = Npc_Create(MEDIVAL_ARBALEST, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 20:
-					{
-						int entity = Npc_Create(MEDIVAL_ELITE_LONGBOWMEN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 21:
-					{
-						int entity = Npc_Create(MEDIVAL_PALADIN, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 22:
-					{
-						int entity = Npc_Create(MEDIVAL_RIDDENARCHER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 23:
-					{
-						int entity = Npc_Create(MEDIVAL_CONSTRUCT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*29.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 24:
-					{
-						int entity = Npc_Create(MEDIVAL_RAM, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 25:
-					{
-						int entity = Npc_Create(MEDIVAL_SCOUT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 26:
-					{
-						int entity = Npc_Create(MEDIVAL_HUSSAR, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 27:
-					{
-						int entity = Npc_Create(MEDIVAL_OBUCH, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)* 23.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 28:
-					{
-						int entity = Npc_Create(MEDIVAL_MONK, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 12.0 );
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 29:
-					{
-						int entity = Npc_Create(MEDIVAL_CROSSBOW_GIANT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 27.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 30:
-					{
-						int entity = Npc_Create(MEDIVAL_SWORDSMAN_GIANT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 27.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 31:
-					{
-						int entity = Npc_Create(MEDIVAL_EAGLE_GIANT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 27.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 32:
-					{
-						int entity = Npc_Create(MEDIVAL_ACHILLES, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 30);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.30 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 33:
-					{
-						int entity = Npc_Create(MEDIVAL_SON_OF_OSIRIS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 31);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					default: //This should not happen
-					{
-						ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
-					}
-				}
-				
-				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "13 ; 9999");
-				Attributes_Set(client, 178, 0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-				FakeClientCommand(client, "use tf_weapon_spellbook");
-				Attributes_Set(client, 698, 1.0);
-				Delete_Flame[client] = true;
-				
-				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
-				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
-					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-				Mana_Hud_Delay[client] = 0.0;
-				
-				Current_Mana[client] -= mana_cost;
-					
-				delay_hud[client] = 0.0;
-
-				how_many_times_swinged[client] = 0;
-			}
-			else
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-			}
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Not enough Charges");
-		}
-	}
-}
-
-
-public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result, int slot)
-{
-	if(weapon >= MaxClients)
-	{
-		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE)
-		{
-			int mana_cost = 150;
-			if(mana_cost <= Current_Mana[client])
-			{
-				Rogue_OnAbilityUse(weapon);
-				float pos1[3], ang[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
-				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-				float Dimension_Loc[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				ParticleEffectAt(Dimension_Loc, "utaunt_constellations_blue_base", 1.0);
-				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
-				switch(GetRandomInt(1, 10))
-				{
-					case 1:
-					{
-						int entity = Npc_Create(SEARUNNER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 2:
-					{
-						int entity = Npc_Create(SEASLIDER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 3:
-					{
-						int entity = Npc_Create(SEASPITTER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 4:
-					{
-						int entity = Npc_Create(SEAREAPER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*21.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 5:
-					{
-						int entity = Npc_Create(SEACRAWLER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 6:
-					{
-						int entity = Npc_Create(SEAPIERCER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 7:
-					{
-						int entity = Npc_Create(SEAPREDATOR, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*10.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 8:
-					{
-						int entity = Npc_Create(SEASPEWER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 9:
-					{
-						int entity = Npc_Create(SEASWARMCALLER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 10:
-					{
-						int entity = Npc_Create(SEAREEFBREAKER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*20.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					default: //This should not happen
-					{
-						ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
-					}
-				}
-				
-				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "13 ; 9999");
-				Attributes_Set(client, 178, 0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-				FakeClientCommand(client, "use tf_weapon_spellbook");
-				Attributes_Set(client, 698, 1.0);
-				Delete_Flame[client] = true;
-				
-				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
-				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
-					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-				Mana_Hud_Delay[client] = 0.0;
-				
-				Current_Mana[client] -= mana_cost;
-					
-				delay_hud[client] = 0.0;
-
-				how_many_times_swinged[client] = 0;
-			}
-			else
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-			}
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Not enough Charges");
-		}
-	}
-}
-
-public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &result, int slot)
-{
-	if(weapon >= MaxClients)
-	{
-		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE)
-		{
-			int mana_cost = 150;
-			if(mana_cost <= Current_Mana[client])
-			{
-				Rogue_OnAbilityUse(weapon);
-				float pos1[3], ang[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
-				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-				float Dimension_Loc[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				ParticleEffectAt(Dimension_Loc, "utaunt_constellations_blue_base", 1.0);
-				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
-				switch(GetRandomInt(1, 26))
-				{
-					case 1:
-					{
-						int entity = Npc_Create(SEARUNNER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 2:
-					{
-						int entity = Npc_Create(SEASLIDER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 3:
-					{
-						int entity = Npc_Create(SEASPITTER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 4:
-					{
-						int entity = Npc_Create(SEAREAPER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*21.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 5:
-					{
-						int entity = Npc_Create(SEACRAWLER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 6:
-					{
-						int entity = Npc_Create(SEAPIERCER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 7:
-					{
-						int entity = Npc_Create(SEAPREDATOR, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*10.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 8:
-					{
-						int entity = Npc_Create(SEASPEWER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 9:
-					{
-						int entity = Npc_Create(SEASWARMCALLER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 10:
-					{
-						int entity = Npc_Create(SEAREEFBREAKER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*20.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 11:
-					{
-						int entity = Npc_Create(SEABORN_KAZIMIERZ_KNIGHT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 12:
-					{
-						int entity = Npc_Create(SEABORN_KAZIMIERZ_KNIGHT_ARCHER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 13:
-					{
-						int entity = Npc_Create(SEABORN_KAZIMIERZ_LONGARCHER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 14:
-					{
-						int entity = Npc_Create(SEABORN_KAZIMIERZ_ASSASIN_MELEE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*18.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 15:
-					{
-						int entity = Npc_Create(SEABORN_SCOUT, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 16:
-					{
-						int entity = Npc_Create(SEABORN_PYRO, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 17:
-					{
-						int entity = Npc_Create(SEABORN_DEMO, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.35 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 18:
-					{
-						int entity = Npc_Create(SEABORN_HEAVY, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 19:
-					{
-						int entity = Npc_Create(SEABORN_MEDIC, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*13.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 20:
-					{
-						int entity = Npc_Create(SEABORN_SNIPER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 21:
-					{
-						int entity = Npc_Create(SEABORN_SPY, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 22:
-					{
-						int entity = Npc_Create(SEABORN_GUARD, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*22.0);
-							maxhealth = RoundFloat(float(maxhealth) * 1.1);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 23:
-					{
-						int entity = Npc_Create(SEABORN_DEFENDER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
-							maxhealth = RoundFloat(float(maxhealth) * 1.2);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 24:
-					{
-						int entity = Npc_Create(SEABORN_CASTER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 25:
-					{
-						int entity = Npc_Create(SEABORN_SPECIALIST, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					default: //This should not happen
-					{
-						ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
-					}
-				}
-				
-				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "13 ; 9999");
-				Attributes_Set(client, 178, 0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-				FakeClientCommand(client, "use tf_weapon_spellbook");
-				Attributes_Set(client, 698, 1.0);
-				Delete_Flame[client] = true;
-				
-				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
-				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
-					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-				Mana_Hud_Delay[client] = 0.0;
-				
-				Current_Mana[client] -= mana_cost;
-					
-				delay_hud[client] = 0.0;
-
-				how_many_times_swinged[client] = 0;
-			}
-			else
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-			}
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Not enough Charges");
-		}
-	}
-}
-
-public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &result, int slot)
-{
-	if(weapon >= MaxClients)
-	{
-		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE)
-		{
-			int mana_cost = 150;
-			if(mana_cost <= Current_Mana[client])
-			{
-				Rogue_OnAbilityUse(weapon);
-				float pos1[3], ang[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
-				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-				float Dimension_Loc[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				ParticleEffectAt(Dimension_Loc, "eyeboss_death_vortex", 1.5);
-				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
-				switch(GetRandomInt(1, 14))
-				{
-					case 1:
-					{
-						int entity = Npc_Create(EXPIDONSA_BENERA, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 2:
-					{
-						int entity = Npc_Create(EXPIDONSA_PENTAL, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 3:
-					{
-						int entity = Npc_Create(EXPIDONSA_DEFANDA, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 4:
-					{
-						int entity = Npc_Create(EXPIDONSA_SELFAM_IRE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 5:
-					{
-						int entity = Npc_Create(EXPIDONSA_VAUSMAGICA, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 6:
-					{
-						int entity = Npc_Create(EXPIDONSA_PISTOLEER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 7:
-					{
-						int entity = Npc_Create(EXPIDONSA_DIVERSIONISTICO, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 8:
-					{
-						int entity = Npc_Create(EXPIDONSA_RIFALMANU, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 9:
-					{
-						int entity = Npc_Create(EXPIDONSA_SICCERINO, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 10:
-					{
-						int entity = Npc_Create(EXPIDONSA_SOLDINE_PROTOTYPE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 11:
-					{
-						int entity = Npc_Create(EXPIDONSA_PROTECTA, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 12:
-					{
-						int entity = Npc_Create(EXPIDONSA_EGABUNAR, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 13:
-					{
-						int entity = Npc_Create(EXPIDONSA_ENEGAKAPUS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.30 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 14:
-					{
-						int entity = Npc_Create(EXPIDONSA_VAUSTECHICUS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					default: //This should not happen
-					{
-						ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
-					}
-				}
-				
-				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "13 ; 9999");
-				Attributes_Set(client, 178, 0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-				FakeClientCommand(client, "use tf_weapon_spellbook");
-				Attributes_Set(client, 698, 1.0);
-				Delete_Flame[client] = true;
-				
-				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
-				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
-					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-				Mana_Hud_Delay[client] = 0.0;
-				
-				Current_Mana[client] -= mana_cost;
-					
-				delay_hud[client] = 0.0;
-
-				how_many_times_swinged[client] = 0;
-			}
-			else
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-			}
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Not enough Charges");
-		}
-	}
-}
-
-public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &result, int slot)
-{
-	if(weapon >= MaxClients)
-	{
-		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE)
-		{
-			int mana_cost = 150;
-			if(mana_cost <= Current_Mana[client])
-			{
-				Rogue_OnAbilityUse(weapon);
-				float pos1[3], ang[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
-				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-				float Dimension_Loc[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
-				ParticleEffectAt(Dimension_Loc, "eyeboss_death_vortex", 1.5);
-				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
-				switch(GetRandomInt(1, 26))
-				{
-					case 1:
-					{
-						int entity = Npc_Create(EXPIDONSA_BENERA, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 2:
-					{
-						int entity = Npc_Create(EXPIDONSA_PENTAL, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 3:
-					{
-						int entity = Npc_Create(EXPIDONSA_DEFANDA, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 4:
-					{
-						int entity = Npc_Create(EXPIDONSA_SELFAM_IRE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 5:
-					{
-						int entity = Npc_Create(EXPIDONSA_VAUSMAGICA, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.20);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 6:
-					{
-						int entity = Npc_Create(EXPIDONSA_PISTOLEER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*12.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 7:
-					{
-						int entity = Npc_Create(EXPIDONSA_DIVERSIONISTICO, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 8:
-					{
-						int entity = Npc_Create(EXPIDONSA_RIFALMANU, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*16.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 9:
-					{
-						int entity = Npc_Create(EXPIDONSA_SICCERINO, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 10:
-					{
-						int entity = Npc_Create(EXPIDONSA_SOLDINE_PROTOTYPE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*24.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 11:
-					{
-						int entity = Npc_Create(EXPIDONSA_PROTECTA, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 12:
-					{
-						int entity = Npc_Create(EXPIDONSA_EGABUNAR, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 13:
-					{
-						int entity = Npc_Create(EXPIDONSA_ENEGAKAPUS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*14.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.30 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 14:
-					{
-						int entity = Npc_Create(EXPIDONSA_VAUSTECHICUS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 15:
-					{
-						int entity = Npc_Create(EXPIDONSA_HEAVYPUNUEL, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*27.0);
-							maxhealth = RoundFloat(float(maxhealth) * 1.1);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 16:
-					{
-						int entity = Npc_Create(EXPIDONSA_SNIPONEER, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 15.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 17:
-					{
-						int entity = Npc_Create(EXPIDONSA_DUALREA, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0)*19.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 18:
-					{
-						int entity = Npc_Create(EXPIDONSA_GUARDUS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 27.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 19:
-					{
-						int entity = Npc_Create(EXPIDONSA_MINIGUNASSISA, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 21.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 20:
-					{
-						int entity = Npc_Create(EXPIDONSA_IGNITUS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 26.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 21:
-					{
-						int entity = Npc_Create(EXPIDONSA_HELENA, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 14.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.22);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 22:
-					{
-						int entity = Npc_Create(EXPIDONSA_ERASUS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 21.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 23:
-					{
-						int entity = Npc_Create(EXPIDONSA_GIANTTANKUS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 27.5);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 24:
-					{
-						int entity = Npc_Create(EXPIDONSA_SPEEDUSADIVUS, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 17.0);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.31 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 25:
-					{
-						int entity = Npc_Create(EXPIDONSA_SOLDINE, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 30);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.4 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					case 26:
-					{
-						int entity = Npc_Create(EXPIDONSA_SEARGENTIDEAL, client, pos1, ang, TFTeam_Red);
-						if(entity > MaxClients)
-						{
-							int maxhealth = RoundFloat(Attributes_Get(weapon, 410, 1.0) * 31);
-							SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-							
-							fl_Extra_Damage[entity] = (RoundFloat(Attributes_Get(weapon, 410, 1.0)) * 0.32 * WEAPON_EXTRA_DAMAGE_MODIF);
-							CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-							i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-						}
-					}
-					default: //This should not happen
-					{
-						ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
-					}
-				}
-				
-				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "13 ; 9999");
-				Attributes_Set(client, 178, 0.25 * WEAPON_EXTRA_DAMAGE_MODIF);
-				FakeClientCommand(client, "use tf_weapon_spellbook");
-				Attributes_Set(client, 698, 1.0);
-				Delete_Flame[client] = true;
-				
-				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
-				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
-					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-				Mana_Hud_Delay[client] = 0.0;
-				
-				Current_Mana[client] -= mana_cost;
-					
-				delay_hud[client] = 0.0;
-
-				how_many_times_swinged[client] = 0;
-			}
-			else
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-			}
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Not enough Charges");
-		}
-	}
-}
-
 public Action Dimension_KillNPC(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
@@ -4844,27 +230,596 @@ void Npc_OnTakeDamage_DimensionalRipper(int attacker, int victim)
 
 
 
-public void Weapon_Dimension_Summon_Non_Pap(int client, int weapon, bool &result, int slot, int pap_logic)
+public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result, int slot, int pap_logic)
 {
-	switch(GetRandomInt(1, 26))
+	switch(GetRandomInt(1, 19))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, HEADCRAB_ZOMBIE ,weapon, 0.85, 0.85, "eyeboss_tp_player");
+			Dimension_Summon_Npc(client, HEADCRAB_ZOMBIE ,weapon, 0.85, 0.85, "ghost_appearation");
 		case 2:
-			Dimension_Summon_Npc(client, FORTIFIED_HEADCRAB_ZOMBIE ,weapon, 0.9, 0.9, "eyeboss_tp_player");
+			Dimension_Summon_Npc(client, FORTIFIED_HEADCRAB_ZOMBIE ,weapon, 0.9, 0.9, "ghost_appearation");
+		case 3:
+			Dimension_Summon_Npc(client, FASTZOMBIE ,weapon, 0.8, 0.8, "ghost_appearation");
+		case 4:
+			Dimension_Summon_Npc(client, FORTIFIED_FASTZOMBIE ,weapon, 0.85, 0.85, "ghost_appearation");
+		case 5:
+			Dimension_Summon_Npc(client, TORSOLESS_HEADCRAB_ZOMBIE ,weapon, 0.85, 0.85, "ghost_appearation");
+		case 6:
+			Dimension_Summon_Npc(client, FORTIFIED_GIANT_POISON_ZOMBIE ,weapon, 1.2, 1.2, "ghost_appearation");
+		case 7:
+			Dimension_Summon_Npc(client, POISON_ZOMBIE ,weapon, 1.0, 1.0, "ghost_appearation");
+		case 8:
+			Dimension_Summon_Npc(client, FORTIFIED_POISON_ZOMBIE ,weapon, 1.1, 1.1, "ghost_appearation");
+		case 9:
+			Dimension_Summon_Npc(client, FATHER_GRIGORI ,weapon, 1.9, 1.5, "ghost_appearation");
+		case 10:
+			Dimension_Summon_Npc(client, COMBINE_POLICE_PISTOL ,weapon, 1.0, 1.0, "ghost_appearation");
+		case 11:
+			Dimension_Summon_Npc(client, COMBINE_SOLDIER_AR2 ,weapon, 1.1, 1.1, "ghost_appearation");
+		case 12:
+			Dimension_Summon_Npc(client, COMBINE_SOLDIER_SHOTGUN ,weapon, 1.1, 1.2, "ghost_appearation");
+		case 13:
+			Dimension_Summon_Npc(client, COMBINE_POLICE_SMG ,weapon, 1.1, 1.1, "ghost_appearation");
+		case 14:
+			Dimension_Summon_Npc(client, COMBINE_SOLDIER_SWORDSMAN ,weapon, 1.1, 1.1, "ghost_appearation");
+		case 15:
+			Dimension_Summon_Npc(client, COMBINE_SOLDIER_ELITE ,weapon, 1.1, 1.25, "ghost_appearation");	
+		case 16:
+			Dimension_Summon_Npc(client, COMBINE_SOLDIER_GIANT_SWORDSMAN ,weapon, 1.5, 1.2, "ghost_appearation");
+		case 17:
+			Dimension_Summon_Npc(client, COMBINE_SOLDIER_DDT ,weapon, 1.0, 1.1, "ghost_appearation");
+		case 18:
+			Dimension_Summon_Npc(client, COMBINE_SOLDIER_COLLOSS ,weapon, 1.75, 1.3, "ghost_appearation");
+		case 19:
+			Dimension_Summon_Npc(client, COMBINE_OVERLORD ,weapon, 2.0, 1.5, "ghost_appearation");
+		default: //This should not happen
+		{
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+		}
 	}
 }
 
-public void Weapon_Dimension_Summon_Non_Pap_1(int client, int weapon, bool &result, int slot, int pap_logic)
+public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
 {
-	switch(GetRandomInt(1, 26))
+	switch(GetRandomInt(1, 23))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, XENO_HEADCRAB_ZOMBIE ,weapon, 0.85, 0.85, "eyeboss_tp_player");
+			Dimension_Summon_Npc(client, SPY_MAIN_BOSS ,weapon, 2.5, 2.0, "ghost_appearation");
 		case 2:
-			Dimension_Summon_Npc(client, XENO_FORTIFIED_HEADCRAB_ZOMBIE ,weapon, 0.9, 0.9, "eyeboss_tp_player");
+			Dimension_Summon_Npc(client, ENGINEER_ZOMBIE ,weapon, 1.1, 1.1, "ghost_appearation");
+		case 3:
+			Dimension_Summon_Npc(client, HEAVY_ZOMBIE ,weapon, 1.3, 1.0, "ghost_appearation");
+		case 4:
+			Dimension_Summon_Npc(client, KAMIKAZE_DEMO ,weapon, 0.5, 3.0, "ghost_appearation");
+		case 5:
+			Dimension_Summon_Npc(client, MEDIC_HEALER ,weapon, 0.8, 1.25, "ghost_appearation");
+		case 6:
+			Dimension_Summon_Npc(client, HEAVY_ZOMBIE_GIANT ,weapon, 1.5, 1.2, "ghost_appearation");
+		case 7:
+			Dimension_Summon_Npc(client, SPY_FACESTABBER ,weapon, 1.2, 1.1, "ghost_appearation");
+		case 8:
+			Dimension_Summon_Npc(client, SOLDIER_ROCKET_ZOMBIE ,weapon, 1.0, 1.2, "ghost_appearation");
+		case 9:
+			Dimension_Summon_Npc(client, FATHER_GRIGORI ,weapon, 1.9, 1.5, "ghost_appearation");
+		case 10:
+			Dimension_Summon_Npc(client, SOLDIER_ZOMBIE_MINION ,weapon, 1.2, 1.2, "ghost_appearation");
+		case 11:
+			Dimension_Summon_Npc(client, SPY_THIEF ,weapon, 1.2, 1.1, "ghost_appearation");
+		case 12:
+			Dimension_Summon_Npc(client, SPY_TRICKSTABBER ,weapon, 1.2, 1.2, "ghost_appearation");
+		case 13:
+			Dimension_Summon_Npc(client, SPY_HALF_CLOACKED ,weapon, 1.2, 1.1, "ghost_appearation");
+		case 14:
+			Dimension_Summon_Npc(client, COMBINE_SOLDIER_SWORDSMAN ,weapon, 1.1, 1.1, "ghost_appearation");
+		case 15:
+			Dimension_Summon_Npc(client, COMBINE_SOLDIER_ELITE ,weapon, 1.1, 1.25, "ghost_appearation");	
+		case 16:
+			Dimension_Summon_Npc(client, COMBINE_SOLDIER_GIANT_SWORDSMAN ,weapon, 1.5, 1.2, "ghost_appearation");
+		case 17:
+			Dimension_Summon_Npc(client, SNIPER_MAIN ,weapon, 1.2, 1.2, "ghost_appearation");
+		case 18:
+			Dimension_Summon_Npc(client, COMBINE_SOLDIER_COLLOSS ,weapon, 1.75, 1.3, "ghost_appearation");
+		case 19:
+			Dimension_Summon_Npc(client, COMBINE_OVERLORD ,weapon, 2.0, 1.5, "ghost_appearation");
+		case 20:
+			Dimension_Summon_Npc(client, DEMO_MAIN ,weapon, 1.2, 1.2, "ghost_appearation");
+		case 21:
+			Dimension_Summon_Npc(client, BATTLE_MEDIC_MAIN ,weapon, 1.3, 1.2, "ghost_appearation");
+		case 22:
+			Dimension_Summon_Npc(client, GIANT_PYRO_MAIN ,weapon, 1.75, 1.2, "ghost_appearation");
+		case 23:
+			Dimension_Summon_Npc(client, COMBINE_DEUTSCH_RITTER ,weapon, 1.5, 1.2, "ghost_appearation");
+		default: //This should not happen
+		{
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+		}
 	}
 }
+
+public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, int slot, int pap_logic)
+{
+	switch(GetRandomInt(1, 12))
+	{
+		case 1:
+			Dimension_Summon_Npc(client, ALT_COMBINE_MAGE ,weapon, 1.1, 1.15, "eyeboss_tp_player");
+		case 2:
+			Dimension_Summon_Npc(client, ALT_MEDIC_APPRENTICE_MAGE ,weapon, 1.1, 1.15, "eyeboss_tp_player");
+		case 3:
+			Dimension_Summon_Npc(client, ALT_MEDIC_CHARGER ,weapon, 1.3, 1.2, "eyeboss_tp_player");
+		case 4:
+			Dimension_Summon_Npc(client, ALT_MEDIC_BERSERKER ,weapon, 1.3, 1.2, "eyeboss_tp_player");
+		case 5:
+			Dimension_Summon_Npc(client, ALT_MEDIC_SUPPERIOR_MAGE ,weapon, 1.6, 1.2, "eyeboss_tp_player");
+		case 6:
+			Dimension_Summon_Npc(client, ALT_SNIPER_RAILGUNNER ,weapon, 0.7, 1.3, "eyeboss_tp_player");
+		case 7:
+			Dimension_Summon_Npc(client, ALT_SOLDIER_BARRAGER ,weapon, 1.1, 1.2, "eyeboss_tp_player");
+		case 8:
+			Dimension_Summon_Npc(client, ALT_The_Shit_Slapper ,weapon, 1.75, 1.2, "eyeboss_tp_player");
+		case 9:
+			Dimension_Summon_Npc(client, ALT_MECHA_ENGINEER ,weapon, 1.2, 1.1, "eyeboss_tp_player");
+		case 10:
+			Dimension_Summon_Npc(client, ALT_MECHA_HEAVY ,weapon, 1.4, 1.2, "eyeboss_tp_player");
+		case 11:
+			Dimension_Summon_Npc(client, ALT_MECHA_SCOUT ,weapon, 1.1, 1.1, "eyeboss_tp_player");
+		case 12:
+			Dimension_Summon_Npc(client, ALT_MECHASOLDIER_BARRAGER ,weapon, 1.1, 1.2, "eyeboss_tp_player");
+		default: //This should not happen
+		{
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+		}
+	}
+}
+
+public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
+{
+	switch(GetRandomInt(1, 14))
+	{
+		case 1:
+			Dimension_Summon_Npc(client, ALT_MECHA_HEAVYGIANT ,weapon, 1.5, 1.2, "eyeboss_tp_player");
+		case 2:
+			Dimension_Summon_Npc(client, ALT_MECHA_PYROGIANT ,weapon, 1.55, 1.2, "eyeboss_tp_player");
+		case 3:
+			Dimension_Summon_Npc(client, ALT_MEDIC_CHARGER ,weapon, 1.3, 1.2, "eyeboss_tp_player");
+		case 4:
+			Dimension_Summon_Npc(client, ALT_MEDIC_BERSERKER ,weapon, 1.3, 1.2, "eyeboss_tp_player");
+		case 5:
+			Dimension_Summon_Npc(client, ALT_MEDIC_SUPPERIOR_MAGE ,weapon, 1.6, 1.2, "eyeboss_tp_player");
+		case 6:
+			Dimension_Summon_Npc(client, ALT_SNIPER_RAILGUNNER ,weapon, 0.7, 1.3, "eyeboss_tp_player");
+		case 7:
+			Dimension_Summon_Npc(client, ALT_SOLDIER_BARRAGER ,weapon, 1.1, 1.2, "eyeboss_tp_player");
+		case 8:
+			Dimension_Summon_Npc(client, ALT_The_Shit_Slapper ,weapon, 1.75, 1.2, "eyeboss_tp_player");
+		case 9:
+			Dimension_Summon_Npc(client, ALT_MECHA_ENGINEER ,weapon, 1.2, 1.1, "eyeboss_tp_player");
+		case 10:
+			Dimension_Summon_Npc(client, ALT_MECHA_HEAVY ,weapon, 1.4, 1.2, "eyeboss_tp_player");
+		case 11:
+			Dimension_Summon_Npc(client, ALT_COMBINE_DEUTSCH_RITTER ,weapon, 1.4, 1.25, "eyeboss_tp_player");
+		case 12:
+			Dimension_Summon_Npc(client, ALT_MECHASOLDIER_BARRAGER ,weapon, 1.1, 1.2, "eyeboss_tp_player");
+		case 13:
+			Dimension_Summon_Npc(client, ALT_MEDIC_HEALER_3 ,weapon, 1.0, 1.25, "eyeboss_tp_player");
+		case 14:
+			Dimension_Summon_Npc(client, ALT_SCHWERTKRIEG ,weapon, 2.25, 1.5, "eyeboss_tp_player");
+		default: //This should not happen
+		{
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+		}
+	}
+}
+
+public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, int slot, int pap_logic)
+{
+	switch(GetRandomInt(1, 30))
+	{
+		case 1:
+			Dimension_Summon_Npc(client, XENO_HEADCRAB_ZOMBIE ,weapon, 0.85, 0.85, "utaunt_smoke_floor1_green");
+		case 2:
+			Dimension_Summon_Npc(client, XENO_FORTIFIED_HEADCRAB_ZOMBIE ,weapon, 0.9, 0.9, "utaunt_smoke_floor1_green");
+		case 3:
+			Dimension_Summon_Npc(client, XENO_FASTZOMBIE ,weapon, 0.8, 0.8, "utaunt_smoke_floor1_green");
+		case 4:
+			Dimension_Summon_Npc(client, XENO_FORTIFIED_FASTZOMBIE ,weapon, 0.9, 0.9, "utaunt_smoke_floor1_green");
+		case 5:
+			Dimension_Summon_Npc(client, XENO_TORSOLESS_HEADCRAB_ZOMBIE ,weapon, 0.8, 0.8, "utaunt_smoke_floor1_green");
+		case 6:
+			Dimension_Summon_Npc(client, XENO_FORTIFIED_GIANT_POISON_ZOMBIE ,weapon, 1.5, 1.2, "utaunt_smoke_floor1_green");
+		case 7:
+			Dimension_Summon_Npc(client, XENO_POISON_ZOMBIE ,weapon, 1.2, 1.1, "utaunt_smoke_floor1_green");
+		case 8:
+			Dimension_Summon_Npc(client, XENO_FORTIFIED_POISON_ZOMBIE ,weapon, 1.3, 1.1, "utaunt_smoke_floor1_green");
+		case 9:
+			Dimension_Summon_Npc(client, XENO_COMBINE_POLICE_PISTOL ,weapon, 1.0, 1.0, "utaunt_smoke_floor1_green");
+		case 10:
+			Dimension_Summon_Npc(client, XENO_COMBINE_POLICE_SMG ,weapon, 1.1, 1.1, "utaunt_smoke_floor1_green");
+		case 11:
+			Dimension_Summon_Npc(client, XENO_COMBINE_SOLDIER_AR2 ,weapon, 1.2, 1.2, "utaunt_smoke_floor1_green");
+		case 12:
+			Dimension_Summon_Npc(client, XENO_COMBINE_SOLDIER_SHOTGUN ,weapon, 1.2, 1.2, "utaunt_smoke_floor1_green");
+		case 13:
+			Dimension_Summon_Npc(client, XENO_COMBINE_SOLDIER_SWORDSMAN ,weapon, 1.3, 1.2, "utaunt_smoke_floor1_green");
+		case 14:
+			Dimension_Summon_Npc(client, XENO_COMBINE_SOLDIER_ELITE ,weapon, 1.1, 1.2, "utaunt_smoke_floor1_green");
+		case 15:
+			Dimension_Summon_Npc(client, XENO_COMBINE_SOLDIER_GIANT_SWORDSMAN ,weapon, 1.5, 1.2, "utaunt_smoke_floor1_green");
+		case 16:
+			Dimension_Summon_Npc(client, XENO_COMBINE_SOLDIER_DDT ,weapon, 1.1, 1.2, "utaunt_smoke_floor1_green");
+		case 17:
+			Dimension_Summon_Npc(client, XENO_COMBINE_SOLDIER_COLLOSS ,weapon, 1.75, 1.2, "utaunt_smoke_floor1_green");
+		case 18:
+			Dimension_Summon_Npc(client, XENO_SCOUT_ZOMBIE ,weapon, 1.1, 1.1, "utaunt_smoke_floor1_green");
+		case 19:
+			Dimension_Summon_Npc(client, XENO_ENGINEER_ZOMBIE ,weapon, 1.2, 1.2, "utaunt_smoke_floor1_green");
+		case 20:
+			Dimension_Summon_Npc(client, XENO_HEAVY_ZOMBIE ,weapon, 1.3, 1.2, "utaunt_smoke_floor1_green");
+		case 21:
+			Dimension_Summon_Npc(client, XENO_KAMIKAZE_DEMO ,weapon, 0.5, 3.0, "utaunt_smoke_floor1_green");
+		case 22:
+			Dimension_Summon_Npc(client, XENO_SPY_FACESTABBER ,weapon, 1.2, 1.1, "utaunt_smoke_floor1_green");
+		case 23:
+			Dimension_Summon_Npc(client, XENO_SOLDIER_ROCKET_ZOMBIE ,weapon, 1.1, 1.2, "utaunt_smoke_floor1_green");
+		case 24:
+			Dimension_Summon_Npc(client, XENO_SPY_THIEF ,weapon, 1.2, 1.1, "utaunt_smoke_floor1_green");
+		case 25:
+			Dimension_Summon_Npc(client, XENO_SPY_TRICKSTABBER ,weapon, 1.2, 1.2, "utaunt_smoke_floor1_green");
+		case 26:
+			Dimension_Summon_Npc(client, XENO_KAMIKAZE_DEMO ,weapon, 0.5, 3.0, "utaunt_smoke_floor1_green");
+		case 27:
+			Dimension_Summon_Npc(client, XENO_SPY_FACESTABBER ,weapon, 1.2, 1.1, "utaunt_smoke_floor1_green");
+		case 28:
+			Dimension_Summon_Npc(client, XENO_SPY_HALF_CLOACKED ,weapon, 1.2, 1.2, "utaunt_smoke_floor1_green");
+		case 29:
+			Dimension_Summon_Npc(client, XENO_SNIPER_MAIN ,weapon, 1.2, 1.2, "utaunt_smoke_floor1_green");
+		case 30:
+			Dimension_Summon_Npc(client, XENO_DEMO_MAIN ,weapon, 1.3, 1.2, "utaunt_smoke_floor1_green");
+		default: //This should not happen
+		{
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+		}
+	}
+}
+
+public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
+{
+	switch(GetRandomInt(1, 30))
+	{
+		case 1:
+			Dimension_Summon_Npc(client, XENO_COMBINE_OVERLORD ,weapon, 2.0, 1.5, "utaunt_smoke_floor1_green");
+		case 2:
+			Dimension_Summon_Npc(client, XENO_FATHER_GRIGORI ,weapon, 1.9, 1.5, "utaunt_smoke_floor1_green");
+		case 3:
+			Dimension_Summon_Npc(client, XENO_MEDIC_HEALER ,weapon, 0.8, 1.2, "utaunt_smoke_floor1_green");
+		case 4:
+			Dimension_Summon_Npc(client, XENO_BATTLE_MEDIC_MAIN ,weapon, 1.3, 1.2, "utaunt_smoke_floor1_green");
+		case 5:
+			Dimension_Summon_Npc(client, XENO_GIANT_PYRO_MAIN ,weapon, 1.6, 1.2, "utaunt_smoke_floor1_green");
+		case 6:
+			Dimension_Summon_Npc(client, XENO_COMBINE_DEUTSCH_RITTER ,weapon, 1.5, 1.3, "utaunt_smoke_floor1_green");
+		case 7:
+			Dimension_Summon_Npc(client, XENO_SPY_MAIN_BOSS ,weapon, 2.5, 1.4, "utaunt_smoke_floor1_green");
+		case 8:
+			Dimension_Summon_Npc(client, XENO_FORTIFIED_POISON_ZOMBIE ,weapon, 1.3, 1.1, "utaunt_smoke_floor1_green");
+		case 9:
+			Dimension_Summon_Npc(client, XENO_COMBINE_POLICE_PISTOL ,weapon, 1.0, 1.0, "utaunt_smoke_floor1_green");
+		case 10:
+			Dimension_Summon_Npc(client, XENO_COMBINE_POLICE_SMG ,weapon, 1.1, 1.1, "utaunt_smoke_floor1_green");
+		case 11:
+			Dimension_Summon_Npc(client, XENO_COMBINE_SOLDIER_AR2 ,weapon, 1.2, 1.2, "utaunt_smoke_floor1_green");
+		case 12:
+			Dimension_Summon_Npc(client, XENO_COMBINE_SOLDIER_SHOTGUN ,weapon, 1.2, 1.2, "utaunt_smoke_floor1_green");
+		case 13:
+			Dimension_Summon_Npc(client, XENO_COMBINE_SOLDIER_SWORDSMAN ,weapon, 1.3, 1.2, "utaunt_smoke_floor1_green");
+		case 14:
+			Dimension_Summon_Npc(client, XENO_COMBINE_SOLDIER_ELITE ,weapon, 1.1, 1.2, "utaunt_smoke_floor1_green");
+		case 15:
+			Dimension_Summon_Npc(client, XENO_COMBINE_SOLDIER_GIANT_SWORDSMAN ,weapon, 1.5, 1.2, "utaunt_smoke_floor1_green");
+		case 16:
+			Dimension_Summon_Npc(client, XENO_COMBINE_SOLDIER_DDT ,weapon, 1.1, 1.2, "utaunt_smoke_floor1_green");
+		case 17:
+			Dimension_Summon_Npc(client, XENO_COMBINE_SOLDIER_COLLOSS ,weapon, 1.75, 1.2, "utaunt_smoke_floor1_green");
+		case 18:
+			Dimension_Summon_Npc(client, XENO_SCOUT_ZOMBIE ,weapon, 1.1, 1.1, "utaunt_smoke_floor1_green");
+		case 19:
+			Dimension_Summon_Npc(client, XENO_ENGINEER_ZOMBIE ,weapon, 1.2, 1.2, "utaunt_smoke_floor1_green");
+		case 20:
+			Dimension_Summon_Npc(client, XENO_HEAVY_ZOMBIE ,weapon, 1.3, 1.2, "utaunt_smoke_floor1_green");
+		case 21:
+			Dimension_Summon_Npc(client, XENO_KAMIKAZE_DEMO ,weapon, 0.5, 3.0, "utaunt_smoke_floor1_green");
+		case 22:
+			Dimension_Summon_Npc(client, XENO_SPY_FACESTABBER ,weapon, 1.2, 1.1, "utaunt_smoke_floor1_green");
+		case 23:
+			Dimension_Summon_Npc(client, XENO_SOLDIER_ROCKET_ZOMBIE ,weapon, 1.1, 1.2, "utaunt_smoke_floor1_green");
+		case 24:
+			Dimension_Summon_Npc(client, XENO_SPY_THIEF ,weapon, 1.2, 1.1, "utaunt_smoke_floor1_green");
+		case 25:
+			Dimension_Summon_Npc(client, XENO_SPY_TRICKSTABBER ,weapon, 1.2, 1.2, "utaunt_smoke_floor1_green");
+		case 26:
+			Dimension_Summon_Npc(client, XENO_KAMIKAZE_DEMO ,weapon, 0.5, 3.0, "utaunt_smoke_floor1_green");
+		case 27:
+			Dimension_Summon_Npc(client, XENO_SPY_FACESTABBER ,weapon, 1.2, 1.1, "utaunt_smoke_floor1_green");
+		case 28:
+			Dimension_Summon_Npc(client, XENO_SPY_HALF_CLOACKED ,weapon, 1.2, 1.2, "utaunt_smoke_floor1_green");
+		case 29:
+			Dimension_Summon_Npc(client, XENO_SNIPER_MAIN ,weapon, 1.2, 1.2, "utaunt_smoke_floor1_green");
+		case 30:
+			Dimension_Summon_Npc(client, XENO_DEMO_MAIN ,weapon, 1.3, 1.2, "utaunt_smoke_floor1_green");
+		default: //This should not happen
+		{
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+		}
+	}
+}
+public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &result, int slot, int pap_logic)
+{
+	switch(GetRandomInt(1, 21))
+	{
+		case 1:
+			Dimension_Summon_Npc(client, MEDIVAL_MILITIA ,weapon, 0.9, 0.9, "npc_boss_bomb_alert");
+		case 2:
+			Dimension_Summon_Npc(client, MEDIVAL_ARCHER ,weapon, 0.8, 1.0, "npc_boss_bomb_alert");
+		case 3:
+			Dimension_Summon_Npc(client, MEDIVAL_MAN_AT_ARMS ,weapon, 1.0, 1.0, "npc_boss_bomb_alert");
+		case 4:
+			Dimension_Summon_Npc(client, MEDIVAL_SWORDSMAN ,weapon, 1.1, 1.1, "npc_boss_bomb_alert");
+		case 5:
+			Dimension_Summon_Npc(client, MEDIVAL_TWOHANDED_SWORDSMAN ,weapon, 1.25, 1.2, "npc_boss_bomb_alert");
+		case 6:
+			Dimension_Summon_Npc(client, MEDIVAL_CROSSBOW_MAN ,weapon, 1.0, 1.1, "npc_boss_bomb_alert");
+		case 7:
+			Dimension_Summon_Npc(client, MEDIVAL_LIGHT_CAV ,weapon, 1.0, 1.1, "npc_boss_bomb_alert");
+		case 8:
+			Dimension_Summon_Npc(client, MEDIVAL_SPEARMEN ,weapon, 1.0, 1.1, "npc_boss_bomb_alert");
+		case 9:
+			Dimension_Summon_Npc(client, MEDIVAL_HANDCANNONEER ,weapon, 1.0, 1.2, "npc_boss_bomb_alert");
+		case 10:
+			Dimension_Summon_Npc(client, MEDIVAL_ELITE_SKIRMISHER ,weapon, 1.1, 1.2, "npc_boss_bomb_alert");
+		case 11:
+			Dimension_Summon_Npc(client, MEDIVAL_EAGLE_SCOUT ,weapon, 1.1, 1.1, "npc_boss_bomb_alert");
+		case 12:
+			Dimension_Summon_Npc(client, MEDIVAL_SAMURAI ,weapon, 1.3, 1.2, "npc_boss_bomb_alert");
+		case 13:
+			Dimension_Summon_Npc(client, MEDIVAL_CHAMPION ,weapon, 1.3, 1.3, "npc_boss_bomb_alert");
+		case 14:
+			Dimension_Summon_Npc(client, MEDIVAL_BRAWLER ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
+		case 15:
+			Dimension_Summon_Npc(client, MEDIVAL_EAGLE_WARRIOR ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
+		case 16:
+			Dimension_Summon_Npc(client, MEDIVAL_CAVALARY ,weapon, 1.1, 1.2, "npc_boss_bomb_alert");
+		case 17:
+			Dimension_Summon_Npc(client, MEDIVAL_HALB ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
+		case 18:
+			Dimension_Summon_Npc(client, MEDIVAL_LONGBOWMEN ,weapon, 1.1, 1.2, "npc_boss_bomb_alert");
+		case 19:
+			Dimension_Summon_Npc(client, MEDIVAL_ARBALEST ,weapon, 1.0, 1.2, "npc_boss_bomb_alert");
+		case 20:
+			Dimension_Summon_Npc(client, MEDIVAL_PALADIN ,weapon, 1.4, 1.2, "npc_boss_bomb_alert");
+		case 21:
+			Dimension_Summon_Npc(client, MEDIVAL_RIDDENARCHER ,weapon, 1.1, 1.2, "npc_boss_bomb_alert");
+		default: //This should not happen
+		{
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+		}
+	}
+}
+
+public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
+{
+	switch(GetRandomInt(1, 20))
+	{
+		case 1:
+			Dimension_Summon_Npc(client, MEDIVAL_CONSTRUCT ,weapon, 1.9, 1.4, "npc_boss_bomb_alert");
+		case 2:
+			Dimension_Summon_Npc(client, MEDIVAL_RAM ,weapon, 0.8, 1.0, "npc_boss_bomb_alert");
+		case 3:
+			Dimension_Summon_Npc(client, MEDIVAL_SCOUT ,weapon, 1.2, 1.0, "npc_boss_bomb_alert");
+		case 4:
+			Dimension_Summon_Npc(client, MEDIVAL_HUSSAR ,weapon, 1.3, 1.2, "npc_boss_bomb_alert");
+		case 5:
+			Dimension_Summon_Npc(client, MEDIVAL_OBUCH ,weapon, 1.4, 1.2, "npc_boss_bomb_alert");
+		case 6:
+			Dimension_Summon_Npc(client, MEDIVAL_MONK ,weapon, 1.2, 1.5, "npc_boss_bomb_alert");
+		case 7:
+			Dimension_Summon_Npc(client, MEDIVAL_CROSSBOW_GIANT ,weapon, 1.5, 1.3, "npc_boss_bomb_alert");
+		case 8:
+			Dimension_Summon_Npc(client, MEDIVAL_SWORDSMAN_GIANT ,weapon, 1.5, 1.3, "npc_boss_bomb_alert");
+		case 9:
+			Dimension_Summon_Npc(client, MEDIVAL_HANDCANNONEER ,weapon, 1.0, 1.2, "npc_boss_bomb_alert");
+		case 10:
+			Dimension_Summon_Npc(client, MEDIVAL_ELITE_SKIRMISHER ,weapon, 1.1, 1.2, "npc_boss_bomb_alert");
+		case 11:
+			Dimension_Summon_Npc(client, MEDIVAL_EAGLE_GIANT ,weapon, 1.5, 1.1, "npc_boss_bomb_alert");
+		case 12:
+			Dimension_Summon_Npc(client, MEDIVAL_SAMURAI ,weapon, 1.3, 1.2, "npc_boss_bomb_alert");
+		case 13:
+			Dimension_Summon_Npc(client, MEDIVAL_CHAMPION ,weapon, 1.3, 1.3, "npc_boss_bomb_alert");
+		case 14:
+			Dimension_Summon_Npc(client, MEDIVAL_BRAWLER ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
+		case 15:
+			Dimension_Summon_Npc(client, MEDIVAL_EAGLE_WARRIOR ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
+		case 16:
+			Dimension_Summon_Npc(client, MEDIVAL_ACHILLES ,weapon, 2.0, 1.3, "npc_boss_bomb_alert");
+		case 17:
+			Dimension_Summon_Npc(client, MEDIVAL_HALB ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
+		case 18:
+			Dimension_Summon_Npc(client, MEDIVAL_SON_OF_OSIRIS ,weapon, 2.5, 1.3, "npc_boss_bomb_alert");
+		case 19:
+			Dimension_Summon_Npc(client, MEDIVAL_ARBALEST ,weapon, 1.0, 1.2, "npc_boss_bomb_alert");
+		case 20:
+			Dimension_Summon_Npc(client, MEDIVAL_PALADIN ,weapon, 1.4, 1.2, "npc_boss_bomb_alert");
+		default: //This should not happen
+		{
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+		}
+	}
+}
+
+public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result, int slot, int pap_logic)
+{
+	switch(GetRandomInt(1, 10))
+	{
+		case 1:
+			Dimension_Summon_Npc(client, SEARUNNER ,weapon, 0.8, 0.8, "utaunt_constellations_blue_base");
+		case 2:
+			Dimension_Summon_Npc(client, SEASLIDER ,weapon, 1.1, 1.0, "utaunt_constellations_blue_base");
+		case 3:
+			Dimension_Summon_Npc(client, SEASPITTER ,weapon, 1.0, 1.1, "utaunt_constellations_blue_base");
+		case 4:
+			Dimension_Summon_Npc(client, SEAREAPER ,weapon, 1.5, 1.2, "utaunt_constellations_blue_base");
+		case 5:
+			Dimension_Summon_Npc(client, SEACRAWLER ,weapon, 0.8, 0.8, "utaunt_constellations_blue_base");
+		case 6:
+			Dimension_Summon_Npc(client, SEAPIERCER ,weapon, 1.2, 1.1, "utaunt_constellations_blue_base");
+		case 7:
+			Dimension_Summon_Npc(client, SEAPREDATOR ,weapon, 1.0, 1.1, "utaunt_constellations_blue_base");
+		case 8:
+			Dimension_Summon_Npc(client, SEASPEWER ,weapon, 1.2, 1.3, "utaunt_constellations_blue_base");
+		case 9:
+			Dimension_Summon_Npc(client, SEASWARMCALLER ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+		case 10:
+			Dimension_Summon_Npc(client, SEAREEFBREAKER ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+		default: //This should not happen
+		{
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+		}
+	}
+}
+public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
+{
+	switch(GetRandomInt(1, 21))
+	{
+		case 1:
+			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_KNIGHT ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+		case 2:
+			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_KNIGHT_ARCHER ,weapon, 1.1, 1.2, "utaunt_constellations_blue_base");
+		case 3:
+			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_LONGARCHER ,weapon, 1.1, 1.3, "utaunt_constellations_blue_base");
+		case 4:
+			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_ASSASIN_MELEE ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+		case 5:
+			Dimension_Summon_Npc(client, SEABORN_SCOUT ,weapon, 1.1, 1.1, "utaunt_constellations_blue_base");
+		case 6:
+			Dimension_Summon_Npc(client, SEAPIERCER_ALT ,weapon, 1.2, 1.1, "utaunt_constellations_blue_base");
+		case 7:
+			Dimension_Summon_Npc(client, SEAPREDATOR_ALT ,weapon, 1.0, 1.1, "utaunt_constellations_blue_base");
+		case 8:
+			Dimension_Summon_Npc(client, SEASPEWER_ALT ,weapon, 1.2, 1.3, "utaunt_constellations_blue_base");
+		case 9:
+			Dimension_Summon_Npc(client, SEASWARMCALLER_ALT ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+		case 10:
+			Dimension_Summon_Npc(client, SEAREEFBREAKER_ALT ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+		case 11:
+			Dimension_Summon_Npc(client, SEABORN_PYRO ,weapon, 1.2, 1.1, "utaunt_constellations_blue_base");
+		case 12:
+			Dimension_Summon_Npc(client, SEABORN_DEMO ,weapon, 0.5, 3.0, "utaunt_constellations_blue_base");
+		case 13:
+			Dimension_Summon_Npc(client, SEABORN_HEAVY ,weapon, 1.3, 1.2, "utaunt_constellations_blue_base");
+		case 14:
+			Dimension_Summon_Npc(client, SEABORN_MEDIC ,weapon, 1.0, 1.2, "utaunt_constellations_blue_base");
+		case 15:
+			Dimension_Summon_Npc(client, SEABORN_SNIPER ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+		case 16:
+			Dimension_Summon_Npc(client, SEABORN_SPY ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+		case 17:
+			Dimension_Summon_Npc(client, SEABORN_GUARD ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+		case 18:
+			Dimension_Summon_Npc(client, SEABORN_DEFENDER ,weapon, 1.5, 1.1, "utaunt_constellations_blue_base");
+		case 19:
+			Dimension_Summon_Npc(client, SEABORN_CASTER ,weapon, 1.1, 1.3, "utaunt_constellations_blue_base");
+		case 20:
+			Dimension_Summon_Npc(client, SEABORN_SPECIALIST ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+		case 21:
+			Dimension_Summon_Npc(client, FIRSTTOTALK ,weapon, 2.0, 1.3, "utaunt_constellations_blue_base");
+		default: //This should not happen
+		{
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+		}
+	}
+}
+
+public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &result, int slot, int pap_logic)
+{
+	switch(GetRandomInt(1, 14))
+	{
+		case 1:
+			Dimension_Summon_Npc(client, EXPIDONSA_BENERA ,weapon, 0.9, 0.9, "eyeboss_death_vortex");
+		case 2:
+			Dimension_Summon_Npc(client, EXPIDONSA_PENTAL ,weapon, 1.0, 1.0, "eyeboss_death_vortex");
+		case 3:
+			Dimension_Summon_Npc(client, EXPIDONSA_DEFANDA ,weapon, 1.2, 1.0, "eyeboss_death_vortex");
+		case 4:
+			Dimension_Summon_Npc(client, EXPIDONSA_SELFAM_IRE ,weapon, 1.1, 1.1, "eyeboss_death_vortex");
+		case 5:
+			Dimension_Summon_Npc(client, EXPIDONSA_VAUSMAGICA ,weapon, 1.1, 1.0, "eyeboss_death_vortex");
+		case 6:
+			Dimension_Summon_Npc(client, EXPIDONSA_PISTOLEER ,weapon, 0.8, 1.3, "eyeboss_death_vortex");
+		case 7:
+			Dimension_Summon_Npc(client, EXPIDONSA_DIVERSIONISTICO ,weapon, 1.1, 1.2, "eyeboss_death_vortex");
+		case 8:
+			Dimension_Summon_Npc(client, EXPIDONSA_RIFALMANU ,weapon, 1.1, 1.2, "eyeboss_death_vortex");
+		case 9:
+			Dimension_Summon_Npc(client, EXPIDONSA_SICCERINO ,weapon, 1.1, 1.1, "eyeboss_death_vortex");
+		case 10:
+			Dimension_Summon_Npc(client, EXPIDONSA_SOLDINE_PROTOTYPE ,weapon, 1.4, 1.25, "eyeboss_death_vortex");
+		case 11:
+			Dimension_Summon_Npc(client, EXPIDONSA_PROTECTA ,weapon, 1.3, 1.1, "eyeboss_death_vortex");
+		case 12:
+			Dimension_Summon_Npc(client, EXPIDONSA_EGABUNAR ,weapon, 1.2, 1.2, "eyeboss_death_vortex");
+		case 13:
+			Dimension_Summon_Npc(client, EXPIDONSA_ENEGAKAPUS ,weapon, 1.1, 1.1, "eyeboss_death_vortex");
+		case 14:
+			Dimension_Summon_Npc(client, EXPIDONSA_VAUSTECHICUS ,weapon, 1.2, 1.1, "eyeboss_death_vortex");
+		default: //This should not happen
+		{
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+		}
+	}
+}
+
+public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
+{
+	switch(GetRandomInt(1, 16))
+	{
+		case 1:
+			Dimension_Summon_Npc(client, EXPIDONSA_HEAVYPUNUEL ,weapon, 1.5, 1.2, "eyeboss_death_vortex");
+		case 2:
+			Dimension_Summon_Npc(client, EXPIDONSA_DUALREA ,weapon, 1.3, 1.3, "eyeboss_death_vortex");
+		case 3:
+			Dimension_Summon_Npc(client, EXPIDONSA_GUARDUS ,weapon, 1.6, 1.2, "eyeboss_death_vortex");
+		case 4:
+			Dimension_Summon_Npc(client, EXPIDONSA_IGNITUS ,weapon, 1.5, 1.2, "eyeboss_death_vortex");
+		case 5:
+			Dimension_Summon_Npc(client, EXPIDONSA_GIANTTANKUS ,weapon, 1.75, 1.2, "eyeboss_death_vortex");
+		case 6:
+			Dimension_Summon_Npc(client, EXPIDONSA_SNIPONEER ,weapon, 0.8, 1.4, "eyeboss_death_vortex");
+		case 7:
+			Dimension_Summon_Npc(client, EXPIDONSA_DIVERSIONISTICO ,weapon, 1.1, 1.2, "eyeboss_death_vortex");
+		case 8:
+			Dimension_Summon_Npc(client, EXPIDONSA_MINIGUNASSISA ,weapon, 1.2, 1.2, "eyeboss_death_vortex");
+		case 9:
+			Dimension_Summon_Npc(client, EXPIDONSA_SPEEDUSADIVUS ,weapon, 1.2, 1.1, "eyeboss_death_vortex");
+		case 10:
+			Dimension_Summon_Npc(client, EXPIDONSA_SOLDINE_PROTOTYPE ,weapon, 1.4, 1.25, "eyeboss_death_vortex");
+		case 11:
+			Dimension_Summon_Npc(client, EXPIDONSA_HELENA ,weapon, 1.0, 1.2, "eyeboss_death_vortex");
+		case 12:
+			Dimension_Summon_Npc(client, EXPIDONSA_ERASUS ,weapon, 1.4, 1.3, "eyeboss_death_vortex");
+		case 13:
+			Dimension_Summon_Npc(client, EXPIDONSA_ENEGAKAPUS ,weapon, 1.1, 1.1, "eyeboss_death_vortex");
+		case 14:
+			Dimension_Summon_Npc(client, EXPIDONSA_VAUSTECHICUS ,weapon, 1.2, 1.1, "eyeboss_death_vortex");
+		case 15:
+			Dimension_Summon_Npc(client, EXPIDONSA_SOLDINE ,weapon, 2.0, 1.5, "eyeboss_death_vortex");
+		case 16:
+			Dimension_Summon_Npc(client, EXPIDONSA_SEARGENTIDEAL ,weapon, 3.0, 1.3, "eyeboss_death_vortex");
+		default: //This should not happen
+		{
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+		}
+	}
+}
+
 
 
 void Dimension_Summon_Npc(int client, int NpcId, int weapon, float HealthMulti, float DamageMulti, char[] ParticleEffect)
