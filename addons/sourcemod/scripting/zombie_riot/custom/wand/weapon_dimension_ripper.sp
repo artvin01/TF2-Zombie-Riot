@@ -258,27 +258,27 @@ void CreateDimEffect(int client, int weapon, int particle, int entity)
 
 	if(pap == 1.0) //Only show if the weapon is actually in your hand right now.
 	{
-		string DimPart = "hwn_skeleton_glow_red"
+		string DimPart = "hwn_skeleton_glow_red";
 	}
 	if(pap == 2.0) //Only show if the weapon is actually in your hand right now.
 	{
-		string DimPart = "burningplayer_blueglow"
+		string DimPart = "burningplayer_blueglow";
 	}
 	if(pap == 3.0) //Only show if the weapon is actually in your hand right now.
 	{
-		string DimPart = "unusual_aura_green_smoke"
+		string DimPart = "unusual_aura_green_smoke";
 	}
 	if(pap == 4.0) //Only show if the weapon is actually in your hand right now.
 	{
-		string DimPart = "contract_score_bonus_sparkle"
+		string DimPart = "contract_score_bonus_sparkle";
 	}
 	if(pap == 5.0) //Only show if the weapon is actually in your hand right now.
 	{
-		string DimPart = "unusual_sapper_teamcolor_blue"
+		string DimPart = "unusual_sapper_teamcolor_blue";
 	}
 	if(pap == 6.0) //Only show if the weapon is actually in your hand right now.
 	{
-		string DimPart = "utaunt_glowyplayer_purple_parent"
+		string DimPart = "utaunt_glowyplayer_purple_parent";
 	}
 	else //Only show if the weapon is actually in your hand right now.
 	{
