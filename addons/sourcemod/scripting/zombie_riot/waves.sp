@@ -1336,7 +1336,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			if(round.Custom_Refresh_Npc_Store)
 			{
 				//PrintToChatAll("%t", "Grigori Store Refresh");
-				//Store_RandomizeNPCStore(false); // Refresh me !!!
+				//Store_RandomizeNPCStore(0); // Refresh me !!!
 				refreshNPCStore = true;
 			}
 			if(round.medival_difficulty != 0)
@@ -1546,19 +1546,19 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			else
 			{
-				Store_RandomizeNPCStore(false, 99, 1);
+				Store_RandomizeNPCStore(0, 99, 1);
 				if(refreshNPCStore)
-					Store_RandomizeNPCStore(false);
+					Store_RandomizeNPCStore(0);
 				
 				NPC_SpawnNext(panzer_spawn, panzer_sound);
 				return;
 			}
 
 			if(refreshNPCStore)
-				Store_RandomizeNPCStore(false);
+				Store_RandomizeNPCStore(0);
 
 			
-			Store_RandomizeNPCStore(false, 99, 1);
+			Store_RandomizeNPCStore(0, 99, 1);
 		}
 	}
 	else if(Rogue_Mode())

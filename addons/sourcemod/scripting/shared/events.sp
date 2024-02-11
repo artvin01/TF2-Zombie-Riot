@@ -137,7 +137,7 @@ public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast
 #if defined ZR
 public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
-	Store_RandomizeNPCStore(true);
+	Store_RandomizeNPCStore(1);
 	f_FreeplayDamageExtra = 1.0;
 	b_GameOnGoing = false;
 	for(int client=1; client<=MaxClients; client++)
