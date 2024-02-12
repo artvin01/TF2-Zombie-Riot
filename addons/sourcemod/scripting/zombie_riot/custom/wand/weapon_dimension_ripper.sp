@@ -212,7 +212,7 @@ public Action Dimension_KillNPC(Handle timer, int ref)
 
 
 
-void Npc_OnTakeDamage_DimensionalRipper(int attacker, int victim)
+void Npc_OnTakeDamage_DimensionalRipper(int attacker)
 {
 	/*
 		++ add charge code xd
