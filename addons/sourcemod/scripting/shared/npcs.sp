@@ -666,7 +666,24 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			{
 				Blitzed_By_Riot = true;
 			}
-
+			if(f_HeadshotDamageMultiNpc[victim] <= 0.0 && hitgroup == HITGROUP_HEAD)
+			{
+				damage = 0.0;
+				float chargerPos[3];
+				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
+				if(b_BoundingBoxVariant[victim] == 1)
+				{
+					chargerPos[2] += 120.0;
+				}
+				else
+				{
+					chargerPos[2] += 82.0;
+				}
+				TE_ParticleInt(g_particleMissText, chargerPos);
+				TE_SendToClient(attacker);
+				EmitSoundToClient(attacker, "physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(95, 105));
+				return Plugin_Handled;
+			}
 			if((hitgroup == HITGROUP_HEAD && !b_CannotBeHeadshot[victim]) || Blitzed_By_Riot)
 			{
 				
@@ -676,7 +693,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					damage *= 2.0;
 				}
 #endif
-
+				damage *= f_HeadshotDamageMultiNpc[victim];
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
 					damage *= 2.0;

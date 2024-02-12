@@ -432,6 +432,8 @@ enum
 	INTERITUS_ANARCHY_ABOMINATION	  = 378,
 	INTERITUS_ANARCHY_ENFORCER	 	  = 379,
 	INTERITUS_ANARCHY_BRAINDEAD	 	  = 380,
+	INTERITUS_ANARCHY_BEHEMOTH		  = 381,
+	INTERITUS_ANARCHY_ABSOLUTE_INCINIRATOR= 382,
 
 	MAX_NPC_TYPES	// Add entries above this line
 }
@@ -842,7 +844,9 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Mad Doctor",
 	"Abomination",
 	"Anarchist Enforcer",
-	"Braindead"
+	"Braindead",
+	"Behemonth",
+	"Absolute Incinirator"
 };
 
 // See items.sp for IDs to names
@@ -1629,7 +1633,9 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_mad_doctor",
 	"npc_abomination",
 	"npc_enforcer",
-	"npc_braindead"
+	"npc_braindead",
+	"npc_behemonth",
+	"npc_absolute_incinirator"
 };
 
 void NPC_MapStart()
@@ -1916,6 +1922,8 @@ void NPC_MapStart()
 	AnarchyAbomination_OnMapStart_NPC();
 	AnarchyEnforcer_OnMapStart_NPC();
 	AnarchyBraindead_OnMapStart_NPC();
+	AnarchyBehemoth_OnMapStart_NPC();
+	AnarchyAbsoluteIncinirator_OnMapStart_NPC();
 
 
 
@@ -3021,6 +3029,12 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 
 		case INTERITUS_ANARCHY_BRAINDEAD:
 			entity = AnarchyBraindead(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_BEHEMOTH:
+			entity = AnarchyBehemoth(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_ABSOLUTE_INCINIRATOR:
+			entity = AnarchyAbsoluteIncinirator(client, vecPos, vecAng, ally);
 
 		case INTERITUS_FOREST_SNIPER:
 			entity = Archosauria(client, vecPos, vecAng, ally);
@@ -5327,6 +5341,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/anarchy/npc_abomination.sp"
 #include "zombie_riot/npc/interitus/anarchy/npc_enforcer.sp"
 #include "zombie_riot/npc/interitus/anarchy/npc_braindead.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_behemoth.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_absolute_incinirator.sp"
 
 #include "zombie_riot/npc/interitus/forest/npc_archosauria.sp"
 #include "zombie_riot/npc/interitus/forest/npc_aslan.sp"

@@ -7735,6 +7735,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_DungeonContracts_35PercentMoreDamage[entity] = false;
 	b_DungeonContracts_25PercentMoreDamage[entity] = false;
 #endif
+	f_HeadshotDamageMultiNpc[entity] = 1.0;
 	i_NoEntityFoundCount[entity] = 0;
 	f3_CustomMinMaxBoundingBox[entity][0] = 0.0;
 	f3_CustomMinMaxBoundingBox[entity][1] = 0.0;

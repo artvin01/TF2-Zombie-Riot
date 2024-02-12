@@ -2109,4 +2109,12 @@
 	{
 		"en"	"Braindead"
 	}
+	"Behemonth"
+	{
+		"en"	"Behemonth"
+	}
+	"Absolute Incinirator"
+	{
+		"en"	"Absolute Incinirator"
+	}
 }
