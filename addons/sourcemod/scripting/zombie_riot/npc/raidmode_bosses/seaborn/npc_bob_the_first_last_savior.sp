@@ -520,6 +520,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					enemy.ExtraMeleeRes = 0.5;
 					enemy.ExtraRangedRes = 0.5;
 					enemy.ExtraSize = 1.0;
+					enemy.Team = GetTeam(npc.index);
 
 					Waves_AddNextEnemy(enemy);
 
@@ -820,7 +821,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 			npc.PlaySummonSound();
 			
-			SetupMidWave();
+			SetupMidWave(npc.index);
 			return;
 		}
 	}
@@ -1472,38 +1473,38 @@ static void GiveOneRevive()
 	WaveEndLogicExtra();
 }
 
-static void SetupMidWave()
+static void SetupMidWave(int entity)
 {
-	AddBobEnemy(COMBINE_SOLDIER_ELITE, 20);
-	AddBobEnemy(COMBINE_SOLDIER_DDT, 20);
-	AddBobEnemy(COMBINE_SOLDIER_SWORDSMAN, 40);
-	AddBobEnemy(COMBINE_SOLDIER_GIANT_SWORDSMAN, 15);
-	AddBobEnemy(COMBINE_SOLDIER_COLLOSS, 2, 1);
+	AddBobEnemy(entity, COMBINE_SOLDIER_ELITE, 20);
+	AddBobEnemy(entity, COMBINE_SOLDIER_DDT, 20);
+	AddBobEnemy(entity, COMBINE_SOLDIER_SWORDSMAN, 40);
+	AddBobEnemy(entity, COMBINE_SOLDIER_GIANT_SWORDSMAN, 15);
+	AddBobEnemy(entity, COMBINE_SOLDIER_COLLOSS, 2, 1);
 
-	AddBobEnemy(COMBINE_SOLDIER_DDT, 30);
-	AddBobEnemy(COMBINE_SOLDIER_ELITE, 20);
-	AddBobEnemy(COMBINE_SOLDIER_GIANT_SWORDSMAN, 20);
+	AddBobEnemy(entity, COMBINE_SOLDIER_DDT, 30);
+	AddBobEnemy(entity, COMBINE_SOLDIER_ELITE, 20);
+	AddBobEnemy(entity, COMBINE_SOLDIER_GIANT_SWORDSMAN, 20);
 
-	AddBobEnemy(COMBINE_SOLDIER_SWORDSMAN, 40);
-	AddBobEnemy(COMBINE_SOLDIER_DDT, 10);
-	AddBobEnemy(COMBINE_SOLDIER_GIANT_SWORDSMAN, 20);
+	AddBobEnemy(entity, COMBINE_SOLDIER_SWORDSMAN, 40);
+	AddBobEnemy(entity, COMBINE_SOLDIER_DDT, 10);
+	AddBobEnemy(entity, COMBINE_SOLDIER_GIANT_SWORDSMAN, 20);
 
-	AddBobEnemy(COMBINE_SOLDIER_ELITE, 50);
-	AddBobEnemy(COMBINE_SOLDIER_DDT, 50);
-	AddBobEnemy(COMBINE_SOLDIER_SHOTGUN, 50);
+	AddBobEnemy(entity, COMBINE_SOLDIER_ELITE, 50);
+	AddBobEnemy(entity, COMBINE_SOLDIER_DDT, 50);
+	AddBobEnemy(entity, COMBINE_SOLDIER_SHOTGUN, 50);
 
-	AddBobEnemy(COMBINE_SOLDIER_ELITE, 10);
-	AddBobEnemy(COMBINE_SOLDIER_DDT, 10);
-	AddBobEnemy(COMBINE_SOLDIER_AR2, 10);
-	AddBobEnemy(COMBINE_SOLDIER_SWORDSMAN, 10);
-	AddBobEnemy(COMBINE_SOLDIER_GIANT_SWORDSMAN, 10);
-	AddBobEnemy(COMBINE_SOLDIER_SHOTGUN, 10);
-	AddBobEnemy(COMBINE_SOLDIER_AR2, 10);
-	AddBobEnemy(COMBINE_POLICE_SMG, 10);
-	AddBobEnemy(COMBINE_POLICE_PISTOL, 10);
+	AddBobEnemy(entity, COMBINE_SOLDIER_ELITE, 10);
+	AddBobEnemy(entity, COMBINE_SOLDIER_DDT, 10);
+	AddBobEnemy(entity, COMBINE_SOLDIER_AR2, 10);
+	AddBobEnemy(entity, COMBINE_SOLDIER_SWORDSMAN, 10);
+	AddBobEnemy(entity, COMBINE_SOLDIER_GIANT_SWORDSMAN, 10);
+	AddBobEnemy(entity, COMBINE_SOLDIER_SHOTGUN, 10);
+	AddBobEnemy(entity, COMBINE_SOLDIER_AR2, 10);
+	AddBobEnemy(entity, COMBINE_POLICE_SMG, 10);
+	AddBobEnemy(entity, COMBINE_POLICE_PISTOL, 10);
 }
 
-static void AddBobEnemy(int id, int count, int boss = 0)
+static void AddBobEnemy(int bobindx, int id, int count, int boss = 0)
 {
 	Enemy enemy;
 
@@ -1515,6 +1516,7 @@ static void AddBobEnemy(int id, int count, int boss = 0)
 	enemy.ExtraSpeed = 1.5;
 	enemy.ExtraDamage = 4.0;
 	enemy.ExtraSize = 1.0;
+	enemy.Team = GetTeam(bobindx);
 
 	for(int i; i < count; i++)
 	{

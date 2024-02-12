@@ -1957,9 +1957,9 @@
 	{
 		"en"	"Magia Anchor"
 	}
-	"Storm Weaver"
+	"Stellar Weaver"
 	{
-		"en"	"Storm Weaver"
+		"en"	"Stellar Weaver"
 	}
 	"Beheaded Kamikaze"
 	{
@@ -2076,5 +2076,13 @@
 	"Ursus"
 	{
 		"en"	"Ursus"
+	}
+	"Ransacker"
+	{
+		"en"	"Ransacker"
+	}
+	"Stellar Weaver"
+	{
+		"en"	"Stellar Weaver"
 	}
 }

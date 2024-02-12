@@ -371,6 +371,7 @@ public Action StalkerFather_Timer(Handle timer)
 	enemy.ExtraSpeed = 1.0;
 	enemy.ExtraDamage = 1.0;	
 	enemy.ExtraSize = 1.0;	
+	enemy.Team = TFTeam_Blue;	
 	Waves_AddNextEnemy(enemy);
 	return Plugin_Stop;
 }

@@ -35,10 +35,9 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
-static bool b_health_stripped[MAXENTITIES];
-
 static float fl_teleport_timer[MAXENTITIES];
 static bool b_teleport_recharging[MAXENTITIES];
+static bool b_schwert_is_ally[MAXENTITIES];
 
 
 static float TELEPORT_STRIKE_Smite_BaseDMG = 1500.0; //Base damage of the effect
@@ -153,15 +152,23 @@ methodmap Schwertkrieg < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		g_b_schwert_died=false;	
+		if(ally != TFTeam_Red)
+		{
+			g_b_schwert_died=false;	
 
-		g_b_angered=false;
+			g_b_angered=false;
+			b_schwert_is_ally[npc.index] = false;	//if schwert is blue do normal stuff
+		}
+		else
+		{
+			b_schwert_is_ally[npc.index] = true;	//if schwert is red, block all the raidboss angered logic!
+		}
+		
+		
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
-		b_health_stripped[npc.index] = false;
 		
 		SDKHook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
 		
@@ -179,7 +186,7 @@ methodmap Schwertkrieg < CClotBody
 		}
 		else
 		{
-			if(RaidBossActive==INVALID_ENT_REFERENCE)
+			if(RaidBossActive==INVALID_ENT_REFERENCE && !ally)
 			{
 				RaidBossActive = EntIndexToEntRef(npc.index);
 				RaidModeTime = GetGameTime(npc.index) + 9000.0;
@@ -386,7 +393,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float meleedmg= 175.0;
-								if(g_b_angered)
+								if(g_b_angered && !b_schwert_is_ally[npc.index])
 								{
 									meleedmg = 325.0;
 								}	
@@ -529,7 +536,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 			{
 				
 				
-				if(g_b_angered)
+				if(g_b_angered && !b_schwert_is_ally[npc.index])
 				{
 					npc.m_flMeleeArmor = 1.0;
 					fl_teleport_timer[npc.index]= GameTime+(TELEPORT_STRIKE_Reuseable*0.5);
@@ -567,7 +574,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 				if(Succeed)
 				{
 				
-					if(g_b_angered)
+					if(g_b_angered && !b_schwert_is_ally[npc.index])
 					{
 						npc.m_flMeleeArmor = 1.0;
 						fl_teleport_timer[npc.index]= GameTime+(TELEPORT_STRIKE_Reuseable*0.5);
@@ -598,7 +605,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 				else
 				{
 					fl_teleport_timer[npc.index]= GameTime+5.0;	//retry in 5 seconds
-					if(g_b_angered)
+					if(g_b_angered && !b_schwert_is_ally[npc.index])
 					{
 						npc.m_flMeleeArmor = 1.0;
 					}
@@ -612,7 +619,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 		else
 		{
 			fl_teleport_timer[npc.index]= GameTime+1.0;	//retry in 1 second
-			if(g_b_angered)
+			if(g_b_angered && !b_schwert_is_ally[npc.index])
 			{
 				npc.m_flMeleeArmor = 1.0;
 			}
@@ -628,7 +635,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 	}
 	else
 	{
-		if(g_b_angered)
+		if(g_b_angered && !b_schwert_is_ally[npc.index])
 			npc.m_flSpeed = Schwertkrieg_Speed*1.35;
 		else
 			npc.m_flSpeed = Schwertkrieg_Speed;
@@ -671,7 +678,7 @@ static void Schwertkrieg_Teleport_Boom(int iNPC, float vecTarget[3], float pos[3
 	TELEPORT_STRIKE_spawnBeam(0.8, 145, 47, 47, 255, "materials/sprites/lgtning.vmt", 8.0, 8.2, _, 5.0, pos, vecTarget);
 	//TELEPORT_STRIKE_spawnBeam(320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
 	float radius = TELEPORT_STRIKE_Smite_Radius;
-	if(g_b_angered)
+	if(g_b_angered && !b_schwert_is_ally[npc.index])
 	{
 		radius *= 1.25;
 	}
