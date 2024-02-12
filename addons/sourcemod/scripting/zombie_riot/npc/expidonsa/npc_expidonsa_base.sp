@@ -150,8 +150,8 @@ void ExpidonsaGroupHeal(int HealingNpc, float RangeDistance, int MaxAlliesHealed
 	func_Expidonsa_Heal_Before[HealingNpc] = Function_HealBefore;
 	func_Expidonsa_Heal_After[HealingNpc] = Function_HealAfter;
 
-	int TeamNum = GetEntProp(HealingNpc, Prop_Data, "m_iTeamNum");
-	SetEntProp(HealingNpc, Prop_Data, "m_iTeamNum", 4);
+	int TeamNum = GetTeam(HealingNpc);
+	SetTeam(HealingNpc, 999);
 	Explode_Logic_Custom(0.0,
 	HealingNpc,
 	HealingNpc,
@@ -165,7 +165,7 @@ void ExpidonsaGroupHeal(int HealingNpc, float RangeDistance, int MaxAlliesHealed
 	false,
 	_,
 	Expidonsa_AllyHeal);
-	SetEntProp(HealingNpc, Prop_Data, "m_iTeamNum", TeamNum);
+	SetTeam(HealingNpc, TeamNum);
 }
 
 void Expidonsa_AllyHeal(int HealerNpc, int victim, float damage, int weapon)

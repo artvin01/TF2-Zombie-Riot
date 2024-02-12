@@ -639,7 +639,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 		SDKUnhook(npc.index, SDKHook_Think, Blitzkrieg_ClotThink);
 		b_timer_lose[npc.index] = true;
 		
-		CPrintToChatAll("{crimson}Blitzkrieg: Annhilated.");
+		CPrintToChatAll("{crimson}Blitzkrieg{default}: Annhilated{default}.");
 		return;
 	}
 	if(RaidModeTime < GetGameTime())

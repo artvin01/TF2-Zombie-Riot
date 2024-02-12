@@ -416,6 +416,7 @@ public void Bloonarius_ClotThink(int iNPC)
 			enemy.ExtraSpeed = 1.0;
 			enemy.ExtraDamage = 1.0;	
 			enemy.ExtraSize = 1.0;	
+			enemy.Team = GetTeam(npc.index);
 			for(int i; i<count; i++)
 			{
 				Waves_AddNextEnemy(enemy);

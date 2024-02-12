@@ -468,7 +468,8 @@ public void StalkerCombine_ClotThink(int iNPC)
 							enemy.ExtraRangedRes = 1.0;
 							enemy.ExtraSpeed = 1.0;
 							enemy.ExtraDamage = 1.0;	
-							enemy.ExtraSize = 1.0;		
+							enemy.ExtraSize = 1.0;	
+							enemy.Team = GetTeam(npc.index);	
 							Waves_AddNextEnemy(enemy);
 
 							TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);

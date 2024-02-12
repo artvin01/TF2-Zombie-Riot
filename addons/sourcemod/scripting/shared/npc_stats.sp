@@ -459,10 +459,12 @@ methodmap CClotBody < CBaseCombatCharacter
 #if !defined RTS
 		if(Ally == TFTeam_Red)
 			SetEntityCollisionGroup(npc, 24);
-#endif
 
 		if(Ally != TFTeam_Red)
+#endif
+		{
 			AddNpcToAliveList(npc, 0);
+		}
 			
 		locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollide_NpcLoco);
 		locomotion.SetCallback(LocomotionCallback_IsEntityTraversable, IsEntityTraversable);
@@ -2966,13 +2968,6 @@ methodmap CClotBody < CBaseCombatCharacter
 	
 		return (iActivity == this.m_iActivity);
 	}
-
-	//return the bot's collision mask
-	/*public int GetSolidMaskNothing()
-	{
-		//What to collide with
-		return 0;
-	}*/
 	public void RestartMainSequence()
 	{
 		SetEntPropFloat(this.index, Prop_Data, "m_flAnimTime", GetGameTime());
@@ -3048,6 +3043,7 @@ public void NPC_Base_InitGamedata()
 
 
 	g_hGetSolidMask			= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
+
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "LookupSequence");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
@@ -6820,6 +6816,11 @@ int GetSolidMask(int npc)
 	{
 		Solidity = (MASK_NPCSOLID);
 	}
+	//this npc ignores all collisions.
+	if(b_IgnoreAllCollisionNPC[npc])
+	{
+		Solidity = (0);	//uhh?
+	}
 	return Solidity;
 }
 
@@ -7790,6 +7791,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_AttackHappensMaximum[entity] = 0.0;
 	b_AttackHappenswillhappen[entity] = false;
 	b_thisNpcIsABoss[entity] = false;
+	b_ShowNpcHealthbar[entity] = false;
 	b_thisNpcIsARaid[entity] = false;
 	b_TryToAvoidTraverse[entity] = false;
 	b_NPCVelocityCancel[entity] = false;
@@ -8834,7 +8836,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 	}
 	
 	int NpcTypeDefine = 0;
-	if(b_thisNpcIsABoss[npc.index] || (i_NpcInternalId[npc.index] == CITIZEN && !b_IsCamoNPC[npc.index] && !b_ThisEntityIgnored[npc.index]))
+	if(b_thisNpcIsABoss[npc.index] || b_ShowNpcHealthbar[npc.index] || (i_NpcInternalId[npc.index] == CITIZEN && !b_IsCamoNPC[npc.index] && !b_ThisEntityIgnored[npc.index]))
 	{
 		NpcTypeDefine = 1;
 	}
