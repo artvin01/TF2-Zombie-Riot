@@ -76,7 +76,6 @@ methodmap Cautus < CClotBody
 		i_NpcInternalId[npc.index] = INTERITUS_FOREST_SPY;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
-		KillFeed_SetKillIcon(npc.index, "knife");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -195,12 +194,14 @@ static void ClotThink(int iNPC)
 							{
 								npc.PlayMeleeBackstabSound(target);
 								npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
+								KillFeed_SetKillIcon(npc.index, "backstab");
 								damage *= 4.0;
 							}
 							else
 							{
 								npc.PlayMeleeHitSound();
 								npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+								KillFeed_SetKillIcon(npc.index, "knife");
 							}
 
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
