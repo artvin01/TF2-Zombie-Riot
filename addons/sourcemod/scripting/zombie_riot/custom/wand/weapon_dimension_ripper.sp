@@ -221,10 +221,10 @@ void Npc_OnTakeDamage_DimensionalRipper(int attacker, int victim)
 	{
 		how_many_times_swinged[attacker] += 1;
 	}
-	if(b_thisNpcIsARaid[victim])
-	{
-		how_many_times_swinged[attacker] += 1;
-	}
+	//if(b_thisNpcIsARaid[victim])
+	//{
+	//	how_many_times_swinged[attacker] += 1;
+	//}
 	if(how_many_times_swinged[attacker] >= MAX_DIMENSION_CHARGE)
 	{
 		how_many_times_swinged[attacker] = MAX_DIMENSION_CHARGE;
@@ -693,25 +693,25 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 	switch(GetRandomInt(1, 21))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_KNIGHT ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_KNIGHT ,weapon, 1.4, 1.2, "utaunt_constellations_blue_base");
 		case 2:
 			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_KNIGHT_ARCHER ,weapon, 1.1, 1.2, "utaunt_constellations_blue_base");
 		case 3:
 			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_LONGARCHER ,weapon, 1.1, 1.3, "utaunt_constellations_blue_base");
 		case 4:
-			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_ASSASIN_MELEE ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_ASSASIN_MELEE ,weapon, 1.2, 1.25, "utaunt_constellations_blue_base");
 		case 5:
-			Dimension_Summon_Npc(client, SEABORN_SCOUT ,weapon, 1.1, 1.1, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEABORN_SCOUT ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
 		case 6:
 			Dimension_Summon_Npc(client, SEAPIERCER_ALT ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
 		case 7:
 			Dimension_Summon_Npc(client, SEAPREDATOR_ALT ,weapon, 1.0, 1.2, "utaunt_constellations_blue_base");
 		case 8:
-			Dimension_Summon_Npc(client, SEASPEWER_ALT ,weapon, 1.2, 1.3, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEASPEWER_ALT ,weapon, 1.3, 1.3, "utaunt_constellations_blue_base");
 		case 9:
-			Dimension_Summon_Npc(client, SEASWARMCALLER_ALT ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEASWARMCALLER_ALT ,weapon, 1.3, 1.2, "utaunt_constellations_blue_base");
 		case 10:
-			Dimension_Summon_Npc(client, SEAREEFBREAKER_ALT ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEAREEFBREAKER_ALT ,weapon, 1.3, 1.2, "utaunt_constellations_blue_base");
 		case 11:
 			Dimension_Summon_Npc(client, SEABORN_PYRO ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
 		case 12:
@@ -719,15 +719,15 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 		case 13:
 			Dimension_Summon_Npc(client, SEABORN_HEAVY ,weapon, 1.5, 1.2, "utaunt_constellations_blue_base");
 		case 14:
-			Dimension_Summon_Npc(client, SEABORN_MEDIC ,weapon, 1.0, 1.2, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEABORN_MEDIC ,weapon, 0.8, 1.2, "utaunt_constellations_blue_base");
 		case 15:
-			Dimension_Summon_Npc(client, SEABORN_SNIPER ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEABORN_SNIPER ,weapon, 1.3, 1.2, "utaunt_constellations_blue_base");
 		case 16:
-			Dimension_Summon_Npc(client, SEABORN_SPY ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEABORN_SPY ,weapon, 1.3, 1.2, "utaunt_constellations_blue_base");
 		case 17:
-			Dimension_Summon_Npc(client, SEABORN_GUARD ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEABORN_GUARD ,weapon, 1.4, 1.2, "utaunt_constellations_blue_base");
 		case 18:
-			Dimension_Summon_Npc(client, SEABORN_DEFENDER ,weapon, 1.0, 1.1, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEABORN_DEFENDER ,weapon, 0.7, 1.1, "utaunt_constellations_blue_base");
 		case 19:
 			Dimension_Summon_Npc(client, SEABORN_CASTER ,weapon, 1.1, 1.3, "utaunt_constellations_blue_base");
 		case 20:
