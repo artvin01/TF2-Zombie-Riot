@@ -178,7 +178,7 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 				GetEntPropVector(client, Prop_Send, "m_vecOrigin", flClientPos);
 				for(int targ; targ<i_MaxcountNpc; targ++)
 				{
-					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotalTotal[targ]);
 					if (IsValidEntity(baseboss_index))
 					{
 						if(!b_NpcHasDied[baseboss_index])
@@ -813,7 +813,7 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 			GetEntPropVector(client, Prop_Send, "m_vecOrigin", flClientPos);
 			for(int targ; targ<i_MaxcountNpc; targ++)
 			{
-				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotalTotal[targ]);
 				if (IsValidEntity(baseboss_index))
 				{
 					if(!b_NpcHasDied[baseboss_index])
