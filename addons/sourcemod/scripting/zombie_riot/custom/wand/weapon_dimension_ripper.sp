@@ -839,6 +839,7 @@ void Dimension_Summon_Npc(int client, int NpcId, int weapon, float HealthMulti, 
 			{
 				how_many_times_swinged[client] = 0;
 				Rogue_OnAbilityUse(weapon);
+				Current_Mana[client] -= mana_cost;
 				float pos1[3], ang[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
