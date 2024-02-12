@@ -183,7 +183,7 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 					{
 						if(!b_NpcHasDied[baseboss_index])
 						{
-							if (GetEntProp(client, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
+							if (GetTeam(client)!=GetTeam(baseboss_index)) 
 							{
 								float targPos[3];
 								targPos = WorldSpaceCenterOld(baseboss_index);
@@ -818,7 +818,7 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 				{
 					if(!b_NpcHasDied[baseboss_index])
 					{
-						if (GetEntProp(client, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
+						if (GetTeam(client)!=GetTeam(baseboss_index))  
 						{
 							float targPos[3];
 							targPos = WorldSpaceCenterOld(baseboss_index);
@@ -970,10 +970,8 @@ stock int CreateHellHoeProjectile(int client, float flSpeed, float flPos[3], flo
 	TeleportEntity(iCarrier, flPos, NULL_VECTOR, fVel);
 	SetEntityMoveType(iCarrier, MOVETYPE_FLY);
 	
-	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
-	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iCarrier));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iRot));
+	SetTeam(iCarrier, GetClientTeam(client));
+	SetTeam(iRot, GetClientTeam(client));
 	
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
