@@ -642,7 +642,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 		case 15:
 			Dimension_Summon_Npc(client, MEDIVAL_EAGLE_WARRIOR ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
 		case 16:
-			Dimension_Summon_Npc(client, MEDIVAL_ACHILLES ,weapon, 2.0, 1.3, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_ACHILLES ,weapon, 2.0, 2.0, "npc_boss_bomb_alert");
 		case 17:
 			Dimension_Summon_Npc(client, MEDIVAL_HALB ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
 		case 18:
@@ -703,13 +703,13 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 		case 5:
 			Dimension_Summon_Npc(client, SEABORN_SCOUT ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
 		case 6:
-			Dimension_Summon_Npc(client, SEAPIERCER_ALT ,weapon, 1.2, 1.1, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEAPIERCER_ALT ,weapon, 1.3, 1.1, "utaunt_constellations_blue_base");
 		case 7:
-			Dimension_Summon_Npc(client, SEAPREDATOR_ALT ,weapon, 1.0, 1.1, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEAPREDATOR_ALT ,weapon, 1.2, 1.1, "utaunt_constellations_blue_base");
 		case 8:
-			Dimension_Summon_Npc(client, SEASPEWER_ALT ,weapon, 1.2, 1.3, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEASPEWER_ALT ,weapon, 1.4, 1.3, "utaunt_constellations_blue_base");
 		case 9:
-			Dimension_Summon_Npc(client, SEASWARMCALLER_ALT ,weapon, 1.3, 1.2, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEASWARMCALLER_ALT ,weapon, 1.4, 1.25, "utaunt_constellations_blue_base");
 		case 10:
 			Dimension_Summon_Npc(client, SEAREEFBREAKER_ALT ,weapon, 1.5, 1.2, "utaunt_constellations_blue_base");
 		case 11:
@@ -793,15 +793,15 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 		case 3:
 			Dimension_Summon_Npc(client, EXPIDONSA_GUARDUS ,weapon, 1.6, 1.2, "eyeboss_death_vortex");
 		case 4:
-			Dimension_Summon_Npc(client, EXPIDONSA_IGNITUS ,weapon, 1.5, 1.2, "eyeboss_death_vortex");
+			Dimension_Summon_Npc(client, EXPIDONSA_IGNITUS ,weapon, 1.6, 1.3, "eyeboss_death_vortex");
 		case 5:
 			Dimension_Summon_Npc(client, EXPIDONSA_GIANTTANKUS ,weapon, 1.75, 1.2, "eyeboss_death_vortex");
 		case 6:
-			Dimension_Summon_Npc(client, EXPIDONSA_SNIPONEER ,weapon, 0.8, 1.4, "eyeboss_death_vortex");
+			Dimension_Summon_Npc(client, EXPIDONSA_SNIPONEER ,weapon, 0.8, 1.5, "eyeboss_death_vortex");
 		case 7:
-			Dimension_Summon_Npc(client, EXPIDONSA_DIVERSIONISTICO ,weapon, 1.1, 1.2, "eyeboss_death_vortex");
+			Dimension_Summon_Npc(client, EXPIDONSA_DIVERSIONISTICO ,weapon, 1.3, 1.2, "eyeboss_death_vortex");
 		case 8:
-			Dimension_Summon_Npc(client, EXPIDONSA_MINIGUNASSISA ,weapon, 1.2, 1.2, "eyeboss_death_vortex");
+			Dimension_Summon_Npc(client, EXPIDONSA_MINIGUNASSISA ,weapon, 1.2, 1.1, "eyeboss_death_vortex");
 		case 9:
 			Dimension_Summon_Npc(client, EXPIDONSA_SPEEDUSADIVUS ,weapon, 1.2, 1.1, "eyeboss_death_vortex");
 		case 10:
@@ -811,9 +811,9 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 		case 12:
 			Dimension_Summon_Npc(client, EXPIDONSA_ERASUS ,weapon, 1.4, 1.3, "eyeboss_death_vortex");
 		case 13:
-			Dimension_Summon_Npc(client, EXPIDONSA_ENEGAKAPUS ,weapon, 1.1, 1.1, "eyeboss_death_vortex");
+			Dimension_Summon_Npc(client, EXPIDONSA_ENEGAKAPUS ,weapon, 1.2, 1.1, "eyeboss_death_vortex");
 		case 14:
-			Dimension_Summon_Npc(client, EXPIDONSA_VAUSTECHICUS ,weapon, 1.2, 1.1, "eyeboss_death_vortex");
+			Dimension_Summon_Npc(client, EXPIDONSA_VAUSTECHICUS ,weapon, 1.3, 1.1, "eyeboss_death_vortex");
 		case 15:
 			Dimension_Summon_Npc(client, EXPIDONSA_SOLDINE ,weapon, 2.0, 2.0, "eyeboss_death_vortex");
 		case 16:
