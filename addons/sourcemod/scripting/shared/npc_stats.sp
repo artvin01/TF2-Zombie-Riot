@@ -459,10 +459,10 @@ methodmap CClotBody < CBaseCombatCharacter
 #if !defined RTS
 		if(Ally == TFTeam_Red)
 			SetEntityCollisionGroup(npc, 24);
-#endif
 
 		if(Ally != TFTeam_Red)
 			AddNpcToAliveList(npc, 0);
+#endif
 			
 		locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollide_NpcLoco);
 		locomotion.SetCallback(LocomotionCallback_IsEntityTraversable, IsEntityTraversable);
