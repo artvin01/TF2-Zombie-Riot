@@ -276,6 +276,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Weapon_German_WandTouch(entity, target);
 		}
+		case WEAPON_LUDO:
+		{
+			Weapon_Ludo_WandTouch(entity, target);
+		}
 		case WEAPON_SENSAL_SCYTHE:
 		{
 			Weapon_Sensal_WandTouch(entity, target);

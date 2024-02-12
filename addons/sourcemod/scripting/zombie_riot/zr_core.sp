@@ -154,6 +154,7 @@ enum
 	WEAPON_HEAVY_PARTICLE_RIFLE = 83,
 	WEAPON_SICCERINO = 84,
 	WEAPON_DIMENSION_RIPPER = 85,
+	WEAPON_LUDO = 86,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -483,6 +484,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_heavy_particle_rifle.sp"
 #include "zombie_riot/custom/weapon_railcannon.sp"
 #include "zombie_riot/custom/wand/weapon_dimension_ripper.sp"
+#include "zombie_riot/custom/wand/weapon_ludo.sp"
 
 void ZR_PluginLoad()
 {
@@ -706,6 +708,7 @@ void ZR_MapStart()
 	Gladiia_MapStart();
 	WeaponBoard_Precache();
 	Weapon_German_MapStart();
+	Weapon_Ludo_MapStart();
 	Ion_Beam_Wand_MapStart();
 	OnMapStartLeper();
 	Flagellant_MapStart();
