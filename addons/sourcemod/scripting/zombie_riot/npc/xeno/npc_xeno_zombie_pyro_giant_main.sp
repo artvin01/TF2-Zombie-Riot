@@ -129,7 +129,7 @@ methodmap XenoPyroGiant < CClotBody
 	
 	public XenoPyroGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		XenoPyroGiant npc = view_as<XenoPyroGiant>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.5", "85000", ally, false, true));
+		XenoPyroGiant npc = view_as<XenoPyroGiant>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "85000", ally, false, true));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);

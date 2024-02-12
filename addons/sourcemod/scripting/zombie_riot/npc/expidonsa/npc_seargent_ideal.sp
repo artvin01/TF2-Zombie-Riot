@@ -400,8 +400,7 @@ Action SeargentIdeal_Protect(int victim, int &attacker, int &inflictor, float &d
 
 void SeargentIdealShield(int iNpc)
 {
-	int TeamNum = GetTeam(iNpc);
-	SetTeam(iNpc, 999);
+	b_NpcIsTeamkiller[iNpc] = true;
 	Explode_Logic_Custom(0.0,
 	iNpc,
 	iNpc,
@@ -415,7 +414,7 @@ void SeargentIdealShield(int iNpc)
 	false,
 	_,
 	SeargentIdealShieldAffected);
-	SetTeam(iNpc, TeamNum);
+	b_NpcIsTeamkiller[iNpc] = false;
 }
 
 

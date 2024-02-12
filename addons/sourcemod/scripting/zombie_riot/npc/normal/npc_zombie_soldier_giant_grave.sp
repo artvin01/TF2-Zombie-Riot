@@ -148,7 +148,7 @@ methodmap SoldierGiant < CClotBody
 	
 	public SoldierGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		SoldierGiant npc = view_as<SoldierGiant>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.5", "200000", ally, false, true));
+		SoldierGiant npc = view_as<SoldierGiant>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "200000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = SOLDIER_ZOMBIE_BOSS;
 		i_NpcWeight[npc.index] = 3;

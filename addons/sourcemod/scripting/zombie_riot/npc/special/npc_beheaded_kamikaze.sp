@@ -299,8 +299,7 @@ void Kamikaze_DeathExplosion(int entity)
 	pack_boom.WriteCell(1);
 	RequestFrame(MakeExplosionFrameLaterKami, pack_boom);
 
-	int TeamNum = GetTeam(npc.index);
-	SetTeam(npc.index, 999);
+	b_NpcIsTeamkiller[entity] = true;
 	Explode_Logic_Custom(90.0 * npc.m_flWaveScale,
 	npc.index,
 	npc.index,
@@ -315,7 +314,7 @@ void Kamikaze_DeathExplosion(int entity)
 	5.0,
 	_,
 	BeheadedKamiBoomInternal);
-	SetTeam(npc.index, TeamNum);
+	b_NpcIsTeamkiller[entity] = true;
 	SmiteNpcToDeath(entity);
 	/*
 

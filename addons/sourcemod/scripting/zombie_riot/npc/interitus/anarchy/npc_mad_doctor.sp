@@ -2,44 +2,43 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/demoman_paincrticialdeath01.mp3",
-	"vo/demoman_paincrticialdeath02.mp3",
-	"vo/demoman_paincrticialdeath03.mp3",
-	"vo/demoman_paincrticialdeath04.mp3",
-	"vo/demoman_paincrticialdeath05.mp3",
+	"vo/medic_paincrticialdeath01.mp3",
+	"vo/medic_paincrticialdeath02.mp3",
+	"vo/medic_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/demoman_painsharp01.mp3",
-	"vo/demoman_painsharp02.mp3",
-	"vo/demoman_painsharp03.mp3",
-	"vo/demoman_painsharp04.mp3",
-	"vo/demoman_painsharp05.mp3",
-	"vo/demoman_painsharp06.mp3",
-	"vo/demoman_painsharp07.mp3",
+	")vo/medic_painsharp01.mp3",
+	")vo/medic_painsharp02.mp3",
+	")vo/medic_painsharp03.mp3",
+	")vo/medic_painsharp04.mp3",
+	")vo/medic_painsharp05.mp3",
+	")vo/medic_painsharp06.mp3",
+	")vo/medic_painsharp07.mp3",
+	")vo/medic_painsharp08.mp3",
 };
 
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/demoman_battlecry01.mp3",
-	"vo/demoman_battlecry02.mp3",
-	"vo/demoman_battlecry03.mp3",
-	"vo/demoman_battlecry04.mp3",
+	")vo/medic_battlecry01.mp3",
+	")vo/medic_battlecry02.mp3",
+	")vo/medic_battlecry03.mp3",
+	")vo/medic_battlecry04.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
+	"weapons/knife_swing.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/blade_slice_2.wav",
-	"weapons/blade_slice_3.wav",
-	"weapons/blade_slice_4.wav",
+	"weapons/ubersaw_hit1.wav",
+	"weapons/ubersaw_hit2.wav",
+	"weapons/ubersaw_hit3.wav",
+	"weapons/ubersaw_hit4.wav",
 };
 
-void DesertInabdil_OnMapStart_NPC()
+
+void AnarchyMadDoctor_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -49,7 +48,7 @@ void DesertInabdil_OnMapStart_NPC()
 }
 
 
-methodmap DesertInabdil < CClotBody
+methodmap AnarchyMadDoctor < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -79,7 +78,7 @@ methodmap DesertInabdil < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -88,15 +87,15 @@ methodmap DesertInabdil < CClotBody
 	}
 	
 	
-	public DesertInabdil(int client, float vecPos[3], float vecAng[3], int ally)
+	public AnarchyMadDoctor(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		DesertInabdil npc = view_as<DesertInabdil>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
+		AnarchyMadDoctor npc = view_as<AnarchyMadDoctor>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "6000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_DESERT_INABDIL;
+		i_NpcInternalId[npc.index] = INTERITUS_ANARCHY_MADDOCTOR;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		SetVariantInt(0);
@@ -110,43 +109,45 @@ methodmap DesertInabdil < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(DesertInabdil_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertInabdil_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(DesertInabdil_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AnarchyMadDoctor_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AnarchyMadDoctor_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AnarchyMadDoctor_ClotThink);
 		
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 200.0;
-		npc.m_flNextRangedAttack = GetGameTime();
+		npc.m_flSpeed = 320.0;
+		npc.m_flMeleeArmor = 1.5;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+	
+
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_uberneedle/c_uberneedle.mdl");
 		
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_kriegsmaschine_9000/sf14_medic_kriegsmaschine_9000.mdl");
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/short2014_all_mercs_mask/short2014_all_mercs_mask_demo.mdl");
-
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/sf14_demo_cyborg/sf14_demo_cyborg.mdl");
-
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl");
-
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_second_opinion/hw2013_second_opinion.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_quacks_cureall/hw2013_quacks_cureall.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
+		
 		return npc;
 	}
 }
 
-public void DesertInabdil_ClotThink(int iNPC)
+public void AnarchyMadDoctor_ClotThink(int iNPC)
 {
-	DesertInabdil npc = view_as<DesertInabdil>(iNPC);
+	AnarchyMadDoctor npc = view_as<AnarchyMadDoctor>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -172,34 +173,7 @@ public void DesertInabdil_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	float TrueArmor = 1.0;
-
-	float TimeMultiplier = 1.0;
-	TimeMultiplier = GetGameTime(npc.index) - npc.m_flNextRangedAttack;
-
-	TimeMultiplier *= 0.40;
-
-	if(TimeMultiplier > 2.0)
-	{
-		if(!NpcStats_IsEnemySilenced(npc.index))
-		{
-			TrueArmor *= 0.5;
-		}
-		TimeMultiplier = 2.0;
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 3);
-	}
-	else
-	{
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
-	}
-	if(TimeMultiplier < 1.0)
-	{
-		TimeMultiplier = 1.0;
-	}
-	fl_TotalArmor[npc.index] = TrueArmor;
-
-	npc.m_flSpeed = (200.0 * TimeMultiplier);
-
+	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
@@ -215,7 +189,7 @@ public void DesertInabdil_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		DesertInabdilSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		AnarchyMadDoctorSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -225,9 +199,9 @@ public void DesertInabdil_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action DesertInabdil_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AnarchyMadDoctor_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	DesertInabdil npc = view_as<DesertInabdil>(victim);
+	AnarchyMadDoctor npc = view_as<AnarchyMadDoctor>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -237,19 +211,25 @@ public Action DesertInabdil_OnTakeDamage(int victim, int &attacker, int &inflict
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+	//each HIT gives more. 
+	WinterArcticMageHealRandomAlly(victim, 2000.0);
 	
 	return Plugin_Changed;
 }
 
-public void DesertInabdil_NPCDeath(int entity)
+public void AnarchyMadDoctor_NPCDeath(int entity)
 {
-	DesertInabdil npc = view_as<DesertInabdil>(entity);
+	AnarchyMadDoctor npc = view_as<AnarchyMadDoctor>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 		
 	
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
@@ -261,7 +241,7 @@ public void DesertInabdil_NPCDeath(int entity)
 
 }
 
-void DesertInabdilSelfDefense(DesertInabdil npc, float gameTime, int target, float distance)
+void AnarchyMadDoctorSelfDefense(AnarchyMadDoctor npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -282,27 +262,35 @@ void DesertInabdilSelfDefense(DesertInabdil npc, float gameTime, int target, flo
 				if(IsValidEnemy(npc.index, target))
 				{
 					float damageDealt = 40.0;
-					float TimeMultiplier = 1.0;
-					TimeMultiplier = GetGameTime(npc.index) - npc.m_flNextRangedAttack;
-					TimeMultiplier *= 0.40;
-
-					if(TimeMultiplier > 2.0)
+					if(npc.m_iOverlordComboAttack >= 3)
 					{
 						damageDealt *= 2.0;
+						fl_TotalArmor[npc.index] = fl_TotalArmor[npc.index] * 0.85;
+						if(fl_TotalArmor[npc.index] < 0.5)
+						{
+							fl_TotalArmor[npc.index] = 0.5;
+						}
 					}
-
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+						damageDealt *= 2.5;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+					if(npc.m_iOverlordComboAttack >= 3)
+					{
+						Sakratan_AddNeuralDamage(target, npc.index, 50, true);
+					}
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
 				} 
 			}
+			if(npc.m_iOverlordComboAttack >= 3)
+			{
+				npc.m_iOverlordComboAttack = 0;
+				npc.m_flNextMeleeAttack = gameTime + 0.75;
+			}
 			delete swingTrace;
-			npc.m_flNextRangedAttack = GetGameTime(npc.index);
 		}
 	}
 
@@ -318,11 +306,12 @@ void DesertInabdilSelfDefense(DesertInabdil npc, float gameTime, int target, flo
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
+				npc.m_iOverlordComboAttack++;
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.2;
+				npc.m_flAttackHappens = gameTime + 0.15;
+				npc.m_flDoingAnimation = gameTime + 0.15;
+				npc.m_flNextMeleeAttack = gameTime + 0.25;
 			}
 		}
 	}

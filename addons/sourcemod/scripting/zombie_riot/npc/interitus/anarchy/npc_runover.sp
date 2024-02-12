@@ -39,7 +39,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_slice_4.wav",
 };
 
-void DesertInabdil_OnMapStart_NPC()
+void AnarchyRunover_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -49,7 +49,7 @@ void DesertInabdil_OnMapStart_NPC()
 }
 
 
-methodmap DesertInabdil < CClotBody
+methodmap AnarchyRunover < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -88,11 +88,11 @@ methodmap DesertInabdil < CClotBody
 	}
 	
 	
-	public DesertInabdil(int client, float vecPos[3], float vecAng[3], int ally)
+	public AnarchyRunover(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		DesertInabdil npc = view_as<DesertInabdil>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
+		AnarchyRunover npc = view_as<AnarchyRunover>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "13500", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_DESERT_INABDIL;
+		i_NpcInternalId[npc.index] = INTERITUS_ANARCHY_RUNOVER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -110,9 +110,9 @@ methodmap DesertInabdil < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(DesertInabdil_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertInabdil_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(DesertInabdil_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AnarchyRunover_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AnarchyRunover_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AnarchyRunover_ClotThink);
 		
 		
 		//IDLE
@@ -129,11 +129,11 @@ methodmap DesertInabdil < CClotBody
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/short2014_all_mercs_mask/short2014_all_mercs_mask_demo.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2023_clowns_coverup/hwn2023_clowns_coverup_demo.mdl");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/sf14_demo_cyborg/sf14_demo_cyborg.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2022_nightbane_brim/hwn2022_nightbane_brim.mdl");
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/sbox2014_toowoomba_tunic/sbox2014_toowoomba_tunic_demo.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
@@ -144,9 +144,9 @@ methodmap DesertInabdil < CClotBody
 	}
 }
 
-public void DesertInabdil_ClotThink(int iNPC)
+public void AnarchyRunover_ClotThink(int iNPC)
 {
-	DesertInabdil npc = view_as<DesertInabdil>(iNPC);
+	AnarchyRunover npc = view_as<AnarchyRunover>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -215,7 +215,7 @@ public void DesertInabdil_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		DesertInabdilSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		AnarchyRunoverSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -225,9 +225,9 @@ public void DesertInabdil_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action DesertInabdil_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AnarchyRunover_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	DesertInabdil npc = view_as<DesertInabdil>(victim);
+	AnarchyRunover npc = view_as<AnarchyRunover>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -241,9 +241,9 @@ public Action DesertInabdil_OnTakeDamage(int victim, int &attacker, int &inflict
 	return Plugin_Changed;
 }
 
-public void DesertInabdil_NPCDeath(int entity)
+public void AnarchyRunover_NPCDeath(int entity)
 {
-	DesertInabdil npc = view_as<DesertInabdil>(entity);
+	AnarchyRunover npc = view_as<AnarchyRunover>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -261,7 +261,7 @@ public void DesertInabdil_NPCDeath(int entity)
 
 }
 
-void DesertInabdilSelfDefense(DesertInabdil npc, float gameTime, int target, float distance)
+void AnarchyRunoverSelfDefense(AnarchyRunover npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -281,21 +281,24 @@ void DesertInabdilSelfDefense(DesertInabdil npc, float gameTime, int target, flo
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 40.0;
+					float damageDealt = 80.0;
+					int NeutralDmg = 30;
 					float TimeMultiplier = 1.0;
 					TimeMultiplier = GetGameTime(npc.index) - npc.m_flNextRangedAttack;
 					TimeMultiplier *= 0.40;
 
 					if(TimeMultiplier > 2.0)
 					{
-						damageDealt * 2.0;
+						damageDealt *= 2.0;
+						NeutralDmg *= 2;
 					}
 
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+						damageDealt *= 3.5;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+					Sakratan_AddNeuralDamage(target, npc.index, NeutralDmg, true);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();

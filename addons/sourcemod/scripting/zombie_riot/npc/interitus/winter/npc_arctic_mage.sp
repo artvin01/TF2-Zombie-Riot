@@ -91,7 +91,7 @@ methodmap WinterArcticMage < CClotBody
 	
 	public WinterArcticMage(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		WinterArcticMage npc = view_as<WinterArcticMage>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "15000", ally, false, true));
+		WinterArcticMage npc = view_as<WinterArcticMage>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "15000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_WINTER_ARCTIC_MAGE;
 		i_NpcWeight[npc.index] = 2;
