@@ -674,6 +674,7 @@ bool b_CannotBeSlowed[MAXENTITIES];
 float f_NpcTurnPenalty[MAXENTITIES];
 bool b_IsInUpdateGroundConstraintLogic;
 bool b_IgnorePlayerCollisionNPC[MAXENTITIES];
+bool b_IgnoreAllCollisionNPC[MAXENTITIES];		//for npc's that noclip
 
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
 int h_NpcCollissionHookType[MAXENTITIES];
@@ -777,7 +778,6 @@ Handle g_hGetBonePosition;
 
 //PluginBot SDKCalls
 Handle g_hGetSolidMask;
-//Handle g_hGetSolidMaskNone;
 //DHooks
 //Handle g_hGetCurrencyValue;
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
@@ -1020,6 +1020,7 @@ float fl_AttackHappensMaximum[MAXENTITIES];
 bool b_AttackHappenswillhappen[MAXENTITIES];
 bool b_thisNpcIsABoss[MAXENTITIES];
 bool b_thisNpcIsARaid[MAXENTITIES]; //This is used for scaling.
+bool b_ShowNpcHealthbar[MAXENTITIES];
 bool b_TryToAvoidTraverse[MAXENTITIES];
 bool b_NoKnockbackFromSources[MAXENTITIES];
 int i_NpcWeight[MAXENTITIES]; //This is used for scaling.
@@ -1745,7 +1746,7 @@ public void OnClientPutInServer(int client)
 	//do cooldown upon connection.
 	AdjustBotCount();
 #if !defined RTS
-	WeaponClass[client] = TFClass_Unknown;
+	WeaponClass[client] = TFClass_Scout;
 #endif
 	f_ClientReviveDelay[client] = 0.0;
 	
@@ -1829,7 +1830,7 @@ public void OnClientDisconnect(int client)
 	b_DisplayDamageHud[client] = false;
 
 #if !defined RTS
-	WeaponClass[client] = TFClass_Unknown;
+	WeaponClass[client] = TFClass_Scout;
 #endif
 
 #if defined RPG
@@ -2525,6 +2526,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		EntityFuncAttackInstant[entity] = INVALID_FUNCTION;
 		b_Is_Player_Projectile_Through_Npc[entity] = false;
 		b_IgnorePlayerCollisionNPC[entity] = false;
+		b_IgnoreAllCollisionNPC[entity] = false;
 		b_ForceCollisionWithProjectile[entity] = false;
 		b_ProjectileCollideIgnoreWorld[entity] = false;
 		i_IsABuilding[entity] = false;
@@ -3520,8 +3522,8 @@ void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons=true,
 {
 	if(classType < TFClass_Scout || classType > TFClass_Engineer)
 	{
-		//classType = TFClass_Medic;
-		ThrowError("Invalid class %d", classType);
+		classType = TFClass_Scout;
+		LogError("Invalid class %d", classType);
 	}
 	
 	TF2_SetPlayerClass(client, classType, weapons, persistent);

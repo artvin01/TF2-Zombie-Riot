@@ -1107,6 +1107,7 @@ void GodArkantosSpawnEnemy(int arkantos, int npc_id, int health = 0, int count, 
 	enemy.ExtraSpeed = 1.0;
 	enemy.ExtraDamage = 1.0;
 	enemy.ExtraSize = 1.0;		
+	enemy.Team = GetTeam(arkantos);
 	for(int i; i<count; i++)
 	{
 		Waves_AddNextEnemy(enemy);

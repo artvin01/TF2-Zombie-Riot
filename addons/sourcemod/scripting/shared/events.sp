@@ -15,7 +15,7 @@ void Events_PluginStart()
 	HookEvent("deploy_buff_banner", OnBannerDeploy, EventHookMode_Pre);
 //	HookEvent("nav_blocked", NavBlocked, EventHookMode_Pre);
 #if defined ZR
-	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_PostNoCopy);
+	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_Post);
 	HookEvent("teamplay_setup_finished", OnSetupFinished, EventHookMode_PostNoCopy);
 #endif
 	

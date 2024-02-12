@@ -289,7 +289,7 @@ void VausTechicusShieldGiving(VausTechicus npc, float gameTime)
 	{
 		npc.m_flNextRangedSpecialAttack = gameTime + 1.0; //Retry in 1 second.
 		int TeamNum = GetTeam(npc.index);
-		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
+		SetTeam(npc.index, 999);
 		Explode_Logic_Custom(0.0,
 		npc.index,
 		npc.index,
@@ -303,7 +303,7 @@ void VausTechicusShieldGiving(VausTechicus npc, float gameTime)
 		false,
 		_,
 		VausTechicusShield);
-		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
+		SetTeam(npc.index, TeamNum);
 	}
 }
 
@@ -352,19 +352,9 @@ void VausTechicusShield(int entity, int victim, float damage, int weapon)
 	if(entity == victim)
 		return;
 
-	if(GetTeam(entity) == TFTeam_Red)
+	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
 	{
-		if (!b_NpcHasDied[victim])
-		{
-			VausTechicusShieldInternal(entity,victim);
-		}
-	}
-	else
-	{
-		if (GetTeam(victim) != TFTeam_Red && !i_IsABuilding[victim] && victim > MaxClients)
-		{
-			VausTechicusShieldInternal(entity,victim);
-		}
+		VausTechicusShieldInternal(entity,victim);
 	}
 }
 

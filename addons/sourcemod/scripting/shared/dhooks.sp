@@ -896,7 +896,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-			if(b_IsAProjectile[entity2] && GetTeam(entity1) == GetTeam(entity2))
+			if(b_IsAProjectile[entity2])
+			{
+				return false;
+			}
+			if(GetTeam(entity2) == GetTeam(entity1))
 			{
 				return false;
 			}
@@ -1706,11 +1710,7 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPost(int client, DHookReturn
 		{
 			return MRES_Ignored;
 		}
-		#if defined NoSendProxyClass
 		TF2_SetPlayerClass_ZR(GetChargeEffectBeingProvided, WeaponClass[GetChargeEffectBeingProvided], false, false);
-		#else
-		TF2_SetPlayerClass_ZR(GetChargeEffectBeingProvided, CurrentClass[GetChargeEffectBeingProvided], false, false);
-		#endif
 		GetChargeEffectBeingProvided = 0;
 	}
 	return MRES_Ignored;
