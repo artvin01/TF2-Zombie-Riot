@@ -5281,3 +5281,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/forest/npc_aslan.sp"
 #include "zombie_riot/npc/interitus/forest/npc_perro.sp"
 #include "zombie_riot/npc/interitus/forest/npc_caprinae.sp"
+#include "zombie_riot/npc/interitus/forest/npc_liberi.sp"
+#include "zombie_riot/npc/interitus/forest/npc_ursus.sp"
+#include "zombie_riot/npc/interitus/forest/npc_aegir.sp"
+#include "zombie_riot/npc/interitus/forest/npc_cautus.sp"
