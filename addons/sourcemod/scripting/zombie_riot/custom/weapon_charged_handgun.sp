@@ -465,6 +465,7 @@ static void Wand_Launch_IEM(int client, int iRot, float speed, float time, float
 	
 	SetTeam(iCarrier, GetClientTeam(client));
 	SetTeam(iRot, GetClientTeam(client));
+	
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
 	SetEntityCollisionGroup(iCarrier, 27);
@@ -606,10 +607,10 @@ public Action Timer_Electric_Think_PAP(Handle timer, int ref)
 	
 	Damage_Reduction[iCarrier] = 1.0;
 					
-	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	for(int targ; targ<i_MaxcountNpc; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
-		if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		if (IsValidEntity(baseboss_index))
 		{
 			if(!b_NpcHasDied[baseboss_index])
 			{
@@ -668,7 +669,7 @@ public Action Timer_Electric_Think_PAP(Handle timer, int ref)
 						TE_SetupBeamPoints(flCarrierPos, targPos, Beam_Glow, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 						TE_SendToAll(0.0);
 							
-						Damage_Reduction[iCarrier] *= EXPLOSION_AOE_DAMAGE_FALLOFF;
+						Damage_Reduction[iCarrier] *= EXPLOSION_AOE_DAMAGE_FALLOFF * 0.85;
 						//use blast cus it does its own calculations for that ahahahah im evil 
 					}
 				}
@@ -742,7 +743,7 @@ public Action Timer_Electric_Think_PAP_Star(Handle timer, int ref)
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "Open");
 	
-	Wand_Launch_IEM(client, iRot, 100.0, 5.0, Damage_Tornado[iCarrier], 1, nfAng, flCarrierPos);
+	Wand_Launch_IEM(client, iRot, 100.0, 5.0, Damage_Tornado[iCarrier]*0.5, 1, nfAng, flCarrierPos);
 
 	return Plugin_Continue;
 }
@@ -794,10 +795,10 @@ public Action Timer_Electric_Think(Handle timer, int ref)
 	
 	Damage_Reduction[iCarrier] = 1.0;
 					
-	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	for(int targ; targ<i_MaxcountNpc; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
-		if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		if (IsValidEntity(baseboss_index))
 		{
 			if(!b_NpcHasDied[baseboss_index])
 			{
@@ -856,7 +857,7 @@ public Action Timer_Electric_Think(Handle timer, int ref)
 						TE_SetupBeamPoints(flCarrierPos, targPos, Beam_Glow, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 						TE_SendToAll(0.0);
 							
-						Damage_Reduction[iCarrier] *= EXPLOSION_AOE_DAMAGE_FALLOFF;
+						Damage_Reduction[iCarrier] *= EXPLOSION_AOE_DAMAGE_FALLOFF * 0.85;
 						//use blast cus it does its own calculations for that ahahahah im evil (you scare me sometime man)
 					}
 				}
