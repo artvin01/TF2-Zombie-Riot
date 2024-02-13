@@ -734,19 +734,19 @@ public void TheMessenger_NPCDeath(int entity)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{blue}TheMessenger{default}: Your futile attempts of trying to reconsile...");
+			CPrintToChatAll("{lightblue}The Messenger{default}: Your futile attempts of trying to reconsile...");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{blue}TheMessenger{default}: Your judgement will arrive later.");
+			CPrintToChatAll("{lightblue}The Messenger{default}: Your judgement will arrive later.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{blue}TheMessenger{default}: Seems like youre not all talk.");
+			CPrintToChatAll("{lightblue}The Messenger{default}: Seems like youre not all talk.");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{blue}TheMessenger{default}: I can see why you murdered those expidonsans. {crimson} Sadist.");
+			CPrintToChatAll("{lightblue}The Messenger{default}: I can see why you murdered those expidonsans. {crimson} Sadist.");
 		}
 	}
 
@@ -1077,6 +1077,13 @@ void MessengerInitiateGroupAttack(TheMessenger npc)
 {
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 	int enemy[MAXENTITIES];
+	if(!IsValidEntity(npc.m_iWearable2))
+	{
+		float flPos[3];
+		float flAng[3];
+		npc.GetAttachment("effect_hand_r", flPos, flAng);
+		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "flaregun_trail_blue", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+	}
 	GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, npc.m_iWearable2);
 
 	for(int i; i < sizeof(enemy); i++)
@@ -1088,7 +1095,7 @@ void MessengerInitiateGroupAttack(TheMessenger npc)
 			float vecHit[3];
 			vecHit = WorldSpaceCenterOld(Target);
 			float vecHitPart[3];
-			vecHitPart = WorldSpaceCenterOld(npc.m_iWearable2);
+			GetEntPropVector(npc.m_iWearable2, Prop_Data, "m_vecAbsOrigin", vecHitPart);
 
 			int projectile;
 			float Proj_Damage = 18.0 * RaidModeScaling;

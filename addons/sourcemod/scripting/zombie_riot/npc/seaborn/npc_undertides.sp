@@ -322,7 +322,14 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 	float Pos1[3];
 	if(RangeLimit > 0.0)
 	{
-		Pos1 = WorldSpaceCenterOld(TraceEntity);
+		if(b_ThisEntityIgnored_NoTeam[TraceEntity])
+		{
+			GetEntPropVector(TraceEntity, Prop_Data, "m_vecAbsOrigin", Pos1);
+		}
+		else
+		{
+			Pos1 = WorldSpaceCenterOld(TraceEntity);
+		}
 	}
 
 	for(int client = 1; client <= MaxClients; client++)
