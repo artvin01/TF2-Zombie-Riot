@@ -67,7 +67,7 @@ methodmap SeaRunner < CClotBody
 	
 	public SeaRunner(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		SeaRunner npc = view_as<SeaRunner>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.5", data[0] ? "450" : "350", ally, false));
+		SeaRunner npc = view_as<SeaRunner>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.35", data[0] ? "450" : "350", ally, false));
 		// 3000 x 0.15
 		// 4000 x 0.15
 

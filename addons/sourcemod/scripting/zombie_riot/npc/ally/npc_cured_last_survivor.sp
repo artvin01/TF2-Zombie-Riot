@@ -163,7 +163,7 @@ public void CuredFatherGrigori_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 }
 
-bool BoughtGregHelp;
+static bool BoughtGregHelp;
 
 methodmap CuredFatherGrigori < CClotBody
 {
@@ -812,5 +812,6 @@ public void OnBuy_BuffGreg(int client)
 		SetEntPropEnt(greg, Prop_Send, "m_hOwnerEntity",client);
 	}
 	
-	Store_RandomizeNPCStore(false);
+	CancelClientMenu(client, true);
+	Store_RandomizeNPCStore(2);
 }

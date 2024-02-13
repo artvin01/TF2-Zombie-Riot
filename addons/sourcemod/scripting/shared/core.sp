@@ -457,6 +457,8 @@ int i_HowManyBombsHud[MAXENTITIES];
 float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
+float f_LudoDebuff[MAXENTITIES];
+float f_SpadeLudoDebuff[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
 float f_HighTeslarDebuff[MAXENTITIES];
 float f_Silenced[MAXENTITIES];
@@ -1095,6 +1097,7 @@ float fl_WaveScale[MAXENTITIES];
 float fl_StandStill[MAXENTITIES];
 float fl_GrappleCooldown[MAXENTITIES];
 float fl_HookDamageTaken[MAXENTITIES];
+float f_HeadshotDamageMultiNpc[MAXENTITIES];
 
 bool b_PlayHurtAnimation[MAXENTITIES];
 bool b_follow[MAXENTITIES];
@@ -1524,7 +1527,7 @@ public void OnMapStart()
 public void OnMapEnd()
 {
 #if defined ZR
-	Store_RandomizeNPCStore(true);
+	Store_RandomizeNPCStore(1);
 	OnRoundEnd(null, NULL_STRING, false);
 	OnMapEndWaves();
 	Spawns_MapEnd();

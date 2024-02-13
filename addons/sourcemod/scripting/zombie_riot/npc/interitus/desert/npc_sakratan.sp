@@ -298,7 +298,7 @@ void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sou
 	if(victim <= MaxClients)
 	{
 		Armor_DebuffType[victim] = 2;
-		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
+		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 		{
 			Armor_Charge[victim] -= damage;
 			if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
@@ -311,8 +311,7 @@ void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sou
 				//if server starts crashing out of nowhere, change how to change teamnum
 				EmitSoundToAll("mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 				ParticleEffectAt(ProjectileLoc, "hightower_explosion", 1.0);
-				int TeamNum = GetTeam(attacker);
-				SetTeam(attacker, 999);
+				b_NpcIsTeamkiller[victim] = true;
 				Explode_Logic_Custom(0.0,
 				attacker,
 				attacker,
@@ -326,7 +325,7 @@ void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sou
 				false,
 				_,
 				SakratanGroupDebuff);
-				SetTeam(attacker, TeamNum);
+				b_NpcIsTeamkiller[victim] = false;
 				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
 			//	Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
 			}
@@ -334,6 +333,10 @@ void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sou
 			if(sound || !Armor_Charge[victim])
 				ClientCommand(victim, "playgamesound friends/friend_online.wav");
 		}
+	}
+	else
+	{
+		IncreaceEntityDamageTakenBy(victim, 1.025, 1.0);			
 	}
 }
 

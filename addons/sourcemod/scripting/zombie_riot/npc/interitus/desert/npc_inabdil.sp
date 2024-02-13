@@ -288,7 +288,7 @@ void DesertInabdilSelfDefense(DesertInabdil npc, float gameTime, int target, flo
 
 					if(TimeMultiplier > 2.0)
 					{
-						damageDealt * 2.0;
+						damageDealt *= 2.0;
 					}
 
 					if(ShouldNpcDealBonusDamage(target))

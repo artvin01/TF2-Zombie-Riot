@@ -2728,4 +2728,20 @@
 	{
 		"en"	"More damage and attackspeed.\nYour R now summons a giant pair of siccors to siccor the enemy."
 	}
+	"Ludomania Desc"
+	{
+		"en"	"A set of glowing cards. They shimmer brilliantly.\nDraw: Press M2 to draw a card. Gain different effects depending on what card you drew.\nEach card has a different value, don't go over 21!\nDamage is exponentional."
+	}
+	"Ludomania Extra Desc"
+	{
+		"en"	"4 is homing\n5 gives mana\n6 stuns\n7 silences the enemy\n8 bleeds the enemy (weak)\n9 bleeds the enemy (strong)\n10 debuffs the enemy\nJ-Q-K change card effects"
+	}
+	"Ludomancy Desc"
+	{
+		"en"	"Mathematical Foresight: Gain a passive ability that lets you (somewhat) predict the value of your next card.\nAll cards gain one out of four symbols, which improve the effect of the drawn card."
+	}
+	"Ludomancy Extra Desc"
+	{
+		"en"	"Hearts:Current card's value is decreased by 1.\nDiamonds:If you have more than 3 cards, something special happens.\nClubs:Overall damage increased by 20%%.\nSpades:Current card's ability is improved."
+	}
 }

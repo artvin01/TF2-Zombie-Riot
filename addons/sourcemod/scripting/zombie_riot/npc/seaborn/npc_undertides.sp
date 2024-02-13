@@ -481,7 +481,7 @@ void UnderTides_NPCDeath(int entity)
 
 	float pos[3];
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
-	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	
 	SDKUnhook(npc.index, SDKHook_Think, UnderTides_ClotThink);
 	

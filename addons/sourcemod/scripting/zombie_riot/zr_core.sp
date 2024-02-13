@@ -157,6 +157,7 @@ enum
 	WEAPON_HELL_HOE_1 = 86,
 	WEAPON_HELL_HOE_2 = 87,
 	WEAPON_HELL_HOE_3 = 88,
+	WEAPON_LUDO = 89,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -487,6 +488,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_railcannon.sp"
 #include "zombie_riot/custom/wand/weapon_dimension_ripper.sp"
 #include "zombie_riot/custom/weapon_hell_hoe.sp"
+#include "zombie_riot/custom/wand/weapon_ludo.sp"
 
 void ZR_PluginLoad()
 {
@@ -710,6 +712,7 @@ void ZR_MapStart()
 	Gladiia_MapStart();
 	WeaponBoard_Precache();
 	Weapon_German_MapStart();
+	Weapon_Ludo_MapStart();
 	Ion_Beam_Wand_MapStart();
 	OnMapStartLeper();
 	Flagellant_MapStart();
@@ -744,7 +747,7 @@ void ZR_MapStart()
 	SetVariantString("ForceEnableUpgrades(2)");
 	AcceptEntityInput(0, "RunScriptCode");
 	
-	//Store_RandomizeNPCStore(true);
+	//Store_RandomizeNPCStore(1);
 }
 
 public Action GlobalTimer(Handle timer)
@@ -1166,7 +1169,7 @@ public Action Command_AFKKnight(int client, int args)
 public Action Command_SpawnGrigori(int client, int args)
 {
 	Spawn_Cured_Grigori();
-	Store_RandomizeNPCStore(false);
+	Store_RandomizeNPCStore(0);
 	return Plugin_Handled;
 }
 

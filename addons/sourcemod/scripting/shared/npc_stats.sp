@@ -1391,6 +1391,14 @@ methodmap CClotBody < CBaseCombatCharacter
 			{
 				speed_for_return *= 0.95;
 			}
+			else if (f_LudoDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= GetRandomFloat(0.7, 0.9);
+			}
+			else if (f_SpadeLudoDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= GetRandomFloat(0.7, 0.85);
+			}
 		}
 		else if (!b_CannotBeSlowed[this.index])
 		{
@@ -1426,6 +1434,14 @@ methodmap CClotBody < CBaseCombatCharacter
 			else if (f_VeryLowIceDebuff[this.index] > Gametime)
 			{
 				speed_for_return *= 0.97;
+			}
+			else if (f_LudoDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.96;
+			}
+			else if (f_SpadeLudoDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.94;
 			}
 			if(f_SpecterDyingDebuff[this.index] > Gametime)
 			{
@@ -1929,7 +1945,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		return this.GetLocomotionInterface().IsOnGround();
 	}
-	public void AddGesture(const char[] anim, bool cancel_animation = true, float duration = 1.0, bool autokill = true)
+	public void AddGesture(const char[] anim, bool cancel_animation = true, float duration = 1.0, bool autokill = true, float SetGestureSpeed = 1.0)
 	{
 		int activity = this.LookupActivity(anim);
 		if(activity < 0)
@@ -1946,7 +1962,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		int layer = this.FindGestureLayer(view_as<Activity>(activity));
 		if(layer != -1)
-			this.SetLayerPlaybackRate(layer, 1.0);
+			this.SetLayerPlaybackRate(layer, SetGestureSpeed);
 	}
 	public void RemoveGesture(const char[] anim)
 	{
@@ -4459,7 +4475,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 				return false;
 			}
 #else
-			if(GetTeam(index) == GetTeam(enemy))
+			if(!b_NpcIsTeamkiller[index] && GetTeam(index) == GetTeam(enemy))
 			{
 				return false;
 			}
@@ -7735,6 +7751,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_DungeonContracts_35PercentMoreDamage[entity] = false;
 	b_DungeonContracts_25PercentMoreDamage[entity] = false;
 #endif
+	f_HeadshotDamageMultiNpc[entity] = 1.0;
 	i_NoEntityFoundCount[entity] = 0;
 	f3_CustomMinMaxBoundingBox[entity][0] = 0.0;
 	f3_CustomMinMaxBoundingBox[entity][1] = 0.0;
@@ -7746,6 +7763,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Wearable[entity][4] = -1;
 	i_Wearable[entity][5] = -1;
 	i_Wearable[entity][6] = -1;
+	i_OverlordComboAttack[entity] = 0;
 	i_FreezeWearable[entity] = -1;
 	i_InvincibleParticle[entity] = -1;
 	f3_SpawnPosition[entity][0] = 0.0;
@@ -7888,6 +7906,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f3_WasPathingToHere[entity][1] = 0.0;
 	f3_WasPathingToHere[entity][2] = 0.0;
 	f_LowTeslarDebuff[entity] = 0.0;
+	f_LudoDebuff[entity] = 0.0;
+	f_SpadeLudoDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_WidowsWineDebuff[entity] = 0.0;
@@ -8546,6 +8566,8 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 {
 	f_HighTeslarDebuff[enemy] = 0.0;
 	f_LowTeslarDebuff[enemy] = 0.0;
+	f_LudoDebuff[enemy] = 0.0;
+	f_SpadeLudoDebuff[enemy] = 0.0;
 	IgniteFor[enemy] = 0;
 	f_HighIceDebuff[enemy] = 0.0;
 	f_LowIceDebuff[enemy] = 0.0;

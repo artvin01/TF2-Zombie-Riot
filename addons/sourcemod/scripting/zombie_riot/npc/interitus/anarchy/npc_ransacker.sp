@@ -228,6 +228,12 @@ public void AnarchyRansacker_NPCDeath(int entity)
 	}
 		
 	
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -279,7 +285,7 @@ void AnarchyRansackerSelfDefense(AnarchyRansacker npc, float gameTime, int targe
 	if(npc.m_flNextRangedAttack && npc.m_flNextRangedAttack == 5.0)
 	{
 		npc.m_flNextRangedAttack = 0.0;
-		npc.m_iWearable1 = npc.EquipItem("head", "mmodels/weapons/c_models/c_wooden_bat/c_wooden_bat.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_wooden_bat/c_wooden_bat.mdl");
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		npc.m_flSpeed = 330.0;
 		return;

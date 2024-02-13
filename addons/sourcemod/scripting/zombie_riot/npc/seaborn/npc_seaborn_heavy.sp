@@ -200,6 +200,10 @@ void SeabornHeavy_OnTakeDamage(int victim, int attacker, int damagetype)
 		SeabornHeavy npc = view_as<SeabornHeavy>(victim);
 		if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 		{
+			if (attacker <= MaxClients && attacker > 0 && TeutonType[attacker] != TEUTON_NONE)
+			{	
+				return;
+			}
 			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 			npc.m_blPlayHurtAnimation = true;
 

@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define ITSTILIVES 666
-
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 110.0
 // 120 * 120
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED 12100.0
@@ -426,6 +424,23 @@ enum
 	INTERITUS_FOREST_SOLDIER = 373,
 	INTERITUS_FOREST_DEMOMAN = 374,
 
+	INTERITUS_ANARCHY_RUNOVER		  = 375,
+	INTERITUS_ANARCHY_HITMAN		  = 376,
+	INTERITUS_ANARCHY_MADDOCTOR		  = 377,
+	INTERITUS_ANARCHY_ABOMINATION	  = 378,
+	INTERITUS_ANARCHY_ENFORCER	 	  = 379,
+	INTERITUS_ANARCHY_BRAINDEAD	 	  = 380,
+	INTERITUS_ANARCHY_BEHEMOTH		  = 381,
+	INTERITUS_ANARCHY_ABSOLUTE_INCINIRATOR= 382,
+  
+	INTERITUS_FOREST_MEDIC = 383,
+	INTERITUS_FOREST_HEAVY = 384,
+	INTERITUS_FOREST_PYRO = 385,
+	INTERITUS_FOREST_SPY = 386,
+	INTERITUS_FOREST_ENGINEER = 387,
+	INTERITUS_FOREST_BOSS = 388,
+	RAIDMODE_THE_MESSENGER	= 389,
+
 	MAX_NPC_TYPES	// Add entries above this line
 }
 
@@ -829,7 +844,23 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Archosauria",
 	"Aslan",
 	"Perro",
-	"Caprinae"
+	"Caprinae",
+	"Runover",
+	"Hitman",
+	"Mad Doctor",
+	"Abomination",
+	"Anarchist Enforcer",
+	"Braindead",
+	"Behemonth",
+	"Absolute Incinirator",
+
+	"Liberi",
+	"Ursus",
+	"Aegir",
+	"Cautus",
+	"Vulpo",
+	"Major Steam",
+	"The Messenger"
 };
 
 // See items.sp for IDs to names
@@ -1205,6 +1236,13 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	-1,	//RUINA_STELLAR_WEAVER
 	-1,	//RUINA_STELLAR_WEAVER_MID
 	1,
+	-1,
+	-1,
+	-1,
+	-1,
+
+	-1,
+	-1,
 	-1,
 	-1,
 	-1,
@@ -1610,7 +1648,23 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_archosauria",
 	"npc_alsan",
 	"npc_perro",
-	"npc_caprinae"
+	"npc_caprinae",
+	"npc_runover",
+	"npc_hitman",
+	"npc_mad_doctor",
+	"npc_abomination",
+	"npc_enforcer",
+	"npc_braindead",
+	"npc_behemonth",
+	"npc_absolute_incinirator",
+
+	"npc_liberi",
+	"npc_ursus",
+	"npc_aegir",
+	"npc_cautus",
+	"npc_vulpo",
+	"npc_majorsteam",
+	"npc_the_messenger"
 };
 
 void NPC_MapStart()
@@ -1891,6 +1945,15 @@ void NPC_MapStart()
 	WinterSkinHunter_OnMapStart_NPC();
 	WinterIrritatedPerson_OnMapStart_NPC();
 	AnarchyRansacker_OnMapStart_NPC();
+	AnarchyRunover_OnMapStart_NPC();
+	AnarchyHitman_OnMapStart_NPC();
+	AnarchyMadDoctor_OnMapStart_NPC();
+	AnarchyAbomination_OnMapStart_NPC();
+	AnarchyEnforcer_OnMapStart_NPC();
+	AnarchyBraindead_OnMapStart_NPC();
+	AnarchyBehemoth_OnMapStart_NPC();
+	AnarchyAbsoluteIncinirator_OnMapStart_NPC();
+	MajorSteam_MapStart();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1920,6 +1983,7 @@ void NPC_MapStart()
 	Raidboss_Schwertkrieg_OnMapStart_NPC();
 	Raidboss_Donnerkrieg_OnMapStart_NPC();
 	RaidbossBobTheFirst_OnMapStart();
+	TheMessenger_OnMapStart_NPC();
 
 	// Bloon Low Prio
 	Bloon_MapStart();
@@ -2977,6 +3041,30 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 		case INTERITUS_ANARCHY_RANSACKER:
 			entity = AnarchyRansacker(client, vecPos, vecAng, ally);
 
+		case INTERITUS_ANARCHY_RUNOVER:
+			entity = AnarchyRunover(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_HITMAN:
+			entity = AnarchyHitman(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_MADDOCTOR:
+			entity = AnarchyMadDoctor(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_ABOMINATION:
+			entity = AnarchyAbomination(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_ENFORCER:
+			entity = AnarchyEnforcer(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_BRAINDEAD:
+			entity = AnarchyBraindead(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_BEHEMOTH:
+			entity = AnarchyBehemoth(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_ABSOLUTE_INCINIRATOR:
+			entity = AnarchyAbsoluteIncinirator(client, vecPos, vecAng, ally);
+
 		case INTERITUS_FOREST_SNIPER:
 			entity = Archosauria(client, vecPos, vecAng, ally);
 
@@ -2988,6 +3076,28 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 
 		case INTERITUS_FOREST_DEMOMAN:
 			entity = Caprinae(client, vecPos, vecAng, ally, data);
+
+		case INTERITUS_FOREST_MEDIC:
+			entity = Liberi(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_HEAVY:
+			entity = Ursus(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_PYRO:
+			entity = Aegir(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_SPY:
+			entity = Cautus(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_ENGINEER:
+			entity = Vulpo(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_BOSS:
+			entity = MajorSteam(client, vecPos, vecAng, ally);
+			
+		case RAIDMODE_THE_MESSENGER:
+			entity = TheMessenger(client, vecPos, vecAng, ally, data);
+
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -5253,6 +5363,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_vip_building.sp"
 #include "zombie_riot/npc/rogue/npc_overlord_rogue.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_bladedance.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_the_messenger.sp"
 
 
 #include "zombie_riot/npc/interitus/desert/npc_ahim.sp"
@@ -5276,8 +5387,22 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/winter/npc_irritated_person.sp"
 
 #include "zombie_riot/npc/interitus/anarchy/npc_ransacker.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_runover.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_hitman.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_mad_doctor.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_abomination.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_enforcer.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_braindead.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_behemoth.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_absolute_incinirator.sp"
 
 #include "zombie_riot/npc/interitus/forest/npc_archosauria.sp"
 #include "zombie_riot/npc/interitus/forest/npc_aslan.sp"
 #include "zombie_riot/npc/interitus/forest/npc_perro.sp"
 #include "zombie_riot/npc/interitus/forest/npc_caprinae.sp"
+#include "zombie_riot/npc/interitus/forest/npc_liberi.sp"
+#include "zombie_riot/npc/interitus/forest/npc_ursus.sp"
+#include "zombie_riot/npc/interitus/forest/npc_aegir.sp"
+#include "zombie_riot/npc/interitus/forest/npc_cautus.sp"
+#include "zombie_riot/npc/interitus/forest/npc_vulpo.sp"
+#include "zombie_riot/npc/interitus/forest/npc_majorsteam.sp"
