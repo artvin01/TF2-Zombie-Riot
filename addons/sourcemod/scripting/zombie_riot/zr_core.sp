@@ -2316,3 +2316,24 @@ stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)
 	delete hTrace;
 	return iReturn;
 }
+
+stock bool isPlayerMad(int client) {
+
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding == -1)
+		return false;
+
+	if (i_CustomWeaponEquipLogic[weapon_holding] == WEAPON_HELL_HOE_3) {
+
+		int clientMaxHp = SDKCall_GetMaxHealth(client);
+		int health = GetClientHealth(client);
+		if (health >= clientMaxHp/2)
+			return false;
+
+		return true;
+	}
+	else if (i_CustomWeaponEquipLogic[weapon_holding] == WEAPON_HELL_HOE_2) {
+		return g_isPlayerInDeathMarch_HellHoe[client];
+	}
+	return false;
+}
