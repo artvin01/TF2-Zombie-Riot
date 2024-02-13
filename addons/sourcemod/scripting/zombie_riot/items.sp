@@ -27,7 +27,8 @@ static const char Categories[][] =
 	"Medieval Empire",
 	"Cry of Fear",
 	"Seaborn Infection",
-	"Expidonsa"
+	"Expidonsa",
+	"Internius Alliances"
 };
 
 enum struct GiftItem
@@ -45,7 +46,7 @@ enum struct OwnedItem
 
 static ArrayList GiftItems;
 static ArrayList OwnedItems;
-static int LastMenuPage[MAXTF2PLAYERS];
+static int CategoryPage[MAXTF2PLAYERS];
 
 static int g_BeamIndex = -1;
 static int i_RarityType[MAXENTITIES];
@@ -317,7 +318,7 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 
 			/*if(Database_IsCached(client))
 			{
-				menu.SetTitle("%t\n \n%s\n%t\n ", NPC_Names[page], buffer, LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
+				menu.SetTitle("%t\n \n%s\n%t\n ", NPC_Names[page], buffer, CategoryPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
 			}
 			else*/
 			{
@@ -326,7 +327,7 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 		}
 		/*else if(Database_IsCached(client))
 		{
-			menu.SetTitle("%t\n \n%t\n ", NPC_Names[page], LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
+			menu.SetTitle("%t\n \n%t\n ", NPC_Names[page], CategoryPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
 		}*/
 		else
 		{
@@ -348,14 +349,15 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 		char data[16], buffer[64];
 		for(int i; i < sizeof(NPC_Names); i++)
 		{
-			if(NPCCategory[i] == LastMenuPage[client])
+			if(NPCCategory[i] == CategoryPage[client])
 			{
 				IntToString(i, data, sizeof(data));
 				FormatEx(buffer, sizeof(buffer), "%t", NPC_Names[i]);
 				
 				if(i == page)
 				{
-					pos = menu.AddItem(data, buffer);
+					menu.AddItem(data, buffer);
+					pos = menu.ItemCount;
 				}
 				else
 				{
@@ -366,16 +368,16 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 			}
 		}
 
-		//menu.SetTitle("%t\n%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Categories[LastMenuPage[client]], LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", kills);
-		menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Categories[LastMenuPage[client]]);
+		//menu.SetTitle("%t\n%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Categories[CategoryPage[client]], CategoryPage[client] ? "Zombie Kills" : "Allied Summons", kills);
+		menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Categories[CategoryPage[client]]);
 
 		menu.ExitBackButton = true;
 		menu.DisplayAt(client, (pos / 7 * 7), MENU_TIME_FOREVER);
 	}
 	else
 	{
-		if(LastMenuPage[client] < 0)
-			LastMenuPage[client] = 0;
+		if(CategoryPage[client] < 0)
+			CategoryPage[client] = 0;
 		
 		/*int kills;
 		int length = OwnedItems.Length;
@@ -399,8 +401,8 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 		}
 
 		menu.ExitBackButton = true;
-		menu.DisplayAt(client, (LastMenuPage[client] / 7 * 7), MENU_TIME_FOREVER);
-		LastMenuPage[client] = -1;
+		menu.DisplayAt(client, (CategoryPage[client] / 7 * 7), MENU_TIME_FOREVER);
+		CategoryPage[client] = -1;
 	}
 }
 
@@ -416,7 +418,7 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 		{
 			if(choice == MenuCancel_ExitBack)
 			{
-				if(LastMenuPage[client] == -1)
+				if(CategoryPage[client] == -1)
 				{
 					Store_Menu(client);
 				}
@@ -435,7 +437,7 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 			}
 			else
 			{
-				LastMenuPage[client] = -1;
+				CategoryPage[client] = -1;
 			}
 		}
 		case MenuAction_Select:
@@ -444,9 +446,9 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			int id = StringToInt(buffer);
 
-			if(LastMenuPage[client] == -1)	// Main -> Category
+			if(CategoryPage[client] == -1)	// Main -> Category
 			{
-				LastMenuPage[client] = id;
+				CategoryPage[client] = id;
 				Items_EncyclopediaMenu(client, 0, false);
 			}
 			else if(choice || menu.GetItem(1, data, sizeof(data)))	// Category -> Item

@@ -60,6 +60,10 @@
 		"en" 		"Expidonsa"
 		"pt"		"Expidonsa"
 	}
+	"Internius Alliances"
+	{
+		"en"		"Internius Alliances"
+	}
 	"Headcrab Zombie Desc"
 	{
 		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around."

@@ -14,14 +14,6 @@ static const char g_HurtSounds[][] = {
 	"vo/heavy_painsharp05.mp3",
 };
 
-
-static const char g_IdleSounds[][] = {
-	"vo/heavy_meleedare10.mp3",
-	"vo/heavy_meleedare09.mp3",
-	"vo/heavy_meleedare08.mp3",
-	"vo/heavy_meleedare03.mp3",
-};
-
 static const char g_IdleAlertedSounds[][] = {
 	"vo/heavy_meleedare13.mp3",
 	"vo/heavy_meleedare12.mp3",
@@ -639,7 +631,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			switch(GetRandomInt(0,2))
+			switch(GetRandomInt(0,3))
 			{
 				case 0:
 				{
@@ -649,11 +641,11 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				{
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: You're all alone against Chaos now.");
 				}
-				case 3:
+				case 2:
 				{
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: I will drag you face down to the bottoms of the Deep Sea.");
 				}
-				case 4:
+				case 3:
 				{
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: Blitzkrierg was weak, that's why he failed. {crimson}Just like you are.");
 				}
@@ -730,7 +722,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 	if(Kahmlstein_Attack_TempPowerup(npc))
 		return;
 
-	if(f_KahmlResTemp[npc.index] < GetGameTime())
+	if(f_KahmlResTemp[npc.index] > GetGameTime())
 	{
 		npc.m_flMeleeArmor = 0.65;
 		npc.m_flRangedArmor = 0.5;	
@@ -781,10 +773,10 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 					if(npc.m_flCharge_delay < GetGameTime(npc.index))
 					{
-						if(flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
+						if(npc.IsOnGround() && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
 						{
 							npc.PlayChargeSound();
-							npc.m_flCharge_delay = GetGameTime(npc.index) + 5.0;
+							npc.m_flCharge_delay = GetGameTime(npc.index) +  (5.0 *(1.0 / f_MessengerSpeedUp[npc.index]));
 							PluginBot_Jump(npc.index, vecTarget);
 							float flPos[3];
 							float flAng[3];
@@ -967,13 +959,15 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 		npc.m_iChanged_WalkCycle = 0;
 		if(i_RaidGrantExtra[npc.index] < 2)
 			npc.m_flInJump = GetGameTime(npc.index) + (0.7 * (1.0 / f_MessengerSpeedUp[npc.index]));
+
+		npc.m_flInJump = GetGameTime(npc.index) + (0.7 * (1.0 / f_MessengerSpeedUp[npc.index]));
 	}
 	if(i_RaidGrantExtra[npc.index] == 4 && npc.m_iOverlordComboAttack == 0)
 	{
 		npc.m_iOverlordComboAttack = 5555;
 		npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + (35.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 	}
-	if(npc.m_flRangedSpecialDelay > GetGameTime(npc.index) && npc.m_flInJump < GetGameTime(npc.index) && npc.m_iOverlordComboAttack == 5555)
+	if(npc.m_flRangedSpecialDelay > GetGameTime(npc.index) && (npc.m_flInJump < GetGameTime(npc.index) || i_RaidGrantExtra[npc.index] == 4) && npc.m_iOverlordComboAttack == 5555)
 	{
 		if(Target > 0)
 		{
@@ -1399,16 +1393,16 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	Sensal npc = view_as<Sensal>(victim);
-	if(npc.g_TimesSummoned < 99)
+	if(npc.g_TimesSummoned < 199)
 	{
-		int nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (99 - npc.g_TimesSummoned) / 100;
+		int nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (199 - npc.g_TimesSummoned) / 200;
 		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < nextLoss)
 		{
 			npc.g_TimesSummoned++;
 			RaidModeScaling *= 1.1;
 			if((npc.g_TimesSummoned % 25) == 0)
 			{
-				switch(GetRandomInt(0,2))
+				switch(GetRandomInt(0,3))
 				{
 					case 0:
 					{
@@ -1418,16 +1412,16 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 					{
 						CPrintToChatAll("{darkblue}Kahmlstein{default}: oh no im so scared.");
 					}
-					case 3:
+					case 2:
 					{
 						CPrintToChatAll("{darkblue}Kahmlstein{default}: Even bugs hit harder.");
 					}
-					case 4:
+					case 3:
 					{
 						CPrintToChatAll("{darkblue}Kahmlstein{default}: Keep running, that'll help.");
 					}
 				}
-				f_KahmlResTemp[npc.index] = GetGameTime() + 10.0;
+				f_KahmlResTemp[npc.index] = GetGameTime() + 5.0;
 			}
 			npc.m_flNextChargeSpecialAttack -= 1.0;
 			npc.m_flRangedSpecialDelay -= 1.0;
@@ -1437,7 +1431,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 
 	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
-		switch(GetRandomInt(0,2))
+		switch(GetRandomInt(0,3))
 		{
 			case 0:
 			{
@@ -1447,11 +1441,11 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: Pathetic.");
 			}
-			case 3:
+			case 2:
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: Such idiots.");
 			}
-			case 4:
+			case 3:
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: All your curelty, worse then states.");
 			}

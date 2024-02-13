@@ -3057,9 +3057,17 @@
 	{
 		"en"	"The Seaborn infection has arrived, Armor Corrosion attacks will infect your armor, cure it with armor tables!"
 	}
+	"Internius Desc"
+	{
+		"en"	"Chaos has afflicted many cities. Get ready."
+	}
 	"Schwert Donner Desc"
 	{
 		"en"	"Schwertkrieg charges you down with his sword while Donnerkrieg fires laser attacks!"
+	}
+	"Khaml Desc"
+	{
+		"en"	"The judges of your actions have arrived."
 	}
 	"Wait for power"
 	{

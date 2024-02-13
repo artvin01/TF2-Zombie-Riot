@@ -226,6 +226,7 @@ methodmap TheMessenger < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(TheMessenger_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(TheMessenger_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(TheMessenger_ClotThink);
+		func_NPCFuncWin[npc.index] = view_as<Function>(TheMessenger_Win);
 
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, TheMessenger_OnTakeDamagePost);
 
@@ -315,7 +316,14 @@ methodmap TheMessenger < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		if(ZR_GetWaveCount()+1 <= 15)
+		{
 			IgniteTargetEffect(npc.m_iWearable1);
+			CPrintToChatAll("{lightblue}The Messenger{default}: Welcome, welcome sinners! I'm bearing a message to you all!");
+		}
+		else
+		{
+			CPrintToChatAll("{lightblue}The Messenger{default}: Round two.");
+		}
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/cc_summer2015_outta_sight/cc_summer2015_outta_sight.mdl");
 		SetVariantString("1.0");
@@ -380,6 +388,71 @@ public void TheMessenger_ClotThink(int iNPC)
 		Music_RoundEnd(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		BlockLoseSay = true;
+		if(ZR_GetWaveCount()+1 <= 15)
+		{
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: Shame.");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: Are you for real??");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: No comment.");
+				}
+			}
+		}
+		else
+		{
+			CPrintToChatAll("{lightblue}The Messenger{default}: ...........");
+		}
+	}
+	if(LastMann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			npc.m_fbGunout = true;
+			if(ZR_GetWaveCount()+1 <= 15)
+			{
+				switch(GetRandomInt(0,2))
+				{
+					case 0:
+					{
+						CPrintToChatAll("{darkblue}The Messenger{default}: Your friends are dead. {crimson}Accept your fate.");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{darkblue}The Messenger{default}: It's just you and me now.");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{darkblue}The Messenger{default}: Give up, you cannot win.");
+					}
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,2))
+				{
+					case 0:
+					{
+						CPrintToChatAll("{darkblue}The Messenger{default}: YOU ARE DEAD");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{darkblue}The Messenger{default}: I'LL FUCK YOU UP");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{darkblue}The Messenger{default}: AHAHAHAHAHAHA");
+					}
+				}				
+			}
+		}
 	}
 /*
 	if(TheMessengerTransformation(npc))
@@ -518,19 +591,19 @@ bool Messanger_Elemental_Attack_Projectiles(TheMessenger npc)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: The longer you drag it out, the more painfull itll be.");
+						CPrintToChatAll("{lightblue}The Messenger{default}: No more fucking around.");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: More time, more time...");
+						CPrintToChatAll("{lightblue}The Messenger{default}: Stop wasting my time shitheads.");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: So much time wasted...");
+						CPrintToChatAll("{lightblue}The Messenger{default}: All sinners will {crimson}DIE.");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: Its always about delaying isnt it?{crimson} Face me.");
+						CPrintToChatAll("{lightblue}The Messenger{default}: You just brought infinite pain upon you.");
 					}
 				}
 				MessengerInitiateGroupAttack(npc);
@@ -744,25 +817,46 @@ public void TheMessenger_NPCDeath(int entity)
 	if(BlockLoseSay)
 		return;
 
-	if(!b_thisNpcIsARaid[npc.index])
+	if(b_thisNpcIsARaid[npc.index])
 	{
-		switch(GetRandomInt(0,3))
+		if(ZR_GetWaveCount()+1 <= 15)
 		{
-			case 0:
+			switch(GetRandomInt(0,3))
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Your futile attempts of trying to reconsile...");
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: Ugh... little fucks.. This ain't over");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: You're just delaying the inevitable..");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: I may or may not heavily underestimated you..");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: No...");
+				}
 			}
-			case 1:
+		}
+		else
+		{
+			switch(GetRandomInt(0,2))
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Your judgement will arrive later.");
-			}
-			case 2:
-			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Seems like youre not all talk.");
-			}
-			case 3:
-			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: I can see why you murdered those expidonsans. {crimson} Sadist.");
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: NOT TWICE");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: WHY");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: I just want to impress Him for once... Ugh.....");
+				}
 			}
 		}
 	}
@@ -1169,19 +1263,60 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Uttery morronic Mercs.");
+				CPrintToChatAll("{lightblue}The Messenger{default}: Ahahahahahaha, all of you are {crimson}FUCKED!!");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Your time at judgement has come at hand.");
+				CPrintToChatAll("{lightblue}The Messenger{default}: VOID, GRANT ME STRENGHT!");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: You are too dumb to believe this'll work right?");
+				CPrintToChatAll("{lightblue}The Messenger{default}: You think you won? I'M JUST GETTING STARTED.");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: The bad guys always lose, don't you agree? {crimson} Animal killers.");
+				CPrintToChatAll("{lightblue}The Messenger{default}: Remember those cats? {crimson} You're getting it worse.");
+			}
+		}
+	}
+}
+
+
+public void TheMessenger_Win(int entity)
+{
+	if(ZR_GetWaveCount()+1 <= 15)
+	{
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: Judgement delivered.");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: Your penance is now over.");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: Thus your reign of terror is no more.");
+			}
+		}
+	}
+	else
+	{
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: {crimson}TAKE THAT YOU FUCKS");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: Are you seeing me right now? I did it..");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: Are you proud? My Lord....");
 			}
 		}
 	}

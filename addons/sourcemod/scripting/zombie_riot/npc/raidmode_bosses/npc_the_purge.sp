@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static char g_DeathSounds[][] =
+static const char g_DeathSounds[][] =
 {
 	"vo/heavy_yell3.mp3",
 	"vo/heavy_laughterbig01.mp3",
@@ -9,12 +9,12 @@ static char g_DeathSounds[][] =
 	"vo/heavy_domination09.mp3"
 };
 
-static char g_BoomSounds[][] =
+static const char g_BoomSounds[][] =
 {
 	"mvm/mvm_tank_explode.wav"
 };
 
-static char g_AngerSounds[][] =
+static const char g_AngerSounds[][] =
 {
 	"vo/heavy_domination02.mp3",
 	"vo/heavy_domination04.mp3",
@@ -34,11 +34,12 @@ void ThePurge_MapStart()
 
 	PrecacheSound("weapons/family_business_shoot.wav");
 	PrecacheSound("weapons/tf2_backshot_shotty.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_gunspin.wav");
+	PrecacheSound("mvm/giant_heavy/giant_heavy_gunfire.wav");
 	PrecacheSound("mvm/giant_heavy/giant_heavy_gunwindup.wav");
 	PrecacheSound("mvm/giant_heavy/giant_heavy_gunwinddown.wav");
 	PrecacheSound("mvm/giant_soldier/giant_soldier_rocket_shoot.wav");
 	PrecacheSound("mvm/giant_demoman/giant_demoman_grenade_shoot.wav");
+	PrecacheSoundCustom("#zombiesurvival/internius/the_purge.mp3");
 }
 
 methodmap ThePurge < CClotBody
@@ -59,7 +60,16 @@ methodmap ThePurge < CClotBody
 	}
 	public void PlayMinigunSound()
 	{
-		EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunspin.wav", this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		if(i_TimesSummoned[this.index])
+			return;
+		
+		i_TimesSummoned[this.index] = 1;
+		EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunfire.wav", this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void StopMinigunSound()
+	{
+		i_TimesSummoned[this.index] = 0;
+		StopSound(this.index, SNDCHAN_STATIC, "mvm/giant_heavy/giant_heavy_gunfire.wav");
 	}
 	public void PlayMinigunStartSound()
 	{
@@ -167,6 +177,7 @@ methodmap ThePurge < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_iGunType = 0;
 		npc.m_flSwitchCooldown = GetGameTime(npc.index) + 2.0;
+		i_TimesSummoned[npc.index] = 0;
 		npc.m_flMeleeArmor = 1.5;
 
 		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);
@@ -199,7 +210,7 @@ methodmap ThePurge < CClotBody
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		RaidModeScaling *= 0.85;
 
-		Music_SetRaidMusic("#zombiesurvival/internius/messenger.mp3", 219, true, 1.25);
+		Music_SetRaidMusic("#zombiesurvival/internius/the_purge.mp3", 229, true, 1.5);
 		
 		Citizen_MiniBossSpawn();
 		return npc;
@@ -303,8 +314,9 @@ static void ClotThink(int iNPC)
 			{
 				case 0, 3, 6:	// Fists/Minigun/Rockets -> Shotgun
 				{
+					npc.StopMinigunSound();
 					if(npc.m_iGunType == 3)
-						npc.PlayMinigunStartSound();
+						npc.PlayMinigunStopSound();
 					
 					npc.m_iGunType++;
 					npc.SetWeaponModel("models/workshop/weapons/c_models/c_russian_riot/c_russian_riot.mdl");
@@ -328,7 +340,7 @@ static void ClotThink(int iNPC)
 					npc.m_flRangedArmor = 1.0;
 					npc.m_flMeleeArmor = 1.5;
 				}
-				case 2, 10:	// SMG/Healing -> Minigun
+				case 2:	// SMG/Healing -> Minigun
 				{
 					npc.m_iGunType = 3;
 					npc.SetWeaponModel("models/workshop/weapons/c_models/c_iron_curtain/c_iron_curtain.mdl");
@@ -383,6 +395,14 @@ static void ClotThink(int iNPC)
 
 					npc.m_flRangedArmor = 1.5;
 					npc.m_flMeleeArmor = 2.25;
+				}
+				case 10:	// Healing -> Fists
+				{
+					npc.m_iGunType = 0;
+					npc.SetWeaponModel("");
+					npc.SetActivity("ACT_MP_RUN_MELEE");
+					npc.m_flSpeed = 400.0;
+					cooldown = 5.0;
 				}
 			}
 
@@ -503,6 +523,8 @@ static void ClotThink(int iNPC)
 				{
 					KillFeed_SetKillIcon(npc.index, "minigun");
 					
+					npc.FaceTowards(vecTarget, 4000.0);
+					
 					npc.PlayMinigunSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 
@@ -606,6 +628,8 @@ static void ClotThink(int iNPC)
 				{
 					KillFeed_SetKillIcon(npc.index, "minigun");
 					
+					npc.FaceTowards(vecTarget, 8000.0);
+					
 					npc.PlayMinigunSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 
@@ -682,7 +706,7 @@ static void ClotDeathLoopThink(int iNPC)
 	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
 	
 	npc.PlayBoomSound();
-	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
 	npc.m_bDissapearOnDeath = false;
 	SmiteNpcToDeath(npc.index);
@@ -698,6 +722,8 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 
 		if(damage >= health)
 		{
+			npc.StopMinigunSound();
+
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 			b_DoNotUnStuck[npc.index] = true;
 			b_CantCollidieAlly[npc.index] = true;
@@ -720,6 +746,7 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 		{
 			npc.Anger = true;
 			npc.PlayAngerSound();
+			npc.StopMinigunSound();
 			npc.SetWeaponModel("");
 			npc.m_flSwitchCooldown = GetGameTime(npc.index) + 3.0;
 			npc.m_iGunType = 10;

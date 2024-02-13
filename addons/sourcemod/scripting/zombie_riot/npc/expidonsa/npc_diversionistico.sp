@@ -191,7 +191,6 @@ methodmap Diversionistico < CClotBody
 		{
 			if(LastSpawnDiversio < GetGameTime())
 			{
-				EmitSoundToAll("player/taunt_knuckle_crack.wav", _, _, _, _, 1.0);	
 				EmitSoundToAll("player/spy_uncloak_feigndeath.wav", _, _, _, _, 1.0);	
 				EmitSoundToAll("player/spy_uncloak_feigndeath.wav", _, _, _, _, 1.0);	
 				for(int client_check=1; client_check<=MaxClients; client_check++)
