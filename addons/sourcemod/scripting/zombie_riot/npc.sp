@@ -1247,6 +1247,7 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	-1,
 	-1,
 	-1,
+	-1,
 	-1,	// BONEZONE_BUFFED_BIGBONES
 
 	11,	//INTERITUS_DESERT_AHIM			= 351,
