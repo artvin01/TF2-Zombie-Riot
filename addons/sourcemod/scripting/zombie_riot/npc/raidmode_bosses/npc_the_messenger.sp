@@ -948,9 +948,9 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 					int projectile;
 					float Proj_Damage = 18.0 * RaidModeScaling;
 					if(ZR_GetWaveCount()+1 <= 15)
-						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_red", true);
+						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_red", false);
 					else
-						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_blue", true);
+						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_blue", false);
 			
 					SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 					int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
@@ -1210,9 +1210,9 @@ void MessengerInitiateGroupAttack(TheMessenger npc)
 			int projectile;
 			float Proj_Damage = 18.0 * RaidModeScaling;
 			if(ZR_GetWaveCount()+1 <= 15)
-				projectile = npc.FireParticleRocket(vecHit, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_red", true,_,true, vecHitPart);
+				projectile = npc.FireParticleRocket(vecHit, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_red", false,_,true, vecHitPart);
 			else
-				projectile = npc.FireParticleRocket(vecHit, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_blue", true,_,true, vecHitPart);
+				projectile = npc.FireParticleRocket(vecHit, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_blue", false,_,true, vecHitPart);
 	
 			SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 			

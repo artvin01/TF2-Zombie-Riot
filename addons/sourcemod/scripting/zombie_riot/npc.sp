@@ -3206,6 +3206,76 @@ public void ZR_NpcTauntWin()
 }
 public void NPCDeath(int entity)
 {
+	if(view_as<CClotBody>(entity).m_fCreditsOnKill)
+	{
+		int GiveMoney = 0;
+		float CreditsOnKill = view_as<CClotBody>(entity).m_fCreditsOnKill;
+		if (CreditsOnKill <= 1.0)
+		{
+			f_FactionCreditGain += CreditsOnKill;
+
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(!b_IsPlayerABot[client] && IsClientInGame(client))
+				{
+					if(GetClientTeam(client) != 2)
+					{
+						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.2;
+					}
+					else if (TeutonType[client] == TEUTON_WAITING)
+					{
+						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.1;
+					}
+				}
+			}		
+
+			if(f_FactionCreditGain >= 1.0)
+			{
+				f_FactionCreditGain -= 1.0;
+				GiveMoney = 1;
+			}
+		}
+		else
+		{
+			GiveMoney = RoundToFloor(CreditsOnKill);
+			float Decimal_MoneyGain = FloatFraction(CreditsOnKill);	
+			f_FactionCreditGain += Decimal_MoneyGain;
+			
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(!b_IsPlayerABot[client] && IsClientInGame(client))
+				{
+					if(GetClientTeam(client) != 2)
+					{
+						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.2);
+					}
+					else if (TeutonType[client] == TEUTON_WAITING)
+					{
+						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.1);
+					}
+				}
+			}
+
+			if(f_FactionCreditGain >= 1.0)
+			{
+				f_FactionCreditGain -= 1.0;
+				GiveMoney += 1;
+			}
+		}
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(!b_IsPlayerABot[client] && IsClientInGame(client))
+			{
+				if(f_FactionCreditGainReduction[client] > 1.0)
+				{
+					int RemoveMoney = RoundToFloor(f_FactionCreditGainReduction[client]);
+					f_FactionCreditGainReduction[client] -= float(RemoveMoney);
+					CashSpent[client] += RemoveMoney;
+				}
+			}
+		}
+		CurrentCash += GiveMoney;
+	}
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
 		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
@@ -4169,77 +4239,7 @@ public void NPCDeath(int entity)
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		
 	}
-	
-	if(view_as<CClotBody>(entity).m_fCreditsOnKill)
-	{
-		int GiveMoney = 0;
-		float CreditsOnKill = view_as<CClotBody>(entity).m_fCreditsOnKill;
-		if (CreditsOnKill <= 1.0)
-		{
-			f_FactionCreditGain += CreditsOnKill;
 
-			for(int client=1; client<=MaxClients; client++)
-			{
-				if(!b_IsPlayerABot[client] && IsClientInGame(client))
-				{
-					if(GetClientTeam(client) != 2)
-					{
-						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.2;
-					}
-					else if (TeutonType[client] == TEUTON_WAITING)
-					{
-						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.1;
-					}
-				}
-			}		
-
-			if(f_FactionCreditGain >= 1.0)
-			{
-				f_FactionCreditGain -= 1.0;
-				GiveMoney = 1;
-			}
-		}
-		else
-		{
-			GiveMoney = RoundToFloor(CreditsOnKill);
-			float Decimal_MoneyGain = FloatFraction(CreditsOnKill);	
-			f_FactionCreditGain += Decimal_MoneyGain;
-			
-			for(int client=1; client<=MaxClients; client++)
-			{
-				if(!b_IsPlayerABot[client] && IsClientInGame(client))
-				{
-					if(GetClientTeam(client) != 2)
-					{
-						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.2);
-					}
-					else if (TeutonType[client] == TEUTON_WAITING)
-					{
-						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.1);
-					}
-				}
-			}
-
-			if(f_FactionCreditGain >= 1.0)
-			{
-				f_FactionCreditGain -= 1.0;
-				GiveMoney += 1;
-			}
-		}
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(!b_IsPlayerABot[client] && IsClientInGame(client))
-			{
-				if(f_FactionCreditGainReduction[client] > 1.0)
-				{
-					int RemoveMoney = RoundToFloor(f_FactionCreditGainReduction[client]);
-					f_FactionCreditGainReduction[client] -= float(RemoveMoney);
-					CashSpent[client] += RemoveMoney;
-				}
-			}
-		}
-		CurrentCash += GiveMoney;
-	}
 }
 
 Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
