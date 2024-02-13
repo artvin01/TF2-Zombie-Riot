@@ -35,6 +35,10 @@
 	{
 		"en" 		"The Messenger has accumulated chaos."
 	}
+	"Chaos Kahmlstein Arrived"
+	{
+		"en" 		"Kahmlstein, the rebellious chaos inflicted leader will annihilate you."
+	}
 	"Blitzkrieg Spawn"
 	{
 		"en" 		"Blitzkrieg has arrived."

@@ -440,6 +440,7 @@ enum
 	INTERITUS_FOREST_ENGINEER = 387,
 	INTERITUS_FOREST_BOSS = 388,
 	RAIDMODE_THE_MESSENGER	= 389,
+	RAIDMODE_CHAOS_KAHMLSTEIN = 390,
 
 	MAX_NPC_TYPES	// Add entries above this line
 }
@@ -860,7 +861,8 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Cautus",
 	"Vulpo",
 	"Major Steam",
-	"The Messenger"
+	"The Messenger",
+	"Kahmlstein"
 };
 
 // See items.sp for IDs to names
@@ -1664,7 +1666,8 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_cautus",
 	"npc_vulpo",
 	"npc_majorsteam",
-	"npc_the_messenger"
+	"npc_the_messenger",
+	"npc_chaos_Kahmlstein"
 };
 
 void NPC_MapStart()
@@ -1984,6 +1987,7 @@ void NPC_MapStart()
 	Raidboss_Donnerkrieg_OnMapStart_NPC();
 	RaidbossBobTheFirst_OnMapStart();
 	TheMessenger_OnMapStart_NPC();
+	ChaosKahmlstein_OnMapStart_NPC();
 
 	// Bloon Low Prio
 	Bloon_MapStart();
@@ -3097,6 +3101,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 			
 		case RAIDMODE_THE_MESSENGER:
 			entity = TheMessenger(client, vecPos, vecAng, ally, data);
+
+		case RAIDMODE_CHAOS_KAHMLSTEIN:
+			entity = ChaosKahmlstein(client, vecPos, vecAng, ally, data);
 
 
 		default:
@@ -5364,6 +5371,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/npc_overlord_rogue.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_bladedance.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_the_messenger.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_chaos_Kahmlstein.sp"
 
 
 #include "zombie_riot/npc/interitus/desert/npc_ahim.sp"

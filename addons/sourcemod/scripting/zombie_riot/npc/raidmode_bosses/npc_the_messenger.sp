@@ -78,6 +78,8 @@ static const char g_MessengerThrowIce[][] = {
 bool BlockLoseSay;
 static float f_MessengerSpeedUp[MAXENTITIES];
 
+static float f_messenger_cutscene_necksnap[MAXENTITIES];
+
 void TheMessenger_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -247,11 +249,13 @@ methodmap TheMessenger < CClotBody
 		b_thisNpcIsARaid[npc.index] = true;
 		
 
-		bool final = StrContains(data, "final_item") != -1;
+		bool final = StrContains(data, "Cutscene_Khaml") != -1;
 		
 		if(final)
 		{
+			TeleportDiversioToRandLocation(npc.index);
 			i_RaidGrantExtra[npc.index] = 1;
+			f_messenger_cutscene_necksnap[npc.index] = GetGameTime() + 2.0;
 		}
 		
 		for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -355,6 +359,13 @@ public void TheMessenger_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+
+	if(i_RaidGrantExtra[npc.index] > 0)
+	{
+		i_RaidGrantExtra[npc.index] = 0;
+		CPrintToChatAll("{lightblue}The Messenger{default}: {crimson}AHAHAHAHHAHAHAHA!!! ALL OF YOU ARE DEAD!!");
+		return;
+	}
 	/*
 	if(TheMessengerTalkPostWin(npc))
 		return;
@@ -707,8 +718,11 @@ public void TheMessenger_NPCDeath(int entity)
 
 	*/
 	
-	ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
-	npc.PlayDeathSound();	
+	if(!b_thisNpcIsARaid[npc.index])
+	{
+		ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
+		npc.PlayDeathSound();	
+	}
 
 	RaidBossActive = INVALID_ENT_REFERENCE;
 		
@@ -730,26 +744,28 @@ public void TheMessenger_NPCDeath(int entity)
 	if(BlockLoseSay)
 		return;
 
-	switch(GetRandomInt(0,3))
+	if(!b_thisNpcIsARaid[npc.index])
 	{
-		case 0:
+		switch(GetRandomInt(0,3))
 		{
-			CPrintToChatAll("{lightblue}The Messenger{default}: Your futile attempts of trying to reconsile...");
-		}
-		case 1:
-		{
-			CPrintToChatAll("{lightblue}The Messenger{default}: Your judgement will arrive later.");
-		}
-		case 2:
-		{
-			CPrintToChatAll("{lightblue}The Messenger{default}: Seems like youre not all talk.");
-		}
-		case 3:
-		{
-			CPrintToChatAll("{lightblue}The Messenger{default}: I can see why you murdered those expidonsans. {crimson} Sadist.");
+			case 0:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: Your futile attempts of trying to reconsile...");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: Your judgement will arrive later.");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: Seems like youre not all talk.");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: I can see why you murdered those expidonsans. {crimson} Sadist.");
+			}
 		}
 	}
-
 }
 /*
 
@@ -840,7 +856,7 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 					if(ZR_GetWaveCount()+1 <= 15)
 						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_red", true);
 					else
-						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1500.0, 150.0, "spell_fireball_small_blue", true);
+						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_blue", true);
 			
 					SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 					int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
@@ -1102,7 +1118,7 @@ void MessengerInitiateGroupAttack(TheMessenger npc)
 			if(ZR_GetWaveCount()+1 <= 15)
 				projectile = npc.FireParticleRocket(vecHit, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_red", true,_,true, vecHitPart);
 			else
-				projectile = npc.FireParticleRocket(vecHit, Proj_Damage, 1500.0, 150.0, "spell_fireball_small_blue", true,_,true, vecHitPart);
+				projectile = npc.FireParticleRocket(vecHit, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_blue", true,_,true, vecHitPart);
 	
 			SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 			
@@ -1125,6 +1141,9 @@ void MessengerInitiateGroupAttack(TheMessenger npc)
 
 public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
+	if(!b_thisNpcIsARaid[victim])
+		return;
+
 	Sensal npc = view_as<Sensal>(victim);
 	if(npc.g_TimesSummoned < 99)
 	{

@@ -353,7 +353,7 @@ void SakratanGroupDebuff(int entity, int victim, float damage, int weapon)
 
 void SakratanGroupDebuffInternal(int victim)
 {
-	if(!b_BobsTrueFear[victim])
+	if(victim <= MaxClients && !b_BobsTrueFear[victim])
 	{
 		HealEntityGlobal(victim, victim, -250.0, 1.0, 0.0, HEAL_ABSOLUTE);
 		IncreaceEntityDamageTakenBy(victim, 1.25, 10.0);
