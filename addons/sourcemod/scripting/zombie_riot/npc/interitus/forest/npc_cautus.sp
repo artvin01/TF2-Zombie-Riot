@@ -92,7 +92,7 @@ methodmap Cautus < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_sd_neonsign/c_sd_neonsign.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_knife/c_knife.mdl");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/spy/spy_ttg_max.mdl");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
@@ -174,7 +174,7 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			if(distance < 10000.0)
+			if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
 			{
 				target = Can_I_See_Enemy(npc.index, target);
 				if(IsValidEnemy(npc.index, target))
@@ -213,11 +213,11 @@ static void ClotThink(int iNPC)
 					npc.m_flNextMeleeAttack = gameTime + 1.05;
 				}
 			}
-			else if(distance > 50000.0 && distance < 1000000.0)	// 1000 HU
+			else if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5) && distance < 1000000.0)	// 1000 HU
 			{
 				vecTarget[2] += 300.0;
 				PluginBot_Jump(npc.index, vecTarget);
-				npc.m_flNextMeleeAttack = gameTime + 1.05;
+				npc.m_flNextMeleeAttack = gameTime + 2.45;
 			}
 		}
 	}

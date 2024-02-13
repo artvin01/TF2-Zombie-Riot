@@ -387,7 +387,7 @@ public void AnarchyAbomination_Rocket_Particle_StartTouch(int entity, int target
 		if(target <= MaxClients)
 			TF2_IgnitePlayer(target, target, 5.0);
 
-		StartBleedingTimer_Against_Client(target, npc.index, 3.0, 5);
+		StartBleedingTimer_Against_Client(target, owner, 3.0, 5);
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
 		{

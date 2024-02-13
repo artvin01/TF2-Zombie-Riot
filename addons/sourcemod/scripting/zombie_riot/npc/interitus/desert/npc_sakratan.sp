@@ -298,7 +298,7 @@ void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sou
 	if(victim <= MaxClients)
 	{
 		Armor_DebuffType[victim] = 2;
-		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
+		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 		{
 			Armor_Charge[victim] -= damage;
 			if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))

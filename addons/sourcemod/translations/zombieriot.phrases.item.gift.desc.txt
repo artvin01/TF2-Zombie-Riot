@@ -1325,4 +1325,20 @@
 	{
 		"en"	"A heavy with hits that debuff a large amount of Chaos."
 	}
+	"Aegir Desc"
+	{
+		"en"	"A pyro that deals a large amount of extra damage to\ntargets under the effects of Chaos or Jarate."
+	}
+	"Cautus Desc"
+	{
+		"en"	"A spy that jumps often and gains damage resistance while mid-air.\nAble to backstab while not silenced."
+	}
+	"Vulpo Desc"
+	{
+		"en"	"A engineer that fires ranged attacks with high damage bonus against buildings."
+	}
+	"Major Steam Desc"
+	{
+		"en"	"A giant steampunk soldier which reloads while not firing.\nAble to fire when has enough rounds and can't change target while firing.\nExplodes on death killing all non-bosses."
+	}
 }

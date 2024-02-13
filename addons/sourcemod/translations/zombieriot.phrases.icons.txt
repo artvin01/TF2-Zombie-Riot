@@ -31,6 +31,10 @@
 		"en" 		"The Expidonsan Sensal reaps."
 		"pt"		"O Expidonsan Sensal colhe."
 	}
+	"The Messanger Arrived"
+	{
+		"en" 		"The Messenger has accumulated chaos."
+	}
 	"Blitzkrieg Spawn"
 	{
 		"en" 		"Blitzkrieg has arrived."
@@ -193,6 +197,10 @@
 	{
 		"en"	"Diversionistico Spawn"
 		"pt"	"Diversionistico Apareceu."
+	}
+	"Snipers Appear"
+	{
+		"en"	"Snipers Appear."
 	}
 	"The Doctor Speech 1"
 	{

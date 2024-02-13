@@ -439,6 +439,7 @@ enum
 	INTERITUS_FOREST_SPY = 386,
 	INTERITUS_FOREST_ENGINEER = 387,
 	INTERITUS_FOREST_BOSS = 388,
+	RAIDMODE_THE_MESSENGER	= 389,
 
 	MAX_NPC_TYPES	// Add entries above this line
 }
@@ -851,14 +852,15 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Anarchist Enforcer",
 	"Braindead",
 	"Behemonth",
-	"Absolute Incinirator"
+	"Absolute Incinirator",
 
 	"Liberi",
 	"Ursus",
 	"Aegir",
 	"Cautus",
 	"Vulpo",
-	"Major Steam"
+	"Major Steam",
+	"The Messenger"
 };
 
 // See items.sp for IDs to names
@@ -1654,14 +1656,15 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_enforcer",
 	"npc_braindead",
 	"npc_behemonth",
-	"npc_absolute_incinirator"
+	"npc_absolute_incinirator",
 
 	"npc_liberi",
 	"npc_ursus",
 	"npc_aegir",
 	"npc_cautus",
 	"npc_vulpo",
-	"npc_majorsteam"
+	"npc_majorsteam",
+	"npc_the_messenger"
 };
 
 void NPC_MapStart()
@@ -1980,6 +1983,7 @@ void NPC_MapStart()
 	Raidboss_Schwertkrieg_OnMapStart_NPC();
 	Raidboss_Donnerkrieg_OnMapStart_NPC();
 	RaidbossBobTheFirst_OnMapStart();
+	TheMessenger_OnMapStart_NPC();
 
 	// Bloon Low Prio
 	Bloon_MapStart();
@@ -3090,6 +3094,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 
 		case INTERITUS_FOREST_BOSS:
 			entity = MajorSteam(client, vecPos, vecAng, ally);
+			
+		case RAIDMODE_THE_MESSENGER:
+			entity = TheMessenger(client, vecPos, vecAng, ally, data);
+
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -5355,6 +5363,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_vip_building.sp"
 #include "zombie_riot/npc/rogue/npc_overlord_rogue.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_bladedance.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_the_messenger.sp"
 
 
 #include "zombie_riot/npc/interitus/desert/npc_ahim.sp"

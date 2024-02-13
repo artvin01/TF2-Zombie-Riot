@@ -9,6 +9,8 @@ void MajorSteam_MapStart()
 	PrecacheModel("models/bots/soldier_boss/bot_soldier_boss.mdl");
 	PrecacheSound(g_DeathSounds);
 	PrecacheSound(g_MeleeAttackSounds);
+	PrecacheSound("misc/halloween/hwn_dance_howl.wav");
+	PrecacheSound("weapons/barret_arm_zap.wav");
 }
 
 methodmap MajorSteam < CClotBody
@@ -63,7 +65,7 @@ methodmap MajorSteam < CClotBody
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_rocketlauncher/c_rocketlauncher.mdl");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/robo_soldier_fullmetaldrillhat/robo_soldier_fullmetaldrillhat.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/robo_soldier_fullmetaldrillhat/robo_soldier_fullmetaldrillhat.mdl", _, _, 1.001);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 
 		return npc;
@@ -213,8 +215,8 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			return Plugin_Handled;
 		}
 		
-		npc.m_flMeleeArmor += 0.001;
-		npc.m_flRangedArmor += 0.001;
+		npc.m_flMeleeArmor += 0.001 / MultiGlobal;
+		npc.m_flRangedArmor += 0.001 / MultiGlobal;
 
 		if(npc.m_flMeleeArmor > 2.0)
 			npc.m_flMeleeArmor = 2.0;
@@ -235,7 +237,7 @@ static void ClotDeath(int entity)
 	npc.PlayDeathSound();
 	
 	KillFeed_SetKillIcon(npc.index, "pumpkindeath");
-	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
 	int weapon = EntRefToEntIndex(LastHitWeaponRef[npc.index]);
 	int client = EntRefToEntIndex(LastHitRef[npc.index]);
@@ -244,11 +246,11 @@ static void ClotDeath(int entity)
 	SetTeam(npc.index, 999);
 	b_ThisNpcIsSawrunner[npc.index] = true;
 	i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
-	Explode_Logic_Custom(999999.9, client, npc.index, weapon, vecMe, 450.0 * zr_smallmapbalancemulti.FloatValue, 1.0, _, true, 40);
+	Explode_Logic_Custom(9999999.9, client, npc.index, weapon, vecMe, 450.0 * zr_smallmapbalancemulti.FloatValue, 1.0, _, true, 40, _, _, _, MajorSteamExplodePre);
 	b_ThisNpcIsSawrunner[npc.index] = false;
 	SetTeam(npc.index, team);
 	
-	int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 20;
+	int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4;
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	
@@ -275,4 +277,12 @@ static void ClotDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+}
+
+static float MajorSteamExplodePre(int attacker, int victim, float damage, int weapon)
+{
+	if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
+		return 10000.0 - damage;	// 10k dmg vs bosses
+	
+	return 0.0;
 }

@@ -2117,4 +2117,28 @@
 	{
 		"en"	"Absolute Incinirator"
 	}
+	"Aegir"
+	{
+		"en"	"Aegir"
+	}
+	"Ursus"
+	{
+		"en"	"Ursus"
+	}
+	"Cautus"
+	{
+		"en"	"Cautus"
+	}
+	"Vulpo"
+	{
+		"en"	"Vulpo"
+	}
+	"Major Steam"
+	{
+		"en"	"Major Steam"
+	}
+	"The Messenger"
+	{
+		"en"	"The Messenger"
+	}
 }

@@ -256,7 +256,7 @@ void MedivalRam_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 	
 	float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
-	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, entity, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	
 	if(Garrison[entity])
 	{

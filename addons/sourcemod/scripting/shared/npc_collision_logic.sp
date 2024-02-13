@@ -7,8 +7,9 @@ public bool ShouldCollide_NpcLoco(CBaseNPC_Locomotion loco, int otherindex)
 
 bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarules = 0)
 { 
-	if(bot_entidx == otherindex)
+	if(b_NpcIsTeamkiller[bot_entidx] && bot_entidx == otherindex)
 		return false;
+
 	//bots will always collide with brushes, and not ignored.
 	if(b_is_a_brush[otherindex])
 	{

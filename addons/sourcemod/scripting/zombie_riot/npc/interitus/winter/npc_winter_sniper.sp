@@ -126,6 +126,25 @@ methodmap WinterSniper < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+
+		if(ally != TFTeam_Red)
+		{
+			if(LastSpawnDiversio < GetGameTime())
+			{
+				EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", _, _, _, _, 1.0);	
+				EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", _, _, _, _, 1.0);	
+				for(int client_check=1; client_check<=MaxClients; client_check++)
+				{
+					if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+					{
+						SetGlobalTransTarget(client_check);
+						ShowGameText(client_check, "voice_player", 1, "%t", "Snipers Appear");
+					}
+				}
+			}
+			LastSpawnDiversio = GetGameTime() + 20.0;
+			TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
+		}
 		
 		return npc;
 	}
@@ -328,6 +347,7 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 					damageDealt *= 10.0;
 
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
+				Sakratan_AddNeuralDamage(target, npc.index, 120);
 			} 
 		}
 	}

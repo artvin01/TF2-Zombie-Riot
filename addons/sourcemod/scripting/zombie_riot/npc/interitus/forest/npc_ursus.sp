@@ -172,7 +172,7 @@ static void ClotThink(int iNPC)
 					target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						float damage = 150.0;
+						float damage = 75.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damage *= 1.5;
 
@@ -186,7 +186,7 @@ static void ClotThink(int iNPC)
 			}
 		}
 
-		if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			target = Can_I_See_Enemy(npc.index, target);
 			if(IsValidEnemy(npc.index, target))

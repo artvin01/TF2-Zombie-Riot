@@ -109,8 +109,8 @@ static void ClotThink(int iNPC)
 	int target = npc.m_iTargetAlly;
 	if(!IsValidAlly(npc.index, target))
 	{
-		target = GetClosestTarget(npc.index);
-		if(target < 1)
+		target = GetClosestAlly(npc.index);
+		if(target <= MaxClients)
 		{
 			LastHitRef[npc.index] = -1;
 			SmiteNpcToDeath(npc.index);
