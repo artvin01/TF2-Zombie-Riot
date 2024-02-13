@@ -2141,4 +2141,8 @@
 	{
 		"en"	"The Messenger"
 	}
+	"The Purge"
+	{
+		"en"	"The Purge"
+	}
 }

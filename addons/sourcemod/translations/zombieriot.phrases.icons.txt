@@ -35,6 +35,10 @@
 	{
 		"en" 		"The Messenger has accumulated chaos."
 	}
+	"The Pruge Arrived"
+	{
+		"en" 		"The Pruge has accumulated chaos."
+	}
 	"Blitzkrieg Spawn"
 	{
 		"en" 		"Blitzkrieg has arrived."
