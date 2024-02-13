@@ -607,9 +607,9 @@ bool b_OverlordsFinalWish[MAXTF2PLAYERS];
 bool b_BobsTrueFear[MAXTF2PLAYERS];
 float f_ArmorCurrosionImmunity[MAXENTITIES];
 int i_nm_body_client[MAXTF2PLAYERS];
-int g_particleMissText;
 Handle g_hRecalculatePlayerBodygroups;
 #endif
+int g_particleMissText;
 float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
 float Mana_Regen_Level[MAXPLAYERS]={0.0, ...};				//405
 int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 				//785
