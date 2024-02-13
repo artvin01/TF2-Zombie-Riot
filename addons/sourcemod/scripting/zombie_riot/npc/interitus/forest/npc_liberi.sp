@@ -24,9 +24,9 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/medic_battlecry04.mp3"
 };
 
-static float LeberiBuff[MAXENTITES];
+static float LiberiBuff[MAXENTITIES];
 
-methodmap Leberi < CClotBody
+methodmap Liberi < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -45,9 +45,9 @@ methodmap Leberi < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public Leberi(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Liberi(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Leberi npc = view_as<Leberi>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "17500", ally));
+		Liberi npc = view_as<Liberi>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "17500", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_FOREST_MEDIC;
 		i_NpcWeight[npc.index] = 1;
@@ -85,7 +85,7 @@ methodmap Leberi < CClotBody
 
 static void ClotThink(int iNPC)
 {
-	Leberi npc = view_as<Leberi>(iNPC);
+	Liberi npc = view_as<Liberi>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -129,13 +129,13 @@ static void ClotThink(int iNPC)
 		{
 			npc.StopPathing();
 
-			LeberiBuff[target] = GetGameTime() + 0.2;
+			LiberiBuff[target] = GetGameTime() + 0.2;
 
 			if(!NpcStats_IsEnemySilenced(npc.index))
 			{
 				b_NpcIsInvulnerable[target] = true;
-				SDKUnhook(target, SDKHook_ThinkPost, LeberiBuffThink);
-				SDKHook(target, SDKHook_ThinkPost, LeberiBuffThink);
+				SDKUnhook(target, SDKHook_ThinkPost, LiberiBuffThink);
+				SDKHook(target, SDKHook_ThinkPost, LiberiBuffThink);
 			}
 		}
 		else
@@ -152,18 +152,18 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-static void LeberiBuffThink(int entity)
+static void LiberiBuffThink(int entity)
 {
-	if(GetGameTime() > LeberiBuff[entity])
+	if(GetGameTime() > LiberiBuff[entity])
 	{
 		b_NpcIsInvulnerable[entity] = false;
-		SDKUnhook(entity, SDKHook_ThinkPost, LeberiBuffThink);
+		SDKUnhook(entity, SDKHook_ThinkPost, LiberiBuffThink);
 	}
 }
 
 static void ClotDeath(int entity)
 {
-	Leberi npc = view_as<Leberi>(entity);
+	Liberi npc = view_as<Liberi>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	

@@ -423,7 +423,12 @@ enum
 	INTERITUS_FOREST_SCOUT = 372,
 	INTERITUS_FOREST_SOLDIER = 373,
 	INTERITUS_FOREST_DEMOMAN = 374,
-	HELLO I WILL LIKE TO GIT MERGE PLZ
+	INTERITUS_FOREST_MEDIC,
+	INTERITUS_FOREST_HEAVY,
+	INTERITUS_FOREST_PYRO,
+	INTERITUS_FOREST_SPY,
+	INTERITUS_FOREST_ENGINEER,
+	INTERITUS_FOREST_BOSS,
 
 	MAX_NPC_TYPES	// Add entries above this line
 }
@@ -828,7 +833,14 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Archosauria",
 	"Aslan",
 	"Perro",
-	"Caprinae"
+	"Caprinae",
+
+	"Liberi",
+	"Ursus",
+	"Aegir",
+	"Cautus",
+	"Vulpo",
+	"Major Steam"
 };
 
 // See items.sp for IDs to names
@@ -1204,6 +1216,13 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	-1,	//RUINA_STELLAR_WEAVER
 	-1,	//RUINA_STELLAR_WEAVER_MID
 	1,
+	-1,
+	-1,
+	-1,
+	-1,
+
+	-1,
+	-1,
 	-1,
 	-1,
 	-1,
@@ -1609,7 +1628,14 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_archosauria",
 	"npc_alsan",
 	"npc_perro",
-	"npc_caprinae"
+	"npc_caprinae",
+
+	"npc_liberi",
+	"npc_ursus",
+	"npc_aegir",
+	"npc_cautus",
+	"npc_vulpo",
+	"npc_majorsteam"
 };
 
 void NPC_MapStart()
@@ -1890,6 +1916,7 @@ void NPC_MapStart()
 	WinterSkinHunter_OnMapStart_NPC();
 	WinterIrritatedPerson_OnMapStart_NPC();
 	AnarchyRansacker_OnMapStart_NPC();
+	MajorSteam_MapStart();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2987,6 +3014,24 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 
 		case INTERITUS_FOREST_DEMOMAN:
 			entity = Caprinae(client, vecPos, vecAng, ally, data);
+
+		case INTERITUS_FOREST_MEDIC:
+			entity = Liberi(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_HEAVY:
+			entity = Ursus(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_PYRO:
+			entity = Aegir(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_SPY:
+			entity = Cautus(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_ENGINEER:
+			entity = Vulpo(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_BOSS:
+			entity = MajorSteam(client, vecPos, vecAng, ally);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -5284,3 +5329,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/forest/npc_ursus.sp"
 #include "zombie_riot/npc/interitus/forest/npc_aegir.sp"
 #include "zombie_riot/npc/interitus/forest/npc_cautus.sp"
+#include "zombie_riot/npc/interitus/forest/npc_vulpo.sp"
+#include "zombie_riot/npc/interitus/forest/npc_majorsteam.sp"

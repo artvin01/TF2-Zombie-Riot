@@ -218,8 +218,6 @@ static void ClotThink(int iNPC)
 static void ClotDeath(int entity)
 {
 	Caprinae npc = view_as<Caprinae>(entity);
-	if(!npc.m_bGib)
-		npc.PlayDeathSound();
 	
 	float startPosition[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition); 

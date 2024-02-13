@@ -66,7 +66,7 @@ methodmap Ursus < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Ursus(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Ursus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Ursus npc = view_as<Ursus>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "30000", ally));
 		

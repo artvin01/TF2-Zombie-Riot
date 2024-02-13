@@ -45,7 +45,7 @@ methodmap Vulpo < CClotBody
 	}
 	public void PlayHurtSound()
 	{
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSSL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayDeathSound() 
 	{
@@ -56,7 +56,7 @@ methodmap Vulpo < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Vulpo(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Vulpo(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Vulpo npc = view_as<Vulpo>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "30000", ally));
 		

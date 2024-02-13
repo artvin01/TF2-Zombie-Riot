@@ -54,6 +54,9 @@ methodmap MajorSteam < CClotBody
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_flAttackHappens = 0.0;
 
+		npc.m_flMeleeArmor = 0.01;
+		npc.m_flRangedArmor = 0.01;
+
 		b_CannotBeStunned[npc.index] = true;
 		b_CannotBeKnockedUp[npc.index] = true;
 		b_CannotBeSlowed[npc.index] = true;
@@ -170,8 +173,6 @@ static void ClotThink(int iNPC)
 	{
 		npc.StopPathing();
 	}
-
-	npc.PlayIdleSound();
 }
 
 static void MajorSteam_DownedThink(int entity)
@@ -197,7 +198,7 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			npc.Anger = true;
 			npc.PlayHurtSound();
 			npc.StopPathing();
-			npc.m_flNextThinkTime = gameTime + 2.0;
+			npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.0;
 
 			func_NPCThink[npc.index] = MajorSteam_DownedThink;
 			
@@ -211,6 +212,15 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			damage = 0.0;
 			return Plugin_Handled;
 		}
+		
+		npc.m_flMeleeArmor += 0.001;
+		npc.m_flRangedArmor += 0.001;
+
+		if(npc.m_flMeleeArmor > 2.0)
+			npc.m_flMeleeArmor = 2.0;
+
+		if(npc.m_flRangedArmor > 2.0)
+			npc.m_flRangedArmor = 2.0;
 	}
 
 	return Plugin_Changed;
@@ -238,6 +248,28 @@ static void ClotDeath(int entity)
 	b_ThisNpcIsSawrunner[npc.index] = false;
 	SetTeam(npc.index, team);
 	
+	int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 20;
+	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+	
+	int other = Npc_Create(INTERITUS_FOREST_ENGINEER, -1, pos, ang, team, "EX");
+	if(other > MaxClients)
+	{
+		if(team != TFTeam_Red)
+			Zombies_Currently_Still_Ongoing++;
+		
+		SetEntProp(other, Prop_Data, "m_iHealth", health);
+		SetEntProp(other, Prop_Data, "m_iMaxHealth", health);
+		
+		fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
+		fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
+		fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
+		fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
+		b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
+		b_StaticNPC[other] = b_StaticNPC[npc.index];
+		view_as<CClotBody>(other).m_flNextThinkTime = GetGameTime(other) + 8.0;
+	}
+
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	
