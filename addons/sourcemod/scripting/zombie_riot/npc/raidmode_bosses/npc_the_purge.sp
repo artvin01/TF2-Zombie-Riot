@@ -1,266 +1,184 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] = {
-	"weapons/rescue_ranger_teleport_receive_01.wav",
-	"weapons/rescue_ranger_teleport_receive_02.wav",
-};
-
-static const char g_TeleportSound[][] = {
-	"weapons/rescue_ranger_teleport_receive_01.wav",
-	"weapons/rescue_ranger_teleport_receive_02.wav",
-};
-
-static const char g_HurtSounds[][] = {
-	"vo/soldier_painsharp01.mp3",
-	"vo/soldier_painsharp02.mp3",
-	"vo/soldier_painsharp03.mp3",
-	"vo/soldier_painsharp04.mp3",
-	"vo/soldier_painsharp05.mp3",
-	"vo/soldier_painsharp06.mp3",
-	"vo/soldier_painsharp07.mp3",
-	"vo/soldier_painsharp08.mp3",
-};
-
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
-static const char g_MeleeHitSounds[][] = {
-	"weapons/blade_slice_2.wav",
-	"weapons/blade_slice_3.wav",
-	"weapons/blade_slice_4.wav",
-};
-static const char g_RangedSound[][] = {
-	"weapons/tacky_grenadier_shoot.wav",
-};
-
-static const char g_HurtArmorSounds[][] = {
-	")physics/metal/metal_box_impact_bullet1.wav",
-	")physics/metal/metal_box_impact_bullet2.wav",
-	")physics/metal/metal_box_impact_bullet3.wav",
-};
-static const char g_SuperJumpSound[][] = {
-	"misc/halloween/spell_mirv_explode_primary.wav",
-};
-
-static char g_AngerSounds[][] = {
-	"vo/taunts/soldier_taunts03.mp3",
-};
-
-static char g_SyctheHitSound[][] = {
-	"ambient/machines/slicer1.wav",
-	"ambient/machines/slicer2.wav",
-	"ambient/machines/slicer3.wav",
-	"ambient/machines/slicer4.wav",
-};
-
-static char g_SyctheInitiateSound[][] = {
-	"npc/env_headcrabcanister/incoming.wav",
-};
-
-
-static char g_AngerSoundsPassed[][] = {
-	"vo/taunts/soldier_taunts15.mp3",
-};
-
-static const char g_LaserGlobalAttackSound[][] = {
-	"weapons/bumper_car_speed_boost_start.wav",
-};
-
-static const char g_MessengerThrowFire[][] = {
-	"misc/halloween/spell_fireball_cast.wav",
-};
-
-static const char g_MessengerThrowIce[][] = {
-	"weapons/icicle_freeze_victim_01.wav",
-};
-
-bool BlockLoseSay;
-static float f_MessengerSpeedUp[MAXENTITIES];
-
-void TheMessenger_OnMapStart_NPC()
+static char g_DeathSounds[][] =
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_MessengerThrowFire));	   i++) { PrecacheSound(g_MessengerThrowFire[i]);	   }
-	for (int i = 0; i < (sizeof(g_MessengerThrowIce));	   i++) { PrecacheSound(g_MessengerThrowIce[i]);	   }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_TeleportSound)); i++) { PrecacheSound(g_TeleportSound[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedSound)); i++) { PrecacheSound(g_RangedSound[i]); }
-	for (int i = 0; i < (sizeof(g_HurtArmorSounds)); i++) { PrecacheSound(g_HurtArmorSounds[i]); }
-	for (int i = 0; i < (sizeof(g_SuperJumpSound)); i++) { PrecacheSound(g_SuperJumpSound[i]); }
-	for (int i = 0; i < (sizeof(g_AngerSoundsPassed));   i++) { PrecacheSound(g_AngerSoundsPassed[i]);   }
-	for (int i = 0; i < (sizeof(g_SyctheHitSound));   i++) { PrecacheSound(g_SyctheHitSound[i]);   }
-	for (int i = 0; i < (sizeof(g_SyctheInitiateSound));   i++) { PrecacheSound(g_SyctheInitiateSound[i]);   }
-	for (int i = 0; i < (sizeof(g_LaserGlobalAttackSound));   i++) { PrecacheSound(g_LaserGlobalAttackSound[i]);   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	PrecacheSoundCustom("#zombiesurvival/internius/messenger.mp3");
+	"vo/heavy_yell3.mp3",
+	"vo/heavy_laughterbig01.mp3",
+	"vo/heavy_laughterbig02.mp3",
+	"vo/heavy_domination09.mp3"
+};
+
+static char g_BoomSounds[][] =
+{
+	"mvm/mvm_tank_explode.wav"
+};
+
+static char g_AngerSounds[][] =
+{
+	"vo/heavy_domination02.mp3",
+	"vo/heavy_domination04.mp3",
+	"vo/heavy_domination06.mp3",
+	"vo/heavy_domination08.mp3",
+	"vo/heavy_domination12.mp3",
+	"vo/heavy_domination13.mp3",
+	"vo/heavy_domination14.mp3",
+	"vo/heavy_domination16.mp3"
+};
+
+void ThePurge_MapStart()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_BoomSounds);
+	PrecacheSoundArray(g_AngerSounds);
+
+	PrecacheSound("weapons/family_business_shoot.wav");
+	PrecacheSound("weapons/tf2_backshot_shotty.wav");
+	PrecacheSound("mvm/giant_heavy/giant_heavy_gunspin.wav");
+	PrecacheSound("mvm/giant_heavy/giant_heavy_gunwindup.wav");
+	PrecacheSound("mvm/giant_heavy/giant_heavy_gunwinddown.wav");
+	PrecacheSound("mvm/giant_soldier/giant_soldier_rocket_shoot.wav");
+	PrecacheSound("mvm/giant_demoman/giant_demoman_grenade_shoot.wav");
 }
 
-
-methodmap TheMessenger < CClotBody
+methodmap ThePurge < CClotBody
 {
-	property int i_GunMode
+	public void PlayDeathSound()
 	{
-		public get()							{ return i_AttacksTillMegahit[this.index]; }
-		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
+		int sound = GetRandomInt(0, sizeof(g_DeathSounds) - 1);
+		
+		EmitSoundToAll(g_DeathSounds[sound], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	property float f_TheMessengerMeleeCooldown
+	public void PlayShotgunSound()
 	{
-		public get()							{ return fl_NextChargeSpecialAttack[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextChargeSpecialAttack[this.index] = TempValueForProperty; }
+		EmitSoundToAll("weapons/family_business_shoot.wav", this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	property float f_TheMessengerRocketJumpCD
+	public void PlaySMGSound()
 	{
-		public get()							{ return fl_NextRangedBarrage_Singular[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextRangedBarrage_Singular[this.index] = TempValueForProperty; }
+		EmitSoundToAll("weapons/tf2_backshot_shotty.wav", this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	property float f_TheMessengerRocketJumpCD_Wearoff
+	public void PlayMinigunSound()
 	{
-		public get()							{ return fl_AttackHappensMaximum[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_AttackHappensMaximum[this.index] = TempValueForProperty; }
+		EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunspin.wav", this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	property bool b_TheMessengerRocketJump
+	public void PlayMinigunStartSound()
 	{
-		public get()							{ return b_NextRangedBarrage_OnGoing[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_NextRangedBarrage_OnGoing[this.index] = TempValueForProperty; }
+		EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunwindup.wav", this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayAngerSoundPassed() 
+	public void PlayMinigunStopSound()
 	{
-		int sound = GetRandomInt(0, sizeof(g_AngerSoundsPassed) - 1);
-		EmitSoundToAll(g_AngerSoundsPassed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_AngerSoundsPassed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-
-		EmitSoundToAll("mvm/mvm_tele_deliver.wav", this.index, SNDCHAN_STATIC, 80, _, 0.8);
+		EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunwinddown.wav", this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlaySytheInitSound() {
-	
-		int sound = GetRandomInt(0, sizeof(g_SyctheInitiateSound) - 1);
-		EmitSoundToAll(g_SyctheInitiateSound[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_SyctheInitiateSound[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	public void PlayRocketSound()
+	{
+		EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayAngerSound() {
-	
+	public void PlayGrenadeSound()
+	{
+		EmitSoundToAll("mvm/giant_demoman/giant_demoman_grenade_shoot.wav", this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayBoomSound()
+	{
+		EmitSoundToAll(g_BoomSounds[GetRandomInt(0, sizeof(g_BoomSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayAngerSound()
+	{
 		int sound = GetRandomInt(0, sizeof(g_AngerSounds) - 1);
-		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_AngerSounds[sound]);
+		EmitSoundToAll(g_AngerSounds[sound]);
 	}
-	
-	public void PlayDeathSound() 
-	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
-	public void PlayProjectileSound() 
-	{
-		if(this.m_flidle_talk > GetGameTime(this.index))
-			return;
-			
-		this.m_flidle_talk = GetGameTime(this.index) + 0.1;
-		if(ZR_GetWaveCount()+1 <= 15)
-			EmitSoundToAll(g_MessengerThrowFire[GetRandomInt(0, sizeof(g_MessengerThrowFire) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		else
-			EmitSoundToAll(g_MessengerThrowIce[GetRandomInt(0, sizeof(g_MessengerThrowIce) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
-	
-	public void PlaySuperJumpSound()
-	{
-		EmitSoundToAll(g_SuperJumpSound[GetRandomInt(0, sizeof(g_SuperJumpSound) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_SuperJumpSound[GetRandomInt(0, sizeof(g_SuperJumpSound) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
-	public void PlayMeleeSound()
-	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
-	public void PlayMeleeHitSound() 
-	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
-	public void PlayRangedSound() 
-	{
-		EmitSoundToAll(g_RangedSound[GetRandomInt(0, sizeof(g_RangedSound) - 1)], this.index, SNDCHAN_WEAPON, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
-	public void PlayHurtArmorSound() 
-	{
-		EmitSoundToAll(g_HurtArmorSounds[GetRandomInt(0, sizeof(g_HurtArmorSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
-	}
-	
-	public void PlayHurtSound() 
+	property int m_iGunType
 	{
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, _, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		public get()		{	return this.m_iOverlordComboAttack;	}
+		public set(int value) 	{	this.m_iOverlordComboAttack = value;	}
 	}
-	public void PlayTeleportSound() 
+	property float m_flSwitchCooldown	// Delay between switching weapons
 	{
-		EmitSoundToAll(g_TeleportSound[GetRandomInt(0, sizeof(g_TeleportSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		
+		public get()			{	return this.m_flGrappleCooldown;	}
+		public set(float value) 	{	this.m_flGrappleCooldown = value;	}
 	}
-	
-	public TheMessenger(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
-	{
-		TheMessenger npc = view_as<TheMessenger>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
-		
-		i_NpcInternalId[npc.index] = RAIDMODE_THE_MESSENGER;
-		i_NpcWeight[npc.index] = 4;
 
+	public void SetWeaponModel(const char[] model)
+	{
+		if(IsValidEntity(this.m_iWearable1))
+			RemoveEntity(this.m_iWearable1);
+		
+		if(model[0])
+			this.m_iWearable1 = this.EquipItem("head", model);
+	}
+
+	public ThePurge(int client, float vecPos[3], float vecAng[3], int team)
+	{
+		ThePurge npc = view_as<ThePurge>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "25000", team, false, true, true, true));
+		
+		i_NpcInternalId[npc.index] = RAIDBOSS_THE_PURGE;
+		i_NpcWeight[npc.index] = 5;
+		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		npc.SetActivity("ACT_MP_RUN_MELEE");
+		npc.AddGesture("ACT_MP_CYOA_PDA_OUTRO");
+
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		func_NPCDeath[npc.index] = ClotDeath;
+		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
+		func_NPCThink[npc.index] = ClotThink;
 		
-		SetVariantInt(4);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
+		/*
+			Cosmetics
+		*/
+
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 		
-		npc.m_flNextMeleeAttack = 0.0;
+		SetVariantColor(view_as<int>({0, 0, 255, 200}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/spr17_wingman/spr17_wingman_heavy.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/sbox2014_war_pants/sbox2014_war_pants.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/player/items/heavy/heavy_wolf_helm.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/player/items/heavy/heavy_wolf_chest.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop_partner/player/items/heavy/dex_sarifarm/dex_sarifarm.mdl");
+		
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
+
+		/*
+			Variables
+		*/
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
-		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
+		npc.m_bThisNpcIsABoss = true;
 		npc.m_bDissapearOnDeath = true;
-		npc.m_flMeleeArmor = 1.25;	
-
-
-
-		func_NPCDeath[npc.index] = view_as<Function>(TheMessenger_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(TheMessenger_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(TheMessenger_ClotThink);
-
-		SDKHook(npc.index, SDKHook_OnTakeDamagePost, TheMessenger_OnTakeDamagePost);
-
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.StartPathing();
+		npc.Anger = false;
 		npc.m_flSpeed = 300.0;
-		npc.i_GunMode = 0;
-		npc.m_flRangedSpecialDelay = GetGameTime() + 10.0;
-		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
-		npc.m_flAngerDelay = GetGameTime() + 15.0;
-		BlockLoseSay = false;
-		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 15.0;
-		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 25.0;
-		f_MessengerSpeedUp[npc.index] = 1.0;
-		npc.g_TimesSummoned = 0;
-		
-		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);	
-		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);	
+		npc.m_iTarget = 0;
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.5;
 		b_thisNpcIsARaid[npc.index] = true;
-		
 
-		bool final = StrContains(data, "final_item") != -1;
-		
-		if(final)
-		{
-			i_RaidGrantExtra[npc.index] = 1;
-		}
-		
+		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flAttackHappens = 0.0;
+		npc.m_iGunType = 0;
+		npc.m_flSwitchCooldown = GetGameTime(npc.index) + 2.0;
+		npc.m_flMeleeArmor = 1.5;
+
+		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);
+		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);
+
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "The Messanger Arrived");
+				ShowGameText(client_check, "item_armor", 1, "%t", "The Pruge Arrived");
 			}
 		}
 
@@ -268,895 +186,581 @@ methodmap TheMessenger < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
-		if(RaidModeScaling < 55)
-		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
-		}
-		else
-		{
-			RaidModeScaling *= 0.38;
-		}
+		RaidModeScaling = float(ZR_GetWaveCount()+1) * 0.19;
 		
 		float amount_of_people = float(CountPlayersOnRed());
 		if(amount_of_people > 12.0)
-		{
 			amount_of_people = 12.0;
-		}
-		amount_of_people *= 0.12;
 		
+		amount_of_people *= 0.12;
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-		
-		if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-		{
-			RaidModeScaling *= 0.85;
-		}
-		else if(ZR_GetWaveCount()+1 > 55)
-		{
-			RaidModeScaling *= 0.7;
-		}
-		
+		RaidModeScaling *= 0.85;
+
 		Music_SetRaidMusic("#zombiesurvival/internius/messenger.mp3", 219, true, 1.25);
-		npc.m_iChanged_WalkCycle = -1;
-
-		int skin = 1;
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-
-	//	Weapon
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_battleaxe/c_battleaxe.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-
-		if(ZR_GetWaveCount()+1 <= 15)
-			IgniteTargetEffect(npc.m_iWearable1);
-
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/cc_summer2015_outta_sight/cc_summer2015_outta_sight.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/sbox2014_juggernaut_jacket/sbox2014_juggernaut_jacket.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_stunt_suit/hwn2023_stunt_suit.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/all_class/hiphunter_boots/hiphunter_boots_demo.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-
-//		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
-
 		
-		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
-		npc.m_bTeamGlowDefault = false;
-
-		SetVariantColor(view_as<int>({173, 216, 230, 200}));
-		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-		
+		Citizen_MiniBossSpawn();
 		return npc;
 	}
 }
 
-public void TheMessenger_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
-	TheMessenger npc = view_as<TheMessenger>(iNPC);
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	ThePurge npc = view_as<ThePurge>(iNPC);
+	
+	float gameTime = GetGameTime(npc.index);
+
+	if(RaidBossActive != INVALID_ENT_REFERENCE && RaidModeTime < GetGameTime())
 	{
-		return;
+		if(npc.m_iGunType != 11)
+		{
+			npc.PlayAngerSound();
+			npc.PlayMinigunStartSound();
+			npc.m_iGunType = 11;
+			npc.m_flNextMeleeAttack = gameTime + 1.0;
+			npc.m_flSwitchCooldown = FAR_FUTURE;
+			npc.m_flSpeed = 370.0;
+			npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
+			npc.SetWeaponModel("models/workshop/weapons/c_models/c_iron_curtain/c_iron_curtain.mdl");
+
+			if(npc.Anger)
+			{
+				npc.m_flRangedArmor = 0.1;
+				npc.m_flMeleeArmor = 0.15;
+			}
+			else
+			{
+				npc.m_flRangedArmor = 0.25;
+				npc.m_flMeleeArmor = 0.375;
+			}
+		}
 	}
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+
+	if(npc.m_flNextDelayTime > gameTime)
+		return;
+	
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-	/*
-	if(TheMessengerTalkPostWin(npc))
+	
+	//Think throttling
+	if(npc.m_flNextThinkTime > gameTime)
 		return;
-*/
-	if(RaidModeTime < GetGameTime())
+	
+	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	//Set raid to this one incase the previous one has died or somehow vanished
+	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
 	{
-		int entity = CreateEntityByName("game_round_win"); //You loose.
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
-		RaidBossActive = INVALID_ENT_REFERENCE;
-		BlockLoseSay = true;
+		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+		{
+			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
+			{
+				Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
+			}	
+		}
 	}
-/*
-	if(TheMessengerTransformation(npc))
-		return;
-*/
-	if(npc.m_blPlayHurtAnimation)
-	{
-		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
-		npc.m_blPlayHurtAnimation = false;
-		npc.PlayHurtSound();
-	}
-
-
-
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
-	{
-		return;
-	}
-
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
-	if(npc.i_GunMode == 0 && Messanger_Elemental_Attack_Projectiles(npc))
-	{
-		npc.m_flMeleeArmor = 0.3125;
-		npc.m_flRangedArmor = 0.25;	
-		return;
-	}
-
-	if(Messanger_Elemental_Attack_TempPowerup(npc))
-	{
-		npc.m_flMeleeArmor = 0.3125;
-		npc.m_flRangedArmor = 0.25;	
-		return;
-	}
-
-	npc.m_flMeleeArmor = 1.25;
-	npc.m_flRangedArmor = 1.0;		
-
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+	else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)) || IsPartnerGivingUpSilvester(EntRefToEntIndex(RaidBossActive)))
+	{	
+		RaidBossActive = EntIndexToEntRef(npc.index);
 	}
 	
-	if(IsValidEnemy(npc.index, npc.m_iTarget))
+	int target = npc.m_iTarget;
+	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
 	{
+		i_Target[npc.index] = -1;
+		npc.m_flAttackHappens = 0.0;
+	}
+	
+	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
+	{
+		target = GetClosestTarget(npc.index);
+		npc.m_iTarget = target;
+		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+	}
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
-		int SetGoalVectorIndex = 0;
-		SetGoalVectorIndex = TheMessengerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
-		
-		switch(SetGoalVectorIndex)
+	if(target > 0)
+	{
+		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+		float distance = GetVectorDistance(vecTarget, vecMe, true);
+		if(distance < npc.GetLeadRadius()) 
 		{
-			case 0:
+			vecTarget = PredictSubjectPositionOld(npc, target);
+			NPC_SetGoalVector(npc.index, vecTarget);
+		}
+		else
+		{
+			NPC_SetGoalEntity(npc.index, target);
+		}
+
+		if(npc.m_flSwitchCooldown < gameTime)
+		{
+			float cooldown = 10.0;
+
+			switch(npc.m_iGunType)
 			{
-				npc.m_bAllowBackWalking = false;
-				//Get the normal prediction code.
-				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				case 0, 3, 6:	// Fists/Minigun/Rockets -> Shotgun
 				{
-					float vPredictedPos[3];
-					vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
-					Messanger_Elemental_Attack_FingerPoint(npc);
+					if(npc.m_iGunType == 3)
+						npc.PlayMinigunStartSound();
+					
+					npc.m_iGunType++;
+					npc.SetWeaponModel("models/workshop/weapons/c_models/c_russian_riot/c_russian_riot.mdl");
+					npc.SetActivity("ACT_MP_RUN_SECONDARY");
+					npc.m_flNextMeleeAttack = gameTime + 0.5;
+					npc.m_flSpeed = 300.0;
+					cooldown = 8.0;
+
+					npc.m_flRangedArmor = 1.0;
+					npc.m_flMeleeArmor = 1.5;
 				}
-				else 
+				case 1, 4, 7:	// Shotgun -> SMG
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.m_iGunType++;
+					npc.SetWeaponModel("models/workshop/weapons/c_models/c_trenchgun/c_trenchgun.mdl");
+					npc.SetActivity("ACT_MP_RUN_SECONDARY");
+					npc.m_flNextMeleeAttack = gameTime + 0.5;
+					npc.m_flSpeed = 300.0;
+					cooldown = 8.0;
+
+					npc.m_flRangedArmor = 1.0;
+					npc.m_flMeleeArmor = 1.5;
+				}
+				case 2, 10:	// SMG/Healing -> Minigun
+				{
+					npc.m_iGunType = 3;
+					npc.SetWeaponModel("models/workshop/weapons/c_models/c_iron_curtain/c_iron_curtain.mdl");
+					npc.SetActivity("ACT_MP_CROUCH_DEPLOYED_IDLE");
+					npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 0.5 : 1.0);
+					npc.m_flSpeed = 50.0;
+					cooldown = 6.0;
+
+					npc.m_flRangedArmor = 0.5;
+					npc.m_flMeleeArmor = 0.75;
+
+					npc.PlayMinigunStartSound();
+				}
+				case 5:	// SMG -> Rockets
+				{
+					npc.m_iGunType = 6;
+					npc.SetWeaponModel("");
+					npc.SetActivity("taunt_burstchester_heavy", true);
+					npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 1.65 : 3.25);
+					npc.m_flSpeed = 1.0;
+					cooldown = 5.3;
+
+					if(npc.Anger)
+						npc.SetPlaybackRate(0.5);
+
+					npc.m_flRangedArmor = 0.25;
+					npc.m_flMeleeArmor = 0.375;
+
+					npc.PlayMinigunStopSound();
+				}
+				case 8:	// SMG -> Grenade
+				{
+					npc.m_iGunType = 9;
+					npc.SetWeaponModel("models/workshop/weapons/c_models/c_quadball/c_quadball.mdl");
+					npc.SetActivity("ACT_MP_RUN_SECONDARY");
+					npc.m_flNextMeleeAttack = gameTime + 1.0;
+					npc.m_flSpeed = 250.0;
+					cooldown = 10.0;
+
+					npc.m_flRangedArmor = 1.0;
+					npc.m_flMeleeArmor = 1.5;
+				}
+				case 9:	// Grenade -> Fists
+				{
+					npc.PlayBoomSound();
+					TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
+
+					npc.m_iGunType = 0;
+					npc.SetWeaponModel("");
+					npc.SetActivity("ACT_MP_RUN_MELEE");
+					cooldown = 3.0;
+
+					npc.m_flRangedArmor = 1.5;
+					npc.m_flMeleeArmor = 2.25;
 				}
 			}
-			case 1:
+
+			if(npc.Anger)
+				cooldown *= 0.5;
+
+			npc.m_flSwitchCooldown = gameTime + cooldown;
+		}
+		
+		switch(npc.m_iGunType)
+		{
+			case 0:	// Fists
 			{
-				npc.m_bAllowBackWalking = true;
-				float vBackoffPos[3];
-				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				RaidModeScaling *= 1.00005;
+				npc.StartPathing();
+			}
+			case 1, 4, 7:	// Shotgun
+			{
+				npc.StartPathing();
+
+				if(distance < 160000.0 && npc.m_flNextMeleeAttack < gameTime)	// 400 HU
+				{
+					if(Can_I_See_Enemy(npc.index, target) == target)
+					{
+						KillFeed_SetKillIcon(npc.index, "family_business");
+						
+						npc.FaceTowards(vecTarget, 400.0);
+
+						npc.PlayShotgunSound();
+						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
+
+						float eyePitch[3];
+						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+						
+						float vecDirShooting[3], vecRight[3], vecUp[3];
+
+						vecTarget[2] += 15.0;
+						MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
+						GetVectorAngles(vecDirShooting, vecDirShooting);
+						vecDirShooting[1] = eyePitch[1];
+						GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+						
+						float vecDir[3];
+
+						float damage = RaidModeScaling * 0.1;
+
+						for(int i; i < 10; i++)
+						{
+							float x = GetRandomFloat(-0.1, 0.1);
+							float y = GetRandomFloat(-0.1, 0.1);
+							
+							vecDir[0] = vecDirShooting[0] + x * vecRight[0] + y * vecUp[0]; 
+							vecDir[1] = vecDirShooting[1] + x * vecRight[1] + y * vecUp[1]; 
+							vecDir[2] = vecDirShooting[2] + x * vecRight[2] + y * vecUp[2]; 
+							NormalizeVector(vecDir, vecDir);
+							
+							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer01_red");
+						}
+
+						npc.m_flNextMeleeAttack = gameTime + 0.4;
+
+						KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+					}
+				}
+			}
+			case 2, 5, 8:	// SMG
+			{
+				npc.StartPathing();
+
+				if(distance < 360000.0 && npc.m_flNextMeleeAttack < gameTime)	// 600 HU
+				{
+					if(Can_I_See_Enemy(npc.index, target) == target)
+					{
+						KillFeed_SetKillIcon(npc.index, "panic_attack");
+						
+						npc.PlaySMGSound();
+						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
+
+						float eyePitch[3];
+						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+						
+						float vecDirShooting[3], vecRight[3], vecUp[3];
+
+						vecTarget[2] += 15.0;
+						MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
+						GetVectorAngles(vecDirShooting, vecDirShooting);
+						vecDirShooting[1] = eyePitch[1];
+						GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+						
+						float vecDir[3];
+
+						float damage = RaidModeScaling * 0.1;
+
+						for(int i; i < 2; i++)
+						{
+							float x = GetRandomFloat(-0.05, 0.05);
+							float y = GetRandomFloat(-0.05, 0.05);
+							
+							vecDir[0] = vecDirShooting[0] + x * vecRight[0] + y * vecUp[0]; 
+							vecDir[1] = vecDirShooting[1] + x * vecRight[1] + y * vecUp[1]; 
+							vecDir[2] = vecDirShooting[2] + x * vecRight[2] + y * vecUp[2]; 
+							NormalizeVector(vecDir, vecDir);
+							
+							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer01_red");
+						}
+
+						npc.m_flNextMeleeAttack = gameTime + 0.05;
+
+						KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+					}
+				}
+			}
+			case 3:	// Minigun
+			{
+				npc.StopPathing();
+
+				if(npc.m_flNextMeleeAttack < gameTime)
+				{
+					KillFeed_SetKillIcon(npc.index, "minigun");
+					
+					npc.PlayMinigunSound();
+					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+
+					float eyePitch[3];
+					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+					
+					float vecDirShooting[3], vecRight[3], vecUp[3];
+
+					vecTarget[2] += 15.0;
+					MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
+					GetVectorAngles(vecDirShooting, vecDirShooting);
+					vecDirShooting[1] = eyePitch[1];
+					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+					
+					float vecDir[3];
+
+					float damage = RaidModeScaling * 0.025;
+					
+					npc.m_flSpeed -= 1.0;
+					if(npc.m_flSpeed < 0.0)
+						npc.m_flSpeed = 0.0;
+					
+					// Scale up damage with longer time
+					damage *= 6.0 - (npc.m_flSpeed / 10.0);
+
+					for(int i; i < 3; i++)
+					{
+						float x = GetRandomFloat(-0.15, 0.15);
+						float y = GetRandomFloat(-0.15, 0.15);
+						
+						vecDir[0] = vecDirShooting[0] + x * vecRight[0] + y * vecUp[0]; 
+						vecDir[1] = vecDirShooting[1] + x * vecRight[1] + y * vecUp[1]; 
+						vecDir[2] = vecDirShooting[2] + x * vecRight[2] + y * vecUp[2]; 
+						NormalizeVector(vecDir, vecDir);
+						
+						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer01_red");
+					}
+
+					npc.m_flNextMeleeAttack = gameTime + 0.05;
+
+					KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+				}
+			}
+			case 6:	// Rocket
+			{
+				npc.StopPathing();
+
+				if(npc.m_flNextMeleeAttack < gameTime)
+				{
+					npc.PlayRocketSound();
+					
+					int enemy[4];
+					GetHighDefTargets(view_as<UnderTides>(npc), enemy, sizeof(enemy));
+					for(int i; (i < sizeof(enemy)) && enemy[i]; i++)
+					{
+						if(GetURandomInt() % 2)
+						{
+							vecTarget = PredictSubjectPositionForProjectilesOld(npc, target, 900.0);
+						}
+						else
+						{
+							GetWorldSpaceCenter(target, vecTarget);
+						}
+
+						npc.FireRocket(vecTarget, RaidModeScaling, 900.0);
+					}
+
+					npc.m_flNextMeleeAttack = gameTime + 0.05;
+				}
+			}
+			case 9:	// Grenade
+			{
+				npc.StartPathing();
+
+				if(npc.m_flNextMeleeAttack < gameTime)
+				{
+					if(Can_I_See_Enemy(npc.index, target) == target)
+					{
+						KillFeed_SetKillIcon(npc.index, "iron_bomber");
+						
+						npc.PlayGrenadeSound();
+						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
+
+						vecTarget = PredictSubjectPositionForProjectilesOld(npc, target, 1000.0);
+						npc.FireGrenade(vecTarget, 1000.0, RaidModeScaling, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl");
+
+						npc.m_flNextMeleeAttack = gameTime + 0.45;
+					}
+				}
+			}
+			case 10:	// Healing
+			{
+				npc.StopPathing();
+				npc.SetActivity("taunt_cheers_heavy", true);
+			}
+			case 11:	// Minigun
+			{
+				npc.StopPathing();
+
+				if(npc.m_flNextMeleeAttack < gameTime)
+				{
+					KillFeed_SetKillIcon(npc.index, "minigun");
+					
+					npc.PlayMinigunSound();
+					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+
+					float eyePitch[3];
+					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+					
+					float vecDirShooting[3], vecRight[3], vecUp[3];
+
+					vecTarget[2] += 15.0;
+					MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
+					GetVectorAngles(vecDirShooting, vecDirShooting);
+					vecDirShooting[1] = eyePitch[1];
+					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+					
+					float vecDir[3];
+
+					float damage = RaidModeScaling * 0.3;
+
+					for(int i; i < 3; i++)
+					{
+						float x = GetRandomFloat(-0.15, 0.15);
+						float y = GetRandomFloat(-0.15, 0.15);
+						
+						vecDir[0] = vecDirShooting[0] + x * vecRight[0] + y * vecUp[0]; 
+						vecDir[1] = vecDirShooting[1] + x * vecRight[1] + y * vecUp[1]; 
+						vecDir[2] = vecDirShooting[2] + x * vecRight[2] + y * vecUp[2]; 
+						NormalizeVector(vecDir, vecDir);
+						
+						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer01_red");
+					}
+
+					npc.m_flNextMeleeAttack = gameTime + 0.05;
+
+					KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+				}
 			}
 		}
 	}
 	else
 	{
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
-	}
-	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
-	{
-		TheMessengerAnimationChange(npc);
+		npc.StopPathing();
+
+		npc.SetActivity("taunt02", true);
+		npc.SetPlaybackRate(0.5);
+		npc.SetWeaponModel("models/workshop/weapons/c_models/c_russian_riot/c_russian_riot.mdl");
+		npc.m_iGunType = 1;
 	}
 }
 
-bool Messanger_Elemental_Attack_Projectiles(TheMessenger npc)
+static void ClotDeathStartThink(int iNPC)
 {
-	if(!npc.m_flAttackHappens_2 && npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index))
-	{
-		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (25.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
-		npc.AddActivityViaSequence("taunt_roar_owar");
-		npc.m_flAttackHappens = 0.0;
-		npc.SetCycle(0.01);
-		npc.SetPlaybackRate(f_MessengerSpeedUp[npc.index]);
-		npc.m_flAttackHappens_2 = GetGameTime(npc.index) + (4.0 * (1.0 / f_MessengerSpeedUp[npc.index]));	
-		npc.m_flDoingAnimation = GetGameTime(npc.index) + (4.0 * (1.0 / f_MessengerSpeedUp[npc.index]));	
-		npc.m_iOverlordComboAttack = 0;
-		npc.m_iChanged_WalkCycle = 0;
-
-		if(IsValidEntity(npc.m_iWearable2))
-			RemoveEntity(npc.m_iWearable2);
-
-		float flPos[3];
-		float flAng[3];
-		npc.GetAttachment("effect_hand_r", flPos, flAng);
-
-		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "flaregun_trail_blue", npc.index, "effect_hand_r", {0.0,0.0,0.0});
-	}
-
-	if(npc.m_flAttackHappens_2)
-	{
-		float TimeUntillOver = npc.m_flAttackHappens_2 - GetGameTime(npc.index);
-		//one second into the ability
-		if(npc.m_flAttackHappens_2 < GetGameTime(npc.index))
-		{
-			if(IsValidEntity(npc.m_iWearable2))
-				RemoveEntity(npc.m_iWearable2);
-			npc.m_flAttackHappens_2 = 0.0;
-		}
-
-		if(TimeUntillOver < (0.3 * (1.0 / f_MessengerSpeedUp[npc.index])))
-		{
-			if(npc.m_iOverlordComboAttack != 4)
-			{
-				npc.m_iOverlordComboAttack = 4;
-				fl_TotalArmor[npc.index] = fl_TotalArmor[npc.index] * 0.9;
-				RaidModeScaling *= 1.1;
-				switch(GetRandomInt(0,3))
-				{
-					case 0:
-					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: The longer you drag it out, the more painfull itll be.");
-					}
-					case 1:
-					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: More time, more time...");
-					}
-					case 2:
-					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: So much time wasted...");
-					}
-					case 3:
-					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: Its always about delaying isnt it?{crimson} Face me.");
-					}
-				}
-				MessengerInitiateGroupAttack(npc);
-			}
-			return true;
-		}
-		if(TimeUntillOver < (2.0 * (1.0 / f_MessengerSpeedUp[npc.index])))
-		{
-			if(npc.m_iOverlordComboAttack != 3)
-			{
-				npc.m_iOverlordComboAttack = 3;
-				MessengerInitiateGroupAttack(npc);
-
-			}
-			return true;
-		}
-		if(TimeUntillOver < (2.7 * (1.0 / f_MessengerSpeedUp[npc.index])))
-		{
-			if(npc.m_iOverlordComboAttack != 2)
-			{
-				npc.m_iOverlordComboAttack = 2;
-				MessengerInitiateGroupAttack(npc);
-
-			}
-			return true;
-		}
-		if(TimeUntillOver < (3.5 * (1.0 / f_MessengerSpeedUp[npc.index])))
-		{
-			if(npc.m_iOverlordComboAttack != 1)
-			{
-				npc.m_iOverlordComboAttack = 1;
-				MessengerInitiateGroupAttack(npc);
-			}
-			return true;
-		}
-		return true;
-	}
-	return false;
-}
-
-
-bool Messanger_Elemental_Attack_TempPowerup(TheMessenger npc)
-{
-	if(!npc.m_flNextRangedBarrage_Spam && npc.m_flAttackHappens_bullshit < GetGameTime(npc.index))
-	{
-		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + (35.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
-		npc.AddActivityViaSequence("taunt_cheers_demo");
-		npc.m_flAttackHappens = 0.0;
-		npc.SetCycle(0.01);
-		npc.SetPlaybackRate(f_MessengerSpeedUp[npc.index]);
-		npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + (1.85 * (1.0 / f_MessengerSpeedUp[npc.index]));	
-		npc.m_flDoingAnimation = GetGameTime(npc.index) + (1.85 * (1.0 / f_MessengerSpeedUp[npc.index]));	
-		npc.m_iOverlordComboAttack = 0;
-		npc.m_iChanged_WalkCycle = 0;
-		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 10.0;
-		if(IsValidEntity(npc.m_iWearable2))
-			RemoveEntity(npc.m_iWearable2);
-			
-		float flPos[3];
-		float flAng[3];
-		npc.GetAttachment("effect_hand_r", flPos, flAng);
-
-		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "flaregun_trail_blue", npc.index, "effect_hand_r", {0.0,0.0,0.0});
-	}
-	if(npc.m_flNextRangedBarrage_Spam)
-	{
-
-		if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index))
-		{
-			npc.i_GunMode = 0;
-			if(IsValidEntity(npc.m_iWearable1))
-				RemoveEntity(npc.m_iWearable1);
-
-			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_battleaxe/c_battleaxe.mdl");
-			SetVariantString("1.0");
-			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-			
-			if(ZR_GetWaveCount()+1 <= 15)
-				IgniteTargetEffect(npc.m_iWearable1);
-
-			npc.m_flNextRangedBarrage_Spam = 0.0;
-		}
-	}
-	if(npc.m_flNextRangedBarrage_Singular)
-	{
-		float TimeUntillOver = npc.m_flNextRangedBarrage_Singular - GetGameTime(npc.index);
-
-		if(TimeUntillOver < (1.2 * (1.0 / f_MessengerSpeedUp[npc.index])))
-		{
-			if(npc.m_iOverlordComboAttack != 1)
-			{
-				npc.m_iOverlordComboAttack = 1;
-				MessengerInitiateGroupAttack(npc);
-				if(IsValidEntity(npc.m_iWearable2))
-					RemoveEntity(npc.m_iWearable2);
-			}
-		}
-		if(npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index))
-		{
-			npc.i_GunMode = 1;
-
-			if(IsValidEntity(npc.m_iWearable1))
-				RemoveEntity(npc.m_iWearable1);
-			if(IsValidEntity(npc.m_iWearable2))
-				RemoveEntity(npc.m_iWearable2);
-
-			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_quadball/c_quadball.mdl");
-			SetVariantString("1.0");
-			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-			npc.m_flNextRangedBarrage_Singular = 0.0;
-		}
-		return true;
-	}
-	return false;
-}
-
-
-bool Messanger_Elemental_Attack_FingerPoint(TheMessenger npc)
-{
-	if(!npc.m_flJumpStartTimeInternal && npc.m_flJumpCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0;
-		npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_PRIMARY");
-		npc.m_flJumpStartTimeInternal = GetGameTime(npc.index) + 0.75;	
-		float flPos[3];
-		float flAng[3];
-		int Particle_1;
-		npc.GetAttachment("foot_L", flPos, flAng);
-		Particle_1 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "effect_hand_l", {0.0,0.0,0.0});
-		CreateTimer(0.75, Timer_RemoveEntity, EntIndexToEntRef(Particle_1), TIMER_FLAG_NO_MAPCHANGE);
-	}
-	if(npc.m_flJumpStartTimeInternal)
-	{
-		if(npc.m_flJumpStartTimeInternal < GetGameTime(npc.index))
-		{
-			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
-			vPredictedPos = GetBehindTarget(npc.m_iTarget, 30.0 ,vPredictedPos);
-			static float hullcheckmaxs[3];
-			static float hullcheckmins[3];
-			hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
-			hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
-
-			float PreviousPos[3];
-			PreviousPos = WorldSpaceCenterOld(npc.index);
-			
-			bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
-			if(Succeed)
-			{
-				npc.PlayTeleportSound();
-				ParticleEffectAt(PreviousPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-				ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-						
-				npc.m_flJumpStartTimeInternal = 0.0;
-			}
-		}
-		return true;
-	}
-	return false;
-}
-
-public Action TheMessenger_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	TheMessenger npc = view_as<TheMessenger>(victim);
-		
-	if(attacker <= 0)
-		return Plugin_Continue;
-
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
-	}		
+	ThePurge npc = view_as<ThePurge>(iNPC);
 	
+	npc.SetActivity("taunt_mourning_mercs_heavy", true);
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.5;
+	func_NPCThink[npc.index] = ClotDeathLoopThink;
+	ClotDeathLoopThink(npc.index);
+}
+
+static void ClotDeathLoopThink(int iNPC)
+{
+	ThePurge npc = view_as<ThePurge>(iNPC);
+	
+	float gameTime = GetGameTime(npc.index);
+	if(npc.m_flNextDelayTime > gameTime)
+		return;
+	
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.Update();
+	
+	if(npc.m_flNextThinkTime > gameTime)
+		return;
+	
+	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+	
+	npc.PlayBoomSound();
+	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
+
+	npc.m_bDissapearOnDeath = false;
+	SmiteNpcToDeath(npc.index);
+}
+
+static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage)
+{
+	if(attacker > 0)
+	{
+		ThePurge npc = view_as<ThePurge>(victim);
+		
+		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+
+		if(damage >= health)
+		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+			b_DoNotUnStuck[npc.index] = true;
+			b_CantCollidieAlly[npc.index] = true;
+			b_CantCollidie[npc.index] = true;
+			SetEntityCollisionGroup(npc.index, 24);
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
+			RemoveNpcFromEnemyList(npc.index);
+			RaidBossActive = INVALID_ENT_REFERENCE;
+
+			GiveProgressDelay(3.0);
+			func_NPCThink[npc.index] = ClotDeathStartThink;
+
+			npc.PlayDeathSound();
+
+			damage = 0.0;
+			return Plugin_Handled;
+		}
+
+		if(!npc.Anger && health < (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4))
+		{
+			npc.Anger = true;
+			npc.PlayAngerSound();
+			npc.SetWeaponModel("");
+			npc.m_flSwitchCooldown = GetGameTime(npc.index) + 3.0;
+			npc.m_iGunType = 10;
+
+			if(RaidModeTime < GetGameTime())
+				RaidModeTime = GetGameTime();
+			
+			RaidModeTime += 61.0;
+
+			npc.m_flRangedArmor = 0.25;
+			npc.m_flMeleeArmor = 0.375;
+
+			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 8.0, _, 3.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 16.0, _, 13.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 16.0, _, 13.0, HEAL_SELFHEAL|HEAL_SILENCEABLE);
+		}
+	}
 	return Plugin_Changed;
 }
 
-public void TheMessenger_NPCDeath(int entity)
+static void ClotDeath(int entity)
 {
-	TheMessenger npc = view_as<TheMessenger>(entity);
-	/*
-		Explode on death code here please
-
-	*/
+	ThePurge npc = view_as<ThePurge>(entity);
 	
-	ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
-	npc.PlayDeathSound();	
-
-	RaidBossActive = INVALID_ENT_REFERENCE;
-		
-	if(IsValidEntity(npc.m_iWearable7))
-		RemoveEntity(npc.m_iWearable7);
-	if(IsValidEntity(npc.m_iWearable6))
-		RemoveEntity(npc.m_iWearable6);
-	if(IsValidEntity(npc.m_iWearable5))
-		RemoveEntity(npc.m_iWearable5);
-	if(IsValidEntity(npc.m_iWearable4))
-		RemoveEntity(npc.m_iWearable4);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
-	if(BlockLoseSay)
-		return;
-
-	switch(GetRandomInt(0,3))
-	{
-		case 0:
-		{
-			CPrintToChatAll("{blue}TheMessenger{default}: Your futile attempts of trying to reconsile...");
-		}
-		case 1:
-		{
-			CPrintToChatAll("{blue}TheMessenger{default}: Your judgement will arrive later.");
-		}
-		case 2:
-		{
-			CPrintToChatAll("{blue}TheMessenger{default}: Seems like youre not all talk.");
-		}
-		case 3:
-		{
-			CPrintToChatAll("{blue}TheMessenger{default}: I can see why you murdered those expidonsans. {crimson} Sadist.");
-		}
-	}
-
-}
-/*
-
-
-*/
-void TheMessengerAnimationChange(TheMessenger npc)
-{
 	
-	if(npc.m_iChanged_WalkCycle == 0)
-	{
-		npc.m_iChanged_WalkCycle = -1;
-	}
-	switch(npc.i_GunMode)
-	{
-		case 1: //primary
-		{
-			if (npc.IsOnGround())
-			{
-				if(npc.m_iChanged_WalkCycle != 1)
-				{
-				// ResetTheMessengerWeapon(npc, 1);
-					npc.m_bisWalking = true;
-					npc.m_iChanged_WalkCycle = 1;
-					npc.SetActivity("ACT_MP_RUN_SECONDARY");
-					npc.StartPathing();
-				}	
-			}
-			else
-			{
-				if(npc.m_iChanged_WalkCycle != 2)
-				{
-				//	ResetTheMessengerWeapon(npc, 1);
-					npc.m_bisWalking = false;
-					npc.m_iChanged_WalkCycle = 2;
-					npc.SetActivity("ACT_MP_JUMP_FLOAT_SECONDAY");
-					npc.StartPathing();
-				}	
-			}
-		}
-		case 0: //Melee
-		{
-			if (npc.IsOnGround())
-			{
-				if(npc.m_iChanged_WalkCycle != 3)
-				{
-				//	ResetTheMessengerWeapon(npc, 0);
-					npc.m_bisWalking = true;
-					npc.m_iChanged_WalkCycle = 3;
-					npc.SetActivity("ACT_MP_RUN_ITEM1");
-					npc.StartPathing();
-				}	
-			}
-			else
-			{
-				if(npc.m_iChanged_WalkCycle != 4)
-				{
-				//	ResetTheMessengerWeapon(npc, 0);
-					npc.m_bisWalking = false;
-					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_MP_JUMP_FLOAT_ITEM1");
-					npc.StartPathing();
-				}	
-			}
-		}
-	}
-
-}
-
-int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float distance)
-{
-	if(npc.i_GunMode == 1)
-	{
-		if(gameTime > npc.m_flNextMeleeAttack)
-		{
-			if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5))
-			{
-				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-						
-				if(IsValidEnemy(npc.index, Enemy_I_See))
-				{
-					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-					npc.m_iTarget = Enemy_I_See;
-					npc.PlayRangedSound();
-					float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
-					npc.FaceTowards(vecTarget, 20000.0);
-					int projectile;
-					float Proj_Damage = 18.0 * RaidModeScaling;
-					if(ZR_GetWaveCount()+1 <= 15)
-						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_red", true);
-					else
-						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1500.0, 150.0, "spell_fireball_small_blue", true);
-			
-					SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-					int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
-					CreateTimer(3.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(3.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
-					
-					SDKHook(projectile, SDKHook_StartTouch, TheMessenger_Rocket_Particle_StartTouch);		
-					
-				}
-				if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
-				{
-					//target is too far, try to close in
-					return 0;
-				}
-				else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
-				{
-					if(Can_I_See_Enemy_Only(npc.index, target))
-					{
-						//target is too close, try to keep distance
-						return 1;
-					}
-				}
-				return 0;
-			}
-			else
-			{
-				if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
-				{
-					//target is too far, try to close in
-					return 0;
-				}
-				else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
-				{
-					if(Can_I_See_Enemy_Only(npc.index, target))
-					{
-						//target is too close, try to keep distance
-						return 1;
-					}
-				}
-			}
-		}
-		else
-		{
-			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
-			{
-				//target is too far, try to close in
-				return 0;
-			}
-			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
-			{
-				if(Can_I_See_Enemy_Only(npc.index, target))
-				{
-					//target is too close, try to keep distance
-					return 1;
-				}
-			}
-		}
-	}
-	if(npc.m_flAttackHappens)
-	{
-		if(npc.m_flAttackHappens < GetGameTime(npc.index))
-		{
-			npc.m_flAttackHappens = 0.0;
-			
-			if(IsValidEnemy(npc.index, target))
-			{
-				int HowManyEnemeisAoeMelee = 64;
-				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
-				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
-				delete swingTrace;
-				bool PlaySound = false;
-				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
-				{
-					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
-					{
-						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
-						{
-							PlaySound = true;
-							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
-							float vecHit[3];
-							vecHit = WorldSpaceCenterOld(targetTrace);
-
-							float damage = 24.0;
-							damage *= 1.15;
-
-							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
-								
-							
-							// Hit particle
-							
-						
-							
-							bool Knocked = false;
-										
-							if(IsValidClient(targetTrace))
-							{
-								if (IsInvuln(targetTrace))
-								{
-									Knocked = true;
-									Custom_Knockback(npc.index, targetTrace, 900.0, true);
-									if(!NpcStats_IsEnemySilenced(npc.index))
-									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
-									}
-								}
-								else
-								{
-									if(!NpcStats_IsEnemySilenced(npc.index))
-									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
-									}
-								}
-							}
-										
-							if(ZR_GetWaveCount()+1 <= 15)
-							{
-								if(targetTrace <= MaxClients)
-									TF2_IgnitePlayer(targetTrace, targetTrace, 5.0);
-
-								StartBleedingTimer_Against_Client(targetTrace, npc.index, 3.0, 5);
-							}
-							else
-							{
-								Sakratan_AddNeuralDamage(targetTrace, npc.index, 150, true, true);
-							}
-
-							if(!Knocked)
-								Custom_Knockback(npc.index, targetTrace, 650.0); 
-						} 
-					}
-				}
-				if(PlaySound)
-				{
-					npc.PlayMeleeHitSound();
-				}
-			}
-		}
-	}
-	//Melee attack, last prio
-	else if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
-	{
-		if(IsValidEnemy(npc.index, target)) 
-		{
-			if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
-			{
-				int Enemy_I_See;
-									
-				Enemy_I_See = Can_I_See_Enemy(npc.index, target);
-						
-				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
-				{
-					target = Enemy_I_See;
-
-					npc.PlayMeleeSound();
-					npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1",true, 1.0, _, f_MessengerSpeedUp[npc.index]);
-							
-					npc.m_flAttackHappens = gameTime + (0.25 * (1.0 / f_MessengerSpeedUp[npc.index]));
-					npc.m_flNextMeleeAttack = gameTime + (1.2 * (1.0 / f_MessengerSpeedUp[npc.index]));
-					npc.m_flDoingAnimation = gameTime + (0.25 * (1.0 / f_MessengerSpeedUp[npc.index]));
-				}
-			}
-		}
-		else
-		{
-			npc.m_flGetClosestTargetTime = 0.0;
-			npc.m_iTarget = GetClosestTarget(npc.index);
-		}	
-	}
-	return 0;
-}
-
-
-
-public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
-{
-	if(target > 0 && target < MAXENTITIES)	//did we hit something???
-	{
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(!IsValidEntity(owner))
-		{
-			owner = 0;
-		}
-		
-		int inflictor = h_ArrowInflictorRef[entity];
-		if(inflictor != -1)
-			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
-
-		if(inflictor == -1)
-			inflictor = owner;
-			
-		float ProjectileLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-		float DamageDeal = fl_rocket_particle_dmg[entity];
-		if(ShouldNpcDealBonusDamage(target))
-			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
-
-		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
-
-		if(ZR_GetWaveCount()+1 <= 15)
-		{
-			if(target <= MaxClients)
-				TF2_IgnitePlayer(target, target, 5.0);
-
-			StartBleedingTimer_Against_Client(target, owner, DamageDeal * 0.1, 5);
-		}
-		else
-		{
-			Sakratan_AddNeuralDamage(target, owner, 75, true, true);
-		}
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-	}
-	else
-	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
-		//we uhh, missed?
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-	}
-	RemoveEntity(entity);
-}
-
-
-
-void MessengerInitiateGroupAttack(TheMessenger npc)
-{
-	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-	int enemy[MAXENTITIES];
-	GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, npc.m_iWearable2);
-
-	for(int i; i < sizeof(enemy); i++)
-	{
-		if(enemy[i])
-		{
-			npc.PlayProjectileSound();
-			int Target = enemy[i];
-			float vecHit[3];
-			vecHit = WorldSpaceCenterOld(Target);
-			float vecHitPart[3];
-			vecHitPart = WorldSpaceCenterOld(npc.m_iWearable2);
-
-			int projectile;
-			float Proj_Damage = 18.0 * RaidModeScaling;
-			if(ZR_GetWaveCount()+1 <= 15)
-				projectile = npc.FireParticleRocket(vecHit, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_red", true,_,true, vecHitPart);
-			else
-				projectile = npc.FireParticleRocket(vecHit, Proj_Damage, 1500.0, 150.0, "spell_fireball_small_blue", true,_,true, vecHitPart);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
 	
-			SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-			
-			SDKHook(projectile, SDKHook_StartTouch, TheMessenger_Rocket_Particle_StartTouch);		
-			static float ang_Look[3];
-			GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
-			Initiate_HomingProjectile(projectile,
-			npc.index,
-				70.0,			// float lockonAngleMax,
-				15.0,				//float homingaSec,
-				true,				// bool LockOnlyOnce,
-				true,				// bool changeAngles,
-				ang_Look,			
-				Target); //home onto this enemy
-		}
-	}
-}
-
-
-
-public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
-{
-	Sensal npc = view_as<Sensal>(victim);
-	if(npc.g_TimesSummoned < 99)
-	{
-		int nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (99 - npc.g_TimesSummoned) / 100;
-		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < nextLoss)
-		{
-			npc.g_TimesSummoned++;
-			npc.m_flAttackHappens_bullshit -= 1.0;
-			npc.m_flNextChargeSpecialAttack -= 1.0;
-			npc.m_flJumpCooldown -= 0.25;
-		}
-	}
-
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
-	{
-		npc.Anger = true;
-		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 0.0;
-		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 0.0;
-		f_MessengerSpeedUp[npc.index] = 1.65;
-		npc.m_flSpeed = 330.0;
-
-		switch(GetRandomInt(0,3))
-		{
-			case 0:
-			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Uttery morronic Mercs.");
-			}
-			case 1:
-			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Your time at judgement has come at hand.");
-			}
-			case 2:
-			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: You are too dumb to believe this'll work right?");
-			}
-			case 3:
-			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: The bad guys always lose, don't you agree? {crimson} Animal killers.");
-			}
-		}
-	}
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+	
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+	
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	
+	Citizen_MiniBossDeath(entity);
 }
