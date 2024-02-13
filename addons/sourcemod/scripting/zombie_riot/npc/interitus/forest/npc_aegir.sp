@@ -3,43 +3,41 @@
 
 static const char g_DeathSounds[][] =
 {
-	"vo/heavy_paincrticialdeath01.mp3",
-	"vo/heavy_paincrticialdeath02.mp3",
-	"vo/heavy_paincrticialdeath03.mp3"
+	"vo/pyro_paincrticialdeath01.mp3",
+	"vo/pyro_paincrticialdeath02.mp3",
+	"vo/pyro_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSounds[][] =
 {
-	"vo/heavy_painsharp01.mp3",
-	"vo/heavy_painsharp02.mp3",
-	"vo/heavy_painsharp03.mp3",
-	"vo/heavy_painsharp04.mp3",
-	"vo/heavy_painsharp05.mp3"
+	"vo/pyro_painsharp01.mp3",
+	"vo/pyro_painsharp02.mp3",
+	"vo/pyro_painsharp03.mp3",
+	"vo/pyro_painsharp04.mp3",
+	"vo/pyro_painsharp05.mp3"
 };
 
 static const char g_IdleAlertedSounds[][] =
 {
-	"vo/taunts/heavy_taunts16.mp3",
-	"vo/taunts/heavy_taunts18.mp3",
-	"vo/taunts/heavy_taunts19.mp3"
+	"vo/taunts/pyro_taunts01.mp3",
+	"vo/taunts/pyro_taunts02.mp3",
+	"vo/taunts/pyro_taunts03.mp3"
 };
 
 static const char g_MeleeHitSounds[][] =
 {
-	"weapons/boxing_gloves_hit1.wav",
-	"weapons/boxing_gloves_hit2.wav",
-	"weapons/boxing_gloves_hit3.wav",
-	"weapons/boxing_gloves_hit4.wav"
+	"weapons/neon_sign_hit_01.wav",
+	"weapons/neon_sign_hit_02.wav",
+	"weapons/neon_sign_hit_03.wav",
+	"weapons/neon_sign_hit_04.wav"
 };
 
 static const char g_MeleeAttackSounds[][] =
 {
-	"weapons/boxing_gloves_swing1.wav",
-	"weapons/boxing_gloves_swing2.wav",
-	"weapons/boxing_gloves_swing4.wav"
+	"weapons/machete_swing.wav",
 };
 
-methodmap Ursus < CClotBody
+methodmap Aegir < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -66,42 +64,45 @@ methodmap Ursus < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Ursus(int client, float vecPos[3], float vecAng[3], int ally)
+	public Aegir(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Ursus npc = view_as<Ursus>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "30000", ally));
+		Aegir npc = view_as<Aegir>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "17500", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_HEAVY;
-		i_NpcWeight[npc.index] = 4;
+		i_NpcInternalId[npc.index] = INTERITUS_FOREST_PYRO;
+		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
-		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+		KillFeed_SetKillIcon(npc.index, "annihilator");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
+		SetVariantInt(7);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
 		
-		npc.m_flSpeed = 280.0;
+		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_bear_claw/c_bear_claw.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_sd_neonsign/c_sd_neonsign.mdl");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/jul13_bear_necessitys/jul13_bear_necessitys.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/hwn2022_cranial_cowl/hwn2022_cranial_cowl.mdl");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/dec22_battle_bear_style1/dec22_battle_bear_style1_heavy.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/hw2013_beast_from_below/hw2013_beast_from_below.mdl");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/jul13_border_armor/jul13_border_armor.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2021_eyequarium/hwn2021_eyequarium_pyro.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/sum23_brother_mann_style3/sum23_brother_mann_style3.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2021_hook_line_thinker/hwn2021_hook_line_thinker.mdl");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 
 		return npc;
@@ -110,7 +111,7 @@ methodmap Ursus < CClotBody
 
 static void ClotThink(int iNPC)
 {
-	Ursus npc = view_as<Ursus>(iNPC);
+	Aegir npc = view_as<Aegir>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -172,13 +173,17 @@ static void ClotThink(int iNPC)
 					target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						float damage = 150.0;
+						float damage = 100.0;
 						if(ShouldNpcDealBonusDamage(target))
-							damage *= 1.5;
+							damage *= 5.0;
+						
+						if(target <= MaxClients && (Armor_Charge[target] < 0 || TF2_IsPlayerInCondition(target, TFCond_Milked) || TF2_IsPlayerInCondition(target, TFCond_Jarated)))
+						{
+							damage *= 6.0;
+						}
 
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-						Sakratan_AddNeuralDamage(target, npc.index, 300);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
 					}
 				}
 
@@ -198,7 +203,7 @@ static void ClotThink(int iNPC)
 				npc.PlayMeleeSound();
 				
 				npc.m_flAttackHappens = gameTime + 0.35;
-				npc.m_flNextMeleeAttack = gameTime + 0.85;
+				npc.m_flNextMeleeAttack = gameTime + 0.55;
 			}
 		}
 	}
@@ -212,7 +217,7 @@ static void ClotThink(int iNPC)
 
 static void ClotDeath(int entity)
 {
-	Ursus npc = view_as<Ursus>(entity);
+	Aegir npc = view_as<Aegir>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	

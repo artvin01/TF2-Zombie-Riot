@@ -1,13 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] =
-{
-	"vo/soldier_paincrticialdeath01.mp3",
-	"vo/soldier_paincrticialdeath02.mp3",
-	"vo/soldier_paincrticialdeath03.mp3"
-};
-
 static const char g_HurtSounds[][] =
 {
 	"vo/demoman_painsharp01.mp3",
@@ -53,10 +46,6 @@ methodmap Caprinae < CClotBody
 	{
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	public void PlayDeathSound() 
-	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-	}
 	public void PlayMeleeSound()
  	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);
@@ -68,7 +57,7 @@ methodmap Caprinae < CClotBody
 	
 	public Caprinae(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Caprinae npc = view_as<Caprinae>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "66000", ally));
+		Caprinae npc = view_as<Caprinae>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.5", "66000", ally, _, _, true));
 		
 		npc.Anger = view_as<bool>(data[0]);
 		i_NpcInternalId[npc.index] = INTERITUS_FOREST_DEMOMAN;
@@ -229,14 +218,12 @@ static void ClotThink(int iNPC)
 static void ClotDeath(int entity)
 {
 	Caprinae npc = view_as<Caprinae>(entity);
-	if(!npc.m_bGib)
-		npc.PlayDeathSound();
 	
 	float startPosition[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition); 
 	startPosition[2] += 45;
 	
-	makeexplosion(entity, entity, startPosition, "", 400, 120, _, _, true);
+	makeexplosion(entity, entity, startPosition, "", 500, 120, _, _, true);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

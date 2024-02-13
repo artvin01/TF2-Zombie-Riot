@@ -3,43 +3,42 @@
 
 static const char g_DeathSounds[][] =
 {
-	"vo/heavy_paincrticialdeath01.mp3",
-	"vo/heavy_paincrticialdeath02.mp3",
-	"vo/heavy_paincrticialdeath03.mp3"
+	"vo/spy_paincrticialdeath01.mp3",
+	"vo/spy_paincrticialdeath02.mp3",
+	"vo/spy_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSounds[][] =
 {
-	"vo/heavy_painsharp01.mp3",
-	"vo/heavy_painsharp02.mp3",
-	"vo/heavy_painsharp03.mp3",
-	"vo/heavy_painsharp04.mp3",
-	"vo/heavy_painsharp05.mp3"
+	"vo/spy_painsharp01.mp3",
+	"vo/spy_painsharp02.mp3",
+	"vo/spy_painsharp03.mp3",
+	"vo/spy_painsharp04.mp3"
 };
+
 
 static const char g_IdleAlertedSounds[][] =
 {
-	"vo/taunts/heavy_taunts16.mp3",
-	"vo/taunts/heavy_taunts18.mp3",
-	"vo/taunts/heavy_taunts19.mp3"
+	"vo/spy_battlecry01.mp3",
+	"vo/spy_battlecry02.mp3",
+	"vo/spy_battlecry03.mp3",
+	"vo/spy_battlecry04.mp3"
 };
 
 static const char g_MeleeHitSounds[][] =
 {
-	"weapons/boxing_gloves_hit1.wav",
-	"weapons/boxing_gloves_hit2.wav",
-	"weapons/boxing_gloves_hit3.wav",
-	"weapons/boxing_gloves_hit4.wav"
+	"weapons/blade_hit1.wav",
+	"weapons/blade_hit2.wav",
+	"weapons/blade_hit3.wav",
+	"weapons/blade_hit4.wav"
 };
 
-static const char g_MeleeAttackSounds[][] =
+static const char g_MeleeAttackBackstabSounds[][] =
 {
-	"weapons/boxing_gloves_swing1.wav",
-	"weapons/boxing_gloves_swing2.wav",
-	"weapons/boxing_gloves_swing4.wav"
+	"player/spy_shield_break.wav",
 };
 
-methodmap Ursus < CClotBody
+methodmap Cautus < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -57,51 +56,54 @@ methodmap Ursus < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	public void PlayMeleeSound()
- 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);
+	public void PlayMeleeBackstabSound(int target)
+	{
+		EmitSoundToAll(g_MeleeAttackBackstabSounds[GetRandomInt(0, sizeof(g_MeleeAttackBackstabSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		if(target <= MaxClients)
+		{
+			EmitSoundToClient(target, g_MeleeAttackBackstabSounds[GetRandomInt(0, sizeof(g_MeleeAttackBackstabSounds) - 1)], target, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		}
 	}
 	public void PlayMeleeHitSound()
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Ursus(int client, float vecPos[3], float vecAng[3], int ally)
+	public Cautus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Ursus npc = view_as<Ursus>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "30000", ally));
+		Cautus npc = view_as<Cautus>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "10000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_HEAVY;
-		i_NpcWeight[npc.index] = 4;
+		i_NpcInternalId[npc.index] = INTERITUS_FOREST_SPY;
+		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
-		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
+
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
 		
-		npc.m_flSpeed = 280.0;
+		npc.m_flSpeed = 320.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_bear_claw/c_bear_claw.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_sd_neonsign/c_sd_neonsign.mdl");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/jul13_bear_necessitys/jul13_bear_necessitys.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/spy/spy_ttg_max.mdl");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/dec22_battle_bear_style1/dec22_battle_bear_style1_heavy.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/spy/sf14_the_rogues_rabbit/sf14_the_rogues_rabbit.mdl");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/jul13_border_armor/jul13_border_armor.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/player/items/spy/grfs_spy.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/sum23_brother_mann_style3/sum23_brother_mann_style3.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/spy/hwn2016_showstopper/hwn2016_showstopper.mdl");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 
 		return npc;
@@ -110,7 +112,7 @@ methodmap Ursus < CClotBody
 
 static void ClotThink(int iNPC)
 {
-	Ursus npc = view_as<Ursus>(iNPC);
+	Cautus npc = view_as<Cautus>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -142,6 +144,17 @@ static void ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 
+	if(npc.IsOnGround())
+	{
+		npc.m_flMeleeArmor = 1.0;
+		npc.m_flRangedArmor = 1.0;
+	}
+	else
+	{
+		npc.m_flMeleeArmor = 0.15;
+		npc.m_flRangedArmor = 0.15;
+	}
+
 	if(target > 0)
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
@@ -158,47 +171,53 @@ static void ClotThink(int iNPC)
 		}
 
 		npc.StartPathing();
-		
-		if(npc.m_flAttackHappens)
+
+		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			if(npc.m_flAttackHappens < gameTime)
+			if(distance < 10000.0)
 			{
-				npc.m_flAttackHappens = 0.0;
-				
-				Handle swingTrace;
-				npc.FaceTowards(vecTarget, 15000.0);
-				if(npc.DoSwingTrace(swingTrace, target, _, _, _, _))
+				target = Can_I_See_Enemy(npc.index, target);
+				if(IsValidEnemy(npc.index, target))
 				{
-					target = TR_GetEntityIndex(swingTrace);
-					if(target > 0)
+					Handle swingTrace;
+					npc.FaceTowards(vecTarget, 15000.0);
+					if(npc.DoSwingTrace(swingTrace, target, _, _, _, _))
 					{
-						float damage = 150.0;
-						if(ShouldNpcDealBonusDamage(target))
-							damage *= 1.5;
+						target = TR_GetEntityIndex(swingTrace);
+						if(target > 0)
+						{
+							float damage = 100.0;
+							if(ShouldNpcDealBonusDamage(target))
+								damage *= 5.0;
+							
+							if(IsBehindAndFacingTarget(npc.index, target) && !NpcStats_IsEnemySilenced(npc.index))
+							{
+								npc.PlayMeleeBackstabSound(target);
+								npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
+								KillFeed_SetKillIcon(npc.index, "backstab");
+								damage *= 4.0;
+							}
+							else
+							{
+								npc.PlayMeleeHitSound();
+								npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+								KillFeed_SetKillIcon(npc.index, "knife");
+							}
 
-						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-						Sakratan_AddNeuralDamage(target, npc.index, 300);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
+						}
 					}
+
+					delete swingTrace;
+
+					npc.m_flNextMeleeAttack = gameTime + 1.05;
 				}
-
-				delete swingTrace;
 			}
-		}
-
-		if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)
-		{
-			target = Can_I_See_Enemy(npc.index, target);
-			if(IsValidEnemy(npc.index, target))
+			else if(distance > 50000.0 && distance < 1000000.0)	// 1000 HU
 			{
-				npc.m_iTarget = target;
-				npc.m_flGetClosestTargetTime = gameTime + 1.0;
-
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-				npc.PlayMeleeSound();
-				
-				npc.m_flAttackHappens = gameTime + 0.35;
-				npc.m_flNextMeleeAttack = gameTime + 0.85;
+				vecTarget[2] += 300.0;
+				PluginBot_Jump(npc.index, vecTarget);
+				npc.m_flNextMeleeAttack = gameTime + 1.05;
 			}
 		}
 	}
@@ -212,7 +231,7 @@ static void ClotThink(int iNPC)
 
 static void ClotDeath(int entity)
 {
-	Ursus npc = view_as<Ursus>(entity);
+	Cautus npc = view_as<Cautus>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	

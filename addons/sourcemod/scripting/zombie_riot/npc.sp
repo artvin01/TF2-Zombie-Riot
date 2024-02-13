@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define ITSTILIVES 666
-
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 110.0
 // 120 * 120
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED 12100.0
@@ -434,6 +432,13 @@ enum
 	INTERITUS_ANARCHY_BRAINDEAD	 	  = 380,
 	INTERITUS_ANARCHY_BEHEMOTH		  = 381,
 	INTERITUS_ANARCHY_ABSOLUTE_INCINIRATOR= 382,
+  
+	INTERITUS_FOREST_MEDIC = 383,
+	INTERITUS_FOREST_HEAVY = 384,
+	INTERITUS_FOREST_PYRO = 385,
+	INTERITUS_FOREST_SPY = 386,
+	INTERITUS_FOREST_ENGINEER = 387,
+	INTERITUS_FOREST_BOSS = 388,
 
 	MAX_NPC_TYPES	// Add entries above this line
 }
@@ -847,6 +852,13 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Braindead",
 	"Behemonth",
 	"Absolute Incinirator"
+
+	"Liberi",
+	"Ursus",
+	"Aegir",
+	"Cautus",
+	"Vulpo",
+	"Major Steam"
 };
 
 // See items.sp for IDs to names
@@ -1222,6 +1234,13 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	-1,	//RUINA_STELLAR_WEAVER
 	-1,	//RUINA_STELLAR_WEAVER_MID
 	1,
+	-1,
+	-1,
+	-1,
+	-1,
+
+	-1,
+	-1,
 	-1,
 	-1,
 	-1,
@@ -1636,6 +1655,13 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_braindead",
 	"npc_behemonth",
 	"npc_absolute_incinirator"
+
+	"npc_liberi",
+	"npc_ursus",
+	"npc_aegir",
+	"npc_cautus",
+	"npc_vulpo",
+	"npc_majorsteam"
 };
 
 void NPC_MapStart()
@@ -1924,8 +1950,7 @@ void NPC_MapStart()
 	AnarchyBraindead_OnMapStart_NPC();
 	AnarchyBehemoth_OnMapStart_NPC();
 	AnarchyAbsoluteIncinirator_OnMapStart_NPC();
-
-
+	MajorSteam_MapStart();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -3047,6 +3072,24 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 
 		case INTERITUS_FOREST_DEMOMAN:
 			entity = Caprinae(client, vecPos, vecAng, ally, data);
+
+		case INTERITUS_FOREST_MEDIC:
+			entity = Liberi(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_HEAVY:
+			entity = Ursus(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_PYRO:
+			entity = Aegir(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_SPY:
+			entity = Cautus(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_ENGINEER:
+			entity = Vulpo(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_BOSS:
+			entity = MajorSteam(client, vecPos, vecAng, ally);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -5348,3 +5391,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/forest/npc_aslan.sp"
 #include "zombie_riot/npc/interitus/forest/npc_perro.sp"
 #include "zombie_riot/npc/interitus/forest/npc_caprinae.sp"
+#include "zombie_riot/npc/interitus/forest/npc_liberi.sp"
+#include "zombie_riot/npc/interitus/forest/npc_ursus.sp"
+#include "zombie_riot/npc/interitus/forest/npc_aegir.sp"
+#include "zombie_riot/npc/interitus/forest/npc_cautus.sp"
+#include "zombie_riot/npc/interitus/forest/npc_vulpo.sp"
+#include "zombie_riot/npc/interitus/forest/npc_majorsteam.sp"

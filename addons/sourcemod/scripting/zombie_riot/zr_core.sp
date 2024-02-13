@@ -739,7 +739,7 @@ void ZR_MapStart()
 	SetVariantString("ForceEnableUpgrades(2)");
 	AcceptEntityInput(0, "RunScriptCode");
 	
-	//Store_RandomizeNPCStore(true);
+	//Store_RandomizeNPCStore(1);
 }
 
 public Action GlobalTimer(Handle timer)
@@ -1161,7 +1161,7 @@ public Action Command_AFKKnight(int client, int args)
 public Action Command_SpawnGrigori(int client, int args)
 {
 	Spawn_Cured_Grigori();
-	Store_RandomizeNPCStore(false);
+	Store_RandomizeNPCStore(0);
 	return Plugin_Handled;
 }
 

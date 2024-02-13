@@ -2630,7 +2630,7 @@ bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped
 	return false;
 }
 
-void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave = 0)
+void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave = 0)
 {
 	int amount;
 	int length = StoreItems.Length;
@@ -2657,8 +2657,10 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave
 						break;
 					}
 				}
+				
+				StoreItems.SetArray(i, item);
 			}
-			else
+			else if(ResetStore != 2)
 			{
 				if(addItem == 0)
 				{
@@ -2681,9 +2683,9 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave
 				item.GetItemInfo(0, info);
 				if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost_Unlock < CurrentCash)
 					indexes[amount++] = i;
+				
+				StoreItems.SetArray(i, item);
 			}
-			
-			StoreItems.SetArray(i, item);
 		}
 	}
 	if(subtract_wave != 0)

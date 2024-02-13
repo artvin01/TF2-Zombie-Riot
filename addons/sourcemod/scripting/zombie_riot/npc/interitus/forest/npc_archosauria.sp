@@ -285,7 +285,7 @@ int ArchosauriaSelfDefense(Archosauria npc, float gameTime)
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
 			{
-				float damageDealt = 100.0;
+				float damageDealt = 150.0;
 				if(ShouldNpcDealBonusDamage(target))
 					damageDealt *= 10.0;
 

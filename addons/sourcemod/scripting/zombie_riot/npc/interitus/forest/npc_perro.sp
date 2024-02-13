@@ -185,7 +185,7 @@ static void ClotThink(int iNPC)
 					target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						float damage = 65.0 * hpRatio;
+						float damage = 75.0 * hpRatio;
 						if(ShouldNpcDealBonusDamage(target))
 							damage *= 6.0;
 
