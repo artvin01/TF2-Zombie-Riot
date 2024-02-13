@@ -2085,4 +2085,36 @@
 	{
 		"en"	"Stellar Weaver"
 	}
+	"Runover"
+	{
+		"en"	"Runover"
+	}
+	"Hitman"
+	{
+		"en"	"Hitman"
+	}
+	"Mad Doctor"
+	{
+		"en"	"Mad Doctor"
+	}
+	"Abomination"
+	{
+		"en"	"Abomination"
+	}
+	"Anarchist Enforcer"
+	{
+		"en"	"Anarchist Enforcer"
+	}
+	"Braindead"
+	{
+		"en"	"Braindead"
+	}
+	"Behemonth"
+	{
+		"en"	"Behemonth"
+	}
+	"Absolute Incinirator"
+	{
+		"en"	"Absolute Incinirator"
+	}
 }

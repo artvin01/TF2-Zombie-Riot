@@ -1095,6 +1095,7 @@ float fl_WaveScale[MAXENTITIES];
 float fl_StandStill[MAXENTITIES];
 float fl_GrappleCooldown[MAXENTITIES];
 float fl_HookDamageTaken[MAXENTITIES];
+float f_HeadshotDamageMultiNpc[MAXENTITIES];
 
 bool b_PlayHurtAnimation[MAXENTITIES];
 bool b_follow[MAXENTITIES];

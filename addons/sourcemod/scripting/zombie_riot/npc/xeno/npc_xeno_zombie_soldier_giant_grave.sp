@@ -150,7 +150,7 @@ methodmap XenoSoldierGiant < CClotBody
 	
 	public XenoSoldierGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		XenoSoldierGiant npc = view_as<XenoSoldierGiant>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.5", "200000", ally, false, true));
+		XenoSoldierGiant npc = view_as<XenoSoldierGiant>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "200000", ally, false, true));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);

@@ -126,7 +126,7 @@ methodmap Ignitus < CClotBody
 	
 	public Ignitus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Ignitus npc = view_as<Ignitus>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.5", "27500", ally, false, true));
+		Ignitus npc = view_as<Ignitus>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "27500", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_IGNITUS;
 		i_NpcWeight[npc.index] = 3;

@@ -236,7 +236,7 @@ methodmap Kahmlstein < CClotBody
 	
 	public Kahmlstein(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Kahmlstein npc = view_as<Kahmlstein>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "15000", ally, false, true));
+		Kahmlstein npc = view_as<Kahmlstein>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "15000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = ALT_KAHMLSTEIN;
 		i_NpcWeight[npc.index] = 4;
