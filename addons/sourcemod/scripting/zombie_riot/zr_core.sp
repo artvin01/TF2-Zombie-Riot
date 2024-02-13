@@ -154,7 +154,10 @@ enum
 	WEAPON_HEAVY_PARTICLE_RIFLE = 83,
 	WEAPON_SICCERINO = 84,
 	WEAPON_DIMENSION_RIPPER = 85,
-	WEAPON_LUDO = 86,
+	WEAPON_HELL_HOE_1 = 86,
+	WEAPON_HELL_HOE_2 = 87,
+	WEAPON_HELL_HOE_3 = 88,
+	WEAPON_LUDO = 89,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -484,6 +487,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_heavy_particle_rifle.sp"
 #include "zombie_riot/custom/weapon_railcannon.sp"
 #include "zombie_riot/custom/wand/weapon_dimension_ripper.sp"
+#include "zombie_riot/custom/weapon_hell_hoe.sp"
 #include "zombie_riot/custom/wand/weapon_ludo.sp"
 
 void ZR_PluginLoad()
@@ -720,6 +724,7 @@ void ZR_MapStart()
 	Heavy_Particle_Rifle_Mapstart();
 	Precache_Railcannon();
 	ResetMapStartDimWeapon();
+	Hell_Hoe_MapStart();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;

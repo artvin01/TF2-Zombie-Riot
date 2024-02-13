@@ -668,7 +668,7 @@ public Action Timer_Electric_Think_PAP(Handle timer, int ref)
 						TE_SetupBeamPoints(flCarrierPos, targPos, Beam_Glow, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 						TE_SendToAll(0.0);
 							
-						Damage_Reduction[iCarrier] *= EXPLOSION_AOE_DAMAGE_FALLOFF;
+						Damage_Reduction[iCarrier] *= EXPLOSION_AOE_DAMAGE_FALLOFF * 0.9;
 						//use blast cus it does its own calculations for that ahahahah im evil 
 					}
 				}
@@ -742,7 +742,7 @@ public Action Timer_Electric_Think_PAP_Star(Handle timer, int ref)
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "Open");
 	
-	Wand_Launch_IEM(client, iRot, 100.0, 5.0, Damage_Tornado[iCarrier], 1, nfAng, flCarrierPos);
+	Wand_Launch_IEM(client, iRot, 100.0, 5.0, Damage_Tornado[iCarrier]/2, 1, nfAng, flCarrierPos);
 
 	return Plugin_Continue;
 }
@@ -856,7 +856,7 @@ public Action Timer_Electric_Think(Handle timer, int ref)
 						TE_SetupBeamPoints(flCarrierPos, targPos, Beam_Glow, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 						TE_SendToAll(0.0);
 							
-						Damage_Reduction[iCarrier] *= EXPLOSION_AOE_DAMAGE_FALLOFF;
+						Damage_Reduction[iCarrier] *= EXPLOSION_AOE_DAMAGE_FALLOFF * 0.85;
 						//use blast cus it does its own calculations for that ahahahah im evil (you scare me sometime man)
 					}
 				}
