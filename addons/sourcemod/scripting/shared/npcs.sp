@@ -1370,7 +1370,18 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁");
 	}
-		
+	if(f_LudoDebuff[victim] > GameTime)
+	{
+		Debuff_added = true;
+		Debuff_added_hud = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "^");
+	}
+	if(f_SpadeLudoDebuff[victim] > GameTime)
+	{
+		Debuff_added = true;
+		Debuff_added_hud = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "^^");
+	}	
 	if(BleedAmountCountStack[victim] > 0) //bleed
 	{
 		Debuff_added = true;
@@ -1981,6 +1992,10 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
 	if(f_HighTeslarDebuff[npc] > GameTime)
 		return true;
 	else if(f_LowTeslarDebuff[npc] > GameTime)
+		return true;
+	else if(f_LudoDebuff[npc] > GameTime)
+		return true;
+	else if(f_SpadeLudoDebuff[npc] > GameTime)
 		return true;
 	else if(BleedAmountCountStack[npc] > 0) //bleed
 		return true;
@@ -3211,6 +3226,14 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 	else if(f_LowTeslarDebuff[victim] > GameTime)
 	{
 		damage += BaseDamageBeforeBuffs * (0.2 * DamageBuffExtraScaling);
+	}
+	else if(f_LudoDebuff[victim] > GameTime)
+	{
+		damage += BaseDamageBeforeBuffs * GetRandomFloat(0.05,0.15);
+	}
+	else if(f_SpadeLudoDebuff[victim] > GameTime)
+	{
+		damage += BaseDamageBeforeBuffs * GetRandomFloat(0.10,0.15);
 	}
 	if(f_PotionShrinkEffect[victim] > GameTime)
 	{

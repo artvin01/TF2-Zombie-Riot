@@ -1391,6 +1391,14 @@ methodmap CClotBody < CBaseCombatCharacter
 			{
 				speed_for_return *= 0.95;
 			}
+			else if (f_LudoDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= GetRandomFloat(0.7, 0.9);
+			}
+			else if (f_SpadeLudoDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= GetRandomFloat(0.7, 0.85);
+			}
 		}
 		else if (!b_CannotBeSlowed[this.index])
 		{
@@ -1426,6 +1434,14 @@ methodmap CClotBody < CBaseCombatCharacter
 			else if (f_VeryLowIceDebuff[this.index] > Gametime)
 			{
 				speed_for_return *= 0.97;
+			}
+			else if (f_LudoDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.96;
+			}
+			else if (f_SpadeLudoDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.94;
 			}
 			if(f_SpecterDyingDebuff[this.index] > Gametime)
 			{
@@ -7890,6 +7906,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f3_WasPathingToHere[entity][1] = 0.0;
 	f3_WasPathingToHere[entity][2] = 0.0;
 	f_LowTeslarDebuff[entity] = 0.0;
+	f_LudoDebuff[entity] = 0.0;
+	f_SpadeLudoDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_WidowsWineDebuff[entity] = 0.0;
@@ -8548,6 +8566,8 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 {
 	f_HighTeslarDebuff[enemy] = 0.0;
 	f_LowTeslarDebuff[enemy] = 0.0;
+	f_LudoDebuff[enemy] = 0.0;
+	f_SpadeLudoDebuff[enemy] = 0.0;
 	IgniteFor[enemy] = 0;
 	f_HighIceDebuff[enemy] = 0.0;
 	f_LowIceDebuff[enemy] = 0.0;
