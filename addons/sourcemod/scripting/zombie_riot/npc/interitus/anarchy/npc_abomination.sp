@@ -255,8 +255,14 @@ public Action AnarchyAbomination_OnTakeDamage(int victim, int &attacker, int &in
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
+		if (attacker <= MaxClients && attacker > 0 && TeutonType[attacker] != TEUTON_NONE)
+		{	
+			return Plugin_Changed;
+		}
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+		//teutons dont change this.
+
 		npc.m_flSpeed = 290.0;
 		if(damagetype & DMG_CLUB)
 		{
@@ -378,6 +384,10 @@ public void AnarchyAbomination_Rocket_Particle_StartTouch(int entity, int target
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 
 		Sakratan_AddNeuralDamage(target, owner, 15, true, true);
+		if(target <= MaxClients)
+			TF2_IgnitePlayer(target, target, 5.0);
+
+		StartBleedingTimer_Against_Client(target, npc.index, 3.0, 5);
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
 		{

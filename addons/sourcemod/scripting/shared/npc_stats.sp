@@ -7747,6 +7747,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Wearable[entity][4] = -1;
 	i_Wearable[entity][5] = -1;
 	i_Wearable[entity][6] = -1;
+	i_OverlordComboAttack[entity] = 0;
 	i_FreezeWearable[entity] = -1;
 	i_InvincibleParticle[entity] = -1;
 	f3_SpawnPosition[entity][0] = 0.0;

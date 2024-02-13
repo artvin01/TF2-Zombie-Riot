@@ -326,6 +326,7 @@ void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sou
 				_,
 				SakratanGroupDebuff);
 				b_NpcIsTeamkiller[victim] = false;
+				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
 			//	Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
 			}
 			

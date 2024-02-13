@@ -102,6 +102,7 @@ methodmap AnarchyHitman < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		f_HeadshotDamageMultiNpc[npc.index] = 5.0;
 
 		func_NPCDeath[npc.index] = view_as<Function>(AnarchyHitman_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AnarchyHitman_OnTakeDamage);
