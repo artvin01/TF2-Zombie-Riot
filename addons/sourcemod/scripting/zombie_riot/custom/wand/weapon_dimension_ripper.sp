@@ -254,7 +254,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 		case 8:
 			Dimension_Summon_Npc(client, FORTIFIED_POISON_ZOMBIE ,weapon, 1.1, 1.1, "ghost_appearation");
 		case 9:
-			Dimension_Summon_Npc(client, FATHER_GRIGORI ,weapon, 1.9, 1.5, "ghost_appearation");
+			Dimension_Summon_Npc(client, FATHER_GRIGORI ,weapon, 1.8, 1.5, "ghost_appearation");
 		case 10:
 			Dimension_Summon_Npc(client, COMBINE_POLICE_PISTOL ,weapon, 1.0, 1.0, "ghost_appearation");
 		case 11:
@@ -274,7 +274,7 @@ public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result,
 		case 18:
 			Dimension_Summon_Npc(client, COMBINE_SOLDIER_COLLOSS ,weapon, 1.75, 1.3, "ghost_appearation");
 		case 19:
-			Dimension_Summon_Npc(client, COMBINE_OVERLORD ,weapon, 2.0, 1.5, "ghost_appearation");
+			Dimension_Summon_Npc(client, COMBINE_OVERLORD ,weapon, 1.8, 1.5, "ghost_appearation");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -489,9 +489,9 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 	switch(GetRandomInt(1, 30))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, XENO_COMBINE_OVERLORD ,weapon, 2.0, 1.75, "utaunt_smoke_floor1_green");
+			Dimension_Summon_Npc(client, XENO_COMBINE_OVERLORD ,weapon, 1.9, 1.75, "utaunt_smoke_floor1_green");
 		case 2:
-			Dimension_Summon_Npc(client, XENO_FATHER_GRIGORI ,weapon, 1.9, 2.0, "utaunt_smoke_floor1_green");
+			Dimension_Summon_Npc(client, XENO_FATHER_GRIGORI ,weapon, 1.8, 1.5, "utaunt_smoke_floor1_green");
 		case 3:
 			Dimension_Summon_Npc(client, XENO_MEDIC_HEALER ,weapon, 0.8, 1.2, "utaunt_smoke_floor1_green");
 		case 4:
