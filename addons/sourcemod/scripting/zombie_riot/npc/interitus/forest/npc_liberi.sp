@@ -47,7 +47,7 @@ methodmap Liberi < CClotBody
 	
 	public Liberi(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Liberi npc = view_as<Liberi>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "17500", ally));
+		Liberi npc = view_as<Liberi>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "35000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_FOREST_MEDIC;
 		i_NpcWeight[npc.index] = 1;

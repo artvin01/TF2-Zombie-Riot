@@ -70,7 +70,7 @@ methodmap Perro < CClotBody
 	
 	public Perro(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Perro npc = view_as<Perro>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "15000", ally));
+		Perro npc = view_as<Perro>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "30000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_FOREST_SOLDIER;
 		i_NpcWeight[npc.index] = 3;

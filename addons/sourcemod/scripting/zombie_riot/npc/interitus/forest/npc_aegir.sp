@@ -66,7 +66,7 @@ methodmap Aegir < CClotBody
 	
 	public Aegir(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Aegir npc = view_as<Aegir>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "17500", ally));
+		Aegir npc = view_as<Aegir>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "35000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_FOREST_PYRO;
 		i_NpcWeight[npc.index] = 1;

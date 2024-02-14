@@ -68,7 +68,7 @@ methodmap Ursus < CClotBody
 	
 	public Ursus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Ursus npc = view_as<Ursus>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "30000", ally));
+		Ursus npc = view_as<Ursus>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "60000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_FOREST_HEAVY;
 		i_NpcWeight[npc.index] = 4;
