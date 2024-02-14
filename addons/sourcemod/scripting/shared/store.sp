@@ -6241,6 +6241,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_RedBladeWeapon(client, entity);
 		Enable_Gravaton_Wand(client, entity);
 		Enable_Dimension_Wand(client, entity);
+		Enable_Management_Hell_Hoe(client, entity);
 #endif
 
 #if defined RPG
