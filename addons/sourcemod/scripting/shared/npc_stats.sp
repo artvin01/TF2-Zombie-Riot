@@ -3186,8 +3186,20 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	RemoveFromNpcAliveList(pThis);
 	if(!b_NpcHasDied[pThis])
 	{
-		int client = EntRefToEntIndex(LastHitRef[pThis]);
+
+#if defined ZR
+		int client;
+		if(Saga_EnemyDoomed(pThis))
+		{
+			client = Saga_EnemyDoomedBy(pThis);
+		}
+		else
+		{
+			client = EntRefToEntIndex(LastHitRef[pThis]);
+		}
+
 		KillFeed_Show(pThis, iInflictor, iAttacker, client, iWeapon, iDamagetype);
+#endif
 
 		//MUST be at top, or else there can be heavy issues regarding infinite loops!
 		b_NpcHasDied[pThis] = true;
