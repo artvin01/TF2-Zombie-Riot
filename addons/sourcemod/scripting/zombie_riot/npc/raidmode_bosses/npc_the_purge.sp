@@ -208,7 +208,7 @@ methodmap ThePurge < CClotBody
 			amount_of_people = 1.0;
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-		RaidModeScaling *= 0.85;
+		RaidModeScaling *= 1.15;
 
 		Music_SetRaidMusic("#zombiesurvival/internius/the_purge.mp3", 229, true, 1.5);
 		
@@ -447,7 +447,7 @@ static void ClotThink(int iNPC)
 						
 						float vecDir[3];
 
-						float damage = RaidModeScaling * 0.1;
+						float damage = RaidModeScaling * 0.2;
 
 						for(int i; i < 10; i++)
 						{
@@ -494,7 +494,7 @@ static void ClotThink(int iNPC)
 						
 						float vecDir[3];
 
-						float damage = RaidModeScaling * 0.1;
+						float damage = RaidModeScaling * 0.2;
 
 						for(int i; i < 2; i++)
 						{
@@ -541,7 +541,7 @@ static void ClotThink(int iNPC)
 					
 					float vecDir[3];
 
-					float damage = RaidModeScaling * 0.025;
+					float damage = RaidModeScaling * 0.05;
 					
 					npc.m_flSpeed -= 1.0;
 					if(npc.m_flSpeed < 0.0)
@@ -646,7 +646,7 @@ static void ClotThink(int iNPC)
 					
 					float vecDir[3];
 
-					float damage = RaidModeScaling * 0.3;
+					float damage = RaidModeScaling * 0.6;
 
 					for(int i; i < 3; i++)
 					{
