@@ -831,7 +831,7 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 								GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 								//Code to do damage position and ragdolls
 								
-								SDKHooks_TakeDamage(baseboss_index, client, client, clientMaxHp*0.1*(clientMaxHp-health), DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), targPos, _, ZR_DAMAGE_LASER_NO_BLAST);
+								SDKHooks_TakeDamage(baseboss_index, client, client, clientMaxHp*0.05*(clientMaxHp-health), DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), targPos, _, ZR_DAMAGE_LASER_NO_BLAST);
 							}
 						}
 					}
