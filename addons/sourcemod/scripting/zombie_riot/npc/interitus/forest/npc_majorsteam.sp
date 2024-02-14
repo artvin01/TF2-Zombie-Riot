@@ -30,7 +30,7 @@ methodmap MajorSteam < CClotBody
 	
 	public MajorSteam(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		MajorSteam npc = view_as<MajorSteam>(CClotBody(vecPos, vecAng, "models/bots/soldier_boss/bot_soldier_boss.mdl", "2.0", "300000", ally, _, _, true));
+		MajorSteam npc = view_as<MajorSteam>(CClotBody(vecPos, vecAng, "models/bots/soldier_boss/bot_soldier_boss.mdl", "2.0", "300000", ally, _, true));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_FOREST_BOSS;
 		i_NpcWeight[npc.index] = 999;
@@ -41,8 +41,8 @@ methodmap MajorSteam < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
 		
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
+	//	SetVariantInt(1);
+	//	AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
@@ -136,7 +136,7 @@ static void ClotThink(int iNPC)
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 				npc.PlayMeleeSound();
 
-				int entity = npc.FireRocket(vecTarget, 350.0, 350.0);
+				int entity = npc.FireRocket(vecTarget, 350.0, 350.0,_,_,_,70.0);
 				if(entity != -1)
 				{
 					i_ChaosArrowAmount[entity] = 100;
@@ -238,18 +238,12 @@ static void ClotDeath(int entity)
 	
 	KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-
-	int weapon = EntRefToEntIndex(LastHitWeaponRef[npc.index]);
-	int client = EntRefToEntIndex(LastHitRef[npc.index]);
 	int team = GetTeam(npc.index);
 
-	SetTeam(npc.index, 999);
-	b_ThisNpcIsSawrunner[npc.index] = true;
-	i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
-	Explode_Logic_Custom(9999999.9, client, npc.index, weapon, vecMe, 450.0 * zr_smallmapbalancemulti.FloatValue, 1.0, _, true, 40, _, _, _, MajorSteamExplodePre);
-	b_ThisNpcIsSawrunner[npc.index] = false;
-	SetTeam(npc.index, team);
-	
+	b_NpcIsTeamkiller[npc.index] = true;
+	Explode_Logic_Custom(999999.9, npc.index, npc.index, -1, vecMe, 450.0 * zr_smallmapbalancemulti.FloatValue, 1.0, _, true, 40, _, _, _, MajorSteamExplodePre);
+	b_NpcIsTeamkiller[npc.index] = false;
+
 	int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4;
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
@@ -282,7 +276,8 @@ static void ClotDeath(int entity)
 static float MajorSteamExplodePre(int attacker, int victim, float damage, int weapon)
 {
 	if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
-		return 10000.0 - damage;	// 10k dmg vs bosses
+		return 10000.0;	// 10k dmg vs bosses
 	
-	return 0.0;
+	return damage;
 }
+

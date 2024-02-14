@@ -1664,7 +1664,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		if(weapon > 0 && attacker > 0)
 			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
 		
-		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
+		if(percentage < 10.0)
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.2f%%]", Debuff_Adder, percentage);
+		}
+		else
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
+		}
 		Debuff_added = true;
 	}
 	
@@ -1703,7 +1710,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 #endif
 
-		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
+		if(percentage < 10.0)
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.2f%%]", Debuff_Adder, percentage);
+		}
+		else
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
+		}
 		Debuff_added = true;
 	}
 	if(b_NpcIsInvulnerable[victim])
