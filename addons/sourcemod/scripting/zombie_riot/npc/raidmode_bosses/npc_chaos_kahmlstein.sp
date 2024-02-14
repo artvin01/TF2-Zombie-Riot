@@ -407,6 +407,7 @@ methodmap ChaosKahmlstein < CClotBody
 			{
 				RaidModeScaling *= 0.7;
 			}
+			RaidModeScaling *= 0.6;
 		}
 
 		
@@ -908,7 +909,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 		npc.m_iOverlordComboAttack = 666;
 		npc.m_iChanged_WalkCycle = 0;
 		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
-		float damage = 150.0;
+		float damage = 40.0;
 		int Enemypunch = npc.m_iTarget;
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))
 		{
@@ -1011,7 +1012,7 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 		npc.m_iOverlordComboAttack = 6666;
 		npc.m_flAttackHappens = 0.0;
 		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
-		float damage = 200.0;
+		float damage = 50.0;
 		int Enemypunch = npc.m_iTarget;
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))
 		{
@@ -1214,7 +1215,7 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 					float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
 					npc.FaceTowards(vecTarget, 20000.0);
 					int projectile;
-					float Proj_Damage = 20.0 * RaidModeScaling;
+					float Proj_Damage = 5.0 * RaidModeScaling;
 					vecTarget[0] += GetRandomFloat(-10.0, 10.0);
 					vecTarget[1] += GetRandomFloat(-10.0, 10.0);
 					vecTarget[2] += GetRandomFloat(-10.0, 10.0);

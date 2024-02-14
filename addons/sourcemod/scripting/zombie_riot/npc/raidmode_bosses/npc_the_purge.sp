@@ -192,7 +192,8 @@ methodmap ThePurge < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "The Pruge Arrived");
 			}
 		}
-
+		CPrintToChatAll("{crimson}The Purge{default}: {crimson}Engaging the targets.");
+			
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
@@ -207,8 +208,11 @@ methodmap ThePurge < CClotBody
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
 
+		func_NPCFuncWin[npc.index] = view_as<Function>(ThePurge_Win);
+
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		RaidModeScaling *= 1.55;
+		RaidModeScaling *= 10.0;
 
 		Music_SetRaidMusic("#zombiesurvival/internius/the_purge.mp3", 229, true, 1.5);
 		
@@ -227,6 +231,7 @@ static void ClotThink(int iNPC)
 	{
 		if(npc.m_iGunType != 11)
 		{
+			CPrintToChatAll("{crimson}The Purge{default}: {crimson}Annihilation status: Absolute.");
 			npc.PlayAngerSound();
 			npc.PlayMinigunStartSound();
 			npc.m_iGunType = 11;
@@ -277,6 +282,14 @@ static void ClotThink(int iNPC)
 		RaidBossActive = EntIndexToEntRef(npc.index);
 	}
 	
+	if(LastMann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			npc.m_fbGunout = true;
+			CPrintToChatAll("{crimson}The Purge{default}: {crimson}Last moving target detected.");
+		}
+	}
 	int target = npc.m_iTarget;
 	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
 	{
@@ -348,6 +361,7 @@ static void ClotThink(int iNPC)
 					npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 0.5 : 1.0);
 					npc.m_flSpeed = 50.0;
 					cooldown = 6.0;
+					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Engage.");
 
 					npc.m_flRangedArmor = 0.5;
 					npc.m_flMeleeArmor = 0.75;
@@ -362,6 +376,7 @@ static void ClotThink(int iNPC)
 					npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 1.65 : 3.25);
 					npc.m_flSpeed = 1.0;
 					cooldown = 5.3;
+					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Activation: Rocket barrage.");
 
 					if(npc.Anger)
 						npc.SetPlaybackRate(0.5);
@@ -416,7 +431,7 @@ static void ClotThink(int iNPC)
 		{
 			case 0:	// Fists
 			{
-				RaidModeScaling *= 1.00005;
+				RaidModeScaling *= 1.025;
 				npc.StartPathing();
 			}
 			case 1, 4, 7:	// Shotgun
@@ -683,6 +698,7 @@ static void ClotDeathStartThink(int iNPC)
 {
 	ThePurge npc = view_as<ThePurge>(iNPC);
 	
+	CPrintToChatAll("{crimson}The Purge{default}: {crimson}ERROR ERROR ERROR.");
 	npc.SetActivity("taunt_mourning_mercs_heavy", true);
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.5;
 	func_NPCThink[npc.index] = ClotDeathLoopThink;
@@ -704,7 +720,8 @@ static void ClotDeathLoopThink(int iNPC)
 		return;
 	
 	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
-	
+	CPrintToChatAll("{darkblue}??????????{default}: You will regret this.");
+				
 	npc.PlayBoomSound();
 	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
@@ -790,4 +807,10 @@ static void ClotDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 	
 	Citizen_MiniBossDeath(entity);
+}
+
+
+public void ThePurge_Win(int entity)
+{
+	CPrintToChatAll("{crimson}The Purge{default}: {crimson}Annihilation completed.");
 }

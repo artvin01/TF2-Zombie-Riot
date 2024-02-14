@@ -316,15 +316,18 @@ methodmap TheMessenger < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_battleaxe/c_battleaxe.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-
-		if(ZR_GetWaveCount()+1 <= 15)
+		
+		if(!final)
 		{
-			IgniteTargetEffect(npc.m_iWearable1);
-			CPrintToChatAll("{lightblue}The Messenger{default}: Welcome, welcome sinners! I'm bearing a message to you all!");
-		}
-		else
-		{
-			CPrintToChatAll("{lightblue}The Messenger{default}: Round two.");
+			if(ZR_GetWaveCount()+1 <= 15)
+			{
+				IgniteTargetEffect(npc.m_iWearable1);
+				CPrintToChatAll("{lightblue}The Messenger{default}: Welcome, welcome sinners! I'm bearing a message to you all!");
+			}
+			else
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: Round two.");
+			}
 		}
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/cc_summer2015_outta_sight/cc_summer2015_outta_sight.mdl");
