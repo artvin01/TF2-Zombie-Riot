@@ -320,7 +320,7 @@ int ArchosauriaSelfDefense(Archosauria npc, float gameTime)
 	{
 		
 		npc.m_flAttackHappens = gameTime + 1.25;
-		npc.m_flDoingAnimation = gameTime + 0.8;
+		npc.m_flDoingAnimation = gameTime + 0.65;
 		npc.m_flNextMeleeAttack = gameTime + 2.5;
 	}
 	return 1;

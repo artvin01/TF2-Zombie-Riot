@@ -377,7 +377,7 @@ public void HighInquisitorDario_ClotThink(int iNPC)
 				npc.m_fbRangedSpecialOn = false;
 				npc.PlayDeflectSound();
 
-				npc.m_flDoingAnimation = gameTime + 0.8;
+				npc.m_flDoingAnimation = gameTime + 0.65;
 			}
 		}
 	}
