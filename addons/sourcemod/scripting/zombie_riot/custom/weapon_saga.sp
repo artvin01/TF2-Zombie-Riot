@@ -7,6 +7,7 @@ static Handle WeaponTimer[MAXTF2PLAYERS];
 static int WeaponRef[MAXTF2PLAYERS];
 static int WeaponCharge[MAXTF2PLAYERS];
 static float SagaCrippled[MAXENTITIES + 1];
+static int SagaCrippler[MAXENTITIES + 1];
 static bool SagaRegen[MAXENTITIES];
 
 static const char g_MeleeHitSounds[][] =
@@ -30,11 +31,17 @@ void Saga_MapStart()
 void Saga_EntityCreated(int entity)
 {
 	SagaCrippled[entity] = 0.0;
+	SagaCrippler[entity] = 0;
 }
 
 bool Saga_EnemyDoomed(int entity)
 {
 	return view_as<bool>(SagaCrippled[entity]);
+}
+
+int Saga_EnemyDoomedBy(int entity)
+{
+	return SagaCrippler[entity];
 }
 
 bool Saga_RegenHealth(int entity)
@@ -325,6 +332,7 @@ void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon, in
 	{
 		damage = float(GetEntProp(victim, Prop_Data, "m_iHealth") - 1);
 
+		SagaCrippler[victim] = attacker;
 		SagaCrippled[victim] = Attributes_Get(weapon, 868, -1.0) == -1.0 ? 1.0 : 2.0;
 		CreateTimer(10.0, Saga_ExcuteTarget, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		FreezeNpcInTime(victim, 10.2);
