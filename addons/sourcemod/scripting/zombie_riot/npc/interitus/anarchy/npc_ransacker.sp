@@ -92,7 +92,7 @@ methodmap AnarchyRansacker < CClotBody
 	
 	public AnarchyRansacker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		AnarchyRansacker npc = view_as<AnarchyRansacker>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "3500", ally));
+		AnarchyRansacker npc = view_as<AnarchyRansacker>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "5000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_ANARCHY_RANSACKER;
 		i_NpcWeight[npc.index] = 1;

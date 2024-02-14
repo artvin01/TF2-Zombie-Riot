@@ -347,7 +347,7 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 					damageDealt *= 10.0;
 
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-				Sakratan_AddNeuralDamage(target, npc.index, 120);
+				Sakratan_AddNeuralDamage(target, npc.index, 90);
 			} 
 		}
 	}
@@ -356,7 +356,7 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 	{
 		
 		npc.m_flAttackHappens = gameTime + 1.25;
-		npc.m_flDoingAnimation = gameTime + 0.9;
+		npc.m_flDoingAnimation = gameTime + 0.8;
 		npc.m_flNextMeleeAttack = gameTime + 2.5;
 	}
 	return 1;

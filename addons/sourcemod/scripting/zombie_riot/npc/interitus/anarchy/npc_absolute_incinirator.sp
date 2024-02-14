@@ -279,7 +279,7 @@ int AnarchyAbsoluteInciniratorSelfDefense(AnarchyAbsoluteIncinirator npc, float 
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						float damageDealt = 35.0;
+						float damageDealt = 50.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
 

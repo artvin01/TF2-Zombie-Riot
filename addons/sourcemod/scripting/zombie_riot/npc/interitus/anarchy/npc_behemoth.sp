@@ -89,7 +89,7 @@ methodmap AnarchyBehemoth < CClotBody
 	
 	public AnarchyBehemoth(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		AnarchyBehemoth npc = view_as<AnarchyBehemoth>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "35000", ally, false, true));
+		AnarchyBehemoth npc = view_as<AnarchyBehemoth>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "60000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_ANARCHY_BEHEMOTH;
 		i_NpcWeight[npc.index] = 3;

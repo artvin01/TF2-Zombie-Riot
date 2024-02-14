@@ -208,7 +208,7 @@ methodmap ThePurge < CClotBody
 			amount_of_people = 1.0;
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-		RaidModeScaling *= 1.15;
+		RaidModeScaling *= 1.55;
 
 		Music_SetRaidMusic("#zombiesurvival/internius/the_purge.mp3", 229, true, 1.5);
 		

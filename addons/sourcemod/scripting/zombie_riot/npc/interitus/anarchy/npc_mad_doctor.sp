@@ -89,7 +89,7 @@ methodmap AnarchyMadDoctor < CClotBody
 	
 	public AnarchyMadDoctor(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		AnarchyMadDoctor npc = view_as<AnarchyMadDoctor>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "6000", ally));
+		AnarchyMadDoctor npc = view_as<AnarchyMadDoctor>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "12000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_ANARCHY_MADDOCTOR;
 		i_NpcWeight[npc.index] = 1;

@@ -85,7 +85,7 @@ methodmap AnarchyBraindead < CClotBody
 
 	public AnarchyBraindead(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		AnarchyBraindead npc = view_as<AnarchyBraindead>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "3500", ally));
+		AnarchyBraindead npc = view_as<AnarchyBraindead>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "7000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_ANARCHY_BRAINDEAD;
 		i_NpcWeight[npc.index] = 1;

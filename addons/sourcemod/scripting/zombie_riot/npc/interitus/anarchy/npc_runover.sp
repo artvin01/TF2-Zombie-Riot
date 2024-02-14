@@ -90,7 +90,7 @@ methodmap AnarchyRunover < CClotBody
 	
 	public AnarchyRunover(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		AnarchyRunover npc = view_as<AnarchyRunover>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "13500", ally));
+		AnarchyRunover npc = view_as<AnarchyRunover>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "17500", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_ANARCHY_RUNOVER;
 		i_NpcWeight[npc.index] = 1;

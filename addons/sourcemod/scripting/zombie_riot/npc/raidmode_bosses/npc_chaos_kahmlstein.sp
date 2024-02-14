@@ -497,6 +497,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 					foundEm = true;
 					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", Pos);
 					b_DissapearOnDeath[entity] = false;
+					b_thisNpcIsARaid[entity] = false;
 					SmiteNpcToDeath(entity);
 				}
 			}
@@ -1110,8 +1111,8 @@ public void ChaosKahmlstein_NPCDeath(int entity)
 				CPrintToChat(client,"{default}Kahml thanks your.. efforts? You get: {red}''Kahml's Contained Chaos''{default}!");
 			}
 		}
+		CPrintToChatAll("{darkblue}Kahmlstein{default}: This sensation.. Did I... lose? Haha, I never felt like this for a long time now.");
 	}
-	CPrintToChatAll("{darkblue}Kahmlstein{default}: This sensation.. Did I... lose? Haha, I never felt like this for a long time now.");
 }
 /*
 
