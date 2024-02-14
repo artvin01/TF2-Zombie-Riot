@@ -1208,6 +1208,11 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		Good for ammo based healing.
 	*/
 
+#if defined ZR
+	if(isPlayerMad(reciever) && !(flag_extrarules & (HEAL_SELFHEAL)))
+		return 0;
+#endif
+
 	if(!(flag_extrarules & (HEAL_ABSOLUTE)))
 	{
 #if defined ZR

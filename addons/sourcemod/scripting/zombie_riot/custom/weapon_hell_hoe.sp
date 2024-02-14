@@ -326,7 +326,7 @@ public Action Weapon_Junker_Staff_PAP1(int client, int weapon, const char[] clas
 		
 		if (isPlayerMad(client) && i_CustomWeaponEquipLogic[weapon] == WEAPON_HELL_HOE_3) {
 			EmitSoundToAll(SOUND_HELL_HOE, client, 80, _, _, 1.0);
-			HellHoeLaunch(client, weapon, damage, speed/2, time/3, 5, 50.0, "spell_teleport_red", 0.01);
+			HellHoeLaunch(client, weapon, damage, speed/2, time/3, 5, 50.0, "spell_teleport_red", 0.008);
 		}
 		else {
 			EmitSoundToAll(SOUND_WAND_JUNKER_SHOT, client, 80, _, _, 1.0);
@@ -515,7 +515,7 @@ public Action Weapon_Hell_Hoe(int client, int weapon, const char[] classname, bo
 				SetEntProp(client, Prop_Data, "m_iHealth", newHealth);
 				
 				EmitSoundToAll(SOUND_HELL_HOE, client, 80, _, _, 1.0);
-				HellHoeLaunch(client, weapon, damage, speed, time, 5, 50.0, "spell_teleport_red", 0.01);
+				HellHoeLaunch(client, weapon, damage, speed, time, 5, 50.0, "spell_teleport_red", 0.008);
 			}
 			else {
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -831,7 +831,7 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 								GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 								//Code to do damage position and ragdolls
 								
-								SDKHooks_TakeDamage(baseboss_index, client, client, clientMaxHp*0.1*(clientMaxHp-health), DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), targPos, _, ZR_DAMAGE_LASER_NO_BLAST);
+								SDKHooks_TakeDamage(baseboss_index, client, client, clientMaxHp*0.05*(clientMaxHp-health), DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), targPos, _, ZR_DAMAGE_LASER_NO_BLAST);
 							}
 						}
 					}
