@@ -427,15 +427,15 @@ public void TheMessenger_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{darkblue}The Messenger{default}: Your friends are dead. {crimson}Accept your fate.");
+						CPrintToChatAll("{lightblue}The Messenger{default}: Your friends are dead. {crimson}Accept your fate.");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{darkblue}The Messenger{default}: It's just you and me now.");
+						CPrintToChatAll("{lightblue}The Messenger{default}: It's just you and me now.");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{darkblue}The Messenger{default}: Give up, you cannot win.");
+						CPrintToChatAll("{lightblue}The Messenger{default}: Give up, you cannot win.");
 					}
 				}
 			}
@@ -445,15 +445,15 @@ public void TheMessenger_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{darkblue}The Messenger{default}: YOU ARE DEAD");
+						CPrintToChatAll("{lightblue}The Messenger{default}: YOU ARE DEAD");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{darkblue}The Messenger{default}: I'LL FUCK YOU UP");
+						CPrintToChatAll("{lightblue}The Messenger{default}: I'LL FUCK YOU UP");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{darkblue}The Messenger{default}: AHAHAHAHAHAHA");
+						CPrintToChatAll("{lightblue}The Messenger{default}: AHAHAHAHAHAHA");
 					}
 				}				
 			}
