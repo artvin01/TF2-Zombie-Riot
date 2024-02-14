@@ -1713,7 +1713,7 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_vulpo",
 	"npc_majorsteam",
 	"npc_the_messenger",
-	"npc_chaos_Kahmlstein",
+	"npc_chaos_kahmlstein",
 	"npc_the_purge"
 };
 
