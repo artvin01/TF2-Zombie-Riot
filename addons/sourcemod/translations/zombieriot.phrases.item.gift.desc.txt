@@ -60,9 +60,9 @@
 		"en" 		"Expidonsa"
 		"pt"		"Expidonsa"
 	}
-	"Internius Alliances"
+	"Interitus Alliances"
 	{
-		"en"		"Internius Alliances"
+		"en"		"interitus Alliances"
 	}
 	"Headcrab Zombie Desc"
 	{

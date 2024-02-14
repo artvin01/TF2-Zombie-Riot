@@ -28,7 +28,7 @@ static const char Categories[][] =
 	"Cry of Fear",
 	"Seaborn Infection",
 	"Expidonsa",
-	"Internius Alliances"
+	"Interitus Alliances"
 };
 
 enum struct GiftItem

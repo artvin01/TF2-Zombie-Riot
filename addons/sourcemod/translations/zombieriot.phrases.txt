@@ -3057,9 +3057,9 @@
 	{
 		"en"	"The Seaborn infection has arrived, Armor Corrosion attacks will infect your armor, cure it with armor tables!"
 	}
-	"Internius Desc"
+	"Interitus Desc"
 	{
-		"en"	"Chaos has afflicted many cities. Get ready."
+		"en"	"Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
 	}
 	"Schwert Donner Desc"
 	{
