@@ -71,7 +71,7 @@ methodmap Cautus < CClotBody
 	
 	public Cautus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Cautus npc = view_as<Cautus>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "10000", ally));
+		Cautus npc = view_as<Cautus>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "20000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_FOREST_SPY;
 		i_NpcWeight[npc.index] = 1;

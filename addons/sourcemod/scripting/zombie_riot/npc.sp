@@ -1694,7 +1694,7 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_doctor_special",
 	"npc_ransacker",
 	"npc_archosauria",
-	"npc_alsan",
+	"npc_aslan",
 	"npc_perro",
 	"npc_caprinae",
 	"npc_runover",
