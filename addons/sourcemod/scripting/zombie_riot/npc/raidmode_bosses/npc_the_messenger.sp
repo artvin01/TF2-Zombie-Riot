@@ -383,7 +383,7 @@ public void TheMessenger_ClotThink(int iNPC)
 	if(TheMessengerTalkPostWin(npc))
 		return;
 */
-	if(RaidModeTime < GetGameTime())
+	if(RaidBossActive != INVALID_ENT_REFERENCE && RaidModeTime < GetGameTime())
 	{
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");
