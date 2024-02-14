@@ -4567,7 +4567,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		if(IsClientInGame(client) && IsPlayerAlive(client))
 		{
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos2);
-			if(GetVectorDistance(pos1, pos2, true) < range)
+			if(GetVectorDistance(pos1, pos2, true) < range && f_ClientArmorRegen[client] - 0.3 < GetGameTime())
 			{
 				allies.Push(client);
 
@@ -4577,7 +4577,10 @@ public Action Timer_VillageThink(Handle timer, int ref)
 					if(Armor_Charge[client] < maxarmor)
 					{
 						f_ClientArmorRegen[client] = GetGameTime() + 0.7;
-						GiveArmorViaPercentage(client, 0.01, 1.0);
+						if(f_TimeUntillNormalHeal[client] > GetGameTime())
+							GiveArmorViaPercentage(client, 0.00125, 1.0);
+						else
+							GiveArmorViaPercentage(client, 0.005, 1.0);
 					}
 				}
 				else if(effects & VILLAGE_001)
@@ -4585,7 +4588,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 					if(Armor_Charge[client] < 0)
 					{
 						f_ClientArmorRegen[client] = GetGameTime() + 0.7;
-						GiveArmorViaPercentage(client, 0.01, 1.0);
+						GiveArmorViaPercentage(client, 0.005, 1.0);
 					}
 				}
 
