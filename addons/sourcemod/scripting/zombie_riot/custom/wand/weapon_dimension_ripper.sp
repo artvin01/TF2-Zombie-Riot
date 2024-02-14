@@ -4,7 +4,7 @@
 #define SOUND_WAND_SHOT_DIM	"misc/doomsday_lift_stop.wav"
 #define SOUND_DIM_IMPACT "weapons/cow_mangler_explosion_normal_01.wav"
 #define SOUND_ABILITY "misc/rd_points_return01.wav"
-#define MAX_DIMENSION_CHARGE 40
+#define MAX_DIMENSION_CHARGE 35
 static Handle h_TimerDimensionWeaponManagement[MAXPLAYERS+1]={null, ...};
 static int how_many_times_swinged[MAXTF2PLAYERS];
 static float f_DIMAbilityActive[MAXPLAYERS+1]={0.0, ...};
@@ -559,47 +559,47 @@ public void Weapon_Dimension_Summon_Medeival(int client, int weapon, bool &resul
 	switch(GetRandomInt(1, 21))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, MEDIVAL_MILITIA ,weapon, 0.9, 0.9, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_MILITIA ,weapon, 0.8, 0.8, "npc_boss_bomb_alert");
 		case 2:
-			Dimension_Summon_Npc(client, MEDIVAL_ARCHER ,weapon, 0.8, 1.0, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_ARCHER ,weapon, 0.7, 0.9, "npc_boss_bomb_alert");
 		case 3:
-			Dimension_Summon_Npc(client, MEDIVAL_MAN_AT_ARMS ,weapon, 1.0, 1.0, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_MAN_AT_ARMS ,weapon, 0.9, 0.9, "npc_boss_bomb_alert");
 		case 4:
-			Dimension_Summon_Npc(client, MEDIVAL_SWORDSMAN ,weapon, 1.1, 1.1, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_SWORDSMAN ,weapon, 1.0, 1.0, "npc_boss_bomb_alert");
 		case 5:
-			Dimension_Summon_Npc(client, MEDIVAL_TWOHANDED_SWORDSMAN ,weapon, 1.25, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_TWOHANDED_SWORDSMAN ,weapon, 1.15, 1.1, "npc_boss_bomb_alert");
 		case 6:
-			Dimension_Summon_Npc(client, MEDIVAL_CROSSBOW_MAN ,weapon, 1.0, 1.1, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_CROSSBOW_MAN ,weapon, 0.9, 1.0, "npc_boss_bomb_alert");
 		case 7:
-			Dimension_Summon_Npc(client, MEDIVAL_LIGHT_CAV ,weapon, 1.0, 1.1, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_LIGHT_CAV ,weapon, 0.9, 1.0, "npc_boss_bomb_alert");
 		case 8:
-			Dimension_Summon_Npc(client, MEDIVAL_SPEARMEN ,weapon, 1.0, 1.1, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_SPEARMEN ,weapon, 0.9, 1.0, "npc_boss_bomb_alert");
 		case 9:
-			Dimension_Summon_Npc(client, MEDIVAL_HANDCANNONEER ,weapon, 1.0, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_HANDCANNONEER ,weapon, 0.9, 1.1, "npc_boss_bomb_alert");
 		case 10:
-			Dimension_Summon_Npc(client, MEDIVAL_ELITE_SKIRMISHER ,weapon, 1.1, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_ELITE_SKIRMISHER ,weapon, 1.0, 1.2, "npc_boss_bomb_alert");
 		case 11:
-			Dimension_Summon_Npc(client, MEDIVAL_EAGLE_SCOUT ,weapon, 1.1, 1.1, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_EAGLE_SCOUT ,weapon, 1.0, 1.0, "npc_boss_bomb_alert");
 		case 12:
-			Dimension_Summon_Npc(client, MEDIVAL_SAMURAI ,weapon, 1.3, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_SAMURAI ,weapon, 1.2, 1.1, "npc_boss_bomb_alert");
 		case 13:
-			Dimension_Summon_Npc(client, MEDIVAL_CHAMPION ,weapon, 1.3, 1.3, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_CHAMPION ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
 		case 14:
-			Dimension_Summon_Npc(client, MEDIVAL_BRAWLER ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_BRAWLER ,weapon, 1.1, 1.2, "npc_boss_bomb_alert");
 		case 15:
-			Dimension_Summon_Npc(client, MEDIVAL_EAGLE_WARRIOR ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_EAGLE_WARRIOR ,weapon, 1.1, 1.1, "npc_boss_bomb_alert");
 		case 16:
-			Dimension_Summon_Npc(client, MEDIVAL_CAVALARY ,weapon, 1.1, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_CAVALARY ,weapon, 1.0, 1.1, "npc_boss_bomb_alert");
 		case 17:
-			Dimension_Summon_Npc(client, MEDIVAL_HALB ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_HALB ,weapon, 1.1, 1.1, "npc_boss_bomb_alert");
 		case 18:
-			Dimension_Summon_Npc(client, MEDIVAL_LONGBOWMEN ,weapon, 1.1, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_LONGBOWMEN ,weapon, 1.0, 1.1, "npc_boss_bomb_alert");
 		case 19:
-			Dimension_Summon_Npc(client, MEDIVAL_ARBALEST ,weapon, 1.0, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_ARBALEST ,weapon, 0.9, 1.1, "npc_boss_bomb_alert");
 		case 20:
-			Dimension_Summon_Npc(client, MEDIVAL_PALADIN ,weapon, 1.4, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_PALADIN ,weapon, 1.3, 1.1, "npc_boss_bomb_alert");
 		case 21:
-			Dimension_Summon_Npc(client, MEDIVAL_RIDDENARCHER ,weapon, 1.1, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_RIDDENARCHER ,weapon, 1.0, 1.1, "npc_boss_bomb_alert");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -612,45 +612,45 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 	switch(GetRandomInt(1, 20))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, MEDIVAL_CONSTRUCT ,weapon, 1.9, 1.75, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_CONSTRUCT ,weapon, 1.8, 1.6, "npc_boss_bomb_alert");
 		case 2:
-			Dimension_Summon_Npc(client, MEDIVAL_RAM ,weapon, 0.8, 1.0, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_RAM ,weapon, 0.7, 1.0, "npc_boss_bomb_alert");
 		case 3:
-			Dimension_Summon_Npc(client, MEDIVAL_SCOUT ,weapon, 1.2, 1.0, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_SCOUT ,weapon, 1.1, 0.9, "npc_boss_bomb_alert");
 		case 4:
-			Dimension_Summon_Npc(client, MEDIVAL_HUSSAR ,weapon, 1.3, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_HUSSAR ,weapon, 1.2, 1.1, "npc_boss_bomb_alert");
 		case 5:
-			Dimension_Summon_Npc(client, MEDIVAL_OBUCH ,weapon, 1.4, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_OBUCH ,weapon, 1.3, 1.1, "npc_boss_bomb_alert");
 		case 6:
-			Dimension_Summon_Npc(client, MEDIVAL_MONK ,weapon, 1.2, 2.0, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_MONK ,weapon, 1.0, 2.0, "npc_boss_bomb_alert");
 		case 7:
-			Dimension_Summon_Npc(client, MEDIVAL_CROSSBOW_GIANT ,weapon, 1.5, 1.3, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_CROSSBOW_GIANT ,weapon, 1.3, 1.5, "npc_boss_bomb_alert");
 		case 8:
-			Dimension_Summon_Npc(client, MEDIVAL_SWORDSMAN_GIANT ,weapon, 1.5, 1.3, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_SWORDSMAN_GIANT ,weapon, 1.4, 1.2, "npc_boss_bomb_alert");
 		case 9:
-			Dimension_Summon_Npc(client, MEDIVAL_HANDCANNONEER ,weapon, 1.0, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_HANDCANNONEER ,weapon, 0.9, 1.1, "npc_boss_bomb_alert");
 		case 10:
-			Dimension_Summon_Npc(client, MEDIVAL_ELITE_SKIRMISHER ,weapon, 1.1, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_ELITE_SKIRMISHER ,weapon, 1.0, 1.1, "npc_boss_bomb_alert");
 		case 11:
-			Dimension_Summon_Npc(client, MEDIVAL_EAGLE_GIANT ,weapon, 1.5, 1.1, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_EAGLE_GIANT ,weapon, 1.4, 1.0, "npc_boss_bomb_alert");
 		case 12:
-			Dimension_Summon_Npc(client, MEDIVAL_SAMURAI ,weapon, 1.3, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_SAMURAI ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
 		case 13:
-			Dimension_Summon_Npc(client, MEDIVAL_CHAMPION ,weapon, 1.3, 1.3, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_CHAMPION ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
 		case 14:
-			Dimension_Summon_Npc(client, MEDIVAL_BRAWLER ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_BRAWLER ,weapon, 1.1, 1.2, "npc_boss_bomb_alert");
 		case 15:
-			Dimension_Summon_Npc(client, MEDIVAL_EAGLE_WARRIOR ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_EAGLE_WARRIOR ,weapon, 1.1, 1.1, "npc_boss_bomb_alert");
 		case 16:
-			Dimension_Summon_Npc(client, MEDIVAL_ACHILLES ,weapon, 2.0, 2.0, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_ACHILLES ,weapon, 2.0, 1.9, "npc_boss_bomb_alert");
 		case 17:
-			Dimension_Summon_Npc(client, MEDIVAL_HALB ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_HALB ,weapon, 1.1, 1.1, "npc_boss_bomb_alert");
 		case 18:
-			Dimension_Summon_Npc(client, MEDIVAL_SON_OF_OSIRIS ,weapon, 2.5, 2.0, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_SON_OF_OSIRIS ,weapon, 2.0, 1.9, "npc_boss_bomb_alert");
 		case 19:
-			Dimension_Summon_Npc(client, MEDIVAL_ARBALEST ,weapon, 1.0, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_ARBALEST ,weapon, 0.9, 1.1, "npc_boss_bomb_alert");
 		case 20:
-			Dimension_Summon_Npc(client, MEDIVAL_PALADIN ,weapon, 1.4, 1.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_PALADIN ,weapon, 1.3, 1.1, "npc_boss_bomb_alert");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -671,9 +671,9 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 		case 4:
 			Dimension_Summon_Npc(client, SEAREAPER ,weapon, 1.5, 1.2, "utaunt_constellations_blue_base");
 		case 5:
-			Dimension_Summon_Npc(client, SEACRAWLER ,weapon, 0.8, 0.8, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEACRAWLER ,weapon, 1.5, 0.8, "utaunt_constellations_blue_base");
 		case 6:
-			Dimension_Summon_Npc(client, SEAPIERCER ,weapon, 1.2, 1.1, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEABORN_SCOUT ,weapon, 1.2, 1.1, "utaunt_constellations_blue_base");
 		case 7:
 			Dimension_Summon_Npc(client, SEAPREDATOR ,weapon, 1.0, 1.1, "utaunt_constellations_blue_base");
 		case 8:
@@ -699,11 +699,11 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 		case 3:
 			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_LONGARCHER ,weapon, 1.1, 1.3, "utaunt_constellations_blue_base");
 		case 4:
-			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_ASSASIN_MELEE ,weapon, 1.3, 1.2, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, PATHSHAPER_FRACTAL ,weapon, 1.4, 1.2, "utaunt_constellations_blue_base");
 		case 5:
 			Dimension_Summon_Npc(client, SEABORN_SCOUT ,weapon, 1.2, 1.2, "utaunt_constellations_blue_base");
 		case 6:
-			Dimension_Summon_Npc(client, SEAPIERCER_ALT ,weapon, 1.3, 1.1, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_BESERKER ,weapon, 1.7, 1.2, "utaunt_constellations_blue_base");
 		case 7:
 			Dimension_Summon_Npc(client, SEAPREDATOR_ALT ,weapon, 1.2, 1.1, "utaunt_constellations_blue_base");
 		case 8:
@@ -717,7 +717,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 		case 12:
 			Dimension_Summon_Npc(client, SEABORN_DEMO ,weapon, 0.5, 3.0, "utaunt_constellations_blue_base");
 		case 13:
-			Dimension_Summon_Npc(client, SEABORN_HEAVY ,weapon, 1.5, 1.2, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEABORN_HEAVY ,weapon, 1.4, 1.2, "utaunt_constellations_blue_base");
 		case 14:
 			Dimension_Summon_Npc(client, SEABORN_MEDIC ,weapon, 1.0, 1.2, "utaunt_constellations_blue_base");
 		case 15:
@@ -725,16 +725,14 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 		case 16:
 			Dimension_Summon_Npc(client, SEABORN_SPY ,weapon, 1.3, 1.2, "utaunt_constellations_blue_base");
 		case 17:
-			Dimension_Summon_Npc(client, SEABORN_GUARD ,weapon, 1.4, 1.2, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEABORN_GUARD ,weapon, 1.5, 1.2, "utaunt_constellations_blue_base");
 		case 18:
-			Dimension_Summon_Npc(client, SEABORN_DEFENDER ,weapon, 0.8, 1.1, "utaunt_constellations_blue_base");
-		case 19:
 			Dimension_Summon_Npc(client, SEABORN_CASTER ,weapon, 1.1, 1.3, "utaunt_constellations_blue_base");
-		case 20:
+		case 19:
 			Dimension_Summon_Npc(client, SEABORN_SPECIALIST ,weapon, 1.3, 1.2, "utaunt_constellations_blue_base");
+		case 20:
+			Dimension_Summon_Npc(client, FIRSTTOTALK ,weapon, 2.25, 2.0, "utaunt_constellations_blue_base");
 		case 21:
-			Dimension_Summon_Npc(client, FIRSTTOTALK ,weapon, 2.5, 2.0, "utaunt_constellations_blue_base");
-		case 22:
 			Dimension_Summon_Npc(client, SEABORN_VANGUARD ,weapon, 1.35, 1.2, "utaunt_constellations_blue_base");	
 		default: //This should not happen
 		{
@@ -801,7 +799,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 		case 7:
 			Dimension_Summon_Npc(client, EXPIDONSA_DIVERSIONISTICO ,weapon, 1.3, 1.2, "eyeboss_death_vortex");
 		case 8:
-			Dimension_Summon_Npc(client, EXPIDONSA_MINIGUNASSISA ,weapon, 1.2, 1.1, "eyeboss_death_vortex");
+			Dimension_Summon_Npc(client, EXPIDONSA_MINIGUNASSISA ,weapon, 1.2, 1.0, "eyeboss_death_vortex");
 		case 9:
 			Dimension_Summon_Npc(client, EXPIDONSA_SPEEDUSADIVUS ,weapon, 1.2, 1.1, "eyeboss_death_vortex");
 		case 10:
@@ -817,7 +815,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 		case 15:
 			Dimension_Summon_Npc(client, EXPIDONSA_SOLDINE ,weapon, 2.0, 2.0, "eyeboss_death_vortex");
 		case 16:
-			Dimension_Summon_Npc(client, EXPIDONSA_SEARGENTIDEAL ,weapon, 3.0, 1.5, "eyeboss_death_vortex");
+			Dimension_Summon_Npc(client, EXPIDONSA_SEARGENTIDEAL ,weapon, 2.5, 2.0, "eyeboss_death_vortex");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -896,8 +894,8 @@ public Action Dimension_GiveStrength(Handle timer, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity) && !b_NpcHasDied[entity])
 	{
-		fl_Extra_MeleeArmor[entity] *= 0.75;
-		fl_Extra_RangedArmor[entity] *= 0.75;	
+		fl_Extra_MeleeArmor[entity] *= 0.85;
+		fl_Extra_RangedArmor[entity] *= 0.85;	
 		fl_Extra_Damage[entity] *= 1.25;	
 	}
 	
