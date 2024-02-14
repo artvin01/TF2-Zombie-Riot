@@ -721,8 +721,16 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 
 	if(f_KahmlResTemp[npc.index] > GetGameTime())
 	{
-		npc.m_flMeleeArmor = 0.65;
-		npc.m_flRangedArmor = 0.5;	
+		if(NpcStats_IsEnemySilenced(npc.index))
+		{
+			npc.m_flMeleeArmor = 0.65;
+			npc.m_flRangedArmor = 0.5;	
+		}
+		else
+		{
+			npc.m_flMeleeArmor = 0.75;
+			npc.m_flRangedArmor = 0.6;	
+		}
 	}
 	else
 	{

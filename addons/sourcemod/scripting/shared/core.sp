@@ -2612,10 +2612,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 		b_IsAProjectile[entity] = false;
 
-		if(StrContains(classname, "projectile") != -1)
+		if(StrContains(classname, "tf_projectile") != -1)
 		{
 			b_IsAProjectile[entity] = true;
 		}
+		
 		if(!StrContains(classname, "env_entity_dissolver"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);

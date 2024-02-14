@@ -4577,7 +4577,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 					if(Armor_Charge[client] < maxarmor)
 					{
 						f_ClientArmorRegen[client] = GetGameTime() + 0.7;
-						Armor_Charge[client] += 2;
+						GiveArmorViaPercentage(client, 0.01, 1.0);
 					}
 				}
 				else if(effects & VILLAGE_001)
@@ -4585,7 +4585,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 					if(Armor_Charge[client] < 0)
 					{
 						f_ClientArmorRegen[client] = GetGameTime() + 0.7;
-						Armor_Charge[client] += 2;
+						GiveArmorViaPercentage(client, 0.01, 1.0);
 					}
 				}
 
@@ -5111,8 +5111,8 @@ static void VillageUpgradeMenu(int client, int viewer)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s [1 Banana]%s", TranslateItemName(viewer, "Grow Blocker", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : Village_TierExists[1] == 1 ? " [Tier 1 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_010), buffer, (!owner || points < 1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Prevents non-boss enemies from", ITEMDRAW_DISABLED);
-		menu.AddItem("", "gaining health in influence radius.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Lowers non-boss enemies from", ITEMDRAW_DISABLED);
+		menu.AddItem("", "gaining health in the influence radius as much (50% usually).\n ", ITEMDRAW_DISABLED);
 	}
 	
 	if(Village_Flags[client] & VILLAGE_005)
@@ -5162,14 +5162,14 @@ static void VillageUpgradeMenu(int client, int viewer)
 	{
 		FormatEx(buffer, sizeof(buffer), "Armor Aid [2 Bananas]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_002), buffer, (!owner || points < 2) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Gain a point of armor every half.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Gain 1% of armor every half.\n ", ITEMDRAW_DISABLED);
 		menu.AddItem("", "second to all players in range.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
 		FormatEx(buffer, sizeof(buffer), "Wandering Aid [2 Bananas]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : Village_TierExists[2] == 1 ? " [Tier 1 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_001), buffer, (!owner || points < 2) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Heals a point of armor erosion every.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Heals 1% of armor erosion every.\n ", ITEMDRAW_DISABLED);
 		menu.AddItem("", "half second to all players in range.\n ", ITEMDRAW_DISABLED);
 	}
 

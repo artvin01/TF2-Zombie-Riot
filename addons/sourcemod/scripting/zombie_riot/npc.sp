@@ -863,7 +863,7 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Vulpo",
 	"Major Steam",
 	"The Messenger",
-	"Kahmlstein",
+	"Chaos Kahmlstein",
 	"The Purge"
 };
 

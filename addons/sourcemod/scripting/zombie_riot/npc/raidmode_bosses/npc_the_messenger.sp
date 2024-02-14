@@ -1057,19 +1057,13 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 								{
 									Knocked = true;
 									Custom_Knockback(npc.index, targetTrace, 900.0, true);
-									if(!NpcStats_IsEnemySilenced(npc.index))
-									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
-									}
+									TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
 								}
 								else
 								{
-									if(!NpcStats_IsEnemySilenced(npc.index))
-									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
-									}
+									TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
 								}
 							}
 										
@@ -1082,7 +1076,11 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 							}
 							else
 							{
-								Sakratan_AddNeuralDamage(targetTrace, npc.index, 150, true, true);
+								int ChaosDamage = 150;
+								if(NpcStats_IsEnemySilenced(npc.index))
+									ChaosDamage = 100;
+
+								Sakratan_AddNeuralDamage(targetTrace, npc.index, ChaosDamage, true, true);
 							}
 
 							if(!Knocked)
@@ -1166,7 +1164,11 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 		}
 		else
 		{
-			Sakratan_AddNeuralDamage(target, owner, 75, true, true);
+			int ChaosDamage = 75;
+			if(NpcStats_IsEnemySilenced(owner))
+				ChaosDamage = 40;
+
+			Sakratan_AddNeuralDamage(target, owner, ChaosDamage, true, true);
 		}
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
