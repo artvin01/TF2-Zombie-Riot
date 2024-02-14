@@ -1703,7 +1703,7 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_abomination",
 	"npc_enforcer",
 	"npc_braindead",
-	"npc_behemonth",
+	"npc_behemoth",
 	"npc_absolute_incinirator",
 
 	"npc_liberi",
