@@ -1703,7 +1703,7 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_abomination",
 	"npc_enforcer",
 	"npc_braindead",
-	"npc_behemonth",
+	"npc_behemoth",
 	"npc_absolute_incinirator",
 
 	"npc_liberi",
@@ -5421,7 +5421,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/npc_overlord_rogue.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_bladedance.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_the_messenger.sp"
-#include "zombie_riot/npc/raidmode_bosses/npc_chaos_Kahmlstein.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_chaos_kahmlstein.sp"
 
 #include "zombie_riot/npc/raidmode_bosses/npc_the_purge.sp"
 
