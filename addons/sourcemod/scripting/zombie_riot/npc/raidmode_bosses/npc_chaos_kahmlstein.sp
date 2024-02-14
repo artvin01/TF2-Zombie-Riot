@@ -182,7 +182,7 @@ methodmap ChaosKahmlstein < CClotBody
 	}
 	public void PlayChargeSound() 
 	{
-		EmitSoundToAll(g_charge_sound[GetRandomInt(0, sizeof(g_charge_sound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80, 85));
+		EmitSoundToAll(g_charge_sound[GetRandomInt(0, sizeof(g_charge_sound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80, 85));
 
 	}
 	public void PlayProjectileSound() 
@@ -196,16 +196,11 @@ methodmap ChaosKahmlstein < CClotBody
 		else
 			EmitSoundToAll(g_MessengerThrowIce[GetRandomInt(0, sizeof(g_MessengerThrowIce) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+	public void PlayIdleAlertSound() 
+	{
+		int sound = GetRandomInt(0, sizeof(g_AngerSounds) - 1);
+		EmitSoundToAll(g_IdleAlertedSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleAlertedSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlaySuperJumpSound()
 	{
@@ -834,6 +829,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 	{
 		if(!npc.m_flAttackHappens_2 && npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index))
 		{
+			npc.PlayIdleAlertSound();
 			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (15.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
@@ -952,9 +948,13 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 		npc.AddActivityViaSequence("taunt_yetipunch");
 		npc.m_flAttackHappens = 0.0;
 		if(i_RaidGrantExtra[npc.index] < 2)
+		{
 			npc.SetCycle(0.35);
+			npc.PlayIdleAlertSound();
+		}
 		else
 			npc.SetCycle(0.55);
+
 		npc.SetPlaybackRate(1.2 *f_MessengerSpeedUp[npc.index]);
 		npc.m_flDoingAnimation = GetGameTime(npc.index) + (1.85 * (1.0 / f_MessengerSpeedUp[npc.index]));	
 		npc.m_iOverlordComboAttack = 5555;
