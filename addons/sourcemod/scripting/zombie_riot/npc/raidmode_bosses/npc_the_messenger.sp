@@ -303,6 +303,8 @@ methodmap TheMessenger < CClotBody
 		{
 			RaidModeScaling *= 0.7;
 		}
+
+		RaidModeScaling *= 0.5;
 		
 		Music_SetRaidMusic("#zombiesurvival/internius/messenger.mp3", 219, true, 1.25);
 		npc.m_iChanged_WalkCycle = -1;
@@ -476,15 +478,15 @@ public void TheMessenger_ClotThink(int iNPC)
 
 	if(npc.i_GunMode == 0 && Messanger_Elemental_Attack_Projectiles(npc))
 	{
-		npc.m_flMeleeArmor = 0.3125;
-		npc.m_flRangedArmor = 0.25;	
+		npc.m_flMeleeArmor = 0.65;
+		npc.m_flRangedArmor = 0.5;	
 		return;
 	}
 
 	if(Messanger_Elemental_Attack_TempPowerup(npc))
 	{
-		npc.m_flMeleeArmor = 0.3125;
-		npc.m_flRangedArmor = 0.25;	
+		npc.m_flMeleeArmor = 0.65;
+		npc.m_flRangedArmor = 0.5;	
 		return;
 	}
 
@@ -1245,9 +1247,9 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < nextLoss)
 		{
 			npc.g_TimesSummoned++;
-			npc.m_flAttackHappens_bullshit -= 1.0;
-			npc.m_flNextChargeSpecialAttack -= 1.0;
-			npc.m_flJumpCooldown -= 0.25;
+			npc.m_flAttackHappens_bullshit -= 0.5;
+			npc.m_flNextChargeSpecialAttack -= 0.5;
+			npc.m_flJumpCooldown -= 0.125;
 		}
 	}
 
