@@ -250,10 +250,6 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Vamp_CleaverHit(entity, target);
 		}
-		case WEAPON_QUINCY_BOW:
-		{
-			Quincy_Touch(entity, target);
-		}
 		case 23:
 		{
 			Event_GB_OnHatTouch(entity, target);

@@ -136,7 +136,7 @@ static void ClotThink(int iNPC)
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 				npc.PlayMeleeSound();
 
-				int entity = npc.FireRocket(vecTarget, 125.0, 350.0,_,_,_,70.0);
+				int entity = npc.FireRocket(vecTarget, 200.0, 350.0,_,_,_,70.0);
 				if(entity != -1)
 				{
 					i_ChaosArrowAmount[entity] = 100;

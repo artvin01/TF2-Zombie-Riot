@@ -152,7 +152,7 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		Radius *= Attributes_Get(weapon, 101, 1.0);
 		Radius *= Attributes_Get(weapon, 102, 1.0);
 
-		float damage = 100.0;
+		float damage = 65.0;
 			
 		damage *= Attributes_Get(weapon, 410, 1.0);
 
@@ -415,6 +415,8 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 			}
 		}
 
+		Time *= 0.5;
+
 		fl_gravaton_charges[client] -=GRAVATON_WAND_GRAVITATION_COLLAPSE_COST;
 		fl_gravaton_duration[client] =GameTime+Time;
 		fl_gravaton_throttle[client] = 0.0;
@@ -441,7 +443,7 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 		Radius *= Attributes_Get(weapon, 101, 1.0);
 		Radius *= Attributes_Get(weapon, 102, 1.0);
 
-		float damage = 30.0;
+		float damage = 20.0;
 			
 		damage *= Attributes_Get(weapon, 410, 1.0);
 
