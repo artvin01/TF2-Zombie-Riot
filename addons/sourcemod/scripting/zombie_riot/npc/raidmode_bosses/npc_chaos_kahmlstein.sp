@@ -1115,7 +1115,7 @@ public void ChaosKahmlstein_NPCDeath(int entity)
 
 	if(i_RaidGrantExtra[npc.index] == 1)
 	{
-		if(GameRules_GetRoundState() == RoundState_RoundRunning))
+		if(GameRules_GetRoundState() == RoundState_RoundRunning)
 		{
 			for (int client = 0; client < MaxClients; client++)
 			{
