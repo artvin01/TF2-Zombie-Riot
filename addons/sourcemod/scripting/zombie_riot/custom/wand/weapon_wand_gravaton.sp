@@ -152,7 +152,7 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		Radius *= Attributes_Get(weapon, 101, 1.0);
 		Radius *= Attributes_Get(weapon, 102, 1.0);
 
-		float damage = 75.0;
+		float damage = 65.0;
 			
 		damage *= Attributes_Get(weapon, 410, 1.0);
 
