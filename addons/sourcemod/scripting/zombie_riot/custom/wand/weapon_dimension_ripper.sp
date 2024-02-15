@@ -362,7 +362,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 	switch(GetRandomInt(1, 4))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, MEDIVAL_RAM ,weapon, 0.5, 1.0, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_RAM ,weapon, 0.4, 1.0, "npc_boss_bomb_alert");
 		case 2:
 			Dimension_Summon_Npc(client, MEDIVAL_OBUCH ,weapon, 1.3, 1.2, "npc_boss_bomb_alert");
 		case 3:
