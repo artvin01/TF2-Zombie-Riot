@@ -2391,6 +2391,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			Npc_OnTakeDamage_DimensionalRipper(attacker);
 		}
+		case WEAPON_THE_COLLECTOR:
+		{
+			Npc_OnTakeDamage_TheCollector(attacker, victim, damage);
+		}
 	}
 #endif
 

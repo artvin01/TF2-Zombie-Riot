@@ -159,6 +159,7 @@ enum
 	WEAPON_HELL_HOE_3 = 88,
 	WEAPON_LUDO = 89,
 	WEAPON_KAHMLFIST = 90,
+	WEAPON_THE_COLLECTOR = 91,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -489,6 +490,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_dimension_ripper.sp"
 #include "zombie_riot/custom/weapon_hell_hoe.sp"
 #include "zombie_riot/custom/wand/weapon_ludo.sp"
+#include "zombie_riot/custom/weapon_the_collector.sp"
 
 void ZR_PluginLoad()
 {
