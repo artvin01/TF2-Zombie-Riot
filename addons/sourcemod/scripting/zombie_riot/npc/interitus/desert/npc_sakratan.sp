@@ -347,21 +347,20 @@ void SakratanGroupDebuff(int entity, int victim, float damage, int weapon)
 		return;
 
 	if (GetTeam(victim) != GetTeam(entity))
-		SakratanGroupDebuffInternal(victim);
+		SakratanGroupDebuffInternal(victim, entity);
 		
 }
 
-void SakratanGroupDebuffInternal(int victim)
+void SakratanGroupDebuffInternal(int victim, int attacker)
 {
-	if(victim <= MaxClients && !b_BobsTrueFear[victim])
-	{
-		HealEntityGlobal(victim, victim, -250.0, 1.0, 0.0, HEAL_ABSOLUTE);
-		IncreaceEntityDamageTakenBy(victim, 1.25, 10.0);
-	}
+	bool sawrunner = b_ThisNpcIsSawrunner[attacker];
+	b_ThisNpcIsSawrunner[attacker] = true;
+	
+	if(!b_BobsTrueFear[victim])
+		SDKHooks_TakeDamage(victim, attacker, attacker, 250.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
 	else
-	{
-		HealEntityGlobal(victim, victim, -200.0, 1.0, 0.0, HEAL_ABSOLUTE);
-		IncreaceEntityDamageTakenBy(victim, 1.18, 8.0);		
-	}
+		SDKHooks_TakeDamage(victim, attacker, attacker, 200.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
 
+	b_ThisNpcIsSawrunner[attacker] = sawrunner;
+	IncreaceEntityDamageTakenBy(victim, 1.25, 10.0);
 }

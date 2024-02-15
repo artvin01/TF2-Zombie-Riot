@@ -246,7 +246,7 @@ methodmap ChaosKahmlstein < CClotBody
 	
 	public ChaosKahmlstein(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		ChaosKahmlstein npc = view_as<ChaosKahmlstein>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
+		ChaosKahmlstein npc = view_as<ChaosKahmlstein>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "40000", ally, false, true, true,_)); //giant!
 		
 		i_NpcInternalId[npc.index] = RAIDMODE_CHAOS_KAHMLSTEIN;
 		i_NpcWeight[npc.index] = 4;
@@ -315,6 +315,7 @@ methodmap ChaosKahmlstein < CClotBody
 			b_ThisEntityIgnored[npc.index] = true;
 			b_thisNpcIsARaid[npc.index] = true;
 			npc.m_flNextChargeSpecialAttack = 0.0;
+			b_NoKillFeed[npc.index] = true;
 		}
 		else if(StrContains(data, "fake_3") != -1)
 		{
@@ -329,6 +330,7 @@ methodmap ChaosKahmlstein < CClotBody
 			b_thisNpcIsARaid[npc.index] = true;
 			npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 10.0;
 			npc.i_GunMode = 1;
+			b_NoKillFeed[npc.index] = true;
 		}
 		else if(StrContains(data, "fake_4") != -1)
 		{
@@ -342,6 +344,7 @@ methodmap ChaosKahmlstein < CClotBody
 			b_ThisEntityIgnored[npc.index] = true;
 			b_thisNpcIsARaid[npc.index] = true;
 			npc.m_flRangedSpecialDelay = 0.0;
+			b_NoKillFeed[npc.index] = true;
 		}
 		else
 		{
@@ -353,7 +356,6 @@ methodmap ChaosKahmlstein < CClotBody
 			{
 				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 				{
-					LookAtTarget(client_check, npc.index);
 					SetGlobalTransTarget(client_check);
 					ShowGameText(client_check, "item_armor", 1, "%t", "Chaos Kahmlstein Arrived");
 				}
@@ -402,7 +404,7 @@ methodmap ChaosKahmlstein < CClotBody
 			{
 				RaidModeScaling *= 0.7;
 			}
-			RaidModeScaling *= 0.6;
+			RaidModeScaling *= 0.75;
 		}
 
 		
@@ -913,7 +915,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 		npc.m_iOverlordComboAttack = 666;
 		npc.m_iChanged_WalkCycle = 0;
 		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
-		float damage = 40.0;
+		float damage = 50.0;
 		int Enemypunch = npc.m_iTarget;
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))
 		{
@@ -1020,7 +1022,7 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 		npc.m_iOverlordComboAttack = 6666;
 		npc.m_flAttackHappens = 0.0;
 		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
-		float damage = 50.0;
+		float damage = 60.0;
 		int Enemypunch = npc.m_iTarget;
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))
 		{
@@ -1223,7 +1225,7 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 					float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
 					npc.FaceTowards(vecTarget, 20000.0);
 					int projectile;
-					float Proj_Damage = 5.0 * RaidModeScaling;
+					float Proj_Damage = 10.0 * RaidModeScaling;
 					vecTarget[0] += GetRandomFloat(-10.0, 10.0);
 					vecTarget[1] += GetRandomFloat(-10.0, 10.0);
 					vecTarget[2] += GetRandomFloat(-10.0, 10.0);
@@ -1402,16 +1404,16 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 
 public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
-	Sensal npc = view_as<Sensal>(victim);
+	ChaosKahmlstein npc = view_as<ChaosKahmlstein>(victim);
 	if(npc.g_TimesSummoned < 199)
 	{
 		int nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (199 - npc.g_TimesSummoned) / 200;
 		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < nextLoss)
 		{
 			npc.g_TimesSummoned++;
-			RaidModeScaling *= 1.1;
 			if((npc.g_TimesSummoned % 25) == 0)
 			{
+				RaidModeScaling *= 1.05;
 				switch(GetRandomInt(0,3))
 				{
 					case 0:
@@ -1433,9 +1435,9 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 				}
 				f_KahmlResTemp[npc.index] = GetGameTime() + 5.0;
 			}
-			npc.m_flNextChargeSpecialAttack -= 1.0;
-			npc.m_flRangedSpecialDelay -= 1.0;
-			npc.m_flCharge_delay -= 0.25;
+			npc.m_flNextChargeSpecialAttack -= 0.5;
+			npc.m_flRangedSpecialDelay -= 0.5;
+			npc.m_flCharge_delay -= 0.15;
 		}
 	}
 
@@ -1460,8 +1462,8 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: All your curelty, worse then states.");
 			}
 		}
-		RaidModeScaling *= 1.15;
-		npc.g_TimesSummoned = 0;
+		RaidModeScaling *= 1.2;
+		npc.g_TimesSummoned = 100;
 		npc.Anger = true;
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 0.0;
 		npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 0.0;
