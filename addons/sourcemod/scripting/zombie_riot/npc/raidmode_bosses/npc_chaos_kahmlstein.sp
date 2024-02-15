@@ -404,7 +404,6 @@ methodmap ChaosKahmlstein < CClotBody
 			{
 				RaidModeScaling *= 0.7;
 			}
-			RaidModeScaling *= 0.75;
 		}
 
 		
@@ -915,7 +914,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 		npc.m_iOverlordComboAttack = 666;
 		npc.m_iChanged_WalkCycle = 0;
 		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
-		float damage = 50.0;
+		float damage = 70.0;
 		int Enemypunch = npc.m_iTarget;
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))
 		{
@@ -1022,7 +1021,7 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 		npc.m_iOverlordComboAttack = 6666;
 		npc.m_flAttackHappens = 0.0;
 		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
-		float damage = 60.0;
+		float damage = 80.0;
 		int Enemypunch = npc.m_iTarget;
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))
 		{
@@ -1407,8 +1406,8 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 	ChaosKahmlstein npc = view_as<ChaosKahmlstein>(victim);
 	if(npc.g_TimesSummoned < 199)
 	{
-		int nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (199 - npc.g_TimesSummoned) / 200;
-		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < nextLoss)
+		int nextLoss = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 10) * (199 - npc.g_TimesSummoned) / 200;
+		if((GetEntProp(npc.index, Prop_Data, "m_iHealth") / 10) < nextLoss)
 		{
 			npc.g_TimesSummoned++;
 			if((npc.g_TimesSummoned % 25) == 0)

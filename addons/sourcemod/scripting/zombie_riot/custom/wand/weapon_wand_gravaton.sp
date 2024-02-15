@@ -414,6 +414,8 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 				Time = 8.0;
 			}
 		}
+		
+		Time *= 0.5;
 
 		fl_gravaton_charges[client] -=GRAVATON_WAND_GRAVITATION_COLLAPSE_COST;
 		fl_gravaton_duration[client] =GameTime+Time;
