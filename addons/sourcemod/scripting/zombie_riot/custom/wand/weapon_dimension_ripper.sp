@@ -4,7 +4,7 @@
 #define SOUND_WAND_SHOT_DIM	"misc/doomsday_lift_stop.wav"
 #define SOUND_DIM_IMPACT "weapons/cow_mangler_explosion_normal_01.wav"
 #define SOUND_ABILITY "misc/rd_points_return01.wav"
-#define MAX_DIMENSION_CHARGE 35
+#define MAX_DIMENSION_CHARGE 30
 static Handle h_TimerDimensionWeaponManagement[MAXPLAYERS+1]={null, ...};
 static int how_many_times_swinged[MAXTF2PLAYERS];
 static float f_DIMAbilityActive[MAXPLAYERS+1]={0.0, ...};
@@ -823,6 +823,107 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 	}
 }
 
+public void Weapon_Dimension_Summon_Interitus(int client, int weapon, bool &result, int slot, int pap_logic)
+{
+	switch(GetRandomInt(1, 16))
+	{
+		case 1:
+			Dimension_Summon_Npc(client, INTERITUS_DESERT_AHIM ,weapon, 0.9, 0.9, "eyeboss_death_vortex");
+		case 2:
+			Dimension_Summon_Npc(client, INTERITUS_DESERT_INABDIL ,weapon, 1.2, 1.1, "eyeboss_death_vortex");
+		case 3:
+			Dimension_Summon_Npc(client, INTERITUS_DESERT_KHAZAAN ,weapon, 1.2, 1.0, "eyeboss_death_vortex");
+		case 4:
+			Dimension_Summon_Npc(client, INTERITUS_DESERT_SAKRATAN ,weapon, 1.1, 1.2, "eyeboss_death_vortex");
+		case 5:
+			Dimension_Summon_Npc(client, INTERITUS_DESERT_YADEAM ,weapon, 1.0, 1.1, "eyeboss_death_vortex");
+		case 6:
+			Dimension_Summon_Npc(client, INTERITUS_DESERT_RAJUL ,weapon, 1.3, 1.1, "eyeboss_death_vortex");
+		case 7:
+			Dimension_Summon_Npc(client, INTERITUS_DESERT_QANAAS , ,weapon, 0.8, 1.2, "eyeboss_death_vortex");
+		case 8:
+			Dimension_Summon_Npc(client, INTERITUS_DESERT_ATILLA ,weapon, 0.9, 0.9, "eyeboss_death_vortex");
+		case 9:
+			Dimension_Summon_Npc(client, INTERITUS_WINTER_SNIPER ,weapon, 0.8, 1.3, "eyeboss_death_vortex");
+		case 10:
+			Dimension_Summon_Npc(client, INTERITUS_WINTER_ZIBERIANMINER ,weapon, 1.0, 1.1, "eyeboss_death_vortex");
+		case 11:
+			Dimension_Summon_Npc(client, INTERITUS_WINTER_SNOWEY_GUNNER ,weapon, 1.3, 1.1, "eyeboss_death_vortex");
+		case 12:
+			Dimension_Summon_Npc(client, INTERITUS_WINTER_FREEZING_CLEANER ,weapon, 1.2, 1.2, "eyeboss_death_vortex");
+		case 13:
+			Dimension_Summon_Npc(client, INTERITUS_WINTER_AIRBORN_EXPLORER ,weapon, 1.2, 1.2, "eyeboss_death_vortex");
+		case 14:
+			Dimension_Summon_Npc(client, INTERITUS_WINTER_ARCTIC_MAGE ,weapon, 1.6, 1.2, "eyeboss_death_vortex");
+		case 15:
+			Dimension_Summon_Npc(client, INTERITUS_WINTER_FROST_HUNTER ,weapon, 1.1, 1.1, "eyeboss_death_vortex");
+		case 16:
+			Dimension_Summon_Npc(client, INTERITUS_WINTER_SKIN_HUNTER ,weapon, 1.0, 1.2, "eyeboss_death_vortex");
+		default: //This should not happen
+		{
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+		}
+	}
+}
+
+public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
+{
+	switch(GetRandomInt(1, 20))
+	{
+		case 1:
+			Dimension_Summon_Npc(client, INTERITUS_DESERT_ANCIENTDEMON ,weapon, 2.0, 1.8, "eyeboss_death_vortex");
+		case 2:
+			Dimension_Summon_Npc(client, INTERITUS_ANARCHY_RUNOVER ,weapon, 1.2, 1.2, "eyeboss_death_vortex");
+		case 3:
+			Dimension_Summon_Npc(client, INTERITUS_ANARCHY_HITMAN ,weapon, 1.2, 1.2, "eyeboss_death_vortex");
+		case 4:
+			Dimension_Summon_Npc(client, INTERITUS_ANARCHY_RANSACKER ,weapon, 1.3, 1.2, "eyeboss_death_vortex");
+		case 5:
+			Dimension_Summon_Npc(client, INTERITUS_ANARCHY_MADDOCTOR ,weapon, 1.3, 1.3, "eyeboss_death_vortex");
+		case 6:
+			Dimension_Summon_Npc(client, INTERITUS_FOREST_HEAVY ,weapon, 1.5, 1.2, "eyeboss_death_vortex");
+		case 7:
+			Dimension_Summon_Npc(client, INTERITUS_ANARCHY_ENFORCER , weapon, 0.8, 1.4, "eyeboss_death_vortex");
+		case 8:
+			Dimension_Summon_Npc(client, INTERITUS_DESERT_ATILLA ,weapon, 1.0, 1.0, "eyeboss_death_vortex");
+		case 9:
+			Dimension_Summon_Npc(client, INTERITUS_WINTER_SNIPER ,weapon, 0.8, 1.5, "eyeboss_death_vortex");
+		case 10:
+			Dimension_Summon_Npc(client, INTERITUS_ANARCHY_BRAINDEAD ,weapon, 1.3, 1.35, "eyeboss_death_vortex");
+		case 11:
+			Dimension_Summon_Npc(client, INTERITUS_ANARCHY_BEHEMOTH ,weapon, 1.75, 1.2, "eyeboss_death_vortex");
+		case 12:
+			Dimension_Summon_Npc(client, INTERITUS_WINTER_FREEZING_CLEANER ,weapon, 1.3, 1.3, "eyeboss_death_vortex");
+		case 13:
+			Dimension_Summon_Npc(client, INTERITUS_WINTER_AIRBORN_EXPLORER ,weapon, 1.2, 1.4, "eyeboss_death_vortex");
+		case 14:
+			Dimension_Summon_Npc(client, INTERITUS_WINTER_ARCTIC_MAGE ,weapon, 1.7, 1.2, "eyeboss_death_vortex");
+		case 15:
+			Dimension_Summon_Npc(client, INTERITUS_ANARCHY_ABSOLUTE_INCINIRATOR ,weapon, 1.3, 1.4, "eyeboss_death_vortex");
+		case 16:
+			Dimension_Summon_Npc(client, INTERITUS_FOREST_MEDIC ,weapon, 1.3, 1.2, "eyeboss_death_vortex");
+		case 17:
+			Dimension_Summon_Npc(client, INTERITUS_FOREST_PYRO ,weapon, 1.4, 1.2, "eyeboss_death_vortex");
+		case 18:
+			Dimension_Summon_Npc(client, INTERITUS_FOREST_SPY ,weapon, 1.3, 1.1, "eyeboss_death_vortex");
+		case 19:
+			Dimension_Summon_Npc(client, INTERITUS_FOREST_ENGINEER ,weapon, 1.3, 1.2, "eyeboss_death_vortex");
+		case 20:
+			Dimension_Summon_Npc(client, INTERITUS_WINTER_SKIN_HUNTER ,weapon, 1.3, 1.25, "eyeboss_death_vortex");
+		case 17:
+			Dimension_Summon_Npc(client, INTERITUS_FOREST_SNIPER ,weapon, 1.0, 1.75, "eyeboss_death_vortex");
+		case 18:
+			Dimension_Summon_Npc(client, INTERITUS_FOREST_SCOUT ,weapon, 1.2, 1.2, "eyeboss_death_vortex");
+		case 19:
+			Dimension_Summon_Npc(client, INTERITUS_FOREST_SOLDIER ,weapon, 1.3, 1.2, "eyeboss_death_vortex");
+		case 20:
+			Dimension_Summon_Npc(client, INTERITUS_FOREST_DEMOMAN ,weapon, 1.8, 1.3, "eyeboss_death_vortex");
+		default: //This should not happen
+		{
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+		}
+	}
+}
 
 
 void Dimension_Summon_Npc(int client, int NpcId, int weapon, float HealthMulti, float DamageMulti, char[] ParticleEffect)
