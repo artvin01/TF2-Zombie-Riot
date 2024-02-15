@@ -2611,11 +2611,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 
 		b_IsAProjectile[entity] = false;
-
-		if(StrContains(classname, "projectile") != -1)
-		{
-			b_IsAProjectile[entity] = true;
-		}
 		if(!StrContains(classname, "env_entity_dissolver"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
@@ -2681,6 +2676,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			b_IsAProjectile[entity] = true;
 			
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		//	ApplyExplosionDhook_Rocket(entity);
@@ -2718,11 +2714,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "tf_projectile_syringe"))
 		{
+			//This can only be on red anyways.
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-			
+			SetTeam(entity, TFTeam_Red);
+			b_IsAProjectile[entity] = true;
 		}
 		else if(!StrContains(classname, "tf_projectile_flare"))
 		{
@@ -2730,6 +2728,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			b_IsAProjectile[entity] = true;
 			
 		}
 		else if(!StrContains(classname, "tf_projectile_healing_bolt"))
@@ -2741,6 +2740,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team_Player);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			//SDKHook_SpawnPost doesnt work
+			b_IsAProjectile[entity] = true;
 		}
 		
 		else if(!StrContains(classname, "tf_projectile_pipe_remote"))
@@ -2753,6 +2753,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, PipeApplyDamageCustom);
 			ApplyExplosionDhook_Pipe(entity, true);
 			//SDKHook_SpawnPost doesnt work
+			b_IsAProjectile[entity] = true;
 		}
 		else if(!StrContains(classname, "tf_projectile_arrow"))
 		{
@@ -2763,6 +2764,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			
 			//SDKHook_SpawnPost doesnt work
+			b_IsAProjectile[entity] = true;
 		}
 		else if(!StrContains(classname, "prop_dynamic"))
 		{
@@ -2823,6 +2825,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			ApplyExplosionDhook_Pipe(entity, false);
 			SDKHook(entity, SDKHook_SpawnPost, PipeApplyDamageCustom);
+			b_IsAProjectile[entity] = true;
 			
 #if defined ZR
 			SDKHook(entity, SDKHook_SpawnPost, Is_Pipebomb);
@@ -2840,6 +2843,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			b_IsAProjectile[entity] = true;
 			
 		}
 		else if(!StrContains(classname, "zr_projectile_base"))
@@ -2850,6 +2854,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			b_IsAProjectile[entity] = true;
 			
 		}
 		else if (!StrContains(classname, "tf_weapon_handgun_scout_primary")) 

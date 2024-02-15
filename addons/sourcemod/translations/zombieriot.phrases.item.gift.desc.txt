@@ -60,9 +60,9 @@
 		"en" 		"Expidonsa"
 		"pt"		"Expidonsa"
 	}
-	"Internius Alliances"
+	"Interitus Alliances"
 	{
-		"en"		"Internius Alliances"
+		"en"		"interitus Alliances"
 	}
 	"Headcrab Zombie Desc"
 	{
@@ -222,7 +222,7 @@
 	}
 	"X10 Spy Main Desc"
 	{
-		"en" 		"Spymains from an alternative timeline.\nHe has the deadringer but attacks through it.\nShoots at you and once below half heatlh those bullets turn into rockets.\nEvery 3rd melee hit deals bonus damage and knocks you away.\nOnce below half health he only takes 65% of the damage.\nDeadringer gives 90% resistance (resistsance can be silenced)."
+		"en" 		"Spymains from an alternative timeline.\nHe has the deadringer but attacks through it.\nShoots at you and once below half heatlh those bullets turn into rockets.\nEvery 3rd melee hit deals bonus damage and knocks you away.\nOnce below half health he only takes 65%% of the damage.\nDeadringer gives 90%% resistance (resistsance can be silenced)."
 	}
 		
 	//XENO
@@ -406,7 +406,7 @@
 	}
 	"Cured Father Grigori Desc"
 	{
-		"en" 		"You Managed to heal grigori of the virus. He will assist you in Battle.\nDuring Setup times he will sell random weapons for 20% off."
+		"en" 		"You Managed to heal grigori of the virus. He will assist you in Battle.\nDuring Setup times he will sell random weapons for 20%% off."
 	}
 	"Combine Mage Desc"
 	{
@@ -526,7 +526,7 @@
 	}
 	"Samurai Desc"
 	{
-		"en" 		"A combine who adopted an acient way of battle, highly deadly.\nWill deal 25% extra damage to any non, melee player, and get angered if attacked by anything non melee."
+		"en" 		"A combine who adopted an acient way of battle, highly deadly.\nWill deal 25%% extra damage to any non, melee player, and get angered if attacked by anything non melee."
 	}
 	"The Addiction Desc"
 	{
@@ -543,6 +543,10 @@
 	"Kahmlstein Desc"
 	{
 		"en"		"A far distant battler, he doesnt care about chaos, he just wants to fight, you cant kill him, hell fake his death and just go away as he is bored."
+	}
+	"Chaos Kahmlstein Desc"
+	{
+		"en"		"Afflicted by chaos to make his reasoning uncontrollable.\nHe hates you for killing expidonsans.\nDont let the fight take too long as he gets faster over time.\n(Silence) makes his melee not glide you around, it also makes his projectiles deal less chaos, also reduces resistances he gets when going below a health threshhold."
 	}
 	"L4D2 Tank Desc"
 	{
@@ -562,7 +566,7 @@
 	}
 	"Capped Ram Desc"
 	{
-		"en"		"takes 0.01% dmg from ranged attacks and does high damage to barricades."
+		"en"		"takes 0.01%% dmg from ranged attacks and does high damage to barricades."
 	}
 	"The Shit Slapper Desc"
 	{
@@ -691,7 +695,7 @@
 	}
 	"Hussar Desc"
 	{
-		"en"		"Buffs allies around it, and protects allies, take out asap.\nBuffs give 10% more dmg and resistance (can be silenced)."
+		"en"		"Buffs allies around it, and protects allies, take out asap.\nBuffs give 10%% more dmg and resistance (can be silenced)."
 	}
 	"Knight Desc"
 	{
@@ -907,7 +911,7 @@
 	}
 	"Regressed Predator Desc"
 	{
-		"en"		"Drops remains, when consumed, provides a 50% dodge chance.\n''A special individual among the Predators.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
+		"en"		"Drops remains, when consumed, provides a 50%% dodge chance.\n''A special individual among the Predators.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
 	}
 	"Nethersea Brandguider Desc"
 	{
@@ -919,7 +923,7 @@
 	}
 	"Regressed Brandguider Desc"
 	{
-		"en"		"Drops remains, when consumed and below 40% health, provides melee resistance and ignore buildings.\n''A special individual among the Brandguiders.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
+		"en"		"Drops remains, when consumed and below 40%% health, provides melee resistance and ignore buildings.\n''A special individual among the Brandguiders.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
 	}
 	"Armorless Union Assassin Desc"
 	{
@@ -1291,7 +1295,7 @@
 	}
 	"Ruriana Desc"
 	{
-		"en"		"A more powerful Lanius, however lacks the ability to teleport on its own, and lacks the speed buffing abilitity\nHowever, damage taken in the last 5 seconds gets converted into AOE healing with a 2 dmg to 1 healing ratio\nThe healing cap is 10% of the npc's health"
+		"en"		"A more powerful Lanius, however lacks the ability to teleport on its own, and lacks the speed buffing abilitity\nHowever, damage taken in the last 5 seconds gets converted into AOE healing with a 2 dmg to 1 healing ratio\nThe healing cap is 10%% of the npc's health"
 	}
 	"Venium Desc"
 	{
@@ -1343,6 +1347,122 @@
 	}
 	"Major Steam Desc"
 	{
-		"en"	"A giant steampunk soldier which reloads while not firing.\nAble to fire when has enough rounds and can't change target while firing.\nExplodes on death killing all non-bosses."
+		"en"	"A giant steampunk soldier which reloads while not firing.\nAble to fire when has enough rounds and can't change target while firing.\nExplodes on death killing all non-bosses.\nEach time it takes an instance of damage, he loses abit of resistance."
+	}
+	"Ahim Desc" 
+	{
+		"en"	"Throws a cleaver when close enough, then engages in melee combat."
+	}
+	"Inabdil Desc" 
+	{
+		"en"	"Ramps up speed over time, at max speed it gains massive damage and resistance, and its sword glows gold, when it melee's, missing or not itll lose this bonus, deals chaos damage if charged."
+	}
+	"Khazaan Desc" 
+	{
+		"en"	"Each 3rd melee attack that hits will give him 50%% more resistance upto 75%% at max."
+	}
+	"Sakratan Desc" 
+	{
+		"en"	"Inflicts the chaos debuff, which makes you explode, dealing 250 true damage to everoyne around you.\nThis also causes all affected allies to recieve 25%% more damage for 10 seconds."
+	}
+	"Yadeam Desc" 
+	{
+		"en"	"Heals all allies around themselves except eachother.\nThrows explosive piss."
+	}
+	"Rajul Desc" 
+	{
+		"en"	"When taking damage, depending onthe damage he will heal 3 allies around himself.\nIf they recieve enough overheal, they will recieve a permanent buff."
+	}
+	"Qanaas Desc" 
+	{
+		"en"	"A sniper that spawns randomly around the map.\nTheir aim isnt good so dodging is easy.\nDeals immensive damage to barricades."
+	}
+	"Atilla Desc" 
+	{
+		"en"	"Deals low damage but inflicts bleed."
+	}
+	"Ancient Demon Desc" 
+	{
+		"en"	"Each time an enemy dies around them they gain HP, damage, resistance and a speed buff.\nThis also spawns a weaker smaller version of them randmly around the map.\nBuffs stack infinitly.\nDeals chaos damage."
+	}
+	"Winter Sniper Desc" 
+	{
+		"en"	"A stronger Ziberian sniper which deals massive chaos damage."
+	}
+	"Ziberian Miner Desc" 
+	{
+		"en"	"Deals massive building damage."
+	}
+	"Snowey Gunner Desc" 
+	{
+		"en"	"Tries to kite you, and has great heatlh and ranged damage."
+	}
+	"Freezing Cleaner Desc" 
+	{
+		"en"	"attacks immensively fast and deals AOE damage, deals huge chaos damage."
+	}
+	"Airborn Explorer Desc" 
+	{
+		"en"	"Can jump and while midair they gain 3x damage, 3x range, and take 2x ranged damage."
+	}
+	"Arctic Mage Desc" 
+	{
+		"en"	"When taking damage, depending onthe damage he will heal 3 allies around himself.\nIf they recieve enough overheal, they will recieve a permanent buff.\nGives himself a shield sometimes on hit, and shields allies on hit aswell.\nDeals huge chaos damage."
+	}
+	"Frost Hunter Desc" 
+	{
+		"en"	"Fires 2 shots before going in with their melee."
+	}
+	"Skin Hunter Desc" 
+	{
+		"en"	"Heals all allies around them except eachother, throws knives that predict your movement."
+	}
+	"Irritated Person Desc" 
+	{
+		"en"	"Each 3rd attack gives a small resistance buff upto 75%%.\nThe more he is hurt, the more damage he takes but he gets faste rand deals more damage too.\nJumps at you but if enough health is lost, he will instead do a ground pound which damages all enemeis."
+	}
+	"Ransacker Desc" 
+	{
+		"en"	"Throws a cleaver and then goes in for melee."
+	}
+	"Runover Desc" 
+	{
+		"en"	"Ramps up speed over time, at max speed it gains massive damage and resistance, and its sword glows gold, when it melee's, missing or not itll lose this bonus, deals chaos damage if charged."
+	}
+	"Hitman Desc" 
+	{
+		"en"	"Deals immensive damage and chaos to everything.\nIs extreamly fast and dodges every 2nd attack.\nHas low HP and takes 2.5x melee damage but takes 50%% less ranged damage."
+	}
+	"Mad Doctor Desc"
+	{
+		"en"	"attacks very very fast and each 3rd attack gives it resistance and a big attack cooldown to itself.\nEach ATTACK not based on damage heals allies around themselves simular to rajul or arctic mage."
+	}
+	"Abomination Desc"
+	{
+		"en"	"Deals immensive damage overtime, deals chaos damage and burns you.\nEach attack it recieves will grant it resistance towards the damage type it got, and vulnerability to the other.\n(Silence) causes the resistance gain part to not happen."
+	}
+	"Anarchist Enforcer Desc"
+	{
+		"en"	"A sniper that deals huge damgae and gives bleed."
+	}
+	"Braindead Desc"
+	{
+		"en"	"Shoots 10 shots very fast with high damage, and then reloads for a long time."
+	}
+	"Behemonth Desc"
+	{
+		"en"	"Has very high health and chaos damage.\nIs entirely immune to headshots."
+	}
+	"Absolute Incinirator Desc"
+	{
+		"en"	"An enemy that kites you and also burns you with his ''shotgun''."
+	}
+	"The Messenger Desc"
+	{
+		"en"	"Kahmlsteins forced right hand man, he really wants his attention.\nApart of the no goverment group called Interitus.\nWave 15: Deals fire and bleed damage.\nWave 30: deals massive chaos damage.\nEach time he does his 4 ball attack he gains permanent power and resistance.\nEach time he shows his hand sign he will teleport.\n(Silence) Reduces chaos damage he deals."
+	}
+	"The Purge Desc"
+	{
+		"en"	"A machine to help the efforts of the Interitus group.\nHas a great arsenal of weapons.\nHeals when low enough and gains massive power everytime he has his fists out.\nFinish the fight fast before he becomes too strong."
 	}
 }

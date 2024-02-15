@@ -62,7 +62,7 @@ methodmap Archosauria < CClotBody
 			npc.m_flSpeed = 300.0;
 		}
 
-		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	

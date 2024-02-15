@@ -50,7 +50,7 @@ methodmap MajorSteam < CClotBody
 		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
 		
-		npc.m_flSpeed = 120.0;
+		npc.m_flSpeed = 100.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_iOverlordComboAttack = 0;
@@ -136,7 +136,7 @@ static void ClotThink(int iNPC)
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 				npc.PlayMeleeSound();
 
-				int entity = npc.FireRocket(vecTarget, 350.0, 350.0,_,_,_,70.0);
+				int entity = npc.FireRocket(vecTarget, 200.0, 350.0,_,_,_,70.0);
 				if(entity != -1)
 				{
 					i_ChaosArrowAmount[entity] = 100;

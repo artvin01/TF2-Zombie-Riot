@@ -840,6 +840,10 @@
 		"pt"		"Kahmlstein" 
 		"nl"		"Kahmlstein"
 	}
+	"Chaos Kahmlstein"
+	{
+		"en"		"Chaos Kahmlstein"
+	}
 	"L4D2 Tank"
 	{
 		"en"		"Tank"

@@ -383,7 +383,7 @@ public void TheMessenger_ClotThink(int iNPC)
 	if(TheMessengerTalkPostWin(npc))
 		return;
 */
-	if(RaidModeTime < GetGameTime())
+	if(RaidBossActive != INVALID_ENT_REFERENCE && RaidModeTime < GetGameTime())
 	{
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");
@@ -427,15 +427,15 @@ public void TheMessenger_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{darkblue}The Messenger{default}: Your friends are dead. {crimson}Accept your fate.");
+						CPrintToChatAll("{lightblue}The Messenger{default}: Your friends are dead. {crimson}Accept your fate.");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{darkblue}The Messenger{default}: It's just you and me now.");
+						CPrintToChatAll("{lightblue}The Messenger{default}: It's just you and me now.");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{darkblue}The Messenger{default}: Give up, you cannot win.");
+						CPrintToChatAll("{lightblue}The Messenger{default}: Give up, you cannot win.");
 					}
 				}
 			}
@@ -445,15 +445,15 @@ public void TheMessenger_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{darkblue}The Messenger{default}: YOU ARE DEAD");
+						CPrintToChatAll("{lightblue}The Messenger{default}: YOU ARE DEAD");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{darkblue}The Messenger{default}: I'LL FUCK YOU UP");
+						CPrintToChatAll("{lightblue}The Messenger{default}: I'LL FUCK YOU UP");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{darkblue}The Messenger{default}: AHAHAHAHAHAHA");
+						CPrintToChatAll("{lightblue}The Messenger{default}: AHAHAHAHAHAHA");
 					}
 				}				
 			}
@@ -1057,19 +1057,13 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 								{
 									Knocked = true;
 									Custom_Knockback(npc.index, targetTrace, 900.0, true);
-									if(!NpcStats_IsEnemySilenced(npc.index))
-									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
-									}
+									TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
 								}
 								else
 								{
-									if(!NpcStats_IsEnemySilenced(npc.index))
-									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
-									}
+									TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
 								}
 							}
 										
@@ -1082,7 +1076,11 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 							}
 							else
 							{
-								Sakratan_AddNeuralDamage(targetTrace, npc.index, 150, true, true);
+								int ChaosDamage = 150;
+								if(NpcStats_IsEnemySilenced(npc.index))
+									ChaosDamage = 100;
+
+								Sakratan_AddNeuralDamage(targetTrace, npc.index, ChaosDamage, true, true);
 							}
 
 							if(!Knocked)
@@ -1166,7 +1164,11 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 		}
 		else
 		{
-			Sakratan_AddNeuralDamage(target, owner, 75, true, true);
+			int ChaosDamage = 75;
+			if(NpcStats_IsEnemySilenced(owner))
+				ChaosDamage = 40;
+
+			Sakratan_AddNeuralDamage(target, owner, ChaosDamage, true, true);
 		}
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))

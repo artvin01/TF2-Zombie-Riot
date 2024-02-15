@@ -189,7 +189,7 @@ methodmap ThePurge < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "The Pruge Arrived");
+				ShowGameText(client_check, "item_armor", 1, "%t", "The Purge Arrived");
 			}
 		}
 		CPrintToChatAll("{crimson}The Purge{default}: {crimson}Engaging the targets.");
@@ -776,9 +776,9 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			npc.m_flRangedArmor = 0.25;
 			npc.m_flMeleeArmor = 0.375;
 
-			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 8.0, _, 3.0, HEAL_ABSOLUTE);
-			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 16.0, _, 13.0, HEAL_ABSOLUTE);
-			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 16.0, _, 13.0, HEAL_SELFHEAL|HEAL_SILENCEABLE);
+			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 6.0, _, 3.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 12.0, _, 13.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 12.0, _, 13.0, HEAL_SELFHEAL|HEAL_SILENCEABLE);
 		}
 	}
 	return Plugin_Changed;
