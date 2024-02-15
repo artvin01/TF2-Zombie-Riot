@@ -2730,7 +2730,7 @@
 	}
 	"Ludomancy Desc"
 	{
-		"en"	"Mathematical Foresight: Gain a passive ability that lets you (somewhat) predict the value of your next card.\nAll cards gain one out of four symbols, which improve the effect of the drawn card."
+		"en"	"Mathematical Foresight: Gain a passive ability that lets you (somewhat) predict the value of your next card.\nAll cards gain one out of four symbols:\n$ = BlackJack value reduced by 1\n^ = Dmg increased by 10%\n# = 3 of these lead to a prize\n* = Improves current card"
 	}
 	"Ludomancy Extra Desc"
 	{
