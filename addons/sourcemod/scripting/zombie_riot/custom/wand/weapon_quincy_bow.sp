@@ -3,23 +3,16 @@
 
 static Handle h_TimerQuincy_BowManagement[MAXPLAYERS+1] = {null, ...};
 static float fl_hud_timer[MAXTF2PLAYERS+1];
-static int i_Quincy_Skill_Points[MAXTF2PLAYERS + 1];
 static float fl_Quincy_Charge[MAXTF2PLAYERS + 1];
 static float fl_Quincy_Max_Battery[MAXTF2PLAYERS + 1];
 static float fl_Quincy_Charge_Multi[MAXTF2PLAYERS + 1];
 
-static bool b_quincy_battery_special_one[MAXTF2PLAYERS + 1];
-static bool b_quincy_battery_special_two[MAXTF2PLAYERS + 1];
-static int i_quincy_pap[MAXTF2PLAYERS + 1];
+#define QUINCY_BOW_HYPER_BARRAGE_DRAIN 10.0		//how much charge is drained per shot
+#define QUINCY_BOW_HYPER_BARRAGE_MINIMUM 25.0	//what % of charge does the battery need to start firing
+#define QUINCY_BOW_MAX_HYPER_BARRAGE 15			//how many maximum individual timers/origin points are shot, kinda like how many of them can be fired a second, this is the max amt
+#define QUINCY_BOW_MULTI_SHOT_MINIMUM	50.0	//yada yada
 
-static int Beam_Laser;
-static int Beam_Glow;
-
-#define QUINCY_BOW_HYPER_SHOT_SOUND "ambient_mp3/halloween/thunder_01.mp3"	//I cast floodgate!
-#define QUINCY_BOW_PENETRATING_SHOT_SOUND "ambient_mp3/halloween/thunder_07.mp3"
-#define QUINCY_BOW_ARROW_TOUCH_SOUND "friends/friend_online.wav"	//who needs friends anyway... :(
-#define QUINCY_BOW_MENU_SOUND1 "misc/halloween/spelltick_02.wav"
-#define QUINCY_BOW_MENU_SOUND2 "misc/halloween/spelltick_01.wav"
+#define QUINCY_BOW_ARROW_TOUCH_SOUND "friends/friend_online.wav"
 
 static float fl_sound_timer[MAXTF2PLAYERS + 1];
 
@@ -45,90 +38,28 @@ static const char Zap_Sound[][] = {
 #define QUINCY_BOW_BASELINE_BATTERY 300.0
 
 
-/*
-	How much mana the bow can store
-	
-	100% = 300	//baseline.
-	800	//battery1
-	1300	//battery2
-	1800	//battery3
-	750% = 2300	//battery4
-	
-	Baseline damage is 100*charge%
-	
-	so if charge is 500%
-	dmg = 100*5.0
-	baseline dmg = 500.0*upgrades
-
-*/
-#define QUINCY_BOW_HYPER_BARRAGE_DRAIN 10.0		//how much charge is drained per shot
-#define QUINCY_BOW_HYPER_BARRAGE_MINIMUM 25.0	//what % of charge does the battery need to start firing
-#define QUINCY_BOW_MAX_HYPER_BARRAGE 15			//how many maximum individual timers/origin points are shot, kinda like how many of them can be fired a second, this is the max amt
-#define QUINCY_BOW_MULTI_SHOT_MINIMUM	50.0	//yada yada
-
-#define QUINCY_BOW_HYPER_ARROW_MINIMUM	700.0		//what % of charge does the battery need to be before hyper arrow is triggerable
-#define QUINCY_BOW_PENETRATING_ARROW_MINIMUM 425.0	//same thing as hyper arrow
-
-
-
-#define QUINCY_BOW_FAST_CHARGE_1	(1 << 1)
-#define QUINCY_BOW_FAST_CHARGE_2	(1 << 2)
-#define QUINCY_BOW_FAST_CHARGE_3	(1 << 3)
-#define QUINCY_BOW_FAST_CHARGE_4	(1 << 4)
-
-#define QUINCY_BOW_BATTERY_1		(1 << 5)
-#define QUINCY_BOW_BATTERY_2		(1 << 6)
-#define QUINCY_BOW_BATTERY_3		(1 << 7)
-#define QUINCY_BOW_BATTERY_4		(1 << 8)
-
-static bool b_skill_points_give_at_pap[MAXTF2PLAYERS + 1][7];
-
-static int Quincy_Bow_Hex_Array[MAXTF2PLAYERS+1];
 static float fl_Quincy_Barrage_Firerate[MAXTF2PLAYERS + 1][QUINCY_BOW_MAX_HYPER_BARRAGE+1];
 
 static int g_rocket_particle;
 static int g_particleImpactTornado;
 
-public void Quincy_On_Buy_Reset(int client)
-{
-	Quincy_Bow_Hex_Array[client] = 0;
-	i_Quincy_Skill_Points[client] = 0;
-	for(int i=0 ; i < 7 ; i++)
-	{
-		b_skill_points_give_at_pap[client][i] = false;
-	}
-	//CPrintToChatAll("client %N, Stats RESET", client);
-}
-
 public void QuincyMapStart()
 {
-	PrecacheSound(QUINCY_BOW_HYPER_SHOT_SOUND);
-	PrecacheSound(QUINCY_BOW_PENETRATING_SHOT_SOUND);
 	PrecacheSound(QUINCY_BOW_ARROW_TOUCH_SOUND);
-	PrecacheSound(QUINCY_BOW_MENU_SOUND1);
-	PrecacheSound(QUINCY_BOW_MENU_SOUND2);
 	
 	for (int i = 0; i < (sizeof(Zap_Sound));	   i++) { PrecacheSound(Zap_Sound[i]);	   }
 	for (int i = 0; i < (sizeof(Spark_Sound));	   i++) { PrecacheSound(Spark_Sound[i]);	   }
 	
-	Zero(i_quincy_pap);
 	Zero2(fl_Quincy_Barrage_Firerate);
 	Zero(fl_sound_timer);
-	Zero(b_quincy_battery_special_one);
-	Zero(b_quincy_battery_special_two);
 	Zero(fl_Quincy_Charge_Multi);
 	Zero(fl_Quincy_Charge);
-	Zero(i_Quincy_Skill_Points);
 	Zero(h_TimerQuincy_BowManagement);
 	Zero(fl_hud_timer);
-	Zero(Quincy_Bow_Hex_Array);
-	Zero2(b_skill_points_give_at_pap);
 	
 	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
 	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
-	
-	Beam_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
-	Beam_Glow = PrecacheModel("sprites/glow02.vmt", true);
+
 	
 	for(int client=1 ; client <= MAXTF2PLAYERS ; client++)
 	{
@@ -137,19 +68,9 @@ public void QuincyMapStart()
 	}
 	
 }
-static void Give_Skill_Points(int client, int pap)
-{
-	if(!b_skill_points_give_at_pap[client][pap])	//no going back!
-	{
-		b_skill_points_give_at_pap[client][pap] = true;
-		i_Quincy_Skill_Points[client]++;
-	}
-}
 static int Get_Quincy_Pap(int weapon)
 {
-	int pap = 0;
-	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
-	return pap;
+	return RoundFloat(Attributes_Get(weapon, 122, 0.0));
 }
 public void Activate_Quincy_Bow(int client, int weapon)
 {
@@ -162,13 +83,39 @@ public void Activate_Quincy_Bow(int client, int weapon)
 			//Yes?
 			delete h_TimerQuincy_BowManagement[client];
 			h_TimerQuincy_BowManagement[client] = null;			
-		//	Create_Quincy_Weapon(client, true);
 			
 			
 			int pap = Get_Quincy_Pap(weapon);
-			if(pap!=0)
-				Give_Skill_Points(client, pap);
-			i_quincy_pap[client] = pap;
+
+			switch(pap)
+			{
+				case 0:
+				{
+					fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY;
+					fl_Quincy_Charge_Multi[client] = 1.0;
+				}
+				case 1:
+				{
+					fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*1.1;
+					fl_Quincy_Charge_Multi[client] = 1.5;
+				}
+				case 2:
+				{
+					fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*1.2;
+					fl_Quincy_Charge_Multi[client] = 2.0;
+				}
+				case 3:
+				{
+					fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*1.5;
+					fl_Quincy_Charge_Multi[client] = 2.25;
+				}
+				case 5:
+				{
+					fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*1.7;
+					fl_Quincy_Charge_Multi[client] = 2.5;
+				}
+			}
+
 			DataPack pack;
 			h_TimerQuincy_BowManagement[client] = CreateDataTimer(0.1, Timer_Management_Quincy_Bow, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
@@ -180,12 +127,35 @@ public void Activate_Quincy_Bow(int client, int weapon)
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_QUINCY_BOW)
 	{
 		int pap = Get_Quincy_Pap(weapon);
-		if(pap!=0)
-			Give_Skill_Points(client, pap);
-		i_quincy_pap[client] = pap;
 
-		
-	//	Create_Quincy_Weapon(client, true);
+		switch(pap)
+		{
+			case 0:
+			{
+				fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY;
+				fl_Quincy_Charge_Multi[client] = 1.0;
+			}
+			case 1:
+			{
+				fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*1.1;
+				fl_Quincy_Charge_Multi[client] = 1.5;
+			}
+			case 2:
+			{
+				fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*1.2;
+				fl_Quincy_Charge_Multi[client] = 2.0;
+			}
+			case 3:
+			{
+				fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*1.5;
+				fl_Quincy_Charge_Multi[client] = 2.25;
+			}
+			case 5:
+			{
+				fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*1.7;
+				fl_Quincy_Charge_Multi[client] = 2.5;
+			}
+		}
 		
 		DataPack pack;
 		h_TimerQuincy_BowManagement[client] = CreateDataTimer(0.1, Timer_Management_Quincy_Bow, pack, TIMER_REPEAT);
@@ -221,15 +191,15 @@ static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 		int buttons = GetClientButtons(client);
 		bool attack = (buttons & IN_ATTACK) != 0;
 		bool attack2 = (buttons & IN_ATTACK2) != 0;
+
+		int pap = Get_Quincy_Pap(weapon);
 		
 		float charge_percent = (fl_Quincy_Charge[client] / QUINCY_BOW_BASELINE_BATTERY) * 100.0;
 		
 		if(fl_hud_timer[client]<GameTime)
 		{
-			//CPrintToChatAll("charge %.1f", fl_Quincy_Charge[client]);
 			fl_hud_timer[client] = GameTime + 0.5;
-			Quincy_Bow_Show_Hud(client, charge_percent);
-			//Update_Quincy(client);
+			Quincy_Bow_Show_Hud(client, charge_percent, weapon);
 		}
 		if(!attack && !attack2 && b_lockout[client])
 		{
@@ -265,10 +235,7 @@ static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 						EmitSoundToAll(Spark_Sound[GetRandomInt(0, sizeof(Spark_Sound)-1)], client, SNDCHAN_STATIC, 80, _, 0.15, RoundToFloor(charge_percent_sound)+25);
 					}
 					
-				}
-			
-
-				
+				}		
 			}
 			if(fl_Quincy_Max_Battery[client]>fl_Quincy_Charge[client])
 			{
@@ -298,97 +265,11 @@ static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Insufficient Charge");
 		}
-		int flags = Quincy_Bow_Hex_Array[client];
-		if(flags & QUINCY_BOW_FAST_CHARGE_4)	//Hyper Barrage
+		if(pap>=4)	//Hyper Barrage
 		{
 			if(charge_percent>QUINCY_BOW_HYPER_BARRAGE_MINIMUM)
 			{
-				float angles[3];
-				float UserLoc[3];
-				
-				GetClientEyePosition(client, UserLoc);
-				GetClientEyeAngles(client, angles);
-				int speed = RoundToCeil(charge_percent / 20.0);
-				
-				
-				
-				float distance = GetRandomFloat(float(speed)*10.0, float(speed)*25.0);
-
-				float tempAngles[3], endLoc[3], Direction[3];
-				
-				float base = 180.0 / speed;
-				
-				float tmp=base;
-				
-				Handle swingTrace;
-				float Vec_offset[3] , vec[3];
-						
-				b_LagCompNPC_No_Layers = true;
-				StartLagCompensation_Base_Boss(client);
-				DoSwingTrace_Custom(swingTrace, client, Vec_offset, 9999.9, false, 10.0, false); //infinite range, and (doesn't)ignore walls!	
-				FinishLagCompensation_Base_boss();
-			
-				int target = TR_GetEntityIndex(swingTrace);	
-				if(IsValidEnemy(client, target))
-				{
-					vec = WorldSpaceCenterOld(target);
-					
-				}
-				else
-				{
-					TR_GetEndPosition(vec, swingTrace);
-				}
-				Vec_offset = vec;
-						
-				delete swingTrace;
-				
-				UserLoc[2] -= 50.0;
-				
-				if(speed>QUINCY_BOW_MAX_HYPER_BARRAGE)
-					speed = QUINCY_BOW_MAX_HYPER_BARRAGE;
-				for(int i=1 ; i<=speed ; i++)
-				{	
-					if(fl_Quincy_Barrage_Firerate[client][i]<GameTime)
-					{
-						float firerate = 0.5;
-						firerate *= Attributes_Get(weapon, 5, 1.0);
-						firerate *= Attributes_Get(weapon, 6, 1.0);
-						
-						fl_Quincy_Barrage_Firerate[client][i] = GameTime + firerate + GetRandomFloat(firerate/-2.0, firerate/2.0);
-						
-						fl_Quincy_Charge[client] -= QUINCY_BOW_HYPER_BARRAGE_DRAIN;
-						
-						
-						tempAngles[0] =	tmp*float(i)+180-(base/2);	//180 = Directly upwards, minus half the "gap" angle
-						tempAngles[1] = angles[1]-90.0;
-						tempAngles[2] = 0.0;
-						
-						if(tempAngles[0]>=360)
-						{
-							tempAngles[0] -= 360;
-						}
-									
-						GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-						ScaleVector(Direction, distance);
-						AddVectors(UserLoc, Direction, endLoc);
-						
-						float fl_speed = 3000.0*(charge_percent/50.0);
-		
-						fl_speed *= Attributes_Get(weapon, 103, 1.0);
-							
-						fl_speed *= Attributes_Get(weapon, 104, 1.0);
-							
-						fl_speed *= Attributes_Get(weapon, 475, 1.0);
-						
-						if(fl_speed>3000.0)
-							fl_speed = 3000.0;
-							
-						float damage;
-						damage = 33.0*(charge_percent/100.0);
-						damage *= Attributes_Get(weapon, 410, 1.0);
-						Quincy_Rocket_Launch(client, weapon, endLoc, Vec_offset, fl_speed, damage, "raygun_projectile_blue");
-					}
-				}
+				Quincy_Hyper_Barrage(client, charge_percent, GameTime, weapon);
 			}
 		}
 		
@@ -398,29 +279,107 @@ static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 		Delete_Quincy_Weapon(client);
 	}
 }
+static void Quincy_Hyper_Barrage(int client, float charge_percent, float GameTime, int weapon)
+{
+	float angles[3];
+	float UserLoc[3];
+	
+	GetClientEyePosition(client, UserLoc);
+	GetClientEyeAngles(client, angles);
+	int speed = RoundToCeil(charge_percent / 20.0);
+
+	float distance = GetRandomFloat(float(speed)*10.0, float(speed)*25.0);
+
+	float tempAngles[3], endLoc[3], Direction[3];
+	
+	float base = 180.0 / speed;
+	
+	float tmp=base;
+	
+	Handle swingTrace;
+	float Vec_offset[3] , vec[3];
+			
+	b_LagCompNPC_No_Layers = true;
+	StartLagCompensation_Base_Boss(client);
+	DoSwingTrace_Custom(swingTrace, client, Vec_offset, 9999.9, false, 10.0, false); //infinite range, and (doesn't)ignore walls!	
+	FinishLagCompensation_Base_boss();
+
+	int target = TR_GetEntityIndex(swingTrace);	
+	if(IsValidEnemy(client, target))
+	{
+		vec = WorldSpaceCenterOld(target);
+		
+	}
+	else
+	{
+		TR_GetEndPosition(vec, swingTrace);
+	}
+	Vec_offset = vec;
+			
+	delete swingTrace;
+	
+	UserLoc[2] -= 50.0;
+	
+	if(speed>QUINCY_BOW_MAX_HYPER_BARRAGE)
+		speed = QUINCY_BOW_MAX_HYPER_BARRAGE;
+
+	for(int i=1 ; i<=speed ; i++)
+	{	
+		if(fl_Quincy_Barrage_Firerate[client][i]<GameTime)
+		{
+			float firerate = 0.5;
+			firerate *= Attributes_Get(weapon, 5, 1.0);
+			firerate *= Attributes_Get(weapon, 6, 1.0);
+			
+			fl_Quincy_Barrage_Firerate[client][i] = GameTime + firerate + GetRandomFloat(firerate/-2.0, firerate/2.0);
+			
+			fl_Quincy_Charge[client] -= QUINCY_BOW_HYPER_BARRAGE_DRAIN;
+			
+			
+			tempAngles[0] =	tmp*float(i)+180-(base/2);	//180 = Directly upwards, minus half the "gap" angle
+			tempAngles[1] = angles[1]-90.0;
+			tempAngles[2] = 0.0;
+			
+			if(tempAngles[0]>=360)
+			{
+				tempAngles[0] -= 360;
+			}
+						
+			GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+			ScaleVector(Direction, distance);
+			AddVectors(UserLoc, Direction, endLoc);
+			
+			float fl_speed = 3000.0*(charge_percent/50.0);
+
+			fl_speed *= Attributes_Get(weapon, 103, 1.0);
+				
+			fl_speed *= Attributes_Get(weapon, 104, 1.0);
+				
+			fl_speed *= Attributes_Get(weapon, 475, 1.0);
+			
+			if(fl_speed>3000.0)
+				fl_speed = 3000.0;
+				
+			float damage;
+			damage = 33.0*(charge_percent/100.0);
+			damage *= Attributes_Get(weapon, 410, 1.0);
+			Quincy_Rocket_Launch(client, weapon, endLoc, Vec_offset, fl_speed, damage, "raygun_projectile_blue");
+		}
+	}
+}
 static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 {
 	
-	int flags = Quincy_Bow_Hex_Array[client];
+	int pap = Get_Quincy_Pap(weapon);
 	
-	float speed = 3000.0*(charge_percent/100.0);
-	if(b_quincy_battery_special_two[client])
-	{
-		Quincy_Hyper_Arrow(client, charge_percent, weapon);
-		return;
-	}
-	float damage;
-	if(b_quincy_battery_special_one[client])
-	{
-		damage = 200.0*(charge_percent/100.0);
-		damage *= Attributes_Get(weapon, 410, 1.0);
-		Penetrating_Shot(client, 10.0, damage, 1500.0);
-		fl_Quincy_Charge[client] = 0.0;
-		return;
-	}
+	float speed = 6000.0*(charge_percent/100.0);
 
+	float damage=1.0;
+
+	if(speed>=3000)
+		speed=3000.0;
 	
-	if(flags & QUINCY_BOW_FAST_CHARGE_3)	//removes half charge debuff
+	if(pap>=2)	//removes half charge debuff
 	{
 		float charge_debuff = (charge_percent / 100.0);
 		if(charge_debuff<0.5)
@@ -431,11 +390,10 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 		
 		float multi_arrow_damage = 0.75*damage * Attributes_Get(weapon, 410, 1.0);
 		
-		if(charge_percent>50.0)
+		if(charge_percent>QUINCY_BOW_MULTI_SHOT_MINIMUM)
 		{
-			float amt = charge_percent / 25.0;
-			
-			
+			float amt = charge_percent / (QUINCY_BOW_MULTI_SHOT_MINIMUM/2.0);
+
 			float Vec_offset[3]; 
 			Get_Fake_Forward_Vec(client, 100.0, Vec_offset);
 			Vec_offset[2] -= 32.5;
@@ -448,9 +406,34 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 			
 			float wide_set = 45.0;	//How big the angle difference from left to right, in this case its 90 \/ if you set it to 90 rather then 45 it would be a 180 degree swing
 			
+			switch(pap)
+			{
+				case 2:
+				{
+					if(amt>=3.0)
+						amt=3.0;
+				}
+				case 3:
+				{
+					if(amt>=5.0)
+						amt=5.0;
+				}
+				case 4:
+				{
+					if(amt>=7.0)
+						amt=7.0;
+				}
+				default:
+				{
+					amt=3.0;
+				}
+			}
+
 			ang_Look[1] -= wide_set;
 			float type = (wide_set*2) / RoundToFloor(amt);	//check why its so horribly offset
 			ang_Look[1] -= type/2;
+
+			
 			for(int i=1 ; i<= RoundToFloor(amt) ; i++)
 			{
 		
@@ -502,15 +485,6 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 	
 	fl_Quincy_Charge[client] = 0.0;
 }
-
-public void Quincy_Bow_Debug(int client, int weapon, bool crit, int slot)
-{
-	int flags = Quincy_Bow_Hex_Array[client];
-	CPrintToChatAll("flags: %i", flags);
-	//i_Quincy_Skill_Points[client]++;
-	CPrintToChatAll("points, now total %i", i_Quincy_Skill_Points[client]);
-	
-}
 static void Get_Fake_Forward_Vec(int client, float Range, float Vec_Target[3])
 {
 	float vecAngles[3], Direction[3], Pos[3];
@@ -522,20 +496,43 @@ static void Get_Fake_Forward_Vec(int client, float Range, float Vec_Target[3])
 	AddVectors(Pos, Direction, Vec_Target);
 }
 
-static void Quincy_Bow_Show_Hud(int client, float charge_percent)
+static void Quincy_Bow_Show_Hud(int client, float charge_percent, int weapon)
 {
-	int flags = Quincy_Bow_Hex_Array[client];
 	
+	int pap = Get_Quincy_Pap(weapon);
 	
 	char HUDText[255] = "";
 	
 	Format(HUDText, sizeof(HUDText), "%sRaishi Concentration: %.1f％", HUDText, charge_percent);
-	
-	if(flags & QUINCY_BOW_FAST_CHARGE_3 && !(flags & QUINCY_BOW_FAST_CHARGE_4))
+
+
+	if(pap>=2)
 	{
 		if(charge_percent>QUINCY_BOW_MULTI_SHOT_MINIMUM)
 		{
 			float amt = charge_percent / (QUINCY_BOW_MULTI_SHOT_MINIMUM/2.0);
+			switch(pap)
+			{
+				case 2:
+				{
+					if(amt>=3.0)
+						amt=3.0;
+				}
+				case 3:
+				{
+					if(amt>=5.0)
+						amt=5.0;
+				}
+				case 4:
+				{
+					if(amt>=7.0)
+						amt=7.0;
+				}
+				default:
+				{
+					amt=3.0;
+				}
+			}
 			Format(HUDText, sizeof(HUDText), "%s\nExtra Shoots: [%i]", HUDText, RoundToFloor(amt));
 		}
 		else
@@ -543,51 +540,18 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent)
 			Format(HUDText, sizeof(HUDText), "%s\nMulti Shot: Inactive [%.1f％/%.1f％]", HUDText, charge_percent, QUINCY_BOW_MULTI_SHOT_MINIMUM);
 		}
 		
-	}
-	else if(flags & QUINCY_BOW_FAST_CHARGE_4)
-	{
-		if(charge_percent<25.0)
+		if(pap>=4)
 		{
-			Format(HUDText, sizeof(HUDText), "%s\nHyper Barrage Not Active!\nInsufficient Raishi! [%.1f％/%.1f％]", HUDText, charge_percent, QUINCY_BOW_HYPER_BARRAGE_MINIMUM);
-		}
-		else
-		{
-			Format(HUDText, sizeof(HUDText), "%s\nHyper Barrage Active!\nHyper Barrage Speed: [%.1f％]", HUDText, charge_percent);
-		}
-	}
-	
-	if(flags & QUINCY_BOW_BATTERY_3)
-	{
-		if(charge_percent>QUINCY_BOW_PENETRATING_ARROW_MINIMUM)
-		{
-			b_quincy_battery_special_one[client] = true;
-			Format(HUDText, sizeof(HUDText), "%s\nPenetrating Arrow Ready!", HUDText);
-		}
-		else
-		{
-			b_quincy_battery_special_one[client] = false;
-			Format(HUDText, sizeof(HUDText), "%s\nPenetrating Arrow Not Ready! [%.1f％/%.1f％]", HUDText, charge_percent, QUINCY_BOW_PENETRATING_ARROW_MINIMUM);
-		}
-			
-	}
-	if(flags & QUINCY_BOW_BATTERY_4)
-	{
-		if(charge_percent>QUINCY_BOW_HYPER_ARROW_MINIMUM)
-		{
-			b_quincy_battery_special_two[client] = true;
-			Format(HUDText, sizeof(HUDText), "%s\nHyper Arrow Ready!", HUDText);
-				
-		}
-		else
-		{
-			b_quincy_battery_special_two[client] = false;
-			Format(HUDText, sizeof(HUDText), "%s\nHyper Arrow Not Ready! [%.1f％/%.1f％]", HUDText, charge_percent, QUINCY_BOW_HYPER_ARROW_MINIMUM);
-				
+			if(charge_percent<25.0)
+			{
+				Format(HUDText, sizeof(HUDText), "%s\nHyper Barrage Not Active!\nInsufficient Raishi! [%.1f％/%.1f％]", HUDText, charge_percent, QUINCY_BOW_HYPER_BARRAGE_MINIMUM);
+			}
+			else
+			{
+				Format(HUDText, sizeof(HUDText), "%s\nHyper Barrage Active!\nHyper Barrage Speed: [%.1f％]", HUDText, charge_percent);
+			}
 		}
 	}
-	
-	
-	
 	
 	PrintHintText(client, HUDText);
 	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
@@ -629,248 +593,8 @@ public void Quincy_Touch(int entity, int target)
 		RemoveEntity(entity);
 	}
 }
-
-public void Quincy_Menu(int client, int weapon)
-{	
-	if(!IsValidClient(client))
-		return;
-		
-	Menu menu2 = new Menu(Quincy_Menu_Selection);
-	int flags = Quincy_Bow_Hex_Array[client];
-	
-	if(i_Quincy_Skill_Points[client]>0)
-	{
-		menu2.SetTitle("%t", "Quincy Menu First", i_Quincy_Skill_Points[client]);
-		
-		
-
-		if(!(flags & QUINCY_BOW_FAST_CHARGE_1))
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Fast1");
-			menu2.AddItem("1", buffer);
-		}
-		else if(!(flags & QUINCY_BOW_FAST_CHARGE_2))
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Fast2");
-			menu2.AddItem("1", buffer);
-		}
-		else if(!(flags & QUINCY_BOW_FAST_CHARGE_3))
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Fast3");
-			menu2.AddItem("1", buffer);
-		}
-		else if(!(flags & QUINCY_BOW_FAST_CHARGE_4))
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t","Quincy Fast4");
-			menu2.AddItem("1", buffer);
-		}
-		
-		
-		if(!(flags & QUINCY_BOW_BATTERY_1))
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat1");
-			menu2.AddItem("2", buffer);
-		}
-		else if(!(flags & QUINCY_BOW_BATTERY_2))
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat2");
-			menu2.AddItem("2", buffer);
-		}
-		else if(!(flags & QUINCY_BOW_BATTERY_3))
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat3");
-			menu2.AddItem("2", buffer);
-		}
-		else if(!(flags & QUINCY_BOW_BATTERY_4))
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat4");
-			menu2.AddItem("2", buffer);
-		}
-									
-	}					
-	else
-	{
-		menu2.SetTitle("%t", "Quincy Menu Second");
-		
-		if(!(flags & QUINCY_BOW_FAST_CHARGE_1))
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Charge_0");
-			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
-		}
-		else if(!(flags & QUINCY_BOW_FAST_CHARGE_2))
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Charge_1");
-			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
-		}
-		else if(!(flags & QUINCY_BOW_FAST_CHARGE_3))
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Charge_2");
-			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
-		}
-		else if(!(flags & QUINCY_BOW_FAST_CHARGE_4))
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t","Quincy Charge_3");
-			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
-		}
-		else
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t","Quincy Charge_4");
-			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
-		}
-		
-		if(!(flags & QUINCY_BOW_BATTERY_1))
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat_0");
-			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
-		}
-		else if(!(flags & QUINCY_BOW_BATTERY_2))
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat_1");
-			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
-		}
-		else if(!(flags & QUINCY_BOW_BATTERY_3))
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat_2");
-			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
-		}
-		else if(!(flags & QUINCY_BOW_BATTERY_4))
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat_3");
-			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
-		}
-		else
-		{
-			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat_4");
-			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
-		}
-
-	}
-	menu2.Display(client, MENU_TIME_FOREVER); // they have 3 seconds.
-	
-}
-
-static int Quincy_Menu_Selection(Menu menu, MenuAction action, int client, int choice)
-{
-	switch(action)
-	{
-		case MenuAction_End:
-		{
-			delete menu;
-		}
-		case MenuAction_Select:
-		{
-			int flags = Quincy_Bow_Hex_Array[client];
-			char buffer[24];
-			menu.GetItem(choice, buffer, sizeof(buffer));
-			int id = StringToInt(buffer);
-			
-			if(id==3)
-			{
-				return 0;	//do nothing
-			}
-			
-			i_Quincy_Skill_Points[client]--;
-			//CPrintToChatAll("Skill Points Left: %i", i_Quincy_Skill_Points[client]);
-			switch(id)
-			{
-				case 1:	//speed
-				{
-					EmitSoundToClient(client, QUINCY_BOW_MENU_SOUND1);
-					if(!(flags & QUINCY_BOW_FAST_CHARGE_1))
-					{
-						//CPrintToChatAll("Speed1");
-						Quincy_Bow_Hex_Array[client] |= QUINCY_BOW_FAST_CHARGE_1;
-						fl_Quincy_Charge_Multi[client] = 1.5;
-					}
-					else if(!(flags & QUINCY_BOW_FAST_CHARGE_2))
-					{
-						//CPrintToChatAll("Speed2");
-						Quincy_Bow_Hex_Array[client]  |= QUINCY_BOW_FAST_CHARGE_2;
-						fl_Quincy_Charge_Multi[client] = 1.75;
-					}
-					else if(!(flags & QUINCY_BOW_FAST_CHARGE_3))
-					{
-						//CPrintToChatAll("Speed3");
-						Quincy_Bow_Hex_Array[client]  |= QUINCY_BOW_FAST_CHARGE_3;
-						fl_Quincy_Charge_Multi[client] = 3.0;
-					}
-					else if(!(flags & QUINCY_BOW_FAST_CHARGE_4))
-					{
-						//CPrintToChatAll("Speed4");
-						Quincy_Bow_Hex_Array[client]  |= QUINCY_BOW_FAST_CHARGE_4;
-						fl_Quincy_Charge_Multi[client] = 4.5;
-					}
-					else
-					{
-						fl_Quincy_Charge_Multi[client] = 1.0;
-					}
-					
-					
-				}
-				case 2:	//battery
-				{
-					EmitSoundToClient(client, QUINCY_BOW_MENU_SOUND2);
-					if(!(flags & QUINCY_BOW_BATTERY_1))
-					{
-						//CPrintToChatAll("Battery1");
-						fl_Quincy_Max_Battery[client] = 800.0;
-						Quincy_Bow_Hex_Array[client] |= QUINCY_BOW_BATTERY_1;
-					}
-					else if(!(flags & QUINCY_BOW_BATTERY_2))
-					{
-						//CPrintToChatAll("Battery2");
-						fl_Quincy_Max_Battery[client] = 1300.0;
-						Quincy_Bow_Hex_Array[client]  |= QUINCY_BOW_BATTERY_2;
-					}
-					else if(!(flags & QUINCY_BOW_BATTERY_3))
-					{
-						//CPrintToChatAll("Battery3");
-						fl_Quincy_Max_Battery[client] = 1800.0;
-						Quincy_Bow_Hex_Array[client]  |= QUINCY_BOW_BATTERY_3;
-					}
-					else if(!(flags & QUINCY_BOW_BATTERY_4))
-					{
-						//CPrintToChatAll("Battery4");
-						fl_Quincy_Max_Battery[client] = 2300.0;
-						Quincy_Bow_Hex_Array[client]  |= QUINCY_BOW_BATTERY_4;
-					}
-					else
-					{
-						fl_Quincy_Max_Battery[client] = 300.0;
-					}
-				}
-			}
-		}
-	}
-	return 0;	//do nothing
-}
-
 static int i_particle[MAXPLAYERS+1][9];
 static int i_laser[MAXPLAYERS+1][7];
-/*
-static int i_charge_particle[MAXPLAYERS+1][2][9];
-static int i_charge_laser[MAXPLAYERS+1][2][9];
-
-static int i_battery_particle[MAXPLAYERS+1][2][9];
-static int i_battery_laser[MAXPLAYERS+1][2][9];*/
 
 static void test(float vec[3], float vec2[3], float Direction[3])
 {
@@ -938,12 +662,7 @@ static void Create_Quincy_Weapon(int client, bool first = false)
 	{
 		Delete_Quincy_Weapon(client);
 		Spawn_Weapon(client,viewmodelModel);
-	}
-	
-	
-		
-		
-		
+	}	
 }
 
 static void Spawn_Weapon(int client, int viewmodelModel)
@@ -1084,9 +803,6 @@ static void Spawn_Weapon(int client, int viewmodelModel)
 	i_particle[client][7] = EntIndexToEntRef(particle_8_1);
 	i_particle[client][8] = EntIndexToEntRef(i_particle_right);
 	
-	
-	
-	
 }
 static void Delete_Quincy_Weapon(int client)
 {
@@ -1103,233 +819,6 @@ static void Delete_Quincy_Weapon(int client)
 			RemoveEntity(entity);
 	}
 }
-
-static bool Quincy_Blade_BEAM_HitDetected[MAXENTITIES];
- static void Quincy_Hyper_Arrow(int client, float charge_percent, int weapon)
- {
- 	float damage = 200.0*(charge_percent/100.0);
- 	Client_Shake(client, 0, 50.0, 25.0, 1.5);
- 	damage *= Attributes_Get(weapon, 410, 1.0);
- 	Quincy_Damage_Trace(client, 20.0, damage);
- 	
- }
- static void Quincy_Damage_Trace(int client, float radius, float dmg)
-{
-	
-	EmitSoundToAll(QUINCY_BOW_HYPER_SHOT_SOUND, client, SNDCHAN_STATIC, 100, _, 1.0);
-	
-	float flPos_2[3];
-	float flAng_2[3];
-	GetAttachment(client, "effect_hand_r", flPos_2, flAng_2);
-	
-	float Vec_1[3], Vec_2[3], angles[3];
-	GetClientEyeAngles(client, angles);
-	GetClientEyePosition(client, Vec_1);
-	Handle trace = TR_TraceRayFilterEx(Vec_1, angles, 11, RayType_Infinite, BEAM_TraceWallsOnly);
-	if (TR_DidHit(trace))
-	{
-		TR_GetEndPosition(Vec_2, trace);
-		static float hullMin[3];
-		static float hullMax[3];
-
-		for (int i = 1; i < MAXENTITIES; i++)
-		{
-			Quincy_Blade_BEAM_HitDetected[i] = false;
-		}
-		
-		hullMin[0] = -radius;
-		hullMin[1] = hullMin[0];
-		hullMin[2] = hullMin[0];
-		hullMax[0] = -hullMin[0];
-		hullMax[1] = -hullMin[1];
-		hullMax[2] = -hullMin[2];
-		StartLagCompensation_Base_Boss(client);
-		Handle btrace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, 1073741824, Quincy_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-		delete btrace;
-		FinishLagCompensation_Base_boss();
-		if(VIPBuilding_Active())
-			dmg *= 0.5;
-			
-		for (int victim = 1; victim < MAXENTITIES; victim++)
-		{
-			if (Quincy_Blade_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
-			{
-				SDKHooks_TakeDamage(victim, client, client, dmg, DMG_PLASMA, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
-			}
-		}
-		radius *= 2.0;
-		int r, g, b;
-		r = 15;
-		g = 179;
-		b = 235;
-		int colorLayer4[4];
-		SetColorRGBA(colorLayer4, r, g, b, 60);
-		int colorLayer3[4];
-		SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 60);
-		int colorLayer2[4];
-		SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 60);
-		int colorLayer1[4];
-		SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 60);
-		TE_SetupBeamPoints(flPos_2, Vec_2, Beam_Laser, 0, 0, 0, 1.0, ClampBeamWidth(radius * 0.3 * 1.28), ClampBeamWidth(radius * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
-		TE_SendToAll(0.0);
-		int glowColor[4];
-		SetColorRGBA(glowColor, r, g, b, 60);
-		TE_SetupBeamPoints(flPos_2, Vec_2, Beam_Glow, 0, 0, 0, 1.75, ClampBeamWidth(radius * 0.3 * 1.28), ClampBeamWidth(radius * 0.3 * 1.28), 0, 1.5, glowColor, 0);
-		TE_SendToAll(0.0);
-	}
-	delete trace;
-
-}
-static bool Quincy_BEAM_TraceUsers(int entity, int contentsMask, int client)
-{
-	if (IsEntityAlive(entity))
-	{
-		Quincy_Blade_BEAM_HitDetected[entity] = true;
-	}
-	return false;
-}
-static bool BEAM_TraceWallsOnly(int entity, int contentsMask)
-{
-	return !entity;
-}
-static bool BeamWand_HitDetected[MAXTF2PLAYERS];
-static int BeamWand_BuildingHit[MAX_TARGETS_HIT];
-static float BeamWand_Targets_Hit[MAXTF2PLAYERS];
-static void Penetrating_Shot(int client, float radius, float damage, float range)
-{
-
-	EmitSoundToAll(QUINCY_BOW_PENETRATING_SHOT_SOUND, client, SNDCHAN_STATIC, 100, _, 1.0);
-	
-	float diameter = radius*2.0;
-	static float angles[3];
-	static float startPoint[3];
-	static float endPoint[3];
-	static float hullMin[3];
-	static float hullMax[3];
-	static float playerPos[3];
-	GetClientEyeAngles(client, angles);
-	GetClientEyePosition(client, startPoint);
-	Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, BEAM_TraceWallsOnly);
-	if (TR_DidHit(trace))
-	{
-		TR_GetEndPosition(endPoint, trace);
-		CloseHandle(trace);
-		ConformLineDistance(endPoint, startPoint, endPoint, range);
-		float lineReduce = radius * 2.0 / 3.0;
-		float curDist = GetVectorDistance(startPoint, endPoint, false);
-		if (curDist > lineReduce)
-		{
-			ConformLineDistance(endPoint, startPoint, endPoint, curDist - lineReduce);
-		}
-		for (int i = 1; i < MAXTF2PLAYERS; i++)
-		{
-			BeamWand_HitDetected[i] = false;
-		}
-		
-		
-		for (int building = 0; building < MAX_TARGETS_HIT; building++)
-		{
-			BeamWand_BuildingHit[building] = false;
-		}
-		
-		
-		hullMin[0] = -radius;
-		hullMin[1] = hullMin[0];
-		hullMin[2] = hullMin[0];
-		hullMax[0] = -hullMin[0];
-		hullMax[1] = -hullMin[1];
-		hullMax[2] = -hullMin[2];
-		b_LagCompNPC_No_Layers = true;
-		StartLagCompensation_Base_Boss(client);
-		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BeamWand_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-		delete trace;
-		FinishLagCompensation_Base_boss();
-
-		float vecForward[3];
-		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		BeamWand_Targets_Hit[client] = 1.0;
-		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		for (int building = 0; building < MAX_TARGETS_HIT; building++)
-		{
-			if (BeamWand_BuildingHit[building])
-			{
-				if(IsValidEntity(BeamWand_BuildingHit[building]))
-				{
-					playerPos = WorldSpaceCenterOld(BeamWand_BuildingHit[building]);
-					
-					float damage_force[3];
-					damage_force = CalculateDamageForceOld(vecForward, 10000.0);
-					DataPack pack = new DataPack();
-					pack.WriteCell(EntIndexToEntRef(BeamWand_BuildingHit[building]));
-					pack.WriteCell(EntIndexToEntRef(client));
-					pack.WriteCell(EntIndexToEntRef(client));
-					pack.WriteFloat(damage/BeamWand_Targets_Hit[client]);
-					pack.WriteCell(DMG_PLASMA);
-					pack.WriteCell(EntIndexToEntRef(weapon_active));
-					pack.WriteFloat(damage_force[0]);
-					pack.WriteFloat(damage_force[1]);
-					pack.WriteFloat(damage_force[2]);
-					pack.WriteFloat(playerPos[0]);
-					pack.WriteFloat(playerPos[1]);
-					pack.WriteFloat(playerPos[2]);
-					pack.WriteCell(0);
-					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
-					
-					BeamWand_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
-				}
-				else
-					BeamWand_BuildingHit[building] = false;
-			}
-		}
-		
-		static float belowBossEyes[3];
-		float flAng_2[3];
-		GetAttachment(client, "effect_hand_r", belowBossEyes, flAng_2);
-		int r, g, b;
-		r = 15;
-		g = 179;
-		b = 235;
-		int colorLayer4[4];
-		SetColorRGBA(colorLayer4, r, g, b, 120);
-		int colorLayer3[4];
-		SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 120);
-		int colorLayer2[4];
-		SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 120);
-		int colorLayer1[4];
-		SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 120);
-		TE_SetupBeamPoints(belowBossEyes, endPoint, Beam_Laser, 0, 0, 0, 0.55, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
-		TE_SendToAll(0.0);
-		int glowColor[4];
-		SetColorRGBA(glowColor, r, g, b, 120);
-		TE_SetupBeamPoints(belowBossEyes, endPoint, Beam_Glow, 0, 0, 0, 1.1, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.5, glowColor, 0);
-		TE_SendToAll(0.0);
-	}
-	else
-	{
-		delete trace;
-	}
-}
-static bool BeamWand_TraceUsers(int entity, int contentsMask, int client)
-{
-	if (IsValidEntity(entity))
-	{
-		entity = Target_Hit_Wand_Detection(client, entity);
-		if(0 < entity)
-		{
-			for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
-			{
-				if(!BeamWand_BuildingHit[i])
-				{
-					BeamWand_BuildingHit[i] = entity;
-					break;
-				}
-			}
-			
-		}
-	}
-	return false;
-}
-
 static float f_projectile_dmg[MAXENTITIES];
 
 static int i_Quincy_index[MAXENTITIES+1];

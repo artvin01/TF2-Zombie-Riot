@@ -2272,33 +2272,25 @@
 	{
 		"en"	"Give everyone 20%% more attackspeed, reloadspeed and healspeed during the duration of the banner."
 	}
-	"quincy pap0"	//todo: make the desc's abit cooler sounding
+	"quincy pap0"
 	{
-		"en"	"Your weapon has the ability to specialise into 2 tress's, Charge rate and Battery capacity\nWith higher battery - more damage but longer charge time\nWith charge - Dmg potential is lower but faster charge rate\nHold MOUSE2 and press RELOAD on a pap to open a menu"
+		"en"	"A bow made of pure energy\nHold mouse1 to charge it, damage dealt depends on how much mana you pump into it"
+	}
+	"quincy pap"
+	{
+		"en"	"More damage!"
+	}
+	"quincy pap arrow"
+	{
+		"en"	"Once you charge you weapon enough you gain the ability to shoow more arrows at once!"
 	}
 	"quincy pap1"
 	{
-		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
+		"en"	"More damage, and extra arrows fired per multi shot"
 	}
-	"quincy pap2"
+	"quincy pap hyper"
 	{
-		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
-	}
-	"quincy pap3"
-	{
-		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
-	}
-	"quincy pap4"
-	{
-		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
-	}
-	"quincy pap5"
-	{
-		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
-	}
-	"quincy pap6"
-	{
-		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
+		"en"	"You can now fire a constant stream of magic arrows!\nAlso more damage and arrows fired per multi shot."
 	}
 	"Taurus Judge Desc 1"
 	{
