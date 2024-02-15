@@ -178,7 +178,7 @@ methodmap OverlordRogue < CClotBody
 		#endif
 	}
 	
-	public OverlordRogue(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public OverlordRogue(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		OverlordRogue npc = view_as<OverlordRogue>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "100000", ally));
 		

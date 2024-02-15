@@ -162,7 +162,7 @@ methodmap MedivalSamurai < CClotBody
 	
 	
 	
-	public MedivalSamurai(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalSamurai(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalSamurai npc = view_as<MedivalSamurai>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "25000", ally));
 		SetVariantInt(1);

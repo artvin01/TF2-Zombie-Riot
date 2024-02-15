@@ -144,7 +144,7 @@ methodmap CorruptedSpyMinion < CClotBody
 		#endif
 	}
 	
-	public CorruptedSpyMinion(int client, float vecPos[3], float vecAng[3], bool ally)
+	public CorruptedSpyMinion(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		CorruptedSpyMinion npc = view_as<CorruptedSpyMinion>(CClotBody(vecPos, vecAng, "models/freak_fortress_2/corruptedspy/corruptedspy_animated_funny_1.mdl", "0.65", "1000", ally, false, true, true ,true));
 		

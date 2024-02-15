@@ -124,9 +124,9 @@ methodmap Mecha_PyroGiant < CClotBody
 	}
 	
 	
-	public Mecha_PyroGiant(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Mecha_PyroGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Mecha_PyroGiant npc = view_as<Mecha_PyroGiant>(CClotBody(vecPos, vecAng, "models/bots/pyro/bot_pyro.mdl", "1.5", "75000", ally, false, true));
+		Mecha_PyroGiant npc = view_as<Mecha_PyroGiant>(CClotBody(vecPos, vecAng, "models/bots/pyro/bot_pyro.mdl", "1.35", "75000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = ALT_MECHA_PYROGIANT;
 		i_NpcWeight[npc.index] = 3;
@@ -280,7 +280,7 @@ public void Mecha_PyroGiant_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 								{
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_CLUB, -1, _, vecHit);
 								//	TF2_IgnitePlayer(target, npc.index, 5.0);

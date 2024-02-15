@@ -159,7 +159,7 @@ methodmap SeaBlueGoggles < CClotBody
 		public set(float value) 	{	this.m_flCharge_delay = value;	}
 	}
 
-	public SeaBlueGoggles(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeaBlueGoggles(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SeaBlueGoggles npc = view_as<SeaBlueGoggles>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
@@ -187,6 +187,7 @@ methodmap SeaBlueGoggles < CClotBody
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_ice", npc.index, "head", {0.0,0.0,0.0});
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 			
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");

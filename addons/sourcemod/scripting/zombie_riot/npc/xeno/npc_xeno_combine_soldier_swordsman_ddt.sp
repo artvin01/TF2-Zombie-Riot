@@ -159,7 +159,7 @@ methodmap XenoCombineDDT < CClotBody
 	}
 	
 	
-	public XenoCombineDDT(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoCombineDDT(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineDDT npc = view_as<XenoCombineDDT>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250", ally));
 		SetVariantInt(1);

@@ -65,7 +65,7 @@ methodmap SeaBrandguider < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeaBrandguider(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeaBrandguider(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];
@@ -145,7 +145,6 @@ public void SeaBrandguider_ClotThink(int iNPC)
 			{
 				npc.Anger = true;
 				npc.m_flMeleeArmor = 0.25;
-				Change_Npc_Collision(npc.index, VIPBuilding_Active() ? num_ShouldCollideEnemyTDIgnoreBuilding : num_ShouldCollideEnemyIngoreBuilding);
 			}
 		}
 	}

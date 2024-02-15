@@ -66,7 +66,7 @@ methodmap BarrackThorns < BarrackBody
 		EmitSoundToAll(g_ThornsDeath[GetRandomInt(0, sizeof(g_ThornsDeath) - 1)],
 		this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
-	public BarrackThorns(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackThorns(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		bool elite = view_as<bool>(Store_HasNamedItem(client, "Construction Master"));
 		bool MaxPot = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
@@ -112,7 +112,7 @@ methodmap BarrackThorns < BarrackBody
 		npc.m_flSpeed = 250.0;
 
 		if(elite)
-			npc.BonusDamageBonus *= 1.5;
+			npc.BonusDamageBonus *= 2.0;
 
 		ThornsDecidedOnAttack[npc.index] = 0;
 		ThornsAbilityAttackTimes[npc.index] = 0;
@@ -156,7 +156,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 				if(ThornsHasElite[npc.index])
 				{
 					ThornsLevelAt[npc.index] = 1;
-					npc.BonusDamageBonus *= 1.5;
+					npc.BonusDamageBonus *= 2.0;
 					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth",GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 2);
 				}
 			}

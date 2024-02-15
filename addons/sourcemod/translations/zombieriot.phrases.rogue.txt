@@ -3,64 +3,77 @@
 	"Missing Rogue Translation"
 	{
 		"en"	"INVALID NAME"
+		"pt"	"NOME INVÁLIDO"
 		"ru"	"НЕДЕЙСТВИТЕЛЬНОЕ ИМЯ"
 	}
 	"Missing Rogue Translation Desc"
 	{
 		"en"	"INVALID DESC"
+		"pt"	"DESCRIÇÃO INVÁLIDA"
 		"ru"	"НЕДЕЙСТВИТЕЛЬНОЕ ОПИСАНИЕ"
 	}
 	"Allies Amongst Chaos"
 	{
 		"en"	"Allies Amongst Chaos"
+		"pt"	"Aliados em meio o Caos"
 		"ru"	"Союзники среди хаоса"
 	}
 	"A Deeper Discovery"
 	{
 		"en"	"A Deeper Discovery"
+		"pt"	"A Descoberta Profunda"
 	}
 	"All Parties Involved"
 	{
 		"en"	"All Parties Involved"
+		"pt"	"Todas as partes envolvidas"
 	}
 	"Nightmares Evolve"
 	{
 		"en"	"Nightmares Evolve"
+		"pt"	"Pesadelos Evolvem"
 	}
 	"Time Stands Still"
 	{
 		"en"	"Time Stands Still"
+		"pt"	"O Tempo Está Parado"
 	}
 	"The Void"
 	{
 		"en"	"The Void"
+		"pt"	"O Vazio"
 	}
 	"Vote for the starting item"
 	{
 		"en"	"Vote for the starting item:"
+		"pt"	"Vote no item inicial:"
 		"ru"	"Голосование за начальный предмет:"
 	}
 	"Vote for the next stage"
 	{
 		"en"	"Vote for the next stage:"
+		"pt"	"Vote na próxima etapa:"
 		"ru"	"Голосование за следующий этап:"
 	}
 	"Additional Starting Ingot"
 	{
 		"#format"	"{1:d},{2:d}"
 		"en"	"Starting Australium Ingots ({1} -> {2})"
+		"pt"	"Lingotes iniciais de Austrálio ({1} -> {2})"
 		"ru"	"Начальные слитки австралия ({1} -> {2})"
 	}
 	"Stage"
 	{
 		"#format"	"{1:d},{2:d}"
 		"en"		"Stage: {1}-{2}"
+		"pt"		"Fase: {1}-{2}"
 		"ru"		"Этап: {1}-{2}"
 	}
 	"New Artifact"
 	{
 		"#format"	"{1:t}"
 		"en"	"Collected Artifact: {yellow}{1}"
+		"pt"	"Artefatos Coletados: {yellow}{1}"
 		"ru"	"Получен артефакт: {yellow}{1}"
 	}
 	"Artifact Info"
@@ -72,22 +85,26 @@
 	{
 		"#format"	"{1:d}"
 		"en"	"{green}Gained {1} Australium Ingots!"
+		"pt"	"{green}Adquiriu {1} Barras de Australium!"
 		"ru"	"{green}Получено {1} слитков австралия!"
 	}
 	"Australium Ingots"
 	{
 		"#format"	"{1:d}"
 		"en"	"Australium Ingots: {1}"
+		"pt"	"Barras de Australium: {1}"
 		"ru"	"Слитков австралия: {1}"
 	}
 	"Encounter"
 	{
 		"en"	"Encounter"
+		"pt"	"Encontro"
 		"ru"	"Встреча"
 	}
 	"Collected Artifacts"
 	{
 		"en"	"Collected Artifacts"
+		"pt"	"Artefatos Coletados"
 		"ru"	"Собранные артефакты"
 	}
 
@@ -95,45 +112,54 @@
 	"Optional Battle Title"
 	{
 		"en"	"Something seems off about this, should we fight or leave right here?"
+		"pt"	"Algo parece errado sobre isso, devemos lutar ou sair daqui?"
 	}
 	"We can handle this"
 	{
 		"en"	"We can handle this"
+		"pt"	"Podemos cuidar disso"
 		"ru"	"Мы справимся"
 	}
 	"Better leave now"
 	{
 		"en"	"Better leave now"
+		"pt"	"Melhor ir agora"
 		"ru"	"Лучше уйти сейчас"
 	}
 	"Enter a special battle"
 	{
 		"en"	"Enter a special battle"
+		"pt"	"Entrar em uma batalha especial"
 		"ru"	"Вступить в особую битву"
 	}
 	"Leave this encounter"
 	{
 		"en"	"Leave this encounter"
+		"pt"	"Abandonar esse encontro"
 		"ru"	"Оставить эту встречу"
 	}
 	"Shop Encounter Title"
 	{
 		"en"	"You stumble upon a shop to find an old man selling goods, do you take up his offers?"
+		"pt"	"Você se depara com uma loja com um senhorzinho vendendo coisas, você aceita sua oferta?"
 		"ru"	"Наткнувшись на магазин, вы видите старика, продающего товары, примете ли вы его предложение?"
 	}
 	"Better save up now"
 	{
 		"en"	"Better save up now"
+		"pt"	"É melhor salvar agora"
 		"ru"	"Лучше поднакопить"
 	}
 	"Boons Encounter Title"
 	{
 		"en"	"Some items are present before you, but you seem to be only to pick one."
+		"pt"	"Alguns itens são apresentados diante a você, mas você so pode escolher um."
 		"ru"	"Перед вами лежат несколько предметов, но вы, кажется, должны выбрать только один."
 	}
 	"There's nothing here?"
 	{
 		"en"	"There's nothing here?"
+		"pt"	"Não tem nada aqui?"
 		"ru"	"Тут ничего не было?"
 	}
 	"Lore Title"
@@ -143,40 +169,48 @@
 	"Sword and Stone Lore"
 	{
 		"en"	"You stumble on a knight wearing a worn-out set of armor and gloomily looking at a sword in a stone.\nHe claims to be a knight journeying in search of the holy sword, and he must bring this sword back to his kingdom to become its rightful ruler.\nHowever, he has no way to pull out the sword from the stone."
+		"pt"	"Você se depara com um cavaleiro vestindo uma armadura desgastada e olhando sombriamente para a espada em uma pedra.\nEle afirma ser um cavaleiro que viaja em busca da espada sagrada e deve trazer essa espada de volta ao seu reino para se tornar seu governante legítimo.\nNo entanto, ele não tem como retirar a espada da pedra."
 		"ru"	"Вы натыкаетесь на рыцаря в изношенных доспехах, который мрачно смотрит на меч в камне.\nОн утверждает, что является рыцарем, путешествующим в поисках священного меча, и должен вернуть этот меч в своё королевство, чтобы стать его законным правителем.\nОднако у него нет способа вытащить меч из камня."
 	}
 	"Sword and Stone Option 1"
 	{
 		"en"	"Might as well smash the sword into two halves"
+		"pt"	"Aproveitar e dividir a espada em duas metades"
 		"ru"	"С таким же успехом можно разбить меч на две половины."
 	}
 	"Sword and Stone Lore 1"
 	{
 		"en"	"You rack your brain to come up with a solution. In the end, you smash the sword in two. Seeing half of the sword still stuck in the stone, the knight lets out a long sigh, shakes his head, and leaves."
+		"pt"	"Você quebra a cabeça para encontrar uma solução. No final, você quebra a espada em duas. Ao ver a metade da espada ainda presa na pedra, o cavaleiro solta um longo suspiro, balança a cabeça e vai embora."
 		"ru"	"Вы ломаете голову, пытаясь найти решение. В конце концов, вы разбиваете меч на две части. Видя, что половина меча по-прежнему застряла в камне, рыцарь испустил долгий вздох, покачал головой и ушёл."
 	}
 	"Sword and Stone Option 2"
 	{
 		"en"	"Could use the stone as a hammer"
+		"pt"	"Poderia usar a pedra como martelo"
 		"ru"	"Может использовать камень в качестве молотка"
 	}
 	"Sword and Stone Lore 2"
 	{
 		"en"	"Taking your advice, the knight attempts to lift the sword, the stone still attached. Unable to keep his balance, he trips and falls on the ground head first, knocking himself unconscious."
+		"pt"	"Seguindo seu conselho, o cavaleiro tenta levantar a espada com a pedra ainda presa. Sem conseguir manter o equilíbrio, ele tropeça e cai de cabeça no chão, ficando inconsciente."
 		"ru"	"Послушавшись вашего совета, рыцарь пытается поднять меч, камень всё ещё прикреплен к нему. Не удержав равновесия, он спотыкается и падает на землю головой вперёд, теряя сознание."
 	}
 	"Sword and Stone Option 3"
 	{
 		"en"	"Doesn't look like it's necessary"
+		"pt"	"Parece não ser necessário"
 		"ru"	"Не думаю, что оно больше нужно"
 	}
 	"Sword and Stone Lore 3a"
 	{
 		"en"	"''Strange stones lying in forts distributing swords is no basis for a system of government."
+		"pt"	"\"Pedras estranhas em fortalezas distribuindo espadas não são base para um sistema de governo."
 	}
 	"Sword and Stone Lore 3b"
 	{
 		"en"	"Supreme executive power derives from a mandate from the masses, not from some farcical geologic ceremony.'' The knight thinks you have a point and leaves on a satisfied note."
+		"pt"	"O poder executivo supremo deriva de um mandato das massas, não de alguma cerimônia geológica farsesca\". O cavaleiro acha que você tem razão e sai satisfeito."
 	}
 	"Theatrical Lore"
 	{

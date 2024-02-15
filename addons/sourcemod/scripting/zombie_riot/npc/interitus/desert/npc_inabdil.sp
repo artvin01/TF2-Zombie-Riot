@@ -88,7 +88,7 @@ methodmap DesertInabdil < CClotBody
 	}
 	
 	
-	public DesertInabdil(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertInabdil(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertInabdil npc = view_as<DesertInabdil>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
 		
@@ -288,7 +288,7 @@ void DesertInabdilSelfDefense(DesertInabdil npc, float gameTime, int target, flo
 
 					if(TimeMultiplier > 2.0)
 					{
-						damageDealt * 2.0;
+						damageDealt *= 2.0;
 					}
 
 					if(ShouldNpcDealBonusDamage(target))

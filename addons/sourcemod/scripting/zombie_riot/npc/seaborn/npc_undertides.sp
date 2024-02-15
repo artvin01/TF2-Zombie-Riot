@@ -60,7 +60,7 @@ methodmap UnderTides < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public UnderTides(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public UnderTides(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		UnderTides npc = view_as<UnderTides>(CClotBody(vecPos, vecAng, "models/synth.mdl", "1.0", "15000", ally, false, true, _, _, {30.0, 30.0, 100.0}));
 		// 100,000 x 0.15
@@ -316,18 +316,25 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 	{
 		TraceEntity = TraceFrom;
 	}
-	int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
+	int team = GetTeam(npc.index);
 	int[] def = new int[count];
 	float gameTime = GetGameTime();
 	float Pos1[3];
 	if(RangeLimit > 0.0)
 	{
-		Pos1 = WorldSpaceCenterOld(TraceEntity);
+		if(b_ThisEntityIgnored_NoTeam[TraceEntity])
+		{
+			GetEntPropVector(TraceEntity, Prop_Data, "m_vecAbsOrigin", Pos1);
+		}
+		else
+		{
+			Pos1 = WorldSpaceCenterOld(TraceEntity);
+		}
 	}
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetClientTeam(client) != team && IsEntityAlive(client) && Can_I_See_Enemy_Only(npc.index, client))
+		if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetTeam(client) != team && IsEntityAlive(client) && Can_I_See_Enemy_Only(npc.index, client))
 		{
 			if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, client))
 				continue;
@@ -390,14 +397,14 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 		}
 	}
 
-	if(team != 3 && !player_only)
+	if(!player_only)
 	{
-		for(int a; a < i_MaxcountNpc; a++)
+		for(int a; a < i_MaxcountNpcTotal; a++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[a]);
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
 			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
 			{
-				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
+				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && GetTeam(entity) != team && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
 				{
 					if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, entity))
 						continue;
@@ -422,50 +429,6 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 						if(f_BattilonsNpcBuff[entity] > gameTime)
 							defense += 4;
 
-						if(enemy[i] && def[i] < defense)
-							continue;
-
-						AddToList(entity, i, enemy, count);
-						AddToList(defense, i, def, count);
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	if(team != 2 && !player_only)
-	{
-		for(int a; a < i_MaxcountNpc_Allied; a++)
-		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[a]);
-			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
-			{
-				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
-				{
-					if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, entity))
-						continue;
-						
-					if(RangeLimit > 0.0)
-					{
-						float flDistanceToTarget = GetVectorDistance(WorldSpaceCenterOld(entity), Pos1, true);
-						if(flDistanceToTarget > RangeLimit)
-							continue;
-					}
-
-					for(int i; i < count; i++)
-					{
-						int defense = b_npcspawnprotection[entity] ? 8 : 0;
-						
-						if(fl_RangedArmor[entity] < 1.0)
-							defense += 10 - RoundToFloor(fl_RangedArmor[entity] * 10.0);
-
-						if(Resistance_Overall_Low[entity] > gameTime)
-							defense += 2;
-						
-						if(f_BattilonsNpcBuff[entity] > gameTime)
-							defense += 4;
-						
 						if(i_NpcInternalId[entity] == CITIZEN)
 						{
 							Citizen cit = view_as<Citizen>(entity);
@@ -525,7 +488,7 @@ void UnderTides_NPCDeath(int entity)
 
 	float pos[3];
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
-	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	
 	SDKUnhook(npc.index, SDKHook_Think, UnderTides_ClotThink);
 	

@@ -101,12 +101,12 @@ methodmap DesertAncientDemon < CClotBody
 	{
 		public get()		{	return i_RaidGrantExtra[this.index] < 0;	}
 	}
-	public DesertAncientDemon(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertAncientDemon(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertAncientDemon npc = view_as<DesertAncientDemon>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "15000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_DESERT_ANCIENTDEMON;
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
@@ -397,7 +397,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 	{
 		return;
 	}
-	if(GetEntProp(ally, Prop_Send, "m_iTeamNum") != GetEntProp(self, Prop_Send, "m_iTeamNum"))
+	if(GetTeam(ally) != GetTeam(self))
 	{
 		return;
 	}
@@ -433,7 +433,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 	float ProjLoc[3];
 	GetEntPropVector(self, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 	ProjLoc[2] += 100.0;
-	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("health_text", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	fl_TotalArmor[self] = fl_TotalArmor[self] * 0.985;
 	fl_Extra_Speed[self] = fl_Extra_Speed[self] + 0.01;
 	if(fl_TotalArmor[self] <= 0.35)
@@ -441,12 +441,12 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 		fl_TotalArmor[self] = 0.35;
 	}
 	TE_Particle("teleported_blue", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-	int NpcSpawnDemon = Npc_Create(INTERITUS_DESERT_ANCIENTDEMON, -1, SelfPos, AllyAng, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2); //can only be enemy
+	int NpcSpawnDemon = Npc_Create(INTERITUS_DESERT_ANCIENTDEMON, -1, SelfPos, AllyAng, GetTeam(npc.index)); //can only be enemy
 	i_RaidGrantExtra[ally] = 999;
 	if(IsValidEntity(NpcSpawnDemon))
 	{
-		flMaxHealth /= 20;
-		if(GetEntProp(NpcSpawnDemon, Prop_Send, "m_iTeamNum") != 2)
+		flMaxHealth /= 40;
+		if(GetTeam(NpcSpawnDemon) != TFTeam_Red)
 		{
 			Zombies_Currently_Still_Ongoing += 1;
 		}

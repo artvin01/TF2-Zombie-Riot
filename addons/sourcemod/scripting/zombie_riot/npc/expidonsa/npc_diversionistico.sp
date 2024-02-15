@@ -115,7 +115,7 @@ methodmap Diversionistico < CClotBody
 		
 	}
 
-	public Diversionistico(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Diversionistico(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Diversionistico npc = view_as<Diversionistico>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally, false, false, true));
 		
@@ -187,21 +187,24 @@ methodmap Diversionistico < CClotBody
 		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 350.0);
 		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 500.0);
 
-		if(LastSpawnDiversio < GetGameTime())
+		if(ally != TFTeam_Red)
 		{
-			EmitSoundToAll("player/spy_uncloak_feigndeath.wav", _, _, _, _, 1.0);	
-			EmitSoundToAll("player/spy_uncloak_feigndeath.wav", _, _, _, _, 1.0);	
-			for(int client_check=1; client_check<=MaxClients; client_check++)
+			if(LastSpawnDiversio < GetGameTime())
 			{
-				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+				EmitSoundToAll("player/spy_uncloak_feigndeath.wav", _, _, _, _, 1.0);	
+				EmitSoundToAll("player/spy_uncloak_feigndeath.wav", _, _, _, _, 1.0);	
+				for(int client_check=1; client_check<=MaxClients; client_check++)
 				{
-					SetGlobalTransTarget(client_check);
-					ShowGameText(client_check, "voice_player", 1, "%t", "Diversionistico Spawn");
+					if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+					{
+						SetGlobalTransTarget(client_check);
+						ShowGameText(client_check, "voice_player", 1, "%t", "Diversionistico Spawn");
+					}
 				}
 			}
+			LastSpawnDiversio = GetGameTime() + 20.0;
+			TeleportDiversioToRandLocation(npc.index);
 		}
-		LastSpawnDiversio = GetGameTime() + 20.0;
-		TeleportDiversioToRandLocation(npc.index);
 		return npc;
 	}
 }

@@ -109,7 +109,7 @@ methodmap MedicHealer < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public MedicHealer(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedicHealer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedicHealer npc = view_as<MedicHealer>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "3500", ally));
 		
@@ -264,20 +264,14 @@ public void MedicHealer_ClotThink(int iNPC)
 						npc.m_bnew_target = true;
 					}
 
-					bool regrow = true;
-					Building_CamoOrRegrowBlocker(PrimaryThreatIndex, _, regrow);
-					if(regrow && !NpcStats_IsEnemySilenced(npc.index))
+					if(!NpcStats_IsEnemySilenced(npc.index))
 					{
 						if(IsValidEntity(npc.m_iWearable4))
 						{
 							SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 							SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
 						}
-						SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") + 50);
-						if(GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") >= GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"))
-						{
-							SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"));
-						}
+						HealEntityGlobal(npc.index, PrimaryThreatIndex, 50.0, 1.0);
 					}
 					else
 					{

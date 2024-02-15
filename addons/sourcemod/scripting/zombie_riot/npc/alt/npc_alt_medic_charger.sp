@@ -92,7 +92,7 @@ methodmap AltMedicCharger < CClotBody
 		PrintToServer("CClot::PlayHurtSound()");
 		#endif
 	}
-	public AltMedicCharger(int client, float vecPos[3], float vecAng[3], bool ally)
+	public AltMedicCharger(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		AltMedicCharger npc = view_as<AltMedicCharger>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "13500", ally));
 		
@@ -289,7 +289,7 @@ public void AltMedicCharger_ClotThink(int iNPC)
 								{
 									dmg=50.0;
 								}
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, dmg, DMG_CLUB, -1, _, vecHit);
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, dmg*1.25, DMG_CLUB, -1, _, vecHit);

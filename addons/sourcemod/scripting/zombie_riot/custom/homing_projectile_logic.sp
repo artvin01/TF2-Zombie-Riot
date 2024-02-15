@@ -78,7 +78,7 @@ public Action Projectile_NonPerfectHoming(Handle timer, int ref)
 
 		//the current enemy doesnt exist, rehome
 		int Closest = GetClosestTarget(entity, _, _, true,_,_,_,_,_,_,_,_,view_as<Function>(HomingProjectile_ValidTargetCheck));
-		if(IsValidEnemy(RMR_RocketOwner[entity], Closest))
+		if(IsValidEnemy(EntRefToEntIndex(RMR_RocketOwner[entity]), Closest))
 		{
 			if(IsValidEnemy(entity, Closest))
 			{

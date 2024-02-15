@@ -1091,6 +1091,7 @@ void Rogue_NextProgress()
 					SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
 					DispatchSpawn(entity);
 					AcceptEntityInput(entity, "RoundWin");
+					RemoveAllCustomMusic();
 				}
 				else
 				{
@@ -1548,25 +1549,18 @@ static void StartStage(const Stage stage)
 			TeleportEntity(client, pos, ang, NULL_VECTOR);
 	}
 	
-	for(int i; i < i_MaxcountNpc; i++)
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-			SmiteNpcToDeath(entity);
-	}
-	
-	for(int i; i < i_MaxcountNpc_Allied; i++)
-	{
-		entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
+		entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
-			if(i_NpcInternalId[entity] == REMAINS)
+			if(GetTeam(entity) == TFTeam_Red)
 			{
-				SmiteNpcToDeath(entity);
+				TeleportEntity(entity, pos, ang, NULL_VECTOR);
 			}
 			else
 			{
-				TeleportEntity(entity, pos, ang, NULL_VECTOR);	
+				SmiteNpcToDeath(entity);
 			}
 		}
 	}
@@ -1634,18 +1628,20 @@ static void TeleportToSpawn()
 		}
 	}
 	
-	for(int i; i < i_MaxcountNpc; i++)
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-			SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
-	}
-	
-	for(int i; i < i_MaxcountNpc_Allied; i++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-			TeleportEntity(entity, pos, ang, NULL_VECTOR);
+		{
+			if(GetTeam(entity) == TFTeam_Red)
+			{
+				TeleportEntity(entity, pos, ang, NULL_VECTOR);
+			}
+			else
+			{
+				SmiteNpcToDeath(entity);
+			}
+		}
 	}
 
 	for(int i; i < i_MaxcountBuilding; i++)
@@ -2067,10 +2063,10 @@ void Rogue_GiveNamedArtifact(const char[] name, bool silent = false)
 
 				if(artifact.FuncAlly != INVALID_FUNCTION)
 				{
-					for(int a; a < i_MaxcountNpc_Allied; a++)
+					for(int a; a < i_MaxcountNpcTotal; a++)
 					{
-						int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[a]);
-						if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+						int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+						if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Red)
 						{
 							Call_StartFunction(null, artifact.FuncAlly);
 							Call_PushCell(entity);

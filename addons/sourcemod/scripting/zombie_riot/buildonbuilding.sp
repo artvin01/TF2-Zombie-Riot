@@ -95,9 +95,9 @@ public void Event_ObjectMoved_Custom(int building)
 		CClotBody buildingclot = view_as<CClotBody>(iBuildingDependency[building]);
 		buildingclot.bBuildingIsStacked = false;
 		//make npc's that target the previous building target the stacked one now.
-		for(int targ; targ<i_MaxcountNpc; targ++)
+		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 			{
 				CClotBody npc = view_as<CClotBody>(baseboss_index);
@@ -148,17 +148,17 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 		}
 	}
 
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied))
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+		if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TFTeam_Red)
 		{
 			b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = true;
 		}
 	}
 	for(int entity=1; entity<=MAXENTITIES; entity++)
 	{
-		if (IsValidEntity(entity) && (IsEntitySpike(entity) || b_Is_Player_Projectile[entity]))
+		if (IsValidEntity(entity) && (IsEntitySpike(entity) || b_IsAProjectile[entity])/* || (!b_ThisEntityIgnored_NoTeam[entity] && GetTeam(entity) == TFTeam_Red))*/)
 		{
 			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
 		}
@@ -441,9 +441,9 @@ void OnEntityDestroyed_Build_On_Build(int entity)
 			CClotBody building = view_as<CClotBody>(iBuildingDependency[entity]);
 			building.bBuildingIsStacked = false;
 			//make npc's that target the previous building target the stacked one now.
-			for(int targ; targ<i_MaxcountNpc; targ++)
+			for(int targ; targ<i_MaxcountNpcTotal; targ++)
 			{
-				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 				if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 				{
 					CClotBody npc = view_as<CClotBody>(baseboss_index);

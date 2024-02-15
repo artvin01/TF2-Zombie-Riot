@@ -315,7 +315,7 @@ methodmap TheGambler < CClotBody
 		#endif
 	}
 	
-	public TheGambler(int client, float vecPos[3], float vecAng[3], bool ally)
+	public TheGambler(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		TheGambler npc = view_as<TheGambler>(CClotBody(vecPos, vecAng, GAMBLERMODEL, "1.0", "180000", ally));
 		
@@ -324,7 +324,7 @@ methodmap TheGambler < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		if(!b_IsAlliedNpc[npc.index])
+		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			RaidBossActive = EntRefToEntIndex(npc.index);
 			for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -1265,7 +1265,7 @@ public void TheGambler_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}*/
 	npc.PlayDeathSound();
-	if(!b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
@@ -1318,8 +1318,6 @@ static void Orb_Launched(int iNPC, int iRot, float speed, float time, float dama
 	
 	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", npc.index);
 	SetEntProp(iRot, Prop_Send, "m_iTeamNum", npc.index);
-	//RequestFrame(See_Projectile_Team, EntIndexToEntRef(iCarrier));
-	//RequestFrame(See_Projectile_Team, EntIndexToEntRef(iRot));
 	
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);

@@ -3,7 +3,7 @@
 
 methodmap EndSpeaker2 < EndSpeakerSmall
 {
-	public EndSpeaker2(bool ally)
+	public EndSpeaker2(int ally)
 	{
 		float vecPos[3], vecAng[3];
 		view_as<EndSpeaker>(0).GetSpawn(vecPos, vecAng);
@@ -11,7 +11,7 @@ methodmap EndSpeaker2 < EndSpeakerSmall
 		char health[12];
 		IntToString(view_as<EndSpeaker>(0).m_iBaseHealth * 3, health, sizeof(health));
 
-		EndSpeaker2 npc = view_as<EndSpeaker2>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.5", health, ally, false));
+		EndSpeaker2 npc = view_as<EndSpeaker2>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.35", health, ally, false));
 		
 		i_NpcInternalId[npc.index] = ENDSPEAKER_2;
 		i_NpcWeight[npc.index] = 2;

@@ -3,7 +3,6 @@
 
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float Necro_Damage[MAXPLAYERS+1]={0.0, ...};
-static bool Delete_Flame[MAXPLAYERS+1]={false, ...};
 
 public void Wand_Calcium_Spell_ClearAll()
 {
@@ -127,6 +126,6 @@ public void Spawn_Calcium(int client)
 	
 	char buffer[16];
 	FloatToString(Necro_Damage[client], buffer, sizeof(buffer));
-	Npc_Create(NECRO_CALCIUM, client, flPos, flAng, true, buffer);
+	Npc_Create(NECRO_CALCIUM, client, flPos, flAng, TFTeam_Red, buffer);
 	Items_GiveNPCKill(client, NECRO_CALCIUM);
 }

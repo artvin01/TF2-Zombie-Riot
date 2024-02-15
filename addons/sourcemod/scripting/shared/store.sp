@@ -77,8 +77,8 @@ enum struct ItemInfo
 
 	float BackstabCD;
 	float BackstabDMGMulti;
-	int BackstabHealPerTick;
-	int BackstabHealTicks;
+	float BackstabHealOverThisTime;
+	float BackstabHealTotal;
 	bool BackstabLaugh;
 	bool NoRefundWanted;
 	float BackstabDmgPentalty;
@@ -95,6 +95,7 @@ enum struct ItemInfo
 	float WeaponSizeOverride;
 	float WeaponSizeOverrideViewmodel;
 	char WeaponModelOverride[128];
+	char WeaponSoundOverrideString[255];
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
 	int Weapon_Bodygroup;
@@ -158,6 +159,7 @@ enum struct ItemInfo
 		{
 			this.Cost_Unlock = this.Cost;
 		}
+		
 		Format(buffer, sizeof(buffer), "%sdesc", prefix);
 		kv.GetString(buffer, this.Desc, 256);
 
@@ -172,7 +174,7 @@ enum struct ItemInfo
 		
 		Format(buffer, sizeof(buffer), "%sclassname", prefix);
 		kv.GetString(buffer, this.Classname, 36);
-		
+
 		Format(buffer, sizeof(buffer), "%sindex", prefix);
 		this.Index = kv.GetNum(buffer);
 
@@ -194,11 +196,11 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sbackstab_dmg_multi", prefix);
 		this.BackstabDMGMulti		= kv.GetFloat(buffer, 0.0);
 		
-		Format(buffer, sizeof(buffer), "%sbackstab_heal_per_tick", prefix);
-		this.BackstabHealPerTick		= kv.GetNum(buffer, 0);
+		Format(buffer, sizeof(buffer), "%sheal_over_this_time", prefix);
+		this.BackstabHealOverThisTime		= kv.GetFloat(buffer, 0.0);
 
-		Format(buffer, sizeof(buffer), "%sbackstab_heal_ticks", prefix);
-		this.BackstabHealTicks		= kv.GetNum(buffer, 0);
+		Format(buffer, sizeof(buffer), "%sbackstab_total_heal", prefix);
+		this.BackstabHealTotal		= kv.GetFloat(buffer, 0.0);
 
 		Format(buffer, sizeof(buffer), "%sbackstab_laugh", prefix);
 		this.BackstabLaugh		= view_as<bool>(kv.GetNum(buffer, 0));
@@ -273,6 +275,9 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sweapon_sound_index_override", prefix);
 		this.WeaponSoundIndexOverride	= view_as<bool>(kv.GetNum(buffer, 0));
 
+		Format(buffer, sizeof(buffer), "%ssound_weapon_override_string", prefix);
+		kv.GetString(buffer, this.WeaponSoundOverrideString, sizeof(buffer));
+
 		Format(buffer, sizeof(buffer), "%smodel_weapon_override", prefix);
 		kv.GetString(buffer, this.WeaponModelOverride, sizeof(buffer));
 		
@@ -309,7 +314,11 @@ enum struct ItemInfo
 			this.WeaponModelIndexOverride = 0;
 		}
 
-
+		if(this.WeaponSoundOverrideString[0])
+		{
+			//precache the sound!
+			PrecacheSound(this.WeaponSoundOverrideString, true);
+		}
 	
 		
 		Format(buffer, sizeof(buffer), "%sfunc_attack", prefix);
@@ -901,7 +910,7 @@ void Store_OpenItemPage(int client)
 	{
 		static Item item;
 		StoreItems.GetArray(StoreWeapon[weapon], item);
-		//if(ItemBuyable(item))
+		if(item.Owned[client] && (!item.Hidden || item.ChildKit))
 		{
 			NPCOnly[client] = 0;
 			LastMenuPage[client] = 0;
@@ -960,7 +969,7 @@ void Store_SwapToItem(int client, int swap)
 		}
 	}
 
-	FakeClientCommand(client, "use %s", classname);
+	TF2Util_SetPlayerActiveWeapon(client, swap);
 }
 
 #if defined ZR
@@ -969,7 +978,7 @@ void Store_SwapItems(int client)
 	//int suit = GetEntProp(client, Prop_Send, "m_bWearingSuit");
 	//if(!suit)
 	//	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
-	
+
 	int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(active > MaxClients)
 	{
@@ -981,7 +990,8 @@ void Store_SwapItems(int client)
 		int length = GetMaxWeapons(client);
 		for(int i; i < length; i++)
 		{
-			if(GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i) == active)
+			int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+			if(weapon == active)	// Active weapon is highest up in our slot
 			{
 				int lowestI, nextI;
 				int lowestE = -1;
@@ -992,7 +1002,7 @@ void Store_SwapItems(int client)
 				{
 					if(a != i)
 					{
-						int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", a);
+						weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", a);
 						if(weapon > MaxClients)
 						{
 							GetEntityClassname(weapon, buffer, sizeof(buffer));
@@ -1040,8 +1050,9 @@ void Store_SwapItems(int client)
 					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", nextE, switchI);
 					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", switchE, nextI);
 					
-					GetEntityClassname(nextE, buffer, sizeof(buffer));
-					FakeClientCommand(client, "use %s", buffer);
+					//GetEntityClassname(nextE, buffer, sizeof(buffer));
+					//FakeClientCommand(client, "use %s", buffer);
+					TF2Util_SetPlayerActiveWeapon(client, nextE);
 					//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
 					//SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + );
 					
@@ -1050,6 +1061,15 @@ void Store_SwapItems(int client)
 					//	SetEntPropFloat(client, Prop_Send, "m_flNextAttack", time);
 				}
 				break;
+			}
+			else if(weapon != -1)	// Another weapon is highest up in our slot
+			{
+				GetEntityClassname(weapon, buffer, sizeof(buffer));
+				if(TF2_GetClassnameSlot(buffer) == slot)
+				{
+					TF2Util_SetPlayerActiveWeapon(client, weapon);
+					break;
+				}
 			}
 		}
 	}
@@ -1784,6 +1804,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 						item.Sell[client] = ItemSell(base, info.Cost);
 						if(item.GregOnlySell == 2)
 						{
+							item.BuyPrice[client] = 0;
 							item.Sell[client] = 0;
 						}
 					}
@@ -2609,7 +2630,7 @@ bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped
 	return false;
 }
 
-void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave = 0)
+void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave = 0)
 {
 	int amount;
 	int length = StoreItems.Length;
@@ -2636,8 +2657,10 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave
 						break;
 					}
 				}
+				
+				StoreItems.SetArray(i, item);
 			}
-			else
+			else if(ResetStore != 2)
 			{
 				if(addItem == 0)
 				{
@@ -2658,11 +2681,11 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave
 				}
 				
 				item.GetItemInfo(0, info);
-				if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost < CurrentCash)
+				if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost_Unlock < CurrentCash)
 					indexes[amount++] = i;
+				
+				StoreItems.SetArray(i, item);
 			}
-			
-			StoreItems.SetArray(i, item);
 		}
 	}
 	if(subtract_wave != 0)
@@ -3099,6 +3122,10 @@ static void MenuPage(int client, int section)
 					
 					bool fullSell = (item.BuyWave[client] == Waves_GetRound());
 					bool canSell = (!item.ChildKit && item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client] > 0));
+					if(item.GregOnlySell == 2)
+					{
+						canSell = false;
+					}
 					if(item.Equipped[client] && info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
 					{
 						int cost = AmmoData[info.Ammo][0] * 10;
@@ -3115,7 +3142,7 @@ static void MenuPage(int client, int section)
 					}
 
 					//We shall allow unequipping again.
-					if(item.Equipped[client])
+					if(item.Equipped[client] && item.GregOnlySell != 2)
 					{
 						FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
 						menu.AddItem(buffer2, buffer, item.ChildKit ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);	// 2
@@ -3256,18 +3283,21 @@ static void MenuPage(int client, int section)
 	{
 		StoreItems.GetArray(i, item);
 		//item.GetItemInfo(0, info);
-		if(NPCOnly[client] == 1)
+		if(NPCOnly[client] == 1)	// Greg Store Menu
 		{
 			if((!item.NPCSeller && item.NPCSeller_WaveStart == 0) || item.Level > ClientLevel)
 				continue;
 		}
-		else if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
+		else if(NPCOnly[client] == 2 || NPCOnly[client] == 3)	// Rebel Store Menu
 		{
 			if(item.Level > ClientLevel)
 				continue;
 		}
-		else if(UsingChoosenTags[client])
+		else if(UsingChoosenTags[client])	// Tag Search Menu
 		{
+			if(item.Hidden || item.Level > ClientLevel)
+				continue;
+			
 			int a;
 			int length2 = ChoosenTags[client].Length;
 			for(; a < length2; a++)
@@ -3447,6 +3477,10 @@ static void MenuPage(int client, int section)
 				else if(!info.Cost && item.Level)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [Lv %d]%s", TranslateItemName(client, item.Name, info.Custom_Name), item.Level, BuildingExtraCounter);
+				}
+				else if(info.Cost >= 999999 && !CvarInfiniteCash.BoolValue)
+				{
+					continue;
 				}
 				else if(info.Cost > 1000 && info.Cost_Unlock > CurrentCash)
 				{
@@ -4113,6 +4147,11 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									item.BuyPrice[client] = info.Cost;
 									item.RogueBoughtRecently[client] += 1;
 									item.Sell[client] = ItemSell(base, info.Cost);
+									if(item.GregOnlySell == 2)
+									{
+										item.BuyPrice[client] = 0;
+										item.Sell[client] = 0;
+									}
 									item.BuyWave[client] = Rogue_GetRoundScale();
 									item.Equipped[client] = false;
 
@@ -4299,7 +4338,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 				}
 				case 2:	// Unequip
 				{
-					if(item.Owned[client] && item.Equipped[client])
+					if(item.Owned[client] && item.Equipped[client] && item.GregOnlySell != 2)
 					{
 						int active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 
@@ -5132,19 +5171,20 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	/*
 	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_pda_engineer_destroy", 26, 100, 5, "671 ; 1"));
 	*/
-
-	int watch_entity_attribs = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
-	if(watch_entity_attribs != INVALID_ENT_REFERENCE)
-		TF2_RemoveWearable(client, watch_entity_attribs);
-
-	watch_entity_attribs = GiveWearable(client, 0);
-	Attributes_Set(watch_entity_attribs, 221, -99.0);
-	Attributes_Set(watch_entity_attribs, 160, 1.0);
-	Attributes_Set(watch_entity_attribs, 35, 0.0);
-	Attributes_Set(watch_entity_attribs, 816, 1.0);
-	Attributes_Set(watch_entity_attribs, 671, 1.0);
-	Attributes_Set(watch_entity_attribs, 34, 999.0);
-	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(watch_entity_attribs);
+	int ViewmodelPlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(IsValidEntity(ViewmodelPlayerModel))
+	{
+		Attributes_Set(ViewmodelPlayerModel, 221, -99.0);
+		Attributes_Set(ViewmodelPlayerModel, 160, 1.0);
+		Attributes_Set(ViewmodelPlayerModel, 35, 0.0);
+		Attributes_Set(ViewmodelPlayerModel, 816, 1.0);
+		Attributes_Set(ViewmodelPlayerModel, 671, 1.0);
+		Attributes_Set(ViewmodelPlayerModel, 34, 999.0);
+		TF2Attrib_SetByDefIndex(ViewmodelPlayerModel, 319, BANNER_DURATION_FIX_FLOAT);
+		//do not save this.
+		i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(ViewmodelPlayerModel);
+	}
+	
 	
 #if defined ZR
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
@@ -5168,6 +5208,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_ProximityAmmo[client] = false;
 	b_ExpertTrapper[client] = false;
 	b_RaptureZombie[client] = false;
+	b_ArmorVisualiser[client] = false;
 	i_MaxSupportBuildingsLimit[client] = 0;
 	b_PlayerWasAirbornKnockbackReduction[client] = false;
 	BannerOnEntityCreated(client);
@@ -5634,6 +5675,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_WeaponForceClass[entity] 				= info.WeaponForceClass;
 					i_WeaponSoundIndexOverride[entity] 		= info.WeaponSoundIndexOverride;
 					i_WeaponModelIndexOverride[entity] 		= info.WeaponModelIndexOverride;
+					Format(c_WeaponSoundOverrideString[entity],sizeof(c_WeaponSoundOverrideString[]),"%s",info.WeaponSoundOverrideString);	
 					f_WeaponSizeOverride[entity]			= info.WeaponSizeOverride;
 					f_WeaponSizeOverrideViewmodel[entity]	= info.WeaponSizeOverrideViewmodel;
 					f_WeaponVolumeStiller[entity]				= info.WeaponVolumeStiller;
@@ -5669,8 +5711,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					}
 					f_BackstabCooldown[entity] 					= info.BackstabCD;
 					f_BackstabDmgMulti[entity] 					= info.BackstabDMGMulti;
-					i_BackstabHealEachTick[entity] 				= info.BackstabHealPerTick;
-					i_BackstabHealTicks[entity] 				= info.BackstabHealTicks;
+					f_BackstabHealOverThisDuration[entity] 				= info.BackstabHealOverThisTime;
+					f_BackstabHealTotal[entity] 				= info.BackstabHealTotal;
 					b_BackstabLaugh[entity] 					= info.BackstabLaugh;
 
 
@@ -5899,6 +5941,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.SpecialAdditionViaNonAttribute == 12)
 					{
 						b_RaptureZombie[client] = true;
+					}
+					if(info.SpecialAdditionViaNonAttribute == 13)
+					{
+						b_ArmorVisualiser[client] = true;
 					}
 
 #endif
@@ -6173,6 +6219,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Saga_Enable(client, entity);
 		Enable_WeaponBoard(client, entity);
 		Enable_Casino(client, entity);
+		Enable_Ludo(client, entity);
 		Enable_Rapier(client, entity);
 		Enable_Mlynar(client, entity);
 		Enable_Judge(client, entity);
@@ -6193,6 +6240,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		AngelicShotgun_Enable(client, entity);
 		Enable_RedBladeWeapon(client, entity);
 		Enable_Gravaton_Wand(client, entity);
+		Enable_Dimension_Wand(client, entity);
+		Enable_Management_Hell_Hoe(client, entity);
 #endif
 
 #if defined RPG

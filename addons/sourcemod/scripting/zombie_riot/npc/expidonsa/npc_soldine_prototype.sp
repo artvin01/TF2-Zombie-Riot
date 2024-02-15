@@ -96,9 +96,9 @@ methodmap SoldinePrototype < CClotBody
 	}
 	
 	
-	public SoldinePrototype(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SoldinePrototype(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		SoldinePrototype npc = view_as<SoldinePrototype>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.5", "7500", ally, false, true));
+		SoldinePrototype npc = view_as<SoldinePrototype>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "7500", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_SOLDINE_PROTOTYPE;
 		i_NpcWeight[npc.index] = 3;

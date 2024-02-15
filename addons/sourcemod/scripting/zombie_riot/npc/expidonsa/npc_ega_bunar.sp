@@ -113,7 +113,7 @@ methodmap EgaBunar < CClotBody
 	}
 	
 	
-	public EgaBunar(int client, float vecPos[3], float vecAng[3], bool ally)
+	public EgaBunar(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		EgaBunar npc = view_as<EgaBunar>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1500", ally));
 		

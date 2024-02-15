@@ -60,7 +60,7 @@ methodmap Pathshaper < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Pathshaper(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Pathshaper(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Pathshaper npc = view_as<Pathshaper>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.75", "35000", ally, false, true));
 		// 35000 x 1.0
@@ -226,47 +226,25 @@ void Pathshaper_NPCDeath(int entityy)
 	
 	SDKUnhook(npc.index, SDKHook_Think, Pathshaper_ClotThink);
 
-	if(GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2)
+	int team = GetTeam(entityy);
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		for(int i; i < i_MaxcountNpc_Allied; i++)
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PATHSHAPER_FRACTAL && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
-			if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PATHSHAPER_FRACTAL && IsEntityAlive(entity))
-			{
-				RequestFrame(KillNpc, i_ObjectsNpcs_Allied[i]);
-			}
-		}
-	}
-	else
-	{
-		for(int i; i < i_MaxcountNpc; i++)
-		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-			if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PATHSHAPER_FRACTAL && IsEntityAlive(entity))
-			{
-				RequestFrame(KillNpc, i_ObjectsNpcs[i]);
-			}
+			RequestFrame(KillNpc, i_ObjectsNpcsTotal[i]);
 		}
 	}
 }
 
 void Pathshaper_SpawnFractal(CClotBody npc, int health, int limit)
 {
+	int team = GetTeam(npc.index);
 	int count;
-	for(int i; i < i_MaxcountNpc; i++)
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PATHSHAPER_FRACTAL && IsEntityAlive(entity))
-		{
-			if(++count == limit)
-				return;
-		}
-	}
-
-	for(int i; i < i_MaxcountNpc_Allied; i++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
-		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PATHSHAPER_FRACTAL && IsEntityAlive(entity))
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PATHSHAPER_FRACTAL && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
 			if(++count == limit)
 				return;
@@ -275,12 +253,11 @@ void Pathshaper_SpawnFractal(CClotBody npc, int health, int limit)
 
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-	bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
 	
-	int entity = Npc_Create(PATHSHAPER_FRACTAL, -1, pos, ang, ally);
+	int entity = Npc_Create(PATHSHAPER_FRACTAL, -1, pos, ang, GetTeam(npc.index));
 	if(entity > MaxClients)
 	{
-		if(!ally)
+		if(GetTeam(npc.index) != TFTeam_Red)
 			Zombies_Currently_Still_Ongoing++;
 		
 		SetEntProp(entity, Prop_Data, "m_iHealth", health);

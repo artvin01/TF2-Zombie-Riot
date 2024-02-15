@@ -762,7 +762,7 @@ stock int GetClosestAlly(int entity)
 		int i = MaxClients + 1;
 		while ((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 		{
-			if (GetEntProp(entity, Prop_Send, "m_iTeamNum")==GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") < GetEntProp(i, Prop_Data, "m_iMaxHealth"))
+			if (GetTeam(entity)==GetTeam(i) && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") < GetEntProp(i, Prop_Data, "m_iMaxHealth"))
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -796,7 +796,7 @@ stock bool IsValidAllyNotFullHealth(int index, int ally)
 		GetEntityClassname(ally, strClassname, sizeof(strClassname));
 		if(StrEqual(strClassname, "zr_base_npc"))
 		{
-			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(ally, Prop_Send, "m_iTeamNum") && GetEntProp(ally, Prop_Data, "m_iHealth") > 0 && GetEntProp(ally, Prop_Data, "m_iHealth") < GetEntProp(ally, Prop_Data, "m_iMaxHealth")) 
+			if(GetTeam(index) == GetTeam(ally) && GetEntProp(ally, Prop_Data, "m_iHealth") > 0 && GetEntProp(ally, Prop_Data, "m_iHealth") < GetEntProp(ally, Prop_Data, "m_iMaxHealth")) 
 			{
 				return true;
 			}

@@ -129,6 +129,38 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 		}
 	}
 
+	if(bestIndex == -1 && name[0])	// Fallback to case checks for spawn names
+	{
+		for(int i; i < length; i++)
+		{
+			SpawnerList.GetArray(i, spawn);
+			if(StrContains(name, spawn.Name) == -1)	// Invalid name, ignore
+				continue;
+			
+			if(!IsValidEntity(spawn.EntRef))	// Invalid entity, remove
+			{
+				SpawnerList.Erase(i);
+				i--;
+				length--;
+				continue;
+			}
+
+			if(!spawn.BaseBoss)
+			{
+				if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
+					continue;
+
+				nonBossSpawners++;
+			}
+			
+			if(bestIndex == -1 || (spawn.Cooldown < gameTime && spawn.Points >= bestPoints))
+			{
+				bestIndex = i;
+				bestPoints = spawn.Points;
+			}
+		}
+	}
+
 	if(bestIndex == -1)
 		return false;
 	

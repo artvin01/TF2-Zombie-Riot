@@ -72,7 +72,7 @@ methodmap SeabornSoldier < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornSoldier(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornSoldier(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornSoldier npc = view_as<SeabornSoldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "4000", ally));
 		
@@ -180,17 +180,26 @@ public void SeabornSoldier_ClotThink(int iNPC)
 							
 							float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 							float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-							bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+							int team = GetTeam(npc.index);
 
 							fl_Extra_Speed[npc.index] *= 1.25;
 							fl_Extra_Damage[npc.index] *= 1.1;
 
-							for(int i; i < 10; i++)
+							for(int i; i < 5; i++)
 							{
-								int entity = Npc_Create(SEABORN_SOLDIER, -1, pos, ang, ally);
+								if(MaxEnemiesAllowedSpawnNext(1) <= EnemyNpcAlive)
+								{
+									fl_Extra_Speed[npc.index] *= 1.1;
+									fl_Extra_Damage[npc.index] *= 1.05;
+									SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 1.1));
+									SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 1.1));
+									continue;
+								}
+
+								int entity = Npc_Create(SEABORN_SOLDIER, -1, pos, ang, team);
 								if(entity > MaxClients)
 								{
-									if(!ally)
+									if(team != TFTeam_Red)
 										Zombies_Currently_Still_Ongoing += 1;
 									
 									SetEntProp(entity, Prop_Data, "m_iHealth", health);

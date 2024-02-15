@@ -175,7 +175,7 @@ methodmap XenoCombineDeutsch < CClotBody
 	}
 	
 	
-	public XenoCombineDeutsch(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoCombineDeutsch(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineDeutsch npc = view_as<XenoCombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "110000", ally));
 		SetVariantInt(1);

@@ -110,7 +110,7 @@ public void Weapon_SeaRange_M2(int client, int weapon, bool crit, int slot)
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
 	GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 
-	int entity = Npc_Create(SEARUNNER, client, pos1, ang, true);
+	int entity = Npc_Create(SEARUNNER, client, pos1, ang, TFTeam_Red);
 	if(entity > MaxClients)
 	{
 		fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
@@ -140,7 +140,7 @@ public void Weapon_SeaRangePap_M2(int client, int weapon, bool crit, int slot)
 
 	for(int i; i < 2; i++)
 	{
-		int entity = Npc_Create(SEARUNNER, client, pos1, ang, true);
+		int entity = Npc_Create(SEARUNNER, client, pos1, ang, TFTeam_Red);
 		if(entity > MaxClients)
 		{
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
@@ -175,7 +175,7 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 
 	for(int i; i < 3; i++)
 	{
-		int entity = Npc_Create(SEARUNNER, client, pos1, ang, true);
+		int entity = Npc_Create(SEARUNNER, client, pos1, ang, TFTeam_Red);
 		if(entity > MaxClients)
 		{
 			int maxhealth = SDKCall_GetMaxHealth(client);
@@ -214,7 +214,12 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 
 public void Weapon_SeaHealing_M1(int client, int weapon, bool crit, int slot)
 {
-	if(dieingstate[client] != 0 || Ability_Check_Cooldown(client, slot) > 0.0)
+	if(dieingstate[client] != 0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
+	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -250,7 +255,7 @@ public void Weapon_SeaHealing_M1(int client, int weapon, bool crit, int slot)
 				ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 
 
-				float cooldown = float(health) / 5.0;
+				float cooldown = float(healing) / 5.0;
 				if(cooldown < 1.0)
 					cooldown = 1.0;
 				
@@ -272,6 +277,11 @@ public void Weapon_SeaHealing_M1(int client, int weapon, bool crit, int slot)
 
 public void Weapon_SeaHealing_M2(int client, int weapon, bool crit, int slot)
 {
+	if(dieingstate[client] != 0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
 	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -297,7 +307,7 @@ public void Weapon_SeaHealing_M2(int client, int weapon, bool crit, int slot)
 		if(healing > ammo)
 			healing = ammo;
 		
-		SetEntityHealth(client, health + healing);
+		HealEntityGlobal(client, client, float(healing), 1.0, 0.0, _);
 		
 		ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 

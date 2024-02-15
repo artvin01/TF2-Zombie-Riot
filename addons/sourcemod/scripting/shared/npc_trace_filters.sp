@@ -22,11 +22,15 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	}
 	else if(!b_NpcHasDied[entity])
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+#if defined ZR
+		if(!b_NpcIsTeamkiller[iExclude] && GetTeam(iExclude) == GetTeam(entity))
 		{
 			return false;
 		}
 		else if(!b_IsCamoNPC[entity] && b_CantCollidie[entity] && b_CantCollidieAlly[entity]) //If both are on, then that means the npc shouldnt be invis and stuff
+#else
+		if(!b_IsCamoNPC[entity] && b_CantCollidie[entity] && b_CantCollidieAlly[entity])
+#endif
 		{
 			return false;
 		}
@@ -42,12 +46,12 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	{
 		return false;
 	}	
-	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+#if defined ZR
+	if(!b_NpcIsTeamkiller[iExclude] && GetTeam(iExclude) == GetTeam(entity))
 	{
 		return false;
 	}
 
-#if defined ZR
 	if(Saga_EnemyDoomed(entity) && Saga_EnemyDoomed(iExclude))
 	{
 		return false;
@@ -125,7 +129,7 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 
 	//if anything else is team
 	
-	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	if(GetTeam(data) == GetTeam(entity))
 		return false;
 	
 
@@ -153,7 +157,7 @@ public bool TraceRayHitWorldOnly(int entity,int mask,any data)
 	{
 		return true;
 	}
-	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	if(GetTeam(data) == GetTeam(entity))
 		return false;
 
 	if(b_is_a_brush[entity])
@@ -178,7 +182,7 @@ public bool TraceRayHitWorldOnly(int entity,int mask,any data)
 	
 	//if anything else is team
 	
-	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	if(GetTeam(data) == GetTeam(entity))
 		return false;
 	
 
@@ -213,7 +217,7 @@ public bool TraceRayHitWorldAndBuildingsOnly(int entity,int mask,any data)
 	{
 		return true;
 	}
-	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	if(GetTeam(data) == GetTeam(entity))
 		return false;
 
 	if(b_is_a_brush[entity])

@@ -314,10 +314,6 @@ public void Hose_Heal(int owner, int entity, int amt)
 	{
 		ApplyHealEvent(entity, amt);
 	}
-	if(owner < MaxClients)
-	{
-		Healing_done_in_total[owner] += amt;
-	}
 	
 	SetEntProp(entity, Prop_Data, "m_iHealth", newHP);	
 	
@@ -499,7 +495,6 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 
 			HealEntityGlobal(client, target, float(ammo_amount_left), 1.15, 1.0, _);
 			
-			Healing_done_in_total[client] += ammo_amount_left;
 			ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 
 			if(target <= MaxClients)
@@ -661,7 +656,6 @@ public void TouchHealthKit(int entity, int other)
 		}
 		if(IsValidClient(Owner))
 		{
-			Healing_done_in_total[Owner] += healing_done;
 			PrintHintText(Owner, "%t", "You healed for", other, healing_done);
 		}
 		ApplyHealEvent(other, healing_done);
@@ -671,60 +665,3 @@ public void TouchHealthKit(int entity, int other)
 		RemoveEntity(entity);	
 	}
 }
-
-/*
-public Action Timer_Detect_Player_Nearby_healthkit(Handle timer, any entid)
-{
-	int entity = EntRefToEntIndex(entid);
-	if(IsValidEntity(entity) && entity>MaxClients)
-	{
-		if(f_HealMaxPickup_Enable[entity] > GetGameTime())
-		{
-			return Plugin_Continue;
-		}
-		float powerup_pos[3];
-		float client_pos[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", powerup_pos);
-		for (int client = 1; client <= MaxClients; client++)
-		{
-			if (IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
-			{
-				GetClientAbsOrigin(client, client_pos);
-				if (GetVectorDistance(powerup_pos, client_pos, true) <= 4900.0)
-				{
-					float maxhealth = 1.0;
-					float health = float(GetEntProp(client, Prop_Data, "m_iHealth"));
-					maxhealth = float(SDKCall_GetMaxHealth(client));
-					if(RoundToNearest(health) >= (RoundToNearest(maxhealth * 1.15)))
-					{
-						continue;
-					}
-
-					int Owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
-					int healing_done = HealEntityGlobal(Owner, client, f_HealMaxPickup[entity], 1.15, _, _);
-					if(healing_done <= 0)
-					{
-						continue;
-					}
-					if(IsValidClient(Owner))
-					{
-						Healing_done_in_total[Owner] += healing_done;
-						PrintHintText(Owner, "%t", "You healed for", client, healing_done);
-					}
-					ApplyHealEvent(client, healing_done);
-					ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-					Increaced_Overall_damage_Low[client] = GetGameTime() + 15.0;
-					Resistance_Overall_Low[client] = GetGameTime() + 15.0;
-					RemoveEntity(entity);
-					return Plugin_Stop;
-				}
-			}
-		}
-	}
-	else
-	{
-		return Plugin_Stop;
-	}
-	return Plugin_Continue;
-}
-*/

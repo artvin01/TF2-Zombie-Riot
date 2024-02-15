@@ -7,7 +7,7 @@ static const char HandModels[][] =
 	"models/empty.mdl",
 	"models/weapons/c_models/c_scout_arms.mdl",
 	"models/weapons/c_models/c_sniper_arms.mdl",
-	"models/weapons/c_models/c_soldier_arms.mdl",
+	"models/zombie_riot/weapons/soldier_hands/c_soldier_arms.mdl", //needed custom model due to rocket in face.
 	"models/weapons/c_models/c_demo_arms.mdl",
 	"models/weapons/c_models/c_medic_arms.mdl",
 	"models/weapons/c_models/c_heavy_arms.mdl",
@@ -128,8 +128,8 @@ void ViewChange_PlayerModel(int client)
 #endif
 				
 				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
-				SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
-				SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
+				SetTeam(entity, team);
+				SetEntProp(entity, Prop_Send, "m_nSkin", GetEntProp(client, Prop_Send, "m_nSkin"));
 				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
 				SetEntityCollisionGroup(entity, 11);
 				SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
@@ -205,7 +205,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 
 				
 				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
-				SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+				SetTeam(entity, team);
 				SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
 				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
 				SetEntityCollisionGroup(entity, 11);
@@ -222,7 +222,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 
 				if(i_WeaponVMTExtraSetting[active] != -1)
 				{
-					
+					i_WeaponVMTExtraSetting[entity] = i_WeaponVMTExtraSetting[active];
 #if defined ZR
 					if(IsSensalWeapon(i_CustomWeaponEquipLogic[active]))
 					{
@@ -253,7 +253,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				
 				if(i_WeaponVMTExtraSetting[active] != -1)
 				{
-
+					i_WeaponVMTExtraSetting[entity] = i_WeaponVMTExtraSetting[active];
 #if defined ZR
 					if(IsSensalWeapon(i_CustomWeaponEquipLogic[active]))
 					{
@@ -273,7 +273,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				}
 
 				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
-				SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+				SetTeam(entity, team);
 				SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
 				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
 				SetEntityCollisionGroup(entity, 11);

@@ -164,7 +164,7 @@ methodmap CombineElite < CClotBody
 	}
 	
 	
-	public CombineElite(int client, float vecPos[3], float vecAng[3], bool ally)
+	public CombineElite(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineElite npc = view_as<CombineElite>(CClotBody(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", "1500", ally));
 		

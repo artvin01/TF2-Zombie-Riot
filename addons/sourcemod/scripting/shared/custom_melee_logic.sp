@@ -571,17 +571,22 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		if(soundIndex > 0)
 		{
 			char SoundStringToPlay[256];
-			if(i_WeaponSoundIndexOverride[weapon] != -1)
+			if(soundIndex == MELEE_HIT && c_WeaponSoundOverrideString[weapon][0])
+			{
+				EmitSoundToAll(c_WeaponSoundOverrideString[weapon], client, SNDCHAN_STATIC, RoundToNearest(90.0 * f_WeaponVolumeSetRange[weapon])
+				, _, 1.0 * f_WeaponVolumeStiller[weapon]);
+			}
+			else if(i_WeaponSoundIndexOverride[weapon] != -1)
 			{
 				if(i_WeaponSoundIndexOverride[weapon] > 0)
 					SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", i_WeaponSoundIndexOverride[weapon]);
 
 				SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
+
 				if(i_WeaponSoundIndexOverride[weapon] > 0)
 					SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", Item_Index);
 
 				EmitGameSoundToAll(SoundStringToPlay, client);
-					
 			}
 		}
 

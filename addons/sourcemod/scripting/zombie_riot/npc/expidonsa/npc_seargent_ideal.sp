@@ -138,7 +138,7 @@ methodmap SeargentIdeal < CClotBody
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public SeargentIdeal(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeargentIdeal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeargentIdeal npc = view_as<SeargentIdeal>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "25000", ally));
 		
@@ -400,8 +400,7 @@ Action SeargentIdeal_Protect(int victim, int &attacker, int &inflictor, float &d
 
 void SeargentIdealShield(int iNpc)
 {
-	int TeamNum = GetEntProp(iNpc, Prop_Send, "m_iTeamNum");
-	SetEntProp(iNpc, Prop_Send, "m_iTeamNum", 4);
+	b_NpcIsTeamkiller[iNpc] = true;
 	Explode_Logic_Custom(0.0,
 	iNpc,
 	iNpc,
@@ -415,7 +414,7 @@ void SeargentIdealShield(int iNpc)
 	false,
 	_,
 	SeargentIdealShieldAffected);
-	SetEntProp(iNpc, Prop_Send, "m_iTeamNum", TeamNum);
+	b_NpcIsTeamkiller[iNpc] = false;
 }
 
 
@@ -424,25 +423,15 @@ void SeargentIdealShieldAffected(int entity, int victim, float damage, int weapo
 	if(entity == victim)
 		return;
 
-	if(b_IsAlliedNpc[entity])
+	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
 	{
-		if (b_IsAlliedNpc[victim])
-		{
-			SeargentIdealShieldInternal(entity, victim);
-		}
-	}
-	else
-	{
-		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
-		{
-			SeargentIdealShieldInternal(entity, victim);
-		}
+		SeargentIdealShieldInternal(entity, victim);
 	}
 }
 
 void SeargentIdealShieldInternal(int shielder, int victim)
 {
-	if(i_NpcInternalId[victim] != EXPIDONSA_DIVERSIONISTICO) //do not shield diversios.
+	if(i_NpcInternalId[victim] != EXPIDONSA_DIVERSIONISTICO && !b_NpcHasDied[victim]) //do not shield diversios.
 	{
 		SeargentIdeal npc = view_as<SeargentIdeal>(victim);
 		npc.m_iGetSeargentProtector = shielder;

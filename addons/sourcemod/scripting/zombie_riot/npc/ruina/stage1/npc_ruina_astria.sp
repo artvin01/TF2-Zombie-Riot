@@ -153,9 +153,9 @@ methodmap Astria < CClotBody
 	}
 	
 	
-	public Astria(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Astria(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Astria npc = view_as<Astria>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.5", "1250", ally));
+		Astria npc = view_as<Astria>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally));
 		
 		i_NpcInternalId[npc.index] = RUINA_ASTRIA;
 		i_NpcWeight[npc.index] = 1;

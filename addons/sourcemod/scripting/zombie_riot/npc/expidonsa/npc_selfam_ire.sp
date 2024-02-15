@@ -102,7 +102,7 @@ methodmap SelfamIre < CClotBody
 	}
 	
 	
-	public SelfamIre(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SelfamIre(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SelfamIre npc = view_as<SelfamIre>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "550", ally));
 		

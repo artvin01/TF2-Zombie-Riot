@@ -12,7 +12,7 @@ methodmap MedivalTrebuchet < CClotBody
 		EmitSoundToAll("weapons/mortar/mortar_fire1.wav", this.index, _, 130, _, 1.0, 100);
 	}
 	
-	public MedivalTrebuchet(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalTrebuchet(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalTrebuchet npc = view_as<MedivalTrebuchet>(CClotBody(vecPos, vecAng, NPCModel, "1.35", "5000", ally));
 		i_NpcInternalId[npc.index] = MEDIVAL_TREBUCHET;
@@ -72,7 +72,7 @@ public void MedivalTrebuchet_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,_,999999.9, true);
 		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
-		if(npc.m_iTarget == -1)
+		if(npc.m_iTarget < 1)
 		{
 			b_DoNotChangeTargetTouchNpc[npc.index] = 0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
@@ -179,7 +179,7 @@ public void MedivalTrebuchet_ClotThink(int iNPC)
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,_,999999.9, true);
-		if(npc.m_iTarget == -1)
+		if(npc.m_iTarget < 1)
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index);
 		}
@@ -196,7 +196,7 @@ void MedivalTrebuchet_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 	
 	float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
-	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, entity, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }
 
 

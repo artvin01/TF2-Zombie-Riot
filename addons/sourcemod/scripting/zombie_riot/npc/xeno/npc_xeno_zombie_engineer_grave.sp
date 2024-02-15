@@ -134,7 +134,7 @@ methodmap XenoEngineer < CClotBody
 	}
 	
 	
-	public XenoEngineer(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoEngineer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoEngineer npc = view_as<XenoEngineer>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "3000", ally));
 		

@@ -166,7 +166,7 @@ methodmap CombineSoldierAr2 < CClotBody
 	}
 	
 	
-	public CombineSoldierAr2(int client, float vecPos[3], float vecAng[3], bool ally)
+	public CombineSoldierAr2(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineSoldierAr2 npc = view_as<CombineSoldierAr2>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "1250", ally));
 		

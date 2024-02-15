@@ -129,9 +129,9 @@ methodmap Mecha_HeavyGiant < CClotBody
 	}
 	
 	
-	public Mecha_HeavyGiant(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Mecha_HeavyGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Mecha_HeavyGiant npc = view_as<Mecha_HeavyGiant>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.5", "15000", ally, false, true));
+		Mecha_HeavyGiant npc = view_as<Mecha_HeavyGiant>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.35", "15000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = ALT_MECHA_HEAVYGIANT;
 		i_NpcWeight[npc.index] = 3;

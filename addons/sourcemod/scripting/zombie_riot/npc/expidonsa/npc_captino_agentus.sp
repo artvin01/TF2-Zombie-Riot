@@ -142,7 +142,7 @@ methodmap CaptinoAgentus < CClotBody
 		EmitSoundToAll(g_ZapAttackSounds[GetRandomInt(0, sizeof(g_ZapAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_PullAttackSounds[GetRandomInt(0, sizeof(g_PullAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public CaptinoAgentus(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public CaptinoAgentus(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		CaptinoAgentus npc = view_as<CaptinoAgentus>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally));
 		
@@ -314,10 +314,10 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 							float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 							float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 							
-							int spawn_index = Npc_Create(EXPIDONSA_DIVERSIONISTICO, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+							int spawn_index = Npc_Create(EXPIDONSA_DIVERSIONISTICO, -1, pos, ang, GetTeam(npc.index));
 							if(spawn_index > MaxClients)
 							{
-								Zombies_Currently_Still_Ongoing += 1;
+								Zombies_Currently_Still_Ongoing += 1; // FIXME
 								TeleportEntity(spawn_index, pos, ang);
 								SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 								SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);

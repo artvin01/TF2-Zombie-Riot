@@ -408,7 +408,7 @@ methodmap BarrackBody < CClotBody
 	  int steptype = STEPTYPE_COMBINE_METRO, const char[] size_of_npc = "0.575",
 	   float ExtraOffset = 0.0, const char[] ParticleModelPath = "models/pickups/pickup_powerup_supernova.mdl", bool IsInvuln = false)
 	{
-		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, modelpath, size_of_npc, health, true, IsInvuln, .Ally_Collideeachother = !IsInvuln));
+		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, modelpath, size_of_npc, health, TFTeam_Red, IsInvuln, .Ally_Collideeachother = !IsInvuln));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -552,7 +552,8 @@ bool BarrackBody_ThinkStart(int iNPC, float GameTime, float offsetHealth = 0.0)
 	if(npc.m_flNextThinkTime > GameTime)
 		return false;
 		
-
+	npc.m_flNextThinkTime = GameTime + 0.1;
+	
 	BarrackBody_HealthHud(npc,offsetHealth);
 	if(f_NextHealTime[npc.index] < GameTime && !i_NpcIsABuilding[npc.index])
 	{
@@ -583,7 +584,6 @@ bool BarrackBody_ThinkStart(int iNPC, float GameTime, float offsetHealth = 0.0)
 		}
 			
 	}
-	npc.m_flNextThinkTime = GameTime + 0.1;
 	return true;
 }
 
@@ -601,10 +601,12 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 	
 	bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer || command == Command_RTSMove);
 
-	if(!newTarget && !retreating)
+	// Only retarget when can we had an existing target before
+	if(!newTarget && !retreating && i_Target[npc.index] != -1)
 		newTarget = !IsValidEnemy(npc.index, npc.m_iTarget);
 
-	if(!newTarget && !retreating)
+	// Only retarget when can we had an existing target before
+	if(!newTarget && !retreating && npc.m_iTargetRally > 0)
 		newTarget = !IsValidEnemy(npc.index, npc.m_iTargetRally);
 
 	if(newTarget)
@@ -632,6 +634,10 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo);	
 		}
+		else
+		{
+			npc.m_iTarget = -1;
+		}
 		
 		if(npc.m_iTargetAlly > 0 && !passive)
 		{
@@ -645,7 +651,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 			int entity = MaxClients + 1;
 			while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 			{
-				if(BarrackOwner[entity] == BarrackOwner[npc.index] && GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+				if(BarrackOwner[entity] == BarrackOwner[npc.index] && GetTeam(entity) == 2)
 				{
 					BarrackBody ally = view_as<BarrackBody>(entity);
 					if(ally.m_iTargetRally > 0 && IsValidEnemy(npc.index, ally.m_iTargetRally))
@@ -782,7 +788,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 						vecTarget[1] += GetRandomFloat(-300.0, 300.0);
 					}
 					vecTarget[2] += 50.0;
-					Handle trace = TR_TraceRayFilterEx(vecTarget, view_as<float>({90.0, 0.0, 0.0}), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
+					Handle trace = TR_TraceRayFilterEx(vecTarget, view_as<float>({90.0, 0.0, 0.0}), GetSolidMask(npc.index), RayType_Infinite, BulletAndMeleeTrace, npc.index);
 					TR_GetEndPosition(vecTarget, trace);
 					delete trace;
 					vecTarget[2] += 18.0;

@@ -896,10 +896,10 @@ void Weapon_Ark_SilenceAOE(int enemyStruck, float duration)
 	float VictimPos[3];
 	float EnemyPos[3];
 	GetEntPropVector(enemyStruck, Prop_Data, "m_vecAbsOrigin", VictimPos);
-	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
+	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-		if(IsValidEntity(entity))
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+		if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", EnemyPos);
 			if (GetVectorDistance(EnemyPos, VictimPos, true) <= (LAPPLAND_AOE_SILENCE_RANGE_SQUARED))

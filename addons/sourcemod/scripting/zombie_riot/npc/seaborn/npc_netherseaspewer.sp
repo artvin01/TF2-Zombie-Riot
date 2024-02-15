@@ -54,7 +54,7 @@ methodmap SeaSpewer < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeaSpewer(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeaSpewer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];
@@ -223,7 +223,7 @@ public void SeaSpewer_ClotThink(int iNPC)
 
 static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int count)
 {
-	int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
+	int team = GetTeam(npc.index);
 //	float gameTime = GetGameTime();
 	float vecTarget[3];
 	int found;
@@ -244,46 +244,21 @@ static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int c
 		}
 	}
 
-	if(team != 3)
+	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
-		for(int a; a < i_MaxcountNpc; a++)
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[a]);
-			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
+			if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && GetTeam(entity) != team && Can_I_See_Enemy_Only(npc.index, entity))
 			{
-				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
+				if(silenced || !SeaFounder_TouchingNethersea(entity))
 				{
-					if(silenced || !SeaFounder_TouchingNethersea(entity))
-					{
-						vecTarget = WorldSpaceCenterOld(entity);
-						if(GetVectorDistance(vecTarget, vecMe, true) > 48400.0)	// 1.1 * 200
-							continue;
-					}
-
-					AddToList(entity, found, enemy, count);
+					vecTarget = WorldSpaceCenterOld(entity);
+					if(GetVectorDistance(vecTarget, vecMe, true) > 48400.0)	// 1.1 * 200
+						continue;
 				}
-			}
-		}
-	}
 
-	if(team != 2)
-	{
-		for(int a; a < i_MaxcountNpc_Allied; a++)
-		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[a]);
-			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
-			{
-				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
-				{
-					if(silenced || !SeaFounder_TouchingNethersea(entity))
-					{
-						vecTarget = WorldSpaceCenterOld(entity);
-						if(GetVectorDistance(vecTarget, vecMe, true) > 48400.0)	// 1.1 * 200
-							continue;
-					}
-
-					AddToList(entity, found, enemy, count);
-				}
+				AddToList(entity, found, enemy, count);
 			}
 		}
 	}

@@ -1051,7 +1051,14 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	{
 		damage *= 1.10;
 	}
-	
+	if(f_MultiDamageTaken[entity] != 1.0)
+	{
+		damage *= f_MultiDamageTaken[entity];
+	}
+	if(f_MultiDamageTaken_Flat[entity] != 1.0)
+	{
+		damage *= f_MultiDamageTaken_Flat[entity];
+	}
 	if(b_thisNpcIsABoss[attacker])
 	{
 		damage *= 1.5;
@@ -1808,7 +1815,7 @@ void Building_ShowInteractionHud(int client, int entity)
 		}
 		else if(StrEqual(buffer, "zr_base_npc"))
 		{
-			if(b_IsAlliedNpc[entity])
+			if(GetTeam(entity) == TFTeam_Red)
 			{
 				if(f_CooldownForHurtHud[client] < GetGameTime() && f_CooldownForHurtHud_Ally[client] < GetGameTime())
 				{
@@ -1992,6 +1999,12 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 						if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false) && (StrEqual(buffer, "zr_ammobox") || StrEqual(buffer, "zr_armortable") || StrEqual(buffer, "zr_perkmachine") || StrEqual(buffer, "zr_packapunch")))
 						{
+							if(MaxSupportBuildingsAllowed(client, false) <= 1 && i_WhatBuilding[entity] == BuildingPackAPunch)
+							{
+								ClientCommand(client, "playgamesound items/medshotno1.wav");
+								PrintToChat(client,"You do not own enough builder upgrades to own a pack a punch.");
+								return true;
+							}
 							if(h_ClaimedBuilding[client][entity] != null)
 								delete h_ClaimedBuilding[client][entity];
 
@@ -3607,7 +3620,7 @@ public void BuildingMortarAction(int client, int mortar)
 	color[2] = 0;
 	color[3] = 255;
 									
-	if (TF2_GetClientTeam(client) == TFTeam_Blue)
+	if (GetTeam(client) == TFTeam_Blue)
 	{
 		color[2] = 255;
 		color[0] = 0;
@@ -3807,7 +3820,7 @@ static void Railgun_Boom(int client)
 			}
 			
 			
-			for (int building = 1; building < MAX_TARGETS_HIT; building++)
+			for (int building = 0; building < MAX_TARGETS_HIT; building++)
 			{
 				BEAM_BuildingHit[building] = false;
 			}
@@ -3941,7 +3954,7 @@ static void Railgun_Boom_Client(int client)
 			}
 			
 			
-			for (int building = 1; building < MAX_TARGETS_HIT; building++)
+			for (int building = 0; building < MAX_TARGETS_HIT; building++)
 			{
 				BEAM_BuildingHit[building] = false;
 			}
@@ -4037,7 +4050,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 			
-			if (((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
+			if (((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
 			{
 				for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
 				{
@@ -4554,7 +4567,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		if(IsClientInGame(client) && IsPlayerAlive(client))
 		{
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos2);
-			if(GetVectorDistance(pos1, pos2, true) < range)
+			if(GetVectorDistance(pos1, pos2, true) < range && f_ClientArmorRegen[client] - 0.3 < GetGameTime())
 			{
 				allies.Push(client);
 
@@ -4564,7 +4577,10 @@ public Action Timer_VillageThink(Handle timer, int ref)
 					if(Armor_Charge[client] < maxarmor)
 					{
 						f_ClientArmorRegen[client] = GetGameTime() + 0.7;
-						Armor_Charge[client] += 2;
+						if(f_TimeUntillNormalHeal[client] > GetGameTime())
+							GiveArmorViaPercentage(client, 0.00125, 1.0);
+						else
+							GiveArmorViaPercentage(client, 0.005, 1.0);
 					}
 				}
 				else if(effects & VILLAGE_001)
@@ -4572,7 +4588,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 					if(Armor_Charge[client] < 0)
 					{
 						f_ClientArmorRegen[client] = GetGameTime() + 0.7;
-						Armor_Charge[client] += 2;
+						GiveArmorViaPercentage(client, 0.005, 1.0);
 					}
 				}
 
@@ -4586,7 +4602,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 	int i = MaxClients + 1;
 	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
-		if(GetEntProp(i, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(i) == TFTeam_Red)
 		{
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < range)
@@ -4747,7 +4763,7 @@ void Building_CamoOrRegrowBlocker(int entity, bool &camo = false, bool &regrow =
 {
 	if(camo || regrow)
 	{
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != 2)
+		if(GetTeam(entity) != 2)
 		{
 			static float pos1[3];
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
@@ -5098,8 +5114,8 @@ static void VillageUpgradeMenu(int client, int viewer)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s [1 Banana]%s", TranslateItemName(viewer, "Grow Blocker", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : Village_TierExists[1] == 1 ? " [Tier 1 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_010), buffer, (!owner || points < 1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Prevents non-boss enemies from", ITEMDRAW_DISABLED);
-		menu.AddItem("", "gaining health in influence radius.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Lowers non-boss enemies from", ITEMDRAW_DISABLED);
+		menu.AddItem("", "gaining health in the influence radius as much (50% usually).\n ", ITEMDRAW_DISABLED);
 	}
 	
 	if(Village_Flags[client] & VILLAGE_005)
@@ -5149,14 +5165,14 @@ static void VillageUpgradeMenu(int client, int viewer)
 	{
 		FormatEx(buffer, sizeof(buffer), "Armor Aid [2 Bananas]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_002), buffer, (!owner || points < 2) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Gain a point of armor every half.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Gain 1% of armor every half.\n ", ITEMDRAW_DISABLED);
 		menu.AddItem("", "second to all players in range.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
 		FormatEx(buffer, sizeof(buffer), "Wandering Aid [2 Bananas]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : Village_TierExists[2] == 1 ? " [Tier 1 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_001), buffer, (!owner || points < 2) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Heals a point of armor erosion every.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Heals 1% of armor erosion every.\n ", ITEMDRAW_DISABLED);
 		menu.AddItem("", "half second to all players in range.\n ", ITEMDRAW_DISABLED);
 	}
 
@@ -6829,9 +6845,9 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 					HasupgradeVillager = true;
 					if(BARRACKS_VILLAGER == GetSData(CivType[owner], TrainingIndex[owner], NPCIndex))
 					{
-						for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+						for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 						{
-							int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+							int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 
 							if(IsValidEntity(entity_close) && i_NpcInternalId[entity_close] == BARRACKS_VILLAGER)
 							{
@@ -6887,7 +6903,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						GetEntPropVector(mounted ? owner : entity, Prop_Data, "m_angRotation", ang);
 						
 						view_as<BarrackBody>(mounted ? owner : entity).PlaySpawnSound();
-						int npc = Npc_Create(GetSData(CivType[owner], TrainingIndex[owner], NPCIndex), owner, pos, ang, true);
+						int npc = Npc_Create(GetSData(CivType[owner], TrainingIndex[owner], NPCIndex), owner, pos, ang, TFTeam_Red);
 						view_as<BarrackBody>(npc).m_iSupplyCount = GetSData(CivType[owner], TrainingIndex[owner], SupplyCost);
 						Barracks_UpdateEntityUpgrades(owner, npc, true, true); //make sure upgrades if spawned, happen on full health!
 
@@ -7033,7 +7049,7 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 	}
 	if(f_VillageSavingResources[client] < GetGameTime())
 	{
-		f_VillageSavingResources[client] = GetGameTime() + 10.0;
+		f_VillageSavingResources[client] = GetGameTime() + 0.25;
 		BarracksSaveResources(client);
 	}
 }
@@ -7267,9 +7283,9 @@ static void SummonerMenu(int client, int viewer)
 					HasupgradeVillager = true;
 					if(BARRACKS_VILLAGER == GetSData(CivType[client], TrainingIndex[client], NPCIndex))
 					{
-						for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+						for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 						{
-							int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+							int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 
 							if(IsValidEntity(entity_close) && i_NpcInternalId[entity_close] == BARRACKS_VILLAGER)
 							{
@@ -7353,9 +7369,9 @@ static void SummonerMenu(int client, int viewer)
 				}
 				else
 				{
-					for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 					{
-						int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+						int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 
 						if(IsValidEntity(entity_close) && i_NpcInternalId[entity_close] == BARRACKS_VILLAGER)
 						{
@@ -7655,7 +7671,7 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 	int entity = MaxClients + 1;
 	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 	{
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(entity) == 2)
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId == userid)
@@ -7886,10 +7902,8 @@ void Barracks_BuildingThink(int client)
 			EmitSoundToAll("weapons/bow_shoot.wav", mounted ? playerclient.index : npc.index, _, 70, _, 0.9, 100);
 
 			//npc.m_flDoingSpecial is damage, see above.
-			b_IsAlliedNpc[npc.index] = true;
 			int arrow = npc.FireArrow(vecTarget, npc.m_flDoingSpecial, projectile_speed,_,_, 55.0, client, mounted ? client : -1);
 			npc.m_iOverlordComboAttack -= 1;
-			b_IsAlliedNpc[npc.index] = false;
 
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CRENELLATIONS)
 			{

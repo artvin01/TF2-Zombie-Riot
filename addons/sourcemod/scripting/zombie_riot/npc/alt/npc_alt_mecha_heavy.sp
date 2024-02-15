@@ -131,7 +131,7 @@ methodmap Mecha_Heavy < CClotBody
 	
 	
 	
-	public Mecha_Heavy(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Mecha_Heavy(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Mecha_Heavy npc = view_as<Mecha_Heavy>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.0", "5000", ally));
 		
@@ -271,7 +271,7 @@ public void Mecha_Heavy_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);

@@ -69,7 +69,7 @@ methodmap BarrackVillager < BarrackBody
 			}
 		}
 	}
-	public BarrackVillager(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackVillager(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackVillager npc = view_as<BarrackVillager>(BarrackBody(client, vecPos, vecAng, "1000",_,_,_,_,"models/pickups/pickup_powerup_king.mdl"));
 		
@@ -162,7 +162,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 				if(flDistanceToTarget < (50.0*50.0))
 				{
 					//We are close enough to build, lets build.
-					int spawn_index = Npc_Create(BARRACKS_BUILDING, client, VillagerDesiredBuildLocation[npc.index], {0.0,0.0,0.0}, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+					int spawn_index = Npc_Create(BARRACKS_BUILDING, client, VillagerDesiredBuildLocation[npc.index], {0.0,0.0,0.0}, GetTeam(npc.index));
 					if(spawn_index > MaxClients)
 					{
 						VillagerDesiredBuildLocation[npc.index][0] = 0.0;
@@ -175,7 +175,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 
 						npc.m_iTowerLinked = spawn_index;
 						player.m_iTowerLinked = spawn_index;
-						if(!b_IsAlliedNpc[iNPC])
+						if(GetTeam(iNPC) != TFTeam_Red)
 						{
 							Zombies_Currently_Still_Ongoing += 1;
 						}

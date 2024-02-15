@@ -8,7 +8,7 @@ methodmap BarrackHussar < BarrackBody
 		return;
 //		EmitSoundToAll("mvm/mvm_tank_horn.wav", this.index, _, 60, _, 0.4, 60);
 	}
-	public BarrackHussar(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackHussar(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackHussar npc = view_as<BarrackHussar>(BarrackBody(client, vecPos, vecAng, "2000",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		

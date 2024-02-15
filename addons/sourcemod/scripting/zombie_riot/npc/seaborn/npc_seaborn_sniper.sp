@@ -63,7 +63,7 @@ methodmap SeabornSniper < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornSniper(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornSniper(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornSniper npc = view_as<SeabornSniper>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "4000", ally));
 		

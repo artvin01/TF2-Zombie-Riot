@@ -146,9 +146,9 @@ methodmap SoldierGiant < CClotBody
 	}
 	
 	
-	public SoldierGiant(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SoldierGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		SoldierGiant npc = view_as<SoldierGiant>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.5", "200000", ally, false, true));
+		SoldierGiant npc = view_as<SoldierGiant>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "200000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = SOLDIER_ZOMBIE_BOSS;
 		i_NpcWeight[npc.index] = 3;
@@ -385,6 +385,15 @@ public void SoldierGiant_ClotDamaged_Post(int victim, int attacker, int inflicto
 		float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
 		if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
 		{
+			if(MaxEnemiesAllowedSpawnNext(1) <= EnemyNpcAlive)
+			{
+				fl_TotalArmor[npc.index] = 0.5;
+				//grrr i cant spawn!!!!
+				//become fat.
+				return;
+			}
+			fl_TotalArmor[npc.index] = 1.0;
+			//yay i spawned, im now thinn :3
 			npc.g_TimesSummoned++;
 			maxhealth /= 7;
 			for(int i; i<1; i++)
@@ -392,15 +401,19 @@ public void SoldierGiant_ClotDamaged_Post(int victim, int attacker, int inflicto
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 				
-				int spawn_index = Npc_Create(SOLDIER_ZOMBIE_MINION, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+				int spawn_index = Npc_Create(SOLDIER_ZOMBIE_MINION, -1, pos, ang, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
-					Zombies_Currently_Still_Ongoing += 1;
+					Zombies_Currently_Still_Ongoing += 1;	// FIXME
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 				}
 			}
 		}
+	}
+	else
+	{
+		fl_TotalArmor[npc.index] = 1.0;
 	}
 }
 

@@ -107,7 +107,7 @@ methodmap AltMedicApprenticeMage < CClotBody
 	
 	
 	
-	public AltMedicApprenticeMage(int client, float vecPos[3], float vecAng[3], bool ally)
+	public AltMedicApprenticeMage(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		AltMedicApprenticeMage npc = view_as<AltMedicApprenticeMage>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
@@ -249,7 +249,7 @@ public void AltMedicApprenticeMage_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 550.0, DMG_CLUB, -1, _, vecHit);

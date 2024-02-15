@@ -271,10 +271,10 @@ public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &infl
 		case RUINA_MAGIA_ANCHOR:
 			Magia_Anchor_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
-		case RUINA_STORM_WEAVER:
+		case RUINA_STELLAR_WEAVER:
 			Storm_Weaver_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case RUINA_STORM_WEAVER_MID:
+		case RUINA_STELLAR_WEAVER_MID:
 			Storm_Weaver_Mid_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	}
 		
@@ -455,10 +455,10 @@ public void Ruina_NPCDeath_Override(int entity)
 		case RUINA_MAGIA_ANCHOR:
 			Magia_Anchor_NPCDeath(entity);
 
-		case RUINA_STORM_WEAVER:
+		case RUINA_STELLAR_WEAVER:
 			Storm_Weaver_NPCDeath(entity);
 
-		case RUINA_STORM_WEAVER_MID:
+		case RUINA_STELLAR_WEAVER_MID:
 			Storm_Weaver_Mid_NPCDeath(entity);
 			
 		default:
@@ -482,10 +482,10 @@ static int GetRandomMaster(int client)
 {
 	i_previus_priority[client] = -1;
 	int valid = -1;
-	for(int targ; targ<i_MaxcountNpc; targ++)
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(client) == GetTeam(baseboss_index))
 		{
 			if(Check_If_I_Am_The_Right_Slave(client, baseboss_index))
 				valid=baseboss_index;
@@ -497,11 +497,11 @@ static int GetClosestHealer(int client)
 {
 	int valid = -1;
 	float Npc_Vec[3]; Npc_Vec=GetAbsOriginOld(client);
-	for(int targ; targ<i_MaxcountNpc; targ++)
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 		float dist = 99999999.9;
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_npc_healer[baseboss_index])
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_npc_healer[baseboss_index] && GetTeam(client) == GetTeam(baseboss_index))
 		{
 			float target_vec[3]; target_vec = GetAbsOriginOld(baseboss_index);
 			float Distance=GetVectorDistance(Npc_Vec, target_vec, true);
@@ -517,11 +517,11 @@ static int GetClosestAnchor(int client)
 {
 	int valid = -1;
 	float Npc_Vec[3]; Npc_Vec=GetAbsOriginOld(client);
-	for(int targ; targ<i_MaxcountNpc; targ++)
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 		float dist = 99999999.9;
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_npc_sniper_anchor_point[baseboss_index])
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_npc_sniper_anchor_point[baseboss_index] && GetTeam(client) == GetTeam(baseboss_index))
 		{
 			float target_vec[3]; target_vec = GetAbsOriginOld(baseboss_index);
 			float Distance=GetVectorDistance(Npc_Vec, target_vec, true);
@@ -539,11 +539,11 @@ static int GetClosestRecall(int iNPC, int Target)
 	int valid = -1;
 	int Valid_Secondary=-1;
 	float Npc_Vec[3]; Npc_Vec=GetAbsOriginOld(main.index);
-	for(int targ; targ<i_MaxcountNpc; targ++)
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 		float dist = 99999999.9;
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_recall_achor[baseboss_index])
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_recall_achor[baseboss_index] && GetTeam(iNPC) == GetTeam(baseboss_index))
 		{
 			CClotBody npc = view_as<CClotBody>(baseboss_index);
 			if(npc.m_iTarget==Target)
@@ -1313,10 +1313,10 @@ public void Warp_Non_Combat_Npcs_Near(int iNPC, int type, int Target)
 
 	float pos1[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-	for(int targ; targ<i_MaxcountNpc; targ++)
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(iNPC) == GetTeam(baseboss_index))
 		{
 			if(!b_block_recall[baseboss_index])
 			{
@@ -1324,7 +1324,7 @@ public void Warp_Non_Combat_Npcs_Near(int iNPC, int type, int Target)
 				{
 					if(i_npc_type[baseboss_index]==type || type==2)	//same type of npc, or a global type
 					{
-						if(GetEntProp(baseboss_index, Prop_Data, "m_iTeamNum") == GetEntProp(npc.index, Prop_Data, "m_iTeamNum") && IsEntityAlive(baseboss_index))
+						if(GetTeam(baseboss_index) == GetTeam(npc.index) && IsEntityAlive(baseboss_index))
 						{
 							CClotBody npc2 = view_as<CClotBody>(baseboss_index);
 							int PrimrayThreatIndex = npc2.m_iTarget;
@@ -1409,16 +1409,16 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 		return;
 
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-	for(int targ; targ<i_MaxcountNpc; targ++)
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 		{
-			if(baseboss_index!=npc.index)
+			if(baseboss_index!=npc.index && GetTeam(iNPC) == GetTeam(baseboss_index))
 			{
 				if(i_npc_type[baseboss_index]==i_master_attracts[npc.index] || (i_master_attracts[npc.index]==3 || Override))	//same type of npc, or a global type
 				{
-					if(GetEntProp(baseboss_index, Prop_Data, "m_iTeamNum") == GetEntProp(npc.index, Prop_Data, "m_iTeamNum") && IsEntityAlive(baseboss_index))
+					if(GetTeam(baseboss_index) == GetTeam(npc.index) && IsEntityAlive(baseboss_index))
 					{
 						static float pos2[3];
 						GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", pos2);

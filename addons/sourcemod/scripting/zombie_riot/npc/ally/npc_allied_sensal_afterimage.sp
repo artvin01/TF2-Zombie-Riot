@@ -28,9 +28,9 @@ methodmap AlliedSensalAbility < CClotBody
 	}
 
 	
-	public AlliedSensalAbility(int client, float vecPos[3], float vecAng[3], bool ally)
+	public AlliedSensalAbility(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		AlliedSensalAbility npc = view_as<AlliedSensalAbility>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "100", true, true));
+		AlliedSensalAbility npc = view_as<AlliedSensalAbility>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "100", TFTeam_Red, true));
 		
 		i_NpcInternalId[npc.index] = WEAPON_SENSAL_AFTERIMAGE;
 		i_NpcWeight[npc.index] = 999;
@@ -49,6 +49,10 @@ methodmap AlliedSensalAbility < CClotBody
 
 		while(TF2U_GetWearable(client, entity, i, "tf_wearable"))
 		{
+
+			if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+				continue;
+				
 			ModelIndex = GetEntProp(entity, Prop_Data, "m_nModelIndex");
 			if(ModelIndex < 0)
 			{

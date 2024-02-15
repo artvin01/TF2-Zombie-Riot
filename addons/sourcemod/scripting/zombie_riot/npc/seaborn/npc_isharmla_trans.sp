@@ -70,9 +70,9 @@ methodmap IsharmlaTrans < CClotBody
 		EmitSoundToAll("ui/halloween_boss_summoned_fx.wav");
 	}
 	
-	public IsharmlaTrans(int client, float vecPos[3], float vecAng[3], bool ally)
+	public IsharmlaTrans(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IsharmlaTrans npc = view_as<IsharmlaTrans>(CClotBody(vecPos, vecAng, "models/bots/headless_hatman.mdl", "1.5", "45000", ally, false, true));
+		IsharmlaTrans npc = view_as<IsharmlaTrans>(CClotBody(vecPos, vecAng, "models/bots/headless_hatman.mdl", "1.35", "45000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = ISHARMLA_TRANS;
 		i_NpcWeight[npc.index] = 6;
@@ -133,7 +133,7 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 
 	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, _, _, true);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, _, false);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 	

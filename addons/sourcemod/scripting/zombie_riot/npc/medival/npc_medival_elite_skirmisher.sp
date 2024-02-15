@@ -145,7 +145,7 @@ methodmap MedivalEliteSkirmisher < CClotBody
 		#endif
 	}
 	
-	public MedivalEliteSkirmisher(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalEliteSkirmisher(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalEliteSkirmisher npc = view_as<MedivalEliteSkirmisher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000", ally));
 		SetVariantInt(1);

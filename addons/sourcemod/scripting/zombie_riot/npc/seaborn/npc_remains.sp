@@ -41,7 +41,7 @@ methodmap Remains < CClotBody
 		if(type < 0 || type >= sizeof(RemainModels))
 			return view_as<Remains>(-1);
 
-		Remains npc = view_as<Remains>(CClotBody(vecPos, vecAng, RemainModels[type], "1.0", "100", true, true));
+		Remains npc = view_as<Remains>(CClotBody(vecPos, vecAng, RemainModels[type], "1.0", "100", TFTeam_Red, true));
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 2);
 
@@ -95,7 +95,7 @@ void Remains_SpawnDrop(float pos[3], int type)
 {
 	char data[4];
 	IntToString(type, data, sizeof(data));
-	Npc_Create(REMAINS, -1, pos, {0.0, 0.0, 0.0}, true, data);
+	Npc_Create(REMAINS, -1, pos, {0.0, 0.0, 0.0}, TFTeam_Red, data);
 }
 
 void Remains_NPCDeath(int entity)
@@ -128,9 +128,9 @@ static bool IsClosestRemain(int thisEntity)
 	int remain1, remain2;
 	float dist1 = FAR_FUTURE;
 	float dist2 = FAR_FUTURE;
-	for(int i; i < i_MaxcountNpc_Allied; i++)
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == REMAINS && IsEntityAlive(entity))
 		{
 			float distance = GetVectorDistance(GetWorldSpaceCenterOld(entity), pos, true);

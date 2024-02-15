@@ -93,7 +93,7 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
 		//Edit: Need owner entity, otheriwse you can actuall hit your own god damn rocket and make a ding sound. (Really annoying.)
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage should be nothing. if it somehow goes boom.
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		SetTeam(entity, GetTeam(client));
 		int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
 		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
 		DispatchSpawn(entity);
@@ -275,6 +275,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		case WEAPON_GERMAN:
 		{
 			Weapon_German_WandTouch(entity, target);
+		}
+		case WEAPON_LUDO:
+		{
+			Weapon_Ludo_WandTouch(entity, target);
 		}
 		case WEAPON_SENSAL_SCYTHE:
 		{

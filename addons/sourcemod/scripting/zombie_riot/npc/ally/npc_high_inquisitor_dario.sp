@@ -101,7 +101,7 @@ methodmap HighInquisitorDario < CClotBody
 	}
 	
 	
-	public HighInquisitorDario(int client, float vecPos[3], float vecAng[3], bool ally)
+	public HighInquisitorDario(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		HighInquisitorDario npc = view_as<HighInquisitorDario>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
 		
@@ -377,7 +377,7 @@ public void HighInquisitorDario_ClotThink(int iNPC)
 				npc.m_fbRangedSpecialOn = false;
 				npc.PlayDeflectSound();
 
-				npc.m_flDoingAnimation = gameTime + 0.8;
+				npc.m_flDoingAnimation = gameTime + 0.65;
 			}
 		}
 	}

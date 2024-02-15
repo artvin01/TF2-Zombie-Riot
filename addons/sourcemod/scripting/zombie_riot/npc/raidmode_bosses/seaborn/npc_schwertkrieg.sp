@@ -292,7 +292,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 	
 	
 	
-	public Raidboss_Schwertkrieg(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Raidboss_Schwertkrieg(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
@@ -337,6 +337,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		npc.m_flSpeed =330.0;
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 			
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -477,6 +478,20 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
+	/*if(fl_divine_intervention_active > GetGameTime() && !b_teleport_strike_active[npc.index])
+	{
+		int Ally = EntRefToEntIndex(i_ally_index);
+		if(IsValidAlly(npc.index, Ally))
+		{
+			NPC_SetGoalEntity(npc.index, Ally);
+			return;
+		}
+		else
+		{
+			CPrintToChatAll("Something CATASTROPHIC HAPPENED, OH GOD");
+		}	
+	}*/
+
 	if(schwert_retreat && Schwert_Status(npc, GameTime)==1 && b_teleport_strike_active[npc.index])
 	{
 		npc.m_flMeleeArmor = fl_schwert_armour[npc.index][1];
@@ -497,7 +512,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 		if(IsValidAlly(npc.index, EntRefToEntIndex(i_ally_index)))	//schwert will always prefer attacking enemies who are near donnerkrieg.
 		{
 			npc.m_iTarget = GetClosestTarget(EntRefToEntIndex(i_ally_index),_,_,_,_,_,_,true);
-			if(npc.m_iTarget == -1)
+			if(npc.m_iTarget < 1)
 			{
 				npc.m_iTarget = GetClosestTarget(EntRefToEntIndex(i_ally_index));
 			}
@@ -924,7 +939,7 @@ static void Schwert_Aggresive_Behavior(Raidboss_Schwertkrieg npc, int PrimaryThr
 								fl_schwert_sword_battery[npc.index] +=1.0;
 						}
 						
-						if(target <= MaxClients)
+						if(!ShouldNpcDealBonusDamage(target))
 						{
 							float Bonus_damage = 1.0;
 							int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
@@ -1743,7 +1758,7 @@ static void Schwertkrieg_Laser_Trace(Raidboss_Schwertkrieg npc, float Start_Poin
 			
 	for (int victim = 0; victim < MAXTF2PLAYERS; victim++)
 	{
-		if (Schwertkrieg_BEAM_HitDetected[victim] && GetEntProp(npc.index, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		if (Schwertkrieg_BEAM_HitDetected[victim] && GetTeam(npc.index) != GetTeam(victim))
 		{
 			float playerPos[3];
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
@@ -1806,6 +1821,7 @@ static int Create_Blade(float Loc[3], char size[10])
 		CClotBody npc = view_as<CClotBody>(prop);
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 
 		SetVariantColor(view_as<int>({3, 244, 252, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
@@ -2352,7 +2368,7 @@ static int Schwert_Create_Invis_Proj(Raidboss_Schwertkrieg npc, float rocket_spe
 	{
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
+		SetTeam(entity, GetTeam(npc.index));
 		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
 										
 		TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
@@ -2379,7 +2395,6 @@ static int Schwert_Create_Invis_Proj(Raidboss_Schwertkrieg npc, float rocket_spe
 		
 		SetEntProp(entity, Prop_Data, "m_nSolidType", 6);
 		SetEntProp(entity, Prop_Send, "m_CollisionGroup", 1);
-		See_Projectile_Team(entity);
 
 		SetEntityMoveType(entity, MOVETYPE_NOCLIP);
 

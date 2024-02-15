@@ -22,7 +22,7 @@ methodmap StalkerFather < StalkerShared
 		i_PlayMusicSound = GetTime() + 39;
 	}
 	
-	public StalkerFather(int client, float vecPos[3], float vecAng[3], bool ally)
+	public StalkerFather(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		StalkerFather npc = view_as<StalkerFather>(CClotBody(vecPos, vecAng, "models/zombie/monk_combine.mdl", "1.15", "66666", ally));
 		
@@ -371,6 +371,7 @@ public Action StalkerFather_Timer(Handle timer)
 	enemy.ExtraSpeed = 1.0;
 	enemy.ExtraDamage = 1.0;	
 	enemy.ExtraSize = 1.0;	
+	enemy.Team = TFTeam_Blue;	
 	Waves_AddNextEnemy(enemy);
 	return Plugin_Stop;
 }

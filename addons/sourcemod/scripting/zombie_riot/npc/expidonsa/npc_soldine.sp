@@ -149,7 +149,7 @@ methodmap Soldine < CClotBody
 	}
 	
 	
-	public Soldine(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Soldine(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Soldine npc = view_as<Soldine>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "40000", ally));
 		

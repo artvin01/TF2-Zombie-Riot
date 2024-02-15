@@ -66,11 +66,11 @@ methodmap Storm_Weaver_Mid < CClotBody
 		#endif
 	}
 	
-	public Storm_Weaver_Mid(int client, float vecPos[3], float vecAng[3], bool ally, float in_line_id)
+	public Storm_Weaver_Mid(int client, float vecPos[3], float vecAng[3], int ally, float in_line_id)
 	{
 		Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(CClotBody(vecPos, vecAng, RUINA_STORM_WEAVER_MODEL, RUINA_STORM_WEAVER_MODEL_SIZE, "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_STORM_WEAVER_MID;
+		i_NpcInternalId[npc.index] = RUINA_STELLAR_WEAVER_MID;
 		i_NpcWeight[npc.index] = 999;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -79,7 +79,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 		i_following_id[npc.index] = EntIndexToEntRef(RoundToFloor(in_line_id));
 
 
-		if(!ally)
+		if(ally != TFTeam_Red)
 		{
 			b_thisNpcIsABoss[npc.index] = true;
 		}
@@ -121,6 +121,8 @@ methodmap Storm_Weaver_Mid < CClotBody
 public void Storm_Weaver_Mid_ClotThink(int iNPC)
 {
 	Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(iNPC);
+
+	f_StuckOutOfBoundsCheck[npc.index] = GetGameTime() + 10.0;
 	
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
@@ -214,6 +216,10 @@ public Action Storm_Weaver_Mid_OnTakeDamage(int victim, int &attacker, int &infl
 		fl_ruina_battery[npc.index] += damage;	//turn damage taken into energy
 
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health());
+	}
+	else if(b_stellar_weaver_true_solo)
+	{
+		Stellar_Weaver_Share_Damage_With_All(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 	}
 
 	damage=0.0;	//storm weaver doesn't really take any damage, his "health bar" is just the combined health of all the towers
