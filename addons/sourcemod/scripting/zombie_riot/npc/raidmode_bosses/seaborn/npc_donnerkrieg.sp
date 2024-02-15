@@ -3506,7 +3506,7 @@ static Action Divine_Intervention_Hook(int iNPC)
 		int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int spawn_index;
 
-		spawn_index = Npc_Create(RUINA_STELLAR_WEAVER, -1, Npc_Loc, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2, "solo_true");
+		spawn_index = Npc_Create(RUINA_STELLAR_WEAVER, -1, Npc_Loc, ang, GetTeam(npc.index), "solo_true");
 		if(spawn_index > MaxClients)
 		{
 			Zombies_Currently_Still_Ongoing += 1;
