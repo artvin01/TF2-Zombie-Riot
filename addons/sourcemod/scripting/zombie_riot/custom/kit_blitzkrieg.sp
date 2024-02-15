@@ -75,7 +75,6 @@ public void Enable_Blitzkrieg_Kit(int client, int weapon)
 			if(fl_primary_reloading[client]>GetGameTime())
 			{
 				b_primary_lock[client]=true;
-				Attributes_Set(weapon, 821, 1.0);
 			}
 		}
 		return;
@@ -87,7 +86,14 @@ public void Enable_Blitzkrieg_Kit(int client, int weapon)
 		h_TimerKitBlitzkriegManagement[client] = CreateDataTimer(0.1, Timer_Management_KitBlitzkrieg, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
-		fl_primary_reloading[client] = 0.0;
+		if(fl_primary_reloading[client]>GetGameTime()+100.0)//somehow the timer we got is WAAAAY too high. reset it
+		{
+			fl_primary_reloading[client]=0.0;	
+		}
+		if(fl_primary_reloading[client]>GetGameTime())
+		{
+			b_primary_lock[client]=true;
+		}
 		fl_primary_dmg_amt[client] = 100.0;
 		i_patten_type[client]=0;
 		b_was_lastman[client]=false;
@@ -149,6 +155,13 @@ public Action Timer_Management_KitBlitzkrieg(Handle timer, DataPack pack)
 				{
 					b_primary_lock[client]=false;
 					Attributes_Set(weapon_holding, 821, 0.0);
+				}
+			}
+			else
+			{
+				if(RoundFloat(Attributes_Get(weapon_holding, 821, 0.0))==1)
+				{
+					b_primary_lock[client]=true;
 				}
 			}
 		}
