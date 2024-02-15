@@ -34,6 +34,9 @@ static float BOLT_FALLOFF_RADIUS_BUFFED = 0.66;
 static float BOLT_DAMAGE_ENTITYMULT = 3.0;
 static float BOLT_DAMAGE_ENTITYMULT_BUFFED = 4.0;
 
+static float NECROMANCER_MAX_SUMMONS = 4.0;
+static float NECROMANCER_MAX_SUMMONS_BUFFED = 8.0;
+
 #define BONES_NECROMANCER_SCALE					"1.0"
 #define BONES_NECROMANCER_BUFFED_SCALE			"1.2"
 
@@ -458,12 +461,60 @@ public void Necromancer_WaitForBolt(NecromancerBones npc)
 		
 		EmitSoundToAll(SOUND_BOLT_IMPACT, 0, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL - 20, _, NORMAL_ZOMBIE_VOLUME - 0.1, GetRandomInt(80, 110), -1, Necro_TargetLoc[npc.index]);
 		
-		//TODO: Summon skeletons
+		Necromancer_Summon(npc);
+		if (b_BonesBuffed[npc.index])
+			Necromancer_Summon(npc);
 		
 		NecroCastState[npc.index] = NECRO_CASTSTATE_INACTIVE;
 		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BONES_NECROMANCER_ATTACKINTERVAL_BUFFED : BONES_NECROMANCER_ATTACKINTERVAL);
 		npc.m_flAttackHappenswillhappen = false;
 	}
+}
+
+
+public void Necromancer_Summon(NecromancerBones npc)
+{
+	if (npc.m_flBoneZoneNumSummons < (b_BonesBuffed[npc.index] ? NECROMANCER_MAX_SUMMONS_BUFFED : NECROMANCER_MAX_SUMMONS))
+	{
+		any entity = -1;
+		float randAng[3];
+		randAng[1] = GetRandomFloat(0.0, 360.0);
+		
+		//This can be expanded to allow Necromancers to summon more types of NPCs.
+		//For obvious reasons, you should NEVER allow Necromancers to summon more Necromancers.
+		//Aside from that, any NPC is fair game.
+		switch(GetRandomInt(1, 3))
+		{
+			case 1:
+			{
+				entity = BasicBones(npc.index, Necro_TargetLoc[npc.index], randAng, b_IsAlliedNpc[npc.index], b_BonesBuffed[npc.index]);
+				Necromancer_AssignSummonStats(entity, npc, 1.0);
+			}
+			case 2:
+			{
+				entity = BeefyBones(npc.index, Necro_TargetLoc[npc.index], randAng, b_IsAlliedNpc[npc.index], b_BonesBuffed[npc.index]);
+				Necromancer_AssignSummonStats(entity, npc, 1.0);
+			}
+			case 3:
+			{
+				entity = BrittleBones(npc.index, Necro_TargetLoc[npc.index], randAng, b_IsAlliedNpc[npc.index], b_BonesBuffed[npc.index]);
+				Necromancer_AssignSummonStats(entity, npc, 0.5);
+					
+				randAng[1] = GetRandomFloat(0.0, 360.0);
+					
+				entity = BrittleBones(npc.index, Necro_TargetLoc[npc.index], randAng, b_IsAlliedNpc[npc.index], b_BonesBuffed[npc.index]);
+				Necromancer_AssignSummonStats(entity, npc, 0.5);
+			}
+		}
+	}
+}
+
+public void Necromancer_AssignSummonStats(int entity, NecromancerBones npc, float value)
+{
+	CClotBody summoned = view_as<CClotBody>(entity);
+	summoned.m_iBoneZoneSummoner = npc.index;
+	summoned.m_flBoneZoneSummonValue = value;
+	npc.m_flBoneZoneNumSummons += value;
 }
 
 public void NecromancerBones_ClotThink(int iNPC)

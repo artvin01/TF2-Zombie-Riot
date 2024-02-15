@@ -1311,6 +1311,24 @@ methodmap CClotBody < CBaseCombatCharacter
 		public set(bool TempValueForProperty) 	{ b_BoneZoneNaturallyBuffed[this.index] = TempValueForProperty; }
 	}
 	
+	property int m_iBoneZoneSummoner
+	{
+		public get()				{ return EntRefToEntIndex(i_BoneZoneSummoner[this.index]); }
+		public set(int TempValueForProperty) 	{ i_BoneZoneSummoner[this.index] = EntIndexToEntRef(TempValueForProperty); }
+	}
+	
+	property float m_flBoneZoneSummonValue
+	{
+		public get()				{ return f_BoneZoneSummonValue[this.index]; }
+		public set(float TempValueForProperty) 	{ f_BoneZoneSummonValue[this.index] = TempValueForProperty; }
+	}
+	
+	property float m_flBoneZoneNumSummons
+	{
+		public get()				{ return f_BoneZoneNumSummons[this.index]; }
+		public set(float TempValueForProperty) 	{ f_BoneZoneNumSummons[this.index] = TempValueForProperty; }
+	}
+	
 	property Handle g_BoneZoneBuffers
 	{
 		public get()				{ return g_BoneZoneBuffers[this.index]; }

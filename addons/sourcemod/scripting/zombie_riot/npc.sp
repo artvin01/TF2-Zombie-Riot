@@ -3050,6 +3050,7 @@ public void NPCDeath(int entity)
 		return;
 		//todo: convert all on death and on take damage to this.
 	}
+	//TODO: Bone Zone summoner stuff
 	switch(i_NpcInternalId[entity])
 	{
 		case HEADCRAB_ZOMBIE:
