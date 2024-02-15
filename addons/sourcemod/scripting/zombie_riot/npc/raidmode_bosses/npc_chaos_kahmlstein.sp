@@ -514,6 +514,8 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			}
 			else
 			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's fight!");
+				Music_SetRaidMusic("#zombiesurvival/internius/khamlstein.mp3", 294, true, 1.5);
 				i_khamlCutscene[npc.index] = 0;
 			}
 		}
@@ -1111,17 +1113,24 @@ public void ChaosKahmlstein_NPCDeath(int entity)
 	if(BlockLoseSay)
 		return;
 
-	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_RoundRunning)
+	if(i_RaidGrantExtra[npc.index] == 1)
 	{
-		for (int client = 0; client < MaxClients; client++)
+		if(GameRules_GetRoundState() == RoundState_RoundRunning)
 		{
-			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+			for (int client = 0; client < MaxClients; client++)
 			{
-				Items_GiveNamedItem(client, "Kahml's Contained Chaos");
-				CPrintToChat(client,"{default}Kahml thanks your.. efforts? You get: {red}''Kahml's Contained Chaos''{default}!");
+				if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+				{
+					Items_GiveNamedItem(client, "Kahml's Contained Chaos");
+					CPrintToChat(client,"{default}Kahml thanks your.. efforts? You get: {red}''Kahml's Contained Chaos''{default}!");
+				}
 			}
+			CPrintToChatAll("{darkblue}Kahmlstein{default}: This sensation.. Did I... lose? Haha, I never felt like this for a long time now.");
 		}
-		CPrintToChatAll("{darkblue}Kahmlstein{default}: This sensation.. Did I... lose? Haha, I never felt like this for a long time now.");
+	}
+	else
+	{
+		CPrintToChatAll("{darkblue}Kahmlstein{default}: That was good, next time ill be sure to actually try, now factor in the chance i lied.");
 	}
 }
 /*
@@ -1421,7 +1430,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 					}
 					case 1:
 					{
-						CPrintToChatAll("{darkblue}Kahmlstein{default}: oh no im so scared.");
+						CPrintToChatAll("{darkblue}Kahmlstein{default}: Oh no im so scared.");
 					}
 					case 2:
 					{

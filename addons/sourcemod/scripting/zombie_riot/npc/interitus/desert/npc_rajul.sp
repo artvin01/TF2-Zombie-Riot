@@ -96,7 +96,7 @@ methodmap DesertRajul < CClotBody
 	
 	public DesertRajul(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		DesertRajul npc = view_as<DesertRajul>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "3500", ally, false, true));
+		DesertRajul npc = view_as<DesertRajul>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "3000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_DESERT_RAJUL;
 		i_NpcWeight[npc.index] = 2;

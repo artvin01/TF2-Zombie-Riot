@@ -39,9 +39,9 @@
 	{
 		"en" 		"Kahmlstein, the rebellious chaos inflicted leader will annihilate you."
 	}
-	"The Pruge Arrived"
+	"The Purge Arrived"
 	{
-		"en" 		"The Pruge has accumulated chaos."
+		"en" 		"The Purge has accumulated chaos."
 	}
 	"Blitzkrieg Spawn"
 	{
