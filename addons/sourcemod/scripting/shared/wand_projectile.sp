@@ -296,6 +296,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Weapon_Heavy_Particle_Rifle(entity, target);
 		}
+		case WEAPON_QUINCY_BOW:
+		{
+			Quincy_Touch(entity, target);
+		}
 	}
 #else
 	switch(i_WandIdNumber[entity])
