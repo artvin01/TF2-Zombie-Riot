@@ -840,7 +840,7 @@ public void Weapon_Dimension_Summon_Interitus(int client, int weapon, bool &resu
 		case 6:
 			Dimension_Summon_Npc(client, INTERITUS_DESERT_RAJUL ,weapon, 1.3, 1.1, "eyeboss_death_vortex");
 		case 7:
-			Dimension_Summon_Npc(client, INTERITUS_DESERT_QANAAS , ,weapon, 0.8, 1.2, "eyeboss_death_vortex");
+			Dimension_Summon_Npc(client, INTERITUS_DESERT_QANAAS ,weapon, 0.8, 1.2, "eyeboss_death_vortex");
 		case 8:
 			Dimension_Summon_Npc(client, INTERITUS_DESERT_ATILLA ,weapon, 0.9, 0.9, "eyeboss_death_vortex");
 		case 9:
