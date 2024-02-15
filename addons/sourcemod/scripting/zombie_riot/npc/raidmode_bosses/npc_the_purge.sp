@@ -189,7 +189,7 @@ methodmap ThePurge < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "The Pruge Arrived");
+				ShowGameText(client_check, "item_armor", 1, "%t", "The Purge Arrived");
 			}
 		}
 		CPrintToChatAll("{crimson}The Purge{default}: {crimson}Engaging the targets.");
