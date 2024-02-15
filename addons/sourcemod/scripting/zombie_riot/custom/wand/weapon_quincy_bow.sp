@@ -9,7 +9,7 @@ static float fl_Quincy_Charge_Multi[MAXTF2PLAYERS + 1];
 
 #define QUINCY_BOW_HYPER_BARRAGE_DRAIN 10.0		//how much charge is drained per shot
 #define QUINCY_BOW_HYPER_BARRAGE_MINIMUM 25.0	//what % of charge does the battery need to start firing
-#define QUINCY_BOW_MAX_HYPER_BARRAGE 15			//how many maximum individual timers/origin points are shot, kinda like how many of them can be fired a second, this is the max amt
+#define QUINCY_BOW_MAX_HYPER_BARRAGE 14			//how many maximum individual timers/origin points are shot, kinda like how many of them can be fired a second, this is the max amt
 #define QUINCY_BOW_MULTI_SHOT_MINIMUM	50.0	//yada yada
 
 #define QUINCY_BOW_ARROW_TOUCH_SOUND "friends/friend_online.wav"
@@ -292,10 +292,6 @@ static void Quincy_Hyper_Barrage(int client, float charge_percent, float GameTim
 
 	float tempAngles[3], endLoc[3], Direction[3];
 	
-	float base = 180.0 / speed;
-	
-	float tmp=base;
-	
 	Handle swingTrace;
 	float Vec_offset[3] , vec[3];
 			
@@ -318,15 +314,29 @@ static void Quincy_Hyper_Barrage(int client, float charge_percent, float GameTim
 			
 	delete swingTrace;
 	
-	UserLoc[2] -= 50.0;
+	
 	
 	if(speed>QUINCY_BOW_MAX_HYPER_BARRAGE)
 		speed = QUINCY_BOW_MAX_HYPER_BARRAGE;
+
+	speed = RoundToCeil(speed / 2.0) * 2;
+
+	float special_angle = 45.0;
+		
+	float Ratio_Core = (180.0)/(speed);
+
+	if(speed>=8)
+	{
+		UserLoc[2] += 12.0*(speed-7);
+	}
 
 	for(int i=1 ; i<=speed ; i++)
 	{	
 		if(fl_Quincy_Barrage_Firerate[client][i]<GameTime)
 		{
+			
+			float Angle_Adj =  Ratio_Core*i+special_angle-(Ratio_Core/2);
+
 			float firerate = 0.5;
 			firerate *= Attributes_Get(weapon, 5, 1.0);
 			firerate *= Attributes_Get(weapon, 6, 1.0);
@@ -334,18 +344,22 @@ static void Quincy_Hyper_Barrage(int client, float charge_percent, float GameTim
 			fl_Quincy_Barrage_Firerate[client][i] = GameTime + firerate + GetRandomFloat(firerate/-2.0, firerate/2.0);
 			
 			fl_Quincy_Charge[client] -= QUINCY_BOW_HYPER_BARRAGE_DRAIN;
-			
-			
-			tempAngles[0] =	tmp*float(i)+180-(base/2);	//180 = Directly upwards, minus half the "gap" angle
-			tempAngles[1] = angles[1]-90.0;
-			tempAngles[2] = 0.0;
-			
-			if(tempAngles[0]>=360)
+
+			if(i>speed/2)
 			{
-				tempAngles[0] -= 360;
+				Angle_Adj+=special_angle*2.0;
 			}
+			
+			
+			
+			tempAngles[0] = angles[0];
+			tempAngles[1] = angles[1];
+			tempAngles[2] = Angle_Adj;	
+			
+			if(tempAngles[2]>360.0)
+				tempAngles[2] -= 360.0;
 						
-			GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+			GetAngleVectors(tempAngles, Direction, NULL_VECTOR, Direction);
 			ScaleVector(Direction, distance);
 			AddVectors(UserLoc, Direction, endLoc);
 			
