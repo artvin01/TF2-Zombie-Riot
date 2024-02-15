@@ -868,7 +868,7 @@ public void Weapon_Dimension_Summon_Interitus(int client, int weapon, bool &resu
 
 public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
 {
-	switch(GetRandomInt(1, 20))
+	switch(GetRandomInt(1, 24))
 	{
 		case 1:
 			Dimension_Summon_Npc(client, INTERITUS_DESERT_ANCIENTDEMON ,weapon, 2.0, 1.8, "eyeboss_death_vortex");
@@ -910,13 +910,13 @@ public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &
 			Dimension_Summon_Npc(client, INTERITUS_FOREST_ENGINEER ,weapon, 1.3, 1.2, "eyeboss_death_vortex");
 		case 20:
 			Dimension_Summon_Npc(client, INTERITUS_WINTER_SKIN_HUNTER ,weapon, 1.3, 1.25, "eyeboss_death_vortex");
-		case 17:
+		case 21:
 			Dimension_Summon_Npc(client, INTERITUS_FOREST_SNIPER ,weapon, 1.0, 1.75, "eyeboss_death_vortex");
-		case 18:
+		case 22:
 			Dimension_Summon_Npc(client, INTERITUS_FOREST_SCOUT ,weapon, 1.2, 1.2, "eyeboss_death_vortex");
-		case 19:
+		case 23:
 			Dimension_Summon_Npc(client, INTERITUS_FOREST_SOLDIER ,weapon, 1.3, 1.2, "eyeboss_death_vortex");
-		case 20:
+		case 24:
 			Dimension_Summon_Npc(client, INTERITUS_FOREST_DEMOMAN ,weapon, 1.8, 1.3, "eyeboss_death_vortex");
 		default: //This should not happen
 		{
