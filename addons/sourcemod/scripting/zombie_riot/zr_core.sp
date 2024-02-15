@@ -106,7 +106,7 @@ enum
 	WEAPON_VAMPKNIVES_4_CLEAVER = 35,
 	WEAPON_SPEEDFISTS = 36,
 	WEAPON_ANCIENT_BANNER = 37,
-	WEAPON_QUINCY_BOW = 38,
+	WEAPON_UNUSED = 38,
 	WEAPON_JUDGE = 39,
 	WEAPON_JUDGE_PAP = 40,
 	WEAPON_BOARD = 41,
@@ -447,7 +447,6 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/escape_sentry_hat.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
 #include "zombie_riot/custom/weapon_health_hose.sp"
-#include "shared/custom/weapon_street_fighter.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
 #include "shared/custom/weapon_judgement_of_iberia.sp"
 #include "shared/custom/weapon_phlog_replacement.sp"
@@ -457,7 +456,6 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_lantean_wand.sp"
 #include "zombie_riot/custom/weapon_specter.sp"
 #include "zombie_riot/custom/weapon_yamato.sp"
-#include "zombie_riot/custom/wand/weapon_quincy_bow.sp"
 #include "zombie_riot/custom/weapon_fantasy_blade.sp"
 #include "zombie_riot/custom/weapon_saga.sp"
 #include "zombie_riot/custom/wand/weapon_wand_beam_pap.sp"
@@ -705,7 +703,6 @@ void ZR_MapStart()
 	ResetMapStartOcean();
 	Specter_MapStart();
 	Reset_stats_Yamato_Global();	//acts as a reset/map precache
-	QuincyMapStart();
 	Fantasy_Blade_MapStart();
 	Casino_MapStart();
 	Saga_MapStart();
