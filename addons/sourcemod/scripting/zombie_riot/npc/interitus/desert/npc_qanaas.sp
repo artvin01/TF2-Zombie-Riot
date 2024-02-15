@@ -96,7 +96,7 @@ methodmap DesertQanaas < CClotBody
 			npc.StartPathing();
 			npc.m_flSpeed = 200.0;
 		}	
-		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
