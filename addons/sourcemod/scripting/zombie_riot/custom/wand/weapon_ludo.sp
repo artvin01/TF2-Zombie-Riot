@@ -54,6 +54,8 @@ static bool JackReserve[MAXTF2PLAYERS];
 static bool QueenReserve[MAXTF2PLAYERS];
 static bool KingReserve[MAXTF2PLAYERS];
 
+static int Second[MAXTF2PLAYERS];
+static int Third[MAXTF2PLAYERS];
 static int Fourth[MAXTF2PLAYERS];
 static int Fifth[MAXTF2PLAYERS];
 static int Sixth[MAXTF2PLAYERS];
@@ -95,6 +97,8 @@ void Weapon_Ludo_MapStart()
 	Zero(QueenReserve);
 	Zero(KingReserve);
 
+	Zero(Second);
+	Zero(Third);
 	Zero(Fourth);
 	Zero(Fifth);
 	Zero(Sixth);
@@ -124,7 +128,7 @@ void Weapon_Ludo_MapStart()
 public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 {
 	int mana_cost;
-	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0)/2) * CardCounter[client];
+	mana_cost = (RoundToCeil(Attributes_Get(weapon, 733, 1.0)) + 10) * CardCounter[client];
 	if(mana_cost > 200)
 		mana_cost = 200;
 	if(CardCounter[client] > 1 && mana_cost <= Current_Mana[client])
@@ -136,7 +140,7 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 		{
 			case false:
 			{
-				damageModBlackjack = (float(BlackJack[client]) - 10.0) / 15.0;
+				damageModBlackjack = (float(BlackJack[client]) - 10.0) / 20.0;
 				if(damageModBlackjack < 0.05)
 					damageModBlackjack = 0.0;
 			}
@@ -144,21 +148,25 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 			{
 				switch(BlackJack[client])
 				{
-					case 22:
+					case 22,23:
 					{
-						damageModBlackjack = -0.15;
+						damageModBlackjack = -0.10;
 					}
-					case 23:
+					case 24,25:
+					{
+						damageModBlackjack = -0.2;
+					}
+					case 26:
 					{
 						damageModBlackjack = -0.3;
 					}
-					case 24:
+					case 27:
 					{
-						damageModBlackjack = -0.45;
+						damageModBlackjack = -0.4;
 					}
 					default:
 					{
-						damageModBlackjack = -0.6;
+						damageModBlackjack = -0.5;
 					}
 				}
 				Fourth[client] = 0;
@@ -195,30 +203,34 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 			{
 				damageModCards = 1.5;
 			}
+			case 7:
+			{
+				damageModCards = 10.0; //huge dmg as this is incredibly rare, feel free to reduce if getting 7 cards is too common
+			}
 			default:
 			{
-				damageModCards = 2.0;
+				damageModCards = 1.0;
 			}
 		}
 
 		float DiamondBuff = 1.0;
 
 		if(BlackJack[client] == 21)
-			damageModBlackjack = 1.5;
+			damageModBlackjack = 1.0;
 
-		if(DiamondCounter[client] > 3 && OverLimit[client] == false)
+		if(DiamondCounter[client] > 2 && OverLimit[client] == false)
 		{
-			damageModBlackjack = 2.0;
-			damageModCards = 2.0;
+			damageModBlackjack = 1.5;
+			damageModCards = 1.5;
 			DiamondBuff = 2.0;
 		}
 
 		damage += damageModBlackjack * 100;
-		damage *= damageModCards;
 		damage += float(SpadeCounter[client]) * 10;
+		damage *= damageModCards;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 
-		float speed = 1100.0 * DiamondBuff;
+		float speed = 1650.0 * DiamondBuff;
 		if(Fourth[client] > 0)
 			speed /= 2;
 
@@ -240,13 +252,13 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 			{
 				case 1:
 				{
-					speed *= 2;
+					speed *= 4;
 					damage *= 1.2;
 				}
 				case 2:
 				{
-					speed *= 4;
-					damage *= 1.3;
+					speed *= 8;
+					damage *= 1.4;
 				}
 			}
 			switch(Queen[client]) //more projectile!!!!
@@ -262,11 +274,14 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 						speed *= GetRandomFloat(0.6,1.4);
 						int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_LUDO, weapon, CardParticle[client]);
 						//PrintToChatAll("projectile fired");
-						if(Fourth[client] > 0)
+						if(Fourth[client] > 0 || Third[client] > 0 || Second[client] > 0)
 						{
+							int homing = Second[client];
+							homing = Third[client];
+							homing = Fourth[client];
 							static float angle[3];
 							GetEntPropVector(projectile, Prop_Send, "m_angRotation", angle);
-							switch(Fourth[client]) // first time trying homing please dont kill me
+							switch(homing) // first time trying homing please dont kill me
 							{
 								case 1:
 								{
@@ -302,11 +317,14 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 					{
 						speed *= GetRandomFloat(0.6,1.4);
 						int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_LUDO, weapon, CardParticle[client]);
-						if(Fourth[client] > 0)
+						if(Fourth[client] > 0 || Third[client] > 0 || Second[client] > 0)
 						{
+							int homing = Second[client];
+							homing = Third[client];
+							homing = Fourth[client];
 							static float angle[3];
 							GetEntPropVector(projectile, Prop_Send, "m_angRotation", angle);
-							switch(Fourth[client]) // first time trying homing please dont kill me
+							switch(homing) // first time trying homing please dont kill me
 							{
 								case 1:
 								{
@@ -337,22 +355,25 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 			{
 				case 1:
 				{
-					speed *= 0.25;
+					speed *= 0.2;
 					damage *= 1.5;
 				}
 				case 2:
 				{
-					speed *= 0.5;
+					speed *= 0.2;
 					damage *= 2.0;
 				}
 			}
 		}
 		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_LUDO, weapon, CardParticle[client]);
-		if(Fourth[client] > 0)
+		if(Fourth[client] > 0 || Third[client] > 0 || Second[client] > 0)
 		{
+			int homing = Second[client];
+			homing = Third[client];
+			homing = Fourth[client];
 			static float angle[3];
 			GetEntPropVector(projectile, Prop_Send, "m_angRotation", angle);
-			switch(Fourth[client]) // first time trying homing please dont kill me
+			switch(homing) // first time trying homing please dont kill me
 			{
 				case 1:
 				{
@@ -386,11 +407,11 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 			}
 			case 1:
 			{
-				Current_Mana[client] += mana_cost;
+				Current_Mana[client] += mana_cost * 2;
 			}
 			case 2:
 			{
-				Current_Mana[client] += mana_cost * 2;
+				Current_Mana[client] += mana_cost * 4;
 			}
 		}
 		
@@ -811,6 +832,17 @@ static void Ludo_BlackjackRNG(int client) //draws the generated card from ludo c
 					Format(SeventhCard[client], sizeof(SeventhCard[]), "%s","2");
 				}
 			}
+			switch(HasClubs[client]) //homing card
+			{
+				case false:
+				{
+					Second[client]++;
+				}
+				case true:
+				{
+					Second[client] += 2;
+				}
+			}
 			BlackjackCounter[client] = 0;
 			BlackJack[client] += 2;
 		}
@@ -845,6 +877,17 @@ static void Ludo_BlackjackRNG(int client) //draws the generated card from ludo c
 				case 6: //seventh
 				{
 					Format(SeventhCard[client], sizeof(SeventhCard[]), "%s","3");
+				}
+			}
+			switch(HasClubs[client]) //homing card
+			{
+				case false:
+				{
+					Third[client]++;
+				}
+				case true:
+				{
+					Third[client] += 2;
 				}
 			}
 			BlackjackCounter[client] = 0;
@@ -1435,7 +1478,7 @@ public void Weapon_Ludo_M2(int client, int weapon, bool crit, int slot)
 					CreateCardEffect(client);
 				}
 			}
-			Ability_Apply_Cooldown(client, slot, 1.0);
+			Ability_Apply_Cooldown(client, slot, 0.5);
 		}	
 		else
 		{
@@ -1480,20 +1523,20 @@ public void Weapon_Ludo_WandTouch(int entity, int target)
 			{
 				case 1:
 				{
-					float StunDuration = 1.5;
+					float StunDuration = 3.0;
 					if(b_thisNpcIsARaid[target])
 					{
-						StunDuration = 1.0;
+						StunDuration = 1.5;
 					}	
 
 					FreezeNpcInTime(target, StunDuration);
 				}
 				case 2:
 				{
-					float StunDuration = 3.0;
+					float StunDuration = 5.0;
 					if(b_thisNpcIsARaid[target])
 					{
-						StunDuration = 1.5;
+						StunDuration = 2.5;
 					}	
 
 					FreezeNpcInTime(target, StunDuration);
@@ -1503,46 +1546,46 @@ public void Weapon_Ludo_WandTouch(int entity, int target)
 			{
 				case 1:
 				{
-					NpcStats_SilenceEnemy(target, 7.0);
+					NpcStats_SilenceEnemy(target, 10.0);
 				}
 				case 2:
 				{
-					NpcStats_SilenceEnemy(target, 10.0);
+					NpcStats_SilenceEnemy(target, 15.0);
 				}
 			}
 			switch(EighthDebuff[owner])
 			{
 				case 1:
 				{
-					StartBleedingTimer(target, owner, (100 * Attributes_Get(weapon, 410, 1.0)) * 0.02, 4, weapon, DMG_PLASMA);
+					StartBleedingTimer(target, owner, (100 * Attributes_Get(weapon, 410, 1.0)) * 0.03, 4, weapon, DMG_PLASMA);
 				}
 				case 2:
 				{
-					StartBleedingTimer(target, owner, (100 * Attributes_Get(weapon, 410, 1.0)) * 0.03, 4, weapon, DMG_PLASMA);
+					StartBleedingTimer(target, owner, (100 * Attributes_Get(weapon, 410, 1.0)) * 0.05, 4, weapon, DMG_PLASMA);
 				}
 			}
 			switch(NinethDebuff[owner])
 			{
 				case 1:
 				{
-					StartBleedingTimer(target, owner, f_WandDamage[entity] * 0.02, 4, weapon, DMG_PLASMA);
+					StartBleedingTimer(target, owner, f_WandDamage[entity] * 0.03, 4, weapon, DMG_PLASMA);
 				}
 				case 2:
 				{
-					StartBleedingTimer(target, owner, f_WandDamage[entity] * 0.03, 4, weapon, DMG_PLASMA);
+					StartBleedingTimer(target, owner, f_WandDamage[entity] * 0.05, 4, weapon, DMG_PLASMA);
 				}
 			}
 			switch(TenthDebuff[owner])
 			{
 				case 1:
 				{
-					float time = GetGameTime() + 7.0;
+					float time = GetGameTime() + 12.5;
 					if(f_LudoDebuff[target] <= time)
 						f_LudoDebuff[target] = time;
 				}
 				case 2:
 				{
-					float time = GetGameTime() + 10.0;
+					float time = GetGameTime() + 20.0;
 					if(f_SpadeLudoDebuff[target] <= time)
 						f_SpadeLudoDebuff[target] = time;
 				}
