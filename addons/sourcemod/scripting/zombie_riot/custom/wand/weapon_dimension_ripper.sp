@@ -850,6 +850,9 @@ void Dimension_Summon_Npc(int client, int NpcId, int weapon, float HealthMulti, 
 				if(entity > MaxClients)
 				{
 					//30 as a starting value.
+					fl_MeleeArmor[entity] = 1.0;
+					fl_RangedArmor[entity] = 1.0;
+					//Reset resistances.
 					
 					float f_MaxHealth = 30.0;
 					f_MaxHealth *= Attributes_Get(weapon, 410, 1.0);
