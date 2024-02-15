@@ -622,7 +622,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 		case 5:
 			Dimension_Summon_Npc(client, MEDIVAL_OBUCH ,weapon, 1.3, 1.1, "npc_boss_bomb_alert");
 		case 6:
-			Dimension_Summon_Npc(client, MEDIVAL_MONK ,weapon, 1.0, 2.0, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, MEDIVAL_OBUCH ,weapon, 1.3, 1.1, "npc_boss_bomb_alert");
 		case 7:
 			Dimension_Summon_Npc(client, MEDIVAL_CROSSBOW_GIANT ,weapon, 1.3, 1.5, "npc_boss_bomb_alert");
 		case 8:
