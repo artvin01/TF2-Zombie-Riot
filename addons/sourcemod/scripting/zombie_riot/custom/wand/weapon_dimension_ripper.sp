@@ -299,7 +299,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 		case 3:
 			Dimension_Summon_Npc(client, ALT_SNIPER_RAILGUNNER ,weapon, 0.7, 1.5, "eyeboss_tp_player");
 		case 4:
-			Dimension_Summon_Npc(client, ALT_IKUNAGAE ,weapon, 2.0, 1.75, "eyeboss_tp_player");
+			Dimension_Summon_Npc(client, ALT_SCHWERTKRIEG ,weapon, 2.0, 1.75, "eyeboss_tp_player");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
