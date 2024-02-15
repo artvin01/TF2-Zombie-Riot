@@ -2524,16 +2524,6 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							{
 								switch(i_CustomWeaponEquipLogic[weapon])
 								{
-									case WEAPON_QUINCY_BOW:
-									{
-										int buttons = GetClientButtons(client);
-										bool attack2 = (buttons & IN_ATTACK2) != 0;
-										if(attack2)
-										{
-											Quincy_Menu(client, weapon);
-											return true;
-										}
-									}
 									case WEAPON_ION_BEAM:
 									{
 										int buttons = GetClientButtons(client);
