@@ -106,9 +106,7 @@ enum
 	WEAPON_VAMPKNIVES_4_CLEAVER = 35,
 	WEAPON_SPEEDFISTS = 36,
 	WEAPON_ANCIENT_BANNER = 37,
-	//aa
 	WEAPON_QUINCY_BOW = 38,
-	//aa
 	WEAPON_JUDGE = 39,
 	WEAPON_JUDGE_PAP = 40,
 	WEAPON_BOARD = 41,
@@ -449,7 +447,6 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/escape_sentry_hat.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
 #include "zombie_riot/custom/weapon_health_hose.sp"
-#include "shared/custom/weapon_street_fighter.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
 #include "shared/custom/weapon_judgement_of_iberia.sp"
 #include "shared/custom/weapon_phlog_replacement.sp"
