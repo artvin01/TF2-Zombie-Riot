@@ -140,7 +140,7 @@ methodmap Storm_Weaver < CClotBody
 
 		fl_special_invuln_timer[npc.index] = GetGameTime()+2.5;
 
-		if(RaidBossActive==INVALID_ENT_REFERENCE)
+		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);	//temp raidmode stuff
 			RaidAllowsBuildings = false;
@@ -671,7 +671,7 @@ public void Storm_Weaver_ClotThink(int iNPC)
 		return;
 	}
 
-	if(RaidBossActive == INVALID_ENT_REFERENCE)
+	if(!IsValidEntity(RaidBossActive))
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}
