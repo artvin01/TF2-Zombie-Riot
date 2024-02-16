@@ -37,7 +37,7 @@ static float Vamp_MaxHeal_Normal[4] = { 3.0, 2.5, 2.0, 1.8 };	//Max heal per tic
 static float Vamp_MinHeal_Normal[4] = { 1.5, 1.25, 1.1, 1.0 };	//Minimum healing received per Bloodlust tick.
 static float Vamp_BleedDMG_Normal[4] = { 5.0, 6.5, 7.0, 8.5 }; //The base damage dealt per Bloodlust tick.
 static int Vamp_BleedStacksOnMelee_Normal[4] = { 7, 10, 12, 14 }; //Number of Bloodlust stacks applied on a melee hit.
-static int Vamp_BleedStacksOnThrow_Normal[4] = { 5, 7, 10, 12 }; //Number of Bloodlust stacks applied on a throw hit.
+static int Vamp_BleedStacksOnThrow_Normal[4] = { 3, 4, 5, 6 }; //Number of Bloodlust stacks applied on a throw hit.
 static float Vamp_ThrowMultiplier_Normal[4] = { 2.0, 3.0, 3.75, 4.25 }; //Amount to multiply damage dealt by thrown knives.
 static float Vamp_ThrowCD_Normal[4] = { 6.0, 9.0, 12.0, 12.0 }; //Knife throw cooldown.
 static int Vamp_ThrowKnives_Normal[4] = { 2, 3, 5, 6 }; //Number of knives thrown by M2.
@@ -54,7 +54,7 @@ static float Vamp_MaxHeal_Cleaver[4] = { 4.0, 4.0, 4.0, 4.0 };	//Max heal per ti
 static float Vamp_MinHeal_Cleaver[4] = { 2.0, 2.0, 2.0, 2.0 };	//Minimum healing received per Bloodlust tick.
 static float Vamp_BleedDMG_Cleaver[4] = { 7.5, 20.0, 25.0, 30.0 }; //The base damage dealt per Bloodlust tick.
 static int Vamp_BleedStacksOnMelee_Cleaver[4] = { 12, 16, 20, 24 }; //Same as pap route 1, but for pap route 2.
-static int Vamp_BleedStacksOnThrow_Cleaver[4] = { 16, 20, 24, 28 }; //Same as pap route 1, but for pap route 2.
+static int Vamp_BleedStacksOnThrow_Cleaver[4] = { 8, 10, 12, 14 }; //Same as pap route 1, but for pap route 2.
 static float Vamp_ThrowMultiplier_Cleaver[4] = { 2.0, 1.33, 1.15, 1.0 }; //Same as pap route 1, but for pap route 2.
 static float Vamp_ThrowCD_Cleaver[4] = { 10.0, 9.0, 12.0, 12.0 }; //Same as pap route 1, but for pap route 2.
 static int Vamp_ThrowKnives_Cleaver[4] = { 1, 1, 2, 3 }; //Same as pap route 1, but for pap route 2.
@@ -157,6 +157,7 @@ public void Vamp_ActivateThrow(int client, int weapon, int pap, bool cleaver)
 		DMG_Final *= Attributes_Get(weapon, 1, 1.0);
 		DMG_Final *= Attributes_Get(weapon, 2, 1.0);
 		DMG_Final *= Attributes_Get(weapon, 476, 1.0);
+		DMG_Final *= 0.5;
 		
 		Vamp_ThrowKnives(client, weapon, BleedStacks, DMG_Final, NumKnives, NumWaves, Rate, Spread, Velocity, 0, cleaver, pap, CleaverMult);
 	}

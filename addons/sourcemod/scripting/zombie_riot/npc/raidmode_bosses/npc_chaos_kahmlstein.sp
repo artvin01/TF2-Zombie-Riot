@@ -404,6 +404,7 @@ methodmap ChaosKahmlstein < CClotBody
 			{
 				RaidModeScaling *= 0.7;
 			}
+			RaidModeScaling *= 0.7;
 		}
 
 		
@@ -1362,7 +1363,7 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 								}
 							}
 
-							Sakratan_AddNeuralDamage(targetTrace, npc.index, 150, true, true);
+							Sakratan_AddNeuralDamage(targetTrace, npc.index, 100, true, true);
 
 							if(!Knocked)
 								Custom_Knockback(npc.index, targetTrace, 650.0); 

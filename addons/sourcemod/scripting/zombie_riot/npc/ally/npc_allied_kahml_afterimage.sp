@@ -146,7 +146,8 @@ static void Internal_Npc_ClotThink(int iNPC)
 	int target = TR_GetEntityIndex(swingTrace);	
 	delete swingTrace;
 
-	npc.m_iTarget = target;
+	if(target > 0)
+		npc.m_iTarget = target;
 		
 
 	if(!IsValidEnemy(npc.index,npc.m_iTarget))

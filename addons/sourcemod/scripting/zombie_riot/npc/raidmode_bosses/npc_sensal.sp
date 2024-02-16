@@ -329,7 +329,7 @@ methodmap Sensal < CClotBody
 		else if(ZR_GetWaveCount()+1 > 55)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
-			RaidModeScaling *= 0.7;
+			RaidModeScaling *= 0.65;
 		}
 		if(!cutscene)
 		{

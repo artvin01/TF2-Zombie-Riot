@@ -179,6 +179,7 @@ methodmap ThePurge < CClotBody
 		npc.m_flSwitchCooldown = GetGameTime(npc.index) + 2.0;
 		i_TimesSummoned[npc.index] = 0;
 		npc.m_flMeleeArmor = 1.5;
+		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 
 		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);
 		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);
@@ -213,6 +214,7 @@ methodmap ThePurge < CClotBody
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		RaidModeScaling *= 1.55;
 		RaidModeScaling *= 5.0;
+		RaidModeScaling *= 3.0;
 
 		Music_SetRaidMusic("#zombiesurvival/internius/the_purge.mp3", 229, true, 1.5);
 		
@@ -431,7 +433,7 @@ static void ClotThink(int iNPC)
 		{
 			case 0:	// Fists
 			{
-				RaidModeScaling *= 1.025;
+				RaidModeScaling *= 1.01;
 				npc.StartPathing();
 			}
 			case 1, 4, 7:	// Shotgun
