@@ -242,6 +242,7 @@ static void ClotThink(int iNPC)
 			npc.m_flSpeed = 370.0;
 			npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
 			npc.SetWeaponModel("models/workshop/weapons/c_models/c_iron_curtain/c_iron_curtain.mdl");
+			npc.StartPathing();
 
 			if(npc.Anger)
 			{
