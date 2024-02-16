@@ -43,8 +43,8 @@ static float Vamp_ThrowCD_Normal[4] = { 6.0, 9.0, 12.0, 12.0 }; //Knife throw co
 static int Vamp_ThrowKnives_Normal[4] = { 2, 3, 5, 6 }; //Number of knives thrown by M2.
 static int Vamp_ThrowWaves_Normal[4] = { 2, 2, 4, 4 }; //Number of times to throw knives with M2.
 static float Vamp_ThrowRate_Normal[4] = { 0.15, 0.1, 0.05, 0.05 }; //Time between throws if more than one wave in M2.
-static float Vamp_ThrowSpread_Normal[4] = { 0.0, 30.0, 30.0, 30.0 }; //Degree of fan throw when throwing knives.
-static float Vamp_ThrowVelocity_Normal[4] = { 1800.0, 2200.0, 2600.0, 2600.0 };	//Velocity of thrown knives.w 
+static float Vamp_ThrowSpread_Normal[4] = { 15.0, 30.0, 30.0, 30.0 }; //Degree of fan throw when throwing knives.
+static float Vamp_ThrowVelocity_Normal[4] = { 1800.0, 2200.0, 2600.0, 2600.0 };	//Velocity of thrown knives.
 
 //Pap Route 2 - Bloody Butcher: Becomes a slow but deadly cleaver which inflicts heavy damage and gibs zombies on kill. Inflicts more Bloodlust on hit to balance out the
 //slower swing speed. M2 has a longer cooldown and throws fewer knives, but knives become extremely powerful cleavers which keep flying if they kill the
