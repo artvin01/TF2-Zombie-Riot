@@ -227,7 +227,7 @@ static void ClotThink(int iNPC)
 	
 	float gameTime = GetGameTime(npc.index);
 
-	if(RaidBossActive != INVALID_ENT_REFERENCE && RaidModeTime < GetGameTime())
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
 		if(npc.m_iGunType != 11)
 		{
