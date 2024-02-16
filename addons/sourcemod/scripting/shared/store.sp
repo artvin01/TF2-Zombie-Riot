@@ -6242,6 +6242,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Gravaton_Wand(client, entity);
 		Enable_Dimension_Wand(client, entity);
 		Enable_Management_Hell_Hoe(client, entity);
+		Enable_Kahml_Fist_Ability(client, entity);
 #endif
 
 #if defined RPG

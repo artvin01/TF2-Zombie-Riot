@@ -604,6 +604,7 @@ void ZR_MapStart()
 	Zero2(Pack_A_Punch_Machine_money_limit);
 	Zero2(fl_blitz_ioc_punish_timer);
 	CleanAllBuildingEscape();
+	KahmlFistMapStart();
 	M3_ClearAll();
 	ZeroRage_ClearAll();
 	SniperMonkey_ClearAll();

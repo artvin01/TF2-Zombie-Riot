@@ -755,7 +755,6 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		if(ChaosKahmlstein_Attack_Melee_Uppercut(npc, npc.m_iTarget))
