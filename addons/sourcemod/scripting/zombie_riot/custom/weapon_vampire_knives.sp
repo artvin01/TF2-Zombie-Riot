@@ -381,19 +381,19 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	if (!IsValidClient(attacker) || !IsValidEntity(victim))
 	{
 		BleedAmountCountStack[victimOriginalId] -= 1;
-		return Plugin_Continue;
+		return Plugin_Stop;
 	}
 		
 	if (b_NpcIsInvulnerable[victim]) //If the NPC is invulnerable, stop all bleeding.
 	{
 		BleedAmountCountStack[victim] -= 1;
-		return Plugin_Continue;
+		return Plugin_Stop;
 	}	
 	
 	if (b_NpcHasDied[victim]) //Npc died, stop bleed and stop life leech
 	{
 		BleedAmountCountStack[victim] -= 1;
-		return Plugin_Continue;
+		return Plugin_Stop;
 	}
 	
 	int NumHits = ReadPackCell(pack);
@@ -461,7 +461,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	if (NumHits >= HitQuota)
 	{
 		BleedAmountCountStack[victim] -= 1;
-		return Plugin_Continue;
+		return Plugin_Stop;
 	}
 	Handle pack2;
 	CreateDataTimer(Rate, Vamp_BloodlustTick, pack2, TIMER_FLAG_NO_MAPCHANGE);
