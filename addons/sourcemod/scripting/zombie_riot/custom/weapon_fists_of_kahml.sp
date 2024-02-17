@@ -3,6 +3,7 @@
 
 static int how_many_times_fisted[MAXTF2PLAYERS];
 static float f_DurationOfProjectileAttack[MAXTF2PLAYERS];
+static int HHH_SkeletonOverride;
 
 #define SOUND_AUTOAIM_IMPACT_FLESH_1 		"physics/flesh/flesh_impact_bullet1.wav"
 #define SOUND_AUTOAIM_IMPACT_FLESH_2 		"physics/flesh/flesh_impact_bullet2.wav"
@@ -18,6 +19,16 @@ static float f_DurationOfProjectileAttack[MAXTF2PLAYERS];
 void KahmlFistMapStart()
 {
 	Zero(f_DurationOfProjectileAttack);
+	HHH_SkeletonOverride = PrecacheModel("models/bots/headless_hatman.mdl");
+}
+
+public void Enable_HHH_Axe_Ability(int client, int weapon) 
+{
+	if(i_CustomWeaponEquipLogic[weapon] != WEAPON_HHH_AXE)
+		return;
+
+	if(i_PlayerModelOverrideIndexWearable[client] == 0)
+		OverridePlayerModel(client, HHH_SkeletonOverride, true);
 }
 
 public void Fists_of_Kahml(int client, int weapon, bool crit, int slot)
