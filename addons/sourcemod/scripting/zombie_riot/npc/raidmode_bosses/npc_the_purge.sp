@@ -228,6 +228,10 @@ static void ClotThink(int iNPC)
 	ThePurge npc = view_as<ThePurge>(iNPC);
 	
 	float gameTime = GetGameTime(npc.index);
+	if(i_RaidGrantExtra[iNPC] == RAIDITEM_INDEX_WIN_COND)
+	{
+		return;
+	}
 
 	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
@@ -239,7 +243,7 @@ static void ClotThink(int iNPC)
 			npc.m_iGunType = 11;
 			npc.m_flNextMeleeAttack = gameTime + 1.0;
 			npc.m_flSwitchCooldown = FAR_FUTURE;
-			npc.m_flSpeed = 370.0;
+			npc.m_flSpeed = 450.0;
 			npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
 			npc.SetWeaponModel("models/workshop/weapons/c_models/c_iron_curtain/c_iron_curtain.mdl");
 			npc.StartPathing();
@@ -640,13 +644,11 @@ static void ClotThink(int iNPC)
 			}
 			case 11:	// Minigun
 			{
-				npc.StopPathing();
-
 				if(npc.m_flNextMeleeAttack < gameTime)
 				{
 					KillFeed_SetKillIcon(npc.index, "minigun");
 					
-					npc.FaceTowards(vecTarget, 8000.0);
+					npc.FaceTowards(WorldSpaceCenterOld(target), 8000.0);
 					
 					npc.PlayMinigunSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
@@ -816,4 +818,5 @@ static void ClotDeath(int entity)
 public void ThePurge_Win(int entity)
 {
 	CPrintToChatAll("{crimson}The Purge{default}: {crimson}Annihilation completed.");
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 }

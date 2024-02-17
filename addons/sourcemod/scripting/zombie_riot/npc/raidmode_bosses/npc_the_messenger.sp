@@ -127,6 +127,11 @@ methodmap TheMessenger < CClotBody
 		public get()							{ return b_NextRangedBarrage_OnGoing[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_NextRangedBarrage_OnGoing[this.index] = TempValueForProperty; }
 	}
+	property float m_flSwitchCooldown	// Delay between switching weapons
+	{
+		public get()			{	return this.m_flGrappleCooldown;	}
+		public set(float value) 	{	this.m_flGrappleCooldown = value;	}
+	}
 	public void PlayAngerSoundPassed() 
 	{
 		int sound = GetRandomInt(0, sizeof(g_AngerSoundsPassed) - 1);
@@ -735,16 +740,17 @@ bool Messanger_Elemental_Attack_FingerPoint(TheMessenger npc)
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0;
 		npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_PRIMARY");
 		npc.m_flJumpStartTimeInternal = GetGameTime(npc.index) + 0.75;	
+		npc.m_flSwitchCooldown = GetGameTime(npc.index) + 1.25;	
 		float flPos[3];
 		float flAng[3];
 		int Particle_1;
 		npc.GetAttachment("foot_L", flPos, flAng);
-		Particle_1 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "effect_hand_l", {0.0,0.0,0.0});
+		Particle_1 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
 		CreateTimer(0.75, Timer_RemoveEntity, EntIndexToEntRef(Particle_1), TIMER_FLAG_NO_MAPCHANGE);
 	}
 	if(npc.m_flJumpStartTimeInternal)
 	{
-		if(npc.m_flJumpStartTimeInternal < GetGameTime(npc.index))
+		if(npc.m_flJumpStartTimeInternal < GetGameTime(npc.index) && npc.m_flSwitchCooldown > GetGameTime(npc.index))
 		{
 			float vPredictedPos[3];
 			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
@@ -765,6 +771,7 @@ bool Messanger_Elemental_Attack_FingerPoint(TheMessenger npc)
 				ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						
 				npc.m_flJumpStartTimeInternal = 0.0;
+				MessengerResetAndDelayAttack(npc.index);
 			}
 		}
 		return true;
@@ -1128,7 +1135,15 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 	return 0;
 }
 
-
+void MessengerResetAndDelayAttack(int entity)
+{
+	TheMessenger npc = view_as<TheMessenger>(entity);
+	npc.m_flAttackHappens = 0.0;
+	if(npc.m_flNextMeleeAttack < GetGameTime(entity) + 0.5)
+	{
+		npc.m_flNextMeleeAttack = GetGameTime(entity) + 0.5;
+	}
+}
 
 public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 {
@@ -1167,6 +1182,13 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 			int ChaosDamage = 75;
 			if(NpcStats_IsEnemySilenced(owner))
 				ChaosDamage = 40;
+
+			if(i_NpcInternalId[owner] == RAIDMODE_THE_MESSENGER)
+			{
+				ChaosDamage = 40;
+				if(NpcStats_IsEnemySilenced(owner))
+					ChaosDamage = 30;
+			}
 
 			Sakratan_AddNeuralDamage(target, owner, ChaosDamage, true, true);
 		}
@@ -1245,7 +1267,7 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 	if(!b_thisNpcIsARaid[victim])
 		return;
 
-	Sensal npc = view_as<Sensal>(victim);
+	TheMessenger npc = view_as<TheMessenger>(victim);
 	if(npc.g_TimesSummoned < 99)
 	{
 		int nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (99 - npc.g_TimesSummoned) / 100;
