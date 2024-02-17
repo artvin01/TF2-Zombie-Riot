@@ -157,7 +157,11 @@ public void Vamp_ActivateThrow(int client, int weapon, int pap, bool cleaver)
 		DMG_Final *= Attributes_Get(weapon, 1, 1.0);
 		DMG_Final *= Attributes_Get(weapon, 2, 1.0);
 		DMG_Final *= Attributes_Get(weapon, 476, 1.0);
-		DMG_Final *= 0.5;
+
+		if(cleaver)
+			DMG_Final *= 0.85;
+		else
+			DMG_Final *= 0.4;
 		
 		Vamp_ThrowKnives(client, weapon, BleedStacks, DMG_Final, NumKnives, NumWaves, Rate, Spread, Velocity, 0, cleaver, pap, CleaverMult);
 	}

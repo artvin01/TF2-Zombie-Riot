@@ -918,9 +918,9 @@
 	}
 	"Longsword Pap 3"
 	{
-		"en"	"Increased damage and attackspeed, but you move 10%% slower."
-		"ru"	"Увеличенный урон и скорость атаки, но вы двигаетесь на 10%% медленнее."
-		"chi"   "增加伤害和攻击速度，但移动速度降低10%%。"
+		"en"	"Increased damage and attackspeed, but you move 5%% slower."
+		"ru"	"Увеличенный урон и скорость атаки, но вы двигаетесь на 5%% медленнее."
+		"chi"   "增加伤害和攻击速度，但移动速度降低5%%。"
 	}
 	
 	"Speed Fists Of Speed Desc"
