@@ -5085,7 +5085,7 @@ void Store_ApplyAttribs(int client)
 #endif
 }
 
-void Store_GiveAll(int client, int health, bool removeWeapons = false, bool ResetModelClass = true)
+void Store_GiveAll(int client, int health, bool removeWeapons = false)
 {
 #if defined ZR
 	if(!StoreItems)

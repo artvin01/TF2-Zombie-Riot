@@ -86,12 +86,25 @@ void OverridePlayerModel(int client, int ModelIndex, bool DontShowCosmetics)
 	i_PlayerModelOverrideIndexWearable[client] = ModelIndex;
 	ViewChange_PlayerModel(client);
 	int entity;
-	while(TF2_GetWearable(client, entity))
+	if(DontShowCosmetics)
 	{
-		if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-			continue;
+		while(TF2_GetWearable(client, entity))
+		{
+			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
+				continue;
 
-		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+		}
+	}
+	else
+	{
+		while(TF2_GetWearable(client, entity))
+		{
+			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
+				continue;
+
+			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+		}
 	}
 }
 
