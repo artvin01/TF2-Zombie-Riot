@@ -477,8 +477,8 @@ public void OnPostThink(int client)
 				Current_Mana[client] -= RoundToCeil(Mana_Loss*1.5);	//Passively lose your overmana!	if your not a mage you lose it faster
 			}
 
-			CPrintToChatAll("Regen neg1: %i", RoundToCeil(Mana_Loss));
-			CPrintToChatAll("Regen neg2: %i", RoundToCeil(Mana_Loss*1.5));
+			//CPrintToChatAll("Regen neg1: %i", RoundToCeil(Mana_Loss));
+			//CPrintToChatAll("Regen neg2: %i", RoundToCeil(Mana_Loss*1.5));
 		}
 		has_mage_weapon[client] = true;	//now force the mana hud even if your not a mage. this only applies to non mages if you got overmana, and the only way you can get overmana without a mage weapon is if you got hit by ruina's debuff.
 	}
