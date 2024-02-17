@@ -2726,14 +2726,10 @@
 	}
 	"Ludomania Extra Desc"
 	{
-		"en"	"4 is homing\n5 gives mana\n6 stuns\n7 silences the enemy\n8 bleeds the enemy (weak)\n9 bleeds the enemy (strong)\n10 debuffs the enemy\nJ-Q-K change card effects"
+		"en"	"2,3 and 4 is homing\n5 gives mana\n6 stuns\n7 silences the enemy\n8 bleeds the enemy (weak)\n9 bleeds the enemy (strong)\n10 debuffs the enemy\nJ-Q-K change projectile effects"
 	}
 	"Ludomancy Desc"
 	{
-		"en"	"Mathematical Foresight: Gain a passive ability that lets you (somewhat) predict the value of your next card.\nAll cards gain one out of four symbols:\n$ = BlackJack value reduced by 1\n^ = Dmg increased by 10%\n# = 3 of these lead to a prize\n* = Improves current card"
-	}
-	"Ludomancy Extra Desc"
-	{
-		"en"	"Hearts:Current card's value is decreased by 1.\nDiamonds:If you have more than 3 cards, something special happens.\nClubs:Overall damage increased by 20%%.\nSpades:Current card's ability is improved."
+		"en"	"Mathematical Foresight: Gain a passive ability that lets you (somewhat) predict the value of your next card.\nAll cards gain one out of four symbols:\n$ = BlackJack value reduced by 1\n^ = Dmg increased by 10%\n# = 3 of these lead to a prize!\n* = Improves card"
 	}
 }
