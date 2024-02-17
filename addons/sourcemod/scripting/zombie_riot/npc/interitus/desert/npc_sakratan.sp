@@ -356,7 +356,7 @@ void SakratanGroupDebuffInternal(int victim, int attacker)
 	bool sawrunner = b_ThisNpcIsSawrunner[attacker];
 	b_ThisNpcIsSawrunner[attacker] = true;
 	
-	if(!b_BobsTrueFear[victim])
+	if(victim <= MaxClients && !b_BobsTrueFear[victim])
 		SDKHooks_TakeDamage(victim, attacker, attacker, 250.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
 	else
 		SDKHooks_TakeDamage(victim, attacker, attacker, 200.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
