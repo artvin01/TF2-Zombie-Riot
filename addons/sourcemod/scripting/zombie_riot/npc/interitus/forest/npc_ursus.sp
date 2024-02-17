@@ -3,44 +3,40 @@
 
 static const char g_DeathSounds[][] =
 {
-	"vo/scout_paincrticialdeath01.mp3",
-	"vo/scout_paincrticialdeath02.mp3",
-	"vo/scout_paincrticialdeath03.mp3"
+	"vo/heavy_paincrticialdeath01.mp3",
+	"vo/heavy_paincrticialdeath02.mp3",
+	"vo/heavy_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSounds[][] =
 {
-	"vo/scout_painsharp01.mp3",
-	"vo/scout_painsharp02.mp3",
-	"vo/scout_painsharp03.mp3",
-	"vo/scout_painsharp04.mp3",
-	"vo/scout_painsharp05.mp3",
-	"vo/scout_painsharp06.mp3",
-	"vo/scout_painsharp07.mp3",
-	"vo/scout_painsharp08.mp3"
+	"vo/heavy_painsharp01.mp3",
+	"vo/heavy_painsharp02.mp3",
+	"vo/heavy_painsharp03.mp3",
+	"vo/heavy_painsharp04.mp3",
+	"vo/heavy_painsharp05.mp3"
 };
 
 static const char g_IdleAlertedSounds[][] =
 {
-	"vo/scout_battlecry01.mp3",
-	"vo/scout_battlecry02.mp3",
-	"vo/scout_battlecry03.mp3",
-	"vo/scout_battlecry04.mp3",
-	"vo/scout_battlecry05.mp3"
+	"vo/taunts/heavy_taunts16.mp3",
+	"vo/taunts/heavy_taunts18.mp3",
+	"vo/taunts/heavy_taunts19.mp3"
 };
 
 static const char g_MeleeHitSounds[][] =
 {
-	"weapons/cleaver_hit_02.wav",
-	"weapons/cleaver_hit_03.wav",
-	"weapons/cleaver_hit_05.wav",
-	"weapons/cleaver_hit_06.wav",
-	"weapons/cleaver_hit_07.wav"
+	"weapons/boxing_gloves_hit1.wav",
+	"weapons/boxing_gloves_hit2.wav",
+	"weapons/boxing_gloves_hit3.wav",
+	"weapons/boxing_gloves_hit4.wav"
 };
 
 static const char g_MeleeAttackSounds[][] =
 {
-	"weapons/machete_swing.wav",
+	"weapons/boxing_gloves_swing1.wav",
+	"weapons/boxing_gloves_swing2.wav",
+	"weapons/boxing_gloves_swing4.wav"
 };
 
 methodmap Ursus < CClotBody
@@ -70,9 +66,9 @@ methodmap Ursus < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Ursus(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Ursus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Ursus npc = view_as<Ursus>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "30000", ally));
+		Ursus npc = view_as<Ursus>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "60000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_FOREST_HEAVY;
 		i_NpcWeight[npc.index] = 4;
@@ -176,12 +172,12 @@ static void ClotThink(int iNPC)
 					target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						float damage = 100.0;
+						float damage = 75.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damage *= 1.5;
 
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 						Sakratan_AddNeuralDamage(target, npc.index, 300);
 					}
 				}
@@ -190,7 +186,7 @@ static void ClotThink(int iNPC)
 			}
 		}
 
-		if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			target = Can_I_See_Enemy(npc.index, target);
 			if(IsValidEnemy(npc.index, target))

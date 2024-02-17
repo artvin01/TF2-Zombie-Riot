@@ -918,9 +918,9 @@
 	}
 	"Longsword Pap 3"
 	{
-		"en"	"Increased damage and attackspeed, but you move 10%% slower."
-		"ru"	"Увеличенный урон и скорость атаки, но вы двигаетесь на 10%% медленнее."
-		"chi"   "增加伤害和攻击速度，但移动速度降低10%%。"
+		"en"	"Increased damage and attackspeed, but you move 5%% slower."
+		"ru"	"Увеличенный урон и скорость атаки, но вы двигаетесь на 5%% медленнее."
+		"chi"   "增加伤害和攻击速度，但移动速度降低5%%。"
 	}
 	
 	"Speed Fists Of Speed Desc"
@@ -968,17 +968,9 @@
 	
 	"Fists Of Kahmlstein Desc"
 	{
-		"en"	"Fists sent from the gods forged by the destroyer of galaxies."
-		"ru"	"Кулаки, посланные богами, выкованные разрушителем галактик."
-		"chi"   "众神送来的拳头由星系的毁灭者锻造而成。"
+		"en"	"fists from Khamlstein, His reigin over cities and states has no end.\nProve your strength against him to gain a certain item to gain another ability..."
 	}
-	"Fists Of Kahmlstein Pap 1"
-	{
-		"en"	"Increased damage and attackspeed"
-		"ru"	"Увеличенный урон и скорость атаки."
-		"chi"   "增加伤害和攻击速度。"
-	}
-	
+
 	"Bad Wand Desc"
 	{
 		"en"	"Consumes mana with each shot. M2 Gives extra attackspeed for a short time."
@@ -2272,33 +2264,25 @@
 	{
 		"en"	"Give everyone 20%% more attackspeed, reloadspeed and healspeed during the duration of the banner."
 	}
-	"quincy pap0"	//todo: make the desc's abit cooler sounding
+	"quincy pap0"
 	{
-		"en"	"Your weapon has the ability to specialise into 2 tress's, Charge rate and Battery capacity\nWith higher battery - more damage but longer charge time\nWith charge - Dmg potential is lower but faster charge rate\nHold MOUSE2 and press RELOAD on a pap to open a menu"
+		"en"	"A bow made of pure energy\nHold mouse1 to charge it, damage dealt depends on how much mana you pump into it"
+	}
+	"quincy pap"
+	{
+		"en"	"More damage!"
+	}
+	"quincy pap arrow"
+	{
+		"en"	"Once you charge you weapon enough you gain the ability to shoow more arrows at once!"
 	}
 	"quincy pap1"
 	{
-		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
+		"en"	"More damage, and extra arrows fired per multi shot"
 	}
-	"quincy pap2"
+	"quincy pap hyper"
 	{
-		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
-	}
-	"quincy pap3"
-	{
-		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
-	}
-	"quincy pap4"
-	{
-		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
-	}
-	"quincy pap5"
-	{
-		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
-	}
-	"quincy pap6"
-	{
-		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
+		"en"	"You can now fire a constant stream of magic arrows!\nAlso more damage and arrows fired per multi shot."
 	}
 	"Taurus Judge Desc 1"
 	{
@@ -2727,5 +2711,21 @@
 	"Siccerino Pap 3"
 	{
 		"en"	"More damage and attackspeed.\nYour R now summons a giant pair of siccors to siccor the enemy."
+	}
+	"Ludomania Desc"
+	{
+		"en"	"A set of glowing cards. They shimmer brilliantly.\nDraw: Press M2 to draw a card. Gain different effects depending on what card you drew.\nEach card has a different value, don't go over 21!\nDamage is exponentional."
+	}
+	"Ludomania Extra Desc"
+	{
+		"en"	"4 is homing\n5 gives mana\n6 stuns\n7 silences the enemy\n8 bleeds the enemy (weak)\n9 bleeds the enemy (strong)\n10 debuffs the enemy\nJ-Q-K change card effects"
+	}
+	"Ludomancy Desc"
+	{
+		"en"	"Mathematical Foresight: Gain a passive ability that lets you (somewhat) predict the value of your next card.\nAll cards gain one out of four symbols:\n$ = BlackJack value reduced by 1\n^ = Dmg increased by 10%\n# = 3 of these lead to a prize\n* = Improves current card"
+	}
+	"Ludomancy Extra Desc"
+	{
+		"en"	"Hearts:Current card's value is decreased by 1.\nDiamonds:If you have more than 3 cards, something special happens.\nClubs:Overall damage increased by 20%%.\nSpades:Current card's ability is improved."
 	}
 }

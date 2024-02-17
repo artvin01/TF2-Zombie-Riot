@@ -82,7 +82,7 @@ methodmap DesertSakratan < CClotBody
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}
 	
@@ -298,7 +298,7 @@ void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sou
 	if(victim <= MaxClients)
 	{
 		Armor_DebuffType[victim] = 2;
-		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
+		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 		{
 			Armor_Charge[victim] -= damage;
 			if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
@@ -311,8 +311,7 @@ void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sou
 				//if server starts crashing out of nowhere, change how to change teamnum
 				EmitSoundToAll("mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 				ParticleEffectAt(ProjectileLoc, "hightower_explosion", 1.0);
-				int TeamNum = GetTeam(attacker);
-				SetEntProp(attacker, Prop_Send, "m_iTeamNum", 4);
+				b_NpcIsTeamkiller[victim] = true;
 				Explode_Logic_Custom(0.0,
 				attacker,
 				attacker,
@@ -326,7 +325,7 @@ void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sou
 				false,
 				_,
 				SakratanGroupDebuff);
-				SetEntProp(attacker, Prop_Send, "m_iTeamNum", TeamNum);
+				b_NpcIsTeamkiller[victim] = false;
 				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
 			//	Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
 			}
@@ -334,6 +333,10 @@ void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sou
 			if(sound || !Armor_Charge[victim])
 				ClientCommand(victim, "playgamesound friends/friend_online.wav");
 		}
+	}
+	else
+	{
+		IncreaceEntityDamageTakenBy(victim, 1.025, 1.0);			
 	}
 }
 
@@ -344,21 +347,20 @@ void SakratanGroupDebuff(int entity, int victim, float damage, int weapon)
 		return;
 
 	if (GetTeam(victim) != GetTeam(entity))
-		SakratanGroupDebuffInternal(victim);
+		SakratanGroupDebuffInternal(victim, entity);
 		
 }
 
-void SakratanGroupDebuffInternal(int victim)
+void SakratanGroupDebuffInternal(int victim, int attacker)
 {
+	bool sawrunner = b_ThisNpcIsSawrunner[attacker];
+	b_ThisNpcIsSawrunner[attacker] = true;
+	
 	if(!b_BobsTrueFear[victim])
-	{
-		HealEntityGlobal(victim, victim, -250.0, 1.0, 0.0, HEAL_ABSOLUTE);
-		IncreaceEntityDamageTakenBy(victim, 1.25, 10.0);
-	}
+		SDKHooks_TakeDamage(victim, attacker, attacker, 250.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
 	else
-	{
-		HealEntityGlobal(victim, victim, -200.0, 1.0, 0.0, HEAL_ABSOLUTE);
-		IncreaceEntityDamageTakenBy(victim, 1.18, 8.0);		
-	}
+		SDKHooks_TakeDamage(victim, attacker, attacker, 200.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
 
+	b_ThisNpcIsSawrunner[attacker] = sawrunner;
+	IncreaceEntityDamageTakenBy(victim, 1.25, 10.0);
 }

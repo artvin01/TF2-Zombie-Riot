@@ -322,7 +322,14 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 	float Pos1[3];
 	if(RangeLimit > 0.0)
 	{
-		Pos1 = WorldSpaceCenterOld(TraceEntity);
+		if(b_ThisEntityIgnored_NoTeam[TraceEntity])
+		{
+			GetEntPropVector(TraceEntity, Prop_Data, "m_vecAbsOrigin", Pos1);
+		}
+		else
+		{
+			Pos1 = WorldSpaceCenterOld(TraceEntity);
+		}
 	}
 
 	for(int client = 1; client <= MaxClients; client++)
@@ -481,7 +488,7 @@ void UnderTides_NPCDeath(int entity)
 
 	float pos[3];
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
-	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	
 	SDKUnhook(npc.index, SDKHook_Think, UnderTides_ClotThink);
 	

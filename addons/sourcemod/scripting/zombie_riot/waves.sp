@@ -203,7 +203,7 @@ public Action Waves_RevoteCmd(int client, int args)
 	return Plugin_Handled;
 }
 
-bool Waves_CallVote(int client, bool force = false)
+bool Waves_CallVote(int client, int force = 0)
 {
 	if(Rogue_Mode())
 		return Rogue_CallVote(client);
@@ -231,7 +231,7 @@ bool Waves_CallVote(int client, bool force = false)
 		}
 		
 		menu.ExitButton = false;
-		menu.Display(client, MENU_TIME_FOREVER);
+		menu.DisplayAt(client, (force / 7 * 7), MENU_TIME_FOREVER);
 		return true;
 	}
 	return false;
@@ -270,7 +270,7 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 							CPrintToChat(client, "%s: %s", vote.Name, vote.Desc);
 						}
 
-						Waves_CallVote(client, true);
+						Waves_CallVote(client, choice);
 						return 0;
 					}
 				}
@@ -1336,7 +1336,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			if(round.Custom_Refresh_Npc_Store)
 			{
 				//PrintToChatAll("%t", "Grigori Store Refresh");
-				//Store_RandomizeNPCStore(false); // Refresh me !!!
+				//Store_RandomizeNPCStore(0); // Refresh me !!!
 				refreshNPCStore = true;
 			}
 			if(round.medival_difficulty != 0)
@@ -1546,19 +1546,19 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			else
 			{
-				Store_RandomizeNPCStore(false, 99, 1);
+				Store_RandomizeNPCStore(0, 99, 1);
 				if(refreshNPCStore)
-					Store_RandomizeNPCStore(false);
+					Store_RandomizeNPCStore(0);
 				
 				NPC_SpawnNext(panzer_spawn, panzer_sound);
 				return;
 			}
 
 			if(refreshNPCStore)
-				Store_RandomizeNPCStore(false);
+				Store_RandomizeNPCStore(0);
 
 			
-			Store_RandomizeNPCStore(false, 99, 1);
+			Store_RandomizeNPCStore(0, 99, 1);
 		}
 	}
 	else if(Rogue_Mode())

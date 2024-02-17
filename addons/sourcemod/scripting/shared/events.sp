@@ -15,7 +15,7 @@ void Events_PluginStart()
 	HookEvent("deploy_buff_banner", OnBannerDeploy, EventHookMode_Pre);
 //	HookEvent("nav_blocked", NavBlocked, EventHookMode_Pre);
 #if defined ZR
-	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_PostNoCopy);
+	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_Post);
 	HookEvent("teamplay_setup_finished", OnSetupFinished, EventHookMode_PostNoCopy);
 #endif
 	
@@ -137,7 +137,7 @@ public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast
 #if defined ZR
 public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
-	Store_RandomizeNPCStore(true);
+	Store_RandomizeNPCStore(1);
 	f_FreeplayDamageExtra = 1.0;
 	b_GameOnGoing = false;
 	for(int client=1; client<=MaxClients; client++)
@@ -198,12 +198,20 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		ViewChange_UpdateHands(client, CurrentClass[client]);
 		TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
-		if(b_IsPlayerNiko[client])
+		if(b_IsPlayerNiko[client] || b_HideCosmeticsPlayer[client])
 		{
 		  	int entity = MaxClients+1;
 			while(TF2_GetWearable(client, entity))
 			{
-				SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+			}
+		}
+		else
+		{
+			int entity = MaxClients+1;
+			while(TF2_GetWearable(client, entity))
+			{
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 			}
 		}
 		/*

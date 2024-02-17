@@ -71,7 +71,7 @@ methodmap DesertYadeam < CClotBody
 	
 	public DesertYadeam(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		DesertYadeam npc = view_as<DesertYadeam>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "2500", ally));
+		DesertYadeam npc = view_as<DesertYadeam>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "2000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_DESERT_YADEAM;
 		i_NpcWeight[npc.index] = 1;

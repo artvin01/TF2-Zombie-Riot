@@ -6,6 +6,11 @@ static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_02.wav",
 };
 
+static const char g_TeleportSound[][] = {
+	"weapons/rescue_ranger_teleport_receive_01.wav",
+	"weapons/rescue_ranger_teleport_receive_02.wav",
+};
+
 static const char g_HurtSounds[][] = {
 	"vo/soldier_painsharp01.mp3",
 	"vo/soldier_painsharp02.mp3",
@@ -17,36 +22,16 @@ static const char g_HurtSounds[][] = {
 	"vo/soldier_painsharp08.mp3",
 };
 
-static const char g_MissAbilitySound[][] = {
-	"vo/soldier_negativevocalization01.mp3",
-	"vo/soldier_negativevocalization02.mp3",
-	"vo/soldier_negativevocalization03.mp3",
-	"vo/soldier_negativevocalization04.mp3",
-	"vo/soldier_negativevocalization05.mp3",
-	"vo/soldier_negativevocalization06.mp3",
-};
-
-
-static const char g_IdleAlertedSounds[][] = {
-	"vo/taunts/soldier_taunts19.mp3",
-	"vo/taunts/soldier_taunts20.mp3",
-	"vo/taunts/soldier_taunts21.mp3",
-	"vo/taunts/soldier_taunts18.mp3",
-};
-
-static const char g_RangedAttackSounds[][] = {
-	"weapons/airstrike_fire_01.wav",
-	"weapons/airstrike_fire_02.wav",
-	"weapons/airstrike_fire_03.wav",
-};
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 static const char g_MeleeHitSounds[][] = {
-	"weapons/neon_sign_hit_01.wav",
-	"weapons/neon_sign_hit_02.wav",
-	"weapons/neon_sign_hit_03.wav",
-	"weapons/neon_sign_hit_04.wav"
+	"weapons/blade_slice_2.wav",
+	"weapons/blade_slice_3.wav",
+	"weapons/blade_slice_4.wav",
+};
+static const char g_RangedSound[][] = {
+	"weapons/tacky_grenadier_shoot.wav",
 };
 
 static const char g_HurtArmorSounds[][] = {
@@ -82,55 +67,62 @@ static const char g_LaserGlobalAttackSound[][] = {
 	"weapons/bumper_car_speed_boost_start.wav",
 };
 
-static int Silvester_TE_Used;
+static const char g_MessengerThrowFire[][] = {
+	"misc/halloween/spell_fireball_cast.wav",
+};
 
+static const char g_MessengerThrowIce[][] = {
+	"weapons/icicle_freeze_victim_01.wav",
+};
 
-static bool b_RageAnimated[MAXENTITIES];
-static bool b_RageProjectile[MAXENTITIES];
+bool BlockLoseSay;
+static float f_MessengerSpeedUp[MAXENTITIES];
 
-void Sensal_OnMapStart_NPC()
+static float f_messenger_cutscene_necksnap[MAXENTITIES];
+
+void TheMessenger_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MessengerThrowFire));	   i++) { PrecacheSound(g_MessengerThrowFire[i]);	   }
+	for (int i = 0; i < (sizeof(g_MessengerThrowIce));	   i++) { PrecacheSound(g_MessengerThrowIce[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_TeleportSound)); i++) { PrecacheSound(g_TeleportSound[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_RangedSound)); i++) { PrecacheSound(g_RangedSound[i]); }
 	for (int i = 0; i < (sizeof(g_HurtArmorSounds)); i++) { PrecacheSound(g_HurtArmorSounds[i]); }
 	for (int i = 0; i < (sizeof(g_SuperJumpSound)); i++) { PrecacheSound(g_SuperJumpSound[i]); }
 	for (int i = 0; i < (sizeof(g_AngerSoundsPassed));   i++) { PrecacheSound(g_AngerSoundsPassed[i]);   }
 	for (int i = 0; i < (sizeof(g_SyctheHitSound));   i++) { PrecacheSound(g_SyctheHitSound[i]);   }
 	for (int i = 0; i < (sizeof(g_SyctheInitiateSound));   i++) { PrecacheSound(g_SyctheInitiateSound[i]);   }
 	for (int i = 0; i < (sizeof(g_LaserGlobalAttackSound));   i++) { PrecacheSound(g_LaserGlobalAttackSound[i]);   }
-	for (int i = 0; i < (sizeof(g_MissAbilitySound));   i++) { PrecacheSound(g_MissAbilitySound[i]);   }
-	PrecacheModel("models/player/soldier.mdl");
-	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
+	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	PrecacheSoundCustom("#zombiesurvival/internius/messenger.mp3");
 }
 
 
-methodmap Sensal < CClotBody
+methodmap TheMessenger < CClotBody
 {
 	property int i_GunMode
 	{
-		public get()							{ return i_TimesSummoned[this.index]; }
-		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+		public get()							{ return i_AttacksTillMegahit[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
 	}
-	property float f_SensalMeleeCooldown
+	property float f_TheMessengerMeleeCooldown
 	{
 		public get()							{ return fl_NextChargeSpecialAttack[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextChargeSpecialAttack[this.index] = TempValueForProperty; }
 	}
-	property float f_SensalRocketJumpCD
+	property float f_TheMessengerRocketJumpCD
 	{
 		public get()							{ return fl_NextRangedBarrage_Singular[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextRangedBarrage_Singular[this.index] = TempValueForProperty; }
 	}
-	property float f_SensalRocketJumpCD_Wearoff
+	property float f_TheMessengerRocketJumpCD_Wearoff
 	{
 		public get()							{ return fl_AttackHappensMaximum[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_AttackHappensMaximum[this.index] = TempValueForProperty; }
 	}
-	property bool b_SensalRocketJump
+	property bool b_TheMessengerRocketJump
 	{
 		public get()							{ return b_NextRangedBarrage_OnGoing[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_NextRangedBarrage_OnGoing[this.index] = TempValueForProperty; }
@@ -155,44 +147,23 @@ methodmap Sensal < CClotBody
 		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayIdleAlertSound() 
-	{
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-	
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-	}
-	
-	public void PlayHurtSound() 
-	{
-		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		
-	}
-	
-	public void PlayMissSound() 
-	{
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
-		EmitSoundToAll(g_MissAbilitySound[GetRandomInt(0, sizeof(g_MissAbilitySound) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		
-	}
 	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	
-	public void PlayRangedSound()
+	public void PlayProjectileSound() 
 	{
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		if(this.m_flidle_talk > GetGameTime(this.index))
+			return;
+			
+		this.m_flidle_talk = GetGameTime(this.index) + 0.1;
+		if(ZR_GetWaveCount()+1 <= 15)
+			EmitSoundToAll(g_MessengerThrowFire[GetRandomInt(0, sizeof(g_MessengerThrowFire) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		else
+			EmitSoundToAll(g_MessengerThrowIce[GetRandomInt(0, sizeof(g_MessengerThrowIce) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
+	
 	public void PlaySuperJumpSound()
 	{
 		EmitSoundToAll(g_SuperJumpSound[GetRandomInt(0, sizeof(g_SuperJumpSound) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -207,26 +178,39 @@ methodmap Sensal < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
+	public void PlayRangedSound() 
+	{
+		EmitSoundToAll(g_RangedSound[GetRandomInt(0, sizeof(g_RangedSound) - 1)], this.index, SNDCHAN_WEAPON, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
 	public void PlayHurtArmorSound() 
 	{
 		EmitSoundToAll(g_HurtArmorSounds[GetRandomInt(0, sizeof(g_HurtArmorSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 	}
 	
-	
-	public Sensal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public void PlayHurtSound() 
 	{
-		Sensal npc = view_as<Sensal>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, _, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayTeleportSound() 
+	{
+		EmitSoundToAll(g_TeleportSound[GetRandomInt(0, sizeof(g_TeleportSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		i_NpcInternalId[npc.index] = RAIDMODE_KHAMLSTEIN;
+	}
+	
+	public TheMessenger(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	{
+		TheMessenger npc = view_as<TheMessenger>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
+		
+		i_NpcInternalId[npc.index] = RAIDMODE_THE_MESSENGER;
 		i_NpcWeight[npc.index] = 4;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(2);
+		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -236,10 +220,16 @@ methodmap Sensal < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flMeleeArmor = 1.25;	
-		
-		SDKHook(npc.index, SDKHook_Think, Sensal_ClotThink);
-		
-		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSensal_OnTakeDamagePost);
+
+
+
+		func_NPCDeath[npc.index] = view_as<Function>(TheMessenger_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(TheMessenger_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(TheMessenger_ClotThink);
+		func_NPCFuncWin[npc.index] = view_as<Function>(TheMessenger_Win);
+
+		SDKHook(npc.index, SDKHook_OnTakeDamagePost, TheMessenger_OnTakeDamagePost);
+
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -250,22 +240,23 @@ methodmap Sensal < CClotBody
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
 		npc.m_flAngerDelay = GetGameTime() + 15.0;
 		BlockLoseSay = false;
+		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 15.0;
+		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 25.0;
+		f_MessengerSpeedUp[npc.index] = 1.0;
+		npc.g_TimesSummoned = 0;
 		
-		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
-		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);	
+		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);	
 		b_thisNpcIsARaid[npc.index] = true;
-		b_angered_twice[npc.index] = false;
-		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
-		{
-			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
-		}
 		
 
-		bool final = StrContains(data, "final_item") != -1;
+		bool final = StrContains(data, "Cutscene_Khaml") != -1;
 		
 		if(final)
 		{
+			TeleportDiversioToRandLocation(npc.index);
 			i_RaidGrantExtra[npc.index] = 1;
+			f_messenger_cutscene_necksnap[npc.index] = GetGameTime() + 2.0;
 		}
 		
 		for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -274,7 +265,7 @@ methodmap Sensal < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Sensal Arrived");
+				ShowGameText(client_check, "item_armor", 1, "%t", "The Messanger Arrived");
 			}
 		}
 
@@ -283,7 +274,6 @@ methodmap Sensal < CClotBody
 		RaidAllowsBuildings = false;
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
-		b_RageAnimated[npc.index] = false;
 		if(RaidModeScaling < 55)
 		{
 			RaidModeScaling *= 0.19; //abit low, inreacing
@@ -313,70 +303,87 @@ methodmap Sensal < CClotBody
 		{
 			RaidModeScaling *= 0.7;
 		}
+
+		RaidModeScaling *= 0.5;
 		
-		Music_SetRaidMusic("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3", 218, true);
+		Music_SetRaidMusic("#zombiesurvival/internius/messenger.mp3", 219, true, 1.25);
 		npc.m_iChanged_WalkCycle = -1;
 
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 	//	Weapon
-	//	npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_rocketlauncher/c_rocketlauncher.mdl");
-	//	SetVariantString("1.0");
-	//	AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop_partner/player/items/all_class/tw2_roman_wreath/tw2_roman_wreath_heavy.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_battleaxe/c_battleaxe.mdl");
 		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		
+		if(!final)
+		{
+			if(ZR_GetWaveCount()+1 <= 15)
+			{
+				IgniteTargetEffect(npc.m_iWearable1);
+				CPrintToChatAll("{lightblue}The Messenger{default}: Welcome, welcome sinners! I'm bearing a message to you all!");
+			}
+			else
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: Round two.");
+			}
+		}
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/short2014_soldier_fedhair/short2014_soldier_fedhair.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/cc_summer2015_outta_sight/cc_summer2015_outta_sight.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/coldfront_curbstompers/coldfront_curbstompers.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/sbox2014_juggernaut_jacket/sbox2014_juggernaut_jacket.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_the_caws_of_death/hw2013_the_caws_of_death_soldier.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_stunt_suit/hwn2023_stunt_suit.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/soldier/spr18_veterans_attire/spr18_veterans_attire.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/all_class/hiphunter_boots/hiphunter_boots_demo.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+//		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
-		SensalEffects(npc.index, view_as<int>(npc.Anger));
 
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
 
-		SetVariantColor(view_as<int>({35, 35, 255, 200}));
+		SetVariantColor(view_as<int>({173, 216, 230, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
 		return npc;
 	}
 }
 
-public void Sensal_ClotThink(int iNPC)
+public void TheMessenger_ClotThink(int iNPC)
 {
-	Sensal npc = view_as<Sensal>(iNPC);
+	TheMessenger npc = view_as<TheMessenger>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-	
-	if(SensalTalkPostWin(npc))
-		return;
 
-	if(RaidModeTime < GetGameTime())
+	if(i_RaidGrantExtra[npc.index] > 0)
+	{
+		i_RaidGrantExtra[npc.index] = 0;
+		CPrintToChatAll("{lightblue}The Messenger{default}: {crimson}AHAHAHAHHAHAHAHA!!! ALL OF YOU ARE DEAD!!");
+		return;
+	}
+	/*
+	if(TheMessengerTalkPostWin(npc))
+		return;
+*/
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");
@@ -385,39 +392,84 @@ public void Sensal_ClotThink(int iNPC)
 		AcceptEntityInput(entity, "RoundWin");
 		Music_RoundEnd(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		SDKUnhook(npc.index, SDKHook_Think, Sensal_ClotThink);
 		BlockLoseSay = true;
-	}
-
-	if(SensalTransformation(npc))
-		return;
-
-	if(SensalMassLaserAttack(npc))
-		return;
-
-	if(SensalSummonPortal(npc))
-		return;
-
-	if (npc.IsOnGround())
-	{
-		if(GetGameTime(npc.index) > npc.f_SensalRocketJumpCD_Wearoff)
+		if(ZR_GetWaveCount()+1 <= 15)
 		{
-			npc.b_SensalRocketJump = false;
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: Shame.");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: Are you for real??");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: No comment.");
+				}
+			}
+		}
+		else
+		{
+			CPrintToChatAll("{lightblue}The Messenger{default}: ...........");
 		}
 	}
-	
-	if(npc.m_bAllowBackWalking)
+	if(LastMann)
 	{
-		if(IsValidEnemy(npc.index, npc.m_iTarget))
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 150.0);
+		if(!npc.m_fbGunout)
+		{
+			npc.m_fbGunout = true;
+			if(ZR_GetWaveCount()+1 <= 15)
+			{
+				switch(GetRandomInt(0,2))
+				{
+					case 0:
+					{
+						CPrintToChatAll("{lightblue}The Messenger{default}: Your friends are dead. {crimson}Accept your fate.");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{lightblue}The Messenger{default}: It's just you and me now.");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{lightblue}The Messenger{default}: Give up, you cannot win.");
+					}
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,2))
+				{
+					case 0:
+					{
+						CPrintToChatAll("{lightblue}The Messenger{default}: YOU ARE DEAD");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{lightblue}The Messenger{default}: I'LL FUCK YOU UP");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{lightblue}The Messenger{default}: AHAHAHAHAHAHA");
+					}
+				}				
+			}
+		}
 	}
-
+/*
+	if(TheMessengerTransformation(npc))
+		return;
+*/
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
+
 
 
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
@@ -427,6 +479,23 @@ public void Sensal_ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
+	if(npc.i_GunMode == 0 && Messanger_Elemental_Attack_Projectiles(npc))
+	{
+		npc.m_flMeleeArmor = 0.65;
+		npc.m_flRangedArmor = 0.5;	
+		return;
+	}
+
+	if(Messanger_Elemental_Attack_TempPowerup(npc))
+	{
+		npc.m_flMeleeArmor = 0.65;
+		npc.m_flRangedArmor = 0.5;	
+		return;
+	}
+
+	npc.m_flMeleeArmor = 1.25;
+	npc.m_flRangedArmor = 1.0;		
+
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -435,11 +504,12 @@ public void Sensal_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
+
 		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		int SetGoalVectorIndex = 0;
-		SetGoalVectorIndex = SensalSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
-
+		SetGoalVectorIndex = TheMessengerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		
 		switch(SetGoalVectorIndex)
 		{
 			case 0:
@@ -451,6 +521,7 @@ public void Sensal_ClotThink(int iNPC)
 					float vPredictedPos[3];
 					vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
+					Messanger_Elemental_Attack_FingerPoint(npc);
 				}
 				else 
 				{
@@ -471,17 +542,239 @@ public void Sensal_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-
 	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
-		SensalAnimationChange(npc);
+		TheMessengerAnimationChange(npc);
 	}
-	npc.PlayIdleAlertSound();
 }
 
-public Action Sensal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+bool Messanger_Elemental_Attack_Projectiles(TheMessenger npc)
 {
-	Sensal npc = view_as<Sensal>(victim);
+	if(!npc.m_flAttackHappens_2 && npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index))
+	{
+		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (25.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.AddActivityViaSequence("taunt_roar_owar");
+		npc.m_flAttackHappens = 0.0;
+		npc.SetCycle(0.01);
+		npc.SetPlaybackRate(f_MessengerSpeedUp[npc.index]);
+		npc.m_flAttackHappens_2 = GetGameTime(npc.index) + (4.0 * (1.0 / f_MessengerSpeedUp[npc.index]));	
+		npc.m_flDoingAnimation = GetGameTime(npc.index) + (4.0 * (1.0 / f_MessengerSpeedUp[npc.index]));	
+		npc.m_iOverlordComboAttack = 0;
+		npc.m_iChanged_WalkCycle = 0;
+
+		if(IsValidEntity(npc.m_iWearable2))
+			RemoveEntity(npc.m_iWearable2);
+
+		float flPos[3];
+		float flAng[3];
+		npc.GetAttachment("effect_hand_r", flPos, flAng);
+
+		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "flaregun_trail_blue", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+	}
+
+	if(npc.m_flAttackHappens_2)
+	{
+		float TimeUntillOver = npc.m_flAttackHappens_2 - GetGameTime(npc.index);
+		//one second into the ability
+		if(npc.m_flAttackHappens_2 < GetGameTime(npc.index))
+		{
+			if(IsValidEntity(npc.m_iWearable2))
+				RemoveEntity(npc.m_iWearable2);
+			npc.m_flAttackHappens_2 = 0.0;
+		}
+
+		if(TimeUntillOver < (0.3 * (1.0 / f_MessengerSpeedUp[npc.index])))
+		{
+			if(npc.m_iOverlordComboAttack != 4)
+			{
+				npc.m_iOverlordComboAttack = 4;
+				fl_TotalArmor[npc.index] = fl_TotalArmor[npc.index] * 0.9;
+				RaidModeScaling *= 1.1;
+				switch(GetRandomInt(0,3))
+				{
+					case 0:
+					{
+						CPrintToChatAll("{lightblue}The Messenger{default}: No more fucking around.");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{lightblue}The Messenger{default}: Stop wasting my time shitheads.");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{lightblue}The Messenger{default}: All sinners will {crimson}DIE.");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{lightblue}The Messenger{default}: You just brought infinite pain upon you.");
+					}
+				}
+				MessengerInitiateGroupAttack(npc);
+			}
+			return true;
+		}
+		if(TimeUntillOver < (2.0 * (1.0 / f_MessengerSpeedUp[npc.index])))
+		{
+			if(npc.m_iOverlordComboAttack != 3)
+			{
+				npc.m_iOverlordComboAttack = 3;
+				MessengerInitiateGroupAttack(npc);
+
+			}
+			return true;
+		}
+		if(TimeUntillOver < (2.7 * (1.0 / f_MessengerSpeedUp[npc.index])))
+		{
+			if(npc.m_iOverlordComboAttack != 2)
+			{
+				npc.m_iOverlordComboAttack = 2;
+				MessengerInitiateGroupAttack(npc);
+
+			}
+			return true;
+		}
+		if(TimeUntillOver < (3.5 * (1.0 / f_MessengerSpeedUp[npc.index])))
+		{
+			if(npc.m_iOverlordComboAttack != 1)
+			{
+				npc.m_iOverlordComboAttack = 1;
+				MessengerInitiateGroupAttack(npc);
+			}
+			return true;
+		}
+		return true;
+	}
+	return false;
+}
+
+
+bool Messanger_Elemental_Attack_TempPowerup(TheMessenger npc)
+{
+	if(!npc.m_flNextRangedBarrage_Spam && npc.m_flAttackHappens_bullshit < GetGameTime(npc.index))
+	{
+		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + (35.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.AddActivityViaSequence("taunt_cheers_demo");
+		npc.m_flAttackHappens = 0.0;
+		npc.SetCycle(0.01);
+		npc.SetPlaybackRate(f_MessengerSpeedUp[npc.index]);
+		npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + (1.85 * (1.0 / f_MessengerSpeedUp[npc.index]));	
+		npc.m_flDoingAnimation = GetGameTime(npc.index) + (1.85 * (1.0 / f_MessengerSpeedUp[npc.index]));	
+		npc.m_iOverlordComboAttack = 0;
+		npc.m_iChanged_WalkCycle = 0;
+		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 10.0;
+		if(IsValidEntity(npc.m_iWearable2))
+			RemoveEntity(npc.m_iWearable2);
+			
+		float flPos[3];
+		float flAng[3];
+		npc.GetAttachment("effect_hand_r", flPos, flAng);
+
+		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "flaregun_trail_blue", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+	}
+	if(npc.m_flNextRangedBarrage_Spam)
+	{
+
+		if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index))
+		{
+			npc.i_GunMode = 0;
+			if(IsValidEntity(npc.m_iWearable1))
+				RemoveEntity(npc.m_iWearable1);
+
+			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_battleaxe/c_battleaxe.mdl");
+			SetVariantString("1.0");
+			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			
+			if(ZR_GetWaveCount()+1 <= 15)
+				IgniteTargetEffect(npc.m_iWearable1);
+
+			npc.m_flNextRangedBarrage_Spam = 0.0;
+		}
+	}
+	if(npc.m_flNextRangedBarrage_Singular)
+	{
+		float TimeUntillOver = npc.m_flNextRangedBarrage_Singular - GetGameTime(npc.index);
+
+		if(TimeUntillOver < (1.2 * (1.0 / f_MessengerSpeedUp[npc.index])))
+		{
+			if(npc.m_iOverlordComboAttack != 1)
+			{
+				npc.m_iOverlordComboAttack = 1;
+				MessengerInitiateGroupAttack(npc);
+				if(IsValidEntity(npc.m_iWearable2))
+					RemoveEntity(npc.m_iWearable2);
+			}
+		}
+		if(npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index))
+		{
+			npc.i_GunMode = 1;
+
+			if(IsValidEntity(npc.m_iWearable1))
+				RemoveEntity(npc.m_iWearable1);
+			if(IsValidEntity(npc.m_iWearable2))
+				RemoveEntity(npc.m_iWearable2);
+
+			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_quadball/c_quadball.mdl");
+			SetVariantString("1.0");
+			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			npc.m_flNextRangedBarrage_Singular = 0.0;
+		}
+		return true;
+	}
+	return false;
+}
+
+
+bool Messanger_Elemental_Attack_FingerPoint(TheMessenger npc)
+{
+	if(!npc.m_flJumpStartTimeInternal && npc.m_flJumpCooldown < GetGameTime(npc.index))
+	{
+		npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0;
+		npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_PRIMARY");
+		npc.m_flJumpStartTimeInternal = GetGameTime(npc.index) + 0.75;	
+		float flPos[3];
+		float flAng[3];
+		int Particle_1;
+		npc.GetAttachment("foot_L", flPos, flAng);
+		Particle_1 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "effect_hand_l", {0.0,0.0,0.0});
+		CreateTimer(0.75, Timer_RemoveEntity, EntIndexToEntRef(Particle_1), TIMER_FLAG_NO_MAPCHANGE);
+	}
+	if(npc.m_flJumpStartTimeInternal)
+	{
+		if(npc.m_flJumpStartTimeInternal < GetGameTime(npc.index))
+		{
+			float vPredictedPos[3];
+			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			vPredictedPos = GetBehindTarget(npc.m_iTarget, 30.0 ,vPredictedPos);
+			static float hullcheckmaxs[3];
+			static float hullcheckmins[3];
+			hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+			hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+
+			float PreviousPos[3];
+			PreviousPos = WorldSpaceCenterOld(npc.index);
+			
+			bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
+			if(Succeed)
+			{
+				npc.PlayTeleportSound();
+				ParticleEffectAt(PreviousPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+				ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+						
+				npc.m_flJumpStartTimeInternal = 0.0;
+			}
+		}
+		return true;
+	}
+	return false;
+}
+
+public Action TheMessenger_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	TheMessenger npc = view_as<TheMessenger>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -491,49 +784,26 @@ public Action Sensal_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}		
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
-	{
-		if(((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/40) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
-		{
-			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
-
-			ReviveAll(true);
-
-			b_angered_twice[npc.index] = true; 
-			i_SaidLineAlready[npc.index] = 0; 
-			f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
-			RaidModeTime += 60.0;
-			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
-			b_NpcIsInvulnerable[npc.index] = true;
-			RemoveNpcFromEnemyList(npc.index);
-			GiveProgressDelay(20.0);
-			
-			CPrintToChatAll("{blue}Sensal{default}: You keep talking about Silvester and Blue Goggles, what is the meaning of this?");
-
-			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
-			return Plugin_Handled;
-		}
-	}
-
 	
 	return Plugin_Changed;
 }
 
-public void Sensal_NPCDeath(int entity)
+public void TheMessenger_NPCDeath(int entity)
 {
-	Sensal npc = view_as<Sensal>(entity);
+	TheMessenger npc = view_as<TheMessenger>(entity);
 	/*
 		Explode on death code here please
 
 	*/
 	
-	ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
-	npc.PlayDeathSound();	
+	if(!b_thisNpcIsARaid[npc.index])
+	{
+		ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
+		npc.PlayDeathSound();	
+	}
 
 	RaidBossActive = INVALID_ENT_REFERENCE;
-	SDKUnhook(npc.index, SDKHook_Think, Sensal_ClotThink);
 		
-	
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable6))
@@ -549,49 +819,63 @@ public void Sensal_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 
-	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
-	{
-		if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-		{
-			RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-		}					
-	}
-	
 	if(BlockLoseSay)
 		return;
 
-	switch(GetRandomInt(0,3))
+	if(b_thisNpcIsARaid[npc.index])
 	{
-		case 0:
+		if(ZR_GetWaveCount()+1 <= 15)
 		{
-			CPrintToChatAll("{blue}Sensal{default}: Your actions against a fellow {gold}Expidonsan{default} will not be forgiven, I will be back with reinforcements.");
+			switch(GetRandomInt(0,3))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: Ugh... little fucks.. This ain't over");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: You're just delaying the inevitable..");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: I may or may not heavily underestimated you..");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: No...");
+				}
+			}
 		}
-		case 1:
+		else
 		{
-			CPrintToChatAll("{blue}Sensal{default}: Your time will come when you pay for going against the law of {gold}Expidonsa{default}.");
-		}
-		case 2:
-		{
-			CPrintToChatAll("{blue}Sensal{default}: {gold}Expidonsa{default} is far out of your level of understanding.");
-		}
-		case 3:
-		{
-			CPrintToChatAll("{blue}Sensal{default}: You do not know what you are getting yourself into.");
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: NOT TWICE");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: WHY");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: I just want to impress Him for once... Ugh.....");
+				}
+			}
 		}
 	}
-
 }
 /*
 
 
 */
-void SensalAnimationChange(Sensal npc)
+void TheMessengerAnimationChange(TheMessenger npc)
 {
 	
 	if(npc.m_iChanged_WalkCycle == 0)
 	{
 		npc.m_iChanged_WalkCycle = -1;
-		SensalEffects(npc.index, view_as<int>(npc.Anger));
 	}
 	switch(npc.i_GunMode)
 	{
@@ -601,10 +885,10 @@ void SensalAnimationChange(Sensal npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 1)
 				{
-				// ResetSensalWeapon(npc, 1);
+				// ResetTheMessengerWeapon(npc, 1);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 1;
-					npc.SetActivity("ACT_MP_RUN_PRIMARY");
+					npc.SetActivity("ACT_MP_RUN_SECONDARY");
 					npc.StartPathing();
 				}	
 			}
@@ -612,10 +896,10 @@ void SensalAnimationChange(Sensal npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 2)
 				{
-				//	ResetSensalWeapon(npc, 1);
+				//	ResetTheMessengerWeapon(npc, 1);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 2;
-					npc.SetActivity("ACT_MP_JUMP_FLOAT_PRIMARY");
+					npc.SetActivity("ACT_MP_JUMP_FLOAT_SECONDAY");
 					npc.StartPathing();
 				}	
 			}
@@ -626,10 +910,10 @@ void SensalAnimationChange(Sensal npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 3)
 				{
-				//	ResetSensalWeapon(npc, 0);
+				//	ResetTheMessengerWeapon(npc, 0);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 3;
-					npc.SetActivity("ACT_MP_RUN_MELEE");
+					npc.SetActivity("ACT_MP_RUN_ITEM1");
 					npc.StartPathing();
 				}	
 			}
@@ -637,10 +921,10 @@ void SensalAnimationChange(Sensal npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 4)
 				{
-				//	ResetSensalWeapon(npc, 0);
+				//	ResetTheMessengerWeapon(npc, 0);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
+					npc.SetActivity("ACT_MP_JUMP_FLOAT_ITEM1");
 					npc.StartPathing();
 				}	
 			}
@@ -649,126 +933,88 @@ void SensalAnimationChange(Sensal npc)
 
 }
 
-int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
+int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float distance)
 {
-	npc.i_GunMode = 0;
-	if(ZR_GetWaveCount()+1 >= 45 && npc.m_flAngerDelay < GetGameTime(npc.index))
+	if(npc.i_GunMode == 1)
 	{
-		int Enemy_I_See;
-									
-		Enemy_I_See = Can_I_See_Enemy(npc.index, target);
-						
-		if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+		if(gameTime > npc.m_flNextMeleeAttack)
 		{
-			//i can see my enemy, but we want to make sure if there is even space free above us.
-			static float flMyPos[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
-			static float hullcheckmaxs[3];
-			static float hullcheckmins[3];
-
-			//Defaults:
-			//hullcheckmaxs = view_as<float>( { 24.0, 24.0, 72.0 } );
-			//hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );
-
-			hullcheckmaxs = view_as<float>( { 35.0, 35.0, 500.0 } ); //check if above is free
-			hullcheckmins = view_as<float>( { -35.0, -35.0, 17.0 } );
-			
-			if(!IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, npc.index))
+			if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5))
 			{
-				npc.m_flDead_Ringer_Invis_bool = true;
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+						
+				if(IsValidEnemy(npc.index, Enemy_I_See))
+				{
+					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+					npc.m_iTarget = Enemy_I_See;
+					npc.PlayRangedSound();
+					float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+					npc.FaceTowards(vecTarget, 20000.0);
+					int projectile;
+					float Proj_Damage = 18.0 * RaidModeScaling;
+					if(ZR_GetWaveCount()+1 <= 15)
+						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_red", false);
+					else
+						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_blue", false);
+			
+					SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+					int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
+					CreateTimer(3.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(3.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+					
+					SDKHook(projectile, SDKHook_StartTouch, TheMessenger_Rocket_Particle_StartTouch);		
+					
+				}
+				if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
+				{
+					//target is too far, try to close in
+					return 0;
+				}
+				else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
+				{
+					if(Can_I_See_Enemy_Only(npc.index, target))
+					{
+						//target is too close, try to keep distance
+						return 1;
+					}
+				}
+				return 0;
 			}
 			else
 			{
-				npc.m_flDead_Ringer_Invis_bool = false;
+				if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
+				{
+					//target is too far, try to close in
+					return 0;
+				}
+				else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
+				{
+					if(Can_I_See_Enemy_Only(npc.index, target))
+					{
+						//target is too close, try to keep distance
+						return 1;
+					}
+				}
 			}
-
-			if(IsValidEntity(npc.m_iWearable7))
-			{
-				RemoveEntity(npc.m_iWearable7);
-			}
-			npc.AddActivityViaSequence("taunt05");
-			npc.m_flAttackHappens = 0.0;
-			EmitSoundToAll("mvm/mvm_tank_end.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
-			npc.SetCycle(0.01);
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
-			VausMagicaGiveShield(npc.index, CountPlayersOnRed() * 2); //Give self a shield
-
-			SensalThrowScythes(npc);
-			npc.m_flDoingAnimation = gameTime + 0.45;
-			npc.m_flAngerDelay = gameTime + 60.0;
-
-			if(ZR_GetWaveCount()+1 >= 60)
-				npc.m_flAngerDelay = gameTime + 30.0;
-
-			npc.m_flReloadIn = gameTime + 3.0;
 		}
 		else
 		{
-			npc.m_flAngerDelay = gameTime + 1.0;
-		}
-	}
-
-	if(npc.m_flNextRangedSpecialAttackHappens < GetGameTime(npc.index))
-	{
-		int Enemy_I_See;
-									
-		Enemy_I_See = Can_I_See_Enemy(npc.index, target);
-						
-		if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
-		{
-			npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
-			npc.PlaySytheInitSound();
-			SensalThrowScythes(npc);
-			npc.m_flDoingAnimation = gameTime + 0.45;
-			npc.m_flNextRangedSpecialAttackHappens = gameTime + 7.5;
-
-			if(ZR_GetWaveCount()+1 >= 15)
-				npc.m_flNextRangedSpecialAttackHappens = gameTime + 4.0;
-				
-			if(ZR_GetWaveCount()+1 >= 30)
-				npc.m_flNextRangedSpecialAttackHappens = gameTime + 5.5;
-		}
-	}
-	else if(ZR_GetWaveCount()+1 >= 30 && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
-	{
-		int Enemy_I_See;
-									
-		Enemy_I_See = Can_I_See_Enemy(npc.index, target);
-						
-		if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
-		{
-			SensalThrowScythes(npc);
-			if(IsValidEntity(npc.m_iWearable7))
+			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
 			{
-				RemoveEntity(npc.m_iWearable7);
+				//target is too far, try to close in
+				return 0;
 			}
-			npc.m_flRangedSpecialDelay = gameTime + 15.5;
-			npc.m_flAttackHappens_2 = gameTime + 1.4;
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
-			npc.m_flDoingAnimation = gameTime + 99.0;
-			npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
-			npc.m_flAttackHappens = 0.0;
-			VausMagicaGiveShield(npc.index, CountPlayersOnRed() * 2); //Give self a shield
-			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
-			npc.SetCycle(0.01);
-			float flPos[3];
-			float flAng[3];
-			npc.m_iChanged_WalkCycle = 0;
-			npc.GetAttachment("effect_hand_r", flPos, flAng);
-			if(!npc.Anger)
-				npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "flaregun_trail_blue", npc.index, "effect_hand_r", {0.0,0.0,0.0});
-			else
-				npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "flaregun_trail_red", npc.index, "effect_hand_r", {0.0,0.0,0.0});
-
-			/*
-				Fire a shitretlrrsgtrsglsoads of lasers
-			*/
-
+			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
+			{
+				if(Can_I_See_Enemy_Only(npc.index, target))
+				{
+					//target is too close, try to keep distance
+					return 1;
+				}
+			}
 		}
-	}	
-	else if(npc.m_flAttackHappens)
+	}
+	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
 		{
@@ -811,22 +1057,32 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 								{
 									Knocked = true;
 									Custom_Knockback(npc.index, targetTrace, 900.0, true);
-									if(!NpcStats_IsEnemySilenced(npc.index))
-									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
-									}
+									TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
 								}
 								else
 								{
-									if(!NpcStats_IsEnemySilenced(npc.index))
-									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
-									}
+									TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
 								}
 							}
 										
+							if(ZR_GetWaveCount()+1 <= 15)
+							{
+								if(targetTrace <= MaxClients)
+									TF2_IgnitePlayer(targetTrace, targetTrace, 5.0);
+
+								StartBleedingTimer_Against_Client(targetTrace, npc.index, 3.0, 5);
+							}
+							else
+							{
+								int ChaosDamage = 150;
+								if(NpcStats_IsEnemySilenced(npc.index))
+									ChaosDamage = 100;
+
+								Sakratan_AddNeuralDamage(targetTrace, npc.index, ChaosDamage, true, true);
+							}
+
 							if(!Knocked)
 								Custom_Knockback(npc.index, targetTrace, 650.0); 
 						} 
@@ -855,11 +1111,11 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 					target = Enemy_I_See;
 
 					npc.PlayMeleeSound();
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+					npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1",true, 1.0, _, f_MessengerSpeedUp[npc.index]);
 							
-					npc.m_flAttackHappens = gameTime + 0.25;
-					npc.m_flNextMeleeAttack = gameTime + 1.2;
-					npc.m_flDoingAnimation = gameTime + 0.25;
+					npc.m_flAttackHappens = gameTime + (0.25 * (1.0 / f_MessengerSpeedUp[npc.index]));
+					npc.m_flNextMeleeAttack = gameTime + (1.2 * (1.0 / f_MessengerSpeedUp[npc.index]));
+					npc.m_flDoingAnimation = gameTime + (0.25 * (1.0 / f_MessengerSpeedUp[npc.index]));
 				}
 			}
 		}
@@ -873,351 +1129,8 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 }
 
 
-void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r")
-{
-	if(attachment[0])
-	{
-		CClotBody npc = view_as<CClotBody>(iNpc);
-		if(IsValidEntity(npc.m_iWearable7))
-		{
-			if(colour)
-			{
-				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 1);
-			}
-			else
-			{
-				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 0);
-			}
-		}
-		else
-		{
-			npc.m_iWearable7 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
-			SetVariantString("1.35");
-			AcceptEntityInput(npc.m_iWearable7, "SetModelScale");	
-			SetVariantInt(1);
-			AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
-			if(colour)
-			{
-				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 1);
-			}
-			else
-			{
-				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 0);
-			}
-		}
-	}
-	else
-	{
-		int ModelApply = ApplyCustomModelToWandProjectile(iNpc, WEAPON_CUSTOM_WEAPONRY_1, 1.65, "scythe_spin");
 
-		if(colour)
-		{
-			SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
-		}
-		else
-		{
-			SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
-		}
-		SetVariantInt(2);
-		AcceptEntityInput(ModelApply, "SetBodyGroup");
-	}
-}
-
-
-public void RaidbossSensal_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
-{
-	Sensal npc = view_as<Sensal>(victim);
-	if(ZR_GetWaveCount()+1 >= 45)
-	{
-		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
-		{
-			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 3.0;
-			b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
-			npc.PlayAngerSound();
-			npc.Anger = true; //	>:(
-			b_RageAnimated[npc.index] = false;
-			RaidModeTime += 60.0;
-			npc.m_bisWalking = false;
-			if(IsValidEntity(npc.m_iWearable7))
-			{
-				RemoveEntity(npc.m_iWearable7);
-			}
-			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-			pos[2] += 5.0;
-			ParticleEffectAt(pos, "utaunt_electricity_cloud1_WY", 3.0);
-		}
-	}
-}
-
-
-void SensalThrowScythes(Sensal npc)
-{
-	Silvester_TE_Used = 0;
-	int MaxCount = 1;
-	float DelayPillars = 0.5;
-	float DelaybewteenPillars = 0.5;
-	float ang_Look[3];
-	float pos[3];
-	pos = WorldSpaceCenterOld(npc.index);
-	
-	if(ZR_GetWaveCount()+1 >= 60)
-		MaxCount = 2;
-
-	for(int Repeat; Repeat <= 7; Repeat++)
-	{
-		Sensal_Scythe_Throw_Ability(npc.index,
-		SENSAL_BASE_RANGED_SCYTHE_DAMGAE * RaidModeScaling,				 	//damage
-		MaxCount, 	//how many
-		DelayPillars,									//Delay untill hit
-		DelaybewteenPillars,									//Extra delay between each
-		ang_Look 								/*2 dimensional plane*/,
-		pos,
-		0.25);									//volume
-		ang_Look[1] += 45.0;
-	}
-}
-
-void Sensal_Scythe_Throw_Ability(int entity,
-float damage,
-int count,
-float delay,
-float delay_PerPillar,
-float direction[3] /*2 dimensional plane*/,
-float origin[3],
-float volume = 0.7)
-{
-	float timerdelay = GetGameTime() + delay;
-	DataPack pack;
-	CreateDataTimer(delay_PerPillar, Sensal_SpawnSycthes, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-	pack.WriteCell(EntIndexToEntRef(entity)); 	//who this attack belongs to
-	pack.WriteCell(damage);
-	pack.WriteCell(0);						//how many pillars, this counts down with each pillar made
-	pack.WriteCell(count);						//how many pillars, this counts down with each pillar made
-	pack.WriteCell(timerdelay);					//Delay for each initial pillar
-	pack.WriteCell(direction[0]);
-	pack.WriteCell(direction[1]);
-	pack.WriteCell(direction[2]);
-	pack.WriteCell(origin[0]);
-	pack.WriteCell(origin[1]);
-	pack.WriteCell(origin[2]);
-	pack.WriteCell(volume);
-
-	float origin_altered[3];
-	origin_altered = origin;
-
-	for(int Repeats; Repeats < count; Repeats++)
-	{
-		float Range = 50.0;
-		float VecForward[3];
-		float vecRight[3];
-		float vecUp[3];
-				
-		GetAngleVectors(direction, VecForward, vecRight, vecUp);
-
-		float vecSwingEnd[3];
-		vecSwingEnd[0] = origin_altered[0] + VecForward[0] * (PILLAR_SPACING);
-		vecSwingEnd[1] = origin_altered[1] + VecForward[1] * (PILLAR_SPACING);
-		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
-		static float hullcheckmaxs[3];
-		static float hullcheckmins[3];
-
-		hullcheckmaxs = view_as<float>( { 5.0, 5.0, 5.0 } );
-		hullcheckmins = view_as<float>( { -5.0, -5.0, -5.0 } );
-		
-		Handle trace = TR_TraceHullFilterEx(origin_altered, vecSwingEnd, hullcheckmins, hullcheckmaxs, MASK_PLAYERSOLID, Sensal_TraceWallsOnly);
-
-		if (TR_DidHit(trace))
-		{
-			TR_GetEndPosition(origin_altered, trace);
-		}
-		else
-		{
-			origin_altered = vecSwingEnd;
-		}
-		delete trace;
-
-		Range += (float(Repeats) * 10.0);
-		Silvester_TE_Used += 1;
-		if(Silvester_TE_Used > 31)
-		{
-			int DelayFrames = (Silvester_TE_Used / 32);
-			DelayFrames *= 2;
-			DataPack pack_TE = new DataPack();
-			pack_TE.WriteCell(origin_altered[0]);
-			pack_TE.WriteCell(origin_altered[1]);
-			pack_TE.WriteCell(origin_altered[2]);
-			pack_TE.WriteCell(Range);
-			pack_TE.WriteCell(delay + (delay_PerPillar * float(Repeats)));
-			RequestFrames(Sensal_DelayTE, DelayFrames, pack_TE);
-			//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
-		}
-		else
-		{
-			spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, delay + (delay_PerPillar * float(Repeats)), 5.0, 0.0, 1);	
-		}
-		/*
-		int laser;
-		RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
-
-		int red = 212;
-		int green = 155;
-		int blue = 0;
-
-		laser = ConnectWithBeam(npc.m_iWearable6, -1, red, green, blue, 5.0, 5.0, 0.0, LINKBEAM,_, origin_altered);
-
-		CreateTimer(delay, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
-		*/
-
-	}
-}
-
-public void Sensal_DelayTE(DataPack pack)
-{
-	pack.Reset();
-	float Origin[3];
-	Origin[0] = pack.ReadCell();
-	Origin[1] = pack.ReadCell();
-	Origin[2] = pack.ReadCell();
-	float Range = pack.ReadCell();
-	float Delay = pack.ReadCell();
-	spawnRing_Vectors(Origin, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, Delay, 5.0, 0.0, 1);	
-		
-	delete pack;
-}
-
-
-
-public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int entity = EntRefToEntIndex(pack.ReadCell());
-	float damage = pack.ReadCell();
-	DataPackPos countPos = pack.Position;
-	int count = pack.ReadCell();
-	int countMax = pack.ReadCell();
-	float delayUntillImpact = pack.ReadCell();
-	float direction[3];
-	direction[0] = pack.ReadCell();
-	direction[1] = pack.ReadCell();
-	direction[2] = pack.ReadCell();
-	float origin[3];
-	DataPackPos originPos = pack.Position;
-	origin[0] = pack.ReadCell();
-	origin[1] = pack.ReadCell();
-	origin[2] = pack.ReadCell();
-	float volume = pack.ReadCell();
-
-	//Timers have a 0.1 impresicison logic, accont for it.
-	if(delayUntillImpact - 0.1 > GetGameTime())
-	{
-		return Plugin_Continue;
-	}
-
-	count += 1;
-	pack.Position = countPos;
-	pack.WriteCell(count, false);
-	if(IsValidEntity(entity))
-	{
-		float VecForward[3];
-		float vecRight[3];
-		float vecUp[3];
-				
-		GetAngleVectors(direction, VecForward, vecRight, vecUp);
-		
-		float vecSwingEnd[3];
-		vecSwingEnd[0] = origin[0] + VecForward[0] * (PILLAR_SPACING);
-		vecSwingEnd[1] = origin[1] + VecForward[1] * (PILLAR_SPACING);
-		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
-		float origin_altered[3];
-		static float hullcheckmaxs[3];
-		static float hullcheckmins[3];
-
-		hullcheckmaxs = view_as<float>( { 5.0, 5.0, 5.0 } );
-		hullcheckmins = view_as<float>( { -5.0, -5.0, -5.0 } );
-		
-		Handle trace = TR_TraceHullFilterEx(origin, vecSwingEnd, hullcheckmins, hullcheckmaxs, MASK_PLAYERSOLID, Sensal_TraceWallsOnly);
-
-		if (TR_DidHit(trace))
-		{
-			TR_GetEndPosition(origin_altered, trace);
-		}
-		else
-		{
-			origin_altered = vecSwingEnd;
-		}
-		delete trace;
-
-		Sensal npc = view_as<Sensal>(entity);
-		float FloatVector[3];
-		
-		
-		if(IsValidEntity(npc.m_iTarget))
-		{
-			FloatVector = WorldSpaceCenterOld(npc.m_iTarget);
-		}
-		else
-		{
-			FloatVector = WorldSpaceCenterOld(entity);
-		}
-
-		int Projectile = npc.FireParticleRocket(FloatVector, damage , 400.0 , 100.0 , "",_,_,true,origin_altered,_,_,_,false);
-		SensalEffects(Projectile,view_as<int>(npc.Anger),"");
-		b_RageProjectile[Projectile] = npc.Anger;
-		//dont exist !
-		SDKUnhook(Projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-		SDKHook(Projectile, SDKHook_StartTouch, Sensal_Particle_StartTouch);
-		CreateTimer(15.0, Timer_RemoveEntitySensal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
-		static float ang_Look[3];
-		GetEntPropVector(Projectile, Prop_Send, "m_angRotation", ang_Look);
-		Initiate_HomingProjectile(Projectile,
-		 npc.index,
-		 	70.0,			// float lockonAngleMax,
-		   	10.0,				//float homingaSec,
-			true,				// bool LockOnlyOnce,
-			true,				// bool changeAngles,
-			  ang_Look);// float AnglesInitiate[3]);
-
-		if(volume == 0.25)
-		{
-			EmitSoundToAll("weapons/mortar/mortar_explode3.wav", 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, volume, SNDPITCH_NORMAL, -1, origin_altered);		
-		}
-		else
-		{
-			EmitSoundToAll("weapons/mortar/mortar_explode3.wav", 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, volume, SNDPITCH_NORMAL, -1, origin_altered);
-			EmitSoundToAll("weapons/mortar/mortar_explode3.wav", 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, volume, SNDPITCH_NORMAL, -1, origin_altered);
-		}
-
-		pack.Position = originPos;
-		pack.WriteCell(origin_altered[0], false);
-		pack.WriteCell(origin_altered[1], false);
-		pack.WriteCell(origin_altered[2], false);
-		//override origin, we have a new origin.
-	}
-	else
-	{
-		return Plugin_Stop; //cancel.
-	}
-
-	if(count >= countMax)
-	{
-		return Plugin_Stop;
-	}
-	return Plugin_Continue;
-
-}
-
-public Action Timer_RemoveEntitySensal(Handle timer, any entid)
-{
-	int entity = EntRefToEntIndex(entid);
-	if(IsValidEntity(entity))
-	{
-		RemoveEntity(entity);
-	}
-	return Plugin_Stop;
-}
-
-
-public void Sensal_Particle_StartTouch(int entity, int target)
+public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
@@ -1240,19 +1153,23 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 		if(ShouldNpcDealBonusDamage(target))
 			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
 
+		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 
-		if(b_should_explode[entity])	//should we "explode" or do "kinetic" damage
+		if(ZR_GetWaveCount()+1 <= 15)
 		{
-			i_ExplosiveProjectileHexArray[owner] = i_ExplosiveProjectileHexArray[entity];
-			Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
+			if(target <= MaxClients)
+				TF2_IgnitePlayer(target, target, 5.0);
+
+			StartBleedingTimer_Against_Client(target, owner, DamageDeal * 0.1, 5);
 		}
 		else
 		{
-			SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
-		}
-		EmitSoundToAll(g_SyctheHitSound[GetRandomInt(0, sizeof(g_SyctheHitSound) - 1)], entity, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		TE_Particle(b_RageProjectile[entity] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+			int ChaosDamage = 75;
+			if(NpcStats_IsEnemySilenced(owner))
+				ChaosDamage = 40;
 
+			Sakratan_AddNeuralDamage(target, owner, ChaosDamage, true, true);
+		}
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
 		{
@@ -1263,10 +1180,6 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 	{
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		//we uhh, missed?
-		float ProjectileLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-		TE_Particle(b_RageProjectile[entity] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -1276,542 +1189,142 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 }
 
 
-bool SensalTalkPostWin(Sensal npc)
-{
-	if(!b_angered_twice[npc.index])
-		return false;
 
-	if(npc.m_iChanged_WalkCycle != 6)
+void MessengerInitiateGroupAttack(TheMessenger npc)
+{
+	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+	int enemy[MAXENTITIES];
+	if(!IsValidEntity(npc.m_iWearable2))
 	{
-		if(IsValidEntity(npc.m_iWearable7))
+		float flPos[3];
+		float flAng[3];
+		npc.GetAttachment("effect_hand_r", flPos, flAng);
+		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "flaregun_trail_blue", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+	}
+	GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, npc.m_iWearable2);
+
+	for(int i; i < sizeof(enemy); i++)
+	{
+		if(enemy[i])
 		{
-			RemoveEntity(npc.m_iWearable7);
-		}
-		SensalEffects(npc.index, view_as<int>(npc.Anger));
-		npc.m_bisWalking = true;
-		npc.m_iChanged_WalkCycle = 6;
-		npc.AddActivityViaSequence("selectionMenu_Idle");
-		npc.SetCycle(0.01);
-		NPC_StopPathing(npc.index);
-	}
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
-			{
-				Music_Stop_All(client); //This is actually more expensive then i thought.
-			}
-			SetMusicTimer(client, GetTime() + 6);
-			fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
-		}
-	}
-	if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
-	{
-		CPrintToChatAll("{blue}Sensal{default}: We apologize for the sudden attack, we didn't know, take this as an apology.");
-		
-		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
-		BlockLoseSay = true;
-		for (int client = 0; client < MaxClients; client++)
-		{
-			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
-			{
-				Items_GiveNamedItem(client, "Expidonsan Battery Device");
-				CPrintToChat(client,"{default}Sensal gave you a high tech battery: {darkblue}''Expidonsan Battery Device''{default}!");
-			}
+			npc.PlayProjectileSound();
+			int Target = enemy[i];
+			float vecHit[3];
+			vecHit = WorldSpaceCenterOld(Target);
+			float vecHitPart[3];
+			GetEntPropVector(npc.m_iWearable2, Prop_Data, "m_vecAbsOrigin", vecHitPart);
+
+			int projectile;
+			float Proj_Damage = 18.0 * RaidModeScaling;
+			if(ZR_GetWaveCount()+1 <= 15)
+				projectile = npc.FireParticleRocket(vecHit, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_red", false,_,true, vecHitPart);
+			else
+				projectile = npc.FireParticleRocket(vecHit, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_blue", false,_,true, vecHitPart);
+	
+			SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+			
+			SDKHook(projectile, SDKHook_StartTouch, TheMessenger_Rocket_Particle_StartTouch);		
+			static float ang_Look[3];
+			GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
+			Initiate_HomingProjectile(projectile,
+			npc.index,
+				70.0,			// float lockonAngleMax,
+				15.0,				//float homingaSec,
+				true,				// bool LockOnlyOnce,
+				true,				// bool changeAngles,
+				ang_Look,			
+				Target); //home onto this enemy
 		}
 	}
-	else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
-	{
-		i_SaidLineAlready[npc.index] = 4;
-		CPrintToChatAll("{blue}Sensal{default}: But I see that this was to protect you guys, yet you were able to destroy Nemesis.");
-	}
-	else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
-	{
-		i_SaidLineAlready[npc.index] = 3;
-		CPrintToChatAll("{blue}Sensal{default}: We got sent to rescue him and we saw you attacking him.");
-	}
-	else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
-	{
-		i_SaidLineAlready[npc.index] = 2;
-		CPrintToChatAll("{blue}Sensal{default}: We are close friends though we lost contact since he came out of the city.");
-	}
-	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
-	{
-		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of your's now aswell.");
-	}
-	return true; //He is trying to help.
 }
 
-bool SensalTransformation(Sensal npc)
+
+
+public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
-	if(npc.Anger)
-	{
-		if(!b_RageAnimated[npc.index])
-		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
-			npc.AddActivityViaSequence("taunt_the_profane_puppeteer");
-			npc.m_flAttackHappens = 0.0;
-			npc.SetCycle(0.01);
-			b_RageAnimated[npc.index] = true;
-			b_CannotBeHeadshot[npc.index] = true;
-			b_CannotBeBackstabbed[npc.index] = true;
-			b_CannotBeStunned[npc.index] = true;
-			b_CannotBeKnockedUp[npc.index] = true;
-			b_CannotBeSlowed[npc.index] = true;
-			npc.m_flAttackHappens_2 = 0.0;	
-			if(IsValidEntity(npc.m_iWearable1))
-				RemoveEntity(npc.m_iWearable1);
-		
-			SetVariantInt(3);
-			AcceptEntityInput(npc.index, "SetBodyGroup");
+	if(!b_thisNpcIsARaid[victim])
+		return;
 
-			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
-			{
-				if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-				{
-					RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-				}				
-			}
+	Sensal npc = view_as<Sensal>(victim);
+	if(npc.g_TimesSummoned < 99)
+	{
+		int nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (99 - npc.g_TimesSummoned) / 100;
+		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < nextLoss)
+		{
+			npc.g_TimesSummoned++;
+			npc.m_flAttackHappens_bullshit -= 0.5;
+			npc.m_flNextChargeSpecialAttack -= 0.5;
+			npc.m_flJumpCooldown -= 0.125;
 		}
 	}
 
-	if(npc.m_flNextChargeSpecialAttack)
+	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
-		if(npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index))
+		npc.Anger = true;
+		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 0.0;
+		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 0.0;
+		f_MessengerSpeedUp[npc.index] = 1.65;
+		npc.m_flSpeed = 330.0;
+
+		switch(GetRandomInt(0,3))
 		{
-			SetVariantInt(2);
-			AcceptEntityInput(npc.index, "SetBodyGroup");
-			b_CannotBeHeadshot[npc.index] = false;
-			b_CannotBeBackstabbed[npc.index] = false;
-			b_CannotBeStunned[npc.index] = false;
-			b_CannotBeKnockedUp[npc.index] = false;
-			b_CannotBeSlowed[npc.index] = false;
-			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-			NPC_StartPathing(npc.index);
-			npc.m_bPathing = true;
-			npc.m_flSpeed = 330.0;
-			npc.m_flNextChargeSpecialAttack = 0.0;
-			npc.m_bisWalking = true;
-			RaidModeScaling *= 1.15;
-			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
-			if(iActivity > 0) npc.StartActivity(iActivity);
-			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable3, 255, 35, 35, 255);
-		//	i_NpcInternalId[npc.index] = XENO_RAIDBOSS_SUPERSILVESTER;
-			i_NpcWeight[npc.index] = 4;
-			SensalEffects(npc.index, view_as<int>(npc.Anger));
-			npc.m_flRangedArmor = 0.7;
-			npc.m_flMeleeArmor = 0.875;		
-
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
-
-				
-			SetVariantColor(view_as<int>({255, 35, 35, 200}));
-			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-			npc.PlayAngerSoundPassed();
-
-
-			npc.m_flNextRangedSpecialAttack = 0.0;			
-			npc.m_flNextRangedAttack = 0.0;		
-			npc.m_flRangedSpecialDelay = 0.0;	
-			//Reset all cooldowns.
+			case 0:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: Ahahahahahaha, all of you are {crimson}FUCKED!!");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: VOID, GRANT ME STRENGHT!");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: You think you won? I'M JUST GETTING STARTED.");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: Remember those cats? {crimson} You're getting it worse.");
+			}
 		}
-		return true;
 	}
-	return false;
-}
-bool SensalMassLaserAttack(Sensal npc)
-{
-	if(npc.m_flAttackHappens_2)
-	{
-		UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-		int enemy_2[MAXTF2PLAYERS];
-		bool ClientTargeted[MAXTF2PLAYERS];
-		GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, true);
-		for(int i; i < sizeof(enemy_2); i++)
-		{
-			if(enemy_2[i])
-			{
-				ClientTargeted[enemy_2[i]] = true;
-				if(!IsValidEntity(i_LaserEntityIndex[enemy_2[i]]))
-				{
-					int red = 200;
-					int green = 200;
-					int blue = 200;
-					if(IsValidEntity(i_LaserEntityIndex[enemy_2[i]]))
-					{
-						RemoveEntity(i_LaserEntityIndex[enemy_2[i]]);
-					}
-
-					int laser;
-					
-					laser = ConnectWithBeam(npc.index, enemy_2[i], red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-			
-					i_LaserEntityIndex[enemy_2[i]] = EntIndexToEntRef(laser);
-				}
-			}
-		}
-		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
-		{
-			if(!ClientTargeted[client_clear])
-			{
-				if(IsValidEntity(i_LaserEntityIndex[client_clear]))
-				{
-					RemoveEntity(i_LaserEntityIndex[client_clear]);
-				}
-			}
-		}
-		if(npc.m_flAttackHappens_2 < GetGameTime(npc.index))
-		{
-			if(IsValidEntity(npc.m_iWearable1))
-				RemoveEntity(npc.m_iWearable1);
-
-			float flPos[3];
-			float flAng[3];
-			GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
-			int ParticleEffect;
-			
-			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", flAng);
-			flAng[0] = 90.0;
-			if(!npc.Anger)
-				ParticleEffect = ParticleEffectAt(flPos, "powerup_supernova_explode_blue", 1.0); //This is the root bone basically
-			else
-				ParticleEffect = ParticleEffectAt(flPos, "powerup_supernova_explode_red", 1.0); //This is the root bone basically
-			
-			TeleportEntity(ParticleEffect, NULL_VECTOR, flAng, NULL_VECTOR);
-			npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.5;
-			npc.m_iChanged_WalkCycle = 0;
-			npc.m_flAttackHappens_2 = 0.0;	
-			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
-			{
-				if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-				{
-					RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-				}				
-			}
-
-			int enemy[32];
-			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, true);
-			bool foundEnemy = false;
-			for(int i; i < sizeof(enemy); i++)
-			{
-				if(enemy[i])
-				{
-					foundEnemy = true;
-					SensalInitiateLaserAttack(npc.index, WorldSpaceCenterOld(enemy[i]), flPos);
-				}
-			}
-			if(foundEnemy)
-			{
-				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME);
-				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME);
-				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME);
-			}
-			else
-			{
-				npc.PlayMissSound();
-			}
-		}
-		return true;
-	}
-	return false;
 }
 
-bool SensalSummonPortal(Sensal npc)
+
+public void TheMessenger_Win(int entity)
 {
-	if(npc.m_flReloadIn)
+	if(ZR_GetWaveCount()+1 <= 15)
 	{
-		if(npc.m_flReloadIn < GetGameTime(npc.index))
+		switch(GetRandomInt(0,2))
 		{
-			static float flMyPos[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
-
-			if(npc.m_flDead_Ringer_Invis_bool)
+			case 0:
 			{
-				flMyPos[2] += 400.0;
+				CPrintToChatAll("{lightblue}The Messenger{default}: Judgement delivered.");
 			}
-			else
+			case 1:
 			{
-				flMyPos[2] += 120.0; //spawn at headhight instead.
+				CPrintToChatAll("{lightblue}The Messenger{default}: Your penance is now over.");
 			}
-			
-			//every 5 seconds, summon blades onto all enemeis in view
-			int PortalParticle;
-			if(npc.Anger)
+			case 2:
 			{
-				PortalParticle = ParticleEffectAt(flMyPos, "eyeboss_death_vortex", 0.0);
-			}
-			else
-			{
-				PortalParticle = ParticleEffectAt(flMyPos, "eyeboss_tp_vortex", 0.0);
-			}
-			Sensal particle = view_as<Sensal>(PortalParticle);
-			particle.Anger = npc.Anger;
-			DataPack pack;
-			CreateDataTimer(8.5, Sensal_TimerRepeatPortalGate, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-			pack.WriteCell(EntIndexToEntRef(npc.index));
-			pack.WriteCell(EntIndexToEntRef(PortalParticle));
-
-			float flPos[3];
-			float flAng[3];
-			GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
-			EmitSoundToAll("mvm/mvm_tele_deliver.wav", 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, flMyPos);	
-			
-			ParticleEffectAt(flPos, "hammer_bell_ring_shockwave", 1.0); //This is the root bone basically
-
-			npc.m_flReloadIn = 0.0;
-			npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.5;
-			npc.m_iChanged_WalkCycle = 0;
-		}
-		return true;
-	}
-	return false;
-}
-public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int Originator = EntRefToEntIndex(pack.ReadCell());
-	int Particle = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidEntity(Originator) && IsValidEntity(Particle))
-	{
-		if(b_angered_twice[Originator])
-		{
-			if(IsValidEntity(Particle))
-			{
-				RemoveEntity(Particle);
-			}
-			return Plugin_Stop;
-		}
-
-		Sensal npc = view_as<Sensal>(Originator);
-		static float flMyPos[3];
-		GetEntPropVector(Particle, Prop_Data, "m_vecOrigin", flMyPos);
-		UnderTides npcGetInfo = view_as<UnderTides>(Originator);
-		int enemy[16];
-		GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, true, Particle, (1800.0 * 1800.0));
-		bool Foundenemies = false;
-
-		for(int i; i < sizeof(enemy); i++)
-		{
-			if(enemy[i])
-			{
-				if(i != 0 && i > (CountPlayersOnRed() /2)) //dont do more then half but always do 1
-					break;
-					
-				Foundenemies = true;
-				int Projectile = npc.FireParticleRocket(WorldSpaceCenterOld(enemy[i]), SENSAL_BASE_RANGED_SCYTHE_DAMGAE * RaidModeScaling , 400.0 , 100.0 , "",_,_,true, flMyPos,_,_,_,false);
-				SensalEffects(Projectile,view_as<int>(npc.Anger),"");
-				b_RageProjectile[Projectile] = npc.Anger;
-
-				//dont exist !
-				SDKUnhook(Projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-				SDKHook(Projectile, SDKHook_StartTouch, Sensal_Particle_StartTouch);
-				
-				CreateTimer(15.0, Timer_RemoveEntitySensal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
-				static float ang_Look[3];
-				GetEntPropVector(Projectile, Prop_Send, "m_angRotation", ang_Look);
-				Initiate_HomingProjectile(Projectile,
-				npc.index,
-					70.0,			// float lockonAngleMax,
-					10.0,				//float homingaSec,
-					true,				// bool LockOnlyOnce,
-					true,				// bool changeAngles,
-					ang_Look,			
-					enemy[i]); //home onto this enemy
+				CPrintToChatAll("{lightblue}The Messenger{default}: Thus your reign of terror is no more.");
 			}
 		}
-
-		if(Foundenemies)
-			EmitSoundToAll("misc/halloween/spell_teleport.wav", npc.index, SNDCHAN_STATIC, 90, _, 0.8);
-			
-		Sensal particle = view_as<Sensal>(Particle);
-		if(npc.Anger && !particle.Anger)
-		{
-			//update particle
-			int PortalParticle = ParticleEffectAt(flMyPos, "eyeboss_death_vortex", 0.0);
-			DataPack pack2;
-			particle.Anger = npc.Anger;
-			CreateDataTimer(8.5, Sensal_TimerRepeatPortalGate, pack2, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-			pack2.WriteCell(EntIndexToEntRef(Originator));
-			pack2.WriteCell(EntIndexToEntRef(PortalParticle));
-			if(IsValidEntity(Particle))
-			{
-				RemoveEntity(Particle);
-			}
-			return Plugin_Stop;
-		}
-		return Plugin_Continue;
 	}
 	else
 	{
-		if(IsValidEntity(Particle))
+		switch(GetRandomInt(0,2))
 		{
-			RemoveEntity(Particle);
-		}
-		return Plugin_Stop;
-	}
-}
-
-
-
-
-int SensalHitDetected[MAXENTITIES];
-
-void SensalInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
-{
-
-	float vecForward[3], vecRight[3], Angles[3];
-
-	MakeVectorFromPoints(VectorStart, VectorTarget, vecForward);
-	GetVectorAngles(vecForward, Angles);
-	GetAngleVectors(vecForward, vecForward, vecRight, VectorTarget);
-
-	Handle trace = TR_TraceRayFilterEx(VectorStart, Angles, 11, RayType_Infinite, Sensal_TraceWallsOnly);
-	if (TR_DidHit(trace))
-	{
-		TR_GetEndPosition(VectorTarget, trace);
-		
-		float lineReduce = 10.0 * 2.0 / 3.0;
-		float curDist = GetVectorDistance(VectorStart, VectorTarget, false);
-		if (curDist > lineReduce)
-		{
-			ConformLineDistance(VectorTarget, VectorStart, VectorTarget, curDist - lineReduce);
+			case 0:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: {crimson}TAKE THAT YOU FUCKS");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: Are you seeing me right now? I did it..");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: Are you proud? My Lord....");
+			}
 		}
 	}
-	delete trace;
-
-	Sensal npc = view_as<Sensal>(entity);
-	int red = 255;
-	int green = 255;
-	int blue = 255;
-	int Alpha = 255;
-
-	if(npc.Anger)
-	{
-		red = 255;
-		green = 255;
-		blue = 255;
-	}
-
-	int colorLayer4[4];
-	float diameter = float(SENSAL_LASER_THICKNESS * 4);
-	SetColorRGBA(colorLayer4, red, green, blue, Alpha);
-	//we set colours of the differnet laser effects to give it more of an effect
-	int colorLayer1[4];
-	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, Alpha);
-	int glowColor[4];
-	SetColorRGBA(glowColor, red, green, blue, Alpha);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Glow, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.5, glowColor, 0);
-	TE_SendToAll(0.0);
-
-	DataPack pack = new DataPack();
-	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteFloat(VectorTarget[0]);
-	pack.WriteFloat(VectorTarget[1]);
-	pack.WriteFloat(VectorTarget[2]);
-	pack.WriteFloat(VectorStart[0]);
-	pack.WriteFloat(VectorStart[1]);
-	pack.WriteFloat(VectorStart[2]);
-	RequestFrames(SensalInitiateLaserAttack_DamagePart, 50, pack);
-}
-
-void SensalInitiateLaserAttack_DamagePart(DataPack pack)
-{
-	for (int i = 1; i < MAXENTITIES; i++)
-	{
-		SensalHitDetected[i] = false;
-	}
-	pack.Reset();
-	int entity = EntRefToEntIndex(pack.ReadCell());
-	if(!IsValidEntity(entity))
-		entity = 0;
-
-	float VectorTarget[3];
-	float VectorStart[3];
-	VectorTarget[0] = pack.ReadFloat();
-	VectorTarget[1] = pack.ReadFloat();
-	VectorTarget[2] = pack.ReadFloat();
-	VectorStart[0] = pack.ReadFloat();
-	VectorStart[1] = pack.ReadFloat();
-	VectorStart[2] = pack.ReadFloat();
-
-	Sensal npc = view_as<Sensal>(entity);
-	int red = 50;
-	int green = 50;
-	int blue = 255;
-	int Alpha = 222;
-	if(npc.Anger)
-	{
-		red = 255;
-		green = 50;
-		blue = 50;
-	}
-	int colorLayer4[4];
-	float diameter = float(SENSAL_LASER_THICKNESS * 4);
-	SetColorRGBA(colorLayer4, red, green, blue, Alpha);
-	//we set colours of the differnet laser effects to give it more of an effect
-	int colorLayer1[4];
-	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, Alpha);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer1, 3);
-	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer1, 3);
-	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
-	TE_SendToAll(0.0);
-
-	float hullMin[3];
-	float hullMax[3];
-	hullMin[0] = -float(SENSAL_LASER_THICKNESS);
-	hullMin[1] = hullMin[0];
-	hullMin[2] = hullMin[0];
-	hullMax[0] = -hullMin[0];
-	hullMax[1] = -hullMin[1];
-	hullMax[2] = -hullMin[2];
-
-	Handle trace;
-	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Sensal_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
-	delete trace;
-			
-	float CloseDamage = 70.0 * RaidModeScaling;
-	float FarDamage = 60.0 * RaidModeScaling;
-	float MaxDistance = 5000.0;
-	float playerPos[3];
-	for (int victim = 1; victim < MAXENTITIES; victim++)
-	{
-		if (SensalHitDetected[victim] && GetTeam(entity) != GetTeam(victim))
-		{
-			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-			float distance = GetVectorDistance(VectorStart, playerPos, false);
-			float damage = CloseDamage + (FarDamage-CloseDamage) * (distance/MaxDistance);
-			if (damage < 0)
-				damage *= -1.0;
-
-			
-			if(victim > MaxClients) //make sure barracks units arent bad
-				damage *= 0.5;
-
-			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
-				
-		}
-	}
-	delete pack;
-}
-
-
-public bool Sensal_BEAM_TraceUsers(int entity, int contentsMask, int client)
-{
-	if (IsEntityAlive(entity))
-	{
-		SensalHitDetected[entity] = true;
-	}
-	return false;
-}
-
-public bool Sensal_TraceWallsOnly(int entity, int contentsMask)
-{
-	return !entity;
 }

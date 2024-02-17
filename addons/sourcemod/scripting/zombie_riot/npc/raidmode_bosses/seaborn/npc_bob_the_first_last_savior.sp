@@ -411,7 +411,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	//Raidmode timer runs out, they lost.
 	if(!npc.m_bFakeClone && npc.m_flNextThinkTime != FAR_FUTURE && RaidModeTime < GetGameTime())
 	{
-		if(RaidBossActive != INVALID_ENT_REFERENCE)
+		if(IsValidEntity(RaidBossActive))
 		{
 			ZR_NpcTauntWinClear();
 			int entity = CreateEntityByName("game_round_win"); 
@@ -1568,7 +1568,7 @@ Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, float &damage
 				{
 					if(i_NpcInternalId[other] == BOB_THE_FIRST || i_NpcInternalId[other] == BOB_THE_FIRST_S)
 					{
-						if(IsEntityAlive(other) && GetTeam(npc.index) == GetTeam(other))
+						if(GetTeam(npc.index) == GetTeam(other))
 						{
 							SmiteNpcToDeath(other);
 						}
@@ -1602,7 +1602,7 @@ void RaidbossBobTheFirst_NPCDeath(int entity)
 		{
 			if(i_NpcInternalId[other] == BOB_THE_FIRST || i_NpcInternalId[other] == BOB_THE_FIRST_S)
 			{
-				if(IsEntityAlive(other) && GetTeam(npc.index) == GetTeam(other))
+				if(GetTeam(npc.index) == GetTeam(other))
 				{
 					SmiteNpcToDeath(other);
 				}
@@ -1619,7 +1619,7 @@ static Action Bob_DeathCutsceneCheck(Handle timer)
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int victim = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(victim != INVALID_ENT_REFERENCE && IsEntityAlive(victim) && GetTeam(victim) != TFTeam_Red)
+		if(victim != INVALID_ENT_REFERENCE && GetTeam(victim) != TFTeam_Red)
 			SmiteNpcToDeath(victim);
 	}
 	

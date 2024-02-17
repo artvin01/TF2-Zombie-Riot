@@ -317,7 +317,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			npc.PlayRevengeSound();
 		}
 
-		if(RaidBossActive != INVALID_ENT_REFERENCE)
+		if(IsValidEntity(RaidBossActive))
 		{
 			ZR_NpcTauntWinClear();
 			int entity = CreateEntityByName("game_round_win"); 

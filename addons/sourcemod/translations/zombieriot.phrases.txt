@@ -1269,7 +1269,7 @@
 	}
 	"Debuff/Buff Explain 2"
 	{
-		"en" 		"DEBUFFS:\nPurple Armor Bar : if Full, get heavy true dmg + heavy slow.\n⌁ : 25%% more dmg taken and slower movementspeed.\n⌁⌁ : 35%% more dmg taken and slower movementspeed.\n❣ : Bleed Stacks\n~ : Burn/Ignite\n❅ : 5%% more dmg and slower movementspeed, each ❅ gives 5%% extra.\n४ : 35%% more dmg taken and heavy slow.\n⯯ : 40%% more dmg taken.\n‼ : 30%% more dmg taken.\n↓ : 65%% slower movement Speed.\nX : some enemies cant activate abilities.\n▼ : 35%% more dmg taken, 65%% slower, 50%% less dmg dealt."
+		"en" 		"DEBUFFS:\nPurple Armor Bar : if Full, get heavy true dmg + heavy slow.\n⌁ : 25%% more dmg taken and slower movementspeed.\n⌁⌁ : 35%% more dmg taken and slower movementspeed.\n❣ : Bleed Stacks\n~ : Burn/Ignite\n❅ : 5%% more dmg and slower movementspeed, each ❅ gives 5%% extra.\n४ : 35%% more dmg taken and heavy slow.\n⯯ : 40%% more dmg taken.\n‼ : 30%% more dmg taken.\n^ : 5-15% more damage taken, 10-30% slower movement speed.\n↓ : 65%% slower movement Speed.\nX : some enemies cant activate abilities.\n▼ : 35%% more dmg taken, 65%% slower, 50%% less dmg dealt."
 		"ru" 		"НЕГАТ. ЭФФ.:\nФиол. полоса брони : если заполнена, получ. тяж. полн. урон + тяж. замедл.\n⌁ : На 25%% увелич. получаем. урон и замедл. скор-ть передвиж.\n⌁⌁ : На 35%% увелич. получаем. урон и замедл. скор-ть передвиж.\n❣ : Уров. кровотеч.\n~ : Горение\n❅ : На 5%% увелич. получаем. урон и замедл. скор-ть передвиж., кажд. ❅ даёт 5%% доп.\n४ : На 35%% увелич. получаем. урон и тяж. замедл.\n⯯ : На 40%% увелич. получаем. урон.\n‼ : На 30%% увелич. получаем. урон.\n↓ : На 65%% замедл. скор-ть передвиж.\nX : некоторые враги не могут исп. способн.\n▼ : На 35%% увелич. получаем. урон, на 65%% медл., на 50%% меньш. наносим. урон."
 	}
 	"Command Help Explained"
@@ -3057,8 +3057,51 @@
 	{
 		"en"	"The Seaborn infection has arrived, Armor Corrosion attacks will infect your armor, cure it with armor tables!"
 	}
+	"Interitus Desc"
+	{
+		"en"	"Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
+	}
 	"Schwert Donner Desc"
 	{
 		"en"	"Schwertkrieg charges you down with his sword while Donnerkrieg fires laser attacks!"
+	}
+	"Khaml Desc"
+	{
+		"en"	"The judges of your actions have arrived."
+	}
+	"Wait for power"
+	{
+		"#format"	"{1:.1f}"
+		"en" "You need to rest: [{1}]"
+	}
+	"Stop playing with"
+	{
+		"en" "Stop playing with death"
+	}
+	"Not Enough Health"
+	{
+		"#format"	"{1:d}"
+		"en" "Not Enough Health, you need: [{1}] hp"
+	}
+	"Let the beast sleeps"
+	{
+		"#format"	"{1:.1f}"
+		"en" "Let the beast sleeps: {1:.1f}"
+	}
+	"Angel hoe on"
+	{
+		"en" "Angel Transformation: On"
+	}
+	"Angel hoe off"
+	{
+		"en" "Angel Transformation: Off"
+	}
+	"Evil hoe on"
+	{
+		"en" "Blood pact: On"
+	}
+	"Evil hoe off"
+	{
+		"en" "Blood pact: Off"
 	}
 }

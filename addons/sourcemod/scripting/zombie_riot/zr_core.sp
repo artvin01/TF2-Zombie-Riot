@@ -154,6 +154,12 @@ enum
 	WEAPON_HEAVY_PARTICLE_RIFLE = 83,
 	WEAPON_SICCERINO = 84,
 	WEAPON_DIMENSION_RIPPER = 85,
+	WEAPON_HELL_HOE_1 = 86,
+	WEAPON_HELL_HOE_2 = 87,
+	WEAPON_HELL_HOE_3 = 88,
+	WEAPON_LUDO = 89,
+	WEAPON_KAHMLFIST = 90,
+	WEAPON_HHH_AXE = 91,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -242,6 +248,8 @@ float f_Reviving_This_Client[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpam[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 int i_MaxArmorTableUsed[MAXTF2PLAYERS];
+int i_PlayerModelOverrideIndexWearable[MAXTF2PLAYERS];
+bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -442,7 +450,6 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/escape_sentry_hat.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
 #include "zombie_riot/custom/weapon_health_hose.sp"
-#include "shared/custom/weapon_street_fighter.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
 #include "shared/custom/weapon_judgement_of_iberia.sp"
 #include "shared/custom/weapon_phlog_replacement.sp"
@@ -483,6 +490,8 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_heavy_particle_rifle.sp"
 #include "zombie_riot/custom/weapon_railcannon.sp"
 #include "zombie_riot/custom/wand/weapon_dimension_ripper.sp"
+#include "zombie_riot/custom/weapon_hell_hoe.sp"
+#include "zombie_riot/custom/wand/weapon_ludo.sp"
 
 void ZR_PluginLoad()
 {
@@ -597,7 +606,10 @@ void ZR_MapStart()
 	Zero2(Perk_Machine_money_limit);
 	Zero2(Pack_A_Punch_Machine_money_limit);
 	Zero2(fl_blitz_ioc_punish_timer);
+	Zero(i_PlayerModelOverrideIndexWearable);
+	Zero(b_HideCosmeticsPlayer);
 	CleanAllBuildingEscape();
+	KahmlFistMapStart();
 	M3_ClearAll();
 	ZeroRage_ClearAll();
 	SniperMonkey_ClearAll();
@@ -706,6 +718,7 @@ void ZR_MapStart()
 	Gladiia_MapStart();
 	WeaponBoard_Precache();
 	Weapon_German_MapStart();
+	Weapon_Ludo_MapStart();
 	Ion_Beam_Wand_MapStart();
 	OnMapStartLeper();
 	Flagellant_MapStart();
@@ -717,6 +730,7 @@ void ZR_MapStart()
 	Heavy_Particle_Rifle_Mapstart();
 	Precache_Railcannon();
 	ResetMapStartDimWeapon();
+	Hell_Hoe_MapStart();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;
@@ -739,7 +753,7 @@ void ZR_MapStart()
 	SetVariantString("ForceEnableUpgrades(2)");
 	AcceptEntityInput(0, "RunScriptCode");
 	
-	//Store_RandomizeNPCStore(true);
+	//Store_RandomizeNPCStore(1);
 }
 
 public Action GlobalTimer(Handle timer)
@@ -819,6 +833,8 @@ void ZR_ClientDisconnect(int client)
 	WoodAmount[client] = 0.0;
 	FoodAmount[client] = 0.0;
 	GoldAmount[client] = 0.0;
+	i_PlayerModelOverrideIndexWearable[client] = 0;
+	b_HideCosmeticsPlayer[client] = false;
 	
 	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 	{
@@ -1161,7 +1177,7 @@ public Action Command_AFKKnight(int client, int args)
 public Action Command_SpawnGrigori(int client, int args)
 {
 	Spawn_Cured_Grigori();
-	Store_RandomizeNPCStore(false);
+	Store_RandomizeNPCStore(0);
 	return Plugin_Handled;
 }
 
@@ -1395,7 +1411,6 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	
 	bool alive;
 	LastMann = true;
-	int players = CurrentPlayers;
 	CurrentPlayers = 0;
 	int GlobalIntencity_Reduntant;
 	for(int client=1; client<=MaxClients; client++)
@@ -1431,10 +1446,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			}
 		}
 	}
-	
-	if(CurrentPlayers < players)
-		CurrentPlayers = players;
-	
+
 	if(LastMann && !GlobalIntencity_Reduntant) //Make sure if they are alone, it wont play last man music.
 		LastMann = false;
 	
@@ -2307,4 +2319,25 @@ stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)
 	
 	delete hTrace;
 	return iReturn;
+}
+
+stock bool isPlayerMad(int client) {
+
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding == -1)
+		return false;
+
+	if (i_CustomWeaponEquipLogic[weapon_holding] == WEAPON_HELL_HOE_3) {
+
+		int clientMaxHp = SDKCall_GetMaxHealth(client);
+		int health = GetClientHealth(client);
+		if (health >= clientMaxHp/2)
+			return false;
+
+		return true;
+	}
+	else if (i_CustomWeaponEquipLogic[weapon_holding] == WEAPON_HELL_HOE_2) {
+		return g_isPlayerInDeathMarch_HellHoe[client];
+	}
+	return false;
 }

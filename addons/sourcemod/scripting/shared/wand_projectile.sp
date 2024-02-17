@@ -138,6 +138,8 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 			pack.WriteCell(EntIndexToEntRef(entity));
 			pack.WriteCell(EntIndexToEntRef(particle));
 		}
+		//so they dont get stuck on entities in the air.
+		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 12); 
 
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Wand_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
@@ -250,10 +252,6 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Vamp_CleaverHit(entity, target);
 		}
-		case WEAPON_QUINCY_BOW:
-		{
-			Quincy_Touch(entity, target);
-		}
 		case 23:
 		{
 			Event_GB_OnHatTouch(entity, target);
@@ -276,6 +274,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Weapon_German_WandTouch(entity, target);
 		}
+		case WEAPON_LUDO:
+		{
+			Weapon_Ludo_WandTouch(entity, target);
+		}
 		case WEAPON_SENSAL_SCYTHE:
 		{
 			Weapon_Sensal_WandTouch(entity, target);
@@ -295,6 +297,14 @@ public void Wand_Base_StartTouch(int entity, int other)
 		case WEAPON_HEAVY_PARTICLE_RIFLE:
 		{
 			Weapon_Heavy_Particle_Rifle(entity, target);
+		}
+		case WEAPON_QUINCY_BOW:
+		{
+			Quincy_Touch(entity, target);
+		}
+		case WEAPON_KAHMLFIST:
+		{
+			Melee_KahmlFistTouch(entity, target);
 		}
 	}
 #else

@@ -2630,7 +2630,7 @@ bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped
 	return false;
 }
 
-void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave = 0)
+void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave = 0)
 {
 	int amount;
 	int length = StoreItems.Length;
@@ -2657,8 +2657,10 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave
 						break;
 					}
 				}
+				
+				StoreItems.SetArray(i, item);
 			}
-			else
+			else if(ResetStore != 2)
 			{
 				if(addItem == 0)
 				{
@@ -2681,9 +2683,9 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave
 				item.GetItemInfo(0, info);
 				if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost_Unlock < CurrentCash)
 					indexes[amount++] = i;
+				
+				StoreItems.SetArray(i, item);
 			}
-			
-			StoreItems.SetArray(i, item);
 		}
 	}
 	if(subtract_wave != 0)
@@ -4993,7 +4995,12 @@ void Store_ApplyAttribs(int client)
 		{
 			if(!TF2_GetWearable(client, entity))
 				break;
-			
+
+			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
+			{
+				continue;
+			}
+
 			Attributes_RemoveAll(entity);
 			attribs++;
 		}
@@ -5118,6 +5125,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
 	b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
+	OverridePlayerModel(client, 0, false);
 #endif
 #if defined RPG
 	MudrockShieldUnequip(client);
@@ -6217,6 +6225,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Saga_Enable(client, entity);
 		Enable_WeaponBoard(client, entity);
 		Enable_Casino(client, entity);
+		Enable_Ludo(client, entity);
 		Enable_Rapier(client, entity);
 		Enable_Mlynar(client, entity);
 		Enable_Judge(client, entity);
@@ -6238,6 +6247,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_RedBladeWeapon(client, entity);
 		Enable_Gravaton_Wand(client, entity);
 		Enable_Dimension_Wand(client, entity);
+		Enable_Management_Hell_Hoe(client, entity);
+		Enable_Kahml_Fist_Ability(client, entity);
+		Enable_HHH_Axe_Ability(client, entity);
 #endif
 
 #if defined RPG

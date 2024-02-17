@@ -457,6 +457,8 @@ int i_HowManyBombsHud[MAXENTITIES];
 float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
+float f_LudoDebuff[MAXENTITIES];
+float f_SpadeLudoDebuff[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
 float f_HighTeslarDebuff[MAXENTITIES];
 float f_Silenced[MAXENTITIES];
@@ -605,9 +607,9 @@ bool b_OverlordsFinalWish[MAXTF2PLAYERS];
 bool b_BobsTrueFear[MAXTF2PLAYERS];
 float f_ArmorCurrosionImmunity[MAXENTITIES];
 int i_nm_body_client[MAXTF2PLAYERS];
-int g_particleMissText;
 Handle g_hRecalculatePlayerBodygroups;
 #endif
+int g_particleMissText;
 float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
 float Mana_Regen_Level[MAXPLAYERS]={0.0, ...};				//405
 int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 				//785
@@ -1095,6 +1097,7 @@ float fl_WaveScale[MAXENTITIES];
 float fl_StandStill[MAXENTITIES];
 float fl_GrappleCooldown[MAXENTITIES];
 float fl_HookDamageTaken[MAXENTITIES];
+float f_HeadshotDamageMultiNpc[MAXENTITIES];
 
 bool b_PlayHurtAnimation[MAXENTITIES];
 bool b_follow[MAXENTITIES];
@@ -1524,7 +1527,7 @@ public void OnMapStart()
 public void OnMapEnd()
 {
 #if defined ZR
-	Store_RandomizeNPCStore(true);
+	Store_RandomizeNPCStore(1);
 	OnRoundEnd(null, NULL_STRING, false);
 	OnMapEndWaves();
 	Spawns_MapEnd();
@@ -1746,7 +1749,7 @@ public void OnClientPutInServer(int client)
 	//do cooldown upon connection.
 	AdjustBotCount();
 #if !defined RTS
-	WeaponClass[client] = TFClass_Unknown;
+	WeaponClass[client] = TFClass_Scout;
 #endif
 	f_ClientReviveDelay[client] = 0.0;
 	
@@ -1830,7 +1833,7 @@ public void OnClientDisconnect(int client)
 	b_DisplayDamageHud[client] = false;
 
 #if !defined RTS
-	WeaponClass[client] = TFClass_Unknown;
+	WeaponClass[client] = TFClass_Scout;
 #endif
 
 #if defined RPG
@@ -2608,11 +2611,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 
 		b_IsAProjectile[entity] = false;
-
-		if(StrContains(classname, "projectile") != -1)
-		{
-			b_IsAProjectile[entity] = true;
-		}
 		if(!StrContains(classname, "env_entity_dissolver"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
@@ -2678,6 +2676,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			b_IsAProjectile[entity] = true;
 			
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		//	ApplyExplosionDhook_Rocket(entity);
@@ -2715,11 +2714,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "tf_projectile_syringe"))
 		{
+			//This can only be on red anyways.
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-			
+			SetTeam(entity, TFTeam_Red);
+			b_IsAProjectile[entity] = true;
 		}
 		else if(!StrContains(classname, "tf_projectile_flare"))
 		{
@@ -2727,6 +2728,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			b_IsAProjectile[entity] = true;
 			
 		}
 		else if(!StrContains(classname, "tf_projectile_healing_bolt"))
@@ -2738,6 +2740,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team_Player);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			//SDKHook_SpawnPost doesnt work
+			b_IsAProjectile[entity] = true;
 		}
 		
 		else if(!StrContains(classname, "tf_projectile_pipe_remote"))
@@ -2750,6 +2753,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, PipeApplyDamageCustom);
 			ApplyExplosionDhook_Pipe(entity, true);
 			//SDKHook_SpawnPost doesnt work
+			b_IsAProjectile[entity] = true;
 		}
 		else if(!StrContains(classname, "tf_projectile_arrow"))
 		{
@@ -2760,6 +2764,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			
 			//SDKHook_SpawnPost doesnt work
+			b_IsAProjectile[entity] = true;
 		}
 		else if(!StrContains(classname, "prop_dynamic"))
 		{
@@ -2820,6 +2825,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			ApplyExplosionDhook_Pipe(entity, false);
 			SDKHook(entity, SDKHook_SpawnPost, PipeApplyDamageCustom);
+			b_IsAProjectile[entity] = true;
 			
 #if defined ZR
 			SDKHook(entity, SDKHook_SpawnPost, Is_Pipebomb);
@@ -2837,6 +2843,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			b_IsAProjectile[entity] = true;
 			
 		}
 		else if(!StrContains(classname, "zr_projectile_base"))
@@ -2847,6 +2854,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			b_IsAProjectile[entity] = true;
 			
 		}
 		else if (!StrContains(classname, "tf_weapon_handgun_scout_primary")) 
@@ -3522,8 +3530,8 @@ void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons=true,
 {
 	if(classType < TFClass_Scout || classType > TFClass_Engineer)
 	{
-		//classType = TFClass_Medic;
-		ThrowError("Invalid class %d", classType);
+		classType = TFClass_Scout;
+		LogError("Invalid class %d", classType);
 	}
 	
 	TF2_SetPlayerClass(client, classType, weapons, persistent);

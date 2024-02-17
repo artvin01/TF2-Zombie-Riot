@@ -33,7 +33,7 @@ methodmap Archosauria < CClotBody
 
 	public Archosauria(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Archosauria npc = view_as<Archosauria>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "10000", ally));
+		Archosauria npc = view_as<Archosauria>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "20000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_FOREST_SNIPER;
 		i_NpcWeight[npc.index] = 2;
@@ -62,7 +62,7 @@ methodmap Archosauria < CClotBody
 			npc.m_flSpeed = 300.0;
 		}
 
-		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -88,6 +88,25 @@ methodmap Archosauria < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+
+		if(ally != TFTeam_Red)
+		{
+			if(LastSpawnDiversio < GetGameTime())
+			{
+				EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", _, _, _, _, 1.0);	
+				EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", _, _, _, _, 1.0);	
+				for(int client_check=1; client_check<=MaxClients; client_check++)
+				{
+					if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+					{
+						SetGlobalTransTarget(client_check);
+						ShowGameText(client_check, "voice_player", 1, "%t", "Snipers Appear");
+					}
+				}
+			}
+			LastSpawnDiversio = GetGameTime() + 20.0;
+			TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
+		}
 		
 		return npc;
 	}
@@ -285,7 +304,7 @@ int ArchosauriaSelfDefense(Archosauria npc, float gameTime)
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
 			{
-				float damageDealt = 100.0;
+				float damageDealt = 150.0;
 				if(ShouldNpcDealBonusDamage(target))
 					damageDealt *= 10.0;
 
@@ -301,7 +320,7 @@ int ArchosauriaSelfDefense(Archosauria npc, float gameTime)
 	{
 		
 		npc.m_flAttackHappens = gameTime + 1.25;
-		npc.m_flDoingAnimation = gameTime + 0.9;
+		npc.m_flDoingAnimation = gameTime + 0.65;
 		npc.m_flNextMeleeAttack = gameTime + 2.5;
 	}
 	return 1;

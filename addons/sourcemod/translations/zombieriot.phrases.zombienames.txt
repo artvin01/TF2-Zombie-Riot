@@ -840,6 +840,10 @@
 		"pt"		"Kahmlstein" 
 		"nl"		"Kahmlstein"
 	}
+	"Chaos Kahmlstein"
+	{
+		"en"		"Chaos Kahmlstein"
+	}
 	"L4D2 Tank"
 	{
 		"en"		"Tank"
@@ -2076,5 +2080,77 @@
 	"Ursus"
 	{
 		"en"	"Ursus"
+	}
+	"Ransacker"
+	{
+		"en"	"Ransacker"
+	}
+	"Stellar Weaver"
+	{
+		"en"	"Stellar Weaver"
+	}
+	"Runover"
+	{
+		"en"	"Runover"
+	}
+	"Hitman"
+	{
+		"en"	"Hitman"
+	}
+	"Mad Doctor"
+	{
+		"en"	"Mad Doctor"
+	}
+	"Abomination"
+	{
+		"en"	"Abomination"
+	}
+	"Anarchist Enforcer"
+	{
+		"en"	"Anarchist Enforcer"
+	}
+	"Braindead"
+	{
+		"en"	"Braindead"
+	}
+	"Behemonth"
+	{
+		"en"	"Behemonth"
+	}
+	"Absolute Incinirator"
+	{
+		"en"	"Absolute Incinirator"
+	}
+	"Aegir"
+	{
+		"en"	"Aegir"
+	}
+	"Ursus"
+	{
+		"en"	"Ursus"
+	}
+	"Cautus"
+	{
+		"en"	"Cautus"
+	}
+	"Vulpo"
+	{
+		"en"	"Vulpo"
+	}
+	"Major Steam"
+	{
+		"en"	"Major Steam"
+	}
+	"The Messenger"
+	{
+		"en"	"The Messenger"
+	}
+	"The Purge"
+	{
+		"en"	"The Purge"
+	}
+	"Rouge Expidonsan Doctor"
+	{
+		"en"	"Rouge Expidonsan Doctor"
 	}
 }

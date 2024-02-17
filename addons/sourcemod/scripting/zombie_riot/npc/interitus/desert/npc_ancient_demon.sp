@@ -93,7 +93,7 @@ methodmap DesertAncientDemon < CClotBody
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 	}
 	
@@ -433,7 +433,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 	float ProjLoc[3];
 	GetEntPropVector(self, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 	ProjLoc[2] += 100.0;
-	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("health_text", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	fl_TotalArmor[self] = fl_TotalArmor[self] * 0.985;
 	fl_Extra_Speed[self] = fl_Extra_Speed[self] + 0.01;
 	if(fl_TotalArmor[self] <= 0.35)

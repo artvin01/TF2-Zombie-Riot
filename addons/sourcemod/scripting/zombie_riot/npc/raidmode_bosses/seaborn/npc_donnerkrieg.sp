@@ -605,7 +605,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 	
-	if(RaidBossActive == INVALID_ENT_REFERENCE)
+	if(!IsValidEntity(RaidBossActive))
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}

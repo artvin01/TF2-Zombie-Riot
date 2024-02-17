@@ -329,7 +329,7 @@ methodmap Sensal < CClotBody
 		else if(ZR_GetWaveCount()+1 > 55)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
-			RaidModeScaling *= 0.7;
+			RaidModeScaling *= 0.65;
 		}
 		if(!cutscene)
 		{
@@ -1544,9 +1544,9 @@ bool SensalMassLaserAttack(Sensal npc)
 	if(npc.m_flAttackHappens_2)
 	{
 		UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-		int enemy_2[MAXTF2PLAYERS];
-		bool ClientTargeted[MAXTF2PLAYERS];
-		GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, true);
+		int enemy_2[MAXENTITIES];
+		bool ClientTargeted[MAXENTITIES];
+		GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false);
 		for(int i; i < sizeof(enemy_2); i++)
 		{
 			if(enemy_2[i])
@@ -1570,7 +1570,7 @@ bool SensalMassLaserAttack(Sensal npc)
 				}
 			}
 		}
-		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
+		for(int client_clear=1; client_clear<MAXENTITIES; client_clear++)
 		{
 			if(!ClientTargeted[client_clear])
 			{
@@ -1609,8 +1609,8 @@ bool SensalMassLaserAttack(Sensal npc)
 				}				
 			}
 
-			int enemy[32];
-			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, true);
+			int enemy[128];
+			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false);
 			bool foundEnemy = false;
 			for(int i; i < sizeof(enemy); i++)
 			{
@@ -1706,17 +1706,14 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 		static float flMyPos[3];
 		GetEntPropVector(Particle, Prop_Data, "m_vecOrigin", flMyPos);
 		UnderTides npcGetInfo = view_as<UnderTides>(Originator);
-		int enemy[16];
-		GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, true, Particle, (1800.0 * 1800.0));
+		int enemy[MAXENTITIES];
+		GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, Particle, (1800.0 * 1800.0));
 		bool Foundenemies = false;
 
 		for(int i; i < sizeof(enemy); i++)
 		{
 			if(enemy[i])
 			{
-				if(i != 0 && i > (CountPlayersOnRed(1) /2)) //dont do more then half but always do 1
-					break;
-					
 				Foundenemies = true;
 				int Projectile = npc.FireParticleRocket(WorldSpaceCenterOld(enemy[i]), SENSAL_BASE_RANGED_SCYTHE_DAMGAE * RaidModeScaling , 400.0 , 100.0 , "",_,_,true, flMyPos,_,_,_,false);
 				SensalEffects(Projectile,view_as<int>(npc.Anger),"");
@@ -1906,8 +1903,8 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 				damage *= -1.0;
 
 			
-			if(victim > MaxClients) //make sure barracks units arent bad
-				damage *= 0.5;
+			if(victim > MaxClients) //make sure barracks units arent bad, they now get targetted too.
+				damage *= 0.25;
 
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 				

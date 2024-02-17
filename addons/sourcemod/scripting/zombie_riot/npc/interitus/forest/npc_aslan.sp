@@ -72,7 +72,7 @@ methodmap Aslan < CClotBody
 	
 	public Aslan(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Aslan npc = view_as<Aslan>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "12500", ally));
+		Aslan npc = view_as<Aslan>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "25000", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_FOREST_SCOUT;
 		i_NpcWeight[npc.index] = 1;
@@ -191,7 +191,7 @@ static void ClotThink(int iNPC)
 			}
 		}
 
-		if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			target = Can_I_See_Enemy(npc.index, target);
 			if(IsValidEnemy(npc.index, target))

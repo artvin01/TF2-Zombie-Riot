@@ -30,8 +30,8 @@ void Npc_Sp_Precache()
 	f_DelayGiveOutlineNpc = 0.0;
 	f_DelayNextWaveStartAdvancing = 0.0;
 	f_DelayNextWaveStartAdvancingDeathNpc = 0.0;
-	g_particleMissText = PrecacheParticleSystem("miss_text");
 #endif
+	g_particleMissText = PrecacheParticleSystem("miss_text");
 	g_particleCritText = PrecacheParticleSystem("crit_text");
 	g_particleMiniCritText = PrecacheParticleSystem("minicrit_text");
 }
@@ -666,7 +666,24 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			{
 				Blitzed_By_Riot = true;
 			}
-
+			if(f_HeadshotDamageMultiNpc[victim] <= 0.0 && hitgroup == HITGROUP_HEAD)
+			{
+				damage = 0.0;
+				float chargerPos[3];
+				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
+				if(b_BoundingBoxVariant[victim] == 1)
+				{
+					chargerPos[2] += 120.0;
+				}
+				else
+				{
+					chargerPos[2] += 82.0;
+				}
+				TE_ParticleInt(g_particleMissText, chargerPos);
+				TE_SendToClient(attacker);
+				EmitSoundToClient(attacker, "physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(95, 105));
+				return Plugin_Handled;
+			}
 			if((hitgroup == HITGROUP_HEAD && !b_CannotBeHeadshot[victim]) || Blitzed_By_Riot)
 			{
 				
@@ -676,7 +693,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					damage *= 2.0;
 				}
 #endif
-
+				damage *= f_HeadshotDamageMultiNpc[victim];
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
 					damage *= 2.0;
@@ -1353,7 +1370,18 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁");
 	}
-		
+	if(f_LudoDebuff[victim] > GameTime)
+	{
+		Debuff_added = true;
+		Debuff_added_hud = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "^");
+	}
+	if(f_SpadeLudoDebuff[victim] > GameTime)
+	{
+		Debuff_added = true;
+		Debuff_added_hud = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "^^");
+	}	
 	if(BleedAmountCountStack[victim] > 0) //bleed
 	{
 		Debuff_added = true;
@@ -1636,7 +1664,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		if(weapon > 0 && attacker > 0)
 			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
 		
-		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
+		if(percentage < 10.0)
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.2f%%]", Debuff_Adder, percentage);
+		}
+		else
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
+		}
 		Debuff_added = true;
 	}
 	
@@ -1675,7 +1710,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 #endif
 
-		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
+		if(percentage < 10.0)
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.2f%%]", Debuff_Adder, percentage);
+		}
+		else
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
+		}
 		Debuff_added = true;
 	}
 	if(b_NpcIsInvulnerable[victim])
@@ -1964,6 +2006,10 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
 	if(f_HighTeslarDebuff[npc] > GameTime)
 		return true;
 	else if(f_LowTeslarDebuff[npc] > GameTime)
+		return true;
+	else if(f_LudoDebuff[npc] > GameTime)
+		return true;
+	else if(f_SpadeLudoDebuff[npc] > GameTime)
 		return true;
 	else if(BleedAmountCountStack[npc] > 0) //bleed
 		return true;
@@ -2343,7 +2389,7 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		}
 		case WEAPON_DIMENSION_RIPPER:
 		{
-			Npc_OnTakeDamage_DimensionalRipper(attacker, victim);
+			Npc_OnTakeDamage_DimensionalRipper(attacker);
 		}
 	}
 #endif
@@ -3194,6 +3240,14 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 	else if(f_LowTeslarDebuff[victim] > GameTime)
 	{
 		damage += BaseDamageBeforeBuffs * (0.2 * DamageBuffExtraScaling);
+	}
+	else if(f_LudoDebuff[victim] > GameTime)
+	{
+		damage += BaseDamageBeforeBuffs * GetRandomFloat(0.05,0.15);
+	}
+	else if(f_SpadeLudoDebuff[victim] > GameTime)
+	{
+		damage += BaseDamageBeforeBuffs * GetRandomFloat(0.10,0.15);
 	}
 	if(f_PotionShrinkEffect[victim] > GameTime)
 	{

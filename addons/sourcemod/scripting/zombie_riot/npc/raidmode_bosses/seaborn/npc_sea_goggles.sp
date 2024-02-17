@@ -263,7 +263,7 @@ public void SeaBlueGoggles_ClotThink(int iNPC)
 			npc.PlayRevengeSound();
 		}
 
-		if(RaidBossActive != INVALID_ENT_REFERENCE)
+		if(IsValidEntity(RaidBossActive))
 		{
 			int entity = CreateEntityByName("game_round_win"); 
 			DispatchKeyValue(entity, "force_map_reset", "1");

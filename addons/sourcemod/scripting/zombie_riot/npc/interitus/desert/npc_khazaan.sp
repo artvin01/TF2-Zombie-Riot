@@ -84,14 +84,14 @@ methodmap DesertKhazaan < CClotBody
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}
 	
 	
 	public DesertKhazaan(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		DesertKhazaan npc = view_as<DesertKhazaan>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "1000", ally));
+		DesertKhazaan npc = view_as<DesertKhazaan>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "900", ally));
 		
 		i_NpcInternalId[npc.index] = INTERITUS_DESERT_KHAZAAN;
 		i_NpcWeight[npc.index] = 1;
@@ -167,6 +167,12 @@ public void DesertKhazaan_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+	}
+	
+	fl_TotalArmor[npc.index] = fl_TotalArmor[npc.index] + 0.005;
+	if(fl_TotalArmor[npc.index] > 1.0)
+	{
+		fl_TotalArmor[npc.index] = 1.0;
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))

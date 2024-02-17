@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define ITSTILIVES 666
-
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 110.0
 // 120 * 120
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED 12100.0
@@ -426,6 +424,26 @@ enum
 	INTERITUS_FOREST_SOLDIER = 373,
 	INTERITUS_FOREST_DEMOMAN = 374,
 
+	INTERITUS_ANARCHY_RUNOVER		  = 375,
+	INTERITUS_ANARCHY_HITMAN		  = 376,
+	INTERITUS_ANARCHY_MADDOCTOR		  = 377,
+	INTERITUS_ANARCHY_ABOMINATION	  = 378,
+	INTERITUS_ANARCHY_ENFORCER	 	  = 379,
+	INTERITUS_ANARCHY_BRAINDEAD	 	  = 380,
+	INTERITUS_ANARCHY_BEHEMOTH		  = 381,
+	INTERITUS_ANARCHY_ABSOLUTE_INCINIRATOR= 382,
+  
+	INTERITUS_FOREST_MEDIC = 383,
+	INTERITUS_FOREST_HEAVY = 384,
+	INTERITUS_FOREST_PYRO = 385,
+	INTERITUS_FOREST_SPY = 386,
+	INTERITUS_FOREST_ENGINEER = 387,
+	INTERITUS_FOREST_BOSS = 388,
+	RAIDMODE_THE_MESSENGER	= 389,
+	RAIDMODE_CHAOS_KAHMLSTEIN = 390,
+	RAIDBOSS_THE_PURGE = 391,
+	WEAPON_KAHML_AFTERIMAGE = 392,
+	
 	MAX_NPC_TYPES	// Add entries above this line
 }
 
@@ -824,12 +842,31 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Frost Hunter",
 	"Skin Hunter",
 	"Irritated Person",
-	"The Doctor",
+	"Rouge Expidonsan Doctor",
 	"Ransacker",
 	"Archosauria",
 	"Aslan",
 	"Perro",
-	"Caprinae"
+	"Caprinae",
+	"Runover",
+	"Hitman",
+	"Mad Doctor",
+	"Abomination",
+	"Anarchist Enforcer",
+	"Braindead",
+	"Behemonth",
+	"Absolute Incinirator",
+
+	"Liberi",
+	"Ursus",
+	"Aegir",
+	"Cautus",
+	"Vulpo",
+	"Major Steam",
+	"The Messenger",
+	"Chaos Kahmlstein",
+	"The Purge",
+	"Kahmlstein"
 };
 
 // See items.sp for IDs to names
@@ -1204,11 +1241,63 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	-1,	//RUINA_MAGIA_ANCHOR
 	-1,	//RUINA_STELLAR_WEAVER
 	-1,	//RUINA_STELLAR_WEAVER_MID
-	1,
+	1,	// MINI_BEHEADED_KAMI
+
+	-1,	// BONEZONE_BEEFYBONES
 	-1,
 	-1,
 	-1,
-	-1
+	-1,
+	-1,
+	-1,
+	-1,	// BONEZONE_BUFFED_BIGBONES
+
+	11,	//INTERITUS_DESERT_AHIM			= 351,
+	11,	//	INTERITUS_DESERT_INABDIL		= 352,
+	11,	//	INTERITUS_DESERT_KHAZAAN		= 353,
+	11,	//	INTERITUS_DESERT_SAKRATAN		= 354,
+	11,	//	INTERITUS_DESERT_YADEAM			= 355,
+	11,	//	INTERITUS_DESERT_RAJUL			= 356,
+	11,	//	INTERITUS_DESERT_QANAAS			= 357,
+	11,	//	INTERITUS_DESERT_ATILLA			= 358,
+	11,	//	INTERITUS_DESERT_ANCIENTDEMON	= 359,
+	11,	//	INTERITUS_WINTER_SNIPER			= 360,
+	11,	//	INTERITUS_WINTER_ZIBERIANMINER 	= 361,
+	11,	//	INTERITUS_WINTER_SNOWEY_GUNNER	= 362,
+	11,	//	INTERITUS_WINTER_FREEZING_CLEANER = 363,
+	11,	//	INTERITUS_WINTER_AIRBORN_EXPLORER = 364,
+	11,	//	INTERITUS_WINTER_ARCTIC_MAGE	  = 365,
+	11,	//	INTERITUS_WINTER_FROST_HUNTER	  = 366,
+	11,	//	INTERITUS_WINTER_SKIN_HUNTER	  = 367,
+	11,	//	INTERITUS_WINTER_IRRITATED_PERSON = 368,
+	1,	//	THEDOCTOR_MINIBOSS				  = 369,
+  
+	11,	//	INTERITUS_ANARCHY_RANSACKER		  = 370,
+  
+	11,	//	INTERITUS_FOREST_SNIPER = 371,
+	11,	//	INTERITUS_FOREST_SCOUT = 372,
+	11,	//	INTERITUS_FOREST_SOLDIER = 373,
+	11,	//	INTERITUS_FOREST_DEMOMAN = 374,
+
+	11,	//	INTERITUS_ANARCHY_RUNOVER		  = 375,
+	11,	//	INTERITUS_ANARCHY_HITMAN		  = 376,
+	11,	//	INTERITUS_ANARCHY_MADDOCTOR		  = 377,
+	11,	//	INTERITUS_ANARCHY_ABOMINATION	  = 378,
+	11,	//	INTERITUS_ANARCHY_ENFORCER	 	  = 379,
+	11,	//	INTERITUS_ANARCHY_BRAINDEAD	 	  = 380,
+	11,	//	INTERITUS_ANARCHY_BEHEMOTH		  = 381,
+	11,	//	INTERITUS_ANARCHY_ABSOLUTE_INCINIRATOR= 382,
+  
+	11,	//	INTERITUS_FOREST_MEDIC = 383,
+	11,	//	INTERITUS_FOREST_HEAVY = 384,
+	11,	//	INTERITUS_FOREST_PYRO = 385,
+	11,	//	INTERITUS_FOREST_SPY = 386,
+	11,	//	INTERITUS_FOREST_ENGINEER = 387,
+	11,	//	INTERITUS_FOREST_BOSS = 388,
+	2,	//	RAIDMODE_THE_MESSENGER	= 389,
+	2,	//	RAIDMODE_CHAOS_KAHMLSTEIN = 390,
+	2	//	RAIDBOSS_THE_PURGE = 391,
+	-1, // WEAPON_KAHML_AFTERIMAGE = 392
 };
 
 public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
@@ -1608,9 +1697,28 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_doctor_special",
 	"npc_ransacker",
 	"npc_archosauria",
-	"npc_alsan",
+	"npc_aslan",
 	"npc_perro",
-	"npc_caprinae"
+	"npc_caprinae",
+	"npc_runover",
+	"npc_hitman",
+	"npc_mad_doctor",
+	"npc_abomination",
+	"npc_enforcer",
+	"npc_braindead",
+	"npc_behemoth",
+	"npc_absolute_incinirator",
+
+	"npc_liberi",
+	"npc_ursus",
+	"npc_aegir",
+	"npc_cautus",
+	"npc_vulpo",
+	"npc_majorsteam",
+	"npc_the_messenger",
+	"npc_chaos_kahmlstein",
+	"npc_the_purge",
+	"npc_allied_kahml"
 };
 
 void NPC_MapStart()
@@ -1891,6 +1999,15 @@ void NPC_MapStart()
 	WinterSkinHunter_OnMapStart_NPC();
 	WinterIrritatedPerson_OnMapStart_NPC();
 	AnarchyRansacker_OnMapStart_NPC();
+	AnarchyRunover_OnMapStart_NPC();
+	AnarchyHitman_OnMapStart_NPC();
+	AnarchyMadDoctor_OnMapStart_NPC();
+	AnarchyAbomination_OnMapStart_NPC();
+	AnarchyEnforcer_OnMapStart_NPC();
+	AnarchyBraindead_OnMapStart_NPC();
+	AnarchyBehemoth_OnMapStart_NPC();
+	AnarchyAbsoluteIncinirator_OnMapStart_NPC();
+	MajorSteam_MapStart();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1920,6 +2037,9 @@ void NPC_MapStart()
 	Raidboss_Schwertkrieg_OnMapStart_NPC();
 	Raidboss_Donnerkrieg_OnMapStart_NPC();
 	RaidbossBobTheFirst_OnMapStart();
+	TheMessenger_OnMapStart_NPC();
+	ChaosKahmlstein_OnMapStart_NPC();
+	ThePurge_MapStart();
 
 	// Bloon Low Prio
 	Bloon_MapStart();
@@ -2977,6 +3097,30 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 		case INTERITUS_ANARCHY_RANSACKER:
 			entity = AnarchyRansacker(client, vecPos, vecAng, ally);
 
+		case INTERITUS_ANARCHY_RUNOVER:
+			entity = AnarchyRunover(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_HITMAN:
+			entity = AnarchyHitman(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_MADDOCTOR:
+			entity = AnarchyMadDoctor(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_ABOMINATION:
+			entity = AnarchyAbomination(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_ENFORCER:
+			entity = AnarchyEnforcer(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_BRAINDEAD:
+			entity = AnarchyBraindead(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_BEHEMOTH:
+			entity = AnarchyBehemoth(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_ABSOLUTE_INCINIRATOR:
+			entity = AnarchyAbsoluteIncinirator(client, vecPos, vecAng, ally);
+
 		case INTERITUS_FOREST_SNIPER:
 			entity = Archosauria(client, vecPos, vecAng, ally);
 
@@ -2988,6 +3132,37 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 
 		case INTERITUS_FOREST_DEMOMAN:
 			entity = Caprinae(client, vecPos, vecAng, ally, data);
+
+		case INTERITUS_FOREST_MEDIC:
+			entity = Liberi(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_HEAVY:
+			entity = Ursus(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_PYRO:
+			entity = Aegir(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_SPY:
+			entity = Cautus(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_ENGINEER:
+			entity = Vulpo(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_BOSS:
+			entity = MajorSteam(client, vecPos, vecAng, ally);
+			
+		case RAIDMODE_THE_MESSENGER:
+			entity = TheMessenger(client, vecPos, vecAng, ally, data);
+
+		case RAIDMODE_CHAOS_KAHMLSTEIN:
+			entity = ChaosKahmlstein(client, vecPos, vecAng, ally, data);
+
+			
+		case RAIDBOSS_THE_PURGE:
+			entity = ThePurge(client, vecPos, vecAng, ally);
+			
+		case WEAPON_KAHML_AFTERIMAGE:
+			entity = AlliedKahmlAbility(client, vecPos, vecAng, ally);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -3040,6 +3215,76 @@ public void ZR_NpcTauntWin()
 }
 public void NPCDeath(int entity)
 {
+	if(view_as<CClotBody>(entity).m_fCreditsOnKill)
+	{
+		int GiveMoney = 0;
+		float CreditsOnKill = view_as<CClotBody>(entity).m_fCreditsOnKill;
+		if (CreditsOnKill <= 1.0)
+		{
+			f_FactionCreditGain += CreditsOnKill;
+
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(!b_IsPlayerABot[client] && IsClientInGame(client))
+				{
+					if(GetClientTeam(client) != 2)
+					{
+						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.2;
+					}
+					else if (TeutonType[client] == TEUTON_WAITING)
+					{
+						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.1;
+					}
+				}
+			}		
+
+			if(f_FactionCreditGain >= 1.0)
+			{
+				f_FactionCreditGain -= 1.0;
+				GiveMoney = 1;
+			}
+		}
+		else
+		{
+			GiveMoney = RoundToFloor(CreditsOnKill);
+			float Decimal_MoneyGain = FloatFraction(CreditsOnKill);	
+			f_FactionCreditGain += Decimal_MoneyGain;
+			
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(!b_IsPlayerABot[client] && IsClientInGame(client))
+				{
+					if(GetClientTeam(client) != 2)
+					{
+						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.2);
+					}
+					else if (TeutonType[client] == TEUTON_WAITING)
+					{
+						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.1);
+					}
+				}
+			}
+
+			if(f_FactionCreditGain >= 1.0)
+			{
+				f_FactionCreditGain -= 1.0;
+				GiveMoney += 1;
+			}
+		}
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(!b_IsPlayerABot[client] && IsClientInGame(client))
+			{
+				if(f_FactionCreditGainReduction[client] > 1.0)
+				{
+					int RemoveMoney = RoundToFloor(f_FactionCreditGainReduction[client]);
+					f_FactionCreditGainReduction[client] -= float(RemoveMoney);
+					CashSpent[client] += RemoveMoney;
+				}
+			}
+		}
+		CurrentCash += GiveMoney;
+	}
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
 		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
@@ -4003,77 +4248,7 @@ public void NPCDeath(int entity)
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		
 	}
-	
-	if(view_as<CClotBody>(entity).m_fCreditsOnKill)
-	{
-		int GiveMoney = 0;
-		float CreditsOnKill = view_as<CClotBody>(entity).m_fCreditsOnKill;
-		if (CreditsOnKill <= 1.0)
-		{
-			f_FactionCreditGain += CreditsOnKill;
 
-			for(int client=1; client<=MaxClients; client++)
-			{
-				if(!b_IsPlayerABot[client] && IsClientInGame(client))
-				{
-					if(GetClientTeam(client) != 2)
-					{
-						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.2;
-					}
-					else if (TeutonType[client] == TEUTON_WAITING)
-					{
-						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.1;
-					}
-				}
-			}		
-
-			if(f_FactionCreditGain >= 1.0)
-			{
-				f_FactionCreditGain -= 1.0;
-				GiveMoney = 1;
-			}
-		}
-		else
-		{
-			GiveMoney = RoundToFloor(CreditsOnKill);
-			float Decimal_MoneyGain = FloatFraction(CreditsOnKill);	
-			f_FactionCreditGain += Decimal_MoneyGain;
-			
-			for(int client=1; client<=MaxClients; client++)
-			{
-				if(!b_IsPlayerABot[client] && IsClientInGame(client))
-				{
-					if(GetClientTeam(client) != 2)
-					{
-						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.2);
-					}
-					else if (TeutonType[client] == TEUTON_WAITING)
-					{
-						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.1);
-					}
-				}
-			}
-
-			if(f_FactionCreditGain >= 1.0)
-			{
-				f_FactionCreditGain -= 1.0;
-				GiveMoney += 1;
-			}
-		}
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(!b_IsPlayerABot[client] && IsClientInGame(client))
-			{
-				if(f_FactionCreditGainReduction[client] > 1.0)
-				{
-					int RemoveMoney = RoundToFloor(f_FactionCreditGainReduction[client]);
-					f_FactionCreditGainReduction[client] -= float(RemoveMoney);
-					CashSpent[client] += RemoveMoney;
-				}
-			}
-		}
-		CurrentCash += GiveMoney;
-	}
 }
 
 Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -5008,6 +5183,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_citizen.sp"
 #include "zombie_riot/npc/ally/npc_allied_sensal_afterimage.sp"
 #include "zombie_riot/npc/ally/npc_allied_leper_visualiser.sp"
+#include "zombie_riot/npc/ally/npc_allied_kahml_afterimage.sp"
 
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"
@@ -5253,7 +5429,10 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_vip_building.sp"
 #include "zombie_riot/npc/rogue/npc_overlord_rogue.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_bladedance.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_the_messenger.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_chaos_kahmlstein.sp"
 
+#include "zombie_riot/npc/raidmode_bosses/npc_the_purge.sp"
 
 #include "zombie_riot/npc/interitus/desert/npc_ahim.sp"
 #include "zombie_riot/npc/interitus/desert/npc_inabdil.sp"
@@ -5276,8 +5455,22 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/winter/npc_irritated_person.sp"
 
 #include "zombie_riot/npc/interitus/anarchy/npc_ransacker.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_runover.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_hitman.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_mad_doctor.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_abomination.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_enforcer.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_braindead.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_behemoth.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_absolute_incinirator.sp"
 
 #include "zombie_riot/npc/interitus/forest/npc_archosauria.sp"
 #include "zombie_riot/npc/interitus/forest/npc_aslan.sp"
 #include "zombie_riot/npc/interitus/forest/npc_perro.sp"
 #include "zombie_riot/npc/interitus/forest/npc_caprinae.sp"
+#include "zombie_riot/npc/interitus/forest/npc_liberi.sp"
+#include "zombie_riot/npc/interitus/forest/npc_ursus.sp"
+#include "zombie_riot/npc/interitus/forest/npc_aegir.sp"
+#include "zombie_riot/npc/interitus/forest/npc_cautus.sp"
+#include "zombie_riot/npc/interitus/forest/npc_vulpo.sp"
+#include "zombie_riot/npc/interitus/forest/npc_majorsteam.sp"
