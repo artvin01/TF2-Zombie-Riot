@@ -169,6 +169,12 @@ public void DesertKhazaan_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
+	fl_TotalArmor[npc.index] = fl_TotalArmor[npc.index] + 0.005;
+	if(fl_TotalArmor[npc.index] > 1.0)
+	{
+		fl_TotalArmor[npc.index] = 1.0;
+	}
+	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
