@@ -86,7 +86,7 @@ void OverridePlayerModel(int client, int ModelIndex, bool DontShowCosmetics)
 	i_PlayerModelOverrideIndexWearable[client] = ModelIndex;
 	ViewChange_PlayerModel(client);
 	int entity;
-	if(DontShowCosmetics)
+	if(DontShowCosmetics || b_IsPlayerNiko[client])
 	{
 		while(TF2_GetWearable(client, entity))
 		{
@@ -98,6 +98,9 @@ void OverridePlayerModel(int client, int ModelIndex, bool DontShowCosmetics)
 	}
 	else
 	{
+		if(b_IsPlayerNiko[client])
+			return;
+
 		while(TF2_GetWearable(client, entity))
 		{
 			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
