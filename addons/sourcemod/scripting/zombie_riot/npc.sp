@@ -842,7 +842,7 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Frost Hunter",
 	"Skin Hunter",
 	"Irritated Person",
-	"The Doctor",
+	"Rouge Expidonsan Doctor",
 	"Ransacker",
 	"Archosauria",
 	"Aslan",
