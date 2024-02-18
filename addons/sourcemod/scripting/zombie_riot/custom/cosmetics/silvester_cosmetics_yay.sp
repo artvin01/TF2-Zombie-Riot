@@ -59,17 +59,16 @@ void ApplyExtraSilvesterCosmeticEffects(int client, bool remove = false)
 
 public void EnableSilvesterCosmetic(int client) 
 {
+	//for now block
 	if(TeutonType[client] != TEUTON_NONE)
 		return;
-		
+
 	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Silvester Wings [???]"));
 	if (h_SilvesterCosmeticEffectManagement[client] != null)
 	{
 		//This timer already exists.
 		if(HasWings)
 		{
-			SilvesterCosmeticRemoveEffects(client);
-			ApplyExtraSilvesterCosmeticEffects(client,_);
 			//Is the weapon it again?
 			//Yes?
 			delete h_SilvesterCosmeticEffectManagement[client];
@@ -83,8 +82,6 @@ public void EnableSilvesterCosmetic(int client)
 	
 	if(HasWings)
 	{
-		SilvesterCosmeticRemoveEffects(client);
-		ApplyExtraSilvesterCosmeticEffects(client,_);
 		DataPack pack;
 		h_SilvesterCosmeticEffectManagement[client] = CreateDataTimer(0.1, TimerSilvesterCosmetic, pack, TIMER_REPEAT);
 		pack.WriteCell(client);

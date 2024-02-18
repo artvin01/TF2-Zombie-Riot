@@ -163,6 +163,8 @@ public void CuredFatherGrigori_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 }
 
+static bool BoughtGregHelp;
+
 methodmap CuredFatherGrigori < CClotBody
 {
 	
@@ -300,9 +302,9 @@ methodmap CuredFatherGrigori < CClotBody
 		#endif
 	}
 	
-	public CuredFatherGrigori(int client, float vecPos[3], float vecAng[3])
+	public CuredFatherGrigori(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		CuredFatherGrigori npc = view_as<CuredFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", true, true, false));
+		CuredFatherGrigori npc = view_as<CuredFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally, true, false));
 		
 		i_NpcInternalId[npc.index] = CURED_FATHER_GRIGORI;
 		i_NpcWeight[npc.index] = 999;
@@ -340,6 +342,7 @@ methodmap CuredFatherGrigori < CClotBody
 		npc.Anger = false;
 		npc.m_bScalesWithWaves = true;
 		npc.StartPathing();
+		npc.m_flNextRangedSpecialAttack = 0.0;
 		
 		
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_annabelle.mdl");
@@ -347,6 +350,7 @@ methodmap CuredFatherGrigori < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		npc.m_flAttackHappenswillhappen = false;
+		BoughtGregHelp = false;
 		
 		return npc;
 	}
@@ -373,7 +377,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-	if(CurrentPlayers <= 4)
+	if(BoughtGregHelp || CurrentPlayers <= 4)
 	{
 		if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 		{
@@ -390,29 +394,76 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 		npc.m_flSpeed = 0.0;
 		return;
 	}
-						
-	if(CurrentPlayers <= 4 && IsValidEnemy(npc.index, PrimaryThreatIndex))
+	
+	if(!npc.m_iTargetWalkTo)
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		npc.m_iTargetWalkTo = GetClosestAllyPlayerGreg(npc.index);
+	}
+	if(npc.m_iTargetWalkTo > 0)
+	{
+		if (GetTeam(npc.m_iTargetWalkTo)==GetTeam(npc.index) && 
+		b_BobsCuringHand[npc.m_iTargetWalkTo] && b_BobsCuringHand_Revived[npc.m_iTargetWalkTo] >= 20 && TeutonType[npc.m_iTargetWalkTo] == TEUTON_NONE && dieingstate[npc.m_iTargetWalkTo] > 0 
+		&& GetEntPropEnt(npc.m_iTargetWalkTo, Prop_Data, "m_hVehicle") == -1 && !b_LeftForDead[npc.m_iTargetWalkTo])
+		{
+			//walk to client.
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetWalkTo);
+			
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			if(flDistanceToTarget < (70.0*70.0))
+			{
+				//slowly revive
+				ReviveClientFromOrToEntity(npc.m_iTargetWalkTo, npc.index, 1);
+				if(npc.m_flNextRangedSpecialAttack && npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
+				{
+					npc.m_flNextRangedSpecialAttack = 0.0;
+					npc.SetPlaybackRate(0.0);	
+				}
+				if(npc.m_iChanged_WalkCycle != 11) 	
+				{
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
+					npc.AddActivityViaSequence("Open_door_towards_right");
+					npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 0.7;
+					npc.m_iChanged_WalkCycle = 11;
+					npc.m_bisWalking = false;
+					npc.m_flSpeed = 0.0;
+					//forgot to add walk.
+				}
+			}
+			else
+			{
+				if(npc.m_iChanged_WalkCycle != 2) 	
+				{
+					int iActivity = npc.LookupActivity("ACT_RUN_AR2_RELAXED");
+					if(iActivity > 0) npc.StartActivity(iActivity);
+					npc.m_iChanged_WalkCycle = 2;
+					npc.m_bisWalking = true;
+					npc.m_flSpeed = 250.0;
+					//forgot to add walk.
+				}
+				NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+				npc.StartPathing();
+			}
+		}
+		else
+		{
+			npc.m_iTargetWalkTo = 0;
+		}
+		return;
+	}
+	int Owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
+						
+	if((BoughtGregHelp || CurrentPlayers <= 4) && IsValidEnemy(npc.index, PrimaryThreatIndex))
+	{
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				
-			/*	int color[4];
-				color[0] = 255;
-				color[1] = 255;
-				color[2] = 0;
-				color[3] = 255;
-			
-				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
-			
-				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
@@ -480,7 +531,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 					float vecDirShooting[3], vecRight[3], vecUp[3];
 					
 					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -494,8 +545,13 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
 					
-					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 50.0, 9000.0, DMG_BULLET, "bullet_tracer01_red", _ , _ , "0");
-					
+					float DamageDelt = 50.0;
+					if(BoughtGregHelp && CurrentPlayers <= 4)
+					{
+						DamageDelt = 75.0;
+					}
+					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, DamageDelt, 9000.0, DMG_BULLET, "bullet_tracer01_red", Owner , _ , "0");
+
 					npc.PlayRangedSound();
 					
 					if(GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") < 0)
@@ -554,7 +610,12 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
+									float DamageDelt = 85.0;
+									if(BoughtGregHelp && CurrentPlayers <= 4)
+									{
+										DamageDelt = 100.0;
+									}
+									SDKHooks_TakeDamage(target, npc.index, Owner, DamageDelt, DMG_CLUB, -1, _, vecHit);
 									
 									// Hit particle
 									
@@ -581,7 +642,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 	}
 	else
 	{
-		if(CurrentPlayers <= 4)
+		if(BoughtGregHelp || CurrentPlayers <= 4)
 		{
 			if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 			{
@@ -602,9 +663,9 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 		if(IsValidAllyPlayer(npc.index, npc.m_iTargetAlly))
 		{
 			npc.m_bWasSadAlready = false;
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			if(flDistanceToTarget > 250000) //500 units
 			{
 				if(npc.m_iChanged_WalkCycle != 2) 	
@@ -706,3 +767,51 @@ public void CuredFatherGrigori_NPCDeath(int entity)
 }
 
 
+
+static int GetClosestAllyPlayerGreg(int entity)
+{
+	float TargetDistance = 0.0; 
+	int ClosestTarget = 0; 
+	for( int i = 1; i <= MaxClients; i++ ) 
+	{
+		if (IsValidClient(i))
+		{
+			if (GetTeam(i) == GetTeam(entity) && b_BobsCuringHand[i] && b_BobsCuringHand_Revived[i] >= 20 && TeutonType[i] == TEUTON_NONE && dieingstate[i] > 0 && GetEntPropEnt(i, Prop_Data, "m_hVehicle") == -1 && !b_LeftForDead[i]) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+			{
+				float EntityLocation[3], TargetLocation[3]; 
+				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+				GetClientAbsOrigin( i, TargetLocation ); 
+				
+				
+				float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+				if( TargetDistance ) 
+				{
+					if( distance < TargetDistance ) 
+					{
+						ClosestTarget = i; 
+						TargetDistance = distance;		  
+					}
+				} 
+				else 
+				{
+					ClosestTarget = i; 
+					TargetDistance = distance;
+				}					
+			}
+		}
+	}
+	return ClosestTarget; 
+}
+
+public void OnBuy_BuffGreg(int client)
+{
+	int greg = EntRefToEntIndex(SalesmanAlive);
+	BoughtGregHelp = true;
+	if(greg > 0)
+	{
+		SetEntPropEnt(greg, Prop_Send, "m_hOwnerEntity",client);
+	}
+	
+	CancelClientMenu(client, true);
+	Store_RandomizeNPCStore(2);
+}

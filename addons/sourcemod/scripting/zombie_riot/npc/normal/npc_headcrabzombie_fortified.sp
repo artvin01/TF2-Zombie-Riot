@@ -128,7 +128,7 @@ methodmap FortifiedHeadcrabZombie < CClotBody
 	
 	
 	
-	public FortifiedHeadcrabZombie(int client, float vecPos[3], float vecAng[3], bool ally)
+	public FortifiedHeadcrabZombie(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		FortifiedHeadcrabZombie npc = view_as<FortifiedHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "500", ally, false));
 		
@@ -210,14 +210,14 @@ public void FortifiedHeadcrabZombie_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}

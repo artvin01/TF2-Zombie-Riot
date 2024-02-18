@@ -133,7 +133,7 @@ methodmap MedivalCrossbowGiant < CClotBody
 		#endif
 	}
 	
-	public MedivalCrossbowGiant(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalCrossbowGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalCrossbowGiant npc = view_as<MedivalCrossbowGiant>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "20000", ally, false, true));
 		SetVariantInt(1);
@@ -242,14 +242,14 @@ public void MedivalCrossbowGiant_ClotThink(int iNPC)
 			{
 				npc.m_flSpeed = 120.0;
 			}
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				/*
 				int color[4];
 				color[0] = 255;
@@ -330,7 +330,7 @@ public void HandleAnimEventMedival_GiantCrossbowMan(int entity, int event)
 				
 			float projectile_speed = 1200.0;
 			
-			vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
+			vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
 				
 			npc.FaceTowards(vecTarget, 30000.0);
 						

@@ -110,13 +110,20 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 
 	//todo: If needed, add a delay so it doesnt happen on every swing
 	bool ThereWasSeaborn = false;
-	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+	if(!StrContains(WhatDifficultySetting_Internal, "Schwert & Donner") || !StrContains(WhatDifficultySetting_Internal, "You."))
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-		if(IsValidEntity(entity) && i_BleedType[entity] == BLEEDTYPE_SEABORN)
+		ThereWasSeaborn = true;
+	}
+	if(!ThereWasSeaborn)
+	{
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			ThereWasSeaborn = true;
-			break;
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			if(IsValidEntity(entity) && i_BleedType[entity] == BLEEDTYPE_SEABORN)
+			{
+				ThereWasSeaborn = true;
+				break;
+			}
 		}
 	}
 	if(!ThereWasSeaborn)
@@ -244,7 +251,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 		f_WeaponDamageCalculated[client] = damage;
 
 		bool raidboss_active = false;
-		if(RaidbossIgnoreBuildingsLogic())
+		if(RaidbossIgnoreBuildingsLogic(1))
 		{
 			raidboss_active = true;
 		}
@@ -279,12 +286,12 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int target = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(target) && !b_NpcHasDied[target])
+			int target = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			if(IsValidEnemy(client, target, true, false))
 			{
-				VicLoc = WorldSpaceCenter(target);
+				VicLoc = WorldSpaceCenterOld(target);
 				
 				if (GetVectorDistance(UserLoc, VicLoc,true) <= IRENE_JUDGEMENT_MAXRANGE_SQUARED)
 				{
@@ -398,12 +405,12 @@ public void Npc_Irene_Launch_client(int client)
 			b_LagCompNPC_No_Layers = true;
 			StartLagCompensation_Base_Boss(client);	
 
-			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int enemy = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-				if(IsValidEntity(enemy) && !b_NpcHasDied[enemy])
+				int enemy = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				if(IsValidEnemy(client, enemy, true, false))
 				{
-					VicLoc = WorldSpaceCenter(enemy);
+					VicLoc = WorldSpaceCenterOld(enemy);
 					
 					if (GetVectorDistance(UserLoc, VicLoc,true) <= IRENE_JUDGEMENT_MAXRANGE_SQUARED) //respect max range.
 					{
@@ -429,7 +436,7 @@ public void Npc_Irene_Launch_client(int client)
 			float VicLoc[3];
 
 			//poisition of the enemy we random decide to shoot.
-			VicLoc = WorldSpaceCenter(target);
+			VicLoc = WorldSpaceCenterOld(target);
 
 			LookAtTarget(client, target);
 
@@ -494,7 +501,7 @@ public void Npc_Irene_Launch(int iNPC)
 	if(b_IreneNpcWasShotUp[iNPC])
 	{
 		float VicLoc[3];
-		VicLoc = WorldSpaceCenter(iNPC);
+		VicLoc = WorldSpaceCenterOld(iNPC);
 		VicLoc[2] += 250.0; //Jump up.
 		PluginBot_Jump(iNPC, VicLoc);
 	}
@@ -502,7 +509,7 @@ public void Npc_Irene_Launch(int iNPC)
 	
 	bool raidboss_active = false;
 	float time_stay_In_sky;
-	if(RaidbossIgnoreBuildingsLogic())
+	if(RaidbossIgnoreBuildingsLogic(1))
 	{
 		raidboss_active = true;
 	}

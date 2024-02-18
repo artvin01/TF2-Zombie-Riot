@@ -2,17 +2,20 @@
 #pragma newdecls required
 
 static int weapon_id[MAXPLAYERS+1]={8, ...};
+static const float nullVec[] = {0.0,0.0,0.0};
 static Handle Give_bomb_back[MAXPLAYERS+1];
 static bool Handle_on[MAXPLAYERS+1]={false, ...};
 static int g_ProjectileModel;
+static int g_ProjectileModelPipe;
 
 public void Grenade_Custom_Precache()
 {
-	PrecacheSound("mvm/giant_demoman/giant_demoman_grenade_shoot.wav");
-	static char model[PLATFORM_MAX_PATH];
-	model = "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl";
-	g_ProjectileModel = PrecacheModel(model);
 	Zero(Handle_on);
+
+	PrecacheSound("mvm/giant_demoman/giant_demoman_grenade_shoot.wav");
+	
+	g_ProjectileModel = PrecacheModel("models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl");
+	g_ProjectileModelPipe = PrecacheModel("models/workshop/weapons/c_models/c_caber/c_caber.mdl");
 }
 
 public void Weapon_Grenade(int client, int weapon, const char[] classname, bool &result)
@@ -35,13 +38,12 @@ public void Weapon_Grenade(int client, int weapon, const char[] classname, bool 
 	}
 }
 
-public void Reset_stats_Grenade_Singular(int client)
+void Reset_stats_Grenade_Singular(int client)
 {
 	Handle_on[client] = false;
 }
 
-
-public Action Give_Back_Grenade(Handle cut_timer, int client)
+static Action Give_Back_Grenade(Handle cut_timer, int client)
 {
 	if (IsValidClient(client))
 	{
@@ -58,7 +60,66 @@ public Action Give_Back_Grenade(Handle cut_timer, int client)
 	return Plugin_Handled;
 }
 
+public void Weapon_Pipebomb(int client, int weapon, const char[] classname, bool &result)
+{
+	if(weapon >= MaxClients)
+	{
+		weapon_id[client] = weapon;
+		Give_bomb_back[client] = CreateTimer(15.0, Give_Back_Pipebomb, client, TIMER_FLAG_NO_MAPCHANGE);
+		if(Handle_on[client])
+		{
+			delete Give_bomb_back[client];
+		}
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Threw Pipebomb");
+		SetAmmo(client, Ammo_Hand_Grenade, 0); //Give ammo back that they just spend like an idiot
+		CurrentAmmo[client][Ammo_Hand_Grenade] = GetAmmo(client, Ammo_Hand_Grenade);
+		Handle_on[client] = true;
+	}
+}
 
+void Is_Pipebomb(int entity)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if (owner > 0 && owner <= MaxClients)
+	{
+		if (!IsClientInGame(owner))
+		{
+			return;
+		}
+
+		int weapon_active = GetEntPropEnt(owner, Prop_Send, "m_hActiveWeapon");
+		int weaponindex = GetEntProp(weapon_active, Prop_Send, "m_iItemDefinitionIndex");
+			
+		if(weaponindex == 1083)
+		{
+			for(int i; i<4; i++)
+			{
+				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelPipe, _, i);
+			}
+			SetEntPropVector(entity, Prop_Send, "m_vecMins", nullVec);
+			SetEntPropVector(entity, Prop_Send, "m_vecMaxs", nullVec);
+		}
+	}	
+}
+
+static Action Give_Back_Pipebomb(Handle cut_timer, int client)
+{
+	if (IsValidClient(client))
+	{
+		//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+		//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+		SetAmmo(client, Ammo_Hand_Grenade, 1); //Give ammo back that they just spend like an idiot
+		CurrentAmmo[client][Ammo_Hand_Grenade] = GetAmmo(client, Ammo_Hand_Grenade);
+		ClientCommand(client, "playgamesound items/gunpickup2.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Pipebomb Is Back");
+		Handle_on[client] = false;
+	}
+	return Plugin_Handled;
+}
 
 public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, const char[] classname, bool &result)
 {

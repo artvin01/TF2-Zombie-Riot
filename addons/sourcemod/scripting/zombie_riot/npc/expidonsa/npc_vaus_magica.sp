@@ -82,7 +82,7 @@ methodmap VausMagica < CClotBody
 		EmitSoundToAll(g_ShieldAttackSounds[GetRandomInt(0, sizeof(g_ShieldAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public VausMagica(int client, float vecPos[3], float vecAng[3], bool ally)
+	public VausMagica(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		VausMagica npc = view_as<VausMagica>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "5000", ally));
 		
@@ -185,13 +185,13 @@ public void VausMagica_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -264,8 +264,7 @@ void VausMagicaShieldGiving(VausMagica npc, float gameTime)
 	if(gameTime > npc.m_flNextRangedSpecialAttack)
 	{
 		npc.m_flNextRangedSpecialAttack = gameTime + 1.0; //Retry in 1 second.
-		int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
-		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
+		b_NpcIsTeamkiller[npc.index] = true;
 		Explode_Logic_Custom(0.0,
 		npc.index,
 		npc.index,
@@ -279,7 +278,7 @@ void VausMagicaShieldGiving(VausMagica npc, float gameTime)
 		false,
 		_,
 		VausMagicaShield);
-		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
+		b_NpcIsTeamkiller[npc.index] = false;
 	}
 }
 
@@ -293,7 +292,7 @@ void VausMagicaSelfDefense(VausMagica npc, float gameTime, int target, float dis
 	{
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(target);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
 			npc.m_flAttackHappens = 0.0;
 			
 			npc.FaceTowards(vecTarget, 15000.0);
@@ -328,19 +327,9 @@ void VausMagicaShield(int entity, int victim, float damage, int weapon)
 	if(entity == victim)
 		return;
 
-	if(b_IsAlliedNpc[entity])
+	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
 	{
-		if (b_IsAlliedNpc[victim])
-		{
-			VausMagicaShieldInternal(entity,victim);
-		}
-	}
-	else
-	{
-		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
-		{
-			VausMagicaShieldInternal(entity,victim);
-		}
+		VausMagicaShieldInternal(entity,victim);
 	}
 }
 

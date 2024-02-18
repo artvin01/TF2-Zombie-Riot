@@ -133,7 +133,7 @@ methodmap The_Shit_Slapper < CClotBody
 	
 	
 	
-	public The_Shit_Slapper(int client, float vecPos[3], float vecAng[3], bool ally)
+	public The_Shit_Slapper(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		The_Shit_Slapper npc = view_as<The_Shit_Slapper>(CClotBody(vecPos, vecAng, "models/zombie/classic_torso.mdl", "4.5", "500", ally, false));
 		
@@ -198,14 +198,14 @@ public void The_Shit_Slapper_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}

@@ -205,7 +205,7 @@ void CryoWandHitM2(int entity, int victim, float damage, int weapon)
 		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", VicLoc);
 		CreateTimer(0.1, Cryo_Unfreeze, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		EmitSoundToAll(SOUND_WAND_CRYO_SHATTER, victim);
-		SDKHooks_TakeDamage(victim, weapon, entity, damage * Cryo_M2_FreezeMult_Pap2, DMG_PLASMA, -1, CalculateExplosiveDamageForce(UserLoc, VicLoc, 1500.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(victim, weapon, entity, damage * Cryo_M2_FreezeMult_Pap2, DMG_PLASMA, -1, CalculateExplosiveDamageForceOld(UserLoc, VicLoc, 1500.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
 	}
 	else
 	{
@@ -302,7 +302,7 @@ public void Weapon_Wand_Cryo_Shoot(int client, int weapon, bool crit, int slot, 
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 11, weapon, ParticleName, Angles);
 
 			//Remove unused hook.
-			SDKUnhook(projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
+		//	SDKUnhook(projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
 
 			Cryo_IsCryo[projectile] = true;
 			Cryo_SlowType[projectile] = SlowType;
@@ -312,7 +312,7 @@ public void Weapon_Wand_Cryo_Shoot(int client, int weapon, bool crit, int slot, 
 		//		Cryo_AlreadyHit[i][iCarrier] = false; //This will make all rehitable with the same projectile, i doubt thats what you want.
 				Cryo_AlreadyHit[projectile][entity] = false;
 			}
-			SetEntityCollisionGroup(projectile, 1); //Do not collide.
+			SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 
 		//	CreateTimer(0.25, Cryo_Timer, EntIndexToEntRef(projectile), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		}
@@ -341,9 +341,8 @@ public void Weapon_Wand_Cryo_Shoot(int client, int weapon, bool crit, int slot, 
 
 //If you use SearchDamage (above), convert this timer to a void method and rename it to Cryo_DealDamage:
 
-public void Cryo_Touch(int entity, int other)
+public void Cryo_Touch(int entity, int target)
 {
-	int target = Target_Hit_Wand_Detection(entity, other);
 	if (target > 0)	
 	{
 		static float angles[3];
@@ -354,7 +353,7 @@ public void Cryo_Touch(int entity, int other)
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 		if(!Cryo_AlreadyHit[entity][target])
 		{
-			VicLoc = WorldSpaceCenter(target);
+			VicLoc = WorldSpaceCenterOld(target);
 			//Code to do damage position and ragdolls
 			//Code to do damage position and ragdolls
 			switch (Cryo_SlowType[entity])
@@ -396,7 +395,7 @@ public void Cryo_Touch(int entity, int other)
 				RemoveEntity(entity);
 			}
 
-			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 0.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
+			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 0.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
 			
 			float Health_After_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
 			

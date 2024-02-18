@@ -174,8 +174,15 @@ int KillFeed_GetBotTeam(int client)
 
 void KillFeed_SetBotTeam(int client, int team)
 {
-	ForceTeam[client] = team;
-	ChangeClientTeam(client, team);
+	int teamSet = team;
+
+	if(teamSet < TFTeam_Unassigned)
+		teamSet = TFTeam_Unassigned;
+	if(teamSet > TFTeam_Blue)
+		teamSet = TFTeam_Blue;
+	ForceTeam[client] = teamSet;
+	
+	ChangeClientTeam(client, teamSet);
 }
 
 #if defined ZR
@@ -212,7 +219,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 			return;
 		
 		feed.userid = GetClientUserId(Bots[botNum]);
-		feed.victim_team = GetEntProp(victim, Prop_Send, "m_iTeamNum");
+		feed.victim_team = GetTeam(victim);
 		strcopy(feed.victim_name, sizeof(feed.victim_name), NPC_Names[i_NpcInternalId[victim]]);
 		
 		botNum++;
@@ -243,7 +250,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 			return;
 		
 		feed.userid = GetClientUserId(Bots[botNum]);
-		feed.victim_team = GetEntProp(victim, Prop_Send, "m_iTeamNum");
+		feed.victim_team = GetTeam(victim);
 		botNum++;
 
 		priority = true;
@@ -273,7 +280,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 				return;
 			
 			feed.attacker = GetClientUserId(Bots[botNum]);
-			feed.attacker_team = GetEntProp(attacker, Prop_Send, "m_iTeamNum");
+			feed.attacker_team = GetTeam(attacker);
 			strcopy(feed.attacker_name, sizeof(feed.attacker_name), NPC_Names[i_NpcInternalId[attacker]]);
 			
 			botNum++;
@@ -392,14 +399,14 @@ static void ShowNextFeed()
 		KillFeed feedmain, feed;
 		if(highLength)
 		{
-			HighList.GetArray(0, feedmain);
 			HighList.GetArray(0, feed);
+			feedmain = feed;
 			priority = true;
 		}
 		else
 		{
-			LowList.GetArray(0, feedmain);
 			LowList.GetArray(0, feed);
+			feedmain = feed;
 		}
 
 		int victim = GetClientOfUserId(feed.userid);
@@ -466,19 +473,21 @@ static void ShowNextFeed()
 			list.Push(event);
 
 			// Add anything using the same team/name
-			if(HighList.Length)
+			if(!HighList.Length)
+			{
+				if(!LowList.Length)
+				{
+					break;
+				}
+				else
+				{
+					LowList.GetArray(0, feed);
+				}
+			}
+			else
 			{
 				HighList.GetArray(0, feed);
-				continue;
 			}
-			
-			if(LowList.Length)
-			{
-				LowList.GetArray(0, feed);
-				continue;
-			}
-
-			break;
 		}
 		while((!feed.victim_name[0] || (feed.victim_team == feedmain.victim_team && StrEqual(feed.victim_name, feedmain.victim_name))) &&
 			(!feed.attacker_name[0] || (feed.attacker_team == feedmain.attacker_team && StrEqual(feed.attacker_name, feedmain.attacker_name))));

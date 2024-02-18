@@ -43,7 +43,7 @@ methodmap SeabornMedic < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 	
-	public SeabornMedic(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornMedic(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornMedic npc = view_as<SeabornMedic>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "6000", ally));
 		
@@ -121,7 +121,8 @@ public void SeabornMedic_ClotThink(int iNPC)
 
 	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		if(GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2)
+		int team = GetTeam(npc.index);
+		if(team == 2)
 		{
 			for(int client = 1; client <= MaxClients; client++)
 			{
@@ -130,30 +131,21 @@ public void SeabornMedic_ClotThink(int iNPC)
 					f_HussarBuff[client] = gameTime;
 				}
 			}
-
-			for(int i; i < i_MaxcountNpc_Allied; i++)
-			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-				if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-				{
-					f_HussarBuff[entity] = gameTime;
-				}
-			}
 		}
-		else
+
+		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			for(int i; i < i_MaxcountNpc; i++)
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-				if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-				{
-					f_HussarBuff[entity] = gameTime;
-				}
+				f_HussarBuff[entity] = gameTime;
 			}
 		}
 	}
-	
-	NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+	if(npc.m_iTargetAlly > 0)
+	{
+		NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+	}
 
 	npc.PlayIdleSound();
 }

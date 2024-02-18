@@ -54,7 +54,7 @@ methodmap SeaSpewer < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeaSpewer(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeaSpewer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];
@@ -87,7 +87,7 @@ methodmap SeaSpewer < CClotBody
 
 		if(carrier)
 		{
-			float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+			float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
 			vecMe[2] += 100.0;
 
 			npc.m_iWearable1 = ParticleEffectAt(vecMe, "powerup_icon_precision", -1.0);
@@ -149,13 +149,13 @@ public void SeaSpewer_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 		float distance = GetVectorDistance(vecTarget, vecMe, true);		
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -177,7 +177,7 @@ public void SeaSpewer_ClotThink(int iNPC)
 
 				for(int i; i < count; i++)
 				{
-					vecTarget = PredictSubjectPositionForProjectiles(npc, enemy[i], 1200.0);
+					vecTarget = PredictSubjectPositionForProjectilesOld(npc, enemy[i], 1200.0);
 
 					int entity = npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPEWER_ALT ? 240.0 : 195.0, 1200.0, "models/weapons/w_bugbait.mdl");
 					// 650 * 0.3
@@ -196,7 +196,7 @@ public void SeaSpewer_ClotThink(int iNPC)
 						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(entity, 100, 100, 255, 255);
 
-						vecTarget = WorldSpaceCenter(entity);
+						vecTarget = WorldSpaceCenterOld(entity);
 						f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "rockettrail_bubbles", 3.0);
 						SetParent(entity, f_ArrowTrailParticle[entity]);
 						f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
@@ -223,7 +223,7 @@ public void SeaSpewer_ClotThink(int iNPC)
 
 static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int count)
 {
-	int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
+	int team = GetTeam(npc.index);
 //	float gameTime = GetGameTime();
 	float vecTarget[3];
 	int found;
@@ -235,7 +235,7 @@ static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int c
 		{
 			if(silenced || !SeaFounder_TouchingNethersea(client))
 			{
-				vecTarget = WorldSpaceCenter(client);
+				vecTarget = WorldSpaceCenterOld(client);
 				if(GetVectorDistance(vecTarget, vecMe, true) > 48400.0)	// 1.1 * 200
 					continue;
 			}
@@ -244,46 +244,21 @@ static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int c
 		}
 	}
 
-	if(team != 3)
+	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
-		for(int a; a < i_MaxcountNpc; a++)
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[a]);
-			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
+			if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && GetTeam(entity) != team && Can_I_See_Enemy_Only(npc.index, entity))
 			{
-				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
+				if(silenced || !SeaFounder_TouchingNethersea(entity))
 				{
-					if(silenced || !SeaFounder_TouchingNethersea(entity))
-					{
-						vecTarget = WorldSpaceCenter(entity);
-						if(GetVectorDistance(vecTarget, vecMe, true) > 48400.0)	// 1.1 * 200
-							continue;
-					}
-
-					AddToList(entity, found, enemy, count);
+					vecTarget = WorldSpaceCenterOld(entity);
+					if(GetVectorDistance(vecTarget, vecMe, true) > 48400.0)	// 1.1 * 200
+						continue;
 				}
-			}
-		}
-	}
 
-	if(team != 2)
-	{
-		for(int a; a < i_MaxcountNpc_Allied; a++)
-		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[a]);
-			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
-			{
-				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
-				{
-					if(silenced || !SeaFounder_TouchingNethersea(entity))
-					{
-						vecTarget = WorldSpaceCenter(entity);
-						if(GetVectorDistance(vecTarget, vecMe, true) > 48400.0)	// 1.1 * 200
-							continue;
-					}
-
-					AddToList(entity, found, enemy, count);
-				}
+				AddToList(entity, found, enemy, count);
 			}
 		}
 	}
@@ -300,7 +275,7 @@ static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int c
 				{
 					if(silenced || building.bBuildingIsStacked || !SeaFounder_TouchingNethersea(entity))
 					{
-						vecTarget = WorldSpaceCenter(entity);
+						vecTarget = WorldSpaceCenterOld(entity);
 						if(GetVectorDistance(vecTarget, vecMe, true) > 48400.0)	// 1.1 * 200
 							continue;
 					}

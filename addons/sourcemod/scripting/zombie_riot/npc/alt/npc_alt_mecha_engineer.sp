@@ -128,7 +128,7 @@ methodmap Mecha_Engineer < CClotBody
 	}
 	
 	
-	public Mecha_Engineer(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Mecha_Engineer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Mecha_Engineer npc = view_as<Mecha_Engineer>(CClotBody(vecPos, vecAng, "models/bots/engineer/bot_engineer.mdl", "1.0", "2500", ally));
 		
@@ -215,14 +215,14 @@ public void Mecha_Engineer_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;

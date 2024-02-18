@@ -170,7 +170,7 @@ methodmap XenoCombineSoldierShotgun < CClotBody
 	}
 	
 	
-	public XenoCombineSoldierShotgun(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoCombineSoldierShotgun(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineSoldierShotgun npc = view_as<XenoCombineSoldierShotgun>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "800", ally));
 		
@@ -259,14 +259,14 @@ public void XenoCombineSoldierShotgun_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -289,7 +289,7 @@ public void XenoCombineSoldierShotgun_ClotThink(int iNPC)
 			{
 				npc.m_fbGunout = true;
 				
-			//	float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			//	float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.9;
 				npc.m_iAttacksTillReload += 1;
 				
@@ -322,7 +322,7 @@ public void XenoCombineSoldierShotgun_ClotThink(int iNPC)
 					//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
 					
 
-					MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -336,11 +336,11 @@ public void XenoCombineSoldierShotgun_ClotThink(int iNPC)
 					
 					if(EscapeModeForNpc)
 					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 15.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 15.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 					else
 					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 10.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 10.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 				}
 				npc.PlayRangedSound();				

@@ -168,7 +168,7 @@ methodmap MedivalAchilles < CClotBody
 		#endif
 	}
 	
-	public MedivalAchilles(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalAchilles(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalAchilles npc = view_as<MedivalAchilles>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "100000", ally));
 		SetVariantInt(1);
@@ -275,18 +275,18 @@ public void MedivalAchilles_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, { 80.0, 80.0, 80.0 }, { -80.0, -80.0, -80.0 })) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 75.0;
+					float damage = 125.0;
 
 					if(Medival_Difficulty_Level > 2.0)
 					{
-						damage = 100.0;
+						damage = 150.0;
 					}
 
 					if(ShouldNpcDealBonusDamage(target))
@@ -319,7 +319,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 				float distance = GetVectorDistance( EntityLocation, TargetLocation, true );  
 					
 				float vecTarget[3];
-				vecTarget = WorldSpaceCenter(npc.m_iTarget);
+				vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 
 				if(distance <= (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
 				{
@@ -332,13 +332,13 @@ public void MedivalAchilles_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -429,7 +429,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 					npc.m_flAttackHappens = gameTime + 0.25;
 
 					npc.m_flDoingAnimation = gameTime + 0.25;
-					npc.m_flNextMeleeAttack = gameTime + 0.7;
+					npc.m_flNextMeleeAttack = gameTime + 0.55;
 					npc.m_bisWalking = true;
 				}
 			}
@@ -482,7 +482,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 						AcceptEntityInput(npc.m_iWearable4, "Enable");
 						float vEnd[3];
 						
-						vEnd = GetAbsOrigin(npc.m_iTarget);
+						vEnd = GetAbsOriginOld(npc.m_iTarget);
 						Handle pack;
 						CreateDataTimer(ACHILLES_CHARGE_SPAN, Smite_Timer_achilles, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 						WritePackCell(pack, EntIndexToEntRef(npc.index));

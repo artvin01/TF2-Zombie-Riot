@@ -162,7 +162,7 @@ methodmap BunkerHeadlessHorse < CClotBody
 		#endif
 	}
 	
-	public BunkerHeadlessHorse(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BunkerHeadlessHorse(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BunkerHeadlessHorse npc = view_as<BunkerHeadlessHorse>(CClotBody(vecPos, vecAng, "models/bots/headless_hatman.mdl", "1.0", "3000", ally, false));
 		
@@ -286,15 +286,15 @@ public void BunkerHeadlessHorse_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		//EmitSoundToAll("ui/halloween_boss_chosen_it.wav", closest)
 		
 		if(flDistanceToTarget < npc.GetLeadRadius()) //Predict their pos.
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else

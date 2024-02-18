@@ -79,18 +79,18 @@ methodmap SeabornSpecialist < CClotBody
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornSpecialist(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornSpecialist(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		bool teleported;
 
 		float vecPos2[3], vecAng2[3];
-		if(!ally)
+		if(ally != TFTeam_Red)
 		{
 			float lowest = 1.0;
-			for(int i; i < i_MaxcountNpc; i++)
+			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-				if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && IsEntityAlive(entity))
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && IsEntityAlive(entity) && GetTeam(entity) != TFTeam_Red)
 				{
 					float ratio = float(GetEntProp(entity, Prop_Data, "m_iHealth") + 2) / float(GetEntProp(entity, Prop_Data, "m_iMaxHealth") + 1);
 					if(ratio < lowest)
@@ -98,7 +98,7 @@ methodmap SeabornSpecialist < CClotBody
 						teleported = true;
 						lowest = ratio;
 
-						vecPos2 = GetAbsOrigin(entity);
+						vecPos2 = GetAbsOriginOld(entity);
 						GetEntPropVector(entity, Prop_Data, "m_angRotation", vecAng2);
 					}
 				}
@@ -195,8 +195,8 @@ public void SeabornSpecialist_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -248,7 +248,7 @@ public void SeabornSpecialist_ClotThink(int iNPC)
 		{
 			if(distance < npc.GetLeadRadius())
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 

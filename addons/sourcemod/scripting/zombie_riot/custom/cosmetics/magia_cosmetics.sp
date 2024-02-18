@@ -1,5 +1,5 @@
 
-#define MAX_MAGIA_COSMETIC_ENERGY_EFFECTS 22
+#define MAX_MAGIA_COSMETIC_ENERGY_EFFECTS 21
 static int i_MagiaCosmeticEffect[MAXENTITIES][MAX_MAGIA_COSMETIC_ENERGY_EFFECTS];
 static Handle h_MagiaCosmeticEffectManagement[MAXPLAYERS+1] = {null, ...};
 
@@ -63,8 +63,6 @@ public void EnableMagiaCosmetic(int client)
 		//This timer already exists.
 		if(HasWings)
 		{
-			MagiaCosmeticRemoveEffects(client);
-			ApplyExtraMagiaCosmeticEffects(client,_);
 			//Is the weapon it again?
 			//Yes?
 			delete h_MagiaCosmeticEffectManagement[client];
@@ -78,8 +76,6 @@ public void EnableMagiaCosmetic(int client)
 	
 	if(HasWings)
 	{
-		MagiaCosmeticRemoveEffects(client);
-		ApplyExtraMagiaCosmeticEffects(client,_);
 		DataPack pack;
 		h_MagiaCosmeticEffectManagement[client] = CreateDataTimer(0.1, TimerMagiaCosmetic, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
@@ -130,11 +126,20 @@ void MagiaCosmeticEffects(int entity, int wearable)	//Magia Wings [???]
 		3rd: front and back, negative goes back.
 	*/
 
+	/* old, flag.
+
+	int particle_left_wing_1 = InfoTargetParentAt({7.5, -7.5, -2.5}, "", 0.0);		//head
+	int particle_left_wing_2 = InfoTargetParentAt({25.0, 40.0, 20.0}, "", 0.0);		//bottom
+	int particle_left_wing_3 = InfoTargetParentAt({19.5, -15.5, 15.0}, "", 0.0);		//top
+	int particle_left_wing_4 = InfoTargetParentAt({45.0, 0.0, 10.0}, "", 0.0);		//side
+
+	*/
+
 	int ParticleOffsetMain = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	GetAttachment(wearable, "flag", flPos, flAng);
+	GetAttachment(wearable, "back_lower", flPos, flAng);
 	Custom_SDKCall_SetLocalOrigin(ParticleOffsetMain, flPos);
 	SetEntPropVector(ParticleOffsetMain, Prop_Data, "m_angRotation", flAng); 
-	SetParent(wearable, ParticleOffsetMain, "flag",_);
+	SetParent(wearable, ParticleOffsetMain, "back_lower",_);
 
 
 	/*
@@ -146,7 +151,7 @@ void MagiaCosmeticEffects(int entity, int wearable)	//Magia Wings [???]
 
 	//Left
 
-	int particle_left_core = InfoTargetParentAt({0.0, 6.5, -7.5}, "", 0.0);
+	int particle_left_core = InfoTargetParentAt({0.0, -5.0, -7.5}, "", 0.0);	//6.5
 
 
 	/*
@@ -156,9 +161,9 @@ void MagiaCosmeticEffects(int entity, int wearable)	//Magia Wings [???]
 	*/
 
 	int particle_left_wing_1 = InfoTargetParentAt({7.5, -7.5, -2.5}, "", 0.0);		//head
-	int particle_left_wing_2 = InfoTargetParentAt({25.0, 40.0, 20.0}, "", 0.0);		//bottom
-	int particle_left_wing_3 = InfoTargetParentAt({19.5, -15.5, 15.0}, "", 0.0);		//top
-	int particle_left_wing_4 = InfoTargetParentAt({45.0, 0.0, 10.0}, "", 0.0);		//side
+	int particle_left_wing_2 = InfoTargetParentAt({50.0, 10.0, 20.0}, "", 0.0);		//bottom
+	int particle_left_wing_3 = InfoTargetParentAt({15.5, -22.5, 15.0}, "", 0.0);		//top
+	int particle_left_wing_4 = InfoTargetParentAt({35.0, -15.0, 10.0}, "", 0.0);		//side
 
 	SetParent(particle_left_core, particle_left_wing_1, "",_, true);
 	SetParent(particle_left_core, particle_left_wing_2, "",_, true);
@@ -197,7 +202,7 @@ void MagiaCosmeticEffects(int entity, int wearable)	//Magia Wings [???]
 
 	//right
 
-	int particle_right_core = InfoTargetParentAt({0.0, 6.5, -7.5}, "", 0.0);
+	int particle_right_core = InfoTargetParentAt({0.0, -5.0, -7.5}, "", 0.0);
 
 
 	/*
@@ -207,9 +212,9 @@ void MagiaCosmeticEffects(int entity, int wearable)	//Magia Wings [???]
 	*/
 
 	int particle_right_wing_1 = InfoTargetParentAt({-7.5, -7.5, -2.5}, "", 0.0);		//head
-	int particle_right_wing_2 = InfoTargetParentAt({-25.0, 40.0, 20.0}, "", 0.0);		//bottom
-	int particle_right_wing_3 = InfoTargetParentAt({-19.5, -15.5, 15.0}, "", 0.0);		//top
-	int particle_right_wing_4 = InfoTargetParentAt({-45.0, 0.0, 10.0}, "", 0.0);		//side
+	int particle_right_wing_2 = InfoTargetParentAt({-50.0, 10.0, 20.0}, "", 0.0);		//bottom
+	int particle_right_wing_3 = InfoTargetParentAt({-15.5, -22.5, 15.0}, "", 0.0);		//top
+	int particle_right_wing_4 = InfoTargetParentAt({-35.0, -15.0, 10.0}, "", 0.0);		//side
 
 	SetParent(particle_right_core, particle_right_wing_1, "",_, true);
 	SetParent(particle_right_core, particle_right_wing_2, "",_, true);
@@ -241,7 +246,7 @@ void MagiaCosmeticEffects(int entity, int wearable)	//Magia Wings [???]
 
 	i_MagiaCosmeticEffect[entity][16] = EntIndexToEntRef(laser_right_wing_1);
 	i_MagiaCosmeticEffect[entity][17] = EntIndexToEntRef(laser_right_wing_2);
-	i_MagiaCosmeticEffect[entity][19] = EntIndexToEntRef(laser_right_wing_3);
-	i_MagiaCosmeticEffect[entity][20] = EntIndexToEntRef(laser_right_wing_4);
-	i_MagiaCosmeticEffect[entity][21] = EntIndexToEntRef(laser_right_wing_5);
+	i_MagiaCosmeticEffect[entity][18] = EntIndexToEntRef(laser_right_wing_3);
+	i_MagiaCosmeticEffect[entity][19] = EntIndexToEntRef(laser_right_wing_4);
+	i_MagiaCosmeticEffect[entity][20] = EntIndexToEntRef(laser_right_wing_5);
 }

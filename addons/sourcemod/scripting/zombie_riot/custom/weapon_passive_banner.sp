@@ -6,6 +6,8 @@ int i_SetBannerType[MAXPLAYERS+1];
 bool b_ClientHasAncientBanner[MAXENTITIES];
 bool b_EntityRecievedBuff[MAXENTITIES];
 Handle Timer_AncientBanner = null;
+Handle Timer_Banner_Management_2[MAXPLAYERS+1] = {null, ...};
+Handle Timer_Banner_Management_1[MAXPLAYERS+1] = {null, ...};
 
 float BannerDefaultRange(int client)
 {
@@ -32,6 +34,17 @@ enum
 	AncientBanner = 3
 }
 
+int ClientHasBannersWithCD(int client)
+{
+	if(Timer_Banner_Management_1[client] != null)
+		return BuffBanner;
+	if(Timer_Banner_Management_2[client] != null)
+		return Battilons;
+	if(b_ClientHasAncientBanner[client])
+		return AncientBanner;
+
+	return 0;
+}
 public void Enable_Management_Banner(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
 	if (Timer_Banner_Management[client] != null)
@@ -84,10 +97,10 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 			}
 		}
 	}
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
-		int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 		{
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
@@ -105,7 +118,6 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 
 
 
-Handle Timer_Banner_Management_1[MAXPLAYERS+1] = {null, ...};
 
 public void Enable_Management_Banner_1(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
@@ -162,10 +174,10 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 				}
 			}
 		}
-		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
@@ -187,7 +199,6 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 
 
 
-Handle Timer_Banner_Management_2[MAXPLAYERS+1] = {null, ...};
 
 public void Enable_Management_Banner_2(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
@@ -243,10 +254,10 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 				}
 			}
 		}
-		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
@@ -302,18 +313,20 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 					{
 						f_AncientBannerNpcBuff[ally] = GetGameTime() + 0.5;
+						i_ExtraPlayerPoints[client] += 1;
 					}
 				}
 			}
-			for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+			for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 			{
-				int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-				if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+				int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+				if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 				{
 					GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 					{
 						f_AncientBannerNpcBuff[ally] = GetGameTime() + 0.5;
+						i_ExtraPlayerPoints[client] += 1;
 					}
 				}
 			}
@@ -336,10 +349,10 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 				}
 			}
 		}
-		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				if(f_AncientBannerNpcBuff[ally] > GetGameTime())
 				{
@@ -361,10 +374,10 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 				ModifyEntityAncientBuff(ally, 1, 0.8, false, 1.2);
 			}
 		}
-		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				ModifyEntityAncientBuff(ally, 2, 0.8, false, 1.2);
 			}

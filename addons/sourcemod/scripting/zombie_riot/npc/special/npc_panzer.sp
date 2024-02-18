@@ -89,17 +89,17 @@ static char[] GetPanzerHealth()
 	
 	float temp_float_hp = float(health);
 	
-	if(CurrentRound+1 < 30)
+	if(ZR_GetWaveCount()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
 	}
-	else if(CurrentRound+1 < 45)
+	else if(ZR_GetWaveCount()+1 < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health /= 2;
@@ -208,7 +208,7 @@ methodmap NaziPanzer < CClotBody
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		this.GetVectors(vecForward, vecSwingStart, vecAngles);
 
-		vecSwingStart = GetAbsOrigin(this.index);
+		vecSwingStart = GetAbsOriginOld(this.index);
 		vecSwingStart[2] += 44.0;
 
 		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
@@ -229,7 +229,7 @@ methodmap NaziPanzer < CClotBody
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 20.0, true);	// Damage
 			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 2.0);
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+			SetTeam(entity,GetTeam(this.index));
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
 			DispatchSpawn(entity);
 			SetEntityModel(entity, "models/weapons/w_bullet.mdl");
@@ -255,7 +255,7 @@ methodmap NaziPanzer < CClotBody
 		}
 	}
 	
-	public NaziPanzer(int client, float vecPos[3], float vecAng[3], bool ally)
+	public NaziPanzer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		NaziPanzer npc = view_as<NaziPanzer>(CClotBody(vecPos, vecAng, "models/zombie_riot/cod_zombies/panzer_soldat_2.mdl", "1.15", GetPanzerHealth(), ally, false, true));
 		
@@ -317,13 +317,13 @@ methodmap NaziPanzer < CClotBody
 		
 		float vecForward[3], vecRight[3], vecTarget[3];
 		
-		vecTarget = WorldSpaceCenter(target);
-		MakeVectorFromPoints(WorldSpaceCenter(this.index), vecTarget, vecForward);
+		vecTarget = WorldSpaceCenterOld(target);
+		MakeVectorFromPoints(WorldSpaceCenterOld(this.index), vecTarget, vecForward);
 		GetVectorAngles(vecForward, vecForward);
 		vecForward[1] = eyePitch[1];
 		GetAngleVectors(vecForward, vecForward, vecRight, vecTarget);
 		
-		float vecSwingStart[3]; vecSwingStart = GetAbsOrigin(this.index);
+		float vecSwingStart[3]; vecSwingStart = GetAbsOriginOld(this.index);
 		vecSwingStart[2] += 44.0;
 		
 		float vecSwingEnd[3];
@@ -456,14 +456,14 @@ public void NaziPanzer_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
 	//		PrintToChatAll("cutoff");
 			NPC_SetGoalVector(npc.index, vPredictedPos);	
 		}
@@ -633,13 +633,13 @@ public void NaziPanzer_ClotThink(int iNPC)
 			target = Can_I_See_Enemy(npc.index, HumanTarget);
 			if (target == HumanTarget)
 			{
-				float vecTargetHook[3]; vecTargetHook = WorldSpaceCenter(HumanTarget);
+				float vecTargetHook[3]; vecTargetHook = WorldSpaceCenterOld(HumanTarget);
 				npc.FaceTowards(vecTargetHook, 20000.0);
 				
 				float projectile_speed = 1200.0;
 			
 				float vPredictedPosHuman[3];
-				vPredictedPosHuman = PredictSubjectPositionForProjectiles(npc, HumanTarget, projectile_speed);
+				vPredictedPosHuman = PredictSubjectPositionForProjectilesOld(npc, HumanTarget, projectile_speed);
 				npc.FireHook(vPredictedPosHuman);
 				npc.m_flGrappleCooldown = GetGameTime(npc.index) + 30.0;
 				

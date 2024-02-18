@@ -191,7 +191,7 @@ methodmap XenoCombineOverlord < CClotBody
 		#endif
 	}
 	
-	public XenoCombineOverlord(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoCombineOverlord(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(CClotBody(vecPos, vecAng, "models/zombie_riot/bosses/overlord_3.mdl", "1.0", "35000", ally));
 		
@@ -304,7 +304,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			if (npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				if (npc.m_flmovedelay < GetGameTime(npc.index) && npc.m_flAngerDelay < GetGameTime(npc.index))
@@ -337,12 +337,12 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 			
 		//	npc.FaceTowards(vecTarget, 1000.0);
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -413,7 +413,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
 					
 					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -427,7 +427,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
-					int player_hurt = FireBullet(npc.index, npc.index, WorldSpaceCenter(npc.index), vecDir, 75.0, 150.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+					int player_hurt = FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 75.0, 150.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 					
 					if(IsValidClient(player_hurt))
 					{

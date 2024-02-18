@@ -149,7 +149,7 @@ methodmap Soldine < CClotBody
 	}
 	
 	
-	public Soldine(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Soldine(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Soldine npc = view_as<Soldine>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "40000", ally));
 		
@@ -234,7 +234,7 @@ public void Soldine_ClotThink(int iNPC)
 	if(npc.m_bAllowBackWalking)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
-			npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 150.0);
+			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 150.0);
 	}
 
 	if(npc.m_blPlayHurtAnimation)
@@ -260,8 +260,8 @@ public void Soldine_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		int SetGoalVectorIndex = 0;
 		SetGoalVectorIndex = SoldineSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 
@@ -274,7 +274,7 @@ public void Soldine_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3];
-					vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+					vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
@@ -286,7 +286,7 @@ public void Soldine_ClotThink(int iNPC)
 			{
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
-				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
+				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
 			}
 		}
@@ -426,7 +426,7 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 			{
 				npc.m_flAttackHappens = 0.0;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(target), 15000.0);
+				npc.FaceTowards(WorldSpaceCenterOld(target), 15000.0);
 				if(npc.DoSwingTrace(swingTrace, target, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target_hit = TR_GetEntityIndex(swingTrace);	
@@ -536,7 +536,7 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 					npc.PlaySuperJumpSound();
 					static float flMyPos_2[3];
 					flMyPos[2] += 800.0;
-					flMyPos_2 = WorldSpaceCenter(target);
+					flMyPos_2 = WorldSpaceCenterOld(target);
 
 					flMyPos[0] = flMyPos_2[0];
 					flMyPos[1] = flMyPos_2[1];
@@ -568,7 +568,7 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 					DamageRocket *= 0.5;
 				}
 				float vPredictedPos[3];
-				vPredictedPos = PredictSubjectPositionForProjectiles(npc, target, projectile_speed);
+				vPredictedPos = PredictSubjectPositionForProjectilesOld(npc, target, projectile_speed);
 				
 				npc.FaceTowards(vPredictedPos, 20000.0);
 				//Play attack anim

@@ -128,9 +128,9 @@ methodmap HeavyGiant < CClotBody
 	}
 	
 	
-	public HeavyGiant(int client, float vecPos[3], float vecAng[3], bool ally)
+	public HeavyGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		HeavyGiant npc = view_as<HeavyGiant>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "15000", ally, false, true));
+		HeavyGiant npc = view_as<HeavyGiant>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "15000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = HEAVY_ZOMBIE_GIANT;
 		i_NpcWeight[npc.index] = 1;
@@ -208,14 +208,14 @@ public void HeavyGiant_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;

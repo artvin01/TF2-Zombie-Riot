@@ -63,7 +63,7 @@ methodmap Barrack_Alt_Mecha_Barrager < BarrackBody
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
-	public Barrack_Alt_Mecha_Barrager(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Barrack_Alt_Mecha_Barrager(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barrack_Alt_Mecha_Barrager npc = view_as<Barrack_Alt_Mecha_Barrager>(BarrackBody(client, vecPos, vecAng, "100", "models/bots/soldier/bot_soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
@@ -141,8 +141,8 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			if(b_we_are_reloading[npc.index])
 			{
@@ -170,7 +170,7 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 					{
 						//Play attack anim
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1100.0);
+						vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1100.0);
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.PlayRangedSound();
 						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),75.0, 1) ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, _, _,_, GetClientOfUserId(npc.OwnerUserId));

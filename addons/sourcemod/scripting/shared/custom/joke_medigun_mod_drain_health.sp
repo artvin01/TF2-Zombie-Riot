@@ -125,7 +125,7 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 			return MRES_Supercede;	
 		}
 #endif
-		if(What_type_Heal == 1.0)
+		if(What_type_Heal == 1.0 || What_type_Heal == 5.0 || What_type_Heal == 6.0)
 		{
 		//	bool is_uber_activated=view_as<bool>(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"));
 #if defined ZR
@@ -141,7 +141,7 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 				return MRES_Supercede;
 			}
 #endif
-			else if(b_IsAlliedNpc[target])
+			else if(!b_NpcHasDied[target] && GetTeam(target) == TFTeam_Red)
 			{
 				DHookSetReturn(hReturn, true);
 				return MRES_Supercede;
@@ -164,7 +164,7 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 					GetEntityClassname(target, buffer, sizeof(buffer));
 					if(!StrContains(buffer, "zr_base_npc", true))
 					{
-						bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(target, Prop_Send, "m_iTeamNum");
+						bool team = GetTeam(owner)==GetTeam(target);
 						if(drains && !team)
 						{
 							DHookSetReturn(hReturn, true);
@@ -178,7 +178,7 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 					GetEntityClassname(target, buffer, sizeof(buffer));
 					if(!StrContains(buffer, "obj_", true))
 					{
-						bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(target, Prop_Send, "m_iTeamNum");
+						bool team = GetTeam(owner)==GetTeam(target);
 						if((heals && team) || (drains && !team))
 						{
 							DHookSetReturn(hReturn, true);
@@ -197,8 +197,6 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 static float medigun_heal_delay[MAXTF2PLAYERS];
 static float medigun_hud_delay[MAXTF2PLAYERS];
 
-static float f_IncrementalSmallHeal[MAXENTITIES];
-
 static int i_targethealedLastBy[MAXENTITIES];
 
 float target_sucked_long[MAXENTITIES]={0.85, ...};
@@ -213,7 +211,6 @@ stock float Target_Sucked_Long_Return(int entity)
 
 public void Medigun_ClearAll()
 {
-	Zero(f_IncrementalSmallHeal); //Do not save the heal across stages of the game.
 	Zero(f_MedigunDelayAttackThink);
 	Zero(medigun_heal_delay);
 	Zero(medigun_hud_delay);
@@ -243,7 +240,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			int new_ammo = GetAmmo(owner, 22);
 			if(IsValidEntity(healTarget) && healTarget>MaxClients && GetAmmo(owner, 22) > 0)
 			{
-				bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(healTarget, Prop_Send, "m_iTeamNum");
+				bool team = GetTeam(owner)==GetTeam(healTarget);
 				float flDrainRate = 500.0;
 				
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
@@ -289,7 +286,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						flDrainRate *= target_sucked_long[healTarget];
 						
 						static float Entity_Position[3];
-						Entity_Position = WorldSpaceCenter(healTarget);
+						Entity_Position = WorldSpaceCenterOld(healTarget);
 						
 						SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime() * 3.0, DMG_PLASMA, medigun, _, Entity_Position);
 					}
@@ -312,7 +309,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						flDrainRate *= target_sucked_long[healTarget];
 						
 						static float Entity_Position[3];
-						Entity_Position = WorldSpaceCenter(healTarget);
+						Entity_Position = WorldSpaceCenterOld(healTarget);
 						
 						SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
 					}
@@ -355,7 +352,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			
 			if(IsValidEntity(healTarget) && healTarget>MaxClients && GetAmmo(owner, 3) > 0)
 			{
-				bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(healTarget, Prop_Send, "m_iTeamNum");
+				bool team = GetTeam(owner)==GetTeam(healTarget);
 		//		float flDrainRate = 100.0;
 				
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
@@ -487,16 +484,16 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
-		else if(What_type_Heal == 1.0)
+		else if(What_type_Heal == 1.0 || What_type_Heal == 5.0 || What_type_Heal == 6.0)
 		{
 			int new_ammo = GetAmmo(owner, 21);
-			if((IsValidClient(healTarget) && healTarget<=MaxClients && GetAmmo(owner, 21) > 0) || (IsValidEntity(healTarget) && b_IsAlliedNpc[healTarget]) && GetAmmo(owner, 21) > 0)
+			if((IsValidClient(healTarget) && healTarget<=MaxClients && GetAmmo(owner, 21) > 0) || (IsValidEntity(healTarget) && !b_NpcHasDied[healTarget] && GetTeam(healTarget) == TFTeam_Red) && GetAmmo(owner, 21) > 0)
 			{
-				bool team = GetEntProp(owner, Prop_Data, "m_iTeamNum")==GetEntProp(healTarget, Prop_Data, "m_iTeamNum");
+				bool team = GetTeam(owner)==GetTeam(healTarget);
 				if(team)
 				{
 					bool Is_Allied_Npc = false;
-					if(b_IsAlliedNpc[healTarget]) //Give uber
+					if(!b_NpcHasDied[healTarget]) //Give uber
 					{
 #if defined ZR
 						float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
@@ -523,7 +520,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					{
 						healing_Amount *= 0.25;
 					}	
-					i_targethealedLastBy[healTarget] = owner;
 
 					if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
 					{
@@ -537,16 +533,51 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					//The healing is less then 1 ? Do own logic.
 					if(!Is_Allied_Npc)
 					{
-#if defined RPG
-						flMaxHealth = 1.1;
-#else
-						flMaxHealth = 1.5;
-#endif
+						if(What_type_Heal != 5.0)
+							flMaxHealth = 1.5;
+						else
+							flMaxHealth = 1.75;
 					}
 					else
 					{
-						flMaxHealth = 1.25;
+						if(What_type_Heal != 5.0)
+							flMaxHealth = 1.25;
+						else
+							flMaxHealth = 1.45;
 					}
+
+					if(What_type_Heal == 6.0)
+					{
+						float Healing_GiveArmor = 0.35;
+
+						if(healTarget <= MaxClients)
+						{
+							Healing_GiveArmor *= Healing_Value;
+
+							if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
+							{
+								Healing_GiveArmor *= 0.25;
+							}
+							if(i_targethealedLastBy[healTarget] != owner) //If youre healing someone thats already being healed, then the healing amount will be heavily reduced.
+							{
+								Healing_GiveArmor *= 0.25;
+							}	
+							GiveArmorViaPercentage(healTarget, Healing_GiveArmor, 1.0, true);
+						}
+
+						
+						Healing_GiveArmor = 0.35;
+
+						Healing_GiveArmor *= Healing_Value;
+
+						if(f_TimeUntillNormalHeal[owner] > GetGameTime())
+						{
+							Healing_GiveArmor *= 0.25;
+						}
+						GiveArmorViaPercentage(owner, Healing_GiveArmor, 1.0, true);
+					}
+
+					i_targethealedLastBy[healTarget] = owner;
 					//self heal
 					int ammoSubtract;
 					ammoSubtract = HealEntityGlobal(owner, owner, healing_Amount_Self, 1.0, 0.0, _, new_ammo);
@@ -557,12 +588,13 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					ammoSubtract = HealEntityGlobal(owner, healTarget, healing_Amount, flMaxHealth, 0.0, _, new_ammo);
 					new_ammo -= ammoSubtract;
 
-					if(b_IsAlliedNpc[healTarget])
+					if(!b_NpcHasDied[healTarget])
 					{
 						Calculate_And_Display_hp(owner, healTarget, 0.0, true);
 					}
 					else //is a player probably.
 					{
+
 						ApplyHealEvent(healTarget, ammoSubtract);
 					}
 					
@@ -604,7 +636,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 		{
 			if(IsValidEntity(healTarget) && healTarget>MaxClients)
 			{
-				bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(healTarget, Prop_Send, "m_iTeamNum");
+				bool team = GetTeam(owner)==GetTeam(healTarget);
 				float flDrainRate = 500.0;
 				
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
@@ -648,7 +680,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					flDrainRate *= target_sucked_long[healTarget];
 						
 					static float Entity_Position[3];
-					Entity_Position = WorldSpaceCenter(healTarget);
+					Entity_Position = WorldSpaceCenterOld(healTarget);
 						
 					SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
 				}

@@ -1,0 +1,269 @@
+"Phrases"
+{
+	"Real-Time Camera"
+	{
+		"en"		"Real-Time Camera"
+		"pt"		"Câmera de Tempo-Real"
+	}
+	"Disable Camera"
+	{
+		"en"		"Disable Camera"
+		"pt"		"Desligar Câmera"
+	}
+	"Enable Camera"
+	{
+		"en"		"Enable Camera"
+		"pt"		"Ligar Câmera"
+	}
+	"Mouse Settings"
+	{
+		"en"		"Mouse Settings"
+		"pt"		"Opções de Mouse"
+	}
+	"Bind Settings"
+	{
+		"en"		"Bind Settings"
+		"pt"		"Opções de Binds"
+	}
+	"Screen Aspect Ratio"
+	{
+		"en"		"Screen Aspect Ratio"
+		"pt"		"Proporção da Tela"
+	}
+	"Mouse Sensitivity"
+	{
+		"en"		"Mouse Sensitivity"
+		"pt"		"Sensibilidade do Mouse"
+	}
+	"Scroll Speed"
+	{
+		"en"		"Scroll Speed"
+		"pt"		"Velocidade do Scroll"
+	}
+	"Zoom Speed"
+	{
+		"en"		"Zoom Speed"
+		"pt"		"Velocidade do Zoom"
+	}
+	"Left-Click"
+	{
+		"en"		"Left-Click"
+		"pt"		"Clique Esquerdo"
+	}
+	"Right-Click"
+	{
+		"en"		"Right-Click"
+		"pt"		"Clique Direito"
+	}
+	"Add To Selection"
+	{
+		"en"		"Add To Selection"
+		"pt"		"Adicionar a Seleção"
+	}
+	"Clear Selection"
+	{
+		"en"		"Clear Selection"
+		"pt"		"Limpar Seleção"
+	}
+	"Select All Units"
+	{
+		"en"		"Select All Units"
+		"pt"		"Selecionar Tudo"
+	}
+	"Select Idle Worker"
+	{
+		"en"		"Select Idle Worker"
+		"pt"		"Selecionar Trabalhador Ocioso"
+	}
+	"Delete Selected"
+	{
+		"en"		"Delete Selected"
+		"pt"		"Excluir Selecionados"
+	}
+	"Adjust Camera"
+	{
+		"en"		"Adjust Camera"
+		"pt"		"Ajustar Câmera"
+	}
+	"Zoom In"
+	{
+		"en"		"Zoom In"
+		"pt"		"Aumentar Zoom"
+	}
+	"Zoom Out"
+	{
+		"en"		"Zoom Out"
+		"pt"		"Diminuir Zoom"
+	}
+	"Scroll Up"
+	{
+		"en"		"Scroll Up"
+		"pt"		"Rolar pra Cima"
+	}
+	"Scroll Down"
+	{
+		"en"		"Scroll Down"
+		"pt"		"Rolar pra Baixo"
+	}
+	"Scroll Left"
+	{
+		"en"		"Scroll Left"
+		"pt"		"Rolar pra Esquerda"
+	}
+	"Scroll Right"
+	{
+		"en"		"Scroll Right"
+		"pt"		"Rolar pra Direita"
+	}
+	"Q (Skill 1)"
+	{
+		"en"		"Q (Skill 1)"
+		"pt"		"Q (Poder 1)"
+	}
+	"W (Skill 2)"
+	{
+		"en"		"W (Skill 2)"
+		"pt"		"W (Poder 2)"
+	}
+	"E (Skill 3)"
+	{
+		"en"		"E (Skill 3)"
+		"pt"		"E (Poder 3)"
+	}
+	"R (Skill 4)"
+	{
+		"en"		"R (Skill 4)"
+		"pt"		"R (Poder 4)"
+	}
+	"T (Skill 5)"
+	{
+		"en"		"T (Skill 5)"
+		"pt"		"T (Poder 5)"
+	}
+	"A (Attack Move)"
+	{
+		"en"		"A (Attack Move)"
+		"pt"		"A (Atacar)"
+	}
+	"S (Stand Ground)"
+	{
+		"en"		"S (Stand Ground)"
+		"pt"		"S (Manter Posição)"
+	}
+	"D (Patrol Area)"
+	{
+		"en"		"D (Patrol Area)"
+		"pt"		"D (Patrulhar Área)"
+	}
+	"F (Skill 9)"
+	{
+		"en"		"F (Skill 9)"
+		"pt"		"F (Poder 9)"
+	}
+	"G (Skill 10)"
+	{
+		"en"		"G (Skill 10)"
+		"pt"		"G (Poder 10)"
+	}
+	"Press a key to bind"
+	{
+		"en"		"Press a key to bind"
+		"pt"		"Pressione tecla para anexa-la"
+	}
+	"Valid Key Info 1"
+	{
+		"en"		"Valid keys include most +/- related keys."
+		"pt"		"Teclas válidas são geralmente +/- relacionadas."
+	}
+	"Valid Key Info 2"
+	{
+		"en"		"impulse works with any number and voicemenu as itself."
+		"pt"		"impulse funciona com qualquer número e voicemenu por si só."
+	}
+	"Valid Key Info 3"
+	{
+		"en"		"dropitem, voicemenu, lastinv can also be used."
+	}
+	"RTS Help 1"
+	{
+		"en"		"TIP: Move your mouse and click on a unit"
+	}
+	"RTS Help 2"
+	{
+		"en"		"TIP: Command units by selecting\nthem and right-click the ground"
+	}
+	"RTS Help 3"
+	{
+		"en"		"TIP: Use skills using\nQ, W, and other keys"
+	}
+	"RTS Help 4"
+	{
+		"en"		"TIP: Press 0 to open the\noptions menu to customize\nbinds and mouse settings"
+	}
+	"RTS Tooltip 1"
+	{
+		"en"		"TIP: With a combat unit, press A\nbefore right-clicking to make\nthem auto attack while moving"
+	}
+	"RTS Tooltip 2"
+	{
+		"en"		"TIP: With a combat unit, press S\nbefore right-clicking to make\nthem hold that position and don't move"
+	}
+	"RTS Tooltip 3"
+	{
+		"en"		"TIP: With a combat unit, press D\nbefore right-clicking to make\nthem patrol back and forth between two locations"
+	}
+	"RTS Tooltip 4"
+	{
+		"en"		"TIP: You can press jump\nto clear your selection\nor cancel special moves"
+	}
+	"RTS Tooltip 5"
+	{
+		"en"		"TIP: You can press drop item\nto delete a selected unit,\nhold crouch to delete all at once"
+	}
+	"RTS Tooltip 6"
+	{
+		"en"		"TIP: Hold crouch to queue up\ncommands such as ordering a\nset of commands or buildings"
+	}
+	"RTS Tooltip 7"
+	{
+		"en"		"TIP: You can adjust your\ncamera with commands such as\n+moveup/down and special attack"
+	}
+	"RTS Tooltip 8"
+	{
+		"en"		"TIP: Hold crouch and a number to\nset your selection to a control group,\nyou can later select this group\nby pressing the same number"
+	}
+	"Team Of"
+	{
+		"#format"	"{1:s}"
+		"en"		"Team {1}"
+	}
+	"Health Of"
+	{
+		"#format"	"{1:d},{2:d}"
+		"en"		"Health: {1} / {2}"
+	}
+	"Armor Of"
+	{
+		"#format"	"{1:s}"
+		"en"		"Armor: {1}"
+	}
+	"Damage Of"
+	{
+		"#format"	"{1:s}"
+		"en"		"Damage: {1}"
+	}
+	"vs Type of"
+	{
+		"#format"	"{1:t},{2:s}"
+		"en"		"vs {1}: {2}"
+	}
+	"Spectating"
+	{
+		"en"		"Spectating"
+	}
+	"Resource Of"
+	{
+		"#format"	"{1:s}"
+		"en"		"Resource: {1}"
+	}
+}

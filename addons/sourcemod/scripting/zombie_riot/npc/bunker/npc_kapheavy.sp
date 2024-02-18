@@ -190,7 +190,7 @@ methodmap Eternal_Kaptain_Heavy < CClotBody
 		#endif
 	}
 	
-	public Eternal_Kaptain_Heavy(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Eternal_Kaptain_Heavy(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Eternal_Kaptain_Heavy npc = view_as<Eternal_Kaptain_Heavy>(CClotBody(vecPos, vecAng, "models/zombie_riot/bvb_kaptainheavy.mdl", "1.0", "550000", ally));
 		
@@ -204,7 +204,7 @@ methodmap Eternal_Kaptain_Heavy < CClotBody
 		i_ExplosiveProjectileHexArray[npc.index] = EP_NO_KNOCKBACK;
 		npc.m_bThisNpcIsABoss = true;
 		KapheavyHasDied = false;
-		if(!b_IsAlliedNpc[npc.index])
+		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 320.0;
@@ -251,7 +251,7 @@ methodmap Eternal_Kaptain_Heavy < CClotBody
 public void Eternal_Kaptain_Heavy_ClotThink(int iNPC)
 {
 	Eternal_Kaptain_Heavy npc = view_as<Eternal_Kaptain_Heavy>(iNPC);
-	if(!b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		if(DokMedHasDied)
 		{
@@ -438,14 +438,14 @@ public void Eternal_Kaptain_Heavy_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			
 		/*	int color[4];
 			color[0] = 255;

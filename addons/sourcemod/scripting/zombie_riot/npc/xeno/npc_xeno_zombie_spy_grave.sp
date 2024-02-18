@@ -130,7 +130,7 @@ methodmap XenoSpy < CClotBody
 	}
 	
 	
-	public XenoSpy(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoSpy(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSpy npc = view_as<XenoSpy>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "5000", ally));
 		
@@ -228,14 +228,14 @@ public void XenoSpy_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;

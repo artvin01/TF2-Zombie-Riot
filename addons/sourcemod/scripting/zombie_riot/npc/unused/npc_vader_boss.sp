@@ -222,7 +222,7 @@ methodmap Vader < CClotBody
 		#endif
 	}
 	
-	public Vader(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Vader(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Vader npc = view_as<Vader>(CClotBody(vecPos, vecAng, "models/freak_fortress_2/dark_vader/vader_but_cool_final_4.mdl", "1.0", "50000", ally, false, true, true ,true));
 		
@@ -248,7 +248,6 @@ methodmap Vader < CClotBody
 		{
 			RaidModeScaling *= 0.40;
 		}
-		Raidboss_Clean_Everyone();
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
@@ -358,8 +357,8 @@ public void Vader_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 		/* if(npc.m_flJumpCooldown < GetGameTime() && npc.m_flInJump < GetGameTime() && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
 		{
@@ -387,7 +386,7 @@ public void Vader_ClotThink(int iNPC)
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 				
 				NPC_SetGoalVector(npc.index, vPredictedPos);
@@ -426,7 +425,7 @@ public void Vader_ClotThink(int iNPC)
 					//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
 					
 					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -442,11 +441,11 @@ public void Vader_ClotThink(int iNPC)
 					
 					if(EscapeModeForNpc)
 					{
-						FireBullet(npc.index, npc.index, WorldSpaceCenter(npc.index), vecDir, 50.0, 550.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 550.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 					else
 					{
-						FireBullet(npc.index, npc.index, WorldSpaceCenter(npc.index), vecDir, 35.0 * RaidModeScaling, 550.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 35.0 * RaidModeScaling, 550.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 				}
 			}

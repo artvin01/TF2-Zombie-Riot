@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define ITSTILIVES 666
-
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 110.0
 // 120 * 120
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED 12100.0
@@ -10,6 +8,8 @@
 #define GIANT_ENEMY_MELEE_RANGE_FLOAT 150.0
 // 140 * 140
 #define GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED 22500.0
+
+#define RAIDITEM_INDEX_WIN_COND 9999
 
 static float f_FactionCreditGain;
 static float f_FactionCreditGainReduction[MAXTF2PLAYERS];
@@ -341,12 +341,12 @@ enum
 	RUINA_MAGIA					= 295,
 	EXPIDONSA_SEARGENTIDEAL		= 296,
 
-	SEA_RAIDBOSS_SILVESTER		= 297,
-	SEA_RAIDBOSS_GOGGLES		= 298,
+	UNUSED_1			= 297,
+	UNUSED_2			= 298,
 	SEA_RAIDBOSS_DONNERKRIEG	= 299,
 	SEA_RAIDBOSS_SCHWERTKRIEG	= 300,
-	SEA_RAIDBOSS_GOD_ARKANTOS	= 301,
-	BOB_THE_FIRST			= 302,
+	BOB_THE_FIRST			= 301,
+	BOB_THE_FIRST_S			= 302,
 	SEA_ALLY_SILVESTER		= 303,
 	SEA_ALLY_GOGGLES		= 304,
 	SEA_ALLY_DONNERKRIEG		= 305,
@@ -375,9 +375,9 @@ enum
 	EXPIDONSA_ANFUHREREISENHARD		= 327, //not as many gimmics as everything else has a million gimmics
 	EXPIDONSA_SPEEDUSADIVUS			= 328,
 	WEAPON_SENSAL_AFTERIMAGE		= 329,
-	WEAPON_LEPER_AFTERIMAGE		= 330,
-	OVERLORD_ROGUE	= 331,
-	RAIDBOSS_BLADEDANCE = 332,
+	WEAPON_LEPER_AFTERIMAGE			= 330,
+	OVERLORD_ROGUE					= 331,
+	RAIDBOSS_BLADEDANCE 			= 332,
 	RUINA_STELLA					= 333,
 	RUINA_ASTRIA 					= 334,
 	RUINA_AETHER 					= 335,
@@ -386,10 +386,64 @@ enum
 	RUINA_RURIANA					= 338,
 	RUINA_VENIUM					= 339,
 	RUINA_MAGIA_ANCHOR				= 340,
-	RUINA_STORM_WEAVER				= 341,
-	RUINA_STORM_WEAVER_MID			= 342,
+	RUINA_STELLAR_WEAVER			= 341,
+	RUINA_STELLAR_WEAVER_MID		= 342,
+	MINI_BEHEADED_KAMI				= 343,
 	
+	BONEZONE_BEEFYBONES				= 344,
+	BONEZONE_BRITTLEBONES			= 345,
+	BONEZONE_BIGBONES				= 346,
+	BONEZONE_BUFFED_BASICBONES		= 347,
+	BONEZONE_BUFFED_BEEFYBONES		= 348,
+	BONEZONE_BUFFED_BRITTLEBONES	= 349,
+	BONEZONE_BUFFED_BIGBONES		= 350,
+	INTERITUS_DESERT_AHIM			= 351,
+	INTERITUS_DESERT_INABDIL		= 352,
+	INTERITUS_DESERT_KHAZAAN		= 353,
+	INTERITUS_DESERT_SAKRATAN		= 354,
+	INTERITUS_DESERT_YADEAM			= 355,
+	INTERITUS_DESERT_RAJUL			= 356,
+	INTERITUS_DESERT_QANAAS			= 357,
+	INTERITUS_DESERT_ATILLA			= 358,
+	INTERITUS_DESERT_ANCIENTDEMON	= 359,
+	INTERITUS_WINTER_SNIPER			= 360,
+	INTERITUS_WINTER_ZIBERIANMINER 	= 361,
+	INTERITUS_WINTER_SNOWEY_GUNNER	= 362,
+	INTERITUS_WINTER_FREEZING_CLEANER = 363,
+	INTERITUS_WINTER_AIRBORN_EXPLORER = 364,
+	INTERITUS_WINTER_ARCTIC_MAGE	  = 365,
+	INTERITUS_WINTER_FROST_HUNTER	  = 366,
+	INTERITUS_WINTER_SKIN_HUNTER	  = 367,
+	INTERITUS_WINTER_IRRITATED_PERSON = 368,
+	THEDOCTOR_MINIBOSS				  = 369,
+  
+	INTERITUS_ANARCHY_RANSACKER		  = 370,
+  
+	INTERITUS_FOREST_SNIPER = 371,
+	INTERITUS_FOREST_SCOUT = 372,
+	INTERITUS_FOREST_SOLDIER = 373,
+	INTERITUS_FOREST_DEMOMAN = 374,
 
+	INTERITUS_ANARCHY_RUNOVER		  = 375,
+	INTERITUS_ANARCHY_HITMAN		  = 376,
+	INTERITUS_ANARCHY_MADDOCTOR		  = 377,
+	INTERITUS_ANARCHY_ABOMINATION	  = 378,
+	INTERITUS_ANARCHY_ENFORCER	 	  = 379,
+	INTERITUS_ANARCHY_BRAINDEAD	 	  = 380,
+	INTERITUS_ANARCHY_BEHEMOTH		  = 381,
+	INTERITUS_ANARCHY_ABSOLUTE_INCINIRATOR= 382,
+  
+	INTERITUS_FOREST_MEDIC = 383,
+	INTERITUS_FOREST_HEAVY = 384,
+	INTERITUS_FOREST_PYRO = 385,
+	INTERITUS_FOREST_SPY = 386,
+	INTERITUS_FOREST_ENGINEER = 387,
+	INTERITUS_FOREST_BOSS = 388,
+	RAIDMODE_THE_MESSENGER	= 389,
+	RAIDMODE_CHAOS_KAHMLSTEIN = 390,
+	RAIDBOSS_THE_PURGE = 391,
+	WEAPON_KAHML_AFTERIMAGE = 392,
+	
 	MAX_NPC_TYPES	// Add entries above this line
 }
 
@@ -714,17 +768,17 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Magia",
 	"Seargent Ideal",
 
-	"Silvester",
-	"Blue Goggles",
+	"nothing",
+	"nothing",
 	"Donnerkrieg",
 	"Schwertkrieg",
-	"God Arkantos",
-	"Bob",
-	"Seaborn Silvester",
-	"Seaborn Blue Goggles",
-	"Seaborn Donnerkrieg",
-	"Seaborn Schwertkreig",
-	"Seaborn God Arkantos",
+	"?????????????",
+	"Bob the First",
+	"nothing",
+	"nothing",
+	"nothing",
+	"nothing",
+	"nothing",
 	"VIP Building, The Objective",
 	"Rifal Manu",
 	"Siccerino",
@@ -758,8 +812,61 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Ruriana",
 	"Venium",
 	"Magia Anchor",
-	"Storm Weaver",
-	"Storm Weaver"
+	"Stellar Weaver",
+	"Stellar Weaver",
+	"Beheaded Kamikaze",
+	
+	"Beefy Bones",
+	"Brittle Bones",
+	"Big Bones",
+	"Buffed Basic Bones",
+	"Buffed Beefy Bones",
+	"Buffed Brittle Bones",
+	"Buffed Big Bones",
+
+	"Ahim",
+	"Inabdil",
+	"Khazaan",
+	"Sakratan",
+	"Yadeam",
+	"Rajul",
+	"Qanaas",
+	"Atilla",
+	"Ancient Demon",
+	"Winter Sniper",
+	"Ziberian Miner",
+	"Snowey Gunner",
+	"Freezing Cleaner",
+	"Airborn Explorer",
+	"Arctic Mage",
+	"Frost Hunter",
+	"Skin Hunter",
+	"Irritated Person",
+	"Rouge Expidonsan Doctor",
+	"Ransacker",
+	"Archosauria",
+	"Aslan",
+	"Perro",
+	"Caprinae",
+	"Runover",
+	"Hitman",
+	"Mad Doctor",
+	"Abomination",
+	"Anarchist Enforcer",
+	"Braindead",
+	"Behemonth",
+	"Absolute Incinirator",
+
+	"Liberi",
+	"Ursus",
+	"Aegir",
+	"Cautus",
+	"Vulpo",
+	"Major Steam",
+	"The Messenger",
+	"Chaos Kahmlstein",
+	"The Purge",
+	"Kahmlstein"
 };
 
 // See items.sp for IDs to names
@@ -1072,7 +1179,7 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	9,	// SEABORN_SPECIALIST	= 280,
 	9,	// SEABORN_SUPPORTER	= 281,
 	9,	// ISHARMLA		= 282,
-	9,	// ISHARMLA_TRANS		= 283,
+	-1,	// ISHARMLA_TRANS		= 283,
 
 	-1,	// RUINA_THEOCRACY = 284,
 	10,	// EXPIDONSA_BENERA = 285,
@@ -1088,17 +1195,17 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	-1,	// RUINA_MAGIA					= 295,
 	10,	// EXPIDONSA_SEARGENTIDEAL		= 296,
 
-	-1,	// SEA_RAIDBOSS_SILVESTER		= 297,
-	-1,	// SEA_RAIDBOSS_GOGGLES		= 298,
-	-1,	// SEA_RAIDBOSS_DONNERKRIEG	= 299,
-	-1,	// SEA_RAIDBOSS_SCHWERTKRIEG	= 300,
-	-1,	// SEA_RAIDBOSS_GOD_ARKANTOS	= 301,
-	-1,	// BOB_THE_FIRST			= 302,
-	-1,	// SEA_ALLY_SILVESTER		= 303,
-	-1,	// SEA_ALLY_GOGGLES		= 304,
-	-1,	// SEA_ALLY_DONNERKRIEG		= 305,
-	-1,	// SEA_ALLY_SCHWERTKRIEG		= 306,
-	-1,	// SEA_ALLY_GOD_ARKANTOS		= 307,
+	-1,	// 		= 297,
+	-1,	// 		= 298,
+	2,	// SEA_RAIDBOSS_DONNERKRIEG	= 299,
+	2,	// SEA_RAIDBOSS_SCHWERTKRIEG	= 300,
+	-1,	// BOB_THE_FIRST		= 301,
+	-1,	// BOB_THE_FIRST_S		= 302,
+	-1,	// 		= 303,
+	-1,	// 		= 304,
+	-1,	// 		= 305,
+	-1,	// 		= 306,
+	-1,	// 		= 307,
 	0,	// VIP_BUILDING			= 308
 	10,	// EXPIDONSA_RIFALMANU		= 309,
 	10,	// EXPIDONSA_SICCERINO			= 310,
@@ -1132,8 +1239,65 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	-1,	//RUINA_RURIANA
 	-1,	//RUINA_VENIUM
 	-1,	//RUINA_MAGIA_ANCHOR
-	-1,	//RUINA_STORM_WEAVER
-	-1	//RUINA_STORM_WEAVER_MID
+	-1,	//RUINA_STELLAR_WEAVER
+	-1,	//RUINA_STELLAR_WEAVER_MID
+	1,	// MINI_BEHEADED_KAMI
+
+	-1,	// BONEZONE_BEEFYBONES
+	-1,
+	-1,
+	-1,
+	-1,
+	-1,
+	-1,
+	-1,	// BONEZONE_BUFFED_BIGBONES
+
+	11,	//INTERITUS_DESERT_AHIM			= 351,
+	11,	//	INTERITUS_DESERT_INABDIL		= 352,
+	11,	//	INTERITUS_DESERT_KHAZAAN		= 353,
+	11,	//	INTERITUS_DESERT_SAKRATAN		= 354,
+	11,	//	INTERITUS_DESERT_YADEAM			= 355,
+	11,	//	INTERITUS_DESERT_RAJUL			= 356,
+	11,	//	INTERITUS_DESERT_QANAAS			= 357,
+	11,	//	INTERITUS_DESERT_ATILLA			= 358,
+	11,	//	INTERITUS_DESERT_ANCIENTDEMON	= 359,
+	11,	//	INTERITUS_WINTER_SNIPER			= 360,
+	11,	//	INTERITUS_WINTER_ZIBERIANMINER 	= 361,
+	11,	//	INTERITUS_WINTER_SNOWEY_GUNNER	= 362,
+	11,	//	INTERITUS_WINTER_FREEZING_CLEANER = 363,
+	11,	//	INTERITUS_WINTER_AIRBORN_EXPLORER = 364,
+	11,	//	INTERITUS_WINTER_ARCTIC_MAGE	  = 365,
+	11,	//	INTERITUS_WINTER_FROST_HUNTER	  = 366,
+	11,	//	INTERITUS_WINTER_SKIN_HUNTER	  = 367,
+	11,	//	INTERITUS_WINTER_IRRITATED_PERSON = 368,
+	1,	//	THEDOCTOR_MINIBOSS				  = 369,
+  
+	11,	//	INTERITUS_ANARCHY_RANSACKER		  = 370,
+  
+	11,	//	INTERITUS_FOREST_SNIPER = 371,
+	11,	//	INTERITUS_FOREST_SCOUT = 372,
+	11,	//	INTERITUS_FOREST_SOLDIER = 373,
+	11,	//	INTERITUS_FOREST_DEMOMAN = 374,
+
+	11,	//	INTERITUS_ANARCHY_RUNOVER		  = 375,
+	11,	//	INTERITUS_ANARCHY_HITMAN		  = 376,
+	11,	//	INTERITUS_ANARCHY_MADDOCTOR		  = 377,
+	11,	//	INTERITUS_ANARCHY_ABOMINATION	  = 378,
+	11,	//	INTERITUS_ANARCHY_ENFORCER	 	  = 379,
+	11,	//	INTERITUS_ANARCHY_BRAINDEAD	 	  = 380,
+	11,	//	INTERITUS_ANARCHY_BEHEMOTH		  = 381,
+	11,	//	INTERITUS_ANARCHY_ABSOLUTE_INCINIRATOR= 382,
+  
+	11,	//	INTERITUS_FOREST_MEDIC = 383,
+	11,	//	INTERITUS_FOREST_HEAVY = 384,
+	11,	//	INTERITUS_FOREST_PYRO = 385,
+	11,	//	INTERITUS_FOREST_SPY = 386,
+	11,	//	INTERITUS_FOREST_ENGINEER = 387,
+	11,	//	INTERITUS_FOREST_BOSS = 388,
+	2,	//	RAIDMODE_THE_MESSENGER	= 389,
+	2,	//	RAIDMODE_CHAOS_KAHMLSTEIN = 390,
+	2,	//	RAIDBOSS_THE_PURGE = 391,
+	-1, // WEAPON_KAHML_AFTERIMAGE = 392
 };
 
 public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
@@ -1455,17 +1619,17 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_ruina_magia",
 	"npc_seargent_ideal",
 	
-	"npc_sea_silvester",
-	"npc_sea_goggles",
-	"Donnerkrieg",
-	"Schwertkreig",
-	"God Arkantos",
+	"",
+	"",
+	"npc_sea_donnerkrieg",
+	"npc_sea_schwertkrieg",
 	"npc_bob_the_first_last_savior",
-	"Seaborn Silvester",
-	"Seaborn Blue Goggles",
-	"Seaborn Donnerkrieg",
-	"Seaborn Schwertkreig",
-	"Seaborn God Arkantos",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
 	"npc_vip_building",
 	"npc_rifal_manu",
 	"npc_siccerino",
@@ -1501,8 +1665,60 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_ruina_ruriana",
 	"npc_ruina_venium",
 	"npc_ruina_magia_anchor",
-	"npc_ruina_storm_weaver",
-	""
+	"npc_ruina_stellar_weaver",
+	"npc_ruina_stellar_weaver_middle",
+	"npc_beheaded_kami",
+	
+	"npc_beefybones",
+	"npc_brittlebones",
+	"npc_bigbones",
+	"npc_basicbones",
+	"npc_beefybones",
+	"npc_brittlebones",
+	"npc_bigbones",
+	"npc_ahim",
+	"npc_inabdil",
+	"npc_khazaan",
+	"npc_sakratan",
+	"npc_yadeam",
+	"npc_rajul",
+	"npc_qanaas",
+	"npc_atilla",
+	"npc_ancient_demon",
+	"npc_winter_sniper",
+	"npc_ziberian_miner",
+	"npc_snowey_gunner",
+	"npc_freezing_cleaner",
+	"npc_airborn_explorer",
+	"npc_arctic_mage",
+	"npc_frost_hunter",
+	"npc_skin_hunter",
+	"npc_irritated_person",
+	"npc_doctor_special",
+	"npc_ransacker",
+	"npc_archosauria",
+	"npc_aslan",
+	"npc_perro",
+	"npc_caprinae",
+	"npc_runover",
+	"npc_hitman",
+	"npc_mad_doctor",
+	"npc_abomination",
+	"npc_enforcer",
+	"npc_braindead",
+	"npc_behemoth",
+	"npc_absolute_incinirator",
+
+	"npc_liberi",
+	"npc_ursus",
+	"npc_aegir",
+	"npc_cautus",
+	"npc_vulpo",
+	"npc_majorsteam",
+	"npc_the_messenger",
+	"npc_chaos_kahmlstein",
+	"npc_the_purge",
+	"npc_allied_kahml"
 };
 
 void NPC_MapStart()
@@ -1638,7 +1854,9 @@ void NPC_MapStart()
 	The_Shit_Slapper_OnMapStart_NPC();
 	
 	BasicBones_OnMapStart_NPC();
-	Itstilives_MapStart();
+	BeefyBones_OnMapStart_NPC();
+	BrittleBones_OnMapStart_NPC();
+	BigBones_OnMapStart_NPC();
 	AlliedLeperVisualiserAbility_OnMapStart_NPC();
 	
 	Mecha_Engineer_OnMapStart_NPC();
@@ -1650,8 +1868,9 @@ void NPC_MapStart()
 	Donnerkrieg_OnMapStart_NPC();
 	Schwertkrieg_OnMapStart_NPC();
 	PhantomKnight_OnMapStart_NPC();
+	BeheadedKamiKaze_OnMapStart_NPC();
 	Alt_Medic_Constructor_OnMapStart_NPC();	//3rd alt medic.
-	
+	/*
 	TheGambler_OnMapStart_NPC();
 	Pablo_Gonzales_OnMapStart_NPC();
 	Doktor_Medick_OnMapStart_NPC();
@@ -1667,7 +1886,7 @@ void NPC_MapStart()
 	BunkerSkeletonSmall_OnMapStart_NPC();
 	BunkerSkeletonKing_OnMapStart_NPC();
 	BunkerHeadlessHorse_OnMapStart_NPC();
-
+	*/
 	MedivalScout_OnMapStart_NPC();
 	MedivalBuilding_OnMapStart_NPC();
 	MedivalConstruct_OnMapStart_NPC();
@@ -1759,7 +1978,37 @@ void NPC_MapStart()
 	GiantTankus_OnMapStart_NPC();
 	AnfuhrerEisenhard_OnMapStart_NPC();
 	SpeedusAdivus_OnMapStart_NPC();
-	
+
+//internius
+	DesertAhim_OnMapStart_NPC();
+	DesertInabdil_OnMapStart_NPC();
+	DesertKhazaan_OnMapStart_NPC();
+	DesertSakratan_OnMapStart_NPC();
+	DesertYadeam_OnMapStart_NPC();
+	DesertRajul_OnMapStart_NPC();
+	DesertQanaas_OnMapStart_NPC();
+	DesertAtilla_OnMapStart_NPC();
+	DesertAncientDemon_OnMapStart_NPC();
+	WinterSniper_OnMapStart_NPC();
+	WinterZiberianMiner_OnMapStart_NPC();
+	WinterSnoweyGunner_OnMapStart_NPC();
+	WinterFreezingCleaner_OnMapStart_NPC();
+	WinterAirbornExplorer_OnMapStart_NPC();
+	WinterArcticMage_OnMapStart_NPC();
+	WinterFrostHunter_OnMapStart_NPC();
+	WinterSkinHunter_OnMapStart_NPC();
+	WinterIrritatedPerson_OnMapStart_NPC();
+	AnarchyRansacker_OnMapStart_NPC();
+	AnarchyRunover_OnMapStart_NPC();
+	AnarchyHitman_OnMapStart_NPC();
+	AnarchyMadDoctor_OnMapStart_NPC();
+	AnarchyAbomination_OnMapStart_NPC();
+	AnarchyEnforcer_OnMapStart_NPC();
+	AnarchyBraindead_OnMapStart_NPC();
+	AnarchyBehemoth_OnMapStart_NPC();
+	AnarchyAbsoluteIncinirator_OnMapStart_NPC();
+	MajorSteam_MapStart();
+
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();
@@ -1787,6 +2036,10 @@ void NPC_MapStart()
 	Sensal_OnMapStart_NPC();
 	Raidboss_Schwertkrieg_OnMapStart_NPC();
 	Raidboss_Donnerkrieg_OnMapStart_NPC();
+	RaidbossBobTheFirst_OnMapStart();
+	TheMessenger_OnMapStart_NPC();
+	ChaosKahmlstein_OnMapStart_NPC();
+	ThePurge_MapStart();
 
 	// Bloon Low Prio
 	Bloon_MapStart();
@@ -1815,9 +2068,10 @@ void NPC_MapStart()
 	RaidbossBladedance_MapStart();
 }
 
-any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
+any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], int team, const char[] data="") //dmg mult only used for summonings
 {
 	any entity = -1;
+	int ally = team;
 	switch(Index_Of_Npc)
 	{
 		case HEADCRAB_ZOMBIE:
@@ -2067,7 +2321,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = NaziPanzer(client, vecPos, vecAng, ally);
 		
 		case BOB_THE_GOD_OF_GODS:
-			entity = BobTheGod(client, vecPos, vecAng);
+			entity = BobTheGod(client, vecPos, vecAng, ally);
 		
 		case NECRO_COMBINE:
 			entity = NecroCombine(client, vecPos, vecAng, StringToFloat(data));
@@ -2076,7 +2330,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = NecroCalcium(client, vecPos, vecAng, StringToFloat(data));
 		
 		case CURED_FATHER_GRIGORI:
-			entity = CuredFatherGrigori(client, vecPos, vecAng);
+			entity = CuredFatherGrigori(client, vecPos, vecAng, ally);
 		
 		case ALT_COMBINE_MAGE:
 			entity = AltCombineMage(client, vecPos, vecAng, ally);
@@ -2196,11 +2450,29 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = The_Shit_Slapper(client, vecPos, vecAng, ally);
 		
 		case BONEZONE_BASICBONES:
-			entity = BasicBones(client, vecPos, vecAng, ally);
-		
-		case ITSTILIVES:
-			entity = Itstilives(client, vecPos, vecAng);
-		
+			entity = BasicBones(client, vecPos, vecAng, ally, false);
+			
+		case BONEZONE_BEEFYBONES:
+			entity = BeefyBones(client, vecPos, vecAng, ally, false);
+			
+		case BONEZONE_BRITTLEBONES:
+			entity = BrittleBones(client, vecPos, vecAng, ally, false);
+			
+		case BONEZONE_BIGBONES:
+			entity = BigBones(client, vecPos, vecAng, ally, false);
+			
+		case BONEZONE_BUFFED_BASICBONES:
+			entity = BasicBones(client, vecPos, vecAng, ally, true);
+			
+		case BONEZONE_BUFFED_BEEFYBONES:
+			entity = BeefyBones(client, vecPos, vecAng, ally, true);
+			
+		case BONEZONE_BUFFED_BRITTLEBONES:
+			entity = BrittleBones(client, vecPos, vecAng, ally, true);
+			
+		case BONEZONE_BUFFED_BIGBONES:
+			entity = BigBones(client, vecPos, vecAng, ally, true);
+			
 		case ALT_MECHA_ENGINEER:
 			entity = Mecha_Engineer(client, vecPos, vecAng, ally);
 		
@@ -2223,11 +2495,14 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = Schwertkrieg(client, vecPos, vecAng, ally, data);
 		
 		case PHANTOM_KNIGHT:
-			entity = PhantomKnight(client, vecPos, vecAng, ally);
+			entity = PhantomKnight(client, vecPos, vecAng, ally);	
+		
+		case MINI_BEHEADED_KAMI:
+			entity = BeheadedKamiKaze(client, vecPos, vecAng, ally);		
 		
 		case ALT_MEDIC_HEALER_3:	//3 being the 3rd stage of alt waves.
 			entity = Alt_Medic_Constructor(client, vecPos, vecAng, ally);
-		
+		/*
 		case THE_GAMBLER:
 			entity = TheGambler(client, vecPos, vecAng, ally);
 		
@@ -2272,7 +2547,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		
 		case BUNKER_HEADLESSHORSE:
 			entity = BunkerHeadlessHorse(client, vecPos, vecAng, ally);
-		
+		*/
 		case MEDIVAL_SCOUT:
 			entity = MedivalScout(client, vecPos, vecAng, ally);
 		
@@ -2391,25 +2666,25 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = NearlSwordAbility(client, vecPos, vecAng, ally);
 		
 		case STALKER_COMBINE:
-			entity = StalkerCombine(client, vecPos, vecAng, false);
+			entity = StalkerCombine(client, vecPos, vecAng, ally);
 		
 		case STALKER_FATHER:
-			entity = StalkerFather(client, vecPos, vecAng, false);
+			entity = StalkerFather(client, vecPos, vecAng, ally);
 		
 		case STALKER_GOGGLES:
-			entity = StalkerGoggles(client, vecPos, vecAng, false);
+			entity = StalkerGoggles(client, vecPos, vecAng, ally);
 		
 		case XENO_RAIDBOSS_SILVESTER:
-			entity = RaidbossSilvester(client, vecPos, vecAng, false, data);
+			entity = RaidbossSilvester(client, vecPos, vecAng, ally, data);
 		
 		case XENO_RAIDBOSS_BLUE_GOGGLES:
-			entity = RaidbossBlueGoggles(client, vecPos, vecAng, false, data);
+			entity = RaidbossBlueGoggles(client, vecPos, vecAng, ally, data);
 		
 		case XENO_RAIDBOSS_SUPERSILVESTER:
-			entity = RaidbossSilvester(client, vecPos, vecAng, false, data);
+			entity = RaidbossSilvester(client, vecPos, vecAng, ally, data);
 		
 		case XENO_RAIDBOSS_NEMESIS:
-			entity = RaidbossNemesis(client, vecPos, vecAng, false, data);
+			entity = RaidbossNemesis(client, vecPos, vecAng, ally, data);
 		
 		case SEARUNNER, SEARUNNER_ALT:
 			entity = SeaRunner(client, vecPos, vecAng, ally, data);
@@ -2645,23 +2920,20 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case RUINA_MAGIA_ANCHOR:
 			entity = Magia_Anchor(client, vecPos, vecAng, ally);
 
-		case RUINA_STORM_WEAVER:
+		case RUINA_STELLAR_WEAVER:
 			entity = Storm_Weaver(client, vecPos, vecAng, ally, data);
 
-		case RUINA_STORM_WEAVER_MID:
+		case RUINA_STELLAR_WEAVER_MID:
 			entity = Storm_Weaver_Mid(client, vecPos, vecAng, ally, StringToFloat(data));
 		
 		case SEA_RAIDBOSS_DONNERKRIEG:
-			entity = Raidboss_Donnerkrieg(client, vecPos, vecAng, ally);
+			entity = Raidboss_Donnerkrieg(client, vecPos, vecAng, ally, data);
 			
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			entity = Raidboss_Schwertkrieg(client, vecPos, vecAng, ally);
 		
-		case SEA_ALLY_SILVESTER:
-			entity = SeaAllySilvester(vecPos, vecAng);
-		
-		case SEA_ALLY_GOGGLES:
-			entity = SeaAllyGoggles(vecPos, vecAng);
+		case BOB_THE_FIRST, BOB_THE_FIRST_S:
+			entity = RaidbossBobTheFirst(vecPos, vecAng, ally, data);
 
 		case EXPIDONSA_BENERA:
 			entity = Benera(client, vecPos, vecAng, ally);
@@ -2682,7 +2954,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = Pistoleer(client, vecPos, vecAng, ally);
 
 		case EXPIDONSA_DIVERSIONISTICO:
-			entity = Diversionistico(client, vecPos, vecAng, ally);
+			entity = Diversionistico(client, vecPos, vecAng, ally, data);
 
 		case EXPIDONSA_HEAVYPUNUEL:
 			entity = HeavyPunuel(client, vecPos, vecAng, ally);
@@ -2718,7 +2990,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = EnegaKapus(client, vecPos, vecAng, ally);
 
 		case EXPIDONSA_CAPTINOAGENTUS:
-			entity = CaptinoAgentus(client, vecPos, vecAng, ally);
+			entity = CaptinoAgentus(client, vecPos, vecAng, ally, data);
 
 		case RAIDMODE_EXPIDONSA_SENSAL:
 			entity = Sensal(client, vecPos, vecAng, ally, data);
@@ -2765,6 +3037,133 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case RAIDBOSS_BLADEDANCE:
 			entity = RaidbossBladedance(client, vecPos, vecAng, ally, data);
 
+		case INTERITUS_DESERT_AHIM:
+			entity = DesertAhim(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_INABDIL:
+			entity = DesertInabdil(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_KHAZAAN:
+			entity = DesertKhazaan(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_SAKRATAN:
+			entity = DesertSakratan(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_YADEAM:
+			entity = DesertYadeam(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_RAJUL:
+			entity = DesertRajul(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_QANAAS:
+			entity = DesertQanaas(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_ATILLA:
+			entity = DesertAtilla(client, vecPos, vecAng, ally);
+
+		case INTERITUS_DESERT_ANCIENTDEMON:
+			entity = DesertAncientDemon(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_SNIPER:
+			entity = WinterSniper(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_ZIBERIANMINER:
+			entity = WinterZiberianMiner(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_SNOWEY_GUNNER:
+			entity = WinterSnoweyGunner(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_FREEZING_CLEANER:
+			entity = WinterFreezingCleaner(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_AIRBORN_EXPLORER:
+			entity = WinterAirbornExplorer(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_ARCTIC_MAGE:
+			entity = WinterArcticMage(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_FROST_HUNTER:
+			entity = WinterFrostHunter(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_SKIN_HUNTER:
+			entity = WinterSkinHunter(client, vecPos, vecAng, ally);
+
+		case INTERITUS_WINTER_IRRITATED_PERSON:
+			entity = WinterIrritatedPerson(client, vecPos, vecAng, ally);
+
+		case THEDOCTOR_MINIBOSS:
+			entity = SpecialDoctor(client, vecPos, vecAng, ally,data);
+     
+		case INTERITUS_ANARCHY_RANSACKER:
+			entity = AnarchyRansacker(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_RUNOVER:
+			entity = AnarchyRunover(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_HITMAN:
+			entity = AnarchyHitman(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_MADDOCTOR:
+			entity = AnarchyMadDoctor(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_ABOMINATION:
+			entity = AnarchyAbomination(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_ENFORCER:
+			entity = AnarchyEnforcer(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_BRAINDEAD:
+			entity = AnarchyBraindead(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_BEHEMOTH:
+			entity = AnarchyBehemoth(client, vecPos, vecAng, ally);
+
+		case INTERITUS_ANARCHY_ABSOLUTE_INCINIRATOR:
+			entity = AnarchyAbsoluteIncinirator(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_SNIPER:
+			entity = Archosauria(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_SCOUT:
+			entity = Aslan(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_SOLDIER:
+			entity = Perro(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_DEMOMAN:
+			entity = Caprinae(client, vecPos, vecAng, ally, data);
+
+		case INTERITUS_FOREST_MEDIC:
+			entity = Liberi(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_HEAVY:
+			entity = Ursus(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_PYRO:
+			entity = Aegir(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_SPY:
+			entity = Cautus(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_ENGINEER:
+			entity = Vulpo(client, vecPos, vecAng, ally);
+
+		case INTERITUS_FOREST_BOSS:
+			entity = MajorSteam(client, vecPos, vecAng, ally);
+			
+		case RAIDMODE_THE_MESSENGER:
+			entity = TheMessenger(client, vecPos, vecAng, ally, data);
+
+		case RAIDMODE_CHAOS_KAHMLSTEIN:
+			entity = ChaosKahmlstein(client, vecPos, vecAng, ally, data);
+
+			
+		case RAIDBOSS_THE_PURGE:
+			entity = ThePurge(client, vecPos, vecAng, ally);
+			
+		case WEAPON_KAHML_AFTERIMAGE:
+			entity = AlliedKahmlAbility(client, vecPos, vecAng, ally);
+
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
@@ -2772,7 +3171,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 	if(entity > 0)
 	{
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(entity) == 2)
 		{
 			Rogue_AllySpawned(entity);
 		}
@@ -2784,13 +3183,122 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 	
 	return entity;
 }	
-public void NPCDeath(int entity)
+
+public void ZR_NpcTauntWinClear()
 {
-	for(int targ; targ<i_MaxcountNpc; targ++)
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 		{
+			func_NPCFuncWin[baseboss_index] = INVALID_FUNCTION;
+		}
+	}
+}
+public void ZR_NpcTauntWin()
+{
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	{
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		{
+			Function func = func_NPCFuncWin[baseboss_index];
+			if(func && func != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, func);
+				Call_PushCell(baseboss_index);
+				Call_Finish();
+			}
+			func_NPCFuncWin[baseboss_index] = INVALID_FUNCTION;
+		}
+	}
+}
+public void NPCDeath(int entity)
+{
+	if(view_as<CClotBody>(entity).m_fCreditsOnKill)
+	{
+		int GiveMoney = 0;
+		float CreditsOnKill = view_as<CClotBody>(entity).m_fCreditsOnKill;
+		if (CreditsOnKill <= 1.0)
+		{
+			f_FactionCreditGain += CreditsOnKill;
+
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(!b_IsPlayerABot[client] && IsClientInGame(client))
+				{
+					if(GetClientTeam(client) != 2)
+					{
+						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.2;
+					}
+					else if (TeutonType[client] == TEUTON_WAITING)
+					{
+						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.1;
+					}
+				}
+			}		
+
+			if(f_FactionCreditGain >= 1.0)
+			{
+				f_FactionCreditGain -= 1.0;
+				GiveMoney = 1;
+			}
+		}
+		else
+		{
+			GiveMoney = RoundToFloor(CreditsOnKill);
+			float Decimal_MoneyGain = FloatFraction(CreditsOnKill);	
+			f_FactionCreditGain += Decimal_MoneyGain;
+			
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(!b_IsPlayerABot[client] && IsClientInGame(client))
+				{
+					if(GetClientTeam(client) != 2)
+					{
+						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.2);
+					}
+					else if (TeutonType[client] == TEUTON_WAITING)
+					{
+						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.1);
+					}
+				}
+			}
+
+			if(f_FactionCreditGain >= 1.0)
+			{
+				f_FactionCreditGain -= 1.0;
+				GiveMoney += 1;
+			}
+		}
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(!b_IsPlayerABot[client] && IsClientInGame(client))
+			{
+				if(f_FactionCreditGainReduction[client] > 1.0)
+				{
+					int RemoveMoney = RoundToFloor(f_FactionCreditGainReduction[client]);
+					f_FactionCreditGainReduction[client] -= float(RemoveMoney);
+					CashSpent[client] += RemoveMoney;
+				}
+			}
+		}
+		CurrentCash += GiveMoney;
+	}
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	{
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		{
+			Function func = func_NPCDeathForward[baseboss_index];
+			if(func && func != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, func);
+				Call_PushCell(baseboss_index);
+				Call_PushCell(entity);
+				Call_Finish();
+				//todo: convert all on death and on take damage to this.
+			}
 			switch(i_NpcInternalId[baseboss_index])
 			{
 				case SEABORN_KAZIMIERZ_BESERKER:
@@ -2800,7 +3308,15 @@ public void NPCDeath(int entity)
 			}
 		}
 	}
-
+	Function func = func_NPCDeath[entity];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(entity);
+		Call_Finish();
+		return;
+		//todo: convert all on death and on take damage to this.
+	}
 	switch(i_NpcInternalId[entity])
 	{
 		case HEADCRAB_ZOMBIE:
@@ -3180,6 +3696,27 @@ public void NPCDeath(int entity)
 		
 		case BONEZONE_BASICBONES:
 			BasicBones_NPCDeath(entity);
+			
+		case BONEZONE_BEEFYBONES:
+			BeefyBones_NPCDeath(entity);
+			
+		case BONEZONE_BRITTLEBONES:
+			BrittleBones_NPCDeath(entity);
+			
+		case BONEZONE_BIGBONES:
+			BigBones_NPCDeath(entity);
+			
+		case BONEZONE_BUFFED_BASICBONES:
+			BasicBones_NPCDeath(entity);
+			
+		case BONEZONE_BUFFED_BEEFYBONES:
+			BeefyBones_NPCDeath(entity);
+			
+		case BONEZONE_BUFFED_BRITTLEBONES:
+			BrittleBones_NPCDeath(entity);
+			
+		case BONEZONE_BUFFED_BIGBONES:
+			BigBones_NPCDeath(entity);
 		
 		case ALT_MECHA_ENGINEER:
 			Mecha_Engineer_NPCDeath(entity);
@@ -3204,10 +3741,13 @@ public void NPCDeath(int entity)
 		
 		case PHANTOM_KNIGHT:
 			PhantomKnight_NPCDeath(entity);
+
+		case MINI_BEHEADED_KAMI:
+			BeheadedKamiKaze_NPCDeath(entity);
 		
 		case ALT_MEDIC_HEALER_3:
 			Alt_Medic_Constructor_NPCDeath(entity);
-		
+		/*
 		case THE_GAMBLER:
 			TheGambler_NPCDeath(entity);
 		
@@ -3252,7 +3792,7 @@ public void NPCDeath(int entity)
 		
 		case BUNKER_HEADLESSHORSE:
 			BunkerHeadlessHorse_NPCDeath(entity);
-		
+		*/
 		case MEDIVAL_SCOUT:
 			MedivalScout_NPCDeath(entity);
 		
@@ -3588,8 +4128,9 @@ public void NPCDeath(int entity)
 		
 		case ISHARMLA_TRANS:
 			IsharmlaTrans_NPCDeath(entity);
-			
-		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA, RUINA_DRONE, RUINA_RURIANA, RUINA_VENIUM , RUINA_MAGIA_ANCHOR, RUINA_STORM_WEAVER, RUINA_STORM_WEAVER_MID:
+	
+		//TODO: Redo this so it uses the new system.
+		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA, RUINA_DRONE, RUINA_RURIANA, RUINA_VENIUM , RUINA_MAGIA_ANCHOR, RUINA_STELLAR_WEAVER, RUINA_STELLAR_WEAVER_MID:
 			Ruina_NPCDeath_Override(entity); //all ruina npc deaths are here
 		
 		case SEA_RAIDBOSS_DONNERKRIEG:
@@ -3598,12 +4139,9 @@ public void NPCDeath(int entity)
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			Raidboss_Schwertkrieg_NPCDeath(entity);
 		
-		case SEA_ALLY_SILVESTER:
-			SeaAllySilvester_NPCDeath(entity);
+		case BOB_THE_FIRST, BOB_THE_FIRST_S:
+			RaidbossBobTheFirst_NPCDeath(entity);
 		
-		case SEA_ALLY_GOGGLES:
-			SeaAllyGoggles_NPCDeath(entity);
-
 		case EXPIDONSA_BENERA:
 			Benera_NPCDeath(entity); 
 
@@ -3710,81 +4248,29 @@ public void NPCDeath(int entity)
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		
 	}
-	
-	if(view_as<CClotBody>(entity).m_fCreditsOnKill)
-	{
-		int GiveMoney = 0;
-		float CreditsOnKill = view_as<CClotBody>(entity).m_fCreditsOnKill;
-		if (CreditsOnKill <= 1.0)
-		{
-			f_FactionCreditGain += CreditsOnKill;
 
-			for(int client=1; client<=MaxClients; client++)
-			{
-				if(!b_IsPlayerABot[client] && IsClientInGame(client))
-				{
-					if(GetClientTeam(client) != 2)
-					{
-						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.2;
-					}
-					else if (TeutonType[client] == TEUTON_WAITING)
-					{
-						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.1;
-					}
-				}
-			}		
-
-			if(f_FactionCreditGain >= 1.0)
-			{
-				f_FactionCreditGain -= 1.0;
-				GiveMoney = 1;
-			}
-		}
-		else
-		{
-			GiveMoney = RoundToFloor(CreditsOnKill);
-			float Decimal_MoneyGain = FloatFraction(CreditsOnKill);	
-			f_FactionCreditGain += Decimal_MoneyGain;
-			
-			for(int client=1; client<=MaxClients; client++)
-			{
-				if(!b_IsPlayerABot[client] && IsClientInGame(client))
-				{
-					if(GetClientTeam(client) != 2)
-					{
-						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.2);
-					}
-					else if (TeutonType[client] == TEUTON_WAITING)
-					{
-						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.1);
-					}
-				}
-			}
-
-			if(f_FactionCreditGain >= 1.0)
-			{
-				f_FactionCreditGain -= 1.0;
-				GiveMoney += 1;
-			}
-		}
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(!b_IsPlayerABot[client] && IsClientInGame(client))
-			{
-				if(f_FactionCreditGainReduction[client] > 1.0)
-				{
-					int RemoveMoney = RoundToFloor(f_FactionCreditGainReduction[client]);
-					f_FactionCreditGainReduction[client] -= float(RemoveMoney);
-					CashSpent[client] += RemoveMoney;
-				}
-			}
-		}
-		CurrentCash += GiveMoney;
-	}
 }
 
 Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	Function func = func_NPCOnTakeDamage[victim];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(victim);
+		Call_PushCellRef(attacker);
+		Call_PushCellRef(inflictor);
+		Call_PushFloatRef(damage);
+		Call_PushCellRef(damagetype);
+		Call_PushCellRef(weapon);
+		Call_PushArray(damageForce, sizeof(damageForce));
+		Call_PushArray(damagePosition, sizeof(damagePosition));
+		Call_PushCell(damagecustom);
+		Call_Finish();
+		return Plugin_Changed;
+		//todo: convert all on death and on take damage to this.
+	}
+
 	switch(i_NpcInternalId[victim])
 	{
 		case HEADCRAB_ZOMBIE, FORTIFIED_HEADCRAB_ZOMBIE, FASTZOMBIE, FORTIFIED_FASTZOMBIE:
@@ -4155,6 +4641,27 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case BONEZONE_BASICBONES:
 			BasicBones_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+			
+		case BONEZONE_BEEFYBONES:
+			BeefyBones_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+			
+		case BONEZONE_BRITTLEBONES:
+			BrittleBones_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+			
+		case BONEZONE_BIGBONES:
+			BigBones_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+			
+		case BONEZONE_BUFFED_BASICBONES:
+			BasicBones_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+			
+		case BONEZONE_BUFFED_BEEFYBONES:
+			BeefyBones_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+			
+		case BONEZONE_BUFFED_BRITTLEBONES:
+			BrittleBones_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+			
+		case BONEZONE_BUFFED_BIGBONES:
+			BigBones_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case ALT_MECHA_ENGINEER:
 			Mecha_Engineer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -4179,10 +4686,13 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case PHANTOM_KNIGHT:
 			PhantomKnight_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case MINI_BEHEADED_KAMI:
+			BeheadedKamiKaze_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case ALT_MEDIC_HEALER_3:
 			Alt_Medic_Constructor_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
+		/*
 		case THE_GAMBLER:
 			TheGambler_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
@@ -4227,7 +4737,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case BUNKER_HEADLESSHORSE:
 			BunkerHeadlessHorse_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
+		*/
 		case MEDIVAL_SCOUT:
 			MedivalScout_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
@@ -4448,9 +4958,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case ISHARMLA:
 			Isharmla_OnTakeDamage(victim, attacker, damage);
-			
-		
-		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA, RUINA_DRONE, RUINA_RURIANA, RUINA_VENIUM, RUINA_MAGIA_ANCHOR, RUINA_STORM_WEAVER, RUINA_STORM_WEAVER_MID:	
+		//TODO: Redo this so it uses the new system.
+		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA, RUINA_DRONE, RUINA_RURIANA, RUINA_VENIUM, RUINA_MAGIA_ANCHOR, RUINA_STELLAR_WEAVER, RUINA_STELLAR_WEAVER_MID:	
 			Ruina_NPC_OnTakeDamage_Override(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 			
 		case SEA_RAIDBOSS_DONNERKRIEG:
@@ -4459,7 +4968,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			Raidboss_Schwertkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
-
+		case BOB_THE_FIRST, BOB_THE_FIRST_S:
+			RaidbossBobTheFirst_OnTakeDamage(victim, attacker, damage);
 
 		case EXPIDONSA_BENERA:
 			Benera_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -4653,8 +5163,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/special/npc_panzer.sp"
 #include "zombie_riot/npc/special/npc_sawrunner.sp"
 #include "zombie_riot/npc/special/npc_l4d2_tank.sp"
-#include "zombie_riot/npc/special/npc_itstilives.sp"
 #include "zombie_riot/npc/special/npc_phantom_knight.sp"
+#include "zombie_riot/npc/special/npc_beheaded_kamikaze.sp"
+#include "zombie_riot/npc/special/npc_doctor.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"
@@ -4672,6 +5183,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_citizen.sp"
 #include "zombie_riot/npc/ally/npc_allied_sensal_afterimage.sp"
 #include "zombie_riot/npc/ally/npc_allied_leper_visualiser.sp"
+#include "zombie_riot/npc/ally/npc_allied_kahml_afterimage.sp"
 
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"
@@ -4768,7 +5280,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/cof/npc_simon.sp"
 
 #include "zombie_riot/npc/bonezone/npc_basicbones.sp"
+#include "zombie_riot/npc/bonezone/npc_beefybones.sp"
+#include "zombie_riot/npc/bonezone/npc_brittlebones.sp"
+#include "zombie_riot/npc/bonezone/npc_bigbones.sp"
 
+/*
 #include "zombie_riot/npc/bunker/npc_gambler.sp"
 #include "zombie_riot/npc/bunker/npc_pablo.sp"
 #include "zombie_riot/npc/bunker/npc_dokmedick.sp"
@@ -4784,7 +5300,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/bunker/npc_bunker_small_skeleton.sp"
 #include "zombie_riot/npc/bunker/npc_bunker_king_skeleton.sp"
 #include "zombie_riot/npc/bunker/npc_bunker_hhh.sp"
-
+*/
 #include "zombie_riot/npc/ally/npc_barrack.sp"
 #include "zombie_riot/npc/ally/npc_barrack_militia.sp"
 #include "zombie_riot/npc/ally/npc_barrack_archer.sp"
@@ -4877,8 +5393,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/raidmode_bosses/seaborn/npc_donnerkrieg.sp"
 #include "zombie_riot/npc/raidmode_bosses/seaborn/npc_schwertkrieg.sp"
-#include "zombie_riot/npc/ally/npc_seaally_silvester.sp"
-#include "zombie_riot/npc/ally/npc_seaally_goggles.sp"
+#include "zombie_riot/npc/raidmode_bosses/seaborn/npc_bob_the_first_last_savior.sp"
 
 #include "zombie_riot/npc/expidonsa/npc_benera.sp"
 #include "zombie_riot/npc/expidonsa/npc_pental.sp"
@@ -4914,3 +5429,48 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_vip_building.sp"
 #include "zombie_riot/npc/rogue/npc_overlord_rogue.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_bladedance.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_the_messenger.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_chaos_kahmlstein.sp"
+
+#include "zombie_riot/npc/raidmode_bosses/npc_the_purge.sp"
+
+#include "zombie_riot/npc/interitus/desert/npc_ahim.sp"
+#include "zombie_riot/npc/interitus/desert/npc_inabdil.sp"
+#include "zombie_riot/npc/interitus/desert/npc_khazaan.sp"
+#include "zombie_riot/npc/interitus/desert/npc_sakratan.sp"
+#include "zombie_riot/npc/interitus/desert/npc_yadeam.sp"
+#include "zombie_riot/npc/interitus/desert/npc_rajul.sp"
+#include "zombie_riot/npc/interitus/desert/npc_qanaas.sp"
+#include "zombie_riot/npc/interitus/desert/npc_atilla.sp"
+#include "zombie_riot/npc/interitus/desert/npc_ancient_demon.sp"
+
+#include "zombie_riot/npc/interitus/winter/npc_winter_sniper.sp"
+#include "zombie_riot/npc/interitus/winter/npc_ziberian_miner.sp"
+#include "zombie_riot/npc/interitus/winter/npc_snowey_gunner.sp"
+#include "zombie_riot/npc/interitus/winter/npc_freezing_cleaner.sp"
+#include "zombie_riot/npc/interitus/winter/npc_airborn_explorer.sp"
+#include "zombie_riot/npc/interitus/winter/npc_arctic_mage.sp"
+#include "zombie_riot/npc/interitus/winter/npc_skin_hunter.sp"
+#include "zombie_riot/npc/interitus/winter/npc_frost_hunter.sp"
+#include "zombie_riot/npc/interitus/winter/npc_irritated_person.sp"
+
+#include "zombie_riot/npc/interitus/anarchy/npc_ransacker.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_runover.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_hitman.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_mad_doctor.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_abomination.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_enforcer.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_braindead.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_behemoth.sp"
+#include "zombie_riot/npc/interitus/anarchy/npc_absolute_incinirator.sp"
+
+#include "zombie_riot/npc/interitus/forest/npc_archosauria.sp"
+#include "zombie_riot/npc/interitus/forest/npc_aslan.sp"
+#include "zombie_riot/npc/interitus/forest/npc_perro.sp"
+#include "zombie_riot/npc/interitus/forest/npc_caprinae.sp"
+#include "zombie_riot/npc/interitus/forest/npc_liberi.sp"
+#include "zombie_riot/npc/interitus/forest/npc_ursus.sp"
+#include "zombie_riot/npc/interitus/forest/npc_aegir.sp"
+#include "zombie_riot/npc/interitus/forest/npc_cautus.sp"
+#include "zombie_riot/npc/interitus/forest/npc_vulpo.sp"
+#include "zombie_riot/npc/interitus/forest/npc_majorsteam.sp"

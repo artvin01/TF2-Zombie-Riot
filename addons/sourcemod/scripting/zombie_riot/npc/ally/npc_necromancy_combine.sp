@@ -172,7 +172,7 @@ methodmap NecroCombine < CClotBody
 	
 	public NecroCombine(int client, float vecPos[3], float vecAng[3], float damage_multiplier = 1.0)
 	{
-		NecroCombine npc = view_as<NecroCombine>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.8", "1250", true, true, false));
+		NecroCombine npc = view_as<NecroCombine>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.8", "1250", TFTeam_Red, true, false));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = NECRO_COMBINE;
@@ -279,15 +279,15 @@ public void NecroCombine_ClotThink(int iNPC)
 		
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 		{
-				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 				
 			
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 				
 				//Predict their pos.
 				if(flDistanceToTarget < npc.GetLeadRadius()) {
 					
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 					/*
 					int color[4];
 					color[0] = 255;
@@ -350,7 +350,7 @@ public void NecroCombine_ClotThink(int iNPC)
 										{
 											damage *= 0.5;
 										}
-										SDKHooks_TakeDamage(target, owner, owner, (damage * npc.m_flExtraDamage), DMG_SLASH, -1, _, vecHit); //Do acid so i can filter it well.
+										SDKHooks_TakeDamage(target, owner, owner, (damage * npc.m_flExtraDamage), DMG_PLASMA, -1, _, vecHit); //Do acid so i can filter it well.
 										
 										// Hit particle
 										

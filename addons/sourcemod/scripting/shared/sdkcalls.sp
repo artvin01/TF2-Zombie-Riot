@@ -459,35 +459,23 @@ void Manual_Impulse_101(int client, int health)
 		SetConVarInt(sv_cheats, 0, false, false);
 	}
 	
-	
-	float host_timescale;
-	host_timescale = GetConVarFloat(cvarTimeScale);
-	
-	if(host_timescale != 1.0)
-	{
-		for(int i=1; i<=MaxClients; i++)
-		{
-			if(IsClientInGame(i) && !IsFakeClient(i))
-			{
-				SendConVarValue(i, sv_cheats, "1");
-			}
-		}
-	}
-	
 	//how quirky.
 	SetAmmo(client, 1, 9999);
 	SetAmmo(client, 2, 9999);
+#if !defined RTS
 	SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
 	for(int i=Ammo_Jar; i<Ammo_MAX; i++)
 	{
 		SetAmmo(client, i, CurrentAmmo[client][i]);
 	}
-	
+#endif
+
 	OnWeaponSwitchPost(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
 
 #if defined ZR
 	ClientApplyRageMeterStatus(client);
 	ClientApplyMedigunUber(client);
+	Clip_GiveAllWeaponsClipSizes(client);
 #endif
 
 	if(health > 0)

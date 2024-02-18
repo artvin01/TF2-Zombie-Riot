@@ -1,6 +1,21 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define BONES_BASIC_HP			"300"
+#define BONES_BASIC_HP_BUFFED	"600"
+
+static float BONES_BASIC_SPEED = 300.0;
+static float BONES_BASIC_SPEED_BUFFED = 350.0;
+
+static float BONES_BASIC_PLAYERDAMAGE = 50.0;
+static float BONES_BASIC_PLAYERDAMAGE_BUFFED = 90.0;
+
+static float BONES_BASIC_BUILDINGDAMAGE = 60.0;
+static float BONES_BASIC_BUILDINGDAMAGE_BUFFED = 100.0;
+
+static float BONES_BASIC_ATTACKINTERVAL = 1.2;
+static float BONES_BASIC_ATTACKINTERVAL_BUFFED = 0.8;
+
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
 };
@@ -43,7 +58,7 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode3.wav",
 };
 
-static bool WakeTheFUCKUp[MAXENTITIES];
+static bool b_BonesBuffed[MAXENTITIES];
 
 public void BasicBones_OnMapStart_NPC()
 {
@@ -139,11 +154,19 @@ methodmap BasicBones < CClotBody
 	
 	
 	
-	public BasicBones(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BasicBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
-		BasicBones npc = view_as<BasicBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "1.0", "300", ally, false));
+		BasicBones npc = view_as<BasicBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "1.0", buffed ? BONES_BASIC_HP_BUFFED : BONES_BASIC_HP, ally, false));
 		
-		i_NpcInternalId[npc.index] = BONEZONE_BASICBONES;
+		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_BASICBONES : BONEZONE_BASICBONES;
+		b_BonesBuffed[npc.index] = buffed;
+		
+		if (buffed)
+		{
+			TE_SetupParticleEffect("utaunt_wispy_parent_g", PATTACH_ABSORIGIN_FOLLOW, npc.index);
+			TE_WriteNum("m_bControlPoint1", npc.index);	
+			TE_SendToAll();	
+		}
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -151,7 +174,7 @@ methodmap BasicBones < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_bDoSpawnGesture = true;
-		WakeTheFUCKUp[npc.index] = false;
+		DispatchKeyValue(npc.index, "skin", "2");
 
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -160,12 +183,7 @@ methodmap BasicBones < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		//IDLE
-		npc.m_flSpeed = 120.0;
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 200.0;
-		}
-		
+		npc.m_flSpeed = (buffed ? BONES_BASIC_SPEED_BUFFED : BONES_BASIC_SPEED);
 		
 		SDKHook(npc.index, SDKHook_Think, BasicBones_ClotThink);
 		
@@ -192,18 +210,11 @@ public void BasicBones_ClotThink(int iNPC)
 		npc.AddGesture("ACT_TRANSITION");
 		npc.m_bDoSpawnGesture = false;
 		npc.PlayHeIsAwake();
-//		WakeTheFUCKUp[npc.index] = true && GetGameTime(npc.index) + 4.0 ;
 	}
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
-	}
-	
-	if(WakeTheFUCKUp[npc.index])//this is only there so he can actually move
-	{
-		WakeTheFUCKUp[npc.index] = false;
-		npc.m_flSpeed = 300.0;
 	}
 	
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
@@ -237,14 +248,14 @@ public void BasicBones_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
 	//		PrintToChatAll("cutoff");
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -283,23 +294,11 @@ public void BasicBones_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 						if(target > 0) 
 						{
-							if(EscapeModeForNpc)
-							{
-								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_CLUB, -1, _, vecHit);
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
-							}
+							if(target <= MaxClients)
+								SDKHooks_TakeDamage(target, npc.index, npc.index, b_BonesBuffed[npc.index] ? BONES_BASIC_PLAYERDAMAGE_BUFFED : BONES_BASIC_PLAYERDAMAGE, DMG_CLUB, -1, _, vecHit);
 							else
-							{
-								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_CLUB, -1, _, vecHit);					
-							}
-							
-							
-								
+								SDKHooks_TakeDamage(target, npc.index, npc.index, b_BonesBuffed[npc.index] ? BONES_BASIC_BUILDINGDAMAGE_BUFFED : BONES_BASIC_BUILDINGDAMAGE, DMG_CLUB, -1, _, vecHit);					
+
 							// Hit sound
 							npc.PlayMeleeHitSound();
 						}
@@ -309,13 +308,13 @@ public void BasicBones_ClotThink(int iNPC)
 						}
 					}
 					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BONES_BASIC_ATTACKINTERVAL_BUFFED : BONES_BASIC_ATTACKINTERVAL);
 					npc.m_flAttackHappenswillhappen = false;
 				}
 				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BONES_BASIC_ATTACKINTERVAL_BUFFED : BONES_BASIC_ATTACKINTERVAL);
 				}
 			}
 			

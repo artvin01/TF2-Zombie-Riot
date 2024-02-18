@@ -3,7 +3,7 @@
 
 methodmap EndSpeaker1 < EndSpeakerSmall
 {
-	public EndSpeaker1(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public EndSpeaker1(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		EndSpeaker1 npc = view_as<EndSpeaker1>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.0", "1200", ally, false, _, true));
 		// 10000 x 0.4 x 0.3
@@ -59,12 +59,12 @@ public void EndSpeaker1_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			vecTarget = PredictSubjectPosition(npc, npc.m_iTarget);
+			vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 		}
 		else 

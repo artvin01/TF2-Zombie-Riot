@@ -130,7 +130,7 @@ methodmap GodKingRaidriar < CClotBody
 		#endif
 	}
 	
-	public GodKingRaidriar(int client, float vecPos[3], float vecAng[3], bool ally)
+	public GodKingRaidriar(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		GodKingRaidriar npc = view_as<GodKingRaidriar>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "5000", ally, false, true, true, true));
 		
@@ -259,13 +259,13 @@ public void GodKingRaidriar_ClotThink(int iNPC)
 			npc.StartPathing(); //idk i added this as a safty
 		}
 		
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		if(flDistanceToTarget < npc.GetLeadRadius())//Predict their pos.
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else

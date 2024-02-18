@@ -84,7 +84,7 @@ methodmap Addicition < CClotBody
 		EmitCustomToAll(g_ThunderSounds[GetRandomInt(0, sizeof(g_ThunderSounds) - 1)], this.index, SNDCHAN_AUTO, 120, _, 3.0);
 	}
 	
-	public Addicition(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Addicition(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Addicition npc = view_as<Addicition>(CClotBody(vecPos, vecAng, "models/zombie_riot/aom/david_monster.mdl", "1.15", data[0] == 'f' ? "250000" : "10000", ally, false, false, true));
 		i_NpcInternalId[npc.index] = THEADDICTION;
@@ -180,7 +180,7 @@ public void Addicition_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -229,9 +229,9 @@ public void Addicition_ClotThink(int iNPC)
 		}
 		else
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 			
-			float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			if(distance < 40000.0 && npc.m_flNextMeleeAttack < gameTime)
 			{
 				npc.FaceTowards(vecTarget, 15000.0);
@@ -274,7 +274,7 @@ public void Addicition_ClotThink(int iNPC)
 				}
 				else
 				{
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				npc.StartPathing();
@@ -352,13 +352,13 @@ public void Addicition_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 				
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
@@ -409,7 +409,7 @@ public void Addicition_ClotThink(int iNPC)
 					
 					float vEnd[3];
 					
-					vEnd = GetAbsOrigin(npc.m_iTarget);
+					vEnd = GetAbsOriginOld(npc.m_iTarget);
 					Handle pack;
 					CreateDataTimer(ADDICTION_CHARGE_SPAN, Smite_Timer_Addiction, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 					WritePackCell(pack, EntIndexToEntRef(npc.index));

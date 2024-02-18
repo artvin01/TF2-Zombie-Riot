@@ -169,7 +169,7 @@ methodmap AltCombineMage < CClotBody
 		#endif
 	}
 	
-	public AltCombineMage(int client, float vecPos[3], float vecAng[3], bool ally)
+	public AltCombineMage(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		AltCombineMage npc = view_as<AltCombineMage>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "200", ally));
 		SetVariantInt(1);
@@ -230,7 +230,13 @@ public void AltCombineMage_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
-	
+
+	float TrueArmor = 1.0;
+	if(npc.m_fbRangedSpecialOn)
+		TrueArmor *= 0.75;
+		
+	fl_TotalArmor[npc.index] = TrueArmor;
+
 	//Think throttling
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) {
 		return;
@@ -248,15 +254,15 @@ public void AltCombineMage_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -397,9 +403,6 @@ public Action AltCombineMage_OnTakeDamage(int victim, int &attacker, int &inflic
 		return Plugin_Continue;
 		
 	AltCombineMage npc = view_as<AltCombineMage>(victim);
-		
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{

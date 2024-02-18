@@ -129,7 +129,7 @@ methodmap XenoSoldier < CClotBody
 		#endif
 	}
 	
-	public XenoSoldier(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoSoldier(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSoldier npc = view_as<XenoSoldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "3000", ally));
 		
@@ -223,14 +223,14 @@ public void XenoSoldier_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				/*
 				int color[4];
 				color[0] = 255;
@@ -277,7 +277,7 @@ public void XenoSoldier_ClotThink(int iNPC)
 						
 						float projectile_speed = 1000.0;
 						
-						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
+						vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
 						
 						npc.FireRocket(vecTarget, 26.0, projectile_speed);
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;

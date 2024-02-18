@@ -85,7 +85,7 @@ methodmap Guardus < CClotBody
 	}
 	
 	
-	public Guardus(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Guardus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Guardus npc = view_as<Guardus>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "20000", ally, false, true));
 		//lower health due to masssive hp gain on attack
@@ -171,13 +171,13 @@ public void Guardus_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -220,23 +220,7 @@ public void Guardus_NPCDeath(int entity)
 	//when dying, cause a heal explosion!
 	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		b_ExpidonsaWasAttackingNonPlayer = false;
-		int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
-		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
-		Explode_Logic_Custom(0.0,
-		npc.index,
-		npc.index,
-		-1,
-		_,
-		50.0,
-		_,
-		_,
-		true,
-		5,
-		false,
-		_,
-		GuardusAllyHeal);
-		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
+		ExpidonsaGroupHeal(npc.index, 200.0, 99, 1250.0, 1.0, true);
 	}
 	ExpidonsaRemoveEffects(entity);
 	SDKUnhook(npc.index, SDKHook_Think, Guardus_ClotThink);
@@ -262,7 +246,7 @@ void GuardusSelfDefense(Guardus npc, float gameTime, int target, float distance)
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
@@ -279,41 +263,23 @@ void GuardusSelfDefense(Guardus npc, float gameTime, int target, float distance)
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-
-					int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
-					SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
 					// Hit sound
 					npc.PlayMeleeHitSound();
-					//on hit, we heal all allies around us
 					if(target <= MaxClients)
 					{
 						if (IsInvuln(target))
 						{
-							b_ExpidonsaWasAttackingNonPlayer = true;
+							ExpidonsaGroupHeal(npc.index, 150.0, 5, 750.0, 1.0, true);
 						}
 						else
 						{
-							b_ExpidonsaWasAttackingNonPlayer = false;
+							ExpidonsaGroupHeal(npc.index, 150.0, 5, 1250.0, 1.0, true);
 						}
 					}
 					else
 					{
-						b_ExpidonsaWasAttackingNonPlayer = true;
+						ExpidonsaGroupHeal(npc.index, 150.0, 5, 750.0, 1.0, true);
 					}
-					Explode_Logic_Custom(0.0,
-					npc.index,
-					npc.index,
-					-1,
-					_,
-					200.0,
-					_,
-					_,
-					true,
-					5,
-					false,
-					_,
-					GuardusAllyHeal);
-					SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
 				} 
 			}
 			delete swingTrace;
@@ -373,42 +339,4 @@ void GuardusEffects(int iNpc)
 	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
 	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
 	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(Laser_1);
-}
-
-
-void GuardusAllyHeal(int entity, int victim, float damage, int weapon)
-{
-	if(entity == victim)
-		return;
-
-	if(b_IsAlliedNpc[entity])
-	{
-		if(victim <= MaxClients)
-		{
-			GuardusAllyHealInternal(entity, victim, 50.0);
-		}
-		else if (b_IsAlliedNpc[victim])
-		{
-			GuardusAllyHealInternal(entity, victim, 50.0);
-		}
-	}
-	else
-	{
-		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
-		{
-			GuardusAllyHealInternal(entity, victim, 1250.0);
-		}
-	}
-}
-
-void GuardusAllyHealInternal(int entity, int victim, float heal)
-{
-	if(b_ExpidonsaWasAttackingNonPlayer)
-		heal *= 0.5;
-
-	HealEntityGlobal(entity, victim, heal, 1.0,_,_);
-	float ProjLoc[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-	ProjLoc[2] += 100.0;
-	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }

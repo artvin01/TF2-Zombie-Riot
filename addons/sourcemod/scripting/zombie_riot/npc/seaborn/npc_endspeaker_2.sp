@@ -3,7 +3,7 @@
 
 methodmap EndSpeaker2 < EndSpeakerSmall
 {
-	public EndSpeaker2(bool ally)
+	public EndSpeaker2(int ally)
 	{
 		float vecPos[3], vecAng[3];
 		view_as<EndSpeaker>(0).GetSpawn(vecPos, vecAng);
@@ -11,7 +11,7 @@ methodmap EndSpeaker2 < EndSpeakerSmall
 		char health[12];
 		IntToString(view_as<EndSpeaker>(0).m_iBaseHealth * 3, health, sizeof(health));
 
-		EndSpeaker2 npc = view_as<EndSpeaker2>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.5", health, ally, false));
+		EndSpeaker2 npc = view_as<EndSpeaker2>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.35", health, ally, false));
 		
 		i_NpcInternalId[npc.index] = ENDSPEAKER_2;
 		i_NpcWeight[npc.index] = 2;
@@ -75,8 +75,8 @@ public void EndSpeaker2_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -84,7 +84,7 @@ public void EndSpeaker2_ClotThink(int iNPC)
 			
 			if(npc.m_flAttackHappens < gameTime)
 			{
-				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1200.0);
 
 				npc.m_flAttackHappens = 0.0;
 				
@@ -116,7 +116,7 @@ public void EndSpeaker2_ClotThink(int iNPC)
 					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(entity, 100, 100, 255, 255);
 					
-					vecTarget = WorldSpaceCenter(entity);
+					vecTarget = WorldSpaceCenterOld(entity);
 					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "rockettrail_bubbles", 3.0);
 					SetParent(entity, f_ArrowTrailParticle[entity]);
 					f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
@@ -149,7 +149,7 @@ public void EndSpeaker2_ClotThink(int iNPC)
 		{
 			if(distance < npc.GetLeadRadius())
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 

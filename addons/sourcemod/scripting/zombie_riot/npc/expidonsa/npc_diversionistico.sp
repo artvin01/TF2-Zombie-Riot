@@ -115,7 +115,7 @@ methodmap Diversionistico < CClotBody
 		
 	}
 
-	public Diversionistico(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Diversionistico(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Diversionistico npc = view_as<Diversionistico>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally, false, false, true));
 		
@@ -143,7 +143,13 @@ methodmap Diversionistico < CClotBody
 		b_TryToAvoidTraverse[npc.index] = true;
 		DiversionSpawnNpcReset(npc.index);
 		
+		bool final = StrContains(data, "spy_duel") != -1;
 		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
+
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
@@ -181,21 +187,24 @@ methodmap Diversionistico < CClotBody
 		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 350.0);
 		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 500.0);
 
-		if(LastSpawnDiversio < GetGameTime())
+		if(ally != TFTeam_Red)
 		{
-			EmitSoundToAll("player/spy_uncloak_feigndeath.wav", _, _, _, _, 1.0);	
-			EmitSoundToAll("player/spy_uncloak_feigndeath.wav", _, _, _, _, 1.0);	
-			for(int client_check=1; client_check<=MaxClients; client_check++)
+			if(LastSpawnDiversio < GetGameTime())
 			{
-				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+				EmitSoundToAll("player/spy_uncloak_feigndeath.wav", _, _, _, _, 1.0);	
+				EmitSoundToAll("player/spy_uncloak_feigndeath.wav", _, _, _, _, 1.0);	
+				for(int client_check=1; client_check<=MaxClients; client_check++)
 				{
-					SetGlobalTransTarget(client_check);
-					ShowGameText(client_check, "voice_player", 1, "%t", "Diversionistico Spawn");
+					if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+					{
+						SetGlobalTransTarget(client_check);
+						ShowGameText(client_check, "voice_player", 1, "%t", "Diversionistico Spawn");
+					}
 				}
 			}
+			LastSpawnDiversio = GetGameTime() + 20.0;
+			TeleportDiversioToRandLocation(npc.index);
 		}
-		LastSpawnDiversio = GetGameTime() + 20.0;
-		TeleportDiversioToRandLocation(npc.index);
 		return npc;
 	}
 }
@@ -233,14 +242,14 @@ public void Diversionistico_ClotThink(int iNPC)
 	{
 		int AntiCheeseReply = 0;
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
 			b_TryToAvoidTraverse[npc.index] = false;
-			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			vPredictedPos = GetBehindTarget(npc.m_iTarget, 40.0 ,vPredictedPos);
 			AntiCheeseReply = DiversionAntiCheese(npc.m_iTarget, npc.index, vPredictedPos);
 			b_TryToAvoidTraverse[npc.index] = true;
@@ -292,12 +301,22 @@ public Action Diversionistico_OnTakeDamage(int victim, int &attacker, int &infli
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+
+	if(i_RaidGrantExtra[victim])
+	{
+		if(!i_HasBeenBackstabbed[victim])
+		{
+			damage = 0.0;
+			return Plugin_Changed;
+		}
+	}
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+
 	
 	return Plugin_Changed;
 }
@@ -326,7 +345,7 @@ public void Diversionistico_NPCDeath(int entity)
 }
 void DiversionisticoSelfDefenseRanged(Diversionistico npc, float gameTime, int target)
 {
-	npc.FaceTowards(WorldSpaceCenter(target), 15000.0);
+	npc.FaceTowards(WorldSpaceCenterOld(target), 15000.0);
 	if(gameTime > npc.m_flNextRangedAttack)
 	{
 		npc.PlayZapSound();
@@ -334,7 +353,7 @@ void DiversionisticoSelfDefenseRanged(Diversionistico npc, float gameTime, int t
 		npc.m_flDoingAnimation = gameTime + 0.25;
 		npc.m_flNextRangedAttack = gameTime + 1.2;
 		float damageDealt = 85.0;
-		SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, WorldSpaceCenter(target));
+		SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, WorldSpaceCenterOld(target));
 		if(IsValidEntity(npc.m_iWearable5))
 			RemoveEntity(npc.m_iWearable5);
 
@@ -352,11 +371,18 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 			int Enemy_I_See;					
 			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			
-			npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.PlayMeleeSound();
-				if(IsBehindAndFacingTarget(npc.index, npc.m_iTarget) && !NpcStats_IsEnemySilenced(npc.index))
+				if(i_RaidGrantExtra[npc.index])
+				{
+					if(Enemy_I_See <= MaxClients && b_FaceStabber[Enemy_I_See])
+					{
+						BackstabDone = true;
+					}
+				}
+				if(BackstabDone || IsBehindAndFacingTarget(npc.index, npc.m_iTarget) && !NpcStats_IsEnemySilenced(npc.index))
 				{
 					BackstabDone = true;
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");	
@@ -391,8 +417,19 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 
 					if(BackstabDone)
 					{
+						if(i_RaidGrantExtra[npc.index])
+						{
+							if(target <= MaxClients && b_FaceStabber[target])
+							{
+								damageDealt *= 0.5;
+							}
+						}
 						npc.PlayMeleeBackstabSound(target);
 						damageDealt *= 3.0;
+					}
+					else if(i_RaidGrantExtra[npc.index])
+					{
+						damageDealt *= 0.5;
 					}
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
@@ -408,7 +445,7 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 
 
 
-int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false)
+int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, float MaxSpawnDist = 1250.0, float MinSpawnDist = 500.0)
 {
 	if(zr_disablerandomvillagerspawn.BoolValue)
 		return 3;
@@ -434,11 +471,11 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false)
 				float f3_PositionTemp[3];
 				GetEntPropVector(client_check, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
 				float flDistanceToTarget = GetVectorDistance(AproxRandomSpaceToWalkTo, f3_PositionTemp, true);	
-				if(flDistanceToTarget > (1250.0 * 1250.0))
+				if(flDistanceToTarget > (MaxSpawnDist * MaxSpawnDist))
 				{
 					WasTooFarAway += 1;
 				}
-				if(flDistanceToTarget < (500.0 * 500.0))
+				if(flDistanceToTarget < (MinSpawnDist * MinSpawnDist))
 				{
 					DoNotTeleport = true;
 					break;

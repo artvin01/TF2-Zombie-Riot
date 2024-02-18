@@ -395,9 +395,9 @@ public void ClotThink(int iNPC)
 		if(IsValidAllyNotFullHealth(npc.index, PrimaryThreatIndex))
 		{
 				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 				
 				if(flDistanceToTarget < 250000)
 				{
@@ -424,7 +424,7 @@ public void ClotThink(int iNPC)
 						SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"));
 					}
 					
-					npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 2000.0);
+					npc.FaceTowards(WorldSpaceCenterOld(PrimaryThreatIndex), 2000.0);
 				}
 				else
 				{
@@ -455,9 +455,9 @@ public void ClotThink(int iNPC)
 		}
 		if(IsValidAllyPlayer(npc.index, npc.m_iTargetAlly))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			if(flDistanceToTarget > 90000) //300 units
 			{
 				NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);	
@@ -505,14 +505,14 @@ public void ClotThink(int iNPC)
 		
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 		{
-				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 				
 				//Predict their pos.
 				if(flDistanceToTarget < npc.GetLeadRadius()) {
 					
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 					
 					int color[4];
 					color[0] = 255;
@@ -762,7 +762,7 @@ stock int GetClosestAlly(int entity)
 		int i = MaxClients + 1;
 		while ((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 		{
-			if (GetEntProp(entity, Prop_Send, "m_iTeamNum")==GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") < GetEntProp(i, Prop_Data, "m_iMaxHealth"))
+			if (GetTeam(entity)==GetTeam(i) && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") < GetEntProp(i, Prop_Data, "m_iMaxHealth"))
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -796,7 +796,7 @@ stock bool IsValidAllyNotFullHealth(int index, int ally)
 		GetEntityClassname(ally, strClassname, sizeof(strClassname));
 		if(StrEqual(strClassname, "zr_base_npc"))
 		{
-			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(ally, Prop_Send, "m_iTeamNum") && GetEntProp(ally, Prop_Data, "m_iHealth") > 0 && GetEntProp(ally, Prop_Data, "m_iHealth") < GetEntProp(ally, Prop_Data, "m_iMaxHealth")) 
+			if(GetTeam(index) == GetTeam(ally) && GetEntProp(ally, Prop_Data, "m_iHealth") > 0 && GetEntProp(ally, Prop_Data, "m_iHealth") < GetEntProp(ally, Prop_Data, "m_iMaxHealth")) 
 			{
 				return true;
 			}

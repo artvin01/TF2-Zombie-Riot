@@ -166,11 +166,12 @@ public void Sensal_Ability_R_Laser(int client, int weapon, bool crit, int slot) 
 			}
 			FinishLagCompensation_Base_boss();
 
-			int spawn_index = Npc_Create(WEAPON_SENSAL_AFTERIMAGE, client, flPos, fAng, GetEntProp(client, Prop_Send, "m_iTeamNum") == 2);
+			int spawn_index = Npc_Create(WEAPON_SENSAL_AFTERIMAGE, client, flPos, fAng, GetTeam(client));
 			if(spawn_index > 0)
 			{
 				//this is the damage
-				i_Target[spawn_index] = foundTarget;
+				CClotBody npc = view_as<CClotBody>(spawn_index);
+				npc.m_iTarget = foundTarget;
 				fl_heal_cooldown[spawn_index] = damage;
 				i_Changed_WalkCycle[spawn_index] = EntIndexToEntRef(weapon);
 			}
@@ -360,7 +361,7 @@ void SummonScytheSensalProjectile(int client, int weapon)
 	time *= Attributes_Get(weapon, 102, 1.0);
 
 	float Pos_player[3];
-	Pos_player = WorldSpaceCenter(client);
+	Pos_player = WorldSpaceCenterOld(client);
 	
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
@@ -503,7 +504,7 @@ public void Weapon_Sensal_WandTouch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenter(target);
+		Entity_Position = WorldSpaceCenterOld(target);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
@@ -517,7 +518,7 @@ public void Weapon_Sensal_WandTouch(int entity, int target)
 			
 		TE_Particle(b_ClientPossesBattery[owner] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position,_,ZR_DAMAGE_REFLECT_LOGIC);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position,_,ZR_DAMAGE_REFLECT_LOGIC);	// 2048 is DMG_NOGIB?
 		
 		
 		if(IsValidEntity(particle))

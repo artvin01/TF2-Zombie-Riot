@@ -12,10 +12,10 @@ void Events_PluginStart()
 	HookEvent("player_team", OnPlayerTeam, EventHookMode_Pre);
 	HookEvent("player_connect_client", OnPlayerConnect, EventHookMode_Pre);
 	HookEvent("player_disconnect", OnPlayerConnect, EventHookMode_Pre);
+	HookEvent("deploy_buff_banner", OnBannerDeploy, EventHookMode_Pre);
 //	HookEvent("nav_blocked", NavBlocked, EventHookMode_Pre);
-	
 #if defined ZR
-	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_PostNoCopy);
+	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_Post);
 	HookEvent("teamplay_setup_finished", OnSetupFinished, EventHookMode_PostNoCopy);
 #endif
 	
@@ -104,7 +104,7 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 		int team = event.GetInt("team");
 		switch(team)
 		{
-			case 0,1: //either team ? kill dispenser!
+			case 0,1,3: //either team ? kill dispenser!
 			{
 				DestroyDispenser(client);
 			}
@@ -120,6 +120,11 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 	return Plugin_Changed;
 }
 
+public Action OnBannerDeploy(Event event, const char[] name, bool dontBroadcast)
+{
+	return Plugin_Handled;
+}
+
 public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast)
 {
 	if(!event.GetBool("bot"))
@@ -132,7 +137,7 @@ public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast
 #if defined ZR
 public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
-	Store_RandomizeNPCStore(true);
+	Store_RandomizeNPCStore(1);
 	f_FreeplayDamageExtra = 1.0;
 	b_GameOnGoing = false;
 	for(int client=1; client<=MaxClients; client++)
@@ -160,6 +165,11 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
 	CurrentGame = 0;
+	if(event.GetInt("team") == 3)
+	{
+		//enemy team won due to timer or something else.
+		ZR_NpcTauntWin();
+	}
 }
 #endif
 
@@ -174,23 +184,34 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 		ForcePlayerCrouch(client, false);
+
+#if defined RTS
+		RTS_PlayerResupply(client);
+#else
 		TF2_RemoveAllWeapons(client); //Remove all weapons. No matter what.
 		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
 		SetVariantString("");
 	  	AcceptEntityInput(client, "SetCustomModel");
-	  	
-	  	
+
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 		ViewChange_DeleteHands(client);
 		ViewChange_UpdateHands(client, CurrentClass[client]);
 		TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
-		if(b_IsPlayerNiko[client])
+		if(b_IsPlayerNiko[client] || b_HideCosmeticsPlayer[client])
 		{
 		  	int entity = MaxClients+1;
 			while(TF2_GetWearable(client, entity))
 			{
-				SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+			}
+		}
+		else
+		{
+			int entity = MaxClients+1;
+			while(TF2_GetWearable(client, entity))
+			{
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 			}
 		}
 		/*
@@ -204,7 +225,8 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		}
 		*/
 		//doesnt work, can cause client crashes?
-		
+#endif
+
 #if defined ZR
 		//DEFAULTS
 		if(dieingstate[client] == 0)
@@ -388,8 +410,9 @@ public Action OnTeutonHealth(int client, int &health)
 {
 	if(TeutonType[client])
 	{
-		SetEntityHealth(client, 0);
-		return Plugin_Continue;
+		SetEntityHealth(client, 1);
+		health = 1;
+		return Plugin_Changed;
 	}
 	
 	SDKUnhook(client, SDKHook_GetMaxHealth, OnTeutonHealth);
@@ -407,7 +430,9 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		Waves_PlayerSpawn(client);
 #endif
 
+#if !defined RTS
 		Thirdperson_PlayerSpawn(client);
+#endif
 
 		// Resets the hand/arm pos for melee weapons 
 		//it doesnt do it on its own, and weapon such as the song of the ocean due to this
@@ -430,7 +455,9 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	if(!client)
 		return Plugin_Continue;
 	
+#if !defined RTS
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
+#endif
 
 #if defined ZR
 	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), dieingstate[client] ? -69 : 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
@@ -439,7 +466,11 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 #if defined ZR
-	Update_Ammo(client);
+	ArmorDisplayClient(client, true);
+	DataPack pack = new DataPack();
+	pack.WriteCell(GetClientUserId(client));
+	pack.WriteCell(-1);
+	Update_Ammo(pack);
 	Escape_DropItem(client);
 	if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
 	{
@@ -478,8 +509,10 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	UpdateLevelAbovePlayerText(client, true);
 #endif
 
+#if !defined RTS
 	Store_WeaponSwitch(client, -1);
 	RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
+#endif
 
 	event.BroadcastDisabled = true;
 	return Plugin_Changed;
@@ -561,6 +594,9 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 						int entity_wearable, i;
 						while(TF2U_GetWearable(client, entity_wearable, i))
 						{
+							if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity_wearable] != -1)
+								continue;
+
 							SetEntityRenderMode(entity_wearable, RENDER_NORMAL);
 							SetEntityRenderColor(entity_wearable, 255, 255, 255, 255);
 						}

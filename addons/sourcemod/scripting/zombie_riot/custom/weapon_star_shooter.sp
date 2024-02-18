@@ -81,7 +81,7 @@ void TBB_Precahce_Star_Shooter()
 
 void TBB_Ability_Star_Shooter(int client)
 {
-	for (int building = 1; building < MAX_TARGETS_HIT; building++)
+	for (int building = 0; building < MAX_TARGETS_HIT; building++)
 	{
 		BEAM_BuildingHit[building] = false;
 		BEAM_Targets_Hit[client] = 0.0;
@@ -93,12 +93,12 @@ void TBB_Ability_Star_Shooter(int client)
 	BEAM_CanUse[client] = true;
 	BEAM_CloseDPT[client] = 2.0;
 	BEAM_FarDPT[client] = 1.0;
-	BEAM_MaxDistance[client] = 3000;
+	BEAM_MaxDistance[client] = 9000;
 	BEAM_BeamRadius[client] = 15;
 	BEAM_ColorHex[client] = ParseColor("800080");
 	BEAM_ChargeUpTime[client] = 1;
 	BEAM_CloseBuildingDPT[client] = Strength[client];
-	BEAM_FarBuildingDPT[client] = Strength[client] * 1.5;
+	BEAM_FarBuildingDPT[client] = Strength[client] * 2.0;
 	BEAM_Duration[client] = 2.5;
 	
 	BEAM_BeamOffset[client][0] = 0.0;
@@ -230,7 +230,7 @@ static void TBB_Tick(int client)
 		}
 		
 		
-		for (int building = 1; building < MAX_TARGETS_HIT; building++)
+		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			BEAM_BuildingHit[building] = false;
 		}
@@ -247,21 +247,6 @@ static void TBB_Tick(int client)
 		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
 		FinishLagCompensation_Base_boss();
-//		int weapon = BEAM_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
-		/*
-		for (int victim = 1; victim < MaxClients; victim++)
-		{
-			if (BEAM_HitDetected[victim] && BossTeam != GetClientTeam(victim))
-			{
-				GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-				float distance = GetVectorDistance(startPoint, playerPos, false);
-				float damage = BEAM_CloseDPT[client] + (BEAM_FarDPT[client]-BEAM_CloseDPT[client]) * (distance/BEAM_MaxDistance[client]);
-				if (damage < 0)
-					damage *= -1.0;
-				TakeDamage(victim, client, client, damage/6, 2048, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
-			}
-		}
-		*/
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		BEAM_Targets_Hit[client] = 1.0;
@@ -272,14 +257,14 @@ static void TBB_Tick(int client)
 			{
 				if(IsValidEntity(BEAM_BuildingHit[building]))
 				{
-					playerPos = WorldSpaceCenter(BEAM_BuildingHit[building]);
+					playerPos = WorldSpaceCenterOld(BEAM_BuildingHit[building]);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
 					float damage = BEAM_CloseBuildingDPT[client] + (BEAM_FarBuildingDPT[client]-BEAM_CloseBuildingDPT[client]) * (distance/BEAM_MaxDistance[client]);
 					if (damage < 0)
 						damage *= -1.0;
 					
 					float damage_force[3];
-					damage_force = CalculateDamageForce(vecForward, 10000.0);
+					damage_force = CalculateDamageForceOld(vecForward, 10000.0);
 					DataPack pack = new DataPack();
 					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
 					pack.WriteCell(EntIndexToEntRef(client));

@@ -3,7 +3,7 @@
 static Handle h_TimerRedBladeWeaponManagement[MAXPLAYERS+1] = {null, ...};
 static float f_RedBladehuddelay[MAXPLAYERS+1]={0.0, ...};
 static bool HALFORNO[MAXPLAYERS];
-static int i_RedBladeFireParticle[MAXPLAYERS+1][2];
+static int i_RedBladeFireParticle[MAXPLAYERS+1];
 static int i_RedBladeNpcToCharge[MAXPLAYERS+1];
 static float f_RedBladeChargeDuration[MAXPLAYERS+1];
 
@@ -191,7 +191,22 @@ void CheckRedBladeBelowHalfHealth(int client, int weapon)
 		MakeBladeBloddy(client, false, weapon);
 	}
 }
-void WeaponRedBlade_OnTakeDamage(int victim, float &damage)
+
+
+void WeaponRedBlade_OnTakeDamageNpc(int attacker,int victim, int damagetype,int weapon, float &damage)
+{
+	if(HALFORNO[attacker] && b_thisNpcIsARaid[victim])
+	{
+		damage *= 0.75;
+	}
+	if(!b_OverlordsFinalWish[attacker])
+		return;
+	
+	if(damagetype & DMG_CLUB)
+		NPC_Ignite(victim, attacker, 3.0, weapon);
+}
+
+void WeaponRedBlade_OnTakeDamage(int attacker, int victim, float &damage)
 {
 	if(f_RedBladeChargeDuration[victim] > GetGameTime())
 	{
@@ -199,34 +214,65 @@ void WeaponRedBlade_OnTakeDamage(int victim, float &damage)
 	}
 	if(HALFORNO[victim])
 	{
-		damage *= 0.35;
+		damage *= 0.45;
+		if(b_thisNpcIsARaid[attacker])
+		{
+			damage *= 1.15;
+		}
 	}
 }
+float WeaponRedBlade_OnTakeDamage_Hud(int victim)
+{
+	float returndmg = 1.0;
+	if(f_RedBladeChargeDuration[victim] > GetGameTime())
+	{
+		returndmg *= 0.25;
+	}
+	if(HALFORNO[victim])
+	{
+		returndmg *= 0.45;
+	}
+	return returndmg;
+}
+
 void WeaponRedBlade_OnTakeDamage_Post(int victim, int weapon)
 {
 	CheckRedBladeBelowHalfHealth(victim, weapon);
 }
-void MakeBladeBloddy(int client, bool ignite, int weapon)
+stock void MakeBladeBloddy(int client, bool ignite, int weapon)
 {
-	return;
-	//note: Doesnt work:
-	int Weaponviewmodel = EntRefToEntIndex(WeaponRef_viewmodel[client]);
-	int view_Weaponviewmodel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
-	if(!IsValidEntity(Weaponviewmodel) || !IsValidEntity(view_Weaponviewmodel))
-		return;
-		
-	if(ignite)
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
+
+	if(IsValidEntity(viewmodelModel))
 	{
-		SetEntProp(weapon, Prop_Send, "m_bIsBloody", 1);
-		SetEntProp(Weaponviewmodel, Prop_Send, "m_nSkin", 3);
-		SetEntProp(view_Weaponviewmodel, Prop_Send, "m_nSkin", 3);
-	}
-	else
+		if(ignite)
+		{
+			if(Timer_Ingition_Settings[viewmodelModel] == null)
+				IgniteTargetEffect(viewmodelModel, FIRSTPERSON, client);
+		}
+		else
+		{
+			if(Timer_Ingition_Settings[viewmodelModel] != null)
+				ExtinguishTarget(viewmodelModel);
+		}
+	}	
+
+	int viewmodelModel_Hand;
+	viewmodelModel_Hand = EntRefToEntIndex(WeaponRef_viewmodel[client]);
+	if(IsValidEntity(viewmodelModel_Hand))
 	{
-		SetEntProp(weapon, Prop_Send, "m_bIsBloody",0);
-		SetEntProp(Weaponviewmodel, Prop_Send, "m_nSkin", 0);
-		SetEntProp(view_Weaponviewmodel, Prop_Send, "m_nSkin", 0);
-	}
+		if(ignite)
+		{
+			if(Timer_Ingition_Settings[viewmodelModel_Hand] == null)
+				IgniteTargetEffect(viewmodelModel_Hand, THIRDPERSON, client);
+		}
+		else
+		{
+			if(Timer_Ingition_Settings[viewmodelModel_Hand] != null)
+				ExtinguishTarget(viewmodelModel_Hand);
+		}
+	}	
 }
 
 void CreateRedBladeEffect(int client)
@@ -238,39 +284,45 @@ void CreateRedBladeEffect(int client)
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
 
 	
-	int particle = ParticleEffectAt(flPos, "utaunt_hellpit_middlebase", 0.0);
+	int particle = ParticleEffectAt(flPos, "utaunt_tarotcard_red_glow", 0.0);
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(client, particle);
 	i_RedBladeFireParticle[client][0] = EntIndexToEntRef(particle);
-
-	particle = ParticleEffectAt(flPos, "utaunt_tarotcard_red_glow", 0.0);
-	AddEntityToThirdPersonTransitMode(client, particle);
-	SetParent(client, particle);
-	i_RedBladeFireParticle[client][1] = EntIndexToEntRef(particle);
 }
 
 bool IsRedBladeEffectSpawned(int client)
 {
-	for(int loop = 0; loop<2; loop++)
+	int entity = EntRefToEntIndex(i_RedBladeFireParticle[client]);
+	if(!IsValidEntity(entity))
 	{
-		int entity = EntRefToEntIndex(i_RedBladeFireParticle[client][loop]);
-		if(!IsValidEntity(entity))
-		{
-			return false;
-		}
+		return false;
 	}
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
+
+	if(IsValidEntity(viewmodelModel))
+	{
+		if(Timer_Ingition_Settings[viewmodelModel] == null)
+			return false;
+	}	
+
+	int viewmodelModel_Hand;
+	viewmodelModel_Hand = EntRefToEntIndex(WeaponRef_viewmodel[client]);
+	if(IsValidEntity(viewmodelModel_Hand))
+	{
+		if(Timer_Ingition_Settings[viewmodelModel_Hand] == null)
+			return false;
+	}	
+
 	return true;
 }
 
 void DestroyRedBladeEffect(int client)
 {
-	for(int loop = 0; loop<2; loop++)
+	int entity = EntRefToEntIndex(i_RedBladeFireParticle[client]);
+	if(IsValidEntity(entity))
 	{
-		int entity = EntRefToEntIndex(i_RedBladeFireParticle[client][loop]);
-		if(IsValidEntity(entity))
-		{
-			RemoveEntity(entity);
-		}
-		i_RedBladeFireParticle[client][loop] = INVALID_ENT_REFERENCE;
+		RemoveEntity(entity);
 	}
+	i_RedBladeFireParticle[client] = INVALID_ENT_REFERENCE;
 }

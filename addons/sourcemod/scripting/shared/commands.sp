@@ -27,7 +27,11 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
 	char buffer[64];
 	KvGetSectionName(kv, buffer, sizeof(buffer));
-	if(StrEqual(buffer, "+inspect_server", false))
+	if(RTSCamera_ClientCommandKeyValues(client, buffer))
+	{
+		return Plugin_Handled;
+	}
+	else if(StrEqual(buffer, "+inspect_server", false))
 	{
 #if defined ZR
 		b_HoldingInspectWeapon[client] = true;
@@ -66,7 +70,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	
 //	HINT: there is a - version, which is detected when letting go of the button, its basically a fancy onclientruncmd, although it shouldnt be used really.
 
-	if(StrEqual(buffer, "+use_action_slot_item_server", false))
+	else if(StrEqual(buffer, "+use_action_slot_item_server", false))
 	{
 		BuilderMenu(client);
 		//This is an extra slot, incase you want to use it for anything.
@@ -161,7 +165,7 @@ public Action OnSayCommand(int client, const char[] command, int args)
 #if defined ZR
 public Action Command_Voicemenu(int client, const char[] command, int args)
 {
-	if(client && args == 2 && TeutonType[client] == TEUTON_NONE && IsPlayerAlive(client))
+	if(client && args == 2 && IsPlayerAlive(client))
 	{
 		char arg[4];
 		GetCmdArg(1, arg, sizeof(arg));
@@ -170,6 +174,9 @@ public Action Command_Voicemenu(int client, const char[] command, int args)
 			GetCmdArg(2, arg, sizeof(arg));
 			if(arg[0] == '0')
 			{
+				if(TeutonType[client] != TEUTON_NONE)
+					return Plugin_Handled;
+
 				if(f_MedicCallIngore[client] < GetGameTime())
 				{
 					bool has_been_done = BuildingCustomCommand(client);

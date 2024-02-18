@@ -96,9 +96,9 @@ methodmap SoldinePrototype < CClotBody
 	}
 	
 	
-	public SoldinePrototype(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SoldinePrototype(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		SoldinePrototype npc = view_as<SoldinePrototype>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.5", "7500", ally, false, true));
+		SoldinePrototype npc = view_as<SoldinePrototype>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "7500", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_SOLDINE_PROTOTYPE;
 		i_NpcWeight[npc.index] = 3;
@@ -185,13 +185,13 @@ public void SoldinePrototype_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -256,7 +256,7 @@ void SoldinePrototypeSelfDefense(SoldinePrototype npc, float gameTime, int targe
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 		{
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(target);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
 
 			int Enemy_I_See;
 								

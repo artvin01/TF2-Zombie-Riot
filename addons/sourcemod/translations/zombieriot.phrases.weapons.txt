@@ -2297,4 +2297,24 @@
 	{
 		"en"	"Hurricane-Blitz"
 	}
+	"Gravaton Spell"
+	{
+		"en"	"Gravaton Spell"
+	}
+	"Heavy Particle Rifle"
+	{
+		"en"	"Heavy Particle Rifle"
+	}
+	"Flash Grenade"
+	{
+		"en"	"Flash Grenade"
+	}
+	"Flashier Grenade"
+	{
+		"en"	"Flashier Grenade"
+	}
+	"Energized Riot Gun"
+	{
+		"en"	"Energized Riot Gun"
+	}
 }

@@ -90,7 +90,7 @@ methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	public Barrack_Alt_Scientific_Witchery(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Barrack_Alt_Scientific_Witchery(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(BarrackBody(client, vecPos, vecAng, "1300", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_crit.mdl"));
 		
@@ -179,8 +179,8 @@ public void Barrack_Alt_Scientific_Witchery_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 
 			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
@@ -271,7 +271,7 @@ static float H_fl_current_vec[MAXENTITIES][H_SLICER_AMOUNT+2][3];
 static void Horizontal_Slicer(int client, float vecTarget[3], float Range)
 {
 	float Vec_offset[3]; Vec_offset = vecTarget;
-	float Npc_Vec[3]; Npc_Vec = WorldSpaceCenter(client);
+	float Npc_Vec[3]; Npc_Vec = WorldSpaceCenterOld(client);
 	
 	
 	H_fl_starting_vec[client] = Npc_Vec;
@@ -410,7 +410,7 @@ static float fl_current_vec[MAXENTITIES][3];
 static void Create_Laser_Hell(int client, float vecTarget[3])
 {
 	float Vec_offset[3]; Vec_offset = vecTarget;
-	float Npc_Vec[3]; Npc_Vec = WorldSpaceCenter(client);
+	float Npc_Vec[3]; Npc_Vec = WorldSpaceCenterOld(client);
 	
 	
 	fl_target_vec[client] = Vec_offset;
@@ -519,7 +519,7 @@ static void Scientific_Witchery_Ability(int client, float Vec_1[3], float Vec_2[
 			
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (Scientific_Witchery_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+				if (Scientific_Witchery_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
 				{
 					int inflictor = GetClientOfUserId(npc.OwnerUserId);
 					if(inflictor==-1)

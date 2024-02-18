@@ -155,7 +155,7 @@ methodmap MedivalSwordsmanGiant < CClotBody
 		#endif
 	}
 	
-	public MedivalSwordsmanGiant(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalSwordsmanGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalSwordsmanGiant npc = view_as<MedivalSwordsmanGiant>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "25000", ally, false, true));
 		SetVariantInt(1);
@@ -265,15 +265,15 @@ public void MedivalSwordsmanGiant_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;

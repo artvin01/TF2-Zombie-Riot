@@ -183,7 +183,7 @@ methodmap BunkerSkeleton < CClotBody
 		#endif
 	}
 	
-	public BunkerSkeleton(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BunkerSkeleton(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BunkerSkeleton npc = view_as<BunkerSkeleton>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "1.0", "3000", ally, false));
 		
@@ -285,9 +285,9 @@ public void BunkerSkeleton_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		if(npc.m_flJumpCooldown < GetGameTime(npc.index) && npc.m_flInJump < GetGameTime(npc.index) && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
 		{
@@ -317,7 +317,7 @@ public void BunkerSkeleton_ClotThink(int iNPC)
 		
 		if(flDistanceToTarget < npc.GetLeadRadius()) //Predict their pos.
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else

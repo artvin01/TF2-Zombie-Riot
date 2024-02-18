@@ -132,7 +132,7 @@ methodmap AnfuhrerEisenhard < CClotBody
 	}
 	
 	
-	public AnfuhrerEisenhard(int client, float vecPos[3], float vecAng[3], bool ally)
+	public AnfuhrerEisenhard(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		AnfuhrerEisenhard npc = view_as<AnfuhrerEisenhard>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "500000", ally));
 		
@@ -227,6 +227,13 @@ public void AnfuhrerEisenhard_ClotThink(int iNPC)
 		npc.m_flSpeed = 320.0;
 	}
 
+	float TrueArmor = 1.0;
+	if(npc.Anger)
+	{
+		TrueArmor *= 0.65;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
+
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
@@ -241,13 +248,13 @@ public void AnfuhrerEisenhard_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -275,13 +282,20 @@ public Action AnfuhrerEisenhard_OnTakeDamage(int victim, int &attacker, int &inf
 	//if youre behind him and attack him ,you deal 2x the damage.
 	if(IsBehindAndFacingTarget(attacker, victim))
 	{
+		if(attacker <= MaxClients)
+		{
+			bool PlaySound = false;
+			if(f_MinicritSoundDelay[attacker] < GetGameTime())
+			{
+				PlaySound = true;
+				f_MinicritSoundDelay[attacker] = GetGameTime() + 0.25;
+			}
+			
+			DisplayCritAboveNpc(victim, attacker, PlaySound,_,_,true); //Display crit above head
+		}
 		damage *= 1.5;
 	}
-
-	if(npc.Anger)
-	{
-		damage *= 0.65;
-	}
+	
 	if(npc.m_flArmorCount > 0.0)
 	{
 		if(damagetype & DMG_CLUB)
@@ -369,7 +383,7 @@ void AnfuhrerEisenhardSelfDefense(AnfuhrerEisenhard npc, float gameTime, int tar
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
@@ -390,6 +404,8 @@ void AnfuhrerEisenhardSelfDefense(AnfuhrerEisenhard npc, float gameTime, int tar
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+					IncreaceEntityDamageTakenBy(target, 0.15, 5.0, true);
+					//give 15% dmg vul with each hit for 5 secs
 
 					// Hit sound
 					npc.PlayMeleeHitSound();

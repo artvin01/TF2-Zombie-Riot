@@ -101,7 +101,7 @@ methodmap DDT < CClotBody
 		
 		SetEntProp(this.index, Prop_Send, "m_nSkin", type);
 	}
-	public DDT(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public DDT(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool fortified = StrContains(data, "f") != -1;
 		
@@ -208,16 +208,16 @@ public void DDT_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 													
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			
-			NPC_SetGoalVector(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
+			NPC_SetGoalVector(npc.index, PredictSubjectPositionOld(npc, PrimaryThreatIndex));
 		}
 		else
 		{
@@ -235,22 +235,22 @@ public void DDT_ClotThink(int iNPC)
 				{
 					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
 					}
 					else
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 200.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 200.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
 					}
 				}
 				else
 				{
 					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
 					}
 					else
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 165.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 165.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
 					}
 				}					
 			}
@@ -337,7 +337,7 @@ public void DDT_NPCDeath(int entity)
 		SetEntityCollisionGroup(entity_death, 2);
 		SetVariantString("death");
 		AcceptEntityInput(entity_death, "SetAnimation");
-		SetEntProp(entity_death, Prop_Send, "m_iTeamNum", GetEntProp(npc.index, Prop_Send, "m_iTeamNum"));
+		SetTeam(entity_death, GetTeam(npc.index));
 		
 		pos[2] += 20.0;
 		
@@ -354,7 +354,7 @@ public void DDT_PostDeath(const char[] output, int caller, int activator, float 
 	
 	TE_Particle("ExplosionCore_buildings", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
 	
-	int spawn_index = Npc_Create(BTD_BLOON, -1, pos, angles, GetEntProp(caller, Prop_Send, "m_iTeamNum") == 2, "9rc");
+	int spawn_index = Npc_Create(BTD_BLOON, -1, pos, angles, GetTeam(caller), "9rc");
 	if(spawn_index > MaxClients)
 		Zombies_Currently_Still_Ongoing += 1;
 }
@@ -368,7 +368,7 @@ public void DDT_PostFortifiedDeath(const char[] output, int caller, int activato
 	
 	TE_Particle("ExplosionCore_buildings", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
 	
-	int spawn_index = Npc_Create(BTD_BLOON, -1, pos, angles, GetEntProp(caller, Prop_Send, "m_iTeamNum") == 2, "9frc");
+	int spawn_index = Npc_Create(BTD_BLOON, -1, pos, angles, GetTeam(caller), "9frc");
 	if(spawn_index > MaxClients)
 		Zombies_Currently_Still_Ongoing += 1;
 }

@@ -106,7 +106,7 @@ public Action Flagellant_HealerTimer(Handle timer, DataPack pack)
 				}
 				else if(!b_NpcHasDied[target])
 				{
-					if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2 && !Citizen_ThatIsDowned(target))
+					if(GetTeam(target) == 2 && !Citizen_ThatIsDowned(target))
 					{
 						validAlly = true;
 					}
@@ -116,7 +116,7 @@ public Action Flagellant_HealerTimer(Handle timer, DataPack pack)
 				color[0] = validAlly ? 50 : 200;
 
 				if(validAlly)
-					pos = GetAbsOrigin(target);
+					pos = GetAbsOriginOld(target);
 				
 				pos[2] += 10.0;
 
@@ -157,7 +157,7 @@ public Action Flagellant_DamagerTimer(Handle timer, DataPack pack)
 				}
 				else if(!b_NpcHasDied[target])
 				{
-					if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+					if(GetTeam(target) != 2)
 					{
 						if(!b_NpcIsInvulnerable[target])
 							validEnemy = true;
@@ -168,7 +168,7 @@ public Action Flagellant_DamagerTimer(Handle timer, DataPack pack)
 				color[1] = validEnemy ? 50 : 200;
 
 				if(validEnemy)
-					pos = GetAbsOrigin(target);
+					pos = GetAbsOriginOld(target);
 				
 				pos[2] += 10.0;
 
@@ -304,7 +304,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 	}
 	else if(!b_NpcHasDied[target])
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2 && !b_NpcIsInvulnerable[target] && !Citizen_ThatIsDowned(target))
+		if(GetTeam(target) == 2 && !b_NpcIsInvulnerable[target] && !Citizen_ThatIsDowned(target))
 		{
 			validAlly = true;
 		}
@@ -432,7 +432,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 	}
 	else if(!b_NpcHasDied[target])
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		if(GetTeam(target) != 2)
 		{
 			if(!b_NpcIsInvulnerable[target])
 				validEnemy = true;
@@ -514,7 +514,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 	}
 	else if(!b_NpcHasDied[target])
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2 && !b_NpcIsInvulnerable[target])
+		if(GetTeam(target) == 2 && !b_NpcIsInvulnerable[target])
 		{
 			validAlly = true;
 		}
@@ -622,7 +622,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 	}
 	else if(!b_NpcHasDied[target])
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		if(GetTeam(target) != 2)
 		{
 			if(!b_NpcIsInvulnerable[target])
 				validEnemy = true;
@@ -634,7 +634,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 		Rogue_OnAbilityUse(weapon);
 
 		int round = Rogue_GetRoundScale();
-		bool raid = RaidbossIgnoreBuildingsLogic();
+		bool raid = RaidbossIgnoreBuildingsLogic(1);
 		if(LastSepsis[client] != round || LastSepsisRaid[client] != raid)
 		{
 			LastSepsis[client] = round;
@@ -689,7 +689,7 @@ public Action Flagellant_CheckSepsisTimer(Handle timer, int userid)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
-		if(LastSepsis[client] == Rogue_GetRoundScale() && LastSepsisRaid[client] == RaidbossIgnoreBuildingsLogic())
+		if(LastSepsis[client] == Rogue_GetRoundScale() && LastSepsisRaid[client] == RaidbossIgnoreBuildingsLogic(1))
 			return Plugin_Continue;
 
 		TF2_RemoveCondition(client, TFCond_FocusBuff);
@@ -717,6 +717,9 @@ static void TriggerDeathDoor(int client, int &healing)
 		int entity, i;
 		while(TF2U_GetWearable(client, entity, i))
 		{
+			if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+				continue;
+
 			SetEntityRenderMode(entity, RENDER_NORMAL);
 			SetEntityRenderColor(entity, 255, 255, 255, 255);
 		}
@@ -724,6 +727,7 @@ static void TriggerDeathDoor(int client, int &healing)
 		SetEntityRenderColor(client, 255, 255, 255, 255);
 		SetEntityCollisionGroup(client, 5);
 		DoOverlay(client, "", 2);
+		SetEntityMoveType(client, MOVETYPE_WALK);
 
 		int health = 50;
 		if(health > healing)
@@ -734,7 +738,7 @@ static void TriggerDeathDoor(int client, int &healing)
 		ClientCommand(client, "playgamesound misc/halloween/strongman_bell_01.wav");
 
 		int round = Rogue_GetRoundScale();
-		bool raid = RaidbossIgnoreBuildingsLogic();
+		bool raid = RaidbossIgnoreBuildingsLogic(1);
 		if(LastDeathDoor[client] != round || LastDeathDoorRaid[client] != raid)
 		{
 			DeathDoors[client] = 2;

@@ -101,7 +101,7 @@ methodmap RaidbossBladedance < CClotBody
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[rand], this.index, SNDCHAN_AUTO, 130, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public RaidbossBladedance(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public RaidbossBladedance(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossBladedance npc = view_as<RaidbossBladedance>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "1500000", ally, false));
 		
@@ -138,7 +138,7 @@ methodmap RaidbossBladedance < CClotBody
 
 		npc.Anger = false;
 		npc.m_iOverlordComboAttack = 0;
-		npc.m_flMeleeArmor = 1.25;
+	//	npc.m_flMeleeArmor = 1.25;
 		
 		Citizen_MiniBossSpawn();
 		
@@ -169,12 +169,11 @@ methodmap RaidbossBladedance < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		RaidModeScaling = 9999999.99;
-		RaidModeTime = GetGameTime() + ((250.0) * (MultiGlobal * 0.75));
+		RaidModeTime = GetGameTime() + ((300.0) * (1.0 + (MultiGlobalEnemy * 0.4)));
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "??????????????????????????????????");
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
-		Raidboss_Clean_Everyone();
 
 		return npc;
 	}
@@ -189,7 +188,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 	//Raidmode timer runs out, they lost.
 	if(npc.m_flNextThinkTime != FAR_FUTURE && RaidModeTime < GetGameTime())
 	{
-		if(RaidBossActive != INVALID_ENT_REFERENCE)
+		if(IsValidEntity(RaidBossActive))
 		{
 			int entity = CreateEntityByName("game_round_win"); 
 			DispatchKeyValue(entity, "force_map_reset", "1");
@@ -257,7 +256,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 		{
 			npc.Anger = true;
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSpecialAttackSecondarySound(vecTarget);
@@ -273,11 +272,11 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
 
-			int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
+			int team = GetTeam(npc.index);
 			int entity = -1;
 			while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 			{
-				if(entity != npc.index && !b_NpcHasDied[entity] && GetEntProp(entity, Prop_Send, "m_iTeamNum") != team)
+				if(entity != npc.index && !b_NpcHasDied[entity] && GetTeam(entity) != team)
 				{
 					f_GodArkantosBuff[entity] = GetGameTime() + 16.0;
 					ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
@@ -292,13 +291,13 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 			npc.FaceTowards(vecTarget, 30000.0);
 			if(npc.m_flNextRangedAttackHappening < gameTime)
 			{
 				npc.m_flNextRangedAttackHappening = 0.0;
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 400.0);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 400.0);
 				npc.FireRocket(vPredictedPos, 1000.0, 400.0, "models/effects/combineball.mdl");
 				npc.PlayRangedSound();
 
@@ -309,13 +308,13 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -410,6 +409,8 @@ public void RaidbossBladedance_NPCDeath(int entity)
 	RaidbossBladedance npc = view_as<RaidbossBladedance>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
+
+	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s",WhatDifficultySetting_Internal);
 	
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_RoundRunning)
 	{

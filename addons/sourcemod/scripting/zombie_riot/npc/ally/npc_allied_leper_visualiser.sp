@@ -11,9 +11,9 @@ void AlliedLeperVisualiserAbility_OnMapStart_NPC()
 methodmap AlliedLeperVisualiserAbility < CClotBody
 {
 	
-	public AlliedLeperVisualiserAbility(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public AlliedLeperVisualiserAbility(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		AlliedLeperVisualiserAbility npc = view_as<AlliedLeperVisualiserAbility>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "100", true, true));
+		AlliedLeperVisualiserAbility npc = view_as<AlliedLeperVisualiserAbility>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "100", TFTeam_Red, true));
 		
 		i_NpcInternalId[npc.index] = WEAPON_LEPER_AFTERIMAGE;
 		i_NpcWeight[npc.index] = 999;
@@ -32,6 +32,9 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 
 		while(TF2U_GetWearable(client, entity, i, "tf_wearable"))
 		{
+			if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+				continue;
+
 			ModelIndex = GetEntProp(entity, Prop_Data, "m_nModelIndex");
 			if(ModelIndex < 0)
 			{
@@ -130,6 +133,7 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 		NPC_StopPathing(npc.index);
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
+		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.
 		SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6); 

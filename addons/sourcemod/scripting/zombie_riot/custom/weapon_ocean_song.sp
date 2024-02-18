@@ -70,7 +70,7 @@ void ConnectTwoEntitiesWithMedibeam(int owner, int target)
 	}
 	float vecTarget[3];
 	
-	vecTarget = WorldSpaceCenter(target);
+	vecTarget = WorldSpaceCenterOld(target);
 
 	int particle = ParticleEffectAtOcean(vecTarget, "medicgun_beam_red", 0.0 , _, false);
 	
@@ -80,7 +80,7 @@ void ConnectTwoEntitiesWithMedibeam(int owner, int target)
 
 	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 	
-	vecTarget = WorldSpaceCenter(OldParticle2);
+	vecTarget = WorldSpaceCenterOld(OldParticle2);
 
 	int particle2 = ParticleEffectAtOcean(vecTarget, "medicgun_beam_red", 0.0 , particle, false);
 	SetParent(OldParticle2, particle2, "", _, true);
@@ -316,10 +316,6 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 					int healingdone = HealEntityGlobal(client, ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0,_,_);
 					if(healingdone > 0)
 					{
-						if(client < MaxClients)
-						{
-							Healing_done_in_total[client] += healingdone;
-						}
 						ApplyHealEvent(ally, healingdone);
 					}
 				}
@@ -337,10 +333,10 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 			}
 		}
 	}
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
-		int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 		{
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= range)
@@ -354,7 +350,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 					flHealMutli_Calc = flHealMulti;
 				} 
 				flHealMutli_Calc *= extra_heal;
-				int healingdone = HealEntityGlobal(client, ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0,_,_);
+				HealEntityGlobal(client, ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0,_,_);
 				if(!HordingsBuff)
 				{
 					if(f_OceanBuffAbility[client] > GetGameTime())
@@ -365,10 +361,6 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 					{
 						f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.21;
 					}
-				}
-				if(client < MaxClients)
-				{
-					Healing_done_in_total[client] += healingdone;
 				}
 			}
 		}

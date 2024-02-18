@@ -136,7 +136,7 @@ methodmap BunkerSkeletonKing < CClotBody
 		#endif
 	}
 	
-	public BunkerSkeletonKing(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BunkerSkeletonKing(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BunkerSkeletonKing npc = view_as<BunkerSkeletonKing>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper_boss/skeleton_sniper_boss.mdl", "1.7", "30000", ally, false));
 		
@@ -244,7 +244,7 @@ public void BunkerSkeletonKing_ClotThink(int iNPC)
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		
-					int spawn_index = Npc_Create(BUNKER_SKELETON, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+					int spawn_index = Npc_Create(BUNKER_SKELETON, -1, pos, ang, GetTeam(npc.index));
 					if(spawn_index > MaxClients)
 					{
 						Zombies_Currently_Still_Ongoing += 1;
@@ -264,7 +264,7 @@ public void BunkerSkeletonKing_ClotThink(int iNPC)
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		
-					int spawn_index = Npc_Create(BUNKER_SMALL_SKELETON, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+					int spawn_index = Npc_Create(BUNKER_SMALL_SKELETON, -1, pos, ang, GetTeam(npc.index));
 					if(spawn_index > MaxClients)
 					{
 						Zombies_Currently_Still_Ongoing += 1;
@@ -293,13 +293,13 @@ public void BunkerSkeletonKing_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		if(flDistanceToTarget < npc.GetLeadRadius()) //Predict their pos.
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else

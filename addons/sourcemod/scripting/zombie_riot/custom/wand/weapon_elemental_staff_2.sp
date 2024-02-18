@@ -51,7 +51,7 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 				float vecUp[3];
 				
 				GetVectors(client, client_slammed_forward[client], client_slammed_right[client], vecUp); //Sorry i dont know any other way with this :(
-				client_slammed_pos[client] = GetAbsOrigin(client);
+				client_slammed_pos[client] = GetAbsOriginOld(client);
 				client_slammed_pos[client][2] += 5.0;
 				
 				float vecSwingEnd[3];
@@ -220,6 +220,10 @@ public void Weapon_Passanger_Attack(int client, int weapon, bool crit, int slot)
 			delete swingTrace;
 			static float belowBossEyes[3];
 
+			belowBossEyes[0] = 0.0;
+			belowBossEyes[1] = 0.0;
+			belowBossEyes[2] = 0.0;
+
 			float damage = 65.0;
 			damage *= Attributes_Get(weapon, 410, 1.0);
 
@@ -255,10 +259,10 @@ stock int GetClosestTargetNotAffectedByLightning(float EntityLocation[3])
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 
 
-	for(int targ; targ<i_MaxcountNpc; targ++)
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && !b_EntityHitByLightning[baseboss_index])
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && !b_EntityHitByLightning[baseboss_index] && GetTeam(baseboss_index) != TFTeam_Red)
 		{
 			float TargetLocation[3]; 
 			GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
@@ -290,7 +294,7 @@ stock int GetClosestTargetNotAffectedByLightning(float EntityLocation[3])
 }
 
 
-void Passanger_Lightning_Effect(float belowBossEyes[3], float vecHit[3], int Power)
+void Passanger_Lightning_Effect(float belowBossEyes[3], float vecHit[3], int Power, float diameter_override = 0.0, int color[3] = {0,0,0})
 {	
 	
 	int r = 255; //Yellow.
@@ -304,6 +308,16 @@ void Passanger_Lightning_Effect(float belowBossEyes[3], float vecHit[3], int Pow
 	if(Power == 3)
 	{
 		diameter = 25.0;
+	}
+	if(diameter_override != 0.0)
+	{
+		diameter = diameter_override;
+	}
+	if(color[0] != 0)
+	{
+		r = color[0]; //Yellow.
+		g = color[1];
+		b = color[2];
 	}
 	int colorLayer4[4];
 	SetColorRGBA(colorLayer4, r, g, b, 125);
@@ -408,7 +422,7 @@ public void Passanger_Cooldown_Logic(int client, int weapon)
 		{
 			b_PassangerExtraCharge[client] = true;
 			float ClientPos[3];
-			ClientPos = WorldSpaceCenter(client);
+			ClientPos = WorldSpaceCenterOld(client);
 			TR_EnumerateEntitiesSphere(ClientPos, 100.0, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Passanger, client);
 
 			if(b_PassangerExtraCharge[client])
@@ -490,6 +504,10 @@ public void Weapon_Passanger_LightningArea(int client, int weapon, bool crit, in
 			{
 				//We have found a victim.
 				static float belowBossEyes[3];
+				belowBossEyes[0] = 0.0;
+				belowBossEyes[1] = 0.0;
+				belowBossEyes[2] = 0.0;
+
 				GetBeamDrawStartPoint_Stock(client, belowBossEyes);
 				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", vecHit);
 				Passanger_Activate_Storm(client, weapon, vecHit);
@@ -557,9 +575,9 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 	}
 	if(Firstlightning)
 	{
-		Passanger_Lightning_Effect(StartLightningPos, WorldSpaceCenter(target), 1);
+		Passanger_Lightning_Effect(StartLightningPos, WorldSpaceCenterOld(target), 1);
 	}
-	StartLightningPos = WorldSpaceCenter(target);
+	StartLightningPos = WorldSpaceCenterOld(target);
 	f_PassangerDebuff[target] = GetGameTime() + 0.3;
 	SDKHooks_TakeDamage(target, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);	//BURNING TO THE GROUND!!!
 	f_CooldownForHurtHud[client] = 0.0;
@@ -579,8 +597,8 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 			SDKHooks_TakeDamage(enemy, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);		
 			f_CooldownForHurtHud[client] = 0.0;
 			GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecHit);
-			Passanger_Lightning_Effect(StartLightningPos, WorldSpaceCenter(enemy), 3);
-			StartLightningPos = WorldSpaceCenter(enemy);
+			Passanger_Lightning_Effect(StartLightningPos, WorldSpaceCenterOld(enemy), 3);
+			StartLightningPos = WorldSpaceCenterOld(enemy);
 		}
 		else
 		{
@@ -655,10 +673,10 @@ public Action TimerPassangerAbility(Handle timer, DataPack pack)
 	{
 		int count;
 		static int targets[i_MaxcountNpc];
-		for(int targ; targ<i_MaxcountNpc; targ++)
+		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(baseboss_index) != TFTeam_Red)
 			{
 				static float TargetLocation[3]; 
 				GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 

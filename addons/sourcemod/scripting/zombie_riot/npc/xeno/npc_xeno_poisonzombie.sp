@@ -123,7 +123,7 @@ methodmap XenoPoisonZombie < CClotBody
 	
 	
 	
-	public XenoPoisonZombie(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoPoisonZombie(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoPoisonZombie npc = view_as<XenoPoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.15", "1000", ally));
 		
@@ -188,6 +188,14 @@ public void XenoPoisonZombie_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
+	float TrueArmor = 1.0;
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
+			TrueArmor *= 0.25;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
+		
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
@@ -205,14 +213,14 @@ public void XenoPoisonZombie_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -331,10 +339,20 @@ public Action XenoPoisonZombie_OnTakeDamage(int victim, int &attacker, int &infl
 			CreateTimer(2.0, XenoPoisonZombie_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(10.0, XenoPoisonZombie_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		}
-		if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
+		float TrueArmor = 1.0;
+		if(!NpcStats_IsEnemySilenced(victim))
 		{
-			damage *= 0.25;
+			if(fl_TotalArmor[npc.index] == 1.0)
+			{
+				if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
+				{
+					TrueArmor *= 0.25;
+					fl_TotalArmor[npc.index] = TrueArmor;
+					OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, true);
+				}
+			}
 		}
+		fl_TotalArmor[npc.index] = TrueArmor;
 	}
 	
 	/*

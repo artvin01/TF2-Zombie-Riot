@@ -54,7 +54,7 @@ methodmap SeaCrawler < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
 	}
 	
-	public SeaCrawler(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeaCrawler(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeaCrawler npc = view_as<SeaCrawler>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.75", data[0] ? "5250" : "3750", ally, false, true));
 		// 25000 x 0.15
@@ -109,7 +109,7 @@ public void SeaCrawler_ClotThink(int iNPC)
 			npc.m_iAttacksTillReload--;
 			npc.PlayAngerSound();
 
-			float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+			float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
 			spawnRing_Vectors(vecMe, 100.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 800.0);
 			Explode_Logic_Custom(i_NpcInternalId[npc.index] == SEACRAWLER_ALT ? 60.0 : 45.0, -1, npc.index, -1, vecMe, 400.0, _, _, true, _, false, 1.0, SeaCrawler_ExplodePost);
 			// 300 x 0.15
@@ -133,12 +133,12 @@ public void SeaCrawler_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);		
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -158,7 +158,7 @@ public void SeaCrawler_ClotThink(int iNPC)
 
 public void SeaCrawler_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
-	ParticleEffectAt(WorldSpaceCenter(victim), "water_bulletsplash01", 3.0);
+	ParticleEffectAt(WorldSpaceCenterOld(victim), "water_bulletsplash01", 3.0);
 	SeaSlider_AddNeuralDamage(victim, attacker, RoundToCeil(damage));
 }
 

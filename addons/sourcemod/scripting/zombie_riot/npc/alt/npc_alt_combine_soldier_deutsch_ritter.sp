@@ -171,7 +171,7 @@ methodmap Alt_CombineDeutsch < CClotBody
 	}
 	
 	
-	public Alt_CombineDeutsch(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Alt_CombineDeutsch(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Alt_CombineDeutsch npc = view_as<Alt_CombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000", ally));
 		SetVariantInt(1);
@@ -266,7 +266,13 @@ public void Alt_CombineDeutsch_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
+
+	float TrueArmor = 1.0;
+	if(npc.m_fbRangedSpecialOn)
+		TrueArmor *= 0.75;
 	
+	fl_TotalArmor[npc.index] = TrueArmor;
+
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
@@ -285,15 +291,15 @@ public void Alt_CombineDeutsch_ClotThink(int iNPC)
 			
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -326,7 +332,7 @@ public void Alt_CombineDeutsch_ClotThink(int iNPC)
 				float Angles[3], distance = 100.0, UserLoc[3];
 				
 				
-				UserLoc = GetAbsOrigin(npc.index);
+				UserLoc = GetAbsOriginOld(npc.index);
 				
 				MakeVectorFromPoints(UserLoc, vecTarget, Angles);
 				GetVectorAngles(Angles, Angles);
@@ -455,9 +461,7 @@ public Action Alt_CombineDeutsch_OnTakeDamage(int victim, int &attacker, int &in
 		return Plugin_Continue;
 		
 	Alt_CombineDeutsch npc = view_as<Alt_CombineDeutsch>(victim);
-	
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
+
 	
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))

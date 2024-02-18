@@ -5,6 +5,7 @@ static int Music_Timer[MAXTF2PLAYERS];
 static int Music_Timer_2[MAXTF2PLAYERS];
 static float Give_Cond_Timer[MAXTF2PLAYERS];
 static bool MusicDisabled;
+static bool XenoMapExtra;
 static float RaidMusicVolume;
 
 #define RANGE_FIRST_MUSIC 6250000
@@ -32,8 +33,18 @@ void Music_SetRaidMusic(const char[] MusicPath, int duration, bool isCustom, flo
 
 }
 
+static const char g_LastMannAnnouncer[][] =
+{
+	"vo/announcer_am_lastmanalive01.mp3",
+	"vo/announcer_am_lastmanalive02.mp3",
+	"vo/announcer_am_lastmanalive03.mp3",
+	"vo/announcer_am_lastmanalive04.mp3",
+};
+
+
 void Music_MapStart()
 {
+	PrecacheSoundArray(g_LastMannAnnouncer);
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/1.mp3",_,0);
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/2.mp3",_,0);
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/3.mp3",_,0);
@@ -60,6 +71,13 @@ void Music_MapStart()
 	PrecacheSoundCustom("#zombiesurvival/music_win_1.mp3",_,1);
 
 	MusicDisabled = FindInfoTarget("zr_nomusic");
+	XenoMapExtra = FindInfoTarget("zr_xeno_extras");
+
+	if(XenoMapExtra)
+	{
+		PrecacheSoundCustom("#zombie_riot/abandoned_lab/music/inside_lab.mp3",_,1);
+		PrecacheSoundCustom("#zombie_riot/abandoned_lab/music/outside_wasteland.mp3",_,1);
+	}
 }
 
 bool Music_Disabled()
@@ -67,11 +85,22 @@ bool Music_Disabled()
 	return MusicDisabled;
 }
 
+bool XenoExtraLogic(bool NpcBuffing = false)
+{
+	if(!NpcBuffing)
+		return XenoMapExtra;
+	else
+	{
+		if(XenoMapExtra && (!StrContains(WhatDifficultySetting_Internal, "Xeno") || !StrContains(WhatDifficultySetting_Internal, "Silvester & Goggles")))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void Music_EndLastmann()
 {
-//	if(MusicDisabled)   Does this even matter? You might aswell keep it in yknow...
-//		return;
-
 	if(LastMann)
 	{
 		for(int client=1; client<=MaxClients; client++)
@@ -98,6 +127,17 @@ void Music_EndLastmann()
 	}
 }
 
+void PlayTeamDeadSound()
+{
+	int RandomInt = GetRandomInt(0,sizeof(g_LastMannAnnouncer)- 1);
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && !IsFakeClient(client))
+		{
+			EmitSoundToClient(client, g_LastMannAnnouncer[RandomInt], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+		}
+	}	
+}
 void Music_RoundEnd(int victim, bool music = true)
 {
 	ExcuteRelay("zr_gamelost");
@@ -135,8 +175,10 @@ void Music_RoundEnd(int victim, bool music = true)
 			SendConVarValue(i, sv_cheats, "1");
 		}
 	}
+	ResetReplications();
 	cvarTimeScale.SetFloat(0.1);
 	CreateTimer(0.5, SetTimeBack);
+	RemoveAllCustomMusic();
 }
 
 public Action SetTimeBack(Handle timer)
@@ -148,6 +190,7 @@ public Action SetTimeBack(Handle timer)
 			SendConVarValue(i, sv_cheats, "0");
 		}
 	}
+	ResetReplications();
 	cvarTimeScale.SetFloat(1.0);
 	return Plugin_Handled;
 }
@@ -218,6 +261,14 @@ void Music_Stop_All(int client)
 		StopSound(client, SNDCHAN_STATIC, char_RaidMusicSpecial1);
 		StopSound(client, SNDCHAN_STATIC, char_RaidMusicSpecial1);
 	}
+
+	if(XenoExtraLogic())
+	{
+		StopSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/inside_lab.mp3");
+		StopSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/outside_wasteland.mp3");
+		StopSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/inside_lab.mp3");
+		StopSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/outside_wasteland.mp3");
+	}
 	
 }
 
@@ -226,7 +277,21 @@ public void ConVarCallback_Plugin_message(QueryCookie cookie, int client, ConVar
 	if(result == ConVarQuery_Okay)
 		f_ClientServerShowMessages[client] = view_as<bool>(StringToInt(cvarValue));
 }
-
+public void ConVarCallback_g_ragdoll_fadespeed(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
+{
+	if(result == ConVarQuery_Okay)
+	{
+		if(f_BegPlayerToSetRagdollFade[client] < GetGameTime())
+		{
+			f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 30.0;
+			if(StringToInt(cvarValue) == 0)
+			{
+				SetGlobalTransTarget(client);
+				PrintToChat(client,"%t", "Show Ragdoll Hint Message");
+			}
+		}
+	}
+}
 //TODO: This music just breaks and cuts off earlier and plays earlier, i really dont know why. I hate it! Find a fix!
 
 void Music_PostThink(int client)
@@ -366,13 +431,28 @@ void Music_PostThink(int client)
 			}
 			return;
 		}
+		if(XenoExtraLogic() && !LastMann)
+		{
+			//This is special code for a map.
+			if(CurrentRound +1 <= 30)
+			{
+				EmitCustomToClient(client, "#zombie_riot/abandoned_lab/music/outside_wasteland.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+				SetMusicTimer(client, GetTime() + 138);	
+			}
+			else
+			{
+				EmitCustomToClient(client, "#zombie_riot/abandoned_lab/music/inside_lab.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.45);
+				SetMusicTimer(client, GetTime() + 151);	
+			}
+			return;
+		}
 		float f_intencity;
 		float targPos[3];
 		float chargerPos[3];
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(entity) && !b_NpcHasDied[entity])
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 			{
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
 				GetClientAbsOrigin(client, chargerPos);
@@ -575,4 +655,12 @@ void Music_ClearAll()
 	Zero(Give_Cond_Timer);
 	Zero(f_ClientMusicVolume);
 	Zero(f_BegPlayerToSetDuckConvar);
+	Zero(f_BegPlayerToSetRagdollFade);
+}
+
+void RemoveAllCustomMusic()
+{
+	char_MusicString1[0] = 0;	
+	char_MusicString2[0] = 0;	
+	char_RaidMusicSpecial1[0] = 0;	
 }

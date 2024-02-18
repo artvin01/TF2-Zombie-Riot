@@ -325,7 +325,7 @@ public void Weapon_Trash_Cannon_Fire_Pap2(int client, int weapon, bool crit)
 
 public void Trash_Cannon_ChooseNext(int client, int weapon, int tier)
 {
-	Queue scramble = Rand_GenerateScrambledQueue(i_TrashNumEffects);
+	ArrayStack scramble = Rand_GenerateScrambledArrayStack(i_TrashNumEffects);
 	
 	bool success = false;
 	int effect = 0;
@@ -506,9 +506,9 @@ public MRESReturn Shock_Explode(int entity)
 	float damage = f_ShockDMG[tier] * Attributes_Get(weapon, 2, 1.0);
 	float radius = f_ShockRadius[tier];
 
-	for (int i = 0; i < i_MaxcountNpc; i++)
+	for (int i = 0; i < i_MaxcountNpcTotal; i++)
 	{
-		int ent = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		int ent = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		
 		if (IsValidEntity(ent) && !b_NpcHasDied[ent])
 		{
@@ -533,7 +533,7 @@ public void Shock_ChainToVictim(int inflictor, int client, int weapon, float dam
 	if (IsValidEntity(victim))
 	{
 		float vicLoc[3];
-		vicLoc = WorldSpaceCenter(victim);
+		vicLoc = WorldSpaceCenterOld(victim);
 		SDKHooks_TakeDamage(victim, inflictor, client, damage, DMG_BLAST | DMG_ALWAYSGIB, weapon);
 		
 		if (f_PassangerDebuff[victim] < gt)
@@ -600,7 +600,7 @@ public void Trash_Arrows(int client, int weapon, int tier)
 		int arrow = SDKCall_CTFCreateArrow(pos, ang, vel, 0.1, 8, client, client);
 		if (IsValidEntity(arrow))
 		{
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(arrow));
+			
 			SetEntityCollisionGroup(arrow, 27);
 			SetEntDataFloat(arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, damage, true);	// Damage
 			SetEntPropEnt(arrow, Prop_Send, "m_hOriginalLauncher", weapon);
@@ -642,7 +642,7 @@ public void Trash_Pyre(int client, int weapon, int tier)
 	
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		SetTeam(entity, GetTeam(client));
 		
 		DispatchSpawn(entity);
 		
@@ -1152,11 +1152,10 @@ int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocit
 			
 	if (IsValidEntity(prop))
 	{
-		b_Is_Player_Projectile[prop] = true;
 		DispatchKeyValue(prop, "targetname", "trash_projectile"); 
 				
 		SetEntDataFloat(prop, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-		SetEntProp(prop, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		SetTeam(prop, GetTeam(client));
 				
 		DispatchSpawn(prop);
 				
@@ -1238,14 +1237,14 @@ public int Trash_GetClosestVictim(float position[3], float radius, bool shock)
 	int closest = -1;
 	float dist = 999999999.0;
 	
-	for (int i = 0; i < i_MaxcountNpc; i++)
+	for (int i = 0; i < i_MaxcountNpcTotal; i++)
 	{
-		int ent = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		int ent = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		
-		if (IsValidEntity(ent) && !b_NpcHasDied[ent] && (!shock || f_NextShockTime[ent] <= GetGameTime()))
+		if (IsValidEntity(ent) && GetTeam(ent) != TFTeam_Red && !b_NpcHasDied[ent] && (!shock || f_NextShockTime[ent] <= GetGameTime()))
 		{
 			float vicLoc[3];  
-			vicLoc = WorldSpaceCenter(ent);
+			vicLoc = WorldSpaceCenterOld(ent);
 			
 			float targDist = GetVectorDistance(position, vicLoc, true);  
 				
@@ -1260,9 +1259,9 @@ public int Trash_GetClosestVictim(float position[3], float radius, bool shock)
 	return closest;
 }
 
-public Queue Rand_GenerateScrambledQueue(int numSlots)
+public ArrayStack Rand_GenerateScrambledArrayStack(int numSlots)
 {
-	Queue scramble = new Queue();
+	ArrayStack scramble = new ArrayStack();
 	Handle genericArray = CreateArray(255);
 	
 	for (int i = 0; i <= numSlots; i++)

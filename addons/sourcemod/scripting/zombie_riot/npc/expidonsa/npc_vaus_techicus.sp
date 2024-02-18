@@ -82,7 +82,7 @@ methodmap VausTechicus < CClotBody
 		EmitSoundToAll(g_ShieldAttackSounds[GetRandomInt(0, sizeof(g_ShieldAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public VausTechicus(int client, float vecPos[3], float vecAng[3], bool ally)
+	public VausTechicus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		VausTechicus npc = view_as<VausTechicus>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "20000", ally));
 		
@@ -202,13 +202,13 @@ public void VausTechicus_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -288,8 +288,7 @@ void VausTechicusShieldGiving(VausTechicus npc, float gameTime)
 	if(gameTime > npc.m_flNextRangedSpecialAttack)
 	{
 		npc.m_flNextRangedSpecialAttack = gameTime + 1.0; //Retry in 1 second.
-		int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
-		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
+		b_NpcIsTeamkiller[npc.index] = true;
 		Explode_Logic_Custom(0.0,
 		npc.index,
 		npc.index,
@@ -303,7 +302,7 @@ void VausTechicusShieldGiving(VausTechicus npc, float gameTime)
 		false,
 		_,
 		VausTechicusShield);
-		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
+		b_NpcIsTeamkiller[npc.index] = false;
 	}
 }
 
@@ -317,7 +316,7 @@ void VausTechicusSelfDefense(VausTechicus npc, float gameTime, int target, float
 	{
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(target);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
 			npc.m_flAttackHappens = 0.0;
 			
 			npc.FaceTowards(vecTarget, 15000.0);
@@ -352,19 +351,9 @@ void VausTechicusShield(int entity, int victim, float damage, int weapon)
 	if(entity == victim)
 		return;
 
-	if(b_IsAlliedNpc[entity])
+	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
 	{
-		if (b_IsAlliedNpc[victim])
-		{
-			VausTechicusShieldInternal(entity,victim);
-		}
-	}
-	else
-	{
-		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
-		{
-			VausTechicusShieldInternal(entity,victim);
-		}
+		VausTechicusShieldInternal(entity,victim);
 	}
 }
 

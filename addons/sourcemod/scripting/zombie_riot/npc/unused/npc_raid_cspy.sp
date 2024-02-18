@@ -270,7 +270,7 @@ methodmap CorruptedSpyRaid < CClotBody
 		this.m_flPlayMusicSound = GetEngineTime() + 210.0;
 	}
 
-	public CorruptedSpyRaid(int client, float vecPos[3], float vecAng[3], bool ally)
+	public CorruptedSpyRaid(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		CorruptedSpyRaid npc = view_as<CorruptedSpyRaid>(CClotBody(vecPos, vecAng, "models/freak_fortress_2/corruptedspy/corruptedspy_animated_funny_1.mdl", "1.35", "500000", ally, false, true, true, true));
 		
@@ -281,6 +281,7 @@ methodmap CorruptedSpyRaid < CClotBody
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -306,7 +307,6 @@ methodmap CorruptedSpyRaid < CClotBody
 		{
 			RaidModeScaling *= 0.34;
 		}
-		Raidboss_Clean_Everyone();
 		
 		npc.m_fbGunout = false;
 		npc.m_bmovedelay_gun = false;
@@ -420,9 +420,9 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest, true))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest, 0.3);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest, 0.3);
 		
 		if(npc.m_flDead_Ringer_Invis < GetGameTime() && npc.m_flDead_Ringer_Invis_bool)
 		{
@@ -507,14 +507,14 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 			float vecDirShooting[3], vecRight[3], vecUp[3];
 			
 			vecTarget[2] += 15.0;
-			MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+			MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 			GetVectorAngles(vecDirShooting, vecDirShooting);
 			vecDirShooting[1] = eyePitch[1];
 			GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 			
 			float m_vecSrc[3];
 			
-			m_vecSrc = WorldSpaceCenter(npc.index);
+			m_vecSrc = WorldSpaceCenterOld(npc.index);
 			
 			float vecEnd[3];
 			vecEnd[0] = m_vecSrc[0] + vecDirShooting[0] * 9000; 
@@ -641,8 +641,8 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 	}
 	if(npc.m_flNextTeleport < GetGameTime())
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest, 0.3);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
+		float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest, 0.3);
 		static float flVel[3];
 		GetEntPropVector(closest, Prop_Data, "m_vecVelocity", flVel);
 		if (!npc.Anger)
@@ -795,10 +795,10 @@ public void CorruptedSpyRaid_ClotDamaged_Post(int victim, int attacker, int infl
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			int spawn_index = Npc_Create(CORRUPTEDSPYMINION, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			int spawn_index = Npc_Create(CORRUPTEDSPYMINION, -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
-				Zombies_Currently_Still_Ongoing += 1;
+				Zombies_Currently_Still_Ongoing += 1;	// FIXME
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}

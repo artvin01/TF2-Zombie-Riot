@@ -315,7 +315,7 @@ methodmap TheGambler < CClotBody
 		#endif
 	}
 	
-	public TheGambler(int client, float vecPos[3], float vecAng[3], bool ally)
+	public TheGambler(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		TheGambler npc = view_as<TheGambler>(CClotBody(vecPos, vecAng, GAMBLERMODEL, "1.0", "180000", ally));
 		
@@ -324,7 +324,7 @@ methodmap TheGambler < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		if(!b_IsAlliedNpc[npc.index])
+		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			RaidBossActive = EntRefToEntIndex(npc.index);
 			for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -758,13 +758,13 @@ public void TheGambler_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		//Predict their pos.
 		
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			//int color[4];
 			//color[0] = 255;
 			//color[1] = 255;
@@ -792,7 +792,7 @@ public void TheGambler_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1400.0);
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
@@ -811,7 +811,7 @@ public void TheGambler_ClotThink(int iNPC)
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -841,7 +841,7 @@ public void TheGambler_ClotThink(int iNPC)
 					npc.FireArrow(vecTarget, Archers_Anhilation_Damage, 1400.0, _, 1.0);
 				}
 				
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
+				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 				//npc.PlayRangedSound();
 			}
 		}
@@ -856,7 +856,7 @@ public void TheGambler_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1400.0);
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
@@ -875,7 +875,7 @@ public void TheGambler_ClotThink(int iNPC)
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -905,7 +905,7 @@ public void TheGambler_ClotThink(int iNPC)
 					npc.FireArrow(vecTarget, ExodiaRandomizedDamage, 1400.0, _, 1.0);
 				}
 				Exodia_Hits[npc.index]++;
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
+				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 				npc.PlayRangedSound();
 			}
 		}
@@ -920,7 +920,7 @@ public void TheGambler_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1400.0);
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
@@ -939,7 +939,7 @@ public void TheGambler_ClotThink(int iNPC)
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -969,7 +969,7 @@ public void TheGambler_ClotThink(int iNPC)
 					npc.FireArrow(vecTarget, PelletGun_Damage, 1400.0, _, 1.0);
 				}
 				
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
+				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 				npc.PlayRangedTwoSound();
 			}
 		}
@@ -984,7 +984,7 @@ public void TheGambler_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1400.0);
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
@@ -1003,7 +1003,7 @@ public void TheGambler_ClotThink(int iNPC)
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -1032,7 +1032,7 @@ public void TheGambler_ClotThink(int iNPC)
 					npc.FireArrow(vecTarget, WeakMachineGun_Smg_Damage, 1400.0, _, 1.0);
 				}
 				
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
+				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 				npc.PlayRangedThirdSound();
 			}
 		}
@@ -1047,7 +1047,7 @@ public void TheGambler_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1400.0);
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
@@ -1066,7 +1066,7 @@ public void TheGambler_ClotThink(int iNPC)
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -1114,7 +1114,7 @@ public void TheGambler_ClotThink(int iNPC)
 					Orb_Launched(npc.index, iRot, speed, 5.0, damage);
 				}
 				
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
+				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 				//npc.PlayRangedSound();
 			}
 		}*/
@@ -1265,7 +1265,7 @@ public void TheGambler_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}*/
 	npc.PlayDeathSound();
-	if(!b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
@@ -1318,8 +1318,6 @@ static void Orb_Launched(int iNPC, int iRot, float speed, float time, float dama
 	
 	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", npc.index);
 	SetEntProp(iRot, Prop_Send, "m_iTeamNum", npc.index);
-	//RequestFrame(See_Projectile_Team, EntIndexToEntRef(iCarrier));
-	//RequestFrame(See_Projectile_Team, EntIndexToEntRef(iRot));
 	
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
@@ -1376,10 +1374,10 @@ public Action Gambler_Orb_IEM_OnHatTouch(int entity, int client)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenter(target);
+		Entity_Position = WorldSpaceCenterOld(target);
 		//Code to do damage position and ragdolls
 		
-		SDKHooks_TakeDamage(client, npc.index, npc.index, Orb_Damage_Projectile[npc.index], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(client, npc.index, npc.index, Orb_Damage_Projectile[npc.index], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 	}
 	else if(target == 1)
 	{
@@ -1443,7 +1441,7 @@ public Action Gambler_Timer_Electric_Think(Handle timer, int iCarrier)
 	{
 		if(IsValidClient(i))
 		{
-			targPos = WorldSpaceCenter(i);
+			targPos = WorldSpaceCenterOld(i);
 			if(GetVectorDistance(flCarrierPos, targPos) <= Orb_Radius[npc.index])
 			{
 				//Code to do damage position and ragdolls
@@ -1456,7 +1454,7 @@ public Action Gambler_Timer_Electric_Think(Handle timer, int iCarrier)
 				float damage_1 = Custom_Explosive_Logic(npc.index, distance_1, 0.75, Orb_Damage_Tornado[npc.index], Orb_Radius[npc.index]+1.0);				
 				damage_1 /= Orb_Damage_Reduction[npc.index];
 				
-				SDKHooks_TakeDamage(i, npc.index, npc.index, damage_1, DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), targPos);
+				SDKHooks_TakeDamage(i, npc.index, npc.index, damage_1, DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), targPos);
 				int r = 255;
 				int g = 125;
 				int b = 125;

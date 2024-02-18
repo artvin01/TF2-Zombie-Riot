@@ -157,9 +157,10 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 		int entity = CreateEntityByName("tf_projectile_pipe_remote");
 		if(IsValidEntity(entity))
 		{
+			b_ExpertTrapper[entity] = b_ExpertTrapper[client];
 			b_StickyIsSticking[entity] = true; //Make them not stick to npcs.
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+			SetTeam(entity, team);
 			SetEntProp(entity, Prop_Send, "m_bCritical", false); 	//No crits, causes particles which cause FPS DEATH!! Crits in tf2 cause immensive lag from what i know from ff2.
 																	//Might also just be cosmetics, eitherways, dont use this, litterally no reason to!
 			SetEntProp(entity, Prop_Send, "m_iType", 1);
@@ -240,6 +241,7 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classnam
 			Bonus_damage = 1.0;
 			
 		Calculate_HP_Spikes *= Bonus_damage;
+
 		
 		static float ang[3], pos[3], vel[3];
 		int team = GetClientTeam(client);
@@ -255,9 +257,10 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classnam
 		int entity = CreateEntityByName("tf_projectile_pipe_remote");
 		if(IsValidEntity(entity))
 		{
+			b_ExpertTrapper[entity] = b_ExpertTrapper[client];
 			b_StickyIsSticking[entity] = true; //Make them not stick to npcs.
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+			SetTeam(entity, team);
 			SetEntProp(entity, Prop_Send, "m_bCritical", false); 	//No crits, causes particles which cause FPS DEATH!! Crits in tf2 cause immensive lag from what i know from ff2.
 																	//Might also just be cosmetics, eitherways, dont use this, litterally no reason to!
 			SetEntProp(entity, Prop_Send, "m_iType", 1);
@@ -358,10 +361,10 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 				float targPos[3];
 				float Spikepos[3];
 				
-				for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 				{
-					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-					if (IsValidEntity(baseboss_index))
+					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+					if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 					{
 						if(!b_NpcHasDied[baseboss_index])
 						{
@@ -376,7 +379,11 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 									continue;
 								
 								//Just do full damage.
-								SDKHooks_TakeDamage(baseboss_index, client, client, float(Spike_Health[entity]), DMG_BULLET, -1, NULL_VECTOR, Spikepos);
+								float DamageTrap = float(Spike_Health[entity]);
+								if(b_ExpertTrapper[client] && b_ExpertTrapper[entity])
+									DamageTrap *= 4.5;
+
+								SDKHooks_TakeDamage(baseboss_index, client, client, DamageTrap, DMG_BULLET, -1, NULL_VECTOR, Spikepos);
 
 								RemoveEntity(entity);
 								SetEntitySpike(entity, 0);

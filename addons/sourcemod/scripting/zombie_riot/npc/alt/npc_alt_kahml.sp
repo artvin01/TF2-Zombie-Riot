@@ -234,9 +234,9 @@ methodmap Kahmlstein < CClotBody
 		#endif
 	}
 	
-	public Kahmlstein(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Kahmlstein(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Kahmlstein npc = view_as<Kahmlstein>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "15000", ally, false, true));
+		Kahmlstein npc = view_as<Kahmlstein>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "15000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = ALT_KAHMLSTEIN;
 		i_NpcWeight[npc.index] = 4;
@@ -247,6 +247,14 @@ methodmap Kahmlstein < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
+
+		if(!IsValidEntity(RaidBossActive))
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidModeScaling = 10.0;
+			RaidAllowsBuildings = true;
+		}
 		
 		npc.m_bDissapearOnDeath = true;
 		
@@ -691,11 +699,11 @@ public void Kahmlstein_ClotThink(int iNPC)
 			i_kahml_combo_offest[npc.index] = 0;
 			i_kahml_combo[npc.index] = 0;
 		}
-		float vecTarget[3];	vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3];	vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex, 0.3);
+		float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex, 0.3);
 		
 		if(npc.m_flCharge_Duration < GetGameTime(npc.index) && i_kahml_dash_charge[npc.index] > 2)
 		{
@@ -921,8 +929,11 @@ public void Kahmlstein_NPCDeath(int entity)
 {
 	Kahmlstein npc = view_as<Kahmlstein>(entity);
 	npc.PlayDeathSound();	
-	ParticleEffectAt(WorldSpaceCenter(npc.index), "teleported_blue", 0.5);
+	ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
 	CPrintToChatAll("{blue}Kahmlstein{default}: You're boring me, im leaving.");
+
+	if(npc.index==EntRefToEntIndex(RaidBossActive))
+		RaidBossActive=INVALID_ENT_REFERENCE;
 
 	SDKUnhook(npc.index, SDKHook_Think, Kahmlstein_ClotThink);
 	

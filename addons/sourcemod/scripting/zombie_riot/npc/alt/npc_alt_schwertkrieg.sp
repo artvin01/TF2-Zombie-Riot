@@ -35,10 +35,9 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
-static bool b_health_stripped[MAXENTITIES];
-
 static float fl_teleport_timer[MAXENTITIES];
 static bool b_teleport_recharging[MAXENTITIES];
+static bool b_schwert_is_ally[MAXENTITIES];
 
 
 static float TELEPORT_STRIKE_Smite_BaseDMG = 1500.0; //Base damage of the effect
@@ -141,7 +140,7 @@ methodmap Schwertkrieg < CClotBody
 	
 	
 	
-	public Schwertkrieg(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Schwertkrieg(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Schwertkrieg npc = view_as<Schwertkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
@@ -153,15 +152,23 @@ methodmap Schwertkrieg < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		g_b_schwert_died=false;	
+		if(ally != TFTeam_Red)
+		{
+			g_b_schwert_died=false;	
 
-		g_b_angered=false;
+			g_b_angered=false;
+			b_schwert_is_ally[npc.index] = false;	//if schwert is blue do normal stuff
+		}
+		else
+		{
+			b_schwert_is_ally[npc.index] = true;	//if schwert is red, block all the raidboss angered logic!
+		}
+		
+		
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
-		b_health_stripped[npc.index] = false;
 		
 		SDKHook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
 		
@@ -176,6 +183,16 @@ methodmap Schwertkrieg < CClotBody
 		if(final)
 		{
 			i_RaidGrantExtra[npc.index] = 1;
+		}
+		else
+		{
+			if(!IsValidEntity(RaidBossActive) && !ally)
+			{
+				RaidBossActive = EntIndexToEntRef(npc.index);
+				RaidModeTime = GetGameTime(npc.index) + 9000.0;
+				RaidModeScaling = 10.0;
+				RaidAllowsBuildings = true;
+			}
 		}
 		
 		
@@ -258,7 +275,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 	{
 		return;
 	}
-	if(RaidBossActive == INVALID_ENT_REFERENCE && !g_b_schwert_died && ZR_GetWaveCount()+1 >=60 && i_RaidGrantExtra[npc.index] == 1)
+	if(!IsValidEntity(RaidBossActive) && !g_b_schwert_died && ZR_GetWaveCount()+1 >=60 && i_RaidGrantExtra[npc.index] == 1)
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}
@@ -299,7 +316,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 		npc.m_bPathing = false;
 		npc.SetActivity("ACT_MP_CROUCH_MELEE");
 		npc.m_bisWalking = false;
-		if(g_b_donner_died && RaidBossActive == INVALID_ENT_REFERENCE)
+		if(g_b_donner_died && !IsValidEntity(RaidBossActive))
 		{
 			if(GetGameTime() > g_f_blitz_dialogue_timesincehasbeenhurt)
 			{
@@ -314,14 +331,14 @@ public void Schwertkrieg_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -376,29 +393,36 @@ public void Schwertkrieg_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float meleedmg= 175.0;
-								if(g_b_angered)
+								if(g_b_angered && !b_schwert_is_ally[npc.index])
 								{
 									meleedmg = 325.0;
 								}	
 									
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 								{
-									float Bonus_damage = 1.0;
-									int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
-	
-									if(IsValidEntity(weapon))
+									if(target <= MaxClients)
 									{
-										char classname[32];
-										GetEntityClassname(weapon, classname, 32);
-									
-										int weapon_slot = TF2_GetClassnameSlot(classname);
-									
-										if(weapon_slot != 2 || i_IsWandWeapon[weapon])
+										float Bonus_damage = 1.0;
+										int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
+		
+										if(IsValidEntity(weapon))
 										{
-											Bonus_damage = 1.5;
+											char classname[32];
+											GetEntityClassname(weapon, classname, 32);
+										
+											int weapon_slot = TF2_GetClassnameSlot(classname);
+										
+											if(weapon_slot != 2 || i_IsWandWeapon[weapon])
+											{
+												Bonus_damage = 1.5;
+											}
+											meleedmg *= Bonus_damage;
+											SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
 										}
-										meleedmg *= Bonus_damage;
-										SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
+										else
+										{
+											SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
+										}	
 									}
 									else
 									{
@@ -454,7 +478,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 			b_teleport_recharging[npc.index]=false;
 			npc.AddActivityViaSequence("taunt_neck_snap_medic");
 
-			float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index);
+			float npc_Loc[3]; npc_Loc = GetAbsOriginOld(npc.index);
 
 			EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
 			EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
@@ -490,7 +514,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 		float vecPos[3];
 				
 		GetVectors(PrimaryThreatIndex, VecForward, vecRight, vecUp);
-		vecPos = GetAbsOrigin(PrimaryThreatIndex);
+		vecPos = GetAbsOriginOld(PrimaryThreatIndex);
 		vecPos[2] += 5.0;
 				
 		float vecSwingEnd[3];
@@ -506,13 +530,13 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 			npc.FaceTowards(vecSwingEnd);
 
 			float start_offset[3], end_offset[3];
-			start_offset = WorldSpaceCenter(npc.index);
+			start_offset = WorldSpaceCenterOld(npc.index);
 			bool Succeed = NPC_Teleport(npc.index, vecSwingEnd);
 			if(Succeed)
 			{
 				
 				
-				if(g_b_angered)
+				if(g_b_angered && !b_schwert_is_ally[npc.index])
 				{
 					npc.m_flMeleeArmor = 1.0;
 					fl_teleport_timer[npc.index]= GameTime+(TELEPORT_STRIKE_Reuseable*0.5);
@@ -550,7 +574,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 				if(Succeed)
 				{
 				
-					if(g_b_angered)
+					if(g_b_angered && !b_schwert_is_ally[npc.index])
 					{
 						npc.m_flMeleeArmor = 1.0;
 						fl_teleport_timer[npc.index]= GameTime+(TELEPORT_STRIKE_Reuseable*0.5);
@@ -581,7 +605,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 				else
 				{
 					fl_teleport_timer[npc.index]= GameTime+5.0;	//retry in 5 seconds
-					if(g_b_angered)
+					if(g_b_angered && !b_schwert_is_ally[npc.index])
 					{
 						npc.m_flMeleeArmor = 1.0;
 					}
@@ -595,7 +619,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 		else
 		{
 			fl_teleport_timer[npc.index]= GameTime+1.0;	//retry in 1 second
-			if(g_b_angered)
+			if(g_b_angered && !b_schwert_is_ally[npc.index])
 			{
 				npc.m_flMeleeArmor = 1.0;
 			}
@@ -611,7 +635,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 	}
 	else
 	{
-		if(g_b_angered)
+		if(g_b_angered && !b_schwert_is_ally[npc.index])
 			npc.m_flSpeed = Schwertkrieg_Speed*1.35;
 		else
 			npc.m_flSpeed = Schwertkrieg_Speed;
@@ -654,7 +678,7 @@ static void Schwertkrieg_Teleport_Boom(int iNPC, float vecTarget[3], float pos[3
 	TELEPORT_STRIKE_spawnBeam(0.8, 145, 47, 47, 255, "materials/sprites/lgtning.vmt", 8.0, 8.2, _, 5.0, pos, vecTarget);
 	//TELEPORT_STRIKE_spawnBeam(320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
 	float radius = TELEPORT_STRIKE_Smite_Radius;
-	if(g_b_angered)
+	if(g_b_angered && !b_schwert_is_ally[npc.index])
 	{
 		radius *= 1.25;
 	}

@@ -123,7 +123,7 @@ methodmap XenoFortifiedGiantPoisonZombie < CClotBody
 	
 	
 	
-	public XenoFortifiedGiantPoisonZombie(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoFortifiedGiantPoisonZombie(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoFortifiedGiantPoisonZombie npc = view_as<XenoFortifiedGiantPoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.75", "3000", ally, false, true));
 		
@@ -183,7 +183,15 @@ public void XenoFortifiedGiantPoisonZombie_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
-				
+	
+	float TrueArmor = 1.0;
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
+			TrueArmor *= 0.25;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		if(!npc.m_flAttackHappenswillhappen)
@@ -209,14 +217,14 @@ public void XenoFortifiedGiantPoisonZombie_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -338,10 +346,20 @@ public Action XenoFortifiedGiantPoisonZombie_OnTakeDamage(int victim, int &attac
 			CreateTimer(2.0, XenoFortifiedGiantPoisonZombie_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(10.0, XenoFortifiedGiantPoisonZombie_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		}
-		if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
+		float TrueArmor = 1.0;
+		if(!NpcStats_IsEnemySilenced(victim))
 		{
-			damage *= 0.25;
+			if(fl_TotalArmor[npc.index] == 1.0)
+			{
+				if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
+				{
+					TrueArmor *= 0.25;
+					fl_TotalArmor[npc.index] = TrueArmor;
+					OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, true);
+				}
+			}
 		}
+		fl_TotalArmor[npc.index] = TrueArmor;
 	}
 	
 	

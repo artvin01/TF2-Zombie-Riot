@@ -491,7 +491,7 @@ methodmap TrueZerofuse < CClotBody
 		#endif
 	}
 	
-	public TrueZerofuse(int client, float vecPos[3], float vecAng[3], bool ally)
+	public TrueZerofuse(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		TrueZerofuse npc = view_as<TrueZerofuse>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "2250000", ally));
 		
@@ -500,7 +500,7 @@ methodmap TrueZerofuse < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		i_ExplosiveProjectileHexArray[npc.index] = EP_NO_KNOCKBACK;
 		
-		if(!b_IsAlliedNpc[npc.index])//idk why you would even allow him to be an ally...
+		if(GetTeam(npc.index) != TFTeam_Red)//idk why you would even allow him to be an ally...
 		{
 			RaidBossActive = EntRefToEntIndex(npc.index);
 			
@@ -620,7 +620,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(!b_IsAlliedNpc[npc.index])//Don't allow the ally version to fuck over the round
+	if(GetTeam(npc.index) != TFTeam_Red)//Don't allow the ally version to fuck over the round
 	{
 		if(RaidModeTime < GetGameTime())
 		{
@@ -695,7 +695,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		
-				int spawn_index = Npc_Create(SPY_MAIN_BOSS, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+				int spawn_index = Npc_Create(SPY_MAIN_BOSS, -1, pos, ang, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
 					Zombies_Currently_Still_Ongoing += 1;
@@ -708,7 +708,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		
-				int spawn_index = Npc_Create(MEDIVAL_SAMURAI, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+				int spawn_index = Npc_Create(MEDIVAL_SAMURAI, -1, pos, ang, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
 					Zombies_Currently_Still_Ongoing += 1;
@@ -940,8 +940,8 @@ public void TrueZerofuse_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);	
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);	
 		if(npc.m_flJumpCooldown < GetGameTime(npc.index) && npc.m_flInJump < GetGameTime(npc.index) && flDistanceToTarget > 920000 && !b_WrathRage[npc.index] && !b_ForceWrath[npc.index])
 		{
 			int Enemy_I_See;
@@ -969,7 +969,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			/*int color[4];
 			color[0] = 255;
 			color[1] = 255;
@@ -999,11 +999,11 @@ public void TrueZerofuse_ClotThink(int iNPC)
 			{
 				if(b_Lifeloss[npc.index])
 				{
-					vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1200.0);
+					vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1200.0);
 				}
 				else
 				{
-					vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 650.0);
+					vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 650.0);
 				}
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
@@ -1031,7 +1031,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -1335,7 +1335,7 @@ public void TrueZerofuse_NPCDeath(int entity)
 	TrueZerofuse npc = view_as<TrueZerofuse>(entity);
 	
 	npc.PlayDeathSound();
-	if(!b_IsAlliedNpc[npc.index])//ally shouldn't kill the music if the original pablo is there still nor killing the raid index either
+	if(GetTeam(npc.index) != TFTeam_Red)//ally shouldn't kill the music if the original pablo is there still nor killing the raid index either
 	{
 		Music_Stop_Zerofuse_Theme(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;

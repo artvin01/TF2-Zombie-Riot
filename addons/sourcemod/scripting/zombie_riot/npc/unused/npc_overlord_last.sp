@@ -179,7 +179,7 @@ methodmap OverlordRogue < CClotBody
 		#endif
 	}
 	
-	public OverlordRogue(int client, float vecPos[3], float vecAng[3], bool ally)
+	public OverlordRogue(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		OverlordRogue npc = view_as<OverlordRogue>(CClotBody(vecPos, vecAng, "models/zombie_riot/bosses/overlord_3.mdl", "1.0", "1000000", ally));
 		
@@ -242,7 +242,14 @@ public void OverlordRogue_ClotThink(int iNPC)
 	{
 		return;
 	}
+	float TrueArmor = 1.0;
+	if(npc.m_flAngerDelay > GetGameTime(npc.index))
+		TrueArmor *= 0.25;
 	
+	if(npc.m_fbRangedSpecialOn)
+		TrueArmor *= 0.15;
+	fl_TotalArmor[npc.index] = TrueArmor;
+
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
@@ -270,7 +277,7 @@ public void OverlordRogue_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			if (npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				if (npc.m_flmovedelay < GetGameTime(npc.index) && npc.m_flAngerDelay < GetGameTime(npc.index))
@@ -303,12 +310,12 @@ public void OverlordRogue_ClotThink(int iNPC)
 			
 		//	npc.FaceTowards(vecTarget, 1000.0);
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -381,7 +388,7 @@ public void OverlordRogue_ClotThink(int iNPC)
 					//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
 					
 					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -549,12 +556,6 @@ public Action OverlordRogue_OnTakeDamage(int victim, int &attacker, int &inflict
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
-	if(npc.m_flAngerDelay > GetGameTime(npc.index))
-		damage *= 0.25;
-	
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.15;
 	
 	return Plugin_Changed;
 }

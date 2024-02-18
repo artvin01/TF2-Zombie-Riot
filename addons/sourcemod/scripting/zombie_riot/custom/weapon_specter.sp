@@ -153,7 +153,7 @@ public void Weapon_SpecterBone(int client, int weapon, bool &result, int slot)
 		TF2_AddCondition(client, TFCond_NoHealingDamageBuff, SPECTER_BONE_FRACTURE_DURATION);
 		MakePlayerGiveResponseVoice(client, 1); //haha!
 
-		if(RaidbossIgnoreBuildingsLogic())
+		if(RaidbossIgnoreBuildingsLogic(1))
 		{
 			ApplyTempAttrib(weapon, 412, 0.25, SPECTER_BONE_FRACTURE_DURATION);
 		}
@@ -213,7 +213,7 @@ public Action Specter_BoneTimer(Handle timer, int userid)
 		f_ImmuneToFalldamage[client] = GetGameTime() + 5.0;
 		if(!dieingstate[client])
 		{
-			if(!RaidbossIgnoreBuildingsLogic())
+			if(!RaidbossIgnoreBuildingsLogic(1))
 				SetEntityHealth(client, 1);
 		}
 			
@@ -256,54 +256,7 @@ public void Weapon_SpecterSurvive(int client, int weapon, bool &result, int slot
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);	
 	}
 }
-/*
-public Action Specter_ReviveTimer(Handle timer, int client)
-{
-	if(SpecterCharge[client] < 60 && SpecterExpireIn[client] < GetGameTime())
-	{
-		SpecterCharge[client]--;
-		SpecterExpireIn[client] = GetGameTime() + 5.0;
-	}
 
-	bool endTimer;
-	if(SpecterCharge[client] < 1 || !IsClientInGame(client) || !IsPlayerAlive(client))
-	{
-		endTimer = true;
-	}
-	else if(dieingstate[client] > 159 || (dieingstate[client] > 0 && !b_LeftForDead[client]))
-	{
-		if(SpecterCharge[client] > 59)
-		{
-			ClientCommand(client, "playgamesound %s", SPECTER_SINGING);
-			ClientCommand(client, "playgamesound %s", SPECTER_SINGING);
-
-			b_LeftForDead[client] = true;
-			dieingstate[client] = 159; // 5 seconds
-			i_AmountDowned[client]--;
-			SpecterCharge[client] -= 60;
-			endTimer = true;
-
-			PrintHintText(client, "Specter Revive Activated");
-		}
-	}
-	else
-	{
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(weapon != -1 && weapon == WEAPON_SPECTER)
-		{
-			PrintHintText(client, "Specter Revive [%d / 60]", SpecterCharge[client]);
-			StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
-		}
-	}
-
-	if(!endTimer)
-		return Plugin_Continue;
-	
-	SpecterExpireIn[client] = 0.0;
-	SpecterCharge[client] = 0;
-	return Plugin_Stop;
-}
-*/
 
 
 bool SpecterCheckIfAutoRevive(int client)
@@ -379,12 +332,12 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 					//Bleed sucks but thats on purpose
 
 					float vecTarget[3];
-					for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 					{
-						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-						if (IsValidEntity(baseboss_index))
+						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+						if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 						{
-							vecTarget = WorldSpaceCenter(baseboss_index);
+							vecTarget = WorldSpaceCenterOld(baseboss_index);
 							
 							float flDistanceToTarget = GetVectorDistance(flPos, vecTarget, true);
 							if(flDistanceToTarget < (SPECTER_DEAD_RANGE * SPECTER_DEAD_RANGE))

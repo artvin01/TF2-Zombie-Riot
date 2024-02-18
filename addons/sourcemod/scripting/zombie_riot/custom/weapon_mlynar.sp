@@ -188,7 +188,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 				static float ang3[3];
 
 				float pos1[3];
-				pos1 = WorldSpaceCenter(HitEntitiesSphereMlynar[entity_traced]);
+				pos1 = WorldSpaceCenterOld(HitEntitiesSphereMlynar[entity_traced]);
 				GetVectorAnglesTwoPoints(pos2, pos1, ang3);
 
 				// fix all angles
@@ -209,7 +209,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 				{
 					// success
 			//		Hit = true;
-					SDKHooks_TakeDamage(HitEntitiesSphereMlynar[entity_traced], client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 100000.0), pos1);
+					SDKHooks_TakeDamage(HitEntitiesSphereMlynar[entity_traced], client, client, damage, DMG_CLUB, weapon, CalculateDamageForceOld(vecSwingForward, 100000.0), pos1);
 					EmitSoundToAll("weapons/halloween_boss/knight_axe_hit.wav", HitEntitiesSphereMlynar[entity_traced],_ ,_ ,_ ,0.75);
 				}
 			}
@@ -362,7 +362,7 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 				f_MlynarDmgMultiPassive[client] = 2.0;
 			}
 			float ClientPos[3];
-			ClientPos = WorldSpaceCenter(client);
+			ClientPos = WorldSpaceCenterOld(client);
 			//we have atleast one enemy near us, more do not equal more strength
 			//but the same enemy cannot give a huge amount of power over time.
 			for(int i=0; i < MAXENTITIES; i++)
@@ -414,7 +414,7 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 			if(f_MlynarHurtDuration[client] > GetGameTime())
 			{
 				f_MlynarDmgMultiHurt[client] += 0.01;
-				if(RaidbossIgnoreBuildingsLogic()) //During raids, give power 2x as fast.
+				if(RaidbossIgnoreBuildingsLogic(1)) //During raids, give power 2x as fast.
 				{
 					f_MlynarDmgMultiHurt[client] += 0.01;
 				}
@@ -466,6 +466,10 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 {
 	f_MlynarHurtDuration[victim] = GetGameTime() + 1.0;
 	//insert reflect code.
+	if(b_thisNpcIsARaid[attacker])
+	{
+		damage *= 1.15;
+	}
 	if(f_MlynarReflectCooldown[victim][attacker] < GetGameTime())
 	{
 		f_MlynarReflectCooldown[victim][attacker] = GetGameTime() + 0.35;
@@ -489,14 +493,14 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 			ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
 		}
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenter(attacker);
+		Entity_Position = WorldSpaceCenterOld(attacker);
 		
 		DataPack pack = new DataPack();
 		pack.WriteCell(EntIndexToEntRef(attacker));
 		pack.WriteCell(EntIndexToEntRef(victim));
 		pack.WriteCell(EntIndexToEntRef(victim));
 		pack.WriteFloat(damageModif);
-		pack.WriteCell(DMG_CLUB);
+		pack.WriteCell(DMG_SLASH);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		pack.WriteFloat(0.0);
 		pack.WriteFloat(0.0);

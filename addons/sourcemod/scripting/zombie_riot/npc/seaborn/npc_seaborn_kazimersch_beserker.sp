@@ -115,9 +115,9 @@ methodmap KazimierzBeserker < CClotBody
 	}
 	
 	
-	public KazimierzBeserker(int client, float vecPos[3], float vecAng[3], bool ally)
+	public KazimierzBeserker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		KazimierzBeserker npc = view_as<KazimierzBeserker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "20000", false, true));
+		KazimierzBeserker npc = view_as<KazimierzBeserker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "20000", ally, true));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -150,7 +150,7 @@ methodmap KazimierzBeserker < CClotBody
 
 		//how many deaths untill we reach full power?
 		float MaxAlliesDeath = 10.0;
-		MaxAlliesDeath *= MultiGlobal;
+		MaxAlliesDeath *= MultiGlobalEnemy;
 		npc.m_iAlliesMaxDeath = RoundToCeil(MaxAlliesDeath);
 
 		npc.m_flPercentageAngry = 0.0;
@@ -208,6 +208,17 @@ public void KazimierzBeserker_ClotThink(int iNPC)
 	{
 		return;
 	}
+
+	float TrueArmor = 1.0;
+	if(npc.m_flPercentageAngry == 1.0)
+	{
+		TrueArmor *= 0.35;
+	}
+	else if(npc.m_flPercentageAngry > 0.5)
+	{
+		TrueArmor *= 0.5;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
 	
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -251,7 +262,7 @@ public void KazimierzBeserker_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -287,13 +298,13 @@ public void KazimierzBeserker_ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -401,14 +412,6 @@ public Action KazimierzBeserker_OnTakeDamage(int victim, int &attacker, int &inf
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
 		return Plugin_Continue;
 	*/
-	if(npc.m_flPercentageAngry == 1.0)
-	{
-		damage *= 0.35;
-	}
-	else if(npc.m_flPercentageAngry > 0.5)
-	{
-		damage *= 0.5;
-	}
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -445,7 +448,7 @@ public void KazimierzBeserker_AllyDeath(int ally, int self)
 {
 	KazimierzBeserker npc = view_as<KazimierzBeserker>(self);
 
-	if(GetEntProp(ally, Prop_Send, "m_iTeamNum") != GetEntProp(self, Prop_Send, "m_iTeamNum"))
+	if(GetTeam(ally) != GetTeam(self))
 	{
 		return;
 	}

@@ -162,6 +162,8 @@ static float BlitzLight_DMG_Radius[MAXENTITIES];
 static float BlitzLight_Radius[MAXENTITIES];
 static float BlitzLight_Angle[MAXENTITIES];
 
+static int g_ProjectileModelRocket;
+
 public void Blitzkrieg_OnMapStart()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);      		}
@@ -177,7 +179,7 @@ public void Blitzkrieg_OnMapStart()
 	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSoundCustom(g_IdleMusic[i]);   }
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
-	
+	g_ProjectileModelRocket = PrecacheModel("models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl");
 	PrecacheSound(SOUND_BLITZ_IMPACT_CONCRETE_1);
 	PrecacheSound(SOUND_BLITZ_IMPACT_CONCRETE_2);
 	PrecacheSound(SOUND_BLITZ_IMPACT_CONCRETE_3);
@@ -347,13 +349,14 @@ methodmap Blitzkrieg < CClotBody
 		PrintToServer("CClot::PlayPullSound()");
 		#endif
 	}
-	public Blitzkrieg(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Blitzkrieg(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Blitzkrieg npc = view_as<Blitzkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.4", "25000", ally, false, true, true, true)); //giant!
 		
 		i_NpcInternalId[npc.index] = RAIDMODE_BLITZKRIEG;
 		i_NpcWeight[npc.index] = 4;
-		
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Blitzkrieg_Win);
+
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
@@ -443,7 +446,6 @@ methodmap Blitzkrieg < CClotBody
 			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		Raidboss_Clean_Everyone();
 		
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -472,6 +474,7 @@ methodmap Blitzkrieg < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
 			
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -609,8 +612,39 @@ public void Blitzkrieg_ClotThink(int iNPC)
 {
 	Blitzkrieg npc = view_as<Blitzkrieg>(iNPC);
 
+	if(LastMann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			npc.m_fbGunout = true;
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: You alone? How amusing.");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: Machines win once more... You're the last...");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: You are hopeless.");
+				}
+			}
+		}
+	}
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		SDKUnhook(npc.index, SDKHook_Think, Blitzkrieg_ClotThink);
+		b_timer_lose[npc.index] = true;
+		
+		CPrintToChatAll("{crimson}Blitzkrieg{default}: Annhilated{default}.");
+		return;
+	}
 	if(RaidModeTime < GetGameTime())
 	{
+		ZR_NpcTauntWinClear();
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");
 		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
@@ -635,6 +669,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				CPrintToChatAll("{crimson}Blitzkrieg{default}: You all will make {crimson}excellent{default} additions to my army...");
 			}
 		}
+		return;
 	}
 	
 	if(!IsValidEntity(npc.m_iWearable6))
@@ -772,11 +807,11 @@ public void Blitzkrieg_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
@@ -933,7 +968,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					if(projectile_speed>=6000.0)
 						projectile_speed = 6000.0;
 						
-					FireBlitzRocket(npc.index, vecTarget, 7.5 * i_HealthScale[npc.index], projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
+					FireBlitzRocket(npc.index, vecTarget, 7.5 * i_HealthScale[npc.index], projectile_speed, 1.0);
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
@@ -985,9 +1020,9 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						//Play attack anim
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 						float projectile_speed = 500.0*(1.0+(1-(Health/MaxHealth))*1.5);	//Rocket speed, scales on current health.
-						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
+						vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
 						npc.PlayMeleeSound();
-						FireBlitzRocket(npc.index,vecTarget, fl_rocket_base_dmg[npc.index] * i_HealthScale[npc.index], projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0); //remove the no kb if people cant escape, or just lower the dmg
+						FireBlitzRocket(npc.index,vecTarget, fl_rocket_base_dmg[npc.index] * i_HealthScale[npc.index], projectile_speed, 1.0); //remove the no kb if people cant escape, or just lower the dmg
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + fl_rocket_firerate[npc.index];
 						i_PrimaryRocketsFired[npc.index]++;	//Adds 1 extra rocket to the shoping list for when we go out shoping in the reload store.
 						npc.m_flAttackHappens = 0.0;
@@ -1023,9 +1058,9 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
-	float vecTarget[3]; vecTarget = WorldSpaceCenter(attacker);
+	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(attacker);
 	
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 	
 	if(flDistanceToTarget > 1000000 && fl_blitz_ioc_punish_timer[npc.index][attacker] < GetGameTime(npc.index) && IsPlayerAlive(attacker) && TeutonType[attacker] == TEUTON_NONE && dieingstate[attacker] == 0)	//Basically we "punish(ment)" players who are too far from blitz.
 	{
@@ -1335,15 +1370,15 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		maxhealth=RoundToNearest((heck/10)*zr_smallmapbalancemulti.FloatValue);
 		if(i_currentwave[npc.index]==45)	//Only spwans if the wave is 45.
 		{
-			spawn_index = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
-			Zombies_Currently_Still_Ongoing += 1;
+			spawn_index = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetTeam(npc.index));
+			Zombies_Currently_Still_Ongoing += 1;	// FIXME
 			if(spawn_index > MaxClients)
 			{
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
-			spawn_index = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
-			Zombies_Currently_Still_Ongoing += 1;
+			spawn_index = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, -1, pos, ang, GetTeam(npc.index));
+			Zombies_Currently_Still_Ongoing += 1;	// FIXME
 			if(spawn_index > MaxClients)
 			{
 			
@@ -1355,8 +1390,8 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		{
 			CPrintToChatAll("{crimson}Blitzkrieg{default}: The brothers have been reborn.");
 			maxhealth=RoundToNearest((heck/5)*zr_smallmapbalancemulti.FloatValue);	//mid squishy
-			spawn_index = Npc_Create(ALT_DONNERKRIEG, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2, "raid_ally");
-			Zombies_Currently_Still_Ongoing += 1;
+			spawn_index = Npc_Create(ALT_DONNERKRIEG, -1, pos, ang, GetTeam(npc.index), "raid_ally");
+			Zombies_Currently_Still_Ongoing += 1;	// FIXME
 			if(spawn_index > MaxClients)
 			{
 				CPrintToChatAll("{crimson}Blitzkrieg{default}: Ay, Donnerkrieg, how ya doin?");
@@ -1364,8 +1399,8 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
 			maxhealth=RoundToNearest((heck/2)*zr_smallmapbalancemulti.FloatValue);	//the tankiest
-			spawn_index = Npc_Create(ALT_SCHWERTKRIEG, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2, "raid_ally");
-			Zombies_Currently_Still_Ongoing += 1;
+			spawn_index = Npc_Create(ALT_SCHWERTKRIEG, -1, pos, ang, GetTeam(npc.index), "raid_ally");
+			Zombies_Currently_Still_Ongoing += 1;	// FIXME
 			if(spawn_index > MaxClients)
 			{
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
@@ -1458,7 +1493,7 @@ public void Blitzkrieg_Punishment_Invoke(int ref, int enemy, float dist)
 		
 		float Range = 200.0;
 		float vecTarget[3];
-		vecTarget = WorldSpaceCenter(enemy);
+		vecTarget = WorldSpaceCenterOld(enemy);
 		vecTarget[2] += 1.0;
 		
 		if(dist > 4000000 && !b_BlitzLight[entity])
@@ -1481,7 +1516,7 @@ public void Blitzkrieg_Punishment_Invoke(int ref, int enemy, float dist)
 		color[2] = 47;
 		color[3] = 255;
 		float UserLoc[3];
-		UserLoc = GetAbsOrigin(entity);
+		UserLoc = GetAbsOriginOld(entity);
 		
 		UserLoc[2]+=75.0;
 		
@@ -1931,7 +1966,7 @@ void BlitzLight_Beams(int entity, bool charging = true)
 		return;
 		
 	float UserLoc[3], UserAng[3];
-	UserLoc = GetAbsOrigin(entity);
+	UserLoc = GetAbsOriginOld(entity);
 	
 	UserAng[0] = 0.0;
 	UserAng[1] = BlitzLight_Angle[npc.index];
@@ -2078,7 +2113,7 @@ public void BlitzLight_DealDamage(int entity)
 			return;
 
 	float beamLoc[3];
-	beamLoc = GetAbsOrigin(entity);
+	beamLoc = GetAbsOriginOld(entity);
 	
 		
 	if(i_BlitzLight_dmg_throttle[npc.index] > 2)	//do damage 10 times a second.
@@ -2126,13 +2161,13 @@ static void spawnRing_Vector(float center[3], float range, float modif_X, float 
 }
 static float fl_blitz_rocket_dmg[MAXENTITIES];
 
-static void FireBlitzRocket(int client, float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0) //No defaults, otherwise i cant even judge.
+static void FireBlitzRocket(int client, float vecTarget[3], float rocket_damage, float rocket_speed, float model_scale = 1.0) //No defaults, otherwise i cant even judge.
 {
 	Blitzkrieg npc = view_as<Blitzkrieg>(client);
 	float vecForward[3], vecSwingStart[3], vecAngles[3];
 	npc.GetVectors(vecForward, vecSwingStart, vecAngles);
 										
-	vecSwingStart = GetAbsOrigin(npc.index);
+	vecSwingStart = GetAbsOriginOld(npc.index);
 	vecSwingStart[2] += 54.0;
 										
 	MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
@@ -2150,19 +2185,17 @@ static void FireBlitzRocket(int client, float vecTarget[3], float rocket_damage,
 		fl_blitz_rocket_dmg[entity] = rocket_damage;
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
+		SetTeam(entity, GetTeam(npc.index));
 		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
 										
 		TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
 		DispatchSpawn(entity);
-		if(rocket_model[0])
+
+		for(int i; i<4; i++)
 		{
-			int g_ProjectileModelRocket = PrecacheModel(rocket_model);
-			for(int i; i<4; i++)
-			{
-				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
-			}
+			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
 		}
+
 		if(model_scale != 1.0)
 		{
 			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", model_scale); // ZZZZ i sleep
@@ -2170,7 +2203,6 @@ static void FireBlitzRocket(int client, float vecTarget[3], float rocket_damage,
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
 		SetEntityCollisionGroup(entity, 24); //our savior
 		Set_Projectile_Collision(entity); //If red, set to 27
-		See_Projectile_Team(entity);
 		
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Blitz_DHook_RocketExplodePre); //*yawn*
 		
@@ -2256,7 +2288,7 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 			{
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 20000.0);
+				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 20000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
@@ -2269,7 +2301,7 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 							PlaySound = true;
 							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
-							vecHit = WorldSpaceCenter(target);
+							vecHit = WorldSpaceCenterOld(target);
 							float meleedmg;
 							meleedmg = 12.5 * i_HealthScale[npc.index];
 							SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);	
@@ -2292,7 +2324,7 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 							}
 								
 							if(!Knocked)
-								Custom_Knockback(npc.index, target, 650.0); 
+								Custom_Knockback(npc.index, target, 450.0, true); 
 						}
 					}
 				}
@@ -2308,9 +2340,9 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget)) 
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
 			{
@@ -2332,4 +2364,8 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 			}
 		}
 	}
+}		
+public void Raidmode_Blitzkrieg_Win(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 }

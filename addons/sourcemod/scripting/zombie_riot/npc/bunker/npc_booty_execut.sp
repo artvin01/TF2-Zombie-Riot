@@ -297,7 +297,7 @@ methodmap BootyExecutioner < CClotBody
 		#endif
 	}
 	
-	public BootyExecutioner(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BootyExecutioner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BootyExecutioner npc = view_as<BootyExecutioner>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.25", "15000", ally, false, true));
 		
@@ -311,7 +311,7 @@ methodmap BootyExecutioner < CClotBody
 		npc.m_bThisNpcIsABoss = true;
 		
 		i_ExplosiveProjectileHexArray[npc.index] = EP_NO_KNOCKBACK;
-		if(!b_IsAlliedNpc[npc.index])
+		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			Music_Stop_Beat_Ten(client);
@@ -377,7 +377,7 @@ public void BootyExecutioner_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(!b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		if(fl_DuoExecuteCustomPootisTheme <= GetGameTime(npc.index) && !b_DuoOnePootisDied && !b_DuoDisableMainPootisTheme && !b_DuoMainLeaderDied && !b_DuoSandSlayerDied)
 		{
@@ -562,14 +562,14 @@ public void BootyExecutioner_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			
 			/*int color[4];
 			color[0] = 255;
@@ -795,7 +795,7 @@ public void BootyExecutioner_NPCDeath(int entity)
 {
 	BootyExecutioner npc = view_as<BootyExecutioner>(entity);
 	npc.PlayDeathSound();	
-	if(!b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		Music_Stop_Main_Theme(entity);
 		Music_Stop_Death_Theme(entity);
@@ -826,7 +826,7 @@ void BootyExecutioner_TBB_Ability(int client)
 		BootyExecutioner_BEAM_BuildingHit[building] = false;
 	}
 	
-	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
+	ParticleEffectAt(WorldSpaceCenterOld(client), "eyeboss_death_vortex", 2.0);
 	
 	BootyExecutioner_BEAM_IsUsing[client] = false;
 	BootyExecutioner_BEAM_TicksActive[client] = 0;
@@ -904,7 +904,7 @@ static void BootyExecutioner_GetBeamDrawStartPoint(int client, float startPoint[
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOrigin(client);
+	startPoint = GetAbsOriginOld(client);
 	startPoint[2] += 50.0;
 	
 	BootyExecutioner npc = view_as<BootyExecutioner>(client);
@@ -914,7 +914,7 @@ static void BootyExecutioner_GetBeamDrawStartPoint(int client, float startPoint[
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOrigin(client);
+	startPoint = GetAbsOriginOld(client);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == BootyExecutioner_BEAM_BeamOffset[client][0] && 0.0 == BootyExecutioner_BEAM_BeamOffset[client][1] && 0.0 == BootyExecutioner_BEAM_BeamOffset[client][2])
@@ -950,7 +950,7 @@ public bool BootyExecutioner_BEAM_TraceUsers(int entity, int contentsMask, int c
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 			
-			if (!StrContains(classname, "zr_base_npc", true) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
+			if (!StrContains(classname, "zr_base_npc", true) && (GetTeam(entity) != GetTeam(client)))
 			{
 				for(int i=1; i <= MAXENTITIES; i++)
 				{
@@ -1005,7 +1005,7 @@ public Action TrueBootyExecutioner_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOrigin(client);
+		startPoint = GetAbsOriginOld(client);
 		startPoint[2] += 50.0;
 
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, BootyExecutioner_BEAM_TraceWallsOnly);
@@ -1036,7 +1036,7 @@ public Action TrueBootyExecutioner_TBB_Tick(int client)
 			
 			for (int victim = 1; victim < MaxClients; victim++)
 			{
-				if (BootyExecutioner_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetClientTeam(victim))
+				if (BootyExecutioner_BEAM_HitDetected[victim] && GetTeam(client) != GetClientTeam(victim))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
@@ -1044,7 +1044,7 @@ public Action TrueBootyExecutioner_TBB_Tick(int client)
 					if (damage < 0)
 						damage *= -1.0;
 
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
 				}
 			}
 			

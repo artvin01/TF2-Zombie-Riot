@@ -1,5 +1,4 @@
 #pragma semicolon 1
-#pragma newdecls required
 //#pragma dynamic    131072
 //Allah This plugin has so much we need to do this.
 
@@ -58,6 +57,19 @@ stock int max(int n1, int n2)
 stock float fmax(float n1, float n2)
 {
 	return n1 > n2 ? n1 : n2;
+}
+
+stock float fClamp(float fValue, float fMin, float fMax)
+{
+	if (fValue < fMin) {
+		return fMin;
+	}
+
+	if (fValue > fMax) {
+		return fMax;
+	}
+
+	return fValue;
 }
 
 stock Function ValToFunc(any val)
@@ -414,44 +426,6 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 	return iReturn;
 }
 
-
-stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)
-{
-	float vecOrigin[3], vecAngles[3], vecEndOrigin[3];
-	GetClientEyePosition(iClient, vecOrigin);
-	GetClientEyeAngles(iClient, vecAngles);
-	
-	i_PreviousInteractedEntity[iClient] = 0; //didnt find any
-	
-	if(f_Reviving_This_Client[iClient] < GetGameTime())
-	{
-		i_Reviving_This_Client[iClient] = 0;
-	}
-
-	Handle hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_DontHitAlivePlayer, iClient);
-	TR_GetEndPosition(vecEndOrigin, hTrace);
-	
-	int iReturn = -1;
-	int iHit = TR_GetEntityIndex(hTrace);
-	
-	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
-		iReturn = iHit;
-
-	if(iReturn > 0)
-	{
-		i_Reviving_This_Client[iClient] = iReturn;
-		f_Reviving_This_Client[iClient] = GetGameTime() + 0.35;
-	}
-	else
-	{
-		i_Reviving_This_Client[iClient] = 0;
-		f_Reviving_This_Client[iClient] = 0.0;
-	}
-	
-	delete hTrace;
-	return iReturn;
-}
-
 stock int GetClientPointVisibleOnlyClient(int iClient, float flDistance = 100.0)
 {
 	float vecOrigin[3], vecAngles[3], vecEndOrigin[3];
@@ -669,9 +643,13 @@ stock void SetAmmo(int client, int type, int ammo)
 	SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, type);
 }
 
-stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count)
+stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count, int custom_classSetting = 0)
 {
-	int weapon = SpawnWeaponBase(client, name, index, level, qual, attrib, value, count);
+	if(custom_classSetting == 11)
+	{
+		custom_classSetting = 0;
+	}
+	int weapon = SpawnWeaponBase(client, name, index, level, qual, attrib, value, count, custom_classSetting);
 	if(weapon != -1)
 	{
 		HandleAttributes(weapon, attrib, value, count); //Thanks suza! i love my min models
@@ -679,7 +657,7 @@ stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, c
 	return weapon;
 }
 
-stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count)
+stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count, int custom_classSetting = 0)
 {
 	Handle weapon = TF2Items_CreateItem(OVERRIDE_ALL|FORCE_GENERATION|PRESERVE_ATTRIBUTES);
 	if(weapon == INVALID_HANDLE)
@@ -691,7 +669,14 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	TF2Items_SetQuality(weapon, qual);
 	TF2Items_SetNumAttributes(weapon, 0);
 
-	TF2_SetPlayerClass_ZR(client, TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true)), _, false);
+#if !defined RTS
+	TFClassType class = TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true));
+	if(custom_classSetting != 0)
+	{
+		class = view_as<TFClassType>(custom_classSetting);
+	}
+	TF2_SetPlayerClass_ZR(client, class, _, false);
+#endif
 	
 	int entity = TF2Items_GiveNamedItem(client, weapon);
 	delete weapon;
@@ -735,7 +720,9 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 	}
 
+#if !defined RTS
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], _, false);
+#endif
 	return entity;
 }
 //										 info.Attribs, info.Value, info.Attribs);
@@ -929,37 +916,6 @@ public void RequestFramesCallback(DataPack pack)
 	}
 }
 
-/*
-int TF2_CreateGlow(int entity, const char[] model, int owner, int color[4])
-{
-	int prop = CreateEntityByName("tf_taunt_prop");
-	if(IsValidEntity(prop))
-	{
-		DispatchSpawn(prop);
-
-		SetEntityModel(prop, model);
-		SetEntPropEnt(prop, Prop_Data, "m_hEffectEntity", owner);
-		SetEntProp(prop, Prop_Send, "m_bGlowEnabled", true);
-		SetEntProp(prop, Prop_Send, "m_fEffects", GetEntProp(prop, Prop_Send, "m_fEffects")|EF_BONEMERGE|EF_NOSHADOW|EF_NOINTERP);
-
-		SetVariantString("!activator");
-		AcceptEntityInput(prop, "SetParent", entity);
-
-		SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(prop, color[0], color[1], color[2], color[3]);
-		SDKHook(prop, SDKHook_SetTransmit, GlowTransmit);
-	}
-	return prop;
-}
-
-public Action GlowTransmit(int entity, int target)
-{
-	if(GetEntPropEnt(entity, Prop_Data, "m_hEffectEntity") == target)
-		return Plugin_Continue;
-
-	return Plugin_Handled;
-}
-*/
 
 stock int TF2_CreateGlow(int iEnt)
 {
@@ -1058,6 +1014,7 @@ stock int GiveWearable(int client, int index)
 		SetEntProp(entity, Prop_Send, "m_iEntityQuality", 1);
 		SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
+		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 		
 		DispatchSpawn(entity);
 		SDKCall_EquipWearable(client, entity);
@@ -1150,8 +1107,7 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 		entity = 0;
 
 	float pos[3];
-	
-	pos = WorldSpaceCenter(client);
+	WorldSpaceCenter(client, pos);
 	
 	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_SLASH | DMG_PREVENT_PHYSICS_FORCE, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
@@ -1217,7 +1173,7 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 
 	float pos[3], ang[3];
 	
-	pos = WorldSpaceCenter(entity);
+	WorldSpaceCenter(entity, pos);
 	int damagetype = pack.ReadCell(); //Same damagetype as the weapon.
 	
 	GetClientEyeAngles(client, ang);
@@ -1241,20 +1197,34 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 //Most healing debuffs shouldnt work with this.
 #define HEAL_ABSOLUTE				(1 << 2) 
 //Any and all healing changes or buffs or debuffs dont work that dont affect the weapon directly.
+#define HEAL_SILENCEABLE				(1 << 3) 
+//Silence Entirely nukes this heal
 */
 //this will return the amount of healing it actually did.
-int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES,
-int MaxHealPermitted = 99999999)
+stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES, int MaxHealPermitted = 99999999)
 {
 	/*
 		MaxHealPermitted is used for HealEntityViaFloat
 		Good for ammo based healing.
 	*/
 
+#if defined ZR
+	if(isPlayerMad(reciever) && !(flag_extrarules & (HEAL_SELFHEAL)))
+		return 0;
+#endif
+
 	if(!(flag_extrarules & (HEAL_ABSOLUTE)))
 	{
+#if defined ZR
 		if(b_HealthyEssence)
 			HealTotal *= 1.25;
+		bool RegrowthBlock,camoblock;
+ 		Building_CamoOrRegrowBlocker(healer, camoblock, RegrowthBlock);
+		if(RegrowthBlock)
+		{
+			HealTotal *= 0.5;
+		}
+#endif
 
 		//Extra healing bonuses or penalty for all healing except absolute
 		if(reciever <= MaxClients)
@@ -1267,35 +1237,38 @@ int MaxHealPermitted = 99999999)
 				HealTotal *= Attributes_GetOnPlayer(reciever, 734, true, false);
 		}
 	}
+#if defined ZR
+	if(healer != reciever && HealOverThisDuration != 0.0)
+	{
+		if(healer > 0 && healer <= MaxClients)
+			Healing_done_in_total[healer] += RoundToNearest(HealTotal);
+	}
+#endif
 	if(HealOverThisDuration == 0.0)
-		return HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
+	{
+		int HealingDoneInt;
+		HealingDoneInt = HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
+#if defined ZR
+		if(healer != reciever && healer <= MaxClients)
+			Healing_done_in_total[healer] += HealingDoneInt;
+#endif
+		return HealingDoneInt;
+	}
 	else
 	{
 		float HealTotalTimer = HealOverThisDuration / 0.1;
 
-		int flMaxHealth;
-		if(reciever > MaxClients)
-		{
-			flMaxHealth = GetEntProp(reciever, Prop_Data, "m_iMaxHealth");
-		}
-		else
-		{
-			flMaxHealth = SDKCall_GetMaxHealth(reciever);
-		}
-
-		flMaxHealth = RoundToNearest(float(flMaxHealth) * Maxhealth);
-	
 		DataPack pack;
 		CreateDataTimer(0.1, Timer_Healing, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(reciever));
 		pack.WriteFloat(HealTotal / HealTotalTimer);
-		pack.WriteCell(flMaxHealth);
+		pack.WriteCell(Maxhealth);
 		pack.WriteCell(RoundToNearest(HealTotalTimer));		
 		return 0; //this is a timer, we cant really quantify this.
 	}
 }
 
-static float f_IncrementalSmallHeal[MAXENTITIES];
+float f_IncrementalSmallHeal[MAXENTITIES];
 
 public Action Timer_Healing(Handle timer, DataPack pack)
 {
@@ -1318,111 +1291,15 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	{
 		return Plugin_Stop;
 	}
-
-	int lastHealth;
-	if(entity > MaxClients)
-	{
-		lastHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
-	}
-	else
-	{
-		lastHealth = GetClientHealth(entity);
-	}
-	
 	// Our Current Health + Leftover Float Health + New Health Gained
-	float newHealth = float(lastHealth) + f_IncrementalSmallHeal[entity] + pack.ReadFloat();
-	
-	if(pack.ReadCell() && newHealth > 0.0)	// Max Health Cap
-	{
-		float maxHealth;
-		if(entity > MaxClients)
-		{
-			maxHealth = float(GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
-		}
-		else
-		{
-			maxHealth = float(SDKCall_GetMaxHealth(entity));
-		}
-		
-		if(newHealth > maxHealth)
-			newHealth = maxHealth;
-	}
-
-	if(newHealth >= 1.0)
-	{
-		float maxHealth;
-
-		if(entity > MaxClients)
-		{
-			maxHealth = float(GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
-		}
-		else
-		{
-			maxHealth = float(SDKCall_GetMaxHealth(entity));
-		}
-		//TARGET HEAL
-		if(lastHealth < maxHealth)
-		{
-			if(newHealth >= maxHealth)
-			{
-				newHealth = maxHealth;
-			}
-
-			int setHealth = RoundToFloor(newHealth);	// Health to set
-
-			f_IncrementalSmallHeal[entity] = newHealth - float(setHealth);	// New extra health
-			
-			if(entity > MaxClients)
-			{
-				SetEntProp(entity, Prop_Data, "m_iHealth", setHealth);
-			}
-			else
-			{
-				SetEntityHealth(entity, setHealth);
-
-				int difference = setHealth - lastHealth;
-				if(difference != -1)
-					ApplyHealEvent(entity, difference);	// Show healing number
-			}
-		}
-	}
-	else
-	{
-		SDKHooks_TakeDamage(entity, 0, 0, 100.0 - newHealth);
-	}
-	
-	/*
-	int i_TargetHealAmount;
-	//The healing is less then 1 ? Do own logic.
-					
-	if (healing_Amount <= 1.0)
-	{
-		f_IncrementalSmallHeal[healTarget] += healing_Amount;
-						
-		if(f_IncrementalSmallHeal[healTarget] >= 1.0)
-		{
-			f_IncrementalSmallHeal[healTarget] -= 1.0;
-			i_TargetHealAmount = 1;
-		}
-	}
-	else
-	{
-		i_TargetHealAmount = RoundToFloor(healing_Amount);
-						
-		float Decimal_healing = FloatFraction(healing_Amount);
-						
-		f_IncrementalSmallHeal[healTarget] += Decimal_healing;
-						
-		if(f_IncrementalSmallHeal[healTarget] >= 1.0)
-		{
-			f_IncrementalSmallHeal[healTarget] -= 1.0;
-			i_TargetHealAmount += 1;
-		}
-	}
-	*/
+	float HealthToGive = pack.ReadFloat();
+	float HealthMaxPercentage = pack.ReadCell();
+	int HealthHealed = HealEntityViaFloat(entity, HealthToGive, HealthMaxPercentage);
+	if(HealthHealed > 0)
+		ApplyHealEvent(entity, HealthHealed);	// Show healing number
 
 	int current = pack.ReadCell();
-	if(current < 2)
+	if(current <= 1)
 		return Plugin_Stop;
 
 	pack.Position--;
@@ -1462,10 +1339,13 @@ public Action Timer_HealEventApply(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	Event event = CreateEvent("player_healonhit", true);
-	event.SetInt("entindex", client);
-	event.SetInt("amount", i_HealsDone_Event[clientOriginalIndex]);
-	event.Fire();
+	if(i_HealsDone_Event[clientOriginalIndex] > 0)
+	{
+		Event event = CreateEvent("player_healonhit", true);
+		event.SetInt("entindex", client);
+		event.SetInt("amount", i_HealsDone_Event[clientOriginalIndex]);
+		event.Fire();
+	}
 	i_HealsDone_Event[clientOriginalIndex] = 0;
 	h_Timer_HealEventApply[clientOriginalIndex] = null;
 	return Plugin_Stop;
@@ -1528,10 +1408,14 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 #endif
 		
 	}
-	if(entity > MaxClients && b_IsAlliedNpc[entity])
+	
+#if !defined RTS
+	if(entity > MaxClients && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Red)
 	{
 		return false;
 	}
+#endif
+
 	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
 	{
 		return false;
@@ -1593,7 +1477,7 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 				return entity!=data;
 			}
 		}
-		else if(b_IsAlliedNpc[entity])
+		else if(!b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Red)
 		{
 			if(i_PreviousInteractedEntity[data] != entity || !i_PreviousInteractedEntityDo[data])
 			{
@@ -1642,6 +1526,8 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 	{
 		return false;
 	}
+
+#if defined ZR
 	if(f_Reviving_This_Client[data] > GetGameTime())
 	{
 		if(i_Reviving_This_Client[data] != entity)
@@ -1649,15 +1535,23 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 			return false;
 		}
 	}
+#endif
 	
 	return entity!=data;
 }
 
-stock float[] GetAbsOrigin(int client)
+#if defined ZR
+stock float[] GetAbsOriginOld(int client)
 {
 	float v[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
 	return v;
+}
+#endif
+
+stock void GetAbsOrigin(int client, float v[3])
+{
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
 }
 
 public void DeleteHandle(Handle handle)
@@ -1675,9 +1569,10 @@ stock bool IsValidClient( int client)
 	return true; 
 }
 
-stock float[] GetWorldSpaceCenter(int client)
+#if defined ZR
+stock float[] GetWorldSpaceCenterOld(int client)
 {
-	float v[3]; v = GetAbsOrigin(client);
+	float v[3]; v = GetAbsOriginOld(client);
 	
 	float max_space[3];
 	GetEntPropVector(client, Prop_Data, "m_vecMaxs", max_space);
@@ -1685,16 +1580,26 @@ stock float[] GetWorldSpaceCenter(int client)
 	
 	return v;
 }
+#endif
 
-bool IsBehindAndFacingTarget(int owner, int target)
+stock void GetWorldSpaceCenter(int client, float v[3])
 {
-	float vecToTarget[3];
-	SubtractVectors(GetWorldSpaceCenter(target), GetWorldSpaceCenter(owner), vecToTarget);
+	GetAbsOrigin(client, v);
+	
+	float max_space[3];
+	GetEntPropVector(client, Prop_Data, "m_vecMaxs", max_space);
+	v[2] += max_space[2] / 2;
+}
+
+bool IsBehindAndFacingTarget(int owner, int target, int weapon = -1)
+{
+	float vecToTarget[3], vecEyeAngles[3];
+	GetWorldSpaceCenter(target, vecToTarget);
+	GetWorldSpaceCenter(owner, vecEyeAngles);
+	SubtractVectors(vecToTarget, vecEyeAngles, vecToTarget);
 
 	vecToTarget[2] = 0.0;
 	NormalizeVector(vecToTarget, vecToTarget);
-	
-	float vecEyeAngles[3];
 	
 	if(owner <= MaxClients)
 		GetClientEyeAngles(owner, vecEyeAngles);
@@ -1719,7 +1624,26 @@ bool IsBehindAndFacingTarget(int owner, int target)
 	float flPosVsTargetViewDot = GetVectorDotProduct(vecToTarget, vecTargetForward);
 	float flPosVsOwnerViewDot = GetVectorDotProduct(vecToTarget, vecOwnerForward);
 	float flViewAnglesDot = GetVectorDotProduct(vecTargetForward, vecOwnerForward);
-	
+	if(weapon > 0)
+	{
+		if(b_BackstabLaugh[weapon])
+		{
+			int AllCorrect = 0;
+			if(flPosVsTargetViewDot > -0.6)
+				AllCorrect++;
+
+			if(flPosVsOwnerViewDot > 0.5)
+				AllCorrect++;
+				
+			if(flViewAnglesDot > -0.8)
+				AllCorrect++;
+			
+			if(AllCorrect >= 3)
+				return true;
+			else
+				return false;
+		}
+	}
 	return ( flPosVsTargetViewDot > 0.0 && flPosVsOwnerViewDot > 0.5 && flViewAnglesDot > -0.3 );
 }
 
@@ -1765,7 +1689,7 @@ public bool PlayersOnly(int entity, int contentsMask, any iExclude)
 		return false;
 	}
 	
-	else if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	else if(GetTeam(iExclude) != GetTeam(entity))
 		return false;
 		
 	
@@ -1813,7 +1737,6 @@ stock bool Client_Shake(int client, int command=SHAKE_START, float amplitude=50.
 	return true;
 }
 
-
 stock void PrintKeyHintText(int client, const char[] format, any ...)
 {
 	char buffer[254]; //maybe 255 is the limit.
@@ -1851,19 +1774,33 @@ stock bool IsEven( int iNum )
 	return iNum % 2 == 0;
 } 
 
-stock bool IsInvuln(int client) //Borrowed from Batfoxkid
+stock bool IsInvuln(int client, bool IgnoreNormalUber = false) //Borrowed from Batfoxkid
 {
 	if(!IsValidClient(client))
 		return true;
 
-	return (TF2_IsPlayerInCondition(client, TFCond_Ubercharged) ||
-		TF2_IsPlayerInCondition(client, TFCond_UberchargedCanteen) ||
-		TF2_IsPlayerInCondition(client, TFCond_UberchargedHidden) ||
-		TF2_IsPlayerInCondition(client, TFCond_UberchargedOnTakeDamage) ||
-		TF2_IsPlayerInCondition(client, TFCond_Bonked) ||
-		TF2_IsPlayerInCondition(client, TFCond_HalloweenGhostMode) ||
-		//TF2_IsPlayerInCondition(client, TFCond_MegaHeal) ||
-		!GetEntProp(client, Prop_Data, "m_takedamage"));
+	if(!IgnoreNormalUber)
+	{
+		return (TF2_IsPlayerInCondition(client, TFCond_Ubercharged) ||
+			TF2_IsPlayerInCondition(client, TFCond_UberchargedCanteen) ||
+			TF2_IsPlayerInCondition(client, TFCond_UberchargedHidden) ||
+			TF2_IsPlayerInCondition(client, TFCond_UberchargedOnTakeDamage) ||
+			TF2_IsPlayerInCondition(client, TFCond_Bonked) ||
+			TF2_IsPlayerInCondition(client, TFCond_HalloweenGhostMode) ||
+			//TF2_IsPlayerInCondition(client, TFCond_MegaHeal) ||
+			!GetEntProp(client, Prop_Data, "m_takedamage"));
+
+	}
+	else
+	{
+		return (TF2_IsPlayerInCondition(client, TFCond_UberchargedCanteen) ||
+			TF2_IsPlayerInCondition(client, TFCond_UberchargedHidden) ||
+			TF2_IsPlayerInCondition(client, TFCond_UberchargedOnTakeDamage) ||
+			TF2_IsPlayerInCondition(client, TFCond_Bonked) ||
+			TF2_IsPlayerInCondition(client, TFCond_HalloweenGhostMode) ||
+			//TF2_IsPlayerInCondition(client, TFCond_MegaHeal) ||
+			!GetEntProp(client, Prop_Data, "m_takedamage"));		
+	}
 }
 
 stock void ModelIndexToString(int index, char[] model, int size)
@@ -2003,7 +1940,7 @@ public bool Base_Boss_Hit(int entity, int contentsMask, any iExclude)
 	
 	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun")))
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return true;
 		}
@@ -2036,7 +1973,7 @@ public bool IngorePlayersAndBuildings(int entity, int contentsMask, any iExclude
 	}
 	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun") || StrEqual(class, "zr_base_npc"))) //include baseboss so it goesthru
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return false;
 		}
@@ -2062,7 +1999,7 @@ public bool Detect_BaseBoss(int entity, int contentsMask, any iExclude)
 	
 	if(entity != iExclude && StrEqual(class, "zr_base_npc"))
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return false;
 		}
@@ -2083,7 +2020,7 @@ stock int GetClosestTarget_BaseBoss(int entity)
 	int i = MaxClients + 1;
 	while ((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
-		if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(i, Prop_Send, "m_iTeamNum") && !b_NpcHasDied[i]) 
+		if (GetTeam(entity)!=GetEntProp(i, Prop_Send, "m_iTeamNum") && !b_NpcHasDied[i]) 
 		{
 			float EntityLocation[3], TargetLocation[3]; 
 			GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -2105,76 +2042,6 @@ stock int GetClosestTarget_BaseBoss(int entity)
 				TargetDistance = distance;
 			}				
 		}
-	}
-	return ClosestTarget; 
-}
-
-bool b_WasAlreadyCalculatedToBeClosest[MAXENTITIES]; //should be false by default...
-
-stock int GetClosestTarget_BaseBoss_Pos(float pos[3],int entity)
-{
-	float TargetDistance = 0.0; 
-	int ClosestTarget = -1; 
-	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
-	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-		if (IsValidEntity(baseboss_index) && !b_WasAlreadyCalculatedToBeClosest[baseboss_index])
-		{
-			if(!b_NpcHasDied[baseboss_index])
-			{
-				if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
-				{
-					float TargetLocation[3]; 
-					GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-					
-					float distance = GetVectorDistance( pos, TargetLocation, true ); 
-					if( TargetDistance ) 
-					{
-						if( distance < TargetDistance ) 
-						{
-							ClosestTarget = baseboss_index; 
-							TargetDistance = distance;		  
-						}
-					} 
-					else 
-					{
-						ClosestTarget = baseboss_index; 
-						TargetDistance = distance;
-					}				
-				}
-			}
-		}
-	}
-	for(int entitycount; entitycount<i_MaxcountBreakable; entitycount++)
-	{
-		int breakable_entity = EntRefToEntIndex(i_ObjectsBreakable[entitycount]);
-		if(IsValidEntity(breakable_entity))
-		{
-			if (GetEntProp(breakable_entity, Prop_Send, "m_iTeamNum")!=GetEntProp(breakable_entity, Prop_Send, "m_iTeamNum")) 
-			{
-				float TargetLocation[3]; 
-				GetEntPropVector( breakable_entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-				
-				float distance = GetVectorDistance( pos, TargetLocation, true ); 
-				if( TargetDistance ) 
-				{
-					if( distance < TargetDistance ) 
-					{
-						ClosestTarget = breakable_entity; 
-						TargetDistance = distance;		  
-					}
-				} 
-				else 
-				{
-					ClosestTarget = breakable_entity; 
-					TargetDistance = distance;
-				}				
-			}
-		}
-	}
-	if(IsValidEntity(ClosestTarget))
-	{
-		b_WasAlreadyCalculatedToBeClosest[ClosestTarget] = true;
 	}
 	return ClosestTarget; 
 }
@@ -2541,7 +2408,7 @@ public bool TraceRayOnlyNpc(int entity, any contentsMask, any data)
 	return !(entity == data);
 }
 
-stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, bool checkTeam=false, TFTeam team=TFTeam_Red, bool send=false) //An extension of IsValidClient that also checks for boss status, alive-ness, and optionally a team. Send is used for debug purposes to inform the programmer when and why this stock returns false.
+stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, bool checkTeam=false, int team=TFTeam_Red, bool send=false) //An extension of IsValidClient that also checks for boss status, alive-ness, and optionally a team. Send is used for debug purposes to inform the programmer when and why this stock returns false.
 {
 	if (!IsValidClient(client)) //Self-explanatory
 	{
@@ -2562,7 +2429,7 @@ stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, boo
 	
 	if (checkTeam) //Do we want to check the client's team?
 	{
-		if (TF2_GetClientTeam(client) != team) //If they aren't on the desired team, return false.
+		if (GetTeam(client) != team) //If they aren't on the desired team, return false.
 		{
 			return false;
 		}
@@ -2693,7 +2560,7 @@ void TE_SendBeam(int client, float m_vecMins[3], float m_vecMaxs[3], float flDur
 }
 
 /*
-float[] CalculateBulletDamageForce( const float vecBulletDir[3], float flScale )
+float[] CalculateBulletDamageForceOld( const float vecBulletDir[3], float flScale )
 {
 	float vecForce[3]; vecForce = vecBulletDir;
 	NormalizeVector( vecForce, vecForce );
@@ -2721,10 +2588,12 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	{
 		return -1;
 	}
-	else if(b_IsAlliedNpc[other_entity])
+#if !defined RTS
+	else if(GetTeam(other_entity) == TFTeam_Red)
 	{
 		return -1;
 	}
+#endif
 	else if(other_entity <= MaxClients)
 	{
 		return -1;
@@ -2737,7 +2606,8 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	return 0;
 }
 
-float[] CalculateDamageForce( const float vecBulletDir[3], float flScale )
+#if defined ZR
+float[] CalculateDamageForceOld( const float vecBulletDir[3], float flScale )
 {
 	float vecForce[3]; vecForce = vecBulletDir;
 	NormalizeVector( vecForce, vecForce );
@@ -2745,8 +2615,17 @@ float[] CalculateDamageForce( const float vecBulletDir[3], float flScale )
 	ScaleVector(vecForce, flScale);
 	return vecForce;
 }
+#endif
 
-float[] CalculateDamageForceSelfCalculated(int client, float flScale )
+void CalculateDamageForce( const float vecBulletDir[3], float flScale, float vecForce[3])
+{
+	vecForce = vecBulletDir;
+	NormalizeVector( vecForce, vecForce );
+	ScaleVector(vecForce, FindConVar("phys_pushscale").FloatValue);
+	ScaleVector(vecForce, flScale);
+}
+
+void CalculateDamageForceSelfCalculated(int client, float flScale, float vec[3])
 {
 	float vecSwingForward[3];
 	float ang[3];
@@ -2754,44 +2633,26 @@ float[] CalculateDamageForceSelfCalculated(int client, float flScale )
 	
 	GetAngleVectors(ang, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
 	
-	return CalculateDamageForce(vecSwingForward, flScale);
+	CalculateDamageForce(vecSwingForward, flScale, vec);
 }
 
 float ImpulseScale( float flTargetMass, float flDesiredSpeed )
 {
 	return (flTargetMass * flDesiredSpeed);
 }
-/*
-float[] CalculateExplosiveDamageForce( const float vecForceOrigin[3],const float vecDir[3], float flScale )
-{
-	info->SetDamagePosition( vecForceOrigin );
 
-	float flClampForce = ImpulseScale( 75, 400 );
-
-	// Calculate an impulse large enough to push a 75kg man 4 in/sec per point of damage
-	float flForceScale = info->GetBaseDamage() * ImpulseScale( 75, 4 );
-
-	if( flForceScale > flClampForce )
-		flForceScale = flClampForce;
-
-	// Fudge blast forces a little bit, so that each
-	// victim gets a slightly different trajectory. 
-	// This simulates features that usually vary from
-	// person-to-person variables such as bodyweight,
-	// which are all indentical for characters using the same model.
-	flForceScale *= random->RandomFloat( 0.85, 1.15 );
-
-	// Calculate the vector and stuff it into the takedamageinfo
-	Vector vecForce = vecDir;
-	VectorNormalize( vecForce );
-	vecForce *= flForceScale;
-	vecForce *= phys_pushscale.GetFloat();
-	vecForce *= flScale;
-	info->SetDamageForce( vecForce );
-}*/
 #define INNER_RADIUS_FRACTION 0.25
 
-float[] CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vecEndPosition[3], float damage_Radius)
+#if defined ZR
+stock float[] CalculateExplosiveDamageForceOld(const float vec_Explosive[3], const float vecEndPosition[3], float damage_Radius)
+{
+	float v[3];
+	CalculateExplosiveDamageForce(vec_Explosive, vecEndPosition, damage_Radius, v);
+	return v;
+}
+#endif
+
+void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vecEndPosition[3], float damage_Radius, float vecForce[3])
 {
 	float flClampForce = ImpulseScale( 75.0, 400.0 );
 
@@ -2830,7 +2691,7 @@ float[] CalculateExplosiveDamageForce(const float vec_Explosive[3], const float 
 	}
 		
 	// Calculate the vector and stuff it into the takedamageinfo
-	float vecForce[3]; vecForce = vecSegment;
+	vecForce = vecSegment;
 	NormalizeVector( vecForce, vecForce );
 	ScaleVector(vecForce, flForceScale);
 	ScaleVector(vecForce, FindConVar("phys_pushscale").FloatValue);
@@ -2839,20 +2700,49 @@ float[] CalculateExplosiveDamageForce(const float vec_Explosive[3], const float 
 	vecForce[0] *= -1.0;
 	vecForce[1] *= -1.0;
 	vecForce[2] *= -1.0;
-	return vecForce;
 }
 
-int CountPlayersOnRed(bool alive = false)
+int CountPlayersOnRed(int alive = 0)
 {
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
 #if defined ZR
-		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && (!alive || (TeutonType[client] != TEUTON_NONE && dieingstate[client] > 0)))
+		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+		{
+			if(!alive)
+			{
+				amount++;
+				continue;
+			}
+			else
+			{
+				if(alive == 1) //check if just not teuton
+				{
+					if(TeutonType[client] == TEUTON_NONE)
+					{
+						amount++;
+						continue;
+					}
+				}
+				else if(alive == 2) //check if downed too
+				{
+					if(TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+					{
+						amount++;
+						continue;
+					}
+				}
+			}
+		}
+
 #else
 		if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client) == 2 && (!alive || IsPlayerAlive(client)))
-#endif
+		{
 			amount++;
+			continue;
+		}
+#endif
 	}
 	
 	return amount;
@@ -2895,11 +2785,15 @@ int inflictor = 0)
 {
 
 	float damage_reduction = 1.0;
+
+#if !defined RTS
 	if(IsValidEntity(weapon))
 	{
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
 	}
+#endif
+
 	//this should make explosives during raids more usefull.
 	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
 	{ 
@@ -3013,7 +2907,7 @@ int inflictor = 0)
 		if(!HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom])
 			break;
 		
-		VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] = WorldSpaceCenter(HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]);
+		WorldSpaceCenter(HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom], VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]]);
 		distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] = GetVectorDistance(VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]], spawnLoc, true);
 		//Save their distances.
 	}
@@ -3130,7 +3024,10 @@ int inflictor = 0)
 				//idealy we should fire a trace and see the distance from the trace
 				//ill do it in abit if i dont forget.
 				damage_1 *= Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
-				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
+				
+				float v[3];
+				CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius, v);
+				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1 / damage_reduction, damage_flags, weapon, v, vicpos, false, custom_flags);	
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{
@@ -3364,7 +3261,7 @@ stock void LookAtTarget(int client, int target)
 	}
 	else
 	{
-		targetEyes = WorldSpaceCenter(target);
+		WorldSpaceCenter(target, targetEyes);
 	}
 	MakeVectorFromPoints(targetEyes, clientEyes, resultant); 
 	GetVectorAngles(resultant, angles); 
@@ -3410,7 +3307,7 @@ int Trail_Attach(int entity, char[] trail, int alpha, float lifetime=1.0, float 
 			
 		DispatchSpawn(entIndex);
 		float f_origin[3];
-		f_origin = GetAbsOrigin(entity);
+		GetAbsOrigin(entity, f_origin);
 		TeleportEntity(entIndex, f_origin, NULL_VECTOR, NULL_VECTOR);
 		SetVariantString(strTargetName);
 		AcceptEntityInput(entIndex, "SetParent");
@@ -3451,7 +3348,7 @@ public void MakeExplosionFrameLater(DataPack pack)
 		DispatchKeyValue(ent, "spawnflags", "581");
 						
 		DispatchKeyValue(ent, "rendermode", "0");
-		DispatchKeyValue(ent, "fireballsprite", spirite);
+		DispatchKeyValue(ent, "fireballsprite", "spirites/zerogxplode.spr");
 										
 		DispatchKeyValueFloat(ent, "DamageForce", 0.0);								
 		SetEntProp(ent, Prop_Data, "m_iMagnitude", 0); 
@@ -3542,8 +3439,7 @@ stock int SpawnFormattedWorldText(const char[] format, float origin[3], int text
 		if(entity_parent != -1 && !teleport)
 		{
 			float vector[3];
-
-			vector = GetAbsOrigin(entity_parent);
+			GetAbsOrigin(entity_parent, vector);
 			
 			vector[0] += origin[0];
 			vector[1] += origin[1];
@@ -3582,7 +3478,7 @@ public Action TeleportTextTimer(Handle timer, DataPack pack)
 	if(IsValidEntity(text_entity) && IsValidEntity(parented_entity))
 	{
 		float vector[3];
-		vector = GetAbsOrigin(parented_entity);
+		GetAbsOrigin(parented_entity, vector);
 		
 		vector[0] += vector_offset[0];
 		vector[1] += vector_offset[1];
@@ -3610,8 +3506,7 @@ stock int SpawnSeperateCollisionBox(int entity, float Mins[3] = {-24.0,-24.0,0.0
 	}
 
 	float vector[3];
-
-	vector = GetAbsOrigin(entity);
+	GetAbsOrigin(entity, vector);
 
 	int brush = CreateEntityByName("func_brush");
         
@@ -3850,12 +3745,19 @@ stock bool AmmoBlacklist(int Ammotype)
 
 #endif
 
-stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3], float Beamoffset[3] = {0.0,0.0,0.0})
+stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3] = {0.0,0.0,0.0}, float Beamoffset[3] = {0.0,0.0,0.0}, float Angles[3] = {0.0,0.0,0.0})
 {
-	GetClientEyePosition(client, startPoint);
-	float angles[3];
-	GetClientEyeAngles(client, angles);
-	startPoint[2] -= 25.0;
+	if(startPoint[0] == 0.0 && startPoint[1] == 0.0 && startPoint[2] == 0.0)
+	{
+		GetClientEyePosition(client, startPoint);
+		startPoint[2] -= 25.0;
+	}
+	
+	if(Angles[0] == 0.0 && Angles[1] == 0.0 && Angles[2] == 0.0)
+	{
+		GetClientEyeAngles(client, Angles);
+	}
+
 	if (0.0 == Beamoffset[0] && 0.0 == Beamoffset[1] && 0.0 == Beamoffset[2])
 	{
 		return;
@@ -3864,8 +3766,8 @@ stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3], float Be
 	float actualBeamOffset[3];
 	tmp[0] = Beamoffset[0];
 	tmp[1] = Beamoffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(tmp, angles, actualBeamOffset);
+	tmp[2] = Beamoffset[2];
+	VectorRotate(tmp, Angles, actualBeamOffset);
 	actualBeamOffset[2] = Beamoffset[2];
 	startPoint[0] += actualBeamOffset[0];
 	startPoint[1] += actualBeamOffset[1];
@@ -3875,7 +3777,6 @@ stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3], float Be
 // Thank you miku:)
 // https://github.com/Mikusch/PropHunt/blob/985808f13d8738945a2c9980db0b75865a20c99c/addons/sourcemod/scripting/prophunt.sp#L332
 
-#if defined ZR
 static bool HazardResult;
 
 bool IsPointHazard(const float pos1[3])
@@ -3941,7 +3842,6 @@ public bool TraceEntityEnumerator_EnumerateTriggers_noBuilds(int entity, int cli
 	
 	return true;
 }
-#endif	// ZR
 
 stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int blue = 34, float duration = 1.01)
 {
@@ -3997,6 +3897,7 @@ public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
 	}
 	return Plugin_Stop;
 }
+
 /*
 void PlayFakeDeathSound(int client)
 {
@@ -4039,7 +3940,6 @@ stock bool ShouldNpcDealBonusDamage(int entity, int attacker = -1)
 	return i_IsABuilding[entity];
 }
 
-int i_OwnerEntityEnvLaser[MAXENTITIES];
 
 stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
 							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt", int ClientToHideFirstPerson = 0)
@@ -4123,7 +4023,6 @@ public Action ThirdersonTransmitEnvLaser(int entity, int client)
 }
 
 
-#if defined ZR
 //bool identified if it went above max health or not.
 
 //No need to delele it, its just 1 ho difference, wow so huge.
@@ -4144,7 +4043,7 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 
 	int i_TargetHealAmount; //Health to actaully apply
 
-	if (healing_Amount <= 1.0)
+	if (healing_Amount <= 1.0 && healing_Amount > 0.0)
 	{
 		f_IncrementalSmallHeal[entity] += healing_Amount;
 			
@@ -4156,18 +4055,25 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	}
 	else
 	{
-		i_TargetHealAmount = RoundToFloor(healing_Amount);
-							
-		float Decimal_healing = FloatFraction(healing_Amount);
-							
-							
-		f_IncrementalSmallHeal[entity] += Decimal_healing;
-							
-		while(f_IncrementalSmallHeal[entity] >= 1.0)
+		if(i_TargetHealAmount < 0.0) //negative heal
 		{
-			f_IncrementalSmallHeal[entity] -= 1.0;
-			i_TargetHealAmount += 1;
+			i_TargetHealAmount = RoundToFloor(healing_Amount);
 		}
+		else
+		{
+			i_TargetHealAmount = RoundToFloor(healing_Amount);
+		
+			float Decimal_healing = FloatFraction(healing_Amount);
+								
+								
+			f_IncrementalSmallHeal[entity] += Decimal_healing;
+								
+			while(f_IncrementalSmallHeal[entity] >= 1.0)
+			{
+				f_IncrementalSmallHeal[entity] -= 1.0;
+				i_TargetHealAmount += 1;
+			}
+		}		
 	}
 	if(i_TargetHealAmount > MaxHealingPermitted)
 	{
@@ -4177,19 +4083,21 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	int newHealth = flHealth + i_TargetHealAmount;
 	int HealAmount = 0;
 	int MaxHeal = RoundToNearest(float(flMaxHealth) * MaxHealthOverMulti);
-	if(MaxHeal >= newHealth) //allow 1 tick of overheal.
+	if(flHealth < MaxHeal)
 	{
-		if(newHealth >= MaxHeal)
+
+		if(newHealth >= MaxHeal) //allow 1 tick of overheal.
 		{
 			SetEntProp(entity, Prop_Data, "m_iHealth", MaxHeal);
 			newHealth = MaxHeal;
+
+			HealAmount = newHealth - flHealth;
 		}
 		else
 		{
 			SetEntProp(entity, Prop_Data, "m_iHealth", newHealth);
+			HealAmount = newHealth - flHealth;
 		}
-		
-		HealAmount = newHealth - flHealth;
 	}
 	if(newHealth <= 0)
 	{
@@ -4198,6 +4106,7 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	return HealAmount;
 }
 
+#if defined ZR
 static const char g_ScoutDownedResponse[][] = {
 	"vo/scout_paincrticialdeath01.mp3",
 	"vo/scout_paincrticialdeath02.mp3",
@@ -4829,4 +4738,241 @@ stock bool AtEdictLimit(int type)
 	}
 
 	return true;
+}
+
+stock int GetParticleEffectIndex(const char[] sEffectName)
+{
+	static int table = INVALID_STRING_TABLE;
+	
+	if (table == INVALID_STRING_TABLE)
+	{
+		table = FindStringTable("ParticleEffectNames");
+	}
+	
+	int iIndex = FindStringIndex(table, sEffectName);
+	if(iIndex != INVALID_STRING_INDEX)
+		return iIndex;
+	
+	// This is the invalid string index
+	return 0;
+}
+
+stock int GetEffectIndex(const char[] sEffectName)
+{
+	static int table = INVALID_STRING_TABLE;
+	
+	if (table == INVALID_STRING_TABLE)
+	{
+		table = FindStringTable("EffectDispatch");
+	}
+	
+	int iIndex = FindStringIndex(table, sEffectName);
+	if(iIndex != INVALID_STRING_INDEX)
+		return iIndex;
+	
+	// This is the invalid string index
+	return 0;
+}
+
+stock TE_SetupParticleEffect(const String:sParticleName[], ParticleAttachment_t:iAttachType, entity)//, const Float:fOrigin[3] = NULL_VECTOR, const Float:fAngles[3] = NULL_VECTOR, const Float:fStart[3] = NULL_VECTOR, iAttachmentPoint = -1, bool:bResetAllParticlesOnEntity = false)
+{
+	TE_Start("EffectDispatch");
+	
+	TE_WriteNum("m_nHitBox", GetParticleEffectIndex(sParticleName));
+	
+	new fFlags;
+	if(entity > 0)
+	{
+		new Float:fEntityOrigin[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", fEntityOrigin);
+		TE_WriteFloatArray("m_vOrigin[0]", fEntityOrigin, 3);
+
+		if(iAttachType != PATTACH_WORLDORIGIN)
+		{
+			TE_WriteNum("entindex", entity);
+			fFlags |= PARTICLE_DISPATCH_FROM_ENTITY;
+		}
+	}
+	
+	/*if(fOrigin != NULL_VECTOR)
+		TE_WriteFloatArray("m_vOrigin[0]", fOrigin, 3);
+	if(fStart != NULL_VECTOR)
+		TE_WriteFloatArray("m_vStart[0]", fStart, 3);
+	if(fAngles != NULL_VECTOR)
+		TE_WriteVector("m_vAngles", fAngles);*/
+	
+	//if(bResetAllParticlesOnEntity)
+	//	fFlags |= PARTICLE_DISPATCH_RESET_PARTICLES;
+	
+	TE_WriteNum("m_fFlags", fFlags);
+	TE_WriteNum("m_nDamageType", _:iAttachType);
+	TE_WriteNum("m_nAttachmentIndex", -1);
+	
+	TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffect"));
+}
+
+stock PrecacheEffect(const String:sEffectName[])
+{
+	static table = INVALID_STRING_TABLE;
+	
+	if (table == INVALID_STRING_TABLE)
+	{
+		table = FindStringTable("EffectDispatch");
+	}
+	
+	new bool:save = LockStringTables(false);
+	AddToStringTable(table, sEffectName);
+	LockStringTables(save);
+}
+stock PrecacheParticleEffect(const String:sEffectName[])
+{
+	static table = INVALID_STRING_TABLE;
+	
+	if (table == INVALID_STRING_TABLE)
+	{
+		table = FindStringTable("ParticleEffectNames");
+	}
+	
+	new bool:save = LockStringTables(false);
+	AddToStringTable(table, sEffectName);
+	LockStringTables(save);
+}
+
+stock void Vector_DegToRad(float vecVector[3])
+{
+	vecVector[0] = DegToRad(vecVector[0]);
+	vecVector[1] = DegToRad(vecVector[1]);
+	vecVector[2] = DegToRad(vecVector[2]);
+}
+
+stock void Matrix_VectorMultiply(float matMatrix[3][3], float vecVector[3], float vecResult[3])
+{
+	vecResult[0] = matMatrix[0][0]*vecVector[0] + matMatrix[0][1]*vecVector[1] + matMatrix[0][2]*vecVector[2];
+	vecResult[1] = matMatrix[1][0]*vecVector[0] + matMatrix[1][1]*vecVector[1] + matMatrix[1][2]*vecVector[2];
+	vecResult[2] = matMatrix[2][0]*vecVector[0] + matMatrix[2][1]*vecVector[1] + matMatrix[2][2]*vecVector[2];
+}
+
+stock void Matrix_Set(float matMatrix[3][3], float f00, float f01, float f02, float f10, float f11, float f12, float f20, float f21, float f22)
+{
+	matMatrix[0][0] = f00;	matMatrix[0][1] = f01;	matMatrix[0][2] = f02;
+	matMatrix[1][0] = f10;	matMatrix[1][1] = f11;	matMatrix[1][2] = f12;
+	matMatrix[2][0] = f20;	matMatrix[2][1] = f21;	matMatrix[2][2] = f22;
+}
+
+stock void Matrix_GetRotationMatrix(float matMatrix[3][3], float fA, float fB, float fG)
+{
+	float fSinA = Sine(fA);
+	float fCosA = Cosine(fA);
+
+	float fSinB = Sine(fB);
+	float fCosB = Cosine(fB);
+
+	float fSinG = Sine(fG);
+	float fCosG = Cosine(fG);
+
+	Matrix_Set(matMatrix,
+		fCosB*fCosG, 	fSinA*fSinB*fCosG - fCosA*fSinG, 	fCosA*fSinB*fCosG + fSinA*fSinG,
+		fCosB*fSinG,	fSinA*fSinB*fSinG + fCosA*fCosG, 	fCosA*fSinB*fSinG - fSinA*fCosG,
+		     -fSinB,		                fSinA*fCosB,	                    fCosA*fCosB
+	);
+}
+
+stock void ForcePlayerCrouch(int client, bool enable)
+{
+	if(enable)
+	{
+		SetVariantInt(1);
+		AcceptEntityInput(client, "SetForcedTauntCam");
+		SetForceButtonState(client, true, IN_DUCK);
+		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 0);
+		b_NetworkedCrouch[client] = true;
+		SetEntProp(client, Prop_Send, "m_bDucked", true);
+		SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
+	}
+	else
+	{
+		int Buttons = GetEntProp(client, Prop_Data, "m_afButtonForced");
+		if(Buttons & IN_DUCK)
+		{
+			if(thirdperson[client])
+			{
+				SetVariantInt(1);
+				AcceptEntityInput(client, "SetForcedTauntCam");
+			}
+			else
+			{
+				SetVariantInt(0);
+				AcceptEntityInput(client, "SetForcedTauntCam");
+			}
+			SetForceButtonState(client, false, IN_DUCK);
+			b_NetworkedCrouch[client] = false;
+			SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
+			SetEntProp(client, Prop_Send, "m_bDucked", false);
+			SetEntityFlags(client, GetEntityFlags(client)&~FL_DUCKING);	
+		}
+	}
+}
+
+stock void SetForceButtonState(int client, bool apply, int button_flag)
+{
+	int Buttons = GetEntProp(client, Prop_Data, "m_afButtonForced");
+
+	if(apply)
+	{
+		Buttons |= button_flag;
+	}
+	else
+	{
+		Buttons &= ~button_flag;
+	}
+	SetEntProp(client, Prop_Data, "m_afButtonForced", Buttons);
+}
+
+stock int GetTeam(int entity)
+{
+	if(entity > 0 && entity <= MAXENTITIES)
+	{
+#if defined ZR
+		if(entity && entity <= MaxClients)
+			return GetClientTeam(entity);
+#endif
+
+		if(TeamNumber[entity] == -1)
+		{
+			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
+		}
+		return TeamNumber[entity];
+			
+	}
+	return GetEntProp(entity, Prop_Data, "m_iTeamNum");
+}
+
+stock void SetTeam(int entity, int teamSet)
+{
+	if(entity > 0 && entity <= MAXENTITIES)
+	{
+		TeamNumber[entity] = teamSet;
+		if(teamSet <= TFTeam_Red)
+		{
+#if defined ZR
+			if(entity && entity <= MaxClients)
+				ChangeClientTeam(entity, teamSet);
+			else
+#endif
+			{
+				SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
+			}
+		}
+		else if(teamSet > TFTeam_Red)
+		{
+			if(entity && entity <= MaxClients)
+				ChangeClientTeam(entity, TFTeam_Blue);
+			else	
+				SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+		}
+	}
+	else
+	{
+		SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
+	}
 }

@@ -9,7 +9,7 @@ static float f_Duration[MAXENTITIES];
 static bool b_ActivatedDuringLastMann[MAXPLAYERS+1];
 static int g_ProjectileModel;
 static int g_ProjectileModelArmor;
-static int g_BeamIndex_heal = -1;
+int g_BeamIndex_heal = -1;
 static int i_BurstpackUsedThisRound [MAXPLAYERS+1];
 
 static char gExplosive1;
@@ -200,6 +200,7 @@ public void PlaceableTempomaryArmorGrenade(int client)
 				
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", team, 1);
+			
 			SetEntProp(entity, Prop_Send, "m_nSkin", (team-2));
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
 			SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
@@ -465,17 +466,15 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 									Healing_Amount = 10.0;
 								}
 								EmitSoundToClient(target, SOUND_HEAL_BEAM, target, _, 90, _, 1.0);
-								HealEntityGlobal(client, target, Healing_Amount, _, 1.0);
-								
-								Healing_done_in_total[client] += RoundToCeil(Healing_Amount);		
+								HealEntityGlobal(client, target, Healing_Amount, _, 1.0);	
 							}
 						}
 					}
 				}
-				for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+				for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 				{
-					int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-					if (IsValidEntity(baseboss_index_allied))
+					int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+					if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TFTeam_Red)
 					{
 						if(!b_ThisEntityIgnored[baseboss_index_allied])
 						{
@@ -702,6 +701,7 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 			{
 				SetConVarInt(sv_cheats, 0, false, false);
 			}
+			ResetReplications();
 		
 			startPosition[2] += 25.0;
 			makeexplosion(client, client, startPosition, "", 0, 0);

@@ -66,7 +66,7 @@ methodmap BarrackThorns < BarrackBody
 		EmitSoundToAll(g_ThornsDeath[GetRandomInt(0, sizeof(g_ThornsDeath) - 1)],
 		this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
-	public BarrackThorns(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackThorns(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		bool elite = view_as<bool>(Store_HasNamedItem(client, "Construction Master"));
 		bool MaxPot = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
@@ -112,7 +112,7 @@ methodmap BarrackThorns < BarrackBody
 		npc.m_flSpeed = 250.0;
 
 		if(elite)
-			npc.BonusDamageBonus *= 1.5;
+			npc.BonusDamageBonus *= 2.0;
 
 		ThornsDecidedOnAttack[npc.index] = 0;
 		ThornsAbilityAttackTimes[npc.index] = 0;
@@ -156,7 +156,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 				if(ThornsHasElite[npc.index])
 				{
 					ThornsLevelAt[npc.index] = 1;
-					npc.BonusDamageBonus *= 1.5;
+					npc.BonusDamageBonus *= 2.0;
 					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth",GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 2);
 				}
 			}
@@ -232,8 +232,8 @@ public void BarrackThorns_ClotThink(int iNPC)
 
 		if(EnemyToAttack > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(EnemyToAttack);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(EnemyToAttack);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 
 			if(ThornsAbilityAttackTimes[npc.index] >= 15)
@@ -358,9 +358,9 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAtta
 			ThornsDecidedOnAttack[npc.index] = 0;
 			if(IsValidEnemy(npc.index, EnemyToAttack))
 			{
-				npc.FaceTowards(WorldSpaceCenter(EnemyToAttack), 15000.0);
+				npc.FaceTowards(WorldSpaceCenterOld(EnemyToAttack), 15000.0);
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(EnemyToAttack), 15000.0);
+				npc.FaceTowards(WorldSpaceCenterOld(EnemyToAttack), 15000.0);
 				if(npc.DoSwingTrace(swingTrace, EnemyToAttack, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 								
@@ -431,7 +431,7 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 	{
 		if(IsValidEnemy(npc.index, EnemyToAttack))
 		{
-			npc.FaceTowards(WorldSpaceCenter(EnemyToAttack), 15000.0);
+			npc.FaceTowards(WorldSpaceCenterOld(EnemyToAttack), 15000.0);
 		}
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
 		{
@@ -463,7 +463,7 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 					GetAttachment(npc.index, "weapon_bone", flPos, flAng);
 					float vecTarget[3];
 					float speed = 2000.0;
-					vecTarget = PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed);
+					vecTarget = PredictSubjectPositionForProjectilesOld(npc, EnemyToAttack, speed);
 					npc.m_flSpeed = 0.0;
 					int rocket;
 					rocket = npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_trail", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
@@ -518,7 +518,7 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 	{
 		if(IsValidEnemy(npc.index, EnemyToAttack))
 		{
-			npc.FaceTowards(WorldSpaceCenter(EnemyToAttack), 15000.0);
+			npc.FaceTowards(WorldSpaceCenterOld(EnemyToAttack), 15000.0);
 		}
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
 		{
@@ -556,7 +556,7 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 					GetAttachment(npc.index, "weapon_bone", flPos, flAng);
 					float vecTarget[3];
 					float speed = 2000.0;
-					vecTarget = PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed);
+					vecTarget = PredictSubjectPositionForProjectilesOld(npc, EnemyToAttack, speed);
 					npc.m_flSpeed = 0.0;
 					int rocket;
 					rocket = npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));

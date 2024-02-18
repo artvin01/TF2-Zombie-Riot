@@ -13,6 +13,7 @@ static Handle DuelState_timer[MAXPLAYERS+1];
 
 static int i_SpeedBuffCount[MAXPLAYERS+1]={0, ...};
 static int i_Current_Pap_Rapier[MAXTF2PLAYERS+1];
+static int i_CashLimit[MAXTF2PLAYERS+1];
 
 static bool b_WonDuel[MAXTF2PLAYERS];
 
@@ -41,17 +42,63 @@ void Weapon_RapierMapChange()
 #define DEFAULT_MELEE_BOUNDS 22.0
 void Rapier_DoSwingTrace(float &CustomMeleeRange, float &CustomMeleeWide)
 {
-	CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.2;
-	CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 0.5;
+	bool raidboss_active = false;
+	if(RaidbossIgnoreBuildingsLogic(1))
+	{
+		raidboss_active = true;
+	}
+
+	switch(raidboss_active)
+	{
+		case true:
+		{
+			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.45;
+			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 0.5;
+		}
+		case false:
+		{
+			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
+			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 0.5;
+		}
+	}
+}
+
+void Rapier_CashWaveEnd()
+{
+	Zero(i_CashLimit);
 }
 
 void RapierEndDuelOnKill(int client,int victim)
 {
 	if(f_DuelStatus[victim] > 0.0 && DuelState_timer[client] != INVALID_HANDLE)
 	{
-		//b_WonDuel[client] = true;
-		delete DuelState_timer[client];
+		int pap = i_Current_Pap_Rapier[client];
+		float MaxHealth = float(SDKCall_GetMaxHealth(client));
 		EmitSoundToClient(client, DUEL5, _, _, 80, _, 0.8, 100);
+		switch(pap)
+		{
+			case 4: //second highest pap)) :)
+			{
+				HealEntityGlobal(client, client, MaxHealth * 0.05, _, 0.5,HEAL_SELFHEAL);
+				i_CashLimit[client]++;
+				if(i_CashLimit[client] < 11)
+				{
+					CashRecievedNonWave[client] += 15;
+					CashSpent[client] -= 15;
+				}
+			}
+			case 5: //highest pap
+			{
+				HealEntityGlobal(client, client, MaxHealth * 0.07, _, 0.5,HEAL_SELFHEAL);
+				i_CashLimit[client]++;
+				if(i_CashLimit[client] < 11)
+				{
+					CashRecievedNonWave[client] += 30;
+					CashSpent[client] -= 30;
+				}
+			}
+		}
+		delete DuelState_timer[client];
 	}
 }
 
@@ -62,26 +109,45 @@ public float Player_OnTakeDamage_Rapier(int victim, int attacker, float &damage)
 	if(f_DuelStatus[attacker] > 0.0 && DuelState_timer[victim] != INVALID_HANDLE)
 	{
 		Client_Shake(victim, 0, 10.0, 5.0, 0.5);
-		return damage *= 1.1111;
+		return damage *= 0.9259; // 25% more damage taken
 	}
 
 	switch(pap)
 	{
 		case 4:
 		{
-			return damage *= 0.8518;
+			return damage *= 0.8148; // 10% more damage taken
 		}
 		case 5:
 		{
-			return damage *= 0.8148;
+			return damage *= 0.7407; // 0% more damage taken
 		}
 		default:
 		{
-			return damage *= 0.8888;
+			return damage *= 0.8888; // 20% more damage taken
 		}
 	}
 }
 
+float Player_OnTakeDamage_Rapier_Hud(int victim)
+{
+	int pap = i_Current_Pap_Rapier[victim];
+	switch(pap)
+	{
+		case 4:
+		{
+			return 0.8148; // 10% more damage taken
+		}
+		case 5:
+		{
+			return 0.7407; // 0% more damage taken
+		}
+		default:
+		{
+			return 0.8888; // 20% more damage taken
+		}
+	}
+}
 void Rapier_duel_minicrits(int attacker)
 {
 	switch(GetRandomInt(1,5))
@@ -109,18 +175,26 @@ void Rapier_duel_minicrits(int attacker)
 	}
 }
 
-public float NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, int weapon)
+public void NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, int weapon)
 {
 	int pap = i_Current_Pap_Rapier[attacker];
+	if(i_HasBeenHeadShotted[victim] == true)
+	{	
+		damage *= 1.1;
+		i_SpeedBuffCount[attacker]++;
+		//PrintToChatAll("speedbuff from headshot :D");
+		if(pap != 0)
+			StartBleedingTimer(victim, attacker, damage * 0.06, 4, weapon, DMG_SLASH);
+	}
 	switch(pap)
 	{
 		case 0, 1:
 		{
 			i_SpeedBuffCount[attacker]++;
-			if(i_SpeedBuffCount[attacker] == 2)
+			if(i_SpeedBuffCount[attacker] > 1)
 			{
 				//TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.35);
-				ApplyTempAttrib(weapon, 107 , 1.3272, 0.35);
+				ApplyTempAttrib(weapon, 107 , 1.3272, 0.4);
 				TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.0001);
 				i_SpeedBuffCount[attacker] *= 0;
 			}
@@ -128,35 +202,44 @@ public float NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, in
 		default:
 		{
 			i_SpeedBuffCount[attacker]++;
-			if(i_SpeedBuffCount[attacker] == 2)
+			if(i_SpeedBuffCount[attacker] > 1)
 			{
 				//TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.7);
-				ApplyTempAttrib(weapon, 107 , 1.3272, 0.7);
+				ApplyTempAttrib(weapon, 107 , 1.3272, 0.8);
 				TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.0001);
 				i_SpeedBuffCount[attacker] *= 0;
 			}
 		}
 	}
+	
+
 	if(f_DuelStatus[victim] > 0.0 && DuelState_timer[attacker] != INVALID_HANDLE)
 	{
 		Rapier_duel_minicrits(attacker);
-		return damage *= 1.5;
+		damage *= 1.25;
 	}
-
-	return damage *= 1.0;
 }
 
 public void Weapon_Rapier_M2(int client, int weapon, bool crit, int slot)
 {
 	//PrintToChatAll("Pressed M2");
+	int Health = GetEntProp(client, Prop_Send, "m_iHealth");
+	float MaxHealth = float(SDKCall_GetMaxHealth(client));
 	float cooldown = Ability_Check_Cooldown(client, slot);
-	if(cooldown > 0.0 && !CvarInfiniteCash.BoolValue && dieingstate[client] != 0)
+	if(cooldown > 0.0)
 	{
 		//PrintToChatAll("Didn't trigger Duel");
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);	
+	}
+	else if(Health < (MaxHealth/4))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "Not healthy enough");
 	}
 	else
 	{
@@ -188,13 +271,13 @@ public void Weapon_Rapier_M2(int client, int weapon, bool crit, int slot)
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		float knockback = -300.0;
+		float knockback = -400.0;
 		// knockback is the overall force with which you be pushed, don't touch other stuff
 		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 			velocity[2] = fmax(velocity[2], 300.0);
 		else
-			velocity[2] += 100.0;    // a little boost to alleviate arcing issues
+			velocity[2] += 125.0;    // a little boost to alleviate arcing issues
 
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 		float time = GetGameTime() + 10.00;
@@ -282,20 +365,22 @@ public void Rapier_Cooldown_Logic(int client, int weapon)
 	if(fl_Rapier_hud_delay[client] < GetGameTime())
 	{
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		int Health = GetEntProp(client, Prop_Send, "m_iHealth");
+		float MaxHealth = float(SDKCall_GetMaxHealth(client));
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
 			i_Current_Pap_Rapier[client] = Rapier_Get_Pap(weapon);
-			TF2_AddCondition(client, TFCond_MarkedForDeathSilent); //reason for not using on_playertakedamage and returining 20% more dmg that way is because this is flashier
+			TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 0.65); //reason for not using on_playertakedamage and returining 20% more dmg that way is because this is flashier
 		}
 		else
 		{
 			TF2_RemoveCondition(client, TFCond_MarkedForDeathSilent);
 		}
-		if(dieingstate[client] == 1 && DuelState_timer[client] != INVALID_HANDLE)
+		if(IsValidClient(client) && IsClientInGame(client) && DuelState_timer[client] != INVALID_HANDLE && Health < (MaxHealth/4))
 		{
-			delete DuelState_timer[client];
 			EmitSoundToClient(client, DUEL6, _, _, 80, _, 0.8, 100);
+			delete DuelState_timer[client];
 		}
 		fl_Rapier_hud_delay[client] = GetGameTime() + 0.5;
 	}

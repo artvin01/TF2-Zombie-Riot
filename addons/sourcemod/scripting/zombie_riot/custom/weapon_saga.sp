@@ -7,6 +7,7 @@ static Handle WeaponTimer[MAXTF2PLAYERS];
 static int WeaponRef[MAXTF2PLAYERS];
 static int WeaponCharge[MAXTF2PLAYERS];
 static float SagaCrippled[MAXENTITIES + 1];
+static int SagaCrippler[MAXENTITIES + 1];
 static bool SagaRegen[MAXENTITIES];
 
 static const char g_MeleeHitSounds[][] =
@@ -30,11 +31,17 @@ void Saga_MapStart()
 void Saga_EntityCreated(int entity)
 {
 	SagaCrippled[entity] = 0.0;
+	SagaCrippler[entity] = 0;
 }
 
 bool Saga_EnemyDoomed(int entity)
 {
 	return view_as<bool>(SagaCrippled[entity]);
+}
+
+int Saga_EnemyDoomedBy(int entity)
+{
+	return SagaCrippler[entity];
 }
 
 bool Saga_RegenHealth(int entity)
@@ -48,12 +55,27 @@ void Saga_DeadEffects(int victim, int attacker, int weapon)
 		Saga_ChargeReduction(attacker, weapon, SagaCrippled[victim]);
 }
 
+public bool Saga_ChargeValidityFunction(int provider, int entity)
+{
+	if(entity <= MaxClients)
+	{
+		int i, weapon;
+		while(TF2_GetItem(entity, weapon, i))
+		{
+			if(Saga_IsChargeWeapon(entity, weapon))
+				return true;
+		}
+	}
+
+	return false;
+}
+
 bool Saga_IsChargeWeapon(int client, int weapon)
 {
 	if(!IsValidEntity(weapon))
 		return false;
 
-	if(f_UberOnHitWeapon[weapon])
+	if(f_UberOnHitWeapon[weapon] > 0.01)
 		return true;
 	
 	if(Passanger_HasCharge(client))
@@ -310,13 +332,13 @@ void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon, in
 	{
 		damage = float(GetEntProp(victim, Prop_Data, "m_iHealth") - 1);
 
+		SagaCrippler[victim] = attacker;
 		SagaCrippled[victim] = Attributes_Get(weapon, 868, -1.0) == -1.0 ? 1.0 : 2.0;
 		CreateTimer(10.0, Saga_ExcuteTarget, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		FreezeNpcInTime(victim, 10.2);
 		SetEntityRenderMode(victim, RENDER_TRANSCOLOR, false, 1, false, true);
 		SetEntityRenderColor(victim, 255, 65, 65, 125, false, false, true);
 		b_ThisEntityIgnoredByOtherNpcsAggro[victim] = true;
-		Change_Npc_Collision(victim, 3);
 		SetEntityCollisionGroup(victim, 17);
 		b_DoNotUnStuck[victim] = true;
 		CClotBody npc = view_as<CClotBody>(victim);
@@ -356,7 +378,7 @@ void SagaCutLast(int entity, int victim, float damage, int weapon)
 	if(SagaCrippled[victim])
 	{
 		float VicLoc[3];
-		VicLoc = WorldSpaceCenter(victim);
+		VicLoc = WorldSpaceCenterOld(victim);
 
 		float Pos1[3];
 		float Pos2[3];
@@ -408,7 +430,7 @@ void SagaCutLast(int entity, int victim, float damage, int weapon)
 
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], 0, SNDCHAN_AUTO, 90, _,_,GetRandomInt(80,110),-1,VicLoc);
 	
-		SDKHooks_TakeDamage(victim, weapon, entity, 10.0, DMG_SLASH, weapon, CalculateDamageForce(vecForward, 10000.0), VicLoc, _, _);
+		SDKHooks_TakeDamage(victim, weapon, entity, 10.0, DMG_SLASH, weapon, CalculateDamageForceOld(vecForward, 10000.0), VicLoc, _, _);
 	}
 }
 

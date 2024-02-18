@@ -107,7 +107,7 @@ methodmap Helena < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public Helena(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Helena(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Helena npc = view_as<Helena>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "5500", ally));
 		
@@ -245,9 +245,9 @@ public void Helena_ClotThink(int iNPC)
 		if(IsValidAlly(npc.index, PrimaryThreatIndex))
 		{
 				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 				
 				if(flDistanceToTarget < 250000)
 				{
@@ -267,17 +267,14 @@ public void Helena_ClotThink(int iNPC)
 						npc.m_bnew_target = true;
 					}
 
-					bool regrow = true;
-					Building_CamoOrRegrowBlocker(PrimaryThreatIndex, _, regrow);
-					if(regrow && !NpcStats_IsEnemySilenced(npc.index))
+					if(!NpcStats_IsEnemySilenced(npc.index))
 					{
-						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
-						SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") + 200);
-						if(GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") >= GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"))
+						if(IsValidEntity(npc.m_iWearable4))
 						{
-							SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"));
+							SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+							SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
 						}
+						HealEntityGlobal(npc.index, PrimaryThreatIndex, 200.0, 1.0);
 					}
 					else
 					{
@@ -285,7 +282,7 @@ public void Helena_ClotThink(int iNPC)
 						SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
 					}
 					
-					npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 2000.0);
+					npc.FaceTowards(WorldSpaceCenterOld(PrimaryThreatIndex), 2000.0);
 				}
 				else
 				{
@@ -341,14 +338,14 @@ public void Helena_ClotThink(int iNPC)
 		
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 		{
-				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 			
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 				
 				//Predict their pos.
 				if(flDistanceToTarget < npc.GetLeadRadius()) {
 					
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 					
 				/*	int color[4];
 					color[0] = 255;

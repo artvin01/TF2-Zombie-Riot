@@ -177,7 +177,8 @@ public void SepcialBackstabLaughSpy(int attacker)
 
 #define MELEE_RANGE 64.0
 #define MELEE_BOUNDS 22.0
-stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0, bool Hit_ally = false, float CustomMeleeWide = 0.0, bool ignore_walls = false, int &enemies_hit_aoe = 1, int weapon = -1)
+stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0,
+ bool Hit_ally = false, float CustomMeleeWide = 0.0, bool ignore_walls = false, int &enemies_hit_aoe = 1, int weapon = -1)
 {
 #if defined ZR
 	if(weapon > 0)
@@ -336,7 +337,7 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 				}
 			}
 			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, client );
-			if ( TR_GetFraction(trace) >= 1.0)
+			if ( TR_GetFraction(trace) >= 1.0 && enemies_hit_aoe != -1)
 			{
 				delete trace;
 				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
@@ -570,17 +571,22 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		if(soundIndex > 0)
 		{
 			char SoundStringToPlay[256];
-			if(i_WeaponSoundIndexOverride[weapon] != -1)
+			if(soundIndex == MELEE_HIT && c_WeaponSoundOverrideString[weapon][0])
+			{
+				EmitSoundToAll(c_WeaponSoundOverrideString[weapon], client, SNDCHAN_STATIC, RoundToNearest(90.0 * f_WeaponVolumeSetRange[weapon])
+				, _, 1.0 * f_WeaponVolumeStiller[weapon]);
+			}
+			else if(i_WeaponSoundIndexOverride[weapon] != -1)
 			{
 				if(i_WeaponSoundIndexOverride[weapon] > 0)
 					SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", i_WeaponSoundIndexOverride[weapon]);
 
 				SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
+
 				if(i_WeaponSoundIndexOverride[weapon] > 0)
 					SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", Item_Index);
 
 				EmitGameSoundToAll(SoundStringToPlay, client);
-					
 			}
 		}
 
@@ -625,7 +631,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			}
 			case WEAPON_KIT_BLITZKRIEG_CORE:
 			{
-				Blitzkrieg_Kit_Custom_Damage_Calc(client, weapon, damage);
+				Blitzkrieg_Kit_OnHitEffect(client, weapon, damage);
 			}
 		}
 #endif
@@ -674,7 +680,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						}
 					}
 #endif
-					SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), playerPos);
+					SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalculateDamageForceOld(vecSwingForward, 20000.0), playerPos);
 					
 #if defined ZR
 					switch(i_CustomWeaponEquipLogic[weapon])
@@ -708,7 +714,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		// 	This doesnt work sadly and i dont have the power/patience to make it work, just do a custom check with some big shit, im sorry.
 			
 				
-			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), vecHit);	
+			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalculateDamageForceOld(vecSwingForward, 20000.0), vecHit);	
 		}
 		else if(target > -1 && Item_Index == 214)
 		{

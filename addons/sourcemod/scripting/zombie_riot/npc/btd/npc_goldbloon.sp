@@ -92,7 +92,7 @@ methodmap GoldBloon < CClotBody
 	{
 		EmitCustomToAll("zombie_riot/btd/popgolden.wav", this.index, SNDCHAN_AUTO, 80, _, 2.0);
 	}
-	public GoldBloon(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public GoldBloon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		/*int range = CurrentRound / 10;
 		
@@ -237,13 +237,13 @@ public void GoldBloon_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			NPC_SetGoalVector(npc.index, PredictSubjectPosition(npc, npc.m_iTarget));
+			NPC_SetGoalVector(npc.index, PredictSubjectPositionOld(npc, npc.m_iTarget));
 		}
 		else
 		{
@@ -386,7 +386,7 @@ public Action GoldBloon_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			}
 		}
 		
-		PluginBot_Jump(npc.index, WorldSpaceCenter(target));
+		PluginBot_Jump(npc.index, WorldSpaceCenterOld(target));
 	}
 
 	SetEntProp(victim, Prop_Data, "m_iHealth", health - 1);

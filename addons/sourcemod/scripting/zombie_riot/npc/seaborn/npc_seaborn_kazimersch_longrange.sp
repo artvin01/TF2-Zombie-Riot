@@ -82,7 +82,7 @@ methodmap KazimierzLongArcher < CClotBody
 	}
 
 	
-	public KazimierzLongArcher(int client, float vecPos[3], float vecAng[3], bool ally)
+	public KazimierzLongArcher(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		KazimierzLongArcher npc = view_as<KazimierzLongArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "17500", ally));
 		SetVariantInt(4);
@@ -223,14 +223,14 @@ public void KazimierzLongArcher_ClotThink(int iNPC)
 			{
 				npc.m_flSpeed = 170.0;
 			}
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				/*
 				int color[4];
 				color[0] = 255;
@@ -311,11 +311,11 @@ public void HandleAnimEventKazimierzLongArcher(int entity, int event)
 			float vecTargetPredict[3];
 				
 			float projectile_speed = 1500.0;
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
 			npc.FaceTowards(vecTarget, 30000.0);
 
-			vecTargetPredict = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
+			vecTargetPredict = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
 
 			float damage = 75.0;
 			npc.PlayMeleeSound();
@@ -337,13 +337,13 @@ public void HandleAnimEventKazimierzLongArcher(int entity, int event)
 			}
 			if(damage > 50.0)
 			{
-				for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 				{
-					int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+					int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 					if(IsValidEntity(entity_close))
 					{
 						CClotBody npcenemy = view_as<CClotBody>(entity_close);
-						if(!npcenemy.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !b_NpcIsInvulnerable[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
+						if(!npcenemy.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !b_NpcIsInvulnerable[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close] && GetTeam(entity_close) == TFTeam_Red) //Check if dead or even targetable
 						{
 							GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", AllyPos);
 							float flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);

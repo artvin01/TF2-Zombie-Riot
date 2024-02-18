@@ -58,7 +58,6 @@ void ConVar_PluginStart()
 	ConVar_Add("nb_last_area_update_tolerance", "2.0"); // default:4
 	ConVar_Add("sv_rollspeed", "2400.0"); // default: idk
 	ConVar_Add("tf_clamp_back_speed", "0.7"); // default: 0.9 Ty to miku for showing me
-	ConVar_Add("mp_waitingforplayers_time", "0.0");
 	
 	#if defined ZR
 	ConVar_Add("mp_disable_respawn_times", "1.0");
@@ -77,10 +76,13 @@ void ConVar_PluginStart()
 	zr_viewshakeonlowhealth = CreateConVar("zr_viewshakeonlowhealth", "1.0", "Enable/Disable viewshake on low health.");
 	zr_disablerandomvillagerspawn = CreateConVar("zr_norandomvillager", "0.0", "Enable/Disable if medival villagers spawn randomly on the map or only on spawnpoints.");
 	zr_waitingtime = CreateConVar("zr_waitingtime", "120.0", "Waiting for players time.");
-	//zr_webhookadmins = CreateConVar("zr_webhookadmins", "", "Webhook channel and key (123456/abcdexf)", FCVAR_PROTECTED);
+	zr_allowfreeplay = CreateConVar("zr_allowfreeplay", "1", "Can players vote to continue into freeplay (endless waves).");
+	zr_enemymulticap = CreateConVar("zr_enemymulticap", "4.0", "Max enemy count multipler, will scale by health onwards", _, true, 0.5);
 
 	// MapSpawnersActive = CreateConVar("zr_spawnersactive", "4", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
 	//CHECK npcs.sp FOR THIS ONE!
+	#else
+	ConVar_Add("mp_waitingforplayers_time", "0.0");
 	#endif
 
 	zr_downloadconfig = CreateConVar("zr_downloadconfig", "", "Downloads override config zr/ .cfg already included");
@@ -93,6 +95,9 @@ void ConVar_PluginStart()
 	CvarKickPlayersAt = CreateConVar("zr_kickplayersat", "", "If the server is full, Do reroute or kick", FCVAR_DONTRECORD);
 	CvarRerouteToIpAfk = CreateConVar("zr_rerouteipafk", "", "If the server is full, reroute", FCVAR_DONTRECORD);
 	
+	mp_bonusroundtime = FindConVar("mp_bonusroundtime");
+	mp_bonusroundtime.SetBounds(ConVarBound_Upper, false);
+
 	AutoExecConfig(true, "zombie_riot");
 	
 }

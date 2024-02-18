@@ -144,7 +144,7 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 
 							if(ParticleRef[client] == -1)
 							{
-								float pos[3]; pos = WorldSpaceCenter(client);
+								float pos[3]; pos = WorldSpaceCenterOld(client);
 								pos[2] += 500.0;
 
 								int entity = ParticleEffectAt(pos, "env_rain_128", -1.0);
@@ -320,12 +320,33 @@ float Gladiia_OnTakeDamageSelf(int victim, int attacker, float damage)
 	return damage;
 }
 
+float Gladiia_OnTakeDamageSelf_Hud(int victim)
+{
+	switch(EliteLevel[victim])
+	{
+		case 3:
+		{
+			return 0.85;//0.7;
+		}
+	}
+
+	return 1.0;
+}
+
 float Gladiia_OnTakeDamageAlly(int victim, int attacker, float damage)
 {
 	if(EliteLevel[victim])	// Being two fishes are we?
 		return damage;
 	
 	return Gladiia_OnTakeDamageSelf(GetHighestGladiiaClient(), attacker, damage);
+}
+
+float Gladiia_OnTakeDamageAlly_Hud(int victim)
+{
+	if(EliteLevel[victim])	// Being two fishes are we?
+		return 1.0;
+	
+	return Gladiia_OnTakeDamageSelf_Hud(GetHighestGladiiaClient());
 }
 
 static int GetHighestGladiiaClient()
@@ -522,12 +543,12 @@ void Gladiia_WandTouch(int entity, int target)
 		float vecForward[3], Entity_Position[3];
 		GetEntPropVector(entity, Prop_Send, "m_angRotation", vecForward);
 		GetAngleVectors(vecForward, vecForward, NULL_VECTOR, NULL_VECTOR);
-		Entity_Position = WorldSpaceCenter(target);
+		Entity_Position = WorldSpaceCenterOld(target);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);
 	}
 
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);

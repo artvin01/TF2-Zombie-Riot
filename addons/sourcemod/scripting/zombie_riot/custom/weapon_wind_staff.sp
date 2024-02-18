@@ -324,7 +324,7 @@ void TBB_Precache_Wind_Staff()
 
 void TBB_Ability_Wind_Staff(int client)
 {
-	for (int building = 1; building < MAX_TARGETS_HIT; building++)
+	for (int building = 0; building < MAX_TARGETS_HIT; building++)
 	{
 		BEAM_BuildingHit[building] = false;
 		BEAM_Targets_Hit[client] = 0.0;
@@ -478,7 +478,7 @@ static void TBB_Tick(int client)
 		}
 		
 		
-		for (int building = 1; building < MAX_TARGETS_HIT; building++)
+		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			BEAM_BuildingHit[building] = false;
 		}
@@ -492,21 +492,6 @@ static void TBB_Tick(int client)
 		hullMax[2] = -hullMin[2];
 		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
-//		int weapon = BEAM_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
-		/*
-		for (int victim = 1; victim < MaxClients; victim++)
-		{
-			if (BEAM_HitDetected[victim] && BossTeam != GetClientTeam(victim))
-			{
-				GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-				float distance = GetVectorDistance(startPoint, playerPos, false);
-				float damage = BEAM_CloseDPT[client] + (BEAM_FarDPT[client]-BEAM_CloseDPT[client]) * (distance/BEAM_MaxDistance[client]);
-				if (damage < 0)
-					damage *= -1.0;
-				TakeDamage(victim, client, client, damage/6, 2048, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
-			}
-		}
-		*/
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		BEAM_Targets_Hit[client] = 1.0;
@@ -517,14 +502,14 @@ static void TBB_Tick(int client)
 			{
 				if(IsValidEntity(BEAM_BuildingHit[building]))
 				{
-					playerPos = WorldSpaceCenter(BEAM_BuildingHit[building]);
+					playerPos = WorldSpaceCenterOld(BEAM_BuildingHit[building]);
 					
 					float distance = GetVectorDistance(startPoint, playerPos, false);
 					float damage = BEAM_CloseBuildingDPT[client] + (BEAM_FarBuildingDPT[client]-BEAM_CloseBuildingDPT[client]) * (distance/BEAM_MaxDistance[client]);
 					if (damage < 0)
 						damage *= -1.0;
 
-					SDKHooks_TakeDamage(BEAM_BuildingHit[building], client, client, damage/BEAM_Targets_Hit[client], DMG_PLASMA, weapon_active, CalculateDamageForce(vecForward, 10000.0), playerPos);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(BEAM_BuildingHit[building], client, client, damage/BEAM_Targets_Hit[client], DMG_PLASMA, weapon_active, CalculateDamageForceOld(vecForward, 10000.0), playerPos);	// 2048 is DMG_NOGIB?
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF; //sneaky. DONT do 1.25.
 				}
 				else
@@ -586,11 +571,9 @@ static void Wand_Launch_Tornado(int client, int iRot, float speed, float time, f
 	TeleportEntity(iCarrier, fPos, NULL_VECTOR, fVel);
 	SetEntityMoveType(iCarrier, MOVETYPE_FLY);	
 	
-	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetClientTeam(client));
-	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetClientTeam(client));
+	SetTeam(iRot, GetClientTeam(client));
+	SetTeam(iCarrier, GetClientTeam(client));
 
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iCarrier));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iRot));
 	
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
@@ -646,10 +629,10 @@ public Action Event_Tornado_OnHatTouch(int entity, int other)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenter(target);
+		Entity_Position = WorldSpaceCenterOld(target);
 		//Code to do damage position and ragdolls
 		
-		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0),Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0),Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)

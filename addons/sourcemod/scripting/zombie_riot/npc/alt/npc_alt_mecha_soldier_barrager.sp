@@ -148,7 +148,7 @@ methodmap MechaSoldier_Barrager < CClotBody
 		#endif
 	}
 	
-	public MechaSoldier_Barrager(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MechaSoldier_Barrager(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MechaSoldier_Barrager npc = view_as<MechaSoldier_Barrager>(CClotBody(vecPos, vecAng, ALTBOTSOLDIERMODEL, "1.0", "2000", ally));
 		
@@ -250,9 +250,9 @@ public void MechaSoldier_Barrager_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
 		if(i_ammo_count[npc.index]==0 && !b_we_are_reloading[npc.index] && !b_target_close[npc.index])	//the npc will prefer to fully reload the clip before attacking, unless the target is too close.
 		{
@@ -298,7 +298,7 @@ public void MechaSoldier_Barrager_ClotThink(int iNPC)
 			{
 				float vBackoffPos[3];
 				
-				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
+				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
 				
 				NPC_SetGoalVector(npc.index, vBackoffPos, true);
 			}
@@ -319,7 +319,7 @@ public void MechaSoldier_Barrager_ClotThink(int iNPC)
 				{
 					//Play attack anim
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-					vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 750.0);
+					vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 750.0);
 					npc.FaceTowards(vecTarget, 20000.0);
 					npc.PlayMeleeSound();
 					float dmg = 13.5;
@@ -344,7 +344,7 @@ public void MechaSoldier_Barrager_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			/*
 			int color[4];
 			color[0] = 255;

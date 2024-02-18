@@ -22,7 +22,7 @@ methodmap StalkerFather < StalkerShared
 		i_PlayMusicSound = GetTime() + 39;
 	}
 	
-	public StalkerFather(int client, float vecPos[3], float vecAng[3], bool ally)
+	public StalkerFather(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		StalkerFather npc = view_as<StalkerFather>(CClotBody(vecPos, vecAng, "models/zombie/monk_combine.mdl", "1.15", "66666", ally));
 		
@@ -139,10 +139,10 @@ public void StalkerFather_ClotThink(int iNPC)
 		}
 	}
 	
-	float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
 	if(npc.m_bChaseAnger && npc.CanSeeEnemy())
 	{
-		LastKnownPos = WorldSpaceCenter(npc.m_iTarget);
+		LastKnownPos = WorldSpaceCenterOld(npc.m_iTarget);
 		float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 		
 		int state;
@@ -173,7 +173,7 @@ public void StalkerFather_ClotThink(int iNPC)
 				npc.StartPathing();
 				if(distance < npc.GetLeadRadius()) 
 				{
-					LastKnownPos = PredictSubjectPosition(npc, npc.m_iTarget);
+					LastKnownPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 					NPC_SetGoalVector(npc.index, LastKnownPos);
 				}
 				else
@@ -370,6 +370,8 @@ public Action StalkerFather_Timer(Handle timer)
 	enemy.ExtraRangedRes = 1.0;
 	enemy.ExtraSpeed = 1.0;
 	enemy.ExtraDamage = 1.0;	
+	enemy.ExtraSize = 1.0;	
+	enemy.Team = TFTeam_Blue;	
 	Waves_AddNextEnemy(enemy);
 	return Plugin_Stop;
 }

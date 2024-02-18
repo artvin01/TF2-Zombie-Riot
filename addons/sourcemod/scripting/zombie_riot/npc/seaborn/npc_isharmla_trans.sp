@@ -70,9 +70,9 @@ methodmap IsharmlaTrans < CClotBody
 		EmitSoundToAll("ui/halloween_boss_summoned_fx.wav");
 	}
 	
-	public IsharmlaTrans(int client, float vecPos[3], float vecAng[3], bool ally)
+	public IsharmlaTrans(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IsharmlaTrans npc = view_as<IsharmlaTrans>(CClotBody(vecPos, vecAng, "models/bots/headless_hatman.mdl", "1.5", "45000", ally, false, true));
+		IsharmlaTrans npc = view_as<IsharmlaTrans>(CClotBody(vecPos, vecAng, "models/bots/headless_hatman.mdl", "1.35", "45000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = ISHARMLA_TRANS;
 		i_NpcWeight[npc.index] = 6;
@@ -133,14 +133,14 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 
 	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, _, _, true);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, _, false);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);		
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -168,7 +168,7 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 							IsharMlarWaterAttack_Invoke(npc.index, enemy[i]);
 						}
 					}
-					vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1000.0);
+					vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1000.0);
 					npc.FireParticleRocket(vecTarget, npc.Anger ? 750.0 : 500.0, 1000.0, 275.0, "drg_cow_rockettrail_burst_charged_blue", true, true, _, _, EP_DEALS_DROWN_DAMAGE);
 				}
 			}
@@ -205,7 +205,7 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 		{
 			if(distance < npc.GetLeadRadius())
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 
@@ -273,7 +273,7 @@ public void IsharMlarWaterAttack_Invoke(int ref, int enemy)
 		float Dmg=500.0;
 		
 		float vecTarget[3];
-		vecTarget = WorldSpaceCenter(enemy);
+		vecTarget = WorldSpaceCenterOld(enemy);
 		vecTarget[2] += 1.0;
 		
 		
@@ -283,7 +283,7 @@ public void IsharMlarWaterAttack_Invoke(int ref, int enemy)
 		color[2] = 255;
 		color[3] = 255;
 		float UserLoc[3];
-		UserLoc = GetAbsOrigin(entity);
+		UserLoc = GetAbsOriginOld(entity);
 		
 		UserLoc[2]+=75.0;
 		

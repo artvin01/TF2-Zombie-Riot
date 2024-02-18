@@ -145,7 +145,7 @@ methodmap MedivalRiddenArcher < CClotBody
 		#endif
 	}
 	
-	public MedivalRiddenArcher(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalRiddenArcher(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalRiddenArcher npc = view_as<MedivalRiddenArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "6500", ally));
 		SetVariantInt(1);
@@ -257,14 +257,14 @@ public void MedivalRiddenArcher_ClotThink(int iNPC)
 			{
 				npc.m_flSpeed = 300.0;
 			}
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				/*
 				int color[4];
 				color[0] = 255;
@@ -343,7 +343,7 @@ public void HandleAnimEventMedival_RiddenArcher(int entity, int event)
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 		{
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 				
 			npc.FaceTowards(vecTarget, 30000.0);
 						

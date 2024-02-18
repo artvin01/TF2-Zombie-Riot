@@ -20,7 +20,7 @@ static float GrigoriCoinPurseCalc()
 {
 	int Ingots = Rogue_GetIngots();
 	
-	return(Pow(0.993, (float(Ingots))));
+	return(Pow(0.9965, (float(Ingots))));
 	//at 100 ingots, we double our attackspeed minimum
 }
 
@@ -210,7 +210,7 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 	{
 		if(attacker > MaxClients || inflictor > MaxClients)
 		{
-			if(b_IsAlliedNpc[attacker] || b_IsAlliedNpc[inflictor])
+			if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			{
 				//15%% more melee dmg for all allies
 				if(damagetype & (DMG_CLUB|DMG_SLASH))
@@ -224,7 +224,7 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 	{
 		if(attacker > MaxClients || inflictor > MaxClients)
 		{
-			if(b_IsAlliedNpc[attacker] || b_IsAlliedNpc[inflictor])
+			if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			{
 				//15%% more Ranged dmg for all allies
 				if(damagetype & (DMG_CLUB|DMG_SLASH))
@@ -241,7 +241,7 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 	}
 	if(b_NickelInjectedPack)
 	{
-		if(attacker > 0 && (b_IsAlliedNpc[attacker] || attacker <= MaxClients))
+		if(attacker > 0 && (GetTeam(attacker) == TFTeam_Red || attacker <= MaxClients))
 		{
 			int maxhealth;
 			if(attacker <= MaxClients)

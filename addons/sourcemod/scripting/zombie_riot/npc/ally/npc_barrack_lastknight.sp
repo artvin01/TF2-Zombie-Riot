@@ -3,7 +3,7 @@
 
 methodmap BarrackLastKnight < BarrackBody
 {
-	public BarrackLastKnight(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackLastKnight(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackLastKnight npc = view_as<BarrackLastKnight>(BarrackBody(client, vecPos, vecAng, "3000", _, _, "0.75",_,"models/pickups/pickup_powerup_regen.mdl"));
 		
@@ -48,8 +48,8 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 
 		if(npc.m_iTarget > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 			//Target close enough to hit
 			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)

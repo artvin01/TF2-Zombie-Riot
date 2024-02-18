@@ -198,7 +198,7 @@ methodmap Bloonarius < CClotBody
 		if(GetEntProp(this.index, Prop_Data, "m_iHealth") < (GetEntProp(this.index, Prop_Data, "m_iMaxHealth") / 2))
 			SetEntProp(this.index, Prop_Send, "m_nSkin", 1);
 	}
-	public Bloonarius(int clien, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Bloonarius(int clien, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		if(IsValidEntity(RaidBossActive))	// Bloon raids fail if another can't spawn
 		{
@@ -273,7 +273,6 @@ methodmap Bloonarius < CClotBody
 		Music_SetRaidMusic("#zombie_riot/btd/musicbossbloonarius.mp3", 198, true);
 		
 		RaidModeTime = (elite ? 0.0 : GetGameTime() + 200.0);
-		Raidboss_Clean_Everyone();
 
 		i_PlayMusicSound = 0;
 		ToggleMapMusic(false);
@@ -361,7 +360,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		int entity = -1;
 		while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
-			if(entity != npc.index && npc.m_bStaticNPC == view_as<CClotBody>(entity).m_bStaticNPC && !view_as<CClotBody>(entity).m_bThisNpcIsABoss && !b_ThisNpcIsImmuneToNuke[entity] && GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			if(entity != npc.index && npc.m_bStaticNPC == view_as<CClotBody>(entity).m_bStaticNPC && !view_as<CClotBody>(entity).m_bThisNpcIsABoss && !b_ThisNpcIsImmuneToNuke[entity] && GetTeam(entity) != view_as<int>(TFTeam_Red))
 			{
 				SmiteNpcToDeath(entity);
 				SmiteNpcToDeath(entity);
@@ -416,6 +415,8 @@ public void Bloonarius_ClotThink(int iNPC)
 			enemy.ExtraRangedRes = 1.0;
 			enemy.ExtraSpeed = 1.0;
 			enemy.ExtraDamage = 1.0;	
+			enemy.ExtraSize = 1.0;	
+			enemy.Team = GetTeam(npc.index);
 			for(int i; i<count; i++)
 			{
 				Waves_AddNextEnemy(enemy);
@@ -439,8 +440,8 @@ public void Bloonarius_ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);			
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);			
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 		NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		npc.StartPathing();
@@ -510,7 +511,7 @@ public Action Bloonarius_SpawnBloonTimer(Handle timer, bool elite)
 		float pos[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_angRotation", ang);
 		
-		int spawn_index = Npc_Create(BloonHigh[tier], -1, pos, ang, false, BloonHighData[tier]);
+		int spawn_index = Npc_Create(BloonHigh[tier], -1, pos, ang, TFTeam_Blue, BloonHighData[tier]);
 		if(spawn_index > MaxClients)
 		{
 			Zombies_Currently_Still_Ongoing++;
@@ -532,6 +533,8 @@ public void Bloonarius_NPCDeath(int entity)
 {
 	Bloonarius npc = view_as<Bloonarius>(entity);
 	npc.PlayDeathSound();
+
+	Waves_ClearWaveCurrentSpawningEnemies();
 
 	StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.mp3");
 	StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.mp3");

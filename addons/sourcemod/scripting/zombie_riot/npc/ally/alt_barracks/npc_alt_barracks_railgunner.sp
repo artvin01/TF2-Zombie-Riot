@@ -55,7 +55,7 @@ methodmap Barrack_Alt_Raigunner < BarrackBody
 	{
 		EmitSoundToAll(g_alt_Sniper_Railgunner_Shoot[GetRandomInt(0, sizeof(g_alt_Sniper_Railgunner_Shoot) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME*0.5, 100);
 	}
-	public Barrack_Alt_Raigunner(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Barrack_Alt_Raigunner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barrack_Alt_Raigunner npc = view_as<Barrack_Alt_Raigunner>(BarrackBody(client, vecPos, vecAng, "175", "models/player/sniper.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
@@ -110,8 +110,8 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 			if(flDistanceToTarget < 1562500.0)
 			{
@@ -125,7 +125,7 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 						float speed = 750.0;
 						if(flDistanceToTarget < 562500)	//Doesn't predict over 750 hu
 						{
-							vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed);
+							vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, speed);
 						}
 						npc.m_flSpeed = 0.0;
 						npc.FaceTowards(vecTarget, 30000.0);

@@ -138,7 +138,7 @@ methodmap SeargentIdeal < CClotBody
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public SeargentIdeal(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeargentIdeal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeargentIdeal npc = view_as<SeargentIdeal>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "25000", ally));
 		
@@ -315,13 +315,13 @@ public void SeargentIdeal_ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -400,8 +400,7 @@ Action SeargentIdeal_Protect(int victim, int &attacker, int &inflictor, float &d
 
 void SeargentIdealShield(int iNpc)
 {
-	int TeamNum = GetEntProp(iNpc, Prop_Send, "m_iTeamNum");
-	SetEntProp(iNpc, Prop_Send, "m_iTeamNum", 4);
+	b_NpcIsTeamkiller[iNpc] = true;
 	Explode_Logic_Custom(0.0,
 	iNpc,
 	iNpc,
@@ -415,7 +414,7 @@ void SeargentIdealShield(int iNpc)
 	false,
 	_,
 	SeargentIdealShieldAffected);
-	SetEntProp(iNpc, Prop_Send, "m_iTeamNum", TeamNum);
+	b_NpcIsTeamkiller[iNpc] = false;
 }
 
 
@@ -424,25 +423,15 @@ void SeargentIdealShieldAffected(int entity, int victim, float damage, int weapo
 	if(entity == victim)
 		return;
 
-	if(b_IsAlliedNpc[entity])
+	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
 	{
-		if (b_IsAlliedNpc[victim])
-		{
-			SeargentIdealShieldInternal(entity, victim);
-		}
-	}
-	else
-	{
-		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
-		{
-			SeargentIdealShieldInternal(entity, victim);
-		}
+		SeargentIdealShieldInternal(entity, victim);
 	}
 }
 
 void SeargentIdealShieldInternal(int shielder, int victim)
 {
-	if(i_NpcInternalId[victim] != EXPIDONSA_DIVERSIONISTICO) //do not shield diversios.
+	if(i_NpcInternalId[victim] != EXPIDONSA_DIVERSIONISTICO && !b_NpcHasDied[victim]) //do not shield diversios.
 	{
 		SeargentIdeal npc = view_as<SeargentIdeal>(victim);
 		npc.m_iGetSeargentProtector = shielder;
@@ -471,9 +460,9 @@ void SeargentIdealSelfDefense(SeargentIdeal npc, float gameTime)
 	{
 		SeargentIdealSelfDefenseMelee(npc,gameTime,GetClosestEnemyToAttack);
 	}
-	float vecTarget[3]; vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
 
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 	{
 		if(npc.m_iChanged_WalkCycle != 5)
@@ -498,10 +487,10 @@ void SeargentIdealSelfDefense(SeargentIdeal npc, float gameTime)
 				//This will predict as its relatively easy to dodge
 				float projectile_speed = 800.0;
 				//lets pretend we have a projectile.
-				vecTarget = PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
 				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 				{
-					vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+					vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
 				}
 				float DamageDone = 25.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "drg_cow_rockettrail_burst_charged_blue", false, true, false,_,_,_,10.0);
@@ -532,7 +521,7 @@ void SeargentIdealSelfDefenseMelee(SeargentIdeal npc, float gameTime, int target
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenter(target), 15000.0);
+			npc.FaceTowards(WorldSpaceCenterOld(target), 15000.0);
 			if(npc.DoSwingTrace(swingTrace, target, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 				target = TR_GetEntityIndex(swingTrace);	

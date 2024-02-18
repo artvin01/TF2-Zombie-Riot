@@ -52,6 +52,11 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		fPos[2] = CustomPos[2];
 	}
 
+	if(speed >= 3000.0)
+	{
+		speed = 3000.0;
+		//if its too fast, then it can cause projectile devietion
+	}
 
 	float tmp[3];
 	float actualBeamOffset[3];
@@ -88,7 +93,7 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
 		//Edit: Need owner entity, otheriwse you can actuall hit your own god damn rocket and make a ding sound. (Really annoying.)
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage should be nothing. if it somehow goes boom.
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		SetTeam(entity, GetTeam(client));
 		int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
 		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
 		DispatchSpawn(entity);
@@ -133,6 +138,8 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 			pack.WriteCell(EntIndexToEntRef(entity));
 			pack.WriteCell(EntIndexToEntRef(particle));
 		}
+		//so they dont get stuck on entities in the air.
+		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 12); 
 
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Wand_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
@@ -235,7 +242,7 @@ public void Wand_Base_StartTouch(int entity, int other)
 		}
 		case 19: //Health Hose particle
 		{
-			Wand_Health_Hose_Touch_World(entity, target);
+			Hose_Touch(entity, target);
 		}
 		case 20: //Vampire Knives thrown knife
 		{
@@ -243,29 +250,22 @@ public void Wand_Base_StartTouch(int entity, int other)
 		}
 		case 21: //Vampire Knives thrown cleaver
 		{
-			Vamp_Cleaver_Touch_World(entity, target);
-		}
-		case WEAPON_QUINCY_BOW:
-		{
-			Quincy_Touch(entity, target);
+			Vamp_CleaverHit(entity, target);
 		}
 		case 23:
 		{
 			Event_GB_OnHatTouch(entity, target);
 		}
-		/*		
 		case WEAPON_LANTEAN:
 		{
-			lantean_Wand_Touch_World(entity, target);
+			lantean_Wand_Touch(entity, target);
 		}
-
-		 	Doesnt work, this projectile has noclip, go to DHOOK public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		case 11:
 		{
 			
 			Cryo_Touch(entity, target);
 		}
-		*/
+		
 		case WEAPON_GLADIIA:
 		{
 			Gladiia_WandTouch(entity, target);
@@ -273,6 +273,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		case WEAPON_GERMAN:
 		{
 			Weapon_German_WandTouch(entity, target);
+		}
+		case WEAPON_LUDO:
+		{
+			Weapon_Ludo_WandTouch(entity, target);
 		}
 		case WEAPON_SENSAL_SCYTHE:
 		{
@@ -285,6 +289,22 @@ public void Wand_Base_StartTouch(int entity, int other)
 		case WEAPON_QUIBAI:
 		{
 			Melee_QuibaiArkTouch(entity, target);
+		}
+		case WEAPON_STAR_SHOOTER:
+		{
+			SuperStarShooterOnHit(entity, target);
+		}
+		case WEAPON_HEAVY_PARTICLE_RIFLE:
+		{
+			Weapon_Heavy_Particle_Rifle(entity, target);
+		}
+		case WEAPON_QUINCY_BOW:
+		{
+			Quincy_Touch(entity, target);
+		}
+		case WEAPON_KAHMLFIST:
+		{
+			Melee_KahmlFistTouch(entity, target);
 		}
 	}
 #else

@@ -127,9 +127,9 @@ methodmap XenoPyroGiant < CClotBody
 	}
 	
 	
-	public XenoPyroGiant(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoPyroGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		XenoPyroGiant npc = view_as<XenoPyroGiant>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.5", "85000", ally, false, true));
+		XenoPyroGiant npc = view_as<XenoPyroGiant>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "85000", ally, false, true));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -241,14 +241,14 @@ public void XenoPyroGiant_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
 			/*	int color[4];
 				color[0] = 255;
