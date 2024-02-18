@@ -37,6 +37,8 @@ static float fl_ruina_internal_healing_timer[MAXENTITIES];
 #define RUINA_ANCHOR_HARD_LIMIT 10
 int i_magia_anchors_active;
 
+static float fl_mana_sickness_timeout[MAXTF2PLAYERS];
+
 float fl_ruina_in_combat_timer[MAXENTITIES];
 static float fl_ruina_internal_teleport_timer[MAXENTITIES];
 static int i_recall_entity_ref[MAXENTITIES];
@@ -85,6 +87,13 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 #define RUINA_ION_CANNON_SOUND_PASSIVE "ambient/energy/weld1.wav"
 #define RUINA_ION_CANNON_SOUND_PASSIVE_CHARGING "weapons/physcannon/physcannon_charge.wav"
 
+enum
+{
+	RUINA_MELEE_NPC = 1,
+	RUINA_RANGED_NPC = 2,
+	RUINA_GLOBAL_NPC = 3
+}
+
 public void Ruina_Ai_Core_Mapstart()
 {
 	Zero(fl_master_change_timer);
@@ -130,6 +139,8 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(i_last_sniper_anchor_id_Ref);
 	Zero(b_recall_achor);
 	Zero(fl_ruina_in_combat_timer);
+
+	Zero(fl_mana_sickness_timeout);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -229,55 +240,9 @@ public void Ruina_Master_Accpet_Slaves(int client)
 }
 public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	float GameTime=GetGameTime();
+	float GameTime = GetGameTime();
 	Ruina_Npc_Shield_Logic(victim, damage, damageForce, GameTime);
 	Ruina_OnTakeDamage_Extra_Logic(victim, GameTime);
-	
-	switch(i_NpcInternalId[victim])
-	{
-		case RUINA_THEOCRACY:
-			Theocracy_ClotDamaged(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-		case RUINA_ADIANTUM:
-			Adiantum_ClotDamaged(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-		case RUINA_LANIUS:
-			Lanius_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-			
-		case RUINA_MAGIA:
-			Magia_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-		case RUINA_STELLA:
-			Stella_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-		case RUINA_ASTRIA:
-			Astria_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case RUINA_AETHER:
-			Aether_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-		case RUINA_EUROPA:
-			Europa_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-		case RUINA_DRONE:
-			Ruina_Drone_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-		case RUINA_RURIANA:
-			Ruriana_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-		case RUINA_VENIUM:
-			Venium_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case RUINA_MAGIA_ANCHOR:
-			Magia_Anchor_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-		case RUINA_STELLAR_WEAVER:
-			Storm_Weaver_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case RUINA_STELLAR_WEAVER_MID:
-			Storm_Weaver_Mid_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-	}
-		
 }
 public void Ruina_Npc_Give_Shield(int client, float strenght)
 {
@@ -415,57 +380,6 @@ public void Ruina_NPCDeath_Override(int entity)
 		//CPrintToChatAll("I died, but master was still alive: %i, now removing one, master has %i slaves left", entity, i_master_current_slaves[Master_Id_Main]);
 	}
 	Ruina_Remove_Shield(entity);
-	
-	
-	switch(i_NpcInternalId[entity])
-	{
-		case RUINA_THEOCRACY:
-			Theocracy_NPCDeath(entity);
-			
-		case RUINA_ADIANTUM:
-			Adiantum_NPCDeath(entity);
-			
-		case RUINA_LANIUS:
-			Lanius_NPCDeath(entity);
-			
-		case RUINA_MAGIA:
-			Magia_NPCDeath(entity);
-		
-		case RUINA_STELLA:
-			Stella_NPCDeath(entity);
-		
-		case RUINA_ASTRIA:
-			Astria_NPCDeath(entity);
-		
-		case RUINA_AETHER:
-			Aether_NPCDeath(entity);
-
-		case RUINA_EUROPA:
-			Europa_NPCDeath(entity);
-
-		case RUINA_DRONE:
-			Ruina_Drone_NPCDeath(entity);
-		
-		case RUINA_RURIANA:
-			Ruriana_NPCDeath(entity);
-
-		case RUINA_VENIUM:
-			Venium_NPCDeath(entity);
-		
-		case RUINA_MAGIA_ANCHOR:
-			Magia_Anchor_NPCDeath(entity);
-
-		case RUINA_STELLAR_WEAVER:
-			Storm_Weaver_NPCDeath(entity);
-
-		case RUINA_STELLAR_WEAVER_MID:
-			Storm_Weaver_Mid_NPCDeath(entity);
-			
-		default:
-			PrintToChatAll("This RUINA Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
-	}
-		
-		
 }
 public int Ruina_Get_Target(int iNPC, float GameTime)
 {
@@ -609,7 +523,7 @@ static bool Check_If_I_Am_The_Right_Slave(int client, int other_client)
 		
 	if(i_previus_priority[client]<i_master_priority[other_client])	//finds the one with highest priority
 	{
-		if(i_npc_type[client]==i_master_attracts[other_client] || i_master_attracts[other_client]==3)	//checks if the type is valid, if its 3 then both are attracted
+		if(i_npc_type[client]==i_master_attracts[other_client] || i_master_attracts[other_client]==RUINA_GLOBAL_NPC)	//checks if the type is valid, if its 3 then both are attracted
 		{
 			i_previus_priority[client] = i_master_priority[other_client];
 			return true;	//ayo we found a new home
@@ -789,7 +703,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 			float Npc_Loc[3];	Npc_Loc = WorldSpaceCenterOld(npc.index);
 			switch(i_npc_type[npc.index])
 			{
-				case 1:	//melee, buisness as usual, just the target is the same as the masters
+				case RUINA_MELEE_NPC:	//melee, buisness as usual, just the target is the same as the masters
 				{
 					if(b_master_is_rallying[Master_Id_Main])	//is master rallying targets to be near it?
 					{
@@ -851,7 +765,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 					}	
 					return;
 				}
-				case 2:	//ranged, target is the same, npc moves towards the master npc
+				case RUINA_RANGED_NPC:	//ranged, target is the same, npc moves towards the master npc
 				{
 						
 					float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
@@ -871,7 +785,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 						npc.m_bPathing = false;
 					}	
 				}
-				case 3:	//for the double type just gonna use melee npc logic
+				case RUINA_GLOBAL_NPC:	//for the double type just gonna use melee npc logic
 				{
 					if(flDistanceToTarget < npc.GetLeadRadius()) 
 					{
@@ -1050,6 +964,29 @@ public void Ruina_Generic_Melee_Self_Defense(int iNPC, int target, float distanc
 				npc.m_flAttackHappens = gameTime + swing_delay;
 				npc.m_flNextMeleeAttack = gameTime + swing_speed;
 			}
+		}
+	}
+}
+stock void Ruina_Add_Mana_Sickness(int iNPC, int Target, float Multi, int flat_amt=0)
+{
+	if(IsValidClient(Target))
+	{
+		float GameTime = GetGameTime();
+
+		if(fl_mana_sickness_timeout[Target] > GameTime)
+			return;
+
+		float OverMana_Ratio = Current_Mana[Target]/max_mana[Target];
+
+		Current_Mana[Target] += RoundToCeil(max_mana[Target]*Multi+flat_amt);
+
+		if(OverMana_Ratio>2.1)
+		{
+			CPrintToChatAll("Player: %N got nuked due to overmana", Target);
+			Current_Mana[Target] = 0;
+			Mana_Regen_Delay[Target] = GameTime + 2.0;
+			Mana_Regen_Delay_Aggreviated[Target] = GameTime + 2.0;
+			fl_mana_sickness_timeout[Target] = GameTime + 2.0;
 		}
 	}
 }
@@ -1322,7 +1259,7 @@ public void Warp_Non_Combat_Npcs_Near(int iNPC, int type, int Target)
 			{
 				if(baseboss_index!=npc.index)
 				{
-					if(i_npc_type[baseboss_index]==type || type==2)	//same type of npc, or a global type
+					if(i_npc_type[baseboss_index]==type || type==RUINA_GLOBAL_NPC)	//same type of npc, or a global type
 					{
 						if(GetTeam(baseboss_index) == GetTeam(npc.index) && IsEntityAlive(baseboss_index))
 						{
@@ -1400,53 +1337,106 @@ static void Ruina_Special_Logic(int iNPC, int Target)
 	}
 }
 
+static float fl_buff_amt[MAXENTITIES];
+static float fl_buff_time[MAXENTITIES];
+static bool b_buff_override[MAXENTITIES];
+
 static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, float amt, bool Override=false)	//only works with ruina npc's
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
-	float pos1[3];
 	
 	if(NpcStats_IsEnemySilenced(npc.index))
 		return;
+	
+	b_buff_override[npc.index] = Override;
 
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	switch(buff_type)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		case 1:
 		{
-			if(baseboss_index!=npc.index && GetTeam(iNPC) == GetTeam(baseboss_index))
-			{
-				if(i_npc_type[baseboss_index]==i_master_attracts[npc.index] || (i_master_attracts[npc.index]==3 || Override))	//same type of npc, or a global type
-				{
-					if(GetTeam(baseboss_index) == GetTeam(npc.index) && IsEntityAlive(baseboss_index))
-					{
-						static float pos2[3];
-						GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (range * range))
-						{
-							if(i_NpcInternalId[baseboss_index] != i_NpcInternalId[npc.index]) //cannot buff itself
-							{
-								switch(buff_type)
-								{
-									case 1:
-										Apply_Defense_buff(time, baseboss_index, amt);
-									case 2:
-										Apply_Speed_buff(time, baseboss_index, amt);
-									case 3:
-										Apply_Attack_buff(time, baseboss_index, amt);
-									case 4:
-										Ruina_Npc_Give_Shield(baseboss_index, amt);
-									case 5:
-										Stella_Healing_Buff(baseboss_index, amt);
-									case 6:
-										b_ruina_allow_teleport[baseboss_index]=true;
-								}
-							}		
-						}
-					}
-				}
-			}
+			b_NpcIsTeamkiller[npc.index] = true;
+			fl_buff_amt[npc.index] = amt;
+			fl_buff_time[npc.index] = time;
+			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Apply_Defense_buff);
+			b_NpcIsTeamkiller[npc.index] = false;
 		}
+		case 2:
+		{
+			b_NpcIsTeamkiller[npc.index] = true;
+			fl_buff_amt[npc.index] = amt;
+			fl_buff_time[npc.index] = time;
+			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Apply_Speed_buff);
+			b_NpcIsTeamkiller[npc.index] = false;
+		}
+		case 3:
+		{
+			b_NpcIsTeamkiller[npc.index] = true;
+			fl_buff_amt[npc.index] = amt;
+			fl_buff_time[npc.index] = time;
+			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Apply_Attack_buff);
+			b_NpcIsTeamkiller[npc.index] = false;
+		}
+		case 4:
+		{
+			b_NpcIsTeamkiller[npc.index] = true;
+			fl_buff_amt[npc.index] = amt;
+			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Shield_Buff);
+			b_NpcIsTeamkiller[npc.index] = false;
+		}
+		case 5:
+		{
+			b_NpcIsTeamkiller[npc.index] = true;
+			fl_buff_amt[npc.index] = amt;
+			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Healing_Buff);
+			b_NpcIsTeamkiller[npc.index] = false;
+		}
+		case 6:
+		{
+			b_NpcIsTeamkiller[npc.index] = true;
+			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Teleport_Buff);
+			b_NpcIsTeamkiller[npc.index] = false;
+		}
+	}
+}
+public void Ruina_Shield_Buff(int entity, int victim, float damage, int weapon)
+{
+	if(entity==victim)
+		return;	//don't buff itself!
+
+	if(GetTeam(entity) != GetTeam(victim))
+		return;
+
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	//same type of npc, or a global type
+	{
+		float amt = fl_buff_amt[entity];
+		Ruina_Npc_Give_Shield(victim, amt);
+	}
+}
+public void Ruina_Teleport_Buff(int entity, int victim, float damage, int weapon)
+{
+	if(entity==victim)
+		return;	//don't buff itself!
+
+	if(GetTeam(entity) != GetTeam(victim))
+		return;
+
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	//same type of npc, or a global type
+	{
+		b_ruina_allow_teleport[victim]=true;
+	}
+}
+public void Ruina_Healing_Buff(int entity, int victim, float damage, int weapon)
+{
+	if(entity==victim)
+		return;	//don't buff itself!
+
+	if(GetTeam(entity) != GetTeam(victim))
+		return;
+
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	//same type of npc, or a global type
+	{
+		float amt = fl_buff_amt[entity];
+		Stella_Healing_Buff(victim, amt);
 	}
 }
 /*
@@ -1454,53 +1444,90 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 	f_Ruina_Defense_Buff[entity] = 0.0;
 	f_Ruina_Attack_Buff[entity] = 0.0;
 */
-static void Apply_Defense_buff(float time, int Other_Npc, float amt)
+public void Ruina_Apply_Defense_buff(int entity, int victim, float damage, int weapon)
 {
-	float GameTime = GetGameTime();
-	if(f_Ruina_Defense_Buff[Other_Npc]>GameTime)
+	if(entity==victim)
+		return;	//don't buff itself!
+
+	if(GetTeam(entity) != GetTeam(victim))
+		return;
+
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	//same type of npc, or a global type
 	{
-		if(amt>f_Ruina_Defense_Buff_Amt[Other_Npc])	//higher is better
+		float time = fl_buff_time[entity];
+		float amt = fl_buff_amt[entity];
+		float GameTime = GetGameTime();
+		if(f_Ruina_Defense_Buff[victim]>GameTime)
 		{
-			f_Ruina_Defense_Buff_Amt[Other_Npc] = amt;
+			if(amt>f_Ruina_Defense_Buff_Amt[victim])	//higher is better
+			{
+				f_Ruina_Defense_Buff_Amt[victim] = amt;
+			}
 		}
-	}
-	else
-	{
-		f_Ruina_Defense_Buff[Other_Npc] = GameTime + time;
-		f_Ruina_Defense_Buff_Amt[Other_Npc] = amt;
+		else
+		{
+			f_Ruina_Defense_Buff_Amt[victim] = amt;
+		}
+		f_Ruina_Defense_Buff[victim] = GameTime + time;
+
 	}
 	
 }
-static void Apply_Speed_buff(float time, int Other_Npc, float amt)
+public void Ruina_Apply_Speed_buff(int entity, int victim, float damage, int weapon)
 {
-	float GameTime = GetGameTime();
-	if(f_Ruina_Speed_Buff[Other_Npc]>GameTime)
+	if(entity==victim)
+		return;	//don't buff itself!
+	
+	if(GetTeam(entity) != GetTeam(victim))
+		return;
+
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	//same type of npc, or a global type
 	{
-		if(amt>f_Ruina_Speed_Buff_Amt[Other_Npc])	//higher is better
+		float time = fl_buff_time[entity];
+		float amt = fl_buff_amt[entity];
+
+		float GameTime = GetGameTime();
+		if(f_Ruina_Speed_Buff[victim]>GameTime)
 		{
-			f_Ruina_Speed_Buff_Amt[Other_Npc] = amt;
+			if(amt>f_Ruina_Speed_Buff_Amt[victim])	//higher is better
+			{
+				f_Ruina_Speed_Buff_Amt[victim] = amt;
+			}
 		}
-	}
-	else
-	{
-		f_Ruina_Speed_Buff[Other_Npc] = GameTime + time;
-		f_Ruina_Speed_Buff_Amt[Other_Npc] = amt;
+		else
+		{
+			f_Ruina_Speed_Buff_Amt[victim] = amt;
+		}
+		f_Ruina_Speed_Buff[victim] = GameTime + time;
 	}
 }
-static void Apply_Attack_buff(float time, int Other_Npc, float amt)
+public void Ruina_Apply_Attack_buff(int entity, int victim, float damage, int weapon)
 {
-	float GameTime = GetGameTime();
-	if(f_Ruina_Attack_Buff[Other_Npc]>GameTime)
+	if(entity==victim)
+		return;	//don't buff itself!
+
+	if(GetTeam(entity) != GetTeam(victim))
+		return;
+
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	//same type of npc, or a global type
 	{
-		if(amt>f_Ruina_Attack_Buff_Amt[Other_Npc])	//higher is better
+		float time = fl_buff_time[entity];
+		float amt = fl_buff_amt[entity];
+
+		float GameTime = GetGameTime();
+		if(f_Ruina_Attack_Buff[victim]>GameTime)
 		{
-			f_Ruina_Attack_Buff_Amt[Other_Npc] = amt;
+			if(amt>f_Ruina_Attack_Buff_Amt[victim])	//higher is better
+			{
+				f_Ruina_Attack_Buff_Amt[victim] = amt;
+			}
 		}
-	}
-	else
-	{
-		f_Ruina_Attack_Buff[Other_Npc] = GameTime + time;
-		f_Ruina_Attack_Buff_Amt[Other_Npc] = amt;
+		else
+		{
+			
+			f_Ruina_Attack_Buff_Amt[victim] = amt;
+		}
+		f_Ruina_Attack_Buff[victim] = GameTime + time;
 	}
 }
 

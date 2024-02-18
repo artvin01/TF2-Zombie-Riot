@@ -135,10 +135,10 @@ methodmap Europa < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
-		
-		
-		SDKHook(npc.index, SDKHook_Think, Europa_ClotThink);
+
+		func_NPCDeath[npc.index] = view_as<Function>(Europa_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Europa_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Europa_ClotThink);
 
 		npc.m_flSpeed = 200.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -174,8 +174,8 @@ methodmap Europa < CClotBody
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
-		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc
-		Ruina_Set_Master_Heirarchy(npc.index, 2, false, 5, 1);		//doesn't acept any npc's
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
+		Ruina_Set_Master_Heirarchy(npc.index, RUINA_RANGED_NPC, false, 5, 1);		//doesn't acept any npc's
 
 		return npc;
 	}
@@ -304,8 +304,10 @@ public Action Europa_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-	fl_ruina_battery[npc.index] += damage;	//turn damage taken into energy
+	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -323,8 +325,8 @@ public void Europa_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	SDKUnhook(npc.index, SDKHook_Think, Europa_ClotThink);
+
+	Ruina_NPCDeath_Override(entity);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

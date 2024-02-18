@@ -171,10 +171,10 @@ methodmap Magia < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
-		
-		
-		SDKHook(npc.index, SDKHook_Think, Magia_ClotThink);
+
+		func_NPCDeath[npc.index] = view_as<Function>(Magia_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Magia_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Magia_ClotThink);
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -210,7 +210,7 @@ methodmap Magia < CClotBody
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
-		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
 		
 		Magia_Create_Hand_Crest(npc.index);
 		
@@ -465,7 +465,9 @@ public Action Magia_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	fl_ruina_battery[npc.index] += damage;	//turn damage taken into energy
+	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -483,10 +485,11 @@ public void Magia_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+
+	Ruina_NPCDeath_Override(entity);
 	
 	Delete_Hand_Crest(entity);
-	
-	SDKUnhook(npc.index, SDKHook_Think, Magia_ClotThink);
+
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);

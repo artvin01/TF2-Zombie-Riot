@@ -132,7 +132,9 @@ methodmap Ruriana < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		SDKHook(npc.index, SDKHook_Think, Ruriana_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Ruriana_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Ruriana_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Ruriana_ClotThink);
 
 		/*
 
@@ -188,8 +190,8 @@ methodmap Ruriana < CClotBody
 		//b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
-		Ruina_Set_Heirarchy(npc.index, 1);	//is a melee npc
-		Ruina_Set_Master_Heirarchy(npc.index, 1, true, 10, 4);		//priority 4, just lower then the actual bosses
+		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
+		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 10, 4);		//priority 4, just lower then the actual bosses
 
 		return npc;
 	}
@@ -282,6 +284,8 @@ public Action Ruriana_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 		return Plugin_Continue;
 
 	float GameTime = GetGameTime(npc.index);
+
+	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	
 	if(fl_ruina_battery_timer[npc.index]<GameTime)
 	{
@@ -320,7 +324,7 @@ public void Ruriana_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 
-	SDKUnhook(npc.index, SDKHook_Think, Ruriana_ClotThink);
+	Ruina_NPCDeath_Override(entity);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
