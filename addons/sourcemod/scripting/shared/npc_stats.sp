@@ -1325,7 +1325,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			speed_for_return = 0.0;
 			return speed_for_return;
 		}	
-		if(b_PernellBuff[this.index])
+		if(f_PernellBuff[this.index] > Gametime)
 		{
 			speed_for_return *= 1.25;
 		}
@@ -7949,7 +7949,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_Extra_Damage[entity] = 1.0;
 	f_PickThisDirectionForabit[entity] = 0.0;
 	b_ScalesWithWaves[entity] = false;
-	b_PernellBuff[entity] = false;
+	f_PernellBuff[entity] = 0.0;
 	f_HussarBuff[entity] = 0.0;
 	f_GodArkantosBuff[entity] = 0.0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
