@@ -216,9 +216,9 @@ public void SpecialDoctor_ClotThink(int iNPC)
 		int target = GetClosestAlly(npc.index, (250.0 * 250.0), _,DoctorBuffAlly);
 		if(target)
 		{
-			if(!b_PernellBuff[target])
+			if(f_PernellBuff[target] < GetGameTime())
 			{
-				b_PernellBuff[target] = true;
+				f_PernellBuff[target] = GetGameTime() + 30.0;
 				npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_SECONDARY",_,_,_,3.0);
 			}
 		}
@@ -521,7 +521,7 @@ public void SpecialDoctor_NPCDeath(int entity)
 
 public bool DoctorBuffAlly(int provider, int entity)
 {
-	if(b_PernellBuff[entity])
+	if(f_PernellBuff[entity] < GetGameTime())
 		return false;
 
 	return true;

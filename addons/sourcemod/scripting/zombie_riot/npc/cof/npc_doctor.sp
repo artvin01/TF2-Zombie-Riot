@@ -173,7 +173,7 @@ public void Doctor_ClotThink(int iNPC)
 			if(!ally.m_bLostHalfHealth)
 			{
 				ally.m_bLostHalfHealth = true;
-				b_PernellBuff[target] = true;
+				f_PernellBuff[target] = GetGameTime() + 30.0;
 				npc.AddGesture("ACT_SIGNAL");
 			}
 		}
