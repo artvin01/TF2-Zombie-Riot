@@ -93,6 +93,15 @@ enum
 	RUINA_RANGED_NPC = 2,
 	RUINA_GLOBAL_NPC = 3
 }
+enum
+{
+	RUINA_DEFENSE_BUFF = 1,
+	RUINA_SPEED_BUFF = 2,
+	RUINA_ATTACK_BUFF = 3,
+	RUINA_SHIELD_BUFF = 4,
+	RUINA_TELEPORT_BUFF = 5,
+	RUINA_HEALING_BUFF = 6
+}
 
 public void Ruina_Ai_Core_Mapstart()
 {
@@ -1035,7 +1044,7 @@ public void Stella_Healing_Logic(int iNPC, int Healing, float Range, float GameT
 		float npc_Loc[3]; npc_Loc = GetAbsOriginOld(npc.index); npc_Loc[2]+=10.0;
 		spawnRing_Vectors(npc_Loc, Range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, cylce_speed, 6.0, 0.1, 1, 1.0);
 		fl_ruina_stella_healing_timer[npc.index]=cylce_speed+GameTime;
-		Apply_Master_Buff(npc.index, 5, Range, 0.0, float(Healing), true);
+		Apply_Master_Buff(npc.index, RUINA_HEALING_BUFF, Range, 0.0, float(Healing), true);
 	}
 }
 static void Stella_Healing_Buff(int baseboss_index, float Power)
@@ -1084,7 +1093,7 @@ public void Astria_Teleport_Allies(int iNPC, float Range, int colour[4])
 	float npc_Loc[3]; npc_Loc = GetAbsOriginOld(npc.index); npc_Loc[2]+=2.5;
 	spawnRing_Vectors(npc_Loc, Range*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", colour[0], colour[1], colour[2], colour[3], 1, 0.5, 6.0, 0.1, 1, 1.0);
 
-	Apply_Master_Buff(npc.index, 6, Range, 0.0, 0.0);
+	Apply_Master_Buff(npc.index, RUINA_TELEPORT_BUFF, Range, 0.0, 0.0);
 }
 static void Recall_Teleportation(int iNPC, int Target)
 {
@@ -1306,22 +1315,22 @@ public void Warp_Non_Combat_Npcs_Near(int iNPC, int type, int Target)
 }
 public void Master_Apply_Defense_Buff(int client, float range, float time, float power)
 {
-	Apply_Master_Buff(client, 1, range, time, power);
+	Apply_Master_Buff(client, RUINA_DEFENSE_BUFF, range, time, power);
 }
 
 public void Master_Apply_Speed_Buff(int client, float range, float time, float power)
 {
-	Apply_Master_Buff(client, 2, range, time, power);
+	Apply_Master_Buff(client, RUINA_DEFENSE_BUFF, range, time, power);
 }
 
 public void Master_Apply_Attack_Buff(int client, float range, float time, float power)
 {
-	Apply_Master_Buff(client, 3, range, time, power);
+	Apply_Master_Buff(client, RUINA_ATTACK_BUFF, range, time, power);
 }
 
 public void Master_Apply_Shield_Buff(int client, float range, float power)
 {
-	Apply_Master_Buff(client, 4, range, 0.0, power);
+	Apply_Master_Buff(client, RUINA_SHIELD_BUFF, range, 0.0, power);
 }
 static void Ruina_Special_Logic(int iNPC, int Target)
 {
@@ -1352,7 +1361,7 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 
 	switch(buff_type)
 	{
-		case 1:
+		case RUINA_DEFENSE_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
 			fl_buff_amt[npc.index] = amt;
@@ -1360,7 +1369,7 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Apply_Defense_buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
-		case 2:
+		case RUINA_SPEED_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
 			fl_buff_amt[npc.index] = amt;
@@ -1368,7 +1377,7 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Apply_Speed_buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
-		case 3:
+		case RUINA_ATTACK_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
 			fl_buff_amt[npc.index] = amt;
@@ -1376,21 +1385,21 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Apply_Attack_buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
-		case 4:
+		case RUINA_SHIELD_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
 			fl_buff_amt[npc.index] = amt;
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Shield_Buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
-		case 5:
+		case RUINA_HEALING_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
 			fl_buff_amt[npc.index] = amt;
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Healing_Buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
-		case 6:
+		case RUINA_TELEPORT_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Teleport_Buff);
