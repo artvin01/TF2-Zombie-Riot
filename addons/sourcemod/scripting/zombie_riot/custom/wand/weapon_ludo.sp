@@ -128,9 +128,9 @@ void Weapon_Ludo_MapStart()
 public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 {
 	int mana_cost;
-	mana_cost = (RoundToCeil(Attributes_Get(weapon, 733, 1.0)) + 10) * CardCounter[client];
-	if(mana_cost > 200)
-		mana_cost = 200;
+	mana_cost = (RoundToCeil(Attributes_Get(weapon, 733, 1.0)) * 2) * CardCounter[client];
+	if(mana_cost > 300)
+		mana_cost = 300;
 	if(CardCounter[client] > 1 && mana_cost <= Current_Mana[client])
 	{
 		float damage = 100.0;
@@ -169,6 +169,8 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 						damageModBlackjack = -0.5;
 					}
 				}
+				Second[client] = 0;
+				Third[client] = 0;
 				Fourth[client] = 0;
 				Fifth[client] = 0;
 				Sixth[client] = 0;
@@ -216,12 +218,11 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 		float DiamondBuff = 1.0;
 
 		if(BlackJack[client] == 21)
-			damageModBlackjack = 1.0;
+			damageModBlackjack = 1.15;
 
 		if(DiamondCounter[client] > 2 && OverLimit[client] == false)
 		{
-			damageModBlackjack = 1.5;
-			damageModCards = 1.5;
+			damageModBlackjack += 0.5;
 			DiamondBuff = 2.0;
 		}
 
@@ -230,7 +231,7 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 		damage *= damageModCards;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 
-		float speed = 1650.0 * DiamondBuff;
+		float speed = 1400.0 * DiamondBuff;
 		if(Fourth[client] > 0)
 			speed /= 2;
 
@@ -265,20 +266,20 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 			{
 				case 1:
 				{
-					float damageQueenMod = ((CardCounter[client] * 5)/100.0 + 1.0);
+					float damageQueenMod = ((CardCounter[client] * 4)/100.0 + 1.0);
 					CardCounter[client] *= 2;
 					damage /= CardCounter[client];
 					damage *= damageQueenMod;
 					for(int i; i < (CardCounter[client] - 1); i++)
 					{
-						speed *= GetRandomFloat(0.6,1.4);
+						speed *= GetRandomFloat(0.5,1.2);
 						int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_LUDO, weapon, CardParticle[client]);
 						//PrintToChatAll("projectile fired");
 						if(Fourth[client] > 0 || Third[client] > 0 || Second[client] > 0)
 						{
 							int homing = Second[client];
-							homing = Third[client];
-							homing = Fourth[client];
+							homing += Third[client];
+							homing += Fourth[client];
 							static float angle[3];
 							GetEntPropVector(projectile, Prop_Send, "m_angRotation", angle);
 							switch(homing) // first time trying homing please dont kill me
@@ -309,19 +310,19 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 				}
 				case 2:
 				{
-					float damageQueenMod = (CardCounter[client] * 5/100.0 + 100.0);
+					float damageQueenMod = ((CardCounter[client] * 4)/100.0 + 1.0);
 					CardCounter[client] *= 2;
 					damage /= CardCounter[client] + 1;
 					damage *= damageQueenMod;
 					for(int i; i < CardCounter[client]; i++)
 					{
-						speed *= GetRandomFloat(0.6,1.4);
+						speed *= GetRandomFloat(0.5,1.2);
 						int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_LUDO, weapon, CardParticle[client]);
 						if(Fourth[client] > 0 || Third[client] > 0 || Second[client] > 0)
 						{
 							int homing = Second[client];
-							homing = Third[client];
-							homing = Fourth[client];
+							homing += Third[client];
+							homing += Fourth[client];
 							static float angle[3];
 							GetEntPropVector(projectile, Prop_Send, "m_angRotation", angle);
 							switch(homing) // first time trying homing please dont kill me
@@ -369,8 +370,8 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 		if(Fourth[client] > 0 || Third[client] > 0 || Second[client] > 0)
 		{
 			int homing = Second[client];
-			homing = Third[client];
-			homing = Fourth[client];
+			homing += Third[client];
+			homing += Fourth[client];
 			static float angle[3];
 			GetEntPropVector(projectile, Prop_Send, "m_angRotation", angle);
 			switch(homing) // first time trying homing please dont kill me
@@ -385,7 +386,7 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 							true,		// bool changeAngles,
 							angle);
 				}
-				case 2:
+				default:
 				{
 					Initiate_HomingProjectile(projectile,
 							client,
@@ -442,6 +443,8 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 		NinethDebuff[client] =	Nineth[client];
 		TenthDebuff[client] = Tenth[client];
 
+		Second[client] = 0;
+		Third[client] = 0;
 		Fourth[client] = 0;
 		Fifth[client] = 0;
 		Sixth[client] = 0;
@@ -1428,13 +1431,13 @@ public void Weapon_Ludo_M2(int client, int weapon, bool crit, int slot)
 			return;
 		}
 
-		int mana_cost;
-		mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
-		if(mana_cost <= Current_Mana[client] && BlackJack[client] < 21)
+		int mana_need;
+		mana_need = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
+		if(mana_need <= Current_Mana[client] && BlackJack[client] < 21)
 		{	
 			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 			Mana_Hud_Delay[client] = 0.0;
-			Current_Mana[client] -= mana_cost;
+			Current_Mana[client] -= mana_need;
 			
 			delay_hud[client] = 0.0;
 
@@ -1485,7 +1488,7 @@ public void Weapon_Ludo_M2(int client, int weapon, bool crit, int slot)
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_need);
 		}
 	}
 	else
