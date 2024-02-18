@@ -2730,22 +2730,22 @@
 	}
 	"Ruina's Sacret Magic Ways Magic Desc"
 	{
-		"en"	"70% More magic damage, 2x max mana, and 15% faster attackspeed for mage weapons."
+		"en"	"70%% More magic damage, 2x max mana, and 15%% faster attackspeed for mage weapons."
 	}
 	"Expidonsan's Black hole Storage Unit Desc"
 	{
-		"en"	"70% More ranged damage, 15% faster attackspeed, 15% faster reload and 25% more clipsize."
-	}
-	"Expidonsan's BLack hole Storage Unit Desc"
-	{
-		"en"	"70% More ranged damage, 15% faster attackspeed, 15% faster reload and 25% more clipsize."
+		"en"	"70%% More ranged damage, 15%% faster attackspeed, 15%% faster reload and 25% more clipsize."
 	}
 	"Wildingen's Elite Building Components Desc"
 	{
-		"en"	"70% More building damage and building health."
+		"en"	"70%% More building damage and building health."
 	}
 	"Spookmaster's Strong Bone Amplifier Desc"
 	{
-		"en"	"1500 more hp and 15% overall damage resistance."
+		"en"	"1500 more hp and 15%% overall damage resistance."
+	}
+	"Helena's Elite Medicine Desc"
+	{
+		"en"	"1.6x Medigun Hurt and Heal and 5%% melee resistance with Secondary/Medigun out"
 	}
 }
