@@ -2728,4 +2728,24 @@
 	{
 		"en"	"Hearts:Current card's value is decreased by 1.\nDiamonds:If you have more than 3 cards, something special happens.\nClubs:Overall damage increased by 20%%.\nSpades:Current card's ability is improved."
 	}
+	"Ruina's Sacret Magic Ways Magic Desc"
+	{
+		"en"	"70% More magic damage, 2x max mana, and 15% faster attackspeed for mage weapons."
+	}
+	"Expidonsan's Black hole Storage Unit Desc"
+	{
+		"en"	"70% More ranged damage, 15% faster attackspeed, 15% faster reload and 25% more clipsize."
+	}
+	"Expidonsan's BLack hole Storage Unit Desc"
+	{
+		"en"	"70% More ranged damage, 15% faster attackspeed, 15% faster reload and 25% more clipsize."
+	}
+	"Wildingen's Elite Building Components Desc"
+	{
+		"en"	"70% More building damage and building health."
+	}
+	"Spookmaster's Strong Bone Amplifier Desc"
+	{
+		"en"	"1500 more hp and 15% overall damage resistance."
+	}
 }
