@@ -268,14 +268,11 @@ public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
 	SetEntProp(client, Prop_Send, "m_bClientSideFrameReset", 0);	
 	SetEntProp(client, Prop_Send, "m_bForceLocalPlayerDraw", 0);
 //its too offset, clientside prediction makes this impossible
-	if(!b_IsPlayerNiko[client] || b_HideCosmeticsPlayer[client])
+	if(!b_IsPlayerNiko[client] && !b_HideCosmeticsPlayer[client])
 	{
 		int entity, i;
 		while(TF2U_GetWearable(client, entity, i))
 		{
-			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-				continue;
-
 			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 		}
 	}

@@ -2576,6 +2576,10 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	{
 		return -1; //I dont exist?
 	}
+	if(other_entity < 0)
+	{
+		return -1; //I dont exist?
+	}
 	else if(other_entity == 0)
 	{
 		return 0;
