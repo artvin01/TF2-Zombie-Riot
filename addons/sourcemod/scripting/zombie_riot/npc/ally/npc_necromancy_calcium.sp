@@ -347,7 +347,7 @@ public void NecroCalcium_ClotThink(int iNPC)
 										{
 											damage *= 0.5;
 										}
-										SDKHooks_TakeDamage(target, owner, owner, (damage * npc.m_flExtraDamage), DMG_SLASH, -1, _, vecHit); //Do acid so i can filter it well.
+										SDKHooks_TakeDamage(target, owner, owner, (damage * npc.m_flExtraDamage), DMG_PLASMA, -1, _, vecHit); //Do acid so i can filter it well.
 										
 										// Hit particle
 										

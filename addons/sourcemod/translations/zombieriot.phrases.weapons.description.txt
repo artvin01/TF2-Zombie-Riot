@@ -2718,14 +2718,30 @@
 	}
 	"Ludomania Extra Desc"
 	{
-		"en"	"4 is homing\n5 gives mana\n6 stuns\n7 silences the enemy\n8 bleeds the enemy (weak)\n9 bleeds the enemy (strong)\n10 debuffs the enemy\nJ-Q-K change card effects"
+		"en"	"2,3 and 4 is homing\n5 gives mana\n6 stuns\n7 silences the enemy\n8 bleeds the enemy (weak)\n9 bleeds the enemy (strong)\n10 debuffs the enemy\nJ-Q-K change projectile effects"
 	}
 	"Ludomancy Desc"
 	{
-		"en"	"Mathematical Foresight: Gain a passive ability that lets you (somewhat) predict the value of your next card.\nAll cards gain one out of four symbols:\n$ = BlackJack value reduced by 1\n^ = Dmg increased by 10%\n# = 3 of these lead to a prize\n* = Improves current card"
+		"en"	"Mathematical Foresight: Gain a passive ability that lets you (somewhat) predict the value of your next card.\nAll cards gain one out of four symbols:\n$ = BlackJack value reduced by 1\n^ = Dmg increased by 10%\n# = 3 of these lead to a prize!\n* = Improves card"
 	}
-	"Ludomancy Extra Desc"
+	"Ruina's Sacret Magic Ways Magic Desc"
 	{
-		"en"	"Hearts:Current card's value is decreased by 1.\nDiamonds:If you have more than 3 cards, something special happens.\nClubs:Overall damage increased by 20%%.\nSpades:Current card's ability is improved."
+		"en"	"70%% More magic damage, 2x max mana, and 15%% faster attackspeed for mage weapons."
+	}
+	"Expidonsan's Black hole Storage Unit Desc"
+	{
+		"en"	"70%% More ranged damage, 15%% faster attackspeed, 15%% faster reload and 25% more clipsize."
+	}
+	"Wildingen's Elite Building Components Desc"
+	{
+		"en"	"70%% More building damage and building health."
+	}
+	"Spookmaster's Strong Bone Amplifier Desc"
+	{
+		"en"	"1500 more hp and 15%% overall damage resistance."
+	}
+	"Helena's Elite Medicine Desc"
+	{
+		"en"	"1.6x Medigun Hurt and Heal and 5%% melee resistance with Secondary/Medigun out"
 	}
 }
