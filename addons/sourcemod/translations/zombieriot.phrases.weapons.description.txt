@@ -918,9 +918,9 @@
 	}
 	"Longsword Pap 3"
 	{
-		"en"	"Increased damage and attackspeed, but you move 10%% slower."
-		"ru"	"Увеличенный урон и скорость атаки, но вы двигаетесь на 10%% медленнее."
-		"chi"   "增加伤害和攻击速度，但移动速度降低10%%。"
+		"en"	"Increased damage and attackspeed, but you move 5%% slower."
+		"ru"	"Увеличенный урон и скорость атаки, но вы двигаетесь на 5%% медленнее."
+		"chi"   "增加伤害和攻击速度，但移动速度降低5%%。"
 	}
 	
 	"Speed Fists Of Speed Desc"
@@ -968,17 +968,9 @@
 	
 	"Fists Of Kahmlstein Desc"
 	{
-		"en"	"Fists sent from the gods forged by the destroyer of galaxies."
-		"ru"	"Кулаки, посланные богами, выкованные разрушителем галактик."
-		"chi"   "众神送来的拳头由星系的毁灭者锻造而成。"
+		"en"	"fists from Khamlstein, His reigin over cities and states has no end.\nProve your strength against him to gain a certain item to gain another ability..."
 	}
-	"Fists Of Kahmlstein Pap 1"
-	{
-		"en"	"Increased damage and attackspeed"
-		"ru"	"Увеличенный урон и скорость атаки."
-		"chi"   "增加伤害和攻击速度。"
-	}
-	
+
 	"Bad Wand Desc"
 	{
 		"en"	"Consumes mana with each shot. M2 Gives extra attackspeed for a short time."

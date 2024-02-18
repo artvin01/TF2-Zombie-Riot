@@ -70,7 +70,7 @@ methodmap SpecialDoctor < CClotBody
 			return;
 		
 		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
-		EmitCustomToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0);
+		EmitCustomToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0);
 	}
 	public void PlayDeathSound()
 	{
@@ -109,12 +109,15 @@ methodmap SpecialDoctor < CClotBody
 
 	public SpecialDoctor(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/doctor_purnell.mdl", "1.15", GetPanzerHealth(), ally));
+		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", GetPanzerHealth(), ally));
 		i_NpcInternalId[npc.index] = THEDOCTOR_MINIBOSS;
 		i_NpcWeight[npc.index] = 3;
 		
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
+
 		npc.m_iState = -1;
-		npc.SetActivity("ACT_SPAWN");
+		npc.SetActivity("ACT_MP_RUN_SECONDARY");
 		
 		if(ally == TFTeam_Red)
 		{
@@ -125,8 +128,27 @@ methodmap SpecialDoctor < CClotBody
 			npc.PlayIntroSound();
 		}
 		
+		npc.m_iWearable1 = npc.EquipItem("head", "models/player/medic.mdl");
+
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/medic/medic_german_gonzila.mdl");
+
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/medic_gasmask/medic_gasmask.mdl");
+
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/spr18_scourge_of_the_sky/spr18_scourge_of_the_sky.mdl");
+
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/sum20_flatliner/sum20_flatliner.mdl");
+
+		npc.m_iWearable6 = npc.EquipItem("head", "models/weapons/c_models/c_ambassador/c_ambassador.mdl");
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_GIANT;
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, SpecialDoctor_ClotDamagedPost);
@@ -180,9 +202,6 @@ public void SpecialDoctor_ClotThink(int iNPC)
 {
 	SpecialDoctor npc = view_as<SpecialDoctor>(iNPC);
 	
-	SetVariantInt(npc.m_iInjuredLevel);
-	AcceptEntityInput(npc.index, "SetBodyGroup");
-	
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
@@ -200,7 +219,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			if(!b_PernellBuff[target])
 			{
 				b_PernellBuff[target] = true;
-				npc.AddGesture("ACT_SIGNAL");
+				npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_SECONDARY",_,_,_,3.0);
 			}
 		}
 	}
@@ -311,7 +330,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			{
 				npc.FaceTowards(vecTarget, 15000.0);
 				
-				npc.AddGesture("ACT_SHOVE");
+				npc.AddGesture("ACT_MP_THROW");
 				npc.PlayMeleeSound();
 				
 				npc.m_flAttackHappens = gameTime + 0.3;
@@ -337,11 +356,11 @@ public void SpecialDoctor_ClotThink(int iNPC)
 						if(IsValidEnemy(npc.index, npc.m_iTarget) && npc.m_iTarget == Enemy_I_See)
 						{
 							behavior = 0;
-							npc.SetActivity("ACT_IDLE");
+							npc.SetActivity("ACT_MP_STAND_SECONDARY");
 							
 							npc.FaceTowards(vecTarget, 15000.0);
 							
-							npc.AddGesture("ACT_SHOOT");
+							npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 							
 							npc.m_flNextRangedAttack = gameTime + 1.0;
 							npc.m_iAttacksTillReload--;
@@ -366,7 +385,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 				else	// In attack cooldown
 				{
 					behavior = 0;
-					npc.SetActivity("ACT_IDLE");
+					npc.SetActivity("ACT_MP_STAND_SECONDARY");
 				}
 			}
 			else if(npc.m_iAttacksTillReload < 0)	// Take the time to reload
@@ -390,7 +409,6 @@ public void SpecialDoctor_ClotThink(int iNPC)
 		else	// What do I do...
 		{
 			behavior = 0;
-			npc.SetActivity("ACT_GMOD_TAUNT_DANCE");
 		}
 	}
 	
@@ -413,7 +431,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 		}
 		case 1:	// Move After the Player
 		{
-			npc.SetActivity("ACT_RUN");
+			npc.SetActivity("ACT_MP_RUN_SECONDARY");
 			npc.m_flSpeed = 200.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
@@ -423,7 +441,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 		}
 		case 2:	// Sprint After the Player
 		{
-			npc.SetActivity("ACT_RUN");
+			npc.SetActivity("ACT_MP_RUN_SECONDARY");
 			npc.m_flSpeed = 250.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
@@ -433,7 +451,6 @@ public void SpecialDoctor_ClotThink(int iNPC)
 		}
 		case 3:	// Retreat
 		{
-			npc.SetActivity("ACT_RUNHIDE");
 			npc.m_flSpeed = 500.0;
 			
 			if(!npc.m_flRangedSpecialDelay)	// Reload anyways timer
@@ -447,7 +464,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 		}
 		case 4:	// Reload
 		{
-			npc.AddGesture("ACT_RELOAD");
+			npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY",_,_,_,0.25);
 			npc.m_flSpeed = 0.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			npc.m_flReloadDelay = gameTime + 4.25;
@@ -469,8 +486,7 @@ public void SpecialDoctor_ClotDamagedPost(int victim, int attacker, int inflicto
 	if(damage > 0.0)
 	{
 		SpecialDoctor npc = view_as<SpecialDoctor>(victim);
-		npc.m_iInjuredLevel = 4 - (GetEntProp(victim, Prop_Data, "m_iHealth") * 5 / GetEntProp(victim, Prop_Data, "m_iMaxHealth"));
-		
+
 		npc.PlayHurtSound();
 	}
 }
@@ -478,7 +494,23 @@ public void SpecialDoctor_ClotDamagedPost(int victim, int attacker, int inflicto
 public void SpecialDoctor_NPCDeath(int entity)
 {
 	SpecialDoctor npc = view_as<SpecialDoctor>(entity);
-	
+
+	SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+	SetEntityRenderColor(npc.index, 255, 255, 255, 255);
+
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, SpecialDoctor_ClotDamagedPost);
 	
 	npc.PlayDeathSound();

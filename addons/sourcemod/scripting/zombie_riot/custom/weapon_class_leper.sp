@@ -268,11 +268,14 @@ public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
 	SetEntProp(client, Prop_Send, "m_bClientSideFrameReset", 0);	
 	SetEntProp(client, Prop_Send, "m_bForceLocalPlayerDraw", 0);
 //its too offset, clientside prediction makes this impossible
-	if(!b_IsPlayerNiko[client])
+	if(!b_IsPlayerNiko[client] || b_HideCosmeticsPlayer[client])
 	{
 		int entity, i;
 		while(TF2U_GetWearable(client, entity, i))
 		{
+			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
+				continue;
+
 			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 		}
 	}
@@ -593,7 +596,7 @@ public float WeaponLeper_OnTakeDamagePlayer(int victim, float &damage, int attac
 {
 	if (Leper_InAnimation[victim] > GetGameTime())
 	{
-		return damage * 0.5; //half damage during animations.
+		return damage * 0.75; //half damage during animations.
 	}
 	return damage; //half damage during animations.
 }
@@ -601,7 +604,7 @@ public float WeaponLeper_OnTakeDamagePlayer_Hud(int victim)
 {
 	if (Leper_InAnimation[victim] > GetGameTime())
 	{
-		return 0.5; //half damage during animations.
+		return 0.75; //half damage during animations.
 	}
 	return 1.0; //half damage during animations.
 }

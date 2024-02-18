@@ -411,7 +411,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	//Raidmode timer runs out, they lost.
 	if(!npc.m_bFakeClone && npc.m_flNextThinkTime != FAR_FUTURE && RaidModeTime < GetGameTime())
 	{
-		if(RaidBossActive != INVALID_ENT_REFERENCE)
+		if(IsValidEntity(RaidBossActive))
 		{
 			ZR_NpcTauntWinClear();
 			int entity = CreateEntityByName("game_round_win"); 

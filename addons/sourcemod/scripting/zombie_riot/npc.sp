@@ -442,7 +442,8 @@ enum
 	RAIDMODE_THE_MESSENGER	= 389,
 	RAIDMODE_CHAOS_KAHMLSTEIN = 390,
 	RAIDBOSS_THE_PURGE = 391,
-
+	WEAPON_KAHML_AFTERIMAGE = 392,
+	
 	MAX_NPC_TYPES	// Add entries above this line
 }
 
@@ -841,7 +842,7 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Frost Hunter",
 	"Skin Hunter",
 	"Irritated Person",
-	"The Doctor",
+	"Rouge Expidonsan Doctor",
 	"Ransacker",
 	"Archosauria",
 	"Aslan",
@@ -864,7 +865,8 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Major Steam",
 	"The Messenger",
 	"Chaos Kahmlstein",
-	"The Purge"
+	"The Purge",
+	"Kahmlstein"
 };
 
 // See items.sp for IDs to names
@@ -1294,7 +1296,8 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	11,	//	INTERITUS_FOREST_BOSS = 388,
 	2,	//	RAIDMODE_THE_MESSENGER	= 389,
 	2,	//	RAIDMODE_CHAOS_KAHMLSTEIN = 390,
-	2	//	RAIDBOSS_THE_PURGE = 391,
+	2,	//	RAIDBOSS_THE_PURGE = 391,
+	-1, // WEAPON_KAHML_AFTERIMAGE = 392
 };
 
 public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
@@ -1714,7 +1717,8 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_majorsteam",
 	"npc_the_messenger",
 	"npc_chaos_kahmlstein",
-	"npc_the_purge"
+	"npc_the_purge",
+	"npc_allied_kahml"
 };
 
 void NPC_MapStart()
@@ -3149,12 +3153,16 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 			
 		case RAIDMODE_THE_MESSENGER:
 			entity = TheMessenger(client, vecPos, vecAng, ally, data);
+
 		case RAIDMODE_CHAOS_KAHMLSTEIN:
 			entity = ChaosKahmlstein(client, vecPos, vecAng, ally, data);
 
 			
 		case RAIDBOSS_THE_PURGE:
 			entity = ThePurge(client, vecPos, vecAng, ally);
+			
+		case WEAPON_KAHML_AFTERIMAGE:
+			entity = AlliedKahmlAbility(client, vecPos, vecAng, ally);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -5175,6 +5183,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_citizen.sp"
 #include "zombie_riot/npc/ally/npc_allied_sensal_afterimage.sp"
 #include "zombie_riot/npc/ally/npc_allied_leper_visualiser.sp"
+#include "zombie_riot/npc/ally/npc_allied_kahml_afterimage.sp"
 
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"

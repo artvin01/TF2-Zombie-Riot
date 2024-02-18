@@ -404,6 +404,7 @@ methodmap ChaosKahmlstein < CClotBody
 			{
 				RaidModeScaling *= 0.7;
 			}
+			RaidModeScaling *= 0.7;
 		}
 
 		
@@ -755,7 +756,6 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		if(ChaosKahmlstein_Attack_Melee_Uppercut(npc, npc.m_iTarget))
@@ -1363,7 +1363,7 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 								}
 							}
 
-							Sakratan_AddNeuralDamage(targetTrace, npc.index, 150, true, true);
+							Sakratan_AddNeuralDamage(targetTrace, npc.index, 100, true, true);
 
 							if(!Knocked)
 								Custom_Knockback(npc.index, targetTrace, 650.0); 

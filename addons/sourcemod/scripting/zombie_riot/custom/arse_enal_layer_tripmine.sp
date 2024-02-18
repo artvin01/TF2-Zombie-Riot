@@ -82,6 +82,8 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 				
 			Calculate_HP_Spikes *= Bonus_damage;
 
+			Calculate_HP_Spikes *= 0.5;
+
 		
 			int TripMine = CreateEntityByName("tf_projectile_pipe_remote");
 		  
@@ -482,7 +484,7 @@ public void Trip_TrackPlanted(int client)
 									}
 									float Damagetrap = Trip_BlastDMG[client];
 									if(b_ExpertTrapper[client] && b_ExpertTrapper[ent2] && b_ExpertTrapper[ent])
-										Damagetrap *= 5.0;
+										Damagetrap *= 12.0;
 										
 									Explode_Logic_Custom(Damagetrap, client, client, -1, EntLoc2,Trip_BlastRadius,_,_,false);
 									Explode_Logic_Custom(Damagetrap, client, client, -1, EntLoc,Trip_BlastRadius,_,_,false);

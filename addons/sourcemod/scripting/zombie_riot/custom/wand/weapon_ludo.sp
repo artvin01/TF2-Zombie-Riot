@@ -408,11 +408,11 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 			}
 			case 1:
 			{
-				Current_Mana[client] += mana_cost;
+				Current_Mana[client] += mana_cost * 2;
 			}
 			case 2:
 			{
-				Current_Mana[client] += mana_cost * 2;
+				Current_Mana[client] += mana_cost * 4;
 			}
 		}
 		

@@ -302,6 +302,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Quincy_Touch(entity, target);
 		}
+		case WEAPON_KAHMLFIST:
+		{
+			Melee_KahmlFistTouch(entity, target);
+		}
 	}
 #else
 	switch(i_WandIdNumber[entity])
