@@ -750,6 +750,13 @@ bool Messanger_Elemental_Attack_FingerPoint(TheMessenger npc)
 	}
 	if(npc.m_flJumpStartTimeInternal)
 	{
+		if(npc.m_flSwitchCooldown < GetGameTime(npc.index))
+		{
+			npc.m_flJumpStartTimeInternal = 0.0;
+		}
+	}
+	if(npc.m_flJumpStartTimeInternal)
+	{
 		if(npc.m_flJumpStartTimeInternal < GetGameTime(npc.index) && npc.m_flSwitchCooldown > GetGameTime(npc.index))
 		{
 			float vPredictedPos[3];
