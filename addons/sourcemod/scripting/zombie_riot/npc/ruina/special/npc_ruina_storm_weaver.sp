@@ -134,9 +134,9 @@ methodmap Storm_Weaver < CClotBody
 
 		Zero(i_storm_weaver_damage_instance);
 
-		func_NPCDeath[npc.index] = view_as<Function>(Storm_Weaver_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Storm_Weaver_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Storm_Weaver_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 
@@ -648,7 +648,7 @@ public void Storm_Weaver_Restore_Collisions(int iNPC)
 }
 //TODO 
 //Rewrite
-public void Storm_Weaver_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Storm_Weaver npc = view_as<Storm_Weaver>(iNPC);
 	
@@ -971,7 +971,7 @@ static int Storm_Weaver_Get_Target(Storm_Weaver npc)
 	}
 	return closest_yet;
 }
-public Action Storm_Weaver_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Storm_Weaver npc = view_as<Storm_Weaver>(victim);
 		
@@ -1064,7 +1064,7 @@ public void Stellar_Weaver_Share_Damage_With_All(int &attacker, int &inflictor, 
 		RequestFrame(Nulify_Instance, attacker);
 }
 
-public void Storm_Weaver_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Storm_Weaver npc = view_as<Storm_Weaver>(entity);
 	if(!npc.m_bGib)

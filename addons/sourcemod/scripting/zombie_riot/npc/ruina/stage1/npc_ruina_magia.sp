@@ -172,9 +172,9 @@ methodmap Magia < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(Magia_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Magia_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Magia_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -222,7 +222,7 @@ methodmap Magia < CClotBody
 
 //TODO 
 //Rewrite
-public void Magia_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Magia npc = view_as<Magia>(iNPC);
 	
@@ -458,7 +458,7 @@ static void Delete_Hand_Crest(int client)
 	}
 }
 
-public Action Magia_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Magia npc = view_as<Magia>(victim);
 		
@@ -478,7 +478,7 @@ public Action Magia_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 	return Plugin_Changed;
 }
 
-public void Magia_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Magia npc = view_as<Magia>(entity);
 	if(!npc.m_bGib)

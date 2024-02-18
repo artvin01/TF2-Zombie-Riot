@@ -162,12 +162,9 @@ methodmap Theocracy < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 
-		func_NPCDeath[npc.index] = view_as<Function>(Theocracy_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Theocracy_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Theocracy_ClotThink);
-				
-		
-		
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -246,7 +243,7 @@ methodmap Theocracy < CClotBody
 
 //TODO 
 //Rewrite
-public void Theocracy_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Theocracy npc = view_as<Theocracy>(iNPC);
 	
@@ -792,7 +789,7 @@ static Action Theocracy_String_Theory_Timer(Handle timer, int ref)
 	
 }
 
-public Action Theocracy_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -839,7 +836,7 @@ public Action Theocracy_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	return Plugin_Changed;
 }
 
-public void Theocracy_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Theocracy npc = view_as<Theocracy>(entity);
 	

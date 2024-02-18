@@ -132,9 +132,9 @@ methodmap Ruriana < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(Ruriana_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Ruriana_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Ruriana_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
 		/*
 
@@ -201,7 +201,7 @@ methodmap Ruriana < CClotBody
 
 //TODO 
 //Rewrite
-public void Ruriana_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Ruriana npc = view_as<Ruriana>(iNPC);
 
@@ -276,7 +276,7 @@ public void Ruriana_ClotThink(int iNPC)
 	}
 	npc.PlayIdleAlertSound();
 }
-public Action Ruriana_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Ruriana npc = view_as<Ruriana>(victim);
 		
@@ -316,7 +316,7 @@ public Action Ruriana_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	return Plugin_Changed;
 }
 
-public void Ruriana_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Ruriana npc = view_as<Ruriana>(entity);
 	if(!npc.m_bGib)

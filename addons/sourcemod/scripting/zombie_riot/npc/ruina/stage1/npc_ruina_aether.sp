@@ -144,9 +144,9 @@ methodmap Aether < CClotBody
 		
 		
 		
-		func_NPCDeath[npc.index] = view_as<Function>(Aether_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Aether_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Aether_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
 		npc.m_flSpeed = 200.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -202,7 +202,7 @@ methodmap Aether < CClotBody
 
 //TODO 
 //Rewrite
-public void Aether_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Aether npc = view_as<Aether>(iNPC);
 	
@@ -303,7 +303,7 @@ public void Aether_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Aether_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Aether npc = view_as<Aether>(victim);
 		
@@ -323,7 +323,7 @@ public Action Aether_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 
-public void Aether_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Aether npc = view_as<Aether>(entity);
 	if(!npc.m_bGib)

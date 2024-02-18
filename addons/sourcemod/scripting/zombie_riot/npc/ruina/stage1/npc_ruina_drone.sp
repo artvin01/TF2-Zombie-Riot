@@ -158,9 +158,10 @@ methodmap Ruina_Drone < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		func_NPCDeath[npc.index] = view_as<Function>(Ruina_Drone_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Ruina_Drone_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Ruina_Drone_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
+
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -204,7 +205,7 @@ methodmap Ruina_Drone < CClotBody
 
 //TODO 
 //Rewrite
-public void Ruina_Drone_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Ruina_Drone npc = view_as<Ruina_Drone>(iNPC);
 	
@@ -264,7 +265,7 @@ public void Ruina_Drone_ClotThink(int iNPC)
 	}
 	npc.PlayIdleAlertSound();
 }
-public Action Ruina_Drone_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Ruina_Drone npc = view_as<Ruina_Drone>(victim);
 		
@@ -284,7 +285,7 @@ public Action Ruina_Drone_OnTakeDamage(int victim, int &attacker, int &inflictor
 	return Plugin_Changed;
 }
 
-public void Ruina_Drone_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Ruina_Drone npc = view_as<Ruina_Drone>(entity);
 	if(!npc.m_bGib)

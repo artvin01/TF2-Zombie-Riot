@@ -210,9 +210,9 @@ methodmap Magia_Anchor < CClotBody
 
 		i_currentwave[npc.index] = (ZR_GetWaveCount()+1);
 
-		func_NPCDeath[npc.index] = view_as<Function>(Magia_Anchor_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Magia_Anchor_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Magia_Anchor_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 
@@ -233,7 +233,7 @@ methodmap Magia_Anchor < CClotBody
 	}
 }
 
-public void Magia_Anchor_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Magia_Anchor npc = view_as<Magia_Anchor>(iNPC);
 
@@ -304,7 +304,7 @@ public void Magia_Anchor_ClotThink(int iNPC)
 
 }
 
-public Action Magia_Anchor_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -322,7 +322,7 @@ public Action Magia_Anchor_OnTakeDamage(int victim, int &attacker, int &inflicto
 	return Plugin_Changed;
 }
 
-public void Magia_Anchor_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Magia_Anchor npc = view_as<Magia_Anchor>(entity);
 	npc.PlayDeathSound();	

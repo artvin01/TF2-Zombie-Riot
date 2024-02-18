@@ -94,10 +94,9 @@ methodmap Storm_Weaver_Mid < CClotBody
 
 		Ruina_Set_No_Retreat(npc.index);
 
-		
-		func_NPCDeath[npc.index] = view_as<Function>(Storm_Weaver_Mid_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Storm_Weaver_Mid_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Storm_Weaver_Mid_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 
@@ -119,7 +118,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 
 //TODO 
 //Rewrite
-public void Storm_Weaver_Mid_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(iNPC);
 
@@ -204,7 +203,7 @@ public void Storm_Weaver_Mid_ClotThink(int iNPC)
 
 
 }
-public Action Storm_Weaver_Mid_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(victim);
 		
@@ -238,7 +237,7 @@ public Action Storm_Weaver_Mid_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-public void Storm_Weaver_Mid_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(entity);
 	if(!npc.m_bGib)
