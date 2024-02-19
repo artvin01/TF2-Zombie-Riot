@@ -1309,6 +1309,18 @@
 	{
 		"en"		"A servant of The Scourge" 	//NEED DESC
 	}
+	"Daedalus Desc"
+	{
+		"en"	"Gives a shield to nearbly ruina alies"
+	}
+	"Malius Desc"
+	{
+		"en"	"Has the ability to boost nearby npc's battery"
+	}
+	"Laz Desc"
+	{
+		"en"	"A magical laser wielding mage"
+	}
 	"Archosauria Desc"
 	{
 		"en"	"A hunter sniper that's silent and fires darts that inflict Jarate and Chaos."

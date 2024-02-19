@@ -1965,6 +1965,18 @@
 	{
 		"en"	"Stellar Weaver"
 	}
+	"Daedalus"
+	{
+		"en"	"Daedalus"
+	}
+	"Malius"
+	{
+		"en"	"Malius"
+	}
+	"Laz"
+	{
+		"en"	"Laz"
+	}
 	"Beheaded Kamikaze"
 	{
 		"en"	"Beheaded Kamikaze"
