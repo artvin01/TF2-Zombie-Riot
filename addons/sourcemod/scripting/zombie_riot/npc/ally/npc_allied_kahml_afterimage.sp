@@ -31,6 +31,7 @@ methodmap AlliedKahmlAbility < CClotBody
 		func_NPCDeath[npc.index] = Internal_Npc_NPCDeath;
 		func_NPCThink[npc.index] = Internal_Npc_ClotThink;
 		npc.m_flRangedSpecialDelay = GetGameTime() + 10.0;
+		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 0.3;
 
 
 		SetVariantInt(GetEntProp(client, Prop_Send, "m_nBody"));
@@ -135,6 +136,10 @@ static void Internal_Npc_ClotThink(int iNPC)
 		SmiteNpcToDeath(iNPC);
 		return;
 	}
+	if(npc.m_flNextChargeSpecialAttack > GetGameTime(npc.index))
+	{
+		return;
+	}
 	//What is owner looking at ?
 	
 	b_LagCompNPC_No_Layers = true;
@@ -152,6 +157,7 @@ static void Internal_Npc_ClotThink(int iNPC)
 
 	if(!IsValidEnemy(npc.index,npc.m_iTarget))
 	{
+		npc.m_iTarget = 0;
 		//no enemy valid, run back to papa
 		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(owner);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
@@ -179,7 +185,7 @@ static void Internal_Npc_ClotThink(int iNPC)
 		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		int SetGoalVectorIndex = 0;
-		SetGoalVectorIndex = ChaosKahmlsteinAllySelfDefense(npc, npc.m_iTarget, flDistanceToTarget); 
+		SetGoalVectorIndex = ChaosKahmlsteinAllySelfDefense(npc, npc.m_iTarget, flDistanceToTarget, owner); 
 		switch(SetGoalVectorIndex)
 		{
 			case 0:
@@ -242,7 +248,7 @@ static void Internal_Npc_NPCDeath(int entity)
 }
 
 
-int ChaosKahmlsteinAllySelfDefense(AlliedKahmlAbility npc, int target, float distance)
+int ChaosKahmlsteinAllySelfDefense(AlliedKahmlAbility npc, int target, float distance, int owner)
 {
 	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.5))
 	{
@@ -263,11 +269,13 @@ int ChaosKahmlsteinAllySelfDefense(AlliedKahmlAbility npc, int target, float dis
 			{
 				case 1:
 				{
-					projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1200.0, 150.0, "raygun_projectile_blue_crit", false);
+					projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1200.0, 150.0, "raygun_projectile_blue_crit", false,
+					_,_,_,_,owner);
 				}
 				case 2:
 				{
-					projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1200.0, 150.0, "raygun_projectile_red_crit", false);
+					projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1200.0, 150.0, "raygun_projectile_red_crit", false,
+					_,_,_,_,owner);
 				}
 			}
 			DataPack pack;

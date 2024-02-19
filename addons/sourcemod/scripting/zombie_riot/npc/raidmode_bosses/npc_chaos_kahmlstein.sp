@@ -125,6 +125,7 @@ void ChaosKahmlstein_OnMapStart_NPC()
 	PrecacheSoundCustom("#zombiesurvival/internius/khamlstein.mp3");
 	PrecacheSoundCustom("zombiesurvival/internius/blinkarrival.wav");
 	PrecacheSound("player/taunt_knuckle_crack.wav");
+	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
 }
 
 
@@ -201,6 +202,8 @@ methodmap ChaosKahmlstein < CClotBody
 		int sound = GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1);
 		EmitSoundToAll(g_IdleAlertedSounds[sound], _, SNDCHAN_STATIC, _, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_IdleAlertedSounds[sound], _, SNDCHAN_STATIC, _, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
+		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
 	}
 	public void PlaySuperJumpSound()
 	{
@@ -871,7 +874,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 		{
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 			int enemy[MAXENTITIES];
-			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, npc.m_iWearable2);
+			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false);
 			for(int i; i < sizeof(enemy); i++)
 			{
 				if(enemy[i])
@@ -989,7 +992,7 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 		{
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 			int enemy[MAXENTITIES];
-			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, npc.m_iWearable2);
+			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false);
 			for(int i; i < sizeof(enemy); i++)
 			{
 				if(enemy[i])
@@ -1750,6 +1753,7 @@ bool Kahmlstein_Attack_TempPowerup(ChaosKahmlstein npc)
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_iChanged_WalkCycle = 0;
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + (10.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
+		EmitSoundToAll("mvm/mvm_tank_horn.wav");
 	}
 	if(npc.m_flNextRangedBarrage_Spam)
 	{
