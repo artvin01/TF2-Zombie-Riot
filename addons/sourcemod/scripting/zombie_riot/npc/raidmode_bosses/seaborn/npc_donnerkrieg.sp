@@ -2748,7 +2748,7 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					if(damage < 4)
 						damage = 4;
 
-					SeaSlider_AddNeuralDamage(victim, npc.index, damage, false);
+					SeaSlider_AddNeuralDamage(victim, npc.index, damage, false, true);
 				}
 				case 2:
 				{
@@ -2756,7 +2756,7 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					if(damage < 8)
 						damage = 8;
 
-					SeaSlider_AddNeuralDamage(victim, npc.index, damage, false);
+					SeaSlider_AddNeuralDamage(victim, npc.index, damage, false, true);
 				}
 				
 			}
@@ -3205,7 +3205,7 @@ public void Donner_Neural_Tweak(int entity, int victim, float damage, int weapon
 	if(IsValidEntity(victim))
 	{
 		int neural_damage = RoundToFloor(ion_damage[entity]);
-		SeaSlider_AddNeuralDamage(victim, entity, neural_damage, false);
+		SeaSlider_AddNeuralDamage(victim, entity, neural_damage, false, true);
 	}
 }
 public void Donner_Neural_Tweak_shake(int entity, int victim, float damage, int weapon)
@@ -3213,7 +3213,7 @@ public void Donner_Neural_Tweak_shake(int entity, int victim, float damage, int 
 	if(IsValidEntity(victim))
 	{
 		int neural_damage = RoundToFloor(ion_damage[entity]);
-		SeaSlider_AddNeuralDamage(victim, entity, neural_damage, false);
+		SeaSlider_AddNeuralDamage(victim, entity, neural_damage, false, true);
 		if(IsValidClient(victim))
 			Client_Shake(victim);
 	}

@@ -67,7 +67,7 @@ void Venium_OnMapStart_NPC()
 	PrecacheModel("models/player/engineer.mdl");
 }
 
-methodmap Venium < CClotBody
+methodmap Valiant < CClotBody
 {
 	
 	public void PlayIdleSound() {
@@ -148,11 +148,11 @@ methodmap Venium < CClotBody
 	}
 	
 	
-	public Venium(int client, float vecPos[3], float vecAng[3], int ally)
+	public Valiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Venium npc = view_as<Venium>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
+		Valiant npc = view_as<Valiant>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_VENIUM;
+		i_NpcInternalId[npc.index] = RUINA_VALIANT;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -233,7 +233,7 @@ methodmap Venium < CClotBody
 //Rewrite
 static void ClotThink(int iNPC)
 {
-	Venium npc = view_as<Venium>(iNPC);
+	Valiant npc = view_as<Valiant>(iNPC);
 	
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
@@ -387,7 +387,7 @@ static void ClotThink(int iNPC)
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Venium npc = view_as<Venium>(victim);
+	Valiant npc = view_as<Valiant>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -407,7 +407,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 static void NPC_Death(int entity)
 {
-	Venium npc = view_as<Venium>(entity);
+	Valiant npc = view_as<Valiant>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -425,7 +425,7 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable4);
 }
 
-static void Venium_Build_Anchor(Venium npc)
+static void Venium_Build_Anchor(Valiant npc)
 {
 	float AproxRandomSpaceToWalkTo[3];
 
@@ -513,7 +513,7 @@ static void Venium_Build_Anchor(Venium npc)
 		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 50000);
 	}
 }
-static void Venium_Post_Bult_Logic(Venium npc, int PrimaryThreatIndex, float GameTime)
+static void Venium_Post_Bult_Logic(Valiant npc, int PrimaryThreatIndex, float GameTime)
 {
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{

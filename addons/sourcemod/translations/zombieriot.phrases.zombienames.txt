@@ -1953,9 +1953,9 @@
 	{
 		"en"	"Ruriana"
 	}
-	"Venium"
+	"Valiant"
 	{
-		"en"	"Venium"
+		"en"	"Valiant"
 	}
 	"Magia Anchor"
 	{

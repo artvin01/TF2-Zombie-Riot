@@ -2,28 +2,53 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/pyro_paincrticialdeath01.mp3",
-	"vo/pyro_paincrticialdeath02.mp3",
-	"vo/pyro_paincrticialdeath03.mp3",
+	"vo/scout_paincrticialdeath01.mp3",
+	"vo/scout_paincrticialdeath02.mp3",
+	"vo/scout_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/pyro_painsharp01.mp3",
-	"vo/pyro_painsharp02.mp3",
-	"vo/pyro_painsharp03.mp3",
-	"vo/pyro_painsharp04.mp3",
-	"vo/pyro_painsharp05.mp3",
+	"vo/scout_painsharp01.mp3",
+	"vo/scout_painsharp02.mp3",
+	"vo/scout_painsharp03.mp3",
+	"vo/scout_painsharp04.mp3",
+	"vo/scout_painsharp05.mp3",
+	"vo/scout_painsharp06.mp3",
+	"vo/scout_painsharp07.mp3",
+	"vo/scout_painsharp08.mp3",
 };
 
 static const char g_IdleSounds[][] = {
-	"vo/pyro_jeers01.mp3",	
-	"vo/pyro_jeers02.mp3",	
+	"vo/scout_standonthepoint01.mp3",
+	"vo/scout_standonthepoint02.mp3",
+	"vo/scout_standonthepoint03.mp3",
+	"vo/scout_standonthepoint04.mp3",
+	"vo/scout_standonthepoint05.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/taunts/pyro_taunts01.mp3",
-	"vo/taunts/pyro_taunts02.mp3",
-	"vo/taunts/pyro_taunts03.mp3",
+	"vo/scout_battlecry01.mp3",
+	"vo/scout_battlecry02.mp3",
+	"vo/scout_battlecry03.mp3",
+	"vo/scout_battlecry04.mp3",
+	"vo/scout_battlecry05.mp3",
+};
+
+static const char g_MeleeHitSounds[][] = {
+	"weapons/halloween_boss/knight_axe_hit.wav",
+};
+static const char g_MeleeAttackSounds[][] = {
+	"weapons/demo_sword_swing1.wav",
+	"weapons/demo_sword_swing2.wav",
+	"weapons/demo_sword_swing3.wav",
+};
+
+static const char g_MeleeMissSounds[][] = {
+	"weapons/bat_draw_swoosh1.wav",
+	"weapons/bat_draw_swoosh2.wav",
+};
+static char g_TeleportSounds[][] = {
+	"misc/halloween/spell_stealth.wav",
 };
 static const char g_RangedAttackSounds[][] = {
 	"weapons/dragons_fury_shoot.wav",
@@ -33,18 +58,22 @@ static const char g_RangedReloadSound[][] = {
 	"weapons/dragons_fury_pressure_build.wav",
 };
 
-void Europa_OnMapStart_NPC()
+void Malius_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
-	PrecacheModel("models/player/pyro.mdl");
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_TeleportSounds);
+	PrecacheSoundArray(g_RangedReloadSound);
+	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheModel("models/player/engineer.mdl");
 }
 
-methodmap Europa < CClotBody
+methodmap Malius < CClotBody
 {
 	
 	public void PlayIdleSound() {
@@ -55,6 +84,14 @@ methodmap Europa < CClotBody
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
+		#endif
+	}
+	
+	public void PlayTeleportSound() {
+		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayTeleportSound()");
 		#endif
 	}
 	
@@ -92,6 +129,29 @@ methodmap Europa < CClotBody
 		PrintToServer("CClot::PlayDeathSound()");
 		#endif
 	}
+	
+	public void PlayMeleeSound() {
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayMeleeHitSound()");
+		#endif
+	}
+	public void PlayMeleeHitSound() {
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayMeleeHitSound()");
+		#endif
+	}
+
+	public void PlayMeleeMissSound() {
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CGoreFast::PlayMeleeMissSound()");
+		#endif
+	}
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
@@ -108,25 +168,26 @@ methodmap Europa < CClotBody
 	}
 	
 	
-	public Europa(int client, float vecPos[3], float vecAng[3], int ally)
+	public Malius(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Europa npc = view_as<Europa>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "1250", ally));
+		Malius npc = view_as<Malius>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_EUROPA;
+		i_NpcInternalId[npc.index] = RUINA_MALIUS;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_PDA");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
 		/*
-			freedom staff		models/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl
-			wraith wrap 	Hwn_Pyro_Spookyhood	"models/player/items/pyro/hwn_pyro_spookyhood.mdl"
-			mair mask		"models/workshop/player/items/pyro/hazeguard/hazeguard.mdl"
-			pyromancer		Dec2014_Pyromancers_Raiments	"models/workshop/player/items/pyro/dec2014_pyromancers_raiments/dec2014_pyromancers_raiments.mdl"
-			hypno-eyes
+			Diplomat 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
+			Angel of death		"models/workshop/player/items/medic/xms2013_medic_robe/xms2013_medic_robe.mdl"
+			demonic dome		"models/workshop/player/items/all_class/hwn2023_demonic_dome/hwn2023_demonic_dome_engineer.mdl"
+			dread hiding hood	"models/workshop/player/items/sniper/thief_sniper_cape/thief_sniper_cape.mdl"
+			construction pda	"models/weapons/c_models/c_builder/mdl"
+			airtight arsonist	"models/workshop/player/items/pyro/spr17_airtight_arsonist/spr17_airtight_arsonist.mdl"
 		
 		*/
 		
@@ -140,26 +201,29 @@ methodmap Europa < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-    	
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
+		
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/pyro/hwn_pyro_spookyhood.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/hazeguard/hazeguard.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec2014_pyromancers_raiments/dec2014_pyromancers_raiments.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_scout.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -168,15 +232,17 @@ methodmap Europa < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 				
+		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
+		Ruina_Set_Battery_Buffer(npc.index, true);
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_RANGED_NPC, false, 5, 1);		//doesn't acept any npc's
-
 		return npc;
 	}
 	
@@ -187,7 +253,7 @@ methodmap Europa < CClotBody
 //Rewrite
 static void ClotThink(int iNPC)
 {
-	Europa npc = view_as<Europa>(iNPC);
+	Malius npc = view_as<Malius>(iNPC);
 	
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
@@ -195,7 +261,7 @@ static void ClotThink(int iNPC)
 		return;
 	}
 	
-	Ruina_Add_Battery(npc.index, 1.5);
+	Ruina_Add_Battery(npc.index, 0.75);
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -216,32 +282,19 @@ static void ClotThink(int iNPC)
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
 	
-	if(npc.m_flGetClosestTargetTime < GameTime)
-	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
-	}
-	
-	int PrimaryThreatIndex = npc.m_iTarget;
-	
-	if(fl_ruina_battery[npc.index]>6000.0)
-	{
-		if(Zombies_Currently_Still_Ongoing < NPC_HARD_LIMIT)
-		{
-			fl_ruina_battery[npc.index] = 0.0;
-			Europa_Spawn_Self(npc);
-		}
-		
-	}
+	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
 
-	if(fl_ruina_battery_timer[npc.index]<GameTime)
+	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
+	
+	if(fl_ruina_battery[npc.index]>500.0)
 	{
-		fl_ruina_battery_timer[npc.index]=GameTime+7.5;
-		if(Zombies_Currently_Still_Ongoing < RoundToFloor(NPC_HARD_LIMIT*0.5))
-		{
-			Europa_Spawn_Minnions(npc);
-		}
+		fl_ruina_battery[npc.index] = 0.0;
+		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
 		
+	}
+	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
+	{
+		Master_Apply_Battery_Buff(npc.index, 300.0, 25.0);
 	}
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -294,7 +347,7 @@ static void ClotThink(int iNPC)
 		{
 			npc.m_bAllowBackWalking=false;
 		}
-		Europa_SelfDefense(npc, GameTime, Anchor_Id);
+		Malius_SelfDefense(npc, GameTime, Anchor_Id);
 	}
 	else
 	{
@@ -306,101 +359,7 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	Europa npc = view_as<Europa>(victim);
-		
-	if(attacker <= 0)
-		return Plugin_Continue;
-
-	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
-	
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
-	}
-	
-	return Plugin_Changed;
-}
-
-static void NPC_Death(int entity)
-{
-	Europa npc = view_as<Europa>(entity);
-	if(!npc.m_bGib)
-	{
-		npc.PlayDeathSound();	
-	}
-
-	Ruina_NPCDeath_Override(entity);
-		
-	if(IsValidEntity(npc.m_iWearable1))
-		RemoveEntity(npc.m_iWearable1);
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
-	if(IsValidEntity(npc.m_iWearable4))
-		RemoveEntity(npc.m_iWearable4);
-}
-static void Europa_Spawn_Minnions(Europa npc)
-{
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-	
-	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
-	if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
-	{
-		npc.g_TimesSummoned++;
-		for(int i; i<1; i++)
-		{
-			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			
-			int spawn_index;
-			
-			spawn_index = Npc_Create(RUINA_DRONE, -1, pos, ang, GetTeam(npc.index));
-			maxhealth = RoundToNearest(maxhealth * 0.45);
-
-			if(spawn_index > MaxClients)
-			{
-				if(GetTeam(npc.index) != TFTeam_Red)
-				{
-					Zombies_Currently_Still_Ongoing += 1;	// FIXME
-				}
-				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-			}
-		}
-	}
-}
-static void Europa_Spawn_Self(Europa npc)
-{
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-
-	if(maxhealth<100)
-		return;
-	
-	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			
-	int spawn_index;
-			
-	spawn_index = Npc_Create(RUINA_EUROPA, -1, pos, ang, GetTeam(npc.index));
-	maxhealth = RoundToNearest(maxhealth * 0.75);
-
-	if(spawn_index > MaxClients)
-	{
-		if(GetTeam(npc.index) != TFTeam_Red)
-		{
-			Zombies_Currently_Still_Ongoing += 1;	// FIXME
-		}
-		SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-	}
-}
-static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty artvin
+static void Malius_SelfDefense(Malius npc, float gameTime, int Anchor_Id)	//ty artvin
 {
 	int GetClosestEnemyToAttack;
 	//Ranged units will behave differently.
@@ -418,7 +377,6 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 		if(gameTime > npc.m_flNextRangedAttack)
 		{
 			fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
-			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
 			npc.PlayRangedSound();
 			//after we fire, we will have a short delay beteween the actual laser, and when it happens
 			//This will predict as its relatively easy to dodge
@@ -431,7 +389,7 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 				vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
 			}
 			float DamageDone = 50.0;
-			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
+			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);
 			npc.FaceTowards(vecTarget, 20000.0);
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
 			npc.PlayRangedReloadSound();
@@ -455,7 +413,6 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 				flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 				if(gameTime > npc.m_flNextRangedAttack)
 				{
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
 					npc.PlayRangedSound();
 					//after we fire, we will have a short delay beteween the actual laser, and when it happens
 					//This will predict as its relatively easy to dodge
@@ -468,7 +425,7 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 						vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
 					}
 					float DamageDone = 25.0;
-					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
+					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);
 					npc.FaceTowards(vecTarget, 20000.0);
 					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
 					npc.PlayRangedReloadSound();
@@ -477,4 +434,48 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 		}
 	}
 	npc.m_iTarget = GetClosestEnemyToAttack;
+}
+
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+
+	Malius npc = view_as<Malius>(victim);
+		
+	if(attacker <= 0)
+		return Plugin_Continue;
+		
+	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+	
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+	{
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
+	}
+	
+	return Plugin_Changed;
+}
+
+static void NPC_Death(int entity)
+{
+	Malius npc = view_as<Malius>(entity);
+	if(!npc.m_bGib)
+	{
+		npc.PlayDeathSound();	
+	}
+	
+	Ruina_NPCDeath_Override(entity);
+		
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	
 }

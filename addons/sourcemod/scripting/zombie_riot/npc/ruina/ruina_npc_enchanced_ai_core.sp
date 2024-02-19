@@ -25,6 +25,7 @@ static int BeamWand_Laser;
 float fl_rally_timer[MAXENTITIES];
 bool b_rally_active[MAXENTITIES];
 
+static bool b_is_battery_buffed[MAXENTITIES];
 float fl_ruina_battery[MAXENTITIES];
 bool b_ruina_battery_ability_active[MAXENTITIES];
 float fl_ruina_battery_timer[MAXENTITIES];
@@ -96,7 +97,8 @@ enum
 	RUINA_ATTACK_BUFF = 3,
 	RUINA_SHIELD_BUFF = 4,
 	RUINA_TELEPORT_BUFF = 5,
-	RUINA_HEALING_BUFF = 6
+	RUINA_HEALING_BUFF = 6,
+	RUINA_BATTERY_BUFF = 7
 }
 
 public void Ruina_Ai_Core_Mapstart()
@@ -143,6 +145,7 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(fl_ruina_in_combat_timer);
 
 	Zero(fl_mana_sickness_timeout);
+	Zero(b_is_battery_buffed);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -175,10 +178,15 @@ public void Ruina_Set_Heirarchy(int client, int type)
 	b_npc_sniper_anchor_point[client]=false;
 	i_last_sniper_anchor_id_Ref[client]=-1;
 	fl_ruina_in_combat_timer[client]=0.0;
+	b_is_battery_buffed[client]=false;
 
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_iTarget=-1;	//set its target as invalid on spawn
 	
+}
+public void Ruina_Set_Battery_Buffer(int client, bool state)
+{
+	b_is_battery_buffed[client]=state;
 }
 public void Ruina_Set_Sniper_Anchor_Point(int client, bool state)
 {
@@ -1162,7 +1170,7 @@ public void Master_Apply_Defense_Buff(int client, float range, float time, float
 
 public void Master_Apply_Speed_Buff(int client, float range, float time, float power)
 {
-	Apply_Master_Buff(client, RUINA_DEFENSE_BUFF, range, time, power);
+	Apply_Master_Buff(client, RUINA_SPEED_BUFF, range, time, power);
 }
 
 public void Master_Apply_Attack_Buff(int client, float range, float time, float power)
@@ -1173,6 +1181,10 @@ public void Master_Apply_Attack_Buff(int client, float range, float time, float 
 public void Master_Apply_Shield_Buff(int client, float range, float power)
 {
 	Apply_Master_Buff(client, RUINA_SHIELD_BUFF, range, 0.0, power);
+}
+public void Master_Apply_Battery_Buff(int client, float range, float power)
+{
+	Apply_Master_Buff(client, RUINA_BATTERY_BUFF, range, 0.0, power);
 }
 static void Ruina_Special_Logic(int iNPC, int Target)
 {
@@ -1242,7 +1254,27 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Teleport_Buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
+		case RUINA_BATTERY_BUFF:
+		{
+			fl_buff_amt[npc.index] = amt;
+			b_NpcIsTeamkiller[npc.index] = true;
+			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Teleport_Buff);
+			b_NpcIsTeamkiller[npc.index] = false;
+		}
 	}
+}
+public void Ruina_Battery_Buff(int entity, int victim, float damage, int weapon)
+{
+	if(entity==victim)
+		return;	//don't buff itself!
+
+	if(GetTeam(entity) != GetTeam(victim))
+		return;
+	
+	if(b_is_battery_buffed[victim])
+		return;
+	
+	Ruina_Add_Battery(victim, fl_buff_amt[entity]);
 }
 public void Ruina_Shield_Buff(int entity, int victim, float damage, int weapon)
 {
@@ -1883,6 +1915,7 @@ Names per stage:
 
 	Each subsequent stage the npc gains a new ability, most of the time it will be an expanded version of what they have, or something new. alongside just higher base stats.
 
+	//created
 	1: Magia -> Magnium -> Magianas -> Magianius
 	{
 		State: Slave AI
@@ -1897,7 +1930,7 @@ Names per stage:
 			ICBM's near a Magnia or above have homing. or other npc's that have this attribute. otherwise it just Goes straight. 
 		}
 	}
-
+	//created
 	2: Lanius -> Laniun -> Loonaris -> Loonarionus
 	{
 
@@ -1913,7 +1946,7 @@ Names per stage:
 
 
 	}
-
+	//created
 	3: Stella -> Stellaria -> Stellaris -> Stellarionus
 	{
 		state: Independant AI.
@@ -1922,7 +1955,7 @@ Names per stage:
 		Heals nearby npc's within range in a AOE.
 		Battery: Massive AOE healing for 2.5 seconds
 	}
-
+	//created
 	4: Astria -> Astriana -> Astrianis -> Astrianious
 	{
 		state: Master AI.
@@ -1930,8 +1963,8 @@ Names per stage:
 		Slow itself, boots nearby npc speed passively.
 		Battery: Nearby npc's gain the ability to teleporto once. cannot have multiple "charges" (since its a bool)
 	}
-
-	5: Solaris -> Solaria -> Solaris -> Solarionus
+	
+	5: Solaris -> Solaria -> Solarika -> Solarionus
 	{
 		State: Independant AI
 		Class: Medic
@@ -1940,6 +1973,7 @@ Names per stage:
 		Battery:
 	}
 
+	//created
 	6: Europa -> Europis -> Eurainis -> Euranionis
 	{
 		State: Master AI.
@@ -1947,8 +1981,58 @@ Names per stage:
 		Summons "brainless" npc's
 		Battery: Summons itself.
 	}
+	//created
+	7: Daedalus -> Draedon -> Draeonis -> Draconia
+	{
+		State: Slave.
+		Class: Scout
+		Support: Shield.
+		Battery: Provides shield to npc's within range.
+	}
+	//created
+	8: Aether -> Aetheria -> Aetherium -> Aetherianus
+	{
+		State: Slave - Indepentant Long range.
+		Class: Sniper
+		Ranged:
 
-	7: Venium -> Valla -> Valianis -> Valiant
+		Attacks from a far with artilery spells. basically the railgunners of this wave.
+	}
+
+	9: Malius -> Maliana -> Malianium -> Malianius.
+	{
+		State: Master AI.
+		Class: Engie
+		Support: Battery
+		Npc's within range have their battery gain boosted.
+		Battery: all npc's within range have 50% of their battery filled instantly. Excludes itself, and other npc's of the same kind.
+	}
+	//created
+	10: Ruriana -> Ruianus -> Ruliana -> Ruina
+	{
+		State: Master AI.
+		Class: Medic.
+		Ranged, Melee.
+		Passive: damage taken is healed to allies around.
+
+		Battery: Ion Sweep - Tl;dr, Ion cannon's EVERYWHERE.
+	}
+	11: Laz -> Lazius -> Lazines -> Lazurus
+	{
+		State: Master AI.
+		Class: Demo.
+		Ranged: Laser.
+	}
+	//created
+	12: Drone -> Dronian -> Dronis -> Dronianis
+	{
+		State: Melee AI.
+		Class: Spy
+		Melee.
+		it only exists as a minnion to be spammed. it has nothing special for now
+	}
+
+	Valiant	//Gonna be set into special, like expi spies.
 	{
 		State: Independant
 		Class: Engie
@@ -1966,61 +2050,6 @@ Names per stage:
 		A worm boss, it itself doesn't have a hitbox.
 	}
 
-	8: Daedalus -> Draedon -> Draeonis -> Draconia
-	{
-		State: Slave.
-		Class: Demo
-		Support: Shield.
-		Battery: Provides shield to npc's within range.
-	}
-
-	9: Aether -> Aetheria -> Aetherium -> Aetherianus
-	{
-		State: Slave - Indepentant Long range.
-		Class: Sniper
-		Ranged:
-
-		Attacks from a far with artilery spells. basically the railgunners of this wave.
-	}
-
-	10: Malius -> Maliana -> Malianium -> Malianius.
-	{
-		State: Master AI.
-		Class: Engie
-		Support: Battery
-		Npc's within range have their battery gain boosted.
-		Battery: all npc's within range have 50% of their battery filled instantly. Excludes itself, and other npc's of the same kind.
-	}
-
-	11: Ruriana -> Ruianus -> Ruliana -> Ruina
-	{
-		State: Master AI.
-		Class: Medic.
-		Ranged, Melee.
-		Passive: damage taken is healed to allies around.
-
-		Battery: Ion Sweep - Tl;dr, Ion cannon's EVERYWHERE.
-	}
-	12: Laz -> Lazius -> Lazines -> Lazurus
-	{
-		State: Master AI.
-		Class: Scout.
-		Ranged: Laser.
-	}
-	13: Shiela -> Shielius -> Skydas -> Shieldalius.
-	{
-		State: Master AI.
-		Class: Heavy.
-		Passive: all npc's who have a shield within range have thier shield slowly recharged.
-		Battery: Provides a shield.
-	}
-	14: Drone -> Dronian -> Dronis -> Dronianis
-	{
-		State: Melee AI.
-		Class: Spy
-		Melee.
-		it only exists as a minnion to be spammed. it has nothing special for now
-	}
 
 	Stage 1 specials:
 

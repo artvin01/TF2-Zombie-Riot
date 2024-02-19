@@ -400,15 +400,12 @@ static void Storm_Weaver_Pulse_Solo_Mode(Storm_Weaver npc)
 		}	
 	}
 
-	CPrintToChatAll("Achor amt %i", i_magia_anchors_active);
-
+	//CPrintToChatAll("Achor amt %i", i_magia_anchors_active);
 
 	if(i_magia_anchors_active>=4)
 	{
 		b_storm_weaver_solo=false;
 	}
-
-	
 }
 static void Storm_Weaver_Force_Spawn_Anchors(Storm_Weaver npc)
 {
@@ -542,7 +539,9 @@ static int Storm_Weaver_Health()
 			}
 		}
 	}
-	return health+1;
+	if(health>10)
+		health-=1;
+	return health;
 }
 
 static void Find_Anchors(int array[RUINA_ANCHOR_HARD_LIMIT+1])
@@ -658,7 +657,6 @@ static void ClotThink(int iNPC)
 {
 	Storm_Weaver npc = view_as<Storm_Weaver>(iNPC);
 	
-
 	f_StuckOutOfBoundsCheck[npc.index] = GetGameTime() + 10.0;
 	float GameTime = GetGameTime(npc.index);
 
@@ -668,7 +666,7 @@ static void ClotThink(int iNPC)
 	if(Storm_Weaver_Health() < 100.0 && fl_special_invuln_timer[npc.index] < GameTime)
 	{
 		npc.m_bDissapearOnDeath = true;	
-		CPrintToChatAll("death cause no hp.");
+		//CPrintToChatAll("death cause no hp.");
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		return;
 	}
@@ -717,6 +715,7 @@ static void ClotThink(int iNPC)
 		{
 			int Health = Storm_Weaver_Health();
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", Health);
+			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", Health);
 		}
 		else
 		{
@@ -727,6 +726,7 @@ static void ClotThink(int iNPC)
 			}
 			int Health = Storm_Weaver_Health();
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", Health);
+			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", Health);
 		}
 			
 	}
@@ -860,6 +860,8 @@ static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target, float Gam
 	else
 	{
 		float target_vec[3]; target_vec = GetAbsOriginOld(Target);
+
+		target_vec[2]+=75.0;
 
 		Storm_Weaver_Fly(npc, target_vec, GameTime);
 	}

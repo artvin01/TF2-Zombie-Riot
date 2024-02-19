@@ -384,7 +384,7 @@ enum
 	RUINA_EUROPA 					= 336,
 	RUINA_DRONE 					= 337,
 	RUINA_RURIANA					= 338,
-	RUINA_VENIUM					= 339,
+	RUINA_VALIANT					= 339,
 	RUINA_MAGIA_ANCHOR				= 340,
 	RUINA_STELLAR_WEAVER			= 341,
 	RUINA_STELLAR_WEAVER_MID		= 342,
@@ -443,6 +443,10 @@ enum
 	RAIDMODE_CHAOS_KAHMLSTEIN = 390,
 	RAIDBOSS_THE_PURGE = 391,
 	WEAPON_KAHML_AFTERIMAGE = 392,
+
+	RUINA_DAEDALUS = 393,
+	RUINA_MALIUS = 394,
+	RUINA_LAZ = 395,
 	
 	MAX_NPC_TYPES	// Add entries above this line
 }
@@ -810,7 +814,7 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Europa",
 	"Ruina Drone",
 	"Ruriana",
-	"Venium",
+	"Valiant",
 	"Magia Anchor",
 	"Stellar Weaver",
 	"Stellar Weaver",
@@ -866,7 +870,10 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"The Messenger",
 	"Chaos Kahmlstein",
 	"The Purge",
-	"Kahmlstein"
+	"Kahmlstein",
+	"Daedalus",
+	"Malius",
+	"Laz"
 };
 
 // See items.sp for IDs to names
@@ -1237,7 +1244,7 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	-1,	//EUROPA
 	-1,	//RUINA_DRONE
 	-1,	//RUINA_RURIANA
-	-1,	//RUINA_VENIUM
+	-1,	//RUINA_VALIANT
 	-1,	//RUINA_MAGIA_ANCHOR
 	-1,	//RUINA_STELLAR_WEAVER
 	-1,	//RUINA_STELLAR_WEAVER_MID
@@ -1298,6 +1305,9 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	2,	//	RAIDMODE_CHAOS_KAHMLSTEIN = 390,
 	2,	//	RAIDBOSS_THE_PURGE = 391,
 	-1, // WEAPON_KAHML_AFTERIMAGE = 392
+	-1,	//RUINA_DAEDALUS = 393,
+	-1,	//RUINA_MALIUS = 394,
+	-1,	//RUINA_LAZ = 395,
 };
 
 public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
@@ -1718,7 +1728,10 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_the_messenger",
 	"npc_chaos_kahmlstein",
 	"npc_the_purge",
-	"npc_allied_kahml"
+	"npc_allied_kahml",
+	"npc_ruina_daedalus",
+	"npc_ruina_malius",
+	"npc_ruina_laz"
 };
 
 void NPC_MapStart()
@@ -1938,6 +1951,9 @@ void NPC_MapStart()
 	Ruina_Drone_OnMapStart_NPC();
 	Ruriana_OnMapStart_NPC();
 	Venium_OnMapStart_NPC();
+	Daedalus_OnMapStart_NPC();
+	Malius_OnMapStart_NPC();
+	Laz_OnMapStart_NPC();
 	//Stage 2.
 
 	//Special.
@@ -2914,8 +2930,8 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 		case RUINA_RURIANA:
 			entity = Ruriana(client, vecPos, vecAng, ally);
 
-		case RUINA_VENIUM:
-			entity = Venium(client, vecPos, vecAng, ally);
+		case RUINA_VALIANT:
+			entity = Valiant(client, vecPos, vecAng, ally);
 
 		case RUINA_MAGIA_ANCHOR:
 			entity = Magia_Anchor(client, vecPos, vecAng, ally);
@@ -2925,6 +2941,15 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 
 		case RUINA_STELLAR_WEAVER_MID:
 			entity = Storm_Weaver_Mid(client, vecPos, vecAng, ally, StringToFloat(data));
+		
+		case RUINA_DAEDALUS:
+			entity = Daedalus(client, vecPos, vecAng, ally);
+
+		case RUINA_MALIUS:
+			entity = Malius(client, vecPos, vecAng, ally);
+
+		case RUINA_LAZ:
+			entity = Laz(client, vecPos, vecAng, ally);
 		
 		case SEA_RAIDBOSS_DONNERKRIEG:
 			entity = Raidboss_Donnerkrieg(client, vecPos, vecAng, ally, data);
@@ -5198,6 +5223,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_drone.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_ruriana.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_venium.sp"
+#include "zombie_riot/npc/ruina/stage1/npc_ruina_daedalus.sp"
+#include "zombie_riot/npc/ruina/stage1/npc_ruina_malius.sp"
+#include "zombie_riot/npc/ruina/stage1/npc_ruina_laz.sp"
 
 //Special Ruina
 #include "zombie_riot/npc/ruina/special/npc_ruina_magia_anchor.sp"
