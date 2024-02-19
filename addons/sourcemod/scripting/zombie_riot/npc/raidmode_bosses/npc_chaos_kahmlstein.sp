@@ -172,8 +172,8 @@ methodmap ChaosKahmlstein < CClotBody
 	public void PlayAngerSound() {
 	
 		int sound = GetRandomInt(0, sizeof(g_AngerSounds) - 1);
-		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_AngerSounds[sound], _, SNDCHAN_STATIC, _, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_AngerSounds[sound], _, SNDCHAN_STATIC, _, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public void PlayDeathSound() 
@@ -198,9 +198,9 @@ methodmap ChaosKahmlstein < CClotBody
 	}
 	public void PlayIdleAlertSound() 
 	{
-		int sound = GetRandomInt(0, sizeof(g_AngerSounds) - 1);
-		EmitSoundToAll(g_IdleAlertedSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_IdleAlertedSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		int sound = GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1);
+		EmitSoundToAll(g_IdleAlertedSounds[sound], _, SNDCHAN_STATIC, _, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleAlertedSounds[sound], _, SNDCHAN_STATIC, _, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlaySuperJumpSound()
 	{
@@ -791,10 +791,10 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 							int Particle_1;
 							int Particle_2;
 							npc.GetAttachment("foot_L", flPos, flAng);
-							Particle_1 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "foot_L", {0.0,0.0,0.0});
+							Particle_1 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "foot_L", {0.0,0.0,0.0});
 							
 							npc.GetAttachment("foot_R", flPos, flAng);
-							Particle_2 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "foot_R", {0.0,0.0,0.0});
+							Particle_2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_red_crit", npc.index, "foot_R", {0.0,0.0,0.0});
 							CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_1), TIMER_FLAG_NO_MAPCHANGE);
 							CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_2), TIMER_FLAG_NO_MAPCHANGE);
 						}
@@ -890,17 +890,20 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 					float AllyAng[3];
 					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", AllyAng);
 					
-					bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
+					bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, false, false);
 					if(Succeed)
 					{
 						npc.PlayTeleportSound();
 						ParticleEffectAt(SelfPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-						ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+						ParticleEffectAt(vPredictedPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						npc.FaceTowards(WorldSpaceCenterOld(Target), 15000.0);
 
 						if(i_RaidGrantExtra[npc.index] < 2)
-							CreateCloneTempKahmlsteinFakeout(npc.index, 2, SelfPos, AllyAng);
+						{
+							CreateCloneTempKahmlsteinFakeout(npc.index, 2, vPredictedPos, AllyAng);
+						}
 
+						SDKCall_SetLocalOrigin(npc.index, SelfPos);	
 					}
 				}
 			}
@@ -1005,16 +1008,20 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 					float AllyAng[3];
 					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", AllyAng);
 					
-					bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
+					bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, false, false);
 					if(Succeed)
 					{
 						npc.PlayTeleportSound();
 						ParticleEffectAt(SelfPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-						ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+						ParticleEffectAt(vPredictedPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						npc.FaceTowards(WorldSpaceCenterOld(Target), 15000.0);
 
 						if(i_RaidGrantExtra[npc.index] < 2)
-							CreateCloneTempKahmlsteinFakeout(npc.index, 4, SelfPos, AllyAng);
+						{
+							CreateCloneTempKahmlsteinFakeout(npc.index, 4, vPredictedPos, AllyAng);
+						}
+
+						SDKCall_SetLocalOrigin(npc.index, SelfPos);	
 					}
 				}
 			}
