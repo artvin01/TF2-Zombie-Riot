@@ -2006,7 +2006,7 @@ void Store_ClientDisconnect(int client)
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if((item.Owned[client] || item.Scaled[client] || item.Equipped[client]) && !item.Hidden)
+		if(item.Owned[client] || item.Scaled[client] || item.Equipped[client])
 		{
 			item.Owned[client] = 0;
 			item.Scaled[client] = 0;
@@ -4998,6 +4998,7 @@ void Store_ApplyAttribs(int client)
 
 			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
 			{
+				i--;
 				continue;
 			}
 
@@ -5061,6 +5062,14 @@ void Store_ApplyAttribs(int client)
 			}
 
 		}
+	}
+
+	while(TF2_GetWearable(client, entity))
+	{
+		if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
+			continue;
+		
+		Attributes_RemoveAll(entity);
 	}
 
 #if defined ZR

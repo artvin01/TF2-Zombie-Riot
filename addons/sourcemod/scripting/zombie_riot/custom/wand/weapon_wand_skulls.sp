@@ -95,7 +95,13 @@ void Wand_Skulls_Precache()
 	PrecacheSound(SKULL_SOUND_EXPLODE_BONES);
 	PrecacheSound(SOUND_SKULL_IMPACT);
 }
-
+public void Reset_stats_Skullswand_Singular(int client)
+{
+	if (Skulls_ArrayStack[client] != null)
+	{
+		DeleteAllSkulls(client);
+	}
+}
 public void Skulls_EntityDestroyed(int ent)
 {
 	if (!IsValidEdict(ent))
