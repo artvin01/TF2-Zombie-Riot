@@ -148,10 +148,9 @@ methodmap Adiantum < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Adiantum_ClotDamaged);
-		SDKHook(npc.index, SDKHook_Think, Adiantum_ClotThink);				
-		
-		
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -204,8 +203,8 @@ methodmap Adiantum < CClotBody
 		
 		Adiantum_Create_Wings(npc.index);
 		
-		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc
-		Ruina_Set_Master_Heirarchy(npc.index, 2, true, 10, 3);	//attracts ranged npc's, can have a maxiumum of 10 of them, priority 3
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
+		Ruina_Set_Master_Heirarchy(npc.index, RUINA_RANGED_NPC, true, 10, 3);	//attracts ranged npc's, can have a maxiumum of 10 of them, priority 3
 		
 		Ruina_Master_Rally(npc.index, true);	//this npc is always rallying ranged npc's
 		
@@ -225,7 +224,7 @@ methodmap Adiantum < CClotBody
 
 //TODO 
 //Rewrite
-public void Adiantum_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Adiantum npc = view_as<Adiantum>(iNPC);
 	
@@ -471,12 +470,15 @@ public Action Smite_Timer_Adiantum(Handle Smite_Logic, DataPack data)
 	return Plugin_Continue;
 }
 
-public Action Adiantum_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
+
 	Adiantum npc = view_as<Adiantum>(victim);
+
+	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -487,15 +489,14 @@ public Action Adiantum_ClotDamaged(int victim, int &attacker, int &inflictor, fl
 	return Plugin_Changed;
 }
 
-public void Adiantum_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Adiantum npc = view_as<Adiantum>(entity);
+
+	Ruina_NPCDeath_Override(entity);
 	
 	Adiantum_Destroy_Wings(entity);
 	npc.PlayDeathSound();
-	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Adiantum_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, Adiantum_ClotThink);	
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);

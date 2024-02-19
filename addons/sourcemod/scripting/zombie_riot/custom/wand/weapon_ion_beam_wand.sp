@@ -88,7 +88,7 @@ public void Ion_Beam_Wand_MapStart()
 #define NEUVELLETE_BASELINE_ION_DMG 750.0
 #define NEUVELLETE_BASELINE_ION_RANGE 15.0
 
-#define NEUVELLETE_BASELINE_DAMAGE 125.0
+#define NEUVELLETE_BASELINE_DAMAGE 140.0
 #define NEUVELLETE_BASELINE_RANGE 1000.0				//how far the laser can reach
 #define NEUVELLETE_BASELINE_TURN_SPEED 1.75	
 #define NEUVELLETE_BASELINE_PITCH_SPEED 0.8
@@ -139,6 +139,16 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 		pap5: Pulse
 	
 	*/
+
+	if(RaidbossIgnoreBuildingsLogic(1))
+	{
+		DamagE *=1.33;
+		Turn_Speed += 1.25;
+		Pitch_Speed += 1.25;
+	}
+		
+
+
 	if(flags & FLAG_NEUVELLETE_PAP_1_DMG)
 	{
 		DamagE *= 1.1;

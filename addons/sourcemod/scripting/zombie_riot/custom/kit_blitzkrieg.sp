@@ -156,6 +156,11 @@ public Action Timer_Management_KitBlitzkrieg(Handle timer, DataPack pack)
 					b_primary_lock[client]=false;
 					Attributes_Set(weapon_holding, 821, 0.0);
 				}
+				else if(RoundFloat(Attributes_Get(weapon_holding, 821, 0.0))==0)
+				{
+					Attributes_Set(weapon_holding, 821, 1.0);
+					b_primary_lock[client]=true;
+				}
 			}
 			else
 			{

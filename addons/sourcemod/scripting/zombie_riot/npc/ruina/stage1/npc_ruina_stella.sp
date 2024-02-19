@@ -163,9 +163,9 @@ methodmap Stella < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		
-		
-		SDKHook(npc.index, SDKHook_Think, Stella_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
 		npc.m_flSpeed = 225.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -205,7 +205,7 @@ methodmap Stella < CClotBody
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
-		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
 
 		Ruina_Set_Healer(npc.index);
 		
@@ -219,7 +219,7 @@ methodmap Stella < CClotBody
 
 //TODO 
 //Rewrite
-public void Stella_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Stella npc = view_as<Stella>(iNPC);
 	
@@ -450,12 +450,15 @@ static void Delete_Hand_Crest(int client)
 	}
 }
 
-public Action Stella_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Stella npc = view_as<Stella>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	
+	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -466,7 +469,7 @@ public Action Stella_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 
-public void Stella_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Stella npc = view_as<Stella>(entity);
 	if(!npc.m_bGib)
@@ -475,8 +478,8 @@ public void Stella_NPCDeath(int entity)
 	}
 	
 	Delete_Hand_Crest(entity);
-	
-	SDKUnhook(npc.index, SDKHook_Think, Stella_ClotThink);
+
+	Ruina_NPCDeath_Override(entity);
 	
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);

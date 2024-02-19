@@ -158,9 +158,10 @@ methodmap Ruina_Drone < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		
-		SDKHook(npc.index, SDKHook_Think, Ruina_Drone_ClotThink);
-		
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
+
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -194,7 +195,7 @@ methodmap Ruina_Drone < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		
-		Ruina_Set_Heirarchy(npc.index, 1);	//is a melee npc
+		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		
 		return npc;
 	}
@@ -204,7 +205,7 @@ methodmap Ruina_Drone < CClotBody
 
 //TODO 
 //Rewrite
-public void Ruina_Drone_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Ruina_Drone npc = view_as<Ruina_Drone>(iNPC);
 	
@@ -264,14 +265,16 @@ public void Ruina_Drone_ClotThink(int iNPC)
 	}
 	npc.PlayIdleAlertSound();
 }
-public Action Ruina_Drone_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Ruina_Drone npc = view_as<Ruina_Drone>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-	fl_ruina_battery[npc.index] += damage;	//turn damage taken into energy
+	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -282,7 +285,7 @@ public Action Ruina_Drone_OnTakeDamage(int victim, int &attacker, int &inflictor
 	return Plugin_Changed;
 }
 
-public void Ruina_Drone_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Ruina_Drone npc = view_as<Ruina_Drone>(entity);
 	if(!npc.m_bGib)
@@ -290,8 +293,7 @@ public void Ruina_Drone_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, Ruina_Drone_ClotThink);
+	Ruina_NPCDeath_Override(entity);
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);

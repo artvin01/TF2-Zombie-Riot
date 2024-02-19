@@ -176,7 +176,7 @@ methodmap Adiantum < CClotBody
 		SetEntityRenderColor(npc.m_iWearable1, 7, 255, 255, 255);
 		
 		
-		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
 		
 		npc.m_flSpeed = 0.0;
 		

@@ -454,6 +454,37 @@ public void OnPostThink(int client)
 	}
 
 #if defined ZR
+	if(Current_Mana[client] >max_mana[client])	//A part of Ruina's special mana "corrosion"
+	{
+		if(Mana_Loss_Delay[client] < GameTime)
+		{
+			Mana_Loss_Delay[client] = GameTime + 0.4;
+		
+			float Mana_Loss = 10.0;
+			if(Mana_Regen_Level[client])
+				Mana_Loss *=Mana_Regen_Level[client];
+
+			float OverMana_Ratio = Current_Mana[client]/max_mana[client];	//the more overmana you have the slower it decays!
+
+			Mana_Loss /=OverMana_Ratio;
+
+			if(has_mage_weapon[client])
+			{
+				Current_Mana[client] -= RoundToCeil(Mana_Loss);	//Passively lose your overmana! if you are a mage you lose this overmana slower
+			}
+			else
+			{
+				Current_Mana[client] -= RoundToCeil(Mana_Loss*1.5);	//Passively lose your overmana!	if your not a mage you lose it faster
+			}
+
+			//CPrintToChatAll("Regen neg1: %i", RoundToCeil(Mana_Loss));
+			//CPrintToChatAll("Regen neg2: %i", RoundToCeil(Mana_Loss*1.5));
+		}
+		has_mage_weapon[client] = true;	//now force the mana hud even if your not a mage. this only applies to non mages if you got overmana, and the only way you can get overmana without a mage weapon is if you got hit by ruina's debuff.
+	}
+#endif	//ZR
+
+#if defined ZR
 	if(Armor_regen_delay[client] < GameTime)
 	{
 		Armour_Level_Current[client] = 0;
@@ -836,9 +867,39 @@ public void OnPostThink(int client)
 			}
 			else
 			{
-				blue = 200;
-				green = 200;
-				red = 200;
+				red 	= 200;
+				green 	= 200;
+				blue	= 200;
+
+				#if defined ZR
+				float OverMana_Ratio = Current_Mana[client]/max_mana[client];
+
+				if(OverMana_Ratio > 1.0)
+				{
+					if(OverMana_Ratio < 2.0)
+					{
+						red = RoundToFloor(127*OverMana_Ratio); 
+						green = 255 - RoundToFloor(255*(OverMana_Ratio-1.0));
+						blue = 255 - RoundToFloor(255*(OverMana_Ratio-1.0));
+
+						if(red>255)
+							red=255;
+
+						if(green<0)
+							green=0;
+						
+						if(blue<0)
+							blue=0;
+					}
+					else	//Player is DANGEROUSLY close to getting nuked due to overmana!
+					{
+						red 	= 255;
+						green 	= 0;
+						blue	= 0;
+					}
+				}
+				#endif	//ZR
+
 			}
 			
 			

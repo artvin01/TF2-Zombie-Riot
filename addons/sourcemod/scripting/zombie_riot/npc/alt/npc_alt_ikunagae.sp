@@ -261,15 +261,22 @@ methodmap Ikunagae < CClotBody
 		npc.StartPathing();
 		
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
-		
-		fl_Scaramouche_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(15.0, 30.0);
 
-		fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(10.0, 30.0);
+		if(GetTeam(npc.index)!=TFTeam_Red)
+		{
+			fl_Scaramouche_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(15.0, 30.0);
+
+			fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(10.0, 30.0);
+			
+			clearance[npc.index] = false;
+			b_Severity_Spin_To_Win[npc.index] = false;
+			
+			Severity_Core(npc.index);
+		}
+
 		
-		clearance[npc.index] = false;
-		b_Severity_Spin_To_Win[npc.index] = false;
 		
-		Severity_Core(npc.index);
+		
 		
 		//Scaramouche_Activate(npc.index);
 		
@@ -305,11 +312,14 @@ public void Ikunagae_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	Normal_Attack_Angles[npc.index] += 1.0;
-	
-	if(Normal_Attack_Angles[npc.index]>=135.0)
+	if(GetTeam(npc.index)!=TFTeam_Red)
 	{
-		Normal_Attack_Angles[npc.index] = 45.0;
+		Normal_Attack_Angles[npc.index] += 1.0;
+		
+		if(Normal_Attack_Angles[npc.index]>=135.0)
+		{
+			Normal_Attack_Angles[npc.index] = 45.0;
+		}
 	}
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
@@ -363,30 +373,33 @@ public void Ikunagae_ClotThink(int iNPC)
 			
 		int Enemy_I_See;		
 		Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-		
-		if(fl_Spin_To_Win_Global_Ability_Timer < GetGameTime(npc.index))
+
+		if(GetTeam(npc.index)!=TFTeam_Red)
 		{
-			if(fl_Spin_To_Win_Ability_Timer[npc.index] < GetGameTime(npc.index))
+			if(fl_Spin_To_Win_Global_Ability_Timer < GetGameTime(npc.index))
 			{
-				clearance[npc.index] = false;
-				fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + 12.5;	//retry in 12.5 seconds
-				Spin_To_Win_Clearance_Check(npc.index);
-				if(clearance[npc.index])
+				if(fl_Spin_To_Win_Ability_Timer[npc.index] < GetGameTime(npc.index))
 				{
-					fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + 120.0;
-					fl_Spin_To_Win_Global_Ability_Timer=GetGameTime(npc.index) + 30.0;
-					
-					Spin_To_Win_Activate(npc.index, i_Severity_Spin_To_Win[npc.index], b_Severity_Spin_To_Win[npc.index], 15.0, 10.0);	//setting severity to 10 or more is just pointless, also lots of lag! same thing when using alt but with over 5
+					clearance[npc.index] = false;
+					fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + 12.5;	//retry in 12.5 seconds
+					Spin_To_Win_Clearance_Check(npc.index);
+					if(clearance[npc.index])
+					{
+						fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + 120.0;
+						fl_Spin_To_Win_Global_Ability_Timer=GetGameTime(npc.index) + 30.0;
+						
+						Spin_To_Win_Activate(npc.index, i_Severity_Spin_To_Win[npc.index], b_Severity_Spin_To_Win[npc.index], 15.0, 10.0);	//setting severity to 10 or more is just pointless, also lots of lag! same thing when using alt but with over 5
+					}
 				}
 			}
-		}
-		if(fl_Scaramouche_Global_Ability_Timer < GetGameTime(npc.index))
-		{
-			if(fl_Scaramouche_Ability_Timer[npc.index] < GetGameTime(npc.index))
+			if(fl_Scaramouche_Global_Ability_Timer < GetGameTime(npc.index))
 			{
-				fl_Scaramouche_Ability_Timer[npc.index] = GetGameTime(npc.index) + 60.0;
-				fl_Scaramouche_Global_Ability_Timer = GetGameTime(npc.index) + 12.5;
-				Scaramouche_Activate(npc.index);
+				if(fl_Scaramouche_Ability_Timer[npc.index] < GetGameTime(npc.index))
+				{
+					fl_Scaramouche_Ability_Timer[npc.index] = GetGameTime(npc.index) + 60.0;
+					fl_Scaramouche_Global_Ability_Timer = GetGameTime(npc.index) + 12.5;
+					Scaramouche_Activate(npc.index);
+				}
 			}
 		}
 		//Target close enough to hit
@@ -458,18 +471,21 @@ public void Ikunagae_ClotThink(int iNPC)
 
 				npc.StartPathing();
 			}
-			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index))
-			{	
-				npc.m_iAmountProjectiles += 1;
-				float dmg = 100.0;
-				Normal_Attack_Start(npc.index, PrimaryThreatIndex, dmg, true);	//kinda custom attack logic for this npc
-				npc.PlayRangedSound();
-				npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 0.1;
-				if (npc.m_iAmountProjectiles >= i_Severity_Barrage[npc.index])
-				{
-					npc.m_iAmountProjectiles = 0;
-					npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 45.0;
-					Ikunagae_Spawn_Minnions(npc.index, 8);
+			if(GetTeam(npc.index)!=TFTeam_Red)
+			{
+				if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index))
+				{	
+					npc.m_iAmountProjectiles += 1;
+					float dmg = 100.0;
+					Normal_Attack_Start(npc.index, PrimaryThreatIndex, dmg, true);	//kinda custom attack logic for this npc
+					npc.PlayRangedSound();
+					npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 0.1;
+					if (npc.m_iAmountProjectiles >= i_Severity_Barrage[npc.index])
+					{
+						npc.m_iAmountProjectiles = 0;
+						npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 45.0;
+						Ikunagae_Spawn_Minnions(npc.index, 8);
+					}
 				}
 			}
 		}
@@ -495,7 +511,8 @@ public Action Ikunagae_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		return Plugin_Continue;
 	Ikunagae npc = view_as<Ikunagae>(victim);
 	
-	Severity_Core(npc.index);
+	if(GetTeam(npc.index)!=TFTeam_Red)
+		Severity_Core(npc.index);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{

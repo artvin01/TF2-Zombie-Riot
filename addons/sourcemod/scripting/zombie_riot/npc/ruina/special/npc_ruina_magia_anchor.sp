@@ -210,15 +210,16 @@ methodmap Magia_Anchor < CClotBody
 
 		i_currentwave[npc.index] = (ZR_GetWaveCount()+1);
 
-		
-		SDKHook(npc.index, SDKHook_Think, Magia_Anchor_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 
 		Ruina_Set_No_Retreat(npc.index);
 		Ruina_Set_Recall_Anchor_Point(npc.index, true);
 
-		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc. in this case its to allow buffing logic to work on it, thats it
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc. in this case its to allow buffing logic to work on it, thats it
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
@@ -232,7 +233,7 @@ methodmap Magia_Anchor < CClotBody
 	}
 }
 
-public void Magia_Anchor_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Magia_Anchor npc = view_as<Magia_Anchor>(iNPC);
 
@@ -303,13 +304,15 @@ public void Magia_Anchor_ClotThink(int iNPC)
 
 }
 
-public Action Magia_Anchor_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
 	Magia_Anchor npc = view_as<Magia_Anchor>(victim);
+
+	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -319,7 +322,7 @@ public Action Magia_Anchor_OnTakeDamage(int victim, int &attacker, int &inflicto
 	return Plugin_Changed;
 }
 
-public void Magia_Anchor_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Magia_Anchor npc = view_as<Magia_Anchor>(entity);
 	npc.PlayDeathSound();	
@@ -329,7 +332,7 @@ public void Magia_Anchor_NPCDeath(int entity)
 
 	i_magia_anchors_active--;
 
-	SDKUnhook(npc.index, SDKHook_Think, Magia_Anchor_ClotThink);
+	Ruina_NPCDeath_Override(entity);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

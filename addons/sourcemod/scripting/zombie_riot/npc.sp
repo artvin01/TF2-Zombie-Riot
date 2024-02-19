@@ -157,7 +157,7 @@ enum
 	
 	MEDIVAL_RAM	= 126,
 	ALT_SOLDIER_BARRAGER = 127,
-	ALT_The_Shit_Slapper = 128,
+	ALT_THE_SHIT_SLAPPER = 128,
 	
 	BONEZONE_BASICBONES = 129,
 	
@@ -1012,7 +1012,7 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 
 	7,	// MEDIVAL_RAM	= 126,
 	4,	// ALT_SOLDIER_BARRAGER = 127,
-	4,	// ALT_The_Shit_Slapper = 128,
+	4,	// ALT_THE_SHIT_SLAPPER = 128,
 
 	0,	// BONEZONE_BASICBONES = 129,
 
@@ -2446,7 +2446,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 		case ALT_SOLDIER_BARRAGER:
 			entity = Soldier_Barrager(client, vecPos, vecAng, ally);
 		
-		case ALT_The_Shit_Slapper:
+		case ALT_THE_SHIT_SLAPPER:
 			entity = The_Shit_Slapper(client, vecPos, vecAng, ally);
 		
 		case BONEZONE_BASICBONES:
@@ -3691,7 +3691,7 @@ public void NPCDeath(int entity)
 		case ALT_SOLDIER_BARRAGER:
 			Soldier_Barrager_NPCDeath(entity);
 		
-		case ALT_The_Shit_Slapper:
+		case ALT_THE_SHIT_SLAPPER:
 			The_Shit_Slapper_NPCDeath(entity);
 		
 		case BONEZONE_BASICBONES:
@@ -4128,10 +4128,6 @@ public void NPCDeath(int entity)
 		
 		case ISHARMLA_TRANS:
 			IsharmlaTrans_NPCDeath(entity);
-	
-		//TODO: Redo this so it uses the new system.
-		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA, RUINA_DRONE, RUINA_RURIANA, RUINA_VENIUM , RUINA_MAGIA_ANCHOR, RUINA_STELLAR_WEAVER, RUINA_STELLAR_WEAVER_MID:
-			Ruina_NPCDeath_Override(entity); //all ruina npc deaths are here
 		
 		case SEA_RAIDBOSS_DONNERKRIEG:
 			Raidboss_Donnerkrieg_NPCDeath(entity);
@@ -4636,7 +4632,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case ALT_SOLDIER_BARRAGER:
 			Soldier_Barrager_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case ALT_The_Shit_Slapper:
+		case ALT_THE_SHIT_SLAPPER:
 			The_Shit_Slapper_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case BONEZONE_BASICBONES:
@@ -4958,9 +4954,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case ISHARMLA:
 			Isharmla_OnTakeDamage(victim, attacker, damage);
-		//TODO: Redo this so it uses the new system.
-		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA, RUINA_DRONE, RUINA_RURIANA, RUINA_VENIUM, RUINA_MAGIA_ANCHOR, RUINA_STELLAR_WEAVER, RUINA_STELLAR_WEAVER_MID:	
-			Ruina_NPC_OnTakeDamage_Override(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 			
 		case SEA_RAIDBOSS_DONNERKRIEG:
 			Raidboss_Donnerkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
