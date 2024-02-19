@@ -53,14 +53,16 @@ static char g_TeleportSounds[][] = {
 
 void Laz_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);  			}
+	
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_TeleportSounds);
+
 	PrecacheModel("models/player/demo.mdl");
 }
 
@@ -159,15 +161,14 @@ methodmap Laz < CClotBody
 		
 		
 		/*
-			Bunsen Brave		Robo_Heavy_Chief
-			Claid					"models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
-			Dark Helm - Laz		Hw2013_The_Dark_Helm_(Class)
-			Diplomat 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
-			Herzenvrecher		"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
+			Bozo's bouffant		"models/workshop/player/items/pyro/hw2013_the_haha_hairdo/hw2013_the_haha_hairdo.mdl"
+			Last Breath			"models/workshop/player/items/pyro/pyro_halloween_gasmask/pyro_halloween_gasmask.mdl"
+			Masked Loyalty		"models/workshop/player/items/pyro/dec23_masked_loyalty/dec23_masked_loyalty.mdl"
+			Mighty Mitre		"models/workshop/player/items/medic/dec18_mighty_mitre/dec18_mighty_mitre.mdl"
+			Nostrum Napalmer	"models/workshop/weapons/c_models/c_ai_flamethrower/c_ai_flamethrower.mdl"
+			Wings of purity		"models/workshop/player/items/medic/sf14_purity_wings/sf14_purity_wings.mdl"
 		
 		*/
-		
-		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -181,25 +182,30 @@ methodmap Laz < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/pyro/hw2013_the_haha_hairdo/hw2013_the_haha_hairdo.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/pyro_halloween_gasmask/pyro_halloween_gasmask.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec23_masked_loyalty/dec23_masked_loyalty.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/dec18_mighty_mitre/dec18_mighty_mitre.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_scout.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_ai_flamethrower/c_ai_flamethrower.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_purity_wings/sf14_purity_wings.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+
 		
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -209,6 +215,7 @@ methodmap Laz < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
@@ -216,7 +223,7 @@ methodmap Laz < CClotBody
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
-		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a melee npc
 		
 		return npc;
 	}
@@ -269,25 +276,91 @@ static void ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Master_Apply_Speed_Buff(npc.index, 125.0, 1.0, 1.12);
+		
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
-			
-		int status=0;
-		Ruina_Generic_Melee_Self_Defense(npc.index, PrimaryThreatIndex, flDistanceToTarget, 10000.0, 25.0, 125.0, "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", 0.54, 0.4, 20000.0, GameTime, status);
-		switch(status)
+
+		if(flDistanceToTarget < (750.0*750.0))
 		{
-			case 1:	//we swung
-				npc.PlayMeleeSound();
-			case 2:	//we hit something
-				npc.PlayMeleeHitSound();
-			case 3:	//we missed
-				npc.PlayMeleeMissSound();
-			//0 means nothing.
+			int Enemy_I_See;
+			
+			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+			//Target close enough to hit
+			if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+			{
+				if(flDistanceToTarget < (325.0*350.0))
+				{
+					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
+					npc.m_bAllowBackWalking=true;
+				}
+				else
+				{
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
+					npc.m_bAllowBackWalking=false;
+				}
+			}
+			else
+			{
+				npc.StartPathing();
+				npc.m_bPathing = true;
+				npc.m_bAllowBackWalking=false;
+			}
+		}
+		else
+		{
+			npc.StartPathing();
+			npc.m_bPathing = true;
+			npc.m_bAllowBackWalking=false;
+		}
+
+		if(npc.m_flNextRangedAttack < GameTime)	//Initialize the attack.
+		{
+			float Charge_Time = 2.5;	//how long it takes to fire the laser
+			npc.m_flAttackHappens = Charge_Time + GameTime;
+			npc.m_flAttackHappens = Charge_Time + 1.0 + GameTime;	//show the laser visuals
+			npc.m_flNextRangedBarrage_Spam = (Charge_Time*0.75);	//for how long can the npc turn until it stops turning towards the target
+			npc.m_flNextRangedAttack = GameTime + 10.0;
+		}
+		else
+		{
+			f_NpcTurnPenalty[npc.index] = 1.0;
+		}
+		if(npc.m_flAttackHappens > GameTime)	//attack is active
+		{
+			if(npc.m_flNextRangedBarrage_Spam > GameTime)	//turn towards enemy
+			{
+				npc.FaceTowards(vecTarget);
+			}
+			else
+			{
+				f_NpcTurnPenalty[npc.index] = 0.15;
+			}
+
+			int color[4] = {175, 175, 175, 175};
+			float time=0.1;
+			float size[2] = {1.0, 1.0};
+
+			bool attack=false;
+			if(npc.m_flNextMeleeAttack < GameTime)	//attack!
+			{
+				npc.m_flAttackHappens = 0.0;
+				f_NpcTurnPenalty[npc.index] = 1.0;
+				color = {127, 255, 255, 255};
+				attack=true;
+			}
+			float EndLoc[3];
+			EndLoc = Do_Laz_Laser_Effects(npc.index, vecTarget, color, size, time, 350.0);	//reuse the location since lazy to do another trace.
+			if(attack)
+			{
+				float Npc_Loc[3];
+				WorldSpaceCenter(npc.index, Npc_Loc);
+				Ruina_Laser_Damage_Trace(npc.index, Npc_Loc, EndLoc, 50.0, 75.0, 5.0);
+			}
 		}
 	}
 	else
@@ -341,5 +414,6 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
-	
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 }

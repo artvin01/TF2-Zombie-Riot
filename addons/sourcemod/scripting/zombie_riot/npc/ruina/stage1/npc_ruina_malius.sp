@@ -359,6 +359,57 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
+static void Malius_Effects_Attack(Malius npc, float Target_Vec[3], int GetClosestEnemyToAttack, float flDistanceToTarget)
+{
+	int amt = 2;
+	float Npc_Loc[3];
+	Npc_Loc = WorldSpaceCenterOld(npc.index);
+	float Ratio_Core = 180.0/(amt);
+
+	Npc_Loc[2]+=50.0;
+
+	float Ang[3];
+	MakeVectorFromPoints(Npc_Loc, Target_Vec, Ang);
+	GetVectorAngles(Ang, Ang);
+
+	for(int i =1 ; i <= amt ; i++)
+	{
+		float Angle_Adj =  Ratio_Core*i+45.0-(Ratio_Core/2);
+
+		if(i>amt/2)
+		{
+			Angle_Adj+=90.0;
+		}	
+
+		float tempAngles[3], Direction[3], endLoc[3];
+		tempAngles[0] = Ang[0];
+		tempAngles[1] = Ang[1];
+		tempAngles[2] = Angle_Adj;	
+
+		
+		if(tempAngles[2]>360.0)
+			tempAngles[2] -= 360.0;
+	
+					
+		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, Direction);
+		ScaleVector(Direction, 75.0);
+		AddVectors(Npc_Loc, Direction, endLoc);
+		
+		float vecTarget[3];
+		vecTarget = Target_Vec;
+		float projectile_speed = 500.0;
+		//lets pretend we have a projectile.
+		if(flDistanceToTarget < 1250.0*1250.0)
+			vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+		if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
+		{
+			vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+		}
+		float DamageDone = 25.0;
+		npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, true, endLoc,_,_, 10.0);
+	}
+}
+
 static void Malius_SelfDefense(Malius npc, float gameTime, int Anchor_Id)	//ty artvin
 {
 	int GetClosestEnemyToAttack;
@@ -380,16 +431,7 @@ static void Malius_SelfDefense(Malius npc, float gameTime, int Anchor_Id)	//ty a
 			npc.PlayRangedSound();
 			//after we fire, we will have a short delay beteween the actual laser, and when it happens
 			//This will predict as its relatively easy to dodge
-			float projectile_speed = 500.0;
-			//lets pretend we have a projectile.
-			if(flDistanceToTarget < 1250.0*1250.0)
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
-			if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-			{
-				vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
-			}
-			float DamageDone = 50.0;
-			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);
+			Malius_Effects_Attack(npc, vecTarget, GetClosestEnemyToAttack, flDistanceToTarget);
 			npc.FaceTowards(vecTarget, 20000.0);
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
 			npc.PlayRangedReloadSound();
@@ -416,16 +458,9 @@ static void Malius_SelfDefense(Malius npc, float gameTime, int Anchor_Id)	//ty a
 					npc.PlayRangedSound();
 					//after we fire, we will have a short delay beteween the actual laser, and when it happens
 					//This will predict as its relatively easy to dodge
-					float projectile_speed = 500.0;
-					//lets pretend we have a projectile.
-					if(flDistanceToTarget < 1250.0*1250.0)
-						vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
-					if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-					{
-						vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
-					}
-					float DamageDone = 25.0;
-					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);
+
+					Malius_Effects_Attack(npc, vecTarget, GetClosestEnemyToAttack, flDistanceToTarget);
+					
 					npc.FaceTowards(vecTarget, 20000.0);
 					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
 					npc.PlayRangedReloadSound();

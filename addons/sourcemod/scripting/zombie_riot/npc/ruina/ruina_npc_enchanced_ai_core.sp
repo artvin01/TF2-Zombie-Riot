@@ -84,6 +84,8 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 #define RUINA_ION_CANNON_SOUND_PASSIVE "ambient/energy/weld1.wav"
 #define RUINA_ION_CANNON_SOUND_PASSIVE_CHARGING "weapons/physcannon/physcannon_charge.wav"
 
+static bool Ruina_Core_BEAM_HitDetected[MAXENTITIES];
+
 enum
 {
 	RUINA_MELEE_NPC = 1,
@@ -146,6 +148,7 @@ public void Ruina_Ai_Core_Mapstart()
 
 	Zero(fl_mana_sickness_timeout);
 	Zero(b_is_battery_buffed);
+	Zero(Ruina_Core_BEAM_HitDetected);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -1872,6 +1875,94 @@ static int Ruina_Create_Entity(float Loc[3], float duration)
 	{
 		return -1;
 	}
+}
+public bool Ruina_BEAM_TraceWallsOnly(int entity, int contentsMask)
+{
+	return !entity;
+}
+stock float[] Do_Laz_Laser_Effects(int client, float Target_Vec[3], int color[4], float size[2], float time, float Dist)
+{
+	float Npc_Loc[3], flAng[3];
+	WorldSpaceCenter(client, Npc_Loc);
+	MakeVectorFromPoints(Npc_Loc, Target_Vec, flAng);
+	GetVectorAngles(flAng, flAng);
+
+	float End_Loc[3];
+
+	Handle trace = TR_TraceRayFilterEx(Npc_Loc, flAng, 11, RayType_Infinite, Ruina_BEAM_TraceWallsOnly);
+	if (TR_DidHit(trace))
+	{
+		TR_GetEndPosition(End_Loc, trace);
+		delete trace;
+
+		float distance = GetVectorDistance(Npc_Loc, End_Loc);
+
+		if(distance>Dist && Dist !=-1.0)
+		{
+			Get_Fake_Forward_Vec(Dist, flAng, End_Loc, Npc_Loc);
+			
+		}
+	}
+	else
+	{
+		delete trace;
+	}
+	
+	float flPos[3]; // original
+	GetAttachment(client, "effect_hand_r", flPos, flAng);
+
+	TE_SetupBeamPoints(flPos, End_Loc, BeamWand_Laser, 0, 0, 0, time, size[0], size[1], 0, 0.1, color, 0);
+	TE_SendToAll();
+
+	return End_Loc;
+}
+static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
+{
+	float Direction[3];
+	
+	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(Direction, Range);
+	AddVectors(Pos, Direction, Vec_Target);
+}
+stock void Ruina_Laser_Damage_Trace(int client, float Start_Point[3], float End_Point[3], float Radius, float dps, float Bonus_dmg = 5.0)
+{
+
+	for (int i = 1; i < MAXENTITIES; i++)
+	{
+		Ruina_Core_BEAM_HitDetected[i] = false;
+	}
+
+	float hullMin[3], hullMax[3];
+	hullMin[0] = -Radius;
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+	Handle trace = TR_TraceHullFilterEx(Start_Point, End_Point, hullMin, hullMax, 1073741824, Ruina_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
+	delete trace;
+			
+	for (int victim = 1; victim < MAXENTITIES; victim++)
+	{
+		if (Ruina_Core_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
+		{
+			float Dmg = dps;
+
+			if(ShouldNpcDealBonusDamage(victim))
+			{
+				Dmg *= Bonus_dmg;
+			}
+			SDKHooks_TakeDamage(victim, client, client, Dmg, DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));
+		}
+	}
+}
+public bool Ruina_BEAM_TraceUsers(int entity, int contentsMask, int client)
+{
+	if (IsEntityAlive(entity))
+	{
+		Ruina_Core_BEAM_HitDetected[entity] = true;
+	}
+	return false;
 }
 /*static void Ruina_Move_Entity(int entity, float loc[3], float speed=10.0)
 {
