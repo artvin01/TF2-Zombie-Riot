@@ -819,6 +819,7 @@ void ZR_ClientDisconnect(int client)
 	Reset_stats_Judge_Singular(client);
 	Reset_stats_Drink_Singular(client);
 	Reset_stats_Grenade_Singular(client);
+	Reset_stats_Skullswand_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
