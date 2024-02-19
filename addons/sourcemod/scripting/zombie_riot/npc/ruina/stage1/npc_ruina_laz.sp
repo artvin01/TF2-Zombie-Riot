@@ -332,6 +332,7 @@ static void ClotThink(int iNPC)
 			npc.m_bAllowBackWalking=false;
 		}
 
+		//note: redo this so its basically not a copy of the pistoleers from expidonsa...
 		if(npc.m_flNextRangedAttack < GameTime)	//Initialize the attack.
 		{
 			if(flDistanceToTarget<(500.0*500.0))
