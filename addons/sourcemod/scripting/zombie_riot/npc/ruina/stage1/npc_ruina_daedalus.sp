@@ -215,6 +215,7 @@ methodmap Daedalus < CClotBody
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a RANGED npc
+		Ruina_Set_Master_Heirarchy(npc.index, RUINA_RANGED_NPC, false, 5, 1);		//doesn't acept any npc's
 		
 		return npc;
 	}
@@ -259,7 +260,7 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>500.0)
+	if(fl_ruina_battery[npc.index]>250.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 

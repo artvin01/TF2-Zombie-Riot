@@ -156,7 +156,7 @@ methodmap Laz < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -165,7 +165,7 @@ methodmap Laz < CClotBody
 			Last Breath			"models/workshop/player/items/pyro/pyro_halloween_gasmask/pyro_halloween_gasmask.mdl"
 			Masked Loyalty		"models/workshop/player/items/pyro/dec23_masked_loyalty/dec23_masked_loyalty.mdl"
 			Mighty Mitre		"models/workshop/player/items/medic/dec18_mighty_mitre/dec18_mighty_mitre.mdl"
-			Nostrum Napalmer	"models/workshop/weapons/c_models/c_ai_flamethrower/c_ai_flamethrower.mdl"
+			Nostrum Napalmer	"models/workshop_partner/weapons/c_models/c_ai_flamethrower/c_ai_flamethrower.mdl"
 			Wings of purity		"models/workshop/player/items/medic/sf14_purity_wings/sf14_purity_wings.mdl"
 		
 		*/
@@ -198,7 +198,7 @@ methodmap Laz < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_ai_flamethrower/c_ai_flamethrower.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_ai_flamethrower/c_ai_flamethrower.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
@@ -223,7 +223,7 @@ methodmap Laz < CClotBody
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
-		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a melee npc
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a RANGED npc
 		
 		return npc;
 	}
@@ -284,7 +284,21 @@ static void ClotThink(int iNPC)
 		
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
-		if(flDistanceToTarget < (750.0*750.0))
+		int iPitch = npc.LookupPoseParameter("body_pitch");
+		if(iPitch < 0)
+			return;		
+						
+		//Body pitch
+		float v[3], ang[3];
+		SubtractVectors(WorldSpaceCenterOld(npc.index), vecTarget, v); 
+		NormalizeVector(v, v);
+		GetVectorAngles(v, ang); 
+								
+		float flPitch = npc.GetPoseParameter(iPitch);
+								
+		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+
+		if(flDistanceToTarget < (500.0*500.0))
 		{
 			int Enemy_I_See;
 			
@@ -320,11 +334,14 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_flNextRangedAttack < GameTime)	//Initialize the attack.
 		{
-			float Charge_Time = 2.5;	//how long it takes to fire the laser
-			npc.m_flAttackHappens = Charge_Time + GameTime;
-			npc.m_flAttackHappens = Charge_Time + 1.0 + GameTime;	//show the laser visuals
-			npc.m_flNextRangedBarrage_Spam = (Charge_Time*0.75);	//for how long can the npc turn until it stops turning towards the target
-			npc.m_flNextRangedAttack = GameTime + 10.0;
+			if(flDistanceToTarget<(500.0*500.0))
+			{
+				float Charge_Time = 2.5;	//how long it takes to fire the laser
+				npc.m_flAttackHappens = Charge_Time + 1.0 + GameTime;	//show the laser visuals
+				npc.m_flNextRangedBarrage_Spam = GameTime + Charge_Time-1.0;	//for how long can the npc turn until it stops turning towards the target
+				npc.m_flNextMeleeAttack = GameTime + Charge_Time;
+				npc.m_flNextRangedAttack = GameTime + 10.0;
+			}
 		}
 		else
 		{
@@ -334,34 +351,47 @@ static void ClotThink(int iNPC)
 		{
 			if(npc.m_flNextRangedBarrage_Spam > GameTime)	//turn towards enemy
 			{
-				npc.FaceTowards(vecTarget);
+				npc.FaceTowards(vecTarget, 20000.0);
 			}
 			else
 			{
-				f_NpcTurnPenalty[npc.index] = 0.15;
+				npc.FaceTowards(vecTarget, 25.0);
 			}
 
-			int color[4] = {175, 175, 175, 175};
+			int color[4];
 			float time=0.1;
-			float size[2] = {1.0, 1.0};
+			float size[2];
+			color = {175, 175, 175, 255};
+			size[0] = 7.5; size[1] = 5.0;
 
 			bool attack=false;
 			if(npc.m_flNextMeleeAttack < GameTime)	//attack!
 			{
 				npc.m_flAttackHappens = 0.0;
-				f_NpcTurnPenalty[npc.index] = 1.0;
 				color = {127, 255, 255, 255};
+				time = 1.0;
+				size[0] = 15.0; size[1] = 7.5;
 				attack=true;
+				
 			}
 			float EndLoc[3];
-			EndLoc = Do_Laz_Laser_Effects(npc.index, vecTarget, color, size, time, 350.0);	//reuse the location since lazy to do another trace.
+			EndLoc = Do_Laz_Laser_Effects(npc.index, color, size, time, 975.0);	//reuse the location since lazy to do another trace.
+
 			if(attack)
 			{
 				float Npc_Loc[3];
 				WorldSpaceCenter(npc.index, Npc_Loc);
-				Ruina_Laser_Damage_Trace(npc.index, Npc_Loc, EndLoc, 50.0, 75.0, 5.0);
+				float dmg = 50.0;
+				float radius = 25.0;
+				Ruina_Laser_Damage_Trace(npc.index, Npc_Loc, EndLoc, radius, dmg, 6.0);
 			}
 		}
+		else
+		{
+			if(npc.m_bAllowBackWalking)
+				npc.FaceTowards(vecTarget, 2000.0);
+		}
+		
 	}
 	else
 	{

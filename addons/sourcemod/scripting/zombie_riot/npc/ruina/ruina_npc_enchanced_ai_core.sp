@@ -49,6 +49,7 @@ static float fl_ruina_shield_timer[MAXENTITIES];
 static bool b_ruina_shield_active[MAXENTITIES];
 static int i_shield_effect[MAXENTITIES];
 static float fl_shield_break_timeout[MAXENTITIES];
+static int i_shield_color[3] = {0, 150, 255};
 
 //these scales on wavecount
 #define RUINA_NORMAL_NPC_MAX_SHIELD 175.0
@@ -340,7 +341,7 @@ static void Ruina_Update_Shield(int client)
 	if(IsValidEntity(i_shield_entity))
 	{
 		SetEntityRenderMode(i_shield_entity, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(i_shield_entity, 255, 255, 255, alpha);
+		SetEntityRenderColor(i_shield_entity, i_shield_color[0], i_shield_color[1], i_shield_color[2], alpha);
 		return;
 	}
 	else
@@ -361,7 +362,7 @@ static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from 
 	AcceptEntityInput(Shield, "SetModelScale");
 	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 	
-	SetEntityRenderColor(Shield, 1, 255, 255, alpha);
+	SetEntityRenderColor(Shield, i_shield_color[0], i_shield_color[1], i_shield_color[2], alpha);
 	SetEntProp(Shield, Prop_Send, "m_nSkin", 0);
 
 	i_shield_effect[client] = EntIndexToEntRef(Shield);
@@ -1880,14 +1881,19 @@ public bool Ruina_BEAM_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
-stock float[] Do_Laz_Laser_Effects(int client, float Target_Vec[3], int color[4], float size[2], float time, float Dist)
+stock float[] Do_Laz_Laser_Effects(int client, int color[4], float size[2], float time, float Dist)
 {
 	float Npc_Loc[3], flAng[3];
 	WorldSpaceCenter(client, Npc_Loc);
-	MakeVectorFromPoints(Npc_Loc, Target_Vec, flAng);
-	GetVectorAngles(flAng, flAng);
-
+	GetEntPropVector(client, Prop_Data, "m_angRotation", flAng);
 	float End_Loc[3];
+
+	CClotBody npc = view_as<CClotBody>(client);
+	int iPitch = npc.LookupPoseParameter("body_pitch");
+			
+	float flPitch = npc.GetPoseParameter(iPitch);
+	flPitch *= -1.0;
+	flAng[0] = flPitch;
 
 	Handle trace = TR_TraceRayFilterEx(Npc_Loc, flAng, 11, RayType_Infinite, Ruina_BEAM_TraceWallsOnly);
 	if (TR_DidHit(trace))
@@ -1900,7 +1906,6 @@ stock float[] Do_Laz_Laser_Effects(int client, float Target_Vec[3], int color[4]
 		if(distance>Dist && Dist !=-1.0)
 		{
 			Get_Fake_Forward_Vec(Dist, flAng, End_Loc, Npc_Loc);
-			
 		}
 	}
 	else
