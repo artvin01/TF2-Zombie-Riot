@@ -222,9 +222,6 @@ methodmap Venium < CClotBody
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		Ruina_Set_No_Retreat(npc.index);	//no running away to heal!
-
-		Ruina_Set_Recall_Status(npc.index, true);
-		
 		
 		return npc;
 	}
@@ -290,7 +287,7 @@ static void ClotThink(int iNPC)
 			{
 				if(dist <= (145.0*145.0))
 				{
-					Ruina_Add_Battery(Anchor, 0.5);
+					Ruina_Add_Battery(Anchor, 1.0);
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 					npc.FaceTowards(Anchor_Loc, 15000.0);

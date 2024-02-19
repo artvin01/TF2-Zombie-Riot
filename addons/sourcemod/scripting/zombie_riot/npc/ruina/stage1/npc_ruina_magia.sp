@@ -285,23 +285,27 @@ static void ClotThink(int iNPC)
 				if(flDistanceToTarget < (75000))
 				{
 					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
+					npc.m_bAllowBackWalking=true;
 				}
 				else
 				{
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
+					npc.m_bAllowBackWalking=false;
 				}
 			}
 			else
 			{
 				npc.StartPathing();
 				npc.m_bPathing = true;
+				npc.m_bAllowBackWalking=false;
 			}		
 		}
 		else
 		{
 			npc.StartPathing();
 			npc.m_bPathing = true;
+			npc.m_bAllowBackWalking=false;
 		}
 			
 		//Target close enough to hit

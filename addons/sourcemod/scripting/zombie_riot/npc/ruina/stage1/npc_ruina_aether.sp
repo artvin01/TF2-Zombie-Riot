@@ -270,11 +270,13 @@ static void ClotThink(int iNPC)
 				{
 					if(flDistanceToTarget < (750.0*750.0))
 					{
+						npc.m_bAllowBackWalking=true;
 						Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
 					}
 					else
 					{
 						NPC_StopPathing(npc.index);
+						npc.m_bAllowBackWalking=false;
 						npc.m_bPathing = false;
 					}
 				}
@@ -282,13 +284,19 @@ static void ClotThink(int iNPC)
 				{
 					npc.StartPathing();
 					npc.m_bPathing = true;
+					npc.m_bAllowBackWalking=false;
 				}
 			}
 			else
 			{
 				npc.StartPathing();
 				npc.m_bPathing = true;
+				npc.m_bAllowBackWalking=false;
 			}
+		}
+		else
+		{
+			npc.m_bAllowBackWalking=false;
 		}
 		
 		Aether_SelfDefense(npc, GameTime, Anchor_Id);

@@ -13,11 +13,9 @@ static bool b_npc_low_health[MAXENTITIES];
 static bool b_npc_no_retreat[MAXENTITIES];
 static bool b_npc_healer[MAXENTITIES];	//warp
 static float fl_npc_healing_duration[MAXENTITIES];
-static bool b_block_recall[MAXENTITIES];
 
 static bool b_npc_sniper_anchor_point[MAXENTITIES];
 static float fl_npc_sniper_anchor_find_timer[MAXENTITIES];
-static bool b_recall_achor[MAXENTITIES];
 static int i_last_sniper_anchor_id_Ref[MAXENTITIES];
 
 static char gLaser1;
@@ -41,8 +39,6 @@ static float fl_mana_sickness_timeout[MAXTF2PLAYERS];
 
 float fl_ruina_in_combat_timer[MAXENTITIES];
 static float fl_ruina_internal_teleport_timer[MAXENTITIES];
-static int i_recall_entity_ref[MAXENTITIES];
-static bool b_ruina_recall_teleport[MAXENTITIES];
 static bool b_ruina_allow_teleport[MAXENTITIES];
 #define RUINA_ASTRIA_TELEPORT_SOUND "misc/halloween_eyeball/book_spawn.wav"
 
@@ -140,13 +136,10 @@ public void Ruina_Ai_Core_Mapstart()
 
 	Zero(fl_ruina_internal_teleport_timer);
 	Zero(b_ruina_allow_teleport);
-	Zero(b_ruina_recall_teleport);
-	Zero(i_recall_entity_ref);
 
 	Zero(b_npc_sniper_anchor_point);
 	Zero(fl_npc_sniper_anchor_find_timer);
 	Zero(i_last_sniper_anchor_id_Ref);
-	Zero(b_recall_achor);
 	Zero(fl_ruina_in_combat_timer);
 
 	Zero(fl_mana_sickness_timeout);
@@ -181,23 +174,11 @@ public void Ruina_Set_Heirarchy(int client, int type)
 	fl_npc_healing_duration[client] = 0.0;
 	b_npc_sniper_anchor_point[client]=false;
 	i_last_sniper_anchor_id_Ref[client]=-1;
-	i_recall_entity_ref[client]=-1;
-	b_recall_achor[client]=false;
-	b_block_recall[client]=false;
-	b_ruina_recall_teleport[client]=true;
 	fl_ruina_in_combat_timer[client]=0.0;
 
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_iTarget=-1;	//set its target as invalid on spawn
 	
-}
-public void Ruina_Set_Recall_Status(int client, bool state)
-{
-	b_block_recall[client]=state;
-}
-public void Ruina_Set_Recall_Anchor_Point(int client, bool state)
-{
-	b_recall_achor[client]=state;
 }
 public void Ruina_Set_Sniper_Anchor_Point(int client, bool state)
 {
@@ -229,8 +210,6 @@ public void Ruina_Set_Master_Heirarchy(int client, int type, bool accepting, int
 	i_master_attracts[client] = type;
 
 	b_ruina_allow_teleport[client]=false;
-
-	b_ruina_recall_teleport[client]=true;
 }
 
 public void Ruina_Master_Release_Slaves(int client)
@@ -296,17 +275,17 @@ static void Ruina_Npc_Shield_Logic(int victim, float &damage, float damageForce[
 			}
 			damage -= damage*fl_ruina_shield_strenght[victim];
 			b_ruina_shield_active[victim] = true;
-			damageForce[0] -= damageForce[0]*fl_ruina_shield_strenght[victim];	//also remove kb dependant on strenght
-			damageForce[1] -= damageForce[1]*fl_ruina_shield_strenght[victim];
-			damageForce[2] -= damageForce[2]*fl_ruina_shield_strenght[victim];
+			damageForce[0] = damageForce[0]*fl_ruina_shield_strenght[victim];	//also remove kb dependant on strenght
+			damageForce[1] = damageForce[1]*fl_ruina_shield_strenght[victim];
+			damageForce[2] = damageForce[2]*fl_ruina_shield_strenght[victim];
 			
 			
 		}
-		else	//if not, remove shield, deal the remaining damage 
+		else	//if not, remove shield
 		{
-			damage = fl_ruina_shield_power[victim] * -1.0;
 			fl_ruina_shield_power[victim] = 0.0;
 			b_ruina_shield_active[victim] = false;
+			Ruina_Remove_Shield(victim);
 		}
 	}
 	else
@@ -371,7 +350,7 @@ static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from 
 	AcceptEntityInput(Shield, "SetModelScale");
 	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 	
-	SetEntityRenderColor(Shield, 255, 255, 255, alpha);
+	SetEntityRenderColor(Shield, 1, 255, 255, alpha);
 	SetEntProp(Shield, Prop_Send, "m_nSkin", 0);
 
 	i_shield_effect[client] = EntIndexToEntRef(Shield);
@@ -455,51 +434,6 @@ static int GetClosestAnchor(int client)
 		}
 	}
 	return valid;
-}
-static int GetClosestRecall(int iNPC, int Target)
-{
-	CClotBody main = view_as<CClotBody>(iNPC);
-	int valid = -1;
-	int Valid_Secondary=-1;
-	float Npc_Vec[3]; Npc_Vec=GetAbsOriginOld(main.index);
-	for(int targ; targ<i_MaxcountNpcTotal; targ++)
-	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
-		float dist = 99999999.9;
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_recall_achor[baseboss_index] && GetTeam(iNPC) == GetTeam(baseboss_index))
-		{
-			CClotBody npc = view_as<CClotBody>(baseboss_index);
-			if(npc.m_iTarget==Target)
-			{
-				float Main_Range = main.GetPathFollower().GetLength();	//the npc's range to its target
-				float Other_Range = npc.GetPathFollower().GetLength();	//the anchors range to the same target
-				if(Other_Range <= Main_Range)
-				{
-					return baseboss_index;
-				}
-				else
-				{
-					Valid_Secondary=baseboss_index;
-				}
-				
-			}
-			else
-			{
-				float target_vec[3]; target_vec = GetAbsOriginOld(baseboss_index);
-				float Distance=GetVectorDistance(Npc_Vec, target_vec, true);
-				if(dist>Distance)
-				{
-					valid = baseboss_index;
-				}
-			}
-		}
-	}
-	if(IsValidEntity(Valid_Secondary))
-	{
-		return Valid_Secondary;
-	}
-	else
-		return valid;
 }
 static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime)
 {
@@ -976,6 +910,44 @@ public void Ruina_Generic_Melee_Self_Defense(int iNPC, int target, float distanc
 		}
 	}
 }
+
+static float fl_mana_sickness_multi[MAXENTITIES];
+static int i_mana_sickness_flat[MAXENTITIES];
+stock void Ruina_AOE_Add_Mana_Sickness(float Loc[3], int iNPC, float range, float Multi, int flat_amt=0)
+{
+	fl_mana_sickness_multi[iNPC] = Multi;
+	i_mana_sickness_flat[iNPC] = flat_amt;
+	Explode_Logic_Custom(0.0, iNPC, iNPC, -1, Loc, range, _, _, true, 99, false, _, Ruina_Apply_Mana_Debuff);
+}
+public void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
+{
+	if(!IsValidClient(victim))
+		return;
+
+	if(GetTeam(entity) != TFTeam_Red)
+		return;
+
+	float GameTime = GetGameTime();
+	
+	if(fl_mana_sickness_timeout[victim] > GameTime)
+		return;
+	
+	float Multi = fl_mana_sickness_multi[entity];
+	int flat_amt = i_mana_sickness_flat[entity];
+	float OverMana_Ratio = Current_Mana[victim]/max_mana[victim];
+
+	Current_Mana[victim] += RoundToCeil(max_mana[victim]*Multi+flat_amt);
+
+	if(OverMana_Ratio>2.1)
+	{
+		CPrintToChatAll("Player: %N got nuked due to overmana, AOE", victim);
+		Current_Mana[victim] = 0;
+		Mana_Regen_Delay[victim] = GameTime + 2.0;
+		Mana_Regen_Delay_Aggreviated[victim] = GameTime + 2.0;
+		fl_mana_sickness_timeout[victim] = GameTime + 2.0;
+	}
+	
+}
 stock void Ruina_Add_Mana_Sickness(int iNPC, int Target, float Multi, int flat_amt=0)
 {
 	if(IsValidClient(Target))
@@ -1024,6 +996,10 @@ public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 			vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
 			NPC_SetGoalVector(npc.index, vBackoffPos, true);
 			
+		}
+		else
+		{
+			npc.m_bAllowBackWalking=false;
 		}
 	}
 	else	//no?
@@ -1094,77 +1070,6 @@ public void Astria_Teleport_Allies(int iNPC, float Range, int colour[4])
 	spawnRing_Vectors(npc_Loc, Range*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", colour[0], colour[1], colour[2], colour[3], 1, 0.5, 6.0, 0.1, 1, 1.0);
 
 	Apply_Master_Buff(npc.index, RUINA_TELEPORT_BUFF, Range, 0.0, 0.0);
-}
-static void Recall_Teleportation(int iNPC, int Target)
-{
-	CClotBody npc = view_as<CClotBody>(iNPC);
-
-	float GameTime = GetGameTime(npc.index);
-
-	if(fl_ruina_in_combat_timer[npc.index] > GameTime)
-	{
-		b_ruina_recall_teleport[npc.index]=false;
-		return;
-	}
-
-	if(fl_ruina_internal_teleport_timer[npc.index]>GameTime || NpcStats_IsEnemySilenced(npc.index))
-	{
-		return;
-	}
-
-	fl_ruina_internal_teleport_timer[npc.index]=GameTime + RUINA_INTERNAL_TELEPORT_COOLDOWN*0.5;
-
-	int anchor = EntRefToEntIndex(i_recall_entity_ref[npc.index]);
-	if(!IsValidEntity(anchor))
-	{
-		anchor = GetClosestRecall(npc.index,Target);
-		if(!IsValidEntity(anchor))
-		{
-			b_ruina_recall_teleport[npc.index]=false;
-			return;	//we failed, giveup!
-		}
-	}
-	float vPredictedPos[3]; 
-
-	vPredictedPos = WorldSpaceCenterOld(anchor);	//teleport ontop of their heads :trolley:
-	vPredictedPos[2]+=100.0;
-
-	float Loc[3];
-	Loc = GetAbsOriginOld(npc.index);
-	Loc[2]+=75.0;
-
-	float start_offset[3], end_offset[3];
-	start_offset = WorldSpaceCenterOld(npc.index);
-
-	bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
-	if(Succeed)
-	{	
-		EmitSoundToAll(RUINA_ASTRIA_TELEPORT_SOUND, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
-		b_ruina_recall_teleport[npc.index]=false;
-		float npc_Loc[3]; npc_Loc = GetAbsOriginOld(npc.index); npc_Loc[2]+=10.0;
-		spawnRing_Vectors(npc_Loc, 2.0*250.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, 0.5, 6.0, 0.1, 1, 1.0);
-		int entity = Ruina_Create_Entity_Spesific(Loc, _ , 2.45);
-		if(IsValidEntity(entity))
-		{
-			Ruina_AttachParticle(entity, "spell_cast_wheel_blue", 2.4, "nozzle");
-			//Ruina_Move_Entity(entity, Loc, 5.0);
-		}
-		float effect_duration = 0.25;
-	
-		end_offset = vPredictedPos;
-							
-		start_offset[2]-= 25.0;
-		end_offset[2] -= 25.0;
-							
-		for(int help=1 ; help<=8 ; help++)
-		{	
-			Astria_Teleport_Effect(RUINA_BALL_PARTICLE_RED, effect_duration, start_offset, end_offset);
-							
-			start_offset[2] += 12.5;
-			end_offset[2] += 12.5;
-		}
-	}
 }
 static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 {
@@ -1250,69 +1155,6 @@ static void Astria_Teleport_Effect(char type[255], float duration = 0.0, float s
 		pack.WriteCell(duration);
 	}
 }
-public void Warp_Non_Combat_Npcs_Near(int iNPC, int type, int Target)
-{
-	CClotBody npc = view_as<CClotBody>(iNPC);
-
-	if(NpcStats_IsEnemySilenced(npc.index))
-		return;
-
-	float pos1[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-	for(int targ; targ<i_MaxcountNpcTotal; targ++)
-	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(iNPC) == GetTeam(baseboss_index))
-		{
-			if(!b_block_recall[baseboss_index])
-			{
-				if(baseboss_index!=npc.index)
-				{
-					if(i_npc_type[baseboss_index]==type || type==RUINA_GLOBAL_NPC)	//same type of npc, or a global type
-					{
-						if(GetTeam(baseboss_index) == GetTeam(npc.index) && IsEntityAlive(baseboss_index))
-						{
-							CClotBody npc2 = view_as<CClotBody>(baseboss_index);
-							int PrimrayThreatIndex = npc2.m_iTarget;
-							if(PrimrayThreatIndex==Target)
-							{
-								float Main_Range = npc.GetPathFollower().GetLength();	//the anchors range to the target
-								float Other_Range = npc2.GetPathFollower().GetLength();	//the npc's range to the same target
-								if(Main_Range <= Other_Range)
-								{
-									b_ruina_recall_teleport[npc2.index]=true;
-									i_recall_entity_ref[npc2.index]=EntIndexToEntRef(npc.index);
-								}
-							}
-							else
-							{
-								
-								if(IsValidEnemy(npc2.index, PrimrayThreatIndex))
-								{
-									float Main_Range = npc2.GetPathFollower().GetLength();	//the npc's range to the target
-									Main_Range*=Main_Range;
-									float Loc[3]; Loc = WorldSpaceCenterOld(npc.index);
-									float npc_Loc[3]; npc_Loc = WorldSpaceCenterOld(npc2.index);
-									float Dist = GetVectorDistance(Loc, npc_Loc, true);
-									if(Dist < Main_Range*0.75)
-									{	
-										b_ruina_recall_teleport[npc2.index]=true;
-										i_recall_entity_ref[npc2.index]=EntIndexToEntRef(npc.index);
-									}
-								}
-								else
-								{
-									b_ruina_recall_teleport[npc2.index]=true;
-									i_recall_entity_ref[npc2.index]=EntIndexToEntRef(npc.index);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
 public void Master_Apply_Defense_Buff(int client, float range, float time, float power)
 {
 	Apply_Master_Buff(client, RUINA_DEFENSE_BUFF, range, time, power);
@@ -1337,11 +1179,6 @@ static void Ruina_Special_Logic(int iNPC, int Target)
 	if(b_ruina_allow_teleport[iNPC])
 	{
 		Astria_Teleportation(iNPC, Target);
-		return;
-	}
-	if(b_ruina_recall_teleport[iNPC])
-	{
-		Recall_Teleportation(iNPC, Target);
 		return;
 	}
 }

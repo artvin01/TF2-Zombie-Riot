@@ -25,12 +25,12 @@ static const char g_IdleMusic[][] = {
 	"#zombiesurvival/seaborn/donner_schwert_5.mp3",	//temp raidmode stuff
 };
 
-#define RUINA_STORM_WEAVER_MODEL "models/props_borealis/bluebarrel001.mdl"
-#define RUINA_STORM_WEAVER_HEAD_MODEL "models/props_borealis/bluebarrel001.mdl"
-#define RUINA_STORM_WEAVER_MODEL_SIZE "1.0"	//1.0
-#define RUINA_STORM_WEAVER_LENGHT 10	//10
+#define RUINA_STORM_WEAVER_MODEL "models/props_moonbase/moon_gravel_crystal_blue.mdl" //"models/props_borealis/bluebarrel001.mdl"
+#define RUINA_STORM_WEAVER_HEAD_MODEL "models/props_moonbase/moon_gravel_crystal_blue.mdl" //"models/props_borealis/bluebarrel001.mdl"
+#define RUINA_STORM_WEAVER_MODEL_SIZE "2.0"	//1.0
+#define RUINA_STORM_WEAVER_LENGHT 12	//10
 
-#define RUINA_STORM_WEAVER_NOCLIP_SPEED 20.0
+#define RUINA_STORM_WEAVER_NOCLIP_SPEED 35.0
 #define RUINA_STORM_WEAVER_FLIGHT_SPEED 315.0
 
 #define RUINA_DAMAGE_INSTANCES_PER_FRAME 1	//a player can only dmg the worm x times a frame, to make piercing weapons not delete him stupidly easily
@@ -66,6 +66,8 @@ void Ruina_Storm_Weaver_MapStart()
 
 	PrecacheModel(RUINA_STORM_WEAVER_HEAD_MODEL);
 	Zero(i_storm_weaver_damage_instance);
+
+	b_stellar_weaver_summoned=false;
 
 	//beam_model = PrecacheModel(BLITZLIGHT_SPRITE);
 }
@@ -112,10 +114,11 @@ methodmap Storm_Weaver < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
+		b_stellar_weaver_summoned=true;
 
 		if(ally != TFTeam_Red)
 		{
-			b_thisNpcIsABoss[npc.index] = true;
+			//b_thisNpcIsABoss[npc.index] = true;
 		}
 
 		b_DoNotUnStuck[npc.index] = true;
@@ -338,6 +341,7 @@ public void Storm_Weaver_Middle_Movement(Storm_Weaver_Mid npc, float loc[3], boo
 		
 	SubtractVectors(Entity_Loc, vecFwd, vecVel);
 	ScaleVector(vecVel, 10.0);
+	vecView[0]-=90.0;
 	TeleportEntity(npc.index, NULL_VECTOR, vecView, NULL_VECTOR);
 
 	npc.SetVelocity(vecVel);
@@ -472,8 +476,10 @@ static void Storm_Weaver_Force_Spawn_Anchors(Storm_Weaver npc)
 	AproxRandomSpaceToWalkTo[2] += 18.0;
 		
 	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceCenterOld(npc.index), true);
-		
-	float range = 250.0*i_magia_anchors_active;
+	
+	int amt = i_magia_anchors_active;
+	amt++;
+	float range = 300.0*amt;
 	if(flDistanceToBuild < (range * range))
 	{
 		return; //The building is too close, we want to retry! it is unfair otherwise.
@@ -818,7 +824,7 @@ static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target, float Gam
 
 	if(IsValidEnemy(npc.index, Target))
 	{
-		int New_Target = Storm_Weaver_Get_Target(npc);	//warp
+		int New_Target = GetClosestTarget(npc.index, true, _, _, true, _, _, false);	//ignore buildings and npc's, only attack players it can see.s it can see.
 		if(!IsValidEntity(New_Target))
 		{
 			New_Target = Target;
@@ -869,6 +875,8 @@ stock void Storm_Weaver_Fly(Storm_Weaver npc, float target_vec[3], float GameTim
 	float vecAngles[3];
 	MakeVectorFromPoints(npc_vec, target_vec, vecAngles);
 	GetVectorAngles(vecAngles, vecAngles);
+
+	vecAngles[0]-=90.0;
 
 	TeleportEntity(npc.index, NULL_VECTOR, vecAngles, NULL_VECTOR);
 
@@ -938,7 +946,7 @@ static bool Storm_Weaver_Check_Heading_Walls(Storm_Weaver npc)
 		return true;
 	}
 
-}*/
+}
 static int Storm_Weaver_Get_Target(Storm_Weaver npc)
 {
 	float npc_vec[3]; npc_vec = GetAbsOriginOld(npc.index);
@@ -970,7 +978,7 @@ static int Storm_Weaver_Get_Target(Storm_Weaver npc)
 		}
 	}
 	return closest_yet;
-}
+}*/
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Storm_Weaver npc = view_as<Storm_Weaver>(victim);
@@ -1076,6 +1084,8 @@ static void NPC_Death(int entity)
 	{
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
+
+	b_stellar_weaver_summoned=false;
 
 	Ruina_NPCDeath_Override(entity);
 	

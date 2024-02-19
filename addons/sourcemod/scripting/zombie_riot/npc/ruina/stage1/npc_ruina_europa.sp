@@ -267,24 +267,32 @@ static void ClotThink(int iNPC)
 					if(flDistanceToTarget < (250.0*250.0))
 					{
 						Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
+						npc.m_bAllowBackWalking=true;
 					}
 					else
 					{
 						NPC_StopPathing(npc.index);
 						npc.m_bPathing = false;
+						npc.m_bAllowBackWalking=false;
 					}
 				}
 				else
 				{
 					npc.StartPathing();
 					npc.m_bPathing = true;
+					npc.m_bAllowBackWalking=false;
 				}
 			}
 			else
 			{
 				npc.StartPathing();
 				npc.m_bPathing = true;
+				npc.m_bAllowBackWalking=false;
 			}
+		}
+		else
+		{
+			npc.m_bAllowBackWalking=false;
 		}
 		Europa_SelfDefense(npc, GameTime, Anchor_Id);
 	}
@@ -357,7 +365,10 @@ static void Europa_Spawn_Minnions(Europa npc)
 
 			if(spawn_index > MaxClients)
 			{
-				Zombies_Currently_Still_Ongoing += 1;	// FIXME
+				if(GetTeam(npc.index) != TFTeam_Red)
+				{
+					Zombies_Currently_Still_Ongoing += 1;	// FIXME
+				}
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
@@ -381,7 +392,10 @@ static void Europa_Spawn_Self(Europa npc)
 
 	if(spawn_index > MaxClients)
 	{
-		Zombies_Currently_Still_Ongoing += 1;	// FIXME
+		if(GetTeam(npc.index) != TFTeam_Red)
+		{
+			Zombies_Currently_Still_Ongoing += 1;	// FIXME
+		}
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 	}

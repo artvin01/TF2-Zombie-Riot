@@ -1439,7 +1439,10 @@ static void Ikunagae_Spawn_Minnions(int client, int hp_multi)
 			}
 			if(spawn_index > MaxClients)
 			{
-				Zombies_Currently_Still_Ongoing += 1;
+				if(GetTeam(npc.index) != TFTeam_Red)
+				{
+					Zombies_Currently_Still_Ongoing += 1;	// FIXME
+				}
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}

@@ -519,7 +519,10 @@ void Donnerkrieg_SpawnAllyDuoRaid(int ref)
 		{
 			i_ally_index = EntIndexToEntRef(spawn_index);
 			Schwertkrieg_Set_Ally_Index(entity);
-			Zombies_Currently_Still_Ongoing += 1;	// FIXME
+			if(GetTeam(entity) != TFTeam_Red)
+			{
+				Zombies_Currently_Still_Ongoing += 1;	// FIXME
+			}
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 		}
@@ -1260,7 +1263,7 @@ static void Heavens_Spawn8(float startLoc[3], float space, float ratio)
 		
 	}
 }
-void Heavens_SpawnBeam(float beamLoc[3], int color[4], float size, bool rings)
+static void Heavens_SpawnBeam(float beamLoc[3], int color[4], float size, bool rings)
 {
 
 

@@ -454,7 +454,7 @@ public void OnPostThink(int client)
 	}
 
 #if defined ZR
-	if(Current_Mana[client] >max_mana[client])	//A part of Ruina's special mana "corrosion"
+	if(Current_Mana[client] > RoundToCeil(max_mana[client]))	//A part of Ruina's special mana "corrosion"
 	{
 		if(Mana_Loss_Delay[client] < GameTime)
 		{
@@ -476,6 +476,9 @@ public void OnPostThink(int client)
 			{
 				Current_Mana[client] -= RoundToCeil(Mana_Loss*1.5);	//Passively lose your overmana!	if your not a mage you lose it faster
 			}
+
+			if(Current_Mana[client] < RoundToCeil(max_mana[client])) //if the mana becomes less then the normal max mana due to mana loss, set it to max mana!
+				Current_Mana[client] = RoundToCeil(max_mana[client]);
 
 			//CPrintToChatAll("Regen neg1: %i", RoundToCeil(Mana_Loss));
 			//CPrintToChatAll("Regen neg2: %i", RoundToCeil(Mana_Loss*1.5));

@@ -81,7 +81,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 
 		if(ally != TFTeam_Red)
 		{
-			b_thisNpcIsABoss[npc.index] = true;
+			//b_thisNpcIsABoss[npc.index] = true;
 		}
 		
 		npc.m_flNextMeleeAttack = 0.0;
