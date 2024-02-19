@@ -429,15 +429,19 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime, Function closestTargetFun
 			{
 				canAttack = true;
 			}
-			case Command_WorkOn:
+			case Command_WorkOn:	// Harvesting a resource
 			{
 				canAttack = false;
-				foundTarget = true;
 
 				if(target == -1 && command.Data)
 				{
 					ResourceSearch = command.Data;
-					target = GetClosestTargetRTS(npc.index, npc.m_flEngageRange, _, _, _, _, closestTargetFunction);
+					target = GetClosestTargetRTS(npc.index, npc.m_flEngageRange, _, _, _, _, ResourceSearchFunction);
+					if(target != -1)
+					{
+						command.TargetRef = EntIndexToEntRef(target);
+						CommandList[npc.index].SetArray(0, command);
+					}
 				}
 			}
 		}
@@ -474,6 +478,11 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime, Function closestTargetFun
 
 		return target;
 	}
+}
+
+static bool ResourceSearchFunction(int entity, int target)
+{
+	return (IsObject(target) && view_as<UnitObject>(target).m_iResourceType == ResourceSearch);
 }
 
 // Make sure to call UnitBody_ThinkTarget before this
