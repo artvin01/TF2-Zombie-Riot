@@ -126,7 +126,7 @@ methodmap UnitBody < CClotBody
 			delete CommandList[this.index];
 		
 		CommandEnum command;
-		SetupCommand(this, command, type, pos, target)
+		SetupCommand(this, command, type, pos, target);
 
 		if(!CommandList[this.index])
 			CommandList[this.index] = new ArrayList(sizeof(CommandEnum));
