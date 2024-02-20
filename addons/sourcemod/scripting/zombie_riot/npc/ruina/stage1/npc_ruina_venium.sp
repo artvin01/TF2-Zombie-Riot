@@ -548,9 +548,24 @@ static void Venium_Post_Bult_Logic(Valiant npc, int PrimaryThreatIndex, float Ga
 		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.5)
 		{
 			Ruina_Basic_Npc_Logic(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
-			int status=0;
-			Ruina_Generic_Melee_Self_Defense(npc.index, PrimaryThreatIndex, flDistanceToTarget, NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25, 45.0, 200.0, "ACT_MP_ATTACK_STAND_MELEE", 0.6, 0.35, 20000.0, GameTime, status);
-			switch(status)
+
+			Ruina_Self_Defense Melee;
+
+			Melee.iNPC = npc.index;
+			Melee.target = PrimaryThreatIndex;
+			Melee.fl_distance_to_target = flDistanceToTarget;
+			Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25;
+			Melee.damage = 45.0;
+			Melee.bonus_dmg = 200.0;
+			Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
+			Melee.swing_speed = 0.6;
+			Melee.swing_delay = 0.35;
+			Melee.turn_speed = 20000.0;
+			Melee.gameTime = GameTime;
+			Melee.status = 0;
+			Melee.Swing_Melee(OnRuina_MeleeAttack);
+
+			switch(Melee.status)
 			{
 				case 1:	//we swung
 					npc.PlayMeleeSound();
@@ -570,4 +585,8 @@ static void Venium_Post_Bult_Logic(Valiant npc, int PrimaryThreatIndex, float Ga
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
+}
+static void OnRuina_MeleeAttack(int iNPC, int Target)
+{
+	Ruina_Add_Mana_Sickness(iNPC, Target, 0.5, 50);	//this one hurts like a truck. :)
 }

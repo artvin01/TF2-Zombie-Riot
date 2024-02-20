@@ -242,10 +242,24 @@ static void ClotThink(int iNPC)
 		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
-			
-		int status=0;
-		Ruina_Generic_Melee_Self_Defense(npc.index, PrimaryThreatIndex, flDistanceToTarget, NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25, 25.0, 125.0, "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", 0.54, 0.4, 20000.0, GameTime, status);
-		switch(status)
+
+		Ruina_Self_Defense Melee;
+
+		Melee.iNPC = npc.index;
+		Melee.target = PrimaryThreatIndex;
+		Melee.fl_distance_to_target = flDistanceToTarget;
+		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25;
+		Melee.damage = 25.0;
+		Melee.bonus_dmg = 125.0;
+		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
+		Melee.swing_speed = 0.54;
+		Melee.swing_delay = 0.4;
+		Melee.turn_speed = 20000.0;
+		Melee.gameTime = GameTime;
+		Melee.status = 0;
+		Melee.Swing_Melee(OnRuina_MeleeAttack);
+
+		switch(Melee.status)
 		{
 			case 1:	//we swung
 				npc.PlayMeleeSound();
@@ -264,6 +278,10 @@ static void ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
+}
+static void OnRuina_MeleeAttack(int iNPC, int Target)
+{
+	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 0);
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {

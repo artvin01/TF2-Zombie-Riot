@@ -861,63 +861,87 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 		npc.StartPathing();
 	}
 }
-public void Ruina_Generic_Melee_Self_Defense(int iNPC, int target, float distance, float range, float damage, float bonus_damage, const char[] attack_anim, float swing_speed, float swing_delay, float turn_speed, float gameTime, int &status)
+enum struct Ruina_Self_Defense
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	int iNPC;
+	int target;
+	float fl_distance_to_target;
+	float range;
+	float damage;
+	float bonus_dmg;
+	char attack_anim[255];
+	float swing_speed;
+	float swing_delay;
+	float turn_speed;
+	float gameTime;
+	int status;
 
-	if(npc.m_flAttackHappens)
+	void Swing_Melee(Function OnAttack = INVALID_FUNCTION)
 	{
-		if(npc.m_flAttackHappens < gameTime)
+		CClotBody npc = view_as<CClotBody>(this.iNPC);
+
+		if(npc.m_flAttackHappens)
 		{
-			npc.m_flAttackHappens = 0.0;
-			
-			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(target), turn_speed);
-			if(npc.DoSwingTrace(swingTrace, target)) 
+			if(npc.m_flAttackHappens < this.gameTime)
 			{
-							
-				int new_target = TR_GetEntityIndex(swingTrace);	
+				npc.m_flAttackHappens = 0.0;
 				
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-				
-				if(IsValidEnemy(npc.index, new_target))
-				{
-					if(!ShouldNpcDealBonusDamage(new_target))
-					{
-						SDKHooks_TakeDamage(new_target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-					}
-					else
-						SDKHooks_TakeDamage(new_target, npc.index, npc.index, bonus_damage, DMG_CLUB, -1, _, vecHit);
-
-					status=2;
-				} 
-				else
-				{
-					status=3;
-				}
-			}
-			delete swingTrace;
-		}
-	}
-
-	if(gameTime > npc.m_flNextMeleeAttack)
-	{
-		if(distance < range)
-		{
-			int Enemy_I_See;
-								
-			Enemy_I_See = Can_I_See_Enemy(npc.index, target);
+				Handle swingTrace;
+				npc.FaceTowards(WorldSpaceCenterOld(this.target), this.turn_speed);
+				if(npc.DoSwingTrace(swingTrace, this.target)) 
+				{				
+					int new_target = TR_GetEntityIndex(swingTrace);	
 					
-			if(IsValidEnemy(npc.index, Enemy_I_See))
-			{
-				status=1;
-				npc.AddGesture(attack_anim);
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					
+					if(IsValidEnemy(npc.index, new_target))
+					{
+						if(!ShouldNpcDealBonusDamage(new_target))
+						{
+							SDKHooks_TakeDamage(new_target, npc.index, npc.index, this.damage, DMG_CLUB, -1, _, vecHit);
+						}
+						else
+							SDKHooks_TakeDamage(new_target, npc.index, npc.index, this.bonus_dmg, DMG_CLUB, -1, _, vecHit);
 
-				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
+						this.status=2;
+
+						if(OnAttack && OnAttack!=INVALID_FUNCTION)
+						{
+							Call_StartFunction(null, OnAttack);
+							Call_PushCell(npc.index);
+							Call_PushCell(new_target);
+							Call_Finish();
+						}
+					} 
+					else
+					{
+						this.status=3;
+					}
+				}
+				delete swingTrace;
+			}
+		}
+
+		if(this.gameTime > npc.m_flNextMeleeAttack)
+		{
+			if(this.fl_distance_to_target < this.range)
+			{
+				int Enemy_I_See;
+									
+				Enemy_I_See = Can_I_See_Enemy(npc.index, this.target);
 						
-				npc.m_flAttackHappens = gameTime + swing_delay;
-				npc.m_flNextMeleeAttack = gameTime + swing_speed;
+				if(IsValidEnemy(npc.index, Enemy_I_See))
+				{
+					this.status=1;
+					if(this.attack_anim[0])
+						npc.AddGesture(this.attack_anim);
+
+					fl_ruina_in_combat_timer[npc.index]=this.gameTime+5.0;
+							
+					npc.m_flAttackHappens = this.gameTime + this.swing_delay;
+					npc.m_flNextMeleeAttack = this.gameTime + this.swing_speed;
+				}
 			}
 		}
 	}
