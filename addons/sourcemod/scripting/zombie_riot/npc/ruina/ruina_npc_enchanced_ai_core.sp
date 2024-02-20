@@ -869,6 +869,29 @@ static float fl_ICBM_dmg[MAXENTITIES];
 static float fl_ICBM_radius[MAXENTITIES];
 static float fl_ICBM_bonus_dmg[MAXENTITIES];
 
+/*
+	Ruina_Launch_ICBM ICBM;
+
+					ICBM.iNPC = npc.index;
+					ICBM.Start_Loc = flPos;
+					float Ang[3];
+					MakeVectorFromPoints(flPos, target_vec, Ang);
+					GetVectorAngles(Ang, Ang);
+					ICBM.Angles = Ang;
+					ICBM.speed = 1000.0;
+					ICBM.radius = 250.0;
+					ICBM.damage = 500.0;
+					ICBM.bonus_dmg = 2.5;
+					ICBM.Level = 1;
+					ICBM.Time = 10.0;
+					ICBM.Launch_ICBM(Func_On_ICBM_Boom);
+
+	static void Func_On_ICBM_Boom(int projectile, float damage, float radius, float Loc[3])
+{
+	CPrintToChatAll("Kaboom!");
+}
+*/
+
 #define RUINA_ICBM_PARTICLE_AMT 10
 #define RUINA_ICBM_ENV_LASER_AMT 10
 static int i_ICBM_Particles[MAXENTITIES][RUINA_ICBM_PARTICLE_AMT];
@@ -876,7 +899,6 @@ static int i_ICBM_Env_Lasers[MAXENTITIES][RUINA_ICBM_ENV_LASER_AMT];
 enum struct Ruina_Launch_ICBM
 {
 	int iNPC;
-	int target;
 	float Start_Loc[3];
 	float Angles[3];
 	float speed;
@@ -935,6 +957,8 @@ enum struct Ruina_Launch_ICBM
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, Ruina_ICBM_StartTouch);
 
+			this.Create_ICBM_Visuals(entity);
+
 			if(this.Time>0.0)
 			{
 				CreateTimer(this.Time, Ruina_Remove_ICBM_Timer, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
@@ -953,7 +977,7 @@ enum struct Ruina_Launch_ICBM
 		flAng[2] *=-1;
 		switch(this.Level)
 		{
-			case 0:
+			case 1:
 			{
 				Ruina_ICBM_Apply_Level_1_Visuals(entity, flAng);
 			}
@@ -983,34 +1007,27 @@ public void Ruina_Delete_ICBM_Visuals(int entity)
 }
 public void Ruina_ICBM_StartTouch(int entity, int target)
 {
-	if(target > 0 && target < MAXENTITIES)	//did we hit something???
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
 	{
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(!IsValidEntity(owner))
-		{
-			owner = 0;
-		}
-			
-		float ProjectileLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-
-		Explode_Logic_Custom(fl_ICBM_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ICBM_radius[entity] , _ , _ , true, _,_, fl_ICBM_bonus_dmg[entity]);
-
-		Function func = func_Ruina_ICBM_Explode[entity];
-
-		if(func && func != INVALID_FUNCTION)
-		{
-			Call_StartFunction(null, func);
-			Call_PushCell(entity);
-			Call_PushFloat(fl_ICBM_dmg[entity]);
-			Call_PushFloat(fl_ICBM_radius[entity]);
-			Call_PushArrayEx(ProjectileLoc, sizeof(ProjectileLoc), SM_PARAM_COPYBACK);
-			Call_Finish();
-		}
+		owner = 0;
 	}
-	else
-	{
+		
+	float ProjectileLoc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 
+	Explode_Logic_Custom(fl_ICBM_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ICBM_radius[entity] , _ , _ , true, _,_, fl_ICBM_bonus_dmg[entity]);
+
+	Function func = func_Ruina_ICBM_Explode[entity];
+
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(entity);
+		Call_PushFloat(fl_ICBM_dmg[entity]);
+		Call_PushFloat(fl_ICBM_radius[entity]);
+		Call_PushArrayEx(ProjectileLoc, sizeof(ProjectileLoc), SM_PARAM_COPYBACK);
+		Call_Finish();
 	}
 	Ruina_Delete_ICBM_Visuals(entity);
 	RemoveEntity(entity);
@@ -1025,11 +1042,6 @@ static Action Ruina_Remove_ICBM_Timer(Handle Timer, int Ref)
 	}
 	return Plugin_Stop;
 }
-/*
-static void Func_On_ICBM_Boom(int projectile, float damage, float radius, float Loc[3])
-{
-
-}*/
 public MRESReturn Ruina_RocketExplodePre(int entity)
 {
 	return MRES_Supercede;	//Don't even think about it mate
@@ -2441,10 +2453,13 @@ public void Ruina_ICBM_Apply_Level_1_Visuals(int client, float flAng[3])
 	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
 	int Laser_2 = ConnectWithBeamClient(particle_3, particle_2_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
 	int Laser_3 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
-	int Laser_6 = ConnectWithBeamClient(particle_2, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
+	int Laser_4 = ConnectWithBeamClient(particle_2, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
 
-	int Laser_4 = ConnectWithBeamClient(particle_2, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM );
-	int Laser_5 = ConnectWithBeamClient(particle_2_1, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM );
+	int Laser_5 = ConnectWithBeamClient(particle_2, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM );
+	int Laser_6 = ConnectWithBeamClient(particle_2_1, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM );
+
+	int Laser_7 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM );
+	int Laser_8 = ConnectWithBeamClient(particle_3_1, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM );
 	
 
 	i_ICBM_Particles[client][0] = EntIndexToEntRef(particle_1);
@@ -2460,4 +2475,6 @@ public void Ruina_ICBM_Apply_Level_1_Visuals(int client, float flAng[3])
 	i_ICBM_Env_Lasers[client][3] = EntIndexToEntRef(Laser_4);
 	i_ICBM_Env_Lasers[client][4] = EntIndexToEntRef(Laser_5);
 	i_ICBM_Env_Lasers[client][5] = EntIndexToEntRef(Laser_6);
+	i_ICBM_Env_Lasers[client][6] = EntIndexToEntRef(Laser_7);
+	i_ICBM_Env_Lasers[client][7] = EntIndexToEntRef(Laser_8);
 }
