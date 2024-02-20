@@ -18,11 +18,17 @@ static const char MeleeMissSounds[][] =
 	"weapons/cbar_miss1.wav",
 };
 
-void Villager_MapStart()
+void Villager_Setup()
 {
 	PrecacheSoundArray(MeleeHitSounds);
 	PrecacheSoundArray(MeleeAttackSounds);
 	PrecacheSoundArray(MeleeMissSounds);
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Villager");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_villager");
+	data.Func = GetFunctionByName(null, "Villager.Villager");
+	NPC_Add(data);
 }
 
 methodmap Villager < EmpireBody
@@ -44,7 +50,6 @@ methodmap Villager < EmpireBody
 	{
 		Villager npc = view_as<Villager>(EmpireBody(team, vecPos, vecAng, _, _, "25"));
 
-		i_NpcInternalId[npc.index] = VILLAGER;
 		i_NpcWeight[npc.index] = 1;
 
 		func_NPCThink[npc.index] = ClotThink;

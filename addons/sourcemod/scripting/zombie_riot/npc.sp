@@ -24,43 +24,6 @@ enum struct NPCData
 	Function Func;
 }
 
-stock int NPC_Add(NPCData data)
-{
-	if(data.Func == INVALID_FUNCTION)
-		ThrowError("Invalid function name");
-	
-	NPCList.PushArray(data);
-}
-
-int NPC_GetCount()
-{
-	return NPCList.Length;
-}
-
-int NPC_GetNameById(int id, char[] buffer, int length)
-{
-	static NPCData data;
-	NPC_GetById(id, data);
-	return strcopy(buffer, length, data.Name);
-}
-
-void NPC_GetById(int id, NPCData data)
-{
-	NPCList.GetArray(id, data);
-}
-
-int NPC_GetByPlugin(const char[] name, NPCData data = {})
-{
-	int length = NPCList.Length;
-	for(int i; i < length; i++)
-	{
-		NPCList.GetArray(i, data);
-		if(StrEqual(name, data.Plugin))
-			return i;
-	}
-	return -1;
-}
-
 // FileNetwork_ConfigSetup needs to be ran first
 void NPC_ConfigSetup()
 {
@@ -422,6 +385,42 @@ void NPC_ConfigSetup()
 	RaidbossBladedance_MapStart();
 }
 
+stock int NPC_Add(NPCData data)
+{
+	if(!data.Func || data.Func == INVALID_FUNCTION)
+		ThrowError("Invalid function name");
+	
+	return NPCList.PushArray(data);
+}
+
+int NPC_GetCount()
+{
+	return NPCList.Length;
+}
+
+int NPC_GetNameById(int id, char[] buffer, int length)
+{
+	static NPCData data;
+	NPC_GetById(id, data);
+	return strcopy(buffer, length, data.Name);
+}
+
+void NPC_GetById(int id, NPCData data)
+{
+	NPCList.GetArray(id, data);
+}
+
+int NPC_GetByPlugin(const char[] name, NPCData data = {})
+{
+	int length = NPCList.Length;
+	for(int i; i < length; i++)
+	{
+		NPCList.GetArray(i, data);
+		if(StrEqual(name, data.Plugin))
+			return i;
+	}
+	return -1;
+}
 
 enum
 {

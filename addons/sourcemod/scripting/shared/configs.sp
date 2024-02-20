@@ -63,10 +63,10 @@ void Configs_ConfigsExecuted()
 	}
 	
 	FileNetwork_ConfigSetup(kv);
+	NPC_ConfigSetup();
 	
 #if defined ZR
 	Items_SetupConfig();
-	NPC_ConfigSetup();
 	Store_ConfigSetup();
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
@@ -92,6 +92,7 @@ void Configs_ConfigsExecuted()
 
 #if defined RTS
 	RTS_ConfigsSetup();
+	Object_ConfigSetup();
 #endif
 
 	delete kv;

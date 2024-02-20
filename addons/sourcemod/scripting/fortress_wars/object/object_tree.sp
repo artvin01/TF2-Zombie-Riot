@@ -1,10 +1,16 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-void TreeObject_MapStart()
+void TreeObject_Setup()
 {
 	PrecacheModel("models/props_manor/clocktower_01.mdl");
 	PrecacheModel("models/props_foliage/deadtree01.mdl");
+	
+	ObjectData data;
+	strcopy(data.Name, sizeof(data.Name), "Dead Tree");
+	strcopy(data.Plugin, sizeof(data.Plugin), "object_tree_dead");
+	data.Func = GetFunctionByName(null, "DeadTree.DeadTree");
+	Object_Add(data);
 }
 
 methodmap DeadTree < UnitObject
@@ -17,9 +23,8 @@ methodmap DeadTree < UnitObject
 
 		int health = data[0] ? StringToInt(data) : 100;
 
-		DeadTree unit = view_as<DeadTree>(UnitObject(TREE_DEAD, vecPos, vecAng, "models/props_manor/clocktower_01.mdl", 0.25, health));
+		DeadTree unit = view_as<DeadTree>(UnitObject(vecPos, vecAng, "models/props_manor/clocktower_01.mdl", 0.25, health));
 		
-		unit.SetName("Dead Tree");
 		unit.m_iResourceType = Resource_Wood;
 		unit.m_hOnTakeDamageFunc = ClotTakeDamage;
 
