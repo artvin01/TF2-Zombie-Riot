@@ -2,50 +2,28 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/scout_paincrticialdeath01.mp3",
-	"vo/scout_paincrticialdeath02.mp3",
-	"vo/scout_paincrticialdeath03.mp3",
+	"vo/engineer_paincrticialdeath01.mp3",
+	"vo/engineer_paincrticialdeath02.mp3",
+	"vo/engineer_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/scout_painsharp01.mp3",
-	"vo/scout_painsharp02.mp3",
-	"vo/scout_painsharp03.mp3",
-	"vo/scout_painsharp04.mp3",
-	"vo/scout_painsharp05.mp3",
-	"vo/scout_painsharp06.mp3",
-	"vo/scout_painsharp07.mp3",
-	"vo/scout_painsharp08.mp3",
+	"vo/engineer_painsharp01.mp3",
+	"vo/engineer_painsharp02.mp3",
+	"vo/engineer_painsharp03.mp3",
+	"vo/engineer_painsharp04.mp3",
+	"vo/engineer_painsharp05.mp3",
+	"vo/engineer_painsharp06.mp3",
+	"vo/engineer_painsharp07.mp3",
+	"vo/engineer_painsharp08.mp3",
 };
 
-static const char g_IdleSounds[][] = {
-	"vo/scout_standonthepoint01.mp3",
-	"vo/scout_standonthepoint02.mp3",
-	"vo/scout_standonthepoint03.mp3",
-	"vo/scout_standonthepoint04.mp3",
-	"vo/scout_standonthepoint05.mp3",
-};
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/scout_battlecry01.mp3",
-	"vo/scout_battlecry02.mp3",
-	"vo/scout_battlecry03.mp3",
-	"vo/scout_battlecry04.mp3",
-	"vo/scout_battlecry05.mp3",
-};
-
-static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
-};
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
-};
-
-static const char g_MeleeMissSounds[][] = {
-	"weapons/bat_draw_swoosh1.wav",
-	"weapons/bat_draw_swoosh2.wav",
+	"vo/engineer_battlecry01.mp3",
+	"vo/engineer_battlecry03.mp3",
+	"vo/engineer_battlecry04.mp3",
+	"vo/engineer_battlecry05.mp3",
 };
 static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
@@ -57,6 +35,13 @@ static const char g_RangedAttackSounds[][] = {
 static const char g_RangedReloadSound[][] = {
 	"weapons/dragons_fury_pressure_build.wav",
 };
+static const char g_IdleSounds[][] = {
+	"vo/engineer_standonthepoint01.mp3",
+	"vo/engineer_standonthepoint02.mp3",
+	"vo/engineer_standonthepoint03.mp3",
+	"vo/engineer_standonthepoint04.mp3",
+	"vo/engineer_standonthepoint05.mp3",
+};
 
 void Malius_OnMapStart_NPC()
 {
@@ -64,9 +49,6 @@ void Malius_OnMapStart_NPC()
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
-	PrecacheSoundArray(g_MeleeHitSounds);
-	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheSoundArray(g_RangedAttackSounds);
@@ -127,29 +109,6 @@ methodmap Malius < CClotBody
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
-		#endif
-	}
-	
-	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
-	}
-	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
-	}
-
-	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
 	public void PlayRangedSound() {
@@ -412,7 +371,7 @@ static void Malius_Effects_Attack(Malius npc, float Target_Vec[3], int GetCloses
 			vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
 		}
 		float DamageDone = 25.0;
-		npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, true, endLoc,_,_, 10.0);
+		npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_red_crit", false, true, true, endLoc,_,_, 10.0);
 	}
 }
 

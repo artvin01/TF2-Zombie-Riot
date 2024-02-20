@@ -56,14 +56,14 @@ static int i_failsafe[MAXENTITIES];
 
 void Venium_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);  			}
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/engineer.mdl");
 }
 
@@ -188,23 +188,40 @@ methodmap Valiant < CClotBody
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
+
+		/*
+			A head full of hot air			"models/workshop/player/items/pyro/invasion_a_head_full_of_hot_air/invasion_a_head_full_of_hot_air.mdl"
+			fireproof secret diary			"models/player/items/all_class/hwn_spellbook_diary.mdl"
+			forstbite bonnet				"models/workshop/player/items/all_class/sum19_bobby_bonnet/sum19_bobby_bonnet_demo.mdl"
+			idea tube						"models/player/items/engineer/engineer_blueprints_back.mdl"
+			sleuth suit						"models/workshop/player/items/engineer/dec23_sleuth_suit/dec23_sleuth_suit.mdl"
+			wings of purity					"models/workshop/player/items/medic/sf14_purity_wings/sf14_purity_wings.mdl"
+		*/
 		
-        /*
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/xms2013_medic_hood/xms2013_medic_hood.mdl");
+        
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/pyro/invasion_a_head_full_of_hot_air/invasion_a_head_full_of_hot_air.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_ramses_regalia/hw2013_ramses_regalia.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/all_class/hwn_spellbook_diary.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/sum19_bobby_bonnet/sum19_bobby_bonnet_demo.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/xms2013_medic_robe/xms2013_medic_robe.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/player/items/engineer/engineer_blueprints_back.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/engineer/dec23_sleuth_suit/dec23_sleuth_suit.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_purity_wings/sf14_purity_wings.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
 		
 		int skin = 1;	//1=blue, 0=red
@@ -213,7 +230,9 @@ methodmap Valiant < CClotBody
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);*/
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 				
 				
 		fl_ruina_battery[npc.index] = 0.0;
@@ -423,6 +442,10 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 }
 
 static void Venium_Build_Anchor(Valiant npc)

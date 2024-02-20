@@ -367,7 +367,7 @@ static void Europa_Spawn_Minnions(Europa npc)
 			{
 				if(GetTeam(npc.index) != TFTeam_Red)
 				{
-					Zombies_Currently_Still_Ongoing += 1;	// FIXME
+					Zombies_Currently_Still_Ongoing += 1;
 				}
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -394,7 +394,7 @@ static void Europa_Spawn_Self(Europa npc)
 	{
 		if(GetTeam(npc.index) != TFTeam_Red)
 		{
-			Zombies_Currently_Still_Ongoing += 1;	// FIXME
+			Zombies_Currently_Still_Ongoing += 1;
 		}
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);

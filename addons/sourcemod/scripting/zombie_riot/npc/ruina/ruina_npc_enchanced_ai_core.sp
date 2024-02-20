@@ -936,14 +936,14 @@ public void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int we
 	if(!IsValidClient(victim))
 		return;
 
-	if(GetTeam(entity) != TFTeam_Red)
+	if(GetTeam(victim) != TFTeam_Red)
 		return;
 
 	float GameTime = GetGameTime();
 	
 	if(fl_mana_sickness_timeout[victim] > GameTime)
 		return;
-	
+		
 	float Multi = fl_mana_sickness_multi[entity];
 	int flat_amt = i_mana_sickness_flat[entity];
 	float OverMana_Ratio = Current_Mana[victim]/max_mana[victim];
@@ -2059,18 +2059,9 @@ Names per stage:
 		Slow itself, boots nearby npc speed passively.
 		Battery: Nearby npc's gain the ability to teleporto once. cannot have multiple "charges" (since its a bool)
 	}
-	
-	5: Solaris -> Solaria -> Solarika -> Solarionus
-	{
-		State: Independant AI
-		Class: Medic
-		Ranged.
-		Flies.
-		Battery:
-	}
 
 	//created
-	6: Europa -> Europis -> Eurainis -> Euranionis
+	5: Europa -> Europis -> Eurainis -> Euranionis
 	{
 		State: Master AI.
 		Class: Pyro.
@@ -2078,7 +2069,7 @@ Names per stage:
 		Battery: Summons itself.
 	}
 	//created
-	7: Daedalus -> Draedon -> Draeonis -> Draconia
+	6: Daedalus -> Draedon -> Draeonis -> Draconia
 	{
 		State: Slave.
 		Class: Scout
@@ -2086,7 +2077,7 @@ Names per stage:
 		Battery: Provides shield to npc's within range.
 	}
 	//created
-	8: Aether -> Aetheria -> Aetherium -> Aetherianus
+	7: Aether -> Aetheria -> Aetherium -> Aetherianus
 	{
 		State: Slave - Indepentant Long range.
 		Class: Sniper
@@ -2095,32 +2086,29 @@ Names per stage:
 		Attacks from a far with artilery spells. basically the railgunners of this wave.
 	}
 
-	9: Malius -> Maliana -> Malianium -> Malianius.
+	8: Malius -> Maliana -> Malianium -> Malianius.
 	{
 		State: Master AI.
 		Class: Engie
 		Support: Battery
 		Npc's within range have their battery gain boosted.
-		Battery: all npc's within range have 50% of their battery filled instantly. Excludes itself, and other npc's of the same kind.
 	}
 	//created
-	10: Ruriana -> Ruianus -> Ruliana -> Ruina
+	9: Ruriana -> Ruianus -> Ruliana -> Ruina
 	{
 		State: Master AI.
 		Class: Medic.
 		Ranged, Melee.
 		Passive: damage taken is healed to allies around.
-
-		Battery: Ion Sweep - Tl;dr, Ion cannon's EVERYWHERE.
 	}
-	11: Laz -> Lazius -> Lazines -> Lazurus
+	10: Laz -> Lazius -> Lazines -> Lazurus
 	{
 		State: Master AI.
 		Class: Demo.
 		Ranged: Laser.
 	}
 	//created
-	12: Drone -> Dronian -> Dronis -> Dronianis
+	11: Drone -> Dronian -> Dronis -> Dronianis
 	{
 		State: Melee AI.
 		Class: Spy

@@ -22,7 +22,7 @@ static const char g_MeleeHitSounds[][] = {
 };
 
 static const char g_IdleMusic[][] = {
-	"#zombiesurvival/seaborn/donner_schwert_5.mp3",	//temp raidmode stuff
+	"#zombiesurvival/ruina/storm_weaver_test.mp3",
 };
 
 #define RUINA_STORM_WEAVER_MODEL "models/props_moonbase/moon_gravel_crystal_blue.mdl" //"models/props_borealis/bluebarrel001.mdl"
@@ -56,9 +56,11 @@ static float fl_special_invuln_timer[MAXENTITIES];
 
 void Ruina_Storm_Weaver_MapStart()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
+
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+
 	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSoundCustom(g_IdleMusic[i]);   }
 
 	Zero2(i_segment_id);
@@ -175,6 +177,7 @@ methodmap Storm_Weaver < CClotBody
 				
 			RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 
+			Music_SetRaidMusic(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], 350, true);
 		}
 
 		
@@ -186,17 +189,15 @@ methodmap Storm_Weaver < CClotBody
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 
-		Music_SetRaidMusic(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], 290, true);
-
 		bool solo = StrContains(data, "solo") != -1;
 
-		if(solo)
-			CPrintToChatAll("solo");
+		//if(solo)
+			//CPrintToChatAll("solo");
 
 		bool true_solo = StrContains(data, "solo_true") != -1;
 
-		if(true_solo)
-			CPrintToChatAll("solo_true");
+		//if(true_solo)
+			//CPrintToChatAll("solo_true");
 
 		b_stellar_weaver_true_solo=false;
 		if(true_solo)
@@ -282,7 +283,10 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 		b_storm_weaver_noclip[spawn_index]=false;
 		b_IgnoreAllCollisionNPC[spawn_index]=true;
 		b_ForceCollisionWithProjectile[spawn_index]=true;
-		Zombies_Currently_Still_Ongoing += 1;	// FIXME
+		if(GetTeam(npc.index) != TFTeam_Red)
+		{
+			Zombies_Currently_Still_Ongoing += 1;
+		}
 		CClotBody tail = view_as<CClotBody>(spawn_index);
 		tail.m_flNextRangedAttack = GetGameTime(tail.index)+1.0+(Section/10.0);
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", Health);
@@ -824,7 +828,7 @@ static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target, float Gam
 
 	if(IsValidEnemy(npc.index, Target))
 	{
-		int New_Target = GetClosestTarget(npc.index, true, _, _, true, _, _, false);	//ignore buildings and npc's, only attack players it can see.s it can see.
+		int New_Target = GetClosestTarget(npc.index, true, _, _, _, _, _, true);	//ignore buildings, only attack what it can see!
 		if(!IsValidEntity(New_Target))
 		{
 			New_Target = Target;
@@ -1024,7 +1028,7 @@ public void Stellar_Weaver_Share_Damage_With_All(int &attacker, int &inflictor, 
 	
 	if(attacker<MAXTF2PLAYERS)
 	{
-		CPrintToChatAll("Dmg Instance Amt: %i", i_storm_weaver_damage_instance[attacker]);
+		//CPrintToChatAll("Dmg Instance Amt: %i", i_storm_weaver_damage_instance[attacker]);
 		if(i_storm_weaver_damage_instance[attacker]>=RUINA_DAMAGE_INSTANCES_PER_FRAME)
 		return;
 	
@@ -1057,7 +1061,7 @@ public void Stellar_Weaver_Share_Damage_With_All(int &attacker, int &inflictor, 
 	}
 	if(total<=0)
 	{
-		CPrintToChatAll("somehow 0 dmg on share all weaver!");
+		//CPrintToChatAll("somehow 0 dmg on share all weaver!");
 		if(attacker<MAXTF2PLAYERS)
 			RequestFrame(Nulify_Instance, attacker);
 		return;

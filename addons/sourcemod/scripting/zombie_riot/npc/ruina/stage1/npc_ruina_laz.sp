@@ -2,92 +2,50 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/scout_paincrticialdeath01.mp3",
-	"vo/scout_paincrticialdeath02.mp3",
-	"vo/scout_paincrticialdeath03.mp3",
+	"vo/demoman_paincrticialdeath01.mp3",
+	"vo/demoman_paincrticialdeath02.mp3",
+	"vo/demoman_paincrticialdeath03.mp3",
+	"vo/demoman_paincrticialdeath04.mp3",
+	"vo/demoman_paincrticialdeath05.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/scout_painsharp01.mp3",
-	"vo/scout_painsharp02.mp3",
-	"vo/scout_painsharp03.mp3",
-	"vo/scout_painsharp04.mp3",
-	"vo/scout_painsharp05.mp3",
-	"vo/scout_painsharp06.mp3",
-	"vo/scout_painsharp07.mp3",
-	"vo/scout_painsharp08.mp3",
+	"vo/demoman_painsharp01.mp3",
+	"vo/demoman_painsharp02.mp3",
+	"vo/demoman_painsharp03.mp3",
+	"vo/demoman_painsharp04.mp3",
+	"vo/demoman_painsharp05.mp3",
+	"vo/demoman_painsharp06.mp3",
+	"vo/demoman_painsharp07.mp3",
 };
-
-static const char g_IdleSounds[][] = {
-	"vo/scout_standonthepoint01.mp3",
-	"vo/scout_standonthepoint02.mp3",
-	"vo/scout_standonthepoint03.mp3",
-	"vo/scout_standonthepoint04.mp3",
-	"vo/scout_standonthepoint05.mp3",
-};
-
 static const char g_IdleAlertedSounds[][] = {
-	"vo/scout_battlecry01.mp3",
-	"vo/scout_battlecry02.mp3",
-	"vo/scout_battlecry03.mp3",
-	"vo/scout_battlecry04.mp3",
-	"vo/scout_battlecry05.mp3",
-};
-
-static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	"vo/demoman_battlecry01.mp3",
+	"vo/demoman_battlecry02.mp3",
+	"vo/demoman_battlecry03.mp3",
+	"vo/demoman_battlecry04.mp3",
 };
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
+	"weapons/physcannon/superphys_launch1.wav",
+	"weapons/physcannon/superphys_launch2.wav",
+	"weapons/physcannon/superphys_launch3.wav",
+	"weapons/physcannon/superphys_launch4.wav",
 };
-
-static const char g_MeleeMissSounds[][] = {
-	"weapons/bat_draw_swoosh1.wav",
-	"weapons/bat_draw_swoosh2.wav",
-};
-static char g_TeleportSounds[][] = {
-	"misc/halloween/spell_stealth.wav",
+static const char g_RangedReloadSound[][] = {
+	"weapons/dragons_fury_pressure_build.wav",
 };
 
 void Laz_OnMapStart_NPC()
 {
-	
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
-	PrecacheSoundArray(g_IdleSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
-	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeMissSounds);
-	PrecacheSoundArray(g_TeleportSounds);
-
+	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheModel("models/player/demo.mdl");
 }
 
 methodmap Laz < CClotBody
-{
-	
-	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
-	}
-	
-	public void PlayTeleportSound() {
-		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
-	}
-	
+{	
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
@@ -130,19 +88,12 @@ methodmap Laz < CClotBody
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
-	}
 
-	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+	public void PlayRangedReloadSound() {
+		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
+		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
 	
@@ -178,33 +129,16 @@ methodmap Laz < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 285.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/pyro/hw2013_the_haha_hairdo/hw2013_the_haha_hairdo.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/pyro_halloween_gasmask/pyro_halloween_gasmask.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec23_masked_loyalty/dec23_masked_loyalty.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/dec18_mighty_mitre/dec18_mighty_mitre.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec23_masked_loyalty/dec23_masked_loyalty.mdl");	
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/dec18_mighty_mitre/dec18_mighty_mitre.mdl");	
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_ai_flamethrower/c_ai_flamethrower.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_purity_wings/sf14_purity_wings.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 
 		
 		int skin = 1;	//1=blue, 0=red
@@ -262,13 +196,12 @@ static void ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
-
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>500.0)
+	/*if(fl_ruina_battery[npc.index]>500.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
@@ -277,7 +210,7 @@ static void ClotThink(int iNPC)
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
 		
-	}
+	}*/
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
@@ -342,11 +275,8 @@ static void ClotThink(int iNPC)
 				npc.m_flNextRangedBarrage_Spam = GameTime + Charge_Time-1.0;	//for how long can the npc turn until it stops turning towards the target
 				npc.m_flNextMeleeAttack = GameTime + Charge_Time;
 				npc.m_flNextRangedAttack = GameTime + 10.0;
+				npc.PlayRangedReloadSound();
 			}
-		}
-		else
-		{
-			f_NpcTurnPenalty[npc.index] = 1.0;
 		}
 		if(npc.m_flAttackHappens > GameTime)	//attack is active
 		{
@@ -373,6 +303,7 @@ static void ClotThink(int iNPC)
 				time = 1.0;
 				size[0] = 15.0; size[1] = 7.5;
 				attack=true;
+				npc.PlayMeleeSound();
 				
 			}
 			float EndLoc[3];
@@ -392,7 +323,6 @@ static void ClotThink(int iNPC)
 			if(npc.m_bAllowBackWalking)
 				npc.FaceTowards(vecTarget, 2000.0);
 		}
-		
 	}
 	else
 	{

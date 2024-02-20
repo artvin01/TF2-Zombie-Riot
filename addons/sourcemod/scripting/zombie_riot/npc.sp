@@ -1673,7 +1673,7 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_ruina_europa",
 	"npc_ruina_drone",
 	"npc_ruina_ruriana",
-	"npc_ruina_venium",
+	"npc_ruina_valiant",
 	"npc_ruina_magia_anchor",
 	"npc_ruina_stellar_weaver",
 	"npc_ruina_stellar_weaver_middle",

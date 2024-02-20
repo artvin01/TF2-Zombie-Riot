@@ -73,13 +73,13 @@ static int i_string_Theory_battery[MAXENTITIES];
 
 public void Theocracy_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_HurtSounds));			i++) { PrecacheSound(g_HurtSounds[i]);			}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); 	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_charge_sound));		i++) { PrecacheSound(g_charge_sound[i]); 		}
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));		i++) { PrecacheSound(g_MeleeHitSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_AngerSounds));   		i++) { PrecacheSound(g_AngerSounds[i]);  		}
-	for (int i = 0; i < (sizeof(g_DeathSounds));		i++) { PrecacheSound(g_DeathSounds[i]);			}
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_charge_sound);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_AngerSounds);
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheModel(LASERBEAM);
 }
 
