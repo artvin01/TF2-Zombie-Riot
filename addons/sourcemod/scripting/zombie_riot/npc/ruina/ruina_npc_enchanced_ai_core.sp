@@ -976,13 +976,8 @@ public void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int we
 
 	if(OverMana_Ratio>2.1)
 	{
-		CPrintToChatAll("Player: %N got nuked due to overmana, AOE", victim);
-		Current_Mana[victim] = 0;
-		Mana_Regen_Delay[victim] = GameTime + 2.0;
-		Mana_Regen_Delay_Aggreviated[victim] = GameTime + 2.0;
-		fl_mana_sickness_timeout[victim] = GameTime + 2.0;
+		Apply_Sickness(entity, victim);
 	}
-	
 }
 stock void Ruina_Add_Mana_Sickness(int iNPC, int Target, float Multi, int flat_amt=0)
 {
@@ -999,13 +994,57 @@ stock void Ruina_Add_Mana_Sickness(int iNPC, int Target, float Multi, int flat_a
 
 		if(OverMana_Ratio>2.1)
 		{
-			CPrintToChatAll("Player: %N got nuked due to overmana", Target);
-			Current_Mana[Target] = 0;
-			Mana_Regen_Delay[Target] = GameTime + 2.0;
-			Mana_Regen_Delay_Aggreviated[Target] = GameTime + 2.0;
-			fl_mana_sickness_timeout[Target] = GameTime + 2.0;
+			Apply_Sickness(iNPC, Target);
 		}
 	}
+}
+static void Apply_Sickness(int iNPC, int Target)
+{
+	CPrintToChatAll("Player: %N got nuked due to overmana", Target);
+	Current_Mana[Target] = 0;
+	float GameTime = GetGameTime();
+	fl_mana_sickness_timeout[Target] = GameTime + 2.0;
+
+	int wave = ZR_GetWaveCount()+1;
+
+	float dmg = 250.0;
+	float time = 2.5;
+
+	float mana = max_mana[Target];
+
+	if(mana <=400.0)
+		mana=400.0;
+
+	if(wave<=15)
+	{
+		dmg =mana;	//evil.
+		time = 2.5;
+	}
+	else if(wave<=30)
+	{
+		dmg = mana*1.25;
+		time = 4.5;
+	}
+	else if(wave<=45)
+	{
+		dmg = mana*1.5;
+		time = 6.5;
+	}
+	else
+	{
+		dmg = mana*2.0;
+		time = 9.0;
+	}
+
+	Mana_Regen_Delay[Target] = GameTime + time;
+	Mana_Regen_Delay_Aggreviated[Target] = GameTime + time;
+
+	TF2_StunPlayer(Target, time, 0.9, TF_STUNFLAG_SLOWDOWN);	//hefty slow	
+
+	bool sawrunner = b_ThisNpcIsSawrunner[iNPC];
+	b_ThisNpcIsSawrunner[iNPC] = true;
+	SDKHooks_TakeDamage(Target, iNPC, iNPC, dmg, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+	b_ThisNpcIsSawrunner[iNPC] = sawrunner;
 }
 public void Ruina_Add_Battery(int iNPC, float Amt)
 {
