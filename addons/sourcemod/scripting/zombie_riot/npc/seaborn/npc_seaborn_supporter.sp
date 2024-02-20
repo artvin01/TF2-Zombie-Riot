@@ -192,7 +192,7 @@ public void SeabornSupporter_ClotThink(int iNPC)
 			
 			if(MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
 			{
-				int entity = Npc_Create(SEARUNNER_ALT, -1, pos, ang, GetTeam(npc.index));
+				int entity = NPC_CreateById(SEARUNNER_ALT, -1, pos, ang, GetTeam(npc.index));
 				if(entity > MaxClients)
 				{
 					if(GetTeam(npc.index) != TFTeam_Red)

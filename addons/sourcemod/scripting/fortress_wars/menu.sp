@@ -58,14 +58,7 @@ void RTSMenu_PlayerRunCmd(int client)
 				if(entity != -1)
 				{
 					// Name
-					if(c_NpcCustomNameOverride[entity][0])
-					{
-						Format(display, sizeof(display), "%s\n%t\n", display, c_NpcCustomNameOverride[entity]);
-					}
-					else
-					{
-						Format(display, sizeof(display), "%s\n%t\n", display, NPC_Names[i_NpcInternalId[entity]]);
-					}
+					Format(display, sizeof(display), "%s\n%t\n", display, c_NpcName[entity]);
 
 					// Flags
 					if(!IsObject(entity))
@@ -174,17 +167,8 @@ void RTSMenu_PlayerRunCmd(int client)
 						maxhealth += GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 
 						int count;
-
-						if(c_NpcCustomNameOverride[entity][0])
-						{
-							map.GetValue(c_NpcCustomNameOverride[entity], count);
-							map.SetValue(c_NpcCustomNameOverride[entity], count + 1);
-						}
-						else
-						{
-							map.GetValue(NPC_Names[i_NpcInternalId[entity]], count);
-							map.SetValue(NPC_Names[i_NpcInternalId[entity]], count + 1);
-						}
+						map.GetValue(c_NpcName[entity], count);
+						map.SetValue(c_NpcName[entity], count + 1);
 					}
 				}
 
@@ -339,14 +323,7 @@ void RTSMenu_PlayerRunCmd(int client)
 				}
 				else if(length == 1)
 				{
-					if(c_NpcCustomNameOverride[entity][0])
-					{
-						FormatEx(buffer, sizeof(buffer), "%t", c_NpcCustomNameOverride[entity]);
-					}
-					else
-					{
-						FormatEx(buffer, sizeof(buffer), "%t", NPC_Names[i_NpcInternalId[entity]]);
-					}
+					FormatEx(buffer, sizeof(buffer), "%t", c_NpcName[entity]);
 				}
 				else
 				{

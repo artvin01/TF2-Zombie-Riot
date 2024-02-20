@@ -162,6 +162,23 @@ enum
 	WEAPON_HHH_AXE = 91,
 }
 
+enum
+{
+	Type_Hidden = -1,
+	Type_Ally = 0,
+	Type_Special,
+	Type_Raid,
+	Type_Common,
+	Type_Alt,
+	Type_Xeno,
+	Type_BTD,
+	Type_Medieval,
+	Type_COF,
+	Type_Seaborn,
+	Type_Expidonsa,
+	Type_Interitus
+}
+
 //int Bob_To_Player[MAXENTITIES];
 bool Bob_Exists = false;
 int GrigoriMaxSells = 3;
@@ -1343,7 +1360,7 @@ public void Spawn_Bob_Combine(int client)
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	flAng[2] = 0.0;
-	int bob = Npc_Create(BOB_THE_GOD_OF_GODS, client, flPos, flAng, TFTeam_Red);
+	int bob = NPC_CreateById(BOB_THE_GOD_OF_GODS, client, flPos, flAng, TFTeam_Red);
 	Bob_Exists = true;
 	Bob_Exists_Index = EntIndexToEntRef(bob);
 	Items_GiveNPCKill(client, BOB_THE_GOD_OF_GODS);
@@ -1372,7 +1389,7 @@ public void Spawn_Cured_Grigori()
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	flAng[2] = 0.0;
-	int entity = Npc_Create(CURED_FATHER_GRIGORI, client, flPos, flAng, TFTeam_Red);
+	int entity = NPC_CreateById(CURED_FATHER_GRIGORI, client, flPos, flAng, TFTeam_Red);
 	SalesmanAlive = EntIndexToEntRef(entity);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_grigori");
 	

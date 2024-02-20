@@ -1499,15 +1499,15 @@ void CreateCloneTempKahmlsteinFakeout(int entity, int TypeOfFake, float SelfPos[
 	{
 		case 2:
 		{
-			KamlcloneSpawn = Npc_Create(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_2"); //can only be enemy
+			KamlcloneSpawn = NPC_CreateById(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_2"); //can only be enemy
 		}
 		case 3:
 		{
-			KamlcloneSpawn = Npc_Create(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_3"); //can only be enemy
+			KamlcloneSpawn = NPC_CreateById(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_3"); //can only be enemy
 		}
 		case 4:
 		{
-			KamlcloneSpawn = Npc_Create(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_4"); //can only be enemy
+			KamlcloneSpawn = NPC_CreateById(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_4"); //can only be enemy
 		}
 	}
 	if(IsValidEntity(KamlcloneSpawn))

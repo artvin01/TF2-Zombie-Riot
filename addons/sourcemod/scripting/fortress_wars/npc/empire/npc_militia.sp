@@ -18,11 +18,17 @@ static const char MeleeMissSounds[][] =
 	"weapons/cbar_miss1.wav",
 };
 
-void Militia_MapStart()
+void Militia_Setup()
 {
 	PrecacheSoundArray(MeleeHitSounds);
 	PrecacheSoundArray(MeleeAttackSounds);
 	PrecacheSoundArray(MeleeMissSounds);
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Militia");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_militia");
+	data.Func = GetFunctionByName(null, "Militia.Militia");
+	NPC_Add(data);
 }
 
 methodmap Militia < EmpireBody
@@ -44,7 +50,6 @@ methodmap Militia < EmpireBody
 	{
 		Militia npc = view_as<Militia>(EmpireBody(team, vecPos, vecAng, _, _, "40"));
 
-		i_NpcInternalId[npc.index] = MILITIA;
 		i_NpcWeight[npc.index] = 1;
 
 		func_NPCThink[npc.index] = ClotThink;

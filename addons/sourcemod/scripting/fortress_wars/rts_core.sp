@@ -139,7 +139,7 @@ void RTS_PluginStart()
 
 void RTS_MapStart()
 {
-	Object_MapStart();
+	
 }
 
 void RTS_PluginEnd()

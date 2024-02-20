@@ -485,7 +485,7 @@ void Waves_SetupMiniBosses(KeyValues map)
 			
 			boss.Index = StringToInt(buffer);
 			if(!boss.Index)
-				boss.Index = GetIndexByPluginName(buffer);
+				boss.Index = NPC_GetByPlugin(buffer);
 			
 			boss.Powerup = kv.GetNum("powerup");
 			boss.Delay = kv.GetFloat("delay", 2.0);
@@ -651,7 +651,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						
 						enemy.Index = StringToInt(plugin);
 						if(!enemy.Index)
-							enemy.Index = GetIndexByPluginName(plugin);
+							enemy.Index = NPC_GetByPlugin(plugin);
 						
 						enemy.Health = kv.GetNum("health");
 						enemy.Is_Boss = kv.GetNum("is_boss");

@@ -95,7 +95,7 @@ void Remains_SpawnDrop(float pos[3], int type)
 {
 	char data[4];
 	IntToString(type, data, sizeof(data));
-	Npc_Create(REMAINS, -1, pos, {0.0, 0.0, 0.0}, TFTeam_Red, data);
+	NPC_CreateById(REMAINS, -1, pos, {0.0, 0.0, 0.0}, TFTeam_Red, data);
 }
 
 void Remains_NPCDeath(int entity)

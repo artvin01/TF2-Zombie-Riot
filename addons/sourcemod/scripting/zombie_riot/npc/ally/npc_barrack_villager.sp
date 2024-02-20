@@ -162,7 +162,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 				if(flDistanceToTarget < (50.0*50.0))
 				{
 					//We are close enough to build, lets build.
-					int spawn_index = Npc_Create(BARRACKS_BUILDING, client, VillagerDesiredBuildLocation[npc.index], {0.0,0.0,0.0}, GetTeam(npc.index));
+					int spawn_index = NPC_CreateById(BARRACKS_BUILDING, client, VillagerDesiredBuildLocation[npc.index], {0.0,0.0,0.0}, GetTeam(npc.index));
 					if(spawn_index > MaxClients)
 					{
 						VillagerDesiredBuildLocation[npc.index][0] = 0.0;
@@ -563,7 +563,7 @@ void BarracksVillager_MenuSpecial(int client, int entity)
 	BarrackVillager npc = view_as<BarrackVillager>(entity);
 
 	Menu menu = new Menu(BarrackVillager_MenuH);
-	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", NPC_Names[i_NpcInternalId[entity]]);
+	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", c_NpcName[entity]);
 	BarrackVillager player = view_as<BarrackVillager>(client);
 	char num[16];
 	IntToString(EntIndexToEntRef(entity), num, sizeof(num));

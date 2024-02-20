@@ -143,7 +143,7 @@ methodmap UnitObject < CBaseAnimating
 
 	public void SetName(const char[] name)
 	{
-		strcopy(c_NpcCustomNameOverride[this.index], sizeof(c_NpcCustomNameOverride[]), name);
+		strcopy(c_NpcName[this.index], sizeof(c_NpcName[]), name);
 	}
 
 	public int EquipItemSeperate(
@@ -197,7 +197,7 @@ methodmap UnitObject < CBaseAnimating
 		return item;
 	}
 	
-	public UnitObject(int id, const float vecPos[3], const float vecAng[3],
+	public UnitObject(const float vecPos[3], const float vecAng[3],
 						const char[] model,
 						float modelscale = 1.0,
 						int health = 125)
@@ -211,7 +211,6 @@ methodmap UnitObject < CBaseAnimating
 		DispatchKeyValueInt(entity, "health", health);
 		DispatchKeyValue(entity, "solid", "2");
 
-		i_NpcInternalId[entity] = id;
 		IsThisObject[entity] = true;
 		func_NPCDeath[entity] = INVALID_FUNCTION;
 		func_NPCOnTakeDamage[entity] = INVALID_FUNCTION;
@@ -306,7 +305,7 @@ static Action CreateCommand(int client, int args)
 	
 	if(args < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_object <index> [data]");
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_object <plugin> [data]");
 		return Plugin_Handled;
 	}
 	
@@ -318,10 +317,11 @@ static Action CreateCommand(int client, int args)
 		return Plugin_Handled;
 	}
 	
-	char buffer[64];
+	char plugin[64], buffer[64];
+	GetCmdArg(1, plugin, sizeof(plugin));
 	GetCmdArg(2, buffer, sizeof(buffer));
 
-	Object_Create(GetCmdArgInt(1), flPos, flAng, buffer);
+	Object_CreateByName(plugin, flPos, flAng, buffer);
 	return Plugin_Handled;
 }
 
@@ -364,29 +364,78 @@ static Action Object_TakeDamage(int victim, int &attacker, int &inflictor, float
 	return Plugin_Handled;
 }
 
-void Object_MapStart()
+static ArrayList ObjectList;
+
+enum struct ObjectData
 {
-	TreeObject_MapStart();
+	char Plugin[64];
+	char Name[64];
+	Function Func;
 }
 
-enum
+void Object_ConfigSetup()
 {
-	TREE_DEAD = 1,
+	delete ObjectList;
+	ObjectList = new ArrayList(sizeof(ObjectData));
 
-	// Add entries above this line
-	MAX_OBJ_TYPES
+	ObjectData data;
+	strcopy(data.Name, sizeof(data.Name), "nothing");
+	strcopy(data.Plugin, sizeof(data.Plugin), "object_nothing");
+	data.Func = INVALID_FUNCTION;
+	ObjectList.PushArray(data);
+
+	TreeObject_Setup();
 }
 
-any Object_Create(int index, const float vecPos[3], const float vecAng[3], const char[] data = "")
+int Object_Add(ObjectData data)
 {
-	any entity = -1;
-	switch(index)
+	if(!data.Func || data.Func == INVALID_FUNCTION)
+		ThrowError("Invalid function name");
+	
+	return ObjectList.PushArray(data);
+}
+
+int Object_GetByPlugin(const char[] name, ObjectData data = {})
+{
+	int length = ObjectList.Length;
+	for(int i; i < length; i++)
 	{
-		case TREE_DEAD:
-			entity = DeadTree(vecPos, vecAng, data);
+		ObjectList.GetArray(i, data);
+		if(StrEqual(name, data.Plugin))
+			return i;
+	}
+	return -1;
+}
 
-		default:
-			PrintToChatAll("Invalid object ID %d!", index);
+int Object_CreateByName(const char[] name, const float vecPos[3], const float vecAng[3], const char[] data = "")
+{
+	static ObjectData objdata;
+	int id = Object_GetByPlugin(name, objdata);
+	if(id == -1)
+	{
+		PrintToChatAll("\"%s\" is not a valid Object!", name);
+		return -1;
+	}
+
+	return CreateObject(objdata, id, vecPos, vecAng, data);
+}
+
+static int CreateObject(const ObjectData objdata, int id, const float vecPos[3], const float vecAng[3], const char[] data)
+{
+	int entity = -1;
+	Call_StartFunction(null, objdata.Func);
+	Call_PushArray(vecPos, sizeof(vecPos));
+	Call_PushArray(vecAng, sizeof(vecAng));
+	Call_PushString(data);
+	Call_Finish(entity);
+	
+	if(entity > 0)
+	{
+		if(!c_NpcName[entity][0])
+			strcopy(c_NpcName[entity], sizeof(c_NpcName[]), objdata.Name);
+		
+		if(!i_NpcInternalId[entity])
+			i_NpcInternalId[entity] = id;
 	}
 
 	return entity;

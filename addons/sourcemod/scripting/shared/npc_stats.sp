@@ -42,7 +42,7 @@ int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES] = {0, ...};
 
 int TeamFreeForAll = 50;
 
-char c_NpcCustomNameOverride[MAXENTITIES][255];
+char c_NpcName[MAXENTITIES][255];
 int i_SpeechBubbleEntity[MAXENTITIES];
 PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
 static int g_modelArrow;
@@ -102,9 +102,9 @@ public Action Command_PetMenu(int client, int args)
 	if(args < 1)
 	{
 #if defined RTS
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [team]");
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <plugin> [health] [data] [team]");
 #else
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [team] [damage multi] [speed multi] [ranged armour] [melee armour] [Extra Size]");
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <plugin> [health] [data] [team] [damage multi] [speed multi] [ranged armour] [melee armour] [Extra Size]");
 #endif
 		return Plugin_Handled;
 	}
@@ -118,7 +118,8 @@ public Action Command_PetMenu(int client, int args)
 	}
 	
 	//1==index, 2==health, 3==data, 4==ally, 5==rpg lvl 
-	char buffer[64];
+	char plugin[64], buffer[64];
+	GetCmdArg(1, plugin, sizeof(plugin));
 	GetCmdArg(3, buffer, sizeof(buffer));
 
 #if defined RTS
@@ -129,7 +130,7 @@ public Action Command_PetMenu(int client, int args)
 	if(args > 3)	//data
 		team = view_as<bool>(GetCmdArgInt(4));
 #if defined ZR
-	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, team, buffer);
+	int entity = NPC_CreateByName(plugin, client, flPos, flAng, team, buffer);
 	if(IsValidEntity(entity))
 	{
 		if(GetTeam(entity) != view_as<int>(TFTeam_Red))
@@ -166,7 +167,7 @@ public Action Command_PetMenu(int client, int args)
 		}
 	}
 #elseif defined RPG
-	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
+	int entity = NPC_CreateByName(plugin, client, flPos, flAng, ally, buffer);
 	if(IsValidEntity(entity))
 	{
 		Level[entity] = args > 4 ? GetCmdArgInt(5) : 0;
@@ -195,7 +196,7 @@ public Action Command_PetMenu(int client, int args)
 		}
 	}
 #elseif defined RTS
-	int entity = Npc_Create(GetCmdArgInt(1), team, flPos, flAng, buffer);
+	int entity = NPC_CreateByName(plugin, team, flPos, flAng, buffer);
 	if(IsValidEntity(entity))
 	{
 		if(args > 1)
@@ -261,8 +262,6 @@ void OnMapStart_NPC_Base()
 	PrecacheEffect("ParticleEffect");
 	PrecacheEffect("ParticleEffectStop");
 	PrecacheParticleEffect("burningplayer_red");
-	
-	NPC_MapStart();
 
 	for (int NpcIndexNumber = 0; NpcIndexNumber < ZR_MAX_NPCS; NpcIndexNumber++)
 	{
@@ -7745,7 +7744,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_NpcOverrideAttacker[entity] = 0;
 	b_thisNpcHasAnOutline[entity] = false;
 	b_ThisNpcIsImmuneToNuke[entity] = false;
-	FormatEx(c_NpcCustomNameOverride[entity], sizeof(c_NpcCustomNameOverride[]), "");
+	FormatEx(c_NpcName[entity], sizeof(c_NpcName[]), "");
 	b_ThisNpcIsSawrunner[entity] = false;
 	Expidonsa_SetToZero(entity);
 	f_AvoidObstacleNavTime[entity] = 0.0;

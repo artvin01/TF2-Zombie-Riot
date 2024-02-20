@@ -196,7 +196,7 @@ public void SeabornSoldier_ClotThink(int iNPC)
 									continue;
 								}
 
-								int entity = Npc_Create(SEABORN_SOLDIER, -1, pos, ang, team);
+								int entity = NPC_CreateById(SEABORN_SOLDIER, -1, pos, ang, team);
 								if(entity > MaxClients)
 								{
 									if(team != TFTeam_Red)

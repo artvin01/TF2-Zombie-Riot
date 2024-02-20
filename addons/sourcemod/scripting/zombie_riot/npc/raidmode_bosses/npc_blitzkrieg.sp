@@ -1370,14 +1370,14 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		maxhealth=RoundToNearest((heck/10)*zr_smallmapbalancemulti.FloatValue);
 		if(i_currentwave[npc.index]==45)	//Only spwans if the wave is 45.
 		{
-			spawn_index = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetTeam(npc.index));
+			spawn_index = NPC_CreateById(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetTeam(npc.index));
 			Zombies_Currently_Still_Ongoing += 1;	// FIXME
 			if(spawn_index > MaxClients)
 			{
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
-			spawn_index = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, -1, pos, ang, GetTeam(npc.index));
+			spawn_index = NPC_CreateById(ALT_MEDIC_SUPPERIOR_MAGE, -1, pos, ang, GetTeam(npc.index));
 			Zombies_Currently_Still_Ongoing += 1;	// FIXME
 			if(spawn_index > MaxClients)
 			{
@@ -1390,7 +1390,7 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		{
 			CPrintToChatAll("{crimson}Blitzkrieg{default}: The brothers have been reborn.");
 			maxhealth=RoundToNearest((heck/5)*zr_smallmapbalancemulti.FloatValue);	//mid squishy
-			spawn_index = Npc_Create(ALT_DONNERKRIEG, -1, pos, ang, GetTeam(npc.index), "raid_ally");
+			spawn_index = NPC_CreateById(ALT_DONNERKRIEG, -1, pos, ang, GetTeam(npc.index), "raid_ally");
 			Zombies_Currently_Still_Ongoing += 1;	// FIXME
 			if(spawn_index > MaxClients)
 			{
@@ -1399,7 +1399,7 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
 			maxhealth=RoundToNearest((heck/2)*zr_smallmapbalancemulti.FloatValue);	//the tankiest
-			spawn_index = Npc_Create(ALT_SCHWERTKRIEG, -1, pos, ang, GetTeam(npc.index), "raid_ally");
+			spawn_index = NPC_CreateById(ALT_SCHWERTKRIEG, -1, pos, ang, GetTeam(npc.index), "raid_ally");
 			Zombies_Currently_Still_Ongoing += 1;	// FIXME
 			if(spawn_index > MaxClients)
 			{

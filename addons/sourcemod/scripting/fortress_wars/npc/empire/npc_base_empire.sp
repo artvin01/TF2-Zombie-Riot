@@ -158,7 +158,7 @@ static const char BuildingCombatAlertSounds[][] =
 	"npc/overwatch/radiovoice/threattoproperty51b.wav"
 };
 
-void EmpireBody_MapStart()
+void EmpireBody_Setup()
 {
 	PrecacheSoundArray(DeathSounds);
 	PrecacheSoundArray(HurtSounds);

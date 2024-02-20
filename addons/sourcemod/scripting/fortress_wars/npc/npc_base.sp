@@ -21,7 +21,7 @@ static Function FuncSound[MAXENTITIES][Sound_MAX];
 static Function FuncSkills[MAXENTITIES];
 static StatEnum Stats[MAXENTITIES];
 
-void UnitBody_MapStart()
+void UnitBody_Setup()
 {
 	Zero(SoundCooldown);
 }
