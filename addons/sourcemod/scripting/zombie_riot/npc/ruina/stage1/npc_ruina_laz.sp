@@ -280,34 +280,42 @@ static void ClotThink(int iNPC)
 		}
 		if(npc.m_flAttackHappens > GameTime)	//attack is active
 		{
+			int color[4];
+			float time=0.1;
+			float size[2];
+			float amp = 0.1;
+			color = {175, 175, 175, 255};
+			size[0] = 7.5; size[1] = 5.0;
+
 			if(npc.m_flNextRangedBarrage_Spam > GameTime)	//turn towards enemy
 			{
 				npc.FaceTowards(vecTarget, 20000.0);
 			}
 			else
 			{
-				npc.FaceTowards(vecTarget, 25.0);
+				color = {100, 255, 100, 255};
+				size[0] = 7.5; size[1] = 5.0;
+				amp = 1.0;
+				time = 0.2;
+				npc.FaceTowards(vecTarget, 175.0);
 			}
 
-			int color[4];
-			float time=0.1;
-			float size[2];
-			color = {175, 175, 175, 255};
-			size[0] = 7.5; size[1] = 5.0;
+			
 
 			bool attack=false;
 			if(npc.m_flNextMeleeAttack < GameTime)	//attack!
 			{
 				npc.m_flAttackHappens = 0.0;
 				color = {127, 255, 255, 255};
-				time = 1.0;
+				time = 0.5;
 				size[0] = 15.0; size[1] = 7.5;
 				attack=true;
+				amp = 5.0;
 				npc.PlayMeleeSound();
 				
 			}
 			float EndLoc[3];
-			EndLoc = Do_Laz_Laser_Effects(npc.index, color, size, time, 975.0);	//reuse the location since lazy to do another trace.
+			EndLoc = Do_Laz_Laser_Effects(npc.index, color, size, time, 975.0, amp);	//reuse the location since lazy to do another trace.
 
 			if(attack)
 			{

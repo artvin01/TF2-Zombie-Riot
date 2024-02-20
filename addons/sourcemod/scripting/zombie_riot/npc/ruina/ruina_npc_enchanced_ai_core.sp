@@ -1881,7 +1881,7 @@ public bool Ruina_BEAM_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
-stock float[] Do_Laz_Laser_Effects(int client, int color[4], float size[2], float time, float Dist)
+stock float[] Do_Laz_Laser_Effects(int client, int color[4], float size[2], float time, float Dist, float amp)
 {
 	float Npc_Loc[3], flAng[3];
 	WorldSpaceCenter(client, Npc_Loc);
@@ -1916,7 +1916,7 @@ stock float[] Do_Laz_Laser_Effects(int client, int color[4], float size[2], floa
 	float flPos[3]; // original
 	GetAttachment(client, "effect_hand_r", flPos, flAng);
 
-	TE_SetupBeamPoints(flPos, End_Loc, BeamWand_Laser, 0, 0, 0, time, size[0], size[1], 0, 0.1, color, 0);
+	TE_SetupBeamPoints(flPos, End_Loc, BeamWand_Laser, 0, 0, 0, time, size[0], size[1], 0, amp, color, 0);
 	TE_SendToAll();
 
 	return End_Loc;

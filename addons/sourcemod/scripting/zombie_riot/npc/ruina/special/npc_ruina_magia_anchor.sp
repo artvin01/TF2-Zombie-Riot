@@ -489,7 +489,7 @@ static void Heavens_Full_Charge(Magia_Anchor npc, int amt, float Radius, float a
 
 		Heavens_SpawnBeam(loc, color, 7.5, true, Radius);
 
-		Ruina_AOE_Add_Mana_Sickness(loc, npc.index, Radius, 0.0, 3);
+		Ruina_AOE_Add_Mana_Sickness(loc, npc.index, Radius, 0.01, 2);
 
 		Explode_Logic_Custom(aDamage, npc.index, npc.index, -1, loc, Radius , _ , _ , true, _, _, 2.5);
 	}
