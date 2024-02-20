@@ -258,7 +258,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		{
 			if(Spawns_GetNextPos(pos, ang, enemy.Spawn))
 			{
-				int entity_Spawner = Npc_Create(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data);
+				int entity_Spawner = NPC_CreateById(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data);
 				if(entity_Spawner != -1)
 				{
 					if(enemy.Is_Outlined)
@@ -397,7 +397,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 	int forcepowerup = pack.ReadCell();
 	float healthmulti = pack.ReadFloat();
 	
-	int entity = Npc_Create(index, -1, pos, ang, TFTeam_Blue);
+	int entity = NPC_CreateById(index, -1, pos, ang, TFTeam_Blue);
 	if(entity != -1)
 	{
 		Zombies_Currently_Still_Ongoing += 1;
@@ -576,18 +576,6 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 	}
 	return Plugin_Stop;
 }
-
-#if !defined RTS
-int GetIndexByPluginName(const char[] name)
-{
-	for(int i; i<sizeof(NPC_Plugin_Names_Converted); i++)
-	{
-		if(StrEqual(name, NPC_Plugin_Names_Converted[i], false))
-			return i;
-	}
-	return 0;
-}
-#endif
 
 public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
 {
@@ -1776,15 +1764,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		offset = MaxHealth < 0 ? 1 : 0;
 		ThousandString(c_MaxHealth[offset], sizeof(c_MaxHealth) - offset);
 
-		if(c_NpcCustomNameOverride[victim][0])
-		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%s / %s",c_NpcCustomNameOverride[victim], c_Health, c_MaxHealth);
-		}
-		else
-		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%s / %s",NPC_Names[i_NpcInternalId[victim]], c_Health, c_MaxHealth);
-		}
-
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%s / %s",c_NpcName[victim], c_Health, c_MaxHealth);
+		
 		//add debuff
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
@@ -1845,15 +1826,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		offset = MaxHealth < 0 ? 1 : 0;
 		ThousandString(c_MaxHealth[offset], sizeof(c_MaxHealth) - offset);
 
-		if(c_NpcCustomNameOverride[victim][0])
-		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%s / %s",ExtraHudHurt,c_NpcCustomNameOverride[victim], c_Health, c_MaxHealth);
-		}
-		else
-		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%s / %s",ExtraHudHurt, NPC_Names[i_NpcInternalId[victim]], c_Health, c_MaxHealth);
-		}
-
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%s / %s",ExtraHudHurt,c_NpcName[victim], c_Health, c_MaxHealth);
+		
 		//add debuff
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 

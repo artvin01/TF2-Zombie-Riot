@@ -272,7 +272,7 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 	char buffer[16];
 	IntToString(follow_ID, buffer, sizeof(buffer));
 
-	spawn_index = Npc_Create(RUINA_STELLAR_WEAVER_MID, -1, pos, ang, GetTeam(npc.index), buffer);
+	spawn_index = NPC_CreateById(RUINA_STELLAR_WEAVER_MID, -1, pos, ang, GetTeam(npc.index), buffer);
 	i_segment_id[npc.index][Section] = EntIndexToEntRef(spawn_index);
 	if(spawn_index > MaxClients)
 	{
@@ -483,7 +483,7 @@ static void Storm_Weaver_Force_Spawn_Anchors(Storm_Weaver npc)
 
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"))+1.0;
 	Health *=0.25;
-	int spawn_index = Npc_Create(RUINA_MAGIA_ANCHOR, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
+	int spawn_index = NPC_CreateById(RUINA_MAGIA_ANCHOR, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(spawn_index > MaxClients)
 	{
 		if(GetTeam(npc.index) != TFTeam_Red)

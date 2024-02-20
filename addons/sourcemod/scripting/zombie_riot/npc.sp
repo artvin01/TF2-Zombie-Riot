@@ -14,6 +14,415 @@
 static float f_FactionCreditGain;
 static float f_FactionCreditGainReduction[MAXTF2PLAYERS];
 
+static ArrayList NPCList;
+
+enum struct NPCData
+{
+	char Plugin[64];
+	char Name[64];
+	int Category;
+	Function Func;
+}
+
+stock int NPC_Add(NPCData data)
+{
+	if(data.Func == INVALID_FUNCTION)
+		ThrowError("Invalid function name");
+	
+	NPCList.PushArray(data);
+}
+
+int NPC_GetCount()
+{
+	return NPCList.Length;
+}
+
+int NPC_GetNameById(int id, char[] buffer, int length)
+{
+	static NPCData data;
+	NPC_GetById(id, data);
+	return strcopy(buffer, length, data.Name);
+}
+
+void NPC_GetById(int id, NPCData data)
+{
+	NPCList.GetArray(id, data);
+}
+
+int NPC_GetByPlugin(const char[] name, NPCData data = {})
+{
+	int length = NPCList.Length;
+	for(int i; i < length; i++)
+	{
+		NPCList.GetArray(i, data);
+		if(StrEqual(name, data.Plugin))
+			return i;
+	}
+	return -1;
+}
+
+// FileNetwork_ConfigSetup needs to be ran first
+void NPC_ConfigSetup()
+{
+	f_FactionCreditGain = 0.0;
+	Zero(f_FactionCreditGainReduction);
+
+	delete NPCList;
+	NPCList = new ArrayList(sizeof(NPCData));
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "nothing");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_nothing");
+	data.Category = Type_Hidden;
+	data.Func = INVALID_FUNCTION;
+	NPCList.PushArray(data);
+
+	GetOldMethodNPCs();
+
+	HeadcrabZombie_OnMapStart_NPC();
+	Fortified_HeadcrabZombie_OnMapStart_NPC();
+	FastZombie_OnMapStart_NPC();
+	FortifiedFastZombie_OnMapStart_NPC();
+	TorsolessHeadcrabZombie_OnMapStart_NPC();
+	FortifiedGiantPoisonZombie_OnMapStart_NPC();
+	PoisonZombie_OnMapStart_NPC();
+	FortifiedPoisonZombie_OnMapStart_NPC();
+	FatherGrigori_OnMapStart_NPC();
+	
+	Combine_Police_Pistol_OnMapStart_NPC();
+	CombinePoliceSmg_OnMapStart_NPC();
+	CombineSoldierAr2_OnMapStart_NPC();
+	CombineSoldierShotgun_OnMapStart_NPC();
+	CombineSwordsman_OnMapStart_NPC();
+	CombineElite_OnMapStart_NPC();
+	CombineGaint_OnMapStart_NPC();
+	CombineDDT_OnMapStart_NPC();
+	CombineCollos_OnMapStart_NPC();
+	CombineOverlord_OnMapStart_NPC();
+	
+	Scout_OnMapStart_NPC();
+	Engineer_OnMapStart_NPC();
+	Heavy_OnMapStart_NPC();
+	FlyingArmor_OnMapStart_NPC();
+	FlyingArmorTiny_OnMapStart_NPC();
+	Kamikaze_OnMapStart_NPC();
+	MedicHealer_OnMapStart_NPC();
+	HeavyGiant_OnMapStart_NPC();
+	Spy_OnMapStart_NPC();
+	Soldier_OnMapStart_NPC();
+	SoldierMinion_OnMapStart_NPC();
+	SoldierGiant_OnMapStart_NPC();
+	
+	SpyThief_OnMapStart_NPC();
+	SpyTrickstabber_OnMapStart_NPC();
+	SpyCloaked_OnMapStart_NPC();
+	SniperMain_OnMapStart_NPC();
+	DemoMain_OnMapStart_NPC();
+	MedicMain_OnMapStart_NPC();
+	PyroGiant_OnMapStart_NPC();
+	CombineDeutsch_OnMapStart_NPC();
+	Alt_CombineDeutsch_OnMapStart_NPC();
+	SpyMainBoss_OnMapStart_NPC();
+	MedivalVillager_OnMapStart_NPC();
+	/*
+	XenoHeadcrabZombie_OnMapStart_NPC();
+	XenoFortified_HeadcrabZombie_OnMapStart_NPC();
+	XenoFastZombie_OnMapStart_NPC();
+	XenoFortifiedFastZombie_OnMapStart_NPC();
+	XenoTorsolessHeadcrabZombie_OnMapStart_NPC();
+	XenoFortifiedGiantPoisonZombie_OnMapStart_NPC();
+	XenoPoisonZombie_OnMapStart_NPC();
+	XenoFortifiedPoisonZombie_OnMapStart_NPC();
+	*/
+	XenoFatherGrigori_OnMapStart_NPC();
+	/*
+	XenoCombine_Police_Pistol_OnMapStart_NPC();
+	XenoCombinePoliceSmg_OnMapStart_NPC();
+	XenoCombineSoldierAr2_OnMapStart_NPC();
+	XenoCombineSoldierShotgun_OnMapStart_NPC();
+	XenoCombineSwordsman_OnMapStart_NPC();
+	XenoCombineElite_OnMapStart_NPC();
+	XenoCombineGaint_OnMapStart_NPC();
+	XenoCombineDDT_OnMapStart_NPC();
+	XenoCombineCollos_OnMapStart_NPC();
+	XenoCombineOverlord_OnMapStart_NPC();
+	
+	XenoScout_OnMapStart_NPC();
+	XenoEngineer_OnMapStart_NPC();
+	XenoHeavy_OnMapStart_NPC();
+	XenoFlyingArmor_OnMapStart_NPC();
+	XenoFlyingArmorTiny_OnMapStart_NPC();
+	XenoKamikaze_OnMapStart_NPC();
+	MedicHealer_OnMapStart_NPC();
+	XenoHeavyGiant_OnMapStart_NPC();
+	XenoSpy_OnMapStart_NPC();
+	XenoSoldier_OnMapStart_NPC();
+	XenoSoldierMinion_OnMapStart_NPC();
+	XenoSoldierGiant_OnMapStart_NPC();
+	*/
+	
+	/*
+	XenoSpyThief_OnMapStart_NPC();
+	XenoSpyTrickstabber_OnMapStart_NPC();
+	XenoSpyCloaked_OnMapStart_NPC();
+	XenoSniperMain_OnMapStart_NPC();
+	XenoDemoMain_OnMapStart_NPC();
+	XenoMedicMain_OnMapStart_NPC();
+	XenoPyroGiant_OnMapStart_NPC();
+	XenoCombineDeutsch_OnMapStart_NPC();
+	XenoSpyMainBoss_OnMapStart_NPC();
+	*/
+	NaziPanzer_OnMapStart_NPC();
+	BobTheGod_OnMapStart_NPC();
+	NecroCombine_OnMapStart_NPC();
+	NecroCalcium_OnMapStart_NPC();
+	CuredFatherGrigori_OnMapStart_NPC();
+	
+	AltMedicApprenticeMage_OnMapStart_NPC();
+	SawRunner_OnMapStart_NPC();
+	AltMedicCharger_OnMapStart_NPC();
+	AltMedicBerseker_OnMapStart_NPC();
+	
+	MedivalMilitia_OnMapStart_NPC();
+	MedivalArcher_OnMapStart_NPC();
+	MedivalManAtArms_OnMapStart_NPC();
+	MedivalSkirmisher_OnMapStart_NPC();
+	MedivalSwordsman_OnMapStart_NPC();
+	MedivalTwoHandedSwordsman_OnMapStart_NPC();
+	MedivalCrossbowMan_OnMapStart_NPC();
+	MedivalSpearMan_OnMapStart_NPC();
+	MedivalHandCannoneer_OnMapStart_NPC();
+	MedivalEliteSkirmisher_OnMapStart_NPC();
+	MedivalPikeman_OnMapStart_NPC();
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnMapStart_NPC();
+	Citizen_OnMapStart();
+	MedivalEagleScout_OnMapStart_NPC();
+	MedivalSamurai_OnMapStart_NPC();
+	Kahmlstein_OnMapStart_NPC();
+	Sniper_railgunner_OnMapStart_NPC();
+	
+	L4D2_Tank_OnMapStart_NPC();
+	MedivalRam_OnMapStart();
+	
+	Soldier_Barrager_OnMapStart_NPC();
+	The_Shit_Slapper_OnMapStart_NPC();
+	
+	BasicBones_OnMapStart_NPC();
+	BeefyBones_OnMapStart_NPC();
+	BrittleBones_OnMapStart_NPC();
+	BigBones_OnMapStart_NPC();
+	AlliedLeperVisualiserAbility_OnMapStart_NPC();
+	
+	Mecha_Engineer_OnMapStart_NPC();
+	Mecha_Heavy_OnMapStart_NPC();
+	Mecha_HeavyGiant_OnMapStart_NPC();
+	Mecha_PyroGiant_OnMapStart_NPC();
+	Mecha_Scout_OnMapStart_NPC();
+	
+	Donnerkrieg_OnMapStart_NPC();
+	Schwertkrieg_OnMapStart_NPC();
+	PhantomKnight_OnMapStart_NPC();
+	BeheadedKamiKaze_OnMapStart_NPC();
+	Alt_Medic_Constructor_OnMapStart_NPC();	//3rd alt medic.
+	/*
+	TheGambler_OnMapStart_NPC();
+	Pablo_Gonzales_OnMapStart_NPC();
+	Doktor_Medick_OnMapStart_NPC();
+	Eternal_Kaptain_Heavy_OnMapStart_NPC();
+	BootyExecutioner_OnMapStart_NPC();
+	SandvichSlayer_OnMapStart_NPC();
+	Payday_Cloaker_OnMapStart_NPC();
+	BunkerKahml_OnMapStart_NPC();
+	TrueZerofuse_OnMapStart_NPC();
+	BunkerBotSoldier_OnMapStart_NPC();
+	BunkerBotSniper_OnMapStart_NPC();
+	BunkerSkeleton_OnMapStart_NPC();
+	BunkerSkeletonSmall_OnMapStart_NPC();
+	BunkerSkeletonKing_OnMapStart_NPC();
+	BunkerHeadlessHorse_OnMapStart_NPC();
+	*/
+	MedivalScout_OnMapStart_NPC();
+	MedivalBuilding_OnMapStart_NPC();
+	MedivalConstruct_OnMapStart_NPC();
+	MedivalChampion_OnMapStart_NPC();
+	MedivalLightCav_OnMapStart_NPC();
+	MedivalHussar_OnMapStart_NPC();
+	MedivalKnight_OnMapStart_NPC();
+	MedivalObuch_OnMapStart_NPC();
+	MedivalMonk_OnMapStart_NPC();
+	MedivalHalb_OnMapStart_NPC();
+	MedivalBrawler_OnMapStart_NPC();
+	MedivalLongbowmen_OnMapStart_NPC();
+	MedivalArbalest_OnMapStart_NPC();
+	MedivalEliteLongbowmen_OnMapStart_NPC();
+	MedivalEagleWarrior_OnMapStart_NPC();
+	MedivalRiddenArcher_OnMapStart_NPC();
+	MedivalSonOfOsiris_OnMapStart_NPC();
+	MedivalAchilles_OnMapStart_NPC();
+	
+	Ikunagae_OnMapStart_NPC();
+	MechaSoldier_Barrager_OnMapStart_NPC();
+	NearlSwordAbility_OnMapStart_NPC();
+
+	SeaRunner_MapStart();
+	SeaPiercer_MapStart();
+	SeaCrawler_MapStart();
+	FirstToTalk_MapStart();
+	UnderTides_MapStart();
+	KazimierzKnight_OnMapStart_NPC();
+	KazimierzKnightArcher_OnMapStart_NPC();
+	KazimierzBeserker_OnMapStart_NPC();
+	KazimierzLongArcher_OnMapStart_NPC();
+	EndSpeaker_MapStart();
+	Remain_MapStart();
+	KazimierzKnightAssasin_OnMapStart_NPC();
+	IsharmlaTrans_MapStart();
+	
+	//Ruina waves	//warp
+	Ruina_Ai_Core_Mapstart();
+	//Stage 1.
+	Theocracy_OnMapStart_NPC();
+	Adiantum_OnMapStart_NPC();
+	Lanius_OnMapStart_NPC();
+	Magia_OnMapStart_NPC();
+	Stella_OnMapStart_NPC();
+	Astria_OnMapStart_NPC();
+	Aether_OnMapStart_NPC();
+	Europa_OnMapStart_NPC();
+	Ruina_Drone_OnMapStart_NPC();
+	Ruriana_OnMapStart_NPC();
+	Venium_OnMapStart_NPC();
+	//Stage 2.
+
+	//Special.
+	Magia_Anchor_OnMapStart_NPC();
+	Ruina_Storm_Weaver_MapStart();
+	Ruina_Storm_Weaver_Mid_MapStart();
+
+	//Expidonsa Waves
+//wave 1-15:
+	Benera_OnMapStart_NPC();
+	Pental_OnMapStart_NPC();
+	Defanda_OnMapStart_NPC();
+	SelfamIre_OnMapStart_NPC();
+	VausMagica_OnMapStart_NPC();
+	Pistoleer_OnMapStart_NPC();
+	Diversionistico_OnMapStart_NPC();	//reused in waves all over
+	HeavyPunuel_OnMapStart_NPC();
+	SeargentIdeal_OnMapStart_NPC();	
+//wave 16-30:
+	RifalManu_OnMapStart_NPC();
+	Siccerino_OnMapStart_NPC();
+	SoldinePrototype_OnMapStart_NPC();
+	Soldine_OnMapStart_NPC();
+	EnegaKapus_OnMapStart_NPC();
+	Sniponeer_OnMapStart_NPC();
+	EgaBunar_OnMapStart_NPC();
+	Protecta_OnMapStart_NPC();
+//wave 31 - 45
+	CaptinoAgentus_OnMapStart_NPC();
+	DualRea_OnMapStart_NPC();
+	Guardus_OnMapStart_NPC();
+	VausTechicus_OnMapStart_NPC();
+	MinigunAssisa_OnMapStart_NPC();
+	Ignitus_OnMapStart_NPC();
+	Helena_OnMapStart_NPC();
+//wave 45-60 there arent as many enemies as im running out of ideas and i want to resuse top enemies
+	Erasus_OnMapStart_NPC();
+	GiantTankus_OnMapStart_NPC();
+	AnfuhrerEisenhard_OnMapStart_NPC();
+	SpeedusAdivus_OnMapStart_NPC();
+
+//internius
+	DesertAhim_OnMapStart_NPC();
+	DesertInabdil_OnMapStart_NPC();
+	DesertKhazaan_OnMapStart_NPC();
+	DesertSakratan_OnMapStart_NPC();
+	DesertYadeam_OnMapStart_NPC();
+	DesertRajul_OnMapStart_NPC();
+	DesertQanaas_OnMapStart_NPC();
+	DesertAtilla_OnMapStart_NPC();
+	DesertAncientDemon_OnMapStart_NPC();
+	WinterSniper_OnMapStart_NPC();
+	WinterZiberianMiner_OnMapStart_NPC();
+	WinterSnoweyGunner_OnMapStart_NPC();
+	WinterFreezingCleaner_OnMapStart_NPC();
+	WinterAirbornExplorer_OnMapStart_NPC();
+	WinterArcticMage_OnMapStart_NPC();
+	WinterFrostHunter_OnMapStart_NPC();
+	WinterSkinHunter_OnMapStart_NPC();
+	WinterIrritatedPerson_OnMapStart_NPC();
+	AnarchyRansacker_OnMapStart_NPC();
+	AnarchyRunover_OnMapStart_NPC();
+	AnarchyHitman_OnMapStart_NPC();
+	AnarchyMadDoctor_OnMapStart_NPC();
+	AnarchyAbomination_OnMapStart_NPC();
+	AnarchyEnforcer_OnMapStart_NPC();
+	AnarchyBraindead_OnMapStart_NPC();
+	AnarchyBehemoth_OnMapStart_NPC();
+	AnarchyAbsoluteIncinirator_OnMapStart_NPC();
+	MajorSteam_MapStart();
+
+	//Alt Barracks
+	Barrack_Alt_Ikunagae_MapStart();
+	Barrack_Alt_Shwertkrieg_MapStart();
+	Barrack_Railgunner_MapStart();
+	Barrack_Alt_Basic_Mage_MapStart();
+	Barrack_Alt_Intermediate_Mage_MapStart();
+	Barrack_Alt_Donnerkrieg_MapStart();
+	Barrack_Alt_Holy_Knight_MapStart();
+	Barrack_Alt_Mecha_Barrager_MapStart();
+	Barrack_Alt_Barrager_MapStart();
+	Barrack_Alt_Berserker_MapStart();
+	Barrack_Alt_Crossbowmedic_MapStart();
+	Barrack_Alt_Scientific_Witchery_MapStart();
+	Barracks_Thorns();
+	VIPBuilding_MapStart();
+	AlliedSensalAbility_OnMapStart_NPC();
+
+	// Raid Low Prio
+	TrueFusionWarrior_OnMapStart();
+	Blitzkrieg_OnMapStart();
+	RaidbossSilvester_OnMapStart();
+	RaidbossBlueGoggles_OnMapStart();
+	RaidbossNemesis_OnMapStart();
+	GodArkantos_OnMapStart();
+	Sensal_OnMapStart_NPC();
+	Raidboss_Schwertkrieg_OnMapStart_NPC();
+	Raidboss_Donnerkrieg_OnMapStart_NPC();
+	RaidbossBobTheFirst_OnMapStart();
+	TheMessenger_OnMapStart_NPC();
+	ChaosKahmlstein_OnMapStart_NPC();
+	ThePurge_MapStart();
+
+	// Bloon Low Prio
+	Bloon_MapStart();
+	GoldBloon_MapStart();
+	Moab_MapStart();
+	Bfb_MapStart();
+	Zomg_MapStart();
+	DDT_MapStart();
+	Bad_MapStart();
+
+	// Stalker Low Prio
+	StalkerCombine_MapStart();
+	StalkerFather_MapStart();
+	StalkerGoggles_OnMapStart();
+
+	// COF Low Prio
+	Addiction_OnMapStart_NPC();
+	Doctor_MapStart();
+	Simon_MapStart();
+
+	// Bloon Raid Low Prio
+	Bloonarius_MapStart();
+
+	// Rogue Mode Low Prio
+	OverlordRogue_OnMapStart_NPC();
+	RaidbossBladedance_MapStart();
+}
+
+
 enum
 {
 	NOTHING 						= 0,	
@@ -444,10 +853,10 @@ enum
 	RAIDBOSS_THE_PURGE = 391,
 	WEAPON_KAHML_AFTERIMAGE = 392,
 	
-	MAX_NPC_TYPES	// Add entries above this line
+	MAX_OLD_NPCS = 393	// DO NOT ADD MORE HERE, USE NEW METHOD
 }
 
-public const char NPC_Names[MAX_NPC_TYPES][] =
+static const char NPC_Names[MAX_OLD_NPCS][] =
 {
 	"nothing",
 	"Headcrab Zombie",
@@ -870,7 +1279,7 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 };
 
 // See items.sp for IDs to names
-public const int NPCCategory[MAX_NPC_TYPES] =
+static const int NPCCategory[MAX_OLD_NPCS] =
 {
 	-1,	// NOTHING 						= 0,	
 	3,	// HEADCRAB_ZOMBIE 				= 1,	
@@ -1300,7 +1709,7 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	-1, // WEAPON_KAHML_AFTERIMAGE = 392
 };
 
-public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
+static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 {
 	"npc_nothing",
 	"npc_headcrabzombie",
@@ -1721,607 +2130,299 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_allied_kahml"
 };
 
-void NPC_MapStart()
+void GetOldMethodNPCs()
 {
-	f_FactionCreditGain = 0.0;
-	Zero(f_FactionCreditGainReduction);
-	HeadcrabZombie_OnMapStart_NPC();
-	Fortified_HeadcrabZombie_OnMapStart_NPC();
-	FastZombie_OnMapStart_NPC();
-	FortifiedFastZombie_OnMapStart_NPC();
-	TorsolessHeadcrabZombie_OnMapStart_NPC();
-	FortifiedGiantPoisonZombie_OnMapStart_NPC();
-	PoisonZombie_OnMapStart_NPC();
-	FortifiedPoisonZombie_OnMapStart_NPC();
-	FatherGrigori_OnMapStart_NPC();
-	
-	Combine_Police_Pistol_OnMapStart_NPC();
-	CombinePoliceSmg_OnMapStart_NPC();
-	CombineSoldierAr2_OnMapStart_NPC();
-	CombineSoldierShotgun_OnMapStart_NPC();
-	CombineSwordsman_OnMapStart_NPC();
-	CombineElite_OnMapStart_NPC();
-	CombineGaint_OnMapStart_NPC();
-	CombineDDT_OnMapStart_NPC();
-	CombineCollos_OnMapStart_NPC();
-	CombineOverlord_OnMapStart_NPC();
-	
-	Scout_OnMapStart_NPC();
-	Engineer_OnMapStart_NPC();
-	Heavy_OnMapStart_NPC();
-	FlyingArmor_OnMapStart_NPC();
-	FlyingArmorTiny_OnMapStart_NPC();
-	Kamikaze_OnMapStart_NPC();
-	MedicHealer_OnMapStart_NPC();
-	HeavyGiant_OnMapStart_NPC();
-	Spy_OnMapStart_NPC();
-	Soldier_OnMapStart_NPC();
-	SoldierMinion_OnMapStart_NPC();
-	SoldierGiant_OnMapStart_NPC();
-	
-	SpyThief_OnMapStart_NPC();
-	SpyTrickstabber_OnMapStart_NPC();
-	SpyCloaked_OnMapStart_NPC();
-	SniperMain_OnMapStart_NPC();
-	DemoMain_OnMapStart_NPC();
-	MedicMain_OnMapStart_NPC();
-	PyroGiant_OnMapStart_NPC();
-	CombineDeutsch_OnMapStart_NPC();
-	Alt_CombineDeutsch_OnMapStart_NPC();
-	SpyMainBoss_OnMapStart_NPC();
-	MedivalVillager_OnMapStart_NPC();
-	/*
-	XenoHeadcrabZombie_OnMapStart_NPC();
-	XenoFortified_HeadcrabZombie_OnMapStart_NPC();
-	XenoFastZombie_OnMapStart_NPC();
-	XenoFortifiedFastZombie_OnMapStart_NPC();
-	XenoTorsolessHeadcrabZombie_OnMapStart_NPC();
-	XenoFortifiedGiantPoisonZombie_OnMapStart_NPC();
-	XenoPoisonZombie_OnMapStart_NPC();
-	XenoFortifiedPoisonZombie_OnMapStart_NPC();
-	*/
-	XenoFatherGrigori_OnMapStart_NPC();
-	/*
-	XenoCombine_Police_Pistol_OnMapStart_NPC();
-	XenoCombinePoliceSmg_OnMapStart_NPC();
-	XenoCombineSoldierAr2_OnMapStart_NPC();
-	XenoCombineSoldierShotgun_OnMapStart_NPC();
-	XenoCombineSwordsman_OnMapStart_NPC();
-	XenoCombineElite_OnMapStart_NPC();
-	XenoCombineGaint_OnMapStart_NPC();
-	XenoCombineDDT_OnMapStart_NPC();
-	XenoCombineCollos_OnMapStart_NPC();
-	XenoCombineOverlord_OnMapStart_NPC();
-	
-	XenoScout_OnMapStart_NPC();
-	XenoEngineer_OnMapStart_NPC();
-	XenoHeavy_OnMapStart_NPC();
-	XenoFlyingArmor_OnMapStart_NPC();
-	XenoFlyingArmorTiny_OnMapStart_NPC();
-	XenoKamikaze_OnMapStart_NPC();
-	MedicHealer_OnMapStart_NPC();
-	XenoHeavyGiant_OnMapStart_NPC();
-	XenoSpy_OnMapStart_NPC();
-	XenoSoldier_OnMapStart_NPC();
-	XenoSoldierMinion_OnMapStart_NPC();
-	XenoSoldierGiant_OnMapStart_NPC();
-	*/
-	
-	/*
-	XenoSpyThief_OnMapStart_NPC();
-	XenoSpyTrickstabber_OnMapStart_NPC();
-	XenoSpyCloaked_OnMapStart_NPC();
-	XenoSniperMain_OnMapStart_NPC();
-	XenoDemoMain_OnMapStart_NPC();
-	XenoMedicMain_OnMapStart_NPC();
-	XenoPyroGiant_OnMapStart_NPC();
-	XenoCombineDeutsch_OnMapStart_NPC();
-	XenoSpyMainBoss_OnMapStart_NPC();
-	*/
-	NaziPanzer_OnMapStart_NPC();
-	BobTheGod_OnMapStart_NPC();
-	NecroCombine_OnMapStart_NPC();
-	NecroCalcium_OnMapStart_NPC();
-	CuredFatherGrigori_OnMapStart_NPC();
-	
-	AltMedicApprenticeMage_OnMapStart_NPC();
-	SawRunner_OnMapStart_NPC();
-	AltMedicCharger_OnMapStart_NPC();
-	AltMedicBerseker_OnMapStart_NPC();
-	
-	MedivalMilitia_OnMapStart_NPC();
-	MedivalArcher_OnMapStart_NPC();
-	MedivalManAtArms_OnMapStart_NPC();
-	MedivalSkirmisher_OnMapStart_NPC();
-	MedivalSwordsman_OnMapStart_NPC();
-	MedivalTwoHandedSwordsman_OnMapStart_NPC();
-	MedivalCrossbowMan_OnMapStart_NPC();
-	MedivalSpearMan_OnMapStart_NPC();
-	MedivalHandCannoneer_OnMapStart_NPC();
-	MedivalEliteSkirmisher_OnMapStart_NPC();
-	MedivalPikeman_OnMapStart_NPC();
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnMapStart_NPC();
-	Citizen_OnMapStart();
-	MedivalEagleScout_OnMapStart_NPC();
-	MedivalSamurai_OnMapStart_NPC();
-	Kahmlstein_OnMapStart_NPC();
-	Sniper_railgunner_OnMapStart_NPC();
-	
-	L4D2_Tank_OnMapStart_NPC();
-	MedivalRam_OnMapStart();
-	
-	Soldier_Barrager_OnMapStart_NPC();
-	The_Shit_Slapper_OnMapStart_NPC();
-	
-	BasicBones_OnMapStart_NPC();
-	BeefyBones_OnMapStart_NPC();
-	BrittleBones_OnMapStart_NPC();
-	BigBones_OnMapStart_NPC();
-	AlliedLeperVisualiserAbility_OnMapStart_NPC();
-	
-	Mecha_Engineer_OnMapStart_NPC();
-	Mecha_Heavy_OnMapStart_NPC();
-	Mecha_HeavyGiant_OnMapStart_NPC();
-	Mecha_PyroGiant_OnMapStart_NPC();
-	Mecha_Scout_OnMapStart_NPC();
-	
-	Donnerkrieg_OnMapStart_NPC();
-	Schwertkrieg_OnMapStart_NPC();
-	PhantomKnight_OnMapStart_NPC();
-	BeheadedKamiKaze_OnMapStart_NPC();
-	Alt_Medic_Constructor_OnMapStart_NPC();	//3rd alt medic.
-	/*
-	TheGambler_OnMapStart_NPC();
-	Pablo_Gonzales_OnMapStart_NPC();
-	Doktor_Medick_OnMapStart_NPC();
-	Eternal_Kaptain_Heavy_OnMapStart_NPC();
-	BootyExecutioner_OnMapStart_NPC();
-	SandvichSlayer_OnMapStart_NPC();
-	Payday_Cloaker_OnMapStart_NPC();
-	BunkerKahml_OnMapStart_NPC();
-	TrueZerofuse_OnMapStart_NPC();
-	BunkerBotSoldier_OnMapStart_NPC();
-	BunkerBotSniper_OnMapStart_NPC();
-	BunkerSkeleton_OnMapStart_NPC();
-	BunkerSkeletonSmall_OnMapStart_NPC();
-	BunkerSkeletonKing_OnMapStart_NPC();
-	BunkerHeadlessHorse_OnMapStart_NPC();
-	*/
-	MedivalScout_OnMapStart_NPC();
-	MedivalBuilding_OnMapStart_NPC();
-	MedivalConstruct_OnMapStart_NPC();
-	MedivalChampion_OnMapStart_NPC();
-	MedivalLightCav_OnMapStart_NPC();
-	MedivalHussar_OnMapStart_NPC();
-	MedivalKnight_OnMapStart_NPC();
-	MedivalObuch_OnMapStart_NPC();
-	MedivalMonk_OnMapStart_NPC();
-	MedivalHalb_OnMapStart_NPC();
-	MedivalBrawler_OnMapStart_NPC();
-	MedivalLongbowmen_OnMapStart_NPC();
-	MedivalArbalest_OnMapStart_NPC();
-	MedivalEliteLongbowmen_OnMapStart_NPC();
-	MedivalEagleWarrior_OnMapStart_NPC();
-	MedivalRiddenArcher_OnMapStart_NPC();
-	MedivalSonOfOsiris_OnMapStart_NPC();
-	MedivalAchilles_OnMapStart_NPC();
-	
-	Ikunagae_OnMapStart_NPC();
-	MechaSoldier_Barrager_OnMapStart_NPC();
-	NearlSwordAbility_OnMapStart_NPC();
-
-	SeaRunner_MapStart();
-	SeaPiercer_MapStart();
-	SeaCrawler_MapStart();
-	FirstToTalk_MapStart();
-	UnderTides_MapStart();
-	KazimierzKnight_OnMapStart_NPC();
-	KazimierzKnightArcher_OnMapStart_NPC();
-	KazimierzBeserker_OnMapStart_NPC();
-	KazimierzLongArcher_OnMapStart_NPC();
-	EndSpeaker_MapStart();
-	Remain_MapStart();
-	KazimierzKnightAssasin_OnMapStart_NPC();
-	IsharmlaTrans_MapStart();
-	
-	//Ruina waves	//warp
-	Ruina_Ai_Core_Mapstart();
-	//Stage 1.
-	Theocracy_OnMapStart_NPC();
-	Adiantum_OnMapStart_NPC();
-	Lanius_OnMapStart_NPC();
-	Magia_OnMapStart_NPC();
-	Stella_OnMapStart_NPC();
-	Astria_OnMapStart_NPC();
-	Aether_OnMapStart_NPC();
-	Europa_OnMapStart_NPC();
-	Ruina_Drone_OnMapStart_NPC();
-	Ruriana_OnMapStart_NPC();
-	Venium_OnMapStart_NPC();
-	//Stage 2.
-
-	//Special.
-	Magia_Anchor_OnMapStart_NPC();
-	Ruina_Storm_Weaver_MapStart();
-	Ruina_Storm_Weaver_Mid_MapStart();
-
-	//Expidonsa Waves
-//wave 1-15:
-	Benera_OnMapStart_NPC();
-	Pental_OnMapStart_NPC();
-	Defanda_OnMapStart_NPC();
-	SelfamIre_OnMapStart_NPC();
-	VausMagica_OnMapStart_NPC();
-	Pistoleer_OnMapStart_NPC();
-	Diversionistico_OnMapStart_NPC();	//reused in waves all over
-	HeavyPunuel_OnMapStart_NPC();
-	SeargentIdeal_OnMapStart_NPC();	
-//wave 16-30:
-	RifalManu_OnMapStart_NPC();
-	Siccerino_OnMapStart_NPC();
-	SoldinePrototype_OnMapStart_NPC();
-	Soldine_OnMapStart_NPC();
-	EnegaKapus_OnMapStart_NPC();
-	Sniponeer_OnMapStart_NPC();
-	EgaBunar_OnMapStart_NPC();
-	Protecta_OnMapStart_NPC();
-//wave 31 - 45
-	CaptinoAgentus_OnMapStart_NPC();
-	DualRea_OnMapStart_NPC();
-	Guardus_OnMapStart_NPC();
-	VausTechicus_OnMapStart_NPC();
-	MinigunAssisa_OnMapStart_NPC();
-	Ignitus_OnMapStart_NPC();
-	Helena_OnMapStart_NPC();
-//wave 45-60 there arent as many enemies as im running out of ideas and i want to resuse top enemies
-	Erasus_OnMapStart_NPC();
-	GiantTankus_OnMapStart_NPC();
-	AnfuhrerEisenhard_OnMapStart_NPC();
-	SpeedusAdivus_OnMapStart_NPC();
-
-//internius
-	DesertAhim_OnMapStart_NPC();
-	DesertInabdil_OnMapStart_NPC();
-	DesertKhazaan_OnMapStart_NPC();
-	DesertSakratan_OnMapStart_NPC();
-	DesertYadeam_OnMapStart_NPC();
-	DesertRajul_OnMapStart_NPC();
-	DesertQanaas_OnMapStart_NPC();
-	DesertAtilla_OnMapStart_NPC();
-	DesertAncientDemon_OnMapStart_NPC();
-	WinterSniper_OnMapStart_NPC();
-	WinterZiberianMiner_OnMapStart_NPC();
-	WinterSnoweyGunner_OnMapStart_NPC();
-	WinterFreezingCleaner_OnMapStart_NPC();
-	WinterAirbornExplorer_OnMapStart_NPC();
-	WinterArcticMage_OnMapStart_NPC();
-	WinterFrostHunter_OnMapStart_NPC();
-	WinterSkinHunter_OnMapStart_NPC();
-	WinterIrritatedPerson_OnMapStart_NPC();
-	AnarchyRansacker_OnMapStart_NPC();
-	AnarchyRunover_OnMapStart_NPC();
-	AnarchyHitman_OnMapStart_NPC();
-	AnarchyMadDoctor_OnMapStart_NPC();
-	AnarchyAbomination_OnMapStart_NPC();
-	AnarchyEnforcer_OnMapStart_NPC();
-	AnarchyBraindead_OnMapStart_NPC();
-	AnarchyBehemoth_OnMapStart_NPC();
-	AnarchyAbsoluteIncinirator_OnMapStart_NPC();
-	MajorSteam_MapStart();
-
-	//Alt Barracks
-	Barrack_Alt_Ikunagae_MapStart();
-	Barrack_Alt_Shwertkrieg_MapStart();
-	Barrack_Railgunner_MapStart();
-	Barrack_Alt_Basic_Mage_MapStart();
-	Barrack_Alt_Intermediate_Mage_MapStart();
-	Barrack_Alt_Donnerkrieg_MapStart();
-	Barrack_Alt_Holy_Knight_MapStart();
-	Barrack_Alt_Mecha_Barrager_MapStart();
-	Barrack_Alt_Barrager_MapStart();
-	Barrack_Alt_Berserker_MapStart();
-	Barrack_Alt_Crossbowmedic_MapStart();
-	Barrack_Alt_Scientific_Witchery_MapStart();
-	Barracks_Thorns();
-	VIPBuilding_MapStart();
-	AlliedSensalAbility_OnMapStart_NPC();
-
-	// Raid Low Prio
-	TrueFusionWarrior_OnMapStart();
-	Blitzkrieg_OnMapStart();
-	RaidbossSilvester_OnMapStart();
-	RaidbossBlueGoggles_OnMapStart();
-	RaidbossNemesis_OnMapStart();
-	GodArkantos_OnMapStart();
-	Sensal_OnMapStart_NPC();
-	Raidboss_Schwertkrieg_OnMapStart_NPC();
-	Raidboss_Donnerkrieg_OnMapStart_NPC();
-	RaidbossBobTheFirst_OnMapStart();
-	TheMessenger_OnMapStart_NPC();
-	ChaosKahmlstein_OnMapStart_NPC();
-	ThePurge_MapStart();
-
-	// Bloon Low Prio
-	Bloon_MapStart();
-	GoldBloon_MapStart();
-	Moab_MapStart();
-	Bfb_MapStart();
-	Zomg_MapStart();
-	DDT_MapStart();
-	Bad_MapStart();
-
-	// Stalker Low Prio
-	StalkerCombine_MapStart();
-	StalkerFather_MapStart();
-	StalkerGoggles_OnMapStart();
-
-	// COF Low Prio
-	Addiction_OnMapStart_NPC();
-	Doctor_MapStart();
-	Simon_MapStart();
-
-	// Bloon Raid Low Prio
-	Bloonarius_MapStart();
-
-	// Rogue Mode Low Prio
-	OverlordRogue_OnMapStart_NPC();
-	RaidbossBladedance_MapStart();
+	NPCData data;
+	for(int i = 1; i < MAX_OLD_NPCS; i++)
+	{
+		strcopy(data.Name, sizeof(data.Name), NPC_Names[i]);
+		strcopy(data.Plugin, sizeof(data.Plugin), NPC_Plugin_Names_Converted[i]);
+		data.Category = NPCCategory[i];
+		data.Func = INVALID_FUNCTION;
+		NPCList.PushArray(data);
+	}
 }
 
-any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], int team, const char[] data="") //dmg mult only used for summonings
+stock int NPC_CreateByName(const char[] name, int client, float vecPos[3], float vecAng[3], int team, const char[] data = "")
+{
+	static NPCData npcdata;
+	int id = NPC_GetByPlugin(name, npcdata);
+	if(id == -1)
+	{
+		PrintToChatAll("\"%s\" is not a valid NPC or is using old method!", name);
+		return -1;
+	}
+
+	return CreateNPC(npcdata, id, client, vecPos, vecAng, team, data);
+}
+
+int NPC_CreateById(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], int team, const char[] data = "")
+{
+	if(Index_Of_Npc < 1 || NPCList.Length >= Index_Of_Npc)
+	{
+		PrintToChatAll("[%d] is not a valid NPC!", Index_Of_Npc);
+		return -1;
+	}
+
+	static NPCData npcdata;
+	NPC_GetById(Index_Of_Npc, npcdata);
+	return CreateNPC(npcdata, Index_Of_Npc, client, vecPos, vecAng, team, data);
+}
+
+static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	any entity = -1;
-	int ally = team;
-	switch(Index_Of_Npc)
+
+	switch(id)
 	{
 		case HEADCRAB_ZOMBIE:
-			entity = HeadcrabZombie(client, vecPos, vecAng, ally);
+			entity = HeadcrabZombie(client, vecPos, vecAng, team);
 		
 		case FORTIFIED_HEADCRAB_ZOMBIE:
-			entity = FortifiedHeadcrabZombie(client, vecPos, vecAng, ally);
+			entity = FortifiedHeadcrabZombie(client, vecPos, vecAng, team);
 		
 		case FASTZOMBIE:
-			entity = FastZombie(client, vecPos, vecAng, ally);
+			entity = FastZombie(client, vecPos, vecAng, team);
 		
 		case FORTIFIED_FASTZOMBIE:
-			entity = FortifiedFastZombie(client, vecPos, vecAng, ally);
+			entity = FortifiedFastZombie(client, vecPos, vecAng, team);
 		
 		case TORSOLESS_HEADCRAB_ZOMBIE:
-			entity = TorsolessHeadcrabZombie(client, vecPos, vecAng, ally);
+			entity = TorsolessHeadcrabZombie(client, vecPos, vecAng, team);
 		
 		case FORTIFIED_GIANT_POISON_ZOMBIE:
-			entity = FortifiedGiantPoisonZombie(client, vecPos, vecAng, ally);
+			entity = FortifiedGiantPoisonZombie(client, vecPos, vecAng, team);
 		
 		case POISON_ZOMBIE:
-			entity = PoisonZombie(client, vecPos, vecAng, ally);
+			entity = PoisonZombie(client, vecPos, vecAng, team);
 		
 		case FORTIFIED_POISON_ZOMBIE:
-			entity = FortifiedPoisonZombie(client, vecPos, vecAng, ally);
+			entity = FortifiedPoisonZombie(client, vecPos, vecAng, team);
 		
 		case FATHER_GRIGORI:
-			entity = FatherGrigori(client, vecPos, vecAng, ally);
+			entity = FatherGrigori(client, vecPos, vecAng, team);
 		
 		case COMBINE_POLICE_PISTOL:
-			entity = Combine_Police_Pistol(client, vecPos, vecAng, ally);
+			entity = Combine_Police_Pistol(client, vecPos, vecAng, team);
 		
 		case COMBINE_POLICE_SMG:
-			entity = CombinePoliceSmg(client, vecPos, vecAng, ally);
+			entity = CombinePoliceSmg(client, vecPos, vecAng, team);
 		
 		case COMBINE_SOLDIER_AR2:
-			entity = CombineSoldierAr2(client, vecPos, vecAng, ally);
+			entity = CombineSoldierAr2(client, vecPos, vecAng, team);
 		
 		case COMBINE_SOLDIER_SHOTGUN:
-			entity = CombineSoldierShotgun(client, vecPos, vecAng, ally);
+			entity = CombineSoldierShotgun(client, vecPos, vecAng, team);
 		
 		case COMBINE_SOLDIER_SWORDSMAN:
-			entity = CombineSwordsman(client, vecPos, vecAng, ally);
+			entity = CombineSwordsman(client, vecPos, vecAng, team);
 		
 		case COMBINE_SOLDIER_ELITE:
-			entity = CombineElite(client, vecPos, vecAng, ally);
+			entity = CombineElite(client, vecPos, vecAng, team);
 		
 		case COMBINE_SOLDIER_GIANT_SWORDSMAN:
-			entity = CombineGaint(client, vecPos, vecAng, ally);
+			entity = CombineGaint(client, vecPos, vecAng, team);
 		
 		case COMBINE_SOLDIER_DDT:
-			entity = CombineDDT(client, vecPos, vecAng, ally);
+			entity = CombineDDT(client, vecPos, vecAng, team);
 		
 		case COMBINE_SOLDIER_COLLOSS:
-			entity = CombineCollos(client, vecPos, vecAng, ally);
+			entity = CombineCollos(client, vecPos, vecAng, team);
 		
 		case COMBINE_OVERLORD:
-			entity = CombineOverlord(client, vecPos, vecAng, ally);
+			entity = CombineOverlord(client, vecPos, vecAng, team);
 		
 		case SCOUT_ZOMBIE:
-			entity = Scout(client, vecPos, vecAng, ally);
+			entity = Scout(client, vecPos, vecAng, team);
 		
 		case ENGINEER_ZOMBIE:
-			entity = Engineer(client, vecPos, vecAng, ally);
+			entity = Engineer(client, vecPos, vecAng, team);
 		
 		case HEAVY_ZOMBIE:
-			entity = Heavy(client, vecPos, vecAng, ally);
+			entity = Heavy(client, vecPos, vecAng, team);
 		
 		case FLYINGARMOR_ZOMBIE:
-			entity = FlyingArmor(client, vecPos, vecAng, ally);
+			entity = FlyingArmor(client, vecPos, vecAng, team);
 		
 		case FLYINGARMOR_TINY_ZOMBIE:
-			entity = FlyingArmorTiny(client, vecPos, vecAng, ally);
+			entity = FlyingArmorTiny(client, vecPos, vecAng, team);
 		
 		case KAMIKAZE_DEMO:
-			entity = Kamikaze(client, vecPos, vecAng, ally);
+			entity = Kamikaze(client, vecPos, vecAng, team);
 		
 		case MEDIC_HEALER:
-			entity = MedicHealer(client, vecPos, vecAng, ally);
+			entity = MedicHealer(client, vecPos, vecAng, team);
 		
 		case HEAVY_ZOMBIE_GIANT:
-			entity = HeavyGiant(client, vecPos, vecAng, ally);
+			entity = HeavyGiant(client, vecPos, vecAng, team);
 		
 		case SPY_FACESTABBER:
-			entity = Spy(client, vecPos, vecAng, ally);
+			entity = Spy(client, vecPos, vecAng, team);
 		
 		case SOLDIER_ROCKET_ZOMBIE:
-			entity = Soldier(client, vecPos, vecAng, ally);
+			entity = Soldier(client, vecPos, vecAng, team);
 		
 		case SOLDIER_ZOMBIE_MINION:
-			entity = SoldierMinion(client, vecPos, vecAng, ally);
+			entity = SoldierMinion(client, vecPos, vecAng, team);
 		
 		case SOLDIER_ZOMBIE_BOSS:
-			entity = SoldierGiant(client, vecPos, vecAng, ally);
+			entity = SoldierGiant(client, vecPos, vecAng, team);
 		
 		case SPY_THIEF:
-			entity = SpyThief(client, vecPos, vecAng, ally);
+			entity = SpyThief(client, vecPos, vecAng, team);
 		
 		case SPY_TRICKSTABBER:
-			entity = SpyTrickstabber(client, vecPos, vecAng, ally);
+			entity = SpyTrickstabber(client, vecPos, vecAng, team);
 		
 		case SPY_HALF_CLOACKED:
-			entity = SpyCloaked(client, vecPos, vecAng, ally);
+			entity = SpyCloaked(client, vecPos, vecAng, team);
 		
 		case SNIPER_MAIN:
-			entity = SniperMain(client, vecPos, vecAng, ally);
+			entity = SniperMain(client, vecPos, vecAng, team);
 		
 		case DEMO_MAIN:
-			entity = DemoMain(client, vecPos, vecAng, ally);
+			entity = DemoMain(client, vecPos, vecAng, team);
 		
 		case BATTLE_MEDIC_MAIN:
-			entity = MedicMain(client, vecPos, vecAng, ally);
+			entity = MedicMain(client, vecPos, vecAng, team);
 		
 		case GIANT_PYRO_MAIN:
-			entity = PyroGiant(client, vecPos, vecAng, ally);
+			entity = PyroGiant(client, vecPos, vecAng, team);
 		
 		case COMBINE_DEUTSCH_RITTER:
-			entity = CombineDeutsch(client, vecPos, vecAng, ally);
+			entity = CombineDeutsch(client, vecPos, vecAng, team);
 		
 		case ALT_COMBINE_DEUTSCH_RITTER:
-			entity = Alt_CombineDeutsch(client, vecPos, vecAng, ally);
+			entity = Alt_CombineDeutsch(client, vecPos, vecAng, team);
 		
 		case SPY_MAIN_BOSS:
-			entity = SpyMainBoss(client, vecPos, vecAng, ally);
+			entity = SpyMainBoss(client, vecPos, vecAng, team);
 		
 		case XENO_HEADCRAB_ZOMBIE:
-			entity = XenoHeadcrabZombie(client, vecPos, vecAng, ally);
+			entity = XenoHeadcrabZombie(client, vecPos, vecAng, team);
 		
 		case XENO_FORTIFIED_HEADCRAB_ZOMBIE:
-			entity = XenoFortifiedHeadcrabZombie(client, vecPos, vecAng, ally);
+			entity = XenoFortifiedHeadcrabZombie(client, vecPos, vecAng, team);
 		
 		case XENO_FASTZOMBIE:
-			entity = XenoFastZombie(client, vecPos, vecAng, ally);
+			entity = XenoFastZombie(client, vecPos, vecAng, team);
 		
 		case XENO_FORTIFIED_FASTZOMBIE:
-			entity = XenoFortifiedFastZombie(client, vecPos, vecAng, ally);
+			entity = XenoFortifiedFastZombie(client, vecPos, vecAng, team);
 		
 		case XENO_TORSOLESS_HEADCRAB_ZOMBIE:
-			entity = XenoTorsolessHeadcrabZombie(client, vecPos, vecAng, ally);
+			entity = XenoTorsolessHeadcrabZombie(client, vecPos, vecAng, team);
 		
 		case XENO_FORTIFIED_GIANT_POISON_ZOMBIE:
-			entity = XenoFortifiedGiantPoisonZombie(client, vecPos, vecAng, ally);
+			entity = XenoFortifiedGiantPoisonZombie(client, vecPos, vecAng, team);
 		
 		case XENO_POISON_ZOMBIE:
-			entity = XenoPoisonZombie(client, vecPos, vecAng, ally);
+			entity = XenoPoisonZombie(client, vecPos, vecAng, team);
 		
 		case XENO_FORTIFIED_POISON_ZOMBIE:
-			entity = XenoFortifiedPoisonZombie(client, vecPos, vecAng, ally);
+			entity = XenoFortifiedPoisonZombie(client, vecPos, vecAng, team);
 		
 		case XENO_FATHER_GRIGORI:
-			entity = XenoFatherGrigori(client, vecPos, vecAng, ally);
+			entity = XenoFatherGrigori(client, vecPos, vecAng, team);
 		
 		case XENO_COMBINE_POLICE_PISTOL:
-			entity = XenoCombinePolicePistol(client, vecPos, vecAng, ally);
+			entity = XenoCombinePolicePistol(client, vecPos, vecAng, team);
 		
 		case XENO_COMBINE_POLICE_SMG:
-			entity = XenoCombinePoliceSmg(client, vecPos, vecAng, ally);
+			entity = XenoCombinePoliceSmg(client, vecPos, vecAng, team);
 		
 		case XENO_COMBINE_SOLDIER_AR2:
-			entity = XenoCombineSoldierAr2(client, vecPos, vecAng, ally);
+			entity = XenoCombineSoldierAr2(client, vecPos, vecAng, team);
 		
 		case XENO_COMBINE_SOLDIER_SHOTGUN:
-			entity = XenoCombineSoldierShotgun(client, vecPos, vecAng, ally);
+			entity = XenoCombineSoldierShotgun(client, vecPos, vecAng, team);
 		
 		case XENO_COMBINE_SOLDIER_SWORDSMAN:
-			entity = XenoCombineSwordsman(client, vecPos, vecAng, ally);
+			entity = XenoCombineSwordsman(client, vecPos, vecAng, team);
 		
 		case XENO_COMBINE_SOLDIER_ELITE:
-			entity = XenoCombineElite(client, vecPos, vecAng, ally);
+			entity = XenoCombineElite(client, vecPos, vecAng, team);
 		
 		case XENO_COMBINE_SOLDIER_GIANT_SWORDSMAN:
-			entity = XenoCombineGaint(client, vecPos, vecAng, ally);
+			entity = XenoCombineGaint(client, vecPos, vecAng, team);
 		
 		case XENO_COMBINE_SOLDIER_DDT:
-			entity = XenoCombineDDT(client, vecPos, vecAng, ally);
+			entity = XenoCombineDDT(client, vecPos, vecAng, team);
 		
 		case XENO_COMBINE_SOLDIER_COLLOSS:
-			entity = XenoCombineCollos(client, vecPos, vecAng, ally);
+			entity = XenoCombineCollos(client, vecPos, vecAng, team);
 		
 		case XENO_COMBINE_OVERLORD:
-			entity = XenoCombineOverlord(client, vecPos, vecAng, ally);
+			entity = XenoCombineOverlord(client, vecPos, vecAng, team);
 		
 		case XENO_SCOUT_ZOMBIE:
-			entity = XenoScout(client, vecPos, vecAng, ally);
+			entity = XenoScout(client, vecPos, vecAng, team);
 		
 		case XENO_ENGINEER_ZOMBIE:
-			entity = XenoEngineer(client, vecPos, vecAng, ally);
+			entity = XenoEngineer(client, vecPos, vecAng, team);
 		
 		case XENO_HEAVY_ZOMBIE:
-			entity = XenoHeavy(client, vecPos, vecAng, ally);
+			entity = XenoHeavy(client, vecPos, vecAng, team);
 		
 		case XENO_FLYINGARMOR_ZOMBIE:
-			entity = XenoFlyingArmor(client, vecPos, vecAng, ally);
+			entity = XenoFlyingArmor(client, vecPos, vecAng, team);
 		
 		case XENO_FLYINGARMOR_TINY_ZOMBIE:
-			entity = XenoFlyingArmorTiny(client, vecPos, vecAng, ally);
+			entity = XenoFlyingArmorTiny(client, vecPos, vecAng, team);
 		
 		case XENO_KAMIKAZE_DEMO:
-			entity = XenoKamikaze(client, vecPos, vecAng, ally);
+			entity = XenoKamikaze(client, vecPos, vecAng, team);
 		
 		case XENO_MEDIC_HEALER:
-			entity = XenoMedicHealer(client, vecPos, vecAng, ally);
+			entity = XenoMedicHealer(client, vecPos, vecAng, team);
 		
 		case XENO_HEAVY_ZOMBIE_GIANT:
-			entity = XenoHeavyGiant(client, vecPos, vecAng, ally);
+			entity = XenoHeavyGiant(client, vecPos, vecAng, team);
 		
 		case XENO_SPY_FACESTABBER:
-			entity = XenoSpy(client, vecPos, vecAng, ally);
+			entity = XenoSpy(client, vecPos, vecAng, team);
 		
 		case XENO_SOLDIER_ROCKET_ZOMBIE:
-			entity = XenoSoldier(client, vecPos, vecAng, ally);
+			entity = XenoSoldier(client, vecPos, vecAng, team);
 		
 		case XENO_SOLDIER_ZOMBIE_MINION:
-			entity = XenoSoldierMinion(client, vecPos, vecAng, ally);
+			entity = XenoSoldierMinion(client, vecPos, vecAng, team);
 		
 		case XENO_SOLDIER_ZOMBIE_BOSS:
-			entity = XenoSoldierGiant(client, vecPos, vecAng, ally);
+			entity = XenoSoldierGiant(client, vecPos, vecAng, team);
 		
 		case XENO_SPY_THIEF:
-			entity = XenoSpyThief(client, vecPos, vecAng, ally);
+			entity = XenoSpyThief(client, vecPos, vecAng, team);
 		
 		case XENO_SPY_TRICKSTABBER:
-			entity = XenoSpyTrickstabber(client, vecPos, vecAng, ally);
+			entity = XenoSpyTrickstabber(client, vecPos, vecAng, team);
 		
 		case XENO_SPY_HALF_CLOACKED:
-			entity = XenoSpyCloaked(client, vecPos, vecAng, ally);
+			entity = XenoSpyCloaked(client, vecPos, vecAng, team);
 		
 		case XENO_SNIPER_MAIN:
-			entity = XenoSniperMain(client, vecPos, vecAng, ally);
+			entity = XenoSniperMain(client, vecPos, vecAng, team);
 		
 		case XENO_DEMO_MAIN:
-			entity = XenoDemoMain(client, vecPos, vecAng, ally);
+			entity = XenoDemoMain(client, vecPos, vecAng, team);
 		
 		case XENO_BATTLE_MEDIC_MAIN:
-			entity = XenoMedicMain(client, vecPos, vecAng, ally);
+			entity = XenoMedicMain(client, vecPos, vecAng, team);
 		
 		case XENO_GIANT_PYRO_MAIN:
-			entity = XenoPyroGiant(client, vecPos, vecAng, ally);
+			entity = XenoPyroGiant(client, vecPos, vecAng, team);
 		
 		case XENO_COMBINE_DEUTSCH_RITTER:
-			entity = XenoCombineDeutsch(client, vecPos, vecAng, ally);
+			entity = XenoCombineDeutsch(client, vecPos, vecAng, team);
 		
 		case XENO_SPY_MAIN_BOSS:
-			entity = XenoSpyMainBoss(client, vecPos, vecAng, ally);
+			entity = XenoSpyMainBoss(client, vecPos, vecAng, team);
 		
 		case NAZI_PANZER:
-			entity = NaziPanzer(client, vecPos, vecAng, ally);
+			entity = NaziPanzer(client, vecPos, vecAng, team);
 		
 		case BOB_THE_GOD_OF_GODS:
-			entity = BobTheGod(client, vecPos, vecAng, ally);
+			entity = BobTheGod(client, vecPos, vecAng, team);
 		
 		case NECRO_COMBINE:
 			entity = NecroCombine(client, vecPos, vecAng, StringToFloat(data));
@@ -2330,847 +2431,860 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 			entity = NecroCalcium(client, vecPos, vecAng, StringToFloat(data));
 		
 		case CURED_FATHER_GRIGORI:
-			entity = CuredFatherGrigori(client, vecPos, vecAng, ally);
+			entity = CuredFatherGrigori(client, vecPos, vecAng, team);
 		
 		case ALT_COMBINE_MAGE:
-			entity = AltCombineMage(client, vecPos, vecAng, ally);
+			entity = AltCombineMage(client, vecPos, vecAng, team);
 		
 		case BTD_BLOON:
-			entity = Bloon(client, vecPos, vecAng, ally, data);
+			entity = Bloon(client, vecPos, vecAng, team, data);
 		
 		case BTD_MOAB:
-			entity = Moab(client, vecPos, vecAng, ally, data);
+			entity = Moab(client, vecPos, vecAng, team, data);
 		
 		case BTD_BFB:
-			entity = BFB(client, vecPos, vecAng, ally, data);
+			entity = BFB(client, vecPos, vecAng, team, data);
 		
 		case BTD_ZOMG:
-			entity = Zomg(client, vecPos, vecAng, ally, data);
+			entity = Zomg(client, vecPos, vecAng, team, data);
 		
 		case BTD_DDT:
-			entity = DDT(client, vecPos, vecAng, ally, data);
+			entity = DDT(client, vecPos, vecAng, team, data);
 		
 		case BTD_BAD:
-			entity = Bad(client, vecPos, vecAng, ally, data);
+			entity = Bad(client, vecPos, vecAng, team, data);
 		
 		case ALT_MEDIC_APPRENTICE_MAGE:
-			entity = AltMedicApprenticeMage(client, vecPos, vecAng, ally);
+			entity = AltMedicApprenticeMage(client, vecPos, vecAng, team);
 		
 		case SAWRUNNER:
-			entity = SawRunner(client, vecPos, vecAng, ally);
+			entity = SawRunner(client, vecPos, vecAng, team);
 		
 		case RAIDMODE_TRUE_FUSION_WARRIOR:
-			entity = TrueFusionWarrior(client, vecPos, vecAng, ally, data);
+			entity = TrueFusionWarrior(client, vecPos, vecAng, team, data);
 		
 		case ALT_MEDIC_CHARGER:
-			entity = AltMedicCharger(client, vecPos, vecAng, ally);
+			entity = AltMedicCharger(client, vecPos, vecAng, team);
 		
 		case ALT_MEDIC_BERSERKER:
-			entity = AltMedicBerseker(client, vecPos, vecAng, ally);
+			entity = AltMedicBerseker(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_MILITIA:
-			entity = MedivalMilitia(client, vecPos, vecAng, ally);
+			entity = MedivalMilitia(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_ARCHER:
-			entity = MedivalArcher(client, vecPos, vecAng, ally);
+			entity = MedivalArcher(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_MAN_AT_ARMS:
-			entity = MedivalManAtArms(client, vecPos, vecAng, ally);
+			entity = MedivalManAtArms(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_SKIRMISHER:
-			entity = MedivalSkirmisher(client, vecPos, vecAng, ally);
+			entity = MedivalSkirmisher(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_SWORDSMAN:
-			entity = MedivalSwordsman(client, vecPos, vecAng, ally);
+			entity = MedivalSwordsman(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_TWOHANDED_SWORDSMAN:
-			entity = MedivalTwoHandedSwordsman(client, vecPos, vecAng, ally);
+			entity = MedivalTwoHandedSwordsman(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_CROSSBOW_MAN:
-			entity = MedivalCrossbowMan(client, vecPos, vecAng, ally);
+			entity = MedivalCrossbowMan(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_SPEARMEN:
-			entity = MedivalSpearMan(client, vecPos, vecAng, ally);
+			entity = MedivalSpearMan(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_HANDCANNONEER:
-			entity = MedivalHandCannoneer(client, vecPos, vecAng, ally);
+			entity = MedivalHandCannoneer(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_ELITE_SKIRMISHER:
-			entity = MedivalEliteSkirmisher(client, vecPos, vecAng, ally);
+			entity = MedivalEliteSkirmisher(client, vecPos, vecAng, team);
 		
 		case RAIDMODE_BLITZKRIEG:
-			entity = Blitzkrieg(client, vecPos, vecAng, ally, data);
+			entity = Blitzkrieg(client, vecPos, vecAng, team, data);
 		
 		case MEDIVAL_PIKEMAN:
-			entity = MedivalPikeman(client, vecPos, vecAng, ally);
+			entity = MedivalPikeman(client, vecPos, vecAng, team);
 		
 		case ALT_MEDIC_SUPPERIOR_MAGE:
-			entity = NPC_ALT_MEDIC_SUPPERIOR_MAGE(client, vecPos, vecAng, ally);
+			entity = NPC_ALT_MEDIC_SUPPERIOR_MAGE(client, vecPos, vecAng, team);
 		
 		case CITIZEN:
 			entity = Citizen(client, vecPos, vecAng, data);
 		
 		case MEDIVAL_EAGLE_SCOUT:
-			entity = MedivalEagleScout(client, vecPos, vecAng, ally);
+			entity = MedivalEagleScout(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_SAMURAI:
-			entity = MedivalSamurai(client, vecPos, vecAng, ally);
+			entity = MedivalSamurai(client, vecPos, vecAng, team);
 		
 		case THEADDICTION:
-			entity = Addicition(client, vecPos, vecAng, ally, data);
+			entity = Addicition(client, vecPos, vecAng, team, data);
 		
 		case THEDOCTOR:
-			entity = Doctor(client, vecPos, vecAng, ally, data);
+			entity = Doctor(client, vecPos, vecAng, team, data);
 		
 		case BOOKSIMON:
-			entity = Simon(client, vecPos, vecAng, ally, data);
+			entity = Simon(client, vecPos, vecAng, team, data);
 		
 		case ALT_KAHMLSTEIN:
-			entity = Kahmlstein(client, vecPos, vecAng, ally);
+			entity = Kahmlstein(client, vecPos, vecAng, team);
 		
 		case L4D2_TANK:
-			entity = L4D2_Tank(client, vecPos, vecAng, ally);
+			entity = L4D2_Tank(client, vecPos, vecAng, team);
 		
 		case ALT_SNIPER_RAILGUNNER:
-			entity = Sniper_railgunner(client, vecPos, vecAng, ally);
+			entity = Sniper_railgunner(client, vecPos, vecAng, team);
 		
 		case BTD_GOLDBLOON:
-			entity = GoldBloon(client, vecPos, vecAng, ally, data);
+			entity = GoldBloon(client, vecPos, vecAng, team, data);
 		
 		case BTD_BLOONARIUS:
-			entity = Bloonarius(client, vecPos, vecAng, ally, data);
+			entity = Bloonarius(client, vecPos, vecAng, team, data);
 		
 		case MEDIVAL_RAM:
-			entity = MedivalRam(client, vecPos, vecAng, ally, data);
+			entity = MedivalRam(client, vecPos, vecAng, team, data);
 		
 		case ALT_SOLDIER_BARRAGER:
-			entity = Soldier_Barrager(client, vecPos, vecAng, ally);
+			entity = Soldier_Barrager(client, vecPos, vecAng, team);
 		
 		case ALT_THE_SHIT_SLAPPER:
-			entity = The_Shit_Slapper(client, vecPos, vecAng, ally);
+			entity = The_Shit_Slapper(client, vecPos, vecAng, team);
 		
 		case BONEZONE_BASICBONES:
-			entity = BasicBones(client, vecPos, vecAng, ally, false);
+			entity = BasicBones(client, vecPos, vecAng, team, false);
 			
 		case BONEZONE_BEEFYBONES:
-			entity = BeefyBones(client, vecPos, vecAng, ally, false);
+			entity = BeefyBones(client, vecPos, vecAng, team, false);
 			
 		case BONEZONE_BRITTLEBONES:
-			entity = BrittleBones(client, vecPos, vecAng, ally, false);
+			entity = BrittleBones(client, vecPos, vecAng, team, false);
 			
 		case BONEZONE_BIGBONES:
-			entity = BigBones(client, vecPos, vecAng, ally, false);
+			entity = BigBones(client, vecPos, vecAng, team, false);
 			
 		case BONEZONE_BUFFED_BASICBONES:
-			entity = BasicBones(client, vecPos, vecAng, ally, true);
+			entity = BasicBones(client, vecPos, vecAng, team, true);
 			
 		case BONEZONE_BUFFED_BEEFYBONES:
-			entity = BeefyBones(client, vecPos, vecAng, ally, true);
+			entity = BeefyBones(client, vecPos, vecAng, team, true);
 			
 		case BONEZONE_BUFFED_BRITTLEBONES:
-			entity = BrittleBones(client, vecPos, vecAng, ally, true);
+			entity = BrittleBones(client, vecPos, vecAng, team, true);
 			
 		case BONEZONE_BUFFED_BIGBONES:
-			entity = BigBones(client, vecPos, vecAng, ally, true);
+			entity = BigBones(client, vecPos, vecAng, team, true);
 			
 		case ALT_MECHA_ENGINEER:
-			entity = Mecha_Engineer(client, vecPos, vecAng, ally);
+			entity = Mecha_Engineer(client, vecPos, vecAng, team);
 		
 		case ALT_MECHA_HEAVY:
-			entity = Mecha_Heavy(client, vecPos, vecAng, ally);
+			entity = Mecha_Heavy(client, vecPos, vecAng, team);
 		
 		case ALT_MECHA_HEAVYGIANT:
-			entity = Mecha_HeavyGiant(client, vecPos, vecAng, ally);
+			entity = Mecha_HeavyGiant(client, vecPos, vecAng, team);
 		
 		case ALT_MECHA_PYROGIANT:
-			entity = Mecha_PyroGiant(client, vecPos, vecAng, ally);
+			entity = Mecha_PyroGiant(client, vecPos, vecAng, team);
 		
 		case ALT_MECHA_SCOUT:
-			entity = Mecha_Scout(client, vecPos, vecAng, ally);
+			entity = Mecha_Scout(client, vecPos, vecAng, team);
 		
 		case ALT_DONNERKRIEG:
-			entity = Donnerkrieg(client, vecPos, vecAng, ally, data);
+			entity = Donnerkrieg(client, vecPos, vecAng, team, data);
 		
 		case ALT_SCHWERTKRIEG:
-			entity = Schwertkrieg(client, vecPos, vecAng, ally, data);
+			entity = Schwertkrieg(client, vecPos, vecAng, team, data);
 		
 		case PHANTOM_KNIGHT:
-			entity = PhantomKnight(client, vecPos, vecAng, ally);	
+			entity = PhantomKnight(client, vecPos, vecAng, team);	
 		
 		case MINI_BEHEADED_KAMI:
-			entity = BeheadedKamiKaze(client, vecPos, vecAng, ally);		
+			entity = BeheadedKamiKaze(client, vecPos, vecAng, team);		
 		
 		case ALT_MEDIC_HEALER_3:	//3 being the 3rd stage of alt waves.
-			entity = Alt_Medic_Constructor(client, vecPos, vecAng, ally);
+			entity = Alt_Medic_Constructor(client, vecPos, vecAng, team);
 		/*
 		case THE_GAMBLER:
-			entity = TheGambler(client, vecPos, vecAng, ally);
+			entity = TheGambler(client, vecPos, vecAng, team);
 		
 		case PABLO_GONZALES:
-			entity = Pablo_Gonzales(client, vecPos, vecAng, ally);
+			entity = Pablo_Gonzales(client, vecPos, vecAng, team);
 		
 		case DOKTOR_MEDICK:
-			entity = Doktor_Medick(client, vecPos, vecAng, ally);
+			entity = Doktor_Medick(client, vecPos, vecAng, team);
 		
 		case KAPTAIN_HEAVY:
-			entity = Eternal_Kaptain_Heavy(client, vecPos, vecAng, ally);
+			entity = Eternal_Kaptain_Heavy(client, vecPos, vecAng, team);
 		
 		case BOOTY_EXECUTIONIER:
-			entity = BootyExecutioner(client, vecPos, vecAng, ally);
+			entity = BootyExecutioner(client, vecPos, vecAng, team);
 		
 		case SANDVICH_SLAYER:
-			entity = SandvichSlayer(client, vecPos, vecAng, ally);
+			entity = SandvichSlayer(client, vecPos, vecAng, team);
 		
 		case PAYDAYCLOAKER:
-			entity = Payday_Cloaker(client, vecPos, vecAng, ally);
+			entity = Payday_Cloaker(client, vecPos, vecAng, team);
 		
 		case BUNKER_KAHML_VTWO:
-			entity = BunkerKahml(client, vecPos, vecAng, ally);
+			entity = BunkerKahml(client, vecPos, vecAng, team);
 		
 		case TRUE_ZEROFUSE:
-			entity = TrueZerofuse(client, vecPos, vecAng, ally);
+			entity = TrueZerofuse(client, vecPos, vecAng, team);
 		
 		case BUNKER_BOT_SOLDIER:
-			entity = BunkerBotSoldier(client, vecPos, vecAng, ally);
+			entity = BunkerBotSoldier(client, vecPos, vecAng, team);
 		
 		case BUNKER_BOT_SNIPER:
-			entity = BunkerBotSniper(client, vecPos, vecAng, ally);
+			entity = BunkerBotSniper(client, vecPos, vecAng, team);
 		
 		case BUNKER_SKELETON:
-			entity = BunkerSkeleton(client, vecPos, vecAng, ally);
+			entity = BunkerSkeleton(client, vecPos, vecAng, team);
 		
 		case BUNKER_SMALL_SKELETON:
-			entity = BunkerSkeletonKing(client, vecPos, vecAng, ally);
+			entity = BunkerSkeletonKing(client, vecPos, vecAng, team);
 		
 		case BUNKER_KING_SKELETON:
-			entity = BunkerSkeletonKing(client, vecPos, vecAng, ally);
+			entity = BunkerSkeletonKing(client, vecPos, vecAng, team);
 		
 		case BUNKER_HEADLESSHORSE:
-			entity = BunkerHeadlessHorse(client, vecPos, vecAng, ally);
+			entity = BunkerHeadlessHorse(client, vecPos, vecAng, team);
 		*/
 		case MEDIVAL_SCOUT:
-			entity = MedivalScout(client, vecPos, vecAng, ally);
+			entity = MedivalScout(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_VILLAGER:
-			entity = MedivalVillager(client, vecPos, vecAng, ally);
+			entity = MedivalVillager(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_BUILDING:
-			entity = MedivalBuilding(client, vecPos, vecAng, ally, data);
+			entity = MedivalBuilding(client, vecPos, vecAng, team, data);
 		
 		case MEDIVAL_CONSTRUCT:
-			entity = MedivalConstruct(client, vecPos, vecAng, ally);
+			entity = MedivalConstruct(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_CHAMPION:
-			entity = MedivalChampion(client, vecPos, vecAng, ally);
+			entity = MedivalChampion(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_LIGHT_CAV:
-			entity = MedivalLightCav(client, vecPos, vecAng, ally);
+			entity = MedivalLightCav(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_HUSSAR:
-			entity = MedivalHussar(client, vecPos, vecAng, ally);
+			entity = MedivalHussar(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_KNIGHT:
-			entity = MedivalKnight(client, vecPos, vecAng, ally);
+			entity = MedivalKnight(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_OBUCH:
-			entity = MedivalObuch(client, vecPos, vecAng, ally);
+			entity = MedivalObuch(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_MONK:
-			entity = MedivalMonk(client, vecPos, vecAng, ally);
+			entity = MedivalMonk(client, vecPos, vecAng, team);
 		
 		case BARRACK_MILITIA:
-			entity = BarrackMilitia(client, vecPos, vecAng, ally);
+			entity = BarrackMilitia(client, vecPos, vecAng, team);
 		
 		case BARRACK_ARCHER:
-			entity = BarrackArcher(client, vecPos, vecAng, ally);
+			entity = BarrackArcher(client, vecPos, vecAng, team);
 		
 		case BARRACK_MAN_AT_ARMS:
-			entity = BarrackManAtArms(client, vecPos, vecAng, ally);
+			entity = BarrackManAtArms(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_HALB:
-			entity = MedivalHalb(client, vecPos, vecAng, ally);
+			entity = MedivalHalb(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_BRAWLER:
-			entity = MedivalBrawler(client, vecPos, vecAng, ally);
+			entity = MedivalBrawler(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_LONGBOWMEN:
-			entity = MedivalLongbowmen(client, vecPos, vecAng, ally);
+			entity = MedivalLongbowmen(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_ARBALEST:
-			entity = MedivalArbalest(client, vecPos, vecAng, ally);
+			entity = MedivalArbalest(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_ELITE_LONGBOWMEN:
-			entity = MedivalEliteLongbowmen(client, vecPos, vecAng, ally);
+			entity = MedivalEliteLongbowmen(client, vecPos, vecAng, team);
 		
 		case BARRACK_CROSSBOW:
-			entity = BarrackCrossbow(client, vecPos, vecAng, ally);
+			entity = BarrackCrossbow(client, vecPos, vecAng, team);
 		
 		case BARRACK_SWORDSMAN:
-			entity = BarrackSwordsman(client, vecPos, vecAng, ally);
+			entity = BarrackSwordsman(client, vecPos, vecAng, team);
 		
 		case BARRACK_ARBELAST:
-			entity = BarrackArbelast(client, vecPos, vecAng, ally);
+			entity = BarrackArbelast(client, vecPos, vecAng, team);
 		
 		case BARRACK_TWOHANDED:
-			entity = BarrackTwoHanded(client, vecPos, vecAng, ally);
+			entity = BarrackTwoHanded(client, vecPos, vecAng, team);
 		
 		case BARRACK_LONGBOW:
-			entity = BarrackLongbow(client, vecPos, vecAng, ally);
+			entity = BarrackLongbow(client, vecPos, vecAng, team);
 		
 		case BARRACK_CHAMPION:
-			entity = BarrackChampion(client, vecPos, vecAng, ally);
+			entity = BarrackChampion(client, vecPos, vecAng, team);
 		
 		case BARRACK_MONK:
-			entity = BarrackMonk(client, vecPos, vecAng, ally);
+			entity = BarrackMonk(client, vecPos, vecAng, team);
 		
 		case BARRACK_HUSSAR:
-			entity = BarrackHussar(client, vecPos, vecAng, ally);
+			entity = BarrackHussar(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_CAVALARY:
-			entity = MedivalCavalary(client, vecPos, vecAng, ally);
+			entity = MedivalCavalary(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_PALADIN:
-			entity = MedivalPaladin(client, vecPos, vecAng, ally);
+			entity = MedivalPaladin(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_CROSSBOW_GIANT:
-			entity = MedivalCrossbowGiant(client, vecPos, vecAng, ally);
+			entity = MedivalCrossbowGiant(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_SWORDSMAN_GIANT:
-			entity = MedivalSwordsmanGiant(client, vecPos, vecAng, ally);
+			entity = MedivalSwordsmanGiant(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_EAGLE_WARRIOR:
-			entity = MedivalEagleWarrior(client, vecPos, vecAng, ally);
+			entity = MedivalEagleWarrior(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_RIDDENARCHER:
-			entity = MedivalRiddenArcher(client, vecPos, vecAng, ally);
+			entity = MedivalRiddenArcher(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_EAGLE_GIANT:
-			entity = MedivalEagleGiant(client, vecPos, vecAng, ally);
+			entity = MedivalEagleGiant(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_SON_OF_OSIRIS:
-			entity = MedivalSonOfOsiris(client, vecPos, vecAng, ally);
+			entity = MedivalSonOfOsiris(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_ACHILLES:
-			entity = MedivalAchilles(client, vecPos, vecAng, ally);
+			entity = MedivalAchilles(client, vecPos, vecAng, team);
 		
 		case MEDIVAL_TREBUCHET:
-			entity = MedivalTrebuchet(client, vecPos, vecAng, ally);
+			entity = MedivalTrebuchet(client, vecPos, vecAng, team);
 		
 		case ALT_IKUNAGAE:
-			entity = Ikunagae(client, vecPos, vecAng, ally);
+			entity = Ikunagae(client, vecPos, vecAng, team);
 		
 		case ALT_MECHASOLDIER_BARRAGER:
-			entity = MechaSoldier_Barrager(client, vecPos, vecAng, ally);
+			entity = MechaSoldier_Barrager(client, vecPos, vecAng, team);
 		
 		case NEARL_SWORD:
-			entity = NearlSwordAbility(client, vecPos, vecAng, ally);
+			entity = NearlSwordAbility(client, vecPos, vecAng, team);
 		
 		case STALKER_COMBINE:
-			entity = StalkerCombine(client, vecPos, vecAng, ally);
+			entity = StalkerCombine(client, vecPos, vecAng, team);
 		
 		case STALKER_FATHER:
-			entity = StalkerFather(client, vecPos, vecAng, ally);
+			entity = StalkerFather(client, vecPos, vecAng, team);
 		
 		case STALKER_GOGGLES:
-			entity = StalkerGoggles(client, vecPos, vecAng, ally);
+			entity = StalkerGoggles(client, vecPos, vecAng, team);
 		
 		case XENO_RAIDBOSS_SILVESTER:
-			entity = RaidbossSilvester(client, vecPos, vecAng, ally, data);
+			entity = RaidbossSilvester(client, vecPos, vecAng, team, data);
 		
 		case XENO_RAIDBOSS_BLUE_GOGGLES:
-			entity = RaidbossBlueGoggles(client, vecPos, vecAng, ally, data);
+			entity = RaidbossBlueGoggles(client, vecPos, vecAng, team, data);
 		
 		case XENO_RAIDBOSS_SUPERSILVESTER:
-			entity = RaidbossSilvester(client, vecPos, vecAng, ally, data);
+			entity = RaidbossSilvester(client, vecPos, vecAng, team, data);
 		
 		case XENO_RAIDBOSS_NEMESIS:
-			entity = RaidbossNemesis(client, vecPos, vecAng, ally, data);
+			entity = RaidbossNemesis(client, vecPos, vecAng, team, data);
 		
 		case SEARUNNER, SEARUNNER_ALT:
-			entity = SeaRunner(client, vecPos, vecAng, ally, data);
+			entity = SeaRunner(client, vecPos, vecAng, team, data);
 		
 		case SEASLIDER, SEASLIDER_ALT:
-			entity = SeaSlider(client, vecPos, vecAng, ally, data);
+			entity = SeaSlider(client, vecPos, vecAng, team, data);
 		
 		case SEASPITTER, SEASPITTER_ALT:
-			entity = SeaSpitter(client, vecPos, vecAng, ally, data);
+			entity = SeaSpitter(client, vecPos, vecAng, team, data);
 		
 		case SEAREAPER, SEAREAPER_ALT:
-			entity = SeaReaper(client, vecPos, vecAng, ally, data);
+			entity = SeaReaper(client, vecPos, vecAng, team, data);
 		
 		case SEACRAWLER, SEACRAWLER_ALT:
-			entity = SeaCrawler(client, vecPos, vecAng, ally, data);
+			entity = SeaCrawler(client, vecPos, vecAng, team, data);
 		
 		case SEAPIERCER, SEAPIERCER_ALT:
-			entity = SeaPiercer(client, vecPos, vecAng, ally, data);
+			entity = SeaPiercer(client, vecPos, vecAng, team, data);
 		
 		case FIRSTTOTALK:
-			entity = FirstToTalk(client, vecPos, vecAng, ally);
+			entity = FirstToTalk(client, vecPos, vecAng, team);
 		
 		case UNDERTIDES:
-			entity = UnderTides(client, vecPos, vecAng, ally, data);
+			entity = UnderTides(client, vecPos, vecAng, team, data);
 		
 		case SEABORN_KAZIMIERZ_KNIGHT:
-			entity = KazimierzKnight(client, vecPos, vecAng, ally);
+			entity = KazimierzKnight(client, vecPos, vecAng, team);
 		
 		case SEABORN_KAZIMIERZ_KNIGHT_ARCHER:
-			entity = KazimierzKnightArcher(client, vecPos, vecAng, ally, data);
+			entity = KazimierzKnightArcher(client, vecPos, vecAng, team, data);
 		
 		case SEABORN_KAZIMIERZ_BESERKER:
-			entity = KazimierzBeserker(client, vecPos, vecAng, ally);
+			entity = KazimierzBeserker(client, vecPos, vecAng, team);
 		
 		case SEABORN_KAZIMIERZ_LONGARCHER:
-			entity = KazimierzLongArcher(client, vecPos, vecAng, ally);
+			entity = KazimierzLongArcher(client, vecPos, vecAng, team);
 		
 		case REMAINS:
 			entity = Remains(client, vecPos, vecAng, data);
 		
 		case ENDSPEAKER_1:
-			entity = EndSpeaker1(client, vecPos, vecAng, ally, data);
+			entity = EndSpeaker1(client, vecPos, vecAng, team, data);
 		
 		case ENDSPEAKER_2:
-			entity = EndSpeaker2(ally);
+			entity = EndSpeaker2(team);
 		
 		case ENDSPEAKER_3:
-			entity = EndSpeaker3(ally);
+			entity = EndSpeaker3(team);
 		
 		case ENDSPEAKER_4:
-			entity = EndSpeaker4(ally);
+			entity = EndSpeaker4(team);
 		
 		case SEAFOUNDER, SEAFOUNDER_ALT, SEAFOUNDER_CARRIER:
-			entity = SeaFounder(client, vecPos, vecAng, ally, data);
+			entity = SeaFounder(client, vecPos, vecAng, team, data);
 		
 		case SEAPREDATOR, SEAPREDATOR_ALT, SEAPREDATOR_CARRIER:
-			entity = SeaPredator(client, vecPos, vecAng, ally, data);
+			entity = SeaPredator(client, vecPos, vecAng, team, data);
 		
 		case SEABRANDGUIDER, SEABRANDGUIDER_ALT, SEABRANDGUIDER_CARRIER:
-			entity = SeaBrandguider(client, vecPos, vecAng, ally, data);
+			entity = SeaBrandguider(client, vecPos, vecAng, team, data);
 
 		case SEABORN_KAZIMIERZ_ASSASIN_MELEE:
-			entity = KazimierzKnightAssasin(client, vecPos, vecAng, ally);
+			entity = KazimierzKnightAssasin(client, vecPos, vecAng, team);
 		
 		case SEASPEWER, SEASPEWER_ALT, SEASPEWER_CARRIER:
-			entity = SeaSpewer(client, vecPos, vecAng, ally, data);
+			entity = SeaSpewer(client, vecPos, vecAng, team, data);
 		
 		case SEASWARMCALLER, SEASWARMCALLER_ALT, SEASWARMCALLER_CARRIER:
-			entity = SeaSwarmcaller(client, vecPos, vecAng, ally, data);
+			entity = SeaSwarmcaller(client, vecPos, vecAng, team, data);
 		
 		case SEAREEFBREAKER, SEAREEFBREAKER_ALT, SEAREEFBREAKER_CARRIER:
-			entity = SeaReefbreaker(client, vecPos, vecAng, ally, data);
+			entity = SeaReefbreaker(client, vecPos, vecAng, team, data);
 		
 		case BARRACK_THORNS:
-			entity = BarrackThorns(client, vecPos, vecAng, ally);
+			entity = BarrackThorns(client, vecPos, vecAng, team);
 		
 		case RAIDMODE_GOD_ARKANTOS:
-			entity = GodArkantos(client, vecPos, vecAng, ally, data);
+			entity = GodArkantos(client, vecPos, vecAng, team, data);
 		
 		case SEABORN_SCOUT:
-			entity = SeabornScout(client, vecPos, vecAng, ally);
+			entity = SeabornScout(client, vecPos, vecAng, team);
 		
 		case SEABORN_SOLDIER:
-			entity = SeabornSoldier(client, vecPos, vecAng, ally);
+			entity = SeabornSoldier(client, vecPos, vecAng, team);
 		
 		case CITIZEN_RUNNER:
 			entity = CitizenRunner(client, vecPos, vecAng, data);
 		
 		case SEABORN_PYRO:
-			entity = SeabornPyro(client, vecPos, vecAng, ally);
+			entity = SeabornPyro(client, vecPos, vecAng, team);
 		
 		case SEABORN_DEMO:
-			entity = SeabornDemo(client, vecPos, vecAng, ally);
+			entity = SeabornDemo(client, vecPos, vecAng, team);
 		
 		case SEABORN_HEAVY:
-			entity = SeabornHeavy(client, vecPos, vecAng, ally);
+			entity = SeabornHeavy(client, vecPos, vecAng, team);
 		
 		case SEABORN_ENGINEER:
-			entity = SeabornEngineer(client, vecPos, vecAng, ally);
+			entity = SeabornEngineer(client, vecPos, vecAng, team);
 		
 		case SEABORN_MEDIC:
-			entity = SeabornMedic(client, vecPos, vecAng, ally);
+			entity = SeabornMedic(client, vecPos, vecAng, team);
 		
 		case SEABORN_SNIPER:
-			entity = SeabornSniper(client, vecPos, vecAng, ally);
+			entity = SeabornSniper(client, vecPos, vecAng, team);
 		
 		case SEABORN_SPY:
-			entity = SeabornSpy(client, vecPos, vecAng, ally);
+			entity = SeabornSpy(client, vecPos, vecAng, team);
 		
 		case ALT_BARRACKS_SCHWERTKRIEG:
-			entity = Barrack_Alt_Shwertkrieg(client, vecPos, vecAng, ally);
+			entity = Barrack_Alt_Shwertkrieg(client, vecPos, vecAng, team);
 			
 		case ALT_BARRACK_IKUNAGAE:
-			entity = Barrack_Alt_Ikunagae(client, vecPos, vecAng, ally);
+			entity = Barrack_Alt_Ikunagae(client, vecPos, vecAng, team);
 			
 		case ALT_BARRACK_RAILGUNNER:
-			entity = Barrack_Alt_Raigunner(client, vecPos, vecAng, ally);
+			entity = Barrack_Alt_Raigunner(client, vecPos, vecAng, team);
 			
 		case ALT_BARRACK_BASIC_MAGE:
-			entity = Barrack_Alt_Basic_Mage(client, vecPos, vecAng, ally);
+			entity = Barrack_Alt_Basic_Mage(client, vecPos, vecAng, team);
 			
 		case ALT_BARRACK_INTERMEDIATE_MAGE:
-			entity = Barrack_Alt_Intermediate_Mage(client, vecPos, vecAng, ally);
+			entity = Barrack_Alt_Intermediate_Mage(client, vecPos, vecAng, team);
 			
 		case ALT_BARRACK_DONNERKRIEG:
-			entity = Barrack_Alt_Donnerkrieg(client, vecPos, vecAng, ally);
+			entity = Barrack_Alt_Donnerkrieg(client, vecPos, vecAng, team);
 
 		case ALT_BARRACKS_HOLY_KNIGHT:
-			entity = Barrack_Alt_Holy_Knight(client, vecPos, vecAng, ally);
+			entity = Barrack_Alt_Holy_Knight(client, vecPos, vecAng, team);
 		
 		case ALT_BARRACK_MECHA_BARRAGER:
-			entity = Barrack_Alt_Mecha_Barrager(client, vecPos, vecAng, ally);
+			entity = Barrack_Alt_Mecha_Barrager(client, vecPos, vecAng, team);
 			
 		case ALT_BARRACK_BARRAGER:
-			entity = Barrack_Alt_Barrager(client, vecPos, vecAng, ally);
+			entity = Barrack_Alt_Barrager(client, vecPos, vecAng, team);
 			
 		case ALT_BARRACKS_BERSERKER:
-			entity = Barrack_Alt_Berserker(client, vecPos, vecAng, ally);
+			entity = Barrack_Alt_Berserker(client, vecPos, vecAng, team);
 			
 		case ALT_BARRACKS_CROSSBOW_MEDIC:
-			entity = Barrack_Alt_Crossbowmedic(client, vecPos, vecAng, ally);
+			entity = Barrack_Alt_Crossbowmedic(client, vecPos, vecAng, team);
 		
 		case LASTKNIGHT:
-			entity = LastKnight(client, vecPos, vecAng, ally, data);
+			entity = LastKnight(client, vecPos, vecAng, team, data);
 		
 		case BARRACK_LASTKNIGHT:
-			entity = BarrackLastKnight(client, vecPos, vecAng, ally);
+			entity = BarrackLastKnight(client, vecPos, vecAng, team);
 		
 		case SAINTCARMEN:
-			entity = SaintCarmen(client, vecPos, vecAng, ally);
+			entity = SaintCarmen(client, vecPos, vecAng, team);
 		
 		case PATHSHAPER:
-			entity = Pathshaper(client, vecPos, vecAng, ally);
+			entity = Pathshaper(client, vecPos, vecAng, team);
 		
 		case PATHSHAPER_FRACTAL:
-			entity = PathshaperFractal(client, vecPos, vecAng, ally);
+			entity = PathshaperFractal(client, vecPos, vecAng, team);
 			
 		case BARRACKS_TEUTONIC_KNIGHT:
-			entity = BarrackTeuton(client, vecPos, vecAng, ally);
+			entity = BarrackTeuton(client, vecPos, vecAng, team);
 
 		case BARRACKS_VILLAGER:
-			entity = BarrackVillager(client, vecPos, vecAng, ally);
+			entity = BarrackVillager(client, vecPos, vecAng, team);
 
 		case BARRACKS_BUILDING:
-			entity = BarrackBuilding(client, vecPos, vecAng, ally);
+			entity = BarrackBuilding(client, vecPos, vecAng, team);
 
 		case TIDELINKED_BISHOP:
-			entity = TidelinkedBishop(client, vecPos, vecAng, ally);
+			entity = TidelinkedBishop(client, vecPos, vecAng, team);
 
 		case TIDELINKED_ARCHON:
-			entity = TidelinkedArchon(client, vecPos, vecAng, ally);
+			entity = TidelinkedArchon(client, vecPos, vecAng, team);
 			
 		case ALT_BARRACK_SCIENTIFIC_WITCHERY:
-			entity = Barrack_Alt_Scientific_Witchery(client, vecPos, vecAng, ally);
+			entity = Barrack_Alt_Scientific_Witchery(client, vecPos, vecAng, team);
 
 		case SEABORN_GUARD:
-			entity = SeabornGuard(client, vecPos, vecAng, ally);
+			entity = SeabornGuard(client, vecPos, vecAng, team);
 
 		case SEABORN_DEFENDER:
-			entity = SeabornDefender(client, vecPos, vecAng, ally);
+			entity = SeabornDefender(client, vecPos, vecAng, team);
 
 		case SEABORN_VANGUARD:
-			entity = SeabornVanguard(client, vecPos, vecAng, ally);
+			entity = SeabornVanguard(client, vecPos, vecAng, team);
 
 		case SEABORN_CASTER:
-			entity = SeabornCaster(client, vecPos, vecAng, ally);
+			entity = SeabornCaster(client, vecPos, vecAng, team);
 
 		case SEABORN_SPECIALIST:
-			entity = SeabornSpecialist(client, vecPos, vecAng, ally);
+			entity = SeabornSpecialist(client, vecPos, vecAng, team);
 
 		case SEABORN_SUPPORTER:
-			entity = SeabornSupporter(client, vecPos, vecAng, ally);
+			entity = SeabornSupporter(client, vecPos, vecAng, team);
 
 		case ISHARMLA:
-			entity = Isharmla(client, vecPos, vecAng, ally);
+			entity = Isharmla(client, vecPos, vecAng, team);
 
 		case ISHARMLA_TRANS:
-			entity = IsharmlaTrans(client, vecPos, vecAng, ally);
+			entity = IsharmlaTrans(client, vecPos, vecAng, team);
 			
 		case RUINA_THEOCRACY:	//warp
-			entity = Theocracy(client, vecPos, vecAng, ally);
+			entity = Theocracy(client, vecPos, vecAng, team);
 		
 		case RUINA_ADIANTUM:
-			entity = Adiantum(client, vecPos, vecAng, ally);
+			entity = Adiantum(client, vecPos, vecAng, team);
 			
 		case RUINA_LANIUS:
-			entity = Lanius(client, vecPos, vecAng, ally);
+			entity = Lanius(client, vecPos, vecAng, team);
 			
 		case RUINA_MAGIA:
-			entity = Magia(client, vecPos, vecAng, ally);
+			entity = Magia(client, vecPos, vecAng, team);
 
 		case RUINA_STELLA:
-			entity = Stella(client, vecPos, vecAng, ally);
+			entity = Stella(client, vecPos, vecAng, team);
 
 		case RUINA_ASTRIA:
-			entity = Astria(client, vecPos, vecAng, ally);
+			entity = Astria(client, vecPos, vecAng, team);
 
 		case RUINA_AETHER:
-			entity = Aether(client, vecPos, vecAng, ally);
+			entity = Aether(client, vecPos, vecAng, team);
 
 		case RUINA_EUROPA:
-			entity = Europa(client, vecPos, vecAng, ally);
+			entity = Europa(client, vecPos, vecAng, team);
 
 		case RUINA_DRONE:
-			entity = Ruina_Drone(client, vecPos, vecAng, ally);
+			entity = Ruina_Drone(client, vecPos, vecAng, team);
 		
 		case RUINA_RURIANA:
-			entity = Ruriana(client, vecPos, vecAng, ally);
+			entity = Ruriana(client, vecPos, vecAng, team);
 
 		case RUINA_VENIUM:
-			entity = Venium(client, vecPos, vecAng, ally);
+			entity = Venium(client, vecPos, vecAng, team);
 
 		case RUINA_MAGIA_ANCHOR:
-			entity = Magia_Anchor(client, vecPos, vecAng, ally);
+			entity = Magia_Anchor(client, vecPos, vecAng, team);
 
 		case RUINA_STELLAR_WEAVER:
-			entity = Storm_Weaver(client, vecPos, vecAng, ally, data);
+			entity = Storm_Weaver(client, vecPos, vecAng, team, data);
 
 		case RUINA_STELLAR_WEAVER_MID:
-			entity = Storm_Weaver_Mid(client, vecPos, vecAng, ally, StringToFloat(data));
+			entity = Storm_Weaver_Mid(client, vecPos, vecAng, team, StringToFloat(data));
 		
 		case SEA_RAIDBOSS_DONNERKRIEG:
-			entity = Raidboss_Donnerkrieg(client, vecPos, vecAng, ally, data);
+			entity = Raidboss_Donnerkrieg(client, vecPos, vecAng, team, data);
 			
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
-			entity = Raidboss_Schwertkrieg(client, vecPos, vecAng, ally);
+			entity = Raidboss_Schwertkrieg(client, vecPos, vecAng, team);
 		
 		case BOB_THE_FIRST, BOB_THE_FIRST_S:
-			entity = RaidbossBobTheFirst(vecPos, vecAng, ally, data);
+			entity = RaidbossBobTheFirst(vecPos, vecAng, team, data);
 
 		case EXPIDONSA_BENERA:
-			entity = Benera(client, vecPos, vecAng, ally);
+			entity = Benera(client, vecPos, vecAng, team);
 			
 		case EXPIDONSA_PENTAL:
-			entity = Pental(client, vecPos, vecAng, ally);
+			entity = Pental(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_DEFANDA:
-			entity = Defanda(client, vecPos, vecAng, ally);
+			entity = Defanda(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_SELFAM_IRE:
-			entity = SelfamIre(client, vecPos, vecAng, ally);
+			entity = SelfamIre(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_VAUSMAGICA:
-			entity = VausMagica(client, vecPos, vecAng, ally);
+			entity = VausMagica(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_PISTOLEER:
-			entity = Pistoleer(client, vecPos, vecAng, ally);
+			entity = Pistoleer(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_DIVERSIONISTICO:
-			entity = Diversionistico(client, vecPos, vecAng, ally, data);
+			entity = Diversionistico(client, vecPos, vecAng, team, data);
 
 		case EXPIDONSA_HEAVYPUNUEL:
-			entity = HeavyPunuel(client, vecPos, vecAng, ally);
+			entity = HeavyPunuel(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_SEARGENTIDEAL:
-			entity = SeargentIdeal(client, vecPos, vecAng, ally, data);
+			entity = SeargentIdeal(client, vecPos, vecAng, team, data);
 		
 		case VIP_BUILDING:
 			entity = VIPBuilding(client, vecPos, vecAng, data);
 
 		case EXPIDONSA_RIFALMANU:
-			entity = RifalManu(client, vecPos, vecAng, ally);
+			entity = RifalManu(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_SICCERINO:
-			entity = Siccerino(client, vecPos, vecAng, ally);
+			entity = Siccerino(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_SOLDINE_PROTOTYPE:
-			entity = SoldinePrototype(client, vecPos, vecAng, ally);
+			entity = SoldinePrototype(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_SOLDINE:
-			entity = Soldine(client, vecPos, vecAng, ally);
+			entity = Soldine(client, vecPos, vecAng, team);
 			
 		case EXPIDONSA_PROTECTA:
-			entity = Protecta(client, vecPos, vecAng, ally);
+			entity = Protecta(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_SNIPONEER:
-			entity = Sniponeer(client, vecPos, vecAng, ally);
+			entity = Sniponeer(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_EGABUNAR:
-			entity = EgaBunar(client, vecPos, vecAng, ally);
+			entity = EgaBunar(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_ENEGAKAPUS:
-			entity = EnegaKapus(client, vecPos, vecAng, ally);
+			entity = EnegaKapus(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_CAPTINOAGENTUS:
-			entity = CaptinoAgentus(client, vecPos, vecAng, ally, data);
+			entity = CaptinoAgentus(client, vecPos, vecAng, team, data);
 
 		case RAIDMODE_EXPIDONSA_SENSAL:
-			entity = Sensal(client, vecPos, vecAng, ally, data);
+			entity = Sensal(client, vecPos, vecAng, team, data);
 
 		case EXPIDONSA_DUALREA:
-			entity = DualRea(client, vecPos, vecAng, ally);
+			entity = DualRea(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_GUARDUS:
-			entity = Guardus(client, vecPos, vecAng, ally);
+			entity = Guardus(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_VAUSTECHICUS:
-			entity = VausTechicus(client, vecPos, vecAng, ally);
+			entity = VausTechicus(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_MINIGUNASSISA:
-			entity = MinigunAssisa(client, vecPos, vecAng, ally);
+			entity = MinigunAssisa(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_IGNITUS:
-			entity = Ignitus(client, vecPos, vecAng, ally);
+			entity = Ignitus(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_HELENA:
-			entity = Helena(client, vecPos, vecAng, ally);
+			entity = Helena(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_ERASUS:
-			entity = Erasus(client, vecPos, vecAng, ally);
+			entity = Erasus(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_GIANTTANKUS:
-			entity = GiantTankus(client, vecPos, vecAng, ally);
+			entity = GiantTankus(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_ANFUHREREISENHARD:
-			entity = AnfuhrerEisenhard(client, vecPos, vecAng, ally);
+			entity = AnfuhrerEisenhard(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_SPEEDUSADIVUS:
-			entity = SpeedusAdivus(client, vecPos, vecAng, ally);
+			entity = SpeedusAdivus(client, vecPos, vecAng, team);
 
 		case WEAPON_SENSAL_AFTERIMAGE:
-			entity = AlliedSensalAbility(client, vecPos, vecAng, ally);
+			entity = AlliedSensalAbility(client, vecPos, vecAng, team);
 
 		case WEAPON_LEPER_AFTERIMAGE:
-			entity = AlliedLeperVisualiserAbility(client, vecPos, vecAng, ally, data);
+			entity = AlliedLeperVisualiserAbility(client, vecPos, vecAng, team, data);
 
 		case OVERLORD_ROGUE:
-			entity = OverlordRogue(client, vecPos, vecAng, ally, data);
+			entity = OverlordRogue(client, vecPos, vecAng, team, data);
 
 		case RAIDBOSS_BLADEDANCE:
-			entity = RaidbossBladedance(client, vecPos, vecAng, ally, data);
+			entity = RaidbossBladedance(client, vecPos, vecAng, team, data);
 
 		case INTERITUS_DESERT_AHIM:
-			entity = DesertAhim(client, vecPos, vecAng, ally);
+			entity = DesertAhim(client, vecPos, vecAng, team);
 
 		case INTERITUS_DESERT_INABDIL:
-			entity = DesertInabdil(client, vecPos, vecAng, ally);
+			entity = DesertInabdil(client, vecPos, vecAng, team);
 
 		case INTERITUS_DESERT_KHAZAAN:
-			entity = DesertKhazaan(client, vecPos, vecAng, ally);
+			entity = DesertKhazaan(client, vecPos, vecAng, team);
 
 		case INTERITUS_DESERT_SAKRATAN:
-			entity = DesertSakratan(client, vecPos, vecAng, ally);
+			entity = DesertSakratan(client, vecPos, vecAng, team);
 
 		case INTERITUS_DESERT_YADEAM:
-			entity = DesertYadeam(client, vecPos, vecAng, ally);
+			entity = DesertYadeam(client, vecPos, vecAng, team);
 
 		case INTERITUS_DESERT_RAJUL:
-			entity = DesertRajul(client, vecPos, vecAng, ally);
+			entity = DesertRajul(client, vecPos, vecAng, team);
 
 		case INTERITUS_DESERT_QANAAS:
-			entity = DesertQanaas(client, vecPos, vecAng, ally);
+			entity = DesertQanaas(client, vecPos, vecAng, team);
 
 		case INTERITUS_DESERT_ATILLA:
-			entity = DesertAtilla(client, vecPos, vecAng, ally);
+			entity = DesertAtilla(client, vecPos, vecAng, team);
 
 		case INTERITUS_DESERT_ANCIENTDEMON:
-			entity = DesertAncientDemon(client, vecPos, vecAng, ally);
+			entity = DesertAncientDemon(client, vecPos, vecAng, team);
 
 		case INTERITUS_WINTER_SNIPER:
-			entity = WinterSniper(client, vecPos, vecAng, ally);
+			entity = WinterSniper(client, vecPos, vecAng, team);
 
 		case INTERITUS_WINTER_ZIBERIANMINER:
-			entity = WinterZiberianMiner(client, vecPos, vecAng, ally);
+			entity = WinterZiberianMiner(client, vecPos, vecAng, team);
 
 		case INTERITUS_WINTER_SNOWEY_GUNNER:
-			entity = WinterSnoweyGunner(client, vecPos, vecAng, ally);
+			entity = WinterSnoweyGunner(client, vecPos, vecAng, team);
 
 		case INTERITUS_WINTER_FREEZING_CLEANER:
-			entity = WinterFreezingCleaner(client, vecPos, vecAng, ally);
+			entity = WinterFreezingCleaner(client, vecPos, vecAng, team);
 
 		case INTERITUS_WINTER_AIRBORN_EXPLORER:
-			entity = WinterAirbornExplorer(client, vecPos, vecAng, ally);
+			entity = WinterAirbornExplorer(client, vecPos, vecAng, team);
 
 		case INTERITUS_WINTER_ARCTIC_MAGE:
-			entity = WinterArcticMage(client, vecPos, vecAng, ally);
+			entity = WinterArcticMage(client, vecPos, vecAng, team);
 
 		case INTERITUS_WINTER_FROST_HUNTER:
-			entity = WinterFrostHunter(client, vecPos, vecAng, ally);
+			entity = WinterFrostHunter(client, vecPos, vecAng, team);
 
 		case INTERITUS_WINTER_SKIN_HUNTER:
-			entity = WinterSkinHunter(client, vecPos, vecAng, ally);
+			entity = WinterSkinHunter(client, vecPos, vecAng, team);
 
 		case INTERITUS_WINTER_IRRITATED_PERSON:
-			entity = WinterIrritatedPerson(client, vecPos, vecAng, ally);
+			entity = WinterIrritatedPerson(client, vecPos, vecAng, team);
 
 		case THEDOCTOR_MINIBOSS:
-			entity = SpecialDoctor(client, vecPos, vecAng, ally,data);
+			entity = SpecialDoctor(client, vecPos, vecAng, team,data);
      
 		case INTERITUS_ANARCHY_RANSACKER:
-			entity = AnarchyRansacker(client, vecPos, vecAng, ally);
+			entity = AnarchyRansacker(client, vecPos, vecAng, team);
 
 		case INTERITUS_ANARCHY_RUNOVER:
-			entity = AnarchyRunover(client, vecPos, vecAng, ally);
+			entity = AnarchyRunover(client, vecPos, vecAng, team);
 
 		case INTERITUS_ANARCHY_HITMAN:
-			entity = AnarchyHitman(client, vecPos, vecAng, ally);
+			entity = AnarchyHitman(client, vecPos, vecAng, team);
 
 		case INTERITUS_ANARCHY_MADDOCTOR:
-			entity = AnarchyMadDoctor(client, vecPos, vecAng, ally);
+			entity = AnarchyMadDoctor(client, vecPos, vecAng, team);
 
 		case INTERITUS_ANARCHY_ABOMINATION:
-			entity = AnarchyAbomination(client, vecPos, vecAng, ally);
+			entity = AnarchyAbomination(client, vecPos, vecAng, team);
 
 		case INTERITUS_ANARCHY_ENFORCER:
-			entity = AnarchyEnforcer(client, vecPos, vecAng, ally);
+			entity = AnarchyEnforcer(client, vecPos, vecAng, team);
 
 		case INTERITUS_ANARCHY_BRAINDEAD:
-			entity = AnarchyBraindead(client, vecPos, vecAng, ally);
+			entity = AnarchyBraindead(client, vecPos, vecAng, team);
 
 		case INTERITUS_ANARCHY_BEHEMOTH:
-			entity = AnarchyBehemoth(client, vecPos, vecAng, ally);
+			entity = AnarchyBehemoth(client, vecPos, vecAng, team);
 
 		case INTERITUS_ANARCHY_ABSOLUTE_INCINIRATOR:
-			entity = AnarchyAbsoluteIncinirator(client, vecPos, vecAng, ally);
+			entity = AnarchyAbsoluteIncinirator(client, vecPos, vecAng, team);
 
 		case INTERITUS_FOREST_SNIPER:
-			entity = Archosauria(client, vecPos, vecAng, ally);
+			entity = Archosauria(client, vecPos, vecAng, team);
 
 		case INTERITUS_FOREST_SCOUT:
-			entity = Aslan(client, vecPos, vecAng, ally);
+			entity = Aslan(client, vecPos, vecAng, team);
 
 		case INTERITUS_FOREST_SOLDIER:
-			entity = Perro(client, vecPos, vecAng, ally);
+			entity = Perro(client, vecPos, vecAng, team);
 
 		case INTERITUS_FOREST_DEMOMAN:
-			entity = Caprinae(client, vecPos, vecAng, ally, data);
+			entity = Caprinae(client, vecPos, vecAng, team, data);
 
 		case INTERITUS_FOREST_MEDIC:
-			entity = Liberi(client, vecPos, vecAng, ally);
+			entity = Liberi(client, vecPos, vecAng, team);
 
 		case INTERITUS_FOREST_HEAVY:
-			entity = Ursus(client, vecPos, vecAng, ally);
+			entity = Ursus(client, vecPos, vecAng, team);
 
 		case INTERITUS_FOREST_PYRO:
-			entity = Aegir(client, vecPos, vecAng, ally);
+			entity = Aegir(client, vecPos, vecAng, team);
 
 		case INTERITUS_FOREST_SPY:
-			entity = Cautus(client, vecPos, vecAng, ally);
+			entity = Cautus(client, vecPos, vecAng, team);
 
 		case INTERITUS_FOREST_ENGINEER:
-			entity = Vulpo(client, vecPos, vecAng, ally);
+			entity = Vulpo(client, vecPos, vecAng, team);
 
 		case INTERITUS_FOREST_BOSS:
-			entity = MajorSteam(client, vecPos, vecAng, ally);
+			entity = MajorSteam(client, vecPos, vecAng, team);
 			
 		case RAIDMODE_THE_MESSENGER:
-			entity = TheMessenger(client, vecPos, vecAng, ally, data);
+			entity = TheMessenger(client, vecPos, vecAng, team, data);
 
 		case RAIDMODE_CHAOS_KAHMLSTEIN:
-			entity = ChaosKahmlstein(client, vecPos, vecAng, ally, data);
-
-			
+			entity = ChaosKahmlstein(client, vecPos, vecAng, team, data);
+		
 		case RAIDBOSS_THE_PURGE:
-			entity = ThePurge(client, vecPos, vecAng, ally);
+			entity = ThePurge(client, vecPos, vecAng, team);
 			
 		case WEAPON_KAHML_AFTERIMAGE:
-			entity = AlliedKahmlAbility(client, vecPos, vecAng, ally);
+			entity = AlliedKahmlAbility(client, vecPos, vecAng, team);
 
 		default:
-			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
+		{
+			Call_StartFunction(null, npcdata.Func);
+			Call_PushCell(client);
+			Call_PushArrayEx(vecPos, sizeof(vecPos), 0);
+			Call_PushArrayEx(vecAng, sizeof(vecAng), 0);
+			Call_PushCell(team);
+			Call_PushString(data);
+			Call_Finish(entity);
+		}
 		
 	}
-
-	if(entity > 0)
+	
+	if(entity != -1)
 	{
+		if(!c_NpcName[entity][0])
+			strcopy(c_NpcName[entity], sizeof(c_NpcName[]), npcdata.Name);
+		
+		if(!i_NpcInternalId[entity])
+			i_NpcInternalId[entity] = id;
+		
 		if(GetTeam(entity) == 2)
 		{
 			Rogue_AllySpawned(entity);
@@ -3180,11 +3294,11 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], i
 			Rogue_EnemySpawned(entity);
 		}
 	}
-	
-	return entity;
-}	
 
-public void ZR_NpcTauntWinClear()
+	return entity;
+}
+
+void ZR_NpcTauntWinClear()
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
@@ -3195,7 +3309,8 @@ public void ZR_NpcTauntWinClear()
 		}
 	}
 }
-public void ZR_NpcTauntWin()
+
+void ZR_NpcTauntWin()
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
@@ -3213,7 +3328,8 @@ public void ZR_NpcTauntWin()
 		}
 	}
 }
-public void NPCDeath(int entity)
+
+void NPCDeath(int entity)
 {
 	if(view_as<CClotBody>(entity).m_fCreditsOnKill)
 	{

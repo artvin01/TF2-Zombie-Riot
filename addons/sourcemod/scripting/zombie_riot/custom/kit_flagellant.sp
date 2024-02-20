@@ -385,7 +385,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 				
 				if(target > MaxClients)
 				{
-					PrintHintText(client, "You Healed %t for %.0f HP!, you gain a %.0f healing cooldown.", NPC_Names[i_NpcInternalId[target]], healing, cooldown);
+					PrintHintText(client, "You Healed Ally for %.0f HP!, you gain a %.0f healing cooldown.", healing, cooldown);
 				}
 				else
 				{
@@ -396,7 +396,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 		}
 		else if(target > MaxClients)
 		{
-			PrintHintText(client, "%t Is already at full hp.", NPC_Names[i_NpcInternalId[target]]);
+			PrintHintText(client, "Ally Is already at full hp.");
 		}
 		else
 		{

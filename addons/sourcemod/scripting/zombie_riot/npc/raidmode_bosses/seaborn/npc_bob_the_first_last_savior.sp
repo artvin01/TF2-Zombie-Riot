@@ -381,29 +381,20 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	{
 		if(!npc.m_fbGunout)
 		{
-			char buffer[64];
-			if(c_NpcCustomNameOverride[npc.index][0])
-			{
-				strcopy(buffer, sizeof(buffer), c_NpcCustomNameOverride[npc.index]);
-			}
-			else
-			{
-				strcopy(buffer, sizeof(buffer), NPC_Names[i_NpcInternalId[npc.index]]);
-			}
 			npc.m_fbGunout = true;
 			switch(GetRandomInt(0,2))
 			{
 				case 0:
 				{
-					CPrintToChatAll("{white}%s{default}: One Sea creature left.", buffer);
+					CPrintToChatAll("{white}%s{default}: One infected left.", c_NpcName[npc.index]);
 				}
 				case 1:
 				{
-					CPrintToChatAll("{white}%s{default}: This nightare ends soon.", buffer);
+					CPrintToChatAll("{white}%s{default}: This nightmare ends soon.", c_NpcName[npc.index]);
 				}
 				case 3:
 				{
-					CPrintToChatAll("{white}%s{default}: Last. Creature. Left.", buffer);
+					CPrintToChatAll("{white}%s{default}: Last. Infected. Left.", c_NpcName[npc.index]);
 				}
 			}
 		}
@@ -429,26 +420,16 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				ForcePlayerSuicide(client);
 		}
 
-		char buffer[64];
-		if(c_NpcCustomNameOverride[npc.index][0])
-		{
-			strcopy(buffer, sizeof(buffer), c_NpcCustomNameOverride[npc.index]);
-		}
-		else
-		{
-			strcopy(buffer, sizeof(buffer), NPC_Names[i_NpcInternalId[npc.index]]);
-		}
-
 		switch(GetURandomInt() % 3)
 		{
 			case 0:
-				CPrintToChatAll("{white}%s{default}: You weren't supposed to have this infection.", buffer);
+				CPrintToChatAll("{white}%s{default}: You weren't supposed to have this infection.", c_NpcName[npc.index]);
 			
 			case 1:
-				CPrintToChatAll("{white}%s{default}: No choice but to kill you, it consumes you.", buffer);
+				CPrintToChatAll("{white}%s{default}: No choice but to kill you, it consumes you.", c_NpcName[npc.index]);
 			
 			case 2:
-				CPrintToChatAll("{white}%s{default}: Nobody wins.", buffer);
+				CPrintToChatAll("{white}%s{default}: Nobody wins.", c_NpcName[npc.index]);
 		}
 		
 		// Play funny animation intro
@@ -671,7 +652,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		
 		npc.Anger = false;
 		npc.m_bSecondPhase = true;
-		c_NpcCustomNameOverride[npc.index][0] = 0;
+		strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Bob the First");
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 17 / 20);
 
 		if(XenoExtraLogic())
@@ -785,7 +766,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			summon = Npc_Create(BOB_THE_FIRST, -1, pos, ang, GetTeam(npc.index), "fake");
+			summon = NPC_CreateById(BOB_THE_FIRST, -1, pos, ang, GetTeam(npc.index), "fake");
 			if(summon > MaxClients)
 			{
 				fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index] * 0.5;
@@ -799,9 +780,9 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 	if(!npc.m_bFakeClone && !npc.m_bSecondPhase)
 	{
-		if(healthPoints < 15 && !c_NpcCustomNameOverride[npc.index][0])
+		if(healthPoints < 15)
 		{
-			strcopy(c_NpcCustomNameOverride[npc.index], sizeof(c_NpcCustomNameOverride[]), "??????? First");
+			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "??????? First");
 		}
 		else if(healthPoints < 9)
 		{
@@ -817,7 +798,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 			npc.Anger = true;
 			npc.SetActivity("ACT_IDLE_ZOMBIE");
-			strcopy(c_NpcCustomNameOverride[npc.index], sizeof(c_NpcCustomNameOverride[]), "??? the First");
+			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "??? the First");
 
 			npc.PlaySummonSound();
 			

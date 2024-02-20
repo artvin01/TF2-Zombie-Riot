@@ -58,9 +58,9 @@ void RTSMenu_PlayerRunCmd(int client)
 				if(entity != -1)
 				{
 					// Name
-					if(c_NpcCustomNameOverride[entity][0])
+					if(c_NpcName[entity][0])
 					{
-						Format(display, sizeof(display), "%s\n%t\n", display, c_NpcCustomNameOverride[entity]);
+						Format(display, sizeof(display), "%s\n%t\n", display, c_NpcName[entity]);
 					}
 					else
 					{
@@ -175,10 +175,10 @@ void RTSMenu_PlayerRunCmd(int client)
 
 						int count;
 
-						if(c_NpcCustomNameOverride[entity][0])
+						if(c_NpcName[entity][0])
 						{
-							map.GetValue(c_NpcCustomNameOverride[entity], count);
-							map.SetValue(c_NpcCustomNameOverride[entity], count + 1);
+							map.GetValue(c_NpcName[entity], count);
+							map.SetValue(c_NpcName[entity], count + 1);
 						}
 						else
 						{
@@ -339,9 +339,9 @@ void RTSMenu_PlayerRunCmd(int client)
 				}
 				else if(length == 1)
 				{
-					if(c_NpcCustomNameOverride[entity][0])
+					if(c_NpcName[entity][0])
 					{
-						FormatEx(buffer, sizeof(buffer), "%t", c_NpcCustomNameOverride[entity]);
+						FormatEx(buffer, sizeof(buffer), "%t", c_NpcName[entity]);
 					}
 					else
 					{

@@ -66,6 +66,7 @@ void Configs_ConfigsExecuted()
 	
 #if defined ZR
 	Items_SetupConfig();
+	NPC_ConfigSetup();
 	Store_ConfigSetup();
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);

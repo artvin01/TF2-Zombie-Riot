@@ -143,7 +143,7 @@ methodmap UnitObject < CBaseAnimating
 
 	public void SetName(const char[] name)
 	{
-		strcopy(c_NpcCustomNameOverride[this.index], sizeof(c_NpcCustomNameOverride[]), name);
+		strcopy(c_NpcName[this.index], sizeof(c_NpcName[]), name);
 	}
 
 	public int EquipItemSeperate(

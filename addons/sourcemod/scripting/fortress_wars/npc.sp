@@ -26,7 +26,7 @@ void NPC_MapStart()
 	Villager_MapStart();
 }
 
-stock any Npc_Create(int index, int team, const float vecPos[3], const float vecAng[3], const char[] data = "")
+stock any NPC_CreateById(int index, int team, const float vecPos[3], const float vecAng[3], const char[] data = "")
 {
 	any entity = -1;
 	switch(index)

@@ -352,7 +352,7 @@ static void Europa_Spawn_Minnions(Europa npc)
 			
 			int spawn_index;
 			
-			spawn_index = Npc_Create(RUINA_DRONE, -1, pos, ang, GetTeam(npc.index));
+			spawn_index = NPC_CreateById(RUINA_DRONE, -1, pos, ang, GetTeam(npc.index));
 			maxhealth = RoundToNearest(maxhealth * 0.45);
 
 			if(spawn_index > MaxClients)
@@ -376,7 +376,7 @@ static void Europa_Spawn_Self(Europa npc)
 			
 	int spawn_index;
 			
-	spawn_index = Npc_Create(RUINA_EUROPA, -1, pos, ang, GetTeam(npc.index));
+	spawn_index = NPC_CreateById(RUINA_EUROPA, -1, pos, ang, GetTeam(npc.index));
 	maxhealth = RoundToNearest(maxhealth * 0.75);
 
 	if(spawn_index > MaxClients)

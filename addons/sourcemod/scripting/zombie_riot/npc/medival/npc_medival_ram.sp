@@ -56,7 +56,7 @@ methodmap MedivalRam < CClotBody
 		{
 			Garrison[npc.index] = StringToInt(data);
 			if(!Garrison[npc.index])
-				Garrison[npc.index] = GetIndexByPluginName(data);
+				Garrison[npc.index] = NPC_GetByPlugin(data);
 			
 			if(Garrison[npc.index] && !ally)
 				Zombies_Currently_Still_Ongoing += 6;
@@ -266,7 +266,7 @@ void MedivalRam_NPCDeath(int entity)
 		
 		for(int i; i < 6; i++)
 		{
-			Npc_Create(Garrison[entity], -1, pos, ang, Team);
+			NPC_CreateById(Garrison[entity], -1, pos, ang, Team);
 		}
 	}
 }

@@ -342,7 +342,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				if(Rogue_Mode())
 					IncreaceSpawnRates *= 3.0;
 
-				int spawn_index = Npc_Create(EnemyToSpawn, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
+				int spawn_index = NPC_CreateById(EnemyToSpawn, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
 					npc.PlayMeleeMissSound();

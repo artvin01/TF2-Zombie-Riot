@@ -435,7 +435,7 @@ void SpawnBeheadedKamikaze(DataPack pack)
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 			}
 			Zombies_Currently_Still_Ongoing += 1;
-			Npc_Create(MINI_BEHEADED_KAMI, -1, pos, ang, TFTeam_Blue); //can only be enemy
+			NPC_CreateById(MINI_BEHEADED_KAMI, -1, pos, ang, TFTeam_Blue); //can only be enemy
 		}
 		RequestFrame(SpawnBeheadedKamikaze, pack);
 		return;
