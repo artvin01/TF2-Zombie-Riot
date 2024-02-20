@@ -2085,13 +2085,17 @@ Names per stage:
 
 		Attacks from a far with artilery spells. basically the railgunners of this wave.
 	}
-
+	//created
 	8: Malius -> Maliana -> Malianium -> Malianius.
 	{
 		State: Master AI.
 		Class: Engie
 		Support: Battery
-		Npc's within range have their battery gain boosted.
+		Battery: Gives a set amt of battery to nearby npc's
+
+		Maliana:
+
+		Npc's within range have their passive battery gain boosted
 	}
 	//created
 	9: Ruriana -> Ruianus -> Ruliana -> Ruina
