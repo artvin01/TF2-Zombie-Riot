@@ -805,7 +805,7 @@ enum
 	BONEZONE_BUFFED_BEEFYBONES		= 348,
 	BONEZONE_BUFFED_BRITTLEBONES	= 349,
 	BONEZONE_BUFFED_BIGBONES		= 350,
-	INTERITUS_DESERT_AHIM			= 351,
+	INTERITUS_DESERT_AHIM_UNSUED			= 351,
 	INTERITUS_DESERT_INABDIL		= 352,
 	INTERITUS_DESERT_KHAZAAN		= 353,
 	INTERITUS_DESERT_SAKRATAN		= 354,
@@ -1660,7 +1660,7 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	-1,
 	-1,	// BONEZONE_BUFFED_BIGBONES
 
-	11,	//INTERITUS_DESERT_AHIM			= 351,
+	-1,	//INTERITUS_DESERT_AHIM_UNSUED			= 351,
 	11,	//	INTERITUS_DESERT_INABDIL		= 352,
 	11,	//	INTERITUS_DESERT_KHAZAAN		= 353,
 	11,	//	INTERITUS_DESERT_SAKRATAN		= 354,
@@ -3136,9 +3136,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 
 		case RAIDBOSS_BLADEDANCE:
 			entity = RaidbossBladedance(client, vecPos, vecAng, team, data);
-
-		case INTERITUS_DESERT_AHIM:
-			entity = DesertAhim(client, vecPos, vecAng, team);
 
 		case INTERITUS_DESERT_INABDIL:
 			entity = DesertInabdil(client, vecPos, vecAng, team);

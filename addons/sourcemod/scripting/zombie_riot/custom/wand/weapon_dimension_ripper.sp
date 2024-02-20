@@ -827,9 +827,9 @@ public void Weapon_Dimension_Summon_Interitus(int client, int weapon, bool &resu
 {
 	switch(GetRandomInt(1, 16))
 	{
-		case 1:
-			Dimension_Summon_Npc(client, INTERITUS_DESERT_AHIM ,weapon, 0.9, 0.9, "eyeboss_death_vortex");
-		case 2:
+//		case 1:
+//			Dimension_Summon_Npc(client, INTERITUS_DESERT_AHIM ,weapon, 0.9, 0.9, "eyeboss_death_vortex");
+		case 1,2:
 			Dimension_Summon_Npc(client, INTERITUS_DESERT_INABDIL ,weapon, 1.2, 1.1, "eyeboss_death_vortex");
 		case 3:
 			Dimension_Summon_Npc(client, INTERITUS_DESERT_KHAZAAN ,weapon, 1.2, 1.0, "eyeboss_death_vortex");

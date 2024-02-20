@@ -49,6 +49,12 @@ void DesertAhim_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Ahim");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ahim");
+	data.Func = GetFunctionByName(null, "DesertAhim.DesertAhim");
+	NPC_Add(data);
 }
 
 
@@ -98,7 +104,6 @@ methodmap DesertAhim < CClotBody
 	{
 		DesertAhim npc = view_as<DesertAhim>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "550", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_DESERT_AHIM;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -118,9 +123,9 @@ methodmap DesertAhim < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(DesertAhim_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertAhim_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(DesertAhim_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -146,7 +151,7 @@ methodmap DesertAhim < CClotBody
 	}
 }
 
-public void DesertAhim_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	DesertAhim npc = view_as<DesertAhim>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -200,7 +205,7 @@ public void DesertAhim_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public void DesertAhim_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static void Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	DesertAhim npc = view_as<DesertAhim>(victim);
 		
@@ -214,7 +219,7 @@ public void DesertAhim_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 }
 
-public void DesertAhim_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	DesertAhim npc = view_as<DesertAhim>(entity);
 	if(!npc.m_bGib)
