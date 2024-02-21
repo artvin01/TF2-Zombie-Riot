@@ -53,6 +53,7 @@ void DesertAhim_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ahim");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ahim");
+	data.Category = Type_Interitus;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
