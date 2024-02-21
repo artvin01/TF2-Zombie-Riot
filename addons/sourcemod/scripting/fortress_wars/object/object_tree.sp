@@ -9,8 +9,13 @@ void TreeObject_Setup()
 	ObjectData data;
 	strcopy(data.Name, sizeof(data.Name), "Dead Tree");
 	strcopy(data.Plugin, sizeof(data.Plugin), "object_tree_dead");
-	data.Func = GetFunctionByName(null, "DeadTree.DeadTree");
+	data.Func = ClotSummon;
 	Object_Add(data);
+}
+
+static any ClotSummon(const float vecPos[3], const float vecAng[3], const char[] data)
+{
+	return DeadTree(vecPos, vecAng, data);
 }
 
 methodmap DeadTree < UnitObject
