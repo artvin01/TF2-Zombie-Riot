@@ -27,13 +27,8 @@ void Villager_Setup()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Villager");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_villager");
-	data.Func = ClotSummon;
+	data.Func = GetFunctionByName(null, "Villager.Villager");
 	NPC_Add(data);
-}
-
-static any ClotSummon(int team, const float vecPos[3], const float vecAng[3])
-{
-	return Villager(team, vecPos, vecAng);
 }
 
 methodmap Villager < EmpireBody

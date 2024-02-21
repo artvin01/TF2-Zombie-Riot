@@ -27,13 +27,8 @@ void Militia_Setup()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Militia");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_militia");
-	data.Func = ClotSummon;
+	data.Func = GetFunctionByName(null, "Militia.Militia");
 	NPC_Add(data);
-}
-
-static any ClotSummon(int team, const float vecPos[3], const float vecAng[3])
-{
-	return Militia(team, vecPos, vecAng);
 }
 
 methodmap Militia < EmpireBody

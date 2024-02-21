@@ -53,14 +53,10 @@ void DesertAhim_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ahim");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ahim");
-	data.Func = ClotSummon;
+	data.Func = GetFunctionByName(null, "DesertAhim.DesertAhim");
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
-{
-	return DesertAhim(client, vecPos, vecAng, ally);
-}
 
 methodmap DesertAhim < CClotBody
 {
