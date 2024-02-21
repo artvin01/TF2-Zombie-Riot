@@ -1165,7 +1165,7 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Seaborn Supporter",
 	"Ishar'mla, Heart of Corruption",
 	"Ishar'mla, Heart of Corruption",
-	"",
+	"nothing",
 	"Benera",
 	"Pental",
 	"Defanda",
@@ -1173,10 +1173,10 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Vaus Magica",
 	"Pistoleer",
 	"Diversionistico",
-	"",	//unused
-	"",	//unused
+	"nothing",	//unused
+	"nothing",	//unused
 	"Heavy Punuel",
-	"",	//unused
+	"nothing",	//unused
 	"Seargent Ideal",
 
 	"nothing",
@@ -1215,16 +1215,16 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Allied Leper Afterimage",
 	"Overlord The Last",
 	"Bladedance The Combine",
-	"",
-	"",
-	"",	//unused
-	"",
-	"",
-	"",
-	"",
-	"",
-	"",
-	"",
+	"nothing",
+	"nothing",
+	"nothing",	//unused
+	"nothing",
+	"nothing",
+	"nothing",
+	"nothing",
+	"nothing",
+	"nothing",
+	"nothing",
 	"Beheaded Kamikaze",
 	
 	"Beefy Bones",

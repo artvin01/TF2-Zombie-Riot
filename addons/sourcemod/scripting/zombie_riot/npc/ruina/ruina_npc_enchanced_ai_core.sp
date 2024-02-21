@@ -1188,7 +1188,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	CPrintToChatAll("Player: %N got nuked due to overmana", Target);
 	Current_Mana[Target] = 0;
 	float GameTime = GetGameTime();
-	fl_mana_sickness_timeout[Target] = GameTime + 2.0;
+	
 
 	int wave = ZR_GetWaveCount()+1;
 
@@ -1221,8 +1221,10 @@ static void Apply_Sickness(int iNPC, int Target)
 		time = 9.0;
 	}
 
+	fl_mana_sickness_timeout[Target] = GameTime + time;
+
 	Mana_Regen_Delay[Target] = GameTime + time;
-	Mana_Regen_Delay_Aggreviated[Target] = GameTime + time;
+	Mana_Regen_Block_Timer[Target] = GameTime + time;
 
 	TF2_StunPlayer(Target, time, 0.9, TF_STUNFLAG_SLOWDOWN);	//hefty slow	
 

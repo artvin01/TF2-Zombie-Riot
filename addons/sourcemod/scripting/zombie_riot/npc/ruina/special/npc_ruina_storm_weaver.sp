@@ -21,9 +21,9 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/dragons_fury_shoot.wav",
 };
 
-static const char g_IdleMusic[][] = {
-	"#zombiesurvival/ruina/storm_weaver_test.mp3",
-};
+//static const char g_IdleMusic[][] = {
+//	"#zombiesurvival/ruina/storm_weaver_test.mp3",
+//};
 
 #define RUINA_STORM_WEAVER_MODEL "models/props_moonbase/moon_gravel_crystal_blue.mdl" //"models/props_borealis/bluebarrel001.mdl"
 #define RUINA_STORM_WEAVER_HEAD_MODEL "models/props_moonbase/moon_gravel_crystal_blue.mdl" //"models/props_borealis/bluebarrel001.mdl"
@@ -63,7 +63,7 @@ void Ruina_Storm_Weaver_MapStart()
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
 
-	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSoundCustom(g_IdleMusic[i]);   }
+	//for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSoundCustom(g_IdleMusic[i]);   }
 
 	Zero2(i_segment_id);
 	Zero(b_storm_weaver_noclip);
@@ -189,7 +189,7 @@ methodmap Storm_Weaver < CClotBody
 				
 			RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 
-			Music_SetRaidMusic(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], 350, true);
+			//Music_SetRaidMusic(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], 350, true);
 		}
 
 		
@@ -571,7 +571,6 @@ static void Find_Anchors(int array[RUINA_ANCHOR_HARD_LIMIT+1])
 		{
 			if(b_is_magia_tower[baseboss_index])
 			{
-				CPrintToChatAll("A tower has been added");
 				array[anchor_current]=baseboss_index;
 				anchor_current++;
 			}

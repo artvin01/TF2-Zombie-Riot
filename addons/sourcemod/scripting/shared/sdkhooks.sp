@@ -62,6 +62,7 @@ void SDKHook_MapStart()
 	Zero(f_EntityIsStairAbusing);
 	#if defined ZR
 	Zero(Mana_Loss_Delay);
+	Zero(Mana_Regen_Block_Timer);
 	#endif
 	Armor_WearableModelIndex = PrecacheModel("models/effects/resist_shield/resist_shield.mdl", true);
 	int entity = FindEntityByClassname(MaxClients+1, "tf_player_manager");
@@ -444,8 +445,12 @@ public void OnPostThink(int client)
 			mana_regen[client] *= 0.30;
 		}
 #endif
-			
+
+#if defined ZR		
+		if(Current_Mana[client] < RoundToCeil(max_mana[client]) && Mana_Regen_Block_Timer[client] < GameTime)
+#else
 		if(Current_Mana[client] < RoundToCeil(max_mana[client]))
+#endif
 		{
 			Current_Mana[client] += RoundToCeil(mana_regen[client]);
 				
