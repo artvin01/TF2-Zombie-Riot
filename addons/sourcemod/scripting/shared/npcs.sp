@@ -261,6 +261,10 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 				int entity_Spawner = NPC_CreateById(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data);
 				if(entity_Spawner != -1)
 				{
+					if(GetTeam(entity_Spawner) != TFTeam_Red)
+					{
+						NpcAddedToZombiesLeftCurrently(entity_Spawner, false);
+					}
 					if(enemy.Is_Outlined)
 					{
 						b_thisNpcHasAnOutline[entity_Spawner] = true;
@@ -400,7 +404,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 	int entity = NPC_CreateById(index, -1, pos, ang, TFTeam_Blue);
 	if(entity != -1)
 	{
-		Zombies_Currently_Still_Ongoing += 1;
+		NpcAddedToZombiesLeftCurrently(entity, true);
 
 		CClotBody npcstats = view_as<CClotBody>(entity);
 		if(isBoss)
@@ -2137,12 +2141,14 @@ public void Try_Backstab_Anim_Again(int ref)
 
 void NPC_DeadEffects(int entity)
 {
+#if defined ZR		
+	RemoveNpcFromZombiesLeftCounter(entity);
+#endif
 #if !defined RTS
 	if(GetTeam(entity) != TFTeam_Red)
 #endif
 	{
 #if defined ZR		
-		Zombies_Currently_Still_Ongoing -= 1;
 		DropPowerupChance(entity);
 		Gift_DropChance(entity);
 #endif
@@ -3217,11 +3223,11 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 	}
 	else if(f_LudoDebuff[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * GetRandomFloat(0.05,0.15);
+		damage += BaseDamageBeforeBuffs * (GetRandomFloat(0.05,0.15) * DamageBuffExtraScaling);
 	}
 	else if(f_SpadeLudoDebuff[victim] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * GetRandomFloat(0.10,0.15);
+		damage += BaseDamageBeforeBuffs * (GetRandomFloat(0.10,0.15) * DamageBuffExtraScaling);
 	}
 	if(f_PotionShrinkEffect[victim] > GameTime)
 	{

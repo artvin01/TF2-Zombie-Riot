@@ -448,7 +448,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 		flMaxHealth /= 40;
 		if(GetTeam(NpcSpawnDemon) != TFTeam_Red)
 		{
-			Zombies_Currently_Still_Ongoing += 1;
+			NpcAddedToZombiesLeftCurrently(NpcSpawnDemon, true);
 		}
 		i_RaidGrantExtra[NpcSpawnDemon] = -1;
 		SetEntProp(NpcSpawnDemon, Prop_Data, "m_iHealth", flMaxHealth);

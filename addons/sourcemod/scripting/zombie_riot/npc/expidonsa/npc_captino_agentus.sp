@@ -317,7 +317,7 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 							int spawn_index = NPC_CreateById(EXPIDONSA_DIVERSIONISTICO, -1, pos, ang, GetTeam(npc.index));
 							if(spawn_index > MaxClients)
 							{
-								Zombies_Currently_Still_Ongoing += 1; // FIXME
+								NpcAddedToZombiesLeftCurrently(spawn_index, true);
 								TeleportEntity(spawn_index, pos, ang);
 								SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 								SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);

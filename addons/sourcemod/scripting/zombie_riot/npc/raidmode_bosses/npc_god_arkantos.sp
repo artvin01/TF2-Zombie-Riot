@@ -344,7 +344,7 @@ public void GodArkantos_ClotThink(int iNPC)
 			int spawn_index = NPC_CreateById(SEASLIDER, -1, pos, ang, TFTeam_Blue);
 			if(spawn_index > MaxClients)
 			{
-				Zombies_Currently_Still_Ongoing += 1;
+				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
 				fl_ExtraDamage[spawn_index] = 25.0;
@@ -362,7 +362,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		int spawn_index = NPC_CreateById(ISHARMLA, -1, pos, ang, TFTeam_Blue);
 		if(spawn_index > MaxClients)
 		{
-			Zombies_Currently_Still_Ongoing += 1;
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", 100000000);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 100000000);
 			fl_ExtraDamage[spawn_index] = 25.0;

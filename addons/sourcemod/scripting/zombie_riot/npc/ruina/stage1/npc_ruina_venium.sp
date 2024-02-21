@@ -506,7 +506,7 @@ static void Venium_Build_Anchor(Venium npc)
 		i_anchor_id[npc.index] = EntIndexToEntRef(spawn_index);
 		if(GetTeam(npc.index) != TFTeam_Red)
 		{
-			Zombies_Currently_Still_Ongoing += 1;
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		}
 		fl_ruina_battery[spawn_index]=10.0;
 		SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);

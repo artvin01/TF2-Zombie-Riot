@@ -356,7 +356,7 @@ public void DDT_PostDeath(const char[] output, int caller, int activator, float 
 	
 	int spawn_index = NPC_CreateById(BTD_BLOON, -1, pos, angles, GetTeam(caller), "9rc");
 	if(spawn_index > MaxClients)
-		Zombies_Currently_Still_Ongoing += 1;
+		NpcAddedToZombiesLeftCurrently(BTD_BLOON, true);
 }
 
 public void DDT_PostFortifiedDeath(const char[] output, int caller, int activator, float delay)
@@ -370,5 +370,5 @@ public void DDT_PostFortifiedDeath(const char[] output, int caller, int activato
 	
 	int spawn_index = NPC_CreateById(BTD_BLOON, -1, pos, angles, GetTeam(caller), "9frc");
 	if(spawn_index > MaxClients)
-		Zombies_Currently_Still_Ongoing += 1;
+		NpcAddedToZombiesLeftCurrently(BTD_BLOON, true);
 }

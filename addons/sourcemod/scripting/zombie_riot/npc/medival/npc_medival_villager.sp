@@ -627,7 +627,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 					i_BuildingRef[iNPC] = EntIndexToEntRef(spawn_index);
 					if(GetTeam(iNPC) != TFTeam_Red)
 					{
-						Zombies_Currently_Still_Ongoing += 1;
+						NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					}
 					i_AttacksTillMegahit[spawn_index] = 10;
 					SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);

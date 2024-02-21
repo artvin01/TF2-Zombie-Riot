@@ -354,7 +354,7 @@ public void XenoHeavyGiant_NPCDeath(int entity)
 			int spawn_index = NPC_CreateById(XENO_HEAVY_ZOMBIE, -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
-				Zombies_Currently_Still_Ongoing += 1;	// FIXME
+				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}

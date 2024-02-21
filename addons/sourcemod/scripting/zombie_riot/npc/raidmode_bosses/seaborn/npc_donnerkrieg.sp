@@ -519,7 +519,7 @@ void Donnerkrieg_SpawnAllyDuoRaid(int ref)
 		{
 			i_ally_index = EntIndexToEntRef(spawn_index);
 			Schwertkrieg_Set_Ally_Index(entity);
-			Zombies_Currently_Still_Ongoing += 1;	// FIXME
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 		}
@@ -3509,7 +3509,7 @@ static Action Divine_Intervention_Hook(int iNPC)
 		spawn_index = NPC_CreateById(RUINA_STELLAR_WEAVER, -1, Npc_Loc, ang, GetTeam(npc.index), "solo_true");
 		if(spawn_index > MaxClients)
 		{
-			Zombies_Currently_Still_Ongoing += 1;
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", Health);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", Health);
 			b_weaver_summoned=true;

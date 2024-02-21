@@ -177,7 +177,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 						player.m_iTowerLinked = spawn_index;
 						if(GetTeam(iNPC) != TFTeam_Red)
 						{
-							Zombies_Currently_Still_Ongoing += 1;
+							NpcAddedToZombiesLeftCurrently(iNPC, true);
 						}
 						i_AttacksTillMegahit[spawn_index] = 10;
 						SetEntProp(spawn_index, Prop_Data, "m_iHealth", 1); //only 1 health, the villager needs to first needs to build it up over time.

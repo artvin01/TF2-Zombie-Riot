@@ -21,6 +21,7 @@ int dieingstate[MAXTF2PLAYERS];
 int TeutonType[MAXTF2PLAYERS];
 int i_TeamGlow[MAXENTITIES]={-1, ...};
 bool EscapeModeForNpc;
+bool b_NpcHasBeenAddedToZombiesLeft[MAXENTITIES];
 int Zombies_Currently_Still_Ongoing;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 float Medival_Difficulty_Level = 0.0;
@@ -135,7 +136,7 @@ public Action Command_PetMenu(int client, int args)
 	{
 		if(GetTeam(entity) != view_as<int>(TFTeam_Red))
 		{
-			Zombies_Currently_Still_Ongoing += 1;
+			NpcAddedToZombiesLeftCurrently(entity, true);
 		}
 		
 		if(args > 1)
@@ -3130,18 +3131,34 @@ void RemoveFromNpcPathList(CClotBody body)
 		}
 	}	
 }
+#if defined ZR
+void NpcAddedToZombiesLeftCurrently(int entity, bool CountUp)
+{
+	b_NpcHasBeenAddedToZombiesLeft[entity] = true;
+	if(CountUp)
+	{
+		Zombies_Currently_Still_Ongoing += 1;
+	}
+} 
+
+void RemoveNpcFromZombiesLeftCounter(int entity)
+{
+	if(b_NpcHasBeenAddedToZombiesLeft[entity])
+	{
+		Zombies_Currently_Still_Ongoing -= 1;
+	}
+	b_NpcHasBeenAddedToZombiesLeft[entity] = false;
+}
+#endif
 static void OnDestroy(CClotBody body)
 {
 	RemoveFromNpcAliveList(body.index);
+#if defined ZR
+		RemoveNpcFromZombiesLeftCounter(body.index);
+#endif
 	if(!b_NpcHasDied[body.index])
 	{
 		RemoveFromNpcPathList(body);
-#if defined ZR
-		if(GetTeam(body.index) != TFTeam_Red)
-		{
-			Zombies_Currently_Still_Ongoing -= 1;
-		}
-#endif
 	}
 	b_ThisWasAnNpc[body.index] = false;
 	b_NpcHasDied[body.index] = true;
@@ -7758,7 +7775,8 @@ stock float fmodf(float num, float denom)
 public void SetDefaultValuesToZeroNPC(int entity)
 {
 #if defined ZR
-	i_SpawnProtectionEntity[entity] = -1;
+	b_NpcHasBeenAddedToZombiesLeft[entity] = false;
+	i_SpawnProtectionEntity[entity] = -1; 
 	i_TeamGlow[entity] = -1;
 	i_NpcOverrideAttacker[entity] = 0;
 	b_thisNpcHasAnOutline[entity] = false;

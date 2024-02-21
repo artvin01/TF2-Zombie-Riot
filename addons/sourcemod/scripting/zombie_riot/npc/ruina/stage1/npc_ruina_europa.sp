@@ -357,7 +357,7 @@ static void Europa_Spawn_Minnions(Europa npc)
 
 			if(spawn_index > MaxClients)
 			{
-				Zombies_Currently_Still_Ongoing += 1;	// FIXME
+				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
@@ -381,7 +381,7 @@ static void Europa_Spawn_Self(Europa npc)
 
 	if(spawn_index > MaxClients)
 	{
-		Zombies_Currently_Still_Ongoing += 1;	// FIXME
+		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 	}

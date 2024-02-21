@@ -274,5 +274,5 @@ public void Moab_NPCDeath(int entity)
 	
 	int spawn_index = NPC_CreateById(BTD_BLOON, -1, pos, angles, GetTeam(entity), npc.m_bFortified ? "9f" : "9");
 	if(spawn_index > MaxClients)
-		Zombies_Currently_Still_Ongoing += 1;
+		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 }

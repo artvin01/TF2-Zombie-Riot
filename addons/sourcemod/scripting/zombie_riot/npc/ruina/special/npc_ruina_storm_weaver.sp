@@ -279,7 +279,7 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 		b_storm_weaver_noclip[spawn_index]=false;
 		b_IgnoreAllCollisionNPC[spawn_index]=true;
 		b_ForceCollisionWithProjectile[spawn_index]=true;
-		Zombies_Currently_Still_Ongoing += 1;	// FIXME
+		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		CClotBody tail = view_as<CClotBody>(spawn_index);
 		tail.m_flNextRangedAttack = GetGameTime(tail.index)+1.0+(Section/10.0);
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", Health);
@@ -488,7 +488,7 @@ static void Storm_Weaver_Force_Spawn_Anchors(Storm_Weaver npc)
 	{
 		if(GetTeam(npc.index) != TFTeam_Red)
 		{
-			Zombies_Currently_Still_Ongoing += 1;
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		}
 		fl_ruina_battery[spawn_index]=255.0;	//force spawn them fully
 		SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);

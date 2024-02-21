@@ -349,7 +349,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 					npc.PlayMeleeMissSound();
 					if(GetTeam(iNPC) != TFTeam_Red)
 					{
-						Zombies_Currently_Still_Ongoing += 1;
+						NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					}
 					else
 					{
