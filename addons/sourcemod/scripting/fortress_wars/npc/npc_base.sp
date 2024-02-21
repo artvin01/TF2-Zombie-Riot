@@ -284,6 +284,22 @@ bool UnitBody_GetCommand(int entity, int i, int &type, float pos[3], int &target
 	return false;
 }
 
+bool UnitBody_GetCommand(int entity, int i, int &type, float pos[3], int &target)
+{
+	int actions = CommandList[entity].Length;
+	if(i < actions)
+	{
+		CommandEnum command;
+		CommandList[entity].GetArray(i, command);
+		type = command.Type;
+		pos = command.Pos;
+		target = EntRefToEntIndex(command.TargetRef);
+		return true;
+	}
+
+	return false;
+}
+
 void UnitBody_GetStats(int entity, StatEnum stats)
 {
 	view_as<UnitBody>(entity).GetStats(stats);
