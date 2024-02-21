@@ -1,15 +1,17 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define MELEE_RANGE_SQR	6500.0
+#define MELEE_RANGE_SQR	10000.0
 
 enum struct CommandEnum
 {
 	int Type;
 	float Pos[3];
 	int TargetRef;
+	int Data;
 }
 
+static int ResourceSearch;
 static float SoundCooldown[MAXTF2PLAYERS];
 
 static int UnitFlags[MAXENTITIES];
@@ -121,12 +123,13 @@ methodmap UnitBody < CClotBody
 	public void AddCommand(bool override, int type, const float pos[3], int target = -1)
 	{
 		if(override)
+		{
 			delete CommandList[this.index];
+			this.m_flGetClosestTargetTime = 0.0;
+		}
 		
 		CommandEnum command;
-		command.Type = type;
-		command.TargetRef = target == -1 ? -1 : EntIndexToEntRef(target);
-		command.Pos = pos;
+		SetupCommand(this, command, type, pos, target);
 
 		if(!CommandList[this.index])
 			CommandList[this.index] = new ArrayList(sizeof(CommandEnum));
@@ -153,6 +156,19 @@ methodmap UnitBody < CClotBody
 		}
 
 		SDKHooks_TakeDamage(victim, this.index, this.index, float(damage), damageType, _, damageForce, damagePosition);
+	}
+	public bool InAttackRange(int target, float rangesqr)
+	{
+		float vecMe[3], vecTarget[3];
+		WorldSpaceCenter(this.index, vecMe);
+		WorldSpaceCenter(target, vecTarget);
+		
+		Handle trace = TR_TraceRayFilterEx(vecMe, vecTarget, MASK_SOLID, RayType_EndPoint, AttackRangeTrace, target);
+		TR_GetEndPosition(vecTarget, trace);
+		delete trace;
+
+		float dist = GetVectorDistance(vecMe, vecTarget, true);
+		return dist < rangesqr;
 	}
 
 	public bool IsAlly(int team)
@@ -192,6 +208,38 @@ methodmap UnitBody < CClotBody
 	}
 }
 
+static bool AttackRangeTrace(int entity, int contentsMask, int match)
+{
+	return entity == match;
+}
+
+static void SetupCommand(UnitBody npc, CommandEnum command, int type, const float pos[3], int target)
+{
+	command.Type = type;
+	command.TargetRef = target == -1 ? -1 : EntIndexToEntRef(target);
+	command.Pos = pos;
+
+	if(target != -1 && command.Type <= Command_HoldPos)
+	{
+		if(IsObject(target))
+		{
+			if(npc.HasFlag(Flag_Worker))
+			{
+				command.Type = Command_WorkOn;
+				command.Data = view_as<UnitObject>(target).m_iResourceType;
+			}
+			else
+			{
+				command.Type = Command_Attack;
+			}
+		}
+		else if(!UnitBody_IsEntAlly(npc.index, target))
+		{
+			command.Type = Command_Attack;
+		}
+	}
+}
+
 bool UnitBody_IsEntAlly(int attacker, int entity)
 {
 	return view_as<UnitBody>(entity).IsAlly(TeamNumber[attacker]);
@@ -210,6 +258,22 @@ bool UnitBody_HasFlag(int entity, int flag)
 void UnitBody_AddCommand(int entity, bool override, int type, const float pos[3], int target = -1)
 {
 	view_as<UnitBody>(entity).AddCommand(override, type, pos, target);
+}
+
+bool UnitBody_GetCommand(int entity, int i, int &type, float pos[3], int &target)
+{
+	int actions = CommandList[entity].Length;
+	if(i < actions)
+	{
+		CommandEnum command;
+		CommandList[entity].GetArray(i, command);
+		type = command.Type;
+		pos = command.Pos;
+		target = EntRefToEntIndex(command.TargetRef);
+		return true;
+	}
+
+	return false;
 }
 
 void UnitBody_GetStats(int entity, StatEnum stats)
@@ -323,7 +387,8 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime, Function closestTargetFun
 
 	for(;;)
 	{
-		if(CommandList[npc.index] && CommandList[npc.index].Length)
+		int length = CommandList[npc.index] ? CommandList[npc.index].Length : 0;
+		if(length)
 		{
 			// Oldest command
 			CommandList[npc.index].GetArray(0, command);
@@ -339,25 +404,32 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime, Function closestTargetFun
 		}
 		
 		bool foundTarget;
-		int target = command.TargetRef == -1 ? -1 : EntRefToEntIndex(command.TargetRef);
-		if(target > 0)
+		int target = -1;
+		if(command.TargetRef != -1)
 		{
+			target = EntRefToEntIndex(command.TargetRef);
 			if(IsValidEnemy(npc.index, target, true))	// Following enemy
 			{
 				npc.m_iTargetWalkTo = target;
-				npc.m_flGetClosestTargetTime = gameTime + 1.0;
+				npc.m_flGetClosestTargetTime = gameTime + 0.5;
 
 				command.Type = Command_Attack;	// Force to always attack
 				foundTarget = true;
 			}
-			else if(IsValidEntity(target))	// Following something
+			else if(IsValidEntity(target))
 			{
-				
+				// Following something
+			}
+			else if(command.Type == Command_WorkOn && length == 1)
+			{
+				// Resource gone, find a new one (if it's our only command)
+				target = -1;
 			}
 			else	// Following target is now invalid
 			{
 				// Remove this command
 				CommandList[npc.index].Erase(0);
+				npc.m_flGetClosestTargetTime = 0.0;
 				continue;
 			}
 		}
@@ -365,30 +437,42 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime, Function closestTargetFun
 		bool canAttack;
 		switch(command.Type)
 		{
-			case Command_Idle:
+			case Command_Idle,	// Idle, no command
+				Command_HoldPos,// Can attack, later code prevents moving
+				Command_Patrol:	// Attacks on patrol, workers patrol to auto repair
 			{
-				// Idle, no command
+				
 				canAttack = !npc.HasFlag(Flag_Worker);
 			}
-			case Command_Move:
+			case Command_Move:	// Only move, no attack
 			{
-				// Only move, no attack
 				canAttack = false;
 			}
-			case Command_Attack:
+			case Command_Attack:	// Attack move
 			{
-				// Attack move
 				canAttack = true;
 			}
-			case Command_HoldPos:
+			case Command_WorkOn:	// Harvesting a resource
 			{
-				// Can attack, later code prevents moving
-				canAttack = !npc.HasFlag(Flag_Worker);
-			}
-			case Command_Patrol:
-			{
-				// Attacks on patrol, workers patrol to auto repair
-				canAttack = !npc.HasFlag(Flag_Worker);
+				canAttack = false;
+
+				if(target == -1 && command.Data)
+				{
+					ResourceSearch = command.Data;
+					target = GetClosestTargetRTS(npc.index, npc.m_flVisionRange, _, _, _, _, ResourceSearchFunction);
+					if(target == -1)
+					{
+						// No nearby resource
+						CommandList[npc.index].Erase(0);
+						continue;
+					}
+					else
+					{
+						// New resource
+						command.TargetRef = EntIndexToEntRef(target);
+						CommandList[npc.index].SetArray(0, command);
+					}
+				}
 			}
 		}
 
@@ -398,29 +482,37 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime, Function closestTargetFun
 			{
 				if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo, true))
 				{
-
+					target = npc.m_iTargetWalkTo;
 				}
 				else if(i_TargetToWalkTo[npc.index] != -1 || npc.m_flGetClosestTargetTime < gameTime)
 				{
 					// Had an existing target or time as passed
 					target = GetClosestTargetRTS(npc.index, npc.m_flEngageRange, _, _, _, _, closestTargetFunction);
-					npc.m_flGetClosestTargetTime = gameTime + 1.0;
+					npc.m_iTargetWalkTo = target;
+					npc.m_flGetClosestTargetTime = gameTime + 0.5;
 				}
 				else
 				{
 					target = -1;
+					if(i_TargetToWalkTo[npc.index] != -1)
+						npc.m_iTargetWalkTo = target;
 				}
 			}
 			else
 			{
 				target = -1;
+				if(i_TargetToWalkTo[npc.index] != -1)
+					npc.m_iTargetWalkTo = target;
 			}
-
-			npc.m_iTargetWalkTo = target;
 		}
 
 		return target;
 	}
+}
+
+static bool ResourceSearchFunction(int entity, int target)
+{
+	return (IsObject(target) && view_as<UnitObject>(target).m_iResourceType == ResourceSearch);
 }
 
 // Make sure to call UnitBody_ThinkTarget before this
@@ -445,7 +537,6 @@ stock bool UnitBody_ThinkMove(UnitBody npc, float gameTime)
 		float distance = GetVectorDistance(vecMe, command.Pos, true);
 		if(distance < npc.GetLeadRadius())
 		{
-			//Predict their pos.
 			PredictSubjectPosition(npc, target, _, _, command.Pos);
 			npc.SetGoalVector(command.Pos);
 		}
@@ -464,7 +555,7 @@ stock bool UnitBody_ThinkMove(UnitBody npc, float gameTime)
 		{
 			npc.StopPathing();
 
-			bool nextCommand = true;
+			bool nextCommand;
 			switch(command.Type)
 			{
 				case Command_Idle, Command_HoldPos:

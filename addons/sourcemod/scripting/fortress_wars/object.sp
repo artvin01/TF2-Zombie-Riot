@@ -217,6 +217,10 @@ methodmap UnitObject < CBaseAnimating
 
 		DispatchSpawn(entity);
 
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		SetTeam(entity, 0);
+
 		SDKHook(entity, SDKHook_OnTakeDamage, Object_TakeDamage);
 
 		return view_as<UnitObject>(entity);

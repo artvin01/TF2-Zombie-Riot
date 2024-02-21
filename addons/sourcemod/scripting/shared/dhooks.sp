@@ -1810,12 +1810,12 @@ public MRESReturn DHook_TauntPre(int client, DHookParam param)
 		f_DelayAttackspeedPreivous[client] = 1.0;
 	}
 	
-	static char buffer[36];
-	GetEntityClassname(weapon, buffer, sizeof(buffer));
-	TFClassType class = TF2_GetWeaponClass(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"), CurrentClass[client], TF2_GetClassnameSlot(buffer));
-	if(class != TFClass_Unknown)
+	//static char buffer[36];
+	//GetEntityClassname(weapon, buffer, sizeof(buffer));
+	//TFClassType class = TF2_GetWeaponClass(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"), CurrentClass[client], TF2_GetClassnameSlot(buffer));
+	//if(class != TFClass_Unknown)
 	{
-		TF2_SetPlayerClass_ZR(client, class, false, false);
+		TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
 	}
 
 	return MRES_Ignored;
