@@ -2157,7 +2157,7 @@ stock int NPC_CreateByName(const char[] name, int client, float vecPos[3], float
 
 int NPC_CreateById(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], int team, const char[] data = "")
 {
-	if(Index_Of_Npc < 1 || NPCList.Length >= Index_Of_Npc)
+	if(Index_Of_Npc < 1 || Index_Of_Npc >= NPCList.Length)
 	{
 		PrintToChatAll("[%d] is not a valid NPC!", Index_Of_Npc);
 		return -1;
