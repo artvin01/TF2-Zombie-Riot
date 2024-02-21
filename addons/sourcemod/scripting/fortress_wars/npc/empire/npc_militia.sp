@@ -125,12 +125,7 @@ static void ClotThink(int entity)
 	{
 		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			float vecMe[3], vecTarget[3];
-			WorldSpaceCenter(npc.index, vecMe);
-			WorldSpaceCenter(target, vecTarget);
-			
-			float distance = GetVectorDistance(vecMe, vecTarget, true);
-			if(distance < MELEE_RANGE_SQR)
+			if(npc.InAttackRange(target, MELEE_RANGE_SQR))
 			{
 				npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
 				npc.PlayMeleeSound();

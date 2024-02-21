@@ -629,10 +629,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()		 
 		{ 
 			int returnint = EntRefToEntIndex(i_TargetAlly[this.index]);
+#if defined ZR
 			if(returnint == -1)
 			{
 				return 0;
 			}
+#endif
 			return returnint;
 		}
 		public set(int iInt) 
@@ -1082,10 +1084,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()		 
 		{ 
 			int returnint = EntRefToEntIndex(i_TargetToWalkTo[this.index]);
+#if defined ZR
 			if(returnint == -1)
 			{
 				return 0;
 			}
+#endif
 			return returnint;
 		}
 		public set(int iInt) 
@@ -1105,10 +1109,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()		 
 		{ 
 			int returnint = EntRefToEntIndex(i_Target[this.index]);
+#if defined ZR
 			if(returnint == -1)
 			{
 				return 0;
 			}
+#endif
 			return returnint;
 		}
 		public set(int iInt) 
@@ -2105,7 +2111,11 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public void SetGoalEntity(int target, bool ignoretime = false)
 	{
+#if defined RTS
+		if(IsObject(target) || i_IsABuilding[target] || b_IsVehicle[target])
+#else
 		if(i_IsABuilding[target] || b_IsVehicle[target])
+#endif
 		{
 			//broken on targetting buildings...?
 			float pos[3]; GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
@@ -4088,8 +4098,6 @@ public void constrainDistance(const float[] startPoint, float[] endPoint, float 
 
 public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, TraverseWhenType when)
 {
-	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
-	
 	if(other_entidx < 1)
 	{
 		return false;
@@ -4111,8 +4119,15 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 	}
 	*/
 #if defined RTS
+	if(IsObject(other_entidx))
+	{
+		return false;
+	}
+
 	return !b_NpcHasDied[other_entidx];
 #else
+	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
+
 	if(GetTeam(bot_entidx) == TFTeam_Red) //ally!
 	{
 		if(b_IsCamoNPC[bot_entidx])
@@ -6895,15 +6910,19 @@ static void PredictSubjectPositionInternal(CClotBody npc, int subject, float Ext
 		
 	botPos[2] += 45.0;
 	subjectPos[2] += 45.0;
-#if defined ZR
 	//do not predict if in air
 	//do not predict if its a building, waste of resources.
+
+#if defined RTS
+	if(IsObject(subject) || i_IsABuilding[subject])
+#else
 	if(Npc_Is_Targeted_In_Air(npc.index) || i_IsABuilding[subject])
+#endif
 	{
 		f_PredictPos[subject] = subjectPos;
 		return;
 	}
-#endif
+
 	float SubjectAbsVelocity[3];
 	GetEntPropVector(subject, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
 	if(MovementSpreadSpeedTooLow(SubjectAbsVelocity))
