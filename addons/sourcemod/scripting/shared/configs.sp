@@ -63,6 +63,7 @@ void Configs_ConfigsExecuted()
 	}
 	
 	FileNetwork_ConfigSetup(kv);
+	NPC_ConfigSetup();
 	
 #if defined ZR
 	Items_SetupConfig();
@@ -91,6 +92,7 @@ void Configs_ConfigsExecuted()
 
 #if defined RTS
 	RTS_ConfigsSetup();
+	Object_ConfigSetup();
 #endif
 
 	delete kv;

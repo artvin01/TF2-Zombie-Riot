@@ -244,10 +244,10 @@ public void BunkerSkeletonKing_ClotThink(int iNPC)
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		
-					int spawn_index = Npc_Create(BUNKER_SKELETON, -1, pos, ang, GetTeam(npc.index));
+					int spawn_index = NPC_CreateById(BUNKER_SKELETON, -1, pos, ang, GetTeam(npc.index));
 					if(spawn_index > MaxClients)
 					{
-						Zombies_Currently_Still_Ongoing += 1;
+						NpcAddedToZombiesLeftCurrently(spawn_index, true);
 						SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 					}
@@ -264,10 +264,10 @@ public void BunkerSkeletonKing_ClotThink(int iNPC)
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		
-					int spawn_index = Npc_Create(BUNKER_SMALL_SKELETON, -1, pos, ang, GetTeam(npc.index));
+					int spawn_index = NPC_CreateById(BUNKER_SMALL_SKELETON, -1, pos, ang, GetTeam(npc.index));
 					if(spawn_index > MaxClients)
 					{
-						Zombies_Currently_Still_Ongoing += 1;
+						NpcAddedToZombiesLeftCurrently(spawn_index, true);
 						SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 					}

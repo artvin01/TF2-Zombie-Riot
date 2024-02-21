@@ -514,15 +514,12 @@ void Donnerkrieg_SpawnAllyDuoRaid(int ref)
 		
 		maxhealth = RoundToFloor(maxhealth*1.5);
 
-		int spawn_index = Npc_Create(SEA_RAIDBOSS_SCHWERTKRIEG, -1, pos, ang, GetTeam(entity));
+		int spawn_index = NPC_CreateById(SEA_RAIDBOSS_SCHWERTKRIEG, -1, pos, ang, GetTeam(entity));
 		if(spawn_index > MaxClients)
 		{
 			i_ally_index = EntIndexToEntRef(spawn_index);
 			Schwertkrieg_Set_Ally_Index(entity);
-			if(GetTeam(entity) != TFTeam_Red)
-			{
-				Zombies_Currently_Still_Ongoing += 1;	// FIXME
-			}
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 		}
@@ -3509,10 +3506,10 @@ static Action Divine_Intervention_Hook(int iNPC)
 		int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int spawn_index;
 
-		spawn_index = Npc_Create(RUINA_STELLAR_WEAVER, -1, Npc_Loc, ang, GetTeam(npc.index), "solo_true");
+		spawn_index = NPC_CreateById(RUINA_STELLAR_WEAVER, -1, Npc_Loc, ang, GetTeam(npc.index), "solo_true");
 		if(spawn_index > MaxClients)
 		{
-			Zombies_Currently_Still_Ongoing += 1;
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", Health);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", Health);
 			b_weaver_summoned=true;

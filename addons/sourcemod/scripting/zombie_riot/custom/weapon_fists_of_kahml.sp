@@ -190,11 +190,11 @@ public void Fists_of_Kahml_Ablity_2(int client, int weapon, bool crit, int slot)
 		float damage = 15.0;
 		fAng[0] = 0.0;
 		damage *= Attributes_Get(weapon, 2, 1.0);
-		int spawn_index = Npc_Create(WEAPON_KAHML_AFTERIMAGE, client, flPos, fAng, GetTeam(client));
+		int spawn_index = NPC_CreateByName("npc_allied_kahml", client, flPos, fAng, GetTeam(client));
 		f_DurationOfProjectileAttack[client] = GetGameTime() + 10.0;
 		if(spawn_index > 0)
 		{
-			EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", spawn_index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
+			EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 			ParticleEffectAt(WorldSpaceCenterOld(spawn_index), "teleported_blue", 0.5);
 			//this is the damage
 			fl_heal_cooldown[spawn_index] = damage;

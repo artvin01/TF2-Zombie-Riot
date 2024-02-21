@@ -31,7 +31,7 @@ methodmap AlliedKahmlAbility < CClotBody
 		func_NPCDeath[npc.index] = Internal_Npc_NPCDeath;
 		func_NPCThink[npc.index] = Internal_Npc_ClotThink;
 		npc.m_flRangedSpecialDelay = GetGameTime() + 10.0;
-		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 0.3;
+		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 0.35;
 
 
 		SetVariantInt(GetEntProp(client, Prop_Send, "m_nBody"));
@@ -97,6 +97,7 @@ methodmap AlliedKahmlAbility < CClotBody
 		
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
+		npc.StartPathing();
 	/*
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
@@ -146,7 +147,7 @@ static void Internal_Npc_ClotThink(int iNPC)
 	StartLagCompensation_Base_Boss(owner);
 	Handle swingTrace;
 	float vecSwingForward[3];
-	DoSwingTrace_Custom(swingTrace, owner, vecSwingForward, 1500.0, false, 45.0, true); 
+	DoSwingTrace_Custom(swingTrace, owner, vecSwingForward, 9999.0, false, 45.0, true); 
 	FinishLagCompensation_Base_boss();
 	int target = TR_GetEntityIndex(swingTrace);	
 	delete swingTrace;
@@ -162,6 +163,8 @@ static void Internal_Npc_ClotThink(int iNPC)
 		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(owner);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 		
+		npc.m_bAllowBackWalking = false;
+
 		if(flDistanceToTarget > (100.0 * 100.0))
 		{
 			NPC_StartPathing(npc.index);

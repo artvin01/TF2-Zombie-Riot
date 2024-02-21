@@ -260,7 +260,7 @@ methodmap RaidbossNemesis < CClotBody
 		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 25.0;
 		if(XenoExtraLogic())
 		{
-			FormatEx(c_NpcCustomNameOverride[npc.index], sizeof(c_NpcCustomNameOverride[]), "Enraged Nemesis");
+			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Enraged Nemesis");
 			CPrintToChatAll("{green}Nemesis: ... NGHRRRRR....");
 		}
 		else

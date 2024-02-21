@@ -60,7 +60,8 @@ enum
 	Command_Move,
 	Command_Attack,
 	Command_HoldPos,
-	Command_Patrol
+	Command_Patrol,
+	Command_WorkOn
 }
 
 enum
@@ -139,7 +140,7 @@ void RTS_PluginStart()
 
 void RTS_MapStart()
 {
-	Object_MapStart();
+	
 }
 
 void RTS_PluginEnd()
@@ -201,6 +202,9 @@ float RTS_GameSpeed()
 
 bool RTS_IsSpectating(int client)
 {
+	if(TeamNumber[client] < 0)
+		return true;
+	
 	return Defeated[TeamNumber[client]];
 }
 

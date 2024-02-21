@@ -441,14 +441,14 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 		fl_TotalArmor[self] = 0.35;
 	}
 	TE_Particle("teleported_blue", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-	int NpcSpawnDemon = Npc_Create(INTERITUS_DESERT_ANCIENTDEMON, -1, SelfPos, AllyAng, GetTeam(npc.index)); //can only be enemy
+	int NpcSpawnDemon = NPC_CreateById(INTERITUS_DESERT_ANCIENTDEMON, -1, SelfPos, AllyAng, GetTeam(npc.index)); //can only be enemy
 	i_RaidGrantExtra[ally] = 999;
 	if(IsValidEntity(NpcSpawnDemon))
 	{
 		flMaxHealth /= 40;
 		if(GetTeam(NpcSpawnDemon) != TFTeam_Red)
 		{
-			Zombies_Currently_Still_Ongoing += 1;
+			NpcAddedToZombiesLeftCurrently(NpcSpawnDemon, true);
 		}
 		i_RaidGrantExtra[NpcSpawnDemon] = -1;
 		SetEntProp(NpcSpawnDemon, Prop_Data, "m_iHealth", flMaxHealth);

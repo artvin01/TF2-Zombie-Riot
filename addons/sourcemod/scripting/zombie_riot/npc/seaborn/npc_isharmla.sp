@@ -162,7 +162,7 @@ public void Isharmla_ClotThink(int iNPC)
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3;
 		
-		int entity = Npc_Create(ISHARMLA_TRANS, -1, pos, ang, GetTeam(npc.index));
+		int entity = NPC_CreateById(ISHARMLA_TRANS, -1, pos, ang, GetTeam(npc.index));
 		if(entity > MaxClients)
 		{
 			b_IsEntityNeverTranmitted[npc.index] = true;

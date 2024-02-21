@@ -795,10 +795,10 @@ public void CorruptedSpyRaid_ClotDamaged_Post(int victim, int attacker, int infl
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			int spawn_index = Npc_Create(CORRUPTEDSPYMINION, -1, pos, ang, GetTeam(npc.index));
+			int spawn_index = NPC_CreateById(CORRUPTEDSPYMINION, -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
-				Zombies_Currently_Still_Ongoing += 1;	// FIXME
+				NpcAddedToZombiesLeftCurrently(fake_spawned, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}

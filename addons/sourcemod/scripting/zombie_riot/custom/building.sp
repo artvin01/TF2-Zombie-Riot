@@ -6893,7 +6893,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						GetEntPropVector(mounted ? owner : entity, Prop_Data, "m_angRotation", ang);
 						
 						view_as<BarrackBody>(mounted ? owner : entity).PlaySpawnSound();
-						int npc = Npc_Create(GetSData(CivType[owner], TrainingIndex[owner], NPCIndex), owner, pos, ang, TFTeam_Red);
+						int npc = NPC_CreateById(GetSData(CivType[owner], TrainingIndex[owner], NPCIndex), owner, pos, ang, TFTeam_Red);
 						view_as<BarrackBody>(npc).m_iSupplyCount = GetSData(CivType[owner], TrainingIndex[owner], SupplyCost);
 						Barracks_UpdateEntityUpgrades(owner, npc, true, true); //make sure upgrades if spawned, happen on full health!
 
@@ -7297,23 +7297,23 @@ static void SummonerMenu(int client, int viewer)
 			}
 			if(/*(AtMaxSupply(client) - subtractVillager) || */(GetSupplyLeft(client) + subtractVillager) < GetSData(CivType[client], TrainingIndex[client], SupplyCost))
 			{
-				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", NPC_Names[GetSData(CivType[client], TrainingIndex[client], NPCIndex)]);
+				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", GetNPCName(GetSData(CivType[client], TrainingIndex[client], NPCIndex)));
 				if(i_BarricadesBuild[client])
 					Format(buffer1, sizeof(buffer1), "%s\nTIP: Your barricades counts towards the supply limit\n ", buffer1);
 			}
 			else if(TrainingStartedIn[client] < 0.0)
 			{
-				FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied)\n ", NPC_Names[GetSData(CivType[client], TrainingIndex[client], NPCIndex)]);
+				FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied)\n ", GetNPCName(GetSData(CivType[client], TrainingIndex[client], NPCIndex)));
 			}
 			else
 			{
 				float gameTime = GetGameTime();
-				FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", NPC_Names[GetSData(CivType[client], TrainingIndex[client], NPCIndex)],
+				FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", GetNPCName(GetSData(CivType[client], TrainingIndex[client], NPCIndex)),
 					100.0 - ((TrainingIn[client] - gameTime) * 100.0 / (TrainingIn[client] - TrainingStartedIn[client])));
 			}
 
 			if(TrainingQueue[client] != -1)
-				Format(buffer1, sizeof(buffer1), "%sNext: %t\n ", buffer1, NPC_Names[GetSData(CivType[client], TrainingQueue[client], NPCIndex)]);
+				Format(buffer1, sizeof(buffer1), "%sNext: %t\n ", buffer1, GetNPCName(GetSData(CivType[client], TrainingQueue[client], NPCIndex)));
 			
 			itemsAddedToList += 1;
 			menu.AddItem(buffer1, buffer1, owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
@@ -7380,11 +7380,11 @@ static void SummonerMenu(int client, int viewer)
 			if(GetEntityFlags(viewer) & FL_DUCKING)
 			{
 				ShowingDesc = true;
-				FormatEx(buffer2, sizeof(buffer2), "%s Desc", NPC_Names[GetSData(CivType[client], i, NPCIndex)]);
+				FormatEx(buffer2, sizeof(buffer2), "%s Desc",GetNPCName(GetSData(CivType[client], i, NPCIndex)));
 			}
 			else
 			{
-				FormatEx(buffer1, sizeof(buffer1), "%t [", NPC_Names[GetSData(CivType[client], i, NPCIndex)]);
+				FormatEx(buffer1, sizeof(buffer1), "%t [", GetNPCName(GetSData(CivType[client], i, NPCIndex)));
 			}
 			if(!ShowingDesc)
 			{
@@ -7452,6 +7452,13 @@ static void SummonerMenu(int client, int viewer)
 	menu.ExitButton = true;
 	if(menu.Display(viewer, 1))
 		InMenu[viewer] = client;
+}
+
+static char[] GetNPCName(int id)
+{
+	NPCData data;
+	NPC_GetById(id, data);
+	return data.Name;
 }
 
 //void AddItemToTrainingList(char item, )
