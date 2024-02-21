@@ -51,6 +51,17 @@ void Ruriana_OnMapStart_NPC()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
 	Zero(i_damage_taken);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Ruriana");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_ruriana");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Ruriana(client, vecPos, vecAng, ally);
 }
 
 methodmap Ruriana < CClotBody
@@ -120,7 +131,6 @@ methodmap Ruriana < CClotBody
 	{
 		Ruriana npc = view_as<Ruriana>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_RURIANA;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

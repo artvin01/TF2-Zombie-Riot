@@ -64,6 +64,17 @@ void Magia_OnMapStart_NPC()
 	PrecacheSoundArray(g_TeleportSounds);
 
 	PrecacheModel("models/player/medic.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Magia");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_magia");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Magia(client, vecPos, vecAng, ally);
 }
 
 methodmap Magia < CClotBody
@@ -151,7 +162,6 @@ methodmap Magia < CClotBody
 	{
 		Magia npc = view_as<Magia>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_MAGIA;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

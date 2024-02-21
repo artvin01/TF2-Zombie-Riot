@@ -50,6 +50,7 @@ static float fl_teleport_time[MAXENTITIES];
 static int i_segment_id[MAXENTITIES][RUINA_STORM_WEAVER_LENGHT+1];
 static int i_traveling_to_anchor[MAXENTITIES];
 static float fl_special_invuln_timer[MAXENTITIES];
+static bool b_ignore_npc[MAXENTITIES];
 
 //static int beam_model;
 
@@ -57,6 +58,7 @@ static float fl_special_invuln_timer[MAXENTITIES];
 void Ruina_Storm_Weaver_MapStart()
 {
 
+	Zero(b_ignore_npc);
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
@@ -72,6 +74,17 @@ void Ruina_Storm_Weaver_MapStart()
 	b_stellar_weaver_summoned=false;
 
 	//beam_model = PrecacheModel(BLITZLIGHT_SPRITE);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Stellar Weaver");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_stellar_weaver");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Storm_Weaver(client, vecPos, vecAng, ally, data);
 }
 
 methodmap Storm_Weaver < CClotBody
@@ -111,7 +124,6 @@ methodmap Storm_Weaver < CClotBody
 	{
 		Storm_Weaver npc = view_as<Storm_Weaver>(CClotBody(vecPos, vecAng, RUINA_STORM_WEAVER_HEAD_MODEL, RUINA_STORM_WEAVER_MODEL_SIZE, "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_STELLAR_WEAVER;
 		i_NpcWeight[npc.index] = 999;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -242,6 +254,7 @@ methodmap Storm_Weaver < CClotBody
 
 		ParticleEffectAt(npc_vec, "eyeboss_death_vortex", 5.0);
 
+		b_ignore_npc[npc.index]=true;
 		int follow_id = npc.index;
 		for(int i=0 ; i< RUINA_STORM_WEAVER_LENGHT ; i++)
 		{
@@ -276,10 +289,12 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 	char buffer[16];
 	IntToString(follow_ID, buffer, sizeof(buffer));
 
-	spawn_index = NPC_CreateById(RUINA_STELLAR_WEAVER_MID, -1, pos, ang, GetTeam(npc.index), buffer);
+
+	spawn_index = NPC_CreateByName("npc_ruina_stellar_weaver_middle", npc.index, pos, ang, GetTeam(npc.index), buffer);
 	i_segment_id[npc.index][Section] = EntIndexToEntRef(spawn_index);
 	if(spawn_index > MaxClients)
 	{
+		b_ignore_npc[spawn_index]=true;
 		b_storm_weaver_noclip[spawn_index]=false;
 		b_IgnoreAllCollisionNPC[spawn_index]=true;
 		b_ForceCollisionWithProjectile[spawn_index]=true;
@@ -299,6 +314,7 @@ static void Storm_Weaver_Nuke_Tail(Storm_Weaver npc)
 		int Tail = EntRefToEntIndex(i_segment_id[npc.index][i]);
 		CClotBody tail = view_as<CClotBody>(Tail);
 		tail.m_bDissapearOnDeath = true;	
+		b_ignore_npc[tail.index]=false;
 		RequestFrame(KillNpc, EntIndexToEntRef(tail.index));
 	}
 }
@@ -487,7 +503,7 @@ static void Storm_Weaver_Force_Spawn_Anchors(Storm_Weaver npc)
 
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"))+1.0;
 	Health *=0.25;
-	int spawn_index = NPC_CreateById(RUINA_MAGIA_ANCHOR, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
+	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(spawn_index > MaxClients)
 	{
 		if(GetTeam(npc.index) != TFTeam_Red)
@@ -514,7 +530,7 @@ static int Storm_Weaver_Health()
 			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 			{
-				if(i_NpcInternalId[baseboss_index] !=RUINA_STELLAR_WEAVER && i_NpcInternalId[baseboss_index] !=RUINA_STELLAR_WEAVER_MID)
+				if(!b_ignore_npc[baseboss_index])
 				{
 					if(GetTeam(baseboss_index) != TFTeam_Red)
 					{
@@ -553,8 +569,9 @@ static void Find_Anchors(int array[RUINA_ANCHOR_HARD_LIMIT+1])
 		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 		{
-			if(i_NpcInternalId[baseboss_index] == RUINA_MAGIA_ANCHOR)
+			if(b_is_magia_tower[baseboss_index])
 			{
+				CPrintToChatAll("A tower has been added");
 				array[anchor_current]=baseboss_index;
 				anchor_current++;
 			}
@@ -1040,7 +1057,7 @@ public void Stellar_Weaver_Share_Damage_With_All(int &attacker, int &inflictor, 
 		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 		{
-			if(i_NpcInternalId[baseboss_index] !=RUINA_STELLAR_WEAVER && i_NpcInternalId[baseboss_index] !=RUINA_STELLAR_WEAVER_MID)
+			if(!b_ignore_npc[baseboss_index])
 			{
 				if(IsEntityAlive(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 				{
@@ -1088,6 +1105,7 @@ static void NPC_Death(int entity)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
 
+	b_ignore_npc[npc.index]=false;
 	b_stellar_weaver_summoned=false;
 
 	Ruina_NPCDeath_Override(entity);

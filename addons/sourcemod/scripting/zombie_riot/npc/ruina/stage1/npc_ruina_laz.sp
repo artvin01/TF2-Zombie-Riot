@@ -42,6 +42,17 @@ void Laz_OnMapStart_NPC()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheModel("models/player/demo.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Laz");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_laz");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Laz(client, vecPos, vecAng, ally);
 }
 
 methodmap Laz < CClotBody
@@ -102,7 +113,6 @@ methodmap Laz < CClotBody
 	{
 		Laz npc = view_as<Laz>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_LAZ;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

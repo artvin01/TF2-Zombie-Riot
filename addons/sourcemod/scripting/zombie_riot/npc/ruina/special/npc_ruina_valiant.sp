@@ -65,6 +65,17 @@ void Venium_OnMapStart_NPC()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/engineer.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Valiant");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_valiant");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Valiant(client, vecPos, vecAng, ally);
 }
 
 methodmap Valiant < CClotBody
@@ -152,7 +163,6 @@ methodmap Valiant < CClotBody
 	{
 		Valiant npc = view_as<Valiant>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_VALIANT;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -520,7 +530,7 @@ static void Venium_Build_Anchor(Valiant npc)
 	//Retry.
 
 
-	int spawn_index = NPC_CreateById(RUINA_MAGIA_ANCHOR, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
+	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(spawn_index > MaxClients)
 	{
 		i_anchor_id[npc.index] = EntIndexToEntRef(spawn_index);

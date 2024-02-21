@@ -81,6 +81,17 @@ public void Theocracy_OnMapStart_NPC()
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheModel(LASERBEAM);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Theocracy");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_theocracy");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Theocracy(client, vecPos, vecAng, ally);
 }
 
 methodmap Theocracy < CClotBody
@@ -151,9 +162,6 @@ methodmap Theocracy < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		
-		i_NpcInternalId[npc.index] = RUINA_THEOCRACY;
 		
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;

@@ -53,6 +53,17 @@ void Malius_OnMapStart_NPC()
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheModel("models/player/engineer.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Malius");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_malius");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Malius(client, vecPos, vecAng, ally);
 }
 
 methodmap Malius < CClotBody
@@ -131,7 +142,6 @@ methodmap Malius < CClotBody
 	{
 		Malius npc = view_as<Malius>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_MALIUS;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

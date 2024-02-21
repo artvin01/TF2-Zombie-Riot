@@ -62,7 +62,19 @@ void Stella_OnMapStart_NPC()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/medic.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Stella");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_stella");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Stella(client, vecPos, vecAng, ally);
+}
+
 
 methodmap Stella < CClotBody
 {
@@ -149,7 +161,6 @@ methodmap Stella < CClotBody
 	{
 		Stella npc = view_as<Stella>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_STELLA;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

@@ -42,6 +42,17 @@ void Europa_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	PrecacheModel("models/player/pyro.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Europa");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_europa");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Europa(client, vecPos, vecAng, ally);
 }
 
 methodmap Europa < CClotBody
@@ -112,7 +123,6 @@ methodmap Europa < CClotBody
 	{
 		Europa npc = view_as<Europa>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_EUROPA;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -360,7 +370,7 @@ static void Europa_Spawn_Minnions(Europa npc)
 			
 			int spawn_index;
 			
-			spawn_index = NPC_CreateById(RUINA_DRONE, -1, pos, ang, GetTeam(npc.index));
+			spawn_index = NPC_CreateByName("npc_ruina_drone", npc.index, pos, ang, GetTeam(npc.index));
 			maxhealth = RoundToNearest(maxhealth * 0.45);
 
 			if(spawn_index > MaxClients)
@@ -384,7 +394,7 @@ static void Europa_Spawn_Self(Europa npc)
 			
 	int spawn_index;
 			
-	spawn_index = NPC_CreateById(RUINA_EUROPA, -1, pos, ang, GetTeam(npc.index));
+	spawn_index = NPC_CreateByName("npc_ruina_europa", npc.index, pos, ang, GetTeam(npc.index));
 	maxhealth = RoundToNearest(maxhealth * 0.75);
 
 	if(spawn_index > MaxClients)

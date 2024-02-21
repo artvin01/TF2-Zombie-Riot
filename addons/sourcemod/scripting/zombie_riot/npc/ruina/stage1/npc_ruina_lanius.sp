@@ -62,6 +62,17 @@ void Lanius_OnMapStart_NPC()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/scout.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Lanius");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_lanius");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Lanius(client, vecPos, vecAng, ally);
 }
 
 methodmap Lanius < CClotBody
@@ -149,7 +160,6 @@ methodmap Lanius < CClotBody
 	{
 		Lanius npc = view_as<Lanius>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_LANIUS;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

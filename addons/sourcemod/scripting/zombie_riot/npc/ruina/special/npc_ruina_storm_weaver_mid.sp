@@ -25,12 +25,22 @@ static int i_following_id[MAXENTITIES];
 
 void Ruina_Storm_Weaver_Mid_MapStart()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
 
 	PrecacheModel(RUINA_STORM_WEAVER_MODEL);
 
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Stellar Weaver");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_stellar_weaver_middle");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Storm_Weaver_Mid(client, vecPos, vecAng, ally , StringToFloat(data));
 }
 
 methodmap Storm_Weaver_Mid < CClotBody
@@ -70,7 +80,6 @@ methodmap Storm_Weaver_Mid < CClotBody
 	{
 		Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(CClotBody(vecPos, vecAng, RUINA_STORM_WEAVER_MODEL, RUINA_STORM_WEAVER_MODEL_SIZE, "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_STELLAR_WEAVER_MID;
 		i_NpcWeight[npc.index] = 999;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

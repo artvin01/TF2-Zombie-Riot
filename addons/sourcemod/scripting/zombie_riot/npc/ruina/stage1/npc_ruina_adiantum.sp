@@ -61,6 +61,16 @@ public void Adiantum_OnMapStart_NPC()
 	gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt");
 	
 	PrecacheSound("misc/halloween/gotohell.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Adiantum");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_adiantum");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Adiantum(client, vecPos, vecAng, ally);
 }
 
 
@@ -136,9 +146,8 @@ methodmap Adiantum < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		
-		i_NpcInternalId[npc.index] = RUINA_ADIANTUM;
+
+		i_NpcWeight[npc.index] = 2;
 		
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;

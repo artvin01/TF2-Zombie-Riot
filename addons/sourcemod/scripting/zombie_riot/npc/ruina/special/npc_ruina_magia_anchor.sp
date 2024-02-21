@@ -79,6 +79,8 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/draw_sword.wav",
 };
 
+bool b_is_magia_tower[MAXENTITIES];
+
 #define RUINA_TOWER_CORE_MODEL "models/props_urban/urban_skybuilding005a.mdl"
 #define RUINA_TOWER_CORE_MODEL_SIZE "0.75"
 #define RUINA_ANCHOR_MODEL	"models/props_combine/combine_citadel001.mdl"
@@ -100,6 +102,7 @@ static int i_heavens_target_id[MAGIA_ANCHOR_MAX_IONS+1];
 
 void Magia_Anchor_OnMapStart_NPC()
 {
+	Zero(b_is_magia_tower);
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -110,6 +113,17 @@ void Magia_Anchor_OnMapStart_NPC()
 	PrecacheModel(RUINA_ANCHOR_MODEL);
 	PrecacheModel(RUINA_TOWER_CORE_MODEL);
 	Heavens_Beam = PrecacheModel(BLITZLIGHT_SPRITE);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Magia Anchor");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_magia_anchor");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Magia_Anchor(client, vecPos, vecAng, ally);
 }
 methodmap Magia_Anchor < CClotBody
 {
@@ -172,12 +186,12 @@ methodmap Magia_Anchor < CClotBody
 	{
 		Magia_Anchor npc = view_as<Magia_Anchor>(CClotBody(vecPos, vecAng, RUINA_TOWER_CORE_MODEL, RUINA_TOWER_CORE_MODEL_SIZE, "10000", ally, false,true,_,_,{30.0,30.0,350.0}));
 		
-		i_NpcInternalId[npc.index] = RUINA_MAGIA_ANCHOR;
 		i_NpcWeight[npc.index] = 999;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
-		
+		b_is_magia_tower[npc.index]=true;
+
 		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", RUINA_ANCHOR_MODEL, _, _, _, 225.0);
 		SetVariantString(RUINA_ANCHOR_MODEL_SIZE);
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -361,12 +375,12 @@ static void Summon_Stellar_Weaver(Magia_Anchor npc)
 	
 	maxhealth = RoundToFloor(maxhealth*1.5);
 	float Npc_Loc[3]; Npc_Loc = GetAbsOriginOld(npc.index);
-	int spawn_index = Npc_Create(RUINA_STELLAR_WEAVER, -1, Npc_Loc, ang, GetTeam(npc.index));
+	int spawn_index = NPC_CreateByName("npc_ruina_stellar_weaver", npc.index, Npc_Loc, ang, GetTeam(npc.index));
 	if(spawn_index > MaxClients)
 	{
-		if(GetTeam(spawn_index) != TFTeam_Red)
+		if(GetTeam(npc.index) != TFTeam_Red)
 		{
-			Zombies_Currently_Still_Ongoing += 1;	// FIXME
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		}
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -399,6 +413,7 @@ static void NPC_Death(int entity)
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	makeexplosion(-1, -1, pos, "", 0, 0);
 
+	b_is_magia_tower[npc.index]=false;
 	i_magia_anchors_active--;
 
 	Ruina_NPCDeath_Override(entity);
