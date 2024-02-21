@@ -13,16 +13,10 @@ static const char MeleeAttackSounds[][] =
 	"weapons/shovel_swing.wav",
 };
 
-static const char MeleeMissSounds[][] =
-{
-	"weapons/cbar_miss1.wav",
-};
-
 void Militia_Setup()
 {
 	PrecacheSoundArray(MeleeHitSounds);
 	PrecacheSoundArray(MeleeAttackSounds);
-	PrecacheSoundArray(MeleeMissSounds);
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Militia");
@@ -45,10 +39,6 @@ methodmap Militia < EmpireBody
 	public void PlayMeleeHitSound()
 	{
 		EmitSoundToAll(MeleeHitSounds[GetRandomInt(0, sizeof(MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-	}
-	public void PlayMeleeMissSound()
-	{
-		EmitSoundToAll(MeleeMissSounds[GetRandomInt(0, sizeof(MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
 	public Militia(int team, const float vecPos[3], const float vecAng[3])

@@ -120,9 +120,9 @@ methodmap UnitBody < CClotBody
 		Stats[this.index] = stats;
 	}
 
-	public void AddCommand(bool override, int type, const float pos[3], int target = -1)
+	public void AddCommand(int method, int type, const float pos[3], int target = -1)
 	{
-		if(override)
+		if(method == 1)
 		{
 			delete CommandList[this.index];
 			this.m_flGetClosestTargetTime = 0.0;
@@ -134,9 +134,17 @@ methodmap UnitBody < CClotBody
 		if(!CommandList[this.index])
 			CommandList[this.index] = new ArrayList(sizeof(CommandEnum));
 		
-		CommandList[this.index].PushArray(command);
+		if(method == 2 && CommandList[this.index].Length)
+		{
+			CommandList[this.index].ShiftUp(0);
+			CommandList[this.index].SetArray(0, command);
+		}
+		else
+		{
+			CommandList[this.index].PushArray(command);
+		}
 
-		if(override && type == Command_Patrol)
+		if(method == 1 && type == Command_Patrol)
 		{
 			// Keep our current position when starting a patrol
 			command.TargetRef = -1;
@@ -226,7 +234,7 @@ static void SetupCommand(UnitBody npc, CommandEnum command, int type, const floa
 			if(npc.HasFlag(Flag_Worker))
 			{
 				command.Type = Command_WorkOn;
-				command.Data = view_as<UnitObject>(target).m_iResourceType;
+				command.Data = Object_GetResource(target);
 			}
 			else
 			{
@@ -255,9 +263,9 @@ bool UnitBody_HasFlag(int entity, int flag)
 	return view_as<UnitBody>(entity).HasFlag(flag);
 }
 
-void UnitBody_AddCommand(int entity, bool override, int type, const float pos[3], int target = -1)
+void UnitBody_AddCommand(int entity, int method, int type, const float pos[3], int target = -1)
 {
-	view_as<UnitBody>(entity).AddCommand(override, type, pos, target);
+	view_as<UnitBody>(entity).AddCommand(method, type, pos, target);
 }
 
 bool UnitBody_GetCommand(int entity, int i, int &type, float pos[3], int &target)
@@ -400,7 +408,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime, Function closestTargetFun
 			GetAbsOrigin(npc.index, command.Pos);
 			command.TargetRef = -1;
 
-			npc.AddCommand(false, command.Type, command.Pos, command.TargetRef);
+			npc.AddCommand(0, command.Type, command.Pos, command.TargetRef);
 		}
 		
 		bool foundTarget;
@@ -512,7 +520,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime, Function closestTargetFun
 
 static bool ResourceSearchFunction(int entity, int target)
 {
-	return (IsObject(target) && view_as<UnitObject>(target).m_iResourceType == ResourceSearch);
+	return (IsObject(target) && Object_GetResource(target) == ResourceSearch);
 }
 
 // Make sure to call UnitBody_ThinkTarget before this
