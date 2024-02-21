@@ -126,7 +126,7 @@ static void ClotThink(int entity)
 
 			if(IsObject(target) && Object_GetResource(target))
 			{
-				SDKHooks_TakeDamage(target, this.index, this.index, 1.0, DMG_CLUB, _, _, vecTarget);
+				SDKHooks_TakeDamage(target, npc.index, npc.index, 1.0, DMG_CLUB, _, _, vecTarget);
 				npc.PlayMeleeCollectSound();
 				harvesting = true;
 			}
