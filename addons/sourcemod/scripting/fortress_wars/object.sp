@@ -297,6 +297,11 @@ static bool ObjectDeath(int entity, bool delet)
 	return true;
 }
 
+int Object_GetResource(int entity)
+{
+	return view_as<UnitObject>(entity).m_iResourceType;
+}
+
 bool IsObject(int entity)
 {
 	return IsThisObject[entity];

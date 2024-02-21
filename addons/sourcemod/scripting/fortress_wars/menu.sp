@@ -87,7 +87,7 @@ void RTSMenu_PlayerRunCmd(int client)
 
 					if(IsObject(entity))
 					{
-						Format(display, sizeof(display), "%s\n%t", display, "Resource Of", ResourceName[GetEntProp(entity, Prop_Data, "m_iResourceType")]);
+						Format(display, sizeof(display), "%s\n%t", display, "Resource Of", ResourceName[Object_GetResource(entity)]);
 					}
 					else
 					{

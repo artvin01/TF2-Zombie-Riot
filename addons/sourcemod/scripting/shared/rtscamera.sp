@@ -1414,7 +1414,7 @@ static stock void MoveSelectedUnits(int client, const float vecMovePos[3], int t
 					if(type < Command_Move)
 						type = Command_Move;
 					
-					UnitBody_AddCommand(entity, !HoldPress[client][Key_Ctrl], type, vecMovePos, target);
+					UnitBody_AddCommand(entity, HoldPress[client][Key_Ctrl] ? 0 : 1, type, vecMovePos, target);
 
 					if(!success)
 						UnitBody_PlaySound(entity, client, Sound_Move);
