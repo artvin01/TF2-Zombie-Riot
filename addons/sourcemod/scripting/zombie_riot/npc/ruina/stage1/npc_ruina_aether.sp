@@ -38,13 +38,25 @@ static const char g_RangedReloadSound[][] = {
 
 void Aether_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheSoundArray(g_RangedReloadSound);
+
 	PrecacheModel("models/player/sniper.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Aether");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_aether");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Aether(client, vecPos, vecAng, ally);
 }
 
 methodmap Aether < CClotBody
@@ -115,8 +127,7 @@ methodmap Aether < CClotBody
 	public Aether(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Aether npc = view_as<Aether>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "1250", ally));
-		
-		i_NpcInternalId[npc.index] = RUINA_AETHER;
+
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -270,11 +281,13 @@ static void ClotThink(int iNPC)
 				{
 					if(flDistanceToTarget < (750.0*750.0))
 					{
+						npc.m_bAllowBackWalking=true;
 						Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
 					}
 					else
 					{
 						NPC_StopPathing(npc.index);
+						npc.m_bAllowBackWalking=false;
 						npc.m_bPathing = false;
 					}
 				}
@@ -282,13 +295,19 @@ static void ClotThink(int iNPC)
 				{
 					npc.StartPathing();
 					npc.m_bPathing = true;
+					npc.m_bAllowBackWalking=false;
 				}
 			}
 			else
 			{
 				npc.StartPathing();
 				npc.m_bPathing = true;
+				npc.m_bAllowBackWalking=false;
 			}
+		}
+		else
+		{
+			npc.m_bAllowBackWalking=false;
 		}
 		
 		Aether_SelfDefense(npc, GameTime, Anchor_Id);

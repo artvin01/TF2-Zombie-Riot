@@ -13,13 +13,12 @@ static bool b_npc_low_health[MAXENTITIES];
 static bool b_npc_no_retreat[MAXENTITIES];
 static bool b_npc_healer[MAXENTITIES];	//warp
 static float fl_npc_healing_duration[MAXENTITIES];
-static bool b_block_recall[MAXENTITIES];
 
 static bool b_npc_sniper_anchor_point[MAXENTITIES];
 static float fl_npc_sniper_anchor_find_timer[MAXENTITIES];
-static bool b_recall_achor[MAXENTITIES];
 static int i_last_sniper_anchor_id_Ref[MAXENTITIES];
 
+static int g_rocket_particle;
 static char gLaser1;
 static int BeamWand_Laser;
 //static char gGlow1;	//blue
@@ -27,6 +26,7 @@ static int BeamWand_Laser;
 float fl_rally_timer[MAXENTITIES];
 bool b_rally_active[MAXENTITIES];
 
+static bool b_is_battery_buffed[MAXENTITIES];
 float fl_ruina_battery[MAXENTITIES];
 bool b_ruina_battery_ability_active[MAXENTITIES];
 float fl_ruina_battery_timer[MAXENTITIES];
@@ -41,8 +41,6 @@ static float fl_mana_sickness_timeout[MAXTF2PLAYERS];
 
 float fl_ruina_in_combat_timer[MAXENTITIES];
 static float fl_ruina_internal_teleport_timer[MAXENTITIES];
-static int i_recall_entity_ref[MAXENTITIES];
-static bool b_ruina_recall_teleport[MAXENTITIES];
 static bool b_ruina_allow_teleport[MAXENTITIES];
 #define RUINA_ASTRIA_TELEPORT_SOUND "misc/halloween_eyeball/book_spawn.wav"
 
@@ -52,6 +50,7 @@ static float fl_ruina_shield_timer[MAXENTITIES];
 static bool b_ruina_shield_active[MAXENTITIES];
 static int i_shield_effect[MAXENTITIES];
 static float fl_shield_break_timeout[MAXENTITIES];
+static int i_shield_color[3] = {0, 150, 255};
 
 //these scales on wavecount
 #define RUINA_NORMAL_NPC_MAX_SHIELD 175.0
@@ -87,6 +86,8 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 #define RUINA_ION_CANNON_SOUND_PASSIVE "ambient/energy/weld1.wav"
 #define RUINA_ION_CANNON_SOUND_PASSIVE_CHARGING "weapons/physcannon/physcannon_charge.wav"
 
+static bool Ruina_Core_BEAM_HitDetected[MAXENTITIES];
+
 enum
 {
 	RUINA_MELEE_NPC = 1,
@@ -100,7 +101,8 @@ enum
 	RUINA_ATTACK_BUFF = 3,
 	RUINA_SHIELD_BUFF = 4,
 	RUINA_TELEPORT_BUFF = 5,
-	RUINA_HEALING_BUFF = 6
+	RUINA_HEALING_BUFF = 6,
+	RUINA_BATTERY_BUFF = 7
 }
 
 public void Ruina_Ai_Core_Mapstart()
@@ -140,16 +142,15 @@ public void Ruina_Ai_Core_Mapstart()
 
 	Zero(fl_ruina_internal_teleport_timer);
 	Zero(b_ruina_allow_teleport);
-	Zero(b_ruina_recall_teleport);
-	Zero(i_recall_entity_ref);
 
 	Zero(b_npc_sniper_anchor_point);
 	Zero(fl_npc_sniper_anchor_find_timer);
 	Zero(i_last_sniper_anchor_id_Ref);
-	Zero(b_recall_achor);
 	Zero(fl_ruina_in_combat_timer);
 
 	Zero(fl_mana_sickness_timeout);
+	Zero(b_is_battery_buffed);
+	Zero(Ruina_Core_BEAM_HitDetected);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -163,6 +164,8 @@ public void Ruina_Ai_Core_Mapstart()
 	PrecacheSound(RUINA_ASTRIA_TELEPORT_SOUND);
 
 	PrecacheModel(RUINA_POINT_MODEL);
+
+	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
 
 	i_magia_anchors_active=0;
 	
@@ -181,23 +184,16 @@ public void Ruina_Set_Heirarchy(int client, int type)
 	fl_npc_healing_duration[client] = 0.0;
 	b_npc_sniper_anchor_point[client]=false;
 	i_last_sniper_anchor_id_Ref[client]=-1;
-	i_recall_entity_ref[client]=-1;
-	b_recall_achor[client]=false;
-	b_block_recall[client]=false;
-	b_ruina_recall_teleport[client]=true;
 	fl_ruina_in_combat_timer[client]=0.0;
+	b_is_battery_buffed[client]=false;
 
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_iTarget=-1;	//set its target as invalid on spawn
 	
 }
-public void Ruina_Set_Recall_Status(int client, bool state)
+public void Ruina_Set_Battery_Buffer(int client, bool state)
 {
-	b_block_recall[client]=state;
-}
-public void Ruina_Set_Recall_Anchor_Point(int client, bool state)
-{
-	b_recall_achor[client]=state;
+	b_is_battery_buffed[client]=state;
 }
 public void Ruina_Set_Sniper_Anchor_Point(int client, bool state)
 {
@@ -229,8 +225,6 @@ public void Ruina_Set_Master_Heirarchy(int client, int type, bool accepting, int
 	i_master_attracts[client] = type;
 
 	b_ruina_allow_teleport[client]=false;
-
-	b_ruina_recall_teleport[client]=true;
 }
 
 public void Ruina_Master_Release_Slaves(int client)
@@ -296,17 +290,17 @@ static void Ruina_Npc_Shield_Logic(int victim, float &damage, float damageForce[
 			}
 			damage -= damage*fl_ruina_shield_strenght[victim];
 			b_ruina_shield_active[victim] = true;
-			damageForce[0] -= damageForce[0]*fl_ruina_shield_strenght[victim];	//also remove kb dependant on strenght
-			damageForce[1] -= damageForce[1]*fl_ruina_shield_strenght[victim];
-			damageForce[2] -= damageForce[2]*fl_ruina_shield_strenght[victim];
+			damageForce[0] = damageForce[0]*fl_ruina_shield_strenght[victim];	//also remove kb dependant on strenght
+			damageForce[1] = damageForce[1]*fl_ruina_shield_strenght[victim];
+			damageForce[2] = damageForce[2]*fl_ruina_shield_strenght[victim];
 			
 			
 		}
-		else	//if not, remove shield, deal the remaining damage 
+		else	//if not, remove shield
 		{
-			damage = fl_ruina_shield_power[victim] * -1.0;
 			fl_ruina_shield_power[victim] = 0.0;
 			b_ruina_shield_active[victim] = false;
+			Ruina_Remove_Shield(victim);
 		}
 	}
 	else
@@ -350,7 +344,7 @@ static void Ruina_Update_Shield(int client)
 	if(IsValidEntity(i_shield_entity))
 	{
 		SetEntityRenderMode(i_shield_entity, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(i_shield_entity, 255, 255, 255, alpha);
+		SetEntityRenderColor(i_shield_entity, i_shield_color[0], i_shield_color[1], i_shield_color[2], alpha);
 		return;
 	}
 	else
@@ -371,7 +365,7 @@ static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from 
 	AcceptEntityInput(Shield, "SetModelScale");
 	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 	
-	SetEntityRenderColor(Shield, 255, 255, 255, alpha);
+	SetEntityRenderColor(Shield, i_shield_color[0], i_shield_color[1], i_shield_color[2], alpha);
 	SetEntProp(Shield, Prop_Send, "m_nSkin", 0);
 
 	i_shield_effect[client] = EntIndexToEntRef(Shield);
@@ -455,51 +449,6 @@ static int GetClosestAnchor(int client)
 		}
 	}
 	return valid;
-}
-static int GetClosestRecall(int iNPC, int Target)
-{
-	CClotBody main = view_as<CClotBody>(iNPC);
-	int valid = -1;
-	int Valid_Secondary=-1;
-	float Npc_Vec[3]; Npc_Vec=GetAbsOriginOld(main.index);
-	for(int targ; targ<i_MaxcountNpcTotal; targ++)
-	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
-		float dist = 99999999.9;
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_recall_achor[baseboss_index] && GetTeam(iNPC) == GetTeam(baseboss_index))
-		{
-			CClotBody npc = view_as<CClotBody>(baseboss_index);
-			if(npc.m_iTarget==Target)
-			{
-				float Main_Range = main.GetPathFollower().GetLength();	//the npc's range to its target
-				float Other_Range = npc.GetPathFollower().GetLength();	//the anchors range to the same target
-				if(Other_Range <= Main_Range)
-				{
-					return baseboss_index;
-				}
-				else
-				{
-					Valid_Secondary=baseboss_index;
-				}
-				
-			}
-			else
-			{
-				float target_vec[3]; target_vec = GetAbsOriginOld(baseboss_index);
-				float Distance=GetVectorDistance(Npc_Vec, target_vec, true);
-				if(dist>Distance)
-				{
-					valid = baseboss_index;
-				}
-			}
-		}
-	}
-	if(IsValidEntity(Valid_Secondary))
-	{
-		return Valid_Secondary;
-	}
-	else
-		return valid;
 }
 static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime)
 {
@@ -915,65 +864,304 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 		npc.StartPathing();
 	}
 }
-public void Ruina_Generic_Melee_Self_Defense(int iNPC, int target, float distance, float range, float damage, float bonus_damage, const char[] attack_anim, float swing_speed, float swing_delay, float turn_speed, float gameTime, int &status)
+static Function func_Ruina_ICBM_Explode[MAXENTITIES];
+static float fl_ICBM_dmg[MAXENTITIES];
+static float fl_ICBM_radius[MAXENTITIES];
+static float fl_ICBM_bonus_dmg[MAXENTITIES];
+
+/*
+	Ruina_Launch_ICBM ICBM;
+
+					ICBM.iNPC = npc.index;
+					ICBM.Start_Loc = flPos;
+					float Ang[3];
+					MakeVectorFromPoints(flPos, target_vec, Ang);
+					GetVectorAngles(Ang, Ang);
+					ICBM.Angles = Ang;
+					ICBM.speed = 1000.0;
+					ICBM.radius = 250.0;
+					ICBM.damage = 500.0;
+					ICBM.bonus_dmg = 2.5;
+					ICBM.Level = 1;
+					ICBM.Time = 10.0;
+					ICBM.Launch_ICBM(Func_On_ICBM_Boom);
+
+	static void Func_On_ICBM_Boom(int projectile, float damage, float radius, float Loc[3])
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	CPrintToChatAll("Kaboom!");
+}
+*/
 
-	if(npc.m_flAttackHappens)
-	{
-		if(npc.m_flAttackHappens < gameTime)
+#define RUINA_ICBM_PARTICLE_AMT 10
+#define RUINA_ICBM_ENV_LASER_AMT 10
+static int i_ICBM_Particles[MAXENTITIES][RUINA_ICBM_PARTICLE_AMT];
+static int i_ICBM_Env_Lasers[MAXENTITIES][RUINA_ICBM_ENV_LASER_AMT];
+enum struct Ruina_Launch_ICBM
+{
+	int iNPC;
+	float Start_Loc[3];
+	float Angles[3];
+	float speed;
+	float radius;
+	float damage;
+	float bonus_dmg;
+	int Level;
+	float Time;
+	int Launch_ICBM(Function OnAttack = INVALID_FUNCTION)
+	{	
+		float vecForward[3];
+		vecForward[0] = Cosine(DegToRad(this.Angles[0]))*Cosine(DegToRad(this.Angles[1]))*this.speed;
+		vecForward[1] = Cosine(DegToRad(this.Angles[0]))*Sine(DegToRad(this.Angles[1]))*this.speed;
+		vecForward[2] = Sine(DegToRad(this.Angles[0]))*-this.speed;
+
+		int entity = CreateEntityByName("zr_projectile_base");
+		if(IsValidEntity(entity))
 		{
-			npc.m_flAttackHappens = 0.0;
-			
-			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(target), turn_speed);
-			if(npc.DoSwingTrace(swingTrace, target)) 
+			if(OnAttack && OnAttack != INVALID_FUNCTION)
 			{
-							
-				int new_target = TR_GetEntityIndex(swingTrace);	
-				
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-				
-				if(IsValidEnemy(npc.index, new_target))
-				{
-					if(!ShouldNpcDealBonusDamage(new_target))
-					{
-						SDKHooks_TakeDamage(new_target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-					}
-					else
-						SDKHooks_TakeDamage(new_target, npc.index, npc.index, bonus_damage, DMG_CLUB, -1, _, vecHit);
-
-					status=2;
-				} 
-				else
-				{
-					status=3;
-				}
+				func_Ruina_ICBM_Explode[entity] = OnAttack;
 			}
-			delete swingTrace;
+			else
+			{
+				func_Ruina_ICBM_Explode[entity] = INVALID_FUNCTION;
+			}
+			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+
+			fl_ICBM_dmg[entity] = this.damage;
+			fl_ICBM_radius[entity] = this.radius;
+			fl_ICBM_bonus_dmg[entity] = this.bonus_dmg;
+			
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.iNPC);
+			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
+			SetTeam(entity, GetTeam(this.iNPC));
+			
+			TeleportEntity(entity, this.Start_Loc, this.Angles, NULL_VECTOR, true);
+			DispatchSpawn(entity);
+			for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
+			{
+				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_rocket_particle, _, i);
+			}
+			SetEntityModel(entity, PARTICLE_ROCKET_MODEL);
+	
+			//Make it entirely invis. Shouldnt even render these 8 polygons.
+			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+
+			SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+			SetEntityRenderColor(entity, 255, 255, 255, 0);
+
+			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
+			SetEntityCollisionGroup(entity, 24); //our savior
+			Set_Projectile_Collision(entity); //If red, set to 27
+			
+			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Ruina_RocketExplodePre);
+		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			SDKHook(entity, SDKHook_StartTouch, Ruina_ICBM_StartTouch);
+
+			this.Create_ICBM_Visuals(entity);
+
+			if(this.Time>0.0)
+			{
+				CreateTimer(this.Time, Ruina_Remove_ICBM_Timer, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			}
+			return entity;
+		}
+		return -1;
+	}
+	void Create_ICBM_Visuals(int entity)
+	{
+		float flAng[3];
+		flAng = this.Angles;
+
+		flAng[1]-=90.0;
+		flAng[2]=flAng[0]; flAng[0]=0.0;
+		flAng[2] *=-1;
+		switch(this.Level)
+		{
+			case 1:
+			{
+				Ruina_ICBM_Apply_Level_1_Visuals(entity, flAng);
+			}
 		}
 	}
-
-	if(gameTime > npc.m_flNextMeleeAttack)
+}
+public void Ruina_Delete_ICBM_Visuals(int entity)
+{
+	for(int loop = 0; loop<RUINA_ICBM_PARTICLE_AMT; loop++)
 	{
-		if(distance < range)
+		int particle = EntRefToEntIndex(i_ICBM_Particles[entity][loop]);
+		if(IsValidEntity(particle))
 		{
-			int Enemy_I_See;
-								
-			Enemy_I_See = Can_I_See_Enemy(npc.index, target);
-					
-			if(IsValidEnemy(npc.index, Enemy_I_See))
-			{
-				status=1;
-				npc.AddGesture(attack_anim);
+			RemoveEntity(particle);
+		}
+		i_ICBM_Particles[entity][loop] = INVALID_ENT_REFERENCE;
+	}
+	for(int loop = 0; loop<RUINA_ICBM_ENV_LASER_AMT; loop++)
+	{
+		int laser = EntRefToEntIndex(i_ICBM_Env_Lasers[entity][loop]);
+		if(IsValidEntity(laser))
+		{
+			RemoveEntity(laser);
+		}
+		i_ICBM_Env_Lasers[entity][loop] = INVALID_ENT_REFERENCE;
+	}
+}
+public void Ruina_ICBM_StartTouch(int entity, int target)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+	{
+		owner = 0;
+	}
+		
+	float ProjectileLoc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 
-				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
-						
-				npc.m_flAttackHappens = gameTime + swing_delay;
-				npc.m_flNextMeleeAttack = gameTime + swing_speed;
+	Explode_Logic_Custom(fl_ICBM_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ICBM_radius[entity] , _ , _ , true, _,_, fl_ICBM_bonus_dmg[entity]);
+
+	Function func = func_Ruina_ICBM_Explode[entity];
+
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(entity);
+		Call_PushFloat(fl_ICBM_dmg[entity]);
+		Call_PushFloat(fl_ICBM_radius[entity]);
+		Call_PushArrayEx(ProjectileLoc, sizeof(ProjectileLoc), SM_PARAM_COPYBACK);
+		Call_Finish();
+	}
+	Ruina_Delete_ICBM_Visuals(entity);
+	RemoveEntity(entity);
+}
+static Action Ruina_Remove_ICBM_Timer(Handle Timer, int Ref)
+{
+	int ICBM = EntRefToEntIndex(Ref);
+	if(IsValidEntity(ICBM))
+	{
+		Ruina_Delete_ICBM_Visuals(ICBM);
+		RemoveEntity(ICBM);
+	}
+	return Plugin_Stop;
+}
+public MRESReturn Ruina_RocketExplodePre(int entity)
+{
+	return MRES_Supercede;	//Don't even think about it mate
+}
+enum struct Ruina_Self_Defense
+{
+	int iNPC;
+	int target;
+	float fl_distance_to_target;
+	float range;
+	float damage;
+	float bonus_dmg;
+	char attack_anim[255];
+	float swing_speed;
+	float swing_delay;
+	float turn_speed;
+	float gameTime;
+	int status;
+
+	void Swing_Melee(Function OnAttack = INVALID_FUNCTION)
+	{
+		CClotBody npc = view_as<CClotBody>(this.iNPC);
+
+		if(npc.m_flAttackHappens)
+		{
+			if(npc.m_flAttackHappens < this.gameTime)
+			{
+				npc.m_flAttackHappens = 0.0;
+				
+				Handle swingTrace;
+				npc.FaceTowards(WorldSpaceCenterOld(this.target), this.turn_speed);
+				if(npc.DoSwingTrace(swingTrace, this.target)) 
+				{				
+					int new_target = TR_GetEntityIndex(swingTrace);	
+					
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					
+					if(IsValidEnemy(npc.index, new_target))
+					{
+						if(!ShouldNpcDealBonusDamage(new_target))
+						{
+							SDKHooks_TakeDamage(new_target, npc.index, npc.index, this.damage, DMG_CLUB, -1, _, vecHit);
+						}
+						else
+							SDKHooks_TakeDamage(new_target, npc.index, npc.index, this.bonus_dmg, DMG_CLUB, -1, _, vecHit);
+
+						this.status=2;
+
+						if(OnAttack && OnAttack!=INVALID_FUNCTION)
+						{
+							Call_StartFunction(null, OnAttack);
+							Call_PushCell(npc.index);
+							Call_PushCell(new_target);
+							Call_Finish();
+						}
+					} 
+					else
+					{
+						this.status=3;
+					}
+				}
+				delete swingTrace;
 			}
 		}
+
+		if(this.gameTime > npc.m_flNextMeleeAttack)
+		{
+			if(this.fl_distance_to_target < this.range)
+			{
+				int Enemy_I_See;
+									
+				Enemy_I_See = Can_I_See_Enemy(npc.index, this.target);
+						
+				if(IsValidEnemy(npc.index, Enemy_I_See))
+				{
+					this.status=1;
+					if(this.attack_anim[0])
+						npc.AddGesture(this.attack_anim);
+
+					fl_ruina_in_combat_timer[npc.index]=this.gameTime+5.0;
+							
+					npc.m_flAttackHappens = this.gameTime + this.swing_delay;
+					npc.m_flNextMeleeAttack = this.gameTime + this.swing_speed;
+				}
+			}
+		}
+	}
+}
+
+static float fl_mana_sickness_multi[MAXENTITIES];
+static int i_mana_sickness_flat[MAXENTITIES];
+stock void Ruina_AOE_Add_Mana_Sickness(float Loc[3], int iNPC, float range, float Multi, int flat_amt=0)
+{
+	fl_mana_sickness_multi[iNPC] = Multi;
+	i_mana_sickness_flat[iNPC] = flat_amt;
+	Explode_Logic_Custom(0.0, iNPC, iNPC, -1, Loc, range, _, _, true, 99, false, _, Ruina_Apply_Mana_Debuff);
+}
+public void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
+{
+	if(!IsValidClient(victim))
+		return;
+
+	if(GetTeam(victim) != TFTeam_Red)
+		return;
+
+	float GameTime = GetGameTime();
+	
+	if(fl_mana_sickness_timeout[victim] > GameTime)
+		return;
+		
+	float Multi = fl_mana_sickness_multi[entity];
+	int flat_amt = i_mana_sickness_flat[entity];
+	float OverMana_Ratio = Current_Mana[victim]/max_mana[victim];
+
+	Current_Mana[victim] += RoundToCeil(max_mana[victim]*Multi+flat_amt);
+
+	if(OverMana_Ratio>2.1)
+	{
+		Apply_Sickness(entity, victim);
 	}
 }
 stock void Ruina_Add_Mana_Sickness(int iNPC, int Target, float Multi, int flat_amt=0)
@@ -991,13 +1179,59 @@ stock void Ruina_Add_Mana_Sickness(int iNPC, int Target, float Multi, int flat_a
 
 		if(OverMana_Ratio>2.1)
 		{
-			CPrintToChatAll("Player: %N got nuked due to overmana", Target);
-			Current_Mana[Target] = 0;
-			Mana_Regen_Delay[Target] = GameTime + 2.0;
-			Mana_Regen_Delay_Aggreviated[Target] = GameTime + 2.0;
-			fl_mana_sickness_timeout[Target] = GameTime + 2.0;
+			Apply_Sickness(iNPC, Target);
 		}
 	}
+}
+static void Apply_Sickness(int iNPC, int Target)
+{
+	CPrintToChatAll("Player: %N got nuked due to overmana", Target);
+	Current_Mana[Target] = 0;
+	float GameTime = GetGameTime();
+	
+
+	int wave = ZR_GetWaveCount()+1;
+
+	float dmg = 250.0;
+	float time = 2.5;
+
+	float mana = max_mana[Target];
+
+	if(mana <=400.0)
+		mana=400.0;
+
+	if(wave<=15)
+	{
+		dmg =mana;	//evil.
+		time = 2.5;
+	}
+	else if(wave<=30)
+	{
+		dmg = mana*1.25;
+		time = 4.5;
+	}
+	else if(wave<=45)
+	{
+		dmg = mana*1.5;
+		time = 6.5;
+	}
+	else
+	{
+		dmg = mana*2.0;
+		time = 9.0;
+	}
+
+	fl_mana_sickness_timeout[Target] = GameTime + time;
+
+	Mana_Regen_Delay[Target] = GameTime + time;
+	Mana_Regen_Block_Timer[Target] = GameTime + time;
+
+	TF2_StunPlayer(Target, time, 0.9, TF_STUNFLAG_SLOWDOWN);	//hefty slow	
+
+	bool sawrunner = b_ThisNpcIsSawrunner[iNPC];
+	b_ThisNpcIsSawrunner[iNPC] = true;
+	SDKHooks_TakeDamage(Target, iNPC, iNPC, dmg, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+	b_ThisNpcIsSawrunner[iNPC] = sawrunner;
 }
 public void Ruina_Add_Battery(int iNPC, float Amt)
 {
@@ -1024,6 +1258,10 @@ public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 			vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
 			NPC_SetGoalVector(npc.index, vBackoffPos, true);
 			
+		}
+		else
+		{
+			npc.m_bAllowBackWalking=false;
 		}
 	}
 	else	//no?
@@ -1094,77 +1332,6 @@ public void Astria_Teleport_Allies(int iNPC, float Range, int colour[4])
 	spawnRing_Vectors(npc_Loc, Range*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", colour[0], colour[1], colour[2], colour[3], 1, 0.5, 6.0, 0.1, 1, 1.0);
 
 	Apply_Master_Buff(npc.index, RUINA_TELEPORT_BUFF, Range, 0.0, 0.0);
-}
-static void Recall_Teleportation(int iNPC, int Target)
-{
-	CClotBody npc = view_as<CClotBody>(iNPC);
-
-	float GameTime = GetGameTime(npc.index);
-
-	if(fl_ruina_in_combat_timer[npc.index] > GameTime)
-	{
-		b_ruina_recall_teleport[npc.index]=false;
-		return;
-	}
-
-	if(fl_ruina_internal_teleport_timer[npc.index]>GameTime || NpcStats_IsEnemySilenced(npc.index))
-	{
-		return;
-	}
-
-	fl_ruina_internal_teleport_timer[npc.index]=GameTime + RUINA_INTERNAL_TELEPORT_COOLDOWN*0.5;
-
-	int anchor = EntRefToEntIndex(i_recall_entity_ref[npc.index]);
-	if(!IsValidEntity(anchor))
-	{
-		anchor = GetClosestRecall(npc.index,Target);
-		if(!IsValidEntity(anchor))
-		{
-			b_ruina_recall_teleport[npc.index]=false;
-			return;	//we failed, giveup!
-		}
-	}
-	float vPredictedPos[3]; 
-
-	vPredictedPos = WorldSpaceCenterOld(anchor);	//teleport ontop of their heads :trolley:
-	vPredictedPos[2]+=100.0;
-
-	float Loc[3];
-	Loc = GetAbsOriginOld(npc.index);
-	Loc[2]+=75.0;
-
-	float start_offset[3], end_offset[3];
-	start_offset = WorldSpaceCenterOld(npc.index);
-
-	bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
-	if(Succeed)
-	{	
-		EmitSoundToAll(RUINA_ASTRIA_TELEPORT_SOUND, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
-		b_ruina_recall_teleport[npc.index]=false;
-		float npc_Loc[3]; npc_Loc = GetAbsOriginOld(npc.index); npc_Loc[2]+=10.0;
-		spawnRing_Vectors(npc_Loc, 2.0*250.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, 0.5, 6.0, 0.1, 1, 1.0);
-		int entity = Ruina_Create_Entity_Spesific(Loc, _ , 2.45);
-		if(IsValidEntity(entity))
-		{
-			Ruina_AttachParticle(entity, "spell_cast_wheel_blue", 2.4, "nozzle");
-			//Ruina_Move_Entity(entity, Loc, 5.0);
-		}
-		float effect_duration = 0.25;
-	
-		end_offset = vPredictedPos;
-							
-		start_offset[2]-= 25.0;
-		end_offset[2] -= 25.0;
-							
-		for(int help=1 ; help<=8 ; help++)
-		{	
-			Astria_Teleport_Effect(RUINA_BALL_PARTICLE_RED, effect_duration, start_offset, end_offset);
-							
-			start_offset[2] += 12.5;
-			end_offset[2] += 12.5;
-		}
-	}
 }
 static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 {
@@ -1250,69 +1417,6 @@ static void Astria_Teleport_Effect(char type[255], float duration = 0.0, float s
 		pack.WriteCell(duration);
 	}
 }
-public void Warp_Non_Combat_Npcs_Near(int iNPC, int type, int Target)
-{
-	CClotBody npc = view_as<CClotBody>(iNPC);
-
-	if(NpcStats_IsEnemySilenced(npc.index))
-		return;
-
-	float pos1[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-	for(int targ; targ<i_MaxcountNpcTotal; targ++)
-	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(iNPC) == GetTeam(baseboss_index))
-		{
-			if(!b_block_recall[baseboss_index])
-			{
-				if(baseboss_index!=npc.index)
-				{
-					if(i_npc_type[baseboss_index]==type || type==RUINA_GLOBAL_NPC)	//same type of npc, or a global type
-					{
-						if(GetTeam(baseboss_index) == GetTeam(npc.index) && IsEntityAlive(baseboss_index))
-						{
-							CClotBody npc2 = view_as<CClotBody>(baseboss_index);
-							int PrimrayThreatIndex = npc2.m_iTarget;
-							if(PrimrayThreatIndex==Target)
-							{
-								float Main_Range = npc.GetPathFollower().GetLength();	//the anchors range to the target
-								float Other_Range = npc2.GetPathFollower().GetLength();	//the npc's range to the same target
-								if(Main_Range <= Other_Range)
-								{
-									b_ruina_recall_teleport[npc2.index]=true;
-									i_recall_entity_ref[npc2.index]=EntIndexToEntRef(npc.index);
-								}
-							}
-							else
-							{
-								
-								if(IsValidEnemy(npc2.index, PrimrayThreatIndex))
-								{
-									float Main_Range = npc2.GetPathFollower().GetLength();	//the npc's range to the target
-									Main_Range*=Main_Range;
-									float Loc[3]; Loc = WorldSpaceCenterOld(npc.index);
-									float npc_Loc[3]; npc_Loc = WorldSpaceCenterOld(npc2.index);
-									float Dist = GetVectorDistance(Loc, npc_Loc, true);
-									if(Dist < Main_Range*0.75)
-									{	
-										b_ruina_recall_teleport[npc2.index]=true;
-										i_recall_entity_ref[npc2.index]=EntIndexToEntRef(npc.index);
-									}
-								}
-								else
-								{
-									b_ruina_recall_teleport[npc2.index]=true;
-									i_recall_entity_ref[npc2.index]=EntIndexToEntRef(npc.index);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
 public void Master_Apply_Defense_Buff(int client, float range, float time, float power)
 {
 	Apply_Master_Buff(client, RUINA_DEFENSE_BUFF, range, time, power);
@@ -1320,7 +1424,7 @@ public void Master_Apply_Defense_Buff(int client, float range, float time, float
 
 public void Master_Apply_Speed_Buff(int client, float range, float time, float power)
 {
-	Apply_Master_Buff(client, RUINA_DEFENSE_BUFF, range, time, power);
+	Apply_Master_Buff(client, RUINA_SPEED_BUFF, range, time, power);
 }
 
 public void Master_Apply_Attack_Buff(int client, float range, float time, float power)
@@ -1332,16 +1436,15 @@ public void Master_Apply_Shield_Buff(int client, float range, float power)
 {
 	Apply_Master_Buff(client, RUINA_SHIELD_BUFF, range, 0.0, power);
 }
+public void Master_Apply_Battery_Buff(int client, float range, float power)
+{
+	Apply_Master_Buff(client, RUINA_BATTERY_BUFF, range, 0.0, power);
+}
 static void Ruina_Special_Logic(int iNPC, int Target)
 {
 	if(b_ruina_allow_teleport[iNPC])
 	{
 		Astria_Teleportation(iNPC, Target);
-		return;
-	}
-	if(b_ruina_recall_teleport[iNPC])
-	{
-		Recall_Teleportation(iNPC, Target);
 		return;
 	}
 }
@@ -1405,7 +1508,27 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Teleport_Buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
+		case RUINA_BATTERY_BUFF:
+		{
+			fl_buff_amt[npc.index] = amt;
+			b_NpcIsTeamkiller[npc.index] = true;
+			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Teleport_Buff);
+			b_NpcIsTeamkiller[npc.index] = false;
+		}
 	}
+}
+public void Ruina_Battery_Buff(int entity, int victim, float damage, int weapon)
+{
+	if(entity==victim)
+		return;	//don't buff itself!
+
+	if(GetTeam(entity) != GetTeam(victim))
+		return;
+	
+	if(b_is_battery_buffed[victim])
+		return;
+	
+	Ruina_Add_Battery(victim, fl_buff_amt[entity]);
 }
 public void Ruina_Shield_Buff(int entity, int victim, float damage, int weapon)
 {
@@ -2004,6 +2127,98 @@ static int Ruina_Create_Entity(float Loc[3], float duration)
 		return -1;
 	}
 }
+public bool Ruina_BEAM_TraceWallsOnly(int entity, int contentsMask)
+{
+	return !entity;
+}
+stock float[] Do_Laz_Laser_Effects(int client, int color[4], float size[2], float time, float Dist, float amp)
+{
+	float Npc_Loc[3], flAng[3];
+	WorldSpaceCenter(client, Npc_Loc);
+	GetEntPropVector(client, Prop_Data, "m_angRotation", flAng);
+	float End_Loc[3];
+
+	CClotBody npc = view_as<CClotBody>(client);
+	int iPitch = npc.LookupPoseParameter("body_pitch");
+			
+	float flPitch = npc.GetPoseParameter(iPitch);
+	flPitch *= -1.0;
+	flAng[0] = flPitch;
+
+	Handle trace = TR_TraceRayFilterEx(Npc_Loc, flAng, 11, RayType_Infinite, Ruina_BEAM_TraceWallsOnly);
+	if (TR_DidHit(trace))
+	{
+		TR_GetEndPosition(End_Loc, trace);
+		delete trace;
+
+		float distance = GetVectorDistance(Npc_Loc, End_Loc);
+
+		if(distance>Dist && Dist !=-1.0)
+		{
+			Get_Fake_Forward_Vec(Dist, flAng, End_Loc, Npc_Loc);
+		}
+	}
+	else
+	{
+		delete trace;
+	}
+	
+	float flPos[3]; // original
+	GetAttachment(client, "effect_hand_r", flPos, flAng);
+
+	TE_SetupBeamPoints(flPos, End_Loc, BeamWand_Laser, 0, 0, 0, time, size[0], size[1], 0, amp, color, 0);
+	TE_SendToAll();
+
+	return End_Loc;
+}
+static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
+{
+	float Direction[3];
+	
+	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(Direction, Range);
+	AddVectors(Pos, Direction, Vec_Target);
+}
+stock void Ruina_Laser_Damage_Trace(int client, float Start_Point[3], float End_Point[3], float Radius, float dps, float Bonus_dmg = 5.0)
+{
+
+	for (int i = 1; i < MAXENTITIES; i++)
+	{
+		Ruina_Core_BEAM_HitDetected[i] = false;
+	}
+
+	float hullMin[3], hullMax[3];
+	hullMin[0] = -Radius;
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+	Handle trace = TR_TraceHullFilterEx(Start_Point, End_Point, hullMin, hullMax, 1073741824, Ruina_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
+	delete trace;
+			
+	for (int victim = 1; victim < MAXENTITIES; victim++)
+	{
+		if (Ruina_Core_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
+		{
+			float Dmg = dps;
+
+			if(ShouldNpcDealBonusDamage(victim))
+			{
+				Dmg *= Bonus_dmg;
+			}
+			SDKHooks_TakeDamage(victim, client, client, Dmg, DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));
+		}
+	}
+}
+public bool Ruina_BEAM_TraceUsers(int entity, int contentsMask, int client)
+{
+	if (IsEntityAlive(entity))
+	{
+		Ruina_Core_BEAM_HitDetected[entity] = true;
+	}
+	return false;
+}
 /*static void Ruina_Move_Entity(int entity, float loc[3], float speed=10.0)
 {
 	if(IsValidEntity(entity))	
@@ -2046,6 +2261,7 @@ Names per stage:
 
 	Each subsequent stage the npc gains a new ability, most of the time it will be an expanded version of what they have, or something new. alongside just higher base stats.
 
+	//created
 	1: Magia -> Magnium -> Magianas -> Magianius
 	{
 		State: Slave AI
@@ -2060,7 +2276,7 @@ Names per stage:
 			ICBM's near a Magnia or above have homing. or other npc's that have this attribute. otherwise it just Goes straight. 
 		}
 	}
-
+	//created
 	2: Lanius -> Laniun -> Loonaris -> Loonarionus
 	{
 
@@ -2076,7 +2292,7 @@ Names per stage:
 
 
 	}
-
+	//created
 	3: Stella -> Stellaria -> Stellaris -> Stellarionus
 	{
 		state: Independant AI.
@@ -2085,7 +2301,7 @@ Names per stage:
 		Heals nearby npc's within range in a AOE.
 		Battery: Massive AOE healing for 2.5 seconds
 	}
-
+	//created
 	4: Astria -> Astriana -> Astrianis -> Astrianious
 	{
 		state: Master AI.
@@ -2094,24 +2310,67 @@ Names per stage:
 		Battery: Nearby npc's gain the ability to teleporto once. cannot have multiple "charges" (since its a bool)
 	}
 
-	5: Solaris -> Solaria -> Solaris -> Solarionus
-	{
-		State: Independant AI
-		Class: Medic
-		Ranged.
-		Flies.
-		Battery:
-	}
-
-	6: Europa -> Europis -> Eurainis -> Euranionis
+	//created
+	5: Europa -> Europis -> Eurainis -> Euranionis
 	{
 		State: Master AI.
 		Class: Pyro.
 		Summons "brainless" npc's
 		Battery: Summons itself.
 	}
+	//created
+	6: Daedalus -> Draedon -> Draeonis -> Draconia
+	{
+		State: Slave.
+		Class: Scout
+		Support: Shield.
+		Battery: Provides shield to npc's within range.
+	}
+	//created
+	7: Aether -> Aetheria -> Aetherium -> Aetherianus
+	{
+		State: Slave - Indepentant Long range.
+		Class: Sniper
+		Ranged:
 
-	7: Venium -> Valla -> Valianis -> Valiant
+		Attacks from a far with artilery spells. basically the railgunners of this wave.
+	}
+	//created
+	8: Malius -> Maliana -> Malianium -> Malianius.
+	{
+		State: Master AI.
+		Class: Engie
+		Support: Battery
+		Battery: Gives a set amt of battery to nearby npc's
+
+		Maliana:
+
+		Npc's within range have their passive battery gain boosted
+	}
+	//created
+	9: Ruriana -> Ruianus -> Ruliana -> Ruina
+	{
+		State: Master AI.
+		Class: Medic.
+		Ranged, Melee.
+		Passive: damage taken is healed to allies around.
+	}
+	10: Laz -> Lazius -> Lazines -> Lazurus
+	{
+		State: Master AI.
+		Class: Demo.
+		Ranged: Laser.
+	}
+	//created
+	11: Drone -> Dronian -> Dronis -> Dronianis
+	{
+		State: Melee AI.
+		Class: Spy
+		Melee.
+		it only exists as a minnion to be spammed. it has nothing special for now
+	}
+
+	Valiant	//Gonna be set into special, like expi spies.
 	{
 		State: Independant
 		Class: Engie
@@ -2129,61 +2388,6 @@ Names per stage:
 		A worm boss, it itself doesn't have a hitbox.
 	}
 
-	8: Daedalus -> Draedon -> Draeonis -> Draconia
-	{
-		State: Slave.
-		Class: Demo
-		Support: Shield.
-		Battery: Provides shield to npc's within range.
-	}
-
-	9: Aether -> Aetheria -> Aetherium -> Aetherianus
-	{
-		State: Slave - Indepentant Long range.
-		Class: Sniper
-		Ranged:
-
-		Attacks from a far with artilery spells. basically the railgunners of this wave.
-	}
-
-	10: Malius -> Maliana -> Malianium -> Malianius.
-	{
-		State: Master AI.
-		Class: Engie
-		Support: Battery
-		Npc's within range have their battery gain boosted.
-		Battery: all npc's within range have 50% of their battery filled instantly. Excludes itself, and other npc's of the same kind.
-	}
-
-	11: Ruriana -> Ruianus -> Ruliana -> Ruina
-	{
-		State: Master AI.
-		Class: Medic.
-		Ranged, Melee.
-		Passive: damage taken is healed to allies around.
-
-		Battery: Ion Sweep - Tl;dr, Ion cannon's EVERYWHERE.
-	}
-	12: Laz -> Lazius -> Lazines -> Lazurus
-	{
-		State: Master AI.
-		Class: Scout.
-		Ranged: Laser.
-	}
-	13: Shiela -> Shielius -> Skydas -> Shieldalius.
-	{
-		State: Master AI.
-		Class: Heavy.
-		Passive: all npc's who have a shield within range have thier shield slowly recharged.
-		Battery: Provides a shield.
-	}
-	14: Drone -> Dronian -> Dronis -> Dronianis
-	{
-		State: Melee AI.
-		Class: Spy
-		Melee.
-		it only exists as a minnion to be spammed. it has nothing special for now
-	}
 
 	Stage 1 specials:
 
@@ -2199,3 +2403,80 @@ Names per stage:
 
 
 */
+
+
+
+public void Ruina_ICBM_Apply_Level_1_Visuals(int client, float flAng[3])
+{
+	int red = 185;
+	int green = 205;
+	int blue = 237;
+	float flPos[3];
+
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+
+	/*
+		{x, y, z};
+
+		x = Right = -x, Left = x
+		y = Forward = y, backwrads = -y
+		z is inverted values
+		 
+	*/
+
+	int particle_2 = InfoTargetParentAt({0.0, 10.0, 10.0}, "", 0.0); //First offset we go by
+	int particle_2_1 = InfoTargetParentAt({0.0, 10.0, -10.0}, "", 0.0);
+
+	int particle_3 = InfoTargetParentAt({10.0,10.0,0.0}, "", 0.0);
+	int particle_3_1 = InfoTargetParentAt({-10.0,10.0,0.0}, "", 0.0);
+
+	int particle_4 = InfoTargetParentAt({0.0,50.0, 0.0}, "", 0.0);
+
+
+	SetParent(particle_1, particle_2, "",_, true);
+	SetParent(particle_1, particle_2_1, "",_, true);
+	SetParent(particle_1, particle_3, "",_, true);
+	SetParent(particle_1, particle_3_1, "",_, true);
+	SetParent(particle_1, particle_4, "",_, true);
+
+	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
+	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(client, particle_1, "",_);
+
+
+	float amp = 0.1;
+
+	float blade_start = 2.0;
+	float blade_end = 0.5;
+	//handguard
+	float handguard_size = 1.0;
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_2_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
+	int Laser_3 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
+	int Laser_4 = ConnectWithBeamClient(particle_2, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
+
+	int Laser_5 = ConnectWithBeamClient(particle_2, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM );
+	int Laser_6 = ConnectWithBeamClient(particle_2_1, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM );
+
+	int Laser_7 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM );
+	int Laser_8 = ConnectWithBeamClient(particle_3_1, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM );
+	
+
+	i_ICBM_Particles[client][0] = EntIndexToEntRef(particle_1);
+	i_ICBM_Particles[client][1] = EntIndexToEntRef(particle_2);
+	i_ICBM_Particles[client][2] = EntIndexToEntRef(particle_2_1);
+	i_ICBM_Particles[client][3] = EntIndexToEntRef(particle_3);
+	i_ICBM_Particles[client][4] = EntIndexToEntRef(particle_3_1);
+	i_ICBM_Particles[client][5] = EntIndexToEntRef(particle_4);
+
+	i_ICBM_Env_Lasers[client][0] = EntIndexToEntRef(Laser_1);
+	i_ICBM_Env_Lasers[client][1] = EntIndexToEntRef(Laser_2);
+	i_ICBM_Env_Lasers[client][2] = EntIndexToEntRef(Laser_3);
+	i_ICBM_Env_Lasers[client][3] = EntIndexToEntRef(Laser_4);
+	i_ICBM_Env_Lasers[client][4] = EntIndexToEntRef(Laser_5);
+	i_ICBM_Env_Lasers[client][5] = EntIndexToEntRef(Laser_6);
+	i_ICBM_Env_Lasers[client][6] = EntIndexToEntRef(Laser_7);
+	i_ICBM_Env_Lasers[client][7] = EntIndexToEntRef(Laser_8);
+}
