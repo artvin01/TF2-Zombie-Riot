@@ -1199,7 +1199,7 @@ public void OnClientAuthorized(int client)
 	if(CurrentRound)
 	{
 		// Give extra cash to newly joined
-		int cash = CurrentCash / 10;
+		int cash = CurrentCash / 20;
 		if(StartCash < 750)
 			cash += StartCash / 2;
 		
