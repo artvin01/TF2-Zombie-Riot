@@ -160,7 +160,7 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 				}
 			}
 			
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
 				

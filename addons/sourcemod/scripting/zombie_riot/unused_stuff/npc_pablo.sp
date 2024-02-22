@@ -540,7 +540,7 @@ public void PabloGonzalos_ClotThink(int iNPC)
 				}
 			}
 			//Target close enough to hit
-			if(flDistanceToTarget > 10000 && npc.m_flReloadDelay < GetGameTime())
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flReloadDelay < GetGameTime())
 			{
 				npc.StartPathing();
 				

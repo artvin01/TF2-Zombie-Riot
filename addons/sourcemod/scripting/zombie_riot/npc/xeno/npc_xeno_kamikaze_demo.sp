@@ -182,7 +182,7 @@ public void XenoKamikaze_ClotThink(int iNPC)
 			}
 			npc.StartPathing();
 			
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 1000.0);

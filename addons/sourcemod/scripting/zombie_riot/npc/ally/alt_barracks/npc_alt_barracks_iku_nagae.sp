@@ -203,7 +203,7 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 			//	ang[0] = clamp(ang[0], -44.0, 89.0);
 			npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				BarrackBody_ThinkMove(npc.index, 275.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 9999.0, _, false);
 				//Look at target so we hit.

@@ -580,7 +580,7 @@ public void Bloon_ClotThink(int iNPC)
 			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		
-		if(flDistanceToTarget < 10000)
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 		{
 			if(npc.m_flNextMeleeAttack < gameTime)
 			{

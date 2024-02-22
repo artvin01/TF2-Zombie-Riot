@@ -801,7 +801,7 @@ public void Doktor_Medick_ClotThink(int iNPC)
 			npc.StartPathing();
 		}
 		//Target close enough to hit
-		if(flDistanceToTarget < 10000 && !b_Chemical_Warfare[npc.index] || npc.m_flAttackHappenswillhappen && !b_Chemical_Warfare[npc.index])
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && !b_Chemical_Warfare[npc.index] || npc.m_flAttackHappenswillhappen && !b_Chemical_Warfare[npc.index])
 		{
 		//	Look at target so we hit.
 		//	npc.FaceTowards(vecTarget, 1000.0);
