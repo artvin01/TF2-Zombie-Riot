@@ -1115,7 +1115,7 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 	{
 		if(IsValidEnemy(npc.index, target)) 
 		{
-			if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 			{
 				int Enemy_I_See;
 									

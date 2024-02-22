@@ -347,7 +347,7 @@ void DesertAncientDemonSelfDefense(DesertAncientDemon npc, float gameTime, int t
 	}
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;
 								
@@ -367,7 +367,7 @@ void DesertAncientDemonSelfDefense(DesertAncientDemon npc, float gameTime, int t
 	}
 	if(gameTime > npc.m_flNextRangedAttack)
 	{
-		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25) && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
+		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED) && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 		{
 			int Enemy_I_See;
 								

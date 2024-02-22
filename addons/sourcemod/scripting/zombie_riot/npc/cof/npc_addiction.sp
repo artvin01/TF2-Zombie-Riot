@@ -427,7 +427,7 @@ public void Addicition_ClotThink(int iNPC)
 				}
 			}
 		}
-		if(flDistanceToTarget < 10000.0 || npc.m_flAttackHappenswillhappen)
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 		{
 			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
 			{

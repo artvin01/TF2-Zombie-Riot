@@ -46,7 +46,7 @@ public void Fists_of_Kahml(int client, int weapon, bool crit, int slot)
 		
 		EmitSoundToAll("weapons/gauss/fire1.wav", client, _, 75, _, 0.25, GetRandomInt(90, 110));
 
-		float damage = 30.0;
+		float damage = 20.0;
 				
 		float speed = 1100.0;
 		damage *= Attributes_Get(weapon, 2, 1.0);

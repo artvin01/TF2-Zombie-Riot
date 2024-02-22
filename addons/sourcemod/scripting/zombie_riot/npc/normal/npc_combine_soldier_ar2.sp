@@ -404,7 +404,7 @@ public void CombineSoldierAr2_ClotThink(int iNPC)
 			//	npc.FaceTowards(vecTarget);
 			//	npc.FaceTowards(vecTarget);
 				
-				if((npc.m_flNextMeleeAttack < GetGameTime(npc.index) && flDistanceToTarget < 10000) || npc.m_flAttackHappenswillhappen)
+				if((npc.m_flNextMeleeAttack < GetGameTime(npc.index) && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED) || npc.m_flAttackHappenswillhappen)
 				{
 				
 			//		npc.FaceTowards(vecTarget, 1000.0);

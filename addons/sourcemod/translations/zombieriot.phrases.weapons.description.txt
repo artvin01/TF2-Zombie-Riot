@@ -2314,11 +2314,11 @@
 	}
 	"The Standchen Desc"
 	{
-		"en"	"Speichert bis zu drei Angriffe, unleash by letting go of attack. Stored shots deal bonus damage.\nAbility increases damage, fire rate, and stores another shot but, kann nur Elite- oder Riesengegner treffen, ability can be canceled."
+		"en"	"Saves upto 3 attacks, unleash by letting go of attack. Stored shots deal bonus damage.\nAbility increases damage, fire rate, and stores another shot but, can only hit giant or elite/elite+ enemies, ability can be canceled."
 	}
 	"The Standchen Desc Pap"
 	{
-		"en"	"Speichert bis zu vier Angriffe."
+		"en"	"Saves upto 4 attacks."
 	}
 	"Sensal Desc"
 	{

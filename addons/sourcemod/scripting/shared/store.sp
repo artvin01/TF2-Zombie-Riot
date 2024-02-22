@@ -594,6 +594,7 @@ void Store_OnCached(int client)
 		if(!Store_HasNamedItem(client, "ZR Contest Nominator [???] Cash"))
 		{
 			Store_SetNamedItem(client, "ZR Contest Nominator [???] Cash", 1);
+			CashRecievedNonWave[client] += 50;
 			CashSpent[client] -= 50;
 		}
 	}
@@ -603,6 +604,7 @@ void Store_OnCached(int client)
 		if(!Store_HasNamedItem(client, "ZR Content Creator [???] Cash"))
 		{
 			Store_SetNamedItem(client, "ZR Content Creator [???] Cash", 1);
+			CashRecievedNonWave[client] += 50;
 			CashSpent[client] -= 50;
 		}
 	}
