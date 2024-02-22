@@ -259,6 +259,17 @@ void NPC_ConfigSetup()
 	Malius_OnMapStart_NPC();
 	Laz_OnMapStart_NPC();
 	//Stage 2.
+	Laniun_OnMapStart_NPC();
+	Magnium_OnMapStart_NPC();
+	Stellaria_OnMapStart_NPC();
+	Astriana_OnMapStart_NPC();
+	Europis_OnMapStart_NPC();
+	Draedon_OnMapStart_NPC();
+	Aetheria_OnMapStart_NPC();
+	Maliana_OnMapStart_NPC();
+	Ruianus_OnMapStart_NPC();
+	Lazius_OnMapStart_NPC();
+	Dronian_OnMapStart_NPC();
 
 	//Special.
 	Magia_Anchor_OnMapStart_NPC();
@@ -5273,6 +5284,21 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_daedalus.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_malius.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_laz.sp"
+
+//Stage 2
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_laniun.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_magnium.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_stellaria.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_astriana.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_europis.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_draedon.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_aetheria.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_maliana.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_ruianus.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_lazius.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_dronian.sp"
+
+
 
 //Special Ruina
 #include "zombie_riot/npc/ruina/special/npc_ruina_valiant.sp"

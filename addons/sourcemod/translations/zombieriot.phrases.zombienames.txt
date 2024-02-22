@@ -1977,6 +1977,50 @@
 	{
 		"en"	"Laz"
 	}
+	"Laniun"
+	{
+		"en"	"Laniun"
+	}
+	"Magnium"
+	{
+		"en"	"Magnium"
+	}
+	"Stellaria"
+	{
+		"en"	"Stellaria"
+	}
+	"Astriana"
+	{
+		"en"	"Astriana"
+	}
+	"Europis"
+	{
+		"en"	"Europis"
+	}
+	"Draedon"
+	{
+		"en"	"Draedon"
+	}
+	"Aetheria"
+	{
+		"en"	"Aetheria"
+	}
+	"Maliana"
+	{
+		"en"	"Maliana"
+	}
+	"Ruianus"
+	{
+		"en"	"Ruianus"
+	}
+	"Lazius"
+	{
+		"en"	"Lazius"
+	}
+	"Dronian"
+	{
+		"en"	"Dronian"
+	}
 	"Beheaded Kamikaze"
 	{
 		"en"	"Beheaded Kamikaze"

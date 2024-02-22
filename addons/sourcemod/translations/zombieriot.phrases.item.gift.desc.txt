@@ -1321,6 +1321,50 @@
 	{
 		"en"	"A magical laser wielding mage"
 	}
+	"Laniun Desc"	//Need descs
+	{
+		"en"	"A stronger variant of Lanius"
+	}
+	"Magnium Desc"
+	{
+		"en"	"A stronger magia, has a special magic ICBM, very dangerous"
+	}
+	"Stellaria Desc"
+	{
+		"en"	"Aya"
+	}
+	"Astriana Desc"
+	{
+		"en"	"Aya"
+	}
+	"Europis Desc"
+	{
+		"en"	"Aya"
+	}
+	"Draedon Desc"
+	{
+		"en"	"Aya"
+	}
+	"Aetheria Desc"
+	{
+		"en"	"Aya"
+	}
+	"Maliana Desc"
+	{
+		"en"	"Aya"
+	}
+	"Ruianus Desc"
+	{
+		"en"	"Aya"
+	}
+	"Lazius Desc"
+	{
+		"en"	"Aya"
+	}
+	"Dronian Desc"
+	{
+		"en"	"Aya"
+	}
 	"Archosauria Desc"
 	{
 		"en"	"A hunter sniper that's silent and fires darts that inflict Jarate and Chaos."
