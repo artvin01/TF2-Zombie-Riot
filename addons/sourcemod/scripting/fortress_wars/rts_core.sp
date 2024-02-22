@@ -43,7 +43,9 @@ enum
 	Resource_None = 0,
 	Resource_Wood = 1,
 	Resource_Gold = 2,
-	Resource_Food = 3
+	Resource_Food = 3,
+
+	Resource_MAX
 }
 
 public const char ResourceName[][] =
@@ -66,7 +68,7 @@ enum
 
 enum
 {
-	Sound_Select,
+	Sound_Select = 0,
 	Sound_Move,
 	Sound_Attack,
 	Sound_CombatAlert,
