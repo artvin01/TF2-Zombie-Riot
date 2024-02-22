@@ -128,16 +128,7 @@
 	"Zombies Left"
 	{
 		"#format"	"{1:d}"
-		"en"		"Zombies Left: {1}"
-		"it"		"Zombie Rimanenti: {1}"
-		"ru"		"Осталось зомби: {1}"
-		"pl"		"Nieumarłych pozostało: {1}"
-		"es"		"Zombies restantes: {1}"
-		"fr"		"Zombies Restants: {1}"
-		"de"		"Verbleibene Untote: {1}"
-		"pt"		"Zumbis Vivos: {1}"
-		"nl"		"Zombies over: {1}"
-		"chi"		"剩余僵尸: {1}"
+		"en"		"Enemies Left: {1}"
 	}
 	"Medi-Kit Cooldown"
 	{

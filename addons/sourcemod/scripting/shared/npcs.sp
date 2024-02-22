@@ -1273,8 +1273,8 @@ void RemoveHudCooldown(int client)
 
 stock void Calculate_And_Display_HP_Hud(int attacker)
 {
-	int victim = i_HudVictimToDisplay[attacker];
-	if(!IsValidEntity(victim))
+	int victim = EntRefToEntIndex(i_HudVictimToDisplay[attacker]);
+	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
 		return;
 
 #if defined ZR
@@ -1943,7 +1943,7 @@ void ResetDamageHud(int client)
 stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)
 {
 	b_DisplayDamageHud[attacker] = true;
-	i_HudVictimToDisplay[attacker] = victim;
+	i_HudVictimToDisplay[attacker] = EntIndexToEntRef(victim);
 	float GameTime = GetGameTime();
 	bool raidboss_active = false;
 	if(!b_NpcIsInvulnerable[victim])
