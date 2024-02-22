@@ -940,7 +940,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							int Enemy_I_See;
 							Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 							//Target close enough to hit
-							if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
+							if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex && flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)
 							{
 								npc.m_flCharge_delay = GetGameTime(npc.index) + 7.5;
 								npc.m_flCharge_Duration = GetGameTime(npc.index) + 1.0;

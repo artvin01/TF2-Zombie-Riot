@@ -216,7 +216,7 @@ public void AnarchyAbomination_ClotThink(int iNPC)
 		}
 		if(npc.m_flCharge_delay < GetGameTime(npc.index))
 		{
-			if(flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
+			if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)
 			{
 				npc.PlayChargeSound();
 				npc.m_flCharge_delay = GetGameTime(npc.index) + 5.0;
