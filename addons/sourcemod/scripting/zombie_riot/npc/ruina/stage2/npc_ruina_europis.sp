@@ -370,7 +370,7 @@ static void Europis_Spawn_Minnions(Europis npc)
 			
 			int spawn_index;
 			
-			spawn_index = NPC_CreateByName("npc_ruina_drone", npc.index, pos, ang, GetTeam(npc.index));
+			spawn_index = NPC_CreateByName("npc_ruina_dronian", npc.index, pos, ang, GetTeam(npc.index));
 			maxhealth = RoundToNearest(maxhealth * 0.45);
 
 			if(spawn_index > MaxClients)
@@ -394,7 +394,7 @@ static void Europis_Spawn_Self(Europis npc)
 			
 	int spawn_index;
 			
-	spawn_index = NPC_CreateByName("npc_ruina_Europis", npc.index, pos, ang, GetTeam(npc.index));
+	spawn_index = NPC_CreateByName("npc_ruina_europis", npc.index, pos, ang, GetTeam(npc.index));
 	maxhealth = RoundToNearest(maxhealth * 0.75);
 
 	if(spawn_index > MaxClients)
