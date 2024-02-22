@@ -451,7 +451,6 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_calcium_wand.sp"
 #include "zombie_riot/custom/wand/weapon_wand_calcium_spell.sp"
 #include "zombie_riot/custom/weapon_passive_banner.sp"
-#include "zombie_riot/custom/weapon_zeroknife.sp"
 #include "zombie_riot/custom/weapon_ark.sp"
 #include "zombie_riot/custom/pets.sp"
 #include "zombie_riot/custom/coin_flip.sp"
@@ -628,7 +627,6 @@ void ZR_MapStart()
 	CleanAllBuildingEscape();
 	KahmlFistMapStart();
 	M3_ClearAll();
-	ZeroRage_ClearAll();
 	SniperMonkey_ClearAll();
 	Weapon_Cspyknife_ClearAll();
 	f_DelaySpawnsForVariousReasons = 0.0;
@@ -810,12 +808,6 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
-	/*
-	if(CurrentRound)
-		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
-	See databaseuh
-	*/
-
 }
 
 void ZR_ClientDisconnect(int client)
@@ -1203,10 +1195,17 @@ public void OnClientAuthorized(int client)
 {
 	Ammo_Count_Used[client] = 0;
 	CashSpentTotal[client] = 0;
-/*	
+	
 	if(CurrentRound)
-		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.10);
-*/
+	{
+		// Give extra cash to newly joined
+		int cash = CurrentCash / 10;
+		if(StartCash < 750)
+			cash += StartCash / 2;
+		
+		CashSpent[client] = -cash;
+		CashRecievedNonWave[client] = cash;
+	}
 }
 
 void ZR_OnClientDisconnect_Post()
