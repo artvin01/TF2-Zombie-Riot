@@ -60,6 +60,10 @@ void SDKHook_PluginStart()
 void SDKHook_MapStart()
 {
 	Zero(f_EntityIsStairAbusing);
+	#if defined ZR
+	Zero(Mana_Loss_Delay);
+	Zero(Mana_Regen_Block_Timer);
+	#endif
 	Armor_WearableModelIndex = PrecacheModel("models/effects/resist_shield/resist_shield.mdl", true);
 	int entity = FindEntityByClassname(MaxClients+1, "tf_player_manager");
 	if(entity != -1)
@@ -441,8 +445,12 @@ public void OnPostThink(int client)
 			mana_regen[client] *= 0.30;
 		}
 #endif
-			
+
+#if defined ZR		
+		if(Current_Mana[client] < RoundToCeil(max_mana[client]) && Mana_Regen_Block_Timer[client] < GameTime)
+#else
 		if(Current_Mana[client] < RoundToCeil(max_mana[client]))
+#endif
 		{
 			Current_Mana[client] += RoundToCeil(mana_regen[client]);
 				
@@ -454,8 +462,9 @@ public void OnPostThink(int client)
 	}
 
 #if defined ZR
-	if(Current_Mana[client] >max_mana[client])	//A part of Ruina's special mana "corrosion"
+	if(Current_Mana[client] > RoundToCeil(max_mana[client]+10.0))	//A part of Ruina's special mana "corrosion"
 	{
+		//the +10 is for rounding errors.
 		if(Mana_Loss_Delay[client] < GameTime)
 		{
 			Mana_Loss_Delay[client] = GameTime + 0.4;
@@ -476,6 +485,9 @@ public void OnPostThink(int client)
 			{
 				Current_Mana[client] -= RoundToCeil(Mana_Loss*1.5);	//Passively lose your overmana!	if your not a mage you lose it faster
 			}
+
+			if(Current_Mana[client] < RoundToCeil(max_mana[client])) //if the mana becomes less then the normal max mana due to mana loss, set it to max mana!
+				Current_Mana[client] = RoundToCeil(max_mana[client]);
 
 			//CPrintToChatAll("Regen neg1: %i", RoundToCeil(Mana_Loss));
 			//CPrintToChatAll("Regen neg2: %i", RoundToCeil(Mana_Loss*1.5));
@@ -874,7 +886,7 @@ public void OnPostThink(int client)
 				#if defined ZR
 				float OverMana_Ratio = Current_Mana[client]/max_mana[client];
 
-				if(OverMana_Ratio > 1.0)
+				if(OverMana_Ratio > 1.05)
 				{
 					if(OverMana_Ratio < 2.0)
 					{

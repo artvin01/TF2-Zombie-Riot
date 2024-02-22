@@ -1953,9 +1953,9 @@
 	{
 		"en"	"Ruriana"
 	}
-	"Venium"
+	"Valiant"
 	{
-		"en"	"Venium"
+		"en"	"Valiant"
 	}
 	"Magia Anchor"
 	{
@@ -1964,6 +1964,18 @@
 	"Stellar Weaver"
 	{
 		"en"	"Stellar Weaver"
+	}
+	"Daedalus"
+	{
+		"en"	"Daedalus"
+	}
+	"Malius"
+	{
+		"en"	"Malius"
+	}
+	"Laz"
+	{
+		"en"	"Laz"
 	}
 	"Beheaded Kamikaze"
 	{

@@ -255,6 +255,9 @@ void NPC_ConfigSetup()
 	Ruina_Drone_OnMapStart_NPC();
 	Ruriana_OnMapStart_NPC();
 	Venium_OnMapStart_NPC();
+	Daedalus_OnMapStart_NPC();
+	Malius_OnMapStart_NPC();
+	Laz_OnMapStart_NPC();
 	//Stage 2.
 
 	//Special.
@@ -735,7 +738,7 @@ enum
 	ISHARMLA_TRANS		= 283,
 	
 	//ruina
-	RUINA_THEOCRACY = 284,
+	UNUSED_RUN10 = 284,
 	EXPIDONSA_BENERA = 285,
 	EXPIDONSA_PENTAL = 286,
 	EXPIDONSA_DEFANDA = 287,
@@ -743,10 +746,10 @@ enum
 	EXPIDONSA_VAUSMAGICA = 289,
 	EXPIDONSA_PISTOLEER = 290,
 	EXPIDONSA_DIVERSIONISTICO 	= 291,
-	RUINA_ADIANTUM 				= 292,
-	RUINA_LANIUS				= 293,
+	UNUSED_RUN3 				= 292,
+	UNUSED_RUN1				= 293,
 	EXPIDONSA_HEAVYPUNUEL		= 294,
-	RUINA_MAGIA					= 295,
+	UNUSED_RUN2					= 295,
 	EXPIDONSA_SEARGENTIDEAL		= 296,
 
 	UNUSED_1			= 297,
@@ -786,16 +789,16 @@ enum
 	WEAPON_LEPER_AFTERIMAGE			= 330,
 	OVERLORD_ROGUE					= 331,
 	RAIDBOSS_BLADEDANCE 			= 332,
-	RUINA_STELLA					= 333,
-	RUINA_ASTRIA 					= 334,
-	RUINA_AETHER 					= 335,
-	RUINA_EUROPA 					= 336,
-	RUINA_DRONE 					= 337,
-	RUINA_RURIANA					= 338,
-	RUINA_VENIUM					= 339,
-	RUINA_MAGIA_ANCHOR				= 340,
-	RUINA_STELLAR_WEAVER			= 341,
-	RUINA_STELLAR_WEAVER_MID		= 342,
+	UNUSED_RUN9					= 333,
+	UNUSED_RUN5 					= 334,
+	UNUSED_RUN4 					= 335,
+	UNUSED_RUN7 					= 336,
+	UNUSED_RUN6 					= 337,
+	UNUSED_RUN8					= 338,
+	UNUSED_RUN11					= 339,
+	UNUSED_RUN12				= 340,
+	UNUSED_RUN14			= 341,
+	UNUSED_RUN13		= 342,
 	MINI_BEHEADED_KAMI				= 343,
 	
 	BONEZONE_BEEFYBONES				= 344,
@@ -841,16 +844,16 @@ enum
 	INTERITUS_ANARCHY_BEHEMOTH		  = 381,
 	INTERITUS_ANARCHY_ABSOLUTE_INCINIRATOR= 382,
   
-	INTERITUS_FOREST_MEDIC = 383,
-	INTERITUS_FOREST_HEAVY = 384,
-	INTERITUS_FOREST_PYRO = 385,
-	INTERITUS_FOREST_SPY = 386,
-	INTERITUS_FOREST_ENGINEER = 387,
-	INTERITUS_FOREST_BOSS = 388,
-	RAIDMODE_THE_MESSENGER	= 389,
-	RAIDMODE_CHAOS_KAHMLSTEIN = 390,
-	RAIDBOSS_THE_PURGE = 391,
-	WEAPON_KAHML_AFTERIMAGE = 392,
+	INTERITUS_FOREST_MEDIC 			= 383,
+	INTERITUS_FOREST_HEAVY 			= 384,
+	INTERITUS_FOREST_PYRO 			= 385,
+	INTERITUS_FOREST_SPY 			= 386,
+	INTERITUS_FOREST_ENGINEER 		= 387,
+	INTERITUS_FOREST_BOSS 			= 388,
+	RAIDMODE_THE_MESSENGER			= 389,
+	RAIDMODE_CHAOS_KAHMLSTEIN 		= 390,
+	RAIDBOSS_THE_PURGE 				= 391,
+	WEAPON_KAHML_AFTERIMAGE			= 392,
 	
 	MAX_OLD_NPCS = 393	// DO NOT ADD MORE HERE, USE NEW METHOD
 }
@@ -1162,7 +1165,7 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Seaborn Supporter",
 	"Ishar'mla, Heart of Corruption",
 	"Ishar'mla, Heart of Corruption",
-	"Theocracy",
+	"nothing",
 	"Benera",
 	"Pental",
 	"Defanda",
@@ -1170,10 +1173,10 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Vaus Magica",
 	"Pistoleer",
 	"Diversionistico",
-	"Adiantum",
-	"Lanius",
+	"nothing",	//unused
+	"nothing",	//unused
 	"Heavy Punuel",
-	"Magia",
+	"nothing",	//unused
 	"Seargent Ideal",
 
 	"nothing",
@@ -1212,16 +1215,16 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Allied Leper Afterimage",
 	"Overlord The Last",
 	"Bladedance The Combine",
-	"Stella",
-	"Astria",
-	"Aether",
-	"Europa",
-	"Ruina Drone",
-	"Ruriana",
-	"Venium",
-	"Magia Anchor",
-	"Stellar Weaver",
-	"Stellar Weaver",
+	"nothing",
+	"nothing",
+	"nothing",	//unused
+	"nothing",
+	"nothing",
+	"nothing",
+	"nothing",
+	"nothing",
+	"nothing",
+	"nothing",
 	"Beheaded Kamikaze",
 	
 	"Beefy Bones",
@@ -1589,7 +1592,7 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	9,	// ISHARMLA		= 282,
 	-1,	// ISHARMLA_TRANS		= 283,
 
-	-1,	// RUINA_THEOCRACY = 284,
+	-1,	//  = 284,
 	10,	// EXPIDONSA_BENERA = 285,
 	10,	// EXPIDONSA_PENTAL = 286,
 	10,	// EXPIDONSA_DEFANDA = 287,
@@ -1597,10 +1600,10 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	10,	// EXPIDONSA_VAUSMAGICA = 289,
 	10,	// EXPIDONSA_PISTOLEER = 290,
 	10,	// EXPIDONSA_DIVERSIONISTICO 	= 291,
-	-1,	// RUINA_ADIANTUM 				= 292,
-	-1,	// RUINA_LANIUS				= 293,
+	-1,	// unused 				= 292,
+	-1,	// unused
 	10,	// EXPIDONSA_HEAVYPUNUEL		= 294,
-	-1,	// RUINA_MAGIA					= 295,
+	-1,	// unused
 	10,	// EXPIDONSA_SEARGENTIDEAL		= 296,
 
 	-1,	// 		= 297,
@@ -1639,16 +1642,16 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	0, 	//WEAPON_SENSAL_AFTERIMAGE			= 329 
 	-1,	// OVERLORD_ROGUE
 	-1,	// RAIDBOSS_BLADEDANCE
-	-1,	//RUINA_STELLA
-	-1,	// Astria
-	-1,	//Aether
-	-1,	//EUROPA
-	-1,	//RUINA_DRONE
-	-1,	//RUINA_RURIANA
-	-1,	//RUINA_VENIUM
-	-1,	//RUINA_MAGIA_ANCHOR
-	-1,	//RUINA_STELLAR_WEAVER
-	-1,	//RUINA_STELLAR_WEAVER_MID
+	-1,	//
+	-1,	//
+	-1,	//unused
+	-1,	//
+	-1,	//
+	-1,	//
+	-1,	//
+	-1,	//
+	-1,	//
+	-1,	//
 	1,	// MINI_BEHEADED_KAMI
 
 	-1,	// BONEZONE_BEEFYBONES
@@ -1705,7 +1708,7 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	2,	//	RAIDMODE_THE_MESSENGER	= 389,
 	2,	//	RAIDMODE_CHAOS_KAHMLSTEIN = 390,
 	2,	//	RAIDBOSS_THE_PURGE = 391,
-	-1, // WEAPON_KAHML_AFTERIMAGE = 392
+	-1, // WEAPON_KAHML_AFTERIMAGE = 392,
 };
 
 static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
@@ -2013,7 +2016,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"npc_isharmla",
 	"npc_isharmla_trans",
 	
-	"npc_ruina_theocracy",
+	"",
 	"npc_benera",
 	"npc_pental",
 	"npc_defanda",
@@ -2021,10 +2024,10 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"npc_vaus_magica",
 	"npc_benera_pistoleer",
 	"npc_diversionistico",
-	"npc_ruina_adiantum",
-	"npc_ruina_lanius",
+	"",	//unused
+	"",	//unused
 	"npc_heavy_punuel",
-	"npc_ruina_magia",
+	"",	//unused
 	"npc_seargent_ideal",
 	
 	"",
@@ -2065,16 +2068,16 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"",
 	"npc_overlord_rogue",
 	"npc_bladedance",
-	"npc_ruina_stella",
-	"npc_ruina_astria",
-	"npc_ruina_aether",
-	"npc_ruina_europa",
-	"npc_ruina_drone",
-	"npc_ruina_ruriana",
-	"npc_ruina_venium",
-	"npc_ruina_magia_anchor",
-	"npc_ruina_stellar_weaver",
-	"npc_ruina_stellar_weaver_middle",
+	"",
+	"",
+	"",	//unused
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
 	"npc_beheaded_kami",
 	
 	"npc_beefybones",
@@ -2983,48 +2986,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 
 		case ISHARMLA_TRANS:
 			entity = IsharmlaTrans(client, vecPos, vecAng, team);
-			
-		case RUINA_THEOCRACY:	//warp
-			entity = Theocracy(client, vecPos, vecAng, team);
-		
-		case RUINA_ADIANTUM:
-			entity = Adiantum(client, vecPos, vecAng, team);
-			
-		case RUINA_LANIUS:
-			entity = Lanius(client, vecPos, vecAng, team);
-			
-		case RUINA_MAGIA:
-			entity = Magia(client, vecPos, vecAng, team);
-
-		case RUINA_STELLA:
-			entity = Stella(client, vecPos, vecAng, team);
-
-		case RUINA_ASTRIA:
-			entity = Astria(client, vecPos, vecAng, team);
-
-		case RUINA_AETHER:
-			entity = Aether(client, vecPos, vecAng, team);
-
-		case RUINA_EUROPA:
-			entity = Europa(client, vecPos, vecAng, team);
-
-		case RUINA_DRONE:
-			entity = Ruina_Drone(client, vecPos, vecAng, team);
-		
-		case RUINA_RURIANA:
-			entity = Ruriana(client, vecPos, vecAng, team);
-
-		case RUINA_VENIUM:
-			entity = Venium(client, vecPos, vecAng, team);
-
-		case RUINA_MAGIA_ANCHOR:
-			entity = Magia_Anchor(client, vecPos, vecAng, team);
-
-		case RUINA_STELLAR_WEAVER:
-			entity = Storm_Weaver(client, vecPos, vecAng, team, data);
-
-		case RUINA_STELLAR_WEAVER_MID:
-			entity = Storm_Weaver_Mid(client, vecPos, vecAng, team, StringToFloat(data));
 		
 		case SEA_RAIDBOSS_DONNERKRIEG:
 			entity = Raidboss_Donnerkrieg(client, vecPos, vecAng, team, data);
@@ -5309,9 +5270,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_europa.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_drone.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_ruriana.sp"
-#include "zombie_riot/npc/ruina/stage1/npc_ruina_venium.sp"
+#include "zombie_riot/npc/ruina/stage1/npc_ruina_daedalus.sp"
+#include "zombie_riot/npc/ruina/stage1/npc_ruina_malius.sp"
+#include "zombie_riot/npc/ruina/stage1/npc_ruina_laz.sp"
 
 //Special Ruina
+#include "zombie_riot/npc/ruina/special/npc_ruina_valiant.sp"
 #include "zombie_riot/npc/ruina/special/npc_ruina_magia_anchor.sp"
 #include "zombie_riot/npc/ruina/special/npc_ruina_storm_weaver.sp"
 #include "zombie_riot/npc/ruina/special/npc_ruina_storm_weaver_mid.sp"
