@@ -806,6 +806,36 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				}
 				else 
 				{
+					if(npc.m_flCharge_delay < GetGameTime(npc.index))
+					{
+						if(npc.IsOnGround())
+						{
+							float vPredictedPos[3];
+							vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+							vPredictedPos = GetBehindTarget(npc.m_iTarget, 30.0 ,vPredictedPos);
+							static float hullcheckmaxs[3];
+							static float hullcheckmins[3];
+							hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+							hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+
+							float SelfPos[3];
+							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
+							float AllyAng[3];
+							GetEntPropVector(npc.index, Prop_Data, "m_angRotation", AllyAng);
+							
+							bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, false);
+							if(Succeed)
+							{
+								npc.PlayTeleportSound();
+								npc.PlayTeleportSound();
+								npc.PlayTeleportSound();
+								ParticleEffectAt(SelfPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+								ParticleEffectAt(vPredictedPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+								npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+								npc.m_flCharge_delay = GetGameTime(npc.index) +  (5.0 *(1.0 / f_MessengerSpeedUp[npc.index]));
+							}
+						}
+					}
 					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 				}
 			}
