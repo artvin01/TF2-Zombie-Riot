@@ -368,7 +368,7 @@ methodmap ChaosKahmlstein < CClotBody
 				RaidModeScaling *= 0.38;
 			}
 			
-			float amount_of_people = 16;
+			float amount_of_people = 16.0;
 
 			amount_of_people *= 0.12;
 			

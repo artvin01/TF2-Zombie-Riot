@@ -74,7 +74,7 @@ jobs:
         run: |
           spcomp -E -O2 -v2 -i "include" -o zombie_riot.smx zombie_riot.sp
           spcomp -O2 -v2 -i "include" -o fortress_wars.smx fortress_wars.sp
-          spcomp -O2 -v2 -i "include" -o npc_framework.smx npc_framework.sp
+          spcomp -E -O2 -v2 -i "include" -o npc_framework.smx npc_framework.sp
         working-directory: ${{ env.SCRIPTS_PATH }}
       
       - name: Upload Artifacts
