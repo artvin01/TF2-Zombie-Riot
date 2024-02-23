@@ -239,6 +239,11 @@ methodmap Sensal < CClotBody
 		EmitSoundToAll(g_HurtArmorSounds[GetRandomInt(0, sizeof(g_HurtArmorSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 	}
+	property float m_flSwitchCooldown	// Delay between switching weapons
+	{
+		public get()			{	return this.m_flGrappleCooldown;	}
+		public set(float value) 	{	this.m_flGrappleCooldown = value;	}
+	}
 	
 	
 	public Sensal(int client, const float vecPos[3], const float vecAng[3], int ally, const char[] data)
@@ -289,15 +294,7 @@ methodmap Sensal < CClotBody
 
 		bool final = StrContains(data, "final_item") != -1;
 		
-		if(final)
-		{
-			i_RaidGrantExtra[npc.index] = 1;
-		}
-		bool cutscene = StrContains(data, "duo_cutscene") != -1;
-		if(cutscene)
-		{
-			i_RaidGrantExtra[npc.index] = 50;
-		}
+		i_RaidGrantExtra[npc.index] = 1;
 		
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -309,7 +306,7 @@ methodmap Sensal < CClotBody
 			}
 		}
 
-		RaidModeScaling = 60.0;//float(ZR_GetWaveCount()+1);
+		RaidModeScaling = 45.0;//float(ZR_GetWaveCount()+1);
 		b_RageAnimated[npc.index] = false;
 		if(RaidModeScaling < 55)
 		{
@@ -332,22 +329,7 @@ methodmap Sensal < CClotBody
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		/*
-		if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-		{
-			RaidModeScaling *= 0.85;
-		}
-		else if(ZR_GetWaveCount()+1 > 55)
-		{
-			RaidModeTime = GetGameTime(npc.index) + 220.0;
-			RaidModeScaling *= 0.65;
-		}
-		*/
-		if(!cutscene)
-		{
-			//func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
-			//Music_SetRaidMusic("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3", 218, true);
-		}
+
 		npc.m_iChanged_WalkCycle = -1;
 
 		int skin = 1;
@@ -385,6 +367,7 @@ methodmap Sensal < CClotBody
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 		SensalEffects(npc.index, view_as<int>(npc.Anger));
+		npc.m_flSwitchCooldown = GetGameTime() + GetRandomFloat(30.0, 60.0);
 
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
@@ -413,7 +396,45 @@ public void Sensal_ClotThink(int iNPC)
 			Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
 		}	
 	}
-
+	if(npc.m_flSwitchCooldown < GetGameTime())
+	{
+		npc.m_flSwitchCooldown = GetGameTime() + GetRandomFloat(30.0, 60.0);
+		switch(GetURandomInt() % 7)
+		{
+			case 0:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: Your Chaos destroys all there is.");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: Multidimensional travel is nothing that cant be achived by us.");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: Are you sure you can handle me?");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: I am on no ones team.");
+			}
+			case 4:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: Your abiltiies are futile against me, you do not know me.");
+			}
+			case 5:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: Your universe is full of chaos.");
+			}
+			case 6:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: Raids? What is that, i am worse.");
+			}
+			case 7:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: All what you know is nothing before my technology.");
+			}
+		}
+	}
 	npc.Update();
 	if(i_RaidGrantExtra[npc.index] == 50)
 	{
@@ -591,6 +612,35 @@ public void Sensal_ClotThink(int iNPC)
 				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 		}
+		if(npc.m_flCharge_delay < GetGameTime(npc.index))
+		{
+			if(npc.IsOnGround())
+			{
+				float vPredictedPos[3];
+				PredictSubjectPosition(npc, npc.m_iTarget, _, _, vPredictedPos);
+				vPredictedPos = GetBehindTarget(npc.m_iTarget, 30.0 ,vPredictedPos);
+				static float hullcheckmaxs[3];
+				static float hullcheckmins[3];
+				hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+				hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+
+				float SelfPos[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
+				float AllyAng[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", AllyAng);
+				
+				bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, false);
+				if(Succeed)
+				{
+					npc.PlayDeathSound();
+					ParticleEffectAt(SelfPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+					ParticleEffectAt(vPredictedPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+					float SpaceCenter[3]; WorldSpaceCenter(npc.m_iTarget, SpaceCenter);
+					npc.FaceTowards(SpaceCenter, 15000.0);
+					npc.m_flCharge_delay = GetGameTime(npc.index) + 5.0;
+				}
+			}
+		}
 	}
 	else
 	{
@@ -631,7 +681,7 @@ public Action Sensal_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
 			
-			CPrintToChatAll("{blue}Sensal{default}: You keep talking about Silvester and Blue Goggles, what is the meaning of this?");
+			CPrintToChatAll("{blue}Sensal{default}: You will ruin all there is.");
 
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
@@ -818,15 +868,16 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.m_flAttackHappens = 0.0;
 			EmitSoundToAll("mvm/mvm_tank_end.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 			npc.SetCycle(0.01);
+			npc.SetPlaybackRate(2.0);
 			npc.StopPathing();
 			npc.m_bPathing = false;
 			SensalGiveShield(npc.index, 45); //Give self a shield
 
 			SensalThrowScythes(npc);
 			npc.m_flDoingAnimation = gameTime + 0.45;
-			npc.m_flAngerDelay = gameTime + 30.0;
+			npc.m_flAngerDelay = gameTime + 15.0;
 
-			npc.m_flReloadIn = gameTime + 3.0;
+			npc.m_flReloadIn = gameTime + 1.5;
 		}
 		else
 		{
@@ -1086,7 +1137,7 @@ void SensalThrowScythes(Sensal npc)
 	WorldSpaceCenter(npc.index, pos);
 	
 //	if(ZR_GetWaveCount()+1 >= 60)
-	MaxCount = 2;
+	MaxCount = 3;
 
 	for(int Repeat; Repeat <= 7; Repeat++)
 	{
@@ -1285,7 +1336,7 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 			WorldSpaceCenter(entity, FloatVector);
 		}
 
-		int Projectile = npc.FireParticleRocket(FloatVector, damage , 400.0 , 100.0 , "",_,_,true,origin_altered,_,_,_,false);
+		int Projectile = npc.FireParticleRocket(FloatVector, damage , 600.0 , 100.0 , "",_,_,true,origin_altered,_,_,_,false);
 		SensalEffects(Projectile,view_as<int>(npc.Anger),"");
 		b_RageProjectile[Projectile] = npc.Anger;
 		//dont exist !
@@ -1298,7 +1349,7 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		 npc.index,
 		 	70.0,			// float lockonAngleMax,
 		   	9.0,				//float homingaSec,
-			true,				// bool LockOnlyOnce,
+			false,				// bool LockOnlyOnce,
 			true,				// bool changeAngles,
 			  ang_Look);// float AnglesInitiate[3]);
 
@@ -1375,7 +1426,6 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 		{
 			SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
 		}
-		float VulnerabilityToGive = 0.10;
 		EmitSoundToAll(g_SyctheHitSound[GetRandomInt(0, sizeof(g_SyctheHitSound) - 1)], entity, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		TE_Particle(b_RageProjectile[entity] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
@@ -1422,7 +1472,7 @@ bool SensalTalkPostWin(Sensal npc)
 	}
 	if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
 	{
-		CPrintToChatAll("{blue}Sensal{default}: We apologize for the sudden attack, we didn't know, take this as an apology.");
+		CPrintToChatAll("{blue}Sensal{default}: I will be back with allies.");
 		
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		BlockLoseSay = true;
@@ -1430,22 +1480,22 @@ bool SensalTalkPostWin(Sensal npc)
 	else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 	{
 		i_SaidLineAlready[npc.index] = 4;
-		CPrintToChatAll("{blue}Sensal{default}: But I see that this was to protect you guys, yet you were able to destroy Nemesis.");
+		CPrintToChatAll("{blue}Sensal{default}: You destroy yourselves and eachother.");
 	}
 	else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
 	{
 		i_SaidLineAlready[npc.index] = 3;
-		CPrintToChatAll("{blue}Sensal{default}: We got sent to rescue him and we saw you attacking him.");
+		CPrintToChatAll("{blue}Sensal{default}: As much as he hates me this is gone on too far.");
 	}
 	else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
 	{
 		i_SaidLineAlready[npc.index] = 2;
-		CPrintToChatAll("{blue}Sensal{default}: We are close friends though we lost contact since he came out of the city.");
+		CPrintToChatAll("{blue}Sensal{default}: I will make sure to contact {green}Spookmaster Bones{default}.");
 	}
 	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 	{
 		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of your's now aswell.");
+		CPrintToChatAll("{blue}Sensal{default}: I came here to make sure all is fine, it is not.");
 	}
 	return true; //He is trying to help.
 }
@@ -1659,7 +1709,7 @@ bool SensalSummonPortal(Sensal npc)
 			Sensal particle = view_as<Sensal>(PortalParticle);
 			particle.Anger = npc.Anger;
 			DataPack pack;
-			CreateDataTimer(8.5, Sensal_TimerRepeatPortalGate, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			CreateDataTimer(4.5, Sensal_TimerRepeatPortalGate, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(EntIndexToEntRef(npc.index));
 			pack.WriteCell(EntIndexToEntRef(PortalParticle));
 
@@ -1708,7 +1758,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 				Foundenemies = true;
 				float pos[3];
 				WorldSpaceCenter(enemy[i], pos);
-				int Projectile = npc.FireParticleRocket(pos, SENSAL_BASE_RANGED_SCYTHE_DAMGAE * RaidModeScaling , 400.0 , 100.0 , "",_,_,true, flMyPos,_,_,_,false);
+				int Projectile = npc.FireParticleRocket(pos, SENSAL_BASE_RANGED_SCYTHE_DAMGAE * RaidModeScaling , 600.0 , 100.0 , "",_,_,true, flMyPos,_,_,_,false);
 				SensalEffects(Projectile,view_as<int>(npc.Anger),"");
 				b_RageProjectile[Projectile] = npc.Anger;
 
@@ -1723,7 +1773,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 				npc.index,
 					70.0,			// float lockonAngleMax,
 					9.0,				//float homingaSec,
-					true,				// bool LockOnlyOnce,
+					false,				// bool LockOnlyOnce,
 					true,				// bool changeAngles,
 					ang_Look,			
 					enemy[i]); //home onto this enemy
@@ -1946,4 +1996,20 @@ void SensalGiveShield(int sensal, int shieldcount)
 	//	shieldcount *= 2;
 
 	VausMagicaGiveShield(sensal, shieldcount); //Give self a shield
+}
+
+float[] GetBehindTarget(int target, float Distance, float origin[3])
+{
+	float VecForward[3];
+	float vecRight[3];
+	float vecUp[3];
+	
+	GetVectors(target, VecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
+	
+	float vecSwingEnd[3];
+	vecSwingEnd[0] = origin[0] - VecForward[0] * (Distance);
+	vecSwingEnd[1] = origin[1] - VecForward[1] * (Distance);
+	vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
+
+	return vecSwingEnd;
 }
