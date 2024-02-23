@@ -136,7 +136,7 @@ void FileNetwork_ConfigSetup(KeyValues map)
 	delete kv;
 }
 
-void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", int delay = 5)
+stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", int delay = 5)
 {
 	PrecacheSound(sound);
 
