@@ -2165,6 +2165,7 @@ enum PlayerAnimEvent_t
 39	PLAYERANIMEVENT_COUNT
 };
 */
+
 public void Try_Backstab_Anim_Again(int ref)
 {
 	int attacker = EntRefToEntIndex(ref);
@@ -2174,7 +2175,8 @@ public void Try_Backstab_Anim_Again(int ref)
 		{
 			RequestFrame(Try_Backstab_Anim_Again, ref);
 		}
-		Animation_Retry[attacker] -= 1;
+
+		Animation_Retry[attacker]--;
 		TE_Start("PlayerAnimEvent");
 		TE_WriteEnt("m_hPlayer", attacker);
 		TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
@@ -2183,16 +2185,16 @@ public void Try_Backstab_Anim_Again(int ref)
 	}
 }
 
-
 void NPC_DeadEffects(int entity)
 {
+
 #if defined ZR		
 	RemoveNpcFromZombiesLeftCounter(entity);
-#endif
-#if defined ZR
 	if(GetTeam(entity) != TFTeam_Red)
 #endif
+
 	{
+		
 #if defined ZR		
 		DropPowerupChance(entity);
 		Gift_DropChance(entity);
@@ -2207,11 +2209,6 @@ void NPC_DeadEffects(int entity)
 			GiveXP(client, 1);
 			Items_GiveNPCKill(client, i_NpcInternalId[entity]);
 			Saga_DeadEffects(entity, client, WeaponLastHit);
-#endif
-			
-#if defined RPG
-			Quests_AddKill(client, NPC_Names[i_NpcInternalId[entity]]);
-			Spawns_NPCDeath(entity, client, WeaponLastHit);
 #endif
 			
 			Attributes_OnKill(client, WeaponLastHit);

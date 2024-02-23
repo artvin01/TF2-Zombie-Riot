@@ -1237,6 +1237,11 @@ public Plugin myinfo =
 	version		=	"manual"
 };
 
+static any Native_FuncToVal(Handle plugin, int numParams)
+{
+	return GetNativeCell(1);
+}
+
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
 	MarkNativeAsOptional("FuncToVal");
@@ -1520,7 +1525,52 @@ public void OnMapStart()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	PrecacheModel(WEAPON_CUSTOM_WEAPONRY_1);
 	
-	MapStartResetAll();
+#if defined ZR
+	Zero(i_CustomWeaponEquipLogic);
+	Zero(Mana_Hud_Delay);
+	Zero(Mana_Regen_Delay);
+	Zero(RollAngle_Regen_Delay);
+#endif
+
+	SDKHooks_ClearAll();
+
+	Zero(f_MinicritSoundDelay);
+	Zero(b_IsAGib);
+	Zero(i_Hex_WeaponUsesTheseAbilities);
+	Zero(f_WidowsWineDebuffPlayerCooldown);
+	Zero(f_WidowsWineDebuff);
+	Zero(f_TempCooldownForVisualManaPotions);
+	Zero(i_IsABuilding);
+	Zero(f_ImmuneToFalldamage);
+	Zero(f_DelayLookingAtHud);
+	Zero(f_TimeUntillNormalHeal);
+	Zero(f_ClientWasTooLongInsideHurtZone);
+	Zero(f_ClientWasTooLongInsideHurtZoneDamage);
+	Zero(f_ClientWasTooLongInsideHurtZoneStairs);
+	Zero(f_ClientWasTooLongInsideHurtZoneDamageStairs);
+	Zero(delay_hud);
+	Zero(Increaced_Overall_damage_Low);
+	Zero(Resistance_Overall_Low);
+	Zero(Increaced_Sentry_damage_Low);
+	Zero(Increaced_Sentry_damage_High);
+	Zero(Resistance_for_building_Low);
+	Zero(f_BotDelayShow);
+	Zero(f_OneShotProtectionTimer);
+	CleanAllNpcArray();
+	Zero(f_ClientServerShowMessages);
+	Zero(h_NpcCollissionHookType);
+	Zero(h_NpcSolidHookType);
+	Zero2(i_StickyToNpcCount);
+	Zero(f_DelayBuildNotif);
+	Zero(f_ClientInvul);
+	Zero(i_HasBeenBackstabbed);
+	Zero(i_HasBeenHeadShotted);
+	Zero(b_LimitedGibGiveMoreHealth);
+	Zero2(f_TargetWasBlitzedByRiotShield);
+	Zero(f_StunExtraGametimeDuration);
+	CurrentGibCount = 0;
+	Zero(f_EmpowerStateSelf);
+	Zero(f_EmpowerStateOther);
 	
 #if defined ZR
 	ZR_MapStart();
@@ -1747,6 +1797,50 @@ public Action Command_ToggleReload(int client, int args)
 		b_MarkForReload = true;
 	}
 	return Plugin_Handled;
+}
+
+//ty miku for tellingg
+public void ConVarCallback(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
+{
+	if(result == ConVarQuery_Okay)
+		f_ClientMusicVolume[client] = StringToFloat(cvarValue);
+}
+public void ConVarCallback_FirstPersonViewModel(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
+{
+	if(result == ConVarQuery_Okay)
+		b_FirstPersonUsesWorldModel[client] = view_as<bool>(StringToInt(cvarValue));
+}
+
+public void ConVarCallbackDuckToVolume(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
+{
+	if(result == ConVarQuery_Okay)
+	{
+		if(f_BegPlayerToSetDuckConvar[client] < GetGameTime())
+		{
+			f_BegPlayerToSetDuckConvar[client] = GetGameTime() + 300.0;
+			if(StringToFloat(cvarValue) < 0.9)
+			{
+				SetGlobalTransTarget(client);
+				PrintToChat(client,"%t", "Show Grigori Mute Hint Message");
+			}
+		}
+	}
+}
+
+public void ConVarCallback_g_ragdoll_fadespeed(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
+{
+	if(result == ConVarQuery_Okay)
+	{
+		if(f_BegPlayerToSetRagdollFade[client] < GetGameTime())
+		{
+			f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 30.0;
+			if(StringToInt(cvarValue) == 0)
+			{
+				SetGlobalTransTarget(client);
+				PrintToChat(client,"%t", "Show Ragdoll Hint Message");
+			}
+		}
+	}
 }
 
 public void OnClientPostAdminCheck(int client)
@@ -3040,7 +3134,7 @@ public Action SDKHook_Regenerate_Touch(int entity, int target)
 	return Plugin_Continue;
 }
 
-public void Set_Projectile_Collision(int entity)
+void Set_Projectile_Collision(int entity)
 {
 	if(IsValidEntity(entity) && GetTeam(entity) != view_as<int>(TFTeam_Blue))
 	{
@@ -3060,6 +3154,19 @@ public void Delete_FrameLater(int ref) //arck, they are client side...
 	{
 		RemoveEntity(entity);
 	}
+}
+
+void RemoveNpcThingsAgain(int entity)
+{
+#if defined ZR
+	CleanAllAppliedEffects_BombImplanter(entity, false);
+	//Dont have to check for if its an npc or not, really doesnt matter in this case, just be sure to delete it cus why not
+	//incase this breaks, add a baseboss check
+	CleanAllApplied_Aresenal(entity, true);
+	b_NpcForcepowerupspawn[entity] = 0;	
+	CleanAllApplied_Cryo(entity);
+#endif
+	i_HexCustomDamageTypes[entity] = 0;
 }
 
 public void OnEntityDestroyed(int entity)
@@ -3109,19 +3216,6 @@ public void OnEntityDestroyed(int entity)
 		OnEntityDestroyed_Build_On_Build(entity);
 		#endif
 	}
-}
-
-public void RemoveNpcThingsAgain(int entity)
-{
-#if defined ZR
-	CleanAllAppliedEffects_BombImplanter(entity, false);
-	//Dont have to check for if its an npc or not, really doesnt matter in this case, just be sure to delete it cus why not
-	//incase this breaks, add a baseboss check
-	CleanAllApplied_Aresenal(entity, true);
-	b_NpcForcepowerupspawn[entity] = 0;	
-	CleanAllApplied_Cryo(entity);
-#endif
-	i_HexCustomDamageTypes[entity] = 0;
 }
 
 #if defined ZR
@@ -3347,60 +3441,6 @@ public void Frame_OffCheats()
 	CvarCheats.SetBool(false, false, false);
 }
 */
-public any Native_FuncToVal(Handle plugin, int numParams)
-{
-	return GetNativeCell(1);
-}
-
-static void MapStartResetAll()
-{
-#if defined ZR
-	Zero(i_CustomWeaponEquipLogic);
-	Zero(Mana_Hud_Delay);
-	Zero(Mana_Regen_Delay);
-	Zero(RollAngle_Regen_Delay);
-#endif
-
-	SDKHooks_ClearAll();
-
-	Zero(f_MinicritSoundDelay);
-	Zero(b_IsAGib);
-	Zero(i_Hex_WeaponUsesTheseAbilities);
-	Zero(f_WidowsWineDebuffPlayerCooldown);
-	Zero(f_WidowsWineDebuff);
-	Zero(f_TempCooldownForVisualManaPotions);
-	Zero(i_IsABuilding);
-	Zero(f_ImmuneToFalldamage);
-	Zero(f_DelayLookingAtHud);
-	Zero(f_TimeUntillNormalHeal);
-	Zero(f_ClientWasTooLongInsideHurtZone);
-	Zero(f_ClientWasTooLongInsideHurtZoneDamage);
-	Zero(f_ClientWasTooLongInsideHurtZoneStairs);
-	Zero(f_ClientWasTooLongInsideHurtZoneDamageStairs);
-	Zero(delay_hud);
-	Zero(Increaced_Overall_damage_Low);
-	Zero(Resistance_Overall_Low);
-	Zero(Increaced_Sentry_damage_Low);
-	Zero(Increaced_Sentry_damage_High);
-	Zero(Resistance_for_building_Low);
-	Zero(f_BotDelayShow);
-	Zero(f_OneShotProtectionTimer);
-	CleanAllNpcArray();
-	Zero(f_ClientServerShowMessages);
-	Zero(h_NpcCollissionHookType);
-	Zero(h_NpcSolidHookType);
-	Zero2(i_StickyToNpcCount);
-	Zero(f_DelayBuildNotif);
-	Zero(f_ClientInvul);
-	Zero(i_HasBeenBackstabbed);
-	Zero(i_HasBeenHeadShotted);
-	Zero(b_LimitedGibGiveMoreHealth);
-	Zero2(f_TargetWasBlitzedByRiotShield);
-	Zero(f_StunExtraGametimeDuration);
-	CurrentGibCount = 0;
-	Zero(f_EmpowerStateSelf);
-	Zero(f_EmpowerStateOther);
-}
 
 #if defined _tf2items_included
 public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, Handle &item)
@@ -3432,51 +3472,6 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 	return Plugin_Continue;
 }
 #endif
-
-//ty miku for tellingg
-
-public void ConVarCallback(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
-{
-	if(result == ConVarQuery_Okay)
-		f_ClientMusicVolume[client] = StringToFloat(cvarValue);
-}
-public void ConVarCallback_FirstPersonViewModel(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
-{
-	if(result == ConVarQuery_Okay)
-		b_FirstPersonUsesWorldModel[client] = view_as<bool>(StringToInt(cvarValue));
-}
-
-public void ConVarCallbackDuckToVolume(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
-{
-	if(result == ConVarQuery_Okay)
-	{
-		if(f_BegPlayerToSetDuckConvar[client] < GetGameTime())
-		{
-			f_BegPlayerToSetDuckConvar[client] = GetGameTime() + 300.0;
-			if(StringToFloat(cvarValue) < 0.9)
-			{
-				SetGlobalTransTarget(client);
-				PrintToChat(client,"%t", "Show Grigori Mute Hint Message");
-			}
-		}
-	}
-}
-
-public void ConVarCallback_g_ragdoll_fadespeed(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
-{
-	if(result == ConVarQuery_Okay)
-	{
-		if(f_BegPlayerToSetRagdollFade[client] < GetGameTime())
-		{
-			f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 30.0;
-			if(StringToInt(cvarValue) == 0)
-			{
-				SetGlobalTransTarget(client);
-				PrintToChat(client,"%t", "Show Ragdoll Hint Message");
-			}
-		}
-	}
-}
 
 public Action AdminCheckKick(Handle timer, int ref)
 {
@@ -3580,16 +3575,6 @@ stock void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons
 	}
 	
 	TF2_SetPlayerClass(client, classType, weapons, persistent);
-}
-
-void ResetReplications()
-{
-	for(int client=1; client<=MaxClients; client++)
-	{
-		ReplicateClient_Svairaccelerate[client] = -1.0;
-		ReplicateClient_Tfsolidobjects[client] = -1;
-		ReplicateClient_RollAngle[client] = -1;
-	}
 }
 
 #if defined ZR

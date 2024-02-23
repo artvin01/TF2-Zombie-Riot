@@ -251,6 +251,16 @@ stock bool ExcuteRelay(const char[] name, const char[] input="Trigger")
 	return found;
 }
 
+void ResetReplications()
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		ReplicateClient_Svairaccelerate[client] = -1.0;
+		ReplicateClient_Tfsolidobjects[client] = -1;
+		ReplicateClient_RollAngle[client] = -1;
+	}
+}
+
 stock void CreateAttachedAnnotation(int client, int entity, float time, const char[] buffer)
 {
 	Event event = CreateEvent("show_annotation");
