@@ -347,7 +347,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
-			RaidModeTime = GetGameTime() + 15.0;
+			RaidModeTime = GetGameTime() + 292.0;
 			RaidModeScaling = 9999999.99;
 
 			Zombies_Currently_Still_Ongoing--;
