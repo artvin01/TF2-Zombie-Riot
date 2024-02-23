@@ -1537,14 +1537,12 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 	return entity!=data;
 }
 
-#if defined ZR
 stock float[] GetAbsOriginOld(int client)
 {
 	float v[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
 	return v;
 }
-#endif
 
 stock void GetAbsOrigin(int client, float v[3])
 {

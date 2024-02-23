@@ -3872,7 +3872,6 @@ stock bool IsLengthGreaterThan(float vector[3], float length)
 
 public float clamp(float a, float b, float c) { return (a > c ? c : (a < b ? b : a)); }
 
-#if defined ZR
 stock float[] WorldSpaceCenterOld(int entity)
 {
 	//We need to do an exception here, if we detect that we actually make the size bigger via lag comp
@@ -3902,7 +3901,6 @@ stock float[] WorldSpaceCenterOld(int entity)
 	
 	return vecPos;
 }
-#endif
 
 stock void WorldSpaceCenter(int entity, float vecPos[3])
 {
@@ -6869,7 +6867,6 @@ public MRESReturn IBody_GetSolidMask(Address pThis, Handle hReturn, Handle hPara
 	return MRES_Supercede; 
 }
 
-#if defined ZR
 stock float[] PredictSubjectPositionOld(CClotBody npc, int subject, float Extra_lead = 0.0, bool ignore = false)
 {
 	if(!ignore && f_PredictDuration[subject] > GetGameTime())
@@ -6881,7 +6878,6 @@ stock float[] PredictSubjectPositionOld(CClotBody npc, int subject, float Extra_
 	f_PredictDuration[subject] = GetGameTime() + 0.05;
 	return f_PredictPos[subject];
 }
-#endif
 
 stock void PredictSubjectPosition(CClotBody npc, int subject, float Extra_lead = 0.0, bool ignore = false, float vec[3])
 {
@@ -7178,14 +7174,12 @@ stock void BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject, fl
 	pathTarget[2] += 20.0; //Clip them up, minimum crouch level preferred, or else the bots get really confused and sometimees go otther ways if the player goes up or down somewhere, very thin stairs break these bots.
 }
 
-#if defined ZR
 stock float[] PredictSubjectPositionForProjectilesOld(CClotBody npc, int subject, float projectile_speed, float offset = 0.0)
 {
 	float v[3];
 	PredictSubjectPositionForProjectiles(npc, subject, projectile_speed, offset, v);
 	return v;
 }
-#endif
 
 stock void PredictSubjectPositionForProjectiles(CClotBody npc, int subject, float projectile_speed, float offset = 0.0, float pathTarget[3])
 {

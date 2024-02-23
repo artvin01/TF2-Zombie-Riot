@@ -836,7 +836,6 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.SetPlaybackRate(2.0);
 			npc.StopPathing();
 			npc.m_bPathing = false;
-			SensalGiveShield(npc.index, 45); //Give self a shield
 
 			SensalThrowScythes(npc);
 			npc.m_flDoingAnimation = gameTime + 0.45;
@@ -863,7 +862,6 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			SensalThrowScythes(npc);
 			npc.m_flDoingAnimation = gameTime + 0.45;
 			npc.m_flNextRangedSpecialAttackHappens = gameTime + 7.5;
-			SensalGiveShield(npc.index, 15);
 
 			npc.m_flNextRangedSpecialAttackHappens = gameTime + 5.5;
 		}
@@ -888,7 +886,6 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.m_flDoingAnimation = gameTime + 99.0;
 			npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
 			npc.m_flAttackHappens = 0.0;
-			SensalGiveShield(npc.index, 30);
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 			npc.SetCycle(0.01);
 			float flPos[3];
@@ -1936,33 +1933,6 @@ public bool Sensal_TraceWallsOnly(int entity, int contentsMask)
 	return !entity;
 }
 
-
-void SensalGiveShield(int sensal, int shieldcount)
-{
-	return;
-	Sensal npc = view_as<Sensal>(sensal);
-	//if(ZR_GetWaveCount()+1 >= 60)
-	{
-		shieldcount *= 2;
-	}
-	/*else if(ZR_GetWaveCount()+1 >= 45)
-	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.85);
-	}
-	else if(ZR_GetWaveCount()+1 >= 30)
-	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.5);
-	}*/
-	if(npc.Anger)
-	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.5);
-	}
-
-	//if(LastMann)
-	//	shieldcount *= 2;
-
-	VausMagicaGiveShield(sensal, shieldcount); //Give self a shield
-}
 
 float[] GetBehindTarget(int target, float Distance, float origin[3])
 {
