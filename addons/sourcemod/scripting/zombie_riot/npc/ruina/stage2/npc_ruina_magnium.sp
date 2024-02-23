@@ -244,8 +244,6 @@ static void ClotThink(int iNPC)
 		return;
 	}
 	
-	Ruina_Add_Battery(npc.index, 0.75);
-	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
@@ -263,6 +261,8 @@ static void ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
+
+	Ruina_Add_Battery(npc.index, 0.75);
 
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.

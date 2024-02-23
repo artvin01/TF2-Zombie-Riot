@@ -169,12 +169,12 @@ methodmap Laniun < CClotBody
 		
 		
 		/*
-			Bunsen Brave		Robo_Heavy_Chief
-			Claid					"models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
-			Dark Helm - Laniun		Hw2013_The_Dark_Helm_(Class)
-			Diplomat 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
-			Herzenvrecher		"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
-		
+			Bunsen Brave			"models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl"
+			festive eyelander		"models/weapons/c_models/c_claymore/c_claymore_xmas.mdl"
+			Berliner's bucket helm	"models/player/items/medic/berliners_bucket_helm.mdl"
+			Diplomat 				"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
+			tuxxy					"models/player/items/all_class/tuxxy_scout.mdl"
+			Athenian Attire			"models/workshop/player/items/scout/hwn2018_athenian_attire/hwn2018_athenian_attire.mdl"
 		*/
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -191,25 +191,12 @@ methodmap Laniun < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_scout.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claymore/c_claymore_xmas.mdl");	//claidemor	
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl");	
+		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/medic/berliners_bucket_helm.mdl");	
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");	
+		npc.m_iWearable5 = npc.EquipItem("head", "models/player/items/all_class/tuxxy_scout.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2018_athenian_attire/hwn2018_athenian_attire.mdl");
 		
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -219,6 +206,7 @@ methodmap Laniun < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
@@ -246,7 +234,7 @@ static void ClotThink(int iNPC)
 		return;
 	}
 	
-	Ruina_Add_Battery(npc.index, 0.75);
+	
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -266,20 +254,21 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
+	Ruina_Add_Battery(npc.index, 2.5);
+
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>500.0)
+	if(fl_ruina_battery[npc.index]>3000.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
-		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
-		
+		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Master_Apply_Speed_Buff(npc.index, 125.0, 1.0, 1.12);
+		Master_Apply_Speed_Buff(npc.index, 130.0, 1.0, 1.17);
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
@@ -297,7 +286,7 @@ static void ClotThink(int iNPC)
 			{
 				npc.FaceTowards(vPredictedPos);
 				npc.FaceTowards(vPredictedPos);
-				npc.m_flNextTeleport = GameTime + 30.0;
+				npc.m_flNextTeleport = GameTime + 25.0;
 				float Tele_Check = GetVectorDistance(WorldSpaceCenterOld(npc.index), vPredictedPos);
 					
 					
@@ -313,15 +302,12 @@ static void ClotThink(int iNPC)
 							
 						float effect_duration = 0.25;
 	
-						end_offset = WorldSpaceCenterOld(npc.index);
-							
-						start_offset[2]-= 25.0;
-						end_offset[2] -= 25.0;
-							
+						end_offset = vPredictedPos;
+										
 						for(int help=1 ; help<=8 ; help++)
 						{	
-							Laniun_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
-							
+							Lanius_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
+											
 							start_offset[2] += 12.5;
 							end_offset[2] += 12.5;
 						}
@@ -340,11 +326,11 @@ static void ClotThink(int iNPC)
 		Melee.target = PrimaryThreatIndex;
 		Melee.fl_distance_to_target = flDistanceToTarget;
 		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
-		Melee.damage = 25.0;
-		Melee.bonus_dmg = 125.0;
+		Melee.damage = 50.0;
+		Melee.bonus_dmg = 250.0;
 		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
-		Melee.swing_speed = 0.54;
-		Melee.swing_delay = 0.4;
+		Melee.swing_speed = 0.475;
+		Melee.swing_delay = 0.37;
 		Melee.turn_speed = 20000.0;
 		Melee.gameTime = GameTime;
 		Melee.status = 0;
@@ -375,29 +361,6 @@ static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
 	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 0);
 }
-
-static void Laniun_Teleport_Effect(char type[255], float duration = 0.0, float start_point[3], float end_point[3])
-{
-	int part1 = CreateEntityByName("info_particle_system");
-	if(IsValidEdict(part1))
-	{
-		TeleportEntity(part1, start_point, NULL_VECTOR, NULL_VECTOR);
-		DispatchKeyValue(part1, "effect_name", type);
-		SetVariantString("!activator");
-		DispatchSpawn(part1);
-		ActivateEntity(part1);
-		AcceptEntityInput(part1, "Start");
-		
-		DataPack pack;
-		CreateDataTimer(0.1, Timer_Move_Particle, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteCell(EntIndexToEntRef(part1));
-		pack.WriteCell(end_point[0]);
-		pack.WriteCell(end_point[1]);
-		pack.WriteCell(end_point[2]);
-		pack.WriteCell(duration);
-	}
-}
-
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 
@@ -439,5 +402,6 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
-	
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 }
