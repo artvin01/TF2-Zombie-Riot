@@ -3,7 +3,7 @@
 
 #define PILLAR_SPACING 170.0
 #define SENSAL_BASE_RANGED_SCYTHE_DAMGAE 13.0
-#define SENSAL_LASER_THICKNESS 25
+#define SENSAL_LASER_THICKNESS 50
 
 static bool BlockLoseSay;
 
@@ -268,8 +268,6 @@ methodmap Sensal < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flMeleeArmor = 1.25;	
 		
-		SDKHook(npc.index, SDKHook_Think, Sensal_ClotThink);
-		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSensal_OnTakeDamagePost);
 		//IDLE
 		npc.m_iState = 0;
@@ -291,8 +289,6 @@ methodmap Sensal < CClotBody
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
 		
-
-		bool final = StrContains(data, "final_item") != -1;
 		
 		i_RaidGrantExtra[npc.index] = 1;
 		
@@ -306,7 +302,7 @@ methodmap Sensal < CClotBody
 			}
 		}
 
-		RaidModeScaling = 45.0;//float(ZR_GetWaveCount()+1);
+		RaidModeScaling = 60.0;//float(ZR_GetWaveCount()+1);
 		b_RageAnimated[npc.index] = false;
 		if(RaidModeScaling < 55)
 		{
@@ -419,7 +415,7 @@ public void Sensal_ClotThink(int iNPC)
 			}
 			case 4:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: Your abiltiies are futile against me, you do not know me.");
+				CPrintToChatAll("{blue}Sensal{default}: Your abilties are futile against me, you do not know me.");
 			}
 			case 5:
 			{
@@ -436,37 +432,6 @@ public void Sensal_ClotThink(int iNPC)
 		}
 	}
 	npc.Update();
-	if(i_RaidGrantExtra[npc.index] == 50)
-	{
-		npc.m_flSpeed = 660.0;
-		BlockLoseSay = true;
-		if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-		{
-			npc.m_iTarget = GetClosestAlly(npc.index);
-			npc.m_flGetClosestTargetTime = GetRandomRetargetTime();
-		}
-		if(IsValidAlly(npc.index, npc.m_iTarget))
-		{
-			float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, vecMe, true);
-			if(flDistanceToTarget < npc.GetLeadRadius()) 
-			{
-				npc.StopPathing();
-				npc.m_bPathing = false;
-			}
-			else 
-			{
-				npc.SetGoalEntity(npc.m_iTarget);
-				npc.StartPathing();
-			}
-		}
-		else
-		{
-			npc.m_flGetClosestTargetTime = 0.0;
-		}
-		return;
-	}
 	if(SensalTalkPostWin(npc))
 		return;
 /*
@@ -1974,6 +1939,7 @@ public bool Sensal_TraceWallsOnly(int entity, int contentsMask)
 
 void SensalGiveShield(int sensal, int shieldcount)
 {
+	return;
 	Sensal npc = view_as<Sensal>(sensal);
 	//if(ZR_GetWaveCount()+1 >= 60)
 	{
