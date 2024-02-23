@@ -1124,10 +1124,8 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 			LagCompEntitiesThatAreIntheWay(Compensator);
 		}
 	}
-	#if defined LagCompensation
 	if(b_LagCompNPC)
 		StartLagCompensation_Base_Boss(Compensator);
-	#endif
 	
 	if(b_LagCompNPC_BlockInteral)
 	{
@@ -1249,9 +1247,7 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 
 public MRESReturn LagCompensationThink(Address manager)
 {
-	#if defined LagCompensation
 	LagCompensationThink_Forward();
-	#endif
 	return MRES_Ignored;
 }
 public void FinishLagCompMoveBack()
@@ -1270,10 +1266,8 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 	//Set this to false to be sure.
 	FinishLagCompMoveBack();
 	
-	#if defined LagCompensation
 	if(b_LagCompNPC)
 		FinishLagCompensation_Base_boss();
-	#endif
 	
 //	FinishLagCompensationResetValues();
 	
@@ -1825,11 +1819,7 @@ public MRESReturn DHook_TauntPre(int client, DHookParam param)
 public MRESReturn DHook_TauntPost(int client, DHookParam param)
 {
 	//Set class back to what it was
-	#if defined NoSendProxyClass
 	TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
-	#else
-	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
-	#endif
 	return MRES_Ignored;
 }
 #endif

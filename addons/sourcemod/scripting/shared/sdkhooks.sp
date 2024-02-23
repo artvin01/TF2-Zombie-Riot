@@ -1,21 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
-/*
-static const float ViewHeights[] =
-{
-	75.0,
-	65.0,
-	75.0,
-	68.0,
-	68.0,
-	75.0,
-	75.0,
-	68.0,
-	75.0,
-	68.0
-};
-*/
-//static int g_offsPlayerPunchAngleVel = -1;
+
 static float i_WasInUber[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
@@ -271,15 +256,6 @@ public void OnPostThink(int client)
 		b_DisplayDamageHud[client] = false;
 		Calculate_And_Display_HP_Hud(client);
 	}
-#if !defined NoSendProxyClass
-	if(WeaponClass[client]!=TFClass_Unknown)
-	{
-		TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
-		if(GetEntPropFloat(client, Prop_Send, "m_vecViewOffset[2]") > 64.0)	// Otherwise, shaking
-			SetEntPropFloat(client, Prop_Send, "m_vecViewOffset[2]", ViewHeights[WeaponClass[client]]);
-	}
-#endif
-
 	if(b_PhaseThroughBuildingsPerma[client] == 2)
 	{
 		if(ReplicateClient_Tfsolidobjects[client] != 0)

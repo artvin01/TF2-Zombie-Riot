@@ -67,14 +67,6 @@ enum
 	EDICT_EFFECT
 }
 
-#define LagCompensation
-
-#define HaveLayersForLagCompensation
-
-//Not used cus i need all the performance i can get.
-
-#define NoSendProxyClass
-
 //maybe doing this will help lag, as there are no aim layers in zombies, they always look forwards no matter what.
 
 //edit: No, makes you miss more often.
@@ -1353,9 +1345,7 @@ public void OnPluginStart()
 	NPCCamera_PluginStart();
 	SDKHook_PluginStart();
 //	Building_PluginStart();
-#if defined LagCompensation
 	OnPluginStart_LagComp();
-#endif
 	NPC_Base_InitGamedata();
 
 #if defined NOG
@@ -1931,9 +1921,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	if(b_IsPlayerABot[client])
 		return Plugin_Continue;
 	
-#if defined LagCompensation
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
-#endif
 	
 #if defined RTS
 	RTS_PlayerRunCmd(client);
