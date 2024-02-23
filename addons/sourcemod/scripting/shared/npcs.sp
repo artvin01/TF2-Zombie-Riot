@@ -610,7 +610,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		i_HasBeenHeadShotted[victim] = false;
 		if(damagetype & DMG_BULLET)
 		{
-#if !defined RTS
+#if defined ZR
 			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
 			{
 
@@ -649,7 +649,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 #endif
 		}
 
-#if !defined RTS
+#if defined ZR
 		if(!i_WeaponCannotHeadshot[weapon])
 #endif
 		{
@@ -1149,7 +1149,11 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	}		
 #endif
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+#if defined ZR
 	if((Damageaftercalc > 0.0 || b_NpcIsInvulnerable[victim] || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+#else
+	if((Damageaftercalc > 0.0 || b_NpcIsInvulnerable[victim]) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+#endif
 	{
 
 #if defined ZR
@@ -1227,7 +1231,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	Damageaftercalc = 0.0;
 }
 
-void GiveRageOnDamage(int client, float damage)
+stock void GiveRageOnDamage(int client, float damage)
 {
 	if(!GetEntProp(client, Prop_Send, "m_bRageDraining"))
 	{
@@ -1254,7 +1258,7 @@ stock void Generic_OnTakeDamage(int victim, int attacker)
 	}
 }
 
-#if !defined RTS
+#if defined ZR
 static float f_damageAddedTogether[MAXTF2PLAYERS];
 static float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
 
@@ -1872,7 +1876,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 }
 #endif	// Non-RTS
 
-bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 0)
+stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 0)
 {
 	if(fl_TotalArmor[victim] != 1.0)
 		return true;
@@ -2144,7 +2148,7 @@ void NPC_DeadEffects(int entity)
 #if defined ZR		
 	RemoveNpcFromZombiesLeftCounter(entity);
 #endif
-#if !defined RTS
+#if defined ZR
 	if(GetTeam(entity) != TFTeam_Red)
 #endif
 	{
@@ -2403,7 +2407,7 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, int &att
 #endif
 	return damage;
 }
-bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int damagecustom)
+stock bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int damagecustom)
 {
 	if(attacker <= MaxClients)
 	{
@@ -2551,7 +2555,7 @@ stock void OnTakeDamageRpgAgressionOnHit(int victim, int &attacker, int &inflict
 }
 #endif
 
-void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int &damagetype, bool trueArmorOnly = false, int weapon = 0)
+stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int &damagetype, bool trueArmorOnly = false, int weapon = 0)
 {
 	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
 	{
@@ -2990,7 +2994,7 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 						SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GameTime+(attack_speed));
 					}
 
-#if !defined RTS
+#if defined ZR
 					if(b_BackstabLaugh[weapon])
 					{
 						SepcialBackstabLaughSpy(attacker);
@@ -3352,8 +3356,7 @@ stock void OnPostAttackUniqueWeapon(int attacker, int victim, int weapon, int da
 #endif
 }
 
-
-void DisplayRGBHealthValue(int Health_init, int Maxhealth_init, int &red, int &green, int &blue)
+stock void DisplayRGBHealthValue(int Health_init, int Maxhealth_init, int &red, int &green, int &blue)
 {
 	int Health = Health_init;
 	int MaxHealth = Maxhealth_init;

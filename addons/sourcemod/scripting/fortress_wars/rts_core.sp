@@ -118,6 +118,7 @@ enum struct SkillEnum
 }
 
 int BuildMode[MAXTF2PLAYERS];
+int Resource[MAX_TEAMS][Resource_MAX];
 
 #include "fortress_wars/object.sp"
 #include "fortress_wars/npc.sp"	// Global NPC List

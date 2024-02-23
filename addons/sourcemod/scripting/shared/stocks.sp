@@ -362,6 +362,8 @@ stock bool KvJumpToKeySymbol2(KeyValues kv, int id)
 	return false;
 }
 
+static bool i_PreviousInteractedEntityDo[MAXENTITIES];
+
 stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool ignore_allied_npc = false, bool mask_shot = false, float vecEndOrigin[3] = {0.0, 0.0, 0.0}, int repeatsretry = 2)
 {
 	float vecOrigin[3], vecAngles[3];
@@ -481,6 +483,7 @@ stock void CreateExplosion(int owner, const float origin[3], float damage, int m
 	}
 }
 
+#if defined __tf_econ_data_included
 stock TFClassType TF2_GetWeaponClass(int index, TFClassType defaul=TFClass_Unknown, int checkSlot=-1)
 {
 	switch(index)
@@ -532,6 +535,7 @@ stock TFClassType TF2_GetWeaponClass(int index, TFClassType defaul=TFClass_Unkno
 	
 	return defaul;
 }
+#endif
 
 stock bool TF2_GetItem(int client, int &weapon, int &pos)
 {
@@ -643,6 +647,7 @@ stock void SetAmmo(int client, int type, int ammo)
 	SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, type);
 }
 
+#if defined _tf2items_included
 stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count, int custom_classSetting = 0)
 {
 	if(custom_classSetting == 11)
@@ -669,7 +674,7 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	TF2Items_SetQuality(weapon, qual);
 	TF2Items_SetNumAttributes(weapon, 0);
 
-#if !defined RTS
+#if defined ZR
 	TFClassType class = TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true));
 	if(custom_classSetting != 0)
 	{
@@ -686,16 +691,7 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 
 		for(int i; i < count; i++)
 		{
-#if defined RPG
-			if(attrib[i] < 0)
-			{
-				Stats_GetCustomStats(entity, attrib[i], value[i]);
-			}
-			else
-#endif
-			{
-				Attributes_Set(entity, attrib[i], value[i]);
-			}
+			Attributes_Set(entity, attrib[i], value[i]);
 		}
 		
 		if(StrEqual(name, "tf_weapon_sapper"))
@@ -720,11 +716,12 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 	}
 
-#if !defined RTS
+#if defined ZR
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], _, false);
 #endif
 	return entity;
 }
+
 //										 info.Attribs, info.Value, info.Attribs);
 public void HandleAttributes(int weapon, const int[] attributes, const float[] values, int count)
 {
@@ -789,6 +786,7 @@ void RemoveAllDefaultAttribsExceptStrings(int entity)
 	
 	delete staticAttribs;	
 }
+#endif
 
 stock void NullifySpecificAttributes(int entity, int attribute)
 {
@@ -803,7 +801,6 @@ stock void NullifySpecificAttributes(int entity, int attribute)
 			Attributes_Set(entity, attribute, 0.0);	
 		}
 	}
-	
 }
 
 stock void TF2_RemoveItem(int client, int weapon)
@@ -1409,7 +1406,7 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 		
 	}
 	
-#if !defined RTS
+#if defined ZR
 	if(entity > MaxClients && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Red)
 	{
 		return false;
@@ -1626,6 +1623,7 @@ bool IsBehindAndFacingTarget(int owner, int target, int weapon = -1)
 	float flViewAnglesDot = GetVectorDotProduct(vecTargetForward, vecOwnerForward);
 	if(weapon > 0)
 	{
+#if defined ZR
 		if(b_BackstabLaugh[weapon])
 		{
 			int AllCorrect = 0;
@@ -1643,6 +1641,7 @@ bool IsBehindAndFacingTarget(int owner, int target, int weapon = -1)
 			else
 				return false;
 		}
+#endif
 	}
 	return ( flPosVsTargetViewDot > 0.0 && flPosVsOwnerViewDot > 0.5 && flViewAnglesDot > -0.3 );
 }
@@ -1660,7 +1659,7 @@ stock float AngleNormalize(float angle)
 	return angle;
 }
 
-void DoOverlay(int client, const char[] overlay, int Methods = 0)
+stock void DoOverlay(int client, const char[] overlay, int Methods = 0)
 {
 	if(Methods == 1 || Methods == 2)
 	{
@@ -2094,7 +2093,7 @@ stock bool IsEntityStuck(int entity)
 	return (TR_DidHit());
 }
 
-
+#if defined _tf2items_included
 stock int SpawnWeapon_Special(int client, char[] name, int index, int level, int qual, const char[] att, bool visible=true)
 {
 	if(StrEqual(name, "saxxy", false))	// if "saxxy" is specified as the name, replace with appropiate name
@@ -2168,6 +2167,7 @@ stock int SpawnWeapon_Special(int client, char[] name, int index, int level, int
 	}
 	return entity;
 }
+#endif
 
 stock void GetRayAngles(float startPoint[3], float endPoint[3], float angle[3])
 {
@@ -2218,6 +2218,7 @@ stock float fixAngle(float angle)
 	return angle;
 }
 
+#if defined _tf2items_included
 stock int Spawn_Buildable(int client, int AllowBuilding = -1)
 {
 	int entity = SpawnWeapon(client, "tf_weapon_builder", 28, 1, 0, view_as<int>({148}), view_as<float>({1.0}), 1); 
@@ -2268,6 +2269,7 @@ stock int Spawn_Buildable(int client, int AllowBuilding = -1)
 	}	
 	return -1;
 }
+#endif
 
 public void CreateEarthquake(float position[3], float duration, float radius, float amplitude, float frequency)
 {
@@ -2481,7 +2483,7 @@ stock int TracePlayerHulls(const float pos[3], const float mins[3], const float 
 	return bHit;
 }
 
-void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, const int color[4])
+stock void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, const int color[4])
 {
 	//Trace top down
 	/*
@@ -2570,7 +2572,7 @@ float[] CalculateBulletDamageForceOld( const float vecBulletDir[3], float flScal
 }
 */
 
-int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
+stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 {
 	if(owner_projectile < 1)
 	{
@@ -2592,7 +2594,7 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	{
 		return -1;
 	}
-#if !defined RTS
+#if defined ZR
 	else if(GetTeam(other_entity) == TFTeam_Red)
 	{
 		return -1;
@@ -2706,12 +2708,12 @@ void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vec
 	vecForce[2] *= -1.0;
 }
 
+#if defined ZR
 int CountPlayersOnRed(int alive = 0)
 {
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
-#if defined ZR
 		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 		{
 			if(!alive)
@@ -2740,18 +2742,17 @@ int CountPlayersOnRed(int alive = 0)
 			}
 		}
 
-#else
 		if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client) == 2 && (!alive || IsPlayerAlive(client)))
 		{
 			amount++;
 			continue;
 		}
-#endif
 	}
 	
 	return amount;
 	
 }
+#endif
 
 int CountPlayersOnServer()
 {
@@ -2790,7 +2791,7 @@ int inflictor = 0)
 
 	float damage_reduction = 1.0;
 
-#if !defined RTS
+#if defined ZR
 	if(IsValidEntity(weapon))
 	{
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
@@ -3783,7 +3784,7 @@ stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3] = {0.0,0.
 
 static bool HazardResult;
 
-bool IsPointHazard(const float pos1[3])
+stock bool IsPointHazard(const float pos1[3])
 {
 	HazardResult = false;
 	TR_EnumerateEntities(pos1, pos1, PARTITION_TRIGGER_EDICTS, RayType_EndPoint, TraceEntityEnumerator_EnumerateTriggers);
@@ -3812,13 +3813,13 @@ public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 }
 
 
-bool IsBoxHazard(const float pos1[3],const float mins[3],const float maxs[3])
+stock bool IsBoxHazard(const float pos1[3],const float mins[3],const float maxs[3])
 {
 	HazardResult = false;
 	TR_EnumerateEntitiesHull(pos1, pos1, mins, maxs, PARTITION_TRIGGER_EDICTS, TraceEntityEnumerator_EnumerateTriggers, _);
 	return HazardResult;
 }
-bool IsPointNoBuild(const float pos1[3])
+stock bool IsPointNoBuild(const float pos1[3])
 {
 	HazardResult = false;
 	TR_EnumerateEntities(pos1, pos1, PARTITION_TRIGGER_EDICTS, RayType_EndPoint, TraceEntityEnumerator_EnumerateTriggers_noBuilds);
@@ -3851,8 +3852,10 @@ stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int 
 {
 	float HudY = 0.75;
 	float HudX = -1.0;
+#if defined ZR
 	HudX += f_NotifHudOffsetY[client];
 	HudY += f_NotifHudOffsetX[client];
+#endif
 	SetHudTextParams(HudX, HudY, duration, red, green, blue, 255);
 }
 

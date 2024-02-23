@@ -79,6 +79,8 @@ void ConVar_PluginStart()
 	zr_allowfreeplay = CreateConVar("zr_allowfreeplay", "1", "Can players vote to continue into freeplay (endless waves).");
 	zr_enemymulticap = CreateConVar("zr_enemymulticap", "4.0", "Max enemy count multipler, will scale by health onwards", _, true, 0.5);
 
+	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
+	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	// MapSpawnersActive = CreateConVar("zr_spawnersactive", "4", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
 	//CHECK npcs.sp FOR THIS ONE!
 	#else
@@ -87,10 +89,8 @@ void ConVar_PluginStart()
 
 	zr_downloadconfig = CreateConVar("zr_downloadconfig", "", "Downloads override config zr/ .cfg already included");
 	
-	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
 	//CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "8", "The maximum amount of blue bots allowed for the killfeed and more");
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
-	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	CvarRerouteToIp = CreateConVar("zr_rerouteip", "", "If the server is full, reroute", FCVAR_DONTRECORD);
 	CvarKickPlayersAt = CreateConVar("zr_kickplayersat", "", "If the server is full, Do reroute or kick", FCVAR_DONTRECORD);
 	CvarRerouteToIpAfk = CreateConVar("zr_rerouteipafk", "", "If the server is full, reroute", FCVAR_DONTRECORD);
