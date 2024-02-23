@@ -5,7 +5,16 @@ static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
 static float fl_normal_attack_duration[MAXENTITIES];
 
 static const char g_nightmare_cannon_core_sound[][] = {
-	"freak_fortress_2/bvb_bomberzv2/loop_laser.mp3",
+	"ambient_mp3/halloween/thunder_01.mp3",
+	"ambient_mp3/halloween/thunder_02.mp3",
+	"ambient_mp3/halloween/thunder_03.mp3",
+	"ambient_mp3/halloween/thunder_04.mp3",
+	"ambient_mp3/halloween/thunder_05.mp3",
+	"ambient_mp3/halloween/thunder_06.mp3",
+	"ambient_mp3/halloween/thunder_07.mp3",
+	"ambient_mp3/halloween/thunder_08.mp3",
+	"ambient_mp3/halloween/thunder_09.mp3",
+	"ambient_mp3/halloween/thunder_10.mp3",
 };
 
 
