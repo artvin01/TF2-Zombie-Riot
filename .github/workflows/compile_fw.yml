@@ -3,7 +3,7 @@ name: Compile FW
 on:
   push:
     branches:
-      -main
+      -master
   pull_request:
 
 jobs:
