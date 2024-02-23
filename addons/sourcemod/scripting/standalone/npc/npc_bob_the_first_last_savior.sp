@@ -359,13 +359,15 @@ static void Internal_ClotThink(int iNPC)
 {
 	RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(iNPC);
 	
-
-	for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+	if(!npc.m_bFakeClone)
 	{
-		if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
+		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
 		{
-			Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
-		}	
+			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
+			{
+				Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
+			}	
+		}
 	}
 	float gameTime = GetGameTime(npc.index);
 

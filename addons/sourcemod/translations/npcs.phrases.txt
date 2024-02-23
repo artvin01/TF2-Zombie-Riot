@@ -16,4 +16,17 @@
 	{
 		"en"		"Sensal"
 	}
+	"Bob The First"
+	{
+		"en"		"Bob The First"
+	}
+	"??????? First"
+	{
+		"en"		"??????? First"
+	}
+	"??? the First"
+	{
+		"en"		"??? the First"
+	}
+	
 }
