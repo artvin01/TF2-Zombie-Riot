@@ -1,13 +1,17 @@
-name: Compile
+name: Compile NOG
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      -main
+  pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sm-version: ['1.12.7053']
+        sm-version: ['1.12.X']
     
     steps:
       - name: Install Checkout
@@ -72,13 +76,5 @@ jobs:
       
       - name: Compile ${{ matrix.sm-version }}
         run: |
-          spcomp -E -O2 -v2 -i "include" -o zombie_riot.smx zombie_riot.sp
-          spcomp -O2 -v2 -i "include" -o fortress_wars.smx fortress_wars.sp
           spcomp -E -O2 -v2 -i "include" -o npc_framework.smx npc_framework.sp
         working-directory: ${{ env.SCRIPTS_PATH }}
-      
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@master
-        with:
-          name: zombie_riot.smx
-          path: addons/sourcemod/scripting/zombie_riot.smx
