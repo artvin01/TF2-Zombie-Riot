@@ -265,8 +265,6 @@ methodmap RaidbossBobTheFirst < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		
-		npc.m_bSecondPhase = true;
-		npc.g_TimesSummoned = -2;
 		if(StrContains(data, "final_item") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 1;
@@ -561,6 +559,24 @@ static void Internal_ClotThink(int iNPC)
 
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			summon = NPC_CreateByName("npc_bob_the_first_last_savior", -1, pos, ang, GetTeam(npc.index), "fake");
+			if(summon > MaxClients)
+			{
+				fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index] * 0.5;
+				fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index] * 0.75;
+
+				SetEntityRenderMode(summon, RENDER_TRANSALPHA);
+				SetEntityRenderColor(summon, 200, 200, 200, 200);
+			}
+			summon = NPC_CreateByName("npc_bob_the_first_last_savior", -1, pos, ang, GetTeam(npc.index), "fake");
+			if(summon > MaxClients)
+			{
+				fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index] * 0.5;
+				fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index] * 0.75;
+
+				SetEntityRenderMode(summon, RENDER_TRANSALPHA);
+				SetEntityRenderColor(summon, 200, 200, 200, 200);
+			}
 			summon = NPC_CreateByName("npc_bob_the_first_last_savior", -1, pos, ang, GetTeam(npc.index), "fake");
 			if(summon > MaxClients)
 			{
