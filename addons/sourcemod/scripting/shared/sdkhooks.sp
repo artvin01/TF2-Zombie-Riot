@@ -1,21 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
-/*
-static const float ViewHeights[] =
-{
-	75.0,
-	65.0,
-	75.0,
-	68.0,
-	68.0,
-	75.0,
-	75.0,
-	68.0,
-	75.0,
-	68.0
-};
-*/
-//static int g_offsPlayerPunchAngleVel = -1;
+
 static float i_WasInUber[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
@@ -271,15 +256,6 @@ public void OnPostThink(int client)
 		b_DisplayDamageHud[client] = false;
 		Calculate_And_Display_HP_Hud(client);
 	}
-#if !defined NoSendProxyClass
-	if(WeaponClass[client]!=TFClass_Unknown)
-	{
-		TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
-		if(GetEntPropFloat(client, Prop_Send, "m_vecViewOffset[2]") > 64.0)	// Otherwise, shaking
-			SetEntPropFloat(client, Prop_Send, "m_vecViewOffset[2]", ViewHeights[WeaponClass[client]]);
-	}
-#endif
-
 	if(b_PhaseThroughBuildingsPerma[client] == 2)
 	{
 		if(ReplicateClient_Tfsolidobjects[client] != 0)
@@ -317,7 +293,6 @@ public void OnPostThink(int client)
 		}
 	}
 		
-#if defined ZR
 	//Reduce knockback when airborn, this is to fix issues regarding flying way too high up, making it really easy to tank groups!
 	bool WasAirborn = false;
 
@@ -411,13 +386,8 @@ public void OnPostThink(int client)
 			}
 		}
 	}
-#endif	// ZR
 
-#if defined ZR
 	if(Mana_Regen_Delay[client] < GameTime || (b_AggreviatedSilence[client] && Mana_Regen_Delay_Aggreviated[client] < GameTime))
-#else
-	if(Mana_Regen_Delay[client] < GameTime)
-#endif
 	{
 		Mana_Regen_Delay[client] = GameTime + 0.4;
 		Mana_Regen_Delay_Aggreviated[client] = GameTime + 0.4;
@@ -434,7 +404,6 @@ public void OnPostThink(int client)
 			}
 		}
 
-#if defined ZR
 		max_mana[client] = 400.0;
 		mana_regen[client] = 10.0;
 			
@@ -450,28 +419,16 @@ public void OnPostThink(int client)
 		{
 			mana_regen[client] *= 1.35;
 		}
-#endif
-				
-#if defined RPG
-		max_mana[client] = 40.0;
-		mana_regen[client] = 1.0;
-#endif
-					
+
 		mana_regen[client] *= Mana_Regen_Level[client];
 		max_mana[client] *= Mana_Regen_Level[client];
 
-#if defined ZR
 		if(b_AggreviatedSilence[client])	
 		{
 			mana_regen[client] *= 0.30;
 		}
-#endif
-
-#if defined ZR		
+	
 		if(Current_Mana[client] < RoundToCeil(max_mana[client]) && Mana_Regen_Block_Timer[client] < GameTime)
-#else
-		if(Current_Mana[client] < RoundToCeil(max_mana[client]))
-#endif
 		{
 			Current_Mana[client] += RoundToCeil(mana_regen[client]);
 				
@@ -482,7 +439,6 @@ public void OnPostThink(int client)
 		Mana_Hud_Delay[client] = 0.0;
 	}
 
-#if defined ZR
 	if(Current_Mana[client] > RoundToCeil(max_mana[client]+10.0))	//A part of Ruina's special mana "corrosion"
 	{
 		//the +10 is for rounding errors.
@@ -515,9 +471,7 @@ public void OnPostThink(int client)
 		}
 		has_mage_weapon[client] = true;	//now force the mana hud even if your not a mage. this only applies to non mages if you got overmana, and the only way you can get overmana without a mage weapon is if you got hit by ruina's debuff.
 	}
-#endif	//ZR
 
-#if defined ZR
 	if(Armor_regen_delay[client] < GameTime)
 	{
 		Armour_Level_Current[client] = 0;
@@ -562,18 +516,10 @@ public void OnPostThink(int client)
 		Armor_regen_delay[client] = GameTime + 1.0;
 	}
 	if(Mana_Hud_Delay[client] < GameTime)
-#else	// ZR
-	else if(Mana_Hud_Delay[client] < GameTime)
-#endif
-
 	{
 		SetGlobalTransTarget(client);
 		char buffer[255];
-#if defined RPG		
 		float HudY = 0.95;
-#else
-		float HudY = 0.95;
-#endif
 		float HudX = -1.0;
 	
 		HudX += f_WeaponHudOffsetY[client];
@@ -671,7 +617,6 @@ public void OnPostThink(int client)
 				IsReady = false;
 			}
 			
-#if defined ZR
 			if(GetAbilitySlotCount(client) > 0)
 			{
 				cooldown_time = GetAbilityCooldownM3(client);
@@ -727,7 +672,6 @@ public void OnPostThink(int client)
 				IsReady = false;
 				had_An_ability = true;
 			}
-#endif	// ZR
 			if(had_An_ability)
 			{
 				HudY -= 0.035;
@@ -738,9 +682,6 @@ public void OnPostThink(int client)
 			float percentage_Global = 1.0;
 			float value = 1.0;
 
-
-
-#if defined ZR
 			percentage_Global *= ArmorPlayerReduction(client);
 			percentage_Global *= Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(client, weapon);
 			
@@ -762,7 +703,6 @@ public void OnPostThink(int client)
 					percentage_Global *= 0.0;
 				}
 			}
-#endif
 
 			value = Attributes_FindOnPlayerZR(client, 412, true);	// Overall damage resistance
 			if(value)
@@ -964,29 +904,7 @@ public void OnPostThink(int client)
 		had_An_ability = false;
 		char bufferbuffs[64];
 		//BUFFS!
-#if defined RPG		
-		if(f_HealingPotionDuration[client] > GameTime) //Client has a buff, but which one?
-		{
-			float time_left = f_HealingPotionDuration[client] - GameTime;
-			had_An_ability = true;
-			switch(f_HealingPotionEffect[client])
-			{
-				case MELEE_BUFF_2:
-				{
-					Format(bufferbuffs, sizeof(bufferbuffs), "[STR! %.0fs] %s",time_left, bufferbuffs);
-				}
-				case RANGED_BUFF_2: 
-				{
-					Format(bufferbuffs, sizeof(bufferbuffs), "[DEX! %.0fs] %s",time_left, bufferbuffs);
-				}
-				case MAGE_BUFF_2:
-				{
-					Format(bufferbuffs, sizeof(bufferbuffs), "[INT! %.0fs] %s",time_left, bufferbuffs);
-				}		
-			}
-		}
-#endif
-#if defined ZR	
+
 		if(Wands_Potions_HasBuff(client))
 		{
 			had_An_ability = true;
@@ -1031,7 +949,7 @@ public void OnPostThink(int client)
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "i%s", bufferbuffs);
 		}
-#endif
+
 		if(Increaced_Overall_damage_Low[client] > GameTime)
 		{
 			had_An_ability = true;
@@ -1087,60 +1005,6 @@ public void OnPostThink(int client)
 			Format(buffer, sizeof(buffer), "%s\n%s", bufferbuffs, buffer);
 			HudY += -0.0345; //correct offset
 		}
-#if defined RPG
-		int xpLevel = LevelToXp(Level[client]);
-		int xpNext = LevelToXp(Level[client]+1);
-			
-		int extra = XP[client]-xpLevel;
-		int nextAt = xpNext-xpLevel;
-			
-	
-
-		if(Tier[client])
-		{
-			Format(buffer, sizeof(buffer), "%s\n%d | Elite %d Level %d",buffer, extra, Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
-		}
-		else
-		{
-			Format(buffer, sizeof(buffer), "%s\n%d | Level %d",buffer,extra, Level[client]);
-		}
-
-
-		if(Level[client] >= CURRENT_MAX_LEVEL || Level[client] == GetLevelCap(Tier[client]))
-		{
-			Format(buffer, sizeof(buffer), "%s | E%d\n", buffer, Tier[client] + 1);
-
-			for(int i=1; i<21; i++)
-			{
-				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
-			}
-
-		}
-		else
-		{
-			Format(buffer, sizeof(buffer), "%s | %d\n", buffer, xpNext - XP[client]);
-			for(int i=1; i<21; i++)
-			{
-				if(extra > nextAt*(i*0.05))
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
-				}
-				else if(extra > nextAt*(i*0.05 - 1.0/60.0))
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
-				}
-				else if(extra > nextAt*(i*0.05 - 1.0/30.0))
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
-				}
-				else
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
-				}
-			}
-			Format(buffer, sizeof(buffer), "%s\n", buffer);
-		}
-#endif
 		if(buffer[0])
 		{
 			SetHudTextParams(HudX, HudY, 0.81, red, green, blue, 255);
@@ -1151,11 +1015,6 @@ public void OnPostThink(int client)
 	{
 		delay_hud[client] = GameTime + 0.4;
 
-#if defined RPG
-		RPG_UpdateHud(client);
-#endif
-
-#if defined ZR
 		UpdatePlayerPoints(client);
 
 		if(LastMann || dieingstate[client] > 0)
@@ -1519,10 +1378,7 @@ public void OnPostThink(int client)
 		//Todo: Only update when needed.
 		SetEntProp(client, Prop_Send, "m_iHideHUD", GetEntProp(client, Prop_Send, "m_iHideHUD") | HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN);
 		PrintKeyHintText(client,"%s", HudBuffer);
-#endif	// ZR
 	}
-		
-#if defined ZR
 	else if(f_DelayLookingAtHud[client] < GameTime)
 	{
 		//Reuse uhh
@@ -1545,7 +1401,6 @@ public void OnPostThink(int client)
 	}
 	
 	Music_PostThink(client);
-#endif
 }
 
 public void OnPostThinkPost(int client)
@@ -1555,7 +1410,7 @@ public void OnPostThinkPost(int client)
 		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 0);
 	}
 }
-#endif	// Non-RTS
+#endif	// ZR
 
 /*
 public void OnPreThink(int client)
@@ -2363,11 +2218,11 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 				}
 				
 			}
-#endif
 			if(b_IsPlayerNiko[entity])
 			{
 				return Plugin_Handled;
 			}
+#endif
 		
 		}
 	}

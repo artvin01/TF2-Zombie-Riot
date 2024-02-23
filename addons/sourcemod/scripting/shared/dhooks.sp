@@ -96,11 +96,11 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
 	DHook_CreateDetour(gamedata, "CBaseObject::FirstSpawn", Dhook_FirstSpawn_Pre, Dhook_FirstSpawn_Post);
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
-#endif
-
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
 	DHook_CreateDetour(gamedata, "CTFPlayerShared::PulseRageBuff()", Dhook_PulseFlagBuff,_);
+#endif
+
 	//thanks to https://github.com/nosoop/SM-TFCustomAttributeStarterPack/blob/6e8ffcc929553f8906f0b32d92b649c32681cd1e/scripting/attr_buff_override.sp#L53
 	//nosoop
 
@@ -1124,10 +1124,8 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 			LagCompEntitiesThatAreIntheWay(Compensator);
 		}
 	}
-	#if defined LagCompensation
 	if(b_LagCompNPC)
 		StartLagCompensation_Base_Boss(Compensator);
-	#endif
 	
 	if(b_LagCompNPC_BlockInteral)
 	{
@@ -1249,9 +1247,7 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 
 public MRESReturn LagCompensationThink(Address manager)
 {
-	#if defined LagCompensation
 	LagCompensationThink_Forward();
-	#endif
 	return MRES_Ignored;
 }
 public void FinishLagCompMoveBack()
@@ -1270,10 +1266,8 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 	//Set this to false to be sure.
 	FinishLagCompMoveBack();
 	
-	#if defined LagCompensation
 	if(b_LagCompNPC)
 		FinishLagCompensation_Base_boss();
-	#endif
 	
 //	FinishLagCompensationResetValues();
 	
@@ -1825,11 +1819,7 @@ public MRESReturn DHook_TauntPre(int client, DHookParam param)
 public MRESReturn DHook_TauntPost(int client, DHookParam param)
 {
 	//Set class back to what it was
-	#if defined NoSendProxyClass
 	TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
-	#else
-	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
-	#endif
 	return MRES_Ignored;
 }
 #endif
@@ -2046,6 +2036,7 @@ public MRESReturn Detour_MaintainBotQuota(int pThis)
 
 //We want to disable them auto switching weapons during this, the reason being is that it messes with out custom equip logic, bad!
 
+#if defined ZR
 public MRESReturn Dhook_BlowHorn_Post(int entity)
 {
 	Attributes_Set(entity, 698, 1.0); // disable weapon switch
@@ -2072,7 +2063,6 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 		SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
 	}
 	
-#if defined ZR
 	//They successfully blew the horn! give them abit of credit for that! they helpinnnnnnn... yay
 	i_ExtraPlayerPoints[client] += 15;
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -2084,8 +2074,6 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 	}
 	RequestFrame(DelayEffectOnHorn, EntIndexToEntRef(client));
 
-
-#endif
 	
 	Attributes_Set(entity, 698, 0.0); // disable weapon switch
 	return MRES_Ignored;
@@ -2102,7 +2090,6 @@ stock void DelayEffectOnHorn(int ref)
 
 	ExtendDuration *= Attributes_GetOnPlayer(client, 319, true, false);
 
-#if defined ZR
 	if(b_ArkantosBuffItem[client])
 	{
 		int r = 200;
@@ -2118,7 +2105,7 @@ stock void DelayEffectOnHorn(int ref)
 		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.2, 6.0, 6.1, 1);
 		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 6.0, 6.1, 1);
 	}
-#endif
+
 	f_BannerAproxDur[client] = GetGameTime() + ExtendDuration;
 	f_BannerDurationActive[client] = GetGameTime() + 0.35;
 	CreateTimer(0.15, TimerGrantBannerDuration, EntIndexToEntRef(client), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -2169,7 +2156,7 @@ public Action TimerGrantBannerDuration(Handle timer, int ref)
 	{
 		return Plugin_Continue;
 	}
-#if defined ZR
+
 	if(ClientHasBannersWithCD(client) == 0)
 		return Plugin_Continue;
 
@@ -2193,7 +2180,6 @@ public Action TimerGrantBannerDuration(Handle timer, int ref)
 		BannerWearable[client] = EntIndexToEntRef(entity);
 		SDKCall_EquipWearable(client, entity);
 	}	
-#endif
 	return Plugin_Continue;
 }
 
@@ -2213,6 +2199,7 @@ public Action TimerSetBannerExtraDuration(Handle timer, DataPack pack)
 
 	return Plugin_Continue;
 }
+#endif
 /*
 ( INextBot *bot, const Vector &goalPos, const Vector &forward, const Vector &left )
 */
@@ -2253,7 +2240,7 @@ public MRESReturn DHook_ManageRegularWeaponsPost(int client, DHookParam param)
 #endif
 
 #define MAX_YAW_SHIELD_DELETE_SIDEWAY 25.0
-bool ShieldDeleteProjectileCheck(int owner, int enemy)
+stock bool ShieldDeleteProjectileCheck(int owner, int enemy)
 {
 	float pos1[3];
 	float pos2[3];

@@ -251,6 +251,16 @@ stock bool ExcuteRelay(const char[] name, const char[] input="Trigger")
 	return found;
 }
 
+void ResetReplications()
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		ReplicateClient_Svairaccelerate[client] = -1.0;
+		ReplicateClient_Tfsolidobjects[client] = -1;
+		ReplicateClient_RollAngle[client] = -1;
+	}
+}
+
 stock void CreateAttachedAnnotation(int client, int entity, float time, const char[] buffer)
 {
 	Event event = CreateEvent("show_annotation");
@@ -1586,7 +1596,7 @@ stock void GetWorldSpaceCenter(int client, float v[3])
 	v[2] += max_space[2] / 2;
 }
 
-bool IsBehindAndFacingTarget(int owner, int target, int weapon = -1)
+stock bool IsBehindAndFacingTarget(int owner, int target, int weapon = -1)
 {
 	float vecToTarget[3], vecEyeAngles[3];
 	GetWorldSpaceCenter(target, vecToTarget);
@@ -2621,7 +2631,7 @@ float[] CalculateDamageForceOld( const float vecBulletDir[3], float flScale )
 }
 #endif
 
-void CalculateDamageForce( const float vecBulletDir[3], float flScale, float vecForce[3])
+stock void CalculateDamageForce( const float vecBulletDir[3], float flScale, float vecForce[3])
 {
 	vecForce = vecBulletDir;
 	NormalizeVector( vecForce, vecForce );
@@ -2629,7 +2639,7 @@ void CalculateDamageForce( const float vecBulletDir[3], float flScale, float vec
 	ScaleVector(vecForce, flScale);
 }
 
-void CalculateDamageForceSelfCalculated(int client, float flScale, float vec[3])
+stock void CalculateDamageForceSelfCalculated(int client, float flScale, float vec[3])
 {
 	float vecSwingForward[3];
 	float ang[3];
