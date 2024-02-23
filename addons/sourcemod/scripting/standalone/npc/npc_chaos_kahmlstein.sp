@@ -349,6 +349,7 @@ methodmap ChaosKahmlstein < CClotBody
 			RaidModeTime = GetGameTime() + 250.0;
 			EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);	
 			EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);	
+			SDKHook(npc.index, SDKHook_OnTakeDamagePost, ChaosKahmlstein_OnTakeDamagePost);
 			for(int client_check=1; client_check<=MaxClients; client_check++)
 			{
 				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
@@ -452,12 +453,14 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-
-	for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+	if(!b_NoKillFeed[npc.index])
 	{
-		if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
+		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
 		{
-			Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
+			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
+			{
+				Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
+			}	
 		}	
 	}
 	float RaidModeTimeLeft = RaidModeTime - GetGameTime();
@@ -486,7 +489,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 	else if(RaidModeTimeLeft < 0.0 && i_SpeedUpTime[npc.index] == 3)
 	{
 		i_SpeedUpTime[npc.index] = 4; 
-		f_MessengerSpeedUp[npc.index] *= 1.25;
+		f_MessengerSpeedUp[npc.index] *= 2.0;
 		npc.m_flSpeed = 600.0;
 		if(i_RaidGrantExtra[npc.index] < 2)
 			CPrintToChatAll("{darkblue}Kahmlstein{default}:{crimson} YAAAAAAAAAAAAAAAAAAAAAAA.");
