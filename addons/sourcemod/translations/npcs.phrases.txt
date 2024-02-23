@@ -28,5 +28,9 @@
 	{
 		"en"		"??? the First"
 	}
+	"Chaos Kahmlstein"
+	{
+		"en"		"Chaos Kahmlstein"
+	}
 	
 }

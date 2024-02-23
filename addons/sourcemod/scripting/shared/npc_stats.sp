@@ -7018,14 +7018,12 @@ static void PredictSubjectPositionInternal(CClotBody npc, int subject, float Ext
 static float f_PickThisDirectionForabit[MAXENTITIES];
 static int i_PickThisDirectionForabit[MAXENTITIES];
 
-#if defined ZR
 stock float[] BackoffFromOwnPositionAndAwayFromEnemyOld(CClotBody npc, int subject, float extra_backoff = 64.0)
 {
 	float v[3];
 	BackoffFromOwnPositionAndAwayFromEnemy(npc, subject, extra_backoff, v);
 	return v;
 }
-#endif
 
 stock void BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject, float extra_backoff = 64.0, float pathTarget[3])
 {
