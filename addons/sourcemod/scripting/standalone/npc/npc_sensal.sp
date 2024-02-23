@@ -268,6 +268,11 @@ methodmap Sensal < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flMeleeArmor = 1.25;	
 		
+
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSensal_OnTakeDamagePost);
 		//IDLE
 		npc.m_iState = 0;
@@ -375,7 +380,7 @@ methodmap Sensal < CClotBody
 	}
 }
 
-public void Sensal_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	Sensal npc = view_as<Sensal>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -620,7 +625,7 @@ public void Sensal_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Sensal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Sensal npc = view_as<Sensal>(victim);
 		
@@ -657,7 +662,7 @@ public Action Sensal_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 
-public void Sensal_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	Sensal npc = view_as<Sensal>(entity);
 	/*
@@ -670,7 +675,6 @@ public void Sensal_NPCDeath(int entity)
 	ParticleEffectAt(pos, "teleported_blue", 0.5);
 	npc.PlayDeathSound();	
 
-	SDKUnhook(npc.index, SDKHook_Think, Sensal_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable7))
@@ -695,11 +699,7 @@ public void Sensal_NPCDeath(int entity)
 			RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
 		}					
 	}
-	if(i_RaidGrantExtra[npc.index] == 50)
-	{
-		CPrintToChatAll("{blue}Sensal{default}: You all are comming with me.");
-		return;
-	}
+
 	if(BlockLoseSay)
 		return;
 
