@@ -35,13 +35,24 @@ static const char g_RangedReloadSound[][] = {
 
 void Europa_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheModel("models/player/pyro.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Europa");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_europa");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Europa(client, vecPos, vecAng, ally);
 }
 
 methodmap Europa < CClotBody
@@ -112,7 +123,6 @@ methodmap Europa < CClotBody
 	{
 		Europa npc = view_as<Europa>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_EUROPA;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -135,10 +145,10 @@ methodmap Europa < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
-		
-		
-		SDKHook(npc.index, SDKHook_Think, Europa_ClotThink);
+
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
 		npc.m_flSpeed = 200.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -174,8 +184,8 @@ methodmap Europa < CClotBody
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
-		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc
-		Ruina_Set_Master_Heirarchy(npc.index, 2, false, 5, 1);		//doesn't acept any npc's
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
+		Ruina_Set_Master_Heirarchy(npc.index, RUINA_RANGED_NPC, false, 5, 1);		//doesn't acept any npc's
 
 		return npc;
 	}
@@ -185,7 +195,7 @@ methodmap Europa < CClotBody
 
 //TODO 
 //Rewrite
-public void Europa_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Europa npc = view_as<Europa>(iNPC);
 	
@@ -267,24 +277,32 @@ public void Europa_ClotThink(int iNPC)
 					if(flDistanceToTarget < (250.0*250.0))
 					{
 						Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
+						npc.m_bAllowBackWalking=true;
 					}
 					else
 					{
 						NPC_StopPathing(npc.index);
 						npc.m_bPathing = false;
+						npc.m_bAllowBackWalking=false;
 					}
 				}
 				else
 				{
 					npc.StartPathing();
 					npc.m_bPathing = true;
+					npc.m_bAllowBackWalking=false;
 				}
 			}
 			else
 			{
 				npc.StartPathing();
 				npc.m_bPathing = true;
+				npc.m_bAllowBackWalking=false;
 			}
+		}
+		else
+		{
+			npc.m_bAllowBackWalking=false;
 		}
 		Europa_SelfDefense(npc, GameTime, Anchor_Id);
 	}
@@ -298,14 +316,16 @@ public void Europa_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Europa_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Europa npc = view_as<Europa>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-	fl_ruina_battery[npc.index] += damage;	//turn damage taken into energy
+	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -316,15 +336,15 @@ public Action Europa_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 
-public void Europa_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Europa npc = view_as<Europa>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	SDKUnhook(npc.index, SDKHook_Think, Europa_ClotThink);
+
+	Ruina_NPCDeath_Override(entity);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -350,12 +370,12 @@ static void Europa_Spawn_Minnions(Europa npc)
 			
 			int spawn_index;
 			
-			spawn_index = Npc_Create(RUINA_DRONE, -1, pos, ang, GetTeam(npc.index));
+			spawn_index = NPC_CreateByName("npc_ruina_drone", npc.index, pos, ang, GetTeam(npc.index));
 			maxhealth = RoundToNearest(maxhealth * 0.45);
 
 			if(spawn_index > MaxClients)
 			{
-				Zombies_Currently_Still_Ongoing += 1;	// FIXME
+				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
@@ -374,12 +394,12 @@ static void Europa_Spawn_Self(Europa npc)
 			
 	int spawn_index;
 			
-	spawn_index = Npc_Create(RUINA_EUROPA, -1, pos, ang, GetTeam(npc.index));
+	spawn_index = NPC_CreateByName("npc_ruina_europa", npc.index, pos, ang, GetTeam(npc.index));
 	maxhealth = RoundToNearest(maxhealth * 0.75);
 
 	if(spawn_index > MaxClients)
 	{
-		Zombies_Currently_Still_Ongoing += 1;	// FIXME
+		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 	}
@@ -418,6 +438,7 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 			npc.FaceTowards(vecTarget, 20000.0);
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
+			npc.PlayRangedReloadSound();
 		}
 	}
 	else
@@ -458,6 +479,10 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 				}
 			}
 		}
+	}
+	if(npc.m_bAllowBackWalking)
+	{
+		npc.FaceTowards(vecTarget, 350.0);
 	}
 	npc.m_iTarget = GetClosestEnemyToAttack;
 }

@@ -144,7 +144,7 @@ void Freeplay_SpawnEnemy(int entity)
 		f_HussarBuff[entity] = FAR_FUTURE;
 	
 	if(PernellBuff)
-		b_PernellBuff[entity] = true;
+		f_PernellBuff[entity] = FAR_FUTURE;
 	
 	if(IceDebuff > 2)
 		f_HighIceDebuff[entity] = FAR_FUTURE;

@@ -22,6 +22,8 @@
 #define COLORR_GREEN				{  0, 255,   0, 255}
 #define COLORR_GRAY				{ 128,  128,  128, 255}
 
+#define FLAG_MODEL	"models/flag/flag.mdl"
+
 enum
 {
 	OBS_MODE_NONE = 0,	// not in spectator mode
@@ -211,6 +213,7 @@ static bool RTSEnabled[MAXTF2PLAYERS];
 static ArrayList Selected[MAXTF2PLAYERS];
 static int FocusRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static int CameraRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
+static int FlagRef[MAXTF2PLAYERS][6];
 static int LastFOV[MAXTF2PLAYERS];
 static int LastDefaultFOV[MAXTF2PLAYERS];
 static float MinZoom[MAXTF2PLAYERS];
@@ -253,10 +256,19 @@ void RTSCamera_PluginStart()
 	RegConsoleCmd("sm_rts", RTSCamera_CommandMenu, "RTS Camera Menu");
 	RegConsoleCmd("sm_rtstoggle", RTSCamera_CommandToggle, "Toggle RTS Camera");
 
+	PrecacheModel(FLAG_MODEL);
+
 	for(int i; i <= MAXENTITIES; i++)
 	{
 		if(i < MAXTF2PLAYERS)
+		{
 			SetDefaultValues(i);
+			
+			for(int a; a < sizeof(FlagRef[]); a++)
+			{
+				FlagRef[i][a] = INVALID_ENT_REFERENCE;
+			}
+		}
 		
 		for(int a; a < sizeof(BeamRef[]); a++)
 		{
@@ -1222,6 +1234,8 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 		}
 	}
 
+	RenderWaypoints(client);
+
 	if(!InSelectDrag[client])	// Not holding Left-Click
 	{
 		int color[4] = {255, 255, 255, 255};
@@ -1263,50 +1277,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 		else if(Selected[client] && NextMoveType[client])	// Has selected units
 		{
 			cursor = CURSOR_MOVE;
-
-#if defined RTS
-			switch(NextMoveType[client])
-			{
-				case Command_Attack:
-				{
-					// Red
-					color[1] = 0;
-					color[2] = 0;
-				}
-				case Command_HoldPos:
-				{
-					// Yellow
-					color[2] = 0;
-				}
-				case Command_Patrol:
-				{
-					// Blue
-					color[0] = 0;
-					color[1] = 0;
-				}
-			}
-#elseif defined ZR
-			switch(NextMoveType[client])
-			{
-				case Move_Attack:
-				{
-					// Red
-					color[1] = 0;
-					color[2] = 0;
-				}
-				case Move_HoldPos:
-				{
-					// Yellow
-					color[2] = 0;
-				}
-				case Move_Patrol:
-				{
-					// Blue
-					color[0] = 0;
-					color[1] = 0;
-				}
-			}
-#endif
+			GetColor(NextMoveType[client], color);
 		}
 		else
 		{
@@ -1341,6 +1312,56 @@ static int GetUnitSelectTrace(int client, const float vecPos[3], const float vec
 static bool TraceEntityFilter_Units(int entity, int contentsMask, int client)
 {
 	return IsSelectableUnitEntity(client, entity);
+}
+
+static void GetColor(int type, int color[4])
+{
+	switch(type)
+	{
+#if defined RTS
+		case Command_Move:
+		{
+			// Green
+			color[0] = 0;
+			color[2] = 0;
+		}
+		case Command_Attack:
+		{
+			// Red
+			color[1] = 0;
+			color[2] = 0;
+		}
+		case Command_HoldPos:
+		{
+			// Yellow
+			color[2] = 0;
+		}
+		case Command_Patrol:
+		{
+			// Blue
+			color[0] = 0;
+			color[1] = 0;
+		}
+#elseif defined ZR
+		case Move_Attack:
+		{
+			// Red
+			color[1] = 0;
+			color[2] = 0;
+		}
+		case Move_HoldPos:
+		{
+			// Yellow
+			color[2] = 0;
+		}
+		case Move_Patrol:
+		{
+			// Blue
+			color[0] = 0;
+			color[1] = 0;
+		}
+#endif
+	}
 }
 
 static void HighlightSelectedUnits(int client)
@@ -1393,7 +1414,7 @@ static stock void MoveSelectedUnits(int client, const float vecMovePos[3], int t
 					if(type < Command_Move)
 						type = Command_Move;
 					
-					UnitBody_AddCommand(entity, !HoldPress[client][Key_Ctrl], type, vecMovePos, target);
+					UnitBody_AddCommand(entity, HoldPress[client][Key_Ctrl] ? 0 : 1, type, vecMovePos, target);
 
 					if(!success)
 						UnitBody_PlaySound(entity, client, Sound_Move);
@@ -1456,7 +1477,7 @@ static stock void MoveSelectedUnits(int client, const float vecMovePos[3], int t
 
 static void RemoveSelectBeams(int owner)
 {
-	for(int i; i < 4; i++)
+	for(int i; i < sizeof(BeamRef[]); i++)
 	{
 		if(BeamRef[owner][i] == INVALID_ENT_REFERENCE)
 			continue;
@@ -1467,6 +1488,94 @@ static void RemoveSelectBeams(int owner)
 
 		BeamRef[owner][i] = INVALID_ENT_REFERENCE;
 	}
+}
+
+// Call this only after validating Selected[]
+static stock void RenderWaypoints(int client)
+{
+#if defined RTS
+	if(Selected[client])
+	{
+		int entity = EntRefToEntIndex(Selected[client].Get(0));
+
+		if(UnitBody_CanControl(client, entity))
+		{
+			int type, target;
+			float pos[3];
+			for(int i; i < sizeof(FlagRef[]); i++)
+			{
+				if(UnitBody_GetCommand(entity, i, type, pos, target) && type >= Command_Move)
+				{
+					int color[4] = {255, 255, 255, 255};
+					GetColor(type, color);
+
+					int flag = -1;
+
+					if(FlagRef[client][i] != INVALID_ENT_REFERENCE)
+						flag = EntRefToEntIndex(FlagRef[client][i]);
+					
+					if(flag == -1)
+					{
+						if(target != -1)
+							GetAbsOrigin(target, pos);
+						
+						flag = CreateEntityByName("prop_dynamic");
+						if(flag == -1)
+							continue;
+						
+						DispatchKeyValueVector(flag, "origin", pos);
+						DispatchKeyValueVector(flag, "angles", {0.0, -135.0, 0.0});
+						DispatchKeyValue(flag, "model", FLAG_MODEL);
+						DispatchKeyValue(flag, "modelscale", "1.0");
+						DispatchKeyValue(flag, "skin", "2");
+						DispatchKeyValue(flag, "solid", "0");
+
+						SetEntPropEnt(flag, Prop_Data, "m_hOwnerEntity", client);
+
+						DispatchSpawn(flag);
+
+						SetEntityRenderMode(flag, RENDER_TRANSCOLOR);
+						SDKHook(flag, SDKHook_SetTransmit, SetTransmit_Beam);
+
+						FlagRef[client][i] = EntIndexToEntRef(flag);
+					}
+					else
+					{
+						if(target != -1)
+							GetAbsOrigin(target, pos);
+						
+						TeleportEntity(flag, pos, NULL_VECTOR, NULL_VECTOR);
+					}
+					
+					SetEntityRenderColor(flag, color[0], color[1], color[2], color[3]);
+				}
+				else if(FlagRef[client][i] != INVALID_ENT_REFERENCE)
+				{
+					int flag = EntRefToEntIndex(FlagRef[client][i]);
+					if(flag != -1)
+						RemoveEntity(flag);
+
+					FlagRef[client][i] = INVALID_ENT_REFERENCE;
+				}
+			}
+
+			return;
+		}
+
+	}
+	
+	for(int i; i < sizeof(FlagRef[]); i++)
+	{
+		if(FlagRef[client][i] == INVALID_ENT_REFERENCE)
+			continue;
+		
+		int entity = EntRefToEntIndex(FlagRef[client][i]);
+		if(entity != -1)
+			RemoveEntity(entity);
+
+		FlagRef[client][i] = INVALID_ENT_REFERENCE;
+	}
+#endif
 }
 
 /*
@@ -1624,6 +1733,7 @@ static void DisableCamera(int client)
 
 	RemoveSelectBeams(client);
 	ClearSelected(client);
+	RenderWaypoints(client);
 	HoveringOver[client] = -1;
 
 	//SetEntProp(client, Prop_Send, "m_iFOV", LastFOV[client]);

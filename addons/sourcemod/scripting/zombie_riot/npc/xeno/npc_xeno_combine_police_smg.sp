@@ -385,7 +385,7 @@ public void XenoCombinePoliceSmg_ClotThink(int iNPC)
 				}
 			}
 			//Target close enough to hit
-			if(flDistanceToTarget > 10000 && npc.m_flReloadDelay < GetGameTime(npc.index))
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				npc.StartPathing();
 				

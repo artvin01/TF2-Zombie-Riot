@@ -35,7 +35,15 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 			return false;
 		}
 	}
-	
+	/*
+#if defined RTS
+	else if(IsObject(entity))
+	{
+		return true;
+	}
+#endif
+	*/
+
 	//if anything else is team
 	if(b_IsARespawnroomVisualiser[entity])
 	{

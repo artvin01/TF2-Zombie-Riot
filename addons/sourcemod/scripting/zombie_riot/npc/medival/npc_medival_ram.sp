@@ -56,7 +56,7 @@ methodmap MedivalRam < CClotBody
 		{
 			Garrison[npc.index] = StringToInt(data);
 			if(!Garrison[npc.index])
-				Garrison[npc.index] = GetIndexByPluginName(data);
+				Garrison[npc.index] = NPC_GetByPlugin(data);
 			
 			if(Garrison[npc.index] && !ally)
 				Zombies_Currently_Still_Ongoing += 6;
@@ -171,7 +171,7 @@ public void MedivalRam_ClotThink(int iNPC)
 			}
 	
 			//Target close enough to hit
-			if((flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
+			if((flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
 			{
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
@@ -266,7 +266,7 @@ void MedivalRam_NPCDeath(int entity)
 		
 		for(int i; i < 6; i++)
 		{
-			Npc_Create(Garrison[entity], -1, pos, ang, Team);
+			NPC_CreateById(Garrison[entity], -1, pos, ang, Team);
 		}
 	}
 }

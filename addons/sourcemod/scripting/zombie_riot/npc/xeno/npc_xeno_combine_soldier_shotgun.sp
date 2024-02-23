@@ -285,7 +285,7 @@ public void XenoCombineSoldierShotgun_ClotThink(int iNPC)
 			{
 				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index))
+			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				npc.m_fbGunout = true;
 				

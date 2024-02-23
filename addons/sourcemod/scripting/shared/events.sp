@@ -165,7 +165,7 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
 	CurrentGame = 0;
-	if(event.GetInt("team") == 3)
+	if(event != INVALID_HANDLE && event.GetInt("team") == 3)
 	{
 		//enemy team won due to timer or something else.
 		ZR_NpcTauntWin();
@@ -198,12 +198,20 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		ViewChange_UpdateHands(client, CurrentClass[client]);
 		TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
-		if(b_IsPlayerNiko[client])
+		if(b_IsPlayerNiko[client] || b_HideCosmeticsPlayer[client])
 		{
 		  	int entity = MaxClients+1;
 			while(TF2_GetWearable(client, entity))
 			{
-				SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+			}
+		}
+		else
+		{
+			int entity = MaxClients+1;
+			while(TF2_GetWearable(client, entity))
+			{
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 			}
 		}
 		/*

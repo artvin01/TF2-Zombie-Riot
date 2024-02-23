@@ -179,6 +179,7 @@ methodmap ThePurge < CClotBody
 		npc.m_flSwitchCooldown = GetGameTime(npc.index) + 2.0;
 		i_TimesSummoned[npc.index] = 0;
 		npc.m_flMeleeArmor = 1.5;
+		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 
 		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);
 		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);
@@ -213,6 +214,7 @@ methodmap ThePurge < CClotBody
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		RaidModeScaling *= 1.55;
 		RaidModeScaling *= 5.0;
+		RaidModeScaling *= 3.0;
 
 		Music_SetRaidMusic("#zombiesurvival/internius/the_purge.mp3", 229, true, 1.5);
 		
@@ -226,8 +228,12 @@ static void ClotThink(int iNPC)
 	ThePurge npc = view_as<ThePurge>(iNPC);
 	
 	float gameTime = GetGameTime(npc.index);
+	if(i_RaidGrantExtra[iNPC] == RAIDITEM_INDEX_WIN_COND)
+	{
+		return;
+	}
 
-	if(RaidBossActive != INVALID_ENT_REFERENCE && RaidModeTime < GetGameTime())
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
 		if(npc.m_iGunType != 11)
 		{
@@ -237,9 +243,10 @@ static void ClotThink(int iNPC)
 			npc.m_iGunType = 11;
 			npc.m_flNextMeleeAttack = gameTime + 1.0;
 			npc.m_flSwitchCooldown = FAR_FUTURE;
-			npc.m_flSpeed = 370.0;
+			npc.m_flSpeed = 450.0;
 			npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
 			npc.SetWeaponModel("models/workshop/weapons/c_models/c_iron_curtain/c_iron_curtain.mdl");
+			npc.StartPathing();
 
 			if(npc.Anger)
 			{
@@ -431,7 +438,7 @@ static void ClotThink(int iNPC)
 		{
 			case 0:	// Fists
 			{
-				RaidModeScaling *= 1.025;
+				RaidModeScaling *= 1.01;
 				npc.StartPathing();
 			}
 			case 1, 4, 7:	// Shotgun
@@ -637,13 +644,11 @@ static void ClotThink(int iNPC)
 			}
 			case 11:	// Minigun
 			{
-				npc.StopPathing();
-
 				if(npc.m_flNextMeleeAttack < gameTime)
 				{
 					KillFeed_SetKillIcon(npc.index, "minigun");
 					
-					npc.FaceTowards(vecTarget, 8000.0);
+					npc.FaceTowards(WorldSpaceCenterOld(target), 8000.0);
 					
 					npc.PlayMinigunSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
@@ -813,4 +818,5 @@ static void ClotDeath(int entity)
 public void ThePurge_Win(int entity)
 {
 	CPrintToChatAll("{crimson}The Purge{default}: {crimson}Annihilation completed.");
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 }

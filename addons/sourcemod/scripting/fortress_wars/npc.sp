@@ -1,44 +1,108 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-enum
-{
-	NOTHING	= 0,
-	MILITIA = 1,
-	VILLAGER = 2,
+static ArrayList NPCList;
 
-	// Add entries above this line
-	MAX_NPC_TYPES
+enum struct NPCData
+{
+	char Plugin[64];
+	char Name[64];
+	Function Func;
 }
 
-public const char NPC_Names[MAX_NPC_TYPES][] =
+// FileNetwork_ConfigSetup needs to be ran first
+void NPC_ConfigSetup()
 {
-	"nothing",
-	"Militia",
-	"Villager"
-};
+	delete NPCList;
+	NPCList = new ArrayList(sizeof(NPCData));
 
-void NPC_MapStart()
-{
-	UnitBody_MapStart();
-	EmpireBody_MapStart();
-	Militia_MapStart();
-	Villager_MapStart();
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "nothing");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_nothing");
+	data.Func = INVALID_FUNCTION;
+	NPCList.PushArray(data);
+
+	UnitBody_Setup();
+	EmpireBody_Setup();
+	Militia_Setup();
+	Villager_Setup();
 }
 
-stock any Npc_Create(int index, int team, const float vecPos[3], const float vecAng[3], const char[] data = "")
+int NPC_Add(NPCData data)
 {
-	any entity = -1;
-	switch(index)
+	if(!data.Func || data.Func == INVALID_FUNCTION)
+		ThrowError("Invalid function name");
+	
+	return NPCList.PushArray(data);
+}
+
+stock int NPC_GetNameById(int id, char[] buffer, int length)
+{
+	static NPCData data;
+	NPC_GetById(id, data);
+	return strcopy(buffer, length, data.Name);
+}
+
+stock int NPC_GetNameByPlugin(const char[] name, char[] buffer, int length)
+{
+	static NPCData data;
+	int lengt = NPCList.Length;
+	for(int i; i < lengt; i++)
 	{
-		case MILITIA:
-			entity = Militia(team, vecPos, vecAng);
+		NPCList.GetArray(i, data);
+		if(StrEqual(name, data.Plugin))
+			return strcopy(buffer, length, data.Name);
+	}
+	return 0;
+}
 
-		case VILLAGER:
-			entity = Villager(team, vecPos, vecAng);
+void NPC_GetById(int id, NPCData data)
+{
+	NPCList.GetArray(id, data);
+}
 
-		default:
-			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%d] Is not a valid npc!", index);
+int NPC_GetByPlugin(const char[] name, NPCData data = {})
+{
+	int length = NPCList.Length;
+	for(int i; i < length; i++)
+	{
+		NPCList.GetArray(i, data);
+		if(StrEqual(name, data.Plugin))
+			return i;
+	}
+	return -1;
+}
+
+int NPC_CreateByName(const char[] name, int team, const float vecPos[3], const float vecAng[3], const char[] data = "")
+{
+	static NPCData npcdata;
+	int id = NPC_GetByPlugin(name, npcdata);
+	if(id == -1)
+	{
+		PrintToChatAll("\"%s\" is not a valid NPC!", name);
+		return -1;
+	}
+
+	return CreateNPC(npcdata, id, team, vecPos, vecAng, data);
+}
+
+static int CreateNPC(const NPCData npcdata, int id, int team, const float vecPos[3], const float vecAng[3], const char[] data)
+{
+	int entity = -1;
+	Call_StartFunction(null, npcdata.Func);
+	Call_PushCell(team);
+	Call_PushArray(vecPos, sizeof(vecPos));
+	Call_PushArray(vecAng, sizeof(vecAng));
+	Call_PushString(data);
+	Call_Finish(entity);
+	
+	if(entity > 0)
+	{
+		if(!c_NpcName[entity][0])
+			strcopy(c_NpcName[entity], sizeof(c_NpcName[]), npcdata.Name);
+		
+		if(!i_NpcInternalId[entity])
+			i_NpcInternalId[entity] = id;
 	}
 
 	return entity;

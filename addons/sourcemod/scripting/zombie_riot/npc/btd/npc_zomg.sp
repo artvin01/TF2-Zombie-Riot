@@ -264,7 +264,7 @@ public void Zomg_NPCDeath(int entity)
 	GetEntPropVector(entity, Prop_Data, "m_angRotation", angles);
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	
-	int spawn_index = Npc_Create(BTD_BFB, -1, pos, angles, GetTeam(entity), npc.m_bFortified ? "f" : "");
+	int spawn_index = NPC_CreateById(BTD_BFB, -1, pos, angles, GetTeam(entity), npc.m_bFortified ? "f" : "");
 	if(spawn_index > MaxClients)
-		Zombies_Currently_Still_Ongoing += 1;
+		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 }

@@ -73,14 +73,25 @@ static int i_string_Theory_battery[MAXENTITIES];
 
 public void Theocracy_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_HurtSounds));			i++) { PrecacheSound(g_HurtSounds[i]);			}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); 	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_charge_sound));		i++) { PrecacheSound(g_charge_sound[i]); 		}
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));		i++) { PrecacheSound(g_MeleeHitSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_AngerSounds));   		i++) { PrecacheSound(g_AngerSounds[i]);  		}
-	for (int i = 0; i < (sizeof(g_DeathSounds));		i++) { PrecacheSound(g_DeathSounds[i]);			}
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_charge_sound);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_AngerSounds);
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheModel(LASERBEAM);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Theocracy");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_theocracy");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Theocracy(client, vecPos, vecAng, ally);
 }
 
 methodmap Theocracy < CClotBody
@@ -153,20 +164,15 @@ methodmap Theocracy < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
-		i_NpcInternalId[npc.index] = RUINA_THEOCRACY;
-		
-		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		
 		npc.m_flNextMeleeAttack = 0.0;
-		
-		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Theocracy_ClotDamaged);
-		SDKHook(npc.index, SDKHook_Think, Theocracy_ClotThink);				
-		
-		
+
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -219,8 +225,8 @@ methodmap Theocracy < CClotBody
 		
 		Theocracy_Create_Wings(npc.index);
 		
-		Ruina_Set_Heirarchy(npc.index, 1);	//is a melee npc
-		Ruina_Set_Master_Heirarchy(npc.index, 1, true, 15, 3);
+		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
+		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 15, 3);
 		
 		fl_rally_timer[npc.index] = GetGameTime(npc.index) + 5.0;
 		b_rally_active[npc.index] = false;
@@ -245,7 +251,7 @@ methodmap Theocracy < CClotBody
 
 //TODO 
 //Rewrite
-public void Theocracy_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Theocracy npc = view_as<Theocracy>(iNPC);
 	
@@ -366,7 +372,7 @@ public void Theocracy_ClotThink(int iNPC)
 
 			}
 					
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 1000.0);
@@ -791,7 +797,7 @@ static Action Theocracy_String_Theory_Timer(Handle timer, int ref)
 	
 }
 
-public Action Theocracy_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -803,10 +809,20 @@ public Action Theocracy_ClotDamaged(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+
+	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	
 	if(!bl_string_theory_active[npc.index] && damagetype & DMG_CLUB)
 	{
-		i_string_Theory_battery[npc.index] += RoundToFloor(damage);
+		if(NpcStats_IsEnemySilenced(npc.index))
+		{
+			i_string_Theory_battery[npc.index] += RoundToFloor(damage*0.75);
+		}
+		else
+		{
+			i_string_Theory_battery[npc.index] += RoundToFloor(damage);
+		}
+		
 	}
 	if(i_string_Theory_battery[npc.index]>3000 && !bl_string_theory_active[npc.index])
 	{
@@ -828,16 +844,15 @@ public Action Theocracy_ClotDamaged(int victim, int &attacker, int &inflictor, f
 	return Plugin_Changed;
 }
 
-public void Theocracy_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Theocracy npc = view_as<Theocracy>(entity);
 	
 	Theocracy_Destroy_Wings(entity);
-	
+
 	npc.PlayDeathSound();
-	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Theocracy_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, Theocracy_ClotThink);	
+
+	Ruina_NPCDeath_Override(entity);
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);

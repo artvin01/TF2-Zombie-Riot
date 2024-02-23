@@ -96,6 +96,7 @@ static const char g_charge_sound[][] = {
 };
 
 static float f_MessengerSpeedUp[MAXENTITIES];
+static int i_SpeedUpTime[MAXENTITIES];
 static bool b_khamlWeaponRage[MAXENTITIES];
 
 static int i_khamlCutscene[MAXENTITIES];
@@ -125,6 +126,7 @@ void ChaosKahmlstein_OnMapStart_NPC()
 	PrecacheSoundCustom("#zombiesurvival/internius/khamlstein.mp3");
 	PrecacheSoundCustom("zombiesurvival/internius/blinkarrival.wav");
 	PrecacheSound("player/taunt_knuckle_crack.wav");
+	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
 }
 
 
@@ -172,8 +174,8 @@ methodmap ChaosKahmlstein < CClotBody
 	public void PlayAngerSound() {
 	
 		int sound = GetRandomInt(0, sizeof(g_AngerSounds) - 1);
-		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_AngerSounds[sound], _, SNDCHAN_STATIC, _, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_AngerSounds[sound], _, SNDCHAN_STATIC, _, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public void PlayDeathSound() 
@@ -198,9 +200,11 @@ methodmap ChaosKahmlstein < CClotBody
 	}
 	public void PlayIdleAlertSound() 
 	{
-		int sound = GetRandomInt(0, sizeof(g_AngerSounds) - 1);
-		EmitSoundToAll(g_IdleAlertedSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_IdleAlertedSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		int sound = GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1);
+		EmitSoundToAll(g_IdleAlertedSounds[sound], _, SNDCHAN_STATIC, _, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleAlertedSounds[sound], _, SNDCHAN_STATIC, _, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
+		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
 	}
 	public void PlaySuperJumpSound()
 	{
@@ -241,7 +245,7 @@ methodmap ChaosKahmlstein < CClotBody
 	}
 	public void PlayTeleportSound() 
 	{
-		EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
+		EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", this.index, SNDCHAN_STATIC, 120, _, 3.0);	
 	}
 	
 	public ChaosKahmlstein(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -289,6 +293,7 @@ methodmap ChaosKahmlstein < CClotBody
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 5.0;
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + 10.0;
 		f_MessengerSpeedUp[npc.index] = 1.0;
+		i_SpeedUpTime[npc.index] = 0;
 		npc.g_TimesSummoned = 0;
 		
 		b_thisNpcIsARaid[npc.index] = true;
@@ -404,6 +409,7 @@ methodmap ChaosKahmlstein < CClotBody
 			{
 				RaidModeScaling *= 0.7;
 			}
+			RaidModeScaling *= 0.7;
 		}
 
 		
@@ -654,27 +660,31 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 	}
 	float RaidModeTimeLeft = RaidModeTime - GetGameTime();
 
-	if(RaidModeTimeLeft < 190.0 && f_MessengerSpeedUp[npc.index] == 1.0)
+	if(RaidModeTimeLeft < 190.0 && i_SpeedUpTime[npc.index] == 0)
 	{
-		f_MessengerSpeedUp[npc.index] = 1.25;
+		i_SpeedUpTime[npc.index] = 1; 
+		f_MessengerSpeedUp[npc.index] *= 1.15;
 		if(i_RaidGrantExtra[npc.index] < 2)
 			CPrintToChatAll("{darkblue}Kahmlstein{default}: I'm literally half asleep, let's heat things up.");
 	}
-	else if(RaidModeTimeLeft < 130.0 && f_MessengerSpeedUp[npc.index] == 1.25)
+	else if(RaidModeTimeLeft < 130.0 && i_SpeedUpTime[npc.index] == 1)
 	{
-		f_MessengerSpeedUp[npc.index] = 1.35;
+		i_SpeedUpTime[npc.index] = 2; 
+		f_MessengerSpeedUp[npc.index] *= 1.15;
 		if(i_RaidGrantExtra[npc.index] < 2)
 			CPrintToChatAll("{darkblue}Kahmlstein{default}: Even mine dead grandma is more entertaining than this.");
 	}
-	else if(RaidModeTimeLeft < 70 && f_MessengerSpeedUp[npc.index] == 1.35)
+	else if(RaidModeTimeLeft < 70 && i_SpeedUpTime[npc.index] == 2)
 	{
-		f_MessengerSpeedUp[npc.index] = 1.5;
+		i_SpeedUpTime[npc.index] = 3; 
+		f_MessengerSpeedUp[npc.index] *= 1.1;
 		if(i_RaidGrantExtra[npc.index] < 2)
 			CPrintToChatAll("{darkblue}Kahmlstein{default}:{crimson} RAAAAAAH, I'M UNSTOPPABLE!!!.");
 	}
-	else if(RaidModeTimeLeft < 0.0 && f_MessengerSpeedUp[npc.index] == 1.5)
+	else if(RaidModeTimeLeft < 0.0 && i_SpeedUpTime[npc.index] == 3)
 	{
-		f_MessengerSpeedUp[npc.index] = 5.0;
+		i_SpeedUpTime[npc.index] = 4; 
+		f_MessengerSpeedUp[npc.index] *= 3.0;
 		npc.m_flSpeed = 600.0;
 		if(i_RaidGrantExtra[npc.index] < 2)
 			CPrintToChatAll("{darkblue}Kahmlstein{default}:{crimson} YAAAAAAAAAAAAAAAAAAAAAAA.");
@@ -755,7 +765,6 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		if(ChaosKahmlstein_Attack_Melee_Uppercut(npc, npc.m_iTarget))
@@ -781,7 +790,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 					if(npc.m_flCharge_delay < GetGameTime(npc.index))
 					{
-						if(npc.IsOnGround() && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
+						if(npc.IsOnGround() && flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)
 						{
 							npc.PlayChargeSound();
 							npc.m_flCharge_delay = GetGameTime(npc.index) +  (5.0 *(1.0 / f_MessengerSpeedUp[npc.index]));
@@ -791,10 +800,10 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 							int Particle_1;
 							int Particle_2;
 							npc.GetAttachment("foot_L", flPos, flAng);
-							Particle_1 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "foot_L", {0.0,0.0,0.0});
+							Particle_1 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "foot_L", {0.0,0.0,0.0});
 							
 							npc.GetAttachment("foot_R", flPos, flAng);
-							Particle_2 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "foot_R", {0.0,0.0,0.0});
+							Particle_2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_red_crit", npc.index, "foot_R", {0.0,0.0,0.0});
 							CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_1), TIMER_FLAG_NO_MAPCHANGE);
 							CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_2), TIMER_FLAG_NO_MAPCHANGE);
 						}
@@ -803,6 +812,34 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				}
 				else 
 				{
+					if(npc.m_flCharge_delay < GetGameTime(npc.index))
+					{
+						if(npc.IsOnGround())
+						{
+							float vPredictedPos[3];
+							vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+							vPredictedPos = GetBehindTarget(npc.m_iTarget, 30.0 ,vPredictedPos);
+							static float hullcheckmaxs[3];
+							static float hullcheckmins[3];
+							hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+							hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+
+							float SelfPos[3];
+							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
+							float AllyAng[3];
+							GetEntPropVector(npc.index, Prop_Data, "m_angRotation", AllyAng);
+							
+							bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, false);
+							if(Succeed)
+							{
+								npc.PlayTeleportSound();
+								ParticleEffectAt(SelfPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+								ParticleEffectAt(vPredictedPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+								npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+								npc.m_flCharge_delay = GetGameTime(npc.index) +  (5.0 *(1.0 / f_MessengerSpeedUp[npc.index]));
+							}
+						}
+					}
 					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 				}
 			}
@@ -871,7 +908,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 		{
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 			int enemy[MAXENTITIES];
-			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, npc.m_iWearable2);
+			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false);
 			for(int i; i < sizeof(enemy); i++)
 			{
 				if(enemy[i])
@@ -890,17 +927,20 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 					float AllyAng[3];
 					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", AllyAng);
 					
-					bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
+					bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, false, false);
 					if(Succeed)
 					{
 						npc.PlayTeleportSound();
 						ParticleEffectAt(SelfPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-						ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+						ParticleEffectAt(vPredictedPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						npc.FaceTowards(WorldSpaceCenterOld(Target), 15000.0);
 
 						if(i_RaidGrantExtra[npc.index] < 2)
-							CreateCloneTempKahmlsteinFakeout(npc.index, 2, SelfPos, AllyAng);
+						{
+							CreateCloneTempKahmlsteinFakeout(npc.index, 2, vPredictedPos, AllyAng);
+						}
 
+						SDKCall_SetLocalOrigin(npc.index, SelfPos);	
 					}
 				}
 			}
@@ -986,7 +1026,7 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 		{
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 			int enemy[MAXENTITIES];
-			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, npc.m_iWearable2);
+			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false);
 			for(int i; i < sizeof(enemy); i++)
 			{
 				if(enemy[i])
@@ -1005,16 +1045,20 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 					float AllyAng[3];
 					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", AllyAng);
 					
-					bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
+					bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, false, false);
 					if(Succeed)
 					{
 						npc.PlayTeleportSound();
 						ParticleEffectAt(SelfPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-						ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+						ParticleEffectAt(vPredictedPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						npc.FaceTowards(WorldSpaceCenterOld(Target), 15000.0);
 
 						if(i_RaidGrantExtra[npc.index] < 2)
-							CreateCloneTempKahmlsteinFakeout(npc.index, 4, SelfPos, AllyAng);
+						{
+							CreateCloneTempKahmlsteinFakeout(npc.index, 4, vPredictedPos, AllyAng);
+						}
+
+						SDKCall_SetLocalOrigin(npc.index, SelfPos);	
 					}
 				}
 			}
@@ -1363,7 +1407,7 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 								}
 							}
 
-							Sakratan_AddNeuralDamage(targetTrace, npc.index, 150, true, true);
+							Sakratan_AddNeuralDamage(targetTrace, npc.index, 100, true, true);
 
 							if(!Knocked)
 								Custom_Knockback(npc.index, targetTrace, 650.0); 
@@ -1382,7 +1426,7 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 	{
 		if(IsValidEnemy(npc.index, target)) 
 		{
-			if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 			{
 				int Enemy_I_See;
 									
@@ -1421,6 +1465,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 			npc.g_TimesSummoned++;
 			if((npc.g_TimesSummoned % 25) == 0)
 			{
+				f_MessengerSpeedUp[npc.index] *= 1.025;
 				RaidModeScaling *= 1.05;
 				switch(GetRandomInt(0,3))
 				{
@@ -1443,14 +1488,15 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 				}
 				f_KahmlResTemp[npc.index] = GetGameTime() + 5.0;
 			}
-			npc.m_flNextChargeSpecialAttack -= 0.5;
-			npc.m_flRangedSpecialDelay -= 0.5;
-			npc.m_flCharge_delay -= 0.15;
+			npc.m_flNextChargeSpecialAttack -= 0.25;
+			npc.m_flRangedSpecialDelay -= 0.25;
+			npc.m_flCharge_delay -= 0.05;
 		}
 	}
 
 	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
+		f_MessengerSpeedUp[npc.index] *= 1.15;
 		switch(GetRandomInt(0,3))
 		{
 			case 0:
@@ -1489,15 +1535,15 @@ void CreateCloneTempKahmlsteinFakeout(int entity, int TypeOfFake, float SelfPos[
 	{
 		case 2:
 		{
-			KamlcloneSpawn = Npc_Create(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_2"); //can only be enemy
+			KamlcloneSpawn = NPC_CreateById(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_2"); //can only be enemy
 		}
 		case 3:
 		{
-			KamlcloneSpawn = Npc_Create(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_3"); //can only be enemy
+			KamlcloneSpawn = NPC_CreateById(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_3"); //can only be enemy
 		}
 		case 4:
 		{
-			KamlcloneSpawn = Npc_Create(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_4"); //can only be enemy
+			KamlcloneSpawn = NPC_CreateById(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_4"); //can only be enemy
 		}
 	}
 	if(IsValidEntity(KamlcloneSpawn))
@@ -1743,6 +1789,7 @@ bool Kahmlstein_Attack_TempPowerup(ChaosKahmlstein npc)
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_iChanged_WalkCycle = 0;
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + (10.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
+		EmitSoundToAll("mvm/mvm_tank_horn.wav");
 	}
 	if(npc.m_flNextRangedBarrage_Spam)
 	{

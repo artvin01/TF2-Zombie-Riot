@@ -358,7 +358,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 		case 7:
 			Dimension_Summon_Npc(client, ALT_SOLDIER_BARRAGER ,weapon, 1.1, 1.2, "eyeboss_tp_player");
 		case 8:
-			Dimension_Summon_Npc(client, ALT_The_Shit_Slapper ,weapon, 1.75, 1.2, "eyeboss_tp_player");
+			Dimension_Summon_Npc(client, ALT_THE_SHIT_SLAPPER ,weapon, 1.75, 1.2, "eyeboss_tp_player");
 		case 9:
 			Dimension_Summon_Npc(client, ALT_MECHA_ENGINEER ,weapon, 1.2, 1.1, "eyeboss_tp_player");
 		case 10:
@@ -393,7 +393,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 		case 7:
 			Dimension_Summon_Npc(client, ALT_SOLDIER_BARRAGER ,weapon, 1.1, 1.2, "eyeboss_tp_player");
 		case 8:
-			Dimension_Summon_Npc(client, ALT_The_Shit_Slapper ,weapon, 1.75, 1.2, "eyeboss_tp_player");
+			Dimension_Summon_Npc(client, ALT_THE_SHIT_SLAPPER ,weapon, 1.75, 1.2, "eyeboss_tp_player");
 		case 9:
 			Dimension_Summon_Npc(client, ALT_MECHA_ENGINEER ,weapon, 1.2, 1.1, "eyeboss_tp_player");
 		case 10:
@@ -827,9 +827,9 @@ public void Weapon_Dimension_Summon_Interitus(int client, int weapon, bool &resu
 {
 	switch(GetRandomInt(1, 16))
 	{
-		case 1:
-			Dimension_Summon_Npc(client, INTERITUS_DESERT_AHIM ,weapon, 0.9, 0.9, "eyeboss_death_vortex");
-		case 2:
+//		case 1:
+//			Dimension_Summon_Npc(client, INTERITUS_DESERT_AHIM ,weapon, 0.9, 0.9, "eyeboss_death_vortex");
+		case 1,2:
 			Dimension_Summon_Npc(client, INTERITUS_DESERT_INABDIL ,weapon, 1.2, 1.1, "eyeboss_death_vortex");
 		case 3:
 			Dimension_Summon_Npc(client, INTERITUS_DESERT_KHAZAAN ,weapon, 1.2, 1.0, "eyeboss_death_vortex");
@@ -947,7 +947,7 @@ void Dimension_Summon_Npc(int client, int NpcId, int weapon, float HealthMulti, 
 				if(ParticleEffect[0])
 					ParticleEffectAt(Dimension_Loc, ParticleEffect, 1.5);
 				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
-				int entity = Npc_Create(NpcId, client, pos1, ang, TFTeam_Red);
+				int entity = NPC_CreateById(NpcId, client, pos1, ang, TFTeam_Red);
 				if(entity > MaxClients)
 				{
 					//30 as a starting value.

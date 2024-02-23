@@ -13,16 +13,21 @@ static const char MeleeAttackSounds[][] =
 	"weapons/shovel_swing.wav",
 };
 
-static const char MeleeMissSounds[][] =
-{
-	"weapons/cbar_miss1.wav",
-};
-
-void Militia_MapStart()
+void Militia_Setup()
 {
 	PrecacheSoundArray(MeleeHitSounds);
 	PrecacheSoundArray(MeleeAttackSounds);
-	PrecacheSoundArray(MeleeMissSounds);
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Militia");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_militia");
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int team, const float vecPos[3], const float vecAng[3])
+{
+	return Militia(team, vecPos, vecAng);
 }
 
 methodmap Militia < EmpireBody
@@ -35,16 +40,11 @@ methodmap Militia < EmpireBody
 	{
 		EmitSoundToAll(MeleeHitSounds[GetRandomInt(0, sizeof(MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
-	public void PlayMeleeMissSound()
-	{
-		EmitSoundToAll(MeleeMissSounds[GetRandomInt(0, sizeof(MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-	}
 	
 	public Militia(int team, const float vecPos[3], const float vecAng[3])
 	{
 		Militia npc = view_as<Militia>(EmpireBody(team, vecPos, vecAng, _, _, "40"));
 
-		i_NpcInternalId[npc.index] = MILITIA;
 		i_NpcWeight[npc.index] = 1;
 
 		func_NPCThink[npc.index] = ClotThink;
@@ -115,12 +115,7 @@ static void ClotThink(int entity)
 	{
 		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			float vecMe[3], vecTarget[3];
-			WorldSpaceCenter(npc.index, vecMe);
-			WorldSpaceCenter(target, vecTarget);
-			
-			float distance = GetVectorDistance(vecMe, vecTarget, true);
-			if(distance < MELEE_RANGE_SQR)
+			if(npc.InAttackRange(target, MELEE_RANGE_SQR))
 			{
 				npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
 				npc.PlayMeleeSound();

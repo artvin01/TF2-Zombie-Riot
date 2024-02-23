@@ -196,11 +196,11 @@ public void SeabornSoldier_ClotThink(int iNPC)
 									continue;
 								}
 
-								int entity = Npc_Create(SEABORN_SOLDIER, -1, pos, ang, team);
+								int entity = NPC_CreateById(SEABORN_SOLDIER, -1, pos, ang, team);
 								if(entity > MaxClients)
 								{
 									if(team != TFTeam_Red)
-										Zombies_Currently_Still_Ongoing += 1;
+										NpcAddedToZombiesLeftCurrently(entity, true);
 									
 									SetEntProp(entity, Prop_Data, "m_iHealth", health);
 									SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);

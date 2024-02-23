@@ -425,7 +425,7 @@ public void XenoCombineElite_ClotThink(int iNPC)
 					
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
-				if((npc.m_flNextMeleeAttack < GetGameTime(npc.index) && flDistanceToTarget < 10000) || npc.m_flAttackHappenswillhappen)
+				if((npc.m_flNextMeleeAttack < GetGameTime(npc.index) && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED) || npc.m_flAttackHappenswillhappen)
 				{
 					if (!npc.m_flAttackHappenswillhappen)
 					{

@@ -46,14 +46,25 @@ static const char g_MeleeMissSounds[][] = {
 
 void Ruina_Drone_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeMissSounds);
+
 	PrecacheModel("models/player/spy.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Ruina Drone");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_drone");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Ruina_Drone(client, vecPos, vecAng, ally);
 }
 
 methodmap Ruina_Drone < CClotBody
@@ -133,7 +144,6 @@ methodmap Ruina_Drone < CClotBody
 	{
 		Ruina_Drone npc = view_as<Ruina_Drone>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_DRONE;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -158,9 +168,10 @@ methodmap Ruina_Drone < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		
-		SDKHook(npc.index, SDKHook_Think, Ruina_Drone_ClotThink);
-		
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
+
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -194,7 +205,7 @@ methodmap Ruina_Drone < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		
-		Ruina_Set_Heirarchy(npc.index, 1);	//is a melee npc
+		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		
 		return npc;
 	}
@@ -204,7 +215,7 @@ methodmap Ruina_Drone < CClotBody
 
 //TODO 
 //Rewrite
-public void Ruina_Drone_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Ruina_Drone npc = view_as<Ruina_Drone>(iNPC);
 	
@@ -241,10 +252,24 @@ public void Ruina_Drone_ClotThink(int iNPC)
 		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 		
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
-			
-		int status=0;
-		Ruina_Generic_Melee_Self_Defense(npc.index, PrimaryThreatIndex, flDistanceToTarget, NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25, 25.0, 125.0, "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", 0.54, 0.4, 20000.0, GameTime, status);
-		switch(status)
+
+		Ruina_Self_Defense Melee;
+
+		Melee.iNPC = npc.index;
+		Melee.target = PrimaryThreatIndex;
+		Melee.fl_distance_to_target = flDistanceToTarget;
+		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25;
+		Melee.damage = 25.0;
+		Melee.bonus_dmg = 125.0;
+		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
+		Melee.swing_speed = 0.54;
+		Melee.swing_delay = 0.4;
+		Melee.turn_speed = 20000.0;
+		Melee.gameTime = GameTime;
+		Melee.status = 0;
+		Melee.Swing_Melee(OnRuina_MeleeAttack);
+
+		switch(Melee.status)
 		{
 			case 1:	//we swung
 				npc.PlayMeleeSound();
@@ -264,14 +289,20 @@ public void Ruina_Drone_ClotThink(int iNPC)
 	}
 	npc.PlayIdleAlertSound();
 }
-public Action Ruina_Drone_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static void OnRuina_MeleeAttack(int iNPC, int Target)
+{
+	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 0);
+}
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Ruina_Drone npc = view_as<Ruina_Drone>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-	fl_ruina_battery[npc.index] += damage;	//turn damage taken into energy
+	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -282,7 +313,7 @@ public Action Ruina_Drone_OnTakeDamage(int victim, int &attacker, int &inflictor
 	return Plugin_Changed;
 }
 
-public void Ruina_Drone_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Ruina_Drone npc = view_as<Ruina_Drone>(entity);
 	if(!npc.m_bGib)
@@ -290,8 +321,7 @@ public void Ruina_Drone_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, Ruina_Drone_ClotThink);
+	Ruina_NPCDeath_Override(entity);
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);

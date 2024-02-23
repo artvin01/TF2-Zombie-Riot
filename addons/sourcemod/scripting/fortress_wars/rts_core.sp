@@ -43,7 +43,9 @@ enum
 	Resource_None = 0,
 	Resource_Wood = 1,
 	Resource_Gold = 2,
-	Resource_Food = 3
+	Resource_Food = 3,
+
+	Resource_MAX
 }
 
 public const char ResourceName[][] =
@@ -60,12 +62,13 @@ enum
 	Command_Move,
 	Command_Attack,
 	Command_HoldPos,
-	Command_Patrol
+	Command_Patrol,
+	Command_WorkOn
 }
 
 enum
 {
-	Sound_Select,
+	Sound_Select = 0,
 	Sound_Move,
 	Sound_Attack,
 	Sound_CombatAlert,
@@ -139,7 +142,7 @@ void RTS_PluginStart()
 
 void RTS_MapStart()
 {
-	Object_MapStart();
+	
 }
 
 void RTS_PluginEnd()
@@ -201,6 +204,9 @@ float RTS_GameSpeed()
 
 bool RTS_IsSpectating(int client)
 {
+	if(TeamNumber[client] < 0)
+		return true;
+	
 	return Defeated[TeamNumber[client]];
 }
 

@@ -253,7 +253,7 @@ public void GoldBloon_ClotThink(int iNPC)
 		npc.StartPathing();
 		
 		//Target close enough to hit
-		if(flDistanceToTarget < 10000)
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 		{
 			if(npc.m_flNextMeleeAttack < gameTime)
 			{

@@ -419,7 +419,7 @@ public void XenoSpyCloaked_ClotThink(int iNPC)
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) && flDistanceToTarget < 10000)
+				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 				{
 					if (!npc.m_flAttackHappenswillhappen)
 					{

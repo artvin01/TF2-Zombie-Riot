@@ -53,16 +53,28 @@ static char g_TeleportSounds[][] = {
 
 void Stella_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);  			}
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/medic.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Stella");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_stella");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Stella(client, vecPos, vecAng, ally);
+}
+
 
 methodmap Stella < CClotBody
 {
@@ -149,7 +161,6 @@ methodmap Stella < CClotBody
 	{
 		Stella npc = view_as<Stella>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_STELLA;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -163,9 +174,9 @@ methodmap Stella < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		
-		
-		SDKHook(npc.index, SDKHook_Think, Stella_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
 		npc.m_flSpeed = 225.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -205,7 +216,7 @@ methodmap Stella < CClotBody
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
-		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
 
 		Ruina_Set_Healer(npc.index);
 		
@@ -219,7 +230,7 @@ methodmap Stella < CClotBody
 
 //TODO 
 //Rewrite
-public void Stella_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Stella npc = view_as<Stella>(iNPC);
 	
@@ -313,10 +324,24 @@ public void Stella_ClotThink(int iNPC)
 			npc.StartPathing();
 			npc.m_bPathing = true;
 		}
-			
-		int status=0;
-		Ruina_Generic_Melee_Self_Defense(npc.index, PrimaryThreatIndex, flDistanceToTarget, NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED, 25.0, 125.0, "ACT_MP_ATTACK_STAND_MELEE", 0.54, 0.4, 20000.0, GameTime, status);
-		switch(status)
+
+		Ruina_Self_Defense Melee;
+
+		Melee.iNPC = npc.index;
+		Melee.target = PrimaryThreatIndex;
+		Melee.fl_distance_to_target = flDistanceToTarget;
+		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25;
+		Melee.damage = 25.0;
+		Melee.bonus_dmg = 125.0;
+		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
+		Melee.swing_speed = 0.54;
+		Melee.swing_delay = 0.4;
+		Melee.turn_speed = 20000.0;
+		Melee.gameTime = GameTime;
+		Melee.status = 0;
+		Melee.Swing_Melee(OnRuina_MeleeAttack);
+
+		switch(Melee.status)
 		{
 			case 1:	//we swung
 				npc.PlayMeleeSound();
@@ -335,6 +360,10 @@ public void Stella_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
+}
+static void OnRuina_MeleeAttack(int iNPC, int Target)
+{
+	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 0);
 }
 
 static int i_particle[MAXENTITIES][11];
@@ -450,12 +479,15 @@ static void Delete_Hand_Crest(int client)
 	}
 }
 
-public Action Stella_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Stella npc = view_as<Stella>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	
+	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -466,7 +498,7 @@ public Action Stella_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 
-public void Stella_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Stella npc = view_as<Stella>(entity);
 	if(!npc.m_bGib)
@@ -475,8 +507,8 @@ public void Stella_NPCDeath(int entity)
 	}
 	
 	Delete_Hand_Crest(entity);
-	
-	SDKUnhook(npc.index, SDKHook_Think, Stella_ClotThink);
+
+	Ruina_NPCDeath_Override(entity);
 	
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);

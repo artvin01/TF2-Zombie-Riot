@@ -216,7 +216,7 @@ methodmap Donnerkrieg < CClotBody
 		else
 		{
 			RaidModeScaling = 10.0;	//just a safety net
-			if(RaidBossActive==INVALID_ENT_REFERENCE)
+			if(!IsValidEntity(RaidBossActive))
 			{
 				RaidBossActive = EntIndexToEntRef(npc.index);
 				RaidModeTime = GetGameTime(npc.index) + 9000.0;
@@ -316,7 +316,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 	{
 		return;
 	}
-	if(RaidBossActive == INVALID_ENT_REFERENCE && !g_b_donner_died && ZR_GetWaveCount()+1 >=60 && i_RaidGrantExtra[npc.index] == 1)
+	if(!IsValidEntity(RaidBossActive) && !g_b_donner_died && ZR_GetWaveCount()+1 >=60 && i_RaidGrantExtra[npc.index] == 1)
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}
@@ -367,7 +367,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 		npc.m_bPathing = false;
 		npc.SetActivity("ACT_MP_CROUCH_MELEE");
 		npc.m_bisWalking = false;
-		if(g_b_schwert_died && RaidBossActive == INVALID_ENT_REFERENCE)
+		if(g_b_schwert_died && !IsValidEntity(RaidBossActive))
 		{
 			for(int client=1; client<=MaxClients; client++)
 			{
@@ -571,7 +571,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 				}
 				
 				//Target close enough to hit
-				if(flDistanceToTarget < 100000 || npc.m_flAttackHappenswillhappen)
+				if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 				{
 					//Look at target so we hit.
 				//	npc.FaceTowards(vecTarget, 1000.0);

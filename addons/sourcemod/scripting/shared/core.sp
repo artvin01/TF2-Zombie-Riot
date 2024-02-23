@@ -411,6 +411,8 @@ float f_ClientInvul[MAXENTITIES]; //Extra ontop of uber if they somehow lose it 
 int Current_Mana[MAXTF2PLAYERS];
 float Mana_Regen_Delay[MAXTF2PLAYERS];
 float Mana_Regen_Delay_Aggreviated[MAXTF2PLAYERS];
+float Mana_Regen_Block_Timer[MAXTF2PLAYERS];
+float Mana_Loss_Delay[MAXTF2PLAYERS];
 float RollAngle_Regen_Delay[MAXTF2PLAYERS];
 float Mana_Hud_Delay[MAXTF2PLAYERS];
 
@@ -472,7 +474,7 @@ float f_TimeFrozenStill[MAXENTITIES];
 float f_BuildingAntiRaid[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
 float f_RaidStunResistance[MAXENTITIES];
-bool b_PernellBuff[MAXENTITIES];
+float f_PernellBuff[MAXENTITIES];
 float f_HussarBuff[MAXENTITIES];
 float f_Ruina_Speed_Buff[MAXENTITIES];
 float f_Ruina_Speed_Buff_Amt[MAXENTITIES];

@@ -21,6 +21,7 @@ int dieingstate[MAXTF2PLAYERS];
 int TeutonType[MAXTF2PLAYERS];
 int i_TeamGlow[MAXENTITIES]={-1, ...};
 bool EscapeModeForNpc;
+bool b_NpcHasBeenAddedToZombiesLeft[MAXENTITIES];
 int Zombies_Currently_Still_Ongoing;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 float Medival_Difficulty_Level = 0.0;
@@ -42,7 +43,7 @@ int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES] = {0, ...};
 
 int TeamFreeForAll = 50;
 
-char c_NpcCustomNameOverride[MAXENTITIES][255];
+char c_NpcName[MAXENTITIES][255];
 int i_SpeechBubbleEntity[MAXENTITIES];
 PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
 static int g_modelArrow;
@@ -102,9 +103,9 @@ public Action Command_PetMenu(int client, int args)
 	if(args < 1)
 	{
 #if defined RTS
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [team]");
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <plugin> [health] [data] [team]");
 #else
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [team] [damage multi] [speed multi] [ranged armour] [melee armour] [Extra Size]");
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <plugin> [health] [data] [team] [damage multi] [speed multi] [ranged armour] [melee armour] [Extra Size]");
 #endif
 		return Plugin_Handled;
 	}
@@ -118,7 +119,8 @@ public Action Command_PetMenu(int client, int args)
 	}
 	
 	//1==index, 2==health, 3==data, 4==ally, 5==rpg lvl 
-	char buffer[64];
+	char plugin[64], buffer[64];
+	GetCmdArg(1, plugin, sizeof(plugin));
 	GetCmdArg(3, buffer, sizeof(buffer));
 
 #if defined RTS
@@ -129,12 +131,12 @@ public Action Command_PetMenu(int client, int args)
 	if(args > 3)	//data
 		team = view_as<bool>(GetCmdArgInt(4));
 #if defined ZR
-	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, team, buffer);
+	int entity = NPC_CreateByName(plugin, client, flPos, flAng, team, buffer);
 	if(IsValidEntity(entity))
 	{
 		if(GetTeam(entity) != view_as<int>(TFTeam_Red))
 		{
-			Zombies_Currently_Still_Ongoing += 1;
+			NpcAddedToZombiesLeftCurrently(entity, true);
 		}
 		
 		if(args > 1)
@@ -166,7 +168,7 @@ public Action Command_PetMenu(int client, int args)
 		}
 	}
 #elseif defined RPG
-	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
+	int entity = NPC_CreateByName(plugin, client, flPos, flAng, ally, buffer);
 	if(IsValidEntity(entity))
 	{
 		Level[entity] = args > 4 ? GetCmdArgInt(5) : 0;
@@ -195,7 +197,7 @@ public Action Command_PetMenu(int client, int args)
 		}
 	}
 #elseif defined RTS
-	int entity = Npc_Create(GetCmdArgInt(1), team, flPos, flAng, buffer);
+	int entity = NPC_CreateByName(plugin, team, flPos, flAng, buffer);
 	if(IsValidEntity(entity))
 	{
 		if(args > 1)
@@ -261,8 +263,6 @@ void OnMapStart_NPC_Base()
 	PrecacheEffect("ParticleEffect");
 	PrecacheEffect("ParticleEffectStop");
 	PrecacheParticleEffect("burningplayer_red");
-	
-	NPC_MapStart();
 
 	for (int NpcIndexNumber = 0; NpcIndexNumber < ZR_MAX_NPCS; NpcIndexNumber++)
 	{
@@ -630,10 +630,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()		 
 		{ 
 			int returnint = EntRefToEntIndex(i_TargetAlly[this.index]);
+#if defined ZR
 			if(returnint == -1)
 			{
 				return 0;
 			}
+#endif
 			return returnint;
 		}
 		public set(int iInt) 
@@ -1083,10 +1085,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()		 
 		{ 
 			int returnint = EntRefToEntIndex(i_TargetToWalkTo[this.index]);
+#if defined ZR
 			if(returnint == -1)
 			{
 				return 0;
 			}
+#endif
 			return returnint;
 		}
 		public set(int iInt) 
@@ -1106,10 +1110,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()		 
 		{ 
 			int returnint = EntRefToEntIndex(i_Target[this.index]);
+#if defined ZR
 			if(returnint == -1)
 			{
 				return 0;
 			}
+#endif
 			return returnint;
 		}
 		public set(int iInt) 
@@ -1325,7 +1331,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			speed_for_return = 0.0;
 			return speed_for_return;
 		}	
-		if(b_PernellBuff[this.index])
+		if(f_PernellBuff[this.index] > Gametime)
 		{
 			speed_for_return *= 1.25;
 		}
@@ -2106,7 +2112,11 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public void SetGoalEntity(int target, bool ignoretime = false)
 	{
+#if defined RTS
+		if(IsObject(target) || i_IsABuilding[target] || b_IsVehicle[target])
+#else
 		if(i_IsABuilding[target] || b_IsVehicle[target])
+#endif
 		{
 			//broken on targetting buildings...?
 			float pos[3]; GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
@@ -3121,18 +3131,34 @@ void RemoveFromNpcPathList(CClotBody body)
 		}
 	}	
 }
+#if defined ZR
+void NpcAddedToZombiesLeftCurrently(int entity, bool CountUp)
+{
+	b_NpcHasBeenAddedToZombiesLeft[entity] = true;
+	if(CountUp)
+	{
+		Zombies_Currently_Still_Ongoing += 1;
+	}
+} 
+
+void RemoveNpcFromZombiesLeftCounter(int entity)
+{
+	if(b_NpcHasBeenAddedToZombiesLeft[entity])
+	{
+		Zombies_Currently_Still_Ongoing -= 1;
+	}
+	b_NpcHasBeenAddedToZombiesLeft[entity] = false;
+}
+#endif
 static void OnDestroy(CClotBody body)
 {
 	RemoveFromNpcAliveList(body.index);
+#if defined ZR
+		RemoveNpcFromZombiesLeftCounter(body.index);
+#endif
 	if(!b_NpcHasDied[body.index])
 	{
 		RemoveFromNpcPathList(body);
-#if defined ZR
-		if(GetTeam(body.index) != TFTeam_Red)
-		{
-			Zombies_Currently_Still_Ongoing -= 1;
-		}
-#endif
 	}
 	b_ThisWasAnNpc[body.index] = false;
 	b_NpcHasDied[body.index] = true;
@@ -4089,8 +4115,6 @@ public void constrainDistance(const float[] startPoint, float[] endPoint, float 
 
 public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, TraverseWhenType when)
 {
-	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
-	
 	if(other_entidx < 1)
 	{
 		return false;
@@ -4112,8 +4136,15 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 	}
 	*/
 #if defined RTS
+	if(IsObject(other_entidx))
+	{
+		return false;
+	}
+
 	return !b_NpcHasDied[other_entidx];
 #else
+	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
+
 	if(GetTeam(bot_entidx) == TFTeam_Red) //ally!
 	{
 		if(b_IsCamoNPC[bot_entidx])
@@ -6896,15 +6927,19 @@ static void PredictSubjectPositionInternal(CClotBody npc, int subject, float Ext
 		
 	botPos[2] += 45.0;
 	subjectPos[2] += 45.0;
-#if defined ZR
 	//do not predict if in air
 	//do not predict if its a building, waste of resources.
+
+#if defined RTS
+	if(IsObject(subject) || i_IsABuilding[subject])
+#else
 	if(Npc_Is_Targeted_In_Air(npc.index) || i_IsABuilding[subject])
+#endif
 	{
 		f_PredictPos[subject] = subjectPos;
 		return;
 	}
-#endif
+
 	float SubjectAbsVelocity[3];
 	GetEntPropVector(subject, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
 	if(MovementSpreadSpeedTooLow(SubjectAbsVelocity))
@@ -7740,12 +7775,13 @@ stock float fmodf(float num, float denom)
 public void SetDefaultValuesToZeroNPC(int entity)
 {
 #if defined ZR
-	i_SpawnProtectionEntity[entity] = -1;
+	b_NpcHasBeenAddedToZombiesLeft[entity] = false;
+	i_SpawnProtectionEntity[entity] = -1; 
 	i_TeamGlow[entity] = -1;
 	i_NpcOverrideAttacker[entity] = 0;
 	b_thisNpcHasAnOutline[entity] = false;
 	b_ThisNpcIsImmuneToNuke[entity] = false;
-	FormatEx(c_NpcCustomNameOverride[entity], sizeof(c_NpcCustomNameOverride[]), "");
+	FormatEx(c_NpcName[entity], sizeof(c_NpcName[]), "");
 	b_ThisNpcIsSawrunner[entity] = false;
 	Expidonsa_SetToZero(entity);
 	f_AvoidObstacleNavTime[entity] = 0.0;
@@ -7949,7 +7985,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_Extra_Damage[entity] = 1.0;
 	f_PickThisDirectionForabit[entity] = 0.0;
 	b_ScalesWithWaves[entity] = false;
-	b_PernellBuff[entity] = false;
+	f_PernellBuff[entity] = 0.0;
 	f_HussarBuff[entity] = 0.0;
 	f_GodArkantosBuff[entity] = 0.0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
@@ -8596,7 +8632,7 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 
 
 
-bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3], float hullcheckmaxs_Player[3], bool check_for_Ground_Clerance = false)
+bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3], float hullcheckmaxs_Player[3], bool check_for_Ground_Clerance = false, bool teleport_entity = true)
 {
 	bool FoundSafeSpot = false;
 	//Try base position.
@@ -8699,7 +8735,7 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, check_for_Ground_Clerance))
 		FoundSafeSpot = true;
 
-	if(FoundSafeSpot)
+	if(FoundSafeSpot && teleport_entity)
 	{
 		SDKCall_SetLocalOrigin(client, endPos);	
 	}

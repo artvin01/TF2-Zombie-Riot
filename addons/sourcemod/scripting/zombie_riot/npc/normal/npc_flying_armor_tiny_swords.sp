@@ -294,7 +294,7 @@ public void FlyingArmorTiny_ClotThink(int iNPC)
 			}
 			
 			//Target close enough to hit
-			if((flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
+			if((flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
 			{
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				

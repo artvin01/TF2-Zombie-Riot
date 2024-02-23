@@ -60,6 +60,10 @@ void SDKHook_PluginStart()
 void SDKHook_MapStart()
 {
 	Zero(f_EntityIsStairAbusing);
+	#if defined ZR
+	Zero(Mana_Loss_Delay);
+	Zero(Mana_Regen_Block_Timer);
+	#endif
 	Armor_WearableModelIndex = PrecacheModel("models/effects/resist_shield/resist_shield.mdl", true);
 	int entity = FindEntityByClassname(MaxClients+1, "tf_player_manager");
 	if(entity != -1)
@@ -441,8 +445,12 @@ public void OnPostThink(int client)
 			mana_regen[client] *= 0.30;
 		}
 #endif
-			
+
+#if defined ZR		
+		if(Current_Mana[client] < RoundToCeil(max_mana[client]) && Mana_Regen_Block_Timer[client] < GameTime)
+#else
 		if(Current_Mana[client] < RoundToCeil(max_mana[client]))
+#endif
 		{
 			Current_Mana[client] += RoundToCeil(mana_regen[client]);
 				
@@ -452,6 +460,41 @@ public void OnPostThink(int client)
 					
 		Mana_Hud_Delay[client] = 0.0;
 	}
+
+#if defined ZR
+	if(Current_Mana[client] > RoundToCeil(max_mana[client]+10.0))	//A part of Ruina's special mana "corrosion"
+	{
+		//the +10 is for rounding errors.
+		if(Mana_Loss_Delay[client] < GameTime)
+		{
+			Mana_Loss_Delay[client] = GameTime + 0.4;
+		
+			float Mana_Loss = 10.0;
+			if(Mana_Regen_Level[client])
+				Mana_Loss *=Mana_Regen_Level[client];
+
+			float OverMana_Ratio = Current_Mana[client]/max_mana[client];	//the more overmana you have the slower it decays!
+
+			Mana_Loss /=OverMana_Ratio;
+
+			if(has_mage_weapon[client])
+			{
+				Current_Mana[client] -= RoundToCeil(Mana_Loss);	//Passively lose your overmana! if you are a mage you lose this overmana slower
+			}
+			else
+			{
+				Current_Mana[client] -= RoundToCeil(Mana_Loss*1.5);	//Passively lose your overmana!	if your not a mage you lose it faster
+			}
+
+			if(Current_Mana[client] < RoundToCeil(max_mana[client])) //if the mana becomes less then the normal max mana due to mana loss, set it to max mana!
+				Current_Mana[client] = RoundToCeil(max_mana[client]);
+
+			//CPrintToChatAll("Regen neg1: %i", RoundToCeil(Mana_Loss));
+			//CPrintToChatAll("Regen neg2: %i", RoundToCeil(Mana_Loss*1.5));
+		}
+		has_mage_weapon[client] = true;	//now force the mana hud even if your not a mage. this only applies to non mages if you got overmana, and the only way you can get overmana without a mage weapon is if you got hit by ruina's debuff.
+	}
+#endif	//ZR
 
 #if defined ZR
 	if(Armor_regen_delay[client] < GameTime)
@@ -836,9 +879,39 @@ public void OnPostThink(int client)
 			}
 			else
 			{
-				blue = 200;
-				green = 200;
-				red = 200;
+				red 	= 200;
+				green 	= 200;
+				blue	= 200;
+
+				#if defined ZR
+				float OverMana_Ratio = Current_Mana[client]/max_mana[client];
+
+				if(OverMana_Ratio > 1.05)
+				{
+					if(OverMana_Ratio < 2.0)
+					{
+						red = RoundToFloor(127*OverMana_Ratio); 
+						green = 255 - RoundToFloor(255*(OverMana_Ratio-1.0));
+						blue = 255 - RoundToFloor(255*(OverMana_Ratio-1.0));
+
+						if(red>255)
+							red=255;
+
+						if(green<0)
+							green=0;
+						
+						if(blue<0)
+							blue=0;
+					}
+					else	//Player is DANGEROUSLY close to getting nuked due to overmana!
+					{
+						red 	= 255;
+						green 	= 0;
+						blue	= 0;
+					}
+				}
+				#endif	//ZR
+
 			}
 			
 			
