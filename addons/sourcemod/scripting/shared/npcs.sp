@@ -610,7 +610,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		i_HasBeenHeadShotted[victim] = false;
 		if(damagetype & DMG_BULLET)
 		{
-#if !defined RTS
+#if defined ZR
 			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
 			{
 
@@ -649,7 +649,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 #endif
 		}
 
-#if !defined RTS
+#if defined ZR
 		if(!i_WeaponCannotHeadshot[weapon])
 #endif
 		{
@@ -757,6 +757,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				played_headshotsound_already[attacker] = GetGameTime();
 				if(!Blitzed_By_Riot) //dont play headshot sound if blized.
 				{
+#if defined ZR
 					switch(random_case)
 					{
 						case 1:
@@ -782,6 +783,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 							EmitCustomToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
 						}
 					}
+#endif
 				}
 				return Plugin_Changed;
 			}
@@ -1003,9 +1005,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif		
 			OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, _,weapon);
 
-#if defined ZR
+#if !defined RTS
 			VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage, damagetype,i_HexCustomDamageTypes[victim]);
+#endif
 
+#if defined ZR
 			OnTakeDamageWidowsWine(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 
 			if(Rogue_InItallianWrath(weapon))
@@ -1031,13 +1035,13 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 			if(attacker <= MaxClients && attacker > 0)
 			{
+#if defined ZR
 				if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 				{
 					DoClientHitmarker(attacker);
 				}
-#if defined RPG
-				OnTakeDamageRpgPotionBuff(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition,damagecustom, GameTime);
 #endif
+
 				if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 				{
 					if(WeaponWasValid)
@@ -1051,7 +1055,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						OnTakeDamageBackstab(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 					}
 				}
-				if(TF2_IsPlayerInCondition(attacker, TFCond_NoHealingDamageBuff) || damagetype & DMG_CRIT)
+				if(TF2_IsPlayerInCondition(attacker, TFCond_NoHealingDamageBuff) || (damagetype & DMG_CRIT))
 				{		
 					damage *= 1.35;
 					bool PlaySound = false;
@@ -1063,7 +1067,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					
 					DisplayCritAboveNpc(victim, attacker, PlaySound,_,_,true); //Display crit above head
 					
+#if defined ZR	
 					damagetype &= ~DMG_CRIT;
+#endif
+
 				}
 			}
 		}
@@ -1075,7 +1082,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 		{
-#if defined ZR	
+#if defined ZR
 			if(SeargentIdeal_Existant())
 			{
 				SeargentIdeal_Protect(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
@@ -1149,10 +1156,14 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	}		
 #endif
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+#if defined ZR
 	if((Damageaftercalc > 0.0 || b_NpcIsInvulnerable[victim] || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+#else
+	if((Damageaftercalc > 0.0 || b_NpcIsInvulnerable[victim]) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+#endif
 	{
 
-#if defined ZR
+#if !defined RTS
 		if(inflictor > 0 && inflictor <= MaxClients)
 		{
 			GiveRageOnDamage(inflictor, Damageaftercalc);
@@ -1227,7 +1238,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	Damageaftercalc = 0.0;
 }
 
-void GiveRageOnDamage(int client, float damage)
+stock void GiveRageOnDamage(int client, float damage)
 {
 	if(!GetEntProp(client, Prop_Send, "m_bRageDraining"))
 	{
@@ -1649,12 +1660,13 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 				percentage *= Medival_Difficulty_Level;
 			}
 		}
+		if(weapon > 0 && attacker > 0)
+			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
 #endif
 		if(VausMagicaShieldLogicEnabled(victim))
 			percentage *= 0.25;
 		
-		if(weapon > 0 && attacker > 0)
-			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
+
 		
 		if(percentage < 10.0)
 		{
@@ -1723,9 +1735,11 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	}
 #if defined ZR
 	if(EntRefToEntIndex(RaidBossActive) != victim)
+#endif	// ZR
 	{
 		float HudOffset = 0.05;
 
+#if defined ZR
 		if(raidboss_active)
 		{
 			//there is a raid, then this displays a hud below the raid hud.
@@ -1747,11 +1761,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 				HudOffset += 0.035;
 			}
 		}
+#endif	// ZR
 
 		float HudY = -1.0;
 
+#if defined ZR
 		HudY += f_HurtHudOffsetY[attacker];
 		HudOffset += f_HurtHudOffsetX[attacker];
+#endif	// ZR
 
 		SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
 		char ExtraHudHurt[255];
@@ -1778,13 +1795,16 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
 		ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
 
+#if defined ZR
 		if(!raidboss_active)
+#endif	// ZR
 		{
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%s", ExtraHudHurt, c_DmgDelt);
 		}
 			
 		ShowSyncHudText(attacker, SyncHud,"%s",ExtraHudHurt);
 	}
+#if defined ZR
 	else
 	{
 		float Timer_Show = RaidModeTime - GameTime;
@@ -1870,9 +1890,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	ShowSyncHudText(attacker, SyncHud, "%s\n%s\n%d / %d\n%s-%0.f", level, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
 #endif
 }
-#endif	// Non-RTS
 
-bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 0)
+stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 0)
 {
 	if(fl_TotalArmor[victim] != 1.0)
 		return true;
@@ -1933,7 +1952,7 @@ bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 0)
 
 	return false;
 }
-#if defined ZR
+#if !defined RTS
 void ResetDamageHud(int client)
 {
 	SetHudTextParams(-1.0, 0.05, 1.0, 0, 0, 0, 255, 0, 0.01, 0.01);
@@ -2144,7 +2163,7 @@ void NPC_DeadEffects(int entity)
 #if defined ZR		
 	RemoveNpcFromZombiesLeftCounter(entity);
 #endif
-#if !defined RTS
+#if defined ZR
 	if(GetTeam(entity) != TFTeam_Red)
 #endif
 	{
@@ -2403,7 +2422,7 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, int &att
 #endif
 	return damage;
 }
-bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int damagecustom)
+stock bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int damagecustom)
 {
 	if(attacker <= MaxClients)
 	{
@@ -2551,7 +2570,7 @@ stock void OnTakeDamageRpgAgressionOnHit(int victim, int &attacker, int &inflict
 }
 #endif
 
-void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int &damagetype, bool trueArmorOnly = false, int weapon = 0)
+stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int &damagetype, bool trueArmorOnly = false, int weapon = 0)
 {
 	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
 	{
@@ -2990,7 +3009,7 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 						SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GameTime+(attack_speed));
 					}
 
-#if !defined RTS
+#if defined ZR
 					if(b_BackstabLaugh[weapon])
 					{
 						SepcialBackstabLaughSpy(attacker);
@@ -3352,8 +3371,7 @@ stock void OnPostAttackUniqueWeapon(int attacker, int victim, int weapon, int da
 #endif
 }
 
-
-void DisplayRGBHealthValue(int Health_init, int Maxhealth_init, int &red, int &green, int &blue)
+stock void DisplayRGBHealthValue(int Health_init, int Maxhealth_init, int &red, int &green, int &blue)
 {
 	int Health = Health_init;
 	int MaxHealth = Maxhealth_init;

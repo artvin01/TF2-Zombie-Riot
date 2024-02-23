@@ -9,7 +9,7 @@ int i_ExpidonsaShieldCapacity_Mini[MAXENTITIES];
 int i_Expidonsa_ShieldEffect[MAXENTITIES];
 float f_Expidonsa_ShieldBroke[MAXENTITIES];
 
-void ExpidonsaRemoveEffects(int iNpc)
+stock void ExpidonsaRemoveEffects(int iNpc)
 {
 	for(int loop = 0; loop<MAX_EXPI_ENERGY_EFFECTS; loop++)
 	{
@@ -30,14 +30,14 @@ void Expidonsa_SetToZero(int iNpc)
 	VausMagicaRemoveShield(iNpc);
 }
 
-bool VausMagicaShieldLogicEnabled(int victim)
+stock bool VausMagicaShieldLogicEnabled(int victim)
 {
 	if(i_ExpidonsaShieldCapacity[victim] > 0)
 		return true;
 
 	return false;
 }
-int VausMagicaShieldLeft(int victim)
+stock int VausMagicaShieldLeft(int victim)
 {
 	return i_ExpidonsaShieldCapacity[victim];
 }
@@ -45,7 +45,11 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damag
 {
 	if(i_ExpidonsaShieldCapacity[victim] > 0 && (!(ZrDamageType & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)))
 	{
+#if defined ZR
 		if(attacker <=MaxClients && TeutonType[attacker] != TEUTON_NONE)
+#else
+		if(attacker <=MaxClients)
+#endif
 		{
 			i_ExpidonsaShieldCapacity_Mini[victim]++;
 			if(i_ExpidonsaShieldCapacity_Mini[victim] <= 1)
@@ -140,7 +144,7 @@ float f_Expidonsa_HealingOverheal[MAXENTITIES];
 bool b_Expidonsa_Selfheal[MAXENTITIES];
 Function func_Expidonsa_Heal_After[MAXENTITIES] = {INVALID_FUNCTION, ...};
 Function func_Expidonsa_Heal_Before[MAXENTITIES] = {INVALID_FUNCTION, ...};
-void ExpidonsaGroupHeal(int HealingNpc, float RangeDistance, int MaxAlliesHealed, float HealingAmmount,
+stock void ExpidonsaGroupHeal(int HealingNpc, float RangeDistance, int MaxAlliesHealed, float HealingAmmount,
  float Expidonsa_HealingOverheal, bool Selfheal, Function Function_HealBefore = INVALID_FUNCTION , Function Function_HealAfter = INVALID_FUNCTION)
 {
 	b_Expidonsa_Selfheal[HealingNpc] = Selfheal;
@@ -167,7 +171,7 @@ void ExpidonsaGroupHeal(int HealingNpc, float RangeDistance, int MaxAlliesHealed
 	b_NpcIsTeamkiller[HealingNpc] = false;
 }
 
-void Expidonsa_AllyHeal(int HealerNpc, int victim, float damage, int weapon)
+static void Expidonsa_AllyHeal(int HealerNpc, int victim, float damage, int weapon)
 {
 	if(HealerNpc == victim)
 	{
@@ -208,7 +212,7 @@ void Expidonsa_AllyHeal(int HealerNpc, int victim, float damage, int weapon)
 	}
 }
 
-void Expidonsa_AllyHealInternal(int HealerNpc, int victim, float heal)
+static void Expidonsa_AllyHealInternal(int HealerNpc, int victim, float heal)
 {
 	bool CancelHeal = false;
 	Function func = func_Expidonsa_Heal_Before[HealerNpc];
@@ -240,7 +244,7 @@ void Expidonsa_AllyHealInternal(int HealerNpc, int victim, float heal)
 		Call_Finish();
 	}
 }
-bool Expidonsa_DontHealSameIndex(int entity, int victim)
+stock bool Expidonsa_DontHealSameIndex(int entity, int victim)
 {
 	if(i_NpcInternalId[entity] == i_NpcInternalId[victim])
 		return true;

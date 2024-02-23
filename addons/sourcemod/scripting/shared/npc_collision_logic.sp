@@ -113,9 +113,7 @@ bool NpcCollisionCheck(int npc, int other, int extrarules = 0)
 	return ShouldCollide_NpcLoco_Internal(npc, other, extrarules);
 }
 
-
-
-bool IsEntityTowerDefense(int entity)
+stock bool IsEntityTowerDefense(int entity)
 {
 #if defined ZR
 	if(GetTeam(entity) != TFTeam_Red)

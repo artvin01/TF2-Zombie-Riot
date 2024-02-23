@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
 #define SOUND_WAND_SHOT 	"weapons/capper_shoot.wav"
 #define SOUND_ZAP "misc/halloween/spell_lightning_ball_impact.wav"
 

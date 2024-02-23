@@ -23,7 +23,7 @@ void Attributes_EntityDestroyed(int entity)
 	delete WeaponAttributes[entity];
 }
 
-bool Attributes_RemoveAll(int entity)
+stock bool Attributes_RemoveAll(int entity)
 {
 	delete WeaponAttributes[entity];
 	return TF2Attrib_RemoveAll(entity);
@@ -136,6 +136,7 @@ stock void Attributes_SetString(int entity, int attrib, const char[] value)
 	WeaponAttributes[entity].SetString(buffer, value);
 }
 
+#if defined ZR
 bool Attributes_Fire(int weapon)
 {
 	int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");
@@ -154,6 +155,7 @@ bool Attributes_Fire(int weapon)
 	}
 	return false;
 }
+#endif
 
 #if defined RPG
 int Attributes_Airdashes(int client)

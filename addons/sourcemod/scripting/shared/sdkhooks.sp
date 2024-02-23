@@ -23,7 +23,10 @@ static float i_WasInJarate[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float f_EntityHazardCheckDelay[MAXTF2PLAYERS];
 
 bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
+
+#if defined ZR
 int Armor_WearableModelIndex;
+#endif
 
 void SDKHooks_ClearAll()
 {
@@ -54,7 +57,9 @@ void SDKHook_PluginStart()
 	SyncHud_ArmorCounter = CreateHudSynchronizer();
 #endif
 	
+#if !defined NOG
 	AddNormalSoundHook(SDKHook_NormalSHook);
+#endif
 }
 
 void SDKHook_MapStart()
@@ -63,8 +68,8 @@ void SDKHook_MapStart()
 	#if defined ZR
 	Zero(Mana_Loss_Delay);
 	Zero(Mana_Regen_Block_Timer);
-	#endif
 	Armor_WearableModelIndex = PrecacheModel("models/effects/resist_shield/resist_shield.mdl", true);
+	#endif
 	int entity = FindEntityByClassname(MaxClients+1, "tf_player_manager");
 	if(entity != -1)
 		SDKHook(entity, SDKHook_ThinkPost, SDKHook_ScoreThink);
@@ -133,10 +138,9 @@ public void SDKHook_ScoreThink(int entity)
 
 void SDKHook_HookClient(int client)
 {
+#if defined ZR
 	SDKUnhook(client, SDKHook_PreThinkPost, OnPreThinkPost);
 	SDKHook(client, SDKHook_PreThinkPost, OnPreThinkPost);
-
-#if !defined RTS
 	SDKUnhook(client, SDKHook_PostThink, OnPostThink);
 	SDKUnhook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
 	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
@@ -146,6 +150,11 @@ void SDKHook_HookClient(int client)
 
 	SDKUnhook(client, SDKHook_PostThinkPost, OnPostThinkPost);
 	SDKHook(client, SDKHook_PostThinkPost, OnPostThinkPost);
+#endif
+
+#if defined NOG
+	SDKUnhook(client, SDKHook_PostThink, OnPostThink_OnlyHurtHud);
+	SDKHook(client, SDKHook_PostThink, OnPostThink_OnlyHurtHud);
 #endif
 
 #if defined ZR
@@ -212,7 +221,19 @@ public void OnPreThinkPost(int client)
 #endif
 }
 
-#if !defined RTS
+#if defined NOG
+public void OnPostThink_OnlyHurtHud(int client)
+{
+	if(b_DisplayDamageHud[client])
+	{
+		b_DisplayDamageHud[client] = false;
+		Calculate_And_Display_HP_Hud(client);
+	}
+}
+
+#endif
+
+#if defined ZR
 public void OnPostThink(int client)
 {
 	float GameTime = GetGameTime();
@@ -2385,7 +2406,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 {
 	if(weapon != -1)
 	{
-#if !defined RTS
+#if defined ZR
 		if(EntRefToEntIndex(i_PreviousWeapon[client]) != weapon)
 			OnWeaponSwitchPre(client, EntRefToEntIndex(i_PreviousWeapon[client]));
 #endif
@@ -2399,7 +2420,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 		Building_WeaponSwitchPost(client, weapon, buffer);
 #endif
 
-#if !defined RTS	
+#if defined ZR	
 		if(i_SemiAutoWeapon[weapon])
 		{
 			char classname[64];
@@ -2413,7 +2434,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 #endif
 	}
 
-#if !defined RTS
+#if defined ZR
 	Store_WeaponSwitch(client, weapon);
 	RequestFrame(OnWeaponSwitchFrame, GetClientUserId(client));
 #endif
@@ -2425,7 +2446,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 
 }
 
-#if !defined RTS
+#if defined ZR
 public void OnWeaponSwitchFrame(int userid)
 {
 	int client = GetClientOfUserId(userid);
@@ -2691,7 +2712,7 @@ public Action Timer_CauseFadeInAndFadeDelete(Handle timer)
 }
 #endif	// ZR
 
-void IncreaceEntityDamageTakenBy(int entity, float amount, float duration, bool Flat = false)
+stock void IncreaceEntityDamageTakenBy(int entity, float amount, float duration, bool Flat = false)
 {
 	if(!Flat)
 		f_MultiDamageTaken[entity] *= amount;

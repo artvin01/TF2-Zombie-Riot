@@ -12,10 +12,11 @@ public Action NPCCamera_SpecNext(int client, const char[] command, int args)
 	int minEntity = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
 	int bestEntity = MAXENTITIES;
 	int worseEntity = MAXENTITIES;
-
-	for(int entity = 1; entity <= MaxClients; entity++)
+	
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		if(IsClientInGame(entity) && IsPlayerAlive(entity))
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && (GetTeam(entity) == TFTeam_Red || b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_StaticNPC[entity]))
 		{
 			if(entity > minEntity && entity < bestEntity)
 			{
@@ -27,11 +28,13 @@ public Action NPCCamera_SpecNext(int client, const char[] command, int args)
 			}
 		}
 	}
-	
-	for(int i; i < i_MaxcountNpcTotal; i++)
+
+	if(bestEntity == MAXENTITIES && worseEntity == MAXENTITIES)	// No NPCs, don't override camera
+		return Plugin_Continue;
+
+	for(int entity = 1; entity <= MaxClients; entity++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && (GetTeam(entity) == TFTeam_Red || b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_StaticNPC[entity]))
+		if(IsClientInGame(entity) && IsPlayerAlive(entity))
 		{
 			if(entity > minEntity && entity < bestEntity)
 			{
@@ -62,9 +65,10 @@ public Action NPCCamera_SpecPrev(int client, const char[] command, int args)
 	int bestEntity = 0;
 	int worseEntity = 0;
 
-	for(int entity = MaxClients; entity > 0; entity--)
+	for(int i = i_MaxcountNpcTotal - 1; i >= 0; i--)
 	{
-		if(IsClientInGame(entity) && IsPlayerAlive(entity))
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && (GetTeam(entity) == TFTeam_Red || b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_StaticNPC[entity]) && IsEntityAlive(entity))
 		{
 			if(entity < maxEntity && entity > bestEntity)
 			{
@@ -77,10 +81,12 @@ public Action NPCCamera_SpecPrev(int client, const char[] command, int args)
 		}
 	}
 
-	for(int i = i_MaxcountNpcTotal - 1; i >= 0; i--)
+	if(bestEntity == 0 && worseEntity == 0)	// No NPCs, don't override camera
+		return Plugin_Continue;
+
+	for(int entity = MaxClients; entity > 0; entity--)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && (GetTeam(entity) == TFTeam_Red || b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_StaticNPC[entity]) && IsEntityAlive(entity))
+		if(IsClientInGame(entity) && IsPlayerAlive(entity))
 		{
 			if(entity < maxEntity && entity > bestEntity)
 			{
