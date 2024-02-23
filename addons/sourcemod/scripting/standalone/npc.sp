@@ -25,12 +25,14 @@ void NPC_ConfigSetup()
 	HeadcrabZombie_Precache();
 	CombinePolicePistol_Precache();
 	Sensal_OnMapStart_NPC();
+	RaidbossBobTheFirst_OnMapStart();
 }
 
 #include "standalone/npc/npc_headcrabzombie.sp"
 #include "standalone/npc/npc_combine_police_pistol.sp"
 #include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
 #include "standalone/npc/npc_sensal.sp"
+#include "standalone/npc/npc_bob_the_first_last_savior.sp"
 
 int NPC_Add(NPCData data)
 {

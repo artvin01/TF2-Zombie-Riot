@@ -57,7 +57,9 @@ void SDKHook_PluginStart()
 	SyncHud_ArmorCounter = CreateHudSynchronizer();
 #endif
 	
+#if !defined NOG
 	AddNormalSoundHook(SDKHook_NormalSHook);
+#endif
 }
 
 void SDKHook_MapStart()
