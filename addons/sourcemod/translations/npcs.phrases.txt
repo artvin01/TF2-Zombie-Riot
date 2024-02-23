@@ -1,0 +1,19 @@
+"Phrases"
+{
+	"nothing"
+	{
+		"en" 		"Example Text!"
+	}
+	"Headcrab Zombie"
+	{
+		"en" 		"Headcrab Zombie"
+	}
+	"Metro Cop"
+	{
+		"en"		"Metro Cop"
+	}
+	"Sensal"
+	{
+		"en"		"Sensal"
+	}
+}

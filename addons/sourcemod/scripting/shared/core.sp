@@ -1200,7 +1200,6 @@ int Armor_Wearable[MAXTF2PLAYERS];
 #include "shared/custom_melee_logic.sp"
 #include "shared/killfeed.sp"
 #include "shared/thirdperson.sp"
-#include "shared/wand_projectile.sp"
 #include "shared/viewchanges.sp"
 #include "shared/store.sp"
 #include "shared/teuton_sound_override.sp"
@@ -1214,6 +1213,7 @@ int Armor_Wearable[MAXTF2PLAYERS];
 #include "shared/sdkcalls.sp"
 #include "shared/sdkhooks.sp"
 #include "shared/stocks.sp"
+#include "shared/wand_projectile.sp"
 
 #if !defined NOG
 #include "shared/commands.sp"
@@ -1355,8 +1355,8 @@ public void OnPluginStart()
 	ZR_PluginStart();
 	KillFeed_PluginStart();
 	Thirdperson_PluginStart();
-	WandProjectile_GamedataInit();
 #endif
+	WandProjectile_GamedataInit();
 	
 #if defined RTS
 	RTS_PluginStart();
@@ -1499,9 +1499,12 @@ public void OnMapStart()
 	PrecacheSound("player/crit_hit_mini4.wav");
 	PrecacheSound("mvm/mvm_revive.wav");
 
+#if defined ZR
 	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
 	PrecacheSoundCustom("zombiesurvival/headshot2.wav");
 	PrecacheSoundCustom("zombiesurvival/hm.mp3");
+#endif
+
 	PrecacheSound("weapons/explode1.wav");
 	PrecacheSound("weapons/explode2.wav");
 	PrecacheSound("weapons/explode3.wav");

@@ -1,12 +1,16 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
+
+#if defined ZR
 static int i_ProjectileIndex;
 
 void WandStocks_Map_Precache()
 {
 	i_ProjectileIndex = PrecacheModel(ENERGY_BALL_MODEL);
 }
+#endif
 
 int iref_PropAppliedToRocket[MAXENTITIES];
 //todo:
@@ -24,6 +28,8 @@ void WandProjectile_GamedataInit()
 
 	EntityFactory.Install();
 }
+
+#if defined ZR
 int Wand_Projectile_Spawn(int client,
 float speed,
 float time,
@@ -151,6 +157,7 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 	//Somehow failed...
 	return -1;
 }
+#endif
 
 public MRESReturn Wand_DHook_RocketExplodePre(int arrow)
 {
@@ -173,11 +180,10 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 	return Plugin_Stop; 
 }
 
-
+#if defined ZR
 public void Wand_Base_StartTouch(int entity, int other)
 {
 	int target = Target_Hit_Wand_Detection(entity, other);
-#if defined ZR
 	switch(i_WandIdNumber[entity])
 	{
 		case 0:
@@ -307,30 +313,8 @@ public void Wand_Base_StartTouch(int entity, int other)
 			Melee_KahmlFistTouch(entity, target);
 		}
 	}
-#else
-	switch(i_WandIdNumber[entity])
-	{
-		case 0:
-		{
-			return; //This was has its own entire logic, dont do anything.
-		}
-		case 1:
-		{
-			Want_DefaultWandTouch(entity, target);
-		}
-		case 2:
-		{
-			Want_LightningTouch(entity, target);
-		}
-		case 4:
-		{
-			Want_FireWandTouch(entity, target);
-		}	
-	}
-#endif
 }
-
-
+#endif
 
 static void OnCreate_Proj(CClotBody body)
 {

@@ -1003,9 +1003,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif		
 			OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, _,weapon);
 
-#if defined ZR
+#if !defined RTS
 			VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage, damagetype,i_HexCustomDamageTypes[victim]);
+#endif
 
+#if defined ZR
 			OnTakeDamageWidowsWine(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 
 			if(Rogue_InItallianWrath(weapon))
@@ -1031,13 +1033,13 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 			if(attacker <= MaxClients && attacker > 0)
 			{
+#if defined ZR
 				if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 				{
 					DoClientHitmarker(attacker);
 				}
-#if defined RPG
-				OnTakeDamageRpgPotionBuff(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition,damagecustom, GameTime);
 #endif
+
 				if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 				{
 					if(WeaponWasValid)
@@ -1051,7 +1053,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						OnTakeDamageBackstab(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 					}
 				}
-				if(TF2_IsPlayerInCondition(attacker, TFCond_NoHealingDamageBuff) || damagetype & DMG_CRIT)
+				if(TF2_IsPlayerInCondition(attacker, TFCond_NoHealingDamageBuff) || (damagetype & DMG_CRIT))
 				{		
 					damage *= 1.35;
 					bool PlaySound = false;
@@ -1063,7 +1065,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					
 					DisplayCritAboveNpc(victim, attacker, PlaySound,_,_,true); //Display crit above head
 					
+#if defined ZR	
 					damagetype &= ~DMG_CRIT;
+#endif
+
 				}
 			}
 		}
@@ -1075,7 +1080,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 		{
-#if defined ZR	
+#if defined ZR
 			if(SeargentIdeal_Existant())
 			{
 				SeargentIdeal_Protect(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);

@@ -45,6 +45,9 @@ void Hook_DHook_UpdateTransmitState(int entity)
 public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 {
 	int Compensator = param.Get(1);
+	if(IsFakeClient(Compensator))
+		return MRES_Ignored;
+	
 	StartLagCompResetValues();
 	StartLagCompensation_Base_Boss(Compensator);
 	return MRES_Ignored;
@@ -58,6 +61,10 @@ public MRESReturn LagCompensationThink(Address manager)
 
 public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //This code does not need to be touched. mostly.
 {
+	int Compensator = param.Get(1);
+	if(IsFakeClient(Compensator))
+		return MRES_Ignored;
+	
 	FinishLagCompensation_Base_boss();
 	StartLagCompResetValues();
 	return MRES_Ignored;

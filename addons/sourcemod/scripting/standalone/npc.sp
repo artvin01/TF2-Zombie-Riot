@@ -23,9 +23,14 @@ void NPC_ConfigSetup()
 	NPCList.PushArray(data);
 
 	HeadcrabZombie_Precache();
+	CombinePolicePistol_Precache();
+	Sensal_OnMapStart_NPC();
 }
 
 #include "standalone/npc/npc_headcrabzombie.sp"
+#include "standalone/npc/npc_combine_police_pistol.sp"
+#include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
+#include "standalone/npc/npc_sensal.sp"
 
 int NPC_Add(NPCData data)
 {

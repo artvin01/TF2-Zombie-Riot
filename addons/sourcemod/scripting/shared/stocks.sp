@@ -4601,7 +4601,7 @@ enum g_Collision_Group
 
 float f_HitmarkerSameFrame[MAXTF2PLAYERS];
 
-void DoClientHitmarker(int client)
+stock void DoClientHitmarker(int client)
 {
 	if(b_HudHitMarker[client] && f_HitmarkerSameFrame[client] != GetGameTime())
 	{

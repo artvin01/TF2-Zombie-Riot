@@ -19,7 +19,6 @@ enum
 
 int dieingstate[MAXTF2PLAYERS];
 int TeutonType[MAXTF2PLAYERS];
-int i_TeamGlow[MAXENTITIES]={-1, ...};
 bool EscapeModeForNpc;
 bool b_NpcHasBeenAddedToZombiesLeft[MAXENTITIES];
 int Zombies_Currently_Still_Ongoing;
@@ -30,8 +29,6 @@ int i_Backstabs[MAXTF2PLAYERS];
 int i_Headshots[MAXTF2PLAYERS];	
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
-int Shared_BEAM_Laser;
-int Shared_BEAM_Glow;
 int i_NpcOverrideAttacker[MAXENTITIES];
 int TeamFreeForAll = 50;
 #endif
@@ -41,6 +38,9 @@ int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES] = {0, ...};
 #endif
 
+int i_TeamGlow[MAXENTITIES]={-1, ...};
+int Shared_BEAM_Laser;
+int Shared_BEAM_Glow;
 char c_NpcName[MAXENTITIES][255];
 int i_SpeechBubbleEntity[MAXENTITIES];
 PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
@@ -92,6 +92,21 @@ static bool b_NpcResizedForCrouch[MAXENTITIES];
 
 int i_EntitiesHitAoeSwing_NpcSwing[MAXENTITIES]= {-1, ...};	//Who got hit
 int i_EntitiesHitAtOnceMax_NpcSwing; //How many do we stack
+
+public Action Command_RemoveAll(int client, int args)
+{
+	int entity = -1;
+	while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	{
+		if(IsValidEntity(entity))
+		{
+			b_DissapearOnDeath[entity] = true;
+			b_DoGibThisNpc[entity] = true;
+			SmiteNpcToDeath(entity);
+		}
+	}
+	return Plugin_Handled;
+}
 
 public Action Command_PetMenu(int client, int args)
 {
@@ -201,10 +216,9 @@ void OnMapStart_NPC_Base()
 	g_particleImpactRubber = PrecacheParticleSystem("halloween_explosion_bits");
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
 	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
-#if defined ZR
 	Shared_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	Shared_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
-#endif
+
 	PrecacheModel(ARROW_TRAIL);
 	PrecacheDecal(ARROW_TRAIL, true);
 	PrecacheModel(ARROW_TRAIL_RED);
@@ -363,8 +377,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		b_NpcIgnoresbuildings[npc] = IgnoreBuildings;
 #else
-		SetTeam(npc, 5);
-
+		SetTeam(npc, Ally);
 #endif
 		AddEntityToLagCompList(npc);
 
@@ -1592,7 +1605,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
-#if defined ZR
 	property int m_iTeamGlow
 	{
 		public get()		 
@@ -1616,7 +1628,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return b_TeamGlowDefault[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_TeamGlowDefault[this.index] = TempValueForProperty; }
 	}
-#endif
 	property int m_iTextEntity1
 	{
 		public get()		 
@@ -2974,7 +2985,7 @@ methodmap CClotBody < CBaseCombatCharacter
 public void NPC_Base_InitGamedata()
 {
 	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_SLAY);
-	
+	RegAdminCmd("sm_remove_npc", Command_RemoveAll, ADMFLAG_SLAY);
 	
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
@@ -3126,11 +3137,8 @@ static void OnDestroy(CClotBody body)
 	b_NpcHasDied[body.index] = true;
 	b_StaticNPC[body.index] = false;
 
-	
-#if defined ZR
 	if(IsValidEntity(body.m_iTeamGlow))
 		RemoveEntity(body.m_iTeamGlow);
-#endif
 
 	if(IsValidEntity(body.m_iSpawnProtectionEntity))
 		RemoveEntity(body.m_iSpawnProtectionEntity);
@@ -3241,9 +3249,9 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		SDKUnhook(pThis, SDKHook_ThinkPost, NpcBaseThinkPost);
 #if defined ZR
 		OnKillUniqueWeapon(iAttacker, iWeapon, pThis);
+#endif
 		if(IsValidEntity(npc.m_iTeamGlow))
 			RemoveEntity(npc.m_iTeamGlow);
-#endif
 		if(IsValidEntity(npc.m_iSpawnProtectionEntity))
 			RemoveEntity(npc.m_iSpawnProtectionEntity);
 
@@ -7756,22 +7764,13 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ThisNpcIsImmuneToNuke[entity] = false;
 	c_NpcName[entity][0] = 0;
 	b_ThisNpcIsSawrunner[entity] = false;
-	Expidonsa_SetToZero(entity);
 	f_AvoidObstacleNavTime[entity] = 0.0;
 #endif
-	
-#if defined RPG
-	hFromSpawnerIndex[entity] = -1;
-	i_NpcIsUnderSpawnProtectionInfluence[entity] = 0;
-	b_DungeonContracts_BleedOnHit[entity] = false;
-	b_DungeonContracts_ZombieSpeedTimes3[entity] = false;
-	b_DungeonContracts_ZombieFlatArmorMelee[entity] = false;
-	b_DungeonContracts_ZombieFlatArmorRanged[entity] = false;
-	b_DungeonContracts_ZombieFlatArmorMage[entity] = false;
-	b_DungeonContracts_ZombieArmorDebuffResistance[entity] = false;
-	b_DungeonContracts_35PercentMoreDamage[entity] = false;
-	b_DungeonContracts_25PercentMoreDamage[entity] = false;
+
+#if !defined RTS
+	Expidonsa_SetToZero(entity);
 #endif
+
 	f_HeadshotDamageMultiNpc[entity] = 1.0;
 	i_NoEntityFoundCount[entity] = 0;
 	f3_CustomMinMaxBoundingBox[entity][0] = 0.0;
