@@ -398,6 +398,8 @@ methodmap Sensal < CClotBody
 
 public void Sensal_ClotThink(int iNPC)
 {
+	PrintCenterTextAll("Sensal HP: %d / %d", GetEntProp(iNPC, Prop_Data, "m_iHealth"), GetEntProp(iNPC, Prop_Data, "m_iMaxHealth"));
+
 	Sensal npc = view_as<Sensal>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
