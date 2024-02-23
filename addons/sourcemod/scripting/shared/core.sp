@@ -170,6 +170,8 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 #define DISPENSER_BLUEPRINT	"models/buildables/dispenser_blueprint.mdl"
 #define SENTRY_BLUEPRINT	"models/buildables/sentry1_blueprint.mdl"
 
+#define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
+
 native any FuncToVal(Function bruh);
 
 enum
