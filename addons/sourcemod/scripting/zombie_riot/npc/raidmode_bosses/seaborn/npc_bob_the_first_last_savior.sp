@@ -227,6 +227,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 	{
 		float pos[3];
 		pos = vecPos;
+		bool SmittenNpc = false;
 		
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
@@ -235,6 +236,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			{
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 				SmiteNpcToDeath(entity);
+				SmittenNpc = true;
 			}
 		}
 
@@ -258,6 +260,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_BobFirst_Win);
 			i_RaidGrantExtra[npc.index] = 1;
 			npc.m_flNextDelayTime = GetGameTime(npc.index) + 10.0;
+			npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 10.0;
 			npc.g_TimesSummoned = 0;
 			WaveStart_SubWaveStart(GetGameTime() + 500.0);
 			//this shouldnt ever start, no anti delay here.
@@ -289,6 +292,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		else
 		{
 			npc.m_flNextDelayTime = GetGameTime(npc.index) + 5.0;
+			npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 5.0;
 			npc.SetPlaybackRate(2.0);
 			npc.g_TimesSummoned = 0;
 		}
@@ -343,7 +347,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
-			RaidModeTime = GetGameTime() + 292.0;
+			RaidModeTime = GetGameTime() + 15.0;
 			RaidModeScaling = 9999999.99;
 
 			Zombies_Currently_Still_Ongoing--;
@@ -355,6 +359,25 @@ methodmap RaidbossBobTheFirst < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		AcceptEntityInput(npc.m_iWearable1, "Disable");
 		npc.b_SwordIgnition = false;
+		strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "?????????????");
+		if(SmittenNpc)
+		{
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{white}%s{default}: I'll Handle this one.", c_NpcName[npc.index]);
+				}
+				case 1:
+				{
+					CPrintToChatAll("{white}%s{default}: Schwert and Donner, you did enough, stand back.", c_NpcName[npc.index]);
+				}
+				case 3:
+				{
+					CPrintToChatAll("{white}%s{default}: I know enough about infections and its weaknesses to fend you off.", c_NpcName[npc.index]);
+				}
+			}
+		}
 		
 		return npc;
 	}
@@ -377,6 +400,64 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		b_NpcIsInvulnerable[npc.index] = false;
 	}
 
+	if(npc.m_flAttackHappens_bullshit > GetGameTime(npc.index))
+	{
+		b_NpcIsInvulnerable[npc.index] = true;
+	}
+
+	int healthPoints = 20;
+
+	if(npc.m_bFakeClone)
+	{
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(other != INVALID_ENT_REFERENCE && other != npc.index)
+			{
+				if(i_NpcInternalId[other] == BOB_THE_FIRST || i_NpcInternalId[other] == BOB_THE_FIRST_S)
+				{
+					if(!view_as<RaidbossBobTheFirst>(other).m_bFakeClone && IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
+					{
+						if(view_as<RaidbossBobTheFirst>(other).Anger)
+						{
+							healthPoints = 19;	// During combine summons
+							npc.m_flNextMeleeAttack = gameTime + 10.0;
+						}
+						else
+						{
+							healthPoints = GetEntProp(other, Prop_Data, "m_iHealth") * 20 / GetEntProp(other, Prop_Data, "m_iMaxHealth");
+						}
+						
+						break;
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		healthPoints = GetEntProp(npc.index, Prop_Data, "m_iHealth") * 20 / GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	}
+	if(npc.m_bFakeClone)
+	{
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(other != INVALID_ENT_REFERENCE && other != npc.index)
+			{
+				if(i_NpcInternalId[other] == BOB_THE_FIRST || i_NpcInternalId[other] == BOB_THE_FIRST_S)
+				{
+					if(!view_as<RaidbossBobTheFirst>(other).m_bFakeClone && IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
+					{
+						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(other, Prop_Data, "m_iHealth"));
+						SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", GetEntProp(other, Prop_Data, "m_iMaxHealth"));
+						
+						break;
+					}
+				}
+			}
+		}
+	}
 	if(!npc.m_bFakeClone && LastMann)
 	{
 		if(!npc.m_fbGunout)
@@ -402,40 +483,80 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	//Raidmode timer runs out, they lost.
 	if(!npc.m_bFakeClone && npc.m_flNextThinkTime != FAR_FUTURE && RaidModeTime < GetGameTime())
 	{
-		if(IsValidEntity(RaidBossActive))
+		if(healthPoints < 20)
 		{
-			ZR_NpcTauntWinClear();
+			if(IsValidEntity(RaidBossActive))
+			{
+				ZR_NpcTauntWinClear();
+				int entity = CreateEntityByName("game_round_win"); 
+				DispatchKeyValue(entity, "force_map_reset", "1");
+				SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+				DispatchSpawn(entity);
+				AcceptEntityInput(entity, "RoundWin");
+				Music_RoundEnd(entity);
+				RaidBossActive = INVALID_ENT_REFERENCE;
+			}
+
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client) && IsPlayerAlive(client))
+					ForcePlayerSuicide(client);
+			}
+
+			switch(GetURandomInt() % 3)
+			{
+				case 0:
+					CPrintToChatAll("{white}%s{default}: You weren't supposed to have this infection.", c_NpcName[npc.index]);
+				
+				case 1:
+					CPrintToChatAll("{white}%s{default}: No choice but to kill you, it consumes you.", c_NpcName[npc.index]);
+				
+				case 2:
+					CPrintToChatAll("{white}%s{default}: Nobody wins.", c_NpcName[npc.index]);
+			}
+			
+			// Play funny animation intro
+			NPC_StopPathing(npc.index);
+			npc.m_flNextThinkTime = FAR_FUTURE;
+			npc.SetActivity("ACT_IDLE_ZOMBIE");
+		}
+		else
+		{
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client))
+				{
+					Music_Stop_All(client);
+					SetMusicTimer(client, GetTime() + 33);
+					SendConVarValue(client, sv_cheats, "1");
+				}
+			}
+			ResetReplications();
+
+			cvarTimeScale.SetFloat(0.1);
+			CreateTimer(0.5, SetTimeBack);
+			
+			char_MusicString1[0] = 0;
+			char_MusicString2[0] = 0;
+			char_RaidMusicSpecial1[0] = 0;
+
+			EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+
 			int entity = CreateEntityByName("game_round_win"); 
 			DispatchKeyValue(entity, "force_map_reset", "1");
-			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
 			DispatchSpawn(entity);
 			AcceptEntityInput(entity, "RoundWin");
-			Music_RoundEnd(entity);
-			RaidBossActive = INVALID_ENT_REFERENCE;
+			RemoveAllCustomMusic();
+
+			CPrintToChatAll("{white}%s{default}: I guess you werent infected, i'm sorry.", c_NpcName[npc.index]);
+			
+			// Play funny animation intro
+			NPC_StopPathing(npc.index);
+			npc.m_flNextThinkTime = FAR_FUTURE;
+			GivePlayerItems(1);
 		}
 
-		for(int client = 1; client <= MaxClients; client++)
-		{
-			if(IsClientInGame(client) && IsPlayerAlive(client))
-				ForcePlayerSuicide(client);
-		}
-
-		switch(GetURandomInt() % 3)
-		{
-			case 0:
-				CPrintToChatAll("{white}%s{default}: You weren't supposed to have this infection.", c_NpcName[npc.index]);
-			
-			case 1:
-				CPrintToChatAll("{white}%s{default}: No choice but to kill you, it consumes you.", c_NpcName[npc.index]);
-			
-			case 2:
-				CPrintToChatAll("{white}%s{default}: Nobody wins.", c_NpcName[npc.index]);
-		}
-		
-		// Play funny animation intro
-		NPC_StopPathing(npc.index);
-		npc.m_flNextThinkTime = FAR_FUTURE;
-		npc.SetActivity("ACT_IDLE_ZOMBIE");
 	}
 
 	if(npc.m_flNextDelayTime > gameTime)
@@ -702,40 +823,6 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		}
 	}
 
-	int healthPoints = 20;
-
-	if(npc.m_bFakeClone)
-	{
-		for(int i; i < i_MaxcountNpcTotal; i++)
-		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(other != INVALID_ENT_REFERENCE && other != npc.index)
-			{
-				if(i_NpcInternalId[other] == BOB_THE_FIRST || i_NpcInternalId[other] == BOB_THE_FIRST_S)
-				{
-					if(!view_as<RaidbossBobTheFirst>(other).m_bFakeClone && IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
-					{
-						if(view_as<RaidbossBobTheFirst>(other).Anger)
-						{
-							healthPoints = 19;	// During combine summons
-							npc.m_flNextMeleeAttack = gameTime + 10.0;
-						}
-						else
-						{
-							healthPoints = GetEntProp(other, Prop_Data, "m_iHealth") * 20 / GetEntProp(other, Prop_Data, "m_iMaxHealth");
-						}
-						
-						break;
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		healthPoints = GetEntProp(npc.index, Prop_Data, "m_iHealth") * 20 / GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-	}
-
 	if(!npc.m_bFakeClone)
 	{
 		int summon;
@@ -780,11 +867,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 	if(!npc.m_bFakeClone && !npc.m_bSecondPhase)
 	{
-		if(healthPoints < 15)
-		{
-			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "??????? First");
-		}
-		else if(healthPoints < 9)
+		if(healthPoints < 9)
 		{
 			if(npc.b_SwordIgnition)
 			{
@@ -804,6 +887,10 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			
 			SetupMidWave(npc.index);
 			return;
+		}
+		else if(healthPoints < 15)
+		{
+			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "??????? First");
 		}
 	}
 
@@ -1627,15 +1714,17 @@ static Action Bob_DeathCutsceneCheck(Handle timer)
 	return Plugin_Stop;
 }
 
-static void GivePlayerItems()
+static void GivePlayerItems(int coolwin = 0)
 {
-	
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 		{
 			Items_GiveNamedItem(client, "Bob's Curing Hand");
-			CPrintToChat(client, "{default}Bob has defeated you, however... you gained: {yellow}''Bob's Curing Hand''{default}!");
+			if(coolwin == 0)
+				CPrintToChat(client, "{default}Bob has defeated you, however... you gained: {yellow}''Bob's Curing Hand''{default}!");
+			else
+				CPrintToChat(client, "{default}You didnt attack bob for no reason and thus he gives you: {yellow}''Bob's Curing Hand''{default}!");
 		}
 	}
 

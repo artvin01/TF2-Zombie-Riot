@@ -2051,11 +2051,11 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Oh this aint good.");
+					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Oh its very serious, we'll go.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: AAAGHHHGHHAA.");
+					CPrintToChatAll("{aqua}Donnerkrieg{snow}: This isn't a joke if you come...");
 				}
 			}
 			

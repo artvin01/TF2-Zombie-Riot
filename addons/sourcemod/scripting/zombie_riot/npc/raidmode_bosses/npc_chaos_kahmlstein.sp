@@ -96,6 +96,7 @@ static const char g_charge_sound[][] = {
 };
 
 static float f_MessengerSpeedUp[MAXENTITIES];
+static int i_SpeedUpTime[MAXENTITIES];
 static bool b_khamlWeaponRage[MAXENTITIES];
 
 static int i_khamlCutscene[MAXENTITIES];
@@ -244,7 +245,7 @@ methodmap ChaosKahmlstein < CClotBody
 	}
 	public void PlayTeleportSound() 
 	{
-		EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
+		EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", this.index, SNDCHAN_STATIC, 120, _, 3.0);	
 	}
 	
 	public ChaosKahmlstein(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -292,6 +293,7 @@ methodmap ChaosKahmlstein < CClotBody
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 5.0;
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + 10.0;
 		f_MessengerSpeedUp[npc.index] = 1.0;
+		i_SpeedUpTime[npc.index] = 0;
 		npc.g_TimesSummoned = 0;
 		
 		b_thisNpcIsARaid[npc.index] = true;
@@ -658,27 +660,31 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 	}
 	float RaidModeTimeLeft = RaidModeTime - GetGameTime();
 
-	if(RaidModeTimeLeft < 190.0 && f_MessengerSpeedUp[npc.index] == 1.0)
+	if(RaidModeTimeLeft < 190.0 && i_SpeedUpTime[npc.index] == 0)
 	{
-		f_MessengerSpeedUp[npc.index] = 1.25;
+		i_SpeedUpTime[npc.index] = 1; 
+		f_MessengerSpeedUp[npc.index] *= 1.15;
 		if(i_RaidGrantExtra[npc.index] < 2)
 			CPrintToChatAll("{darkblue}Kahmlstein{default}: I'm literally half asleep, let's heat things up.");
 	}
-	else if(RaidModeTimeLeft < 130.0 && f_MessengerSpeedUp[npc.index] == 1.25)
+	else if(RaidModeTimeLeft < 130.0 && i_SpeedUpTime[npc.index] == 1)
 	{
-		f_MessengerSpeedUp[npc.index] = 1.35;
+		i_SpeedUpTime[npc.index] = 2; 
+		f_MessengerSpeedUp[npc.index] *= 1.15;
 		if(i_RaidGrantExtra[npc.index] < 2)
 			CPrintToChatAll("{darkblue}Kahmlstein{default}: Even mine dead grandma is more entertaining than this.");
 	}
-	else if(RaidModeTimeLeft < 70 && f_MessengerSpeedUp[npc.index] == 1.35)
+	else if(RaidModeTimeLeft < 70 && i_SpeedUpTime[npc.index] == 2)
 	{
-		f_MessengerSpeedUp[npc.index] = 1.5;
+		i_SpeedUpTime[npc.index] = 3; 
+		f_MessengerSpeedUp[npc.index] *= 1.1;
 		if(i_RaidGrantExtra[npc.index] < 2)
 			CPrintToChatAll("{darkblue}Kahmlstein{default}:{crimson} RAAAAAAH, I'M UNSTOPPABLE!!!.");
 	}
-	else if(RaidModeTimeLeft < 0.0 && f_MessengerSpeedUp[npc.index] == 1.5)
+	else if(RaidModeTimeLeft < 0.0 && i_SpeedUpTime[npc.index] == 3)
 	{
-		f_MessengerSpeedUp[npc.index] = 5.0;
+		i_SpeedUpTime[npc.index] = 4; 
+		f_MessengerSpeedUp[npc.index] *= 3.0;
 		npc.m_flSpeed = 600.0;
 		if(i_RaidGrantExtra[npc.index] < 2)
 			CPrintToChatAll("{darkblue}Kahmlstein{default}:{crimson} YAAAAAAAAAAAAAAAAAAAAAAA.");
@@ -826,8 +832,6 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 							bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, false);
 							if(Succeed)
 							{
-								npc.PlayTeleportSound();
-								npc.PlayTeleportSound();
 								npc.PlayTeleportSound();
 								ParticleEffectAt(SelfPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 								ParticleEffectAt(vPredictedPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
@@ -1461,6 +1465,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 			npc.g_TimesSummoned++;
 			if((npc.g_TimesSummoned % 25) == 0)
 			{
+				f_MessengerSpeedUp[npc.index] *= 1.025;
 				RaidModeScaling *= 1.05;
 				switch(GetRandomInt(0,3))
 				{
@@ -1483,14 +1488,15 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 				}
 				f_KahmlResTemp[npc.index] = GetGameTime() + 5.0;
 			}
-			npc.m_flNextChargeSpecialAttack -= 0.5;
-			npc.m_flRangedSpecialDelay -= 0.5;
-			npc.m_flCharge_delay -= 0.15;
+			npc.m_flNextChargeSpecialAttack -= 0.25;
+			npc.m_flRangedSpecialDelay -= 0.25;
+			npc.m_flCharge_delay -= 0.05;
 		}
 	}
 
 	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
+		f_MessengerSpeedUp[npc.index] *= 1.15;
 		switch(GetRandomInt(0,3))
 		{
 			case 0:
