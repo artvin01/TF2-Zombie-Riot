@@ -1919,29 +1919,28 @@ static int was_reviving_this[MAXTF2PLAYERS];
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
 	if(b_IsPlayerABot[client])
+	{
 		return Plugin_Continue;
+	}
 	
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	
 #if defined RTS
 	RTS_PlayerRunCmd(client);
-#elseif !defined NOG
-	#if defined ZR
+#endif
+
+#if defined ZR
 	Escape_PlayerRunCmd(client);
 	
 	//tutorial stuff.
 	Tutorial_MakeClientNotMove(client);
-	#endif
 
 	if(buttons & IN_ATTACK)
 	{
 		int entity = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(entity > MaxClients)
 		{
-			
-	#if defined ZR
 			f_Actualm_flNextPrimaryAttack[entity] = GetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack");
-	#endif
 			
 			bool cancel_attack = false;
 			cancel_attack = Attributes_Fire(entity);
@@ -1992,10 +1991,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		holding[client] |= IN_ATTACK2;
 		
-	#if defined ZR
 		b_IgnoreWarningForReloadBuidling[client] = false;
-	#endif
-		
+
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding != -1)
 		{
@@ -2011,8 +2008,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				Call_PushCell(slot); //This is attack 2 :)
 				Call_Finish(action);
 			}
-			
-	#if defined ZR
+
 			char classname[36];
 			GetEntityClassname(weapon_holding, classname, sizeof(classname));
 			
@@ -2024,7 +2020,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					Pickup_Building_M2(client, weapon, false);
 				}
 			}
-	#endif
 		}
 		
 		StartPlayerOnlyLagComp(client, true);
@@ -2048,8 +2043,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 
 	//	CheckAlivePlayers(0, 0, true);
 		
-		
-	#if defined ZR
 		if(angles[0] < -70.0)
 		{
 			int entity = EntRefToEntIndex(Building_Mounted[client]);
@@ -2059,7 +2052,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 		}
 		else
-	#endif
 		{
 			int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			
@@ -2099,7 +2091,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		holding[client] |= IN_SCORE;
 		
-	#if defined ZR
 		if(dieingstate[client] == 0)
 		{
 			if(WaitingInQueue[client])
@@ -2116,14 +2107,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 
 		}
-	#endif
-		
-	#if defined RPG
-		FakeClientCommandEx(client, "sm_store");
-	#endif
 	}
 	
-	#if defined ZR
 	if(holding[client] & IN_ATTACK3)
 	{
 		if(!(buttons & IN_ATTACK3))
@@ -2229,8 +2214,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 	
-	#endif	// ZR
-#endif	// Gamemodes
+#endif	// ZR
 	return Plugin_Continue;
 }
 
