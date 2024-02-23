@@ -1161,7 +1161,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 #endif
 	{
 
-#if defined ZR
+#if !defined RTS
 		if(inflictor > 0 && inflictor <= MaxClients)
 		{
 			GiveRageOnDamage(inflictor, Damageaftercalc);
@@ -1263,7 +1263,7 @@ stock void Generic_OnTakeDamage(int victim, int attacker)
 	}
 }
 
-#if defined ZR
+#if !defined RTS
 static float f_damageAddedTogether[MAXTF2PLAYERS];
 static float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
 
@@ -1658,12 +1658,13 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 				percentage *= Medival_Difficulty_Level;
 			}
 		}
+		if(weapon > 0 && attacker > 0)
+			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
 #endif
 		if(VausMagicaShieldLogicEnabled(victim))
 			percentage *= 0.25;
 		
-		if(weapon > 0 && attacker > 0)
-			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
+
 		
 		if(percentage < 10.0)
 		{
@@ -1732,9 +1733,11 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	}
 #if defined ZR
 	if(EntRefToEntIndex(RaidBossActive) != victim)
+#endif	// ZR
 	{
 		float HudOffset = 0.05;
 
+#if defined ZR
 		if(raidboss_active)
 		{
 			//there is a raid, then this displays a hud below the raid hud.
@@ -1756,11 +1759,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 				HudOffset += 0.035;
 			}
 		}
+#endif	// ZR
 
 		float HudY = -1.0;
 
+#if defined ZR
 		HudY += f_HurtHudOffsetY[attacker];
 		HudOffset += f_HurtHudOffsetX[attacker];
+#endif	// ZR
 
 		SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
 		char ExtraHudHurt[255];
@@ -1787,13 +1793,16 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
 		ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
 
+#if defined ZR
 		if(!raidboss_active)
+#endif	// ZR
 		{
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%s", ExtraHudHurt, c_DmgDelt);
 		}
 			
 		ShowSyncHudText(attacker, SyncHud,"%s",ExtraHudHurt);
 	}
+#if defined ZR
 	else
 	{
 		float Timer_Show = RaidModeTime - GameTime;
@@ -1879,7 +1888,6 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	ShowSyncHudText(attacker, SyncHud, "%s\n%s\n%d / %d\n%s-%0.f", level, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
 #endif
 }
-#endif	// Non-RTS
 
 stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 0)
 {
@@ -1942,7 +1950,7 @@ stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 
 
 	return false;
 }
-#if defined ZR
+#if !defined RTS
 void ResetDamageHud(int client)
 {
 	SetHudTextParams(-1.0, 0.05, 1.0, 0, 0, 0, 255, 0, 0.01, 0.01);

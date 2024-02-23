@@ -136,10 +136,9 @@ public void SDKHook_ScoreThink(int entity)
 
 void SDKHook_HookClient(int client)
 {
+#if defined ZR
 	SDKUnhook(client, SDKHook_PreThinkPost, OnPreThinkPost);
 	SDKHook(client, SDKHook_PreThinkPost, OnPreThinkPost);
-
-#if defined ZR
 	SDKUnhook(client, SDKHook_PostThink, OnPostThink);
 	SDKUnhook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
 	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
@@ -149,6 +148,11 @@ void SDKHook_HookClient(int client)
 
 	SDKUnhook(client, SDKHook_PostThinkPost, OnPostThinkPost);
 	SDKHook(client, SDKHook_PostThinkPost, OnPostThinkPost);
+#endif
+
+#if defined NOG
+	SDKUnhook(client, SDKHook_PostThink, OnPostThink_OnlyHurtHud);
+	SDKHook(client, SDKHook_PostThink, OnPostThink_OnlyHurtHud);
 #endif
 
 #if defined ZR
@@ -214,6 +218,18 @@ public void OnPreThinkPost(int client)
 		SetEntityHealth(client, maxhealth);
 #endif
 }
+
+#if defined NOG
+public void OnPostThink_OnlyHurtHud(int client)
+{
+	if(b_DisplayDamageHud[client])
+	{
+		b_DisplayDamageHud[client] = false;
+		Calculate_And_Display_HP_Hud(client);
+	}
+}
+
+#endif
 
 #if defined ZR
 public void OnPostThink(int client)

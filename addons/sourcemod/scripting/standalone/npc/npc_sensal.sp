@@ -270,7 +270,7 @@ methodmap Sensal < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 450.0;
 		npc.i_GunMode = 0;
 		npc.m_flRangedSpecialDelay = GetGameTime() + 10.0;
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
@@ -398,14 +398,22 @@ methodmap Sensal < CClotBody
 
 public void Sensal_ClotThink(int iNPC)
 {
-	PrintCenterTextAll("Sensal HP: %d / %d", GetEntProp(iNPC, Prop_Data, "m_iHealth"), GetEntProp(iNPC, Prop_Data, "m_iMaxHealth"));
-
 	Sensal npc = view_as<Sensal>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
+	
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+
+	for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+	{
+		if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
+		{
+			Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
+		}	
+	}
+
 	npc.Update();
 	if(i_RaidGrantExtra[npc.index] == 50)
 	{
@@ -1368,7 +1376,6 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 			SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
 		}
 		float VulnerabilityToGive = 0.10;
-		IncreaceEntityDamageTakenBy(target, VulnerabilityToGive, 5.0, true);
 		EmitSoundToAll(g_SyctheHitSound[GetRandomInt(0, sizeof(g_SyctheHitSound) - 1)], entity, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		TE_Particle(b_RageProjectile[entity] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
@@ -1491,7 +1498,7 @@ bool SensalTransformation(Sensal npc)
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 			npc.StartPathing();
 			npc.m_bPathing = true;
-			npc.m_flSpeed = 330.0;
+			npc.m_flSpeed = 500.0;
 			npc.m_flNextChargeSpecialAttack = 0.0;
 			npc.m_bisWalking = true;
 			RaidModeScaling *= 1.15;
