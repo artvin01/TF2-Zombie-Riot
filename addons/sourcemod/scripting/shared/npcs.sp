@@ -30,8 +30,8 @@ void Npc_Sp_Precache()
 	f_DelayGiveOutlineNpc = 0.0;
 	f_DelayNextWaveStartAdvancing = 0.0;
 	f_DelayNextWaveStartAdvancingDeathNpc = 0.0;
-#endif
 	g_particleMissText = PrecacheParticleSystem("miss_text");
+#endif
 	g_particleCritText = PrecacheParticleSystem("crit_text");
 	g_particleMiniCritText = PrecacheParticleSystem("minicrit_text");
 }
@@ -608,18 +608,15 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 	{
 		f_TraceAttackWasTriggeredSameFrame[victim] = GetGameTime();
 		i_HasBeenHeadShotted[victim] = false;
+#if defined ZR
 		if(damagetype & DMG_BULLET)
 		{
-#if defined ZR
 			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
 			{
-
-	#if defined ZR
 				if(b_ProximityAmmo[attacker])
 				{
 					damage *= 1.15;
 				}
-	#endif
 
 				float AttackerPos[3];
 				float VictimPos[3];
@@ -636,22 +633,16 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					distance = 0.1;
 				}
 				float WeaponDamageFalloff = i_WeaponDamageFalloff[weapon];
-
-	#if defined ZR
 				if(b_ProximityAmmo[attacker])
 				{
 					WeaponDamageFalloff *= 0.8;
 				}
-	#endif
 
 				damage *= Pow(WeaponDamageFalloff, (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
 			}
-#endif
 		}
 
-#if defined ZR
 		if(!i_WeaponCannotHeadshot[weapon])
-#endif
 		{
 			bool Blitzed_By_Riot = false;
 			if(f_TargetWasBlitzedByRiotShield[victim][weapon] > GetGameTime())
@@ -678,13 +669,11 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			}
 			if((hitgroup == HITGROUP_HEAD && !b_CannotBeHeadshot[victim]) || Blitzed_By_Riot)
 			{
-				
-#if defined ZR
 				if(b_ThisNpcIsSawrunner[victim])
 				{
 					damage *= 2.0;
 				}
-#endif
+
 				damage *= f_HeadshotDamageMultiNpc[victim];
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
@@ -704,7 +693,6 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					i_HasBeenHeadShotted[victim] = true; //shouldnt count as an actual headshot!
 				}
 
-#if defined ZR
 				if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
 				{
 					damage *= 1.25;
@@ -751,11 +739,9 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					damage = 0.0;
 				}
 				played_headshotsound_already[attacker] = GetGameTime();
-#endif
-				
+
 				if(!Blitzed_By_Riot) //dont play headshot sound if blized.
 				{
-#if defined ZR
 					switch(random_case)
 					{
 						case 1:
@@ -781,14 +767,11 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 							EmitCustomToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
 						}
 					}
-#endif
 				}
 				return Plugin_Changed;
 			}
 			else
 			{
-
-#if defined ZR
 				if(i_ArsenalBombImplanter[weapon] > 0)
 				{
 					float damage_save = 50.0;
@@ -813,7 +796,6 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					Apply_Particle_Teroriser_Indicator(victim);
 					damage = 0.0;
 				}
-#endif
 
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
@@ -823,6 +805,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				return Plugin_Changed;
 			}
 		}
+#endif	// ZR
 	}
 	return Plugin_Changed;
 }
@@ -978,7 +961,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				Damageaftercalc = 0.0;
 				return Plugin_Handled;	
 			}
-#endif
 
 			if(!(damagetype & DMG_NOCLOSEDISTANCEMOD))
 			{
@@ -989,9 +971,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				damagetype &= ~DMG_USEDISTANCEMOD;
 			}
 			//Decide Damage falloff ourselves.
-
-			//This exists for rpg so that attacking the target will trigger it for hte next 5 seconds.
-			//ZR does not need this.
+#endif
 
 #if !defined RTS
 			OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, _,weapon);
@@ -1081,9 +1061,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif
 
 		NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+#if defined ZR
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 		{
-#if defined ZR
 			if(SeargentIdeal_Existant())
 			{
 				SeargentIdeal_Protect(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
@@ -1093,9 +1074,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					return Plugin_Handled;
 				}
 			}
-#endif
-
-#if defined ZR
 			if(attacker <= MaxClients && attacker > 0)
 			{
 				if(WeaponWasValid)
@@ -1104,8 +1082,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					damage = modified_damage;
 				}
 			}
-#endif
 		}
+#endif
 	}
 
 #if !defined RTS

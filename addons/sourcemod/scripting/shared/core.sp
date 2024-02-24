@@ -645,10 +645,10 @@ int played_headshotsound_already_Case [MAXTF2PLAYERS];
 int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
 int i_BarbariansMind[MAXPLAYERS + 1]={0, ...}; 				//830
 bool b_FaceStabber[MAXTF2PLAYERS];
-#endif
-int i_WandOwner[MAXENTITIES]; //
 int g_particleMissText;
-int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 				//785
+int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 
+#endif
+int i_WandOwner[MAXENTITIES]; //				//785
 int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
 
 int i_BleedDurationWeapon[MAXENTITIES]={0, ...}; 				//149
