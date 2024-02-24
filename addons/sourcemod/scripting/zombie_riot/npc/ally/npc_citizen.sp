@@ -1835,7 +1835,7 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				Handle swingTrace;
 				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-								npc.FaceTowards(VecEnemy, 15000.0);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 2))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	

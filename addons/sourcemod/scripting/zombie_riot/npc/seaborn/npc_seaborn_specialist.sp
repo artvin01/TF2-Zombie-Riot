@@ -98,7 +98,7 @@ methodmap SeabornSpecialist < CClotBody
 						teleported = true;
 						lowest = ratio;
 
-						vecPos2 = GetAbsOriginOld(entity);
+						GetAbsOrigin(entity, vecPos2);
 						GetEntPropVector(entity, Prop_Data, "m_angRotation", vecAng2);
 					}
 				}
@@ -196,7 +196,8 @@ public void SeabornSpecialist_ClotThink(int iNPC)
 	if(npc.m_iTarget > 0)
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec );
+		float distance = GetVectorDistance(vecTarget, npc_vec, true);
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -248,7 +249,7 @@ public void SeabornSpecialist_ClotThink(int iNPC)
 		{
 			if(distance < npc.GetLeadRadius())
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 

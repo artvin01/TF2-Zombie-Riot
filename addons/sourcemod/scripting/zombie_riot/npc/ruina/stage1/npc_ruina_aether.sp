@@ -267,7 +267,7 @@ static void ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
 
 		if(!IsValidEntity(Anchor_Id))
@@ -380,7 +380,7 @@ static void Aether_SelfDefense(Aether npc, float gameTime, int Anchor_Id)	//ty a
 	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 	if(flDistanceToTarget < (2250.0*2250.0))
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
@@ -393,10 +393,10 @@ static void Aether_SelfDefense(Aether npc, float gameTime, int Anchor_Id)	//ty a
 			float projectile_speed = 1250.0;
 			//lets pretend we have a projectile.
 			if(flDistanceToTarget < 1250.0*1250.0)
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 			if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 			{
-				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
+				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 			}
 			float DamageDone = 25.0;
 			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
@@ -415,26 +415,21 @@ static void Aether_SelfDefense(Aether npc, float gameTime, int Anchor_Id)	//ty a
 			{
 				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
 				GetClosestEnemyToAttack = target;
-				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
+				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 
-				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 				flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-				float SelfPos[3W = orldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
-				GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 				if(gameTime > npc.m_flNextRangedAttack)
 				{
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
 					npc.PlayRangedSound();
-					//after we fire, we will have a short delay beteween the actual laser, and when it happens
-					//This will predict as its relatively easy to dodge
 					float projectile_speed = 1250.0;
 					//lets pretend we have a projectile.
 					if(flDistanceToTarget < 1250.0*1250.0)
-						vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+						PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 					if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 					{
-						WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
+						WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 					}
 					float DamageDone = 25.0;
 					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);

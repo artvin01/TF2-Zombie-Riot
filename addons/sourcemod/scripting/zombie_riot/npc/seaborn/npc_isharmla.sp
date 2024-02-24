@@ -247,7 +247,7 @@ public void Isharmla_ClotThink(int iNPC)
 
 				if(IsValidAlly(npc.index, npc.m_iTarget))
 				{
-					float vecAlly[3]; vecAlly = WorldSpaceCenterOld(npc.m_iTarget);
+					float vecAlly[3]; WorldSpaceCenter(npc.m_iTarget, vecAlly);
 
 					int healing = npc.Anger ? 24000 : 16000;
 
@@ -285,7 +285,7 @@ public void Isharmla_ClotThink(int iNPC)
 				int ally = GetClosestAlly(npc.index, _, npc.m_iTarget);
 				if(ally > 0)
 				{
-					float vecAlly[3]; vecAlly = WorldSpaceCenterOld(ally);
+					float vecAlly[3]; WorldSpaceCenter(ally, vecAlly);
 
 					int healing = npc.Anger ? 24000 : 16000;
 

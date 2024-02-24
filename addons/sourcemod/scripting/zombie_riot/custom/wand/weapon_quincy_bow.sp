@@ -583,12 +583,13 @@ public void Quincy_Touch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		WorldSpaceCenter(target, Entity_Position);;
+		WorldSpaceCenter(target, Entity_Position);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 
 		if(IsValidEntity(particle))
 		{
@@ -913,7 +914,7 @@ public Action Quincy_StartTouch(int entity, int other)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		WorldSpaceCenter(target, Entity_Position);;
+		WorldSpaceCenter(target, Entity_Position);
 		
 		int owner = EntRefToEntIndex(i_Quincy_index[entity]);
 		int weapon =EntRefToEntIndex(i_Quincy_wep[entity]);
@@ -922,8 +923,8 @@ public Action Quincy_StartTouch(int entity, int other)
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 		TE_ParticleInt(g_particleImpactTornado, pos1);
 		TE_SendToAll();
-
-		SDKHooks_TakeDamage(target, owner, owner, f_projectile_dmg[entity], DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, owner, owner, f_projectile_dmg[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		
 		

@@ -282,7 +282,7 @@ void Allied_Sensal_InitiateLaserAttack(int owner, int entity, float VectorTarget
 
 				SensalCauseKnockback(npc.index, SensalAllied_BEAM_BuildingHit[building]);
 				float EnemyVecPos[3]; WorldSpaceCenter(SensalAllied_BEAM_BuildingHit[building], EnemyVecPos);
-				SDKHooks_TakeDamage(SensalAllied_BEAM_BuildingHit[building], owner, owner, damage / DamageFallOff, DMG_CLUB, Weapon, NULL_VECTOR, WEnemyVecPos, _ , ZR_DAMAGE_REFLECT_LOGIC);	// 2048 is DMG_NOGIB?
+				SDKHooks_TakeDamage(SensalAllied_BEAM_BuildingHit[building], owner, owner, damage / DamageFallOff, DMG_CLUB, Weapon, NULL_VECTOR, EnemyVecPos, _ , ZR_DAMAGE_REFLECT_LOGIC);	// 2048 is DMG_NOGIB?
 				DamageFallOff *= LASER_AOE_DAMAGE_FALLOFF;	
 				EnemiesHit += 1;
 				if(EnemiesHit >= 5)

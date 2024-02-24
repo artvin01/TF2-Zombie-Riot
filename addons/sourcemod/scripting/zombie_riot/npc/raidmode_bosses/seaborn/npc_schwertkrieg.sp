@@ -1435,7 +1435,7 @@ static void Schwert_Movement_Ally_Movement(Raidboss_Schwertkrieg npc, float flDi
 	npc.StartPathing();
 	npc.m_bPathing = true;
 	
-	float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex_Schwert, WorldSpaceVec);
+	float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex_Schwert, WorldSpaceVec2);
 	
 	if(flDistanceToTarget_Schwert < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25)
 	{

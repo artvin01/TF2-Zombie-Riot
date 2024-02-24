@@ -687,9 +687,9 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 		}
 
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-			
+		
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 		if(!b_Crystal_active)
 		{
@@ -783,10 +783,9 @@ static void Donner_Movement(int client, int PrimaryThreatIndex, float GameTime)
 {
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
 	
-	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-			
+	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);	
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 	npc.m_flSpeed = 300.0;
 

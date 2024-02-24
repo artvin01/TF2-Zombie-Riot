@@ -254,7 +254,7 @@ void Weapon_German_WandTouch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		WorldSpaceCenter(target, Entity_Position);;
+		WorldSpaceCenter(target, Entity_Position);
 
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 		
@@ -272,7 +272,8 @@ void Weapon_German_WandTouch(int entity, int target)
 
 		DamageWand *= Pow(WeaponDamageFalloff, (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
 
-		SDKHooks_TakeDamage(target, owner, owner, DamageWand, DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, owner, owner, DamageWand, DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);
 		
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(particle > MaxClients)

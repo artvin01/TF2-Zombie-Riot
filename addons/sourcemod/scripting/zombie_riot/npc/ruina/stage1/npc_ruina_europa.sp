@@ -394,7 +394,7 @@ static void Europa_Spawn_Self(Europa npc)
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
 	int spawn_index;
-			
+	
 	spawn_index = NPC_CreateByName("npc_ruina_europa", npc.index, pos, ang, GetTeam(npc.index));
 	maxhealth = RoundToNearest(maxhealth * 0.75);
 
@@ -431,7 +431,7 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 			float projectile_speed = 500.0;
 			//lets pretend we have a projectile.
 			if(flDistanceToTarget < 1250.0*1250.0)
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 			if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 			{
 				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
@@ -458,7 +458,6 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 
 				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
 
-				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 				flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				if(gameTime > npc.m_flNextRangedAttack)
 				{
@@ -469,7 +468,7 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 					float projectile_speed = 500.0;
 					//lets pretend we have a projectile.
 					if(flDistanceToTarget < 1250.0*1250.0)
-						vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+						PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 					if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 					{
 						WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );

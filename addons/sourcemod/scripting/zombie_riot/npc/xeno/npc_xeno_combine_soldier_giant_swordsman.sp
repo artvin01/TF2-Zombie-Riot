@@ -344,7 +344,7 @@ public void XenoCombineGaint_ClotThink(int iNPC)
 					
 					vecTarget[2] += 15.0;
 					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
-				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
+					MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -358,7 +358,8 @@ public void XenoCombineGaint_ClotThink(int iNPC)
 					
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
-					FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 20.0, 150.0, DMG_BULLET, "bullet_tracer02_blue");
+					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
+					FireBullet(npc.index, npc.index, npc_vec, vecDir, 20.0, 150.0, DMG_BULLET, "bullet_tracer02_blue");
 				}
 			}
 			

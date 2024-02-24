@@ -339,7 +339,7 @@ public void XenoCombineCollos_ClotThink(int iNPC)
 					
 					vecTarget[2] += 15.0;
 					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
-				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
+					MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -353,13 +353,14 @@ public void XenoCombineCollos_ClotThink(int iNPC)
 					
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
+					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
 					if(EscapeModeForNpc)
 					{
-						FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 250.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.index, npc_vec, vecDir, 50.0, 250.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 					else
 					{
-						FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 35.0, 250.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.index, npc_vec, vecDir, 35.0, 250.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 				}
 			}

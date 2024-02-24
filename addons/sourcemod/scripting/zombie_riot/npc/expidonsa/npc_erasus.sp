@@ -179,7 +179,7 @@ public void Erasus_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
@@ -248,7 +248,7 @@ void ErasusSelfDefense(Erasus npc, float gameTime, int target, float distance)
 			
 			Handle swingTrace;
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-								npc.FaceTowards(VecEnemy, 15000.0);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							

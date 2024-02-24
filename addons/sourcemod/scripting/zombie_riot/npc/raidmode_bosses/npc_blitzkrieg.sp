@@ -1062,7 +1062,7 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 	float vecTarget[3]; WorldSpaceCenter(attacker, vecTarget );
 	
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 	
 	if(flDistanceToTarget > 1000000 && fl_blitz_ioc_punish_timer[npc.index][attacker] < GetGameTime(npc.index) && IsPlayerAlive(attacker) && TeutonType[attacker] == TEUTON_NONE && dieingstate[attacker] == 0)	//Basically we "punish(ment)" players who are too far from blitz.
 	{

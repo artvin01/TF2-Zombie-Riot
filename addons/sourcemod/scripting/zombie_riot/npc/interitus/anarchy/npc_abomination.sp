@@ -204,7 +204,7 @@ public void AnarchyAbomination_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
@@ -340,7 +340,7 @@ void AnarchyAbominationSelfDefense(AnarchyAbomination npc)
 	float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 	bool SpinSound = true;
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 	if(flDistanceToTarget < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
 	{
 		npc.PlayMinigunSound(true);

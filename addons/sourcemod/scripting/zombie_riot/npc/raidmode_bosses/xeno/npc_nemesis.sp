@@ -667,7 +667,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				{
 					float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 					float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+					float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 					if(flDistanceToTarget < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 					{
 						int Enemy_I_See;
@@ -768,7 +768,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				{
 					float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 					float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+					float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 					if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0))
 					{
 
@@ -838,7 +838,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		//Predict their pos.
 		if(fl_OverrideWalkDest[npc.index] < gameTime)
 		{
@@ -1235,7 +1235,7 @@ void Nemesis_TryDodgeAttack(int entity)
 				fl_OverrideWalkDest[npc.index] = GetGameTime(npc.index) + 1.5;
 				if(IsValidEntity(npc.m_iTarget))
 				{
-					float vecTarget[3]; vecTarget = WorldSpaceCenterOld(ref);
+					float vecTarget[3]; WorldSpaceCenter(ref, vecTarget);
 					npc.FaceTowards(vecTarget);
 				}
 				NPC_SetGoalVector(npc.index, PosToDodgeTo);
@@ -1393,7 +1393,7 @@ public Action CheckStuckNemesis(Handle timer, any entid)
 stock float[] Nemesis_DodgeToDirection(CClotBody npc, float extra_backoff = 64.0, float Angle = -90.0)
 {
 	float botPos[3];
-	botPos = WorldSpaceCenterOld(npc.index);
+	WorldSpaceCenter(npc.index, botPos);
 	
 	// compute our desired destination
 	float pathTarget[3];

@@ -1380,7 +1380,7 @@ public Action Gambler_Orb_IEM_OnHatTouch(int entity, int client)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		WorldSpaceCenter(target, Entity_Position);;
+		WorldSpaceCenter(target, Entity_Position);
 		//Code to do damage position and ragdolls
 		
 		SDKHooks_TakeDamage(client, npc.index, npc.index, Orb_Damage_Projectile[npc.index], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?

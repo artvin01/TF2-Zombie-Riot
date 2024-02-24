@@ -367,7 +367,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 	
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if (npc.m_flReloadDelay < GetGameTime(npc.index) && flDistanceToTarget < 40000 || flDistanceToTarget > 90000 && npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime(npc.index))
 		{
 			if (!npc.m_bmovedelay)
@@ -454,7 +454,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 			
 			vecTarget[2] += 15.0;
 			float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
-				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
+			MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 			GetVectorAngles(vecDirShooting, vecDirShooting);
 			vecDirShooting[1] = eyePitch[1];
 			GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);

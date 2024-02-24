@@ -201,7 +201,7 @@ public void The_Shit_Slapper_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 			
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())

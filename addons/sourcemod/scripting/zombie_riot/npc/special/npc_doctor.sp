@@ -253,7 +253,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 	}
 	if(IsValidAlly(npc.index, npc.m_iTargetAlly) && IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTargetally[3]; vecTargetally = WorldSpaceCenterOld(npc.m_iTargetAlly);
+		float vecTargetally[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTargetally);
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float vecPos[3]; WorldSpaceCenter(npc.index, vecPos );
 		
@@ -289,7 +289,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			{
 				Handle swingTrace;
 				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-								npc.FaceTowards(VecEnemy, 15000.0);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	

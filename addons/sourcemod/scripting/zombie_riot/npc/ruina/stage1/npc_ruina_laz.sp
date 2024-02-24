@@ -226,7 +226,7 @@ static void ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
 		if(iPitch < 0)
@@ -235,7 +235,7 @@ static void ClotThink(int iNPC)
 		//Body pitch
 		float v[3], ang[3];
 		float SelfVec[3]; WorldSpaceCenter(npc.index, SelfVec);
-			SubtractVectors(SelfVec, vecTarget, v); 
+		SubtractVectors(SelfVec, vecTarget, v); 
 		NormalizeVector(v, v);
 		GetVectorAngles(v, ang); 
 								

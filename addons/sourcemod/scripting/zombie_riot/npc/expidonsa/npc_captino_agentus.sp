@@ -279,7 +279,7 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 	
 		npc.m_bAllowBackWalking = false;
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			if(!IsEnemyBuilding)
@@ -330,7 +330,7 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 							float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 							ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 							float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-								npc.FaceTowards(VecEnemy, 15000.0);
+							npc.FaceTowards(VecEnemy, 15000.0);
 							npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 12.5;
 							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7; //so they cant instastab you!
 						}
@@ -484,7 +484,7 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 			}
 
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-								npc.FaceTowards(VecEnemy, 15000.0);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			Handle swingTrace;
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Ignore barricades
 			{
@@ -516,7 +516,7 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-								npc.FaceTowards(VecEnemy, 15000.0);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.PlayMeleeSound();

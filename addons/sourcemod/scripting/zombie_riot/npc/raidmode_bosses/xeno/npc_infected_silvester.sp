@@ -1613,7 +1613,7 @@ public Action contact_throw_Silvester_entity(int client)
 	else
 	{
 		char classname[60];
-		chargerPos = WorldSpaceCenterOld(client);
+		WorldSpaceCenter(client, chargerPos);
 		for(int entity=1; entity <= MAXENTITIES; entity++)
 		{
 			if (IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
@@ -1621,7 +1621,7 @@ public Action contact_throw_Silvester_entity(int client)
 				GetEntityClassname(entity, classname, sizeof(classname));
 				if (!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
 				{
-					targPos = WorldSpaceCenterOld(entity);
+					WorldSpaceCenter(entity, targPos);
 					if (GetVectorDistance(chargerPos, targPos, true) <= (250.0* 250.0) && GetTeam(entity)!=GetTeam(client))
 					{
 						if (!b_AlreadyHitTankThrow[client][entity] && entity != client)
@@ -2200,8 +2200,8 @@ public Action Silvester_TBB_Tick(int client)
 					{
 						damage *= 3.0; //give 3x dmg to anything
 					}
-
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
+					float vic_vec[3]; WorldSpaceCenter(victim, vic_vec);
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, vic_vec);	// 2048 is DMG_NOGIB?
 				}
 			}
 			

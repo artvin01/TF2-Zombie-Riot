@@ -252,7 +252,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			{
 				Handle swingTrace;
 				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-								npc.FaceTowards(VecEnemy, 15000.0);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -286,7 +286,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 
 		if(npc.m_bChaseAnger)
 		{
-			LastKnownPos = WorldSpaceCenterOld(npc.m_iTarget);
+			WorldSpaceCenter(npc.m_iTarget, LastKnownPos);
 			float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 
 			int state;
@@ -371,7 +371,8 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		else
 		{
 			// Stare at the target, confirm their real before chasing after
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 1000.0);
+			float Targ_Vec[3]; WorldSpaceCenter(npc.m_iTarget, Targ_Vec);
+			npc.FaceTowards(Targ_Vec, 1000.0);
 		}
 	}
 	else
@@ -384,7 +385,8 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		}
 
 		int state;
-		float distance = GetVectorDistance(LastKnownPos, WorldSpaceCenterOld(npc.index), true);
+		float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
+		float distance = GetVectorDistance(LastKnownPos, npc_vec, true);
 		if(npc.m_flDoingAnimation > gameTime)
 		{
 			state = -1;

@@ -1735,7 +1735,7 @@ public Action BobTheGod_anger_medkit(Handle dashHud, int entity)
 			float pos[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos);
 			
 			float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
-		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
+			float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 			if(flDistanceToTarget < 150)
 			{
 				SDKHooks_TakeDamage(client, npc.index, client, 35.0, DMG_CLUB);

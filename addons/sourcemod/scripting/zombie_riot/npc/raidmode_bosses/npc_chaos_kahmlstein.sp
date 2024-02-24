@@ -775,7 +775,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int SetGoalVectorIndex = 0;
 		SetGoalVectorIndex = ChaosKahmlsteinSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		switch(SetGoalVectorIndex)
@@ -1365,7 +1365,7 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
 				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-								npc.FaceTowards(VecEnemy, 15000.0);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;

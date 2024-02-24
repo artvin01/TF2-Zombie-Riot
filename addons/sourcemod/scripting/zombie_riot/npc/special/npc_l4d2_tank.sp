@@ -310,19 +310,20 @@ public void L4D2_Tank_ClotThink(int iNPC)
 		{
 			I_Wanna_Throw_ally = true;
 			NPC_SetGoalEntity(npc.index, EntRefToEntIndex(i_IWantToThrowHim[npc.index]));
-			vecTarget = WorldSpaceCenterOld(EntRefToEntIndex(i_IWantToThrowHim[npc.index]));
-			flDistanceToTarget  = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			WorldSpaceCenter(EntRefToEntIndex(i_IWantToThrowHim[npc.index]), vecTarget);
+			float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
+			flDistanceToTarget  = GetVectorDistance(vecTarget, npc_vec, true);
 			
-			vecTarget_OnRun = WorldSpaceCenterOld(closest);
-			flDistanceToTarget_OnRun = GetVectorDistance(vecTarget_OnRun, WorldSpaceCenterOld(npc.index), true);
+			WorldSpaceCenter(closest, vecTarget_OnRun);
+			flDistanceToTarget_OnRun = GetVectorDistance(vecTarget_OnRun, npc_vec, true);
 			
 		}
 		if(!I_Wanna_Throw_ally)
 		{
-			vecTarget = WorldSpaceCenterOld(closest);
+			WorldSpaceCenter(closest, vecTarget);
 			vecTarget_OnRun = vecTarget;
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-				flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+			flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius())
 			{
@@ -368,7 +369,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 								
 								SDKCall_SetLocalOrigin(client, flPos);
 								
-								float vecTarget_closest[3]; vecTarget_closest = WorldSpaceCenterOld(Closest_non_grabbed_player);
+								float vecTarget_closest[3]; WorldSpaceCenter(Closest_non_grabbed_player, vecTarget_closest);
 								npc.FaceTowards(vecTarget_closest, 20000.0);
 								PluginBot_Jump(client, vecTarget_closest);
 								RequestFrame(ApplySdkHookTankThrow, EntIndexToEntRef(client));
@@ -426,7 +427,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 		
 							if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See) && Closest_non_grabbed_player == Enemy_I_See)
 							{
-								float vecTarget_closest[3]; vecTarget_closest = WorldSpaceCenterOld(Closest_non_grabbed_player);
+								float vecTarget_closest[3]; WorldSpaceCenter(Closest_non_grabbed_player, vecTarget_closest);
 								npc.FaceTowards(vecTarget_closest, 20000.0);
 								if(client > MaxClients && !b_NpcHasDied[client])
 								{
@@ -834,7 +835,7 @@ public Action contact_throw_tank(int client)
 	{
 		char classname[60];
 		
-		chargerPos = WorldSpaceCenterOld(client);
+		WorldSpaceCenter(client, chargerPos);
 		for(int entity=1; entity <= MAXENTITIES; entity++)
 		{
 			
@@ -843,7 +844,7 @@ public Action contact_throw_tank(int client)
 				GetEntityClassname(entity, classname, sizeof(classname));
 				if (!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
 				{
-					targPos = WorldSpaceCenterOld(entity);
+					WorldSpaceCenter(entity, targPos);
 					if (GetVectorDistance(chargerPos, targPos, true) <= (125.0* 125.0))
 					{
 						if (!b_AlreadyHitTankThrow[client][entity] && entity != client && i_TankThrewThis[client] != entity)
@@ -905,7 +906,7 @@ public Action contact_throw_tank_entity(int client)
 	else
 	{
 		char classname[60];
-		chargerPos = WorldSpaceCenterOld(client);
+		WorldSpaceCenter(client, chargerPos);
 		for(int entity=1; entity <= MAXENTITIES; entity++)
 		{
 			if (IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
@@ -913,7 +914,7 @@ public Action contact_throw_tank_entity(int client)
 				GetEntityClassname(entity, classname, sizeof(classname));
 				if (!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
 				{
-					targPos = WorldSpaceCenterOld(entity);
+					WorldSpaceCenter(entity, targPos);
 					if (GetVectorDistance(chargerPos, targPos, true) <= (125.0* 125.0))
 					{
 						if (!b_AlreadyHitTankThrow[client][entity] && entity != client && i_TankThrewThis[client] != entity)

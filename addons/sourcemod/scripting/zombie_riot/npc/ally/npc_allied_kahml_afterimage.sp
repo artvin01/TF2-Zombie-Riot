@@ -162,7 +162,7 @@ static void Internal_Npc_ClotThink(int iNPC)
 		//no enemy valid, run back to papa
 		float vecTarget[3]; WorldSpaceCenter(owner, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
 		npc.m_bAllowBackWalking = false;
 
@@ -188,7 +188,7 @@ static void Internal_Npc_ClotThink(int iNPC)
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int SetGoalVectorIndex = 0;
 		SetGoalVectorIndex = ChaosKahmlsteinAllySelfDefense(npc, npc.m_iTarget, flDistanceToTarget, owner); 
 		switch(SetGoalVectorIndex)

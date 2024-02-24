@@ -285,7 +285,7 @@ static void ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		if(flDistanceToTarget < 100000)
 		{
@@ -345,7 +345,7 @@ static void ClotThink(int iNPC)
 						
 					float projectile_speed = 1000.0;
 					float target_vec[3];
-					target_vec = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
+					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 		
 					npc.FireParticleRocket(target_vec, 50.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
 						

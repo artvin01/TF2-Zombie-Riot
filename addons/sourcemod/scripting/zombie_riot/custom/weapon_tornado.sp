@@ -271,7 +271,7 @@ public void Tornado_Blitz_StartTouch(int entity, int other)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		WorldSpaceCenter(target, Entity_Position);;
+		WorldSpaceCenter(target, Entity_Position);
 		
 		int owner = EntRefToEntIndex(i_tornado_index[entity]);
 		int weapon = EntRefToEntIndex(i_tornado_wep[entity]);
@@ -280,8 +280,8 @@ public void Tornado_Blitz_StartTouch(int entity, int other)
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 		TE_ParticleInt(g_particleImpactTornado, pos1);
 		TE_SendToAll();
-
-		SDKHooks_TakeDamage(target, owner, owner, fl_tornado_dmg[entity], DMG_BULLET, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, owner, owner, fl_tornado_dmg[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		//CPrintToChatAll("sdk_dmg");
 		

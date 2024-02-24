@@ -317,13 +317,14 @@ methodmap NaziPanzer < CClotBody
 		
 		float vecForward[3], vecRight[3], vecTarget[3];
 		
-		WorldSpaceCenter(Target, vecTarget );
-		MakeVectorFromPoints(WorldSpaceCenterOld(this.index), vecTarget, vecForward);
+		WorldSpaceCenter(target, vecTarget );
+		float npc_vec[3]; WorldSpaceCenter(this.index, npc_vec);
+		MakeVectorFromPoints(npc_vec, vecTarget, vecForward);
 		GetVectorAngles(vecForward, vecForward);
 		vecForward[1] = eyePitch[1];
 		GetAngleVectors(vecForward, vecForward, vecRight, vecTarget);
 		
-		float vecSwingStart[3]; vecSwingStart = GetAbsOriginOld(this.index);
+		float vecSwingStart[3]; GetAbsOrigin(this.index, vecSwingStart);
 		vecSwingStart[2] += 44.0;
 		
 		float vecSwingEnd[3];
@@ -459,7 +460,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 			
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
@@ -634,7 +635,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 			target = Can_I_See_Enemy(npc.index, HumanTarget);
 			if (target == HumanTarget)
 			{
-				float vecTargetHook[3]; vecTargetHook = WorldSpaceCenterOld(HumanTarget);
+				float vecTargetHook[3]; WorldSpaceCenter(HumanTarget, vecTargetHook);
 				npc.FaceTowards(vecTargetHook, 20000.0);
 				
 				float projectile_speed = 1200.0;

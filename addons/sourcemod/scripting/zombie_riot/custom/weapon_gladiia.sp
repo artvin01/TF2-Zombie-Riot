@@ -543,12 +543,13 @@ void Gladiia_WandTouch(int entity, int target)
 		float vecForward[3], Entity_Position[3];
 		GetEntPropVector(entity, Prop_Send, "m_angRotation", vecForward);
 		GetAngleVectors(vecForward, vecForward, NULL_VECTOR, NULL_VECTOR);
-		WorldSpaceCenter(target, Entity_Position);;
+		WorldSpaceCenter(target, Entity_Position);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, Dmg_Force, Entity_Position);
 	}
 
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);

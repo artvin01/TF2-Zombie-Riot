@@ -286,7 +286,7 @@ int DesertQanaasSelfDefense(DesertQanaas npc, float gameTime)
 		}
 	}
 	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-								npc.FaceTowards(VecEnemy, 15000.0);
+	npc.FaceTowards(VecEnemy, 15000.0);
 
 	static float ThrowPos[MAXENTITIES][3];  
 	float origin[3], angles[3];

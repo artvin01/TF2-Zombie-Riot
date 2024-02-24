@@ -69,7 +69,8 @@ public void EndSpeaker4_ClotThink(int iNPC)
 	if(npc.m_iTarget > 0)
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec );
+		float distance = GetVectorDistance(vecTarget, npc_vec, true);
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -117,7 +118,7 @@ public void EndSpeaker4_ClotThink(int iNPC)
 
 				if(failed)
 				{
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1200.0);
+					PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0, _, vecTarget);
 					
 					int entity = -1;
 					if(npc.m_hBuffs & BUFF_SPEWER)
@@ -176,7 +177,7 @@ public void EndSpeaker4_ClotThink(int iNPC)
 		{
 			if(distance < npc.GetLeadRadius())
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 

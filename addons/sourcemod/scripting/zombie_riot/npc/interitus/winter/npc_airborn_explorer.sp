@@ -205,7 +205,7 @@ public void WinterAirbornExplorer_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
@@ -333,7 +333,7 @@ void WinterAirbornExplorerSelfDefense(WinterAirbornExplorer npc, float gameTime,
 			
 			Handle swingTrace;
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-								npc.FaceTowards(VecEnemy, 15000.0);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			static float MaxVec[3];
 			static float MinVec[3];
 			MaxVec = {64.0,64.0,64.0};

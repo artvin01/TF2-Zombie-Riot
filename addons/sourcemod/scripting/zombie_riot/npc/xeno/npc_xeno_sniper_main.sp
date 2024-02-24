@@ -415,7 +415,7 @@ public void XenoSniperMain_ClotThink(int iNPC)
 					
 					vecTarget[2] += 15.0;
 					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
-				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
+					MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -436,7 +436,8 @@ public void XenoSniperMain_ClotThink(int iNPC)
 					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
 					
-					FireBullet(npc.index, npc.m_iWearable2, WorldSpaceCenterOld(npc.index), vecDir, 4.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
+					FireBullet(npc.index, npc.m_iWearable2, npc_vec, vecDir, 4.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					npc.PlayRangedSound();
 				}
 			}

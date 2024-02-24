@@ -257,7 +257,8 @@ public void SeaReaper_ClotThink(int iNPC)
 
 public void SeaRepear_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
-	ParticleEffectAt(WorldSpaceCenterOld(victim), "water_bulletsplash01", 1.5);
+	float vic_vec[3]; WorldSpaceCenter(victim, vic_vec);
+	ParticleEffectAt(vic_vec, "water_bulletsplash01", 1.5);
 	SeaSlider_AddNeuralDamage(victim, attacker, i_NpcInternalId[attacker] == SEAREAPER_ALT ? 15 : 12);
 	// 400 x 0.2 x 0.15
 	// 500 x 0.2 x 0.15

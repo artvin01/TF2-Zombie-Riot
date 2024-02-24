@@ -350,7 +350,7 @@ public void XenoCombinePoliceSmg_ClotThink(int iNPC)
 					
 					vecTarget[2] += 15.0;
 					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
-				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
+					MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -374,13 +374,14 @@ public void XenoCombinePoliceSmg_ClotThink(int iNPC)
 					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
 					
+					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
 					if(EscapeModeForNpc)
 					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 6.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+						FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 6.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					}
 					else
 					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 3.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+						FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 3.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					}
 					
 					npc.PlayRangedSound();

@@ -130,8 +130,11 @@ public void SeabornEngineer_ClotThink(int iNPC)
 			{
 				KillFeed_SetKillIcon(npc.index, "obj_attachment_sapper");
 
-				ParticleEffectAt(WorldSpaceCenterOld(npc.index), "water_bulletsplash01", 3.0);
-				ParticleEffectAt(WorldSpaceCenterOld(npc.m_iTargetAlly), "water_bulletsplash01", 3.0);
+				float trg_vec[3]; WorldSpaceCenter(npc.m_iTargetAlly, trg_vec );
+				float self_vec[3]; WorldSpaceCenter(npc.index, self_vec);
+
+				ParticleEffectAt(self_vec, "water_bulletsplash01", 3.0);
+				ParticleEffectAt(trg_vec, "water_bulletsplash01", 3.0);
 
 				int repair = Building_GetBuildingRepair(npc.m_iTargetAlly);
 				if(repair < 1)
@@ -214,7 +217,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 

@@ -279,7 +279,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
@@ -445,7 +445,7 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 
 	float vecTarget[3];
 	float vecTarget_2[3];
-	WorldSpaceCenter(Target, vecTarget );
+	WorldSpaceCenter(target, vecTarget );
 	WorldSpaceCenter(target, vecTarget_2);
 
 	bool first_target = true;

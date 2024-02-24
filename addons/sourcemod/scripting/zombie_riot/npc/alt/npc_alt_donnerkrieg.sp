@@ -501,127 +501,127 @@ public void Donnerkrieg_ClotThink(int iNPC)
 		if(!b_nightmare_logic[npc.index])
 		{	
 	
-				float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
-				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
-				//Predict their pos.
-				if(flDistanceToTarget < npc.GetLeadRadius()) {
-					
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
-					
-				/*	int color[4];
-					color[0] = 255;
-					color[1] = 255;
-					color[2] = 0;
-					color[3] = 255;
+			//Predict their pos.
+			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-					int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 				
-					TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-					TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
+			/*	int color[4];
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 0;
+				color[3] = 255;
+			
+				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
+			
+				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
+				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
+				
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			} else {
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			}
+				
+			if(g_b_angered)	//thanks to the loss of his companion donner has gained A NECK
+			{
+				int iPitch = npc.LookupPoseParameter("body_pitch");
+				if(iPitch < 0)
+					return;		
 					
-					NPC_SetGoalVector(npc.index, vPredictedPos);
-				} else {
-					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-				}
-					
-				if(g_b_angered)	//thanks to the loss of his companion donner has gained A NECK
-				{
-					int iPitch = npc.LookupPoseParameter("body_pitch");
-					if(iPitch < 0)
-						return;		
+				//Body pitch
+				float v[3], ang[3];
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+				float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec2);
+				SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
+				NormalizeVector(v, v);
+				GetVectorAngles(v, ang); 
 						
-					//Body pitch
-					float v[3], ang[3];
-					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-					float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec2);
-					SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
-					NormalizeVector(v, v);
-					GetVectorAngles(v, ang); 
-							
-					float flPitch = npc.GetPoseParameter(iPitch);
-							
-					npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
-				}
-				if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime && flDistanceToTarget > (110.0 * 110.0) && flDistanceToTarget < (500.0 * 500.0))
-				{	
-
-					npc.FaceTowards(vecTarget);
-					float projectile_speed = 400.0;
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
-					if(g_b_angered)
-					{
-						npc.FireParticleRocket(vecTarget, 125.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
-					}
-					else
-					{
-						npc.FireParticleRocket(vecTarget, 25.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
-					}
+				float flPitch = npc.GetPoseParameter(iPitch);
 						
-					//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
+				npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+			}
+			if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime && flDistanceToTarget > (110.0 * 110.0) && flDistanceToTarget < (500.0 * 500.0))
+			{	
 
-					npc.m_iAmountProjectiles += 1;
-					npc.PlayRangedSound();
-					npc.AddGesture("ACT_MP_THROW");
-					npc.m_flNextRangedBarrage_Singular = GameTime + 0.15;
-					if (npc.m_iAmountProjectiles >= 15.0)
-					{
-						npc.m_iAmountProjectiles = 0;
-						npc.m_flNextRangedBarrage_Spam = GameTime + 45.0;
-					}
-				}
-				
-				//Target close enough to hit
-				if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
+				npc.FaceTowards(vecTarget);
+				float projectile_speed = 400.0;
+				vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
+				if(g_b_angered)
 				{
-					//Look at target so we hit.
-				//	npc.FaceTowards(vecTarget, 1000.0);
-					
-					//Can we attack right now?
-					if(npc.m_flNextMeleeAttack < GameTime)
-					{
-						//Play attack ani
-						if (!npc.m_flAttackHappenswillhappen)
-						{
-							npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-							npc.PlayMeleeSound();
-							npc.m_flAttackHappens = GameTime+0.4;
-							npc.m_flAttackHappens_bullshit = GameTime+0.54;
-							npc.m_flAttackHappenswillhappen = true;
-							npc.FaceTowards(vecTarget);
-							Normal_Attack_BEAM_TBB_Ability(npc.index);
-							
-							if(flDistanceToTarget < 100.0*100.0)	//to prevent players from sitting ontop of donnerkrieg and just stabing his head
-							{
-								Handle swingTrace;
-								if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, _, _, _, 1))
-								{
-									int target = TR_GetEntityIndex(swingTrace);	
-								
-									float vecHit[3];
-									TR_GetEndPosition(vecHit, swingTrace);
-									
-									if(target > 0) 
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 22.0*RaidModeScaling, DMG_CLUB, -1, _, vecHit);						
-									} 
-								}
-								delete swingTrace;
-							}
-						}
-						if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
-						{
-							npc.m_flAttackHappenswillhappen = false;
-							npc.m_flNextMeleeAttack = GameTime + 0.6;
-						}
-					}
+					npc.FireParticleRocket(vecTarget, 125.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
 				}
 				else
 				{
-					npc.StartPathing();
+					npc.FireParticleRocket(vecTarget, 25.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
 				}
+					
+				//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
+
+				npc.m_iAmountProjectiles += 1;
+				npc.PlayRangedSound();
+				npc.AddGesture("ACT_MP_THROW");
+				npc.m_flNextRangedBarrage_Singular = GameTime + 0.15;
+				if (npc.m_iAmountProjectiles >= 15.0)
+				{
+					npc.m_iAmountProjectiles = 0;
+					npc.m_flNextRangedBarrage_Spam = GameTime + 45.0;
+				}
+			}
+			
+			//Target close enough to hit
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
+			{
+				//Look at target so we hit.
+			//	npc.FaceTowards(vecTarget, 1000.0);
+				
+				//Can we attack right now?
+				if(npc.m_flNextMeleeAttack < GameTime)
+				{
+					//Play attack ani
+					if (!npc.m_flAttackHappenswillhappen)
+					{
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+						npc.PlayMeleeSound();
+						npc.m_flAttackHappens = GameTime+0.4;
+						npc.m_flAttackHappens_bullshit = GameTime+0.54;
+						npc.m_flAttackHappenswillhappen = true;
+						npc.FaceTowards(vecTarget);
+						Normal_Attack_BEAM_TBB_Ability(npc.index);
+						
+						if(flDistanceToTarget < 100.0*100.0)	//to prevent players from sitting ontop of donnerkrieg and just stabing his head
+						{
+							Handle swingTrace;
+							if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, _, _, _, 1))
+							{
+								int target = TR_GetEntityIndex(swingTrace);	
+							
+								float vecHit[3];
+								TR_GetEndPosition(vecHit, swingTrace);
+								
+								if(target > 0) 
+								{
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 22.0*RaidModeScaling, DMG_CLUB, -1, _, vecHit);						
+								} 
+							}
+							delete swingTrace;
+						}
+					}
+					if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
+					{
+						npc.m_flAttackHappenswillhappen = false;
+						npc.m_flNextMeleeAttack = GameTime + 0.6;
+					}
+				}
+			}
+			else
+			{
+				npc.StartPathing();
+			}
 		}
 		else
 		{

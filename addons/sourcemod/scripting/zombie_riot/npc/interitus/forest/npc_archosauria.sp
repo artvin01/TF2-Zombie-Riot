@@ -146,7 +146,7 @@ public void Archosauria_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int ExtraBehavior = ArchosauriaSelfDefense(npc,GetGameTime(npc.index)); 
 
 		switch(ExtraBehavior)
@@ -255,7 +255,7 @@ int ArchosauriaSelfDefense(Archosauria npc, float gameTime)
 		}
 	}
 	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-								npc.FaceTowards(VecEnemy, 15000.0);
+	npc.FaceTowards(VecEnemy, 15000.0);
 
 	static float ThrowPos[MAXENTITIES][3];  
 	float origin[3], angles[3];

@@ -281,7 +281,7 @@ static void ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		if(npc.m_flNextRangedBarrage_Spam < GameTime)
 		{
@@ -404,7 +404,7 @@ static void Adiantum_Destroy_Wings(int client)
 }
 static void Adiantum_Summon_Ion_Barrage(int client, float vecTarget[3])
 {
-	float current_loc[3]; current_loc=GetAbsOriginOld(client);
+	float current_loc[3]; GetAbsOrigin(client, current_loc);
 	float vecAngles[3], Direction[3], endLoc[3];
 	
 	
@@ -435,7 +435,7 @@ public void Adiantum_Ion_Invoke(int ref, float vecTarget[3], float Time)
 		
 		int color[4] = {1, 175, 255, 255};
 		float UserLoc[3];
-		UserLoc = GetAbsOriginOld(entity);
+		GetAbsOrigin(entity, UserLoc);
 		
 		UserLoc[2]+=75.0;
 		

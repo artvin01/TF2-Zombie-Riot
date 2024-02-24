@@ -385,7 +385,8 @@ static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
 	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+	
 	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 	{	
 		//target is within range, attack them
@@ -425,7 +426,7 @@ static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
 				npc.PlayRangedSound();
 				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
 				float projectile_speed = 800.0;
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 				{
 					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );

@@ -282,7 +282,7 @@ static void ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		if(flDistanceToTarget < 100000)
 		{
@@ -342,7 +342,7 @@ static void ClotThink(int iNPC)
 						
 					float projectile_speed = 750.0;
 					float target_vec[3];
-					target_vec = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
+					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _, target_vec);
 		
 					float dmg = 30.0;
 					float radius = 150.0;

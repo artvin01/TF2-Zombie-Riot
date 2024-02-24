@@ -132,7 +132,8 @@ public void FirstToTalk_ClotThink(int iNPC)
 	if(npc.m_iTarget > 0)
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec );
+		float distance = GetVectorDistance(vecTarget, npc_vec, true);
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -272,7 +273,7 @@ public Action FirstToTalk_TimerShoot(Handle timer, DataPack pack)
 			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(entity, 100, 100, 255, 255);
 			
-			vecPos = WorldSpaceCenterOld(entity);
+			WorldSpaceCenter(entity, vecPos);
 			f_ArrowTrailParticle[entity] = ParticleEffectAt(vecPos, "rockettrail_bubbles", 3.0);
 			SetParent(entity, f_ArrowTrailParticle[entity]);
 			f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
@@ -319,7 +320,7 @@ public Action FirstToTalk_TimerAttack(Handle timer, DataPack pack)
 
 		if(victim)
 		{
-			vecPos = WorldSpaceCenterOld(victim);
+			WorldSpaceCenter(victim, vecPos);
 			ParticleEffectAt(vecPos, "water_bulletsplash01", 3.0);
 
 			float vecPos2[3];

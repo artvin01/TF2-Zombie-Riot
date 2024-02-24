@@ -163,7 +163,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		}
 
 		npc.PlaySpawnSound();
-		float pos[3]; pos = WorldSpaceCenterOld(npc.index);
+		float pos[3]; WorldSpaceCenter(npc.index, pos);
 		pos[2] -= 10.0;
 		TE_Particle("teleported_blue", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 		
@@ -224,7 +224,7 @@ public void BeheadedKamiKaze_ClotThink(int iNPC)
 		
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{

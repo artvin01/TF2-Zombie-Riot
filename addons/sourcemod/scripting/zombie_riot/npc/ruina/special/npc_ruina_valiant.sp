@@ -305,8 +305,8 @@ static void ClotThink(int iNPC)
 		fl_ruina_battery_timer[npc.index] = GameTime+30.0;	//A set timeout for rebuild an anchor.
 		float Anchor_Loc[3], Npc_Loc[3];
 
-		Anchor_Loc = WorldSpaceCenterOld(Anchor);
-		Npc_Loc = WorldSpaceCenterOld(npc.index);
+		WorldSpaceCenter(Anchor, Anchor_Loc);
+		WorldSpaceCenter(npc.index, Npc_Loc);
 
 		float dist = GetVectorDistance(Anchor_Loc, Npc_Loc, true);
 
@@ -380,7 +380,7 @@ static void ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 		if(flDistanceToTarget < (2000.0*2000.0))
 		{
@@ -520,8 +520,9 @@ static void Venium_Build_Anchor(Valiant npc)
 		
 	AproxRandomSpaceToWalkTo[2] += 18.0;
 	AproxRandomSpaceToWalkTo[2] += 18.0;
-		
-	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceCenterOld(npc.index), true);
+	
+	float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
+	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, npc_vec, true);
 		
 	if(flDistanceToBuild < (2000.0 * 2000.0) && i_failsafe[npc.index] <= RUINA_ANCHOR_FAILSAFE_AMMOUNT)
 	{
@@ -555,7 +556,7 @@ static void Venium_Post_Bult_Logic(Valiant npc, int PrimaryThreatIndex, float Ga
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.5)
 		{
