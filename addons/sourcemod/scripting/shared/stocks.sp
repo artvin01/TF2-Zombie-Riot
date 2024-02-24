@@ -251,6 +251,16 @@ stock bool ExcuteRelay(const char[] name, const char[] input="Trigger")
 	return found;
 }
 
+void ResetReplications()
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		ReplicateClient_Svairaccelerate[client] = -1.0;
+		ReplicateClient_Tfsolidobjects[client] = -1;
+		ReplicateClient_RollAngle[client] = -1;
+	}
+}
+
 stock void CreateAttachedAnnotation(int client, int entity, float time, const char[] buffer)
 {
 	Event event = CreateEvent("show_annotation");
@@ -1586,7 +1596,7 @@ stock void GetWorldSpaceCenter(int client, float v[3])
 	v[2] += max_space[2] / 2;
 }
 
-bool IsBehindAndFacingTarget(int owner, int target, int weapon = -1)
+stock bool IsBehindAndFacingTarget(int owner, int target, int weapon = -1)
 {
 	float vecToTarget[3], vecEyeAngles[3];
 	GetWorldSpaceCenter(target, vecToTarget);
@@ -2621,7 +2631,7 @@ float[] CalculateDamageForceOld( const float vecBulletDir[3], float flScale )
 }
 #endif
 
-void CalculateDamageForce( const float vecBulletDir[3], float flScale, float vecForce[3])
+stock void CalculateDamageForce( const float vecBulletDir[3], float flScale, float vecForce[3])
 {
 	vecForce = vecBulletDir;
 	NormalizeVector( vecForce, vecForce );
@@ -2629,7 +2639,7 @@ void CalculateDamageForce( const float vecBulletDir[3], float flScale, float vec
 	ScaleVector(vecForce, flScale);
 }
 
-void CalculateDamageForceSelfCalculated(int client, float flScale, float vec[3])
+stock void CalculateDamageForceSelfCalculated(int client, float flScale, float vec[3])
 {
 	float vecSwingForward[3];
 	float ang[3];
@@ -4937,7 +4947,7 @@ stock int GetTeam(int entity)
 {
 	if(entity > 0 && entity <= MAXENTITIES)
 	{
-#if defined ZR
+#if !defined RTS
 		if(entity && entity <= MaxClients)
 			return GetClientTeam(entity);
 #endif
@@ -4959,21 +4969,33 @@ stock void SetTeam(int entity, int teamSet)
 		TeamNumber[entity] = teamSet;
 		if(teamSet <= TFTeam_Red)
 		{
-#if defined ZR
-			if(entity && entity <= MaxClients)
+
+#if !defined RTS
+			if(entity <= MaxClients)
+			{
 				ChangeClientTeam(entity, teamSet);
+			}
 			else
 #endif
+
 			{
 				SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
 			}
 		}
 		else if(teamSet > TFTeam_Red)
 		{
-			if(entity && entity <= MaxClients)
+
+#if !defined RTS
+			if(entity <= MaxClients)
+			{
 				ChangeClientTeam(entity, TFTeam_Blue);
-			else	
+			}
+			else
+#endif
+
+			{
 				SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+			}
 		}
 	}
 	else

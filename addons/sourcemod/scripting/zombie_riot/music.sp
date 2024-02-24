@@ -277,21 +277,7 @@ public void ConVarCallback_Plugin_message(QueryCookie cookie, int client, ConVar
 	if(result == ConVarQuery_Okay)
 		f_ClientServerShowMessages[client] = view_as<bool>(StringToInt(cvarValue));
 }
-public void ConVarCallback_g_ragdoll_fadespeed(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
-{
-	if(result == ConVarQuery_Okay)
-	{
-		if(f_BegPlayerToSetRagdollFade[client] < GetGameTime())
-		{
-			f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 30.0;
-			if(StringToInt(cvarValue) == 0)
-			{
-				SetGlobalTransTarget(client);
-				PrintToChat(client,"%t", "Show Ragdoll Hint Message");
-			}
-		}
-	}
-}
+
 //TODO: This music just breaks and cuts off earlier and plays earlier, i really dont know why. I hate it! Find a fix!
 
 void Music_PostThink(int client)
@@ -655,7 +641,6 @@ void Music_ClearAll()
 	Zero(Give_Cond_Timer);
 	Zero(f_ClientMusicVolume);
 	Zero(f_BegPlayerToSetDuckConvar);
-	Zero(f_BegPlayerToSetRagdollFade);
 }
 
 void RemoveAllCustomMusic()

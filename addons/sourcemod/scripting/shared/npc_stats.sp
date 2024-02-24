@@ -135,8 +135,10 @@ public Action Command_PetMenu(int client, int args)
 
 #if defined RTS
 	int team = TeamNumber[client];
-#else
+#elseif defined ZR
 	int team = TFTeam_Blue;
+#else
+	int team = 4;
 #endif
 	if(args > 3)	//data
 		team = view_as<bool>(GetCmdArgInt(4));
@@ -376,8 +378,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 		b_NpcIgnoresbuildings[npc] = IgnoreBuildings;
-#else
+#elseif !defined RTS
 		SetTeam(npc, Ally);
+		b_NpcIgnoresbuildings[npc] = IgnoreBuildings;
 #endif
 		AddEntityToLagCompList(npc);
 
@@ -3280,12 +3283,14 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 				f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 1.5;
 			}
 		}
-		
-		VausMagicaRemoveShield(pThis);
-
 		CleanAllAppliedEffects_BombImplanter(pThis, true);
-#endif		
+#endif
+
+#if !defined RTS
+		VausMagicaRemoveShield(pThis);
 		NPC_DeadEffects(pThis); //Do kill attribute stuff
+#endif
+
 		RemoveNpcThingsAgain(pThis);
 		ExtinguishTarget(pThis);
 		NPCDeath(pThis);
@@ -4724,7 +4729,9 @@ stock int GetClosestTarget(int entity,
 				GetClosestTarget_AddTarget(target, 4);
 		}
 	}
-#else
+#endif
+
+#if defined ZR
 	/*
 		The npc is not on the player team, it will target players first
 		other enemy npcs are preffered only when too close.
@@ -4739,7 +4746,6 @@ stock int GetClosestTarget(int entity,
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
-	#if defined ZR
 					if(IsTowerdefense && i_NpcInternalId[entity_close] == VIP_BUILDING)
 					{
 						if(!IsValidEnemy(entity, view_as<CClotBody>(entity).m_iTarget, true, true))
@@ -4747,7 +4753,7 @@ stock int GetClosestTarget(int entity,
 							return entity_close; //we found a vip building, go after it.
 						}
 					}
-	#endif
+					
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, entity_close))
@@ -4775,21 +4781,20 @@ stock int GetClosestTarget(int entity,
 			}
 		}
 	}
-#if defined ZR
 	if(IsTowerdefense)
 	{
 		CClotBody npc = view_as<CClotBody>(entity);
 		return npc.m_iTarget;
 	}
 #endif
+
+#if !defined RTS
 	//If the team searcher is not on red, target buildings, buildings can only be on the player team.
-#if defined ZR
+	#if defined ZR
 	if(SearcherNpcTeam != TFTeam_Red && !RaidbossIgnoreBuildingsLogic(1) && !IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers)) //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
-#elseif defined RTS
-	if(!IgnoreBuildings && SearcherNpcTeam != TFTeam_Red)
-#else
+	#else
 	if(SearcherNpcTeam != TFTeam_Red && !IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers))
-#endif
+	#endif
 	{
 		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 		{
@@ -4823,7 +4828,7 @@ stock int GetClosestTarget(int entity,
 			}
 		}
 	}
-#endif	// Non-RTS
+#endif	// Non_RTS
 
 #if defined RTS
 	return GetClosestTarget_Internal(entity, fldistancelimit, EntityLocation, MinimumDistance);
@@ -4852,7 +4857,7 @@ void GetClosestTarget_ResetAllTargets()
 }
 
 #if defined RTS
-int GetClosestTarget_Internal(int entity, float fldistancelimit, const float EntityLocation[3], float MinimumDistance)
+stock int GetClosestTarget_Internal(int entity, float fldistancelimit, const float EntityLocation[3], float MinimumDistance)
 #else
 int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistancelimitAllyNPC, const float EntityLocation[3], bool UseVectorDistance, float MinimumDistance)
 #endif
@@ -7432,7 +7437,7 @@ void TE_ParticleInt(int iParticleIndex, const float origin[3] = NULL_VECTOR, con
 	TE_WriteNum("m_bResetParticles", resetParticles ? 1 : 0);
 }
 
-void TE_BloodSprite(float Origin[3],float Direction[3], int red, int green, int blue, int alpha, int size)
+stock void TE_BloodSprite(float Origin[3],float Direction[3], int red, int green, int blue, int alpha, int size)
 {
 	TE_Start("Blood Sprite");
 	TE_WriteVector("m_vecOrigin", Origin);
@@ -7787,10 +7792,12 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_Jumping[entity] = false;
 	b_AllowBackWalking[entity] = false;
 	fl_JumpStartTime[entity] = 0.0;
+#if !defined RTS
 	for(int client; client <= MaxClients; client++)
 	{
 		f_BackstabBossDmgPenaltyNpcTime[entity][client] = 0.0;
 	}
+#endif
 	fl_JumpStartTimeInternal[entity] = 0.0;
 	fl_JumpCooldown[entity] = 0.0;
 	fl_NextDelayTime[entity] = 0.0;
