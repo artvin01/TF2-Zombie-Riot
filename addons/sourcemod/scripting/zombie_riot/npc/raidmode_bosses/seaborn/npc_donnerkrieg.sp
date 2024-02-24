@@ -1292,8 +1292,6 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(Raidboss_Donnerkrieg npc, int P
 	
 	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
-	//float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(PrimaryThreatIndex), true);
-	
 	float GameTime = GetGameTime(npc.index);
 	if(!npc.m_bInKame)
 	{
@@ -1961,7 +1959,8 @@ static Action Donner_Nightmare_Offset(Handle timer, int client)
 		f_NpcTurnPenalty[npc.index] = 0.1;	//:)
 		npc.SetPlaybackRate(0.0);
 		npc.SetCycle(0.23);
-		ParticleEffectAt(WorldSpaceCenterOld(npc.index), "eyeboss_death_vortex", 1.0);
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		ParticleEffectAt(WorldSpaceVec, "eyeboss_death_vortex", 1.0);
 		EmitSoundToAll("mvm/mvm_tank_ping.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
 		
 		fl_nightmare_end_timer[npc.index] = GetGameTime(npc.index) + DONNERKRIEG_NIGHTMARE_CANNON_DURATION+1.5;
@@ -2014,7 +2013,8 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 	int wave = ZR_GetWaveCount()+1;
 
 	int ally = EntRefToEntIndex(i_ally_index);
-	ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	if(!b_donner_said_win_line)
 	{
 		if(wave<60)
@@ -2400,7 +2400,8 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 							
 		//Body pitch
 		float v[3], ang[3];
-		SubtractVectors(WorldSpaceCenterOld(npc.index), vecNPC, v); 
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		SubtractVectors(WorldSpaceVec, vecNPC, v); 
 		NormalizeVector(v, v);
 		GetVectorAngles(v, ang); 
 									
@@ -2731,7 +2732,8 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					{
 						Dmg *= 5.0;
 					}
-					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);
 				}
 				case 1:
 				{
@@ -2742,7 +2744,8 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					{
 						Dmg *= 5.0;
 					}
-					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/12), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/12), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);
 
 					int damage = RoundToFloor(dps*0.01);
 					if(damage < 4)
@@ -3225,7 +3228,7 @@ static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
 	Handle trace; 
 	
 	float pos_enemy[3];
-	pos_enemy = WorldSpaceCenterOld(enemy);
+	WorldSpaceCenter(enemy, pos_enemy);
 
 	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, attacker);
 	int Traced_Target;

@@ -673,7 +673,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 			{
 				float vecAlly[3];
 				float vecMe[3];
-				vecAlly = WorldSpaceCenterOld(Ally);
+				WorldSpaceCenter(Ally, vecAlly);
 				WorldSpaceCenter(npc.index, vecMe);
 
 				float flDistanceToAlly = GetVectorDistance(vecAlly, vecMe, true);
@@ -712,7 +712,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 		Ally = EntRefToEntIndex(i_ally_index);
 		if(IsValidAlly(npc.index, Ally))
 		{
-			float vecAlly[3]; vecAlly = WorldSpaceCenterOld(Ally);
+			float vecAlly[3]; WorldSpaceCenter(Ally, vecAlly);
 
 			float flDistanceToAlly = GetVectorDistance(vecAlly, npc_Vec, true);
 			Schwert_Movement_Ally_Movement(npc, flDistanceToAlly, Ally, GameTime, PrimaryThreatIndex, flDistanceToTarget);
@@ -727,7 +727,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 			Ally = EntRefToEntIndex(i_ally_index);
 			if(IsValidAlly(npc.index, Ally))
 			{
-				float vecAlly[3]; vecAlly = WorldSpaceCenterOld(Ally);
+				float vecAlly[3]; WorldSpaceCenter(Ally, vecAlly);
 
 				float flDistanceToAlly = GetVectorDistance(vecAlly, npc_Vec, true);
 				Schwert_Movement_Ally_Movement(npc, flDistanceToAlly, Ally, GameTime, PrimaryThreatIndex, flDistanceToTarget, true);	//warp
@@ -809,7 +809,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 				if(IsValidAlly(npc.index, Ally))
 				{
 					float vecAlly[3];
-					vecAlly = WorldSpaceCenterOld(Ally);
+					WorldSpaceCenter(Ally, vecAlly);
 					if(GetVectorDistance(vecAlly, npc_Vec, true) < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*5.0 && Can_I_See_Enemy_Only(npc.index, Ally))
 					{
 						NPCStats_RemoveAllDebuffs(Ally);
@@ -1379,10 +1379,10 @@ static Action Schwert_Boom(Handle Smite_Logic, DataPack pack)
 static bool Schwert_Teleport(int iNPC, float vecTarget[3], float Min_Range)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
-	float Tele_Check = GetVectorDistance(WorldSpaceCenterOld(npc.index), vecTarget);
-
 	float start_offset[3], end_offset[3];
-	start_offset = WorldSpaceCenterOld(npc.index);
+	WorldSpaceCenter(npc.index, start_offset);
+	float Tele_Check = GetVectorDistance(start_offset, vecTarget);
+
 
 	bool Succeed = false;
 
@@ -1435,11 +1435,12 @@ static void Schwert_Movement_Ally_Movement(Raidboss_Schwertkrieg npc, float flDi
 	npc.StartPathing();
 	npc.m_bPathing = true;
 	
+	float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex_Schwert, WorldSpaceVec);
 	
 	if(flDistanceToTarget_Schwert < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25)
 	{
 		Schwert_Movement(npc, flDistanceToTarget_Schwert, PrimaryThreatIndex_Schwert);
-		Schwert_Aggresive_Behavior(npc, PrimaryThreatIndex_Schwert, GameTime, flDistanceToTarget_Schwert, WorldSpaceCenterOld(PrimaryThreatIndex_Schwert));
+		Schwert_Aggresive_Behavior(npc, PrimaryThreatIndex_Schwert, GameTime, flDistanceToTarget_Schwert, WorldSpaceVec2);
 		if(Schwert_Status(npc, GameTime)!=1)
 			npc.m_flSpeed =  fl_schwert_speed;
 		return;
@@ -1458,12 +1459,13 @@ static void Schwert_Movement_Ally_Movement(Raidboss_Schwertkrieg npc, float flDi
 		int target_new = GetClosestTarget(donner.index);
 		if(IsValidEnemy(npc.index, target_new))
 		{
-			float Ally_Vec[3]; Ally_Vec = WorldSpaceCenterOld(donner.index);
-			float Vec_Target[3]; Vec_Target = WorldSpaceCenterOld(target_new);
+			float Ally_Vec[3]; WorldSpaceCenter(donner.index, Ally_Vec);
+			float Vec_Target[3]; WorldSpaceCenter(target_new, Vec_Target);
 			float flDistanceToTarget = GetVectorDistance(Ally_Vec, Vec_Target, true);
 			if(flDistanceToTarget < (500.0*500.0))	//they are to close to my beloved, *Kill them*
 			{
-				flDistanceToTarget = GetVectorDistance(WorldSpaceCenterOld(npc.index), Vec_Target, true);
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+				flDistanceToTarget = GetVectorDistance(WorldSpaceVec, Vec_Target, true);
 				Schwert_Movement(npc, flDistanceToTarget, target_new);
 				Schwert_Aggresive_Behavior(npc, target_new, GameTime, flDistanceToTarget, Vec_Target);
 				if(Schwert_Status(npc, GameTime)!=1)
@@ -1472,7 +1474,7 @@ static void Schwert_Movement_Ally_Movement(Raidboss_Schwertkrieg npc, float flDi
 			else
 			{
 				Schwert_Movement(npc, flDistanceToTarget_Schwert, PrimaryThreatIndex_Schwert);
-				Schwert_Aggresive_Behavior(npc, PrimaryThreatIndex_Schwert, GameTime, flDistanceToTarget_Schwert, WorldSpaceCenterOld(PrimaryThreatIndex_Schwert));
+				Schwert_Aggresive_Behavior(npc, PrimaryThreatIndex_Schwert, GameTime, flDistanceToTarget_Schwert, WorldSpaceVec2);
 				if(Schwert_Status(npc, GameTime)!=1)
 					npc.m_flSpeed =  fl_schwert_speed;
 			}
@@ -1480,7 +1482,7 @@ static void Schwert_Movement_Ally_Movement(Raidboss_Schwertkrieg npc, float flDi
 		else
 		{
 			Schwert_Movement(npc, flDistanceToTarget_Schwert, PrimaryThreatIndex_Schwert);
-			Schwert_Aggresive_Behavior(npc, PrimaryThreatIndex_Schwert, GameTime, flDistanceToTarget_Schwert, WorldSpaceCenterOld(PrimaryThreatIndex_Schwert));
+			Schwert_Aggresive_Behavior(npc, PrimaryThreatIndex_Schwert, GameTime, flDistanceToTarget_Schwert, WorldSpaceVec2);
 			if(Schwert_Status(npc, GameTime)!=1)
 				npc.m_flSpeed =  fl_schwert_speed;
 		}
@@ -1888,7 +1890,9 @@ public void Raidboss_Schwertkrieg_NPCDeath(int entity)
 			}
 		}
 	}
-	ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_red", 0.5);
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+
+	ParticleEffectAt(WorldSpaceVec, "teleported_red", 0.5);
 
 	if(IsValidEntity(Projectile_Index[npc.index]))
 	{
@@ -2503,7 +2507,7 @@ static void Schwert_TurnToTarget_Proj(int projectile, int Target)
 	GetEntPropVector(projectile, Prop_Send, "m_vecOrigin", rocketOrigin);
 
 	float pos1[3];
-	pos1 = WorldSpaceCenterOld(Target);
+	WorldSpaceCenter(Target, pos1);
 	GetRayAngles(rocketOrigin, pos1, tmpAngles);
 	
 	// Thanks to mikusch for pointing out this function to use instead
@@ -2549,7 +2553,7 @@ static bool Can_I_See_Withing_Angles(int projectile, int Target)
 	float pos1[3];
 	float pos2[3];
 	GetEntPropVector(projectile, Prop_Send, "m_vecOrigin", pos2);
-	pos1 = WorldSpaceCenterOld(Target);
+	WorldSpaceCenter(Target, pos1);
 	GetVectorAnglesTwoPoints(pos2, pos1, ang3);
 
 	// fix all angles

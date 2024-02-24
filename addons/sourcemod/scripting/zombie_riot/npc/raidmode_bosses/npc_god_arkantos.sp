@@ -378,7 +378,8 @@ public void GodArkantos_ClotThink(int iNPC)
 		int closestTarget = GetClosestAllyPlayer(npc.index);
 		if(IsValidEntity(closestTarget))
 		{
-			npc.FaceTowards(WorldSpaceCenterOld(closestTarget), 100.0);
+			float WorldSpaceVec[3]; WorldSpaceCenter(closestTarget, WorldSpaceVec);
+			npc.FaceTowards(WorldSpaceVec, 100.0);
 		}
 		npc.SetActivity("ACT_IDLE");
 		npc.m_bisWalking = false;
@@ -1153,7 +1154,7 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 							PlaySound = true;
 							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
-							vecHit = WorldSpaceCenterOld(target);
+							WorldSpaceCenter(target, vecHit);
 										
 							float damage = 20.0;
 							if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)

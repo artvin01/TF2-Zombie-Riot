@@ -647,8 +647,9 @@ static void ClotThink(int iNPC)
 				if(npc.m_flNextMeleeAttack < gameTime)
 				{
 					KillFeed_SetKillIcon(npc.index, "minigun");
-					
-					npc.FaceTowards(WorldSpaceCenterOld(target), 8000.0);
+					float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
+
+					npc.FaceTowards(WorldSpaceVec, 8000.0);
 					
 					npc.PlayMinigunSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");

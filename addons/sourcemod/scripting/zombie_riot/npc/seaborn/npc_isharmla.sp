@@ -65,7 +65,7 @@ methodmap Isharmla < CClotBody
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSALPHA);
 		npc.m_bTeamGlowDefault = true;
 
-		if(!ally && !IsValidEntity(RaidBossActive))
+		if(ally != TFTeam_Red && !IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;

@@ -415,7 +415,7 @@ public void SeaBlueGoggles_ClotThink(int iNPC)
 
 		if(!alone && tier > 0 && npc.m_flBuffCooldown < gameTime && !NpcStats_IsEnemySilenced(npc.index))
 		{
-			vecAlly = WorldSpaceCenterOld(ally);
+			WorldSpaceCenter(ally, vecAlly);
 			if(GetVectorDistance(vecAlly, vecMe, true) < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, ally))
 			{
 				// Buff Silver

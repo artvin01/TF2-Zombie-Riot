@@ -547,7 +547,8 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		int closestTarget = GetClosestAllyPlayer(npc.index);
 		if(IsValidEntity(closestTarget))
 		{
-			npc.FaceTowards(WorldSpaceCenterOld(closestTarget), 100.0);
+			float WorldSpaceVec[3]; WorldSpaceCenter(closestTarget, WorldSpaceVec);
+			npc.FaceTowards(WorldSpaceVec, 100.0);
 		}
 		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
 		int ally = EntRefToEntIndex(i_RaidDuoAllyIndex);
@@ -997,7 +998,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		//Predict their pos.
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTargetWalkTo);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
@@ -1014,7 +1015,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			
 		//Body pitch
 		float v[3], ang[3];
-		SubtractVectors(WorldSpaceCenterOld(npc.index), WorldSpaceCenterOld(npc.m_iTargetWalkTo), v); 
+		SubtractVectors(VecSelfNpc, vecTarget, v); 
 		NormalizeVector(v, v);
 		GetVectorAngles(v, ang); 
 				
@@ -1461,7 +1462,8 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 			{
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 20000.0);
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
+				npc.FaceTowards(WorldSpaceVec, 20000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
@@ -1474,7 +1476,7 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 							PlaySound = true;
 							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
-							vecHit = WorldSpaceCenterOld(target);
+							WorldSpaceCenter(target, vecHit);
 							float damage = 24.0;
 							float damage_rage = 28.0;
 							if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)

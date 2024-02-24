@@ -461,7 +461,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 			
 			float m_vecSrc[3];
 			
-			m_vecSrc = WorldSpaceCenterOld(npc.index);
+			WorldSpaceCenter(npc.index, m_vecSrc);
 			
 			float vecEnd[3];
 			vecEnd[0] = m_vecSrc[0] + vecDirShooting[0] * 9000; 
@@ -494,8 +494,9 @@ public void SpyMainBoss_ClotThink(int iNPC)
 			vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 			vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 			NormalizeVector(vecDir, vecDir);
-			
-			FireBullet(npc.index, npc.m_iWearable5, WorldSpaceCenterOld(npc.index), vecDir, 60.0, 9000.0, DMG_BULLET, "bullet_tracer01_blue");
+			float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+
+			FireBullet(npc.index, npc.m_iWearable5, WorldSpaceVec, vecDir, 60.0, 9000.0, DMG_BULLET, "bullet_tracer01_blue");
 			
 			npc.PlayRangedSound();
 		}

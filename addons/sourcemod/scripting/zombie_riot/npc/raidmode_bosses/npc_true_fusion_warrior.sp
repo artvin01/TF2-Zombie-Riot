@@ -480,7 +480,10 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		npc.m_flNextThinkTime = 0.0;
 		int enemyGet = GetClosestAllyPlayer(npc.index);
 		if(IsValidEntity(enemyGet))
-			npc.FaceTowards(WorldSpaceCenterOld(enemyGet), 100.0);
+		{
+			float WorldSpaceVec[3]; WorldSpaceCenter(enemyGet, WorldSpaceVec);
+			npc.FaceTowards(WorldSpaceVec, 100.0);
+		}
 			
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
@@ -623,7 +626,9 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			
 				//Body pitch
 				float v[3], ang[3];
-				SubtractVectors(WorldSpaceCenterOld(npc.index), WorldSpaceCenterOld(closest), v); 
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+				float WorldSpaceVec2[3]; WorldSpaceCenter(closest, WorldSpaceVec);
+				SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
 				NormalizeVector(v, v);
 				GetVectorAngles(v, ang); 
 				
@@ -1070,7 +1075,8 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 
 void TrueFusionWarrior_TBB_Ability_Anger(int client)
 {
-	ParticleEffectAt(WorldSpaceCenterOld(client), "eyeboss_death_vortex", 2.0);
+	float WorldSpaceVec[3]; WorldSpaceCenter(client, WorldSpaceVec);
+	ParticleEffectAt(WorldSpaceVec, "eyeboss_death_vortex", 2.0);
 	
 	FusionWarrior_BEAM_IsUsing[client] = false;
 	FusionWarrior_BEAM_TicksActive[client] = 0;
@@ -1132,7 +1138,8 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 
 void TrueFusionWarrior_TBB_Ability(int client)
 {
-	ParticleEffectAt(WorldSpaceCenterOld(client), "eyeboss_death_vortex", 2.0);
+	float WorldSpaceVec[3]; WorldSpaceCenter(client, WorldSpaceVec);
+	ParticleEffectAt(WorldSpaceVec, "eyeboss_death_vortex", 2.0);
 			
 	FusionWarrior_BEAM_IsUsing[client] = false;
 	FusionWarrior_BEAM_TicksActive[client] = 0;
@@ -1339,8 +1346,9 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 					{
 						damage *= 3.0; //give 3x dmg to anything
 					}
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
 
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
 				}
 			}
 			
@@ -1627,7 +1635,8 @@ void TrueFusionSelfDefense(TrueFusionWarrior npc, float gameTime)
 			{
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 20000.0);
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
+				npc.FaceTowards(WorldSpaceVec, 20000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
@@ -1640,7 +1649,7 @@ void TrueFusionSelfDefense(TrueFusionWarrior npc, float gameTime)
 							PlaySound = true;
 							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
-							vecHit = WorldSpaceCenterOld(target);
+							WorldSpaceCenter(target, vecHit);
 
 							float damage = 24.0;
 							float damage_rage = 28.0;

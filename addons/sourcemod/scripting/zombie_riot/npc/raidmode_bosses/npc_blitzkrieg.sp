@@ -2290,7 +2290,8 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 			{
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 20000.0);
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
+				npc.FaceTowards(WorldSpaceVec, 20000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
@@ -2303,7 +2304,7 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 							PlaySound = true;
 							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
-							vecHit = WorldSpaceCenterOld(target);
+							WorldSpaceCenter(target, vecHit);
 							float meleedmg;
 							meleedmg = 12.5 * i_HealthScale[npc.index];
 							SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);	

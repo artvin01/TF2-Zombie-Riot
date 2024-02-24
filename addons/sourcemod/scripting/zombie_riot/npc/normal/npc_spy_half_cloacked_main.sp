@@ -395,8 +395,8 @@ public void SpyCloaked_ClotThink(int iNPC)
 					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
-					
-					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					npc.PlayRangedSound();
 				}
 			}

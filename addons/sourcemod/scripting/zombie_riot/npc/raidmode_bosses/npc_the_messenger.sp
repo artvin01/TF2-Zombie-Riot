@@ -770,14 +770,15 @@ bool Messanger_Elemental_Attack_FingerPoint(TheMessenger npc)
 			hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
 
 			float PreviousPos[3];
-			PreviousPos = WorldSpaceCenterOld(npc.index);
+			WorldSpaceCenter(npc.index, PreviousPos);
 			
 			bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
 			if(Succeed)
 			{
 				npc.PlayTeleportSound();
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 				ParticleEffectAt(PreviousPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-				ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+				ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						
 				npc.m_flJumpStartTimeInternal = 0.0;
 				MessengerResetAndDelayAttack(npc.index);
@@ -814,7 +815,8 @@ public void TheMessenger_NPCDeath(int entity)
 	
 	if(!b_thisNpcIsARaid[npc.index])
 	{
-		ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 		npc.PlayDeathSound();	
 	}
 
@@ -1054,7 +1056,7 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 							PlaySound = true;
 							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
-							vecHit = WorldSpaceCenterOld(targetTrace);
+							WorldSpaceCenter(targetTrace, vecHit);
 
 							float damage = 24.0;
 							damage *= 1.15;
@@ -1242,7 +1244,7 @@ void MessengerInitiateGroupAttack(TheMessenger npc)
 			npc.PlayProjectileSound();
 			int Target = enemy[i];
 			float vecHit[3];
-			vecHit = WorldSpaceCenterOld(Target);
+			WorldSpaceCenter(Target, vecHit);
 			float vecHitPart[3];
 			GetEntPropVector(npc.m_iWearable2, Prop_Data, "m_vecAbsOrigin", vecHitPart);
 

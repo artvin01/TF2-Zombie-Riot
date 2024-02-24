@@ -935,7 +935,8 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 						npc.PlayTeleportSound();
 						ParticleEffectAt(SelfPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						ParticleEffectAt(vPredictedPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-						npc.FaceTowards(WorldSpaceCenterOld(Target), 15000.0);
+						float WorldSpaceVec[3]; WorldSpaceCenter(Target, WorldSpaceVec);
+						npc.FaceTowards(WorldSpaceVec, 15000.0);
 
 						if(i_RaidGrantExtra[npc.index] < 2)
 						{
@@ -1053,7 +1054,8 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 						npc.PlayTeleportSound();
 						ParticleEffectAt(SelfPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						ParticleEffectAt(vPredictedPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-						npc.FaceTowards(WorldSpaceCenterOld(Target), 15000.0);
+						float WorldSpaceVec[3]; WorldSpaceCenter(Target, WorldSpaceVec);
+						npc.FaceTowards(WorldSpaceVec, 15000.0);
 
 						if(i_RaidGrantExtra[npc.index] < 2)
 						{
@@ -1151,8 +1153,8 @@ public void ChaosKahmlstein_NPCDeath(int entity)
 
 	if(i_RaidGrantExtra[npc.index] >= 2)
 		return;
-
-	ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();	
 
 	RaidBossActive = INVALID_ENT_REFERENCE;
@@ -1376,7 +1378,7 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 							PlaySound = true;
 							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
-							vecHit = WorldSpaceCenterOld(targetTrace);
+							WorldSpaceCenter(targetTrace, vecHit);
 
 							float damage = 24.0;
 							damage *= 1.2;
@@ -1752,7 +1754,7 @@ void KahmlsteinInitiatePunch_DamagePart(DataPack pack)
 				{
 					FreezeNpcInTime(victim, 1.5);
 					
-					hullMin = WorldSpaceCenterOld(victim);
+					WorldSpaceCenter(victim, hullMin);
 					hullMin[2] += 100.0; //Jump up.
 					PluginBot_Jump(victim, hullMin);
 				}

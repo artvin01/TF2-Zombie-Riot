@@ -2059,7 +2059,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 				{
 					FreezeNpcInTime(victim, 1.5);
 					
-					hullMin = WorldSpaceCenterOld(victim);
+					WorldSpaceCenter(victim, hullMin);
 					hullMin[2] += 100.0; //Jump up.
 					PluginBot_Jump(victim, hullMin);
 				}
