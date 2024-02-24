@@ -647,9 +647,9 @@ int i_BarbariansMind[MAXPLAYERS + 1]={0, ...}; 				//830
 bool b_FaceStabber[MAXTF2PLAYERS];
 int g_particleMissText;
 int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 
+int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
 #endif
 int i_WandOwner[MAXENTITIES]; //				//785
-int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
 
 int i_BleedDurationWeapon[MAXENTITIES]={0, ...}; 				//149
 int i_BurnDurationWeapon[MAXENTITIES]={0, ...}; 				//208
