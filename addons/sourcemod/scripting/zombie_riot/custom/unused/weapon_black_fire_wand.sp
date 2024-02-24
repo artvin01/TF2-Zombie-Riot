@@ -263,3 +263,5 @@ float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
 float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 
 float WorldSpaceVec[3]; WorldSpaceCenter(entity_close, WorldSpaceVec);
+
+float CalcDamageForceVec[3]; CalculateDamageForce(vecSwingForward, 20000.0, CalcDamageForceVec);

@@ -571,8 +571,7 @@ static void Railcannon_Tick(int client, int pap, bool supercharged)
 						}
 						damage /= BEAM_Targets_Hit[client];
 
-						float damage_force[3];
-						damage_force = CalculateDamageForceOld(vecForward, 10000.0);
+						float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
 
 						float trueDamagePercentage = 0.4;
 						float stunDuration = 5.0;

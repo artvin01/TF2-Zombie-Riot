@@ -429,8 +429,8 @@ void SagaCutLast(int entity, int victim, float damage, int weapon)
 
 
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], 0, SNDCHAN_AUTO, 90, _,_,GetRandomInt(80,110),-1,VicLoc);
-	
-		SDKHooks_TakeDamage(victim, weapon, entity, 10.0, DMG_SLASH, weapon, CalculateDamageForceOld(vecForward, 10000.0), VicLoc, _, _);
+		float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
+		SDKHooks_TakeDamage(victim, weapon, entity, 10.0, DMG_SLASH, weapon, damage_force, VicLoc, _, _);
 	}
 }
 

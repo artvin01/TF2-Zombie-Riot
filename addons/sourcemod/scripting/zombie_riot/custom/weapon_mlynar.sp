@@ -209,7 +209,8 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 				{
 					// success
 			//		Hit = true;
-					SDKHooks_TakeDamage(HitEntitiesSphereMlynar[entity_traced], client, client, damage, DMG_CLUB, weapon, CalculateDamageForceOld(vecSwingForward, 100000.0), pos1);
+					float damage_force[3]; CalculateDamageForce(vecSwingForward, 100000.0, damage_force);
+					SDKHooks_TakeDamage(HitEntitiesSphereMlynar[entity_traced], client, client, damage, DMG_CLUB, weapon, damage_force, pos1);
 					EmitSoundToAll("weapons/halloween_boss/knight_axe_hit.wav", HitEntitiesSphereMlynar[entity_traced],_ ,_ ,_ ,0.75);
 				}
 			}

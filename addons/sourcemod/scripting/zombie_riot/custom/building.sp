@@ -3847,8 +3847,8 @@ static void Railgun_Boom(int client)
 							damage *= 1.55;
 							First_Target_Hit = false;
 						}
-					
-						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), playerPos);	// 2048 is DMG_NOGIB?
+						float CalcDamageForceVec[3]; CalculateDamageForce(vecForward, 10000.0, CalcDamageForceVec);
+						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalcDamageForceVec, playerPos);	// 2048 is DMG_NOGIB?
 						BEAM_Targets_Hit[obj] *= LASER_AOE_DAMAGE_FALLOFF;
 					}
 					else
@@ -3985,7 +3985,8 @@ static void Railgun_Boom_Client(int client)
 						}
 
 						float TargetVecPos[3]; WorldSpaceCenter(BEAM_BuildingHit[building], TargetVecPos);
-						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), TargetVecPos);	// 2048 is DMG_NOGIB?
+						float CalcDamageForceVec[3]; CalculateDamageForce(vecForward, 10000.0, CalcDamageForceVec);
+						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalcDamageForceVec, TargetVecPos);	// 2048 is DMG_NOGIB?
 						BEAM_Targets_Hit[obj] *= LASER_AOE_DAMAGE_FALLOFF;
 					}
 					else

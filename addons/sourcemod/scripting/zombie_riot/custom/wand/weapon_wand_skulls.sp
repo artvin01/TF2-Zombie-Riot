@@ -1074,7 +1074,6 @@ public void Wand_Skulls_Touch_Launched(int entity, int target)
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-	//SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
 	if(IsValidEntity(particle))
 	{
 		RemoveEntity(particle);

@@ -2539,16 +2539,6 @@ void TE_SendBeam(int client, float m_vecMins[3], float m_vecMaxs[3], float flDur
 	TE_SendToClient(client);
 }
 
-/*
-float[] CalculateBulletDamageForceOld( const float vecBulletDir[3], float flScale )
-{
-	float vecForce[3]; vecForce = vecBulletDir;
-	NormalizeVector( vecForce, vecForce );
-	ScaleVector(vecForce, FindConVar("phys_pushscale").FloatValue);
-	ScaleVector(vecForce, flScale);
-	return vecForce;
-}
-*/
 
 stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 {
@@ -2590,16 +2580,6 @@ stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	return 0;
 }
 
-#if defined ZR
-float[] CalculateDamageForceOld( const float vecBulletDir[3], float flScale )
-{
-	float vecForce[3]; vecForce = vecBulletDir;
-	NormalizeVector( vecForce, vecForce );
-	ScaleVector(vecForce, FindConVar("phys_pushscale").FloatValue);
-	ScaleVector(vecForce, flScale);
-	return vecForce;
-}
-#endif
 
 void CalculateDamageForce( const float vecBulletDir[3], float flScale, float vecForce[3])
 {

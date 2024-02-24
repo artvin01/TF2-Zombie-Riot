@@ -646,8 +646,7 @@ static void Beam_Wand_Laser_Attack(int client, float endVec_2[3], int num, float
 					WorldSpaceCenter(BEAM_BuildingHit[building], playerPos);
 					
 					
-					float damage_force[3];
-					damage_force = CalculateDamageForceOld(vecForward, 10000.0);
+					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
 					DataPack pack = new DataPack();
 					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
 					pack.WriteCell(EntIndexToEntRef(client));

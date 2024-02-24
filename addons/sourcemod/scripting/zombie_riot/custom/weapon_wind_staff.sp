@@ -509,7 +509,8 @@ static void TBB_Tick(int client)
 					if (damage < 0)
 						damage *= -1.0;
 
-					SDKHooks_TakeDamage(BEAM_BuildingHit[building], client, client, damage/BEAM_Targets_Hit[client], DMG_PLASMA, weapon_active, CalculateDamageForceOld(vecForward, 10000.0), playerPos);	// 2048 is DMG_NOGIB?
+					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
+					SDKHooks_TakeDamage(BEAM_BuildingHit[building], client, client, damage/BEAM_Targets_Hit[client], DMG_PLASMA, weapon_active, damage_force, playerPos);	// 2048 is DMG_NOGIB?
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF; //sneaky. DONT do 1.25.
 				}
 				else

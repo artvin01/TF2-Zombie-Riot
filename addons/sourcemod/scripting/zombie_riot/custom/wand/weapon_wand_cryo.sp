@@ -394,8 +394,8 @@ public void Cryo_Touch(int entity, int target)
 				}
 				RemoveEntity(entity);
 			}
-
-			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 0.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
+			
+			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, {0.0,0.0,0.0}, VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
 			
 			float Health_After_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
 			

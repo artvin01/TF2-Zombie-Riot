@@ -1377,7 +1377,7 @@ public Action Gambler_Orb_IEM_OnHatTouch(int entity, int client)
 		WorldSpaceCenter(target, Entity_Position);
 		//Code to do damage position and ragdolls
 		
-		SDKHooks_TakeDamage(client, npc.index, npc.index, Orb_Damage_Projectile[npc.index], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(client, npc.index, npc.index, Orb_Damage_Projectile[npc.index], DMG_PLASMA, -1, {0.0,0.0,0.0}, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 	}
 	else if(target == 1)
 	{
@@ -1453,7 +1453,7 @@ public Action Gambler_Timer_Electric_Think(Handle timer, int iCarrier)
 				float damage_1 = Custom_Explosive_Logic(npc.index, distance_1, 0.75, Orb_Damage_Tornado[npc.index], Orb_Radius[npc.index]+1.0);				
 				damage_1 /= Orb_Damage_Reduction[npc.index];
 				
-				SDKHooks_TakeDamage(i, npc.index, npc.index, damage_1, DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), targPos);
+				SDKHooks_TakeDamage(i, npc.index, npc.index, damage_1, DMG_PLASMA, -1, {0.0,0.0,0.0}, targPos);
 				int r = 255;
 				int g = 125;
 				int b = 125;

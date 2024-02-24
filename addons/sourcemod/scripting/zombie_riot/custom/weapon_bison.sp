@@ -221,8 +221,7 @@ static void TBB_Tick(int client)
 					if (damage < 0)
 						damage *= -1.0;
 					
-					float damage_force[3];
-					damage_force = CalculateDamageForceOld(vecForward, 10000.0);
+					float damage_force[3]; CalculateDamageForce(vecSwingForward, 20000.0, damage_force);
 					DataPack pack = new DataPack();
 					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
 					pack.WriteCell(EntIndexToEntRef(client));
