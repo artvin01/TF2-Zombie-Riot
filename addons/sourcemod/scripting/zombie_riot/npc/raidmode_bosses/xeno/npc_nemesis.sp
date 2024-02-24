@@ -260,7 +260,7 @@ methodmap RaidbossNemesis < CClotBody
 		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 25.0;
 		if(XenoExtraLogic())
 		{
-			FormatEx(c_NpcCustomNameOverride[npc.index], sizeof(c_NpcCustomNameOverride[]), "Enraged Nemesis");
+			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Enraged Nemesis");
 			CPrintToChatAll("{green}Nemesis: ... NGHRRRRR....");
 		}
 		else
@@ -667,7 +667,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				{
 					float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
 					float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
-					if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+					if(flDistanceToTarget < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 					{
 						int Enemy_I_See;
 							

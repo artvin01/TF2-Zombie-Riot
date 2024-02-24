@@ -69,7 +69,7 @@ void StartLagCompensation_Base_Boss(int client)
 {
 //	if(DoingLagCompensation)
 //		ThrowError("Already in BaseBoss Lag Comp");
-	
+
 	DoingLagCompensation = true;
 	
 	// Get true latency
@@ -129,7 +129,7 @@ static bool WantsLagCompensationOnEntity(int entity, int player, const float vie
 #if defined RTS
 	bool allied = UnitBody_CanControl(player, entity);
 #else
-	bool allied = GetTeam(entity) == TFTeam_Red;
+	bool allied = GetTeam(entity) == GetTeam(player);
 #endif
 
 	if(b_LagCompNPC_OnlyAllies ^ allied)
@@ -250,7 +250,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	if(b_LagCompNPC_ExtendBoundingBox)
 	{
 
-#if !defined RTS
+#if defined ZR
 		if(GetTeam(entity) != TFTeam_Red)
 #endif
 		
@@ -314,7 +314,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 
 		////////////////////////
 		// Now do all the layers
-#if !defined RTS
+#if defined ZR
 		if(GetTeam(entity) != TFTeam_Red)
 #endif
 		{
@@ -389,14 +389,14 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 //		ThrowError("Not in BaseBoss Lag Comp");
 	
 	DoingLagCompensation = false;
-	
+
 	for(int index; index < ZR_MAX_LAG_COMP; index++)
 	{
 		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
 		if(IsValidEntity(entity) && WasBackTracked[index])
 		{
 
-#if !defined RTS
+#if defined ZR
 			if(GetTeam(entity) != TFTeam_Red)
 #endif
 
@@ -541,7 +541,7 @@ void LagCompensationThink_Forward()
 				GetEntPropVector(entity, Prop_Data, "m_angRotation", record.m_vecAngles);
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", record.m_vecOrigin);
 
-#if !defined RTS
+#if defined ZR
 				if(GetTeam(entity) != TFTeam_Red) //If its an allied baseboss, make sure to not get layers.
 #endif
 				{
@@ -562,7 +562,7 @@ void LagCompensationThink_Forward()
 					record.m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
 					record.m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
 				}
-#if !defined RTS
+#if defined ZR
 				else
 				{
 					record.m_layerRecords = 0;

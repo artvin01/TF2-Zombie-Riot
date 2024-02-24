@@ -248,7 +248,7 @@ methodmap Kahmlstein < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
 
-		if(RaidBossActive==INVALID_ENT_REFERENCE)
+		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;

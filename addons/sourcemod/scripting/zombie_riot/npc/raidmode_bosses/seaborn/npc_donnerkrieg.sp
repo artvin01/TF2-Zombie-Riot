@@ -514,12 +514,12 @@ void Donnerkrieg_SpawnAllyDuoRaid(int ref)
 		
 		maxhealth = RoundToFloor(maxhealth*1.5);
 
-		int spawn_index = Npc_Create(SEA_RAIDBOSS_SCHWERTKRIEG, -1, pos, ang, GetTeam(entity));
+		int spawn_index = NPC_CreateById(SEA_RAIDBOSS_SCHWERTKRIEG, -1, pos, ang, GetTeam(entity));
 		if(spawn_index > MaxClients)
 		{
 			i_ally_index = EntIndexToEntRef(spawn_index);
 			Schwertkrieg_Set_Ally_Index(entity);
-			Zombies_Currently_Still_Ongoing += 1;	// FIXME
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 		}
@@ -605,7 +605,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 	
-	if(RaidBossActive == INVALID_ENT_REFERENCE)
+	if(!IsValidEntity(RaidBossActive))
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}
@@ -1260,7 +1260,7 @@ static void Heavens_Spawn8(float startLoc[3], float space, float ratio)
 		
 	}
 }
-void Heavens_SpawnBeam(float beamLoc[3], int color[4], float size, bool rings)
+static void Heavens_SpawnBeam(float beamLoc[3], int color[4], float size, bool rings)
 {
 
 
@@ -2051,11 +2051,11 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Oh this aint good.");
+					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Oh its very serious, we'll go.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: AAAGHHHGHHAA.");
+					CPrintToChatAll("{aqua}Donnerkrieg{snow}: This isn't a joke if you come...");
 				}
 			}
 			
@@ -2745,7 +2745,7 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					if(damage < 4)
 						damage = 4;
 
-					SeaSlider_AddNeuralDamage(victim, npc.index, damage, false);
+					SeaSlider_AddNeuralDamage(victim, npc.index, damage, false, true);
 				}
 				case 2:
 				{
@@ -2753,7 +2753,7 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					if(damage < 8)
 						damage = 8;
 
-					SeaSlider_AddNeuralDamage(victim, npc.index, damage, false);
+					SeaSlider_AddNeuralDamage(victim, npc.index, damage, false, true);
 				}
 				
 			}
@@ -3202,7 +3202,7 @@ public void Donner_Neural_Tweak(int entity, int victim, float damage, int weapon
 	if(IsValidEntity(victim))
 	{
 		int neural_damage = RoundToFloor(ion_damage[entity]);
-		SeaSlider_AddNeuralDamage(victim, entity, neural_damage, false);
+		SeaSlider_AddNeuralDamage(victim, entity, neural_damage, false, true);
 	}
 }
 public void Donner_Neural_Tweak_shake(int entity, int victim, float damage, int weapon)
@@ -3210,7 +3210,7 @@ public void Donner_Neural_Tweak_shake(int entity, int victim, float damage, int 
 	if(IsValidEntity(victim))
 	{
 		int neural_damage = RoundToFloor(ion_damage[entity]);
-		SeaSlider_AddNeuralDamage(victim, entity, neural_damage, false);
+		SeaSlider_AddNeuralDamage(victim, entity, neural_damage, false, true);
 		if(IsValidClient(victim))
 			Client_Shake(victim);
 	}
@@ -3506,10 +3506,10 @@ static Action Divine_Intervention_Hook(int iNPC)
 		int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int spawn_index;
 
-		spawn_index = Npc_Create(RUINA_STELLAR_WEAVER, -1, Npc_Loc, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2, "solo_true");
+		spawn_index = NPC_CreateById(RUINA_STELLAR_WEAVER, -1, Npc_Loc, ang, GetTeam(npc.index), "solo_true");
 		if(spawn_index > MaxClients)
 		{
-			Zombies_Currently_Still_Ongoing += 1;
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", Health);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", Health);
 			b_weaver_summoned=true;

@@ -918,9 +918,9 @@
 	}
 	"Longsword Pap 3"
 	{
-		"en"	"Increased damage and attackspeed, but you move 10%% slower."
-		"ru"	"Увеличенный урон и скорость атаки, но вы двигаетесь на 10%% медленнее."
-		"chi"   "增加伤害和攻击速度，但移动速度降低10%%。"
+		"en"	"Increased damage and attackspeed, but you move 5%% slower."
+		"ru"	"Увеличенный урон и скорость атаки, но вы двигаетесь на 5%% медленнее."
+		"chi"   "增加伤害和攻击速度，但移动速度降低5%%。"
 	}
 	
 	"Speed Fists Of Speed Desc"
@@ -968,17 +968,9 @@
 	
 	"Fists Of Kahmlstein Desc"
 	{
-		"en"	"Fists sent from the gods forged by the destroyer of galaxies."
-		"ru"	"Кулаки, посланные богами, выкованные разрушителем галактик."
-		"chi"   "众神送来的拳头由星系的毁灭者锻造而成。"
+		"en"	"fists from Khamlstein, His reigin over cities and states has no end.\nProve your strength against him to gain a certain item to gain another ability..."
 	}
-	"Fists Of Kahmlstein Pap 1"
-	{
-		"en"	"Increased damage and attackspeed"
-		"ru"	"Увеличенный урон и скорость атаки."
-		"chi"   "增加伤害和攻击速度。"
-	}
-	
+
 	"Bad Wand Desc"
 	{
 		"en"	"Consumes mana with each shot. M2 Gives extra attackspeed for a short time."
@@ -2322,11 +2314,11 @@
 	}
 	"The Standchen Desc"
 	{
-		"en"	"Speichert bis zu drei Angriffe, unleash by letting go of attack. Stored shots deal bonus damage.\nAbility increases damage, fire rate, and stores another shot but, kann nur Elite- oder Riesengegner treffen, ability can be canceled."
+		"en"	"Saves upto 3 attacks, unleash by letting go of attack. Stored shots deal bonus damage.\nAbility increases damage, fire rate, and stores another shot but, can only hit giant or elite/elite+ enemies, ability can be canceled."
 	}
 	"The Standchen Desc Pap"
 	{
-		"en"	"Speichert bis zu vier Angriffe."
+		"en"	"Saves upto 4 attacks."
 	}
 	"Sensal Desc"
 	{
@@ -2726,14 +2718,30 @@
 	}
 	"Ludomania Extra Desc"
 	{
-		"en"	"4 is homing\n5 gives mana\n6 stuns\n7 silences the enemy\n8 bleeds the enemy (weak)\n9 bleeds the enemy (strong)\n10 debuffs the enemy\nJ-Q-K change card effects"
+		"en"	"2,3 and 4 is homing\n5 gives mana\n6 stuns\n7 silences the enemy\n8 bleeds the enemy (weak)\n9 bleeds the enemy (strong)\n10 debuffs the enemy\nJ-Q-K change projectile effects"
 	}
 	"Ludomancy Desc"
 	{
-		"en"	"Mathematical Foresight: Gain a passive ability that lets you (somewhat) predict the value of your next card.\nAll cards gain one out of four symbols:\n$ = BlackJack value reduced by 1\n^ = Dmg increased by 10%\n# = 3 of these lead to a prize\n* = Improves current card"
+		"en"	"Mathematical Foresight: Gain a passive ability that lets you (somewhat) predict the value of your next card.\nAll cards gain one out of four symbols:\n$ = BlackJack value reduced by 1\n^ = Dmg increased by 10%\n# = 3 of these lead to a prize!\n* = Improves card"
 	}
-	"Ludomancy Extra Desc"
+	"Ruina's Sacret Magic Ways Magic Desc"
 	{
-		"en"	"Hearts:Current card's value is decreased by 1.\nDiamonds:If you have more than 3 cards, something special happens.\nClubs:Overall damage increased by 20%%.\nSpades:Current card's ability is improved."
+		"en"	"70%% More magic damage, 2x max mana, and 15%% faster attackspeed for mage weapons."
+	}
+	"Expidonsan's Black hole Storage Unit Desc"
+	{
+		"en"	"70%% More ranged damage, 15%% faster attackspeed, 15%% faster reload and 25% more clipsize."
+	}
+	"Wildingen's Elite Building Components Desc"
+	{
+		"en"	"70%% More building damage and building health."
+	}
+	"Spookmaster's Strong Bone Amplifier Desc"
+	{
+		"en"	"1500 more hp and 15%% overall damage resistance."
+	}
+	"Helena's Elite Medicine Desc"
+	{
+		"en"	"1.6x Medigun Hurt and Heal and 5%% melee resistance with Secondary/Medigun out"
 	}
 }

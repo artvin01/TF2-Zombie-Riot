@@ -128,7 +128,7 @@ void CitizenRunner_NPCDeath(int entit)
 
 		static const int RandomInfection[] = { SEAPREDATOR_ALT, SEAPREDATOR_ALT, SEAFOUNDER_ALT, SEASPEWER_ALT, SEASWARMCALLER_ALT };
 
-		int entity = Npc_Create(RandomInfection[GetURandomInt() % sizeof(RandomInfection)], -1, pos, angles, TFTeam_Blue);
+		int entity = NPC_CreateById(RandomInfection[GetURandomInt() % sizeof(RandomInfection)], -1, pos, angles, TFTeam_Blue);
 		if(entity > MaxClients)
 		{
 			Zombies_Currently_Still_Ongoing++;

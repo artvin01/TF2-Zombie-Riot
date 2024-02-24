@@ -1,0 +1,36 @@
+"Phrases"
+{
+	"nothing"
+	{
+		"en" 		"Example Text!"
+	}
+	"Headcrab Zombie"
+	{
+		"en" 		"Headcrab Zombie"
+	}
+	"Metro Cop"
+	{
+		"en"		"Metro Cop"
+	}
+	"Sensal"
+	{
+		"en"		"Sensal"
+	}
+	"Bob The First"
+	{
+		"en"		"Bob The First"
+	}
+	"??????? First"
+	{
+		"en"		"??????? First"
+	}
+	"??? the First"
+	{
+		"en"		"??? the First"
+	}
+	"Chaos Kahmlstein"
+	{
+		"en"		"Chaos Kahmlstein"
+	}
+	
+}

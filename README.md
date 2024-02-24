@@ -10,17 +10,12 @@ SO HOW THIS CODE WORKS CAN HEAVILY VARY FROM FILE TO FILE!!!
 
 **YOU MUST USE SOURCEMOD 1.12 FOR THIS PLUGIN!!!!!!!!!!!!!!!**
 
-Use build 7031 or older, DO NOT USE NEWER.
-It breaks float values for some god forsaken reason.
-
 If you wish to use this plugin for your own server, please keep all the credits that are here or i WILL cry.
 Do not go above 14 players(you can have 32 slots, i recommend 16+) but dont allow more inside the plugin itself (Inside queue.sp), as the server doesnt support that interms of performance, the npc's are limited at 32 for a reason.
 The performance heavy things are Lagcompensation and pathfinder, but i tried to optimise those as much as i could.
 Most of the code is made towards client prediction to make the best experience.
 
 Also keep in mind that i (artvin) started coding here with only half a year of knowledege so you'll see a fuckton of shitcode.
-
-There is also an escapemode Verison of this gamemode and more to come. If you need help, ask me questions, and i will awnser them and put a FAQ here too so i dont have to repeat myself.
 
 ### Where can I see this gamemode in action?
 

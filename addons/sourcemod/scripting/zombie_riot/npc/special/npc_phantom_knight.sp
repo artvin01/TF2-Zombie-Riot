@@ -572,7 +572,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 								b_thisNpcIsABoss[view_as<int>(fake_spawned)] = true;
 								GiveNpcOutLineLastOrBoss(view_as<int>(fake_spawned), true);
 							}
-							Zombies_Currently_Still_Ongoing += 1;
+							NpcAddedToZombiesLeftCurrently(fake_spawned, true);
 							b_IsPhantomFake[view_as<int>(fake_spawned)] = true;
 
 							int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");

@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#if !defined RTS
+#if defined ZR
 enum struct WeaponData
 {
 	char Classname[36];
@@ -56,13 +56,10 @@ void Configs_ConfigsExecuted()
 			}
 			delete dir;
 		}
-		else
-		{
-			LogError("[Config] Directory '%s' does not exist", buffer);
-		}
 	}
 	
 	FileNetwork_ConfigSetup(kv);
+	NPC_ConfigSetup();
 	
 #if defined ZR
 	Items_SetupConfig();
@@ -91,11 +88,12 @@ void Configs_ConfigsExecuted()
 
 #if defined RTS
 	RTS_ConfigsSetup();
+	Object_ConfigSetup();
 #endif
 
 	delete kv;
 
-#if !defined RTS
+#if defined ZR
 	delete WeaponList;
 	WeaponList = new ArrayList(sizeof(WeaponData));
 	
@@ -133,7 +131,7 @@ void Configs_ConfigsExecuted()
 	}
 }
 
-#if !defined RTS
+#if defined ZR
 stock float Config_GetDPSOfEntity(int entity)
 {
 	static char classname[36];

@@ -525,7 +525,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 		
 	}	
 
-	if(RaidBossActive == INVALID_ENT_REFERENCE)
+	if(!IsValidEntity(RaidBossActive))
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}

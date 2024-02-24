@@ -254,7 +254,7 @@ void Pathshaper_SpawnFractal(CClotBody npc, int health, int limit)
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	
-	int entity = Npc_Create(PATHSHAPER_FRACTAL, -1, pos, ang, GetTeam(npc.index));
+	int entity = NPC_CreateById(PATHSHAPER_FRACTAL, -1, pos, ang, GetTeam(npc.index));
 	if(entity > MaxClients)
 	{
 		if(GetTeam(npc.index) != TFTeam_Red)

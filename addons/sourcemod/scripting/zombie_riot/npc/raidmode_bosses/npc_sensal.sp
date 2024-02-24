@@ -329,7 +329,7 @@ methodmap Sensal < CClotBody
 		else if(ZR_GetWaveCount()+1 > 55)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
-			RaidModeScaling *= 0.7;
+			RaidModeScaling *= 0.65;
 		}
 		if(!cutscene)
 		{
@@ -478,10 +478,10 @@ public void Sensal_ClotThink(int iNPC)
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			int spawn_index = Npc_Create(EXPIDONSA_DIVERSIONISTICO, -1, pos, ang, GetTeam(npc.index));
+			int spawn_index = NPC_CreateById(EXPIDONSA_DIVERSIONISTICO, -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
-				Zombies_Currently_Still_Ongoing += 1;	// FIXME
+				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
 			}
@@ -957,7 +957,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 	{
 		if(IsValidEnemy(npc.index, target)) 
 		{
-			if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 			{
 				int Enemy_I_See;
 									

@@ -403,10 +403,10 @@ public void XenoSoldierGiant_ClotDamagedPost(int victim, int attacker, int infli
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 				
-				int spawn_index = Npc_Create(XENO_SOLDIER_ZOMBIE_MINION, -1, pos, ang, GetTeam(npc.index));
+				int spawn_index = NPC_CreateById(XENO_SOLDIER_ZOMBIE_MINION, -1, pos, ang, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
-					Zombies_Currently_Still_Ongoing += 1;	// FIXME
+					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 				}

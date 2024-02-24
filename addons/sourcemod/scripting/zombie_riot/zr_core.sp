@@ -159,6 +159,24 @@ enum
 	WEAPON_HELL_HOE_3 = 88,
 	WEAPON_LUDO = 89,
 	WEAPON_KAHMLFIST = 90,
+	WEAPON_HHH_AXE = 91,
+}
+
+enum
+{
+	Type_Hidden = -1,
+	Type_Ally = 0,
+	Type_Special,
+	Type_Raid,
+	Type_Common,
+	Type_Alt,
+	Type_Xeno,
+	Type_BTD,
+	Type_Medieval,
+	Type_COF,
+	Type_Seaborn,
+	Type_Expidonsa,
+	Type_Interitus
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -232,8 +250,6 @@ float RoundStartTime;
 char WhatDifficultySetting_Internal[21];
 char WhatDifficultySetting[21];
 float healing_cooldown[MAXTF2PLAYERS];
-float Damage_dealt_in_total[MAXTF2PLAYERS];
-int i_Damage_dealt_in_total[MAXTF2PLAYERS];
 float f_TimeAfterSpawn[MAXTF2PLAYERS];
 float WoodAmount[MAXTF2PLAYERS];
 float FoodAmount[MAXTF2PLAYERS];
@@ -244,9 +260,10 @@ bool b_PlayerWasAirbornKnockbackReduction[MAXTF2PLAYERS];
 bool b_ArkantosBuffItem[MAXENTITIES];
 int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
-float f_HudCooldownAntiSpam[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 int i_MaxArmorTableUsed[MAXTF2PLAYERS];
+int i_PlayerModelOverrideIndexWearable[MAXTF2PLAYERS];
+bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -431,7 +448,6 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_calcium_wand.sp"
 #include "zombie_riot/custom/wand/weapon_wand_calcium_spell.sp"
 #include "zombie_riot/custom/weapon_passive_banner.sp"
-#include "zombie_riot/custom/weapon_zeroknife.sp"
 #include "zombie_riot/custom/weapon_ark.sp"
 #include "zombie_riot/custom/pets.sp"
 #include "zombie_riot/custom/coin_flip.sp"
@@ -603,9 +619,11 @@ void ZR_MapStart()
 	Zero2(Perk_Machine_money_limit);
 	Zero2(Pack_A_Punch_Machine_money_limit);
 	Zero2(fl_blitz_ioc_punish_timer);
+	Zero(i_PlayerModelOverrideIndexWearable);
+	Zero(b_HideCosmeticsPlayer);
 	CleanAllBuildingEscape();
+	KahmlFistMapStart();
 	M3_ClearAll();
-	ZeroRage_ClearAll();
 	SniperMonkey_ClearAll();
 	Weapon_Cspyknife_ClearAll();
 	f_DelaySpawnsForVariousReasons = 0.0;
@@ -787,12 +805,6 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
-	/*
-	if(CurrentRound)
-		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
-	See databaseuh
-	*/
-
 }
 
 void ZR_ClientDisconnect(int client)
@@ -813,6 +825,7 @@ void ZR_ClientDisconnect(int client)
 	Reset_stats_Judge_Singular(client);
 	Reset_stats_Drink_Singular(client);
 	Reset_stats_Grenade_Singular(client);
+	Reset_stats_Skullswand_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
@@ -827,6 +840,8 @@ void ZR_ClientDisconnect(int client)
 	WoodAmount[client] = 0.0;
 	FoodAmount[client] = 0.0;
 	GoldAmount[client] = 0.0;
+	i_PlayerModelOverrideIndexWearable[client] = 0;
+	b_HideCosmeticsPlayer[client] = false;
 	
 	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 	{
@@ -1177,10 +1192,17 @@ public void OnClientAuthorized(int client)
 {
 	Ammo_Count_Used[client] = 0;
 	CashSpentTotal[client] = 0;
-/*	
+	
 	if(CurrentRound)
-		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.10);
-*/
+	{
+		// Give extra cash to newly joined
+		int cash = CurrentCash / 20;
+		if(StartCash < 750)
+			cash += StartCash / 2;
+		
+		CashSpent[client] = -cash;
+		CashRecievedNonWave[client] = cash;
+	}
 }
 
 void ZR_OnClientDisconnect_Post()
@@ -1334,7 +1356,7 @@ public void Spawn_Bob_Combine(int client)
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	flAng[2] = 0.0;
-	int bob = Npc_Create(BOB_THE_GOD_OF_GODS, client, flPos, flAng, TFTeam_Red);
+	int bob = NPC_CreateById(BOB_THE_GOD_OF_GODS, client, flPos, flAng, TFTeam_Red);
 	Bob_Exists = true;
 	Bob_Exists_Index = EntIndexToEntRef(bob);
 	Items_GiveNPCKill(client, BOB_THE_GOD_OF_GODS);
@@ -1363,7 +1385,7 @@ public void Spawn_Cured_Grigori()
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	flAng[2] = 0.0;
-	int entity = Npc_Create(CURED_FATHER_GRIGORI, client, flPos, flAng, TFTeam_Red);
+	int entity = NPC_CreateById(CURED_FATHER_GRIGORI, client, flPos, flAng, TFTeam_Red);
 	SalesmanAlive = EntIndexToEntRef(entity);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_grigori");
 	
@@ -1403,7 +1425,6 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	
 	bool alive;
 	LastMann = true;
-	int players = CurrentPlayers;
 	CurrentPlayers = 0;
 	int GlobalIntencity_Reduntant;
 	for(int client=1; client<=MaxClients; client++)
@@ -1439,10 +1460,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			}
 		}
 	}
-	
-	if(CurrentPlayers < players)
-		CurrentPlayers = players;
-	
+
 	if(LastMann && !GlobalIntencity_Reduntant) //Make sure if they are alone, it wont play last man music.
 		LastMann = false;
 	
@@ -2105,7 +2123,6 @@ void PlayerApplyDefaults(int client)
 		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
 		QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
-		QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		

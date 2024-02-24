@@ -509,7 +509,7 @@ void Dimension_Summon_Npc(int client, int NpcId, int weapon, float HealthMulti, 
 				if(ParticleEffect[0])
 					ParticleEffectAt(Dimension_Loc, ParticleEffect, 1.5);
 				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.0);
-				int entity = Npc_Create(NpcId, client, pos1, ang, TFTeam_Red);
+				int entity = NPC_CreateById(NpcId, client, pos1, ang, TFTeam_Red);
 				if(entity > MaxClients)
 				{
 					//30 as a starting value.

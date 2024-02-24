@@ -307,7 +307,7 @@ public void NecroCombine_ClotThink(int iNPC)
 				}
 				
 				//Target close enough to hit
-				if((flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
+				if((flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
 				{
 				//	npc.FaceTowards(vecTarget, 1000.0);
 					
@@ -350,7 +350,7 @@ public void NecroCombine_ClotThink(int iNPC)
 										{
 											damage *= 0.5;
 										}
-										SDKHooks_TakeDamage(target, owner, owner, (damage * npc.m_flExtraDamage), DMG_SLASH, -1, _, vecHit); //Do acid so i can filter it well.
+										SDKHooks_TakeDamage(target, owner, owner, (damage * npc.m_flExtraDamage), DMG_PLASMA, -1, _, vecHit); //Do acid so i can filter it well.
 										
 										// Hit particle
 										

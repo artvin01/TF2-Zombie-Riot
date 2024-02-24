@@ -169,6 +169,12 @@ public void DesertKhazaan_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
+	fl_TotalArmor[npc.index] = fl_TotalArmor[npc.index] + 0.005;
+	if(fl_TotalArmor[npc.index] > 1.0)
+	{
+		fl_TotalArmor[npc.index] = 1.0;
+	}
+	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
@@ -279,7 +285,7 @@ void DesertKhazaanSelfDefense(DesertKhazaan npc, float gameTime, int target, flo
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;
 								

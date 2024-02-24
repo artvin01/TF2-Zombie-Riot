@@ -165,7 +165,7 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
 	CurrentGame = 0;
-	if(event.GetInt("team") == 3)
+	if(event != INVALID_HANDLE && event.GetInt("team") == 3)
 	{
 		//enemy team won due to timer or something else.
 		ZR_NpcTauntWin();
@@ -198,12 +198,20 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		ViewChange_UpdateHands(client, CurrentClass[client]);
 		TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
-		if(b_IsPlayerNiko[client])
+		if(b_IsPlayerNiko[client] || b_HideCosmeticsPlayer[client])
 		{
 		  	int entity = MaxClients+1;
 			while(TF2_GetWearable(client, entity))
 			{
-				SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+			}
+		}
+		else
+		{
+			int entity = MaxClients+1;
+			while(TF2_GetWearable(client, entity))
+			{
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 			}
 		}
 		/*
@@ -422,7 +430,7 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		Waves_PlayerSpawn(client);
 #endif
 
-#if !defined RTS
+#if defined ZR
 		Thirdperson_PlayerSpawn(client);
 #endif
 
@@ -447,14 +455,12 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	if(!client)
 		return Plugin_Continue;
 	
-#if !defined RTS
+#if defined ZR
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #endif
 
 #if defined ZR
 	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), dieingstate[client] ? -69 : 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
-#else
-	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
 #endif
 
 #if defined ZR
@@ -501,7 +507,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	UpdateLevelAbovePlayerText(client, true);
 #endif
 
-#if !defined RTS
+#if defined ZR
 	Store_WeaponSwitch(client, -1);
 	RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
 #endif

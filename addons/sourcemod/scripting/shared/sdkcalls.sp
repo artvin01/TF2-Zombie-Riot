@@ -18,8 +18,11 @@ static Handle g_hCTFCreateArrow;
 //static Handle g_hSDKPlaySpecificSequence;
 //static Handle g_hDoAnimationEvent;
 
+#if !defined NOG
 static Handle g_hSDKStartLagComp;
 static Handle g_hSDKEndLagComp;
+#endif
+
 static Handle g_hSDKUpdateBlocked;
 
 
@@ -211,7 +214,7 @@ void SDKCall_EquipWearable(int client, int entity)
 		SDKCall(SDKEquipWearable, client, entity);
 }
 
-void SDKCall_GetShootSound(int entity, int index, char[] buffer, int length)
+stock void SDKCall_GetShootSound(int entity, int index, char[] buffer, int length)
 {
 	if(SDKGetShootSound)
 		SDKCall(SDKGetShootSound, entity, buffer, length, index);
@@ -372,7 +375,8 @@ void SDKCall_BecomeRagdollOnClient(int entity, const float vec[3])
 	SDKCall(SDKBecomeRagdollOnClient, entity, vec);
 }
 
-void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
+#if !defined NOG
+stock void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 {
 	if(g_GottenAddressesForLagComp)
 	{
@@ -395,6 +399,7 @@ void EndPlayerOnlyLagComp(int client)
 		SDKCall(g_hSDKEndLagComp, g_hSDKEndLagCompAddress, client);
 	}
 }
+#endif
 
 void UpdateBlockedNavmesh()
 {
@@ -420,6 +425,7 @@ stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 
 //BIG thanks to backwards#8236 on discord for helping me out, YOU ARE MY HERO.
 
+#if !defined NOG
 void Sdkcall_Load_Lagcomp()
 {
 	if(!g_GottenAddressesForLagComp)
@@ -442,8 +448,9 @@ void Sdkcall_Load_Lagcomp()
 		delete gamedata_lag_comp;	
 	}
 }
+#endif
 
-void Manual_Impulse_101(int client, int health)
+stock void Manual_Impulse_101(int client, int health)
 {
 
 #if defined ZR
@@ -462,7 +469,7 @@ void Manual_Impulse_101(int client, int health)
 	//how quirky.
 	SetAmmo(client, 1, 9999);
 	SetAmmo(client, 2, 9999);
-#if !defined RTS
+#if defined ZR
 	SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
 	for(int i=Ammo_Jar; i<Ammo_MAX; i++)
 	{
