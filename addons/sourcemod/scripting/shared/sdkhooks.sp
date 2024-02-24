@@ -128,10 +128,8 @@ void SDKHook_HookClient(int client)
 	SDKHook(client, SDKHook_PreThinkPost, OnPreThinkPost);
 	SDKUnhook(client, SDKHook_PostThink, OnPostThink);
 	SDKUnhook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
-	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
 	SDKHook(client, SDKHook_PostThink, OnPostThink);
 	SDKHook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
-	SDKHook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
 
 	SDKUnhook(client, SDKHook_PostThinkPost, OnPostThinkPost);
 	SDKHook(client, SDKHook_PostThinkPost, OnPostThinkPost);
@@ -142,9 +140,11 @@ void SDKHook_HookClient(int client)
 	SDKHook(client, SDKHook_PostThink, OnPostThink_OnlyHurtHud);
 #endif
 
-#if defined ZR
+#if !defined RTS
 	SDKUnhook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
 	SDKHook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
+	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
+	SDKHook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
 #endif
 }
 
@@ -1481,9 +1481,9 @@ public void OnPreThink(int client)
 }
 */
 
-#if defined ZR
 public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+#if defined ZR
 	if(!(damagetype & DMG_DROWN|DMG_FALL))
 	{
 		i_PlayerDamaged[victim] += RoundToCeil(damage);
@@ -1500,10 +1500,12 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 
 	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
 	ArmorDisplayClient(victim);
+#endif
 	i_HexCustomDamageTypes[victim] = 0;
 
 	return Plugin_Continue;
 }
+#if defined ZR
 void RegainTf2Buffs(int victim)
 {
 	if(i_WasInUber[victim])
@@ -1544,22 +1546,22 @@ static void Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim)
 #endif
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+#if defined ZR
 	i_WasInUber[victim] = 0.0;
 	i_WasInMarkedForDeath[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
-#if defined ZR
 	if(TeutonType[victim])
 		return Plugin_Handled;
 #endif
 
 	float GameTime = GetGameTime();
 
+#if defined ZR
 	if(f_ClientInvul[victim] > GameTime) //Treat this as if they were a teuton, complete and utter immunity to everything in existance.
 	{
 		return Plugin_Handled;
 	}
 
-#if defined ZR
 	if(RaidbossIgnoreBuildingsLogic(1))
 	{
 		if(TF2_IsPlayerInCondition(victim, TFCond_Ubercharged))
@@ -1573,7 +1575,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
 	}
-#endif
 
 	if(!(damagetype & DMG_DROWN))
 	{
@@ -1583,7 +1584,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Continue;	
 		}
 	}
-#if defined ZR
 	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 	if(dieingstate[victim] > 0)
 	{
@@ -1599,25 +1599,15 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		return Plugin_Handled;
 	}
 	else
-#endif	
 	{
 		if(victim == attacker)
 			return Plugin_Handled;
-	}	
-#if defined ZR
+	}
 	float Replicated_Damage;
 	Replicate_Damage_Medications(victim, damage, Replicated_Damage, damagetype);
 	
-#endif
-	
 	if(damagetype & DMG_FALL)
 	{
-			
-#if defined RPG
-		damage *= 400.0 / float(SDKCall_GetMaxHealth(victim));
-#endif
-			
-#if defined ZR
 		Replicated_Damage *= 0.45; //Reduce falldmg by passive overall
 		damage *= 0.45;
 		if(RaidbossIgnoreBuildingsLogic(1))
@@ -1626,15 +1616,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			damage *= 0.75;			
 		}
 		else if(i_SoftShoes[victim] == 1)
-#else
-		if(i_SoftShoes[victim] == 1)
-#endif
 		{
-				
-#if defined ZR
 			Replicated_Damage *= 0.9;
-#endif
-				
 			damage *= 0.9;
 		}
 		if(f_ImmuneToFalldamage[victim] > GameTime)
@@ -1650,17 +1633,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		LastHitRef[victim] = EntIndexToEntRef(attacker);
 	}
-		
-
-#if defined RPG	
-	if(Ability_Mudrock_Shield_OnTakeDamage(victim))
-	{
-		damage = 0.0;
-		return Plugin_Handled;
-	}
-#endif
 	
-#if defined ZR
 	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker] && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
 	{
 		if(!b_ThisNpcIsSawrunner[attacker])
@@ -1682,15 +1655,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			Replicated_Damage *= 2.0;
 		}
 	}
-#elseif defined RPG
-	if(damagetype & (DMG_DROWN|DMG_DROWNRECOVER))
-	{
-		damage *= 2.0;
-	}
-#endif
-
 	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
-#if defined ZR
+
 	if(Medival_Difficulty_Level != 0.0)
 	{
 		float difficulty_math = Medival_Difficulty_Level;
@@ -1717,7 +1683,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 	if(!b_ThisNpcIsSawrunner[attacker])
-#endif
+#endif	// ZR
 	
 	{
 		
@@ -1744,54 +1710,49 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				Replicated_Damage *= 1.25;
 			}
 		}
+#endif	// ZR
 		if(f_HussarBuff[attacker] > GameTime) //hussar!
 		{
 			damage *= 1.10;
+#if defined ZR
 			Replicated_Damage *= 1.10;
+#endif
 		}
 		if(f_HussarBuff[victim] > GameTime) //hussar!
 		{
 			damage *= 0.90;
+#if defined ZR
 			Replicated_Damage *= 0.90;
+#endif
 		}
+#if defined ZR
 		if(f_PotionShrinkEffect[attacker] > GameTime || (IsValidEntity(inflictor) && f_PotionShrinkEffect[attacker] > GameTime))
 		{
 			damage *= 0.5; //half the damage when small.
 			Replicated_Damage *= 0.5;
 		}
+#endif
 		if(f_BattilonsNpcBuff[victim] > GameTime)
 		{
 			damage *= 0.8;
+#if defined ZR
 			Replicated_Damage *= 0.8;
-		}	
+#endif
+		}
 		damage *= fl_Extra_Damage[attacker];
+#if defined ZR
 		Replicated_Damage *= fl_Extra_Damage[attacker];
+#endif
 		
 		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
 		//It will just return the same damage if nothing is done.
 	
+#if defined ZR
 		if(RaidbossIgnoreBuildingsLogic(1) && i_HealthBeforeSuit[victim] > 0)
 		{
 			Replicated_Damage *= 5.0; //when a raid is alive, make quantum armor 8x as bad at tanking.
 			damage *= 5.0;	
 		}
-#endif
-#if defined RPG
-		if(f_HealingPotionDuration[victim] > GameTime) //Client has a buff, but which one?
-		{
-			switch(f_HealingPotionEffect[victim])
-			{
-				case MELEE_BUFF_2: //Take less damage.
-				{
-					damage *= 0.85;
-				}
-				default: //Nothing.
-				{
-					damage *= 1.0;
-				}
-			}
-		}
-
 #endif
 		if(f_EmpowerStateOther[victim] > GameTime) //Allow stacking.
 		{
@@ -1944,12 +1905,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 		}
 #endif	// ZR
-
-#if defined RPG		
-		damage = BeserkHealthArmor_OnTakeDamage(victim, damage);
-
-		damage = RpgCC_ContractExtrasPlayerOnTakeDamage(victim, attacker, damage, damagetype);
-#endif
 	}
 	
 #if defined ZR

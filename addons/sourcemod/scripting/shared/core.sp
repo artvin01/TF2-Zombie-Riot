@@ -645,11 +645,11 @@ int played_headshotsound_already_Case [MAXTF2PLAYERS];
 int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
 int i_BarbariansMind[MAXPLAYERS + 1]={0, ...}; 				//830
 bool b_FaceStabber[MAXTF2PLAYERS];
-#endif
-int i_WandOwner[MAXENTITIES]; //
 int g_particleMissText;
-int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 				//785
+int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 
 int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
+#endif
+int i_WandOwner[MAXENTITIES]; //				//785
 
 int i_BleedDurationWeapon[MAXENTITIES]={0, ...}; 				//149
 int i_BurnDurationWeapon[MAXENTITIES]={0, ...}; 				//208
@@ -1249,10 +1249,11 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	
 #if defined ZR
 	Thirdperson_PluginLoad();
+	ZR_PluginLoad();
 #endif
 	
-#if defined ZR
-	ZR_PluginLoad();
+#if defined NOG
+	NOG_PluginLoad();
 #endif
 
 	return APLRes_Success;
