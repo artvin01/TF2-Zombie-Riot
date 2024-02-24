@@ -4947,7 +4947,7 @@ stock int GetTeam(int entity)
 {
 	if(entity > 0 && entity <= MAXENTITIES)
 	{
-#if defined ZR
+#if !defined RTS
 		if(entity && entity <= MaxClients)
 			return GetClientTeam(entity);
 #endif
@@ -4969,21 +4969,33 @@ stock void SetTeam(int entity, int teamSet)
 		TeamNumber[entity] = teamSet;
 		if(teamSet <= TFTeam_Red)
 		{
-#if defined ZR
-			if(entity && entity <= MaxClients)
+
+#if !defined RTS
+			if(entity <= MaxClients)
+			{
 				ChangeClientTeam(entity, teamSet);
+			}
 			else
 #endif
+
 			{
 				SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
 			}
 		}
 		else if(teamSet > TFTeam_Red)
 		{
-			if(entity && entity <= MaxClients)
+
+#if !defined RTS
+			if(entity <= MaxClients)
+			{
 				ChangeClientTeam(entity, TFTeam_Blue);
-			else	
+			}
+			else
+#endif
+
+			{
 				SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+			}
 		}
 	}
 	else
