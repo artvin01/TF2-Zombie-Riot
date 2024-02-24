@@ -426,7 +426,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	
 	float loc[3], vicloc[3], dist;
 	GetClientAbsOrigin(attacker, loc);
-	vicloc = WorldSpaceCenterOld(victim);
+	WorldSpaceCenter(victim, vicloc);
 	dist = GetVectorDistance(loc, vicloc);
 	
 	for (int i = 0; i < 3; i++)

@@ -1039,7 +1039,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 								PlaySound = true;
 								int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 								float vecHit[3];
-								vecHit = WorldSpaceCenterOld(target);
+								WorldSpaceCenter(target, vecHit);
 
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_CLUB, -1, _, vecHit);	
 								
@@ -1291,7 +1291,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						
 						npc.m_flNextMeleeAttack = gameTime + 10.0;
 						npc.StopPathing();
-						vecMe = WorldSpaceCenterOld(npc.index);
+						WorldSpaceCenter(npc.index, vecMe);
 
 						switch(GetURandomInt() % 3)
 						{
@@ -1845,12 +1845,12 @@ stock void BobPullTarget(int bobnpc, int enemy)
 	//pull player
 	float vecMe[3];
 	float vecTarget[3];
-	vecMe = WorldSpaceCenterOld(npc.index);
+	WorldSpaceCenter(npc.index, vecMe);
 	if(enemy <= MaxClients)
 	{
 		static float angles[3];
 		
-		vecTarget = WorldSpaceCenterOld(enemy);
+		WorldSpaceCenter(enemy, vecTarget );
 		GetVectorAnglesTwoPoints(vecTarget, vecMe, angles);
 		
 		if(GetEntityFlags(enemy) & FL_ONGROUND)

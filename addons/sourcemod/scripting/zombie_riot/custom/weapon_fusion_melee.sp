@@ -1337,7 +1337,7 @@ void DrawBigSiccerinoSiccors(float Angles[3], int client, float belowBossEyes[3]
 			{
 				if(IsValidEntity(BEAM_BuildingHit[building]))
 				{
-					playerPos = WorldSpaceCenterOld(BEAM_BuildingHit[building]);
+					WorldSpaceCenter(BEAM_BuildingHit[building], playerPos);
 
 					f_SiccerinoExtraDamage[client][BEAM_BuildingHit[building]] += 0.35;
 					DataPack pack1;

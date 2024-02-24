@@ -406,7 +406,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 		&& GetEntPropEnt(npc.m_iTargetWalkTo, Prop_Data, "m_hVehicle") == -1 && !b_LeftForDead[npc.m_iTargetWalkTo])
 		{
 			//walk to client.
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetWalkTo);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget);
 			
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
@@ -553,7 +553,8 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 					{
 						DamageDelt = 75.0;
 					}
-					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, DamageDelt, 9000.0, DMG_BULLET, "bullet_tracer01_red", Owner , _ , "0");
+					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, DamageDelt, 9000.0, DMG_BULLET, "bullet_tracer01_red", Owner , _ , "0");
 
 					npc.PlayRangedSound();
 					

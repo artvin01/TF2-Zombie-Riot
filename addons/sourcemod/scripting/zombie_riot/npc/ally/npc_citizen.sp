@@ -1659,7 +1659,8 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	if(info.Attrib[0] == 99999)
 	{
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_crowbar.mdl");
-		ParticleEffectAt_Parent(WorldSpaceCenterOld(npc.index), "raygun_projectile_red_crit", npc.index, "anim_attachment_RH");
+		float Vecself[3]; WorldSpaceCenter(npc.index, Vecself);
+		ParticleEffectAt_Parent(Vecself, "raygun_projectile_red_crit", npc.index, "anim_attachment_RH");
 	}
 	else
 	{
@@ -1881,7 +1882,10 @@ public void Citizen_ClotThink(int iNPC)
 		else
 		{
 			if(IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo))
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 500.0);
+			{
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
+				npc.FaceTowards(WorldSpaceVec, 500.0);
+			}
 			
 			return;
 		}
@@ -2046,7 +2050,7 @@ public void Citizen_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo))
 	{
 		npc.m_flidle_talk = FAR_FUTURE;
-		vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		distance = GetVectorDistance(vecTarget, vecMe, true);
 		//todo, rewrite npcs so itdoes this code outside of this, i filtered out invinceable enemies.
 		if(RunFromNPC(npc.m_iTarget) && view_as<SawRunner>(npc.m_iTarget).m_iTarget == npc.index && distance < 250000.0)
@@ -2865,7 +2869,7 @@ public void Citizen_ClotThink(int iNPC)
 				{
 					if(i_NpcInternalId[entity] == CITIZEN)
 					{
-						vecTarget2 = WorldSpaceCenterOld(entity);
+						WorldSpaceCenter(entity, vecTarget2);
 						distance = GetVectorDistance(vecTarget2, vecMe, true);
 						if(distance < 6000.0 && !combat)
 						{
@@ -3129,7 +3133,7 @@ public void Citizen_ClotThink(int iNPC)
 				if(talkingTo)
 				{
 					if(talkingTo > MaxClients)
-						vecTarget = WorldSpaceCenterOld(talkingTo);
+						WorldSpaceCenter(talkingTo, vecTarget);
 					
 					npc.SlowTurn(vecTarget);
 					
@@ -3190,7 +3194,7 @@ void Citizen_MiniBossDeath(int entity)
 	int talkingTo;
 	float distance;
 	
-	float vecMe[3]; vecMe = WorldSpaceCenterOld(entity);
+	float vecMe[3]; WorldSpaceCenter(entity, vecMe);
 	float vecTarget[3];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 	{
@@ -3218,7 +3222,7 @@ void Citizen_LiveCitizenReaction(int entity)
 	int talkingTo;
 	float distance = 60000.0;
 	
-	float vecMe[3]; vecMe = WorldSpaceCenterOld(entity);
+	float vecMe[3]; WorldSpaceCenter(entity, vecMe);
 	float vecTarget[3];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 	{
@@ -3251,7 +3255,7 @@ void Citizen_LiveCitizenReaction(int entity)
 	{
 		if(talkingTo > MaxClients)
 		{
-			vecTarget = WorldSpaceCenterOld(talkingTo);
+			WorldSpaceCenter(talkingTo, vecTarget);
 			view_as<Citizen>(talkingTo).SlowTurn(vecMe);
 			view_as<Citizen>(talkingTo).m_flidle_talk += 35.0;
 			CreateTimer(3.0, Citizen_ReactionTimer, EntIndexToEntRef(talkingTo), TIMER_FLAG_NO_MAPCHANGE);
@@ -3284,7 +3288,7 @@ void Citizen_PlayerDeath(int client)
 		int talker, talkingTo;
 		float distance = 10000000.0;
 		
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(client);
+		float vecMe[3]; WorldSpaceCenter(client, vecMe);
 		float vecTarget[3];
 		for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 		{

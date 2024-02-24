@@ -740,7 +740,8 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 						npc.PlayTeleportSound();
 						ParticleEffectAt(SelfPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						ParticleEffectAt(vPredictedPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-						npc.FaceTowards(WorldSpaceCenterOld(Target), 15000.0);
+						float VecEnemy[3]; WorldSpaceCenter(Target, VecEnemy);
+						npc.FaceTowards(VecEnemy, 15000.0);
 
 						if(i_RaidGrantExtra[npc.index] < 2)
 						{
@@ -771,7 +772,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 		}
 		if(IsValidEnemy(npc.index, Enemypunch))
 		{
-			float vecThem[3]; vecThem = WorldSpaceCenterOld(Enemypunch);
+			float vecThem[3]; WorldSpaceCenter(Enemypunch, vecThem );
 			vecThem[2] += 35.0;
 			KahmlsteinInitiatePunch(npc.index, vecThem, vecMe, (1.0 * (1.0 / f_MessengerSpeedUp[npc.index])) , damage * RaidModeScaling, false, 250.0);
 		}
@@ -858,7 +859,8 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 						npc.PlayTeleportSound();
 						ParticleEffectAt(SelfPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						ParticleEffectAt(vPredictedPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-						npc.FaceTowards(WorldSpaceCenterOld(Target), 15000.0);
+						float VecEnemy[3]; WorldSpaceCenter(Target, VecEnemy);
+						npc.FaceTowards(VecEnemy, 15000.0);
 
 						if(i_RaidGrantExtra[npc.index] < 2)
 						{
@@ -882,7 +884,7 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 		}
 		if(IsValidEnemy(npc.index, Enemypunch))
 		{
-			float vecThem[3]; vecThem = WorldSpaceCenterOld(Enemypunch);
+			float vecThem[3]; WorldSpaceCenter(Enemypunch, vecThem );
 			vecThem[2] += 35.0;
 			KahmlsteinInitiatePunch(npc.index, vecThem, vecMe, (1.0 * (1.0 / f_MessengerSpeedUp[npc.index])) , damage * RaidModeScaling, false, 300.0);
 		}
@@ -945,8 +947,9 @@ public void ChaosKahmlstein_NPCDeath(int entity)
 
 	if(i_RaidGrantExtra[npc.index] >= 2)
 		return;
-
-	ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
+		
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();	
 
 	CPrintToChatAll("{darkblue}Kahmlstein{default}: That was good, next time ill be sure to actually try, now factor in the chance i lied.");
@@ -1131,7 +1134,7 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
 				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-								npc.FaceTowards(VecEnemy, 15000.0);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
@@ -1144,7 +1147,7 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 							PlaySound = true;
 							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
-							vecHit = WorldSpaceCenterOld(targetTrace);
+							WorldSpaceCenter(targetTrace, vecHit);
 
 							float damage = 24.0;
 							damage *= 1.2;
@@ -1516,7 +1519,7 @@ void KahmlsteinInitiatePunch_DamagePart(DataPack pack)
 				{
 					FreezeNpcInTime(victim, 1.5);
 					
-					hullMin = WorldSpaceCenterOld(victim);
+					WorldSpaceCenter(victim, hullMin);
 					hullMin[2] += 100.0; //Jump up.
 					PluginBot_Jump(victim, hullMin);
 				}

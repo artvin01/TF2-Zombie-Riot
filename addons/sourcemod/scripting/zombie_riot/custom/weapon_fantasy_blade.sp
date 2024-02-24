@@ -711,7 +711,7 @@ static void Horizontal_Slicer(int client, float vecTarget[3], float Range, float
 {
 	vecTarget[2] -= 10.0;
 	float Vec_offset[3]; Vec_offset = vecTarget;
-	float Npc_Vec[3]; Npc_Vec = WorldSpaceCenterOld(client);
+	float Npc_Vec[3]; WorldSpaceCenter(client, Npc_Vec);
 	
 	switch(GetRandomInt(1, 2))
 	{

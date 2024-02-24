@@ -116,7 +116,7 @@ public void SeaAllyDonnerkrieg_ClotThink(int iNPC)
 									{
 										FreezeNpcInTime(target, 1.5);
 										
-										vecHit = WorldSpaceCenterOld(target);
+										WorldSpaceCenter(target, vecHit);
 										vecHit[2] += 75.0;
 										PluginBot_Jump(target, vecHit);
 										EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);

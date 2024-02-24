@@ -255,7 +255,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 	{
 		float vecTargetally[3]; vecTargetally = WorldSpaceCenterOld(npc.m_iTargetAlly);
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-		float vecPos[3]; vecPos = WorldSpaceCenterOld(npc.index);
+		float vecPos[3]; WorldSpaceCenter(npc.index, vecPos );
 		
 		float distanceToAlly = GetVectorDistance(vecTargetally, vecPos, true);
 		float distanceToEnemy = GetVectorDistance(vecTarget, vecTargetally, true);
@@ -323,7 +323,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 	{
 		if(npc.m_iTarget > 0 && npc.m_iTargetWalkTo > 0)	// We have a target
 		{
-			float vecPos[3]; vecPos = WorldSpaceCenterOld(npc.index);
+			float vecPos[3]; WorldSpaceCenter(npc.index, vecPos );
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 			
 			float distance = GetVectorDistance(vecTarget, vecPos, true);

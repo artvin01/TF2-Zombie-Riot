@@ -337,7 +337,7 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 						if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 						{
-							vecTarget = WorldSpaceCenterOld(baseboss_index);
+							WorldSpaceCenter(baseboss_index, vecTarget);
 							
 							float flDistanceToTarget = GetVectorDistance(flPos, vecTarget, true);
 							if(flDistanceToTarget < (SPECTER_DEAD_RANGE * SPECTER_DEAD_RANGE))

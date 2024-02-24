@@ -153,7 +153,10 @@ public void WinterSnoweyGunner_ClotThink(int iNPC)
 	if(npc.m_bAllowBackWalking)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 150.0);
+		{
+			float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
+			npc.FaceTowards(WorldSpaceVec, 150.0);
+		}
 	}
 
 	if(npc.m_blPlayHurtAnimation)

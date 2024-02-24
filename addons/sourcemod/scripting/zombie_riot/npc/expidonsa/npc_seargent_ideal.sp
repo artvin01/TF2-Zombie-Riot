@@ -523,7 +523,8 @@ void SeargentIdealSelfDefenseMelee(SeargentIdeal npc, float gameTime, int target
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(target), 15000.0);
+			float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
+			npc.FaceTowards(WorldSpaceVec, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, target, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 				target = TR_GetEntityIndex(swingTrace);	

@@ -615,7 +615,7 @@ public Action Timer_Electric_Think_PAP(Handle timer, int ref)
 			{
 				if (GetTeam(client)!=GetTeam(baseboss_index)) 
 				{
-					targPos = WorldSpaceCenterOld(baseboss_index);
+					WorldSpaceCenter(baseboss_index, targPos);
 					if (GetVectorDistance(flCarrierPos, targPos) <= TORNADO_Radius[client])
 					{
 						//Code to do damage position and ragdolls
@@ -803,7 +803,7 @@ public Action Timer_Electric_Think(Handle timer, int ref)
 			{
 				if (GetTeam(client)!=GetTeam(baseboss_index)) 
 				{
-					targPos = WorldSpaceCenterOld(baseboss_index);
+					WorldSpaceCenter(baseboss_index, targPos);
 					if (GetVectorDistance(flCarrierPos, targPos) <= TORNADO_Radius[client])
 					{
 						//Code to do damage position and ragdolls

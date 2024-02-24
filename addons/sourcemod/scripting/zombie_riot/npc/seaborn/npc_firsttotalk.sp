@@ -258,7 +258,7 @@ public Action FirstToTalk_TimerShoot(Handle timer, DataPack pack)
 	FirstToTalk npc = view_as<FirstToTalk>(EntRefToEntIndex(pack.ReadCell()));
 	if(npc.index != INVALID_ENT_REFERENCE)
 	{
-		float vecPos[3]; vecPos = WorldSpaceCenterOld(npc.index);
+		float vecPos[3]; WorldSpaceCenter(npc.index, vecPos );
 		vecPos[2] += 100.0;
 
 		npc.PlayMeleeSound();

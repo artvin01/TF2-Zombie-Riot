@@ -401,7 +401,9 @@ public void MedivalVillager_ClotThink(int iNPC)
 			}
 			if(IsValidAlly(npc.index, i_ClosestAlly[npc.index]))
 			{
-				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenterOld(i_ClosestAlly[npc.index]), WorldSpaceCenterOld(npc.index), true);
+				float WorldSpaceVec[3]; WorldSpaceCenter(i_ClosestAlly[npc.index], WorldSpaceVec);
+				float WorldSpaceVec2[3]; WorldSpaceCenter(npc.index, WorldSpaceVec2);
+				float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
 				if(flDistanceToTarget < (125.0* 125.0))
 				{
 					if(npc.m_iChanged_WalkCycle != 5) 	
@@ -430,7 +432,9 @@ public void MedivalVillager_ClotThink(int iNPC)
 			}
 			else if(IsValidEntity(buildingentity)) //We already have 1
 			{
-				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenterOld(buildingentity), WorldSpaceCenterOld(npc.index), true);
+				float WorldSpaceVec[3]; WorldSpaceCenter(buildingentity, WorldSpaceVec);
+				float WorldSpaceVec2[3]; WorldSpaceCenter(npc.index, WorldSpaceVec2);
+				float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
 				
 				NPC_SetGoalEntity(npc.index, buildingentity);
 				NPC_StartPathing(iNPC);
@@ -474,8 +478,9 @@ public void MedivalVillager_ClotThink(int iNPC)
 			//Search and find a building.
 			if(IsValidEntity(buildingentity)) //We already have 1
 			{
-				
-				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenterOld(buildingentity), WorldSpaceCenterOld(npc.index), true);
+				float WorldSpaceVec[3]; WorldSpaceCenter(buildingentity, WorldSpaceVec);
+				float WorldSpaceVec2[3]; WorldSpaceCenter(npc.index, WorldSpaceVec2);
+				float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
 
 				int Entity_I_See;
 			
@@ -493,7 +498,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 							npc.m_flSpeed = 0.0;
 						}
 						i_AttacksTillMegahit[buildingentity] += 1;
-						npc.FaceTowards(WorldSpaceCenterOld(buildingentity), 15000.0);
+						npc.FaceTowards(WorldSpaceVec, 15000.0);
 					}
 					else
 					{
@@ -609,8 +614,9 @@ public void MedivalVillager_ClotThink(int iNPC)
 				
 				AproxRandomSpaceToWalkTo[2] += 18.0;
 				AproxRandomSpaceToWalkTo[2] += 18.0;
-				
-				float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceCenterOld(npc.index), true);
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+
+				float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceVec, true);
 				
 				if(flDistanceToBuild < (500.0 * 500.0))
 				{
@@ -637,7 +643,9 @@ public void MedivalVillager_ClotThink(int iNPC)
 		}
 		case 2:
 		{
-			float flDistanceToTarget = GetVectorDistance(WorldSpaceCenterOld(buildingentity), WorldSpaceCenterOld(npc.index), true);
+			float WorldSpaceVec[3]; WorldSpaceCenter(buildingentity, WorldSpaceVec);
+			float WorldSpaceVec2[3]; WorldSpaceCenter(npc.index, WorldSpaceVec2);
+			float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
 
 			int Entity_I_See;
 			
@@ -672,7 +680,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 						Maxhealthbuilding = healthbuilding;
 					}
 					SetEntProp(buildingentity, Prop_Data, "m_iHealth",healthbuilding);
-					npc.FaceTowards(WorldSpaceCenterOld(buildingentity), 15000.0);
+					npc.FaceTowards(WorldSpaceVec, 15000.0);
 				}
 				else
 				{

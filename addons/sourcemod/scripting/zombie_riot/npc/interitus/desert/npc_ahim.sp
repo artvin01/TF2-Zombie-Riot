@@ -269,7 +269,7 @@ void DesertAhimSelfDefense(DesertAhim npc, float gameTime, int target, float dis
 		if(npc.m_flNextRangedAttack < gameTime)
 		{
 			float EnemyPos[3];
-			EnemyPos = WorldSpaceCenterOld(npc.m_iTarget);
+			WorldSpaceCenter(npc.m_iTarget, EnemyPos);
 			npc.FaceTowards(EnemyPos, 15000.0);
 			npc.FireArrow(EnemyPos, 35.0, 1200.0, "models/workshop_partner/weapons/c_models/c_sd_cleaver/c_sd_cleaver.mdl");
 

@@ -527,7 +527,7 @@ static void TBB_Tick(int client)
 			{
 				if(IsValidEntity(BeamWand_BuildingHit[building]))
 				{
-					playerPos = WorldSpaceCenterOld(BeamWand_BuildingHit[building]);
+					WorldSpaceCenter(BeamWand_BuildingHit[building],playerPos);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
 					float damage = BeamWand_CloseBuildingDPT[client] + (BeamWand_FarBuildingDPT[client]-BeamWand_CloseBuildingDPT[client]) * (distance/BeamWand_MaxDistance[client]);
 					if (damage < 0)

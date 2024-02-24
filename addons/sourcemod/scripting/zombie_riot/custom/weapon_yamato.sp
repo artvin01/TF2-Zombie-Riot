@@ -260,7 +260,7 @@ static void Spin_To_Win_attack(int client, float endVec[3], float endVec_2[3], i
 				if(IsValidEntity(BEAM_BuildingHit[building]))
 				{
 					
-					playerPos = WorldSpaceCenterOld(BEAM_BuildingHit[building]);
+					WorldSpaceCenter(BEAM_BuildingHit[building], playerPos);
 					
 					
 					float damage_force[3];

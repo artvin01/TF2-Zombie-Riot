@@ -535,7 +535,9 @@ public void Donnerkrieg_ClotThink(int iNPC)
 						
 					//Body pitch
 					float v[3], ang[3];
-					SubtractVectors(WorldSpaceCenterOld(npc.index), WorldSpaceCenterOld(PrimaryThreatIndex), v); 
+					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+					float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec2);
+					SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
 					NormalizeVector(v, v);
 					GetVectorAngles(v, ang); 
 							
@@ -648,12 +650,9 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 				
 	Donnerkrieg npc = view_as<Donnerkrieg>(ref);
 	
-	//float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
-	
+
 	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-			
-	//float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(PrimaryThreatIndex), true);
-	
+
 	float GameTime = GetGameTime(npc.index);
 	if(!npc.m_bInKame)
 	{
@@ -813,7 +812,9 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 						
 			//Body pitch
 			float v[3], ang[3];
-			SubtractVectors(WorldSpaceCenterOld(npc.index), WorldSpaceCenterOld(PrimaryThreatIndex), v); 
+			float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+			float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec2);
+			SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
 			NormalizeVector(v, v);
 			GetVectorAngles(v, ang); 
 							
@@ -826,13 +827,14 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 		
 		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		
+		float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 		if(g_b_angered)
 		{
-			npc.FaceTowards(WorldSpaceCenterOld(PrimaryThreatIndex), 150.0);
+			npc.FaceTowards(WorldSpaceVec, 150.0);
 		}
 		else
 		{
-			npc.FaceTowards(WorldSpaceCenterOld(PrimaryThreatIndex), 5.0);
+			npc.FaceTowards(WorldSpaceVec, 5.0);
 		}
 		
 		NPC_StopPathing(npc.index);
@@ -1033,7 +1035,8 @@ void NightmareCannon_TBB_Ability(int client)
 		NightmareCannon_BEAM_BuildingHit[building] = false;
 	}
 	
-	ParticleEffectAt(WorldSpaceCenterOld(client), "eyeboss_death_vortex", 2.0);
+	float WorldSpaceVec[3]; WorldSpaceCenter(client, WorldSpaceVec);
+	ParticleEffectAt(WorldSpaceVec, "eyeboss_death_vortex", 2.0);
 	EmitSoundToAll("mvm/mvm_tank_ping.wav");
 			
 	NightmareCannon_BEAM_IsUsing[client] = false;
@@ -1264,7 +1267,8 @@ public Action NightmareCannon_TBB_Tick(int client)
 					{
 						damage *= 5.0;
 					}
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
 				}
 			}
 			static float belowBossEyes[3];

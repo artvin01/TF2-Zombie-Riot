@@ -542,7 +542,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 			{
 				//CPrintToChatAll("Healing Duration 2 | Valid healer | %f", fl_npc_healing_duration[npc.index]);
 				float Master_Loc[3]; Master_Loc = WorldSpaceCenterOld(Healer);
-				float Npc_Loc[3];	Npc_Loc = WorldSpaceCenterOld(npc.index);
+				float Npc_Loc[3];	WorldSpaceCenter(npc.index, Npc_Loc);
 					
 				float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
 
@@ -658,8 +658,8 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 		}
 		else
 		{
-			float Master_Loc[3]; Master_Loc = WorldSpaceCenterOld(Master_Id_Main);
-			float Npc_Loc[3];	Npc_Loc = WorldSpaceCenterOld(npc.index);
+			float Master_Loc[3]; WorldSpaceCenter(Master_Id_Main, Master_Loc);
+			float Npc_Loc[3];	WorldSpaceCenter(npc.index, Npc_Loc);
 			switch(i_npc_type[npc.index])
 			{
 				case RUINA_MELEE_NPC:	//melee, buisness as usual, just the target is the same as the masters
@@ -830,7 +830,7 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 	if(IsValidEntity(Anchor_Id))
 	{
 		float Master_Loc[3]; Master_Loc = WorldSpaceCenterOld(Anchor_Id);
-		float Npc_Loc[3];	Npc_Loc = WorldSpaceCenterOld(npc.index);
+		float Npc_Loc[3];	WorldSpaceCenter(npc.index, Npc_Loc);
 						
 		float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
 						

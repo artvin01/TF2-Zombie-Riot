@@ -195,7 +195,8 @@ public void Fists_of_Kahml_Ablity_2(int client, int weapon, bool crit, int slot)
 		if(spawn_index > 0)
 		{
 			EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
-			ParticleEffectAt(WorldSpaceCenterOld(spawn_index), "teleported_blue", 0.5);
+			float SelfNewPos[3]; WorldSpaceCenter(spawn_index, SelfNewPos);
+			ParticleEffectAt(SelfNewPos, "teleported_blue", 0.5);
 			//this is the damage
 			fl_heal_cooldown[spawn_index] = damage;
 			i_Changed_WalkCycle[spawn_index] = EntIndexToEntRef(weapon);

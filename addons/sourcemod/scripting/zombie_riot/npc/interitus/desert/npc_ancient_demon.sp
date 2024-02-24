@@ -425,7 +425,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 	int flMaxHealth = GetEntProp(self, Prop_Data, "m_iMaxHealth");
 	int flMaxHealthally = GetEntProp(ally, Prop_Data, "m_iMaxHealth");
 	float pos[3]; 
-	pos = WorldSpaceCenterOld(ally);
+	WorldSpaceCenter(ally, pos);
 	pos[2] -= 10.0;
 	DesertAncientDemon npc1 = view_as<DesertAncientDemon>(ally);
 	npc1.m_bDissapearOnDeath = true;

@@ -763,7 +763,7 @@ public Action PerfectHomingShot(Handle timer, DataPack pack)
 void HomingProjectile_TurnToTarget(int enemy, int Projectile)
 {
 	float flTargetPos[3];
-	flTargetPos = WorldSpaceCenterOld(enemy);
+	WorldSpaceCenter(enemy, flTargetPos);
 	float flRocketPos[3];
 	GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", flRocketPos);
 

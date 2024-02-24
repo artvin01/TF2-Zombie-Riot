@@ -282,8 +282,8 @@ public void MedicHealer_ClotThink(int iNPC)
 							SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
 						}
 					}
-					
-					npc.FaceTowards(WorldSpaceCenterOld(PrimaryThreatIndex), 2000.0);
+					float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
+					npc.FaceTowards(WorldSpaceVec, 2000.0);
 				}
 				else
 				{

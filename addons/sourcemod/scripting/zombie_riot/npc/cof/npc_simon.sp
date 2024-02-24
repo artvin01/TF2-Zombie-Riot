@@ -243,7 +243,7 @@ public void Simon_ClotThink(int iNPC)
 	{
 		if(npc.m_iTarget > 0)	// We have a target
 		{
-			float vecPos[3]; vecPos = WorldSpaceCenterOld(npc.index);
+			float vecPos[3]; WorldSpaceCenter(npc.index, vecPos );
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 			
 			float distance = GetVectorDistance(vecTarget, vecPos, true);
@@ -411,7 +411,7 @@ public void Simon_ClotThink(int iNPC)
 			int ClosestTarget;
 			float TargetLocation[3];
 			float TargetDistance;
-			float vecPos[3]; vecPos = WorldSpaceCenterOld(npc.index);
+			float vecPos[3]; WorldSpaceCenter(npc.index, vecPos );
 			for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
 			{
 				int entity = i_ObjectsSpawners[entitycount];

@@ -346,7 +346,8 @@ public void Diversionistico_NPCDeath(int entity)
 }
 void DiversionisticoSelfDefenseRanged(Diversionistico npc, float gameTime, int target)
 {
-	npc.FaceTowards(WorldSpaceCenterOld(target), 15000.0);
+	float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
+	npc.FaceTowards(WorldSpaceVec, 15000.0);
 	if(gameTime > npc.m_flNextRangedAttack)
 	{
 		npc.PlayZapSound();
@@ -354,7 +355,7 @@ void DiversionisticoSelfDefenseRanged(Diversionistico npc, float gameTime, int t
 		npc.m_flDoingAnimation = gameTime + 0.25;
 		npc.m_flNextRangedAttack = gameTime + 1.2;
 		float damageDealt = 85.0;
-		SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, WorldSpaceCenterOld(target));
+		SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, WorldSpaceVec);
 		if(IsValidEntity(npc.m_iWearable5))
 			RemoveEntity(npc.m_iWearable5);
 

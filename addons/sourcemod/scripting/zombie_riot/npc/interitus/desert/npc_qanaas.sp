@@ -174,10 +174,10 @@ public void DesertQanaas_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetWalkTo);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int ExtraBehavior = DesertQanaasSelfDefense(npc,GetGameTime(npc.index)); 
 
 		switch(ExtraBehavior)
@@ -295,7 +295,7 @@ int DesertQanaasSelfDefense(DesertQanaas npc, float gameTime)
 	{
 		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 		{
-			ThrowPos[npc.index] = WorldSpaceCenterOld(npc.m_iTarget);
+			 WorldSpaceCenter(npc.m_iTarget, ThrowPos[npc.index]);
 		}
 	}
 	else
@@ -303,14 +303,14 @@ int DesertQanaasSelfDefense(DesertQanaas npc, float gameTime)
 		if(npc.m_flAttackHappens)
 		{
 			float pos_npc[3];
-			pos_npc = WorldSpaceCenterOld(npc.index);
+			WorldSpaceCenter(npc.index, pos_npc);
 			float AngleAim[3];
 			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
 			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
 			int Traced_Target = TR_GetEntityIndex(hTrace);
 			if(Traced_Target > 0)
 			{
-				ThrowPos[npc.index] = WorldSpaceCenterOld(Traced_Target);
+				WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
 			}
 			else if(TR_DidHit(hTrace))
 			{

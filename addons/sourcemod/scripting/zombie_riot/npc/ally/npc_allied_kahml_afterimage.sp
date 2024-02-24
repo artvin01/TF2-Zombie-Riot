@@ -160,7 +160,7 @@ static void Internal_Npc_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = 0;
 		//no enemy valid, run back to papa
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(owner);
+		float vecTarget[3]; WorldSpaceCenter(owner, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		

@@ -317,7 +317,7 @@ methodmap NaziPanzer < CClotBody
 		
 		float vecForward[3], vecRight[3], vecTarget[3];
 		
-		vecTarget = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(Target, vecTarget );
 		MakeVectorFromPoints(WorldSpaceCenterOld(this.index), vecTarget, vecForward);
 		GetVectorAngles(vecForward, vecForward);
 		vecForward[1] = eyePitch[1];

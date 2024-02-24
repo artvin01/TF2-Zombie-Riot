@@ -243,3 +243,23 @@ public void Weapon_Amaterasu(int client, int weapon, const char[] classname, boo
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+WorldSpaceCenterOld
+
+float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+
+float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
+
+float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
+
+float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
+
+float WorldSpaceVec[3]; WorldSpaceCenter(entity_close, WorldSpaceVec);

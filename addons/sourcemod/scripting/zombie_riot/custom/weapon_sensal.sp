@@ -361,7 +361,7 @@ void SummonScytheSensalProjectile(int client, int weapon)
 	time *= Attributes_Get(weapon, 102, 1.0);
 
 	float Pos_player[3];
-	Pos_player = WorldSpaceCenterOld(client);
+	WorldSpaceCenter(client, Pos_player);
 	
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);

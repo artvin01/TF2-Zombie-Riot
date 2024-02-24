@@ -305,7 +305,7 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 						hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
 
 						float PreviousPos[3];
-						PreviousPos = WorldSpaceCenterOld(npc.index);
+						WorldSpaceCenter(npc.index, PreviousPos);
 						
 						bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
 						if(Succeed)
@@ -326,7 +326,9 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 							}
 							npc.PlayTeleportSound();
 							ParticleEffectAt(PreviousPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-							ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+							
+							float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+							ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 							float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 								npc.FaceTowards(VecEnemy, 15000.0);
 							npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 12.5;
@@ -444,7 +446,8 @@ public void CaptinoAgentus_NPCDeath(int entity)
 }
 void CaptinoAgentusSelfDefenseRanged(CaptinoAgentus npc, float gameTime, int target)
 {
-	npc.FaceTowards(WorldSpaceCenterOld(target), 15000.0);
+	float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
+	npc.FaceTowards(WorldSpaceVec, 15000.0);
 	if(gameTime > npc.m_flNextRangedAttack)
 	{
 		npc.PlayZapSound();
@@ -452,7 +455,7 @@ void CaptinoAgentusSelfDefenseRanged(CaptinoAgentus npc, float gameTime, int tar
 		npc.m_flDoingAnimation = gameTime + 0.25;
 		npc.m_flNextRangedAttack = gameTime + 1.2;
 		float damageDealt = 125.0;
-		SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, WorldSpaceCenterOld(target));
+		SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, WorldSpaceVec);
 		if(IsValidEntity(npc.m_iWearable7))
 			RemoveEntity(npc.m_iWearable7);
 

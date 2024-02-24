@@ -422,7 +422,7 @@ public void Passanger_Cooldown_Logic(int client, int weapon)
 		{
 			b_PassangerExtraCharge[client] = true;
 			float ClientPos[3];
-			ClientPos = WorldSpaceCenterOld(client);
+			WorldSpaceCenter(client, ClientPos);
 			TR_EnumerateEntitiesSphere(ClientPos, 100.0, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Passanger, client);
 
 			if(b_PassangerExtraCharge[client])
@@ -575,9 +575,10 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 	}
 	if(Firstlightning)
 	{
-		Passanger_Lightning_Effect(StartLightningPos, WorldSpaceCenterOld(target), 1);
+		float EnemyVecPos[3]; WorldSpaceCenter(target, EnemyVecPos);
+		Passanger_Lightning_Effect(StartLightningPos, EnemyVecPos, 1);
 	}
-	StartLightningPos = WorldSpaceCenterOld(target);
+	WorldSpaceCenter(target, StartLightningPos);
 	f_PassangerDebuff[target] = GetGameTime() + 0.3;
 	SDKHooks_TakeDamage(target, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);	//BURNING TO THE GROUND!!!
 	f_CooldownForHurtHud[client] = 0.0;
@@ -597,8 +598,9 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 			SDKHooks_TakeDamage(enemy, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);		
 			f_CooldownForHurtHud[client] = 0.0;
 			GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecHit);
-			Passanger_Lightning_Effect(StartLightningPos, WorldSpaceCenterOld(enemy), 3);
-			StartLightningPos = WorldSpaceCenterOld(enemy);
+			float EnemyVecPos[3]; WorldSpaceCenter(enemy, EnemyVecPos);
+			Passanger_Lightning_Effect(StartLightningPos, EnemyVecPos, 3);
+			WorldSpaceCenter(enemy, StartLightningPos);
 		}
 		else
 		{

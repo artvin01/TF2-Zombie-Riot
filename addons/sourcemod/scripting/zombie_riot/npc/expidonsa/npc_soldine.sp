@@ -234,7 +234,10 @@ public void Soldine_ClotThink(int iNPC)
 	if(npc.m_bAllowBackWalking)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 150.0);
+		{
+			float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
+			npc.FaceTowards(WorldSpaceVec, 150.0);
+		}
 	}
 
 	if(npc.m_blPlayHurtAnimation)
@@ -427,7 +430,8 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 			{
 				npc.m_flAttackHappens = 0.0;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(target), 15000.0);
+				float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
+				npc.FaceTowards(WorldSpaceVec, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, target, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target_hit = TR_GetEntityIndex(swingTrace);	
@@ -537,7 +541,7 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 					npc.PlaySuperJumpSound();
 					static float flMyPos_2[3];
 					flMyPos[2] += 800.0;
-					flMyPos_2 = WorldSpaceCenterOld(target);
+					WorldSpaceCenter(target, flMyPos_2);
 
 					flMyPos[0] = flMyPos_2[0];
 					flMyPos[1] = flMyPos_2[1];

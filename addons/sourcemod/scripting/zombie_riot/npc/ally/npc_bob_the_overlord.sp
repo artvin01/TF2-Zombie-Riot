@@ -381,7 +381,8 @@ public void BobTheGod_ClotThink(int iNPC)
 		if(IsPlayerAlive(client) && npc.m_b_follow)
 		{
 			float vecTarget[3]; WorldSpaceCenter(client, vecTarget );
-			flDistanceToOwner = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index));
+			float Vecself[3]; WorldSpaceCenter(npc.index, Vecself );
+			flDistanceToOwner = GetVectorDistance(vecTarget, Vecself);
 		}
 		else
 		{
@@ -408,9 +409,9 @@ public void BobTheGod_ClotThink(int iNPC)
 		if(IsValidEnemy(npc.index, attacker, true))
 		{
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(attacker);
-						
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index));
+			float vecTarget[3]; WorldSpaceCenter(attacker, vecTarget );
+			float Vecself[3]; WorldSpaceCenter(npc.index, Vecself);	
+			float flDistanceToTarget = GetVectorDistance(vecTarget, Vecself);
 			
 			if(!IsPlayerAlive(client))
 			{
@@ -447,7 +448,8 @@ public void BobTheGod_ClotThink(int iNPC)
 			int PrimaryThreatIndex = npc.m_iTarget;
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 					
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index));
+			float Vecself[3]; WorldSpaceCenter(client, Vecself);	
+			float flDistanceToTarget = GetVectorDistance(vecTarget, Vecself);
 			if (npc.m_fbGunout == false && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				if (!npc.m_bmovedelay)
@@ -754,7 +756,8 @@ public void BobTheGod_ClotThink(int iNPC)
 			
 			float vecTarget[3]; WorldSpaceCenter(client, vecTarget );
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index));
+			float Vecself[3]; WorldSpaceCenter(npc.index, Vecself);	
+			float flDistanceToTarget = GetVectorDistance(vecTarget, Vecself);
 			
 			if (flDistanceToTarget > 300 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{

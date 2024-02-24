@@ -966,7 +966,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 		}
 		if(IsValidEnemy(npc.index, Enemypunch))
 		{
-			float vecThem[3]; vecThem = WorldSpaceCenterOld(Enemypunch);
+			float vecThem[3]; WorldSpaceCenter(Enemypunch, vecThem );
 			vecThem[2] += 35.0;
 			KahmlsteinInitiatePunch(npc.index, vecThem, vecMe, (1.0 * (1.0 / f_MessengerSpeedUp[npc.index])) , damage * RaidModeScaling, false, 250.0);
 		}
@@ -1077,7 +1077,7 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 		}
 		if(IsValidEnemy(npc.index, Enemypunch))
 		{
-			float vecThem[3]; vecThem = WorldSpaceCenterOld(Enemypunch);
+			float vecThem[3]; WorldSpaceCenter(Enemypunch, vecThem );
 			vecThem[2] += 35.0;
 			KahmlsteinInitiatePunch(npc.index, vecThem, vecMe, (1.0 * (1.0 / f_MessengerSpeedUp[npc.index])) , damage * RaidModeScaling, false, 300.0);
 		}

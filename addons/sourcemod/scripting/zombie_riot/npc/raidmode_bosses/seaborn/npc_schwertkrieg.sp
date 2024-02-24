@@ -604,7 +604,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 	int wave = ZR_GetWaveCount()+1;
 	
 	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-	float npc_Vec[3]; npc_Vec = WorldSpaceCenterOld(npc.index);
+	float npc_Vec[3]; WorldSpaceCenter(npc.index, npc_Vec);
 
 	float flDistanceToTarget = GetVectorDistance(vecTarget, npc_Vec, true);
 
@@ -674,7 +674,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 				float vecAlly[3];
 				float vecMe[3];
 				vecAlly = WorldSpaceCenterOld(Ally);
-				vecMe = WorldSpaceCenterOld(npc.index);
+				WorldSpaceCenter(npc.index, vecMe);
 
 				float flDistanceToAlly = GetVectorDistance(vecAlly, vecMe, true);
 				Schwert_Movement_Ally_Movement(npc, flDistanceToAlly, Ally, GameTime, PrimaryThreatIndex, flDistanceToTarget, true);	//warp

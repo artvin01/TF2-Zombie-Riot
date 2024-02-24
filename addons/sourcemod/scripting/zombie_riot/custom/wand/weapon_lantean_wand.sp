@@ -606,7 +606,7 @@ static void LanternFindVecToBotTo(int client)
 	int target = TR_GetEntityIndex(swingTrace);	
 	if(IsValidEnemy(client, target))
 	{
-		vec = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, vec);
 	}
 	else
 	{

@@ -531,7 +531,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 			npc.FaceTowards(vecSwingEnd);
 
 			float start_offset[3], end_offset[3];
-			start_offset = WorldSpaceCenterOld(npc.index);
+			WorldSpaceCenter(npc.index, start_offset);
 			bool Succeed = NPC_Teleport(npc.index, vecSwingEnd);
 			if(Succeed)
 			{

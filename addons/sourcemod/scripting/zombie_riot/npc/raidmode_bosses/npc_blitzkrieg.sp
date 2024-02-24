@@ -1059,7 +1059,7 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(attacker);
+	float vecTarget[3]; WorldSpaceCenter(attacker, vecTarget );
 	
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
@@ -1495,7 +1495,7 @@ public void Blitzkrieg_Punishment_Invoke(int ref, int enemy, float dist)
 		
 		float Range = 200.0;
 		float vecTarget[3];
-		vecTarget = WorldSpaceCenterOld(enemy);
+		WorldSpaceCenter(enemy, vecTarget );
 		vecTarget[2] += 1.0;
 		
 		if(dist > 4000000 && !b_BlitzLight[entity])

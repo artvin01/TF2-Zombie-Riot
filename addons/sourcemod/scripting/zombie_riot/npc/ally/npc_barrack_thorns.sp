@@ -232,7 +232,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 
 		if(EnemyToAttack > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(EnemyToAttack);
+			float vecTarget[3]; WorldSpaceCenter(EnemyToAttack, vecTarget);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 

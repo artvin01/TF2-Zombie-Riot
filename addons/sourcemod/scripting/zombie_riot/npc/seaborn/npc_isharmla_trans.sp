@@ -274,7 +274,7 @@ public void IsharMlarWaterAttack_Invoke(int ref, int enemy)
 		float Dmg=500.0;
 		
 		float vecTarget[3];
-		vecTarget = WorldSpaceCenterOld(enemy);
+		WorldSpaceCenter(enemy, vecTarget );
 		vecTarget[2] += 1.0;
 		
 		

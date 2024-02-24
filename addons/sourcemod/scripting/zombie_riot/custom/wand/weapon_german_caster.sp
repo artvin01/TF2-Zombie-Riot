@@ -178,7 +178,7 @@ public Action Weapon_German_Timer(Handle timer, int client)
 					
 					EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 					int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_GERMAN, weapon, "unusual_tesla_flash");
-					f3_GermanFiredFromHere[projectile] = WorldSpaceCenterOld(client);
+					WorldSpaceCenter(client, f3_GermanFiredFromHere[projectile]);
 					static float ang_Look[3];
 					GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
 					if(target > 0)

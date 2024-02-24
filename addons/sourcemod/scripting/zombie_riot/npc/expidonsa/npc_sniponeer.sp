@@ -279,7 +279,8 @@ void SniponeerSelfDefense(Sniponeer npc, float gameTime)
 					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
 				}
 
-				SniponeerInitiateLaserAttack(npc.index, vecTarget, WorldSpaceCenterOld(npc.index));
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+				SniponeerInitiateLaserAttack(npc.index, vecTarget, WorldSpaceVec);
 				npc.FaceTowards(vecTarget, 20000.0);
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.5;
 			}

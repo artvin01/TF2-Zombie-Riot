@@ -303,7 +303,7 @@ static void Quincy_Hyper_Barrage(int client, float charge_percent, float GameTim
 	int target = TR_GetEntityIndex(swingTrace);	
 	if(IsValidEnemy(client, target))
 	{
-		vec = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, vec);
 		
 	}
 	else
@@ -411,7 +411,7 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 			float Vec_offset[3]; 
 			Get_Fake_Forward_Vec(client, 100.0, Vec_offset);
 			Vec_offset[2] -= 32.5;
-			float Npc_Vec[3]; Npc_Vec = WorldSpaceCenterOld(client);
+			float Npc_Vec[3]; WorldSpaceCenter(client, Npc_Vec);
 			
 			float ang_Look[3];
 			

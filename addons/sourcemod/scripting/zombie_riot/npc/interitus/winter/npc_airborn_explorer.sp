@@ -308,7 +308,7 @@ void WinterAirbornExplorerSelfDefense(WinterAirbornExplorer npc, float gameTime,
 				{
 					static float flMyPos_2[3];
 					flMyPos[2] += 250.0;
-					flMyPos_2 = WorldSpaceCenterOld(Enemy_I_See);
+					WorldSpaceCenter(Enemy_I_See, flMyPos_2);
 
 					flMyPos[0] = flMyPos_2[0];
 					flMyPos[1] = flMyPos_2[1];

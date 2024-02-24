@@ -699,7 +699,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 			i_kahml_combo_offest[npc.index] = 0;
 			i_kahml_combo[npc.index] = 0;
 		}
-		float vecTarget[3];	vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float vecTarget[3];	WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
@@ -930,7 +930,8 @@ public void Kahmlstein_NPCDeath(int entity)
 {
 	Kahmlstein npc = view_as<Kahmlstein>(entity);
 	npc.PlayDeathSound();	
-	ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	CPrintToChatAll("{blue}Kahmlstein{default}: You're boring me, im leaving.");
 
 	if(npc.index==EntRefToEntIndex(RaidBossActive))

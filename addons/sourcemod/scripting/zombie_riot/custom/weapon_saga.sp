@@ -378,7 +378,7 @@ void SagaCutLast(int entity, int victim, float damage, int weapon)
 	if(SagaCrippled[victim])
 	{
 		float VicLoc[3];
-		VicLoc = WorldSpaceCenterOld(victim);
+		WorldSpaceCenter(victim, VicLoc);
 
 		float Pos1[3];
 		float Pos2[3];

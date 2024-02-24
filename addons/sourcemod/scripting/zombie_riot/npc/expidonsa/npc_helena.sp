@@ -282,8 +282,9 @@ public void Helena_ClotThink(int iNPC)
 						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
 					}
+					float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 					
-					npc.FaceTowards(WorldSpaceCenterOld(PrimaryThreatIndex), 2000.0);
+					npc.FaceTowards(WorldSpaceVec, 2000.0);
 				}
 				else
 				{

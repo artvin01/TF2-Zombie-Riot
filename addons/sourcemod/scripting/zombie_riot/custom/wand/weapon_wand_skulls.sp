@@ -599,7 +599,7 @@ void Skull_AutoFire(int ent, int target, int client)
 	float pos[3], ang[3], TargetLoc[3], DummyAngles[3];
 	GetEntPropVector(ent, Prop_Send, "m_vecOrigin", pos);
 	GetEntPropVector(target, Prop_Send, "m_angRotation", DummyAngles);
-	TargetLoc = WorldSpaceCenterOld(target);
+	WorldSpaceCenter(target, TargetLoc);
 
 
 	float dist = GetVectorDistance(pos, TargetLoc, true);
@@ -731,7 +731,7 @@ public int Skull_GetClosestTarget(int ent, float range)
 			
 		if(IsValidEnemy(owner, i, true, false))
 		{
-			TargetLoc = WorldSpaceCenterOld(i);
+			WorldSpaceCenter(i, TargetLoc);
 			float dist = GetVectorDistance(DroneLoc, TargetLoc, true);
 			if(dist <= range)
 			{	

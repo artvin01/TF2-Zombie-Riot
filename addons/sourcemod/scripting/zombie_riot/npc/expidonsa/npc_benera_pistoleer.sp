@@ -281,7 +281,8 @@ void PistoleerSelfDefense(Pistoleer npc, float gameTime)
 					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
 				}
 
-				PistoleerInitiateLaserAttack(npc.index, vecTarget, WorldSpaceCenterOld(npc.index));
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+				PistoleerInitiateLaserAttack(npc.index, vecTarget, WorldSpaceVec);
 				npc.FaceTowards(vecTarget, 20000.0);
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.5;
 			}

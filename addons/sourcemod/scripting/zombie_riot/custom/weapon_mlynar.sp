@@ -188,7 +188,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 				static float ang3[3];
 
 				float pos1[3];
-				pos1 = WorldSpaceCenterOld(HitEntitiesSphereMlynar[entity_traced]);
+				WorldSpaceCenter(HitEntitiesSphereMlynar[entity_traced], pos1);
 				GetVectorAnglesTwoPoints(pos2, pos1, ang3);
 
 				// fix all angles
@@ -362,7 +362,7 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 				f_MlynarDmgMultiPassive[client] = 2.0;
 			}
 			float ClientPos[3];
-			ClientPos = WorldSpaceCenterOld(client);
+			WorldSpaceCenter(client, ClientPos);
 			//we have atleast one enemy near us, more do not equal more strength
 			//but the same enemy cannot give a huge amount of power over time.
 			for(int i=0; i < MAXENTITIES; i++)

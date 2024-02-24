@@ -387,7 +387,8 @@ public Action GoldBloon_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			}
 		}
 		
-		PluginBot_Jump(npc.index, WorldSpaceCenterOld(target));
+		float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
+		PluginBot_Jump(npc.index, WorldSpaceVec);
 	}
 
 	SetEntProp(victim, Prop_Data, "m_iHealth", health - 1);

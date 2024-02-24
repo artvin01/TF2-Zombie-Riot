@@ -353,7 +353,7 @@ public void Cryo_Touch(int entity, int target)
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 		if(!Cryo_AlreadyHit[entity][target])
 		{
-			VicLoc = WorldSpaceCenterOld(target);
+			WorldSpaceCenter(target, VicLoc);
 			//Code to do damage position and ragdolls
 			//Code to do damage position and ragdolls
 			switch (Cryo_SlowType[entity])
