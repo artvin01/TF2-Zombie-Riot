@@ -386,7 +386,6 @@ public void BunkerBotSniper_ClotThink(int iNPC)
 					
 					npc.FireArrow(vecTarget, 30.0, 1400.0, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 0.7);
 					
-					//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 					npc.PlayRangedSound();
 				}
 			}

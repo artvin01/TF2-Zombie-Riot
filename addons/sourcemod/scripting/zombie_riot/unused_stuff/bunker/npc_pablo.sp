@@ -738,16 +738,16 @@ public void Pablo_Gonzales_ClotThink(int iNPC)
 					}
 					npc.PlayLeShitengler();
 				}
-				
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 				if(b_FinalGunUsage[npc.index])
 				{
 					if(b_Lifeloss[npc.index])
 					{
-						FireBullet(npc.index, npc.m_iWearable3, WorldSpaceCenterOld(npc.index), vecDir, 600.0, 9000.0, DMG_BULLET|DMG_CRIT, "bullet_tracer01_red");
+						FireBullet(npc.index, npc.m_iWearable3, WorldSpaceVec, vecDir, 600.0, 9000.0, DMG_BULLET|DMG_CRIT, "bullet_tracer01_red");
 					}
 					else
 					{
-						FireBullet(npc.index, npc.m_iWearable3, WorldSpaceCenterOld(npc.index), vecDir, 600.0, 2000.0, DMG_BULLET, "bullet_tracer01_red");
+						FireBullet(npc.index, npc.m_iWearable3, WorldSpaceVec, vecDir, 600.0, 2000.0, DMG_BULLET, "bullet_tracer01_red");
 					}
 					npc.PlayRangedSound();
 				}

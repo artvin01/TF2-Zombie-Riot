@@ -284,7 +284,7 @@ public void IsharMlarWaterAttack_Invoke(int ref, int enemy)
 		color[2] = 255;
 		color[3] = 255;
 		float UserLoc[3];
-		UserLoc = GetAbsOriginOld(entity);
+		GetAbsOrigin(entity, UserLoc);
 		
 		UserLoc[2]+=75.0;
 		

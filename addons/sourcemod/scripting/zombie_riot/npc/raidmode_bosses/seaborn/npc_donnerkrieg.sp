@@ -1160,7 +1160,7 @@ static void Heavens_Light_Charging(int ref, float ratio)
 		Base_Dist = 150.0;
 		
 	float UserLoc[3], UserAng[3];
-	UserLoc = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, UserLoc);
 	
 	UserAng[0] = 0.0;
 	UserAng[1] = fl_Heavens_Angle;
@@ -1549,7 +1549,7 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 	float Range = 150.0;
 
 	float UserLoc[3];
-	UserLoc = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, UserLoc);
 	UserLoc[2]+=75.0;
 
 	for(int Ion=0 ; Ion < Amt1 ; Ion++)
@@ -1673,7 +1673,7 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 static bool Heavens_Fall_Clearance_Check(Raidboss_Donnerkrieg npc, float &Return_Dist, float Max_Distance)
 {
 	float UserLoc[3], Angles[3];
-	UserLoc = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, UserLoc);
 	Max_Distance+=Max_Distance*0.1;
 	float distance = Max_Distance;
 	float Distances[361];
@@ -2129,7 +2129,7 @@ static bool Donnerkrieg_Is_Target_Infront(Raidboss_Donnerkrieg npc, float Radius
 {
 	float startPoint[3], angles[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, startPoint);
 	startPoint[2] += 50.0;
 	int iPitch = npc.LookupPoseParameter("body_pitch");
 	if(iPitch < 0)
@@ -2138,7 +2138,7 @@ static bool Donnerkrieg_Is_Target_Infront(Raidboss_Donnerkrieg npc, float Radius
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, startPoint);
 	startPoint[2] += 50.0;
 
 	b_hit_something=false;
@@ -2429,7 +2429,7 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 	angles[0] = flPitch;
 
 	float Pos[3];
-	Pos = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, Pos);
 	Pos[2]+=50.0;
 
 	int infection = 0;
@@ -2543,7 +2543,7 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 					{
 						if(IsValidEnemy(npc.index, i))
 						{
-							float current_loc[3], vecAngles[3]; current_loc = GetAbsOriginOld(i);
+							float current_loc[3], vecAngles[3]; GetAbsOrigin(i, current_loc);
 							MakeVectorFromPoints(endPoint, current_loc, vecAngles);
 							GetVectorAngles(vecAngles, vecAngles);
 							float Dist2 = 2000.0;
@@ -2796,7 +2796,7 @@ public void Donnerkrieg_Invoke_Crstaline_Reflection(int client, float Target[3],
 	{
 		if(IsValidClient(i))
 		{
-			float loc[3] ; loc = GetAbsOriginOld(i);
+			float loc[3] ; GetAbsOrigin(i, loc);
 			loc[0] +=GetRandomFloat(-75.0,75.0);
 			loc[1] +=GetRandomFloat(-75.0,75.0);
 			loc[2] +=GetRandomFloat(-75.0,75.0);
@@ -2819,7 +2819,7 @@ static int Create_Crystal(int client, float vecTarget[3], float damage, float ro
 	float vecForward[3], vecSwingStart[3], vecAngles[3];
 	npc.GetVectors(vecForward, vecSwingStart, vecAngles);
 										
-	vecSwingStart = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, vecSwingStart);
 	vecSwingStart[2] += 54.0;
 										
 	MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
@@ -3389,7 +3389,7 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 static bool Divine_Intervention_Check(Raidboss_Donnerkrieg npc, float Min_Dist)
 {
 	float UserLoc[3], Angles[3];
-	UserLoc = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, UserLoc);
 	
 	int Total_Hit = 0;
 	

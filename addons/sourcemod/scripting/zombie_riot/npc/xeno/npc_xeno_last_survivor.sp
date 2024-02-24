@@ -305,7 +305,7 @@ methodmap XenoFatherGrigori < CClotBody
 			float vecForward[3], vecSwingStart[3], vecAngles[3];
 			this.GetVectors(vecForward, vecSwingStart, vecAngles);
 	
-			vecSwingStart = GetAbsOriginOld(this.index);
+			GetAbsOrigin(this.index, vecSwingStart);
 			vecSwingStart[2] += 90.0;
 	
 			MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);

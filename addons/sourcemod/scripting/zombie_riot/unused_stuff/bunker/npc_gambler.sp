@@ -843,8 +843,6 @@ public void TheGambler_ClotThink(int iNPC)
 					npc.FireArrow(vecTarget, Archers_Anhilation_Damage, 1400.0, _, 1.0);
 				}
 				
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
-				//npc.PlayRangedSound();
 			}
 		}
 		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < 1425000 && npc.m_flReloadDelay < GetGameTime(npc.index) && Exodia_TheFuckYouGun[npc.index])
@@ -908,7 +906,6 @@ public void TheGambler_ClotThink(int iNPC)
 					npc.FireArrow(vecTarget, ExodiaRandomizedDamage, 1400.0, _, 1.0);
 				}
 				Exodia_Hits[npc.index]++;
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 				npc.PlayRangedSound();
 			}
 		}
@@ -973,7 +970,6 @@ public void TheGambler_ClotThink(int iNPC)
 					npc.FireArrow(vecTarget, PelletGun_Damage, 1400.0, _, 1.0);
 				}
 				
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 				npc.PlayRangedTwoSound();
 			}
 		}
@@ -1037,7 +1033,6 @@ public void TheGambler_ClotThink(int iNPC)
 					npc.FireArrow(vecTarget, WeakMachineGun_Smg_Damage, 1400.0, _, 1.0);
 				}
 				
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 				npc.PlayRangedThirdSound();
 			}
 		}
@@ -1120,7 +1115,6 @@ public void TheGambler_ClotThink(int iNPC)
 					Orb_Launched(npc.index, iRot, speed, 5.0, damage);
 				}
 				
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 				//npc.PlayRangedSound();
 			}
 		}*/
@@ -1447,7 +1441,6 @@ public Action Gambler_Timer_Electric_Think(Handle timer, int iCarrier)
 	{
 		if(IsValidClient(i))
 		{
-			targPos = WorldSpaceCenterOld(i);
 			if(GetVectorDistance(flCarrierPos, targPos) <= Orb_Radius[npc.index])
 			{
 				//Code to do damage position and ragdolls

@@ -659,8 +659,8 @@ public void Doktor_Medick_ClotThink(int iNPC)
 		}
 		float vOrigin[3];
 		float vEnd[3];
-		vOrigin = GetAbsOriginOld(npc.m_iTarget);
-		vEnd = GetAbsOriginOld(npc.m_iTarget);
+		GetAbsOrigin(npc.m_iTarget, vOrigin);
+		GetAbsOrigin(npc.m_iTarget, vEnd);
 		//if(b_OverDoseActive[npc.index] && npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 		if(b_OverDoseActive[npc.index])
 		{
@@ -711,9 +711,6 @@ public void Doktor_Medick_ClotThink(int iNPC)
 				//float vAngles[3];
 				//float vOrigin[3];
 				//float vEnd[3];
-				//vAngles = GetAbsOriginOld(npc.m_iTarget);
-				//vOrigin = GetAbsOriginOld(npc.m_iTarget);
-				//vEnd = GetAbsOriginOld(npc.m_iTarget);
 			
 				Handle pack;
 				CreateDataTimer(Overdose_Smite_ChargeSpan, Overdose_Smite_Timer, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -794,7 +791,6 @@ public void Doktor_Medick_ClotThink(int iNPC)
 				
 				npc.FireArrow(vecTarget, Chemical_Warfare_Damage, 1400.0, "models/weapons/w_models/w_syringe_proj.mdl", 1.5);
 				
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 				//npc.PlayRangedSound();
 			}
 		}
@@ -1249,7 +1245,7 @@ void MoonLight_Beams(int entity, bool charging = true)
 		return;
 	
 	float UserLoc[3], UserAng[3];
-	UserLoc = GetAbsOriginOld(entity);
+	GetAbsOrigin(entity, UserLoc);
 	
 	UserAng[0] = 0.0;
 	UserAng[1] = MoonLight_Angle[npc.index];
@@ -1392,7 +1388,7 @@ public void MoonLight_DealDamage(int entity)
 	if(MoonLightDamage_throttle[npc.index] < GetGameTime(npc.index))
 	{
 		float beamLoc[3];
-		beamLoc = GetAbsOriginOld(entity);
+		GetAbsOrigin(entity, beamLoc);
 		MoonLightDamage_throttle[npc.index] = GetGameTime(npc.index) + 0.5;	//funny throttle due to me being dumb and not knowing to how do damage any other way.
 		Explode_Logic_Custom(MoonLight_DMG[npc.index], entity, entity, -1, beamLoc, MoonLight_DMG_Radius[npc.index] , _, _, true);
 		//CPrintToChatAll("Damage: %.1f%", MoonLight_DMG[npc.index]);

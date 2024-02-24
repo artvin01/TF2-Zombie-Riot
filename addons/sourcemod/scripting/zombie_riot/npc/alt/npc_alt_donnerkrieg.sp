@@ -1141,7 +1141,7 @@ static void NightmareCannon_GetBeamDrawStartPoint(int client, float startPoint[3
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	Donnerkrieg npc = view_as<Donnerkrieg>(client);
@@ -1151,7 +1151,7 @@ static void NightmareCannon_GetBeamDrawStartPoint(int client, float startPoint[3
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == NightmareCannon_BEAM_BeamOffset[client][0] && 0.0 == NightmareCannon_BEAM_BeamOffset[client][1] && 0.0 == NightmareCannon_BEAM_BeamOffset[client][2])
@@ -1208,7 +1208,7 @@ public Action NightmareCannon_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOriginOld(client);
+		GetAbsOrigin(client, startPoint);
 		startPoint[2] += 50.0;
 		
 		if(!b_nightmare_logic[npc.index])
@@ -1239,7 +1239,7 @@ public Action NightmareCannon_TBB_Tick(int client)
 				int PrimaryThreatIndex = npc.m_iTarget;
 				if(IsValidEnemy(npc.index, PrimaryThreatIndex) &&  !b_nightmare_logic[npc.index])
 				{
-					float target_vec[3]; target_vec = GetAbsOriginOld(PrimaryThreatIndex);
+					float target_vec[3]; GetAbsOrigin(PrimaryThreatIndex, target_vec);
 					endPoint[2] = target_vec[2];
 				}
 			}

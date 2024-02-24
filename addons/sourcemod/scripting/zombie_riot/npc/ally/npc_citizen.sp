@@ -2146,7 +2146,7 @@ public void Citizen_ClotThink(int iNPC)
 						else	// Try to shoot
 						{
 							float npc_pos[3];
-							npc_pos = GetAbsOriginOld(npc.index);
+							GetAbsOrigin(npc.index, npc_pos);
 								
 							npc_pos[2] += 30.0;
 							
@@ -2256,7 +2256,7 @@ public void Citizen_ClotThink(int iNPC)
 						if(!cooldown)
 						{
 							float npc_pos[3];
-							npc_pos = GetAbsOriginOld(npc.index);
+							GetAbsOrigin(npc.index, npc_pos);
 								
 							npc_pos[2] += 30.0;
 							
@@ -2353,7 +2353,7 @@ public void Citizen_ClotThink(int iNPC)
 						if(!cooldown)
 						{
 							float npc_pos[3];
-							npc_pos = GetAbsOriginOld(npc.index);
+							GetAbsOrigin(npc.index, npc_pos);
 								
 							npc_pos[2] += 30.0;
 							
@@ -2444,7 +2444,7 @@ public void Citizen_ClotThink(int iNPC)
 						else	// Try to shoot
 						{
 							float npc_pos[3];
-							npc_pos = GetAbsOriginOld(npc.index);
+							GetAbsOrigin(npc.index, npc_pos);
 								
 							npc_pos[2] += 30.0;
 							
@@ -2545,7 +2545,7 @@ public void Citizen_ClotThink(int iNPC)
 						else	// Try to shoot
 						{
 							float npc_pos[3];
-							npc_pos = GetAbsOriginOld(npc.index);
+							GetAbsOrigin(npc.index, npc_pos);
 								
 							npc_pos[2] += 30.0;
 							

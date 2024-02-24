@@ -51,7 +51,7 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 				float vecUp[3];
 				
 				GetVectors(client, client_slammed_forward[client], client_slammed_right[client], vecUp); //Sorry i dont know any other way with this :(
-				client_slammed_pos[client] = GetAbsOriginOld(client);
+				GetAbsOrigin(client, client_slammed_pos[client]);
 				client_slammed_pos[client][2] += 5.0;
 				
 				float vecSwingEnd[3];

@@ -427,7 +427,7 @@ public void Vader_ClotThink(int iNPC)
 					
 					vecTarget[2] += 15.0;
 					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
-				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
+					MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -440,14 +440,14 @@ public void Vader_ClotThink(int iNPC)
 					NormalizeVector(vecDir, vecDir);
 					
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_RH"), PATTACH_POINT_FOLLOW, true);
-					
+					float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 					if(EscapeModeForNpc)
 					{
-						FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 550.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 50.0, 550.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 					else
 					{
-						FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 35.0 * RaidModeScaling, 550.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 35.0 * RaidModeScaling, 550.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 				}
 			}

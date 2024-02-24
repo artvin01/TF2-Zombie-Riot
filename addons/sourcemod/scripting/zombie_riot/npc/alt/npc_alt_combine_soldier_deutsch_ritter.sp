@@ -333,7 +333,7 @@ public void Alt_CombineDeutsch_ClotThink(int iNPC)
 				float Angles[3], distance = 100.0, UserLoc[3];
 				
 				
-				UserLoc = GetAbsOriginOld(npc.index);
+				GetAbsOrigin(npc.index, UserLoc);
 				
 				MakeVectorFromPoints(UserLoc, vecTarget, Angles);
 				GetVectorAngles(Angles, Angles);

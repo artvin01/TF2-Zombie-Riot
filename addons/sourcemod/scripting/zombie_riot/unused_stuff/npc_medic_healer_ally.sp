@@ -424,8 +424,8 @@ public void ClotThink(int iNPC)
 					{
 						SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"));
 					}
-					
-					npc.FaceTowards(WorldSpaceCenterOld(PrimaryThreatIndex), 2000.0);
+					float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
+					npc.FaceTowards(WorldSpaceVec, 2000.0);
 				}
 				else
 				{

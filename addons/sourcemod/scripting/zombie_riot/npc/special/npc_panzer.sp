@@ -208,7 +208,7 @@ methodmap NaziPanzer < CClotBody
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		this.GetVectors(vecForward, vecSwingStart, vecAngles);
 
-		vecSwingStart = GetAbsOriginOld(this.index);
+		GetAbsOrigin(this.index, vecSwingStart);
 		vecSwingStart[2] += 44.0;
 
 		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);

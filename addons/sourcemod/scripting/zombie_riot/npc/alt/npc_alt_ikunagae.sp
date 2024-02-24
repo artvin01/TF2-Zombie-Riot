@@ -579,7 +579,7 @@ static void Scaramouche_Activate(int client)
 	
 	float UserLoc[3];
 	
-	UserLoc = GetAbsOriginOld(client);
+	GetAbsOrigin(client, UserLoc);
 	UserLoc[2] += 10.0;
 	
 	int type_class = 2;
@@ -742,7 +742,7 @@ static void Spin_To_Win_Activate(int client, int severity, bool alternate_attack
 	i_spin_to_win_throttle[npc.index] = 0;
 	
 	float UserLoc[3];
-	UserLoc = GetAbsOriginOld(client);
+	GetAbsOrigin(client, UserLoc);
 	
 	int r, g, b, a;
 	r = 41;
@@ -930,7 +930,7 @@ static void Spin_To_Win_Clearance_Check(int client)
 {
 	
 	float UserLoc[3], Angles[3];
-	UserLoc = GetAbsOriginOld(client);
+	GetAbsOrigin(client, UserLoc);
 	float distance = 100.0;
 	
 	int Total_Hit = 0;
@@ -999,7 +999,7 @@ static void Normal_Attack_Start(int client, int target, float damgae, bool alter
 	float Angles[3], distance = 100.0, UserLoc[3];
 				
 				
-	UserLoc = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, UserLoc);
 	
 	UserLoc[2] += 50.0;
 	
@@ -1248,7 +1248,7 @@ static void Ikunagae_GetBeamDrawStartPoint(int client, float startPoint[3])
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	Ikunagae npc = view_as<Ikunagae>(client);
@@ -1258,7 +1258,7 @@ static void Ikunagae_GetBeamDrawStartPoint(int client, float startPoint[3])
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == Ikunagae_BEAM_BeamOffset[client][0] && 0.0 == Ikunagae_BEAM_BeamOffset[client][1] && 0.0 == Ikunagae_BEAM_BeamOffset[client][2])
@@ -1311,7 +1311,7 @@ static Action Ikunagae_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOriginOld(client);
+		GetAbsOrigin(client, startPoint);
 		startPoint[2] += 50.0;
 
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, Ikunagae_BEAM_TraceWallsOnly);

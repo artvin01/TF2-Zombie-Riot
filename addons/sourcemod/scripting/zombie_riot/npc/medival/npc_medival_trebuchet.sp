@@ -133,7 +133,7 @@ public void MedivalTrebuchet_ClotThink(int iNPC)
 						}
 					}
 					float vEnd[3];
-					vEnd = GetAbsOriginOld(npc.m_iTarget);
+					GetAbsOrigin(npc.m_iTarget, vEnd);
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					spawnBeam(0.15, 255, 255, 255, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vEnd, WorldSpaceVec);	
 						

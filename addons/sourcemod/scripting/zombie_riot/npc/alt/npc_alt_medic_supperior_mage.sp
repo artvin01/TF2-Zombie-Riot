@@ -700,7 +700,7 @@ static void NPC_ALT_MEDIC_SUPPERIOR_MAGE_GetBeamDrawStartPoint(int client, float
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE npc = view_as<NPC_ALT_MEDIC_SUPPERIOR_MAGE>(client);
@@ -710,7 +710,7 @@ static void NPC_ALT_MEDIC_SUPPERIOR_MAGE_GetBeamDrawStartPoint(int client, float
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamOffset[client][0] && 0.0 == NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamOffset[client][1] && 0.0 == NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamOffset[client][2])
@@ -766,7 +766,7 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOriginOld(client);
+		GetAbsOrigin(client, startPoint);
 		startPoint[2] += 50.0;
 
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceWallsOnly);

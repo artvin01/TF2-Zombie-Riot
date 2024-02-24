@@ -526,7 +526,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 				float vecPos[3];
 				
 				GetVectors(npc.m_iTarget, VecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
-				vecPos = GetAbsOriginOld(npc.m_iTarget);
+				GetAbsOrigin(npc.m_iTarget, vecPos);
 				vecPos[2] += 5.0;
 				
 				float vecSwingEnd[3];

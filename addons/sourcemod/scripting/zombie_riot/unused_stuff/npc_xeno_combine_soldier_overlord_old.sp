@@ -415,7 +415,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					
 					vecTarget[2] += 15.0;
 					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
-				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
+					MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -426,10 +426,10 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
-					
+					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
-					int player_hurt = FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 75.0, 150.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+					int player_hurt = FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 75.0, 150.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 					
 					if(IsValidClient(player_hurt))
 					{

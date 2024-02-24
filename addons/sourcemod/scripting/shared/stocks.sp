@@ -1537,13 +1537,6 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 	return entity!=data;
 }
 
-stock float[] GetAbsOriginOld(int client)
-{
-	float v[3];
-	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
-	return v;
-}
-
 stock void GetAbsOrigin(int client, float v[3])
 {
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
@@ -1563,19 +1556,6 @@ stock bool IsValidClient( int client)
 		
 	return true; 
 }
-
-#if defined ZR
-stock float[] GetWorldSpaceCenterOld(int client)
-{
-	float v[3]; v = GetAbsOriginOld(client);
-	
-	float max_space[3];
-	GetEntPropVector(client, Prop_Data, "m_vecMaxs", max_space);
-	v[2] += max_space[2] / 2;
-	
-	return v;
-}
-#endif
 
 stock void GetWorldSpaceCenter(int client, float v[3])
 {

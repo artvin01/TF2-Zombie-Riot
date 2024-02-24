@@ -8117,7 +8117,7 @@ bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/, bool
 	
 	if(startPos[0] == 0.0)
 	{
-		startPos = GetAbsOriginOld(npc);
+		GetAbsOrigin(npc, startPos);
 		startPos[2] += 25.0;		
 	}
 

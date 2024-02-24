@@ -484,7 +484,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 						AcceptEntityInput(npc.m_iWearable4, "Enable");
 						float vEnd[3];
 						
-						vEnd = GetAbsOriginOld(npc.m_iTarget);
+						GetAbsOrigin(npc.m_iTarget, vEnd);
 						Handle pack;
 						CreateDataTimer(ACHILLES_CHARGE_SPAN, Smite_Timer_achilles, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 						WritePackCell(pack, EntIndexToEntRef(npc.index));

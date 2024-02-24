@@ -2092,7 +2092,7 @@ static void Silvester_GetBeamDrawStartPoint(int client, float startPoint[3])
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(client);
@@ -2102,7 +2102,7 @@ static void Silvester_GetBeamDrawStartPoint(int client, float startPoint[3])
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == Silvester_BEAM_BeamOffset[client][0] && 0.0 == Silvester_BEAM_BeamOffset[client][1] && 0.0 == Silvester_BEAM_BeamOffset[client][2])
@@ -2156,7 +2156,7 @@ public Action Silvester_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOriginOld(client);
+		GetAbsOrigin(client, startPoint);
 		startPoint[2] += 75.0;
 
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, Silvester_BEAM_TraceWallsOnly);

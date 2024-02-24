@@ -133,7 +133,8 @@ static bool IsClosestRemain(int thisEntity)
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == REMAINS && IsEntityAlive(entity))
 		{
-			float distance = GetVectorDistance(GetWorldSpaceCenterOld(entity), pos, true);
+			float WorldSpaceVec[3]; WorldSpaceCenter(entity, WorldSpaceVec);
+			float distance = GetVectorDistance(WorldSpaceVec, pos, true);
 			if(distance < dist1)
 			{
 				remain2 = remain1;

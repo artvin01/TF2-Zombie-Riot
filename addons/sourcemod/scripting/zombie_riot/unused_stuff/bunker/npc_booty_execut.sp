@@ -826,8 +826,8 @@ void BootyExecutioner_TBB_Ability(int client)
 	{
 		BootyExecutioner_BEAM_BuildingHit[building] = false;
 	}
-	
-	ParticleEffectAt(WorldSpaceCenterOld(client), "eyeboss_death_vortex", 2.0);
+	float WorldSpaceVec[3]; WorldSpaceCenter(client, WorldSpaceVec);
+	ParticleEffectAt(WorldSpaceVec, "eyeboss_death_vortex", 2.0);
 	
 	BootyExecutioner_BEAM_IsUsing[client] = false;
 	BootyExecutioner_BEAM_TicksActive[client] = 0;
@@ -905,7 +905,7 @@ static void BootyExecutioner_GetBeamDrawStartPoint(int client, float startPoint[
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	BootyExecutioner npc = view_as<BootyExecutioner>(client);
@@ -915,7 +915,7 @@ static void BootyExecutioner_GetBeamDrawStartPoint(int client, float startPoint[
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == BootyExecutioner_BEAM_BeamOffset[client][0] && 0.0 == BootyExecutioner_BEAM_BeamOffset[client][1] && 0.0 == BootyExecutioner_BEAM_BeamOffset[client][2])
@@ -1006,7 +1006,7 @@ public Action TrueBootyExecutioner_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOriginOld(client);
+		GetAbsOrigin(client, startPoint);
 		startPoint[2] += 50.0;
 
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, BootyExecutioner_BEAM_TraceWallsOnly);
@@ -1045,7 +1045,8 @@ public Action TrueBootyExecutioner_TBB_Tick(int client)
 					if (damage < 0)
 						damage *= -1.0;
 
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
 				}
 			}
 			

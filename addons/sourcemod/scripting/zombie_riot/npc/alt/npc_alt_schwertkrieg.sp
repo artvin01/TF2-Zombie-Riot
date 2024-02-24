@@ -479,7 +479,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 			b_teleport_recharging[npc.index]=false;
 			npc.AddActivityViaSequence("taunt_neck_snap_medic");
 
-			float npc_Loc[3]; npc_Loc = GetAbsOriginOld(npc.index);
+			float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc);
 
 			EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
 			EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
@@ -515,7 +515,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 		float vecPos[3];
 				
 		GetVectors(PrimaryThreatIndex, VecForward, vecRight, vecUp);
-		vecPos = GetAbsOriginOld(PrimaryThreatIndex);
+		GetAbsOrigin(PrimaryThreatIndex, vecPos);
 		vecPos[2] += 5.0;
 				
 		float vecSwingEnd[3];

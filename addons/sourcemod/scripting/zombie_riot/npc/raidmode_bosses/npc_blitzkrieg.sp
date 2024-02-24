@@ -1518,7 +1518,7 @@ public void Blitzkrieg_Punishment_Invoke(int ref, int enemy, float dist)
 		color[2] = 47;
 		color[3] = 255;
 		float UserLoc[3];
-		UserLoc = GetAbsOriginOld(entity);
+		GetAbsOrigin(entity, UserLoc);
 		
 		UserLoc[2]+=75.0;
 		
@@ -1968,7 +1968,7 @@ void BlitzLight_Beams(int entity, bool charging = true)
 		return;
 		
 	float UserLoc[3], UserAng[3];
-	UserLoc = GetAbsOriginOld(entity);
+	GetAbsOrigin(entity, UserLoc);
 	
 	UserAng[0] = 0.0;
 	UserAng[1] = BlitzLight_Angle[npc.index];
@@ -2115,7 +2115,7 @@ public void BlitzLight_DealDamage(int entity)
 			return;
 
 	float beamLoc[3];
-	beamLoc = GetAbsOriginOld(entity);
+	GetAbsOrigin(entity, beamLoc);
 	
 		
 	if(i_BlitzLight_dmg_throttle[npc.index] > 2)	//do damage 10 times a second.
@@ -2169,7 +2169,7 @@ static void FireBlitzRocket(int client, float vecTarget[3], float rocket_damage,
 	float vecForward[3], vecSwingStart[3], vecAngles[3];
 	npc.GetVectors(vecForward, vecSwingStart, vecAngles);
 										
-	vecSwingStart = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, vecSwingStart);
 	vecSwingStart[2] += 54.0;
 										
 	MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);

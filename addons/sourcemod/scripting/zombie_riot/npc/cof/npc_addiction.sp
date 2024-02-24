@@ -245,7 +245,7 @@ public void Addicition_ClotThink(int iNPC)
 					
 					float vEnd[3];
 					
-					vEnd = GetAbsOriginOld(npc.m_iTarget);
+					GetAbsOrigin(npc.m_iTarget, vEnd);
 					Handle pack;
 					CreateDataTimer(ADDICTION_CHARGE_SPAN, Smite_Timer_Addiction, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 					WritePackCell(pack, EntIndexToEntRef(npc.index));

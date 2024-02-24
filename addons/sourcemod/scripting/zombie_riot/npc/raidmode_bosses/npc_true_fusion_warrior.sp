@@ -1237,7 +1237,7 @@ static void FusionWarrior_GetBeamDrawStartPoint(int client, float startPoint[3])
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(client);
@@ -1247,7 +1247,7 @@ static void FusionWarrior_GetBeamDrawStartPoint(int client, float startPoint[3])
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == FusionWarrior_BEAM_BeamOffset[client][0] && 0.0 == FusionWarrior_BEAM_BeamOffset[client][1] && 0.0 == FusionWarrior_BEAM_BeamOffset[client][2])
@@ -1302,7 +1302,7 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOriginOld(client);
+		GetAbsOrigin(client, startPoint);
 		startPoint[2] += 50.0;
 
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, FusionWarrior_BEAM_TraceWallsOnly);

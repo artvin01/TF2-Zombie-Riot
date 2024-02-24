@@ -1019,7 +1019,7 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 
 			Schwert_Impact_Lance_CosmeticRemoveEffects(npc.index);
 
-			float npc_Loc[3]; npc_Loc = GetAbsOriginOld(npc.index);
+			float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc);
 
 			EmitSoundToAll(SCHWERT_TELEPORT_STRIKE_INTIALIZE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
 			EmitSoundToAll(SCHWERT_TELEPORT_STRIKE_INTIALIZE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
@@ -1080,7 +1080,7 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 			float vecPos[3];
 					
 			GetVectors(PrimaryThreatIndex, VecForward, vecRight, vecUp);
-			vecPos = GetAbsOriginOld(PrimaryThreatIndex);
+			GetAbsOrigin(PrimaryThreatIndex, vecPos);
 			vecPos[2] += 5.0;
 					
 			float vecSwingEnd[3];
@@ -1112,7 +1112,7 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 				}
 				else
 				{
-					vecSwingEnd = GetAbsOriginOld(PrimaryThreatIndex);
+					GetAbsOrigin(PrimaryThreatIndex, vecSwingEnd);
 					vecSwingEnd[2]+=125.0;
 					if(Schwert_Teleport(npc.index, vecSwingEnd, 0.0))
 					{
@@ -1136,7 +1136,7 @@ static bool Schwert_Do_Group_Tele(int iNPC, int PrimaryThreatIndex)
 	float vecPos[3];
 			
 	GetVectors(PrimaryThreatIndex, VecForward, vecRight, vecUp);
-	vecPos = GetAbsOriginOld(PrimaryThreatIndex);
+	GetAbsOrigin(PrimaryThreatIndex, vecPos);
 	vecPos[2] += 5.0;
 			
 	float vecSwingEnd[3];
@@ -1561,7 +1561,7 @@ static void Schwert_Lifeloss_Logic(Raidboss_Schwertkrieg npc)
 		fl_schwert_sword_battery[npc.index] = GetGameTime() + 30.0;
 
 		float Loc[3];
-		Loc = GetAbsOriginOld(npc.index);
+		GetAbsOrigin(npc.index, Loc);
 
 		for(int i=0 ; i < SCHWERKRIEG_SWORDS_AMT ; i++)
 		{
@@ -1576,9 +1576,9 @@ static void Schwert_Lifeloss_Logic(Raidboss_Schwertkrieg npc)
 	{
 		float Duration = npc.m_flNextChargeSpecialAttack - GetGameTime();
 		float Ratio = (Duration/6.0);
-		float Loc[3]; Loc = GetAbsOriginOld(npc.index); Loc[2]+=50.0;
+		float Loc[3]; GetAbsOrigin(npc.index, Loc); Loc[2]+=50.0;
 		Loc[2] += 150.0*Ratio;
-		float Loc2[3]; Loc2 = GetAbsOriginOld(npc.index); Loc2[2]+=25.0;
+		float Loc2[3]; GetAbsOrigin(npc.index, Loc2); Loc2[2]+=25.0;
 		float speed = 30.0 - 25.0*Ratio;
 		Schwert_Manipulate_Sword_Location(npc, Loc, Loc2, GetGameTime(), speed, true, 15.0*RaidModeScaling);
 	}
@@ -1669,7 +1669,7 @@ static void Schwert_Manipulate_Sword_Location(Raidboss_Schwertkrieg npc, float L
 
 		if(IsValidEntity(sword))
 		{
-			float Sword_Loc[3]; Sword_Loc = GetAbsOriginOld(sword);
+			float Sword_Loc[3]; GetAbsOrigin(sword, Sword_Loc);
 
 			Schwertkrieg_Move_Entity(sword, EndLoc, Ang);
 			
@@ -2292,9 +2292,10 @@ static float fl_retract_timer[MAXENTITIES];
  **/
 static void Schwert_Launch_Boomerang_Core(Raidboss_Schwertkrieg npc, int initialTarget)	//warp
 {
-
+	float Npc_Vec[3], Target_Vec[3], Initial_Vec[3];
+	GetAbsOrigin(initialTarget, Initial_Vec);
 	float rocket_speed = 750.0;
-	int projectile = Schwert_Create_Invis_Proj(npc, rocket_speed, GetAbsOriginOld(initialTarget));
+	int projectile = Schwert_Create_Invis_Proj(npc, rocket_speed, Initial_Vec);
 	
 	if(!IsValidEntity(projectile))
 		return;
@@ -2305,8 +2306,8 @@ static void Schwert_Launch_Boomerang_Core(Raidboss_Schwertkrieg npc, int initial
 		fl_boomerang_duration[projectile] = GetGameTime() + 12.5;
 
 	float Npc_Vec[3], Target_Vec[3];
-	Npc_Vec = GetAbsOriginOld(npc.index);
-	Target_Vec = GetAbsOriginOld(initialTarget);
+	GetAbsOrigin(npc.index, Npc_Vec);
+	GetAbsOrigin(initialTarget, Target_Vec);
 
 	fl_homing_throttle[projectile]=0.0;
 	float Ang[3];
@@ -2355,7 +2356,7 @@ static int Schwert_Create_Invis_Proj(Raidboss_Schwertkrieg npc, float rocket_spe
 	float vecForward[3], vecSwingStart[3], vecAngles[3];
 	npc.GetVectors(vecForward, vecSwingStart, vecAngles);
 										
-	vecSwingStart = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, vecSwingStart);
 	vecSwingStart[2] += 54.0;
 										
 	MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
@@ -2435,8 +2436,8 @@ static Action Schwert_Spiral_Core_Projectile_Homing_Hook(int iNPC)
 
 	//sword stuff:
 
-	float Npc_Vec[3]; Npc_Vec = GetAbsOriginOld(npc.index);
-	float Proj_Vec[3]; Proj_Vec = GetAbsOriginOld(entity);
+	float Npc_Vec[3]; GetAbsOrigin(npc.index, Npc_Vec);
+	float Proj_Vec[3]; GetAbsOrigin(entity, Proj_Vec);
 
 
 	if(npc.Anger)

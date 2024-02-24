@@ -516,7 +516,7 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 			
 			float m_vecSrc[3];
 			
-			m_vecSrc = WorldSpaceCenterOld(npc.index);
+			WorldSpaceCenter(npc.index, m_vecSrc);
 			
 			float vecEnd[3];
 			vecEnd[0] = m_vecSrc[0] + vecDirShooting[0] * 9000; 

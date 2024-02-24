@@ -494,7 +494,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				float vecSpread = 0.1;
 				
 				float npc_pos[3];
-				npc_pos = GetAbsOriginOld(npc.index);
+				GetAbsOrigin(npc.index, npc_pos);
 					
 				npc_pos[2] += 30.0;
 					
@@ -612,7 +612,7 @@ public void BobTheGod_ClotThink(int iNPC)
 	
 						float vecSpread = 0.1;
 						float npc_pos[3];
-						npc_pos = GetAbsOriginOld(npc.index);
+						GetAbsOrigin(npc.index, npc_pos);
 							
 						npc_pos[2] += 30.0;
 						npc.FaceTowards(vecTarget, 15000.0);

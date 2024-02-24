@@ -956,7 +956,7 @@ static void Internal_ClotThink(int iNPC)
 							//Take their old position and nuke it.
 							float vEnd[3];
 					
-							vEnd = GetAbsOriginOld(EnemyToPull);
+							GetAbsOrigin(EnemyToPull, vEnd);
 							Handle pack;
 							CreateDataTimer(BOB_CHARGE_SPAN, Smite_Timer_Bob, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 							WritePackCell(pack, EntIndexToEntRef(npc.index));

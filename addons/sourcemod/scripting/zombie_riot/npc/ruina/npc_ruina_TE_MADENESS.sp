@@ -322,11 +322,6 @@ public void TE_Madness(int ref, int enemy)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
-		
-		//TE_Madness_BEAM_LOC[npc.index][1]=WorldSpaceCenterOld(enemy)	//1st loc on enemy
-		
-		//TE_Madness_END_BEAM_LOC[npc.index][1]=WorldSpaceCenterOld(enemy)
-		
 		SDKHook(ref, SDKHook_Think, TE_Madness_Primary_TBB_Tick);
 		CreateTimer(60.0, TE_Madness_TBB_Timer, ref, TIMER_FLAG_NO_MAPCHANGE);
 	}
@@ -413,7 +408,7 @@ public Action TE_Madness_Primary_TBB_Tick(int client)
 			{
 				case 0:
 				{			
-					UserLoc = GetAbsOriginOld(client);
+					GetAbsOrigin(client, UserLoc);
 					CustomAng=-1;
 					radius=200.0;
 					UserLoc[2]+=500.0;
@@ -421,7 +416,7 @@ public Action TE_Madness_Primary_TBB_Tick(int client)
 				}
 				case 1:
 				{
-					UserLoc = GetAbsOriginOld(client);
+					GetAbsOrigin(client, UserLoc);
 					CustomAng=1;
 					radius=50.0;
 					UserLoc[2]+=10.0;
@@ -500,7 +495,7 @@ void TE_Madness_spawn_beams(int client, int colour[4], int o)
 			{
 				int PrimaryThreatIndex = npc.m_iTarget;
 				float vecTarget[3];
-				vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+				WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				TE_Madness_Attack_Timer[npc.index][m]=GetGameTime(npc.index)+GetRandomFloat(15.0, 5.0);
 				
 				int SPRITE_INT_2 = PrecacheModel("materials/sprites/lgtning.vmt", false);
