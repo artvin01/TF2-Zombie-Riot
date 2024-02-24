@@ -1249,10 +1249,11 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	
 #if defined ZR
 	Thirdperson_PluginLoad();
+	ZR_PluginLoad();
 #endif
 	
-#if defined ZR
-	ZR_PluginLoad();
+#if defined NOG
+	NOG_PluginLoad();
 #endif
 
 	return APLRes_Success;
