@@ -1287,7 +1287,7 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(Raidboss_Donnerkrieg npc, int P
 
 	schwert_retreat=true;	//while using the cannon, schwert protects donner
 	
-	//float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+	
 	
 	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
