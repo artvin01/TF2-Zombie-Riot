@@ -179,8 +179,9 @@ public void Barrack_Alt_Scientific_Witchery_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 
 			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
@@ -271,7 +272,7 @@ static float H_fl_current_vec[MAXENTITIES][H_SLICER_AMOUNT+2][3];
 static void Horizontal_Slicer(int client, float vecTarget[3], float Range)
 {
 	float Vec_offset[3]; Vec_offset = vecTarget;
-	float Npc_Vec[3]; Npc_Vec = WorldSpaceCenterOld(client);
+	float Npc_Vec[3]; WorldSpaceCenter(client, Npc_Vec);
 	
 	
 	H_fl_starting_vec[client] = Npc_Vec;
@@ -410,7 +411,7 @@ static float fl_current_vec[MAXENTITIES][3];
 static void Create_Laser_Hell(int client, float vecTarget[3])
 {
 	float Vec_offset[3]; Vec_offset = vecTarget;
-	float Npc_Vec[3]; Npc_Vec = WorldSpaceCenterOld(client);
+	float Npc_Vec[3]; WorldSpaceCenter(client, Npc_Vec);
 	
 	
 	fl_target_vec[client] = Vec_offset;

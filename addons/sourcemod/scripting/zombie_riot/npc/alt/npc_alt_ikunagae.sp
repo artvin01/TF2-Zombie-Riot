@@ -338,9 +338,10 @@ public void Ikunagae_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 		//Predict their pos.
 		
@@ -657,7 +658,7 @@ public Action Scaramouche_TBB_Tick(int client)
 				int PrimaryThreatIndex = npc.m_iTarget;
 				if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 				{
-					float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+					float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 					npc.FireParticleRocket(vecTarget, 100.0 , 450.0 , 100.0 , "raygun_projectile_blue",_,_,true,Location);
 				}
 				//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
@@ -1000,7 +1001,7 @@ static void Normal_Attack_Start(int client, int target, float damgae, bool alter
 	
 	UserLoc[2] += 50.0;
 	
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+	float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 	
 	MakeVectorFromPoints(UserLoc, vecTarget, Angles);
 	GetVectorAngles(Angles, Angles);

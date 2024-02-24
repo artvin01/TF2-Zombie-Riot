@@ -493,7 +493,7 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 			ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
 		}
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(attacker);
+		WorldSpaceCenter(attacker, Entity_Position );
 		
 		DataPack pack = new DataPack();
 		pack.WriteCell(EntIndexToEntRef(attacker));

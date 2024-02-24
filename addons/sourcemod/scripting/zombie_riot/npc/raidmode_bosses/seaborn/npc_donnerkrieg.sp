@@ -686,9 +686,10 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 			//CPrintToChatAll("Initial Donner Logic");
 		}
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 		if(!b_Crystal_active)
 		{
@@ -698,7 +699,8 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 							
 			//Body pitch
 			float v[3], ang[3];
-			SubtractVectors(WorldSpaceCenterOld(npc.index), vecTarget, v); 
+			float SelfVec[3]; WorldSpaceCenter(npc.index, SelfVec);
+			SubtractVectors(SelfVec, vecTarget, v); 
 			NormalizeVector(v, v);
 			GetVectorAngles(v, ang); 
 									
@@ -781,9 +783,10 @@ static void Donner_Movement(int client, int PrimaryThreatIndex, float GameTime)
 {
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
 	
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 	npc.m_flSpeed = 300.0;
 
@@ -1287,7 +1290,7 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(Raidboss_Donnerkrieg npc, int P
 	
 	//float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 	
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
 	//float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(PrimaryThreatIndex), true);
 	

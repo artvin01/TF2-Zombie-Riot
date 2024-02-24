@@ -83,9 +83,9 @@ public void SeabornDemo_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
-		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
@@ -177,6 +177,7 @@ void SeabornDemo_NPCDeath(int entity)
 
 public void SeabornDemo_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
-	ParticleEffectAt(WorldSpaceCenterOld(victim), "water_bulletsplash01", 3.0);
+	float EnemyVecPos[3]; WorldSpaceCenter(victim, EnemyVecPos);
+	ParticleEffectAt(EnemyVecPos, "water_bulletsplash01", 3.0);
 	SeaSlider_AddNeuralDamage(victim, attacker, RoundToCeil(damage * 2.0));
 }

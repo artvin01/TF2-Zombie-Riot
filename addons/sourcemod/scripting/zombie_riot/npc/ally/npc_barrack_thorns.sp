@@ -233,7 +233,8 @@ public void BarrackThorns_ClotThink(int iNPC)
 		if(EnemyToAttack > 0)
 		{
 			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(EnemyToAttack);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 
 			if(ThornsAbilityAttackTimes[npc.index] >= 15)
@@ -358,9 +359,9 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAtta
 			ThornsDecidedOnAttack[npc.index] = 0;
 			if(IsValidEnemy(npc.index, EnemyToAttack))
 			{
-				npc.FaceTowards(WorldSpaceCenterOld(EnemyToAttack), 15000.0);
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(EnemyToAttack), 15000.0);
+				float SelfVecPos[3]; WorldSpaceCenter(EnemyToAttack, SelfVecPos);
+				npc.FaceTowards(SelfVecPos, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, EnemyToAttack, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 								
@@ -431,7 +432,8 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 	{
 		if(IsValidEnemy(npc.index, EnemyToAttack))
 		{
-			npc.FaceTowards(WorldSpaceCenterOld(EnemyToAttack), 15000.0);
+			float SelfVecPos[3]; WorldSpaceCenter(EnemyToAttack, SelfVecPos);
+			npc.FaceTowards(SelfVecPos, 15000.0);
 		}
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
 		{
@@ -518,7 +520,8 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 	{
 		if(IsValidEnemy(npc.index, EnemyToAttack))
 		{
-			npc.FaceTowards(WorldSpaceCenterOld(EnemyToAttack), 15000.0);
+			float SelfVecPos[3]; WorldSpaceCenter(EnemyToAttack, SelfVecPos);
+			npc.FaceTowards(SelfVecPos, 15000.0);
 		}
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
 		{

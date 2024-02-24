@@ -498,7 +498,7 @@ public void Vamp_Knife_Touch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);;
 		//Code to do damage position and ragdolls
 		
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
@@ -557,7 +557,7 @@ public bool Vamp_CleaverHit(int entity, int target)
 	float vecForward[3];
 	GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 	static float Entity_Position[3];
-	Entity_Position = WorldSpaceCenterOld(target);
+	WorldSpaceCenter(target, Entity_Position);;
 	//Code to do damage position and ragdolls
 		
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);

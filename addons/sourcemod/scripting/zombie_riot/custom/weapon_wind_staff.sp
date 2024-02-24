@@ -629,7 +629,7 @@ public Action Event_Tornado_OnHatTouch(int entity, int other)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);;
 		//Code to do damage position and ragdolls
 		
 		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0),Entity_Position);	// 2048 is DMG_NOGIB?

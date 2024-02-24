@@ -440,7 +440,7 @@ public void Bloonarius_ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);			
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );			
 		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 		NPC_SetGoalEntity(npc.index, npc.m_iTarget);

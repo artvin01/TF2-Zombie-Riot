@@ -321,7 +321,8 @@ public void L4D2_Tank_ClotThink(int iNPC)
 		{
 			vecTarget = WorldSpaceCenterOld(closest);
 			vecTarget_OnRun = vecTarget;
-			flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+				flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius())
 			{

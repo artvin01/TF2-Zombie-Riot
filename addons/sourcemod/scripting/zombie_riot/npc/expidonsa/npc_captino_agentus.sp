@@ -275,10 +275,11 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 		if(IsEnemyBuilding)
 			npc.i_GunMode = 0;
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
 		npc.m_bAllowBackWalking = false;
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			if(!IsEnemyBuilding)
@@ -326,7 +327,8 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 							npc.PlayTeleportSound();
 							ParticleEffectAt(PreviousPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 							ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-							npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+							float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+								npc.FaceTowards(VecEnemy, 15000.0);
 							npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 12.5;
 							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7; //so they cant instastab you!
 						}
@@ -478,7 +480,8 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 				npc.AddGesture("ACT_MP_ATTACK_STAND_GRENADE_BUILDING");
 			}
 
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+								npc.FaceTowards(VecEnemy, 15000.0);
 			Handle swingTrace;
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Ignore barricades
 			{
@@ -509,7 +512,8 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 			int Enemy_I_See;					
 			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+								npc.FaceTowards(VecEnemy, 15000.0);
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.PlayMeleeSound();

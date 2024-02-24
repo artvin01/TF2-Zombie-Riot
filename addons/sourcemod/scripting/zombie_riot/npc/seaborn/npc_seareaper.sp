@@ -163,7 +163,7 @@ public void SeaReaper_ClotThink(int iNPC)
 	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))
 		npc.m_iTarget = 0;
 	
-	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -179,7 +179,7 @@ public void SeaReaper_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float distance = npc.Anger ? GetVectorDistance(vecTarget, vecMe, true) : FAR_FUTURE;		
 		
 		if(distance < npc.GetLeadRadius())

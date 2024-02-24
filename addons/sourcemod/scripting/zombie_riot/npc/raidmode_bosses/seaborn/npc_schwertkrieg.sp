@@ -603,7 +603,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 	
 	int wave = ZR_GetWaveCount()+1;
 	
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 	float npc_Vec[3]; npc_Vec = WorldSpaceCenterOld(npc.index);
 
 	float flDistanceToTarget = GetVectorDistance(vecTarget, npc_Vec, true);

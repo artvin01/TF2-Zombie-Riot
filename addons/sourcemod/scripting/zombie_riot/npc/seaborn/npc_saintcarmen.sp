@@ -146,8 +146,9 @@ public void SaintCarmen_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -195,7 +196,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 							{
 								FreezeNpcInTime(target, 2.0);
 								
-								vecHit = WorldSpaceCenterOld(target);
+								WorldSpaceCenter(target, vecHit);
 								vecHit[2] += 250.0; //Jump up.
 								PluginBot_Jump(target, vecHit);
 								EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);

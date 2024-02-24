@@ -242,9 +242,10 @@ public void MedicHealer_ClotThink(int iNPC)
 		if(IsValidAlly(npc.index, PrimaryThreatIndex))
 		{
 				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+				float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
 				if(flDistanceToTarget < 250000)
 				{
@@ -338,9 +339,10 @@ public void MedicHealer_ClotThink(int iNPC)
 		
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 		{
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+				float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
 				//Predict their pos.
 				if(flDistanceToTarget < npc.GetLeadRadius()) {

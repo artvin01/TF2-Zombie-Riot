@@ -185,8 +185,9 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
 			
 			int iPitch = npc.LookupPoseParameter("body_pitch");
@@ -194,7 +195,8 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 				return;	
 			//Body pitch
 			float v[3], ang[3];
-			SubtractVectors(WorldSpaceCenterOld(npc.index), vecTarget, v); 
+			float SelfVec[3]; WorldSpaceCenter(npc.index, SelfVec);
+			SubtractVectors(SelfVec, vecTarget, v); 
 			NormalizeVector(v, v);
 			GetVectorAngles(v, ang); 
 					
@@ -426,7 +428,7 @@ static Action Ikunagae_TBB_Tick(int client)
 		int target = npc.m_iTarget;
 		if(target > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		
 			npc.FaceTowards(vecTarget, 20000.0);
 			npc.FaceTowards(vecTarget, 20000.0);

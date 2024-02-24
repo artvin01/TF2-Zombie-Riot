@@ -380,7 +380,7 @@ public void BobTheGod_ClotThink(int iNPC)
 	{
 		if(IsPlayerAlive(client) && npc.m_b_follow)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(client);
+			float vecTarget[3]; WorldSpaceCenter(client, vecTarget );
 			flDistanceToOwner = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index));
 		}
 		else
@@ -445,7 +445,7 @@ public void BobTheGod_ClotThink(int iNPC)
 		else
 		{
 			int PrimaryThreatIndex = npc.m_iTarget;
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 					
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index));
 			if (npc.m_fbGunout == false && npc.m_flReloadDelay < GetGameTime(npc.index))
@@ -752,7 +752,7 @@ public void BobTheGod_ClotThink(int iNPC)
 		else if ((npc.m_iState == 0 || npc.m_iState == 2) && npc.m_flFollowing_Master_Now < GetGameTime(npc.index))
 		{
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(client);
+			float vecTarget[3]; WorldSpaceCenter(client, vecTarget );
 			
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index));
 			
@@ -1020,7 +1020,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1055,7 +1056,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1094,7 +1096,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1133,7 +1136,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1154,7 +1158,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1175,7 +1180,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1196,7 +1202,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1248,7 +1255,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget > 300)
 		{
@@ -1297,7 +1305,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		if(flDistanceToTarget < 300)
 		{
 			int iActivity_melee = npc.LookupActivity("ACT_BUSY_THREAT");
@@ -1340,7 +1349,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1364,7 +1374,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1388,7 +1399,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300/* && GetEntProp(npc.index, Prop_Data, "m_iHealth") > 500*/)
 		{
@@ -1424,7 +1436,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300/* && GetEntProp(npc.index, Prop_Data, "m_iHealth") > 500*/)
 		{
@@ -1456,7 +1469,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300/* && GetEntProp(npc.index, Prop_Data, "m_iHealth") > 500*/)
 		{
@@ -1488,7 +1502,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300/* && GetEntProp(npc.index, Prop_Data, "m_iHealth") > 500*/)
 		{
@@ -1572,7 +1587,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1597,7 +1613,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1622,7 +1639,8 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 100 && npc.m_flheal_cooldown < GetGameTime(npc.index))
 		{
@@ -1713,7 +1731,8 @@ public Action BobTheGod_anger_medkit(Handle dashHud, int entity)
 		{
 			float pos[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos);
 			
-			float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+			float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 			if(flDistanceToTarget < 150)
 			{
 				SDKHooks_TakeDamage(client, npc.index, client, 35.0, DMG_CLUB);

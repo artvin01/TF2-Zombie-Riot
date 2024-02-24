@@ -238,8 +238,9 @@ public void Barrack_Alt_Donnerkrieg_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0 && !b_cannon_active[npc.index])
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			int iPitch = npc.LookupPoseParameter("body_pitch");
 			if(iPitch < 0)
@@ -481,7 +482,7 @@ static Action Ikunagae_TBB_Tick(int client)
 		int target = npc.m_iTarget;
 		if(IsValidEntity(target))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		
 			int Enemy_I_See = Can_I_See_Enemy(npc.index, target);
 
@@ -609,7 +610,7 @@ static void DonnerKrieg_Normal_Attack(Barrack_Alt_Donnerkrieg npc)
 		int target = npc.m_iTarget;
 		if(IsValidEntity(target))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		
 			int Enemy_I_See = Can_I_See_Enemy(npc.index, target);
 

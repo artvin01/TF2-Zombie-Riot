@@ -73,7 +73,7 @@ methodmap Isharmla < CClotBody
 			RaidAllowsBuildings = true;
 		}
 
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 		vecMe[2] += 500.0;
 		npc.m_iWearable2 = ParticleEffectAt(vecMe, "env_rain_512", -1.0);
 		SetParent(npc.index, npc.m_iWearable2);
@@ -243,7 +243,7 @@ public void Isharmla_ClotThink(int iNPC)
 				npc.m_flAttackHappens = 0.0;
 				npc.PlayMeleeSound();
 				
-				float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+				float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 
 				if(IsValidAlly(npc.index, npc.m_iTarget))
 				{

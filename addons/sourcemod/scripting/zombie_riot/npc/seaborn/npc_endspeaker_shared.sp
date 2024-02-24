@@ -198,7 +198,7 @@ methodmap EndSpeaker < CClotBody
 
 			if(entity)
 			{
-				vecTarget = WorldSpaceCenterOld(entity);
+				WorldSpaceCenter(entity, vecTarget);
 
 				for(int b; b < count; b++)
 				{

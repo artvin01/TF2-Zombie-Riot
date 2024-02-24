@@ -382,7 +382,7 @@ public Action Event_Ark_OnHatTouch(int entity, int other)// code responsible for
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);;
 		//Code to do damage position and ragdolls
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
@@ -459,7 +459,7 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(attacker);
+		WorldSpaceCenter(attacker, Entity_Position );
 		
 		float flPos[3]; // original
 		float flAng[3]; // original
@@ -664,7 +664,7 @@ public void Melee_LapplandArkTouch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);;
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
@@ -1024,7 +1024,7 @@ public void Melee_QuibaiArkTouch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);;
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);

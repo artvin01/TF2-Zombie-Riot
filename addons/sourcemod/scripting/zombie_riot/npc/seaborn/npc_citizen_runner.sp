@@ -86,7 +86,7 @@ public void CitizenRunner_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 
 		if(distance < 10000.0)

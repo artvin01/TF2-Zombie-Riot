@@ -139,7 +139,7 @@ public void StalkerFather_ClotThink(int iNPC)
 		}
 	}
 	
-	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 	if(npc.m_bChaseAnger && npc.CanSeeEnemy())
 	{
 		LastKnownPos = WorldSpaceCenterOld(npc.m_iTarget);

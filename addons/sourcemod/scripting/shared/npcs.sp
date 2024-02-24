@@ -2683,7 +2683,7 @@ void OnTakeDamageWidowsWine(int victim, int &attacker, int &inflictor, float &da
 		{
 			f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 20.0;
 				
-			float vecVictim[3]; vecVictim = WorldSpaceCenterOld(victim);
+			float vecVictim[3]; WorldSpaceCenter(victim,vecVictim);
 				
 			ParticleEffectAt(vecVictim, "peejar_impact_cloud_milk", 0.5);
 				

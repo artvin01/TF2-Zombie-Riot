@@ -896,8 +896,8 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 	if(npc.m_iTarget > 0 && healthPoints < 20)
 	{
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 
 		switch(npc.m_iAttackType)
 		{

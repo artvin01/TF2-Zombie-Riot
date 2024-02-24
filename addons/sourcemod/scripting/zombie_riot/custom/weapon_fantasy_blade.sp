@@ -401,7 +401,7 @@ static float Fantasy_Blade_Tele(int client, int weapon, float damage, float rang
 			
 			if(times_hurt>10)
 				break;
-			VictimPos = WorldSpaceCenterOld(HitEntitiesTeleportTrace[entity_traced]);
+			WorldSpaceCenter(HitEntitiesTeleportTrace[entity_traced], VictimPos);
 
 			SDKHooks_TakeDamage(HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 / damage_reduction, DMG_CLUB, weapon, CalculateExplosiveDamageForceOld(abspos, VictimPos, 5000.0), VictimPos, false);	
 			damage_reduction *= ExplosionDmgMultihitFalloff;

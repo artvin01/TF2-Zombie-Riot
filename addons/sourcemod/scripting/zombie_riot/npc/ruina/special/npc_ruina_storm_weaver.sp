@@ -762,7 +762,8 @@ static void ClotThink(int iNPC)
 			float flDistanceToTarget, vecTarget[3];
 			vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
 
-			flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+				flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			if(GameTime > npc.m_flNextRangedAttack)
 			{
 				npc.PlayMeleeHitSound();
@@ -977,7 +978,7 @@ static int Storm_Weaver_Get_Target(Storm_Weaver npc)
 		{
 			if(IsValidEnemy(npc.index, entity))
 			{
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(entity);
+				float vecTarget[3]; WorldSpaceCenter(entity, vecTarget);
 		
 				float flDistanceToTarget = GetVectorDistance(vecTarget, npc_vec, true);
 

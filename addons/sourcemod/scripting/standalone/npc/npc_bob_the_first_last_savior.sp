@@ -615,8 +615,8 @@ static void Internal_ClotThink(int iNPC)
 
 	if(npc.m_iTarget > 0 && healthPoints < 20)
 	{
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 
 		switch(npc.m_iAttackType)
 		{
@@ -756,7 +756,7 @@ static void Internal_ClotThink(int iNPC)
 								PlaySound = true;
 								int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 								float vecHit[3];
-								vecHit = WorldSpaceCenterOld(target);
+								WorldSpaceCenter(target, vecHit);
 
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 750.0, DMG_CLUB, -1, _, vecHit);	
 								
@@ -991,7 +991,7 @@ static void Internal_ClotThink(int iNPC)
 						
 						npc.m_flNextMeleeAttack = gameTime + 10.0;
 						npc.StopPathing();
-						vecMe = WorldSpaceCenterOld(npc.index);
+						WorldSpaceCenter(npc.index, vecMe);
 
 						switch(GetURandomInt() % 3)
 						{
@@ -1336,12 +1336,12 @@ stock void BobPullTarget(int bobnpc, int enemy)
 	//pull player
 	float vecMe[3];
 	float vecTarget[3];
-	vecMe = WorldSpaceCenterOld(npc.index);
+	WorldSpaceCenter(npc.index, vecMe);
 	if(enemy <= MaxClients)
 	{
 		static float angles[3];
 		
-		vecTarget = WorldSpaceCenterOld(enemy);
+		WorldSpaceCenter(enemy, vecTarget);
 		GetVectorAnglesTwoPoints(vecTarget, vecMe, angles);
 		
 		if(GetEntityFlags(enemy) & FL_ONGROUND)
@@ -1548,7 +1548,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 				{
 					FreezeNpcInTime(victim, 1.5);
 					
-					hullMin = WorldSpaceCenterOld(victim);
+					WorldSpaceCenter(victim, hullMin);
 					hullMin[2] += 100.0; //Jump up.
 					PluginBot_Jump(victim, hullMin);
 				}

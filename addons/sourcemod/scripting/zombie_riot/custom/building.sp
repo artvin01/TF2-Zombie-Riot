@@ -3983,8 +3983,9 @@ static void Railgun_Boom_Client(int client)
 							damage *= 1.55;
 							First_Target_Hit = false;
 						}
-	
-						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), WorldSpaceCenterOld(BEAM_BuildingHit[building]));	// 2048 is DMG_NOGIB?
+
+						float TargetVecPos[3]; WorldSpaceCenter(BEAM_BuildingHit[building], TargetVecPos);
+						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), TargetVecPos);	// 2048 is DMG_NOGIB?
 						BEAM_Targets_Hit[obj] *= LASER_AOE_DAMAGE_FALLOFF;
 					}
 					else
@@ -7887,12 +7888,12 @@ void Barracks_BuildingThink(int client)
 				vecTarget = PredictSubjectPositionForProjectilesOld(mounted ? playerclient : npc, ValidEnemyToTarget, projectile_speed, 55.0);
 				if(!Can_I_See_Enemy_Only(mounted ? playerclient.index : npc.index, ValidEnemyToTarget)) //cant see enemy in the predicted position, we will instead just attack normally
 				{
-					vecTarget = WorldSpaceCenterOld(ValidEnemyToTarget);
+					WorldSpaceCenter(ValidEnemyToTarget, vecTarget );
 				}
 			}
 			else
 			{
-				vecTarget = WorldSpaceCenterOld(ValidEnemyToTarget);
+				WorldSpaceCenter(ValidEnemyToTarget, vecTarget );
 			}
 
 

@@ -313,8 +313,8 @@ static void ClotThink(int iNPC)
 
 	if(target > 0)
 	{
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float distance = GetVectorDistance(vecTarget, vecMe, true);
 		if(distance < npc.GetLeadRadius()) 
 		{
@@ -724,7 +724,7 @@ static void ClotDeathLoopThink(int iNPC)
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
-	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 	CPrintToChatAll("{darkblue}??????????{default}: You will regret this.");
 				
 	npc.PlayBoomSound();

@@ -641,7 +641,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 		
 		if(npc.m_iTargetAlly > 0 && !passive)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
 			npc.m_iTargetRally = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo, _, _, vecTarget, command != Command_Aggressive);
 		}
 		else

@@ -402,7 +402,7 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 			int target = TR_GetEntityIndex(swingTrace);	
 			if(IsValidEnemy(client, target))
 			{
-				vec = WorldSpaceCenterOld(target);
+				WorldSpaceCenter(target, vec);
 			}
 			else
 			{
@@ -485,7 +485,7 @@ public void Blitzkrieg_Kit_Rocket_StartTouch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);;
 		
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);

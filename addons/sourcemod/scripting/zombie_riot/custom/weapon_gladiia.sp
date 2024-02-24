@@ -543,7 +543,7 @@ void Gladiia_WandTouch(int entity, int target)
 		float vecForward[3], Entity_Position[3];
 		GetEntPropVector(entity, Prop_Send, "m_angRotation", vecForward);
 		GetAngleVectors(vecForward, vecForward, NULL_VECTOR, NULL_VECTOR);
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);;
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);

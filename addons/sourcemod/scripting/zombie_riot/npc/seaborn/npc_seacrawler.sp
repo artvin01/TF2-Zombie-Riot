@@ -109,7 +109,7 @@ public void SeaCrawler_ClotThink(int iNPC)
 			npc.m_iAttacksTillReload--;
 			npc.PlayAngerSound();
 
-			float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+			float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 			spawnRing_Vectors(vecMe, 100.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 800.0);
 			Explode_Logic_Custom(i_NpcInternalId[npc.index] == SEACRAWLER_ALT ? 60.0 : 45.0, -1, npc.index, -1, vecMe, 400.0, _, _, true, _, false, 1.0, SeaCrawler_ExplodePost);
 			// 300 x 0.15
@@ -133,8 +133,9 @@ public void SeaCrawler_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
@@ -158,7 +159,8 @@ public void SeaCrawler_ClotThink(int iNPC)
 
 public void SeaCrawler_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
-	ParticleEffectAt(WorldSpaceCenterOld(victim), "water_bulletsplash01", 3.0);
+	float EnemyVecPos[3]; WorldSpaceCenter(victim, EnemyVecPos);
+	ParticleEffectAt(EnemyVecPos, "water_bulletsplash01", 3.0);
 	SeaSlider_AddNeuralDamage(victim, attacker, RoundToCeil(damage));
 }
 

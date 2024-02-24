@@ -254,7 +254,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 	if(IsValidAlly(npc.index, npc.m_iTargetAlly) && IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTargetally[3]; vecTargetally = WorldSpaceCenterOld(npc.m_iTargetAlly);
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float vecPos[3]; vecPos = WorldSpaceCenterOld(npc.index);
 		
 		float distanceToAlly = GetVectorDistance(vecTargetally, vecPos, true);
@@ -288,7 +288,8 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+								npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -323,7 +324,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 		if(npc.m_iTarget > 0 && npc.m_iTargetWalkTo > 0)	// We have a target
 		{
 			float vecPos[3]; vecPos = WorldSpaceCenterOld(npc.index);
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 			
 			float distance = GetVectorDistance(vecTarget, vecPos, true);
 			if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)	// Close at any time: Melee
