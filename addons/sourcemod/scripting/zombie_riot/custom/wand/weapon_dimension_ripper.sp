@@ -331,7 +331,7 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 		case 1:
 			Dimension_Summon_Npc(client, XENO_BATTLE_MEDIC_MAIN ,weapon, 1.2, 1.0, "utaunt_smoke_floor1_green");
 		case 2:
-			Dimension_Summon_Npc(client, XENO_SPY_MAIN_BOSS ,weapon, 2.0, 1.2, "utaunt_smoke_floor1_green");
+			Dimension_Summon_Npc(client, XENO_SPY_MAIN_BOSS ,weapon, 1.75, 1.2, "utaunt_smoke_floor1_green");
 		case 3:
 			Dimension_Summon_Npc(client, XENO_SOLDIER_ROCKET_ZOMBIE ,weapon, 1.1, 1.2, "utaunt_smoke_floor1_green");
 		default: //This should not happen
