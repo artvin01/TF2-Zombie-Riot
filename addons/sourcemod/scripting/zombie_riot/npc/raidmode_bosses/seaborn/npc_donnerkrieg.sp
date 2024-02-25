@@ -686,9 +686,10 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 			//CPrintToChatAll("Initial Donner Logic");
 		}
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 		if(!b_Crystal_active)
 		{
@@ -698,7 +699,8 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 							
 			//Body pitch
 			float v[3], ang[3];
-			SubtractVectors(WorldSpaceCenterOld(npc.index), vecTarget, v); 
+			float SelfVec[3]; WorldSpaceCenter(npc.index, SelfVec);
+			SubtractVectors(SelfVec, vecTarget, v); 
 			NormalizeVector(v, v);
 			GetVectorAngles(v, ang); 
 									
@@ -781,9 +783,9 @@ static void Donner_Movement(int client, int PrimaryThreatIndex, float GameTime)
 {
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
 	
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);	
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 	npc.m_flSpeed = 300.0;
 
@@ -812,7 +814,7 @@ static void Donner_Movement(int client, int PrimaryThreatIndex, float GameTime)
 				npc.m_bAllowBackWalking=true;
 				npc.StartPathing();
 				float vBackoffPos[3];
-				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true);
 
 				npc.StartPathing();
@@ -848,7 +850,7 @@ static void Donner_Movement(int client, int PrimaryThreatIndex, float GameTime)
 	{
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 						
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		} 
@@ -1158,7 +1160,7 @@ static void Heavens_Light_Charging(int ref, float ratio)
 		Base_Dist = 150.0;
 		
 	float UserLoc[3], UserAng[3];
-	UserLoc = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, UserLoc);
 	
 	UserAng[0] = 0.0;
 	UserAng[1] = fl_Heavens_Angle;
@@ -1285,12 +1287,10 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(Raidboss_Donnerkrieg npc, int P
 
 	schwert_retreat=true;	//while using the cannon, schwert protects donner
 	
-	//float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 	
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+	
+	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
-	//float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(PrimaryThreatIndex), true);
-	
 	float GameTime = GetGameTime(npc.index);
 	if(!npc.m_bInKame)
 	{
@@ -1327,7 +1327,7 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(Raidboss_Donnerkrieg npc, int P
 			{
 				npc.StartPathing();
 				float vBackoffPos[3];
-				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true);
 
 				if(fl_nightmare_grace_period[npc.index]<GameTime)
@@ -1549,7 +1549,7 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 	float Range = 150.0;
 
 	float UserLoc[3];
-	UserLoc = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, UserLoc);
 	UserLoc[2]+=75.0;
 
 	for(int Ion=0 ; Ion < Amt1 ; Ion++)
@@ -1673,7 +1673,7 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 static bool Heavens_Fall_Clearance_Check(Raidboss_Donnerkrieg npc, float &Return_Dist, float Max_Distance)
 {
 	float UserLoc[3], Angles[3];
-	UserLoc = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, UserLoc);
 	Max_Distance+=Max_Distance*0.1;
 	float distance = Max_Distance;
 	float Distances[361];
@@ -1958,7 +1958,8 @@ static Action Donner_Nightmare_Offset(Handle timer, int client)
 		f_NpcTurnPenalty[npc.index] = 0.1;	//:)
 		npc.SetPlaybackRate(0.0);
 		npc.SetCycle(0.23);
-		ParticleEffectAt(WorldSpaceCenterOld(npc.index), "eyeboss_death_vortex", 1.0);
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		ParticleEffectAt(WorldSpaceVec, "eyeboss_death_vortex", 1.0);
 		EmitSoundToAll("mvm/mvm_tank_ping.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
 		
 		fl_nightmare_end_timer[npc.index] = GetGameTime(npc.index) + DONNERKRIEG_NIGHTMARE_CANNON_DURATION+1.5;
@@ -2011,7 +2012,8 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 	int wave = ZR_GetWaveCount()+1;
 
 	int ally = EntRefToEntIndex(i_ally_index);
-	ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	if(!b_donner_said_win_line)
 	{
 		if(wave<60)
@@ -2127,7 +2129,7 @@ static bool Donnerkrieg_Is_Target_Infront(Raidboss_Donnerkrieg npc, float Radius
 {
 	float startPoint[3], angles[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, startPoint);
 	startPoint[2] += 50.0;
 	int iPitch = npc.LookupPoseParameter("body_pitch");
 	if(iPitch < 0)
@@ -2136,7 +2138,7 @@ static bool Donnerkrieg_Is_Target_Infront(Raidboss_Donnerkrieg npc, float Radius
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, startPoint);
 	startPoint[2] += 50.0;
 
 	b_hit_something=false;
@@ -2397,7 +2399,8 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 							
 		//Body pitch
 		float v[3], ang[3];
-		SubtractVectors(WorldSpaceCenterOld(npc.index), vecNPC, v); 
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		SubtractVectors(WorldSpaceVec, vecNPC, v); 
 		NormalizeVector(v, v);
 		GetVectorAngles(v, ang); 
 									
@@ -2426,7 +2429,7 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 	angles[0] = flPitch;
 
 	float Pos[3];
-	Pos = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, Pos);
 	Pos[2]+=50.0;
 
 	int infection = 0;
@@ -2540,7 +2543,7 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 					{
 						if(IsValidEnemy(npc.index, i))
 						{
-							float current_loc[3], vecAngles[3]; current_loc = GetAbsOriginOld(i);
+							float current_loc[3], vecAngles[3]; GetAbsOrigin(i, current_loc);
 							MakeVectorFromPoints(endPoint, current_loc, vecAngles);
 							GetVectorAngles(vecAngles, vecAngles);
 							float Dist2 = 2000.0;
@@ -2728,7 +2731,8 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					{
 						Dmg *= 5.0;
 					}
-					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);
 				}
 				case 1:
 				{
@@ -2739,7 +2743,8 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					{
 						Dmg *= 5.0;
 					}
-					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/12), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/12), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);
 
 					int damage = RoundToFloor(dps*0.01);
 					if(damage < 4)
@@ -2791,7 +2796,7 @@ public void Donnerkrieg_Invoke_Crstaline_Reflection(int client, float Target[3],
 	{
 		if(IsValidClient(i))
 		{
-			float loc[3] ; loc = GetAbsOriginOld(i);
+			float loc[3] ; GetAbsOrigin(i, loc);
 			loc[0] +=GetRandomFloat(-75.0,75.0);
 			loc[1] +=GetRandomFloat(-75.0,75.0);
 			loc[2] +=GetRandomFloat(-75.0,75.0);
@@ -2814,7 +2819,7 @@ static int Create_Crystal(int client, float vecTarget[3], float damage, float ro
 	float vecForward[3], vecSwingStart[3], vecAngles[3];
 	npc.GetVectors(vecForward, vecSwingStart, vecAngles);
 										
-	vecSwingStart = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, vecSwingStart);
 	vecSwingStart[2] += 54.0;
 										
 	MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
@@ -3222,7 +3227,7 @@ static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
 	Handle trace; 
 	
 	float pos_enemy[3];
-	pos_enemy = WorldSpaceCenterOld(enemy);
+	WorldSpaceCenter(enemy, pos_enemy);
 
 	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, attacker);
 	int Traced_Target;
@@ -3384,7 +3389,7 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 static bool Divine_Intervention_Check(Raidboss_Donnerkrieg npc, float Min_Dist)
 {
 	float UserLoc[3], Angles[3];
-	UserLoc = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, UserLoc);
 	
 	int Total_Hit = 0;
 	

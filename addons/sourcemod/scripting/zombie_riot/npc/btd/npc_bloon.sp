@@ -564,16 +564,18 @@ public void Bloon_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 													
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			
-			NPC_SetGoalVector(npc.index, PredictSubjectPositionOld(npc, PrimaryThreatIndex));
+			
+			float VecPredictPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, VecPredictPos);
+			NPC_SetGoalVector(npc.index, VecPredictPos);
 		}
 		else
 		{
@@ -585,6 +587,7 @@ public void Bloon_ClotThink(int iNPC)
 			if(npc.m_flNextMeleeAttack < gameTime)
 			{
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
+				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				
 				for(int i; i<9; i++)
 				{
@@ -594,22 +597,22 @@ public void Bloon_ClotThink(int iNPC)
 						{
 							if(npc.m_bFortified)
 							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 1.0 + float(i) * 1.4, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 1.0 + float(i) * 1.4, DMG_CLUB, -1, _, WorldSpaceVec);
 							}
 							else
 							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 1.0 + float(i), DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 1.0 + float(i), DMG_CLUB, -1, _, WorldSpaceVec);
 							}
 						}
 						else
 						{
 							if(npc.m_bFortified)
 							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, (2.0 + float(i) * 4.2) * 2.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, (2.0 + float(i) * 4.2) * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
 							}
 							else
 							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, (2.0 + float(i) * 3.0) * 2.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, (2.0 + float(i) * 3.0) * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
 							}
 						}
 						//delete swingTrace;

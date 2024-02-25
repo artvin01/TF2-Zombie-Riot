@@ -277,9 +277,10 @@ static void ClotThink(int iNPC)
 		int Anchor_Id=-1;
 		Ruina_Independant_Long_Range_Npc_Logic(npc.index, PrimaryThreatIndex, GameTime, Anchor_Id); //handles movement
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		if(!IsValidEntity(Anchor_Id))
 		{
@@ -338,7 +339,7 @@ static void Malius_Effects_Attack(Malius npc, float Target_Vec[3], int GetCloses
 {
 	int amt = 2;
 	float Npc_Loc[3];
-	Npc_Loc = WorldSpaceCenterOld(npc.index);
+	WorldSpaceCenter(npc.index, Npc_Loc);
 	float Ratio_Core = 180.0/(amt);
 
 	Npc_Loc[2]+=50.0;
@@ -375,10 +376,10 @@ static void Malius_Effects_Attack(Malius npc, float Target_Vec[3], int GetCloses
 		float projectile_speed = 500.0;
 		//lets pretend we have a projectile.
 		if(flDistanceToTarget < 1250.0*1250.0)
-			vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+			PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 		if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 		{
-			vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+			WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
 		}
 		float DamageDone = 25.0;
 		npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_red_crit", false, true, true, endLoc,_,_, 10.0);
@@ -395,9 +396,10 @@ static void Malius_SelfDefense(Malius npc, float gameTime, int Anchor_Id)	//ty a
 	{
 		return;
 	}
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 	if(flDistanceToTarget < (1000.0*1000.0))
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
@@ -423,11 +425,11 @@ static void Malius_SelfDefense(Malius npc, float gameTime, int Anchor_Id)	//ty a
 			if(IsValidEnemy(npc.index,target))
 			{
 				GetClosestEnemyToAttack = target;
-				vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
 
 				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
 
-				flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+				flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				if(gameTime > npc.m_flNextRangedAttack)
 				{
 					npc.PlayRangedSound();

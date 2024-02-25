@@ -243,7 +243,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 			npc.FaceTowards(vecTarget, 20000.0);
 		}
 
@@ -277,13 +277,14 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -444,8 +445,8 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 
 	float vecTarget[3];
 	float vecTarget_2[3];
-	vecTarget = WorldSpaceCenterOld(target);
-	vecTarget_2 = WorldSpaceCenterOld(target);
+	WorldSpaceCenter(target, vecTarget );
+	WorldSpaceCenter(target, vecTarget_2);
 
 	bool first_target = true;
 	bool enemy_died = false;
@@ -486,7 +487,7 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 			{
 				if(!enemy_died)
 				{
-					vecTarget = WorldSpaceCenterOld(PreviousTarget);
+					WorldSpaceCenter(PreviousTarget, vecTarget);
 				}
 				else
 				{
@@ -496,7 +497,7 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 
 			first_target = false;
 			
-			vecTarget_2 = WorldSpaceCenterOld(enemy);
+			WorldSpaceCenter(enemy, vecTarget_2);
 			enemy_died = false;
 			float vehit_save[3];
 			GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vehit_save);

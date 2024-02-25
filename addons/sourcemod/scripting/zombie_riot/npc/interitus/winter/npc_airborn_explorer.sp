@@ -202,13 +202,14 @@ public void WinterAirbornExplorer_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -307,7 +308,7 @@ void WinterAirbornExplorerSelfDefense(WinterAirbornExplorer npc, float gameTime,
 				{
 					static float flMyPos_2[3];
 					flMyPos[2] += 250.0;
-					flMyPos_2 = WorldSpaceCenterOld(Enemy_I_See);
+					WorldSpaceCenter(Enemy_I_See, flMyPos_2);
 
 					flMyPos[0] = flMyPos_2[0];
 					flMyPos[1] = flMyPos_2[1];
@@ -331,7 +332,8 @@ void WinterAirbornExplorerSelfDefense(WinterAirbornExplorer npc, float gameTime,
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			static float MaxVec[3];
 			static float MinVec[3];
 			MaxVec = {64.0,64.0,64.0};

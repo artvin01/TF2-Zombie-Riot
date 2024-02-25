@@ -357,8 +357,9 @@ public void Vader_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		/* if(npc.m_flJumpCooldown < GetGameTime() && npc.m_flInJump < GetGameTime() && flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)
 		{
@@ -386,7 +387,7 @@ public void Vader_ClotThink(int iNPC)
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 				
 				NPC_SetGoalVector(npc.index, vPredictedPos);
@@ -425,7 +426,8 @@ public void Vader_ClotThink(int iNPC)
 					//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
 					
 					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+					MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -438,14 +440,14 @@ public void Vader_ClotThink(int iNPC)
 					NormalizeVector(vecDir, vecDir);
 					
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_RH"), PATTACH_POINT_FOLLOW, true);
-					
+					float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 					if(EscapeModeForNpc)
 					{
-						FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 550.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 50.0, 550.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 					else
 					{
-						FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 35.0 * RaidModeScaling, 550.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 35.0 * RaidModeScaling, 550.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 				}
 			}

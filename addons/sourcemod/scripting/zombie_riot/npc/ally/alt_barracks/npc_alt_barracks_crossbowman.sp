@@ -102,8 +102,9 @@ public void Barrack_Alt_Crossbowmedic_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			if(flDistanceToTarget < 1562500.0)
 			{
@@ -117,7 +118,7 @@ public void Barrack_Alt_Crossbowmedic_ClotThink(int iNPC)
 						float speed = 750.0;
 						if(flDistanceToTarget < 562500)	//Doesn't predict over 750 hu
 						{
-							vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, speed);
+							PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 						}
 						npc.m_flSpeed = 0.0;
 						npc.FaceTowards(vecTarget, 30000.0);

@@ -394,11 +394,14 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default} here, now STAY NEAR ME!");
 						}
 					}
-					ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
+					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+					float WorldSpaceVec2[3]; WorldSpaceCenter(AllyEntity, WorldSpaceVec2);
+
+					ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 					EmitSoundToAll("misc/halloween/spell_teleport.wav", npc.index, SNDCHAN_STATIC, 90, _, 0.8);
 					float victimPos1[3];
 					GetEntPropVector(AllyEntity, Prop_Data, "m_vecAbsOrigin", victimPos1); 
-					ParticleEffectAt(WorldSpaceCenterOld(AllyEntity), "teleported_blue", 0.5);
+					ParticleEffectAt(WorldSpaceVec2, "teleported_blue", 0.5);
 					TeleportEntity(npc.index, victimPos1, NULL_VECTOR, NULL_VECTOR);
 					npc.m_iTarget = -1;
 					i_GogglesHurtTalkMessage[npc.index] = 0;
@@ -452,7 +455,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		int closestTarget = GetClosestAllyPlayer(npc.index);
 		if(IsValidEntity(closestTarget))
 		{
-			npc.FaceTowards(WorldSpaceCenterOld(closestTarget), 100.0);
+			float WorldSpaceVec[3]; WorldSpaceCenter(closestTarget, WorldSpaceVec);
+			npc.FaceTowards(WorldSpaceVec, 100.0);
 		}
 		if(IsValidEntity(npc.m_iWearable3))
 			RemoveEntity(npc.m_iWearable3);
@@ -601,13 +605,13 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 	if(npc.m_iTarget > 0)
 	{
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 		float vecAlly[3];
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float distance = GetVectorDistance(vecTarget, vecMe, true);
 		if(distance < npc.GetLeadRadius()) 
 		{
-			vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vecTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 		}
 		else
@@ -679,7 +683,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 		if(!alone && tier > 0 && npc.m_flBuffCooldown < gameTime && !NpcStats_IsEnemySilenced(npc.index))
 		{
-			vecAlly = WorldSpaceCenterOld(ally);
+			WorldSpaceCenter(ally, vecAlly);
 			if(GetVectorDistance(vecAlly, vecMe, true) < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, ally))
 			{
 				// Buff Silver
@@ -710,7 +714,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		}
 		else if(!alone && tier > 1 && (npc.m_iGunType == 1 || npc.m_iGunType == 2) && npc.m_flPiggyCooldown < gameTime)
 		{
-			vecAlly = WorldSpaceCenterOld(ally);
+			WorldSpaceCenter(ally, vecAlly);
 			if(GetVectorDistance(vecAlly, vecMe, true) < 20000.0)	// 140 HU
 			{
 				// Enable piggyback
@@ -772,7 +776,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 										PlaySound = true;
 										int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 										float vecHit[3];
-										vecHit = WorldSpaceCenterOld(target);
+										WorldSpaceCenter(target, vecHit);
 
 										KillFeed_SetKillIcon(npc.index, "club");
 
@@ -872,7 +876,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 
 							if(distance < 1000000.0 && !NpcStats_IsEnemySilenced(npc.index))	// 1000 HU
-								vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1500.0);
+								PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1500.0, _,vecTarget);
 							
 							npc.FaceTowards(vecTarget, 30000.0);
 							

@@ -87,7 +87,7 @@ methodmap SeaSpewer < CClotBody
 
 		if(carrier)
 		{
-			float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+			float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 			vecMe[2] += 100.0;
 
 			npc.m_iWearable1 = ParticleEffectAt(vecMe, "powerup_icon_precision", -1.0);
@@ -149,13 +149,13 @@ public void SeaSpewer_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float distance = GetVectorDistance(vecTarget, vecMe, true);		
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -177,7 +177,7 @@ public void SeaSpewer_ClotThink(int iNPC)
 
 				for(int i; i < count; i++)
 				{
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, enemy[i], 1200.0);
+					PredictSubjectPositionForProjectiles(npc, enemy[i], 1200.0, _,vecTarget);
 
 					int entity = npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPEWER_ALT ? 240.0 : 195.0, 1200.0, "models/weapons/w_bugbait.mdl");
 					// 650 * 0.3
@@ -196,7 +196,7 @@ public void SeaSpewer_ClotThink(int iNPC)
 						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(entity, 100, 100, 255, 255);
 
-						vecTarget = WorldSpaceCenterOld(entity);
+						WorldSpaceCenter(entity, vecTarget);
 						f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "rockettrail_bubbles", 3.0);
 						SetParent(entity, f_ArrowTrailParticle[entity]);
 						f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
@@ -235,7 +235,7 @@ static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int c
 		{
 			if(silenced || !SeaFounder_TouchingNethersea(client))
 			{
-				vecTarget = WorldSpaceCenterOld(client);
+				WorldSpaceCenter(client, vecTarget );
 				if(GetVectorDistance(vecTarget, vecMe, true) > 48400.0)	// 1.1 * 200
 					continue;
 			}
@@ -253,7 +253,7 @@ static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int c
 			{
 				if(silenced || !SeaFounder_TouchingNethersea(entity))
 				{
-					vecTarget = WorldSpaceCenterOld(entity);
+					WorldSpaceCenter(entity, vecTarget);
 					if(GetVectorDistance(vecTarget, vecMe, true) > 48400.0)	// 1.1 * 200
 						continue;
 				}
@@ -275,7 +275,7 @@ static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int c
 				{
 					if(silenced || building.bBuildingIsStacked || !SeaFounder_TouchingNethersea(entity))
 					{
-						vecTarget = WorldSpaceCenterOld(entity);
+						WorldSpaceCenter(entity, vecTarget);
 						if(GetVectorDistance(vecTarget, vecMe, true) > 48400.0)	// 1.1 * 200
 							continue;
 					}

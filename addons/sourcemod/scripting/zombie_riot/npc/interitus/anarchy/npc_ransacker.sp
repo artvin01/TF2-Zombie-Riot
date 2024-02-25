@@ -182,13 +182,14 @@ public void AnarchyRansacker_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -269,7 +270,7 @@ void AnarchyRansackerSelfDefense(AnarchyRansacker npc, float gameTime, int targe
 		if(npc.m_flNextRangedAttack < gameTime)
 		{
 			float EnemyPos[3];
-			EnemyPos = WorldSpaceCenterOld(npc.m_iTarget);
+			WorldSpaceCenter(npc.m_iTarget, EnemyPos);
 			npc.FaceTowards(EnemyPos, 15000.0);
 			npc.FireArrow(EnemyPos, 75.0, 1200.0, "models/workshop_partner/weapons/c_models/c_sd_cleaver/c_sd_cleaver.mdl");
 
@@ -300,7 +301,8 @@ void AnarchyRansackerSelfDefense(AnarchyRansacker npc, float gameTime, int targe
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 			{
 							

@@ -401,9 +401,11 @@ static float Fantasy_Blade_Tele(int client, int weapon, float damage, float rang
 			
 			if(times_hurt>10)
 				break;
-			VictimPos = WorldSpaceCenterOld(HitEntitiesTeleportTrace[entity_traced]);
+			WorldSpaceCenter(HitEntitiesTeleportTrace[entity_traced], VictimPos);
 
-			SDKHooks_TakeDamage(HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 / damage_reduction, DMG_CLUB, weapon, CalculateExplosiveDamageForceOld(abspos, VictimPos, 5000.0), VictimPos, false);	
+			float ExplodePos[3]; CalculateExplosiveDamageForce(abspos, VictimPos, 5000.0, ExplodePos);
+
+			SDKHooks_TakeDamage(HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 / damage_reduction, DMG_CLUB, weapon, ExplodePos, VictimPos, false);	
 			damage_reduction *= ExplosionDmgMultihitFalloff;
 			Teleport_CD--;
 			times_hurt++;
@@ -711,7 +713,7 @@ static void Horizontal_Slicer(int client, float vecTarget[3], float Range, float
 {
 	vecTarget[2] -= 10.0;
 	float Vec_offset[3]; Vec_offset = vecTarget;
-	float Npc_Vec[3]; Npc_Vec = WorldSpaceCenterOld(client);
+	float Npc_Vec[3]; WorldSpaceCenter(client, Npc_Vec);
 	
 	switch(GetRandomInt(1, 2))
 	{

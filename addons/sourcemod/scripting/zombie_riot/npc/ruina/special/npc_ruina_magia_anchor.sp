@@ -354,7 +354,7 @@ static void ClotThink(int iNPC)
 	//	SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
 		fl_ruina_battery[npc.index]=333.0;
 
-		float Npc_Loc[3]; Npc_Loc = GetAbsOriginOld(npc.index);
+		float Npc_Loc[3]; GetAbsOrigin(npc.index, Npc_Loc);
 
 		for(int i=0 ; i <MAGIA_ANCHOR_MAX_IONS ; i++)
 		{
@@ -374,7 +374,7 @@ static void Summon_Stellar_Weaver(Magia_Anchor npc)
 	maxhealth = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	
 	maxhealth = RoundToFloor(maxhealth*1.5);
-	float Npc_Loc[3]; Npc_Loc = GetAbsOriginOld(npc.index);
+	float Npc_Loc[3]; GetAbsOrigin(npc.index, Npc_Loc);
 	int spawn_index = NPC_CreateByName("npc_ruina_stellar_weaver", npc.index, Npc_Loc, ang, GetTeam(npc.index));
 	if(spawn_index > MaxClients)
 	{

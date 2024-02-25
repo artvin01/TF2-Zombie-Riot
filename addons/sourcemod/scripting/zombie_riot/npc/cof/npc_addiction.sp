@@ -129,171 +129,6 @@ methodmap Addicition < CClotBody
 		this.m_flSpeed = 220.0;
 	}
 }
-/*
-public void Addicition_ClotThink(int iNPC)
-{
-	Addicition npc = view_as<Addicition>(iNPC);
-	
-	float gameTime = GetGameTime(npc.index);
-	if(npc.m_flNextThinkTime > gameTime)
-		return;
-	
-	npc.m_flNextThinkTime = gameTime + 0.04;
-	npc.Update();
-	npc.PlayIdleSound();
-	
-	if(npc.m_bLostHalfHealth)
-	{
-		npc.m_flMeleeArmor = 1.0 - Pow(0.98, float(Zombies_Currently_Still_Ongoing));
-		npc.m_flRangedArmor = npc.m_flMeleeArmor;
-	}
-	else if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2)
-	{
-		npc.SetHalfLifeStats();
-	}
-	
-	if(npc.m_flRangedSpecialDelay > 1.0)
-	{
-		if(npc.m_flRangedSpecialDelay < gameTime)
-		{
-			npc.m_flRangedSpecialDelay = 1.0;
-			
-			float vecMe[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecMe); 
-			vecMe[2] += 45;
-			
-			makeexplosion(npc.index, npc.index, vecMe, "", 2000, 1000, 1000.0);
-			
-			npc.m_flRangedSpecialDelay = 0.0;
-			npc.PlayLightningSound();
-		}
-		
-		return;
-	}
-	
-	if(npc.m_flAttackHappens)
-	{
-		if(npc.m_flAttackHappens < gameTime)
-		{
-			npc.m_flAttackHappens = 0.0;
-			
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
-			{
-				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
-				{
-					int target = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					
-					if(target > 0) 
-					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 600.0, DMG_CLUB);
-					}
-				}
-				delete swingTrace;
-			}
-		}
-		
-		return;
-	}
-	
-	if(npc.m_flReloadDelay > gameTime)
-	{
-		if(npc.m_bPathing)
-		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
-		}
-		return;
-	}
-	
-	if(npc.m_flRangedSpecialDelay == 1.0)
-		npc.m_flRangedSpecialDelay = 0.0;
-	
-	if(npc.m_flGetClosestTargetTime < gameTime)
-	{
-		npc.m_flGetClosestTargetTime = gameTime + 0.5;
-		npc.m_iTarget = GetClosestTarget(npc.index);
-	}
-	
-	if(npc.m_iTarget > 0)
-	{
-		if(!IsValidEnemy(npc.index, npc.m_iTarget))
-		{
-			//Stop chasing dead target.
-			npc.m_iTarget = 0;
-			npc.m_flGetClosestTargetTime = 0.0;
-		}
-		else
-		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-			
-			float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
-			if(distance < 40000.0 && npc.m_flNextMeleeAttack < gameTime)
-			{
-				npc.FaceTowards(vecTarget, 15000.0);
-				
-				npc.SetActivity("ACT_IDLE");
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-				npc.PlayAttackSound();
-				
-				npc.m_flAttackHappens = gameTime + 0.4;
-				npc.m_flReloadDelay = gameTime + 0.6;
-				npc.m_flNextMeleeAttack = gameTime + 1.3;
-				
-				if(npc.m_bPathing)
-				{
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
-				}
-			}
-			else if(distance < 200000.0 && npc.m_flNextRangedSpecialAttack < gameTime)
-			{
-				npc.SetActivity("ACT_LIGHTNING");
-				
-				npc.m_flRangedSpecialDelay = gameTime + 3.0;
-				npc.m_flReloadDelay = gameTime + 5.0;
-				npc.m_flNextRangedSpecialAttack = gameTime + 30.0;
-				
-				if(npc.m_bPathing)
-				{
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
-				}
-			}
-			else
-			{
-				npc.SetActivity(npc.m_bLostHalfHealth ? "ACT_RUN_HALFLIFE" : "ACT_RUN");
-				
-				if(distance > 29000.0)
-				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
-				}
-				else
-				{
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
-				}
-				npc.StartPathing();
-			}
-			
-			return;
-		}
-	}
-	
-	if(npc.m_bPathing)
-	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
-	}
-	
-	npc.m_flGetClosestTargetTime = 0.0;
-	npc.SetActivity("ACT_IDLE");
-}
-*/
 
 public void Addicition_ClotThink(int iNPC)
 {
@@ -352,13 +187,14 @@ public void Addicition_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
@@ -409,7 +245,7 @@ public void Addicition_ClotThink(int iNPC)
 					
 					float vEnd[3];
 					
-					vEnd = GetAbsOriginOld(npc.m_iTarget);
+					GetAbsOrigin(npc.m_iTarget, vEnd);
 					Handle pack;
 					CreateDataTimer(ADDICTION_CHARGE_SPAN, Smite_Timer_Addiction, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 					WritePackCell(pack, EntIndexToEntRef(npc.index));

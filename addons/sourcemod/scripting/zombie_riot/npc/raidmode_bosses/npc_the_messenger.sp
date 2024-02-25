@@ -511,8 +511,9 @@ public void TheMessenger_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int SetGoalVectorIndex = 0;
 		SetGoalVectorIndex = TheMessengerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		
@@ -525,7 +526,7 @@ public void TheMessenger_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3];
-					vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 					Messanger_Elemental_Attack_FingerPoint(npc);
 				}
@@ -538,7 +539,7 @@ public void TheMessenger_ClotThink(int iNPC)
 			{
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
-				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
 			}
 		}
@@ -761,7 +762,7 @@ bool Messanger_Elemental_Attack_FingerPoint(TheMessenger npc)
 		if(npc.m_flJumpStartTimeInternal < GetGameTime(npc.index) && npc.m_flSwitchCooldown > GetGameTime(npc.index))
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			vPredictedPos = GetBehindTarget(npc.m_iTarget, 30.0 ,vPredictedPos);
 			static float hullcheckmaxs[3];
 			static float hullcheckmins[3];
@@ -769,14 +770,15 @@ bool Messanger_Elemental_Attack_FingerPoint(TheMessenger npc)
 			hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
 
 			float PreviousPos[3];
-			PreviousPos = WorldSpaceCenterOld(npc.index);
+			WorldSpaceCenter(npc.index, PreviousPos);
 			
 			bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
 			if(Succeed)
 			{
 				npc.PlayTeleportSound();
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 				ParticleEffectAt(PreviousPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-				ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+				ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						
 				npc.m_flJumpStartTimeInternal = 0.0;
 				MessengerResetAndDelayAttack(npc.index);
@@ -813,7 +815,8 @@ public void TheMessenger_NPCDeath(int entity)
 	
 	if(!b_thisNpcIsARaid[npc.index])
 	{
-		ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 		npc.PlayDeathSound();	
 	}
 
@@ -963,7 +966,7 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 					npc.m_iTarget = Enemy_I_See;
 					npc.PlayRangedSound();
-					float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+					float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 					npc.FaceTowards(vecTarget, 20000.0);
 					int projectile;
 					float Proj_Damage = 18.0 * RaidModeScaling;
@@ -1039,7 +1042,8 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 			{
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
@@ -1052,7 +1056,7 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 							PlaySound = true;
 							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
-							vecHit = WorldSpaceCenterOld(targetTrace);
+							WorldSpaceCenter(targetTrace, vecHit);
 
 							float damage = 24.0;
 							damage *= 1.15;
@@ -1240,7 +1244,7 @@ void MessengerInitiateGroupAttack(TheMessenger npc)
 			npc.PlayProjectileSound();
 			int Target = enemy[i];
 			float vecHit[3];
-			vecHit = WorldSpaceCenterOld(Target);
+			WorldSpaceCenter(Target, vecHit);
 			float vecHitPart[3];
 			GetEntPropVector(npc.m_iWearable2, Prop_Data, "m_vecAbsOrigin", vecHitPart);
 

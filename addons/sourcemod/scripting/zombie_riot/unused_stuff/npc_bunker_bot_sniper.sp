@@ -228,14 +228,15 @@ public void BunkerBotSniper_ClotThink(int iNPC)
 				SetVariantString("1.0");
 				AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 			}
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius())
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
@@ -304,14 +305,15 @@ public void BunkerBotSniper_ClotThink(int iNPC)
 		}
 		else if(!npc.Anger)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -341,7 +343,7 @@ public void BunkerBotSniper_ClotThink(int iNPC)
 				}
 				else
 				{
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1400.0);
+					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0, vecTarget);
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 					npc.FaceTowards(vecTarget, 10000.0);
@@ -360,7 +362,8 @@ public void BunkerBotSniper_ClotThink(int iNPC)
 					float vecDirShooting[3], vecRight[3], vecUp[3];
 					
 					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -383,7 +386,6 @@ public void BunkerBotSniper_ClotThink(int iNPC)
 					
 					npc.FireArrow(vecTarget, 30.0, 1400.0, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 0.7);
 					
-					//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 					npc.PlayRangedSound();
 				}
 			}

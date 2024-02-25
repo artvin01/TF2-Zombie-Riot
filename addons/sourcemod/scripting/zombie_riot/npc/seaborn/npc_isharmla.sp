@@ -65,7 +65,7 @@ methodmap Isharmla < CClotBody
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSALPHA);
 		npc.m_bTeamGlowDefault = true;
 
-		if(!ally && !IsValidEntity(RaidBossActive))
+		if(ally != TFTeam_Red && !IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
@@ -73,7 +73,7 @@ methodmap Isharmla < CClotBody
 			RaidAllowsBuildings = true;
 		}
 
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 		vecMe[2] += 500.0;
 		npc.m_iWearable2 = ParticleEffectAt(vecMe, "env_rain_512", -1.0);
 		SetParent(npc.index, npc.m_iWearable2);
@@ -243,11 +243,11 @@ public void Isharmla_ClotThink(int iNPC)
 				npc.m_flAttackHappens = 0.0;
 				npc.PlayMeleeSound();
 				
-				float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+				float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 
 				if(IsValidAlly(npc.index, npc.m_iTarget))
 				{
-					float vecAlly[3]; vecAlly = WorldSpaceCenterOld(npc.m_iTarget);
+					float vecAlly[3]; WorldSpaceCenter(npc.m_iTarget, vecAlly);
 
 					int healing = npc.Anger ? 24000 : 16000;
 
@@ -285,7 +285,7 @@ public void Isharmla_ClotThink(int iNPC)
 				int ally = GetClosestAlly(npc.index, _, npc.m_iTarget);
 				if(ally > 0)
 				{
-					float vecAlly[3]; vecAlly = WorldSpaceCenterOld(ally);
+					float vecAlly[3]; WorldSpaceCenter(ally, vecAlly);
 
 					int healing = npc.Anger ? 24000 : 16000;
 

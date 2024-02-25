@@ -547,7 +547,8 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		int closestTarget = GetClosestAllyPlayer(npc.index);
 		if(IsValidEntity(closestTarget))
 		{
-			npc.FaceTowards(WorldSpaceCenterOld(closestTarget), 100.0);
+			float WorldSpaceVec[3]; WorldSpaceCenter(closestTarget, WorldSpaceVec);
+			npc.FaceTowards(WorldSpaceVec, 100.0);
 		}
 		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
 		int ally = EntRefToEntIndex(i_RaidDuoAllyIndex);
@@ -711,7 +712,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	{
 		if(IsValidEntity(npc.m_iTargetWalkTo))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetWalkTo);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
 			npc.FaceTowards(vecTarget, 80.0);
 		}
 		NPC_StopPathing(npc.index);
@@ -995,9 +996,10 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		int ActionToTake = -1;
 
 		//Predict their pos.
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetWalkTo);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTargetWalkTo);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			NPC_SetGoalVector(npc.index, vPredictedPos);
@@ -1013,7 +1015,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			
 		//Body pitch
 		float v[3], ang[3];
-		SubtractVectors(WorldSpaceCenterOld(npc.index), WorldSpaceCenterOld(npc.m_iTargetWalkTo), v); 
+		SubtractVectors(VecSelfNpc, vecTarget, v); 
 		NormalizeVector(v, v);
 		GetVectorAngles(v, ang); 
 				
@@ -1460,7 +1462,8 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 			{
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 20000.0);
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
+				npc.FaceTowards(WorldSpaceVec, 20000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
@@ -1473,7 +1476,7 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 							PlaySound = true;
 							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
-							vecHit = WorldSpaceCenterOld(target);
+							WorldSpaceCenter(target, vecHit);
 							float damage = 24.0;
 							float damage_rage = 28.0;
 							if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
@@ -1531,9 +1534,10 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget)) 
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			if(flDistanceToTarget < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 			{
@@ -1609,7 +1613,7 @@ public Action contact_throw_Silvester_entity(int client)
 	else
 	{
 		char classname[60];
-		chargerPos = WorldSpaceCenterOld(client);
+		WorldSpaceCenter(client, chargerPos);
 		for(int entity=1; entity <= MAXENTITIES; entity++)
 		{
 			if (IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
@@ -1617,7 +1621,7 @@ public Action contact_throw_Silvester_entity(int client)
 				GetEntityClassname(entity, classname, sizeof(classname));
 				if (!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
 				{
-					targPos = WorldSpaceCenterOld(entity);
+					WorldSpaceCenter(entity, targPos);
 					if (GetVectorDistance(chargerPos, targPos, true) <= (250.0* 250.0) && GetTeam(entity)!=GetTeam(client))
 					{
 						if (!b_AlreadyHitTankThrow[client][entity] && entity != client)
@@ -2088,7 +2092,7 @@ static void Silvester_GetBeamDrawStartPoint(int client, float startPoint[3])
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(client);
@@ -2098,7 +2102,7 @@ static void Silvester_GetBeamDrawStartPoint(int client, float startPoint[3])
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == Silvester_BEAM_BeamOffset[client][0] && 0.0 == Silvester_BEAM_BeamOffset[client][1] && 0.0 == Silvester_BEAM_BeamOffset[client][2])
@@ -2152,7 +2156,7 @@ public Action Silvester_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOriginOld(client);
+		GetAbsOrigin(client, startPoint);
 		startPoint[2] += 75.0;
 
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, Silvester_BEAM_TraceWallsOnly);
@@ -2196,8 +2200,8 @@ public Action Silvester_TBB_Tick(int client)
 					{
 						damage *= 3.0; //give 3x dmg to anything
 					}
-
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
+					float vic_vec[3]; WorldSpaceCenter(victim, vic_vec);
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, vic_vec);	// 2048 is DMG_NOGIB?
 				}
 			}
 			

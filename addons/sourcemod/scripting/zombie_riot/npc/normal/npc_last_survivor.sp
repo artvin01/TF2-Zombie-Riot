@@ -284,7 +284,7 @@ methodmap FatherGrigori < CClotBody
 			float vecForward[3], vecSwingStart[3], vecAngles[3];
 			this.GetVectors(vecForward, vecSwingStart, vecAngles);
 	
-			vecSwingStart = GetAbsOriginOld(this.index);
+			GetAbsOrigin(this.index, vecSwingStart);
 			vecSwingStart[2] += 90.0;
 	
 			MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
@@ -354,14 +354,15 @@ public void FatherGrigori_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest, true))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
+		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -375,7 +376,7 @@ public void FatherGrigori_ClotThink(int iNPC)
 		
 		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && npc.m_flDoingAnimation < GetGameTime(npc.index) && flDistanceToTarget < 202500)
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 			if (!npc.Anger)
 			{
 				npc.FaceTowards(vecTarget, 1000.0);

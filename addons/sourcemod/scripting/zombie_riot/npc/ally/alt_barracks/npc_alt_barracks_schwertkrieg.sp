@@ -212,7 +212,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 				if(PrimaryThreatIndex>0)
 				{
 					vaild = true;
-				 	vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+				 	WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				}
 				
 				
@@ -225,14 +225,15 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 						teleport = true;
 						teletime = 45.0;
 						Emergency_Teleport = false;
-						teleport_target_vec = WorldSpaceCenterOld(npc_owner);
+						WorldSpaceCenter(npc_owner, teleport_target_vec);
 						teleport_target_vec[2] += 200.0;
 					}
 					case 2:	//aggresive
 					{
 						if(vaild)
 						{
-							float target_dist = GetVectorDistance(WorldSpaceCenterOld(npc.index), vecTarget);
+							float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);		
+							float target_dist = GetVectorDistance(WorldSpaceVec, vecTarget);
 							if (target_dist < 2500.0)	//target is within range, Murder
 							{
 								teletime = 15.0;
@@ -258,8 +259,8 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 					{
 						if(vaild)
 						{
-							
-							float target_dist = GetVectorDistance(WorldSpaceCenterOld(npc.index), vecTarget);
+							float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+							float target_dist = GetVectorDistance(WorldSpaceVec, vecTarget);
 							if (target_dist < 300.0)	//target is within range, Murder
 							{
 								//CPrintToChatAll("Defensive tele");
@@ -286,7 +287,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 						//CPrintToChatAll("retreat tele");
 						teletime = 20.0;
 						teleport = true;
-						teleport_target_vec = WorldSpaceCenterOld(npc_owner);
+						WorldSpaceCenter(npc_owner, teleport_target_vec);
 						
 						teleport_target_vec[2] += 200.0;
 					}
@@ -303,7 +304,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 					
 					npc.FaceTowards(teleport_target_vec);
 					npc.FaceTowards(teleport_target_vec);
-					float current_loc[3]; current_loc = WorldSpaceCenterOld(npc.index);
+					float current_loc[3]; WorldSpaceCenter(npc.index, current_loc);
 					npc.m_flNextTeleport = GameTime + teletime * npc.BonusFireRate;
 					float Tele_Check = GetVectorDistance(current_loc, teleport_target_vec);
 					
@@ -319,7 +320,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 							npc.PlayTeleportSound();
 							
 							float time = 1.0;
-							current_loc = WorldSpaceCenterOld(npc.index);
+							WorldSpaceCenter(npc.index, current_loc);
 							spawnRing_Vectors(current_loc, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, time, 4.0, 0.1, 1, 1.0);
 							Explode_Logic_Custom(Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),15000.0, 1), GetClientOfUserId(npc.OwnerUserId), npc.index, -1, current_loc, 325*2.0 ,_,0.8, false);
 							current_loc[2] -= 500.0;
@@ -340,8 +341,9 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{

@@ -452,7 +452,6 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/pets.sp"
 #include "zombie_riot/custom/coin_flip.sp"
 #include "zombie_riot/custom/weapon_manual_reload.sp"
-#include "zombie_riot/custom/weapon_atomic.sp"
 #include "zombie_riot/custom/weapon_super_star_shooter.sp"
 #include "zombie_riot/custom/weapon_Texan_business.sp"
 #include "zombie_riot/custom/weapon_explosivebullets.sp"
@@ -710,7 +709,6 @@ void ZR_MapStart()
 	Wand_Cryo_Precache();
 	Vampire_Knives_Precache();
 	Fusion_Melee_OnMapStart();
-	Atomic_MapStart();
 	SSS_Map_Precache();
 	ExplosiveBullets_Precache();
 	Quantum_Gear_Map_Precache();

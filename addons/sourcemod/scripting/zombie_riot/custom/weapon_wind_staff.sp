@@ -502,14 +502,15 @@ static void TBB_Tick(int client)
 			{
 				if(IsValidEntity(BEAM_BuildingHit[building]))
 				{
-					playerPos = WorldSpaceCenterOld(BEAM_BuildingHit[building]);
+					WorldSpaceCenter(BEAM_BuildingHit[building], playerPos);
 					
 					float distance = GetVectorDistance(startPoint, playerPos, false);
 					float damage = BEAM_CloseBuildingDPT[client] + (BEAM_FarBuildingDPT[client]-BEAM_CloseBuildingDPT[client]) * (distance/BEAM_MaxDistance[client]);
 					if (damage < 0)
 						damage *= -1.0;
 
-					SDKHooks_TakeDamage(BEAM_BuildingHit[building], client, client, damage/BEAM_Targets_Hit[client], DMG_PLASMA, weapon_active, CalculateDamageForceOld(vecForward, 10000.0), playerPos);	// 2048 is DMG_NOGIB?
+					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
+					SDKHooks_TakeDamage(BEAM_BuildingHit[building], client, client, damage/BEAM_Targets_Hit[client], DMG_PLASMA, weapon_active, damage_force, playerPos);	// 2048 is DMG_NOGIB?
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF; //sneaky. DONT do 1.25.
 				}
 				else
@@ -629,10 +630,10 @@ public Action Event_Tornado_OnHatTouch(int entity, int other)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 		//Code to do damage position and ragdolls
-		
-		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0),Entity_Position);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, Dmg_Force,Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)

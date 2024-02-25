@@ -431,12 +431,11 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			float vecForward[3];
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			static float Entity_Position[3];
-			Entity_Position = WorldSpaceCenterOld(attacker);
+			WorldSpaceCenter(attacker, Entity_Position );
 
 			f_BoardReflectCooldown[victim][attacker] = GetGameTime() + 0.1;
 			
-			float ReflectPosVec[3];
-			ReflectPosVec = CalculateDamageForceOld(vecForward, 10000.0);
+			float ReflectPosVec[3]; CalculateDamageForce(vecForward, 10000.0, ReflectPosVec);
 			DataPack pack = new DataPack();
 			pack.WriteCell(EntIndexToEntRef(attacker));
 			pack.WriteCell(EntIndexToEntRef(victim));

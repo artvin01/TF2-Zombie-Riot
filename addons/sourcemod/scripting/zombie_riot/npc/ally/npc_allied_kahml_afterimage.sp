@@ -160,8 +160,9 @@ static void Internal_Npc_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = 0;
 		//no enemy valid, run back to papa
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(owner);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(owner, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
 		npc.m_bAllowBackWalking = false;
 
@@ -170,7 +171,7 @@ static void Internal_Npc_ClotThink(int iNPC)
 			NPC_StartPathing(npc.index);
 			if(flDistanceToTarget < npc.GetLeadRadius()) 
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, owner);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, owner,_,_, vPredictedPos);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 
@@ -185,8 +186,9 @@ static void Internal_Npc_ClotThink(int iNPC)
 	}
 	else
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int SetGoalVectorIndex = 0;
 		SetGoalVectorIndex = ChaosKahmlsteinAllySelfDefense(npc, npc.m_iTarget, flDistanceToTarget, owner); 
 		switch(SetGoalVectorIndex)
@@ -198,7 +200,7 @@ static void Internal_Npc_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3];
-					vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
@@ -210,7 +212,7 @@ static void Internal_Npc_ClotThink(int iNPC)
 			{
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
-				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
 			}
 		}
@@ -261,7 +263,7 @@ int ChaosKahmlsteinAllySelfDefense(AlliedKahmlAbility npc, int target, float dis
 		{
 			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",true, 0.09, _, 4.0);
 			npc.PlayRangedSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 			npc.FaceTowards(vecTarget, 20000.0);
 			int projectile;
 			float Proj_Damage = fl_heal_cooldown[npc.index];

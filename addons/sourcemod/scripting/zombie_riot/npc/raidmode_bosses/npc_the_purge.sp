@@ -313,12 +313,12 @@ static void ClotThink(int iNPC)
 
 	if(target > 0)
 	{
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float distance = GetVectorDistance(vecTarget, vecMe, true);
 		if(distance < npc.GetLeadRadius()) 
 		{
-			vecTarget = PredictSubjectPositionOld(npc, target);
+			PredictSubjectPosition(npc, target,_,_,vecTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 		}
 		else
@@ -604,7 +604,7 @@ static void ClotThink(int iNPC)
 					{
 						if(GetURandomInt() % 2)
 						{
-							vecTarget = PredictSubjectPositionForProjectilesOld(npc, target, 900.0);
+							PredictSubjectPositionForProjectiles(npc, target, 900.0,_,vecTarget);
 						}
 						else
 						{
@@ -630,7 +630,7 @@ static void ClotThink(int iNPC)
 						npc.PlayGrenadeSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 
-						vecTarget = PredictSubjectPositionForProjectilesOld(npc, target, 1000.0);
+						PredictSubjectPositionForProjectiles(npc, target, 1000.0, _,vecTarget);
 						npc.FireGrenade(vecTarget, 1000.0, RaidModeScaling, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl");
 
 						npc.m_flNextMeleeAttack = gameTime + 0.45;
@@ -647,8 +647,9 @@ static void ClotThink(int iNPC)
 				if(npc.m_flNextMeleeAttack < gameTime)
 				{
 					KillFeed_SetKillIcon(npc.index, "minigun");
-					
-					npc.FaceTowards(WorldSpaceCenterOld(target), 8000.0);
+					float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
+
+					npc.FaceTowards(WorldSpaceVec, 8000.0);
 					
 					npc.PlayMinigunSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
@@ -724,7 +725,7 @@ static void ClotDeathLoopThink(int iNPC)
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
-	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 	CPrintToChatAll("{darkblue}??????????{default}: You will regret this.");
 				
 	npc.PlayBoomSound();

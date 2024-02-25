@@ -139,8 +139,9 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -168,7 +169,7 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 							IsharMlarWaterAttack_Invoke(npc.index, enemy[i]);
 						}
 					}
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1000.0);
+					PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1000.0,_,vecTarget);
 					npc.FireParticleRocket(vecTarget, npc.Anger ? 750.0 : 500.0, 1000.0, 275.0, "drg_cow_rockettrail_burst_charged_blue", true, true, _, _, EP_DEALS_DROWN_DAMAGE);
 				}
 			}
@@ -205,7 +206,7 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 		{
 			if(distance < npc.GetLeadRadius())
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 
@@ -273,7 +274,7 @@ public void IsharMlarWaterAttack_Invoke(int ref, int enemy)
 		float Dmg=500.0;
 		
 		float vecTarget[3];
-		vecTarget = WorldSpaceCenterOld(enemy);
+		WorldSpaceCenter(enemy, vecTarget );
 		vecTarget[2] += 1.0;
 		
 		
@@ -283,7 +284,7 @@ public void IsharMlarWaterAttack_Invoke(int ref, int enemy)
 		color[2] = 255;
 		color[3] = 255;
 		float UserLoc[3];
-		UserLoc = GetAbsOriginOld(entity);
+		GetAbsOrigin(entity, UserLoc);
 		
 		UserLoc[2]+=75.0;
 		

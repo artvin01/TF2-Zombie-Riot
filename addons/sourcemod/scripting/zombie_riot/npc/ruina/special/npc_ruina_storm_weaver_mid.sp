@@ -193,7 +193,7 @@ static void ClotThink(int iNPC)
 		if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 		{
 			float vecTarget[3];
-			vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 
 			if(GameTime > npc.m_flNextRangedAttack)
 			{

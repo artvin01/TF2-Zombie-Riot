@@ -262,9 +262,10 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			
 			if(i_ammo_count[npc.index]==0 && !b_we_are_reloading[npc.index] && !b_target_close[npc.index])	//the npc will prefer to fully reload the clip before attacking, unless the target is too close.
@@ -311,7 +312,7 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 				{
 					float vBackoffPos[3];
 					
-					vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
+					BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 					
 					NPC_SetGoalVector(npc.index, vBackoffPos, true);
 				}
@@ -332,7 +333,7 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 					{
 						//Play attack anim
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-						vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 750.0);
+						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 750.0, _,vecTarget);
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.PlayMeleeSound();
 						float dmg = 12.5;
@@ -361,7 +362,7 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 			if(flDistanceToTarget < npc.GetLeadRadius())
 			{
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				/*
 				int color[4];
 				color[0] = 255;

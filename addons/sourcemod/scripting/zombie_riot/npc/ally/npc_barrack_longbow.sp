@@ -41,8 +41,9 @@ public void BarrackLongbow_ClotThink(int iNPC)
 
 		if(npc.m_iTarget > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			if(flDistanceToTarget < 320000.0)
 			{
@@ -79,7 +80,7 @@ void BarrackLongbow_HandleAnimEvent(int entity, int event)
 		
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			float vecTarget[3]; vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 2000.0);
+			float vecTarget[3]; PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 2000.0,_, vecTarget);
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSound();

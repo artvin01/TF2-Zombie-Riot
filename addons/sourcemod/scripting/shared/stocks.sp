@@ -1547,13 +1547,6 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 	return entity!=data;
 }
 
-stock float[] GetAbsOriginOld(int client)
-{
-	float v[3];
-	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
-	return v;
-}
-
 stock void GetAbsOrigin(int client, float v[3])
 {
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
@@ -1573,19 +1566,6 @@ stock bool IsValidClient( int client)
 		
 	return true; 
 }
-
-#if defined ZR
-stock float[] GetWorldSpaceCenterOld(int client)
-{
-	float v[3]; v = GetAbsOriginOld(client);
-	
-	float max_space[3];
-	GetEntPropVector(client, Prop_Data, "m_vecMaxs", max_space);
-	v[2] += max_space[2] / 2;
-	
-	return v;
-}
-#endif
 
 stock void GetWorldSpaceCenter(int client, float v[3])
 {
@@ -2569,16 +2549,6 @@ void TE_SendBeam(int client, float m_vecMins[3], float m_vecMaxs[3], float flDur
 	TE_SendToClient(client);
 }
 
-/*
-float[] CalculateBulletDamageForceOld( const float vecBulletDir[3], float flScale )
-{
-	float vecForce[3]; vecForce = vecBulletDir;
-	NormalizeVector( vecForce, vecForce );
-	ScaleVector(vecForce, FindConVar("phys_pushscale").FloatValue);
-	ScaleVector(vecForce, flScale);
-	return vecForce;
-}
-*/
 
 stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 {
@@ -2620,16 +2590,6 @@ stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	return 0;
 }
 
-#if defined ZR
-float[] CalculateDamageForceOld( const float vecBulletDir[3], float flScale )
-{
-	float vecForce[3]; vecForce = vecBulletDir;
-	NormalizeVector( vecForce, vecForce );
-	ScaleVector(vecForce, FindConVar("phys_pushscale").FloatValue);
-	ScaleVector(vecForce, flScale);
-	return vecForce;
-}
-#endif
 
 stock void CalculateDamageForce( const float vecBulletDir[3], float flScale, float vecForce[3])
 {
@@ -2657,14 +2617,6 @@ float ImpulseScale( float flTargetMass, float flDesiredSpeed )
 
 #define INNER_RADIUS_FRACTION 0.25
 
-#if defined ZR
-stock float[] CalculateExplosiveDamageForceOld(const float vec_Explosive[3], const float vecEndPosition[3], float damage_Radius)
-{
-	float v[3];
-	CalculateExplosiveDamageForce(vec_Explosive, vecEndPosition, damage_Radius, v);
-	return v;
-}
-#endif
 
 void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vecEndPosition[3], float damage_Radius, float vecForce[3])
 {

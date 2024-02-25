@@ -896,8 +896,8 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 	if(npc.m_iTarget > 0 && healthPoints < 20)
 	{
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 
 		switch(npc.m_iAttackType)
 		{
@@ -1014,7 +1014,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			}
 			case 9:
 			{
-				vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				PredictSubjectPosition(npc, npc.m_iTarget,_,_, vecTarget);
 				NPC_SetGoalVector(npc.index, vecTarget);
 
 				npc.FaceTowards(vecTarget, 20000.0);
@@ -1039,7 +1039,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 								PlaySound = true;
 								int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 								float vecHit[3];
-								vecHit = WorldSpaceCenterOld(target);
+								WorldSpaceCenter(target, vecHit);
 
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_CLUB, -1, _, vecHit);	
 								
@@ -1131,7 +1131,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				float distance = GetVectorDistance(vecTarget, vecMe, true);
 				if(distance < npc.GetLeadRadius()) 
 				{
-					vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vecTarget);
 					NPC_SetGoalVector(npc.index, vecTarget);
 				}
 				else
@@ -1158,7 +1158,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						npc.m_iAttackType = 11;
 						npc.m_flAttackHappens = gameTime + 0.5;
 						
-						vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1600.0);
+						PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1600.0,_,vecTarget);
 						npc.FireRocket(vecTarget, 600.0, 1600.0, "models/weapons/w_bullet.mdl", 2.0);
 						npc.PlayGunSound();
 
@@ -1244,7 +1244,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 						if(EnemyToPull)
 						{
-							vecTarget = PredictSubjectPositionOld(npc, EnemyToPull);
+							PredictSubjectPosition(npc, EnemyToPull,_,_,vecTarget);
 							npc.FaceTowards(vecTarget, 50000.0);
 							
 							if(!npc.m_bFakeClone)
@@ -1256,7 +1256,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							//Take their old position and nuke it.
 							float vEnd[3];
 					
-							vEnd = GetAbsOriginOld(EnemyToPull);
+							GetAbsOrigin(EnemyToPull, vEnd);
 							Handle pack;
 							CreateDataTimer(BOB_CHARGE_SPAN, Smite_Timer_Bob, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 							WritePackCell(pack, EntIndexToEntRef(npc.index));
@@ -1291,7 +1291,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						
 						npc.m_flNextMeleeAttack = gameTime + 10.0;
 						npc.StopPathing();
-						vecMe = WorldSpaceCenterOld(npc.index);
+						WorldSpaceCenter(npc.index, vecMe);
 
 						switch(GetURandomInt() % 3)
 						{
@@ -1394,7 +1394,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						float distance = GetVectorDistance(vecTarget, vecMe, true);
 						if(distance < npc.GetLeadRadius()) 
 						{
-							vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
+							PredictSubjectPosition(npc, npc.m_iTarget,_,_, vecTarget);
 							NPC_SetGoalVector(npc.index, vecTarget);
 						}
 						else
@@ -1845,12 +1845,12 @@ stock void BobPullTarget(int bobnpc, int enemy)
 	//pull player
 	float vecMe[3];
 	float vecTarget[3];
-	vecMe = WorldSpaceCenterOld(npc.index);
+	WorldSpaceCenter(npc.index, vecMe);
 	if(enemy <= MaxClients)
 	{
 		static float angles[3];
 		
-		vecTarget = WorldSpaceCenterOld(enemy);
+		WorldSpaceCenter(enemy, vecTarget );
 		GetVectorAnglesTwoPoints(vecTarget, vecMe, angles);
 		
 		if(GetEntityFlags(enemy) & FL_ONGROUND)
@@ -2059,7 +2059,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 				{
 					FreezeNpcInTime(victim, 1.5);
 					
-					hullMin = WorldSpaceCenterOld(victim);
+					WorldSpaceCenter(victim, hullMin);
 					hullMin[2] += 100.0; //Jump up.
 					PluginBot_Jump(victim, hullMin);
 				}

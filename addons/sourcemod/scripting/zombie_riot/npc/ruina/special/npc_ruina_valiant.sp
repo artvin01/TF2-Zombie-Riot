@@ -305,8 +305,8 @@ static void ClotThink(int iNPC)
 		fl_ruina_battery_timer[npc.index] = GameTime+30.0;	//A set timeout for rebuild an anchor.
 		float Anchor_Loc[3], Npc_Loc[3];
 
-		Anchor_Loc = WorldSpaceCenterOld(Anchor);
-		Npc_Loc = WorldSpaceCenterOld(npc.index);
+		WorldSpaceCenter(Anchor, Anchor_Loc);
+		WorldSpaceCenter(npc.index, Npc_Loc);
 
 		float dist = GetVectorDistance(Anchor_Loc, Npc_Loc, true);
 
@@ -377,9 +377,10 @@ static void ClotThink(int iNPC)
 			npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 			npc.m_iChanged_WalkCycle = 0;
 		}
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 		if(flDistanceToTarget < (2000.0*2000.0))
 		{
@@ -519,8 +520,9 @@ static void Venium_Build_Anchor(Valiant npc)
 		
 	AproxRandomSpaceToWalkTo[2] += 18.0;
 	AproxRandomSpaceToWalkTo[2] += 18.0;
-		
-	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceCenterOld(npc.index), true);
+	
+	float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
+	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, npc_vec, true);
 		
 	if(flDistanceToBuild < (2000.0 * 2000.0) && i_failsafe[npc.index] <= RUINA_ANCHOR_FAILSAFE_AMMOUNT)
 	{
@@ -551,9 +553,10 @@ static void Venium_Post_Bult_Logic(Valiant npc, int PrimaryThreatIndex, float Ga
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.5)
 		{

@@ -163,7 +163,7 @@ public void SeaReaper_ClotThink(int iNPC)
 	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))
 		npc.m_iTarget = 0;
 	
-	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -179,12 +179,12 @@ public void SeaReaper_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float distance = npc.Anger ? GetVectorDistance(vecTarget, vecMe, true) : FAR_FUTURE;		
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -257,7 +257,8 @@ public void SeaReaper_ClotThink(int iNPC)
 
 public void SeaRepear_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
-	ParticleEffectAt(WorldSpaceCenterOld(victim), "water_bulletsplash01", 1.5);
+	float vic_vec[3]; WorldSpaceCenter(victim, vic_vec);
+	ParticleEffectAt(vic_vec, "water_bulletsplash01", 1.5);
 	SeaSlider_AddNeuralDamage(victim, attacker, i_NpcInternalId[attacker] == SEAREAPER_ALT ? 15 : 12);
 	// 400 x 0.2 x 0.15
 	// 500 x 0.2 x 0.15

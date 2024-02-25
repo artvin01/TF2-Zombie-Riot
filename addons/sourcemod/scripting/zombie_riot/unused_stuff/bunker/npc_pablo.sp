@@ -637,12 +637,13 @@ public void Pablo_Gonzales_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);	
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 			/*int color[4];
 			color[0] = 255;
 			color[1] = 255;
@@ -671,7 +672,7 @@ public void Pablo_Gonzales_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1400.0);
+				PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0, vecTarget);
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
@@ -697,7 +698,8 @@ public void Pablo_Gonzales_ClotThink(int iNPC)
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+				float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -736,16 +738,16 @@ public void Pablo_Gonzales_ClotThink(int iNPC)
 					}
 					npc.PlayLeShitengler();
 				}
-				
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 				if(b_FinalGunUsage[npc.index])
 				{
 					if(b_Lifeloss[npc.index])
 					{
-						FireBullet(npc.index, npc.m_iWearable3, WorldSpaceCenterOld(npc.index), vecDir, 600.0, 9000.0, DMG_BULLET|DMG_CRIT, "bullet_tracer01_red");
+						FireBullet(npc.index, npc.m_iWearable3, WorldSpaceVec, vecDir, 600.0, 9000.0, DMG_BULLET|DMG_CRIT, "bullet_tracer01_red");
 					}
 					else
 					{
-						FireBullet(npc.index, npc.m_iWearable3, WorldSpaceCenterOld(npc.index), vecDir, 600.0, 2000.0, DMG_BULLET, "bullet_tracer01_red");
+						FireBullet(npc.index, npc.m_iWearable3, WorldSpaceVec, vecDir, 600.0, 2000.0, DMG_BULLET, "bullet_tracer01_red");
 					}
 					npc.PlayRangedSound();
 				}
