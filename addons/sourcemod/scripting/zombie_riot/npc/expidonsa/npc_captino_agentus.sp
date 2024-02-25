@@ -275,17 +275,18 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 		if(IsEnemyBuilding)
 			npc.i_GunMode = 0;
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
 		npc.m_bAllowBackWalking = false;
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			if(!IsEnemyBuilding)
 			{
 				float vPredictedPos[3];
 				b_TryToAvoidTraverse[npc.index] = false;
-				vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 				vPredictedPos = GetBehindTarget(npc.m_iTarget, 30.0 ,vPredictedPos);
 				AntiCheeseReply = DiversionAntiCheese(npc.m_iTarget, npc.index, vPredictedPos);
 				b_TryToAvoidTraverse[npc.index] = true;
@@ -304,7 +305,7 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 						hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
 
 						float PreviousPos[3];
-						PreviousPos = WorldSpaceCenterOld(npc.index);
+						WorldSpaceCenter(npc.index, PreviousPos);
 						
 						bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
 						if(Succeed)
@@ -325,8 +326,11 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 							}
 							npc.PlayTeleportSound();
 							ParticleEffectAt(PreviousPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-							ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-							npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+							
+							float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+							ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+							float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+							npc.FaceTowards(VecEnemy, 15000.0);
 							npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 12.5;
 							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7; //so they cant instastab you!
 						}
@@ -344,7 +348,7 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 					{
 						npc.m_bAllowBackWalking = true;
 						float vBackoffPos[3];
-						vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+						BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
 						NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
 					}
 					else
@@ -360,7 +364,7 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 					NPC_StartPathing(npc.index);
 
 				float vPredictedPos[3];
-				vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 		}
@@ -442,7 +446,8 @@ public void CaptinoAgentus_NPCDeath(int entity)
 }
 void CaptinoAgentusSelfDefenseRanged(CaptinoAgentus npc, float gameTime, int target)
 {
-	npc.FaceTowards(WorldSpaceCenterOld(target), 15000.0);
+	float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
+	npc.FaceTowards(WorldSpaceVec, 15000.0);
 	if(gameTime > npc.m_flNextRangedAttack)
 	{
 		npc.PlayZapSound();
@@ -450,7 +455,7 @@ void CaptinoAgentusSelfDefenseRanged(CaptinoAgentus npc, float gameTime, int tar
 		npc.m_flDoingAnimation = gameTime + 0.25;
 		npc.m_flNextRangedAttack = gameTime + 1.2;
 		float damageDealt = 125.0;
-		SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, WorldSpaceCenterOld(target));
+		SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, WorldSpaceVec);
 		if(IsValidEntity(npc.m_iWearable7))
 			RemoveEntity(npc.m_iWearable7);
 
@@ -478,7 +483,8 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 				npc.AddGesture("ACT_MP_ATTACK_STAND_GRENADE_BUILDING");
 			}
 
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			Handle swingTrace;
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Ignore barricades
 			{
@@ -509,7 +515,8 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 			int Enemy_I_See;					
 			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.PlayMeleeSound();

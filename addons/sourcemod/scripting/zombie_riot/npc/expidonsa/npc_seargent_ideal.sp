@@ -315,13 +315,14 @@ public void SeargentIdeal_ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -460,9 +461,10 @@ void SeargentIdealSelfDefense(SeargentIdeal npc, float gameTime)
 	{
 		SeargentIdealSelfDefenseMelee(npc,gameTime,GetClosestEnemyToAttack);
 	}
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 	{
 		if(npc.m_iChanged_WalkCycle != 5)
@@ -487,10 +489,10 @@ void SeargentIdealSelfDefense(SeargentIdeal npc, float gameTime)
 				//This will predict as its relatively easy to dodge
 				float projectile_speed = 800.0;
 				//lets pretend we have a projectile.
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 				{
-					vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
 				}
 				float DamageDone = 25.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "drg_cow_rockettrail_burst_charged_blue", false, true, false,_,_,_,10.0);
@@ -521,7 +523,8 @@ void SeargentIdealSelfDefenseMelee(SeargentIdeal npc, float gameTime, int target
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(target), 15000.0);
+			float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
+			npc.FaceTowards(WorldSpaceVec, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, target, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 				target = TR_GetEntityIndex(swingTrace);	

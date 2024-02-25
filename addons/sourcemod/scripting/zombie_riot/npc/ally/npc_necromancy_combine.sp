@@ -279,102 +279,103 @@ public void NecroCombine_ClotThink(int iNPC)
 		
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 		{
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				
 			
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
-				//Predict their pos.
-				if(flDistanceToTarget < npc.GetLeadRadius()) {
-					
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
-					/*
-					int color[4];
-					color[0] = 255;
-					color[1] = 255;
-					color[2] = 0;
-					color[3] = 255;
+			//Predict their pos.
+			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-					int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
+				/*
+				int color[4];
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 0;
+				color[3] = 255;
+			
+				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
+			
+				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
+				TE_SendToAllInRange(vecTarget, RangeType_Visibility);
+				*/
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			} else {
 				
-					TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-					TE_SendToAllInRange(vecTarget, RangeType_Visibility);
-					*/
-					NPC_SetGoalVector(npc.index, vPredictedPos);
-				} else {
-					
-					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-				}
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			}
+			
+			//Target close enough to hit
+			if((flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
+			{
+			//	npc.FaceTowards(vecTarget, 1000.0);
 				
-				//Target close enough to hit
-				if((flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
+				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 				{
-				//	npc.FaceTowards(vecTarget, 1000.0);
-					
-					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+					if (!npc.m_flAttackHappenswillhappen)
 					{
-						if (!npc.m_flAttackHappenswillhappen)
-						{
-							npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
-							npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
-							npc.PlayMeleeSound();
-							npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
-							npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
-							npc.m_flAttackHappenswillhappen = true;
-						}
-							
-						if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-						{
-							Handle swingTrace;
-							npc.FaceTowards(vecTarget, 40000.0);
-							if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex,_,_,_,2))
+						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
+						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
+						npc.PlayMeleeSound();
+						npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
+						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
+						npc.m_flAttackHappenswillhappen = true;
+					}
+						
+					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					{
+						Handle swingTrace;
+						npc.FaceTowards(vecTarget, 40000.0);
+						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex,_,_,_,2))
+							{
+								
+								int target = TR_GetEntityIndex(swingTrace);	
+								
+								float vecHit[3];
+								TR_GetEndPosition(vecHit, swingTrace);
+								
+								if(target > 0) 
 								{
-									
-									int target = TR_GetEntityIndex(swingTrace);	
-									
-									float vecHit[3];
-									TR_GetEndPosition(vecHit, swingTrace);
-									
-									if(target > 0) 
+									float damage = 65.0;
+									int weapon = GetEntPropEnt(owner, Prop_Send, "m_hActiveWeapon");
+									if(weapon > 0)
 									{
-										float damage = 65.0;
-										int weapon = GetEntPropEnt(owner, Prop_Send, "m_hActiveWeapon");
-										if(weapon > 0)
-										{
-											if(i_CustomWeaponEquipLogic[weapon] != WEAPON_NECRO_WANDS)
-											{
-												damage *= 0.5;
-											}
-										}
-										else
+										if(i_CustomWeaponEquipLogic[weapon] != WEAPON_NECRO_WANDS)
 										{
 											damage *= 0.5;
 										}
-										SDKHooks_TakeDamage(target, owner, owner, (damage * npc.m_flExtraDamage), DMG_PLASMA, -1, _, vecHit); //Do acid so i can filter it well.
-										
-										// Hit particle
-										
-										
-										// Hit sound
-										npc.PlayMeleeHitSound();
-									} 
-								}
-							delete swingTrace;
-							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
-							npc.m_flAttackHappenswillhappen = false;
-						}
-						else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-						{
-							npc.m_flAttackHappenswillhappen = false;
-							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
-						}
+									}
+									else
+									{
+										damage *= 0.5;
+									}
+									SDKHooks_TakeDamage(target, owner, owner, (damage * npc.m_flExtraDamage), DMG_PLASMA, -1, _, vecHit); //Do acid so i can filter it well.
+									
+									// Hit particle
+									
+									
+									// Hit sound
+									npc.PlayMeleeHitSound();
+								} 
+							}
+						delete swingTrace;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
+						npc.m_flAttackHappenswillhappen = false;
+					}
+					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					{
+						npc.m_flAttackHappenswillhappen = false;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
 					}
 				}
-				if (npc.m_flReloadDelay < GetGameTime(npc.index))
-				{
-					npc.StartPathing();
-					
-				}
+			}
+			if (npc.m_flReloadDelay < GetGameTime(npc.index))
+			{
+				npc.StartPathing();
+				
+			}
 		}
 		else
 		{

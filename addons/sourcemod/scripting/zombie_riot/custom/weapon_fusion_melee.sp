@@ -1337,7 +1337,7 @@ void DrawBigSiccerinoSiccors(float Angles[3], int client, float belowBossEyes[3]
 			{
 				if(IsValidEntity(BEAM_BuildingHit[building]))
 				{
-					playerPos = WorldSpaceCenterOld(BEAM_BuildingHit[building]);
+					WorldSpaceCenter(BEAM_BuildingHit[building], playerPos);
 
 					f_SiccerinoExtraDamage[client][BEAM_BuildingHit[building]] += 0.35;
 					DataPack pack1;
@@ -1345,8 +1345,7 @@ void DrawBigSiccerinoSiccors(float Angles[3], int client, float belowBossEyes[3]
 					pack1.WriteCell(EntIndexToEntRef(client));
 					pack1.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));		
 					pack1.WriteFloat(0.35);	
-					float damage_force[3];
-					damage_force = CalculateDamageForceOld(vecForward, 10000.0);
+					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
 					DataPack pack = new DataPack();
 					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
 					pack.WriteCell(EntIndexToEntRef(client));

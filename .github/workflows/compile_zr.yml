@@ -1,6 +1,10 @@
-name: Compile
+name: Compile ZR
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      -master
+  pull_request:
 
 jobs:
   build:
@@ -73,7 +77,6 @@ jobs:
       - name: Compile ${{ matrix.sm-version }}
         run: |
           spcomp -E -O2 -v2 -i "include" -o zombie_riot.smx zombie_riot.sp
-          spcomp -O2 -v2 -i "include" -o fortress_wars.smx fortress_wars.sp
         working-directory: ${{ env.SCRIPTS_PATH }}
       
       - name: Upload Artifacts

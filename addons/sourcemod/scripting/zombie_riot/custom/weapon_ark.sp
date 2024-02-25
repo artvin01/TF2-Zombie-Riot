@@ -382,13 +382,14 @@ public Action Event_Ark_OnHatTouch(int entity, int other)// code responsible for
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 		//Code to do damage position and ragdolls
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(other, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(other, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		if(IsValidEntity(particle) && particle != 0)
 		{
 			RemoveEntity(particle);
@@ -459,7 +460,7 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(attacker);
+		WorldSpaceCenter(attacker, Entity_Position );
 		
 		float flPos[3]; // original
 		float flAng[3]; // original
@@ -480,7 +481,7 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 		RequestFrame(TeleportParticleArk, pack);
 
 		float ReflectPosVec[3];
-		ReflectPosVec = CalculateDamageForceOld(vecForward, 10000.0);
+		CalculateDamageForce(vecForward, 10000.0, ReflectPosVec);
 
 		DataPack packdmg = new DataPack();
 		packdmg.WriteCell(EntIndexToEntRef(attacker));
@@ -664,7 +665,7 @@ public void Melee_LapplandArkTouch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
@@ -694,7 +695,8 @@ public void Melee_LapplandArkTouch(int entity, int target)
 			Weapon_Ark_SilenceAOE(target, LAPPLAND_SILENCE_DUR_ABILITY); //lag comp or not, doesnt matter.
 		}
 
-		SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity], DMG_CLUB, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		
 		
@@ -763,7 +765,7 @@ public Action PerfectHomingShot(Handle timer, DataPack pack)
 void HomingProjectile_TurnToTarget(int enemy, int Projectile)
 {
 	float flTargetPos[3];
-	flTargetPos = WorldSpaceCenterOld(enemy);
+	WorldSpaceCenter(enemy, flTargetPos);
 	float flRocketPos[3];
 	GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", flRocketPos);
 
@@ -1024,7 +1026,7 @@ public void Melee_QuibaiArkTouch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
@@ -1043,7 +1045,8 @@ public void Melee_QuibaiArkTouch(int entity, int target)
 			Weapon_Ark_SilenceAOE(target, QUIBAI_SILENCE_DUR_ABILITY); //lag comp or not, doesnt matter.
 		}
 		ChangeAttackspeedQuibai(owner,weapon);
-		SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity], DMG_CLUB, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		
 		

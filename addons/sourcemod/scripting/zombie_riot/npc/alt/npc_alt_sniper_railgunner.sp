@@ -237,9 +237,10 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 			{
 				npc.m_flSpeed = 170.0;
 			}
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			
 			if(flDistanceToTarget < 1562500)	//1250 range
@@ -257,7 +258,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 					{
 						float vBackoffPos[3];
 						
-						vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
+						BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 						
 						NPC_SetGoalVector(npc.index, vBackoffPos, true);
 					}
@@ -292,7 +293,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 								npc.PlayMeleeSound();
 								if(flDistanceToTarget < 1000000)	//doesn't predict over 1000 hu
 								{
-									vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, speed);
+									PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 								}
 								if(ZR_GetWaveCount()<40)
 								{
@@ -306,7 +307,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 							{
 								if(flDistanceToTarget < 562500)	//Doesn't predict over 750 hu
 								{
-									vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, speed);
+									PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 								}
 								if(ZR_GetWaveCount()<40)
 								{
@@ -337,7 +338,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				/*
 				int color[4];
 				color[0] = 255;

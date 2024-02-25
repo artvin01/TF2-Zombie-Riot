@@ -305,7 +305,7 @@ methodmap XenoFatherGrigori < CClotBody
 			float vecForward[3], vecSwingStart[3], vecAngles[3];
 			this.GetVectors(vecForward, vecSwingStart, vecAngles);
 	
-			vecSwingStart = GetAbsOriginOld(this.index);
+			GetAbsOrigin(this.index, vecSwingStart);
 			vecSwingStart[2] += 90.0;
 	
 			MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
@@ -369,14 +369,15 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
+		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -399,7 +400,7 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 				
 				float projectile_speed = 800.0;
 				
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, closest, projectile_speed);
+				PredictSubjectPositionForProjectiles(npc, closest, projectile_speed,_, vecTarget);
 							
 				npc.PlayMeleeSound();
 				
@@ -414,7 +415,7 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");		
 				float projectile_speed = 800.0;
 				
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, closest, projectile_speed);
+				PredictSubjectPositionForProjectiles(npc, closest, projectile_speed,_, vecTarget);
 							
 				npc.PlayMeleeSound();
 				

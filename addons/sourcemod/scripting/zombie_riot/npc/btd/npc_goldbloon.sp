@@ -237,13 +237,15 @@ public void GoldBloon_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			NPC_SetGoalVector(npc.index, PredictSubjectPositionOld(npc, npc.m_iTarget));
+			float VecSelfNpc1[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_,VecSelfNpc1);
+			NPC_SetGoalVector(npc.index, VecSelfNpc1);
 		}
 		else
 		{
@@ -386,7 +388,8 @@ public Action GoldBloon_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			}
 		}
 		
-		PluginBot_Jump(npc.index, WorldSpaceCenterOld(target));
+		float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
+		PluginBot_Jump(npc.index, WorldSpaceVec);
 	}
 
 	SetEntProp(victim, Prop_Data, "m_iHealth", health - 1);

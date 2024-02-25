@@ -1070,14 +1070,7 @@
 		"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
 	}
-	
-	"Atomic Reconstructor Desc"
-	{
-		"en"	"Consumes mana with each shot, has 2 main attack, Use both in turns for maximum damage."
-		"ru"	"Потребляет ману с каждым выстрелом, имеет 2 основные атаки, используйте обе по очереди для максимального урона."
-		"chi"   "每次射击消耗法力值，有2种攻击模式，轮流使用两种攻击获得最大伤害。"
-	}
-	
+
 	"Necromancy Staff Desc"
 	{
 		"en"	"Consumes mana with each shot. M2 Summons 1 Combine DDT on your side.\nNot having your wand in your hand will disencurage your minion and half its damage."

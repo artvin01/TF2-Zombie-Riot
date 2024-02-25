@@ -208,7 +208,7 @@ methodmap NaziPanzer < CClotBody
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		this.GetVectors(vecForward, vecSwingStart, vecAngles);
 
-		vecSwingStart = GetAbsOriginOld(this.index);
+		GetAbsOrigin(this.index, vecSwingStart);
 		vecSwingStart[2] += 44.0;
 
 		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
@@ -317,13 +317,14 @@ methodmap NaziPanzer < CClotBody
 		
 		float vecForward[3], vecRight[3], vecTarget[3];
 		
-		vecTarget = WorldSpaceCenterOld(target);
-		MakeVectorFromPoints(WorldSpaceCenterOld(this.index), vecTarget, vecForward);
+		WorldSpaceCenter(target, vecTarget );
+		float npc_vec[3]; WorldSpaceCenter(this.index, npc_vec);
+		MakeVectorFromPoints(npc_vec, vecTarget, vecForward);
 		GetVectorAngles(vecForward, vecForward);
 		vecForward[1] = eyePitch[1];
 		GetAngleVectors(vecForward, vecForward, vecRight, vecTarget);
 		
-		float vecSwingStart[3]; vecSwingStart = GetAbsOriginOld(this.index);
+		float vecSwingStart[3]; GetAbsOrigin(this.index, vecSwingStart);
 		vecSwingStart[2] += 44.0;
 		
 		float vecSwingEnd[3];
@@ -456,14 +457,15 @@ public void NaziPanzer_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
+		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 	//		PrintToChatAll("cutoff");
 			NPC_SetGoalVector(npc.index, vPredictedPos);	
 		}
@@ -633,13 +635,13 @@ public void NaziPanzer_ClotThink(int iNPC)
 			target = Can_I_See_Enemy(npc.index, HumanTarget);
 			if (target == HumanTarget)
 			{
-				float vecTargetHook[3]; vecTargetHook = WorldSpaceCenterOld(HumanTarget);
+				float vecTargetHook[3]; WorldSpaceCenter(HumanTarget, vecTargetHook);
 				npc.FaceTowards(vecTargetHook, 20000.0);
 				
 				float projectile_speed = 1200.0;
 			
 				float vPredictedPosHuman[3];
-				vPredictedPosHuman = PredictSubjectPositionForProjectilesOld(npc, HumanTarget, projectile_speed);
+				PredictSubjectPositionForProjectiles(npc, HumanTarget, projectile_speed,_, vPredictedPosHuman);
 				npc.FireHook(vPredictedPosHuman);
 				npc.m_flGrappleCooldown = GetGameTime(npc.index) + 30.0;
 				

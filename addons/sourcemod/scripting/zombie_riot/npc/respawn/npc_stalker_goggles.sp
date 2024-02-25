@@ -251,7 +251,8 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			if(npc.m_iTarget > 0)
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -285,7 +286,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 
 		if(npc.m_bChaseAnger)
 		{
-			LastKnownPos = WorldSpaceCenterOld(npc.m_iTarget);
+			WorldSpaceCenter(npc.m_iTarget, LastKnownPos);
 			float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 
 			int state;
@@ -325,7 +326,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 						{
 							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 
-							float vecTarget[3]; vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 3500.0);
+							float vecTarget[3]; PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 3500.0, _,vecTarget);
 							npc.FaceTowards(vecTarget, 30000.0);
 							
 							npc.PlayRangedSound();
@@ -349,7 +350,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 						npc.StartPathing();
 						if(distance < npc.GetLeadRadius()) 
 						{
-							LastKnownPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+							PredictSubjectPosition(npc, npc.m_iTarget,_,_,LastKnownPos);
 							NPC_SetGoalVector(npc.index, LastKnownPos);
 						}
 						else
@@ -370,7 +371,8 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		else
 		{
 			// Stare at the target, confirm their real before chasing after
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 1000.0);
+			float Targ_Vec[3]; WorldSpaceCenter(npc.m_iTarget, Targ_Vec);
+			npc.FaceTowards(Targ_Vec, 1000.0);
 		}
 	}
 	else
@@ -383,7 +385,8 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		}
 
 		int state;
-		float distance = GetVectorDistance(LastKnownPos, WorldSpaceCenterOld(npc.index), true);
+		float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
+		float distance = GetVectorDistance(LastKnownPos, npc_vec, true);
 		if(npc.m_flDoingAnimation > gameTime)
 		{
 			state = -1;

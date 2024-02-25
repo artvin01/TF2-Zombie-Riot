@@ -177,13 +177,14 @@ public void DesertKhazaan_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -243,7 +244,8 @@ void DesertKhazaanSelfDefense(DesertKhazaan npc, float gameTime, int target, flo
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
@@ -259,10 +261,13 @@ void DesertKhazaanSelfDefense(DesertKhazaan npc, float gameTime, int target, flo
 					{
 						damageDealt *= 2.0;
 						Custom_Knockback(npc.index, target, 550.0, true, true); 
-						fl_TotalArmor[npc.index] = fl_TotalArmor[npc.index] * 0.5;
-						if(fl_TotalArmor[npc.index] < 0.25)
+						if(GetTeam(npc.index) != TFTeam_Red)
 						{
-							fl_TotalArmor[npc.index] = 0.25;
+							fl_TotalArmor[npc.index] = fl_TotalArmor[npc.index] * 0.5;
+							if(fl_TotalArmor[npc.index] < 0.25)
+							{
+								fl_TotalArmor[npc.index] = 0.25;
+							}
 						}
 					}
 					if(ShouldNpcDealBonusDamage(target))

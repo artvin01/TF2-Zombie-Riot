@@ -370,14 +370,13 @@ static void TBB_Tick(int client)
 			{
 				if (IsValidEntity(BeamWand_BuildingHit[building]))
 				{
-					playerPos      = WorldSpaceCenterOld(BeamWand_BuildingHit[building]);
+					WorldSpaceCenter(BeamWand_BuildingHit[building], playerPos);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
 					float damage   = BeamWand_CloseBuildingDPT[client] + (BeamWand_FarBuildingDPT[client] - BeamWand_CloseBuildingDPT[client]) * (distance / BeamWand_MaxDistance[client]);
 					if (damage < 0)
 						damage *= -1.0;
 
-					float damage_force[3];
-					damage_force  = CalculateDamageForceOld(vecForward, 10000.0);
+					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
 					DataPack pack = new DataPack();
 					pack.WriteCell(EntIndexToEntRef(BeamWand_BuildingHit[building]));
 					pack.WriteCell(EntIndexToEntRef(client));

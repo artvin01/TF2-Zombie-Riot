@@ -414,14 +414,14 @@ static int GetRandomMaster(int client)
 static int GetClosestHealer(int client)
 {
 	int valid = -1;
-	float Npc_Vec[3]; Npc_Vec=GetAbsOriginOld(client);
+	float Npc_Vec[3]; GetAbsOrigin(client, Npc_Vec);
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
 		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 		float dist = 99999999.9;
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_npc_healer[baseboss_index] && GetTeam(client) == GetTeam(baseboss_index))
 		{
-			float target_vec[3]; target_vec = GetAbsOriginOld(baseboss_index);
+			float target_vec[3]; GetAbsOrigin(baseboss_index, target_vec);
 			float Distance=GetVectorDistance(Npc_Vec, target_vec, true);
 			if(dist>Distance)
 			{
@@ -434,14 +434,14 @@ static int GetClosestHealer(int client)
 static int GetClosestAnchor(int client)
 {
 	int valid = -1;
-	float Npc_Vec[3]; Npc_Vec=GetAbsOriginOld(client);
+	float Npc_Vec[3]; GetAbsOrigin(client, Npc_Vec);
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
 		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 		float dist = 99999999.9;
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_npc_sniper_anchor_point[baseboss_index] && GetTeam(client) == GetTeam(baseboss_index))
 		{
-			float target_vec[3]; target_vec = GetAbsOriginOld(baseboss_index);
+			float target_vec[3]; GetAbsOrigin(baseboss_index, target_vec);
 			float Distance=GetVectorDistance(Npc_Vec, target_vec, true);
 			if(dist>Distance)
 			{
@@ -542,8 +542,8 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 			if(IsValidEntity(Healer))	//check if its valid in the first place, if not, likey healer doesn't exist
 			{
 				//CPrintToChatAll("Healing Duration 2 | Valid healer | %f", fl_npc_healing_duration[npc.index]);
-				float Master_Loc[3]; Master_Loc = WorldSpaceCenterOld(Healer);
-				float Npc_Loc[3];	Npc_Loc = WorldSpaceCenterOld(npc.index);
+				float Master_Loc[3]; WorldSpaceCenter(Healer, Master_Loc);
+				float Npc_Loc[3];	WorldSpaceCenter(npc.index, Npc_Loc);
 					
 				float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
 
@@ -623,10 +623,11 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 			//CPrintToChatAll("backup target used by npc %i, target is %N", npc.index, PrimaryThreatIndex);
 			b_return = true;
 		}
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-					
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
-			
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		
 		if(b_return)	//basic movement logic for when a npc no longer possese a master.
 		{
 			if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//the almost final check, if it fails it forces a refind.
@@ -634,7 +635,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 									
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+					float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
 							
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
@@ -658,8 +659,8 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 		}
 		else
 		{
-			float Master_Loc[3]; Master_Loc = WorldSpaceCenterOld(Master_Id_Main);
-			float Npc_Loc[3];	Npc_Loc = WorldSpaceCenterOld(npc.index);
+			float Master_Loc[3]; WorldSpaceCenter(Master_Id_Main, Master_Loc);
+			float Npc_Loc[3];	WorldSpaceCenter(npc.index, Npc_Loc);
 			switch(i_npc_type[npc.index])
 			{
 				case RUINA_MELEE_NPC:	//melee, buisness as usual, just the target is the same as the masters
@@ -691,7 +692,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 								if(flDistanceToTarget < npc.GetLeadRadius()) 
 								{
 										
-									float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+									float vPredictedPos[3];  PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
 										
 									NPC_SetGoalVector(npc.index, vPredictedPos);
 								}
@@ -709,7 +710,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 						if(flDistanceToTarget < npc.GetLeadRadius()) 
 						{
 								
-							float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+							float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
 							
 							NPC_SetGoalVector(npc.index, vPredictedPos);
 						}
@@ -749,7 +750,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 					if(flDistanceToTarget < npc.GetLeadRadius()) 
 					{
 									
-						float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+						float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_, vPredictedPos);
 									
 						NPC_SetGoalVector(npc.index, vPredictedPos);
 					}
@@ -768,14 +769,15 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 	}
 	else	//if its a master buisness as usual
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-				
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-						
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
-						
+			
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
+
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -792,13 +794,14 @@ public void Ruina_Basic_Npc_Logic(int iNPC, int PrimaryThreatIndex, float GameTi
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 	if(flDistanceToTarget < npc.GetLeadRadius()) 
-	{				
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
-						
+	{
+		float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
+		
 		NPC_SetGoalVector(npc.index, vPredictedPos);
 	}
 	else 
@@ -827,8 +830,8 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 	}
 	if(IsValidEntity(Anchor_Id))
 	{
-		float Master_Loc[3]; Master_Loc = WorldSpaceCenterOld(Anchor_Id);
-		float Npc_Loc[3];	Npc_Loc = WorldSpaceCenterOld(npc.index);
+		float Master_Loc[3]; WorldSpaceCenter(Anchor_Id, Master_Loc);
+		float Npc_Loc[3];	WorldSpaceCenter(npc.index, Npc_Loc);
 						
 		float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
 						
@@ -849,13 +852,14 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 	}
 	else
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-				
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
-		{				
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
-							
+		{
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_,vPredictedPos);
+			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -1073,7 +1077,8 @@ enum struct Ruina_Self_Defense
 				npc.m_flAttackHappens = 0.0;
 				
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(this.target), this.turn_speed);
+				float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
+				npc.FaceTowards(npc_vec, this.turn_speed);
 				if(npc.DoSwingTrace(swingTrace, this.target)) 
 				{				
 					int new_target = TR_GetEntityIndex(swingTrace);	
@@ -1256,7 +1261,7 @@ public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 		{
 			npc.StartPathing();
 			float vBackoffPos[3];
-			vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
+			BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 			NPC_SetGoalVector(npc.index, vBackoffPos, true);
 			
 		}
@@ -1269,7 +1274,7 @@ public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 	{
 		npc.StartPathing();
 		float vBackoffPos[3];
-		vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
+		BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 		NPC_SetGoalVector(npc.index, vBackoffPos, true);
 	}
 }
@@ -1280,7 +1285,7 @@ public void Stella_Healing_Logic(int iNPC, int Healing, float Range, float GameT
 
 	if(fl_ruina_stella_healing_timer[npc.index]<=GameTime)
 	{
-		float npc_Loc[3]; npc_Loc = GetAbsOriginOld(npc.index); npc_Loc[2]+=10.0;
+		float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc); npc_Loc[2]+=10.0;
 		spawnRing_Vectors(npc_Loc, Range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, cylce_speed, 6.0, 0.1, 1, 1.0);
 		fl_ruina_stella_healing_timer[npc.index]=cylce_speed+GameTime;
 		Apply_Master_Buff(npc.index, RUINA_HEALING_BUFF, Range, 0.0, float(Healing), true);
@@ -1329,7 +1334,7 @@ public void Astria_Teleport_Allies(int iNPC, float Range, int colour[4])
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
-	float npc_Loc[3]; npc_Loc = GetAbsOriginOld(npc.index); npc_Loc[2]+=2.5;
+	float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc); npc_Loc[2]+=2.5;
 	spawnRing_Vectors(npc_Loc, Range*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", colour[0], colour[1], colour[2], colour[3], 1, 0.5, 6.0, 0.1, 1, 1.0);
 
 	Apply_Master_Buff(npc.index, RUINA_TELEPORT_BUFF, Range, 0.0, 0.0);
@@ -1351,21 +1356,21 @@ static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 
 	if(IsValidAlly(npc.index, PrimaryThreatIndex))
 	{
-		vPredictedPos = WorldSpaceCenterOld(PrimaryThreatIndex);	//teleport ontop of their heads :trolley:
+		WorldSpaceCenter(PrimaryThreatIndex, vPredictedPos);	//teleport ontop of their heads :trolley:
 		vPredictedPos[2]+=100.0;
 	}
 	else
 	{
-		vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);	//otherwise just normal buisness xd
+		PredictSubjectPosition(npc, PrimaryThreatIndex,_,_,vPredictedPos);	//otherwise just normal buisness xd
 	}
 	
 
 	float Loc[3];
-	Loc = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, Loc);
 	Loc[2]+=75.0;
 
 	float start_offset[3], end_offset[3];
-	start_offset = WorldSpaceCenterOld(npc.index);
+	WorldSpaceCenter(npc.index, start_offset);
 
 	bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
 	if(Succeed)
@@ -1373,7 +1378,7 @@ static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 		EmitSoundToAll(RUINA_ASTRIA_TELEPORT_SOUND, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 		b_ruina_allow_teleport[npc.index]=false;
-		float npc_Loc[3]; npc_Loc = GetAbsOriginOld(npc.index); npc_Loc[2]+=10.0;
+		float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc); npc_Loc[2]+=10.0;
 		spawnRing_Vectors(npc_Loc, 2.0*250.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, 0.5, 6.0, 0.1, 1, 1.0);
 		int entity = Ruina_Create_Entity_Spesific(Loc, _ , 2.45);
 		if(IsValidEntity(entity))
@@ -2208,7 +2213,8 @@ stock void Ruina_Laser_Damage_Trace(int client, float Start_Point[3], float End_
 			{
 				Dmg *= Bonus_dmg;
 			}
-			SDKHooks_TakeDamage(victim, client, client, Dmg, DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));
+			float Vic_Vec[3]; WorldSpaceCenter(victim, Vic_Vec);
+			SDKHooks_TakeDamage(victim, client, client, Dmg, DMG_PLASMA, -1, NULL_VECTOR, Vic_Vec);
 		}
 	}
 }

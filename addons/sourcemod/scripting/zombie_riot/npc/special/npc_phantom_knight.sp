@@ -299,7 +299,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -344,7 +345,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 			}
 			npc.PlayRangedReloadSound();
 			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_CLUB_DAMAGE;
-			makeexplosion(npc.index, npc.index, WorldSpaceCenterOld(npc.index), "", RoundToCeil(damage * npc.m_flWaveScale), 110,_,_,_, false, 4.0);
+			float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
+			makeexplosion(npc.index, npc.index, npc_vec, "", RoundToCeil(damage * npc.m_flWaveScale), 110,_,_,_, false, 4.0);
 
 			f_StareAtEnemy[npc.index] = GetGameTime(npc.index) + 2.0;
 			f_AttackHappensAoe[npc.index] = 0.0;
@@ -355,13 +357,14 @@ public void PhantomKnight_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		NoEnemyFound = 0;
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -511,7 +514,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 				}
 				
 				//Stare. Dont even attack. Dont do anything. Just look. This should also be impossible to backstab.
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				npc.m_bisWalking = false;
 			}
 			case 4:
@@ -522,7 +526,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 				float vecPos[3];
 				
 				GetVectors(npc.m_iTarget, VecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
-				vecPos = GetAbsOriginOld(npc.m_iTarget);
+				GetAbsOrigin(npc.m_iTarget, vecPos);
 				vecPos[2] += 5.0;
 				
 				float vecSwingEnd[3];
@@ -543,8 +547,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 				float vecPos_Npc[3];
 				float vecPosMiddle_Npc[3];
 				float vecAng_Npc[3];
-				vecPos_Npc = GetAbsOriginOld(npc.index);
-				vecPosMiddle_Npc = WorldSpaceCenterOld(npc.index);
+				GetAbsOrigin(npc.index, vecPos_Npc);
+				WorldSpaceCenter(npc.index, vecPosMiddle_Npc);
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vecAng_Npc);
 
 				bool Succeed = NPC_Teleport(npc.index, vecSwingEnd);
@@ -558,7 +562,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 						npc.RemoveGesture("ACT_CUSTOM_DODGE_LUCIAN");
 						npc.SetActivity("ACT_CUSTOM_TELEPORT_LUCIAN");
 					}
-					npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+					float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+					npc.FaceTowards(VecEnemy, 15000.0);
 					if(i_PhantomsSpawned[npc.index] <= 5 || (ZR_GetWaveCount() > 60 && i_PhantomsSpawned[npc.index] <= 10)) //We want a limit on how many fakes he can have.
 					{
 						//If its wave 60 or above, he can spawn 10 instead

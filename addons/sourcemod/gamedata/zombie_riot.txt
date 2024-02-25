@@ -805,7 +805,7 @@
 			{
 				"offset"		"CBaseEntity::UpdateTransmitState()"
 				"hooktype"		"entity"
-				"return"		"void"
+				"return"		"int"
 				"this"			"entity"
 			}
 		}

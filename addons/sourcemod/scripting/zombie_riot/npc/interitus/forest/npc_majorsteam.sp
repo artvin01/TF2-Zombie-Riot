@@ -111,12 +111,13 @@ static void ClotThink(int iNPC)
 
 	if(target > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, target);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -131,7 +132,7 @@ static void ClotThink(int iNPC)
 			if(npc.m_flAttackHappens < gameTime)
 			{
 				if(npc.m_iOverlordComboAttack % 2)
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, target, (npc.m_iOverlordComboAttack % 3) ? 350.0 : 1100.0);
+					PredictSubjectPositionForProjectiles(npc, target, (npc.m_iOverlordComboAttack % 3) ? 350.0 : 1100.0, _,vecTarget);
 
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 				npc.PlayMeleeSound();
@@ -204,7 +205,7 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 
 			func_NPCThink[npc.index] = MajorSteam_DownedThink;
 			
-			float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+			float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 			spawnRing_Vectors(vecMe, 450.0 * zr_smallmapbalancemulti.FloatValue * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 255, 1, 1.95, 5.0, 0.0, 1);
 			spawnRing_Vectors(vecMe, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 255, 1, 1.95, 5.0, 0.0, 1, 450.0 * zr_smallmapbalancemulti.FloatValue * 2.0);
 			
@@ -232,7 +233,7 @@ static void ClotDeath(int entity)
 {
 	MajorSteam npc = view_as<MajorSteam>(entity);
 
-	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 
 	npc.PlayDeathSound();
 	

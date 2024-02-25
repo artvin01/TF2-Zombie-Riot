@@ -603,7 +603,7 @@ public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] cl
 
 					float EntLoc2[3];
 					
-					EntLoc2 = WorldSpaceCenterOld(npc);
+					WorldSpaceCenter(npc, EntLoc2);
 					i_HowManyBombsHud[npc] -= BomsToBoom;
 					i_HowManyBombsOnThisEntity[npc][client] = 0;
 					Cause_Terroriser_Explosion(client, npc, damage, EntLoc2, true);

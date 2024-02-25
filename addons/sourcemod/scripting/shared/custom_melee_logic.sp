@@ -679,8 +679,9 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 							
 						}
 					}
-#endif
-					SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalculateDamageForceOld(vecSwingForward, 20000.0), playerPos);
+#endif				
+					float CalcDamageForceVec[3]; CalculateDamageForce(vecSwingForward, 20000.0, CalcDamageForceVec);
+					SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, playerPos);
 					
 #if defined ZR
 					switch(i_CustomWeaponEquipLogic[weapon])
@@ -713,8 +714,8 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);
 		// 	This doesnt work sadly and i dont have the power/patience to make it work, just do a custom check with some big shit, im sorry.
 			
-				
-			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalculateDamageForceOld(vecSwingForward, 20000.0), vecHit);	
+			float CalcDamageForceVec[3]; CalculateDamageForce(vecSwingForward, 20000.0, CalcDamageForceVec);
+			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, vecHit);	
 		}
 		else if(target > -1 && Item_Index == 214)
 		{

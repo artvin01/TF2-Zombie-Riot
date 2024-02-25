@@ -401,7 +401,9 @@ public void MedivalVillager_ClotThink(int iNPC)
 			}
 			if(IsValidAlly(npc.index, i_ClosestAlly[npc.index]))
 			{
-				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenterOld(i_ClosestAlly[npc.index]), WorldSpaceCenterOld(npc.index), true);
+				float WorldSpaceVec[3]; WorldSpaceCenter(i_ClosestAlly[npc.index], WorldSpaceVec);
+				float WorldSpaceVec2[3]; WorldSpaceCenter(npc.index, WorldSpaceVec2);
+				float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
 				if(flDistanceToTarget < (125.0* 125.0))
 				{
 					if(npc.m_iChanged_WalkCycle != 5) 	
@@ -430,7 +432,9 @@ public void MedivalVillager_ClotThink(int iNPC)
 			}
 			else if(IsValidEntity(buildingentity)) //We already have 1
 			{
-				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenterOld(buildingentity), WorldSpaceCenterOld(npc.index), true);
+				float WorldSpaceVec[3]; WorldSpaceCenter(buildingentity, WorldSpaceVec);
+				float WorldSpaceVec2[3]; WorldSpaceCenter(npc.index, WorldSpaceVec2);
+				float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
 				
 				NPC_SetGoalEntity(npc.index, buildingentity);
 				NPC_StartPathing(iNPC);
@@ -474,8 +478,9 @@ public void MedivalVillager_ClotThink(int iNPC)
 			//Search and find a building.
 			if(IsValidEntity(buildingentity)) //We already have 1
 			{
-				
-				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenterOld(buildingentity), WorldSpaceCenterOld(npc.index), true);
+				float WorldSpaceVec[3]; WorldSpaceCenter(buildingentity, WorldSpaceVec);
+				float WorldSpaceVec2[3]; WorldSpaceCenter(npc.index, WorldSpaceVec2);
+				float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
 
 				int Entity_I_See;
 			
@@ -493,7 +498,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 							npc.m_flSpeed = 0.0;
 						}
 						i_AttacksTillMegahit[buildingentity] += 1;
-						npc.FaceTowards(WorldSpaceCenterOld(buildingentity), 15000.0);
+						npc.FaceTowards(WorldSpaceVec, 15000.0);
 					}
 					else
 					{
@@ -609,8 +614,9 @@ public void MedivalVillager_ClotThink(int iNPC)
 				
 				AproxRandomSpaceToWalkTo[2] += 18.0;
 				AproxRandomSpaceToWalkTo[2] += 18.0;
-				
-				float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceCenterOld(npc.index), true);
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+
+				float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceVec, true);
 				
 				if(flDistanceToBuild < (500.0 * 500.0))
 				{
@@ -637,7 +643,9 @@ public void MedivalVillager_ClotThink(int iNPC)
 		}
 		case 2:
 		{
-			float flDistanceToTarget = GetVectorDistance(WorldSpaceCenterOld(buildingentity), WorldSpaceCenterOld(npc.index), true);
+			float WorldSpaceVec[3]; WorldSpaceCenter(buildingentity, WorldSpaceVec);
+			float WorldSpaceVec2[3]; WorldSpaceCenter(npc.index, WorldSpaceVec2);
+			float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
 
 			int Entity_I_See;
 			
@@ -672,7 +680,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 						Maxhealthbuilding = healthbuilding;
 					}
 					SetEntProp(buildingentity, Prop_Data, "m_iHealth",healthbuilding);
-					npc.FaceTowards(WorldSpaceCenterOld(buildingentity), 15000.0);
+					npc.FaceTowards(WorldSpaceVec, 15000.0);
 				}
 				else
 				{
@@ -704,14 +712,15 @@ public void MedivalVillager_ClotThink(int iNPC)
 			}
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+				float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
 				//Predict their pos.
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+					float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
@@ -770,7 +779,8 @@ void VillagerSelfDefense(MedivalVillager npc, float gameTime)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 0)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -801,9 +811,10 @@ void VillagerSelfDefense(MedivalVillager npc, float gameTime)
 	{
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex)) 
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 			{

@@ -651,7 +651,7 @@ static Action Hexagon_Witchery_Tick(int client)
 		int target = TR_GetEntityIndex(swingTrace);	
 		if(IsValidEnemy(client, target))
 		{
-			vec = WorldSpaceCenterOld(target);
+			WorldSpaceCenter(target, vec);
 			
 		}
 		else
@@ -1603,11 +1603,10 @@ static void Beam_Wand_Laser_Attack(int client, float playerPos[3], float endVec_
 					if(IsValidEntity(BEAM_BuildingHit[building]))
 					{
 						float trg_loc[3];
-						trg_loc = WorldSpaceCenterOld(BEAM_BuildingHit[building]);
+						WorldSpaceCenter(BEAM_BuildingHit[building], trg_loc);
 						
 						
-						float damage_force[3];
-						damage_force = CalculateDamageForceOld(vecForward, 10000.0);
+						float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
 						DataPack pack = new DataPack();
 						pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
 						pack.WriteCell(EntIndexToEntRef(client));

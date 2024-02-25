@@ -344,7 +344,8 @@ public void StalkerCombine_ClotThink(int iNPC)
 			if(npc.m_iTarget > 0)
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -384,7 +385,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 
 		if(npc.m_bChaseAnger)
 		{
-			float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+			float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 			float engineTime = GetEngineTime();
 
 			for(int client = 1; client <= MaxClients; client++)
@@ -405,7 +406,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 			
 			npc.PlayMusicSound();
 
-			LastKnownPos = WorldSpaceCenterOld(npc.m_iTarget);
+			WorldSpaceCenter(npc.m_iTarget, LastKnownPos);
 			float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 
 			int state;
@@ -444,7 +445,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 					npc.StartPathing();
 					if(distance < npc.GetLeadRadius()) 
 					{
-						LastKnownPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+						PredictSubjectPosition(npc, npc.m_iTarget,_,_,LastKnownPos);
 						NPC_SetGoalVector(npc.index, LastKnownPos);
 					}
 					else
@@ -502,7 +503,8 @@ public void StalkerCombine_ClotThink(int iNPC)
 		else
 		{
 			// Stare at the target, confirm their real before chasing after
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 1000.0);
+			float targ_vec[3]; WorldSpaceCenter(npc.m_iTarget, targ_vec);
+			npc.FaceTowards(targ_vec, 1000.0);
 		}
 
 		npc.PlayIdleAlertSound();
@@ -526,7 +528,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 		}
 
 		int state;
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 		float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 		if(npc.m_flDoingAnimation > gameTime)
 		{

@@ -338,9 +338,10 @@ public void Ikunagae_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 		//Predict their pos.
 		
@@ -350,7 +351,9 @@ public void Ikunagae_ClotThink(int iNPC)
 			
 		//Body pitch
 		float v[3], ang[3];
-		SubtractVectors(WorldSpaceCenterOld(npc.index), WorldSpaceCenterOld(PrimaryThreatIndex), v); 
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec2);
+		SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
 		NormalizeVector(v, v);
 		GetVectorAngles(v, ang); 
 				
@@ -361,7 +364,7 @@ public void Ikunagae_ClotThink(int iNPC)
 		
 		if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -576,7 +579,7 @@ static void Scaramouche_Activate(int client)
 	
 	float UserLoc[3];
 	
-	UserLoc = GetAbsOriginOld(client);
+	GetAbsOrigin(client, UserLoc);
 	UserLoc[2] += 10.0;
 	
 	int type_class = 2;
@@ -657,7 +660,7 @@ public Action Scaramouche_TBB_Tick(int client)
 				int PrimaryThreatIndex = npc.m_iTarget;
 				if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 				{
-					float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+					float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 					npc.FireParticleRocket(vecTarget, 100.0 , 450.0 , 100.0 , "raygun_projectile_blue",_,_,true,Location);
 				}
 				//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
@@ -739,7 +742,7 @@ static void Spin_To_Win_Activate(int client, int severity, bool alternate_attack
 	i_spin_to_win_throttle[npc.index] = 0;
 	
 	float UserLoc[3];
-	UserLoc = GetAbsOriginOld(client);
+	GetAbsOrigin(client, UserLoc);
 	
 	int r, g, b, a;
 	r = 41;
@@ -927,7 +930,7 @@ static void Spin_To_Win_Clearance_Check(int client)
 {
 	
 	float UserLoc[3], Angles[3];
-	UserLoc = GetAbsOriginOld(client);
+	GetAbsOrigin(client, UserLoc);
 	float distance = 100.0;
 	
 	int Total_Hit = 0;
@@ -996,11 +999,11 @@ static void Normal_Attack_Start(int client, int target, float damgae, bool alter
 	float Angles[3], distance = 100.0, UserLoc[3];
 				
 				
-	UserLoc = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, UserLoc);
 	
 	UserLoc[2] += 50.0;
 	
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+	float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 	
 	MakeVectorFromPoints(UserLoc, vecTarget, Angles);
 	GetVectorAngles(Angles, Angles);
@@ -1245,7 +1248,7 @@ static void Ikunagae_GetBeamDrawStartPoint(int client, float startPoint[3])
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	Ikunagae npc = view_as<Ikunagae>(client);
@@ -1255,7 +1258,7 @@ static void Ikunagae_GetBeamDrawStartPoint(int client, float startPoint[3])
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == Ikunagae_BEAM_BeamOffset[client][0] && 0.0 == Ikunagae_BEAM_BeamOffset[client][1] && 0.0 == Ikunagae_BEAM_BeamOffset[client][2])
@@ -1308,7 +1311,7 @@ static Action Ikunagae_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOriginOld(client);
+		GetAbsOrigin(client, startPoint);
 		startPoint[2] += 50.0;
 
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, Ikunagae_BEAM_TraceWallsOnly);
@@ -1353,8 +1356,8 @@ static Action Ikunagae_TBB_Tick(int client)
 					{
 						damage *= 5.0;
 					}
-
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
 				}
 			}
 			

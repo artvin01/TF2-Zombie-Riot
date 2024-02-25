@@ -634,12 +634,13 @@ public void Doktor_Medick_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 		/*	int color[4];
 			color[0] = 255;
 			color[1] = 255;
@@ -658,12 +659,12 @@ public void Doktor_Medick_ClotThink(int iNPC)
 		}
 		float vOrigin[3];
 		float vEnd[3];
-		vOrigin = GetAbsOriginOld(npc.m_iTarget);
-		vEnd = GetAbsOriginOld(npc.m_iTarget);
+		GetAbsOrigin(npc.m_iTarget, vOrigin);
+		GetAbsOrigin(npc.m_iTarget, vEnd);
 		//if(b_OverDoseActive[npc.index] && npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 		if(b_OverDoseActive[npc.index])
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex, 0.3);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, 0.3,_,vPredictedPos);
 			static float flVel[3];
 			f_OverDose_Usage[npc.index] = GetGameTime(npc.index) + Overdose_Reuseable;
 			
@@ -710,9 +711,6 @@ public void Doktor_Medick_ClotThink(int iNPC)
 				//float vAngles[3];
 				//float vOrigin[3];
 				//float vEnd[3];
-				//vAngles = GetAbsOriginOld(npc.m_iTarget);
-				//vOrigin = GetAbsOriginOld(npc.m_iTarget);
-				//vEnd = GetAbsOriginOld(npc.m_iTarget);
 			
 				Handle pack;
 				CreateDataTimer(Overdose_Smite_ChargeSpan, Overdose_Smite_Timer, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -750,7 +748,7 @@ public void Doktor_Medick_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1400.0);
+				PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0, vecTarget);
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
@@ -769,7 +767,8 @@ public void Doktor_Medick_ClotThink(int iNPC)
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+				float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -792,7 +791,6 @@ public void Doktor_Medick_ClotThink(int iNPC)
 				
 				npc.FireArrow(vecTarget, Chemical_Warfare_Damage, 1400.0, "models/weapons/w_models/w_syringe_proj.mdl", 1.5);
 				
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 				//npc.PlayRangedSound();
 			}
 		}
@@ -1247,7 +1245,7 @@ void MoonLight_Beams(int entity, bool charging = true)
 		return;
 	
 	float UserLoc[3], UserAng[3];
-	UserLoc = GetAbsOriginOld(entity);
+	GetAbsOrigin(entity, UserLoc);
 	
 	UserAng[0] = 0.0;
 	UserAng[1] = MoonLight_Angle[npc.index];
@@ -1390,7 +1388,7 @@ public void MoonLight_DealDamage(int entity)
 	if(MoonLightDamage_throttle[npc.index] < GetGameTime(npc.index))
 	{
 		float beamLoc[3];
-		beamLoc = GetAbsOriginOld(entity);
+		GetAbsOrigin(entity, beamLoc);
 		MoonLightDamage_throttle[npc.index] = GetGameTime(npc.index) + 0.5;	//funny throttle due to me being dumb and not knowing to how do damage any other way.
 		Explode_Logic_Custom(MoonLight_DMG[npc.index], entity, entity, -1, beamLoc, MoonLight_DMG_Radius[npc.index] , _, _, true);
 		//CPrintToChatAll("Damage: %.1f%", MoonLight_DMG[npc.index]);
