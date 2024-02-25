@@ -261,10 +261,13 @@ void DesertKhazaanSelfDefense(DesertKhazaan npc, float gameTime, int target, flo
 					{
 						damageDealt *= 2.0;
 						Custom_Knockback(npc.index, target, 550.0, true, true); 
-						fl_TotalArmor[npc.index] = fl_TotalArmor[npc.index] * 0.5;
-						if(fl_TotalArmor[npc.index] < 0.25)
+						if(GetTeam(npc.index) != TFTeam_Red)
 						{
-							fl_TotalArmor[npc.index] = 0.25;
+							fl_TotalArmor[npc.index] = fl_TotalArmor[npc.index] * 0.5;
+							if(fl_TotalArmor[npc.index] < 0.25)
+							{
+								fl_TotalArmor[npc.index] = 0.25;
+							}
 						}
 					}
 					if(ShouldNpcDealBonusDamage(target))
