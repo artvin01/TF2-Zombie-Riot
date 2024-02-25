@@ -523,7 +523,7 @@ public void SpecialDoctor_NPCDeath(int entity)
 public bool DoctorBuffAlly(int provider, int entity)
 {
 	if(f_PernellBuff[entity] < GetGameTime())
-		return false;
+		return true;
 
-	return true;
+	return false;
 }
