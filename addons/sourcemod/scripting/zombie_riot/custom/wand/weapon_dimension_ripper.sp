@@ -529,6 +529,7 @@ void Dimension_Summon_Npc(int client, int NpcId, int weapon, float HealthMulti, 
 					fl_Extra_Damage[entity] *= ExtraDamage;
 					fl_MeleeArmor[entity] = 1.0;
 					fl_RangedArmor[entity] = 1.0;
+					b_IsCamoNPC[entity] = false;
 
 					CreateTimer(60.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 					CreateTimer(4.0, Dimension_GiveStrength, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);

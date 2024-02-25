@@ -452,6 +452,8 @@ static void ClotThink(int iNPC)
 						KillFeed_SetKillIcon(npc.index, "family_business");
 						
 						npc.FaceTowards(vecTarget, 400.0);
+						if(target > MaxClients)
+							npc.FaceTowards(vecTarget, 99999.0);
 
 						npc.PlayShotgunSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
@@ -502,6 +504,8 @@ static void ClotThink(int iNPC)
 						
 						npc.PlaySMGSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
+						if(target > MaxClients)
+							npc.FaceTowards(vecTarget, 99999.0);
 
 						float eyePitch[3];
 						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
@@ -546,7 +550,9 @@ static void ClotThink(int iNPC)
 					KillFeed_SetKillIcon(npc.index, "minigun");
 					
 					npc.FaceTowards(vecTarget, 4000.0);
-					
+					if(target > MaxClients)
+						npc.FaceTowards(vecTarget, 99999.0);
+
 					npc.PlayMinigunSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 
@@ -650,6 +656,8 @@ static void ClotThink(int iNPC)
 					float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
 
 					npc.FaceTowards(WorldSpaceVec, 8000.0);
+					if(target > MaxClients)
+						npc.FaceTowards(WorldSpaceVec, 99999.0);
 					
 					npc.PlayMinigunSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
@@ -793,7 +801,8 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 static void ClotDeath(int entity)
 {
 	ThePurge npc = view_as<ThePurge>(entity);
-	
+	npc.PlayMinigunStopSound();
+
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	
