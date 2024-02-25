@@ -6826,18 +6826,6 @@ public MRESReturn IBody_GetSolidMask(Address pThis, Handle hReturn, Handle hPara
 	return MRES_Supercede; 
 }
 
-stock float[] PredictSubjectPositionOld(CClotBody npc, int subject, float Extra_lead = 0.0, bool ignore = false)
-{
-	if(!ignore && f_PredictDuration[subject] > GetGameTime())
-	{
-		return f_PredictPos[subject];
-	}
-	
-	PredictSubjectPositionInternal(npc, subject, Extra_lead);
-	f_PredictDuration[subject] = GetGameTime() + 0.05;
-	return f_PredictPos[subject];
-}
-
 stock void PredictSubjectPosition(CClotBody npc, int subject, float Extra_lead = 0.0, bool ignore = false, float vec[3])
 {
 	if(!ignore && f_PredictDuration[subject] > GetGameTime())

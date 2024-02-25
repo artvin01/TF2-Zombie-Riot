@@ -318,7 +318,7 @@ static void ClotThink(int iNPC)
 		float distance = GetVectorDistance(vecTarget, vecMe, true);
 		if(distance < npc.GetLeadRadius()) 
 		{
-			vecTarget = PredictSubjectPositionOld(npc, target);
+			PredictSubjectPosition(npc, target,_,_,vecTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 		}
 		else

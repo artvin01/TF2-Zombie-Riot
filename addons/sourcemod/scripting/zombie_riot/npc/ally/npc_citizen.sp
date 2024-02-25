@@ -3017,7 +3017,7 @@ public void Citizen_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				PredictSubjectPosition(npc, npc.m_iTarget,_,_, vecTarget);
 				NPC_SetGoalVector(npc.index, vecTarget);
 			}
 			

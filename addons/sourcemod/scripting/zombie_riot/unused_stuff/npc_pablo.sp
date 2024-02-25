@@ -447,7 +447,7 @@ public void PabloGonzalos_ClotThink(int iNPC)
 		
 		if(flDistanceToTarget < npc.GetLeadRadius()) //Predict their pos.
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else

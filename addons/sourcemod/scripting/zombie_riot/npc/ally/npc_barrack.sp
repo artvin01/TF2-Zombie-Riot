@@ -739,7 +739,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			if(flDistanceToTarget < npc.GetLeadRadius())
 			{
 				//Predict their pos.
-				vecTarget = PredictSubjectPositionOld(npc, npc.m_iTargetRally);
+				PredictSubjectPosition(npc, npc.m_iTargetRally,_,_, vecTarget);
 				NPC_SetGoalVector(npc.index, vecTarget);
 
 				npc.StartPathing();

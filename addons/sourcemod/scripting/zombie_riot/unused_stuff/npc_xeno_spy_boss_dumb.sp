@@ -505,7 +505,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -597,7 +597,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 			{		
 				npc.FaceTowards(vecTarget, 20000.0);
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 				npc.m_flNextRangedAttack = GetGameTime() + 0.3;
 				npc.m_iAttacksTillReload -= 1;

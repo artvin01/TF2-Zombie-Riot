@@ -423,7 +423,7 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest, 0.3);
+		float vPredictedPos[3]; PredictSubjectPosition(npc, closest, 0.3,_,vPredictedPos);
 		
 		if(npc.m_flDead_Ringer_Invis < GetGameTime() && npc.m_flDead_Ringer_Invis_bool)
 		{
@@ -644,7 +644,7 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 	if(npc.m_flNextTeleport < GetGameTime())
 	{
 		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest, 0.3);
+		float vPredictedPos[3]; PredictSubjectPosition(npc, closest, 0.3,_,vPredictedPos);
 		static float flVel[3];
 		GetEntPropVector(closest, Prop_Data, "m_vecVelocity", flVel);
 		if (!npc.Anger)

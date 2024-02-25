@@ -1014,7 +1014,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			}
 			case 9:
 			{
-				vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				PredictSubjectPosition(npc, npc.m_iTarget,_,_, vecTarget);
 				NPC_SetGoalVector(npc.index, vecTarget);
 
 				npc.FaceTowards(vecTarget, 20000.0);
@@ -1131,7 +1131,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				float distance = GetVectorDistance(vecTarget, vecMe, true);
 				if(distance < npc.GetLeadRadius()) 
 				{
-					vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vecTarget);
 					NPC_SetGoalVector(npc.index, vecTarget);
 				}
 				else
@@ -1244,7 +1244,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 						if(EnemyToPull)
 						{
-							vecTarget = PredictSubjectPositionOld(npc, EnemyToPull);
+							PredictSubjectPosition(npc, EnemyToPull,_,_,vecTarget);
 							npc.FaceTowards(vecTarget, 50000.0);
 							
 							if(!npc.m_bFakeClone)
@@ -1394,7 +1394,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						float distance = GetVectorDistance(vecTarget, vecMe, true);
 						if(distance < npc.GetLeadRadius()) 
 						{
-							vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
+							PredictSubjectPosition(npc, npc.m_iTarget,_,_, vecTarget);
 							NPC_SetGoalVector(npc.index, vecTarget);
 						}
 						else

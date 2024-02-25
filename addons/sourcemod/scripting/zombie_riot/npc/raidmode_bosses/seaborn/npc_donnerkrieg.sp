@@ -850,7 +850,7 @@ static void Donner_Movement(int client, int PrimaryThreatIndex, float GameTime)
 	{
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 						
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		} 

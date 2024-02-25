@@ -173,7 +173,7 @@ public void StalkerFather_ClotThink(int iNPC)
 				npc.StartPathing();
 				if(distance < npc.GetLeadRadius()) 
 				{
-					LastKnownPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_,LastKnownPos);
 					NPC_SetGoalVector(npc.index, LastKnownPos);
 				}
 				else

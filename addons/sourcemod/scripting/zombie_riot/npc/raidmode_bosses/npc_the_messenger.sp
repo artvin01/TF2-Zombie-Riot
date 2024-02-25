@@ -526,7 +526,7 @@ public void TheMessenger_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3];
-					vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 					Messanger_Elemental_Attack_FingerPoint(npc);
 				}
@@ -762,7 +762,7 @@ bool Messanger_Elemental_Attack_FingerPoint(TheMessenger npc)
 		if(npc.m_flJumpStartTimeInternal < GetGameTime(npc.index) && npc.m_flSwitchCooldown > GetGameTime(npc.index))
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			vPredictedPos = GetBehindTarget(npc.m_iTarget, 30.0 ,vPredictedPos);
 			static float hullcheckmaxs[3];
 			static float hullcheckmins[3];

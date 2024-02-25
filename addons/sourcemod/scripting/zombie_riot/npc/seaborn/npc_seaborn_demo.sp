@@ -88,7 +88,7 @@ public void SeabornDemo_ClotThink(int iNPC)
 		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 

@@ -704,7 +704,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex, 0.3);
+		float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, 0.3,_, vPredictedPos);
 		
 		if(npc.m_flCharge_Duration < GetGameTime(npc.index) && i_kahml_dash_charge[npc.index] > 2)
 		{

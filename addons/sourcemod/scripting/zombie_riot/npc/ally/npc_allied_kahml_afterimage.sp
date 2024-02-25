@@ -171,7 +171,7 @@ static void Internal_Npc_ClotThink(int iNPC)
 			NPC_StartPathing(npc.index);
 			if(flDistanceToTarget < npc.GetLeadRadius()) 
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, owner);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, owner,_,_, vPredictedPos);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 
@@ -200,7 +200,7 @@ static void Internal_Npc_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3];
-					vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 

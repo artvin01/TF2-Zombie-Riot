@@ -787,7 +787,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3];
-					vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 					if(npc.m_flCharge_delay < GetGameTime(npc.index))
 					{
@@ -818,7 +818,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 						if(npc.IsOnGround())
 						{
 							float vPredictedPos[3];
-							vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+							PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 							vPredictedPos = GetBehindTarget(npc.m_iTarget, 30.0 ,vPredictedPos);
 							static float hullcheckmaxs[3];
 							static float hullcheckmins[3];
@@ -917,7 +917,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 				{
 					Target = enemy[i];
 					float vPredictedPos[3];
-					vPredictedPos = PredictSubjectPositionOld(npc, Target);
+					PredictSubjectPosition(npc, Target,_,_, vPredictedPos);
 					vPredictedPos = GetBehindTarget(Target, 30.0 ,vPredictedPos);
 					static float hullcheckmaxs[3];
 					static float hullcheckmins[3];
@@ -1036,7 +1036,7 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 				{
 					Target = enemy[i];
 					float vPredictedPos[3];
-					vPredictedPos = PredictSubjectPositionOld(npc, Target);
+					PredictSubjectPosition(npc, Target,_,_, vPredictedPos);
 					vPredictedPos = GetBehindTarget(Target, 30.0 ,vPredictedPos);
 					static float hullcheckmaxs[3];
 					static float hullcheckmins[3];

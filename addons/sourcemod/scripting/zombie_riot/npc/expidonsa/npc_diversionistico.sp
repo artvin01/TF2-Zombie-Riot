@@ -250,7 +250,7 @@ public void Diversionistico_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			b_TryToAvoidTraverse[npc.index] = false;
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			vPredictedPos = GetBehindTarget(npc.m_iTarget, 40.0 ,vPredictedPos);
 			AntiCheeseReply = DiversionAntiCheese(npc.m_iTarget, npc.index, vPredictedPos);
 			b_TryToAvoidTraverse[npc.index] = true;

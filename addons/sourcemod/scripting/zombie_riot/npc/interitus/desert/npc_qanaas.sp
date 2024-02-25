@@ -209,7 +209,7 @@ public void DesertQanaas_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTargetWalkTo);
+			PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 

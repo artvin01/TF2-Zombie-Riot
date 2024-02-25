@@ -189,7 +189,7 @@ public void WinterSkinHunter_ClotThink(int iNPC)
 				NPC_StartPathing(npc.index);
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTargetAlly);
+					float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_,vPredictedPos );
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 

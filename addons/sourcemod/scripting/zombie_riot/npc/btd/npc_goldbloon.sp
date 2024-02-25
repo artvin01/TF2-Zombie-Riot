@@ -244,7 +244,8 @@ public void GoldBloon_ClotThink(int iNPC)
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			NPC_SetGoalVector(npc.index, PredictSubjectPositionOld(npc, npc.m_iTarget));
+			float VecSelfNpc[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_,VecSelfNpc);
+			NPC_SetGoalVector(npc.index, VecSelfNpc);
 		}
 		else
 		{

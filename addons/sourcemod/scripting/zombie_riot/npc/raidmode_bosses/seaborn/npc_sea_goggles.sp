@@ -366,7 +366,7 @@ public void SeaBlueGoggles_ClotThink(int iNPC)
 		float distance = GetVectorDistance(vecTarget, vecMe, true);
 		if(distance < npc.GetLeadRadius()) 
 		{
-			vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vecTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 		}
 		else
