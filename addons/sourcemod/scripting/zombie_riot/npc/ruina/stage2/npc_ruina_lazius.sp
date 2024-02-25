@@ -223,9 +223,9 @@ static void ClotThink(int iNPC)
 	}*/
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
 		if(iPitch < 0)
@@ -233,7 +233,7 @@ static void ClotThink(int iNPC)
 						
 		//Body pitch
 		float v[3], ang[3];
-		SubtractVectors(WorldSpaceCenterOld(npc.index), vecTarget, v); 
+		SubtractVectors(Npc_Vec, vecTarget, v); 
 		NormalizeVector(v, v);
 		GetVectorAngles(v, ang); 
 								

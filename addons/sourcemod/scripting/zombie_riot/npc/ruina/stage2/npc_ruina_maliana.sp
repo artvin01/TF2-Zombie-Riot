@@ -277,9 +277,9 @@ static void ClotThink(int iNPC)
 		int Anchor_Id=-1;
 		Ruina_Independant_Long_Range_Npc_Logic(npc.index, PrimaryThreatIndex, GameTime, Anchor_Id); //handles movement
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 			
 		if(!IsValidEntity(Anchor_Id))
 		{
@@ -338,7 +338,7 @@ static void Maliana_Effects_Attack(Maliana npc, float Target_Vec[3], int GetClos
 {
 	int amt = 2;
 	float Npc_Loc[3];
-	Npc_Loc = WorldSpaceCenterOld(npc.index);
+	WorldSpaceCenter(npc.index, Npc_Loc);
 	float Ratio_Core = 180.0/(amt);
 
 	Npc_Loc[2]+=50.0;
@@ -375,10 +375,10 @@ static void Maliana_Effects_Attack(Maliana npc, float Target_Vec[3], int GetClos
 		float projectile_speed = 500.0;
 		//lets pretend we have a projectile.
 		if(flDistanceToTarget < 1250.0*1250.0)
-			vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+			PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 		if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 		{
-			vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+			WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 		}
 		float DamageDone = 25.0;
 		npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_red_crit", false, true, true, endLoc,_,_, 10.0);
@@ -395,9 +395,9 @@ static void Maliana_SelfDefense(Maliana npc, float gameTime, int Anchor_Id)	//ty
 	{
 		return;
 	}
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
-
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
+	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 	if(flDistanceToTarget < (1000.0*1000.0))
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
@@ -423,11 +423,11 @@ static void Maliana_SelfDefense(Maliana npc, float gameTime, int Anchor_Id)	//ty
 			if(IsValidEnemy(npc.index,target))
 			{
 				GetClosestEnemyToAttack = target;
-				vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 
 				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
 
-				flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+				flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 				if(gameTime > npc.m_flNextRangedAttack)
 				{
 					npc.PlayRangedSound();

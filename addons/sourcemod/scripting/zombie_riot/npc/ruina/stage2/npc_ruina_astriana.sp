@@ -384,9 +384,10 @@ static void Astriana_SelfDefense(Astriana npc, float gameTime)	//ty artvin
 	{
 		return;
 	}
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
+	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
 	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 	{	
 		//target is within range, attack them
@@ -426,10 +427,10 @@ static void Astriana_SelfDefense(Astriana npc, float gameTime)	//ty artvin
 				npc.PlayRangedSound();
 				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
 				float projectile_speed = 800.0;
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 				{
-					vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 				}
 				float DamageDone = 25.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);

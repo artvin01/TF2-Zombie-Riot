@@ -260,9 +260,9 @@ static void ClotThink(int iNPC)
 
 		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 		
 		Ruina_Self_Defense Melee;
 

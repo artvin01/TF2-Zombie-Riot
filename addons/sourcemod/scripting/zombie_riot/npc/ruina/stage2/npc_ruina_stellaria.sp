@@ -286,9 +286,9 @@ static void ClotThink(int iNPC)
 		//Predict their pos.
 		Ruina_Basic_Npc_Logic(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
 			
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 			
 		if(flDistanceToTarget < (750.0*750.0))
 		{
