@@ -2905,7 +2905,7 @@ public void Citizen_ClotThink(int iNPC)
 
 			npc.m_bAllowBackWalking = true;
 			
-			vecTarget = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+			BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vecTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
@@ -2989,7 +2989,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_flidle_talk = FAR_FUTURE;
 			npc.m_bAllowBackWalking = false;
 			
-			vecTarget = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+			BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vecTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
@@ -3000,7 +3000,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_flidle_talk = FAR_FUTURE;
 			npc.m_bAllowBackWalking = true;
 			
-			vecTarget = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+			BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vecTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)

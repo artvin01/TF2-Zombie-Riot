@@ -117,7 +117,7 @@ static void ClotThink(int iNPC)
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, Target,_,_, vPredictedPos);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -132,7 +132,7 @@ static void ClotThink(int iNPC)
 			if(npc.m_flAttackHappens < gameTime)
 			{
 				if(npc.m_iOverlordComboAttack % 2)
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, target, (npc.m_iOverlordComboAttack % 3) ? 350.0 : 1100.0);
+					PredictSubjectPositionForProjectiles(npc, target, (npc.m_iOverlordComboAttack % 3) ? 350.0 : 1100.0, _,vecTarget);
 
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 				npc.PlayMeleeSound();

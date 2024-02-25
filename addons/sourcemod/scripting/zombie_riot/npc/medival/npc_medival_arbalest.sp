@@ -345,7 +345,7 @@ public void HandleAnimEventMedival_Arbalest(int entity, int event)
 				
 			float projectile_speed = 1200.0;
 			
-			vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
+			PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed,_,vecTarget);
 				
 			npc.FaceTowards(vecTarget, 30000.0);
 						

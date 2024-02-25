@@ -316,7 +316,7 @@ public void HandleAnimEventKazimierzLongArcher(int entity, int event)
 		
 			npc.FaceTowards(vecTarget, 30000.0);
 
-			vecTargetPredict = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
+			PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,vecTargetPredict);
 
 			float damage = 75.0;
 			npc.PlayMeleeSound();

@@ -126,7 +126,7 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 						float speed = 750.0;
 						if(flDistanceToTarget < 562500)	//Doesn't predict over 750 hu
 						{
-							vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, speed);
+							PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 						}
 						npc.m_flSpeed = 0.0;
 						npc.FaceTowards(vecTarget, 30000.0);

@@ -312,7 +312,7 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 				{
 					float vBackoffPos[3];
 					
-					vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
+					BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 					
 					NPC_SetGoalVector(npc.index, vBackoffPos, true);
 				}
@@ -333,7 +333,7 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 					{
 						//Play attack anim
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-						vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 750.0);
+						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 750.0, _,vecTarget);
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.PlayMeleeSound();
 						float dmg = 12.5;

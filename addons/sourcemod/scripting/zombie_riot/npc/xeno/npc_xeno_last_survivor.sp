@@ -400,7 +400,7 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 				
 				float projectile_speed = 800.0;
 				
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, closest, projectile_speed);
+				PredictSubjectPositionForProjectiles(npc, closest, projectile_speed,_, vecTarget);
 							
 				npc.PlayMeleeSound();
 				
@@ -415,7 +415,7 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");		
 				float projectile_speed = 800.0;
 				
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, closest, projectile_speed);
+				PredictSubjectPositionForProjectiles(npc, closest, projectile_speed,_, vecTarget);
 							
 				npc.PlayMeleeSound();
 				

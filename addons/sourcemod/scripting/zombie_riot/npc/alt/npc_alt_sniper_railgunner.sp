@@ -258,7 +258,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 					{
 						float vBackoffPos[3];
 						
-						vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
+						BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 						
 						NPC_SetGoalVector(npc.index, vBackoffPos, true);
 					}
@@ -293,7 +293,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 								npc.PlayMeleeSound();
 								if(flDistanceToTarget < 1000000)	//doesn't predict over 1000 hu
 								{
-									vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, speed);
+									PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 								}
 								if(ZR_GetWaveCount()<40)
 								{
@@ -307,7 +307,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 							{
 								if(flDistanceToTarget < 562500)	//Doesn't predict over 750 hu
 								{
-									vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, speed);
+									PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 								}
 								if(ZR_GetWaveCount()<40)
 								{

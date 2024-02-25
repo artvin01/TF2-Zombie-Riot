@@ -710,7 +710,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 
 			if(flDistanceToTarget < canRetreat)
 			{
-				vecTarget = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vecTarget);
 				NPC_SetGoalVector(npc.index, vecTarget);
 				
 				npc.StartPathing();

@@ -604,7 +604,7 @@ static void ClotThink(int iNPC)
 					{
 						if(GetURandomInt() % 2)
 						{
-							vecTarget = PredictSubjectPositionForProjectilesOld(npc, target, 900.0);
+							PredictSubjectPositionForProjectiles(npc, target, 900.0,_,vecTarget);
 						}
 						else
 						{
@@ -630,7 +630,7 @@ static void ClotThink(int iNPC)
 						npc.PlayGrenadeSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 
-						vecTarget = PredictSubjectPositionForProjectilesOld(npc, target, 1000.0);
+						PredictSubjectPositionForProjectiles(npc, target, 1000.0, _,vecTarget);
 						npc.FireGrenade(vecTarget, 1000.0, RaidModeScaling, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl");
 
 						npc.m_flNextMeleeAttack = gameTime + 0.45;

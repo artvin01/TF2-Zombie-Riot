@@ -873,7 +873,7 @@ static void Schwert_Aggresive_Behavior(Raidboss_Schwertkrieg npc, int PrimaryThr
 	{
 		npc.m_bAllowBackWalking=true;
 		float vBackoffPos[3];
-		vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
+		BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 		NPC_SetGoalVector(npc.index, vBackoffPos, true);
 
 		npc.FaceTowards(vecTarget, 20000.0);
@@ -1418,7 +1418,7 @@ static void Schwert_Movement(Raidboss_Schwertkrieg npc, float flDistanceToTarget
 	npc.m_bPathing = true;
 	if(flDistanceToTarget < npc.GetLeadRadius())
 	{
-		float vPredictedPos[3]; PredictSubjectPosition(npc, Target,_,_, vPredictedPos);
+		float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 								
 		NPC_SetGoalVector(npc.index, vPredictedPos);
 	} 
@@ -2305,7 +2305,6 @@ static void Schwert_Launch_Boomerang_Core(Raidboss_Schwertkrieg npc, int initial
 	else
 		fl_boomerang_duration[projectile] = GetGameTime() + 12.5;
 
-	float Npc_Vec[3], Target_Vec[3];
 	GetAbsOrigin(npc.index, Npc_Vec);
 	GetAbsOrigin(initialTarget, Target_Vec);
 

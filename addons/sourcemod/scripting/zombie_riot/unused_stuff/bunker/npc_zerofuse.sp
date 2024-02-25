@@ -1000,11 +1000,11 @@ public void TrueZerofuse_ClotThink(int iNPC)
 			{
 				if(b_Lifeloss[npc.index])
 				{
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1200.0);
+					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1200.0,vecTarget);
 				}
 				else
 				{
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 650.0);
+					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 650.0, vecTarget);
 				}
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;

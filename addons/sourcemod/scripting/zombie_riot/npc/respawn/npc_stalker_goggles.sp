@@ -326,7 +326,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 						{
 							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 
-							float vecTarget[3]; vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 3500.0);
+							float vecTarget[3]; PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 3500.0, _,vecTarget);
 							npc.FaceTowards(vecTarget, 30000.0);
 							
 							npc.PlayRangedSound();

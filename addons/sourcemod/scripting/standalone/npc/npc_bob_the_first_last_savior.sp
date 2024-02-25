@@ -858,7 +858,7 @@ static void Internal_ClotThink(int iNPC)
 						npc.m_iAttackType = 11;
 						npc.m_flAttackHappens = gameTime + 0.5;
 						
-						vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1600.0);
+						PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1600.0, _,vecTarget);
 						npc.FireRocket(vecTarget, 1200.0, 1600.0, "models/weapons/w_bullet.mdl", 2.0);
 						npc.PlayGunSound();
 

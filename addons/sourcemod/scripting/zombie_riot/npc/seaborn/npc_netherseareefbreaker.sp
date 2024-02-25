@@ -289,7 +289,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 
 				if(failed)
 				{
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1200.0);
+					PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0, _,vecTarget);
 					int entity = npc.FireArrow(vecTarget, attack, 1200.0, "models/weapons/w_bugbait.mdl");
 					
 					if(entity != -1)

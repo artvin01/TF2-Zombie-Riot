@@ -2607,14 +2607,6 @@ float ImpulseScale( float flTargetMass, float flDesiredSpeed )
 
 #define INNER_RADIUS_FRACTION 0.25
 
-#if defined ZR
-stock float[] CalculateExplosiveDamageForceOld(const float vec_Explosive[3], const float vecEndPosition[3], float damage_Radius)
-{
-	float v[3];
-	CalculateExplosiveDamageForce(vec_Explosive, vecEndPosition, damage_Radius, v);
-	return v;
-}
-#endif
 
 void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vecEndPosition[3], float damage_Radius, float vecForce[3])
 {

@@ -7886,7 +7886,7 @@ void Barracks_BuildingThink(int client)
 			
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICS)
 			{
-				vecTarget = PredictSubjectPositionForProjectilesOld(mounted ? playerclient : npc, ValidEnemyToTarget, projectile_speed, 55.0);
+				PredictSubjectPositionForProjectiles(mounted ? playerclient : npc, ValidEnemyToTarget, projectile_speed, 55.0,vecTarget);
 				if(!Can_I_See_Enemy_Only(mounted ? playerclient.index : npc.index, ValidEnemyToTarget)) //cant see enemy in the predicted position, we will instead just attack normally
 				{
 					WorldSpaceCenter(ValidEnemyToTarget, vecTarget );

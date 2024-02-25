@@ -169,7 +169,7 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 							IsharMlarWaterAttack_Invoke(npc.index, enemy[i]);
 						}
 					}
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1000.0);
+					PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1000.0,_,vecTarget);
 					npc.FireParticleRocket(vecTarget, npc.Anger ? 750.0 : 500.0, 1000.0, 275.0, "drg_cow_rockettrail_burst_charged_blue", true, true, _, _, EP_DEALS_DROWN_DAMAGE);
 				}
 			}

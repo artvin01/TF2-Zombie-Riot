@@ -173,7 +173,7 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 						//Play attack anim
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-						vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1200.0);
+						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1200.0,_,vecTarget);
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.PlayRangedSound();
 						//npc.FireRocket(vecTarget, 500.0 * npc.BonusDamageBonus, 1200.0, _, _, _, _, GetClientOfUserId(npc.OwnerUserId));

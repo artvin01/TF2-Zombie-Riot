@@ -665,7 +665,7 @@ public void BunkerKahml_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1400.0);
+				PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0, vecTarget);
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);

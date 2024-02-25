@@ -641,7 +641,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 				float projectile_speed = 1200.0;
 			
 				float vPredictedPosHuman[3];
-				vPredictedPosHuman = PredictSubjectPositionForProjectilesOld(npc, HumanTarget, projectile_speed);
+				PredictSubjectPositionForProjectiles(npc, HumanTarget, projectile_speed,_, vPredictedPosHuman);
 				npc.FireHook(vPredictedPosHuman);
 				npc.m_flGrappleCooldown = GetGameTime(npc.index) + 30.0;
 				

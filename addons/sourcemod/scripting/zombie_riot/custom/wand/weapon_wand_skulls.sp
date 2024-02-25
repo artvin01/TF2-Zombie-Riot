@@ -622,7 +622,7 @@ void Skull_AutoFire(int ent, int target, int client)
 	if(dist < (Skull_ShootRange[ent] * 0.5)) //If at half range, try to predict.
 	{
 		CClotBody npc = view_as<CClotBody>(ent);
-		TargetLoc = PredictSubjectPositionForProjectilesOld(npc, target, velocity);
+		PredictSubjectPositionForProjectiles(npc, target, velocity, _,TargetLoc);
 	}
 
 	GetAngleToPoint(ent, TargetLoc, DummyAngles, ang);

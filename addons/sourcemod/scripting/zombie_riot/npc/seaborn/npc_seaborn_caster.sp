@@ -153,7 +153,7 @@ public void SeabornCaster_ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 				
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 600.0);
+				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 600.0, _, vecTarget);
 				npc.FaceTowards(vecTarget, 15000.0);
 
 				npc.PlayMeleeSound();

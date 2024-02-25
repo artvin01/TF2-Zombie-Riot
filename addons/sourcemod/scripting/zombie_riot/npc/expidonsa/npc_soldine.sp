@@ -290,7 +290,7 @@ public void Soldine_ClotThink(int iNPC)
 			{
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
-				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
 			}
 		}
@@ -573,7 +573,7 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 					DamageRocket *= 0.5;
 				}
 				float vPredictedPos[3];
-				vPredictedPos = PredictSubjectPositionForProjectilesOld(npc, target, projectile_speed);
+				PredictSubjectPositionForProjectiles(npc, target, projectile_speed, _,vPredictedPos);
 				
 				npc.FaceTowards(vPredictedPos, 20000.0);
 				//Play attack anim

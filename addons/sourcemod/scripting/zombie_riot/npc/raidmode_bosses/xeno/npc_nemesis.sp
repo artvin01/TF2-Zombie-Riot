@@ -972,7 +972,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				npc.m_flJumpStartTime = gameTime + 0.1;
 				npc.FaceTowards(vecTarget, 99999.9);
 
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1300.0);
+				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1300.0, _,vecTarget);
 				float VecSave[3];
 				VecSave = vecTarget;
 

@@ -80,7 +80,7 @@ void BarrackLongbow_HandleAnimEvent(int entity, int event)
 		
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			float vecTarget[3]; vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 2000.0);
+			float vecTarget[3]; PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 2000.0,_, vecTarget);
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSound();

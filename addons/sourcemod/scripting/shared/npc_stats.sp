@@ -436,10 +436,12 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntityCollisionGroup(npc, 24);
 
 		if(Ally != TFTeam_Red)
-#endif
 		{
 			AddNpcToAliveList(npc, 0);
 		}
+#else
+		AddNpcToAliveList(npc, 0);
+#endif
 			
 		locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollide_NpcLoco);
 		locomotion.SetCallback(LocomotionCallback_IsEntityTraversable, IsEntityTraversable);
@@ -6339,76 +6341,6 @@ stock char[] GetStepSoundForMaterial(const char[] material)
 	return sound;
 }
 
-public void PluginBot_Jump_Now(int bot_entidx, float vecPos[3])
-{
-	CClotBody npc = view_as<CClotBody>(bot_entidx);
-	
-	float watchForClimbRange = 75.0;
-	
-	float vecNPC[3];
-	GetEntPropVector(bot_entidx, Prop_Data, "m_vecOrigin", vecNPC);
-	
-	float flDistance = GetVectorDistance(vecNPC, vecPos);
-	if(flDistance > watchForClimbRange || npc.m_bJumping)
-		return;
-	
-	//I guess we failed our last jump because we're jumping again this soon, let's try just a regular jump.
-	if((GetGameTime() - npc.m_flJumpStartTime) < 0.25)
-		npc.Jump();
-	/*
-	else
-		npc.JumpAcrossGap(vecPos, vecPos);
-	*/
-	npc.m_bJumping = true;
-	npc.m_flJumpStartTime = GetGameTime();
-}
-
-
-public void PluginBot_Jump_Now_old(int bot_index)
-{
-	CClotBody npc = view_as<CClotBody>(bot_index);
-
-	if((GetGameTime() - npc.m_flJumpStartTimeInternal) < 2.0)
-		return;
-
-	npc.m_flJumpStartTimeInternal = GetGameTime();
-
-	float Jump_1_frame[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
-	
-	static float hullcheckmaxs[3];
-	static float hullcheckmins[3];
-	if(b_IsGiant[bot_index])
-	{
-		hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
-		hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
-	}			
-	else
-	{
-		hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
-		hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );		
-	}
-	
-	if (!IsSpaceOccupiedDontIgnorePlayers(Jump_1_frame, hullcheckmins, hullcheckmaxs, npc.index))//The boss will start to merge with shits, cancel out velocity.
-	{
-		float Save_Old_Pos[3];
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Save_Old_Pos);
-		npc.m_vecLastValidPosJump(Save_Old_Pos, true);
-		float vecJumpVel[3];
-		npc.m_flJumpCooldown = GetGameTime() + 1.5;
-		npc.GetVelocity(vecJumpVel);
-		
-		vecJumpVel[2] = 450.0;
-		
-		npc.Jump();
-		SetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
-		CreateTimer(0.1, Did_They_Get_Suck, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-		npc.SetVelocity(vecJumpVel);
-		
-	}
-	return;
-}
-
 public Action Did_They_Get_Suck(Handle cut_timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
@@ -6802,11 +6734,14 @@ bool SetTeleportEndPoint(int client, float Position[3])
 int GetSolidMask(int npc)
 {
 	int Solidity;
+#if defined ZR
 	if(GetTeam(npc) == TFTeam_Red)
 		Solidity = (MASK_NPCSOLID|MASK_PLAYERSOLID);
 	else
 		Solidity = (MASK_NPCSOLID);
-
+#else
+	Solidity = (MASK_NPCSOLID|MASK_PLAYERSOLID);
+#endif
 	if(b_IgnorePlayerCollisionNPC[npc])
 	{
 		Solidity = (MASK_NPCSOLID);
@@ -6965,13 +6900,6 @@ static void PredictSubjectPositionInternal(CClotBody npc, int subject, float Ext
 static float f_PickThisDirectionForabit[MAXENTITIES];
 static int i_PickThisDirectionForabit[MAXENTITIES];
 
-stock float[] BackoffFromOwnPositionAndAwayFromEnemyOld(CClotBody npc, int subject, float extra_backoff = 64.0)
-{
-	float v[3];
-	BackoffFromOwnPositionAndAwayFromEnemy(npc, subject, extra_backoff, v);
-	return v;
-}
-
 stock void BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject, float extra_backoff = 64.0, float pathTarget[3])
 {
 	float botPos[3];
@@ -7119,12 +7047,6 @@ stock void BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject, fl
 	pathTarget[2] += 20.0; //Clip them up, minimum crouch level preferred, or else the bots get really confused and sometimees go otther ways if the player goes up or down somewhere, very thin stairs break these bots.
 }
 
-stock float[] PredictSubjectPositionForProjectilesOld(CClotBody npc, int subject, float projectile_speed, float offset = 0.0)
-{
-	float v[3];
-	PredictSubjectPositionForProjectiles(npc, subject, projectile_speed, offset, v);
-	return v;
-}
 
 stock void PredictSubjectPositionForProjectiles(CClotBody npc, int subject, float projectile_speed, float offset = 0.0, float pathTarget[3])
 {
@@ -7198,15 +7120,6 @@ stock void PredictSubjectPositionForProjectiles(CClotBody npc, int subject, floa
 	*/
 	//replace this with a trace.
 }
-
-#if defined ZR
-stock float[] PredictSubjectPositionHookOld(CClotBody npc, int subject)
-{
-	float v[3];
-	PredictSubjectPositionHook(npc, subject, v);
-	return v;
-}
-#endif
 
 stock void PredictSubjectPositionHook(CClotBody npc, int subject, float subjectPos[3])
 {

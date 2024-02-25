@@ -288,7 +288,7 @@ public void Simon_ClotThink(int iNPC)
 							
 							npc.m_iAttacksTillReload--;
 							
-							vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1000.0);
+							PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1000.0,_, vecTarget);
 							npc.FireRocket(vecTarget, 140.0, 1000.0, "models/weapons/w_bullet.mdl", 2.0);
 							
 							npc.PlayShootSound();
@@ -381,7 +381,7 @@ public void Simon_ClotThink(int iNPC)
 			if(!npc.m_flRangedSpecialDelay)	// Reload anyways timer
 				npc.m_flRangedSpecialDelay = gameTime + 3.0;
 			
-			float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+			float vBackoffPos[3]; BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
 			NPC_SetGoalVector(npc.index, vBackoffPos);
 			
 			if(!npc.m_bPathing)
@@ -471,7 +471,7 @@ public void Simon_ClotThink(int iNPC)
 				
 				if(npc.m_iTarget)
 				{
-					float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+					float vBackoffPos[3]; BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
 					NPC_SetGoalVector(npc.index, vBackoffPos);
 					
 					if(!npc.m_bPathing)

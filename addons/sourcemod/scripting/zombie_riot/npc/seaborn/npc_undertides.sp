@@ -231,7 +231,7 @@ public void UnderTides_ClotThink(int iNPC)
 			{
 				if(enemy[i])
 				{
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, enemy[i], 1300.0);
+					PredictSubjectPositionForProjectiles(npc, enemy[i], 1300.0, _,vecTarget);
 
 					npc.FireArrow(vecTarget, 57.0, 1300.0);
 					// 380 * 0.15
@@ -264,7 +264,7 @@ public void UnderTides_ClotThink(int iNPC)
 			{
 				if(enemy[i])
 				{
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, enemy[i], 1200.0);
+					PredictSubjectPositionForProjectiles(npc, enemy[i], 1200.0, _,vecTarget);
 
 					int entity = npc.FireArrow(vecTarget, 57.0, 1200.0, "models/weapons/w_bugbait.mdl");
 					// 380 * 0.15

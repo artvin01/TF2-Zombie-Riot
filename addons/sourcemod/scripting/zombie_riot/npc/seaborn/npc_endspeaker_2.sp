@@ -85,7 +85,7 @@ public void EndSpeaker2_ClotThink(int iNPC)
 			
 			if(npc.m_flAttackHappens < gameTime)
 			{
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1200.0);
+				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0, _,vecTarget);
 
 				npc.m_flAttackHappens = 0.0;
 				

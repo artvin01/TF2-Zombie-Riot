@@ -205,7 +205,8 @@ void CryoWandHitM2(int entity, int victim, float damage, int weapon)
 		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", VicLoc);
 		CreateTimer(0.1, Cryo_Unfreeze, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		EmitSoundToAll(SOUND_WAND_CRYO_SHATTER, victim);
-		SDKHooks_TakeDamage(victim, weapon, entity, damage * Cryo_M2_FreezeMult_Pap2, DMG_PLASMA, -1, CalculateExplosiveDamageForceOld(UserLoc, VicLoc, 1500.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
+		float ExplodePos[3]; CalculateExplosiveDamageForce(UserLoc, VicLoc, 1500.0, ExplodePos);
+		SDKHooks_TakeDamage(victim, weapon, entity, damage * Cryo_M2_FreezeMult_Pap2, DMG_PLASMA, -1, ExplodePos, VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
 	}
 	else
 	{
