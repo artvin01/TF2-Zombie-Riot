@@ -45,8 +45,8 @@ static float NECROMANCER_MAX_SUMMONS_BUFFED = 8.0;
 
 #define BONES_NECROMANCER_BUFFPARTICLE			"utaunt_cremation_purple_parent"
 
-#define PARTICLE_NECROMANCER_CAST_BUFFED		""
-#define PARTICLE_NECROMANCER_CAST				""
+#define PARTICLE_NECROMANCER_CAST_BUFFED		"raygun_projectile_blue"
+#define PARTICLE_NECROMANCER_CAST				"raygun_projectile_red"
 
 #define SOUND_BOLT_IMPACT		"misc/halloween/spell_spawn_boss.wav"
 #define SOUND_BOLT_CAST			"misc/halloween/spell_mirv_cast.wav"
@@ -120,6 +120,7 @@ Necromancer_CastState NecroCastState[MAXENTITIES] = { NECRO_CASTSTATE_INACTIVE }
 
 static int cast_Target[MAXENTITIES];
 static int castParticle[MAXENTITIES];
+//static int NecroAnim[MAXENTITIES];
 
 static float Necro_TargetLoc[MAXENTITIES][3];
 static float castTime[MAXENTITIES];
@@ -241,8 +242,9 @@ methodmap NecromancerBones < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_WIZARD_IDLE");
+		int iActivity = npc.LookupActivity("ACT_ARCHMAGE_IDLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+		//NecroAnim[npc.index] = 0;
 		
 		//npc.m_bDoSpawnGesture = true;
 
@@ -390,10 +392,17 @@ public void Necromancer_SeekTarget(NecromancerBones npc, int closest)
 		npc.m_flAttackHappens = GetGameTime(npc.index) + 0.1;
 		npc.m_flAttackHappenswillhappen = true;
 		
-		//TODO: Need a different set of animations for Necromancers.
-		npc.AddGesture("ACT_MP_PASSTIME_THROW_BEGIN");
+		npc.AddGesture("ACT_MP_PASSTIME_THROW_END");
+		
 		castParticle[npc.index] = EntIndexToEntRef(Necromancer_AttachParticle(npc.index, b_BonesBuffed[npc.index] ? PARTICLE_NECROMANCER_CAST_BUFFED : PARTICLE_NECROMANCER_CAST, _, "handR"));
 	}
+}
+
+public void Necro_DeleteCastParticle(int index)
+{
+	int part = EntRefToEntIndex(castParticle[index]);
+	if (IsValidEntity(part))
+		RemoveEntity(part);
 }
 
 public void Necromancer_WaitForCast(NecromancerBones npc, int closest)
@@ -427,6 +436,8 @@ public void Necromancer_WaitForCast(NecromancerBones npc, int closest)
 			npc.m_flAttackHappenswillhappen = false;
 			NecroCastState[npc.index] = NECRO_CASTSTATE_INACTIVE;
 		}
+		
+		Necro_DeleteCastParticle(npc.index);
 	}
 }
 
@@ -436,6 +447,7 @@ public void Necromancer_WaitForBolt(NecromancerBones npc)
 	{
 		NecroCastState[npc.index] = NECRO_CASTSTATE_INACTIVE;
 		npc.m_flAttackHappenswillhappen = false;
+		npc.RemoveGesture("ACT_MP_PASSTIME_THROW_END");
 	}
 	else if (GetGameTime(npc.index) < castTime[npc.index])	//The bolt is not ready yet, draw a ring indicator.
 	{
@@ -482,6 +494,7 @@ public void Necromancer_Summon(NecromancerBones npc)
 		
 		//This can be expanded to allow Necromancers to summon more types of NPCs.
 		//For obvious reasons, you should NEVER allow Necromancers to summon more Necromancers.
+		//I also recommend you don't allow them to summon Skeletal Saints or Profaned Priests unless the necromancer is already buffed. Nothing will break if you do, it would just be too strong.
 		//Aside from that, any NPC is fair game.
 		switch(GetRandomInt(1, 3))
 		{
@@ -583,6 +596,7 @@ public void NecromancerBones_ClotThink(int iNPC)
 	else
 	{
 		NPC_StopPathing(npc.index);
+			
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -637,6 +651,7 @@ public void NecromancerBones_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	SDKUnhook(entity, SDKHook_Think, NecromancerBones_ClotThink);
+	Necro_DeleteCastParticle(entity);
 		
 	npc.RemoveAllWearables();
 //	AcceptEntityInput(npc.index, "KillHierarchy");

@@ -976,7 +976,7 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 		if (Priest_IsHealing[npc.index])
 		{
 			Priest_RemoveHealingParticle(npc.index);
-			npc.RemoveGesture("ACT_PRIEST_HEALING"); //TODO: Saints need custom anims
+			npc.RemoveGesture("ACT_PRIEST_HEALING");
 			Priest_IsHealing[npc.index] = false;
 		}
 		
@@ -1026,10 +1026,13 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 			if (!HasEntProp(i, Prop_Send, "m_iTeamNum"))
 				continue;
 			
+			CClotBody healTarget = view_as<CClotBody>(i);		
+			if (healTarget.BoneZone_IsASaint())
+				continue;
+			
 			float healPos[3], userPos[3];
 			WorldSpaceCenter(i, healPos);
 			WorldSpaceCenter(npc.index, userPos);
-			CClotBody healTarget = view_as<CClotBody>(i);
 			if (IsValidAlly(npc.index, i) && GetVectorDistance(userPos, healPos) <= SAINTBONES_HEAL_RANGE_BUFFED)
 			{
 				AtLeastOne = true;
