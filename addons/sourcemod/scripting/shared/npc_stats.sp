@@ -4493,13 +4493,14 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 				return false;
 			}
 			
-			else if(b_bBuildingIsPlaced[enemy])
+			else if(GetEntProp(enemy, Prop_Send, "m_bCarried") ||
+				GetEntProp(enemy, Prop_Send, "m_bPlacing"))
 			{
-				return true;
+				return false;
 			}
 			else
 			{
-				return false;
+				return true;
 			}
 		}
 	}
