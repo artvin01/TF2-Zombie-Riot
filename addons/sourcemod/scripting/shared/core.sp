@@ -8,8 +8,8 @@
 #include <dhooks>
 #if !defined NOG
 #include <tf2items>
-#endif
 #include <tf_econ_data>
+#endif
 #include <tf2attributes>
 //#include <lambda>
 #include <morecolors>
@@ -255,13 +255,16 @@ float f_OneShotProtectionTimer[MAXTF2PLAYERS];
 int i_EntityToAlwaysMeleeHit[MAXTF2PLAYERS];
 //int Dont_Crouch[MAXENTITIES]={0, ...};
 
+#if !defined NOG
 ConVar cvar_nbAvoidObstacle;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar CvarAirAcclerate; //sv_airaccelerate
+bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
+int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
+#endif
 ConVar sv_cheats;
 ConVar nav_edit;
-bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 bool DoingLagCompensation;
 bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_ExtendBoundingBox;
@@ -346,6 +349,7 @@ float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 bool b_IsPlayerNiko[MAXTF2PLAYERS];
 int i_HowManyBombsHud[MAXENTITIES];
+bool b_TauntSpeedIncreace[MAXTF2PLAYERS] = {true, ...};
 #endif
 
 //only used in zr, however, can also be used for other gamemodes incase theres a limit.
@@ -365,7 +369,6 @@ float Resistance_for_building_Low[MAXENTITIES];
 
 bool b_DisplayDamageHud[MAXTF2PLAYERS];
 bool b_HudHitMarker[MAXTF2PLAYERS] = {true, ...};
-bool b_TauntSpeedIncreace[MAXTF2PLAYERS] = {true, ...};
 
 bool b_HudScreenShake[MAXTF2PLAYERS] = {true, ...};
 bool b_HudLowHealthShake[MAXTF2PLAYERS] = {true, ...};
@@ -656,7 +659,6 @@ int i_BurnDurationWeapon[MAXENTITIES]={0, ...}; 				//208
 int i_ExtinquisherWeapon[MAXENTITIES]={0, ...}; 				//638
 float f_UberOnHitWeapon[MAXENTITIES]={0.0, ...}; 				//17
 
-int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
 bool b_IsCannibal[MAXTF2PLAYERS];
 
 float f_NpcImmuneToBleed[MAXENTITIES];
@@ -1312,6 +1314,7 @@ public void OnPluginStart()
 	cvarTimeScale = FindConVar("host_timescale");
 #endif
 
+#if !defined NOG
 	CvarMpSolidObjects = FindConVar("tf_solidobjects");
 	if(CvarMpSolidObjects)
 		CvarMpSolidObjects.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
@@ -1328,11 +1331,11 @@ public void OnPluginStart()
 	if(cvar_nbAvoidObstacle)
 		cvar_nbAvoidObstacle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
-	
 	//FindConVar("tf_bot_count").Flags &= ~FCVAR_NOTIFY;
 	FindConVar("sv_tags").Flags &= ~FCVAR_NOTIFY;
 
 	sv_cheats.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+#endif
 	
 	LoadTranslations("zombieriot.phrases");
 	LoadTranslations("zombieriot.phrases.weapons.description");
@@ -2762,10 +2765,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
 #endif
-		else if(!StrContains(classname, "item_currencypack_custom"))
-		{
-			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
-		}
 #if defined RTS
 		else if(!StrContains(classname, "phys_bone_follower"))
 		{
@@ -3284,6 +3283,7 @@ for(int entitycount; entitycount<i_MaxcountHomingMagicShot; entitycount++)
 }
 */
 
+#if defined ZR
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
 	if(condition == TFCond_Cloaked)
@@ -3360,18 +3360,6 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 		int entity = GetClientPointVisible(client, _, _, _, vecEndOrigin); //So you can also correctly interact with players holding shit.
 		if(entity > 0)
 		{
-#if defined RPG
-			if(b_is_a_brush[entity]) //THIS is for brushes that act as collision boxes for NPCS inside quests.sp
-			{
-				int entityfrombrush = BrushToEntity(entity);
-				if(entityfrombrush != -1)
-				{
-					entity = entityfrombrush;
-				}
-			}
-#endif
-
-#if defined ZR
 			static char buffer[64];
 			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 			{
@@ -3403,38 +3391,13 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				if (GetTeam(entity) != TFTeam_Red)
 					return false;
 			}
-#endif
-					
-#if defined RPG
-			if(TextStore_Interact(client, entity, Is_Reload_Button))
-				return true;
-			
-			if(Tinker_Interact(client, entity, weapon))
-				return true;
-
-			if(Quests_Interact(client, entity))
-				return true;
-			
-			if(Dungeon_Interact(client, entity))
-				return true;
-
-			if(AllyNpcInteract(client, entity, weapon))
-				return true;
-#endif
 		
 		}
-		
-#if defined RPG
-		else
-		{
-			if(Garden_Interact(client, vecEndOrigin))
-				return true;
-		}
-#endif
 		
 	}
 	return false;
 }
+#endif
 
 /*
 public void Frame_OffCheats()

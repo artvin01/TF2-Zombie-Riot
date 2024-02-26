@@ -4904,7 +4904,7 @@ stock int GetTeam(int entity)
 			return GetClientTeam(entity);
 #endif
 
-		if(TeamNumber[entity] == -1)
+		if(TeamNumber[entity] == -1 || b_NpcHasDied[entity])
 		{
 			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
 		}
