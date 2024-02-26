@@ -12,6 +12,8 @@
 
 #define LASERBEAM	"sprites/laserbeam.vmt"
 
+ConVar zr_showdamagehud;
+
 #include "standalone/convars.sp"
 #include "standalone/dhooks.sp"
 #include "standalone/natives.sp"

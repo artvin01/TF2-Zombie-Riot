@@ -8,8 +8,8 @@
 #include <dhooks>
 #if !defined NOG
 #include <tf2items>
-#endif
 #include <tf_econ_data>
+#endif
 #include <tf2attributes>
 //#include <lambda>
 #include <morecolors>
@@ -2762,10 +2762,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
 #endif
-		else if(!StrContains(classname, "item_currencypack_custom"))
-		{
-			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
-		}
 #if defined RTS
 		else if(!StrContains(classname, "phys_bone_follower"))
 		{

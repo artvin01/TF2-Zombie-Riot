@@ -212,7 +212,8 @@ public void OnPostThink_OnlyHurtHud(int client)
 	if(b_DisplayDamageHud[client])
 	{
 		b_DisplayDamageHud[client] = false;
-		Calculate_And_Display_HP_Hud(client);
+		if(zr_showdamagehud.BoolValue)
+			Calculate_And_Display_HP_Hud(client);
 	}
 }
 
