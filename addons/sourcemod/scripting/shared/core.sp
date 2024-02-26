@@ -1312,6 +1312,7 @@ public void OnPluginStart()
 	cvarTimeScale = FindConVar("host_timescale");
 #endif
 
+#if !defined NOG
 	CvarMpSolidObjects = FindConVar("tf_solidobjects");
 	if(CvarMpSolidObjects)
 		CvarMpSolidObjects.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
@@ -1328,11 +1329,11 @@ public void OnPluginStart()
 	if(cvar_nbAvoidObstacle)
 		cvar_nbAvoidObstacle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
-	
 	//FindConVar("tf_bot_count").Flags &= ~FCVAR_NOTIFY;
 	FindConVar("sv_tags").Flags &= ~FCVAR_NOTIFY;
 
 	sv_cheats.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+#endif
 	
 	LoadTranslations("zombieriot.phrases");
 	LoadTranslations("zombieriot.phrases.weapons.description");
