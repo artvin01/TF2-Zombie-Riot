@@ -255,13 +255,16 @@ float f_OneShotProtectionTimer[MAXTF2PLAYERS];
 int i_EntityToAlwaysMeleeHit[MAXTF2PLAYERS];
 //int Dont_Crouch[MAXENTITIES]={0, ...};
 
+#if !defined NOG
 ConVar cvar_nbAvoidObstacle;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar CvarAirAcclerate; //sv_airaccelerate
+bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
+int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
+#endif
 ConVar sv_cheats;
 ConVar nav_edit;
-bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 bool DoingLagCompensation;
 bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_ExtendBoundingBox;
@@ -656,7 +659,6 @@ int i_BurnDurationWeapon[MAXENTITIES]={0, ...}; 				//208
 int i_ExtinquisherWeapon[MAXENTITIES]={0, ...}; 				//638
 float f_UberOnHitWeapon[MAXENTITIES]={0.0, ...}; 				//17
 
-int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
 bool b_IsCannibal[MAXTF2PLAYERS];
 
 float f_NpcImmuneToBleed[MAXENTITIES];

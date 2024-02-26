@@ -148,6 +148,7 @@ void SDKHook_HookClient(int client)
 #endif
 }
 
+#if defined ZR
 public void OnPreThinkPost(int client)
 {
 	if(b_NetworkedCrouch[client])
@@ -156,7 +157,6 @@ public void OnPreThinkPost(int client)
 	}
 	if(CvarMpSolidObjects)
 	{
-#if defined ZR
 		if(RaidbossIgnoreBuildingsLogic(1))
 		{
 			if(i_PreviousBuildingCollision[client] == -1)
@@ -178,7 +178,6 @@ public void OnPreThinkPost(int client)
 			}
 			i_PreviousBuildingCollision[client] = -1;
 		}
-#endif
 		
 		if(b_PhaseThroughBuildingsPerma[client] == 0)
 		{
@@ -199,12 +198,8 @@ public void OnPreThinkPost(int client)
 	}
 #endif
 */
-#if defined RPG
-	int maxhealth = SDKCall_GetMaxHealth(client);
-	if(GetClientHealth(client) > maxhealth)
-		SetEntityHealth(client, maxhealth);
-#endif
 }
+#endif
 
 #if defined NOG
 public void OnPostThink_OnlyHurtHud(int client)
