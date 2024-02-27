@@ -53,7 +53,7 @@ static const char g_RangedAttackSounds[][] = {
 	"weapons/rescue_ranger_fire.wav",
 };
 
-void Astria_OnMapStart_NPC()
+void Astriana_OnMapStart_NPC()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
@@ -68,18 +68,18 @@ void Astria_OnMapStart_NPC()
 	PrecacheModel("models/player/engineer.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Astria");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_astria");
+	strcopy(data.Name, sizeof(data.Name), "Astriana");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_astriana");
 	data.Category = -1;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Astria(client, vecPos, vecAng, ally);
+	return Astriana(client, vecPos, vecAng, ally);
 }
 
-methodmap Astria < CClotBody
+methodmap Astriana < CClotBody
 {
 	
 	public void PlayIdleSound() {
@@ -165,9 +165,9 @@ methodmap Astria < CClotBody
 	}
 	
 	
-	public Astria(int client, float vecPos[3], float vecAng[3], int ally)
+	public Astriana(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Astria npc = view_as<Astria>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally));
+		Astriana npc = view_as<Astriana>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -251,7 +251,7 @@ methodmap Astria < CClotBody
 //Rewrite
 static void ClotThink(int iNPC)
 {
-	Astria npc = view_as<Astria>(iNPC);
+	Astriana npc = view_as<Astriana>(iNPC);
 	
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
@@ -301,7 +301,7 @@ static void ClotThink(int iNPC)
 		fl_ruina_battery_timer[npc.index]=GameTime+1.0;
 	}
 
-	Astria_SelfDefense(npc, GameTime);	//note: Masters can use this method, but slaves should still use primarythreatindex rather then finding via distance.
+	Astriana_SelfDefense(npc, GameTime);	//note: Masters can use this method, but slaves should still use primarythreatindex rather then finding via distance.
 
 	if(npc.m_flNextTeleport < GameTime && fl_ruina_battery[npc.index]>1250.0)
 	{
@@ -330,7 +330,7 @@ static void ClotThink(int iNPC)
 
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Astria npc = view_as<Astria>(victim);
+	Astriana npc = view_as<Astriana>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -350,7 +350,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 static void NPC_Death(int entity)
 {
-	Astria npc = view_as<Astria>(entity);
+	Astriana npc = view_as<Astriana>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -374,7 +374,7 @@ static void NPC_Death(int entity)
 	
 }
 
-static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
+static void Astriana_SelfDefense(Astriana npc, float gameTime)	//ty artvin
 {
 	int GetClosestEnemyToAttack;
 	//Ranged units will behave differently.
@@ -385,10 +385,9 @@ static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
 		return;
 	}
 	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
+	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 
-	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	
 	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 	{	
 		//target is within range, attack them
@@ -431,7 +430,7 @@ static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
 				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 				{
-					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
+					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 				}
 				float DamageDone = 25.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);

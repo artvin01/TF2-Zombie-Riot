@@ -76,11 +76,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 
 		switch(RaidFight)
 		{
-			case 2:
-			{
-				enemy.Index = RAIDMODE_BLITZKRIEG;
-				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
-			}
 			case 3:
 			{
 				enemy.Index = XENO_RAIDBOSS_SILVESTER;

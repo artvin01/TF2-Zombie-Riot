@@ -2,36 +2,36 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+	"vo/scout_paincrticialdeath01.mp3",
+	"vo/scout_paincrticialdeath02.mp3",
+	"vo/scout_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/medic_painsharp01.mp3",
-	"vo/medic_painsharp02.mp3",
-	"vo/medic_painsharp03.mp3",
-	"vo/medic_painsharp04.mp3",
-	"vo/medic_painsharp05.mp3",
-	"vo/medic_painsharp06.mp3",
-	"vo/medic_painsharp07.mp3",
-	"vo/medic_painsharp08.mp3",
+	"vo/scout_painsharp01.mp3",
+	"vo/scout_painsharp02.mp3",
+	"vo/scout_painsharp03.mp3",
+	"vo/scout_painsharp04.mp3",
+	"vo/scout_painsharp05.mp3",
+	"vo/scout_painsharp06.mp3",
+	"vo/scout_painsharp07.mp3",
+	"vo/scout_painsharp08.mp3",
 };
 
 static const char g_IdleSounds[][] = {
-	"vo/medic_standonthepoint01.mp3",
-	"vo/medic_standonthepoint02.mp3",
-	"vo/medic_standonthepoint03.mp3",
-	"vo/medic_standonthepoint04.mp3",
-	"vo/medic_standonthepoint05.mp3",
+	"vo/scout_standonthepoint01.mp3",
+	"vo/scout_standonthepoint02.mp3",
+	"vo/scout_standonthepoint03.mp3",
+	"vo/scout_standonthepoint04.mp3",
+	"vo/scout_standonthepoint05.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/medic_battlecry01.mp3",
-	"vo/medic_battlecry02.mp3",
-	"vo/medic_battlecry03.mp3",
-	"vo/medic_battlecry04.mp3",
-	"vo/medic_battlecry05.mp3",
+	"vo/scout_battlecry01.mp3",
+	"vo/scout_battlecry02.mp3",
+	"vo/scout_battlecry03.mp3",
+	"vo/scout_battlecry04.mp3",
+	"vo/scout_battlecry05.mp3",
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -51,9 +51,8 @@ static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
 };
 
-void Magia_OnMapStart_NPC()
+void Draedon_OnMapStart_NPC()
 {
-
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -62,22 +61,21 @@ void Magia_OnMapStart_NPC()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
-
-	PrecacheModel("models/player/medic.mdl");
+	PrecacheModel("models/player/scout.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Magia");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_magia");
+	strcopy(data.Name, sizeof(data.Name), "Draedon");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_draedon");
 	data.Category = -1;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Magia(client, vecPos, vecAng, ally);
+	return Draedon(client, vecPos, vecAng, ally);
 }
 
-methodmap Magia < CClotBody
+methodmap Draedon < CClotBody
 {
 	
 	public void PlayIdleSound() {
@@ -158,24 +156,25 @@ methodmap Magia < CClotBody
 	}
 	
 	
-	public Magia(int client, float vecPos[3], float vecAng[3], int ally)
+	public Draedon(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Magia npc = view_as<Magia>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
+		Draedon npc = view_as<Draedon>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
 		/*
-			nunhood						//Xms2013_Medic_Hood
-			ramses regalia				//Hw2013_Ramses_Regalia
-			lo-grav loafers				//Hw2013_Moon_Boots
-			angel of death				//Xms2013_Medic_Robe
-		
+			b'aaarrgh-n-britches	models/workshop/player/items/scout/hwn2015_bargain_britches/hwn2015_bargain_britches.mdl
+			berliner's bazooka		models/player/items/medic/berliners_bucket_helm.mdl
+			Sole Saviors			models/workshop/player/items/all_class/sbox2014_armor_shoes/sbox2014_armor_shoes_demo.mdl
+
+			beggars 				models/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl
+			battalions				models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl
 		*/
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -187,27 +186,30 @@ methodmap Magia < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
-		
+
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/xms2013_medic_hood/xms2013_medic_hood.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2015_bargain_britches/hwn2015_bargain_britches.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_ramses_regalia/hw2013_ramses_regalia.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/medic/berliners_bucket_helm.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/sbox2014_armor_shoes/sbox2014_armor_shoes_demo.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/xms2013_medic_robe/xms2013_medic_robe.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
+		npc.m_iWearable5 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -216,15 +218,13 @@ methodmap Magia < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-				
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 				
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
-		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
-		
-		Magia_Create_Hand_Crest(npc.index);
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a RANGED npc
 		
 		return npc;
 	}
@@ -236,14 +236,13 @@ methodmap Magia < CClotBody
 //Rewrite
 static void ClotThink(int iNPC)
 {
-	Magia npc = view_as<Magia>(iNPC);
+	Draedon npc = view_as<Draedon>(iNPC);
 	
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
 	}
-	
 	
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
@@ -271,23 +270,18 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>500.0)
+	if(fl_ruina_battery[npc.index]>250.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
-		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
+
+		Master_Apply_Shield_Buff(npc.index, 250.0, 0.7);	//30% block shield
 		
 	}
-	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
-	{	
-		Master_Apply_Speed_Buff(npc.index, 125.0, 1.0, 1.12);
-	}
-	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
-			
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-		
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 			
 		if(flDistanceToTarget < 100000)
 		{
@@ -345,11 +339,13 @@ static void ClotThink(int iNPC)
 						
 					GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 						
-					float projectile_speed = 1000.0;
+					float projectile_speed = 750.0;
 					float target_vec[3];
-					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
+					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _, target_vec);
 		
-					npc.FireParticleRocket(target_vec, 50.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
+					float dmg = 30.0;
+					float radius = 150.0;
+					npc.FireParticleRocket(target_vec, dmg , projectile_speed , radius , "raygun_projectile_blue", _, _, true, flPos);
 						
 				}
 				else
@@ -363,6 +359,8 @@ static void ClotThink(int iNPC)
 			npc.StartPathing();
 				
 		}
+			
+
 	}
 	else
 	{
@@ -374,112 +372,10 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static int i_particle[MAXENTITIES][11];
-static int i_laser[MAXENTITIES][8];
-
-static void Magia_Create_Hand_Crest(int client)
-{
-	float flPos[3];
-	float flAng[3];
-	GetAttachment(client, "effect_hand_r", flPos, flAng);
-	
-	
-	int r, g, b;
-	float f_start, f_end, amp;
-	r = 1;
-	g = 175;
-	b = 255;
-	f_start = 1.0;
-	f_end = 1.0;
-	amp = 0.1;
-	
-	int particle_0 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
-	
-	
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);
-	
-	SetParent(particle_0, particle_1);
-	
-	
-	//X axis- Left, Right	//this one im almost fully sure of
-	//Y axis - Foward, Back
-	//Z axis - Up Down
-	
-	
-	int particle_2 = InfoTargetParentAt({0.0, 0.0, 15.0}, "", 0.0);
-	int particle_2_1 = InfoTargetParentAt({0.0, 0.0, -15.0}, "", 0.0);
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_2, particle_2_1, "",_, true);
-	
-	int particle_4 = InfoTargetParentAt({15.0, 0.0, 0.0}, "", 0.0);
-	int particle_4_1 = InfoTargetParentAt({-15.0, 0.0, 0.0}, "", 0.0);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_4, particle_4_1, "",_, true);
-	
-	int particle_5 = InfoTargetParentAt({7.5, 0.0, 7.5}, "", 0.0);
-	int particle_5_1 = InfoTargetParentAt({-7.5, 0.0, -7.5}, "", 0.0);
-	SetParent(particle_1, particle_5, "",_, true);
-	SetParent(particle_5, particle_5_1, "",_, true);
-	
-	int particle_6 = InfoTargetParentAt({-7.5, 0.0, 7.5}, "", 0.0);
-	int particle_6_1 = InfoTargetParentAt({7.5, 0.0, -7.5}, "", 0.0);
-	SetParent(particle_1, particle_6, "",_, true);
-	SetParent(particle_6, particle_6_1, "",_, true);
-
-
-	Custom_SDKCall_SetLocalOrigin(particle_0, flPos);
-	SetEntPropVector(particle_0, Prop_Data, "m_angRotation", flAng); 
-	SetParent(client, particle_0, "effect_hand_r",_);
-
-	
-	i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
-	
-	i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_4_1, particle_4, r, g, b, f_start, f_end, amp, LASERBEAM));
-	
-	i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_5_1, particle_5, r, g, b, f_start, f_end, amp, LASERBEAM));
-	
-	i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
-	
-	/*i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_2, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_2_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_4, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_4_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_5, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_5_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][6] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_6, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][7] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_6_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));*/
-	
-	
-	i_particle[client][0] = EntIndexToEntRef(particle_0);
-	i_particle[client][1] = EntIndexToEntRef(particle_1);
-	i_particle[client][2] = EntIndexToEntRef(particle_2);
-	i_particle[client][3] = EntIndexToEntRef(particle_4);
-	i_particle[client][4] = EntIndexToEntRef(particle_4_1);
-	i_particle[client][5] = EntIndexToEntRef(particle_5);
-	i_particle[client][6] = EntIndexToEntRef(particle_5_1);
-	i_particle[client][7] = EntIndexToEntRef(particle_6);
-	i_particle[client][8] = EntIndexToEntRef(particle_6_1);
-	
-}
-static void Delete_Hand_Crest(int client)
-{
-	for(int laser=0 ; laser<4 ; laser++)
-	{
-		int entity = EntRefToEntIndex(i_laser[client][laser]);
-		if(IsValidEntity(entity))
-			RemoveEntity(entity);
-	}
-	for(int particle=0 ; particle < 9 ; particle++)
-	{
-		int entity = EntRefToEntIndex(i_particle[client][particle]);
-		if(IsValidEntity(entity))
-			RemoveEntity(entity);
-	}
-}
-
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Magia npc = view_as<Magia>(victim);
+
+	Draedon npc = view_as<Draedon>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -499,16 +395,13 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 static void NPC_Death(int entity)
 {
-	Magia npc = view_as<Magia>(entity);
+	Draedon npc = view_as<Draedon>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-
-	Ruina_NPCDeath_Override(entity);
 	
-	Delete_Hand_Crest(entity);
-
+	Ruina_NPCDeath_Override(entity);
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
@@ -518,5 +411,7 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 	
 }

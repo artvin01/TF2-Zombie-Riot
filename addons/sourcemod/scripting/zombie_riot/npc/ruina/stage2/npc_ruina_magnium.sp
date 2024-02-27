@@ -51,7 +51,7 @@ static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
 };
 
-void Magia_OnMapStart_NPC()
+void Magnium_OnMapStart_NPC()
 {
 
 	PrecacheSoundArray(g_DeathSounds);
@@ -66,18 +66,18 @@ void Magia_OnMapStart_NPC()
 	PrecacheModel("models/player/medic.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Magia");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_magia");
+	strcopy(data.Name, sizeof(data.Name), "Magnium");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_magnium");
 	data.Category = -1;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Magia(client, vecPos, vecAng, ally);
+	return Magnium(client, vecPos, vecAng, ally);
 }
 
-methodmap Magia < CClotBody
+methodmap Magnium < CClotBody
 {
 	
 	public void PlayIdleSound() {
@@ -158,9 +158,9 @@ methodmap Magia < CClotBody
 	}
 	
 	
-	public Magia(int client, float vecPos[3], float vecAng[3], int ally)
+	public Magnium(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Magia npc = view_as<Magia>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
+		Magnium npc = view_as<Magnium>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -224,7 +224,7 @@ methodmap Magia < CClotBody
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
 		
-		Magia_Create_Hand_Crest(npc.index);
+		Magnium_Create_Hand_Crest(npc.index);
 		
 		return npc;
 	}
@@ -236,15 +236,13 @@ methodmap Magia < CClotBody
 //Rewrite
 static void ClotThink(int iNPC)
 {
-	Magia npc = view_as<Magia>(iNPC);
+	Magnium npc = view_as<Magnium>(iNPC);
 	
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
 	}
-	
-	
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -285,9 +283,8 @@ static void ClotThink(int iNPC)
 	{
 			
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-		
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 			
 		if(flDistanceToTarget < 100000)
 		{
@@ -377,7 +374,7 @@ static void ClotThink(int iNPC)
 static int i_particle[MAXENTITIES][11];
 static int i_laser[MAXENTITIES][8];
 
-static void Magia_Create_Hand_Crest(int client)
+static void Magnium_Create_Hand_Crest(int client)
 {
 	float flPos[3];
 	float flAng[3];
@@ -479,7 +476,7 @@ static void Delete_Hand_Crest(int client)
 
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Magia npc = view_as<Magia>(victim);
+	Magnium npc = view_as<Magnium>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -499,7 +496,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 static void NPC_Death(int entity)
 {
-	Magia npc = view_as<Magia>(entity);
+	Magnium npc = view_as<Magnium>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	

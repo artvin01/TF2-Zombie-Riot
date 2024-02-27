@@ -2,36 +2,32 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/scout_paincrticialdeath01.mp3",
-	"vo/scout_paincrticialdeath02.mp3",
-	"vo/scout_paincrticialdeath03.mp3",
+	"vo/spy_paincrticialdeath01.mp3",
+	"vo/spy_paincrticialdeath02.mp3",
+	"vo/spy_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/scout_painsharp01.mp3",
-	"vo/scout_painsharp02.mp3",
-	"vo/scout_painsharp03.mp3",
-	"vo/scout_painsharp04.mp3",
-	"vo/scout_painsharp05.mp3",
-	"vo/scout_painsharp06.mp3",
-	"vo/scout_painsharp07.mp3",
-	"vo/scout_painsharp08.mp3",
+	"vo/spy_painsharp01.mp3",
+	"vo/spy_painsharp02.mp3",
+	"vo/spy_painsharp03.mp3",
+	"vo/spy_painsharp04.mp3",
 };
 
 static const char g_IdleSounds[][] = {
-	"vo/scout_standonthepoint01.mp3",
-	"vo/scout_standonthepoint02.mp3",
-	"vo/scout_standonthepoint03.mp3",
-	"vo/scout_standonthepoint04.mp3",
-	"vo/scout_standonthepoint05.mp3",
+	"vo/spy_laughshort01.mp3",
+	"vo/spy_laughshort02.mp3",
+	"vo/spy_laughshort03.mp3",
+	"vo/spy_laughshort04.mp3",
+	"vo/spy_laughshort05.mp3",
+	"vo/spy_laughshort06.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/scout_battlecry01.mp3",
-	"vo/scout_battlecry02.mp3",
-	"vo/scout_battlecry03.mp3",
-	"vo/scout_battlecry04.mp3",
-	"vo/scout_battlecry05.mp3",
+	"vo/spy_battlecry01.mp3",
+	"vo/spy_battlecry02.mp3",
+	"vo/spy_battlecry03.mp3",
+	"vo/spy_battlecry04.mp3",
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -47,11 +43,8 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/bat_draw_swoosh1.wav",
 	"weapons/bat_draw_swoosh2.wav",
 };
-static char g_TeleportSounds[][] = {
-	"misc/halloween/spell_stealth.wav",
-};
 
-void Lanius_OnMapStart_NPC()
+void Dronian_OnMapStart_NPC()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
@@ -60,22 +53,21 @@ void Lanius_OnMapStart_NPC()
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
-	PrecacheSoundArray(g_TeleportSounds);
-	PrecacheModel("models/player/scout.mdl");
 
+	PrecacheModel("models/player/spy.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Lanius");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_lanius");
+	strcopy(data.Name, sizeof(data.Name), "Dronian");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dronian");
 	data.Category = -1;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Lanius(client, vecPos, vecAng, ally);
+	return Dronian(client, vecPos, vecAng, ally);
 }
 
-methodmap Lanius < CClotBody
+methodmap Dronian < CClotBody
 {
 	
 	public void PlayIdleSound() {
@@ -86,14 +78,6 @@ methodmap Lanius < CClotBody
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
-		#endif
-	}
-	
-	public void PlayTeleportSound() {
-		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
 		#endif
 	}
 	
@@ -156,9 +140,9 @@ methodmap Lanius < CClotBody
 	}
 	
 	
-	public Lanius(int client, float vecPos[3], float vecAng[3], int ally)
+	public Dronian(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Lanius npc = view_as<Lanius>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
+		Dronian npc = view_as<Dronian>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -171,7 +155,7 @@ methodmap Lanius < CClotBody
 		/*
 			Bunsen Brave		Robo_Heavy_Chief
 			Claid					"models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
-			Dark Helm - Lanius		Hw2013_The_Dark_Helm_(Class)
+			Dark Helm - Dronian		Hw2013_The_Dark_Helm_(Class)
 			Diplomat 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
 			Herzenvrecher		"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
 		
@@ -182,7 +166,8 @@ methodmap Lanius < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-
+		
+		
 		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
@@ -207,7 +192,7 @@ methodmap Lanius < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_scout.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_spy.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		
@@ -219,12 +204,6 @@ methodmap Lanius < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-				
-		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
-				
-		fl_ruina_battery[npc.index] = 0.0;
-		b_ruina_battery_ability_active[npc.index] = false;
-		fl_ruina_battery_timer[npc.index] = 0.0;
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		
@@ -238,16 +217,14 @@ methodmap Lanius < CClotBody
 //Rewrite
 static void ClotThink(int iNPC)
 {
-	Lanius npc = view_as<Lanius>(iNPC);
+	Dronian npc = view_as<Dronian>(iNPC);
 	
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
 	}
-	
-	
-	
+
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
@@ -265,81 +242,23 @@ static void ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
-
-	Ruina_Add_Battery(npc.index, 0.75);
-
 	
-	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
+	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>500.0)
-	{
-		fl_ruina_battery[npc.index] = 0.0;
-		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
-		
-	}
-	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
-	{
-		Master_Apply_Speed_Buff(npc.index, 125.0, 1.0, 1.12);
-	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-		
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		//note: the old vec here is already replaced in a seperate branch that also adds other stuff
-		if(npc.m_flNextTeleport < GameTime && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (500.0 * 500.0))
-		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_ ,vPredictedPos);
-			static float flVel[3];
-			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
-		
-			if (flVel[0] >= 190.0)
-			{
-				npc.FaceTowards(vPredictedPos);
-				npc.FaceTowards(vPredictedPos);
-				npc.m_flNextTeleport = GameTime + 30.0;
-				float Tele_Check = GetVectorDistance(VecSelfNpc, vPredictedPos);
-					
-					
-				float start_offset[3], end_offset[3];
-				start_offset = VecSelfNpc;
-					
-				if(Tele_Check > 200.0)
-				{
-					bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
-					if(Succeed)
-					{
-						npc.PlayTeleportSound();
-							
-						float effect_duration = 0.25;
-	
-						end_offset = vPredictedPos;
-										
-						for(int help=1 ; help<=8 ; help++)
-						{	
-							Lanius_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
-											
-							start_offset[2] += 12.5;
-							end_offset[2] += 12.5;
-						}
-					}
-					else
-					{
-						npc.m_flNextTeleport = GameTime + 1.0;
-					}
-				}
-			}
-		}		
+		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 
 		Ruina_Self_Defense Melee;
 
 		Melee.iNPC = npc.index;
 		Melee.target = PrimaryThreatIndex;
 		Melee.fl_distance_to_target = flDistanceToTarget;
-		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
+		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25;
 		Melee.damage = 25.0;
 		Melee.bonus_dmg = 125.0;
 		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
@@ -370,20 +289,17 @@ static void ClotThink(int iNPC)
 	}
 	npc.PlayIdleAlertSound();
 }
-
 static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
 	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 0);
 }
-
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-
-	Lanius npc = view_as<Lanius>(victim);
+	Dronian npc = view_as<Dronian>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
@@ -399,7 +315,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 static void NPC_Death(int entity)
 {
-	Lanius npc = view_as<Lanius>(entity);
+	Dronian npc = view_as<Dronian>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	

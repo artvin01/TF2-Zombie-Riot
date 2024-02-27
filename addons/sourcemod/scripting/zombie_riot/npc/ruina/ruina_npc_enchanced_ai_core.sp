@@ -178,6 +178,7 @@ public void Ruina_Set_Heirarchy(int client, int type)
 {
 	fl_shield_break_timeout[client] = 0.0;
 	i_npc_type[client] = type;
+	i_master_attracts[client] = type;
 	b_master_exists[client] = false;
 	b_npc_healer[client] = false;
 	b_npc_no_retreat[client] = false;
@@ -2485,4 +2486,25 @@ public void Ruina_ICBM_Apply_Level_1_Visuals(int client, float flAng[3])
 	i_ICBM_Env_Lasers[client][5] = EntIndexToEntRef(Laser_6);
 	i_ICBM_Env_Lasers[client][6] = EntIndexToEntRef(Laser_7);
 	i_ICBM_Env_Lasers[client][7] = EntIndexToEntRef(Laser_8);
+}
+stock void Lanius_Teleport_Effect(char type[255], float duration = 0.0, float start_point[3], float end_point[3])
+{
+	int part1 = CreateEntityByName("info_particle_system");
+	if(IsValidEdict(part1))
+	{
+		TeleportEntity(part1, start_point, NULL_VECTOR, NULL_VECTOR);
+		DispatchKeyValue(part1, "effect_name", type);
+		SetVariantString("!activator");
+		DispatchSpawn(part1);
+		ActivateEntity(part1);
+		AcceptEntityInput(part1, "Start");
+		
+		DataPack pack;
+		CreateDataTimer(0.1, Timer_Move_Particle, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(part1));
+		pack.WriteCell(end_point[0]);
+		pack.WriteCell(end_point[1]);
+		pack.WriteCell(end_point[2]);
+		pack.WriteCell(duration);
+	}
 }

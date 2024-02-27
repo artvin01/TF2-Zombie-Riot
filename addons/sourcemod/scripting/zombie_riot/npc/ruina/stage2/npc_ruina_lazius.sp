@@ -34,7 +34,7 @@ static const char g_RangedReloadSound[][] = {
 	"weapons/dragons_fury_pressure_build.wav",
 };
 
-void Laz_OnMapStart_NPC()
+void Lazius_OnMapStart_NPC()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
@@ -44,18 +44,18 @@ void Laz_OnMapStart_NPC()
 	PrecacheModel("models/player/demo.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Laz");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_laz");
+	strcopy(data.Name, sizeof(data.Name), "Lazius");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_lazius");
 	data.Category = -1;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Laz(client, vecPos, vecAng, ally);
+	return Lazius(client, vecPos, vecAng, ally);
 }
 
-methodmap Laz < CClotBody
+methodmap Lazius < CClotBody
 {	
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -109,9 +109,9 @@ methodmap Laz < CClotBody
 	}
 	
 	
-	public Laz(int client, float vecPos[3], float vecAng[3], int ally)
+	public Lazius(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Laz npc = view_as<Laz>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
+		Lazius npc = view_as<Lazius>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -179,15 +179,13 @@ methodmap Laz < CClotBody
 //Rewrite
 static void ClotThink(int iNPC)
 {
-	Laz npc = view_as<Laz>(iNPC);
+	Lazius npc = view_as<Lazius>(iNPC);
 	
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
 	}
-	
-	
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -207,7 +205,7 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	//Ruina_Add_Battery(npc.index, 0.75);
+	Ruina_Add_Battery(npc.index, 0.75);
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
 
@@ -226,9 +224,8 @@ static void ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-		
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
 		if(iPitch < 0)
@@ -236,8 +233,7 @@ static void ClotThink(int iNPC)
 						
 		//Body pitch
 		float v[3], ang[3];
-		float SelfVec[3]; WorldSpaceCenter(npc.index, SelfVec);
-		SubtractVectors(SelfVec, vecTarget, v); 
+		SubtractVectors(Npc_Vec, vecTarget, v); 
 		NormalizeVector(v, v);
 		GetVectorAngles(v, ang); 
 								
@@ -329,7 +325,7 @@ static void ClotThink(int iNPC)
 				
 			}
 			float EndLoc[3];
-			EndLoc = Do_Laz_Laser_Effects(npc.index, color, size, time, 975.0, amp);	//reuse the location since lazy to do another trace.
+			EndLoc = Do_Laz_Laser_Effects(npc.index, color, size, time, 975.0, amp);	//reuse the location since Laziusy to do another trace.
 
 			if(attack)
 			{
@@ -359,7 +355,7 @@ static void ClotThink(int iNPC)
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 
-	Laz npc = view_as<Laz>(victim);
+	Lazius npc = view_as<Lazius>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -379,7 +375,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 static void NPC_Death(int entity)
 {
-	Laz npc = view_as<Laz>(entity);
+	Lazius npc = view_as<Lazius>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	

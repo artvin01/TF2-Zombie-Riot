@@ -2,35 +2,36 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/engineer_paincrticialdeath01.mp3",
-	"vo/engineer_paincrticialdeath02.mp3",
-	"vo/engineer_paincrticialdeath03.mp3",
+	"vo/scout_paincrticialdeath01.mp3",
+	"vo/scout_paincrticialdeath02.mp3",
+	"vo/scout_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/engineer_painsharp01.mp3",
-	"vo/engineer_painsharp02.mp3",
-	"vo/engineer_painsharp03.mp3",
-	"vo/engineer_painsharp04.mp3",
-	"vo/engineer_painsharp05.mp3",
-	"vo/engineer_painsharp06.mp3",
-	"vo/engineer_painsharp07.mp3",
-	"vo/engineer_painsharp08.mp3",
+	"vo/scout_painsharp01.mp3",
+	"vo/scout_painsharp02.mp3",
+	"vo/scout_painsharp03.mp3",
+	"vo/scout_painsharp04.mp3",
+	"vo/scout_painsharp05.mp3",
+	"vo/scout_painsharp06.mp3",
+	"vo/scout_painsharp07.mp3",
+	"vo/scout_painsharp08.mp3",
 };
 
 static const char g_IdleSounds[][] = {
-	"vo/engineer_standonthepoint01.mp3",
-	"vo/engineer_standonthepoint02.mp3",
-	"vo/engineer_standonthepoint03.mp3",
-	"vo/engineer_standonthepoint04.mp3",
-	"vo/engineer_standonthepoint05.mp3",
+	"vo/scout_standonthepoint01.mp3",
+	"vo/scout_standonthepoint02.mp3",
+	"vo/scout_standonthepoint03.mp3",
+	"vo/scout_standonthepoint04.mp3",
+	"vo/scout_standonthepoint05.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/engineer_battlecry01.mp3",
-	"vo/engineer_battlecry03.mp3",
-	"vo/engineer_battlecry04.mp3",
-	"vo/engineer_battlecry05.mp3",
+	"vo/scout_battlecry01.mp3",
+	"vo/scout_battlecry02.mp3",
+	"vo/scout_battlecry03.mp3",
+	"vo/scout_battlecry04.mp3",
+	"vo/scout_battlecry05.mp3",
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -49,11 +50,8 @@ static const char g_MeleeMissSounds[][] = {
 static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
 };
-static const char g_RangedAttackSounds[][] = {
-	"weapons/rescue_ranger_fire.wav",
-};
 
-void Astria_OnMapStart_NPC()
+void Laniun_OnMapStart_NPC()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
@@ -63,23 +61,21 @@ void Astria_OnMapStart_NPC()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
-	PrecacheSoundArray(g_RangedAttackSounds);
-	
-	PrecacheModel("models/player/engineer.mdl");
+	PrecacheModel("models/player/scout.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Astria");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_astria");
+	strcopy(data.Name, sizeof(data.Name), "Laniun");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_laniun");
 	data.Category = -1;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Astria(client, vecPos, vecAng, ally);
+	return Laniun(client, vecPos, vecAng, ally);
 }
 
-methodmap Astria < CClotBody
+methodmap Laniun < CClotBody
 {
 	
 	public void PlayIdleSound() {
@@ -158,72 +154,49 @@ methodmap Astria < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-
-	public void PlayRangedSound()
-	{
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-	}
 	
 	
-	public Astria(int client, float vecPos[3], float vecAng[3], int ally)
+	public Laniun(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Astria npc = view_as<Astria>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally));
+		Laniun npc = view_as<Laniun>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
 		/*
-			resuce ranger
-			Arctic mole
-			berliner's bucker helm	Berliners_Bucket_Helm
-			big chief				Heavy_Big_Chief
-			cadaver's capper		Hw2013_Soldier_Jiangshi_Hat
-			gaelic garb				Jul13_Gaelic_Garb
-		
+			Bunsen Brave			"models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl"
+			festive eyelander		"models/weapons/c_models/c_claymore/c_claymore_xmas.mdl"
+			Berliner's bucket helm	"models/player/items/medic/berliners_bucket_helm.mdl"
+			Diplomat 				"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
+			tuxxy					"models/player/items/all_class/tuxxy_scout.mdl"
+			Athenian Attire			"models/workshop/player/items/scout/hwn2018_athenian_attire/hwn2018_athenian_attire.mdl"
 		*/
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
+
 		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
-		
-		npc.m_flSpeed = 200.0;
+
+		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_tele_shotgun/c_tele_shotgun.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/engineer/dec22_arctic_mole_style1/dec22_arctic_mole_style1.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/medic/berliners_bucket_helm.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/player/items/heavy/heavy_big_chief.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/hw2013_soldier_jiangshi_hat/hw2013_soldier_jiangshi_hat.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/demo/jul13_gaelic_garb/jul13_gaelic_garb.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claymore/c_claymore_xmas.mdl");	//claidemor	
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl");	
+		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/medic/berliners_bucket_helm.mdl");	
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");	
+		npc.m_iWearable5 = npc.EquipItem("head", "models/player/items/all_class/tuxxy_scout.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2018_athenian_attire/hwn2018_athenian_attire.mdl");
 		
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -233,25 +206,27 @@ methodmap Astria < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
+				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
-		
+				
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
-		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, false, 15, 10);	//Priority 10: Teleporting/Movement masters
 		
 		return npc;
 	}
+	
+	
 }
 
 //TODO 
 //Rewrite
 static void ClotThink(int iNPC)
 {
-	Astria npc = view_as<Astria>(iNPC);
+	Laniun npc = view_as<Laniun>(iNPC);
 	
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
@@ -282,41 +257,95 @@ static void ClotThink(int iNPC)
 	Ruina_Add_Battery(npc.index, 2.5);
 
 	
-	if(npc.m_flGetClosestTargetTime < GameTime)
-	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
-	}
-	
-	int PrimaryThreatIndex = npc.m_iTarget;
-	
-	if(fl_ruina_battery[npc.index]>750 && npc.m_flNextTeleport < GameTime + 10.0)
-	{
-		Ruina_Master_Rally(npc.index, true);
-		Ruina_Master_Accpet_Slaves(npc.index);
-	}
-	if(fl_ruina_battery_timer[npc.index]>GameTime)	//constant speed buff!
-	{
-		Master_Apply_Speed_Buff(npc.index, 200.0, 1.0, 1.25);
-		fl_ruina_battery_timer[npc.index]=GameTime+1.0;
-	}
+	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
 
-	Astria_SelfDefense(npc, GameTime);	//note: Masters can use this method, but slaves should still use primarythreatindex rather then finding via distance.
-
-	if(npc.m_flNextTeleport < GameTime && fl_ruina_battery[npc.index]>1250.0)
+	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
+	
+	if(fl_ruina_battery[npc.index]>3000.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
-
-		npc.m_flNextTeleport = GameTime + 30.0;
-
-		Astria_Teleport_Allies(npc.index, 350.0, {20, 150, 255, 150});
-
-		Ruina_Master_Release_Slaves(npc.index);
+		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
 	}
-
-	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
+		Master_Apply_Speed_Buff(npc.index, 130.0, 1.0, 1.17);
+	}
+	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
+	{
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
+			
+		if(npc.m_flNextTeleport < GameTime && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (500.0 * 500.0))
+		{
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_, vPredictedPos);
+			static float flVel[3];
+			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
+		
+			if (flVel[0] >= 190.0)
+			{
+				npc.FaceTowards(vPredictedPos);
+				npc.FaceTowards(vPredictedPos);
+				npc.m_flNextTeleport = GameTime + 25.0;
+				float Tele_Check = GetVectorDistance(Npc_Vec, vPredictedPos);
+					
+					
+				float start_offset[3], end_offset[3];
+				start_offset = Npc_Vec;
+					
+				if(Tele_Check > 200.0)
+				{
+					bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
+					if(Succeed)
+					{
+						npc.PlayTeleportSound();
+							
+						float effect_duration = 0.25;
+	
+						end_offset = vPredictedPos;
+										
+						for(int help=1 ; help<=8 ; help++)
+						{	
+							Lanius_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
+											
+							start_offset[2] += 12.5;
+							end_offset[2] += 12.5;
+						}
+					}
+					else
+					{
+						npc.m_flNextTeleport = GameTime + 1.0;
+					}
+				}
+			}
+		}		
+
+		Ruina_Self_Defense Melee;
+
+		Melee.iNPC = npc.index;
+		Melee.target = PrimaryThreatIndex;
+		Melee.fl_distance_to_target = flDistanceToTarget;
+		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
+		Melee.damage = 50.0;
+		Melee.bonus_dmg = 250.0;
+		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
+		Melee.swing_speed = 0.475;
+		Melee.swing_delay = 0.37;
+		Melee.turn_speed = 20000.0;
+		Melee.gameTime = GameTime;
+		Melee.status = 0;
+		Melee.Swing_Melee(OnRuina_MeleeAttack);
+
+		switch(Melee.status)
+		{
+			case 1:	//we swung
+				npc.PlayMeleeSound();
+			case 2:	//we hit something
+				npc.PlayMeleeHitSound();
+			case 3:	//we missed
+				npc.PlayMeleeMissSound();
+			//0 means nothing.
+		}
 	}
 	else
 	{
@@ -328,16 +357,21 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
+static void OnRuina_MeleeAttack(int iNPC, int Target)
+{
+	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 0);
+}
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Astria npc = view_as<Astria>(victim);
+
+	Laniun npc = view_as<Laniun>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-
+		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-	Ruina_Add_Battery(npc.index, damage*0.75);	//turn damage taken into energy
+	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -350,19 +384,18 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 static void NPC_Death(int entity)
 {
-	Astria npc = view_as<Astria>(entity);
+	Laniun npc = view_as<Laniun>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-
-	Ruina_NPCDeath_Override(entity);
-
 	
-	if(IsValidEntity(npc.m_iWearable1))
-		RemoveEntity(npc.m_iWearable1);
+	Ruina_NPCDeath_Override(entity);
+		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
@@ -371,74 +404,4 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
-	
-}
-
-static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
-{
-	int GetClosestEnemyToAttack;
-	//Ranged units will behave differently.
-	//Get the closest visible target via distance checks, not via pathing check.
-	GetClosestEnemyToAttack = GetClosestTarget(npc.index,_,_,_,_,_,_,true,_,_,true);	//works with masters, slaves not so much
-	if(!IsValidEnemy(npc.index,GetClosestEnemyToAttack))	//no target, what to do while idle
-	{
-		return;
-	}
-	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
-
-	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	
-	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
-	{	
-		//target is within range, attack them
-		if(flDistanceToTarget <(NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
-		{
-			int Enemy_I_See;
-				
-			Enemy_I_See = Can_I_See_Enemy(npc.index, GetClosestEnemyToAttack);
-			//Target close enough to hit
-			if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
-			{
-				if(flDistanceToTarget < (750.0*750.0))
-				{
-					Ruina_Runaway_Logic(npc.index, GetClosestEnemyToAttack);
-					npc.m_bAllowBackWalking=true;
-				}
-				else
-				{
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
-					npc.m_bAllowBackWalking=false;
-				}
-			}
-			else
-			{
-				npc.StartPathing();
-				npc.m_bPathing = true;
-				npc.m_bAllowBackWalking=false;
-			}
-		}
-		else
-		{
-			npc.m_bAllowBackWalking=false;
-			if(gameTime > npc.m_flNextRangedAttack)
-			{
-				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", true);
-				npc.PlayRangedSound();
-				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
-				float projectile_speed = 800.0;
-				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
-				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-				{
-					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
-				}
-				float DamageDone = 25.0;
-				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);
-				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.25;
-			}
-		}
-	}
-	npc.m_iTarget = GetClosestEnemyToAttack;
 }

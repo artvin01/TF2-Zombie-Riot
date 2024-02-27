@@ -43,7 +43,7 @@ static const char g_IdleSounds[][] = {
 	"vo/engineer_standonthepoint05.mp3",
 };
 
-void Malius_OnMapStart_NPC()
+void Maliana_OnMapStart_NPC()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
@@ -55,18 +55,18 @@ void Malius_OnMapStart_NPC()
 	PrecacheModel("models/player/engineer.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Malius");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_malius");
+	strcopy(data.Name, sizeof(data.Name), "Maliana");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_maliana");
 	data.Category = -1;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Malius(client, vecPos, vecAng, ally);
+	return Maliana(client, vecPos, vecAng, ally);
 }
 
-methodmap Malius < CClotBody
+methodmap Maliana < CClotBody
 {
 	
 	public void PlayIdleSound() {
@@ -138,9 +138,9 @@ methodmap Malius < CClotBody
 	}
 	
 	
-	public Malius(int client, float vecPos[3], float vecAng[3], int ally)
+	public Maliana(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Malius npc = view_as<Malius>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
+		Maliana npc = view_as<Maliana>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -216,6 +216,7 @@ methodmap Malius < CClotBody
 		
 		Ruina_Set_Battery_Buffer(npc.index, true);
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
+
 		return npc;
 	}
 	
@@ -226,15 +227,13 @@ methodmap Malius < CClotBody
 //Rewrite
 static void ClotThink(int iNPC)
 {
-	Malius npc = view_as<Malius>(iNPC);
+	Maliana npc = view_as<Maliana>(iNPC);
 	
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
 	}
-	
-	
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -279,9 +278,8 @@ static void ClotThink(int iNPC)
 		Ruina_Independant_Long_Range_Npc_Logic(npc.index, PrimaryThreatIndex, GameTime, Anchor_Id); //handles movement
 
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-		
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 			
 		if(!IsValidEntity(Anchor_Id))
 		{
@@ -323,7 +321,7 @@ static void ClotThink(int iNPC)
 		{
 			npc.m_bAllowBackWalking=false;
 		}
-		Malius_SelfDefense(npc, GameTime, Anchor_Id);
+		Maliana_SelfDefense(npc, GameTime, Anchor_Id);
 		npc.FaceTowards(vecTarget);
 	}
 	else
@@ -336,7 +334,7 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static void Malius_Effects_Attack(Malius npc, float Target_Vec[3], int GetClosestEnemyToAttack, float flDistanceToTarget)
+static void Maliana_Effects_Attack(Maliana npc, float Target_Vec[3], int GetClosestEnemyToAttack, float flDistanceToTarget)
 {
 	int amt = 2;
 	float Npc_Loc[3];
@@ -380,14 +378,14 @@ static void Malius_Effects_Attack(Malius npc, float Target_Vec[3], int GetCloses
 			PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 		if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 		{
-			WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
+			WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 		}
 		float DamageDone = 25.0;
 		npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_red_crit", false, true, true, endLoc,_,_, 10.0);
 	}
 }
 
-static void Malius_SelfDefense(Malius npc, float gameTime, int Anchor_Id)	//ty artvin
+static void Maliana_SelfDefense(Maliana npc, float gameTime, int Anchor_Id)	//ty artvin
 {
 	int GetClosestEnemyToAttack;
 	//Ranged units will behave differently.
@@ -398,9 +396,8 @@ static void Malius_SelfDefense(Malius npc, float gameTime, int Anchor_Id)	//ty a
 		return;
 	}
 	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
-
-	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 	if(flDistanceToTarget < (1000.0*1000.0))
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
@@ -409,7 +406,7 @@ static void Malius_SelfDefense(Malius npc, float gameTime, int Anchor_Id)	//ty a
 			npc.PlayRangedSound();
 			//after we fire, we will have a short delay beteween the actual laser, and when it happens
 			//This will predict as its relatively easy to dodge
-			Malius_Effects_Attack(npc, vecTarget, GetClosestEnemyToAttack, flDistanceToTarget);
+			Maliana_Effects_Attack(npc, vecTarget, GetClosestEnemyToAttack, flDistanceToTarget);
 			npc.FaceTowards(vecTarget, 20000.0);
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
 			npc.PlayRangedReloadSound();
@@ -426,18 +423,18 @@ static void Malius_SelfDefense(Malius npc, float gameTime, int Anchor_Id)	//ty a
 			if(IsValidEnemy(npc.index,target))
 			{
 				GetClosestEnemyToAttack = target;
-				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
+				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 
 				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
 
-				flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+				flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 				if(gameTime > npc.m_flNextRangedAttack)
 				{
 					npc.PlayRangedSound();
 					//after we fire, we will have a short delay beteween the actual laser, and when it happens
 					//This will predict as its relatively easy to dodge
 
-					Malius_Effects_Attack(npc, vecTarget, GetClosestEnemyToAttack, flDistanceToTarget);
+					Maliana_Effects_Attack(npc, vecTarget, GetClosestEnemyToAttack, flDistanceToTarget);
 					
 					npc.FaceTowards(vecTarget, 20000.0);
 					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
@@ -452,7 +449,7 @@ static void Malius_SelfDefense(Malius npc, float gameTime, int Anchor_Id)	//ty a
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 
-	Malius npc = view_as<Malius>(victim);
+	Maliana npc = view_as<Maliana>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -472,7 +469,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 static void NPC_Death(int entity)
 {
-	Malius npc = view_as<Malius>(entity);
+	Maliana npc = view_as<Maliana>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	

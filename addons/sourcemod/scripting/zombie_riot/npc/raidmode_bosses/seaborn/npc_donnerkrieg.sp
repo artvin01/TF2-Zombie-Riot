@@ -2191,13 +2191,13 @@ static void Donnerkrieg_Normal_Attack(Raidboss_Donnerkrieg npc, float GameTime, 
 {
 	if(npc.m_flNextMeleeAttack < GameTime && !npc.m_flAttackHappenswillhappen)
 	{
-		if(flDistanceToTarget < (2500.0*2500.0))	// is the target we wish to delete within range???
+		if(flDistanceToTarget < (2000.0*2000.0))	// is the target we wish to delete within range???
 		{
-			if(Donnerkrieg_Is_Target_Infront(npc, 75.0))	//only fire the laser if the target is actually infront of us, otherwise just dont
+			if(Donnerkrieg_Is_Target_Infront(npc, 50.0))	//only fire the laser if the target is actually infront of us, otherwise just dont
 			{
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 				npc.PlayMeleeSound();
-				npc.m_flAttackHappens = GameTime+0.2;
+				npc.m_flAttackHappens = GameTime+0.3;
 				npc.FaceTowards(vecTarget, 20000.0);
 				npc.m_flAttackHappenswillhappen=true;
 			}
@@ -2207,7 +2207,7 @@ static void Donnerkrieg_Normal_Attack(Raidboss_Donnerkrieg npc, float GameTime, 
 			}
 		}
 	}
-	else if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappenswillhappen)	//a slight delay to the actual firing so the animation plays, and who knows, give a 0.2 second chance for the player to doge it lmao
+	else if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappenswillhappen)	//a slight delay to the actual firing so the animation plays, and who knows, give a 0.3 second chance for the player to doge it lmao
 	{
 	//	npc.FaceTowards(vecTarget, 20000.0);
 		npc.m_flAttackHappenswillhappen=false;

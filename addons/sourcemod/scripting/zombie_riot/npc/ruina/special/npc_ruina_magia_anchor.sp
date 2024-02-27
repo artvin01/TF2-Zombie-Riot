@@ -396,6 +396,9 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	Magia_Anchor npc = view_as<Magia_Anchor>(victim);
 
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+	if(fl_ruina_battery[npc.index] <=200.0)
+		Ruina_Add_Battery(npc.index, 0.5);	//anchor gets charge every hit. :)
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{

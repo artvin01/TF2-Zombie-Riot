@@ -1492,6 +1492,8 @@ static void Schwert_Movement_Ally_Movement(Raidboss_Schwertkrieg npc, float flDi
 		NPC_SetGoalEntity(npc.index, donner.index);
 		if(Schwert_Status(npc, GameTime)!=1)
 			npc.m_flSpeed =  fl_schwert_speed*2.0;
+
+		npc.m_flGetClosestTargetTime = 0.0;
 	}
 }
 
