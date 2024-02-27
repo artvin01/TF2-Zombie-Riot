@@ -1872,37 +1872,6 @@ public Action DeleteEntitiesInHazards(Handle timer)
 			}
 		}
 	}
-	/*
-	no longer need deletion as spikes have a pickup all option.
-	for(int entitycount; entitycount<ZR_MAX_TRAPS; entitycount++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsTraps[entitycount]);
-		if (IsValidEntity(entity))
-		{
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", BuildingPos);
-			BuildingPos[2] + 10.0;
-			if(IsPointNoBuild(BuildingPos))
-			{
-				RemoveEntity(entity);
-			}
-		}
-	}
-	for(int entity; entity<MAXENTITIES; entity++)
-	{
-		if (IsValidEntity(entity))
-		{
-			if(IsEntitySpike(entity))
-			{
-				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", BuildingPos);
-				BuildingPos[2] + 10.0;
-				if(IsPointNoBuild(BuildingPos))
-				{
-					RemoveEntity(entity);
-				}
-			}
-		}
-	}
-	*/
 	return Plugin_Handled;
 }
 void ReviveAll(bool raidspawned = false)
