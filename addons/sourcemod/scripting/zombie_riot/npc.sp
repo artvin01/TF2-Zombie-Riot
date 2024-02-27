@@ -554,7 +554,7 @@ enum
 	MEDIVAL_SPEARMEN					= 105,
 	MEDIVAL_HANDCANNONEER				= 106,
 	MEDIVAL_ELITE_SKIRMISHER			= 107,
-	RAIDMODE_BLITZKRIEG					= 108,
+	UNUSED_3							= 108,
 	MEDIVAL_PIKEMAN						= 109,
 	ALT_MEDIC_SUPPERIOR_MAGE			= 110,
 	CITIZEN								= 111,
@@ -986,7 +986,7 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Spearman",
 	"Hand Cannoneer",
 	"Elite Skirmisher",
-	"Blitzkrieg",
+	"nothing",
 	"Pikeman",
 	"Medic Supperior Mage",
 	"Rebel",
@@ -1409,7 +1409,7 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	7,	// MEDIVAL_SPEARMEN					= 105,
 	7,	// MEDIVAL_HANDCANNONEER				= 106,
 	7,	// MEDIVAL_ELITE_SKIRMISHER			= 107,
-	2,	// RAIDMODE_BLITZKRIEG					= 108,
+	2,	// UNUSED					= 108,
 	7,	// MEDIVAL_PIKEMAN						= 109,
 	4,	// ALT_MEDIC_SUPPERIOR_MAGE			= 110,
 	0,	// CITIZEN								= 111,
@@ -1838,7 +1838,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"npc_medival_spearmen",
 	"npc_medival_handcannoneer",
 	"npc_medival_elite_skirmisher",
-	"npc_blitzkrieg",
+	"",
 	"npc_medival_pikeman",
 	"npc_alt_medic_supperior_mage",
 	"npc_citizen",
@@ -2511,9 +2511,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		
 		case MEDIVAL_ELITE_SKIRMISHER:
 			entity = MedivalEliteSkirmisher(client, vecPos, vecAng, team);
-		
-		case RAIDMODE_BLITZKRIEG:
-			entity = Blitzkrieg(client, vecPos, vecAng, team, data);
 		
 		case MEDIVAL_PIKEMAN:
 			entity = MedivalPikeman(client, vecPos, vecAng, team);
@@ -3727,9 +3724,6 @@ void NPCDeath(int entity)
 		case MEDIVAL_ELITE_SKIRMISHER:
 			MedivalEliteSkirmisher_NPCDeath(entity);
 		
-		case RAIDMODE_BLITZKRIEG:
-			Blitzkrieg_NPCDeath(entity);
-		
 		case MEDIVAL_PIKEMAN:
 			MedivalPikeman_NPCDeath(entity);
 		
@@ -4667,9 +4661,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case MEDIVAL_ELITE_SKIRMISHER:
 			MedivalEliteSkirmisher_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case RAIDMODE_BLITZKRIEG:
-			Blitzkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case MEDIVAL_PIKEMAN:
 			MedivalPikeman_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
