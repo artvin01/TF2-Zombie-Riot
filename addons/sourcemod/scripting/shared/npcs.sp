@@ -1288,6 +1288,9 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
 		return;
 
+	if(!c_NpcName[victim][0])
+		return;
+
 #if defined ZR
 	bool raidboss_active = false;
 	int raid_entity = EntRefToEntIndex(RaidBossActive);
