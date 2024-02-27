@@ -2481,7 +2481,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	public int FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, int flags = 0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE) //No defaults, otherwise i cant even judge.
 	{
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
-		this.GetVectors(vecForward, vecSwingStart, vecAngles);
+		//this.GetVectors(vecForward, vecSwingStart, vecAngles);
 
 		GetAbsOrigin(this.index, vecSwingStart);
 		vecSwingStart[2] += 54.0;
@@ -2530,7 +2530,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	public int FireParticleRocket(float vecTarget[3], float rocket_damage, float rocket_speed, float damage_radius , const char[] rocket_particle = "", bool do_aoe_dmg=false , bool FromBlueNpc=true, bool Override_Spawn_Loc = false, float Override_VEC[3] = {0.0,0.0,0.0}, int flags = 0, int inflictor = INVALID_ENT_REFERENCE, float bonusdmg = 1.0, bool hide_projectile = true)
 	{
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
-		this.GetVectors(vecForward, vecSwingStart, vecAngles);
+		//this.GetVectors(vecForward, vecSwingStart, vecAngles);
 		
 		if(Override_Spawn_Loc)
 		{
@@ -2647,7 +2647,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		//ITS NOT actually an arrow, because of an ANNOOOOOOOOOOOYING sound.
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
-		this.GetVectors(vecForward, vecSwingStart, vecAngles);
+		//this.GetVectors(vecForward, vecSwingStart, vecAngles);
 
 		if(entitytofirefrom == -1)
 		{

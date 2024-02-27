@@ -1498,6 +1498,7 @@ public void OnMapStart()
 	PrecacheSound("weapons/gauss/fire1.wav");
 	PrecacheSound("items/powerup_pickup_knockout_melee_hit.wav");
 	PrecacheSound("weapons/capper_shoot.wav");
+	PrecacheSound("ambient/explosions/explode_3.wav");
 
 	PrecacheSound("misc/halloween/clock_tick.wav");
 	PrecacheSound("mvm/mvm_bomb_warning.wav");
