@@ -1263,7 +1263,7 @@ void MessengerInitiateGroupAttack(TheMessenger npc)
 			Initiate_HomingProjectile(projectile,
 			npc.index,
 				70.0,			// float lockonAngleMax,
-				15.0,				//float homingaSec,
+				7.5,				//float homingaSec,
 				true,				// bool LockOnlyOnce,
 				true,				// bool changeAngles,
 				ang_Look,			

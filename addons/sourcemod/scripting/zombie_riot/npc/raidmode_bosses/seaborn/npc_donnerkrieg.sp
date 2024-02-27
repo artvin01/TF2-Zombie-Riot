@@ -752,8 +752,8 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 			}
 
 			Donner_Movement(npc.index, PrimaryThreatIndex, GameTime);
-				
-			Donnerkrieg_Normal_Attack(npc, GameTime, flDistanceToTarget, vecTarget);
+			float vPredictedPos[3]; PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, SquareRoot(flDistanceToTarget), _, vPredictedPos);
+			Donnerkrieg_Normal_Attack(npc, GameTime, flDistanceToTarget, vPredictedPos);
 					
 					
 			npc.StartPathing();
@@ -2209,7 +2209,7 @@ static void Donnerkrieg_Normal_Attack(Raidboss_Donnerkrieg npc, float GameTime, 
 	}
 	else if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappenswillhappen)	//a slight delay to the actual firing so the animation plays, and who knows, give a 0.2 second chance for the player to doge it lmao
 	{
-		npc.FaceTowards(vecTarget, 20000.0);
+	//	npc.FaceTowards(vecTarget, 20000.0);
 		npc.m_flAttackHappenswillhappen=false;
 		npc.m_flNextMeleeAttack=GameTime +1.0;
 		fl_normal_attack_duration[npc.index] = GameTime+0.25;

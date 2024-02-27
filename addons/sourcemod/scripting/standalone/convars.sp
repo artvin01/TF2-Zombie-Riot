@@ -27,6 +27,7 @@ void ConVar_PluginStart()
 	
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	zr_downloadconfig = CreateConVar("zr_downloadconfig", "", "Downloads override config zr/ .cfg already included");
+	zr_showdamagehud = CreateConVar("zr_showdamagehud", "0", "If to show the damage dealt HUD when hitting NPCs");
 }
 
 void ConVar_Add(const char[] name, const char[] value, bool enforce=true)
