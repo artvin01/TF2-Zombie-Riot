@@ -53,7 +53,6 @@ public Action Timer_Management_Messenger(Handle timer, DataPack pack)
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		DestroyMessengerEffect(client);
 		Change[client] = false;
 		return Plugin_Stop;
 	}
@@ -135,7 +134,7 @@ public void Messenger_Modechange(int client, int weapon, int slot)
 		
 		if(Ability_CD <= 0.0)
 			Ability_CD = 0.0;
-			
+
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
