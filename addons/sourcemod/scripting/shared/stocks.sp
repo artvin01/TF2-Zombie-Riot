@@ -1358,6 +1358,10 @@ public Action Timer_HealEventApply(Handle timer, DataPack pack)
 	return Plugin_Stop;
 }
 
+public bool Trace_WorldOnly(int entity, int mask, any data)
+{
+	return entity == 0;
+}
 
 public bool Trace_DontHitEntity(int entity, int mask, any data)
 {
