@@ -53,6 +53,9 @@ void DesertAhim_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ahim");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ahim");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_bat"); 	//leaderboard_class_(insert the name)
+	data.IconCustom = false;								//download needed?
+	data.Flags = 0;											//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	data.Category = Type_Interitus;
 	data.Func = ClotSummon;
 	NPC_Add(data);

@@ -22,6 +22,12 @@ enum struct NPCData
 	char Name[64];
 	int Category;
 	Function Func;
+	int Flags;
+	char Icon[32];
+	bool IconCustom;
+
+	// Don't touch below
+	bool IconPrecached;
 }
 
 // FileNetwork_ConfigSetup needs to be ran first
@@ -38,6 +44,7 @@ void NPC_ConfigSetup()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_nothing");
 	data.Category = Type_Hidden;
 	data.Func = INVALID_FUNCTION;
+	strcopy(data.Icon, sizeof(data.Icon), "duck");
 	NPCList.PushArray(data);
 
 	GetOldMethodNPCs();
@@ -259,6 +266,17 @@ void NPC_ConfigSetup()
 	Malius_OnMapStart_NPC();
 	Laz_OnMapStart_NPC();
 	//Stage 2.
+	Laniun_OnMapStart_NPC();
+	Magnium_OnMapStart_NPC();
+	Stellaria_OnMapStart_NPC();
+	Astriana_OnMapStart_NPC();
+	Europis_OnMapStart_NPC();
+	Draedon_OnMapStart_NPC();
+	Aetheria_OnMapStart_NPC();
+	Maliana_OnMapStart_NPC();
+	Ruianus_OnMapStart_NPC();
+	Lazius_OnMapStart_NPC();
+	Dronian_OnMapStart_NPC();
 
 	//Special.
 	Magia_Anchor_OnMapStart_NPC();
@@ -420,9 +438,22 @@ int NPC_GetByPlugin(const char[] name, NPCData data = {})
 	{
 		NPCList.GetArray(i, data);
 		if(StrEqual(name, data.Plugin))
+		{
+			PrecacheIcons(i, data);
 			return i;
+		}
 	}
 	return -1;
+}
+
+static void PrecacheIcons(int i, NPCData data)
+{
+	if(data.IconCustom && !data.IconPrecached)
+	{
+		PrecacheMvMIconCustom(data.Icon);
+		data.IconPrecached = true;
+		NPCList.SetArray(i, data);
+	}
 }
 
 enum
@@ -543,7 +574,7 @@ enum
 	MEDIVAL_SPEARMEN					= 105,
 	MEDIVAL_HANDCANNONEER				= 106,
 	MEDIVAL_ELITE_SKIRMISHER			= 107,
-	RAIDMODE_BLITZKRIEG					= 108,
+	UNUSED_3							= 108,
 	MEDIVAL_PIKEMAN						= 109,
 	ALT_MEDIC_SUPPERIOR_MAGE			= 110,
 	CITIZEN								= 111,
@@ -647,7 +678,7 @@ enum
 	STALKER_FATHER		= 194,
 	STALKER_GOGGLES		= 195,
 
-	XENO_RAIDBOSS_SILVESTER		= 196,
+	UNUSED_196		= 196,
 	XENO_RAIDBOSS_BLUE_GOGGLES	= 197,
 	XENO_RAIDBOSS_SUPERSILVESTER	= 198,
 	XENO_RAIDBOSS_NEMESIS	= 199,
@@ -773,7 +804,7 @@ enum
 	EXPIDONSA_EGABUNAR				= 315,
 	EXPIDONSA_ENEGAKAPUS			= 316,
 	EXPIDONSA_CAPTINOAGENTUS		= 317,
-	RAIDMODE_EXPIDONSA_SENSAL		= 318,
+	UNUSED_318		= 318,
 	EXPIDONSA_DUALREA				= 319,
 	EXPIDONSA_GUARDUS				= 320,
 	EXPIDONSA_VAUSTECHICUS			= 321,
@@ -975,7 +1006,7 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Spearman",
 	"Hand Cannoneer",
 	"Elite Skirmisher",
-	"Blitzkrieg",
+	"nothing",
 	"Pikeman",
 	"Medic Supperior Mage",
 	"Rebel",
@@ -1398,7 +1429,7 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	7,	// MEDIVAL_SPEARMEN					= 105,
 	7,	// MEDIVAL_HANDCANNONEER				= 106,
 	7,	// MEDIVAL_ELITE_SKIRMISHER			= 107,
-	2,	// RAIDMODE_BLITZKRIEG					= 108,
+	-1,	//					= 108,
 	7,	// MEDIVAL_PIKEMAN						= 109,
 	4,	// ALT_MEDIC_SUPPERIOR_MAGE			= 110,
 	0,	// CITIZEN								= 111,
@@ -1627,7 +1658,7 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	10,	// EXPIDONSA_EGABUNAR					= 315,
 	10,	// EXPIDONSA_ENEGAKAPUS					= 316,
 	10, // EXPIDONSA_CAPTINOAGENTUS				= 317,
-	2, // RAIDMODE_EXPIDONSA_SENSAL			= 318,
+	-1, // UNUSED_318							= 318,
 	10, // EXPIDONSA_DUALREA					= 319,
 	10, // EXPIDONSA_GUARDUS					= 320,
 	10, // EXPIDONSA_VAUSTECHICUS				= 321,
@@ -1827,7 +1858,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"npc_medival_spearmen",
 	"npc_medival_handcannoneer",
 	"npc_medival_elite_skirmisher",
-	"npc_blitzkrieg",
+	"",
 	"npc_medival_pikeman",
 	"npc_alt_medic_supperior_mage",
 	"npc_citizen",
@@ -1924,7 +1955,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"npc_stalker_father",
 	"npc_stalker_goggles",
 
-	"npc_xeno_raidboss_silvester",
+	"",
 	"npc_xeno_raidboss_blue_goggles",
 	"",
 	"npc_xeno_raidboss_nemesis",
@@ -2052,7 +2083,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"npc_enegakapus",
 	//wave 30+:
 	"npc_captino_agentus",
-	"npc_sensal", //Raid
+	"", //Raid
 	"npc_dualrea",
 	"npc_guardus",
 	"npc_vaus_techicus",
@@ -2501,9 +2532,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		case MEDIVAL_ELITE_SKIRMISHER:
 			entity = MedivalEliteSkirmisher(client, vecPos, vecAng, team);
 		
-		case RAIDMODE_BLITZKRIEG:
-			entity = Blitzkrieg(client, vecPos, vecAng, team, data);
-		
 		case MEDIVAL_PIKEMAN:
 			entity = MedivalPikeman(client, vecPos, vecAng, team);
 		
@@ -2777,14 +2805,8 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		case STALKER_GOGGLES:
 			entity = StalkerGoggles(client, vecPos, vecAng, team);
 		
-		case XENO_RAIDBOSS_SILVESTER:
-			entity = RaidbossSilvester(client, vecPos, vecAng, team, data);
-		
 		case XENO_RAIDBOSS_BLUE_GOGGLES:
 			entity = RaidbossBlueGoggles(client, vecPos, vecAng, team, data);
-		
-		case XENO_RAIDBOSS_SUPERSILVESTER:
-			entity = RaidbossSilvester(client, vecPos, vecAng, team, data);
 		
 		case XENO_RAIDBOSS_NEMESIS:
 			entity = RaidbossNemesis(client, vecPos, vecAng, team, data);
@@ -3053,9 +3075,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		case EXPIDONSA_CAPTINOAGENTUS:
 			entity = CaptinoAgentus(client, vecPos, vecAng, team, data);
 
-		case RAIDMODE_EXPIDONSA_SENSAL:
-			entity = Sensal(client, vecPos, vecAng, team, data);
-
 		case EXPIDONSA_DUALREA:
 			entity = DualRea(client, vecPos, vecAng, team);
 
@@ -3250,6 +3269,8 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		{
 			Rogue_EnemySpawned(entity);
 		}
+
+		Waves_UpdateMvMStats();
 	}
 
 	return entity;
@@ -3716,9 +3737,6 @@ void NPCDeath(int entity)
 		case MEDIVAL_ELITE_SKIRMISHER:
 			MedivalEliteSkirmisher_NPCDeath(entity);
 		
-		case RAIDMODE_BLITZKRIEG:
-			Blitzkrieg_NPCDeath(entity);
-		
 		case MEDIVAL_PIKEMAN:
 			MedivalPikeman_NPCDeath(entity);
 		
@@ -3992,14 +4010,8 @@ void NPCDeath(int entity)
 		case STALKER_GOGGLES:
 			StalkerGoggles_NPCDeath(entity);
 		
-		case XENO_RAIDBOSS_SILVESTER:
-			RaidbossSilvester_NPCDeath(entity);
-		
 		case XENO_RAIDBOSS_BLUE_GOGGLES:
 			RaidbossBlueGoggles_NPCDeath(entity);
-		
-		case XENO_RAIDBOSS_SUPERSILVESTER:
-			RaidbossSilvester_NPCDeath(entity);
 		
 		case XENO_RAIDBOSS_NEMESIS:
 			RaidbossNemesis_NPCDeath(entity);
@@ -4267,9 +4279,6 @@ void NPCDeath(int entity)
 
 		case EXPIDONSA_CAPTINOAGENTUS:
 			CaptinoAgentus_NPCDeath(entity);
-
-		case RAIDMODE_EXPIDONSA_SENSAL:
-			Sensal_NPCDeath(entity);
 
 		case EXPIDONSA_DUALREA:
 			DualRea_NPCDeath(entity);
@@ -4657,9 +4666,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case MEDIVAL_ELITE_SKIRMISHER:
 			MedivalEliteSkirmisher_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case RAIDMODE_BLITZKRIEG:
-			Blitzkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
 		case MEDIVAL_PIKEMAN:
 			MedivalPikeman_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
@@ -4905,14 +4911,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case STALKER_GOGGLES:
 			StalkerGoggles_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case XENO_RAIDBOSS_SILVESTER:
-			RaidbossSilvester_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
 		case XENO_RAIDBOSS_BLUE_GOGGLES:
 			RaidbossBlueGoggles_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case XENO_RAIDBOSS_SUPERSILVESTER:
-			RaidbossSilvester_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case XENO_RAIDBOSS_NEMESIS:
 			RaidbossNemesis_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -5094,9 +5094,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case EXPIDONSA_CAPTINOAGENTUS:
 			CaptinoAgentus_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
-		case RAIDMODE_EXPIDONSA_SENSAL:
-			Sensal_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
 		case EXPIDONSA_DUALREA:
 			DualRea_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
@@ -5273,6 +5270,21 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_daedalus.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_malius.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_laz.sp"
+
+//Stage 2
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_laniun.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_magnium.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_stellaria.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_astriana.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_europis.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_draedon.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_aetheria.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_maliana.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_ruianus.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_lazius.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_dronian.sp"
+
+
 
 //Special Ruina
 #include "zombie_riot/npc/ruina/special/npc_ruina_valiant.sp"

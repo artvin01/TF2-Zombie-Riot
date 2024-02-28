@@ -179,12 +179,9 @@ public Action Command_PetMenu(int client, int args)
 			fl_Extra_MeleeArmor[entity] = GetCmdArgFloat(8);
 
 		if(args > 8)
-			fl_Extra_MeleeArmor[entity] = GetCmdArgFloat(9);
-
-		if(args > 9)
 		{
 			float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
-			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale * GetCmdArgFloat(10));
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale * GetCmdArgFloat(9));
 		}
 	}
 
@@ -3329,6 +3326,11 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		{	
 			SetNpcToDeadViaGib(pThis);
 		}
+
+#if defined ZR
+		Waves_UpdateMvMStats();
+#endif
+
 	}
 	else
 	{	
@@ -4493,8 +4495,12 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 				return false;
 			}
 			
+#if defined ZR
+			else if(!b_bBuildingIsPlaced[enemy])
+#else
 			else if(GetEntProp(enemy, Prop_Send, "m_bCarried") ||
 				GetEntProp(enemy, Prop_Send, "m_bPlacing"))
+#endif
 			{
 				return false;
 			}
@@ -4774,8 +4780,15 @@ stock int GetClosestTarget(int entity,
 			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(GetTeam(entity_close) != SearcherNpcTeam && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+				if(GetTeam(entity_close) != SearcherNpcTeam && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 				{
+#if defined ZR
+					if(!npc.bBuildingIsPlaced)
+						continue;
+#else
+					if(GetEntProp(enemy, Prop_Send, "m_bCarried") || GetEntProp(enemy, Prop_Send, "m_bPlacing"))
+						continue;
+#endif
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, entity_close))
@@ -7773,7 +7786,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	IgniteRef[entity] = -1;
 	f_NpcImmuneToBleed[entity] = 0.0;
 	f_CreditsOnKill[entity] = 0.0;
-	i_CreditsOnKill[entity] = 0;
 	i_PluginBot_ApproachDelay[entity] = 0;
 	b_npcspawnprotection[entity] = false;
 	f_CooldownForHurtParticle[entity] = 0.0;

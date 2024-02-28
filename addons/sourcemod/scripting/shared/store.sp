@@ -4803,8 +4803,8 @@ void Store_ApplyAttribs(int client)
 #endif
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
-	map.SetValue("465", 10.0);	// x10 faster diepsner build
-	map.SetValue("464", 10.0);	// x10 faster sentry build
+	map.SetValue("465", 999.0);	// instant build
+	map.SetValue("464", 999.0);	// instant build
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
 //	map.SetValue("397", 50.0);	// Ignore ally with shooting
 	map.SetValue("169", 0.0);	// Complete sentrygun Immunity
@@ -6819,7 +6819,7 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 
 void GiveCredits(int client, int credits, bool building)
 {
-	if(building && !Waves_Started() && StartCash < 750)
+	if(building && Waves_InSetup() && StartCash < 750)
 	{
 		if(!CashSpentGivePostSetupWarning[client])
 		{
@@ -6827,13 +6827,7 @@ void GiveCredits(int client, int credits, bool building)
 			PrintToChat(client,"%t","Pre Setup Cash Gain Hint");
 			CashSpentGivePostSetupWarning[client] = true;
 		}
-		int CreditsGive = credits;
-		int CreditsSaveForLater = credits;
-		CreditsGive /= 2;
-		CreditsSaveForLater = CreditsSaveForLater - CreditsGive;
-
-		CashSpent[client] -= CreditsGive;
-		CashSpentGivePostSetup[client] += CreditsSaveForLater;
+		CashSpentGivePostSetup[client] += credits;
 	}
 	else
 	{
@@ -6845,6 +6839,7 @@ void GrantCreditsBack(int client)
 {
 	CashSpent[client] -= CashSpentGivePostSetup[client];
 	CashSpentGivePostSetup[client] = 0;
+	CashSpentGivePostSetupWarning[client] = false;
 }
 #endif	// ZR
 

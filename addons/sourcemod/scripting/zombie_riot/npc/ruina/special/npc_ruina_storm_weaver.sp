@@ -87,6 +87,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 	return Storm_Weaver(client, vecPos, vecAng, ally, data);
 }
 
+static float fl_touch_timeout[MAXENTITIES];
+
 methodmap Storm_Weaver < CClotBody
 {
 	public void PlayHurtSound() {
@@ -266,6 +268,7 @@ methodmap Storm_Weaver < CClotBody
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
 		SDKHook(npc.index, SDKHook_Touch, Storm_Weaver_Damage_Touch);
+		Zero(fl_touch_timeout);
 
 		b_storm_weaver_noclip[npc.index]=false;
 
@@ -643,8 +646,15 @@ static void Storm_Weaver_Damage_Touch(int entity, int other)
 {
 	if(IsValidEnemy(entity, other, true, true)) //Must detect camo.
 	{
-		if(fl_recently_teleported[entity]<GetGameTime())
-			SDKHooks_TakeDamage(other, entity, entity, 2.5*RaidModeScaling, DMG_CRUSH, -1, _);
+		float GameTime = GetGameTime();
+		if(fl_recently_teleported[entity]<GameTime)
+		{
+			if(fl_touch_timeout[other] < GameTime)
+			{
+				fl_touch_timeout[other] = GameTime+0.1;
+				SDKHooks_TakeDamage(other, entity, entity, 2.5*RaidModeScaling, DMG_CRUSH, -1, _);
+			}
+		}
 	}
 }
 
