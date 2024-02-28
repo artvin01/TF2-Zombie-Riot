@@ -2280,7 +2280,7 @@ static void UpdateMvMStatsFrame()
 		int objective = GetObjectiveResource();
 		if(objective != -1)
 		{
-			SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", cashLeft);
+			SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", RoundToNearest(cashLeft));
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", totalcount);
 
 			if(Rogue_Mode())
