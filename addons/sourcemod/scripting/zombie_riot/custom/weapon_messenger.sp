@@ -84,11 +84,11 @@ void CreateMessengerEffect(int client)
 		SetParent(viewmodelModel, particle, "effect_hand_l");
 		i_MessengerParticle[client][0] = EntIndexToEntRef(particle);
 	}
-	if(change == true)
+	if(Change == true)
 	{
 		FireIce = 1;
 	}
-	else if(change == false)
+	else if(Change == false)
 	{
 		FireIce = 0;
 	}
@@ -182,7 +182,7 @@ public void Messenger_Modechange(int client, int weapon, int slot)
 }
 
 
-public void Gun_MessengerTouch(int entity, int target)
+public void Gun_MessengerTouch(int entity, int target, int victim, int attacker)
 {
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if (target > 0)	
