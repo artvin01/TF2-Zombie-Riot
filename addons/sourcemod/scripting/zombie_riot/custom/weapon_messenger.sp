@@ -14,6 +14,7 @@ void Nailgun_Map_Precache()
 	PrecacheSound(SOUND_MES_IMPACT);
 }
 
+
 public void Enable_Messenger_Launcher_Ability(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
 	if (h_TimerMessengerWeaponManagement[client] != null)
