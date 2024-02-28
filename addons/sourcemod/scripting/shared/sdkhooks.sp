@@ -1025,11 +1025,11 @@ public void OnPostThink(int client)
 				char WaveString[64];
 				if(Rogue_Mode() && Rogue_InSetup())
 				{
-					Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Stage", Rogue_GetRound()+1, Rogue_GetWave()+1); 
+					Format(WaveString, sizeof(WaveString), "%s", WhatDifficultySetting); 
 				}
 				else
 				{
-					Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1); 
+					Format(WaveString, sizeof(WaveString), "%s", WhatDifficultySetting); 
 				}
 				i_WhatLevelForHudIsThisClientAt[client] -= 1;
 				Handle hKv = CreateKeyValues("Stuff", "title", WaveString);
@@ -1315,11 +1315,10 @@ public void OnPostThink(int client)
 			}
 			else
 			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t\n%t", HudBuffer,
+				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t", HudBuffer,
 				"Credits_Menu_New", (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
-				PerkNames[i_CurrentEquippedPerk[client]],
-				"Zombies Left", Zombies_Currently_Still_Ongoing
+				PerkNames[i_CurrentEquippedPerk[client]]
 				);
 				
 			}
@@ -1336,7 +1335,7 @@ public void OnPostThink(int client)
 			}
 			if(!Has_Wave_Showing && !Rogue_Mode())
 			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%s | %t", HudBuffer, WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);
+				Format(HudBuffer, sizeof(HudBuffer), "%s\n%s", HudBuffer, WhatDifficultySetting);
 			}
 			if(Store_ActiveCanMulti(client))
 			{
@@ -1345,24 +1344,22 @@ public void OnPostThink(int client)
 		}
 		else if (TeutonType[client] == TEUTON_DEAD)
 		{
-			Format(HudBuffer, sizeof(HudBuffer), "%s %t\n%t",HudBuffer, "You Died Teuton",
-				"Zombies Left", Zombies_Currently_Still_Ongoing
+			Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Died Teuton"
 			);
 
 			if(!Has_Wave_Showing && !Rogue_Mode())
 			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s%s | %t",HudBuffer,WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);		
+				Format(HudBuffer, sizeof(HudBuffer), "%s%s",HudBuffer,WhatDifficultySetting);		
 			}
 		}
 		else
 		{
-			Format(HudBuffer, sizeof(HudBuffer), "%s %t\n%t",HudBuffer, "You Wait Teuton",
-				"Zombies Left", Zombies_Currently_Still_Ongoing
+			Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Wait Teuton"
 			);
 
 			if(!Has_Wave_Showing && !Rogue_Mode())
 			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s%s | %t",HudBuffer,WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);		
+				Format(HudBuffer, sizeof(HudBuffer), "%s%s",HudBuffer,WhatDifficultySetting);		
 			}
 		}
 		SetEntProp(client, Prop_Send, "m_nCurrency", CurrentCash-CashSpent[client]);

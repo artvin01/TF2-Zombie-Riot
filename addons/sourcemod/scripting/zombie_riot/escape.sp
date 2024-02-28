@@ -1,10 +1,8 @@
 static int Carrying[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
-static bool Waiting;
 void Escape_RoundStart()
 {
 	DeleteAndRemoveAllNpcs = 5.0;
 	mp_bonusroundtime.IntValue = 15;
-	Waiting = true;
 }
 
 void Escape_RoundEnd()
@@ -46,49 +44,6 @@ public Action Remove_All(Handle Timer_Handle, any Null)
 	DeleteAndRemoveAllNpcs = 5.0;
 	mp_bonusroundtime.IntValue = 15;
 	return Plugin_Handled;
-}
-
-void Escape_SetupEnd()
-{
-	if(Waiting)
-	{
-		int amount = CountPlayersOnRed();
-		
-		float multi = amount*0.25;
-		
-		if(multi < 0.25) //Have a minimum for 50% as i cant really balance bob, and escape maps alone are really hard anyways.
-			multi = 0.25;
-		
-		Waiting = false;
-		int entity = -1;
-		char buffer[64];
-		while((entity=FindEntityByClassname(entity, "npc_maker")) != -1)
-		{
-			GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-			if(!StrContains(buffer, "zr_", false))
-			{
-				amount = GetEntProp(entity, Prop_Data, "m_nMaxNumNPCs");
-				if(amount)
-				{
-					amount = RoundToFloor(float(amount) * multi);
-					if(amount < 1)
-						amount = 1;
-					
-					SetVariantInt(amount);
-					AcceptEntityInput(entity, "SetMaxChildren");
-				}
-				
-				float time = GetEntPropFloat(entity, Prop_Data, "m_flSpawnFrequency");
-				if(time)
-				{
-					time *= (1.25 - (multi / 4));
-					
-					SetVariantFloat(time);
-					AcceptEntityInput(entity, "SetSpawnFrequency");
-				}
-			}
-		}
-	}
 }
 
 bool Escape_Interact(int client, int entity)

@@ -117,8 +117,21 @@ void Sensal_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MissAbilitySound));   i++) { PrecacheSound(g_MissAbilitySound[i]);   }
 	PrecacheModel("models/player/soldier.mdl");
 	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Sensal");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sensal");
+	strcopy(data.Icon, sizeof(data.Icon), "sensal_raid");
+	data.IconCustom = true;
+	data.Category = Type_Raid;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Sensal(client, vecPos, vecAng, ally, data);
+}
 
 methodmap Sensal < CClotBody
 {
@@ -229,8 +242,6 @@ methodmap Sensal < CClotBody
 	public Sensal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Sensal npc = view_as<Sensal>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
-		
-		i_NpcInternalId[npc.index] = RAIDMODE_EXPIDONSA_SENSAL;
 		i_NpcWeight[npc.index] = 4;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -249,8 +260,10 @@ methodmap Sensal < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flMeleeArmor = 1.25;	
 		
-		SDKHook(npc.index, SDKHook_Think, Sensal_ClotThink);
-		
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSensal_OnTakeDamagePost);
 		//IDLE
 		npc.m_iState = 0;
@@ -384,7 +397,7 @@ methodmap Sensal < CClotBody
 	}
 }
 
-public void Sensal_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	Sensal npc = view_as<Sensal>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -453,7 +466,7 @@ public void Sensal_ClotThink(int iNPC)
 	{
 		npc.AddActivityViaSequence("selectionMenu_Idle");
 		npc.SetCycle(0.01);
-		SDKUnhook(npc.index, SDKHook_Think, Sensal_ClotThink);
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
 		CPrintToChatAll("{blue}Sensal{default}: Refusing to collaborate or even reason with {gold}Expidonsa{default} will result in termination.");
 		return;
@@ -472,7 +485,7 @@ public void Sensal_ClotThink(int iNPC)
 		npc.AddActivityViaSequence("selectionMenu_Idle");
 		npc.SetCycle(0.01);
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		SDKUnhook(npc.index, SDKHook_Think, Sensal_ClotThink);
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		CPrintToChatAll("{blue}Sensal{default}: You are under arrest. The Expidonsan elite forces will take you now.");
 		for(int i; i<32; i++)
 		{
@@ -575,7 +588,7 @@ public void Sensal_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Sensal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Sensal npc = view_as<Sensal>(victim);
 		
@@ -619,7 +632,7 @@ public void Raidmode_Expidonsa_Sensal_Win(int entity)
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 }
 
-public void Sensal_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	Sensal npc = view_as<Sensal>(entity);
 	/*
@@ -632,7 +645,6 @@ public void Sensal_NPCDeath(int entity)
 	npc.PlayDeathSound();	
 
 	RaidBossActive = INVALID_ENT_REFERENCE;
-	SDKUnhook(npc.index, SDKHook_Think, Sensal_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable7))

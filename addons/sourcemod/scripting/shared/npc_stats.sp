@@ -179,12 +179,9 @@ public Action Command_PetMenu(int client, int args)
 			fl_Extra_MeleeArmor[entity] = GetCmdArgFloat(8);
 
 		if(args > 8)
-			fl_Extra_MeleeArmor[entity] = GetCmdArgFloat(9);
-
-		if(args > 9)
 		{
 			float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
-			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale * GetCmdArgFloat(10));
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale * GetCmdArgFloat(9));
 		}
 	}
 
@@ -3329,6 +3326,11 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		{	
 			SetNpcToDeadViaGib(pThis);
 		}
+
+#if defined ZR
+		Waves_UpdateMvMStats();
+#endif
+
 	}
 	else
 	{	

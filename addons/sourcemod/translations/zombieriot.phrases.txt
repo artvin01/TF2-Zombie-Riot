@@ -111,25 +111,6 @@
 		"nl"		"Schild: {1}"
 		"chi"		"护甲: {1}"
 	}
-	"Wave"
-	{
-		"#format"	"{1:d},{2:d}"
-		"en"		"Wave: {1}-{2}"
-		"it"		"Ondata: {1}-{2}"
-		"ru"		"Волна: {1}-{2}"
-		"pl"		"Runda: {1}-{2}"
-		"es"		"Oleada: {1}-{2}"
-		"fr"		"Vague : {1}-{2}"
-		"de" 		"Welle : {1}-{2}"
-		"pt"		"Onda: {1}-{2}"
-		"nl"		"Golf: {1}-{2}"
-		"chi"		"波数: {1}-{2}"
-	}
-	"Zombies Left"
-	{
-		"#format"	"{1:d}"
-		"en"		"Enemies Left: {1}"
-	}
 	"Medi-Kit Cooldown"
 	{
 		"#format"	"{1:.0f}"

@@ -4661,12 +4661,16 @@ stock void SpawnTimer(float time)
 	AcceptEntityInput(timer, "Resume");
 	AcceptEntityInput(timer, "Enable");
 	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
-	
+
 	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
 	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
 	
 	Event event = CreateEvent("teamplay_update_timer", true);
 	event.Fire();
+
+//	int entity = FindEntityByClassname(-1, "tf_objective_resource");
+//	if(entity != -1)
+//		SetEntPropFloat(entity, Prop_Send, "m_flMannVsMachineNextWaveTime", GetGameTime() + time);
 }
 
 stock int GetOwnerLoop(int entity)

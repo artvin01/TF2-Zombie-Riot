@@ -73,7 +73,10 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR
 public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 {
-	PrintToChatAll("mvm_begin_wave");
+	for(int client=1; client<=MaxClients; client++)
+	{
+		SetMusicTimer(client, 0);
+	}
 	Waves_SetReadyStatus(0);
 	Waves_Progress();
 }

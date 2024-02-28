@@ -6383,7 +6383,6 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 }
 public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams) 
 {
-	CClotBody npc = view_as<CClotBody>(Building_Index);
 	RequestFrame(Dhook_FinishedBuilding_Post_Frame, EntIndexToEntRef(Building_Index));
 	return MRES_Ignored;
 }

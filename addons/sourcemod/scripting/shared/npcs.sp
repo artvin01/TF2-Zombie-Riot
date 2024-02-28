@@ -350,6 +350,8 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 			{
 				PrintToChatAll("SPAWN FAILED (%s)", enemy.Spawn);
 			}
+
+			Waves_UpdateMvMStats();
 		}
 		else if((EnemyNpcAlive - EnemyNpcAliveStatic) <= 0)
 		{
@@ -1282,6 +1284,8 @@ stock void RemoveHudCooldown(int client)
 	f_HudCooldownAntiSpam[client] = 0.0;
 }
 
+#define ZR_DEFAULT_HUD_OFFSET 0.15
+
 stock void Calculate_And_Display_HP_Hud(int attacker)
 {
 	int victim = EntRefToEntIndex(i_HudVictimToDisplay[attacker]);
@@ -1743,7 +1747,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	if(EntRefToEntIndex(RaidBossActive) != victim)
 #endif	// ZR
 	{
-		float HudOffset = 0.0535;
+		float HudOffset = ZR_DEFAULT_HUD_OFFSET;
 
 #if defined ZR
 		if(raidboss_active)
@@ -1821,7 +1825,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		if(Timer_Show > 800.0)
 			RaidModeTime = 99999999.9;
 
-		float HudOffset = 0.0535;
+		float HudOffset = ZR_DEFAULT_HUD_OFFSET;
 		float HudY = -1.0;
 
 		HudY += f_HurtHudOffsetY[attacker];
@@ -1871,29 +1875,6 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		ShowSyncHudText(attacker, SyncHudRaid,"%s",ExtraHudHurt);	
 
 	}
-#endif	// ZR
-
-#if defined RPG
-	char level[32];
-	GetDisplayString(Level[victim], level, sizeof(level));
-
-	if(IsValidEntity(npc.m_iTextEntity3))
-	{
-		char HealthString[512];
-		Format(HealthString, sizeof(HealthString), "%i / %i", Health, MaxHealth);
-			
-		DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
-	}
-	float HudY = -1.0;
-	float HudOffset = 0.0535;
-
-	HudY += f_HurtHudOffsetY[attacker];
-	HudOffset += f_HurtHudOffsetX[attacker];
-
-	SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-		
-	//RPG cannot support translations! due to test and its used everywhere.
-	ShowSyncHudText(attacker, SyncHud, "%s\n%s\n%d / %d\n%s-%0.f", level, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
 #endif
 }
 

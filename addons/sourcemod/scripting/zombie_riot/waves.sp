@@ -1,6 +1,14 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define MVM_CLASS_FLAG_NONE				0
+#define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// ???
+#define MVM_CLASS_FLAG_SUPPORT			(1 << 1)	// Show as Support?
+#define MVM_CLASS_FLAG_MISSION			(1 << 2)	// Show as Flashing?
+#define MVM_CLASS_FLAG_MINIBOSS			(1 << 3)	// Show as Red Background?
+#define MVM_CLASS_FLAG_ALWAYSCRIT		(1 << 4)	// Show with Crit Borders?
+#define MVM_CLASS_FLAG_SUPPORT_LIMITED	(1 << 5)	// Show as Flashing?
+
 enum struct Enemy
 {
 	int Health;
@@ -91,9 +99,7 @@ enum struct Vote
 	char Append[16];
 }
 
-static ArrayStack Enemies;
-static float CreditsLeft;
-
+static ArrayList Enemies;
 static ArrayList Rounds;
 static ArrayList Voting;
 static bool CanReVote;
@@ -113,6 +119,7 @@ static float f_ZombieAntiDelaySpeedUp;
 static int i_ZombieAntiDelaySpeedUp;
 static Handle WaveTimer;
 
+static bool UpdateFramed;
 static int WaveGiftItem;
 
 public Action Waves_ProgressTimer(Handle timer)
@@ -758,10 +765,10 @@ void Waves_RoundStart()
 	else if(Voting)
 	{
 		float wait = zr_waitingtime.FloatValue;
-		if(wait < 90.0 || Voting.Length < 3)
+		if(wait < 60.0 || Voting.Length < 3)
 			CanReVote = false;
 		
-		float time = wait - (CanReVote ? 60.0 : 30.0);
+		float time = wait - (CanReVote ? 30.0 : 0.0);
 		if(time < 20.0)
 			time = 20.0;
 		
@@ -771,7 +778,7 @@ void Waves_RoundStart()
 		if(wait < time)
 			wait = time;
 
-		SpawnTimer(wait);
+		//SpawnTimer(wait);
 		CreateTimer(wait, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 		
 		Waves_SetReadyStatus(2);
@@ -941,6 +948,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				delete kv;
 
 				Waves_SetReadyStatus(1);
+				Waves_UpdateMvMStats();
 			}
 		}
 		else
@@ -954,8 +962,7 @@ public Action Waves_EndVote(Handle timer, float time)
 void Waves_ClearWaves()
 {
 	delete Enemies;
-	Enemies = new ArrayStack(sizeof(Enemy));
-	CreditsLeft = 0.0;
+	Enemies = new ArrayList(sizeof(Enemy));
 }
 
 void Waves_Progress(bool donotAdvanceRound = false)
@@ -964,8 +971,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		return;
 
 	Cooldown = GetGameTime();
-	int objective = GetObjectiveResource();
-		
+	
 	delete WaveTimer;
 	
 	Round round;
@@ -1434,7 +1440,17 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			if(round.Setup > 1.0)
 			{
-				if(char_MusicString1[0] || char_MusicString2[0])
+				if(round.Setup > 59.0)
+				{
+					for(int client=1; client<=MaxClients; client++)
+					{
+						if(IsClientInGame(client))
+						{
+							SetMusicTimer(client, GetTime() + 99999);
+						}
+					}
+				}
+				else if(char_MusicString1[0] || char_MusicString2[0])
 				{
 					for(int client=1; client<=MaxClients; client++)
 					{
@@ -1633,7 +1649,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				NPC_SpawnNext(false, false);
 			}
 			
-			if(Enemies.Empty)
+			if(!Enemies.Length)
 			{
 				CurrentWave++;
 				Waves_Progress();
@@ -1762,7 +1778,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		Gave_Ammo_Supply += 1;	
 	}
 //	PrintToChatAll("Wave: %d - %d", CurrentRound+1, CurrentWave+1);
-	
+
+	Waves_UpdateMvMStats();
 }
 
 public void Medival_Wave_Difficulty_Riser(int difficulty)
@@ -1806,7 +1823,7 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 
 bool Waves_IsEmpty()
 {
-	if(!Enemies || Enemies.Empty)
+	if(!Enemies || !Enemies.Length)
 		return true;
 	
 	return false;
@@ -1814,23 +1831,22 @@ bool Waves_IsEmpty()
 
 bool Waves_GetNextEnemy(Enemy enemy)
 {
-	if(!Enemies || Enemies.Empty)
+	if(!Enemies)
 		return false;
 	
-	Enemies.PopArray(enemy);
-
-	CreditsLeft -= enemy.Credits;
-
+	int length = Enemies.Length;
+	if(!length)
+		return false;
+	
+	Enemies.GetArray(length - 1, enemy);
+	Enemies.Erase(length - 1);
 	return true;
 }
 
 void Waves_AddNextEnemy(const Enemy enemy)
 {
 	if(Enemies)
-	{
 		Enemies.PushArray(enemy);
-		CreditsLeft += enemy.Credits;
-	}
 }
 
 void Waves_ClearWave()
@@ -1849,11 +1865,10 @@ void Waves_ClearWave()
 
 void Waves_ClearWaveCurrentSpawningEnemies()
 {
-	Enemy enemy;
-	while(Waves_GetNextEnemy(enemy))
-	{
-		Zombies_Currently_Still_Ongoing--;
-	}
+	if(Enemies)
+		Zombies_Currently_Still_Ongoing -= Enemies.Length;
+	
+	Waves_ClearWaves();
 }
 
 bool Waves_Started()
@@ -2092,6 +2107,17 @@ static int GetMvMStats()
 
 void Waves_UpdateMvMStats()
 {
+	if(!UpdateFramed)
+	{
+		UpdateFramed = true;
+		RequestFrame(UpdateMvMStatsFrame);
+	}
+}
+
+static void UpdateMvMStatsFrame()
+{
+	UpdateFramed = false;
+
 	int mvm = GetMvMStats();
 	if(mvm != -1)
 	{
@@ -2111,32 +2137,272 @@ void Waves_UpdateMvMStats()
 				ThrowError("Invalid offset");
 		}
 
-		float cash = CreditsLeft;
+		float cashLeft, totalCash;
+
+		int totalcount;
+		int id[24];
+		int count[24];
+		int flags[24];
+		bool active[24];
 		
-		if(Rounds && !InSetup && CurrentRound >= 0 && CurrentRound < (Rounds.Length - 1))
+		int maxwaves = Rounds ? Rounds.Length : 0;
+		if(maxwaves && CurrentRound >= 0 && CurrentRound < maxwaves)
 		{
 			Round round;
 			Rounds.GetArray(CurrentRound, round);
-			cash += float(round.Cash);
-		}
-
-		for(int i; i < i_MaxcountNpcTotal; i++)
-		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(entity != -1 && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
+			if(!InSetup && CurrentRound != (maxwaves - 1))
 			{
-				cash += f_CreditsOnKill[entity];
+				cashLeft += float(round.Cash);
+				totalCash += float(round.Cash);
+			}
+			
+			if(round.Waves)
+			{
+				float playercount = float(CountPlayersOnRed());
+				if(playercount == 1.0)
+					playercount = 0.70;
+
+				Wave wave;
+				int length = round.Waves.Length;
+				for(int a; a < length; a++)
+				{
+					round.Waves.GetArray(a, wave);
+
+					int num = wave.Count;
+					float cash = wave.EnemyData.Credits / float(num);
+					
+					if(wave.EnemyData.Does_Not_Scale == 0)
+					{
+						if(wave.EnemyData.Is_Boss == 0)
+						{
+							num = RoundToNearest(float(num) * MultiGlobalEnemy);
+						}
+						else
+						{
+							num = RoundToNearest(float(num) * playercount * 0.25);
+						}
+					}
+					
+					if(num < 1)
+					{
+						num = 1;
+					}
+					else if(num > 150)
+					{
+						num = 150;
+					}
+
+					totalcount += num;
+					totalCash += cash;
+					
+					if(a > CurrentWave)
+					{
+						cashLeft += cash;
+					}
+					else
+					{
+						num = 0;
+					}
+
+					for(int b; b < sizeof(id); b++)
+					{
+						if(!id[b] || id[b] == wave.EnemyData.Index)
+						{
+							count[b] += num;
+							
+							if(!id[b])
+							{
+								id[b] = wave.EnemyData.Index;
+								flags[b] = SetupFlags(wave.EnemyData, false);
+							}
+							
+							break;
+						}
+					}
+				}
 			}
 		}
 
-		SetEntData(mvm, m_currentWaveStats + 4, 0);	// nCreditsDropped
-		SetEntData(mvm, m_currentWaveStats + 8, RoundToCeil(cash));	// nCreditsAcquired
+		Enemy enemy;
+		int length = Enemies.Length;
+		for(int a; a < length; a++)
+		{
+			Enemies.GetArray(a, enemy);
+			cashLeft += enemy.Credits;
+
+			for(int b; b < sizeof(id); b++)
+			{
+				if(!id[b] || id[b] == enemy.Index)
+				{
+					count[b]++;
+					
+					if(!id[b])
+					{
+						id[b] = enemy.Index;
+						flags[b] = SetupFlags(enemy, true);
+					}
+					
+					break;
+				}
+			}
+		}
+
+		for(int a; a < i_MaxcountNpcTotal; a++)
+		{
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+			if(entity != -1 && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
+			{
+				cashLeft += f_CreditsOnKill[entity];
+
+				for(int b; b < sizeof(id); b++)
+				{
+					if(!id[b] || id[b] == i_NpcInternalId[entity])
+					{
+						count[b]++;
+						active[b] = true;
+						
+						if(!id[b])
+						{
+							id[b] = i_NpcInternalId[entity];
+							flags[b] = MVM_CLASS_FLAG_SUPPORT;
+
+							if(b_thisNpcIsABoss[entity] || b_thisNpcHasAnOutline[entity])
+								flags[b] |= MVM_CLASS_FLAG_MINIBOSS;
+							
+							if(b_thisNpcIsARaid[entity])
+								flags[b] |= MVM_CLASS_FLAG_SUPPORT_LIMITED;
+							
+							if(fl_Extra_MeleeArmor[entity] < 1.0 || 
+							fl_Extra_RangedArmor[entity] < 1.0 || 
+							fl_Extra_Speed[entity] > 1.0 || 
+							fl_Extra_Damage[entity] > 1.0 ||
+							b_ThisNpcIsImmuneToNuke[entity])
+								flags[b] |= MVM_CLASS_FLAG_ALWAYSCRIT;
+						}
+						
+						break;
+					}
+				}
+			}
+		}
+
+		int objective = GetObjectiveResource();
+		if(objective != -1)
+		{
+			//SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", cashLeft);
+			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
+			SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves - 1 : 0);
+			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", totalcount);
+
+			NPCData data;
+			for(int i; i < sizeof(id); i++)
+			{
+				if(id[i])
+				{
+					NPC_GetById(id[i], data);
+					if(!data.Icon[0])
+					{/*
+						if(StrContains(data.Name, "sword", false) != -1 || StrContains(data.Plugin, "sword", false) != -1)
+						{
+							strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+						}
+						else if(StrContains(data.Name, "scout", false) != -1 || StrContains(data.Plugin, "scout", false) != -1)
+						{
+							strcopy(data.Icon, sizeof(data.Icon), "scout");
+						}
+						else if(StrContains(data.Name, "soldier", false) != -1 || StrContains(data.Plugin, "soldier", false) != -1)
+						{
+							strcopy(data.Icon, sizeof(data.Icon), "soldier");
+						}
+						else if(StrContains(data.Name, "pyro", false) != -1 || StrContains(data.Plugin, "pyro", false) != -1)
+						{
+							strcopy(data.Icon, sizeof(data.Icon), "pyro");
+						}
+						else if(StrContains(data.Name, "demo", false) != -1 || StrContains(data.Plugin, "demo", false) != -1)
+						{
+							strcopy(data.Icon, sizeof(data.Icon), "demo");
+						}
+						else if(StrContains(data.Name, "heavy", false) != -1 || StrContains(data.Plugin, "heavy", false) != -1)
+						{
+							strcopy(data.Icon, sizeof(data.Icon), "heavy");
+						}
+						else if(StrContains(data.Name, "engi", false) != -1 || StrContains(data.Plugin, "engi", false) != -1)
+						{
+							strcopy(data.Icon, sizeof(data.Icon), "engineer");
+						}
+						else if(StrContains(data.Name, "medic", false) != -1 || StrContains(data.Plugin, "medic", false) != -1)
+						{
+							strcopy(data.Icon, sizeof(data.Icon), "medic");
+						}
+						else if(StrContains(data.Name, "sniper", false) != -1 || StrContains(data.Plugin, "sniper", false) != -1)
+						{
+							strcopy(data.Icon, sizeof(data.Icon), "sniper");
+						}
+						else if(StrContains(data.Name, "spy", false) != -1 || StrContains(data.Plugin, "spy", false) != -1)
+						{
+							strcopy(data.Icon, sizeof(data.Icon), "spy");
+						}
+						else*/
+						{
+							strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
+						}
+					}
+					
+					if(!data.Flags)
+						data.Flags = flags[i];
+
+					//PrintToChatAll("ID: %d Count: %d Flags: %d On: %d", id[i], count[i], flags[i], active[i]);
+					SetWaveClass(objective, i, count[i], data.Icon, data.Flags, active[i]);
+				}
+				else
+				{
+					SetWaveClass(objective, i);
+				}
+			}
+		}
+/*
+		int acquired = RoundFloat(totalCash - cashLeft);
+		SetEntData(mvm, m_currentWaveStats + 4, acquired);	// nCreditsDropped
+		SetEntData(mvm, m_currentWaveStats + 8, acquired);	// nCreditsAcquired
 		SetEntData(mvm, m_currentWaveStats + 12, 0);	// nCreditsBonus
 
-		SetEntData(mvm, m_runningTotalWaveStats + 4, 0);	// nCreditsDropped
+		SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash);	// nCreditsDropped
 		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash);	// nCreditsAcquired
 		SetEntData(mvm, m_runningTotalWaveStats + 12, 0);	// nCreditsBonus
+	*/
 	}
+}
+
+static int SetupFlags(const Enemy data, bool support)
+{
+	int flags = 0;
+	
+	if(support || data.Is_Static || data.Team == TFTeam_Red)
+	{
+		flags |= MVM_CLASS_FLAG_SUPPORT;
+
+		if(data.Is_Boss > 1)
+			flags |= MVM_CLASS_FLAG_SUPPORT_LIMITED;
+	}
+	else
+	{
+		flags |= MVM_CLASS_FLAG_NORMAL;
+
+		if(data.Is_Boss > 1)
+			flags |= MVM_CLASS_FLAG_MISSION;
+	}
+
+	if(data.Is_Boss || data.Is_Outlined)
+		flags |= MVM_CLASS_FLAG_MINIBOSS;
+	
+	if(data.ExtraMeleeRes < 1.0 || 
+	data.ExtraRangedRes < 1.0 || 
+	data.ExtraSpeed > 1.0 || 
+	data.ExtraDamage > 1.0 || 
+	data.Is_Immune_To_Nuke)
+		flags |= MVM_CLASS_FLAG_ALWAYSCRIT;
+	
+	return flags;
 }
 
 void Waves_SetReadyStatus(int status)
@@ -2146,11 +2412,13 @@ void Waves_SetReadyStatus(int status)
 		case 0:	// Normal
 		{
 			GameRules_SetProp("m_bInWaitingForPlayers", false);
+			GameRules_SetProp("m_bInSetup", false);
 			GameRules_SetProp("m_iRoundState", 11);
 		}
 		case 1:	// Ready Up
 		{
 			GameRules_SetProp("m_bInWaitingForPlayers", true);
+			GameRules_SetProp("m_bInSetup", true);
 			GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);
 			FindConVar("tf_mvm_min_players_to_start").IntValue = 1;
 
@@ -2174,6 +2442,7 @@ void Waves_SetReadyStatus(int status)
 		case 2:	// Waiting
 		{
 			GameRules_SetProp("m_bInWaitingForPlayers", true);
+			GameRules_SetProp("m_bInSetup", true);
 			GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);
 			FindConVar("tf_mvm_min_players_to_start").IntValue = 199;
 
@@ -2193,6 +2462,36 @@ void Waves_SetReadyStatus(int status)
 						KillFeed_SetBotTeam(client, TFTeam_Blue);
 				}
 			}
+		}
+	}
+}
+
+static void SetWaveClass(int objective, int index, int count = 0, const char[] icon = "", int flags = 0, bool active = false)
+{
+	static int size1, size2;
+
+	if(!size1)
+		size1 = GetEntPropArraySize(objective, Prop_Send, "m_nMannVsMachineWaveClassCounts");
+	
+	if(!size2)
+		size2 = GetEntPropArraySize(objective, Prop_Send, "m_nMannVsMachineWaveClassCounts2");
+	
+	if(index < size1)
+	{
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassCounts", count, _, index);
+		SetEntPropString(objective, Prop_Send, "m_iszMannVsMachineWaveClassNames", icon, index);
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassFlags", flags, _, index);
+		SetEntProp(objective, Prop_Send, "m_bMannVsMachineWaveClassActive", active, _, index);
+	}
+	else
+	{
+		int index2 = index - size1;
+		if(index2 < size2)
+		{
+			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassCounts2", count, _, index2);
+			SetEntPropString(objective, Prop_Send, "m_iszMannVsMachineWaveClassNames2", icon, index2);
+			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassFlags2", flags, _, index2);
+			SetEntProp(objective, Prop_Send, "m_bMannVsMachineWaveClassActive2", active, _, index2);
 		}
 	}
 }
