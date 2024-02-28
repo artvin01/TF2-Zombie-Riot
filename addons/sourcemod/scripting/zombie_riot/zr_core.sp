@@ -10,6 +10,14 @@
 //#define ZR_ApplyKillEffects NPC_DeadEffects
 #define ZR_GetWaveCount Rogue_GetRoundScale
 
+#define MVM_CLASS_FLAG_NONE				0
+#define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// ???
+#define MVM_CLASS_FLAG_SUPPORT			(1 << 1)	// Show as Support?
+#define MVM_CLASS_FLAG_MISSION			(1 << 2)	// Show as Flashing?
+#define MVM_CLASS_FLAG_MINIBOSS			(1 << 3)	// Show as Red Background?
+#define MVM_CLASS_FLAG_ALWAYSCRIT		(1 << 4)	// Show with Crit Borders?
+#define MVM_CLASS_FLAG_SUPPORT_LIMITED	(1 << 5)	// Show as Flashing?
+
 public const int AmmoData[][] =
 {
 	// Price, Ammo
@@ -206,6 +214,7 @@ int CurrentCash;
 bool LastMann;
 bool LastMannScreenEffect;
 int LimitNpcs;
+int i_MVMPopulator;
 
 //bool RaidMode; 							//Is this raidmode?
 float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
@@ -247,8 +256,8 @@ int CurrentRound;
 int CurrentWave = -1;
 int StartCash;
 float RoundStartTime;
-char WhatDifficultySetting_Internal[21];
-char WhatDifficultySetting[21];
+char WhatDifficultySetting_Internal[32];
+char WhatDifficultySetting[32];
 float healing_cooldown[MAXTF2PLAYERS];
 float f_TimeAfterSpawn[MAXTF2PLAYERS];
 float WoodAmount[MAXTF2PLAYERS];
@@ -394,6 +403,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
 #include "zombie_riot/rogue.sp"
+#include "zombie_riot/mvm_hud.sp"
 #include "zombie_riot/sm_skyboxprops.sp"
 #include "zombie_riot/custom/homing_projectile_logic.sp"
 #include "zombie_riot/custom/building.sp"
@@ -579,6 +589,7 @@ void ZR_MapStart()
 	ZombieMusicPlayed = false;
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
+	WavesUpdateDifficultyName();
 	RoundStartTime = 0.0;
 	cvarTimeScale.SetFloat(1.0);
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
@@ -760,8 +771,9 @@ void ZR_MapStart()
 	b_RaidMusicCustom1 = false;
 	ResetMapStartSensalWeapon();
 	//This enables the MVM money hud, looks way better.
-	SetVariantString("ForceEnableUpgrades(2)");
-	AcceptEntityInput(0, "RunScriptCode");
+	//SetVariantString("ForceEnableUpgrades(2)");
+	//AcceptEntityInput(0, "RunScriptCode");
+	CreateMVMPopulator();
 	
 	//Store_RandomizeNPCStore(1);
 }
@@ -1872,37 +1884,6 @@ public Action DeleteEntitiesInHazards(Handle timer)
 			}
 		}
 	}
-	/*
-	no longer need deletion as spikes have a pickup all option.
-	for(int entitycount; entitycount<ZR_MAX_TRAPS; entitycount++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsTraps[entitycount]);
-		if (IsValidEntity(entity))
-		{
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", BuildingPos);
-			BuildingPos[2] + 10.0;
-			if(IsPointNoBuild(BuildingPos))
-			{
-				RemoveEntity(entity);
-			}
-		}
-	}
-	for(int entity; entity<MAXENTITIES; entity++)
-	{
-		if (IsValidEntity(entity))
-		{
-			if(IsEntitySpike(entity))
-			{
-				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", BuildingPos);
-				BuildingPos[2] + 10.0;
-				if(IsPointNoBuild(BuildingPos))
-				{
-					RemoveEntity(entity);
-				}
-			}
-		}
-	}
-	*/
 	return Plugin_Handled;
 }
 void ReviveAll(bool raidspawned = false)
@@ -2120,7 +2101,6 @@ void PlayerApplyDefaults(int client)
 
 		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
 		QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //cl_showpluginmessages
-		QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		

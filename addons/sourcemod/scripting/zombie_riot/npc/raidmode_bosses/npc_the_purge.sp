@@ -284,11 +284,7 @@ static void ClotThink(int iNPC)
 			}	
 		}
 	}
-	else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)) || IsPartnerGivingUpSilvester(EntRefToEntIndex(RaidBossActive)))
-	{	
-		RaidBossActive = EntIndexToEntRef(npc.index);
-	}
-	
+
 	if(LastMann)
 	{
 		if(!npc.m_fbGunout)

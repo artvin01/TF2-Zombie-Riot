@@ -342,6 +342,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		if(!npc.m_bFakeClone)
 		{
 			strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), "You.");
+			WavesUpdateDifficultyName();
 			Music_SetRaidMusic("#zombiesurvival/bob_raid/bob.mp3", 697, true, 1.99);
 			npc.StopPathing();
 
@@ -1662,7 +1663,7 @@ void RaidbossBobTheFirst_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s",WhatDifficultySetting_Internal);
-
+	WavesUpdateDifficultyName();
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);

@@ -124,6 +124,16 @@ public void RaidbossSilvester_OnMapStart()
 	PrecacheModel(LINKBEAM);
 	PrecacheModel(PILLAR_MODEL);
 	PrecacheSoundCustom("#zombiesurvival/silvester_raid/silvester.mp3");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Silvester");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_raidboss_silvester");
+	strcopy(data.Icon, sizeof(data.Icon), "silvester_raid");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Raid;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
 void Silvester_TBB_Precahce()
@@ -133,6 +143,10 @@ void Silvester_TBB_Precahce()
 	Silvester_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return RaidbossSilvester(client, vecPos, vecAng, ally, data);
+}
 #define EMPOWER_SOUND "items/powerup_pickup_king.wav"
 #define EMPOWER_MATERIAL "materials/sprites/laserbeam.vmt"
 #define EMPOWER_WIDTH 5.0
@@ -286,7 +300,6 @@ methodmap RaidbossSilvester < CClotBody
 	{
 		RaidbossSilvester npc = view_as<RaidbossSilvester>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
-		i_NpcInternalId[npc.index] = XENO_RAIDBOSS_SILVESTER;
 		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -303,6 +316,10 @@ methodmap RaidbossSilvester < CClotBody
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
@@ -356,8 +373,7 @@ methodmap RaidbossSilvester < CClotBody
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		
-		SDKHook(npc.index, SDKHook_Think, RaidbossSilvester_ClotThink);
+	
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSilvester_OnTakeDamagePost);
 		b_angered_twice[npc.index] = false;
@@ -468,7 +484,7 @@ methodmap RaidbossSilvester < CClotBody
 
 //TODO 
 //Rewrite
-public void RaidbossSilvester_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(iNPC);
 	
@@ -530,7 +546,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		Music_RoundEnd(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		SharedTimeLossSilvesterDuo(npc.index);
-		SDKUnhook(npc.index, SDKHook_Think, RaidbossSilvester_ClotThink);
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
 	}
 
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -616,7 +632,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 255, 255, 0, 255);
-			i_NpcInternalId[npc.index] = XENO_RAIDBOSS_SUPERSILVESTER;
+			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Angeled Silvester");
 			i_NpcWeight[npc.index] = 4;
 
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
@@ -1289,7 +1305,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 }
 
 	
-public Action RaidbossSilvester_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -1392,14 +1408,13 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 	}
 }
 
-public void RaidbossSilvester_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
 	if(!npc.m_bDissapearOnDeath)
 	{
 		npc.PlayDeathSound();
 	}
-	SDKUnhook(npc.index, SDKHook_Think, RaidbossSilvester_ClotThink);
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSilvester_OnTakeDamagePost);
 	StopSound(entity, SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
@@ -1626,7 +1641,7 @@ public Action contact_throw_Silvester_entity(int client)
 					{
 						if (!b_AlreadyHitTankThrow[client][entity] && entity != client)
 						{		
-							if(!b_NpcHasDied[entity] && i_NpcInternalId[entity] >= XENO_RAIDBOSS_SILVESTER && i_NpcInternalId[entity] <= XENO_RAIDBOSS_SUPERSILVESTER)
+							if(!b_NpcHasDied[entity])
 								continue;
 								
 							int damage;
@@ -2730,49 +2745,34 @@ int IsSilvesterTransforming(int silvester)
 public void Raidmode_Shared_Xeno_Duo(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
-	SDKUnhook(entity, SDKHook_Think, RaidbossSilvester_ClotThink);
-	SDKUnhook(entity, SDKHook_Think, RaidbossBlueGoggles_ClotThink);
+	func_NPCThink[entity] = INVALID_FUNCTION;
 	if(AlreadySaidWin)
 		return;
 
 	AlreadySaidWin = true;
-
-	switch(i_NpcInternalId[entity])
+	char npc_classname[60];
+	NPC_GetNameById(entity, npc_classname, sizeof(npc_classname));
+	if(StrContains(npc_classname, "npc_xeno_raidboss_silvester"))
 	{
-		case XENO_RAIDBOSS_SILVESTER:
+		if(XenoExtraLogic())
 		{
-			if(XenoExtraLogic())
-			{
-				CPrintToChatAll("{gold}Silvester{default}: Maybe killing you off is better as listening aint your thing.");
-			}
-			else
-			{
-				CPrintToChatAll("{gold}Silvester{default}: Thats it! You're comming with us!");
-			}
+			CPrintToChatAll("{gold}Silvester{default}: You're too stubborn.");
 		}
-
-		case XENO_RAIDBOSS_SUPERSILVESTER:
+		else
 		{
-			if(XenoExtraLogic())
-			{
-				CPrintToChatAll("{gold}Silvester{default}: You're too stubborn.");
-			}
-			else
-			{
-				CPrintToChatAll("{gold}Silvester{default}: Maybe we should have thought of a better way to warn them.");
-			}
+			CPrintToChatAll("{gold}Silvester{default}: Maybe we should have thought of a better way to warn them.");
 		}
-
-		case XENO_RAIDBOSS_BLUE_GOGGLES:
+		return;
+	}
+	if(i_NpcInternalId[entity] == XENO_RAIDBOSS_BLUE_GOGGLES)
+	{
+		if(XenoExtraLogic())
 		{
-			if(XenoExtraLogic())
-			{
-				CPrintToChatAll("{darkblue}Blue Goggles{default}: Too far.");
-			}
-			else
-			{
-				CPrintToChatAll("{darkblue}Blue Goggles{default}: Way better then to die to {green}Him.");
-			}
+			CPrintToChatAll("{darkblue}Blue Goggles{default}: Too far.");
+		}
+		else
+		{
+			CPrintToChatAll("{darkblue}Blue Goggles{default}: Way better then to die to {green}Him.");
 		}
 	}
 }
@@ -2789,7 +2789,7 @@ void SharedTimeLossSilvesterDuo(int entity)
 		GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", SelfPos);
 		GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", AllyAng);
 	}
-	int SensalSpawn = NPC_CreateById(RAIDMODE_EXPIDONSA_SENSAL, -1, SelfPos, AllyAng, GetTeam(entity), "duo_cutscene"); //can only be enemy
+	int SensalSpawn = NPC_CreateByName("npc_sensal", -1, SelfPos, AllyAng, GetTeam(entity), "duo_cutscene"); //can only be enemy
 	if(IsValidEntity(SensalSpawn))
 	{
 		if(GetTeam(SensalSpawn) != TFTeam_Red)
