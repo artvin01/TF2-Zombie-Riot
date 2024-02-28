@@ -4803,8 +4803,8 @@ void Store_ApplyAttribs(int client)
 #endif
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
-	map.SetValue("465", 10.0);	// x10 faster diepsner build
-	map.SetValue("464", 10.0);	// x10 faster sentry build
+	map.SetValue("465", 999.0);	// instant build
+	map.SetValue("464", 999.0);	// instant build
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
 //	map.SetValue("397", 50.0);	// Ignore ally with shooting
 	map.SetValue("169", 0.0);	// Complete sentrygun Immunity
@@ -6345,140 +6345,6 @@ void Store_RemoveSpecificItem(int client, const char[] name)
 		}
 	}
 }
-
-/*bool Store_Interact(int client, int entity, const char[] classname)
-{
-	if(!TeutonType[client] && GameRules_GetRoundState() <= RoundState_RoundRunning && StrEqual(classname, "prop_dynamic"))
-	{
-		char buffer[64];
-		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer))
-		if(!StrContains(buffer, "zr_weapon_", false))
-		{
-			int index = GetEntProp(entity, Prop_Send, "m_nSkin");
-			if(index > 0 && index < StoreItems.Length)
-			{
-				Item item;
-				StoreItems.GetArray(index, item);
-				
-				ItemInfo info;
-				int level = GetEntProp(entity, Prop_Send, "m_nBody");
-				if(item.GetItemInfo(level, info))
-				{
-					if(info.Classname[0])
-					{
-						int last = item.Owned[client] - 1;
-						if(last != level)
-						{
-							item.Owned[client] = level+1;
-							StoreItems.SetArray(index, item);
-							ClientCommand(client, "playgamesound \"ui/item_heavy_gun_pickup.wav\"");
-						}
-						
-						int slot = TF2_GetClassnameSlot(info.Classname);
-						if(slot >= 0 && slot < sizeof(Equipped[]))
-						{
-							if(Equipped[client][slot] == -1)
-							{
-								if(!Waves_InSetup())
-									RemoveEntity(entity);
-							}
-							else if(Waves_InSetup())
-							{
-								if(Equipped[client][slot] != index)
-								{
-									StoreItems.GetArray(Equipped[client][slot], item);
-									item.Owned[client] = 0;
-									StoreItems.SetArray(Equipped[client][slot], item);
-								}
-							}
-							else
-							{
-								if(Equipped[client][slot] != index)
-								{
-									StoreItems.GetArray(Equipped[client][slot], item);
-									last = item.Owned[client] - 1;
-									if(last < 0)
-										last = 0;
-									
-									item.Owned[client] = 0;
-									StoreItems.SetArray(Equipped[client][slot], item);
-								}
-								
-								item.GetItemInfo(last, info);
-								if(info.Model[0])
-									SetEntityModel(entity, info.Model);
-								
-								SetEntProp(entity, Prop_Send, "m_nSkin", Equipped[client][slot]);
-								SetEntProp(entity, Prop_Send, "m_nBody", last);
-								
-								int tier = info.Tier;
-								if(tier >= sizeof(RenderColors))
-									tier = sizeof(RenderColors)-1;
-								
-								if(tier < 0)
-								{
-									tier = 0;
-								}
-								
-								SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-								SetEntityRenderColor(entity, RenderColors[tier][0], RenderColors[tier][1], RenderColors[tier][2], RenderColors[tier][3]);
-							}
-							
-							Equipped[client][slot] = index;
-							if(!TeutonType[client])
-							{
-								TF2_RemoveWeaponSlot(client, slot);
-								Store_GiveItem(client, slot);
-								Manual_Impulse_101(client, GetClientHealth(client));
-							}
-						}
-						return true;
-					}
-					else if(!item.Owned[client])
-					{
-						item.Owned[client] = level+1;
-						StoreItems.SetArray(index, item);
-						ClientCommand(client, "playgamesound \"items/powerup_pickup_base.wav\"");
-						RemoveEntity(entity);
-						
-						if((info.Index < 0 || info.Index > 2) && info.Index < 6)
-						{
-							Store_ApplyAttribs(client);
-						//	if(info.Index == 5)
-						//		Building_IncreaseSentryLevel(client);
-							
-							if(info.Index == 4 || info.Index == 5)
-							{
-								for(int i; i<info.Attribs; i++)
-								{
-									if(info.Attrib[i] == 286)
-									{
-										int ent = MaxClients+1;
-										while((ent=FindEntityByClassname(ent, "obj_*")) != -1)
-										{
-											if(GetEntPropEnt(ent, Prop_Send, "m_hBuilder") == client)
-											{
-												SetEntProp(ent, Prop_Data, "m_iMaxHealth", RoundFloat(GetEntProp(ent, Prop_Data, "m_iMaxHealth")*info.Value[i]));
-												SetEntProp(ent, Prop_Send, "m_iHealth", RoundFloat(GetEntProp(ent, Prop_Send, "m_iHealth")*info.Value[i]));
-											}
-										}
-									}
-								}
-							}
-						}
-						else
-						{
-							Store_GiveAll(client, GetClientHealth(client));
-						}
-						return true;
-					}
-				}
-			}
-		}
-	}
-	return false;
-}*/
-
 void Store_ConsumeItem(int client, int index)
 {
 	static Item item;
@@ -6820,7 +6686,7 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 
 void GiveCredits(int client, int credits, bool building)
 {
-	if(building && !Waves_Started() && StartCash < 750)
+	if(building && Waves_InSetup() && StartCash < 750)
 	{
 		if(!CashSpentGivePostSetupWarning[client])
 		{
@@ -6828,13 +6694,7 @@ void GiveCredits(int client, int credits, bool building)
 			PrintToChat(client,"%t","Pre Setup Cash Gain Hint");
 			CashSpentGivePostSetupWarning[client] = true;
 		}
-		int CreditsGive = credits;
-		int CreditsSaveForLater = credits;
-		CreditsGive /= 2;
-		CreditsSaveForLater = CreditsSaveForLater - CreditsGive;
-
-		CashSpent[client] -= CreditsGive;
-		CashSpentGivePostSetup[client] += CreditsSaveForLater;
+		CashSpentGivePostSetup[client] += credits;
 	}
 	else
 	{
@@ -6846,6 +6706,7 @@ void GrantCreditsBack(int client)
 {
 	CashSpent[client] -= CashSpentGivePostSetup[client];
 	CashSpentGivePostSetup[client] = 0;
+	CashSpentGivePostSetupWarning[client] = false;
 }
 #endif	// ZR
 

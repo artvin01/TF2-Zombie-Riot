@@ -412,8 +412,9 @@ public void RaidbossBladedance_NPCDeath(int entity)
 		npc.PlayDeathSound();
 
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s",WhatDifficultySetting_Internal);
+	WavesUpdateDifficultyName();
 	
-	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_RoundRunning)
+	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
 		for (int client = 0; client < MaxClients; client++)
 		{

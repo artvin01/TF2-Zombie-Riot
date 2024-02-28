@@ -37,6 +37,8 @@
 #define TF2_GetClientTeam	PLZUSE_GetClientTeam
 #define TF2_ChangeClientTeam	PLZUSE_ChangeClientTeam
 
+#define RoundState_ZombieRiot view_as<RoundState>(11)
+
 #define NPC_HARD_LIMIT 40 
 #define ZR_MAX_NPCS (NPC_HARD_LIMIT*6)
 #define ZR_MAX_NPCS_ALLIED 40 //Never need more.
@@ -307,9 +309,6 @@ bool b_DoNotUnStuck[MAXENTITIES];
 bool b_PlayerIsInAnotherPart[MAXENTITIES];
 bool b_EntityIsStairAbusing[MAXENTITIES];
 float f_EntityIsStairAbusing[MAXENTITIES];
-
-float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
-
 int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
 
 //bool Wand_Fired;
@@ -425,7 +424,6 @@ float f_ClientWasTooLongInsideHurtZone[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneDamage[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneStairs[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneDamageStairs[MAXENTITIES]={0.0, ...};
-bool f_ClientServerShowMessages[MAXTF2PLAYERS];
 
 //Needs to be global.
 bool b_IsABow[MAXENTITIES];
@@ -1144,7 +1142,6 @@ float b_isGiantWalkCycle[MAXENTITIES];
 
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
-int i_CreditsOnKill[MAXENTITIES];
 float f_CreditsOnKill[MAXENTITIES];
 
 int i_InSafeZone[MAXENTITIES];
@@ -1464,6 +1461,10 @@ public void OnPluginEnd()
 	RTS_PluginEnd();
 #endif
 
+#if defined ZR
+	MVMHud_Disable();
+#endif
+
 	/*
 	char classname[256];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
@@ -1561,7 +1562,6 @@ public void OnMapStart()
 	Zero(f_BotDelayShow);
 	Zero(f_OneShotProtectionTimer);
 	CleanAllNpcArray();
-	Zero(f_ClientServerShowMessages);
 	Zero(h_NpcCollissionHookType);
 	Zero(h_NpcSolidHookType);
 	Zero2(i_StickyToNpcCount);
@@ -1898,7 +1898,6 @@ public void OnClientPutInServer(int client)
 	f_Ruina_Attack_Buff_Amt[client] = 0.0;
 	f_MultiDamageTaken[client] = 1.0;
 	f_MultiDamageTaken_Flat[client] = 1.0;
-	f_ShowHudDelayForServerMessage[client] = GetGameTime() + 50.0;
 	
 #if defined ZR
 	f_TutorialUpdateStep[client] = 0.0;
@@ -2761,6 +2760,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 #if defined ZR
 		else if(!StrContains(classname, "tf_ammo_pack"))
+		{
+			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
+		}
+		else if(!StrContains(classname, "entity_revive_marker"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}

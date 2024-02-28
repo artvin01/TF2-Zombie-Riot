@@ -15,8 +15,10 @@ void Events_PluginStart()
 	HookEvent("deploy_buff_banner", OnBannerDeploy, EventHookMode_Pre);
 //	HookEvent("nav_blocked", NavBlocked, EventHookMode_Pre);
 #if defined ZR
-	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_Post);
-	HookEvent("teamplay_setup_finished", OnSetupFinished, EventHookMode_PostNoCopy);
+	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_Pre);
+	HookEvent("mvm_begin_wave", OnSetupFinished, EventHookMode_PostNoCopy);
+	HookEvent("mvm_wave_failed", OnWinPanel, EventHookMode_Pre);
+	HookEvent("mvm_mission_complete", OnWinPanel, EventHookMode_Pre);
 #endif
 	
 	HookUserMessage(GetUserMessageId("SayText2"), Hook_BlockUserMessageEx, true);
@@ -56,6 +58,8 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 		}	
 	}
 	
+	CreateMVMPopulator();
+	
 	if(RoundStartTime > GetGameTime())
 		return;
 	
@@ -65,17 +69,21 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Waves_RoundStart();
 #endif
 
-#if defined RPG
-	Zones_ResetAll();
-#endif
-	
+#if defined RTS
 	ServerCommand("mp_waitingforplayers_cancel 1");
+#endif
 }
 
 #if defined ZR
 public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 {
-	Escape_SetupEnd();
+	for(int client=1; client<=MaxClients; client++)
+	{
+		SetMusicTimer(client, 0);
+	}
+	
+	Waves_SetReadyStatus(0);
+	Waves_Progress();
 }
 #endif
 
@@ -135,8 +143,9 @@ public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast
 }
 
 #if defined ZR
-public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
+public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
+	MVMHud_Disable();
 	Store_RandomizeNPCStore(1);
 	f_FreeplayDamageExtra = 1.0;
 	b_GameOnGoing = false;
@@ -170,6 +179,7 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 		//enemy team won due to timer or something else.
 		ZR_NpcTauntWin();
 	}
+	return Plugin_Continue;
 }
 #endif
 

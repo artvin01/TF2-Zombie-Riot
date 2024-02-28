@@ -628,7 +628,7 @@ public bool Building_HealingStation(int client, int entity)
 	Building_Constructed[entity] = false;
 	CreateTimer(0.2, Building_Set_HP_Colour_Sentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	DataPack pack;
-	CreateDataTimer(0.1, Timer_DroppedBuildingWaitHealingStation, pack, TIMER_REPEAT);
+	CreateDataTimer(0.21, Timer_DroppedBuildingWaitHealingStation, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(entity);
 	pack.WriteCell(client); //Need original client index id please.
@@ -792,7 +792,7 @@ public bool Building_AmmoBox(int client, int entity)
 	i_SupportBuildingsBuild[client] += 1;
 
 	DataPack pack_2;
-	CreateDataTimer(0.1, Timer_DroppedBuildingWaitAmmobox, pack_2, TIMER_REPEAT);
+	CreateDataTimer(0.21, Timer_DroppedBuildingWaitAmmobox, pack_2, TIMER_REPEAT);
 	pack_2.WriteCell(EntIndexToEntRef(entity));
 	pack_2.WriteCell(entity);
 	
@@ -837,7 +837,7 @@ public bool Building_ArmorTable(int client, int entity)
 	i_SupportBuildingsBuild[client] += 1;
 
 	DataPack pack_2;
-	CreateDataTimer(0.1, Timer_DroppedBuildingWaitArmorTable, pack_2, TIMER_REPEAT);
+	CreateDataTimer(0.21, Timer_DroppedBuildingWaitArmorTable, pack_2, TIMER_REPEAT);
 	pack_2.WriteCell(EntIndexToEntRef(entity));
 	pack_2.WriteCell(entity);
 	
@@ -888,7 +888,7 @@ public bool Building_PerkMachine(int client, int entity)
 	i_SupportBuildingsBuild[client] += 1;
 
 	DataPack pack_2;
-	CreateDataTimer(0.1, Timer_DroppedBuildingWaitPerkMachine, pack_2, TIMER_REPEAT);
+	CreateDataTimer(0.21, Timer_DroppedBuildingWaitPerkMachine, pack_2, TIMER_REPEAT);
 	pack_2.WriteCell(EntIndexToEntRef(entity));
 	pack_2.WriteCell(entity);
 	
@@ -935,7 +935,7 @@ public bool Building_PackAPunch(int client, int entity)
 	i_SupportBuildingsBuild[client] += 1;
 	
 	DataPack pack_2;
-	CreateDataTimer(0.1, Timer_DroppedBuildingWaitPackAPunch, pack_2, TIMER_REPEAT);
+	CreateDataTimer(0.21, Timer_DroppedBuildingWaitPackAPunch, pack_2, TIMER_REPEAT);
 	pack_2.WriteCell(EntIndexToEntRef(entity));
 	pack_2.WriteCell(entity);
 	
@@ -2768,7 +2768,7 @@ public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 		return Plugin_Stop;
 	}
 	//Wait until full complete
-	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
+	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") >= 1.0)
 	{
 		if(Building_Constructed[obj])
 		{
@@ -2886,7 +2886,7 @@ public Action Timer_DroppedBuildingWaitRailgun(Handle htimer, int entref)
 		return Plugin_Stop;
 	}
 	//Wait until full complete
-	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
+	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") >= 1.0)
 	{
 		CClotBody npc = view_as<CClotBody>(obj);
 		if(Building_Constructed[obj])
@@ -2915,7 +2915,7 @@ public Action Timer_DroppedBuildingWaitMortar(Handle htimer, int entref)
 		return Plugin_Stop;
 	}
 	//Wait until full complete
-	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
+	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") >= 1.0)
 	{
 		CClotBody npc = view_as<CClotBody>(obj);
 		if(Building_Constructed[obj])
@@ -2958,7 +2958,7 @@ public Action Timer_DroppedBuildingWaitHealingStation(Handle htimer, DataPack pa
 		return Plugin_Stop;
 	}
 	//Wait until full complete
-	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
+	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") >= 1.0)
 	{
 		if(Building_Constructed[obj])
 		{
@@ -3018,7 +3018,7 @@ public Action Timer_DroppedBuildingWaitArmorTable(Handle htimer, DataPack pack)
 		return Plugin_Stop;
 	}
 	//Wait until full complete
-	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
+	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") >= 1.0)
 	{
 		if(Building_Constructed[obj])
 		{
@@ -3074,7 +3074,7 @@ public Action Timer_DroppedBuildingWaitPerkMachine(Handle htimer, DataPack pack)
 		return Plugin_Stop;
 	}
 	//Wait until full complete
-	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
+	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") >= 1.0)
 	{
 		if(Building_Constructed[obj])
 		{
@@ -3127,7 +3127,7 @@ public Action Timer_DroppedBuildingWaitPackAPunch(Handle htimer, DataPack pack)
 		return Plugin_Stop;
 	}
 	//Wait until full complete
-	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
+	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") >= 1.0)
 	{
 		if(Building_Constructed[obj])
 		{
@@ -3182,7 +3182,7 @@ public Action Timer_DroppedBuildingWaitWall(Handle htimer, DataPack pack)
 	}
 
 	//Wait until full complete
-	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
+	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") >= 1.0)
 	{
 		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
@@ -3203,7 +3203,7 @@ public Action Timer_DroppedBuildingWaitSentry(Handle htimer, int entref)
 		return Plugin_Stop;
 	}
 	//Wait until full complete
-	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
+	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") >= 1.0)
 	{
 		char buffer[32];
 		GetEntityClassname(obj, buffer, sizeof(buffer));
@@ -3225,7 +3225,7 @@ public bool BuildingCustomCommand(int client)
 	int obj=EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
 	if(IsValidEntity(obj) && obj>MaxClients)
 	{
-		if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
+		if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") >= 1.0)
 		{
 			static char buffer[36];
 			GetEntPropString(obj, Prop_Data, "m_iName", buffer, sizeof(buffer));
@@ -4445,7 +4445,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 			GetClientEyePosition(owner, pos1);
 			mounted = true;
 		}
-		else if(GetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed") == 1.0)
+		else if(GetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed") >= 1.0)
 		{
 			if(!Building_Constructed[entity])
 			{
@@ -4466,7 +4466,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 	}
 	if(Village_Flags[owner] & VILLAGE_500)
 	{
-		if(GetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed") == 1.0)
+		if(GetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed") >= 1.0)
 		{
 			if(Building_Constructed[entity])
 			{
@@ -5734,599 +5734,68 @@ public MRESReturn Dhook_FinishedBuilding_Pre(int Building_Index, Handle hParams)
 	return MRES_Ignored;
 }
 
-public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams) 
+void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 {
-	CClotBody npc = view_as<CClotBody>(Building_Index);
-
-
-	switch(i_WhatBuilding[Building_Index])
+	int Building_Index = EntRefToEntIndex(RefBuild);
+	if(IsValidEntity(Building_Index))
 	{
-		case BuildingElevator:
+		CClotBody npc = view_as<CClotBody>(Building_Index);
+		switch(i_WhatBuilding[Building_Index])
 		{
-			npc.bBuildingIsPlaced = true;
-			Building_Constructed[Building_Index] = true;	
-			SetEntityModel(Building_Index, ELEVATOR_MODEL);
-			SetEntPropFloat(Building_Index, Prop_Send, "m_flModelScale", 1.15); //Abit bigger!
-		}
-		case BuildingBarricade:
-		{
-			npc.bBuildingIsPlaced = true;
-			Building_Constructed[Building_Index] = true;
-			SetEntityModel(Building_Index, BARRICADE_MODEL);
-		}
-		case BuildingRailgun:
-		{
-			npc.bBuildingIsPlaced = true;
-			Building_Constructed[Building_Index] = true;
-			SetEntityModel(Building_Index, CUSTOM_SENTRYGUN_MODEL);
-			/*
-			static const float minbounds[3] = {-15.0, -15.0, 0.0};
-			static const float maxbounds[3] = {15.0, 15.0, 40.0};
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
-			npc.UpdateCollisionBox();	
-			*/
-
-		}
-		case BuildingMortar:
-		{
-			npc.bBuildingIsPlaced = true;
-			Building_Constructed[Building_Index] = true;
-			
-			SetEntityModel(Building_Index, CUSTOM_SENTRYGUN_MODEL);
-			/*
-			static const float minbounds[3] = {-15.0, -15.0, 0.0};
-			static const float maxbounds[3] = {15.0, 15.0, 80.0};
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
-			
-			npc.UpdateCollisionBox();	
-			*/
-
-		}
-		case BuildingSummoner:
-		{
-			SetEntProp(Building_Index, Prop_Send, "m_fEffects", GetEntProp(Building_Index, Prop_Send, "m_fEffects") | EF_NODRAW);
-			npc.bBuildingIsPlaced = true;
-			Building_Constructed[Building_Index] = true;
-			float vOrigin[3];
-			float vAngles[3];
-			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][1]);
-			
-			if(IsValidEntity(prop1))
+			case BuildingElevator:
 			{
-				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+				npc.bBuildingIsPlaced = true;
+				Building_Constructed[Building_Index] = true;	
+				SetEntityModel(Building_Index, ELEVATOR_MODEL);
+				SetEntPropFloat(Building_Index, Prop_Send, "m_flModelScale", 1.15); //Abit bigger!
 			}
-			else
+			case BuildingBarricade:
 			{
-				prop1 = CreateEntityByName("prop_dynamic_override");
-				if(IsValidEntity(prop1))
-				{
-					int clientPre = GetEntPropEnt(Building_Index, Prop_Send, "m_hBuilder");
-					if((i_NormalBarracks_HexBarracksUpgrades[clientPre] & ZR_BARRACKS_UPGRADES_TOWER))
-					{
-						DispatchKeyValue(prop1, "model", "models/props_manor/clocktower_01.mdl");
-						DispatchKeyValue(prop1, "modelscale", "0.11");
-					}
-					else
-					{
-						DispatchKeyValue(prop1, "model", SUMMONER_MODEL);
-						DispatchKeyValue(prop1, "modelscale", "0.15");
-					}
-					DispatchKeyValue(prop1, "StartDisabled", "false");
-					DispatchKeyValue(prop1, "Solid", "0");
-					SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
-					DispatchSpawn(prop1);
-					SetEntityCollisionGroup(prop1, 1);
-					AcceptEntityInput(prop1, "DisableShadow");
-					AcceptEntityInput(prop1, "DisableCollision");
-					SetEntityMoveType(prop1, MOVETYPE_NONE);
-					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1);
-					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop1);
-					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
-					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
-
-					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
-					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1_Summoner);
-				}
+				npc.bBuildingIsPlaced = true;
+				Building_Constructed[Building_Index] = true;
+				SetEntityModel(Building_Index, BARRICADE_MODEL);
 			}
-			SetEntityModel(Building_Index, SUMMONER_MODEL);			
-		}
-		case BuildingHealingStation:
-		{	
-			npc.bBuildingIsPlaced = true;
-			Building_Constructed[Building_Index] = true;
-			float vOrigin[3];
-			float vAngles[3];
-			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
-			int prop2 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][1]);
-			
-			if(IsValidEntity(prop1))
+			case BuildingRailgun:
 			{
-				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-				vAngles[1] += 180.0;
-				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+				npc.bBuildingIsPlaced = true;
+				Building_Constructed[Building_Index] = true;
+				SetEntityModel(Building_Index, CUSTOM_SENTRYGUN_MODEL);
+				/*
+				static const float minbounds[3] = {-15.0, -15.0, 0.0};
+				static const float maxbounds[3] = {15.0, 15.0, 40.0};
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+				npc.UpdateCollisionBox();	
+				*/
+
 			}
-			else
+			case BuildingMortar:
 			{
-				prop1 = CreateEntityByName("prop_dynamic_override");
-				if(IsValidEntity(prop1))
-				{
-					DispatchKeyValue(prop1, "model", HEALING_STATION_MODEL);
-					DispatchKeyValue(prop1, "modelscale", "0.70");
-					DispatchKeyValue(prop1, "StartDisabled", "false");
-					DispatchKeyValue(prop1, "Solid", "0");
-					SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
-					DispatchSpawn(prop1);
-					SetEntityCollisionGroup(prop1, 1);
-					AcceptEntityInput(prop1, "DisableShadow");
-					AcceptEntityInput(prop1, "DisableCollision");
-					SetEntityMoveType(prop1, MOVETYPE_NONE);
-					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
-					Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
-					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
-					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
+				npc.bBuildingIsPlaced = true;
+				Building_Constructed[Building_Index] = true;
+				
+				SetEntityModel(Building_Index, CUSTOM_SENTRYGUN_MODEL);
+				/*
+				static const float minbounds[3] = {-15.0, -15.0, 0.0};
+				static const float maxbounds[3] = {15.0, 15.0, 80.0};
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+				
+				npc.UpdateCollisionBox();	
+				*/
 
-					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-					vAngles[1] += 180.0;
-					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
-					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
-				}
 			}
-			
-			if(IsValidEntity(prop2))
-			{
-				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-				vAngles[1] += 180.0;
-				TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
-			}
-			else
-			{
-				prop2 = CreateEntityByName("prop_dynamic_override");
-				if(IsValidEntity(prop2))
-				{
-					DispatchKeyValue(prop2, "model", HEALING_STATION_MODEL);
-					DispatchKeyValue(prop2, "modelscale", "0.70");
-					DispatchKeyValue(prop2, "StartDisabled", "false");
-					DispatchKeyValue(prop2, "Solid", "0");
-					SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
-					DispatchSpawn(prop2);
-					SetEntityCollisionGroup(prop2, 1);
-					AcceptEntityInput(prop2, "DisableShadow");
-					AcceptEntityInput(prop2, "DisableCollision");
-					SetEntityMoveType(prop2, MOVETYPE_NONE);
-					SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
-					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
-					Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
-					SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
-
-					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-					vAngles[1] += 180.0;
-					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
-					SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
-				}
-			}
-			SetEntityModel(Building_Index, HEALING_STATION_MODEL);
-			/*
-			static const float minbounds[3] = {-15.0, -15.0, 0.0};
-			static const float maxbounds[3] = {15.0, 15.0, 45.0};
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
-			npc.UpdateCollisionBox();	
-			*/
-			//Do not override model collisions of sentries, they are wierd.
-
-		}
-		case BuildingPackAPunch:
-		{
-			npc.bBuildingIsPlaced = true;
-			Building_Constructed[Building_Index] = true;
-			float vOrigin[3];
-			float vAngles[3];
-			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
-			int prop2 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][1]);
-			
-			if(IsValidEntity(prop1))
-			{
-				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-				vAngles[1] -= 90.0;
-				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
-			}
-			else
-			{
-				prop1 = CreateEntityByName("prop_dynamic_override");
-				if(IsValidEntity(prop1))
-				{
-					DispatchKeyValue(prop1, "model", PACKAPUNCH_MODEL);
-					DispatchKeyValue(prop1, "modelscale", "1.0");
-					DispatchKeyValue(prop1, "StartDisabled", "false");
-					DispatchKeyValue(prop1, "Solid", "0");
-					SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
-					DispatchSpawn(prop1);
-					SetEntityCollisionGroup(prop1, 1);
-					AcceptEntityInput(prop1, "DisableShadow");
-					AcceptEntityInput(prop1, "DisableCollision");
-					SetEntityMoveType(prop1, MOVETYPE_NONE);
-					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
-					Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
-					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
-					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
-
-					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-					vAngles[1] -= 90.0;
-					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
-					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
-				}
-			}
-			
-			if(IsValidEntity(prop2))
-			{
-				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-				vAngles[1] -= 90.0;
-				TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
-			}
-			else
-			{
-				prop2 = CreateEntityByName("prop_dynamic_override");
-				if(IsValidEntity(prop2))
-				{
-					DispatchKeyValue(prop2, "model", PACKAPUNCH_MODEL);
-					DispatchKeyValue(prop2, "modelscale", "1.0");
-					DispatchKeyValue(prop2, "StartDisabled", "false");
-					DispatchKeyValue(prop2, "Solid", "0");
-					SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
-					DispatchSpawn(prop2);
-					SetEntityCollisionGroup(prop2, 1);
-					AcceptEntityInput(prop2, "DisableShadow");
-					AcceptEntityInput(prop2, "DisableCollision");
-					SetEntityMoveType(prop2, MOVETYPE_NONE);
-					SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
-
-					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
-					Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
-					SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
-
-					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-					vAngles[1] -= 90.0;
-					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
-					SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
-				}
-			}
-
-			SetEntityModel(Building_Index, PACKAPUNCH_MODEL);
-
-			static const float minbounds[3] = {-25.0, -25.0, 0.0};
-			static const float maxbounds[3] = {25.0, 25.0, 65.0};
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
-					
-			npc.UpdateCollisionBox();	
-
-			float eyePitch[3];
-			GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", eyePitch);
-			eyePitch[1] -= 90.0;
-													
-			TeleportEntity(Building_Index, NULL_VECTOR, eyePitch, NULL_VECTOR);
-		}
-		case BuildingPerkMachine:
-		{
-			npc.bBuildingIsPlaced = true;
-			Building_Constructed[Building_Index] = true;
-			float vOrigin[3];
-			float vAngles[3];
-			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
-			int prop2 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][1]);
-			
-			if(IsValidEntity(prop1))
-			{
-				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-				vAngles[1] -= 90.0;
-				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
-			}
-			else
-			{
-				prop1 = CreateEntityByName("prop_dynamic_override");
-				if(IsValidEntity(prop1))
-				{
-					DispatchKeyValue(prop1, "model", PERKMACHINE_MODEL);
-					DispatchKeyValue(prop1, "modelscale", "1.0");
-					DispatchKeyValue(prop1, "StartDisabled", "false");
-					DispatchKeyValue(prop1, "Solid", "0");
-					SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
-					DispatchSpawn(prop1);
-					SetEntityCollisionGroup(prop1, 1);
-					AcceptEntityInput(prop1, "DisableShadow");
-					AcceptEntityInput(prop1, "DisableCollision");
-					SetEntityMoveType(prop1, MOVETYPE_NONE);
-					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
-					Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
-					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
-					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
-
-					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-					vAngles[1] -= 90.0;
-					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
-					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
-				}
-			}
-			
-			if(IsValidEntity(prop2))
-			{
-				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-				vAngles[1] -= 90.0;
-				TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
-			}
-			else
-			{
-				prop2 = CreateEntityByName("prop_dynamic_override");
-				if(IsValidEntity(prop2))
-				{
-					DispatchKeyValue(prop2, "model", PERKMACHINE_MODEL);
-					DispatchKeyValue(prop2, "modelscale", "1.0");
-					DispatchKeyValue(prop2, "StartDisabled", "false");
-					DispatchKeyValue(prop2, "Solid", "0");
-					SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
-					DispatchSpawn(prop2);
-					SetEntityCollisionGroup(prop2, 1);
-					AcceptEntityInput(prop2, "DisableShadow");
-					AcceptEntityInput(prop2, "DisableCollision");
-					SetEntityMoveType(prop2, MOVETYPE_NONE);
-					SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
-					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
-					Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
-					SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
-
-					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-					vAngles[1] -= 90.0;
-					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
-					SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
-				}
-			}
-			SetEntityModel(Building_Index, PERKMACHINE_MODEL);
-
-			static const float minbounds[3] = {-20.0, -20.0, 0.0};
-			static const float maxbounds[3] = {20.0, 20.0, 65.0};
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
-
-
-			npc.UpdateCollisionBox();	
-			float eyePitch[3];
-			GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", eyePitch);
-			eyePitch[1] -= 90.0;
-													
-			TeleportEntity(Building_Index, NULL_VECTOR, eyePitch, NULL_VECTOR);
-						
-		}
-		case BuildingArmorTable:
-		{
-			npc.bBuildingIsPlaced = true;
-			Building_Constructed[Building_Index] = true;
-			float vOrigin[3];
-			float vAngles[3];
-			
-			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
-			int prop2 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][1]);
-			
-			if(IsValidEntity(prop1))
-			{
-				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
-			}
-			else
-			{
-				prop1 = CreateEntityByName("prop_dynamic_override");
-				if(IsValidEntity(prop1))
-				{
-					DispatchKeyValue(prop1, "model", "models/props_manor/table_01.mdl");
-					DispatchKeyValue(prop1, "modelscale", "1.0");
-					DispatchKeyValue(prop1, "StartDisabled", "false");
-					DispatchKeyValue(prop1, "Solid", "0");
-					SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
-					DispatchSpawn(prop1);
-					SetEntityCollisionGroup(prop1, 1);
-					AcceptEntityInput(prop1, "DisableShadow");
-					AcceptEntityInput(prop1, "DisableCollision");
-					SetEntityMoveType(prop1, MOVETYPE_NONE);
-					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
-					Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
-					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
-					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
-
-					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
-					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1_Armor);
-				}
-			}
-			
-			if(IsValidEntity(prop2))
-			{
-				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-				TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
-			}
-			else
-			{
-				prop2 = CreateEntityByName("prop_dynamic_override");
-				if(IsValidEntity(prop2))
-				{
-					DispatchKeyValue(prop2, "model", "models/props_manor/table_01.mdl");
-					DispatchKeyValue(prop2, "modelscale", "1.0");
-					DispatchKeyValue(prop2, "StartDisabled", "false");
-					DispatchKeyValue(prop2, "Solid", "0");
-					SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
-					DispatchSpawn(prop2);
-					SetEntityCollisionGroup(prop2, 1);
-					AcceptEntityInput(prop2, "DisableShadow");
-					AcceptEntityInput(prop2, "DisableCollision");
-					SetEntityMoveType(prop2, MOVETYPE_NONE);
-					SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
-					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
-					Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
-					SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
-
-					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
-					SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2_Armor);
-				}
-			}
-			SetEntityModel(Building_Index, "models/props_manor/table_01.mdl");
-
-			static const float minbounds[3] = {-20.0, -20.0, 0.0};
-			static const float maxbounds[3] = {20.0, 20.0, 35.0};
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
-
-
-			npc.UpdateCollisionBox();		
-		}
-		case BuildingAmmobox:
-		{
-			npc.bBuildingIsPlaced = true;
-			Building_Constructed[Building_Index] = true;
-			float vOrigin[3];
-			float vAngles[3];
-			
-			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
-			int prop2 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][1]);
-			
-			if(IsValidEntity(prop1))
-			{
-				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-				vOrigin[2] += 15.0;
-				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-				vAngles[1] -= 180.0;
-				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
-			}
-			else
-			{
-				prop1 = CreateEntityByName("prop_dynamic_override");
-				if(IsValidEntity(prop1))
-				{
-					DispatchKeyValue(prop1, "model", "models/items/ammocrate_smg1.mdl");
-					DispatchKeyValue(prop1, "modelscale", "1.00");
-					DispatchKeyValue(prop1, "StartDisabled", "false");
-					DispatchKeyValue(prop1, "Solid", "0");
-					SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
-					DispatchSpawn(prop1);
-					SetEntityCollisionGroup(prop1, 1);
-					AcceptEntityInput(prop1, "DisableShadow");
-					AcceptEntityInput(prop1, "DisableCollision");
-					SetEntityMoveType(prop1, MOVETYPE_NONE);
-					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
-					Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
-					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
-					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
-
-					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-					vAngles[1] -= 180.0;
-					vOrigin[2] += 15.0;
-					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
-					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
-				}
-			}
-			
-			if(IsValidEntity(prop2))
-			{
-				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-				vOrigin[2] += 15.0;
-				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-				vAngles[1] -= 180.0;
-				TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
-			}
-			else
-			{
-				prop2 = CreateEntityByName("prop_dynamic_override");
-				if(IsValidEntity(prop2))
-				{
-					DispatchKeyValue(prop2, "model", "models/items/ammocrate_smg1.mdl");
-					DispatchKeyValue(prop2, "modelscale", "1.00");
-					DispatchKeyValue(prop2, "StartDisabled", "false");
-					DispatchKeyValue(prop2, "Solid", "0");
-					SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
-					DispatchSpawn(prop2);
-					SetEntityCollisionGroup(prop2, 1);
-					AcceptEntityInput(prop2, "DisableShadow");
-					AcceptEntityInput(prop2, "DisableCollision");
-					SetEntityMoveType(prop2, MOVETYPE_NONE);
-					SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
-					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
-					Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
-					SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
-
-					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-					vAngles[1] -= 180.0;
-					vOrigin[2] += 15.0;
-					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
-					SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
-				}
-			}
-
-			SetEntityModel(Building_Index, "models/items/ammocrate_smg1.mdl");
-
-			static const float minbounds[3] = {-20.0, -20.0, -18.0};
-			static const float maxbounds[3] = {20.0, 20.0, 18.0};
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
-			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
-
-
-			npc.UpdateCollisionBox();			
-										
-			GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-			GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-
-			vOrigin[2] += 15.0;
-			vAngles[1] -= 180.0;
-																
-			TeleportEntity(Building_Index, vOrigin, vAngles, NULL_VECTOR);
-						
-		}
-		case BuildingVillage:
-		{
-			int owner = GetEntPropEnt(Building_Index, Prop_Send, "m_hBuilder");
-			if(IsValidEntity(owner) && (Village_Flags[owner] & VILLAGE_500))
+			case BuildingSummoner:
 			{
 				SetEntProp(Building_Index, Prop_Send, "m_fEffects", GetEntProp(Building_Index, Prop_Send, "m_fEffects") | EF_NODRAW);
 				npc.bBuildingIsPlaced = true;
 				Building_Constructed[Building_Index] = true;
 				float vOrigin[3];
 				float vAngles[3];
-				
 				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][1]);
 				
 				if(IsValidEntity(prop1))
@@ -6340,8 +5809,61 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					prop1 = CreateEntityByName("prop_dynamic_override");
 					if(IsValidEntity(prop1))
 					{
-						DispatchKeyValue(prop1, "model", VILLAGE_MODEL_REBEL);
-						DispatchKeyValue(prop1, "modelscale", "0.45");
+						int clientPre = GetEntPropEnt(Building_Index, Prop_Send, "m_hBuilder");
+						if((i_NormalBarracks_HexBarracksUpgrades[clientPre] & ZR_BARRACKS_UPGRADES_TOWER))
+						{
+							DispatchKeyValue(prop1, "model", "models/props_manor/clocktower_01.mdl");
+							DispatchKeyValue(prop1, "modelscale", "0.11");
+						}
+						else
+						{
+							DispatchKeyValue(prop1, "model", SUMMONER_MODEL);
+							DispatchKeyValue(prop1, "modelscale", "0.15");
+						}
+						DispatchKeyValue(prop1, "StartDisabled", "false");
+						DispatchKeyValue(prop1, "Solid", "0");
+						SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
+						DispatchSpawn(prop1);
+						SetEntityCollisionGroup(prop1, 1);
+						AcceptEntityInput(prop1, "DisableShadow");
+						AcceptEntityInput(prop1, "DisableCollision");
+						SetEntityMoveType(prop1, MOVETYPE_NONE);
+						SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1);
+						Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop1);
+						Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
+						SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
+
+						GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+						GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+						TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+						SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1_Summoner);
+					}
+				}
+				SetEntityModel(Building_Index, SUMMONER_MODEL);			
+			}
+			case BuildingHealingStation:
+			{	
+				npc.bBuildingIsPlaced = true;
+				Building_Constructed[Building_Index] = true;
+				float vOrigin[3];
+				float vAngles[3];
+				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
+				int prop2 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][1]);
+				
+				if(IsValidEntity(prop1))
+				{
+					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] += 180.0;
+					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+				}
+				else
+				{
+					prop1 = CreateEntityByName("prop_dynamic_override");
+					if(IsValidEntity(prop1))
+					{
+						DispatchKeyValue(prop1, "model", HEALING_STATION_MODEL);
+						DispatchKeyValue(prop1, "modelscale", "0.70");
 						DispatchKeyValue(prop1, "StartDisabled", "false");
 						DispatchKeyValue(prop1, "Solid", "0");
 						SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
@@ -6351,33 +5873,517 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 						AcceptEntityInput(prop1, "DisableCollision");
 						SetEntityMoveType(prop1, MOVETYPE_NONE);
 						SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
-						Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop1);
+						Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
 						Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
 						SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
 
 						GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 						GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-						
+						vAngles[1] += 180.0;
 						TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
-						SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1_Summoner);
+						SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
 					}
 				}
+				
+				if(IsValidEntity(prop2))
+				{
+					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] += 180.0;
+					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+				}
+				else
+				{
+					prop2 = CreateEntityByName("prop_dynamic_override");
+					if(IsValidEntity(prop2))
+					{
+						DispatchKeyValue(prop2, "model", HEALING_STATION_MODEL);
+						DispatchKeyValue(prop2, "modelscale", "0.70");
+						DispatchKeyValue(prop2, "StartDisabled", "false");
+						DispatchKeyValue(prop2, "Solid", "0");
+						SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
+						DispatchSpawn(prop2);
+						SetEntityCollisionGroup(prop2, 1);
+						AcceptEntityInput(prop2, "DisableShadow");
+						AcceptEntityInput(prop2, "DisableCollision");
+						SetEntityMoveType(prop2, MOVETYPE_NONE);
+						SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
+						Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
+						Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
+						SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
+
+						GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+						GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+						vAngles[1] += 180.0;
+						TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+						SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
+					}
+				}
+				SetEntityModel(Building_Index, HEALING_STATION_MODEL);
+				/*
+				static const float minbounds[3] = {-15.0, -15.0, 0.0};
+				static const float maxbounds[3] = {15.0, 15.0, 45.0};
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+				npc.UpdateCollisionBox();	
+				*/
+				//Do not override model collisions of sentries, they are wierd.
+
+			}
+			case BuildingPackAPunch:
+			{
+				npc.bBuildingIsPlaced = true;
+				Building_Constructed[Building_Index] = true;
+				float vOrigin[3];
+				float vAngles[3];
+				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
+				int prop2 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][1]);
+				
+				if(IsValidEntity(prop1))
+				{
+					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] -= 90.0;
+					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+				}
+				else
+				{
+					prop1 = CreateEntityByName("prop_dynamic_override");
+					if(IsValidEntity(prop1))
+					{
+						DispatchKeyValue(prop1, "model", PACKAPUNCH_MODEL);
+						DispatchKeyValue(prop1, "modelscale", "1.0");
+						DispatchKeyValue(prop1, "StartDisabled", "false");
+						DispatchKeyValue(prop1, "Solid", "0");
+						SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
+						DispatchSpawn(prop1);
+						SetEntityCollisionGroup(prop1, 1);
+						AcceptEntityInput(prop1, "DisableShadow");
+						AcceptEntityInput(prop1, "DisableCollision");
+						SetEntityMoveType(prop1, MOVETYPE_NONE);
+						SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
+						Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
+						Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
+						SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
+
+						GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+						GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+						vAngles[1] -= 90.0;
+						TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+						SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
+					}
+				}
+				
+				if(IsValidEntity(prop2))
+				{
+					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] -= 90.0;
+					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+				}
+				else
+				{
+					prop2 = CreateEntityByName("prop_dynamic_override");
+					if(IsValidEntity(prop2))
+					{
+						DispatchKeyValue(prop2, "model", PACKAPUNCH_MODEL);
+						DispatchKeyValue(prop2, "modelscale", "1.0");
+						DispatchKeyValue(prop2, "StartDisabled", "false");
+						DispatchKeyValue(prop2, "Solid", "0");
+						SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
+						DispatchSpawn(prop2);
+						SetEntityCollisionGroup(prop2, 1);
+						AcceptEntityInput(prop2, "DisableShadow");
+						AcceptEntityInput(prop2, "DisableCollision");
+						SetEntityMoveType(prop2, MOVETYPE_NONE);
+						SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
+
+						Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
+						Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
+						SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
+
+						GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+						GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+						vAngles[1] -= 90.0;
+						TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+						SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
+					}
+				}
+
+				SetEntityModel(Building_Index, PACKAPUNCH_MODEL);
+
+				static const float minbounds[3] = {-25.0, -25.0, 0.0};
+				static const float maxbounds[3] = {25.0, 25.0, 65.0};
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+						
+				npc.UpdateCollisionBox();	
+
+				float eyePitch[3];
+				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", eyePitch);
+				eyePitch[1] -= 90.0;
+														
+				TeleportEntity(Building_Index, NULL_VECTOR, eyePitch, NULL_VECTOR);
+			}
+			case BuildingPerkMachine:
+			{
+				npc.bBuildingIsPlaced = true;
+				Building_Constructed[Building_Index] = true;
+				float vOrigin[3];
+				float vAngles[3];
+				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
+				int prop2 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][1]);
+				
+				if(IsValidEntity(prop1))
+				{
+					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] -= 90.0;
+					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+				}
+				else
+				{
+					prop1 = CreateEntityByName("prop_dynamic_override");
+					if(IsValidEntity(prop1))
+					{
+						DispatchKeyValue(prop1, "model", PERKMACHINE_MODEL);
+						DispatchKeyValue(prop1, "modelscale", "1.0");
+						DispatchKeyValue(prop1, "StartDisabled", "false");
+						DispatchKeyValue(prop1, "Solid", "0");
+						SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
+						DispatchSpawn(prop1);
+						SetEntityCollisionGroup(prop1, 1);
+						AcceptEntityInput(prop1, "DisableShadow");
+						AcceptEntityInput(prop1, "DisableCollision");
+						SetEntityMoveType(prop1, MOVETYPE_NONE);
+						SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
+						Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
+						Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
+						SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
+
+						GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+						GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+						vAngles[1] -= 90.0;
+						TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+						SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
+					}
+				}
+				
+				if(IsValidEntity(prop2))
+				{
+					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] -= 90.0;
+					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+				}
+				else
+				{
+					prop2 = CreateEntityByName("prop_dynamic_override");
+					if(IsValidEntity(prop2))
+					{
+						DispatchKeyValue(prop2, "model", PERKMACHINE_MODEL);
+						DispatchKeyValue(prop2, "modelscale", "1.0");
+						DispatchKeyValue(prop2, "StartDisabled", "false");
+						DispatchKeyValue(prop2, "Solid", "0");
+						SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
+						DispatchSpawn(prop2);
+						SetEntityCollisionGroup(prop2, 1);
+						AcceptEntityInput(prop2, "DisableShadow");
+						AcceptEntityInput(prop2, "DisableCollision");
+						SetEntityMoveType(prop2, MOVETYPE_NONE);
+						SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
+						Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
+						Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
+						SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
+
+						GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+						GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+						vAngles[1] -= 90.0;
+						TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+						SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
+					}
+				}
+				SetEntityModel(Building_Index, PERKMACHINE_MODEL);
+
+				static const float minbounds[3] = {-20.0, -20.0, 0.0};
+				static const float maxbounds[3] = {20.0, 20.0, 65.0};
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+
+
+				npc.UpdateCollisionBox();	
+				float eyePitch[3];
+				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", eyePitch);
+				eyePitch[1] -= 90.0;
+														
+				TeleportEntity(Building_Index, NULL_VECTOR, eyePitch, NULL_VECTOR);
+							
+			}
+			case BuildingArmorTable:
+			{
+				npc.bBuildingIsPlaced = true;
+				Building_Constructed[Building_Index] = true;
+				float vOrigin[3];
+				float vAngles[3];
+				
+				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
+				int prop2 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][1]);
+				
+				if(IsValidEntity(prop1))
+				{
+					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+				}
+				else
+				{
+					prop1 = CreateEntityByName("prop_dynamic_override");
+					if(IsValidEntity(prop1))
+					{
+						DispatchKeyValue(prop1, "model", "models/props_manor/table_01.mdl");
+						DispatchKeyValue(prop1, "modelscale", "1.0");
+						DispatchKeyValue(prop1, "StartDisabled", "false");
+						DispatchKeyValue(prop1, "Solid", "0");
+						SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
+						DispatchSpawn(prop1);
+						SetEntityCollisionGroup(prop1, 1);
+						AcceptEntityInput(prop1, "DisableShadow");
+						AcceptEntityInput(prop1, "DisableCollision");
+						SetEntityMoveType(prop1, MOVETYPE_NONE);
+						SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
+						Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
+						Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
+						SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
+
+						GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+						GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+						TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+						SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1_Armor);
+					}
+				}
+				
+				if(IsValidEntity(prop2))
+				{
+					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+				}
+				else
+				{
+					prop2 = CreateEntityByName("prop_dynamic_override");
+					if(IsValidEntity(prop2))
+					{
+						DispatchKeyValue(prop2, "model", "models/props_manor/table_01.mdl");
+						DispatchKeyValue(prop2, "modelscale", "1.0");
+						DispatchKeyValue(prop2, "StartDisabled", "false");
+						DispatchKeyValue(prop2, "Solid", "0");
+						SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
+						DispatchSpawn(prop2);
+						SetEntityCollisionGroup(prop2, 1);
+						AcceptEntityInput(prop2, "DisableShadow");
+						AcceptEntityInput(prop2, "DisableCollision");
+						SetEntityMoveType(prop2, MOVETYPE_NONE);
+						SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
+						Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
+						Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
+						SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
+
+						GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+						GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+						TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+						SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2_Armor);
+					}
+				}
+				SetEntityModel(Building_Index, "models/props_manor/table_01.mdl");
+
+				static const float minbounds[3] = {-20.0, -20.0, 0.0};
+				static const float maxbounds[3] = {20.0, 20.0, 35.0};
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+
+
+				npc.UpdateCollisionBox();		
+			}
+			case BuildingAmmobox:
+			{
+				npc.bBuildingIsPlaced = true;
+				Building_Constructed[Building_Index] = true;
+				float vOrigin[3];
+				float vAngles[3];
+				
+				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
+				int prop2 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][1]);
+				
+				if(IsValidEntity(prop1))
+				{
+					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+					vOrigin[2] += 15.0;
+					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] -= 180.0;
+					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+				}
+				else
+				{
+					prop1 = CreateEntityByName("prop_dynamic_override");
+					if(IsValidEntity(prop1))
+					{
+						DispatchKeyValue(prop1, "model", "models/items/ammocrate_smg1.mdl");
+						DispatchKeyValue(prop1, "modelscale", "1.00");
+						DispatchKeyValue(prop1, "StartDisabled", "false");
+						DispatchKeyValue(prop1, "Solid", "0");
+						SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
+						DispatchSpawn(prop1);
+						SetEntityCollisionGroup(prop1, 1);
+						AcceptEntityInput(prop1, "DisableShadow");
+						AcceptEntityInput(prop1, "DisableCollision");
+						SetEntityMoveType(prop1, MOVETYPE_NONE);
+						SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
+						Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
+						Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
+						SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
+
+						GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+						GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+						vAngles[1] -= 180.0;
+						vOrigin[2] += 15.0;
+						TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+						SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
+					}
+				}
+				
+				if(IsValidEntity(prop2))
+				{
+					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+					vOrigin[2] += 15.0;
+					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] -= 180.0;
+					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+				}
+				else
+				{
+					prop2 = CreateEntityByName("prop_dynamic_override");
+					if(IsValidEntity(prop2))
+					{
+						DispatchKeyValue(prop2, "model", "models/items/ammocrate_smg1.mdl");
+						DispatchKeyValue(prop2, "modelscale", "1.00");
+						DispatchKeyValue(prop2, "StartDisabled", "false");
+						DispatchKeyValue(prop2, "Solid", "0");
+						SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
+						DispatchSpawn(prop2);
+						SetEntityCollisionGroup(prop2, 1);
+						AcceptEntityInput(prop2, "DisableShadow");
+						AcceptEntityInput(prop2, "DisableCollision");
+						SetEntityMoveType(prop2, MOVETYPE_NONE);
+						SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
+						Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
+						Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
+						SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
+
+						GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+						GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+						vAngles[1] -= 180.0;
+						vOrigin[2] += 15.0;
+						TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+						SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
+					}
+				}
+
+				SetEntityModel(Building_Index, "models/items/ammocrate_smg1.mdl");
+
+				static const float minbounds[3] = {-20.0, -20.0, -18.0};
+				static const float maxbounds[3] = {20.0, 20.0, 18.0};
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+
+
+				npc.UpdateCollisionBox();			
 											
 				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+
+				vOrigin[2] += 15.0;
+				vAngles[1] -= 180.0;
 																	
 				TeleportEntity(Building_Index, vOrigin, vAngles, NULL_VECTOR);
-				
+							
 			}
-						
+			case BuildingVillage:
+			{
+				int owner = GetEntPropEnt(Building_Index, Prop_Send, "m_hBuilder");
+				if(IsValidEntity(owner) && (Village_Flags[owner] & VILLAGE_500))
+				{
+					SetEntProp(Building_Index, Prop_Send, "m_fEffects", GetEntProp(Building_Index, Prop_Send, "m_fEffects") | EF_NODRAW);
+					npc.bBuildingIsPlaced = true;
+					Building_Constructed[Building_Index] = true;
+					float vOrigin[3];
+					float vAngles[3];
+					
+					int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][1]);
+					
+					if(IsValidEntity(prop1))
+					{
+						GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+						GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+						TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+					}
+					else
+					{
+						prop1 = CreateEntityByName("prop_dynamic_override");
+						if(IsValidEntity(prop1))
+						{
+							DispatchKeyValue(prop1, "model", VILLAGE_MODEL_REBEL);
+							DispatchKeyValue(prop1, "modelscale", "0.45");
+							DispatchKeyValue(prop1, "StartDisabled", "false");
+							DispatchKeyValue(prop1, "Solid", "0");
+							SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
+							DispatchSpawn(prop1);
+							SetEntityCollisionGroup(prop1, 1);
+							AcceptEntityInput(prop1, "DisableShadow");
+							AcceptEntityInput(prop1, "DisableCollision");
+							SetEntityMoveType(prop1, MOVETYPE_NONE);
+							SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
+							Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop1);
+							Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
+							SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
+
+							GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+							GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+							
+							TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+							SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1_Summoner);
+						}
+					}
+												
+					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+																		
+					TeleportEntity(Building_Index, vOrigin, vAngles, NULL_VECTOR);
+					
+				}
+							
+			}
+		}
+		int client = GetEntPropEnt(Building_Index, Prop_Send, "m_hBuilder");
+		if(IsValidClient(client)) //Make sure that they dont trigger the building once its done and dont get stuck like idiotas
+		{
+			SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+			SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 		}
 	}
-	int client = GetEntPropEnt(Building_Index, Prop_Send, "m_hBuilder");
-	if(IsValidClient(client)) //Make sure that they dont trigger the building once its done and dont get stuck like idiotas
-	{
-		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-		SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-	}
+}
+public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams) 
+{
+	RequestFrames(Dhook_FinishedBuilding_Post_Frame, 5, EntIndexToEntRef(Building_Index));
 	return MRES_Ignored;
 }
 
@@ -6687,7 +6693,7 @@ public bool Building_Summoner(int client, int entity)
 	Building_Constructed[entity] = false;
 	CreateTimer(0.2, Building_Set_HP_Colour_Sentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	DataPack pack;
-	CreateDataTimer(0.1, Timer_SummonerThink, pack, TIMER_REPEAT);
+	CreateDataTimer(0.21, Timer_SummonerThink, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(entity);
 	i_WhatBuilding[entity] = BuildingSummoner;
@@ -6769,7 +6775,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 		{
 			mounted = true;
 		}
-		else if(GetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed") == 1.0)
+		else if(GetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed") >= 1.0)
 		{
 			if(Building_Constructed[entity])
 			{
@@ -7907,7 +7913,7 @@ void Barracks_BuildingThink(int client)
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CRENELLATIONS)
 			{
 				DataPack pack;
-				CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+				CreateDataTimer(0.21, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 				pack.WriteCell(EntIndexToEntRef(arrow)); //projectile
 				pack.WriteCell(EntIndexToEntRef(ValidEnemyToTarget));		//victim to annihilate :)
 			}

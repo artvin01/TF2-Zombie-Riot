@@ -234,6 +234,7 @@ methodmap RaidbossNemesis < CClotBody
 		Music_SetRaidMusic("#zombie_riot/320_now_1.mp3", 200, true, 1.0);
 		RaidModeScaling = 9999999.99;
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "??????????????????????????????????");
+		WavesUpdateDifficultyName();
 		npc.m_bThisNpcIsABoss = true;
 		npc.Anger = false;
 		npc.m_flSpeed = 300.0;
@@ -1073,6 +1074,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 	}
 	int client = EntRefToEntIndex(i_GrabbedThis[npc.index]);
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s",WhatDifficultySetting_Internal);
+	WavesUpdateDifficultyName();
 	
 	if(IsValidEntity(client))
 	{
@@ -1133,7 +1135,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 
 	GiveProgressDelay(3.0);
 	RaidModeTime += 999.0; //cant afford to delete it, since duo.
-	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_RoundRunning)
+	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
 		for (int client_repat = 0; client_repat < MaxClients; client_repat++)
 		{

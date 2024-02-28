@@ -22,6 +22,12 @@ enum struct NPCData
 	char Name[64];
 	int Category;
 	Function Func;
+	int Flags;
+	char Icon[32];
+	bool IconCustom;
+
+	// Don't touch below
+	bool IconPrecached;
 }
 
 // FileNetwork_ConfigSetup needs to be ran first
@@ -38,6 +44,7 @@ void NPC_ConfigSetup()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_nothing");
 	data.Category = Type_Hidden;
 	data.Func = INVALID_FUNCTION;
+	strcopy(data.Icon, sizeof(data.Icon), "duck");
 	NPCList.PushArray(data);
 
 	GetOldMethodNPCs();
@@ -431,9 +438,22 @@ int NPC_GetByPlugin(const char[] name, NPCData data = {})
 	{
 		NPCList.GetArray(i, data);
 		if(StrEqual(name, data.Plugin))
+		{
+			PrecacheIcons(i, data);
 			return i;
+		}
 	}
 	return -1;
+}
+
+static void PrecacheIcons(int i, NPCData data)
+{
+	if(data.IconCustom && !data.IconPrecached)
+	{
+		PrecacheMvMIconCustom(data.Icon);
+		data.IconPrecached = true;
+		NPCList.SetArray(i, data);
+	}
 }
 
 enum
@@ -658,7 +678,7 @@ enum
 	STALKER_FATHER		= 194,
 	STALKER_GOGGLES		= 195,
 
-	XENO_RAIDBOSS_SILVESTER		= 196,
+	UNUSED_196		= 196,
 	XENO_RAIDBOSS_BLUE_GOGGLES	= 197,
 	XENO_RAIDBOSS_SUPERSILVESTER	= 198,
 	XENO_RAIDBOSS_NEMESIS	= 199,
@@ -750,9 +770,9 @@ enum
 	
 	//ruina
 	UNUSED_RUN10 = 284,
-	EXPIDONSA_BENERA = 285,
+	UNUSED_285 = 285,
 	EXPIDONSA_PENTAL = 286,
-	EXPIDONSA_DEFANDA = 287,
+	UNUSED_287 = 287,
 	EXPIDONSA_SELFAM_IRE = 288,
 	EXPIDONSA_VAUSMAGICA = 289,
 	EXPIDONSA_PISTOLEER = 290,
@@ -784,7 +804,7 @@ enum
 	EXPIDONSA_EGABUNAR				= 315,
 	EXPIDONSA_ENEGAKAPUS			= 316,
 	EXPIDONSA_CAPTINOAGENTUS		= 317,
-	RAIDMODE_EXPIDONSA_SENSAL		= 318,
+	UNUSED_318		= 318,
 	EXPIDONSA_DUALREA				= 319,
 	EXPIDONSA_GUARDUS				= 320,
 	EXPIDONSA_VAUSTECHICUS			= 321,
@@ -1177,9 +1197,9 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Ishar'mla, Heart of Corruption",
 	"Ishar'mla, Heart of Corruption",
 	"nothing",
-	"Benera",
+	"",
 	"Pental",
-	"Defanda",
+	"",
 	"Selfam Ire",
 	"Vaus Magica",
 	"Pistoleer",
@@ -1604,9 +1624,9 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	-1,	// ISHARMLA_TRANS		= 283,
 
 	-1,	//  = 284,
-	10,	// EXPIDONSA_BENERA = 285,
+	-1,	//  = 285,
 	10,	// EXPIDONSA_PENTAL = 286,
-	10,	// EXPIDONSA_DEFANDA = 287,
+	-1,	//  = 287,
 	10,	// EXPIDONSA_SELFAM_IRE = 288,
 	10,	// EXPIDONSA_VAUSMAGICA = 289,
 	10,	// EXPIDONSA_PISTOLEER = 290,
@@ -1638,7 +1658,7 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	10,	// EXPIDONSA_EGABUNAR					= 315,
 	10,	// EXPIDONSA_ENEGAKAPUS					= 316,
 	10, // EXPIDONSA_CAPTINOAGENTUS				= 317,
-	2, // RAIDMODE_EXPIDONSA_SENSAL			= 318,
+	-1, // UNUSED_318							= 318,
 	10, // EXPIDONSA_DUALREA					= 319,
 	10, // EXPIDONSA_GUARDUS					= 320,
 	10, // EXPIDONSA_VAUSTECHICUS				= 321,
@@ -1935,7 +1955,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"npc_stalker_father",
 	"npc_stalker_goggles",
 
-	"npc_xeno_raidboss_silvester",
+	"",
 	"npc_xeno_raidboss_blue_goggles",
 	"",
 	"npc_xeno_raidboss_nemesis",
@@ -2028,9 +2048,9 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"npc_isharmla_trans",
 	
 	"",
-	"npc_benera",
+	"",
 	"npc_pental",
-	"npc_defanda",
+	"",	//unused
 	"npc_selfam_ire",
 	"npc_vaus_magica",
 	"npc_benera_pistoleer",
@@ -2063,7 +2083,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"npc_enegakapus",
 	//wave 30+:
 	"npc_captino_agentus",
-	"npc_sensal", //Raid
+	"", //Raid
 	"npc_dualrea",
 	"npc_guardus",
 	"npc_vaus_techicus",
@@ -2785,14 +2805,8 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		case STALKER_GOGGLES:
 			entity = StalkerGoggles(client, vecPos, vecAng, team);
 		
-		case XENO_RAIDBOSS_SILVESTER:
-			entity = RaidbossSilvester(client, vecPos, vecAng, team, data);
-		
 		case XENO_RAIDBOSS_BLUE_GOGGLES:
 			entity = RaidbossBlueGoggles(client, vecPos, vecAng, team, data);
-		
-		case XENO_RAIDBOSS_SUPERSILVESTER:
-			entity = RaidbossSilvester(client, vecPos, vecAng, team, data);
 		
 		case XENO_RAIDBOSS_NEMESIS:
 			entity = RaidbossNemesis(client, vecPos, vecAng, team, data);
@@ -3003,15 +3017,9 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		
 		case BOB_THE_FIRST, BOB_THE_FIRST_S:
 			entity = RaidbossBobTheFirst(vecPos, vecAng, team, data);
-
-		case EXPIDONSA_BENERA:
-			entity = Benera(client, vecPos, vecAng, team);
 			
 		case EXPIDONSA_PENTAL:
 			entity = Pental(client, vecPos, vecAng, team);
-
-		case EXPIDONSA_DEFANDA:
-			entity = Defanda(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_SELFAM_IRE:
 			entity = SelfamIre(client, vecPos, vecAng, team);
@@ -3060,9 +3068,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 
 		case EXPIDONSA_CAPTINOAGENTUS:
 			entity = CaptinoAgentus(client, vecPos, vecAng, team, data);
-
-		case RAIDMODE_EXPIDONSA_SENSAL:
-			entity = Sensal(client, vecPos, vecAng, team, data);
 
 		case EXPIDONSA_DUALREA:
 			entity = DualRea(client, vecPos, vecAng, team);
@@ -3258,6 +3263,8 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		{
 			Rogue_EnemySpawned(entity);
 		}
+
+		Waves_UpdateMvMStats();
 	}
 
 	return entity;
@@ -3997,14 +4004,8 @@ void NPCDeath(int entity)
 		case STALKER_GOGGLES:
 			StalkerGoggles_NPCDeath(entity);
 		
-		case XENO_RAIDBOSS_SILVESTER:
-			RaidbossSilvester_NPCDeath(entity);
-		
 		case XENO_RAIDBOSS_BLUE_GOGGLES:
 			RaidbossBlueGoggles_NPCDeath(entity);
-		
-		case XENO_RAIDBOSS_SUPERSILVESTER:
-			RaidbossSilvester_NPCDeath(entity);
 		
 		case XENO_RAIDBOSS_NEMESIS:
 			RaidbossNemesis_NPCDeath(entity);
@@ -4216,14 +4217,10 @@ void NPCDeath(int entity)
 		case BOB_THE_FIRST, BOB_THE_FIRST_S:
 			RaidbossBobTheFirst_NPCDeath(entity);
 		
-		case EXPIDONSA_BENERA:
-			Benera_NPCDeath(entity); 
 
 		case EXPIDONSA_PENTAL:
 			Pental_NPCDeath(entity);
 
-		case EXPIDONSA_DEFANDA:
-			Defanda_NPCDeath(entity);
 
 		case EXPIDONSA_SELFAM_IRE:
 			SelfamIre_NPCDeath(entity);
@@ -4272,9 +4269,6 @@ void NPCDeath(int entity)
 
 		case EXPIDONSA_CAPTINOAGENTUS:
 			CaptinoAgentus_NPCDeath(entity);
-
-		case RAIDMODE_EXPIDONSA_SENSAL:
-			Sensal_NPCDeath(entity);
 
 		case EXPIDONSA_DUALREA:
 			DualRea_NPCDeath(entity);
@@ -4907,14 +4901,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case STALKER_GOGGLES:
 			StalkerGoggles_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case XENO_RAIDBOSS_SILVESTER:
-			RaidbossSilvester_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
 		case XENO_RAIDBOSS_BLUE_GOGGLES:
 			RaidbossBlueGoggles_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case XENO_RAIDBOSS_SUPERSILVESTER:
-			RaidbossSilvester_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case XENO_RAIDBOSS_NEMESIS:
 			RaidbossNemesis_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -5039,14 +5027,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case BOB_THE_FIRST, BOB_THE_FIRST_S:
 			RaidbossBobTheFirst_OnTakeDamage(victim, attacker, damage);
 
-		case EXPIDONSA_BENERA:
-			Benera_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
 		case EXPIDONSA_PENTAL:
 			Pental_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-		case EXPIDONSA_DEFANDA:
-			Defanda_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 		case EXPIDONSA_SELFAM_IRE:
 			Selfamire_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -5095,9 +5077,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 		case EXPIDONSA_CAPTINOAGENTUS:
 			CaptinoAgentus_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-		case RAIDMODE_EXPIDONSA_SENSAL:
-			Sensal_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 		case EXPIDONSA_DUALREA:
 			DualRea_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
