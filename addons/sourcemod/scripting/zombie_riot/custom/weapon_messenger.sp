@@ -110,7 +110,7 @@ void CreateMessengerEffect(int client)
 		DestroyMessengerEffect(client);
 		float flPos[3];
 		float flAng[3];
-		GetEntPropVector(client, Prop_Data, "effect_hand_l", flPos, flAng;
+		GetEntPropVector(client, Prop_Data, "effect_hand_l", flPos, flAng);
 		int particle = ParticleEffectAt(flPos, "critical_rocket_red", 0.0);
 		AddEntityToThirdPersonTransitMode(client, particle);
 	}
