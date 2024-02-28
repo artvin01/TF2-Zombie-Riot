@@ -1743,13 +1743,13 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	if(EntRefToEntIndex(RaidBossActive) != victim)
 #endif	// ZR
 	{
-		float HudOffset = 0.05;
+		float HudOffset = 0.0535;
 
 #if defined ZR
 		if(raidboss_active)
 		{
 			//there is a raid, then this displays a hud below the raid hud.
-			HudOffset = 0.205;
+			HudOffset = (HudOffset - 0.25);
 
 			int raidboss = EntRefToEntIndex(RaidBossActive);
 			//We have to check if the raidboss has any debuffs.
@@ -1821,7 +1821,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		if(Timer_Show > 800.0)
 			RaidModeTime = 99999999.9;
 
-		float HudOffset = 0.05;
+		float HudOffset = 0.0535;
 		float HudY = -1.0;
 
 		HudY += f_HurtHudOffsetY[attacker];
@@ -1885,7 +1885,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
 	}
 	float HudY = -1.0;
-	float HudOffset = 0.05;
+	float HudOffset = 0.0535;
 
 	HudY += f_HurtHudOffsetY[attacker];
 	HudOffset += f_HurtHudOffsetX[attacker];

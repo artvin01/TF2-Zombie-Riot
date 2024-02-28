@@ -16,7 +16,7 @@ void Events_PluginStart()
 //	HookEvent("nav_blocked", NavBlocked, EventHookMode_Pre);
 #if defined ZR
 	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_Post);
-	HookEvent("teamplay_setup_finished", OnSetupFinished, EventHookMode_PostNoCopy);
+	HookEvent("mvm_begin_wave", OnSetupFinished, EventHookMode_PostNoCopy);
 #endif
 	
 	HookUserMessage(GetUserMessageId("SayText2"), Hook_BlockUserMessageEx, true);
@@ -65,17 +65,17 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Waves_RoundStart();
 #endif
 
-#if defined RPG
-	Zones_ResetAll();
-#endif
-	
+#if defined RTS
 	ServerCommand("mp_waitingforplayers_cancel 1");
+#endif
 }
 
 #if defined ZR
 public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 {
-	Escape_SetupEnd();
+	PrintToChatAll("mvm_begin_wave");
+	Waves_SetReadyStatus(0);
+	Waves_Progress();
 }
 #endif
 

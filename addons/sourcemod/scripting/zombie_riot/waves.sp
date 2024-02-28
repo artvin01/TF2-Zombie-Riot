@@ -91,11 +91,13 @@ enum struct Vote
 	char Append[16];
 }
 
+static ArrayStack Enemies;
+static float CreditsLeft;
+
 static ArrayList Rounds;
 static ArrayList Voting;
 static bool CanReVote;
 static ArrayList MiniBosses;
-static ArrayStack Enemies;
 static float Cooldown;
 static bool InSetup;
 //static bool InFreeplay;
@@ -173,8 +175,7 @@ public Action Waves_ForcePanzer(int client, int args)
 
 public Action Waves_SetWaveCmd(int client, int args)
 {
-	delete Enemies;
-	Enemies = new ArrayStack(sizeof(Enemy));
+	Waves_ClearWaves();
 	
 	char buffer[12];
 	GetCmdArgString(buffer, sizeof(buffer));
@@ -541,10 +542,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	
 	Rounds = new ArrayList(sizeof(Round));
 	
-	if(Enemies)
-		delete Enemies;
-	
-	Enemies = new ArrayStack(sizeof(Enemy));
+	Waves_ClearWaves();
 	
 	char buffer[64], plugin[64];
 
@@ -709,6 +707,14 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		
 		Rounds.PushArray(round);
 	} while(kv.GotoNextKey());
+
+	int objective = GetObjectiveResource();
+	if(objective != -1)
+	{
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", Rounds.Length - 1);
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", 1);
+		//SetEntPropString(objective, Prop_Send, "m_iszMvMPopfileName", WhatDifficultySetting);
+	}
 	
 	if(start)
 	{
@@ -740,8 +746,7 @@ void Waves_RoundStart()
 		FogEntity = INVALID_ENT_REFERENCE;
 	}
 	
-	delete Enemies;
-	Enemies = new ArrayStack(sizeof(Enemy));
+	Waves_ClearWaves();
 	
 	Waves_RoundEnd();
 	Freeplay_ResetAll();
@@ -768,13 +773,15 @@ void Waves_RoundStart()
 
 		SpawnTimer(wait);
 		CreateTimer(wait, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+		
+		Waves_SetReadyStatus(2);
 	}
 	else
 	{
-		SpawnTimer(90.0);
-		CreateTimer(90.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+		Waves_SetReadyStatus(1);
 	}
 
+	//music\mvm_class_menu_bg.wav
 	if(CurrentCash != StartCash)
 	{
 		Store_Reset();
@@ -793,6 +800,8 @@ void Waves_RoundStart()
 	{
 		Rogue_StartSetup();
 	}
+
+	Waves_UpdateMvMStats();
 }
 
 void Waves_RoundEnd()
@@ -930,6 +939,8 @@ public Action Waves_EndVote(Handle timer, float time)
 				kv.ImportFromFile(buffer);
 				Waves_SetupWaves(kv, false);
 				delete kv;
+
+				Waves_SetReadyStatus(1);
 			}
 		}
 		else
@@ -940,18 +951,20 @@ public Action Waves_EndVote(Handle timer, float time)
 	return Plugin_Continue;
 }
 
-/*void Waves_ClearWaves()
+void Waves_ClearWaves()
 {
 	delete Enemies;
 	Enemies = new ArrayStack(sizeof(Enemy));
-}*/
+	CreditsLeft = 0.0;
+}
 
 void Waves_Progress(bool donotAdvanceRound = false)
 {
-	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue || Cooldown > GetGameTime())
+	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime())
 		return;
 
 	Cooldown = GetGameTime();
+	int objective = GetObjectiveResource();
 		
 	delete WaveTimer;
 	
@@ -1077,7 +1090,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		
 			for(int i; i<count; i++)
 			{
-				Enemies.PushArray(wave.EnemyData);
+				Waves_AddNextEnemy(wave.EnemyData);
 			}
 			
 			if(wave.Delay > 0.0)
@@ -1109,8 +1122,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				ExcuteRelay(ExecuteRelayThings);
 			}
 			
-			delete Enemies;
-			Enemies = new ArrayStack(sizeof(Enemy));
+			Waves_ClearWaves();
 			/*
 			for(int client_Penalise=1; client_Penalise<=MaxClients; client_Penalise++)
 			{
@@ -1524,14 +1536,21 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			else if(round.Setup > 0.0)
 			{
-				Cooldown = GetGameTime() + round.Setup;
-				
 				refreshNPCStore = true;
 				InSetup = true;
 				ExcuteRelay("zr_setuptime");
-				
-				SpawnTimer(round.Setup);
-				CreateTimer(round.Setup, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+
+				if(round.Setup > 59.0)
+				{
+					Waves_SetReadyStatus(1);
+				}
+				else
+				{
+					Cooldown = GetGameTime() + round.Setup;
+
+					SpawnTimer(round.Setup);
+					CreateTimer(round.Setup, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+				}
 
 				Citizen_SetupStart();
 			}
@@ -1591,7 +1610,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					{
 						for(int a; a < wave.Count; a++)
 						{
-							Enemies.PushArray(wave.EnemyData);
+							Waves_AddNextEnemy(wave.EnemyData);
 						}
 						
 						Zombies_Currently_Still_Ongoing += wave.Count;
@@ -1799,13 +1818,19 @@ bool Waves_GetNextEnemy(Enemy enemy)
 		return false;
 	
 	Enemies.PopArray(enemy);
+
+	CreditsLeft -= enemy.Credits;
+
 	return true;
 }
 
 void Waves_AddNextEnemy(const Enemy enemy)
 {
 	if(Enemies)
+	{
 		Enemies.PushArray(enemy);
+		CreditsLeft += enemy.Credits;
+	}
 }
 
 void Waves_ClearWave()
@@ -1942,7 +1967,7 @@ void Zombie_Delay_Warning()
 			if(f_ZombieAntiDelaySpeedUp < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 1;
-				CPrintToChatAll("{crimson}[Zombie-Riot] Enemies grow restless...");
+				CPrintToChatAll("{crimson}Enemies grow restless...");
 			}
 		}
 		case 1:
@@ -1950,7 +1975,7 @@ void Zombie_Delay_Warning()
 			if(f_ZombieAntiDelaySpeedUp + 15.0 < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 2;
-				CPrintToChatAll("{crimson}[Zombie-Riot] Enemies grow annoyed and go faster...");
+				CPrintToChatAll("{crimson}Enemies grow annoyed and go faster...");
 			}
 		}
 		case 2:
@@ -1958,7 +1983,7 @@ void Zombie_Delay_Warning()
 			if(f_ZombieAntiDelaySpeedUp + 35.0 < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 3;
-				CPrintToChatAll("{crimson}[Zombie-Riot] Enemies grow furious and become even faster...");
+				CPrintToChatAll("{crimson}Enemies grow furious and become even faster...");
 			}
 		}
 		case 3:
@@ -1966,7 +1991,7 @@ void Zombie_Delay_Warning()
 			if(f_ZombieAntiDelaySpeedUp + 55.0 < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 4;
-				CPrintToChatAll("{crimson}[Zombie-Riot] Enemies become pissed off and gain super speed...");
+				CPrintToChatAll("{crimson}Enemies become pissed off and gain super speed...");
 			}
 		}
 		case 4:
@@ -1974,7 +1999,7 @@ void Zombie_Delay_Warning()
 			if(f_ZombieAntiDelaySpeedUp + 75.0 < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 5;
-				CPrintToChatAll("{crimson}[Zombie-Riot] Enemies become infuriated and will reach you...");
+				CPrintToChatAll("{crimson}Enemies become infuriated and will reach you...");
 			}
 		}
 	}
@@ -2053,4 +2078,121 @@ void Waves_ForceSetup(float cooldown)
 	InSetup = true;
 	
 	CreateTimer(cooldown, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+}
+
+static int GetObjectiveResource()
+{
+	return FindEntityByClassname(-1, "tf_objective_resource");
+}
+
+static int GetMvMStats()
+{
+	return FindEntityByClassname(-1, "tf_mann_vs_machine_stats");
+}
+
+void Waves_UpdateMvMStats()
+{
+	int mvm = GetMvMStats();
+	if(mvm != -1)
+	{
+		static int m_currentWaveStats, m_runningTotalWaveStats;
+
+		if(!m_currentWaveStats)
+		{
+			m_currentWaveStats = FindSendPropInfo("CMannVsMachineStats", "m_currentWaveStats");
+			if(m_currentWaveStats < 1)
+				ThrowError("Invalid offset");
+		}
+
+		if(!m_runningTotalWaveStats)
+		{
+			m_runningTotalWaveStats = FindSendPropInfo("CMannVsMachineStats", "m_runningTotalWaveStats");
+			if(m_runningTotalWaveStats < 1)
+				ThrowError("Invalid offset");
+		}
+
+		float cash = CreditsLeft;
+		
+		if(Rounds && !InSetup && CurrentRound >= 0 && CurrentRound < (Rounds.Length - 1))
+		{
+			Round round;
+			Rounds.GetArray(CurrentRound, round);
+			cash += float(round.Cash);
+		}
+
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(entity != -1 && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
+			{
+				cash += f_CreditsOnKill[entity];
+			}
+		}
+
+		SetEntData(mvm, m_currentWaveStats + 4, 0);	// nCreditsDropped
+		SetEntData(mvm, m_currentWaveStats + 8, RoundToCeil(cash));	// nCreditsAcquired
+		SetEntData(mvm, m_currentWaveStats + 12, 0);	// nCreditsBonus
+
+		SetEntData(mvm, m_runningTotalWaveStats + 4, 0);	// nCreditsDropped
+		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash);	// nCreditsAcquired
+		SetEntData(mvm, m_runningTotalWaveStats + 12, 0);	// nCreditsBonus
+	}
+}
+
+void Waves_SetReadyStatus(int status)
+{
+	switch(status)
+	{
+		case 0:	// Normal
+		{
+			GameRules_SetProp("m_bInWaitingForPlayers", false);
+			GameRules_SetProp("m_iRoundState", 11);
+		}
+		case 1:	// Ready Up
+		{
+			GameRules_SetProp("m_bInWaitingForPlayers", true);
+			GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);
+			FindConVar("tf_mvm_min_players_to_start").IntValue = 1;
+
+			int objective = GetObjectiveResource();
+			if(objective != -1)
+				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
+			
+			KillFeed_ForceClear();
+
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					GameRules_SetProp("m_bPlayerReady", false, 1, client);
+
+					if(IsFakeClient(client))
+						KillFeed_SetBotTeam(client, TFTeam_Blue);
+				}
+			}
+		}
+		case 2:	// Waiting
+		{
+			GameRules_SetProp("m_bInWaitingForPlayers", true);
+			GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);
+			FindConVar("tf_mvm_min_players_to_start").IntValue = 199;
+
+			int objective = GetObjectiveResource();
+			if(objective != -1)
+				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
+			
+			KillFeed_ForceClear();
+			
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					GameRules_SetProp("m_bPlayerReady", false, 1, client);
+
+					if(IsFakeClient(client))
+						KillFeed_SetBotTeam(client, TFTeam_Blue);
+				}
+			}
+		}
+	}
 }

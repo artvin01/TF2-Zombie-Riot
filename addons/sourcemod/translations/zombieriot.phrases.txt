@@ -1982,11 +1982,7 @@
 	}
 	"Press Button To Switch"
 	{
-		"en"		"Multiple Weapons: Press Inspect"
-		"ru"		"Много оружия: Нажмите клавишу осмотра оружия"
-		"pt"		"Multiplas Armas: Pressione o Botão de inspecionar"
-		"nl"		"Verschillende wapens: Druk op Inspectie"
-		"chi"       "该类型有多个武器:请按F切换"
+		"en"		"Multiple Weapons: Press Action Slot Key!"
 	}
 	"Cannot Build Here"
 	{
@@ -2892,7 +2888,7 @@
 	}
 	"Pre Setup Cash Gain Hint"
 	{
-		"en"		"During setup, you gain half the cash from buildings, you will get this money back once the waves start!"
+		"en"		"During ready setup phases, all the money you gain from buidlings is given after the round has started."
 	}
 	"Extra Description"
 	{

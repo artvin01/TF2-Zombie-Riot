@@ -206,6 +206,7 @@ int CurrentCash;
 bool LastMann;
 bool LastMannScreenEffect;
 int LimitNpcs;
+int i_MVMPopulator;
 
 //bool RaidMode; 							//Is this raidmode?
 float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
@@ -394,6 +395,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
 #include "zombie_riot/rogue.sp"
+#include "zombie_riot/mvm_hud.sp"
 #include "zombie_riot/sm_skyboxprops.sp"
 #include "zombie_riot/custom/homing_projectile_logic.sp"
 #include "zombie_riot/custom/building.sp"
@@ -760,8 +762,9 @@ void ZR_MapStart()
 	b_RaidMusicCustom1 = false;
 	ResetMapStartSensalWeapon();
 	//This enables the MVM money hud, looks way better.
-	SetVariantString("ForceEnableUpgrades(2)");
-	AcceptEntityInput(0, "RunScriptCode");
+	//SetVariantString("ForceEnableUpgrades(2)");
+	//AcceptEntityInput(0, "RunScriptCode");
+	CreateMVMPopulator();
 	
 	//Store_RandomizeNPCStore(1);
 }

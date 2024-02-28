@@ -172,6 +172,12 @@ int KillFeed_GetBotTeam(int client)
 	return ForceTeam[client];
 }
 
+void KillFeed_ForceClear()
+{
+	LowList.Clear();
+	HighList.Clear();
+}
+
 void KillFeed_SetBotTeam(int client, int team)
 {
 	int teamSet = team;

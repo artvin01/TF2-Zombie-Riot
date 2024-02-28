@@ -25,6 +25,7 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_bot_reevaluate_class_in_spawnroom", "1.0");
 	ConVar_Add("tf_bot_keep_class_after_death", "1.0");
 	ConVar_Add("mp_humans_must_join_team", "red");
+	ConVar_Add("mp_tournament", "1");
 	ConVar_Add("mp_teams_unbalance_limit", "0.0");
 	ConVar_Add("mp_scrambleteams_auto", "0.0");
 	ConVar_Add("tf_dropped_weapon_lifetime", "0.0");

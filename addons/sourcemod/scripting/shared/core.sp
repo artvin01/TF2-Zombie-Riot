@@ -1144,7 +1144,6 @@ float b_isGiantWalkCycle[MAXENTITIES];
 
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
-int i_CreditsOnKill[MAXENTITIES];
 float f_CreditsOnKill[MAXENTITIES];
 
 int i_InSafeZone[MAXENTITIES];
@@ -2761,6 +2760,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 #if defined ZR
 		else if(!StrContains(classname, "tf_ammo_pack"))
+		{
+			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
+		}
+		else if(!StrContains(classname, "entity_revive_marker"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
