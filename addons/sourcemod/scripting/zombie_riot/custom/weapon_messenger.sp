@@ -2,7 +2,6 @@
 #pragma newdecls required
 
 static bool Change[MAXPLAYERS];
-static int i_MessengerParticle[MAXTF2PLAYERS];
 static Handle h_TimerMessengerWeaponManagement[MAXPLAYERS+1] = {null, ...};
 static float f_Messengerhuddelay[MAXPLAYERS+1]={0.0, ...};
 
@@ -61,12 +60,7 @@ public Action Timer_Management_Messenger(Handle timer, DataPack pack)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		CreateMessengerEffect(client);
 		MessengerHudShow(client);
-	}
-	else
-	{
-		DestroyMessengerEffect(client);
 	}
 	return Plugin_Continue;
 }
@@ -92,40 +86,6 @@ void CheckMessengerMode(int client)
 		PrintHintText(client,"Fire Blaster");
 		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	}
-}
-
-void CreateMessengerEffect(int client, int entity)
-{
-	int owner = EntRefToEntIndex(i_WandOwner[entity]);
-
-	if(Change[client] == true)
-	{
-		DestroyMessengerEffect(client);
-		float flPos[3]; // original
-		float flAng[3]; // original
-		GetAttachment(owner, "effect_hand_l", flPos, flAng);				
-		int particle_Hand = ParticleEffectAt(flPos, "critical_rocket_blue", 0.0);
-		SetParent(owner, particle_Hand, "effect_hand_l");
-	}
-	else if(Change[client] == false)
-	{
-		DestroyMessengerEffect(client);
-		float flPos[3]; // original
-		float flAng[3]; // original
-		GetAttachment(owner, "effect_hand_l", flPos, flAng);				
-		int particle_Hand = ParticleEffectAt(flPos, "critical_rocket_red", 0.0);
-		SetParent(owner, particle_Hand, "effect_hand_l");
-	}
-			
-}
-void DestroyMessengerEffect(int client)
-{
-	int entity = EntRefToEntIndex(i_MessengerParticle[client]);
-	if(IsValidEntity(entity))
-	{
-		RemoveEntity(entity);
-	}
-	i_MessengerParticle[client] = INVALID_ENT_REFERENCE;
 }
 
 public void Weapon_Messenger(int client, int weapon, bool crit)
@@ -164,10 +124,22 @@ public void Messenger_Modechange(int client, int weapon, int slot)
 		{
 			Change[client] = false;
 		}
-		if(Change[client] == false)
+		else if(Change[client] == false)
 		{
 			Change[client] = true;
 		}
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 	}
 }
 
