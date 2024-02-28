@@ -167,7 +167,6 @@ stock void PrecacheMvMIconCustom(const char[] icon)
 {
 	char buffer[PLATFORM_MAX_PATH];
 	FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vmt", icon);
-	PrecacheModel(buffer);
 
 #if defined UseDownloadTable
 	AddFileToDownloadsTable(buffer);

@@ -2107,6 +2107,7 @@ static int GetMvMStats()
 
 void Waves_UpdateMvMStats()
 {
+/*
 	if(!UpdateFramed)
 	{
 		UpdateFramed = true;
@@ -2117,7 +2118,7 @@ void Waves_UpdateMvMStats()
 static void UpdateMvMStatsFrame()
 {
 	UpdateFramed = false;
-
+*/
 	int mvm = GetMvMStats();
 	if(mvm != -1)
 	{
@@ -2289,10 +2290,19 @@ static void UpdateMvMStatsFrame()
 		int objective = GetObjectiveResource();
 		if(objective != -1)
 		{
-			//SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", cashLeft);
-			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
-			SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves - 1 : 0);
+			SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", cashLeft);
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", totalcount);
+
+			if(Rogue_Mode())
+			{
+				SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", Rogue_GetWave());
+				SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", 0);
+			}
+			else
+			{
+				SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
+				SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves - 1 : 0);
+			}
 
 			NPCData data;
 			for(int i; i < sizeof(id); i++)
@@ -2301,7 +2311,7 @@ static void UpdateMvMStatsFrame()
 				{
 					NPC_GetById(id[i], data);
 					if(!data.Icon[0])
-					{/*
+					{
 						if(StrContains(data.Name, "sword", false) != -1 || StrContains(data.Plugin, "sword", false) != -1)
 						{
 							strcopy(data.Icon, sizeof(data.Icon), "demoknight");
@@ -2342,7 +2352,7 @@ static void UpdateMvMStatsFrame()
 						{
 							strcopy(data.Icon, sizeof(data.Icon), "spy");
 						}
-						else*/
+						else
 						{
 							strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
 						}
@@ -2356,11 +2366,11 @@ static void UpdateMvMStatsFrame()
 				}
 				else
 				{
-					SetWaveClass(objective, i);
+					//SetWaveClass(objective, i);
 				}
 			}
 		}
-/*
+
 		int acquired = RoundFloat(totalCash - cashLeft);
 		SetEntData(mvm, m_currentWaveStats + 4, acquired);	// nCreditsDropped
 		SetEntData(mvm, m_currentWaveStats + 8, acquired);	// nCreditsAcquired
@@ -2369,7 +2379,6 @@ static void UpdateMvMStatsFrame()
 		SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash);	// nCreditsDropped
 		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash);	// nCreditsAcquired
 		SetEntData(mvm, m_runningTotalWaveStats + 12, 0);	// nCreditsBonus
-	*/
 	}
 }
 
@@ -2412,13 +2421,13 @@ void Waves_SetReadyStatus(int status)
 		case 0:	// Normal
 		{
 			GameRules_SetProp("m_bInWaitingForPlayers", false);
-			GameRules_SetProp("m_bInSetup", false);
+			//GameRules_SetProp("m_bInSetup", false);
 			GameRules_SetProp("m_iRoundState", 11);
 		}
 		case 1:	// Ready Up
 		{
 			GameRules_SetProp("m_bInWaitingForPlayers", true);
-			GameRules_SetProp("m_bInSetup", true);
+			//GameRules_SetProp("m_bInSetup", true);
 			GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);
 			FindConVar("tf_mvm_min_players_to_start").IntValue = 1;
 
@@ -2442,7 +2451,7 @@ void Waves_SetReadyStatus(int status)
 		case 2:	// Waiting
 		{
 			GameRules_SetProp("m_bInWaitingForPlayers", true);
-			GameRules_SetProp("m_bInSetup", true);
+			//GameRules_SetProp("m_bInSetup", true);
 			GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);
 			FindConVar("tf_mvm_min_players_to_start").IntValue = 199;
 
@@ -2476,6 +2485,9 @@ static void SetWaveClass(int objective, int index, int count = 0, const char[] i
 	if(!size2)
 		size2 = GetEntPropArraySize(objective, Prop_Send, "m_nMannVsMachineWaveClassCounts2");
 	
+	PrintToServer("Icon: %s", icon);
+	PrintToChatAll("Icon: %s", icon);
+
 	if(index < size1)
 	{
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassCounts", count, _, index);
