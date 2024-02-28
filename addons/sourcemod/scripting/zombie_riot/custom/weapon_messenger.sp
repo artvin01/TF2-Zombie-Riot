@@ -77,7 +77,7 @@ void MessengerHudShow(int client, int weapon)
 	if(f_Messengerhuddelay[client] < GetGameTime())
 	{
 		f_Messengerhuddelay[client] = GetGameTime() + 0.5;
-		CheckMessengerMode(client, weapon);
+		CheckMessengerMode(client);
 	}
 }
 
