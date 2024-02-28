@@ -139,10 +139,6 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 	float damage = 250;
 
 	damage *= Attributes_GetOnPlayer(client, 2, true);
-		
-	float attack_speed;
-		
-	attack_speed = Attributes_GetOnPlayer(client, 6, true); //Sentry attack speed bonus
 			
 	float speed = 1100.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
@@ -155,11 +151,11 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 	
 	if(Change == 1)
 	{
-		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_red",_,false);
+		Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_red",_,false);
 	}
 	else if(Change == 0)
 	{
-		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_blue",_,false);
+		Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_blue",_,false);
 	}
 
 }
@@ -170,13 +166,13 @@ public void Messenger_Modechange(int client, int weapon, int slot)
 	{
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 5.0);
-		if(Change == 0)
+		if(Change == true)
 		{
-			Change = 1;
+			Change = false;
 		}
-		if(Change == 1)
+		if(Change == false)
 		{
-			Change = 0;
+			Change = true;
 		}
 	}
 }
