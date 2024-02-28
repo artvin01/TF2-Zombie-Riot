@@ -135,7 +135,7 @@ void DestroyMessengerEffect(int client)
 
 public void Weapon_Messenger(int client, int weapon, bool crit)
 {
-	float damage = 250.0;
+	float damage = 300.0;
 
 	damage *= Attributes_GetOnPlayer(client, 2, true);
 			
