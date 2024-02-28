@@ -165,6 +165,7 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 
 stock void PrecacheMvMIconCustom(const char[] icon)
 {
+
 	char buffer[PLATFORM_MAX_PATH];
 	FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vmt", icon);
 
@@ -183,6 +184,7 @@ stock void PrecacheMvMIconCustom(const char[] icon)
 	if(ExtraList.FindString(buffer) == -1)
 		ExtraList.PushString(buffer);
 #endif
+
 }
 
 public void FileNetwork_AddSoundFrame(DataPack pack)
