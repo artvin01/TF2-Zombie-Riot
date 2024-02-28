@@ -72,7 +72,7 @@ public Action Timer_Management_Messenger(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-void MessengerHudShow(int client, int weapon)
+void MessengerHudShow(int client)
 {
 	if(f_Messengerhuddelay[client] < GetGameTime())
 	{
