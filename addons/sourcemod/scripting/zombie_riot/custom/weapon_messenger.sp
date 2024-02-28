@@ -5,11 +5,13 @@ static bool Change[MAXPLAYERS];
 static int i_MessengerParticle[MAXTF2PLAYERS];
 static char MessengerParticle[MAXTF2PLAYERS][48];
 static Handle h_TimerMessengerWeaponManagement[MAXPLAYERS+1] = {null, ...};
+static float f_Messengerhuddelay[MAXPLAYERS+1]={0.0, ...};
 
 #define SOUND_MES_IMPACT "weapons/cow_mangler_explosion_normal_01.wav"
 
 void ResetMapStartMessengerWeapon()
 {
+	Zero(f_Messengerhuddelay);
 	Messenger_Map_Precache();
 }
 void Messenger_Map_Precache()
@@ -61,13 +63,36 @@ public Action Timer_Management_Messenger(Handle timer, DataPack pack)
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
 		CreateMessengerEffect(client);
-		CheckMessengerMode(client);
+		MessengerHudShow(client,weapon);
 	}
 	else
 	{
 		DestroyMessengerEffect(client);
 	}
 	return Plugin_Continue;
+}
+
+void MessengerHudShow(int client, int weapon)
+{
+	if(f_Messengerhuddelay[client] < GetGameTime())
+	{
+		f_Messengerhuddelay[client] = GetGameTime() + 0.5;
+		CheckMessengerMode(client, weapon);
+	}
+}
+
+void CheckMessengerMode(int client, int weapon)
+{
+	if (Change[client] == true )
+	{
+		PrintHintText(client,"Chaos Blaster");
+		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	}
+	else if (Change[client] == false)
+	{
+		PrintHintText(client,"Fire Blaster");
+		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	}
 }
 
 void CreateMessengerEffect(int client)
