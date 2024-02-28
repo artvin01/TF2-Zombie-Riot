@@ -84,11 +84,11 @@ void CreateMessengerEffect(int client)
 		SetParent(viewmodelModel, particle, "effect_hand_l");
 		i_MessengerParticle[client][0] = EntIndexToEntRef(particle);
 	}
-	if(Change == true)
+	if(Change[client] == true)
 	{
 		FireIce = 1;
 	}
-	else if(Change == false)
+	else if(Change[client] == false)
 	{
 		FireIce = 0;
 	}
@@ -121,12 +121,12 @@ void DestroyMessengerEffect(int client)
 
 void CheckMessengerMode(int client, int weapon)
 {
-	if (Change == true )
+	if (Change[client] == true )
 	{
 		PrintHintText(client,"Chaos Blaster");
 		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	}
-	else if (Change == false)
+	else if (Change[client] == false)
 	{
 		PrintHintText(client,"Fire Blaster");
 		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
@@ -149,11 +149,11 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 		
 	float time = 25.0; //Pretty much inf.
 	
-	if(Change == 1)
+	if(Change[client] == 1)
 	{
 		Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_red",_,false);
 	}
-	else if(Change == 0)
+	else if(Change[client] == 0)
 	{
 		Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_blue",_,false);
 	}
@@ -166,13 +166,13 @@ public void Messenger_Modechange(int client, int weapon, int slot)
 	{
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 5.0);
-		if(Change == true)
+		if(Change[client] == true)
 		{
-			Change = false;
+			Change[client] = false;
 		}
-		if(Change == false)
+		if(Change[client] == false)
 		{
-			Change = true;
+			Change[client] = true;
 		}
 	}
 }
@@ -195,11 +195,11 @@ public void Gun_MessengerTouch(int entity, int target, int victim, int attacker)
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		if(Change == true)
+		if(Change[client] == true)
 		{
 			NPC_Ignite(victim, attacker, 3.0, weapon);
 		}
-		else if(Change == false)
+		else if(Change[client] == false)
 		{
 			if((f_LowIceDebuff[target] - 0.5) < GetGameTime())
 			{
