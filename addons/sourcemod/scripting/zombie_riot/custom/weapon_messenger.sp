@@ -63,7 +63,7 @@ public Action Timer_Management_Messenger(Handle timer, DataPack pack)
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
 		CreateMessengerEffect(client);
-		MessengerHudShow(client,weapon);
+		MessengerHudShow(client);
 	}
 	else
 	{
