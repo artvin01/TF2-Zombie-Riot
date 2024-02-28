@@ -16,7 +16,7 @@ void CreateMVMPopulator()
 		SetEntityFlags(i_MVMPopulator, GetEntityFlags(i_MVMPopulator)|4194304);
 	}
 
-	GameRules_SetProp("m_iRoundState", 10);
+	GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);
 	GameRules_SetProp("m_bPlayingMannVsMachine", true);
 	GameRules_SetProp("m_bPlayingSpecialDeliveryMode", true);
 }
