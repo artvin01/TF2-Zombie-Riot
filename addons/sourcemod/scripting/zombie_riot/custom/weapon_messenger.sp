@@ -86,11 +86,11 @@ void CreateMessengerEffect(int client)
 	}
 	if(Change[client] == true)
 	{
-		FireIce = 1;
+		int FireIce = 1;
 	}
 	else if(Change[client] == false)
 	{
-		FireIce = 0;
+		int FireIce = 0;
 	}
 	switch(FireIce[client])
 	{
