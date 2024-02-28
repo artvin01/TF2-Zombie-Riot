@@ -54,9 +54,9 @@ public Action Timer_Management_Messenger(Handle timer, DataPack pack)
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
+		DestroyMessengerEffect(client);
 		Change[client] = false;
 		return Plugin_Stop;
-		DestroyMessengerEffect(client);
 	}
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
