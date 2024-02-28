@@ -1,0 +1,192 @@
+#pragma semicolon 1
+#pragma newdecls required
+
+static bool Change[MAXPLAYERS];
+static int i_MessengerParticle[MAXTF2PLAYERS];
+static int FireIce[MAXTF2PLAYERS];
+static char MessengerParticle[MAXTF2PLAYERS][48];
+
+#define SOUND_MES_IMPACT "weapons/cow_mangler_explosion_normal_01.wav"
+
+void Nailgun_Map_Precache()
+{
+	PrecacheSound(SOUND_MES_IMPACT);
+}
+
+public Action Timer_Management_Messenger(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	{
+		Change[client] = false;
+		return Plugin_Stop;
+        DestroyMessengerEffect(client);
+	}
+    int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+	{
+        CreateMessengerEffect(client);
+	}
+	else
+    {
+		DestroyMessengerEffect(client);
+	}
+	return Plugin_Continue;
+}
+
+void CreateMessengerEffect(int client)
+{
+	DestroyMessengerEffect(client);
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(IsValidEntity(viewmodelModel))
+	{
+		float flPos[3]; 
+		float flAng[3];
+		int particle = ParticleEffectAt(flPos, MessengerParticle[client], 0.0);
+		GetAttachment(viewmodelModel, "effect_hand_l", flPos, flAng);
+		SetParent(viewmodelModel, particle, "effect_hand_l");
+		i_MessengerParticle[client][0] = EntIndexToEntRef(particle);
+	}
+    if(change == true)
+    {
+        FireIce = 1;
+    }
+    else if(change == false)
+    {
+        FireIce = 0;
+    }
+    switch(FireIce[client])
+    {
+        case 1:
+        {
+            DestroyMessengerEffect(client);
+            Format(MessengerParticle[client], sizeof(MessengerParticle[]), "%s","critical_rocket_blue"); //white
+            CreateMessengerEffect(client);
+        }
+        case 2:
+        {
+            DestroyMessengerEffect(client);
+            Format(MessengerParticle[client], sizeof(MessengerParticle[]), "%s","critical_rocket_red"); // green
+            CreateMessengerEffect(client);
+        }
+    }
+			
+}
+void DestroyMessengerEffect(int client)
+{
+	int entity = EntRefToEntIndex(i_MessengerParticle[client]);
+	if(IsValidEntity(entity))
+	{
+		RemoveEntity(entity);
+	}
+	i_MessengerParticle[client] = INVALID_ENT_REFERENCE;
+}
+
+void CheckMessengerMode(int client, int weapon)
+{
+	if (Change == true )
+	{
+		PrintHintText(client,"Chaos Blaster");
+		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	}
+	else if (Change == false)
+	{
+		PrintHintText(client,"Fire Blaster");
+		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	}
+
+}
+
+public void Weapon_Messenger(int client, int weapon, bool crit)
+{
+	float damage = 250;
+
+    damage *= Attributes_GetOnPlayer(client, 2, true);
+		
+	float attack_speed;
+		
+	attack_speed = Attributes_GetOnPlayer(client, 6, true); //Sentry attack speed bonus
+			
+	float speed = 1100.0;
+	speed *= Attributes_Get(weapon, 103, 1.0);
+	
+	speed *= Attributes_Get(weapon, 104, 1.0);
+	
+	speed *= Attributes_Get(weapon, 475, 1.0);
+		
+	float time = 25.0; //Pretty much inf.
+	
+    if(Change == 1)
+    {
+        int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_red",_,false);
+    }
+    else if(Change == 0)
+    {
+        int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_blue",_,false);
+    }
+
+}
+
+public void Messenger_Modechange(int client)
+{
+    Rogue_OnAbilityUse(weapon);
+    if(Change == 0)
+    {
+        Change = 1;
+    }
+    if(Change == 1)
+    {
+        Change = 0;
+    }
+}
+
+
+public void Gun_MessengerTouch(int entity, int target)
+{
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
+	if (target > 0)	
+	{
+		//Code to do damage position and ragdolls
+		static float angles[3];
+		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
+		float vecForward[3];
+		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+		static float Entity_Position[3];
+		WorldSpaceCenter(target, Entity_Position);
+
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+        if(Change == true)
+        {
+            NPC_Ignite(victim, attacker, 3.0, weapon);
+        }
+        else if(Change == false)
+        {
+            if((f_LowIceDebuff[target] - 0.5) < GetGameTime())
+            {
+                f_LowIceDebuff[target] = GetGameTime() + 0.6;
+            }
+        }
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
+		EmitSoundToAll(SOUND_MES_IMPACT, entity, SNDCHAN_STATIC, 80, _, 1.0);
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		RemoveEntity(entity);
+	}
+	else if(target == 0)
+	{
+		EmitSoundToAll(SOUND_MES_IMPACT, entity, SNDCHAN_STATIC, 80, _, 1.0);
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		RemoveEntity(entity);
+	}
+}

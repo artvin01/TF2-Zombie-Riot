@@ -6261,6 +6261,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Management_Hell_Hoe(client, entity);
 		Enable_Kahml_Fist_Ability(client, entity);
 		Enable_HHH_Axe_Ability(client, entity);
+		Enable_Messenger_Launcher_Ability(client, entity);
 #endif
 
 #if defined RPG
