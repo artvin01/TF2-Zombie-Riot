@@ -3,7 +3,6 @@
 
 static bool Change[MAXPLAYERS];
 static int i_MessengerParticle[MAXTF2PLAYERS];
-static char MessengerParticle[MAXTF2PLAYERS][48];
 static Handle h_TimerMessengerWeaponManagement[MAXPLAYERS+1] = {null, ...};
 static float f_Messengerhuddelay[MAXPLAYERS+1]={0.0, ...};
 
@@ -97,29 +96,21 @@ void CheckMessengerMode(int client)
 
 void CreateMessengerEffect(int client)
 {
-	DestroyMessengerEffect(client);
-	int viewmodelModel;
-	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
-	if(IsValidEntity(viewmodelModel))
-	{
-		float flPos[3]; 
-		float flAng[3];
-		int particle = ParticleEffectAt(flPos, MessengerParticle[client], 0.0);
-		GetAttachment(viewmodelModel, "effect_hand_l", flPos, flAng);
-		SetParent(viewmodelModel, particle, "effect_hand_l");
-		i_MessengerParticle[client][0] = EntIndexToEntRef(particle);
-	}
 	if(Change[client] == true)
 	{
 		DestroyMessengerEffect(client);
-		Format(MessengerParticle[client], sizeof(MessengerParticle[]), "%s","critical_rocket_blue"); //white
-		CreateMessengerEffect(client);
+		float flPos[3];
+		GetEntPropVector(client, Prop_Data, "effect_hand_l", flPos);
+		int particle = ParticleEffectAt(flPos, "critical_rocket_blue", 0.0);
+		AddEntityToThirdPersonTransitMode(client, particle);
 	}
 	else if(Change[client] == false)
 	{
 		DestroyMessengerEffect(client);
-		Format(MessengerParticle[client], sizeof(MessengerParticle[]), "%s","critical_rocket_red"); // green
-		CreateMessengerEffect(client);
+		float flPos[3];
+		GetEntPropVector(client, Prop_Data, "effect_hand_l", flPos);
+		int particle = ParticleEffectAt(flPos, "critical_rocket_red", 0.0);
+		AddEntityToThirdPersonTransitMode(client, particle);
 	}
 			
 }
