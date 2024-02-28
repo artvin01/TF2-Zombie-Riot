@@ -421,6 +421,7 @@ void UpdateBlockedNavmesh()
 
 stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 {
+	SpawningBot = true;
 	int bot = SDKCall(
 	gH_BotAddCommand,
 	Name, // name

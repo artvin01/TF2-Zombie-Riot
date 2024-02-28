@@ -50,6 +50,7 @@
 #define ZR_MAX_GIBCOUNT 12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 #define ZR_MAX_GIBCOUNT_ABSOLUTE 35 //Anymore then this, and the duration is halved for gibs staying.
 
+bool SpawningBot = false;
 //#pragma dynamic    131072
 //Allah This plugin has so much we need to do this.
 
@@ -1864,6 +1865,12 @@ public void OnClientPutInServer(int client)
 #if !defined NOG
 	if(IsFakeClient(client))
 	{
+		if(!SpawningBot)
+		{
+			KickClient(client);
+			return;
+		}
+		SpawningBot = false;
 		ChangeClientTeam(client, TFTeam_Blue);
 		DHook_HookClient(client);
 		b_IsPlayerABot[client] = true;

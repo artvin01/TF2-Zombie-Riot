@@ -146,6 +146,7 @@ public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast
 public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
 	MVMHud_Disable();
+	GameRules_SetProp("m_iRoundState", RoundState_TeamWin);
 	Store_RandomizeNPCStore(1);
 	f_FreeplayDamageExtra = 1.0;
 	b_GameOnGoing = false;
