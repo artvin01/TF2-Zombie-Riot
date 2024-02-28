@@ -1463,6 +1463,7 @@ public void OnPluginEnd()
 #endif
 
 #if defined ZR
+	Waves_MapEnd();
 	MVMHud_Disable();
 #endif
 
@@ -1610,7 +1611,7 @@ public void OnMapEnd()
 #if defined ZR
 	Store_RandomizeNPCStore(1);
 	OnRoundEnd(null, NULL_STRING, false);
-	OnMapEndWaves();
+	Waves_MapEnd();
 	Spawns_MapEnd();
 #endif
 
@@ -3005,7 +3006,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if (!StrContains(classname, "tf_weapon_medigun")) 
 		{
 			b_IsAMedigun[entity] = true;
-#if defined ZR//#if !defined RTS
+#if defined ZR
 			Medigun_OnEntityCreated(entity);
 #endif
 		}
