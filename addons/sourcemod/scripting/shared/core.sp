@@ -37,6 +37,8 @@
 #define TF2_GetClientTeam	PLZUSE_GetClientTeam
 #define TF2_ChangeClientTeam	PLZUSE_ChangeClientTeam
 
+#define RoundState_ZombieRiot view_as<RoundState>(11)
+
 #define NPC_HARD_LIMIT 40 
 #define ZR_MAX_NPCS (NPC_HARD_LIMIT*6)
 #define ZR_MAX_NPCS_ALLIED 40 //Never need more.
@@ -1457,6 +1459,10 @@ public void OnPluginEnd()
 	
 #if defined RTS
 	RTS_PluginEnd();
+#endif
+
+#if defined ZR
+	MVMHud_Disable();
 #endif
 
 	/*

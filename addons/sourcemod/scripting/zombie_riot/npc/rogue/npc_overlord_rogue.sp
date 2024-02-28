@@ -525,7 +525,7 @@ public void OverlordRogue_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_Think, OverlordRogue_ClotThink);
 
-	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_RoundRunning)
+	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
 		for (int client = 0; client < MaxClients; client++)
 		{

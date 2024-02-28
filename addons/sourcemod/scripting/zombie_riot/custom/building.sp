@@ -6383,7 +6383,7 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 }
 public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams) 
 {
-	RequestFrame(Dhook_FinishedBuilding_Post_Frame, EntIndexToEntRef(Building_Index));
+	RequestFrames(Dhook_FinishedBuilding_Post_Frame, 5, EntIndexToEntRef(Building_Index));
 	return MRES_Ignored;
 }
 

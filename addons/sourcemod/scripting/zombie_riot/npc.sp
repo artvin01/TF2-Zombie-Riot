@@ -770,9 +770,9 @@ enum
 	
 	//ruina
 	UNUSED_RUN10 = 284,
-	EXPIDONSA_BENERA = 285,
+	UNUSED_285 = 285,
 	EXPIDONSA_PENTAL = 286,
-	EXPIDONSA_DEFANDA = 287,
+	UNUSED_287 = 287,
 	EXPIDONSA_SELFAM_IRE = 288,
 	EXPIDONSA_VAUSMAGICA = 289,
 	EXPIDONSA_PISTOLEER = 290,
@@ -1197,9 +1197,9 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Ishar'mla, Heart of Corruption",
 	"Ishar'mla, Heart of Corruption",
 	"nothing",
-	"Benera",
+	"",
 	"Pental",
-	"Defanda",
+	"",
 	"Selfam Ire",
 	"Vaus Magica",
 	"Pistoleer",
@@ -1624,9 +1624,9 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	-1,	// ISHARMLA_TRANS		= 283,
 
 	-1,	//  = 284,
-	10,	// EXPIDONSA_BENERA = 285,
+	-1,	//  = 285,
 	10,	// EXPIDONSA_PENTAL = 286,
-	10,	// EXPIDONSA_DEFANDA = 287,
+	-1,	//  = 287,
 	10,	// EXPIDONSA_SELFAM_IRE = 288,
 	10,	// EXPIDONSA_VAUSMAGICA = 289,
 	10,	// EXPIDONSA_PISTOLEER = 290,
@@ -2048,9 +2048,9 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"npc_isharmla_trans",
 	
 	"",
-	"npc_benera",
+	"",
 	"npc_pental",
-	"npc_defanda",
+	"",	//unused
 	"npc_selfam_ire",
 	"npc_vaus_magica",
 	"npc_benera_pistoleer",
@@ -3017,15 +3017,9 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		
 		case BOB_THE_FIRST, BOB_THE_FIRST_S:
 			entity = RaidbossBobTheFirst(vecPos, vecAng, team, data);
-
-		case EXPIDONSA_BENERA:
-			entity = Benera(client, vecPos, vecAng, team);
 			
 		case EXPIDONSA_PENTAL:
 			entity = Pental(client, vecPos, vecAng, team);
-
-		case EXPIDONSA_DEFANDA:
-			entity = Defanda(client, vecPos, vecAng, team);
 
 		case EXPIDONSA_SELFAM_IRE:
 			entity = SelfamIre(client, vecPos, vecAng, team);
@@ -4223,14 +4217,10 @@ void NPCDeath(int entity)
 		case BOB_THE_FIRST, BOB_THE_FIRST_S:
 			RaidbossBobTheFirst_NPCDeath(entity);
 		
-		case EXPIDONSA_BENERA:
-			Benera_NPCDeath(entity); 
 
 		case EXPIDONSA_PENTAL:
 			Pental_NPCDeath(entity);
 
-		case EXPIDONSA_DEFANDA:
-			Defanda_NPCDeath(entity);
 
 		case EXPIDONSA_SELFAM_IRE:
 			SelfamIre_NPCDeath(entity);
@@ -5037,14 +5027,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case BOB_THE_FIRST, BOB_THE_FIRST_S:
 			RaidbossBobTheFirst_OnTakeDamage(victim, attacker, damage);
 
-		case EXPIDONSA_BENERA:
-			Benera_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
 		case EXPIDONSA_PENTAL:
 			Pental_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-		case EXPIDONSA_DEFANDA:
-			Defanda_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 		case EXPIDONSA_SELFAM_IRE:
 			Selfamire_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);

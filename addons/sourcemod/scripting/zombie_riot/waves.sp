@@ -960,6 +960,13 @@ void Waves_ClearWaves()
 
 void Waves_Progress(bool donotAdvanceRound = false)
 {
+	/*
+	PrintCenterTextAll("Waves_Progress %d | %d | %d | %d | %d", InSetup ? 0 : 1,
+		Rounds ? 1 : 0,
+		CvarNoRoundStart.BoolValue ? 0 : 1,
+		GameRules_GetRoundState() == RoundState_BetweenRounds ? 0 : 1,
+		Cooldown > GetGameTime() ? 0 : 1);
+*/
 	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime())
 		return;
 
@@ -2100,16 +2107,18 @@ static int GetMvMStats()
 
 void Waves_UpdateMvMStats()
 {
-
 	if(!UpdateFramed)
 	{
 		UpdateFramed = true;
-		RequestFrame(UpdateMvMStatsFrame);
+		RequestFrames(UpdateMvMStatsFrame, 30);
 	}
 }
 
 static void UpdateMvMStatsFrame()
 {
+	//Profiler profiler = new Profiler();
+	//profiler.Start();
+
 	UpdateFramed = false;
 
 	int mvm = GetMvMStats();
@@ -2133,14 +2142,15 @@ static void UpdateMvMStatsFrame()
 
 		float cashLeft, totalCash;
 
-		int totalcount;
+		int activecount, totalcount;
 		int id[24];
 		int count[24];
 		int flags[24];
 		bool active[24];
 		
-		int maxwaves = Rounds ? Rounds.Length : 0;
-		if(maxwaves && CurrentRound >= 0 && CurrentRound < maxwaves)
+		int maxwaves = Rounds ? (Rounds.Length - 1) : 0;
+		bool freeplay = !(maxwaves && CurrentRound >= 0 && CurrentRound < maxwaves);
+		if(!freeplay)
 		{
 			Round round;
 			Rounds.GetArray(CurrentRound, round);
@@ -2158,7 +2168,7 @@ static void UpdateMvMStatsFrame()
 
 				Wave wave;
 				int length = round.Waves.Length;
-				for(int a; a < length; a++)
+				for(int a = length - 1; a >= 0; a--)
 				{
 					round.Waves.GetArray(a, wave);
 
@@ -2192,6 +2202,7 @@ static void UpdateMvMStatsFrame()
 					if(a > CurrentWave)
 					{
 						cashLeft += cash;
+						activecount += num;
 					}
 					else
 					{
@@ -2223,6 +2234,7 @@ static void UpdateMvMStatsFrame()
 		{
 			Enemies.GetArray(a, enemy);
 			cashLeft += enemy.Credits;
+			activecount++;
 
 			for(int b; b < sizeof(id); b++)
 			{
@@ -2233,7 +2245,7 @@ static void UpdateMvMStatsFrame()
 					if(!id[b])
 					{
 						id[b] = enemy.Index;
-						flags[b] = SetupFlags(enemy, true);
+						flags[b] = SetupFlags(enemy, !freeplay);
 					}
 					
 					break;
@@ -2241,12 +2253,13 @@ static void UpdateMvMStatsFrame()
 			}
 		}
 
-		for(int a; a < i_MaxcountNpcTotal; a++)
+		int entity = MaxClients + 1;
+		while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
-			if(entity != -1 && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
+			if(GetTeam(entity) != TFTeam_Red)
 			{
 				cashLeft += f_CreditsOnKill[entity];
+				activecount++;
 
 				for(int b; b < sizeof(id); b++)
 				{
@@ -2258,7 +2271,7 @@ static void UpdateMvMStatsFrame()
 						if(!id[b])
 						{
 							id[b] = i_NpcInternalId[entity];
-							flags[b] = b_thisNpcIsARaid[entity] ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_SUPPORT;
+							flags[b] = (freeplay || b_thisNpcIsARaid[entity]) ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_SUPPORT;
 
 							if(b_thisNpcIsABoss[entity] || b_thisNpcHasAnOutline[entity])
 								flags[b] |= MVM_CLASS_FLAG_MINIBOSS;
@@ -2281,7 +2294,7 @@ static void UpdateMvMStatsFrame()
 		if(objective != -1)
 		{
 			SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", RoundToNearest(cashLeft));
-			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", totalcount);
+			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", totalcount > activecount ? totalcount : activecount);
 
 			if(Rogue_Mode())
 			{
@@ -2291,7 +2304,7 @@ static void UpdateMvMStatsFrame()
 			else
 			{
 				SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
-				SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves - 1 : 0);
+				SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves : 0);
 			}
 
 			NPCData data;
@@ -2342,13 +2355,9 @@ static void UpdateMvMStatsFrame()
 						{
 							strcopy(data.Icon, sizeof(data.Icon), "spy");
 						}
-						else if(StrContains(data.Name, "zombie", false) != -1 || StrContains(data.Plugin, "zombie", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "demoknight_samurai");
-						}
 						else
 						{
-							strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
+							strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
 						}
 					}
 					
@@ -2374,6 +2383,10 @@ static void UpdateMvMStatsFrame()
 		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash);	// nCreditsAcquired
 		SetEntData(mvm, m_runningTotalWaveStats + 12, 0);	// nCreditsBonus
 	}
+
+	//profiler.Stop();
+	//PrintToChatAll("Profiler: %f", profiler.Time);
+	//delete profiler;
 }
 
 static int SetupFlags(const Enemy data, bool support)
@@ -2411,9 +2424,10 @@ void Waves_SetReadyStatus(int status)
 	{
 		case 0:	// Normal
 		{
+			InSetup = false;
 			GameRules_SetProp("m_bInWaitingForPlayers", false);
 			GameRules_SetProp("m_bInSetup", false);
-			GameRules_SetProp("m_iRoundState", 11);
+			GameRules_SetProp("m_iRoundState", RoundState_ZombieRiot);
 		}
 		case 1:	// Ready Up
 		{
@@ -2427,13 +2441,12 @@ void Waves_SetReadyStatus(int status)
 				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
 			
 			KillFeed_ForceClear();
+			SDKCall_ResetPlayerAndTeamReadyState();
 
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(IsClientInGame(client))
 				{
-					GameRules_SetProp("m_bPlayerReady", false, 1, client);
-
 					if(IsFakeClient(client))
 						KillFeed_SetBotTeam(client, TFTeam_Blue);
 				}
@@ -2451,13 +2464,12 @@ void Waves_SetReadyStatus(int status)
 				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
 			
 			KillFeed_ForceClear();
+			SDKCall_ResetPlayerAndTeamReadyState();
 			
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(IsClientInGame(client))
 				{
-					GameRules_SetProp("m_bPlayerReady", false, 1, client);
-
 					if(IsFakeClient(client))
 						KillFeed_SetBotTeam(client, TFTeam_Blue);
 				}

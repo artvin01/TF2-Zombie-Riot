@@ -334,6 +334,13 @@
 				"linux"		"@_ZN9CTFPlayer5TauntE8taunts_ti"
 				"windows"	"\x55\x8B\xEC\x81\xEC\xD4\x00\x00\x00\x53\x56\x57\x8B\xF9\xE8"
 			}
+			"CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState"
+			{
+				// From Mikusch
+				"library"	"server"
+				"linux"		"@_ZN24CTeamplayRoundBasedRules28ResetPlayerAndTeamReadyStateEv"
+				"windows"	"\x55\x8B\xEC\x51\x56\x57\x8B\xF9\xC6\x45\xFF\x00\x33\xF6"
+			}
 		}
 		"Functions"
 		{
