@@ -104,41 +104,27 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 	
 	if(Change[client] == true)
 	{
-		Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_red",_,false);
+		Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_blue",_,false);
 	}
 	else if(Change[client] == false)
 	{
-		Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_blue",_,false);
+		Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_red",_,false);
 	}
 
 }
 
-public void Messenger_Modechange(int client, int weapon, int slot)
+public void Messenger_Modechange(int client bool &result)
 {
-	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	if(IsValidEntity(client))
 	{
-		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, 5.0);
-		if(Change[client] == true)
+		if(Change[client])
 		{
-			Change[client] = false;
+			Change[client]=false;
 		}
-		else if(Change[client] == false)
+		else
 		{
-			Change[client] = true;
+			Change[client]=true;
 		}
-	}
-	else
-	{
-		float Ability_CD = Ability_Check_Cooldown(client, slot);
-		
-		if(Ability_CD <= 0.0)
-			Ability_CD = 0.0;
-
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 	}
 }
 
