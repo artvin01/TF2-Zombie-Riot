@@ -163,6 +163,30 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 #endif
 }
 
+stock void PrecacheMvMIconCustom(const char[] icon)
+{
+
+	char buffer[PLATFORM_MAX_PATH];
+	FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vmt", icon);
+
+#if defined UseDownloadTable
+	AddFileToDownloadsTable(buffer);
+#else
+	if(ExtraList.FindString(buffer) == -1)
+		ExtraList.PushString(buffer);
+#endif
+
+	FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vtf", icon);
+
+#if defined UseDownloadTable
+	AddFileToDownloadsTable(buffer);
+#else
+	if(ExtraList.FindString(buffer) == -1)
+		ExtraList.PushString(buffer);
+#endif
+
+}
+
 public void FileNetwork_AddSoundFrame(DataPack pack)
 {
 	pack.Reset();
@@ -244,7 +268,7 @@ static void SendNextFile(int client)
 		Downloading[client] = false;
 
 		PrintToConsole(client, "---");
-		PrintToConsole(client, "[ZR/RPG] Finished Downloading/Verifying Files! You will hear and see everything as intended now.");
+		PrintToConsole(client, "[ZR] Finished Downloading/Verifying Files! You will hear and see everything as intended now.");
 		PrintToConsole(client, "---");
 	}
 }
@@ -288,7 +312,7 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 		{
 #if !defined UseDownloadTable
 			// So the client doesn't freak out about existing CreateFragmentsFromFile spam
-			PrintToConsole(client, "[ZR/RPG] Downloading '%s'", download);
+			PrintToConsole(client, "[ZR] Downloading '%s'", download);
 			if(FileNet_SendFile(client, download, FileNetwork_SendResults, pack))
 				return;
 			
@@ -312,7 +336,7 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success,
 			FormatFileCheck(file, client, filecheck, sizeof(filecheck));
 
 			File filec = OpenFile(filecheck, "wt");
-			filec.WriteLine("Used for file checks for ZR/RPG");
+			filec.WriteLine("Used for file checks for ZR");
 			filec.Close();
 #if !defined UseDownloadTable
 			if(!FileNet_SendFile(client, filecheck, FileNetwork_SendFileCheck))
