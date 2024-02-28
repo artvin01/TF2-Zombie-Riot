@@ -2382,6 +2382,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			Npc_OnTakeDamage_DimensionalRipper(attacker);
 		}
+		case WEAPON_WEAPON_MESSENGER_LAUNCHER:
+		{
+			Gun_MessengerTouch(entity, target, attacker, client);
+		}		
 	}
 #endif
 

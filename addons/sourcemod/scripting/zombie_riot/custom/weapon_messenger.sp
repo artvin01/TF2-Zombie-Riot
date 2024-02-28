@@ -129,7 +129,7 @@ public void Messenger_Modechange(int client, bool &result)
 }
 
 
-public void Gun_MessengerTouch(int entity, int target, int victim, int attacker, int client)
+public void Gun_MessengerTouch(int entity, int target, int attacker, int client)
 {
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if (target > 0)	
@@ -148,7 +148,7 @@ public void Gun_MessengerTouch(int entity, int target, int victim, int attacker,
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 		if(Change[client] == true)
 		{
-			NPC_Ignite(victim, attacker, 3.0, weapon);
+			NPC_Ignite(target, attacker, 3.0, weapon);
 		}
 		else if(Change[client] == false)
 		{
