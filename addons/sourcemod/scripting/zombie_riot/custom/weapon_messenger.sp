@@ -86,26 +86,15 @@ void CreateMessengerEffect(int client)
 	}
 	if(Change[client] == true)
 	{
-		int FireIce = 1;
+		DestroyMessengerEffect(client);
+		Format(MessengerParticle[client], sizeof(MessengerParticle[]), "%s","critical_rocket_blue"); //white
+		CreateMessengerEffect(client);
 	}
 	else if(Change[client] == false)
 	{
-		int FireIce = 0;
-	}
-	switch(FireIce[client])
-	{
-		case 1:
-		{
-			DestroyMessengerEffect(client);
-			Format(MessengerParticle[client], sizeof(MessengerParticle[]), "%s","critical_rocket_blue"); //white
-			CreateMessengerEffect(client);
-		}
-		case 2:
-		{
-			DestroyMessengerEffect(client);
-			Format(MessengerParticle[client], sizeof(MessengerParticle[]), "%s","critical_rocket_red"); // green
-			CreateMessengerEffect(client);
-		}
+		DestroyMessengerEffect(client);
+		Format(MessengerParticle[client], sizeof(MessengerParticle[]), "%s","critical_rocket_red"); // green
+		CreateMessengerEffect(client);
 	}
 			
 }
