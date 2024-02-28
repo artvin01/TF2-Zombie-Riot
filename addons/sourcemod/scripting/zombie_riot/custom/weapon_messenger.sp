@@ -81,7 +81,7 @@ void MessengerHudShow(int client, int weapon)
 	}
 }
 
-void CheckMessengerMode(int client, int weapon)
+void CheckMessengerMode(int client)
 {
 	if (Change[client] == true )
 	{
