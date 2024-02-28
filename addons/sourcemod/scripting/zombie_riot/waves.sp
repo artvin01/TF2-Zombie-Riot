@@ -2475,6 +2475,7 @@ void Waves_SetReadyStatus(int status)
 	}
 }
 
+//This crashes.!
 static void SetWaveClass(int objective, int index, int count = 0, const char[] icon = "", int flags = 0, bool active = false)
 {
 	static int size1, size2;
