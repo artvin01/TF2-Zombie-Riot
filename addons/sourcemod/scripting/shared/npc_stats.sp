@@ -4786,7 +4786,7 @@ stock int GetClosestTarget(int entity,
 					if(!npc.bBuildingIsPlaced)
 						continue;
 #else
-					if(GetEntProp(enemy, Prop_Send, "m_bCarried") || GetEntProp(enemy, Prop_Send, "m_bPlacing"))
+					if(GetEntProp(entity_close, Prop_Send, "m_bCarried") || GetEntProp(entity_close, Prop_Send, "m_bPlacing"))
 						continue;
 #endif
 					if(CanSee)
