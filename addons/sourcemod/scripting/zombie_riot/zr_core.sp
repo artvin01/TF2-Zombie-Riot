@@ -505,6 +505,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_dimension_ripper.sp"
 #include "zombie_riot/custom/weapon_hell_hoe.sp"
 #include "zombie_riot/custom/wand/weapon_ludo.sp"
+#include "zombie_riot/custom/weapon_messenger.sp"
 
 void ZR_PluginLoad()
 {
@@ -742,6 +743,7 @@ void ZR_MapStart()
 	Precache_Railcannon();
 	ResetMapStartDimWeapon();
 	Hell_Hoe_MapStart();
+	ResetMapStartMessengerWeapon();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;

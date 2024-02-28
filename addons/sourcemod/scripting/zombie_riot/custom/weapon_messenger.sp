@@ -9,7 +9,11 @@ static Handle h_TimerMessengerWeaponManagement[MAXPLAYERS+1] = {null, ...};
 
 #define SOUND_MES_IMPACT "weapons/cow_mangler_explosion_normal_01.wav"
 
-void Nailgun_Map_Precache()
+void ResetMapStartMessengerWeapon()
+{
+	Messenger_Map_Precache();
+}
+void Messenger_Map_Precache()
 {
 	PrecacheSound(SOUND_MES_IMPACT);
 }
