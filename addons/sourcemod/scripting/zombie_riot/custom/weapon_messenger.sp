@@ -178,7 +178,7 @@ public void Messenger_Modechange(int client, int weapon, int slot)
 }
 
 
-public void Gun_MessengerTouch(int entity, int target, int victim, int attacker)
+public void Gun_MessengerTouch(int entity, int target, int victim, int attacker, int client)
 {
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if (target > 0)	
