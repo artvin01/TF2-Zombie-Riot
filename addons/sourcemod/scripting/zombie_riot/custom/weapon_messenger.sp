@@ -96,22 +96,26 @@ void CheckMessengerMode(int client)
 
 void CreateMessengerEffect(int client)
 {
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+
 	if(Change[client] == true)
 	{
 		DestroyMessengerEffect(client);
-		float flPos[3];
-		float flAng[3];
-		GetEntPropVector(client, Prop_Data, "effect_hand_l", flPos, flAng);
-		int particle = ParticleEffectAt(flPos, "critical_rocket_blue", 0.0);
+		float flPos[3]; // original
+		float flAng[3]; // original
+		GetAttachment(owner, "effect_hand_l", flPos, flAng);				
+		int particle_Hand = ParticleEffectAt(flPos, "critical_rocket_blue", 0.0);
+		SetParent(owner, particle_Hand, "effect_hand_l");
 		AddEntityToThirdPersonTransitMode(client, particle);
 	}
 	else if(Change[client] == false)
 	{
 		DestroyMessengerEffect(client);
-		float flPos[3];
-		float flAng[3];
-		GetEntPropVector(client, Prop_Data, "effect_hand_l", flPos, flAng);
-		int particle = ParticleEffectAt(flPos, "critical_rocket_red", 0.0);
+		float flPos[3]; // original
+		float flAng[3]; // original
+		GetAttachment(owner, "effect_hand_l", flPos, flAng);				
+		int particle_Hand = ParticleEffectAt(flPos, "critical_rocket_red", 0.0);
+		SetParent(owner, particle_Hand, "effect_hand_l");
 		AddEntityToThirdPersonTransitMode(client, particle);
 	}
 			
