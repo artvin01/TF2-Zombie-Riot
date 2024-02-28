@@ -2238,12 +2238,7 @@
 	{
 		"en"		"Dont be on ladders too long or use them too much. you will receive this message every 0.5 seconds if you stay in it."
 	}
-	"Show Plugin Messages Hint"
-	{
-		"en"		"If you wish to see the wave counter in a better way, set ''cl_showpluginmessages'' to 1 in the console!"
-		"ru"		"Если вы хотите видеть счётчик волн в лучшем виде, установите «cl_showpluginmessages» на 1 в консоли!"
-		"chi"		"如果您希望以更好的方式查看回合波数计数器，请在控制台中输入“cl_showpluginmessages 1”!"
-	}
+
 	"Show Grigori Mute Hint Message"
 	{
 		"en"		"If you wish for Grigori to not half mute your game volume when he talks, set ''snd_ducktovolume'' to 1 in the console!"

@@ -130,6 +130,7 @@ public void RaidbossSilvester_OnMapStart()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_raidboss_silvester");
 	strcopy(data.Icon, sizeof(data.Icon), "silvester_raid");
 	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	NPC_Add(data);

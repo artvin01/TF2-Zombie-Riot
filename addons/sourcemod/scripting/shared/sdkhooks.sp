@@ -1014,40 +1014,6 @@ public void OnPostThink(int client)
 			ApplyLastmanOrDyingOverlay(client);
 		}
 
-		bool Has_Wave_Showing = false;
-		
-		if(f_ClientServerShowMessages[client])
-		{
-			if(GameRules_GetRoundState() != RoundState_TeamWin)
-			{
-				Has_Wave_Showing = true; //yay :)
-				SetGlobalTransTarget(client);
-				char WaveString[64];
-				if(Rogue_Mode() && Rogue_InSetup())
-				{
-					Format(WaveString, sizeof(WaveString), "%s", WhatDifficultySetting); 
-				}
-				else
-				{
-					Format(WaveString, sizeof(WaveString), "%s", WhatDifficultySetting); 
-				}
-				i_WhatLevelForHudIsThisClientAt[client] -= 1;
-				Handle hKv = CreateKeyValues("Stuff", "title", WaveString);
-				KvSetColor(hKv, "color", 0, 255, 0, 255); //green
-				KvSetNum(hKv,   "level", i_WhatLevelForHudIsThisClientAt[client]); //im not sure..
-				KvSetNum(hKv,   "time",  10); // how long? 
-				//	CreateDialog(client, hKv, DialogType_Text); //Cool hud stuff!
-				CreateDialog(client, hKv, DialogType_Msg);
-				delete hKv;
-			}
-		}
-		else if(f_ShowHudDelayForServerMessage[client] < GetGameTime())
-		{
-			f_ShowHudDelayForServerMessage[client] = GameTime + 300.0;
-			SetGlobalTransTarget(client);
-			PrintToChat(client,"%t", "Show Plugin Messages Hint");
-		}
-
 		int Armor_Max = 100000;
 		int armorEnt = client;
 		int vehicle = GetEntPropEnt(client, Prop_Data, "m_hVehicle");
@@ -1333,10 +1299,6 @@ public void OnPostThink(int client)
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
 					"Downs left", downsleft);	
 			}
-			if(!Has_Wave_Showing && !Rogue_Mode())
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%s", HudBuffer, WhatDifficultySetting);
-			}
 			if(Store_ActiveCanMulti(client))
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n\n%t", HudBuffer, "Press Button To Switch");
@@ -1347,26 +1309,18 @@ public void OnPostThink(int client)
 			Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Died Teuton"
 			);
 
-			if(!Has_Wave_Showing && !Rogue_Mode())
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s%s",HudBuffer,WhatDifficultySetting);		
-			}
 		}
 		else
 		{
 			Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Wait Teuton"
 			);
-
-			if(!Has_Wave_Showing && !Rogue_Mode())
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s%s",HudBuffer,WhatDifficultySetting);		
-			}
 		}
 		SetEntProp(client, Prop_Send, "m_nCurrency", CurrentCash-CashSpent[client]);
 		
 		//Todo: Only update when needed.
 		SetEntProp(client, Prop_Send, "m_iHideHUD", GetEntProp(client, Prop_Send, "m_iHideHUD") | HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN);
-		PrintKeyHintText(client,"%s", HudBuffer);
+		if(HudBuffer[0])
+			PrintKeyHintText(client,"%s", HudBuffer);
 	}
 	else if(f_DelayLookingAtHud[client] < GameTime)
 	{

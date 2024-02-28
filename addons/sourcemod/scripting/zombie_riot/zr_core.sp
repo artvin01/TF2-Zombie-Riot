@@ -10,6 +10,14 @@
 //#define ZR_ApplyKillEffects NPC_DeadEffects
 #define ZR_GetWaveCount Rogue_GetRoundScale
 
+#define MVM_CLASS_FLAG_NONE				0
+#define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// ???
+#define MVM_CLASS_FLAG_SUPPORT			(1 << 1)	// Show as Support?
+#define MVM_CLASS_FLAG_MISSION			(1 << 2)	// Show as Flashing?
+#define MVM_CLASS_FLAG_MINIBOSS			(1 << 3)	// Show as Red Background?
+#define MVM_CLASS_FLAG_ALWAYSCRIT		(1 << 4)	// Show with Crit Borders?
+#define MVM_CLASS_FLAG_SUPPORT_LIMITED	(1 << 5)	// Show as Flashing?
+
 public const int AmmoData[][] =
 {
 	// Price, Ammo
@@ -248,8 +256,8 @@ int CurrentRound;
 int CurrentWave = -1;
 int StartCash;
 float RoundStartTime;
-char WhatDifficultySetting_Internal[21];
-char WhatDifficultySetting[21];
+char WhatDifficultySetting_Internal[32];
+char WhatDifficultySetting[32];
 float healing_cooldown[MAXTF2PLAYERS];
 float f_TimeAfterSpawn[MAXTF2PLAYERS];
 float WoodAmount[MAXTF2PLAYERS];
@@ -581,6 +589,7 @@ void ZR_MapStart()
 	ZombieMusicPlayed = false;
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
+	WavesUpdateDifficultyName();
 	RoundStartTime = 0.0;
 	cvarTimeScale.SetFloat(1.0);
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
@@ -2092,7 +2101,6 @@ void PlayerApplyDefaults(int client)
 
 		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
 		QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //cl_showpluginmessages
-		QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		

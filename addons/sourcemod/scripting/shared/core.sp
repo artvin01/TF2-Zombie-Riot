@@ -307,9 +307,6 @@ bool b_DoNotUnStuck[MAXENTITIES];
 bool b_PlayerIsInAnotherPart[MAXENTITIES];
 bool b_EntityIsStairAbusing[MAXENTITIES];
 float f_EntityIsStairAbusing[MAXENTITIES];
-
-float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
-
 int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
 
 //bool Wand_Fired;
@@ -425,7 +422,6 @@ float f_ClientWasTooLongInsideHurtZone[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneDamage[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneStairs[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneDamageStairs[MAXENTITIES]={0.0, ...};
-bool f_ClientServerShowMessages[MAXTF2PLAYERS];
 
 //Needs to be global.
 bool b_IsABow[MAXENTITIES];
@@ -1560,7 +1556,6 @@ public void OnMapStart()
 	Zero(f_BotDelayShow);
 	Zero(f_OneShotProtectionTimer);
 	CleanAllNpcArray();
-	Zero(f_ClientServerShowMessages);
 	Zero(h_NpcCollissionHookType);
 	Zero(h_NpcSolidHookType);
 	Zero2(i_StickyToNpcCount);
@@ -1897,7 +1892,6 @@ public void OnClientPutInServer(int client)
 	f_Ruina_Attack_Buff_Amt[client] = 0.0;
 	f_MultiDamageTaken[client] = 1.0;
 	f_MultiDamageTaken_Flat[client] = 1.0;
-	f_ShowHudDelayForServerMessage[client] = GetGameTime() + 50.0;
 	
 #if defined ZR
 	f_TutorialUpdateStep[client] = 0.0;

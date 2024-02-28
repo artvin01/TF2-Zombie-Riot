@@ -1753,7 +1753,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		if(raidboss_active)
 		{
 			//there is a raid, then this displays a hud below the raid hud.
-			HudOffset = (HudOffset - 0.25);
+			HudOffset = (HudOffset + 0.135);
 
 			int raidboss = EntRefToEntIndex(RaidBossActive);
 			//We have to check if the raidboss has any debuffs.

@@ -1,14 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define MVM_CLASS_FLAG_NONE				0
-#define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// ???
-#define MVM_CLASS_FLAG_SUPPORT			(1 << 1)	// Show as Support?
-#define MVM_CLASS_FLAG_MISSION			(1 << 2)	// Show as Flashing?
-#define MVM_CLASS_FLAG_MINIBOSS			(1 << 3)	// Show as Red Background?
-#define MVM_CLASS_FLAG_ALWAYSCRIT		(1 << 4)	// Show with Crit Borders?
-#define MVM_CLASS_FLAG_SUPPORT_LIMITED	(1 << 5)	// Show as Flashing?
-
 enum struct Enemy
 {
 	int Health;
@@ -157,6 +149,10 @@ void Waves_MapStart()
 {
 	FogEntity = INVALID_ENT_REFERENCE;
 	SkyNameRestore[0] = 0;
+
+	int objective = GetObjectiveResource();
+	if(objective != -1)
+		SetEntProp(objective, Prop_Send, "m_iChallengeIndex", -1);
 }
 
 void Waves_PlayerSpawn(int client)
@@ -717,11 +713,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
-	{
-		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", Rounds.Length - 1);
-		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", 1);
-		//SetEntPropString(objective, Prop_Send, "m_iszMvMPopfileName", WhatDifficultySetting);
-	}
+		SetEntProp(objective, Prop_Send, "m_iChallengeIndex", kv.GetNum("mvmdiff", -1));
 	
 	if(start)
 	{
@@ -734,6 +726,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 			}
 		}
 	}
+
+	Waves_UpdateMvMStats();
 }
 
 void Waves_RoundStart()
@@ -934,12 +928,11 @@ public Action Waves_EndVote(Handle timer, float time)
 				if(highest > 3)
 					highest = 3;
 				
-				Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "FireUser%d", highest + 1);
-				ExcuteRelay("zr_waveselected", WhatDifficultySetting);
-				
 				vote.Name[0] = CharToUpper(vote.Name[0]);
-				strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), vote.Name);
-				strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), vote.Name);
+				Waves_SetDifficultyName(vote.Name);
+				
+				Format(vote.Name, sizeof(vote.Name), "FireUser%d", highest + 1);
+				ExcuteRelay("zr_waveselected", vote.Name);
 				
 				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
 				KeyValues kv = new KeyValues("Waves");
@@ -2265,13 +2258,10 @@ static void UpdateMvMStatsFrame()
 						if(!id[b])
 						{
 							id[b] = i_NpcInternalId[entity];
-							flags[b] = MVM_CLASS_FLAG_SUPPORT;
+							flags[b] = b_thisNpcIsARaid[entity] ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_SUPPORT;
 
 							if(b_thisNpcIsABoss[entity] || b_thisNpcHasAnOutline[entity])
 								flags[b] |= MVM_CLASS_FLAG_MINIBOSS;
-							
-							if(b_thisNpcIsARaid[entity])
-								flags[b] |= MVM_CLASS_FLAG_SUPPORT_LIMITED;
 							
 							if(fl_Extra_MeleeArmor[entity] < 1.0 || 
 							fl_Extra_RangedArmor[entity] < 1.0 || 
@@ -2352,6 +2342,10 @@ static void UpdateMvMStatsFrame()
 						{
 							strcopy(data.Icon, sizeof(data.Icon), "spy");
 						}
+						else if(StrContains(data.Name, "zombie", false) != -1 || StrContains(data.Plugin, "zombie", false) != -1)
+						{
+							strcopy(data.Icon, sizeof(data.Icon), "demoknight_samurai");
+						}
 						else
 						{
 							strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
@@ -2362,7 +2356,7 @@ static void UpdateMvMStatsFrame()
 						data.Flags = flags[i];
 
 					//PrintToChatAll("ID: %d Count: %d Flags: %d On: %d", id[i], count[i], flags[i], active[i]);
-				//	SetWaveClass(objective, i, count[i], "aaaa", 0, active[i]);
+					SetWaveClass(objective, i, count[i], data.Icon, data.Flags, active[i]);
 				}
 				else
 				{
@@ -2386,19 +2380,16 @@ static int SetupFlags(const Enemy data, bool support)
 {
 	int flags = 0;
 	
-	if(support || data.Is_Static || data.Team == TFTeam_Red)
+	if(data.Is_Boss < 2 && (support || data.Is_Static || data.Team == TFTeam_Red))
 	{
 		flags |= MVM_CLASS_FLAG_SUPPORT;
-
-		if(data.Is_Boss > 1)
-			flags |= MVM_CLASS_FLAG_SUPPORT_LIMITED;
 	}
 	else
 	{
 		flags |= MVM_CLASS_FLAG_NORMAL;
 
-		if(data.Is_Boss > 1)
-			flags |= MVM_CLASS_FLAG_MISSION;
+		//if(data.Is_Boss > 1)
+		//	flags |= MVM_CLASS_FLAG_MISSION;
 	}
 
 	if(data.Is_Boss || data.Is_Outlined)
@@ -2475,10 +2466,9 @@ void Waves_SetReadyStatus(int status)
 	}
 }
 
-//This crashes.!
 static void SetWaveClass(int objective, int index, int count = 0, const char[] icon = "", int flags = 0, bool active = false)
 {
-	static int size1, size2;
+	static int size1, size2, name1, name2;
 
 	if(!size1)
 		size1 = GetEntPropArraySize(objective, Prop_Send, "m_nMannVsMachineWaveClassCounts");
@@ -2486,13 +2476,16 @@ static void SetWaveClass(int objective, int index, int count = 0, const char[] i
 	if(!size2)
 		size2 = GetEntPropArraySize(objective, Prop_Send, "m_nMannVsMachineWaveClassCounts2");
 	
-	PrintToServer("Icon: %s", icon);
-	PrintToChatAll("Icon: %s", icon);
+	if(!name1)
+		name1 = GetEntSendPropOffs(objective, "m_iszMannVsMachineWaveClassNames", true);
+	
+	if(!name2)
+		name2 = GetEntSendPropOffs(objective, "m_iszMannVsMachineWaveClassNames2", true);
 
 	if(index < size1)
 	{
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassCounts", count, _, index);
-		SetEntPropString(objective, Prop_Send, "m_iszMannVsMachineWaveClassNames", icon, index);
+		SetEntData(objective, name1 + (index * 4), AllocPooledString(icon), 4, true);
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassFlags", flags, _, index);
 		SetEntProp(objective, Prop_Send, "m_bMannVsMachineWaveClassActive", active, _, index);
 	}
@@ -2502,9 +2495,63 @@ static void SetWaveClass(int objective, int index, int count = 0, const char[] i
 		if(index2 < size2)
 		{
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassCounts2", count, _, index2);
-			SetEntPropString(objective, Prop_Send, "m_iszMannVsMachineWaveClassNames2", icon, index2);
+			SetEntData(objective, name2 + (index2 * 4), AllocPooledString(icon), 4, true);
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassFlags2", flags, _, index2);
 			SetEntProp(objective, Prop_Send, "m_bMannVsMachineWaveClassActive2", active, _, index2);
 		}
 	}
+	
+}
+
+/**
+ * Inserts a string into the game's string pool.  This uses the same implementation that is in
+ * SourceMod's core:
+ * 
+ * https://github.com/alliedmodders/sourcemod/blob/b14c18ee64fc822dd6b0f5baea87226d59707d5a/core/HalfLife2.cpp#L1415-L1423
+ */
+stock Address AllocPooledString(const char[] value) {
+	static StringMap g_AllocPooledStringCache;
+	if(!g_AllocPooledStringCache)
+		g_AllocPooledStringCache = new StringMap();
+
+	Address pValue;
+	if (g_AllocPooledStringCache.GetValue(value, pValue)) {
+		return pValue;
+	}
+
+	int ent = FindEntityByClassname(-1, "worldspawn");
+	if (ent != 0) {
+		return Address_Null;
+	}
+	int offset = FindDataMapInfo(ent, "m_iName");
+	if (offset <= 0) {
+		return Address_Null;
+	}
+	Address pOrig = view_as<Address>(GetEntData(ent, offset));
+	DispatchKeyValue(ent, "targetname", value);
+	pValue = view_as<Address>(GetEntData(ent, offset));
+	SetEntData(ent, offset, pOrig);
+
+	g_AllocPooledStringCache.SetValue(value, pValue);
+	return pValue;
+}
+
+void Waves_SetDifficultyName(const char[] name)
+{
+	strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), name);
+	strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), name);
+	WavesUpdateDifficultyName();
+}
+
+void WavesUpdateDifficultyName()
+{
+	int objective = GetObjectiveResource();
+	if(objective != -1)
+	{
+		static int offset;
+		if(!offset)
+			offset = GetEntSendPropOffs(objective, "m_iszMvMPopfileName", true);
+
+		SetEntData(objective, offset, AllocPooledString(WhatDifficultySetting), 4, true);
+	}	
 }

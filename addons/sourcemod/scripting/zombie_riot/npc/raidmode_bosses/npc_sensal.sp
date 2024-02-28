@@ -123,6 +123,7 @@ void Sensal_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sensal");
 	strcopy(data.Icon, sizeof(data.Icon), "sensal_raid");
 	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	NPC_Add(data);
