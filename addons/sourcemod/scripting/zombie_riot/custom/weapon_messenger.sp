@@ -133,21 +133,6 @@ void DestroyMessengerEffect(int client)
 	i_MessengerParticle[client] = INVALID_ENT_REFERENCE;
 }
 
-void CheckMessengerMode(int client, int weapon)
-{
-	if (Change[client] == true )
-	{
-		PrintHintText(client,"Chaos Blaster");
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-	}
-	else if (Change[client] == false)
-	{
-		PrintHintText(client,"Fire Blaster");
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-	}
-
-}
-
 public void Weapon_Messenger(int client, int weapon, bool crit)
 {
 	float damage = 250.0;
