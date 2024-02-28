@@ -5,12 +5,41 @@ static bool Change[MAXPLAYERS];
 static int i_MessengerParticle[MAXTF2PLAYERS];
 static int FireIce[MAXTF2PLAYERS];
 static char MessengerParticle[MAXTF2PLAYERS][48];
+static Handle h_TimerMessengerWeaponManagement[MAXPLAYERS+1] = {null, ...};
 
 #define SOUND_MES_IMPACT "weapons/cow_mangler_explosion_normal_01.wav"
 
 void Nailgun_Map_Precache()
 {
 	PrecacheSound(SOUND_MES_IMPACT);
+}
+
+public void Enable_Messenger_Launcher_Ability(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
+{
+	if (h_TimerMessengerWeaponManagement[client] != null)
+	{
+		//This timer already exists.
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MESSENGER_LAUNCHER)
+		{
+			//Is the weapon it again?
+			//Yes?
+			delete h_TimerMessengerWeaponManagement[client];
+			h_TimerMessengerWeaponManagement[client] = null;
+			DataPack pack;
+			h_TimerMessengerWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_Messenger, pack, TIMER_REPEAT);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
+		return;
+	}
+		
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MESSENGER_LAUNCHER)
+	{
+		DataPack pack;
+		h_TimerMessengerWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_Messenger, pack, TIMER_REPEAT);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
 }
 
 public Action Timer_Management_Messenger(Handle timer, DataPack pack)
