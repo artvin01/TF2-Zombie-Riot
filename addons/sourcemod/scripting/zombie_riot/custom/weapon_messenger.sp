@@ -3,7 +3,6 @@
 
 static bool Change[MAXPLAYERS];
 static int i_MessengerParticle[MAXTF2PLAYERS];
-static int FireIce[MAXTF2PLAYERS];
 static char MessengerParticle[MAXTF2PLAYERS][48];
 static Handle h_TimerMessengerWeaponManagement[MAXPLAYERS+1] = {null, ...};
 
@@ -62,6 +61,7 @@ public Action Timer_Management_Messenger(Handle timer, DataPack pack)
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
 		CreateMessengerEffect(client);
+		CheckMessengerMode(client);
 	}
 	else
 	{
