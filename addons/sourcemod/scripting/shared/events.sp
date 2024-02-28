@@ -58,10 +58,10 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 		}	
 	}
 	
+	CreateMVMPopulator();
+	
 	if(RoundStartTime > GetGameTime())
 		return;
-	
-	CreateMVMPopulator();
 	
 	RoundStartTime = GetGameTime()+0.1;
 	
