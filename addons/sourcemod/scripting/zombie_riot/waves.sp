@@ -2107,7 +2107,7 @@ static int GetMvMStats()
 
 void Waves_UpdateMvMStats()
 {
-/*
+
 	if(!UpdateFramed)
 	{
 		UpdateFramed = true;
@@ -2118,7 +2118,7 @@ void Waves_UpdateMvMStats()
 static void UpdateMvMStatsFrame()
 {
 	UpdateFramed = false;
-*/
+
 	int mvm = GetMvMStats();
 	if(mvm != -1)
 	{
@@ -2362,11 +2362,11 @@ static void UpdateMvMStatsFrame()
 						data.Flags = flags[i];
 
 					//PrintToChatAll("ID: %d Count: %d Flags: %d On: %d", id[i], count[i], flags[i], active[i]);
-					SetWaveClass(objective, i, count[i], data.Icon, data.Flags, active[i]);
+				//	SetWaveClass(objective, i, count[i], "aaaa", 0, active[i]);
 				}
 				else
 				{
-					//SetWaveClass(objective, i);
+					SetWaveClass(objective, i);
 				}
 			}
 		}
@@ -2421,13 +2421,13 @@ void Waves_SetReadyStatus(int status)
 		case 0:	// Normal
 		{
 			GameRules_SetProp("m_bInWaitingForPlayers", false);
-			//GameRules_SetProp("m_bInSetup", false);
+			GameRules_SetProp("m_bInSetup", false);
 			GameRules_SetProp("m_iRoundState", 11);
 		}
 		case 1:	// Ready Up
 		{
 			GameRules_SetProp("m_bInWaitingForPlayers", true);
-			//GameRules_SetProp("m_bInSetup", true);
+			GameRules_SetProp("m_bInSetup", true);
 			GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);
 			FindConVar("tf_mvm_min_players_to_start").IntValue = 1;
 
@@ -2451,7 +2451,7 @@ void Waves_SetReadyStatus(int status)
 		case 2:	// Waiting
 		{
 			GameRules_SetProp("m_bInWaitingForPlayers", true);
-			//GameRules_SetProp("m_bInSetup", true);
+			GameRules_SetProp("m_bInSetup", true);
 			GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);
 			FindConVar("tf_mvm_min_players_to_start").IntValue = 199;
 
