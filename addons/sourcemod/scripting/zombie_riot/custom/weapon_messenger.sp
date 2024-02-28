@@ -136,7 +136,7 @@ void CheckMessengerMode(int client, int weapon)
 
 public void Weapon_Messenger(int client, int weapon, bool crit)
 {
-	float damage = 250;
+	float damage = 250.0;
 
 	damage *= Attributes_GetOnPlayer(client, 2, true);
 			
@@ -149,11 +149,11 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 		
 	float time = 25.0; //Pretty much inf.
 	
-	if(Change[client] == 1)
+	if(Change[client] == true)
 	{
 		Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_red",_,false);
 	}
-	else if(Change[client] == 0)
+	else if(Change[client] == false)
 	{
 		Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_blue",_,false);
 	}
