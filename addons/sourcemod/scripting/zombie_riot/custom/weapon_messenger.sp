@@ -56,15 +56,15 @@ public Action Timer_Management_Messenger(Handle timer, DataPack pack)
 	{
 		Change[client] = false;
 		return Plugin_Stop;
-        DestroyMessengerEffect(client);
+		DestroyMessengerEffect(client);
 	}
-    int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
-        CreateMessengerEffect(client);
+		CreateMessengerEffect(client);
 	}
 	else
-    {
+	{
 		DestroyMessengerEffect(client);
 	}
 	return Plugin_Continue;
@@ -84,29 +84,29 @@ void CreateMessengerEffect(int client)
 		SetParent(viewmodelModel, particle, "effect_hand_l");
 		i_MessengerParticle[client][0] = EntIndexToEntRef(particle);
 	}
-    if(change == true)
-    {
-        FireIce = 1;
-    }
-    else if(change == false)
-    {
-        FireIce = 0;
-    }
-    switch(FireIce[client])
-    {
-        case 1:
-        {
-            DestroyMessengerEffect(client);
-            Format(MessengerParticle[client], sizeof(MessengerParticle[]), "%s","critical_rocket_blue"); //white
-            CreateMessengerEffect(client);
-        }
-        case 2:
-        {
-            DestroyMessengerEffect(client);
-            Format(MessengerParticle[client], sizeof(MessengerParticle[]), "%s","critical_rocket_red"); // green
-            CreateMessengerEffect(client);
-        }
-    }
+	if(change == true)
+	{
+		FireIce = 1;
+	}
+	else if(change == false)
+	{
+		FireIce = 0;
+	}
+	switch(FireIce[client])
+	{
+		case 1:
+		{
+			DestroyMessengerEffect(client);
+			Format(MessengerParticle[client], sizeof(MessengerParticle[]), "%s","critical_rocket_blue"); //white
+			CreateMessengerEffect(client);
+		}
+		case 2:
+		{
+			DestroyMessengerEffect(client);
+			Format(MessengerParticle[client], sizeof(MessengerParticle[]), "%s","critical_rocket_red"); // green
+			CreateMessengerEffect(client);
+		}
+	}
 			
 }
 void DestroyMessengerEffect(int client)
@@ -138,7 +138,7 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 {
 	float damage = 250;
 
-    damage *= Attributes_GetOnPlayer(client, 2, true);
+	damage *= Attributes_GetOnPlayer(client, 2, true);
 		
 	float attack_speed;
 		
@@ -153,28 +153,32 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 		
 	float time = 25.0; //Pretty much inf.
 	
-    if(Change == 1)
-    {
-        int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_red",_,false);
-    }
-    else if(Change == 0)
-    {
-        int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_blue",_,false);
-    }
+	if(Change == 1)
+	{
+		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_red",_,false);
+	}
+	else if(Change == 0)
+	{
+		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_blue",_,false);
+	}
 
 }
 
-public void Messenger_Modechange(int client)
+public void Messenger_Modechange(int client, int weapon, int slot)
 {
-    Rogue_OnAbilityUse(weapon);
-    if(Change == 0)
-    {
-        Change = 1;
-    }
-    if(Change == 1)
-    {
-        Change = 0;
-    }
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		Rogue_OnAbilityUse(weapon);
+		Ability_Apply_Cooldown(client, slot, 5.0);
+		if(Change == 0)
+		{
+			Change = 1;
+		}
+		if(Change == 1)
+		{
+			Change = 0;
+		}
+	}
 }
 
 
@@ -195,17 +199,17 @@ public void Gun_MessengerTouch(int entity, int target)
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-        if(Change == true)
-        {
-            NPC_Ignite(victim, attacker, 3.0, weapon);
-        }
-        else if(Change == false)
-        {
-            if((f_LowIceDebuff[target] - 0.5) < GetGameTime())
-            {
-                f_LowIceDebuff[target] = GetGameTime() + 0.6;
-            }
-        }
+		if(Change == true)
+		{
+			NPC_Ignite(victim, attacker, 3.0, weapon);
+		}
+		else if(Change == false)
+		{
+			if((f_LowIceDebuff[target] - 0.5) < GetGameTime())
+			{
+				f_LowIceDebuff[target] = GetGameTime() + 0.6;
+			}
+		}
 		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		EmitSoundToAll(SOUND_MES_IMPACT, entity, SNDCHAN_STATIC, 80, _, 1.0);
 		if(IsValidEntity(particle))
