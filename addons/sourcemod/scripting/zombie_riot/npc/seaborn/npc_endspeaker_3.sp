@@ -13,7 +13,6 @@ methodmap EndSpeaker3 < EndSpeakerNormal
 
 		EndSpeaker3 npc = view_as<EndSpeaker3>(CClotBody(vecPos, vecAng, "models/antlion.mdl", "1.15", health, ally, false));
 		
-		i_NpcInternalId[npc.index] = ENDSPEAKER_3;
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_RUN");
 		npc.AddGesture("ACT_ANTLION_BURROW_OUT");
@@ -26,7 +25,9 @@ methodmap EndSpeaker3 < EndSpeakerNormal
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		npc.m_bDissapearOnDeath = true;
 		
-		SDKHook(npc.index, SDKHook_Think, EndSpeaker3_ClotThink);
+		func_NPCDeath[npc.index] = EndSpeaker3_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = EndSpeaker_OnTakeDamage;
+		func_NPCThink[npc.index] = EndSpeaker3_ClotThink;
 		
 		npc.m_flSpeed = 325.0;	// 0.8 + 0.5 x 250
 		npc.m_flGetClosestTargetTime = 0.0;

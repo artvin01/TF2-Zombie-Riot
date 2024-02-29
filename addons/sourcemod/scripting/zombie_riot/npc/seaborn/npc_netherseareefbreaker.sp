@@ -38,7 +38,25 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/demo_sword_swing3.wav",
 };
 
-methodmap SeaReefbreaker < CClotBody
+void SeaReefbreaker_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Nethersea Reefbreaker");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseareefbreaker");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_reefbreaker");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return SeaReefbreaker(client, vecPos, vecAng, ally, data);
+}
+
+methodmap SeaReefbreaker < CSeaBody
 {
 	public void PlayIdleSound()
 	{
@@ -77,7 +95,7 @@ methodmap SeaReefbreaker < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = carrier ? SEAREEFBREAKER_CARRIER : (elite ? SEAREEFBREAKER_ALT : SEAREEFBREAKER);
+		npc.SetElite(elite, carrier);
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_SEABORN_WALK_BESERK");
 		
@@ -86,7 +104,9 @@ methodmap SeaReefbreaker < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		KillFeed_SetKillIcon(npc.index, "nessieclub");
 		
-		SDKHook(npc.index, SDKHook_Think, SeaReefbreaker_ClotThink);
+		func_NPCDeath[npc.index] = SeaReefbreaker_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SeaReefbreaker_OnTakeDamage;
+		func_NPCThink[npc.index] = SeaReefbreaker_ClotThink;
 		
 		npc.m_flSpeed = 300.0;	// 1.2 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -253,7 +273,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 
-				float attack = (i_NpcInternalId[npc.index] == SEAREEFBREAKER_ALT ? 120.0 : 90.0) * npc.Attack(gameTime);
+				float attack = (npc.m_bElite ? 120.0 : 90.0) * npc.Attack(gameTime);
 				// 300 x 0.3
 				// 400 x 0.3
 
@@ -378,16 +398,13 @@ void SeaReefbreaker_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	if(i_NpcInternalId[npc.index] == SEAREEFBREAKER_CARRIER)
+	if(npc.m_bCarrier)
 	{
 		float pos[3];
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 		Remains_SpawnDrop(pos, Buff_Reefbreaker);
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeaReefbreaker_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 

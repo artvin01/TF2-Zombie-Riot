@@ -19,6 +19,24 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/bow_shoot.wav"
 };
 
+void TidelinkedBishop_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Tidelinked Bishop");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_tidelinkedbishop");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_bishop");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return TidelinkedBishop(client, vecPos, vecAng, ally);
+}
+
 methodmap TidelinkedBishop < CClotBody
 {
 	public void PlayIdleSound()
@@ -46,7 +64,6 @@ methodmap TidelinkedBishop < CClotBody
 		SetVariantInt(6);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
-		i_NpcInternalId[npc.index] = TIDELINKED_BISHOP;
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_1");
 		KillFeed_SetKillIcon(npc.index, "huntsman");
@@ -54,8 +71,10 @@ methodmap TidelinkedBishop < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
-		
-		SDKHook(npc.index, SDKHook_Think, TidelinkedBishop_ClotThink);
+
+		func_NPCDeath[npc.index] = TidelinkedBishop_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = TidelinkedBishop_OnTakeDamage;
+		func_NPCThink[npc.index] = TidelinkedBishop_ClotThink;
 		
 		npc.m_flSpeed = 200.0;//100.0;	// 0.4 x 250
 		npc.m_flMeleeArmor = 1.25;
@@ -282,8 +301,6 @@ void TidelinkedBishop_NPCDeath(int entity)
 	TidelinkedBishop npc = view_as<TidelinkedBishop>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
-	
-	SDKUnhook(npc.index, SDKHook_Think, TidelinkedBishop_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

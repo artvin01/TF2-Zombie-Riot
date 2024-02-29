@@ -14,6 +14,24 @@ static const char g_MeleeAttackSounds[][] =
 	"player/invuln_off_vaccinator.wav"
 };
 
+void Isharmla_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Ishar'mla, Heart of Corruption");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_isharmla");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_isharmla");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Isharmla(client, vecPos, vecAng, ally);
+}
+
 methodmap Isharmla < CClotBody
 {
 	public void PlayDeathSound() 
@@ -33,7 +51,6 @@ methodmap Isharmla < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = ISHARMLA;
 		i_NpcWeight[npc.index] = 6;
 		npc.SetActivity("ACT_SKADI_WALK");
 		
@@ -41,7 +58,9 @@ methodmap Isharmla < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		SDKHook(npc.index, SDKHook_Think, Isharmla_ClotThink);
+		func_NPCDeath[npc.index] = Isharmla_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Isharmla_OnTakeDamage;
+		func_NPCThink[npc.index] = Isharmla_ClotThink;
 		
 		npc.m_flSpeed = 150.0;	// 0.6 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -380,8 +399,6 @@ void Isharmla_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_Think, Isharmla_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 

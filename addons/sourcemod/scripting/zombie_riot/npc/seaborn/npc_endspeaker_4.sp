@@ -13,7 +13,6 @@ methodmap EndSpeaker4 < EndSpeakerLarge
 
 		EndSpeaker4 npc = view_as<EndSpeaker4>(CClotBody(vecPos, vecAng, "models/antlion_guard.mdl", "1.15", health, ally, false, true));
 		
-		i_NpcInternalId[npc.index] = ENDSPEAKER_4;
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_RUN");
 		npc.AddGesture("ACT_ANTLIONGUARD_UNBURROW");
@@ -25,12 +24,14 @@ methodmap EndSpeaker4 < EndSpeakerLarge
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, EndSpeaker4_ClotThink);
+		func_NPCDeath[npc.index] = EndSpeaker4_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = EndSpeaker_OnTakeDamage;
+		func_NPCThink[npc.index] = EndSpeaker4_ClotThink;
 		
 		npc.m_flSpeed = 325.0;	// 0.8 + 0.5 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.15;
+		npc.m_flNextThinkTime = GetGameTime(npc.index) + 1.15;
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -221,7 +222,4 @@ void EndSpeaker4_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
-
-	
-	SDKUnhook(npc.index, SDKHook_Think, EndSpeaker4_ClotThink);
 }
