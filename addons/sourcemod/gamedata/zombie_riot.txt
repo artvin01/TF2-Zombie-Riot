@@ -741,6 +741,13 @@
 				"return" 		"void"
 				"this" 			"entity"
 			}
+			"CBaseObject::CheckUpgradeOnHit" 
+			{
+				"offset" 		"CBaseObject::CheckUpgradeOnHit" 
+				"hooktype" 		"entity"
+				"return" 		"bool"
+				"this" 			"entity"
+			}
 			"CBasePlayer::EquipWearable" 
 			{
 				"offset" 		"CBasePlayer::EquipWearable"
@@ -837,6 +844,11 @@
 		}
 		"Offsets"
 		{
+			"CBaseObject::CheckUpgradeOnHit"		
+			{		
+				"windows"	"365"		
+				"linux"		"367"
+			}
 			"CBaseEntity::WorldSpaceCenter"		
 			{		
 				"windows"	"155"		
@@ -846,11 +858,6 @@
 			{
 				"windows" 	"470"
 				"linux" 	"477"
-			}
-			"CBaseObject::StartUpgrading()" 
-			{
-				"windows" 	"382"
-				"linux" 	"384"
 			}
 			"CTFGrenadePipebombProjectile::PipebombTouch" 
 			{
