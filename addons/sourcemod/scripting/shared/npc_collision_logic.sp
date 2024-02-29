@@ -96,6 +96,12 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		{
 			return false;
 		}
+		//ignore collisions if they have different camos!
+		//but only if its not a trace.
+		if(b_IsCamoNPC[bot_entidx] != b_IsCamoNPC[otherindex] && extrarules == 0)
+		{
+			return false;
+		}
 	}
 	//the other index is ingored, ignore.
 	if(b_ThisEntityIgnored[otherindex])
