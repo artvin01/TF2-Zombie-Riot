@@ -150,7 +150,7 @@ methodmap LastKnight < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime() + 9000.0;
-			RaidModeScaling = 100.0;
+			RaidModeScaling = 0.5;
 			RaidAllowsBuildings = true;
 		}
 		
@@ -427,7 +427,11 @@ void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon
 		case 0:
 		{
 			if(ratio < 3)
+			{
 				npc.m_iPhase = 1;
+				if(RaidBossActive == EntRefToEntIndex(npc.index))
+					RaidModeScaling = 0.75;
+			}
 		}
 		case 1:
 		{
@@ -439,6 +443,9 @@ void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon
 				npc.AddGesture("ACT_LAST_KNIGHT_REVIVE");
 				npc.m_flNextThinkTime = gameTime + 8.3;
 				npc.StopPathing();
+
+				if(RaidBossActive == EntRefToEntIndex(npc.index))
+					RaidModeScaling = 1.0;
 			}
 		}
 	}

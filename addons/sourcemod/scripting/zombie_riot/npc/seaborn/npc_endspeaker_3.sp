@@ -44,7 +44,7 @@ methodmap EndSpeaker3 < EndSpeakerNormal
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime() + 9000.0;
-			RaidModeScaling = 65.0;
+			RaidModeScaling = 0.65;
 			RaidAllowsBuildings = true;
 		}
 		return npc;
