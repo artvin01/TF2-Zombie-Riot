@@ -28,6 +28,8 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
 	char buffer[64];
 	KvGetSectionName(kv, buffer, sizeof(buffer));
+
+#if defined ZR
 	if(BlockNext[client])
 	{
 		if(!StrEqual(buffer, "+inspect_server", false))
@@ -35,6 +37,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 		
 		return Plugin_Handled;
 	}
+#endif
 	
 	if(RTSCamera_ClientCommandKeyValues(client, buffer))
 	{

@@ -130,7 +130,6 @@ void RaidbossBobTheFirst_OnMapStart()
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
 	gExplosive1 = PrecacheModel("materials/sprites/sprite_fire01.vmt");
-	PrecacheSoundCustom("#zombiesurvival/bob_raid/bob.mp3");
 	PrecacheSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE);
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bob The First");
