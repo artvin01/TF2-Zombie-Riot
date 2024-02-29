@@ -1963,13 +1963,13 @@ MRESReturn OnWeaponReplenishClipPre(int weapon) // Not when the player press rel
 	return MRES_Ignored;
 	
 }
-#endif	// Non-RTS
 
 void Upgrade_Check_OnEntityCreated(int client)
 {
 	g_DhookCheckUpgradeOnHit.HookEntity(Hook_Pre, client, DHook_CheckUpgradeOnHitPre);
 	g_DhookCheckUpgradeOnHit.HookEntity(Hook_Post, client, DHook_CheckUpgradeOnHitPost);
 }
+#endif	// ZR
 
 void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 {
