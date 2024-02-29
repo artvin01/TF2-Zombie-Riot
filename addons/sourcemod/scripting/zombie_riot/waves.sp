@@ -2117,7 +2117,7 @@ void Waves_UpdateMvMStats()
 	if(!UpdateFramed)
 	{
 		UpdateFramed = true;
-		RequestFrames(UpdateMvMStatsFrame, 30);
+		RequestFrames(UpdateMvMStatsFrame, 10);
 	}
 }
 
