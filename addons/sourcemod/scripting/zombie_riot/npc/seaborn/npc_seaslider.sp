@@ -38,25 +38,7 @@ static const char g_MeleeAttackSounds[][] =
 	"npc/zombie/zo_attack2.wav"
 };
 
-void SeaSlider_Precache()
-{
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Deep Sea Slider");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaslider");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_slider");
-	data.IconCustom = true;
-	data.Flags = 0;
-	data.Category = Type_Seaborn;
-	data.Func = ClotSummon;
-	NPC_Add(data);
-}
-
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
-{
-	return SeaSlider(client, vecPos, vecAng, ally, data);
-}
-
-methodmap SeaSlider < CSeaBody
+methodmap SeaSlider < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -95,7 +77,7 @@ methodmap SeaSlider < CSeaBody
 			AcceptEntityInput(npc.index, "SetBodyGroup");
 		}
 		
-		npc.SetElite(view_as<bool>(data[0]));
+		i_NpcInternalId[npc.index] = data[0] ? SEASLIDER_ALT : SEASLIDER;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_WALK_ON_FIRE");
 		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
@@ -104,9 +86,8 @@ methodmap SeaSlider < CSeaBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		func_NPCDeath[npc.index] = SeaSlider_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = SeaSlider_OnTakeDamage;
-		func_NPCThink[npc.index] = SeaSlider_ClotThink;
+		
+		SDKHook(npc.index, SDKHook_Think, SeaSlider_ClotThink);
 		
 		npc.m_flSpeed = 250.0;	// 1.1 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -187,11 +168,11 @@ public void SeaSlider_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, npc.m_bElite ? 54.0 : 42.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEASLIDER_ALT ? 54.0 : 42.0, DMG_CLUB);
 						// 280 x 0.15
 						// 360 x 0.15
 
-						SeaSlider_AddNeuralDamage(target, npc.index, npc.m_bElite ? 9 : 7);
+						SeaSlider_AddNeuralDamage(target, npc.index, i_NpcInternalId[npc.index] == SEASLIDER_ALT ? 9 : 7);
 						// 280 x 0.15 x 0.15
 						// 360 x 0.15 x 0.15
 					}
@@ -248,6 +229,8 @@ void SeaSlider_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
+	
+	SDKUnhook(npc.index, SDKHook_Think, SeaSlider_ClotThink);
 }
 
 void SeaSlider_AddNeuralDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)

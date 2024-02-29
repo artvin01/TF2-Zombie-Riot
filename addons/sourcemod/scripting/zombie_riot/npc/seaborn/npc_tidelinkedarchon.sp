@@ -31,24 +31,6 @@ static const char g_MeleeHitSounds[][] =
 	"npc/headcrab/headbite.wav"
 };
 
-void TidelinkedArchon_Precache()
-{
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Tidelinked Archon");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_tidelinkedarchon");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_archon");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Seaborn;
-	data.Func = ClotSummon;
-	NPC_Add(data);
-}
-
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
-{
-	return TidelinkedArchon(client, vecPos, vecAng, ally);
-}
-
 methodmap TidelinkedArchon < CClotBody
 {
 	public void PlayIdleSound()
@@ -81,6 +63,7 @@ methodmap TidelinkedArchon < CClotBody
 		TidelinkedArchon npc = view_as<TidelinkedArchon>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "2.3", "20000", ally, false, true));
 		// 20000 x 1.0
 
+		i_NpcInternalId[npc.index] = TIDELINKED_ARCHON;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN");
 		KillFeed_SetKillIcon(npc.index, "bread_bite");
@@ -89,9 +72,7 @@ methodmap TidelinkedArchon < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		func_NPCDeath[npc.index] = TidelinkedArchon_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = TidelinkedArchon_OnTakeDamage;
-		func_NPCThink[npc.index] = TidelinkedArchon_ClotThink;
+		SDKHook(npc.index, SDKHook_Think, TidelinkedArchon_ClotThink);
 		
 		npc.m_flSpeed = 300.0;//150.0;	// 0.6 x 250
 		npc.m_flMeleeArmor = 0.5;
@@ -305,4 +286,6 @@ void TidelinkedArchon_NPCDeath(int entity)
 	TidelinkedArchon npc = view_as<TidelinkedArchon>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
+	
+	SDKUnhook(npc.index, SDKHook_Think, TidelinkedArchon_ClotThink);
 }

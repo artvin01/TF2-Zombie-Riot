@@ -66,61 +66,6 @@ void EndSpeaker_MapStart()
 	PrecacheModel("models/headcrabclassic.mdl");
 	PrecacheModel("models/antlion.mdl");
 	PrecacheModel("models/antlion_guard.mdl");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "The Endspeaker, Will of We Many");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_endspeaker_freeplay");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_endspeaker");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Seaborn;
-	data.Func = ClotSummon0;
-	NPC_Add(data);
-
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_endspeaker_1");
-	data.Flags = MVM_CLASS_FLAG_NORMAL;
-	data.Func = ClotSummon1;
-	NPC_Add(data);
-
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_endspeaker_2");
-	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
-	data.Func = ClotSummon2;
-	NPC_Add(data);
-
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_endspeaker_3");
-	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
-	data.Func = ClotSummon3;
-	NPC_Add(data);
-
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_endspeaker_4");
-	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Func = ClotSummon4;
-	NPC_Add(data);
-}
-
-static any ClotSummon0(int client, float vecPos[3], float vecAng[3], int ally)
-{
-	return EndSpeaker(client, vecPos, vecAng, ally);
-}
-
-static any ClotSummon1(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
-{
-	return EndSpeaker1(client, vecPos, vecAng, ally, data);
-}
-
-static any ClotSummon2(int client, float vecPos[3], float vecAng[3], int ally)
-{
-	return EndSpeaker2(ally);
-}
-
-static any ClotSummon3(int client, float vecPos[3], float vecAng[3], int ally)
-{
-	return EndSpeaker3(ally);
-}
-
-static any ClotSummon4(int client, float vecPos[3], float vecAng[3], int ally)
-{
-	return EndSpeaker4(ally);
 }
 
 #define BUFF_FOUNDER		(1 << 0)

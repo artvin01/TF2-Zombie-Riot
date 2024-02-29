@@ -36,24 +36,9 @@ void SeaRunner_MapStart()
 	PrecacheSoundArray(g_HurtSound);
 
 	PrecacheModel("models/headcrabclassic.mdl");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Shell Sea Runner");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_searunner");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_runner");
-	data.IconCustom = true;
-	data.Flags = 0;
-	data.Category = Type_Seaborn;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
-{
-	return SeaRunner(client, vecPos, vecAng, ally, data);
-}
-
-methodmap SeaRunner < CSeaBody
+methodmap SeaRunner < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -86,7 +71,7 @@ methodmap SeaRunner < CSeaBody
 		// 3000 x 0.15
 		// 4000 x 0.15
 
-		npc.SetElite(view_as<bool>(data[0]));
+		i_NpcInternalId[npc.index] = data[0] ? SEARUNNER_ALT : SEARUNNER;
 		i_NpcWeight[npc.index] = 0;
 		npc.SetActivity("ACT_RUN");
 		KillFeed_SetKillIcon(npc.index, "bread_bite");
@@ -95,9 +80,8 @@ methodmap SeaRunner < CSeaBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		func_NPCDeath[npc.index] = SeaRunner_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = SeaRunner_OnTakeDamage;
-		func_NPCThink[npc.index] = SeaRunner_ClotThink;
+		
+		SDKHook(npc.index, SDKHook_Think, SeaRunner_ClotThink);
 		
 		npc.m_flSpeed = data[0] ? 475.0 : 330.0;	// 1.9 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -178,7 +162,7 @@ public void SeaRunner_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, npc.m_bElite ? 41.0 : 32.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEARUNNER_ALT ? 41.0 : 32.0, DMG_CLUB);
 						// 280 x 0.15
 						// 340 x 0.15
 					}
@@ -235,6 +219,8 @@ void SeaRunner_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
+	
+	SDKUnhook(npc.index, SDKHook_Think, SeaRunner_ClotThink);
 }
 
 

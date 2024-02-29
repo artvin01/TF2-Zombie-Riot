@@ -40,24 +40,9 @@ void SeaPiercer_MapStart()
 	PrecacheSoundArray(g_HurtSound);
 
 	PrecacheModel("models/headcrabblack.mdl");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Primal Sea Piercer");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seapiercer");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_piercer");
-	data.IconCustom = true;
-	data.Flags = 0;
-	data.Category = Type_Seaborn;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
-{
-	return SeaPiercer(client, vecPos, vecAng, ally, data);
-}
-
-methodmap SeaPiercer < CSeaBody
+methodmap SeaPiercer < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -90,7 +75,7 @@ methodmap SeaPiercer < CSeaBody
 		// 9000 x 0.15
 		// 12500 x 0.15
 
-		npc.SetElite(view_as<bool>(data[0]));
+		i_NpcInternalId[npc.index] = data[0] ? SEAPIERCER_ALT : SEAPIERCER;
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_RUN");
 		KillFeed_SetKillIcon(npc.index, "bread_bite");
@@ -99,9 +84,8 @@ methodmap SeaPiercer < CSeaBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		func_NPCDeath[npc.index] = SeaPiercer_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = SeaPiercer_OnTakeDamage;
-		func_NPCThink[npc.index] = SeaPiercer_ClotThink;
+		
+		SDKHook(npc.index, SDKHook_Think, SeaPiercer_ClotThink);
 		
 		npc.m_flSpeed = 187.5;	// 0.75 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -192,7 +176,7 @@ public void SeaPiercer_ClotThink(int iNPC)
 						}
 						else
 						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, npc.m_bElite ? 52.5 : 41.25, DMG_DROWN);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEAPIERCER_ALT ? 52.5 : 41.25, DMG_DROWN);
 							// 550 x 0.15 x 0.5
 							// 700 x 0.15 x 0.5
 						}
@@ -252,4 +236,6 @@ void SeaPiercer_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
+	
+	SDKUnhook(npc.index, SDKHook_Think, SeaPiercer_ClotThink);
 }

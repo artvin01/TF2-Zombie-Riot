@@ -8,24 +8,6 @@ bool CitizenRunner_WasKilled()
 	return CitizenHasDied;
 }
 
-void CitizenRuunner_Precache()
-{
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Citizen");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_citizen_runner");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_citizen");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_SUPPORT;
-	data.Category = Type_Ally;
-	data.Func = ClotSummon;
-	NPC_Add(data);
-}
-
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
-{
-	return CitizenRunner(client, vecPos, vecAng, data);
-}
-
 methodmap CitizenRunner < CClotBody
 {
 	public CitizenRunner(int client, float vecPos[3], float vecAng[3], const char[] data)
@@ -39,6 +21,7 @@ methodmap CitizenRunner < CClotBody
 		Citizen_GenerateModel(seed, view_as<bool>(seed % 2), Cit_Unarmed, buffer, sizeof(buffer));
 		CitizenRunner npc = view_as<CitizenRunner>(CClotBody(vecPos, vecAng, buffer, "1.15", "500", TFTeam_Red, false,_,_,_,_,_,true));
 		
+		i_NpcInternalId[npc.index] = CITIZEN_RUNNER;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN_PROTECTED");
 		
@@ -48,9 +31,7 @@ methodmap CitizenRunner < CClotBody
 
 		npc.m_bDissapearOnDeath = true;
 
-		func_NPCDeath[npc.index] = CitizenRunner_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = CitizenRunner_OnTakeDamage;
-		func_NPCThink[npc.index] = CitizenRunner_ClotThink;
+		SDKHook(npc.index, SDKHook_Think, CitizenRunner_ClotThink);
 		
 		npc.m_flSpeed = 241.5;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -134,6 +115,7 @@ public void CitizenRunner_ClotThink(int iNPC)
 void CitizenRunner_NPCDeath(int entit)
 {
 	CitizenRunner npc = view_as<CitizenRunner>(entit);
+	SDKUnhook(npc.index, SDKHook_Think, CitizenRunner_ClotThink);
 	
 	if(!Waves_InSetup())
 	{

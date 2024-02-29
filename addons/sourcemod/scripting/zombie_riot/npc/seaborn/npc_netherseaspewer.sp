@@ -31,25 +31,7 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/bow_shoot.wav",
 };
 
-void SeaSpewer_Precache()
-{
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Nethersea Spewer");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseaspewer");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_spewer");
-	data.IconCustom = true;
-	data.Flags = 0;
-	data.Category = Type_Seaborn;
-	data.Func = ClotSummon;
-	NPC_Add(data);
-}
-
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
-{
-	return SeaSpewer(client, vecPos, vecAng, ally, data);
-}
-
-methodmap SeaSpewer < CSeaBody
+methodmap SeaSpewer < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -84,7 +66,7 @@ methodmap SeaSpewer < CSeaBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		npc.SetElite(elite, carrier);
+		i_NpcInternalId[npc.index] = carrier ? SEASPEWER_CARRIER : (elite ? SEASPEWER_ALT : SEASPEWER);
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_3");
 		KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
@@ -93,9 +75,8 @@ methodmap SeaSpewer < CSeaBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		func_NPCDeath[npc.index] = SeaSpewer_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = SeaSpewer_OnTakeDamage;
-		func_NPCThink[npc.index] = SeaSpewer_ClotThink;
+		
+		SDKHook(npc.index, SDKHook_Think, SeaSpewer_ClotThink);
 		
 		npc.m_flSpeed = 75.0;	// 0.3 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -198,11 +179,11 @@ public void SeaSpewer_ClotThink(int iNPC)
 				{
 					PredictSubjectPositionForProjectiles(npc, enemy[i], 1200.0, _,vecTarget);
 
-					int entity = npc.FireArrow(vecTarget, npc.m_bElite ? 240.0 : 195.0, 1200.0, "models/weapons/w_bugbait.mdl");
+					int entity = npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPEWER_ALT ? 240.0 : 195.0, 1200.0, "models/weapons/w_bugbait.mdl");
 					// 650 * 0.3
 					// 800 * 0.3
 
-					i_NervousImpairmentArrowAmount[entity] = npc.m_bCarrier ? 6 : (npc.m_bElite ? 5 : 4);
+					i_NervousImpairmentArrowAmount[entity] = i_NpcInternalId[npc.index] == SEASPEWER_CARRIER ? 6 : (i_NpcInternalId[npc.index] == SEASPEWER_ALT ? 5 : 4);
 					// 650 * 0.02 * 0.3
 					// 800 * 0.02 * 0.3
 					// 650 * 0.03 * 0.3
@@ -342,13 +323,16 @@ void SeaSpewer_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	if(npc.m_bCarrier)
+	if(i_NpcInternalId[npc.index] == SEASPEWER_CARRIER)
 	{
 		float pos[3];
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 		Remains_SpawnDrop(pos, Buff_Spewer);
 	}
 	
+	
+	SDKUnhook(npc.index, SDKHook_Think, SeaSpewer_ClotThink);
+
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 

@@ -31,21 +31,6 @@ void UnderTides_MapStart()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	
 	PrecacheModel("models/synth.mdl");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Sal Viento Bishop Quintus");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_undertides");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_undertides");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Seaborn;
-	data.Func = ClotSummon;
-	NPC_Add(data);
-}
-
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
-{
-	return UnderTides(client, vecPos, vecAng, ally);
 }
 
 methodmap UnderTides < CClotBody
@@ -88,8 +73,7 @@ methodmap UnderTides < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		npc.m_bDissapearOnDeath = true;
 		
-		func_NPCDeath[npc.index] = UnderTides_NPCDeath;
-		func_NPCThink[npc.index] = UnderTides_ClotThink;
+		SDKHook(npc.index, SDKHook_Think, UnderTides_ClotThink);
 		
 		i_NpcIsABuilding[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
@@ -507,6 +491,8 @@ void UnderTides_NPCDeath(int entity)
 	float pos[3];
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	
+	SDKUnhook(npc.index, SDKHook_Think, UnderTides_ClotThink);
 	
 	Spawns_RemoveFromArray(entity);
 	

@@ -26,25 +26,7 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/npc/male01/overthere02.wav",
 };
 
-void SeaSwarmcaller_Precache()
-{
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Nethersea Swarmcaller");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseaswarmcaller");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_swarmcaller");
-	data.IconCustom = true;
-	data.Flags = 0;
-	data.Category = Type_Seaborn;
-	data.Func = ClotSummon;
-	NPC_Add(data);
-}
-
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
-{
-	return SeaSwarmcaller(client, vecPos, vecAng, ally, data);
-}
-
-methodmap SeaSwarmcaller < CSeaBody
+methodmap SeaSwarmcaller < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -75,7 +57,7 @@ methodmap SeaSwarmcaller < CSeaBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		npc.SetElite(elite, carrier);
+		i_NpcInternalId[npc.index] = carrier ? SEASWARMCALLER_CARRIER : (elite ? SEASWARMCALLER_ALT : SEASWARMCALLER);
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_3");
 		KillFeed_SetKillIcon(npc.index, "saw_kill");
@@ -84,9 +66,8 @@ methodmap SeaSwarmcaller < CSeaBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		func_NPCDeath[npc.index] = SeaSwarmcaller_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = SeaSwarmcaller_OnTakeDamage;
-		func_NPCThink[npc.index] = SeaSwarmcaller_ClotThink;
+		
+		SDKHook(npc.index, SDKHook_Think, SeaSwarmcaller_ClotThink);
 		
 		npc.m_flSpeed = 200.0;	// 0.8 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -182,7 +163,7 @@ public void SeaSwarmcaller_ClotThink(int iNPC)
 			spawnRing_Vectors(vecMe, 100.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 640.0);
 			// 200 x 1.6
 			
-			Explode_Logic_Custom(npc.m_bElite ? 24.0 : 21.0, -1, npc.index, -1, vecMe, 320.0, _, _, true, _, false, _, SeaSwarmcaller_ExplodePost);
+			Explode_Logic_Custom(i_NpcInternalId[npc.index] == SEASWARMCALLER_ALT ? 24.0 : 21.0, -1, npc.index, -1, vecMe, 320.0, _, _, true, _, false, _, SeaSwarmcaller_ExplodePost);
 			// 140 x 0.15
 			// 160 x 0.15
 		}
@@ -197,7 +178,7 @@ public void SeaSwarmcaller_ClotThink(int iNPC)
 
 public void SeaSwarmcaller_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
-	SeaSlider_AddNeuralDamage(victim, attacker, npc.m_bCarrier ? 3 : 2);
+	SeaSlider_AddNeuralDamage(victim, attacker, i_NpcInternalId[attacker] == SEASWARMCALLER_CARRIER ? 3 : 2);
 	// 140 x 0.05 x 0.15
 	// 160 x 0.05 x 0.15
 	// 140 x 0.1 x 0.15
@@ -224,13 +205,16 @@ void SeaSwarmcaller_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	if(npc.m_bCarrier)
+	if(i_NpcInternalId[npc.index] == SEASWARMCALLER_CARRIER)
 	{
 		float pos[3];
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 		Remains_SpawnDrop(pos, Buff_Swarmcaller);
 	}
 	
+	
+	SDKUnhook(npc.index, SDKHook_Think, SeaSwarmcaller_ClotThink);
+
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 

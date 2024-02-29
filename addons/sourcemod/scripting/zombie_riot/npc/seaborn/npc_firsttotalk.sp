@@ -35,21 +35,6 @@ void FirstToTalk_MapStart()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_AngerSounds);
 	LaserSprite = PrecacheModel(SPRITE_SPRITE);
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "The First To Talk");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_firsttotalk");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_firsttotalk");
-	data.IconCustom = true;
-	data.Flags = 0;
-	data.Category = Type_Seaborn;
-	data.Func = ClotSummon;
-	NPC_Add(data);
-}
-
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
-{
-	return FirstToTalk(client, vecPos, vecAng, ally);
 }
 
 methodmap FirstToTalk < CClotBody
@@ -83,6 +68,7 @@ methodmap FirstToTalk < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
+		i_NpcInternalId[npc.index] = FIRSTTOTALK;
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
 		KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
@@ -91,8 +77,8 @@ methodmap FirstToTalk < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		func_NPCDeath[npc.index] = FirstToTalk_NPCDeath;
-		func_NPCThink[npc.index] = FirstToTalk_ClotThink;
+		
+		SDKHook(npc.index, SDKHook_Think, FirstToTalk_ClotThink);
 		
 		npc.m_flSpeed = 200.0;	// 0.8 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -392,6 +378,9 @@ void FirstToTalk_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
+	
+	SDKUnhook(npc.index, SDKHook_Think, FirstToTalk_ClotThink);
+
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

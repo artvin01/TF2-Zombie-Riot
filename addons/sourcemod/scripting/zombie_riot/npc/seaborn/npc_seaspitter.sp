@@ -37,25 +37,7 @@ static const char g_MeleeAttackSounds[][] =
 	"npc/zombie/zo_attack2.wav"
 };
 
-void SeaSpitter_Precache()
-{
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Ridge Sea Spitter");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaspitter");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_spitter");
-	data.IconCustom = true;
-	data.Flags = 0;
-	data.Category = Type_Seaborn;
-	data.Func = ClotSummon;
-	NPC_Add(data);
-}
-
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
-{
-	return SeaSpitter(client, vecPos, vecAng, ally, data);
-}
-
-methodmap SeaSpitter < CSeaBody
+methodmap SeaSpitter < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -94,7 +76,7 @@ methodmap SeaSpitter < CSeaBody
 			AcceptEntityInput(npc.index, "SetBodyGroup");
 		}
 		
-		npc.SetElite(view_as<bool>(data[0]));
+		i_NpcInternalId[npc.index] = data[0] ? SEASPITTER_ALT : SEASPITTER;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_WALK");
 		KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
@@ -103,9 +85,8 @@ methodmap SeaSpitter < CSeaBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		func_NPCDeath[npc.index] = SeaSpitter_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = SeaSpitter_OnTakeDamage;
-		func_NPCThink[npc.index] = SeaSpitter_ClotThink;
+		
+		SDKHook(npc.index, SDKHook_Think, SeaSpitter_ClotThink);
 		
 		npc.m_flSpeed = 187.5;	// 0.75 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -165,7 +146,7 @@ public void SeaSpitter_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 15000.0);
 				
 				npc.PlayRangedSound();
-				int entity = npc.FireArrow(vecTarget, npc.m_bElite ? 24.0 : 21.0, 800.0, "models/weapons/w_bugbait.mdl");
+				int entity = npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPITTER_ALT ? 24.0 : 21.0, 800.0, "models/weapons/w_bugbait.mdl");
 				// 280 * 0.15
 				// 320 * 0.15
 				
@@ -251,4 +232,6 @@ void SeaSpitter_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
+	
+	SDKUnhook(npc.index, SDKHook_Think, SeaSpitter_ClotThink);
 }
