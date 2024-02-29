@@ -211,6 +211,7 @@ int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
 int CurrentCash;
+int GlobalExtraCash;
 bool LastMann;
 bool LastMannScreenEffect;
 int LimitNpcs;

@@ -2398,7 +2398,7 @@ static void UpdateMvMStatsFrame()
 
 		SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
 		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
-		SetEntData(mvm, m_runningTotalWaveStats + 12, 0, 4, true);	// nCreditsBonus
+		SetEntData(mvm, m_runningTotalWaveStats + 12, GlobalExtraCash, 4, true);	// nCreditsBonus
 	}
 
 	//profiler.Stop();
