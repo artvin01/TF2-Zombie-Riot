@@ -104,6 +104,8 @@ static ConVar CvarSkyName;
 static char SkyNameRestore[64];
 static int FogEntity = INVALID_ENT_REFERENCE;
 
+static StringMap g_AllocPooledStringCache;
+
 static int Gave_Ammo_Supply;
 static int VotedFor[MAXTF2PLAYERS];
 static float VoteEndTime;
@@ -147,6 +149,7 @@ bool Waves_InSetup()
 
 void Waves_MapStart()
 {
+	delete g_AllocPooledStringCache;
 	FogEntity = INVALID_ENT_REFERENCE;
 	SkyNameRestore[0] = 0;
 
@@ -367,11 +370,13 @@ void Waves_DisplayHintVote()
 	}
 }
 
-void OnMapEndWaves()
+void Waves_MapEnd()
 {
 	CurrentGame = -1;
 	delete Voting;
 	Zero(VotedFor);
+	Waves_SetDifficultyName(NULL_STRING);
+	UpdateMvMStatsFrame();
 }
 
 void Waves_SetupVote(KeyValues map)
@@ -728,6 +733,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	}
 
 	Waves_UpdateMvMStats();
+	DoGlobalMultiScaling();
 }
 
 void Waves_RoundStart()
@@ -941,6 +947,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				delete kv;
 
 				Waves_SetReadyStatus(1);
+				DoGlobalMultiScaling();
 				Waves_UpdateMvMStats();
 			}
 		}
@@ -2256,7 +2263,7 @@ static void UpdateMvMStatsFrame()
 		int entity = MaxClients + 1;
 		while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
-			if(GetTeam(entity) != TFTeam_Red)
+			if(!b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 			{
 				cashLeft += f_CreditsOnKill[entity];
 				activecount++;
@@ -2522,7 +2529,6 @@ static void SetWaveClass(int objective, int index, int count = 0, const char[] i
  * https://github.com/alliedmodders/sourcemod/blob/b14c18ee64fc822dd6b0f5baea87226d59707d5a/core/HalfLife2.cpp#L1415-L1423
  */
 stock Address AllocPooledString(const char[] value) {
-	static StringMap g_AllocPooledStringCache;
 	if(!g_AllocPooledStringCache)
 		g_AllocPooledStringCache = new StringMap();
 

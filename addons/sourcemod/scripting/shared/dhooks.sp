@@ -15,11 +15,9 @@ static int GetChargeEffectBeingProvided;
 #if defined ZR
 static bool IsRespawning;
 //static bool Disconnecting;
-#endif
-
-#if defined ZR
 static DynamicHook g_WrenchSmack;
 //DynamicHook g_ObjStartUpgrading;
+static Address CTeamplayRoundBasedRules = Address_Null;
 #endif
 
 static DynamicDetour gH_MaintainBotQuota = null;
@@ -100,6 +98,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
 	DHook_CreateDetour(gamedata, "CTFPlayerShared::PulseRageBuff()", Dhook_PulseFlagBuff,_);
+	DHook_CreateDetour(gamedata, "CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState", _, DHook_ResetPlayerAndTeamReadyStatePost);
 #endif
 
 	//thanks to https://github.com/nosoop/SM-TFCustomAttributeStarterPack/blob/6e8ffcc929553f8906f0b32d92b649c32681cd1e/scripting/attr_buff_override.sp#L53
@@ -2050,6 +2049,17 @@ public MRESReturn Dhook_PulseFlagBuff(Address pPlayerShared)
 		f_BannerDurationActive[client] = GetGameTime() + 1.1;
 	*/
 	return MRES_Supercede;
+}
+
+Address DHook_CTeamplayRoundBasedRules()
+{
+	return CTeamplayRoundBasedRules;
+}
+
+static MRESReturn DHook_ResetPlayerAndTeamReadyStatePost(Address address)
+{
+	CTeamplayRoundBasedRules = address;
+	return MRES_Ignored;
 }
 
 public MRESReturn Dhook_RaiseFlag_Post(int entity)

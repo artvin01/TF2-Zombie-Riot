@@ -211,7 +211,7 @@ void SDKCall_Setup()
 	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
 	
 #if defined ZR
-	StartPrepSDKCall(SDKCall_Static);
+	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState");
 	SDKResetPlayerAndTeamReadyState = EndPrepSDKCall();
 	if(!SDKResetPlayerAndTeamReadyState)
@@ -507,6 +507,10 @@ stock void Manual_Impulse_101(int client, int health)
 void SDKCall_ResetPlayerAndTeamReadyState()
 {
 	if(SDKResetPlayerAndTeamReadyState)
-		SDKCall(SDKResetPlayerAndTeamReadyState);
+	{
+		Address address = DHook_CTeamplayRoundBasedRules();
+		if(address != Address_Null)
+			SDKCall(SDKResetPlayerAndTeamReadyState, address);
+	}
 }
 #endif

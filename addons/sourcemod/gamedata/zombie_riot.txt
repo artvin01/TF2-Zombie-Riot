@@ -827,6 +827,13 @@
 				"return"		"int"
 				"this"			"entity"
 			}
+			"CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState"
+			{
+				"signature"		"CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState"
+				"callconv"		"thiscall"
+				"return"		"void"
+				"this"			"address"
+			}
 		}
 		"Offsets"
 		{
