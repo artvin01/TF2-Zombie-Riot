@@ -299,7 +299,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 		case 3:
 			Dimension_Summon_Npc(client, ALT_SNIPER_RAILGUNNER ,weapon, 0.7, 1.65, "eyeboss_tp_player");
 		case 4:
-			Dimension_Summon_Npc(client, ALT_IKUNAGAE ,weapon, 1.6, 1.45, "eyeboss_tp_player");
+			Dimension_Summon_Npc(client, ALT_IKUNAGAE ,weapon, 1.8, 1.75, "eyeboss_tp_player");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -405,7 +405,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 		case 1:
 			Dimension_Summon_Npc(client, SEABORN_SCOUT ,weapon, 1.15, 1.3, "utaunt_constellations_blue_base");
 		case 2:
-			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_BESERKER ,weapon, 1.4, 1.1, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_BESERKER ,weapon, 1.6, 1.2, "utaunt_constellations_blue_base");
 		case 3:
 			Dimension_Summon_Npc(client, SEABORN_GUARD ,weapon, 1.2, 1.1, "utaunt_constellations_blue_base");
 		case 4:
@@ -477,7 +477,7 @@ public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &
 	switch(GetRandomInt(1, 4))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, INTERITUS_WINTER_SKIN_HUNTER ,weapon, 1.1, 1.3, "teleporter_blue_exit");
+			Dimension_Summon_Npc(client, INTERITUS_WINTER_SKIN_HUNTER ,weapon, 1.1, 1.4, "teleporter_blue_exit");
 		case 2:
 			Dimension_Summon_Npc(client, INTERITUS_ANARCHY_HITMAN ,weapon, 0.8, 1.1, "teleporter_blue_exit");
 		case 3:
@@ -568,8 +568,13 @@ public Action Dimension_GiveStrength(Handle timer, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity) && !b_NpcHasDied[entity])
 	{	
-		fl_Extra_Damage[entity] *= 1.25;	
+		fl_Extra_Damage[entity] *= 1.25;
+		if(RaidbossIgnoreBuildingsLogic(1))
+		{
+			fl_Extra_Damage[entity] *= 1.2;
+		}	
 	}
+
 	
 	return Plugin_Stop;
 }
