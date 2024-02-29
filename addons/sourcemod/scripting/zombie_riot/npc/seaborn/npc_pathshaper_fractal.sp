@@ -31,6 +31,13 @@ static const char g_MeleeHitSounds[][] =
 	"npc/headcrab/headbite.wav"
 };
 
+static int NPCId;
+
+int PathshaperFractal_ID()
+{
+	return NPCId;
+}
+
 void PathshaperFractal_Precache()
 {
 	NPCData data;

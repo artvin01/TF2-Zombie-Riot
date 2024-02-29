@@ -84,10 +84,10 @@ methodmap Isharmla < CClotBody
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSALPHA);
 		npc.m_bTeamGlowDefault = true;
 
-		if(ally != TFTeam_Red && !IsValidEntity(RaidBossActive))
+		if(ally != TFTeam_Red)
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidModeTime = GetGameTime() + 9000.0;
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
@@ -181,7 +181,7 @@ public void Isharmla_ClotThink(int iNPC)
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3;
 		
-		int entity = NPC_CreateById(ISHARMLA_TRANS, -1, pos, ang, GetTeam(npc.index));
+		int entity = NPC_CreateByName("npc_isharmla_trans", -1, pos, ang, GetTeam(npc.index));
 		if(entity > MaxClients)
 		{
 			b_IsEntityNeverTranmitted[npc.index] = true;

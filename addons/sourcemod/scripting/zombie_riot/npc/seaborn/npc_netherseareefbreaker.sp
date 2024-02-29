@@ -299,7 +299,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 							SDKHooks_TakeDamage(target, npc.index, npc.index, attack * 1.1, DMG_CLUB);
 							npc.PlayMeleeHitSound();
 
-							if(i_NpcInternalId[npc.index] == SEAREEFBREAKER_CARRIER)
+							if(npc.m_bCarrier)
 								SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack * 0.2));
 						}
 					}
@@ -325,7 +325,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 						SetParent(entity, f_ArrowTrailParticle[entity]);
 						f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
 
-						if(i_NpcInternalId[npc.index] == SEAREEFBREAKER_CARRIER)
+						if(npc.m_bCarrier)
 							i_NervousImpairmentArrowAmount[entity] = RoundToCeil(attack * 0.1);
 					}
 				}

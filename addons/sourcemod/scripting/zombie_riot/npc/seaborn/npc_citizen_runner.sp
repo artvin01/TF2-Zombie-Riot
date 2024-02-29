@@ -8,7 +8,7 @@ bool CitizenRunner_WasKilled()
 	return CitizenHasDied;
 }
 
-void CitizenRuunner_Precache()
+void CitizenRunner_Precache()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Citizen");
@@ -145,9 +145,7 @@ void CitizenRunner_NPCDeath(int entit)
 
 		SeaFounder_SpawnNethersea(pos);
 
-		static const int RandomInfection[] = { SEAPREDATOR_ALT, SEAPREDATOR_ALT, SEAFOUNDER_ALT, SEASPEWER_ALT, SEASWARMCALLER_ALT };
-
-		int entity = NPC_CreateById(RandomInfection[GetURandomInt() % sizeof(RandomInfection)], -1, pos, angles, TFTeam_Blue);
+		int entity = NPC_CreateByName("npc_netherseafounder", -1, pos, angles, TFTeam_Blue);
 		if(entity > MaxClients)
 		{
 			Zombies_Currently_Still_Ongoing++;

@@ -248,7 +248,7 @@ void Pathshaper_NPCDeath(int entityy)
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PATHSHAPER_FRACTAL && IsEntityAlive(entity) && GetTeam(entity) == team)
+		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PathshaperFractal_ID() && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
 			RequestFrame(KillNpc, i_ObjectsNpcsTotal[i]);
 		}
@@ -262,7 +262,7 @@ void Pathshaper_SpawnFractal(CClotBody npc, int health, int limit)
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PATHSHAPER_FRACTAL && IsEntityAlive(entity) && GetTeam(entity) == team)
+		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PathshaperFractal_ID() && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
 			if(++count == limit)
 				return;
@@ -272,7 +272,7 @@ void Pathshaper_SpawnFractal(CClotBody npc, int health, int limit)
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	
-	int entity = NPC_CreateById(PATHSHAPER_FRACTAL, -1, pos, ang, GetTeam(npc.index));
+	int entity = NPC_CreateById(PathshaperFractal_ID(), -1, pos, ang, GetTeam(npc.index));
 	if(entity > MaxClients)
 	{
 		if(GetTeam(npc.index) != TFTeam_Red)

@@ -259,7 +259,7 @@ methodmap Bloonarius < CClotBody
 		}*/
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
-		RaidAllowsBuildings = true;
+		RaidAllowsBuildings = elite;
 		
 		SetBossBloonPower(CountPlayersOnRed(), elite);
 		
@@ -470,7 +470,7 @@ public void Bloonarius_ClotThink(int iNPC)
 						}
 						else
 						{
-							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 16.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 160.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 						}
 					}
 				}

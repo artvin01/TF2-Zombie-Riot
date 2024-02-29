@@ -279,7 +279,7 @@ public void SeaRepear_ExplodePost(int attacker, int victim, float damage, int we
 {
 	float vic_vec[3]; WorldSpaceCenter(victim, vic_vec);
 	ParticleEffectAt(vic_vec, "water_bulletsplash01", 1.5);
-	SeaSlider_AddNeuralDamage(victim, attacker, npc.m_bElite ? 15 : 12);
+	SeaSlider_AddNeuralDamage(victim, attacker, view_as<SeaReaper>(attacker).m_bElite ? 15 : 12);
 	// 400 x 0.2 x 0.15
 	// 500 x 0.2 x 0.15
 }

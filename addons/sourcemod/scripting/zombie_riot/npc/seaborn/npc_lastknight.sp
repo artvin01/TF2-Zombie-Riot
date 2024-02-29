@@ -84,12 +84,14 @@ methodmap LastKnight < CClotBody
 	
 	public LastKnight(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		if(data[0] == 'R' || data[0] == 'F')
+		if(data[0] == 'N')
 		{
+			// Normal
 			PeaceKnight = -1;
 		}
-		else if(data[0])
+		else if(data[0] == 'F')
 		{
+			// Freeplay
 			PeaceKnight = 0;
 		}
 		else if(PeaceKnight > 0)
@@ -143,6 +145,14 @@ methodmap LastKnight < CClotBody
 
 		npc.m_iWearable5 = ParticleEffectAt(vecMe, "powerup_icon_reflect", -1.0);
 		SetParent(npc.index, npc.m_iWearable5);
+
+		if(data[1] && ally != TFTeam_Red && !IsValidEntity(RaidBossActive))
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime() + 9000.0;
+			RaidModeScaling = 100.0;
+			RaidAllowsBuildings = true;
+		}
 		
 		return npc;
 	}
@@ -266,7 +276,7 @@ public void LastKnight_ClotThink(int iNPC)
 		}
 
 		// Won't attack runners, find players
-		if(npc.m_iTarget < 1 || i_NpcInternalId[npc.m_iTarget] == CITIZEN_RUNNER)
+		if(npc.m_iTarget < 1)
 			npc.m_iTarget = GetClosestTarget(npc.index, npc.m_iPhase == 2, _, false, true);
 	}
 

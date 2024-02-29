@@ -260,7 +260,7 @@ public Action SeaPredator_OnTakeDamage(int victim, int &attacker, int &inflictor
 	float gameTime = GetGameTime(npc.index);
 
 	static int Pity;
-	if(Pity < 30 && npc.m_flNextDelayTime <= (gameTime + DEFAULT_UPDATE_DELAY_FLOAT) && !NpcStats_IsEnemySilenced(npc.index) && (GetURandomInt() % (i_NpcInternalId[npc.index] == SEAPREDATOR_ALT ? 5 : 3)))
+	if(Pity < 30 && npc.m_flNextDelayTime <= (gameTime + DEFAULT_UPDATE_DELAY_FLOAT) && !NpcStats_IsEnemySilenced(npc.index) && (GetURandomInt() % (npc.m_bElite ? 4 : 3)))
 	{
 		if(attacker <= MaxClients && attacker > 0)
 		{
@@ -279,7 +279,7 @@ public Action SeaPredator_OnTakeDamage(int victim, int &attacker, int &inflictor
 		}
 	
 		damage = 0.0;
-		Pity += i_NpcInternalId[npc.index] == SEAPREDATOR_ALT ? 1 : 2;
+		Pity += npc.m_bElite ? 1 : 2;
 	}
 	else if(npc.m_flHeadshotCooldown < gameTime)
 	{

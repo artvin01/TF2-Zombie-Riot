@@ -38,6 +38,14 @@ methodmap EndSpeaker2 < EndSpeakerSmall
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 255, 200, 255);
+
+		if(!npc.m_bHardMode && ally != TFTeam_Red && !IsValidEntity(RaidBossActive))
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime() + 9000.0;
+			RaidModeScaling = 35.0;
+			RaidAllowsBuildings = true;
+		}
 		return npc;
 	}
 }

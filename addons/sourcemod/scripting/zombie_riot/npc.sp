@@ -235,17 +235,49 @@ void NPC_ConfigSetup()
 	NearlSwordAbility_OnMapStart_NPC();
 
 	SeaRunner_MapStart();
-	SeaPiercer_MapStart();
+	SeaSlider_Precache();
+	SeaSpitter_Precache();
+	SeaReaper_Precache();
 	SeaCrawler_MapStart();
+	SeaPiercer_MapStart();
 	FirstToTalk_MapStart();
 	UnderTides_MapStart();
+	Remain_MapStart();
+	SeaFounder_Precache();
+	SeaPredator_Precache();
+	SeaBrandguider_Precache();
+	SeaSpewer_Precache();
+	SeaSwarmcaller_Precache();
+	SeaReefbreaker_Precache();
+	EndSpeaker_MapStart();
+	SeabornScout_Precache();
+	SeabornSoldier_Precache();
+	CitizenRunner_Precache();
+	SeabornPyro_Precache();
+	SeabornDemo_Precache();
+	SeabornHeavy_Precache();
+	SeabornEngineer_Precache();
+	SeabornMedic_Precache();
+	SeabornSniper_Precache();
+	SeabornSpy_Precache();
 	KazimierzKnight_OnMapStart_NPC();
 	KazimierzKnightArcher_OnMapStart_NPC();
 	KazimierzBeserker_OnMapStart_NPC();
 	KazimierzLongArcher_OnMapStart_NPC();
-	EndSpeaker_MapStart();
-	Remain_MapStart();
 	KazimierzKnightAssasin_OnMapStart_NPC();
+	LastKnight_Precache();
+	SeabornGuard_Precache();
+	SeabornVanguard_Precache();
+	SeabornDefender_Precache();
+	SeabornCaster_Precache();
+	SeabornSpecialist_Precache();
+	SeabornSupporter_Precache();
+	SaintCarmen_Precache();
+	TidelinkedArchon_Precache();
+	TidelinkedBishop_Precache();
+	Pathshaper_Precache();
+	PathshaperFractal_Precache();
+	Isharmla_Precache();
 	IsharmlaTrans_MapStart();
 	
 	//Ruina waves	//warp
@@ -574,7 +606,7 @@ enum
 	MEDIVAL_SPEARMEN					= 105,
 	MEDIVAL_HANDCANNONEER				= 106,
 	MEDIVAL_ELITE_SKIRMISHER			= 107,
-	UNUSED_3							= 108,
+
 	MEDIVAL_PIKEMAN						= 109,
 	ALT_MEDIC_SUPPERIOR_MAGE			= 110,
 	CITIZEN								= 111,
@@ -678,65 +710,13 @@ enum
 	STALKER_FATHER		= 194,
 	STALKER_GOGGLES		= 195,
 
-	UNUSED_196		= 196,
 	XENO_RAIDBOSS_BLUE_GOGGLES	= 197,
 	XENO_RAIDBOSS_SUPERSILVESTER	= 198,
 	XENO_RAIDBOSS_NEMESIS	= 199,
 
-	SEARUNNER	= 200,
-	SEARUNNER_ALT,
-	SEASLIDER	= 202,
-	SEASLIDER_ALT,
-	SEASPITTER	= 204,
-	SEASPITTER_ALT,
-	SEAREAPER	= 206,
-	SEAREAPER_ALT,
-	SEACRAWLER	= 208,
-	SEACRAWLER_ALT,
-	SEAPIERCER	= 210,
-	SEAPIERCER_ALT,
-	FIRSTTOTALK	= 212,
-	UNDERTIDES	= 213,
-	SEABORN_KAZIMIERZ_KNIGHT	= 214,
-	SEABORN_KAZIMIERZ_KNIGHT_ARCHER	= 215,
-	SEABORN_KAZIMIERZ_BESERKER	= 216,
-	SEABORN_KAZIMIERZ_LONGARCHER	= 217,
-	REMAINS		= 218,
-	ENDSPEAKER_1	= 219,
-	ENDSPEAKER_2	= 220,
-	ENDSPEAKER_3	= 221,
-	ENDSPEAKER_4	= 222,
-	SEAFOUNDER	= 223,
-	SEAFOUNDER_ALT,
-	SEAFOUNDER_CARRIER,
-	SEAPREDATOR	= 226,
-	SEAPREDATOR_ALT,
-	SEAPREDATOR_CARRIER,
-	SEABRANDGUIDER	= 229,
-	SEABRANDGUIDER_ALT,
-	SEABRANDGUIDER_CARRIER,
-	SEABORN_KAZIMIERZ_ASSASIN_MELEE	= 232,
-	SEASPEWER	= 233,
-	SEASPEWER_ALT,
-	SEASPEWER_CARRIER,
-	SEASWARMCALLER	= 236,
-	SEASWARMCALLER_ALT,
-	SEASWARMCALLER_CARRIER,
-	SEAREEFBREAKER	= 239,
-	SEAREEFBREAKER_ALT,
-	SEAREEFBREAKER_CARRIER,
 	BARRACK_THORNS	= 242,
 	RAIDMODE_GOD_ARKANTOS = 243,
-	SEABORN_SCOUT		= 244,
-	SEABORN_SOLDIER		= 245,
-	CITIZEN_RUNNER		= 246,
-	SEABORN_PYRO		= 247,
-	SEABORN_DEMO		= 248,
-	SEABORN_HEAVY		= 249,
-	SEABORN_ENGINEER	= 250,
-	SEABORN_MEDIC		= 251,
-	SEABORN_SNIPER		= 252,
-	SEABORN_SPY		= 253,
+
 	ALT_BARRACKS_SCHWERTKRIEG = 254,
 	ALT_BARRACK_IKUNAGAE = 255,
 	ALT_BARRACK_RAILGUNNER = 256,
@@ -787,8 +767,7 @@ enum
 	UNUSED_2			= 298,
 	SEA_RAIDBOSS_DONNERKRIEG	= 299,
 	SEA_RAIDBOSS_SCHWERTKRIEG	= 300,
-	BOB_THE_FIRST			= 301,
-	BOB_THE_FIRST_S			= 302,
+
 	SEA_ALLY_SILVESTER		= 303,
 	SEA_ALLY_GOGGLES		= 304,
 	SEA_ALLY_DONNERKRIEG		= 305,
@@ -1960,60 +1939,60 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"",
 	"npc_xeno_raidboss_nemesis",
 
-	"npc_searunner",
-	"",
-	"npc_seaslider",
-	"",
-	"npc_seaspitter",
-	"",
-	"npc_seareaper",
-	"",
-	"npc_seacrawler",
-	"",
-	"npc_seapiercer",
-	"",
-	"npc_firsttotalk",
-	"npc_undertides",
-	"npc_seaborn_kazimersch_knight",
-	"npc_seaborn_kazimersch_archer",
-	"npc_seaborn_kazimersch_beserker",
-	"npc_seaborn_kazimersch_longrange",
-	"npc_endspeaker_freeplay",
-	"npc_endspeaker_1",
-	"npc_endspeaker_2",
-	"npc_endspeaker_3",
-	"npc_endspeaker_4",
-	"npc_netherseafounder",
 	"",
 	"",
-	"npc_netherseapredator",
 	"",
 	"",
-	"npc_netherseabrandguider",
 	"",
 	"",
-	"npc_seaborn_kazimersch_melee_assasin",
-	"npc_netherseaspewer",
 	"",
 	"",
-	"npc_netherseaswarmcaller",
 	"",
 	"",
-	"npc_netherseareefbreaker",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
 	"",
 	"",
 	"",
 	"npc_god_arkantos",
-	"npc_seaborn_scout",
-	"npc_seaborn_soldier",
-	"npc_citizen_runner",
-	"npc_seaborn_pyro",
-	"npc_seaborn_demo",
-	"npc_seaborn_heavy",
-	"npc_seaborn_engineer",
-	"npc_seaborn_medic",
-	"npc_seaborn_sniper",
-	"npc_seaborn_spy",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
 	
 	"",	//schwert
 	"",	//Iku
@@ -2027,25 +2006,25 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"",	//Bereserker
 	"",	//Medic Crossbowman
 
-	"npc_lastknight",
-	"",
-	"npc_saintcarmen",
-	"npc_pathshaper",
-	"npc_pathshaper_fractal",
 	"",
 	"",
 	"",
-	"npc_tidelinkedbishop",
-	"npc_tidelinkedarchon",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
 	"",	//Scientific Witchery
-	"npc_seaborn_guard",
-	"npc_seaborn_defender",
-	"npc_seaborn_vanguard",
-	"npc_seaborn_caster",
-	"npc_seaborn_specialist",
-	"npc_seaborn_supporter",
-	"npc_isharmla",
-	"npc_isharmla_trans",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
 	
 	"",
 	"",
@@ -2065,7 +2044,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"",
 	"npc_sea_donnerkrieg",
 	"npc_sea_schwertkrieg",
-	"npc_bob_the_first_last_savior",
+	"",
 	"",
 	"",
 	"",
@@ -2811,113 +2790,11 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		case XENO_RAIDBOSS_NEMESIS:
 			entity = RaidbossNemesis(client, vecPos, vecAng, team, data);
 		
-		case SEARUNNER, SEARUNNER_ALT:
-			entity = SeaRunner(client, vecPos, vecAng, team, data);
-		
-		case SEASLIDER, SEASLIDER_ALT:
-			entity = SeaSlider(client, vecPos, vecAng, team, data);
-		
-		case SEASPITTER, SEASPITTER_ALT:
-			entity = SeaSpitter(client, vecPos, vecAng, team, data);
-		
-		case SEAREAPER, SEAREAPER_ALT:
-			entity = SeaReaper(client, vecPos, vecAng, team, data);
-		
-		case SEACRAWLER, SEACRAWLER_ALT:
-			entity = SeaCrawler(client, vecPos, vecAng, team, data);
-		
-		case SEAPIERCER, SEAPIERCER_ALT:
-			entity = SeaPiercer(client, vecPos, vecAng, team, data);
-		
-		case FIRSTTOTALK:
-			entity = FirstToTalk(client, vecPos, vecAng, team);
-		
-		case UNDERTIDES:
-			entity = UnderTides(client, vecPos, vecAng, team, data);
-		
-		case SEABORN_KAZIMIERZ_KNIGHT:
-			entity = KazimierzKnight(client, vecPos, vecAng, team);
-		
-		case SEABORN_KAZIMIERZ_KNIGHT_ARCHER:
-			entity = KazimierzKnightArcher(client, vecPos, vecAng, team, data);
-		
-		case SEABORN_KAZIMIERZ_BESERKER:
-			entity = KazimierzBeserker(client, vecPos, vecAng, team);
-		
-		case SEABORN_KAZIMIERZ_LONGARCHER:
-			entity = KazimierzLongArcher(client, vecPos, vecAng, team);
-		
-		case REMAINS:
-			entity = Remains(client, vecPos, vecAng, data);
-		
-		case ENDSPEAKER_1:
-			entity = EndSpeaker1(client, vecPos, vecAng, team, data);
-		
-		case ENDSPEAKER_2:
-			entity = EndSpeaker2(team);
-		
-		case ENDSPEAKER_3:
-			entity = EndSpeaker3(team);
-		
-		case ENDSPEAKER_4:
-			entity = EndSpeaker4(team);
-		
-		case SEAFOUNDER, SEAFOUNDER_ALT, SEAFOUNDER_CARRIER:
-			entity = SeaFounder(client, vecPos, vecAng, team, data);
-		
-		case SEAPREDATOR, SEAPREDATOR_ALT, SEAPREDATOR_CARRIER:
-			entity = SeaPredator(client, vecPos, vecAng, team, data);
-		
-		case SEABRANDGUIDER, SEABRANDGUIDER_ALT, SEABRANDGUIDER_CARRIER:
-			entity = SeaBrandguider(client, vecPos, vecAng, team, data);
-
-		case SEABORN_KAZIMIERZ_ASSASIN_MELEE:
-			entity = KazimierzKnightAssasin(client, vecPos, vecAng, team);
-		
-		case SEASPEWER, SEASPEWER_ALT, SEASPEWER_CARRIER:
-			entity = SeaSpewer(client, vecPos, vecAng, team, data);
-		
-		case SEASWARMCALLER, SEASWARMCALLER_ALT, SEASWARMCALLER_CARRIER:
-			entity = SeaSwarmcaller(client, vecPos, vecAng, team, data);
-		
-		case SEAREEFBREAKER, SEAREEFBREAKER_ALT, SEAREEFBREAKER_CARRIER:
-			entity = SeaReefbreaker(client, vecPos, vecAng, team, data);
-		
 		case BARRACK_THORNS:
 			entity = BarrackThorns(client, vecPos, vecAng, team);
 		
 		case RAIDMODE_GOD_ARKANTOS:
 			entity = GodArkantos(client, vecPos, vecAng, team, data);
-		
-		case SEABORN_SCOUT:
-			entity = SeabornScout(client, vecPos, vecAng, team);
-		
-		case SEABORN_SOLDIER:
-			entity = SeabornSoldier(client, vecPos, vecAng, team);
-		
-		case CITIZEN_RUNNER:
-			entity = CitizenRunner(client, vecPos, vecAng, data);
-		
-		case SEABORN_PYRO:
-			entity = SeabornPyro(client, vecPos, vecAng, team);
-		
-		case SEABORN_DEMO:
-			entity = SeabornDemo(client, vecPos, vecAng, team);
-		
-		case SEABORN_HEAVY:
-			entity = SeabornHeavy(client, vecPos, vecAng, team);
-		
-		case SEABORN_ENGINEER:
-			entity = SeabornEngineer(client, vecPos, vecAng, team);
-		
-		case SEABORN_MEDIC:
-			entity = SeabornMedic(client, vecPos, vecAng, team);
-		
-		case SEABORN_SNIPER:
-			entity = SeabornSniper(client, vecPos, vecAng, team);
-		
-		case SEABORN_SPY:
-			entity = SeabornSpy(client, vecPos, vecAng, team);
 		
 		case ALT_BARRACKS_SCHWERTKRIEG:
 			entity = Barrack_Alt_Shwertkrieg(client, vecPos, vecAng, team);
@@ -2952,21 +2829,9 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		case ALT_BARRACKS_CROSSBOW_MEDIC:
 			entity = Barrack_Alt_Crossbowmedic(client, vecPos, vecAng, team);
 		
-		case LASTKNIGHT:
-			entity = LastKnight(client, vecPos, vecAng, team, data);
-		
 		case BARRACK_LASTKNIGHT:
 			entity = BarrackLastKnight(client, vecPos, vecAng, team);
 		
-		case SAINTCARMEN:
-			entity = SaintCarmen(client, vecPos, vecAng, team);
-		
-		case PATHSHAPER:
-			entity = Pathshaper(client, vecPos, vecAng, team);
-		
-		case PATHSHAPER_FRACTAL:
-			entity = PathshaperFractal(client, vecPos, vecAng, team);
-			
 		case BARRACKS_TEUTONIC_KNIGHT:
 			entity = BarrackTeuton(client, vecPos, vecAng, team);
 
@@ -2976,48 +2841,15 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		case BARRACKS_BUILDING:
 			entity = BarrackBuilding(client, vecPos, vecAng, team);
 
-		case TIDELINKED_BISHOP:
-			entity = TidelinkedBishop(client, vecPos, vecAng, team);
-
-		case TIDELINKED_ARCHON:
-			entity = TidelinkedArchon(client, vecPos, vecAng, team);
-			
 		case ALT_BARRACK_SCIENTIFIC_WITCHERY:
 			entity = Barrack_Alt_Scientific_Witchery(client, vecPos, vecAng, team);
 
-		case SEABORN_GUARD:
-			entity = SeabornGuard(client, vecPos, vecAng, team);
-
-		case SEABORN_DEFENDER:
-			entity = SeabornDefender(client, vecPos, vecAng, team);
-
-		case SEABORN_VANGUARD:
-			entity = SeabornVanguard(client, vecPos, vecAng, team);
-
-		case SEABORN_CASTER:
-			entity = SeabornCaster(client, vecPos, vecAng, team);
-
-		case SEABORN_SPECIALIST:
-			entity = SeabornSpecialist(client, vecPos, vecAng, team);
-
-		case SEABORN_SUPPORTER:
-			entity = SeabornSupporter(client, vecPos, vecAng, team);
-
-		case ISHARMLA:
-			entity = Isharmla(client, vecPos, vecAng, team);
-
-		case ISHARMLA_TRANS:
-			entity = IsharmlaTrans(client, vecPos, vecAng, team);
-		
 		case SEA_RAIDBOSS_DONNERKRIEG:
 			entity = Raidboss_Donnerkrieg(client, vecPos, vecAng, team, data);
 			
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			entity = Raidboss_Schwertkrieg(client, vecPos, vecAng, team);
 		
-		case BOB_THE_FIRST, BOB_THE_FIRST_S:
-			entity = RaidbossBobTheFirst(vecPos, vecAng, team, data);
-			
 		case EXPIDONSA_PENTAL:
 			entity = Pental(client, vecPos, vecAng, team);
 
@@ -3386,13 +3218,6 @@ void NPCDeath(int entity)
 				Call_PushCell(entity);
 				Call_Finish();
 				//todo: convert all on death and on take damage to this.
-			}
-			switch(i_NpcInternalId[baseboss_index])
-			{
-				case SEABORN_KAZIMIERZ_BESERKER:
-				{
-					KazimierzBeserker_AllyDeath(entity, baseboss_index);	
-				}
 			}
 		}
 	}
@@ -4010,114 +3835,12 @@ void NPCDeath(int entity)
 		case XENO_RAIDBOSS_NEMESIS:
 			RaidbossNemesis_NPCDeath(entity);
 		
-		case SEARUNNER, SEARUNNER_ALT:
-			SeaRunner_NPCDeath(entity);
-		
-		case SEASLIDER, SEASLIDER_ALT:
-			SeaSlider_NPCDeath(entity);
-		
-		case SEASPITTER, SEASPITTER_ALT:
-			SeaSpitter_NPCDeath(entity);
-		
-		case SEAREAPER, SEAREAPER_ALT:
-			SeaReaper_NPCDeath(entity);
-		
-		case SEACRAWLER, SEACRAWLER_ALT:
-			SeaCrawler_NPCDeath(entity);
-		
-		case SEAPIERCER, SEAPIERCER_ALT:
-			SeaPiercer_NPCDeath(entity);
-		
-		case FIRSTTOTALK:
-			FirstToTalk_NPCDeath(entity);
-		
-		case UNDERTIDES:
-			UnderTides_NPCDeath(entity);
-		
-		case SEABORN_KAZIMIERZ_KNIGHT:
-			KazimierzKnight_NPCDeath(entity);
-		
-		case SEABORN_KAZIMIERZ_KNIGHT_ARCHER:
-			KazimierzKnightArcher_NPCDeath(entity);
-		
-		case SEABORN_KAZIMIERZ_BESERKER:
-			KazimierzBeserker_NPCDeath(entity);
-		
-		case SEABORN_KAZIMIERZ_LONGARCHER:
-			KazimierzLongArcher_NPCDeath(entity);
-		
-		case REMAINS:
-			Remains_NPCDeath(entity);
-		
-		case ENDSPEAKER_1:
-			EndSpeaker1_NPCDeath(entity);
-		
-		case ENDSPEAKER_2:
-			EndSpeaker2_NPCDeath(entity);
-		
-		case ENDSPEAKER_3:
-			EndSpeaker3_NPCDeath(entity);
-		
-		case ENDSPEAKER_4:
-			EndSpeaker4_NPCDeath(entity);
-		
-		case SEAFOUNDER, SEAFOUNDER_ALT, SEAFOUNDER_CARRIER:
-			SeaFounder_NPCDeath(entity);
-		
-		case SEAPREDATOR, SEAPREDATOR_ALT, SEAPREDATOR_CARRIER:
-			SeaPredator_NPCDeath(entity);
-		
-		case SEABRANDGUIDER, SEABRANDGUIDER_ALT, SEABRANDGUIDER_CARRIER:
-			SeaBrandguider_NPCDeath(entity);
-		
-		case SEABORN_KAZIMIERZ_ASSASIN_MELEE:
-			KazimierzKnightAssasin_NPCDeath(entity);
-		
-		case SEASPEWER, SEASPEWER_ALT, SEASPEWER_CARRIER:
-			SeaSpewer_NPCDeath(entity);
-		
-		case SEASWARMCALLER, SEASWARMCALLER_ALT, SEASWARMCALLER_CARRIER:
-			SeaSwarmcaller_NPCDeath(entity);
-		
-		case SEAREEFBREAKER, SEAREEFBREAKER_ALT, SEAREEFBREAKER_CARRIER:
-			SeaReefbreaker_NPCDeath(entity);
-		
 		case BARRACK_THORNS:
 			BarrackThorns_NPCDeath(entity);
 
 		case RAIDMODE_GOD_ARKANTOS:
 			GodArkantos_NPCDeath(entity);
 
-		case SEABORN_SCOUT:
-			SeabornScout_NPCDeath(entity);
-
-		case SEABORN_SOLDIER:
-			SeabornSoldier_NPCDeath(entity);
-
-		case CITIZEN_RUNNER:
-			CitizenRunner_NPCDeath(entity);
-
-		case SEABORN_PYRO:
-			SeabornPyro_NPCDeath(entity);
-
-		case SEABORN_DEMO:
-			SeabornDemo_NPCDeath(entity);
-
-		case SEABORN_HEAVY:
-			SeabornHeavy_NPCDeath(entity);
-
-		case SEABORN_ENGINEER:
-			SeabornEngineer_NPCDeath(entity);
-
-		case SEABORN_MEDIC:
-			SeabornMedic_NPCDeath(entity);
-
-		case SEABORN_SNIPER:
-			SeabornSniper_NPCDeath(entity);
-
-		case SEABORN_SPY:
-			SeabornSpy_NPCDeath(entity);
-			
 		case ALT_BARRACKS_SCHWERTKRIEG:
 			Barrack_Alt_Shwertkrieg_NPCDeath(entity);
 			
@@ -4151,21 +3874,9 @@ void NPCDeath(int entity)
 		case ALT_BARRACKS_CROSSBOW_MEDIC:
 			Barrack_Alt_Crossbowmedic_NPCDeath(entity);
 		
-		case LASTKNIGHT:
-			LastKnight_NPCDeath(entity);
-		
 		case BARRACK_LASTKNIGHT:
 			BarrackLastKnight_NPCDeath(entity);
 		
-		case SAINTCARMEN:
-			SaintCarmen_NPCDeath(entity);
-		
-		case PATHSHAPER:
-			Pathshaper_NPCDeath(entity);
-		
-		case PATHSHAPER_FRACTAL:
-			PathshaperFractal_NPCDeath(entity);
-			
 		case BARRACKS_TEUTONIC_KNIGHT:
 			BarrackTeuton_NPCDeath(entity);
 
@@ -4175,38 +3886,8 @@ void NPCDeath(int entity)
 		case BARRACKS_BUILDING:
 			BarrackBuilding_NPCDeath(entity);
 		
-		case TIDELINKED_BISHOP:
-			TidelinkedBishop_NPCDeath(entity);
-		
-		case TIDELINKED_ARCHON:
-			TidelinkedArchon_NPCDeath(entity);
-			
 		case ALT_BARRACK_SCIENTIFIC_WITCHERY:
 			Barrack_Alt_Scientific_Witchery_NPCDeath(entity);
-		
-		case SEABORN_GUARD:
-			SeabornGuard_NPCDeath(entity);
-		
-		case SEABORN_DEFENDER:
-			SeabornDefender_NPCDeath(entity);
-		
-		case SEABORN_VANGUARD:
-			SeabornVanguard_NPCDeath(entity);
-		
-		case SEABORN_CASTER:
-			SeabornCaster_NPCDeath(entity);
-		
-		case SEABORN_SPECIALIST:
-			SeabornSpecialist_NPCDeath(entity);
-		
-		case SEABORN_SUPPORTER:
-			SeabornSupporter_NPCDeath(entity);
-		
-		case ISHARMLA:
-			Isharmla_NPCDeath(entity);
-		
-		case ISHARMLA_TRANS:
-			IsharmlaTrans_NPCDeath(entity);
 		
 		case SEA_RAIDBOSS_DONNERKRIEG:
 			Raidboss_Donnerkrieg_NPCDeath(entity);
@@ -4214,10 +3895,6 @@ void NPCDeath(int entity)
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			Raidboss_Schwertkrieg_NPCDeath(entity);
 		
-		case BOB_THE_FIRST, BOB_THE_FIRST_S:
-			RaidbossBobTheFirst_NPCDeath(entity);
-		
-
 		case EXPIDONSA_PENTAL:
 			Pental_NPCDeath(entity);
 
@@ -4907,125 +4584,17 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case XENO_RAIDBOSS_NEMESIS:
 			RaidbossNemesis_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case SEARUNNER, SEARUNNER_ALT:
-			SeaRunner_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEASLIDER, SEASLIDER_ALT:
-			SeaSlider_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEASPITTER, SEASPITTER_ALT:
-			SeaSpitter_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEAREAPER, SEAREAPER_ALT:
-			SeaReaper_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEACRAWLER, SEACRAWLER_ALT:
-			SeaCrawler_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEAPIERCER, SEAPIERCER_ALT:
-			SeaPiercer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case FIRSTTOTALK:
-			FirstToTalk_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-	//	case UNDERTIDES:
-	//		UnderTides_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case CITIZEN_RUNNER:
-			CitizenRunner_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEABORN_KAZIMIERZ_KNIGHT:
-			KazimierzKnight_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEABORN_KAZIMIERZ_KNIGHT_ARCHER:
-			KazimierzKnightArcher_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEABORN_KAZIMIERZ_BESERKER:
-			KazimierzBeserker_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEABORN_KAZIMIERZ_LONGARCHER:
-			KazimierzLongArcher_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-	//	case REMAINS:
-	//		Remains_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case ENDSPEAKER_1:
-			EndSpeaker_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case ENDSPEAKER_2:
-			EndSpeaker_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case ENDSPEAKER_3:
-			EndSpeaker_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case ENDSPEAKER_4:
-			EndSpeaker_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEAFOUNDER, SEAFOUNDER_ALT, SEAFOUNDER_CARRIER:
-			SeaFounder_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEAPREDATOR, SEAPREDATOR_ALT, SEAPREDATOR_CARRIER:
-			SeaPredator_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEABRANDGUIDER, SEABRANDGUIDER_ALT, SEABRANDGUIDER_CARRIER:
-			SeaBrandguider_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEABORN_KAZIMIERZ_ASSASIN_MELEE:
-			KazimierzKnightAssasin_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEASPEWER, SEASPEWER_ALT, SEASPEWER_CARRIER:
-			SeaSpewer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEASWARMCALLER, SEASWARMCALLER_ALT, SEASWARMCALLER_CARRIER:
-			SeaSwarmcaller_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEAREEFBREAKER, SEAREEFBREAKER_ALT, SEAREEFBREAKER_CARRIER:
-			SeaReefbreaker_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
 		case BARRACK_THORNS:
 			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 		case RAIDMODE_GOD_ARKANTOS:
 			GodArkantos_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case SEABORN_SCOUT, SEABORN_SOLDIER, SEABORN_PYRO, SEABORN_DEMO, SEABORN_ENGINEER, SEABORN_MEDIC, SEABORN_SNIPER, SEABORN_SPY:
-			Generic_OnTakeDamage(victim, attacker);
-		
-		case SEABORN_HEAVY:
-			SeabornHeavy_OnTakeDamage(victim, attacker, damagetype);
-		
-		case LASTKNIGHT:
-			LastKnight_OnTakeDamage(victim, attacker, damage, weapon);
-		
-		case SAINTCARMEN, PATHSHAPER_FRACTAL:
-			Generic_OnTakeDamage(victim, attacker);
-		
-		case PATHSHAPER:
-			Pathshaper_OnTakeDamage(victim, attacker);
-		
-		case TIDELINKED_BISHOP:
-			TidelinkedBishop_OnTakeDamage(victim, attacker, damage);
-		
-		case TIDELINKED_ARCHON:
-			TidelinkedArchon_OnTakeDamage(victim, attacker, damage);
-		
-		case SEABORN_GUARD, SEABORN_VANGUARD, SEABORN_CASTER, SEABORN_SPECIALIST, SEABORN_SUPPORTER:
-			Generic_OnTakeDamage(victim, attacker);
-		
-		case SEABORN_DEFENDER:
-			SeabornDefender_OnTakeDamage(victim, attacker, damage, damagetype, damagePosition);
-		
-		case ISHARMLA:
-			Isharmla_OnTakeDamage(victim, attacker, damage);
-			
 		case SEA_RAIDBOSS_DONNERKRIEG:
 			Raidboss_Donnerkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 			
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			Raidboss_Schwertkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-		case BOB_THE_FIRST, BOB_THE_FIRST_S:
-			RaidbossBobTheFirst_OnTakeDamage(victim, attacker, damage);
 
 		case EXPIDONSA_PENTAL:
 			Pental_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);

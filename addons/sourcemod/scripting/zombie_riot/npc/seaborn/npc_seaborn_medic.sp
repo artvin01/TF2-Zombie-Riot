@@ -24,6 +24,24 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/medic_battlecry04.mp3"
 };
 
+void SeabornMedic_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Seaborn Medic");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_medic");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_medic");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MISSION;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SeabornMedic(client, vecPos, vecAng, ally);
+}
+
 methodmap SeabornMedic < CClotBody
 {
 	public void PlayIdleSound()
@@ -47,7 +65,6 @@ methodmap SeabornMedic < CClotBody
 	{
 		SeabornMedic npc = view_as<SeabornMedic>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "6000", ally));
 		
-		i_NpcInternalId[npc.index] = SEABORN_MEDIC;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_SWIM_LOSERSTATE");
 		
@@ -57,7 +74,9 @@ methodmap SeabornMedic < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		SDKHook(npc.index, SDKHook_Think, SeabornMedic_ClotThink);
+		func_NPCDeath[npc.index] = SeabornMedic_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		func_NPCThink[npc.index] = SeabornMedic_ClotThink;
 		
 		Is_a_Medic[npc.index] = true;
 		npc.m_flSpeed = 256.0;
@@ -158,6 +177,4 @@ void SeabornMedic_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornMedic_ClotThink);
 }

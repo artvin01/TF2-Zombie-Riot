@@ -135,7 +135,7 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 5;
 		
-		int entity = NPC_CreateById(TIDELINKED_BISHOP, -1, pos, ang, GetTeam(npc.index));
+		int entity = NPC_CreateByName("npc_tidelinkedbishop", -1, pos, ang, GetTeam(npc.index));
 		if(entity > MaxClients)
 		{
 			i_TargetAlly[npc.index] = EntIndexToEntRef(entity);

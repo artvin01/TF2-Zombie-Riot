@@ -40,6 +40,24 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/machete_swing.wav"
 };
 
+void SeabornEngineer_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Seaborn Engineer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_engineer");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_engineer");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MISSION;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SeabornEngineer(client, vecPos, vecAng, ally);
+}
+
 methodmap SeabornEngineer < CClotBody
 {
 	public void PlayIdleSound()
@@ -71,7 +89,6 @@ methodmap SeabornEngineer < CClotBody
 	{
 		SeabornEngineer npc = view_as<SeabornEngineer>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "10000", ally));
 		
-		i_NpcInternalId[npc.index] = SEABORN_ENGINEER;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		
@@ -81,7 +98,9 @@ methodmap SeabornEngineer < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		SDKHook(npc.index, SDKHook_Think, SeabornEngineer_ClotThink);
+		func_NPCDeath[npc.index] = SeabornEngineer_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		func_NPCThink[npc.index] = SeabornEngineer_ClotThink;
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -293,6 +312,4 @@ void SeabornEngineer_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornEngineer_ClotThink);
 }

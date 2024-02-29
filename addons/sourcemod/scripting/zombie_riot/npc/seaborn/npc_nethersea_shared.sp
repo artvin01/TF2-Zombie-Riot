@@ -24,7 +24,7 @@ methodmap CSeaBody < CClotBody
 		this.m_iMedkitAnnoyance = carrier ? 2 : (elite ? 1 : 0);
 
 		if(carrier || elite)
-			ReqiestFrame(SetNameFrame, EntIndexToEntRef(this.index));
+			RequestFrame(SetNameFrame, EntIndexToEntRef(this.index));
 	}
 }
 

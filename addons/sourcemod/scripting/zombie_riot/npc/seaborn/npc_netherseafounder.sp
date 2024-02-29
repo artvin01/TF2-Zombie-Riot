@@ -209,7 +209,7 @@ public void SeaFounder_ClotThink(int iNPC)
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
 
-						SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack * (i_NpcInternalId[npc.index] == SEAFOUNDER_CARRIER ? 0.2 : 0.1)));
+						SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack * (npc.m_bCarrier ? 0.2 : 0.1)));
 						// 450 x 0.1 x 0.15
 						// 600 x 0.1 x 0.15
 						// 450 x 0.2 x 0.15
