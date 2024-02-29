@@ -2525,8 +2525,8 @@ static void SetWaveClass(int objective, int index, int count = 0, const char[] i
 static void SetEntDataAllocString(int entity, int offset, const char[] string)
 {
 	Address address = AllocPooledString(string);
-	if(address != GetEntData(objective, offset, 4))
-		SetEntData(objective, offset, address, 4, true);
+	if(address != view_as<Address>(GetEntData(entity, offset, 4)))
+		SetEntData(entity, offset, address, 4, true);
 }
 
 /**
@@ -2577,6 +2577,6 @@ void WavesUpdateDifficultyName()
 		if(!offset)
 			offset = GetEntSendPropOffs(objective, "m_iszMvMPopfileName", true);
 
-		SetEntDataAllocString(objective, offset, WhatDifficultySetting, 4, true);
+		SetEntDataAllocString(objective, offset, WhatDifficultySetting);
 	}	
 }
