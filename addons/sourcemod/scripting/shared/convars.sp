@@ -62,7 +62,7 @@ void ConVar_PluginStart()
 	
 	#if defined ZR
 	ConVar_Add("mp_disable_respawn_times", "1.0");
-	ConVar_Add("tf_mvm_defenders_team_size", "16");
+//	ConVar_Add("tf_mvm_defenders_team_size", "16");
 	ConVar_Add("tf_mvm_max_connected_players", "99");
 
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "16", "How many players can play at once?", FCVAR_DONTRECORD);

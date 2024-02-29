@@ -2382,13 +2382,13 @@ static void UpdateMvMStatsFrame()
 		}
 
 		int acquired = RoundFloat(totalCash - cashLeft);
-		SetEntData(mvm, m_currentWaveStats + 4, acquired);	// nCreditsDropped
-		SetEntData(mvm, m_currentWaveStats + 8, acquired);	// nCreditsAcquired
-		SetEntData(mvm, m_currentWaveStats + 12, 0);	// nCreditsBonus
+		SetEntData(mvm, m_currentWaveStats + 4, acquired, 4, true);	// nCreditsDropped
+		SetEntData(mvm, m_currentWaveStats + 8, acquired, 4, true);	// nCreditsAcquired
+		SetEntData(mvm, m_currentWaveStats + 12, 0, 4, true);	// nCreditsBonus
 
-		SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash);	// nCreditsDropped
-		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash);	// nCreditsAcquired
-		SetEntData(mvm, m_runningTotalWaveStats + 12, 0);	// nCreditsBonus
+		SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
+		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
+		SetEntData(mvm, m_runningTotalWaveStats + 12, 0, 4, true);	// nCreditsBonus
 	}
 
 	//profiler.Stop();
