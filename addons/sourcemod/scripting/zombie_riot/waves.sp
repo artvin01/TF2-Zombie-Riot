@@ -2504,7 +2504,7 @@ static void SetWaveClass(int objective, int index, int count = 0, const char[] i
 	if(index < size1)
 	{
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassCounts", count, _, index);
-		SetEntData(objective, name1 + (index * 4), AllocPooledString(icon), 4, true);
+		SetEntDataAllocString(objective, name1 + (index * 4), icon);
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassFlags", flags, _, index);
 		SetEntProp(objective, Prop_Send, "m_bMannVsMachineWaveClassActive", active, _, index);
 	}
@@ -2514,12 +2514,19 @@ static void SetWaveClass(int objective, int index, int count = 0, const char[] i
 		if(index2 < size2)
 		{
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassCounts2", count, _, index2);
-			SetEntData(objective, name2 + (index2 * 4), AllocPooledString(icon), 4, true);
+			SetEntDataAllocString(objective, name2 + (index2 * 4), icon);
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassFlags2", flags, _, index2);
 			SetEntProp(objective, Prop_Send, "m_bMannVsMachineWaveClassActive2", active, _, index2);
 		}
 	}
 	
+}
+
+static void SetEntDataAllocString(int entity, int offset, const char[] string)
+{
+	Address address = AllocPooledString(string);
+	if(address != GetEntData(objective, offset, 4))
+		SetEntData(objective, offset, address, 4, true);
 }
 
 /**
@@ -2528,7 +2535,7 @@ static void SetWaveClass(int objective, int index, int count = 0, const char[] i
  * 
  * https://github.com/alliedmodders/sourcemod/blob/b14c18ee64fc822dd6b0f5baea87226d59707d5a/core/HalfLife2.cpp#L1415-L1423
  */
-stock Address AllocPooledString(const char[] value) {
+static Address AllocPooledString(const char[] value) {
 	if(!g_AllocPooledStringCache)
 		g_AllocPooledStringCache = new StringMap();
 
@@ -2570,6 +2577,6 @@ void WavesUpdateDifficultyName()
 		if(!offset)
 			offset = GetEntSendPropOffs(objective, "m_iszMvMPopfileName", true);
 
-		SetEntData(objective, offset, AllocPooledString(WhatDifficultySetting), 4, true);
+		SetEntDataAllocString(objective, offset, WhatDifficultySetting, 4, true);
 	}	
 }
