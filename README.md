@@ -115,14 +115,15 @@ The SourceMod plugins / extensions listed below are not necessary for TF2 Zombie
 
 Current coders that in anyway actively helped, in order of how much:
 
-- [Artvin](https://github.com/artvin01)
-- [Batfoxkid](https://github.com/Batfoxkid)
+- [Artvin](https://github.com/artvin01) (main dev, me)
+- [Batfoxkid](https://github.com/Batfoxkid) (co dev)
 - [Mikusch](https://github.com/Mikusch) (Gamedata assistance and more, a savior.)
 - [Kenzzer](https://github.com/Kenzzer) (Got gamedata and make an extention edit for us, plus CBaseNpc!)
 - [Mentrillum](https://github.com/Mentrillum) (Assitance in converting from Pathfollower to CBaseNpc!)
-- [Suza](https://github.com/Zabaniya001/)
-- [Alex](https://github.com/JustAlex14)
-- [Spookmaster](https://github.com/SupremeSpookmaster)
+- [Suza](https://github.com/Zabaniya001/)(gamedata stuffs)
+- [Alex](https://github.com/JustAlex14)(Weapons overall assistance)
+- [Spookmaster](https://github.com/SupremeSpookmaster) (general assitance and debugging too)
+- [Ficool2](https://github.com/ficool2) (helped with the mvm hud logic and some workarounds)
 - [Pelipoika](https://github.com/Pelipoika) (Npc base code that we heavily edited, thank you SO much for publishing it all.)
 - [backwards] (backwards#8236) on discord. (Helped with sdkcall lag compensation.)
 
