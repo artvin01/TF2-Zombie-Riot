@@ -403,7 +403,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 	switch(GetRandomInt(1, 4))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_LONGARCHER ,weapon, 1.1, 2.0, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, SEABORN_SCOUT ,weapon, 1.15, 1.3, "utaunt_constellations_blue_base");
 		case 2:
 			Dimension_Summon_Npc(client, SEABORN_KAZIMIERZ_BESERKER ,weapon, 1.4, 1.1, "utaunt_constellations_blue_base");
 		case 3:
