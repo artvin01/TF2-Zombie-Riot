@@ -5748,12 +5748,14 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 				Building_Constructed[Building_Index] = true;	
 				SetEntityModel(Building_Index, ELEVATOR_MODEL);
 				SetEntPropFloat(Building_Index, Prop_Send, "m_flModelScale", 1.15); //Abit bigger!
+				SetEntProp(Building_Index, Prop_Send, "m_bCarried", true);
 			}
 			case BuildingBarricade:
 			{
 				npc.bBuildingIsPlaced = true;
 				Building_Constructed[Building_Index] = true;
 				SetEntityModel(Building_Index, BARRICADE_MODEL);
+				SetEntProp(Building_Index, Prop_Send, "m_bCarried", true);
 			}
 			case BuildingRailgun:
 			{
@@ -5845,6 +5847,7 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 			{	
 				npc.bBuildingIsPlaced = true;
 				Building_Constructed[Building_Index] = true;
+				SetEntProp(Building_Index, Prop_Send, "m_bCarried", true);
 				float vOrigin[3];
 				float vAngles[3];
 				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
@@ -5936,6 +5939,7 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 			{
 				npc.bBuildingIsPlaced = true;
 				Building_Constructed[Building_Index] = true;
+				SetEntProp(Building_Index, Prop_Send, "m_bCarried", true);
 				float vOrigin[3];
 				float vAngles[3];
 				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
@@ -6033,6 +6037,7 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 			{
 				npc.bBuildingIsPlaced = true;
 				Building_Constructed[Building_Index] = true;
+				SetEntProp(Building_Index, Prop_Send, "m_bCarried", true);
 				float vOrigin[3];
 				float vAngles[3];
 				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
@@ -6129,6 +6134,7 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 			{
 				npc.bBuildingIsPlaced = true;
 				Building_Constructed[Building_Index] = true;
+				SetEntProp(Building_Index, Prop_Send, "m_bCarried", true);
 				float vOrigin[3];
 				float vAngles[3];
 				
@@ -6216,6 +6222,7 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 			{
 				npc.bBuildingIsPlaced = true;
 				Building_Constructed[Building_Index] = true;
+				SetEntProp(Building_Index, Prop_Send, "m_bCarried", true);
 				float vOrigin[3];
 				float vAngles[3];
 				
@@ -6383,7 +6390,9 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 }
 public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams) 
 {
+	//tf2 buildings are aids to work with.
 	RequestFrames(Dhook_FinishedBuilding_Post_Frame, 5, EntIndexToEntRef(Building_Index));
+	RequestFrames(Dhook_FinishedBuilding_Post_Frame, 10, EntIndexToEntRef(Building_Index));
 	return MRES_Ignored;
 }
 

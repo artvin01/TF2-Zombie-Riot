@@ -64,6 +64,7 @@ void ConVar_PluginStart()
 	ConVar_Add("mp_disable_respawn_times", "1.0");
 //	ConVar_Add("tf_mvm_defenders_team_size", "16");
 	ConVar_Add("tf_mvm_max_connected_players", "99");
+	ConVar_Add("tf_obj_upgrade_per_hit", "0");
 
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "16", "How many players can play at once?", FCVAR_DONTRECORD);
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
