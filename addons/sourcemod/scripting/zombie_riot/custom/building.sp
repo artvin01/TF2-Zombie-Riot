@@ -6383,7 +6383,9 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 }
 public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams) 
 {
+	//tf2 buildings are aids to work with.
 	RequestFrames(Dhook_FinishedBuilding_Post_Frame, 5, EntIndexToEntRef(Building_Index));
+	RequestFrames(Dhook_FinishedBuilding_Post_Frame, 10, EntIndexToEntRef(Building_Index));
 	return MRES_Ignored;
 }
 

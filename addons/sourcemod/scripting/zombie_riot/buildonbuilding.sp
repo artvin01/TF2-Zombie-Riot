@@ -249,7 +249,6 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		}
 		if(IsValidClient(client))
 		{
-		//	fPos[2] -= 69.0; //This just goes to the ground entirely. and three higher so you can see the bottom of the box.
 			Handle hTrace;
 			static float m_vecLookdown[3];
 			m_vecLookdown = view_as<float>( { 90.0, 0.0, 0.0 } );
@@ -258,7 +257,6 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 			delete hTrace;
 			fPos[2] += 4.0;
 			TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({0, 255, 0, 255}));
-				
 			if(f_DelayBuildNotif[client] < GameTime)
 			{
 				f_DelayBuildNotif[client] = GameTime + 0.25;
@@ -376,7 +374,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		datapack.WriteFloat(endPos[2]);
 		datapack.Reset();
 		DHookSetReturn(hReturn, true);
-		RequestFrames(Frame_TeleportBuilding, 5, datapack);
+		RequestFrame(Frame_TeleportBuilding, datapack);
 		if(IsValidClient(client))
 		{
 			TE_DrawBox(client, endPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({0, 255, 0, 255}));
@@ -482,6 +480,28 @@ public void Frame_TeleportBuilding(DataPack datapack)
 {
 	int building=EntRefToEntIndex(datapack.ReadCell());
 	int dependenton=EntRefToEntIndex(datapack.ReadCell());
+	
+	if(!IsValidEntity(building))
+	{   
+		delete datapack;
+		return;
+	}
+	DataPack datapackInit = new DataPack();
+	datapackInit.WriteCell(EntIndexToEntRef(building));
+	datapackInit.WriteCell(EntIndexToEntRef(dependenton));
+	datapackInit.WriteFloat(datapack.ReadFloat());
+	datapackInit.WriteFloat(datapack.ReadFloat());
+	datapackInit.WriteFloat(datapack.ReadFloat());
+	datapackInit.Reset();
+	RequestFrames(Frame_TeleportBuilding_Init, 3, datapackInit);
+	delete datapack;
+}
+
+
+public void Frame_TeleportBuilding_Init(DataPack datapack)
+{
+	int building=EntRefToEntIndex(datapack.ReadCell());
+	int dependenton=EntRefToEntIndex(datapack.ReadCell());
 	bool NoBuildOnBuild = false;
 	if(dependenton == 0)
 	{
@@ -493,11 +513,13 @@ public void Frame_TeleportBuilding(DataPack datapack)
 		delete datapack;
 		return;
 	}
-	if(!GetEntProp(building, Prop_Send, "m_bBuilding"))
+	
+	if(!b_bBuildingIsPlaced[building])
 	{
 		delete datapack;
 		return;
 	}
+	
 	float vecPos[3];
 	vecPos[0]=datapack.ReadFloat();
 	vecPos[1]=datapack.ReadFloat();
