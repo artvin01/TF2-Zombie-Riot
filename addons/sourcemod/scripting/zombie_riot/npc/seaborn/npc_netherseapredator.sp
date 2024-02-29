@@ -33,7 +33,25 @@ static const char g_MeleeHitSounds[][] =
 	"npc/fast_zombie/claw_strike3.wav"
 };
 
-methodmap SeaPredator < CClotBody
+void SeaPredator_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Nethersea Predator");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseapredator");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_predator");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return SeaPredator(client, vecPos, vecAng, ally, data);
+}
+
+methodmap SeaPredator < CSeaBody
 {
 	public void PlayIdleSound()
 	{
@@ -69,7 +87,7 @@ methodmap SeaPredator < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = carrier ? SEAPREDATOR_CARRIER : (elite ? SEAPREDATOR_ALT : SEAPREDATOR);
+		npc.SetElite(elite, carrier);
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_2");
 		KillFeed_SetKillIcon(npc.index, "fists");
@@ -78,8 +96,9 @@ methodmap SeaPredator < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, SeaPredator_ClotThink);
+		func_NPCDeath[npc.index] = SeaPredator_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SeaPredator_OnTakeDamage;
+		func_NPCThink[npc.index] = SeaPredator_ClotThink;
 		
 		npc.m_flSpeed = 250.0;	// 1.0 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -189,7 +208,7 @@ public void SeaPredator_ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
-						float attack = i_NpcInternalId[npc.index] == SEAPREDATOR_ALT ? 82.5 : 67.5;
+						float attack = npc.m_bElite ? 82.5 : 67.5;
 						// 450 x 0.15
 						// 550 x 0.15
 
@@ -277,16 +296,13 @@ void SeaPredator_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	if(i_NpcInternalId[npc.index] == SEAPREDATOR_CARRIER)
+	if(npc.m_bCarrier)
 	{
 		float pos[3];
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 		Remains_SpawnDrop(pos, Buff_Predator);
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeaPredator_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 

@@ -2326,6 +2326,10 @@ static void UpdateMvMStatsFrame()
 						{
 							strcopy(data.Icon, sizeof(data.Icon), "demoknight");
 						}
+						else if(StrContains(data.Name, "combine", false) != -1 || StrContains(data.Plugin, "combine", false) != -1)
+						{
+							strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
+						}
 						else if(StrContains(data.Name, "scout", false) != -1 || StrContains(data.Plugin, "scout", false) != -1)
 						{
 							strcopy(data.Icon, sizeof(data.Icon), "scout");

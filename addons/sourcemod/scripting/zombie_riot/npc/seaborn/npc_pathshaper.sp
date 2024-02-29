@@ -33,6 +33,24 @@ static const char g_MeleeAttackSounds[][] =
 	"npc/zombie_poison/pz_warn2.wav"
 };
 
+void Pathshaper_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Pathshaper");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_pathshaper");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_pathshaper");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Pathshaper(client, vecPos, vecAng, ally);
+}
+
 methodmap Pathshaper < CClotBody
 {
 	public void PlayIdleSound()
@@ -69,7 +87,6 @@ methodmap Pathshaper < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 
-		i_NpcInternalId[npc.index] = PATHSHAPER;
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_WALK");
 		
@@ -77,7 +94,9 @@ methodmap Pathshaper < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 
-		SDKHook(npc.index, SDKHook_Think, Pathshaper_ClotThink);
+		func_NPCDeath[npc.index] = Pathshaper_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Pathshaper_OnTakeDamage;
+		func_NPCThink[npc.index] = Pathshaper_ClotThink;
 		
 		npc.m_flSpeed = 125.0;	// 0.5 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -224,8 +243,6 @@ void Pathshaper_NPCDeath(int entityy)
 	Pathshaper npc = view_as<Pathshaper>(entityy);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
-	
-	SDKUnhook(npc.index, SDKHook_Think, Pathshaper_ClotThink);
 
 	int team = GetTeam(entityy);
 	for(int i; i < i_MaxcountNpcTotal; i++)

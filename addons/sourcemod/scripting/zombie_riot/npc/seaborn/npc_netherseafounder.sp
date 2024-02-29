@@ -33,7 +33,25 @@ static const char g_MeleeHitSounds[][] =
 	"npc/fast_zombie/claw_strike3.wav"
 };
 
-methodmap SeaFounder < CClotBody
+void SeaFounder_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Nethersea Founder");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseafounder");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_founder");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return SeaFounder(client, vecPos, vecAng, ally, data);
+}
+
+methodmap SeaFounder < CSeaBody
 {
 	public void PlayIdleSound()
 	{
@@ -68,7 +86,7 @@ methodmap SeaFounder < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = carrier ? SEAFOUNDER_CARRIER : (elite ? SEAFOUNDER_ALT : SEAFOUNDER);
+		npc.SetElite(elite, carrier);
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_2");
 		KillFeed_SetKillIcon(npc.index, "fists");
@@ -77,8 +95,9 @@ methodmap SeaFounder < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, SeaFounder_ClotThink);
+		func_NPCDeath[npc.index] = SeaFounder_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SeaFounder_OnTakeDamage;
+		func_NPCThink[npc.index] = SeaFounder_ClotThink;
 		
 		npc.m_flSpeed = 250.0;	// 1.0 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -180,7 +199,7 @@ public void SeaFounder_ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
-						float attack = i_NpcInternalId[npc.index] == SEAFOUNDER_ALT ? 90.0 : 67.5;
+						float attack = npc.m_bElite ? 90.0 : 67.5;
 						// 450 x 0.15
 						// 600 x 0.15
 						
@@ -250,12 +269,9 @@ void SeaFounder_NPCDeath(int entity)
 	if(!NpcStats_IsEnemySilenced(npc.index))
 		SeaFounder_SpawnNethersea(pos);
 
-	if(i_NpcInternalId[npc.index] == SEAFOUNDER_CARRIER)
+	if(npc.m_bCarrier)
 		Remains_SpawnDrop(pos, Buff_Founder);
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeaFounder_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 

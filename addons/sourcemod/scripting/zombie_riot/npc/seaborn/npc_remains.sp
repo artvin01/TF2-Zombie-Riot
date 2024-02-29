@@ -28,6 +28,18 @@ void Remain_MapStart()
 	{
 		PrecacheModel(RemainModels[i]);
 	}
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Consumable Remains");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_remains");
+	data.Category = Type_Hidden;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Remains(client, vecPos, vecAng, ally);
 }
 
 methodmap Remains < CClotBody
@@ -45,7 +57,6 @@ methodmap Remains < CClotBody
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 2);
 
-		i_NpcInternalId[npc.index] = REMAINS;
 		i_NpcWeight[npc.index] = 999;
 		i_NpcIsABuilding[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
