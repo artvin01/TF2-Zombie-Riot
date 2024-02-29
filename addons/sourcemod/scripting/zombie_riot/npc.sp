@@ -25,9 +25,6 @@ enum struct NPCData
 	int Flags;
 	char Icon[32];
 	bool IconCustom;
-
-	// Don't touch below
-	bool IconPrecached;
 }
 
 // FileNetwork_ConfigSetup needs to be ran first
@@ -443,6 +440,12 @@ stock int NPC_Add(NPCData data)
 	if(!data.Func || data.Func == INVALID_FUNCTION)
 		ThrowError("Invalid function name");
 	
+	if(data.Icon[0] && data.IconCustom)
+		PrecacheMvMIconCustom(data.Icon);
+	
+	if(!TranslationPhraseExists(data.Name))
+		ThrowError("Translation '%s' does not exist", data.Name);
+
 	return NPCList.PushArray(data);
 }
 
@@ -470,22 +473,9 @@ int NPC_GetByPlugin(const char[] name, NPCData data = {})
 	{
 		NPCList.GetArray(i, data);
 		if(StrEqual(name, data.Plugin))
-		{
-			PrecacheIcons(i, data);
 			return i;
-		}
 	}
 	return -1;
-}
-
-static void PrecacheIcons(int i, NPCData data)
-{
-	if(data.IconCustom && !data.IconPrecached)
-	{
-		PrecacheMvMIconCustom(data.Icon);
-		data.IconPrecached = true;
-		NPCList.SetArray(i, data);
-	}
 }
 
 enum
