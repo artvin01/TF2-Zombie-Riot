@@ -3979,8 +3979,8 @@ void NPCDeath(int entity)
 		case RAIDBOSS_BLADEDANCE:
 			RaidbossBladedance_NPCDeath(entity);
 
-		default:
-			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
+		//default:
+		//	PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		
 	}
 
