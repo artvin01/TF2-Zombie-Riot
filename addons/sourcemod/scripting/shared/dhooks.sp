@@ -1971,6 +1971,12 @@ void Upgrade_Check_OnEntityCreated(int client)
 }
 #endif	// ZR
 
+void Upgrade_Check_OnEntityCreated(int client)
+{
+	g_DhookCheckUpgradeOnHit.HookEntity(Hook_Pre, client, DHook_CheckUpgradeOnHitPre);
+	g_DhookCheckUpgradeOnHit.HookEntity(Hook_Post, client, DHook_CheckUpgradeOnHitPost);
+}
+
 void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 {
 	g_DHookScoutSecondaryFire.HookEntity(Hook_Pre, entity, DHook_ScoutSecondaryFire);
