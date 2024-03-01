@@ -38,7 +38,25 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/demo_sword_swing3.wav"
 };
 
-methodmap SeaBrandguider < CClotBody
+void SeaBrandguider_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Nethersea Brandguider");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseabrandguider");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_brandguider");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return SeaBrandguider(client, vecPos, vecAng, ally, data);
+}
+
+methodmap SeaBrandguider < CSeaBody
 {
 	public void PlayIdleSound()
 	{
@@ -77,7 +95,7 @@ methodmap SeaBrandguider < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = carrier ? SEABRANDGUIDER_CARRIER : (elite ? SEABRANDGUIDER_ALT : SEABRANDGUIDER);
+		npc.SetElite(elite, carrier);
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_1");
 		KillFeed_SetKillIcon(npc.index, "freedom_staff");
@@ -86,8 +104,9 @@ methodmap SeaBrandguider < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, SeaBrandguider_ClotThink);
+		func_NPCDeath[npc.index] = SeaBrandguider_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SeaBrandguider_OnTakeDamage;
+		func_NPCThink[npc.index] = SeaBrandguider_ClotThink;
 		
 		npc.m_flSpeed = 200.0;	// 0.8 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -198,7 +217,7 @@ public void SeaBrandguider_ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
-						float attack = i_NpcInternalId[npc.index] == SEABRANDGUIDER_ALT ? 135.0 : 120.0;
+						float attack = npc.m_bElite ? 135.0 : 120.0;
 						// 800 x 0.15
 						// 900 x 0.15
 
@@ -275,12 +294,9 @@ void SeaBrandguider_NPCDeath(int entity)
 	float pos[3];
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 
-	if(i_NpcInternalId[npc.index] == SEABRANDGUIDER_CARRIER)
+	if(npc.m_bCarrier)
 		Remains_SpawnDrop(pos, Buff_Brandguider);
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeaBrandguider_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 

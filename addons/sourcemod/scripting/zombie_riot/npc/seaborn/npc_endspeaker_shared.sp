@@ -50,6 +50,9 @@ static const char DigDown[] = "npc/antlion/digdown1.wav";
 static const char DigUp[] = "npc/antlion/digup1.wav";
 static const char GrabBuff[] = "npc/antlion/land1.wav";
 
+static int EndspeakerLowId;
+static int EndspeakerHighId;
+
 void EndSpeaker_MapStart()
 {
 	PrecacheSoundArray(LargeDeath);
@@ -66,6 +69,52 @@ void EndSpeaker_MapStart()
 	PrecacheModel("models/headcrabclassic.mdl");
 	PrecacheModel("models/antlion.mdl");
 	PrecacheModel("models/antlion_guard.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "The Endspeaker, Will of We Many");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_endspeaker_1");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_endspeaker");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_NORMAL;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon1;
+	EndspeakerLowId = NPC_Add(data);
+
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_endspeaker_2");
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Hidden;
+	data.Func = ClotSummon2;
+	NPC_Add(data);
+
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_endspeaker_3");
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
+	data.Func = ClotSummon3;
+	NPC_Add(data);
+
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_endspeaker_4");
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Func = ClotSummon4;
+	EndspeakerHighId = NPC_Add(data);
+}
+
+static any ClotSummon1(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return EndSpeaker1(client, vecPos, vecAng, ally, data);
+}
+
+static any ClotSummon2(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return EndSpeaker2(ally);
+}
+
+static any ClotSummon3(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return EndSpeaker3(ally);
+}
+
+static any ClotSummon4(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return EndSpeaker4(ally);
 }
 
 #define BUFF_FOUNDER		(1 << 0)
@@ -169,7 +218,7 @@ methodmap EndSpeaker < CClotBody
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == REMAINS && IsEntityAlive(entity))
+			if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == Remain_ID() && IsEntityAlive(entity))
 			{
 				remain[count++] = entity;
 			}
@@ -450,8 +499,8 @@ bool EndSpeaker_GetPos(float pos[3])
 	{
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE &&
-			i_NpcInternalId[entity] >= ENDSPEAKER_1 &&
-			i_NpcInternalId[entity] <= ENDSPEAKER_4 &&
+			i_NpcInternalId[entity] >= EndspeakerLowId &&
+			i_NpcInternalId[entity] <= EndspeakerHighId &&
 			IsEntityAlive(entity))
 		{
 			WorldSpaceCenter(entity, pos);

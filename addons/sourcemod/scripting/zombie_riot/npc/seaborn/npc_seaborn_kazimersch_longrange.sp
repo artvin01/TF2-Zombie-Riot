@@ -33,6 +33,21 @@ void KazimierzLongArcher_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Armorless Union Cleanup Squad");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_kazimersch_longrange");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_longrange");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return KazimierzLongArcher(client, vecPos, vecAng, ally);
 }
 
 methodmap KazimierzLongArcher < CClotBody
@@ -87,7 +102,6 @@ methodmap KazimierzLongArcher < CClotBody
 		KazimierzLongArcher npc = view_as<KazimierzLongArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "17500", ally));
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");			
-		i_NpcInternalId[npc.index] = SEABORN_KAZIMIERZ_LONGARCHER;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -110,9 +124,10 @@ methodmap KazimierzLongArcher < CClotBody
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		
-		SDKHook(npc.index, SDKHook_Think, KazimierzLongArcher_ClotThink);
-	
+		func_NPCDeath[npc.index] = KazimierzLongArcher_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = KazimierzLongArcher_OnTakeDamage;
+		func_NPCThink[npc.index] = KazimierzLongArcher_ClotThink;
+		func_NPCAnimEvent[npc.index] = HandleAnimEventKazimierzLongArcher;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 170.0;
@@ -398,9 +413,6 @@ public void KazimierzLongArcher_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, KazimierzLongArcher_ClotThink);
-		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

@@ -2287,7 +2287,7 @@ static void UpdateMvMStatsFrame()
 							fl_Extra_RangedArmor[entity] < 1.0 || 
 							fl_Extra_Speed[entity] > 1.0 || 
 							fl_Extra_Damage[entity] > 1.0 ||
-							b_ThisNpcIsImmuneToNuke[entity])
+							b_thisNpcIsARaid[entity])
 								flags[b] |= MVM_CLASS_FLAG_ALWAYSCRIT;
 						}
 						
@@ -2320,11 +2320,21 @@ static void UpdateMvMStatsFrame()
 				if(id[i])
 				{
 					NPC_GetById(id[i], data);
+					if(data.Flags == -1)
+					{
+						SetWaveClass(objective, i);
+						continue;
+					}
+
 					if(!data.Icon[0])
 					{
 						if(StrContains(data.Name, "sword", false) != -1 || StrContains(data.Plugin, "sword", false) != -1)
 						{
 							strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+						}
+						else if(StrContains(data.Name, "combine", false) != -1 || StrContains(data.Plugin, "combine", false) != -1)
+						{
+							strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
 						}
 						else if(StrContains(data.Name, "scout", false) != -1 || StrContains(data.Plugin, "scout", false) != -1)
 						{
@@ -2388,7 +2398,7 @@ static void UpdateMvMStatsFrame()
 
 		SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
 		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
-		SetEntData(mvm, m_runningTotalWaveStats + 12, 0, 4, true);	// nCreditsBonus
+		SetEntData(mvm, m_runningTotalWaveStats + 12, GlobalExtraCash, 4, true);	// nCreditsBonus
 	}
 
 	//profiler.Stop();
@@ -2419,7 +2429,7 @@ static int SetupFlags(const Enemy data, bool support)
 	data.ExtraRangedRes < 1.0 || 
 	data.ExtraSpeed > 1.0 || 
 	data.ExtraDamage > 1.0 || 
-	data.Is_Immune_To_Nuke)
+	data.Is_Boss > 1)
 		flags |= MVM_CLASS_FLAG_ALWAYSCRIT;
 	
 	return flags;

@@ -374,7 +374,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		datapack.WriteFloat(endPos[2]);
 		datapack.Reset();
 		DHookSetReturn(hReturn, true);
-		RequestFrame(Frame_TeleportBuilding, datapack);
+		RequestFrames(Frame_TeleportBuilding, 5, datapack);
 		if(IsValidClient(client))
 		{
 			TE_DrawBox(client, endPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({0, 255, 0, 255}));
@@ -424,7 +424,7 @@ void OnEntityDestroyed_Build_On_Build(int entity)
 			if(i_WhatBuilding[entity] == BuildingAmmobox)
 			{
 				posStacked[2] += (32.0 * 0.5);
-			}
+			}	
 			
 			switch(i_WhatBuilding[iBuildingDependency[entity]])
 			{
@@ -493,7 +493,7 @@ public void Frame_TeleportBuilding(DataPack datapack)
 	datapackInit.WriteFloat(datapack.ReadFloat());
 	datapackInit.WriteFloat(datapack.ReadFloat());
 	datapackInit.Reset();
-	RequestFrames(Frame_TeleportBuilding_Init, 3, datapackInit);
+	RequestFrames(Frame_TeleportBuilding_Init, 12, datapackInit);
 	delete datapack;
 }
 

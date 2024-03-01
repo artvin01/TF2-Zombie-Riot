@@ -48,6 +48,24 @@ static const char g_RangedAttackSoundsSecondary[][] =
 	"ambient/levels/labs/electric_explosion5.wav",
 };
 
+void SeabornSpecialist_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Seaborn Specialist");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_specialist");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_specialist");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SeabornSpecialist(client, vecPos, vecAng, ally);
+}
+
 methodmap SeabornSpecialist < CClotBody
 {
 	public void PlayIdleSound()
@@ -110,7 +128,6 @@ methodmap SeabornSpecialist < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = SEABORN_SPECIALIST;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_CUSTOM_WALK_LUCIAN");
 		KillFeed_SetKillIcon(npc.index, "claidheamohmor");
@@ -126,7 +143,9 @@ methodmap SeabornSpecialist < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_Think, SeabornSpecialist_ClotThink);
+		func_NPCDeath[npc.index] = SeabornSpecialist_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		func_NPCThink[npc.index] = SeabornSpecialist_ClotThink;
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -274,8 +293,6 @@ void SeabornSpecialist_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornSpecialist_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 

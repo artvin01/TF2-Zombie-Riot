@@ -75,6 +75,7 @@ Function func_NPCDeathForward[MAXENTITIES];
 Function func_NPCOnTakeDamage[MAXENTITIES];
 Function func_NPCThink[MAXENTITIES];
 Function func_NPCFuncWin[MAXENTITIES];
+Function func_NPCAnimEvent[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -3298,6 +3299,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		func_NPCThink[pThis] = INVALID_FUNCTION;
 		func_NPCDeathForward[pThis] = INVALID_FUNCTION;
 		func_NPCFuncWin[pThis] = INVALID_FUNCTION;
+		func_NPCAnimEvent[pThis] = INVALID_FUNCTION;
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		SetEntityCollisionGroup(pThis, 1);
@@ -3751,13 +3753,16 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			StalkerCombine_HandleAnimEvent(pThis, event);
 		}
-		case SEABORN_KAZIMIERZ_KNIGHT_ARCHER:
+		default:
 		{
-			HandleAnimEventMedival_KazimierzArcher(pThis, event);
-		}
-		case SEABORN_KAZIMIERZ_LONGARCHER:
-		{
-			HandleAnimEventKazimierzLongArcher(pThis, event);
+			Function func = func_NPCAnimEvent[pThis];
+			if(func && func != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, func);
+				Call_PushCell(pThis);
+				Call_PushCell(event);
+				Call_Finish();
+			}
 		}
 	}
 #endif
