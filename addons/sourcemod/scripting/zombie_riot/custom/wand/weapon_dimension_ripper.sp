@@ -329,11 +329,11 @@ public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &resul
 	switch(GetRandomInt(1, 4))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, XENO_BATTLE_MEDIC_MAIN ,weapon, 1.0, 1.0, "utaunt_smoke_floor1_green");
+			Dimension_Summon_Npc(client, XENO_BATTLE_MEDIC_MAIN ,weapon, 0.9, 1.1, "utaunt_smoke_floor1_green");
 		case 2:
 			Dimension_Summon_Npc(client, XENO_SPY_MAIN_BOSS ,weapon, 1.7, 1.2, "utaunt_smoke_floor1_green");
 		case 3:
-			Dimension_Summon_Npc(client, XENO_SOLDIER_ROCKET_ZOMBIE ,weapon, 1.1, 1.4, "utaunt_smoke_floor1_green");
+			Dimension_Summon_Npc(client, XENO_SOLDIER_ROCKET_ZOMBIE ,weapon, 1.2, 1.4, "utaunt_smoke_floor1_green");
 		case 4:
 			Dimension_Summon_Npc(client, XENO_KAMIKAZE_DEMO ,weapon, 0.5, 1.5, "utaunt_smoke_floor1_green");
 		default: //This should not happen
