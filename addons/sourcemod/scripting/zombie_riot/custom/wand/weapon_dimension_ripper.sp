@@ -490,7 +490,7 @@ public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &
 }
 
 
-void Dimension_Summon_Npc(int client, char NpcName, int weapon, float HealthMulti, float DamageMulti, char[] ParticleEffect)
+void Dimension_Summon_Npc(int client, char NpcName[], int weapon, float HealthMulti, float DamageMulti, char[] ParticleEffect)
 {
 	
 	if(weapon >= MaxClients)
