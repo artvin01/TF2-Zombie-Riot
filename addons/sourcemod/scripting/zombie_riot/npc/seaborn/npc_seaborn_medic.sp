@@ -31,7 +31,7 @@ void SeabornMedic_Precache()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_medic");
 	strcopy(data.Icon, sizeof(data.Icon), "sea_medic");
 	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MISSION;
+	data.Flags = MVM_CLASS_FLAG_SUPPORT|MVM_CLASS_FLAG_SUPPORT_LIMITED;
 	data.Category = Type_Seaborn;
 	data.Func = ClotSummon;
 	NPC_Add(data);
