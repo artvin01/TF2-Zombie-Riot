@@ -277,13 +277,7 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 public void Rogue_Item_HandWrittenLetter()
 {
 	CurrentCash += 750;
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			CashRecievedNonWave[client] += 750;
-		}
-	}	
+	GlobalExtraCash += 750;	
 }
 
 public void Rogue_Item_HandWrittenLetter_Ally(int entity, StringMap map)
@@ -337,13 +331,7 @@ public void Rogue_Item_HandWrittenLetter_Weapon(int entity)
 public void Rogue_Item_CrudeFlute()
 {
 	CurrentCash += 500;
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			CashRecievedNonWave[client] += 500;
-		}
-	}	
+	GlobalExtraCash += 500;	
 }
 public void Rogue_Item_CrudeFlute_Ally(int entity, StringMap map)
 {
@@ -387,13 +375,7 @@ public void Rogue_Item_CrudeFlute_Ally(int entity, StringMap map)
 public void Rogue_Item_ScrappedWallet()
 {
 	CurrentCash += 500;
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			CashRecievedNonWave[client] += 500;
-		}
-	}	
+	GlobalExtraCash += 500;	
 }
 
 public void Rogue_Item_ScrappedWallet_Weapon(int entity)
@@ -443,14 +425,9 @@ public void Rogue_Item_ScrappedWallet_Ally(int entity, StringMap map)
 
 public void Rogue_Item_GoldenCoin()
 {
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			CashRecievedNonWave[client] += 2000;
-			CashSpent[client] -= 2000;
-		}
-	}	
+	CurrentCash += 2000;
+	GlobalExtraCash += 2000;
+		
 	Rogue_AddIngots(10);
 }
 

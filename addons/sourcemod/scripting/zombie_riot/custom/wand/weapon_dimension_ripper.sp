@@ -379,7 +379,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 		}
 	}
 }
-
+/*
 public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	switch(GetRandomInt(1, 4))
@@ -416,7 +416,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 		}
 	}
 }
-
+*/
 public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	switch(GetRandomInt(1, 3))

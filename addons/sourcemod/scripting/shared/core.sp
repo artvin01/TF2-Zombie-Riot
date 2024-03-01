@@ -50,7 +50,10 @@
 #define ZR_MAX_GIBCOUNT 12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 #define ZR_MAX_GIBCOUNT_ABSOLUTE 35 //Anymore then this, and the duration is halved for gibs staying.
 
+#if !defined NOG
 bool SpawningBot = false;
+#endif
+
 //#pragma dynamic    131072
 //Allah This plugin has so much we need to do this.
 
@@ -3024,7 +3027,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			i_IsABuilding[entity] = true;
 			b_NoKnockbackFromSources[entity] = true;
+
+#if defined ZR
 			Upgrade_Check_OnEntityCreated(entity);
+#endif
+
 			for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
 			{
 				if (EntRefToEntIndex(i_ObjectsBuilding[i]) <= 0)

@@ -33,6 +33,24 @@ static const char g_MeleeHitSounds[][] =
 	"mvm/melee_impacts/bottle_hit_robo03.wav"
 };
 
+void SeabornDefender_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Seaborn Defender");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_defender");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_defender");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SeabornDefender(client, vecPos, vecAng, ally);
+}
+
 methodmap SeabornDefender < CClotBody
 {
 	public void PlayIdleSound()
@@ -72,7 +90,9 @@ methodmap SeabornDefender < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_Think, SeabornDefender_ClotThink);
+		func_NPCDeath[npc.index] = SeabornDefender_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SeabornDefender_OnTakeDamage;
+		func_NPCThink[npc.index] = SeabornDefender_ClotThink;
 		
 		npc.m_flSpeed = 200.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -279,8 +299,6 @@ void SeabornDefender_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornDefender_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 
