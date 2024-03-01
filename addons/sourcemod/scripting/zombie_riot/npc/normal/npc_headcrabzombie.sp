@@ -61,23 +61,41 @@ static char g_MeleeMissSounds[][] = {
 	strcopy(data.Icon, sizeof(data.Icon), "test_filename");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = 0;
+	data.Category = Type_Common;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 
-	static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
-	{
-		return TestNpcSpawn(client, vecPos, vecAng, ally);
-	}
 
-	static any ClotSummon(int client, float vecPos[3], float vecAng[3], const char[] data)
-	{
-		return TestNpcSpawn(client, vecPos, vecAng, ally, data);
-	}
+	MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 
-	func_NPCDeath[npc.index] = _NPCDeath;
-	func_NPCOnTakeDamage[npc.index] = _OnTakeDamage;
-	func_NPCThink[npc.index] = _ClotThink;
+	Type_Hidden = -1,
+	Type_Ally = 0,
+	Type_Special,
+	Type_Raid,
+	Type_Common,
+	Type_Alt,
+	Type_Xeno,
+	Type_BTD,
+	Type_Medieval,
+	Type_COF,
+	Type_Seaborn,
+	Type_Expidonsa,
+	Type_Interitus
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return TestNpcSpawn(client, vecPos, vecAng, ally);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], const char[] data)
+{
+	return TestNpcSpawn(client, vecPos, vecAng, ally, data);
+}
+
+		func_NPCDeath[npc.index] = _NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = _OnTakeDamage;
+		func_NPCThink[npc.index] = _ClotThink;
+	
 */
 
 public void HeadcrabZombie_OnMapStart_NPC()
@@ -97,12 +115,17 @@ public void HeadcrabZombie_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Headcrab Zombie");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_headcrabzombie");
-	strcopy(data.Icon, sizeof(data.Icon), "test_filename");
+	strcopy(data.Icon, sizeof(data.Icon), "norm_headcrab_zombie");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = 0;
+	data.Category = Type_Common;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return HeadcrabZombie(client, vecPos, vecAng, ally);
 }
 
 methodmap HeadcrabZombie < CClotBody
@@ -169,7 +192,6 @@ methodmap HeadcrabZombie < CClotBody
 	{
 		HeadcrabZombie npc = view_as<HeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "300", ally, false));
 		
-		i_NpcInternalId[npc.index] = HEADCRAB_ZOMBIE;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -190,9 +212,10 @@ methodmap HeadcrabZombie < CClotBody
 		{
 			npc.m_flSpeed = 200.0;
 		}
+		func_NPCDeath[npc.index] = HeadcrabZombie_NPCDeath;
+		func_NPCThink[npc.index] = HeadcrabZombie_ClotThink;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, HeadcrabZombie_ClotThink);
+	
 		
 		
 		npc.StartPathing();
@@ -350,8 +373,6 @@ public void HeadcrabZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_Think, HeadcrabZombie_ClotThink);
-//	AcceptEntityInput(npc.index, "KillHierarchy");
 }
 
 

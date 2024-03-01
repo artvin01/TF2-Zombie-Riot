@@ -65,8 +65,22 @@ void CombineCollos_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Combine Golden Collos");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_collos_swordsman");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_gold");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return CombineCollos(client, vecPos, vecAng, ally);
+}
 methodmap CombineCollos < CClotBody
 {
 	
@@ -165,7 +179,6 @@ methodmap CombineCollos < CClotBody
 		
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");		
-		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_COLLOSS;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -192,7 +205,9 @@ methodmap CombineCollos < CClotBody
 		}
 		
 		
-		SDKHook(npc.index, SDKHook_Think, CombineCollos_ClotThink);
+		func_NPCDeath[npc.index] = CombineCollos_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = CombineCollos_OnTakeDamage;
+		func_NPCThink[npc.index] = CombineCollos_ClotThink;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 215, 0, 255);
@@ -466,9 +481,6 @@ public void CombineCollos_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, CombineCollos_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
