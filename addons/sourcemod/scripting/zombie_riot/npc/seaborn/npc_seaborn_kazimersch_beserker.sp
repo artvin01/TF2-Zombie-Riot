@@ -54,7 +54,7 @@ void KazimierzBeserker_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bloodboil Knightclub Trainee");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_kazimersch_beserker");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_beserker");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_berserker");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;
