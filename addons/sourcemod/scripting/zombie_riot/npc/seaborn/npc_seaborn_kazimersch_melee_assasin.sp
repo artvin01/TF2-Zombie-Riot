@@ -50,6 +50,21 @@ void KazimierzKnightAssasin_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeDeflectAttack));	i++) { PrecacheSound(g_MeleeDeflectAttack[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Armorless Union Assassin");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_kazimersch_melee_assasin");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_assasin");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return KazimierzKnightAssasin(client, vecPos, vecAng, ally);
 }
 
 methodmap KazimierzKnightAssasin < CClotBody
@@ -113,7 +128,6 @@ methodmap KazimierzKnightAssasin < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
-		i_NpcInternalId[npc.index] = SEABORN_KAZIMIERZ_ASSASIN_MELEE;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -127,8 +141,9 @@ methodmap KazimierzKnightAssasin < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, KazimierzKnightAssasin_ClotThink);
+		func_NPCDeath[npc.index] = KazimierzKnightAssasin_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = KazimierzKnightAssasin_OnTakeDamage;
+		func_NPCThink[npc.index] = KazimierzKnightAssasin_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;
@@ -417,9 +432,6 @@ public void KazimierzKnightAssasin_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, KazimierzKnightAssasin_ClotThink);
-		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

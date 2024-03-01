@@ -29,9 +29,24 @@ static const char g_MeleeAttackSounds[][] =
 void SeaCrawler_MapStart()
 {
 	PrecacheSoundArray(g_MeleeAttackSounds);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Pocket Sea Crawler");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seacrawler");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_crawler");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
-methodmap SeaCrawler < CClotBody
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return SeaCrawler(client, vecPos, vecAng, ally, data);
+}
+
+methodmap SeaCrawler < CSeaBody
 {
 	public void PlayIdleSound()
 	{
@@ -63,7 +78,7 @@ methodmap SeaCrawler < CClotBody
 		SetVariantInt(data[0] ? 15 : 7);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = data[0] ? SEACRAWLER_ALT : SEACRAWLER;
+		npc.SetElite(view_as<bool>(data[0]));
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_WALK");
 		KillFeed_SetKillIcon(npc.index, "pumpkindeath");
@@ -72,8 +87,9 @@ methodmap SeaCrawler < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, SeaCrawler_ClotThink);
+		func_NPCDeath[npc.index] = SeaCrawler_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SeaCrawler_OnTakeDamage;
+		func_NPCThink[npc.index] = SeaCrawler_ClotThink;
 		
 		npc.m_flSpeed = 100.0;	// 0.4 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -111,7 +127,7 @@ public void SeaCrawler_ClotThink(int iNPC)
 
 			float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 			spawnRing_Vectors(vecMe, 100.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 800.0);
-			Explode_Logic_Custom(i_NpcInternalId[npc.index] == SEACRAWLER_ALT ? 60.0 : 45.0, -1, npc.index, -1, vecMe, 400.0, _, _, true, _, false, 1.0, SeaCrawler_ExplodePost);
+			Explode_Logic_Custom(npc.m_bElite ? 60.0 : 45.0, -1, npc.index, -1, vecMe, 400.0, _, _, true, _, false, 1.0, SeaCrawler_ExplodePost);
 			// 300 x 0.15
 			// 400 x 0.15
 		}
@@ -184,6 +200,4 @@ void SeaCrawler_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeaCrawler_ClotThink);
 }

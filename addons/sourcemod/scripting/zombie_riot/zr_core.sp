@@ -11,12 +11,12 @@
 #define ZR_GetWaveCount Rogue_GetRoundScale
 
 #define MVM_CLASS_FLAG_NONE				0
-#define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// ???
-#define MVM_CLASS_FLAG_SUPPORT			(1 << 1)	// Show as Support?
-#define MVM_CLASS_FLAG_MISSION			(1 << 2)	// Show as Flashing?
-#define MVM_CLASS_FLAG_MINIBOSS			(1 << 3)	// Show as Red Background?
-#define MVM_CLASS_FLAG_ALWAYSCRIT		(1 << 4)	// Show with Crit Borders?
-#define MVM_CLASS_FLAG_SUPPORT_LIMITED	(1 << 5)	// Show as Flashing?
+#define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// Base Normal
+#define MVM_CLASS_FLAG_SUPPORT			(1 << 1)	// Base Support
+#define MVM_CLASS_FLAG_MISSION			(1 << 2)	// Base Support, Always Show
+#define MVM_CLASS_FLAG_MINIBOSS			(1 << 3)	// Add Red Background
+#define MVM_CLASS_FLAG_ALWAYSCRIT		(1 << 4)	// Add Blue Borders
+#define MVM_CLASS_FLAG_SUPPORT_LIMITED	(1 << 5)	// Add to Support?
 
 public const int AmmoData[][] =
 {
@@ -211,6 +211,7 @@ int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
 int CurrentCash;
+int GlobalExtraCash;
 bool LastMann;
 bool LastMannScreenEffect;
 int LimitNpcs;
@@ -1416,7 +1417,7 @@ void CheckAlivePlayersforward(int killed=0)
 void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false)
 {
 	bool rogue = Rogue_Mode();
-	if(!Waves_Started() || (!rogue && Waves_InSetup()) || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_RoundRunning)
+	if(!Waves_Started() || (!rogue && Waves_InSetup()) || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_ZombieRiot)
 	{
 		LastMann = false;
 		CurrentPlayers = 0;

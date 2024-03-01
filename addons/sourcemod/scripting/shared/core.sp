@@ -37,6 +37,8 @@
 #define TF2_GetClientTeam	PLZUSE_GetClientTeam
 #define TF2_ChangeClientTeam	PLZUSE_ChangeClientTeam
 
+#define RoundState_ZombieRiot view_as<RoundState>(11)
+
 #define NPC_HARD_LIMIT 40 
 #define ZR_MAX_NPCS (NPC_HARD_LIMIT*6)
 #define ZR_MAX_NPCS_ALLIED 40 //Never need more.
@@ -47,6 +49,10 @@
 #define ZR_MAX_SPAWNERS 128
 #define ZR_MAX_GIBCOUNT 12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 #define ZR_MAX_GIBCOUNT_ABSOLUTE 35 //Anymore then this, and the duration is halved for gibs staying.
+
+#if !defined NOG
+bool SpawningBot = false;
+#endif
 
 //#pragma dynamic    131072
 //Allah This plugin has so much we need to do this.
@@ -1459,6 +1465,11 @@ public void OnPluginEnd()
 	RTS_PluginEnd();
 #endif
 
+#if defined ZR
+	Waves_MapEnd();
+	MVMHud_Disable();
+#endif
+
 	/*
 	char classname[256];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
@@ -1493,6 +1504,7 @@ public void OnMapStart()
 	PrecacheSound("weapons/gauss/fire1.wav");
 	PrecacheSound("items/powerup_pickup_knockout_melee_hit.wav");
 	PrecacheSound("weapons/capper_shoot.wav");
+	PrecacheSound("ambient/explosions/explode_3.wav");
 
 	PrecacheSound("misc/halloween/clock_tick.wav");
 	PrecacheSound("mvm/mvm_bomb_warning.wav");
@@ -1603,7 +1615,7 @@ public void OnMapEnd()
 #if defined ZR
 	Store_RandomizeNPCStore(1);
 	OnRoundEnd(null, NULL_STRING, false);
-	OnMapEndWaves();
+	Waves_MapEnd();
 	Spawns_MapEnd();
 #endif
 
@@ -1858,6 +1870,12 @@ public void OnClientPutInServer(int client)
 #if !defined NOG
 	if(IsFakeClient(client))
 	{
+		if(!SpawningBot)
+		{
+			KickClient(client);
+			return;
+		}
+		SpawningBot = false;
 		ChangeClientTeam(client, TFTeam_Blue);
 		DHook_HookClient(client);
 		b_IsPlayerABot[client] = true;
@@ -2992,7 +3010,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if (!StrContains(classname, "tf_weapon_medigun")) 
 		{
 			b_IsAMedigun[entity] = true;
-#if defined ZR//#if !defined RTS
+#if defined ZR
 			Medigun_OnEntityCreated(entity);
 #endif
 		}
@@ -3005,12 +3023,15 @@ public void OnEntityCreated(int entity, const char[] classname)
 		
 		else if(!StrContains(classname, "obj_"))
 		{
-		//	g_ObjStartUpgrading.HookEntity(Hook_Pre, entity, ObjStartUpgrading_SmackPre); //causes crashes.
-			//prevent upgrades at all times.
 			b_BuildingHasDied[entity] = false;
 			npc.bCantCollidieAlly = true;
 			i_IsABuilding[entity] = true;
 			b_NoKnockbackFromSources[entity] = true;
+
+#if defined ZR
+			Upgrade_Check_OnEntityCreated(entity);
+#endif
+
 			for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
 			{
 				if (EntRefToEntIndex(i_ObjectsBuilding[i]) <= 0)

@@ -1273,7 +1273,7 @@ public void OnPostThink(int client)
 			if(Rogue_Mode() && Rogue_InSetup())
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t\n%t", HudBuffer,
-				"Credits_Menu_New", (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+				"Credits_Menu_New", GlobalExtraCash + (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
 				PerkNames[i_CurrentEquippedPerk[client]],
 				"Australium Ingots", Rogue_GetIngots()
@@ -1282,7 +1282,7 @@ public void OnPostThink(int client)
 			else
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t", HudBuffer,
-				"Credits_Menu_New", (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+				"Credits_Menu_New", GlobalExtraCash + (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
 				PerkNames[i_CurrentEquippedPerk[client]]
 				);

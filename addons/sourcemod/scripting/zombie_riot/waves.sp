@@ -104,6 +104,8 @@ static ConVar CvarSkyName;
 static char SkyNameRestore[64];
 static int FogEntity = INVALID_ENT_REFERENCE;
 
+static StringMap g_AllocPooledStringCache;
+
 static int Gave_Ammo_Supply;
 static int VotedFor[MAXTF2PLAYERS];
 static float VoteEndTime;
@@ -147,6 +149,7 @@ bool Waves_InSetup()
 
 void Waves_MapStart()
 {
+	delete g_AllocPooledStringCache;
 	FogEntity = INVALID_ENT_REFERENCE;
 	SkyNameRestore[0] = 0;
 
@@ -367,11 +370,13 @@ void Waves_DisplayHintVote()
 	}
 }
 
-void OnMapEndWaves()
+void Waves_MapEnd()
 {
 	CurrentGame = -1;
 	delete Voting;
 	Zero(VotedFor);
+	Waves_SetDifficultyName(NULL_STRING);
+	UpdateMvMStatsFrame();
 }
 
 void Waves_SetupVote(KeyValues map)
@@ -728,6 +733,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	}
 
 	Waves_UpdateMvMStats();
+	DoGlobalMultiScaling();
 }
 
 void Waves_RoundStart()
@@ -941,6 +947,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				delete kv;
 
 				Waves_SetReadyStatus(1);
+				DoGlobalMultiScaling();
 				Waves_UpdateMvMStats();
 			}
 		}
@@ -960,6 +967,13 @@ void Waves_ClearWaves()
 
 void Waves_Progress(bool donotAdvanceRound = false)
 {
+	/*
+	PrintCenterTextAll("Waves_Progress %d | %d | %d | %d | %d", InSetup ? 0 : 1,
+		Rounds ? 1 : 0,
+		CvarNoRoundStart.BoolValue ? 0 : 1,
+		GameRules_GetRoundState() == RoundState_BetweenRounds ? 0 : 1,
+		Cooldown > GetGameTime() ? 0 : 1);
+*/
 	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime())
 		return;
 
@@ -2100,16 +2114,18 @@ static int GetMvMStats()
 
 void Waves_UpdateMvMStats()
 {
-
 	if(!UpdateFramed)
 	{
 		UpdateFramed = true;
-		RequestFrame(UpdateMvMStatsFrame);
+		RequestFrames(UpdateMvMStatsFrame, 10);
 	}
 }
 
 static void UpdateMvMStatsFrame()
 {
+	//Profiler profiler = new Profiler();
+	//profiler.Start();
+
 	UpdateFramed = false;
 
 	int mvm = GetMvMStats();
@@ -2133,14 +2149,15 @@ static void UpdateMvMStatsFrame()
 
 		float cashLeft, totalCash;
 
-		int totalcount;
+		int activecount, totalcount;
 		int id[24];
 		int count[24];
 		int flags[24];
 		bool active[24];
 		
-		int maxwaves = Rounds ? Rounds.Length : 0;
-		if(maxwaves && CurrentRound >= 0 && CurrentRound < maxwaves)
+		int maxwaves = Rounds ? (Rounds.Length - 1) : 0;
+		bool freeplay = !(maxwaves && CurrentRound >= 0 && CurrentRound < maxwaves);
+		if(!freeplay)
 		{
 			Round round;
 			Rounds.GetArray(CurrentRound, round);
@@ -2158,7 +2175,7 @@ static void UpdateMvMStatsFrame()
 
 				Wave wave;
 				int length = round.Waves.Length;
-				for(int a; a < length; a++)
+				for(int a = length - 1; a >= 0; a--)
 				{
 					round.Waves.GetArray(a, wave);
 
@@ -2192,6 +2209,7 @@ static void UpdateMvMStatsFrame()
 					if(a > CurrentWave)
 					{
 						cashLeft += cash;
+						activecount += num;
 					}
 					else
 					{
@@ -2223,6 +2241,7 @@ static void UpdateMvMStatsFrame()
 		{
 			Enemies.GetArray(a, enemy);
 			cashLeft += enemy.Credits;
+			activecount++;
 
 			for(int b; b < sizeof(id); b++)
 			{
@@ -2233,7 +2252,7 @@ static void UpdateMvMStatsFrame()
 					if(!id[b])
 					{
 						id[b] = enemy.Index;
-						flags[b] = SetupFlags(enemy, true);
+						flags[b] = SetupFlags(enemy, !freeplay);
 					}
 					
 					break;
@@ -2241,12 +2260,13 @@ static void UpdateMvMStatsFrame()
 			}
 		}
 
-		for(int a; a < i_MaxcountNpcTotal; a++)
+		int entity = MaxClients + 1;
+		while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
-			if(entity != -1 && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
+			if(!b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 			{
 				cashLeft += f_CreditsOnKill[entity];
+				activecount++;
 
 				for(int b; b < sizeof(id); b++)
 				{
@@ -2258,7 +2278,7 @@ static void UpdateMvMStatsFrame()
 						if(!id[b])
 						{
 							id[b] = i_NpcInternalId[entity];
-							flags[b] = b_thisNpcIsARaid[entity] ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_SUPPORT;
+							flags[b] = (freeplay || b_thisNpcIsARaid[entity]) ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_SUPPORT;
 
 							if(b_thisNpcIsABoss[entity] || b_thisNpcHasAnOutline[entity])
 								flags[b] |= MVM_CLASS_FLAG_MINIBOSS;
@@ -2267,7 +2287,7 @@ static void UpdateMvMStatsFrame()
 							fl_Extra_RangedArmor[entity] < 1.0 || 
 							fl_Extra_Speed[entity] > 1.0 || 
 							fl_Extra_Damage[entity] > 1.0 ||
-							b_ThisNpcIsImmuneToNuke[entity])
+							b_thisNpcIsARaid[entity])
 								flags[b] |= MVM_CLASS_FLAG_ALWAYSCRIT;
 						}
 						
@@ -2281,7 +2301,7 @@ static void UpdateMvMStatsFrame()
 		if(objective != -1)
 		{
 			SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", RoundToNearest(cashLeft));
-			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", totalcount);
+			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", totalcount > activecount ? totalcount : activecount);
 
 			if(Rogue_Mode())
 			{
@@ -2291,7 +2311,7 @@ static void UpdateMvMStatsFrame()
 			else
 			{
 				SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
-				SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves - 1 : 0);
+				SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves : 0);
 			}
 
 			NPCData data;
@@ -2300,11 +2320,21 @@ static void UpdateMvMStatsFrame()
 				if(id[i])
 				{
 					NPC_GetById(id[i], data);
+					if(data.Flags == -1)
+					{
+						SetWaveClass(objective, i);
+						continue;
+					}
+
 					if(!data.Icon[0])
 					{
 						if(StrContains(data.Name, "sword", false) != -1 || StrContains(data.Plugin, "sword", false) != -1)
 						{
 							strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+						}
+						else if(StrContains(data.Name, "combine", false) != -1 || StrContains(data.Plugin, "combine", false) != -1)
+						{
+							strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
 						}
 						else if(StrContains(data.Name, "scout", false) != -1 || StrContains(data.Plugin, "scout", false) != -1)
 						{
@@ -2342,13 +2372,9 @@ static void UpdateMvMStatsFrame()
 						{
 							strcopy(data.Icon, sizeof(data.Icon), "spy");
 						}
-						else if(StrContains(data.Name, "zombie", false) != -1 || StrContains(data.Plugin, "zombie", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "demoknight_samurai");
-						}
 						else
 						{
-							strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
+							strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
 						}
 					}
 					
@@ -2366,14 +2392,18 @@ static void UpdateMvMStatsFrame()
 		}
 
 		int acquired = RoundFloat(totalCash - cashLeft);
-		SetEntData(mvm, m_currentWaveStats + 4, acquired);	// nCreditsDropped
-		SetEntData(mvm, m_currentWaveStats + 8, acquired);	// nCreditsAcquired
-		SetEntData(mvm, m_currentWaveStats + 12, 0);	// nCreditsBonus
+		SetEntData(mvm, m_currentWaveStats + 4, acquired, 4, true);	// nCreditsDropped
+		SetEntData(mvm, m_currentWaveStats + 8, acquired, 4, true);	// nCreditsAcquired
+		SetEntData(mvm, m_currentWaveStats + 12, 0, 4, true);	// nCreditsBonus
 
-		SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash);	// nCreditsDropped
-		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash);	// nCreditsAcquired
-		SetEntData(mvm, m_runningTotalWaveStats + 12, 0);	// nCreditsBonus
+		SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
+		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
+		SetEntData(mvm, m_runningTotalWaveStats + 12, GlobalExtraCash, 4, true);	// nCreditsBonus
 	}
+
+	//profiler.Stop();
+	//PrintToChatAll("Profiler: %f", profiler.Time);
+	//delete profiler;
 }
 
 static int SetupFlags(const Enemy data, bool support)
@@ -2399,7 +2429,7 @@ static int SetupFlags(const Enemy data, bool support)
 	data.ExtraRangedRes < 1.0 || 
 	data.ExtraSpeed > 1.0 || 
 	data.ExtraDamage > 1.0 || 
-	data.Is_Immune_To_Nuke)
+	data.Is_Boss > 1)
 		flags |= MVM_CLASS_FLAG_ALWAYSCRIT;
 	
 	return flags;
@@ -2411,9 +2441,10 @@ void Waves_SetReadyStatus(int status)
 	{
 		case 0:	// Normal
 		{
+			InSetup = false;
 			GameRules_SetProp("m_bInWaitingForPlayers", false);
 			GameRules_SetProp("m_bInSetup", false);
-			GameRules_SetProp("m_iRoundState", 11);
+			GameRules_SetProp("m_iRoundState", RoundState_ZombieRiot);
 		}
 		case 1:	// Ready Up
 		{
@@ -2427,13 +2458,12 @@ void Waves_SetReadyStatus(int status)
 				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
 			
 			KillFeed_ForceClear();
+			SDKCall_ResetPlayerAndTeamReadyState();
 
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(IsClientInGame(client))
 				{
-					GameRules_SetProp("m_bPlayerReady", false, 1, client);
-
 					if(IsFakeClient(client))
 						KillFeed_SetBotTeam(client, TFTeam_Blue);
 				}
@@ -2451,13 +2481,12 @@ void Waves_SetReadyStatus(int status)
 				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
 			
 			KillFeed_ForceClear();
+			SDKCall_ResetPlayerAndTeamReadyState();
 			
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(IsClientInGame(client))
 				{
-					GameRules_SetProp("m_bPlayerReady", false, 1, client);
-
 					if(IsFakeClient(client))
 						KillFeed_SetBotTeam(client, TFTeam_Blue);
 				}
@@ -2485,7 +2514,7 @@ static void SetWaveClass(int objective, int index, int count = 0, const char[] i
 	if(index < size1)
 	{
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassCounts", count, _, index);
-		SetEntData(objective, name1 + (index * 4), AllocPooledString(icon), 4, true);
+		SetEntDataAllocString(objective, name1 + (index * 4), icon);
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassFlags", flags, _, index);
 		SetEntProp(objective, Prop_Send, "m_bMannVsMachineWaveClassActive", active, _, index);
 	}
@@ -2495,12 +2524,19 @@ static void SetWaveClass(int objective, int index, int count = 0, const char[] i
 		if(index2 < size2)
 		{
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassCounts2", count, _, index2);
-			SetEntData(objective, name2 + (index2 * 4), AllocPooledString(icon), 4, true);
+			SetEntDataAllocString(objective, name2 + (index2 * 4), icon);
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassFlags2", flags, _, index2);
 			SetEntProp(objective, Prop_Send, "m_bMannVsMachineWaveClassActive2", active, _, index2);
 		}
 	}
 	
+}
+
+static void SetEntDataAllocString(int entity, int offset, const char[] string)
+{
+	Address address = AllocPooledString(string);
+	if(address != view_as<Address>(GetEntData(entity, offset, 4)))
+		SetEntData(entity, offset, address, 4, true);
 }
 
 /**
@@ -2509,8 +2545,7 @@ static void SetWaveClass(int objective, int index, int count = 0, const char[] i
  * 
  * https://github.com/alliedmodders/sourcemod/blob/b14c18ee64fc822dd6b0f5baea87226d59707d5a/core/HalfLife2.cpp#L1415-L1423
  */
-stock Address AllocPooledString(const char[] value) {
-	static StringMap g_AllocPooledStringCache;
+static Address AllocPooledString(const char[] value) {
 	if(!g_AllocPooledStringCache)
 		g_AllocPooledStringCache = new StringMap();
 
@@ -2552,6 +2587,6 @@ void WavesUpdateDifficultyName()
 		if(!offset)
 			offset = GetEntSendPropOffs(objective, "m_iszMvMPopfileName", true);
 
-		SetEntData(objective, offset, AllocPooledString(WhatDifficultySetting), 4, true);
+		SetEntDataAllocString(objective, offset, WhatDifficultySetting);
 	}	
 }

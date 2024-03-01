@@ -43,8 +43,21 @@ void Defanda_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Defanda");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_defanda");
+	strcopy(data.Icon, sizeof(data.Icon), "medic"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = false;								//download needed?
+	data.Flags = 0;											//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Defanda(client, vecPos, vecAng, ally);
+}
 
 methodmap Defanda < CClotBody
 {
@@ -89,7 +102,6 @@ methodmap Defanda < CClotBody
 	{
 		Defanda npc = view_as<Defanda>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_DEFANDA;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -106,8 +118,10 @@ methodmap Defanda < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
-		SDKHook(npc.index, SDKHook_Think, Defanda_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -133,7 +147,7 @@ methodmap Defanda < CClotBody
 	}
 }
 
-public void Defanda_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	Defanda npc = view_as<Defanda>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -188,7 +202,7 @@ public void Defanda_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Defanda_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Defanda npc = view_as<Defanda>(victim);
 		
@@ -204,7 +218,7 @@ public Action Defanda_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	return Plugin_Changed;
 }
 
-public void Defanda_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	Defanda npc = view_as<Defanda>(entity);
 	if(!npc.m_bGib)
@@ -212,7 +226,6 @@ public void Defanda_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	ExpidonsaRemoveEffects(entity);
-	SDKUnhook(npc.index, SDKHook_Think, Defanda_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable4))

@@ -15,11 +15,9 @@ static int GetChargeEffectBeingProvided;
 #if defined ZR
 static bool IsRespawning;
 //static bool Disconnecting;
-#endif
-
-#if defined ZR
 static DynamicHook g_WrenchSmack;
 //DynamicHook g_ObjStartUpgrading;
+static Address CTeamplayRoundBasedRules = Address_Null;
 #endif
 
 static DynamicDetour gH_MaintainBotQuota = null;
@@ -27,6 +25,7 @@ static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
 static DynamicHook g_DHookScoutSecondaryFire; 
+static DynamicHook g_DhookCheckUpgradeOnHit; 
 DynamicHook g_DhookUpdateTransmitState; 
 
 static DynamicDetour g_CalcPlayerScore;
@@ -100,6 +99,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
 	DHook_CreateDetour(gamedata, "CTFPlayerShared::PulseRageBuff()", Dhook_PulseFlagBuff,_);
+	DHook_CreateDetour(gamedata, "CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState", _, DHook_ResetPlayerAndTeamReadyStatePost);
 #endif
 
 	//thanks to https://github.com/nosoop/SM-TFCustomAttributeStarterPack/blob/6e8ffcc929553f8906f0b32d92b649c32681cd1e/scripting/attr_buff_override.sp#L53
@@ -124,7 +124,7 @@ void DHook_Setup()
 	g_DHookRocketExplode = DHook_CreateVirtual(gamedata, "CTFBaseRocket::Explode");
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
 	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
-
+	g_DhookCheckUpgradeOnHit = DHook_CreateVirtual(gamedata, "CBaseObject::CheckUpgradeOnHit");
 
 	int offset = gamedata.GetOffset("CBaseEntity::UpdateTransmitState()");
 	g_DhookUpdateTransmitState = new DynamicHook(offset, HookType_Entity, ReturnType_Int, ThisPointer_CBaseEntity);
@@ -1413,6 +1413,7 @@ void DHook_UnhookClient(int client)
 {
 	if(ForceRespawn)
 		DynamicHook.RemoveHook(ForceRespawnHook[client]);
+	
 }
 /*
 void DHook_ClientDisconnect()
@@ -1962,7 +1963,13 @@ MRESReturn OnWeaponReplenishClipPre(int weapon) // Not when the player press rel
 	return MRES_Ignored;
 	
 }
-#endif	// Non-RTS
+
+void Upgrade_Check_OnEntityCreated(int client)
+{
+	g_DhookCheckUpgradeOnHit.HookEntity(Hook_Pre, client, DHook_CheckUpgradeOnHitPre);
+	g_DhookCheckUpgradeOnHit.HookEntity(Hook_Post, client, DHook_CheckUpgradeOnHitPost);
+}
+#endif	// ZR
 
 void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 {
@@ -2022,6 +2029,20 @@ int SetEntityTransmitState(int entity, int newFlags)
 	return flags;
 }
 
+//prevent upgrades in ZR
+int WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre;
+public MRESReturn DHook_CheckUpgradeOnHitPre(int entity)
+{
+	WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre = GameRules_GetProp("m_bPlayingMannVsMachine");
+	GameRules_SetProp("m_bPlayingMannVsMachine", false);
+	return MRES_Ignored;
+}
+public MRESReturn DHook_CheckUpgradeOnHitPost(int entity)
+{
+	GameRules_SetProp("m_bPlayingMannVsMachine", WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre);
+	return MRES_Ignored;
+}
+
 public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!
 {
 	return MRES_Supercede;	//NEVER APPLY. Causes you to not fire if accidentally pressing m2
@@ -2050,6 +2071,17 @@ public MRESReturn Dhook_PulseFlagBuff(Address pPlayerShared)
 		f_BannerDurationActive[client] = GetGameTime() + 1.1;
 	*/
 	return MRES_Supercede;
+}
+
+Address DHook_CTeamplayRoundBasedRules()
+{
+	return CTeamplayRoundBasedRules;
+}
+
+static MRESReturn DHook_ResetPlayerAndTeamReadyStatePost(Address address)
+{
+	CTeamplayRoundBasedRules = address;
+	return MRES_Ignored;
 }
 
 public MRESReturn Dhook_RaiseFlag_Post(int entity)

@@ -39,6 +39,24 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/knife_swing.wav"
 };
 
+void SeabornSpy_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Seaborn Spy");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_spy");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_spy");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SeabornSpy(client, vecPos, vecAng, ally);
+}
+
 methodmap SeabornSpy < CClotBody
 {
 	public void PlayIdleSound()
@@ -70,7 +88,6 @@ methodmap SeabornSpy < CClotBody
 	{
 		SeabornSpy npc = view_as<SeabornSpy>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1500", ally));
 		
-		i_NpcInternalId[npc.index] = SEABORN_SPY;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		
@@ -80,7 +97,9 @@ methodmap SeabornSpy < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		SDKHook(npc.index, SDKHook_Think, SeabornSpy_ClotThink);
+		func_NPCDeath[npc.index] = SeabornSpy_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		func_NPCThink[npc.index] = SeabornSpy_ClotThink;
 		
 		npc.m_flSpeed = 320.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -243,6 +262,4 @@ void SeabornSpy_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornSpy_ClotThink);
 }

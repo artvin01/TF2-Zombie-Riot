@@ -110,7 +110,7 @@ public void Weapon_SeaRange_M2(int client, int weapon, bool crit, int slot)
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
 	GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 
-	int entity = NPC_CreateById(SEARUNNER, client, pos1, ang, TFTeam_Red);
+	int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
 	if(entity > MaxClients)
 	{
 		fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
@@ -140,7 +140,7 @@ public void Weapon_SeaRangePap_M2(int client, int weapon, bool crit, int slot)
 
 	for(int i; i < 2; i++)
 	{
-		int entity = NPC_CreateById(SEARUNNER, client, pos1, ang, TFTeam_Red);
+		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
 		if(entity > MaxClients)
 		{
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
@@ -175,7 +175,7 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 
 	for(int i; i < 3; i++)
 	{
-		int entity = NPC_CreateById(SEARUNNER, client, pos1, ang, TFTeam_Red);
+		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
 		if(entity > MaxClients)
 		{
 			int maxhealth = SDKCall_GetMaxHealth(client);

@@ -8,7 +8,6 @@ methodmap EndSpeaker1 < EndSpeakerSmall
 		EndSpeaker1 npc = view_as<EndSpeaker1>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.0", "1200", ally, false, _, true));
 		// 10000 x 0.4 x 0.3
 
-		i_NpcInternalId[npc.index] = ENDSPEAKER_1;
 		i_NpcWeight[npc.index] = 0;
 		npc.SetActivity("ACT_RUN");
 		
@@ -18,7 +17,9 @@ methodmap EndSpeaker1 < EndSpeakerSmall
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bHardMode = view_as<bool>(data[0]);
 		
-		SDKHook(npc.index, SDKHook_Think, EndSpeaker1_ClotThink);
+		func_NPCDeath[npc.index] = EndSpeaker1_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = EndSpeaker_OnTakeDamage;
+		func_NPCThink[npc.index] = EndSpeaker1_ClotThink;
 		
 		npc.m_flSpeed = 250.0;	// 0.8 + 0.2 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -26,6 +27,14 @@ methodmap EndSpeaker1 < EndSpeakerSmall
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
+
+		if(!npc.m_bHardMode && ally != TFTeam_Red && !IsValidEntity(RaidBossActive))
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime() + 9000.0;
+			RaidModeScaling = 0.0;
+			RaidAllowsBuildings = true;
+		}
 		return npc;
 	}
 }
@@ -91,8 +100,6 @@ void EndSpeaker1_NPCDeath(int entity)
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 	npc.SetSpawn(pos, angles);
-
-	SDKUnhook(npc.index, SDKHook_Think, EndSpeaker1_ClotThink);
 	
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))

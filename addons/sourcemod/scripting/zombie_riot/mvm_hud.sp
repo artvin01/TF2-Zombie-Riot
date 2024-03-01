@@ -4,9 +4,8 @@
 void CreateMVMPopulator()
 {
 	//find populator
-	int populator = -1;
-	FindEntityByClassname(populator, "info_populator");
-	if(populator != i_MVMPopulator)
+	int populator = FindEntityByClassname(-1, "info_populator");
+	if(populator == -1 || populator != i_MVMPopulator)
 	{
 		if(!IsValidEntity(populator))
 			populator = CreateEntityByName("info_populator");
@@ -15,8 +14,15 @@ void CreateMVMPopulator()
 
 		//Disables thinking.
 		SetEntityFlags(i_MVMPopulator, GetEntityFlags(i_MVMPopulator)|4194304);
-		GameRules_SetProp("m_iRoundState", 10);
-		GameRules_SetProp("m_bPlayingMannVsMachine", true);
-		GameRules_SetProp("m_bPlayingSpecialDeliveryMode", true);
 	}
+
+	GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);
+	GameRules_SetProp("m_bPlayingMannVsMachine", true);
+	GameRules_SetProp("m_bPlayingSpecialDeliveryMode", true);
+}
+
+void MVMHud_Disable()
+{
+	GameRules_SetProp("m_bPlayingMannVsMachine", false);
+	GameRules_SetProp("m_bPlayingSpecialDeliveryMode", false);
 }

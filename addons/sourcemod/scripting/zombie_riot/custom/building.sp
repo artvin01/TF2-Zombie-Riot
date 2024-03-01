@@ -5748,27 +5748,20 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 				Building_Constructed[Building_Index] = true;	
 				SetEntityModel(Building_Index, ELEVATOR_MODEL);
 				SetEntPropFloat(Building_Index, Prop_Send, "m_flModelScale", 1.15); //Abit bigger!
+				SetEntProp(Building_Index, Prop_Send, "m_bCarried", true);
 			}
 			case BuildingBarricade:
 			{
 				npc.bBuildingIsPlaced = true;
 				Building_Constructed[Building_Index] = true;
 				SetEntityModel(Building_Index, BARRICADE_MODEL);
+				SetEntProp(Building_Index, Prop_Send, "m_bCarried", true);
 			}
 			case BuildingRailgun:
 			{
 				npc.bBuildingIsPlaced = true;
 				Building_Constructed[Building_Index] = true;
 				SetEntityModel(Building_Index, CUSTOM_SENTRYGUN_MODEL);
-				/*
-				static const float minbounds[3] = {-15.0, -15.0, 0.0};
-				static const float maxbounds[3] = {15.0, 15.0, 40.0};
-				SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
-				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
-				SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
-				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
-				npc.UpdateCollisionBox();	
-				*/
 
 			}
 			case BuildingMortar:
@@ -5777,16 +5770,6 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 				Building_Constructed[Building_Index] = true;
 				
 				SetEntityModel(Building_Index, CUSTOM_SENTRYGUN_MODEL);
-				/*
-				static const float minbounds[3] = {-15.0, -15.0, 0.0};
-				static const float maxbounds[3] = {15.0, 15.0, 80.0};
-				SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
-				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
-				SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
-				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
-				
-				npc.UpdateCollisionBox();	
-				*/
 
 			}
 			case BuildingSummoner:
@@ -5845,6 +5828,7 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 			{	
 				npc.bBuildingIsPlaced = true;
 				Building_Constructed[Building_Index] = true;
+				SetEntProp(Building_Index, Prop_Send, "m_bCarried", true);
 				float vOrigin[3];
 				float vAngles[3];
 				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
@@ -5936,6 +5920,7 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 			{
 				npc.bBuildingIsPlaced = true;
 				Building_Constructed[Building_Index] = true;
+				SetEntProp(Building_Index, Prop_Send, "m_bCarried", true);
 				float vOrigin[3];
 				float vAngles[3];
 				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
@@ -6033,6 +6018,7 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 			{
 				npc.bBuildingIsPlaced = true;
 				Building_Constructed[Building_Index] = true;
+				SetEntProp(Building_Index, Prop_Send, "m_bCarried", true);
 				float vOrigin[3];
 				float vAngles[3];
 				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
@@ -6129,6 +6115,7 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 			{
 				npc.bBuildingIsPlaced = true;
 				Building_Constructed[Building_Index] = true;
+				SetEntProp(Building_Index, Prop_Send, "m_bCarried", true);
 				float vOrigin[3];
 				float vAngles[3];
 				
@@ -6216,6 +6203,7 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 			{
 				npc.bBuildingIsPlaced = true;
 				Building_Constructed[Building_Index] = true;
+				SetEntProp(Building_Index, Prop_Send, "m_bCarried", true);
 				float vOrigin[3];
 				float vAngles[3];
 				
@@ -6383,7 +6371,9 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 }
 public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams) 
 {
-	RequestFrame(Dhook_FinishedBuilding_Post_Frame, EntIndexToEntRef(Building_Index));
+	//tf2 buildings are aids to work with.
+	//Frame_TeleportBuilding_Init Should be smaller.
+	RequestFrames(Dhook_FinishedBuilding_Post_Frame, 10, EntIndexToEntRef(Building_Index));
 	return MRES_Ignored;
 }
 

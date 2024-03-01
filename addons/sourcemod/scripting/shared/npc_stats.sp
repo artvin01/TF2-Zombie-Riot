@@ -75,6 +75,7 @@ Function func_NPCDeathForward[MAXENTITIES];
 Function func_NPCOnTakeDamage[MAXENTITIES];
 Function func_NPCThink[MAXENTITIES];
 Function func_NPCFuncWin[MAXENTITIES];
+Function func_NPCAnimEvent[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -2478,7 +2479,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	public int FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, int flags = 0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE) //No defaults, otherwise i cant even judge.
 	{
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
-		this.GetVectors(vecForward, vecSwingStart, vecAngles);
+		//this.GetVectors(vecForward, vecSwingStart, vecAngles);
 
 		GetAbsOrigin(this.index, vecSwingStart);
 		vecSwingStart[2] += 54.0;
@@ -2527,7 +2528,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	public int FireParticleRocket(float vecTarget[3], float rocket_damage, float rocket_speed, float damage_radius , const char[] rocket_particle = "", bool do_aoe_dmg=false , bool FromBlueNpc=true, bool Override_Spawn_Loc = false, float Override_VEC[3] = {0.0,0.0,0.0}, int flags = 0, int inflictor = INVALID_ENT_REFERENCE, float bonusdmg = 1.0, bool hide_projectile = true)
 	{
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
-		this.GetVectors(vecForward, vecSwingStart, vecAngles);
+		//this.GetVectors(vecForward, vecSwingStart, vecAngles);
 		
 		if(Override_Spawn_Loc)
 		{
@@ -2644,7 +2645,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		//ITS NOT actually an arrow, because of an ANNOOOOOOOOOOOYING sound.
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
-		this.GetVectors(vecForward, vecSwingStart, vecAngles);
+		//this.GetVectors(vecForward, vecSwingStart, vecAngles);
 
 		if(entitytofirefrom == -1)
 		{
@@ -3298,6 +3299,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		func_NPCThink[pThis] = INVALID_FUNCTION;
 		func_NPCDeathForward[pThis] = INVALID_FUNCTION;
 		func_NPCFuncWin[pThis] = INVALID_FUNCTION;
+		func_NPCAnimEvent[pThis] = INVALID_FUNCTION;
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		SetEntityCollisionGroup(pThis, 1);
@@ -3751,13 +3753,16 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			StalkerCombine_HandleAnimEvent(pThis, event);
 		}
-		case SEABORN_KAZIMIERZ_KNIGHT_ARCHER:
+		default:
 		{
-			HandleAnimEventMedival_KazimierzArcher(pThis, event);
-		}
-		case SEABORN_KAZIMIERZ_LONGARCHER:
-		{
-			HandleAnimEventKazimierzLongArcher(pThis, event);
+			Function func = func_NPCAnimEvent[pThis];
+			if(func && func != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, func);
+				Call_PushCell(pThis);
+				Call_PushCell(event);
+				Call_Finish();
+			}
 		}
 	}
 #endif
@@ -4786,7 +4791,7 @@ stock int GetClosestTarget(int entity,
 					if(!npc.bBuildingIsPlaced)
 						continue;
 #else
-					if(GetEntProp(enemy, Prop_Send, "m_bCarried") || GetEntProp(enemy, Prop_Send, "m_bPlacing"))
+					if(GetEntProp(entity_close, Prop_Send, "m_bCarried") || GetEntProp(entity_close, Prop_Send, "m_bPlacing"))
 						continue;
 #endif
 					if(CanSee)

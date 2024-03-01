@@ -40,7 +40,7 @@
 				"signature"	"CLagCompensationManager::StartLagCompensation"
 				"callconv"	"thiscall"
 				"return"	"void"
-				"this"		"address" //"ingore" from batfox
+				"this"		"address"
 				"arguments"
 				{
 					"player"
@@ -58,7 +58,7 @@
 				"signature"	"CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE"
 				"callconv"	"thiscall"
 				"return"	"void"
-				"this"		"address" //"ingore" from batfox
+				"this"		"address"
 			}	
 			"CLagCompensationManager::FinishLagCompensation"
 			{

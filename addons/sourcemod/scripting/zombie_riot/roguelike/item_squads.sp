@@ -19,14 +19,13 @@ public void Rogue_Support_Collect()
 {
 	Rogue_AddBonusLife(1);
 	Rogue_AddIngots(20);
+
+	GlobalExtraCash += 250;
 	
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client))
-		{
-			CashRecievedNonWave[client] += 250;
 			CashSpent[client] -= 250;
-		}
 	}
 }
 

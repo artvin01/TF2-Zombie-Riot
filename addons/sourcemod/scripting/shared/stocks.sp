@@ -1358,6 +1358,10 @@ public Action Timer_HealEventApply(Handle timer, DataPack pack)
 	return Plugin_Stop;
 }
 
+public bool Trace_WorldOnly(int entity, int mask, any data)
+{
+	return entity == 0;
+}
 
 public bool Trace_DontHitEntity(int entity, int mask, any data)
 {
@@ -4667,10 +4671,14 @@ stock void SpawnTimer(float time)
 	
 	Event event = CreateEvent("teamplay_update_timer", true);
 	event.Fire();
+/*
+	GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + time);
+	GameRules_SetProp("m_bAwaitingReadyRestart", false);
 
-//	int entity = FindEntityByClassname(-1, "tf_objective_resource");
-//	if(entity != -1)
-//		SetEntPropFloat(entity, Prop_Send, "m_flMannVsMachineNextWaveTime", GetGameTime() + time);
+	Event event = CreateEvent("teamplay_update_timer", true);
+	event.SetInt("seconds", RoundFloat(time));
+	event.Fire();
+*/
 }
 
 stock int GetOwnerLoop(int entity)
