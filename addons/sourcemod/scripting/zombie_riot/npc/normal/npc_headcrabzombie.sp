@@ -54,6 +54,31 @@ static char g_MeleeMissSounds[][] = {
 	"npc/fast_zombie/claw_miss2.wav",
 };
 
+/*
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "TestName");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_test");
+	strcopy(data.Icon, sizeof(data.Icon), "test_filename");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = 0;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+
+	static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+	{
+		return TestNpcSpawn(client, vecPos, vecAng, ally);
+	}
+
+	static any ClotSummon(int client, float vecPos[3], float vecAng[3], const char[] data)
+	{
+		return TestNpcSpawn(client, vecPos, vecAng, ally, data);
+	}
+
+	func_NPCDeath[npc.index] = _NPCDeath;
+	func_NPCOnTakeDamage[npc.index] = _OnTakeDamage;
+	func_NPCThink[npc.index] = _ClotThink;
+*/
 
 public void HeadcrabZombie_OnMapStart_NPC()
 {
@@ -69,6 +94,15 @@ public void HeadcrabZombie_OnMapStart_NPC()
 
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/zombie/classic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Headcrab Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_headcrabzombie");
+	strcopy(data.Icon, sizeof(data.Icon), "test_filename");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = 0;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
 methodmap HeadcrabZombie < CClotBody
