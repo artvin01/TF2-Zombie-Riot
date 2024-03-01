@@ -273,23 +273,27 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 
 public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, int slot, int pap_logic)
 {
+	float fixmebeep =0;
+	/*
 	switch(GetRandomInt(1, 3))
 	{
-		case 1:
-			Dimension_Summon_Npc(client, ALT_COMBINE_MAGE ,weapon, 1.1, 1.15, "eyeboss_tp_player");
-		case 2:
-			Dimension_Summon_Npc(client, ALT_MEDIC_CHARGER ,weapon, 1.3, 1.2, "eyeboss_tp_player");
-		case 3:
-			Dimension_Summon_Npc(client, ALT_SOLDIER_BARRAGER ,weapon, 1.1, 1.3, "eyeboss_tp_player");
+		
+		//case 1:
+		//	Dimension_Summon_Npc(client, ALT_COMBINE_MAGE ,weapon, 1.1, 1.15, "eyeboss_tp_player");
+		//case 2:
+		//	Dimension_Summon_Npc(client, ALT_MEDIC_CHARGER ,weapon, 1.3, 1.2, "eyeboss_tp_player");
+		//case 3:
+		//	Dimension_Summon_Npc(client, ALT_SOLDIER_BARRAGER ,weapon, 1.1, 1.3, "eyeboss_tp_player");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
 		}
-	}
+	}*/
 }
 
 public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
 {
+	/*
 	switch(GetRandomInt(1, 4))
 	{
 		case 1:
@@ -304,7 +308,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
 		}
-	}
+	}*/
 }
 
 public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, int slot, int pap_logic)

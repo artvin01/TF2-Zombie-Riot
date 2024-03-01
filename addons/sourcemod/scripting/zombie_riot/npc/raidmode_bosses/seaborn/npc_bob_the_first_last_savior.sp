@@ -246,7 +246,10 @@ methodmap RaidbossBobTheFirst < CClotBody
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(entity != INVALID_ENT_REFERENCE && (i_NpcInternalId[entity] == SEA_RAIDBOSS_DONNERKRIEG || i_NpcInternalId[entity] == SEA_RAIDBOSS_SCHWERTKRIEG) && IsEntityAlive(entity))
+			char npc_classname[60];
+			NPC_GetNameById(entity, npc_classname, sizeof(npc_classname));
+
+			if(entity != INVALID_ENT_REFERENCE && (StrContains(npc_classname, "npc_sea_donnerkrieg") || StrContains(npc_classname, "npc_sea_schwertkrieg")) && IsEntityAlive(entity))
 			{
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 				SmiteNpcToDeath(entity);

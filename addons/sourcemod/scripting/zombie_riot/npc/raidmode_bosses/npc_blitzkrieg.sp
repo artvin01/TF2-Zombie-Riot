@@ -1387,7 +1387,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		maxhealth=RoundToNearest((heck/10)*zr_smallmapbalancemulti.FloatValue);
 		if(i_currentwave[npc.index]==45)	//Only spwans if the wave is 45.
 		{
-			spawn_index = NPC_CreateById(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetTeam(npc.index));
+			spawn_index = NPC_CreateByName("npc_alt_combine_soldier_deutsch_ritter", npc.index, pos, ang, GetTeam(npc.index));
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			if(spawn_index > MaxClients)
 			{
@@ -1407,7 +1407,8 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		{
 			CPrintToChatAll("{crimson}Blitzkrieg{default}: The brothers have been reborn.");
 			maxhealth=RoundToNearest((heck/5)*zr_smallmapbalancemulti.FloatValue);	//mid squishy
-			spawn_index = NPC_CreateById(ALT_DONNERKRIEG, -1, pos, ang, GetTeam(npc.index), "raid_ally");
+
+			spawn_index = NPC_CreateByName("npc_alt_donnerkrieg", npc.index, pos, ang, GetTeam(npc.index), "raid_ally");
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			if(spawn_index > MaxClients)
 			{
@@ -1416,7 +1417,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
 			maxhealth=RoundToNearest((heck/2)*zr_smallmapbalancemulti.FloatValue);	//the tankiest
-			spawn_index = NPC_CreateById(ALT_SCHWERTKRIEG, -1, pos, ang, GetTeam(npc.index), "raid_ally");
+			spawn_index = NPC_CreateByName("npc_alt_schwertkrieg", npc.index, pos, ang, GetTeam(npc.index), "raid_ally");
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			if(spawn_index > MaxClients)
 			{

@@ -755,8 +755,8 @@ enum
 
 	UNUSED_1			= 297,
 	UNUSED_2			= 298,
-	SEA_RAIDBOSS_DONNERKRIEG	= 299,
-	SEA_RAIDBOSS_SCHWERTKRIEG	= 300,
+	UNUSED_299	= 299,
+	UNUSED_300	= 300,
 
 	SEA_ALLY_SILVESTER		= 303,
 	SEA_ALLY_GOGGLES		= 304,
@@ -1608,8 +1608,8 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 
 	-1,	// 		= 297,
 	-1,	// 		= 298,
-	2,	// SEA_RAIDBOSS_DONNERKRIEG	= 299,
-	2,	// SEA_RAIDBOSS_SCHWERTKRIEG	= 300,
+	-1,	// 	= 299,
+	-1,	// 	= 300,
 	-1,	// BOB_THE_FIRST		= 301,
 	-1,	// BOB_THE_FIRST_S		= 302,
 	-1,	// 		= 303,
@@ -2032,8 +2032,8 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	
 	"",
 	"",
-	"npc_sea_donnerkrieg",
-	"npc_sea_schwertkrieg",
+	"",
+	"",
 	"",
 	"",
 	"",
@@ -2582,9 +2582,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		case ALT_MECHA_SCOUT:
 			entity = Mecha_Scout(client, vecPos, vecAng, team);
 		
-		case ALT_SCHWERTKRIEG:
-			entity = Schwertkrieg(client, vecPos, vecAng, team, data);
-		
 		case PHANTOM_KNIGHT:
 			entity = PhantomKnight(client, vecPos, vecAng, team);	
 		
@@ -2824,12 +2821,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 
 		case ALT_BARRACK_SCIENTIFIC_WITCHERY:
 			entity = Barrack_Alt_Scientific_Witchery(client, vecPos, vecAng, team);
-
-		case SEA_RAIDBOSS_DONNERKRIEG:
-			entity = Raidboss_Donnerkrieg(client, vecPos, vecAng, team, data);
-			
-		case SEA_RAIDBOSS_SCHWERTKRIEG:
-			entity = Raidboss_Schwertkrieg(client, vecPos, vecAng, team);
 		
 		case EXPIDONSA_PENTAL:
 			entity = Pental(client, vecPos, vecAng, team);
@@ -3620,9 +3611,6 @@ void NPCDeath(int entity)
 		case ALT_MECHA_SCOUT:
 			Mecha_Scout_NPCDeath(entity);
 		
-		case ALT_SCHWERTKRIEG:
-			Schwertkrieg_NPCDeath(entity);
-		
 		case PHANTOM_KNIGHT:
 			PhantomKnight_NPCDeath(entity);
 
@@ -3862,12 +3850,6 @@ void NPCDeath(int entity)
 		
 		case ALT_BARRACK_SCIENTIFIC_WITCHERY:
 			Barrack_Alt_Scientific_Witchery_NPCDeath(entity);
-		
-		case SEA_RAIDBOSS_DONNERKRIEG:
-			Raidboss_Donnerkrieg_NPCDeath(entity);
-			
-		case SEA_RAIDBOSS_SCHWERTKRIEG:
-			Raidboss_Schwertkrieg_NPCDeath(entity);
 		
 		case EXPIDONSA_PENTAL:
 			Pental_NPCDeath(entity);
@@ -4389,9 +4371,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case ALT_MECHA_SCOUT:
 			Mecha_Scout_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case ALT_SCHWERTKRIEG:
-			Schwertkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
 		case PHANTOM_KNIGHT:
 			PhantomKnight_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
@@ -4555,12 +4534,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 		case RAIDMODE_GOD_ARKANTOS:
 			GodArkantos_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case SEA_RAIDBOSS_DONNERKRIEG:
-			Raidboss_Donnerkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-			
-		case SEA_RAIDBOSS_SCHWERTKRIEG:
-			Raidboss_Schwertkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 		case EXPIDONSA_PENTAL:
 			Pental_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);

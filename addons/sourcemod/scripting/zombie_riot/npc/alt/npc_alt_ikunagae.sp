@@ -1426,7 +1426,7 @@ static void Ikunagae_Spawn_Minnions(int client, int hp_multi)
 				}
 				case 3:
 				{
-					spawn_index = NPC_CreateById(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetTeam(npc.index));
+					spawn_index = NPC_CreateByName("npc_alt_combine_soldier_deutsch_ritter", npc.index, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 0.8);
 				}
 				case 4:

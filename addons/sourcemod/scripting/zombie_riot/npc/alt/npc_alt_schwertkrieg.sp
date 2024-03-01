@@ -87,9 +87,9 @@ void Schwertkrieg_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Schwertkrieg(client, vecPos, vecAng, ally);
+	return Schwertkrieg(client, vecPos, vecAng, ally, data);
 }
 
 methodmap Schwertkrieg < CClotBody
