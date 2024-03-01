@@ -369,7 +369,7 @@ public void Isharmla_ClotThink(int iNPC)
 	}
 }
 
-void Isharmla_OnTakeDamage(int victim, int attacker, float &damage)
+void Isharmla_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Isharmla npc = view_as<Isharmla>(victim);
 

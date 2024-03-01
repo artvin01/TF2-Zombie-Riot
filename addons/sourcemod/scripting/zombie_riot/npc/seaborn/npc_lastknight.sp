@@ -401,7 +401,7 @@ public void LastKnight_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon)
+void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	LastKnight npc = view_as<LastKnight>(victim);
 
