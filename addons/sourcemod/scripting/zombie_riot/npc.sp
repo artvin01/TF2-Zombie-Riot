@@ -570,7 +570,7 @@ enum
 	NECRO_CALCIUM						= 84,
 	CURED_FATHER_GRIGORI				= 85,
 	
-	ALT_COMBINE_MAGE					= 86,
+	NOTHING_86					= 86,
 	
 	BTD_BLOON							= 87,
 	BTD_MOAB							= 88,
@@ -610,7 +610,7 @@ enum
 	ALT_KAHMLSTEIN						= 117,
 	
 	L4D2_TANK							= 118,
-	ALT_COMBINE_DEUTSCH_RITTER			= 119,
+	UNUSED_119			= 119,
 	ALT_SNIPER_RAILGUNNER				= 120,
 	
 	BTD_GOLDBLOON	= 121,
@@ -630,8 +630,8 @@ enum
 	ALT_MECHA_HEAVYGIANT		= 132,
 	ALT_MECHA_PYROGIANT			= 133,
 	ALT_MECHA_SCOUT				= 134,
-	ALT_DONNERKRIEG				= 135,
-	ALT_SCHWERTKRIEG			= 136,
+	NOTHING_135				= 135,
+	NOTHING_136			= 136,
 	PHANTOM_KNIGHT				= 137, //Lucian "Blood diamond"
 	ALT_MEDIC_HEALER_3			= 138, //3 being the 3rd stage of alt waves.
 	
@@ -950,7 +950,7 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Revived Combine DDT",
 	"Spookmaster Boner",
 	"Cured Father Grigori",
-	"Combine Mage",
+	"",
 	
 	"Bloon",
 	"Massive Ornery Air Blimp",
@@ -986,7 +986,7 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Book Simon",
 	"Kahmlstein",
 	"L4D2 Tank",
-	"Holy Knight",
+	"",
 	"Sniper Railgunner",
 	
 	"Gold Bloon",
@@ -1006,8 +1006,8 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Mecha Giant Heavy",
 	"Mecha Giant Pyro",
 	"Mecha Scout",
-	"Donnerkrieg",
-	"Schwertkrieg",
+	"",
+	"",
 	"Phantom Knight",
 	"Medic Constructor",
 	
@@ -1181,8 +1181,8 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 
 	"nothing",
 	"nothing",
-	"Donnerkrieg",
-	"Schwertkrieg",
+	"",
+	"",
 	"?????????????",
 	"Bob the First",
 	"nothing",
@@ -1372,7 +1372,7 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	0,	// NECRO_CALCIUM						= 84,
 	0,	// CURED_FATHER_GRIGORI				= 85,
 
-	4,	// ALT_COMBINE_MAGE					= 86,
+	-1,	// 					= 86,
 
 	6,	// BTD_BLOON							= 87,
 	6,	// BTD_MOAB							= 88,
@@ -1412,7 +1412,7 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	4,	// ALT_KAHMLSTEIN						= 117,
 
 	1,	// L4D2_TANK							= 118,
-	4,	// ALT_COMBINE_DEUTSCH_RITTER			= 119,
+	-1,	// 			= 119,
 	4,	// ALT_SNIPER_RAILGUNNER				= 120,
 
 	-1,	// BTD_GOLDBLOON	= 121,
@@ -1432,8 +1432,8 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	4,	// ALT_MECHA_HEAVYGIANT		= 132,
 	4,	// ALT_MECHA_PYROGIANT			= 133,
 	4,	// ALT_MECHA_SCOUT				= 134,
-	4,	// ALT_DONNERKRIEG				= 135,
-	4,	// ALT_SCHWERTKRIEG			= 136,
+	-1,	// 				= 135,
+	-1,	// 			= 136,
 	1,	// PHANTOM_KNIGHT				= 137, //Lucian "Blood diamond"
 	4,	// ALT_MEDIC_HEALER_3			= 138, //3 being the 3rd stage of alt waves.
 
@@ -1804,7 +1804,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"npc_necromancy_calcium",
 	"npc_cured_last_survivor",
 	
-	"npc_alt_combine_soldier_mage",
+	"",
 	
 	"npc_bloon",
 	"",
@@ -1838,7 +1838,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"npc_simon",
 	"npc_alt_kahml",
 	"npc_l4d2_tank",
-	"npc_alt_combine_soldier_deutsch_ritter",
+	"",
 	"npc_alt_sniper_railgunner",
 	"npc_golden_bloon",
 	"",
@@ -1856,8 +1856,8 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"npc_alt_mecha_heavy_giant",
 	"npc_alt_mecha_pyro_giant",
 	"npc_alt_mecha_scout",
-	"npc_alt_donnerkrieg",
-	"npc_alt_schwertkrieg",
+	"",
+	"",
 	"npc_phantom_knight",
 	"npc_alt_medic_healer_3",			//3 being the 3rd stage of alt waves.
 	
@@ -2294,9 +2294,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		case COMBINE_DEUTSCH_RITTER:
 			entity = CombineDeutsch(client, vecPos, vecAng, team);
 		
-		case ALT_COMBINE_DEUTSCH_RITTER:
-			entity = Alt_CombineDeutsch(client, vecPos, vecAng, team);
-		
 		case SPY_MAIN_BOSS:
 			entity = SpyMainBoss(client, vecPos, vecAng, team);
 		
@@ -2434,9 +2431,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		
 		case CURED_FATHER_GRIGORI:
 			entity = CuredFatherGrigori(client, vecPos, vecAng, team);
-		
-		case ALT_COMBINE_MAGE:
-			entity = AltCombineMage(client, vecPos, vecAng, team);
 		
 		case BTD_BLOON:
 			entity = Bloon(client, vecPos, vecAng, team, data);
@@ -2587,9 +2581,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		
 		case ALT_MECHA_SCOUT:
 			entity = Mecha_Scout(client, vecPos, vecAng, team);
-		
-		case ALT_DONNERKRIEG:
-			entity = Donnerkrieg(client, vecPos, vecAng, team, data);
 		
 		case ALT_SCHWERTKRIEG:
 			entity = Schwertkrieg(client, vecPos, vecAng, team, data);
@@ -3339,8 +3330,6 @@ void NPCDeath(int entity)
 		case COMBINE_DEUTSCH_RITTER:
 			CombineDeutsch_NPCDeath(entity);
 		
-		case ALT_COMBINE_DEUTSCH_RITTER:
-			Alt_CombineDeutsch_NPCDeath(entity);
 		
 		case SPY_MAIN_BOSS:
 			SpyMainBoss_NPCDeath(entity);
@@ -3480,8 +3469,6 @@ void NPCDeath(int entity)
 		case CURED_FATHER_GRIGORI:
 			CuredFatherGrigori_NPCDeath(entity);
 		
-		case ALT_COMBINE_MAGE:
-			AltCombineMage_NPCDeath(entity);
 		
 		case BTD_BLOON:
 			Bloon_NPCDeath(entity);
@@ -3632,9 +3619,6 @@ void NPCDeath(int entity)
 		
 		case ALT_MECHA_SCOUT:
 			Mecha_Scout_NPCDeath(entity);
-		
-		case ALT_DONNERKRIEG:
-			Donnerkrieg_NPCDeath(entity);
 		
 		case ALT_SCHWERTKRIEG:
 			Schwertkrieg_NPCDeath(entity);
@@ -4116,9 +4100,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case COMBINE_DEUTSCH_RITTER:
 			CombineDeutsch_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case ALT_COMBINE_DEUTSCH_RITTER:
-			Alt_CombineDeutsch_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
 		case SPY_MAIN_BOSS:
 			SpyMainBoss_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
@@ -4257,8 +4238,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case CURED_FATHER_GRIGORI:
 			CuredFatherGrigori_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case ALT_COMBINE_MAGE:
-			AltCombineMage_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case BTD_BLOON:
 			Bloon_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -4409,9 +4388,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case ALT_MECHA_SCOUT:
 			Mecha_Scout_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case ALT_DONNERKRIEG:
-			Donnerkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case ALT_SCHWERTKRIEG:
 			Schwertkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);

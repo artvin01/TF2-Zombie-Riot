@@ -58,12 +58,12 @@ static float Schwertkrieg_Speed = 330.0;
 
 void Schwertkrieg_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeMissSounds);
 	
 	
 	PrecacheSound(TELEPORT_STRIKE_ACTIVATE, true);
@@ -75,6 +75,21 @@ void Schwertkrieg_OnMapStart_NPC()
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("passtime/tv2.wav");
 	PrecacheSound("misc/halloween/spell_mirv_explode_primary.wav");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Schwertkrieg");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_schwertkrieg");
+	data.Category = Type_Alt;
+	data.Func = ClotSummon;
+	strcopy(data.Icon, sizeof(data.Icon), "medic"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = false;													//download needed?
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;										//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Schwertkrieg(client, vecPos, vecAng, ally);
 }
 
 methodmap Schwertkrieg < CClotBody
@@ -143,8 +158,7 @@ methodmap Schwertkrieg < CClotBody
 	public Schwertkrieg(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Schwertkrieg npc = view_as<Schwertkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
-		
-		i_NpcInternalId[npc.index] = ALT_SCHWERTKRIEG;
+
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -169,8 +183,10 @@ methodmap Schwertkrieg < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
-		SDKHook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
+
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
 		//IDLE
 		npc.m_flSpeed = Schwertkrieg_Speed;
@@ -250,7 +266,7 @@ methodmap Schwertkrieg < CClotBody
 
 //TODO 
 //Rewrite
-public void Schwertkrieg_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	Schwertkrieg npc = view_as<Schwertkrieg>(iNPC);
 
@@ -267,7 +283,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 			AcceptEntityInput(entity, "RoundWin");
 			Music_RoundEnd(entity);
 			RaidBossActive = INVALID_ENT_REFERENCE;
-			SDKUnhook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
+			func_NPCThink[npc.index]=INVALID_FUNCTION;
 		}
 	}
 
@@ -686,7 +702,7 @@ static void Schwertkrieg_Teleport_Boom(int iNPC, float vecTarget[3], float pos[3
 	TELEPORT_STRIKE_spawnRing_Vectors(vecTarget, radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 6.0, 0.1, 1, 1.0);
 					
 }
-public Action Schwertkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Schwertkrieg npc = view_as<Schwertkrieg>(victim);
 		
@@ -732,7 +748,7 @@ public Action Schwertkrieg_OnTakeDamage(int victim, int &attacker, int &inflicto
 	return Plugin_Changed;
 }
 
-public void Schwertkrieg_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	Schwertkrieg npc = view_as<Schwertkrieg>(entity);
 	if(!npc.m_bGib)
@@ -749,8 +765,6 @@ public void Schwertkrieg_NPCDeath(int entity)
 	{
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
-	
-	SDKUnhook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
