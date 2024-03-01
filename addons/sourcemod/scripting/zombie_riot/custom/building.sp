@@ -5762,15 +5762,6 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 				npc.bBuildingIsPlaced = true;
 				Building_Constructed[Building_Index] = true;
 				SetEntityModel(Building_Index, CUSTOM_SENTRYGUN_MODEL);
-				/*
-				static const float minbounds[3] = {-15.0, -15.0, 0.0};
-				static const float maxbounds[3] = {15.0, 15.0, 40.0};
-				SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
-				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
-				SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
-				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
-				npc.UpdateCollisionBox();	
-				*/
 
 			}
 			case BuildingMortar:
@@ -5779,16 +5770,6 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 				Building_Constructed[Building_Index] = true;
 				
 				SetEntityModel(Building_Index, CUSTOM_SENTRYGUN_MODEL);
-				/*
-				static const float minbounds[3] = {-15.0, -15.0, 0.0};
-				static const float maxbounds[3] = {15.0, 15.0, 80.0};
-				SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
-				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
-				SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
-				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
-				
-				npc.UpdateCollisionBox();	
-				*/
 
 			}
 			case BuildingSummoner:
@@ -6391,7 +6372,7 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams) 
 {
 	//tf2 buildings are aids to work with.
-	RequestFrames(Dhook_FinishedBuilding_Post_Frame, 5, EntIndexToEntRef(Building_Index));
+	//Frame_TeleportBuilding_Init Should be smaller.
 	RequestFrames(Dhook_FinishedBuilding_Post_Frame, 10, EntIndexToEntRef(Building_Index));
 	return MRES_Ignored;
 }

@@ -424,7 +424,7 @@ void OnEntityDestroyed_Build_On_Build(int entity)
 			if(i_WhatBuilding[entity] == BuildingAmmobox)
 			{
 				posStacked[2] += (32.0 * 0.5);
-			}
+			}	
 			
 			switch(i_WhatBuilding[iBuildingDependency[entity]])
 			{
@@ -493,7 +493,7 @@ public void Frame_TeleportBuilding(DataPack datapack)
 	datapackInit.WriteFloat(datapack.ReadFloat());
 	datapackInit.WriteFloat(datapack.ReadFloat());
 	datapackInit.Reset();
-	RequestFrames(Frame_TeleportBuilding_Init, 3, datapackInit);
+	RequestFrames(Frame_TeleportBuilding_Init, 12, datapackInit);
 	delete datapack;
 }
 
