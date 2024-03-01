@@ -65,6 +65,21 @@ void CombineDeutsch_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Combine Deutsch Ritter");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_deutsch_ritter");
+	strcopy(data.Icon, sizeof(data.Icon), "teutons");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return CombineDeutsch(client, vecPos, vecAng, ally);
 }
 
 methodmap CombineDeutsch < CClotBody
@@ -167,7 +182,6 @@ methodmap CombineDeutsch < CClotBody
 	{
 		CombineDeutsch npc = view_as<CombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000", ally));
 		
-		i_NpcInternalId[npc.index] = COMBINE_DEUTSCH_RITTER;
 		i_NpcWeight[npc.index] = 2;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -184,8 +198,10 @@ methodmap CombineDeutsch < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
+		func_NPCDeath[npc.index] = CombineDeutsch_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = CombineDeutsch_OnTakeDamage;
+		func_NPCThink[npc.index] = CombineDeutsch_ClotThink;
 		
-		SDKHook(npc.index, SDKHook_Think, CombineDeutsch_ClotThink);
 		
 		npc.m_iState = 0;
 		npc.m_flSpeed = 250.0;
@@ -395,9 +411,6 @@ public void CombineDeutsch_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, CombineDeutsch_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);

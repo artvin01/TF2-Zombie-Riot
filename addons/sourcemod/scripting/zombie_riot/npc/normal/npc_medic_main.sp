@@ -43,6 +43,20 @@ void MedicMain_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Battle Medic Main");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medic_main");
+	strcopy(data.Icon, sizeof(data.Icon), "medic_main");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedicMain(client, vecPos, vecAng, ally);
 }
 
 methodmap MedicMain < CClotBody
@@ -112,7 +126,6 @@ methodmap MedicMain < CClotBody
 	{
 		MedicMain npc = view_as<MedicMain>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
-		i_NpcInternalId[npc.index] = BATTLE_MEDIC_MAIN;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -126,8 +139,10 @@ methodmap MedicMain < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, MedicMain_ClotThink);
+
+		func_NPCDeath[npc.index] = MedicMain_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedicMain_OnTakeDamage;
+		func_NPCThink[npc.index] = MedicMain_ClotThink;		
 			
 		
 		//IDLE
@@ -325,9 +340,6 @@ public void MedicMain_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedicMain_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -118,8 +118,21 @@ public void FatherGrigori_OnMapStart_NPC()
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Father Grigori");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_last_survivor");
+	strcopy(data.Icon, sizeof(data.Icon), "grigori");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return FatherGrigori(client, vecPos, vecAng, ally);
+}
 methodmap FatherGrigori < CClotBody
 {
 	public void PlayIdleSound() {
@@ -230,7 +243,6 @@ methodmap FatherGrigori < CClotBody
 	{
 		FatherGrigori npc = view_as<FatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
 		
-		i_NpcInternalId[npc.index] = FATHER_GRIGORI;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -244,8 +256,11 @@ methodmap FatherGrigori < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, FatherGrigori_ClotThink);	
+	
+		func_NPCDeath[npc.index] = FatherGrigori_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = FatherGrigori_OnTakeDamage;
+		func_NPCThink[npc.index] = FatherGrigori_ClotThink;
+
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, FatherGrigori_OnTakeDamagePost);
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 					
@@ -805,9 +820,7 @@ public void FatherGrigori_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, FatherGrigori_ClotThink);	
+
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, FatherGrigori_OnTakeDamagePost);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -65,8 +65,20 @@ public void FastZombie_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_leap_scream));   i++) { PrecacheSound(g_leap_scream[i]);   }
 	for (int i = 0; i < (sizeof(g_leap_prepare));   i++) { PrecacheSound(g_leap_prepare[i]);   }
 	PrecacheModel("models/zombie/fast.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Fast Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_fastzombie");
+	strcopy(data.Icon, sizeof(data.Icon), "norm_fast_zombie");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
-
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return FastZombie(client, vecPos, vecAng, ally);
+}
 methodmap FastZombie < CClotBody
 {
 	public void PlayIdleSound() {
@@ -183,7 +195,6 @@ methodmap FastZombie < CClotBody
 	{
 		FastZombie npc = view_as<FastZombie>(CClotBody(vecPos, vecAng, "models/zombie/fast.mdl", "1.15", "150", ally, false));
 		
-		i_NpcInternalId[npc.index] = FASTZOMBIE;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -197,9 +208,9 @@ methodmap FastZombie < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
+		func_NPCDeath[npc.index] = FastZombie_NPCDeath;
+		func_NPCThink[npc.index] = FastZombie_FastZombieThink;		
 		
-		
-		SDKHook(npc.index, SDKHook_Think, FastZombie_FastZombieThink);
 		
 		//IDLE
 		npc.m_flSpeed = 400.0;
@@ -373,7 +384,6 @@ public void FastZombie_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_Think, FastZombie_FastZombieThink);
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
 
