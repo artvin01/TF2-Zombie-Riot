@@ -299,7 +299,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 		case 3:
 			Dimension_Summon_Npc(client, ALT_SNIPER_RAILGUNNER ,weapon, 0.7, 1.65, "eyeboss_tp_player");
 		case 4:
-			Dimension_Summon_Npc(client, ALT_IKUNAGAE ,weapon, 1.8, 1.75, "eyeboss_tp_player");
+			Dimension_Summon_Npc(client, ALT_IKUNAGAE ,weapon, 1.8, 1.7, "eyeboss_tp_player");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -379,7 +379,6 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 		}
 	}
 }
-/*
 public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	switch(GetRandomInt(1, 4))
@@ -416,7 +415,6 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 		}
 	}
 }
-*/
 public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	switch(GetRandomInt(1, 3))
@@ -458,9 +456,9 @@ public void Weapon_Dimension_Summon_Interitus(int client, int weapon, bool &resu
 	switch(GetRandomInt(1, 4))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, INTERITUS_DESERT_INABDIL ,weapon, 1.1, 1.2, "teleporter_blue_exit");
+			Dimension_Summon_Npc(client, INTERITUS_DESERT_INABDIL ,weapon, 1.1, 1.25, "teleporter_blue_exit");
 		case 2:
-			Dimension_Summon_Npc(client, INTERITUS_DESERT_YADEAM ,weapon, 0.9, 1.2, "teleporter_blue_exit");
+			Dimension_Summon_Npc(client, INTERITUS_DESERT_YADEAM ,weapon, 0.9, 1.4, "teleporter_blue_exit");
 		case 3:
 			Dimension_Summon_Npc(client, INTERITUS_WINTER_SNOWEY_GUNNER ,weapon, 1.2, 1.6, "teleporter_blue_exit");
 		case 4:
@@ -477,7 +475,7 @@ public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &
 	switch(GetRandomInt(1, 4))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, INTERITUS_WINTER_SKIN_HUNTER ,weapon, 1.1, 1.4, "teleporter_blue_exit");
+			Dimension_Summon_Npc(client, INTERITUS_WINTER_SKIN_HUNTER ,weapon, 1.1, 1.5, "teleporter_blue_exit");
 		case 2:
 			Dimension_Summon_Npc(client, INTERITUS_ANARCHY_HITMAN ,weapon, 0.8, 1.1, "teleporter_blue_exit");
 		case 3:
