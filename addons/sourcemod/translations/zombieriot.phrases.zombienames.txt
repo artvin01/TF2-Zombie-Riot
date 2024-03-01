@@ -2209,4 +2209,8 @@
 	{
 		"en"	"Rouge Expidonsan Doctor"
 	}
+	"Laniun"
+	{
+		"en"	"Laniun"
+	}
 }

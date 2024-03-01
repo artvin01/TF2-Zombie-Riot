@@ -342,7 +342,7 @@ public void MedivalMonk_ClotThink(int iNPC)
 			}
 			else
 			{
-				float vecTarget[3]; WorldSpaceCenter(i_ClosestAllyTarget[npc.index], vecTarget );
+				float vecTarget[3]; WorldSpaceCenter(i_ClosestAlly[npc.index], vecTarget );
 				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 				flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				if(flDistanceToTarget < (125.0* 125.0) && Can_I_See_Ally(npc.index, i_ClosestAlly[npc.index])) //make sure we can also see them for no unfair bs
