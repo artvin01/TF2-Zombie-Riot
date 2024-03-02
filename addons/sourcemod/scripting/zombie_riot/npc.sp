@@ -230,6 +230,9 @@ void NPC_ConfigSetup()
 	MedivalCavalary_OnMapStart_NPC();
 	MedivalCrossbowGiant_OnMapStart();
 	MedivalPaladin_OnMapStart_NPC();
+	SpecialDoctor_OnMapStart();
+	MedivalSwordsmanGiant_OnMapStart();
+	MedivalEagleGiant_OnMapStart();
 	
 	Ikunagae_OnMapStart_NPC();
 	MechaSoldier_Barrager_OnMapStart_NPC();

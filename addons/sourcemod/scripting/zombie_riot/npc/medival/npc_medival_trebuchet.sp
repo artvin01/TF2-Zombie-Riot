@@ -41,7 +41,6 @@ methodmap MedivalTrebuchet < CClotBody
 		npc.m_iNpcStepVariation = 0;
 		
 		func_NPCDeath[npc.index] = MedivalTrebuchet_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = MedivalTrebuchet_OnTakeDamage;
 		func_NPCThink[npc.index] = MedivalTrebuchet_ClotThink;
 		
 		npc.m_iState = 0;

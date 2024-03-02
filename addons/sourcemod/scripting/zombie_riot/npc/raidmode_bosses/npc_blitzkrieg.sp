@@ -229,10 +229,10 @@ public void Blitzkrieg_OnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Blitzkrieg");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_blitzkrieg");
+	strcopy(data.Icon, sizeof(data.Icon), "blitzkrieg");
+	data.IconCustom = true;
+	data.Flags = 0;
 	data.Category = Type_Raid;
-	strcopy(data.Icon, sizeof(data.Icon), "blitzkrieg"); 		//leaderboard_class_(insert the name)
-	data.IconCustom = true;													//download needed?
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS;										//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

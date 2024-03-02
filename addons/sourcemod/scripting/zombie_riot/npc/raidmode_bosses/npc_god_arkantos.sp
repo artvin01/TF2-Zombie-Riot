@@ -68,7 +68,20 @@ public void GodArkantos_OnMapStart()
 	for (int i = 0; i < (sizeof(g_SummonSounds));        i++) { PrecacheSound(g_SummonSounds[i]);        }
 	PrecacheSoundCustom("#zombiesurvival/medieval_raid/kazimierz_boss.mp3");
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
-	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "God Arkantos");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_god_arkantos");
+	strcopy(data.Icon, sizeof(data.Icon), "arkantos");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return GodArkantos(client, vecPos, vecAng, ally, data);
 }
 static float f_ArkantosCantDieLimit[MAXENTITIES];
 static bool b_angered_twice[MAXENTITIES];
@@ -153,7 +166,6 @@ methodmap GodArkantos < CClotBody
 	{
 		GodArkantos npc = view_as<GodArkantos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "25000", ally, false, false, true,true)); //giant!
 		
-		i_NpcInternalId[npc.index] = RAIDMODE_GOD_ARKANTOS;
 		i_NpcWeight[npc.index] = 4;
 		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Arkantos_Win);
 
@@ -251,7 +263,9 @@ methodmap GodArkantos < CClotBody
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
 		
-		SDKHook(npc.index, SDKHook_Think, GodArkantos_ClotThink);
+		func_NPCDeath[npc.index] = GodArkantos_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = GodArkantos_OnTakeDamage;
+		func_NPCThink[npc.index] = GodArkantos_ClotThink;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, GodArkantos_OnTakeDamagePost);
 
@@ -1037,9 +1051,6 @@ public void GodArkantos_NPCDeath(int entity)
 			}
 		}
 	}
-
-	SDKUnhook(npc.index, SDKHook_Think, GodArkantos_ClotThink);
-	
 	
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	
@@ -1820,7 +1831,7 @@ bool ArkantosForceTalk()
 public void Raidmode_Arkantos_Win(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
-	SDKUnhook(entity, SDKHook_Think, GodArkantos_ClotThink);
+	func_NPCThink[entity] = INVALID_FUNCTION;
 	switch(GetRandomInt(0,3))
 	{
 		case 0:

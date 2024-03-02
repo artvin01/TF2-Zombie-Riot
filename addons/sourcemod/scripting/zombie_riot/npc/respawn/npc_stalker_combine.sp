@@ -95,7 +95,15 @@ void StalkerCombine_MapStart()
 		PrecacheSoundCustom(SoundList[i]);
 	}
 
-	PrecacheModel("models/zombie/zombie_soldier.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Spawned Combine");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stalker_combine");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
 methodmap StalkerCombine < StalkerShared
@@ -197,7 +205,6 @@ methodmap StalkerCombine < StalkerShared
 	{
 		StalkerCombine npc = view_as<StalkerCombine>(CClotBody(vecPos, vecAng, "models/zombie/zombie_soldier.mdl", "1.2", "6666", ally));
 		
-		i_NpcInternalId[npc.index] = STALKER_COMBINE;
 		i_NpcWeight[npc.index] = 5;
 	//	fl_GetClosestTargetTimeTouch[npc.index] = 99999.9;
 		
@@ -212,7 +219,10 @@ methodmap StalkerCombine < StalkerShared
 		npc.m_iNpcStepVariation = NOTHING;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, StalkerCombine_ClotThink);
+		func_NPCDeath[npc.index] = StalkerCombine_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = StalkerCombine_OnTakeDamage;
+		func_NPCThink[npc.index] = StalkerCombine_ClotThink;
+
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		Is_a_Medic[npc.index] = true;
@@ -676,8 +686,6 @@ void StalkerCombine_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, StalkerCombine_ClotThink);
 
 	for(gib = 0; gib < 9; gib++)
 	{

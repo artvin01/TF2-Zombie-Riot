@@ -115,8 +115,21 @@ void RaidbossNemesis_OnMapStart()
 	PrecacheModel(NEMESIS_MODEL);
 	PrecacheSound("weapons/cow_mangler_explode.wav");
 	PrecacheSoundCustom("#zombie_riot/320_now_1.mp3");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Nemesis");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_nemesis");
+	strcopy(data.Icon, sizeof(data.Icon), "nemesis");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return RaidbossNemesis(client, vecPos, vecAng, ally, data);
+}
 methodmap RaidbossNemesis < CClotBody
 {
 	public void PlayHurtSound()
@@ -184,8 +197,6 @@ methodmap RaidbossNemesis < CClotBody
 
 		//wave 75 xeno raidboss,should be extreamly hard, but still fair, that will be hard to do.
 		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Nemesis_Win);
-
-		i_NpcInternalId[npc.index] = XENO_RAIDBOSS_NEMESIS;
 		i_NpcWeight[npc.index] = 5;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -193,8 +204,10 @@ methodmap RaidbossNemesis < CClotBody
 		int iActivity = npc.LookupActivity("ACT_FT2_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SDKHook(npc.index, SDKHook_Think, RaidbossNemesis_ClotThink);
 		
+		func_NPCDeath[npc.index] = RaidbossNemesis_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = RaidbossNemesis_OnTakeDamage;
+		func_NPCThink[npc.index] = RaidbossNemesis_ClotThink;
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossNemesis_OnTakeDamagePost);
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
@@ -300,7 +313,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		Music_RoundEnd(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		CPrintToChatAll("{green} The infection proves too strong for you to resist as you join his side...");
-		SDKUnhook(npc.index, SDKHook_Think, RaidbossNemesis_ClotThink);
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
 	if(npc.m_flNextRangedAttackHappening && npc.flXenoInfectedSpecialHurtTime - 0.45 < gameTime)
@@ -1115,7 +1128,6 @@ public void RaidbossNemesis_NPCDeath(int entity)
 	}
 
 	i_GrabbedThis[npc.index] = -1;
-	SDKUnhook(npc.index, SDKHook_Think, RaidbossNemesis_ClotThink);
 	
 	
 	if(IsValidEntity(npc.m_iWearable1))
@@ -1682,11 +1694,10 @@ public Action Timer_Nemesis_Infect_Allies(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-
 public void Raidmode_Nemesis_Win(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
-	SDKUnhook(entity, SDKHook_Think, RaidbossNemesis_ClotThink);
+	func_NPCThink[entity] = INVALID_FUNCTION;
 	if(XenoExtraLogic())
 	{
 		CPrintToChatAll("{snow}???{default}: That was too close, they cant get further, i trust you nemesis to annihilate anyone else left.");

@@ -218,8 +218,8 @@ methodmap XenoFastZombie < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 180);
 		func_NPCDeath[npc.index] = XenoFastZombie_NPCDeath;
-		func_NPCThink[npc.index] = XenoFastZombie_FastZombieThink;	
-		func_NPCTakeDamage[npc.index] = XenoFastZombie_FastZombieThink;		
+		func_NPCThink[npc.index] = XenoFastZombie_ClotThink;	
+		func_NPCOnTakeDamage[npc.index] = XenoFastZombie_OnTakeDamage;		
 		
 		//IDLE
 		npc.m_flSpeed = 400.0;

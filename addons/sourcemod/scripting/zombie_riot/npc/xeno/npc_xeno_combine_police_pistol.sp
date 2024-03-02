@@ -196,8 +196,8 @@ methodmap XenoCombinePolicePistol < CClotBody
 
 		
 		func_NPCDeath[npc.index] = XenoCombinePolicePistol_NPCDeath;
-		func_NPCThink[npc.index] = XenoCombinePolicePistol_ClotThink_ClotThink;
-		func_NPCTakeDamage[npc.index] = XenoCombinePolicePistol_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoCombinePolicePistol_ClotThink;
+		func_NPCOnTakeDamage[npc.index] = XenoCombinePolicePistol_OnTakeDamage;
 
 		npc.m_flNextMeleeAttack = 0.0;
 		

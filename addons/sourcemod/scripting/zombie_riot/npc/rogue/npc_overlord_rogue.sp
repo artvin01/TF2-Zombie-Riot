@@ -75,6 +75,20 @@ void OverlordRogue_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
 	for (int i = 0; i < (sizeof(g_ChargeSounds));   i++) { PrecacheSound(g_ChargeSounds[i]);   }
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Overlord The Last");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_overlord_rogue");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return OverlordRogue(client, vecPos, vecAng, ally, data);
 }
 
 methodmap OverlordRogue < CClotBody
@@ -184,8 +198,6 @@ methodmap OverlordRogue < CClotBody
 		
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
-
-		i_NpcInternalId[npc.index] = OVERLORD_ROGUE;
 		i_NpcWeight[npc.index] = 99;
 		KillFeed_SetKillIcon(npc.index, "firedeath");
 		
@@ -200,7 +212,9 @@ methodmap OverlordRogue < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		SDKHook(npc.index, SDKHook_Think, OverlordRogue_ClotThink);
+		func_NPCDeath[npc.index] = OverlordRogue_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = OverlordRogue_OnTakeDamage;
+		func_NPCThink[npc.index] = OverlordRogue_ClotThink;
 		
 		bool final = StrContains(data, "final_item") != -1;
 		
@@ -522,8 +536,6 @@ public void OverlordRogue_NPCDeath(int entity)
 {
 	OverlordRogue npc = view_as<OverlordRogue>(entity);
 	npc.PlayDeathSound();	
-	
-	SDKUnhook(npc.index, SDKHook_Think, OverlordRogue_ClotThink);
 
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{

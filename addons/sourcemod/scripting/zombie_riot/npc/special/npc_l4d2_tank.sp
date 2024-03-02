@@ -51,8 +51,22 @@ public void L4D2_Tank_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheSound("weapons/physcannon/energy_disintegrate5.wav");
 	PrecacheModel("models/infected/hulk_2.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "L4D2 Tank");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_l4d2_tank");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return L4D2_Tank(client, vecPos, vecAng, ally);
+}
 
 static int i_TankAntiStuck[MAXENTITIES];
 
@@ -170,7 +184,9 @@ methodmap L4D2_Tank < CClotBody
 
 		
 		
-		SDKHook(npc.index, SDKHook_Think, L4D2_Tank_ClotThink);
+		func_NPCDeath[npc.index] = L4D2_Tank_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = L4D2_Tank_OnTakeDamage;
+		func_NPCThink[npc.index] = L4D2_Tank_ClotThink;
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, L4D2_Tank_ClotDamagedPost);
 		
 		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
@@ -709,9 +725,6 @@ public void L4D2_Tank_NPCDeath(int entity)
 	}	
 	
 	i_GrabbedThis[npc.index] = -1;
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, L4D2_Tank_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, L4D2_Tank_ClotDamagedPost);
 		
 	if(IsValidEntity(npc.m_iWearable1))

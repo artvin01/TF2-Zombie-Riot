@@ -17,23 +17,27 @@ static char g_KillSounds[][] =
 	"cof/purnell/kill4.mp3"
 };
 static float i_ClosestAllyCDTarget[MAXENTITIES];
-/*
-void SpecialDoctor_MapStart()
+
+
+void SpecialDoctor_OnMapStart()
 {
-	for (int i = 0; i < (sizeof(g_HurtSounds));	   i++) { PrecacheSoundCustom(g_HurtSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_KillSounds));	   i++) { PrecacheSoundCustom(g_KillSounds[i]);	   }
-	PrecacheSoundCustom("cof/purnell/death.mp3");
-	PrecacheSoundCustom("cof/purnell/intro.mp3");
-	PrecacheSoundCustom("cof/purnell/converted.mp3");
-	PrecacheSoundCustom("cof/purnell/reload.mp3");
-	PrecacheSoundCustom("cof/purnell/shoot.mp3");
-	PrecacheSoundCustom("cof/purnell/shove.mp3");
-	PrecacheSoundCustom("cof/purnell/meleehit.mp3");
-
-	PrecacheModel("models/zombie_riot/cof/doctor_purnell.mdl");
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Rouge Expidonsan Doctor");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_doctor");
+	strcopy(data.Icon, sizeof(data.Icon), "medic_uber");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
-*/
 
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return SpecialDoctor(client, vecPos, vecAng, ally, data);
+}
 
 static char[] GetPanzerHealth()
 {
@@ -110,7 +114,6 @@ methodmap SpecialDoctor < CClotBody
 	public SpecialDoctor(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", GetPanzerHealth(), ally));
-		i_NpcInternalId[npc.index] = THEDOCTOR_MINIBOSS;
 		i_NpcWeight[npc.index] = 3;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);

@@ -121,8 +121,21 @@ public void TrueFusionWarrior_OnMapStart()
 	PrecacheSound("player/flow.wav");
 
 	PrecacheSoundCustom("#zombiesurvival/fusion_raid/fusion_bgm.mp3");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "True Fusion Warrior");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_true_fusion_warrior");
+	strcopy(data.Icon, sizeof(data.Icon), "fusion_warrior");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3],int ally, const char[] data)
+{
+	return TrueFusionWarrior(client, vecPos, vecAng, ally, data);
+}
 void TrueFusionWarrior_TBB_Precahce()
 {
 	FusionWarrior_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
@@ -268,7 +281,6 @@ methodmap TrueFusionWarrior < CClotBody
 	{
 		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
-		i_NpcInternalId[npc.index] = RAIDMODE_TRUE_FUSION_WARRIOR;
 		i_NpcWeight[npc.index] = 4;
 		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Fusion_Warrior_Win);
 		

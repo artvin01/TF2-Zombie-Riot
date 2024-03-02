@@ -79,8 +79,22 @@ public void NaziPanzer_OnMapStart_NPC()
 	PrecacheModel(LASERBEAM_PANZER);
 	PrecacheModel(ENERGY_BALL_MODEL_PANZER);
 	PrecacheModel("models/zombie_riot/cod_zombies/panzer_soldat_2.mdl");
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Nazi Panzer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_panzer");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return NaziPanzer(client, vecPos, vecAng, ally);
+}
 static char[] GetPanzerHealth()
 {
 	int health = 110;
@@ -259,7 +273,6 @@ methodmap NaziPanzer < CClotBody
 	{
 		NaziPanzer npc = view_as<NaziPanzer>(CClotBody(vecPos, vecAng, "models/zombie_riot/cod_zombies/panzer_soldat_2.mdl", "1.15", GetPanzerHealth(), ally, false, true));
 		
-		i_NpcInternalId[npc.index] = NAZI_PANZER;
 		i_NpcWeight[npc.index] = 3;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
@@ -273,9 +286,12 @@ methodmap NaziPanzer < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;		
 
+
+		func_NPCDeath[npc.index] = NaziPanzer_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = NaziPanzer_OnTakeDamage;
+		func_NPCThink[npc.index] = NaziPanzer_ClotThink;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, NaziPanzer_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, NaziPanzer_ClotDamagedPost);
 		
 		npc.m_flSpeed = 0.0;
@@ -778,9 +794,6 @@ public void NaziPanzer_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, NaziPanzer_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, NaziPanzer_ClotDamagedPost);
 		
 	if(IsValidEntity(npc.m_iWearable1))
