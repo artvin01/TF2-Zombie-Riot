@@ -2750,8 +2750,10 @@ public void Raidmode_Shared_Xeno_Duo(int entity)
 		return;
 
 	AlreadySaidWin = true;
+	//b_NpcHasDied[client]
 	char npc_classname[60];
-	NPC_GetPluginNameById(entity, npc_classname, sizeof(npc_classname));
+	NPC_GetPluginNameById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	
 	if(StrContains(npc_classname, "npc_xeno_raidboss_silvester"))
 	{
 		if(XenoExtraLogic())
@@ -2764,7 +2766,7 @@ public void Raidmode_Shared_Xeno_Duo(int entity)
 		}
 		return;
 	}
-	if(i_NpcInternalId[entity] == XENO_RAIDBOSS_BLUE_GOGGLES)
+	if(StrContains(npc_classname, "npc_infected_goggles"))
 	{
 		if(XenoExtraLogic())
 		{
@@ -2801,3 +2803,4 @@ void SharedTimeLossSilvesterDuo(int entity)
 		CPrintToChatAll("{blue}Sensal{default}: Stop fighting, now. What is going on here?");
 	}
 }
+

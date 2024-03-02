@@ -4658,9 +4658,11 @@ stock int GetClosestTarget(int entity,
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
-					if(IsTowerdefense && i_NpcInternalId[entity_close] == VIP_BUILDING)
+					if(IsTowerdefense)
 					{
-						if(!IsValidEnemy(entity, view_as<CClotBody>(entity).m_iTarget, true, true))
+						char npc_classname[60];
+						NPC_GetPluginNameById(i_NpcInternalId[entity_close], npc_classname, sizeof(npc_classname));
+						if(StrContains(npc_classname, "npc_vip_building") && !IsValidEnemy(entity, view_as<CClotBody>(entity).m_iTarget, true, true))
 						{
 							return entity_close; //we found a vip building, go after it.
 						}

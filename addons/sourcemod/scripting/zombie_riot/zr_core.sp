@@ -1988,34 +1988,39 @@ void ReviveAll(bool raidspawned = false)
 	int entity = MaxClients + 1;
 	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)
+		if(!b_NpcHasDied[entity])
 		{
-			Citizen npc = view_as<Citizen>(entity);
-			if(npc.m_nDowned && npc.m_iWearable3 > 0)
+			char npc_classname[60];
+			NPC_GetPluginNameById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+			if(StrContains(npc_classname, "npc_citizen"))
 			{
-				npc.SetDowned(false);
-				if(!Waves_InSetup())
+				Citizen npc = view_as<Citizen>(entity);
+				if(npc.m_nDowned && npc.m_iWearable3 > 0)
 				{
-					int target = 0;
-					for(int i=1; i<=MaxClients; i++)
+					npc.SetDowned(false);
+					if(!Waves_InSetup())
 					{
-						if(IsClientInGame(i))
+						int target = 0;
+						for(int i=1; i<=MaxClients; i++)
 						{
-							if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
+							if(IsClientInGame(i))
 							{
-								target = i;
-								break;
+								if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
+								{
+									target = i;
+									break;
+								}
 							}
 						}
-					}
-					
-					if(target)
-					{
-						float pos[3], ang[3];
-						GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
-						GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-						ang[2] = 0.0;
-						TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+						
+						if(target)
+						{
+							float pos[3], ang[3];
+							GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+							GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+							ang[2] = 0.0;
+							TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+						}
 					}
 				}
 			}

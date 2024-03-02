@@ -5247,8 +5247,13 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 					int i = MaxClients + 1;
 					while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 					{
-						if(i_NpcInternalId[i] == CITIZEN)
-							count++;
+						if(!b_NpcHasDied[i])
+						{
+							char npc_classname[60];
+							NPC_GetPluginNameById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
+							if(StrContains(npc_classname, "npc_citizen"))
+								count++;
+						}
 					}
 					
 					if(count < MAX_REBELS_ALLOWED)
@@ -5263,8 +5268,13 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 					int i = MaxClients + 1;
 					while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 					{
-						if(i_NpcInternalId[i] == CITIZEN)
-							count++;
+						if(!b_NpcHasDied[i])
+						{
+							char npc_classname[60];
+							NPC_GetPluginNameById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
+							if(StrContains(npc_classname, "npc_citizen"))
+								count++;
+						}
 					}
 					
 					if(count < MAX_REBELS_ALLOWED)
@@ -5279,8 +5289,13 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 					int i = MaxClients + 1;
 					while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 					{
-						if(i_NpcInternalId[i] == CITIZEN)
-							count++;
+						if(!b_NpcHasDied[i])
+						{
+							char npc_classname[60];
+							NPC_GetPluginNameById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
+							if(StrContains(npc_classname, "npc_citizen"))
+								count++;
+						}
 					}
 					
 					if(count < MAX_REBELS_ALLOWED)
@@ -5383,6 +5398,11 @@ static int GetBuffEffects(int ref)
 
 static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuffs)
 {
+	char npc_classname[60];
+	if(!b_NpcHasDied[entity])
+	{
+		NPC_GetPluginNameById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
+	}
 	if(weapon)
 	{
 		for(int i; i < 16; i++)
@@ -5505,7 +5525,7 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 			}
 		}
 	}
-	else if(i_NpcInternalId[entity] == CITIZEN)
+	else if(StrContains(npc_classname, "npc_citizen"))
 	{
 		Citizen npc = view_as<Citizen>(entity);
 		
@@ -6837,13 +6857,18 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						{
 							int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 
-							if(IsValidEntity(entity_close) && i_NpcInternalId[entity_close] == BARRACKS_VILLAGER)
+							if(IsValidEntity(entity_close))
 							{
-								BarrackBody npc = view_as<BarrackBody>(entity_close);
-								if(GetClientOfUserId(npc.OwnerUserId) == owner)
+								char npc_classname[60];
+								NPC_GetPluginNameById(i_NpcInternalId[entity_close], npc_classname, sizeof(npc_classname));
+								if(StrContains(npc_classname, "npc_barrack_villager"))
 								{
-									OwnsVillager = true;
-									break;
+									BarrackBody npc = view_as<BarrackBody>(entity_close);
+									if(GetClientOfUserId(npc.OwnerUserId) == owner)
+									{
+										OwnsVillager = true;
+										break;
+									}
 								}
 							}
 						}
@@ -7275,13 +7300,18 @@ static void SummonerMenu(int client, int viewer)
 						{
 							int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 
-							if(IsValidEntity(entity_close) && i_NpcInternalId[entity_close] == BARRACKS_VILLAGER)
+							if(IsValidEntity(entity_close))
 							{
-								BarrackBody npc = view_as<BarrackBody>(entity_close);
-								if(GetClientOfUserId(npc.OwnerUserId) == client)
+								char npc_classname[60];
+								NPC_GetPluginNameById(i_NpcInternalId[entity_close], npc_classname, sizeof(npc_classname));
+								if(StrContains(npc_classname, "npc_barrack_villager"))
 								{
-									OwnsVillager = true;
-									break;
+									BarrackBody npc = view_as<BarrackBody>(entity_close);
+									if(GetClientOfUserId(npc.OwnerUserId) == client)
+									{
+										OwnsVillager = true;
+										break;
+									}
 								}
 							}
 						}
@@ -7361,13 +7391,18 @@ static void SummonerMenu(int client, int viewer)
 					{
 						int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 
-						if(IsValidEntity(entity_close) && i_NpcInternalId[entity_close] == BARRACKS_VILLAGER)
+						if(IsValidEntity(entity_close))
 						{
-							BarrackBody npc = view_as<BarrackBody>(entity_close);
-							if(GetClientOfUserId(npc.OwnerUserId) == client)
+							char npc_classname[60];
+							NPC_GetPluginNameById(i_NpcInternalId[entity_close], npc_classname, sizeof(npc_classname));
+							if(StrContains(npc_classname, "npc_barrack_villager"))
 							{
-								poor = true;
-								break;
+								BarrackBody npc = view_as<BarrackBody>(entity_close);
+								if(GetClientOfUserId(npc.OwnerUserId) == client)
+								{
+									poor = true;
+									break;
+								}
 							}
 						}
 					}					
@@ -7671,17 +7706,19 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId == userid)
 			{
+				char npc_classname[60];
+				NPC_GetPluginNameById(i_NpcInternalId[npc.index], npc_classname, sizeof(npc_classname));
 				if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION)
 				{
-					if(i_NpcInternalId[npc.index] != BARRACKS_VILLAGER)
+					if(!StrContains(npc_classname, "npc_barrack_villager"))
 					{
-						if(i_NpcInternalId[npc.index] != BARRACKS_BUILDING)
+						if(StrContains(npc_classname, "npc_barrack_building"))
 							personal += npc.m_iSupplyCount;
 					}
 				}
 				else
 				{
-					if(i_NpcInternalId[npc.index] != BARRACKS_BUILDING)
+					if(!StrContains(npc_classname, "npc_barrack_building"))
 						personal += npc.m_iSupplyCount;
 				}
 			}
