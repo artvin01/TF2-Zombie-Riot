@@ -189,8 +189,8 @@ void Raidboss_Schwertkrieg_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_schwertkrieg");
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
-	strcopy(data.Icon, sizeof(data.Icon), "medic"); 		//leaderboard_class_(insert the name)
-	data.IconCustom = false;													//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "schwert"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = true;													//download needed?
 	data.Flags = 0;										//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 
