@@ -91,8 +91,21 @@ public void XenoSpyMainBoss_OnMapStart_NPC()
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno X10 Spy Main");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_spy_boss");
+	strcopy(data.Icon, sizeof(data.Icon), "spy_x10_main");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoSpyMainBoss(client, vecPos, vecAng, ally);
+}
 //should be alone only here!
 static int Allies_Alive;
 
@@ -210,7 +223,6 @@ methodmap XenoSpyMainBoss < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		i_NpcInternalId[npc.index] = XENO_SPY_MAIN_BOSS;
 		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -224,7 +236,11 @@ methodmap XenoSpyMainBoss < CClotBody
 		
 		
 		
-		SDKHook(npc.index, SDKHook_Think, XenoSpyMainBoss_ClotThink);	
+
+		func_NPCDeath[npc.index] = XenoSpyMainBoss_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoSpyMainBoss_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoSpyMainBoss_ClotThink;	
+			
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, XenoSpyMainBoss_ClotDamagedPost);
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -857,7 +873,6 @@ public void XenoSpyMainBoss_NPCDeath(int entity)
 	}
 	
 	
-	SDKUnhook(npc.index, SDKHook_Think, XenoSpyMainBoss_ClotThink);	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, XenoSpyMainBoss_ClotDamagedPost);
 
 	if(IsValidEntity(npc.m_iWearable1))

@@ -79,6 +79,20 @@ public void XenoCombineSoldierShotgun_OnMapStart_NPC()
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Shotgunner");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_shotgun");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_shotgun");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoCombineSoldierShotgun(client, vecPos, vecAng, ally);
 }
 
 methodmap XenoCombineSoldierShotgun < CClotBody
@@ -174,7 +188,6 @@ methodmap XenoCombineSoldierShotgun < CClotBody
 	{
 		XenoCombineSoldierShotgun npc = view_as<XenoCombineSoldierShotgun>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "800", ally));
 		
-		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_SHOTGUN;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -189,8 +202,12 @@ methodmap XenoCombineSoldierShotgun < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		
-		SDKHook(npc.index, SDKHook_Think, XenoCombineSoldierShotgun_ClotThink);
+	
+
+		func_NPCDeath[npc.index] = XenoCombineSoldierShotgun_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoCombineSoldierShotgun_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoCombineSoldierShotgun_ClotThink;
+
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
@@ -385,7 +402,6 @@ public void XenoCombineSoldierShotgun_NPCDeath(int entity)
 	}
 	
 	
-	SDKUnhook(npc.index, SDKHook_Think, XenoCombineSoldierShotgun_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

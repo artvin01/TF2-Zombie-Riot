@@ -75,8 +75,21 @@ public void XenoCombine_Police_Pistol_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/police.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Metro Cop");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_police_pistol");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_pistol");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoCombinePolicePistol(client, vecPos, vecAng, ally);
+}
 methodmap XenoCombinePolicePistol < CClotBody
 {
 	public void PlayIdleSound() {
@@ -170,7 +183,6 @@ methodmap XenoCombinePolicePistol < CClotBody
 	{
 		XenoCombinePolicePistol npc = view_as<XenoCombinePolicePistol>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "700", ally));
 		
-		i_NpcInternalId[npc.index] = XENO_COMBINE_POLICE_PISTOL;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -183,10 +195,10 @@ methodmap XenoCombinePolicePistol < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;		
 
 		
-		
-		SDKHook(npc.index, SDKHook_Think, XenoCombinePolicePistol_ClotThink);
-				
-		
+		func_NPCDeath[npc.index] = XenoCombinePolicePistol_NPCDeath;
+		func_NPCThink[npc.index] = XenoCombinePolicePistol_ClotThink_ClotThink;
+		func_NPCTakeDamage[npc.index] = XenoCombinePolicePistol_OnTakeDamage;
+
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
@@ -549,8 +561,6 @@ public void XenoCombinePolicePistol_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoCombinePolicePistol_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

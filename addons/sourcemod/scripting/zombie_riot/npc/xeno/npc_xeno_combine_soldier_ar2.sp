@@ -75,8 +75,21 @@ public void XenoCombineSoldierAr2_OnMapStart_NPC()
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Rifler");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_ar2");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_rifle");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoCombineSoldierAr2(client, vecPos, vecAng, ally);
+}
 methodmap XenoCombineSoldierAr2 < CClotBody
 {
 	public void PlayIdleSound() {
@@ -169,7 +182,6 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 	{
 		XenoCombineSoldierAr2 npc = view_as<XenoCombineSoldierAr2>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "1500", ally));
 		
-		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_AR2;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -187,8 +199,6 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 
 		
 		
-		SDKHook(npc.index, SDKHook_Think, XenoCombineSoldierAr2_ClotThink);
-		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
@@ -200,6 +210,10 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 		npc.m_flSpeed = 190.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
+		
+		func_NPCDeath[npc.index] = XenoCombineSoldierAr2_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoCombineSoldierAr2_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoCombineSoldierAr2_ClotThink;
 		
 		if(EscapeModeForNpc)
 		{
@@ -515,7 +529,6 @@ public void XenoCombineSoldierAr2_NPCDeath(int entity)
 	}
 	
 	
-	SDKUnhook(npc.index, SDKHook_Think, XenoCombineSoldierAr2_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

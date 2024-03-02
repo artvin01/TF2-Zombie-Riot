@@ -61,7 +61,7 @@ static char g_MeleeMissSounds[][] = {
 	strcopy(data.Icon, sizeof(data.Icon), "test_filename");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Common;
+	data.Category = Type_Medieval;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 
@@ -95,6 +95,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], const char[]
 		func_NPCDeath[npc.index] = _NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = _OnTakeDamage;
 		func_NPCThink[npc.index] = _ClotThink;
+		func_NPCAnimEvent[npc.index] = INVALID_FUNCTION;
 	
 */
 

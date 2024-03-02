@@ -80,8 +80,21 @@ public void XenoFlyingArmor_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Flying Armor");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_flying_armor");
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data)
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoFlyingArmor(client, vecPos, vecAng, ally);
+}
 methodmap XenoFlyingArmor < CClotBody
 {
 	public void PlayIdleSound() {
@@ -177,8 +190,7 @@ methodmap XenoFlyingArmor < CClotBody
 	{
 		XenoFlyingArmor npc = view_as<XenoFlyingArmor>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = XENO_FLYINGARMOR_ZOMBIE;
+		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -192,9 +204,10 @@ methodmap XenoFlyingArmor < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		
-		
-		SDKHook(npc.index, SDKHook_Think, XenoFlyingArmor_ClotThink);
+	
+		func_NPCDeath[npc.index] = XenoFlyingArmor_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoFlyingArmor_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoFlyingArmor_ClotThink;		
 		
 		npc.m_bDissapearOnDeath = true;
 
@@ -418,7 +431,7 @@ public void XenoFlyingArmor_NPCDeath(int entity)
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			int spawn_index = NPC_CreateById(XENO_FLYINGARMOR_TINY_ZOMBIE, -1, pos, ang, GetTeam(npc.index));
+			int spawn_index = NPC_CreateByName("npc_xeno_flying_armor_tiny_swords", -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -431,9 +444,6 @@ public void XenoFlyingArmor_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoFlyingArmor_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

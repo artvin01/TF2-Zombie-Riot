@@ -5,6 +5,25 @@ static const char NPCModel[] = "models/workshop/player/items/demo/taunt_drunk_ma
 
 #define TREBUCHET_LIGHTNING_RANGE 100.0
 
+void MedivalTrebuchet_OnMapStart()
+{
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Trebuchet");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_trebuchet");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_spammer");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalTrebuchet(client, vecPos, vecAng, ally);
+}
 methodmap MedivalTrebuchet < CClotBody
 {
 	public void PlayMeleeSound()
@@ -15,14 +34,15 @@ methodmap MedivalTrebuchet < CClotBody
 	public MedivalTrebuchet(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalTrebuchet npc = view_as<MedivalTrebuchet>(CClotBody(vecPos, vecAng, NPCModel, "1.35", "5000", ally));
-		i_NpcInternalId[npc.index] = MEDIVAL_TREBUCHET;
 		i_NpcWeight[npc.index] = 5;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = 0;
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalTrebuchet_ClotThink);
+		func_NPCDeath[npc.index] = MedivalTrebuchet_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalTrebuchet_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalTrebuchet_ClotThink;
 		
 		npc.m_iState = 0;
 		npc.m_flSpeed = 150.0;
@@ -192,7 +212,6 @@ void MedivalTrebuchet_NPCDeath(int entity)
 {
 	MedivalTrebuchet npc = view_as<MedivalTrebuchet>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalTrebuchet_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

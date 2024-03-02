@@ -71,7 +71,7 @@ void CombineCollos_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_collos_swordsman");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_gold");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Common;
 	data.Func = ClotSummon;
 	NPC_Add(data);

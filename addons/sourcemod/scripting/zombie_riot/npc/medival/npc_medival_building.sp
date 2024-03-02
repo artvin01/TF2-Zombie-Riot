@@ -102,8 +102,22 @@ void MedivalBuilding_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(TOWER_MODEL);
 
-
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Building");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_building");
+	strcopy(data.Icon, sizeof(data.Icon), "tower");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalBuilding(client, vecPos, vecAng, ally);
+}
+
 methodmap MedivalBuilding < CClotBody
 {
 	public void PlayIdleSound() 
@@ -165,7 +179,6 @@ methodmap MedivalBuilding < CClotBody
 	{
 		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}));
 		
-		i_NpcInternalId[npc.index] = MEDIVAL_BUILDING;
 		i_NpcWeight[npc.index] = 999;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -185,6 +198,10 @@ methodmap MedivalBuilding < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = true;
 		
+		func_NPCDeath[npc.index] = MedivalBuilding_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalBuilding_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalBuilding_ClotThink;
+
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
@@ -205,9 +222,6 @@ methodmap MedivalBuilding < CClotBody
 		f_PlayerScalingBuilding = float(CountPlayersOnRed());
 
 		i_currentwave[npc.index] = (ZR_GetWaveCount()+1);
-
-		
-		SDKHook(npc.index, SDKHook_Think, MedivalBuilding_ClotThink);
 
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 
@@ -484,7 +498,6 @@ public void MedivalBuilding_NPCDeath(int entity)
 	makeexplosion(-1, -1, pos, "", 0, 0);
 
 	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalBuilding_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

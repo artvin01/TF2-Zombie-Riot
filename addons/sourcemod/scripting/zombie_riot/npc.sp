@@ -91,7 +91,7 @@ void NPC_ConfigSetup()
 	Alt_CombineDeutsch_OnMapStart_NPC();
 	SpyMainBoss_OnMapStart_NPC();
 	MedivalVillager_OnMapStart_NPC();
-	/*
+	
 	XenoHeadcrabZombie_OnMapStart_NPC();
 	XenoFortified_HeadcrabZombie_OnMapStart_NPC();
 	XenoFastZombie_OnMapStart_NPC();
@@ -100,9 +100,9 @@ void NPC_ConfigSetup()
 	XenoFortifiedGiantPoisonZombie_OnMapStart_NPC();
 	XenoPoisonZombie_OnMapStart_NPC();
 	XenoFortifiedPoisonZombie_OnMapStart_NPC();
-	*/
+	
 	XenoFatherGrigori_OnMapStart_NPC();
-	/*
+	
 	XenoCombine_Police_Pistol_OnMapStart_NPC();
 	XenoCombinePoliceSmg_OnMapStart_NPC();
 	XenoCombineSoldierAr2_OnMapStart_NPC();
@@ -126,9 +126,9 @@ void NPC_ConfigSetup()
 	XenoSoldier_OnMapStart_NPC();
 	XenoSoldierMinion_OnMapStart_NPC();
 	XenoSoldierGiant_OnMapStart_NPC();
-	*/
 	
-	/*
+	
+	
 	XenoSpyThief_OnMapStart_NPC();
 	XenoSpyTrickstabber_OnMapStart_NPC();
 	XenoSpyCloaked_OnMapStart_NPC();
@@ -138,7 +138,7 @@ void NPC_ConfigSetup()
 	XenoPyroGiant_OnMapStart_NPC();
 	XenoCombineDeutsch_OnMapStart_NPC();
 	XenoSpyMainBoss_OnMapStart_NPC();
-	*/
+	
 	NaziPanzer_OnMapStart_NPC();
 	BobTheGod_OnMapStart_NPC();
 	NecroCombine_OnMapStart_NPC();
@@ -167,6 +167,7 @@ void NPC_ConfigSetup()
 	MedivalSamurai_OnMapStart_NPC();
 	Kahmlstein_OnMapStart_NPC();
 	Sniper_railgunner_OnMapStart_NPC();
+	MedivalTrebuchet_OnMapStart();
 	
 	L4D2_Tank_OnMapStart_NPC();
 	MedivalRam_OnMapStart();
@@ -226,6 +227,9 @@ void NPC_ConfigSetup()
 	MedivalRiddenArcher_OnMapStart_NPC();
 	MedivalSonOfOsiris_OnMapStart_NPC();
 	MedivalAchilles_OnMapStart_NPC();
+	MedivalCavalary_OnMapStart_NPC();
+	MedivalCrossbowGiant_OnMapStart();
+	MedivalPaladin_OnMapStart_NPC();
 	
 	Ikunagae_OnMapStart_NPC();
 	MechaSoldier_Barrager_OnMapStart_NPC();

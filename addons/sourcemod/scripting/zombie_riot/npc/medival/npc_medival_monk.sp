@@ -95,6 +95,20 @@ void MedivalMonk_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_WarCry));   i++) { PrecacheSound(g_WarCry[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Monk");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_monk");
+	strcopy(data.Icon, sizeof(data.Icon), "monk");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalMonk(client, vecPos, vecAng, ally);
 }
 
 static int i_ClosestAlly[MAXENTITIES];
@@ -161,8 +175,7 @@ methodmap MedivalMonk < CClotBody
 	{
 		MedivalMonk npc = view_as<MedivalMonk>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "75000", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_MONK;
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcWeight[npc.index] = 2;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -177,9 +190,11 @@ methodmap MedivalMonk < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, MedivalMonk_ClotThink);
+	
 
+		func_NPCDeath[npc.index] = MedivalMonk_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalMonk_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalMonk_ClotThink;
 		npc.m_iState = 0;
 		npc.m_flSpeed = 150.0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -590,9 +605,6 @@ public void MedivalMonk_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalMonk_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -61,6 +61,23 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
+void MedivalCrossbowGiant_OnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Crossbow Giant");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medvial_crossbow_giant");
+	strcopy(data.Icon, sizeof(data.Icon), "crossbow_big");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalCrossbowGiant(client, vecPos, vecAng, ally);
+}
 methodmap MedivalCrossbowGiant < CClotBody
 {
 	public void PlayIdleSound() {
@@ -137,8 +154,7 @@ methodmap MedivalCrossbowGiant < CClotBody
 	{
 		MedivalCrossbowGiant npc = view_as<MedivalCrossbowGiant>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "20000", ally, false, true));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_CROSSBOW_GIANT;
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -166,9 +182,12 @@ methodmap MedivalCrossbowGiant < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 		
-		
-		SDKHook(npc.index, SDKHook_Think, MedivalCrossbowGiant_ClotThink);
 	
+		func_NPCDeath[npc.index] = MedivalCrossbowGiant_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalCrossbowGiant_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalCrossbowGiant_ClotThink;
+		func_NPCAnimEvent[npc.index] = HandleAnimEventMedival_GiantCrossbowMan;
+		
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 //		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
@@ -376,7 +395,6 @@ public void MedivalCrossbowGiant_NPCDeath(int entity)
 	}
 	
 	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalCrossbowGiant_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

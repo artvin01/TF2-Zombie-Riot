@@ -58,8 +58,21 @@ public void XenoScout_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Scout Assulter");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_zombie_scout_grave");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_bat");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoScout(client, vecPos, vecAng, ally);
+}
 methodmap XenoScout < CClotBody
 {
 	public void PlayIdleSound() {
@@ -140,7 +153,6 @@ methodmap XenoScout < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
-		i_NpcInternalId[npc.index] = XENO_SCOUT_ZOMBIE;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -151,7 +163,9 @@ methodmap XenoScout < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		
 		
-		SDKHook(npc.index, SDKHook_Think, XenoScout_ClotThink);
+		func_NPCDeath[npc.index] = XenoScout_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoScout_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoScout_ClotThink;		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -422,9 +436,6 @@ public void XenoScout_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoScout_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);

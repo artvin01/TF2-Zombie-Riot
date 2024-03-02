@@ -29,8 +29,9 @@ void Kamikaze_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	NPCData data;
 
+	
+	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Kamikaze Demo");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_kamikaze_demo");
 	strcopy(data.Icon, sizeof(data.Icon), "demo");

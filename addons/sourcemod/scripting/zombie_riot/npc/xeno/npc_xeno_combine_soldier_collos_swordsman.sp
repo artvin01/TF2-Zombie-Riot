@@ -78,8 +78,21 @@ public void XenoCombineCollos_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Golden Collos");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_collos_swordsman");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_gold");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoCombineCollos(client, vecPos, vecAng, ally);
+}
 methodmap XenoCombineCollos < CClotBody
 {
 	public void PlayIdleSound() {
@@ -176,7 +189,6 @@ methodmap XenoCombineCollos < CClotBody
 		XenoCombineCollos npc = view_as<XenoCombineCollos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.85", "30000", ally, false, true));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_COLLOSS;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -193,8 +205,11 @@ methodmap XenoCombineCollos < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;		
 
 		
-		
-		SDKHook(npc.index, SDKHook_Think, XenoCombineCollos_ClotThink);
+	
+
+		func_NPCDeath[npc.index] = XenoCombineCollos_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoCombineCollos_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoCombineCollos_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;
@@ -476,7 +491,6 @@ public void XenoCombineCollos_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_Think, XenoCombineCollos_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
