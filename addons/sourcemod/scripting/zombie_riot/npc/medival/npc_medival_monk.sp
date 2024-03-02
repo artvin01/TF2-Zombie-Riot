@@ -83,6 +83,7 @@ static const char g_WarCry[][] = {
 	"ambient/rottenburg/tunneldoor_open.wav",
 };
 
+static int NPCId;
 static float f3_PlaceLocated[MAXENTITIES][3];
 void MedivalMonk_OnMapStart_NPC()
 {
@@ -103,7 +104,7 @@ void MedivalMonk_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Medieval;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -643,7 +644,7 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 		{
 			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK && GetTeam(entity_close) != TFTeam_Red)
+			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != NPCId && GetTeam(entity_close) != TFTeam_Red)
 			{
 				static float pos2[3];
 				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
@@ -664,7 +665,7 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 			{
 				int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-				if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK && i_NpcInternalId[entity_close] != RAIDMODE_GOD_ARKANTOS && GetTeam(entity_close) != TFTeam_Red)
+				if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != NPCId && !b_thisNpcIsARaid[entity_close] && GetTeam(entity_close) != TFTeam_Red)
 				{
 					bool regrow = true;
 					Building_CamoOrRegrowBlocker(entity_close, _, regrow);

@@ -1550,7 +1550,7 @@ static void GiveOneRevive()
 	int entity = MaxClients + 1;
 	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)
+		if(Citizen_IsIt(entity))
 		{
 			Citizen npc = view_as<Citizen>(entity);
 			if(npc.m_nDowned && npc.m_iWearable3 > 0)

@@ -815,6 +815,33 @@ static char g_RangedReloadSound[][] =
 	"weapons/shotgun/shotgun_reload3.wav",
 };
 
+static int NPCId;
+static int ThereCanBeOnlyOne = -1;
+static bool FirstBlood[MAXENTITIES];
+static int IsDowned[MAXENTITIES];
+static bool SeakingMedic[MAXENTITIES];
+static bool SeakingGeneric[MAXENTITIES];
+static int HasPerk[MAXENTITIES];
+static int ReviveTime[MAXENTITIES];
+static int GunType[MAXENTITIES];
+static int GunValue[MAXENTITIES];
+static int GunSeller[MAXENTITIES];
+static int PerkType[MAXENTITIES];
+static bool RebelAggressive[MAXENTITIES];
+static float GunDamage[MAXENTITIES];
+static float GunFireRate[MAXENTITIES];
+static float GunBonusFireRate[MAXENTITIES];
+static float GunBonusReload[MAXENTITIES];
+static float GunReload[MAXENTITIES];
+static int GunClip[MAXENTITIES];
+static float GunRangeBonus[MAXENTITIES];
+static float TalkCooldown[MAXENTITIES];
+static float TalkTurnPos[MAXENTITIES][3];
+static float TalkTurningFor[MAXENTITIES];
+static float HealingCooldown[MAXENTITIES];
+static bool IgnorePlayer[MAXTF2PLAYERS];
+static int ArmorErosion[MAXENTITIES];
+
 void Citizen_OnMapStart()
 {
 	PrecacheModel(BARNEY_MODEL);
@@ -861,39 +888,13 @@ void Citizen_OnMapStart()
 	data.Flags = 0;
 	data.Category = Type_Ally;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], const char[] data)
 {
 	return Citizen(client, vecPos, vecAng, data);
 }
-
-static int ThereCanBeOnlyOne = -1;
-static bool FirstBlood[MAXENTITIES];
-static int IsDowned[MAXENTITIES];
-static bool SeakingMedic[MAXENTITIES];
-static bool SeakingGeneric[MAXENTITIES];
-static int HasPerk[MAXENTITIES];
-static int ReviveTime[MAXENTITIES];
-static int GunType[MAXENTITIES];
-static int GunValue[MAXENTITIES];
-static int GunSeller[MAXENTITIES];
-static int PerkType[MAXENTITIES];
-static bool RebelAggressive[MAXENTITIES];
-static float GunDamage[MAXENTITIES];
-static float GunFireRate[MAXENTITIES];
-static float GunBonusFireRate[MAXENTITIES];
-static float GunBonusReload[MAXENTITIES];
-static float GunReload[MAXENTITIES];
-static int GunClip[MAXENTITIES];
-static float GunRangeBonus[MAXENTITIES];
-static float TalkCooldown[MAXENTITIES];
-static float TalkTurnPos[MAXENTITIES][3];
-static float TalkTurningFor[MAXENTITIES];
-static float HealingCooldown[MAXENTITIES];
-static bool IgnorePlayer[MAXTF2PLAYERS];
-static int ArmorErosion[MAXENTITIES];
 
 methodmap Citizen < CClotBody
 {
@@ -1307,7 +1308,6 @@ methodmap Citizen < CClotBody
 			else if(client)
 			{
 				this.PlaySound(Cit_Found);
-				Items_GiveNPCKill(client, CITIZEN);
 			}
 
 			SetEntityRenderMode(this.index, RENDER_NORMAL);
@@ -1448,9 +1448,14 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 	return -1;
 }
 
+bool Citizen_IsIt(int entity)
+{
+	return (i_NpcInternalId[entity] == NPCId && view_as<Citizen>(entity).m_nDowned);
+}
+
 bool Citizen_ThatIsDowned(int entity)
 {
-	return (i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_nDowned);
+	return (i_NpcInternalId[entity] == NPCId && view_as<Citizen>(entity).m_nDowned);
 }
 
 int Citizen_ReviveTicks(int entity, int amount, int client)
@@ -1489,7 +1494,7 @@ int Citizen_ShowInteractionHud(int entity, int client)
 
 int Citizen_BuildingInteract(int entity)
 {
-	if(i_NpcInternalId[entity] == CITIZEN)
+	if(i_NpcInternalId[entity] == NPCId)
 	{
 		Citizen npc = view_as<Citizen>(entity);
 		
@@ -2020,8 +2025,8 @@ public void Citizen_ClotThink(int iNPC)
 		int entity = MaxClients + 1;
 		while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
-			if((i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 7) ||
-				i_NpcInternalId[entity] == BOB_THE_GOD_OF_GODS &&
+			if((i_NpcInternalId[entity] == NPCId && view_as<Citizen>(entity).m_iBuildingType == 7) /*||
+				i_NpcInternalId[entity] == BOB_THE_GOD_OF_GODS*/ &&
 				HealingCooldown[entity] < gameTime)
 			{
 				WorldSpaceCenter(entity, vecTarget);
@@ -3245,7 +3250,7 @@ void Citizen_MiniBossDeath(int entity)
 	float vecTarget[3];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 	{
-		if(i_NpcInternalId[i] == CITIZEN && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
+		if(i_NpcInternalId[i] == NPCId && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
 		{
 			WorldSpaceCenter(i, vecTarget);
 			float dist = GetVectorDistance(vecTarget, vecMe, true);

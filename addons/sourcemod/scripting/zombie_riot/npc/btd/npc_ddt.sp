@@ -370,9 +370,9 @@ public void DDT_PostDeath(const char[] output, int caller, int activator, float 
 	
 	TE_Particle("ExplosionCore_buildings", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
 	
-	int spawn_index = NPC_CreateById(BTD_BLOON, -1, pos, angles, GetTeam(caller), "9rc");
+	int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, angles, GetTeam(caller), "9rc");
 	if(spawn_index > MaxClients)
-		NpcAddedToZombiesLeftCurrently(BTD_BLOON, true);
+		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 }
 
 public void DDT_PostFortifiedDeath(const char[] output, int caller, int activator, float delay)
@@ -384,7 +384,7 @@ public void DDT_PostFortifiedDeath(const char[] output, int caller, int activato
 	
 	TE_Particle("ExplosionCore_buildings", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
 	
-	int spawn_index = NPC_CreateById(BTD_BLOON, -1, pos, angles, GetTeam(caller), "9frc");
+	int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, angles, GetTeam(caller), "9frc");
 	if(spawn_index > MaxClients)
-		NpcAddedToZombiesLeftCurrently(BTD_BLOON, true);
+		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 }

@@ -418,7 +418,7 @@ public void XenoSoldierGiant_ClotDamagedPost(int victim, int attacker, int infli
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 				
-				int spawn_index = NPC_CreateById(XENO_SOLDIER_ZOMBIE_MINION, -1, pos, ang, GetTeam(npc.index));
+				int spawn_index = NPC_CreateByName("npc_xeno_zombie_soldier_minion_grave", -1, pos, ang, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);

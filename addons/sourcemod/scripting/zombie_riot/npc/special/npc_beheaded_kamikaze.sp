@@ -10,6 +10,7 @@ static const char g_Spawn[][] = {
 	"zombie_riot/miniboss/kamikaze/spawn.wav",
 };
 
+static int NPCId;
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 static float fl_KamikazeInitiate;
 static float fl_KamikazeSpawnDelay;
@@ -35,7 +36,7 @@ void BeheadedKamiKaze_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -346,7 +347,7 @@ float BeheadedKamiBoomInternal(int entity, int victim, float damage, int weapon)
 		return 0.0;
 
 	//instakill any be_headeads.
-	if(i_NpcInternalId[victim] == MINI_BEHEADED_KAMI)
+	if(i_NpcInternalId[victim] == NPCId)
 	{
 		return 1000000000.0;
 	}
@@ -432,7 +433,7 @@ void SpawnBeheadedKamikaze(DataPack pack)
 			int INpc = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 			if (IsValidEntity(INpc))
 			{
-				if(!b_NpcHasDied[INpc] && i_NpcInternalId[INpc] == MINI_BEHEADED_KAMI)
+				if(!b_NpcHasDied[INpc] && i_NpcInternalId[INpc] == NPCId)
 				{
 					Kamikazies += 1;
 				}
@@ -449,7 +450,7 @@ void SpawnBeheadedKamikaze(DataPack pack)
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 			}
-			int spawn_npc = NPC_CreateById(MINI_BEHEADED_KAMI, -1, pos, ang, TFTeam_Blue); //can only be enemy
+			int spawn_npc = NPC_CreateById(NPCId, -1, pos, ang, TFTeam_Blue); //can only be enemy
 			NpcAddedToZombiesLeftCurrently(spawn_npc, true);
 		}
 		RequestFrame(SpawnBeheadedKamikaze, pack);

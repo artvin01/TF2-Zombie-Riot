@@ -18,12 +18,12 @@ static const int BloonLowCount[] =
 	3
 };
 
-static const int BloonHigh[] =
+static const char BloonHigh[][] =
 {
-	BTD_BLOON,
-	BTD_BLOON,
-	BTD_MOAB,
-	BTD_ZOMG
+	"npc_bloon",
+	"npc_bloon",
+	"npc_moab",
+	"npc_zomg"
 };
 
 static const char BloonHighData[][] =
@@ -410,7 +410,7 @@ public void Bloonarius_ClotThink(int iNPC)
 			int count = SpawnMulti(BloonLowCount[tier], players, npc.m_bStaticNPC);
 			
 			Enemy enemy;
-			enemy.Index = BTD_BLOON;
+			enemy.Index = NPC_GetByPlugin("npc_bloon");
 			enemy.Is_Static = npc.m_bStaticNPC;
 
 			strcopy(enemy.Data, sizeof(enemy.Data), BloonLowData[tier]);
@@ -516,7 +516,7 @@ public Action Bloonarius_SpawnBloonTimer(Handle timer, bool elite)
 		float pos[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_angRotation", ang);
 		
-		int spawn_index = NPC_CreateById(BloonHigh[tier], -1, pos, ang, TFTeam_Blue, BloonHighData[tier]);
+		int spawn_index = NPC_CreateByName(BloonHigh[tier], -1, pos, ang, TFTeam_Blue, BloonHighData[tier]);
 		if(spawn_index > MaxClients)
 		{
 			Zombies_Currently_Still_Ongoing++;

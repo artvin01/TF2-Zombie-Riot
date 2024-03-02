@@ -56,6 +56,7 @@ static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 
 #define ARKANTOS_BUFF_MAXRANGE 500.0
 
+static int NPCId;
 public void GodArkantos_OnMapStart()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);       }
@@ -76,7 +77,7 @@ public void GodArkantos_OnMapStart()
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -373,7 +374,7 @@ public void GodArkantos_ClotThink(int iNPC)
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 		}
-		int spawn_index = NPC_CreateById(ISHARMLA, -1, pos, ang, TFTeam_Blue);
+		int spawn_index = NPC_CreateByName("npc_isharmla", -1, pos, ang, TFTeam_Blue);
 		if(spawn_index > MaxClients)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -521,7 +522,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
 			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
-			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != RAIDMODE_GOD_ARKANTOS && GetTeam(npc.index) == GetTeam(baseboss_index))
+			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != NPCId && GetTeam(npc.index) == GetTeam(baseboss_index))
 			{
 				allyAlive = true;
 			}

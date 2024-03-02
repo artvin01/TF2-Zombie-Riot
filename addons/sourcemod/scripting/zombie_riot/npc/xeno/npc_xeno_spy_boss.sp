@@ -823,7 +823,7 @@ public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflic
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 				
-				int spawn_index = NPC_CreateById(XENO_SPY_TRICKSTABBER, -1, pos, ang, team);
+				int spawn_index = NPC_CreateByName("npc_xeno_spy_trickstabber", -1, pos, ang, team);
 				if(spawn_index > MaxClients)
 				{
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);

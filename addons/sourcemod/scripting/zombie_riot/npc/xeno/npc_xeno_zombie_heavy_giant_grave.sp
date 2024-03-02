@@ -366,7 +366,7 @@ public void XenoHeavyGiant_NPCDeath(int entity)
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			int spawn_index = NPC_CreateById(XENO_HEAVY_ZOMBIE, -1, pos, ang, GetTeam(npc.index));
+			int spawn_index = NPC_CreateByName("npc_xeno_zombie_heavy_grave", -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);

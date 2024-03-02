@@ -181,7 +181,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 				if(flDistanceToTarget < (50.0*50.0))
 				{
 					//We are close enough to build, lets build.
-					int spawn_index = NPC_CreateById(BARRACKS_BUILDING, client, VillagerDesiredBuildLocation[npc.index], {0.0,0.0,0.0}, GetTeam(npc.index));
+					int spawn_index = NPC_CreateByName("npc_barrack_building", client, VillagerDesiredBuildLocation[npc.index], {0.0,0.0,0.0}, GetTeam(npc.index));
 					if(spawn_index > MaxClients)
 					{
 						VillagerDesiredBuildLocation[npc.index][0] = 0.0;

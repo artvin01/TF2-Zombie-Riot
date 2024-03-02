@@ -277,7 +277,7 @@ public void Bfb_NPCDeath(int entity)
 	GetEntPropVector(entity, Prop_Data, "m_angRotation", angles);
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	
-	int spawn_index = NPC_CreateById(BTD_MOAB, -1, pos, angles, GetTeam(entity), npc.m_bFortified ? "f" : "");
+	int spawn_index = NPC_CreateByName("npc_moab", -1, pos, angles, GetTeam(entity), npc.m_bFortified ? "f" : "");
 	if(spawn_index > MaxClients)
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 }

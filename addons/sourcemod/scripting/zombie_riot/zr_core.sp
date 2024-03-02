@@ -1367,10 +1367,9 @@ public void Spawn_Bob_Combine(int client)
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	flAng[2] = 0.0;
-	int bob = NPC_CreateById(BOB_THE_GOD_OF_GODS, client, flPos, flAng, TFTeam_Red);
+	int bob = NPC_CreateByName("noc_bob_the_overlord", client, flPos, flAng, TFTeam_Red);
 	Bob_Exists = true;
 	Bob_Exists_Index = EntIndexToEntRef(bob);
-	Items_GiveNPCKill(client, BOB_THE_GOD_OF_GODS);
 }
 
 public void NPC_Despawn_bob(int entity)
@@ -1399,14 +1398,6 @@ public void Spawn_Cured_Grigori()
 	int entity = NPC_CreateById(CURED_FATHER_GRIGORI, client, flPos, flAng, TFTeam_Red);
 	SalesmanAlive = EntIndexToEntRef(entity);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_grigori");
-	
-	for(int client_Give_item=1; client_Give_item<=MaxClients; client_Give_item++)
-	{
-		if(IsClientInGame(client_Give_item) && GetClientTeam(client_Give_item)==2)
-		{
-			Items_GiveNPCKill(client_Give_item, CURED_FATHER_GRIGORI);
-		}
-	}
 }
 
 void CheckAlivePlayersforward(int killed=0)
