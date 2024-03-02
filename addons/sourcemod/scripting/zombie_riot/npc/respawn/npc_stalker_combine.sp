@@ -226,6 +226,7 @@ methodmap StalkerCombine < StalkerShared
 		func_NPCDeath[npc.index] = StalkerCombine_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = StalkerCombine_OnTakeDamage;
 		func_NPCThink[npc.index] = StalkerCombine_ClotThink;
+		func_NPCAnimEvent[npc.index] = StalkerCombine_HandleAnimEvent;
 
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;

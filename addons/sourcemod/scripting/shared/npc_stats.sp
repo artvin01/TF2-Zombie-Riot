@@ -3686,86 +3686,14 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	if(b_NpcHasDied[pThis])
 		return MRES_Ignored;
 		
-#if defined ZR
-	switch(i_NpcInternalId[pThis])
+	Function func = func_NPCAnimEvent[pThis];
+	if(func && func != INVALID_FUNCTION)
 	{
-		case MEDIVAL_ARCHER:
-		{
-			HandleAnimEventMedival_Archer(pThis, event);
-		}
-		case MEDIVAL_SKIRMISHER:
-		{
-			HandleAnimEvent_MedivalSkirmisher(pThis, event);
-		}	
-		case MEDIVAL_CROSSBOW_MAN:
-		{
-			HandleAnimEventMedival_CrossbowMan(pThis, event);
-		}
-		case MEDIVAL_HANDCANNONEER:
-		{
-			HandleAnimEventMedival_HandCannoneer(pThis, event);
-		}
-		case MEDIVAL_ELITE_SKIRMISHER:
-		{
-			HandleAnimEvent_MedivalEliteSkirmisher(pThis, event);
-		}
-		case BARRACK_ARCHER:
-		{
-			BarrackArcher_HandleAnimEvent(pThis, event);
-		}
-		case MEDIVAL_LONGBOWMEN:
-		{
-			HandleAnimEventMedivalLongbowmen(pThis, event);
-		}
-		case MEDIVAL_ELITE_LONGBOWMEN:
-		{
-			HandleAnimEventMedivalEliteLongbowmen(pThis, event);
-		}
-		case MEDIVAL_ARBALEST:
-		{
-			HandleAnimEventMedival_Arbalest(pThis, event);
-		}
-		case BARRACK_CROSSBOW:
-		{
-			BarrackCrossbow_HandleAnimEvent(pThis, event);
-		}
-		case BARRACK_ARBELAST:
-		{
-			BarrackArbelast_HandleAnimEvent(pThis, event);
-		}
-		case BARRACK_LONGBOW:
-		{
-			BarrackLongbow_HandleAnimEvent(pThis, event);
-		}
-		case MEDIVAL_RIDDENARCHER:
-		{
-			HandleAnimEventMedival_RiddenArcher(pThis, event);
-		}
-		case MEDIVAL_CROSSBOW_GIANT:
-		{
-			HandleAnimEventMedival_GiantCrossbowMan(pThis, event);
-		}
-		case MEDIVAL_ACHILLES:
-		{
-			HandleAnimEvent_MedivalAchilles(pThis, event);
-		}
-		case STALKER_COMBINE:
-		{
-			StalkerCombine_HandleAnimEvent(pThis, event);
-		}
-		default:
-		{
-			Function func = func_NPCAnimEvent[pThis];
-			if(func && func != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, func);
-				Call_PushCell(pThis);
-				Call_PushCell(event);
-				Call_Finish();
-			}
-		}
+		Call_StartFunction(null, func);
+		Call_PushCell(pThis);
+		Call_PushCell(event);
+		Call_Finish();
 	}
-#endif
 	
 	switch(npc.m_iNpcStepVariation)
 	{

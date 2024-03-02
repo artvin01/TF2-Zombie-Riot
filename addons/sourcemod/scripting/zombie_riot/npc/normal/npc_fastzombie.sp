@@ -209,7 +209,8 @@ methodmap FastZombie < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		func_NPCDeath[npc.index] = FastZombie_NPCDeath;
-		func_NPCThink[npc.index] = FastZombie_FastZombieThink;		
+		func_NPCThink[npc.index] = FastZombie_FastZombieThink;	
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;	
 		
 		
 		//IDLE

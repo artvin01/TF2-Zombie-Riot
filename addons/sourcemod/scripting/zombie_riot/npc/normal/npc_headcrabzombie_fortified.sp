@@ -162,6 +162,7 @@ methodmap FortifiedHeadcrabZombie < CClotBody
 
 		func_NPCDeath[npc.index] = FortifiedHeadcrabZombie_NPCDeath;
 		func_NPCThink[npc.index] = FortifiedHeadcrabZombie_ClotThink;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 
 		//IDLE
 		npc.m_flSpeed = 140.0;
