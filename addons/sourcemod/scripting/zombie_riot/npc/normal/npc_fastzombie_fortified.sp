@@ -215,6 +215,7 @@ methodmap FortifiedFastZombie < CClotBody
 
 		func_NPCDeath[npc.index] = FortifiedFastZombie_NPCDeath;
 		func_NPCThink[npc.index] = FortifiedFastZombie_ClotThink;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 
 		
 		
