@@ -66,9 +66,9 @@ void Mecha_Engineer_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Mecha_Engineer(client, vecPos, vecAng, ally, data);
+	return Mecha_Engineer(client, vecPos, vecAng, ally);
 }
 
 methodmap Mecha_Engineer < CClotBody

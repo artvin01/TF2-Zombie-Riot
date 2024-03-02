@@ -70,9 +70,9 @@ void Soldier_Barrager_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Soldier_Barrager(client, vecPos, vecAng, ally, data);
+	return Soldier_Barrager(client, vecPos, vecAng, ally);
 }
 
 static int i_ammo_count[MAXENTITIES];

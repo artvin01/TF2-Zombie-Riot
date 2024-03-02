@@ -64,9 +64,9 @@ void Sniper_railgunner_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Sniper_railgunner(client, vecPos, vecAng, ally, data);
+	return Sniper_railgunner(client, vecPos, vecAng, ally);
 }
 
 static int i_overcharge[MAXENTITIES];
