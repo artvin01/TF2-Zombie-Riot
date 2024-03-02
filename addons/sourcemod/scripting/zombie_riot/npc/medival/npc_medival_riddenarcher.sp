@@ -84,7 +84,7 @@ void MedivalRiddenArcher_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return TestNpcSpawn(client, vecPos, vecAng, ally);
+	return MedivalRiddenArcher(client, vecPos, vecAng, ally);
 }
 methodmap MedivalRiddenArcher < CClotBody
 {

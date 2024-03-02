@@ -127,9 +127,22 @@ void ChaosKahmlstein_OnMapStart_NPC()
 	PrecacheSoundCustom("zombiesurvival/internius/blinkarrival.wav");
 	PrecacheSound("player/taunt_knuckle_crack.wav");
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Chaos Kahmlstein");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chaos_kahmlstein");
+	strcopy(data.Icon, sizeof(data.Icon), "kahmlstein");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return ChaosKahmlstein(client, vecPos, vecAng, ally, data);
+}
 methodmap ChaosKahmlstein < CClotBody
 {
 	property int i_GunMode
@@ -252,7 +265,6 @@ methodmap ChaosKahmlstein < CClotBody
 	{
 		ChaosKahmlstein npc = view_as<ChaosKahmlstein>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "40000", ally, false, true, true,_)); //giant!
 		
-		i_NpcInternalId[npc.index] = RAIDMODE_CHAOS_KAHMLSTEIN;
 		i_NpcWeight[npc.index] = 4;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

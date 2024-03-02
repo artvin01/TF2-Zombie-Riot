@@ -95,8 +95,21 @@ void RaidbossBlueGoggles_OnMapStart()
 	PrecacheSoundArray(g_BuffSounds);
 	PrecacheSoundArray(g_AngerSounds);
 	PrecacheSoundArray(g_HappySounds);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Blue Gpggles");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_infected_goggles");
+	strcopy(data.Icon, sizeof(data.Icon), "goggles");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return RaidbossBlueGoggles(client, vecPos, vecAng, ally, data);
+}
 methodmap RaidbossBlueGoggles < CClotBody
 {
 	public void PlayHurtSound()
@@ -190,7 +203,6 @@ methodmap RaidbossBlueGoggles < CClotBody
 	{
 		RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
-		i_NpcInternalId[npc.index] = XENO_RAIDBOSS_BLUE_GOGGLES;
 		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -200,10 +212,12 @@ methodmap RaidbossBlueGoggles < CClotBody
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		
-		SDKHook(npc.index, SDKHook_Think, RaidbossBlueGoggles_ClotThink);
 		b_angered_twice[npc.index] = false;
 		
 
+		func_NPCDeath[npc.index] = RaidbossBlueGoggles_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = RaidbossBlueGoggles_OnTakeDamage;
+		func_NPCThink[npc.index] = RaidbossBlueGoggles_ClotThink;
 		bool final = StrContains(data, "final_item") != -1;
 		
 		if(final)
@@ -329,8 +343,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			SharedTimeLossSilvesterDuo(npc.index);
 			RaidBossActive = INVALID_ENT_REFERENCE;
 		}
-
-		//SDKUnhook(npc.index, SDKHook_Think, RaidbossBlueGoggles_ClotThink);
+		
 
 		if(IsValidEntity(npc.m_iWearable3))
 			RemoveEntity(npc.m_iWearable3);
@@ -1106,7 +1119,6 @@ public void RaidbossBlueGoggles_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-	SDKUnhook(npc.index, SDKHook_Think, RaidbossBlueGoggles_ClotThink);
 	
 	
 	RaidModeTime += 2.0; //cant afford to delete it, since duo.

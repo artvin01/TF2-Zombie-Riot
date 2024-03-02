@@ -113,9 +113,9 @@ void MedivalBuilding_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return MedivalBuilding(client, vecPos, vecAng, ally);
+	return MedivalBuilding(client, vecPos, vecAng, ally, data);
 }
 
 methodmap MedivalBuilding < CClotBody

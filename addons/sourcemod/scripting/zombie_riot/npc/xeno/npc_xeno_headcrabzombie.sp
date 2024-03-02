@@ -159,7 +159,7 @@ methodmap XenoHeadcrabZombie < CClotBody
 		
 		func_NPCDeath[npc.index] = XenoHeadcrabZombie_NPCDeath;
 		func_NPCThink[npc.index] = XenoHeadcrabZombie_ClotThink;
-		func_NPCTakeDamage[npc.index] = XenoHeadcrabZombie_OnTakeDamage;
+		func_NPCOnTakeDamage[npc.index] = XenoHeadcrabZombie_OnTakeDamage;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		

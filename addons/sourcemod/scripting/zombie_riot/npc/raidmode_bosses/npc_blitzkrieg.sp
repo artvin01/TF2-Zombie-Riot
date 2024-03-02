@@ -229,7 +229,10 @@ public void Blitzkrieg_OnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Blitzkrieg");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_blitzkrieg");
-	data.Category = 2;
+	strcopy(data.Icon, sizeof(data.Icon), "blitzkrieg");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Special;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

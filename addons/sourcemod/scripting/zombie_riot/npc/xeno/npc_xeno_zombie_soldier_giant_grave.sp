@@ -180,7 +180,7 @@ methodmap XenoSoldierGiant < CClotBody
 		
 		func_NPCDeath[npc.index] = XenoSoldierGiant_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = XenoSoldierGiant_OnTakeDamage;
-		func_NPCThink[npc.index] = XenoSoldierGiant_ClotThink;;
+		func_NPCThink[npc.index] = XenoSoldierGiant_ClotThink;
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, XenoSoldierGiant_ClotDamagedPost);
 		
 		//IDLE

@@ -32,7 +32,7 @@ void MedivalRam_OnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3],int ally, const char[] data)
 {
 	return MedivalRam(client, vecPos, vecAng, ally, data);
 }
@@ -79,7 +79,6 @@ methodmap MedivalRam < CClotBody
 		}
 		
 		func_NPCDeath[npc.index] = MedivalRam_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = MedivalRam_OnTakeDamage;
 		func_NPCThink[npc.index] = MedivalRam_ClotThink;
 		
 		npc.m_iState = 0;

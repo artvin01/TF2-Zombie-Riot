@@ -88,7 +88,7 @@ public void XenoFlyingArmor_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Common;
 	data.Func = ClotSummon;
-	NPC_Add(data)
+	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)

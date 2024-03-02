@@ -8,6 +8,16 @@ void StalkerFather_MapStart()
 {
 	PrecacheSound("#music/radio1.mp3");
 	PrecacheModel("models/zombie/monk_combine.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Spawned Father Grigori");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stalker_father");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
 methodmap StalkerFather < StalkerShared
@@ -26,7 +36,6 @@ methodmap StalkerFather < StalkerShared
 	{
 		StalkerFather npc = view_as<StalkerFather>(CClotBody(vecPos, vecAng, "models/zombie/monk_combine.mdl", "1.15", "66666", ally));
 		
-		i_NpcInternalId[npc.index] = STALKER_FATHER;
 		i_NpcWeight[npc.index] = 5;
 		fl_GetClosestTargetTimeTouch[npc.index] = 99999.9;
 		
@@ -41,7 +50,9 @@ methodmap StalkerFather < StalkerShared
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, StalkerFather_ClotThink);
+		func_NPCDeath[npc.index] = StalkerFather_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = StalkerFather_OnTakeDamage;
+		func_NPCThink[npc.index] = StalkerFather_ClotThink;
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		Is_a_Medic[npc.index] = true;
@@ -332,9 +343,6 @@ public Action StalkerFather_OnTakeDamage(int victim, int &attacker, int &inflict
 void StalkerFather_NPCDeath(int entity)
 {
 	StalkerFather npc = view_as<StalkerFather>(entity);
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, StalkerFather_ClotThink);
 
 	for(int i; i < 9; i++)
 	{

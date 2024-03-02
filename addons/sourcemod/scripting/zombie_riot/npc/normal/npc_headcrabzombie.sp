@@ -61,7 +61,7 @@ static char g_MeleeMissSounds[][] = {
 	strcopy(data.Icon, sizeof(data.Icon), "test_filename");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Medieval;
+	data.Category = Type_Special;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 

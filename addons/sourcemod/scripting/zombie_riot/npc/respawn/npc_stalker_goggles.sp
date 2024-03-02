@@ -11,6 +11,16 @@ void StalkerGoggles_OnMapStart()
 	PrecacheSound("weapons/sniper_railgun_charged_shot_02.wav");
 	PrecacheSoundCustom("#music/bluemelee.mp3");
 	PrecacheSoundCustom("#music/bluerange.wav");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Spawned Blue Goggles");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stalker_goggles");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
 methodmap StalkerGoggles < StalkerShared
@@ -41,7 +51,6 @@ methodmap StalkerGoggles < StalkerShared
 	{
 		StalkerGoggles npc = view_as<StalkerGoggles>(CClotBody(vecPos, vecAng, "models/bots/sniper/bot_sniper.mdl", "1.0", "66666666", ally));
 		
-		i_NpcInternalId[npc.index] = STALKER_GOGGLES;
 		i_NpcWeight[npc.index] = 5;
 		fl_GetClosestTargetTimeTouch[npc.index] = 99999.9;
 		
@@ -57,7 +66,10 @@ methodmap StalkerGoggles < StalkerShared
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, StalkerGoggles_ClotThink);
+
+		func_NPCDeath[npc.index] = StalkerGoggles_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = StalkerGoggles_OnTakeDamage;
+		func_NPCThink[npc.index] = StalkerGoggles_ClotThink;
 		
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		Is_a_Medic[npc.index] = true;
@@ -582,9 +594,6 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 void StalkerGoggles_NPCDeath(int entity)
 {
 	StalkerGoggles npc = view_as<StalkerGoggles>(entity);
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, StalkerGoggles_ClotThink);
 
 	for(int i; i < 9; i++)
 	{
