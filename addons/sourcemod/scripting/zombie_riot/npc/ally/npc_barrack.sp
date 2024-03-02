@@ -1064,7 +1064,7 @@ public int BarrackBody_MenuH(Menu menu, MenuAction action, int client, int choic
 					}
 					case 7:
 					{
-							char npc_classname[60];
+						char npc_classname[60];
 						NPC_GetPluginNameById(i_NpcInternalId[npc.index], npc_classname, sizeof(npc_classname));
 						
 						if(StrContains(npc_classname, "npc_barrack_villager"))
