@@ -493,6 +493,11 @@ void Waves_SetupMiniBosses(KeyValues map)
 			kv.GetSectionName(buffer, sizeof(buffer));
 			
 			boss.Index = NPC_GetIdByPlugin(buffer);
+			if(boss.Index == -1)
+			{
+				LogError("[Config] Unknown NPC '%s' in mini-bosses", buffer);
+				continue;
+			}
 			
 			boss.Powerup = kv.GetNum("powerup");
 			boss.Delay = kv.GetFloat("delay", 2.0);
@@ -647,13 +652,18 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 					kv.GetString("plugin", plugin, sizeof(plugin));
 					if(plugin[0])
 					{
+						enemy.Index = NPC_GetIdByPlugin(plugin);
+						if(enemy.Index == -1)
+						{
+							LogError("[Config] Unknown NPC '%s' in waves", plugin);
+							continue;
+						}
+
 						wave.Delay = StringToFloat(buffer);
 						wave.Count = kv.GetNum("count", 1);
 
 						kv.GetString("relayname", wave.RelayName, sizeof(wave.RelayName));
 						kv.GetString("relayfire", wave.RelayFire, sizeof(wave.RelayFire));
-						
-						enemy.Index = NPC_GetIdByPlugin(plugin);
 						
 						enemy.Health = kv.GetNum("health");
 						enemy.Is_Boss = kv.GetNum("is_boss");
