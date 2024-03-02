@@ -136,6 +136,8 @@ static char g_KilledEnemy[][] = {
 	"vo/ravenholm/monk_kill11.wav",
 };
 
+static int NPCId;
+
 public void CuredFatherGrigori_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -169,7 +171,12 @@ public void CuredFatherGrigori_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Ally;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
+}
+
+int CuredFatherGrigori_ID()
+{
+	return NPCId;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)

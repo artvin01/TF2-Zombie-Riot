@@ -43,6 +43,7 @@ static const char g_MeleeAttackSounds[][] =
 };
 
 static float SpeedCache = 1.0;
+static int NPCId;
 
 void SeabornVanguard_Precache()
 {
@@ -54,7 +55,7 @@ void SeabornVanguard_Precache()
 	data.Flags = MVM_CLASS_FLAG_SUPPORT|MVM_CLASS_FLAG_SUPPORT_LIMITED;
 	data.Category = Type_Seaborn;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -96,7 +97,6 @@ methodmap SeabornVanguard < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = SEABORN_VANGUARD;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_CUSTOM_WALK_SAMURAI");
 		KillFeed_SetKillIcon(npc.index, "demokatana");
@@ -152,7 +152,7 @@ void SeabornVanguard_SpeedBuff(CClotBody npc, float &speed)
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-				if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == SEABORN_VANGUARD && !view_as<CClotBody>(entity).m_bThisEntityIgnored && IsEntityAlive(entity))
+				if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == NPCId && !view_as<CClotBody>(entity).m_bThisEntityIgnored && IsEntityAlive(entity))
 				{
 					SpeedCache *= 1.05;
 				}

@@ -9,6 +9,7 @@ static const char g_HurtSounds[][] =
 };
 
 static bool IsActive;
+static int NPCId;
 
 void VIPBuilding_MapStart()
 {
@@ -21,7 +22,12 @@ void VIPBuilding_MapStart()
 	data.Flags = 0;
 	data.Category = Type_Ally;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
+}
+
+int VIPBuilding_ID()
+{
+	return NPCId;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], const char[] data)

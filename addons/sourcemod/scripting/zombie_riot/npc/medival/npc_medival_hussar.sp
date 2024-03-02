@@ -84,6 +84,7 @@ static const char g_WarCry[][] = {
 };
 
 static float f_GlobalSoundCD;
+static int NPCId;
 
 void MedivalHussar_OnMapStart_NPC()
 {
@@ -105,7 +106,7 @@ void MedivalHussar_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Medieval;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -424,7 +425,7 @@ void HussarAOEBuff(MedivalHussar npc, float gameTime, bool mute = false)
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
 					if(GetVectorDistance(pos1, pos2, true) < (HUSSAR_BUFF_MAXRANGE * HUSSAR_BUFF_MAXRANGE))
 					{
-						if(i_NpcInternalId[entitycount] != MEDIVAL_HUSSAR) //Hussars cannot buff eachother.
+						if(i_NpcInternalId[entitycount] != NPCId) //Hussars cannot buff eachother.
 						{
 							f_HussarBuff[entitycount] = GetGameTime() + 5.0; //allow buffing of players too if on red.
 							//Buff this entity.

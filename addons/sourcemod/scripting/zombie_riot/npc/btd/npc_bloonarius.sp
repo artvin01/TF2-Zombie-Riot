@@ -410,7 +410,7 @@ public void Bloonarius_ClotThink(int iNPC)
 			int count = SpawnMulti(BloonLowCount[tier], players, npc.m_bStaticNPC);
 			
 			Enemy enemy;
-			enemy.Index = NPC_GetByPlugin("npc_bloon");
+			enemy.Index = NPC_GetIdByPlugin("npc_bloon");
 			enemy.Is_Static = npc.m_bStaticNPC;
 
 			strcopy(enemy.Data, sizeof(enemy.Data), BloonLowData[tier]);

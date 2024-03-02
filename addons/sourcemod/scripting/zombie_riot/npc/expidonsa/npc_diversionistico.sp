@@ -46,6 +46,8 @@ int i_DiversioAntiCheese_Tolerance[MAXENTITIES];
 
 float LastSpawnDiversio;
 
+static int NPCId;
+
 void Diversionistico_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -65,7 +67,12 @@ void Diversionistico_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
 	data.Category = Type_Expidonsa;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
+}
+
+int DiversionisticoID()
+{
+	return NPCId;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)

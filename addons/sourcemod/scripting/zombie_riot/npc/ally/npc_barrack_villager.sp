@@ -15,6 +15,9 @@ enum
 	Villager_Command_GatherResource = 1,
 	Villager_Command_StandNearTower = 2,
 }
+
+static int NPCId;
+
 void BarrackVillagerOnMapStart()
 {
 	NPCData data;
@@ -25,7 +28,12 @@ void BarrackVillagerOnMapStart()
 	data.Flags = 0;
 	data.Category = Type_Ally;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
+}
+
+int BarrackVillager_ID()
+{
+	return NPCId;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)

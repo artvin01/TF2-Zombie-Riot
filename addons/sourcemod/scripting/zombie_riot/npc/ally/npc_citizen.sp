@@ -1470,9 +1470,7 @@ int Citizen_ReviveTicks(int entity, int amount, int client)
 
 int Citizen_ShowInteractionHud(int entity, int client)
 {
-	char npc_classname[60];
-	NPC_GetPluginNameById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-	if(StrContains(npc_classname, "npc_citizen"))
+	if(i_NpcInternalId[entity] == NPCId)
 	{
 		Citizen npc = view_as<Citizen>(entity);
 		
@@ -1508,9 +1506,7 @@ int Citizen_BuildingInteract(int entity)
 
 bool Citizen_Interact(int client, int entity)
 {
-	char npc_classname[60];
-	NPC_GetPluginNameById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-	if(StrContains(npc_classname, "npc_citizen"))
+	if(i_NpcInternalId[entity] == NPCId)
 	{
 		Citizen npc = view_as<Citizen>(entity);
 		
@@ -1625,9 +1621,8 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 			{
 				continue;
 			}
-			char npc_classname[60];
-			NPC_GetPluginNameById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
-			if(StrContains(npc_classname, "npc_citizen") && i != npc.index)
+			
+			if(i_NpcInternalId[i] == NPCId && i != npc.index)
 			{
 				amount += view_as<Citizen>(i).m_iGunValue;
 				if(view_as<Citizen>(i).m_iBuildingType)
@@ -1735,9 +1730,7 @@ void Citizen_SetupStart()
 	int i = -1;
 	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
-		char npc_classname[60];
-		NPC_GetPluginNameById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
-		if(StrContains(npc_classname, "npc_citizen"))
+		if(i_NpcInternalId[i] == NPCId)
 		{
 			Citizen npc = view_as<Citizen>(i);
 			if(npc.m_bHero && !npc.m_nDowned && IsValidEntity(i))
@@ -1749,9 +1742,7 @@ void Citizen_SetupStart()
 				int entity = MaxClients + 1;
 				while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 				{
-					char npc_classname[60];
-					NPC_GetPluginNameById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-					if(StrContains(npc_classname, "npc_citizen") && view_as<Citizen>(entity).m_iBuildingType == 7)
+					if(i_NpcInternalId[entity] == NPCId && view_as<Citizen>(entity).m_iBuildingType == 7)
 					{
 						WorldSpaceCenter(entity, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
@@ -2726,9 +2717,7 @@ public void Citizen_ClotThink(int iNPC)
 		int entity = MaxClients + 1;
 		while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
-			char npc_classname[60];
-			NPC_GetPluginNameById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-			if(StrContains(npc_classname, "npc_citizen") && view_as<Citizen>(entity).m_iBuildingType == 5 && HealingCooldown[entity] < gameTime)
+			if(i_NpcInternalId[entity] == NPCId && view_as<Citizen>(entity).m_iBuildingType == 5 && HealingCooldown[entity] < gameTime)
 			{
 				WorldSpaceCenter(entity, vecTarget);
 				float dist = GetVectorDistance(vecTarget, vecMe, true);
@@ -2798,9 +2787,7 @@ public void Citizen_ClotThink(int iNPC)
 		int entity = MaxClients + 1;
 		while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
-			char npc_classname[60];
-			NPC_GetPluginNameById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-			if(StrContains(npc_classname, "npc_citizen") && view_as<Citizen>(entity).m_iBuildingType == 1 && HealingCooldown[entity] < gameTime)
+			if(i_NpcInternalId[entity] == NPCId && view_as<Citizen>(entity).m_iBuildingType == 1 && HealingCooldown[entity] < gameTime)
 			{
 				WorldSpaceCenter(entity, vecTarget);
 				float dist = GetVectorDistance(vecTarget, vecMe, true);
@@ -2905,9 +2892,7 @@ public void Citizen_ClotThink(int iNPC)
 				float vecTarget2[3];
 				while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 				{
-					char npc_classname[60];
-					NPC_GetPluginNameById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-					if(StrContains(npc_classname, "npc_citizen"))
+					if(i_NpcInternalId[entity] == NPCId)
 					{
 						WorldSpaceCenter(entity, vecTarget2);
 						distance = GetVectorDistance(vecTarget2, vecMe, true);
@@ -3149,9 +3134,7 @@ public void Citizen_ClotThink(int iNPC)
 					{
 						continue;
 					}
-					char npc_classname[60];
-					NPC_GetPluginNameById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
-					if(StrContains(npc_classname, "npc_citizen") && i != npc.index && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE)
+					if(i_NpcInternalId[i] == NPCId && i != npc.index && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE)
 					{
 						WorldSpaceCenter(i, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
@@ -3230,9 +3213,7 @@ void Citizen_MiniBossSpawn()
 		{
 			continue;
 		}
-		char npc_classname[60];
-		NPC_GetPluginNameById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
-		if(StrContains(npc_classname, "npc_citizen") && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE)
+		if(i_NpcInternalId[i] == NPCId && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE)
 		{
 			view_as<Citizen>(i).PlaySound(Cit_MiniBoss);
 			view_as<Citizen>(i).m_flidle_talk += 15.0;
@@ -3278,9 +3259,7 @@ void Citizen_LiveCitizenReaction(int entity)
 	float vecTarget[3];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 	{
-		char npc_classname[60];
-		NPC_GetPluginNameById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
-		if(StrContains(npc_classname, "npc_citizen") && i != entity && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
+		if(i_NpcInternalId[i] == NPCId && i != entity && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
 		{
 			WorldSpaceCenter(i, vecTarget);
 			float dist = GetVectorDistance(vecTarget, vecMe, true);
@@ -3346,9 +3325,7 @@ void Citizen_PlayerDeath(int client)
 		float vecTarget[3];
 		for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 		{
-			char npc_classname[60];
-			NPC_GetPluginNameById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
-			if(StrContains(npc_classname, "npc_citizen") && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
+			if(i_NpcInternalId[i] == NPCId && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
 			{
 				view_as<Citizen>(i).m_flidle_talk = FAR_FUTURE;
 				
@@ -3375,7 +3352,7 @@ void Citizen_PlayerDeath(int client)
 static bool RunFromNPC(int entity)
 {
 	char npc_classname[60];
-	NPC_GetPluginNameById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
 	if(StrContains(npc_classname, "npc_sawrunner"))
 	{
 		return true;

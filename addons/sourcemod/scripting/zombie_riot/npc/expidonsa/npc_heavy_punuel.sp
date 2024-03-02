@@ -131,7 +131,6 @@ methodmap HeavyPunuel < CClotBody
 	{
 		HeavyPunuel npc = view_as<HeavyPunuel>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "1000", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_HEAVYPUNUEL;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

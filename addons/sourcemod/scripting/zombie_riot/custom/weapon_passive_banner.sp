@@ -463,7 +463,7 @@ void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool Grant
 	else if(type == 2)
 	{
 		char npc_classname[60];
-		NPC_GetPluginNameById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+		NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
 		if(StrContains(npc_classname, "npc_citizen"))
 		{
 			Citizen npc = view_as<Citizen>(entity);

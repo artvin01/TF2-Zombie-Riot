@@ -254,7 +254,7 @@ public void LastKnight_ClotThink(int iNPC)
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
-				int ally = NPC_CreateById(BARRACK_LASTKNIGHT, owner, pos, ang, TFTeam_Red);
+				int ally = NPC_CreateByName("npc_barrack_lastknight", owner, pos, ang, TFTeam_Red);
 				view_as<BarrackBody>(ally).BonusDamageBonus = 1.0;
 				view_as<BarrackBody>(ally).BonusFireRate = 1.0;
 				view_as<BarrackBody>(ally).m_iSupplyCount = 0;

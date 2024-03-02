@@ -292,7 +292,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTarget > 0 && (!npc.m_bmovedelay || i_NpcInternalId[npc.m_iTarget] != CURED_FATHER_GRIGORI || !IsValidEntity(npc.m_iTarget)) && !IsValidEnemy(npc.index, npc.m_iTarget, true))
+	if(npc.m_iTarget > 0 && (!npc.m_bmovedelay || i_NpcInternalId[npc.m_iTarget] != CuredFatherGrigori_ID() || !IsValidEntity(npc.m_iTarget)) && !IsValidEnemy(npc.index, npc.m_iTarget, true))
 	{
 		npc.m_iTarget = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -306,12 +306,12 @@ public void StalkerCombine_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + (npc.m_iTarget ? 2.5 : 0.5);
 
 		// Hunt down the Father on Wave 16
-		if(Waves_GetRound() > 14 && (npc.m_iTarget < 1 || i_NpcInternalId[npc.m_iTarget] != CURED_FATHER_GRIGORI))
+		if(Waves_GetRound() > 14 && (npc.m_iTarget < 1 || i_NpcInternalId[npc.m_iTarget] != CuredFatherGrigori_ID()))
 		{
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-				if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == CURED_FATHER_GRIGORI)
+				if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == CuredFatherGrigori_ID())
 				{
 					float EntityLocation[3], TargetLocation[3]; 
 					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", EntityLocation); 
@@ -473,10 +473,10 @@ public void StalkerCombine_ClotThink(int iNPC)
 					if(npc.m_bmovedelay)
 					{
 						// Blow up Father, add the next stalker boss
-						if(i_NpcInternalId[npc.m_iTarget] == CURED_FATHER_GRIGORI)
+						if(i_NpcInternalId[npc.m_iTarget] == CuredFatherGrigori_ID())
 						{
 							Enemy enemy;
-							enemy.Index = STALKER_FATHER;
+							enemy.Index = NPC_GetIdByPlugin("npc_stalker_father");
 							enemy.Health = 666666;
 							enemy.Is_Immune_To_Nuke = true;
 							enemy.Is_Static = true;

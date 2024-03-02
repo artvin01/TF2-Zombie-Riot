@@ -1716,7 +1716,7 @@ void Silvester_SpawnAllyDuoRaid(int ref)
 			
 		maxhealth -= (maxhealth / 4);
 
-		int spawn_index = NPC_CreateById(XENO_RAIDBOSS_BLUE_GOGGLES, -1, pos, ang, GetTeam(entity));
+		int spawn_index = NPC_CreateByName("npc_infected_goggles", -1, pos, ang, GetTeam(entity));
 		if(spawn_index > MaxClients)
 		{
 			i_RaidGrantExtra[spawn_index] = i_RaidGrantExtra[entity];
@@ -2752,7 +2752,7 @@ public void Raidmode_Shared_Xeno_Duo(int entity)
 	AlreadySaidWin = true;
 	//b_NpcHasDied[client]
 	char npc_classname[60];
-	NPC_GetPluginNameById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
 	
 	if(StrContains(npc_classname, "npc_xeno_raidboss_silvester"))
 	{

@@ -105,7 +105,6 @@ methodmap AnarchyMadDoctor < CClotBody
 	{
 		AnarchyMadDoctor npc = view_as<AnarchyMadDoctor>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "12000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_ANARCHY_MADDOCTOR;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

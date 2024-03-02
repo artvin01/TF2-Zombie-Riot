@@ -375,7 +375,7 @@ public Action StalkerFather_Timer(Handle timer)
 		return Plugin_Continue;
 	
 	Enemy enemy;
-	enemy.Index = STALKER_GOGGLES;
+	enemy.Index = NPC_GetIdByPlugin("npc_stalker_googgles");
 	enemy.Health = 66666666;
 	enemy.Is_Immune_To_Nuke = true;
 	enemy.Is_Static = true;
