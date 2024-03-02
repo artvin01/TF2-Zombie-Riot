@@ -208,7 +208,6 @@ methodmap NecroCombine < CClotBody
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", 50000001);
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", 50000001);
 		
-		npc.m_flExtraDamage = damage_multiplier;
 		
 		
 		func_NPCDeath[npc.index] = NecroCombine_NPCDeath;

@@ -207,12 +207,6 @@ methodmap NecroCalcium < CClotBody
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", 50000001);
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", 50000001);
 		
-		if(EscapeModeForNpc)
-		{
-			damage_multiplier *= 2.0;
-		}
-		npc.m_flExtraDamage = damage_multiplier;
-		
 		
 		npc.m_bThisEntityIgnored = true;
 	//	npc.m_flNextThinkTime = GetGameTime(npc.index) + GetRandomFloat(0.2, 0.5);

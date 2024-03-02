@@ -124,7 +124,6 @@ public void Spawn_Necromancy(int client)
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	
-	char buffer[16];
-	FloatToString(Necro_Damage[client], buffer, sizeof(buffer));
-	NPC_CreateByName("npc_necromancy_combine", client, flPos, flAng, TFTeam_Red, buffer);
+	int npc = NPC_CreateByName("npc_necromancy_combine", client, flPos, flAng);
+	fl_ExtraDamage[npc] = Necro_Damage[client];
 }
