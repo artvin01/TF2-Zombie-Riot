@@ -65,7 +65,7 @@ void MedivalCrossbowGiant_OnMapStart()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Crossbow Giant");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medvial_crossbow_giant");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_crossbow_giant");
 	strcopy(data.Icon, sizeof(data.Icon), "crossbow_big");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
