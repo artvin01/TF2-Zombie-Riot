@@ -145,7 +145,6 @@ void NPC_ConfigSetup()
 	NecroCalcium_OnMapStart_NPC();
 	CuredFatherGrigori_OnMapStart_NPC();
 	
-	AltMedicApprenticeMage_OnMapStart_NPC();
 	SawRunner_OnMapStart_NPC();
 	AltMedicCharger_OnMapStart_NPC();
 	AltMedicBerseker_OnMapStart_NPC();
@@ -507,7 +506,6 @@ int NPC_GetByPlugin(const char[] name, NPCData data = {})
 	}
 	return -1;
 }
-
 void GetOldMethodNPCs()
 {
 	NPCData data;
@@ -909,7 +907,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/alt/npc_alt_mecha_pyro_giant_main.sp"
 #include "zombie_riot/npc/alt/npc_alt_mecha_scout.sp"
 #include "zombie_riot/npc/alt/npc_alt_combine_soldier_mage.sp"
-#include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
 #include "zombie_riot/npc/alt/npc_alt_donnerkrieg.sp"
 #include "zombie_riot/npc/alt/npc_alt_schwertkrieg.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_constructor.sp"
