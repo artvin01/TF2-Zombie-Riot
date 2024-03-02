@@ -2943,7 +2943,7 @@ static void MenuPage(int client, int section)
 
 	if(CvarInfiniteCash.BoolValue)
 	{
-		CurrentCash = 999999;
+		CurrentCash = 299999;
 		Ammo_Count_Used[client] = -999999;
 		CashSpent[client] = 0;
 		starterPlayer = false;
