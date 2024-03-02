@@ -232,7 +232,7 @@ void Npc_OnTakeDamage_DimensionalRipper(int attacker)
 }
 
 
-
+/*
 public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	switch(GetRandomInt(1, 4))
@@ -274,7 +274,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	float fixmebeep =0;
-	/*
+	
 	switch(GetRandomInt(1, 3))
 	{
 		
@@ -288,12 +288,12 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
 		}
-	}*/
+	}
 }
 
 public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
 {
-	/*
+	
 	switch(GetRandomInt(1, 4))
 	{
 		case 1:
@@ -308,7 +308,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
 		}
-	}*/
+	}
 }
 
 public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, int slot, int pap_logic)
@@ -383,7 +383,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 		}
 	}
 }
-/*
+
 public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	switch(GetRandomInt(1, 4))
@@ -420,7 +420,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 		}
 	}
 }
-*/
+
 public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	switch(GetRandomInt(1, 3))
@@ -494,7 +494,7 @@ public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &
 		}
 	}
 }
-
+*/
 
 void Dimension_Summon_Npc(int client, int NpcId, int weapon, float HealthMulti, float DamageMulti, char[] ParticleEffect)
 {
