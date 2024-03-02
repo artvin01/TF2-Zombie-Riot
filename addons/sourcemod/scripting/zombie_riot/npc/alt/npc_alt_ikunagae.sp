@@ -1427,12 +1427,12 @@ static void Ikunagae_Spawn_Minnions(int client, int hp_multi)
 			{
 				case 1:
 				{
-					spawn_index = NPC_CreateById(ALT_MEDIC_BERSERKER, -1, pos, ang, GetTeam(npc.index));
+					spawn_index = NPC_CreateByName("npc_alt_medic_berserker", npc.index, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 1.2);
 				}
 				case 2:
 				{
-					spawn_index = NPC_CreateById(ALT_MEDIC_CHARGER, -1, pos, ang, GetTeam(npc.index));
+					spawn_index = NPC_CreateByName("npc_alt_medic_charger", npc.index, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 1.2);
 				}
 				case 3:
@@ -1442,12 +1442,12 @@ static void Ikunagae_Spawn_Minnions(int client, int hp_multi)
 				}
 				case 4:
 				{
-					spawn_index = NPC_CreateById(ALT_SNIPER_RAILGUNNER, -1, pos, ang, GetTeam(npc.index));
+					spawn_index = NPC_CreateByName("npc_alt_sniper_railgunner", npc.index, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 1.1);
 				}
 				case 5:
 				{
-					spawn_index = NPC_CreateById(ALT_MECHASOLDIER_BARRAGER, -1, pos, ang, GetTeam(npc.index));
+					spawn_index = NPC_CreateByName("npc_alt_soldier_barrager", npc.index, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 1.1);
 				}
 			}

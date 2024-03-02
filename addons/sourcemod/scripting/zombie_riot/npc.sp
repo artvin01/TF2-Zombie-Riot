@@ -612,7 +612,7 @@ enum
 	SAWRUNNER							= 94,
 	
 	RAIDMODE_TRUE_FUSION_WARRIOR		= 95,
-	ALT_MEDIC_CHARGER					= 96,
+	UNUSED_96					= 96,
 	UNUSED_97					= 97,
 	
 	MEDIVAL_MILITIA						= 98,
@@ -627,7 +627,7 @@ enum
 	MEDIVAL_ELITE_SKIRMISHER			= 107,
 
 	MEDIVAL_PIKEMAN						= 109,
-	ALT_MEDIC_SUPPERIOR_MAGE			= 110,
+	UNUSED_110			= 110,
 	CITIZEN								= 111,
 	
 	MEDIVAL_EAGLE_SCOUT					= 112,
@@ -640,7 +640,7 @@ enum
 	
 	L4D2_TANK							= 118,
 	UNUSED_119			= 119,
-	ALT_SNIPER_RAILGUNNER				= 120,
+	UNUSED_120				= 120,
 	
 	BTD_GOLDBLOON	= 121,
 	BTD_BLOONARIUS	= 122,
@@ -649,8 +649,8 @@ enum
 	BTD_VORTEX	= 125,
 	
 	MEDIVAL_RAM	= 126,
-	ALT_SOLDIER_BARRAGER = 127,
-	ALT_THE_SHIT_SLAPPER = 128,
+	UNUSED_127 = 127,
+	UNUSED_128 = 128,
 	
 	BONEZONE_BASICBONES = 129,
 	
@@ -662,7 +662,7 @@ enum
 	UNUSED_135				= 135,
 	NOTHING_136			= 136,
 	PHANTOM_KNIGHT				= 137, //Lucian "Blood diamond"
-	ALT_MEDIC_HEALER_3			= 138, //3 being the 3rd stage of alt waves.
+	UNUSED_138			= 138, //3 being the 3rd stage of alt waves.
 	
 	THE_GAMBLER					= 139,
 	PABLO_GONZALES				= 140,
@@ -992,7 +992,7 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"",
 	"Sawrunner",
 	"True Fusion Warrior",
-	"Medic Charger",
+	"",
 	"",
 	"Militia",
 	"Archer",
@@ -1006,7 +1006,7 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Elite Skirmisher",
 	"nothing",
 	"Pikeman",
-	"Medic Supperior Mage",
+	"",
 	"Rebel",
 	"Eagle Scout",
 	"Samurai",
@@ -1016,7 +1016,7 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"",
 	"L4D2 Tank",
 	"",
-	"Sniper Railgunner",
+	"",
 	
 	"Gold Bloon",
 	"Bloonarius",
@@ -1025,8 +1025,8 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Vortex",
 	
 	"Capped Ram",
-	"Soldier Barrager",
-	"The Shit Slapper",
+	"",
+	"",
 	
 	"Basic Bones",
 	
@@ -1038,7 +1038,7 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"",
 	"",
 	"Phantom Knight",
-	"Medic Constructor",
+	"",
 	
 	"Gambler",
 	"Pablo Gonzales",
@@ -1414,7 +1414,7 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	1,	// SAWRUNNER							= 94,
 
 	2,	// RAIDMODE_TRUE_FUSION_WARRIOR		= 95,
-	4,	// ALT_MEDIC_CHARGER					= 96,
+	-1,	// 					= 96,
 	-1,	// 					= 97,
 
 	7,	// MEDIVAL_MILITIA						= 98,
@@ -1429,7 +1429,7 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	7,	// MEDIVAL_ELITE_SKIRMISHER			= 107,
 	-1,	//					= 108,
 	7,	// MEDIVAL_PIKEMAN						= 109,
-	4,	// ALT_MEDIC_SUPPERIOR_MAGE			= 110,
+	-1,	// 			= 110,
 	0,	// CITIZEN								= 111,
 
 	7,	// MEDIVAL_EAGLE_SCOUT					= 112,
@@ -1442,7 +1442,7 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 
 	1,	// L4D2_TANK							= 118,
 	-1,	// 			= 119,
-	4,	// ALT_SNIPER_RAILGUNNER				= 120,
+	4,	// 				= 120,
 
 	-1,	// BTD_GOLDBLOON	= 121,
 	2,	// BTD_BLOONARIUS	= 122,
@@ -1452,7 +1452,7 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 
 	7,	// MEDIVAL_RAM	= 126,
 	-1,	//  = 127,
-	4,	// ALT_THE_SHIT_SLAPPER = 128,
+	4,	//  = 128,
 
 	0,	// BONEZONE_BASICBONES = 129,
 
@@ -1464,7 +1464,7 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	-1,	// 				= 135,
 	-1,	// 			= 136,
 	1,	// PHANTOM_KNIGHT				= 137, //Lucian "Blood diamond"
-	4,	// ALT_MEDIC_HEALER_3			= 138, //3 being the 3rd stage of alt waves.
+	4,	// 			= 138, //3 being the 3rd stage of alt waves.
 
 	-1,	// THE_GAMBLER				= 139,
 	-1,	// PABLO_GONZALES				= 140,
@@ -1844,7 +1844,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"",
 	"npc_sawrunner",
 	"npc_true_fusion_warrior",
-	"npc_alt_medic_charger",
+	"",
 	"",
 	"",
 	"",
@@ -1858,7 +1858,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"",
 	"",
 	"npc_medival_pikeman",
-	"npc_alt_medic_supperior_mage",
+	"",
 	"npc_citizen",
 	"npc_medival_eagle_scout",
 	"npc_medival_samurai",
@@ -1868,7 +1868,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"",
 	"npc_l4d2_tank",
 	"",
-	"npc_alt_sniper_railgunner",
+	"",
 	"npc_golden_bloon",
 	"",
 	"",
@@ -1876,7 +1876,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"",
 	"",
 	"",
-	"npc_alt_the_shit_slapper",
+	"",
 	
 	"npc_basicbones",
 	
@@ -1888,7 +1888,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"",
 	"",
 	"npc_phantom_knight",
-	"npc_alt_medic_healer_3",			//3 being the 3rd stage of alt waves.
+	"",			//3 being the 3rd stage of alt waves.
 	
 	"npc_gambler",
 	"npc_pablo",
@@ -1946,7 +1946,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"",
 	"",
 	"",
-	"npc_alt_mecha_soldier_barrager",
+	"",
 	"",
 
 	"npc_stalker_combine",
@@ -2485,12 +2485,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		case RAIDMODE_TRUE_FUSION_WARRIOR:
 			entity = TrueFusionWarrior(client, vecPos, vecAng, team, data);
 		
-		case ALT_MEDIC_CHARGER:
-			entity = AltMedicCharger(client, vecPos, vecAng, team);
-		
-		case ALT_MEDIC_BERSERKER:
-			entity = AltMedicBerseker(client, vecPos, vecAng, team);
-		
 		case MEDIVAL_MILITIA:
 			entity = MedivalMilitia(client, vecPos, vecAng, team);
 		
@@ -2524,9 +2518,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		case MEDIVAL_PIKEMAN:
 			entity = MedivalPikeman(client, vecPos, vecAng, team);
 		
-		case ALT_MEDIC_SUPPERIOR_MAGE:
-			entity = NPC_ALT_MEDIC_SUPPERIOR_MAGE(client, vecPos, vecAng, team);
-		
 		case CITIZEN:
 			entity = Citizen(client, vecPos, vecAng, data);
 		
@@ -2549,21 +2540,12 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		case L4D2_TANK:
 			entity = L4D2_Tank(client, vecPos, vecAng, team);
 		
-		case ALT_SNIPER_RAILGUNNER:
-			entity = Sniper_railgunner(client, vecPos, vecAng, team);
-		
 		
 		case BTD_BLOONARIUS:
 			entity = Bloonarius(client, vecPos, vecAng, team, data);
 		
 		case MEDIVAL_RAM:
 			entity = MedivalRam(client, vecPos, vecAng, team, data);
-		
-		case ALT_SOLDIER_BARRAGER:
-			entity = Soldier_Barrager(client, vecPos, vecAng, team);
-		
-		case ALT_THE_SHIT_SLAPPER:
-			entity = The_Shit_Slapper(client, vecPos, vecAng, team);
 		
 		case BONEZONE_BASICBONES:
 			entity = BasicBones(client, vecPos, vecAng, team, false);
@@ -2594,9 +2576,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		
 		case MINI_BEHEADED_KAMI:
 			entity = BeheadedKamiKaze(client, vecPos, vecAng, team);		
-		
-		case ALT_MEDIC_HEALER_3:	//3 being the 3rd stage of alt waves.
-			entity = Alt_Medic_Constructor(client, vecPos, vecAng, team);
 		/*
 		case THE_GAMBLER:
 			entity = TheGambler(client, vecPos, vecAng, team);
@@ -3488,11 +3467,6 @@ void NPCDeath(int entity)
 		case RAIDMODE_TRUE_FUSION_WARRIOR:
 			TrueFusionWarrior_NPCDeath(entity);
 		
-		case ALT_MEDIC_CHARGER:
-			AltMedicCharger_NPCDeath(entity);
-		
-		case ALT_MEDIC_BERSERKER:
-			AltMedicBerseker_NPCDeath(entity);
 		
 		case MEDIVAL_MILITIA:
 			MedivalMilitia_NPCDeath(entity);
@@ -3527,9 +3501,6 @@ void NPCDeath(int entity)
 		case MEDIVAL_PIKEMAN:
 			MedivalPikeman_NPCDeath(entity);
 		
-		case ALT_MEDIC_SUPPERIOR_MAGE:
-			NPC_ALT_MEDIC_SUPPERIOR_MAGE_NPCDeath(entity);
-		
 		case CITIZEN:
 			Citizen_NPCDeath(entity);
 		
@@ -3551,22 +3522,14 @@ void NPCDeath(int entity)
 		
 		case L4D2_TANK:
 			L4D2_Tank_NPCDeath(entity);
-		
-		case ALT_SNIPER_RAILGUNNER:
-			Sniper_railgunner_NPCDeath(entity);
-		
+
 		
 		case BTD_BLOONARIUS:
 			Bloonarius_NPCDeath(entity);
 		
 		case MEDIVAL_RAM:
 			MedivalRam_NPCDeath(entity);
-		
-		case ALT_SOLDIER_BARRAGER:
-			Soldier_Barrager_NPCDeath(entity);
-		
-		case ALT_THE_SHIT_SLAPPER:
-			The_Shit_Slapper_NPCDeath(entity);
+
 		
 		case BONEZONE_BASICBONES:
 			BasicBones_NPCDeath(entity);
@@ -3598,9 +3561,7 @@ void NPCDeath(int entity)
 
 		case MINI_BEHEADED_KAMI:
 			BeheadedKamiKaze_NPCDeath(entity);
-		
-		case ALT_MEDIC_HEALER_3:
-			Alt_Medic_Constructor_NPCDeath(entity);
+
 		/*
 		case THE_GAMBLER:
 			TheGambler_NPCDeath(entity);
@@ -4222,12 +4183,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case RAIDMODE_TRUE_FUSION_WARRIOR:
 			TrueFusionWarrior_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case ALT_MEDIC_CHARGER:
-			AltMedicCharger_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case ALT_MEDIC_BERSERKER:
-			AltMedicBerseker_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
 		case MEDIVAL_MILITIA:
 			MedivalMilitia_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
@@ -4261,8 +4216,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case MEDIVAL_PIKEMAN:
 			MedivalPikeman_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case ALT_MEDIC_SUPPERIOR_MAGE:
-			NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case CITIZEN:
 			Citizen_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -4285,8 +4238,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case L4D2_TANK:
 			L4D2_Tank_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case ALT_SNIPER_RAILGUNNER:
-			Sniper_railgunner_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 	//	case BTD_BLOONARIUS:
 	//		Bloonarius_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -4294,11 +4245,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	//	case MEDIVAL_RAM:
 	//		MedivalRam_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case ALT_SOLDIER_BARRAGER:
-			Soldier_Barrager_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case ALT_THE_SHIT_SLAPPER:
-			The_Shit_Slapper_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
 		
 		case BONEZONE_BASICBONES:
 			BasicBones_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -4330,8 +4277,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case MINI_BEHEADED_KAMI:
 			BeheadedKamiKaze_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case ALT_MEDIC_HEALER_3:
-			Alt_Medic_Constructor_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		/*
 		case THE_GAMBLER:
 			TheGambler_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -4485,13 +4430,13 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 		case EXPIDONSA_PENTAL:
 			Pental_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
+/*
 		case EXPIDONSA_SELFAM_IRE:
 			Selfamire_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 		case EXPIDONSA_VAUSMAGICA:
 			Vausmagica_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
+*/
 		case EXPIDONSA_PISTOLEER:
 			Pistoleer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 

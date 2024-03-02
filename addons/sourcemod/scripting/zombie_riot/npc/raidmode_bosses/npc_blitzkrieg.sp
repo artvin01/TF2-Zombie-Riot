@@ -1397,7 +1397,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
-			spawn_index = NPC_CreateById(ALT_MEDIC_SUPPERIOR_MAGE, -1, pos, ang, GetTeam(npc.index));
+			spawn_index = NPC_CreateByName("npc_alt_medic_supperior_mage", npc.index, pos, ang, GetTeam(npc.index));
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			if(spawn_index > MaxClients)
 			{
