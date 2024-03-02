@@ -6667,17 +6667,17 @@ static void SetupNPCIndexes()
 {
 	for(int i; i < sizeof(SummonerBase); i++)
 	{
-		SummonerBase[NPCIndex] = NPC_GetByPlugin(SummonerBaseNPC[i]);
+		SummonerBase[NPCIndex] = NPC_GetIdByPlugin(SummonerBaseNPC[i]);
 	}
 
 	for(int i; i < sizeof(SummonerThorns); i++)
 	{
-		SummonerThorns[NPCIndex] = NPC_GetByPlugin(SummonerThornsNPC[i]);
+		SummonerThorns[NPCIndex] = NPC_GetIdByPlugin(SummonerThornsNPC[i]);
 	}
 	
 	for(int i; i < sizeof(SummonerAlternative); i++)
 	{
-		SummonerAlternative[NPCIndex] = NPC_GetByPlugin(SummonerAlternativeNPC[i]);
+		SummonerAlternative[NPCIndex] = NPC_GetIdByPlugin(SummonerAlternativeNPC[i]);
 	}
 }
 
