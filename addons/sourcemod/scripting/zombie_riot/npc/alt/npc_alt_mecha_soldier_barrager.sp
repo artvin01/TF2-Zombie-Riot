@@ -83,7 +83,7 @@ void MechaSoldier_Barrager_OnMapStart_NPC()
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return MechaSoldier_Barrager(client, vecPos, vecAng, ally, data);
+	return MechaSoldier_Barrager(client, vecPos, vecAng, ally);
 }
 
 static int i_ammo_count[MAXENTITIES];

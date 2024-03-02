@@ -60,7 +60,7 @@ void Alt_Medic_Constructor_OnMapStart_NPC()
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Alt_Medic_Constructor(client, vecPos, vecAng, ally, data);
+	return Alt_Medic_Constructor(client, vecPos, vecAng, ally);
 }
 
 methodmap Alt_Medic_Constructor < CClotBody

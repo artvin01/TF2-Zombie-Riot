@@ -32,7 +32,7 @@ int VIPBuilding_ID()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], const char[] data)
 {
-	return VIPBuilding(client, vecPos, vecAng);
+	return VIPBuilding(client, vecPos, vecAng, data);
 }
 methodmap VIPBuilding < BarrackBody
 {

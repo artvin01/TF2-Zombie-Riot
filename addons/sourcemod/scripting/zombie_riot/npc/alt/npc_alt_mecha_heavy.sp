@@ -70,7 +70,7 @@ void Mecha_Heavy_OnMapStart_NPC()
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Mecha_Heavy(client, vecPos, vecAng, ally, data);
+	return Mecha_Heavy(client, vecPos, vecAng, ally);
 }
 
 methodmap Mecha_Heavy < CClotBody
