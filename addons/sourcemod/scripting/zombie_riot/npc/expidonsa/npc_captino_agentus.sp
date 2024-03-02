@@ -67,9 +67,22 @@ void CaptinoAgentus_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_PullAttackSounds)); i++) { PrecacheSound(g_PullAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_ZapAttackSounds)); i++) { PrecacheSound(g_ZapAttackSounds[i]); }
 	PrecacheModel("models/player/spy.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Captino Agentus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_captino_agentus");
+	strcopy(data.Icon, sizeof(data.Icon), "captino_agentus");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return CaptinoAgentus(client, vecPos, vecAng, ally, data);
+}
 methodmap CaptinoAgentus < CClotBody
 {
 
@@ -146,7 +159,6 @@ methodmap CaptinoAgentus < CClotBody
 	{
 		CaptinoAgentus npc = view_as<CaptinoAgentus>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_CAPTINOAGENTUS;
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -161,7 +173,9 @@ methodmap CaptinoAgentus < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_Think, CaptinoAgentus_ClotThink);
+		func_NPCDeath[npc.index] = CaptinoAgentus_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = CaptinoAgentus_OnTakeDamage;
+		func_NPCThink[npc.index] = CaptinoAgentus_ClotThink;
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -426,7 +440,6 @@ public void CaptinoAgentus_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_Think, CaptinoAgentus_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);

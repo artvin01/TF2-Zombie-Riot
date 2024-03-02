@@ -39,6 +39,24 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/boxing_gloves_swing4.wav"
 };
 
+void UrsusOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Ursus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ursus");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_champ");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Ursus(client, vecPos, vecAng, ally);
+}
+
 methodmap Ursus < CClotBody
 {
 	public void PlayIdleSound()
@@ -70,7 +88,6 @@ methodmap Ursus < CClotBody
 	{
 		Ursus npc = view_as<Ursus>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "60000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_HEAVY;
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		KillFeed_SetKillIcon(npc.index, "warrior_spirit");

@@ -54,8 +54,21 @@ void GiantTankus_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Giant Tankus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_gianttankus");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_steelfist");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return GiantTankus(client, vecPos, vecAng, ally);
+}
 methodmap GiantTankus < CClotBody
 {
 	public void PlayIdleSound() {
@@ -132,11 +145,14 @@ methodmap GiantTankus < CClotBody
 	{
 		GiantTankus npc = view_as<GiantTankus>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", "85000", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_GIANTTANKUS;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
+		func_NPCDeath[npc.index] = GiantTankus_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = GiantTankus_OnTakeDamage;
+		func_NPCThink[npc.index] = GiantTankus_ClotThink;
+
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -149,8 +165,6 @@ methodmap GiantTankus < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, GiantTankus_ClotThink);
 		
 		//IDLE
 		npc.m_flSpeed = 230.0;
@@ -339,9 +353,6 @@ public void GiantTankus_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, GiantTankus_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);

@@ -61,9 +61,22 @@ void AnfuhrerEisenhard_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtArmorSounds)); i++) { PrecacheSound(g_HurtArmorSounds[i]); }
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   }
 	PrecacheModel("models/player/demo.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Anfuhrer Eisenhard");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_anfuhrer_eisenhard");
+	strcopy(data.Icon, sizeof(data.Icon), "eisenhard");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return AnfuhrerEisenhard(client, vecPos, vecAng, ally);
+}
 methodmap AnfuhrerEisenhard < CClotBody
 {
 	public void PlayIdleAlertSound() 
@@ -136,7 +149,6 @@ methodmap AnfuhrerEisenhard < CClotBody
 	{
 		AnfuhrerEisenhard npc = view_as<AnfuhrerEisenhard>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "500000", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_ANFUHREREISENHARD;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -145,6 +157,10 @@ methodmap AnfuhrerEisenhard < CClotBody
 		
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
+
+		func_NPCDeath[npc.index] = AnfuhrerEisenhard_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = AnfuhrerEisenhard_OnTakeDamage;
+		func_NPCThink[npc.index] = AnfuhrerEisenhard_ClotThink;
 		
 		/*
 			Slow and has armor
@@ -158,8 +174,6 @@ methodmap AnfuhrerEisenhard < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		npc.m_bArmorGiven = true;
-		
-		SDKHook(npc.index, SDKHook_Think, AnfuhrerEisenhard_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -359,7 +373,6 @@ public void AnfuhrerEisenhard_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_Think, AnfuhrerEisenhard_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable5))

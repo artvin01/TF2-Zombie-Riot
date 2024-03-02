@@ -45,8 +45,21 @@ void DualRea_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Dualrea");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dualrea");
+	strcopy(data.Icon, sizeof(data.Icon), "scout");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return DualRea(client, vecPos, vecAng, ally);
+}
 
 methodmap DualRea < CClotBody
 {
@@ -91,7 +104,6 @@ methodmap DualRea < CClotBody
 	{
 		DualRea npc = view_as<DualRea>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "3500", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_DUALREA;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -102,6 +114,9 @@ methodmap DualRea < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
+		func_NPCDeath[npc.index] = DualRea_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = DualRea_OnTakeDamage;
+		func_NPCThink[npc.index] = DualRea_ClotThink;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -109,7 +124,6 @@ methodmap DualRea < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_Think, DualRea_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -224,7 +238,6 @@ public void DualRea_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	ExpidonsaRemoveEffects(entity);
-	SDKUnhook(npc.index, SDKHook_Think, DualRea_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable4))

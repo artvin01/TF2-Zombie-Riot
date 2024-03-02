@@ -49,8 +49,22 @@ void WinterFrostHunter_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Frost Hunter");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_frost_hunter");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_fan");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return WinterFrostHunter(client, vecPos, vecAng, ally);
+}
 
 methodmap WinterFrostHunter < CClotBody
 {
@@ -98,7 +112,6 @@ methodmap WinterFrostHunter < CClotBody
 	{
 		WinterFrostHunter npc = view_as<WinterFrostHunter>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_WINTER_FROST_HUNTER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

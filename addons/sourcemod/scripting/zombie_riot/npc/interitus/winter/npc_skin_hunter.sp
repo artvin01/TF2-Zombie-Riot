@@ -31,9 +31,23 @@ void WinterSkinHunter_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Skin Hunter");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_skin_hunter");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper_camper");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return WinterSkinHunter(client, vecPos, vecAng, ally);
+}
 methodmap WinterSkinHunter < CClotBody
 {
 	public void PlayIdleAlertSound() 
@@ -72,7 +86,6 @@ methodmap WinterSkinHunter < CClotBody
 	{
 		WinterSkinHunter npc = view_as<WinterSkinHunter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "7000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_WINTER_SKIN_HUNTER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

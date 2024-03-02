@@ -42,8 +42,22 @@ void VausMagica_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_ShieldAttackSounds)); i++) { PrecacheSound(g_ShieldAttackSounds[i]); }
 	PrecacheModel("models/player/soldier.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Vaus Magica");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vaus_magica");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_stun_armored");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return VausMagica(client, vecPos, vecAng, ally);
+}
 
 methodmap VausMagica < CClotBody
 {
@@ -86,7 +100,6 @@ methodmap VausMagica < CClotBody
 	{
 		VausMagica npc = view_as<VausMagica>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "5000", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_VAUSMAGICA;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -97,6 +110,9 @@ methodmap VausMagica < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
+		func_NPCDeath[npc.index] = VausMagica_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VausMagica_OnTakeDamage;
+		func_NPCThink[npc.index] = VausMagica_ClotThink;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = GetGameTime() + GetRandomFloat(5.0, 7.0);
@@ -104,8 +120,6 @@ methodmap VausMagica < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
-		SDKHook(npc.index, SDKHook_Think, VausMagica_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -232,7 +246,6 @@ public void VausMagica_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_Think, VausMagica_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable4))

@@ -38,8 +38,21 @@ void WinterSniper_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Winter Sniper");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_winter_sniper");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = MVM_CLASS_FLAG_SUPPORT;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return WinterSniper(client, vecPos, vecAng, ally);
+}
 
 methodmap WinterSniper < CClotBody
 {
@@ -78,7 +91,6 @@ methodmap WinterSniper < CClotBody
 	{
 		WinterSniper npc = view_as<WinterSniper>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1500", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_WINTER_SNIPER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

@@ -30,8 +30,20 @@ void Doctor_MapStart()
 	PrecacheSoundCustom("cof/purnell/meleehit.mp3");
 
 	PrecacheModel("models/zombie_riot/cof/doctor_purnell.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "The Doctor");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_doctor");
+	strcopy(data.Icon, sizeof(data.Icon), "medic");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_COF;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
-
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Doctor(client, vecPos, vecAng, ally, data);
+}
 methodmap Doctor < CClotBody
 {
 	public void PlayHurtSound()
@@ -80,7 +92,7 @@ methodmap Doctor < CClotBody
 	public Doctor(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Doctor npc = view_as<Doctor>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/doctor_purnell.mdl", "1.15", data[0] == 'f' ? "200000" : "30000", ally, false, false, true));
-		i_NpcInternalId[npc.index] = THEDOCTOR;
+
 		i_NpcWeight[npc.index] = 3;
 		
 		npc.m_iState = -1;
@@ -99,8 +111,10 @@ methodmap Doctor < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
+		func_NPCDeath[npc.index] = Doctor_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Doctor_OnTakeDamage;
+		func_NPCThink[npc.index] = Doctor_ClotThink;
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Doctor_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, Doctor_ClotThink);
 		
 		npc.m_iInjuredLevel = 0;
 		npc.m_bThisNpcIsABoss = true;
@@ -413,7 +427,6 @@ public void Doctor_NPCDeath(int entity)
 	Doctor npc = view_as<Doctor>(entity);
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Doctor_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_Think, Doctor_ClotThink);
 	
 	NPC_StopPathing(npc.index);
 	npc.m_bPathing = false;

@@ -59,14 +59,19 @@ static char g_MeleeMissSounds[][] = {
 	strcopy(data.Name, sizeof(data.Name), "TestName");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_test");
 	strcopy(data.Icon, sizeof(data.Icon), "test_filename");
-	data.IconCustom = true;
+	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Interitus;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 
-
-	MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	#define MVM_CLASS_FLAG_NONE				0
+	#define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// Base Normal
+	#define MVM_CLASS_FLAG_SUPPORT			(1 << 1)	// Base Support
+	#define MVM_CLASS_FLAG_MISSION			(1 << 2)	// Base Support, Always Show
+	#define MVM_CLASS_FLAG_MINIBOSS			(1 << 3)	// Add Red Background
+	#define MVM_CLASS_FLAG_ALWAYSCRIT		(1 << 4)	// Add Blue Borders
+	#define MVM_CLASS_FLAG_SUPPORT_LIMITED	(1 << 5)	// Add to Support?
 
 	Type_Hidden = -1,
 	Type_Ally = 0,
@@ -87,7 +92,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 	return TestNpcSpawn(client, vecPos, vecAng, ally);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
 	return TestNpcSpawn(client, vecPos, vecAng, ally, data);
 }

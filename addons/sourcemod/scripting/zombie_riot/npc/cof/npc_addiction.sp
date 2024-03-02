@@ -45,6 +45,21 @@ void Addiction_OnMapStart_NPC()
 	PrecacheSoundCustom("cof/addiction/death.mp3");
 
 	PrecacheModel("models/zombie_riot/aom/david_monster.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "The Addiction");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_addiction");
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_COF;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Addicition(client, vecPos, vecAng, ally, data);
 }
 
 methodmap Addicition < CClotBody
@@ -87,7 +102,7 @@ methodmap Addicition < CClotBody
 	public Addicition(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Addicition npc = view_as<Addicition>(CClotBody(vecPos, vecAng, "models/zombie_riot/aom/david_monster.mdl", "1.15", data[0] == 'f' ? "250000" : "10000", ally, false, false, true));
-		i_NpcInternalId[npc.index] = THEADDICTION;
+
 		i_NpcWeight[npc.index] = 3;
 		
 		npc.m_iState = -1;
@@ -98,7 +113,9 @@ methodmap Addicition < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, Addicition_ClotThink);
+		func_NPCDeath[npc.index] = Addicition_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Addicition_OnTakeDamage;
+		func_NPCThink[npc.index] = Addicition_ClotThink;
 		
 		npc.m_bisWalking = false;
 		npc.m_bThisNpcIsABoss = true;
@@ -334,8 +351,6 @@ public void Addicition_NPCDeath(int entity)
 {
 	Addicition npc = view_as<Addicition>(entity);
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, Addicition_ClotThink);
 	
 	NPC_StopPathing(npc.index);
 	npc.m_bPathing = false;

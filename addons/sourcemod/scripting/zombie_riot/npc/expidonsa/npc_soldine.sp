@@ -68,8 +68,21 @@ void Soldine_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtArmorSounds)); i++) { PrecacheSound(g_HurtArmorSounds[i]); }
 	for (int i = 0; i < (sizeof(g_SuperJumpSound)); i++) { PrecacheSound(g_SuperJumpSound[i]); }
 	PrecacheModel("models/player/soldier.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Soldine");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_soldine");
+	strcopy(data.Icon, sizeof(data.Icon), "soldine");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Soldine(client, vecPos, vecAng, ally);
+}
 
 methodmap Soldine < CClotBody
 {
@@ -153,7 +166,6 @@ methodmap Soldine < CClotBody
 	{
 		Soldine npc = view_as<Soldine>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "40000", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_SOLDINE;
 
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -170,8 +182,9 @@ methodmap Soldine < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		
-		SDKHook(npc.index, SDKHook_Think, Soldine_ClotThink);
-		
+		func_NPCDeath[npc.index] = Soldine_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Soldine_OnTakeDamage;
+		func_NPCThink[npc.index] = Soldine_ClotThink;
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -334,7 +347,6 @@ public void Soldine_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_Think, Soldine_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable5))

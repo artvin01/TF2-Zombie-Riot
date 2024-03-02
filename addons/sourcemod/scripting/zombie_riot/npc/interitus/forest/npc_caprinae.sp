@@ -32,6 +32,25 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/boxing_gloves_swing4.wav"
 };
 
+void CaprinaeOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Caprinae");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_caprinae");
+	strcopy(data.Icon, sizeof(data.Icon), "demo");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Caprinae(client, vecPos, vecAng, ally);
+}
+
+
 methodmap Caprinae < CClotBody
 {
 	public void PlayIdleSound()
@@ -60,7 +79,6 @@ methodmap Caprinae < CClotBody
 		Caprinae npc = view_as<Caprinae>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.5", "99000", ally, _, true, true));
 		
 		npc.Anger = view_as<bool>(data[0]);
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_DEMOMAN;
 		i_NpcWeight[npc.index] = npc.Anger ? 1 : 3;
 		npc.SetActivity("ACT_MP_RUN_PASSTIME");
 		KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");

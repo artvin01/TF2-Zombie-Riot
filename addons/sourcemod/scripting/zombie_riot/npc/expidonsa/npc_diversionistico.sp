@@ -57,6 +57,20 @@ void Diversionistico_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/spy.mdl");
 	LastSpawnDiversio = 0.0;
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Diversionistico");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_diversionistico");
+	strcopy(data.Icon, sizeof(data.Icon), "diversionistico");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_SUPPORT;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Diversionistico(client, vecPos, vecAng, ally, data);
 }
 
 void DiversionSpawnNpcReset(int index)
@@ -119,7 +133,6 @@ methodmap Diversionistico < CClotBody
 	{
 		Diversionistico npc = view_as<Diversionistico>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally, false, false, true));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_DIVERSIONISTICO;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -133,7 +146,10 @@ methodmap Diversionistico < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_Think, Diversionistico_ClotThink);
+
+		func_NPCDeath[npc.index] = Diversionistico_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Diversionistico_OnTakeDamage;
+		func_NPCThink[npc.index] = Diversionistico_ClotThink;
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -329,7 +345,6 @@ public void Diversionistico_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_Think, Diversionistico_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable5))

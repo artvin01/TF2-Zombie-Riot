@@ -58,6 +58,20 @@ void Bad_MapStart()
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/bad.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Big Airship of Doom");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bad");
+	strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_BTD;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Bad(client, vecPos, vecAng, ally, data);
 }
 
 methodmap Bad < CClotBody
@@ -100,7 +114,6 @@ methodmap Bad < CClotBody
 		
 		Bad npc = view_as<Bad>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bad.mdl", "1.0", buffer, ally, false, true));
 		
-		i_NpcInternalId[npc.index] = BTD_BAD;
 		i_NpcWeight[npc.index] = 5;
 		KillFeed_SetKillIcon(npc.index, "vehicle");
 		
@@ -113,6 +126,9 @@ methodmap Bad < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bisWalking = false;
 		
+		func_NPCDeath[npc.index] = Bad_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Bad_OnTakeDamage;
+		func_NPCThink[npc.index] = Bad_ClotThink;
 		npc.m_flSpeed = MoabSpeed();
 		npc.m_bFortified = fortified;
 		
@@ -126,7 +142,6 @@ methodmap Bad < CClotBody
 		
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bad_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, Bad_ClotThink);
 		
 		npc.StartPathing();
 		
@@ -259,7 +274,6 @@ public void Bad_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bad_ClotDamagedPost);
 	
-	SDKUnhook(npc.index, SDKHook_Think, Bad_ClotThink);
 	
 	int team = GetTeam(entity);
 	
