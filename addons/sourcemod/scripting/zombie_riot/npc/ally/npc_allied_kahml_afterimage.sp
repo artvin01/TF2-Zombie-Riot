@@ -6,6 +6,25 @@ static const char g_RangedSound[][] = {
 	"weapons/gauss/fire1.wav",
 };
 
+void AlliedKahmlAbilityOnMapStart()
+{
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Kahmlstein");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_allied_kahml_afterimage");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return AlliedKahmlAbility(client, vecPos, vecAng, ally);
+}
+
 methodmap AlliedKahmlAbility < CClotBody
 {
 	public void PlayRangedSound() 
@@ -17,7 +36,6 @@ methodmap AlliedKahmlAbility < CClotBody
 	{
 		AlliedKahmlAbility npc = view_as<AlliedKahmlAbility>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "100", TFTeam_Red, true));
 		
-		i_NpcInternalId[npc.index] = WEAPON_KAHML_AFTERIMAGE;
 		i_NpcWeight[npc.index] = 999;
 		SetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity", client);
 		

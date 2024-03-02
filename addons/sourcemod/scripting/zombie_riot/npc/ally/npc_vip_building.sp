@@ -13,8 +13,21 @@ static bool IsActive;
 void VIPBuilding_MapStart()
 {
 	IsActive = false;
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "VIP Building, The Objective");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vip_building");
+	strcopy(data.Icon, sizeof(data.Icon), "test_filename");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], const char[] data)
+{
+	return VIPBuilding(client, vecPos, vecAng);
+}
 methodmap VIPBuilding < BarrackBody
 {
 	public void PlayHurtSound() 
@@ -38,7 +51,6 @@ methodmap VIPBuilding < BarrackBody
 		SetVariantString("0.1");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		i_NpcInternalId[npc.index] = VIP_BUILDING;
 		i_NpcWeight[npc.index] = 999;
 		i_NpcIsABuilding[npc.index] = true;
 		b_NoKnockbackFromSources[npc.index] = true;
@@ -54,7 +66,8 @@ methodmap VIPBuilding < BarrackBody
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
-		SDKHook(npc.index, SDKHook_Think, VIPBuilding_ClotThink);
+		func_NPCDeath[npc.index] = VIPBuilding_NPCDeath;
+		func_NPCThink[npc.index] = VIPBuilding_ClotThink;
 
 		npc.m_flSpeed = 0.0;
 
@@ -78,7 +91,6 @@ public void VIPBuilding_ClotThink(int iNPC)
 void VIPBuilding_NPCDeath(int entity)
 {
 	VIPBuilding npc = view_as<VIPBuilding>(entity);
-	SDKUnhook(npc.index, SDKHook_Think, VIPBuilding_ClotThink);
 
 	IsActive = false;
 

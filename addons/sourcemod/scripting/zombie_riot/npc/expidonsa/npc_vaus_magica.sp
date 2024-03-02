@@ -223,7 +223,7 @@ public void VausMagica_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Vausmagica_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action VausMagica_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VausMagica npc = view_as<VausMagica>(victim);
 		
@@ -246,6 +246,7 @@ public void VausMagica_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+	SDKUnhook(npc.index, SDKHook_Think, VausMagica_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable4))

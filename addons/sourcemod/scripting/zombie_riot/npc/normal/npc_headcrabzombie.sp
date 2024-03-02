@@ -58,10 +58,10 @@ static char g_MeleeMissSounds[][] = {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "TestName");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_test");
-	strcopy(data.Icon, sizeof(data.Icon), "test_filename");
+	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Interitus;
+	data.Category = Type_Ally;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 
@@ -96,6 +96,11 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 {
 	return TestNpcSpawn(client, vecPos, vecAng, ally, data);
 }
+		If barracks
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = _NPCDeath;
+		func_NPCThink[npc.index] = _ClotThink;
+
 
 		func_NPCDeath[npc.index] = _NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = _OnTakeDamage;

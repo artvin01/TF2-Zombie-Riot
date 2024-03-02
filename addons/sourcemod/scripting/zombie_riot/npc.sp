@@ -407,6 +407,22 @@ void NPC_ConfigSetup()
 	Barracks_Thorns();
 	VIPBuilding_MapStart();
 	AlliedSensalAbility_OnMapStart_NPC();
+	BarrackVillagerOnMapStart();
+	BarrackTwoHandedOnMapStart();
+	BarrackTeutonOnMapStart();
+	BarrackSwordsmanOnMapStart();
+	BarrackMonkOnMapStart();
+	BarrackMilitiaOnMapStart();
+	BarrackManAtArmsOnMapStart();
+	BarrackLongbowOnMapStart();
+	BarrackHussarOnMapStart();
+	BarrackLastKnightOnMapStart();
+	BarrackCrossbowOnMapStart();
+	BarrackChampionOnMapStart();
+	BarrackArcherOnMapStart();
+	BarrackArbelastOnMapStart();
+	AlliedKahmlAbilityOnMapStart();
+
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();

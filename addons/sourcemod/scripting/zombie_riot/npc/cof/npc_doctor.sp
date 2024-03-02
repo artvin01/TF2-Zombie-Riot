@@ -112,7 +112,6 @@ methodmap Doctor < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		func_NPCDeath[npc.index] = Doctor_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = Doctor_OnTakeDamage;
 		func_NPCThink[npc.index] = Doctor_ClotThink;
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Doctor_ClotDamagedPost);
 		

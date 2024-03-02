@@ -15,6 +15,23 @@ enum
 	Villager_Command_GatherResource = 1,
 	Villager_Command_StandNearTower = 2,
 }
+void BarrackVillagerOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Villager");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_villager");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackVillager(client, vecPos, vecAng, ally);
+}
 
 methodmap BarrackVillager < BarrackBody
 {
@@ -73,11 +90,13 @@ methodmap BarrackVillager < BarrackBody
 	{
 		BarrackVillager npc = view_as<BarrackVillager>(BarrackBody(client, vecPos, vecAng, "1000",_,_,_,_,"models/pickups/pickup_powerup_king.mdl"));
 		
-		i_NpcInternalId[npc.index] = BARRACKS_VILLAGER;
 		i_NpcWeight[npc.index] = 1;
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackVillager_ClotThink);
 
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackVillager_NPCDeath;
+		func_NPCThink[npc.index] = BarrackVillager_ClotThink;
+		
 		npc.m_flSpeed = 150.0;
 		npc.i_VillagerSpecialCommand = Villager_Command_Default;
 		npc.m_iTowerLinked = -1;
@@ -444,7 +463,6 @@ void BarrackVillager_NPCDeath(int entity)
 {
 	BarrackVillager npc = view_as<BarrackVillager>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, BarrackVillager_ClotThink);
 }
 
 bool BarracksVillager_RepairSelfTower(int entity, int tower)

@@ -161,6 +161,20 @@ public void CuredFatherGrigori_OnMapStart_NPC()
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Cured Father Grigori");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_cured_last_survivor");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return CuredFatherGrigori(client, vecPos, vecAng, ally);
 }
 
 static bool BoughtGregHelp;
@@ -306,7 +320,6 @@ methodmap CuredFatherGrigori < CClotBody
 	{
 		CuredFatherGrigori npc = view_as<CuredFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally, true, false));
 		
-		i_NpcInternalId[npc.index] = CURED_FATHER_GRIGORI;
 		i_NpcWeight[npc.index] = 999;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -319,7 +332,9 @@ methodmap CuredFatherGrigori < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, CuredFatherGrigori_ClotThink);
+		func_NPCDeath[npc.index] = CuredFatherGrigori_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = CuredFatherGrigori_OnTakeDamage;
+		func_NPCThink[npc.index] = CuredFatherGrigori_ClotThink;
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -763,9 +778,6 @@ public void CuredFatherGrigori_NPCDeath(int entity)
 {
 	CuredFatherGrigori npc = view_as<CuredFatherGrigori>(entity);
 //	npc.PlayDeathSound(); He cant die.
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, CuredFatherGrigori_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

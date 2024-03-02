@@ -745,7 +745,7 @@
 	{
 		"en"		"Launches a high damaging spear that deals immensive damage to buildings\nHe attacks rapidly and can jump aswell."
 	}
-	"Medival Abalest Desc"
+	"Medival Arbalest Desc"
 	{
 		"en"		"Short range, faster attacking high damage archers."
 	}

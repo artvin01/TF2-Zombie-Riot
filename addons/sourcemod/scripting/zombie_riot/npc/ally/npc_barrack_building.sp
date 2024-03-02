@@ -9,6 +9,24 @@ static const char g_HurtSounds[][] = {
 	")physics/metal/metal_box_impact_bullet3.wav",
 };
 
+public void BarrackBuildingOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks Building");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_building");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackBuilding(client, vecPos, vecAng, ally);
+}
+
 methodmap BarrackBuilding < BarrackBody
 {
 	public void PlayHurtSound() 
@@ -30,17 +48,18 @@ methodmap BarrackBuilding < BarrackBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 
-		i_NpcInternalId[npc.index] = BARRACKS_BUILDING;
 		i_NpcWeight[npc.index] = 999;
 		i_NpcIsABuilding[npc.index] = true;
 		b_NoKnockbackFromSources[npc.index] = true;
 		npc.m_bDissapearOnDeath = true;
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackBuilding_NPCDeath;
+		func_NPCThink[npc.index] = BarrackBuilding_ClotThink;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackBuilding_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, BarrackBuilding_OnTakeDamagePost);
 
 		npc.m_flSpeed = 0.0;

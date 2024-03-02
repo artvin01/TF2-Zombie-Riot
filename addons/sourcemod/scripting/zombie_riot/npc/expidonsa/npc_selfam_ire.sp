@@ -224,7 +224,7 @@ public void SelfamIre_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Selfamire_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SelfamIre_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	SelfamIre npc = view_as<SelfamIre>(victim);
 		

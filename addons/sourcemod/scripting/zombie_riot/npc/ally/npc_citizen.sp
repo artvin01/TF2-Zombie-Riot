@@ -853,6 +853,20 @@ void Citizen_OnMapStart()
 
 	PrecacheSound("weapons/rpg/rocketfire1.wav");
 	PrecacheSound("weapons/iceaxe/iceaxe_swing1.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Rebel");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_citizen");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], const char[] data)
+{
+	return Citizen(client, vecPos, vecAng, data);
 }
 
 static int ThereCanBeOnlyOne = -1;
@@ -909,7 +923,6 @@ methodmap Citizen < CClotBody
 		}
 		
 		Citizen npc = view_as<Citizen>(CClotBody(vecPos, vecAng, buffer, "1.15", "150", TFTeam_Red, true));
-		i_NpcInternalId[npc.index] = CITIZEN;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -924,7 +937,9 @@ methodmap Citizen < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TFTeam_Red);
 		
 		
-		SDKHook(npc.index, SDKHook_Think, Citizen_ClotThink);
+		func_NPCDeath[npc.index] = Citizen_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Citizen_OnTakeDamage;
+		func_NPCThink[npc.index] = Citizen_ClotThink;
 		
 		int glow = npc.m_iTeamGlow;
 		if(glow > 0)
@@ -3403,7 +3418,6 @@ public void Citizen_NPCDeath(int entity)
 	Citizen npc = view_as<Citizen>(entity);
 	
 	
-	SDKUnhook(npc.index, SDKHook_Think, Citizen_ClotThink);
 	
 	if(npc.m_iWearable1 > 0 && IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

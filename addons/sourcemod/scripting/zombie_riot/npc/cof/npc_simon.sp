@@ -95,7 +95,6 @@ methodmap Simon < CClotBody
 		ExcuteRelay("zr_simonspawn");
 		
 		func_NPCDeath[npc.index] = Simon_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = Simon_OnTakeDamage;
 		func_NPCThink[npc.index] = Simon_ClotThink;
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
