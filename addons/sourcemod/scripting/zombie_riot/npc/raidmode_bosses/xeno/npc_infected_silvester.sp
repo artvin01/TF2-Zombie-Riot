@@ -2751,7 +2751,7 @@ public void Raidmode_Shared_Xeno_Duo(int entity)
 
 	AlreadySaidWin = true;
 	char npc_classname[60];
-	NPC_GetNameById(entity, npc_classname, sizeof(npc_classname));
+	NPC_GetPluginNameById(entity, npc_classname, sizeof(npc_classname));
 	if(StrContains(npc_classname, "npc_xeno_raidboss_silvester"))
 	{
 		if(XenoExtraLogic())

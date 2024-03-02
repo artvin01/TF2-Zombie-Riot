@@ -3679,6 +3679,7 @@ bool IsWalkEvent(int event, int special = 0)
 	
 }
 
+
 public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 {
 	int event = DHookGetParamObjectPtrVar(hParams, 1, 0, ObjectValueType_Int);

@@ -247,7 +247,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			char npc_classname[60];
-			NPC_GetNameById(entity, npc_classname, sizeof(npc_classname));
+			NPC_GetPluginNameById(entity, npc_classname, sizeof(npc_classname));
 
 			if(entity != INVALID_ENT_REFERENCE && (StrContains(npc_classname, "npc_sea_donnerkrieg") || StrContains(npc_classname, "npc_sea_schwertkrieg")) && IsEntityAlive(entity))
 			{
