@@ -101,7 +101,6 @@ methodmap Siccerino < CClotBody
 	{
 		Siccerino npc = view_as<Siccerino>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_SICCERINO;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

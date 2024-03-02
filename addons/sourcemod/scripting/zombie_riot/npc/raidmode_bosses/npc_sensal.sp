@@ -493,7 +493,7 @@ static void Internal_ClotThink(int iNPC)
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			int spawn_index = NPC_CreateById(EXPIDONSA_DIVERSIONISTICO, -1, pos, ang, GetTeam(npc.index));
+			int spawn_index = NPC_CreateByName("npc_diversionistico", -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);

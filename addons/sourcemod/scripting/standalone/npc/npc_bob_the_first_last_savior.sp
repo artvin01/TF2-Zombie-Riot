@@ -232,7 +232,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 	{
 		public get()		
 		{	
-			return SecondPhase[this.index];	
+			return view_as<bool>(SecondPhase[this.index]);	
 		}
 		public set(bool value)	{	SecondPhase[this.index] = value;	}
 	}	

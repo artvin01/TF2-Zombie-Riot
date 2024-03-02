@@ -42,6 +42,8 @@ static const char g_RangedAttackSounds[][] = {
 	"weapons/airboat/airboat_gun_energy2.wav",
 };
 
+static int NPCId;
+
 void DesertAncientDemon_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -60,7 +62,7 @@ void DesertAncientDemon_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Interitus;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 
@@ -416,7 +418,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 		return;
 	}
 
-	if(i_NpcInternalId[ally] == INTERITUS_DESERT_ANCIENTDEMON)
+	if(i_NpcInternalId[ally] == NPCId)
 	{
 		return;
 	}
@@ -455,7 +457,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 		fl_TotalArmor[self] = 0.35;
 	}
 	TE_Particle("teleported_blue", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-	int NpcSpawnDemon = NPC_CreateById(INTERITUS_DESERT_ANCIENTDEMON, -1, SelfPos, AllyAng, GetTeam(npc.index)); //can only be enemy
+	int NpcSpawnDemon = NPC_CreateById(NPCId, -1, SelfPos, AllyAng, GetTeam(npc.index)); //can only be enemy
 	i_RaidGrantExtra[ally] = 999;
 	if(IsValidEntity(NpcSpawnDemon))
 	{

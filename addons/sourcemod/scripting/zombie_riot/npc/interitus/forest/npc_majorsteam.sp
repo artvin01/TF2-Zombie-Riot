@@ -263,7 +263,7 @@ static void ClotDeath(int entity)
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	
-	int other = NPC_CreateById(INTERITUS_FOREST_ENGINEER, -1, pos, ang, team, "EX");
+	int other = NPC_CreateByName("npc_vulpo", -1, pos, ang, team, "EX");
 	if(other > MaxClients)
 	{
 		if(team != TFTeam_Red)

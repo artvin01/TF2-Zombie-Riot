@@ -44,6 +44,8 @@ static const char g_MeleeHitSounds[][] = {
 int SeargentIdeal_Alive = 0;
 #define SEARGENT_IDEAL_RANGE 250.0
 
+static int NPCId;
+
 bool SeargentIdeal_Existant()
 {
 	if(SeargentIdeal_Alive > 0)
@@ -71,7 +73,7 @@ void SeargentIdeal_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Expidonsa;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 
@@ -397,7 +399,7 @@ public void SeargentIdeal_NPCDeath(int entity)
 
 Action SeargentIdeal_Protect(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
-	if(i_NpcInternalId[victim] != EXPIDONSA_SEARGENTIDEAL)
+	if(i_NpcInternalId[victim] != NPCId)
 	{
 		if(!f_TimeFrozenStill[victim])
 		{
@@ -445,7 +447,7 @@ void SeargentIdealShieldAffected(int entity, int victim, float damage, int weapo
 
 void SeargentIdealShieldInternal(int shielder, int victim)
 {
-	if(i_NpcInternalId[victim] != EXPIDONSA_DIVERSIONISTICO && !b_NpcHasDied[victim]) //do not shield diversios.
+	if(i_NpcInternalId[victim] != DiversionisticoID() && !b_NpcHasDied[victim]) //do not shield diversios.
 	{
 		SeargentIdeal npc = view_as<SeargentIdeal>(victim);
 		npc.m_iGetSeargentProtector = shielder;

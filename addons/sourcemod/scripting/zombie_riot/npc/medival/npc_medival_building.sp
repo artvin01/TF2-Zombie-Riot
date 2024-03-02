@@ -452,7 +452,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
-			if (IsValidEntity(entity) && i_NpcInternalId[entity] == MEDIVAL_VILLAGER && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
+			if (IsValidEntity(entity) && i_NpcInternalId[entity] == MedivalVillager_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
 			{
 				villagerexists = true;
 			}

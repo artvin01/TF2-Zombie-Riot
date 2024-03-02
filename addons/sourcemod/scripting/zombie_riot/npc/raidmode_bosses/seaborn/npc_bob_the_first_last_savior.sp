@@ -247,7 +247,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			char npc_classname[60];
-			NPC_GetPluginNameById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+			NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
 
 			if(entity != INVALID_ENT_REFERENCE && (StrContains(npc_classname, "npc_sea_donnerkrieg") || StrContains(npc_classname, "npc_sea_schwertkrieg")) && IsEntityAlive(entity))
 			{
@@ -635,7 +635,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 					Enemy enemy;
 
-					enemy.Index = XENO_RAIDBOSS_NEMESIS;
+					enemy.Index = NPC_GetIdByPlugin("npc_nemesis");
 					enemy.Health = 40000000;
 					enemy.Is_Boss = 2;
 					enemy.ExtraSpeed = 1.5;
@@ -1564,40 +1564,40 @@ static void GiveOneRevive()
 
 static void SetupMidWave(int entity)
 {
-	AddBobEnemy(entity, COMBINE_SOLDIER_ELITE, 20);
-	AddBobEnemy(entity, COMBINE_SOLDIER_DDT, 20);
-	AddBobEnemy(entity, COMBINE_SOLDIER_SWORDSMAN, 40);
-	AddBobEnemy(entity, COMBINE_SOLDIER_GIANT_SWORDSMAN, 15);
-	AddBobEnemy(entity, COMBINE_SOLDIER_COLLOSS, 2, 1);
+	AddBobEnemy(entity, "npc_combine_soldier_elite", 20);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", 20);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman", 40);
+	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", 15);
+	AddBobEnemy(entity, "npc_combine_soldier_collos_swordsman", 2, 1);
 
-	AddBobEnemy(entity, COMBINE_SOLDIER_DDT, 30);
-	AddBobEnemy(entity, COMBINE_SOLDIER_ELITE, 20);
-	AddBobEnemy(entity, COMBINE_SOLDIER_GIANT_SWORDSMAN, 20);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", 30);
+	AddBobEnemy(entity, "npc_combine_soldier_elite", 20);
+	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", 20);
 
-	AddBobEnemy(entity, COMBINE_SOLDIER_SWORDSMAN, 40);
-	AddBobEnemy(entity, COMBINE_SOLDIER_DDT, 10);
-	AddBobEnemy(entity, COMBINE_SOLDIER_GIANT_SWORDSMAN, 20);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman", 40);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", 10);
+	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", 20);
 
-	AddBobEnemy(entity, COMBINE_SOLDIER_ELITE, 50);
-	AddBobEnemy(entity, COMBINE_SOLDIER_DDT, 50);
-	AddBobEnemy(entity, COMBINE_SOLDIER_SHOTGUN, 50);
+	AddBobEnemy(entity, "npc_combine_soldier_elite", 50);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", 50);
+	AddBobEnemy(entity, "npc_combine_soldier_shotgun", 50);
 
-	AddBobEnemy(entity, COMBINE_SOLDIER_ELITE, 10);
-	AddBobEnemy(entity, COMBINE_SOLDIER_DDT, 10);
-	AddBobEnemy(entity, COMBINE_SOLDIER_AR2, 10);
-	AddBobEnemy(entity, COMBINE_SOLDIER_SWORDSMAN, 10);
-	AddBobEnemy(entity, COMBINE_SOLDIER_GIANT_SWORDSMAN, 10);
-	AddBobEnemy(entity, COMBINE_SOLDIER_SHOTGUN, 10);
-	AddBobEnemy(entity, COMBINE_SOLDIER_AR2, 10);
-	AddBobEnemy(entity, COMBINE_POLICE_SMG, 10);
-	AddBobEnemy(entity, COMBINE_POLICE_PISTOL, 10);
+	AddBobEnemy(entity, "npc_combine_soldier_elite", 10);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", 10);
+	AddBobEnemy(entity, "npc_combine_soldier_ar2", 10);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman", 10);
+	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", 10);
+	AddBobEnemy(entity, "npc_combine_soldier_shotgun", 10);
+	AddBobEnemy(entity, "npc_combine_soldier_ar2", 10);
+	AddBobEnemy(entity, "npc_combine_soldier_smg", 10);
+	AddBobEnemy(entity, "npc_combine_soldier_pistol", 10);
 }
 
-static void AddBobEnemy(int bobindx, int id, int count, int boss = 0)
+static void AddBobEnemy(int bobindx, const char[] plugin, int count, int boss = 0)
 {
 	Enemy enemy;
 
-	enemy.Index = id;
+	enemy.Index = NPC_GetIdByPlugin(plugin);
 	enemy.Is_Boss = boss;
 	enemy.Is_Health_Scaled = 1;
 	enemy.ExtraMeleeRes = 0.05;

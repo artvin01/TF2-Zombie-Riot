@@ -106,7 +106,6 @@ methodmap WinterSnoweyGunner < CClotBody
 	{
 		WinterSnoweyGunner npc = view_as<WinterSnoweyGunner>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "2000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_WINTER_SNOWEY_GUNNER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

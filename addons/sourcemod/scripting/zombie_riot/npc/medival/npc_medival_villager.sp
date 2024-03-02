@@ -83,6 +83,8 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
+static int NPCId;
+
 void MedivalVillager_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -101,8 +103,12 @@ void MedivalVillager_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
+}
 
+int MedivalVillager_ID()
+{
+	return NPCId;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -642,7 +648,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 				//Timeout
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
 
-				int spawn_index = NPC_CreateById(MEDIVAL_BUILDING, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
+				int spawn_index = NPC_CreateByName("npc_medival_building", -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
 					i_BuildingRef[iNPC] = EntIndexToEntRef(spawn_index);

@@ -5249,9 +5249,7 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 					{
 						if(!b_NpcHasDied[i])
 						{
-							char npc_classname[60];
-							NPC_GetPluginNameById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
-							if(StrContains(npc_classname, "npc_citizen"))
+							if(Citizen_IsIt(i))
 								count++;
 						}
 					}
@@ -5270,9 +5268,7 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 					{
 						if(!b_NpcHasDied[i])
 						{
-							char npc_classname[60];
-							NPC_GetPluginNameById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
-							if(StrContains(npc_classname, "npc_citizen"))
+							if(Citizen_IsIt(i))
 								count++;
 						}
 					}
@@ -5291,9 +5287,7 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 					{
 						if(!b_NpcHasDied[i])
 						{
-							char npc_classname[60];
-							NPC_GetPluginNameById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
-							if(StrContains(npc_classname, "npc_citizen"))
+							if(Citizen_IsIt(i))
 								count++;
 						}
 					}
@@ -5398,11 +5392,6 @@ static int GetBuffEffects(int ref)
 
 static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuffs)
 {
-	char npc_classname[60];
-	if(!b_NpcHasDied[entity])
-	{
-		NPC_GetPluginNameById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
-	}
 	if(weapon)
 	{
 		for(int i; i < 16; i++)
@@ -5525,7 +5514,7 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 			}
 		}
 	}
-	else if(StrContains(npc_classname, "npc_citizen"))
+	else if(Citizen_IsIt(entity))
 	{
 		Citizen npc = view_as<Citizen>(entity);
 		
@@ -6475,77 +6464,146 @@ static const char CommandName[][] =
 	Cosmic Repair Handling book - 20.5/s
 */
 
-static const int SummonerBase[][] =
+static const char SummonerBaseNPC[][] =
+{
+	"npc_barrack_militia",
+	
+	"npc_barrack_archer",
+	"npc_barrack_man_at_arms",
+	
+	"npc_barrack_crossbow",
+	"npc_barrack_swordsman",
+	
+	"npc_barrack_arbelast",
+	"npc_barrack_twohanded",
+	
+	"npc_barrack_longbow",
+	"npc_barrack_champion",
+	
+	"npc_barrack_monk",
+	"npc_barrack_hussar",
+	
+	"npc_barrack_teutonic_knight",
+	"npc_barrack_villager"
+};
+
+static int SummonerBase[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level, Supply, Requirement
-	{ BARRACK_MILITIA, 5, 30, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+	{ 0, 5, 30, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
 
-	{ BARRACK_ARCHER, 50, 10, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },		// Construction Novice
-	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+	{ 0, 50, 10, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },		// Construction Novice
+	{ 0, 10, 50, 0, 6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
 
-	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
-	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Worker
+	{ 0, 90, 20, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+	{ 0, 20, 90, 0, 7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Worker
 
-	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
-	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
+	{ 0, 210, 50, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 50, 210, 0, 8, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
 
-	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
-	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	{ 0, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
+	{ 0, 100, 400, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 
-	{ BARRACK_MONK, 210, 50, 50, 12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-	{ BARRACK_HUSSAR, 100, 400, 35, 15, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	{ 0, 210, 50, 50, 12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 100, 400, 35, 15, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 	
-	{ BARRACKS_TEUTONIC_KNIGHT, 100, 750, 	15, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ BARRACKS_VILLAGER, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
+	{ 0, 100, 750, 	15, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
 };
 
-static const int SummonerThorns[][] =
+static const char SummonerThornsNPC[][] =
+{
+	"npc_barrack_militia",
+	
+	"npc_barrack_archer",
+	"npc_barrack_man_at_arms",
+	
+	"npc_barrack_crossbow",
+	"npc_barrack_swordsman",
+	
+	"npc_barrack_arbelast",
+	"npc_barrack_twohanded",
+	
+	"npc_barrack_longbow",
+	"npc_barrack_champion",
+	
+	"npc_barrack_thorns",
+	
+	"npc_barrack_teutonic_knight",
+	"npc_barrack_teutonic_knight",
+	"npc_barrack_villager"
+};
+
+static int SummonerThorns[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level
-	{ BARRACK_MILITIA, 5, 30, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+	{ 0, 5, 30, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
 
-	{ BARRACK_ARCHER, 50, 10, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
-	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0, 50, 10, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
+	{ 0, 10, 50, 0, 6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
 
-	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
-	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 90, 20, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0, 20, 90, 0, 7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
 
-	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES},	// Construction Worker
-	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 210, 50, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES},	// Construction Worker
+	{ 0, 50, 210, 0, 8, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 
-	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 100, 400, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 
-	{ BARRACK_THORNS, 1000, 1000, 50, 50, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 1000, 1000, 50, 50, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 
-	{ BARRACKS_TEUTONIC_KNIGHT, 100, 750, 	15, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ BARRACKS_TEUTONIC_KNIGHT, 9999, 99999, 	9999, 9999, 9999, 9999, 0, 0 },	// Fillter
-	{ BARRACKS_VILLAGER, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0 }	// Construction Expert
+	{ 0, 100, 750, 	15, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 9999, 99999, 	9999, 9999, 9999, 9999, 0, 0 },	// Fillter
+	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0 }	// Construction Expert
 };
 
-static const int SummonerAlternative[][] =
+static const char SummonerAlternativeNPC[][] =
+{
+	"npc_alt_barracks_basic_mage",
+	
+	"npc_alt_barracks_mecha_barrager",
+	"npc_alt_barracks_intermediate_mage",
+	
+	"npc_alt_barracks_crossbowman",
+	"npc_alt_barracks_barrager",
+	
+	"npc_alt_barracks_railgunner",
+	"npc_alt_barracks_holy_knight",
+	
+	"npc_alt_barracks_berserker",
+	"npc_alt_barracks_iku_nagae",
+	
+	"npc_alt_barracks_donnerkrieg",
+	"npc_alt_barracks_schwertkrieg",
+	
+	"npc_alt_barracks_scientific_witchery",
+	"npc_barrack_villager"
+};
+
+static int SummonerAlternative[][] =
 {
 	// NPC Index, 						Wood, 	Food, 	Gold, 	Time, Level, Supply
-	{ ALT_BARRACK_BASIC_MAGE , 			10, 	40, 	0, 		5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+	{ 0 , 			10, 	40, 	0, 		5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
 
-	{ ALT_BARRACK_MECHA_BARRAGER, 		50, 	10, 	1, 		7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
-	{ ALT_BARRACK_INTERMEDIATE_MAGE ,	10, 	50, 	0, 		6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0, 		50, 	10, 	1, 		7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
+	{ 0 ,	10, 	50, 	0, 		6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
 
-	{ ALT_BARRACKS_CROSSBOW_MEDIC, 		50, 	25, 	2, 		8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
-	{ ALT_BARRACK_BARRAGER,				75,		50, 	1, 		7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 		50, 	25, 	2, 		8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0,				75,		50, 	1, 		7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
 
-	{ ALT_BARRACK_RAILGUNNER , 			100, 	50, 	2,		11, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
-	{ ALT_BARRACKS_HOLY_KNIGHT, 		250, 	100, 	0, 		7, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0 , 			100, 	50, 	2,		11, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 		250, 	100, 	0, 		7, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 
-	{ ALT_BARRACKS_BERSERKER, 			50, 	100, 	0,		3, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert	//these ones are meant to be spammed into oblivion
-	{ ALT_BARRACK_IKUNAGAE , 			125,	300,	0,		7, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 			50, 	100, 	0,		3, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert	//these ones are meant to be spammed into oblivion
+	{ 0 , 			125,	300,	0,		7, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 
 
-	{ ALT_BARRACK_DONNERKRIEG, 			175, 	350, 	15, 	12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-	{ ALT_BARRACKS_SCHWERTKRIEG , 		225, 	75, 	10, 	13, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 			175, 	350, 	15, 	12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0 , 		225, 	75, 	10, 	13, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	
-	{ ALT_BARRACK_SCIENTIFIC_WITCHERY, 	1000, 	500, 	35, 	30, 16, 2, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ BARRACKS_VILLAGER, 				750, 	750, 	0,		25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
+	{ 0, 	1000, 	500, 	35, 	30, 16, 2, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 				750, 	750, 	0,		25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
 };
 
 static const int BarracksUpgrades[][] =
@@ -6604,6 +6662,24 @@ static const char CivName[][] =
 	"Iberia Barracks",
 	"Blitzkrieg's Army"
 };
+
+static void SetupNPCIndexes()
+{
+	for(int i; i < sizeof(SummonerBase); i++)
+	{
+		SummonerBase[NPCIndex] = NPC_GetByPlugin(SummonerBaseNPC[i]);
+	}
+
+	for(int i; i < sizeof(SummonerThorns); i++)
+	{
+		SummonerThorns[NPCIndex] = NPC_GetByPlugin(SummonerThornsNPC[i]);
+	}
+	
+	for(int i; i < sizeof(SummonerAlternative); i++)
+	{
+		SummonerAlternative[NPCIndex] = NPC_GetByPlugin(SummonerAlternativeNPC[i]);
+	}
+}
 
 static int GetUnitCount(int civ)
 {
@@ -6673,6 +6749,7 @@ public Action Building_PlaceSummoner(int client, int weapon, const char[] classn
 
 public bool Building_Summoner(int client, int entity)
 {
+	SetupNPCIndexes();
 	SetDefaultValuesToZeroNPC(entity);
 	b_BuildingHasDied[entity] = false;
 	b_CantCollidieAlly[entity] = true;
@@ -6846,12 +6923,12 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 		{
 			bool OwnsVillager = false;
 			bool HasupgradeVillager = false;
-			if(GetSData(CivType[owner], TrainingIndex[owner], NPCIndex) == BARRACKS_VILLAGER)
+			if(GetSData(CivType[owner], TrainingIndex[owner], NPCIndex) == BarrackVillager_ID())
 			{
 				if(i_NormalBarracks_HexBarracksUpgrades[owner] & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER)
 				{
 					HasupgradeVillager = true;
-					if(BARRACKS_VILLAGER == GetSData(CivType[owner], TrainingIndex[owner], NPCIndex))
+					if(BarrackVillager_ID() == GetSData(CivType[owner], TrainingIndex[owner], NPCIndex))
 					{
 						for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 						{
@@ -6860,7 +6937,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 							if(IsValidEntity(entity_close))
 							{
 								char npc_classname[60];
-								NPC_GetPluginNameById(i_NpcInternalId[entity_close], npc_classname, sizeof(npc_classname));
+								NPC_GetPluginById(i_NpcInternalId[entity_close], npc_classname, sizeof(npc_classname));
 								if(StrContains(npc_classname, "npc_barrack_villager"))
 								{
 									BarrackBody npc = view_as<BarrackBody>(entity_close);
@@ -7289,12 +7366,12 @@ static void SummonerMenu(int client, int viewer)
 		{
 			bool OwnsVillager = false;
 			bool HasupgradeVillager = false;
-			if(GetSData(CivType[client], TrainingIndex[client], NPCIndex) == BARRACKS_VILLAGER)
+			if(GetSData(CivType[client], TrainingIndex[client], NPCIndex) == BarrackVillager_ID())
 			{
 				if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER)
 				{
 					HasupgradeVillager = true;
-					if(BARRACKS_VILLAGER == GetSData(CivType[client], TrainingIndex[client], NPCIndex))
+					if(BarrackVillager_ID() == GetSData(CivType[client], TrainingIndex[client], NPCIndex))
 					{
 						for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 						{
@@ -7303,7 +7380,7 @@ static void SummonerMenu(int client, int viewer)
 							if(IsValidEntity(entity_close))
 							{
 								char npc_classname[60];
-								NPC_GetPluginNameById(i_NpcInternalId[entity_close], npc_classname, sizeof(npc_classname));
+								NPC_GetPluginById(i_NpcInternalId[entity_close], npc_classname, sizeof(npc_classname));
 								if(StrContains(npc_classname, "npc_barrack_villager"))
 								{
 									BarrackBody npc = view_as<BarrackBody>(entity_close);
@@ -7380,7 +7457,7 @@ static void SummonerMenu(int client, int viewer)
 
 			if(ResearchRequirement_internal & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER)
 			{
-				if(BARRACKS_VILLAGER == GetSData(CivType[client], TrainingIndex[client], NPCIndex) && TrainingIn[client] >= GetGameTime())
+				if(BarrackVillager_ID() == GetSData(CivType[client], TrainingIndex[client], NPCIndex) && TrainingIn[client] >= GetGameTime())
 				{
 					//dont train more then one at a time
 					poor = true;
@@ -7394,7 +7471,7 @@ static void SummonerMenu(int client, int viewer)
 						if(IsValidEntity(entity_close))
 						{
 							char npc_classname[60];
-							NPC_GetPluginNameById(i_NpcInternalId[entity_close], npc_classname, sizeof(npc_classname));
+							NPC_GetPluginById(i_NpcInternalId[entity_close], npc_classname, sizeof(npc_classname));
 							if(StrContains(npc_classname, "npc_barrack_villager"))
 							{
 								BarrackBody npc = view_as<BarrackBody>(entity_close);
@@ -7707,7 +7784,7 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 			if(npc.OwnerUserId == userid)
 			{
 				char npc_classname[60];
-				NPC_GetPluginNameById(i_NpcInternalId[npc.index], npc_classname, sizeof(npc_classname));
+				NPC_GetPluginById(i_NpcInternalId[npc.index], npc_classname, sizeof(npc_classname));
 				if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION)
 				{
 					if(!StrContains(npc_classname, "npc_barrack_villager"))

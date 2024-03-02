@@ -19,7 +19,7 @@ void AlliedLeperVisualiserAbility_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AlliedLeperVisualiserAbility(client, vecPos, vecAng, ally);
+	return AlliedLeperVisualiserAbility(client, vecPos, vecAng, ally,);
 }
 methodmap AlliedLeperVisualiserAbility < CClotBody
 {

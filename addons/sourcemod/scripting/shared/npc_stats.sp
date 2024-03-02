@@ -76,6 +76,7 @@ Function func_NPCOnTakeDamage[MAXENTITIES];
 Function func_NPCThink[MAXENTITIES];
 Function func_NPCFuncWin[MAXENTITIES];
 Function func_NPCAnimEvent[MAXENTITIES];
+Function func_NPCActorEmoted[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -3300,6 +3301,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		func_NPCDeathForward[pThis] = INVALID_FUNCTION;
 		func_NPCFuncWin[pThis] = INVALID_FUNCTION;
 		func_NPCAnimEvent[pThis] = INVALID_FUNCTION;
+		func_NPCActorEmoted[pThis] = INVALID_FUNCTION;
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		SetEntityCollisionGroup(pThis, 1);
@@ -4660,9 +4662,7 @@ stock int GetClosestTarget(int entity,
 				{
 					if(IsTowerdefense)
 					{
-						char npc_classname[60];
-						NPC_GetPluginNameById(i_NpcInternalId[entity_close], npc_classname, sizeof(npc_classname));
-						if(StrContains(npc_classname, "npc_vip_building") && !IsValidEnemy(entity, view_as<CClotBody>(entity).m_iTarget, true, true))
+						if(i_NpcInternalId[entity_close] == VIPBuilding_ID() && !IsValidEnemy(entity, view_as<CClotBody>(entity).m_iTarget, true, true))
 						{
 							return entity_close; //we found a vip building, go after it.
 						}
@@ -7503,16 +7503,18 @@ stock bool IsValidAlly(int index, int ally)
 
 public int PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCharacter actor, CBaseCombatCharacter emoter, int emote)
 {
-#if defined ZR
-	switch(i_NpcInternalId[actor.index])
+	int value;
+	Function func = func_NPCAnimEvent[actor.index];
+	if(func && func != INVALID_FUNCTION)
 	{
-		case BOB_THE_GOD_OF_GODS:
-		{
-			BobTheGod_PluginBot_OnActorEmoted(actor.index, emoter.index, emote);
-		}
+		Call_StartFunction(null, func);
+		Call_PushCell(action);
+		Call_PushCell(actor);
+		Call_PushCell(emoter);
+		Call_PushCell(emote);
+		Call_Finish(value);
 	}
-#endif
-	return 0;
+	return value;
 }
 
 stock float ApproachAngle( float target, float value, float speed )

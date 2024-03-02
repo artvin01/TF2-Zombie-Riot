@@ -104,6 +104,8 @@ static float f_khamlCutscene[MAXENTITIES];
 
 static float f_KahmlResTemp[MAXENTITIES];
 
+static int NPCId;
+
 void ChaosKahmlstein_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -135,7 +137,7 @@ void ChaosKahmlstein_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 
@@ -507,7 +509,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-				if(entity != INVALID_ENT_REFERENCE && (i_NpcInternalId[entity] == RAIDMODE_THE_MESSENGER && IsEntityAlive(entity)))
+				if(entity != INVALID_ENT_REFERENCE && (b_thisNpcIsARaid[entity] && IsEntityAlive(entity)))
 				{
 					foundEm = true;
 					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", Pos);
@@ -1552,15 +1554,15 @@ void CreateCloneTempKahmlsteinFakeout(int entity, int TypeOfFake, float SelfPos[
 	{
 		case 2:
 		{
-			KamlcloneSpawn = NPC_CreateById(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_2"); //can only be enemy
+			KamlcloneSpawn = NPC_CreateById(NPCId, -1, SelfPos, AllyAng, GetTeam(entity), "fake_2"); //can only be enemy
 		}
 		case 3:
 		{
-			KamlcloneSpawn = NPC_CreateById(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_3"); //can only be enemy
+			KamlcloneSpawn = NPC_CreateById(NPCId, -1, SelfPos, AllyAng, GetTeam(entity), "fake_3"); //can only be enemy
 		}
 		case 4:
 		{
-			KamlcloneSpawn = NPC_CreateById(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_4"); //can only be enemy
+			KamlcloneSpawn = NPC_CreateById(NPCId, -1, SelfPos, AllyAng, GetTeam(entity), "fake_4"); //can only be enemy
 		}
 	}
 	if(IsValidEntity(KamlcloneSpawn))

@@ -1395,7 +1395,7 @@ public void Spawn_Cured_Grigori()
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	flAng[2] = 0.0;
-	int entity = NPC_CreateById(CURED_FATHER_GRIGORI, client, flPos, flAng, TFTeam_Red);
+	int entity = NPC_CreateByName("npc_cured_last_survivor", client, flPos, flAng, TFTeam_Red);
 	SalesmanAlive = EntIndexToEntRef(entity);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_grigori");
 }
@@ -1981,9 +1981,7 @@ void ReviveAll(bool raidspawned = false)
 	{
 		if(!b_NpcHasDied[entity])
 		{
-			char npc_classname[60];
-			NPC_GetPluginNameById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-			if(StrContains(npc_classname, "npc_citizen"))
+			if(Citizen_IsIt(entity))
 			{
 				Citizen npc = view_as<Citizen>(entity);
 				if(npc.m_nDowned && npc.m_iWearable3 > 0)

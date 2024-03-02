@@ -1000,7 +1000,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 			if(!b_NpcHasDied[entity] && npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
 			{
 				char npc_classname[60];
-				NPC_GetPluginNameById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+				NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
 				if(StrContains(npc_classname, "npc_barrack_villager"))
 					SelectUnit(client, entity);
 			}

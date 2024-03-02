@@ -451,7 +451,7 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 				float damage = f_WandDamage[entity];
 				StartBleedingTimer(i, owner, damage / 8.0, 8, weapon, DMG_SLASH);
 				char npc_classname[60];
-				NPC_GetPluginNameById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
+				NPC_GetPluginById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
 				if(StrContains(npc_classname, "npc_bloon"))
 				{
 					if(view_as<Bloon>(i).m_bFortified)

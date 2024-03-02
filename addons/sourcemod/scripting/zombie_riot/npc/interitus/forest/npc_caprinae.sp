@@ -32,6 +32,8 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/boxing_gloves_swing4.wav"
 };
 
+static int NPCId;
+
 void CaprinaeOnMapStart()
 {
 	NPCData data;
@@ -42,14 +44,13 @@ void CaprinaeOnMapStart()
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Interitus;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Caprinae(client, vecPos, vecAng, ally);
 }
-
 
 methodmap Caprinae < CClotBody
 {
@@ -192,7 +193,7 @@ static void ClotThink(int iNPC)
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 					
-					int entity = NPC_CreateById(INTERITUS_FOREST_DEMOMAN, -1, pos, ang, GetTeam(npc.index), "EX");
+					int entity = NPC_CreateById(NPCId, -1, pos, ang, GetTeam(npc.index), "EX");
 					if(entity > MaxClients)
 					{
 						if(GetTeam(npc.index) != TFTeam_Red)

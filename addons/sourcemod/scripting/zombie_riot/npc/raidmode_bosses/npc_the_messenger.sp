@@ -79,6 +79,7 @@ bool BlockLoseSay;
 static float f_MessengerSpeedUp[MAXENTITIES];
 
 static float f_messenger_cutscene_necksnap[MAXENTITIES];
+static int NPCId;
 
 void TheMessenger_OnMapStart_NPC()
 {
@@ -105,7 +106,7 @@ void TheMessenger_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 
@@ -1207,7 +1208,7 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 			if(NpcStats_IsEnemySilenced(owner))
 				ChaosDamage = 40;
 
-			if(i_NpcInternalId[owner] == RAIDMODE_THE_MESSENGER)
+			if(i_NpcInternalId[owner] == NPCId)
 			{
 				ChaosDamage = 40;
 				if(NpcStats_IsEnemySilenced(owner))

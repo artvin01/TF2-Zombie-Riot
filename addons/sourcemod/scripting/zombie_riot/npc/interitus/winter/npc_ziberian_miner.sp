@@ -106,7 +106,6 @@ methodmap WinterZiberianMiner < CClotBody
 	{
 		WinterZiberianMiner npc = view_as<WinterZiberianMiner>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "2000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_WINTER_ZIBERIANMINER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
