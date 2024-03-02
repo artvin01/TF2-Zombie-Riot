@@ -44,8 +44,6 @@ void NPC_ConfigSetup()
 	strcopy(data.Icon, sizeof(data.Icon), "duck");
 	NPCList.PushArray(data);
 
-	GetOldMethodNPCs();
-
 	HeadcrabZombie_OnMapStart_NPC();
 	Fortified_HeadcrabZombie_OnMapStart_NPC();
 	FastZombie_OnMapStart_NPC();
@@ -512,18 +510,6 @@ int NPC_GetByPlugin(const char[] name, NPCData data = {})
 			return i;
 	}
 	return -1;
-}
-void GetOldMethodNPCs()
-{
-	NPCData data;
-	for(int i = 1; i < MAX_OLD_NPCS; i++)
-	{
-		strcopy(data.Name, sizeof(data.Name), NPC_Names[i]);
-		strcopy(data.Plugin, sizeof(data.Plugin), NPC_Plugin_Names_Converted[i]);
-		data.Category = NPCCategory[i];
-		data.Func = INVALID_FUNCTION;
-		NPCList.PushArray(data);
-	}
 }
 
 stock int NPC_CreateByName(const char[] name, int client, float vecPos[3], float vecAng[3], int team, const char[] data = "")
