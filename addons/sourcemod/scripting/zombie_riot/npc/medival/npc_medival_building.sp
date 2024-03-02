@@ -296,7 +296,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				
 				AproxRandomSpaceToWalkTo[2] += 10.0;
 
-				int EnemyToSpawn = MEDIVAL_MILITIA;
+				char EnemyToSpawn[255] = "npc_medival_militia";
 				bool Construct = false;
 
 				if(GetTeam(iNPC) == TFTeam_Red)
@@ -306,49 +306,49 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				
 				if(i_currentwave[iNPC] < 15)
 				{
-					EnemyToSpawn = MEDIVAL_MILITIA;
+					EnemyToSpawn = "npc_medival_militia";
 					IncreaceSpawnRates *= 1.2; //less swarm!
 				}
 				else if(i_currentwave[iNPC] < 20)
 				{
-					EnemyToSpawn = MEDIVAL_MAN_AT_ARMS;
+					EnemyToSpawn = "npc_medival_man_at_arms";
 				}
 				else if(i_currentwave[iNPC] < 25)
 				{
-					EnemyToSpawn = MEDIVAL_SWORDSMAN;
+					EnemyToSpawn = "npc_medival_swordsman";
 				}
 				else if(i_currentwave[iNPC] < 30)
 				{
-					EnemyToSpawn = MEDIVAL_SWORDSMAN;
+					EnemyToSpawn = "npc_medival_swordsman";
 					IncreaceSpawnRates *= 0.75; //Swarm.
 				}
 				else if(i_currentwave[iNPC] < 40)
 				{
-					EnemyToSpawn = MEDIVAL_TWOHANDED_SWORDSMAN;
+					EnemyToSpawn = "npc_medival_twohanded_swordsman";
 				}
 				else if(i_currentwave[iNPC] < 45)
 				{
-					EnemyToSpawn = MEDIVAL_TWOHANDED_SWORDSMAN;
+					EnemyToSpawn = "npc_medival_twohanded_swordsman";
 					IncreaceSpawnRates *= 0.85; //Swarm.
 				}
 				else if(i_currentwave[iNPC] < 50)
 				{
-					EnemyToSpawn = MEDIVAL_CHAMPION;
+					EnemyToSpawn = "npc_medival_champion";
 					IncreaceSpawnRates *= 1.75; //less swarm!
 				}
 				else if(i_currentwave[iNPC] < 55)
 				{
-					EnemyToSpawn = MEDIVAL_CHAMPION;
+					EnemyToSpawn = "npc_medival_champion";
 					IncreaceSpawnRates *= 1.0;
 				}
 				else if(i_currentwave[iNPC] < 60)
 				{
-					EnemyToSpawn = MEDIVAL_CHAMPION;
+					EnemyToSpawn = "npc_medival_champion";
 					IncreaceSpawnRates *= 0.85; //Swarm.
 				}
 				else if(i_currentwave[iNPC] >= 60)
 				{
-					EnemyToSpawn = MEDIVAL_CONSTRUCT;
+					EnemyToSpawn = "npc_medival_construct";
 					IncreaceSpawnRates *= 0.70; //Swarm.
 					Construct = true;
 				}
@@ -356,7 +356,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				if(Rogue_Mode())
 					IncreaceSpawnRates *= 3.0;
 
-				int spawn_index = NPC_CreateById(EnemyToSpawn, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
+				int spawn_index = NPC_CreateByName(EnemyToSpawn, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
 					npc.PlayMeleeMissSound();

@@ -220,7 +220,7 @@ methodmap StalkerCombine < StalkerShared
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = NOTHING;
+		npc.m_iNpcStepVariation = STEPTYPE_NONE;
 		
 		
 		func_NPCDeath[npc.index] = StalkerCombine_NPCDeath;
