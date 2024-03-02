@@ -173,11 +173,11 @@ void NPC_ConfigSetup()
 	
 	Soldier_Barrager_OnMapStart_NPC();
 	The_Shit_Slapper_OnMapStart_NPC();
-	
+	/*
 	BasicBones_OnMapStart_NPC();
 	BeefyBones_OnMapStart_NPC();
 	BrittleBones_OnMapStart_NPC();
-	BigBones_OnMapStart_NPC();
+	BigBones_OnMapStart_NPC();*/
 	AlliedLeperVisualiserAbility_OnMapStart_NPC();
 	
 	Mecha_Engineer_OnMapStart_NPC();

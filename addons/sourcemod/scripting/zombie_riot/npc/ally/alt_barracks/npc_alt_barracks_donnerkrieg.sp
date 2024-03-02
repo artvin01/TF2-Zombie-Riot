@@ -63,6 +63,21 @@ public void Barrack_Alt_Donnerkrieg_MapStart()
 	Ikunagae_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	
 	PrecacheModel("materials/sprites/laserbeam.vmt", true);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks Donnerkrieg");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_donnerkrieg");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Barrack_Alt_Donnerkrieg(client, vecPos, vecAng, ally);
 }
 
 methodmap Barrack_Alt_Donnerkrieg < BarrackBody
@@ -144,10 +159,11 @@ methodmap Barrack_Alt_Donnerkrieg < BarrackBody
 	{
 		Barrack_Alt_Donnerkrieg npc = view_as<Barrack_Alt_Donnerkrieg>(BarrackBody(client, vecPos, vecAng, "650", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
-		i_NpcInternalId[npc.index] = ALT_BARRACK_DONNERKRIEG;
 		i_NpcWeight[npc.index] = 1;
 		
-		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Donnerkrieg_ClotThink);
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barrack_Alt_Donnerkrieg_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Alt_Donnerkrieg_ClotThink;
 
 		npc.m_flSpeed = 250.0;
 		
@@ -348,7 +364,6 @@ void Barrack_Alt_Donnerkrieg_NPCDeath(int entity)
 {
 	Barrack_Alt_Donnerkrieg npc = view_as<Barrack_Alt_Donnerkrieg>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, Barrack_Alt_Donnerkrieg_ClotThink);
 }
 
 static void Primary_Attack_BEAM_Iku_Ability(int client, float GameTime)

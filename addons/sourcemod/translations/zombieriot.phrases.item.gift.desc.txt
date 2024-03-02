@@ -1019,7 +1019,7 @@
 	}
 	"Barracks Basic Mage Desc"
 	{
-		"en"		"Basic unit to blar the enemy with"
+		"en"		"Basic unit to blast the enemy with"
 	}
 	"Barracks Intermediate Mage Desc"
 	{

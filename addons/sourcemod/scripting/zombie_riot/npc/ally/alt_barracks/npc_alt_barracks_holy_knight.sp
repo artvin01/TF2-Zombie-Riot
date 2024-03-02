@@ -12,7 +12,22 @@ static bool b_barrage[MAXENTITIES];
 
 public void Barrack_Alt_Holy_Knight_MapStart()
 {
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++)			{ PrecacheSound(g_RangedAttackSounds[i]);   }
+	PrecacheSoundArray(g_RangedAttackSounds);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks Holy Knight");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_holy_knight");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Barrack_Alt_Holy_Knight(client, vecPos, vecAng, ally);
 }
 
 methodmap Barrack_Alt_Holy_Knight < BarrackBody
@@ -28,10 +43,11 @@ methodmap Barrack_Alt_Holy_Knight < BarrackBody
 	{
 		Barrack_Alt_Holy_Knight npc = view_as<Barrack_Alt_Holy_Knight>(BarrackBody(client, vecPos, vecAng, "1250",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
-		i_NpcInternalId[npc.index] = ALT_BARRACKS_HOLY_KNIGHT;
 		i_NpcWeight[npc.index] = 2;
 		
-		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Holy_Knight_ClotThink);
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barrack_Alt_Holy_Knight_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Alt_Holy_Knight_ClotThink;
 
 		npc.m_flSpeed = 225.0;
 		
@@ -220,5 +236,4 @@ void Barrack_Alt_Holy_Knight_NPCDeath(int entity)
 	Barrack_Alt_Holy_Knight npc = view_as<Barrack_Alt_Holy_Knight>(entity);
 		
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, Barrack_Alt_Holy_Knight_ClotThink);
 }
