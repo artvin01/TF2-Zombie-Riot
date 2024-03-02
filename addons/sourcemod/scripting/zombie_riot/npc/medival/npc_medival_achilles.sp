@@ -96,7 +96,7 @@ void MedivalAchilles_OnMapStart_NPC()
 	PrecacheModel("models/props_junk/harpoon002a.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Achilles");
-	strcopy(data.Plugin, sizeof(data.Plugin), "noc_medival_achilles");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_achilles");
 	strcopy(data.Icon, sizeof(data.Icon), "achilles");
 	data.IconCustom = true;
 	data.Flags = 0;

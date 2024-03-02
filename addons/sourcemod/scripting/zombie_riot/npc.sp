@@ -621,7 +621,7 @@ enum
 	THEADDICTION						= 114,
 	THEDOCTOR							= 115,
 	BOOKSIMON							= 116,
-	ALT_KAHMLSTEIN						= 117,
+	UNUSED_117						= 117,
 	
 	L4D2_TANK							= 118,
 	UNUSED_119			= 119,
@@ -639,12 +639,12 @@ enum
 	
 	BONEZONE_BASICBONES = 129,
 	
-	ALT_MECHA_ENGINEER			= 130,
-	ALT_MECHA_HEAVY				= 131,
-	ALT_MECHA_HEAVYGIANT		= 132,
-	ALT_MECHA_PYROGIANT			= 133,
-	ALT_MECHA_SCOUT				= 134,
-	NOTHING_135				= 135,
+	UNUSED_130			= 130,
+	UNUSED_131				= 131,
+	UNUSED_132		= 132,
+	UNUSED_133			= 133,
+	UNUSED_134				= 134,
+	UNUSED_135				= 135,
 	NOTHING_136			= 136,
 	PHANTOM_KNIGHT				= 137, //Lucian "Blood diamond"
 	ALT_MEDIC_HEALER_3			= 138, //3 being the 3rd stage of alt waves.
@@ -706,8 +706,8 @@ enum
 	MEDIVAL_ACHILLES			= 188,
 	MEDIVAL_TREBUCHET			= 189,
 	
-	ALT_IKUNAGAE				= 190,
-	ALT_MECHASOLDIER_BARRAGER	= 191,
+	UNUSED_190				= 190,
+	UNUSED_191	= 191,
 	NEARL_SWORD					= 192,
 	
 	STALKER_COMBINE		= 193,
@@ -998,7 +998,7 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"The Addiction",
 	"The Doctor",
 	"Book Simon",
-	"Kahmlstein",
+	"",
 	"L4D2 Tank",
 	"",
 	"Sniper Railgunner",
@@ -1015,10 +1015,10 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	
 	"Basic Bones",
 	
-	"Mecha Engineer",
-	"Mecha Heavy",
-	"Mecha Giant Heavy",
-	"Mecha Giant Pyro",
+	"",
+	"",
+	"",
+	"",
 	"Mecha Scout",
 	"",
 	"",
@@ -1082,7 +1082,7 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Achilles",
 	"Trebuchet",
 	
-	"Ikunagae",
+	"",
 	"Mecha Soldier Barrager",
 	"Nearl Radiant Sword",
 
@@ -1423,7 +1423,7 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	8,	// THEADDICTION						= 114,
 	8,	// THEDOCTOR							= 115,
 	8,	// BOOKSIMON							= 116,
-	4,	// ALT_KAHMLSTEIN						= 117,
+	-1,	// 						= 117,
 
 	1,	// L4D2_TANK							= 118,
 	-1,	// 			= 119,
@@ -1441,11 +1441,11 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 
 	0,	// BONEZONE_BASICBONES = 129,
 
-	4,	// ALT_MECHA_ENGINEER			= 130,
-	4,	// ALT_MECHA_HEAVY				= 131,
-	4,	// ALT_MECHA_HEAVYGIANT		= 132,
-	4,	// ALT_MECHA_PYROGIANT			= 133,
-	4,	// ALT_MECHA_SCOUT				= 134,
+	-1,	// 			= 130,
+	-1,	// 				= 131,
+	-1,	// 		= 132,
+	-1,	// 			= 133,
+	-1,	// 				= 134,
 	-1,	// 				= 135,
 	-1,	// 			= 136,
 	1,	// PHANTOM_KNIGHT				= 137, //Lucian "Blood diamond"
@@ -1508,8 +1508,8 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	7,	// MEDIVAL_ACHILLES			= 188,
 	7,	// MEDIVAL_TREBUCHET			= 189,
 
-	4,	// ALT_IKUNAGAE				= 190,
-	4,	// ALT_MECHASOLDIER_BARRAGER	= 191,
+	-1,	// 				= 190,
+	-1,	// 	= 191,
 	0,	// NEARL_SWORD					= 192,
 
 	1,	// STALKER_COMBINE		= 193,
@@ -1850,7 +1850,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"npc_addiction",
 	"npc_doctor_city",
 	"npc_simon",
-	"npc_alt_kahml",
+	"",
 	"npc_l4d2_tank",
 	"",
 	"npc_alt_sniper_railgunner",
@@ -1865,10 +1865,10 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	
 	"npc_basicbones",
 	
-	"npc_alt_mecha_engineer",
-	"npc_alt_mecha_heavy",
-	"npc_alt_mecha_heavy_giant",
-	"npc_alt_mecha_pyro_giant",
+	"",
+	"",
+	"",
+	"",
 	"npc_alt_mecha_scout",
 	"",
 	"",
@@ -1930,7 +1930,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"",
 	"",
 	"",
-	"npc_alt_ikunagae",
+	"",
 	"npc_alt_mecha_soldier_barrager",
 	"",
 
@@ -2533,8 +2533,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		case BOOKSIMON:
 			entity = Simon(client, vecPos, vecAng, team, data);
 		
-		case ALT_KAHMLSTEIN:
-			entity = Kahmlstein(client, vecPos, vecAng, team);
 		
 		case L4D2_TANK:
 			entity = L4D2_Tank(client, vecPos, vecAng, team);
@@ -2578,21 +2576,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 			
 		case BONEZONE_BUFFED_BIGBONES:
 			entity = BigBones(client, vecPos, vecAng, team, true);
-			
-		case ALT_MECHA_ENGINEER:
-			entity = Mecha_Engineer(client, vecPos, vecAng, team);
-		
-		case ALT_MECHA_HEAVY:
-			entity = Mecha_Heavy(client, vecPos, vecAng, team);
-		
-		case ALT_MECHA_HEAVYGIANT:
-			entity = Mecha_HeavyGiant(client, vecPos, vecAng, team);
-		
-		case ALT_MECHA_PYROGIANT:
-			entity = Mecha_PyroGiant(client, vecPos, vecAng, team);
-		
-		case ALT_MECHA_SCOUT:
-			entity = Mecha_Scout(client, vecPos, vecAng, team);
 		
 		case PHANTOM_KNIGHT:
 			entity = PhantomKnight(client, vecPos, vecAng, team);	
@@ -2756,11 +2739,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		case MEDIVAL_TREBUCHET:
 			entity = MedivalTrebuchet(client, vecPos, vecAng, team);
 		
-		case ALT_IKUNAGAE:
-			entity = Ikunagae(client, vecPos, vecAng, team);
-		
-		case ALT_MECHASOLDIER_BARRAGER:
-			entity = MechaSoldier_Barrager(client, vecPos, vecAng, team);
 		
 		case NEARL_SWORD:
 			entity = NearlSwordAbility(client, vecPos, vecAng, team);
@@ -3560,8 +3538,6 @@ void NPCDeath(int entity)
 		case BOOKSIMON:
 			Simon_NPCDeath(entity);
 		
-		case ALT_KAHMLSTEIN:
-			Kahmlstein_NPCDeath(entity);
 		
 		case L4D2_TANK:
 			L4D2_Tank_NPCDeath(entity);
@@ -3606,20 +3582,6 @@ void NPCDeath(int entity)
 		case BONEZONE_BUFFED_BIGBONES:
 			BigBones_NPCDeath(entity);
 		
-		case ALT_MECHA_ENGINEER:
-			Mecha_Engineer_NPCDeath(entity);
-		
-		case ALT_MECHA_HEAVY:
-			Mecha_Heavy_NPCDeath(entity);
-		
-		case ALT_MECHA_HEAVYGIANT:
-			Mecha_HeavyGiant_NPCDeath(entity);
-		
-		case ALT_MECHA_PYROGIANT:
-			Mecha_PyroGiant_NPCDeath(entity);
-		
-		case ALT_MECHA_SCOUT:
-			Mecha_Scout_NPCDeath(entity);
 		
 		case PHANTOM_KNIGHT:
 			PhantomKnight_NPCDeath(entity);
@@ -3782,12 +3744,6 @@ void NPCDeath(int entity)
 		
 		case MEDIVAL_TREBUCHET:
 			MedivalTrebuchet_NPCDeath(entity);
-		
-		case ALT_IKUNAGAE:
-			Ikunagae_NPCDeath(entity);
-		
-		case ALT_MECHASOLDIER_BARRAGER:
-			MechaSoldier_Barrager_NPCDeath(entity);
 		
 		case NEARL_SWORD:
 			NearlSwordAbility_NPCDeath(entity);
@@ -4318,9 +4274,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	//	case BOOKSIMON:
 	//		Simon_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case ALT_KAHMLSTEIN:
-			Kahmlstein_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
 		case L4D2_TANK:
 			L4D2_Tank_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
@@ -4362,21 +4315,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			
 		case BONEZONE_BUFFED_BIGBONES:
 			BigBones_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case ALT_MECHA_ENGINEER:
-			Mecha_Engineer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case ALT_MECHA_HEAVY:
-			Mecha_Heavy_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case ALT_MECHA_HEAVYGIANT:
-			Mecha_HeavyGiant_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case ALT_MECHA_PYROGIANT:
-			Mecha_PyroGiant_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case ALT_MECHA_SCOUT:
-			Mecha_Scout_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case PHANTOM_KNIGHT:
 			PhantomKnight_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -4511,13 +4449,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 	//	case MEDIVAL_TREBUCHET:
 	//		MedivalTrebuchet_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case ALT_IKUNAGAE:
-			Ikunagae_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case ALT_MECHASOLDIER_BARRAGER:
-			MechaSoldier_Barrager_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
+
+
 		case NEARL_SWORD:
 			NearlSwordAbility_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		

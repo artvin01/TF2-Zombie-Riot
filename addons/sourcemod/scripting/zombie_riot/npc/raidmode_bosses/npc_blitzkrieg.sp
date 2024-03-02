@@ -232,7 +232,7 @@ public void Blitzkrieg_OnMapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "blitzkrieg");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
