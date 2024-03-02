@@ -145,7 +145,6 @@ void NPC_ConfigSetup()
 	NecroCalcium_OnMapStart_NPC();
 	CuredFatherGrigori_OnMapStart_NPC();
 	
-	AltMedicApprenticeMage_OnMapStart_NPC();
 	SawRunner_OnMapStart_NPC();
 	AltMedicCharger_OnMapStart_NPC();
 	AltMedicBerseker_OnMapStart_NPC();
@@ -586,12 +585,12 @@ enum
 	BTD_DDT								= 91,
 	BTD_BAD								= 92,
 	
-	ALT_MEDIC_APPRENTICE_MAGE			= 93,
+	UNUSED_93			= 93,
 	SAWRUNNER							= 94,
 	
 	RAIDMODE_TRUE_FUSION_WARRIOR		= 95,
 	ALT_MEDIC_CHARGER					= 96,
-	ALT_MEDIC_BERSERKER					= 97,
+	UNUSED_97					= 97,
 	
 	MEDIVAL_MILITIA						= 98,
 	MEDIVAL_ARCHER						= 99,
@@ -967,11 +966,11 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Big Airship of Doom",
 	
 	
-	"Medic Apprentice Mage",
+	"",
 	"Sawrunner",
 	"True Fusion Warrior",
 	"Medic Charger",
-	"Medic Berserker",
+	"",
 	"Militia",
 	"Archer",
 	"Man-At-Arms",
@@ -1012,7 +1011,7 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"",
 	"",
 	"",
-	"Mecha Scout",
+	"",
 	"",
 	"",
 	"Phantom Knight",
@@ -1076,7 +1075,7 @@ static const char NPC_Names[MAX_OLD_NPCS][] =
 	"Trebuchet",
 	
 	"",
-	"Mecha Soldier Barrager",
+	"",
 	"Nearl Radiant Sword",
 
 	"Spawned Combine",
@@ -1388,12 +1387,12 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	6,	// BTD_DDT								= 91,
 	6,	// BTD_BAD								= 92,
 
-	4,	// ALT_MEDIC_APPRENTICE_MAGE			= 93,
+	-1,	// 			= 93,
 	1,	// SAWRUNNER							= 94,
 
 	2,	// RAIDMODE_TRUE_FUSION_WARRIOR		= 95,
 	4,	// ALT_MEDIC_CHARGER					= 96,
-	4,	// ALT_MEDIC_BERSERKER					= 97,
+	-1,	// 					= 97,
 
 	7,	// MEDIVAL_MILITIA						= 98,
 	7,	// MEDIVAL_ARCHER						= 99,
@@ -1429,7 +1428,7 @@ static const int NPCCategory[MAX_OLD_NPCS] =
 	-1,	// BTD_VORTEX	= 125,
 
 	7,	// MEDIVAL_RAM	= 126,
-	4,	// ALT_SOLDIER_BARRAGER = 127,
+	-1,	//  = 127,
 	4,	// ALT_THE_SHIT_SLAPPER = 128,
 
 	0,	// BONEZONE_BASICBONES = 129,
@@ -1819,11 +1818,11 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"",
 	"",
 	"",
-	"npc_alt_medic_apprentice_mage",
+	"",
 	"npc_sawrunner",
 	"npc_true_fusion_warrior",
 	"npc_alt_medic_charger",
-	"npc_alt_medic_berserker",
+	"",
 	"",
 	"",
 	"",
@@ -1853,7 +1852,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"",
 	"",
 	"",
-	"npc_alt_soldier_barrager",
+	"",
 	"npc_alt_the_shit_slapper",
 	
 	"npc_basicbones",
@@ -1862,7 +1861,7 @@ static const char NPC_Plugin_Names_Converted[MAX_OLD_NPCS][] =
 	"",
 	"",
 	"",
-	"npc_alt_mecha_scout",
+	"",
 	"",
 	"",
 	"npc_phantom_knight",
@@ -2456,9 +2455,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		
 		case BTD_BAD:
 			entity = Bad(client, vecPos, vecAng, team, data);
-		
-		case ALT_MEDIC_APPRENTICE_MAGE:
-			entity = AltMedicApprenticeMage(client, vecPos, vecAng, team);
 		
 		case SAWRUNNER:
 			entity = SawRunner(client, vecPos, vecAng, team);
@@ -3464,8 +3460,6 @@ void NPCDeath(int entity)
 		case BTD_BAD:
 			Bad_NPCDeath(entity);
 		
-		case ALT_MEDIC_APPRENTICE_MAGE:
-			AltMedicApprenticeMage_NPCDeath(entity);
 		
 		case SAWRUNNER:
 			SawRunner_NPCDeath(entity);
@@ -4202,8 +4196,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case BTD_BAD:
 			Bad_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case ALT_MEDIC_APPRENTICE_MAGE:
-			AltMedicApprenticeMage_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case SAWRUNNER:
 			SawRunner_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -4741,7 +4733,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/alt/npc_alt_mecha_pyro_giant_main.sp"
 #include "zombie_riot/npc/alt/npc_alt_mecha_scout.sp"
 #include "zombie_riot/npc/alt/npc_alt_combine_soldier_mage.sp"
-#include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
 #include "zombie_riot/npc/alt/npc_alt_donnerkrieg.sp"
 #include "zombie_riot/npc/alt/npc_alt_schwertkrieg.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_constructor.sp"
