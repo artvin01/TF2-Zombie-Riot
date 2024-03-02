@@ -58,8 +58,21 @@ void Zomg_MapStart()
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/zomg.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Zeppelin of Mighty Gargantuaness");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zomg");
+	strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_BTD;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Zomg(client, vecPos, vecAng, ally, data);
+}
 methodmap Zomg < CClotBody
 {
 	property bool m_bFortified
@@ -100,7 +113,6 @@ methodmap Zomg < CClotBody
 		
 		Zomg npc = view_as<Zomg>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/zomg.mdl", "1.0", buffer, ally, false, true));
 		
-		i_NpcInternalId[npc.index] = BTD_ZOMG;
 		i_NpcWeight[npc.index] = 4;
 		KillFeed_SetKillIcon(npc.index, "vehicle");
 		
@@ -124,10 +136,11 @@ methodmap Zomg < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bDoNotGiveWaveDelay = true;
 		
+		func_NPCDeath[npc.index] = Zomg_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Zomg_OnTakeDamage;
+		func_NPCThink[npc.index] = Zomg_ClotThink;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Zomg_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, Zomg_ClotThink);
-		
 		npc.StartPathing();
 		
 		
@@ -259,8 +272,6 @@ public void Zomg_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Zomg_ClotDamagedPost);
-	
-	SDKUnhook(npc.index, SDKHook_Think, Zomg_ClotThink);
 	
 	float pos[3], angles[3];
 	GetEntPropVector(entity, Prop_Data, "m_angRotation", angles);

@@ -23,6 +23,11 @@ void StalkerGoggles_OnMapStart()
 	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return StalkerGoggles(client, vecPos, vecAng, ally);
+}
+
 methodmap StalkerGoggles < StalkerShared
 {
 	public void PlayMeleeHitSound()

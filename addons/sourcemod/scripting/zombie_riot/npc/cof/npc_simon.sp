@@ -21,8 +21,21 @@ void Simon_MapStart()
 	PrecacheSoundCustom("cof/simon/reload.mp3");
 	PrecacheSoundCustom("cof/simon/shoot.mp3");
 	PrecacheModel("models/zombie_riot/cof/booksimon.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Book Simon");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_simon");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_libertylauncher");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_COF;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Simon(client, vecPos, vecAng, ally, data);
+}
 methodmap Simon < CClotBody
 {
 	public void PlayIdleSound()
@@ -69,7 +82,7 @@ methodmap Simon < CClotBody
 			return view_as<Simon>(INVALID_ENT_REFERENCE);
 		
 		Simon npc = view_as<Simon>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/booksimon.mdl", "1.15", data[0] == 'f' ? "300000" : "200000", ally, false, false, true));
-		i_NpcInternalId[npc.index] = BOOKSIMON;
+		
 		i_NpcWeight[npc.index] = 3;
 		
 		int body = EntRefToEntIndex(SimonRagdollRef);
@@ -81,13 +94,14 @@ methodmap Simon < CClotBody
 		npc.PlayIntroSound();
 		ExcuteRelay("zr_simonspawn");
 		
+		func_NPCDeath[npc.index] = Simon_NPCDeath;
+		func_NPCThink[npc.index] = Simon_ClotThink;
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, Simon_ClotThink);
-		
+
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -496,7 +510,6 @@ public void Simon_NPCDeath(int entity)
 	Simon npc = view_as<Simon>(entity);
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_Think, Simon_ClotThink);
 	
 	NPC_StopPathing(npc.index);
 	npc.m_bPathing = false;

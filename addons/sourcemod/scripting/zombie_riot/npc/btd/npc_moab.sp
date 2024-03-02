@@ -65,8 +65,21 @@ void Moab_MapStart()
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/boab.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Massive Ornery Air Blimp");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_moab");
+	strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_BTD;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Moab(client, vecPos, vecAng, ally, data);
+}
 methodmap Moab < CClotBody
 {
 	property bool m_bFortified
@@ -107,7 +120,6 @@ methodmap Moab < CClotBody
 		
 		Moab npc = view_as<Moab>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/boab.mdl", "1.0", buffer, ally, false, true));
 		
-		i_NpcInternalId[npc.index] = BTD_MOAB;
 		i_NpcWeight[npc.index] = 2;
 		KillFeed_SetKillIcon(npc.index, "vehicle");
 		
@@ -123,6 +135,10 @@ methodmap Moab < CClotBody
 		npc.m_flSpeed = MoabSpeed();
 		npc.m_bFortified = fortified;
 		
+		func_NPCDeath[npc.index] = Moab_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Moab_OnTakeDamage;
+		func_NPCThink[npc.index] = Moab_ClotThink;
+
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iState = 0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -133,7 +149,6 @@ methodmap Moab < CClotBody
 		
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Moab_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, Moab_ClotThink);
 		
 		npc.StartPathing();
 		
@@ -267,8 +282,6 @@ public void Moab_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Moab_ClotDamagedPost);
-	
-	SDKUnhook(npc.index, SDKHook_Think, Moab_ClotThink);
 	
 	float pos[3], angles[3];
 	GetEntPropVector(entity, Prop_Data, "m_angRotation", angles);

@@ -3,18 +3,38 @@
 
 // Balanced around Early Zombie
 
+public void BarrackMilitiaOnMapStart()
+{
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks Villager");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_militia");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+	
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackMilitia(client, vecPos, vecAng, ally);
+}
+
 methodmap BarrackMilitia < BarrackBody
 {
 	public BarrackMilitia(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackMilitia npc = view_as<BarrackMilitia>(BarrackBody(client, vecPos, vecAng, "165",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
-		i_NpcInternalId[npc.index] = BARRACK_MILITIA;
 		i_NpcWeight[npc.index] = 1;
 		KillFeed_SetKillIcon(npc.index, "boston_basher");
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackMilitia_ClotThink);
-
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackMilitia_NPCDeath;
+		func_NPCThink[npc.index] = BarrackMilitia_ClotThink;
 		npc.m_flSpeed = 150.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_boston_basher/c_boston_basher.mdl");
@@ -95,5 +115,4 @@ void BarrackMilitia_NPCDeath(int entity)
 {
 	BarrackMilitia npc = view_as<BarrackMilitia>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, BarrackMilitia_ClotThink);
 }

@@ -32,8 +32,21 @@ void DesertQanaas_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Qanaas");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_qanaas");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = MVM_CLASS_FLAG_SUPPORT;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return DesertQanaas(client, vecPos, vecAng, ally);
+}
 
 methodmap DesertQanaas < CClotBody
 {
@@ -72,7 +85,6 @@ methodmap DesertQanaas < CClotBody
 	{
 		DesertQanaas npc = view_as<DesertQanaas>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "550", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_DESERT_QANAAS;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

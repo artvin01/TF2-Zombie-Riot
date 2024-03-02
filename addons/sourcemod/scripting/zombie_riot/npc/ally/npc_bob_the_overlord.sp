@@ -100,6 +100,20 @@ public void BobTheGod_OnMapStart_NPC()
 	{
 		Has_a_bob[client] = 0;
 	}
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Bob the Second");
+	strcopy(data.Plugin, sizeof(data.Plugin), "noc_bob_the_overlord");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BobTheGod(client, vecPos, vecAng, ally);
 }
 
 methodmap BobTheGod < CClotBody
@@ -209,7 +223,6 @@ methodmap BobTheGod < CClotBody
 		
 		BobTheGod npc = view_as<BobTheGod>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.7", "9999999", ally, true));
 		
-		i_NpcInternalId[npc.index] = BOB_THE_GOD_OF_GODS;
 		i_NpcWeight[npc.index] = 999;
 
 		SetVariantInt(1);
@@ -228,6 +241,9 @@ methodmap BobTheGod < CClotBody
 		
 	//	SetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity", client);
 		
+		func_NPCDeath[npc.index] = BobTheGod_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = BobTheGod_OnTakeDamage;
+		func_NPCThink[npc.index] = BobTheGod_ClotThink;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", 50000001);
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", 50000001);
 					

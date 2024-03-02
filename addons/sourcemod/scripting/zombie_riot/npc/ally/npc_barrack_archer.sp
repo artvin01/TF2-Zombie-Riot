@@ -4,17 +4,37 @@
 // Balanced around Mid Zombie
 // Construction Novice
 
+public void BarrackArcherOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks Building");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_archer");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackArcher(client, vecPos, vecAng, ally);
+}
+
 methodmap BarrackArcher < BarrackBody
 {
 	public BarrackArcher(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackArcher npc = view_as<BarrackArcher>(BarrackBody(client, vecPos, vecAng, "110",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
-		i_NpcInternalId[npc.index] = BARRACK_ARCHER;
 		i_NpcWeight[npc.index] = 1;
 		KillFeed_SetKillIcon(npc.index, "huntsman");
-		
-		SDKHook(npc.index, SDKHook_Think, BarrackArcher_ClotThink);
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackArcher_NPCDeath;
+		func_NPCThink[npc.index] = BarrackArcher_ClotThink;
+		func_NPCAnimEvent[npc.index] = BarrackArcher_HandleAnimEvent;
+	
 
 		npc.m_flSpeed = 200.0;
 		

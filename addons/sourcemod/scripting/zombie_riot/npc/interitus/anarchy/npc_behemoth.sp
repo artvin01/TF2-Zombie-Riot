@@ -45,8 +45,21 @@ void AnarchyBehemoth_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Behemonth");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_behemonth");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_chief");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return AnarchyBehemoth(client, vecPos, vecAng, ally);
+}
 
 methodmap AnarchyBehemoth < CClotBody
 {
@@ -91,7 +104,6 @@ methodmap AnarchyBehemoth < CClotBody
 	{
 		AnarchyBehemoth npc = view_as<AnarchyBehemoth>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "60000", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_ANARCHY_BEHEMOTH;
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

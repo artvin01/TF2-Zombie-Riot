@@ -45,6 +45,21 @@ void WinterSnoweyGunner_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Snowey Gunner");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_snowey_gunner");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_shotgun");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return WinterSnoweyGunner(client, vecPos, vecAng, ally);
 }
 
 

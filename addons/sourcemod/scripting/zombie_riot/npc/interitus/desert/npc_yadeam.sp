@@ -32,8 +32,22 @@ void DesertYadeam_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Yadeam");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_yadeam");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper_camper");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return DesertYadeam(client, vecPos, vecAng, ally);
+}
 
 methodmap DesertYadeam < CClotBody
 {
@@ -73,7 +87,6 @@ methodmap DesertYadeam < CClotBody
 	{
 		DesertYadeam npc = view_as<DesertYadeam>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "2000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_DESERT_YADEAM;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

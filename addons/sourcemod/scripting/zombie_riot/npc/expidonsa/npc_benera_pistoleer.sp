@@ -37,8 +37,21 @@ void Pistoleer_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	PrecacheModel("models/player/scout.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Pistoleer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_benera_pistoleer");
+	strcopy(data.Icon, sizeof(data.Icon), "pistoleer");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Pistoleer(client, vecPos, vecAng, ally);
+}
 methodmap Pistoleer < CClotBody
 {
 	public void PlayIdleAlertSound() 
@@ -77,7 +90,6 @@ methodmap Pistoleer < CClotBody
 	{
 		Pistoleer npc = view_as<Pistoleer>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "600", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_PISTOLEER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -95,8 +107,10 @@ methodmap Pistoleer < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_Think, Pistoleer_ClotThink);
 		
+		func_NPCDeath[npc.index] = Pistoleer_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Pistoleer_OnTakeDamage;
+		func_NPCThink[npc.index] = Pistoleer_ClotThink;
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -217,7 +231,6 @@ public void Pistoleer_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_Think, Pistoleer_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);

@@ -106,6 +106,10 @@ void StalkerCombine_MapStart()
 	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return StalkerCombine(client, vecPos, vecAng, ally);
+}
 methodmap StalkerCombine < StalkerShared
 {
 	public void PlayIdleSound()

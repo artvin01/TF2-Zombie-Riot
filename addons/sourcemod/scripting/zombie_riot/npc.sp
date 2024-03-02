@@ -381,6 +381,14 @@ void NPC_ConfigSetup()
 	AnarchyBehemoth_OnMapStart_NPC();
 	AnarchyAbsoluteIncinirator_OnMapStart_NPC();
 	MajorSteam_MapStart();
+	AegirOnMapStart();
+	CautusOnMapStart();
+	CaprinaeOnMapStart();
+	ArchosauriaOnMapStart();
+	AslanOnMapStart();
+	LiberiOnMapStart();
+	PerroOnMapStart();
+	UrsusOnMapStart();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -398,6 +406,22 @@ void NPC_ConfigSetup()
 	Barracks_Thorns();
 	VIPBuilding_MapStart();
 	AlliedSensalAbility_OnMapStart_NPC();
+	BarrackVillagerOnMapStart();
+	BarrackTwoHandedOnMapStart();
+	BarrackTeutonOnMapStart();
+	BarrackSwordsmanOnMapStart();
+	BarrackMonkOnMapStart();
+	BarrackMilitiaOnMapStart();
+	BarrackManAtArmsOnMapStart();
+	BarrackLongbowOnMapStart();
+	BarrackHussarOnMapStart();
+	BarrackLastKnightOnMapStart();
+	BarrackCrossbowOnMapStart();
+	BarrackChampionOnMapStart();
+	BarrackArcherOnMapStart();
+	BarrackArbelastOnMapStart();
+	AlliedKahmlAbilityOnMapStart();
+
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
@@ -416,7 +440,6 @@ void NPC_ConfigSetup()
 
 	// Bloon Low Prio
 	Bloon_MapStart();
-	GoldBloon_MapStart();
 	Moab_MapStart();
 	Bfb_MapStart();
 	Zomg_MapStart();
@@ -2529,8 +2552,6 @@ static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3],
 		case ALT_SNIPER_RAILGUNNER:
 			entity = Sniper_railgunner(client, vecPos, vecAng, team);
 		
-		case BTD_GOLDBLOON:
-			entity = GoldBloon(client, vecPos, vecAng, team, data);
 		
 		case BTD_BLOONARIUS:
 			entity = Bloonarius(client, vecPos, vecAng, team, data);
@@ -3534,8 +3555,6 @@ void NPCDeath(int entity)
 		case ALT_SNIPER_RAILGUNNER:
 			Sniper_railgunner_NPCDeath(entity);
 		
-		case BTD_GOLDBLOON:
-			GoldBloon_NPCDeath(entity);
 		
 		case BTD_BLOONARIUS:
 			Bloonarius_NPCDeath(entity);
@@ -4268,10 +4287,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case ALT_SNIPER_RAILGUNNER:
 			Sniper_railgunner_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case BTD_GOLDBLOON:
-			GoldBloon_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
+
 	//	case BTD_BLOONARIUS:
 	//		Bloonarius_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
@@ -4661,7 +4677,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/btd/npc_zomg.sp"
 #include "zombie_riot/npc/btd/npc_ddt.sp"
 #include "zombie_riot/npc/btd/npc_bad.sp"
-#include "zombie_riot/npc/btd/npc_goldbloon.sp"
 #include "zombie_riot/npc/btd/npc_bloonarius.sp"
 
 #include "zombie_riot/npc/ally/npc_bob_the_overlord.sp"

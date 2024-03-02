@@ -24,6 +24,23 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/medic_battlecry04.mp3"
 };
 
+void LiberiOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Liberi");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_liberi");
+	strcopy(data.Icon, sizeof(data.Icon), "medic_uber");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Liberi(client, vecPos, vecAng, ally);
+}
 static float LiberiBuff[MAXENTITIES];
 
 methodmap Liberi < CClotBody
@@ -49,7 +66,6 @@ methodmap Liberi < CClotBody
 	{
 		Liberi npc = view_as<Liberi>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "35000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_MEDIC;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		

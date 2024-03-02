@@ -46,9 +46,22 @@ void DesertInabdil_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Inabdil");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_inabdil");
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return DesertInabdil(client, vecPos, vecAng, ally);
+}
 methodmap DesertInabdil < CClotBody
 {
 	public void PlayIdleAlertSound() 
@@ -91,8 +104,7 @@ methodmap DesertInabdil < CClotBody
 	public DesertInabdil(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertInabdil npc = view_as<DesertInabdil>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
-		
-		i_NpcInternalId[npc.index] = INTERITUS_DESERT_INABDIL;
+	
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

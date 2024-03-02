@@ -63,6 +63,20 @@ static int MoabHealth(bool fortified)
 void DDT_MapStart()
 {
 	PrecacheModel("models/zombie_riot/btd/ddt.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Dark Dirigible Titan");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ddt");
+	strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_BTD;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return DDT(client, vecPos, vecAng, ally, data);
 }
 
 methodmap DDT < CClotBody
@@ -110,7 +124,6 @@ methodmap DDT < CClotBody
 		
 		DDT npc = view_as<DDT>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/ddt.mdl", "1.0", buffer, ally, false, true));
 		
-		i_NpcInternalId[npc.index] = BTD_DDT;
 		i_NpcWeight[npc.index] = 2;
 		KillFeed_SetKillIcon(npc.index, "vehicle");
 		
@@ -136,9 +149,11 @@ methodmap DDT < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bDoNotGiveWaveDelay = true;
 		
+		func_NPCDeath[npc.index] = DDT_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = DDT_OnTakeDamage;
+		func_NPCThink[npc.index] = DDT_ClotThink;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, DDT_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, DDT_ClotThink);
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 60);
@@ -315,8 +330,6 @@ public void DDT_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, DDT_ClotDamagedPost);
-	
-	SDKUnhook(npc.index, SDKHook_Think, DDT_ClotThink);
 	
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))
