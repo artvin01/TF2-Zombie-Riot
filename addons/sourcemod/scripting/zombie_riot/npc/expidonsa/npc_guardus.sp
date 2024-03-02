@@ -44,8 +44,8 @@ void Guardus_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "TestName");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_test");
+	strcopy(data.Name, sizeof(data.Name), "Guardus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_guardus");
 	strcopy(data.Icon, sizeof(data.Icon), "medic_uber");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MISSION;

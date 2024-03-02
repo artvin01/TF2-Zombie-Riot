@@ -90,7 +90,7 @@ void MedivalLightCav_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Light Cavalr");
+	strcopy(data.Name, sizeof(data.Name), "Light Cavalry");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_light_cav");
 	strcopy(data.Icon, sizeof(data.Icon), "scout");
 	data.IconCustom = false;

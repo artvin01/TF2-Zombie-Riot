@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
-	"$basetexture" "hud/leaderboard_class_nemesis"
+	"$basetexture" "hud/leaderboard_class_nemesis_boss"
 	"$vertexcolor" 1
 	"$no_fullbright" 1
 	"$ignorez" 1

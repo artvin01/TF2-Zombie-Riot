@@ -635,7 +635,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 					Enemy enemy;
 
-					enemy.Index = NPC_GetIdByPlugin("npc_nemesis");
+					enemy.Index = NPC_GetIdByPlugin("npc_xeno_raidboss_nemesis");
 					enemy.Health = 40000000;
 					enemy.Is_Boss = 2;
 					enemy.ExtraSpeed = 1.5;

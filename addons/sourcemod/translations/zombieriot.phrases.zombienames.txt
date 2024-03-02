@@ -2213,4 +2213,8 @@
 	{
 		"en"	"Laniun"
 	}
+	"Bob the Second"
+	{
+		"en"	"Bob the Second"
+	}
 }

@@ -127,6 +127,7 @@ void NPC_ConfigSetup()
 	XenoSoldier_OnMapStart_NPC();
 	XenoSoldierMinion_OnMapStart_NPC();
 	XenoSoldierGiant_OnMapStart_NPC();
+	XenoMedicHealer_OnMapStart_NPC();
 	
 	
 	
@@ -390,6 +391,7 @@ void NPC_ConfigSetup()
 	LiberiOnMapStart();
 	PerroOnMapStart();
 	UrsusOnMapStart();
+	VulpoOnMapStart();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -471,7 +473,7 @@ stock int NPC_Add(NPCData data)
 		ThrowError("Invalid function name");
 
 	if(!TranslationPhraseExists(data.Name))
-		ThrowError("Translation '%s' does not exist", data.Name);
+		LogError("Translation '%s' does not exist", data.Name);
 
 	return NPCList.PushArray(data);
 }

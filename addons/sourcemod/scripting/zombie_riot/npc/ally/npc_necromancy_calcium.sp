@@ -89,7 +89,7 @@ public void NecroCalcium_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return NecroCalcium(client, vecPos, vecAng, ally);
+	return NecroCalcium(client, vecPos, vecAng);
 }
 methodmap NecroCalcium < CClotBody
 {
@@ -182,7 +182,7 @@ methodmap NecroCalcium < CClotBody
 	}
 	
 	
-	public NecroCalcium(int client, float vecPos[3], float vecAng[3], float damage_multiplier = 1.0)
+	public NecroCalcium(int client, float vecPos[3], float vecAng[3])
 	{
 		NecroCalcium npc = view_as<NecroCalcium>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "0.8", "1250", TFTeam_Red, true));
 		

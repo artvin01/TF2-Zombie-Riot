@@ -98,9 +98,9 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return NPC_ALT_MEDIC_SUPPERIOR_MAGE(client, vecPos, vecAng, ally, data);
+	return NPC_ALT_MEDIC_SUPPERIOR_MAGE(client, vecPos, vecAng, ally);
 }
 methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 {

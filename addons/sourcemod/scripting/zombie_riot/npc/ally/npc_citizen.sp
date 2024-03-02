@@ -891,7 +891,7 @@ void Citizen_OnMapStart()
 	NPCId = NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3],int ally, const char[] data)
 {
 	return Citizen(client, vecPos, vecAng, data);
 }

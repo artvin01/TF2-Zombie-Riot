@@ -117,8 +117,8 @@ void RaidbossNemesis_OnMapStart()
 	PrecacheSoundCustom("#zombie_riot/320_now_1.mp3");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Nemesis");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_nemesis");
-	strcopy(data.Icon, sizeof(data.Icon), "nemesis");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_raidboss_nemesis");
+	strcopy(data.Icon, sizeof(data.Icon), "nemesis_boss");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Special;

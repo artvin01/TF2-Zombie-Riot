@@ -46,7 +46,7 @@ void Alt_Medic_Constructor_OnMapStart_NPC()
 	PrecacheModel("models/bots/medic/bot_medic.mdl");
 	PrecacheSound("player/flow.wav");
 	PrecacheModel(LASERBEAM);
-
+	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Medic Constructor");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_medic_healer_3");
@@ -54,7 +54,7 @@ void Alt_Medic_Constructor_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	strcopy(data.Icon, sizeof(data.Icon), "medic"); 		//leaderboard_class_(insert the name)
 	data.IconCustom = false;													//download needed?
-	data.Flags = MVM_CLASS_FLAG_SUPPORT_LIMITED;								//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	data.Flags = 0;								//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 
 }

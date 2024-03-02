@@ -96,7 +96,7 @@ void RaidbossBlueGoggles_OnMapStart()
 	PrecacheSoundArray(g_AngerSounds);
 	PrecacheSoundArray(g_HappySounds);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Blue Gpggles");
+	strcopy(data.Name, sizeof(data.Name), "Blue Goggles");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_infected_goggles");
 	strcopy(data.Icon, sizeof(data.Icon), "goggles");
 	data.IconCustom = true;

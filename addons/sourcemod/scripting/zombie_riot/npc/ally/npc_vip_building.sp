@@ -30,7 +30,7 @@ int VIPBuilding_ID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3],int ally,  const char[] data)
 {
 	return VIPBuilding(client, vecPos, vecAng, data);
 }

@@ -33,7 +33,10 @@ methodmap BarrackSwordsman < BarrackBody
 		i_NpcWeight[npc.index] = 1;
 		KillFeed_SetKillIcon(npc.index, "sword");
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackSwordsman_ClotThink);
+
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackSwordsman_NPCDeath;
+		func_NPCThink[npc.index] = BarrackSwordsman_ClotThink;
 
 		npc.m_flSpeed = 200.0;
 		

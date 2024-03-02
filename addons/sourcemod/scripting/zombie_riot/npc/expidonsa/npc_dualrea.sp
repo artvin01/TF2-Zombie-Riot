@@ -46,7 +46,7 @@ void DualRea_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Dualrea");
+	strcopy(data.Name, sizeof(data.Name), "Dual Rea");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dualrea");
 	strcopy(data.Icon, sizeof(data.Icon), "scout");
 	data.IconCustom = false;

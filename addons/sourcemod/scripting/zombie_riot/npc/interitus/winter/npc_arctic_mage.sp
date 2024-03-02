@@ -48,8 +48,8 @@ void WinterArcticMage_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "TestName");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_test");
+	strcopy(data.Name, sizeof(data.Name), "Arctic Mage");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_arctic_mage");
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_heal_intertius");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;

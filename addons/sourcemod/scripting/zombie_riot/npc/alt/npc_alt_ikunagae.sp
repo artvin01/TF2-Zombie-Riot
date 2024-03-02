@@ -111,7 +111,7 @@ public void Ikunagae_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_ikunagae");
 	data.Category = Type_Alt;
 	data.Func = ClotSummon;
-	strcopy(data.Icon, sizeof(data.Icon), "ikunagae"); 		//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), "ikunage"); 		//leaderboard_class_(insert the name)
 	data.IconCustom = true;													//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
