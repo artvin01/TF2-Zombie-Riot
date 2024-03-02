@@ -490,6 +490,13 @@ int NPC_GetNameById(int id, char[] buffer, int length)
 	return strcopy(buffer, length, data.Name);
 }
 
+bool NPC_GetPluginNameById(int id, char[] buffer, int length)
+{
+	static NPCData data;
+	NPC_GetById(id, data);
+	return strcopy(buffer, length, data.Plugin);
+}
+
 void NPC_GetById(int id, NPCData data)
 {
 	NPCList.GetArray(id, data);
