@@ -7799,15 +7799,15 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 				NPC_GetPluginById(i_NpcInternalId[npc.index], npc_classname, sizeof(npc_classname));
 				if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION)
 				{
-					if(StrEqual(npc_classname, "npc_barrack_villager"))
+					if(!StrEqual(npc_classname, "npc_barrack_villager"))
 					{
-						if(StrEqual(npc_classname, "npc_barrack_building"))
+						if(!StrEqual(npc_classname, "npc_barrack_building"))
 							personal += npc.m_iSupplyCount;
 					}
 				}
 				else
 				{
-					if(StrEqual(npc_classname, "npc_barrack_building"))
+					if(!StrEqual(npc_classname, "npc_barrack_building"))
 						personal += npc.m_iSupplyCount;
 				}
 			}
