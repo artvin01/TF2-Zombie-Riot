@@ -61,6 +61,21 @@ public void Barrack_Alt_Ikunagae_MapStart()
 	Ikunagae_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	
 	PrecacheModel("materials/sprites/laserbeam.vmt", true);
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks Ikunagae");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_ikunagae");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Barrack_Alt_Ikunagae(client, vecPos, vecAng, ally);
 }
 
 methodmap Barrack_Alt_Ikunagae < BarrackBody
@@ -104,10 +119,11 @@ methodmap Barrack_Alt_Ikunagae < BarrackBody
 	{
 		Barrack_Alt_Ikunagae npc = view_as<Barrack_Alt_Ikunagae>(BarrackBody(client, vecPos, vecAng, "450", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
-		i_NpcInternalId[npc.index] = ALT_BARRACK_IKUNAGAE;
 		i_NpcWeight[npc.index] = 1;
-		
-		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Ikunagae_ClotThink);
+
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barrack_Alt_Ikunagae_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Alt_Ikunagae_ClotThink;
 
 		npc.m_flSpeed = 250.0;
 		
@@ -313,7 +329,6 @@ void Barrack_Alt_Ikunagae_NPCDeath(int entity)
 {
 	Barrack_Alt_Ikunagae npc = view_as<Barrack_Alt_Ikunagae>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, Barrack_Alt_Ikunagae_ClotThink);
 }
 
 static void Normal_Attack_BEAM_Iku_Ability(int client)

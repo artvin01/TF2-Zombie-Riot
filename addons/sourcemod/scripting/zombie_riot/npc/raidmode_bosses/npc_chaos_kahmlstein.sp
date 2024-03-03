@@ -104,6 +104,8 @@ static float f_khamlCutscene[MAXENTITIES];
 
 static float f_KahmlResTemp[MAXENTITIES];
 
+static int NPCId;
+
 void ChaosKahmlstein_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -127,9 +129,22 @@ void ChaosKahmlstein_OnMapStart_NPC()
 	PrecacheSoundCustom("zombiesurvival/internius/blinkarrival.wav");
 	PrecacheSound("player/taunt_knuckle_crack.wav");
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Chaos Kahmlstein");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chaos_kahmlstein");
+	strcopy(data.Icon, sizeof(data.Icon), "kahmlstein");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
 }
 
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return ChaosKahmlstein(client, vecPos, vecAng, ally, data);
+}
 methodmap ChaosKahmlstein < CClotBody
 {
 	property int i_GunMode
@@ -252,7 +267,6 @@ methodmap ChaosKahmlstein < CClotBody
 	{
 		ChaosKahmlstein npc = view_as<ChaosKahmlstein>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "40000", ally, false, true, true,_)); //giant!
 		
-		i_NpcInternalId[npc.index] = RAIDMODE_CHAOS_KAHMLSTEIN;
 		i_NpcWeight[npc.index] = 4;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -495,7 +509,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-				if(entity != INVALID_ENT_REFERENCE && (i_NpcInternalId[entity] == RAIDMODE_THE_MESSENGER && IsEntityAlive(entity)))
+				if(entity != INVALID_ENT_REFERENCE && (b_thisNpcIsARaid[entity] && IsEntityAlive(entity)))
 				{
 					foundEm = true;
 					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", Pos);
@@ -1540,15 +1554,15 @@ void CreateCloneTempKahmlsteinFakeout(int entity, int TypeOfFake, float SelfPos[
 	{
 		case 2:
 		{
-			KamlcloneSpawn = NPC_CreateById(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_2"); //can only be enemy
+			KamlcloneSpawn = NPC_CreateById(NPCId, -1, SelfPos, AllyAng, GetTeam(entity), "fake_2"); //can only be enemy
 		}
 		case 3:
 		{
-			KamlcloneSpawn = NPC_CreateById(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_3"); //can only be enemy
+			KamlcloneSpawn = NPC_CreateById(NPCId, -1, SelfPos, AllyAng, GetTeam(entity), "fake_3"); //can only be enemy
 		}
 		case 4:
 		{
-			KamlcloneSpawn = NPC_CreateById(RAIDMODE_CHAOS_KAHMLSTEIN, -1, SelfPos, AllyAng, GetTeam(entity), "fake_4"); //can only be enemy
+			KamlcloneSpawn = NPC_CreateById(NPCId, -1, SelfPos, AllyAng, GetTeam(entity), "fake_4"); //can only be enemy
 		}
 	}
 	if(IsValidEntity(KamlcloneSpawn))

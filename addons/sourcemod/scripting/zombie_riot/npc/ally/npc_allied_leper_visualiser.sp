@@ -6,8 +6,21 @@
 void AlliedLeperVisualiserAbility_OnMapStart_NPC()
 {
 	PrecacheModel("models/weapons/c_models/c_claymore/c_claymore.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Allied Leper Afterimage");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_allied_leper_visualiser");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return AlliedLeperVisualiserAbility(client, vecPos, vecAng, ally, data);
+}
 methodmap AlliedLeperVisualiserAbility < CClotBody
 {
 	
@@ -15,7 +28,6 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 	{
 		AlliedLeperVisualiserAbility npc = view_as<AlliedLeperVisualiserAbility>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "100", TFTeam_Red, true));
 		
-		i_NpcInternalId[npc.index] = WEAPON_LEPER_AFTERIMAGE;
 		i_NpcWeight[npc.index] = 999;
 		SetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity", client);
 		
@@ -119,7 +131,8 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
 		
-		SDKHook(npc.index, SDKHook_Think, AlliedLeperVisaluser_ClotThink);
+		func_NPCDeath[npc.index] = AlliedLeperVisualiserAbility_NPCDeath;
+		func_NPCThink[npc.index] = AlliedLeperVisaluser_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
@@ -216,7 +229,6 @@ public void AlliedLeperVisualiserAbility_NPCDeath(int entity)
 {
 	AlliedLeperVisualiserAbility npc = view_as<AlliedLeperVisualiserAbility>(entity);
 
-	SDKUnhook(npc.index, SDKHook_Think, AlliedLeperVisaluser_ClotThink);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	

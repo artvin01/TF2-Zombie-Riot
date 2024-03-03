@@ -927,8 +927,10 @@ bool BarrackBody_Interact(int client, int entity)
 {
 	if(!IsValidClient(client))
 		return false;
-
-	if(i_NpcInternalId[entity] != BARRACKS_BUILDING)
+		
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	if(!StrContains(npc_classname, "npc_barrack_building"))
 	{
 		BarrackBody npc = view_as<BarrackBody>(entity);
 		if(npc.OwnerUserId)
@@ -1062,7 +1064,10 @@ public int BarrackBody_MenuH(Menu menu, MenuAction action, int client, int choic
 					}
 					case 7:
 					{
-						if(i_NpcInternalId[npc.index] == BARRACKS_VILLAGER)
+						char npc_classname[60];
+						NPC_GetPluginById(i_NpcInternalId[npc.index], npc_classname, sizeof(npc_classname));
+						
+						if(StrContains(npc_classname, "npc_barrack_villager"))
 						{
 							BarracksVillager_MenuSpecial(client, npc.index);
 							return 0;

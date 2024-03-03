@@ -92,21 +92,6 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
 	float duration = 6.0;
-	switch(i_NpcInternalId[victim])
-	{
-		case BTD_MOAB:
-		{
-			duration = 12.0;
-		}
-		case BTD_BFB:
-		{
-			duration = 9.0;
-		}
-		case BTD_BLOON, BTD_GOLDBLOON, BTD_BAD:
-		{
-			duration = 5.0;
-		}
-	}
 	
 	if(duration)
 	{
@@ -124,30 +109,7 @@ float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float dam
 float SniperMonkey_CrippleMoab(int victim, int &attacker, int &inflictor, float damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
 	float duration = 6.0;
-	switch(i_NpcInternalId[victim])
-	{
-		case BTD_BLOON, BTD_GOLDBLOON:
-		{
-			duration = 0.0;
-		}
-		case BTD_MOAB:
-		{
-			duration = 14.0;
-		}
-		case BTD_BFB:
-		{
-			duration = 12.0;
-		}
-		case BTD_ZOMG:
-		{
-			duration = 6.0;
-		}
-		case BTD_DDT:
-		{
-			duration = 8.0;
-		}
-	}
-	
+
 	if(duration)
 	{
 		if((damagetype & DMG_SLASH) || (damagetype & DMG_BLAST))

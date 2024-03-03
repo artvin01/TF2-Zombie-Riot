@@ -79,6 +79,22 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
+public void MedivalCavalary_OnMapStart_NPC()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Cavalary");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_cavalary");
+	strcopy(data.Icon, sizeof(data.Icon), "scout");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalCavalary(client, vecPos, vecAng, ally);
+}
 methodmap MedivalCavalary < CClotBody
 {
 	public void PlayIdleSound() {
@@ -155,8 +171,7 @@ methodmap MedivalCavalary < CClotBody
 	{
 		MedivalCavalary npc = view_as<MedivalCavalary>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "12500", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_CAVALARY;
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		i_NpcWeight[npc.index] = 2;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -172,7 +187,9 @@ methodmap MedivalCavalary < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalCavalary_ClotThink);
+		func_NPCDeath[npc.index] = MedivalCavalary_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalCavalary_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalCavalary_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;
@@ -400,9 +417,6 @@ void MedivalCavalary_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalCavalary_ClotThink);
-		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

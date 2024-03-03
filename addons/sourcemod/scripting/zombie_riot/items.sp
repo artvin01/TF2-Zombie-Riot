@@ -267,11 +267,6 @@ bool Items_HasNamedItem(int client, const char[] name)
 	return false;
 }
 
-stock void Items_GiveNPCKill(int client, int id)
-{
-	//AddFlagOfLevel(client, -id, 1, true);
-}
-
 bool Items_GiveIdItem(int client, int id)
 {
 	return AddFlagOfLevel(client, IdToLevel(id), IdToFlag(id));

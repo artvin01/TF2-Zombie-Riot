@@ -71,8 +71,21 @@ void MedivalEliteLongbowmen_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Medival Elite Longbowmen");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_elite_longbowmen");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper_bow_multi");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalEliteLongbowmen(client, vecPos, vecAng, ally);
+}
 methodmap MedivalEliteLongbowmen < CClotBody
 {
 	public void PlayIdleSound() {
@@ -150,7 +163,6 @@ methodmap MedivalEliteLongbowmen < CClotBody
 		MedivalEliteLongbowmen npc = view_as<MedivalEliteLongbowmen>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "17500", ally));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_ELITE_LONGBOWMEN;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -165,6 +177,10 @@ methodmap MedivalEliteLongbowmen < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
+		func_NPCDeath[npc.index] = MedivalEliteLongbowmen_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalEliteLongbowmen_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalEliteLongbowmen_ClotThink;
+		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bow/c_bow.mdl");
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -172,10 +188,8 @@ methodmap MedivalEliteLongbowmen < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/scout/spr17_the_lightning_lid/spr17_the_lightning_lid.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		
-		SDKHook(npc.index, SDKHook_Think, MedivalEliteLongbowmen_ClotThink);
-	
+
+
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 //		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
@@ -387,9 +401,6 @@ public void MedivalEliteLongbowmen_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalEliteLongbowmen_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

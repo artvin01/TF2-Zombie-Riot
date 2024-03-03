@@ -81,7 +81,6 @@ methodmap SeabornDefender < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = SEABORN_DEFENDER;
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
 		KillFeed_SetKillIcon(npc.index, "splendid_screen");

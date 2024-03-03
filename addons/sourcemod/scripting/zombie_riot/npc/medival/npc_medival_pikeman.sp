@@ -93,6 +93,21 @@ void MedivalPikeman_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Pikeman");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_pikeman");
+	strcopy(data.Icon, sizeof(data.Icon), "spearmen");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalPikeman(client, vecPos, vecAng, ally);
 }
 
 methodmap MedivalPikeman < CClotBody
@@ -171,8 +186,7 @@ methodmap MedivalPikeman < CClotBody
 	{
 		MedivalPikeman npc = view_as<MedivalPikeman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2500", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_PIKEMAN;
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -188,7 +202,9 @@ methodmap MedivalPikeman < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalPikeman_ClotThink);
+		func_NPCDeath[npc.index] = MedivalPikeman_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalPikeman_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalPikeman_ClotThink;
 	
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 //		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
@@ -403,9 +419,6 @@ public void MedivalPikeman_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalPikeman_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

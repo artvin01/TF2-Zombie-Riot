@@ -65,8 +65,21 @@ public void XenoFastZombie_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_PlayMeleeJumpSound));   i++) { PrecacheSound(g_PlayMeleeJumpSound[i]);   }
 	for (int i = 0; i < (sizeof(g_leap_scream));   i++) { PrecacheSound(g_leap_scream[i]);   }
 	for (int i = 0; i < (sizeof(g_leap_prepare));   i++) { PrecacheSound(g_leap_prepare[i]);   }
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Fast Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_fastzombie");
+	strcopy(data.Icon, sizeof(data.Icon), "norm_fast_zombie");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoFastZombie(client, vecPos, vecAng, ally);
+}
 methodmap XenoFastZombie < CClotBody
 {
 	
@@ -183,7 +196,6 @@ methodmap XenoFastZombie < CClotBody
 	{
 		XenoFastZombie npc = view_as<XenoFastZombie>(CClotBody(vecPos, vecAng, "models/zombie/fast.mdl", "1.15", "200", ally));
 		
-		i_NpcInternalId[npc.index] = XENO_FASTZOMBIE;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -201,12 +213,13 @@ methodmap XenoFastZombie < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		
-		
-		SDKHook(npc.index, SDKHook_Think, XenoFastZombie_ClotThink);
+
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 180);
+		func_NPCDeath[npc.index] = XenoFastZombie_NPCDeath;
+		func_NPCThink[npc.index] = XenoFastZombie_ClotThink;	
+		func_NPCOnTakeDamage[npc.index] = XenoFastZombie_OnTakeDamage;		
 		
 		//IDLE
 		npc.m_flSpeed = 400.0;
@@ -414,9 +427,6 @@ public void XenoFastZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoFastZombie_ClotThink);
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

@@ -215,8 +215,22 @@ void Bloon_MapStart()
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/bloons_hitbox.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Bloon");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bloon");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_BTD;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Bloon(client, vecPos, vecAng, ally, data);
+}
 static int BType[MAXENTITIES];
 static bool Regrow[MAXENTITIES];
 static bool WasCamo[MAXENTITIES];
@@ -455,13 +469,12 @@ methodmap Bloon < CClotBody
 		
 		Bloon npc = view_as<Bloon>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloons_hitbox.mdl", "1.0", buffer, ally));
 		
-		i_NpcInternalId[npc.index] = BTD_BLOON;
 		i_NpcWeight[npc.index] = 1;
 		KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 		
 		npc.m_iBleedType = BLEEDTYPE_RUBBER;
-		npc.m_iStepNoiseType = NOTHING;	
-		npc.m_iNpcStepVariation = NOTHING;	
+		npc.m_iStepNoiseType = STEPTYPE_NONE;	
+		npc.m_iNpcStepVariation = STEPTYPE_NONE;	
 		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_bCamo = camo;
@@ -480,9 +493,11 @@ methodmap Bloon < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bDoNotGiveWaveDelay = true;
 		
+		func_NPCDeath[npc.index] = Bloon_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Bloon_OnTakeDamage;
+		func_NPCThink[npc.index] = Bloon_ClotThink;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bloon_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, Bloon_ClotThink);
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
@@ -756,7 +771,6 @@ public void Bloon_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bloon_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_Think, Bloon_ClotThink);
 	
 	int sprite = npc.m_iSprite;
 	if(sprite > MaxClients && IsValidEntity(sprite))

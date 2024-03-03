@@ -84,6 +84,7 @@ static const char g_WarCry[][] = {
 };
 
 static float f_GlobalSoundCD;
+static int NPCId;
 
 void MedivalHussar_OnMapStart_NPC()
 {
@@ -97,8 +98,21 @@ void MedivalHussar_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_WarCry));   i++) { PrecacheSound(g_WarCry[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	f_GlobalSoundCD = 0.0;
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Hussar");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_hussar");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_backup");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalHussar(client, vecPos, vecAng, ally);
+}
 static int i_ClosestAlly[MAXENTITIES];
 static float i_ClosestAllyCD[MAXENTITIES];
 static int i_ClosestAllyTarget[MAXENTITIES];
@@ -169,8 +183,7 @@ methodmap MedivalHussar < CClotBody
 	{
 		MedivalHussar npc = view_as<MedivalHussar>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "75000", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_HUSSAR;
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -186,7 +199,9 @@ methodmap MedivalHussar < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalHussar_ClotThink);
+		func_NPCDeath[npc.index] = MedivalHussar_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalHussar_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalHussar_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 350.0;
@@ -410,7 +425,7 @@ void HussarAOEBuff(MedivalHussar npc, float gameTime, bool mute = false)
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
 					if(GetVectorDistance(pos1, pos2, true) < (HUSSAR_BUFF_MAXRANGE * HUSSAR_BUFF_MAXRANGE))
 					{
-						if(i_NpcInternalId[entitycount] != MEDIVAL_HUSSAR) //Hussars cannot buff eachother.
+						if(i_NpcInternalId[entitycount] != NPCId) //Hussars cannot buff eachother.
 						{
 							f_HussarBuff[entitycount] = GetGameTime() + 5.0; //allow buffing of players too if on red.
 							//Buff this entity.
@@ -580,9 +595,6 @@ public void MedivalHussar_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalHussar_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

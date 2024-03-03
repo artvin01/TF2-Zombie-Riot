@@ -55,8 +55,21 @@ void Spy_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel("models/player/spy.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Spy Facestabber");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zombie_spy_grave");
+	strcopy(data.Icon, sizeof(data.Icon), "spy");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Spy(client, vecPos, vecAng, ally);
+}
 methodmap Spy < CClotBody
 {
 	
@@ -134,7 +147,6 @@ methodmap Spy < CClotBody
 	{
 		Spy npc = view_as<Spy>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "4000", ally));
 		
-		i_NpcInternalId[npc.index] = SPY_FACESTABBER;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -151,9 +163,11 @@ methodmap Spy < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, Spy_ClotThink);
-		
+
+		func_NPCDeath[npc.index] = Spy_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Spy_OnTakeDamage;
+		func_NPCThink[npc.index] = Spy_ClotThink;		
+
 		npc.m_flSpeed = 350.0;
 		
 		int skin = 23;
@@ -337,10 +351,6 @@ public void Spy_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, Spy_ClotThink);
-		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))

@@ -76,8 +76,21 @@ public void NecroCalcium_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
 	PrecacheModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Spookmaster Boner");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_necromancy_calcium");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return NecroCalcium(client, vecPos, vecAng);
+}
 methodmap NecroCalcium < CClotBody
 {
 	public void PlayIdleSound() {
@@ -169,11 +182,10 @@ methodmap NecroCalcium < CClotBody
 	}
 	
 	
-	public NecroCalcium(int client, float vecPos[3], float vecAng[3], float damage_multiplier = 1.0)
+	public NecroCalcium(int client, float vecPos[3], float vecAng[3])
 	{
 		NecroCalcium npc = view_as<NecroCalcium>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "0.8", "1250", TFTeam_Red, true));
 		
-		i_NpcInternalId[npc.index] = NECRO_CALCIUM;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -189,17 +201,12 @@ methodmap NecroCalcium < CClotBody
 		
 		SetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity", client);
 		
+		func_NPCDeath[npc.index] = NecroCalcium_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = NecroCalcium_OnTakeDamage;
+		func_NPCThink[npc.index] = NecroCalcium_ClotThink;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", 50000001);
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", 50000001);
 		
-		if(EscapeModeForNpc)
-		{
-			damage_multiplier *= 2.0;
-		}
-		npc.m_flExtraDamage = damage_multiplier;
-		
-		
-		SDKHook(npc.index, SDKHook_Think, NecroCalcium_ClotThink);
 		
 		npc.m_bThisEntityIgnored = true;
 	//	npc.m_flNextThinkTime = GetGameTime(npc.index) + GetRandomFloat(0.2, 0.5);
@@ -406,8 +413,6 @@ public void NecroCalcium_NPCDeath(int entity)
 	NecroCalcium npc = view_as<NecroCalcium>(entity);
 //	npc.PlayDeathSound();
 
-	
-	SDKUnhook(npc.index, SDKHook_Think, NecroCalcium_ClotThink);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))

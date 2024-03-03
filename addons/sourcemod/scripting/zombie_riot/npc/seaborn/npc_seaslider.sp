@@ -284,7 +284,7 @@ void SeaSlider_AddNeuralDamage(int victim, int attacker, int damagebase, bool so
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		if(i_NpcInternalId[victim] == CITIZEN)	// Rebels
+		if(Citizen_IsIt(victim))	// Rebels
 		{
 			Citizen npc = view_as<Citizen>(victim);
 			

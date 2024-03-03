@@ -78,6 +78,20 @@ public void CombineSoldierShotgun_OnMapStart_NPC()
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Combine Shotgunner");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_shotgun");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_shotgun");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return CombineSoldierShotgun(client, vecPos, vecAng, ally);
 }
 
 methodmap CombineSoldierShotgun < CClotBody
@@ -174,7 +188,6 @@ methodmap CombineSoldierShotgun < CClotBody
 	{
 		CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "650", ally));
 		
-		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_SHOTGUN;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -189,10 +202,11 @@ methodmap CombineSoldierShotgun < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
 
+		func_NPCDeath[npc.index] = CombineSoldierShotgun_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = CombineSoldierShotgun_OnTakeDamage;
+		func_NPCThink[npc.index] = CombineSoldierShotgun_ClotThink;
 		npc.m_fbGunout = false;
 
-		
-		SDKHook(npc.index, SDKHook_Think, CombineSoldierShotgun_ClotThink);
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		
@@ -377,9 +391,6 @@ public void CombineSoldierShotgun_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, CombineSoldierShotgun_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

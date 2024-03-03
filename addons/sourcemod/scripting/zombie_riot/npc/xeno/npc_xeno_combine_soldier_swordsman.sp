@@ -78,6 +78,20 @@ public void XenoCombineSwordsman_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Swordsman");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_swordsman");
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoCombineSwordsman(client, vecPos, vecAng, ally);
 }
 
 methodmap XenoCombineSwordsman < CClotBody
@@ -180,7 +194,6 @@ methodmap XenoCombineSwordsman < CClotBody
 		XenoCombineSwordsman npc = view_as<XenoCombineSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1750", ally));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_SWORDSMAN;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -197,10 +210,10 @@ methodmap XenoCombineSwordsman < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		
-		SDKHook(npc.index, SDKHook_Think, XenoCombineSwordsman_ClotThink);
-		
-		
+
+		func_NPCDeath[npc.index] = XenoCombineSwordsman_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoCombineSwordsman_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoCombineSwordsman_ClotThink;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 180);
@@ -498,9 +511,6 @@ public void XenoCombineSwordsman_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoCombineSwordsman_ClotThink);
 		
 		
 	if(IsValidEntity(npc.m_iWearable1))

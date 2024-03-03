@@ -42,14 +42,29 @@ static const char g_RangedAttackSounds[][] = {
 
 void AltMedicBerseker_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_TeleportSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_RangedAttackSounds);
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Medic Berserker");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_medic_berserker");
+	data.Category = Type_Alt;
+	data.Func = ClotSummon;
+	strcopy(data.Icon, sizeof(data.Icon), "medic"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = false;													//download needed?
+	data.Flags = MVM_CLASS_FLAG_ALWAYSCRIT;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return AltMedicBerseker(client, vecPos, vecAng, ally);
 }
 
 methodmap AltMedicBerseker < CClotBody
@@ -131,7 +146,6 @@ methodmap AltMedicBerseker < CClotBody
 	{
 		AltMedicBerseker npc = view_as<AltMedicBerseker>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.00", "25000", ally));
 		
-		i_NpcInternalId[npc.index] = ALT_MEDIC_BERSERKER;
 		i_NpcWeight[npc.index] = 1;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -151,8 +165,9 @@ methodmap AltMedicBerseker < CClotBody
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
-		
-		SDKHook(npc.index, SDKHook_Think, AltMedicBerseker_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_ubersaw/c_ubersaw.mdl");
 		SetVariantString("1.0");
@@ -195,16 +210,18 @@ methodmap AltMedicBerseker < CClotBody
 
 //TODO 
 //Rewrite
-public void AltMedicBerseker_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	AltMedicBerseker npc = view_as<AltMedicBerseker>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
 	
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 	
@@ -215,18 +232,18 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > GameTime)
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
 	
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -234,13 +251,13 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-		if (npc.m_flReloadDelay < GetGameTime(npc.index))
+		if (npc.m_flReloadDelay < GameTime)
 		{
-			if (npc.m_flmovedelay < GetGameTime(npc.index))
+			if (npc.m_flmovedelay < GameTime)
 			{
 				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-				npc.m_flmovedelay = GetGameTime(npc.index) + 1.5;
+				npc.m_flmovedelay = GameTime + 1.5;
 				npc.m_flSpeed = 300.0;					
 			}
 			AcceptEntityInput(npc.m_iWearable1, "Enable");
@@ -279,19 +296,19 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 		//	npc.FaceTowards(vecTarget, 2000.0);
 			
 			//Can we attack right now?
-			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+			if(npc.m_flNextMeleeAttack < GameTime)
 			{
 					//Play attack ani
 				if (!npc.m_flAttackHappenswillhappen)
 				{
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 					npc.PlayMeleeSound();
-					npc.m_flAttackHappens = GetGameTime(npc.index)+0.1;
-					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
+					npc.m_flAttackHappens = GameTime+0.1;
+					npc.m_flAttackHappens_bullshit = GameTime+0.54;
 					npc.m_flAttackHappenswillhappen = true;
 				}
 						
-				if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+				if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 				{
 					float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 					float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
@@ -324,26 +341,26 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 					}
 					delete swingTrace;
 					float speed = 0.25 * (Health / MaxHealth);
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + speed;
+					npc.m_flNextMeleeAttack = GameTime + speed;
 					npc.m_flAttackHappenswillhappen = false;
 				}
-				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+				else if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
 				{
 					float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 					float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 					float speed = 0.2 * (Health / MaxHealth);
 					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + speed;
+					npc.m_flNextMeleeAttack = GameTime + speed;
 				}
 			}
 		}
-		else if(flDistanceToTarget > 22500 && npc.m_flAttackHappens_2 < GetGameTime(npc.index))
+		else if(flDistanceToTarget > 22500 && npc.m_flAttackHappens_2 < GameTime)
 		{
 			float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 			float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 			float crocket = 10.0 * (Health / MaxHealth);
 			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-			npc.m_flAttackHappens_2 = GetGameTime(npc.index) + crocket;
+			npc.m_flAttackHappens_2 = GameTime + crocket;
 			npc.PlayRangedSound();
 			npc.FireParticleRocket(vecTarget, 20.0 , 600.0 , 100.0 , "raygun_projectile_blue_crit");
 			//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
@@ -353,12 +370,12 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 			npc.StartPathing();
 			
 		}
-		if (npc.m_flReloadDelay < GetGameTime(npc.index))
+		if (npc.m_flReloadDelay < GameTime)
 		{
 			npc.StartPathing();
 			
 		}
-		if(npc.m_flNextTeleport < GetGameTime(npc.index))
+		if(npc.m_flNextTeleport < GameTime)
 		{
 			static float flVel[3];
 			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
@@ -370,7 +387,7 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				npc.FaceTowards(vecTarget);
 				npc.FaceTowards(vecTarget);
-				npc.m_flNextTeleport = GetGameTime(npc.index) + time;
+				npc.m_flNextTeleport = GameTime + time;
 				float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
 				if(Tele_Check > 120.0)
 				{
@@ -381,7 +398,7 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 					}
 					else
 					{
-						npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
+						npc.m_flNextTeleport = GameTime + 1.0;
 					}
 				}
 			}
@@ -397,7 +414,7 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action AltMedicBerseker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -418,16 +435,13 @@ public Action AltMedicBerseker_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-public void AltMedicBerseker_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	AltMedicBerseker npc = view_as<AltMedicBerseker>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, AltMedicBerseker_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

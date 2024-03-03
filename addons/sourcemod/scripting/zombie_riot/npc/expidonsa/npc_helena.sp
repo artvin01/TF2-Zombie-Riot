@@ -46,8 +46,21 @@ void Helena_OnMapStart_NPC()
 	PrecacheModel("models/player/medic.mdl");
 	PrecacheSound("player/flow.wav");
 	PrecacheModel(LASERBEAM);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Helena");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_helena");
+	strcopy(data.Icon, sizeof(data.Icon), "medic");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Helena(client, vecPos, vecAng, ally);
+}
 methodmap Helena < CClotBody
 {
 	public void PlayIdleAlertSound() {
@@ -111,7 +124,6 @@ methodmap Helena < CClotBody
 	{
 		Helena npc = view_as<Helena>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "5500", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_HELENA;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -120,14 +132,14 @@ methodmap Helena < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
+		func_NPCDeath[npc.index] = Helena_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Helena_OnTakeDamage;
+		func_NPCThink[npc.index] = Helena_ClotThink;
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
-		
-		
-		SDKHook(npc.index, SDKHook_Think, Helena_ClotThink);
 		
 		
 		//IDLE
@@ -463,9 +475,6 @@ public void Helena_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, Helena_ClotThink);
 	
 	Is_a_Medic[npc.index] = false;
 	if(IsValidEntity(npc.m_iWearable1))

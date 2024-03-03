@@ -59,8 +59,21 @@ void SpeedusAdivus_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel("models/player/scout.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Speedus Adivus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_speedus_adivus");
+	strcopy(data.Icon, sizeof(data.Icon), "speedy_adivus");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SpeedusAdivus(client, vecPos, vecAng, ally);
+}
 methodmap SpeedusAdivus < CClotBody
 {
 	
@@ -138,7 +151,6 @@ methodmap SpeedusAdivus < CClotBody
 	{
 		SpeedusAdivus npc = view_as<SpeedusAdivus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "20000", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_SPEEDUSADIVUS;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -155,8 +167,10 @@ methodmap SpeedusAdivus < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
+		func_NPCDeath[npc.index] = SpeedusAdivus_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SpeedusAdivus_OnTakeDamage;
+		func_NPCThink[npc.index] = SpeedusAdivus_ClotThink;
 		
-		SDKHook(npc.index, SDKHook_Think, SpeedusAdivus_ClotThink);
 		
 		npc.m_flSpeed = 430.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -355,9 +369,6 @@ public void SpeedusAdivus_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SpeedusAdivus_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);

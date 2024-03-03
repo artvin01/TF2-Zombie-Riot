@@ -432,7 +432,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 						if(f_BattilonsNpcBuff[entity] > gameTime)
 							defense += 4;
 
-						if(i_NpcInternalId[entity] == CITIZEN)
+						if(Citizen_IsIt(entity))
 						{
 							Citizen cit = view_as<Citizen>(entity);
 							

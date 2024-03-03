@@ -14,8 +14,21 @@ void AlliedSensalAbility_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_ChargeSounds));	   i++) { PrecacheSound(g_ChargeSounds[i]);	   }
 	PrecacheModel("models/weapons/c_models/c_claymore/c_claymore.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Allied Sensal Afterimage");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_allied_sensal_afterimage");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return AlliedSensalAbility(client, vecPos, vecAng, ally);
+}
 methodmap AlliedSensalAbility < CClotBody
 {
 	public void PlayDeathSound() 
@@ -32,7 +45,6 @@ methodmap AlliedSensalAbility < CClotBody
 	{
 		AlliedSensalAbility npc = view_as<AlliedSensalAbility>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "100", TFTeam_Red, true));
 		
-		i_NpcInternalId[npc.index] = WEAPON_SENSAL_AFTERIMAGE;
 		i_NpcWeight[npc.index] = 999;
 		SetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity", client);
 		
@@ -100,8 +112,8 @@ methodmap AlliedSensalAbility < CClotBody
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
-		
-		SDKHook(npc.index, SDKHook_Think, AlliedSensalAbility_ClotThink);
+		func_NPCDeath[npc.index] = AlliedSensalAbility_NPCDeath;
+		func_NPCThink[npc.index] = AlliedSensalAbility_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
@@ -172,7 +184,6 @@ public void AlliedSensalAbility_NPCDeath(int entity)
 {
 	AlliedSensalAbility npc = view_as<AlliedSensalAbility>(entity);
 
-	SDKUnhook(npc.index, SDKHook_Think, AlliedSensalAbility_ClotThink);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	

@@ -1367,10 +1367,9 @@ public void Spawn_Bob_Combine(int client)
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	flAng[2] = 0.0;
-	int bob = NPC_CreateById(BOB_THE_GOD_OF_GODS, client, flPos, flAng, TFTeam_Red);
+	int bob = NPC_CreateByName("noc_bob_the_overlord", client, flPos, flAng, TFTeam_Red);
 	Bob_Exists = true;
 	Bob_Exists_Index = EntIndexToEntRef(bob);
-	Items_GiveNPCKill(client, BOB_THE_GOD_OF_GODS);
 }
 
 public void NPC_Despawn_bob(int entity)
@@ -1396,17 +1395,9 @@ public void Spawn_Cured_Grigori()
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	flAng[2] = 0.0;
-	int entity = NPC_CreateById(CURED_FATHER_GRIGORI, client, flPos, flAng, TFTeam_Red);
+	int entity = NPC_CreateByName("npc_cured_last_survivor", client, flPos, flAng, TFTeam_Red);
 	SalesmanAlive = EntIndexToEntRef(entity);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_grigori");
-	
-	for(int client_Give_item=1; client_Give_item<=MaxClients; client_Give_item++)
-	{
-		if(IsClientInGame(client_Give_item) && GetClientTeam(client_Give_item)==2)
-		{
-			Items_GiveNPCKill(client_Give_item, CURED_FATHER_GRIGORI);
-		}
-	}
 }
 
 void CheckAlivePlayersforward(int killed=0)
@@ -1988,34 +1979,37 @@ void ReviveAll(bool raidspawned = false)
 	int entity = MaxClients + 1;
 	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)
+		if(!b_NpcHasDied[entity])
 		{
-			Citizen npc = view_as<Citizen>(entity);
-			if(npc.m_nDowned && npc.m_iWearable3 > 0)
+			if(Citizen_IsIt(entity))
 			{
-				npc.SetDowned(false);
-				if(!Waves_InSetup())
+				Citizen npc = view_as<Citizen>(entity);
+				if(npc.m_nDowned && npc.m_iWearable3 > 0)
 				{
-					int target = 0;
-					for(int i=1; i<=MaxClients; i++)
+					npc.SetDowned(false);
+					if(!Waves_InSetup())
 					{
-						if(IsClientInGame(i))
+						int target = 0;
+						for(int i=1; i<=MaxClients; i++)
 						{
-							if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
+							if(IsClientInGame(i))
 							{
-								target = i;
-								break;
+								if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
+								{
+									target = i;
+									break;
+								}
 							}
 						}
-					}
-					
-					if(target)
-					{
-						float pos[3], ang[3];
-						GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
-						GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-						ang[2] = 0.0;
-						TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+						
+						if(target)
+						{
+							float pos[3], ang[3];
+							GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+							GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+							ang[2] = 0.0;
+							TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+						}
 					}
 				}
 			}

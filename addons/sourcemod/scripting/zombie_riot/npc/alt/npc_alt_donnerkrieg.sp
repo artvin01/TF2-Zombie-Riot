@@ -86,13 +86,13 @@ static bool b_enraged=false;
 
 void Donnerkrieg_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_RangedAttackSounds);
 	
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	NightmareCannon_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
@@ -106,6 +106,20 @@ void Donnerkrieg_OnMapStart_NPC()
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
 	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Donnerkrieg");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_donnerkrieg");
+	data.Category = Type_Alt;
+	data.Func = ClotSummon;
+	strcopy(data.Icon, sizeof(data.Icon), "donner"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = true;													//download needed?
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Donnerkrieg(client, vecPos, vecAng, ally, data);
 }
 
 methodmap Donnerkrieg < CClotBody
@@ -191,7 +205,6 @@ methodmap Donnerkrieg < CClotBody
 	{
 		Donnerkrieg npc = view_as<Donnerkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "25000", ally));
 		
-		i_NpcInternalId[npc.index] = ALT_DONNERKRIEG;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -223,7 +236,10 @@ methodmap Donnerkrieg < CClotBody
 				RaidAllowsBuildings = true;
 			}
 		}
-		SDKHook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
+
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 			
 		g_b_donner_died=false;
 
@@ -293,7 +309,7 @@ methodmap Donnerkrieg < CClotBody
 
 //TODO 
 //Rewrite
-public void Donnerkrieg_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	Donnerkrieg npc = view_as<Donnerkrieg>(iNPC);
 	
@@ -309,7 +325,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 			AcceptEntityInput(entity, "RoundWin");
 			Music_RoundEnd(entity);
 			RaidBossActive = INVALID_ENT_REFERENCE;
-			SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
+			func_NPCThink[npc.index] = INVALID_FUNCTION;
 		}
 	}
 	if(npc.m_flNextDelayTime > GameTime)
@@ -855,7 +871,7 @@ static Action Donner_Nightmare_Offset(Handle timer, int ref)
 	}
 	return Plugin_Handled;
 }
-public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Donnerkrieg npc = view_as<Donnerkrieg>(victim);
 	
@@ -924,7 +940,7 @@ public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor
 	return Plugin_Changed;
 }
 
-public void Donnerkrieg_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	Donnerkrieg npc = view_as<Donnerkrieg>(entity);
 	if(!npc.m_bGib)
@@ -949,8 +965,6 @@ public void Donnerkrieg_NPCDeath(int entity)
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	
-	SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

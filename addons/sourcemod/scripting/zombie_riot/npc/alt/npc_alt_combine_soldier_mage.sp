@@ -54,28 +54,31 @@ static char g_MeleeMissSounds[][] = {
 
 public void AltCombineMage_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
-	
-	PrecacheModel("models/props_wasteland/rockgranite03b.mdl");
-	PrecacheModel("models/weapons/w_bullet.mdl");
-	PrecacheModel("models/weapons/w_grenade.mdl");
-	
-	PrecacheSound("ambient/explosions/citadel_end_explosion2.wav",true);
-	PrecacheSound("ambient/explosions/citadel_end_explosion1.wav",true);
-	PrecacheSound("ambient/energy/weld1.wav",true);
-	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
-	
-	PrecacheSound("player/flow.wav");
-	PrecacheModel("models/effects/combineball.mdl", true);
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheSoundArray(g_RangedReloadSound);
+	PrecacheSoundArray(g_RangedAttackSoundsSecondary);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Combine Mage");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_combine_soldier_mage");
+	data.Category = Type_Alt;
+	data.Func = ClotSummon;
+	strcopy(data.Icon, sizeof(data.Icon), "combine_pistol"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = true;													//download needed?
+	data.Flags = 0;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return AltCombineMage(client, vecPos, vecAng, ally);
 }
 
 methodmap AltCombineMage < CClotBody
@@ -174,7 +177,6 @@ methodmap AltCombineMage < CClotBody
 		AltCombineMage npc = view_as<AltCombineMage>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "200", ally));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = ALT_COMBINE_MAGE;
 		i_NpcWeight[npc.index] = 1;
 		
 		int iActivity = npc.LookupActivity("ACT_RUN");
@@ -184,8 +186,9 @@ methodmap AltCombineMage < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 
-		
-		SDKHook(npc.index, SDKHook_Think, AltCombineMage_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
 		npc.m_fbGunout = false;
 		
@@ -211,7 +214,7 @@ methodmap AltCombineMage < CClotBody
 
 //TODO 
 //Rewrite
-public void AltCombineMage_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	AltCombineMage npc = view_as<AltCombineMage>(iNPC);
 	
@@ -397,7 +400,7 @@ public void AltCombineMage_ClotThink(int iNPC)
 }
 
 
-public Action AltCombineMage_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -414,16 +417,13 @@ public Action AltCombineMage_OnTakeDamage(int victim, int &attacker, int &inflic
 	return Plugin_Changed;
 }
 
-public void AltCombineMage_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	AltCombineMage npc = view_as<AltCombineMage>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, AltCombineMage_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);

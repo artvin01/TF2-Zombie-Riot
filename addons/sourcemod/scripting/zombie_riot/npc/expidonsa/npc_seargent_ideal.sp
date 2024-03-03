@@ -44,6 +44,8 @@ static const char g_MeleeHitSounds[][] = {
 int SeargentIdeal_Alive = 0;
 #define SEARGENT_IDEAL_RANGE 250.0
 
+static int NPCId;
+
 bool SeargentIdeal_Existant()
 {
 	if(SeargentIdeal_Alive > 0)
@@ -63,9 +65,22 @@ void SeargentIdeal_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/soldier.mdl");
 	SeargentIdeal_Alive = 0;
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Seargent Ideal");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seargent_ideal");
+	strcopy(data.Icon, sizeof(data.Icon), "seargent_ideal");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
 }
 
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return SeargentIdeal(client, vecPos, vecAng, ally, data);
+}
 methodmap SeargentIdeal < CClotBody
 {
 	property int m_iGetSeargentProtector
@@ -142,7 +157,6 @@ methodmap SeargentIdeal < CClotBody
 	{
 		SeargentIdeal npc = view_as<SeargentIdeal>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "25000", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_SEARGENTIDEAL;
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -159,11 +173,12 @@ methodmap SeargentIdeal < CClotBody
 		if(data[0])
 			npc.g_TimesSummoned = StringToInt(data);
 		
+		func_NPCDeath[npc.index] = SeargentIdeal_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SeargentIdeal_OnTakeDamage;
+		func_NPCThink[npc.index] = SeargentIdeal_ClotThink;
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
-		SDKHook(npc.index, SDKHook_Think, SeargentIdeal_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -384,7 +399,7 @@ public void SeargentIdeal_NPCDeath(int entity)
 
 Action SeargentIdeal_Protect(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
-	if(i_NpcInternalId[victim] != EXPIDONSA_SEARGENTIDEAL)
+	if(i_NpcInternalId[victim] != NPCId)
 	{
 		if(!f_TimeFrozenStill[victim])
 		{
@@ -432,7 +447,7 @@ void SeargentIdealShieldAffected(int entity, int victim, float damage, int weapo
 
 void SeargentIdealShieldInternal(int shielder, int victim)
 {
-	if(i_NpcInternalId[victim] != EXPIDONSA_DIVERSIONISTICO && !b_NpcHasDied[victim]) //do not shield diversios.
+	if(i_NpcInternalId[victim] != DiversionisticoID() && !b_NpcHasDied[victim]) //do not shield diversios.
 	{
 		SeargentIdeal npc = view_as<SeargentIdeal>(victim);
 		npc.m_iGetSeargentProtector = shielder;

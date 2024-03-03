@@ -83,8 +83,21 @@ public void XenoCombineElite_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Elite");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_elite");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_elite");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoCombineElite(client, vecPos, vecAng, ally);
+}
 methodmap XenoCombineElite < CClotBody
 {
 	public void PlayIdleSound() {
@@ -180,7 +193,6 @@ methodmap XenoCombineElite < CClotBody
 	{
 		XenoCombineElite npc = view_as<XenoCombineElite>(CClotBody(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", "1750", ally));
 		
-		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_ELITE;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -193,9 +205,10 @@ methodmap XenoCombineElite < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;		
 
-		
-		
-		SDKHook(npc.index, SDKHook_Think, XenoCombineElite_ClotThink);
+		func_NPCDeath[npc.index] = XenoCombineElite_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoCombineElite_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoCombineElite_ClotThink;
+
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -519,9 +532,7 @@ public void XenoCombineElite_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoCombineElite_ClotThink);
+
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
