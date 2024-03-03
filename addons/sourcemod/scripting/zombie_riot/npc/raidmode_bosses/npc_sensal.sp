@@ -1948,19 +1948,23 @@ void SensalGiveShield(int sensal, int shieldcount)
 	Sensal npc = view_as<Sensal>(sensal);
 	if(ZR_GetWaveCount()+1 >= 60)
 	{
-		shieldcount *= 2;
+		shieldcount *= 1.55;
 	}
 	else if(ZR_GetWaveCount()+1 >= 45)
 	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.85);
+		shieldcount = RoundToNearest(float(shieldcount) * 1.45);
 	}
 	else if(ZR_GetWaveCount()+1 >= 30)
 	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.5);
+		shieldcount = RoundToNearest(float(shieldcount) * 1.25);
+	}
+	else
+	{
+		shieldcount = RoundToNearest(float(shieldcount) * 0.75);
 	}
 	if(npc.Anger)
 	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.5);
+		shieldcount = RoundToNearest(float(shieldcount) * 1.15);
 	}
 
 	if(LastMann)

@@ -1571,20 +1571,11 @@ stock bool IsValidClient( int client)
 	return true; 
 }
 
-stock void GetWorldSpaceCenter(int client, float v[3])
-{
-	GetAbsOrigin(client, v);
-	
-	float max_space[3];
-	GetEntPropVector(client, Prop_Data, "m_vecMaxs", max_space);
-	v[2] += max_space[2] / 2;
-}
-
 stock bool IsBehindAndFacingTarget(int owner, int target, int weapon = -1)
 {
 	float vecToTarget[3], vecEyeAngles[3];
-	GetWorldSpaceCenter(target, vecToTarget);
-	GetWorldSpaceCenter(owner, vecEyeAngles);
+	WorldSpaceCenter(target, vecToTarget);
+	WorldSpaceCenter(owner, vecEyeAngles);
 	SubtractVectors(vecToTarget, vecEyeAngles, vecToTarget);
 
 	vecToTarget[2] = 0.0;
