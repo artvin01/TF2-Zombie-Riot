@@ -519,7 +519,7 @@ int NPC_GetIdByPlugin(const char[] plugin, NPCData data = {})
 
 static void PrecacheIcons(int i, NPCData data)
 {
-	if(data.IconCustom && !data.IconPrecached)
+	if(data.Icon[0] && data.IconCustom && !data.IconPrecached)
 	{
 		PrecacheMvMIconCustom(data.Icon);
 		data.IconPrecached = true;

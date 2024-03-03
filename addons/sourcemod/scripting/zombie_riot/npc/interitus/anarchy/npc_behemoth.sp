@@ -47,7 +47,7 @@ void AnarchyBehemoth_OnMapStart_NPC()
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Behemonth");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_behemonth");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_behemoth");
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_chief");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;

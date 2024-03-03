@@ -47,7 +47,7 @@ void AnarchyAbsoluteIncinirator_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Absolute Incinirator");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aboslute_incinirator");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_absolute_incinirator");
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_shotgun");
 	data.IconCustom = false;
 	data.Flags = 0;

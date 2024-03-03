@@ -5,7 +5,7 @@ public void BarrackHussarOnMapStart()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Hussar");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_lastknight");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_hussar");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;

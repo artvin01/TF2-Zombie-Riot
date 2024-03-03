@@ -7,7 +7,7 @@ public void BarrackArbelastOnMapStart()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Medival Arbalest");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_building");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_arbelast");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;

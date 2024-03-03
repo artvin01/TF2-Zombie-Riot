@@ -6560,24 +6560,24 @@ static int SummonerThorns[][] =
 
 static const char SummonerAlternativeNPC[][] =
 {
-	"npc_alt_barracks_basic_mage",
+	"npc_alt_barrack_basic_mage",
 	
-	"npc_alt_barracks_mecha_barrager",
-	"npc_alt_barracks_intermediate_mage",
+	"npc_alt_barrack_mecha_barrager",
+	"npc_alt_barrack_intermediate_mage",
 	
-	"npc_alt_barracks_crossbowman",
-	"npc_alt_barracks_barrager",
+	"npc_alt_barrack_crossbow",
+	"npc_alt_barrack_barrager",
 	
-	"npc_alt_barracks_railgunner",
-	"npc_alt_barracks_holy_knight",
+	"npc_alt_barrack_railgunner",
+	"npc_alt_barrack_holy_knight",
 	
-	"npc_alt_barracks_berserker",
-	"npc_alt_barracks_iku_nagae",
+	"npc_alt_barrack_berserker",
+	"npc_alt_barrack_ikunagae",
 	
-	"npc_alt_barracks_donnerkrieg",
-	"npc_alt_barracks_schwertkrieg",
+	"npc_alt_barrack_donnerkrieg",
+	"npc_alt_barrack_schwertkrieg",
 	
-	"npc_alt_barracks_scientific_witchery",
+	"npc_alt_barrack_witch",
 	"npc_barrack_villager"
 };
 
