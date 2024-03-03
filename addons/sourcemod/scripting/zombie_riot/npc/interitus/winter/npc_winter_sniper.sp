@@ -43,7 +43,7 @@ void WinterSniper_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_winter_sniper");
 	strcopy(data.Icon, sizeof(data.Icon), "sniper");
 	data.IconCustom = false;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_SUPPORT;
 	data.Category = MVM_CLASS_FLAG_SUPPORT;
 	data.Func = ClotSummon;
 	NPC_Add(data);

@@ -930,7 +930,7 @@ bool BarrackBody_Interact(int client, int entity)
 		
 	char npc_classname[60];
 	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-	if(StrEqual(npc_classname, "npc_barrack_building"))
+	if(!StrEqual(npc_classname, "npc_barrack_building"))
 	{
 		BarrackBody npc = view_as<BarrackBody>(entity);
 		if(npc.OwnerUserId)
