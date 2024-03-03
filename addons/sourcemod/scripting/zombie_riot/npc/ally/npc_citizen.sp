@@ -1450,7 +1450,7 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 
 bool Citizen_IsIt(int entity)
 {
-	return (i_NpcInternalId[entity] == NPCId && view_as<Citizen>(entity).m_nDowned);
+	return (i_NpcInternalId[entity] == NPCId);
 }
 
 bool Citizen_ThatIsDowned(int entity)
