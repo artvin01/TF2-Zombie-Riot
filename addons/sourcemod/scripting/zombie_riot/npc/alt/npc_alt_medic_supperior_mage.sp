@@ -92,9 +92,9 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_medic_supperior_mage");
 	data.Category = Type_Alt;
 	data.Func = ClotSummon;
-	strcopy(data.Icon, sizeof(data.Icon), "medic"); 		//leaderboard_class_(insert the name)
-	data.IconCustom = false;													//download needed?
-	data.Flags = MVM_CLASS_FLAG_ALWAYSCRIT;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	strcopy(data.Icon, sizeof(data.Icon), "medic"); 	//leaderboard_class_(insert the name)
+	data.IconCustom = false;							//download needed?
+	data.Flags = MVM_CLASS_FLAG_ALWAYSCRIT;				//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 
 }

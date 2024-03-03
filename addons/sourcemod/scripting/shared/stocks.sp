@@ -2671,7 +2671,7 @@ int CountPlayersOnRed(int alive = 0)
 	{
 		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 		{
-			if(!alive)
+			if(alive == 0)
 			{
 				amount++;
 				continue;
@@ -2695,12 +2695,6 @@ int CountPlayersOnRed(int alive = 0)
 					}
 				}
 			}
-		}
-
-		if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client) == 2 && (!alive || IsPlayerAlive(client)))
-		{
-			amount++;
-			continue;
 		}
 	}
 	
