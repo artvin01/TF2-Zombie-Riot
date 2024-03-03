@@ -7114,7 +7114,7 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 	
 	if(!Waves_InSetup())
 	{
-		float SupplyRateCalc = SupplyRate[client] / (LastMann ? 25.0 : 50.0);
+		float SupplyRateCalc = SupplyRate[client] / (LastMann ? 15.0 : 30.0);
 
 		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CONSCRIPTION)
 		{

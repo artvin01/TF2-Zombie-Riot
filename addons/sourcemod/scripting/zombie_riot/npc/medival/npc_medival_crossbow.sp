@@ -187,6 +187,9 @@ methodmap MedivalCrossbowMan < CClotBody
 		func_NPCThink[npc.index] = MedivalCrossbowMan_ClotThink;
 		func_NPCAnimEvent[npc.index] = HandleAnimEventMedival_CrossbowMan;
 	
+		SetVariantInt(1);
+		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 //		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
@@ -225,9 +228,6 @@ methodmap MedivalCrossbowMan < CClotBody
 public void MedivalCrossbowMan_ClotThink(int iNPC)
 {
 	MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(iNPC);
-	
-	SetVariantInt(1);
-	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
