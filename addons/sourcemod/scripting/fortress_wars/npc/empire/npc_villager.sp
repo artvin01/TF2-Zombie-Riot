@@ -28,7 +28,7 @@ void Villager_Setup()
 	PrecacheSoundArray(MeleeCollectSounds);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Medival Villager");
+	strcopy(data.Name, sizeof(data.Name), "Villager");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_villager");
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -70,10 +70,8 @@ methodmap Villager < EmpireBody
 		npc.AddFlag(Flag_Biological);
 		npc.AddFlag(Flag_Worker);
 
-		StatEnum stats;
-		stats.Damage = 3;
-		stats.ExtraDamage[Flag_Structure] = 3;
-		npc.SetStats(stats);
+		Stats[npc.index].Damage = 3;
+		Stats[npc.index].ExtraDamage[Flag_Structure] = 3;
 
 		npc.m_flHeadshotCooldown = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;

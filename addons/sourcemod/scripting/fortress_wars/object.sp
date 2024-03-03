@@ -5,6 +5,75 @@ static bool IsThisObject[MAXENTITIES];
 
 methodmap UnitObject < CBaseAnimating
 {
+	property int m_iTeamNumber
+	{
+		public get()
+		{
+			return TeamNumber[this.index];
+		}
+		public set(int team)
+		{
+			TeamNumber[this.index] = team;
+		}
+	}
+
+	// Range at which units can provide vision
+	property float m_flVisionRange
+	{
+		public get()
+		{
+			return VisionRange[this.index];
+		}
+		public set(float value)
+		{
+			VisionRange[this.index] = value;
+		}
+	}
+
+	// Range at which units will target automatically
+	property float m_flEngageRange
+	{
+		public get()
+		{
+			return EngageRange[this.index];
+		}
+		public set(float value)
+		{
+			EngageRange[this.index] = value;
+		}
+	}
+
+	public void AddFlag(int type)
+	{
+		UnitFlags[this.index] |= (1 << type);
+	}
+	public void RemoveFlag(int type)
+	{
+		UnitFlags[this.index] &= ~(1 << type);
+	}
+	public void RemoveAllFlags()
+	{
+		UnitFlags[this.index] = 0;
+	}
+	public bool HasFlag(int type)
+	{
+		return view_as<bool>(UnitFlags[this.index] & (1 << type));
+	}
+
+	public void ClearStats(const StatEnum stats = {})
+	{
+		Stats[this.index] = stats;
+	}
+
+	public void SetSoundFunc(int type, Function func)
+	{
+		FuncSound[this.index][type] = func;
+	}
+	public void SetSkillFunc(Function func)
+	{
+		FuncSkills[this.index] = func;
+	}
+
 	property int m_hTextEntity1
 	{
 		public get()
@@ -197,33 +266,46 @@ methodmap UnitObject < CBaseAnimating
 		return item;
 	}
 	
-	public UnitObject(const float vecPos[3], const float vecAng[3],
-						const char[] model,
-						float modelscale = 1.0,
-						int health = 125)
+	public UnitObject(int team, const float vecPos[3],
+					const float vecAng[3] = OBJECT_OFFSET,
+					const char[] model = OBJECT_HITBOX,
+					float modelscale = 1.0,
+					int health = 125)
 	{
-		int entity = CreateEntityByName("prop_resource");
+		UnitObject obj = view_as<UnitObject>(CreateEntityByName("prop_resource"));
 		
-		DispatchKeyValueVector(entity, "origin", vecPos);
-		DispatchKeyValueVector(entity, "angles", vecAng);
-		DispatchKeyValue(entity, "model", model);
-		DispatchKeyValueFloat(entity, "modelscale", modelscale);
-		DispatchKeyValueInt(entity, "health", health);
-		DispatchKeyValue(entity, "solid", "2");
+		DispatchKeyValueVector(obj.index, "origin", vecPos);
+		DispatchKeyValueVector(obj.index, "angles", vecAng);
+		DispatchKeyValue(obj.index, "model", model);
+		DispatchKeyValueFloat(obj.index, "modelscale", modelscale);
+		DispatchKeyValueInt(obj.index, "health", health);
+		DispatchKeyValue(obj.index, "solid", "2");
 
-		IsThisObject[entity] = true;
-		func_NPCDeath[entity] = INVALID_FUNCTION;
-		func_NPCOnTakeDamage[entity] = INVALID_FUNCTION;
+		IsThisObject[obj.index] = true;
+		func_NPCDeath[obj.index] = INVALID_FUNCTION;
+		func_NPCOnTakeDamage[obj.index] = INVALID_FUNCTION;
 
-		DispatchSpawn(entity);
+		SetTeam(obj.index, obj.m_iTeamNumber);
 
-		SetEntProp(entity, Prop_Data, "m_iHealth", health);
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-		SetTeam(entity, 0);
+		obj.m_flVisionRange = 0.0;
+		obj.m_flEngageRange = 0.0;
+		obj.RemoveAllFlags();
+		obj.ClearStats();
+		obj.SetSkillFunc(INVALID_FUNCTION);
 
-		SDKHook(entity, SDKHook_OnTakeDamage, Object_TakeDamage);
+		for(int i; i < Sound_MAX; i++)
+		{
+			obj.SetSoundFunc(i, INVALID_FUNCTION);
+		}
 
-		return view_as<UnitObject>(entity);
+		DispatchSpawn(obj.index);
+
+		SetEntProp(obj.index, Prop_Data, "m_iHealth", health);
+		SetEntProp(obj.index, Prop_Data, "m_iMaxHealth", health);
+
+		SDKHook(obj.index, SDKHook_OnTakeDamage, Object_TakeDamage);
+
+		return view_as<UnitObject>(obj.index);
 	}
 }
 
@@ -241,17 +323,12 @@ void Object_PluginStart()
 
 void Object_PluginEnd()
 {
-/*
-	while((entity = FindEntityByClassname(entity, "prop_resource")) != -1)
-	{
-		RemoveEntity(entity);
-	}
-*/
+
 }
 
-static void OnDestroy(UnitObject unit)
+static void OnDestroy(UnitObject obj)
 {
-	ObjectDeath(unit.index, true);
+	ObjectDeath(obj.index, true);
 }
 
 static bool ObjectDeath(int entity, bool delet)
@@ -337,6 +414,8 @@ static Action CreateCommand(int client, int args)
 static Action Object_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Action action = Plugin_Continue;
+
+	RTS_TakeDamage(victim, damage, damagetype);
 
 	Function func = func_NPCOnTakeDamage[victim];
 	if(func != INVALID_FUNCTION)

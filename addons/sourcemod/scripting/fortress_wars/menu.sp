@@ -61,22 +61,19 @@ void RTSMenu_PlayerRunCmd(int client)
 					Format(display, sizeof(display), "%s\n%t\n", display, c_NpcName[entity]);
 
 					// Flags
-					if(!IsObject(entity))
+					bool first = true;
+					for(int i; i < Flag_MAX; i++)
 					{
-						bool first = true;
-						for(int i; i < Flag_MAX; i++)
+						if(RTS_HasFlag(entity, i))
 						{
-							if(UnitBody_HasFlag(entity, i))
+							if(first)
 							{
-								if(first)
-								{
-									Format(display, sizeof(display), "%s%t", display, FlagName[i]);
-									first = false;
-								}
-								else
-								{
-									Format(display, sizeof(display), "%s, %t", display, FlagName[i]);
-								}
+								Format(display, sizeof(display), "%s%t", display, FlagName[i]);
+								first = false;
+							}
+							else
+							{
+								Format(display, sizeof(display), "%s, %t", display, FlagName[i]);
 							}
 						}
 					}
@@ -87,65 +84,62 @@ void RTSMenu_PlayerRunCmd(int client)
 
 					if(IsObject(entity))
 					{
-						Format(display, sizeof(display), "%s\n%t", display, "Resource Of", ResourceName[Object_GetResource(entity)]);
+						int resource = Object_GetResource(entity);
+						if(resource != Resource_None)
+							Format(display, sizeof(display), "%s\n%t", display, "Resource Of", ResourceName[resource]);
+					}
+					
+					// Armor
+					if(Stats[entity].MeleeArmorBonus != 0)
+					{
+						FormatEx(buffer, sizeof(buffer), "%d (%s%d) / ", Stats[entity].MeleeArmor, Stats[entity].MeleeArmorBonus < 0 ? "" : "+", Stats[entity].MeleeArmorBonus);
 					}
 					else
 					{
-						StatEnum stat;
-						UnitBody_GetStats(entity, stat);
+						FormatEx(buffer, sizeof(buffer), "%d / ", Stats[entity].MeleeArmor);
+					}
 
-						// Armor
-						if(stat.MeleeArmorBonus != 0)
+					if(Stats[entity].RangeArmorBonus != 0)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s%d (%s%d)", buffer, Stats[entity].RangeArmor, Stats[entity].RangeArmorBonus < 0 ? "" : "+", Stats[entity].RangeArmorBonus);
+					}
+					else
+					{
+						FormatEx(buffer, sizeof(buffer), "%s%d", buffer, Stats[entity].RangeArmor);
+					}
+
+					Format(display, sizeof(display), "%s\n%t", display, "Armor Of", buffer);
+
+					if(Stats[entity].Damage)
+					{
+						// Damage
+						if(Stats[entity].DamageBonus)
 						{
-							FormatEx(buffer, sizeof(buffer), "%d (%s%d) / ", stat.MeleeArmor, stat.MeleeArmorBonus < 0 ? "" : "+", stat.MeleeArmorBonus);
+							FormatEx(buffer, sizeof(buffer), "%d (%s%d)", Stats[entity].Damage, Stats[entity].DamageBonus < 0 ? "" : "+", Stats[entity].DamageBonus);
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%d / ", stat.MeleeArmor);
+							IntToString(Stats[entity].Damage, buffer, sizeof(buffer));
 						}
 
-						if(stat.RangeArmorBonus != 0)
+						Format(display, sizeof(display), "%s\n%t", display, "Damage Of", buffer);
+						
+						// Damage vs Flag
+						for(int i; i < Flag_MAX; i++)
 						{
-							FormatEx(buffer, sizeof(buffer), "%s%d (%s%d)", buffer, stat.RangeArmor, stat.RangeArmorBonus < 0 ? "" : "+", stat.RangeArmorBonus);
-						}
-						else
-						{
-							FormatEx(buffer, sizeof(buffer), "%s%d", buffer, stat.RangeArmor);
-						}
-
-						Format(display, sizeof(display), "%s\n%t", display, "Armor Of", buffer);
-
-						if(stat.Damage)
-						{
-							// Damage
-							if(stat.DamageBonus)
+							if(Stats[entity].ExtraDamage[i] || Stats[entity].ExtraDamageBonus[i])
 							{
-								FormatEx(buffer, sizeof(buffer), "%d (%s%d)", stat.Damage, stat.DamageBonus < 0 ? "" : "+", stat.DamageBonus);
-							}
-							else
-							{
-								IntToString(stat.Damage, buffer, sizeof(buffer));
-							}
-
-							Format(display, sizeof(display), "%s\n%t", display, "Damage Of", buffer);
-							
-							// Damage vs Flag
-							for(int i; i < Flag_MAX; i++)
-							{
-								if(stat.ExtraDamage[i] || stat.ExtraDamageBonus[i])
+								if(Stats[entity].DamageBonus || Stats[entity].ExtraDamageBonus[i])
 								{
-									if(stat.DamageBonus || stat.ExtraDamageBonus[i])
-									{
-										int bonus = stat.DamageBonus + stat.ExtraDamageBonus[i];
-										FormatEx(buffer, sizeof(buffer), "%d (%s%d)", stat.Damage + stat.ExtraDamage[i], bonus < 0 ? "" : "+", bonus);
-									}
-									else
-									{
-										IntToString(stat.Damage + stat.ExtraDamage[i], buffer, sizeof(buffer));
-									}
-
-									Format(display, sizeof(display), "%s\n %t", display, "vs Type of", FlagName[i], buffer);
+									int bonus = Stats[entity].DamageBonus + Stats[entity].ExtraDamageBonus[i];
+									FormatEx(buffer, sizeof(buffer), "%d (%s%d)", Stats[entity].Damage + Stats[entity].ExtraDamage[i], bonus < 0 ? "" : "+", bonus);
 								}
+								else
+								{
+									IntToString(Stats[entity].Damage + Stats[entity].ExtraDamage[i], buffer, sizeof(buffer));
+								}
+
+								Format(display, sizeof(display), "%s\n %t", display, "vs Type of", FlagName[i], buffer);
 							}
 						}
 					}
@@ -213,23 +207,24 @@ void RTSMenu_PlayerRunCmd(int client)
 			for(int a; a < length; a++)
 			{
 				int entity = EntRefToEntIndex(selection.Get(a));
-				if(entity != -1 && UnitBody_CanControl(client, entity))
+				if(entity != -1 && RTS_CanControl(client, entity))
 				{
 					for(int b; b < MAX_SKILLS; b++)
 					{
-						if(found[b] && found[b] != i_NpcInternalId[entity])
+						int id = IsObject(entity) ? -i_NpcInternalId[entity] : i_NpcInternalId[entity];
+						if(found[b] && found[b] != id)
 							continue;
 						
 						float cooldown = found[b] ? skill[b].Cooldown : FAR_FUTURE;
 						int count = skill[b].Count;
 
-						if(UnitBody_GetSkill(entity, client, b, skill[b]))
+						if(RTS_GetSkill(entity, client, b, skill[b]))
 						{
 							if(skill[b].Cooldown > cooldown || (skill[b].Cooldown == 0.0 && cooldown != FAR_FUTURE))
 								skill[b].Cooldown = cooldown;
 
 							skill[b].Count += count;
-							found[b] = i_NpcInternalId[entity];
+							found[b] = id;
 						}
 					}
 				}
@@ -306,7 +301,7 @@ void RTSMenu_PlayerRunCmd(int client)
 				for(int b; b < length; b++)
 				{
 					entity = EntRefToEntIndex(ControlGroups[client][a].Get(b));
-					if(entity == -1 || !UnitBody_CanControl(client, entity))
+					if(entity == -1 || !RTS_CanControl(client, entity))
 					{
 						ControlGroups[client][a].Erase(b);
 						b--;

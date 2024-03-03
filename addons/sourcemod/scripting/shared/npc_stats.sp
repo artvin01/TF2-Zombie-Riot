@@ -4395,7 +4395,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			}
 
 #if defined RTS
-			if(UnitBody_IsEntAlly(index, enemy))
+			if(RTS_IsEntAlly(index, enemy))
 			{
 				return false;
 			}
@@ -4591,7 +4591,7 @@ stock int GetClosestTarget(int entity,
 #if defined RTS
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
-					if(UnitBody_IsEntAlly(entity, entity_close))
+					if(RTS_IsEntAlly(entity, entity_close))
 						continue;
 #else
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
@@ -4628,6 +4628,7 @@ stock int GetClosestTarget(int entity,
 	}
 
 #if defined RTS
+	// TODO: Rewrite this (building code / make use of the array)
 	if(ExtraValidityFunction != INVALID_FUNCTION)
 	{
 		int target = -1;

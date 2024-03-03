@@ -1059,7 +1059,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}
 		
 #if defined RTS
-		UnitBody_TakeDamage(victim, damage, damagetype);
+		RTS_TakeDamage(victim, damage, damagetype);
 #endif
 
 		NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);

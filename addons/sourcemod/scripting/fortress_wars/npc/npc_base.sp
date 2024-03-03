@@ -12,20 +12,12 @@ enum struct CommandEnum
 }
 
 static int ResourceSearch;
-static float SoundCooldown[MAXTF2PLAYERS];
 
-static int UnitFlags[MAXENTITIES];
-static float VisionRange[MAXENTITIES];
-static float EngageRange[MAXENTITIES];
 static char NextGesture[MAXENTITIES][32];
 static ArrayList CommandList[MAXENTITIES];
-static Function FuncSound[MAXENTITIES][Sound_MAX];
-static Function FuncSkills[MAXENTITIES];
-static StatEnum Stats[MAXENTITIES];
 
 void UnitBody_Setup()
 {
-	Zero(SoundCooldown);
 }
 
 methodmap UnitBody < CClotBody
@@ -39,18 +31,6 @@ methodmap UnitBody < CClotBody
 		public set(int team)
 		{
 			TeamNumber[this.index] = team;
-		}
-	}
-
-	property bool m_bBuilding
-	{
-		public get()
-		{
-			return i_NpcIsABuilding[this.index];
-		}
-		public set(bool value)
-		{
-			i_NpcIsABuilding[this.index] = value;
 		}
 	}
 
@@ -111,11 +91,7 @@ methodmap UnitBody < CClotBody
 		FuncSkills[this.index] = func;
 	}
 
-	public void GetStats(StatEnum stats)
-	{
-		stats = Stats[this.index];
-	}
-	public void SetStats(const StatEnum stats = {})
+	public void ClearStats(const StatEnum stats = {})
 	{
 		Stats[this.index] = stats;
 	}
@@ -192,19 +168,18 @@ methodmap UnitBody < CClotBody
 						const char[] model = COMBINE_CUSTOM_MODEL,
 						const char[] modelscale = "1.0",
 						const char[] health = "125",
-						bool isBuilding = false,
 						bool isGiant = false,
 						const float CustomThreeDimensions[3] = {0.0,0.0,0.0})
 	{
 		UnitBody npc = view_as<UnitBody>(CClotBody(vecPos, vecAng, model, modelscale, health, isGiant, CustomThreeDimensions));
 		
 		npc.m_iTeamNumber = team;
-		npc.m_bBuilding = isBuilding;
 		npc.m_flVisionRange = 0.0;
+		npc.m_flEngageRange = 0.0;
 		npc.RemoveAllFlags();
 		NextGesture[npc.index][0] = 0;
 		delete CommandList[npc.index];
-		npc.SetStats();
+		npc.ClearStats();
 		npc.SetSkillFunc(INVALID_FUNCTION);
 
 		for(int i; i < Sound_MAX; i++)
@@ -241,26 +216,11 @@ static void SetupCommand(UnitBody npc, CommandEnum command, int type, const floa
 				command.Type = Command_Attack;
 			}
 		}
-		else if(!UnitBody_IsEntAlly(npc.index, target))
+		else if(!RTS_IsEntAlly(npc.index, target))
 		{
 			command.Type = Command_Attack;
 		}
 	}
-}
-
-bool UnitBody_IsEntAlly(int attacker, int entity)
-{
-	return view_as<UnitBody>(entity).IsAlly(TeamNumber[attacker]);
-}
-
-bool UnitBody_CanControl(int attacker, int entity)
-{
-	return view_as<UnitBody>(entity).CanControl(TeamNumber[attacker]);
-}
-
-bool UnitBody_HasFlag(int entity, int flag)
-{
-	return view_as<UnitBody>(entity).HasFlag(flag);
 }
 
 void UnitBody_AddCommand(int entity, int method, int type, const float pos[3], int target = -1)
@@ -282,90 +242,6 @@ bool UnitBody_GetCommand(int entity, int i, int &type, float pos[3], int &target
 	}
 
 	return false;
-}
-
-void UnitBody_GetStats(int entity, StatEnum stats)
-{
-	view_as<UnitBody>(entity).GetStats(stats);
-}
-
-void UnitBody_TakeDamage(int victim, float &damage, int damagetype)
-{
-	int dmg = RoundFloat(damage);
-
-	if(dmg > 0)
-	{
-		if(damagetype & DMG_SLASH)
-		{
-		}
-		else if(damagetype & DMG_CLUB)
-		{
-			dmg -= Stats[victim].MeleeArmor + Stats[victim].MeleeArmorBonus;
-		}
-		else
-		{
-			dmg -= Stats[victim].RangeArmor + Stats[victim].RangeArmorBonus;
-		}
-
-		if(dmg < 1)
-			dmg = 1;
-	}
-
-	damage = float(dmg);
-}
-
-void UnitBody_PlaySound(int entity, int client, int type)
-{
-	float gameTime = GetGameTime();
-	if(SoundCooldown[client] > gameTime)
-		return;
-	
-	if(FuncSound[entity][type] != INVALID_FUNCTION)
-	{
-		SoundCooldown[client] = gameTime + 1.5;
-		
-		Call_StartFunction(null, FuncSound[entity][type]);
-		Call_PushCell(client);
-		Call_Finish();
-	}
-}
-
-bool UnitBody_GetSkill(int entity, int client, int type, SkillEnum skill)
-{
-	bool result;
-
-	if(FuncSkills[entity] != INVALID_FUNCTION)
-	{
-		Call_StartFunction(null, FuncSkills[entity]);
-		Call_PushCell(entity);
-		Call_PushCell(client);
-		Call_PushCell(type);
-		Call_PushCell(false);
-		Call_PushArrayEx(skill, sizeof(skill), SM_PARAM_COPYBACK);
-		Call_Finish(result);
-	}
-
-	return result;
-}
-
-bool UnitBody_TriggerSkill(int entity, int client, int type)
-{
-	bool result;
-
-	if(FuncSkills[entity] != INVALID_FUNCTION)
-	{
-		SkillEnum skill;
-
-		Call_StartFunction(null, FuncSkills[entity]);
-		Call_PushCell(entity);
-		Call_PushCell(client);
-		Call_PushCell(type);
-		Call_PushCell(true);
-		Call_PushArrayEx(skill, sizeof(skill), 0);
-		Call_Finish(result);
-	}
-
-	return result;
 }
 
 bool UnitBody_ThinkStart(UnitBody npc, float gameTime)

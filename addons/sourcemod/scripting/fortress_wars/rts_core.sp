@@ -10,6 +10,10 @@
 #define MAX_TEAMS	17
 #define MAX_SKILLS	10
 
+#define OBJECT_HITBOX	"models/props_moonbase/moon_cube_crystal04.mdl"
+#define OBJECT_OFFSET	{0.0, -90.0, 0.0}
+#define OBJECT_UNITS	128.0
+
 enum
 {
 	Flag_Light = 0,
@@ -119,16 +123,23 @@ enum struct SkillEnum
 
 int BuildMode[MAXTF2PLAYERS];
 int Resource[MAX_TEAMS][Resource_MAX];
+int UnitFlags[MAXENTITIES];
+float VisionRange[MAXENTITIES];
+float EngageRange[MAXENTITIES];
+Function FuncSkills[MAXENTITIES];
+StatEnum Stats[MAXENTITIES];
+Function FuncSound[MAXENTITIES][Sound_MAX];
 
 #include "fortress_wars/object.sp"
 #include "fortress_wars/npc.sp"	// Global NPC List
 #include "fortress_wars/menu.sp"
 
 static bool InSetup;
+static float GameSpeed = 0.5;
 static int AlliedTeams[MAX_TEAMS];
 static int AllowControls[MAX_TEAMS];
 static bool Defeated[MAX_TEAMS];
-static float GameSpeed = 0.5;
+static float SoundCooldown[MAXTF2PLAYERS];
 
 void RTS_PluginStart()
 {
@@ -143,7 +154,8 @@ void RTS_PluginStart()
 
 void RTS_MapStart()
 {
-	
+	Zero(SoundCooldown);
+	PrecacheModel(OBJECT_HITBOX);
 }
 
 void RTS_PluginEnd()
@@ -283,6 +295,100 @@ static Action HealthBarTransmit(int entity, int client)
 	}
 
 	return Plugin_Continue;
+}
+
+bool RTS_IsEntAlly(int attacker, int entity)
+{
+	return RTS_IsTeamAlly(TeamNumber[attacker], TeamNumber[entity]);
+}
+
+bool RTS_CanControl(int attacker, int entity)
+{
+	return RTS_CanTeamControl(TeamNumber[attacker], TeamNumber[entity]);
+}
+
+bool RTS_HasFlag(int entity, int type)
+{
+	return view_as<bool>(UnitFlags[entity] & (1 << type));
+}
+
+void RTS_TakeDamage(int victim, float &damage, int damagetype)
+{
+	int dmg = RoundFloat(damage);
+
+	if(dmg > 0)
+	{
+		if(damagetype & DMG_SLASH)
+		{
+		}
+		else if(damagetype & DMG_CLUB)
+		{
+			dmg -= Stats[victim].MeleeArmor + Stats[victim].MeleeArmorBonus;
+		}
+		else
+		{
+			dmg -= Stats[victim].RangeArmor + Stats[victim].RangeArmorBonus;
+		}
+
+		if(dmg < 1)
+			dmg = 1;
+	}
+
+	damage = float(dmg);
+}
+
+bool RTS_GetSkill(int entity, int client, int type, SkillEnum skill)
+{
+	bool result;
+
+	if(FuncSkills[entity] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, FuncSkills[entity]);
+		Call_PushCell(entity);
+		Call_PushCell(client);
+		Call_PushCell(type);
+		Call_PushCell(false);
+		Call_PushArrayEx(skill, sizeof(skill), SM_PARAM_COPYBACK);
+		Call_Finish(result);
+	}
+
+	return result;
+}
+
+bool RTS_TriggerSkill(int entity, int client, int type)
+{
+	bool result;
+
+	if(FuncSkills[entity] != INVALID_FUNCTION)
+	{
+		SkillEnum skill;
+
+		Call_StartFunction(null, FuncSkills[entity]);
+		Call_PushCell(entity);
+		Call_PushCell(client);
+		Call_PushCell(type);
+		Call_PushCell(true);
+		Call_PushArrayEx(skill, sizeof(skill), 0);
+		Call_Finish(result);
+	}
+
+	return result;
+}
+
+void RTS_PlaySound(int entity, int client, int type)
+{
+	float gameTime = GetGameTime();
+	if(SoundCooldown[client] > gameTime)
+		return;
+	
+	if(FuncSound[entity][type] != INVALID_FUNCTION)
+	{
+		SoundCooldown[client] = gameTime + 1.5;
+		
+		Call_StartFunction(null, FuncSound[entity][type]);
+		Call_PushCell(client);
+		Call_Finish();
+	}
 }
 
 static Action CommandSetSpeed(int client, int args)
