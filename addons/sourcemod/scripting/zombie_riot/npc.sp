@@ -169,6 +169,7 @@ void NPC_ConfigSetup()
 	Kahmlstein_OnMapStart_NPC();
 	Sniper_railgunner_OnMapStart_NPC();
 	MedivalTrebuchet_OnMapStart();
+	AltCombineMage_OnMapStart_NPC();
 	
 	L4D2_Tank_OnMapStart_NPC();
 	MedivalRam_OnMapStart();

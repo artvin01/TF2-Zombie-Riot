@@ -36,7 +36,7 @@ void DesertYadeam_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Yadeam");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_yadeam");
-	strcopy(data.Icon, sizeof(data.Icon), "sniper_camper");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper_camper_1");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Interitus;

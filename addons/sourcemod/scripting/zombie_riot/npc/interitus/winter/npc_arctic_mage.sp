@@ -50,7 +50,7 @@ void WinterArcticMage_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Arctic Mage");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_arctic_mage");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy_heal_intertius");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_heal_intertius_1");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Interitus;

@@ -994,14 +994,14 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 			ClearSelected(client);
 		
 #if defined ZR
+		char npc_classname[60];
 		for(int entity = MaxClients + 1; entity < MAXENTITIES; entity++)
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(!b_NpcHasDied[entity] && npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
 			{
-				char npc_classname[60];
 				NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-				if(StrContains(npc_classname, "npc_barrack_villager"))
+				if(StrEqual(npc_classname, "npc_barrack_villager"))
 					SelectUnit(client, entity);
 			}
 		}

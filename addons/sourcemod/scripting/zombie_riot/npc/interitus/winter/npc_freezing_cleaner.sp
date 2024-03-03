@@ -32,7 +32,7 @@ void WinterFreezingCleaner_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Freezing Cleaner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_freezing_cleaner");
-	strcopy(data.Icon, sizeof(data.Icon), "pyro_freeze");
+	strcopy(data.Icon, sizeof(data.Icon), "pyro_freeze_1");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Interitus;

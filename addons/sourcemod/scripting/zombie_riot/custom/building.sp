@@ -6383,6 +6383,12 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 	//tf2 buildings are aids to work with.
 	//Frame_TeleportBuilding_Init Should be smaller.
 	RequestFrames(Dhook_FinishedBuilding_Post_Frame, 10, EntIndexToEntRef(Building_Index));
+	static char buffer[36];
+	GetEntityClassname(Building_Index, buffer, sizeof(buffer));
+	if(!StrContains(buffer, "obj_dispenser"))
+	{
+		SetEntProp(Building_Index, Prop_Send, "m_bCarried", true);
+	}
 	return MRES_Ignored;
 }
 
@@ -6923,6 +6929,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 		{
 			bool OwnsVillager = false;
 			bool HasupgradeVillager = false;
+			char npc_classname[60];
 			if(GetSData(CivType[owner], TrainingIndex[owner], NPCIndex) == BarrackVillager_ID())
 			{
 				if(i_NormalBarracks_HexBarracksUpgrades[owner] & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER)
@@ -6936,9 +6943,8 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 
 							if(IsValidEntity(entity_close))
 							{
-								char npc_classname[60];
 								NPC_GetPluginById(i_NpcInternalId[entity_close], npc_classname, sizeof(npc_classname));
-								if(StrContains(npc_classname, "npc_barrack_villager"))
+								if(StrEqual(npc_classname, "npc_barrack_villager"))
 								{
 									BarrackBody npc = view_as<BarrackBody>(entity_close);
 									if(GetClientOfUserId(npc.OwnerUserId) == owner)
@@ -7105,37 +7111,43 @@ void CheckSummonerUpgrades(int client)
 void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 {
 	// 1 Supply = 1 Food Every 2 Seconds, 1 Wood Every 4 Seconds
-	float SupplyRateCalc = SupplyRate[client] / (LastMann ? 20.0 : 40.0);
+	
+	if(!Waves_InSetup())
+	{
+		float SupplyRateCalc = SupplyRate[client] / (LastMann ? 25.0 : 50.0);
 
-	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CONSCRIPTION)
-	{
-		SupplyRateCalc *= 1.25;
-	}
-	if(i_CurrentEquippedPerk[client] == 7)
-	{
-		SupplyRateCalc *= 1.15;
-	}
-	if(Rogue_Mode())
-	{
-		SupplyRateCalc *= 2.0;
-	}
-	SupplyRateCalc *= multi;
-	WoodAmount[client] += SupplyRateCalc * 1.15;
-	FoodAmount[client] += SupplyRateCalc * 1.40;
-
-	if(MedievalUnlock[client] || allowgold)
-	{
-		float GoldSupplyRate = SupplyRate[client] / 1500.0;
-		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_GOLDMINERS)
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CONSCRIPTION)
 		{
-			GoldSupplyRate *= 1.25;
+			SupplyRateCalc *= 1.25;
 		}
 		if(i_CurrentEquippedPerk[client] == 7)
 		{
-			GoldSupplyRate *= 1.25;
+			SupplyRateCalc *= 1.15;
 		}
-		GoldSupplyRate *= multi;
-		GoldAmount[client] += GoldSupplyRate;
+		if(Rogue_Mode())
+		{
+			SupplyRateCalc *= 2.0;
+		}
+		SupplyRateCalc *= multi;
+
+		WoodAmount[client] += SupplyRateCalc * 1.15;
+		FoodAmount[client] += SupplyRateCalc * 1.40;
+
+		if(MedievalUnlock[client] || allowgold)
+		{
+			float GoldSupplyRate = SupplyRate[client] / 1500.0;
+			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_GOLDMINERS)
+			{
+				GoldSupplyRate *= 1.25;
+			}
+			if(i_CurrentEquippedPerk[client] == 7)
+			{
+				GoldSupplyRate *= 1.25;
+			}
+			GoldSupplyRate *= multi;
+			GoldAmount[client] += GoldSupplyRate;
+		}
+
 	}
 	if(f_VillageSavingResources[client] < GetGameTime())
 	{
@@ -7366,6 +7378,7 @@ static void SummonerMenu(int client, int viewer)
 		{
 			bool OwnsVillager = false;
 			bool HasupgradeVillager = false;
+			char npc_classname[60];
 			if(GetSData(CivType[client], TrainingIndex[client], NPCIndex) == BarrackVillager_ID())
 			{
 				if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER)
@@ -7379,9 +7392,8 @@ static void SummonerMenu(int client, int viewer)
 
 							if(IsValidEntity(entity_close))
 							{
-								char npc_classname[60];
 								NPC_GetPluginById(i_NpcInternalId[entity_close], npc_classname, sizeof(npc_classname));
-								if(StrContains(npc_classname, "npc_barrack_villager"))
+								if(StrEqual(npc_classname, "npc_barrack_villager"))
 								{
 									BarrackBody npc = view_as<BarrackBody>(entity_close);
 									if(GetClientOfUserId(npc.OwnerUserId) == client)
@@ -7464,15 +7476,15 @@ static void SummonerMenu(int client, int viewer)
 				}
 				else
 				{
+					char npc_classname[60];
 					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 					{
 						int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 
 						if(IsValidEntity(entity_close))
 						{
-							char npc_classname[60];
 							NPC_GetPluginById(i_NpcInternalId[entity_close], npc_classname, sizeof(npc_classname));
-							if(StrContains(npc_classname, "npc_barrack_villager"))
+							if(StrEqual(npc_classname, "npc_barrack_villager"))
 							{
 								BarrackBody npc = view_as<BarrackBody>(entity_close);
 								if(GetClientOfUserId(npc.OwnerUserId) == client)
@@ -7776,6 +7788,7 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 
 
 	int entity = MaxClients + 1;
+	char npc_classname[60];
 	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 	{
 		if(GetTeam(entity) == 2)
@@ -7783,19 +7796,18 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId == userid)
 			{
-				char npc_classname[60];
 				NPC_GetPluginById(i_NpcInternalId[npc.index], npc_classname, sizeof(npc_classname));
 				if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION)
 				{
-					if(!StrContains(npc_classname, "npc_barrack_villager"))
+					if(StrEqual(npc_classname, "npc_barrack_villager"))
 					{
-						if(StrContains(npc_classname, "npc_barrack_building"))
+						if(StrEqual(npc_classname, "npc_barrack_building"))
 							personal += npc.m_iSupplyCount;
 					}
 				}
 				else
 				{
-					if(!StrContains(npc_classname, "npc_barrack_building"))
+					if(StrEqual(npc_classname, "npc_barrack_building"))
 						personal += npc.m_iSupplyCount;
 				}
 			}

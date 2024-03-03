@@ -2754,7 +2754,7 @@ public void Raidmode_Shared_Xeno_Duo(int entity)
 	char npc_classname[60];
 	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
 	
-	if(StrContains(npc_classname, "npc_xeno_raidboss_silvester"))
+	if(StrEqual(npc_classname, "npc_xeno_raidboss_silvester"))
 	{
 		if(XenoExtraLogic())
 		{
@@ -2766,7 +2766,7 @@ public void Raidmode_Shared_Xeno_Duo(int entity)
 		}
 		return;
 	}
-	if(StrContains(npc_classname, "npc_infected_goggles"))
+	if(StrEqual(npc_classname, "npc_infected_goggles"))
 	{
 		if(XenoExtraLogic())
 		{

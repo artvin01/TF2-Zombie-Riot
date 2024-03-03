@@ -35,7 +35,7 @@ void WinterSkinHunter_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Skin Hunter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_skin_hunter");
-	strcopy(data.Icon, sizeof(data.Icon), "sniper_camper");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper_camper_1");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Interitus;

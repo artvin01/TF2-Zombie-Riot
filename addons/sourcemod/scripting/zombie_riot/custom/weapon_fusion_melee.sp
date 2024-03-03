@@ -140,7 +140,7 @@ public float Npc_OnTakeDamage_PaP_Fusion(int attacker, int victim, float damage,
 	{
 		char npc_classname[60];
 		NPC_GetPluginById(i_NpcInternalId[npc.m_iTarget], npc_classname, sizeof(npc_classname));
-		if(StrContains(npc_classname, "npc_nearl_sword"))
+		if(StrEqual(npc_classname, "npc_nearl_sword"))
 		{
 			damage *= 2.0;
 			DisplayCritAboveNpc(victim, attacker, false); //Display crit above head, false for no sound

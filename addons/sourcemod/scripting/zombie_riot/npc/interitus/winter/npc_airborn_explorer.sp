@@ -59,7 +59,7 @@ void WinterAirbornExplorer_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Airborn Explorer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_airborn_explorer");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_jug_market");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_jug_market_1");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Interitus;

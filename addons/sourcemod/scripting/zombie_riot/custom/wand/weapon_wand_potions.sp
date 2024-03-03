@@ -440,6 +440,7 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	
 	int count;
+	char npc_classname[60];
 	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 	{
 		int i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
@@ -450,9 +451,8 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 			{
 				float damage = f_WandDamage[entity];
 				StartBleedingTimer(i, owner, damage / 8.0, 8, weapon, DMG_SLASH);
-				char npc_classname[60];
 				NPC_GetPluginById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
-				if(StrContains(npc_classname, "npc_bloon"))
+				if(StrEqual(npc_classname, "npc_bloon"))
 				{
 					if(view_as<Bloon>(i).m_bFortified)
 					{

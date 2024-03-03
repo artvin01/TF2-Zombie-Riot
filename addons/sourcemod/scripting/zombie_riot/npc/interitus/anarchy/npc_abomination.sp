@@ -36,7 +36,7 @@ void AnarchyAbomination_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Abomination");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_abomination");
-	strcopy(data.Icon, sizeof(data.Icon), "pyro_armored2");
+	strcopy(data.Icon, sizeof(data.Icon), "pyro_armored2_1");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Interitus;
