@@ -1,20 +1,39 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+public void BarrackLastKnightOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Tide-Hunt Knight");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_lastknight");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackLastKnight(client, vecPos, vecAng, ally);
+}
+
 methodmap BarrackLastKnight < BarrackBody
 {
 	public BarrackLastKnight(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackLastKnight npc = view_as<BarrackLastKnight>(BarrackBody(client, vecPos, vecAng, "3000", _, _, "0.75",_,"models/pickups/pickup_powerup_regen.mdl"));
 		
-		i_NpcInternalId[npc.index] = BARRACK_LASTKNIGHT;
 		i_NpcWeight[npc.index] = 2;
 		KillFeed_SetKillIcon(npc.index, "spy_cicle");
 		
 		npc.m_bSelectableByAll = true;
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackLastKnight_ClotThink);
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackLastKnight_NPCDeath;
+		func_NPCThink[npc.index] = BarrackLastKnight_ClotThink;
 
 		npc.m_flSpeed = 150.0;
 		
@@ -118,5 +137,4 @@ void BarrackLastKnight_NPCDeath(int entity)
 {
 	BarrackLastKnight npc = view_as<BarrackLastKnight>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, BarrackLastKnight_ClotThink);
 }

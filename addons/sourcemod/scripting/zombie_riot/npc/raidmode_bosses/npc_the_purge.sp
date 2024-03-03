@@ -40,8 +40,22 @@ void ThePurge_MapStart()
 	PrecacheSound("mvm/giant_soldier/giant_soldier_rocket_shoot.wav");
 	PrecacheSound("mvm/giant_demoman/giant_demoman_grenade_shoot.wav");
 	PrecacheSoundCustom("#zombiesurvival/internius/the_purge.mp3");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "The Purge");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_the_purge");
+	strcopy(data.Icon, sizeof(data.Icon), "the_purge");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return ThePurge(client, vecPos, vecAng, ally);
+}
 methodmap ThePurge < CClotBody
 {
 	public void PlayDeathSound()
@@ -122,7 +136,6 @@ methodmap ThePurge < CClotBody
 	{
 		ThePurge npc = view_as<ThePurge>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "25000", team, false, true, true, true));
 		
-		i_NpcInternalId[npc.index] = RAIDBOSS_THE_PURGE;
 		i_NpcWeight[npc.index] = 5;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

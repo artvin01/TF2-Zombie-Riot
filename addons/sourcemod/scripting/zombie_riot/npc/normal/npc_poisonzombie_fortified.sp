@@ -49,6 +49,20 @@ public void FortifiedPoisonZombie_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	
 	PrecacheModel("models/zombie/poison.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Fortified Poison Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_poisonzombie_fortified");
+	strcopy(data.Icon, sizeof(data.Icon), "norm_poison_zombie_forti");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return FortifiedPoisonZombie(client, vecPos, vecAng, ally);
 }
 
 methodmap FortifiedPoisonZombie < CClotBody
@@ -128,7 +142,6 @@ methodmap FortifiedPoisonZombie < CClotBody
 	{
 		FortifiedPoisonZombie npc = view_as<FortifiedPoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.15", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = FORTIFIED_POISON_ZOMBIE;
 		i_NpcWeight[npc.index] = 2;
 		
 		int iActivity = npc.LookupActivity("ACT_WALK");
@@ -140,8 +153,10 @@ methodmap FortifiedPoisonZombie < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, FortifiedPoisonZombie_ClotThink);		
+
+		func_NPCDeath[npc.index] = FortifiedPoisonZombie_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = FortifiedPoisonZombie_OnTakeDamage;
+		func_NPCThink[npc.index] = FortifiedPoisonZombie_ClotThink;	
 		
 		
 		//IDLE
@@ -349,8 +364,6 @@ public void FortifiedPoisonZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, FortifiedPoisonZombie_ClotThink);	
+
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

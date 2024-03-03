@@ -71,8 +71,21 @@ void MedivalArcher_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Archer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_archer");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper_bow");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalArcher(client, vecPos, vecAng, ally);
+}
 methodmap MedivalArcher < CClotBody
 {
 	public void PlayIdleSound() {
@@ -149,8 +162,7 @@ methodmap MedivalArcher < CClotBody
 	{
 		MedivalArcher npc = view_as<MedivalArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_ARCHER;
+		AcceptEntityInput(npc.index, "SetBodyGroup");	
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -170,7 +182,10 @@ methodmap MedivalArcher < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalArcher_ClotThink);
+		func_NPCDeath[npc.index] = MedivalArcher_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalArcher_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalArcher_ClotThink;
+		func_NPCAnimEvent[npc.index] = HandleAnimEventMedival_Archer;
 	
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 //		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
@@ -378,9 +393,6 @@ public void MedivalArcher_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalArcher_ClotThink);
-		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

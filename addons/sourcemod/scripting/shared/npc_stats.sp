@@ -76,6 +76,7 @@ Function func_NPCOnTakeDamage[MAXENTITIES];
 Function func_NPCThink[MAXENTITIES];
 Function func_NPCFuncWin[MAXENTITIES];
 Function func_NPCAnimEvent[MAXENTITIES];
+Function func_NPCActorEmoted[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -3300,6 +3301,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		func_NPCDeathForward[pThis] = INVALID_FUNCTION;
 		func_NPCFuncWin[pThis] = INVALID_FUNCTION;
 		func_NPCAnimEvent[pThis] = INVALID_FUNCTION;
+		func_NPCActorEmoted[pThis] = INVALID_FUNCTION;
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		SetEntityCollisionGroup(pThis, 1);
@@ -3679,6 +3681,7 @@ bool IsWalkEvent(int event, int special = 0)
 	
 }
 
+
 public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 {
 	int event = DHookGetParamObjectPtrVar(hParams, 1, 0, ObjectValueType_Int);
@@ -3686,86 +3689,14 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	if(b_NpcHasDied[pThis])
 		return MRES_Ignored;
 		
-#if defined ZR
-	switch(i_NpcInternalId[pThis])
+	Function func = func_NPCAnimEvent[pThis];
+	if(func && func != INVALID_FUNCTION)
 	{
-		case MEDIVAL_ARCHER:
-		{
-			HandleAnimEventMedival_Archer(pThis, event);
-		}
-		case MEDIVAL_SKIRMISHER:
-		{
-			HandleAnimEvent_MedivalSkirmisher(pThis, event);
-		}	
-		case MEDIVAL_CROSSBOW_MAN:
-		{
-			HandleAnimEventMedival_CrossbowMan(pThis, event);
-		}
-		case MEDIVAL_HANDCANNONEER:
-		{
-			HandleAnimEventMedival_HandCannoneer(pThis, event);
-		}
-		case MEDIVAL_ELITE_SKIRMISHER:
-		{
-			HandleAnimEvent_MedivalEliteSkirmisher(pThis, event);
-		}
-		case BARRACK_ARCHER:
-		{
-			BarrackArcher_HandleAnimEvent(pThis, event);
-		}
-		case MEDIVAL_LONGBOWMEN:
-		{
-			HandleAnimEventMedivalLongbowmen(pThis, event);
-		}
-		case MEDIVAL_ELITE_LONGBOWMEN:
-		{
-			HandleAnimEventMedivalEliteLongbowmen(pThis, event);
-		}
-		case MEDIVAL_ARBALEST:
-		{
-			HandleAnimEventMedival_Arbalest(pThis, event);
-		}
-		case BARRACK_CROSSBOW:
-		{
-			BarrackCrossbow_HandleAnimEvent(pThis, event);
-		}
-		case BARRACK_ARBELAST:
-		{
-			BarrackArbelast_HandleAnimEvent(pThis, event);
-		}
-		case BARRACK_LONGBOW:
-		{
-			BarrackLongbow_HandleAnimEvent(pThis, event);
-		}
-		case MEDIVAL_RIDDENARCHER:
-		{
-			HandleAnimEventMedival_RiddenArcher(pThis, event);
-		}
-		case MEDIVAL_CROSSBOW_GIANT:
-		{
-			HandleAnimEventMedival_GiantCrossbowMan(pThis, event);
-		}
-		case MEDIVAL_ACHILLES:
-		{
-			HandleAnimEvent_MedivalAchilles(pThis, event);
-		}
-		case STALKER_COMBINE:
-		{
-			StalkerCombine_HandleAnimEvent(pThis, event);
-		}
-		default:
-		{
-			Function func = func_NPCAnimEvent[pThis];
-			if(func && func != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, func);
-				Call_PushCell(pThis);
-				Call_PushCell(event);
-				Call_Finish();
-			}
-		}
+		Call_StartFunction(null, func);
+		Call_PushCell(pThis);
+		Call_PushCell(event);
+		Call_Finish();
 	}
-#endif
 	
 	switch(npc.m_iNpcStepVariation)
 	{
@@ -4729,9 +4660,9 @@ stock int GetClosestTarget(int entity,
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
-					if(IsTowerdefense && i_NpcInternalId[entity_close] == VIP_BUILDING)
+					if(IsTowerdefense)
 					{
-						if(!IsValidEnemy(entity, view_as<CClotBody>(entity).m_iTarget, true, true))
+						if(i_NpcInternalId[entity_close] == VIPBuilding_ID() && !IsValidEnemy(entity, view_as<CClotBody>(entity).m_iTarget, true, true))
 						{
 							return entity_close; //we found a vip building, go after it.
 						}
@@ -7572,16 +7503,18 @@ stock bool IsValidAlly(int index, int ally)
 
 public int PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCharacter actor, CBaseCombatCharacter emoter, int emote)
 {
-#if defined ZR
-	switch(i_NpcInternalId[actor.index])
+	int value;
+	Function func = func_NPCAnimEvent[actor.index];
+	if(func && func != INVALID_FUNCTION)
 	{
-		case BOB_THE_GOD_OF_GODS:
-		{
-			BobTheGod_PluginBot_OnActorEmoted(actor.index, emoter.index, emote);
-		}
+		Call_StartFunction(null, func);
+		Call_PushCell(action);
+		Call_PushCell(actor);
+		Call_PushCell(emoter);
+		Call_PushCell(emote);
+		Call_Finish(value);
 	}
-#endif
-	return 0;
+	return value;
 }
 
 stock float ApproachAngle( float target, float value, float speed )
@@ -8755,7 +8688,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 	}
 	
 	int NpcTypeDefine = 0;
-	if(b_thisNpcIsABoss[npc.index] || b_ShowNpcHealthbar[npc.index] || (i_NpcInternalId[npc.index] == CITIZEN && !b_IsCamoNPC[npc.index] && !b_ThisEntityIgnored[npc.index]))
+	if(b_thisNpcIsABoss[npc.index] || b_ShowNpcHealthbar[npc.index] || (Citizen_IsIt(npc.index) && !b_IsCamoNPC[npc.index] && !b_ThisEntityIgnored[npc.index]))
 	{
 		NpcTypeDefine = 1;
 	}

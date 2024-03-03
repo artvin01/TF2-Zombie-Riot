@@ -231,8 +231,7 @@ void Npc_OnTakeDamage_DimensionalRipper(int attacker)
 	}
 }
 
-
-
+ 
 public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	switch(GetRandomInt(1, 4))
@@ -273,6 +272,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 
 public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, int slot, int pap_logic)
 {
+	
 	switch(GetRandomInt(1, 3))
 	{
 		case 1:
@@ -290,6 +290,7 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 
 public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
 {
+	
 	switch(GetRandomInt(1, 4))
 	{
 		case 1:
@@ -488,7 +489,6 @@ public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &
 		}
 	}
 }
-
 
 void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMulti, float DamageMulti, char[] ParticleEffect)
 {

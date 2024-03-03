@@ -293,6 +293,7 @@ static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 	}
 	else
 	{
+		fl_Quincy_Charge[client] = 0.0;
 		Delete_Quincy_Weapon(client);
 	}
 }

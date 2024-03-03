@@ -49,6 +49,20 @@ public void FortifiedGiantPoisonZombie_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 
 	PrecacheModel("models/zombie/poison.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Fortified Giant Poison Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_poisonzombie_fortified_giant");
+	strcopy(data.Icon, sizeof(data.Icon), "norm_poison_zombie_forti");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return FortifiedGiantPoisonZombie(client, vecPos, vecAng, ally);
 }
 
 methodmap FortifiedGiantPoisonZombie < CClotBody
@@ -128,7 +142,6 @@ methodmap FortifiedGiantPoisonZombie < CClotBody
 	{
 		FortifiedGiantPoisonZombie npc = view_as<FortifiedGiantPoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.75", "3000", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = FORTIFIED_GIANT_POISON_ZOMBIE;
 		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -137,13 +150,14 @@ methodmap FortifiedGiantPoisonZombie < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
-		
+
+		func_NPCDeath[npc.index] = FortifiedGiantPoisonZombie_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = FortifiedGiantPoisonZombie_OnTakeDamage;
+		func_NPCThink[npc.index] = FortifiedGiantPoisonZombie_ClotThink;		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, FortifiedGiantPoisonZombie_ClotThink);		
 		
 		//IDLE
 		npc.m_flAttackHappenswillhappen = false;
@@ -340,8 +354,6 @@ public void FortifiedGiantPoisonZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, FortifiedGiantPoisonZombie_ClotThink);		
+
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

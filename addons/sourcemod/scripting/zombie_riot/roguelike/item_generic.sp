@@ -29,7 +29,7 @@ public void Rogue_Item_GrigoriCoinPurse_Ally(int entity, StringMap map)
 	float Multi = GrigoriCoinPurseCalc();
 	if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
@@ -293,7 +293,7 @@ public void Rogue_Item_HandWrittenLetter_Ally(int entity, StringMap map)
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
@@ -337,7 +337,7 @@ public void Rogue_Item_CrudeFlute_Ally(int entity, StringMap map)
 {
 	if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
@@ -404,7 +404,7 @@ public void Rogue_Item_ScrappedWallet_Ally(int entity, StringMap map)
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
@@ -513,7 +513,7 @@ public void Rogue_Item_GenericDamage5_Ally(int entity, StringMap map)
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
@@ -558,7 +558,7 @@ public void Rogue_Item_GenericDamage10_Ally(int entity, StringMap map)
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
@@ -591,7 +591,7 @@ public void Rogue_Chicken_Nugget_Box_Ally(int entity, StringMap map)
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 

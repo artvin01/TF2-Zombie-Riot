@@ -47,8 +47,21 @@ void WinterArcticMage_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Arctic Mage");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_arctic_mage");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_heal_intertius");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return WinterArcticMage(client, vecPos, vecAng, ally);
+}
 
 methodmap WinterArcticMage < CClotBody
 {
@@ -93,7 +106,6 @@ methodmap WinterArcticMage < CClotBody
 	{
 		WinterArcticMage npc = view_as<WinterArcticMage>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "15000", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_WINTER_ARCTIC_MAGE;
 		i_NpcWeight[npc.index] = 2;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

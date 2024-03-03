@@ -87,8 +87,21 @@ void MedivalConstruct_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Medival Construct");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_construct");
+	strcopy(data.Icon, sizeof(data.Icon), "construct");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalConstruct(client, vecPos, vecAng, ally);
+}
 methodmap MedivalConstruct < CClotBody
 {
 	public void PlayIdleSound() {
@@ -165,8 +178,7 @@ methodmap MedivalConstruct < CClotBody
 	{
 		MedivalConstruct npc = view_as<MedivalConstruct>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.85", "20000", ally, false, true));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_CONSTRUCT;
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -183,7 +195,9 @@ methodmap MedivalConstruct < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalConstruct_ClotThink);
+		func_NPCDeath[npc.index] = MedivalConstruct_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalConstruct_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalConstruct_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 280.0;
@@ -444,9 +458,6 @@ public void MedivalConstruct_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalConstruct_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -56,8 +56,21 @@ public void XenoSoldier_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Soldier Rocketeer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_zombie_soldier_grave");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoSoldier(client, vecPos, vecAng, ally);
+}
 methodmap XenoSoldier < CClotBody
 {
 	public void PlayIdleSound() {
@@ -136,7 +149,6 @@ methodmap XenoSoldier < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		i_NpcInternalId[npc.index] = XENO_SOLDIER_ROCKET_ZOMBIE;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -146,8 +158,10 @@ methodmap XenoSoldier < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		
+		func_NPCDeath[npc.index] = XenoSoldier_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoSoldier_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoSoldier_ClotThink;	
 		
-		SDKHook(npc.index, SDKHook_Think, XenoSoldier_ClotThink);
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -333,9 +347,6 @@ public void XenoSoldier_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoSoldier_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);

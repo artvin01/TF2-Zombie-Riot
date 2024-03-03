@@ -29,8 +29,23 @@ void Kamikaze_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
+
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Kamikaze Demo");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_kamikaze_demo");
+	strcopy(data.Icon, sizeof(data.Icon), "demo");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Kamikaze(client, vecPos, vecAng, ally);
+}
 methodmap Kamikaze < CClotBody
 {
 	public void PlayIdleAlertSound() {
@@ -69,7 +84,6 @@ methodmap Kamikaze < CClotBody
 	{
 		Kamikaze npc = view_as<Kamikaze>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "700", ally));
 		
-		i_NpcInternalId[npc.index] = KAMIKAZE_DEMO;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -87,8 +101,10 @@ methodmap Kamikaze < CClotBody
 		npc.StartPathing();
 		
 		
-		
-		SDKHook(npc.index, SDKHook_Think, Kamikaze_ClotThink);
+
+		func_NPCDeath[npc.index] = Kamikaze_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Kamikaze_OnTakeDamage;
+		func_NPCThink[npc.index] = Kamikaze_ClotThink;		
 		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -264,9 +280,6 @@ public Action Kamikaze_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 public void Kamikaze_NPCDeath(int entity)
 {
 	Kamikaze npc = view_as<Kamikaze>(entity);
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, Kamikaze_ClotThink);
 	
 	if(!NpcStats_IsEnemySilenced(entity))
 	{

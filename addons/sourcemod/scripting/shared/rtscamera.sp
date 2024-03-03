@@ -997,9 +997,12 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 		for(int entity = MaxClients + 1; entity < MAXENTITIES; entity++)
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(!b_NpcHasDied[entity] && i_NpcInternalId[entity] == BARRACKS_VILLAGER && npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
+			if(!b_NpcHasDied[entity] && npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
 			{
-				SelectUnit(client, entity);
+				char npc_classname[60];
+				NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+				if(StrContains(npc_classname, "npc_barrack_villager"))
+					SelectUnit(client, entity);
 			}
 		}
 #endif

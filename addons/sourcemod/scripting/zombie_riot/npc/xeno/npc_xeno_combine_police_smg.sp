@@ -75,8 +75,21 @@ public void XenoCombinePoliceSmg_OnMapStart_NPC()
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Metro Raider");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_police_smg");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_smg");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoCombinePoliceSmg(client, vecPos, vecAng, ally);
+}
 methodmap XenoCombinePoliceSmg < CClotBody
 {
 	public void PlayIdleSound() {
@@ -169,7 +182,6 @@ methodmap XenoCombinePoliceSmg < CClotBody
 	{
 		XenoCombinePoliceSmg npc = view_as<XenoCombinePoliceSmg>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "900", ally));
 		
-		i_NpcInternalId[npc.index] = XENO_COMBINE_POLICE_SMG;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -184,7 +196,9 @@ methodmap XenoCombinePoliceSmg < CClotBody
 
 		
 		
-		SDKHook(npc.index, SDKHook_Think, XenoCombinePoliceSmg_ClotThink);
+		func_NPCDeath[npc.index] = XenoCombinePoliceSmg_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoCombinePoliceSmg_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoCombinePoliceSmg_ClotThink;
 				
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -471,9 +485,6 @@ public void XenoCombinePoliceSmg_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoCombinePoliceSmg_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

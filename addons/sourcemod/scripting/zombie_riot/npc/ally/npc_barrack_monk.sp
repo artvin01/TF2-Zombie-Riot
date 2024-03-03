@@ -1,6 +1,27 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+public void BarrackMonkOnMapStart()
+{
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Monk");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_monk");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+	
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackMonk(client, vecPos, vecAng, ally);
+}
+
+
 methodmap BarrackMonk < BarrackBody
 {
 	public void PlayMeleeWarCry()
@@ -12,12 +33,13 @@ methodmap BarrackMonk < BarrackBody
 	{
 		BarrackMonk npc = view_as<BarrackMonk>(BarrackBody(client, vecPos, vecAng, "750",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
-		i_NpcInternalId[npc.index] = BARRACK_MONK;
 		i_NpcWeight[npc.index] = 1;
 		KillFeed_SetKillIcon(npc.index, "armageddon");
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackMonk_ClotThink);
 
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackMonk_NPCDeath;
+		func_NPCThink[npc.index] = BarrackMonk_ClotThink;
 		npc.m_flSpeed = 175.0;
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");

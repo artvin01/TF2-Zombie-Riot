@@ -52,8 +52,22 @@ void WinterIrritatedPerson_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_SuperJumpSound)); i++) { PrecacheSound(g_SuperJumpSound[i]); }
 	PrecacheModel("models/player/medic.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Irritated Person");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_irritated_person");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_urgent");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return WinterIrritatedPerson(client, vecPos, vecAng, ally);
+}
 
 methodmap WinterIrritatedPerson < CClotBody
 {
@@ -102,7 +116,6 @@ methodmap WinterIrritatedPerson < CClotBody
 	{
 		WinterIrritatedPerson npc = view_as<WinterIrritatedPerson>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.1", "60000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_WINTER_IRRITATED_PERSON;
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

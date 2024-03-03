@@ -95,8 +95,21 @@ void MedivalObuch_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Obuch");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_obuch");
+	strcopy(data.Icon, sizeof(data.Icon), "obuch");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalObuch(client, vecPos, vecAng, ally);
+}
 methodmap MedivalObuch < CClotBody
 {
 	public void PlayIdleSound() {
@@ -173,8 +186,7 @@ methodmap MedivalObuch < CClotBody
 	{
 		MedivalObuch npc = view_as<MedivalObuch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "15000", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_OBUCH;
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcWeight[npc.index] = 2;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -189,11 +201,10 @@ methodmap MedivalObuch < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, MedivalObuch_ClotThink);
 	
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
+		func_NPCDeath[npc.index] = MedivalObuch_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalObuch_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalObuch_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -207,7 +218,7 @@ methodmap MedivalObuch < CClotBody
 		npc.m_flSpeed = 300.0;
 		
 
-		f_ObuchSameEnemyAttacked[npc.index] = 1.5;
+		f_ObuchSameEnemyAttacked[npc.index] = 1.0;
 		i_ObuchSameEnemyAttacked[npc.index] = -1;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_powerjack/c_powerjack.mdl");
@@ -383,9 +394,9 @@ public void MedivalObuch_ClotThink(int iNPC)
 					else
 					{
 						f_ObuchSameEnemyAttacked[npc.index] += 0.5;
-						if(f_ObuchSameEnemyAttacked[npc.index] > 1.5)
+						if(f_ObuchSameEnemyAttacked[npc.index] > 1.0)
 						{
-							f_ObuchSameEnemyAttacked[npc.index] = 1.5;
+							f_ObuchSameEnemyAttacked[npc.index] = 1.0;
 						}
 					}
 					float Armor_Max = 1.5;
@@ -423,9 +434,9 @@ public void MedivalObuch_ClotThink(int iNPC)
 	if(npc.m_flNextMeleeAttack < gameTime)
 	{
 		f_ObuchSameEnemyAttacked[npc.index] += 0.025;
-		if(f_ObuchSameEnemyAttacked[npc.index] > 1.5)
+		if(f_ObuchSameEnemyAttacked[npc.index] > 1.0)
 		{
-			f_ObuchSameEnemyAttacked[npc.index] = 1.5;
+			f_ObuchSameEnemyAttacked[npc.index] = 1.0;
 		}
 
 		float Armor_Max = 1.5;
@@ -470,9 +481,7 @@ public void MedivalObuch_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalObuch_ClotThink);
+
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -46,7 +46,7 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 

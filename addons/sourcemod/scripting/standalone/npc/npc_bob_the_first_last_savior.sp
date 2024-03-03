@@ -105,7 +105,7 @@ static const char g_BobSuperMeleeCharge_Hit[][] =
 static char gGlow1;
 static char gExplosive1;
 static char gLaser1;
-//static int BobHitDetected[MAXENTITIES];
+static int SecondPhase[MAXENTITIES];
 
 void RaidbossBobTheFirst_OnMapStart()
 {
@@ -230,8 +230,11 @@ methodmap RaidbossBobTheFirst < CClotBody
 	}
 	property bool m_bSecondPhase
 	{
-		public get()		{	return i_NpcInternalId[this.index] == BOB_THE_FIRST_S;	}
-		public set(bool value)	{	i_NpcInternalId[this.index] = value ? BOB_THE_FIRST_S : BOB_THE_FIRST;	}
+		public get()		
+		{	
+			return view_as<bool>(SecondPhase[this.index]);	
+		}
+		public set(bool value)	{	SecondPhase[this.index] = value;	}
 	}	
 	property bool b_SwordIgnition
 	{
@@ -250,8 +253,8 @@ methodmap RaidbossBobTheFirst < CClotBody
 
 		RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(CClotBody(pos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "20000000", ally, _, _, true, false));
 		
-		i_NpcInternalId[npc.index] = BOB_THE_FIRST;
 		i_NpcWeight[npc.index] = 4;
+		SecondPhase[npc.index] = false;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

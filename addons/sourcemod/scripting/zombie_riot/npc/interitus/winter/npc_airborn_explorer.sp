@@ -56,8 +56,21 @@ void WinterAirbornExplorer_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackBackstabSounds)); i++) { PrecacheSound(g_MeleeAttackBackstabSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Airborn Explorer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_airborn_explorer");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_jug_market");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return WinterAirbornExplorer(client, vecPos, vecAng, ally);
+}
 
 methodmap WinterAirbornExplorer < CClotBody
 {
@@ -113,7 +126,6 @@ methodmap WinterAirbornExplorer < CClotBody
 	{
 		WinterAirbornExplorer npc = view_as<WinterAirbornExplorer>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "2500", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_WINTER_AIRBORN_EXPLORER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

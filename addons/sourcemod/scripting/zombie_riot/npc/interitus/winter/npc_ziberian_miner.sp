@@ -47,8 +47,21 @@ void WinterZiberianMiner_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Ziberian Miner");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ziberian_miner");
+	strcopy(data.Icon, sizeof(data.Icon), "engineer");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return WinterZiberianMiner(client, vecPos, vecAng, ally);
+}
 
 methodmap WinterZiberianMiner < CClotBody
 {
@@ -93,7 +106,6 @@ methodmap WinterZiberianMiner < CClotBody
 	{
 		WinterZiberianMiner npc = view_as<WinterZiberianMiner>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "2000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_WINTER_ZIBERIANMINER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

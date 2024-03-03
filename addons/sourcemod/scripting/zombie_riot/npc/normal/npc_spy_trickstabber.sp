@@ -76,8 +76,20 @@ void SpyTrickstabber_OnMapStart_NPC()
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Spy Trickstabber");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_spy_trickstabber");
+	strcopy(data.Icon, sizeof(data.Icon), "spy");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
-
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SpyTrickstabber(client, vecPos, vecAng, ally);
+}
 methodmap SpyTrickstabber < CClotBody
 {
 	public void PlayIdleSound() {
@@ -169,7 +181,6 @@ methodmap SpyTrickstabber < CClotBody
 	{
 		SpyTrickstabber npc = view_as<SpyTrickstabber>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "6000", ally));
 		
-		i_NpcInternalId[npc.index] = SPY_TRICKSTABBER;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -186,8 +197,10 @@ methodmap SpyTrickstabber < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, SpyTrickstabber_ClotThink);
+
+		func_NPCDeath[npc.index] = SpyTrickstabber_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SpyTrickstabber_OnTakeDamage;
+		func_NPCThink[npc.index] = SpyTrickstabber_ClotThink;
 		
 		npc.m_iState = 0;
 		npc.m_flSpeed = 280.0;
@@ -385,9 +398,6 @@ public void SpyTrickstabber_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SpyTrickstabber_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -58,6 +58,20 @@ void Bad_MapStart()
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/bad.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Big Airship of Doom");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bad");
+	strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_BTD;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Bad(client, vecPos, vecAng, ally, data);
 }
 
 methodmap Bad < CClotBody
@@ -100,7 +114,6 @@ methodmap Bad < CClotBody
 		
 		Bad npc = view_as<Bad>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bad.mdl", "1.0", buffer, ally, false, true));
 		
-		i_NpcInternalId[npc.index] = BTD_BAD;
 		i_NpcWeight[npc.index] = 5;
 		KillFeed_SetKillIcon(npc.index, "vehicle");
 		
@@ -108,11 +121,14 @@ methodmap Bad < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_iBleedType = BLEEDTYPE_RUBBER;
-		npc.m_iStepNoiseType = NOTHING;	
-		npc.m_iNpcStepVariation = NOTHING;	
+		npc.m_iStepNoiseType = STEPTYPE_NONE;	
+		npc.m_iNpcStepVariation = STEPTYPE_NONE;	
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bisWalking = false;
 		
+		func_NPCDeath[npc.index] = Bad_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Bad_OnTakeDamage;
+		func_NPCThink[npc.index] = Bad_ClotThink;
 		npc.m_flSpeed = MoabSpeed();
 		npc.m_bFortified = fortified;
 		
@@ -126,7 +142,6 @@ methodmap Bad < CClotBody
 		
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bad_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, Bad_ClotThink);
 		
 		npc.StartPathing();
 		
@@ -259,7 +274,6 @@ public void Bad_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bad_ClotDamagedPost);
 	
-	SDKUnhook(npc.index, SDKHook_Think, Bad_ClotThink);
 	
 	int team = GetTeam(entity);
 	
@@ -268,7 +282,7 @@ public void Bad_NPCDeath(int entity)
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 	for(int i; i<3; i++)
 	{
-		int spawn_index = NPC_CreateById(BTD_DDT, -1, pos, angles, team, npc.m_bFortified ? "f" : "");
+		int spawn_index = NPC_CreateByName("npc_ddt", -1, pos, angles, team, npc.m_bFortified ? "f" : "");
 		if(spawn_index > MaxClients)
 			Zombies_Currently_Still_Ongoing++;
 	}
@@ -309,7 +323,7 @@ public void Bad_PostDeath(const char[] output, int caller, int activator, float 
 	
 	for(int i; i<2; i++)
 	{
-		int spawn_index = NPC_CreateById(BTD_ZOMG, -1, pos, angles, GetTeam(caller));
+		int spawn_index = NPC_CreateByName("npc_zomg", -1, pos, angles, GetTeam(caller));
 		if(spawn_index > MaxClients)
 			Zombies_Currently_Still_Ongoing++;
 	}
@@ -326,7 +340,7 @@ public void Bad_PostFortifiedDeath(const char[] output, int caller, int activato
 	
 	for(int i; i<2; i++)
 	{
-		int spawn_index = NPC_CreateById(BTD_ZOMG, -1, pos, angles, GetTeam(caller), "f");
+		int spawn_index = NPC_CreateByName("npc_zomg", -1, pos, angles, GetTeam(caller), "f");
 		if(spawn_index > MaxClients)
 			Zombies_Currently_Still_Ongoing++;
 	}

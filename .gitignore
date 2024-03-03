@@ -4,7 +4,6 @@
 *.inc
 *.vscode
 *.jpg
-*.png
 *.code-workspace
 mynpcs/
 [Cc]compiled/

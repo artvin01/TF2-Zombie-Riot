@@ -167,6 +167,15 @@ stock void PrecacheMvMIconCustom(const char[] icon)
 {
 
 	char buffer[PLATFORM_MAX_PATH];
+	FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vtf", icon);
+
+#if defined UseDownloadTable
+	AddFileToDownloadsTable(buffer);
+#else
+	if(ExtraList.FindString(buffer) == -1)
+		ExtraList.PushString(buffer);
+#endif
+
 	FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vmt", icon);
 
 #if defined UseDownloadTable
@@ -176,13 +185,12 @@ stock void PrecacheMvMIconCustom(const char[] icon)
 		ExtraList.PushString(buffer);
 #endif
 
-	FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vtf", icon);
-
-#if defined UseDownloadTable
-	AddFileToDownloadsTable(buffer);
-#else
-	if(ExtraList.FindString(buffer) == -1)
-		ExtraList.PushString(buffer);
+#if !defined UseDownloadTable
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(StartedQueue[client] && !Downloading[client])
+			SendNextFile(client);
+	}
 #endif
 
 }
@@ -230,20 +238,20 @@ static void SendNextFile(int client)
 	static char download[PLATFORM_MAX_PATH];
 	DataPack pack;
 
-	if(SoundLevel[client] < SoundList.Length)
+	if(ExtraLevel[client] < ExtraList.Length)
+	{
+		ExtraList.GetString(ExtraLevel[client], download, sizeof(download));
+
+		pack = new DataPack();
+		pack.WriteCell(true);	// Is an extra
+	}
+	else if(SoundLevel[client] < SoundList.Length)
 	{
 		SoundList.GetString(SoundLevel[client], download, sizeof(download));
 		Format(download, sizeof(download), "sound/%s", download[download[0] == '#' ? 1 : 0]);
 		
 		pack = new DataPack();
 		pack.WriteCell(false);	// Is a sound
-	}
-	else if(ExtraLevel[client] < ExtraList.Length)
-	{
-		ExtraList.GetString(ExtraLevel[client], download, sizeof(download));
-
-		pack = new DataPack();
-		pack.WriteCell(true);	// Is an extra
 	}
 
 	if(pack)

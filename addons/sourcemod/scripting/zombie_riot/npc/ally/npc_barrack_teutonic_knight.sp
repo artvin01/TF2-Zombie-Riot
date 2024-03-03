@@ -3,17 +3,38 @@
 
 // Balanced around Mid Spy
 
+public void BarrackTeutonOnMapStart()
+{
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks Teutonic Knight");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_teutonic_knight");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+	
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackTeuton(client, vecPos, vecAng, ally);
+}
+
 methodmap BarrackTeuton < BarrackBody
 {
 	public BarrackTeuton(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackTeuton npc = view_as<BarrackTeuton>(BarrackBody(client, vecPos, vecAng, "1300",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
-		i_NpcInternalId[npc.index] = BARRACKS_TEUTONIC_KNIGHT;
 		i_NpcWeight[npc.index] = 1;
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackTeuton_ClotThink);
 
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackTeuton_NPCDeath;
+		func_NPCThink[npc.index] = BarrackTeuton_ClotThink;
 		npc.m_flSpeed = 250.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
@@ -101,5 +122,4 @@ void BarrackTeuton_NPCDeath(int entity)
 {
 	BarrackTeuton npc = view_as<BarrackTeuton>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, BarrackTeuton_ClotThink);
 }

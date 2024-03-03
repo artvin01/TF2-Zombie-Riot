@@ -77,8 +77,21 @@ public void NecroCombine_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Revived Combine DDT");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_necromancy_combine");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
+{
+	return NecroCombine(client, vecPos, vecAng);
+}
 methodmap NecroCombine < CClotBody
 {
 	public void PlayIdleSound() {
@@ -174,8 +187,7 @@ methodmap NecroCombine < CClotBody
 	{
 		NecroCombine npc = view_as<NecroCombine>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.8", "1250", TFTeam_Red, true, false));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = NECRO_COMBINE;
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -196,10 +208,11 @@ methodmap NecroCombine < CClotBody
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", 50000001);
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", 50000001);
 		
-		npc.m_flExtraDamage = damage_multiplier;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, NecroCombine_ClotThink);
+		func_NPCDeath[npc.index] = NecroCombine_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = NecroCombine_OnTakeDamage;
+		func_NPCThink[npc.index] = NecroCombine_ClotThink;
 		
 
 	//	npc.m_flNextThinkTime = GetGameTime(npc.index) + GetRandomFloat(0.2, 0.5);
@@ -407,9 +420,6 @@ public void NecroCombine_NPCDeath(int entity)
 {
 	NecroCombine npc = view_as<NecroCombine>(entity);
 //	npc.PlayDeathSound();
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, NecroCombine_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

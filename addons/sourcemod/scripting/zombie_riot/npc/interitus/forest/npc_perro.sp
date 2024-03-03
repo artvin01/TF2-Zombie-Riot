@@ -41,6 +41,24 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/pickaxe_swing3.wav"
 };
 
+void PerroOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Perro");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_perro");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Perro(client, vecPos, vecAng, ally);
+}
+
 methodmap Perro < CClotBody
 {
 	public void PlayIdleSound()
@@ -72,7 +90,6 @@ methodmap Perro < CClotBody
 	{
 		Perro npc = view_as<Perro>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "30000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_SOLDIER;
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		KillFeed_SetKillIcon(npc.index, "pickaxe");

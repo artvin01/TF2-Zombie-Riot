@@ -2089,7 +2089,6 @@ void NPC_DeadEffects(int entity)
 			
 #if defined ZR
 			GiveXP(client, 1);
-			Items_GiveNPCKill(client, i_NpcInternalId[entity]);
 			Saga_DeadEffects(entity, client, WeaponLastHit);
 #endif
 			

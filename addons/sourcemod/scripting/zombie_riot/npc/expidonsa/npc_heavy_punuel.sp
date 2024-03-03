@@ -51,8 +51,22 @@ void HeavyPunuel_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_HurtArmorSounds)); i++) { PrecacheSound(g_HurtArmorSounds[i]); }
 	PrecacheModel("models/player/demo.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Heavy Punuel");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_heavy_punuel");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_punel");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return HeavyPunuel(client, vecPos, vecAng, ally);
+}
 
 methodmap HeavyPunuel < CClotBody
 {
@@ -117,7 +131,6 @@ methodmap HeavyPunuel < CClotBody
 	{
 		HeavyPunuel npc = view_as<HeavyPunuel>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "1000", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_HEAVYPUNUEL;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -140,7 +153,9 @@ methodmap HeavyPunuel < CClotBody
 
 		npc.m_bArmorGiven = false;
 		
-		SDKHook(npc.index, SDKHook_Think, HeavyPunuel_ClotThink);
+		func_NPCDeath[npc.index] = HeavyPunuel_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = HeavyPunuel_OnTakeDamage;
+		func_NPCThink[npc.index] = HeavyPunuel_ClotThink;
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -309,7 +324,6 @@ public void HeavyPunuel_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_Think, HeavyPunuel_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable3))

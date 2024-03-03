@@ -3,17 +3,37 @@
 
 // Balanced around Early Spy
 
+public void BarrackLongbowOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Medival Longbowmen");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_longbow");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackLongbow(client, vecPos, vecAng, ally);
+}
 methodmap BarrackLongbow < BarrackBody
 {
 	public BarrackLongbow(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackLongbow npc = view_as<BarrackLongbow>(BarrackBody(client, vecPos, vecAng, "350",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
-		i_NpcInternalId[npc.index] = BARRACK_LONGBOW;
+		
 		i_NpcWeight[npc.index] = 1;
 		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackLongbow_ClotThink);
-
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackLongbow_NPCDeath;
+		func_NPCThink[npc.index] = BarrackLongbow_ClotThink;
+		func_NPCAnimEvent[npc.index] = BarrackLongbow_HandleAnimEvent;
+		
 		npc.m_flSpeed = 275.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bow/c_bow.mdl");
@@ -93,5 +113,4 @@ void BarrackLongbow_NPCDeath(int entity)
 {
 	BarrackLongbow npc = view_as<BarrackLongbow>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, BarrackLongbow_ClotThink);
 }
