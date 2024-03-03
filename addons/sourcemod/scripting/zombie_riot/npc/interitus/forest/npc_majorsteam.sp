@@ -14,7 +14,7 @@ void MajorSteam_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Major Steam");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_majorsteam");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_barrage");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_major_crits");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Interitus;
