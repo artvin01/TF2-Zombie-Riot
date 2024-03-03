@@ -2277,8 +2277,8 @@ public void Rocket_Blitz_StartTouch(int entity, int target)
 
 		if(time<=2.0 && time>=0.0)
 		{			
-			if(time<0.5)
-				time=0.5;
+			if(time<1.0)
+				time=1.0;	//minimum dmg limiter
 			float ratio = time/2.0;
 			DamageDeal *=ratio;
 		}
