@@ -2080,6 +2080,7 @@ Address DHook_CTeamplayRoundBasedRules()
 
 static MRESReturn DHook_ResetPlayerAndTeamReadyStatePost(Address address)
 {
+	GetTimerAndNullifyMusicMVM();
 	CTeamplayRoundBasedRules = address;
 	return MRES_Ignored;
 }
