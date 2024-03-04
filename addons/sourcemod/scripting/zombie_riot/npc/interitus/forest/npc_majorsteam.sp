@@ -11,6 +11,21 @@ void MajorSteam_MapStart()
 	PrecacheSound(g_MeleeAttackSounds);
 	PrecacheSound("misc/halloween/hwn_dance_howl.wav");
 	PrecacheSound("weapons/barret_arm_zap.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Major Steam");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_majorsteam");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_major_crits");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MajorSteam(client, vecPos, vecAng, ally);
 }
 
 methodmap MajorSteam < CClotBody
@@ -32,7 +47,6 @@ methodmap MajorSteam < CClotBody
 	{
 		MajorSteam npc = view_as<MajorSteam>(CClotBody(vecPos, vecAng, "models/bots/soldier_boss/bot_soldier_boss.mdl", "2.0", "300000", ally, _, true));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_BOSS;
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_MP_RUN_PRIMARY");
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
@@ -249,7 +263,7 @@ static void ClotDeath(int entity)
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	
-	int other = NPC_CreateById(INTERITUS_FOREST_ENGINEER, -1, pos, ang, team, "EX");
+	int other = NPC_CreateByName("npc_vulpo", -1, pos, ang, team, "EX");
 	if(other > MaxClients)
 	{
 		if(team != TFTeam_Red)

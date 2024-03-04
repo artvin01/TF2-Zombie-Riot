@@ -46,8 +46,21 @@ public void XenoMedicHealer_OnMapStart_NPC()
 
 	PrecacheSound("player/flow.wav");
 	PrecacheModel(LASERBEAM);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Medic Supporter");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_medic_healer");
+	strcopy(data.Icon, sizeof(data.Icon), "medic");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoMedicHealer(client, vecPos, vecAng, ally);
+}
 methodmap XenoMedicHealer < CClotBody
 {
 	public void PlayIdleAlertSound() {
@@ -112,7 +125,6 @@ methodmap XenoMedicHealer < CClotBody
 	{
 		XenoMedicHealer npc = view_as<XenoMedicHealer>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "4500", ally));
 		
-		i_NpcInternalId[npc.index] = XENO_MEDIC_HEALER;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -125,7 +137,9 @@ methodmap XenoMedicHealer < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, XenoMedicHealer_ClotThink);
+		func_NPCDeath[npc.index] = XenoMedicHealer_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoMedicHealer_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoMedicHealer_ClotThink;		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -473,9 +487,6 @@ public void XenoMedicHealer_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoMedicHealer_ClotThink);
 		
 	Is_a_Medic[npc.index] = false;
 	if(IsValidEntity(npc.m_iWearable1))

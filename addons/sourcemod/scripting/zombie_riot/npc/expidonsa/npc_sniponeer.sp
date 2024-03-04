@@ -37,6 +37,20 @@ void Sniponeer_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	PrecacheModel("models/player/scout.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Sniponeer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sniponeer");
+	strcopy(data.Icon, sizeof(data.Icon), "sniponeers");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Sniponeer(client, vecPos, vecAng, ally);
 }
 
 methodmap Sniponeer < CClotBody
@@ -77,7 +91,6 @@ methodmap Sniponeer < CClotBody
 	{
 		Sniponeer npc = view_as<Sniponeer>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1000", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_SNIPONEER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -93,8 +106,9 @@ methodmap Sniponeer < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_Think, Sniponeer_ClotThink);
-		
+		func_NPCDeath[npc.index] = Sniponeer_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Sniponeer_OnTakeDamage;
+		func_NPCThink[npc.index] = Sniponeer_ClotThink;
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -215,7 +229,6 @@ public void Sniponeer_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_Think, Sniponeer_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);

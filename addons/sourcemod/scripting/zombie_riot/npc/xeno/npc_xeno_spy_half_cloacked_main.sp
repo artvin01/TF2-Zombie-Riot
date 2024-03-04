@@ -76,8 +76,21 @@ public void XenoSpyCloaked_OnMapStart_NPC()
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Half Cloaked Spy");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_spy_half_cloacked_main");
+	strcopy(data.Icon, sizeof(data.Icon), "spy");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoSpyCloaked(client, vecPos, vecAng, ally);
+}
 methodmap XenoSpyCloaked < CClotBody
 {
 	public void PlayIdleSound() {
@@ -173,8 +186,6 @@ methodmap XenoSpyCloaked < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		
-		i_NpcInternalId[npc.index] = XENO_SPY_HALF_CLOACKED;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -187,8 +198,10 @@ methodmap XenoSpyCloaked < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		
-		SDKHook(npc.index, SDKHook_Think, XenoSpyCloaked_ClotThink);	
+		func_NPCDeath[npc.index] = XenoSpyCloaked_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoSpyCloaked_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoSpyCloaked_ClotThink;	
+	
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -508,9 +521,6 @@ public void XenoSpyCloaked_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoSpyCloaked_ClotThink);	
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -4,17 +4,39 @@
 // Balanced around Mid Combine
 // Construction Worker
 
+public void BarrackSwordsmanOnMapStart()
+{
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Long Swordsman");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_swordsman");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+	
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackSwordsman(client, vecPos, vecAng, ally);
+}
+
 methodmap BarrackSwordsman < BarrackBody
 {
 	public BarrackSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackSwordsman npc = view_as<BarrackSwordsman>(BarrackBody(client, vecPos, vecAng, "400",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
-		i_NpcInternalId[npc.index] = BARRACK_SWORDSMAN;
 		i_NpcWeight[npc.index] = 1;
 		KillFeed_SetKillIcon(npc.index, "sword");
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackSwordsman_ClotThink);
+
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackSwordsman_NPCDeath;
+		func_NPCThink[npc.index] = BarrackSwordsman_ClotThink;
 
 		npc.m_flSpeed = 200.0;
 		

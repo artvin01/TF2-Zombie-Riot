@@ -24,21 +24,12 @@ void NPC_ConfigSetup()
 
 	HeadcrabZombie_Precache();
 	CombinePolicePistol_Precache();
-	Sensal_OnMapStart_NPC();
-	RaidbossBobTheFirst_OnMapStart();
-//	Raidboss_Schwertkrieg_OnMapStart_NPC();
-//	Raidboss_Donnerkrieg_OnMapStart_NPC();
-	ChaosKahmlstein_OnMapStart_NPC();
+	MyNPCs();
 }
 
 #include "standalone/npc/npc_headcrabzombie.sp"
 #include "standalone/npc/npc_combine_police_pistol.sp"
-#include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
-#include "standalone/npc/npc_sensal.sp"
-#include "standalone/npc/npc_bob_the_first_last_savior.sp"
-//#include "standalone/npc/npc_donnerkrieg.sp"
-//#include "standalone/npc/npc_schwertkrieg.sp"
-#include "standalone/npc/npc_chaos_kahmlstein.sp"
+#include "standalone/mynpcs.sp"
 
 int NPC_Add(NPCData data)
 {
@@ -73,7 +64,7 @@ void NPC_GetById(int id, NPCData data)
 	NPCList.GetArray(id, data);
 }
 
-int NPC_GetByPlugin(const char[] name, NPCData data = {})
+int NPC_GetIdByPlugin(const char[] name, NPCData data = {})
 {
 	int length = NPCList.Length;
 	for(int i; i < length; i++)
@@ -88,7 +79,7 @@ int NPC_GetByPlugin(const char[] name, NPCData data = {})
 int NPC_CreateByName(const char[] name, int client, const float vecPos[3], const float vecAng[3], int team, const char[] data = "")
 {
 	static NPCData npcdata;
-	int id = NPC_GetByPlugin(name, npcdata);
+	int id = NPC_GetIdByPlugin(name, npcdata);
 	if(id == -1)
 	{
 		PrintToChatAll("\"%s\" is not a valid NPC!", name);

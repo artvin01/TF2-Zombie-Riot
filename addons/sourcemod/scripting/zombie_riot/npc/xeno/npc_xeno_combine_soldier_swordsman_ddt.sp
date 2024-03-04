@@ -77,8 +77,21 @@ public void XenoCombineDDT_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Combine DDT");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_swordsman_ddt");
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoCombineDDT(client, vecPos, vecAng, ally);
+}
 methodmap XenoCombineDDT < CClotBody
 {
 	public void PlayIdleAlertSound() {
@@ -164,7 +177,6 @@ methodmap XenoCombineDDT < CClotBody
 		XenoCombineDDT npc = view_as<XenoCombineDDT>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250", ally));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_DDT;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -183,8 +195,11 @@ methodmap XenoCombineDDT < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
+	
+		func_NPCDeath[npc.index] = XenoCombineDDT_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoCombineDDT_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoCombineDDT_ClotThink;
 		
-		SDKHook(npc.index, SDKHook_Think, XenoCombineDDT_ClotThink);		
 		
 
 		npc.m_iState = 0;
@@ -443,10 +458,7 @@ public void XenoCombineDDT_NPCDeath(int entity)
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
-	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoCombineDDT_ClotThink);		
+	}		
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

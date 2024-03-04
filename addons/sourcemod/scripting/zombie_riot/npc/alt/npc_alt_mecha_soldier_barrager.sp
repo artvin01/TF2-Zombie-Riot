@@ -60,15 +60,30 @@ static const char g_RangedReloadSound[][] = {
 
 void MechaSoldier_Barrager_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheModel(ALTBOTSOLDIERMODEL);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Mecha Soldier Barrager");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_soldier_barrager");
+	data.Category = Type_Alt;
+	data.Func = ClotSummon;
+	strcopy(data.Icon, sizeof(data.Icon), "soldier"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = false;													//download needed?
+	data.Flags = 0;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return MechaSoldier_Barrager(client, vecPos, vecAng, ally);
 }
 
 static int i_ammo_count[MAXENTITIES];
@@ -151,8 +166,7 @@ methodmap MechaSoldier_Barrager < CClotBody
 	public MechaSoldier_Barrager(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MechaSoldier_Barrager npc = view_as<MechaSoldier_Barrager>(CClotBody(vecPos, vecAng, ALTBOTSOLDIERMODEL, "1.0", "2000", ally));
-		
-		i_NpcInternalId[npc.index] = ALT_MECHASOLDIER_BARRAGER;
+
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -167,7 +181,9 @@ methodmap MechaSoldier_Barrager < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, MechaSoldier_Barrager_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
 		//IDLE
 		npc.m_flSpeed = 270.0;
@@ -213,16 +229,18 @@ methodmap MechaSoldier_Barrager < CClotBody
 
 //TODO 
 //Rewrite
-public void MechaSoldier_Barrager_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	MechaSoldier_Barrager npc = view_as<MechaSoldier_Barrager>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
 	
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 	
@@ -233,17 +251,17 @@ public void MechaSoldier_Barrager_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > GameTime)
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = GameTime + 0.1;
 	
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -259,17 +277,17 @@ public void MechaSoldier_Barrager_ClotThink(int iNPC)
 		{
 			b_we_are_reloading[npc.index]=true;
 		}
-		if((b_we_are_reloading[npc.index] || (b_target_close[npc.index] && i_ammo_count[npc.index]<=0)) && npc.m_flReloadIn<GetGameTime(npc.index))	//Reload IF. Target too close. Empty clip.
+		if((b_we_are_reloading[npc.index] || (b_target_close[npc.index] && i_ammo_count[npc.index]<=0)) && npc.m_flReloadIn<GameTime)	//Reload IF. Target too close. Empty clip.
 		{
 			npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY2");
-			npc.m_flReloadIn = 0.75 + GetGameTime(npc.index);
+			npc.m_flReloadIn = 0.75 + GameTime;
 			i_ammo_count[npc.index]++;
 			npc.PlayRangedReloadSound();
 		}
-		if(fl_idle_timer[npc.index] <= GetGameTime(npc.index) && npc.m_flReloadIn<GetGameTime(npc.index) && !b_we_are_reloading[npc.index] && !b_target_close[npc.index] && i_ammo_count[npc.index]<10)	//reload if not attacking/idle for long
+		if(fl_idle_timer[npc.index] <= GameTime && npc.m_flReloadIn<GameTime && !b_we_are_reloading[npc.index] && !b_target_close[npc.index] && i_ammo_count[npc.index]<10)	//reload if not attacking/idle for long
 		{
 			npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY2");
-			npc.m_flReloadIn = 0.75 + GetGameTime(npc.index);
+			npc.m_flReloadIn = 0.75 + GameTime;
 			i_ammo_count[npc.index]++;
 			npc.PlayRangedReloadSound();
 		}
@@ -309,14 +327,14 @@ public void MechaSoldier_Barrager_ClotThink(int iNPC)
 			npc.m_flSpeed = 270.0;
 			int Enemy_I_See;
 			
-			fl_idle_timer[npc.index] = 2.5 + GetGameTime(npc.index);
+			fl_idle_timer[npc.index] = 2.5 + GameTime;
 			
 			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 			//Target close enough to hit
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{	
 				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) && i_ammo_count[npc.index] >=0)
+				if(npc.m_flNextMeleeAttack < GameTime && i_ammo_count[npc.index] >=0)
 				{
 					//Play attack anim
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
@@ -325,8 +343,8 @@ public void MechaSoldier_Barrager_ClotThink(int iNPC)
 					npc.PlayMeleeSound();
 					float dmg = 13.5;
 					npc.FireParticleRocket(vecTarget, dmg , 750.0 , 1.0 , "raygun_projectile_blue");
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.5;
-					npc.m_flReloadIn = GetGameTime(npc.index) + 1.75;
+					npc.m_flNextMeleeAttack = GameTime + 0.5;
+					npc.m_flReloadIn = GameTime + 1.75;
 					i_ammo_count[npc.index]--;
 				}
 			}
@@ -377,7 +395,7 @@ public void MechaSoldier_Barrager_ClotThink(int iNPC)
 }
 
 
-public Action MechaSoldier_Barrager_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	MechaSoldier_Barrager npc = view_as<MechaSoldier_Barrager>(victim);
 		
@@ -393,16 +411,13 @@ public Action MechaSoldier_Barrager_OnTakeDamage(int victim, int &attacker, int 
 	return Plugin_Changed;
 }
 
-public void MechaSoldier_Barrager_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	MechaSoldier_Barrager npc = view_as<MechaSoldier_Barrager>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MechaSoldier_Barrager_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable2))

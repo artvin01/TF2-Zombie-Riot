@@ -493,7 +493,7 @@ static void Internal_ClotThink(int iNPC)
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			int spawn_index = NPC_CreateById(EXPIDONSA_DIVERSIONISTICO, -1, pos, ang, GetTeam(npc.index));
+			int spawn_index = NPC_CreateByName("npc_diversionistico", -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -1948,19 +1948,23 @@ void SensalGiveShield(int sensal, int shieldcount)
 	Sensal npc = view_as<Sensal>(sensal);
 	if(ZR_GetWaveCount()+1 >= 60)
 	{
-		shieldcount *= 2;
+		shieldcount *= RoundToNearest(float(shieldcount) * 1.55);
 	}
 	else if(ZR_GetWaveCount()+1 >= 45)
 	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.85);
+		shieldcount = RoundToNearest(float(shieldcount) * 1.45);
 	}
 	else if(ZR_GetWaveCount()+1 >= 30)
 	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.5);
+		shieldcount = RoundToNearest(float(shieldcount) * 1.25);
+	}
+	else
+	{
+		shieldcount = RoundToNearest(float(shieldcount) * 0.75);
 	}
 	if(npc.Anger)
 	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.5);
+		shieldcount = RoundToNearest(float(shieldcount) * 1.15);
 	}
 
 	if(LastMann)

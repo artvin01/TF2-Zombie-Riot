@@ -212,6 +212,20 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 
 	donner_sea_created=false;
 	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Donnerkrieg");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_donnerkrieg");
+	data.Category = Type_Raid;
+	data.Func = ClotSummon;
+	strcopy(data.Icon, sizeof(data.Icon), "donner"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = true;													//download needed?
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;										//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Raidboss_Donnerkrieg(client, vecPos, vecAng, ally, data);
 }
 
 methodmap Raidboss_Donnerkrieg < CClotBody
@@ -280,8 +294,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "25000", ally));
 
 		//b_spawn_bob = false;
-		
-		i_NpcInternalId[npc.index] = SEA_RAIDBOSS_DONNERKRIEG;
+
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -391,8 +404,10 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		Music_SetRaidMusic("#zombiesurvival/seaborn/donner_schwert_5.mp3", 290, true);
 		
 		b_thisNpcIsARaid[npc.index] = true;
-		
-		SDKHook(npc.index, SDKHook_Think, Raidboss_Donnerkrieg_ClotThink);
+
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 			
 		
 		/*
@@ -514,7 +529,7 @@ void Donnerkrieg_SpawnAllyDuoRaid(int ref)
 		
 		maxhealth = RoundToFloor(maxhealth*1.5);
 
-		int spawn_index = NPC_CreateById(SEA_RAIDBOSS_SCHWERTKRIEG, -1, pos, ang, GetTeam(entity));
+		int spawn_index = NPC_CreateByName("npc_sea_schwertkrieg", entity, pos, ang, GetTeam(entity));
 		if(spawn_index > MaxClients)
 		{
 			i_ally_index = EntIndexToEntRef(spawn_index);
@@ -565,7 +580,7 @@ static void Calculate_Combined_Health(Raidboss_Donnerkrieg npc)
 
 //TODO 
 //Rewrite
-public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(iNPC);
 	
@@ -574,7 +589,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 
 	if(RaidModeTime < GetGameTime())
 	{
-		SDKUnhook(npc.index, SDKHook_Think, Raidboss_Donnerkrieg_ClotThink);
+		func_NPCThink[npc.index]=INVALID_FUNCTION;
 		return;
 	}
 		
@@ -1970,7 +1985,7 @@ static Action Donner_Nightmare_Offset(Handle timer, int client)
 	return Plugin_Handled;
 }
 
-public Action Raidboss_Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(victim);
 		
@@ -1995,7 +2010,7 @@ public Action Raidboss_Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &
 	return Plugin_Changed;
 }
 
-public void Raidboss_Donnerkrieg_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(entity);
 	if(!npc.m_bGib)
@@ -2049,15 +2064,19 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 		}
 		else
 		{
-			switch(GetRandomInt(1,2))	//warp
+			switch(GetRandomInt(1,3))	//warp
 			{
 				case 1:
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Oh its very serious, we'll go.");
+					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Huh, I guess our turn's over");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: This isn't a joke if you come...");
+					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Oh boy, this is gonna be fun to watch");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{aqua}Donnerkrieg{snow}: I wanted to play with them more, allas");
 				}
 			}
 			
@@ -2094,8 +2113,6 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	
-	SDKUnhook(npc.index, SDKHook_Think, Raidboss_Donnerkrieg_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

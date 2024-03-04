@@ -121,8 +121,21 @@ public void TrueFusionWarrior_OnMapStart()
 	PrecacheSound("player/flow.wav");
 
 	PrecacheSoundCustom("#zombiesurvival/fusion_raid/fusion_bgm.mp3");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "True Fusion Warrior");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_true_fusion_warrior");
+	strcopy(data.Icon, sizeof(data.Icon), "fusion_warrior");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3],int ally, const char[] data)
+{
+	return TrueFusionWarrior(client, vecPos, vecAng, ally, data);
+}
 void TrueFusionWarrior_TBB_Precahce()
 {
 	FusionWarrior_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
@@ -268,7 +281,6 @@ methodmap TrueFusionWarrior < CClotBody
 	{
 		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
-		i_NpcInternalId[npc.index] = RAIDMODE_TRUE_FUSION_WARRIOR;
 		i_NpcWeight[npc.index] = 4;
 		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Fusion_Warrior_Win);
 		
@@ -336,8 +348,10 @@ methodmap TrueFusionWarrior < CClotBody
 			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
+		func_NPCDeath[npc.index] = TrueFusionWarrior_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = TrueFusionWarrior_OnTakeDamage;
+		func_NPCThink[npc.index] = TrueFusionWarrior_ClotThink;
 		
-		SDKHook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
 		
 		
 		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
@@ -445,7 +459,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	}
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
-		SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
 		CPrintToChatAll("{gold}True Fusion Warrior{default}: New... victims to infect...");
 		return;
@@ -461,7 +475,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		Music_RoundEnd(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		CPrintToChatAll("{gold}True Fusion Warrior{default}: {green}Xeno{default} virus too strong... to resist.. {crimson}join...{default}");
-		SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
 
@@ -1047,7 +1061,6 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
 	ExpidonsaRemoveEffects(entity);
 	
 	RaidBossActive = INVALID_ENT_REFERENCE;

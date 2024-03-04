@@ -71,8 +71,21 @@ void CombineElite_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
 	PrecacheModel("models/combine_super_soldier.mdl");
 	PrecacheModel("models/effects/combineball.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Combine Elite");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_elite");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_elite");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return CombineElite(client, vecPos, vecAng, ally);
+}
 methodmap CombineElite < CClotBody
 {
 	public void PlayIdleSound() {
@@ -168,7 +181,6 @@ methodmap CombineElite < CClotBody
 	{
 		CombineElite npc = view_as<CombineElite>(CClotBody(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", "1500", ally));
 		
-		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_ELITE;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -183,8 +195,10 @@ methodmap CombineElite < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
+		func_NPCDeath[npc.index] = CombineElite_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = CombineElite_OnTakeDamage;
+		func_NPCThink[npc.index] = CombineElite_ClotThink;
 		
-		SDKHook(npc.index, SDKHook_Think, CombineElite_ClotThink);
 	
 		npc.m_fbGunout = false;
 		
@@ -501,9 +515,6 @@ public void CombineElite_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, CombineElite_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

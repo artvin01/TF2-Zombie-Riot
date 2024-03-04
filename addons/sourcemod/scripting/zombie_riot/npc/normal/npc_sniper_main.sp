@@ -52,8 +52,21 @@ void SniperMain_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	PrecacheModel("models/player/sniper.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Sniper Main");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sniper_main");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SniperMain(client, vecPos, vecAng, ally);
+}
 methodmap SniperMain < CClotBody
 {
 	
@@ -136,7 +149,6 @@ methodmap SniperMain < CClotBody
 	{
 		SniperMain npc = view_as<SniperMain>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "20000", ally));
 		
-		i_NpcInternalId[npc.index] = SNIPER_MAIN;
 		i_NpcWeight[npc.index] = 1;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -152,8 +164,10 @@ methodmap SniperMain < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, SniperMain_ClotThink);
+
+		func_NPCDeath[npc.index] = SniperMain_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SniperMain_OnTakeDamage;
+		func_NPCThink[npc.index] = SniperMain_ClotThink;		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, SniperMain_ClotDamaged_Post);
 		
 		//IDLE
@@ -481,9 +495,7 @@ public void SniperMain_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SniperMain_ClotThink);
+
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, SniperMain_ClotDamaged_Post);	
 	
 	if(IsValidEntity(npc.m_iWearable1))

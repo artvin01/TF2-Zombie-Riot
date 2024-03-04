@@ -45,8 +45,21 @@ void Erasus_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Erasus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_erasus");
+	strcopy(data.Icon, sizeof(data.Icon), "scout");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Erasus(client, vecPos, vecAng, ally);
+}
 
 methodmap Erasus < CClotBody
 {
@@ -91,7 +104,6 @@ methodmap Erasus < CClotBody
 	{
 		Erasus npc = view_as<Erasus>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "10000", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_ERASUS;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -102,6 +114,9 @@ methodmap Erasus < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
+		func_NPCDeath[npc.index] = Erasus_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Erasus_OnTakeDamage;
+		func_NPCThink[npc.index] = Erasus_ClotThink;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -109,7 +124,6 @@ methodmap Erasus < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_Think, Erasus_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -224,7 +238,6 @@ public void Erasus_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	ExpidonsaRemoveEffects(entity);
-	SDKUnhook(npc.index, SDKHook_Think, Erasus_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable4))

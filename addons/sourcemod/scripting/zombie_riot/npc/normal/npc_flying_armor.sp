@@ -66,8 +66,23 @@ void FlyingArmor_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
+
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Flying Armor");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_flying_armor");
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return FlyingArmor(client, vecPos, vecAng, ally);
+}
 methodmap FlyingArmor < CClotBody
 {
 	public void PlayIdleSound() {
@@ -164,7 +179,6 @@ methodmap FlyingArmor < CClotBody
 		FlyingArmor npc = view_as<FlyingArmor>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000", ally));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");		
-		i_NpcInternalId[npc.index] = FLYINGARMOR_ZOMBIE;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -187,8 +201,10 @@ methodmap FlyingArmor < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, FlyingArmor_ClotThink);
+
+		func_NPCDeath[npc.index] = FlyingArmor_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = FlyingArmor_OnTakeDamage;
+		func_NPCThink[npc.index] = FlyingArmor_ClotThink;		
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.7");
@@ -403,7 +419,7 @@ public void FlyingArmor_NPCDeath(int entity)
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			int spawn_index = NPC_CreateById(FLYINGARMOR_TINY_ZOMBIE, -1, pos, ang, GetTeam(npc.index));
+			int spawn_index = NPC_CreateByName("npc_flying_armor_tiny_swords", -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -416,9 +432,6 @@ public void FlyingArmor_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, FlyingArmor_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

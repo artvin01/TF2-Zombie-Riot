@@ -42,6 +42,21 @@ public void Barrack_Alt_Shwertkrieg_MapStart()
 	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);  			}
 	Ikunagae_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
 	Zero(fl_self_heal_timer);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks SchwertKrieg");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_schwertkrieg");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Barrack_Alt_Shwertkrieg(client, vecPos, vecAng, ally);
 }
 
 methodmap Barrack_Alt_Shwertkrieg < BarrackBody
@@ -87,10 +102,11 @@ methodmap Barrack_Alt_Shwertkrieg < BarrackBody
 	{
 		Barrack_Alt_Shwertkrieg npc = view_as<Barrack_Alt_Shwertkrieg>(BarrackBody(client, vecPos, vecAng, "1750", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
-		i_NpcInternalId[npc.index] = ALT_BARRACKS_SCHWERTKRIEG;
 		i_NpcWeight[npc.index] = 2;
-		
-		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Shwertkrieg_ClotThink);
+
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barrack_Alt_Shwertkrieg_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Alt_Shwertkrieg_ClotThink;
 
 		npc.m_flSpeed = 350.0;
 		
@@ -418,7 +434,6 @@ void Barrack_Alt_Shwertkrieg_NPCDeath(int entity)
 	Barrack_Alt_Shwertkrieg npc = view_as<Barrack_Alt_Shwertkrieg>(entity);
 		
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, Barrack_Alt_Shwertkrieg_ClotThink);
 }
 static void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
 {

@@ -51,6 +51,21 @@ public void Barrack_Alt_Scientific_Witchery_MapStart()
 	Zero2(fl_trace_target_timeout);
 	
 	gLaser2 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Scientific Witchery");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_witch");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Barrack_Alt_Scientific_Witchery(client, vecPos, vecAng, ally);
 }
 
 methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
@@ -94,10 +109,11 @@ methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
 	{
 		Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(BarrackBody(client, vecPos, vecAng, "1300", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_crit.mdl"));
 		
-		i_NpcInternalId[npc.index] = ALT_BARRACK_SCIENTIFIC_WITCHERY;
 		i_NpcWeight[npc.index] = 1;
-		
-		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Scientific_Witchery_ClotThink);
+
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barrack_Alt_Scientific_Witchery_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Alt_Scientific_Witchery_ClotThink;
 
 		npc.m_flSpeed = 250.0;
 		
@@ -252,7 +268,6 @@ void Barrack_Alt_Scientific_Witchery_NPCDeath(int entity)
 {
 	Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, Barrack_Alt_Scientific_Witchery_ClotThink);
 	
 	SDKUnhook(npc.index, SDKHook_Think, Scientific_Witchery_TBB_Ability);
 	SDKUnhook(npc.index, SDKHook_Think, Scientific_Witchery_TBB_Ability_Two);

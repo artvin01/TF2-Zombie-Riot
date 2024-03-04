@@ -31,6 +31,21 @@ void UnderTides_MapStart()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	
 	PrecacheModel("models/synth.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Sal Viento Bishop Quintus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_undertides");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_undertides");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return UnderTides(client, vecPos, vecAng, ally, data);
 }
 
 methodmap UnderTides < CClotBody
@@ -65,7 +80,6 @@ methodmap UnderTides < CClotBody
 		UnderTides npc = view_as<UnderTides>(CClotBody(vecPos, vecAng, "models/synth.mdl", "1.0", "15000", ally, false, true, _, _, {30.0, 30.0, 100.0}));
 		// 100,000 x 0.15
 
-		i_NpcInternalId[npc.index] = UNDERTIDES;
 		i_NpcWeight[npc.index] = 999;
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
@@ -73,7 +87,8 @@ methodmap UnderTides < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		npc.m_bDissapearOnDeath = true;
 		
-		SDKHook(npc.index, SDKHook_Think, UnderTides_ClotThink);
+		func_NPCDeath[npc.index] = UnderTides_NPCDeath;
+		func_NPCThink[npc.index] = UnderTides_ClotThink;
 		
 		i_NpcIsABuilding[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
@@ -99,15 +114,12 @@ methodmap UnderTides < CClotBody
 		npc.m_iWearable1 = ParticleEffectAt(vecMe, "env_rain_512", -1.0);
 		SetParent(npc.index, npc.m_iWearable1);
 
-		if(data[0])	// Species Outbreak
+		if(!data[0] && ally != TFTeam_Red && !IsValidEntity(RaidBossActive))
 		{
-			npc.m_bThisNpcIsABoss = true;
-
 			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidModeTime = GetGameTime() + 300.0;
-			RaidModeScaling = 100.0;
-
-			//Music_SetRaidMusic("#zombiesurvival/wave_music/bat_abyssalhunters.mp3", 168, true);
+			RaidModeTime = GetGameTime() + 9000.0;
+			RaidModeScaling = 1.0;
+			RaidAllowsBuildings = true;
 		}
 		
 		return npc;
@@ -119,17 +131,6 @@ public void UnderTides_ClotThink(int iNPC)
 	UnderTides npc = view_as<UnderTides>(iNPC);
 
 	float gameTime = GetGameTime();	// You can't stun it
-
-	if(EntRefToEntIndex(RaidBossActive) == npc.index && RaidModeTime < gameTime)
-	{
-		int entity = CreateEntityByName("game_round_win");
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
-		RaidBossActive = INVALID_ENT_REFERENCE;
-	}
 
 	/*if(npc.m_flNextDelayTime > gameTime)
 		return;
@@ -431,7 +432,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 						if(f_BattilonsNpcBuff[entity] > gameTime)
 							defense += 4;
 
-						if(i_NpcInternalId[entity] == CITIZEN)
+						if(Citizen_IsIt(entity))
 						{
 							Citizen cit = view_as<Citizen>(entity);
 							
@@ -491,8 +492,6 @@ void UnderTides_NPCDeath(int entity)
 	float pos[3];
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-	
-	SDKUnhook(npc.index, SDKHook_Think, UnderTides_ClotThink);
 	
 	Spawns_RemoveFromArray(entity);
 	

@@ -104,6 +104,8 @@ static ConVar CvarSkyName;
 static char SkyNameRestore[64];
 static int FogEntity = INVALID_ENT_REFERENCE;
 
+static StringMap g_AllocPooledStringCache;
+
 static int Gave_Ammo_Supply;
 static int VotedFor[MAXTF2PLAYERS];
 static float VoteEndTime;
@@ -147,6 +149,7 @@ bool Waves_InSetup()
 
 void Waves_MapStart()
 {
+	delete g_AllocPooledStringCache;
 	FogEntity = INVALID_ENT_REFERENCE;
 	SkyNameRestore[0] = 0;
 
@@ -367,11 +370,13 @@ void Waves_DisplayHintVote()
 	}
 }
 
-void OnMapEndWaves()
+void Waves_MapEnd()
 {
 	CurrentGame = -1;
 	delete Voting;
 	Zero(VotedFor);
+	Waves_SetDifficultyName(NULL_STRING);
+	UpdateMvMStatsFrame();
 }
 
 void Waves_SetupVote(KeyValues map)
@@ -487,9 +492,12 @@ void Waves_SetupMiniBosses(KeyValues map)
 		{
 			kv.GetSectionName(buffer, sizeof(buffer));
 			
-			boss.Index = StringToInt(buffer);
-			if(!boss.Index)
-				boss.Index = NPC_GetByPlugin(buffer);
+			boss.Index = NPC_GetIdByPlugin(buffer);
+			if(boss.Index == -1)
+			{
+				LogError("[Config] Unknown NPC '%s' in mini-bosses", buffer);
+				continue;
+			}
 			
 			boss.Powerup = kv.GetNum("powerup");
 			boss.Delay = kv.GetFloat("delay", 2.0);
@@ -644,15 +652,18 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 					kv.GetString("plugin", plugin, sizeof(plugin));
 					if(plugin[0])
 					{
+						enemy.Index = NPC_GetIdByPlugin(plugin);
+						if(enemy.Index == -1)
+						{
+							LogError("[Config] Unknown NPC '%s' in waves", plugin);
+							continue;
+						}
+
 						wave.Delay = StringToFloat(buffer);
 						wave.Count = kv.GetNum("count", 1);
 
 						kv.GetString("relayname", wave.RelayName, sizeof(wave.RelayName));
 						kv.GetString("relayfire", wave.RelayFire, sizeof(wave.RelayFire));
-						
-						enemy.Index = StringToInt(plugin);
-						if(!enemy.Index)
-							enemy.Index = NPC_GetByPlugin(plugin);
 						
 						enemy.Health = kv.GetNum("health");
 						enemy.Is_Boss = kv.GetNum("is_boss");
@@ -728,6 +739,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	}
 
 	Waves_UpdateMvMStats();
+	DoGlobalMultiScaling();
 }
 
 void Waves_RoundStart()
@@ -941,6 +953,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				delete kv;
 
 				Waves_SetReadyStatus(1);
+				DoGlobalMultiScaling();
 				Waves_UpdateMvMStats();
 			}
 		}
@@ -2110,7 +2123,7 @@ void Waves_UpdateMvMStats()
 	if(!UpdateFramed)
 	{
 		UpdateFramed = true;
-		RequestFrames(UpdateMvMStatsFrame, 30);
+		RequestFrames(UpdateMvMStatsFrame, 10);
 	}
 }
 
@@ -2256,7 +2269,7 @@ static void UpdateMvMStatsFrame()
 		int entity = MaxClients + 1;
 		while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
-			if(GetTeam(entity) != TFTeam_Red)
+			if(!b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 			{
 				cashLeft += f_CreditsOnKill[entity];
 				activecount++;
@@ -2280,7 +2293,7 @@ static void UpdateMvMStatsFrame()
 							fl_Extra_RangedArmor[entity] < 1.0 || 
 							fl_Extra_Speed[entity] > 1.0 || 
 							fl_Extra_Damage[entity] > 1.0 ||
-							b_ThisNpcIsImmuneToNuke[entity])
+							b_thisNpcIsARaid[entity])
 								flags[b] |= MVM_CLASS_FLAG_ALWAYSCRIT;
 						}
 						
@@ -2313,11 +2326,21 @@ static void UpdateMvMStatsFrame()
 				if(id[i])
 				{
 					NPC_GetById(id[i], data);
+					if(data.Flags == -1)
+					{
+						SetWaveClass(objective, i);
+						continue;
+					}
+
 					if(!data.Icon[0])
 					{
 						if(StrContains(data.Name, "sword", false) != -1 || StrContains(data.Plugin, "sword", false) != -1)
 						{
 							strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+						}
+						else if(StrContains(data.Name, "combine", false) != -1 || StrContains(data.Plugin, "combine", false) != -1)
+						{
+							strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
 						}
 						else if(StrContains(data.Name, "scout", false) != -1 || StrContains(data.Plugin, "scout", false) != -1)
 						{
@@ -2375,13 +2398,13 @@ static void UpdateMvMStatsFrame()
 		}
 
 		int acquired = RoundFloat(totalCash - cashLeft);
-		SetEntData(mvm, m_currentWaveStats + 4, acquired);	// nCreditsDropped
-		SetEntData(mvm, m_currentWaveStats + 8, acquired);	// nCreditsAcquired
-		SetEntData(mvm, m_currentWaveStats + 12, 0);	// nCreditsBonus
+		SetEntData(mvm, m_currentWaveStats + 4, acquired, 4, true);	// nCreditsDropped
+		SetEntData(mvm, m_currentWaveStats + 8, acquired, 4, true);	// nCreditsAcquired
+		SetEntData(mvm, m_currentWaveStats + 12, 0, 4, true);	// nCreditsBonus
 
-		SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash);	// nCreditsDropped
-		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash);	// nCreditsAcquired
-		SetEntData(mvm, m_runningTotalWaveStats + 12, 0);	// nCreditsBonus
+		SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
+		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
+		SetEntData(mvm, m_runningTotalWaveStats + 12, GlobalExtraCash, 4, true);	// nCreditsBonus
 	}
 
 	//profiler.Stop();
@@ -2412,7 +2435,7 @@ static int SetupFlags(const Enemy data, bool support)
 	data.ExtraRangedRes < 1.0 || 
 	data.ExtraSpeed > 1.0 || 
 	data.ExtraDamage > 1.0 || 
-	data.Is_Immune_To_Nuke)
+	data.Is_Boss > 1)
 		flags |= MVM_CLASS_FLAG_ALWAYSCRIT;
 	
 	return flags;
@@ -2497,7 +2520,7 @@ static void SetWaveClass(int objective, int index, int count = 0, const char[] i
 	if(index < size1)
 	{
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassCounts", count, _, index);
-		SetEntData(objective, name1 + (index * 4), AllocPooledString(icon), 4, true);
+		SetEntDataAllocString(objective, name1 + (index * 4), icon);
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassFlags", flags, _, index);
 		SetEntProp(objective, Prop_Send, "m_bMannVsMachineWaveClassActive", active, _, index);
 	}
@@ -2507,12 +2530,19 @@ static void SetWaveClass(int objective, int index, int count = 0, const char[] i
 		if(index2 < size2)
 		{
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassCounts2", count, _, index2);
-			SetEntData(objective, name2 + (index2 * 4), AllocPooledString(icon), 4, true);
+			SetEntDataAllocString(objective, name2 + (index2 * 4), icon);
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveClassFlags2", flags, _, index2);
 			SetEntProp(objective, Prop_Send, "m_bMannVsMachineWaveClassActive2", active, _, index2);
 		}
 	}
 	
+}
+
+static void SetEntDataAllocString(int entity, int offset, const char[] string)
+{
+	Address address = AllocPooledString(string);
+	if(address != view_as<Address>(GetEntData(entity, offset, 4)))
+		SetEntData(entity, offset, address, 4, true);
 }
 
 /**
@@ -2521,8 +2551,7 @@ static void SetWaveClass(int objective, int index, int count = 0, const char[] i
  * 
  * https://github.com/alliedmodders/sourcemod/blob/b14c18ee64fc822dd6b0f5baea87226d59707d5a/core/HalfLife2.cpp#L1415-L1423
  */
-stock Address AllocPooledString(const char[] value) {
-	static StringMap g_AllocPooledStringCache;
+static Address AllocPooledString(const char[] value) {
 	if(!g_AllocPooledStringCache)
 		g_AllocPooledStringCache = new StringMap();
 
@@ -2564,6 +2593,6 @@ void WavesUpdateDifficultyName()
 		if(!offset)
 			offset = GetEntSendPropOffs(objective, "m_iszMvMPopfileName", true);
 
-		SetEntData(objective, offset, AllocPooledString(WhatDifficultySetting), 4, true);
+		SetEntDataAllocString(objective, offset, WhatDifficultySetting);
 	}	
 }

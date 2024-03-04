@@ -66,8 +66,24 @@ void CombineGaint_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
+
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Combine Giant Swordsman");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_giant_swordsman");
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return CombineGaint(client, vecPos, vecAng, ally);
+}
 methodmap CombineGaint < CClotBody
 {
 	public void PlayIdleSound() {
@@ -166,7 +182,6 @@ methodmap CombineGaint < CClotBody
 	{
 		CombineGaint npc = view_as<CombineGaint>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "5000", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_GIANT_SWORDSMAN;
 		i_NpcWeight[npc.index] = 3;
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");		
@@ -181,9 +196,10 @@ methodmap CombineGaint < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		
-		
-		SDKHook(npc.index, SDKHook_Think, CombineGaint_ClotThink);
+	
+		func_NPCDeath[npc.index] = CombineGaint_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = CombineGaint_OnTakeDamage;
+		func_NPCThink[npc.index] = CombineGaint_ClotThink;
 		
 
 		npc.m_iState = 0;
@@ -447,9 +463,6 @@ public void CombineGaint_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, CombineGaint_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

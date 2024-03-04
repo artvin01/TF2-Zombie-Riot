@@ -89,6 +89,20 @@ void MedivalLightCav_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Light Cavalry");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_light_cav");
+	strcopy(data.Icon, sizeof(data.Icon), "scout");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalLightCav(client, vecPos, vecAng, ally);
 }
 
 methodmap MedivalLightCav < CClotBody
@@ -167,8 +181,7 @@ methodmap MedivalLightCav < CClotBody
 	{
 		MedivalLightCav npc = view_as<MedivalLightCav>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_LIGHT_CAV;
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -184,7 +197,9 @@ methodmap MedivalLightCav < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalLightCav_ClotThink);
+		func_NPCDeath[npc.index] = MedivalLightCav_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalLightCav_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalLightCav_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 350.0;
@@ -403,9 +418,6 @@ public void MedivalLightCav_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalLightCav_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

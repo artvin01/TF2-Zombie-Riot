@@ -35,6 +35,24 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/demo_sword_swing3.wav"
 };
 
+void SaintCarmen_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Saint Carmen");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_saintcarmen");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_saintcarmen");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SaintCarmen(client, vecPos, vecAng, ally);
+}
+
 methodmap SaintCarmen < CClotBody
 {
 	public void PlayIdleSound()
@@ -70,7 +88,6 @@ methodmap SaintCarmen < CClotBody
 		SetVariantInt(9);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = SAINTCARMEN;
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_DARIO_WALK");
 		
@@ -79,7 +96,9 @@ methodmap SaintCarmen < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		b_NpcIsTeamkiller[npc.index] = true;
 		
-		SDKHook(npc.index, SDKHook_Think, SaintCarmen_ClotThink);
+		func_NPCDeath[npc.index] = SaintCarmen_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		func_NPCThink[npc.index] = SaintCarmen_ClotThink;
 		
 		npc.m_flSpeed = 250.0;	// 0.5 x 250
 		npc.m_flMeleeArmor = 0.5;
@@ -262,8 +281,6 @@ void SaintCarmen_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_Think, SaintCarmen_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 

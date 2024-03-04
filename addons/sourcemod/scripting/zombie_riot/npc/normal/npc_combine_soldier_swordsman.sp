@@ -66,6 +66,21 @@ void CombineSwordsman_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Combine Swordsman");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_swordsman");
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return CombineSwordsman(client, vecPos, vecAng, ally);
 }
 
 methodmap CombineSwordsman < CClotBody
@@ -168,7 +183,6 @@ methodmap CombineSwordsman < CClotBody
 		CombineSwordsman npc = view_as<CombineSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");		
-		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_SWORDSMAN;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -184,8 +198,11 @@ methodmap CombineSwordsman < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, CombineSwordsman_ClotThink);
+
+		func_NPCDeath[npc.index] = CombineSwordsman_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = CombineSwordsman_OnTakeDamage;
+		func_NPCThink[npc.index] = CombineSwordsman_ClotThink;
+			
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 200.0;
@@ -464,9 +481,6 @@ public void CombineSwordsman_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, CombineSwordsman_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

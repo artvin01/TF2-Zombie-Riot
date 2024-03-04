@@ -37,6 +37,24 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/machete_swing.wav",
 };
 
+void AegirOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Aegir");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aegir");
+	strcopy(data.Icon, sizeof(data.Icon), "pyro");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Aegir(client, vecPos, vecAng, ally);
+}
+
 methodmap Aegir < CClotBody
 {
 	public void PlayIdleSound()
@@ -68,7 +86,6 @@ methodmap Aegir < CClotBody
 	{
 		Aegir npc = view_as<Aegir>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "35000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_PYRO;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		KillFeed_SetKillIcon(npc.index, "annihilator");

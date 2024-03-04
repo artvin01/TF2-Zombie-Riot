@@ -83,6 +83,8 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
+static int NPCId;
+
 void MedivalVillager_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -93,8 +95,26 @@ void MedivalVillager_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Medival Villager");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_villager");
+	strcopy(data.Icon, sizeof(data.Icon), "villager");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
 }
 
+int MedivalVillager_ID()
+{
+	return NPCId;
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalVillager(client, vecPos, vecAng, ally);
+}
 #define MAXTRIESVILLAGER 25
 
 static bool b_WantTobuild[MAXENTITIES];
@@ -180,8 +200,7 @@ methodmap MedivalVillager < CClotBody
 	{
 		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetVillagerHealth(), ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_VILLAGER;
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -198,12 +217,14 @@ methodmap MedivalVillager < CClotBody
 		}
 		npc.m_flNextMeleeAttack = 0.0;
 		
+		func_NPCDeath[npc.index] = MedivalVillager_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalVillager_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalVillager_ClotThink;
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalVillager_ClotThink);
 		i_ClosestAllyCD[npc.index] = 0.0;
 
 		npc.m_iState = 0;
@@ -627,7 +648,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 				//Timeout
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
 
-				int spawn_index = NPC_CreateById(MEDIVAL_BUILDING, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
+				int spawn_index = NPC_CreateByName("npc_medival_building", -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
 					i_BuildingRef[iNPC] = EntIndexToEntRef(spawn_index);
@@ -872,9 +893,6 @@ public void MedivalVillager_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalVillager_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

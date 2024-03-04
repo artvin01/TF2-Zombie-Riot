@@ -40,8 +40,22 @@ void ThePurge_MapStart()
 	PrecacheSound("mvm/giant_soldier/giant_soldier_rocket_shoot.wav");
 	PrecacheSound("mvm/giant_demoman/giant_demoman_grenade_shoot.wav");
 	PrecacheSoundCustom("#zombiesurvival/internius/the_purge.mp3");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "The Purge");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_the_purge");
+	strcopy(data.Icon, sizeof(data.Icon), "the_purge");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return ThePurge(client, vecPos, vecAng, ally);
+}
 methodmap ThePurge < CClotBody
 {
 	public void PlayDeathSound()
@@ -122,7 +136,6 @@ methodmap ThePurge < CClotBody
 	{
 		ThePurge npc = view_as<ThePurge>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "25000", team, false, true, true, true));
 		
-		i_NpcInternalId[npc.index] = RAIDBOSS_THE_PURGE;
 		i_NpcWeight[npc.index] = 5;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -272,18 +285,6 @@ static void ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
-
-	//Set raid to this one incase the previous one has died or somehow vanished
-	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
-	{
-		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
-		{
-			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
-			{
-				Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
-			}	
-		}
-	}
 
 	if(LastMann)
 	{
@@ -443,13 +444,13 @@ static void ClotThink(int iNPC)
 
 				if(distance < 160000.0 && npc.m_flNextMeleeAttack < gameTime)	// 400 HU
 				{
-					if(Can_I_See_Enemy(npc.index, target) == target)
+					if(Can_I_See_Enemy_Only(npc.index, target))
 					{
 						KillFeed_SetKillIcon(npc.index, "family_business");
 						
 						npc.FaceTowards(vecTarget, 400.0);
 						if(target > MaxClients)
-							npc.FaceTowards(vecTarget, 99999.0);
+							npc.FaceTowards(vecTarget, 9999.0);
 
 						npc.PlayShotgunSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
@@ -494,14 +495,14 @@ static void ClotThink(int iNPC)
 
 				if(distance < 360000.0 && npc.m_flNextMeleeAttack < gameTime)	// 600 HU
 				{
-					if(Can_I_See_Enemy(npc.index, target) == target)
+					if(Can_I_See_Enemy_Only(npc.index, target))
 					{
 						KillFeed_SetKillIcon(npc.index, "panic_attack");
 						
 						npc.PlaySMGSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 						if(target > MaxClients)
-							npc.FaceTowards(vecTarget, 99999.0);
+							npc.FaceTowards(vecTarget, 9999.0);
 
 						float eyePitch[3];
 						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
@@ -547,7 +548,7 @@ static void ClotThink(int iNPC)
 					
 					npc.FaceTowards(vecTarget, 4000.0);
 					if(target > MaxClients)
-						npc.FaceTowards(vecTarget, 99999.0);
+						npc.FaceTowards(vecTarget, 9999.0);
 
 					npc.PlayMinigunSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
@@ -610,7 +611,7 @@ static void ClotThink(int iNPC)
 						}
 						else
 						{
-							GetWorldSpaceCenter(target, vecTarget);
+							WorldSpaceCenter(target, vecTarget);
 						}
 
 						npc.FireRocket(vecTarget, RaidModeScaling, 900.0);
@@ -625,7 +626,7 @@ static void ClotThink(int iNPC)
 
 				if(npc.m_flNextMeleeAttack < gameTime)
 				{
-					if(Can_I_See_Enemy(npc.index, target) == target)
+					if(Can_I_See_Enemy_Only(npc.index, target))
 					{
 						KillFeed_SetKillIcon(npc.index, "iron_bomber");
 						
@@ -786,9 +787,9 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			npc.m_flRangedArmor = 0.25;
 			npc.m_flMeleeArmor = 0.375;
 
-			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 6.0, _, 3.0, HEAL_ABSOLUTE);
-			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 12.0, _, 13.0, HEAL_ABSOLUTE);
-			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 12.0, _, 13.0, HEAL_SELFHEAL|HEAL_SILENCEABLE);
+			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 8.0, _, 3.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 15.0, _, 13.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 15.0, _, 13.0, HEAL_SELFHEAL|HEAL_SILENCEABLE);
 		}
 	}
 	return Plugin_Changed;

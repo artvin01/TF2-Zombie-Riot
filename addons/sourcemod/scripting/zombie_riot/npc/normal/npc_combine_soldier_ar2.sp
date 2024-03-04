@@ -76,8 +76,22 @@ public void CombineSoldierAr2_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/combine_soldier.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Combine Rifler");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_ar2");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_rifle");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return CombineSoldierAr2(client, vecPos, vecAng, ally);
+}
 methodmap CombineSoldierAr2 < CClotBody
 {
 	public void PlayIdleSound() {
@@ -170,7 +184,6 @@ methodmap CombineSoldierAr2 < CClotBody
 	{
 		CombineSoldierAr2 npc = view_as<CombineSoldierAr2>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_AR2;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -194,8 +207,10 @@ methodmap CombineSoldierAr2 < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		
+		func_NPCDeath[npc.index] = CombineSoldierAr2_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = CombineSoldierAr2_OnTakeDamage;
+		func_NPCThink[npc.index] = CombineSoldierAr2_ClotThink;
 		
-		SDKHook(npc.index, SDKHook_Think, CombineSoldierAr2_ClotThink);
 		
 		if(EscapeModeForNpc)
 		{
@@ -508,9 +523,6 @@ public void CombineSoldierAr2_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, CombineSoldierAr2_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

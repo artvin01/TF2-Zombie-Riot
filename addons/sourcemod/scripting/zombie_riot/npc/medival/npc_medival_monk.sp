@@ -83,6 +83,7 @@ static const char g_WarCry[][] = {
 	"ambient/rottenburg/tunneldoor_open.wav",
 };
 
+static int NPCId;
 static float f3_PlaceLocated[MAXENTITIES][3];
 void MedivalMonk_OnMapStart_NPC()
 {
@@ -95,6 +96,20 @@ void MedivalMonk_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_WarCry));   i++) { PrecacheSound(g_WarCry[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Monk");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_monk");
+	strcopy(data.Icon, sizeof(data.Icon), "monk");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalMonk(client, vecPos, vecAng, ally);
 }
 
 static int i_ClosestAlly[MAXENTITIES];
@@ -161,8 +176,7 @@ methodmap MedivalMonk < CClotBody
 	{
 		MedivalMonk npc = view_as<MedivalMonk>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "75000", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_MONK;
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcWeight[npc.index] = 2;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -177,9 +191,11 @@ methodmap MedivalMonk < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, MedivalMonk_ClotThink);
+	
 
+		func_NPCDeath[npc.index] = MedivalMonk_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalMonk_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalMonk_ClotThink;
 		npc.m_iState = 0;
 		npc.m_flSpeed = 150.0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -342,7 +358,7 @@ public void MedivalMonk_ClotThink(int iNPC)
 			}
 			else
 			{
-				float vecTarget[3]; WorldSpaceCenter(i_ClosestAllyTarget[npc.index], vecTarget );
+				float vecTarget[3]; WorldSpaceCenter(i_ClosestAlly[npc.index], vecTarget );
 				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 				flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				if(flDistanceToTarget < (125.0* 125.0) && Can_I_See_Ally(npc.index, i_ClosestAlly[npc.index])) //make sure we can also see them for no unfair bs
@@ -590,9 +606,6 @@ public void MedivalMonk_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalMonk_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -631,7 +644,7 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 		{
 			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK && GetTeam(entity_close) != TFTeam_Red)
+			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != NPCId && GetTeam(entity_close) != TFTeam_Red)
 			{
 				static float pos2[3];
 				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
@@ -652,7 +665,7 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 			{
 				int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-				if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK && i_NpcInternalId[entity_close] != RAIDMODE_GOD_ARKANTOS && GetTeam(entity_close) != TFTeam_Red)
+				if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != NPCId && !b_thisNpcIsARaid[entity_close] && GetTeam(entity_close) != TFTeam_Red)
 				{
 					bool regrow = true;
 					Building_CamoOrRegrowBlocker(entity_close, _, regrow);

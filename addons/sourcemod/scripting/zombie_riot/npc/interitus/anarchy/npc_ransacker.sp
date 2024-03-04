@@ -45,8 +45,22 @@ void AnarchyRansacker_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Ransacker");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ransacker");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_bat");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return AnarchyRansacker(client, vecPos, vecAng, ally);
+}
 
 methodmap AnarchyRansacker < CClotBody
 {
@@ -94,7 +108,6 @@ methodmap AnarchyRansacker < CClotBody
 	{
 		AnarchyRansacker npc = view_as<AnarchyRansacker>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "5000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_ANARCHY_RANSACKER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

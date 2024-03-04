@@ -56,8 +56,21 @@ public void XenoSpyThief_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Spy Thief");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_spy_thief");
+	strcopy(data.Icon, sizeof(data.Icon), "spy");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoSpyThief(client, vecPos, vecAng, ally);
+}
 methodmap XenoSpyThief < CClotBody
 {
 	public void PlayIdleSound() {
@@ -138,8 +151,6 @@ methodmap XenoSpyThief < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		
-		i_NpcInternalId[npc.index] = XENO_SPY_THIEF;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -151,9 +162,10 @@ methodmap XenoSpyThief < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		
-		
-		SDKHook(npc.index, SDKHook_Think, XenoSpyThief_ClotThink);	
+		func_NPCDeath[npc.index] = XenoSpyThief_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoSpyThief_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoSpyThief_ClotThink;
+	
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -372,9 +384,6 @@ public void XenoSpyThief_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoSpyThief_ClotThink);	
-		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable3))

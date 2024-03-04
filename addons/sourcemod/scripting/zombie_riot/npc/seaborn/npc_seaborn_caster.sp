@@ -31,6 +31,24 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/capper_shoot.wav"
 };
 
+void SeabornCaster_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Seaborn Caster");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_caster");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_caster");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SeabornCaster(client, vecPos, vecAng, ally);
+}
+
 methodmap SeabornCaster < CClotBody
 {
 	public void PlayIdleSound()
@@ -61,7 +79,6 @@ methodmap SeabornCaster < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = SEABORN_CASTER;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN");
 		KillFeed_SetKillIcon(npc.index, "merasmus_zap");
@@ -70,7 +87,10 @@ methodmap SeabornCaster < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_Think, SeabornCaster_ClotThink);
+		func_NPCDeath[npc.index] = SeabornCaster_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		func_NPCThink[npc.index] = SeabornCaster_ClotThink;
+
 		b_ThisNpcIsSawrunner[npc.index] = true;
 		
 		npc.m_flSpeed = 230.0;
@@ -196,8 +216,6 @@ void SeabornCaster_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornCaster_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 
