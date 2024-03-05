@@ -95,6 +95,10 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 	float damage = 300.0;
 
 	damage *= Attributes_GetOnPlayer(client, 2, true);
+	if(Change[client] == true)
+	{
+		damage *= 0.8
+	}
 			
 	float speed = 1100.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
@@ -103,7 +107,7 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 	
 	speed *= Attributes_Get(weapon, 475, 1.0);
 		
-	float time = 3.0; //Because of Particle Spam.
+	float time = 2.25; //Because of Particle Spam.
 	
 	if(Change[client] == true)
 	{
@@ -115,8 +119,6 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "spell_fireball_small_red",_,false);
 		EmitSoundToAll(SOUND_MES_SHOT_FIRE, client, SNDCHAN_WEAPON, 65, _, 0.45, 135);
 	}
-	StopSound(client, SNDCHAN_STATIC, "weapons/syringegun_shoot.wav");
-
 }
 
 public void Messenger_Modechange(int client, bool &result)
