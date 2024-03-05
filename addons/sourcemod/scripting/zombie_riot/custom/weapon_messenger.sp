@@ -6,6 +6,8 @@ static Handle h_TimerMessengerWeaponManagement[MAXPLAYERS+1] = {null, ...};
 static float f_Messengerhuddelay[MAXPLAYERS+1]={0.0, ...};
 
 #define SOUND_MES_IMPACT "weapons/cow_mangler_explosion_normal_01.wav"
+#define SOUND_MES_SHOT_FIRE 	"misc/halloween/spell_fireball_cast.wav"
+#define SOUND_MES_SHOT_ICE 	"weapons/icicle_freeze_victim_01.wav"
 
 void ResetMapStartMessengerWeapon()
 {
@@ -99,15 +101,17 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 	
 	speed *= Attributes_Get(weapon, 475, 1.0);
 		
-	float time = 25.0; //Pretty much inf.
+	float time = 6.0; //Because of Particle Spam.
 	
 	if(Change[client] == true)
 	{
 		Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_blue",_,false);
+		EmitSoundToAll(SOUND_MES_SHOT_ICE, client, SNDCHAN_WEAPON, 65, _, 0.45, 135);
 	}
 	else if(Change[client] == false)
 	{
 		Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_red",_,false);
+		EmitSoundToAll(SOUND_MES_SHOT_FIRE, client, SNDCHAN_WEAPON, 65, _, 0.45, 135);
 	}
 
 }
@@ -148,13 +152,16 @@ public void Gun_MessengerTouch(int entity, int target)
 		if(Change[owner] == true)
 		{
 			NPC_Ignite(target, owner, 3.0, weapon);
+			PrintToChatAll("Fire Fire Fire");
 		}
 		else if(Change[owner] == false)
 		{
 			if((f_LowIceDebuff[target] - 0.5) < GetGameTime())
 			{
 				f_LowIceDebuff[target] = GetGameTime() + 0.6;
+				PrintToChatAll("Freeze");
 			}
+			PrintToChatAll("Freeze Failed. How?");
 		}
 
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
