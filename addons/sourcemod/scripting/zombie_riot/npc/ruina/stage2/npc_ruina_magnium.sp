@@ -387,7 +387,7 @@ static void ClotThink(int iNPC)
 }
 static void Func_On_ICBM_Boom(int projectile, float damage, float radius, float Loc[3])
 {
-	CPrintToChatAll("Kaboom!");
+	
 }
 
 static int i_particle[MAXENTITIES][11];

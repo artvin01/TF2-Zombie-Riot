@@ -972,7 +972,7 @@ enum struct Ruina_Launch_ICBM
 
 			if(!this.custom)
 			{
-				int ModelApply = ApplyCustomModelToWandProjectile(entity, WEAPON_CUSTOM_WEAPONRY_1, 2.0, "");
+				int ModelApply = ApplyCustomModelToWandProjectile(entity, WEAPON_CUSTOM_WEAPONRY_1, 1.0, "icbm_idle");
 
 				if(this.color[0])
 				{
@@ -982,7 +982,11 @@ enum struct Ruina_Launch_ICBM
 				{
 					SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
 				}
-				SetVariantInt(3);
+				float angles[3];
+				GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
+				angles[1]+=90.0;
+				TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
+				SetVariantInt(4);
 				AcceptEntityInput(ModelApply, "SetBodyGroup");
 			}
 

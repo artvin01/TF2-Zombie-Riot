@@ -52,3 +52,10 @@ $sequence "scythe_spin" {
 	fps 24
 	loop
 }
+
+$sequence "icbm_idle" {
+	"custom_weaponry_1_anims\icbm_idle.smd"
+	fadein 0.2
+	fadeout 0.2
+	fps 30
+}

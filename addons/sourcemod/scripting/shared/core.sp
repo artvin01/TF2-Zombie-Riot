@@ -856,7 +856,7 @@ enum
 /*
 	1 - sensal scythe.
 	2 - sensal scythe spin.
-	3 - ruina ICM
+	4 - ruina ICBM
 */
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.0//0.0151 //Make it 0 for now
