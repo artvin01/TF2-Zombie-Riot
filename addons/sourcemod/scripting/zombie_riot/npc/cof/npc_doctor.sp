@@ -32,7 +32,7 @@ void Doctor_MapStart()
 	PrecacheModel("models/zombie_riot/cof/doctor_purnell.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "The Doctor");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_doctor");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_doctor_city");
 	strcopy(data.Icon, sizeof(data.Icon), "medic");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;

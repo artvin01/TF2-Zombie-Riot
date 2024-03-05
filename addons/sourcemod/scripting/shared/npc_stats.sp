@@ -4377,8 +4377,12 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		}
 #endif
 
-		if(enemy <= MaxClients || !b_NpcHasDied[enemy])
+		if(enemy <= MaxClients || b_ThisWasAnNpc[enemy])
 		{
+			if(b_ThisWasAnNpc[enemy] && b_NpcHasDied[enemy])
+			{
+				return false;
+			}
 			if(b_NpcIsInvulnerable[enemy] && !target_invul)
 			{
 				return false;

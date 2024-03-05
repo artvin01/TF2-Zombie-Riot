@@ -220,7 +220,7 @@ public void SeabornDefender_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornDefender_OnTakeDamage(int victim, int attacker, float &damage, int damagetype, float damagePosition[3])
+void SeabornDefender_OnTakeDamage(int victim, int &attacker, float &damage, int &damagetype, float damagePosition[3])
 {
 	if(attacker > 0)
 	{
@@ -230,13 +230,13 @@ void SeabornDefender_OnTakeDamage(int victim, int attacker, float &damage, int d
 		bool magic;
 		bool pierce;
 		
-		if((damagetype & DMG_SLASH) || NpcStats_IsEnemySilenced(npc.index))
+		if((damagetype & DMG_SLASH) || NpcStats_IsEnemySilenced(victim))
 		{
 			pierce = true;
 		}
 		else
 		{
-			if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(npc.index))
+			if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(victim))
 			{
 				hot = true;
 				pierce = true;

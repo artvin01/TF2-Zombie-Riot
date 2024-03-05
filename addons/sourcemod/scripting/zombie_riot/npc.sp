@@ -411,6 +411,7 @@ void NPC_ConfigSetup()
 	VIPBuilding_MapStart();
 	AlliedSensalAbility_OnMapStart_NPC();
 	BarrackVillagerOnMapStart();
+	BarrackBuildingOnMapStart();
 	BarrackTwoHandedOnMapStart();
 	BarrackTeutonOnMapStart();
 	BarrackSwordsmanOnMapStart();
