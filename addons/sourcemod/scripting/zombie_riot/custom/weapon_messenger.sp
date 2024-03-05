@@ -5,9 +5,9 @@ static bool Change[MAXPLAYERS];
 static Handle h_TimerMessengerWeaponManagement[MAXPLAYERS+1] = {null, ...};
 static float f_Messengerhuddelay[MAXPLAYERS+1]={0.0, ...};
 
-#define SOUND_MES_IMPACT "weapons/cow_mangler_explosion_normal_01.wav"
+#define SOUND_MES_IMPACT "weapons/cow_mangler_explode.wav"
 #define SOUND_MES_SHOT_FIRE 	"misc/halloween/spell_fireball_cast.wav"
-#define SOUND_MES_SHOT_ICE 	"weapons/icicle_freeze_victim_01.wav"
+#define SOUND_MES_SHOT_ICE 	"weapons/doom_rocket_launcher.wav"
 
 void ResetMapStartMessengerWeapon()
 {
@@ -17,6 +17,8 @@ void ResetMapStartMessengerWeapon()
 void Messenger_Map_Precache()
 {
 	PrecacheSound(SOUND_MES_IMPACT);
+	PrecacheSound(SOUND_MES_SHOT_FIRE);
+	PrecacheSound(SOUND_MES_SHOT_ICE);
 }
 
 public void Enable_Messenger_Launcher_Ability(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
@@ -101,7 +103,7 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 	
 	speed *= Attributes_Get(weapon, 475, 1.0);
 		
-	float time = 6.0; //Because of Particle Spam.
+	float time = 3.0; //Because of Particle Spam.
 	
 	if(Change[client] == true)
 	{
@@ -113,6 +115,7 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 		Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_red",_,false);
 		EmitSoundToAll(SOUND_MES_SHOT_FIRE, client, SNDCHAN_WEAPON, 65, _, 0.45, 135);
 	}
+	StopSound(client, SNDCHAN_STATIC, "weapons/syringegun_shoot.wav");
 
 }
 
@@ -163,7 +166,7 @@ public void Gun_MessengerTouch(int entity, int target)
 			}
 			PrintToChatAll("Freeze Failed. How?");
 		}
-
+		PrintToChatAll("HIT");
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		EmitSoundToAll(SOUND_MES_IMPACT, entity, SNDCHAN_STATIC, 80, _, 1.0);
