@@ -760,7 +760,7 @@ void ZR_MapStart()
 //	CreateEntityByName("info_populator");
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	
-	CreateTimer(2.0, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.5, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	CreateTimer(0.2, GetTimerAndNullifyMusicMVM_Timer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
 	char_MusicString1[0] = 0;
@@ -787,9 +787,14 @@ public Action GlobalTimer(Handle timer)
 		if(IsClientInGame(client))
 		{
 			PlayerApplyDefaults(client);
+			Spawns_CheckBadClient(client);
 		}
 	}
 	
+	static int frame;
+	frame++;
+	if(frame % 4)
+		return Plugin_Continue;
 
 	Zombie_Delay_Warning();
 	Spawners_Timer();
@@ -879,6 +884,105 @@ void ZR_ClientDisconnect(int client)
 					RemoveEntity(entity);
 				}
 			}
+		}
+	}
+}
+
+public void OnMapInit()
+{
+	bool mvm;
+
+	char buffer[64];
+	int length = EntityLump.Length();
+	for(int i; i < length; i++)
+	{
+		EntityLumpEntry entry = EntityLump.Get(i);
+		
+		int index = entry.FindKey("classname");
+		if(index != -1)
+		{
+			entry.Get(index, _, _, buffer, sizeof(buffer));
+			delete entry;
+
+			if(StrEqual(buffer, "tf_logic_mann_vs_machine"))
+			{
+				EntityLump.Erase(i);
+				length--;
+				mvm = true;
+				break;
+			}
+		}
+		else
+		{
+			delete entry;
+		}
+	}
+
+	if(mvm)
+	{
+		for(int i; i < length; i++)
+		{
+			EntityLumpEntry entry = EntityLump.Get(i);
+			
+			int index = entry.FindKey("classname");
+			if(index != -1)
+			{
+				entry.Get(index, _, _, buffer, sizeof(buffer));
+
+				if(StrEqual(buffer, "tf_logic_mann_vs_machine") ||
+					StrEqual(buffer, "item_teamflag") ||
+					StrEqual(buffer, "func_respawnroomvisualizer") ||
+					StrEqual(buffer, "func_upgradestation") ||
+					StrEqual(buffer, "func_flagdetectionzone") ||
+					StrEqual(buffer, "func_nav_prefer") ||
+					StrEqual(buffer, "func_nav_avoid") ||
+					!StrContains(buffer, "item_healthkit") ||
+					!StrContains(buffer, "item_ammopack"))
+				{
+					EntityLump.Erase(i);
+					i--;
+					length--;
+				}
+				else if(StrEqual(buffer, "trigger_multiple"))
+				{
+					index = entry.FindKey("spawnflags");
+					if(index != -1)
+					{
+						entry.Get(index, _, _, buffer, sizeof(buffer));
+						int flags = StringToInt(buffer) | (1 << 1);	// Add NPCs
+						IntToString(flags, buffer, sizeof(buffer));
+						entry.Update(index, _, buffer);
+					}
+				}
+				else if(StrEqual(buffer, "filter_activator_team") ||
+					StrEqual(buffer, "filter_activator_tfteam"))
+				{
+					// Set team filters for all teams
+					index = entry.FindKey("filterteam");
+					if(index != -1)
+					{
+						entry.Update(index, _, "4");
+					}
+
+					index = entry.FindKey("TeamNum");
+					if(index != -1)
+					{
+						entry.Update(index, _, "4");
+					}
+
+					index = entry.FindKey("Negated");
+					if(index != -1)
+					{
+						entry.Update(index, _, "1");
+					}
+					else
+					{
+						entry.Append("Negated", "1");
+					}
+				}
+			}
+			
+			delete entry;
 		}
 	}
 }
