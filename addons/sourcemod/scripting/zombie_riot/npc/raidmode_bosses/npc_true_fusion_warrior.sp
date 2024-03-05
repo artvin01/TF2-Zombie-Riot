@@ -641,7 +641,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				//Body pitch
 				float v[3], ang[3];
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-				float WorldSpaceVec2[3]; WorldSpaceCenter(closest, WorldSpaceVec);
+				float WorldSpaceVec2[3]; WorldSpaceCenter(closest, WorldSpaceVec2);
 				SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
 				NormalizeVector(v, v);
 				GetVectorAngles(v, ang); 

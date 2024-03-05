@@ -150,7 +150,10 @@ methodmap SeargentIdeal < CClotBody
 	}
 	public void PlayRangedSound()
 	{
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		if(this.g_TimesSummoned == 0)
+			EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		else
+			EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL - 10, _, NORMAL_ZOMBIE_VOLUME * 0.4);
 	}
 
 	public SeargentIdeal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -510,7 +513,11 @@ void SeargentIdealSelfDefense(SeargentIdeal npc, float gameTime)
 					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
 				}
 				float DamageDone = 25.0;
-				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "drg_cow_rockettrail_burst_charged_blue", false, true, false,_,_,_,10.0);
+				if(npc.g_TimesSummoned == 0)
+					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "drg_cow_rockettrail_burst_charged_blue", false, true, false,_,_,_,10.0);
+				else
+					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "drg_cow_rockettrail_normal_blue", false, true, false,_,_,_,10.0);
+
 				npc.FaceTowards(vecTarget, 20000.0);
 				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.5;
 			}
