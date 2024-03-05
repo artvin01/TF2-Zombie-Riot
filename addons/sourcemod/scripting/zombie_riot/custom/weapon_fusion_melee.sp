@@ -138,7 +138,9 @@ public float Npc_OnTakeDamage_PaP_Fusion(int attacker, int victim, float damage,
 	
 	if(IsValidEntity(npc.m_iTarget))
 	{
-		if(i_NpcInternalId[npc.m_iTarget] == NEARL_SWORD)
+		char npc_classname[60];
+		NPC_GetPluginById(i_NpcInternalId[npc.m_iTarget], npc_classname, sizeof(npc_classname));
+		if(StrEqual(npc_classname, "npc_nearl_sword"))
 		{
 			damage *= 2.0;
 			DisplayCritAboveNpc(victim, attacker, false); //Display crit above head, false for no sound
@@ -365,7 +367,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 					ApplyTempAttrib(weapon, 412, 0.60, 10.0); //Less damage taken from all sources decreaced by 40%
 				}
 
-				int spawn_index = NPC_CreateById(NEARL_SWORD, -1, fPos, fAng, GetTeam(client));
+				int spawn_index = NPC_CreateByName("npc_nearl_sword", -1, fPos, fAng, GetTeam(client));
 				if(spawn_index > MaxClients)
 				{
 

@@ -1412,7 +1412,7 @@
 	}
 	"Compacted Rounds Desc"
 	{
-		"en"	"15%% faster attackspeed, reload speed and 25%% more max clip."
+		"en"	"20%% more weapon damage, 15%% faster attackspeed, reload speed and 25%% more max clip."
 	}
 	"Ammo Coat Elite Desc"
 	{
@@ -1931,7 +1931,7 @@
 		"ru"	"Улучшенный гвардеец подходит для брони комбайнов-воинов"
 		"chi"   "升级的高级战士"
 	}
-	"Medival Abalest Desc"
+	"Medival Arbalest Desc"
 	{
 		"en"	"Upgraded Crossbow Man suitable for takes downs from a safe distance"
 		"ru"	"Улучшенный арбалетчик подходит для поражения с безопасного расстояния"
@@ -1945,9 +1945,9 @@
 	}
 	"Medival Longbowmen Desc"
 	{
-		"en"	"Fire slower than Abalest but deals much more damage and a longer range"
+		"en"	"Fire slower than Arbalest but deals much more damage and a longer range"
 		"ru"	"Стреляет медленнее, чем арбалетчик, но наносит гораздо больше урона и имеет большую дальность"
-		"chi"   "射击速度比Abalest慢，但造成的伤害更大，射程更远"
+		"chi"   "射击速度比Arbalest慢，但造成的伤害更大，射程更远"
 	}
 	"Champion Desc"
 	{

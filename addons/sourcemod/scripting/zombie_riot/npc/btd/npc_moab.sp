@@ -65,8 +65,21 @@ void Moab_MapStart()
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/boab.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Massive Ornery Air Blimp");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_moab");
+	strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_BTD;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Moab(client, vecPos, vecAng, ally, data);
+}
 methodmap Moab < CClotBody
 {
 	property bool m_bFortified
@@ -107,7 +120,6 @@ methodmap Moab < CClotBody
 		
 		Moab npc = view_as<Moab>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/boab.mdl", "1.0", buffer, ally, false, true));
 		
-		i_NpcInternalId[npc.index] = BTD_MOAB;
 		i_NpcWeight[npc.index] = 2;
 		KillFeed_SetKillIcon(npc.index, "vehicle");
 		
@@ -115,14 +127,18 @@ methodmap Moab < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_iBleedType = BLEEDTYPE_RUBBER;
-		npc.m_iStepNoiseType = NOTHING;	
-		npc.m_iNpcStepVariation = NOTHING;	
+		npc.m_iStepNoiseType = STEPTYPE_NONE;	
+		npc.m_iNpcStepVariation = STEPTYPE_NONE;	
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bisWalking = false;
 		
 		npc.m_flSpeed = MoabSpeed();
 		npc.m_bFortified = fortified;
 		
+		func_NPCDeath[npc.index] = Moab_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Moab_OnTakeDamage;
+		func_NPCThink[npc.index] = Moab_ClotThink;
+
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iState = 0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -133,7 +149,6 @@ methodmap Moab < CClotBody
 		
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Moab_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, Moab_ClotThink);
 		
 		npc.StartPathing();
 		
@@ -268,13 +283,11 @@ public void Moab_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Moab_ClotDamagedPost);
 	
-	SDKUnhook(npc.index, SDKHook_Think, Moab_ClotThink);
-	
 	float pos[3], angles[3];
 	GetEntPropVector(entity, Prop_Data, "m_angRotation", angles);
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	
-	int spawn_index = NPC_CreateById(BTD_BLOON, -1, pos, angles, GetTeam(entity), npc.m_bFortified ? "9f" : "9");
+	int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, angles, GetTeam(entity), npc.m_bFortified ? "9f" : "9");
 	if(spawn_index > MaxClients)
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 }

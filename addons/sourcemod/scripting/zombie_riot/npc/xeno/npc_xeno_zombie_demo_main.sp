@@ -36,8 +36,21 @@ public void XenoDemoMain_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_charge_sound)); i++) { PrecacheSound(g_charge_sound[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Demoknight Main");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_zombie_demo_main");
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoDemoMain(client, vecPos, vecAng, ally);
+}
 methodmap XenoDemoMain < CClotBody
 {
 	public void PlayIdleAlertSound() {
@@ -88,7 +101,6 @@ methodmap XenoDemoMain < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
-		i_NpcInternalId[npc.index] = XENO_DEMO_MAIN;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -102,7 +114,9 @@ methodmap XenoDemoMain < CClotBody
 		
 		
 		
-		SDKHook(npc.index, SDKHook_Think, XenoDemoMain_ClotThink);				
+		func_NPCDeath[npc.index] = XenoDemoMain_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoDemoMain_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoDemoMain_ClotThink;					
 		
 		
 		
@@ -321,9 +335,6 @@ public Action XenoDemoMain_OnTakeDamage(int victim, int &attacker, int &inflicto
 public void XenoDemoMain_NPCDeath(int entity)
 {
 	XenoDemoMain npc = view_as<XenoDemoMain>(entity);
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoDemoMain_ClotThink);	
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);

@@ -52,8 +52,22 @@ public void XenoSniperMain_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Sniper Main");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_sniper_main");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoSniperMain(client, vecPos, vecAng, ally);
+}
 methodmap XenoSniperMain < CClotBody
 {
 	public void PlayIdleAlertSound() {
@@ -138,7 +152,6 @@ methodmap XenoSniperMain < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		i_NpcInternalId[npc.index] = XENO_SNIPER_MAIN;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -150,7 +163,9 @@ methodmap XenoSniperMain < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, XenoSniperMain_ClotThink);	
+		func_NPCDeath[npc.index] = XenoSniperMain_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoSniperMain_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoSniperMain_ClotThink;		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, XenoSniperMain_ClotDamagedPost);
 		
 		//IDLE
@@ -496,7 +511,6 @@ public void XenoSniperMain_NPCDeath(int entity)
 	}
 	
 	
-	SDKUnhook(npc.index, SDKHook_Think, XenoSniperMain_ClotThink);	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, XenoSniperMain_ClotDamagedPost);	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

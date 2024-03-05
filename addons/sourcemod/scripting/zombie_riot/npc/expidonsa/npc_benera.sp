@@ -40,7 +40,7 @@ void Benera_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Benera");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_benera");
-	strcopy(data.Icon, sizeof(data.Icon), "engineer"); 	//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_shotgun"); 	//leaderboard_class_(insert the name)
 	data.IconCustom = false;								//download needed?
 	data.Flags = 0;											//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	data.Category = Type_Expidonsa;

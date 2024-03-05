@@ -15,6 +15,23 @@ static const char g_HurtSounds[][] =
 	"vo/sniper_painsharp03.mp3",
 	"vo/sniper_painsharp04.mp3",
 };
+void ArchosauriaOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Archosauria");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_archosauria");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper_sydneysleeper");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_SUPPORT;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Archosauria(client, vecPos, vecAng, ally);
+}
 
 methodmap Archosauria < CClotBody
 {
@@ -35,7 +52,6 @@ methodmap Archosauria < CClotBody
 	{
 		Archosauria npc = view_as<Archosauria>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "20000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_SNIPER;
 		i_NpcWeight[npc.index] = 2;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

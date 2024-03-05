@@ -184,6 +184,20 @@ void Raidboss_Schwertkrieg_OnMapStart_NPC()
 	Zero(b_swords_flying);
 	Zero(fl_groupteleport_timer);
 
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Schwertkrieg");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_schwertkrieg");
+	data.Category = Type_Raid;
+	data.Func = ClotSummon;
+	strcopy(data.Icon, sizeof(data.Icon), "schwert"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = true;													//download needed?
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;										//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Raidboss_Schwertkrieg(client, vecPos, vecAng, ally);
 }
 
 static int i_schwert_hand_particle[MAXENTITIES];
@@ -295,8 +309,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 	public Raidboss_Schwertkrieg(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
-		
-		i_NpcInternalId[npc.index] = SEA_RAIDBOSS_SCHWERTKRIEG;
+
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -317,8 +330,10 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		fl_groupteleport_timer[npc.index]= GetGameTime() + 30.0;
 
 		fl_dance_of_light_sound_spam_timer[npc.index] = 0.0;
-		
-		SDKHook(npc.index, SDKHook_Think, Raidboss_Schwertkrieg_ClotThink);
+
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 
 		RaidModeTime = GetGameTime(npc.index) + 250.0;
 
@@ -440,7 +455,7 @@ public void Schwertkrieg_Set_Ally_Index(int ref)
 }
 //TODO 
 //Rewrite
-public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(iNPC);
 	
@@ -452,7 +467,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 
 	if(RaidModeTime < GetGameTime())
 	{
-		SDKUnhook(npc.index, SDKHook_Think, Raidboss_Schwertkrieg_ClotThink);
+		func_NPCThink[npc.index]=INVALID_FUNCTION;
 		return;
 	}
 
@@ -1497,7 +1512,7 @@ static void Schwert_Movement_Ally_Movement(Raidboss_Schwertkrieg npc, float flDi
 	}
 }
 
-public Action Raidboss_Schwertkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(victim);
 		
@@ -1857,7 +1872,7 @@ static void Delete_Swords(int client)
 	}
 }
 
-public void Raidboss_Schwertkrieg_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(entity);
 	if(!npc.m_bGib)
@@ -1911,8 +1926,6 @@ public void Raidboss_Schwertkrieg_NPCDeath(int entity)
 	}
 			
 	npc.m_bThisNpcIsABoss = false;
-	
-	SDKUnhook(npc.index, SDKHook_Think, Raidboss_Schwertkrieg_ClotThink);
 
 	Schwertkrieg_Delete_Wings(npc);
 	Schwert_Impact_Lance_CosmeticRemoveEffects(npc.index);

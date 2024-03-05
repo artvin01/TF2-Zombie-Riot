@@ -79,6 +79,7 @@ bool BlockLoseSay;
 static float f_MessengerSpeedUp[MAXENTITIES];
 
 static float f_messenger_cutscene_necksnap[MAXENTITIES];
+static int NPCId;
 
 void TheMessenger_OnMapStart_NPC()
 {
@@ -97,9 +98,22 @@ void TheMessenger_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_LaserGlobalAttackSound));   i++) { PrecacheSound(g_LaserGlobalAttackSound[i]);   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	PrecacheSoundCustom("#zombiesurvival/internius/messenger.mp3");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "The Messenger");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_the_messenger");
+	strcopy(data.Icon, sizeof(data.Icon), "messenger");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
 }
 
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return TheMessenger(client, vecPos, vecAng, ally, data);
+}
 methodmap TheMessenger < CClotBody
 {
 	property int i_GunMode
@@ -207,7 +221,6 @@ methodmap TheMessenger < CClotBody
 	{
 		TheMessenger npc = view_as<TheMessenger>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		
-		i_NpcInternalId[npc.index] = RAIDMODE_THE_MESSENGER;
 		i_NpcWeight[npc.index] = 4;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -1195,7 +1208,7 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 			if(NpcStats_IsEnemySilenced(owner))
 				ChaosDamage = 40;
 
-			if(i_NpcInternalId[owner] == RAIDMODE_THE_MESSENGER)
+			if(i_NpcInternalId[owner] == NPCId)
 			{
 				ChaosDamage = 40;
 				if(NpcStats_IsEnemySilenced(owner))

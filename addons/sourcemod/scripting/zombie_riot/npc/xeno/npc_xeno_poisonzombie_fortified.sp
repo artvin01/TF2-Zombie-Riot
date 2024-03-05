@@ -48,8 +48,21 @@ public void XenoFortifiedPoisonZombie_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Fortified Poison Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_poisonzombie_fortified");
+	strcopy(data.Icon, sizeof(data.Icon), "norm_poison_zombie_forti");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoFortifiedPoisonZombie(client, vecPos, vecAng, ally);
+}
 methodmap XenoFortifiedPoisonZombie < CClotBody
 {
 	public void PlayIdleSound() {
@@ -130,7 +143,6 @@ methodmap XenoFortifiedPoisonZombie < CClotBody
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		i_NpcInternalId[npc.index] = XENO_FORTIFIED_POISON_ZOMBIE;
 		i_NpcWeight[npc.index] = 2;
 		
 		
@@ -144,7 +156,10 @@ methodmap XenoFortifiedPoisonZombie < CClotBody
 		
 		
 		
-		SDKHook(npc.index, SDKHook_Think, XenoFortifiedPoisonZombie_ClotThink);		
+
+		func_NPCDeath[npc.index] = XenoFortifiedPoisonZombie_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoFortifiedPoisonZombie_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoFortifiedPoisonZombie_ClotThink;	
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -411,8 +426,6 @@ public void XenoFortifiedPoisonZombie_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoFortifiedPoisonZombie_ClotThink);		
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
 

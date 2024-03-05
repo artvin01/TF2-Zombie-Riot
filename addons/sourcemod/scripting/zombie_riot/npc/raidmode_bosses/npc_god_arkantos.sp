@@ -56,6 +56,7 @@ static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 
 #define ARKANTOS_BUFF_MAXRANGE 500.0
 
+static int NPCId;
 public void GodArkantos_OnMapStart()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);       }
@@ -68,7 +69,20 @@ public void GodArkantos_OnMapStart()
 	for (int i = 0; i < (sizeof(g_SummonSounds));        i++) { PrecacheSound(g_SummonSounds[i]);        }
 	PrecacheSoundCustom("#zombiesurvival/medieval_raid/kazimierz_boss.mp3");
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
-	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "God Arkantos");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_god_arkantos");
+	strcopy(data.Icon, sizeof(data.Icon), "arkantos");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return GodArkantos(client, vecPos, vecAng, ally, data);
 }
 static float f_ArkantosCantDieLimit[MAXENTITIES];
 static bool b_angered_twice[MAXENTITIES];
@@ -153,7 +167,6 @@ methodmap GodArkantos < CClotBody
 	{
 		GodArkantos npc = view_as<GodArkantos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "25000", ally, false, false, true,true)); //giant!
 		
-		i_NpcInternalId[npc.index] = RAIDMODE_GOD_ARKANTOS;
 		i_NpcWeight[npc.index] = 4;
 		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Arkantos_Win);
 
@@ -251,7 +264,9 @@ methodmap GodArkantos < CClotBody
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
 		
-		SDKHook(npc.index, SDKHook_Think, GodArkantos_ClotThink);
+		func_NPCDeath[npc.index] = GodArkantos_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = GodArkantos_OnTakeDamage;
+		func_NPCThink[npc.index] = GodArkantos_ClotThink;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, GodArkantos_OnTakeDamagePost);
 
@@ -359,7 +374,7 @@ public void GodArkantos_ClotThink(int iNPC)
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 		}
-		int spawn_index = NPC_CreateById(ISHARMLA, -1, pos, ang, TFTeam_Blue);
+		int spawn_index = NPC_CreateByName("npc_isharmla", -1, pos, ang, TFTeam_Blue);
 		if(spawn_index > MaxClients)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -507,7 +522,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
 			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
-			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != RAIDMODE_GOD_ARKANTOS && GetTeam(npc.index) == GetTeam(baseboss_index))
+			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != NPCId && GetTeam(npc.index) == GetTeam(baseboss_index))
 			{
 				allyAlive = true;
 			}
@@ -778,8 +793,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			RaidModeTime += 5.0;
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			npc.PlaySummonSound();
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_MAN_AT_ARMS,_, RoundToCeil(6.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_ARCHER,_, RoundToCeil(7.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(6.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_archer",_, RoundToCeil(7.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
@@ -788,9 +803,9 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			npc.PlaySummonSound();
 			
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_SKIRMISHER,_, RoundToCeil(6.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_ARCHER,_, RoundToCeil(5.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_EAGLE_SCOUT,_, RoundToCeil(4.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_skirmisher",_, RoundToCeil(6.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_archer",_, RoundToCeil(5.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_eagle_scout",_, RoundToCeil(4.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
@@ -798,9 +813,9 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			RaidModeTime += 5.0;
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			npc.PlaySummonSound();
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_SKIRMISHER,_, RoundToCeil(6.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_SPEARMEN,_, RoundToCeil(5.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_MAN_AT_ARMS,_, RoundToCeil(5.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_skirmisher",_, RoundToCeil(6.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_spearmen",_, RoundToCeil(5.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(5.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
@@ -812,18 +827,18 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			if(npc.m_bWasSadAlready)
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_SPEARMEN,_, RoundToCeil(2.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_SCOUT,_, RoundToCeil(2.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_MAN_AT_ARMS,_, RoundToCeil(3.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_CONSTRUCT, RoundToCeil(5000.0 * MultiGlobalArkantos), 1, true);		
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_spearmen",_, RoundToCeil(2.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_scout",_, RoundToCeil(2.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(3.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(5000.0 * MultiGlobalArkantos), 1, true);		
 			}
 			else
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_SPEARMEN,_, RoundToCeil(5.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_SCOUT,_, RoundToCeil(5.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_MAN_AT_ARMS,_, RoundToCeil(8.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_CONSTRUCT, RoundToCeil(10000.0 * MultiGlobalArkantos), 1, true);		
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_spearmen",_, RoundToCeil(5.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_scout",_, RoundToCeil(5.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(8.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalArkantos), 1, true);		
 			}
 		}
 	}
@@ -836,9 +851,9 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_SWORDSMAN,_, RoundToCeil(6.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_EAGLE_WARRIOR,_, RoundToCeil(4.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_CROSSBOW_MAN,_, RoundToCeil(4.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_swordsman",_, RoundToCeil(6.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_eagle_warrior",_, RoundToCeil(4.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_crossbow",_, RoundToCeil(4.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
@@ -847,8 +862,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_LIGHT_CAV,_, RoundToCeil(5.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_SWORDSMAN,_, RoundToCeil(12.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_light_cav",_, RoundToCeil(5.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_swordsman",_, RoundToCeil(12.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
@@ -856,9 +871,9 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_BRAWLER,_, RoundToCeil(6.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_LIGHT_CAV,_, RoundToCeil(5.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_SWORDSMAN,_, RoundToCeil(5.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_brawler",_, RoundToCeil(6.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_light_cav",_, RoundToCeil(5.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_swordsman",_, RoundToCeil(5.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
@@ -870,18 +885,18 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			if(npc.m_bWasSadAlready)
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_PIKEMAN,_, RoundToCeil(5.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_CROSSBOW_GIANT,_, RoundToCeil(1.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_MONK,RoundToCeil(5000.0 * MultiGlobalArkantos), 1, true);		
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_CONSTRUCT, RoundToCeil(10000.0 * MultiGlobalArkantos), RoundToCeil(2.0 * MultiGlobal), true);		
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_pikeman",_, RoundToCeil(5.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_crossbow_giant",_, RoundToCeil(1.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(5000.0 * MultiGlobalArkantos), 1, true);		
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalArkantos), RoundToCeil(2.0 * MultiGlobal), true);		
 			}
 			else
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_PIKEMAN,_, RoundToCeil(15.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_CROSSBOW_GIANT,_, RoundToCeil(2.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_MONK,RoundToCeil(10000.0 * MultiGlobalArkantos), 1, true);		
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_CONSTRUCT, RoundToCeil(10000.0 * MultiGlobalArkantos), RoundToCeil(2.0 * MultiGlobal), true);				
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_pikeman",_, RoundToCeil(15.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_crossbow_giant",_, RoundToCeil(2.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(10000.0 * MultiGlobalArkantos), 1, true);		
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalArkantos), RoundToCeil(2.0 * MultiGlobal), true);				
 			}
 		}
 	}
@@ -894,10 +909,10 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_TWOHANDED_SWORDSMAN,_, RoundToCeil(6.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_EAGLE_WARRIOR,_, RoundToCeil(12.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_LONGBOWMEN,_, RoundToCeil(4.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_KNIGHT,_, RoundToCeil(5.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_twohanded_swordsman",_, RoundToCeil(6.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_eagle_warrior",_, RoundToCeil(12.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_longbowmen",_, RoundToCeil(4.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_knight",_, RoundToCeil(5.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
@@ -906,8 +921,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_KNIGHT,_, RoundToCeil(5.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_TWOHANDED_SWORDSMAN,_, RoundToCeil(12.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_knight",_, RoundToCeil(5.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_twohanded_swordsman",_, RoundToCeil(12.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
@@ -915,9 +930,9 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_ELITE_SKIRMISHER,_, RoundToCeil(6.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_LIGHT_CAV,_, RoundToCeil(12.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_SWORDSMAN_GIANT,_, RoundToCeil(2.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_elite_skirmisher",_, RoundToCeil(6.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_light_cav",_, RoundToCeil(12.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_swordsman_giant",_, RoundToCeil(2.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
@@ -929,18 +944,18 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			if(npc.m_bWasSadAlready)
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_HUSSAR,_, RoundToCeil(1.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_OBUCH,_, RoundToCeil(5.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_MONK,RoundToCeil(5000.0 * MultiGlobalArkantos), 1);
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_ACHILLES, RoundToCeil(75000.0 * MultiGlobalArkantos), 1);
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_hussar",_, RoundToCeil(1.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_obuch",_, RoundToCeil(5.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(5000.0 * MultiGlobalArkantos), 1);
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(75000.0 * MultiGlobalArkantos), 1);
 			}
 			else
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_HUSSAR,_, RoundToCeil(2.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_OBUCH,_, RoundToCeil(8.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_MONK,RoundToCeil(2500.0 * MultiGlobalArkantos), 1, true);		
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_ACHILLES, RoundToCeil(125000.0 * MultiGlobalArkantos), 1, true);					
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_hussar",_, RoundToCeil(2.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_obuch",_, RoundToCeil(8.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(2500.0 * MultiGlobalArkantos), 1, true);		
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(125000.0 * MultiGlobalArkantos), 1, true);					
 			}
 		}
 	}
@@ -953,9 +968,9 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_CHAMPION,75000, RoundToCeil(6.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_ARBALEST,50000, RoundToCeil(12.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_ELITE_LONGBOWMEN,50000, RoundToCeil(4.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_champion",75000, RoundToCeil(6.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_arbalest",50000, RoundToCeil(12.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_elite_longbowmen",50000, RoundToCeil(4.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
@@ -964,8 +979,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_CHAMPION,75000, RoundToCeil(12.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_SAMURAI,75000, RoundToCeil(12.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_champion",75000, RoundToCeil(12.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_samurai",75000, RoundToCeil(12.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
@@ -973,10 +988,10 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_ELITE_SKIRMISHER,50000, RoundToCeil(10.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_PALADIN,100000, RoundToCeil(10.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_SWORDSMAN_GIANT,250000, RoundToCeil(2.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,MEDIVAL_ACHILLES, RoundToCeil(300000.0 * MultiGlobalArkantos), 1);
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_elite_skirmisher",50000, RoundToCeil(10.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_paladin",100000, RoundToCeil(10.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_swordsman_giant",250000, RoundToCeil(2.0 * MultiGlobal));
+			GodArkantosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(300000.0 * MultiGlobalArkantos), 1);
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
@@ -988,20 +1003,20 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			if(npc.m_bWasSadAlready)
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_HUSSAR,100000, RoundToCeil(1.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_RIDDENARCHER,75000, RoundToCeil(10.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_MONK,RoundToCeil(25000.0 * MultiGlobalArkantos), 1);
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_SON_OF_OSIRIS, RoundToCeil(750000.0 * MultiGlobalArkantos), 1, true);		
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_VILLAGER, RoundToCeil(150000.0 * MultiGlobalArkantos), 1, true);		
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_hussar",100000, RoundToCeil(1.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_riddenarcher",75000, RoundToCeil(10.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(25000.0 * MultiGlobalArkantos), 1);
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(750000.0 * MultiGlobalArkantos), 1, true);		
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_villager", RoundToCeil(150000.0 * MultiGlobalArkantos), 1, true);		
 			}
 			else
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_HUSSAR,100000, RoundToCeil(2.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_RIDDENARCHER,75000, RoundToCeil(20.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_MONK,RoundToCeil(50000.0 * MultiGlobalArkantos), 1);
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_SON_OF_OSIRIS, RoundToCeil(1500000.0 * MultiGlobalArkantos), 1, true);		
-				GodArkantosSpawnEnemy(npc.index,MEDIVAL_VILLAGER, RoundToCeil(250000.0 * MultiGlobalArkantos), 1, true);				
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_hussar",100000, RoundToCeil(2.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_riddenarcher",75000, RoundToCeil(20.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(50000.0 * MultiGlobalArkantos), 1);
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(1500000.0 * MultiGlobalArkantos), 1, true);		
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_villager", RoundToCeil(250000.0 * MultiGlobalArkantos), 1, true);				
 			}
 		}
 	}
@@ -1037,9 +1052,6 @@ public void GodArkantos_NPCDeath(int entity)
 			}
 		}
 	}
-
-	SDKUnhook(npc.index, SDKHook_Think, GodArkantos_ClotThink);
-	
 	
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	
@@ -1067,7 +1079,7 @@ public void GodArkantos_NPCDeath(int entity)
 	Citizen_MiniBossDeath(entity);
 }
 
-void GodArkantosSpawnEnemy(int arkantos, int npc_id, int health = 0, int count, bool outline = false)
+void GodArkantosSpawnEnemy(int arkantos, char[] plugin_name, int health = 0, int count, bool outline = false)
 {
 	if(GetTeam(arkantos) == TFTeam_Red)
 	{
@@ -1080,7 +1092,8 @@ void GodArkantosSpawnEnemy(int arkantos, int npc_id, int health = 0, int count, 
 		{
 			float pos[3]; GetEntPropVector(arkantos, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(arkantos, Prop_Data, "m_angRotation", ang);
-			int summon = NPC_CreateById(npc_id, -1, pos, ang, GetEntProp(arkantos, Prop_Send, "m_iTeamNum"));
+			
+			int summon = NPC_CreateByName(plugin_name, -1, pos, ang, GetTeam(arkantos));
 			if(summon > MaxClients)
 			{
 				fl_Extra_Damage[summon] = 10.0;
@@ -1096,7 +1109,7 @@ void GodArkantosSpawnEnemy(int arkantos, int npc_id, int health = 0, int count, 
 	}
 		
 	Enemy enemy;
-	enemy.Index = npc_id;
+	enemy.Index = NPC_GetIdByPlugin(plugin_name);
 	if(health != 0)
 	{
 		enemy.Health = health;
@@ -1820,7 +1833,7 @@ bool ArkantosForceTalk()
 public void Raidmode_Arkantos_Win(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
-	SDKUnhook(entity, SDKHook_Think, GodArkantos_ClotThink);
+	func_NPCThink[entity] = INVALID_FUNCTION;
 	switch(GetRandomInt(0,3))
 	{
 		case 0:

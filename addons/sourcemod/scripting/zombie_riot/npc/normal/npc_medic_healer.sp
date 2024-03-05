@@ -48,6 +48,20 @@ void MedicHealer_OnMapStart_NPC()
 	PrecacheModel("models/player/medic.mdl");
 	PrecacheSound("player/flow.wav");
 	PrecacheModel(LASERBEAM);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Medic Supporter");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medic_healer");
+	strcopy(data.Icon, sizeof(data.Icon), "medic");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedicHealer(client, vecPos, vecAng, ally);
 }
 
 methodmap MedicHealer < CClotBody
@@ -113,7 +127,6 @@ methodmap MedicHealer < CClotBody
 	{
 		MedicHealer npc = view_as<MedicHealer>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "3500", ally));
 		
-		i_NpcInternalId[npc.index] = MEDIC_HEALER;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -121,15 +134,17 @@ methodmap MedicHealer < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		
+
+		func_NPCDeath[npc.index] = MedicHealer_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedicHealer_OnTakeDamage;
+		func_NPCThink[npc.index] = MedicHealer_ClotThink;		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, MedicHealer_ClotThink);
+
 		
 		
 		//IDLE
@@ -462,9 +477,6 @@ public void MedicHealer_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedicHealer_ClotThink);
 	
 	Is_a_Medic[npc.index] = false;
 	if(IsValidEntity(npc.m_iWearable1))

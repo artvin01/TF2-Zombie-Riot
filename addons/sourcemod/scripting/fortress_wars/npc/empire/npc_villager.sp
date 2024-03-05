@@ -28,7 +28,7 @@ void Villager_Setup()
 	PrecacheSoundArray(MeleeCollectSounds);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Villager");
+	strcopy(data.Name, sizeof(data.Name), "Medival Villager");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_villager");
 	data.Func = ClotSummon;
 	NPC_Add(data);

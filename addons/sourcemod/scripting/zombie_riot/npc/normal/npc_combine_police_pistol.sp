@@ -76,8 +76,22 @@ public void Combine_Police_Pistol_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/police.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Metro Cop");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_police_pistol");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_pistol");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Combine_Police_Pistol(client, vecPos, vecAng, ally);
+}
 methodmap Combine_Police_Pistol < CClotBody
 {
 	public void PlayIdleSound() {
@@ -139,7 +153,6 @@ methodmap Combine_Police_Pistol < CClotBody
 	{
 		Combine_Police_Pistol npc = view_as<Combine_Police_Pistol>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "550", ally, false));
 		
-		i_NpcInternalId[npc.index] = COMBINE_POLICE_PISTOL;
 		i_NpcWeight[npc.index] = 1;
 		
 		int iActivity = npc.LookupActivity("ACT_RUN");
@@ -164,9 +177,10 @@ methodmap Combine_Police_Pistol < CClotBody
 		{
 			npc.m_flSpeed = 270.0;
 		}
-		
-		
-		SDKHook(npc.index, SDKHook_Think, Combine_Police_Pistol_ClotThink);
+
+		func_NPCDeath[npc.index] = CombinePolicePistol_NPCDeath;
+		func_NPCThink[npc.index] = Combine_Police_Pistol_ClotThink;
+
 		
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
@@ -459,9 +473,6 @@ public void CombinePolicePistol_NPCDeath(int entity)
 {
 	Combine_Police_Pistol npc = view_as<Combine_Police_Pistol>(entity);
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, Combine_Police_Pistol_ClotThink);
-		
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	

@@ -2,6 +2,23 @@
 #pragma newdecls required
 
 // Balanced around Mid Spy
+public void BarrackChampionOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Champion");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_champion");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackChampion(client, vecPos, vecAng, ally);
+}
 
 methodmap BarrackChampion < BarrackBody
 {
@@ -9,11 +26,12 @@ methodmap BarrackChampion < BarrackBody
 	{
 		BarrackChampion npc = view_as<BarrackChampion>(BarrackBody(client, vecPos, vecAng, "1000",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
-		i_NpcInternalId[npc.index] = BARRACK_CHAMPION;
 		i_NpcWeight[npc.index] = 1;
 		KillFeed_SetKillIcon(npc.index, "claidheamohmor");
-		
-		SDKHook(npc.index, SDKHook_Think, BarrackChampion_ClotThink);
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackChampion_NPCDeath;
+		func_NPCThink[npc.index] = BarrackChampion_ClotThink;
+
 
 		npc.m_flSpeed = 250.0;
 		

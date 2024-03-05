@@ -89,8 +89,21 @@ void MedivalBrawler_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Medival Brawler");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_brawler");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_champ");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalBrawler(client, vecPos, vecAng, ally);
+}
 methodmap MedivalBrawler < CClotBody
 {
 	public void PlayIdleSound() {
@@ -167,8 +180,7 @@ methodmap MedivalBrawler < CClotBody
 	{
 		MedivalBrawler npc = view_as<MedivalBrawler>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "4500", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_BRAWLER;
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -183,8 +195,9 @@ methodmap MedivalBrawler < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, MedivalBrawler_ClotThink);
+		func_NPCDeath[npc.index] = MedivalBrawler_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalBrawler_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalBrawler_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 310.0;
@@ -401,9 +414,7 @@ public void MedivalBrawler_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalBrawler_ClotThink);
+
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

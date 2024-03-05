@@ -79,8 +79,21 @@ public void XenoSpyTrickstabber_OnMapStart_NPC()
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Spy Trickstabber");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_spy_trickstabber");
+	strcopy(data.Icon, sizeof(data.Icon), "spy");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoSpyTrickstabber(client, vecPos, vecAng, ally);
+}
 methodmap XenoSpyTrickstabber < CClotBody
 {
 	
@@ -176,7 +189,6 @@ methodmap XenoSpyTrickstabber < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		i_NpcInternalId[npc.index] = XENO_SPY_TRICKSTABBER;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -190,7 +202,10 @@ methodmap XenoSpyTrickstabber < CClotBody
 		
 		
 		
-		SDKHook(npc.index, SDKHook_Think, XenoSpyTrickstabber_ClotThink);	
+		func_NPCDeath[npc.index] = XenoSpyTrickstabber_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoSpyTrickstabber_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoSpyTrickstabber_ClotThink;
+	
 		
 		
 		npc.m_iState = 0;
@@ -402,8 +417,6 @@ public void XenoSpyTrickstabber_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoSpyTrickstabber_ClotThink);	
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

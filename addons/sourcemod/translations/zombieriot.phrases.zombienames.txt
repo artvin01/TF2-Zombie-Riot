@@ -1206,7 +1206,7 @@
 		"pt"		"Aquiles"
 		"ru"		"Ахилл"
 	}
-	"Medival Abalest"
+	"Medival Arbalest"
 	{
 		"en"		"Medieval Arbalest"
 		"pt"		"Arbalest Medieval"
@@ -2212,5 +2212,9 @@
 	"Laniun"
 	{
 		"en"	"Laniun"
+	}
+	"Bob the Second"
+	{
+		"en"	"Bob the Second"
 	}
 }

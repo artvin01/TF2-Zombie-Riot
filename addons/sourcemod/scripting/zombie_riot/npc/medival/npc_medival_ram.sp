@@ -21,8 +21,21 @@ void MedivalRam_OnMapStart()
 {
 	PrecacheModel(NPCModel);
 	PrecacheSound("weapons/stinger_fire1.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Capped Ram");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_ram");
+	strcopy(data.Icon, sizeof(data.Icon), "ram");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3],int ally, const char[] data)
+{
+	return MedivalRam(client, vecPos, vecAng, ally, data);
+}
 static int Garrison[MAXENTITIES];
 
 methodmap MedivalRam < CClotBody
@@ -45,7 +58,6 @@ methodmap MedivalRam < CClotBody
 	public MedivalRam(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, NPCModel, "0.8", "30000", ally, false, true));
-		i_NpcInternalId[npc.index] = MEDIVAL_RAM;
 		i_NpcWeight[npc.index] = 5;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
@@ -56,7 +68,7 @@ methodmap MedivalRam < CClotBody
 		{
 			Garrison[npc.index] = StringToInt(data);
 			if(!Garrison[npc.index])
-				Garrison[npc.index] = NPC_GetByPlugin(data);
+				Garrison[npc.index] = NPC_GetIdByPlugin(data);
 			
 			if(Garrison[npc.index] && !ally)
 				Zombies_Currently_Still_Ongoing += 6;
@@ -66,7 +78,8 @@ methodmap MedivalRam < CClotBody
 			Garrison[npc.index] = 0;
 		}
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalRam_ClotThink);
+		func_NPCDeath[npc.index] = MedivalRam_NPCDeath;
+		func_NPCThink[npc.index] = MedivalRam_ClotThink;
 		
 		npc.m_iState = 0;
 		npc.m_flSpeed = Garrison[npc.index] ? 170.0 : 150.0;
@@ -251,7 +264,6 @@ void MedivalRam_NPCDeath(int entity)
 //		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalRam_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

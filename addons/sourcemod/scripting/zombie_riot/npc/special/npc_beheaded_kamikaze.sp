@@ -10,6 +10,7 @@ static const char g_Spawn[][] = {
 	"zombie_riot/miniboss/kamikaze/spawn.wav",
 };
 
+static int NPCId;
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 static float fl_KamikazeInitiate;
 static float fl_KamikazeSpawnDelay;
@@ -27,8 +28,21 @@ void BeheadedKamiKaze_OnMapStart_NPC()
 	fl_KamikazeSpawnDelay = 0.0;
 	fl_KamikazeSpawnDuration = 0.0;
 	b_KamikazeEvent = false;
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Beheaded Kamikaze");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_beheaded_kami");
+	strcopy(data.Icon, sizeof(data.Icon), "kamikaze");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BeheadedKamiKaze(client, vecPos, vecAng, ally);
+}
 
 static char[] GetBeheadedKamiKazeHealth()
 {
@@ -88,7 +102,6 @@ methodmap BeheadedKamiKaze < CClotBody
 	{
 		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", GetBeheadedKamiKazeHealth(), ally));
 		
-		i_NpcInternalId[npc.index] = MINI_BEHEADED_KAMI;
 		i_NpcWeight[npc.index] = 2;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN");
@@ -102,8 +115,11 @@ methodmap BeheadedKamiKaze < CClotBody
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
 		npc.m_flSpeed = 500.0;
 		
-		SDKHook(npc.index, SDKHook_Think, BeheadedKamiKaze_ClotThink);
 		
+		func_NPCDeath[npc.index] = BeheadedKamiKaze_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = BeheadedKamiKaze_OnTakeDamage;
+		func_NPCThink[npc.index] = BeheadedKamiKaze_ClotThink;
+
 		npc.m_bDoSpawnGesture = true;
 		
 		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
@@ -275,7 +291,6 @@ public void BeheadedKamiKaze_NPCDeath(int entity)
 {
 	BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_Think, BeheadedKamiKaze_ClotThink);
 	StopSound(npc.index, SNDCHAN_VOICE, "zombie_riot/miniboss/kamikaze/become_enraged56.wav");
 	Kamikaze_DeathExplosion(entity);
 }
@@ -332,7 +347,7 @@ float BeheadedKamiBoomInternal(int entity, int victim, float damage, int weapon)
 		return 0.0;
 
 	//instakill any be_headeads.
-	if(i_NpcInternalId[victim] == MINI_BEHEADED_KAMI)
+	if(i_NpcInternalId[victim] == NPCId)
 	{
 		return 1000000000.0;
 	}
@@ -418,7 +433,7 @@ void SpawnBeheadedKamikaze(DataPack pack)
 			int INpc = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 			if (IsValidEntity(INpc))
 			{
-				if(!b_NpcHasDied[INpc] && i_NpcInternalId[INpc] == MINI_BEHEADED_KAMI)
+				if(!b_NpcHasDied[INpc] && i_NpcInternalId[INpc] == NPCId)
 				{
 					Kamikazies += 1;
 				}
@@ -435,7 +450,7 @@ void SpawnBeheadedKamikaze(DataPack pack)
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 			}
-			int spawn_npc = NPC_CreateById(MINI_BEHEADED_KAMI, -1, pos, ang, TFTeam_Blue); //can only be enemy
+			int spawn_npc = NPC_CreateById(NPCId, -1, pos, ang, TFTeam_Blue); //can only be enemy
 			NpcAddedToZombiesLeftCurrently(spawn_npc, true);
 		}
 		RequestFrame(SpawnBeheadedKamikaze, pack);

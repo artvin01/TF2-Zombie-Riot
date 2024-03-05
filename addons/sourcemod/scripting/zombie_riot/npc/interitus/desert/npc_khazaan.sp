@@ -47,8 +47,21 @@ void DesertKhazaan_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Khazaan");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_khazaan");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_champ");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return DesertKhazaan(client, vecPos, vecAng, ally);
+}
 
 methodmap DesertKhazaan < CClotBody
 {
@@ -93,7 +106,6 @@ methodmap DesertKhazaan < CClotBody
 	{
 		DesertKhazaan npc = view_as<DesertKhazaan>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "900", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_DESERT_KHAZAAN;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

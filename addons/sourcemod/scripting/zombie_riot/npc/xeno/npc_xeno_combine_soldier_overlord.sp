@@ -83,8 +83,21 @@ public void XenoCombineOverlord_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Overlord");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_overlord");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_overlord");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoCombineOverlord(client, vecPos, vecAng, ally);
+}
 methodmap XenoCombineOverlord < CClotBody
 {
 	public void PlayIdleSound() {
@@ -192,8 +205,7 @@ methodmap XenoCombineOverlord < CClotBody
 	{
 		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "35000", ally));
 		SetVariantInt(3);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = XENO_COMBINE_OVERLORD;
+		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -205,11 +217,11 @@ methodmap XenoCombineOverlord < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;		
-
 		
-		
-		SDKHook(npc.index, SDKHook_Think, XenoCombineOverlord_ClotThink);
-		
+	
+		func_NPCDeath[npc.index] = XenoCombineOverlord_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoCombineOverlord_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoCombineOverlord_ClotThink;	
 	//	npc.m_bDissapearOnDeath = true;
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -596,7 +608,6 @@ public void XenoCombineOverlord_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_Think, XenoCombineOverlord_ClotThink);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

@@ -71,8 +71,24 @@ void PhantomKnight_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
+
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Phantom Knight");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_phantom_knight");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return PhantomKnight(client, vecPos, vecAng, ally);
+}
 static bool b_IsPhantomFake[MAXENTITIES];
 static float f_AttackHappensAoe[MAXENTITIES];
 static float f_StareAtEnemy[MAXENTITIES];
@@ -146,7 +162,6 @@ methodmap PhantomKnight < CClotBody
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		//Normal sized Miniboss!
-		i_NpcInternalId[npc.index] = PHANTOM_KNIGHT;
 		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -188,9 +203,11 @@ methodmap PhantomKnight < CClotBody
 	//Ranged can now be dodged slightly, which is cooler then this lame reduction.
 		
 		
+		func_NPCDeath[npc.index] = PhantomKnight_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = PhantomKnight_OnTakeDamage;
+		func_NPCThink[npc.index] = PhantomKnight_ClotThink;
 		SDKHook(npc.index, SDKHook_TraceAttack, PhantomKnight_TraceAttack);
 		
-		SDKHook(npc.index, SDKHook_Think, PhantomKnight_ClotThink);
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 200, 200, 255);
@@ -566,10 +583,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 					npc.FaceTowards(VecEnemy, 15000.0);
 					if(i_PhantomsSpawned[npc.index] <= 5 || (ZR_GetWaveCount() > 60 && i_PhantomsSpawned[npc.index] <= 10)) //We want a limit on how many fakes he can have.
 					{
-						//If its wave 60 or above, he can spawn 10 instead
-
-						//spawn fakes!
-						int fake_spawned = view_as<int>(PhantomKnight(1, vecPos_Npc, vecAng_Npc, GetTeam(npc.index)));
+						//If its wave 60 or above, he can spawn
+						int fake_spawned = NPC_CreateByName("npc_phantom_knight", -1, vecPos_Npc, vecAng_Npc,GetTeam(npc.index), "");
 						if(IsValidEntity(view_as<int>(fake_spawned)))
 						{
 							if(b_thisNpcIsABoss[npc.index]) //If he is a boss, make his clones a boss.
@@ -676,8 +691,6 @@ public void PhantomKnight_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	SDKUnhook(npc.index, SDKHook_Think, PhantomKnight_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

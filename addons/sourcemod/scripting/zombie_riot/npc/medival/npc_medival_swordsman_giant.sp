@@ -83,6 +83,23 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
+void MedivalSwordsmanGiant_OnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Swordsman Giant");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_swordsman_giant");
+	strcopy(data.Icon, sizeof(data.Icon), "man_at_arms");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalSwordsmanGiant(client, vecPos, vecAng, ally);
+}
 methodmap MedivalSwordsmanGiant < CClotBody
 {
 	public void PlayIdleSound() {
@@ -160,7 +177,6 @@ methodmap MedivalSwordsmanGiant < CClotBody
 		MedivalSwordsmanGiant npc = view_as<MedivalSwordsmanGiant>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "25000", ally, false, true));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_SWORDSMAN_GIANT;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -176,7 +192,9 @@ methodmap MedivalSwordsmanGiant < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalSwordsmanGiant_ClotThink);
+		func_NPCDeath[npc.index] = MedivalSwordsmanGiant_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalSwordsmanGiant_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalSwordsmanGiant_ClotThink;
 	
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 //		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
@@ -395,8 +413,6 @@ void MedivalSwordsmanGiant_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalSwordsmanGiant_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

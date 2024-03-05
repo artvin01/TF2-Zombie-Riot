@@ -32,9 +32,22 @@ public void Barracks_Thorns()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsAbilityActivate));   i++)			{ PrecacheSound(g_RangedAttackSoundsAbilityActivate[i]);}
 	for (int i = 0; i < (sizeof(g_ThornsSpawn));   i++)			{ PrecacheSound(g_ThornsSpawn[i]);   }
 	for (int i = 0; i < (sizeof(g_ThornsDeath));   i++)			{ PrecacheSound(g_ThornsDeath[i]);   }
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Thorns");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_thorns");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 	
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackThorns(client, vecPos, vecAng, ally);
+}
 bool ThornsHasElite[MAXENTITIES];
 bool ThornsHasMaxPot[MAXENTITIES];
 
@@ -101,12 +114,14 @@ methodmap BarrackThorns < BarrackBody
 		ThornsHasElite[npc.index] = elite;
 		ThornsHasMaxPot[npc.index] = MaxPot;
 
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackThorns_NPCDeath;
+		func_NPCThink[npc.index] = BarrackThorns_ClotThink;
+
 		ThornsDelayTimerUpgrade[npc.index] = GetGameTime() + 5.0;
 
-		i_NpcInternalId[npc.index] = BARRACK_THORNS;
 		i_NpcWeight[npc.index] = 2;
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackThorns_ClotThink);
 		npc.PlayThornsSpawn();
 
 		npc.m_flSpeed = 250.0;

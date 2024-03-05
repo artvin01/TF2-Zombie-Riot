@@ -43,6 +43,20 @@ void Protecta_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Protecta");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_protecta");
+	strcopy(data.Icon, sizeof(data.Icon), "medic");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Protecta(client, vecPos, vecAng, ally);
 }
 
 methodmap Protecta < CClotBody
@@ -88,7 +102,6 @@ methodmap Protecta < CClotBody
 	{
 		Protecta npc = view_as<Protecta>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "2500", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_PROTECTA;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -99,14 +112,15 @@ methodmap Protecta < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
+		func_NPCDeath[npc.index] = Protecta_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Protecta_OnTakeDamage;
+		func_NPCThink[npc.index] = Protecta_ClotThink;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
-		SDKHook(npc.index, SDKHook_Think, Protecta_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -215,7 +229,6 @@ public void Protecta_NPCDeath(int entity)
 		ExpidonsaGroupHeal(npc.index, 150.0, 99, 200.0, 1.0, true);
 	}
 	ExpidonsaRemoveEffects(entity);
-	SDKUnhook(npc.index, SDKHook_Think, Protecta_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable4))
