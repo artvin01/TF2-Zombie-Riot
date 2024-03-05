@@ -1109,7 +1109,7 @@ void GodArkantosSpawnEnemy(int arkantos, char[] plugin_name, int health = 0, int
 	}
 		
 	Enemy enemy;
-	enemy.Index = NPC_GetIdByPlugin(plugin_name);
+	enemy.Index = NPC_GetByPlugin(plugin_name);
 	if(health != 0)
 	{
 		enemy.Health = health;

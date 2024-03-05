@@ -145,18 +145,6 @@ static const char SiegeMoveSounds[][] =
 	"ambient/lightson.wav"	
 };
 
-static const char BuildingSelectSounds[][] =
-{
-	"ambient/machines/machine1_hit1.wav",
-	"ambient/machines/machine1_hit2.wav",
-};
-
-static const char BuildingCombatAlertSounds[][] =
-{
-	"npc/overwatch/radiovoice/socialfractureinprogress.wav",
-	"npc/overwatch/radiovoice/threattoproperty51b.wav"
-};
-
 void EmpireBody_Setup()
 {
 	PrecacheSoundArray(DeathSounds);
@@ -289,14 +277,14 @@ methodmap EmpireBody < UnitBody
 			}
 		}
 		
-		func_NPCDeath[npc.index] = EmpireBody_Death;
-		func_NPCOnTakeDamage[npc.index] = EmpireBody_TakeDamage;
+		npc.m_hOnTakeDamageFunc = EmpireBody_TakeDamage;
+		npc.m_hDeathFunc = EmpireBody_Death;
 
 		return npc;
 	}
 }
 
-void EmpireBody_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+void EmpireBody_TakeDamage(int victim, int &attacker)
 {
 	if(attacker > 0)
 	{

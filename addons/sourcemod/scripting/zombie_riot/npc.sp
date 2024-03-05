@@ -503,7 +503,7 @@ void NPC_GetById(int id, NPCData data)
 	NPCList.GetArray(id, data);
 }
 
-int NPC_GetIdByPlugin(const char[] plugin, NPCData data = {})
+int NPC_GetByPlugin(const char[] plugin, NPCData data = {})
 {
 	int length = NPCList.Length;
 	for(int i; i < length; i++)
@@ -531,7 +531,7 @@ static void PrecacheIcons(int i, NPCData data)
 stock int NPC_CreateByName(const char[] name, int client, float vecPos[3], float vecAng[3], int team, const char[] data = "")
 {
 	static NPCData npcdata;
-	int id = NPC_GetIdByPlugin(name, npcdata);
+	int id = NPC_GetByPlugin(name, npcdata);
 	if(id == -1)
 	{
 		PrintToChatAll("\"%s\" is not a valid NPC or is using old method!", name);

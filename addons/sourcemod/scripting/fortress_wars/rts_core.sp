@@ -10,9 +10,10 @@
 #define MAX_TEAMS	17
 #define MAX_SKILLS	10
 
-#define OBJECT_HITBOX	"models/props_moonbase/moon_cube_crystal04.mdl"
-#define OBJECT_OFFSET	{0.0, -90.0, 0.0}
-#define OBJECT_UNITS	128.0
+#define OBJECT_HITBOX		"models/props_moonbase/moon_cube_crystal04.mdl"
+#define OBJECT_OFFSET		{0.0, -90.0, 0.0}
+#define OBJECT_UNITS		64.0
+#define OBJECT_MODELSIZE	128.0//108.0
 
 enum
 {
@@ -45,6 +46,7 @@ public const char FlagName[][] =
 enum
 {
 	Resource_None = 0,
+	Resource_Supply = 0,
 	Resource_Wood = 1,
 	Resource_Gold = 2,
 	Resource_Food = 3,
@@ -54,10 +56,18 @@ enum
 
 public const char ResourceName[][] =
 {
-	"None",
+	"Supply",
 	"Wood",
 	"Gold",
 	"Food"
+};
+
+public const char ResourceShort[][] =
+{
+	"Supply Short",
+	"Wood Short",
+	"Gold Short",
+	"Food Short"
 };
 
 enum
@@ -111,11 +121,19 @@ enum struct StatEnum
 	int DamageBonus;
 	int ExtraDamage[Flag_MAX];
 	int ExtraDamageBonus[Flag_MAX];
+	int Range;
+	int RangeBonus;
+	int Sight;
+	int SightBonus;
+	int SupplyBonus;
 }
 
 enum struct SkillEnum
 {
+	char Formater[32];
 	char Name[32];
+	char Desc[32];
+	int Price[Resource_MAX];
 	float Cooldown;
 	int Count;
 	bool Auto;
@@ -124,7 +142,6 @@ enum struct SkillEnum
 int BuildMode[MAXTF2PLAYERS];
 int Resource[MAX_TEAMS][Resource_MAX];
 int UnitFlags[MAXENTITIES];
-float VisionRange[MAXENTITIES];
 float EngageRange[MAXENTITIES];
 Function FuncSkills[MAXENTITIES];
 StatEnum Stats[MAXENTITIES];
@@ -312,6 +329,11 @@ bool RTS_HasFlag(int entity, int type)
 	return view_as<bool>(UnitFlags[entity] & (1 << type));
 }
 
+void RTS_CheckSupplies(int team)
+{
+	
+}
+
 void RTS_TakeDamage(int victim, float &damage, int damagetype)
 {
 	int dmg = RoundFloat(damage);
@@ -389,6 +411,17 @@ void RTS_PlaySound(int entity, int client, int type)
 		Call_PushCell(client);
 		Call_Finish();
 	}
+}
+
+void RTS_DisplayMessage(int client, const char[] message)
+{
+	PrintToChat(client, "%t", message);
+	ClientCommand(client, "playgamesound ui/buttonclickrelease.wav");
+}
+
+stock void RTS_UnitPriceChanges(int team, NPCData data)
+{
+	// OVERRIDES
 }
 
 static Action CommandSetSpeed(int client, int args)

@@ -12,7 +12,7 @@ void TreeObject_Setup()
 	Object_Add(data);
 }
 
-static any DeadTreeSummon(int team, const float vecPos[3], const float vecAng[3], const char[] data)
+static any DeadTreeSummon(int team, const float vecPos[3], const char[] data)
 {
 	float ang[3];
 	ang = vecAng;
@@ -20,14 +20,16 @@ static any DeadTreeSummon(int team, const float vecPos[3], const float vecAng[3]
 
 	int health = data[0] ? StringToInt(data) : 100;
 
-	UnitObject obj = UnitObject(team, vecPos, _, _, 1.0, health);
+	UnitObject obj = UnitObject(team, vecPos, 1, health);
 	
 	obj.m_iResourceType = Resource_Wood;
 	obj.m_hOnTakeDamageFunc = ClotTakeDamage;
 
-	SetEntityRenderMode(obj.index, RENDER_NONE);
+	Stats[obj.index].RangeArmor = 99;
 
-	obj.m_hWearable1 = obj.EquipItemSeperate("models/props_foliage/deadtree01.mdl", _, _, 1.01);
+	obj.m_hWearable1 = obj.EquipItemSeperate("models/props_foliage/deadtree01.mdl", _, _, 1.0);
+	if(obj.m_hWearable1 != -1)
+		TeleportEntity(obj.m_hWearable1, NULL_VECTOR, ang, NULL_VECTOR);
 
 	return obj;
 }

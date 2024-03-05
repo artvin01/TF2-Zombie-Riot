@@ -22,16 +22,31 @@ void UnitBody_Setup()
 
 methodmap UnitBody < CClotBody
 {
-	property int m_iTeamNumber
+	property Function m_hDeathFunc
 	{
-		public get()
+		public set(Function value)
 		{
-			return TeamNumber[this.index];
+			func_NPCDeath[this.index] = value;
 		}
-		public set(int team)
+	}
+	property Function m_hOnTakeDamageFunc
+	{
+		public set(Function value)
 		{
-			TeamNumber[this.index] = team;
+			func_NPCOnTakeDamage[this.index] = value;
 		}
+	}
+	property Function m_hThinkFunc
+	{
+		public set(Function value)
+		{
+			func_NPCThink[this.index] = value;
+		}
+	}
+
+	public void SetName(const char[] name)
+	{
+		strcopy(c_NpcName[this.index], sizeof(c_NpcName[]), name);
 	}
 
 	// Range at which units can provide vision
@@ -39,11 +54,7 @@ methodmap UnitBody < CClotBody
 	{
 		public get()
 		{
-			return VisionRange[this.index];
-		}
-		public set(float value)
-		{
-			VisionRange[this.index] = value;
+			return (Stats[this.index].Sight + Stats[this.index].SightBonus) * OBJECT_UNITS;
 		}
 	}
 
@@ -52,11 +63,11 @@ methodmap UnitBody < CClotBody
 	{
 		public get()
 		{
-			return EngageRange[this.index];
-		}
-		public set(float value)
-		{
-			EngageRange[this.index] = value;
+			int range = Stats[this.index].Range + Stats[this.index].RangeBonus;
+			if(range < 4)
+				range = 4;
+			
+			return range * OBJECT_UNITS;
 		}
 	}
 
@@ -74,7 +85,7 @@ methodmap UnitBody < CClotBody
 	}
 	public bool HasFlag(int type)
 	{
-		return view_as<bool>(UnitFlags[this.index] & (1 << type));
+		return RTS_HasFlag(this.index, type);
 	}
 
 	public void AddNextGesture(const char[] anim)
@@ -86,9 +97,12 @@ methodmap UnitBody < CClotBody
 	{
 		FuncSound[this.index][type] = func;
 	}
-	public void SetSkillFunc(Function func)
+	property Function m_hSkillsFunc
 	{
-		FuncSkills[this.index] = func;
+		public set(Function value)
+		{
+			FuncSkills[this.index] = value;
+		}
 	}
 
 	public void ClearStats(const StatEnum stats = {})
@@ -141,8 +155,15 @@ methodmap UnitBody < CClotBody
 
 		SDKHooks_TakeDamage(victim, this.index, this.index, float(damage), damageType, _, damageForce, damagePosition);
 	}
-	public bool InAttackRange(int target, float rangesqr)
+	public bool InAttackRange(int target)
 	{
+		float rangesqr = MELEE_RANGE_SQR;
+		if(Stats[this.index].Range > 1)
+		{
+			rangesqr = (Stats[this.index].Range + Stats[this.index].RangeBonus) * OBJECT_UNITS;
+			rangesqr *= rangesqr;
+		}
+		
 		float vecMe[3], vecTarget[3];
 		WorldSpaceCenter(this.index, vecMe);
 		WorldSpaceCenter(target, vecTarget);
@@ -154,15 +175,6 @@ methodmap UnitBody < CClotBody
 		float dist = GetVectorDistance(vecMe, vecTarget, true);
 		return dist < rangesqr;
 	}
-
-	public bool IsAlly(int team)
-	{
-		return RTS_IsTeamAlly(team, this.m_iTeamNumber);
-	}
-	public bool CanControl(int team)
-	{
-		return RTS_CanTeamControl(team, this.m_iTeamNumber);
-	}
 	
 	public UnitBody(int team, const float vecPos[3], const float vecAng[3],
 						const char[] model = COMBINE_CUSTOM_MODEL,
@@ -173,14 +185,12 @@ methodmap UnitBody < CClotBody
 	{
 		UnitBody npc = view_as<UnitBody>(CClotBody(vecPos, vecAng, model, modelscale, health, isGiant, CustomThreeDimensions));
 		
-		npc.m_iTeamNumber = team;
-		npc.m_flVisionRange = 0.0;
-		npc.m_flEngageRange = 0.0;
+		SetTeam(entity, team);
 		npc.RemoveAllFlags();
 		NextGesture[npc.index][0] = 0;
 		delete CommandList[npc.index];
 		npc.ClearStats();
-		npc.SetSkillFunc(INVALID_FUNCTION);
+		obj.m_hSkillsFunc = INVALID_FUNCTION;
 
 		for(int i; i < Sound_MAX; i++)
 		{

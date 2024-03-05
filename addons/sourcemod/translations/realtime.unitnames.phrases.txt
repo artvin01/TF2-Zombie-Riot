@@ -16,4 +16,8 @@
 	{
 		"en"		"Dead Tree"
 	}
+	"Town Center"
+	{
+		"en"		"Town Center"
+	}
 }

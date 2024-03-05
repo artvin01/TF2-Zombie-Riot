@@ -5,38 +5,29 @@ static ArrayList NPCList;
 
 enum struct NPCData
 {
-	char Plugin[64];
-	char Name[64];
+	char Plugin[32];
+	char Name[32];
 	Function Func;
-}
-
-// FileNetwork_ConfigSetup needs to be ran first
-void NPC_ConfigSetup()
-{
-	delete NPCList;
-	NPCList = new ArrayList(sizeof(NPCData));
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "nothing");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_nothing");
-	data.Func = INVALID_FUNCTION;
-	NPCList.PushArray(data);
-
-	UnitBody_Setup();
-	EmpireBody_Setup();
-	Militia_Setup();
-	Villager_Setup();
+	int Price[Resource_MAX];
 }
 
 int NPC_Add(NPCData data)
 {
 	if(!data.Func || data.Func == INVALID_FUNCTION)
 		ThrowError("Invalid function name");
+
+	if(!TranslationPhraseExists(data.Name))
+		LogError("Translation '%s' does not exist", data.Name);
+	
+	char buffer[32];
+	FormatEx(buffer, sizeof(buffer), "%s Desc", data.Name);
+	if(!TranslationPhraseExists(buffer))
+		LogError("Translation '%s' does not exist", buffer);
 	
 	return NPCList.PushArray(data);
 }
 
-stock int NPC_GetNameById(int id, char[] buffer, int length)
+int NPC_GetNameById(int id, char[] buffer, int length)
 {
 	static NPCData data;
 	NPC_GetById(id, data);
@@ -61,7 +52,7 @@ void NPC_GetById(int id, NPCData data)
 	NPCList.GetArray(id, data);
 }
 
-int NPC_GetIdByPlugin(const char[] name, NPCData data = {})
+int NPC_GetByPlugin(const char[] name, NPCData data = {})
 {
 	int length = NPCList.Length;
 	for(int i; i < length; i++)
@@ -76,7 +67,7 @@ int NPC_GetIdByPlugin(const char[] name, NPCData data = {})
 int NPC_CreateByName(const char[] name, int team, const float vecPos[3], const float vecAng[3], const char[] data = "")
 {
 	static NPCData npcdata;
-	int id = NPC_GetIdByPlugin(name, npcdata);
+	int id = NPC_GetByPlugin(name, npcdata);
 	if(id == -1)
 	{
 		PrintToChatAll("\"%s\" is not a valid NPC!", name);
@@ -136,6 +127,24 @@ void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 		Call_PushCell(damagecustom);
 		Call_Finish();
 	}
+}
+
+// FileNetwork_ConfigSetup needs to be ran first
+void NPC_ConfigSetup()
+{
+	delete NPCList;
+	NPCList = new ArrayList(sizeof(NPCData));
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "nothing");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_nothing");
+	data.Func = INVALID_FUNCTION;
+	NPCList.PushArray(data);
+
+	UnitBody_Setup();
+	EmpireBody_Setup();
+	Militia_Setup();
+	Villager_Setup();
 }
 
 #include "fortress_wars/npc/npc_base.sp"

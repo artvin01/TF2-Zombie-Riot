@@ -1,20 +1,26 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static bool IsThisObject[MAXENTITIES];
-
 methodmap UnitObject < CBaseAnimating
 {
-	property int m_iTeamNumber
+	property Function m_hDeathFunc
 	{
-		public get()
+		public set(Function value)
 		{
-			return TeamNumber[this.index];
+			func_NPCDeath[this.index] = value;
 		}
-		public set(int team)
+	}
+	property Function m_hOnTakeDamageFunc
+	{
+		public set(Function value)
 		{
-			TeamNumber[this.index] = team;
+			func_NPCOnTakeDamage[this.index] = value;
 		}
+	}
+
+	public void SetName(const char[] name)
+	{
+		strcopy(c_NpcName[this.index], sizeof(c_NpcName[]), name);
 	}
 
 	// Range at which units can provide vision
@@ -22,11 +28,7 @@ methodmap UnitObject < CBaseAnimating
 	{
 		public get()
 		{
-			return VisionRange[this.index];
-		}
-		public set(float value)
-		{
-			VisionRange[this.index] = value;
+			return (Stats[this.index].Sight + Stats[this.index].SightBonus) * OBJECT_UNITS;
 		}
 	}
 
@@ -35,11 +37,11 @@ methodmap UnitObject < CBaseAnimating
 	{
 		public get()
 		{
-			return EngageRange[this.index];
-		}
-		public set(float value)
-		{
-			EngageRange[this.index] = value;
+			int range = Stats[this.index].Range + Stats[this.index].RangeBonus;
+			if(range < 4)
+				range = 4;
+			
+			return range * OBJECT_UNITS;
 		}
 	}
 
@@ -57,7 +59,24 @@ methodmap UnitObject < CBaseAnimating
 	}
 	public bool HasFlag(int type)
 	{
-		return view_as<bool>(UnitFlags[this.index] & (1 << type));
+		return RTS_HasFlag(this.index, type);
+	}
+
+	public void AddNextGesture(const char[] anim)
+	{
+		strcopy(NextGesture[this.index], sizeof(NextGesture[]), anim);
+	}
+
+	public void SetSoundFunc(int type, Function func)
+	{
+		FuncSound[this.index][type] = func;
+	}
+	property Function m_hSkillsFunc
+	{
+		public set(Function value)
+		{
+			FuncSkills[this.index] = value;
+		}
 	}
 
 	public void ClearStats(const StatEnum stats = {})
@@ -65,13 +84,70 @@ methodmap UnitObject < CBaseAnimating
 		Stats[this.index] = stats;
 	}
 
-	public void SetSoundFunc(int type, Function func)
+	public void AddCommand(int method, int type, const float pos[3], int target = -1)
 	{
-		FuncSound[this.index][type] = func;
+		if(method == 1)
+		{
+			delete CommandList[this.index];
+			this.m_flGetClosestTargetTime = 0.0;
+		}
+		
+		CommandEnum command;
+		SetupCommand(this, command, type, pos, target);
+
+		if(!CommandList[this.index])
+			CommandList[this.index] = new ArrayList(sizeof(CommandEnum));
+		
+		if(method == 2 && CommandList[this.index].Length)
+		{
+			CommandList[this.index].ShiftUp(0);
+			CommandList[this.index].SetArray(0, command);
+		}
+		else
+		{
+			CommandList[this.index].PushArray(command);
+		}
+
+		if(method == 1 && type == Command_Patrol)
+		{
+			// Keep our current position when starting a patrol
+			command.TargetRef = -1;
+			GetEntPropVector(this.index, Prop_Data, "m_vecAbsOrigin", command.Pos);
+			CommandList[this.index].PushArray(command);
+		}
 	}
-	public void SetSkillFunc(Function func)
+	public void DealDamage(int victim, float multi = 1.0, int damageType = DMG_GENERIC, const float damageForce[3] = NULL_VECTOR, const float damagePosition[3] = NULL_VECTOR)
 	{
-		FuncSkills[this.index] = func;
+		int damage = RoundFloat(Stats[this.index].Damage * multi) + Stats[this.index].DamageBonus;
+
+		// Check for extra damage vs flags
+		for(int i; i < Flag_MAX; i++)
+		{
+			if((Stats[this.index].ExtraDamage[i] || Stats[this.index].ExtraDamageBonus[i]) && view_as<UnitBody>(victim).HasFlag(i))
+				damage += RoundFloat(Stats[this.index].ExtraDamage[i] * multi) + Stats[this.index].ExtraDamageBonus[i];
+		}
+
+		SDKHooks_TakeDamage(victim, this.index, this.index, float(damage), damageType, _, damageForce, damagePosition);
+	}
+	public bool InAttackRange(int target)
+	{
+		float rangesqr = MELEE_RANGE_SQR;
+		if(Stats[this.index].Range > 1)
+		{
+			rangesqr = (Stats[this.index].Range + Stats[this.index].RangeBonus) * OBJECT_UNITS;
+			rangesqr *= rangesqr;
+		}
+		
+		float vecMe[3], vecTarget[3];
+		WorldSpaceCenter(this.index, vecMe);
+		WorldSpaceCenter(target, vecTarget);
+		
+		Handle trace = TR_TraceRayFilterEx(vecMe, vecTarget, MASK_SOLID, RayType_EndPoint, AttackRangeTrace, target);
+		TR_GetEndPosition(vecTarget, trace);
+		delete trace;
+
+		float dist = GetVectorDistance(vecMe, vecTarget, true);
+		return dist < rangesqr;
 	}
 
 	property int m_hTextEntity1
@@ -195,38 +271,19 @@ methodmap UnitObject < CBaseAnimating
 			this.SetProp(Prop_Data, "m_iResourceType", value);
 		}
 	}
-	property Function m_hDeathFunc
-	{
-		public set(Function value)
-		{
-			func_NPCDeath[this.index] = value;
-		}
-	}
-	property Function m_hOnTakeDamageFunc
-	{
-		public set(Function value)
-		{
-			func_NPCOnTakeDamage[this.index] = value;
-		}
-	}
-
-	public void SetName(const char[] name)
-	{
-		strcopy(c_NpcName[this.index], sizeof(c_NpcName[]), name);
-	}
 
 	public int EquipItemSeperate(
 	const char[] model,
 	const char[] anim = "",
 	int skin = 0,
-	float model_size = 1.0,
+	float model_size = 0.0,
 	float offset = 0.0,
 	bool DontParent = false)
 	{
 		int item = CreateEntityByName("prop_dynamic");
 		DispatchKeyValue(item, "model", model);
 
-		if(model_size == 1.0)
+		if(model_size == 0.0)
 		{
 			DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
 		}
@@ -252,7 +309,7 @@ methodmap UnitObject < CBaseAnimating
 			return item;
 		}
 		
-		if(!StrEqual(anim, ""))
+		if(anim[0])
 		{
 			SetVariantString(anim);
 			AcceptEntityInput(item, "SetAnimation");
@@ -267,31 +324,41 @@ methodmap UnitObject < CBaseAnimating
 	}
 	
 	public UnitObject(int team, const float vecPos[3],
+					int scale = 1,
+					int health = 125,
+					bool solid = true,
+					const char[] model = "",
 					const float vecAng[3] = OBJECT_OFFSET,
-					const char[] model = OBJECT_HITBOX,
-					float modelscale = 1.0,
-					int health = 125)
+					float modelscale = 0.0)
 	{
-		UnitObject obj = view_as<UnitObject>(CreateEntityByName("prop_resource"));
+		UnitObject obj = view_as<UnitObject>(CreateEntityByName("obj_building"));
+
+		float pos[3];
+		pos = vecPos;
+		Object_SnapPosition(pos, scale, scale);
 		
-		DispatchKeyValueVector(obj.index, "origin", vecPos);
+		DispatchKeyValueVector(obj.index, "origin", pos);
 		DispatchKeyValueVector(obj.index, "angles", vecAng);
-		DispatchKeyValue(obj.index, "model", model);
-		DispatchKeyValueFloat(obj.index, "modelscale", modelscale);
+		DispatchKeyValue(obj.index, "model", model[0] ? model : OBJECT_HITBOX);
+		DispatchKeyValueFloat(obj.index, "modelscale", modelscale ? (scale * OBJECT_UNITS / OBJECT_MODELSIZE) : modelscale);
 		DispatchKeyValueInt(obj.index, "health", health);
-		DispatchKeyValue(obj.index, "solid", "2");
+		DispatchKeyValueInt(obj.index, "solid", solid ? "2" : "0");
 
-		IsThisObject[obj.index] = true;
-		func_NPCDeath[obj.index] = INVALID_FUNCTION;
-		func_NPCOnTakeDamage[obj.index] = INVALID_FUNCTION;
+		SetEntityRenderFx(obj.index, RENDERFX_FADE_SLOW);
 
-		SetTeam(obj.index, obj.m_iTeamNumber);
+		b_BuildingHasDied[obj.index] = false;
+		i_IsABuilding[obj.index] = true;
+		b_NoKnockbackFromSources[entity] = true;
 
-		obj.m_flVisionRange = 0.0;
+		obj.m_hDeathFunc = INVALID_FUNCTION;
+		obj.m_hOnTakeDamageFunc = INVALID_FUNCTION;
+
+		SetTeam(entity, team);
+
 		obj.m_flEngageRange = 0.0;
 		obj.RemoveAllFlags();
 		obj.ClearStats();
-		obj.SetSkillFunc(INVALID_FUNCTION);
+		obj.m_hSkillsFunc = INVALID_FUNCTION;
 
 		for(int i; i < Sound_MAX; i++)
 		{
@@ -311,7 +378,7 @@ methodmap UnitObject < CBaseAnimating
 
 void Object_PluginStart()
 {
-	CEntityFactory factory = new CEntityFactory("prop_resource", _, OnDestroy);
+	CEntityFactory factory = new CEntityFactory("obj_building", _, OnDestroy);
 	factory.DeriveFromClass("prop_dynamic");
 	factory.BeginDataMapDesc()
 	.DefineIntField("m_iResourceType")
@@ -348,7 +415,8 @@ static bool ObjectDeath(int entity, bool delet)
 		func_NPCDeath[entity] = INVALID_FUNCTION;
 	}
 
-	IsThisObject[entity] = false;
+	b_BuildingHasDied[obj.index] = true;
+	i_IsABuilding[entity] = false;
 
 	SDKUnhook(entity, SDKHook_OnTakeDamage, Object_TakeDamage);
 
@@ -374,6 +442,31 @@ static bool ObjectDeath(int entity, bool delet)
 	return true;
 }
 
+void Object_SnapPosition(float pos[3], int x, int y)
+{
+	int units = RoundFloat(x * OBJECT_UNITS);
+	bool odd = (x % 2) == 1;
+
+	if(odd)
+		pos[0] -= OBJECT_UNITS / 2.0;
+	
+	pos[0] = float(RoundFloat(pos[0]) / units * units);
+
+	if(odd)
+		pos[0] += OBJECT_UNITS / 2.0;
+
+	units = RoundFloat(y * OBJECT_UNITS);
+	odd = (y % 2) == 1;
+
+	if(odd)
+		pos[1] -= OBJECT_UNITS / 2.0;
+	
+	pos[1] = float(RoundFloat(pos[1]) / units * units);
+
+	if(odd)
+		pos[1] += OBJECT_UNITS / 2.0;
+}
+
 int Object_GetResource(int entity)
 {
 	return view_as<UnitObject>(entity).m_iResourceType;
@@ -381,7 +474,7 @@ int Object_GetResource(int entity)
 
 bool IsObject(int entity)
 {
-	return IsThisObject[entity];
+	return i_IsABuilding[entity];
 }
 
 static Action CreateCommand(int client, int args)
@@ -391,12 +484,11 @@ static Action CreateCommand(int client, int args)
 	
 	if(args < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_object <plugin> [data]");
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_object <plugin> [team] [data]");
 		return Plugin_Handled;
 	}
 	
-	float flPos[3], flAng[3];
-	GetClientAbsAngles(client, flAng);
+	float flPos[3];
 	if(!SetTeleportEndPoint(client, flPos))
 	{
 		PrintToChat(client, "Could not find place.");
@@ -405,9 +497,10 @@ static Action CreateCommand(int client, int args)
 	
 	char plugin[64], buffer[64];
 	GetCmdArg(1, plugin, sizeof(plugin));
-	GetCmdArg(2, buffer, sizeof(buffer));
+	int team = GetCmdArgInt(2);
+	GetCmdArg(3, buffer, sizeof(buffer));
 
-	Object_CreateByName(plugin, flPos, flAng, buffer);
+	Object_CreateByName(plugin, team, flPos, buffer);
 	return Plugin_Handled;
 }
 
@@ -459,26 +552,16 @@ enum struct ObjectData
 	char Plugin[64];
 	char Name[64];
 	Function Func;
-}
-
-void Object_ConfigSetup()
-{
-	delete ObjectList;
-	ObjectList = new ArrayList(sizeof(ObjectData));
-
-	ObjectData data;
-	strcopy(data.Name, sizeof(data.Name), "nothing");
-	strcopy(data.Plugin, sizeof(data.Plugin), "object_nothing");
-	data.Func = INVALID_FUNCTION;
-	ObjectList.PushArray(data);
-
-	TreeObject_Setup();
+	int Price[Resource_MAX];
 }
 
 int Object_Add(ObjectData data)
 {
 	if(!data.Func || data.Func == INVALID_FUNCTION)
 		ThrowError("Invalid function name");
+
+	if(!TranslationPhraseExists(data.Name))
+		LogError("Translation '%s' does not exist", data.Name);
 	
 	return ObjectList.PushArray(data);
 }
@@ -495,7 +578,7 @@ int Object_GetByPlugin(const char[] name, ObjectData data = {})
 	return -1;
 }
 
-int Object_CreateByName(const char[] name, const float vecPos[3], const float vecAng[3], const char[] data = "")
+int Object_CreateByName(const char[] name, int team, const float vecPos[3], const char[] data = "")
 {
 	static ObjectData objdata;
 	int id = Object_GetByPlugin(name, objdata);
@@ -505,15 +588,15 @@ int Object_CreateByName(const char[] name, const float vecPos[3], const float ve
 		return -1;
 	}
 
-	return CreateObject(objdata, id, vecPos, vecAng, data);
+	return CreateObject(objdata, id, team, vecPos, data);
 }
 
-static int CreateObject(const ObjectData objdata, int id, const float vecPos[3], const float vecAng[3], const char[] data)
+static int CreateObject(const ObjectData objdata, int id, int team, const float vecPos[3], const char[] data)
 {
 	int entity = -1;
 	Call_StartFunction(null, objdata.Func);
+	Call_PushCell(team);
 	Call_PushArray(vecPos, sizeof(vecPos));
-	Call_PushArray(vecAng, sizeof(vecAng));
 	Call_PushString(data);
 	Call_Finish(entity);
 	
@@ -529,4 +612,24 @@ static int CreateObject(const ObjectData objdata, int id, const float vecPos[3],
 	return entity;
 }
 
+void Object_ConfigSetup()
+{
+	delete ObjectList;
+	ObjectList = new ArrayList(sizeof(ObjectData));
+
+	ObjectData data;
+	strcopy(data.Name, sizeof(data.Name), "nothing");
+	strcopy(data.Plugin, sizeof(data.Plugin), "object_nothing");
+	data.Func = INVALID_FUNCTION;
+	ObjectList.PushArray(data);
+
+	TreeObject_Setup();
+	ObjectEmpire_Setup();
+	TownCenter_Setup();
+}
+
 #include "fortress_wars/object/object_tree.sp"
+#include "fortress_wars/object/object_base_training.sp"
+
+#include "fortress_wars/object/empire/object_base_empire.sp"
+#include "fortress_wars/object/empire/object_towncenter.sp"

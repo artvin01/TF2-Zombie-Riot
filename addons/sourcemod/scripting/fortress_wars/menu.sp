@@ -110,6 +110,21 @@ void RTSMenu_PlayerRunCmd(int client)
 
 					Format(display, sizeof(display), "%s\n%t", display, "Armor Of", buffer);
 
+					if(Stats[entity].Range)
+					{
+						// Range
+						if(Stats[entity].RangeBonus)
+						{
+							FormatEx(buffer, sizeof(buffer), "%d (%s%d)", Stats[entity].Range, Stats[entity].RangeBonus < 0 ? "" : "+", Stats[entity].RangeBonus);
+						}
+						else
+						{
+							IntToString(Stats[entity].RangeBonus, buffer, sizeof(buffer));
+						}
+
+						Format(display, sizeof(display), "%s\n%t", display, "Range Of", buffer);
+					}
+
 					if(Stats[entity].Damage)
 					{
 						// Damage
@@ -237,14 +252,48 @@ void RTSMenu_PlayerRunCmd(int client)
 				{
 					static const char button[][] = { "@", "Q", "W", "E", "R", "T", "A", "S", "D", "F", "G" };
 
-					FormatEx(buffer, sizeof(buffer), "(%s) %t", button[skill[i].Auto ? 0 : (i+1)], skill[i].Name);
+					if(RTSCamera_HoldingCtrl(client) && skill[i].Desc[0])
+					{
+						FormatEx(buffer, sizeof(buffer), "(%s) %t", button[skill[i].Auto ? 0 : (i+1)], skill[i].Desc);
+					}
+					else
+					{
+						if(skill[i].Formater[0])
+						{
+							FormatEx(buffer, sizeof(buffer), "(%s) %t", button[skill[i].Auto ? 0 : (i+1)], skill[i].Formater, skill[i].Name);
+						}
+						else
+						{
+							FormatEx(buffer, sizeof(buffer), "(%s) %t", button[skill[i].Auto ? 0 : (i+1)], skill[i].Name);
+						}
 
-					if(skill[i].Count > 1 || skill[i].Cooldown > 999.9)
-						Format(buffer, sizeof(buffer), "%s x%d", buffer, skill[i].Count);
-					
-					if(skill[i].Cooldown > 0.0 && skill[i].Cooldown < 999.9)
-						Format(buffer, sizeof(buffer), "%s (%ds)", buffer, RoundToCeil(skill[i].Cooldown));
-					
+						bool first2 = true;
+						for(int b; b < Resource_MAX; b++)
+						{
+							if(skill[i].Price[b])
+							{
+								if(first2)
+								{
+									Format(buffer, sizeof(buffer), "%s [%d%s", buffer, skill[i].Price, ResourceShort[b]);
+									first2 = false;
+								}
+								else
+								{
+									Format(buffer, sizeof(buffer), "%s %d%s", buffer, skill[i].Price, ResourceShort[b]);
+								}
+							}
+						}
+
+						if(!first2)
+							Format(buffer, sizeof(buffer), "%s]", buffer);
+						
+						if(skill[i].Count > 1 || skill[i].Cooldown > 999.9)
+							Format(buffer, sizeof(buffer), "%s x%d", buffer, skill[i].Count);
+						
+						if(skill[i].Cooldown > 0.0 && skill[i].Cooldown < 999.9)
+							Format(buffer, sizeof(buffer), "%s (%ds)", buffer, RoundToCeil(skill[i].Cooldown));
+					}
+
 					if(first)
 					{
 						Format(display, sizeof(display), "%s\n \n%s", display, buffer);

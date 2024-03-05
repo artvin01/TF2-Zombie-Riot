@@ -4967,3 +4967,12 @@ stock void SetTeam(int entity, int teamSet)
 		SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
 	}
 }
+
+stock bool FailTranslation(const char[] phrase)
+{
+	if(TranslationPhraseExists(phrase))
+		return false;
+	
+	LogError("Translation '%s' does not exist", phrase);
+	return true;
+}

@@ -31,6 +31,8 @@ void Villager_Setup()
 	strcopy(data.Name, sizeof(data.Name), "Villager");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_villager");
 	data.Func = ClotSummon;
+	data.Price[Resource_Supply] = 1;
+	data.Price[Resource_Food] = 50;
 	NPC_Add(data);
 }
 
@@ -60,16 +62,16 @@ methodmap Villager < EmpireBody
 
 		i_NpcWeight[npc.index] = 1;
 
-		func_NPCThink[npc.index] = ClotThink;
+		npc.m_hThinkFunc = ClotThink;
 		
 		npc.SetActivity("ACT_VILLAGER_IDLE");
 		npc.m_flSpeed = 160.0;
-		npc.m_flVisionRange = 400.0;
-		npc.m_flEngageRange = 300.0;
+		npc.m_flEngageRange = OBJECT_UNITS * 3.0;
 		
 		npc.AddFlag(Flag_Biological);
 		npc.AddFlag(Flag_Worker);
 
+		Stats[npc.index].Sight = 4;
 		Stats[npc.index].Damage = 3;
 		Stats[npc.index].ExtraDamage[Flag_Structure] = 3;
 
@@ -149,7 +151,7 @@ static void ClotThink(int entity)
 		
 		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			if(npc.InAttackRange(target, MELEE_RANGE_SQR))
+			if(npc.InAttackRange(target))
 			{
 				npc.PlayMeleeSound();
 				npc.m_iTarget = target;

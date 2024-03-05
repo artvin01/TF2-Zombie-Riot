@@ -4632,7 +4632,7 @@ stock int GetClosestTarget(int entity,
 	if(ExtraValidityFunction != INVALID_FUNCTION)
 	{
 		int target = -1;
-		while((target = FindEntityByClassname(target, "prop_resource")) != -1)
+		while((target = FindEntityByClassname(target, "obj_building")) != -1)
 		{
 			bool valid;
 			Call_StartFunction(null, ExtraValidityFunction);

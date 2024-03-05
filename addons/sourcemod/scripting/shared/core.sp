@@ -39,15 +39,20 @@
 
 #define RoundState_ZombieRiot view_as<RoundState>(11)
 
-#define NPC_HARD_LIMIT 40 
-#define ZR_MAX_NPCS (NPC_HARD_LIMIT*6)
-#define ZR_MAX_NPCS_ALLIED 40 //Never need more.
-#define ZR_MAX_LAG_COMP 128 
-#define ZR_MAX_BUILDINGS 128 //cant ever have more then 64 realisticly speaking
-#define ZR_MAX_TRAPS 64
-#define ZR_MAX_BREAKBLES 32
-#define ZR_MAX_SPAWNERS 128
-#define ZR_MAX_GIBCOUNT 12 //Anymore then this, and it will only summon 1 gib per zombie instead.
+#if defined ZR
+#define NPC_HARD_LIMIT		40
+#define ZR_MAX_NPCS		196
+#define ZR_MAX_LAG_COMP		128 
+#define ZR_MAX_BUILDINGS	128 //cant ever have more then 64 realisticly speaking
+#define ZR_MAX_TRAPS		64
+#define ZR_MAX_SPAWNERS		128
+#else
+#define ZR_MAX_NPCS		256
+#define ZR_MAX_LAG_COMP		256 
+#define ZR_MAX_BUILDINGS	256
+#endif
+
+#define ZR_MAX_GIBCOUNT		12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 #define ZR_MAX_GIBCOUNT_ABSOLUTE 35 //Anymore then this, and the duration is halved for gibs staying.
 
 #if !defined NOG
@@ -413,9 +418,6 @@ bool i_IsABuilding[MAXENTITIES];
 
 bool i_NpcIsABuilding[MAXENTITIES];
 bool b_NpcIgnoresbuildings[MAXENTITIES];
-
-const int i_MaxcountBreakable = ZR_MAX_BREAKBLES;
-int i_ObjectsBreakable[ZR_MAX_BREAKBLES];
 
 
 bool b_IsAGib[MAXENTITIES];
@@ -2751,11 +2753,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 
 		b_IsAProjectile[entity] = false;
-		if(!StrContains(classname, "env_entity_dissolver"))
+/*		if(!StrContains(classname, "env_entity_dissolver"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
-		else if(!StrContains(classname, "tf_objective_resource"))
+		else*/
+		if(!StrContains(classname, "tf_objective_resource"))
 		{
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
@@ -2844,14 +2847,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "func_breakable"))
 		{
-			for (int i = 0; i < ZR_MAX_BREAKBLES; i++)
-			{
-				if (EntRefToEntIndex(i_ObjectsBreakable[i]) <= 0)
-				{
-					i_ObjectsBreakable[i] = EntIndexToEntRef(entity);
-					i = ZR_MAX_BREAKBLES;
-				}
-			}
 			SDKHook(entity, SDKHook_OnTakeDamagePost, Func_Breakable_Post);
 		}
 #if defined ZR
@@ -3020,7 +3015,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			OnManglerCreated(entity);
 		}
 #endif
-		
 		else if(!StrContains(classname, "obj_"))
 		{
 			b_BuildingHasDied[entity] = false;
