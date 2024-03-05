@@ -107,12 +107,12 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 	
 	if(Change[client] == true)
 	{
-		Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_blue",_,false);
+		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "spell_fireball_small_blue",_,false);
 		EmitSoundToAll(SOUND_MES_SHOT_ICE, client, SNDCHAN_WEAPON, 65, _, 0.45, 135);
 	}
 	else if(Change[client] == false)
 	{
-		Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "spell_fireball_small_red",_,false);
+		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "spell_fireball_small_red",_,false);
 		EmitSoundToAll(SOUND_MES_SHOT_FIRE, client, SNDCHAN_WEAPON, 65, _, 0.45, 135);
 	}
 	StopSound(client, SNDCHAN_STATIC, "weapons/syringegun_shoot.wav");
