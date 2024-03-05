@@ -128,7 +128,7 @@ public void Messenger_Modechange(int client, bool &result)
 }
 
 
-public void Gun_MessengerTouch(int entity, int target, int client)
+public void Gun_MessengerTouch(int entity, int target, int owner)
 {
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if (target > 0)	
@@ -144,18 +144,20 @@ public void Gun_MessengerTouch(int entity, int target, int client)
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		if(Change[client] == true)
+
+		if(Change[owner] == true)
 		{
 			NPC_Ignite(target, owner, 3.0, weapon);
 		}
-		else if(Change[client] == false)
+		else if(Change[owner] == false)
 		{
 			if((f_LowIceDebuff[target] - 0.5) < GetGameTime())
 			{
 				f_LowIceDebuff[target] = GetGameTime() + 0.6;
 			}
 		}
+
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		EmitSoundToAll(SOUND_MES_IMPACT, entity, SNDCHAN_STATIC, 80, _, 1.0);
 		if(IsValidEntity(particle))
