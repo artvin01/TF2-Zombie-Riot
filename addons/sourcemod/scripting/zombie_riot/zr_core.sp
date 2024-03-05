@@ -787,6 +787,7 @@ public Action GlobalTimer(Handle timer)
 		if(IsClientInGame(client))
 		{
 			PlayerApplyDefaults(client);
+			Spawns_CheckBadClient(client);
 		}
 	}
 	
@@ -878,6 +879,107 @@ void ZR_ClientDisconnect(int client)
 					//sometimes this building does not vanish upon being used, we must destroy it manually.
 					RemoveEntity(entity);
 				}
+			}
+		}
+	}
+}
+
+public void OnMapInit()
+{
+	bool mvm;
+
+	char buffer[64];
+	int length = EntityLump.Length();
+	for(int i; i < length; i++)
+	{
+		EntityLumpEntry entry = EntityLump.Get(i);
+		
+		int index = entry.FindKey("classname");
+		if(index != -1)
+		{
+			entry.Get(index, _, _, buffer, sizeof(buffer));
+			delete entry;
+
+			if(StrEqual(buffer, "tf_logic_mann_vs_machine"))
+			{
+				EntityLump.Erase(i);
+				length--;
+				mvm = true;
+				break;
+			}
+		}
+		else
+		{
+			delete entry;
+		}
+	}
+
+	if(mvm)
+	{
+		for(int i; i < length; i++)
+		{
+			EntityLumpEntry entry = EntityLump.Get(i);
+			
+			int index = entry.FindKey("classname");
+			if(index != -1)
+			{
+				entry.Get(index, _, _, buffer, sizeof(buffer));
+				delete entry;
+
+				if(StrEqual(buffer, "tf_logic_mann_vs_machine") ||
+					StrEqual(buffer, "item_teamflag") ||
+					StrEqual(buffer, "func_respawnroomvisualizer") ||
+					StrEqual(buffer, "func_upgradestation") ||
+					StrEqual(buffer, "func_flagdetectionzone") ||
+					StrEqual(buffer, "func_nav_prefer") ||
+					StrEqual(buffer, "func_nav_avoid") ||
+					!StrContains(buffer, "item_healthkit") ||
+					!StrContains(buffer, "item_ammopack"))
+				{
+					EntityLump.Erase(i);
+					i--;
+					length--;
+				}
+				else if(StrEqual(buffer, "trigger_multiple"))
+				{
+					index = entry.FindKey("spawnflags");
+					if(index != -1)
+					{
+						entry.Get(index, _, _, buffer, sizeof(buffer));
+						int flags = StringToInt(buffer) | (1 << 1);	// Add NPCs
+						IntToString(flags, buffer, sizeof(buffer));
+						entry.Update(index, _, buffer);
+					}
+				}
+				else if(StrEqual(buffer, "filter_activator_team") ||
+					StrEqual(buffer, "filter_activator_tfteam"))
+				{
+					index = entry.FindKey("filterteam");
+					if(index != -1)
+					{
+						entry.Update(index, _, "4");
+					}
+
+					index = entry.FindKey("TeamNum");
+					if(index != -1)
+					{
+						entry.Update(index, _, "4");
+					}
+
+					index = entry.FindKey("Negated");
+					if(index != -1)
+					{
+						entry.Update(index, _, "1");
+					}
+					else
+					{
+						entry.Append("Negated", "1");
+					}
+				}
+			}
+			else
+			{
+				delete entry;
 			}
 		}
 	}

@@ -1974,14 +1974,6 @@ public void OnClientDisconnect(int client)
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
 	//Needed to reset attackspeed stuff
-	f_IlligalStuck_ClientDelayCheck[client] = 0.0;
-	for(int Count; Count<MAX_STUCK_PAST_CHECK; Count++)
-	{
-		f3_IlligalStuck_AveragePosClient[client][Count][0] = 0.0;
-		f3_IlligalStuck_AveragePosClient[client][Count][1] = 0.0;
-		f3_IlligalStuck_AveragePosClient[client][Count][2] = 0.0;
-		i2_IlligalStuck_StuckTrueFalse[client][Count] = 0;
-	}
 #endif
 
 	b_DisplayDamageHud[client] = false;

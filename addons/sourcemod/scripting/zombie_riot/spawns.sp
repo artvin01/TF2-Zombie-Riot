@@ -20,6 +20,7 @@ static ArrayList SpawnerList;
 static ConVar MapSpawnersActive;
 static float HighestPoints;
 static float LastNamedSpawn;
+static int BadSpotPoints[MAXTF2PLAYERS];
 
 void Spawns_PluginStart()
 {
@@ -409,4 +410,64 @@ int GetRandomActiveSpawner(const char[] name = "")
 		return spawn.EntRef;
 	}
 	return -1;
+}
+
+void Spawns_CheckBadClient(int client)
+{
+	if(!IsPlayerAlive(client) || TeutonType[client] != TEUTON_NONE)
+	{
+		return;
+	}
+
+	if(!(GetEntityFlags(client) & (FL_ONGROUND|FL_INWATER)))
+	{
+		// In air or water, not gain/loss
+		return;
+	}
+
+	bool bad;
+
+	float pos[3];
+	WorldSpaceCenter(client, pos);
+	CNavArea area = TheNavMesh.GetNearestNavArea(pos, false, 100.0, false, true);
+	if(area == NULL_AREA)
+	{
+		// Not near a nav mesh, bad
+		bad = true;
+	}
+	else
+	{
+		// Good (if still bad, use BuildPath)
+		bad = false;
+	}
+
+	if(bad)
+	{
+		BadSpotPoints[client] += 5;
+
+		if(BadSpotPoints[client] > 14)
+		{
+			float damage = 5.0;
+			NpcStuckZoneWarning(client, damage, 0);	
+			if(damage >= 0.25)
+			{
+				SDKHooks_TakeDamage(client, 0, 0, damage * 4.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE, -1, _, _, _, ZR_STAIR_ANTI_ABUSE_DAMAGE);
+			}
+		}
+	}
+	else if(BadSpotPoints[client] > 0)
+	{
+		BadSpotPoints[client]--;
+	}
+
+	/*
+	public native bool BuildPath( CNavArea startArea, 
+		CNavArea goalArea, 
+		const float goalPos[3], 
+		NavPathCostFunctor costFunc = INVALID_FUNCTION,
+		CNavArea &closestArea = NULL_AREA, 
+		float maxPathLength = 0.0,
+		int teamID = TEAM_ANY,
+		bool ignoreNavBlockers = false);
+	*/
 }
