@@ -421,37 +421,53 @@ void Spawns_CheckBadClient(int client)
 
 	if(!(GetEntityFlags(client) & (FL_ONGROUND|FL_INWATER)))
 	{
-		// In air or water, not gain/loss
+		// In air or water, no gain/loss
 		return;
 	}
 
-	bool bad;
+	int bad;
 
-	float pos[3];
-	WorldSpaceCenter(client, pos);
-	CNavArea area = TheNavMesh.GetNearestNavArea(pos, false, 100.0, false, true);
+	float pos1[3], pos2[3];
+	WorldSpaceCenter(client, pos1);
+	CNavArea area = TheNavMesh.GetNearestNavArea(pos1, false, 100.0, false, true);
 	if(area == NULL_AREA)
 	{
 		// Not near a nav mesh, bad
-		bad = true;
+		bad = 5;
+		BadSpotPoints[client] += 5;
 	}
 	else
 	{
-		// Good (if still bad, use BuildPath)
-		bad = false;
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(!b_NpcHasDied[entity] && IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
+			{
+				WorldSpaceCenter(client, pos2);
+				CNavArea startArea = TheNavMesh.GetNavArea(pos2);
+				if(startArea == NULL_AREA)
+					continue;	// NPC on a bad nav??
+
+				if(!TheNavMesh.BuildPath(startArea, area, pos1))
+				{
+					bad++;
+					BadSpotPoints[client]++;
+					if(bad > 5)
+						break;
+				}
+			}
+		}
 	}
 
-	if(bad)
+	if(bad > 4)
 	{
-		BadSpotPoints[client] += 5;
-
-		if(BadSpotPoints[client] > 14)
+		if(BadSpotPoints[client] > 29)
 		{
 			float damage = 5.0;
 			NpcStuckZoneWarning(client, damage, 0);	
 			if(damage >= 0.25)
 			{
-				SDKHooks_TakeDamage(client, 0, 0, damage * 4.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE, -1, _, _, _, ZR_STAIR_ANTI_ABUSE_DAMAGE);
+				SDKHooks_TakeDamage(client, 0, 0, damage, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE, -1, _, _, _, ZR_STAIR_ANTI_ABUSE_DAMAGE);
 			}
 		}
 	}

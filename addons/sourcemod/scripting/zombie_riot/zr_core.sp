@@ -760,7 +760,7 @@ void ZR_MapStart()
 //	CreateEntityByName("info_populator");
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	
-	CreateTimer(2.0, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.5, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	CreateTimer(0.2, GetTimerAndNullifyMusicMVM_Timer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
 	char_MusicString1[0] = 0;
@@ -791,6 +791,10 @@ public Action GlobalTimer(Handle timer)
 		}
 	}
 	
+	static int frame;
+	frame++;
+	if(frame % 4)
+		return Plugin_Continue;
 
 	Zombie_Delay_Warning();
 	Spawners_Timer();
@@ -924,7 +928,6 @@ public void OnMapInit()
 			if(index != -1)
 			{
 				entry.Get(index, _, _, buffer, sizeof(buffer));
-				delete entry;
 
 				if(StrEqual(buffer, "tf_logic_mann_vs_machine") ||
 					StrEqual(buffer, "item_teamflag") ||
@@ -954,6 +957,7 @@ public void OnMapInit()
 				else if(StrEqual(buffer, "filter_activator_team") ||
 					StrEqual(buffer, "filter_activator_tfteam"))
 				{
+					// Set team filters for all teams
 					index = entry.FindKey("filterteam");
 					if(index != -1)
 					{
@@ -977,10 +981,8 @@ public void OnMapInit()
 					}
 				}
 			}
-			else
-			{
-				delete entry;
-			}
+			
+			delete entry;
 		}
 	}
 }
