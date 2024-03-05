@@ -152,21 +152,17 @@ public void Gun_MessengerTouch(int entity, int target)
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
 
-		if(Change[owner] == true)
+		if(Change[owner] == false)
 		{
 			NPC_Ignite(target, owner, 3.0, weapon);
-			PrintToChatAll("Fire Fire Fire");
 		}
-		else if(Change[owner] == false)
+		else if(Change[owner] == true)
 		{
 			if((f_LowIceDebuff[target] - 0.5) < GetGameTime())
 			{
 				f_LowIceDebuff[target] = GetGameTime() + 0.6;
-				PrintToChatAll("Freeze");
 			}
-			PrintToChatAll("Freeze Failed. How?");
 		}
-		PrintToChatAll("HIT");
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		EmitSoundToAll(SOUND_MES_IMPACT, entity, SNDCHAN_STATIC, 80, _, 1.0);
