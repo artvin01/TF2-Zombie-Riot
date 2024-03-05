@@ -438,10 +438,11 @@ void Spawns_CheckBadClient(int client)
 	}
 	else
 	{
+		int npcs;
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(!b_NpcHasDied[entity] && IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
+			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 			{
 				WorldSpaceCenter(client, pos2);
 				CNavArea startArea = TheNavMesh.GetNavArea(pos2);
@@ -452,9 +453,10 @@ void Spawns_CheckBadClient(int client)
 				{
 					bad++;
 					BadSpotPoints[client]++;
-					if(bad > 5)
-						break;
 				}
+				
+				if(npcs++ > 4)
+					break;
 			}
 		}
 	}
