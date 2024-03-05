@@ -10,9 +10,9 @@ static bool RWI_AlterRocketActualAngle[MAXENTITIES];
 static float RWI_RocketRotation[MAXENTITIES][3];
 
 #if defined ZR
-float[] GetRocketAngles(int entity)
+void GetRocketAngles(int entity, float angles[3])
 {
-	return RWI_RocketRotation[entity];
+	angles = RWI_RocketRotation[entity];
 }
 #endif
 

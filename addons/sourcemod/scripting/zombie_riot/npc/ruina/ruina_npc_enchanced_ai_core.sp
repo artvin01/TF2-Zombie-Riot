@@ -870,6 +870,7 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 	}
 }
 static Function func_Ruina_ICBM_Explode[MAXENTITIES];
+static int i_ICBM_Particle[MAXENTITIES];
 static float fl_ICBM_dmg[MAXENTITIES];
 static float fl_ICBM_radius[MAXENTITIES];
 static float fl_ICBM_bonus_dmg[MAXENTITIES];
@@ -882,13 +883,15 @@ static float fl_ICBM_bonus_dmg[MAXENTITIES];
 					float Ang[3];
 					MakeVectorFromPoints(flPos, target_vec, Ang);
 					GetVectorAngles(Ang, Ang);
+					ICBM.color = {255,255,255,255};
 					ICBM.Angles = Ang;
 					ICBM.speed = 1000.0;
 					ICBM.radius = 250.0;
 					ICBM.damage = 500.0;
 					ICBM.bonus_dmg = 2.5;
-					ICBM.Level = 1;
 					ICBM.Time = 10.0;
+					ICBM.visible = false;
+					ICBM.custom = false;
 					ICBM.Launch_ICBM(Func_On_ICBM_Boom);
 
 	static void Func_On_ICBM_Boom(int projectile, float damage, float radius, float Loc[3])
@@ -896,22 +899,20 @@ static float fl_ICBM_bonus_dmg[MAXENTITIES];
 	CPrintToChatAll("Kaboom!");
 }
 */
-
-#define RUINA_ICBM_PARTICLE_AMT 10
-#define RUINA_ICBM_ENV_LASER_AMT 10
-static int i_ICBM_Particles[MAXENTITIES][RUINA_ICBM_PARTICLE_AMT];
-static int i_ICBM_Env_Lasers[MAXENTITIES][RUINA_ICBM_ENV_LASER_AMT];
 enum struct Ruina_Launch_ICBM
 {
 	int iNPC;
 	float Start_Loc[3];
 	float Angles[3];
+	int color[4];
 	float speed;
 	float radius;
 	float damage;
 	float bonus_dmg;
-	int Level;
 	float Time;
+	bool visible;
+	char rocket_particle[255];
+	bool custom;
 	int Launch_ICBM(Function OnAttack = INVALID_FUNCTION)
 	{	
 		float vecForward[3];
@@ -942,17 +943,48 @@ enum struct Ruina_Launch_ICBM
 			
 			TeleportEntity(entity, this.Start_Loc, this.Angles, NULL_VECTOR, true);
 			DispatchSpawn(entity);
-			for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
-			{
-				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_rocket_particle, _, i);
-			}
-			SetEntityModel(entity, PARTICLE_ROCKET_MODEL);
-	
-			//Make it entirely invis. Shouldnt even render these 8 polygons.
-			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 
-			SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
-			SetEntityRenderColor(entity, 255, 255, 255, 0);
+			if(!this.visible)
+			{
+				for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
+				{
+					SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_rocket_particle, _, i);
+				}
+				SetEntityModel(entity, PARTICLE_ROCKET_MODEL);
+		
+				//Make it entirely invis. Shouldnt even render these 8 polygons.
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+
+				SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+				SetEntityRenderColor(entity, 255, 255, 255, 0);
+			}
+			int particle = 0;
+	
+			if(this.rocket_particle[0]) //If it has something, put it in. usually it has one. but if it doesn't base model it remains.
+			{
+				particle = ParticleEffectAt(this.Start_Loc, this.rocket_particle, 0.0); //Inf duartion
+				i_ICBM_Particle[entity]= EntIndexToEntRef(particle);
+				TeleportEntity(particle, NULL_VECTOR, this.Angles, NULL_VECTOR);
+				SetParent(entity, particle);	
+				SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+				SetEntityRenderColor(entity, 255, 255, 255, 0);
+			}
+
+			if(!this.custom)
+			{
+				int ModelApply = ApplyCustomModelToWandProjectile(entity, WEAPON_CUSTOM_WEAPONRY_1, 2.0, "");
+
+				if(this.color[0])
+				{
+					SetEntityRenderColor(ModelApply, this.color[0], this.color[1], this.color[2], this.color[3]);
+				}
+				else
+				{
+					SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
+				}
+				SetVariantInt(3);
+				AcceptEntityInput(ModelApply, "SetBodyGroup");
+			}
 
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
 			SetEntityCollisionGroup(entity, 24); //our savior
@@ -962,8 +994,6 @@ enum struct Ruina_Launch_ICBM
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, Ruina_ICBM_StartTouch);
 
-			this.Create_ICBM_Visuals(entity);
-
 			if(this.Time>0.0)
 			{
 				CreateTimer(this.Time, Ruina_Remove_ICBM_Timer, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
@@ -971,43 +1001,6 @@ enum struct Ruina_Launch_ICBM
 			return entity;
 		}
 		return -1;
-	}
-	void Create_ICBM_Visuals(int entity)
-	{
-		float flAng[3];
-		flAng = this.Angles;
-
-		flAng[1]-=90.0;
-		flAng[2]=flAng[0]; flAng[0]=0.0;
-		flAng[2] *=-1;
-		switch(this.Level)
-		{
-			case 1:
-			{
-				Ruina_ICBM_Apply_Level_1_Visuals(entity, flAng);
-			}
-		}
-	}
-}
-public void Ruina_Delete_ICBM_Visuals(int entity)
-{
-	for(int loop = 0; loop<RUINA_ICBM_PARTICLE_AMT; loop++)
-	{
-		int particle = EntRefToEntIndex(i_ICBM_Particles[entity][loop]);
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-		i_ICBM_Particles[entity][loop] = INVALID_ENT_REFERENCE;
-	}
-	for(int loop = 0; loop<RUINA_ICBM_ENV_LASER_AMT; loop++)
-	{
-		int laser = EntRefToEntIndex(i_ICBM_Env_Lasers[entity][loop]);
-		if(IsValidEntity(laser))
-		{
-			RemoveEntity(laser);
-		}
-		i_ICBM_Env_Lasers[entity][loop] = INVALID_ENT_REFERENCE;
 	}
 }
 public void Ruina_ICBM_StartTouch(int entity, int target)
@@ -1034,18 +1027,27 @@ public void Ruina_ICBM_StartTouch(int entity, int target)
 		Call_PushArrayEx(ProjectileLoc, sizeof(ProjectileLoc), SM_PARAM_COPYBACK);
 		Call_Finish();
 	}
-	Ruina_Delete_ICBM_Visuals(entity);
-	RemoveEntity(entity);
+	Remove_ICBM(entity);
 }
 static Action Ruina_Remove_ICBM_Timer(Handle Timer, int Ref)
 {
 	int ICBM = EntRefToEntIndex(Ref);
+
 	if(IsValidEntity(ICBM))
 	{
-		Ruina_Delete_ICBM_Visuals(ICBM);
-		RemoveEntity(ICBM);
+		Remove_ICBM(ICBM);
 	}
+
 	return Plugin_Stop;
+}
+static void Remove_ICBM(int entity)
+{
+	int particle = EntRefToEntIndex(i_ICBM_Particle[entity]);
+	if(IsValidEntity(particle))
+	{
+		RemoveEntity(particle);
+	}
+	RemoveEntity(entity);
 }
 public MRESReturn Ruina_RocketExplodePre(int entity)
 {
@@ -2137,12 +2139,11 @@ public bool Ruina_BEAM_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
-stock float[] Do_Laz_Laser_Effects(int client, int color[4], float size[2], float time, float Dist, float amp)
+stock void Do_Laz_Laser_Effects(int client, int color[4], float size[2], float time, float Dist, float amp, float End_Loc[3])
 {
 	float Npc_Loc[3], flAng[3];
 	WorldSpaceCenter(client, Npc_Loc);
 	GetEntPropVector(client, Prop_Data, "m_angRotation", flAng);
-	float End_Loc[3];
 
 	CClotBody npc = view_as<CClotBody>(client);
 	int iPitch = npc.LookupPoseParameter("body_pitch");
@@ -2174,8 +2175,6 @@ stock float[] Do_Laz_Laser_Effects(int client, int color[4], float size[2], floa
 
 	TE_SetupBeamPoints(flPos, End_Loc, BeamWand_Laser, 0, 0, 0, time, size[0], size[1], 0, amp, color, 0);
 	TE_SendToAll();
-
-	return End_Loc;
 }
 static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
 {
@@ -2411,82 +2410,6 @@ Names per stage:
 
 */
 
-
-
-public void Ruina_ICBM_Apply_Level_1_Visuals(int client, float flAng[3])
-{
-	int red = 185;
-	int green = 205;
-	int blue = 237;
-	float flPos[3];
-
-	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
-
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-
-	/*
-		{x, y, z};
-
-		x = Right = -x, Left = x
-		y = Forward = y, backwrads = -y
-		z is inverted values
-		 
-	*/
-
-	int particle_2 = InfoTargetParentAt({0.0, 10.0, 10.0}, "", 0.0); //First offset we go by
-	int particle_2_1 = InfoTargetParentAt({0.0, 10.0, -10.0}, "", 0.0);
-
-	int particle_3 = InfoTargetParentAt({10.0,10.0,0.0}, "", 0.0);
-	int particle_3_1 = InfoTargetParentAt({-10.0,10.0,0.0}, "", 0.0);
-
-	int particle_4 = InfoTargetParentAt({0.0,50.0, 0.0}, "", 0.0);
-
-
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_2_1, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_3_1, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(client, particle_1, "",_);
-
-
-	float amp = 0.1;
-
-	float blade_start = 2.0;
-	float blade_end = 0.5;
-	//handguard
-	float handguard_size = 1.0;
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_2_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
-	int Laser_3 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
-	int Laser_4 = ConnectWithBeamClient(particle_2, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
-
-	int Laser_5 = ConnectWithBeamClient(particle_2, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM );
-	int Laser_6 = ConnectWithBeamClient(particle_2_1, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM );
-
-	int Laser_7 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM );
-	int Laser_8 = ConnectWithBeamClient(particle_3_1, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM );
-	
-
-	i_ICBM_Particles[client][0] = EntIndexToEntRef(particle_1);
-	i_ICBM_Particles[client][1] = EntIndexToEntRef(particle_2);
-	i_ICBM_Particles[client][2] = EntIndexToEntRef(particle_2_1);
-	i_ICBM_Particles[client][3] = EntIndexToEntRef(particle_3);
-	i_ICBM_Particles[client][4] = EntIndexToEntRef(particle_3_1);
-	i_ICBM_Particles[client][5] = EntIndexToEntRef(particle_4);
-
-	i_ICBM_Env_Lasers[client][0] = EntIndexToEntRef(Laser_1);
-	i_ICBM_Env_Lasers[client][1] = EntIndexToEntRef(Laser_2);
-	i_ICBM_Env_Lasers[client][2] = EntIndexToEntRef(Laser_3);
-	i_ICBM_Env_Lasers[client][3] = EntIndexToEntRef(Laser_4);
-	i_ICBM_Env_Lasers[client][4] = EntIndexToEntRef(Laser_5);
-	i_ICBM_Env_Lasers[client][5] = EntIndexToEntRef(Laser_6);
-	i_ICBM_Env_Lasers[client][6] = EntIndexToEntRef(Laser_7);
-	i_ICBM_Env_Lasers[client][7] = EntIndexToEntRef(Laser_8);
-}
 stock void Lanius_Teleport_Effect(char type[255], float duration = 0.0, float start_point[3], float end_point[3])
 {
 	int part1 = CreateEntityByName("info_particle_system");

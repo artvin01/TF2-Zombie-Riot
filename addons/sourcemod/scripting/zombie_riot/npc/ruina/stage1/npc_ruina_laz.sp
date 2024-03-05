@@ -329,7 +329,7 @@ static void ClotThink(int iNPC)
 				
 			}
 			float EndLoc[3];
-			EndLoc = Do_Laz_Laser_Effects(npc.index, color, size, time, 975.0, amp);	//reuse the location since lazy to do another trace.
+			Do_Laz_Laser_Effects(npc.index, color, size, time, 975.0, amp, EndLoc);	//reuse the location since lazy to do another trace.
 
 			if(attack)
 			{

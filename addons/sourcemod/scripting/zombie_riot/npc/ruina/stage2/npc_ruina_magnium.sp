@@ -269,7 +269,7 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>500.0)
+	if(fl_ruina_battery[npc.index]>1000.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
@@ -345,8 +345,23 @@ static void ClotThink(int iNPC)
 					float projectile_speed = 1000.0;
 					float target_vec[3];
 					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
+
+					Ruina_Launch_ICBM ICBM;
+
+					ICBM.iNPC = npc.index;
+					ICBM.Start_Loc = flPos;
+					float Ang[3];
+					MakeVectorFromPoints(flPos, target_vec, Ang);
+					GetVectorAngles(Ang, Ang);
+					ICBM.Angles = Ang;
+					ICBM.speed = 1000.0;
+					ICBM.radius = 300.0;
+					ICBM.damage = 500.0;
+					ICBM.bonus_dmg = 2.5;
+					ICBM.Time = 10.0;
+					ICBM.Launch_ICBM(Func_On_ICBM_Boom);
 		
-					npc.FireParticleRocket(target_vec, 50.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
+					//npc.FireParticleRocket(target_vec, 50.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
 						
 				}
 				else
@@ -369,6 +384,10 @@ static void ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
+}
+static void Func_On_ICBM_Boom(int projectile, float damage, float radius, float Loc[3])
+{
+	CPrintToChatAll("Kaboom!");
 }
 
 static int i_particle[MAXENTITIES][11];

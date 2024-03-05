@@ -33,7 +33,7 @@ public void Barrack_Railgunner_MapStart()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Railgunner Desc");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Railgunner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_railgunner");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
