@@ -10,22 +10,22 @@ enum struct RawHooks
 
 static DynamicHook ForceRespawn;
 static int ForceRespawnHook[MAXTF2PLAYERS];
-static int GetChargeEffectBeingProvided;
 
 #if defined ZR
+static int GetChargeEffectBeingProvided;
 static bool IsRespawning;
 //static bool Disconnecting;
 static DynamicHook g_WrenchSmack;
 //DynamicHook g_ObjStartUpgrading;
 static Address CTeamplayRoundBasedRules = Address_Null;
+static DynamicHook g_DhookCheckUpgradeOnHit; 
+static DynamicHook g_DHookScoutSecondaryFire; 
 #endif
 
 static DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
-static DynamicHook g_DHookScoutSecondaryFire; 
-static DynamicHook g_DhookCheckUpgradeOnHit; 
 DynamicHook g_DhookUpdateTransmitState; 
 
 static DynamicDetour g_CalcPlayerScore;
@@ -117,14 +117,14 @@ void DHook_Setup()
 #if defined ZR
 	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
 	DHook_CreateDetour(gamedata, "CTFPlayer::SpeakConceptIfAllowed()", SpeakConceptIfAllowed_Pre, SpeakConceptIfAllowed_Post);
+	g_DhookCheckUpgradeOnHit = DHook_CreateVirtual(gamedata, "CBaseObject::CheckUpgradeOnHit");
+	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
 #endif
 	g_detour_CTFGrenadePipebombProjectile_PipebombTouch = CheckedDHookCreateFromConf(gamedata, "CTFGrenadePipebombProjectile::PipebombTouch");
 	
 	
 	g_DHookRocketExplode = DHook_CreateVirtual(gamedata, "CTFBaseRocket::Explode");
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
-	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
-	g_DhookCheckUpgradeOnHit = DHook_CreateVirtual(gamedata, "CBaseObject::CheckUpgradeOnHit");
 
 	int offset = gamedata.GetOffset("CBaseEntity::UpdateTransmitState()");
 	g_DhookUpdateTransmitState = new DynamicHook(offset, HookType_Entity, ReturnType_Int, ThisPointer_CBaseEntity);
@@ -228,7 +228,7 @@ public void DHook_EntityDestoryedFrame()
 	}
 }
 
-void DHook_HookStripWeapon(int entity)
+stock void DHook_HookStripWeapon(int entity)
 {
 	if(m_Item > 0 && m_bOnlyIterateItemViewAttributes > 0)
 	{
@@ -416,14 +416,12 @@ public void ApplyExplosionDhook_Pipe(int entity, bool Sticky)
 	//I have to do it twice, if its a custom spawn i have to do it insantly, if its a tf2 spawn then i have to do it seperatly.
 }
 
-void PipeApplyDamageCustom(int entity)
+stock void PipeApplyDamageCustom(int entity)
 {
 	f_CustomGrenadeDamage[entity] = GetEntPropFloat(entity, Prop_Send, "m_flDamage");
 }
 
-
-
-void See_Projectile_Team_Player(int entity)
+stock void See_Projectile_Team_Player(int entity)
 {
 	if (entity < 0 || entity > 2048)
 	{
@@ -1136,7 +1134,9 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		LagCompMovePlayersExceptYou(Compensator);
 	}
 	
+#if defined ZR
 	g_hSDKStartLagCompAddress = manager;
+#endif
 	
 	return MRES_Ignored;
 }
@@ -1272,8 +1272,11 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 	
 //	FinishLagCompensationResetValues();
 	
+#if defined ZR
 	g_hSDKEndLagCompAddress = manager;
 	Sdkcall_Load_Lagcomp();
+#endif
+
 	StartLagCompResetValues();
 	
 	return MRES_Ignored;
@@ -1969,12 +1972,12 @@ void Upgrade_Check_OnEntityCreated(int client)
 	g_DhookCheckUpgradeOnHit.HookEntity(Hook_Pre, client, DHook_CheckUpgradeOnHitPre);
 	g_DhookCheckUpgradeOnHit.HookEntity(Hook_Post, client, DHook_CheckUpgradeOnHitPost);
 }
-#endif	// ZR
 
 void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 {
 	g_DHookScoutSecondaryFire.HookEntity(Hook_Pre, entity, DHook_ScoutSecondaryFire);
 }
+#endif	// ZR
 
 void Hook_DHook_UpdateTransmitState(int entity)
 {
@@ -2303,9 +2306,11 @@ stock bool ShieldDeleteProjectileCheck(int owner, int enemy)
 	return false;
 }
 
+#if defined ZR
 //Thank you mikusch!
 static MRESReturn DHookCallback_CBaseObject_ShouldQuickBuild_Pre(int obj, DHookReturn returnHook)
 {
 	returnHook.Value = false;
 	return MRES_Supercede;
 }
+#endif

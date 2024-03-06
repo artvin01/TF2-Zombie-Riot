@@ -18,7 +18,7 @@ static Handle g_hCTFCreateArrow;
 //static Handle g_hSDKPlaySpecificSequence;
 //static Handle g_hDoAnimationEvent;
 
-#if !defined NOG
+#if defined ZR
 static Handle g_hSDKStartLagComp;
 static Handle g_hSDKEndLagComp;
 #endif
@@ -388,8 +388,8 @@ void SDKCall_BecomeRagdollOnClient(int entity, const float vec[3])
 	SDKCall(SDKBecomeRagdollOnClient, entity, vec);
 }
 
-#if !defined NOG
-stock void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
+#if defined ZR
+void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 {
 	if(g_GottenAddressesForLagComp)
 	{
@@ -442,7 +442,7 @@ stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 
 //BIG thanks to backwards#8236 on discord for helping me out, YOU ARE MY HERO.
 
-#if !defined NOG
+#if defined ZR
 void Sdkcall_Load_Lagcomp()
 {
 	if(!g_GottenAddressesForLagComp)

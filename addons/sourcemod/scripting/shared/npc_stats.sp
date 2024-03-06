@@ -31,11 +31,7 @@ bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int i_NpcOverrideAttacker[MAXENTITIES];
 int TeamFreeForAll = 50;
-#endif
-
-#if defined RPG
-int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
-int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES] = {0, ...};
+bool b_thisNpcHasAnOutline[MAXENTITIES];
 #endif
 
 int i_TeamGlow[MAXENTITIES]={-1, ...};
@@ -46,7 +42,6 @@ int i_SpeechBubbleEntity[MAXENTITIES];
 PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
 static int g_modelArrow;
 
-bool b_thisNpcHasAnOutline[MAXENTITIES];
 float f3_AvoidOverrideMin[MAXENTITIES][3];
 float f3_AvoidOverrideMax[MAXENTITIES][3];
 float f3_AvoidOverrideMinNorm[MAXENTITIES][3];
@@ -4399,7 +4394,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			}
 
 #if defined RTS
-			if(UnitBody_IsEntAlly(index, enemy))
+			if(RTS_IsEntAlly(index, enemy))
 			{
 				return false;
 			}
@@ -4595,7 +4590,7 @@ stock int GetClosestTarget(int entity,
 #if defined RTS
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
-					if(UnitBody_IsEntAlly(entity, entity_close))
+					if(RTS_IsEntAlly(entity, entity_close))
 						continue;
 #else
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
@@ -4632,10 +4627,11 @@ stock int GetClosestTarget(int entity,
 	}
 
 #if defined RTS
+	// TODO: Rewrite this (building code / make use of the array)
 	if(ExtraValidityFunction != INVALID_FUNCTION)
 	{
 		int target = -1;
-		while((target = FindEntityByClassname(target, "prop_resource")) != -1)
+		while((target = FindEntityByClassname(target, "obj_building")) != -1)
 		{
 			bool valid;
 			Call_StartFunction(null, ExtraValidityFunction);
@@ -5840,12 +5836,14 @@ stock void Custom_Knockback(int attacker,
 										
 		GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
 			
+#if !defined RTS
 		if(enemy <= MaxClients && !ignore_attribute && !work_on_entity)
 		{
 			float Attribute_Knockback = Attributes_FindOnPlayerZR(enemy, 252, true, 1.0);	
 			
 			knockback *= Attribute_Knockback;
 		}
+#endif
 		
 		knockback *= 0.75; //oops, too much knockback now!
 
@@ -6171,8 +6169,9 @@ public void GibCollidePlayerInteraction(int gib, int player)
 					{
 						float Heal_Amount = 0.0;
 						
+#if !defined RTS
 						Heal_Amount = Attributes_Get(weapon, 180, 1.0);
-				
+#endif
 						
 						float Heal_Amount_calc;
 						
@@ -8374,7 +8373,7 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun)
 	}
 }
 
-void NpcStats_SilenceEnemy(int enemy, float duration)
+stock void NpcStats_SilenceEnemy(int enemy, float duration)
 {
 	float GameTime = GetGameTime();
 	if(f_Silenced[enemy] < (GameTime + duration))
@@ -8383,7 +8382,7 @@ void NpcStats_SilenceEnemy(int enemy, float duration)
 	}
 }
 
-bool NpcStats_IsEnemySilenced(int enemy)
+stock bool NpcStats_IsEnemySilenced(int enemy)
 {
 	if(!IsValidEntity(enemy))
 		return true; //they dont exist, pretend as if they are silenced.

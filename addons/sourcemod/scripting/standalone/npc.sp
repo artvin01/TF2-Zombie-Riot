@@ -35,6 +35,9 @@ int NPC_Add(NPCData data)
 {
 	if(!data.Func || data.Func == INVALID_FUNCTION)
 		ThrowError("Invalid function name");
+
+	if(!TranslationPhraseExists(data.Name))
+		LogError("Translation '%s' does not exist", data.Name);
 	
 	return NPCList.PushArray(data);
 }
@@ -64,7 +67,7 @@ void NPC_GetById(int id, NPCData data)
 	NPCList.GetArray(id, data);
 }
 
-int NPC_GetIdByPlugin(const char[] name, NPCData data = {})
+int NPC_GetByPlugin(const char[] name, NPCData data = {})
 {
 	int length = NPCList.Length;
 	for(int i; i < length; i++)
@@ -79,7 +82,7 @@ int NPC_GetIdByPlugin(const char[] name, NPCData data = {})
 int NPC_CreateByName(const char[] name, int client, const float vecPos[3], const float vecAng[3], int team, const char[] data = "")
 {
 	static NPCData npcdata;
-	int id = NPC_GetIdByPlugin(name, npcdata);
+	int id = NPC_GetByPlugin(name, npcdata);
 	if(id == -1)
 	{
 		PrintToChatAll("\"%s\" is not a valid NPC!", name);

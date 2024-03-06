@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define MELEE_RANGE_SQR	10000.0
-
 enum struct CommandEnum
 {
 	int Type;
@@ -12,46 +10,41 @@ enum struct CommandEnum
 }
 
 static int ResourceSearch;
-static float SoundCooldown[MAXTF2PLAYERS];
 
-static int UnitFlags[MAXENTITIES];
-static float VisionRange[MAXENTITIES];
-static float EngageRange[MAXENTITIES];
 static char NextGesture[MAXENTITIES][32];
 static ArrayList CommandList[MAXENTITIES];
-static Function FuncSound[MAXENTITIES][Sound_MAX];
-static Function FuncSkills[MAXENTITIES];
-static StatEnum Stats[MAXENTITIES];
 
 void UnitBody_Setup()
 {
-	Zero(SoundCooldown);
 }
 
 methodmap UnitBody < CClotBody
 {
-	property int m_iTeamNumber
+	property Function m_hDeathFunc
 	{
-		public get()
+		public set(Function value)
 		{
-			return TeamNumber[this.index];
+			func_NPCDeath[this.index] = value;
 		}
-		public set(int team)
+	}
+	property Function m_hOnTakeDamageFunc
+	{
+		public set(Function value)
 		{
-			TeamNumber[this.index] = team;
+			func_NPCOnTakeDamage[this.index] = value;
+		}
+	}
+	property Function m_hThinkFunc
+	{
+		public set(Function value)
+		{
+			func_NPCThink[this.index] = value;
 		}
 	}
 
-	property bool m_bBuilding
+	public void SetName(const char[] name)
 	{
-		public get()
-		{
-			return i_NpcIsABuilding[this.index];
-		}
-		public set(bool value)
-		{
-			i_NpcIsABuilding[this.index] = value;
-		}
+		strcopy(c_NpcName[this.index], sizeof(c_NpcName[]), name);
 	}
 
 	// Range at which units can provide vision
@@ -59,11 +52,7 @@ methodmap UnitBody < CClotBody
 	{
 		public get()
 		{
-			return VisionRange[this.index];
-		}
-		public set(float value)
-		{
-			VisionRange[this.index] = value;
+			return (Stats[this.index].Sight + Stats[this.index].SightBonus) * OBJECT_UNITS;
 		}
 	}
 
@@ -72,11 +61,11 @@ methodmap UnitBody < CClotBody
 	{
 		public get()
 		{
-			return EngageRange[this.index];
-		}
-		public set(float value)
-		{
-			EngageRange[this.index] = value;
+			int range = Stats[this.index].Range + Stats[this.index].RangeBonus;
+			if(range < 4)
+				range = 4;
+			
+			return range * OBJECT_UNITS;
 		}
 	}
 
@@ -94,7 +83,7 @@ methodmap UnitBody < CClotBody
 	}
 	public bool HasFlag(int type)
 	{
-		return view_as<bool>(UnitFlags[this.index] & (1 << type));
+		return RTS_HasFlag(this.index, type);
 	}
 
 	public void AddNextGesture(const char[] anim)
@@ -106,16 +95,15 @@ methodmap UnitBody < CClotBody
 	{
 		FuncSound[this.index][type] = func;
 	}
-	public void SetSkillFunc(Function func)
+	property Function m_hSkillsFunc
 	{
-		FuncSkills[this.index] = func;
+		public set(Function value)
+		{
+			FuncSkills[this.index] = value;
+		}
 	}
 
-	public void GetStats(StatEnum stats)
-	{
-		stats = Stats[this.index];
-	}
-	public void SetStats(const StatEnum stats = {})
+	public void ClearStats(const StatEnum stats = {})
 	{
 		Stats[this.index] = stats;
 	}
@@ -165,8 +153,15 @@ methodmap UnitBody < CClotBody
 
 		SDKHooks_TakeDamage(victim, this.index, this.index, float(damage), damageType, _, damageForce, damagePosition);
 	}
-	public bool InAttackRange(int target, float rangesqr)
+	public bool InAttackRange(int target)
 	{
+		float rangesqr = MELEE_RANGE_SQR;
+		if(Stats[this.index].Range > 1)
+		{
+			rangesqr = (Stats[this.index].Range + Stats[this.index].RangeBonus) * OBJECT_UNITS;
+			rangesqr *= rangesqr;
+		}
+		
 		float vecMe[3], vecTarget[3];
 		WorldSpaceCenter(this.index, vecMe);
 		WorldSpaceCenter(target, vecTarget);
@@ -178,34 +173,22 @@ methodmap UnitBody < CClotBody
 		float dist = GetVectorDistance(vecMe, vecTarget, true);
 		return dist < rangesqr;
 	}
-
-	public bool IsAlly(int team)
-	{
-		return RTS_IsTeamAlly(team, this.m_iTeamNumber);
-	}
-	public bool CanControl(int team)
-	{
-		return RTS_CanTeamControl(team, this.m_iTeamNumber);
-	}
 	
 	public UnitBody(int team, const float vecPos[3], const float vecAng[3],
 						const char[] model = COMBINE_CUSTOM_MODEL,
 						const char[] modelscale = "1.0",
 						const char[] health = "125",
-						bool isBuilding = false,
 						bool isGiant = false,
 						const float CustomThreeDimensions[3] = {0.0,0.0,0.0})
 	{
 		UnitBody npc = view_as<UnitBody>(CClotBody(vecPos, vecAng, model, modelscale, health, isGiant, CustomThreeDimensions));
 		
-		npc.m_iTeamNumber = team;
-		npc.m_bBuilding = isBuilding;
-		npc.m_flVisionRange = 0.0;
+		SetTeam(npc.index, team);
 		npc.RemoveAllFlags();
 		NextGesture[npc.index][0] = 0;
 		delete CommandList[npc.index];
-		npc.SetStats();
-		npc.SetSkillFunc(INVALID_FUNCTION);
+		npc.ClearStats();
+		npc.m_hSkillsFunc = INVALID_FUNCTION;
 
 		for(int i; i < Sound_MAX; i++)
 		{
@@ -241,26 +224,11 @@ static void SetupCommand(UnitBody npc, CommandEnum command, int type, const floa
 				command.Type = Command_Attack;
 			}
 		}
-		else if(!UnitBody_IsEntAlly(npc.index, target))
+		else if(!RTS_IsEntAlly(npc.index, target))
 		{
 			command.Type = Command_Attack;
 		}
 	}
-}
-
-bool UnitBody_IsEntAlly(int attacker, int entity)
-{
-	return view_as<UnitBody>(entity).IsAlly(TeamNumber[attacker]);
-}
-
-bool UnitBody_CanControl(int attacker, int entity)
-{
-	return view_as<UnitBody>(entity).CanControl(TeamNumber[attacker]);
-}
-
-bool UnitBody_HasFlag(int entity, int flag)
-{
-	return view_as<UnitBody>(entity).HasFlag(flag);
 }
 
 void UnitBody_AddCommand(int entity, int method, int type, const float pos[3], int target = -1)
@@ -282,90 +250,6 @@ bool UnitBody_GetCommand(int entity, int i, int &type, float pos[3], int &target
 	}
 
 	return false;
-}
-
-void UnitBody_GetStats(int entity, StatEnum stats)
-{
-	view_as<UnitBody>(entity).GetStats(stats);
-}
-
-void UnitBody_TakeDamage(int victim, float &damage, int damagetype)
-{
-	int dmg = RoundFloat(damage);
-
-	if(dmg > 0)
-	{
-		if(damagetype & DMG_SLASH)
-		{
-		}
-		else if(damagetype & DMG_CLUB)
-		{
-			dmg -= Stats[victim].MeleeArmor + Stats[victim].MeleeArmorBonus;
-		}
-		else
-		{
-			dmg -= Stats[victim].RangeArmor + Stats[victim].RangeArmorBonus;
-		}
-
-		if(dmg < 1)
-			dmg = 1;
-	}
-
-	damage = float(dmg);
-}
-
-void UnitBody_PlaySound(int entity, int client, int type)
-{
-	float gameTime = GetGameTime();
-	if(SoundCooldown[client] > gameTime)
-		return;
-	
-	if(FuncSound[entity][type] != INVALID_FUNCTION)
-	{
-		SoundCooldown[client] = gameTime + 1.5;
-		
-		Call_StartFunction(null, FuncSound[entity][type]);
-		Call_PushCell(client);
-		Call_Finish();
-	}
-}
-
-bool UnitBody_GetSkill(int entity, int client, int type, SkillEnum skill)
-{
-	bool result;
-
-	if(FuncSkills[entity] != INVALID_FUNCTION)
-	{
-		Call_StartFunction(null, FuncSkills[entity]);
-		Call_PushCell(entity);
-		Call_PushCell(client);
-		Call_PushCell(type);
-		Call_PushCell(false);
-		Call_PushArrayEx(skill, sizeof(skill), SM_PARAM_COPYBACK);
-		Call_Finish(result);
-	}
-
-	return result;
-}
-
-bool UnitBody_TriggerSkill(int entity, int client, int type)
-{
-	bool result;
-
-	if(FuncSkills[entity] != INVALID_FUNCTION)
-	{
-		SkillEnum skill;
-
-		Call_StartFunction(null, FuncSkills[entity]);
-		Call_PushCell(entity);
-		Call_PushCell(client);
-		Call_PushCell(type);
-		Call_PushCell(true);
-		Call_PushArrayEx(skill, sizeof(skill), 0);
-		Call_Finish(result);
-	}
-
-	return result;
 }
 
 bool UnitBody_ThinkStart(UnitBody npc, float gameTime)

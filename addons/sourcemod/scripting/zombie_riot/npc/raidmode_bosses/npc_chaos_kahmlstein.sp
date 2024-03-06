@@ -108,6 +108,20 @@ static int NPCId;
 
 void ChaosKahmlstein_OnMapStart_NPC()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Chaos Kahmlstein");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chaos_kahmlstein");
+	strcopy(data.Icon, sizeof(data.Icon), "kahmlstein");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPCId = NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MessengerThrowFire));	   i++) { PrecacheSound(g_MessengerThrowFire[i]);	   }
 	for (int i = 0; i < (sizeof(g_MessengerThrowIce));	   i++) { PrecacheSound(g_MessengerThrowIce[i]);	   }
@@ -129,17 +143,7 @@ void ChaosKahmlstein_OnMapStart_NPC()
 	PrecacheSoundCustom("zombiesurvival/internius/blinkarrival.wav");
 	PrecacheSound("player/taunt_knuckle_crack.wav");
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Chaos Kahmlstein");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chaos_kahmlstein");
-	strcopy(data.Icon, sizeof(data.Icon), "kahmlstein");
-	data.IconCustom = true;
-	data.Flags = 0;
-	data.Category = Type_Special;
-	data.Func = ClotSummon;
-	NPCId = NPC_Add(data);
 }
-
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {

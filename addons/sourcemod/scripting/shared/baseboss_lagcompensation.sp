@@ -127,7 +127,7 @@ static bool WantsLagCompensationOnEntity(int entity, int player, const float vie
 	//	return false;
 
 #if defined RTS
-	bool allied = UnitBody_CanControl(player, entity);
+	bool allied = RTS_CanControl(player, entity);
 #else
 	bool allied = GetTeam(entity) == GetTeam(player);
 #endif

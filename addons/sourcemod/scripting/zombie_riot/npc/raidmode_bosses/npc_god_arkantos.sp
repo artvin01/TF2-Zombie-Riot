@@ -59,6 +59,20 @@ static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static int NPCId;
 public void GodArkantos_OnMapStart()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "God Arkantos");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_god_arkantos");
+	strcopy(data.Icon, sizeof(data.Icon), "arkantos");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPCId = NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);       }
 	for (int i = 0; i < (sizeof(g_HurtSounds));        i++) { PrecacheSound(g_HurtSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));        i++) { PrecacheSound(g_IdleAlertedSounds[i]);        }
@@ -69,15 +83,6 @@ public void GodArkantos_OnMapStart()
 	for (int i = 0; i < (sizeof(g_SummonSounds));        i++) { PrecacheSound(g_SummonSounds[i]);        }
 	PrecacheSoundCustom("#zombiesurvival/medieval_raid/kazimierz_boss.mp3");
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "God Arkantos");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_god_arkantos");
-	strcopy(data.Icon, sizeof(data.Icon), "arkantos");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Special;
-	data.Func = ClotSummon;
-	NPCId = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -1109,7 +1114,7 @@ void GodArkantosSpawnEnemy(int arkantos, char[] plugin_name, int health = 0, int
 	}
 		
 	Enemy enemy;
-	enemy.Index = NPC_GetIdByPlugin(plugin_name);
+	enemy.Index = NPC_GetByPlugin(plugin_name);
 	if(health != 0)
 	{
 		enemy.Health = health;

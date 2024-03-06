@@ -6,11 +6,13 @@
 #include <collisionhook>
 #include <clientprefs>
 #include <dhooks>
-#if !defined NOG
+#if defined ZR
 #include <tf2items>
 #include <tf_econ_data>
 #endif
+#if !defined RTS
 #include <tf2attributes>
+#endif
 //#include <lambda>
 #include <morecolors>
 #include <cbasenpc>
@@ -39,15 +41,20 @@
 
 #define RoundState_ZombieRiot view_as<RoundState>(11)
 
-#define NPC_HARD_LIMIT 40 
-#define ZR_MAX_NPCS (NPC_HARD_LIMIT*6)
-#define ZR_MAX_NPCS_ALLIED 40 //Never need more.
-#define ZR_MAX_LAG_COMP 128 
-#define ZR_MAX_BUILDINGS 128 //cant ever have more then 64 realisticly speaking
-#define ZR_MAX_TRAPS 64
-#define ZR_MAX_BREAKBLES 32
-#define ZR_MAX_SPAWNERS 128
-#define ZR_MAX_GIBCOUNT 12 //Anymore then this, and it will only summon 1 gib per zombie instead.
+#if defined ZR
+#define NPC_HARD_LIMIT		40
+#define ZR_MAX_NPCS		196
+#define ZR_MAX_LAG_COMP		128 
+#define ZR_MAX_BUILDINGS	128 //cant ever have more then 64 realisticly speaking
+#define ZR_MAX_TRAPS		64
+#define ZR_MAX_SPAWNERS		128
+#else
+#define ZR_MAX_NPCS		256
+#define ZR_MAX_LAG_COMP		256 
+#define ZR_MAX_BUILDINGS	256
+#endif
+
+#define ZR_MAX_GIBCOUNT		12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 #define ZR_MAX_GIBCOUNT_ABSOLUTE 35 //Anymore then this, and the duration is halved for gibs staying.
 
 #if !defined NOG
@@ -414,9 +421,6 @@ bool i_IsABuilding[MAXENTITIES];
 bool i_NpcIsABuilding[MAXENTITIES];
 bool b_NpcIgnoresbuildings[MAXENTITIES];
 
-const int i_MaxcountBreakable = ZR_MAX_BREAKBLES;
-int i_ObjectsBreakable[ZR_MAX_BREAKBLES];
-
 
 bool b_IsAGib[MAXENTITIES];
 int i_NpcInternalId[MAXENTITIES];
@@ -656,10 +660,6 @@ int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
 #endif
 int i_WandOwner[MAXENTITIES]; //				//785
 
-int i_BleedDurationWeapon[MAXENTITIES]={0, ...}; 				//149
-int i_BurnDurationWeapon[MAXENTITIES]={0, ...}; 				//208
-int i_ExtinquisherWeapon[MAXENTITIES]={0, ...}; 				//638
-float f_UberOnHitWeapon[MAXENTITIES]={0.0, ...}; 				//17
 
 bool b_IsCannibal[MAXTF2PLAYERS];
 
@@ -758,9 +758,12 @@ bool b_ExtendBoundingBox[MAXENTITIES];
 bool b_BlockLagCompInternal[MAXENTITIES];
 bool b_Dont_Move_Building[MAXENTITIES];
 bool b_Dont_Move_Allied_Npc[MAXENTITIES];
+#endif
+
+#if defined ZR
+bool g_GottenAddressesForLagComp;
 Address g_hSDKStartLagCompAddress;
 Address g_hSDKEndLagCompAddress;
-bool g_GottenAddressesForLagComp;
 #endif
 
 int b_BoundingBoxVariant[MAXENTITIES];
@@ -1212,7 +1215,10 @@ int Armor_Wearable[MAXTF2PLAYERS];
 #include "shared/teuton_sound_override.sp"
 #endif
 
+#if !defined RTS
 #include "shared/attributes.sp"
+#endif
+
 #include "shared/configs.sp"
 #include "shared/filenetwork.sp"
 #include "shared/npccamera.sp"
@@ -2743,11 +2749,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 
 		b_IsAProjectile[entity] = false;
-		if(!StrContains(classname, "env_entity_dissolver"))
+/*		if(!StrContains(classname, "env_entity_dissolver"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
-		else if(!StrContains(classname, "tf_objective_resource"))
+		else*/
+		if(!StrContains(classname, "tf_objective_resource"))
 		{
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
@@ -2836,14 +2843,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "func_breakable"))
 		{
-			for (int i = 0; i < ZR_MAX_BREAKBLES; i++)
-			{
-				if (EntRefToEntIndex(i_ObjectsBreakable[i]) <= 0)
-				{
-					i_ObjectsBreakable[i] = EntIndexToEntRef(entity);
-					i = ZR_MAX_BREAKBLES;
-				}
-			}
 			SDKHook(entity, SDKHook_OnTakeDamagePost, Func_Breakable_Post);
 		}
 #if defined ZR
@@ -3012,7 +3011,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			OnManglerCreated(entity);
 		}
 #endif
-		
 		else if(!StrContains(classname, "obj_"))
 		{
 			b_BuildingHasDied[entity] = false;
@@ -3194,7 +3192,11 @@ public void OnEntityDestroyed(int entity)
 		
 		if(entity > MaxClients)
 		{
+
+#if !defined RTS
 			Attributes_EntityDestroyed(entity);
+#endif
+
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
 #if defined ZR

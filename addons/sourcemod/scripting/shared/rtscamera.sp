@@ -892,7 +892,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 			int entity = EntRefToEntIndex(Selected[client].Get(i));
 
 #if defined RTS
-			if(entity != -1 && UnitBody_CanControl(client, entity))
+			if(entity != -1 && RTS_CanControl(client, entity))
 #else
 			if(entity != -1)
 #endif
@@ -930,9 +930,9 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 				for(int b; b < length; b++)
 				{
 					int entity = EntRefToEntIndex(Selected[client].Get(b));
-					if(entity != -1 && UnitBody_CanControl(client, entity))
+					if(entity != -1 && RTS_CanControl(client, entity))
 					{
-						triggered = UnitBody_TriggerSkill(entity, client, a);
+						triggered = RTS_TriggerSkill(entity, client, a);
 						if(triggered)
 							break;
 					}
@@ -1256,7 +1256,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 			cursor = CURSOR_SELECTABLE;
 
 #if defined RTS
-			if(UnitBody_CanControl(client, HoveringOver[client]))
+			if(RTS_CanControl(client, HoveringOver[client]))
 #endif
 			{
 				// Green, Your's
@@ -1264,7 +1264,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 				color[2] = 0;
 			}
 #if defined RTS
-			else if(IsObject(HoveringOver[client]) || UnitBody_IsEntAlly(client, HoveringOver[client]))
+			else if((IsObject(HoveringOver[client]) && TeamNumber[HoveringOver[client]] == 0) || RTS_IsEntAlly(client, HoveringOver[client]))
 			{
 				// Yellow, Ally's
 				color[2] = 0;
@@ -1401,7 +1401,7 @@ static stock void MoveSelectedUnits(int client, const float vecMovePos[3], int t
 			{
 				int entity = EntRefToEntIndex(Selected[client].Get(i));
 #if defined RTS
-				if(entity == -1 || !UnitBody_CanControl(client, entity))
+				if(entity == -1 || !RTS_CanControl(client, entity))
 #else
 				if(entity == -1)
 #endif
@@ -1410,7 +1410,7 @@ static stock void MoveSelectedUnits(int client, const float vecMovePos[3], int t
 					i--;
 					length--;
 				}
-				else
+				else if(!b_NpcHasDied[entity])
 				{
 #if defined RTS
 					int type = NextMoveType[client];
@@ -1420,7 +1420,7 @@ static stock void MoveSelectedUnits(int client, const float vecMovePos[3], int t
 					UnitBody_AddCommand(entity, HoldPress[client][Key_Ctrl] ? 0 : 1, type, vecMovePos, target);
 
 					if(!success)
-						UnitBody_PlaySound(entity, client, Sound_Move);
+						RTS_PlaySound(entity, client, Sound_Move);
 					
 #elseif defined ZR
 
@@ -1501,7 +1501,7 @@ static stock void RenderWaypoints(int client)
 	{
 		int entity = EntRefToEntIndex(Selected[client].Get(0));
 
-		if(UnitBody_CanControl(client, entity))
+		if(RTS_CanControl(client, entity))
 		{
 			int type, target;
 			float pos[3];
@@ -2111,8 +2111,8 @@ static void SelectUnit(int client, int entity)
 		Selected[client] = new ArrayList();
 
 #if defined RTS
-		if(UnitBody_CanControl(client, entity))
-			UnitBody_PlaySound(entity, client, Sound_Select);
+		if(RTS_CanControl(client, entity))
+			RTS_PlaySound(entity, client, Sound_Select);
 #endif
 
 	}
@@ -2126,12 +2126,12 @@ static stock bool UnitEntityIterator(int client, int &entity, bool villagers)
 	for(; entity < MAXENTITIES; entity++)
 	{
 #if defined RTS
-		if(!b_NpcHasDied[entity] && (RTS_IsSpectating(client) || UnitBody_CanControl(client, entity)))
+		if(!b_NpcHasDied[entity] && (RTS_IsSpectating(client) || RTS_CanControl(client, entity)))
 		{
-			if(UnitBody_HasFlag(entity, Flag_Structure))
+			if(RTS_HasFlag(entity, Flag_Structure))
 				continue;
 			
-			if(!villagers && UnitBody_HasFlag(entity, Flag_Worker))
+			if(!villagers && RTS_HasFlag(entity, Flag_Worker))
 				continue;
 			
 			return true;

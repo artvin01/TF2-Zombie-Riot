@@ -118,7 +118,7 @@ public void SDKHook_ScoreThink(int entity)
 }
 #endif
 
-void SDKHook_HookClient(int client)
+stock void SDKHook_HookClient(int client)
 {
 #if defined ZR
 	SDKUnhook(client, SDKHook_PreThinkPost, OnPreThinkPost);
