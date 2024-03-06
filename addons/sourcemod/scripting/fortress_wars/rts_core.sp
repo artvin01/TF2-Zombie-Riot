@@ -3,6 +3,7 @@
 
 #define MIN_FADE_DISTANCE	9999.9
 #define MAX_FADE_DISTANCE	9999.9
+#define MELEE_RANGE_SQR		10000.0
 
 #define HELP_HINT_COUNT	4
 #define TIP_HINT_COUNT	8
@@ -14,6 +15,7 @@
 #define OBJECT_OFFSET		{0.0, -90.0, 0.0}
 #define OBJECT_UNITS		64.0
 #define OBJECT_MODELSIZE	128.0//108.0
+#define SPAWN_ANGLES		{0.0, -45.0, 0.0}
 
 enum
 {
@@ -26,6 +28,7 @@ enum
 	Flag_Heroic,
 	Flag_Summoned,
 	Flag_Worker,
+	Flag_Converted,
 
 	Flag_MAX
 }
@@ -40,7 +43,8 @@ public const char FlagName[][] =
 	"Unique",
 	"Heroic",
 	"Summoned",
-	"Worker"
+	"Worker",
+	"Converted"
 };
 
 enum
@@ -142,11 +146,13 @@ enum struct SkillEnum
 int BuildMode[MAXTF2PLAYERS];
 int Resource[MAX_TEAMS][Resource_MAX];
 int UnitFlags[MAXENTITIES];
-float EngageRange[MAXENTITIES];
+int TeamClass[MAX_TEAMS];
 Function FuncSkills[MAXENTITIES];
 StatEnum Stats[MAXENTITIES];
 Function FuncSound[MAXENTITIES][Sound_MAX];
+ConVar CvarInfiniteCash;
 
+#include "fortress_wars/classes.sp"
 #include "fortress_wars/object.sp"
 #include "fortress_wars/npc.sp"	// Global NPC List
 #include "fortress_wars/menu.sp"
@@ -165,8 +171,10 @@ void RTS_PluginStart()
 	RegAdminCmd("rts_setspeed", CommandSetSpeed, ADMFLAG_RCON, "Set the game speed");
 
 	LoadTranslations("realtime.unitnames.phrases");
+	LoadTranslations("realtime.unitmisc.phrases");
 
 	Object_PluginStart();
+	RTSMenu_PluginStart();
 }
 
 void RTS_MapStart()
@@ -197,6 +205,9 @@ void RTS_ConfigsSetup()
 			TeamNumber[client] = (client % MAX_TEAMS);
 	}
 	// DEBUG
+
+	Classes_ConfigSetup();
+	Object_ConfigSetup();
 }
 
 void RTS_PlayerResupply(int client)
@@ -204,6 +215,7 @@ void RTS_PlayerResupply(int client)
 	// DEBUG
 	TeamNumber[client] = (client % MAX_TEAMS);
 	// DEBUG
+
 /*
 	if(!RTS_InSetup())
 	{
@@ -329,9 +341,19 @@ bool RTS_HasFlag(int entity, int type)
 	return view_as<bool>(UnitFlags[entity] & (1 << type));
 }
 
-void RTS_CheckSupplies(int team)
+void RTS_AddMaxHealth(int entity, int amount)
 {
-	
+	int health = GetEntProp(entity, Prop_Data, "m_iHealth");
+	int maxhealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+
+	SetEntProp(entity, Prop_Data, "m_iHealth", health + amount);
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth + amount);
+}
+
+int RTS_CheckSupplies(int team, int &maxsupplies = 0)
+{
+	maxsupplies = 45;
+	return 45 - team;	
 }
 
 void RTS_TakeDamage(int victim, float &damage, int damagetype)
@@ -422,6 +444,17 @@ void RTS_DisplayMessage(int client, const char[] message)
 stock void RTS_UnitPriceChanges(int team, NPCData data)
 {
 	// OVERRIDES
+}
+
+bool RTS_FindTeamUnitById(int &entity, int team, int id)
+{
+	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	{
+		if(!b_NpcHasDied[entity] && i_NpcInternalId[entity] == id && TeamNumber[entity] == team && !RTS_HasFlag(entity, Flag_Converted))
+			return true;
+	}
+
+	return false;
 }
 
 static Action CommandSetSpeed(int client, int args)

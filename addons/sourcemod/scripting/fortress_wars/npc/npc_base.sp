@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define MELEE_RANGE_SQR	10000.0
-
 enum struct CommandEnum
 {
 	int Type;
@@ -185,12 +183,12 @@ methodmap UnitBody < CClotBody
 	{
 		UnitBody npc = view_as<UnitBody>(CClotBody(vecPos, vecAng, model, modelscale, health, isGiant, CustomThreeDimensions));
 		
-		SetTeam(entity, team);
+		SetTeam(npc.index, team);
 		npc.RemoveAllFlags();
 		NextGesture[npc.index][0] = 0;
 		delete CommandList[npc.index];
 		npc.ClearStats();
-		obj.m_hSkillsFunc = INVALID_FUNCTION;
+		npc.m_hSkillsFunc = INVALID_FUNCTION;
 
 		for(int i; i < Sound_MAX; i++)
 		{

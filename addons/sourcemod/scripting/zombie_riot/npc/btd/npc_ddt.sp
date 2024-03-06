@@ -62,7 +62,9 @@ static int MoabHealth(bool fortified)
 
 void DDT_MapStart()
 {
-	PrecacheModel("models/zombie_riot/btd/ddt.mdl");
+	if(!IsFileInDownloads("models/zombie_riot/btd/ddt.mdl"))
+		return;
+	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Dark Dirigible Titan");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ddt");
@@ -71,7 +73,13 @@ void DDT_MapStart()
 	data.Flags = 0;
 	data.Category = Type_BTD;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheModel("models/zombie_riot/btd/ddt.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)

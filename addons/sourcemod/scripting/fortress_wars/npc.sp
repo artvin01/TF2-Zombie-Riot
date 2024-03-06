@@ -8,7 +8,9 @@ enum struct NPCData
 	char Plugin[32];
 	char Name[32];
 	Function Func;
+
 	int Price[Resource_MAX];
+	float TrainTime;
 }
 
 int NPC_Add(NPCData data)
@@ -77,6 +79,13 @@ int NPC_CreateByName(const char[] name, int team, const float vecPos[3], const f
 	return CreateNPC(npcdata, id, team, vecPos, vecAng, data);
 }
 
+int NPC_CreateById(int id, int team, const float vecPos[3], const float vecAng[3], const char[] data = "")
+{
+	static NPCData npcdata;
+	NPCList.GetArray(id, npcdata);
+	return CreateNPC(npcdata, id, team, vecPos, vecAng, data);
+}
+
 static int CreateNPC(const NPCData npcdata, int id, int team, const float vecPos[3], const float vecAng[3], const char[] data)
 {
 	int entity = -1;
@@ -94,6 +103,8 @@ static int CreateNPC(const NPCData npcdata, int id, int team, const float vecPos
 		
 		if(!i_NpcInternalId[entity])
 			i_NpcInternalId[entity] = id;
+		
+		Classes_NPCSpawn(entity, npcdata, team);
 	}
 
 	return entity;

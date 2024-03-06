@@ -25,9 +25,10 @@ enum struct NPCData
 	int Flags;
 	char Icon[32];
 	bool IconCustom;
+	Function Precache;
 
 	// Don't touch below
-	bool IconPrecached;
+	bool Precached;
 }
 
 // FileNetwork_ConfigSetup needs to be ran first
@@ -511,19 +512,27 @@ int NPC_GetByPlugin(const char[] plugin, NPCData data = {})
 		NPCList.GetArray(i, data);
 		if(StrEqual(plugin, data.Plugin))
 		{
-			PrecacheIcons(i, data);
+			PrecacheNPC(i, data);
 			return i;
 		}
 	}
 	return -1;
 }
 
-static void PrecacheIcons(int i, NPCData data)
+static void PrecacheNPC(int i, NPCData data)
 {
-	if(data.Icon[0] && data.IconCustom && !data.IconPrecached)
+	if(!data.Precached)
 	{
-		PrecacheMvMIconCustom(data.Icon);
-		data.IconPrecached = true;
+		if(data.Icon[0] && data.IconCustom)
+			PrecacheMvMIconCustom(data.Icon);
+		
+		if(data.Precache && data.Precache != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, data.Precache);
+			Call_Finish();
+		}
+
+		data.Precached = true;
 		NPCList.SetArray(i, data);
 	}
 }
@@ -554,8 +563,10 @@ int NPC_CreateById(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3
 	return CreateNPC(npcdata, Index_Of_Npc, client, vecPos, vecAng, team, data);
 }
 
-static int CreateNPC(const NPCData npcdata, int id, int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
+	PrecacheNPC(id, npcdata);
+
 	any entity = -1;
 
 	Call_StartFunction(null, npcdata.Func);

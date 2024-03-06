@@ -45,6 +45,7 @@ void ObjectEmpire_Setup()
 {
 	PrecacheSoundArray(SelectSounds);
 	PrecacheSoundArray(CombatAlertSounds);
+	PrecacheSoundArray(CreatedSounds);
 	PrecacheSoundArray(BigDeathSounds);
 	PrecacheSoundArray(DeathSounds);
 	PrecacheSoundArray(SmallDeathSounds);
@@ -82,17 +83,15 @@ methodmap EmpireObject < UnitObject
 		
 		obj.SetSoundFunc(Sound_Select, PlaySelectSound);
 		obj.SetSoundFunc(Sound_CombatAlert, PlayCombatAlertSound);
-
-		obj.m_flHeadshotCooldown = 0.0;
 		
 		obj.m_hOnTakeDamageFunc = EmpireObject_TakeDamage;
 		obj.m_hDeathFunc = EmpireObject_Death;
 
-		return npc;
+		return obj;
 	}
 }
 
-void EmpireObject_ClotTakeDamage(int victim, int &attacker)
+void EmpireObject_TakeDamage(int victim, int &attacker)
 {
 	if(attacker > 0)
 	{
@@ -106,15 +105,10 @@ void EmpireObject_ClotTakeDamage(int victim, int &attacker)
 	}
 }
 
-void EmpireObject_ClotDeath(int entity)
+void EmpireObject_Death(int entity)
 {
 	EmpireObject obj = view_as<EmpireObject>(entity);
 	obj.PlayDeathSound();
-}
-
-static any TownCenterSummoned(int team, const float vecPos[3], const char[] data)
-{
-	return TownCenter(team, vecPos, vecAng);
 }
 
 static void PlaySelectSound(int client)

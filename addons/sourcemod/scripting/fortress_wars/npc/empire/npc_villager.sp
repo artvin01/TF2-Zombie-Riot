@@ -33,6 +33,7 @@ void Villager_Setup()
 	data.Func = ClotSummon;
 	data.Price[Resource_Supply] = 1;
 	data.Price[Resource_Food] = 50;
+	data.TrainTime = 25.0;
 	NPC_Add(data);
 }
 
@@ -66,7 +67,6 @@ methodmap Villager < EmpireBody
 		
 		npc.SetActivity("ACT_VILLAGER_IDLE");
 		npc.m_flSpeed = 160.0;
-		npc.m_flEngageRange = OBJECT_UNITS * 3.0;
 		
 		npc.AddFlag(Flag_Biological);
 		npc.AddFlag(Flag_Worker);

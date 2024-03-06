@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static Handle ResourceHud;
 static float UpdateMenuIn[MAXTF2PLAYERS];
 static bool InMenu[MAXTF2PLAYERS];
 static bool HadSelection[MAXTF2PLAYERS];
@@ -11,6 +12,11 @@ static ArrayList ControlGroups[MAXTF2PLAYERS][9];
 void RTSMenu_Update(int client)
 {
 	UpdateMenuIn[client] = 0.0;
+}
+
+void RTSMenu_PluginStart()
+{
+	ResourceHud = CreateHudSynchronizer();
 }
 
 void RTSMenu_ClientDisconnect(int client)
@@ -331,6 +337,14 @@ void RTSMenu_PlayerRunCmd(int client)
 				FormatEx(buffer, sizeof(buffer), "RTS Tooltip %d", CurrentTip[client]);
 				Format(display, sizeof(display), "%s\n%t", display, buffer);
 			}
+			
+			if(CvarInfiniteCash.BoolValue)
+			{
+				for(int i = 1; i < Resource_MAX; i++)
+				{
+					Resource[TeamNumber[client]][i] = 100000;
+				}
+			}
 		}
 		
 		Menu menu = new Menu(UpdateMenuMainH);
@@ -381,6 +395,17 @@ void RTSMenu_PlayerRunCmd(int client)
 		menu.Pagination = 0;
 		menu.ExitButton = true;
 		InMenu[client] = menu.Display(client, 1);
+
+		int supplies;
+		int free = RTS_CheckSupplies(TeamNumber[client], supplies);
+		FormatEx(display, sizeof(display), "Medieval Empire\nTeutons\n \n%t %d / %d", ResourceName[0], supplies - free, supplies);
+		for(int i = 1; i < Resource_MAX; i++)
+		{
+			Format(display, sizeof(display), "%s\n%t %d", display, ResourceName[i], Resource[TeamNumber[client]][i]);
+		}
+
+		SetHudTextParams(0.0, 0.0, 0.8, 255, 255, 255, 255);
+		ShowSyncHudText(client, ResourceHud, display);
 	}
 }
 

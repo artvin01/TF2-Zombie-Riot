@@ -104,6 +104,23 @@ float InfectionDelay()
 }
 void RaidbossNemesis_OnMapStart()
 {
+	if(!IsFileInDownloads(NEMESIS_MODEL))
+		return;
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Nemesis");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_raidboss_nemesis");
+	strcopy(data.Icon, sizeof(data.Icon), "nemesis_boss");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);       }
 	for (int i = 0; i < (sizeof(g_HurtSounds));        i++) { PrecacheSound(g_HurtSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));    i++) { PrecacheSound(g_MeleeHitSounds[i]);    }
@@ -115,15 +132,6 @@ void RaidbossNemesis_OnMapStart()
 	PrecacheModel(NEMESIS_MODEL);
 	PrecacheSound("weapons/cow_mangler_explode.wav");
 	PrecacheSoundCustom("#zombie_riot/320_now_1.mp3");
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Nemesis");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_raidboss_nemesis");
-	strcopy(data.Icon, sizeof(data.Icon), "nemesis_boss");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Special;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)

@@ -52,12 +52,9 @@ static int MoabHealth(bool fortified)
 
 void Bad_MapStart()
 {
-	for(int i; i<sizeof(SoundZomgPop); i++)
-	{
-		PrecacheSoundCustom(SoundZomgPop[i]);
-	}
+	if(!IsFileInDownloads("models/zombie_riot/btd/bad.mdl"))
+		return;
 	
-	PrecacheModel("models/zombie_riot/btd/bad.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Big Airship of Doom");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bad");
@@ -66,7 +63,18 @@ void Bad_MapStart()
 	data.Flags = 0;
 	data.Category = Type_BTD;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	for(int i; i<sizeof(SoundZomgPop); i++)
+	{
+		PrecacheSoundCustom(SoundZomgPop[i]);
+	}
+	
+	PrecacheModel("models/zombie_riot/btd/bad.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)

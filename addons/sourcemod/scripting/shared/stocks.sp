@@ -359,17 +359,14 @@ stock int ExplodeStringFloat(const char[] text, const char[] split, float[] buff
 	return total;
 }
 
-stock bool KvJumpToKeySymbol2(KeyValues kv, int id)
+stock void KvGetTranslation(KeyValues kv, const char[] string, char[] buffer, int length, const char[] defaul = "")
 {
-	if(kv.GotoFirstSubKey())
+	kv.GetString(string, buffer, length, defaul);
+	if(buffer[0] && !TranslationPhraseExists(buffer))
 	{
-		do
-		{
-			if(kv.JumpToKeySymbol(id))
-				return true;
-		} while(kv.GotoNextKey());
+		LogError("[Config] Missing translation '%s'", buffer);
+		strcopy(buffer, length, defaul);
 	}
-	return false;
 }
 
 static bool i_PreviousInteractedEntityDo[MAXENTITIES];
@@ -796,7 +793,6 @@ void RemoveAllDefaultAttribsExceptStrings(int entity)
 	
 	delete staticAttribs;	
 }
-#endif
 
 stock void NullifySpecificAttributes(int entity, int attribute)
 {
@@ -812,6 +808,7 @@ stock void NullifySpecificAttributes(int entity, int attribute)
 		}
 	}
 }
+#endif
 
 stock void TF2_RemoveItem(int client, int weapon)
 {
@@ -1130,7 +1127,7 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype)
+stock void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype)
 {
 	if(IsValidEntity(entity) && IsValidEntity(weapon) && IsValidEntity(client))
 	{
@@ -1233,6 +1230,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		}
 #endif
 
+#if !defined RTS
 		//Extra healing bonuses or penalty for all healing except absolute
 		if(reciever <= MaxClients)
 			HealTotal *= Attributes_GetOnPlayer(reciever, 526, true, false);
@@ -1243,6 +1241,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 			if(reciever <= MaxClients)
 				HealTotal *= Attributes_GetOnPlayer(reciever, 734, true, false);
 		}
+#endif
 	}
 #if defined ZR
 	if(healer != reciever && HealOverThisDuration != 0.0)
@@ -3823,6 +3822,7 @@ stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int 
 	SetHudTextParams(HudX, HudY, duration, red, green, blue, 255);
 }
 
+#if !defined RTS
 stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
 {
 	if(Attributes_Has(entity,index))
@@ -3868,6 +3868,7 @@ public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
 	}
 	return Plugin_Stop;
 }
+#endif
 
 /*
 void PlayFakeDeathSound(int client)

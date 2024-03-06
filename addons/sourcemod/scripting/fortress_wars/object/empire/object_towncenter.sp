@@ -20,7 +20,7 @@ void TownCenter_Setup()
 
 static any ClotSummoned(int team, const float vecPos[3], const char[] data)
 {
-	return TownCenter(team, vecPos, vecAng);
+	return TownCenter(team, vecPos);
 }
 
 methodmap TownCenter < EmpireObject
@@ -33,7 +33,8 @@ methodmap TownCenter < EmpireObject
 		obj.AddFlag(Flag_Heroic);
 
 		obj.m_hSkillsFunc = ClotSkill;
-		ObjectTraining_Create(entity);
+		obj.m_hDeathFunc = ClotDeath;
+		ObjectTraining_Create(obj.index);
 
 		Stats[obj.index].Sight = 8;
 		Stats[obj.index].Damage = 5;
@@ -55,9 +56,28 @@ static bool ClotSkill(int entity, int client, int type, bool use, SkillEnum skil
 	{
 		case 0:	// Q
 		{
-			return ObjectTraining_Skill(entity, client, "npc_villager", use, skill);
+			return ObjectTraining_SkillUnit(entity, client, "npc_villager", use, skill);
+		}
+		case 5:	// A
+		{
+			static const int price[Resource_MAX] = {0, 0, 50}; // 50 Gold
+			return ObjectTraining_SkillResearch(entity, client, "Loom", LoomResearched, price, 25.0, use, skill);
+		}
+		case 9:	// G
+		{
+			return ObjectTraining_ClearSkill(entity, client, use, skill);
 		}
 	}
 
 	return false;
+}
+
+static void LoomResearched(int entity, int team)
+{
+	ClassEmpire_EnableLoom(team);
+}
+
+static void ClotDeath(int entity)
+{
+	ObjectTraining_Destory(entity);
 }

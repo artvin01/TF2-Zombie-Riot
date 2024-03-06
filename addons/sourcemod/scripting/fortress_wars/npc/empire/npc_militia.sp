@@ -51,7 +51,6 @@ methodmap Militia < EmpireBody
 		
 		npc.SetActivity("ACT_IDLE");
 		npc.m_flSpeed = 180.0;
-		npc.m_flEngageRange = OBJECT_UNITS * 3.0;
 
 		npc.AddFlag(Flag_Biological);
 

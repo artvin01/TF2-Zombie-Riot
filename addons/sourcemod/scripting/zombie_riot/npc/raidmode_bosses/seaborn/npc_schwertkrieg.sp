@@ -138,6 +138,35 @@ static int i_ProjectileIndex;
 
 void Raidboss_Schwertkrieg_OnMapStart_NPC()
 {
+	Zero(fl_focus_timer);
+	Zero(fl_teleport_strike_recharge);
+	Zero(b_teleport_strike_active);
+	Zero(b_swords_created);
+	Zero(fl_retreat_timer);
+	Zero(fl_dance_of_light_sound_spam_timer);
+	Zero2(fl_dance_of_light_sword_throttle);
+	Zero(Schwertkrieg_BEAM_HitDetected);
+	Zero(fl_spinning_angle);
+	Zero2(fl_schwert_armour);
+	Zero(fl_schwert_sword_battery);
+	Zero(b_swords_flying);
+	Zero(fl_groupteleport_timer);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Schwertkrieg");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_schwertkrieg");
+	data.Category = Type_Raid;
+	data.Func = ClotSummon;
+	strcopy(data.Icon, sizeof(data.Icon), "schwert"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = true;													//download needed?
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;										//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+
+}
+
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_AngerSoundsPassed);
 	PrecacheSoundArray(g_AngerSounds);
 	PrecacheSoundArray(g_DeathSounds);
@@ -169,32 +198,8 @@ void Raidboss_Schwertkrieg_OnMapStart_NPC()
 	
 	PrecacheSound("mvm/mvm_tele_deliver.wav", true);
 	PrecacheSound("mvm/mvm_tele_activate.wav", true);
-
-	Zero(fl_focus_timer);
-	Zero(fl_teleport_strike_recharge);
-	Zero(b_teleport_strike_active);
-	Zero(b_swords_created);
-	Zero(fl_retreat_timer);
-	Zero(fl_dance_of_light_sound_spam_timer);
-	Zero2(fl_dance_of_light_sword_throttle);
-	Zero(Schwertkrieg_BEAM_HitDetected);
-	Zero(fl_spinning_angle);
-	Zero2(fl_schwert_armour);
-	Zero(fl_schwert_sword_battery);
-	Zero(b_swords_flying);
-	Zero(fl_groupteleport_timer);
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Schwertkrieg");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_schwertkrieg");
-	data.Category = Type_Raid;
-	data.Func = ClotSummon;
-	strcopy(data.Icon, sizeof(data.Icon), "schwert"); 		//leaderboard_class_(insert the name)
-	data.IconCustom = true;													//download needed?
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;										//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
-	NPC_Add(data);
-
 }
+
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Raidboss_Schwertkrieg(client, vecPos, vecAng, ally);

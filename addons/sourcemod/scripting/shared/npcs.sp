@@ -449,6 +449,8 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 	
 	float value = 8.0;
 	bool validWeapon = false;
+
+#if !defined RTS
 	if(weapon > MaxClients && IsValidEntity(weapon))
 	{
 		validWeapon = true;
@@ -458,6 +460,7 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 					
 		value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //For wand
 	}
+#endif
 
 	if(wasBurning)
 	{
@@ -510,6 +513,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				
 				int weapon = EntRefToEntIndex(IgniteRef[entity]);
 				float value = 8.0;
+#if !defined RTS
 				if(weapon > MaxClients && IsValidEntity(weapon))
 				{
 					value *= Attributes_FindOnWeapon(attacker, weapon, 2, true, 1.0);	  //For normal weapons
@@ -519,6 +523,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 					value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //For wand
 				}
 				else
+#endif
 				{
 					weapon = -1;
 				}
@@ -1088,9 +1093,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif
 	}
 
-#if !defined RTS
 	OnTakeDamageBleedNpc(victim, attacker, inflictor, damage, damagetype, weapon, damagePosition, GameTime);
-#endif
 
 	npcBase.m_vecpunchforce(damageForce, true);
 	npcBase.m_bGib = false;
@@ -1247,6 +1250,50 @@ stock void Generic_OnTakeDamage(int victim, int attacker)
 		{
 			npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 			npc.m_blPlayHurtAnimation = true;
+		}
+	}
+}
+
+
+void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damagePosition[3], float GameTime)
+{
+	CClotBody npcBase = view_as<CClotBody>(victim);
+	if(damagePosition[0] != 0.0) //If there is no pos, then dont.
+	{
+		if(!(damagetype & (DMG_SHOCK)))
+		{
+			if (f_CooldownForHurtParticle[victim] < GameTime)
+			{
+				f_CooldownForHurtParticle[victim] = GameTime + 0.1;
+				if(npcBase.m_iBleedType == BLEEDTYPE_NORMAL)
+				{
+					TE_ParticleInt(g_particleImpactFlesh, damagePosition);
+					TE_SendToAll();
+				}
+				else if (npcBase.m_iBleedType == BLEEDTYPE_METAL)
+				{
+					damagePosition[2] -= 40.0;
+					TE_ParticleInt(g_particleImpactMetal, damagePosition);
+					TE_SendToAll();
+				}
+				else if (npcBase.m_iBleedType == BLEEDTYPE_RUBBER)
+				{
+					TE_ParticleInt(g_particleImpactRubber, damagePosition);
+					TE_SendToAll();
+				}
+				else if (npcBase.m_iBleedType == BLEEDTYPE_XENO)
+				{
+					//If you cant find any good blood effect, use this one and just recolour it.
+					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
+					TE_SendToAll();
+				}
+				else if (npcBase.m_iBleedType == BLEEDTYPE_SEABORN)
+				{
+					//If you cant find any good blood effect, use this one and just recolour it.
+					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 65, 65, 255, 255, 32);
+					TE_SendToAll();
+				}
+			}
 		}
 	}
 }
@@ -2588,50 +2635,7 @@ void OnTakeDamageWidowsWine(int victim, int &attacker, int &inflictor, float &da
 		}
 	}
 }
-#endif
-void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damagePosition[3], float GameTime)
-{
-	CClotBody npcBase = view_as<CClotBody>(victim);
-	if(damagePosition[0] != 0.0) //If there is no pos, then dont.
-	{
-		if(!(damagetype & (DMG_SHOCK)))
-		{
-			if (f_CooldownForHurtParticle[victim] < GameTime)
-			{
-				f_CooldownForHurtParticle[victim] = GameTime + 0.1;
-				if(npcBase.m_iBleedType == BLEEDTYPE_NORMAL)
-				{
-					TE_ParticleInt(g_particleImpactFlesh, damagePosition);
-					TE_SendToAll();
-				}
-				else if (npcBase.m_iBleedType == BLEEDTYPE_METAL)
-				{
-					damagePosition[2] -= 40.0;
-					TE_ParticleInt(g_particleImpactMetal, damagePosition);
-					TE_SendToAll();
-				}
-				else if (npcBase.m_iBleedType == BLEEDTYPE_RUBBER)
-				{
-					TE_ParticleInt(g_particleImpactRubber, damagePosition);
-					TE_SendToAll();
-				}
-				else if (npcBase.m_iBleedType == BLEEDTYPE_XENO)
-				{
-					//If you cant find any good blood effect, use this one and just recolour it.
-					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
-					TE_SendToAll();
-				}
-				else if (npcBase.m_iBleedType == BLEEDTYPE_SEABORN)
-				{
-					//If you cant find any good blood effect, use this one and just recolour it.
-					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 65, 65, 255, 255, 32);
-					TE_SendToAll();
-				}
-			}
-		}
-	}
-}
-#if defined ZR
+
 bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {	
 	float ExtraDamageDealt;
@@ -2696,50 +2700,6 @@ void OnTakeDamageVehicleDamage(int &attacker, int &inflictor, float &damage, int
 			damage *= cvar.FloatValue;
 	}
 }
-
-#if defined RPG
-stock void OnTakeDamageRpgPotionBuff(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
-{	
-	if(IsValidEntity(weapon))
-	{
-		char Weaponclassname[64];
-		GetEntityClassname(weapon, Weaponclassname, 64);
-		int slot = TF2_GetClassnameSlot(Weaponclassname);
-		if(f_HealingPotionDuration[attacker] > GameTime) //Client has a buff, but which one?
-		{
-			switch(f_HealingPotionEffect[attacker])
-			{
-				case MELEE_BUFF_2:
-				{
-					if(slot == TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon]) //Only melee.
-					{
-						damage *= 1.15;
-					}
-				}
-				case RANGED_BUFF_2: 
-				{
-					if(slot < TFWeaponSlot_Melee) //Only Ranged
-					{
-						damage *= 1.25;
-					}
-				}
-				case MAGE_BUFF_2:
-				{
-					if(i_IsWandWeapon[weapon]) //Only Mage.
-					{
-						damage *= 1.25;
-					}
-				}
-				default: //Nothing.
-				{
-					damage *= 1.0;
-				}
-			}
-		}	
-		damage = RpgCC_ContractExtrasNpcOnTakeDamage(victim, attacker, damage, damagetype, weapon, slot);
-	}
-}
-#endif
 
 stock bool OnTakeDamageOldExtraWeapons(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {	

@@ -62,11 +62,6 @@ methodmap UnitObject < CBaseAnimating
 		return RTS_HasFlag(this.index, type);
 	}
 
-	public void AddNextGesture(const char[] anim)
-	{
-		strcopy(NextGesture[this.index], sizeof(NextGesture[]), anim);
-	}
-
 	public void SetSoundFunc(int type, Function func)
 	{
 		FuncSound[this.index][type] = func;
@@ -84,38 +79,6 @@ methodmap UnitObject < CBaseAnimating
 		Stats[this.index] = stats;
 	}
 
-	public void AddCommand(int method, int type, const float pos[3], int target = -1)
-	{
-		if(method == 1)
-		{
-			delete CommandList[this.index];
-			this.m_flGetClosestTargetTime = 0.0;
-		}
-		
-		CommandEnum command;
-		SetupCommand(this, command, type, pos, target);
-
-		if(!CommandList[this.index])
-			CommandList[this.index] = new ArrayList(sizeof(CommandEnum));
-		
-		if(method == 2 && CommandList[this.index].Length)
-		{
-			CommandList[this.index].ShiftUp(0);
-			CommandList[this.index].SetArray(0, command);
-		}
-		else
-		{
-			CommandList[this.index].PushArray(command);
-		}
-
-		if(method == 1 && type == Command_Patrol)
-		{
-			// Keep our current position when starting a patrol
-			command.TargetRef = -1;
-			GetEntPropVector(this.index, Prop_Data, "m_vecAbsOrigin", command.Pos);
-			CommandList[this.index].PushArray(command);
-		}
-	}
 	public void DealDamage(int victim, float multi = 1.0, int damageType = DMG_GENERIC, const float damageForce[3] = NULL_VECTOR, const float damagePosition[3] = NULL_VECTOR)
 	{
 		int damage = RoundFloat(Stats[this.index].Damage * multi) + Stats[this.index].DamageBonus;
@@ -131,23 +94,7 @@ methodmap UnitObject < CBaseAnimating
 	}
 	public bool InAttackRange(int target)
 	{
-		float rangesqr = MELEE_RANGE_SQR;
-		if(Stats[this.index].Range > 1)
-		{
-			rangesqr = (Stats[this.index].Range + Stats[this.index].RangeBonus) * OBJECT_UNITS;
-			rangesqr *= rangesqr;
-		}
-		
-		float vecMe[3], vecTarget[3];
-		WorldSpaceCenter(this.index, vecMe);
-		WorldSpaceCenter(target, vecTarget);
-		
-		Handle trace = TR_TraceRayFilterEx(vecMe, vecTarget, MASK_SOLID, RayType_EndPoint, AttackRangeTrace, target);
-		TR_GetEndPosition(vecTarget, trace);
-		delete trace;
-
-		float dist = GetVectorDistance(vecMe, vecTarget, true);
-		return dist < rangesqr;
+		return view_as<UnitBody>(this).InAttackRange(target);
 	}
 
 	property int m_hTextEntity1
@@ -342,20 +289,19 @@ methodmap UnitObject < CBaseAnimating
 		DispatchKeyValue(obj.index, "model", model[0] ? model : OBJECT_HITBOX);
 		DispatchKeyValueFloat(obj.index, "modelscale", modelscale ? (scale * OBJECT_UNITS / OBJECT_MODELSIZE) : modelscale);
 		DispatchKeyValueInt(obj.index, "health", health);
-		DispatchKeyValueInt(obj.index, "solid", solid ? "2" : "0");
+		DispatchKeyValueInt(obj.index, "solid", solid ? 2 : 0);
 
 		SetEntityRenderFx(obj.index, RENDERFX_FADE_SLOW);
 
 		b_BuildingHasDied[obj.index] = false;
 		i_IsABuilding[obj.index] = true;
-		b_NoKnockbackFromSources[entity] = true;
+		b_NoKnockbackFromSources[obj.index] = true;
 
 		obj.m_hDeathFunc = INVALID_FUNCTION;
 		obj.m_hOnTakeDamageFunc = INVALID_FUNCTION;
 
-		SetTeam(entity, team);
+		SetTeam(obj.index, team);
 
-		obj.m_flEngageRange = 0.0;
 		obj.RemoveAllFlags();
 		obj.ClearStats();
 		obj.m_hSkillsFunc = INVALID_FUNCTION;
@@ -415,7 +361,7 @@ static bool ObjectDeath(int entity, bool delet)
 		func_NPCDeath[entity] = INVALID_FUNCTION;
 	}
 
-	b_BuildingHasDied[obj.index] = true;
+	b_BuildingHasDied[entity] = true;
 	i_IsABuilding[entity] = false;
 
 	SDKUnhook(entity, SDKHook_OnTakeDamage, Object_TakeDamage);
@@ -444,6 +390,7 @@ static bool ObjectDeath(int entity, bool delet)
 
 void Object_SnapPosition(float pos[3], int x, int y)
 {
+	// Snap x
 	int units = RoundFloat(x * OBJECT_UNITS);
 	bool odd = (x % 2) == 1;
 
@@ -455,6 +402,7 @@ void Object_SnapPosition(float pos[3], int x, int y)
 	if(odd)
 		pos[0] += OBJECT_UNITS / 2.0;
 
+	// Snap y
 	units = RoundFloat(y * OBJECT_UNITS);
 	odd = (y % 2) == 1;
 
@@ -465,6 +413,12 @@ void Object_SnapPosition(float pos[3], int x, int y)
 
 	if(odd)
 		pos[1] += OBJECT_UNITS / 2.0;
+	
+	// Snap to ground
+	pos[2] += 5.0;
+	Handle trace = TR_TraceRayFilterEx(pos, {90.0, 0.0, 0.0}, MASK_SOLID, RayType_Infinite, Trace_WorldOnly);
+	TR_GetEndPosition(pos, trace);
+	delete trace;
 }
 
 int Object_GetResource(int entity)

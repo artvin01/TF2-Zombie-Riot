@@ -303,9 +303,9 @@
 	{
 		"en"		"Building queue is full"
 	}
-	"Supply is full"
+	"Not enough supply"
 	{
-		"en"		"Supply is full"
+		"en"		"Not enough supply"
 	}
 	"At maximum supply"
 	{
@@ -350,6 +350,10 @@
 	"Worker"
 	{
 		"en"		"Worker"
+	}
+	"Converted"
+	{
+		"en"		"Converted"
 	}
 	"Supply"
 	{

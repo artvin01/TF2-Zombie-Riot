@@ -28,6 +28,20 @@ static const char g_AngerSounds[][] =
 
 void ThePurge_MapStart()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "The Purge");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_the_purge");
+	strcopy(data.Icon, sizeof(data.Icon), "the_purge");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_BoomSounds);
 	PrecacheSoundArray(g_AngerSounds);
@@ -40,16 +54,6 @@ void ThePurge_MapStart()
 	PrecacheSound("mvm/giant_soldier/giant_soldier_rocket_shoot.wav");
 	PrecacheSound("mvm/giant_demoman/giant_demoman_grenade_shoot.wav");
 	PrecacheSoundCustom("#zombiesurvival/internius/the_purge.mp3");
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "The Purge");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_the_purge");
-	strcopy(data.Icon, sizeof(data.Icon), "the_purge");
-	data.IconCustom = true;
-	data.Flags = 0;
-	data.Category = Type_Special;
-	data.Func = ClotSummon;
-	NPC_Add(data);
-
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)

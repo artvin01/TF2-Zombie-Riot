@@ -105,6 +105,19 @@ static const char g_BobSuperMeleeCharge_Hit[][] =
 
 void RaidbossBobTheFirst_OnMapStart()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "?????????????");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bob_the_first_last_savior");
+	data.IconCustom = true;
+	data.Flags = -1;
+	data.Category = Type_Hidden;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_IntroStartSounds);
 	PrecacheSoundArray(g_IntroEndSounds);
 	PrecacheSoundArray(g_SummonSounds);
@@ -124,15 +137,6 @@ void RaidbossBobTheFirst_OnMapStart()
 	PrecacheSoundArray(g_BobSuperMeleeCharge_Hit);
 	
 	PrecacheSoundCustom("#zombiesurvival/bob_raid/bob.mp3");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "?????????????");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bob_the_first_last_savior");
-	data.IconCustom = true;
-	data.Flags = -1;
-	data.Category = Type_Hidden;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)

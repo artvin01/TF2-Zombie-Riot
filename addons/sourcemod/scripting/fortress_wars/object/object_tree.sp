@@ -15,7 +15,6 @@ void TreeObject_Setup()
 static any DeadTreeSummon(int team, const float vecPos[3], const char[] data)
 {
 	float ang[3];
-	ang = vecAng;
 	ang[1] = (GetURandomFloat() * 360.0) - 180.0;
 
 	int health = data[0] ? StringToInt(data) : 100;

@@ -6,11 +6,13 @@
 #include <collisionhook>
 #include <clientprefs>
 #include <dhooks>
-#if !defined NOG
+#if defined ZR
 #include <tf2items>
 #include <tf_econ_data>
 #endif
+#if !defined RTS
 #include <tf2attributes>
+#endif
 //#include <lambda>
 #include <morecolors>
 #include <cbasenpc>
@@ -655,13 +657,13 @@ bool b_FaceStabber[MAXTF2PLAYERS];
 int g_particleMissText;
 int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 
 int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
-#endif
-int i_WandOwner[MAXENTITIES]; //				//785
-
 int i_BleedDurationWeapon[MAXENTITIES]={0, ...}; 				//149
 int i_BurnDurationWeapon[MAXENTITIES]={0, ...}; 				//208
 int i_ExtinquisherWeapon[MAXENTITIES]={0, ...}; 				//638
 float f_UberOnHitWeapon[MAXENTITIES]={0.0, ...}; 				//17
+#endif
+int i_WandOwner[MAXENTITIES]; //				//785
+
 
 bool b_IsCannibal[MAXTF2PLAYERS];
 
@@ -760,9 +762,12 @@ bool b_ExtendBoundingBox[MAXENTITIES];
 bool b_BlockLagCompInternal[MAXENTITIES];
 bool b_Dont_Move_Building[MAXENTITIES];
 bool b_Dont_Move_Allied_Npc[MAXENTITIES];
+#endif
+
+#if defined ZR
+bool g_GottenAddressesForLagComp;
 Address g_hSDKStartLagCompAddress;
 Address g_hSDKEndLagCompAddress;
-bool g_GottenAddressesForLagComp;
 #endif
 
 int b_BoundingBoxVariant[MAXENTITIES];
@@ -1214,7 +1219,10 @@ int Armor_Wearable[MAXTF2PLAYERS];
 #include "shared/teuton_sound_override.sp"
 #endif
 
+#if !defined RTS
 #include "shared/attributes.sp"
+#endif
+
 #include "shared/configs.sp"
 #include "shared/filenetwork.sp"
 #include "shared/npccamera.sp"
@@ -3196,7 +3204,11 @@ public void OnEntityDestroyed(int entity)
 		
 		if(entity > MaxClients)
 		{
+
+#if !defined RTS
 			Attributes_EntityDestroyed(entity);
+#endif
+
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
 #if defined ZR

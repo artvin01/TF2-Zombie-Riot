@@ -84,6 +84,20 @@ static int i_GogglesHurtTalkMessage[MAXENTITIES];
 
 void RaidbossBlueGoggles_OnMapStart()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Blue Goggles");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_infected_goggles");
+	strcopy(data.Icon, sizeof(data.Icon), "goggles");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
@@ -95,15 +109,6 @@ void RaidbossBlueGoggles_OnMapStart()
 	PrecacheSoundArray(g_BuffSounds);
 	PrecacheSoundArray(g_AngerSounds);
 	PrecacheSoundArray(g_HappySounds);
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Blue Goggles");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_infected_goggles");
-	strcopy(data.Icon, sizeof(data.Icon), "goggles");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Special;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)

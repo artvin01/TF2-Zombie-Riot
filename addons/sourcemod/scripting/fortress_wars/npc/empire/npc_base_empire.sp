@@ -160,8 +160,6 @@ void EmpireBody_Setup()
 	PrecacheSoundArray(SiegeHurtSounds);
 	PrecacheSoundArray(SiegeSelectSounds);
 	PrecacheSoundArray(SiegeMoveSounds);
-	PrecacheSoundArray(BuildingSelectSounds);
-	PrecacheSoundArray(BuildingCombatAlertSounds);
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
 
@@ -320,11 +318,6 @@ static void PlaySiegeSelectSound(int client)
 	EmitSoundToClient(client, SiegeSelectSounds[GetURandomInt() % sizeof(SiegeSelectSounds)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
 }
 
-static void PlayBuildingSelectSound(int client)
-{
-	EmitSoundToClient(client, BuildingSelectSounds[GetURandomInt() % sizeof(BuildingSelectSounds)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
-}
-
 static void PlayMoveSound(int client)
 {
 	EmitSoundToClient(client, MoveSounds[GetURandomInt() % sizeof(MoveSounds)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
@@ -343,9 +336,4 @@ static void PlayAttackSound(int client)
 static void PlayCombatAlertSound(int client)
 {
 	EmitSoundToClient(client, CombatAlertSounds[GetURandomInt() % sizeof(CombatAlertSounds)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
-}
-
-static void PlayBuildingCombatAlertSound(int client)
-{
-	EmitSoundToClient(client, BuildingCombatAlertSounds[GetURandomInt() % sizeof(BuildingCombatAlertSounds)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
 }
