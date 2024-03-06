@@ -157,9 +157,13 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 		PrecacheSound(altsound);
 		SoundAlts.SetString(sound, altsound);
 	}
-	DataPack pack = new DataPack();
-	pack.WriteString(sound);
-	RequestFrames(FileNetwork_AddSoundFrame, delay, pack);
+
+	if(delay >= 0)
+	{
+		DataPack pack = new DataPack();
+		pack.WriteString(sound);
+		RequestFrames(FileNetwork_AddSoundFrame, delay, pack);
+	}
 #endif
 }
 
@@ -402,26 +406,31 @@ stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND
 #else
 
 	int soundlevel = SoundList.FindString(sound);
-	if(soundlevel == -1)
-		ThrowError("\"%s\" is not precached with PrecacheSoundCustom", sound);
-	
-	if(SoundLevel[client] > soundlevel)
+	if(soundlevel != -1)
 	{
-		float volume2 = volume;
-		int count = RoundToCeil(volume);
-		if(count > 1)
-			volume2 /= float(count);
-		
-		for(int i; i < count; i++)
+		if(SoundLevel[client] > soundlevel)
 		{
-			EmitSoundToClient(client, sound, entity, channel, level, flags, volume2, pitch, speakerentity, origin, dir, updatePos, soundtime);
+			float volume2 = volume;
+			int count = RoundToCeil(volume);
+			if(count > 1)
+				volume2 /= float(count);
+			
+			for(int i; i < count; i++)
+			{
+				EmitSoundToClient(client, sound, entity, channel, level, flags, volume2, pitch, speakerentity, origin, dir, updatePos, soundtime);
+			}
+			return true;
 		}
-		return true;
 	}
 	
 	static char buffer[PLATFORM_MAX_PATH];
 	if(!SoundAlts.GetString(sound, buffer, sizeof(buffer)))
+	{
+		if(soundlevel == -1)
+			ThrowError("\"%s\" is not precached with PrecacheSoundCustom", sound);
+
 		return false;
+	}
 	
 	float volume2 = volume;
 	int count = RoundToCeil(volume);
@@ -514,4 +523,21 @@ stock void EmitCustom(const int[] clients, int numClients, const char[] sound, i
 		}
 	}
 #endif
+}
+
+stock bool IsFileInDownloads(const char[] file)
+{
+	static int table;
+	if(!table)
+		table = FindStringTable("downloadables");
+	
+	char buffer[PLATFORM_MAX_PATH];
+	int length = GetStringTableNumStrings(table);
+	for(int i; i < length; i++)
+	{
+		if(ReadStringTable(table, i, buffer, sizeof(buffer)) && StrEqual(buffer, file, false))
+			return true;
+	}
+
+	return false;
 }

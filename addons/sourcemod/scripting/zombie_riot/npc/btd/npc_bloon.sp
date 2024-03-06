@@ -170,6 +170,23 @@ int Bloon_Health(bool fortified, int type)
 
 void Bloon_MapStart()
 {
+	if(!IsFileInDownloads("models/zombie_riot/btd/bloons_hitbox.mdl"))
+		return;
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Bloon");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bloon");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_BTD;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	char buffer[256];
 	for(int i; i<sizeof(SoundCeramicHit); i++)
 	{
@@ -215,22 +232,13 @@ void Bloon_MapStart()
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/bloons_hitbox.mdl");
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Bloon");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bloon");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
-	data.Flags = 0;
-	data.Category = Type_BTD;
-	data.Func = ClotSummon;
-	NPC_Add(data);
-
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
 	return Bloon(client, vecPos, vecAng, ally, data);
 }
+
 static int BType[MAXENTITIES];
 static bool Regrow[MAXENTITIES];
 static bool WasCamo[MAXENTITIES];

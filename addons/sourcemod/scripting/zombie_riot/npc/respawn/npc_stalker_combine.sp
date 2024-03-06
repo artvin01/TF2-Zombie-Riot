@@ -476,7 +476,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 						if(i_NpcInternalId[npc.m_iTarget] == CuredFatherGrigori_ID())
 						{
 							Enemy enemy;
-							enemy.Index = NPC_GetIdByPlugin("npc_stalker_father");
+							enemy.Index = NPC_GetByPlugin("npc_stalker_father");
 							enemy.Health = 666666;
 							enemy.Is_Immune_To_Nuke = true;
 							enemy.Is_Static = true;

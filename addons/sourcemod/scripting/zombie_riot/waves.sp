@@ -492,7 +492,7 @@ void Waves_SetupMiniBosses(KeyValues map)
 		{
 			kv.GetSectionName(buffer, sizeof(buffer));
 			
-			boss.Index = NPC_GetIdByPlugin(buffer);
+			boss.Index = NPC_GetByPlugin(buffer);
 			if(boss.Index == -1)
 			{
 				LogError("[Config] Unknown NPC '%s' in mini-bosses", buffer);
@@ -652,7 +652,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 					kv.GetString("plugin", plugin, sizeof(plugin));
 					if(plugin[0])
 					{
-						enemy.Index = NPC_GetIdByPlugin(plugin);
+						enemy.Index = NPC_GetByPlugin(plugin);
 						if(enemy.Index == -1)
 						{
 							LogError("[Config] Unknown NPC '%s' in waves", plugin);
@@ -2333,56 +2333,7 @@ static void UpdateMvMStatsFrame()
 					}
 
 					if(!data.Icon[0])
-					{
-						if(StrContains(data.Name, "sword", false) != -1 || StrContains(data.Plugin, "sword", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "demoknight");
-						}
-						else if(StrContains(data.Name, "combine", false) != -1 || StrContains(data.Plugin, "combine", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
-						}
-						else if(StrContains(data.Name, "scout", false) != -1 || StrContains(data.Plugin, "scout", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "scout");
-						}
-						else if(StrContains(data.Name, "soldier", false) != -1 || StrContains(data.Plugin, "soldier", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "soldier");
-						}
-						else if(StrContains(data.Name, "pyro", false) != -1 || StrContains(data.Plugin, "pyro", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "pyro");
-						}
-						else if(StrContains(data.Name, "demo", false) != -1 || StrContains(data.Plugin, "demo", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "demo");
-						}
-						else if(StrContains(data.Name, "heavy", false) != -1 || StrContains(data.Plugin, "heavy", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "heavy");
-						}
-						else if(StrContains(data.Name, "engi", false) != -1 || StrContains(data.Plugin, "engi", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "engineer");
-						}
-						else if(StrContains(data.Name, "medic", false) != -1 || StrContains(data.Plugin, "medic", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "medic");
-						}
-						else if(StrContains(data.Name, "sniper", false) != -1 || StrContains(data.Plugin, "sniper", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "sniper");
-						}
-						else if(StrContains(data.Name, "spy", false) != -1 || StrContains(data.Plugin, "spy", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "spy");
-						}
-						else
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
-						}
-					}
+						strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
 					
 					if(!data.Flags)
 						data.Flags = flags[i];

@@ -3,12 +3,19 @@
 
 #define MIN_FADE_DISTANCE	9999.9
 #define MAX_FADE_DISTANCE	9999.9
+#define MELEE_RANGE_SQR		10000.0
 
 #define HELP_HINT_COUNT	4
 #define TIP_HINT_COUNT	8
 
 #define MAX_TEAMS	17
 #define MAX_SKILLS	10
+
+#define OBJECT_HITBOX		"models/props_moonbase/moon_cube_crystal04.mdl"
+#define OBJECT_OFFSET		{0.0, -90.0, 0.0}
+#define OBJECT_UNITS		64.0
+#define OBJECT_MODELSIZE	128.0//108.0
+#define SPAWN_ANGLES		{0.0, -45.0, 0.0}
 
 enum
 {
@@ -21,6 +28,7 @@ enum
 	Flag_Heroic,
 	Flag_Summoned,
 	Flag_Worker,
+	Flag_Converted,
 
 	Flag_MAX
 }
@@ -35,12 +43,14 @@ public const char FlagName[][] =
 	"Unique",
 	"Heroic",
 	"Summoned",
-	"Worker"
+	"Worker",
+	"Converted"
 };
 
 enum
 {
 	Resource_None = 0,
+	Resource_Supply = 0,
 	Resource_Wood = 1,
 	Resource_Gold = 2,
 	Resource_Food = 3,
@@ -50,10 +60,18 @@ enum
 
 public const char ResourceName[][] =
 {
-	"None",
+	"Supply",
 	"Wood",
 	"Gold",
 	"Food"
+};
+
+public const char ResourceShort[][] =
+{
+	"Supply Short",
+	"Wood Short",
+	"Gold Short",
+	"Food Short"
 };
 
 enum
@@ -107,11 +125,19 @@ enum struct StatEnum
 	int DamageBonus;
 	int ExtraDamage[Flag_MAX];
 	int ExtraDamageBonus[Flag_MAX];
+	int Range;
+	int RangeBonus;
+	int Sight;
+	int SightBonus;
+	int SupplyBonus;
 }
 
 enum struct SkillEnum
 {
+	char Formater[32];
 	char Name[32];
+	char Desc[32];
+	int Price[Resource_MAX];
 	float Cooldown;
 	int Count;
 	bool Auto;
@@ -119,16 +145,24 @@ enum struct SkillEnum
 
 int BuildMode[MAXTF2PLAYERS];
 int Resource[MAX_TEAMS][Resource_MAX];
+int UnitFlags[MAXENTITIES];
+int TeamClass[MAX_TEAMS];
+Function FuncSkills[MAXENTITIES];
+StatEnum Stats[MAXENTITIES];
+Function FuncSound[MAXENTITIES][Sound_MAX];
+ConVar CvarInfiniteCash;
 
+#include "fortress_wars/classes.sp"
 #include "fortress_wars/object.sp"
 #include "fortress_wars/npc.sp"	// Global NPC List
 #include "fortress_wars/menu.sp"
 
 static bool InSetup;
+static float GameSpeed = 0.5;
 static int AlliedTeams[MAX_TEAMS];
 static int AllowControls[MAX_TEAMS];
 static bool Defeated[MAX_TEAMS];
-static float GameSpeed = 0.5;
+static float SoundCooldown[MAXTF2PLAYERS];
 
 void RTS_PluginStart()
 {
@@ -137,13 +171,16 @@ void RTS_PluginStart()
 	RegAdminCmd("rts_setspeed", CommandSetSpeed, ADMFLAG_RCON, "Set the game speed");
 
 	LoadTranslations("realtime.unitnames.phrases");
+	LoadTranslations("realtime.unitmisc.phrases");
 
 	Object_PluginStart();
+	RTSMenu_PluginStart();
 }
 
 void RTS_MapStart()
 {
-	
+	Zero(SoundCooldown);
+	PrecacheModel(OBJECT_HITBOX);
 }
 
 void RTS_PluginEnd()
@@ -168,6 +205,9 @@ void RTS_ConfigsSetup()
 			TeamNumber[client] = (client % MAX_TEAMS);
 	}
 	// DEBUG
+
+	Classes_ConfigSetup();
+	Object_ConfigSetup();
 }
 
 void RTS_PlayerResupply(int client)
@@ -175,6 +215,7 @@ void RTS_PlayerResupply(int client)
 	// DEBUG
 	TeamNumber[client] = (client % MAX_TEAMS);
 	// DEBUG
+
 /*
 	if(!RTS_InSetup())
 	{
@@ -283,6 +324,137 @@ static Action HealthBarTransmit(int entity, int client)
 	}
 
 	return Plugin_Continue;
+}
+
+bool RTS_IsEntAlly(int attacker, int entity)
+{
+	return RTS_IsTeamAlly(TeamNumber[attacker], TeamNumber[entity]);
+}
+
+bool RTS_CanControl(int attacker, int entity)
+{
+	return RTS_CanTeamControl(TeamNumber[attacker], TeamNumber[entity]);
+}
+
+bool RTS_HasFlag(int entity, int type)
+{
+	return view_as<bool>(UnitFlags[entity] & (1 << type));
+}
+
+void RTS_AddMaxHealth(int entity, int amount)
+{
+	int health = GetEntProp(entity, Prop_Data, "m_iHealth");
+	int maxhealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+
+	SetEntProp(entity, Prop_Data, "m_iHealth", health + amount);
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth + amount);
+}
+
+int RTS_CheckSupplies(int team, int &maxsupplies = 0)
+{
+	maxsupplies = 45;
+	return 45 - team;	
+}
+
+void RTS_TakeDamage(int victim, float &damage, int damagetype)
+{
+	int dmg = RoundFloat(damage);
+
+	if(dmg > 0)
+	{
+		if(damagetype & DMG_SLASH)
+		{
+		}
+		else if(damagetype & DMG_CLUB)
+		{
+			dmg -= Stats[victim].MeleeArmor + Stats[victim].MeleeArmorBonus;
+		}
+		else
+		{
+			dmg -= Stats[victim].RangeArmor + Stats[victim].RangeArmorBonus;
+		}
+
+		if(dmg < 1)
+			dmg = 1;
+	}
+
+	damage = float(dmg);
+}
+
+bool RTS_GetSkill(int entity, int client, int type, SkillEnum skill)
+{
+	bool result;
+
+	if(FuncSkills[entity] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, FuncSkills[entity]);
+		Call_PushCell(entity);
+		Call_PushCell(client);
+		Call_PushCell(type);
+		Call_PushCell(false);
+		Call_PushArrayEx(skill, sizeof(skill), SM_PARAM_COPYBACK);
+		Call_Finish(result);
+	}
+
+	return result;
+}
+
+bool RTS_TriggerSkill(int entity, int client, int type)
+{
+	bool result;
+
+	if(FuncSkills[entity] != INVALID_FUNCTION)
+	{
+		SkillEnum skill;
+
+		Call_StartFunction(null, FuncSkills[entity]);
+		Call_PushCell(entity);
+		Call_PushCell(client);
+		Call_PushCell(type);
+		Call_PushCell(true);
+		Call_PushArrayEx(skill, sizeof(skill), 0);
+		Call_Finish(result);
+	}
+
+	return result;
+}
+
+void RTS_PlaySound(int entity, int client, int type)
+{
+	float gameTime = GetGameTime();
+	if(SoundCooldown[client] > gameTime)
+		return;
+	
+	if(FuncSound[entity][type] != INVALID_FUNCTION)
+	{
+		SoundCooldown[client] = gameTime + 1.5;
+		
+		Call_StartFunction(null, FuncSound[entity][type]);
+		Call_PushCell(client);
+		Call_Finish();
+	}
+}
+
+void RTS_DisplayMessage(int client, const char[] message)
+{
+	PrintToChat(client, "%t", message);
+	ClientCommand(client, "playgamesound ui/buttonclickrelease.wav");
+}
+
+stock void RTS_UnitPriceChanges(int team, NPCData data)
+{
+	// OVERRIDES
+}
+
+bool RTS_FindTeamUnitById(int &entity, int team, int id)
+{
+	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	{
+		if(!b_NpcHasDied[entity] && i_NpcInternalId[entity] == id && TeamNumber[entity] == team && !RTS_HasFlag(entity, Flag_Converted))
+			return true;
+	}
+
+	return false;
 }
 
 static Action CommandSetSpeed(int client, int args)

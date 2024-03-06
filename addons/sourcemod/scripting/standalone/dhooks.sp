@@ -80,10 +80,6 @@ public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) 
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}
-	else if(b_thisNpcHasAnOutline[entity])
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
-	}
 	else
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_PVSCHECK);

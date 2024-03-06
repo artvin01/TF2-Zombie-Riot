@@ -163,6 +163,24 @@ bool b_donner_said_win_line;
 
 void Raidboss_Donnerkrieg_OnMapStart_NPC()
 {
+	Zero(fl_nightmare_cannon_core_sound_timer);
+	donner_sea_created=false;
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Donnerkrieg");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_donnerkrieg");
+	data.Category = Type_Raid;
+	data.Func = ClotSummon;
+	strcopy(data.Icon, sizeof(data.Icon), "donner"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = true;													//download needed?
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;	
+	data.Precache = ClotPrecache;									//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+
+}
+
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
@@ -170,8 +188,6 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	PrecacheSoundArray(g_heavens_fall_strike_sound);
 
 	for (int i = 0; i < (sizeof(g_nightmare_cannon_core_sound));   i++) { PrecacheSoundCustom(g_nightmare_cannon_core_sound[i]);	}
-
-	Zero(fl_nightmare_cannon_core_sound_timer);
 
 	g_ProjectileModelRocket = PrecacheModel("models/props_moonbase/moon_gravel_crystal_blue.mdl");
 	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
@@ -209,20 +225,8 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 
 	PrecacheSound("ambient/energy/whiteflash.wav", true);
-
-	donner_sea_created=false;
-	
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Donnerkrieg");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_donnerkrieg");
-	data.Category = Type_Raid;
-	data.Func = ClotSummon;
-	strcopy(data.Icon, sizeof(data.Icon), "donner"); 		//leaderboard_class_(insert the name)
-	data.IconCustom = true;													//download needed?
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;										//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
-	NPC_Add(data);
-
 }
+
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
 	return Raidboss_Donnerkrieg(client, vecPos, vecAng, ally, data);

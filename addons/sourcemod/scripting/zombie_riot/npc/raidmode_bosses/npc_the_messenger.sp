@@ -83,6 +83,20 @@ static int NPCId;
 
 void TheMessenger_OnMapStart_NPC()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "The Messenger");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_the_messenger");
+	strcopy(data.Icon, sizeof(data.Icon), "messenger");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPCId = NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MessengerThrowFire));	   i++) { PrecacheSound(g_MessengerThrowFire[i]);	   }
 	for (int i = 0; i < (sizeof(g_MessengerThrowIce));	   i++) { PrecacheSound(g_MessengerThrowIce[i]);	   }
@@ -98,17 +112,7 @@ void TheMessenger_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_LaserGlobalAttackSound));   i++) { PrecacheSound(g_LaserGlobalAttackSound[i]);   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	PrecacheSoundCustom("#zombiesurvival/internius/messenger.mp3");
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "The Messenger");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_the_messenger");
-	strcopy(data.Icon, sizeof(data.Icon), "messenger");
-	data.IconCustom = true;
-	data.Flags = 0;
-	data.Category = Type_Special;
-	data.Func = ClotSummon;
-	NPCId = NPC_Add(data);
 }
-
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
