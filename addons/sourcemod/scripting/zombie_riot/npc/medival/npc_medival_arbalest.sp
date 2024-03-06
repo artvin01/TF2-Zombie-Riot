@@ -192,11 +192,11 @@ methodmap MedivalArbalest < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+
 		SDKHook(npc.index, SDKHook_Think, MedivalArbalest_ClotThink);
 	
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
-
 		npc.m_iState = 0;
 		npc.m_flSpeed = 170.0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -233,8 +233,6 @@ public void MedivalArbalest_ClotThink(int iNPC)
 {
 	MedivalArbalest npc = view_as<MedivalArbalest>(iNPC);
 	
-	SetVariantInt(1);
-	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{

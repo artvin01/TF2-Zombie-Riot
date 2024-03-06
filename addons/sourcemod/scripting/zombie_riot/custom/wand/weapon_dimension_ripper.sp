@@ -405,7 +405,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 		case 1:
 			Dimension_Summon_Npc(client, "npc_seaborn_scout" ,weapon, 1.15, 1.3, "utaunt_constellations_blue_base");
 		case 2:
-			Dimension_Summon_Npc(client, "npc_seaborn_kazimersch_berserker" ,weapon, 1.6, 1.2, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, "npc_seaborn_kazimersch_beserker" ,weapon, 1.6, 1.2, "utaunt_constellations_blue_base");
 		case 3:
 			Dimension_Summon_Npc(client, "npc_seaborn_guard" ,weapon, 1.2, 1.1, "utaunt_constellations_blue_base");
 		case 4:

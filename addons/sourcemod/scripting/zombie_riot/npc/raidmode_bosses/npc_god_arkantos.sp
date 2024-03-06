@@ -891,7 +891,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
 				GodArkantosSpawnEnemy(npc.index,"npc_medival_pikeman",_, RoundToCeil(5.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medvial_crossbow_giant",_, RoundToCeil(1.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_crossbow_giant",_, RoundToCeil(1.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(5000.0 * MultiGlobalArkantos), 1, true);		
 				GodArkantosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalArkantos), RoundToCeil(2.0 * MultiGlobal), true);		
 			}
@@ -899,7 +899,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 				GodArkantosSpawnEnemy(npc.index,"npc_medival_pikeman",_, RoundToCeil(15.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medvial_crossbow_giant",_, RoundToCeil(2.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(npc.index,"npc_medival_crossbow_giant",_, RoundToCeil(2.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(10000.0 * MultiGlobalArkantos), 1, true);		
 				GodArkantosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalArkantos), RoundToCeil(2.0 * MultiGlobal), true);				
 			}

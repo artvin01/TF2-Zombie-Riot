@@ -583,10 +583,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 					npc.FaceTowards(VecEnemy, 15000.0);
 					if(i_PhantomsSpawned[npc.index] <= 5 || (ZR_GetWaveCount() > 60 && i_PhantomsSpawned[npc.index] <= 10)) //We want a limit on how many fakes he can have.
 					{
-						//If its wave 60 or above, he can spawn 10 instead
-
-						//spawn fakes!
-						int fake_spawned = view_as<int>(PhantomKnight(1, vecPos_Npc, vecAng_Npc, GetTeam(npc.index)));
+						//If its wave 60 or above, he can spawn
+						int fake_spawned = NPC_CreateByName("npc_phantom_knight", -1, vecPos_Npc, vecAng_Npc,GetTeam(npc.index), "");
 						if(IsValidEntity(view_as<int>(fake_spawned)))
 						{
 							if(b_thisNpcIsABoss[npc.index]) //If he is a boss, make his clones a boss.

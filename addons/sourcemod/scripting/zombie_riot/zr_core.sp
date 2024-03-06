@@ -761,6 +761,7 @@ void ZR_MapStart()
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	
 	CreateTimer(2.0, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.2, GetTimerAndNullifyMusicMVM_Timer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
 	char_MusicString1[0] = 0;
 	char_MusicString2[0] = 0;
@@ -788,8 +789,17 @@ public Action GlobalTimer(Handle timer)
 			PlayerApplyDefaults(client);
 		}
 	}
+	
+
 	Zombie_Delay_Warning();
 	Spawners_Timer();
+	return Plugin_Continue;
+}
+public Action GetTimerAndNullifyMusicMVM_Timer(Handle timer)
+{
+	if(GameRules_GetRoundState() == RoundState_BetweenRounds)
+		GetTimerAndNullifyMusicMVM();
+		
 	return Plugin_Continue;
 }
 
@@ -2326,4 +2336,19 @@ stock bool isPlayerMad(int client) {
 		return g_isPlayerInDeathMarch_HellHoe[client];
 	}
 	return false;
+}
+
+
+stock void GetTimerAndNullifyMusicMVM()
+{
+	int Time = RoundToNearest(GameRules_GetPropFloat("m_flRestartRoundTime") - GetGameTime());
+	if(Time > 8 && Time <= 12)
+	{
+		GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + 8.0);
+	}
+	else
+	{
+		return;
+	}
+	
 }
