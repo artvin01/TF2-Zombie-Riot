@@ -1948,7 +1948,7 @@ void SensalGiveShield(int sensal, int shieldcount)
 	Sensal npc = view_as<Sensal>(sensal);
 	if(ZR_GetWaveCount()+1 >= 60)
 	{
-		shieldcount *= RoundToNearest(float(shieldcount) * 1.55);
+		shieldcount = RoundToNearest(float(shieldcount) * 1.55);
 	}
 	else if(ZR_GetWaveCount()+1 >= 45)
 	{
