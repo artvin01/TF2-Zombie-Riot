@@ -121,17 +121,33 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 	}
 }
 
-public void Messenger_Modechange(int client, bool &result)
+public void Messenger_Modechange(int client, int weapon, bool &result)
 {
 	if(IsValidEntity(client))
 	{
-		if(Change[client])
+		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Change[client]=false;
+			Rogue_OnAbilityUse(weapon);
+			Ability_Apply_Cooldown(client, slot, 7.5);
+			if(Change[client])
+			{
+				Change[client]=false;
+			}
+			else
+			{
+				Change[client]=true;
+			}
 		}
 		else
 		{
-			Change[client]=true;
+			float Ability_CD = Ability_Check_Cooldown(client, slot);
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+		
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		}
 	}
 }
