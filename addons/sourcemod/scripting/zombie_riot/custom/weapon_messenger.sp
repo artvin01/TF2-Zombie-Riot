@@ -121,7 +121,7 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 	}
 }
 
-public void Messenger_Modechange(int client, int weapon, bool &result)
+public void Messenger_Modechange(int client, int slot, int weapon, bool &result)
 {
 	if(IsValidEntity(client))
 	{
