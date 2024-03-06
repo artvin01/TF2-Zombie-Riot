@@ -13,14 +13,6 @@ static int SimonRagdollRef = INVALID_ENT_REFERENCE;
 
 void Simon_MapStart()
 {
-	for (int i = 0; i < (sizeof(g_HurtSounds));	   i++) { PrecacheSoundCustom(g_HurtSounds[i]);	   }
-
-	PrecacheSoundCustom("cof/simon/passive.mp3");
-	PrecacheSoundCustom("cof/simon/death7.mp3");
-	PrecacheSoundCustom("cof/simon/intro.mp3");
-	PrecacheSoundCustom("cof/simon/reload.mp3");
-	PrecacheSoundCustom("cof/simon/shoot.mp3");
-	PrecacheModel("models/zombie_riot/cof/booksimon.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Book Simon");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_simon");
@@ -29,7 +21,20 @@ void Simon_MapStart()
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_COF;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	for (int i = 0; i < (sizeof(g_HurtSounds));	   i++) { PrecacheSoundCustom(g_HurtSounds[i]);	   }
+
+	PrecacheSoundCustom("cof/simon/passive.mp3");
+	PrecacheSoundCustom("cof/simon/death7.mp3");
+	PrecacheSoundCustom("cof/simon/intro.mp3");
+	PrecacheSoundCustom("cof/simon/reload.mp3");
+	PrecacheSoundCustom("cof/simon/shoot.mp3");
+	PrecacheModel("models/zombie_riot/cof/booksimon.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)

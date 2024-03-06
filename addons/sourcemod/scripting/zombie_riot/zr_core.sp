@@ -1714,7 +1714,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 
 		if(killed)
 		{
-			Music_RoundEnd(killed);
+			Music_RoundEnd(killed, !rogue);
 			if(!rogue)
 			{
 				CreateTimer(5.0, Remove_All, _, TIMER_FLAG_NO_MAPCHANGE);

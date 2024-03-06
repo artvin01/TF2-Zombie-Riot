@@ -66,6 +66,20 @@ methodmap StalkerShared < CClotBody
 
 void StalkerCombine_MapStart()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Spawned Combine");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stalker_combine");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	static const char SoundList[][] =
 	{
 		"npc/zombine/zombine_idle1.wav",
@@ -94,16 +108,6 @@ void StalkerCombine_MapStart()
 	{
 		PrecacheSoundCustom(SoundList[i]);
 	}
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Spawned Combine");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stalker_combine");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
-	data.Flags = 0;
-	data.Category = Type_Special;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)

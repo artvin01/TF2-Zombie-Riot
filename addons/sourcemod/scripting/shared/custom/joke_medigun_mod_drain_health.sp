@@ -174,9 +174,7 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 				}
 				else if(What_type_Heal == 3.0)
 				{
-					static char buffer[64];
-					GetEntityClassname(target, buffer, sizeof(buffer));
-					if(!StrContains(buffer, "obj_", true))
+					if(i_IsABuilding[target])
 					{
 						bool team = GetTeam(owner)==GetTeam(target);
 						if((heals && team) || (drains && !team))

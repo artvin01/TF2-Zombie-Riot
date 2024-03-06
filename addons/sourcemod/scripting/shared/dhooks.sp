@@ -873,7 +873,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		if(i_WhatBuilding[entity1] == BuildingSentrygun)
 		{
 			//buildings cannot touch eachother
-			if(i_WhatBuilding[entity2] != 0 || (GetTeam(entity2) == TFTeam_Red))
+			if(i_WhatBuilding[entity2] != 0 || (GetTeam(entity2) == TFTeam_Red && entity2 > MaxClients)) //dont ignore players
 			{
 				return false;
 			}

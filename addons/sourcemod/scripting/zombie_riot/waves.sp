@@ -2153,6 +2153,9 @@ static void UpdateMvMStatsFrame()
 				ThrowError("Invalid offset");
 		}
 
+		if(Rogue_UpdateMvMStats(mvm, m_currentWaveStats, m_runningTotalWaveStats))
+			return;
+
 		float cashLeft, totalCash;
 
 		int activecount, totalcount;
@@ -2309,16 +2312,8 @@ static void UpdateMvMStatsFrame()
 			SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", RoundToNearest(cashLeft));
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", totalcount > activecount ? totalcount : activecount);
 
-			if(Rogue_Mode())
-			{
-				SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", Rogue_GetWave());
-				SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", 0);
-			}
-			else
-			{
-				SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
-				SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves : 0);
-			}
+			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
+			SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves : 0);
 
 			NPCData data;
 			for(int i; i < sizeof(id); i++)
@@ -2328,7 +2323,7 @@ static void UpdateMvMStatsFrame()
 					NPC_GetById(id[i], data);
 					if(data.Flags == -1)
 					{
-						SetWaveClass(objective, i);
+						Waves_SetWaveClass(objective, i);
 						continue;
 					}
 
@@ -2339,11 +2334,11 @@ static void UpdateMvMStatsFrame()
 						data.Flags = flags[i];
 
 					//PrintToChatAll("ID: %d Count: %d Flags: %d On: %d", id[i], count[i], flags[i], active[i]);
-					SetWaveClass(objective, i, count[i], data.Icon, data.Flags, active[i]);
+					Waves_SetWaveClass(objective, i, count[i], data.Icon, data.Flags, active[i]);
 				}
 				else
 				{
-					SetWaveClass(objective, i);
+					Waves_SetWaveClass(objective, i);
 				}
 			}
 		}
@@ -2452,7 +2447,7 @@ void Waves_SetReadyStatus(int status)
 	}
 }
 
-static void SetWaveClass(int objective, int index, int count = 0, const char[] icon = "", int flags = 0, bool active = false)
+void Waves_SetWaveClass(int objective, int index, int count = 0, const char[] icon = "", int flags = 0, bool active = false)
 {
 	static int size1, size2, name1, name2;
 
