@@ -60,7 +60,7 @@ static Action ThinkTimer(Handle timer, int ref)
 			{
 				// TODO: Spawn outside the building
 				float pos[3];
-				GetWorldSpaceCenter(entity, pos);
+				WorldSpaceCenter(entity, pos);
 				pos[2] += 300.0;
 				NPC_CreateById(TrainCurrent[entity].Index, team, pos, {0.0, 0.0, 0.0});
 			}

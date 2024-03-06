@@ -657,10 +657,6 @@ bool b_FaceStabber[MAXTF2PLAYERS];
 int g_particleMissText;
 int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 
 int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
-int i_BleedDurationWeapon[MAXENTITIES]={0, ...}; 				//149
-int i_BurnDurationWeapon[MAXENTITIES]={0, ...}; 				//208
-int i_ExtinquisherWeapon[MAXENTITIES]={0, ...}; 				//638
-float f_UberOnHitWeapon[MAXENTITIES]={0.0, ...}; 				//17
 #endif
 int i_WandOwner[MAXENTITIES]; //				//785
 
