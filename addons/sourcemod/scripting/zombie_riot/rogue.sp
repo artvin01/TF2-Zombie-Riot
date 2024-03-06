@@ -783,6 +783,7 @@ public Action Rogue_EndVote(Handle timer, float time)
 			{
 				Rogue_GiveNamedArtifact(vote.Name);
 				strcopy(StartingItem, sizeof(StartingItem), vote.Name);
+				Waves_SetReadyStatus(1);
 			}
 			else
 			{
@@ -800,7 +801,7 @@ public Action Rogue_RoundStartTimer(Handle timer)
 {
 	ProgressTimer = null;
 	
-	if(!Voting && !CvarNoRoundStart.BoolValue && GameRules_GetRoundState() != RoundState_ZombieRiot)
+	if(!Voting && !CvarNoRoundStart.BoolValue && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -1273,7 +1274,7 @@ void Rogue_NextProgress()
 			Rogue_NextProgress();
 		}
 	}
-	
+
 	Waves_UpdateMvMStats();
 }
 

@@ -787,8 +787,7 @@
 	}
 	"Hammer Pap 2"
 	{
-		"en"	"Increased damage and lower attackspeed.\nYour attacks are so strong that they cause explosions.\nArchetype changes to ''Crusher''"
-	    "ru"	"Увеличенный урон и сниженная скорость атаки.\nВаши атаки настолько сильны, что вызывают взрывы.\nАрхетип меняется на «Дробитель»"
+		"en"	"Increased damage and lower attackspeed.\nYour attacks are so strong that they cause explosions.\n1.15x dmg against bosses and 2x dmg against raids.\nArchetype changes to ''Crusher''"
 	}
 	"Hammer Pap 3"
 	{

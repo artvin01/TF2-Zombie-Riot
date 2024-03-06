@@ -424,6 +424,13 @@ void Spawns_CheckBadClient(int client)
 		// In air or water, no gain/loss
 		return;
 	}
+	int RefGround =  GetEntPropEnt(client, Prop_Send, "m_hGroundEntity");
+	int GroundEntity = EntRefToEntIndex(RefGround);
+	if(GroundEntity > 0 && GroundEntity < MAXENTITIES)
+	{
+		//client is ontop of something, dont do more, they have some way to be put down.
+		return;
+	}
 
 	int bad;
 

@@ -80,6 +80,7 @@ void StalkerCombine_MapStart()
 
 static void ClotPrecache()
 {
+	PrecacheModel("models/zombie/zombie_soldier.mdl");
 	static const char SoundList[][] =
 	{
 		"npc/zombine/zombine_idle1.wav",
@@ -101,7 +102,10 @@ static void ClotPrecache()
 		"npc/zombine/zombine_charge1.wav",
 		"npc/zombine/zombine_charge2.wav",
 		"npc/zombine/zombine_readygrenade2.wav",
-		"#music/vlvx_song11.mp3"
+		"#music/vlvx_song11.mp3",
+		"npc/zombine/gear1.wav",
+		"npc/zombine/gear2.wav",
+		"npc/zombine/gear3.wav"
 	};
 
 	for(int i; i < sizeof(SoundList); i++)
@@ -309,8 +313,8 @@ public void StalkerCombine_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index, !npc.m_bChaseAnger, _, true, _, _, _, true, FAR_FUTURE);
 		npc.m_flGetClosestTargetTime = gameTime + (npc.m_iTarget ? 2.5 : 0.5);
 
-		// Hunt down the Father on Wave 16
-		if(Waves_GetRound() > 14 && (npc.m_iTarget < 1 || i_NpcInternalId[npc.m_iTarget] != CuredFatherGrigori_ID()))
+		// Hunt down the Father
+		if(npc.m_iTarget < 1 || i_NpcInternalId[npc.m_iTarget] != CuredFatherGrigori_ID())
 		{
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
@@ -495,8 +499,8 @@ public void StalkerCombine_ClotThink(int iNPC)
 							TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
 
 							KillFeed_SetKillIcon(npc.index, "taunt_soldier");
-							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 99999999.9, DMG_DROWN);
-							SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9, DMG_DROWN);
+							SmiteNpcToDeath(npc.index);
+							SmiteNpcToDeath(npc.m_iTarget);
 						}
 					}
 					else
@@ -668,7 +672,7 @@ void StalkerCombine_HandleAnimEvent(int entity, int event)
 		};
 
 		StalkerCombine npc = view_as<StalkerCombine>(entity);
-		npc.PlayStepSound(RandomSound[GetURandomInt() % sizeof(RandomSound)], 1.0, npc.m_iStepNoiseType);
+		npc.PlayStepSound(RandomSound[GetURandomInt() % sizeof(RandomSound)], 1.0, npc.m_iStepNoiseType, true);
 	}
 }
 
