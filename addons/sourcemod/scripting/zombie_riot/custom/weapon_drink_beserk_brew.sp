@@ -62,14 +62,18 @@ public void Beserk_Mode_Stats(int client)
 	CreateTimer(8.0, After_Beserk_Mode_Stats, client, TIMER_FLAG_NO_MAPCHANGE);
 }
 
-public Action After_Beserk_Mode_Stats(Handle cut_timer, int client)
+public Action After_Beserk_Mode_Stats(Handle timer, int ref)
 {
-	ApplyTempAttrib(client, 412, 1.25, 5.0);
-	ApplyTempAttrib(client, 6, 1.2, 5.0);
-	ApplyTempAttrib(client, 97, 1.25, 5.0);
-	ApplyTempAttrib(client, 107, 0.75, 5.0);
-	ApplyTempAttrib(client, 405, 0.67, 5.0);
-	TF2_AddCondition(client, TFCond_Dazed, 5.0, client);
+	int client = EntRefToEntIndex(ref);
+	if (IsValidClient(client))
+	{
+		ApplyTempAttrib(client, 412, 1.25, 5.0);
+		ApplyTempAttrib(client, 6, 1.2, 5.0);
+		ApplyTempAttrib(client, 97, 1.25, 5.0);
+		ApplyTempAttrib(client, 107, 0.75, 5.0);
+		ApplyTempAttrib(client, 405, 0.67, 5.0);
+		TF2_AddCondition(client, TFCond_Dazed, 5.0, client);
+	}
 }
 
 public void Reset_stats_Beserk_Singular(int client)
