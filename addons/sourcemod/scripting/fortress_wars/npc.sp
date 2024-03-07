@@ -5,38 +5,31 @@ static ArrayList NPCList;
 
 enum struct NPCData
 {
-	char Plugin[64];
-	char Name[64];
+	char Plugin[32];
+	char Name[32];
 	Function Func;
-}
 
-// FileNetwork_ConfigSetup needs to be ran first
-void NPC_ConfigSetup()
-{
-	delete NPCList;
-	NPCList = new ArrayList(sizeof(NPCData));
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "nothing");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_nothing");
-	data.Func = INVALID_FUNCTION;
-	NPCList.PushArray(data);
-
-	UnitBody_Setup();
-	EmpireBody_Setup();
-	Militia_Setup();
-	Villager_Setup();
+	int Price[Resource_MAX];
+	float TrainTime;
 }
 
 int NPC_Add(NPCData data)
 {
 	if(!data.Func || data.Func == INVALID_FUNCTION)
 		ThrowError("Invalid function name");
+
+	if(!TranslationPhraseExists(data.Name))
+		LogError("Translation '%s' does not exist", data.Name);
+	
+	char buffer[32];
+	FormatEx(buffer, sizeof(buffer), "%s Desc", data.Name);
+	if(!TranslationPhraseExists(buffer))
+		LogError("Translation '%s' does not exist", buffer);
 	
 	return NPCList.PushArray(data);
 }
 
-stock int NPC_GetNameById(int id, char[] buffer, int length)
+int NPC_GetNameById(int id, char[] buffer, int length)
 {
 	static NPCData data;
 	NPC_GetById(id, data);
@@ -86,6 +79,13 @@ int NPC_CreateByName(const char[] name, int team, const float vecPos[3], const f
 	return CreateNPC(npcdata, id, team, vecPos, vecAng, data);
 }
 
+int NPC_CreateById(int id, int team, const float vecPos[3], const float vecAng[3], const char[] data = "")
+{
+	static NPCData npcdata;
+	NPCList.GetArray(id, npcdata);
+	return CreateNPC(npcdata, id, team, vecPos, vecAng, data);
+}
+
 static int CreateNPC(const NPCData npcdata, int id, int team, const float vecPos[3], const float vecAng[3], const char[] data)
 {
 	int entity = -1;
@@ -103,6 +103,8 @@ static int CreateNPC(const NPCData npcdata, int id, int team, const float vecPos
 		
 		if(!i_NpcInternalId[entity])
 			i_NpcInternalId[entity] = id;
+		
+		Classes_NPCSpawn(entity, npcdata, team);
 	}
 
 	return entity;
@@ -136,6 +138,24 @@ void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 		Call_PushCell(damagecustom);
 		Call_Finish();
 	}
+}
+
+// FileNetwork_ConfigSetup needs to be ran first
+void NPC_ConfigSetup()
+{
+	delete NPCList;
+	NPCList = new ArrayList(sizeof(NPCData));
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "nothing");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_nothing");
+	data.Func = INVALID_FUNCTION;
+	NPCList.PushArray(data);
+
+	UnitBody_Setup();
+	EmpireBody_Setup();
+	Militia_Setup();
+	Villager_Setup();
 }
 
 #include "fortress_wars/npc/npc_base.sp"

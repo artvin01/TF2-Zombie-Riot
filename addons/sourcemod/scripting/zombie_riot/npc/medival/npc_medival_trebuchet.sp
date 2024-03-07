@@ -5,6 +5,25 @@ static const char NPCModel[] = "models/workshop/player/items/demo/taunt_drunk_ma
 
 #define TREBUCHET_LIGHTNING_RANGE 100.0
 
+void MedivalTrebuchet_OnMapStart()
+{
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Trebuchet");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_trebuchet");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_spammer");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalTrebuchet(client, vecPos, vecAng, ally);
+}
 methodmap MedivalTrebuchet < CClotBody
 {
 	public void PlayMeleeSound()
@@ -15,14 +34,14 @@ methodmap MedivalTrebuchet < CClotBody
 	public MedivalTrebuchet(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalTrebuchet npc = view_as<MedivalTrebuchet>(CClotBody(vecPos, vecAng, NPCModel, "1.35", "5000", ally));
-		i_NpcInternalId[npc.index] = MEDIVAL_TREBUCHET;
 		i_NpcWeight[npc.index] = 5;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = 0;
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalTrebuchet_ClotThink);
+		func_NPCDeath[npc.index] = MedivalTrebuchet_NPCDeath;
+		func_NPCThink[npc.index] = MedivalTrebuchet_ClotThink;
 		
 		npc.m_iState = 0;
 		npc.m_flSpeed = 150.0;
@@ -84,15 +103,16 @@ public void MedivalTrebuchet_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -132,8 +152,9 @@ public void MedivalTrebuchet_ClotThink(int iNPC)
 						}
 					}
 					float vEnd[3];
-					vEnd = GetAbsOriginOld(npc.m_iTarget);
-					spawnBeam(0.15, 255, 255, 255, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vEnd, WorldSpaceCenterOld(npc.index));	
+					GetAbsOrigin(npc.m_iTarget, vEnd);
+					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+					spawnBeam(0.15, 255, 255, 255, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vEnd, WorldSpaceVec);	
 						
 					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
@@ -190,7 +211,6 @@ void MedivalTrebuchet_NPCDeath(int entity)
 {
 	MedivalTrebuchet npc = view_as<MedivalTrebuchet>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalTrebuchet_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

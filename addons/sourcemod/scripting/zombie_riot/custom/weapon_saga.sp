@@ -75,8 +75,8 @@ bool Saga_IsChargeWeapon(int client, int weapon)
 	if(!IsValidEntity(weapon))
 		return false;
 
-	if(f_UberOnHitWeapon[weapon] > 0.01)
-		return true;
+	//if(f_UberOnHitWeapon[weapon] > 0.01)
+	//	return true;
 	
 	if(Passanger_HasCharge(client))
 		return true;
@@ -378,7 +378,7 @@ void SagaCutLast(int entity, int victim, float damage, int weapon)
 	if(SagaCrippled[victim])
 	{
 		float VicLoc[3];
-		VicLoc = WorldSpaceCenterOld(victim);
+		WorldSpaceCenter(victim, VicLoc);
 
 		float Pos1[3];
 		float Pos2[3];
@@ -429,8 +429,8 @@ void SagaCutLast(int entity, int victim, float damage, int weapon)
 
 
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], 0, SNDCHAN_AUTO, 90, _,_,GetRandomInt(80,110),-1,VicLoc);
-	
-		SDKHooks_TakeDamage(victim, weapon, entity, 10.0, DMG_SLASH, weapon, CalculateDamageForceOld(vecForward, 10000.0), VicLoc, _, _);
+		float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
+		SDKHooks_TakeDamage(victim, weapon, entity, 10.0, DMG_SLASH, weapon, damage_force, VicLoc, _, _);
 	}
 }
 

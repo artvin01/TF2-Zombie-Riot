@@ -1940,12 +1940,7 @@
 	{
 	     "en"       "Cryo Staff"
 	}
-	"Atomic Reconstructor"
-	{
-	     "en"       "Atomic Reconstructor"
-		 "ru"       "Атомный реконструктор"
-	     "chi"       "原子重构器"
-	}
+
 	"Only one allowed, sell to see and buy others."
 	{
 	     "en"       "Only one allowed, sell to see and buy others."

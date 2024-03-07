@@ -87,6 +87,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 	return Storm_Weaver(client, vecPos, vecAng, ally, data);
 }
 
+static float fl_touch_timeout[MAXENTITIES];
+
 methodmap Storm_Weaver < CClotBody
 {
 	public void PlayHurtSound() {
@@ -247,7 +249,7 @@ methodmap Storm_Weaver < CClotBody
 
 		b_NoGravity[npc.index] = true;	//Found ya!
 
-		float npc_vec[3]; npc_vec = GetAbsOriginOld(npc.index);
+		float npc_vec[3]; GetAbsOrigin(npc.index, npc_vec);
 		npc_vec[2] += 50.0;
 
 		TeleportEntity(npc.index, npc_vec, NULL_VECTOR, NULL_VECTOR);
@@ -266,6 +268,7 @@ methodmap Storm_Weaver < CClotBody
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
 		SDKHook(npc.index, SDKHook_Touch, Storm_Weaver_Damage_Touch);
+		Zero(fl_touch_timeout);
 
 		b_storm_weaver_noclip[npc.index]=false;
 
@@ -488,8 +491,9 @@ static void Storm_Weaver_Force_Spawn_Anchors(Storm_Weaver npc)
 		
 	AproxRandomSpaceToWalkTo[2] += 18.0;
 	AproxRandomSpaceToWalkTo[2] += 18.0;
-		
-	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceCenterOld(npc.index), true);
+	
+	float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
+	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, npc_vec, true);
 	
 	int amt = i_magia_anchors_active;
 	amt++;
@@ -642,8 +646,15 @@ static void Storm_Weaver_Damage_Touch(int entity, int other)
 {
 	if(IsValidEnemy(entity, other, true, true)) //Must detect camo.
 	{
-		if(fl_recently_teleported[entity]<GetGameTime())
-			SDKHooks_TakeDamage(other, entity, entity, 2.5*RaidModeScaling, DMG_CRUSH, -1, _);
+		float GameTime = GetGameTime();
+		if(fl_recently_teleported[entity]<GameTime)
+		{
+			if(fl_touch_timeout[other] < GameTime)
+			{
+				fl_touch_timeout[other] = GameTime+0.1;
+				SDKHooks_TakeDamage(other, entity, entity, 2.5*RaidModeScaling, DMG_CRUSH, -1, _);
+			}
+		}
 	}
 }
 
@@ -760,20 +771,20 @@ static void ClotThink(int iNPC)
 		if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 		{
 			float flDistanceToTarget, vecTarget[3];
-			vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-
-			flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			if(GameTime > npc.m_flNextRangedAttack)
 			{
 				npc.PlayMeleeHitSound();
 				float projectile_speed = 1250.0;
 				//lets pretend we have a projectile.
 				if(flDistanceToTarget < 1250.0*1250.0)
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed, 40.0);
+					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, 40.0, vecTarget);
 
 				if(!Can_I_See_Enemy_Only(npc.index, PrimaryThreatIndex)) //cant see enemy in the predicted position, we will instead just attack normally
 				{
-					vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+					WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				}
 				float DamageDone = 15.0*RaidModeScaling;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
@@ -785,7 +796,7 @@ static void ClotThink(int iNPC)
 	{
 		if(!b_storm_weaver_solo)
 		{
-			float Npc_Vec[3]; Npc_Vec=GetAbsOriginOld(npc.index);
+			float Npc_Vec[3]; GetAbsOrigin(npc.index, Npc_Vec);
 			if(npc.m_flNextMeleeAttack < GameTime)
 			{
 				
@@ -796,7 +807,7 @@ static void ClotThink(int iNPC)
 					int Anchor_Id = anchor_id[anchor];
 					if(IsEntityAlive(Anchor_Id))
 					{
-						float target_vec[3]; target_vec = GetAbsOriginOld(Anchor_Id);
+						float target_vec[3]; GetAbsOrigin(Anchor_Id, target_vec);
 						float Distance=GetVectorDistance(Npc_Vec, target_vec, true);
 						if(Distance>(250.0*250.0))
 						{
@@ -811,7 +822,7 @@ static void ClotThink(int iNPC)
 				int Anchor_Id = EntRefToEntIndex(i_traveling_to_anchor[npc.index]);
 				if(IsValidEntity(Anchor_Id))
 				{
-					float target_vec[3]; target_vec = GetAbsOriginOld(Anchor_Id);
+					float target_vec[3]; GetAbsOrigin(Anchor_Id, target_vec);
 					float Distance=GetVectorDistance(Npc_Vec, target_vec, true);
 					if(Distance<(250.0*250.0))
 					{
@@ -836,7 +847,7 @@ static void ClotThink(int iNPC)
 }
 static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target, float GameTime)
 {
-	float Npc_Vec[3]; Npc_Vec=GetAbsOriginOld(npc.index);
+	float Npc_Vec[3]; GetAbsOrigin(npc.index, Npc_Vec);
 
 
 	if(IsValidEnemy(npc.index, Target))
@@ -861,7 +872,7 @@ static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target, float Gam
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 
-		float target_vec[3], flDistanceToTarget; target_vec = GetAbsOriginOld(New_Target);
+		float target_vec[3], flDistanceToTarget; GetAbsOrigin(New_Target, target_vec);
 
 		flDistanceToTarget = GetVectorDistance(target_vec, Npc_Vec, true);
 
@@ -876,7 +887,7 @@ static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target, float Gam
 	}
 	else
 	{
-		float target_vec[3]; target_vec = GetAbsOriginOld(Target);
+		float target_vec[3]; GetAbsOrigin(Target, target_vec);
 
 		target_vec[2]+=75.0;
 
@@ -885,7 +896,7 @@ static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target, float Gam
 }
 stock void Storm_Weaver_Fly(Storm_Weaver npc, float target_vec[3], float GameTime)
 {
-	float npc_vec[3]; npc_vec=GetAbsOriginOld(npc.index);
+	float npc_vec[3]; GetAbsOrigin(npc.index, npc_vec);
 
 	float newVel[3];
 	
@@ -947,7 +958,7 @@ stock void Storm_Weaver_Fly(Storm_Weaver npc, float target_vec[3], float GameTim
 static bool Storm_Weaver_Check_Heading_Walls(Storm_Weaver npc)
 {
 
-	float npc_vec[3]; npc_vec = GetAbsOriginOld(npc.index);
+	float npc_vec[3]; GetAbsOrigin(npc.index, npc_vec);
 
 	float maxes[3] = { -30.0, -30.0, -30.0 };
 	float mins[3] = { 30.0, 30.0, 30.0 };
@@ -968,7 +979,7 @@ static bool Storm_Weaver_Check_Heading_Walls(Storm_Weaver npc)
 }
 static int Storm_Weaver_Get_Target(Storm_Weaver npc)
 {
-	float npc_vec[3]; npc_vec = GetAbsOriginOld(npc.index);
+	float npc_vec[3]; GetAbsOrigin(npc.index, npc_vec);
 	float last_dist = 3333333.0;
 	int closest_yet = -1;
 	for(int entity=0 ; entity < MAXENTITIES ; entity++)
@@ -977,7 +988,7 @@ static int Storm_Weaver_Get_Target(Storm_Weaver npc)
 		{
 			if(IsValidEnemy(npc.index, entity))
 			{
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(entity);
+				float vecTarget[3]; WorldSpaceCenter(entity, vecTarget);
 		
 				float flDistanceToTarget = GetVectorDistance(vecTarget, npc_vec, true);
 

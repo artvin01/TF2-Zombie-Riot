@@ -545,7 +545,7 @@ static void Railcannon_Tick(int client, int pap, bool supercharged)
 							EmitSoundToAll(RAILCANNONPAP4_HIT, BEAM_BuildingHit[building], SNDCHAN_STATIC, 90, _, 1.0, 80);
 						}
 
-						playerPos = WorldSpaceCenterOld(BEAM_BuildingHit[building]);
+						WorldSpaceCenter(BEAM_BuildingHit[building], playerPos);
 						float distance = GetVectorDistance(startPoint, playerPos, false);
 						float damage = Strength[client];
 						if (!(GetEntityFlags(client) & FL_ONGROUND) && !supercharged)
@@ -571,8 +571,7 @@ static void Railcannon_Tick(int client, int pap, bool supercharged)
 						}
 						damage /= BEAM_Targets_Hit[client];
 
-						float damage_force[3];
-						damage_force = CalculateDamageForceOld(vecForward, 10000.0);
+						float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
 
 						float trueDamagePercentage = 0.4;
 						float stunDuration = 5.0;

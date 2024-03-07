@@ -745,7 +745,7 @@
 	{
 		"en"		"Launches a high damaging spear that deals immensive damage to buildings\nHe attacks rapidly and can jump aswell."
 	}
-	"Medival Abalest Desc"
+	"Medival Arbalest Desc"
 	{
 		"en"		"Short range, faster attacking high damage archers."
 	}
@@ -1019,7 +1019,7 @@
 	}
 	"Barracks Basic Mage Desc"
 	{
-		"en"		"Basic unit to blar the enemy with"
+		"en"		"Basic unit to blast the enemy with"
 	}
 	"Barracks Intermediate Mage Desc"
 	{
@@ -1320,6 +1320,50 @@
 	"Laz Desc"
 	{
 		"en"	"A magical laser wielding mage"
+	}
+	"Laniun Desc"	//Need descs
+	{
+		"en"	"A stronger variant of Lanius"
+	}
+	"Magnium Desc"
+	{
+		"en"	"A stronger magia, has a special magic ICBM, very dangerous"
+	}
+	"Stellaria Desc"
+	{
+		"en"	"Aya"
+	}
+	"Astriana Desc"
+	{
+		"en"	"Aya"
+	}
+	"Europis Desc"
+	{
+		"en"	"Aya"
+	}
+	"Draedon Desc"
+	{
+		"en"	"Aya"
+	}
+	"Aetheria Desc"
+	{
+		"en"	"Aya"
+	}
+	"Maliana Desc"
+	{
+		"en"	"Aya"
+	}
+	"Ruianus Desc"
+	{
+		"en"	"Aya"
+	}
+	"Lazius Desc"
+	{
+		"en"	"Aya"
+	}
+	"Dronian Desc"
+	{
+		"en"	"Aya"
 	}
 	"Archosauria Desc"
 	{

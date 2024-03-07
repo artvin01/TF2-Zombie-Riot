@@ -1206,7 +1206,7 @@
 		"pt"		"Aquiles"
 		"ru"		"Ахилл"
 	}
-	"Medival Abalest"
+	"Medival Arbalest"
 	{
 		"en"		"Medieval Arbalest"
 		"pt"		"Arbalest Medieval"
@@ -1977,6 +1977,50 @@
 	{
 		"en"	"Laz"
 	}
+	"Laniun"
+	{
+		"en"	"Laniun"
+	}
+	"Magnium"
+	{
+		"en"	"Magnium"
+	}
+	"Stellaria"
+	{
+		"en"	"Stellaria"
+	}
+	"Astriana"
+	{
+		"en"	"Astriana"
+	}
+	"Europis"
+	{
+		"en"	"Europis"
+	}
+	"Draedon"
+	{
+		"en"	"Draedon"
+	}
+	"Aetheria"
+	{
+		"en"	"Aetheria"
+	}
+	"Maliana"
+	{
+		"en"	"Maliana"
+	}
+	"Ruianus"
+	{
+		"en"	"Ruianus"
+	}
+	"Lazius"
+	{
+		"en"	"Lazius"
+	}
+	"Dronian"
+	{
+		"en"	"Dronian"
+	}
 	"Beheaded Kamikaze"
 	{
 		"en"	"Beheaded Kamikaze"
@@ -2164,5 +2208,13 @@
 	"Rouge Expidonsan Doctor"
 	{
 		"en"	"Rouge Expidonsan Doctor"
+	}
+	"Laniun"
+	{
+		"en"	"Laniun"
+	}
+	"Bob the Second"
+	{
+		"en"	"Bob the Second"
 	}
 }

@@ -10,23 +10,22 @@ enum struct RawHooks
 
 static DynamicHook ForceRespawn;
 static int ForceRespawnHook[MAXTF2PLAYERS];
-static int GetChargeEffectBeingProvided;
 
 #if defined ZR
+static int GetChargeEffectBeingProvided;
 static bool IsRespawning;
 //static bool Disconnecting;
-#endif
-
-#if defined ZR
 static DynamicHook g_WrenchSmack;
 //DynamicHook g_ObjStartUpgrading;
+static Address CTeamplayRoundBasedRules = Address_Null;
+static DynamicHook g_DhookCheckUpgradeOnHit; 
+static DynamicHook g_DHookScoutSecondaryFire; 
 #endif
 
 static DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
-static DynamicHook g_DHookScoutSecondaryFire; 
 DynamicHook g_DhookUpdateTransmitState; 
 
 static DynamicDetour g_CalcPlayerScore;
@@ -87,6 +86,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
 	DHook_CreateDetour(gamedata, "CTFPlayer::Taunt", DHook_TauntPre, DHook_TauntPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
+	DHook_CreateDetour(gamedata, "CBaseObject::ShouldQuickBuild", DHookCallback_CBaseObject_ShouldQuickBuild_Pre, _);
 #endif
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::FindTarget", DHook_SentryFind_Target, _);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::Fire", DHook_SentryFire_Pre, DHook_SentryFire_Post);
@@ -99,6 +99,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
 	DHook_CreateDetour(gamedata, "CTFPlayerShared::PulseRageBuff()", Dhook_PulseFlagBuff,_);
+	DHook_CreateDetour(gamedata, "CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState", _, DHook_ResetPlayerAndTeamReadyStatePost);
 #endif
 
 	//thanks to https://github.com/nosoop/SM-TFCustomAttributeStarterPack/blob/6e8ffcc929553f8906f0b32d92b649c32681cd1e/scripting/attr_buff_override.sp#L53
@@ -116,14 +117,14 @@ void DHook_Setup()
 #if defined ZR
 	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
 	DHook_CreateDetour(gamedata, "CTFPlayer::SpeakConceptIfAllowed()", SpeakConceptIfAllowed_Pre, SpeakConceptIfAllowed_Post);
+	g_DhookCheckUpgradeOnHit = DHook_CreateVirtual(gamedata, "CBaseObject::CheckUpgradeOnHit");
+	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
 #endif
 	g_detour_CTFGrenadePipebombProjectile_PipebombTouch = CheckedDHookCreateFromConf(gamedata, "CTFGrenadePipebombProjectile::PipebombTouch");
 	
 	
 	g_DHookRocketExplode = DHook_CreateVirtual(gamedata, "CTFBaseRocket::Explode");
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
-	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
-
 
 	int offset = gamedata.GetOffset("CBaseEntity::UpdateTransmitState()");
 	g_DhookUpdateTransmitState = new DynamicHook(offset, HookType_Entity, ReturnType_Int, ThisPointer_CBaseEntity);
@@ -227,7 +228,7 @@ public void DHook_EntityDestoryedFrame()
 	}
 }
 
-void DHook_HookStripWeapon(int entity)
+stock void DHook_HookStripWeapon(int entity)
 {
 	if(m_Item > 0 && m_bOnlyIterateItemViewAttributes > 0)
 	{
@@ -415,14 +416,12 @@ public void ApplyExplosionDhook_Pipe(int entity, bool Sticky)
 	//I have to do it twice, if its a custom spawn i have to do it insantly, if its a tf2 spawn then i have to do it seperatly.
 }
 
-void PipeApplyDamageCustom(int entity)
+stock void PipeApplyDamageCustom(int entity)
 {
 	f_CustomGrenadeDamage[entity] = GetEntPropFloat(entity, Prop_Send, "m_flDamage");
 }
 
-
-
-void See_Projectile_Team_Player(int entity)
+stock void See_Projectile_Team_Player(int entity)
 {
 	if (entity < 0 || entity > 2048)
 	{
@@ -682,12 +681,6 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 	int owner = GetOwnerLoop(entity);
 	if (0 < owner <= MaxClients)
 	{
-#if defined RPG
-	int weapon;
-	weapon = GetEntPropEnt(entity, Prop_Send, "m_hLauncher");
-	Explode_Logic_Custom(f_CustomGrenadeDamage[entity], owner, entity, weapon, _, _, _, _, _, _, true,_,_,FireBallBonusDamage);
-#endif
-	
 #if defined ZR
 	int weapon;
 	weapon = GetEntPropEnt(entity, Prop_Send, "m_hLauncher");
@@ -874,7 +867,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		if(i_WhatBuilding[entity1] == BuildingSentrygun)
 		{
 			//buildings cannot touch eachother
-			if(i_WhatBuilding[entity2] != 0 || (GetTeam(entity2) == TFTeam_Red))
+			if(i_WhatBuilding[entity2] != 0 || (GetTeam(entity2) == TFTeam_Red && entity2 > MaxClients)) //dont ignore players
 			{
 				return false;
 			}
@@ -1135,7 +1128,9 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		LagCompMovePlayersExceptYou(Compensator);
 	}
 	
+#if defined ZR
 	g_hSDKStartLagCompAddress = manager;
+#endif
 	
 	return MRES_Ignored;
 }
@@ -1271,8 +1266,11 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 	
 //	FinishLagCompensationResetValues();
 	
+#if defined ZR
 	g_hSDKEndLagCompAddress = manager;
 	Sdkcall_Load_Lagcomp();
+#endif
+
 	StartLagCompResetValues();
 	
 	return MRES_Ignored;
@@ -1412,6 +1410,7 @@ void DHook_UnhookClient(int client)
 {
 	if(ForceRespawn)
 		DynamicHook.RemoveHook(ForceRespawnHook[client]);
+	
 }
 /*
 void DHook_ClientDisconnect()
@@ -1511,12 +1510,10 @@ public MRESReturn DHook_ForceRespawn(int client)
 #if defined ZR
 	if(!WaitingInQueue[client] && !GameRules_GetProp("m_bInWaitingForPlayers"))
 		Queue_AddPoint(client);
-#endif
 	
 	SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	
-#if defined ZR
 	GiveCompleteInvul(client, 2.0);
 	
 	if(Waves_Started() && TeutonType[client] == TEUTON_NONE)
@@ -1532,6 +1529,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	return MRES_Ignored;
 }
 		
+#if defined ZR
 //Ty miku for showing me this cvar.
 public void PhaseThroughOwnBuildings(int client)
 {
@@ -1572,6 +1570,7 @@ public void PhaseThroughOwnBuildings(int client)
 		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
 }
+#endif
 
 /*
 public void DHook_TeleportToObserver(DataPack pack)
@@ -1745,7 +1744,6 @@ public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPre(int client, DHookPara
 //	if(!Disconnecting)
 	{
 		LastTeam = GetTeam(client);
-		GameRules_SetProp("m_bPlayingMannVsMachine", true);
 		SetEntProp(client, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 	}
 	return MRES_Ignored;
@@ -1780,7 +1778,6 @@ public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPost(int client, DHookPar
 {
 //	if(!Disconnecting)
 	{
-		GameRules_SetProp("m_bPlayingMannVsMachine", false);
 		SetEntProp(client, Prop_Send, "m_iTeamNum", LastTeam);
 	}
 	return MRES_Ignored;
@@ -1963,12 +1960,18 @@ MRESReturn OnWeaponReplenishClipPre(int weapon) // Not when the player press rel
 	return MRES_Ignored;
 	
 }
-#endif	// Non-RTS
+
+void Upgrade_Check_OnEntityCreated(int client)
+{
+	g_DhookCheckUpgradeOnHit.HookEntity(Hook_Pre, client, DHook_CheckUpgradeOnHitPre);
+	g_DhookCheckUpgradeOnHit.HookEntity(Hook_Post, client, DHook_CheckUpgradeOnHitPost);
+}
 
 void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 {
 	g_DHookScoutSecondaryFire.HookEntity(Hook_Pre, entity, DHook_ScoutSecondaryFire);
 }
+#endif	// ZR
 
 void Hook_DHook_UpdateTransmitState(int entity)
 {
@@ -2023,6 +2026,20 @@ int SetEntityTransmitState(int entity, int newFlags)
 	return flags;
 }
 
+//prevent upgrades in ZR
+int WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre;
+public MRESReturn DHook_CheckUpgradeOnHitPre(int entity)
+{
+	WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre = GameRules_GetProp("m_bPlayingMannVsMachine");
+	GameRules_SetProp("m_bPlayingMannVsMachine", false);
+	return MRES_Ignored;
+}
+public MRESReturn DHook_CheckUpgradeOnHitPost(int entity)
+{
+	GameRules_SetProp("m_bPlayingMannVsMachine", WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre);
+	return MRES_Ignored;
+}
+
 public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!
 {
 	return MRES_Supercede;	//NEVER APPLY. Causes you to not fire if accidentally pressing m2
@@ -2051,6 +2068,18 @@ public MRESReturn Dhook_PulseFlagBuff(Address pPlayerShared)
 		f_BannerDurationActive[client] = GetGameTime() + 1.1;
 	*/
 	return MRES_Supercede;
+}
+
+Address DHook_CTeamplayRoundBasedRules()
+{
+	return CTeamplayRoundBasedRules;
+}
+
+static MRESReturn DHook_ResetPlayerAndTeamReadyStatePost(Address address)
+{
+	GetTimerAndNullifyMusicMVM();
+	CTeamplayRoundBasedRules = address;
+	return MRES_Ignored;
 }
 
 public MRESReturn Dhook_RaiseFlag_Post(int entity)
@@ -2270,3 +2299,12 @@ stock bool ShieldDeleteProjectileCheck(int owner, int enemy)
 
 	return false;
 }
+
+#if defined ZR
+//Thank you mikusch!
+static MRESReturn DHookCallback_CBaseObject_ShouldQuickBuild_Pre(int obj, DHookReturn returnHook)
+{
+	returnHook.Value = false;
+	return MRES_Supercede;
+}
+#endif

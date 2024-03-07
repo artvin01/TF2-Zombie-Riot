@@ -533,7 +533,7 @@ public void Shock_ChainToVictim(int inflictor, int client, int weapon, float dam
 	if (IsValidEntity(victim))
 	{
 		float vicLoc[3];
-		vicLoc = WorldSpaceCenterOld(victim);
+		WorldSpaceCenter(victim, vicLoc);
 		SDKHooks_TakeDamage(victim, inflictor, client, damage, DMG_BLAST | DMG_ALWAYSGIB, weapon);
 		
 		if (f_PassangerDebuff[victim] < gt)
@@ -1244,7 +1244,7 @@ public int Trash_GetClosestVictim(float position[3], float radius, bool shock)
 		if (IsValidEntity(ent) && GetTeam(ent) != TFTeam_Red && !b_NpcHasDied[ent] && (!shock || f_NextShockTime[ent] <= GetGameTime()))
 		{
 			float vicLoc[3];  
-			vicLoc = WorldSpaceCenterOld(ent);
+			WorldSpaceCenter(ent, vicLoc);
 			
 			float targDist = GetVectorDistance(position, vicLoc, true);  
 				

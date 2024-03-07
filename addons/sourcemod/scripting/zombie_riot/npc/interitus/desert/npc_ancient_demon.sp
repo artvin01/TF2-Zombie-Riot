@@ -42,6 +42,8 @@ static const char g_RangedAttackSounds[][] = {
 	"weapons/airboat/airboat_gun_energy2.wav",
 };
 
+static int NPCId;
+
 void DesertAncientDemon_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -52,9 +54,22 @@ void DesertAncientDemon_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	PrecacheModel("models/props_halloween/eyeball_projectile.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Ancient Demon");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ancient_demon");
+	strcopy(data.Icon, sizeof(data.Icon), "spy");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
 }
 
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return DesertAncientDemon(client, vecPos, vecAng, ally);
+}
 methodmap DesertAncientDemon < CClotBody
 {
 	public void PlayIdleAlertSound() 
@@ -105,7 +120,6 @@ methodmap DesertAncientDemon < CClotBody
 	{
 		DesertAncientDemon npc = view_as<DesertAncientDemon>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "15000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_DESERT_ANCIENTDEMON;
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -198,13 +212,14 @@ public void DesertAncientDemon_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -269,7 +284,8 @@ void DesertAncientDemonSelfDefense(DesertAncientDemon npc, float gameTime, int t
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
@@ -313,7 +329,7 @@ void DesertAncientDemonSelfDefense(DesertAncientDemon npc, float gameTime, int t
 			
 			if(npc.m_iTarget > 0)
 			{	
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				npc.FaceTowards(vecTarget, 15000.0);
 				
 				npc.PlayRangedSound();
@@ -336,7 +352,7 @@ void DesertAncientDemonSelfDefense(DesertAncientDemon npc, float gameTime, int t
 					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(entity, 100, 100, 255, 255);
 					
-					vecTarget = WorldSpaceCenterOld(entity);
+					WorldSpaceCenter(entity, vecTarget);
 					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "tranq_distortion_trail", 3.0);
 					SetParent(entity, f_ArrowTrailParticle[entity]);
 					f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
@@ -402,7 +418,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 		return;
 	}
 
-	if(i_NpcInternalId[ally] == INTERITUS_DESERT_ANCIENTDEMON)
+	if(i_NpcInternalId[ally] == NPCId)
 	{
 		return;
 	}
@@ -423,7 +439,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 	int flMaxHealth = GetEntProp(self, Prop_Data, "m_iMaxHealth");
 	int flMaxHealthally = GetEntProp(ally, Prop_Data, "m_iMaxHealth");
 	float pos[3]; 
-	pos = WorldSpaceCenterOld(ally);
+	WorldSpaceCenter(ally, pos);
 	pos[2] -= 10.0;
 	DesertAncientDemon npc1 = view_as<DesertAncientDemon>(ally);
 	npc1.m_bDissapearOnDeath = true;
@@ -441,7 +457,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 		fl_TotalArmor[self] = 0.35;
 	}
 	TE_Particle("teleported_blue", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-	int NpcSpawnDemon = NPC_CreateById(INTERITUS_DESERT_ANCIENTDEMON, -1, SelfPos, AllyAng, GetTeam(npc.index)); //can only be enemy
+	int NpcSpawnDemon = NPC_CreateById(NPCId, -1, SelfPos, AllyAng, GetTeam(npc.index)); //can only be enemy
 	i_RaidGrantExtra[ally] = 999;
 	if(IsValidEntity(NpcSpawnDemon))
 	{

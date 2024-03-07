@@ -17,23 +17,27 @@ static char g_KillSounds[][] =
 	"cof/purnell/kill4.mp3"
 };
 static float i_ClosestAllyCDTarget[MAXENTITIES];
-/*
-void SpecialDoctor_MapStart()
+
+
+void SpecialDoctor_OnMapStart()
 {
-	for (int i = 0; i < (sizeof(g_HurtSounds));	   i++) { PrecacheSoundCustom(g_HurtSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_KillSounds));	   i++) { PrecacheSoundCustom(g_KillSounds[i]);	   }
-	PrecacheSoundCustom("cof/purnell/death.mp3");
-	PrecacheSoundCustom("cof/purnell/intro.mp3");
-	PrecacheSoundCustom("cof/purnell/converted.mp3");
-	PrecacheSoundCustom("cof/purnell/reload.mp3");
-	PrecacheSoundCustom("cof/purnell/shoot.mp3");
-	PrecacheSoundCustom("cof/purnell/shove.mp3");
-	PrecacheSoundCustom("cof/purnell/meleehit.mp3");
-
-	PrecacheModel("models/zombie_riot/cof/doctor_purnell.mdl");
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Rouge Expidonsan Doctor");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_doctor_special");
+	strcopy(data.Icon, sizeof(data.Icon), "medic_uber");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
-*/
 
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return SpecialDoctor(client, vecPos, vecAng, ally, data);
+}
 
 static char[] GetPanzerHealth()
 {
@@ -110,7 +114,6 @@ methodmap SpecialDoctor < CClotBody
 	public SpecialDoctor(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", GetPanzerHealth(), ally));
-		i_NpcInternalId[npc.index] = THEDOCTOR_MINIBOSS;
 		i_NpcWeight[npc.index] = 3;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -253,9 +256,9 @@ public void SpecialDoctor_ClotThink(int iNPC)
 	}
 	if(IsValidAlly(npc.index, npc.m_iTargetAlly) && IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTargetally[3]; vecTargetally = WorldSpaceCenterOld(npc.m_iTargetAlly);
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float vecPos[3]; vecPos = WorldSpaceCenterOld(npc.index);
+		float vecTargetally[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTargetally);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float vecPos[3]; WorldSpaceCenter(npc.index, vecPos );
 		
 		float distanceToAlly = GetVectorDistance(vecTargetally, vecPos, true);
 		float distanceToEnemy = GetVectorDistance(vecTarget, vecTargetally, true);
@@ -288,7 +291,8 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -322,8 +326,8 @@ public void SpecialDoctor_ClotThink(int iNPC)
 	{
 		if(npc.m_iTarget > 0 && npc.m_iTargetWalkTo > 0)	// We have a target
 		{
-			float vecPos[3]; vecPos = WorldSpaceCenterOld(npc.index);
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float vecPos[3]; WorldSpaceCenter(npc.index, vecPos );
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 			
 			float distance = GetVectorDistance(vecTarget, vecPos, true);
 			if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)	// Close at any time: Melee
@@ -365,7 +369,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 							npc.m_flNextRangedAttack = gameTime + 1.0;
 							npc.m_iAttacksTillReload--;
 							
-							vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 700.0);
+							PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 700.0, _,vecTarget);
 							float damage = 50.0;
 
 							npc.FireRocket(vecTarget, damage * 0.9 * npc.m_flWaveScale, 700.0, "models/weapons/w_bullet.mdl", 2.0);
@@ -456,7 +460,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			if(!npc.m_flRangedSpecialDelay)	// Reload anyways timer
 				npc.m_flRangedSpecialDelay = gameTime + 4.0;
 			
-			float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTargetWalkTo);
+			float vBackoffPos[3]; BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTargetWalkTo,_,vBackoffPos);
 			NPC_SetGoalVector(npc.index, vBackoffPos);
 			
 			if(!npc.m_bPathing)
@@ -522,7 +526,7 @@ public void SpecialDoctor_NPCDeath(int entity)
 public bool DoctorBuffAlly(int provider, int entity)
 {
 	if(f_PernellBuff[entity] < GetGameTime())
-		return false;
+		return true;
 
-	return true;
+	return false;
 }

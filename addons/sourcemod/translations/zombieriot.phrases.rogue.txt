@@ -1154,8 +1154,7 @@
 	}
 	"First Class Squad Desc"
 	{
-		"en"	"{green}Alyx joins your adventure"
-		"ru"	"{green}Аликс присоединяется к вашему приключению"
+		"en"	"{green}Father Grigori will acompany you."
 	}
 	"Provoked Anger"
 	{

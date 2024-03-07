@@ -190,12 +190,13 @@ public void Fists_of_Kahml_Ablity_2(int client, int weapon, bool crit, int slot)
 		float damage = 15.0;
 		fAng[0] = 0.0;
 		damage *= Attributes_Get(weapon, 2, 1.0);
-		int spawn_index = NPC_CreateByName("npc_allied_kahml", client, flPos, fAng, GetTeam(client));
+		int spawn_index = NPC_CreateByName("npc_allied_kahml_afterimage", client, flPos, fAng, GetTeam(client));
 		f_DurationOfProjectileAttack[client] = GetGameTime() + 10.0;
 		if(spawn_index > 0)
 		{
 			EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
-			ParticleEffectAt(WorldSpaceCenterOld(spawn_index), "teleported_blue", 0.5);
+			float SelfNewPos[3]; WorldSpaceCenter(spawn_index, SelfNewPos);
+			ParticleEffectAt(SelfNewPos, "teleported_blue", 0.5);
 			//this is the damage
 			fl_heal_cooldown[spawn_index] = damage;
 			i_Changed_WalkCycle[spawn_index] = EntIndexToEntRef(weapon);
@@ -233,12 +234,13 @@ public void Melee_KahmlFistTouch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity], DMG_CLUB, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		if(IsValidEntity(particle))
 		{

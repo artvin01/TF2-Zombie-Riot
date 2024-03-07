@@ -14,6 +14,24 @@ static const char g_MeleeAttackSounds[][] =
 	"player/invuln_off_vaccinator.wav"
 };
 
+void Isharmla_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Ishar'mla, Heart of Corruption");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_isharmla");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_isharmla");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Isharmla(client, vecPos, vecAng, ally);
+}
+
 methodmap Isharmla < CClotBody
 {
 	public void PlayDeathSound() 
@@ -33,7 +51,6 @@ methodmap Isharmla < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = ISHARMLA;
 		i_NpcWeight[npc.index] = 6;
 		npc.SetActivity("ACT_SKADI_WALK");
 		
@@ -41,7 +58,9 @@ methodmap Isharmla < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		SDKHook(npc.index, SDKHook_Think, Isharmla_ClotThink);
+		func_NPCDeath[npc.index] = Isharmla_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Isharmla_OnTakeDamage;
+		func_NPCThink[npc.index] = Isharmla_ClotThink;
 		
 		npc.m_flSpeed = 150.0;	// 0.6 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -65,15 +84,15 @@ methodmap Isharmla < CClotBody
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSALPHA);
 		npc.m_bTeamGlowDefault = true;
 
-		if(!ally && !IsValidEntity(RaidBossActive))
+		if(ally != TFTeam_Red)
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidModeTime = GetGameTime() + 9000.0;
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
 
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 		vecMe[2] += 500.0;
 		npc.m_iWearable2 = ParticleEffectAt(vecMe, "env_rain_512", -1.0);
 		SetParent(npc.index, npc.m_iWearable2);
@@ -162,7 +181,7 @@ public void Isharmla_ClotThink(int iNPC)
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3;
 		
-		int entity = NPC_CreateById(ISHARMLA_TRANS, -1, pos, ang, GetTeam(npc.index));
+		int entity = NPC_CreateByName("npc_isharmla_trans", -1, pos, ang, GetTeam(npc.index));
 		if(entity > MaxClients)
 		{
 			b_IsEntityNeverTranmitted[npc.index] = true;
@@ -243,11 +262,11 @@ public void Isharmla_ClotThink(int iNPC)
 				npc.m_flAttackHappens = 0.0;
 				npc.PlayMeleeSound();
 				
-				float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+				float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 
 				if(IsValidAlly(npc.index, npc.m_iTarget))
 				{
-					float vecAlly[3]; vecAlly = WorldSpaceCenterOld(npc.m_iTarget);
+					float vecAlly[3]; WorldSpaceCenter(npc.m_iTarget, vecAlly);
 
 					int healing = npc.Anger ? 24000 : 16000;
 
@@ -285,7 +304,7 @@ public void Isharmla_ClotThink(int iNPC)
 				int ally = GetClosestAlly(npc.index, _, npc.m_iTarget);
 				if(ally > 0)
 				{
-					float vecAlly[3]; vecAlly = WorldSpaceCenterOld(ally);
+					float vecAlly[3]; WorldSpaceCenter(ally, vecAlly);
 
 					int healing = npc.Anger ? 24000 : 16000;
 
@@ -350,7 +369,7 @@ public void Isharmla_ClotThink(int iNPC)
 	}
 }
 
-void Isharmla_OnTakeDamage(int victim, int attacker, float &damage)
+void Isharmla_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Isharmla npc = view_as<Isharmla>(victim);
 
@@ -380,8 +399,6 @@ void Isharmla_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_Think, Isharmla_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 

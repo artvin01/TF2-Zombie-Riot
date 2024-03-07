@@ -33,6 +33,24 @@ static const char g_MeleeHitSounds[][] =
 	"weapons/barret_arm_zap.wav"
 };
 
+void VulpoOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Vulpo");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vulpo");
+	strcopy(data.Icon, sizeof(data.Icon), "engineer");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Vulpo(client, vecPos, vecAng, ally);
+}
+
 methodmap Vulpo < CClotBody
 {
 	public void PlayIdleSound()
@@ -60,7 +78,6 @@ methodmap Vulpo < CClotBody
 	{
 		Vulpo npc = view_as<Vulpo>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "30000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_ENGINEER;
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_STUN_MIDDLE");
 		KillFeed_SetKillIcon(npc.index, "short_circuit");
@@ -138,12 +155,13 @@ static void ClotThink(int iNPC)
 	{
 		npc.SetActivity("ACT_MP_RUN_SECONDARY");
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, target);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 

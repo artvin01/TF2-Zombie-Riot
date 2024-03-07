@@ -421,30 +421,13 @@ static void TBB_Tick(int client)
 				{
 					if(IsValidEntity(BEAM_BuildingHit[building][repeats]))
 					{
-						playerPos = WorldSpaceCenterOld(BEAM_BuildingHit[building][repeats]);
+						WorldSpaceCenter(BEAM_BuildingHit[building][repeats], playerPos);
 						
 						float distance = GetVectorDistance(startPoint, playerPos, false);
 						float damage = BEAM_CloseBuildingDPT[client] + (BEAM_FarBuildingDPT[client]-BEAM_CloseBuildingDPT[client]) * (distance/BEAM_MaxDistance[client]);
 						if (damage < 0)
 							damage *= -1.0;
-						/*
-						float damage_force[3];
-						damage_force = CalculateDamageForceOld(vecForward, 20000.0);
-						DataPack pack = new DataPack();
-						pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
-						pack.WriteCell(EntIndexToEntRef(client));
-						pack.WriteCell(EntIndexToEntRef(client));
-						pack.WriteFloat(damage/BEAM_Targets_Hit[client]);
-						pack.WriteCell(DMG_PLASMA);
-						pack.WriteCell(EntIndexToEntRef(weapon_active));
-						pack.WriteFloat(damage_force[0]);
-						pack.WriteFloat(damage_force[1]);
-						pack.WriteFloat(damage_force[2]);
-						pack.WriteFloat(playerPos[0]);
-						pack.WriteFloat(playerPos[1]);
-						pack.WriteFloat(playerPos[2]);
-						RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
-						*/
+
 						Damage_dealt[building] += (damage / BEAM_Targets_Hit[client]);
 						BEAM_Targets_Hit[client] *= (LASER_AOE_DAMAGE_FALLOFF + 0.35); //Nerf the pierce by alot
 					}
@@ -491,12 +474,11 @@ static void TBB_Tick(int client)
 			{
 				if(IsValidEntity(BEAM_BuildingHit[building][repeats]))
 				{
-					playerPos = WorldSpaceCenterOld(BEAM_BuildingHit[building][repeats]);
+					WorldSpaceCenter(BEAM_BuildingHit[building][repeats], playerPos);
 							
 				//	float distance = GetVectorDistance(startPoint, playerPos, false);
 					
-					float damage_force[3];
-					damage_force = CalculateDamageForceOld(vecForward, 20000.0);
+					float damage_force[3]; CalculateDamageForce(vecForward, 20000.0, damage_force);
 					DataPack pack = new DataPack();
 					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building][repeats]));
 					pack.WriteCell(EntIndexToEntRef(client));

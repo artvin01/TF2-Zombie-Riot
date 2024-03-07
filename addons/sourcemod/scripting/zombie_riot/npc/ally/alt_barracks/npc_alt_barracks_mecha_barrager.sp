@@ -27,12 +27,27 @@ static const char g_RangedReloadSound[][] = {
 public void Barrack_Alt_Mecha_Barrager_MapStart()
 {
 	PrecacheModel("models/player/medic.mdl");
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++)			{ PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_IdleSounds));   i++)					{ PrecacheSound(g_IdleSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));   i++) 			{ PrecacheSound(g_IdleAlertedSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) 			{ PrecacheSound(g_RangedReloadSound[i]);	}
-	
+	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_RangedReloadSound);
+
 	PrecacheModel("models/bots/soldier/bot_soldier.mdl", true);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks Mecha Barrager");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_mecha_barrager");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Barrack_Alt_Mecha_Barrager(client, vecPos, vecAng, ally);
 }
 
 static int i_ammo_count[MAXENTITIES];
@@ -67,10 +82,11 @@ methodmap Barrack_Alt_Mecha_Barrager < BarrackBody
 	{
 		Barrack_Alt_Mecha_Barrager npc = view_as<Barrack_Alt_Mecha_Barrager>(BarrackBody(client, vecPos, vecAng, "100", "models/bots/soldier/bot_soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
-		i_NpcInternalId[npc.index] = ALT_BARRACK_MECHA_BARRAGER;
 		i_NpcWeight[npc.index] = 1;
 		
-		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Mecha_Barrager_ClotThink);
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barrack_Alt_Mecha_Barrager_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Alt_Mecha_Barrager_ClotThink;
 
 		npc.m_flSpeed = 175.0;
 		
@@ -141,8 +157,9 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			if(b_we_are_reloading[npc.index])
 			{
@@ -170,7 +187,7 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 					{
 						//Play attack anim
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-						vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1100.0);
+						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1100.0,_, vecTarget );
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.PlayRangedSound();
 						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),75.0, 1) ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, _, _,_, GetClientOfUserId(npc.OwnerUserId));
@@ -197,5 +214,4 @@ void Barrack_Alt_Mecha_Barrager_NPCDeath(int entity)
 {
 	Barrack_Alt_Mecha_Barrager npc = view_as<Barrack_Alt_Mecha_Barrager>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, Barrack_Alt_Mecha_Barrager_ClotThink);
 }

@@ -71,8 +71,22 @@ void MedivalCrossbowMan_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Crossbow Man");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_crossbow");
+	strcopy(data.Icon, sizeof(data.Icon), "crossbow");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalCrossbowMan(client, vecPos, vecAng, ally);
+}
 methodmap MedivalCrossbowMan < CClotBody
 {
 	public void PlayIdleSound() {
@@ -149,8 +163,7 @@ methodmap MedivalCrossbowMan < CClotBody
 	{
 		MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "900", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_CROSSBOW_MAN;
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -169,9 +182,14 @@ methodmap MedivalCrossbowMan < CClotBody
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		
-		SDKHook(npc.index, SDKHook_Think, MedivalCrossbowMan_ClotThink);
+		func_NPCDeath[npc.index] = MedivalCrossbowMan_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalCrossbowMan_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalCrossbowMan_ClotThink;
+		func_NPCAnimEvent[npc.index] = HandleAnimEventMedival_CrossbowMan;
 	
+		SetVariantInt(1);
+		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 //		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
@@ -211,9 +229,6 @@ public void MedivalCrossbowMan_ClotThink(int iNPC)
 {
 	MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(iNPC);
 	
-	SetVariantInt(1);
-	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
-	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -252,14 +267,15 @@ public void MedivalCrossbowMan_ClotThink(int iNPC)
 			{
 				npc.m_flSpeed = 170.0;
 			}
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				/*
 				int color[4];
 				color[0] = 255;
@@ -340,7 +356,7 @@ public void HandleAnimEventMedival_CrossbowMan(int entity, int event)
 				
 			float projectile_speed = 1200.0;
 			
-			vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
+			PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed,_,vecTarget);
 				
 			npc.FaceTowards(vecTarget, 30000.0);
 						
@@ -383,9 +399,7 @@ public void MedivalCrossbowMan_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalCrossbowMan_ClotThink);
+
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

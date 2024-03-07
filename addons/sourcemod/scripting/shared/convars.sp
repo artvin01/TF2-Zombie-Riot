@@ -25,6 +25,7 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_bot_reevaluate_class_in_spawnroom", "1.0");
 	ConVar_Add("tf_bot_keep_class_after_death", "1.0");
 	ConVar_Add("mp_humans_must_join_team", "red");
+	ConVar_Add("mp_tournament", "1");
 	ConVar_Add("mp_teams_unbalance_limit", "0.0");
 	ConVar_Add("mp_scrambleteams_auto", "0.0");
 	ConVar_Add("tf_dropped_weapon_lifetime", "0.0");
@@ -61,10 +62,12 @@ void ConVar_PluginStart()
 	
 	#if defined ZR
 	ConVar_Add("mp_disable_respawn_times", "1.0");
-	
+//	ConVar_Add("tf_mvm_defenders_team_size", "16");
+	ConVar_Add("tf_mvm_max_connected_players", "99");
+	ConVar_Add("tf_obj_upgrade_per_hit", "0");
+
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "16", "How many players can play at once?", FCVAR_DONTRECORD);
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
-	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
 	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "1", "No Panzer will spawn or anything alike", FCVAR_DONTRECORD);
 	zr_voteconfig = CreateConVar("zr_voteconfig", "vote", "Vote config zr/ .cfg already included");
 	zr_tagblacklist = CreateConVar("zr_tagblacklist", "private", "Tags to blacklist from weapons config");
@@ -75,7 +78,7 @@ void ConVar_PluginStart()
 	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "2.0", "How long zombie spawn protection lasts for.");
 	zr_viewshakeonlowhealth = CreateConVar("zr_viewshakeonlowhealth", "1.0", "Enable/Disable viewshake on low health.");
 	zr_disablerandomvillagerspawn = CreateConVar("zr_norandomvillager", "0.0", "Enable/Disable if medival villagers spawn randomly on the map or only on spawnpoints.");
-	zr_waitingtime = CreateConVar("zr_waitingtime", "120.0", "Waiting for players time.");
+	zr_waitingtime = CreateConVar("zr_waitingtime", "90.0", "Waiting for players time.");
 	zr_allowfreeplay = CreateConVar("zr_allowfreeplay", "1", "Can players vote to continue into freeplay (endless waves).");
 	zr_enemymulticap = CreateConVar("zr_enemymulticap", "4.0", "Max enemy count multipler, will scale by health onwards", _, true, 0.5);
 
@@ -94,6 +97,7 @@ void ConVar_PluginStart()
 	CvarRerouteToIp = CreateConVar("zr_rerouteip", "", "If the server is full, reroute", FCVAR_DONTRECORD);
 	CvarKickPlayersAt = CreateConVar("zr_kickplayersat", "", "If the server is full, Do reroute or kick", FCVAR_DONTRECORD);
 	CvarRerouteToIpAfk = CreateConVar("zr_rerouteipafk", "", "If the server is full, reroute", FCVAR_DONTRECORD);
+	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
 	
 	mp_bonusroundtime = FindConVar("mp_bonusroundtime");
 	mp_bonusroundtime.SetBounds(ConVarBound_Upper, false);

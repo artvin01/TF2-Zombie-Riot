@@ -47,8 +47,21 @@ void DesertKhazaan_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Khazaan");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_khazaan");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_champ");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return DesertKhazaan(client, vecPos, vecAng, ally);
+}
 
 methodmap DesertKhazaan < CClotBody
 {
@@ -93,7 +106,6 @@ methodmap DesertKhazaan < CClotBody
 	{
 		DesertKhazaan npc = view_as<DesertKhazaan>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "900", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_DESERT_KHAZAAN;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -177,13 +189,14 @@ public void DesertKhazaan_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -243,7 +256,8 @@ void DesertKhazaanSelfDefense(DesertKhazaan npc, float gameTime, int target, flo
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
@@ -259,10 +273,13 @@ void DesertKhazaanSelfDefense(DesertKhazaan npc, float gameTime, int target, flo
 					{
 						damageDealt *= 2.0;
 						Custom_Knockback(npc.index, target, 550.0, true, true); 
-						fl_TotalArmor[npc.index] = fl_TotalArmor[npc.index] * 0.5;
-						if(fl_TotalArmor[npc.index] < 0.25)
+						if(GetTeam(npc.index) != TFTeam_Red)
 						{
-							fl_TotalArmor[npc.index] = 0.25;
+							fl_TotalArmor[npc.index] = fl_TotalArmor[npc.index] * 0.5;
+							if(fl_TotalArmor[npc.index] < 0.25)
+							{
+								fl_TotalArmor[npc.index] = 0.25;
+							}
 						}
 					}
 					if(ShouldNpcDealBonusDamage(target))

@@ -271,13 +271,6 @@ void Music_Stop_All(int client)
 	}
 	
 }
-
-public void ConVarCallback_Plugin_message(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
-{
-	if(result == ConVarQuery_Okay)
-		f_ClientServerShowMessages[client] = view_as<bool>(StringToInt(cvarValue));
-}
-
 //TODO: This music just breaks and cuts off earlier and plays earlier, i really dont know why. I hate it! Find a fix!
 
 void Music_PostThink(int client)

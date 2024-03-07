@@ -28,6 +28,20 @@ static const char g_AngerSounds[][] =
 
 void ThePurge_MapStart()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "The Purge");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_the_purge");
+	strcopy(data.Icon, sizeof(data.Icon), "the_purge");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_BoomSounds);
 	PrecacheSoundArray(g_AngerSounds);
@@ -42,6 +56,10 @@ void ThePurge_MapStart()
 	PrecacheSoundCustom("#zombiesurvival/internius/the_purge.mp3");
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return ThePurge(client, vecPos, vecAng, ally);
+}
 methodmap ThePurge < CClotBody
 {
 	public void PlayDeathSound()
@@ -122,7 +140,6 @@ methodmap ThePurge < CClotBody
 	{
 		ThePurge npc = view_as<ThePurge>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "25000", team, false, true, true, true));
 		
-		i_NpcInternalId[npc.index] = RAIDBOSS_THE_PURGE;
 		i_NpcWeight[npc.index] = 5;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -273,22 +290,6 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	//Set raid to this one incase the previous one has died or somehow vanished
-	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
-	{
-		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
-		{
-			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
-			{
-				Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
-			}	
-		}
-	}
-	else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)) || IsPartnerGivingUpSilvester(EntRefToEntIndex(RaidBossActive)))
-	{	
-		RaidBossActive = EntIndexToEntRef(npc.index);
-	}
-	
 	if(LastMann)
 	{
 		if(!npc.m_fbGunout)
@@ -313,12 +314,12 @@ static void ClotThink(int iNPC)
 
 	if(target > 0)
 	{
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float distance = GetVectorDistance(vecTarget, vecMe, true);
 		if(distance < npc.GetLeadRadius()) 
 		{
-			vecTarget = PredictSubjectPositionOld(npc, target);
+			PredictSubjectPosition(npc, target,_,_,vecTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 		}
 		else
@@ -447,11 +448,13 @@ static void ClotThink(int iNPC)
 
 				if(distance < 160000.0 && npc.m_flNextMeleeAttack < gameTime)	// 400 HU
 				{
-					if(Can_I_See_Enemy(npc.index, target) == target)
+					if(Can_I_See_Enemy_Only(npc.index, target))
 					{
 						KillFeed_SetKillIcon(npc.index, "family_business");
 						
 						npc.FaceTowards(vecTarget, 400.0);
+						if(target > MaxClients)
+							npc.FaceTowards(vecTarget, 9999.0);
 
 						npc.PlayShotgunSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
@@ -496,12 +499,14 @@ static void ClotThink(int iNPC)
 
 				if(distance < 360000.0 && npc.m_flNextMeleeAttack < gameTime)	// 600 HU
 				{
-					if(Can_I_See_Enemy(npc.index, target) == target)
+					if(Can_I_See_Enemy_Only(npc.index, target))
 					{
 						KillFeed_SetKillIcon(npc.index, "panic_attack");
 						
 						npc.PlaySMGSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
+						if(target > MaxClients)
+							npc.FaceTowards(vecTarget, 9999.0);
 
 						float eyePitch[3];
 						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
@@ -546,7 +551,9 @@ static void ClotThink(int iNPC)
 					KillFeed_SetKillIcon(npc.index, "minigun");
 					
 					npc.FaceTowards(vecTarget, 4000.0);
-					
+					if(target > MaxClients)
+						npc.FaceTowards(vecTarget, 9999.0);
+
 					npc.PlayMinigunSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 
@@ -604,11 +611,11 @@ static void ClotThink(int iNPC)
 					{
 						if(GetURandomInt() % 2)
 						{
-							vecTarget = PredictSubjectPositionForProjectilesOld(npc, target, 900.0);
+							PredictSubjectPositionForProjectiles(npc, target, 900.0,_,vecTarget);
 						}
 						else
 						{
-							GetWorldSpaceCenter(target, vecTarget);
+							WorldSpaceCenter(target, vecTarget);
 						}
 
 						npc.FireRocket(vecTarget, RaidModeScaling, 900.0);
@@ -623,14 +630,14 @@ static void ClotThink(int iNPC)
 
 				if(npc.m_flNextMeleeAttack < gameTime)
 				{
-					if(Can_I_See_Enemy(npc.index, target) == target)
+					if(Can_I_See_Enemy_Only(npc.index, target))
 					{
 						KillFeed_SetKillIcon(npc.index, "iron_bomber");
 						
 						npc.PlayGrenadeSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 
-						vecTarget = PredictSubjectPositionForProjectilesOld(npc, target, 1000.0);
+						PredictSubjectPositionForProjectiles(npc, target, 1000.0, _,vecTarget);
 						npc.FireGrenade(vecTarget, 1000.0, RaidModeScaling, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl");
 
 						npc.m_flNextMeleeAttack = gameTime + 0.45;
@@ -647,8 +654,11 @@ static void ClotThink(int iNPC)
 				if(npc.m_flNextMeleeAttack < gameTime)
 				{
 					KillFeed_SetKillIcon(npc.index, "minigun");
-					
-					npc.FaceTowards(WorldSpaceCenterOld(target), 8000.0);
+					float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
+
+					npc.FaceTowards(WorldSpaceVec, 8000.0);
+					if(target > MaxClients)
+						npc.FaceTowards(WorldSpaceVec, 99999.0);
 					
 					npc.PlayMinigunSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
@@ -724,7 +734,7 @@ static void ClotDeathLoopThink(int iNPC)
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
-	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 	CPrintToChatAll("{darkblue}??????????{default}: You will regret this.");
 				
 	npc.PlayBoomSound();
@@ -781,9 +791,9 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			npc.m_flRangedArmor = 0.25;
 			npc.m_flMeleeArmor = 0.375;
 
-			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 6.0, _, 3.0, HEAL_ABSOLUTE);
-			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 12.0, _, 13.0, HEAL_ABSOLUTE);
-			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 12.0, _, 13.0, HEAL_SELFHEAL|HEAL_SILENCEABLE);
+			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 8.0, _, 3.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 15.0, _, 13.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 15.0, _, 13.0, HEAL_SELFHEAL|HEAL_SILENCEABLE);
 		}
 	}
 	return Plugin_Changed;
@@ -792,7 +802,8 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 static void ClotDeath(int entity)
 {
 	ThePurge npc = view_as<ThePurge>(entity);
-	
+	npc.PlayMinigunStopSound();
+
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	

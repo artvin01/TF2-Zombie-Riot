@@ -104,6 +104,23 @@ float InfectionDelay()
 }
 void RaidbossNemesis_OnMapStart()
 {
+	if(!IsFileInDownloads(NEMESIS_MODEL))
+		return;
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Nemesis");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_raidboss_nemesis");
+	strcopy(data.Icon, sizeof(data.Icon), "nemesis_boss");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);       }
 	for (int i = 0; i < (sizeof(g_HurtSounds));        i++) { PrecacheSound(g_HurtSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));    i++) { PrecacheSound(g_MeleeHitSounds[i]);    }
@@ -117,6 +134,10 @@ void RaidbossNemesis_OnMapStart()
 	PrecacheSoundCustom("#zombie_riot/320_now_1.mp3");
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return RaidbossNemesis(client, vecPos, vecAng, ally, data);
+}
 methodmap RaidbossNemesis < CClotBody
 {
 	public void PlayHurtSound()
@@ -184,8 +205,6 @@ methodmap RaidbossNemesis < CClotBody
 
 		//wave 75 xeno raidboss,should be extreamly hard, but still fair, that will be hard to do.
 		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Nemesis_Win);
-
-		i_NpcInternalId[npc.index] = XENO_RAIDBOSS_NEMESIS;
 		i_NpcWeight[npc.index] = 5;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -193,8 +212,10 @@ methodmap RaidbossNemesis < CClotBody
 		int iActivity = npc.LookupActivity("ACT_FT2_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SDKHook(npc.index, SDKHook_Think, RaidbossNemesis_ClotThink);
 		
+		func_NPCDeath[npc.index] = RaidbossNemesis_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = RaidbossNemesis_OnTakeDamage;
+		func_NPCThink[npc.index] = RaidbossNemesis_ClotThink;
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossNemesis_OnTakeDamagePost);
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
@@ -234,6 +255,7 @@ methodmap RaidbossNemesis < CClotBody
 		Music_SetRaidMusic("#zombie_riot/320_now_1.mp3", 200, true, 1.0);
 		RaidModeScaling = 9999999.99;
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "??????????????????????????????????");
+		WavesUpdateDifficultyName();
 		npc.m_bThisNpcIsABoss = true;
 		npc.Anger = false;
 		npc.m_flSpeed = 300.0;
@@ -299,7 +321,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		Music_RoundEnd(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		CPrintToChatAll("{green} The infection proves too strong for you to resist as you join his side...");
-		SDKUnhook(npc.index, SDKHook_Think, RaidbossNemesis_ClotThink);
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
 	if(npc.m_flNextRangedAttackHappening && npc.flXenoInfectedSpecialHurtTime - 0.45 < gameTime)
@@ -665,8 +687,9 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			{
 				if(!XenoExtraLogic())
 				{
-					float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-					float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+					float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+					float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+					float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 					if(flDistanceToTarget < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 					{
 						int Enemy_I_See;
@@ -765,8 +788,9 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			{
 				if(IsValidEnemy(npc.index, npc.m_iTarget))
 				{
-					float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-					float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+					float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+					float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+					float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 					if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0))
 					{
 
@@ -834,14 +858,15 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		//Predict their pos.
 		if(fl_OverrideWalkDest[npc.index] < gameTime)
 		{
 			if(flDistanceToTarget < npc.GetLeadRadius()) 
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} 
 			else 
@@ -969,7 +994,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				npc.m_flJumpStartTime = gameTime + 0.1;
 				npc.FaceTowards(vecTarget, 99999.9);
 
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1300.0);
+				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1300.0, _,vecTarget);
 				float VecSave[3];
 				VecSave = vecTarget;
 
@@ -1070,6 +1095,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 	}
 	int client = EntRefToEntIndex(i_GrabbedThis[npc.index]);
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s",WhatDifficultySetting_Internal);
+	WavesUpdateDifficultyName();
 	
 	if(IsValidEntity(client))
 	{
@@ -1110,7 +1136,6 @@ public void RaidbossNemesis_NPCDeath(int entity)
 	}
 
 	i_GrabbedThis[npc.index] = -1;
-	SDKUnhook(npc.index, SDKHook_Think, RaidbossNemesis_ClotThink);
 	
 	
 	if(IsValidEntity(npc.m_iWearable1))
@@ -1130,7 +1155,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 
 	GiveProgressDelay(3.0);
 	RaidModeTime += 999.0; //cant afford to delete it, since duo.
-	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_RoundRunning)
+	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
 		for (int client_repat = 0; client_repat < MaxClients; client_repat++)
 		{
@@ -1232,7 +1257,7 @@ void Nemesis_TryDodgeAttack(int entity)
 				fl_OverrideWalkDest[npc.index] = GetGameTime(npc.index) + 1.5;
 				if(IsValidEntity(npc.m_iTarget))
 				{
-					float vecTarget[3]; vecTarget = WorldSpaceCenterOld(ref);
+					float vecTarget[3]; WorldSpaceCenter(ref, vecTarget);
 					npc.FaceTowards(vecTarget);
 				}
 				NPC_SetGoalVector(npc.index, PosToDodgeTo);
@@ -1390,7 +1415,7 @@ public Action CheckStuckNemesis(Handle timer, any entid)
 stock float[] Nemesis_DodgeToDirection(CClotBody npc, float extra_backoff = 64.0, float Angle = -90.0)
 {
 	float botPos[3];
-	botPos = WorldSpaceCenterOld(npc.index);
+	WorldSpaceCenter(npc.index, botPos);
 	
 	// compute our desired destination
 	float pathTarget[3];
@@ -1677,11 +1702,10 @@ public Action Timer_Nemesis_Infect_Allies(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-
 public void Raidmode_Nemesis_Win(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
-	SDKUnhook(entity, SDKHook_Think, RaidbossNemesis_ClotThink);
+	func_NPCThink[entity] = INVALID_FUNCTION;
 	if(XenoExtraLogic())
 	{
 		CPrintToChatAll("{snow}???{default}: That was too close, they cant get further, i trust you nemesis to annihilate anyone else left.");

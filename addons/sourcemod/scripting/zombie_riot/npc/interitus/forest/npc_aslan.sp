@@ -43,6 +43,24 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/machete_swing.wav",
 };
 
+void AslanOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Aslan");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aslan");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_stun");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Aslan(client, vecPos, vecAng, ally);
+}
+
 methodmap Aslan < CClotBody
 {
 	public void PlayIdleSound()
@@ -74,7 +92,6 @@ methodmap Aslan < CClotBody
 	{
 		Aslan npc = view_as<Aslan>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "25000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_SCOUT;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		KillFeed_SetKillIcon(npc.index, "prinny_machete");
@@ -148,12 +165,13 @@ static void ClotThink(int iNPC)
 
 	if(target > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, target);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 

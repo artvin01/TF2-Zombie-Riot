@@ -69,8 +69,21 @@ public void XenoTorsolessHeadcrabZombie_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Torsoless Headcrab Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_torsoless_headcrabzombie");
+	strcopy(data.Icon, sizeof(data.Icon), "norm_headcrab_zombie");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoTorsolessHeadcrabZombie(client, vecPos, vecAng, ally);
+}
 methodmap XenoTorsolessHeadcrabZombie < CClotBody
 {
 	public void PlayIdleSound() {
@@ -138,7 +151,6 @@ methodmap XenoTorsolessHeadcrabZombie < CClotBody
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	
-		i_NpcInternalId[npc.index] = XENO_TORSOLESS_HEADCRAB_ZOMBIE;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -152,7 +164,9 @@ methodmap XenoTorsolessHeadcrabZombie < CClotBody
 		
 		
 		
-		SDKHook(npc.index, SDKHook_Think, XenoTorsolessHeadcrabZombie_ClotThink);		
+		func_NPCDeath[npc.index] = XenoTorsolessHeadcrabZombie_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoTorsolessHeadcrabZombie_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoTorsolessHeadcrabZombie_ClotThink;				
 	
 		
 		
@@ -203,14 +217,15 @@ public void XenoTorsolessHeadcrabZombie_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
+		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -311,9 +326,6 @@ public void XenoTorsolessHeadcrabZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoTorsolessHeadcrabZombie_ClotThink);
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

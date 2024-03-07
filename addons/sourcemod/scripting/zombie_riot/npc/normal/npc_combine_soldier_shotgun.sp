@@ -78,6 +78,20 @@ public void CombineSoldierShotgun_OnMapStart_NPC()
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Combine Shotgunner");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_shotgun");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_shotgun");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return CombineSoldierShotgun(client, vecPos, vecAng, ally);
 }
 
 methodmap CombineSoldierShotgun < CClotBody
@@ -174,7 +188,6 @@ methodmap CombineSoldierShotgun < CClotBody
 	{
 		CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "650", ally));
 		
-		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_SHOTGUN;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -189,10 +202,11 @@ methodmap CombineSoldierShotgun < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
 
+		func_NPCDeath[npc.index] = CombineSoldierShotgun_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = CombineSoldierShotgun_OnTakeDamage;
+		func_NPCThink[npc.index] = CombineSoldierShotgun_ClotThink;
 		npc.m_fbGunout = false;
 
-		
-		SDKHook(npc.index, SDKHook_Think, CombineSoldierShotgun_ClotThink);
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		
@@ -256,14 +270,15 @@ public void CombineSoldierShotgun_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -318,7 +333,8 @@ public void CombineSoldierShotgun_ClotThink(int iNPC)
 					//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
 					
 
-					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+					MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -329,14 +345,14 @@ public void CombineSoldierShotgun_ClotThink(int iNPC)
 					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
-					
+					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					if(EscapeModeForNpc)
 					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 15.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 15.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 					else
 					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 10.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 				}
 				npc.PlayRangedSound();				
@@ -375,9 +391,6 @@ public void CombineSoldierShotgun_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, CombineSoldierShotgun_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

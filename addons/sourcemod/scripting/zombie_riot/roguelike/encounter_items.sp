@@ -452,16 +452,10 @@ public void Rogue_Vote_EyeForAnEye(const Vote vote, int index)
 		case 1:
 		{
 			Ammo_Count_Ready -= 20;
-
+			
 			CurrentCash += 1500;
-			for(int client = 1; client <= MaxClients; client++)
-			{
-				if(IsClientInGame(client))
-				{
-					CashRecievedNonWave[client] += 1500;
-				}
-			}
-
+			GlobalExtraCash += 1500;
+			
 			PrintToChatAll("%t", "Eye for an Eye Lore 2");
 		}
 		default:

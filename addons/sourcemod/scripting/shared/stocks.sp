@@ -359,17 +359,14 @@ stock int ExplodeStringFloat(const char[] text, const char[] split, float[] buff
 	return total;
 }
 
-stock bool KvJumpToKeySymbol2(KeyValues kv, int id)
+stock void KvGetTranslation(KeyValues kv, const char[] string, char[] buffer, int length, const char[] defaul = "")
 {
-	if(kv.GotoFirstSubKey())
+	kv.GetString(string, buffer, length, defaul);
+	if(buffer[0] && !TranslationPhraseExists(buffer))
 	{
-		do
-		{
-			if(kv.JumpToKeySymbol(id))
-				return true;
-		} while(kv.GotoNextKey());
+		LogError("[Config] Missing translation '%s'", buffer);
+		strcopy(buffer, length, defaul);
 	}
-	return false;
 }
 
 static bool i_PreviousInteractedEntityDo[MAXENTITIES];
@@ -796,7 +793,6 @@ void RemoveAllDefaultAttribsExceptStrings(int entity)
 	
 	delete staticAttribs;	
 }
-#endif
 
 stock void NullifySpecificAttributes(int entity, int attribute)
 {
@@ -812,6 +808,7 @@ stock void NullifySpecificAttributes(int entity, int attribute)
 		}
 	}
 }
+#endif
 
 stock void TF2_RemoveItem(int client, int weapon)
 {
@@ -1130,7 +1127,7 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype)
+stock void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype)
 {
 	if(IsValidEntity(entity) && IsValidEntity(weapon) && IsValidEntity(client))
 	{
@@ -1233,6 +1230,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		}
 #endif
 
+#if !defined RTS
 		//Extra healing bonuses or penalty for all healing except absolute
 		if(reciever <= MaxClients)
 			HealTotal *= Attributes_GetOnPlayer(reciever, 526, true, false);
@@ -1243,6 +1241,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 			if(reciever <= MaxClients)
 				HealTotal *= Attributes_GetOnPlayer(reciever, 734, true, false);
 		}
+#endif
 	}
 #if defined ZR
 	if(healer != reciever && HealOverThisDuration != 0.0)
@@ -1358,6 +1357,10 @@ public Action Timer_HealEventApply(Handle timer, DataPack pack)
 	return Plugin_Stop;
 }
 
+public bool Trace_WorldOnly(int entity, int mask, any data)
+{
+	return entity == 0;
+}
 
 public bool Trace_DontHitEntity(int entity, int mask, any data)
 {
@@ -1547,13 +1550,6 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 	return entity!=data;
 }
 
-stock float[] GetAbsOriginOld(int client)
-{
-	float v[3];
-	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
-	return v;
-}
-
 stock void GetAbsOrigin(int client, float v[3])
 {
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
@@ -1574,33 +1570,11 @@ stock bool IsValidClient( int client)
 	return true; 
 }
 
-#if defined ZR
-stock float[] GetWorldSpaceCenterOld(int client)
-{
-	float v[3]; v = GetAbsOriginOld(client);
-	
-	float max_space[3];
-	GetEntPropVector(client, Prop_Data, "m_vecMaxs", max_space);
-	v[2] += max_space[2] / 2;
-	
-	return v;
-}
-#endif
-
-stock void GetWorldSpaceCenter(int client, float v[3])
-{
-	GetAbsOrigin(client, v);
-	
-	float max_space[3];
-	GetEntPropVector(client, Prop_Data, "m_vecMaxs", max_space);
-	v[2] += max_space[2] / 2;
-}
-
 stock bool IsBehindAndFacingTarget(int owner, int target, int weapon = -1)
 {
 	float vecToTarget[3], vecEyeAngles[3];
-	GetWorldSpaceCenter(target, vecToTarget);
-	GetWorldSpaceCenter(owner, vecEyeAngles);
+	WorldSpaceCenter(target, vecToTarget);
+	WorldSpaceCenter(owner, vecEyeAngles);
 	SubtractVectors(vecToTarget, vecEyeAngles, vecToTarget);
 
 	vecToTarget[2] = 0.0;
@@ -2569,16 +2543,6 @@ void TE_SendBeam(int client, float m_vecMins[3], float m_vecMaxs[3], float flDur
 	TE_SendToClient(client);
 }
 
-/*
-float[] CalculateBulletDamageForceOld( const float vecBulletDir[3], float flScale )
-{
-	float vecForce[3]; vecForce = vecBulletDir;
-	NormalizeVector( vecForce, vecForce );
-	ScaleVector(vecForce, FindConVar("phys_pushscale").FloatValue);
-	ScaleVector(vecForce, flScale);
-	return vecForce;
-}
-*/
 
 stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 {
@@ -2620,16 +2584,6 @@ stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	return 0;
 }
 
-#if defined ZR
-float[] CalculateDamageForceOld( const float vecBulletDir[3], float flScale )
-{
-	float vecForce[3]; vecForce = vecBulletDir;
-	NormalizeVector( vecForce, vecForce );
-	ScaleVector(vecForce, FindConVar("phys_pushscale").FloatValue);
-	ScaleVector(vecForce, flScale);
-	return vecForce;
-}
-#endif
 
 stock void CalculateDamageForce( const float vecBulletDir[3], float flScale, float vecForce[3])
 {
@@ -2657,14 +2611,6 @@ float ImpulseScale( float flTargetMass, float flDesiredSpeed )
 
 #define INNER_RADIUS_FRACTION 0.25
 
-#if defined ZR
-stock float[] CalculateExplosiveDamageForceOld(const float vec_Explosive[3], const float vecEndPosition[3], float damage_Radius)
-{
-	float v[3];
-	CalculateExplosiveDamageForce(vec_Explosive, vecEndPosition, damage_Radius, v);
-	return v;
-}
-#endif
 
 void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vecEndPosition[3], float damage_Radius, float vecForce[3])
 {
@@ -2724,7 +2670,7 @@ int CountPlayersOnRed(int alive = 0)
 	{
 		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 		{
-			if(!alive)
+			if(alive == 0)
 			{
 				amount++;
 				continue;
@@ -2748,12 +2694,6 @@ int CountPlayersOnRed(int alive = 0)
 					}
 				}
 			}
-		}
-
-		if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client) == 2 && (!alive || IsPlayerAlive(client)))
-		{
-			amount++;
-			continue;
 		}
 	}
 	
@@ -3867,6 +3807,7 @@ stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int 
 	SetHudTextParams(HudX, HudY, duration, red, green, blue, 255);
 }
 
+#if !defined RTS
 stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
 {
 	if(Attributes_Has(entity,index))
@@ -3912,6 +3853,7 @@ public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
 	}
 	return Plugin_Stop;
 }
+#endif
 
 /*
 void PlayFakeDeathSound(int client)
@@ -4709,12 +4651,20 @@ stock void SpawnTimer(float time)
 	AcceptEntityInput(timer, "Resume");
 	AcceptEntityInput(timer, "Enable");
 	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
-	
+
 	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
 	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
 	
 	Event event = CreateEvent("teamplay_update_timer", true);
 	event.Fire();
+/*
+	GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + time);
+	GameRules_SetProp("m_bAwaitingReadyRestart", false);
+
+	Event event = CreateEvent("teamplay_update_timer", true);
+	event.SetInt("seconds", RoundFloat(time));
+	event.Fire();
+*/
 }
 
 stock int GetOwnerLoop(int entity)
@@ -4952,7 +4902,7 @@ stock int GetTeam(int entity)
 			return GetClientTeam(entity);
 #endif
 
-		if(TeamNumber[entity] == -1)
+		if(TeamNumber[entity] == -1 || b_NpcHasDied[entity])
 		{
 			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
 		}
@@ -5002,4 +4952,13 @@ stock void SetTeam(int entity, int teamSet)
 	{
 		SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
 	}
+}
+
+stock bool FailTranslation(const char[] phrase)
+{
+	if(TranslationPhraseExists(phrase))
+		return false;
+	
+	LogError("Translation '%s' does not exist", phrase);
+	return true;
 }

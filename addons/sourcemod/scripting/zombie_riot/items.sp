@@ -267,11 +267,6 @@ bool Items_HasNamedItem(int client, const char[] name)
 	return false;
 }
 
-stock void Items_GiveNPCKill(int client, int id)
-{
-	//AddFlagOfLevel(client, -id, 1, true);
-}
-
 bool Items_GiveIdItem(int client, int id)
 {
 	return AddFlagOfLevel(client, IdToLevel(id), IdToFlag(id));
@@ -353,15 +348,15 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 		for(int i; i < length; i++)
 		{
 			NPC_GetById(i, data);
-			if(data.Category == CategoryPage[client])
+			if(data.Plugin[0] && data.Category == CategoryPage[client])
 			{
 				IntToString(i, data.Plugin, sizeof(data.Plugin));
 				Format(data.Name, sizeof(data.Name), "%t", data.Name);
-				
-				menu.AddItem(data.Plugin, data.Name);
 
 				if(i == page)
 					pos = menu.ItemCount;
+				
+				menu.AddItem(data.Plugin, data.Name);
 
 				//kills += GetFlagsOfLevel(client, -i);
 			}

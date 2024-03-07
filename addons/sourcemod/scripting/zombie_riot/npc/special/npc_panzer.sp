@@ -79,8 +79,22 @@ public void NaziPanzer_OnMapStart_NPC()
 	PrecacheModel(LASERBEAM_PANZER);
 	PrecacheModel(ENERGY_BALL_MODEL_PANZER);
 	PrecacheModel("models/zombie_riot/cod_zombies/panzer_soldat_2.mdl");
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Nazi Panzer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_panzer");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return NaziPanzer(client, vecPos, vecAng, ally);
+}
 static char[] GetPanzerHealth()
 {
 	int health = 110;
@@ -208,7 +222,7 @@ methodmap NaziPanzer < CClotBody
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		this.GetVectors(vecForward, vecSwingStart, vecAngles);
 
-		vecSwingStart = GetAbsOriginOld(this.index);
+		GetAbsOrigin(this.index, vecSwingStart);
 		vecSwingStart[2] += 44.0;
 
 		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
@@ -259,7 +273,6 @@ methodmap NaziPanzer < CClotBody
 	{
 		NaziPanzer npc = view_as<NaziPanzer>(CClotBody(vecPos, vecAng, "models/zombie_riot/cod_zombies/panzer_soldat_2.mdl", "1.15", GetPanzerHealth(), ally, false, true));
 		
-		i_NpcInternalId[npc.index] = NAZI_PANZER;
 		i_NpcWeight[npc.index] = 3;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
@@ -273,9 +286,12 @@ methodmap NaziPanzer < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;		
 
+
+		func_NPCDeath[npc.index] = NaziPanzer_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = NaziPanzer_OnTakeDamage;
+		func_NPCThink[npc.index] = NaziPanzer_ClotThink;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, NaziPanzer_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, NaziPanzer_ClotDamagedPost);
 		
 		npc.m_flSpeed = 0.0;
@@ -317,13 +333,14 @@ methodmap NaziPanzer < CClotBody
 		
 		float vecForward[3], vecRight[3], vecTarget[3];
 		
-		vecTarget = WorldSpaceCenterOld(target);
-		MakeVectorFromPoints(WorldSpaceCenterOld(this.index), vecTarget, vecForward);
+		WorldSpaceCenter(target, vecTarget );
+		float npc_vec[3]; WorldSpaceCenter(this.index, npc_vec);
+		MakeVectorFromPoints(npc_vec, vecTarget, vecForward);
 		GetVectorAngles(vecForward, vecForward);
 		vecForward[1] = eyePitch[1];
 		GetAngleVectors(vecForward, vecForward, vecRight, vecTarget);
 		
-		float vecSwingStart[3]; vecSwingStart = GetAbsOriginOld(this.index);
+		float vecSwingStart[3]; GetAbsOrigin(this.index, vecSwingStart);
 		vecSwingStart[2] += 44.0;
 		
 		float vecSwingEnd[3];
@@ -456,14 +473,15 @@ public void NaziPanzer_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
+		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 	//		PrintToChatAll("cutoff");
 			NPC_SetGoalVector(npc.index, vPredictedPos);	
 		}
@@ -633,13 +651,13 @@ public void NaziPanzer_ClotThink(int iNPC)
 			target = Can_I_See_Enemy(npc.index, HumanTarget);
 			if (target == HumanTarget)
 			{
-				float vecTargetHook[3]; vecTargetHook = WorldSpaceCenterOld(HumanTarget);
+				float vecTargetHook[3]; WorldSpaceCenter(HumanTarget, vecTargetHook);
 				npc.FaceTowards(vecTargetHook, 20000.0);
 				
 				float projectile_speed = 1200.0;
 			
 				float vPredictedPosHuman[3];
-				vPredictedPosHuman = PredictSubjectPositionForProjectilesOld(npc, HumanTarget, projectile_speed);
+				PredictSubjectPositionForProjectiles(npc, HumanTarget, projectile_speed,_, vPredictedPosHuman);
 				npc.FireHook(vPredictedPosHuman);
 				npc.m_flGrappleCooldown = GetGameTime(npc.index) + 30.0;
 				
@@ -776,9 +794,6 @@ public void NaziPanzer_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, NaziPanzer_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, NaziPanzer_ClotDamagedPost);
 		
 	if(IsValidEntity(npc.m_iWearable1))

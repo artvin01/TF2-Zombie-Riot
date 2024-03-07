@@ -157,10 +157,46 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 		PrecacheSound(altsound);
 		SoundAlts.SetString(sound, altsound);
 	}
-	DataPack pack = new DataPack();
-	pack.WriteString(sound);
-	RequestFrames(FileNetwork_AddSoundFrame, delay, pack);
+
+	if(delay >= 0)
+	{
+		DataPack pack = new DataPack();
+		pack.WriteString(sound);
+		RequestFrames(FileNetwork_AddSoundFrame, delay, pack);
+	}
 #endif
+}
+
+stock void PrecacheMvMIconCustom(const char[] icon)
+{
+
+	char buffer[PLATFORM_MAX_PATH];
+	FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vtf", icon);
+
+#if defined UseDownloadTable
+	AddFileToDownloadsTable(buffer);
+#else
+	if(ExtraList.FindString(buffer) == -1)
+		ExtraList.PushString(buffer);
+#endif
+
+	FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vmt", icon);
+
+#if defined UseDownloadTable
+	AddFileToDownloadsTable(buffer);
+#else
+	if(ExtraList.FindString(buffer) == -1)
+		ExtraList.PushString(buffer);
+#endif
+
+#if !defined UseDownloadTable
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(StartedQueue[client] && !Downloading[client])
+			SendNextFile(client);
+	}
+#endif
+
 }
 
 public void FileNetwork_AddSoundFrame(DataPack pack)
@@ -206,20 +242,20 @@ static void SendNextFile(int client)
 	static char download[PLATFORM_MAX_PATH];
 	DataPack pack;
 
-	if(SoundLevel[client] < SoundList.Length)
+	if(ExtraLevel[client] < ExtraList.Length)
+	{
+		ExtraList.GetString(ExtraLevel[client], download, sizeof(download));
+
+		pack = new DataPack();
+		pack.WriteCell(true);	// Is an extra
+	}
+	else if(SoundLevel[client] < SoundList.Length)
 	{
 		SoundList.GetString(SoundLevel[client], download, sizeof(download));
 		Format(download, sizeof(download), "sound/%s", download[download[0] == '#' ? 1 : 0]);
 		
 		pack = new DataPack();
 		pack.WriteCell(false);	// Is a sound
-	}
-	else if(ExtraLevel[client] < ExtraList.Length)
-	{
-		ExtraList.GetString(ExtraLevel[client], download, sizeof(download));
-
-		pack = new DataPack();
-		pack.WriteCell(true);	// Is an extra
 	}
 
 	if(pack)
@@ -244,7 +280,7 @@ static void SendNextFile(int client)
 		Downloading[client] = false;
 
 		PrintToConsole(client, "---");
-		PrintToConsole(client, "[ZR/RPG] Finished Downloading/Verifying Files! You will hear and see everything as intended now.");
+		PrintToConsole(client, "[ZR] Finished Downloading/Verifying Files! You will hear and see everything as intended now.");
 		PrintToConsole(client, "---");
 	}
 }
@@ -288,7 +324,7 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 		{
 #if !defined UseDownloadTable
 			// So the client doesn't freak out about existing CreateFragmentsFromFile spam
-			PrintToConsole(client, "[ZR/RPG] Downloading '%s'", download);
+			PrintToConsole(client, "[ZR] Downloading '%s'", download);
 			if(FileNet_SendFile(client, download, FileNetwork_SendResults, pack))
 				return;
 			
@@ -312,7 +348,7 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success,
 			FormatFileCheck(file, client, filecheck, sizeof(filecheck));
 
 			File filec = OpenFile(filecheck, "wt");
-			filec.WriteLine("Used for file checks for ZR/RPG");
+			filec.WriteLine("Used for file checks for ZR");
 			filec.Close();
 #if !defined UseDownloadTable
 			if(!FileNet_SendFile(client, filecheck, FileNetwork_SendFileCheck))
@@ -370,26 +406,31 @@ stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND
 #else
 
 	int soundlevel = SoundList.FindString(sound);
-	if(soundlevel == -1)
-		ThrowError("\"%s\" is not precached with PrecacheSoundCustom", sound);
-	
-	if(SoundLevel[client] > soundlevel)
+	if(soundlevel != -1)
 	{
-		float volume2 = volume;
-		int count = RoundToCeil(volume);
-		if(count > 1)
-			volume2 /= float(count);
-		
-		for(int i; i < count; i++)
+		if(SoundLevel[client] > soundlevel)
 		{
-			EmitSoundToClient(client, sound, entity, channel, level, flags, volume2, pitch, speakerentity, origin, dir, updatePos, soundtime);
+			float volume2 = volume;
+			int count = RoundToCeil(volume);
+			if(count > 1)
+				volume2 /= float(count);
+			
+			for(int i; i < count; i++)
+			{
+				EmitSoundToClient(client, sound, entity, channel, level, flags, volume2, pitch, speakerentity, origin, dir, updatePos, soundtime);
+			}
+			return true;
 		}
-		return true;
 	}
 	
 	static char buffer[PLATFORM_MAX_PATH];
 	if(!SoundAlts.GetString(sound, buffer, sizeof(buffer)))
+	{
+		if(soundlevel == -1)
+			ThrowError("\"%s\" is not precached with PrecacheSoundCustom", sound);
+
 		return false;
+	}
 	
 	float volume2 = volume;
 	int count = RoundToCeil(volume);
@@ -482,4 +523,21 @@ stock void EmitCustom(const int[] clients, int numClients, const char[] sound, i
 		}
 	}
 #endif
+}
+
+stock bool IsFileInDownloads(const char[] file)
+{
+	static int table;
+	if(!table)
+		table = FindStringTable("downloadables");
+	
+	char buffer[PLATFORM_MAX_PATH];
+	int length = GetStringTableNumStrings(table);
+	for(int i; i < length; i++)
+	{
+		if(ReadStringTable(table, i, buffer, sizeof(buffer)) && StrEqual(buffer, file, false))
+			return true;
+	}
+
+	return false;
 }

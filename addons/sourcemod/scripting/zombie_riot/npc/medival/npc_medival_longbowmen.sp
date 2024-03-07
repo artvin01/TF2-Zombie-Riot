@@ -71,8 +71,22 @@ void MedivalLongbowmen_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Medival Longbowmen");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_longbowmen");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper_bow");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalLongbowmen(client, vecPos, vecAng, ally);
+}
 methodmap MedivalLongbowmen < CClotBody
 {
 	public void PlayIdleSound() {
@@ -149,8 +163,7 @@ methodmap MedivalLongbowmen < CClotBody
 	{
 		MedivalLongbowmen npc = view_as<MedivalLongbowmen>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "12500", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_LONGBOWMEN;
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -174,7 +187,10 @@ methodmap MedivalLongbowmen < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalLongbowmen_ClotThink);
+		func_NPCDeath[npc.index] = MedivalLongbowmen_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalLongbowmen_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalLongbowmen_ClotThink;
+		func_NPCAnimEvent[npc.index] = HandleAnimEventMedivalLongbowmen;
 	
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 //		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
@@ -257,14 +273,15 @@ public void MedivalLongbowmen_ClotThink(int iNPC)
 			{
 				npc.m_flSpeed = 170.0;
 			}
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				/*
 				int color[4];
 				color[0] = 255;
@@ -346,7 +363,7 @@ public void HandleAnimEventMedivalLongbowmen(int entity, int event)
 				
 			float projectile_speed = 2000.0;
 			
-			vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
+			PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed,_,vecTarget);
 				
 			npc.FaceTowards(vecTarget, 30000.0);
 						
@@ -389,9 +406,6 @@ public void MedivalLongbowmen_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalLongbowmen_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -71,8 +71,22 @@ void CombineOverlord_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
 	for (int i = 0; i < (sizeof(g_ChargeSounds));   i++) { PrecacheSound(g_ChargeSounds[i]);   }
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Combine Overlord");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_overlord");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_overlord");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return CombineOverlord(client, vecPos, vecAng, ally);
+}
 methodmap CombineOverlord < CClotBody
 {
 	public void PlayIdleSound() {
@@ -180,7 +194,6 @@ methodmap CombineOverlord < CClotBody
 		CombineOverlord npc = view_as<CombineOverlord>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "35000", ally));
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");	
-		i_NpcInternalId[npc.index] = COMBINE_OVERLORD;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -197,8 +210,10 @@ methodmap CombineOverlord < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, CombineOverlord_ClotThink);
+	
+		func_NPCDeath[npc.index] = CombineOverlord_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = CombineOverlord_OnTakeDamage;
+		func_NPCThink[npc.index] = CombineOverlord_ClotThink;	
 		
 	//	npc.m_bDissapearOnDeath = true;
 		npc.m_bThisNpcIsABoss = true;
@@ -280,7 +295,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			if (npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				if (npc.m_flmovedelay < GetGameTime(npc.index) && npc.m_flAngerDelay < GetGameTime(npc.index))
@@ -313,12 +328,13 @@ public void CombineOverlord_ClotThink(int iNPC)
 			
 		//	npc.FaceTowards(vecTarget, 1000.0);
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -391,7 +407,8 @@ public void CombineOverlord_ClotThink(int iNPC)
 					//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
 					
 					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+					MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -402,10 +419,10 @@ public void CombineOverlord_ClotThink(int iNPC)
 					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
-					
+					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
-					FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 100.0, 150.0, DMG_BULLET, "bullet_tracer02_blue");
+					FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 100.0, 150.0, DMG_BULLET, "bullet_tracer02_blue");
 				}
 			}
 			
@@ -520,10 +537,6 @@ public void CombineOverlord_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, CombineOverlord_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

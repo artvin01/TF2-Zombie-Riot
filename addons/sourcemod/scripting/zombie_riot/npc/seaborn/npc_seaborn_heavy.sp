@@ -39,6 +39,24 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/boxing_gloves_swing4.wav"
 };
 
+void SeabornHeavy_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Seaborn Heavy");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_heavy");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_heavy");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SeabornHeavy(client, vecPos, vecAng, ally);
+}
+
 methodmap SeabornHeavy < CClotBody
 {
 	public void PlayIdleSound()
@@ -70,7 +88,6 @@ methodmap SeabornHeavy < CClotBody
 	{
 		SeabornHeavy npc = view_as<SeabornHeavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "6000", ally));
 		
-		i_NpcInternalId[npc.index] = SEABORN_HEAVY;
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		KillFeed_SetKillIcon(npc.index, "fists");
@@ -81,7 +98,9 @@ methodmap SeabornHeavy < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		SDKHook(npc.index, SDKHook_Think, SeabornHeavy_ClotThink);
+		func_NPCDeath[npc.index] = SeabornHeavy_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SeabornHeavy_OnTakeDamage;
+		func_NPCThink[npc.index] = SeabornHeavy_ClotThink;
 		
 		npc.m_flSpeed = 230.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -131,12 +150,13 @@ public void SeabornHeavy_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -239,6 +259,4 @@ void SeabornHeavy_NPCDeath(int entity)
 	SeabornHeavy npc = view_as<SeabornHeavy>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornHeavy_ClotThink);
 }

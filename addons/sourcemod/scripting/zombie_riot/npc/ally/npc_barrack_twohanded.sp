@@ -3,17 +3,37 @@
 
 // Balanced around Mid Soldier
 
+void BarrackTwoHandedOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Twohanded Swordsman");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_twohanded");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackTwoHanded(client, vecPos, vecAng, ally);
+}
+
 methodmap BarrackTwoHanded < BarrackBody
 {
 	public BarrackTwoHanded(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackTwoHanded npc = view_as<BarrackTwoHanded>(BarrackBody(client, vecPos, vecAng, "625",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
-		i_NpcInternalId[npc.index] = BARRACK_TWOHANDED;
 		i_NpcWeight[npc.index] = 1;
 		KillFeed_SetKillIcon(npc.index, "claidheamohmor");
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackTwoHanded_ClotThink);
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackTwoHanded_NPCDeath;
+		func_NPCThink[npc.index] = BarrackTwoHanded_ClotThink;
+
 
 		npc.m_flSpeed = 225.0;
 		
@@ -43,8 +63,9 @@ public void BarrackTwoHanded_ClotThink(int iNPC)
 
 		if(npc.m_iTarget > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			//Target close enough to hit
 			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
@@ -98,5 +119,4 @@ void BarrackTwoHanded_NPCDeath(int entity)
 {
 	BarrackTwoHanded npc = view_as<BarrackTwoHanded>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, BarrackTwoHanded_ClotThink);
 }

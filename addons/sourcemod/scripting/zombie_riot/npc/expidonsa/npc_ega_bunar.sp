@@ -51,8 +51,22 @@ void EgaBunar_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_HurtArmorSounds)); i++) { PrecacheSound(g_HurtArmorSounds[i]); }
 	PrecacheModel("models/player/demo.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Ega Bunar");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ega_bunar");
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return EgaBunar(client, vecPos, vecAng, ally);
+}
 
 methodmap EgaBunar < CClotBody
 {
@@ -117,7 +131,6 @@ methodmap EgaBunar < CClotBody
 	{
 		EgaBunar npc = view_as<EgaBunar>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1500", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_EGABUNAR;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -132,6 +145,9 @@ methodmap EgaBunar < CClotBody
 			once armor breaks, gains heavy speed
 		*/
 		
+		func_NPCDeath[npc.index] = EgaBunar_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = EgaBunar_OnTakeDamage;
+		func_NPCThink[npc.index] = EgaBunar_ClotThink;
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -140,7 +156,6 @@ methodmap EgaBunar < CClotBody
 
 		npc.m_bArmorGiven = false;
 		
-		SDKHook(npc.index, SDKHook_Think, EgaBunar_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -220,13 +235,14 @@ public void EgaBunar_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -307,7 +323,6 @@ public void EgaBunar_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_Think, EgaBunar_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable3))
@@ -328,7 +343,8 @@ void EgaBunarSelfDefense(EgaBunar npc, float gameTime, int target, float distanc
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							

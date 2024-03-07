@@ -19,14 +19,13 @@ public void Rogue_Support_Collect()
 {
 	Rogue_AddBonusLife(1);
 	Rogue_AddIngots(20);
+
+	GlobalExtraCash += 250;
 	
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client))
-		{
-			CashRecievedNonWave[client] += 250;
 			CashSpent[client] -= 250;
-		}
 	}
 }
 
@@ -47,7 +46,7 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 

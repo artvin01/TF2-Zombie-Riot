@@ -174,9 +174,7 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 				}
 				else if(What_type_Heal == 3.0)
 				{
-					static char buffer[64];
-					GetEntityClassname(target, buffer, sizeof(buffer));
-					if(!StrContains(buffer, "obj_", true))
+					if(i_IsABuilding[target])
 					{
 						bool team = GetTeam(owner)==GetTeam(target);
 						if((heals && team) || (drains && !team))
@@ -286,7 +284,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						flDrainRate *= target_sucked_long[healTarget];
 						
 						static float Entity_Position[3];
-						Entity_Position = WorldSpaceCenterOld(healTarget);
+						WorldSpaceCenter(healTarget, Entity_Position );
 						
 						SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime() * 3.0, DMG_PLASMA, medigun, _, Entity_Position);
 					}
@@ -309,7 +307,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						flDrainRate *= target_sucked_long[healTarget];
 						
 						static float Entity_Position[3];
-						Entity_Position = WorldSpaceCenterOld(healTarget);
+						WorldSpaceCenter(healTarget, Entity_Position );
 						
 						SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
 					}
@@ -680,7 +678,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					flDrainRate *= target_sucked_long[healTarget];
 						
 					static float Entity_Position[3];
-					Entity_Position = WorldSpaceCenterOld(healTarget);
+					WorldSpaceCenter(healTarget, Entity_Position );
 						
 					SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
 				}

@@ -167,7 +167,7 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		int target = TR_GetEntityIndex(swingTrace);	
 		if(IsValidEnemy(client, target))
 		{
-			vec = WorldSpaceCenterOld(target);
+			WorldSpaceCenter(target, vec);
 		}
 		else
 		{
@@ -461,7 +461,7 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 		int target = TR_GetEntityIndex(swingTrace);	
 		if(IsValidEnemy(client, target))
 		{
-			vec = WorldSpaceCenterOld(target);
+			WorldSpaceCenter(target, vec);
 		}
 		else
 		{

@@ -4,8 +4,8 @@
 *.inc
 *.vscode
 *.jpg
-*.png
 *.code-workspace
+mynpcs/
 [Cc]compiled/
 [Dd]esktop.ini
 [Tt]humbs.db

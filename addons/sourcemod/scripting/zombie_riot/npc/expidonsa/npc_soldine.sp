@@ -68,8 +68,21 @@ void Soldine_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtArmorSounds)); i++) { PrecacheSound(g_HurtArmorSounds[i]); }
 	for (int i = 0; i < (sizeof(g_SuperJumpSound)); i++) { PrecacheSound(g_SuperJumpSound[i]); }
 	PrecacheModel("models/player/soldier.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Soldine");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_soldine");
+	strcopy(data.Icon, sizeof(data.Icon), "soldine");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Soldine(client, vecPos, vecAng, ally);
+}
 
 methodmap Soldine < CClotBody
 {
@@ -153,7 +166,6 @@ methodmap Soldine < CClotBody
 	{
 		Soldine npc = view_as<Soldine>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "40000", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_SOLDINE;
 
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -170,8 +182,9 @@ methodmap Soldine < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		
-		SDKHook(npc.index, SDKHook_Think, Soldine_ClotThink);
-		
+		func_NPCDeath[npc.index] = Soldine_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Soldine_OnTakeDamage;
+		func_NPCThink[npc.index] = Soldine_ClotThink;
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -234,7 +247,10 @@ public void Soldine_ClotThink(int iNPC)
 	if(npc.m_bAllowBackWalking)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 150.0);
+		{
+			float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
+			npc.FaceTowards(WorldSpaceVec, 150.0);
+		}
 	}
 
 	if(npc.m_blPlayHurtAnimation)
@@ -260,8 +276,9 @@ public void Soldine_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int SetGoalVectorIndex = 0;
 		SetGoalVectorIndex = SoldineSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 
@@ -274,7 +291,7 @@ public void Soldine_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3];
-					vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
@@ -286,7 +303,7 @@ public void Soldine_ClotThink(int iNPC)
 			{
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
-				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
 			}
 		}
@@ -330,7 +347,6 @@ public void Soldine_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_Think, Soldine_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable5))
@@ -426,7 +442,8 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 			{
 				npc.m_flAttackHappens = 0.0;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(target), 15000.0);
+				float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
+				npc.FaceTowards(WorldSpaceVec, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, target, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target_hit = TR_GetEntityIndex(swingTrace);	
@@ -536,7 +553,7 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 					npc.PlaySuperJumpSound();
 					static float flMyPos_2[3];
 					flMyPos[2] += 800.0;
-					flMyPos_2 = WorldSpaceCenterOld(target);
+					WorldSpaceCenter(target, flMyPos_2);
 
 					flMyPos[0] = flMyPos_2[0];
 					flMyPos[1] = flMyPos_2[1];
@@ -568,7 +585,7 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 					DamageRocket *= 0.5;
 				}
 				float vPredictedPos[3];
-				vPredictedPos = PredictSubjectPositionForProjectilesOld(npc, target, projectile_speed);
+				PredictSubjectPositionForProjectiles(npc, target, projectile_speed, _,vPredictedPos);
 				
 				npc.FaceTowards(vPredictedPos, 20000.0);
 				//Play attack anim

@@ -32,6 +32,26 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/boxing_gloves_swing4.wav"
 };
 
+static int NPCId;
+
+void CaprinaeOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Caprinae");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_caprinae");
+	strcopy(data.Icon, sizeof(data.Icon), "demo");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Caprinae(client, vecPos, vecAng, ally, data);
+}
+
 methodmap Caprinae < CClotBody
 {
 	public void PlayIdleSound()
@@ -57,10 +77,9 @@ methodmap Caprinae < CClotBody
 	
 	public Caprinae(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Caprinae npc = view_as<Caprinae>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.5", "99000", ally, _, true, true));
+		Caprinae npc = view_as<Caprinae>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.5", "99000", ally, _, true));
 		
 		npc.Anger = view_as<bool>(data[0]);
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_DEMOMAN;
 		i_NpcWeight[npc.index] = npc.Anger ? 1 : 3;
 		npc.SetActivity("ACT_MP_RUN_PASSTIME");
 		KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
@@ -138,12 +157,13 @@ static void ClotThink(int iNPC)
 	
 	if(target > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, target);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -173,7 +193,7 @@ static void ClotThink(int iNPC)
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 					
-					int entity = NPC_CreateById(INTERITUS_FOREST_DEMOMAN, -1, pos, ang, GetTeam(npc.index), "EX");
+					int entity = NPC_CreateById(NPCId, -1, pos, ang, GetTeam(npc.index), "EX");
 					if(entity > MaxClients)
 					{
 						if(GetTeam(npc.index) != TFTeam_Red)

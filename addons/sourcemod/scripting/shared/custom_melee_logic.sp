@@ -679,8 +679,9 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 							
 						}
 					}
-#endif
-					SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalculateDamageForceOld(vecSwingForward, 20000.0), playerPos);
+#endif				
+					float CalcDamageForceVec[3]; CalculateDamageForce(vecSwingForward, 20000.0, CalcDamageForceVec);
+					SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, playerPos);
 					
 #if defined ZR
 					switch(i_CustomWeaponEquipLogic[weapon])
@@ -713,8 +714,8 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);
 		// 	This doesnt work sadly and i dont have the power/patience to make it work, just do a custom check with some big shit, im sorry.
 			
-				
-			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalculateDamageForceOld(vecSwingForward, 20000.0), vecHit);	
+			float CalcDamageForceVec[3]; CalculateDamageForce(vecSwingForward, 20000.0, CalcDamageForceVec);
+			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, vecHit);	
 		}
 		else if(target > -1 && Item_Index == 214)
 		{
@@ -722,7 +723,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
 			i_ExplosiveProjectileHexArray[weapon] |= EP_GIBS_REGARDLESS;
 				
-			Explode_Logic_Custom(damage, client, weapon, weapon, vecHit, _, _, _, _, 5); //Only allow 5 targets hit, otherwise it can be really op.
+			Explode_Logic_Custom(damage, client, weapon, weapon, vecHit, _, _, _, _, 5,_,_,_,AOEHammerExtraLogic); //Only allow 5 targets hit, otherwise it can be really op.
 			DataPack pack_boom = new DataPack();
 			pack_boom.WriteFloat(vecHit[0]);
 			pack_boom.WriteFloat(vecHit[1]);
@@ -839,48 +840,14 @@ void FindHullIntersection(const float vecSrc[3], Handle &tr, const float mins[3]
 	}
 }
 
-/*
-
-void FindHullIntersection( const Vector &vecSrc, trace_t &tr, const Vector &mins, const Vector &maxs, CBaseEntity *pEntity )
+void AOEHammerExtraLogic(int entity, int victim, float damage, int weapon)
 {
-	int	i, j, k;
-	trace_t tmpTrace;
-	Vector vecEnd;
-	float distance = 1e6f;
-	Vector minmaxs[2] = {mins, maxs};
-	Vector vecHullEnd = tr.endpos;
-
-	vecHullEnd = vecSrc + ((vecHullEnd - vecSrc)*2);
-	UTIL_TraceLine( vecSrc, vecHullEnd, MASK_SOLID, pEntity, COLLISION_GROUP_NONE, &tmpTrace );
-	if ( tmpTrace.fraction < 1.0 )
+	if(b_thisNpcIsARaid[victim])
 	{
-		tr = tmpTrace;
-		return;
-	}
-
-	for ( i = 0; i < 2; i++ )
+		damage *= 2.0;
+	}	
+	else if(b_thisNpcIsABoss[victim])
 	{
-		for ( j = 0; j < 2; j++ )
-		{
-			for ( k = 0; k < 2; k++ )
-			{
-				vecEnd.x = vecHullEnd.x + minmaxs[i][0];
-				vecEnd.y = vecHullEnd.y + minmaxs[j][1];
-				vecEnd.z = vecHullEnd.z + minmaxs[k][2];
-
-				UTIL_TraceLine( vecSrc, vecEnd, MASK_SOLID, pEntity, COLLISION_GROUP_NONE, &tmpTrace );
-				if ( tmpTrace.fraction < 1.0 )
-				{
-					float thisDistance = (tmpTrace.endpos - vecSrc).Length();
-					if ( thisDistance < distance )
-					{
-						tr = tmpTrace;
-						distance = thisDistance;
-					}
-				}
-			}
-		}
-	}
+		damage *= 1.15;
+	}	
 }
-
-*/

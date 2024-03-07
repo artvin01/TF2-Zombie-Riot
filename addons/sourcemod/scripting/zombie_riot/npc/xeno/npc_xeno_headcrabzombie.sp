@@ -64,8 +64,21 @@ public void XenoHeadcrabZombie_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Headcrab Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_headcrabzombie");
+	strcopy(data.Icon, sizeof(data.Icon), "norm_headcrab_zombie");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoHeadcrabZombie(client, vecPos, vecAng, ally);
+}
 methodmap XenoHeadcrabZombie < CClotBody
 {
 	public void PlayIdleSound() {
@@ -131,7 +144,6 @@ methodmap XenoHeadcrabZombie < CClotBody
 	{
 		XenoHeadcrabZombie npc = view_as<XenoHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "400", ally));
 		
-		i_NpcInternalId[npc.index] = XENO_HEADCRAB_ZOMBIE;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -145,7 +157,9 @@ methodmap XenoHeadcrabZombie < CClotBody
 
 		
 		
-		SDKHook(npc.index, SDKHook_Think, XenoHeadcrabZombie_ClotThink);
+		func_NPCDeath[npc.index] = XenoHeadcrabZombie_NPCDeath;
+		func_NPCThink[npc.index] = XenoHeadcrabZombie_ClotThink;
+		func_NPCOnTakeDamage[npc.index] = XenoHeadcrabZombie_OnTakeDamage;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -217,14 +231,15 @@ public void XenoHeadcrabZombie_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
+		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 	//		PrintToChatAll("cutoff");
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}

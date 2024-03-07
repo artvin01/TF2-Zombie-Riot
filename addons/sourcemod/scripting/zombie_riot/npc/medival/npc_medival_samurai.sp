@@ -94,8 +94,21 @@ void MedivalSamurai_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Samurai");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_samurai");
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight_samurai");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalSamurai(client, vecPos, vecAng, ally);
+}
 float f_RangedPainTolerance[MAXENTITIES];
 
 methodmap MedivalSamurai < CClotBody
@@ -166,8 +179,7 @@ methodmap MedivalSamurai < CClotBody
 	{
 		MedivalSamurai npc = view_as<MedivalSamurai>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "25000", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_SAMURAI;
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcWeight[npc.index] = 2;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -182,7 +194,10 @@ methodmap MedivalSamurai < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalSamurai_ClotThink);
+		func_NPCDeath[npc.index] = MedivalSamurai_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalSamurai_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalSamurai_ClotThink;
+
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, MedivalSamurai_ClotDamaged_Post);
 		
 		//IDLE
@@ -271,14 +286,15 @@ public void MedivalSamurai_ClotThink(int iNPC)
 					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 				}
 			}
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -437,8 +453,6 @@ public void MedivalSamurai_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalSamurai_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, MedivalSamurai_ClotDamaged_Post);	
 	
 	if(IsValidEntity(npc.m_iWearable1))

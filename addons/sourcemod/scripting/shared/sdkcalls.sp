@@ -18,7 +18,7 @@ static Handle g_hCTFCreateArrow;
 //static Handle g_hSDKPlaySpecificSequence;
 //static Handle g_hDoAnimationEvent;
 
-#if !defined NOG
+#if defined ZR
 static Handle g_hSDKStartLagComp;
 static Handle g_hSDKEndLagComp;
 #endif
@@ -28,6 +28,10 @@ static Handle g_hSDKUpdateBlocked;
 
 static Handle SDKGetShootSound;
 static Handle SDKBecomeRagdollOnClient;
+
+#if defined ZR
+static Handle SDKResetPlayerAndTeamReadyState;
+#endif
 
 void SDKCall_Setup()
 {
@@ -205,6 +209,15 @@ void SDKCall_Setup()
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
+	
+#if defined ZR
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState");
+	SDKResetPlayerAndTeamReadyState = EndPrepSDKCall();
+	if(!SDKResetPlayerAndTeamReadyState)
+		LogError("[Gamedata] Could not find CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState");
+#endif
+	
 	delete gamedata;
 }
 
@@ -375,8 +388,8 @@ void SDKCall_BecomeRagdollOnClient(int entity, const float vec[3])
 	SDKCall(SDKBecomeRagdollOnClient, entity, vec);
 }
 
-#if !defined NOG
-stock void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
+#if defined ZR
+void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 {
 	if(g_GottenAddressesForLagComp)
 	{
@@ -408,6 +421,10 @@ void UpdateBlockedNavmesh()
 
 stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 {
+#if !defined NOG
+	SpawningBot = true;
+#endif
+
 	int bot = SDKCall(
 	gH_BotAddCommand,
 	Name, // name
@@ -425,7 +442,7 @@ stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 
 //BIG thanks to backwards#8236 on discord for helping me out, YOU ARE MY HERO.
 
-#if !defined NOG
+#if defined ZR
 void Sdkcall_Load_Lagcomp()
 {
 	if(!g_GottenAddressesForLagComp)
@@ -488,3 +505,15 @@ stock void Manual_Impulse_101(int client, int health)
 	if(health > 0)
 		SetEntityHealth(client, health);
 }
+
+#if defined ZR
+void SDKCall_ResetPlayerAndTeamReadyState()
+{
+	if(SDKResetPlayerAndTeamReadyState)
+	{
+		Address address = DHook_CTeamplayRoundBasedRules();
+		if(address != Address_Null)
+			SDKCall(SDKResetPlayerAndTeamReadyState, address);
+	}
+}
+#endif

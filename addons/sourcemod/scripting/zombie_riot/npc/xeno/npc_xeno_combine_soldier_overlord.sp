@@ -83,8 +83,21 @@ public void XenoCombineOverlord_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Overlord");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_overlord");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_overlord");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoCombineOverlord(client, vecPos, vecAng, ally);
+}
 methodmap XenoCombineOverlord < CClotBody
 {
 	public void PlayIdleSound() {
@@ -192,8 +205,7 @@ methodmap XenoCombineOverlord < CClotBody
 	{
 		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "35000", ally));
 		SetVariantInt(3);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = XENO_COMBINE_OVERLORD;
+		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -205,11 +217,11 @@ methodmap XenoCombineOverlord < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;		
-
 		
-		
-		SDKHook(npc.index, SDKHook_Think, XenoCombineOverlord_ClotThink);
-		
+	
+		func_NPCDeath[npc.index] = XenoCombineOverlord_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoCombineOverlord_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoCombineOverlord_ClotThink;	
 	//	npc.m_bDissapearOnDeath = true;
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -314,7 +326,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			if (npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				if (npc.m_flmovedelay < GetGameTime(npc.index) && npc.m_flAngerDelay < GetGameTime(npc.index))
@@ -347,12 +359,13 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 			
 		//	npc.FaceTowards(vecTarget, 1000.0);
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -423,7 +436,8 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
 					
 					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+					MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -437,7 +451,8 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
-					int player_hurt = FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 75.0, 150.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
+					int player_hurt = FireBullet(npc.index, npc.index, npc_vec, vecDir, 75.0, 150.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 					
 					if(IsValidClient(player_hurt))
 					{
@@ -593,7 +608,6 @@ public void XenoCombineOverlord_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_Think, XenoCombineOverlord_ClotThink);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

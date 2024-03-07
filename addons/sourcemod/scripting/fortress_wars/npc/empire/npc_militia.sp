@@ -47,19 +47,16 @@ methodmap Militia < EmpireBody
 
 		i_NpcWeight[npc.index] = 1;
 
-		func_NPCThink[npc.index] = ClotThink;
+		npc.m_hThinkFunc = ClotThink;
 		
 		npc.SetActivity("ACT_IDLE");
 		npc.m_flSpeed = 180.0;
-		npc.m_flVisionRange = 400.0;
-		npc.m_flEngageRange = 300.0;
 
 		npc.AddFlag(Flag_Biological);
 
-		StatEnum stats;
-		stats.Damage = 4;
-		stats.RangeArmor = 1;
-		npc.SetStats(stats);
+		Stats[npc.index].Sight = 4;
+		Stats[npc.index].Damage = 4;
+		Stats[npc.index].RangeArmor = 1;
 
 		npc.m_flHeadshotCooldown = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -115,7 +112,7 @@ static void ClotThink(int entity)
 	{
 		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			if(npc.InAttackRange(target, MELEE_RANGE_SQR))
+			if(npc.InAttackRange(target))
 			{
 				npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
 				npc.PlayMeleeSound();

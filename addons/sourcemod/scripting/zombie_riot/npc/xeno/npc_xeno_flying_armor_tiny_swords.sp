@@ -82,6 +82,20 @@ public void XenoFlyingArmorTiny_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Tiny Flying Armor");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_flying_armor_tiny_swords");
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoFlyingArmorTiny(client, vecPos, vecAng, ally);
 }
 
 methodmap XenoFlyingArmorTiny < CClotBody
@@ -181,7 +195,6 @@ methodmap XenoFlyingArmorTiny < CClotBody
 		XenoFlyingArmorTiny npc = view_as<XenoFlyingArmorTiny>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.9", "180", ally));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = XENO_FLYINGARMOR_TINY_ZOMBIE;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -195,9 +208,9 @@ methodmap XenoFlyingArmorTiny < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		
-		
-		SDKHook(npc.index, SDKHook_Think, XenoFlyingArmorTiny_ClotThink);
+		func_NPCDeath[npc.index] = XenoFlyingArmorTiny_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoFlyingArmorTiny_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoFlyingArmorTiny_ClotThink;
 		
 
 		npc.m_iState = 0;
@@ -271,7 +284,7 @@ public void XenoFlyingArmorTiny_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			if (npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				if (npc.m_flmovedelay < GetGameTime(npc.index))
@@ -286,12 +299,13 @@ public void XenoFlyingArmorTiny_ClotThink(int iNPC)
 			}
 			
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -407,9 +421,6 @@ public void XenoFlyingArmorTiny_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoFlyingArmorTiny_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

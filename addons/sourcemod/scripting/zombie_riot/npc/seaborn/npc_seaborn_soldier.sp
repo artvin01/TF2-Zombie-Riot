@@ -45,6 +45,24 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/samurai/tf_katana_06.wav",
 };
 
+void SeabornSoldier_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Seaborn Soldier");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_soldier");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_soldier");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SeabornSoldier(client, vecPos, vecAng, ally);
+}
+
 methodmap SeabornSoldier < CClotBody
 {
 	public void PlayIdleSound()
@@ -76,7 +94,6 @@ methodmap SeabornSoldier < CClotBody
 	{
 		SeabornSoldier npc = view_as<SeabornSoldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "4000", ally));
 		
-		i_NpcInternalId[npc.index] = SEABORN_SOLDIER;
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		KillFeed_SetKillIcon(npc.index, "demokatana");
@@ -87,7 +104,9 @@ methodmap SeabornSoldier < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		SDKHook(npc.index, SDKHook_Think, SeabornSoldier_ClotThink);
+		func_NPCDeath[npc.index] = SeabornSoldier_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		func_NPCThink[npc.index] = SeabornSoldier_ClotThink;
 		
 		npc.m_flSpeed = 240.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -137,12 +156,13 @@ public void SeabornSoldier_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -196,7 +216,7 @@ public void SeabornSoldier_ClotThink(int iNPC)
 									continue;
 								}
 
-								int entity = NPC_CreateById(SEABORN_SOLDIER, -1, pos, ang, team);
+								int entity = NPC_CreateById(i_NpcInternalId[npc.index], -1, pos, ang, team);
 								if(entity > MaxClients)
 								{
 									if(team != TFTeam_Red)
@@ -251,6 +271,4 @@ void SeabornSoldier_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornSoldier_ClotThink);
 }

@@ -32,8 +32,22 @@ void AnarchyEnforcer_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Anarchist Enforcer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_enforcer");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_SUPPORT;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return AnarchyEnforcer(client, vecPos, vecAng, ally);
+}
 
 methodmap AnarchyEnforcer < CClotBody
 {
@@ -72,7 +86,6 @@ methodmap AnarchyEnforcer < CClotBody
 	{
 		AnarchyEnforcer npc = view_as<AnarchyEnforcer>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "4000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_ANARCHY_ENFORCER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -177,9 +190,10 @@ public void AnarchyEnforcer_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetWalkTo);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget);
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int ExtraBehavior = AnarchyEnforcerSelfDefense(npc,GetGameTime(npc.index)); 
 
 		switch(ExtraBehavior)
@@ -211,7 +225,7 @@ public void AnarchyEnforcer_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTargetWalkTo);
+			PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -290,7 +304,8 @@ int AnarchyEnforcerSelfDefense(AnarchyEnforcer npc, float gameTime)
 			return 0;
 		}
 	}
-	npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+	npc.FaceTowards(VecEnemy, 15000.0);
 
 	static float ThrowPos[MAXENTITIES][3];  
 	float origin[3], angles[3];
@@ -299,7 +314,7 @@ int AnarchyEnforcerSelfDefense(AnarchyEnforcer npc, float gameTime)
 	{
 		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 		{
-			ThrowPos[npc.index] = WorldSpaceCenterOld(npc.m_iTarget);
+			WorldSpaceCenter(npc.m_iTarget, ThrowPos[npc.index]);
 		}
 	}
 	else
@@ -307,14 +322,14 @@ int AnarchyEnforcerSelfDefense(AnarchyEnforcer npc, float gameTime)
 		if(npc.m_flAttackHappens)
 		{
 			float pos_npc[3];
-			pos_npc = WorldSpaceCenterOld(npc.index);
+			WorldSpaceCenter(npc.index, pos_npc);
 			float AngleAim[3];
 			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
 			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
 			int Traced_Target = TR_GetEntityIndex(hTrace);
 			if(Traced_Target > 0)
 			{
-				ThrowPos[npc.index] = WorldSpaceCenterOld(Traced_Target);
+				WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
 			}
 			else if(TR_DidHit(hTrace))
 			{

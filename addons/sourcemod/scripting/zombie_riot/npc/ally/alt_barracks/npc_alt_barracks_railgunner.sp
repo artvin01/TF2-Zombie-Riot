@@ -28,9 +28,24 @@ static const char g_IdleAlertedSounds[][] =
 public void Barrack_Railgunner_MapStart()
 {
 	PrecacheModel("models/player/sniper.mdl");
-	for (int i = 0; i < (sizeof(g_alt_Sniper_Railgunner_Shoot));   i++)	{ PrecacheSound(g_alt_Sniper_Railgunner_Shoot[i]);	}
-	for (int i = 0; i < (sizeof(g_IdleSounds));   i++)					{ PrecacheSound(g_IdleSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));   i++) 			{ PrecacheSound(g_IdleAlertedSounds[i]);	}
+	PrecacheSoundArray(g_alt_Sniper_Railgunner_Shoot);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks Railgunner Desc");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_railgunner");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Barrack_Alt_Raigunner(client, vecPos, vecAng, ally);
 }
 
 methodmap Barrack_Alt_Raigunner < BarrackBody
@@ -58,11 +73,11 @@ methodmap Barrack_Alt_Raigunner < BarrackBody
 	public Barrack_Alt_Raigunner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barrack_Alt_Raigunner npc = view_as<Barrack_Alt_Raigunner>(BarrackBody(client, vecPos, vecAng, "175", "models/player/sniper.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
-		
-		i_NpcInternalId[npc.index] = ALT_BARRACK_RAILGUNNER;
 		i_NpcWeight[npc.index] = 1;
-		
-		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Raigunner_ClotThink);
+
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barrack_Alt_Raigunner_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Alt_Raigunner_ClotThink;
 
 		npc.m_flSpeed = 150.0;
 		
@@ -110,8 +125,9 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			if(flDistanceToTarget < 1562500.0)
 			{
@@ -125,7 +141,7 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 						float speed = 750.0;
 						if(flDistanceToTarget < 562500)	//Doesn't predict over 750 hu
 						{
-							vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, speed);
+							PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 						}
 						npc.m_flSpeed = 0.0;
 						npc.FaceTowards(vecTarget, 30000.0);
@@ -169,5 +185,4 @@ void Barrack_Alt_Raigunner_NPCDeath(int entity)
 {
 	Barrack_Alt_Raigunner npc = view_as<Barrack_Alt_Raigunner>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, Barrack_Alt_Raigunner_ClotThink);
 }

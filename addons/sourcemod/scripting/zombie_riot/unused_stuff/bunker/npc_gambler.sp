@@ -758,13 +758,14 @@ public void TheGambler_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		//Predict their pos.
 		
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 			//int color[4];
 			//color[0] = 255;
 			//color[1] = 255;
@@ -792,7 +793,7 @@ public void TheGambler_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1400.0);
+				PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0, vecTarget);
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
@@ -811,7 +812,8 @@ public void TheGambler_ClotThink(int iNPC)
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+				float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -841,8 +843,6 @@ public void TheGambler_ClotThink(int iNPC)
 					npc.FireArrow(vecTarget, Archers_Anhilation_Damage, 1400.0, _, 1.0);
 				}
 				
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
-				//npc.PlayRangedSound();
 			}
 		}
 		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < 1425000 && npc.m_flReloadDelay < GetGameTime(npc.index) && Exodia_TheFuckYouGun[npc.index])
@@ -856,7 +856,7 @@ public void TheGambler_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1400.0);
+				PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0, vecTarget);
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
@@ -875,7 +875,8 @@ public void TheGambler_ClotThink(int iNPC)
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+				float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -905,7 +906,6 @@ public void TheGambler_ClotThink(int iNPC)
 					npc.FireArrow(vecTarget, ExodiaRandomizedDamage, 1400.0, _, 1.0);
 				}
 				Exodia_Hits[npc.index]++;
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 				npc.PlayRangedSound();
 			}
 		}
@@ -920,7 +920,7 @@ public void TheGambler_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1400.0);
+				PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0, vecTarget);
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
@@ -939,7 +939,8 @@ public void TheGambler_ClotThink(int iNPC)
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+				float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -969,7 +970,6 @@ public void TheGambler_ClotThink(int iNPC)
 					npc.FireArrow(vecTarget, PelletGun_Damage, 1400.0, _, 1.0);
 				}
 				
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 				npc.PlayRangedTwoSound();
 			}
 		}
@@ -984,7 +984,7 @@ public void TheGambler_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1400.0);
+				PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0, vecTarget);
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
@@ -1003,7 +1003,8 @@ public void TheGambler_ClotThink(int iNPC)
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+				float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -1032,7 +1033,6 @@ public void TheGambler_ClotThink(int iNPC)
 					npc.FireArrow(vecTarget, WeakMachineGun_Smg_Damage, 1400.0, _, 1.0);
 				}
 				
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 				npc.PlayRangedThirdSound();
 			}
 		}
@@ -1047,7 +1047,7 @@ public void TheGambler_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1400.0);
+				PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0, vecTarget);
 				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
@@ -1066,7 +1066,8 @@ public void TheGambler_ClotThink(int iNPC)
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+				float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -1114,7 +1115,6 @@ public void TheGambler_ClotThink(int iNPC)
 					Orb_Launched(npc.index, iRot, speed, 5.0, damage);
 				}
 				
-				//FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 9500.0, DMG_BULLET, "bullet_tracer01_red");
 				//npc.PlayRangedSound();
 			}
 		}*/
@@ -1374,10 +1374,10 @@ public Action Gambler_Orb_IEM_OnHatTouch(int entity, int client)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 		//Code to do damage position and ragdolls
 		
-		SDKHooks_TakeDamage(client, npc.index, npc.index, Orb_Damage_Projectile[npc.index], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(client, npc.index, npc.index, Orb_Damage_Projectile[npc.index], DMG_PLASMA, -1, {0.0,0.0,0.0}, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 	}
 	else if(target == 1)
 	{
@@ -1441,7 +1441,6 @@ public Action Gambler_Timer_Electric_Think(Handle timer, int iCarrier)
 	{
 		if(IsValidClient(i))
 		{
-			targPos = WorldSpaceCenterOld(i);
 			if(GetVectorDistance(flCarrierPos, targPos) <= Orb_Radius[npc.index])
 			{
 				//Code to do damage position and ragdolls
@@ -1454,7 +1453,7 @@ public Action Gambler_Timer_Electric_Think(Handle timer, int iCarrier)
 				float damage_1 = Custom_Explosive_Logic(npc.index, distance_1, 0.75, Orb_Damage_Tornado[npc.index], Orb_Radius[npc.index]+1.0);				
 				damage_1 /= Orb_Damage_Reduction[npc.index];
 				
-				SDKHooks_TakeDamage(i, npc.index, npc.index, damage_1, DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), targPos);
+				SDKHooks_TakeDamage(i, npc.index, npc.index, damage_1, DMG_PLASMA, -1, {0.0,0.0,0.0}, targPos);
 				int r = 255;
 				int g = 125;
 				int b = 125;

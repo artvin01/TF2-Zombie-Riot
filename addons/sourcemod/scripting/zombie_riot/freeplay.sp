@@ -76,29 +76,24 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 
 		switch(RaidFight)
 		{
-			case 2:
-			{
-				enemy.Index = RAIDMODE_BLITZKRIEG;
-				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
-			}
 			case 3:
 			{
-				enemy.Index = XENO_RAIDBOSS_SILVESTER;
+				enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_silvester");
 				enemy.Health = RoundToFloor(2500000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
 			}
 			case 4:
 			{
-				enemy.Index = RAIDMODE_GOD_ARKANTOS;
+				enemy.Index = NPC_GetByPlugin("npc_god_arkantos");
 				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
 			}
 			case 5:
 			{
-				enemy.Index = RAIDMODE_EXPIDONSA_SENSAL;
+				enemy.Index = NPC_GetByPlugin("npc_sensal");
 				enemy.Health = RoundToFloor(6500000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
 			}
 			default:
 			{
-				enemy.Index = RAIDMODE_TRUE_FUSION_WARRIOR;
+				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
 				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
 			}
 		}

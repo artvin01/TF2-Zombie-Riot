@@ -54,55 +54,55 @@ void SDKHook_MapStart()
 	Zero(Mana_Loss_Delay);
 	Zero(Mana_Regen_Block_Timer);
 	Armor_WearableModelIndex = PrecacheModel("models/effects/resist_shield/resist_shield.mdl", true);
-	#endif
-	int entity = FindEntityByClassname(MaxClients+1, "tf_player_manager");
+	int entity = FindEntityByClassname(-1, "tf_player_manager");
 	if(entity != -1)
 		SDKHook(entity, SDKHook_ThinkPost, SDKHook_ScoreThink);
+	#endif
 }
 
 
+#if defined ZR
 public void SDKHook_ScoreThink(int entity)
 {
 	static int offset = -1;
 	
-#if defined ZR
 	static int offset_Damage = -1;
-	static int offset_damageblocked = -1;
-//	static int offset_bonus = -1;
-#endif
-	
+	static int offset_Damage_Boss = -1;
+	static int offset_Cash = -1;
+	static int offset_Healing = -1;
+
+
+		
 	if(offset == -1) 
 		offset = FindSendPropInfo("CTFPlayerResource", "m_iTotalScore");
 
-#if defined ZR
+	//damage
 	if(offset_Damage == -1) 
 		offset_Damage = FindSendPropInfo("CTFPlayerResource", "m_iDamage");
 
-	if(offset_damageblocked == -1) 
-		offset_damageblocked = FindSendPropInfo("CTFPlayerResource", "m_iDamageBlocked");
+	//tank
+	if(offset_Damage_Boss == -1) 
+		offset_Damage_Boss = FindSendPropInfo("CTFPlayerResource", "m_iDamageBoss");
 
-//	if(offset_bonus == -1) 
-//		offset_bonus = FindSendPropInfo("CTFPlayerResource", "m_iCurrencyCollected");
-#endif
-	
-#if defined ZR
-	SetEntDataArray(entity, offset, PlayerPoints, MaxClients + 1);
-	SetEntDataArray(entity, offset_Damage, i_Damage_dealt_in_total, MaxClients + 1);
-//	SetEntDataArray(entity, offset_bonus, i_BarricadeHasBeenDamaged, MaxClients + 1);
-#endif
-	
-#if defined RPG
-	SetEntDataArray(entity, offset, Level, MaxClients + 1);
-#endif
-	
-#if defined ZR
-	int Conversion_ExtraPoints[MAXTF2PLAYERS];
+	//Current cash (laugh at the horder)
+	if(offset_Cash == -1) 
+		offset_Cash = FindSendPropInfo("CTFPlayerResource", "m_iCurrencyCollected");
+
+	int CashCurrentlyOwned[MAXTF2PLAYERS];
 	for(int client=1; client<=MaxClients; client++)
 	{
-		Conversion_ExtraPoints[client] = RoundToCeil(float(i_ExtraPlayerPoints[client]) * 0.5);
+		CashCurrentlyOwned[client] = CurrentCash-CashSpent[client];
 	}
 
-	SetEntDataArray(entity, offset_damageblocked, Conversion_ExtraPoints, MaxClients + 1);
+	//healing done
+	if(offset_Healing == -1) 
+		offset_Healing = FindSendPropInfo("CTFPlayerResource", "m_iHealing");
+	
+	SetEntDataArray(entity, offset, PlayerPoints, MaxClients + 1);
+	SetEntDataArray(entity, offset_Damage, i_Damage_dealt_in_total, MaxClients + 1);
+	SetEntDataArray(entity, offset_Damage_Boss, i_PlayerDamaged, MaxClients + 1);
+	SetEntDataArray(entity, offset_Healing, Healing_done_in_total, MaxClients + 1);
+	SetEntDataArray(entity, offset_Cash, CashCurrentlyOwned, MaxClients + 1);
 
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -113,15 +113,12 @@ public void SDKHook_ScoreThink(int entity)
 			SetEntProp(client, Prop_Send, "m_iBackstabs", i_Backstabs[client]);
 			SetEntProp(client, Prop_Send, "m_iHeadshots", i_Headshots[client]);
 			SetEntProp(client, Prop_Send, "m_iDefenses", RoundToCeil(float(i_BarricadeHasBeenDamaged[client]) * 0.001));
-
-
-		//	m_iHealPoints
 		}
 	}	
-#endif
 }
+#endif
 
-void SDKHook_HookClient(int client)
+stock void SDKHook_HookClient(int client)
 {
 #if defined ZR
 	SDKUnhook(client, SDKHook_PreThinkPost, OnPreThinkPost);
@@ -148,6 +145,7 @@ void SDKHook_HookClient(int client)
 #endif
 }
 
+#if defined ZR
 public void OnPreThinkPost(int client)
 {
 	if(b_NetworkedCrouch[client])
@@ -156,7 +154,6 @@ public void OnPreThinkPost(int client)
 	}
 	if(CvarMpSolidObjects)
 	{
-#if defined ZR
 		if(RaidbossIgnoreBuildingsLogic(1))
 		{
 			if(i_PreviousBuildingCollision[client] == -1)
@@ -178,7 +175,6 @@ public void OnPreThinkPost(int client)
 			}
 			i_PreviousBuildingCollision[client] = -1;
 		}
-#endif
 		
 		if(b_PhaseThroughBuildingsPerma[client] == 0)
 		{
@@ -199,12 +195,8 @@ public void OnPreThinkPost(int client)
 	}
 #endif
 */
-#if defined RPG
-	int maxhealth = SDKCall_GetMaxHealth(client);
-	if(GetClientHealth(client) > maxhealth)
-		SetEntityHealth(client, maxhealth);
-#endif
 }
+#endif
 
 #if defined NOG
 public void OnPostThink_OnlyHurtHud(int client)
@@ -212,7 +204,8 @@ public void OnPostThink_OnlyHurtHud(int client)
 	if(b_DisplayDamageHud[client])
 	{
 		b_DisplayDamageHud[client] = false;
-		Calculate_And_Display_HP_Hud(client);
+		if(zr_showdamagehud.BoolValue)
+			Calculate_And_Display_HP_Hud(client);
 	}
 }
 
@@ -222,7 +215,6 @@ public void OnPostThink_OnlyHurtHud(int client)
 public void OnPostThink(int client)
 {
 	float GameTime = GetGameTime();
-
 	if(b_EntityIsStairAbusing[client])
 	{
 		//damage is 50 to simulate a normal trigger hurt.
@@ -1022,40 +1014,6 @@ public void OnPostThink(int client)
 			ApplyLastmanOrDyingOverlay(client);
 		}
 
-		bool Has_Wave_Showing = false;
-		
-		if(f_ClientServerShowMessages[client])
-		{
-			if(GameRules_GetRoundState() != RoundState_TeamWin)
-			{
-				Has_Wave_Showing = true; //yay :)
-				SetGlobalTransTarget(client);
-				char WaveString[64];
-				if(Rogue_Mode() && Rogue_InSetup())
-				{
-					Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Stage", Rogue_GetRound()+1, Rogue_GetWave()+1); 
-				}
-				else
-				{
-					Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1); 
-				}
-				i_WhatLevelForHudIsThisClientAt[client] -= 1;
-				Handle hKv = CreateKeyValues("Stuff", "title", WaveString);
-				KvSetColor(hKv, "color", 0, 255, 0, 255); //green
-				KvSetNum(hKv,   "level", i_WhatLevelForHudIsThisClientAt[client]); //im not sure..
-				KvSetNum(hKv,   "time",  10); // how long? 
-				//	CreateDialog(client, hKv, DialogType_Text); //Cool hud stuff!
-				CreateDialog(client, hKv, DialogType_Msg);
-				delete hKv;
-			}
-		}
-		else if(f_ShowHudDelayForServerMessage[client] < GetGameTime())
-		{
-			f_ShowHudDelayForServerMessage[client] = GameTime + 300.0;
-			SetGlobalTransTarget(client);
-			PrintToChat(client,"%t", "Show Plugin Messages Hint");
-		}
-
 		int Armor_Max = 100000;
 		int armorEnt = client;
 		int vehicle = GetEntPropEnt(client, Prop_Data, "m_hVehicle");
@@ -1312,25 +1270,11 @@ public void OnPostThink(int client)
 
 			downsleft -= i_AmountDowned[client];
 
-			if(Rogue_Mode() && Rogue_InSetup())
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t\n%t", HudBuffer,
-				"Credits_Menu_New", (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
-				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
-				PerkNames[i_CurrentEquippedPerk[client]],
-				"Australium Ingots", Rogue_GetIngots()
-				);
-			}
-			else
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t\n%t", HudBuffer,
-				"Credits_Menu_New", (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
-				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
-				PerkNames[i_CurrentEquippedPerk[client]],
-				"Zombies Left", Zombies_Currently_Still_Ongoing
-				);
-				
-			}
+			Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t", HudBuffer,
+			"Credits_Menu_New", GlobalExtraCash + (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+			"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
+			PerkNames[i_CurrentEquippedPerk[client]]
+			);
 
 			if(b_LeftForDead[client])
 			{
@@ -1342,10 +1286,6 @@ public void OnPostThink(int client)
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
 					"Downs left", downsleft);	
 			}
-			if(!Has_Wave_Showing && !Rogue_Mode())
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%s | %t", HudBuffer, WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);
-			}
 			if(Store_ActiveCanMulti(client))
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n\n%t", HudBuffer, "Press Button To Switch");
@@ -1353,31 +1293,21 @@ public void OnPostThink(int client)
 		}
 		else if (TeutonType[client] == TEUTON_DEAD)
 		{
-			Format(HudBuffer, sizeof(HudBuffer), "%s %t\n%t",HudBuffer, "You Died Teuton",
-				"Zombies Left", Zombies_Currently_Still_Ongoing
+			Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Died Teuton"
 			);
 
-			if(!Has_Wave_Showing && !Rogue_Mode())
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s%s | %t",HudBuffer,WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);		
-			}
 		}
 		else
 		{
-			Format(HudBuffer, sizeof(HudBuffer), "%s %t\n%t",HudBuffer, "You Wait Teuton",
-				"Zombies Left", Zombies_Currently_Still_Ongoing
+			Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Wait Teuton"
 			);
-
-			if(!Has_Wave_Showing && !Rogue_Mode())
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s%s | %t",HudBuffer,WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);		
-			}
 		}
 		SetEntProp(client, Prop_Send, "m_nCurrency", CurrentCash-CashSpent[client]);
 		
 		//Todo: Only update when needed.
 		SetEntProp(client, Prop_Send, "m_iHideHUD", GetEntProp(client, Prop_Send, "m_iHideHUD") | HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN);
-		PrintKeyHintText(client,"%s", HudBuffer);
+		if(HudBuffer[0])
+			PrintKeyHintText(client,"%s", HudBuffer);
 	}
 	else if(f_DelayLookingAtHud[client] < GameTime)
 	{
@@ -1481,14 +1411,17 @@ public void OnPreThink(int client)
 }
 */
 
-public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
 #if defined ZR
-	if(!(damagetype & DMG_DROWN|DMG_FALL))
+
+	int i_damage = RoundToCeil(damage);
+	if(!(damagetype & (DMG_DROWN|DMG_FALL)))
 	{
-		i_PlayerDamaged[victim] += RoundToCeil(damage);
+		i_PlayerDamaged[victim] += i_damage;
 	}
-	if((damagetype & DMG_DROWN)/* && !b_ThisNpcIsSawrunner[attacker]*/)
+	
+	if((damagetype & DMG_DROWN))
 	{
 		//the player has died to a stuckzone.
 		if(dieingstate[victim] > 0)
@@ -1500,10 +1433,9 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 
 	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
 	ArmorDisplayClient(victim);
+	
 #endif
 	i_HexCustomDamageTypes[victim] = 0;
-
-	return Plugin_Continue;
 }
 #if defined ZR
 void RegainTf2Buffs(int victim)
@@ -1809,7 +1741,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			{
 				f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 20.0;
 				
-				float vecVictim[3]; vecVictim = WorldSpaceCenterOld(victim);
+				float vecVictim[3]; WorldSpaceCenter(victim, vecVictim);
 				
 				ParticleEffectAt(vecVictim, "peejar_impact_cloud_milk", 0.5);
 				
@@ -1826,7 +1758,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 						{
 							if (GetTeam(victim)!=GetTeam(baseboss_index)) 
 							{
-								float vecTarget[3]; vecTarget = WorldSpaceCenterOld(baseboss_index);
+								float vecTarget[3]; WorldSpaceCenter(baseboss_index, vecTarget);
 								
 								float flDistanceToTarget = GetVectorDistance(vecVictim, vecTarget, true);
 								if(flDistanceToTarget < 90000)

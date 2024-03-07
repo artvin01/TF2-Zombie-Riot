@@ -40,6 +40,21 @@ void RaidbossBladedance_MapStart()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));	i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedSpecialAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedSpecialAttackSoundsSecondary[i]);	}
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Bladedance The Combine");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bladedance");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return RaidbossBladedance(client, vecPos, vecAng, ally, data);
 }
 
 methodmap RaidbossBladedance < CClotBody
@@ -105,7 +120,6 @@ methodmap RaidbossBladedance < CClotBody
 	{
 		RaidbossBladedance npc = view_as<RaidbossBladedance>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "1500000", ally, false));
 		
-		i_NpcInternalId[npc.index] = RAIDBOSS_BLADEDANCE;
 		i_NpcWeight[npc.index] = 5;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -113,7 +127,9 @@ methodmap RaidbossBladedance < CClotBody
 
 		npc.SetActivity("ACT_CUSTOM_WALK_BOW");
 
-		SDKHook(npc.index, SDKHook_Think, RaidbossBladedance_ClotThink);
+		func_NPCDeath[npc.index] = RaidbossBladedance_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = RaidbossBladedance_OnTakeDamage;
+		func_NPCThink[npc.index] = RaidbossBladedance_ClotThink;
 		
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 
@@ -198,8 +214,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 			Music_RoundEnd(entity);
 			RaidBossActive = INVALID_ENT_REFERENCE;
 		}
-
-		SDKUnhook(npc.index, SDKHook_Think, RaidbossBladedance_ClotThink);
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		NPC_StopPathing(npc.index);
 		npc.m_flNextThinkTime = FAR_FUTURE;
 	}
@@ -256,7 +271,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 		{
 			npc.Anger = true;
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSpecialAttackSecondarySound(vecTarget);
@@ -291,13 +306,13 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 			npc.FaceTowards(vecTarget, 30000.0);
 			if(npc.m_flNextRangedAttackHappening < gameTime)
 			{
 				npc.m_flNextRangedAttackHappening = 0.0;
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 400.0);
+				float vPredictedPos[3]; PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 400.0, _,vPredictedPos);
 				npc.FireRocket(vPredictedPos, 1000.0, 400.0, "models/effects/combineball.mdl");
 				npc.PlayRangedSound();
 
@@ -308,13 +323,14 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -411,8 +427,9 @@ public void RaidbossBladedance_NPCDeath(int entity)
 		npc.PlayDeathSound();
 
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s",WhatDifficultySetting_Internal);
+	WavesUpdateDifficultyName();
 	
-	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_RoundRunning)
+	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
 		for (int client = 0; client < MaxClients; client++)
 		{
@@ -423,8 +440,6 @@ public void RaidbossBladedance_NPCDeath(int entity)
 			}
 		}
 	}
-
-	SDKUnhook(entity, SDKHook_Think, RaidbossBladedance_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

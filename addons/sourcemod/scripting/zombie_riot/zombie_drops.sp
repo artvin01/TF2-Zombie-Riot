@@ -654,6 +654,7 @@ public Action Timer_Detect_Player_Near_Money(Handle timer, any entid)
 				client_pos[2] += 35.0;
 				if (GetVectorDistance(powerup_pos, client_pos, true) <= PLAYER_DETECT_RANGE_DROPS)
 				{
+					GlobalExtraCash += 500;
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
 					EmitSoundToAll(MONEY_SOUND, _, SNDCHAN_STATIC, 100, _);
 					EmitSoundToAll(MONEY_SOUND, _, SNDCHAN_STATIC, 100, _);
@@ -662,7 +663,6 @@ public Action Timer_Detect_Player_Near_Money(Handle timer, any entid)
 						if (IsValidClient(client_Hud) && IsPlayerAlive(client_Hud) && GetClientTeam(client_Hud) == view_as<int>(TFTeam_Red))
 						{
 							CashSpent[client_Hud] -= 500;
-							CashRecievedNonWave[client_Hud] += 500;
 							SetHudTextParams(-1.0, 0.30, 3.01, 125, 125, 255, 255);
 							SetGlobalTransTarget(client_Hud);
 							ShowHudText(client_Hud,  -1, "%t", "Max Money Activated");
