@@ -519,6 +519,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_hell_hoe.sp"
 #include "zombie_riot/custom/wand/weapon_ludo.sp"
 #include "zombie_riot/custom/weapon_messenger.sp"
+#include "zombie_riot/custom/weapon_drink_beserk_brew.sp"
 
 void ZR_PluginLoad()
 {
@@ -758,6 +759,7 @@ void ZR_MapStart()
 	ResetMapStartDimWeapon();
 	Hell_Hoe_MapStart();
 	ResetMapStartMessengerWeapon();
+	Beserk_Brew_MapStart();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;
@@ -855,6 +857,7 @@ void ZR_ClientDisconnect(int client)
 	Reset_stats_Blemishine_Singular(client);
 	Reset_stats_Judge_Singular(client);
 	Reset_stats_Drink_Singular(client);
+	Reset_stats_Beserk_Singular(client);
 	Reset_stats_Grenade_Singular(client);
 	Reset_stats_Skullswand_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;

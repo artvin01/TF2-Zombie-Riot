@@ -2748,4 +2748,8 @@
 	{
 		"en" "You feel more confident in controlling chaos in this launcher\n Or is it consuming you? \n \n Increased clip, damage, and faster firerate. \n more cryo applied on Chaos mode and more afterburn damage."
 	}
+	"Beserk Brew Desc"
+	{
+		"en" "...Soldier stole this from Merasmus's stash.\n Gives temporary buffs which lasts 8 seconds. After 8 seconds, receives 5 seconds of debuff."
+	}
 }
