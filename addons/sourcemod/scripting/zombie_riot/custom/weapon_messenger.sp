@@ -113,17 +113,17 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 	
 	if(Change[client] == true)
 	{
-		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "spell_fireball_small_blue",_,false);
+		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "spell_fireball_tendril_parent_blue",_,false);
 		EmitSoundToAll(SOUND_MES_SHOT_ICE, client, SNDCHAN_AUTO, 65, _, 0.45, 115);
 	}
 	else if(Change[client] == false)
 	{
-		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "spell_fireball_small_red",_,false);
+		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "spell_fireball_tendril_parent_red",_,false);
 		EmitSoundToAll(SOUND_MES_SHOT_FIRE, client, SNDCHAN_AUTO, 65, _, 0.45, 115);
 	}
 }
 
-public void Messenger_Modechange(int client, int slot, int weapon, bool &result)
+public void Messenger_Modechange(int client, int weapon, bool crit, int slot)
 {
 	if(IsValidEntity(client))
 	{
