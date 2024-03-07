@@ -24,8 +24,8 @@ public void Weapon_Beserk_Brew(int client, int weapon, const char[] classname, b
 			Brew_up[client] = true;
 			Beserk_Mode_Stats(client);
 			float Beserk_Loc[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Beserk_Loc);
-				ParticleEffectAt(Beserk_Loc, "fireSmokeExplosion", 1.5);
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Beserk_Loc);
+			ParticleEffectAt(Beserk_Loc, "fireSmokeExplosion", 1.5);
 			f_TempCooldownForVisualManaPotions[client] = GetGameTime() + 60.0;
 				
 			EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
