@@ -75,6 +75,7 @@ static const char g_MessengerThrowIce[][] = {
 	"weapons/icicle_freeze_victim_01.wav",
 };
 
+static bool b_khamlWeaponRage[MAXENTITIES];
 bool BlockLoseSay;
 static float f_MessengerSpeedUp[MAXENTITIES];
 
@@ -82,6 +83,20 @@ static float f_messenger_cutscene_necksnap[MAXENTITIES];
 static int NPCId;
 
 void TheMessenger_OnMapStart_NPC()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "The Messenger");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_the_messenger");
+	strcopy(data.Icon, sizeof(data.Icon), "messenger");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPCId = NPC_Add(data);
+}
+
+static void ClotPrecache()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MessengerThrowFire));	   i++) { PrecacheSound(g_MessengerThrowFire[i]);	   }
@@ -98,17 +113,7 @@ void TheMessenger_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_LaserGlobalAttackSound));   i++) { PrecacheSound(g_LaserGlobalAttackSound[i]);   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	PrecacheSoundCustom("#zombiesurvival/internius/messenger.mp3");
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "The Messenger");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_the_messenger");
-	strcopy(data.Icon, sizeof(data.Icon), "messenger");
-	data.IconCustom = true;
-	data.Flags = 0;
-	data.Category = Type_Special;
-	data.Func = ClotSummon;
-	NPCId = NPC_Add(data);
 }
-
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
@@ -238,6 +243,7 @@ methodmap TheMessenger < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flMeleeArmor = 1.25;	
+		b_khamlWeaponRage[npc.index] = false;
 
 
 
@@ -814,7 +820,17 @@ public Action TheMessenger_OnTakeDamage(int victim, int &attacker, int &inflicto
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}		
-	
+	if(weapon > 0)
+	{
+		if(!b_khamlWeaponRage[npc.index])
+		{
+			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MESSENGER_LAUNCHER)
+			{
+				b_khamlWeaponRage[npc.index] = true;
+				CPrintToChatAll("{lightblue}The Messenger{default}: FUCK you, okay? FUCK you.");
+			}
+		}
+	}
 	return Plugin_Changed;
 }
 

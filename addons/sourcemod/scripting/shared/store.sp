@@ -1412,6 +1412,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						CashSpent[client] += info.Cost;
 						CashSpentTotal[client] += info.Cost;
 						item.Owned[client] = values[1] + 1;
+						item.CurrentClipSaved[client] = -5;
 
 						if(item.ChildKit)
 						{
@@ -6204,12 +6205,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		
 		i_LowTeslarStaff[entity] = RoundToNearest(Attributes_Get(entity, 3002, 0.0));
 		i_HighTeslarStaff[entity] = RoundToNearest(Attributes_Get(entity, 3000, 0.0));
-
-		
-		i_BleedDurationWeapon[entity] = RoundToNearest(Attributes_Get(entity, 149, 0.0));
-		i_BurnDurationWeapon[entity] = RoundToNearest(Attributes_Get(entity, 208, 0.0));
-		i_ExtinquisherWeapon[entity] = RoundToNearest(Attributes_Get(entity, 638, 0.0));
-		f_UberOnHitWeapon[entity] = Attributes_Get(entity, 17, 0.0);
 		
 #if defined ZR
 		Enable_Management_Knife(client, entity);
@@ -6261,6 +6256,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Management_Hell_Hoe(client, entity);
 		Enable_Kahml_Fist_Ability(client, entity);
 		Enable_HHH_Axe_Ability(client, entity);
+		Enable_Messenger_Launcher_Ability(client, entity);
+		WeaponNailgun_Enable(client, entity);
 #endif
 
 #if defined RPG
@@ -6727,9 +6724,16 @@ void ClipSaveSingle(int client, int weapon)
 	}
 
 	StoreItems.GetArray(StoreWeapon[weapon], item);
-	int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
-	int GetClip = GetEntData(weapon, iAmmoTable, 4);
-	item.CurrentClipSaved[client] = GetClip;
+	if(item.CurrentClipSaved[client] == -5)
+	{
+		item.CurrentClipSaved[client] = 0;
+	}
+	else
+	{
+		int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+		int GetClip = GetEntData(weapon, iAmmoTable, 4);
+		item.CurrentClipSaved[client] = GetClip;
+	}
 	StoreItems.SetArray(StoreWeapon[weapon], item);
 }
 

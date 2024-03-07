@@ -96,6 +96,35 @@ bool AlreadySaidLastmann;
 static int Silvester_TE_Used;
 public void RaidbossSilvester_OnMapStart()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Silvester");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_raidboss_silvester");
+	strcopy(data.Icon, sizeof(data.Icon), "silvester_raid");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Raid;
+	data.Func = ClotSummon;
+	data.Precache = Silvester_TBB_Precahce;
+	NPC_Add(data);
+	Silvester_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
+	Silvester_BEAM_Laser_1 = PrecacheModel("materials/cable/blue.vmt", false);
+	Silvester_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
+	PrecacheSound("weapons/mortar/mortar_explode3.wav", true);
+	PrecacheSound("mvm/mvm_tele_deliver.wav", true);
+	PrecacheSound("player/flow.wav");
+	PrecacheModel(LINKBEAM);
+	PrecacheModel(PILLAR_MODEL);
+	
+	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
+	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
+	PrecacheSound("weapons/physcannon/superphys_launch3.wav", true);
+	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
+	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
+	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
+}
+
+void Silvester_TBB_Precahce()
+{
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);       }
 	for (int i = 0; i < (sizeof(g_HurtSounds));        i++) { PrecacheSound(g_HurtSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_IdleSounds));        i++) { PrecacheSound(g_IdleSounds[i]);        }
@@ -110,37 +139,8 @@ public void RaidbossSilvester_OnMapStart()
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
 	
-	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch3.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
-	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
-	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
-	Silvester_TBB_Precahce();
 	
-	PrecacheSound("weapons/mortar/mortar_explode3.wav", true);
-	PrecacheSound("mvm/mvm_tele_deliver.wav", true);
-	PrecacheSound("player/flow.wav");
-	PrecacheModel(LINKBEAM);
-	PrecacheModel(PILLAR_MODEL);
 	PrecacheSoundCustom("#zombiesurvival/silvester_raid/silvester.mp3");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Silvester");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_raidboss_silvester");
-	strcopy(data.Icon, sizeof(data.Icon), "silvester_raid");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Raid;
-	data.Func = ClotSummon;
-	NPC_Add(data);
-}
-
-void Silvester_TBB_Precahce()
-{
-	Silvester_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
-	Silvester_BEAM_Laser_1 = PrecacheModel("materials/cable/blue.vmt", false);
-	Silvester_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)

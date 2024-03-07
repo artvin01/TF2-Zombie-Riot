@@ -143,11 +143,9 @@ static int i_PlayMusicSound;
 
 void Bloonarius_MapStart()
 {
-	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusdeath.wav");
-	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusspawn.wav");
-	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusvomit.wav");
-	PrecacheSoundCustom("#zombie_riot/btd/musicbossbloonarius.mp3");
-	PrecacheModel("models/zombie_riot/btd/bloonarius.mdl");
+	if(!IsFileInDownloads("models/zombie_riot/btd/bloonarius.mdl"))
+		return;
+	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bloonarius");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bloonarius");
@@ -156,7 +154,17 @@ void Bloonarius_MapStart()
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusdeath.wav");
+	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusspawn.wav");
+	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusvomit.wav");
+	PrecacheSoundCustom("#zombie_riot/btd/musicbossbloonarius.mp3");
+	PrecacheModel("models/zombie_riot/btd/bloonarius.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -410,7 +418,7 @@ public void Bloonarius_ClotThink(int iNPC)
 			int count = SpawnMulti(BloonLowCount[tier], players, npc.m_bStaticNPC);
 			
 			Enemy enemy;
-			enemy.Index = NPC_GetIdByPlugin("npc_bloon");
+			enemy.Index = NPC_GetByPlugin("npc_bloon");
 			enemy.Is_Static = npc.m_bStaticNPC;
 
 			strcopy(enemy.Data, sizeof(enemy.Data), BloonLowData[tier]);

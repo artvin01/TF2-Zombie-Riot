@@ -118,7 +118,7 @@ public void SDKHook_ScoreThink(int entity)
 }
 #endif
 
-void SDKHook_HookClient(int client)
+stock void SDKHook_HookClient(int client)
 {
 #if defined ZR
 	SDKUnhook(client, SDKHook_PreThinkPost, OnPreThinkPost);
@@ -1270,24 +1270,11 @@ public void OnPostThink(int client)
 
 			downsleft -= i_AmountDowned[client];
 
-			if(Rogue_Mode() && Rogue_InSetup())
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t\n%t", HudBuffer,
-				"Credits_Menu_New", GlobalExtraCash + (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
-				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
-				PerkNames[i_CurrentEquippedPerk[client]],
-				"Australium Ingots", Rogue_GetIngots()
-				);
-			}
-			else
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t", HudBuffer,
-				"Credits_Menu_New", GlobalExtraCash + (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
-				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
-				PerkNames[i_CurrentEquippedPerk[client]]
-				);
-				
-			}
+			Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t", HudBuffer,
+			"Credits_Menu_New", GlobalExtraCash + (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+			"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
+			PerkNames[i_CurrentEquippedPerk[client]]
+			);
 
 			if(b_LeftForDead[client])
 			{

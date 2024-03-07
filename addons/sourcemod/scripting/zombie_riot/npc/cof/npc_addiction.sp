@@ -37,14 +37,6 @@ static char g_MeleeMissSounds[][] =
 
 void Addiction_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_HurtSounds));	   i++) { PrecacheSoundCustom(g_HurtSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_PassiveSounds));	   i++) { PrecacheSoundCustom(g_PassiveSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_ThunderSounds));	   i++) { PrecacheSoundCustom(g_ThunderSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));	   i++) { PrecacheSound(g_MeleeMissSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	   i++) { PrecacheSound(g_MeleeHitSounds[i]);	   }
-	PrecacheSoundCustom("cof/addiction/death.mp3");
-
-	PrecacheModel("models/zombie_riot/aom/david_monster.mdl");
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "The Addiction");
@@ -54,7 +46,19 @@ void Addiction_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_COF;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
+}
+static void ClotPrecache()
+{
+	for (int i = 0; i < (sizeof(g_HurtSounds));	   i++) { PrecacheSoundCustom(g_HurtSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_PassiveSounds));	   i++) { PrecacheSoundCustom(g_PassiveSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_ThunderSounds));	   i++) { PrecacheSoundCustom(g_ThunderSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_MeleeMissSounds));	   i++) { PrecacheSound(g_MeleeMissSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	   i++) { PrecacheSound(g_MeleeHitSounds[i]);	   }
+	PrecacheSoundCustom("cof/addiction/death.mp3");
+
+	PrecacheModel("models/zombie_riot/aom/david_monster.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)

@@ -1,16 +1,33 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static Handle ResourceHud;
 static float UpdateMenuIn[MAXTF2PLAYERS];
 static bool InMenu[MAXTF2PLAYERS];
 static bool HadSelection[MAXTF2PLAYERS];
 static int CurrentHelp[MAXTF2PLAYERS];
 static int CurrentTip[MAXTF2PLAYERS];
+static int ResourceText[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static ArrayList ControlGroups[MAXTF2PLAYERS][9];
 
 void RTSMenu_Update(int client)
 {
 	UpdateMenuIn[client] = 0.0;
+}
+
+static void ClearTexts(int client)
+{
+	if(ResourceText[client] != -1)
+	{
+		int entity = EntRefToEntIndex(ResourceText[client]);
+		if(entity != -1)
+			RemoveEntity(ResourceText[client]);
+	}
+}
+
+void RTSMenu_PluginStart()
+{
+	ResourceHud = CreateHudSynchronizer();
 }
 
 void RTSMenu_ClientDisconnect(int client)
@@ -23,6 +40,8 @@ void RTSMenu_ClientDisconnect(int client)
 	{
 		delete ControlGroups[client][i];
 	}
+
+	ClearTexts(client);
 }
 
 void RTSMenu_PlayerRunCmd(int client)
@@ -39,12 +58,12 @@ void RTSMenu_PlayerRunCmd(int client)
 	
 	if(RTS_InSetup())
 	{
-
+		ClearTexts(client);
 	}
 	else
 	{
-		char display[512], buffer[32];
-		strcopy(display, sizeof(display), "Fortress Wars CLOSED ALPHA\n ");
+		char display[512], buffer[48];
+		strcopy(display, sizeof(display), "Fortress Wars CLOSED ALPHA                \n ");
 		
 		ArrayList selection = RTSCamera_GetSelected(client);
 		if(selection)
@@ -61,22 +80,19 @@ void RTSMenu_PlayerRunCmd(int client)
 					Format(display, sizeof(display), "%s\n%t\n", display, c_NpcName[entity]);
 
 					// Flags
-					if(!IsObject(entity))
+					bool first = true;
+					for(int i; i < Flag_MAX; i++)
 					{
-						bool first = true;
-						for(int i; i < Flag_MAX; i++)
+						if(RTS_HasFlag(entity, i))
 						{
-							if(UnitBody_HasFlag(entity, i))
+							if(first)
 							{
-								if(first)
-								{
-									Format(display, sizeof(display), "%s%t", display, FlagName[i]);
-									first = false;
-								}
-								else
-								{
-									Format(display, sizeof(display), "%s, %t", display, FlagName[i]);
-								}
+								Format(display, sizeof(display), "%s%t", display, FlagName[i]);
+								first = false;
+							}
+							else
+							{
+								Format(display, sizeof(display), "%s, %t", display, FlagName[i]);
 							}
 						}
 					}
@@ -87,65 +103,77 @@ void RTSMenu_PlayerRunCmd(int client)
 
 					if(IsObject(entity))
 					{
-						Format(display, sizeof(display), "%s\n%t", display, "Resource Of", ResourceName[Object_GetResource(entity)]);
+						int resource = Object_GetResource(entity);
+						if(resource != Resource_None)
+							Format(display, sizeof(display), "%s\n%t", display, "Resource Of", ResourceName[resource]);
+					}
+					
+					// Armor
+					if(Stats[entity].MeleeArmorBonus != 0)
+					{
+						FormatEx(buffer, sizeof(buffer), "%d (%s%d) / ", Stats[entity].MeleeArmor, Stats[entity].MeleeArmorBonus < 0 ? "" : "+", Stats[entity].MeleeArmorBonus);
 					}
 					else
 					{
-						StatEnum stat;
-						UnitBody_GetStats(entity, stat);
+						FormatEx(buffer, sizeof(buffer), "%d / ", Stats[entity].MeleeArmor);
+					}
 
-						// Armor
-						if(stat.MeleeArmorBonus != 0)
+					if(Stats[entity].RangeArmorBonus != 0)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s%d (%s%d)", buffer, Stats[entity].RangeArmor, Stats[entity].RangeArmorBonus < 0 ? "" : "+", Stats[entity].RangeArmorBonus);
+					}
+					else
+					{
+						FormatEx(buffer, sizeof(buffer), "%s%d", buffer, Stats[entity].RangeArmor);
+					}
+
+					Format(display, sizeof(display), "%s\n%t", display, "Armor Of", buffer);
+
+					if(Stats[entity].Range)
+					{
+						// Range
+						if(Stats[entity].RangeBonus)
 						{
-							FormatEx(buffer, sizeof(buffer), "%d (%s%d) / ", stat.MeleeArmor, stat.MeleeArmorBonus < 0 ? "" : "+", stat.MeleeArmorBonus);
+							FormatEx(buffer, sizeof(buffer), "%d (%s%d)", Stats[entity].Range, Stats[entity].RangeBonus < 0 ? "" : "+", Stats[entity].RangeBonus);
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%d / ", stat.MeleeArmor);
+							IntToString(Stats[entity].Range, buffer, sizeof(buffer));
 						}
 
-						if(stat.RangeArmorBonus != 0)
+						Format(display, sizeof(display), "%s\n%t", display, "Range Of", buffer);
+					}
+
+					if(Stats[entity].Damage)
+					{
+						// Damage
+						if(Stats[entity].DamageBonus)
 						{
-							FormatEx(buffer, sizeof(buffer), "%s%d (%s%d)", buffer, stat.RangeArmor, stat.RangeArmorBonus < 0 ? "" : "+", stat.RangeArmorBonus);
+							FormatEx(buffer, sizeof(buffer), "%d (%s%d)", Stats[entity].Damage, Stats[entity].DamageBonus < 0 ? "" : "+", Stats[entity].DamageBonus);
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%s%d", buffer, stat.RangeArmor);
+							IntToString(Stats[entity].Damage, buffer, sizeof(buffer));
 						}
 
-						Format(display, sizeof(display), "%s\n%t", display, "Armor Of", buffer);
-
-						if(stat.Damage)
+						Format(display, sizeof(display), "%s\n%t", display, "Damage Of", buffer);
+						
+						// Damage vs Flag
+						for(int i; i < Flag_MAX; i++)
 						{
-							// Damage
-							if(stat.DamageBonus)
+							if(Stats[entity].ExtraDamage[i] || Stats[entity].ExtraDamageBonus[i])
 							{
-								FormatEx(buffer, sizeof(buffer), "%d (%s%d)", stat.Damage, stat.DamageBonus < 0 ? "" : "+", stat.DamageBonus);
-							}
-							else
-							{
-								IntToString(stat.Damage, buffer, sizeof(buffer));
-							}
-
-							Format(display, sizeof(display), "%s\n%t", display, "Damage Of", buffer);
-							
-							// Damage vs Flag
-							for(int i; i < Flag_MAX; i++)
-							{
-								if(stat.ExtraDamage[i] || stat.ExtraDamageBonus[i])
+								if(Stats[entity].DamageBonus || Stats[entity].ExtraDamageBonus[i])
 								{
-									if(stat.DamageBonus || stat.ExtraDamageBonus[i])
-									{
-										int bonus = stat.DamageBonus + stat.ExtraDamageBonus[i];
-										FormatEx(buffer, sizeof(buffer), "%d (%s%d)", stat.Damage + stat.ExtraDamage[i], bonus < 0 ? "" : "+", bonus);
-									}
-									else
-									{
-										IntToString(stat.Damage + stat.ExtraDamage[i], buffer, sizeof(buffer));
-									}
-
-									Format(display, sizeof(display), "%s\n %t", display, "vs Type of", FlagName[i], buffer);
+									int bonus = Stats[entity].DamageBonus + Stats[entity].ExtraDamageBonus[i];
+									FormatEx(buffer, sizeof(buffer), "%d (%s%d)", Stats[entity].Damage + Stats[entity].ExtraDamage[i], bonus < 0 ? "" : "+", bonus);
 								}
+								else
+								{
+									IntToString(Stats[entity].Damage + Stats[entity].ExtraDamage[i], buffer, sizeof(buffer));
+								}
+
+								Format(display, sizeof(display), "%s\n %t", display, "vs Type of", FlagName[i], buffer);
 							}
 						}
 					}
@@ -213,23 +241,24 @@ void RTSMenu_PlayerRunCmd(int client)
 			for(int a; a < length; a++)
 			{
 				int entity = EntRefToEntIndex(selection.Get(a));
-				if(entity != -1 && UnitBody_CanControl(client, entity))
+				if(entity != -1 && RTS_CanControl(client, entity))
 				{
 					for(int b; b < MAX_SKILLS; b++)
 					{
-						if(found[b] && found[b] != i_NpcInternalId[entity])
+						int id = IsObject(entity) ? -i_NpcInternalId[entity] : i_NpcInternalId[entity];
+						if(found[b] && found[b] != id)
 							continue;
 						
 						float cooldown = found[b] ? skill[b].Cooldown : FAR_FUTURE;
 						int count = skill[b].Count;
 
-						if(UnitBody_GetSkill(entity, client, b, skill[b]))
+						if(RTS_GetSkill(entity, client, b, skill[b]))
 						{
 							if(skill[b].Cooldown > cooldown || (skill[b].Cooldown == 0.0 && cooldown != FAR_FUTURE))
 								skill[b].Cooldown = cooldown;
 
 							skill[b].Count += count;
-							found[b] = i_NpcInternalId[entity];
+							found[b] = id;
 						}
 					}
 				}
@@ -242,14 +271,48 @@ void RTSMenu_PlayerRunCmd(int client)
 				{
 					static const char button[][] = { "@", "Q", "W", "E", "R", "T", "A", "S", "D", "F", "G" };
 
-					FormatEx(buffer, sizeof(buffer), "(%s) %t", button[skill[i].Auto ? 0 : (i+1)], skill[i].Name);
+					if(RTSCamera_HoldingCtrl(client) && skill[i].Desc[0])
+					{
+						FormatEx(buffer, sizeof(buffer), "(%s) %t", button[skill[i].Auto ? 0 : (i+1)], skill[i].Desc);
+					}
+					else
+					{
+						if(skill[i].Formater[0])
+						{
+							FormatEx(buffer, sizeof(buffer), "(%s) %t", button[skill[i].Auto ? 0 : (i+1)], skill[i].Formater, skill[i].Name);
+						}
+						else
+						{
+							FormatEx(buffer, sizeof(buffer), "(%s) %t", button[skill[i].Auto ? 0 : (i+1)], skill[i].Name);
+						}
 
-					if(skill[i].Count > 1 || skill[i].Cooldown > 999.9)
-						Format(buffer, sizeof(buffer), "%s x%d", buffer, skill[i].Count);
-					
-					if(skill[i].Cooldown > 0.0 && skill[i].Cooldown < 999.9)
-						Format(buffer, sizeof(buffer), "%s (%ds)", buffer, RoundToCeil(skill[i].Cooldown));
-					
+						bool first2 = true;
+						for(int b; b < Resource_MAX; b++)
+						{
+							if(skill[i].Price[b])
+							{
+								if(first2)
+								{
+									Format(buffer, sizeof(buffer), "%s [%d%t", buffer, skill[i].Price[b], ResourceShort[b]);
+									first2 = false;
+								}
+								else
+								{
+									Format(buffer, sizeof(buffer), "%s %d%t", buffer, skill[i].Price[b], ResourceShort[b]);
+								}
+							}
+						}
+
+						if(!first2)
+							Format(buffer, sizeof(buffer), "%s]", buffer);
+						
+						if(skill[i].Count > 1 || skill[i].Cooldown > 999.9)
+							Format(buffer, sizeof(buffer), "%s x%d", buffer, skill[i].Count);
+						
+						if(skill[i].Cooldown > 0.0 && skill[i].Cooldown < 999.9)
+							Format(buffer, sizeof(buffer), "%s (%ds)", buffer, RoundToCeil(skill[i].Cooldown * 2.0));
+					}
+
 					if(first)
 					{
 						Format(display, sizeof(display), "%s\n \n%s", display, buffer);
@@ -287,6 +350,14 @@ void RTSMenu_PlayerRunCmd(int client)
 				FormatEx(buffer, sizeof(buffer), "RTS Tooltip %d", CurrentTip[client]);
 				Format(display, sizeof(display), "%s\n%t", display, buffer);
 			}
+			
+			if(CvarInfiniteCash.BoolValue)
+			{
+				for(int i = 1; i < Resource_MAX; i++)
+				{
+					Resource[TeamNumber[client]][i] = 100000;
+				}
+			}
 		}
 		
 		Menu menu = new Menu(UpdateMenuMainH);
@@ -306,7 +377,7 @@ void RTSMenu_PlayerRunCmd(int client)
 				for(int b; b < length; b++)
 				{
 					entity = EntRefToEntIndex(ControlGroups[client][a].Get(b));
-					if(entity == -1 || !UnitBody_CanControl(client, entity))
+					if(entity == -1 || !RTS_CanControl(client, entity))
 					{
 						ControlGroups[client][a].Erase(b);
 						b--;
@@ -337,7 +408,50 @@ void RTSMenu_PlayerRunCmd(int client)
 		menu.Pagination = 0;
 		menu.ExitButton = true;
 		InMenu[client] = menu.Display(client, 1);
+
+		int supplies;
+		int free = RTS_CheckSupplies(TeamNumber[client], supplies);
+		FormatEx(display, sizeof(display), "Medieval Empire\nTeutons\n \n%t %d / %d", ResourceName[0], supplies - free, supplies);
+		for(int i = 1; i < Resource_MAX; i++)
+		{
+			Format(display, sizeof(display), "%s\n%t %d", display, ResourceName[i], Resource[TeamNumber[client]][i]);
+		}
+
+		if(RTSCamera_InCamera(client))
+		{
+			int entity = EntRefToEntIndex(ResourceText[client]);
+			if(entity == -1)
+			{
+				int camera = RTSCamera_GetCamera(client);
+				if(camera != -1)
+				{
+					float vec[3];
+					RTSCamera_GetVector(client, vec);
+					ScaleVector(vec, 100.0); // Higher = less text size
+					PrintToChatAll("%f %f %f", vec[0], vec[1], vec[2]);
+					
+					entity = SpawnFormattedWorldText("ABCD\n1234", vec, 10, _, camera);
+					DispatchKeyValue(entity, "font", "1");
+					SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
+					SDKHook(entity, SDKHook_SetTransmit, SetTransmit_Owner);
+
+					ResourceText[client] = EntIndexToEntRef(entity);
+				}
+			}
+		}
+		else
+		{
+			ClearTexts(client);
+
+			SetHudTextParams(0.02, 0.02, 0.8, 255, 255, 255, 255);
+			ShowSyncHudText(client, ResourceHud, display);
+		}
 	}
+}
+
+static Action SetTransmit_Owner(int entity, int client)
+{
+	return GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client ? Plugin_Continue : Plugin_Handled;
 }
 
 static int UpdateMenuMainH(Menu menu, MenuAction action, int client, int choice)

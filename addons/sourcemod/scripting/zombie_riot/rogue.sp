@@ -783,6 +783,7 @@ public Action Rogue_EndVote(Handle timer, float time)
 			{
 				Rogue_GiveNamedArtifact(vote.Name);
 				strcopy(StartingItem, sizeof(StartingItem), vote.Name);
+				Waves_SetReadyStatus(1);
 			}
 			else
 			{
@@ -800,7 +801,7 @@ public Action Rogue_RoundStartTimer(Handle timer)
 {
 	ProgressTimer = null;
 	
-	if(!Voting && !CvarNoRoundStart.BoolValue)
+	if(!Voting && !CvarNoRoundStart.BoolValue && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -812,7 +813,7 @@ public Action Rogue_RoundStartTimer(Handle timer)
 		}
 	}
 
-	ProgressTimer = CreateTimer(10.0, Rogue_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	ProgressTimer = CreateTimer(1.0, Rogue_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 	return Plugin_Stop;
 }
 
@@ -1273,6 +1274,8 @@ void Rogue_NextProgress()
 			Rogue_NextProgress();
 		}
 	}
+
+	Waves_UpdateMvMStats();
 }
 
 static void SetFloorMusic(const Floor floor, bool stop)
@@ -1453,6 +1456,8 @@ static void SetNextStage(int id, bool type, const Stage stage, float time = 10.0
 	{
 		StartStage(stage);
 	}
+
+	Waves_UpdateMvMStats();
 }
 
 void Rogue_StartThisBattle(float time = 10.0)
@@ -2140,6 +2145,7 @@ int Rogue_GetIngots()
 void Rogue_AddIngots(int amount)
 {
 	CurrentIngots += amount;
+	Waves_UpdateMvMStats();
 }
 
 void Rogue_SetBattleIngots(int amount)
@@ -2160,6 +2166,7 @@ stock int Rogue_GetBonusLife()
 void Rogue_AddBonusLife(int amount)
 {
 	BonusLives += amount;
+	Waves_UpdateMvMStats();
 }
 
 bool Rogue_InSetup()	// Waves_InSetup()
@@ -2202,6 +2209,7 @@ int Rogue_GetRoundScale()
 void Rogue_AddExtraStage(int count)
 {
 	ExtraStageCount += count;
+	Waves_UpdateMvMStats();
 }
 
 void Rogue_SetRequiredBattle(bool value)
@@ -2232,6 +2240,55 @@ public void Rogue_Vote_NextStage(const Vote vote)
 	}
 
 	SetNextStage(id, false, stage);
+}
+
+bool Rogue_UpdateMvMStats(int mvm, int m_currentWaveStats, int m_runningTotalWaveStats)
+{
+	if(!Rogue_Mode() || !Rogue_InSetup())
+		return false;
+	
+	int objective = FindEntityByClassname(-1, "tf_objective_resource");
+	if(objective != -1)
+	{
+		SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", 0);
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", 0);
+
+		Floor floor;
+		Floors.GetArray(CurrentFloor, floor);
+
+		int maxRooms = floor.RoomCount + ExtraStageCount;
+
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentCount + 1);
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", maxRooms + 2);
+
+		for(int i; i < 24; i++)
+		{
+			switch(i)
+			{
+				case 0:
+				{
+					Waves_SetWaveClass(objective, i, BonusLives, "medic", MVM_CLASS_FLAG_MINIBOSS, true);
+				}
+				case 1:
+				{
+					Waves_SetWaveClass(objective, i, CurrentIngots, "rogue_ingots", MVM_CLASS_FLAG_NORMAL, true);
+				}
+				default:
+				{
+					Waves_SetWaveClass(objective, i);
+				}
+			}
+		}
+	}
+
+	SetEntData(mvm, m_currentWaveStats + 4, 0, 4, true);	// nCreditsDropped
+	SetEntData(mvm, m_currentWaveStats + 8, 0, 4, true);	// nCreditsAcquired
+	SetEntData(mvm, m_currentWaveStats + 12, 0, 4, true);	// nCreditsBonus
+
+	SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
+	SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
+	SetEntData(mvm, m_runningTotalWaveStats + 12, GlobalExtraCash, 4, true);	// nCreditsBonus
+	return true;
 }
 
 //thanks to mikusch for showing me this.

@@ -105,6 +105,19 @@ static const char g_BobSuperMeleeCharge_Hit[][] =
 
 void RaidbossBobTheFirst_OnMapStart()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "?????????????");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bob_the_first_last_savior");
+	data.IconCustom = true;
+	data.Flags = -1;
+	data.Category = Type_Hidden;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_IntroStartSounds);
 	PrecacheSoundArray(g_IntroEndSounds);
 	PrecacheSoundArray(g_SummonSounds);
@@ -124,15 +137,6 @@ void RaidbossBobTheFirst_OnMapStart()
 	PrecacheSoundArray(g_BobSuperMeleeCharge_Hit);
 	
 	PrecacheSoundCustom("#zombiesurvival/bob_raid/bob.mp3");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "?????????????");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bob_the_first_last_savior");
-	data.IconCustom = true;
-	data.Flags = -1;
-	data.Category = Type_Hidden;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -428,7 +432,9 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	{
 		b_NpcIsInvulnerable[npc.index] = true;
 	}
-
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+		return;
+		
 	int healthPoints = 20;
 
 	if(npc.m_bFakeClone)
@@ -638,7 +644,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 					Enemy enemy;
 
-					enemy.Index = NPC_GetIdByPlugin("npc_xeno_raidboss_nemesis");
+					enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
 					enemy.Health = 40000000;
 					enemy.Is_Boss = 2;
 					enemy.ExtraSpeed = 1.5;
@@ -1600,7 +1606,7 @@ static void AddBobEnemy(int bobindx, const char[] plugin, int count, int boss = 
 {
 	Enemy enemy;
 
-	enemy.Index = NPC_GetIdByPlugin(plugin);
+	enemy.Index = NPC_GetByPlugin(plugin);
 	enemy.Is_Boss = boss;
 	enemy.Is_Health_Scaled = 1;
 	enemy.ExtraMeleeRes = 0.05;
@@ -2160,6 +2166,6 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 public void Raidmode_BobFirst_Win(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
-	SDKUnhook(entity, SDKHook_Think, RaidbossBobTheFirst_ClotThink);
+	func_NPCThink[entity] = INVALID_FUNCTION;
 	CPrintToChatAll("{white}Bob the First{default}: Deep sea threat cleaned, finally at peace...");
 }

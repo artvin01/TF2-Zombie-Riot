@@ -787,8 +787,7 @@
 	}
 	"Hammer Pap 2"
 	{
-		"en"	"Increased damage and lower attackspeed.\nYour attacks are so strong that they cause explosions.\nArchetype changes to ''Crusher''"
-	    "ru"	"Увеличенный урон и сниженная скорость атаки.\nВаши атаки настолько сильны, что вызывают взрывы.\nАрхетип меняется на «Дробитель»"
+		"en"	"Increased damage and lower attackspeed.\nYour attacks are so strong that they cause explosions.\n1.15x dmg against bosses and 2x dmg against raids.\nArchetype changes to ''Crusher''"
 	}
 	"Hammer Pap 3"
 	{
@@ -1013,6 +1012,10 @@
 	{
 		"en"	"Will freeze enemies with enough dmg.\nM2 triggers a shockwave at your location\nWhich deals massively increased damage to frozen zombies.\nAnd freeze enemies if dealing enough damage, if frozen, damage buff is 2x as effective."
 		"ru"	"Замораживает врагов при достаточн. кол-ве урона.\nM2 - вызывает небольшую ударную волну,\nкоторая наносит замороженным зомби значительно больший урон.\nИ замораживает врагов, если нанести достаточно урона. По замороженным = 2x урон."
+	}
+	"Cryo Staff Pap 0"
+	{
+		"en"	"Increased damage and attackspeed"
 	}
 	"Cryo Staff Pap 1"
 	{
@@ -2736,5 +2739,13 @@
 	"Helena's Elite Medicine Desc"
 	{
 		"en"	"1.6x Medigun Hurt and Heal and 5%% melee resistance with Secondary/Medigun out"
+	}
+	"Messenger Launcher Desc"
+	{
+		"en" "You feel the power of the Chaos that once consumed the Messenger in your hands\n You lose the ability to deal aoe. Press M2 to change fire mode \n Fire Blaster: Ignites \n Chaos Blaster: short cryo debuff \n Chaos deals more damage on hit.\n Archetype changed into rapid fire"
+	}
+	"Messenger Launcher PAP Desc"
+	{
+		"en" "You feel more confident in controlling chaos in this launcher\n Or is it consuming you? \n \n Increased clip, damage, and faster firerate. \n more cryo applied on Chaos mode and more afterburn damage."
 	}
 }

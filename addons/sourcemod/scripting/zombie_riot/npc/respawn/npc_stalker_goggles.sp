@@ -9,8 +9,6 @@ void StalkerGoggles_OnMapStart()
 	PrecacheModel("models/bots/sniper/bot_sniper.mdl");
 	PrecacheSound("weapons/sniper_railgun_charged_shot_01.wav");
 	PrecacheSound("weapons/sniper_railgun_charged_shot_02.wav");
-	PrecacheSoundCustom("#music/bluemelee.mp3");
-	PrecacheSoundCustom("#music/bluerange.wav");
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Spawned Blue Goggles");
@@ -20,9 +18,15 @@ void StalkerGoggles_OnMapStart()
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
 }
 
+static void ClotPrecache()
+{
+	PrecacheSoundCustom("#music/bluemelee.mp3");
+	PrecacheSoundCustom("#music/bluerange.wav");
+}
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return StalkerGoggles(client, vecPos, vecAng, ally);

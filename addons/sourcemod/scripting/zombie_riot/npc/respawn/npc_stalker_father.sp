@@ -89,7 +89,7 @@ public void StalkerFather_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
-	if(!Waves_InSetup() && Waves_GetRound() > 29)
+	if(!Waves_InSetup()/* && Waves_GetRound() > 29*/)
 	{
 		if(b_NpcIsInvulnerable[npc.index])
 		{
@@ -353,7 +353,7 @@ void StalkerFather_NPCDeath(int entity)
 	{
 		StopSound(npc.index, SNDCHAN_STATIC, "#music/radio1.mp3");
 	}
-
+/*
 	for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)
 	{
 		if(IsClientInGame(client_Grigori) && GetClientTeam(client_Grigori)==2)
@@ -366,7 +366,7 @@ void StalkerFather_NPCDeath(int entity)
 	}
 	Spawn_Cured_Grigori();
 
-	CreateTimer(70.0, StalkerFather_Timer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateTimer(70.0, StalkerFather_Timer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);*/
 }
 
 public Action StalkerFather_Timer(Handle timer)
@@ -375,7 +375,7 @@ public Action StalkerFather_Timer(Handle timer)
 		return Plugin_Continue;
 	
 	Enemy enemy;
-	enemy.Index = NPC_GetIdByPlugin("npc_stalker_googgles");
+	enemy.Index = NPC_GetByPlugin("npc_stalker_googgles");
 	enemy.Health = 66666666;
 	enemy.Is_Immune_To_Nuke = true;
 	enemy.Is_Static = true;

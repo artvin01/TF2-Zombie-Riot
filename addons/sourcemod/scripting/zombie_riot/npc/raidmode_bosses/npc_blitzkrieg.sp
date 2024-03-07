@@ -168,6 +168,27 @@ static bool b_lost;
 
 public void Blitzkrieg_OnMapStart()
 {
+	g_f_blitz_dialogue_timesincehasbeenhurt=0.0;
+	g_b_item_allowed=false;
+	g_b_donner_died=false;
+	g_b_schwert_died=false;
+	g_b_angered=false;
+	b_lost=false;
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Blitzkrieg");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_blitzkrieg");
+	strcopy(data.Icon, sizeof(data.Icon), "blitzkrieg");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Raid;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);      		}
 	for (int i = 0; i < (sizeof(g_HurtSounds));        i++) { PrecacheSound(g_HurtSounds[i]);       		}
 	for (int i = 0; i < (sizeof(g_IdleSounds));        i++) { PrecacheSound(g_IdleSounds[i]);       		}
@@ -218,24 +239,8 @@ public void Blitzkrieg_OnMapStart()
 	PrecacheSound(BLITZLIGHT_ATTACK, true);
 	
 	PrecacheSound("misc/halloween/gotohell.wav");
-
-	g_f_blitz_dialogue_timesincehasbeenhurt=0.0;
-	g_b_item_allowed=false;
-	g_b_donner_died=false;
-	g_b_schwert_died=false;
-	g_b_angered=false;
-	b_lost=false;
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Blitzkrieg");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_blitzkrieg");
-	strcopy(data.Icon, sizeof(data.Icon), "blitzkrieg");
-	data.IconCustom = true;
-	data.Flags = 0;
-	data.Category = Type_Raid;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
+
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
 	return Blitzkrieg(client, vecPos, vecAng, ally, data);

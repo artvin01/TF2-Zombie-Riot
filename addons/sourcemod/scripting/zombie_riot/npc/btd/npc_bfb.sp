@@ -54,7 +54,9 @@ static int MoabHealth(bool fortified)
 
 void Bfb_MapStart()
 {
-	PrecacheModel("models/zombie_riot/btd/bfb.mdl");
+	if(!IsFileInDownloads("models/zombie_riot/btd/bfb.mdl"))
+		return;
+	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Brutal Floating Behemoth");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bfb");
@@ -63,7 +65,13 @@ void Bfb_MapStart()
 	data.Flags = 0;
 	data.Category = Type_BTD;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheModel("models/zombie_riot/btd/bfb.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)

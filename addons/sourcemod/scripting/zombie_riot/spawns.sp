@@ -416,12 +416,25 @@ void Spawns_CheckBadClient(int client)
 {
 	if(!IsPlayerAlive(client) || TeutonType[client] != TEUTON_NONE)
 	{
+		BadSpotPoints[client] = 0;
 		return;
 	}
 
 	if(!(GetEntityFlags(client) & (FL_ONGROUND|FL_INWATER)))
 	{
-		// In air or water, no gain/loss
+		// In air or water
+		BadSpotPoints[client]++;
+		return;
+	}
+
+	if(Waves_InSetup())
+		return;
+
+	int RefGround =  GetEntPropEnt(client, Prop_Send, "m_hGroundEntity");
+	int GroundEntity = EntRefToEntIndex(RefGround);
+	if(GroundEntity > 0 && GroundEntity < MAXENTITIES)
+	{
+		//client is ontop of something, dont do more, they have some way to be put down.
 		return;
 	}
 

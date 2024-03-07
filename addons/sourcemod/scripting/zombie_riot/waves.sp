@@ -492,7 +492,7 @@ void Waves_SetupMiniBosses(KeyValues map)
 		{
 			kv.GetSectionName(buffer, sizeof(buffer));
 			
-			boss.Index = NPC_GetIdByPlugin(buffer);
+			boss.Index = NPC_GetByPlugin(buffer);
 			if(boss.Index == -1)
 			{
 				LogError("[Config] Unknown NPC '%s' in mini-bosses", buffer);
@@ -652,7 +652,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 					kv.GetString("plugin", plugin, sizeof(plugin));
 					if(plugin[0])
 					{
-						enemy.Index = NPC_GetIdByPlugin(plugin);
+						enemy.Index = NPC_GetByPlugin(plugin);
 						if(enemy.Index == -1)
 						{
 							LogError("[Config] Unknown NPC '%s' in waves", plugin);
@@ -1612,6 +1612,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 	else if(Rogue_Mode())
 	{
 		PrintToChatAll("FREEPLAY OCCURED, BAD CFG, REPORT BUG");
+		ThrowError("FREEPLAY OCCURED - LOOK AT FIRST THROWERROR");
+		CurrentRound = 0;
+		CurrentWave = -1;
 	}
 	else
 	{
@@ -2153,6 +2156,9 @@ static void UpdateMvMStatsFrame()
 				ThrowError("Invalid offset");
 		}
 
+		if(Rogue_UpdateMvMStats(mvm, m_currentWaveStats, m_runningTotalWaveStats))
+			return;
+
 		float cashLeft, totalCash;
 
 		int activecount, totalcount;
@@ -2309,16 +2315,8 @@ static void UpdateMvMStatsFrame()
 			SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", RoundToNearest(cashLeft));
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", totalcount > activecount ? totalcount : activecount);
 
-			if(Rogue_Mode())
-			{
-				SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", Rogue_GetWave());
-				SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", 0);
-			}
-			else
-			{
-				SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
-				SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves : 0);
-			}
+			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
+			SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves : 0);
 
 			NPCData data;
 			for(int i; i < sizeof(id); i++)
@@ -2328,71 +2326,22 @@ static void UpdateMvMStatsFrame()
 					NPC_GetById(id[i], data);
 					if(data.Flags == -1)
 					{
-						SetWaveClass(objective, i);
+						Waves_SetWaveClass(objective, i);
 						continue;
 					}
 
 					if(!data.Icon[0])
-					{
-						if(StrContains(data.Name, "sword", false) != -1 || StrContains(data.Plugin, "sword", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "demoknight");
-						}
-						else if(StrContains(data.Name, "combine", false) != -1 || StrContains(data.Plugin, "combine", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
-						}
-						else if(StrContains(data.Name, "scout", false) != -1 || StrContains(data.Plugin, "scout", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "scout");
-						}
-						else if(StrContains(data.Name, "soldier", false) != -1 || StrContains(data.Plugin, "soldier", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "soldier");
-						}
-						else if(StrContains(data.Name, "pyro", false) != -1 || StrContains(data.Plugin, "pyro", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "pyro");
-						}
-						else if(StrContains(data.Name, "demo", false) != -1 || StrContains(data.Plugin, "demo", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "demo");
-						}
-						else if(StrContains(data.Name, "heavy", false) != -1 || StrContains(data.Plugin, "heavy", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "heavy");
-						}
-						else if(StrContains(data.Name, "engi", false) != -1 || StrContains(data.Plugin, "engi", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "engineer");
-						}
-						else if(StrContains(data.Name, "medic", false) != -1 || StrContains(data.Plugin, "medic", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "medic");
-						}
-						else if(StrContains(data.Name, "sniper", false) != -1 || StrContains(data.Plugin, "sniper", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "sniper");
-						}
-						else if(StrContains(data.Name, "spy", false) != -1 || StrContains(data.Plugin, "spy", false) != -1)
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "spy");
-						}
-						else
-						{
-							strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
-						}
-					}
+						strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
 					
 					if(!data.Flags)
 						data.Flags = flags[i];
 
 					//PrintToChatAll("ID: %d Count: %d Flags: %d On: %d", id[i], count[i], flags[i], active[i]);
-					SetWaveClass(objective, i, count[i], data.Icon, data.Flags, active[i]);
+					Waves_SetWaveClass(objective, i, count[i], data.Icon, data.Flags, active[i]);
 				}
 				else
 				{
-					SetWaveClass(objective, i);
+					Waves_SetWaveClass(objective, i);
 				}
 			}
 		}
@@ -2501,7 +2450,7 @@ void Waves_SetReadyStatus(int status)
 	}
 }
 
-static void SetWaveClass(int objective, int index, int count = 0, const char[] icon = "", int flags = 0, bool active = false)
+void Waves_SetWaveClass(int objective, int index, int count = 0, const char[] icon = "", int flags = 0, bool active = false)
 {
 	static int size1, size2, name1, name2;
 

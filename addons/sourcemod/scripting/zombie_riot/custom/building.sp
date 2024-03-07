@@ -6673,17 +6673,17 @@ static void SetupNPCIndexes()
 {
 	for(int i; i < sizeof(SummonerBase); i++)
 	{
-		SummonerBase[i][NPCIndex] = NPC_GetIdByPlugin(SummonerBaseNPC[i]);
+		SummonerBase[i][NPCIndex] = NPC_GetByPlugin(SummonerBaseNPC[i]);
 	}
 
 	for(int i; i < sizeof(SummonerThorns); i++)
 	{
-		SummonerThorns[i][NPCIndex] = NPC_GetIdByPlugin(SummonerThornsNPC[i]);
+		SummonerThorns[i][NPCIndex] = NPC_GetByPlugin(SummonerThornsNPC[i]);
 	}
 	
 	for(int i; i < sizeof(SummonerAlternative); i++)
 	{
-		SummonerAlternative[i][NPCIndex] = NPC_GetIdByPlugin(SummonerAlternativeNPC[i]);
+		SummonerAlternative[i][NPCIndex] = NPC_GetByPlugin(SummonerAlternativeNPC[i]);
 	}
 }
 
@@ -7126,7 +7126,7 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 		}
 		if(Rogue_Mode())
 		{
-			SupplyRateCalc *= 2.0;
+			SupplyRateCalc *= 10.0;
 		}
 		SupplyRateCalc *= multi;
 

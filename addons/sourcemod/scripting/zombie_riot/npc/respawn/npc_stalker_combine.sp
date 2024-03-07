@@ -66,6 +66,21 @@ methodmap StalkerShared < CClotBody
 
 void StalkerCombine_MapStart()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Spawned Combine");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stalker_combine");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheModel("models/zombie/zombie_soldier.mdl");
 	static const char SoundList[][] =
 	{
 		"npc/zombine/zombine_idle1.wav",
@@ -87,23 +102,16 @@ void StalkerCombine_MapStart()
 		"npc/zombine/zombine_charge1.wav",
 		"npc/zombine/zombine_charge2.wav",
 		"npc/zombine/zombine_readygrenade2.wav",
-		"#music/vlvx_song11.mp3"
+		"#music/vlvx_song11.mp3",
+		"npc/zombine/gear1.wav",
+		"npc/zombine/gear2.wav",
+		"npc/zombine/gear3.wav"
 	};
 
 	for(int i; i < sizeof(SoundList); i++)
 	{
 		PrecacheSoundCustom(SoundList[i]);
 	}
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Spawned Combine");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stalker_combine");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
-	data.Flags = 0;
-	data.Category = Type_Special;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -305,8 +313,8 @@ public void StalkerCombine_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index, !npc.m_bChaseAnger, _, true, _, _, _, true, FAR_FUTURE);
 		npc.m_flGetClosestTargetTime = gameTime + (npc.m_iTarget ? 2.5 : 0.5);
 
-		// Hunt down the Father on Wave 16
-		if(Waves_GetRound() > 14 && (npc.m_iTarget < 1 || i_NpcInternalId[npc.m_iTarget] != CuredFatherGrigori_ID()))
+		// Hunt down the Father
+		if(npc.m_iTarget < 1 || i_NpcInternalId[npc.m_iTarget] != CuredFatherGrigori_ID())
 		{
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
@@ -476,14 +484,14 @@ public void StalkerCombine_ClotThink(int iNPC)
 						if(i_NpcInternalId[npc.m_iTarget] == CuredFatherGrigori_ID())
 						{
 							Enemy enemy;
-							enemy.Index = NPC_GetIdByPlugin("npc_stalker_father");
+							enemy.Index = NPC_GetByPlugin("npc_stalker_father");
 							enemy.Health = 666666;
 							enemy.Is_Immune_To_Nuke = true;
 							enemy.Is_Static = true;
 							enemy.ExtraMeleeRes = 1.0;
 							enemy.ExtraRangedRes = 1.0;
 							enemy.ExtraSpeed = 1.0;
-							enemy.ExtraDamage = 1.0;	
+							enemy.ExtraDamage = fl_ExtraDamage[npc.index];	
 							enemy.ExtraSize = 1.0;	
 							enemy.Team = GetTeam(npc.index);	
 							Waves_AddNextEnemy(enemy);
@@ -491,8 +499,8 @@ public void StalkerCombine_ClotThink(int iNPC)
 							TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
 
 							KillFeed_SetKillIcon(npc.index, "taunt_soldier");
-							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 99999999.9, DMG_DROWN);
-							SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9, DMG_DROWN);
+							SmiteNpcToDeath(npc.index);
+							SmiteNpcToDeath(npc.m_iTarget);
 						}
 					}
 					else
@@ -664,7 +672,7 @@ void StalkerCombine_HandleAnimEvent(int entity, int event)
 		};
 
 		StalkerCombine npc = view_as<StalkerCombine>(entity);
-		npc.PlayStepSound(RandomSound[GetURandomInt() % sizeof(RandomSound)], 1.0, npc.m_iStepNoiseType);
+		npc.PlayStepSound(RandomSound[GetURandomInt() % sizeof(RandomSound)], 1.0, npc.m_iStepNoiseType, true);
 	}
 }
 

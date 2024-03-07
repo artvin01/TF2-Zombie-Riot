@@ -67,28 +67,9 @@ void Configs_ConfigsExecuted()
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
 #endif
-	
-#if defined RPG
-	Crafting_ConfigSetup(kv);
-	Dungeon_ConfigSetup(kv);
-	Fishing_ConfigSetup(kv);
-	Games_ConfigSetup(kv);
-	Garden_ConfigSetup(kv);
-	Mining_ConfigSetup(kv);
-	Music_ConfigSetup(kv);
-	Quests_ConfigSetup(kv);
-	Spawns_ConfigSetup(kv);
-	Tinker_ConfigSetup(kv);
-	
-	TextStore_ConfigSetup(kv);
-
-	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/soundscript.txt");
-	LoadSoundScript(buffer);
-#endif
 
 #if defined RTS
 	RTS_ConfigsSetup();
-	Object_ConfigSetup();
 #endif
 
 	delete kv;

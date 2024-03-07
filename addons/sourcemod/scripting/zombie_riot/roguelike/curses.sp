@@ -63,12 +63,16 @@ public void Rogue_SensitiveCurse_Ally(int entity, StringMap map)
 
 public void Rogue_FirstClass_Collect()
 {
+	/*
 	int entity = Citizen_SpawnAtPoint("a");
 	if(entity != -1)
 	{
 		Citizen_ReviveTicks(entity, 999, 0);
 		Citizen_GivePerk(entity, 2);
 	}
+	*/
+	Spawn_Cured_Grigori();
+	Store_RandomizeNPCStore(0);
 }
 
 public void Rogue_Curse_Obsessed(bool enable)

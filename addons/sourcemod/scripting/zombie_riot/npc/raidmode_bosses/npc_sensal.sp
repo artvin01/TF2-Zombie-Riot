@@ -102,6 +102,23 @@ static bool b_RageProjectile[MAXENTITIES];
 
 void Sensal_OnMapStart_NPC()
 {
+	if(!IsFileInDownloads(WEAPON_CUSTOM_WEAPONRY_1))
+		return;
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Sensal");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sensal");
+	strcopy(data.Icon, sizeof(data.Icon), "sensal_raid");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Raid;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
@@ -117,16 +134,6 @@ void Sensal_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MissAbilitySound));   i++) { PrecacheSound(g_MissAbilitySound[i]);   }
 	PrecacheModel("models/player/soldier.mdl");
 	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Sensal");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sensal");
-	strcopy(data.Icon, sizeof(data.Icon), "sensal_raid");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Raid;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -1948,7 +1955,7 @@ void SensalGiveShield(int sensal, int shieldcount)
 	Sensal npc = view_as<Sensal>(sensal);
 	if(ZR_GetWaveCount()+1 >= 60)
 	{
-		shieldcount *= RoundToNearest(float(shieldcount) * 1.55);
+		shieldcount = RoundToNearest(float(shieldcount) * 1.55);
 	}
 	else if(ZR_GetWaveCount()+1 >= 45)
 	{

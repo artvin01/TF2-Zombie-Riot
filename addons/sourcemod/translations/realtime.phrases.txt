@@ -247,6 +247,11 @@
 		"#format"	"{1:s}"
 		"en"		"Armor: {1}"
 	}
+	"Range Of"
+	{
+		"#format"	"{1:s}"
+		"en"		"Range: {1}"
+	}
 	"Damage Of"
 	{
 		"#format"	"{1:s}"
@@ -265,6 +270,50 @@
 	{
 		"#format"	"{1:s}"
 		"en"		"Resource: {1}"
+	}
+	"Create Of"
+	{
+		"#format"	"{1:t}"
+		"en"		"Create {1}"
+	}
+	"Cancel Of"
+	{
+		"#format"	"{1:t}"
+		"en"		"Cancel {1}"
+	}
+	"Build Of"
+	{
+		"#format"	"{1:t}"
+		"en"		"Build {1}"
+	}
+	"Research Of"
+	{
+		"#format"	"{1:t}"
+		"en"		"Research {1}"
+	}
+	"Cancel All"
+	{
+		"en"		"Cancel All"
+	}
+	"Too many issued commands"
+	{
+		"en"		"Too many issued commands"
+	}
+	"Building queue is full"
+	{
+		"en"		"Building queue is full"
+	}
+	"Not enough supply"
+	{
+		"en"		"Not enough supply"
+	}
+	"At maximum supply"
+	{
+		"en"		"At maximum supply"
+	}
+	"Not enough resources"
+	{
+		"en"		"Not enough resources"
 	}
 	"Light"
 	{
@@ -301,5 +350,41 @@
 	"Worker"
 	{
 		"en"		"Worker"
+	}
+	"Converted"
+	{
+		"en"		"Converted"
+	}
+	"Supply"
+	{
+		"en"		"Supply"
+	}
+	"Supply Short"
+	{
+		"en"		"S"
+	}
+	"Wood"
+	{
+		"en"		"Wood"
+	}
+	"Wood Short"
+	{
+		"en"		"W"
+	}
+	"Gold"
+	{
+		"en"		"Gold"
+	}
+	"Gold Short"
+	{
+		"en"		"G"
+	}
+	"Food"
+	{
+		"en"		"Food"
+	}
+	"Food Short"
+	{
+		"en"		"F"
 	}
 }
