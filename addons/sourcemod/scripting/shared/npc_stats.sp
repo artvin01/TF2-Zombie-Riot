@@ -131,7 +131,7 @@ public Action Command_PetMenu(int client, int args)
 	GetCmdArg(3, buffer, sizeof(buffer));
 
 #if defined RTS
-	int team = TeamNumber[client];
+	int team = GetTeam(client);
 #elseif defined ZR
 	int team = TFTeam_Blue;
 #else
@@ -4403,16 +4403,14 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			}
 			
 #if defined ZR
-			if(!b_bBuildingIsPlaced[enemy])
+			if(b_bBuildingIsPlaced[enemy])
 #elseif !defined RTS
-			if(GetEntProp(enemy, Prop_Send, "m_bCarried") ||
-				GetEntProp(enemy, Prop_Send, "m_bPlacing"))
+			if(!GetEntProp(enemy, Prop_Send, "m_bCarried") &&
+				!GetEntProp(enemy, Prop_Send, "m_bPlacing"))
 #endif
 			{
-				return false;
+				return true;
 			}
-			
-			return true;
 		}
 	}
 	return false;

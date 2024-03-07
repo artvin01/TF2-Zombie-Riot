@@ -2085,6 +2085,21 @@ stock void RTSCamera_SetSelected(int client, ArrayList list)
 	Selected[client] = list;
 }
 
+stock int RTSCamera_GetCamera(int client)
+{
+	return EntRefToEntIndex(CameraRef[client]);
+}
+
+stock int RTSCamera_GetFocus(int client)
+{
+	return EntRefToEntIndex(FocusRef[client]);
+}
+
+stock void RTSCamera_GetVector(int client, float vec[3])
+{
+	vec = CameraVector[client];
+}
+
 static stock bool IsSelectableUnitEntity(int client, int entity)
 {
 	if(entity > MaxClients && entity < MAXENTITIES)

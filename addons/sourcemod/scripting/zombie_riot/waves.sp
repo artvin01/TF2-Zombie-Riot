@@ -1613,6 +1613,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 	{
 		PrintToChatAll("FREEPLAY OCCURED, BAD CFG, REPORT BUG");
 		ThrowError("FREEPLAY OCCURED - LOOK AT FIRST THROWERROR");
+		CurrentRound = 0;
+		CurrentWave = -1;
 	}
 	else
 	{

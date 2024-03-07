@@ -7,11 +7,22 @@ static bool InMenu[MAXTF2PLAYERS];
 static bool HadSelection[MAXTF2PLAYERS];
 static int CurrentHelp[MAXTF2PLAYERS];
 static int CurrentTip[MAXTF2PLAYERS];
+static int ResourceText[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static ArrayList ControlGroups[MAXTF2PLAYERS][9];
 
 void RTSMenu_Update(int client)
 {
 	UpdateMenuIn[client] = 0.0;
+}
+
+static void ClearTexts(int client)
+{
+	if(ResourceText[client] != -1)
+	{
+		int entity = EntRefToEntIndex(ResourceText[client]);
+		if(entity != -1)
+			RemoveEntity(ResourceText[client]);
+	}
 }
 
 void RTSMenu_PluginStart()
@@ -29,6 +40,8 @@ void RTSMenu_ClientDisconnect(int client)
 	{
 		delete ControlGroups[client][i];
 	}
+
+	ClearTexts(client);
 }
 
 void RTSMenu_PlayerRunCmd(int client)
@@ -45,7 +58,7 @@ void RTSMenu_PlayerRunCmd(int client)
 	
 	if(RTS_InSetup())
 	{
-
+		ClearTexts(client);
 	}
 	else
 	{
@@ -404,10 +417,41 @@ void RTSMenu_PlayerRunCmd(int client)
 			Format(display, sizeof(display), "%s\n%t %d", display, ResourceName[i], Resource[TeamNumber[client]][i]);
 		}
 
-		// TODO: world text instead?
-		SetHudTextParams(0.02, 0.02, 0.8, 255, 255, 255, 255);
-		ShowSyncHudText(client, ResourceHud, display);
+		if(RTSCamera_InCamera(client))
+		{
+			int entity = EntRefToEntIndex(ResourceText[client]);
+			if(entity == -1)
+			{
+				int camera = RTSCamera_GetCamera(client);
+				if(camera != -1)
+				{
+					float vec[3];
+					RTSCamera_GetVector(client, vec);
+					ScaleVector(vec, 100.0); // Higher = less text size
+					PrintToChatAll("%f %f %f", vec[0], vec[1], vec[2]);
+					
+					entity = SpawnFormattedWorldText("ABCD\n1234", vec, 10, _, camera);
+					DispatchKeyValue(entity, "font", "1");
+					SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
+					SDKHook(entity, SDKHook_SetTransmit, SetTransmit_Owner);
+
+					ResourceText[client] = EntIndexToEntRef(entity);
+				}
+			}
+		}
+		else
+		{
+			ClearTexts(client);
+
+			SetHudTextParams(0.02, 0.02, 0.8, 255, 255, 255, 255);
+			ShowSyncHudText(client, ResourceHud, display);
+		}
 	}
+}
+
+static Action SetTransmit_Owner(int entity, int client)
+{
+	return GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client ? Plugin_Continue : Plugin_Handled;
 }
 
 static int UpdateMenuMainH(Menu menu, MenuAction action, int client, int choice)

@@ -167,7 +167,6 @@ static float SoundCooldown[MAXTF2PLAYERS];
 void RTS_PluginStart()
 {
 	Defeated[0] = true;
-	Zero(TeamNumber);
 	
 	RegAdminCmd("rts_setspeed", CommandSetSpeed, ADMFLAG_RCON, "Set the game speed");
 
