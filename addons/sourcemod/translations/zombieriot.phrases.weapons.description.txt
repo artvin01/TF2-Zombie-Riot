@@ -1013,6 +1013,10 @@
 		"en"	"Will freeze enemies with enough dmg.\nM2 triggers a shockwave at your location\nWhich deals massively increased damage to frozen zombies.\nAnd freeze enemies if dealing enough damage, if frozen, damage buff is 2x as effective."
 		"ru"	"Замораживает врагов при достаточн. кол-ве урона.\nM2 - вызывает небольшую ударную волну,\nкоторая наносит замороженным зомби значительно больший урон.\nИ замораживает врагов, если нанести достаточно урона. По замороженным = 2x урон."
 	}
+	"Cryo Staff Pap 0"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
 	"Cryo Staff Pap 1"
 	{
 		"en"	"Increased damage and attackspeed, Debuff is stronger"

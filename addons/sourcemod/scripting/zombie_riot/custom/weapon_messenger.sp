@@ -113,13 +113,13 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 	
 	if(Change[client] == true)
 	{
-		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "spell_fireball_tendril_parent_blue",_,false);
-		EmitSoundToAll(SOUND_MES_SHOT_ICE, client, SNDCHAN_AUTO, 65, _, 0.45, 115);
+		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "drg_cow_rockettrail_fire_charged_blue",_,false);
+		EmitSoundToAll(SOUND_MES_SHOT_ICE, client, SNDCHAN_AUTO, 65, _, 0.3, 115);
 	}
 	else if(Change[client] == false)
 	{
-		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "spell_fireball_tendril_parent_red",_,false);
-		EmitSoundToAll(SOUND_MES_SHOT_FIRE, client, SNDCHAN_AUTO, 65, _, 0.45, 115);
+		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "drg_cow_rockettrail_fire_charged",_,false);
+		EmitSoundToAll(SOUND_MES_SHOT_FIRE, client, SNDCHAN_AUTO, 65, _, 0.3, 115);
 	}
 }
 
@@ -171,26 +171,29 @@ public void Gun_MessengerTouch(int entity, int target)
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-		float pap = Attributes_Get(weapon, 122, 0.0);
+		if(IsValidEntity(owner))
+		{
+			float pap = Attributes_Get(weapon, 122, 0.0);
 
-
-		if(Change[owner] == false)
-		{
-			NPC_Ignite(target, owner, 3.0, weapon);
-		}
-		else if(Change[owner] && pap > 1)
-		{
-			if((f_LowIceDebuff[target] - 0.5) < GetGameTime())
+			if(Change[owner] == false)
 			{
-				f_LowIceDebuff[target] = GetGameTime() + 0.6;
+				NPC_Ignite(target, owner, 3.0, weapon);
 			}
-		}
-		else if(Change[owner] == true && pap <= 1)
-		{
-			if((f_VeryLowIceDebuff[target] - 0.5) < GetGameTime())
+			else if(pap > 1)
 			{
-				f_VeryLowIceDebuff[target] = GetGameTime() + 0.6;
+				if((f_LowIceDebuff[target] - 0.5) < GetGameTime())
+				{
+					f_LowIceDebuff[target] = GetGameTime() + 0.6;
+				}
 			}
+			else
+			{
+				if((f_VeryLowIceDebuff[target] - 0.5) < GetGameTime())
+				{
+					f_VeryLowIceDebuff[target] = GetGameTime() + 0.6;
+				}
+			}
+			
 		}
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?

@@ -1605,7 +1605,6 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	}
 	
 	CClotBody npc = view_as<CClotBody>(victim);
-	Debuff_added = false;
 	
 	int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
 	bool armor_added = false;
