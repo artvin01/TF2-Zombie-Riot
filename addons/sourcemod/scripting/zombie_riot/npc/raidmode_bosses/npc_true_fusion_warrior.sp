@@ -103,6 +103,7 @@ public void TrueFusionWarrior_OnMapStart()
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
+	TrueFusionWarrior_TBB_Precahce();
 }
 
 static void ClotPrecache()
@@ -126,7 +127,6 @@ static void ClotPrecache()
 	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
-	TrueFusionWarrior_TBB_Precahce();
 	
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
