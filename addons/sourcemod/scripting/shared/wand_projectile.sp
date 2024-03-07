@@ -310,6 +310,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Melee_KahmlFistTouch(entity, target);
 		}
+		case WEAPON_MESSENGER_LAUNCHER:
+		{
+			Gun_MessengerTouch(entity, target);
+		}	
 	}
 }
 #endif

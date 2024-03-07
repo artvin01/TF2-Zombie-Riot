@@ -2328,7 +2328,7 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		case WEAPON_DIMENSION_RIPPER:
 		{
 			Npc_OnTakeDamage_DimensionalRipper(attacker);
-		}
+		}	
 	}
 #endif
 

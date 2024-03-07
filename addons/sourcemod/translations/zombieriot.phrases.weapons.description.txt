@@ -2736,4 +2736,12 @@
 	{
 		"en"	"1.6x Medigun Hurt and Heal and 5%% melee resistance with Secondary/Medigun out"
 	}
+	"Messenger Launcher Desc"
+	{
+		"en" "You feel the power of the Chaos that once consumed the Messenger in your hands\n You lose the ability to deal aoe. Press M2 to change fire mode \n Fire Blaster: Engulfs enemies on flames \n Chaos Blaster: Applies medium cryo effect on enemy for short period \n Archetype changed into rapid fire"
+	}
+	"Messenger Launcher PAP Desc"
+	{
+		"en" "You feel more confident in controlling chaos in this launcher\n Or is it consuming you? \n \n Increased clip, damage, and faster firerate. \n more cryo applied on Chaos mode"
+	}
 }
