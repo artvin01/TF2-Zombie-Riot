@@ -432,7 +432,9 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	{
 		b_NpcIsInvulnerable[npc.index] = true;
 	}
-
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+		return;
+		
 	int healthPoints = 20;
 
 	if(npc.m_bFakeClone)
@@ -2164,6 +2166,6 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 public void Raidmode_BobFirst_Win(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
-	SDKUnhook(entity, SDKHook_Think, RaidbossBobTheFirst_ClotThink);
+	func_NPCThink[entity] = INVALID_FUNCTION;
 	CPrintToChatAll("{white}Bob the First{default}: Deep sea threat cleaned, finally at peace...");
 }
