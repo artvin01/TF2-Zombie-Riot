@@ -74,6 +74,7 @@ public Action After_Beserk_Mode_Stats(Handle timer, int ref)
 		ApplyTempAttrib(client, 405, 0.67, 5.0);
 		TF2_AddCondition(client, TFCond_Dazed, 5.0, client);
 	}
+	return Plugin_Handled;
 }
 
 public void Reset_stats_Beserk_Singular(int client)
