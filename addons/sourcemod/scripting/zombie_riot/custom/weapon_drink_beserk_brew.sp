@@ -30,7 +30,7 @@ public void Weapon_Beserk_Brew(int client, int weapon, const char[] classname, b
 			}
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "You are a GOD!");
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "What could go wrong");
 			SetAmmo(client, Ammo_Potion_Supply, 0); //Give ammo back that they just spend like an idiot
 			CurrentAmmo[client][Ammo_Potion_Supply] = GetAmmo(client, Ammo_Potion_Supply);
 			Brew_up[client] = true;
