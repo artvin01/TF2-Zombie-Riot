@@ -62,7 +62,7 @@ public void Beserk_Mode_Stats(int client)
 	CreateTimer(8.0, After_Beserk_Mode_Stats, client, TIMER_FLAG_NO_MAPCHANGE);
 }
 
-public void After_Beserk_Mode_Stats(int client)
+public Action After_Beserk_Mode_Stats(Handle cut_timer, int client)
 {
 	ApplyTempAttrib(client, 412, 1.25, 5.0);
 	ApplyTempAttrib(client, 6, 1.2, 5.0);
