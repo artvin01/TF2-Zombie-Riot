@@ -27,7 +27,7 @@ methodmap TownCenter < EmpireObject
 {
 	public TownCenter(int team, const float vecPos[3])
 	{
-		TownCenter obj = view_as<TownCenter>(EmpireObject(team, vecPos, 4, 2400, false, "models/props_c17/consolebox03a.mdl", _, 11.0));
+		TownCenter obj = view_as<TownCenter>(EmpireObject(team, vecPos, 4, 2400, false/*, "models/props_c17/consolebox03a.mdl", _, 11.0*/));
 		
 		obj.AddFlag(Flag_Structure);
 		obj.AddFlag(Flag_Heroic);
@@ -44,7 +44,7 @@ methodmap TownCenter < EmpireObject
 
 		obj.m_hWearable1 = obj.EquipItemSeperate("models/props_buildings/row_corner_2.mdl", _, _, 1.6);
 		if(obj.m_hWearable1 != -1)
-			SetEntityRenderColor(obj.index, TeamColor[team][0], TeamColor[team][1], TeamColor[team][2], 255);
+			SetEntityRenderColor(obj.m_hWearable1, TeamColor[team][0], TeamColor[team][1], TeamColor[team][2], 255);
 
 		return obj;
 	}
@@ -60,8 +60,11 @@ static bool ClotSkill(int entity, int client, int type, bool use, SkillEnum skil
 		}
 		case 5:	// A
 		{
+			if(ClassEmpire_HasTech(TeamNumber[entity], EmpireTech_Loom))
+				return false;
+			
 			static const int price[Resource_MAX] = {0, 0, 50}; // 50 Gold
-			return ObjectTraining_SkillResearch(entity, client, "Loom", LoomResearched, price, 25.0, use, skill);
+			return ObjectTraining_SkillResearch(entity, client, "Loom", LoomResearched, price, 12.5, use, skill);
 		}
 		case 9:	// G
 		{
@@ -74,7 +77,7 @@ static bool ClotSkill(int entity, int client, int type, bool use, SkillEnum skil
 
 static void LoomResearched(int entity, int team)
 {
-	ClassEmpire_EnableLoom(team);
+	ClassEmpire_AddTech(team, EmpireTech_Loom);
 }
 
 static void ClotDeath(int entity)

@@ -909,8 +909,12 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 	HighlightSelectedUnits(client);
 
 #if defined RTS
-	if(pressed[Key_Delete] && Selected[client])
+	if((pressed[Key_Delete] && Selected[client]) ||
+	    pressed[Key_Ctrl] ||
+	   (previous[Key_Ctrl] && !holding[Key_Ctrl]))
+	{
 		RTSMenu_Update(client);
+	}
 #endif
 
 	if(holding[Key_ZoomIn] || holding[Key_ZoomOut] || holding[Key_AdjustCamera])
@@ -932,7 +936,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 					int entity = EntRefToEntIndex(Selected[client].Get(b));
 					if(entity != -1 && RTS_CanControl(client, entity))
 					{
-						triggered = RTS_TriggerSkill(entity, client, a);
+						triggered = RTS_TriggerSkill(entity, client, a - Key_Skill1);
 						if(triggered)
 							break;
 					}
@@ -1507,7 +1511,11 @@ static stock void RenderWaypoints(int client)
 			float pos[3];
 			for(int i; i < sizeof(FlagRef[]); i++)
 			{
-				if(UnitBody_GetCommand(entity, i, type, pos, target) && type >= Command_Move)
+				if(IsObject(entity))
+				{
+
+				}
+				else if(UnitBody_GetCommand(entity, i, type, pos, target) && type >= Command_Move)
 				{
 					int color[4] = {255, 255, 255, 255};
 					GetColor(type, color);

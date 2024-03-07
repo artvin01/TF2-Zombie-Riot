@@ -4006,20 +4006,21 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 	{
 		return true;
 	}
-	/*
-	if(b_NpcCollisionType[bot_entidx] == num_ShouldCollideEnemyTD || b_NpcCollisionType[bot_entidx] == num_ShouldCollideEnemyTDIgnoreBuilding) //for tower defense, we need entirely custom logic.
-	{
-		return (!NpcCollisionCheck(bot_entidx, other_entidx, num_TraverseInverse));
-	}
-	*/
+	
 #if defined RTS
 	if(IsObject(other_entidx))
 	{
-		return false;
+		return !b_CantCollidie[other_entidx];
 	}
 
 	return !b_NpcHasDied[other_entidx];
 #else
+	if(i_IsABuilding[other_entidx])
+	{
+		return true;
+	}
+
+#if defined ZR
 	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
 
 	if(GetTeam(bot_entidx) == TFTeam_Red) //ally!
@@ -4028,13 +4029,6 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 		{
 			return true;
 		}
-		if(b_IsCamoNPC[other_entidx])
-		{
-			if(!b_IsCamoNPC[bot_entidx])
-			{
-				return true;
-			}
-		}
 		if(b_CollidesWithEachother[bot_entidx])
 		{
 			if(b_CollidesWithEachother[other_entidx])
@@ -4042,57 +4036,35 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 				return false; //Incase allies collide with eachother, then we try to make them avoid eachother.
 			}
 		}
-		if(i_IsABuilding[other_entidx])
-		{
-			return true;
-		}
-		if(other_entidx > 0 && other_entidx <= MaxClients)
-		{
-			if(b_TryToAvoidTraverse[bot_entidx])
-			{
-				return false;
-			}
-			return true;
-		}
-		if(GetTeam(other_entidx) != TFTeam_Red)
-		{
-			return true;
-			//return false;
-		}
 		if(b_CantCollidie[other_entidx])
 		{
 			return true;
-		}	
+		}
 	}
-	else //Enemy!
+	else if(b_CantCollidieAlly[other_entidx])
 	{
-		if(b_IsCamoNPC[other_entidx])
+		return true;
+	}
+#else
+	if(b_CantCollidie[other_entidx])
+	{
+		return true;
+	}
+
+	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
+#endif
+
+	if(other_entidx > 0 && other_entidx <= MaxClients)
+	{
+		if(b_TryToAvoidTraverse[bot_entidx])
 		{
-			if(!b_IsCamoNPC[bot_entidx])
-			{
-				return true;
-			}
+			return false;
 		}
-		if(i_IsABuilding[other_entidx])
-		{
-			return true;
-		}	
-		if(other_entidx > 0 && other_entidx <= MaxClients)
-		{
-			if(b_TryToAvoidTraverse[bot_entidx])
-			{
-				return false;
-			}
-			return true;
-		}
-		if(GetTeam(bot_entidx) != TFTeam_Red)
-		{
-			return true;
-		}
-		if(b_CantCollidieAlly[other_entidx])
-		{
-			return true;
-		}
+		return true;
+	}
+	if(GetTeam(bot_entidx) != GetTeam(other_entidx))
+	{
+		return true;
 	}
 
 	return false; //we let them through, we dont want them to just try to avoid everything!
@@ -4364,13 +4336,6 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		{
 			return false;
 		}
-		
-#if defined RTS
-		if(IsObject(enemy))
-		{
-			return true;
-		}
-#endif
 
 		if(enemy <= MaxClients || b_ThisWasAnNpc[enemy])
 		{
@@ -4425,24 +4390,29 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			}
 #endif
 
+#if defined RTS
+			if(Object_GetResource(enemy))
+			{
+				return true;
+			}
+#endif
+
 			if(GetTeam(index) == GetTeam(enemy))
 			{
 				return false;
 			}
 			
 #if defined ZR
-			else if(!b_bBuildingIsPlaced[enemy])
-#else
-			else if(GetEntProp(enemy, Prop_Send, "m_bCarried") ||
+			if(!b_bBuildingIsPlaced[enemy])
+#elseif !defined RTS
+			if(GetEntProp(enemy, Prop_Send, "m_bCarried") ||
 				GetEntProp(enemy, Prop_Send, "m_bPlacing"))
 #endif
 			{
 				return false;
 			}
-			else
-			{
-				return true;
-			}
+			
+			return true;
 		}
 	}
 	return false;
@@ -4473,6 +4443,7 @@ int GetClosestTarget_Enemy_Type[MAXENTITIES];
 
 #if defined RTS
 stock int GetClosestTargetRTS(int entity,
+ bool IgnoreBuildings = false,
   float fldistancelimit = 99999.9,
    bool camoDetection = false,
 	 int ingore_client = -1,
@@ -4495,9 +4466,8 @@ stock int GetClosestTarget(int entity,
   		Function ExtraValidityFunction = INVALID_FUNCTION)
 #endif
 {
-#if !defined RTS
 	int SearcherNpcTeam = GetTeam(entity); //do it only once lol
-#endif
+
 	if(EntityLocation[2] == 0.0)
 	{
 		GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -4584,7 +4554,7 @@ stock int GetClosestTarget(int entity,
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
 			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client && GetTeam(entity_close) != GetTeam(entity))
+			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client && GetTeam(entity_close) != SearcherNpcTeam)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
 #if defined RTS
@@ -4625,25 +4595,6 @@ stock int GetClosestTarget(int entity,
 			}
 		}
 	}
-
-#if defined RTS
-	// TODO: Rewrite this (building code / make use of the array)
-	if(ExtraValidityFunction != INVALID_FUNCTION)
-	{
-		int target = -1;
-		while((target = FindEntityByClassname(target, "obj_building")) != -1)
-		{
-			bool valid;
-			Call_StartFunction(null, ExtraValidityFunction);
-			Call_PushCell(entity);
-			Call_PushCell(target);
-			Call_Finish(valid);
-
-			if(valid)
-				GetClosestTarget_AddTarget(target, 4);
-		}
-	}
-#endif
 
 #if defined ZR
 	/*
@@ -4702,13 +4653,14 @@ stock int GetClosestTarget(int entity,
 	}
 #endif
 
-#if !defined RTS
 	//If the team searcher is not on red, target buildings, buildings can only be on the player team.
-	#if defined ZR
+#if defined ZR
 	if(SearcherNpcTeam != TFTeam_Red && !RaidbossIgnoreBuildingsLogic(1) && !IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers)) //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
-	#else
+#elseif defined RTS
+	if(!IgnoreBuildings)
+#else
 	if(!IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers))
-	#endif
+#endif
 	{
 		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 		{
@@ -4721,15 +4673,33 @@ stock int GetClosestTarget(int entity,
 #if defined ZR
 					if(!npc.bBuildingIsPlaced)
 						continue;
+#elseif defined RTS
+					if(ExtraValidityFunction == INVALID_FUNCTION)
+					{
+						// Ignore resources and allies
+						if(Object_GetResource(entity_close) ||
+							RTS_IsEntAlly(entity, entity_close))
+							continue;
+					}
+					else
+					{
+						// Ignore non-resource allies
+						if(!Object_GetResource(entity_close) && RTS_IsEntAlly(entity, entity_close))
+							continue;
+					}
 #else
 					if(GetEntProp(entity_close, Prop_Send, "m_bCarried") || GetEntProp(entity_close, Prop_Send, "m_bPlacing"))
 						continue;
 #endif
+
+#if !defined RTS
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, entity_close))
 							continue;
 					}
+#endif
+
 					if(ExtraValidityFunction != INVALID_FUNCTION)
 					{
 						bool WasValid;
@@ -4749,7 +4719,6 @@ stock int GetClosestTarget(int entity,
 			}
 		}
 	}
-#endif	// Non_RTS
 
 #if defined RTS
 	return GetClosestTarget_Internal(entity, fldistancelimit, EntityLocation, MinimumDistance);

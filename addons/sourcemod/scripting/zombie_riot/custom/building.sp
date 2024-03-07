@@ -7126,7 +7126,7 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 		}
 		if(Rogue_Mode())
 		{
-			SupplyRateCalc *= 2.0;
+			SupplyRateCalc *= 10.0;
 		}
 		SupplyRateCalc *= multi;
 

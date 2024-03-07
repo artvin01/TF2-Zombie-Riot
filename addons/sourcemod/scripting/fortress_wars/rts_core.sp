@@ -12,10 +12,10 @@
 #define MAX_SKILLS	10
 
 #define OBJECT_HITBOX		"models/props_moonbase/moon_cube_crystal04.mdl"
-#define OBJECT_OFFSET		{0.0, -90.0, 0.0}
+#define OBJECT_OFFSET		{0.0, 90.0, 0.0}
 #define OBJECT_UNITS		64.0
 #define OBJECT_MODELSIZE	128.0//108.0
-#define SPAWN_ANGLES		{0.0, -45.0, 0.0}
+#define SPAWN_ANGLES		{0.0, -135.0, 0.0}
 
 enum
 {
@@ -167,6 +167,7 @@ static float SoundCooldown[MAXTF2PLAYERS];
 void RTS_PluginStart()
 {
 	Defeated[0] = true;
+	Zero(TeamNumber);
 	
 	RegAdminCmd("rts_setspeed", CommandSetSpeed, ADMFLAG_RCON, "Set the game speed");
 
@@ -401,6 +402,8 @@ bool RTS_GetSkill(int entity, int client, int type, SkillEnum skill)
 
 bool RTS_TriggerSkill(int entity, int client, int type)
 {
+	PrintToChatAll("RTS_TriggerSkill::%d:%N:%d", entity, client, type);
+
 	bool result;
 
 	if(FuncSkills[entity] != INVALID_FUNCTION)

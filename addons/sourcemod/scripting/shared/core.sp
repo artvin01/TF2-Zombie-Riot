@@ -273,8 +273,6 @@ ConVar cvar_nbAvoidObstacle;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar CvarAirAcclerate; //sv_airaccelerate
-bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
-int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
 #endif
 ConVar sv_cheats;
 ConVar nav_edit;
@@ -764,6 +762,8 @@ bool b_Dont_Move_Allied_Npc[MAXENTITIES];
 bool g_GottenAddressesForLagComp;
 Address g_hSDKStartLagCompAddress;
 Address g_hSDKEndLagCompAddress;
+bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
+int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
 #endif
 
 int b_BoundingBoxVariant[MAXENTITIES];

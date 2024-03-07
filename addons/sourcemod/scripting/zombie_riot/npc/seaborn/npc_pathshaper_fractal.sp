@@ -48,7 +48,7 @@ void PathshaperFractal_Precache()
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
 	data.Category = Type_Seaborn;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)

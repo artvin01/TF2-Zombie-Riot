@@ -1510,12 +1510,10 @@ public MRESReturn DHook_ForceRespawn(int client)
 #if defined ZR
 	if(!WaitingInQueue[client] && !GameRules_GetProp("m_bInWaitingForPlayers"))
 		Queue_AddPoint(client);
-#endif
 	
 	SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	
-#if defined ZR
 	GiveCompleteInvul(client, 2.0);
 	
 	if(Waves_Started() && TeutonType[client] == TEUTON_NONE)
@@ -1531,6 +1529,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	return MRES_Ignored;
 }
 		
+#if defined ZR
 //Ty miku for showing me this cvar.
 public void PhaseThroughOwnBuildings(int client)
 {
@@ -1571,6 +1570,7 @@ public void PhaseThroughOwnBuildings(int client)
 		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
 }
+#endif
 
 /*
 public void DHook_TeleportToObserver(DataPack pack)

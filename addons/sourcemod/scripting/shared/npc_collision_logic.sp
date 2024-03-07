@@ -20,6 +20,8 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	{
 		return false;
 	}
+
+#if defined ZR
 	//if the bots team is player team, then they cant collide with any entities that have this flag.
 	if(GetTeam(bot_entidx) == TFTeam_Red)
 	{
@@ -44,6 +46,8 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		}
 		return false;
 	}
+#endif
+
 	//No matter what, if they are on the same team, then they will not collide at all as of now.
 	if(GetTeam(bot_entidx) == GetTeam(otherindex))
 	{

@@ -49,8 +49,8 @@ void RTSMenu_PlayerRunCmd(int client)
 	}
 	else
 	{
-		char display[512], buffer[32];
-		strcopy(display, sizeof(display), "Fortress Wars CLOSED ALPHA\n ");
+		char display[512], buffer[48];
+		strcopy(display, sizeof(display), "Fortress Wars CLOSED ALPHA                \n ");
 		
 		ArrayList selection = RTSCamera_GetSelected(client);
 		if(selection)
@@ -125,7 +125,7 @@ void RTSMenu_PlayerRunCmd(int client)
 						}
 						else
 						{
-							IntToString(Stats[entity].RangeBonus, buffer, sizeof(buffer));
+							IntToString(Stats[entity].Range, buffer, sizeof(buffer));
 						}
 
 						Format(display, sizeof(display), "%s\n%t", display, "Range Of", buffer);
@@ -280,12 +280,12 @@ void RTSMenu_PlayerRunCmd(int client)
 							{
 								if(first2)
 								{
-									Format(buffer, sizeof(buffer), "%s [%d%s", buffer, skill[i].Price, ResourceShort[b]);
+									Format(buffer, sizeof(buffer), "%s [%d%t", buffer, skill[i].Price[b], ResourceShort[b]);
 									first2 = false;
 								}
 								else
 								{
-									Format(buffer, sizeof(buffer), "%s %d%s", buffer, skill[i].Price, ResourceShort[b]);
+									Format(buffer, sizeof(buffer), "%s %d%t", buffer, skill[i].Price[b], ResourceShort[b]);
 								}
 							}
 						}
@@ -297,7 +297,7 @@ void RTSMenu_PlayerRunCmd(int client)
 							Format(buffer, sizeof(buffer), "%s x%d", buffer, skill[i].Count);
 						
 						if(skill[i].Cooldown > 0.0 && skill[i].Cooldown < 999.9)
-							Format(buffer, sizeof(buffer), "%s (%ds)", buffer, RoundToCeil(skill[i].Cooldown));
+							Format(buffer, sizeof(buffer), "%s (%ds)", buffer, RoundToCeil(skill[i].Cooldown * 2.0));
 					}
 
 					if(first)
@@ -404,7 +404,8 @@ void RTSMenu_PlayerRunCmd(int client)
 			Format(display, sizeof(display), "%s\n%t %d", display, ResourceName[i], Resource[TeamNumber[client]][i]);
 		}
 
-		SetHudTextParams(0.0, 0.0, 0.8, 255, 255, 255, 255);
+		// TODO: world text instead?
+		SetHudTextParams(0.02, 0.02, 0.8, 255, 255, 255, 255);
 		ShowSyncHudText(client, ResourceHud, display);
 	}
 }

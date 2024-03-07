@@ -33,7 +33,7 @@ void Villager_Setup()
 	data.Func = ClotSummon;
 	data.Price[Resource_Supply] = 1;
 	data.Price[Resource_Food] = 50;
-	data.TrainTime = 25.0;
+	data.TrainTime = 12.5;
 	NPC_Add(data);
 }
 
