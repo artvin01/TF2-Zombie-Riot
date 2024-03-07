@@ -70,10 +70,11 @@ public void Beserk_Mode_Stats(int client)
 	ApplyTempAttrib(client, 2, 1.2, 8.0);
 	ApplyTempAttrib(client, 6, 0.8, 8.0);
 	ApplyTempAttrib(client, 97, 0.75, 8.0);
-	ApplyTempAttrib(client, 107, 1.25, 8.0);
 	ApplyTempAttrib(client, 405, 1.33, 8.0);
 	TF2_AddCondition(client, TFCond_HalloweenQuickHeal, 3.0, client);
 	TF2_AddCondition(client, TFCond_UberchargedOnTakeDamage	, 0.5, client);
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 8.0, client);
+	
 	CreateTimer(8.0, After_Beserk_Mode_Stats, client, TIMER_FLAG_NO_MAPCHANGE);
 }
 
@@ -86,7 +87,6 @@ public Action After_Beserk_Mode_Stats(Handle timer, int ref)
 		ApplyTempAttrib(client, 412, 1.25, 5.0);
 		ApplyTempAttrib(client, 6, 1.2, 5.0);
 		ApplyTempAttrib(client, 97, 1.25, 5.0);
-		ApplyTempAttrib(client, 107, 0.75, 5.0);
 		ApplyTempAttrib(client, 405, 0.67, 5.0);
 		TF2_AddCondition(client, TFCond_Dazed, 5.0, client);
 	}
