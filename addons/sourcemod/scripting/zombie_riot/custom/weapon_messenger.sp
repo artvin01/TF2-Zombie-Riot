@@ -8,6 +8,7 @@ static float f_Messengerhuddelay[MAXPLAYERS+1]={0.0, ...};
 #define SOUND_MES_IMPACT "weapons/cow_mangler_explode.wav"
 #define SOUND_MES_SHOT_FIRE 	"misc/halloween/spell_fireball_cast.wav"
 #define SOUND_MES_SHOT_ICE 	"weapons/doom_rocket_launcher.wav"
+#define SOUND_MES_CHANGE 	"weapons/bumper_car_accelerate.wav"
 
 void ResetMapStartMessengerWeapon()
 {
@@ -19,6 +20,7 @@ void Messenger_Map_Precache()
 	PrecacheSound(SOUND_MES_IMPACT);
 	PrecacheSound(SOUND_MES_SHOT_FIRE);
 	PrecacheSound(SOUND_MES_SHOT_ICE);
+	PrecacheSound(SOUND_MES_CHANGE);
 }
 
 public void Enable_Messenger_Launcher_Ability(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
@@ -129,6 +131,7 @@ public void Messenger_Modechange(int client, int slot, int weapon, bool &result)
 		{
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 7.5);
+			EmitSoundToAll(SOUND_MES_CHANGE, client, SNDCHAN_AUTO, 65, _, 0.45, 115);
 			if(Change[client])
 			{
 				Change[client]=false;
