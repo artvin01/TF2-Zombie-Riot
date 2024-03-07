@@ -1,13 +1,13 @@
 // Created by Crowbar 0.71
 
-$modelname "zombie_riot/weapons/ruina_models_1.mdl"
+$modelname "zombie_riot/ruina/ruina_models_1.mdl"
 
 $bodygroup "ruina_icbm"
 {
 	blank
 	studio "ruina_projectile.smd"
 }
-$bodygroup "halo_1.smd"
+$bodygroup "halo_1.smd"	//Create a spinning animation for the rings.
 {
 	blank
 	studio "ruina_projectile.smd"
@@ -31,7 +31,10 @@ $cbox 0 0 0 0 0 0
 
 $bbox -1.784 -1.784 -2.533 1.77 1.773 29.017
 
+//Good to know I can use these to create special points for vector getting to connect beams or TE or for effects
+
 $definebone "weapon_bone" "" 0 0 0 0 0 0 0 0 0 0 0 0
+#definebone "root"	"" 0 0 0 0 0 0 0 0 0 0 0 0
 
 
 $sequence "idle" {
