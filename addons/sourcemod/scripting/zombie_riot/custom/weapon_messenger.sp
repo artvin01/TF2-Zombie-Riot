@@ -168,17 +168,25 @@ public void Gun_MessengerTouch(int entity, int target)
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+		float pap = Attributes_Get(weapon, 391, 0.0);
 
 
 		if(Change[owner] == false)
 		{
 			NPC_Ignite(target, owner, 3.0, weapon);
 		}
-		else if(Change[owner] == true)
+		else if(Change[owner] && pap > 1)
 		{
 			if((f_LowIceDebuff[target] - 0.5) < GetGameTime())
 			{
 				f_LowIceDebuff[target] = GetGameTime() + 0.6;
+			}
+		}
+		else if(Change[owner] == true && pap <= 1)
+		{
+			if((f_VeryLowIceDebuff[target] - 0.5) < GetGameTime())
+			{
+				f_VeryLowIceDebuff[target] = GetGameTime() + 0.6;
 			}
 		}
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
