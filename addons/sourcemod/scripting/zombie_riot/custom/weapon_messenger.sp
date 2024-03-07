@@ -199,7 +199,7 @@ public void Gun_MessengerTouch(int entity, int target)
 		}
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
-		EmitSoundToAll(SOUND_MES_IMPACT, entity, SNDCHAN_STATIC, 80, _, 1.0);
+		EmitSoundToAll(SOUND_MES_IMPACT, entity, SNDCHAN_STATIC, 65, _, 0.8);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -208,7 +208,7 @@ public void Gun_MessengerTouch(int entity, int target)
 	}
 	else if(target == 0)
 	{
-		EmitSoundToAll(SOUND_MES_IMPACT, entity, SNDCHAN_STATIC, 80, _, 1.0);
+		EmitSoundToAll(SOUND_MES_IMPACT, entity, SNDCHAN_STATIC, 65, _, 0.8);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
