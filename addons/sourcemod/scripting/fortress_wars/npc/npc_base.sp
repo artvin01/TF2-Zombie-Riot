@@ -351,7 +351,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime, Function closestTargetFun
 				if(target == -1 && command.Data)
 				{
 					ResourceSearch = command.Data;
-					target = GetClosestTargetRTS(npc.index, npc.m_flVisionRange, _, _, _, _, ResourceSearchFunction);
+					target = GetClosestTargetRTS(npc.index, _, npc.m_flVisionRange, _, _, _, _, ResourceSearchFunction);
 					if(target == -1)
 					{
 						// No nearby resource
@@ -379,7 +379,7 @@ int UnitBody_ThinkTarget(UnitBody npc, float gameTime, Function closestTargetFun
 				else if(i_TargetToWalkTo[npc.index] != -1 || npc.m_flGetClosestTargetTime < gameTime)
 				{
 					// Had an existing target or time as passed
-					target = GetClosestTargetRTS(npc.index, npc.m_flEngageRange, _, _, _, _, closestTargetFunction);
+					target = GetClosestTargetRTS(npc.index, _, npc.m_flEngageRange, _, _, _, _, closestTargetFunction);
 					npc.m_iTargetWalkTo = target;
 					npc.m_flGetClosestTargetTime = gameTime + 0.5;
 				}

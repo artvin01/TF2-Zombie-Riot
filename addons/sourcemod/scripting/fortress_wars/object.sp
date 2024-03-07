@@ -287,15 +287,16 @@ methodmap UnitObject < CBaseAnimating
 		DispatchKeyValueVector(obj.index, "origin", pos);
 		DispatchKeyValueVector(obj.index, "angles", vecAng);
 		DispatchKeyValue(obj.index, "model", model[0] ? model : OBJECT_HITBOX);
-		DispatchKeyValueFloat(obj.index, "modelscale", modelscale ? (scale * OBJECT_UNITS / OBJECT_MODELSIZE) : modelscale);
+		DispatchKeyValueFloat(obj.index, "modelscale", modelscale ? modelscale : (scale * OBJECT_UNITS / OBJECT_MODELSIZE));
 		DispatchKeyValueInt(obj.index, "health", health);
-		DispatchKeyValueInt(obj.index, "solid", solid ? 2 : 0);
+		DispatchKeyValueInt(obj.index, "solid", 2);
 
 		SetEntityRenderFx(obj.index, RENDERFX_FADE_SLOW);
 
 		b_BuildingHasDied[obj.index] = false;
 		i_IsABuilding[obj.index] = true;
 		b_NoKnockbackFromSources[obj.index] = true;
+		b_CantCollidie[obj.index] = !solid;
 
 		obj.m_hDeathFunc = INVALID_FUNCTION;
 		obj.m_hOnTakeDamageFunc = INVALID_FUNCTION;
@@ -325,7 +326,7 @@ methodmap UnitObject < CBaseAnimating
 void Object_PluginStart()
 {
 	CEntityFactory factory = new CEntityFactory("obj_building", _, OnDestroy);
-	factory.DeriveFromClass("prop_dynamic");
+	factory.DeriveFromClass("prop_dynamic_override");
 	factory.BeginDataMapDesc()
 	.DefineIntField("m_iResourceType")
 	.EndDataMapDesc();
@@ -451,7 +452,7 @@ static Action CreateCommand(int client, int args)
 	
 	char plugin[64], buffer[64];
 	GetCmdArg(1, plugin, sizeof(plugin));
-	int team = GetCmdArgInt(2);
+	int team = args > 1 ? GetCmdArgInt(2) : TeamNumber[client];
 	GetCmdArg(3, buffer, sizeof(buffer));
 
 	Object_CreateByName(plugin, team, flPos, buffer);

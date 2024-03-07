@@ -1456,6 +1456,8 @@ static void SetNextStage(int id, bool type, const Stage stage, float time = 10.0
 	{
 		StartStage(stage);
 	}
+
+	Waves_UpdateMvMStats();
 }
 
 void Rogue_StartThisBattle(float time = 10.0)
@@ -2256,8 +2258,8 @@ bool Rogue_UpdateMvMStats(int mvm, int m_currentWaveStats, int m_runningTotalWav
 
 		int maxRooms = floor.RoomCount + ExtraStageCount;
 
-		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", Rogue_GetWave() + 1);
-		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", maxRooms + 1);
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentCount + 1);
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", maxRooms + 2);
 
 		for(int i; i < 24; i++)
 		{

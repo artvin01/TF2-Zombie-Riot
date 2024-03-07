@@ -4,6 +4,7 @@
 enum struct TrainEnum
 {
 	int Index;
+	char Name[32];
 	Function Research;
 	int Price[Resource_MAX];
 	float Time;
@@ -163,7 +164,7 @@ bool ObjectTraining_ClearSkill(int entity, int client, bool use, SkillEnum skill
 	else
 	{
 		strcopy(skill.Formater, sizeof(skill.Formater), "Cancel Of");
-		NPC_GetNameById(TrainCurrent[entity].Index, skill.Name, sizeof(skill.Name));
+		strcopy(skill.Name, sizeof(skill.Name), TrainCurrent[entity].Name);
 		strcopy(skill.Desc, sizeof(skill.Desc), "Cancel All");
 	}
 	
@@ -213,6 +214,7 @@ bool ObjectTraining_SkillUnit(int entity, int client, const char[] name, bool us
 				TrainQueue[entity][i].Research = INVALID_FUNCTION;
 				TrainQueue[entity][i].Time = data.TrainTime;
 				TrainQueue[entity][i].Price = data.Price;
+				strcopy(TrainQueue[entity][i].Name, sizeof(TrainQueue[][].Name), data.Name);
 				
 				for(int b = 1; b < Resource_MAX; b++)
 				{
@@ -320,6 +322,7 @@ bool ObjectTraining_SkillResearch(int entity, int client, const char[] name, Fun
 				TrainQueue[entity][i].Research = func;
 				TrainQueue[entity][i].Time = time;
 				TrainQueue[entity][i].Price = price;
+				strcopy(TrainQueue[entity][i].Name, sizeof(TrainQueue[][].Name), name);
 				
 				for(int b = 1; b < Resource_MAX; b++)
 				{

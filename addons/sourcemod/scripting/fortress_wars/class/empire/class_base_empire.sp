@@ -1,11 +1,21 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static bool VillagerLoom[MAX_TEAMS];
+enum
+{
+	EmpireTech_Loom = 0,
+
+	EmpireTech_MAX
+}
+
+static bool Techs[MAX_TEAMS][EmpireTech_MAX];
 
 public void ClassEmpire_Setup(int team, const float pos[3])
 {
-	VillagerLoom[team] = false;
+	for(int i; i < sizeof(Techs[]); i++)
+	{
+		Techs[team][i] = false;
+	}
 
 	float pos2[3];
 	pos2 = pos;
@@ -31,7 +41,7 @@ public void ClassEmpire_NPCSpawn(int team, int entity, const NPCData data)
 {
 	if(StrEqual(data.Plugin, "npc_villager"))
 	{
-		if(VillagerLoom[team])
+		if(Techs[team][EmpireTech_Loom])
 		{
 			Stats[entity].RangeArmorBonus += 2;
 			Stats[entity].MeleeArmorBonus += 1;
@@ -40,17 +50,31 @@ public void ClassEmpire_NPCSpawn(int team, int entity, const NPCData data)
 	}
 }
 
-void ClassEmpire_EnableLoom(int team)
+bool ClassEmpire_HasTech(int team, int tech)
 {
-	VillagerLoom[team] = true;
+	return Techs[team][tech];
+}
 
-	int id = NPC_GetByPlugin("npc_villager");
+void ClassEmpire_AddTech(int team, int tech)
+{
+	if(Techs[team][tech])
+		return;
+	
+	Techs[team][tech] = true;
 
-	int entity = -1;
-	while(RTS_FindTeamUnitById(entity, team, id))
+	switch(tech)
 	{
-		Stats[entity].RangeArmorBonus += 2;
-		Stats[entity].MeleeArmorBonus += 1;
-		RTS_AddMaxHealth(entity, 15);
+		case EmpireTech_Loom:
+		{
+			int id = NPC_GetByPlugin("npc_villager");
+
+			int entity = -1;
+			while(RTS_FindTeamUnitById(entity, team, id))
+			{
+				Stats[entity].RangeArmorBonus += 2;
+				Stats[entity].MeleeArmorBonus += 1;
+				RTS_AddMaxHealth(entity, 15);
+			}
+		}
 	}
 }
