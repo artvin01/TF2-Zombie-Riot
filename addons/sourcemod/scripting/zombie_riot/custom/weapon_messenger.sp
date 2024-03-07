@@ -97,12 +97,12 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 {
 	float damage = 250.0;
 
-	damage *= Attributes_GetOnPlayer(client, 2, true);
+	damage *= Attributes_Get(weapon, 2, 1.0);
 	if(Change[client] == true)
 	{
 		damage *= 0.8;
 	}
-			
+	
 	float speed = 1100.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
 	
