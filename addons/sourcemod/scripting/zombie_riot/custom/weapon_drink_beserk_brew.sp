@@ -57,8 +57,8 @@ public void Beserk_Mode_Stats(int client)
 	ApplyTempAttrib(client, 97, 0.75, 8.0);
 	ApplyTempAttrib(client, 107, 1.25, 8.0);
 	ApplyTempAttrib(client, 405, 1.33, 8.0);
-	TF2_AddCondition(client, TF_COND_HALLOWEEN_QUICK_HEAL, 3.0, client);
-	TF2_AddCondition(client, TF_COND_INVULNERABLE_USER_BUFF, 0.5, client);
+	TF2_AddCondition(client, TFCond_HalloweenQuickHeal, 3.0, client);
+	TF2_AddCondition(client, TFCond_UberchargedOnTakeDamage	, 0.5, client);
 	CreateTimer(8.0, After_Beserk_Mode_Stats, client, TIMER_FLAG_NO_MAPCHANGE);
 }
 
@@ -69,7 +69,7 @@ public void After_Beserk_Mode_Stats(int client)
 	ApplyTempAttrib(client, 97, 1.25, 5.0);
 	ApplyTempAttrib(client, 107, 0.75, 5.0);
 	ApplyTempAttrib(client, 405, 0.67, 5.0);
-	TF2_AddCondition(client, TF_COND_STUNNED, 5.0, client);
+	TF2_AddCondition(client, TFCond_Dazed, 5.0, client);
 }
 
 public void Reset_stats_Beserk_Singular(int client)
