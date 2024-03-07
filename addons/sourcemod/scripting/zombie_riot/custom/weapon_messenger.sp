@@ -94,7 +94,7 @@ void CheckMessengerMode(int client)
 
 public void Weapon_Messenger(int client, int weapon, bool crit)
 {
-	float damage = 300.0;
+	float damage = 250.0;
 
 	damage *= Attributes_GetOnPlayer(client, 2, true);
 	if(Change[client] == true)
@@ -113,12 +113,13 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 	
 	if(Change[client] == true)
 	{
-		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "drg_cow_rockettrail_fire_charged_blue",_,false);
+		damage *= 1.3;
+		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "drg_cow_rockettrail_fire_charged_blue",_,true);
 		EmitSoundToAll(SOUND_MES_SHOT_ICE, client, SNDCHAN_AUTO, 65, _, 0.3, 115);
 	}
 	else if(Change[client] == false)
 	{
-		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "drg_cow_rockettrail_fire_charged",_,false);
+		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "drg_cow_rockettrail_fire_charged",_,true);
 		EmitSoundToAll(SOUND_MES_SHOT_FIRE, client, SNDCHAN_AUTO, 65, _, 0.3, 115);
 	}
 }

@@ -75,6 +75,7 @@ static const char g_MessengerThrowIce[][] = {
 	"weapons/icicle_freeze_victim_01.wav",
 };
 
+static bool b_khamlWeaponRage[MAXENTITIES];
 bool BlockLoseSay;
 static float f_MessengerSpeedUp[MAXENTITIES];
 
@@ -242,6 +243,7 @@ methodmap TheMessenger < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flMeleeArmor = 1.25;	
+		b_khamlWeaponRage[npc.index] = false;
 
 
 
@@ -818,7 +820,17 @@ public Action TheMessenger_OnTakeDamage(int victim, int &attacker, int &inflicto
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}		
-	
+	if(weapon > 0)
+	{
+		if(!b_khamlWeaponRage[npc.index])
+		{
+			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MESSENGER_LAUNCHER)
+			{
+				b_khamlWeaponRage[npc.index] = true;
+				CPrintToChatAll("{lightblue}The Messenger{default}: FUCK you, okay? FUCK you.");
+			}
+		}
+	}
 	return Plugin_Changed;
 }
 
