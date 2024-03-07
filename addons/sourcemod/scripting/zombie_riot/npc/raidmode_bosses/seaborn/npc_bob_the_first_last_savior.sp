@@ -1598,8 +1598,8 @@ static void SetupMidWave(int entity)
 	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", 10);
 	AddBobEnemy(entity, "npc_combine_soldier_shotgun", 10);
 	AddBobEnemy(entity, "npc_combine_soldier_ar2", 10);
-	AddBobEnemy(entity, "npc_combine_soldier_smg", 10);
-	AddBobEnemy(entity, "npc_combine_soldier_pistol", 10);
+	AddBobEnemy(entity, "npc_combine_police_smg", 10);
+	AddBobEnemy(entity, "npc_combine_police_pistol", 10);
 }
 
 static void AddBobEnemy(int bobindx, const char[] plugin, int count, int boss = 0)
@@ -1622,7 +1622,7 @@ static void AddBobEnemy(int bobindx, const char[] plugin, int count, int boss = 
 	}
 }
 
-Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, float &damage)
+Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &infictor, float &damage)
 {
 	//Valid attackers only.
 	if(attacker < 1)
