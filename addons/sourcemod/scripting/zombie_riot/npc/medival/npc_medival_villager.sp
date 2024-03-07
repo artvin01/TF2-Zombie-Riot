@@ -2,67 +2,31 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"npc/metropolice/die1.wav",
-	"npc/metropolice/die2.wav",
-	"npc/metropolice/die3.wav",
-	"npc/metropolice/die4.wav",
+	"vo/npc/male01/no01.wav",
+	"vo/npc/male01/no02.wav",
 };
 
 static const char g_HurtSounds[][] = {
-	"npc/metropolice/pain1.wav",
-	"npc/metropolice/pain2.wav",
-	"npc/metropolice/pain3.wav",
-	"npc/metropolice/pain4.wav",
+	"vo/npc/male01/pain01.wav",
+	"vo/npc/male01/pain02.wav",
+	"vo/npc/male01/pain03.wav",
+	"vo/npc/male01/pain05.wav",
+	"vo/npc/male01/pain06.wav",
+	"vo/npc/male01/pain07.wav",
+	"vo/npc/male01/pain08.wav",
+	"vo/npc/male01/pain09.wav",
 };
 
 static const char g_IdleSounds[][] = {
-	"npc/metropolice/vo/affirmative.wav",
-	"npc/metropolice/vo/affirmative2.wav",
-	"npc/metropolice/vo/canalblock.wav",
-	"npc/metropolice/vo/chuckle.wav",
-	"npc/metropolice/vo/citizen.wav",
-	"npc/metropolice/vo/code7.wav",
-	"npc/metropolice/vo/code100.wav",
-	"npc/metropolice/vo/copy.wav",
-	"npc/metropolice/vo/breakhiscover.wav",
-	"npc/metropolice/vo/help.wav",
-	"npc/metropolice/vo/hesgone148.wav",
-	"npc/metropolice/vo/hesrunning.wav",
-	"npc/metropolice/vo/infection.wav",
-	"npc/metropolice/vo/king.wav",
-	"npc/metropolice/vo/needanyhelpwiththisone.wav",
-
-	"npc/metropolice/vo/pickupthecan2.wav",
-	"npc/metropolice/vo/sociocide.wav",
-	"npc/metropolice/vo/watchit.wav",
-	"npc/metropolice/vo/xray.wav",
-	"npc/metropolice/vo/youknockeditover.wav",
+	"vo/npc/male01/ohno.wav",
+	"vo/npc/male01/overthere01.wav",
+	"vo/npc/male01/overthere02.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"npc/metropolice/vo/affirmative.wav",
-	"npc/metropolice/vo/affirmative2.wav",
-	"npc/metropolice/vo/canalblock.wav",
-	"npc/metropolice/vo/chuckle.wav",
-	"npc/metropolice/vo/citizen.wav",
-	"npc/metropolice/vo/code7.wav",
-	"npc/metropolice/vo/code100.wav",
-	"npc/metropolice/vo/copy.wav",
-	"npc/metropolice/vo/breakhiscover.wav",
-	"npc/metropolice/vo/help.wav",
-	"npc/metropolice/vo/hesgone148.wav",
-	"npc/metropolice/vo/hesrunning.wav",
-	"npc/metropolice/vo/infection.wav",
-	"npc/metropolice/vo/king.wav",
-	"npc/metropolice/vo/needanyhelpwiththisone.wav",
-	"npc/metropolice/vo/pickupthecan1.wav",
-
-	"npc/metropolice/vo/pickupthecan3.wav",
-	"npc/metropolice/vo/sociocide.wav",
-	"npc/metropolice/vo/watchit.wav",
-	"npc/metropolice/vo/xray.wav",
-	"npc/metropolice/vo/youknockeditover.wav",
-	"npc/metropolice/takedown.wav",
+	"vo/npc/male01/ohno.wav",
+	"vo/npc/male01/overthere01.wav",
+	"vo/npc/male01/overthere02.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -199,7 +163,8 @@ methodmap MedivalVillager < CClotBody
 	public MedivalVillager(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetVillagerHealth(), ally));
-		SetVariantInt(1);
+		
+		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		i_NpcWeight[npc.index] = 3;
 		
@@ -222,7 +187,7 @@ methodmap MedivalVillager < CClotBody
 		func_NPCThink[npc.index] = MedivalVillager_ClotThink;
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
+		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
 		
 		
 		i_ClosestAllyCD[npc.index] = 0.0;
