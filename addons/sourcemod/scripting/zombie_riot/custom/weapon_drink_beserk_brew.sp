@@ -4,6 +4,18 @@
 static Handle Give_brew_back[MAXPLAYERS+1];
 static bool Brew_up[MAXPLAYERS+1]={false, ...};
 
+#define SOUND_DRINK "player/mannpower_invulnerable.wav"
+#define SOUND_END "items/powerup_pickup_plague.wav"
+
+
+
+public void Beserk_Brew_MapStart()
+{
+	PrecacheSound(SOUND_DRINK);
+	PrecacheSound(SOUND_END);
+	Zero(Brew_up);
+}
+
 public void Weapon_Beserk_Brew(int client, int weapon, const char[] classname, bool &result)
 {
 	if(weapon >= MaxClients)
@@ -23,12 +35,21 @@ public void Weapon_Beserk_Brew(int client, int weapon, const char[] classname, b
 			CurrentAmmo[client][Ammo_Potion_Supply] = GetAmmo(client, Ammo_Potion_Supply);
 			Brew_up[client] = true;
 			Beserk_Mode_Stats(client);
+			MakePlayerGiveResponseVoice(client, 1);
 			float Beserk_Loc[3];
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Beserk_Loc);
 			ParticleEffectAt(Beserk_Loc, "fireSmokeExplosion", 1.5);
+			float flPos[3]; // original
+			float flAng[3]; // original
+			GetAttachment(client, "effect_hand_r", flPos, flAng);
+			GetAttachment(client, "effect_hand_l", flPos, flAng);				
+			int particle_Hand_R = ParticleEffectAt(flPos, "sparks_powerline_red", 8.0);
+			int particle_Hand_L = ParticleEffectAt(flPos, "sparks_powerline_red", 8.0);
+			SetParent(client, particle_Hand_R, "effect_hand_r");
+			SetParent(client, particle_Hand_L, "effect_hand_l");
 			f_TempCooldownForVisualManaPotions[client] = GetGameTime() + 60.0;
-				
-			EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
+			
+			EmitSoundToAll(SOUND_DRINK, client, SNDCHAN_AUTO, 65, _, 0.3, 150);
 		}
 		else
 		{
@@ -45,11 +66,6 @@ public void Weapon_Beserk_Brew(int client, int weapon, const char[] classname, b
 	}
 }
 
-public void Beserk_Brew_MapStart()
-{
-	PrecacheSound("player/pl_scout_dodge_can_drink.wav");
-	Zero(Brew_up);
-}
 public void Beserk_Mode_Stats(int client)
 {
 	ApplyTempAttrib(client, 2, 1.2, 8.0);
@@ -67,6 +83,7 @@ public Action After_Beserk_Mode_Stats(Handle timer, int ref)
 	int client = EntRefToEntIndex(ref);
 	if (IsValidClient(client))
 	{
+		EmitSoundToAll(SOUND_END, client, SNDCHAN_AUTO, 65, _, 0.3, 150);
 		ApplyTempAttrib(client, 412, 1.25, 5.0);
 		ApplyTempAttrib(client, 6, 1.2, 5.0);
 		ApplyTempAttrib(client, 97, 1.25, 5.0);
