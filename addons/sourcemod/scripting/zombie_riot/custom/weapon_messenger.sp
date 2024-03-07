@@ -58,6 +58,7 @@ public Action Timer_Management_Messenger(Handle timer, DataPack pack)
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
+		h_TimerMessengerWeaponManagement[client] = null;
 		Change[client] = false;
 		return Plugin_Stop;
 	}
