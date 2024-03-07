@@ -55,11 +55,11 @@ void Mecha_PyroGiant_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Mecha Giant Pyro");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_mecha_pyro_giant");
-	data.Category = Type_Alt;
-	data.Func = ClotSummon;
 	strcopy(data.Icon, sizeof(data.Icon), "pyro"); 		//leaderboard_class_(insert the name)
 	data.IconCustom = false;													//download needed?
-	data.Flags = MVM_CLASS_FLAG_ALWAYSCRIT;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;			
+	data.Category = Type_Alt;
+	data.Func = ClotSummon;													//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 
 }
