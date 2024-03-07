@@ -1622,7 +1622,7 @@ static void AddBobEnemy(int bobindx, const char[] plugin, int count, int boss = 
 	}
 }
 
-Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &infictor, float &damage)
+Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker < 1)

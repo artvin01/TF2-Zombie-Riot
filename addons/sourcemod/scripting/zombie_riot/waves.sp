@@ -263,6 +263,12 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 					{
 						VotedFor[client] = -1;
 					}
+					else if(VotedFor[client] > Voting.Length)
+					{
+						VotedFor[client] = 0;
+						Waves_CallVote(client, choice);
+						return 0;
+					}
 					else
 					{
 						Vote vote;

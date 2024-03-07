@@ -2450,6 +2450,9 @@ stock bool isPlayerMad(int client) {
 
 stock void GetTimerAndNullifyMusicMVM()
 {
+	if(FindEntityByClassname(-1, "tf_gamerules") == -1)
+		return;
+	
 	int Time = RoundToNearest(GameRules_GetPropFloat("m_flRestartRoundTime") - GetGameTime());
 	if(Time > 8 && Time <= 12)
 	{
