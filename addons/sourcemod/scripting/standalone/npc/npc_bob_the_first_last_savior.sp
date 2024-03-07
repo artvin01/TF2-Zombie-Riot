@@ -1146,7 +1146,7 @@ static void Internal_ClotThink(int iNPC)
 }
 
 
-static Action Internal_OnTakeDamage(int victim, int &attacker, float &damage)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker < 1)
