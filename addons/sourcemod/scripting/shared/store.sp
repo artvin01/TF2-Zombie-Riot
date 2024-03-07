@@ -1412,6 +1412,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						CashSpent[client] += info.Cost;
 						CashSpentTotal[client] += info.Cost;
 						item.Owned[client] = values[1] + 1;
+						item.CurrentClipSaved[client] = -5;
 
 						if(item.ChildKit)
 						{
@@ -6256,6 +6257,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Kahml_Fist_Ability(client, entity);
 		Enable_HHH_Axe_Ability(client, entity);
 		Enable_Messenger_Launcher_Ability(client, entity);
+		WeaponNailgun_Enable(client, entity);
 #endif
 
 #if defined RPG
@@ -6722,9 +6724,16 @@ void ClipSaveSingle(int client, int weapon)
 	}
 
 	StoreItems.GetArray(StoreWeapon[weapon], item);
-	int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
-	int GetClip = GetEntData(weapon, iAmmoTable, 4);
-	item.CurrentClipSaved[client] = GetClip;
+	if(item.CurrentClipSaved[client] == -5)
+	{
+		item.CurrentClipSaved[client] = 0;
+	}
+	else
+	{
+		int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+		int GetClip = GetEntData(weapon, iAmmoTable, 4);
+		item.CurrentClipSaved[client] = GetClip;
+	}
 	StoreItems.SetArray(StoreWeapon[weapon], item);
 }
 
