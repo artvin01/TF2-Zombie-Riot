@@ -323,7 +323,7 @@ public void XenoCombinePoliceSmg_ClotThink(int iNPC)
 			} else {
 				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0) && npc.m_flReloadDelay < GetGameTime(npc.index))
+			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				int target;
 			

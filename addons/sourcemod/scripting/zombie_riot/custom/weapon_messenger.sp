@@ -111,7 +111,9 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 	speed *= Attributes_Get(weapon, 475, 1.0);
 		
 	float time = 2.0; //Because of Particle Spam.
-	
+	bool result = false;
+	Weapon_Auto_Shotgun(client, weapon, "", result);
+
 	if(Change[client] == true)
 	{
 		damage *= 1.3;
