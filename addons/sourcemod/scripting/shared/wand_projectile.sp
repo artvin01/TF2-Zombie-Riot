@@ -91,6 +91,7 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		i_WandOwner[entity] = EntIndexToEntRef(client);
 		if(IsValidEntity(weapon))
 			i_WandWeapon[entity] = EntIndexToEntRef(weapon);
+			
 		f_WandDamage[entity] = damage;
 		i_WandIdNumber[entity] = WandId;
 		b_EntityIsArrow[entity] = true;

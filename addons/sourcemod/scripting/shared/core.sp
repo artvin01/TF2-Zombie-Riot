@@ -704,6 +704,7 @@ bool b_CannotBeSlowed[MAXENTITIES];
 float f_NpcTurnPenalty[MAXENTITIES];
 bool b_IsInUpdateGroundConstraintLogic;
 bool b_IgnorePlayerCollisionNPC[MAXENTITIES];
+bool b_ProjectileCollideWithPlayerOnly[MAXENTITIES];
 bool b_IgnoreAllCollisionNPC[MAXENTITIES];		//for npc's that noclip
 
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
@@ -2711,6 +2712,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_ChaosArrowAmount[entity] = 0;
 		i_WeaponArchetype[entity] = 0;
 		i_WeaponForceClass[entity] = 0;
+		b_ProjectileCollideWithPlayerOnly[entity] = false;
 
 #if defined RTS
 		TeamNumber[entity] = 0;
@@ -2880,6 +2882,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			//SDKHook_SpawnPost doesnt work
 			b_IsAProjectile[entity] = true;
+			b_ProjectileCollideWithPlayerOnly[entity] = true;
 		}
 		
 		else if(!StrContains(classname, "tf_projectile_pipe_remote"))
