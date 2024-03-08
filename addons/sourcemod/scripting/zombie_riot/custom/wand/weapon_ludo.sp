@@ -133,14 +133,14 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 		mana_cost = 300;
 	if(CardCounter[client] > 1 && mana_cost <= Current_Mana[client])
 	{
-		float damage = 100.0;
+		float damage = 110.0;
 		float damageModBlackjack;
 		float damageModCards;
 		switch(OverLimit[client])
 		{
 			case false:
 			{
-				damageModBlackjack = (float(BlackJack[client]) - 10.0) / 20.0;
+				damageModBlackjack = (float(BlackJack[client]) - 14.0) / 10.0;
 				if(damageModBlackjack < 0.05)
 					damageModBlackjack = 0.0;
 			}
@@ -187,27 +187,27 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 		{
 			case 2:
 			{
-				damageModCards = 0.65;
+				damageModCards = 0.55;
 			}
 			case 3:
 			{
-				damageModCards = 0.9;
+				damageModCards = 0.765;
 			}
 			case 4:
 			{
-				damageModCards = 1.05;
+				damageModCards = 1.1;
 			}
 			case 5:
 			{
-				damageModCards = 1.25;
+				damageModCards = 1.3;
 			}
 			case 6:
 			{
-				damageModCards = 1.5;
+				damageModCards = 1.6;
 			}
 			case 7:
 			{
-				damageModCards = 10.0; //huge dmg as this is incredibly rare, feel free to reduce if getting 7 cards is too common
+				damageModCards = 50.0; //huge dmg as this is incredibly rare, feel free to reduce if getting 7 cards is too common
 			}
 			default:
 			{
@@ -218,7 +218,7 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 		float DiamondBuff = 1.0;
 
 		if(BlackJack[client] == 21)
-			damageModBlackjack = 1.15;
+			damageModBlackjack = 1.5;
 
 		if(DiamondCounter[client] > 2 && OverLimit[client] == false)
 		{
