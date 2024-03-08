@@ -140,7 +140,7 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 		{
 			case false:
 			{
-				damageModBlackjack = (float(BlackJack[client]) - 14.0) / 10.0;
+				damageModBlackjack = (float(BlackJack[client]) - 10.0) / 10.0;
 				if(damageModBlackjack < 0.05)
 					damageModBlackjack = 0.0;
 			}
