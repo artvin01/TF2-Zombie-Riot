@@ -549,18 +549,24 @@ public int RTSCamera_ShowMenuH(Menu menu, MenuAction action, int client, int cho
 					AspectRatio[client] = (RoundFloat(AspectRatio[client] * 9.0) + 1) / 9.0;
 					SaveMouseCookie(client);
 					option = 3;
+
+					RTSMenu_FormatUpdate(client);
 				}
 				case 32:
 				{
 					AspectRatio[client] = 1.777777;
 					SaveMouseCookie(client);
 					option = 3;
+
+					RTSMenu_FormatUpdate(client);
 				}
 				case 33:
 				{
 					AspectRatio[client] = (RoundFloat(AspectRatio[client] * 9.0) - 1) / 9.0;
 					SaveMouseCookie(client);
 					option = 3;
+
+					RTSMenu_FormatUpdate(client);
 				}
 				case 41:
 				{
@@ -1645,7 +1651,7 @@ static bool CanBeInCamera(int client)
 		!TF2_IsPlayerInCondition(client, TFCond_Taunting));
 }
 
-static void GetCursorVector(int client, const float vecVector[3], const float mouse[2], float cursorVector[3])
+void GetCursorVector(int client, const float vecVector[3], const float mouse[2], float cursorVector[3])
 {
 	float maxX = ArcTangent2(DegToRad(LastDefaultFOV[client] * 0.5), 1.0);
 	float maxY = ArcTangent2(DegToRad(LastDefaultFOV[client] * 0.5 / AspectRatio[client]), 1.0);
@@ -1784,6 +1790,8 @@ static void LoadMouseCookie(int client)
 			MouseSensitivity[client] = StringToFloat(buffers[1]);
 			ScrollSpeed[client] = StringToFloat(buffers[2]);
 			ZoomSpeed[client] = StringToFloat(buffers[3]);
+			
+			RTSMenu_FormatUpdate(client);
 		}
 	}
 }
@@ -2098,6 +2106,16 @@ stock int RTSCamera_GetFocus(int client)
 stock void RTSCamera_GetVector(int client, float vec[3])
 {
 	vec = CameraVector[client];
+}
+
+stock float RTSCamera_GetAspectRatio(int client)
+{
+	return AspectRatio[client];
+}
+
+stock void RTSCamera_GetMousePos(int client, float mouse[2])
+{
+	mouse = LastMousePos[client];
 }
 
 static stock bool IsSelectableUnitEntity(int client, int entity)
