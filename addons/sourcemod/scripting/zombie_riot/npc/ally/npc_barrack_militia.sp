@@ -7,7 +7,7 @@ public void BarrackMilitiaOnMapStart()
 {
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Villager");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Militia");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_militia");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;

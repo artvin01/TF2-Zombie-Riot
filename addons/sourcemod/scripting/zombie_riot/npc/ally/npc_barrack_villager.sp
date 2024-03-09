@@ -21,7 +21,7 @@ static int NPCId;
 void BarrackVillagerOnMapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Medival Villager");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Assistant Villager");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_villager");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
