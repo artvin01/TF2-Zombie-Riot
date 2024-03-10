@@ -8318,3 +8318,11 @@ void Building_Check_ValidSupportcount(int client)
 		}
 	}
 }
+
+
+
+void ApplyBuildingCollectCooldown(int building, int client, float Duration)
+{
+	Building_Collect_Cooldown[building][client] = GetGameTime() + Duration;
+	
+}
