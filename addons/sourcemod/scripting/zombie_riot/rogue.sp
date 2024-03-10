@@ -247,7 +247,14 @@ enum
 	State_Stage
 }
 
+enum
+{
+	BobChaos = 0,
+	BlueParadox = 1
+}
+
 static bool InRogueMode;
+static int RogueStyle;
 
 static ArrayList Voting;
 static float VoteEndTime;
@@ -363,6 +370,7 @@ bool Rogue_NoDiscount()
 
 void Rogue_MapStart()
 {
+	RogueStyle = 0;
 	InRogueMode = false;
 	Zero(f_ProvokedAngerCD);
 }
@@ -393,6 +401,8 @@ void Rogue_SetupVote(KeyValues kv)
 
 	kv.Rewind();
 	kv.JumpToKey("Rogue");
+
+	RogueStyle = kv.GetNum("roguestyle");
 
 	Floor floor;
 
