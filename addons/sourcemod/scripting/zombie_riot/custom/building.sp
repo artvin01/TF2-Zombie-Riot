@@ -291,6 +291,7 @@ void Building_ClearAll()
 	Zero(Village_TierExists);
 	//RebelTimerSpawnIn = 0;
 }
+
 void ResetSentryCD()
 {
 	Zero(Building_Sentry_Cooldown);
@@ -2155,7 +2156,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			{
 				case 7:
 				{
-					Building_Collect_Cooldown[entity][client] = GetGameTime() + 90.0;
+					ApplyBuildingCollectCooldown(entity, client, 90.0);
 					ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 					float HealAmmount = 30.0;
 					if(IsValidClient(owner))
@@ -2218,7 +2219,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 
-										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
+										ApplyBuildingCollectCooldown(entity, client, 5.0, true);
 
 										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
@@ -2254,7 +2255,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										}	
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
-										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
+										ApplyBuildingCollectCooldown(entity, client, 5.0, true);
 										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
@@ -2276,7 +2277,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										}	
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
-										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
+										ApplyBuildingCollectCooldown(entity, client, 5.0, true);
 										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
@@ -2298,7 +2299,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										}		
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
-										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
+										ApplyBuildingCollectCooldown(entity, client, 5.0, true);
 										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
@@ -2321,7 +2322,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										}	
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
-										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
+										ApplyBuildingCollectCooldown(entity, client, 5.0, true);
 										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
@@ -2343,7 +2344,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										}
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
-										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
+										ApplyBuildingCollectCooldown(entity, client, 5.0, true);
 										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
@@ -2365,7 +2366,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											
 											fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 											i_State[entity] = -1;
-											Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
+											ApplyBuildingCollectCooldown(entity, client, 5.0, true);
 											if(!Rogue_Mode() && owner != -1 && owner != client)
 											{
 												Resupplies_Supplied[owner] += 2;
@@ -2419,8 +2420,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							if(GiveArmor)
 							{
 								GiveArmorViaPercentage(client, 0.2, 1.0);
-								
-								Building_Collect_Cooldown[entity][client] = GetGameTime() + 45.0; //small also
+								ApplyBuildingCollectCooldown(entity, client, 45.0);
 
 								float pos[3];
 								GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
@@ -3309,7 +3309,7 @@ public bool BuildingCustomCommand(int client)
 				{
 					if(Building_Collect_Cooldown[obj][client] < GetGameTime())
 					{
-						Building_Collect_Cooldown[obj][client] = GetGameTime() + 75.0;
+						ApplyBuildingCollectCooldown(obj, client, 75.0);
 						ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 						float HealAmmount = 30.0;
 						if(IsValidClient(client))
@@ -3343,7 +3343,7 @@ public bool BuildingCustomCommand(int client)
 							{
 								if(Building_Collect_Cooldown[obj][client] < GetGameTime())
 								{
-									Building_Collect_Cooldown[obj][client] = GetGameTime() + 75.0;
+									ApplyBuildingCollectCooldown(obj, client, 75.0);
 									ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 									float HealAmmount = 30.0;
 									if(IsValidClient(client))
@@ -4333,7 +4333,7 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	}
 	*/
 	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
-	Building_Collect_Cooldown[entity][client] = GetGameTime() + 40.0;
+	ApplyBuildingCollectCooldown(entity, client, 40.0);
 	
 	i_CurrentEquippedPerk[client] = what_perk;
 	
@@ -8320,9 +8320,19 @@ void Building_Check_ValidSupportcount(int client)
 }
 
 
-
-void ApplyBuildingCollectCooldown(int building, int client, float Duration)
+void BuildingVoteEndResetCD()
 {
-	Building_Collect_Cooldown[building][client] = GetGameTime() + Duration;
-	
+	Zero2(Building_Collect_Cooldown);
+}
+
+void ApplyBuildingCollectCooldown(int building, int client, float Duration, bool IgnoreVotingExtraCD = false)
+{
+	if(GameRules_GetRoundState() == RoundState_BetweenRounds && !IgnoreVotingExtraCD)
+	{
+		Building_Collect_Cooldown[building][client] = FAR_FUTURE;
+	}
+	else
+	{
+		Building_Collect_Cooldown[building][client] = GetGameTime() + Duration;
+	}
 }

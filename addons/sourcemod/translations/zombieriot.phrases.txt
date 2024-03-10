@@ -2864,7 +2864,7 @@
 	}
 	"Pre Setup Cash Gain Hint"
 	{
-		"en"		"During ready setup phases, all the money you gain from buidlings is given after the round has started."
+		"en"		"During ready setup phases, you gain half the cash from buildings, it will be given to you once the waves start again."
 	}
 	"Extra Description"
 	{
