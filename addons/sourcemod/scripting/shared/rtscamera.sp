@@ -550,7 +550,10 @@ public int RTSCamera_ShowMenuH(Menu menu, MenuAction action, int client, int cho
 					SaveMouseCookie(client);
 					option = 3;
 
+#if defined RTS
 					RTSMenu_FormatUpdate(client);
+#endif
+
 				}
 				case 32:
 				{
@@ -558,7 +561,9 @@ public int RTSCamera_ShowMenuH(Menu menu, MenuAction action, int client, int cho
 					SaveMouseCookie(client);
 					option = 3;
 
+#if defined RTS
 					RTSMenu_FormatUpdate(client);
+#endif
 				}
 				case 33:
 				{
@@ -566,7 +571,9 @@ public int RTSCamera_ShowMenuH(Menu menu, MenuAction action, int client, int cho
 					SaveMouseCookie(client);
 					option = 3;
 
+#if defined RTS
 					RTSMenu_FormatUpdate(client);
+#endif
 				}
 				case 41:
 				{
@@ -1791,7 +1798,9 @@ static void LoadMouseCookie(int client)
 			ScrollSpeed[client] = StringToFloat(buffers[2]);
 			ZoomSpeed[client] = StringToFloat(buffers[3]);
 			
+#if defined RTS
 			RTSMenu_FormatUpdate(client);
+#endif
 		}
 	}
 }
