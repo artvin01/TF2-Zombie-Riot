@@ -707,6 +707,10 @@
 		"pt"		"Milícia"
 		"nl"		"Militie"
 	}
+	"Barracks Militia"
+	{
+		"en" 		"Militia"
+	}
 	"Archer"
 	{
 		"en" 		"Archer"

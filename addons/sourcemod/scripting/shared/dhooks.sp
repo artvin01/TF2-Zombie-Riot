@@ -950,7 +950,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-			else if(b_IsAProjectile[entity2] && GetTeam(entity2) == GetTeam(entity1))
+			else if(b_IsAProjectile[entity2] && GetTeam(entity2) == GetTeam(entity1) && !b_ProjectileCollideWithPlayerOnly[entity1])
 			{
 				return false;
 			}
