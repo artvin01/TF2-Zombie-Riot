@@ -633,7 +633,7 @@ static void ClotThink(int iNPC)
 				}
 				case 5:
 				{
-					CPrintToChatAll("{crimson}Blitzkrieg{default}: All your friends have already{crimson} joined{default} us.. {cirmson} You're next..");
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: All your friends have already{crimson} joined{default} us.. {crimson} You're next..");
 				}
 			}
 		}
