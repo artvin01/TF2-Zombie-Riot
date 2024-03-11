@@ -500,7 +500,7 @@ public void Weapon_Sensal_WandTouch(int entity, int target)
 	{
 		//Code to do damage position and ragdolls
 		static float angles[3];
-		angles = GetRocketAngles(entity);
+		GetRocketAngles(entity, angles);
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
