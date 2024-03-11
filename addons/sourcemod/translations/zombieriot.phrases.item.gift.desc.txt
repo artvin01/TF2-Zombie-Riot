@@ -1487,7 +1487,7 @@
 	}
 	"Hitman Desc" 
 	{
-		"en"	"Deals immensive damage and chaos to everything.\nIs extreamly fast and dodges every 2nd attack.\nHas low HP and takes 2.5x melee damage but takes 50%% less ranged damage."
+		"en"	"Deals immensive damage to everything.\nIs extreamly fast and dodges every 2nd attack.\nHas low HP and takes 2.5x melee damage but takes 50%% less ranged damage."
 	}
 	"Mad Doctor Desc"
 	{
