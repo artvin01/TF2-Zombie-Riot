@@ -103,13 +103,6 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)
 - [some Gamedata and source scramble](https://github.com/sapphonie/tf2-edict-limiter/releases/tag/v3.0.4)
 
-### Supported
-
-The SourceMod plugins / extensions listed below are not necessary for TF2 Zombie Riot to run but are supported nevertheless:
-
-- [Text-Store](https://github.com/Batfoxkid/Text-Store)
-- [Minecraft-TF2](https://github.com/Batfoxkid/Minecraft-TF2/tree/logic)
-
 ## Credits
 
 Current coders that in anyway actively helped, in order of how much:
