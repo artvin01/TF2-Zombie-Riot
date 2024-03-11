@@ -1480,16 +1480,16 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	ChaosKahmlstein npc = view_as<ChaosKahmlstein>(victim);
-	if(npc.g_TimesSummoned < 199)
+	if(npc.g_TimesSummoned < 150)
 	{
-		int nextLoss = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 10) * (199 - npc.g_TimesSummoned) / 200;
+		int nextLoss = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 10) * (150 - npc.g_TimesSummoned) / 150;
 		if((GetEntProp(npc.index, Prop_Data, "m_iHealth") / 10) < nextLoss)
 		{
 			npc.g_TimesSummoned++;
 			if((npc.g_TimesSummoned % 25) == 0)
 			{
-				f_MessengerSpeedUp[npc.index] *= 1.025;
-				RaidModeScaling *= 1.05;
+				f_MessengerSpeedUp[npc.index] *= 1.02;
+				RaidModeScaling *= 1.035;
 				switch(GetRandomInt(0,3))
 				{
 					case 0:
@@ -1509,7 +1509,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 						CPrintToChatAll("{darkblue}Kahmlstein{default}: Keep running, that'll help.");
 					}
 				}
-				f_KahmlResTemp[npc.index] = GetGameTime() + 5.0;
+				f_KahmlResTemp[npc.index] = GetGameTime() + 2.5;
 			}
 			npc.m_flNextChargeSpecialAttack -= 0.25;
 			npc.m_flRangedSpecialDelay -= 0.25;

@@ -6682,7 +6682,8 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 
 void GiveCredits(int client, int credits, bool building)
 {
-	if(building && Waves_InSetup() && StartCash < 750)
+	
+	if(building && GameRules_GetRoundState() == RoundState_BetweenRounds && StartCash < 750)
 	{
 		if(!CashSpentGivePostSetupWarning[client])
 		{
@@ -6690,7 +6691,9 @@ void GiveCredits(int client, int credits, bool building)
 			PrintToChat(client,"%t","Pre Setup Cash Gain Hint");
 			CashSpentGivePostSetupWarning[client] = true;
 		}
-		CashSpentGivePostSetup[client] += credits;
+		int CreditsGive = credits / 2;
+		CashSpentGivePostSetup[client] += CreditsGive;
+		CashSpent[client] -= CreditsGive;
 	}
 	else
 	{

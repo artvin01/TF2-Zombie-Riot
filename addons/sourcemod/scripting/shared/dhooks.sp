@@ -950,21 +950,28 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-			else if(b_IsAProjectile[entity2] && GetTeam(entity2) == GetTeam(entity1))
+			else if(b_IsAProjectile[entity2] && GetTeam(entity2) == GetTeam(entity1) && !b_ProjectileCollideWithPlayerOnly[entity1])
 			{
 				return false;
 			}
-	#if defined ZR
+#if defined ZR
 			else if (i_WandIdNumber[entity1] == 19 && !i_IsABuilding[entity2] && !b_IsAProjectile[entity2]) //Health Hose projectiles
 			{
 				Hose_Touch(entity1, entity2);
 				return false;
 			}
-	#endif
-			else if(entity2 <= MaxClients && entity2 > 0)
+#endif	
+			//ally projectiles do not collide with players unless they only go for players
+			else if(entity2 <= MaxClients && entity2 > 0 && !b_ProjectileCollideWithPlayerOnly[entity1])
 			{
 				return false;
 			}
+			//ignores everything else if it only collides with players
+			else if(b_ProjectileCollideWithPlayerOnly[entity1])
+			{
+				return false;
+			}
+			//ingore all on the same team, in this case red
 			else if(GetTeam(entity2) == TFTeam_Red)
 			{
 				return false;

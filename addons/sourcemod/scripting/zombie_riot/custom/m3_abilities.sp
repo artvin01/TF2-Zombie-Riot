@@ -290,7 +290,14 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
 							//This gives 35% armor
-							GiveArmorViaPercentage(target, 0.075, 1.0);
+							if(f_TimeUntillNormalHeal[target] > GetGameTime())
+							{
+								GiveArmorViaPercentage(target, 0.075 * 0.5, 1.0);
+							}
+							else
+							{
+								GiveArmorViaPercentage(target, 0.075, 1.0);
+							}
 						}
 					}
 				}

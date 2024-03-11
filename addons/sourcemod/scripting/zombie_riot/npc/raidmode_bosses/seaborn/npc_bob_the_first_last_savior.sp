@@ -432,7 +432,9 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	{
 		b_NpcIsInvulnerable[npc.index] = true;
 	}
-
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+		return;
+		
 	int healthPoints = 20;
 
 	if(npc.m_bFakeClone)
@@ -1596,8 +1598,8 @@ static void SetupMidWave(int entity)
 	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", 10);
 	AddBobEnemy(entity, "npc_combine_soldier_shotgun", 10);
 	AddBobEnemy(entity, "npc_combine_soldier_ar2", 10);
-	AddBobEnemy(entity, "npc_combine_soldier_smg", 10);
-	AddBobEnemy(entity, "npc_combine_soldier_pistol", 10);
+	AddBobEnemy(entity, "npc_combine_police_smg", 10);
+	AddBobEnemy(entity, "npc_combine_police_pistol", 10);
 }
 
 static void AddBobEnemy(int bobindx, const char[] plugin, int count, int boss = 0)
@@ -1620,7 +1622,7 @@ static void AddBobEnemy(int bobindx, const char[] plugin, int count, int boss = 
 	}
 }
 
-Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, float &damage)
+Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker < 1)
@@ -2164,6 +2166,6 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 public void Raidmode_BobFirst_Win(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
-	SDKUnhook(entity, SDKHook_Think, RaidbossBobTheFirst_ClotThink);
+	func_NPCThink[entity] = INVALID_FUNCTION;
 	CPrintToChatAll("{white}Bob the First{default}: Deep sea threat cleaned, finally at peace...");
 }

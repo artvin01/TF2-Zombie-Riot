@@ -184,6 +184,7 @@ methodmap MedivalHandCannoneer < CClotBody
 		func_NPCDeath[npc.index] = MedivalHandCannoneer_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = MedivalHandCannoneer_OnTakeDamage;
 		func_NPCThink[npc.index] = MedivalHandCannoneer_ClotThink;
+		func_NPCAnimEvent[npc.index] = HandleAnimEventMedival_HandCannoneer;
 		
 	
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);

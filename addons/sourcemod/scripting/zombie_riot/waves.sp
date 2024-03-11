@@ -263,6 +263,12 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 					{
 						VotedFor[client] = -1;
 					}
+					else if(VotedFor[client] > Voting.Length)
+					{
+						VotedFor[client] = 0;
+						Waves_CallVote(client, choice);
+						return 0;
+					}
 					else
 					{
 						Vote vote;
@@ -1612,7 +1618,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 	else if(Rogue_Mode())
 	{
 		PrintToChatAll("FREEPLAY OCCURED, BAD CFG, REPORT BUG");
-		ThrowError("FREEPLAY OCCURED - LOOK AT FIRST THROWERROR");
 		CurrentRound = 0;
 		CurrentWave = -1;
 	}

@@ -374,7 +374,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		datapack.WriteFloat(endPos[2]);
 		datapack.Reset();
 		DHookSetReturn(hReturn, true);
-		RequestFrames(Frame_TeleportBuilding, 5, datapack);
+		RequestFrames(Frame_TeleportBuilding, 1, datapack);
 		if(IsValidClient(client))
 		{
 			TE_DrawBox(client, endPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({0, 255, 0, 255}));
@@ -493,7 +493,7 @@ public void Frame_TeleportBuilding(DataPack datapack)
 	datapackInit.WriteFloat(datapack.ReadFloat());
 	datapackInit.WriteFloat(datapack.ReadFloat());
 	datapackInit.Reset();
-	RequestFrames(Frame_TeleportBuilding_Init, 12, datapackInit);
+	RequestFrames(Frame_TeleportBuilding_Init, 1, datapackInit);
 	delete datapack;
 }
 

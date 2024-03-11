@@ -154,7 +154,7 @@ methodmap RaidbossBladedance < CClotBody
 
 		npc.Anger = false;
 		npc.m_iOverlordComboAttack = 0;
-	//	npc.m_flMeleeArmor = 1.25;
+		npc.m_flMeleeArmor = 0.75;
 		
 		Citizen_MiniBossSpawn();
 		
@@ -291,7 +291,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 			int entity = -1;
 			while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 			{
-				if(entity != npc.index && !b_NpcHasDied[entity] && GetTeam(entity) != team)
+				if(!b_NpcHasDied[entity] && GetTeam(entity) == team)
 				{
 					f_GodArkantosBuff[entity] = GetGameTime() + 16.0;
 					ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);

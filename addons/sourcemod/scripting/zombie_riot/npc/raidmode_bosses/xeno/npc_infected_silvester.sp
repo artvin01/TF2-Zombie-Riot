@@ -106,6 +106,21 @@ public void RaidbossSilvester_OnMapStart()
 	data.Func = ClotSummon;
 	data.Precache = Silvester_TBB_Precahce;
 	NPC_Add(data);
+	Silvester_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
+	Silvester_BEAM_Laser_1 = PrecacheModel("materials/cable/blue.vmt", false);
+	Silvester_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
+	PrecacheSound("weapons/mortar/mortar_explode3.wav", true);
+	PrecacheSound("mvm/mvm_tele_deliver.wav", true);
+	PrecacheSound("player/flow.wav");
+	PrecacheModel(LINKBEAM);
+	PrecacheModel(PILLAR_MODEL);
+	
+	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
+	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
+	PrecacheSound("weapons/physcannon/superphys_launch3.wav", true);
+	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
+	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
+	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 }
 
 void Silvester_TBB_Precahce()
@@ -124,22 +139,7 @@ void Silvester_TBB_Precahce()
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
 	
-	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch3.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
-	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
-	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 	
-	Silvester_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
-	Silvester_BEAM_Laser_1 = PrecacheModel("materials/cable/blue.vmt", false);
-	Silvester_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
-	
-	PrecacheSound("weapons/mortar/mortar_explode3.wav", true);
-	PrecacheSound("mvm/mvm_tele_deliver.wav", true);
-	PrecacheSound("player/flow.wav");
-	PrecacheModel(LINKBEAM);
-	PrecacheModel(PILLAR_MODEL);
 	PrecacheSoundCustom("#zombiesurvival/silvester_raid/silvester.mp3");
 }
 
@@ -319,6 +319,7 @@ methodmap RaidbossSilvester < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+		i_TimesSummoned[npc.index] = 0;
 
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -1166,8 +1167,9 @@ static void Internal_ClotThink(int iNPC)
 					MaxCount = 1;
 				}
 				Silvester_TE_Used = 0;
-				if(ZR_GetWaveCount()+1 >= 60)
+				if(ZR_GetWaveCount()+1 >= 60 && i_TimesSummoned[npc.index] >= 3)
 				{
+					i_TimesSummoned[npc.index] = 0;
 					ang_Look[1] -= 30.0;
 					for(int Repeat; Repeat <= 1; Repeat++)
 					{
@@ -1186,6 +1188,7 @@ static void Internal_ClotThink(int iNPC)
 					ang_Look[1] -= 30.0;
 				}
 
+				i_TimesSummoned[npc.index] += 1;
 				Silvester_Damaging_Pillars_Ability(npc.index,
 				25.0 * RaidModeScaling,				 	//damage
 				MaxCount, 	//how many

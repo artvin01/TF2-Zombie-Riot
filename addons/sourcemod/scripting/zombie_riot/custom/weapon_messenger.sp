@@ -58,6 +58,7 @@ public Action Timer_Management_Messenger(Handle timer, DataPack pack)
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
+		h_TimerMessengerWeaponManagement[client] = null;
 		Change[client] = false;
 		return Plugin_Stop;
 	}
@@ -94,14 +95,14 @@ void CheckMessengerMode(int client)
 
 public void Weapon_Messenger(int client, int weapon, bool crit)
 {
-	float damage = 300.0;
+	float damage = 250.0;
 
-	damage *= Attributes_GetOnPlayer(client, 2, true);
+	damage *= Attributes_Get(weapon, 2, 1.0);
 	if(Change[client] == true)
 	{
 		damage *= 0.8;
 	}
-			
+	
 	float speed = 1100.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
 	
@@ -110,15 +111,18 @@ public void Weapon_Messenger(int client, int weapon, bool crit)
 	speed *= Attributes_Get(weapon, 475, 1.0);
 		
 	float time = 2.0; //Because of Particle Spam.
-	
+	bool result = false;
+	Weapon_Auto_Shotgun(client, weapon, "", result);
+
 	if(Change[client] == true)
 	{
-		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "drg_cow_rockettrail_fire_charged_blue",_,false);
+		damage *= 1.3;
+		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "drg_cow_rockettrail_fire_charged_blue",_,true);
 		EmitSoundToAll(SOUND_MES_SHOT_ICE, client, SNDCHAN_AUTO, 65, _, 0.3, 115);
 	}
 	else if(Change[client] == false)
 	{
-		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "drg_cow_rockettrail_fire_charged",_,false);
+		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MESSENGER_LAUNCHER, weapon, "drg_cow_rockettrail_fire_charged",_,true);
 		EmitSoundToAll(SOUND_MES_SHOT_FIRE, client, SNDCHAN_AUTO, 65, _, 0.3, 115);
 	}
 }
@@ -171,7 +175,7 @@ public void Gun_MessengerTouch(int entity, int target)
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-		if(IsValidEntity(owner))
+		if(IsValidEntity(owner) && IsValidEntity(weapon))
 		{
 			float pap = Attributes_Get(weapon, 122, 0.0);
 
@@ -197,7 +201,7 @@ public void Gun_MessengerTouch(int entity, int target)
 		}
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
-		EmitSoundToAll(SOUND_MES_IMPACT, entity, SNDCHAN_STATIC, 80, _, 1.0);
+		EmitSoundToAll(SOUND_MES_IMPACT, entity, SNDCHAN_STATIC, 65, _, 0.8);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -206,7 +210,7 @@ public void Gun_MessengerTouch(int entity, int target)
 	}
 	else if(target == 0)
 	{
-		EmitSoundToAll(SOUND_MES_IMPACT, entity, SNDCHAN_STATIC, 80, _, 1.0);
+		EmitSoundToAll(SOUND_MES_IMPACT, entity, SNDCHAN_STATIC, 65, _, 0.8);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);

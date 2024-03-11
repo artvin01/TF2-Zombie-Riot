@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 /* engine/host.h#L157-L158 */
-#define TIME_TO_TICKS(%1)	RoundToNearest(0.5 + %1 / GetTickInterval())
+#define TIME_TO_TICKS(%1)	RoundToZero(0.5 + %1 / GetTickInterval())
 #define TICKS_TO_TIME(%1)	(GetTickInterval() * float(%1))
 
 /* game/client/c_baseanimatingoverlay.h#L46 */

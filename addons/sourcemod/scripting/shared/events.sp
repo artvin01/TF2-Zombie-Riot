@@ -81,7 +81,7 @@ public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 	{
 		SetMusicTimer(client, 0);
 	}
-	
+	BuildingVoteEndResetCD();
 	Waves_SetReadyStatus(0);
 	Waves_Progress();
 }

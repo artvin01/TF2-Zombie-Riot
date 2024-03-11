@@ -960,7 +960,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						}
 						if(ZR_GetWaveCount()+1 >= 60)
 						{
-							damage *= 1.5;
+							damage *= 1.15;
 						}
 						FireBullet(npc.index, npc.m_iWearable3, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer01_red");
 					}

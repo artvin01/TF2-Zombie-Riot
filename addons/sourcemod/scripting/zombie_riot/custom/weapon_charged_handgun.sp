@@ -1146,7 +1146,7 @@ public bool IEM_Cutter_TraceUsers(int entity, int contentsMask, int carrier)
 		return false;
 		
 	SDKHooks_TakeDamage(entity, client, client, Damage_Reduction[carrier]*Damage_Tornado[carrier], DMG_PLASMA, -1);
-	Damage_Reduction[carrier] *= 0.9; // I don't want it to be underpower
+	Damage_Reduction[carrier] *= 0.75; // I don't want it to be underpower
 	
 	return false;
 }

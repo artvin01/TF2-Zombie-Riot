@@ -7,7 +7,7 @@
 public void BarrackArcherOnMapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Building");
+	strcopy(data.Name, sizeof(data.Name), "Archer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_archer");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
