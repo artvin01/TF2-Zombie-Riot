@@ -635,7 +635,7 @@ static void ClotThink(int iNPC)
 			}
 		}
 	}
-	/*
+	
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
 		b_timer_lose[npc.index] = true;
@@ -662,7 +662,6 @@ static void ClotThink(int iNPC)
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
-	*/
 	if(RaidModeTime < GetGameTime() && !b_lost)	//warp
 	{
 		
@@ -1111,7 +1110,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 	
-	if((flDistanceToTarget > 1000000 || i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND) && fl_blitz_ioc_punish_timer[npc.index][attacker] < GetGameTime(npc.index) && IsPlayerAlive(attacker) && TeutonType[attacker] == TEUTON_NONE && dieingstate[attacker] == 0)	//Basically we "punish(ment)" players who are too far from blitz.
+	if((flDistanceToTarget > 1000000 || b_lost) && fl_blitz_ioc_punish_timer[npc.index][attacker] < GetGameTime(npc.index) && IsPlayerAlive(attacker) && TeutonType[attacker] == TEUTON_NONE && dieingstate[attacker] == 0)	//Basically we "punish(ment)" players who are too far from blitz.
 	{
 		//CPrintToChatAll("Target inside distance %i", attacker);
 		Blitzkrieg_Punishment_Invoke(npc.index, attacker, flDistanceToTarget);
