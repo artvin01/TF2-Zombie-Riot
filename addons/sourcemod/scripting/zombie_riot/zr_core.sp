@@ -329,6 +329,7 @@ bool Is_Elevator[MAXENTITIES]={false, ...};
 
 int StoreWeapon[MAXENTITIES];
 int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
+float f_HealthBeforeSuittime[MAXTF2PLAYERS]={0.0, ...};
 
 int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
@@ -604,6 +605,7 @@ void ZR_MapStart()
 	WaveStart_SubWaveStart(GetGameTime());
 	Reset_stats_starshooter();
 	Zero(f_RingDelayGift);
+	Zero(f_HealthBeforeSuittime);
 	Music_ClearAll();
 	Building_ClearAll();
 	Medigun_ClearAll();

@@ -526,8 +526,8 @@ public void TE_Madness_Attack(float vecTarget[3], int m, int client, int colour[
 	WritePackFloat(data, vecTarget[1]);
 	WritePackFloat(data, vecTarget[2]);
 	WritePackCell(data, m); // mmmmmmmm microwave
-	WritePackCell(data, Range); // Range
-	WritePackCell(data, Dmg); // Damge
+	WritePackFloat(data, Range); // Range
+	WritePackFloat(data, Dmg); // Damge
 	WritePackCell(data, client);
 }
 public Action Smite_Timer_TE_Madness(Handle Smite_Logic, DataPack data)
@@ -539,8 +539,8 @@ public Action Smite_Timer_TE_Madness(Handle Smite_Logic, DataPack data)
 	vecTarget[1] = ReadPackFloat(data);
 	vecTarget[2] = ReadPackFloat(data);
 	int m = ReadPackCell(data);
-	float Ionrange = ReadPackCell(data);
-	float Iondamage = ReadPackCell(data);
+	float Ionrange = ReadPackFloat(data);
+	float Iondamage = ReadPackFloat(data);
 	int client = EntRefToEntIndex(ReadPackCell(data));
 	
 	Adiantum npc = view_as<Adiantum>(client);

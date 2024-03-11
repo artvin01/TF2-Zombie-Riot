@@ -734,6 +734,7 @@ public Action QuantumDeactivate(Handle cut_timer, int ref)
 		int health = i_HealthBeforeSuit[client];
 
 		i_HealthBeforeSuit[client] = 0;
+		f_HealthBeforeSuittime[client] = GetGameTime() + 0.25;
 	//	SetEntityMoveType(client, MOVETYPE_WALK);
 		UnequipQuantumSet(client);
 		//Remove both just in case.

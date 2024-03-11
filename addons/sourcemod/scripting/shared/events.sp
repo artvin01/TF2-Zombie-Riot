@@ -502,6 +502,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 		i_CurrentEquippedPerk[client] = 0;
 		
 	i_HealthBeforeSuit[client] = 0;
+	f_HealthBeforeSuittime[client] = GetGameTime() + 0.25;
 	i_ClientHasCustomGearEquipped[client] = false;
 	UnequipQuantumSet(client);
 //	CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!

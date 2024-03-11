@@ -99,7 +99,6 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 			h_TimerFantasyManagement[client] = null;
 			i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 			
-		//	Create_Halo_And_Wings(client, true);
 			DataPack pack;
 			h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
@@ -112,7 +111,6 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 	{
 		i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 		
-	//	Create_Halo_And_Wings(client, true);
 		DataPack pack;
 		h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
@@ -126,7 +124,7 @@ public Action Timer_Management_Fantasy(Handle timer, DataPack pack)
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		Destroy_Halo_And_Wings(client, 3);
+		Destroy_Halo_And_Wings(client);
 		h_TimerFantasyManagement[client] = null;
 		return Plugin_Stop;
 	}	
@@ -255,7 +253,7 @@ static void Fantasy_Blade_Loop_Logic(int client, int weapon)
 	}
 	else
 	{
-		Destroy_Halo_And_Wings(client, 3);
+		Destroy_Halo_And_Wings(client);
 	}
 }
 static void Fantasy_Show_Hud(int client, float GameTime, int pap)
@@ -462,7 +460,7 @@ static int i_wing_particles[MAXTF2PLAYERS+1][6];
 
 static int i_halo_particles[MAXTF2PLAYERS+1];
 			
-static void Create_Halo_And_Wings(int client, bool first=false)
+static void Create_Halo_And_Wings(int client)
 {
 	//Ty artvin <3
 	
@@ -470,11 +468,14 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 
 	if(!IsValidEntity(viewmodelModel))
+	{
+		Destroy_Halo_And_Wings(client);
 		return;
+	}
 		
 	if(AtEdictLimit(EDICT_PLAYER))
 	{
-		Destroy_Halo_And_Wings(client, 3);
+		Destroy_Halo_And_Wings(client);
 		return;
 	}
 
@@ -489,60 +490,25 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 		}
 	}
 	
-	if(first)
-	{
-		if(pap>=1)
-		{
-			bool do_new = false;
-			int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
-			
-			if(!IsValidEntity(halo_particle))
-				do_new = true;
-			if(do_new)
-				Create_Halo(client);
-		}
-		if(pap>=2)
-		{
-			bool do_new = false;
-			for(int i=0 ; i < 6 ; i++)
-			{
-				int wing_laser = EntRefToEntIndex(i_wing_lasers[client][i]);
-				if(!IsValidEntity(wing_laser))
-				{
-					do_new = true;
-				}
-			}	
-			for(int i=0 ; i < 6 ; i++)
-			{
-				int wing_particle = EntRefToEntIndex(i_wing_particles[client][i]);
-				if(!IsValidEntity(wing_particle))
-				{
-					do_new = true;
-				}
-			}
-			if(do_new)
-				Create_Wings(client,viewmodelModel);
-		}
-		
-		return;
-	}
-	if(pap>=1)
+	if(pap == 1)
 	{
 		bool do_new = false;
 		int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
 		
 		if(!IsValidEntity(halo_particle))
 			do_new = true;
-		if(do_new)
-		{
-			Destroy_Halo_And_Wings(client, 2);
-			Create_Halo(client);
-		}
 		
+		if(do_new)
+			Create_Halo(client);
 	}
-	if(pap>=2)
+	if(pap == 2)
 	{
 		bool do_new = false;
+		int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
+		
+		if(!IsValidEntity(halo_particle))
+			do_new = true;
+	
 		for(int i=0 ; i < 6 ; i++)
 		{
 			int wing_laser = EntRefToEntIndex(i_wing_lasers[client][i]);
@@ -561,15 +527,11 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 		}
 		if(do_new)
 		{
-			Destroy_Halo_And_Wings(client, 1);
+			Destroy_Halo_And_Wings(client);
+			Create_Halo(client);
 			Create_Wings(client,viewmodelModel);
 		}
-		
 	}
-	
-	
-		
-	
 }
 
 static void Create_Halo(int client)
@@ -584,16 +546,16 @@ static void Create_Halo(int client)
 
 	if(AtEdictLimit(EDICT_PLAYER))
 	{
-		Destroy_Halo_And_Wings(client, 3);
+		Destroy_Halo_And_Wings(client);
 		return;
 	}
-		
+
 	GetAttachment(viewmodelModel, "head", flPos, flAng);
 	flPos[2] += 10.0;
 	int particle = ParticleEffectAt(flPos, "unusual_symbols_parent_ice", 0.0);
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(viewmodelModel, particle, "head");
-	i_halo_particles[client] = EntRefToEntIndex(particle);
+	i_halo_particles[client] = EntIndexToEntRef(particle);
 }
 static void Create_Wings(int client, int viewmodelModel)
 {
@@ -660,35 +622,27 @@ static void Create_Wings(int client, int viewmodelModel)
 	i_wing_particles[client][5] = EntIndexToEntRef(particle_0);
 	
 }
-static void Destroy_Halo_And_Wings(int client, int type)
+static void Destroy_Halo_And_Wings(int client)
 {
-	if(type==1 || type == 3)
+	for(int i=0 ; i < 6 ; i++)
 	{
-		
-		
-		for(int i=0 ; i < 6 ; i++)
+		int wing_laser = EntRefToEntIndex(i_wing_lasers[client][i]);
+		if(IsValidEntity(wing_laser))
 		{
-			int wing_laser = EntRefToEntIndex(i_wing_lasers[client][i]);
-			if(IsValidEntity(wing_laser))
-			{
-				RemoveEntity(wing_laser);
-			}
-		}	
-		for(int i=0 ; i < 6 ; i++)
+			RemoveEntity(wing_laser);
+		}
+	}	
+	for(int i=0 ; i < 6 ; i++)
+	{
+		int wing_particle = EntRefToEntIndex(i_wing_particles[client][i]);
+		if(IsValidEntity(wing_particle))
 		{
-			int wing_particle = EntRefToEntIndex(i_wing_particles[client][i]);
-			if(IsValidEntity(wing_particle))
-			{
-				RemoveEntity(wing_particle);
-			}
+			RemoveEntity(wing_particle);
 		}
 	}
-	if(type==2 || type == 3)
-	{
-		int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
-		if(IsValidEntity(halo_particle))
-			RemoveEntity(halo_particle);
-	}
+	int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
+	if(IsValidEntity(halo_particle))
+		RemoveEntity(halo_particle);
 }
 			
 		  ////////////////////
