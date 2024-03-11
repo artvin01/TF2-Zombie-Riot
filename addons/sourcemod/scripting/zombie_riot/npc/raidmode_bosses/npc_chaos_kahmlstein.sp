@@ -118,6 +118,10 @@ void ChaosKahmlstein_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
+
+	//sound is also used somewhere else
+	//for example, a weapon.
+	PrecacheSoundCustom("zombiesurvival/internius/blinkarrival.wav");
 }
 
 static void ClotPrecache()
@@ -140,7 +144,6 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_BobSuperMeleeCharge_Hit);
 	PrecacheSoundArray(g_BobSuperMeleeCharge);
 	PrecacheSoundCustom("#zombiesurvival/internius/khamlstein.mp3");
-	PrecacheSoundCustom("zombiesurvival/internius/blinkarrival.wav");
 	PrecacheSound("player/taunt_knuckle_crack.wav");
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
 }
