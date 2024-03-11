@@ -254,7 +254,7 @@ enum
 }
 
 static bool InRogueMode;
-static int RogueStyle;
+static int RogueTheme;
 
 static ArrayList Voting;
 static float VoteEndTime;
@@ -281,6 +281,7 @@ static int CurrentIngots;
 static int BonusLives;
 static int BattleIngots;
 static bool RequiredBattle;
+static int CurrentChaos;
 
 static int CurseOne = -1;
 static int CurseTwo = -1;
@@ -370,9 +371,10 @@ bool Rogue_NoDiscount()
 
 void Rogue_MapStart()
 {
-	RogueStyle = 0;
+	RogueTheme = 0;
 	InRogueMode = false;
 	Zero(f_ProvokedAngerCD);
+	Rogue_Paradox_MapStart();
 }
 
 void Rogue_SetupVote(KeyValues kv)
@@ -402,7 +404,7 @@ void Rogue_SetupVote(KeyValues kv)
 	kv.Rewind();
 	kv.JumpToKey("Rogue");
 
-	RogueStyle = kv.GetNum("roguestyle");
+	RogueTheme = kv.GetNum("roguestyle");
 
 	Floor floor;
 
@@ -703,6 +705,7 @@ void Rogue_RoundEnd()
 	delete CurrentExclude;
 	delete CurrentMissed;
 	CurrentIngots = 0;
+	CurrentChaos = 0;
 	BonusLives = 0;
 
 	if(CurrentCollection)
@@ -2179,6 +2182,17 @@ void Rogue_AddBonusLife(int amount)
 	Waves_UpdateMvMStats();
 }
 
+int Rogue_GetChaos()
+{
+	return CurrentChaos;
+}
+
+void Rogue_AddChaos(int amount)
+{
+	CurrentChaos += amount;
+	Waves_UpdateMvMStats();
+}
+
 bool Rogue_InSetup()	// Waves_InSetup()
 {
 	return (GameState == State_Setup || ProgressTimer);
@@ -2278,16 +2292,24 @@ bool Rogue_UpdateMvMStats(int mvm, int m_currentWaveStats, int m_runningTotalWav
 				case 0:
 				{
 					Waves_SetWaveClass(objective, i, BonusLives, "medic", MVM_CLASS_FLAG_MINIBOSS, true);
+					continue;
 				}
 				case 1:
 				{
 					Waves_SetWaveClass(objective, i, CurrentIngots, "rogue_ingots", MVM_CLASS_FLAG_NORMAL, true);
+					continue;
 				}
-				default:
+				case 2:
 				{
-					Waves_SetWaveClass(objective, i);
+					if(RogueTheme == BlueParadox)
+					{
+						Waves_SetWaveClass(objective, i, CurrentChaos, "robo_extremethreat", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+						continue;
+					}
 				}
 			}
+
+			Waves_SetWaveClass(objective, i);
 		}
 	}
 
@@ -2412,3 +2434,5 @@ bool IS_MusicReleasingRadio()
 #include "roguelike/shield_items.sp"
 #include "roguelike/on_ability_use.sp"
 #include "roguelike/hand_of_elder_mages.sp"
+
+#include "roguelike/paradox_theme.sp"

@@ -40,7 +40,8 @@ void WinterSkinHunter_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Interitus;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	int id = NPC_Add(data);
+	Rogue_Paradox_AddWinterNPC(id);
 }
 
 
