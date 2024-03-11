@@ -91,6 +91,7 @@ static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 static float fl_LifelossReload[MAXENTITIES];
 static float fl_TheFinalCountdown[MAXENTITIES];
 static float fl_TheFinalCountdown2[MAXENTITIES];
+static bool b_winline;
 
 static bool b_Are_we_reloading[MAXENTITIES];
 
@@ -376,6 +377,8 @@ methodmap Blitzkrieg < CClotBody
 			2 = Melee Run.
 		*/
 //		npc.m_flPlayMusicSound = 0.0;
+
+		b_winline = false;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
@@ -635,10 +638,12 @@ static void ClotThink(int iNPC)
 			}
 		}
 	}
-	/*
-	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND && !b_winline)
 	{
 		b_timer_lose[npc.index] = true;
+
+		b_winline=true;
 		
 		switch(GetRandomInt(0,4))
 		{
@@ -661,7 +666,7 @@ static void ClotThink(int iNPC)
 		}
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
-	}*/
+	} 
 	if(RaidModeTime < GetGameTime() && !b_lost)	//warp
 	{
 		
