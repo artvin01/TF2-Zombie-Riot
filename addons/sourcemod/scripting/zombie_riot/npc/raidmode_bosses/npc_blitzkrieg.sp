@@ -1945,7 +1945,7 @@ public void BlitzLight_Invoke(int ref, float timer, float charge)
 		TickCount_Stage2[npc.index]=RoundToFloor(((timer/3)+charge)*66);
 		TickCount_Stage3[npc.index]=RoundToFloor((((timer/3)*2)+charge)*66);
 
-		if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+		if(b_lost)
 		{
 			BlitzLight_Scale1[npc.index] *=2.5;
 			BlitzLight_Scale2[npc.index] *=2.5;
