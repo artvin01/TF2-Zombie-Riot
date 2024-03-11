@@ -635,7 +635,7 @@ static void ClotThink(int iNPC)
 			}
 		}
 	}
-	
+	/*
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
 		b_timer_lose[npc.index] = true;
@@ -661,7 +661,7 @@ static void ClotThink(int iNPC)
 		}
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
-	}
+	}*/
 	if(RaidModeTime < GetGameTime() && !b_lost)	//warp
 	{
 		
