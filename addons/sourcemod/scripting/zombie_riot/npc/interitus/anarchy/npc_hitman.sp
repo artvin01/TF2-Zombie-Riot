@@ -292,16 +292,12 @@ void AnarchyHitmanSelfDefense(AnarchyHitman npc, float gameTime, int target, flo
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 250.0;
+					float damageDealt = 175.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 10.5;
+						damageDealt *= 8.5;
 
 					
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					if(!NpcStats_IsEnemySilenced(npc.index))
-					{
-						Sakratan_AddNeuralDamage(target, npc.index, 100, true);
-					}
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
