@@ -94,22 +94,14 @@ For both linux and Windows, not all linux gamedata might be here.
 The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot to run:
 
 - [Nosoop's TF2Attribute fork](https://github.com/nosoop/tf2attributes)
-- [TF2Items](https://github.com/asherkin/TF2Items)
-- [CollisionHookFIX](https://github.com/SlidyBat/CollisionHook) THIS IS A GAMEDATA FIX FOR...
-- [CollisionHook](https://github.com/Adrianilloo/Collisionhook)
+- [TF2Items](https://builds.limetech.io/?project=tf2items)
+- [CollisionHookFIX](https://github.com/voided/CollisionHook)
 - [TFEconData](https://github.com/nosoop/SM-TFEconData)
 - [CBaseNpc](https://github.com/TF2-DMB/CBaseNPC)
 - [Timescale Windows Fix](https://forums.alliedmods.net/showthread.php?t=324264) Not needed if you are on linux.
 - [TF2Utils](https://github.com/nosoop/SM-TFUtils)
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)
 - [some Gamedata and source scramble](https://github.com/sapphonie/tf2-edict-limiter/releases/tag/v3.0.4)
-
-### Supported
-
-The SourceMod plugins / extensions listed below are not necessary for TF2 Zombie Riot to run but are supported nevertheless:
-
-- [Text-Store](https://github.com/Batfoxkid/Text-Store)
-- [Minecraft-TF2](https://github.com/Batfoxkid/Minecraft-TF2/tree/logic)
 
 ## Credits
 

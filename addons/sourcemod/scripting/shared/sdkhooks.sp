@@ -1682,8 +1682,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #if defined ZR
 		if(RaidbossIgnoreBuildingsLogic(1) && i_HealthBeforeSuit[victim] > 0)
 		{
-			Replicated_Damage *= 5.0; //when a raid is alive, make quantum armor 8x as bad at tanking.
-			damage *= 5.0;	
+			Replicated_Damage *= 3.0; //when a raid is alive, make quantum armor 8x as bad at tanking.
+			damage *= 3.0;	
 		}
 #endif
 		if(f_EmpowerStateOther[victim] > GameTime) //Allow stacking.

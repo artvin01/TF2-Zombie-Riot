@@ -8284,7 +8284,10 @@ void Building_Check_ValidSupportcount(int client)
 {
 	if(i_HealthBeforeSuit[client] > 0)
 		return;
-	
+		
+	if(f_HealthBeforeSuittime[client] > GetGameTime())
+		return;
+
 	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 	{
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
