@@ -1137,7 +1137,7 @@ static Action Railgun_Think(int client)
 
 	float Angles = Cosmic_Terror_Angle[client];
 
-	Loc[2]+=5.0;
+	Loc[2]+=2.0;
 
 	int color[4] = {0, 150, 255, 150};
 	float thicc = 3.0;
@@ -1159,7 +1159,7 @@ static Action Railgun_Think(int client)
 
 			Get_Fake_Forward_Vec(Range, tempAngles, EndLoc, Loc);
 
-			TE_SetupGlowSprite(EndLoc, gGlow1, COSMIC_TERROR_TE_DELAY, 0.75, 75);
+			TE_SetupGlowSprite(EndLoc, gGlow1, COSMIC_TERROR_TE_DELAY, 0.5, 50);
 			TE_SendToClient(client);
 		}
 	}
@@ -1181,7 +1181,7 @@ static Action Railgun_Think(int client)
 
 			Get_Fake_Forward_Vec(Range, tempAngles, EndLoc, Loc);
 
-			TE_SetupGlowSprite(EndLoc, gGlow1, COSMIC_TERROR_TE_DELAY, 0.75, 75);
+			TE_SetupGlowSprite(EndLoc, gGlow1, COSMIC_TERROR_TE_DELAY, 0.5, 50);
 			TE_SendToClient(client);
 		}
 	}
