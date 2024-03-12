@@ -315,10 +315,6 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Gun_MessengerTouch(entity, target);
 		}
-		case WEAPON_COSMIC_RAILCANNON:
-		{
-			
-		}
 	}
 }
 #endif

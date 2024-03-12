@@ -1015,7 +1015,7 @@ static void Railgun_Fire(int client)
 	Sky_Loc[0]+=GetRandomFloat(-150.0,150.0);
 	Sky_Loc[1]+=GetRandomFloat(-150.0,150.0);
 
-	float Time = 2.5;
+	float Time = 1.0;
 	float Thicc1 = 50.0;
 	float Thicc2 = 75.0;
 
@@ -1035,6 +1035,8 @@ static void Railgun_Fire(int client)
 			
 		TE_SetupBeamPoints(EndLoc, Sky_Loc, BeamWand_Laser, 0, 0, 0, Time, Thicc1, Thicc2, 0, 1.0, color, 1);
 		TE_SendToAll();	
+
+		Loc = EndLoc;
 	}
 	else
 	{
@@ -1050,38 +1052,59 @@ static void Railgun_Fire(int client)
 
 	float dist = GetVectorDistance(Sky_Loc, Loc);
 
-	float Travel_Time = 0.5;
+	float Travel_Time = 0.75;
 
 	float speed = dist/Travel_Time;
 
 	float damage = 1000.0;
 
-	int projectile = Wand_Projectile_Spawn(client, speed, Travel_Time+1.0, damage, WEAPON_COSMIC_RAILCANNON, -1, "", ang_Look, false , Sky_Loc);
+	float Radius = 75.0;
 
-	ApplyCustomModelToWandProjectile(projectile, COSMIC_RAILGUN_PROJECTILE_MODEL, 2.0, "");
+
+
+	int projectile = Wand_Projectile_Spawn(client, speed, Travel_Time+1.0, damage, 0, -1, "", ang_Look, false , Sky_Loc);
+
+	int ModelApply = ApplyCustomModelToWandProjectile(projectile, COSMIC_RAILGUN_PROJECTILE_MODEL, 4.0, "");
+
+	b_ProjectileCollideIgnoreWorld[projectile] = true;
+	SetEntityMoveType(projectile, MOVETYPE_NOCLIP);
+
+	Handle data;
+	CreateDataTimer(Travel_Time, Railgun_Explosion, data, TIMER_FLAG_NO_MAPCHANGE);	//a basic ion timer
+	WritePackFloat(data, Loc[0]);
+	WritePackFloat(data, Loc[1]);
+	WritePackFloat(data, Loc[2]);
+	WritePackFloat(data, Radius);
+	WritePackFloat(data, damage);
+	WritePackCell(data, EntIndexToEntRef(client));
+	WritePackCell(data, EntIndexToEntRef(projectile));
+
+	float angles[3];
+	GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
+	angles[1]+=180.0;
+	TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
 }
-public void Cosmic_Railgun_Touch(int entity, int target)
+
+static Action Railgun_Explosion(Handle Smite_Logic, DataPack data)
 {
-	if (target > 0)	
-	{
-		//Code to do damage position and ragdolls
-		static float angles[3];
-		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
-		float vecForward[3];
-		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		static float Entity_Position[3];
-		WorldSpaceCenter(target, Entity_Position);
+	ResetPack(data);
 		
-		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	float startPosition[3];
+	startPosition[0] = ReadPackFloat(data);
+	startPosition[1] = ReadPackFloat(data);
+	startPosition[2] = ReadPackFloat(data);
+	float Radius = ReadPackFloat(data);
+	float dmg = ReadPackFloat(data);
 
-		Explode_Logic_Custom(f_WandDamage[entity], owner, owner, -1, Entity_Position, 100.0);
+	int client = EntRefToEntIndex(ReadPackCell(data));
+	int projectile = EntRefToEntIndex(ReadPackCell(data));
 
-	}
-	else if(target == 0)
-	{
+	Explode_Logic_Custom(dmg, client, client, -1, startPosition, Radius);
 
-	}
-	return;
+	RemoveEntity(projectile);
+
+	return Plugin_Stop;
+
 }
 
 static Action Railgun_Think(int client)
