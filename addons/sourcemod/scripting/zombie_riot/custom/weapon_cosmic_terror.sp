@@ -10,8 +10,15 @@ static float Cosmic_BeamLoc[MAXPLAYERS+1][3];
 static float Cosmic_Terror_Hud_Delay[MAXPLAYERS+1] = {0.0, ...};
 static float Cosmic_Terror_Trace_Delay[MAXPLAYERS+1] = {0.0, ...};
 
+static int i_Railcannon_ammo[MAXTF2PLAYERS];
+static float fl_Ammo_Gain_Timer[MAXTF2PLAYERS];
+static float fl_Railcannon_recharge[MAXTF2PLAYERS];
+static float fl_recently_added_heat[MAXTF2PLAYERS];
+
 static char gLaser1;
 static int BeamWand_Laser;
+
+#define COSMIC_RAILGUN_PROJECTILE_MODEL "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl"
 
 #define SND_WELD_SOUND		"ambient/energy/weld1.wav"
 #define COSMIC_TERROR_TE_DELAY 0.08
@@ -22,6 +29,11 @@ static char gGlow1;	//blue
 
 void Cosmic_Map_Precache()
 {
+	Zero(fl_recently_added_heat);
+	Zero(i_Railcannon_ammo);
+	Zero(fl_Ammo_Gain_Timer);
+	Zero(fl_Railcannon_recharge);
+	PrecacheModel(COSMIC_RAILGUN_PROJECTILE_MODEL);
 	PrecacheSound(SND_WELD_SOUND, true);
 	PrecacheSound(SND_CLIENT_COSMIC_TERROR_OVERHEAT_SOUND, true);
 	PrecacheSound(SND_CLIENT_COSMIC_TERROR_SOUND, true);
@@ -207,7 +219,7 @@ public Action Cosmic_Activate_Tick(int client)
 	if(IsValidClient(client))
 	{
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(IsValidEntity(weapon) && i_CustomWeaponEquipLogic[weapon]==8)
+		if(IsValidEntity(weapon) && i_CustomWeaponEquipLogic[weapon]==WEAPON_COSMIC_TERROR)
 		{
 			int new_ammo = GetAmmo(client, 23);
 			if(new_ammo >= 5)
@@ -307,7 +319,7 @@ public Action Cosmic_Heat_Tick(int client)
 		Cosmic_Terror_Cooling_Reset[client]=true;
 		if(Cosmic_Terror_Hud_Delay[client]<GetGameTime())
 		{
-			if(IsValidEntity(weapon) && i_CustomWeaponEquipLogic[weapon]==8)	//Checks if the wep is indeed cosmic terror.
+			if(IsValidEntity(weapon) && i_CustomWeaponEquipLogic[weapon]==WEAPON_COSMIC_TERROR)	//Checks if the wep is indeed cosmic terror.
 			{
 				int Heat = RoundToFloor((Cosmic_Heat[client]*100)/Cosmic_Heat_Max[client]);
 				if(Cosmic_Terror_Are_we_Cooling[client])
@@ -327,7 +339,7 @@ public Action Cosmic_Heat_Tick(int client)
 		if(Cosmic_Heat[client]<=0)
 		{
 			Cosmic_Heat[client]=0;
-			if(IsValidEntity(weapon) && i_CustomWeaponEquipLogic[weapon]==8)	//Checks if the wep is indeed cosmic terror.
+			if(IsValidEntity(weapon) && i_CustomWeaponEquipLogic[weapon]==WEAPON_COSMIC_TERROR)	//Checks if the wep is indeed cosmic terror.
 			{
 				PrintHintText(client,"Fully Cooled Down", Cosmic_Heat[client]);
 			}
@@ -827,4 +839,485 @@ public void Cosmic_Terror_Do_Dmg(int client)
 	{
 		Cosmic_Dmg_Throttle[client]++;
 	}
+}
+
+static Handle h_Cosmic_Weapons_Managment[MAXPLAYERS+1] = {null, ...};
+static float fl_hud_timer[MAXTF2PLAYERS+1];
+
+//Railgun
+
+#define RAILCANNON_MAX_AMMO 3
+
+static bool b_Railgun_Charging[MAXTF2PLAYERS];
+static float fl_railgun_chargetime[MAXTF2PLAYERS];
+static float fl_Railgun_charge[MAXTF2PLAYERS];
+#define RAILGUN_INNACURACY_RANGE 250.0
+
+//Pillars
+
+public void Activate_Cosmic_Weapons(int client, int weapon)
+{
+	if (h_Cosmic_Weapons_Managment[client] != null)
+	{
+		//This timer already exists.
+		if(IsCosmic(weapon, client))
+		{
+			//Is the weapon it again?
+			//Yes?
+			delete h_Cosmic_Weapons_Managment[client];
+			h_Cosmic_Weapons_Managment[client] = null;
+			DataPack pack;
+			h_Cosmic_Weapons_Managment[client] = CreateDataTimer(0.1, Timer_Cosmic_Managment, pack, TIMER_REPEAT);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+			fl_hud_timer[client]=0.0;
+		}
+		return;
+	}
+	
+	if(IsCosmic(weapon, client))
+	{
+		DataPack pack;
+		h_Cosmic_Weapons_Managment[client] = CreateDataTimer(0.1, Timer_Cosmic_Managment, pack, TIMER_REPEAT);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		Cosmic_Heat[client] = 0;
+		fl_hud_timer[client]=0.0;
+	}
+}
+static bool IsCosmic(int weapon, int client)
+{
+	if(i_CustomWeaponEquipLogic[weapon]==WEAPON_COSMIC_PILLAR)
+	{
+		int pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		if(pap==1)
+		{
+			Cosmic_Heat_Max[client] = 500.0;
+		}
+		else if(pap==2)
+		{
+			Cosmic_Heat_Max[client] = 1000.0;
+		}
+		Cosmic_Terror_Pap[client] = pap;
+		return true;
+	}
+	else if(i_CustomWeaponEquipLogic[weapon]==WEAPON_COSMIC_RAILCANNON)
+	{
+		Kill_Railgun(client);
+		int pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		if(pap==1)
+		{
+			Cosmic_Heat_Max[client] = 100.0;
+			fl_railgun_chargetime[client] = 7.5;
+		}
+		else if(pap==2)
+		{
+			Cosmic_Heat_Max[client] = 200.0;
+			fl_railgun_chargetime[client] = 4.5;
+		}
+		Cosmic_Terror_Pap[client] = pap;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+static Action Timer_Cosmic_Managment(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	{
+		h_Cosmic_Weapons_Managment[client] = null;
+		return Plugin_Stop;
+	}
+	
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+	{
+		switch(i_CustomWeaponEquipLogic[weapon])
+		{
+			case WEAPON_COSMIC_PILLAR:
+			{
+				Pillar_Logic(client, weapon);
+			}
+			case WEAPON_COSMIC_RAILCANNON:
+			{
+				Railcannon_Logic(client, weapon);
+			}
+			default:
+			{
+				CPrintToChatAll("cosmic hud fuckup, scream");
+				h_Cosmic_Weapons_Managment[client] = null;
+				return Plugin_Stop;
+			}
+		}
+	}
+	else
+	{
+		if(i_CustomWeaponEquipLogic[weapon]==WEAPON_COSMIC_PILLAR)
+		{
+			Kill_Pillars(client);
+		}
+		else if(i_CustomWeaponEquipLogic[weapon]==WEAPON_COSMIC_RAILCANNON)
+		{
+			Kill_Railgun(client);
+		}
+	}
+
+	return Plugin_Continue;
+}
+static void Kill_Pillars(int client)
+{
+
+}
+static void Kill_Railgun(int client)
+{
+	SDKUnhook(client, SDKHook_PreThink, Railgun_Think);
+	b_Railgun_Charging[client]=false;
+}
+
+public void Cosmic_Terror_Railgun(int client, int weapon, bool &result, int slot)
+{
+	if(b_Railgun_Charging[client])
+	{	
+		Kill_Railgun(client);
+		Railgun_Fire(client);
+	}
+	else
+	{
+		float GameTime = GetGameTime();
+
+		Cosmic_Terror_Trace_Delay[client] = 0.0;
+		b_Railgun_Charging[client]=true;
+		fl_Railgun_charge[client] = GameTime;
+		SDKHook(client, SDKHook_PreThink, Railgun_Think);
+	}
+}
+
+static void Railgun_Fire(int client)
+{
+	float Loc[3];
+	Do_Cosmic_Trace(client, Loc);
+
+	float GameTime = GetGameTime();
+
+	float Ratio = 1.0-(GameTime - fl_Railgun_charge[client])/fl_railgun_chargetime[client];
+
+	int color[4] = {0, 150, 255, 150};
+
+	float Sky_Loc[3];
+	Sky_Loc = Loc;
+	Sky_Loc[2]+=GetRandomFloat(750.0,1500.0);
+	Sky_Loc[0]+=GetRandomFloat(-150.0,150.0);
+	Sky_Loc[1]+=GetRandomFloat(-150.0,150.0);
+
+	float Time = 2.5;
+	float Thicc1 = 50.0;
+	float Thicc2 = 75.0;
+
+	Cosmic_Heat[client] += 25;
+
+	fl_recently_added_heat[client] = GetGameTime() + 2.5;
+
+	if(Ratio > 0.0)
+	{
+		float tempAngles[3], EndLoc[3];
+		tempAngles[0] = 0.0;
+		tempAngles[1] = GetRandomFloat(0.0,360.0);
+		tempAngles[2] = 0.0;
+
+		Get_Fake_Forward_Vec(RAILGUN_INNACURACY_RANGE*Ratio, tempAngles, EndLoc, Loc);
+
+			
+		TE_SetupBeamPoints(EndLoc, Sky_Loc, BeamWand_Laser, 0, 0, 0, Time, Thicc1, Thicc2, 0, 1.0, color, 1);
+		TE_SendToAll();	
+	}
+	else
+	{
+		TE_SetupBeamPoints(Loc, Sky_Loc, BeamWand_Laser, 0, 0, 0, Time, Thicc1, Thicc2, 0, 1.0, color, 1);
+		TE_SendToAll();	
+		TE_SetupGlowSprite(Loc, gGlow1, Time, 0.75, 75);
+		TE_SendToClient(client);
+	}
+
+	float ang_Look[3];
+	MakeVectorFromPoints(Sky_Loc, Loc, ang_Look);
+	GetVectorAngles(ang_Look, ang_Look);
+
+	float dist = GetVectorDistance(Sky_Loc, Loc);
+
+	float Travel_Time = 0.5;
+
+	float speed = dist/Travel_Time;
+
+	float damage = 1000.0;
+
+	int projectile = Wand_Projectile_Spawn(client, speed, Travel_Time+1.0, damage, WEAPON_COSMIC_RAILCANNON, -1, "", ang_Look, false , Sky_Loc);
+
+	ApplyCustomModelToWandProjectile(projectile, COSMIC_RAILGUN_PROJECTILE_MODEL, 2.0, "");
+}
+public void Cosmic_Railgun_Touch(int entity, int target)
+{
+	if (target > 0)	
+	{
+		//Code to do damage position and ragdolls
+		static float angles[3];
+		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
+		float vecForward[3];
+		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+		static float Entity_Position[3];
+		WorldSpaceCenter(target, Entity_Position);
+		
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+
+		Explode_Logic_Custom(f_WandDamage[entity], owner, owner, -1, Entity_Position, 100.0);
+
+	}
+	else if(target == 0)
+	{
+
+	}
+	return;
+}
+
+static Action Railgun_Think(int client)
+{
+	float GameTime = GetGameTime();
+
+	float Ratio = 1.0-(GameTime - fl_Railgun_charge[client])/fl_railgun_chargetime[client];
+
+	float Extra_Visual_Range = 75.0;
+
+	float Loc[3];
+
+	if(Cosmic_Terror_Trace_Delay[client] < GameTime)
+	{
+		Cosmic_Terror_Trace_Delay[client] = GameTime + 0.1;
+		Do_Cosmic_Trace(client, Loc);
+		Cosmic_Terror_Last_Known_Loc[client] = Loc;
+	}
+	else
+	{
+		Loc = Cosmic_Terror_Last_Known_Loc[client];
+	}
+
+	Cosmic_Terror_Angle[client] += 1.25;
+				
+	if (Cosmic_Terror_Angle[client] >= 360.0)
+	{
+		Cosmic_Terror_Angle[client] = 0.0;
+	}
+
+	float Angles = Cosmic_Terror_Angle[client];
+
+	Loc[2]+=5.0;
+
+	int color[4] = {0, 150, 255, 150};
+	float thicc = 3.0;
+	if(Ratio > 0.0)
+	{
+		float Range = RAILGUN_INNACURACY_RANGE * Ratio+Extra_Visual_Range;
+
+		TE_SetupBeamRingPoint(Loc, Range*2.0, Range*2.0+1.0, gLaser1, gLaser1, 0, 1, COSMIC_TERROR_TE_DELAY, thicc, 0.1, color, 1, 0);
+		TE_SendToAll();
+
+		int Spam_Amt = 3;
+
+		for(int i=0 ; i < Spam_Amt ; i++)
+		{
+			float tempAngles[3], EndLoc[3];
+			tempAngles[0] = 0.0;
+			tempAngles[1] = Angles + (360.0/Spam_Amt)*i;
+			tempAngles[2] = 0.0;
+
+			Get_Fake_Forward_Vec(Range, tempAngles, EndLoc, Loc);
+
+			TE_SetupGlowSprite(EndLoc, gGlow1, COSMIC_TERROR_TE_DELAY, 0.75, 75);
+			TE_SendToClient(client);
+		}
+	}
+	else
+	{
+		float Range = Extra_Visual_Range;
+
+		TE_SetupBeamRingPoint(Loc, Range*2.0, Range*2.0+1.0, gLaser1, gLaser1, 0, 1, COSMIC_TERROR_TE_DELAY, thicc, 0.1, color, 1, 0);
+		TE_SendToAll();
+
+		int Spam_Amt = 3;
+
+		for(int i=0 ; i < Spam_Amt ; i++)
+		{
+			float tempAngles[3], EndLoc[3];
+			tempAngles[0] = 0.0;
+			tempAngles[1] = Angles + (360.0/Spam_Amt)*i;
+			tempAngles[2] = 0.0;
+
+			Get_Fake_Forward_Vec(Range, tempAngles, EndLoc, Loc);
+
+			TE_SetupGlowSprite(EndLoc, gGlow1, COSMIC_TERROR_TE_DELAY, 0.75, 75);
+			TE_SendToClient(client);
+		}
+	}
+
+	return Plugin_Continue;
+}
+
+static void Do_Cosmic_Trace(int client, float EndLoc[3])
+{
+	float SpawnLoc[3], EyeLoc[3];
+	GetClientEyePosition(client, EyeLoc);
+	GetClientEyeAngles(client, SpawnLoc);
+
+	Handle trace = TR_TraceRayFilterEx(EyeLoc, SpawnLoc, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
+	TR_GetEndPosition(EndLoc, trace);
+	delete trace;
+}
+
+static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
+{
+	float Direction[3];
+	
+	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(Direction, Range);
+	AddVectors(Pos, Direction, Vec_Target);
+}
+
+public void Cosmic_Terror_RailCannon(int client, int weapon, bool crit, int slot)
+{
+	float GameTime = GetGameTime();
+
+	if (Ability_Check_Cooldown(client, slot) > 0.0)
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		return;
+	}
+
+	if(i_Railcannon_ammo[client]>0)
+	{
+		Rogue_OnAbilityUse(weapon);
+		Ability_Apply_Cooldown(client, slot, 10.0);
+
+		fl_Railcannon_recharge[client] = GameTime+10.0;
+
+		i_Railcannon_ammo[client]--;
+	}
+	else
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.");
+	}
+}
+
+static void Railcannon_Logic(int client, int weapon)
+{
+	float GameTime = GetGameTime();
+
+	if(fl_hud_timer[client] < GameTime)
+	{
+		fl_hud_timer[client] = GameTime+0.5;
+
+		int Heat = RoundToFloor((Cosmic_Heat[client]*100)/Cosmic_Heat_Max[client]);
+
+		char HUDText[255] = "";
+		if(!b_Railgun_Charging[client])
+		{
+			Format(HUDText, sizeof(HUDText), "%sRailgun Offline | Heat: %i％\n", HUDText, Heat);
+		}
+		else
+		{
+			float Ratio = 100.0*(GameTime - fl_Railgun_charge[client])/fl_railgun_chargetime[client];
+			if(Ratio<=0.0)
+				Ratio=0.0;
+
+			if(Ratio>100.0)
+				Ratio = 100.0;
+
+			Format(HUDText, sizeof(HUDText), "%sRailgun Accuracy [%.0f％] | Heat: %i％\n", HUDText, Ratio, Heat);
+			
+		}
+
+		if(Cosmic_Terror_Pap[client]>1)
+		{
+			float Ratio = 100.0 - 100.0*((fl_Railcannon_recharge[client] - GameTime)/10.0); 
+			if(Ratio>100.0)
+				Ratio=100.0;
+			Format(HUDText, sizeof(HUDText), "%sRailCannon | Power: %.0f％", HUDText, Ratio);
+			Show_Railcannon_Ammo(client, HUDText);
+
+			if(fl_Ammo_Gain_Timer[client] < GameTime)
+			{
+				fl_Ammo_Gain_Timer[client] = GameTime + 90.0;
+				if(i_Railcannon_ammo[client]<RAILCANNON_MAX_AMMO)
+				{
+					i_Railcannon_ammo[client]++;
+				}
+			}
+		}
+
+		PrintHintText(client, HUDText);
+		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	}
+
+	if(fl_recently_added_heat[client] < GameTime)
+	{
+		
+		if(!b_Railgun_Charging[client])
+		{
+			fl_recently_added_heat[client] = GameTime + 0.1;
+		}
+		else
+		{
+			fl_recently_added_heat[client] = GameTime + 0.5;
+		}
+
+		if(Cosmic_Heat[client]>0)
+			Cosmic_Heat[client] -=1;
+	}
+}
+static void Show_Railcannon_Ammo(int client, char HUDText[255])
+{
+	
+	int ammo = i_Railcannon_ammo[client];
+
+
+	char Bullet = '|';
+
+	Format(HUDText, sizeof(HUDText), "%s\n[", HUDText);
+
+	for(int i =1 ; i <= ammo ; i++)
+	{
+		Format(HUDText, sizeof(HUDText), "%s {%s}", HUDText, Bullet);
+	}
+
+	Format(HUDText, sizeof(HUDText), "%s ]", HUDText);
+	
+}
+
+public void Cosmic_Terror_Pillars(int client, int weapon, bool &result, int slot)
+{
+	int new_ammo = GetAmmo(client, 23);
+	if(new_ammo >= 5)
+	{
+	
+	}
+}
+
+
+static void Pillar_Logic(int client, int weapon)
+{
+	float GameTime = GetGameTime();
 }
