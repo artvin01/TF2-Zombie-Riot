@@ -2485,11 +2485,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
 		GetVectorAngles(vecAngles, vecAngles);
 
-
+		float speed = rocket_speed;
+#if defined ZR
+		Rogue_Paradox_ProjectileSpeed(this.index, speed);
+#endif
 		
-		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
-		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
-		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
+		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*speed;
+		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*speed;
+		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-speed;
 
 		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
@@ -2541,9 +2544,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
 		GetVectorAngles(vecAngles, vecAngles);
 
-		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
-		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
-		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
+		float speed = rocket_speed;
+#if defined ZR
+		Rogue_Paradox_ProjectileSpeed(this.index, speed);
+#endif
+		
+		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*speed;
+		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*speed;
+		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-speed;
 
 		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
@@ -2618,9 +2626,15 @@ methodmap CClotBody < CBaseCombatCharacter
 			vecSwingStart[1] += vecForward[1] * 64;
 			vecSwingStart[2] += vecForward[2] * 64;
 	
-			vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*grenadespeed;
-			vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*grenadespeed;
-			vecForward[2] = Sine(DegToRad(vecAngles[0]))*-grenadespeed;
+			float speed = grenadespeed;
+
+#if defined ZR
+			Rogue_Paradox_ProjectileSpeed(this.index, speed);
+#endif
+			
+			vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*speed;
+			vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*speed;
+			vecForward[2] = Sine(DegToRad(vecAngles[0]))*-speed;
 			
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntPropEnt(entity, Prop_Send, "m_hThrower", this.index);
@@ -2655,10 +2669,15 @@ methodmap CClotBody < CBaseCombatCharacter
 		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
 		GetVectorAngles(vecAngles, vecAngles);
 
+		float speed = rocket_speed;
 		
-		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
-		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
-		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
+#if defined ZR
+		Rogue_Paradox_ProjectileSpeed(this.index, speed);
+#endif
+		
+		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*speed;
+		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*speed;
+		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-speed;
 
 		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))

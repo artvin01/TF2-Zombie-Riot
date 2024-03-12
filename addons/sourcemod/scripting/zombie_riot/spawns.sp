@@ -203,6 +203,8 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 	{
 		spawn.Cooldown = gameTime + cooldownOverride;
 	}
+
+	Rogue_Paradox_SpawnCooldown(spawn.Cooldown);
 	
 	SpawnerList.SetArray(bestIndex, spawn);
 	return true;

@@ -98,7 +98,6 @@ methodmap Vulpo < CClotBody
 		npc.m_flRangedArmor = 0.75;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flAttackHappens = 0.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_dex_arm/c_dex_arm.mdl");
 
@@ -170,33 +169,6 @@ static void ClotThink(int iNPC)
 		}
 
 		npc.StartPathing();
-		
-		if(npc.m_flAttackHappens)
-		{
-			if(npc.m_flAttackHappens < gameTime)
-			{
-				npc.m_flAttackHappens = 0.0;
-				
-				Handle swingTrace;
-				npc.FaceTowards(vecTarget, 15000.0);
-				if(npc.DoSwingTrace(swingTrace, target, _, _, _, _))
-				{
-					target = TR_GetEntityIndex(swingTrace);
-					if(target > 0)
-					{
-						float damage = 150.0;
-						if(ShouldNpcDealBonusDamage(target))
-							damage *= 1.5;
-
-						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-						Sakratan_AddNeuralDamage(target, npc.index, 300);
-					}
-				}
-
-				delete swingTrace;
-			}
-		}
 
 		if(distance < 80000.0 && npc.m_flNextMeleeAttack < gameTime)
 		{
@@ -209,9 +181,9 @@ static void ClotThink(int iNPC)
 				view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 				ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecTarget, false);
 
-				float damage = 20.0;
+				float damage = Rogue_Paradox_RedMoon() ? 40.0 : 20.0;
 				if(ShouldNpcDealBonusDamage(target))
-					damage *= 50.0;
+					damage *= Rogue_Paradox_RedMoon() ? 250.0 : 50.0;
 				
 				npc.PlayMeleeHitSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");

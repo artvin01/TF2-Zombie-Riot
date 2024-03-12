@@ -18,19 +18,10 @@ bool Rogue_HasFriendship()
 	return Friendship;
 }
 
-int Rogue_ReviveSpeed()
+void Rogue_StoryTeller_ReviveSpeed(int &amount)
 {
-	switch(BrokenBlade)
-	{
-		case 0:
-			return 1;
-		
-		case 1:
-			return 2;
-
-		default:
-			return 4;
-	}
+	if(BrokenBlade)
+		amount *= BrokenBlade * 2;
 }
 
 public void Rogue_Blademace_Ally(int entity, StringMap map)

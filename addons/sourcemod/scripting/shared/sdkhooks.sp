@@ -1908,7 +1908,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				SetEntityHealth(victim, 200);
 				if(!b_LeftForDead[victim])
 				{
-					dieingstate[victim] = 250 / Rogue_ReviveSpeed();
+					int speed = 10;
+					Rogue_ReviveSpeed(speed);
+					dieingstate[victim] = 2500 / speed;
 				}
 				else
 				{

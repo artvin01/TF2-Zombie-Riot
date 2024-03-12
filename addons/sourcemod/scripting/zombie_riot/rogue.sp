@@ -1982,6 +1982,12 @@ void Rogue_EnemySpawned(int entity)
 	}
 }
 
+void Rogue_ReviveSpeed(int &amount)
+{
+	Rogue_StoryTeller_ReviveSpeed(amount);
+	Rogue_Paradox_ReviveSpeed(amount);
+}
+
 int Rogue_GetRandomArtfiact(Artifact artifact, bool blacklist, int forcePrice = -1)
 {
 	if(!CurrentMissed)
@@ -2182,12 +2188,12 @@ void Rogue_AddBonusLife(int amount)
 	Waves_UpdateMvMStats();
 }
 
-int Rogue_GetChaos()
+stock int Rogue_GetChaos()
 {
 	return CurrentChaos;
 }
 
-void Rogue_AddChaos(int amount)
+stock void Rogue_AddChaos(int amount)
 {
 	CurrentChaos += amount;
 	Waves_UpdateMvMStats();
