@@ -471,13 +471,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	}
 	if(RaidModeTime < GetGameTime())
 	{
-		ZR_NpcTauntWinClear();
-		int entity = CreateEntityByName("game_round_win"); //You loose.
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		CPrintToChatAll("{gold}True Fusion Warrior{default}: {green}Xeno{default} virus too strong... to resist.. {crimson}join...{default}");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
@@ -1423,7 +1417,7 @@ public void TrueFusionwarrior_IOC_Invoke(int ref, int enemy)
 		static float distance=87.0; // /29 for duartion till boom
 		static float IOCDist=250.0;
 		static float IOCdamage;
-		IOCdamage= (35.0 * RaidModeScaling);
+		IOCdamage= (150.0 * RaidModeScaling);
 		
 		float vecTarget[3];
 		GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecTarget);
@@ -1434,8 +1428,8 @@ public void TrueFusionwarrior_IOC_Invoke(int ref, int enemy)
 		WritePackFloat(data, vecTarget[2]);
 		WritePackCell(data, distance); // Distance
 		WritePackFloat(data, 0.0); // nphi
-		WritePackCell(data, IOCDist); // Range
-		WritePackCell(data, IOCdamage); // Damge
+		WritePackFloat(data, IOCDist); // Range
+		WritePackFloat(data, IOCdamage); // Damge
 		WritePackCell(data, ref);
 		ResetPack(data);
 		TrueFusionwarrior_IonAttack(data);
@@ -1472,8 +1466,8 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 		startPosition[2] = ReadPackFloat(data);
 		float Iondistance = ReadPackCell(data);
 		float nphi = ReadPackFloat(data);
-		int Ionrange = ReadPackCell(data);
-		int Iondamage = ReadPackCell(data);
+		float Ionrange = ReadPackFloat(data);
+		float Iondamage = ReadPackFloat(data);
 		int client = EntRefToEntIndex(ReadPackCell(data));
 		
 		if(!IsValidEntity(client) || b_NpcHasDied[client])
@@ -1567,8 +1561,8 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 		WritePackFloat(nData, startPosition[2]);
 		WritePackCell(nData, Iondistance);
 		WritePackFloat(nData, nphi);
-		WritePackCell(nData, Ionrange);
-		WritePackCell(nData, Iondamage);
+		WritePackFloat(nData, Ionrange);
+		WritePackFloat(nData, Iondamage);
 		WritePackCell(nData, EntIndexToEntRef(client));
 		ResetPack(nData);
 		
@@ -1578,10 +1572,10 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 		{
 			startPosition[2] += 25.0;
 			if(!b_Anger[client])
-				makeexplosion(client, client, startPosition, "", Iondamage, 100);
+				makeexplosion(client, client, startPosition, "", RoundToCeil(Iondamage), 100);
 				
 			else if(b_Anger[client])
-				makeexplosion(client, client, startPosition, "", RoundToCeil(float(Iondamage) * 1.25), 120);
+				makeexplosion(client, client, startPosition, "", RoundToCeil(Iondamage * 1.25), 120);
 				
 			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);

@@ -1544,6 +1544,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						float last = roundtime.FloatValue;
 						roundtime.FloatValue = 20.0;
 
+						MVMHud_Disable();
 						int entity = CreateEntityByName("game_round_win"); 
 						DispatchKeyValue(entity, "force_map_reset", "1");
 						SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);

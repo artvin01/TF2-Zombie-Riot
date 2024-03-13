@@ -517,14 +517,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		{
 			if(IsValidEntity(RaidBossActive))
 			{
-				ZR_NpcTauntWinClear();
-				int entity = CreateEntityByName("game_round_win"); 
-				DispatchKeyValue(entity, "force_map_reset", "1");
-				SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-				DispatchSpawn(entity);
-				AcceptEntityInput(entity, "RoundWin");
-				Music_RoundEnd(entity);
-				RaidBossActive = INVALID_ENT_REFERENCE;
+				ForcePlayerLoss();
 			}
 
 			for(int client = 1; client <= MaxClients; client++)
@@ -552,32 +545,6 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		}
 		else
 		{
-			for(int client = 1; client <= MaxClients; client++)
-			{
-				if(!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client))
-				{
-					Music_Stop_All(client);
-					SetMusicTimer(client, GetTime() + 33);
-					SendConVarValue(client, sv_cheats, "1");
-				}
-			}
-			ResetReplications();
-
-			cvarTimeScale.SetFloat(0.1);
-			CreateTimer(0.5, SetTimeBack);
-			
-			char_MusicString1[0] = 0;
-			char_MusicString2[0] = 0;
-			char_RaidMusicSpecial1[0] = 0;
-
-			EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
-
-			int entity = CreateEntityByName("game_round_win"); 
-			DispatchKeyValue(entity, "force_map_reset", "1");
-			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "RoundWin");
-			RemoveAllCustomMusic();
 
 			CPrintToChatAll("{white}%s{default}: I guess you werent infected, i'm sorry.", c_NpcName[npc.index]);
 			

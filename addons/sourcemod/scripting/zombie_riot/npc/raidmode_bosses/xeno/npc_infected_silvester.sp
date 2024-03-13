@@ -538,13 +538,7 @@ static void Internal_ClotThink(int iNPC)
 	{
 		DeleteAndRemoveAllNpcs = 8.0;
 		mp_bonusroundtime.IntValue = (10 * 2);
-		ZR_NpcTauntWinClear();
-		int entity = CreateEntityByName("game_round_win"); 
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		SharedTimeLossSilvesterDuo(npc.index);
 		func_NPCThink[npc.index] = INVALID_FUNCTION;

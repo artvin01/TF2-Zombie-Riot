@@ -118,6 +118,10 @@ void ChaosKahmlstein_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
+
+	//sound is also used somewhere else
+	//for example, a weapon.
+	PrecacheSoundCustom("zombiesurvival/internius/blinkarrival.wav");
 }
 
 static void ClotPrecache()
@@ -140,7 +144,6 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_BobSuperMeleeCharge_Hit);
 	PrecacheSoundArray(g_BobSuperMeleeCharge);
 	PrecacheSoundCustom("#zombiesurvival/internius/khamlstein.mp3");
-	PrecacheSoundCustom("zombiesurvival/internius/blinkarrival.wav");
 	PrecacheSound("player/taunt_knuckle_crack.wav");
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
 }
@@ -427,7 +430,7 @@ methodmap ChaosKahmlstein < CClotBody
 			{
 				RaidModeScaling *= 0.7;
 			}
-			RaidModeScaling *= 0.7;
+			RaidModeScaling *= 0.6;
 		}
 
 		
@@ -1480,9 +1483,9 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	ChaosKahmlstein npc = view_as<ChaosKahmlstein>(victim);
-	if(npc.g_TimesSummoned < 150)
+	if(npc.g_TimesSummoned < 100)
 	{
-		int nextLoss = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 10) * (150 - npc.g_TimesSummoned) / 150;
+		int nextLoss = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 10) * (100 - npc.g_TimesSummoned) / 100;
 		if((GetEntProp(npc.index, Prop_Data, "m_iHealth") / 10) < nextLoss)
 		{
 			npc.g_TimesSummoned++;

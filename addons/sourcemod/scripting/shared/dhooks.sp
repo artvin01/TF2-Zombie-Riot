@@ -967,12 +967,12 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 			//ignores everything else if it only collides with players
-			else if(b_ProjectileCollideWithPlayerOnly[entity1])
+			else if(entity2 > MaxClients && b_ProjectileCollideWithPlayerOnly[entity1])
 			{
 				return false;
 			}
 			//ingore all on the same team, in this case red
-			else if(GetTeam(entity2) == TFTeam_Red)
+			else if(GetTeam(entity2) == TFTeam_Red && !b_ProjectileCollideWithPlayerOnly[entity1])
 			{
 				return false;
 			}
