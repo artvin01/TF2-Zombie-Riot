@@ -552,6 +552,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			NPC_StopPathing(npc.index);
 			npc.m_flNextThinkTime = FAR_FUTURE;
 			GivePlayerItems(1);
+			ForcePlayerWin();
 		}
 
 	}
