@@ -1491,8 +1491,8 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 			npc.g_TimesSummoned++;
 			if((npc.g_TimesSummoned % 25) == 0)
 			{
-				f_MessengerSpeedUp[npc.index] *= 1.02;
-				RaidModeScaling *= 1.035;
+				f_MessengerSpeedUp[npc.index] *= 1.05;
+				RaidModeScaling *= 1.05;
 				switch(GetRandomInt(0,3))
 				{
 					case 0:
@@ -1512,7 +1512,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 						CPrintToChatAll("{darkblue}Kahmlstein{default}: Keep running, that'll help.");
 					}
 				}
-				f_KahmlResTemp[npc.index] = GetGameTime() + 2.5;
+				f_KahmlResTemp[npc.index] = GetGameTime() + 3.5;
 			}
 			npc.m_flNextChargeSpecialAttack -= 0.25;
 			npc.m_flRangedSpecialDelay -= 0.25;

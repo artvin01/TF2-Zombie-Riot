@@ -301,6 +301,7 @@ int ArchosauriaSelfDefense(Archosauria npc, float gameTime)
 			{
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}
+			delete hTrace;
 		}
 	}
 	if(npc.m_flAttackHappens)
