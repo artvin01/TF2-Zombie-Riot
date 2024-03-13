@@ -866,7 +866,7 @@
 	}
 	"Fractured Ark Pap 4"
 	{
-		"en"	"Attacks are always ranged but with decreased fire rate.\nAbility changes to be able to pull, dealing 150%% of damage.\nArchetype changes to ''Abyssal Hunter''"
+		"en"	"Attacks are always ranged but with decreased fire rate.\nAbility changes to be able to pull, dealing 150%% of damage.\nYou count as a seaborn while wielding this weapon.\nArchetype changes to ''Abyssal Hunter''"
 	}
 	"Fractured Ark Pap 5"
 	{
@@ -1977,9 +1977,7 @@
 	}
 	"Fish Melee Desc"
 	{
-		"en" 	"Heals allies slowly around you and gives them a 10%% dmg buff.\nScales with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 25%% dmg buff to all allies for 15 sec."
-		"ru" 	"Медленно исцеляет союзников вокруг вас и даёт им 10%% усиление урона.\nУвеличивается с улучшением медицинской пушки.\nM1 - доп. исцеление на союзников.\nM2 - более сильное усиление урона на 25%% на всех союзников на 15 сек."
-		"chi"   "可以缓慢治疗你附近的队友，并给予他们10%%的伤害buff。\n收到医疗属性升级影响。\nM1对盟友施放额外治疗值。M2释放光波对所有队友添加25%%的伤害加成buff，持续15秒。"
+		"en" 	"Heals allies slowly around you and gives them a 10%% dmg buff.\nScales with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 25%% dmg buff to all allies for 15 sec.\nYou count as a seaborn while wielding this weapon."
 	}
 	"Lantean Staff Desc"
 	{
@@ -1995,7 +1993,7 @@
 	}
 	"Specter Pap 1"
 	{
-		"en"	"Attacks slower but hits two targets at once.\nDeals 25%% more damage againts raids.\nArchetype changes to ''Abyssal Hunter''"
+		"en"	"Attacks slower but hits two targets at once.\nDeals 25%% more damage againts raids.\nYou count as a seaborn while wielding this weapon.\nArchetype changes to ''Abyssal Hunter''"
 	}
 	"Specter Pap 2a"
 	{
