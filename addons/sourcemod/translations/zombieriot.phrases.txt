@@ -3091,4 +3091,9 @@
 		"#format"	"{1:s}"
 		"en"		"Raidboss by {1}"
 	}
+	"Now Playing Song"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"Now Playing: {1} - {2}"
+	}
 }

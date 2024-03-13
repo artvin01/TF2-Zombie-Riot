@@ -138,13 +138,8 @@ enum struct Floor
 	char ArtifactKey[64];
 	int RoomCount;
 
-	char MusicNormal[PLATFORM_MAX_PATH];
-	int TimeNormal;
-	bool CustomNormal;
-
-	char MusicCurse[PLATFORM_MAX_PATH];
-	int TimeCurse;
-	bool CustomCurse;
+	MusicEnum MusicNormal;
+	MusicEnum MusicCurse;
 
 	ArrayList Encounters;
 	ArrayList Finals;
@@ -163,35 +158,8 @@ enum struct Floor
 		kv.GetString("skyname", this.Skyname, 64);
 		kv.GetString("key", this.ArtifactKey, 64);
 
-		kv.GetString("normal_path", this.MusicNormal, PLATFORM_MAX_PATH);
-		this.TimeNormal = kv.GetNum("normal_time");
-		this.CustomNormal = view_as<bool>(kv.GetNum("normal_download"));
-		if(this.MusicNormal[0])
-		{
-			if(this.CustomNormal)
-			{
-				PrecacheSoundCustom(this.MusicNormal);
-			}
-			else
-			{
-				PrecacheSound(this.MusicNormal);
-			}
-		}
-
-		kv.GetString("curse_path", this.MusicCurse, PLATFORM_MAX_PATH);
-		this.TimeCurse = kv.GetNum("curse_time");
-		this.CustomCurse = view_as<bool>(kv.GetNum("curse_download"));
-		if(this.MusicCurse[0])
-		{
-			if(this.CustomCurse)
-			{
-				PrecacheSoundCustom(this.MusicCurse);
-			}
-			else
-			{
-				PrecacheSound(this.MusicCurse);
-			}
-		}
+		this.MusicNormal.SetupKv("normal_music", kv);
+		this.MusicCurse.SetupKv("curse_music", kv);
 
 		Stage stage;
 
@@ -485,13 +453,14 @@ void Rogue_SetupVote(KeyValues kv)
 
 	if(kv.JumpToKey("CustomSounds"))
 	{
+		char buffer[PLATFORM_MAX_PATH];
 		if(kv.GotoFirstSubKey(false))
 		{
 			do
 			{
-				kv.GetSectionName(floor.MusicNormal, sizeof(floor.MusicNormal));
-				if(floor.MusicNormal[0])
-					PrecacheSoundCustom(floor.MusicNormal, _, 15);
+				kv.GetSectionName(buffer, sizeof(buffer));
+				if(buffer[0])
+					PrecacheSoundCustom(buffer, _, 15);
 			}
 			while(kv.GotoNextKey(false));
 
@@ -1158,11 +1127,9 @@ void Rogue_NextProgress()
 
 					if(cursed)
 					{
-						strcopy(char_MusicString1, sizeof(char_MusicString1), "misc/halloween/gotohell.wav");
-						char_MusicString2[0] = 0;
-						char_RaidMusicSpecial1[0] = 0;
-						i_MusicLength1 = 9;
-						b_MusicCustom1 = false;
+						RemoveAllCustomMusic();
+						strcopy(MusicString1.Path, sizeof(MusicString1.Path), "misc/halloween/gotohell.wav");
+						MusicString1.Time = 9;
 					}
 					else
 					{
@@ -1242,8 +1209,8 @@ void Rogue_NextProgress()
 
 					TeleportToSpawn();
 
-					char_MusicString2[0] = 0;
-					char_RaidMusicSpecial1[0] = 0;
+					//MusicString2.Clear();
+					//RaidMusicSpecial1.Clear();
 				}
 				else	// We somehow ran out of normal rooms
 				{
@@ -1267,7 +1234,7 @@ void Rogue_NextProgress()
 static void SetFloorMusic(const Floor floor, bool stop)
 {
 	bool curse = CurseOne != -1 || CurseTwo != -1;
-	if(char_RaidMusicSpecial1[0] || !StrEqual(char_MusicString1, curse ? floor.MusicCurse : floor.MusicNormal))
+	if(RaidMusicSpecial1.Path[0] || !StrEqual(MusicString1.Path, curse ? floor.MusicCurse.Path : floor.MusicNormal.Path))
 	{
 		if(stop)
 		{
@@ -1281,20 +1248,15 @@ static void SetFloorMusic(const Floor floor, bool stop)
 			}
 		}
 
-		char_MusicString2[0] = 0;
-		char_RaidMusicSpecial1[0] = 0;
+		RemoveAllCustomMusic();
 
 		if(curse)
 		{
-			strcopy(char_MusicString1, sizeof(char_MusicString1), floor.MusicCurse);
-			i_MusicLength1 = floor.TimeCurse;
-			b_MusicCustom1 = floor.CustomCurse;
+			MusicString1 = floor.MusicCurse;
 		}
 		else
 		{
-			strcopy(char_MusicString1, sizeof(char_MusicString1), floor.MusicNormal);
-			i_MusicLength1 = floor.TimeNormal;
-			b_MusicCustom1 = floor.CustomNormal;
+			MusicString1 = floor.MusicNormal;
 		}
 	}
 }
@@ -1486,9 +1448,7 @@ static void StartBattle(const Stage stage, float time = 3.0)
 		}
 	}
 
-	char_MusicString1[0] = 0;
-	char_MusicString2[0] = 0;
-	char_RaidMusicSpecial1[0] = 0;
+	RemoveAllCustomMusic();
 
 	Rogue_Curse_BattleStart();
 	WaveStart_SubWaveStart(GetGameTime());

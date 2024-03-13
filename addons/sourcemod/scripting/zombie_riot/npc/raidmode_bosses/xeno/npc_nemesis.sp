@@ -252,7 +252,7 @@ methodmap RaidbossNemesis < CClotBody
 		}
 		b_thisNpcIsARaid[npc.index] = true;
 
-		Music_SetRaidMusic("#zombie_riot/320_now_1.mp3", 200, true, 1.0);
+		Music_SetRaidMusicSimple("#zombie_riot/320_now_1.mp3", 200, true, 1.0);
 		RaidModeScaling = 9999999.99;
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "??????????????????????????????????");
 		WavesUpdateDifficultyName();

@@ -390,11 +390,11 @@ methodmap ChaosKahmlstein < CClotBody
 			if(final)
 			{
 				RaidModeTime += 45.0;
-				Music_SetRaidMusic("vo/null.mp3", 30, false, 0.5);
+				Music_SetRaidMusicSimple("vo/null.mp3", 30, false, 0.5);
 			}
 			else
 			{
-				Music_SetRaidMusic("#zombiesurvival/internius/khamlstein.mp3", 294, true, 1.5);
+				Music_SetRaidMusicSimple("#zombiesurvival/internius/khamlstein.mp3", 294, true, 1.5);
 			}
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -542,7 +542,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			else
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's fight!");
-				Music_SetRaidMusic("#zombiesurvival/internius/khamlstein.mp3", 294, true, 1.5);
+				Music_SetRaidMusicSimple("#zombiesurvival/internius/khamlstein.mp3", 294, true, 1.5);
 				i_khamlCutscene[npc.index] = 0;
 			}
 		}
@@ -646,7 +646,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's begin.");
 					RaidBossActive = EntIndexToEntRef(npc.index);
 					RaidAllowsBuildings = false;
-					Music_SetRaidMusic("#zombiesurvival/internius/khamlstein.mp3", 294, true, 1.5);
+					Music_SetRaidMusicSimple("#zombiesurvival/internius/khamlstein.mp3", 294, true, 1.5);
 				}
 			}
 		}

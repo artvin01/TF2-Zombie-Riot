@@ -374,7 +374,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		{
 			strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), "You.");
 			WavesUpdateDifficultyName();
-			Music_SetRaidMusic("#zombiesurvival/bob_raid/bob.mp3", 697, true, 1.99);
+			Music_SetRaidMusicSimple("#zombiesurvival/bob_raid/bob.mp3", 697, true, 1.99);
 			npc.StopPathing();
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -1610,7 +1610,7 @@ Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &inflicto
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
 			
-			Music_SetRaidMusic("vo/null.mp3", 30, false, 0.5);
+			Music_SetRaidMusicSimple("vo/null.mp3", 30, false, 0.5);
 			npc.StopPathing();
 
 			RaidBossActive = -1;
