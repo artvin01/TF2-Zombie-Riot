@@ -3383,27 +3383,25 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 			static char buffer[64];
 			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 			{
-
 				if (GetTeam(entity) != TFTeam_Red)
 					return false;
 					
 				if(Building_Interact(client, entity, Is_Reload_Button))
 					return true;
-					
+				
+				//shouldnt invalidate clicking, makes battle hard.
 				if(Store_Girogi_Interact(client, entity, buffer, Is_Reload_Button))
-					return true;
+					return false;
 
 				if (TeutonType[client] == TEUTON_WAITING)
 					return false;
 
 				if(Escape_Interact(client, entity))
 					return true;
-				
-				//if(Store_Interact(client, entity, buffer))
-				//	return true;
 
+				//interacting with citizens shouldnt invalidate clicking, it makes battle hard.
 				if(Citizen_Interact(client, entity))
-					return true;
+					return false;
 				
 				if(Is_Reload_Button && BarrackBody_Interact(client, entity))
 					return true;

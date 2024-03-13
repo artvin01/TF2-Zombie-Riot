@@ -153,6 +153,7 @@ public void Rogue_Bladedance_Ally(int entity, StringMap map)
 		if(TeutonType[entity] != TEUTON_NONE && !dieingstate[entity])
 		{
 			BladeDancer = entity;
+			CPrintToChatAll("{crimson}The Current bladedance Wielder is %N.", BladeDancer);
 
 			float value;
 

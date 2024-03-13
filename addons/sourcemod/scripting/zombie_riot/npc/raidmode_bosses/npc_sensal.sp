@@ -484,12 +484,7 @@ static void Internal_ClotThink(int iNPC)
 		DeleteAndRemoveAllNpcs = 10.0;
 		mp_bonusroundtime.IntValue = (12 * 2);
 		ZR_NpcTauntWinClear();
-		int entity = CreateEntityByName("game_round_win"); //You loose.
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		ForcePlayerLoss();
 		npc.AddActivityViaSequence("selectionMenu_Idle");
 		npc.SetCycle(0.01);
 		RaidBossActive = INVALID_ENT_REFERENCE;

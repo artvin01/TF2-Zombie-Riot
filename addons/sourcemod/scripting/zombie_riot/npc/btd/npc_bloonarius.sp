@@ -223,12 +223,7 @@ methodmap Bloonarius < CClotBody
 	{
 		if(IsValidEntity(RaidBossActive))	// Bloon raids fail if another can't spawn
 		{
-			int entity = CreateEntityByName("game_round_win"); //You loose.
-			DispatchKeyValue(entity, "force_map_reset", "1");
-			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "RoundWin");
-			Music_RoundEnd(entity);
+			ForcePlayerLoss();
 			RaidBossActive = INVALID_ENT_REFERENCE;
 			return view_as<Bloonarius>(-1);
 		}
@@ -314,12 +309,7 @@ public void Bloonarius_ClotThink(int iNPC)
 
 	if(!npc.m_bStaticNPC && RaidModeTime < GetGameTime())
 	{
-		int entity = CreateEntityByName("game_round_win"); //You loose.
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 	}

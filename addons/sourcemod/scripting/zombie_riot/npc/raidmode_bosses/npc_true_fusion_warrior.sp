@@ -471,13 +471,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	}
 	if(RaidModeTime < GetGameTime())
 	{
-		ZR_NpcTauntWinClear();
-		int entity = CreateEntityByName("game_round_win"); //You loose.
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		CPrintToChatAll("{gold}True Fusion Warrior{default}: {green}Xeno{default} virus too strong... to resist.. {crimson}join...{default}");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;

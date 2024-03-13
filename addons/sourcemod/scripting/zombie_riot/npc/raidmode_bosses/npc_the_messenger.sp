@@ -409,13 +409,7 @@ public void TheMessenger_ClotThink(int iNPC)
 */
 	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
-		ZR_NpcTauntWinClear();
-		int entity = CreateEntityByName("game_round_win"); //You loose.
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		BlockLoseSay = true;
 		if(ZR_GetWaveCount()+1 <= 15)

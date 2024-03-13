@@ -206,12 +206,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 	{
 		if(IsValidEntity(RaidBossActive))
 		{
-			int entity = CreateEntityByName("game_round_win"); 
-			DispatchKeyValue(entity, "force_map_reset", "1");
-			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "RoundWin");
-			Music_RoundEnd(entity);
+			ForcePlayerLoss();
 			RaidBossActive = INVALID_ENT_REFERENCE;
 		}
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
@@ -440,7 +435,18 @@ public void RaidbossBladedance_NPCDeath(int entity)
 			}
 		}
 	}
-
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entitynpc = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(IsValidEntity(entitynpc))
+		{
+			if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
+			{
+				SmiteNpcToDeath(entitynpc);
+			}
+		}
+	}
+	ForcePlayerWin();
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	

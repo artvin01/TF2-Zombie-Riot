@@ -343,12 +343,7 @@ public void GodArkantos_ClotThink(int iNPC)
 				SetEntityCollisionGroup(baseboss_index, 24);
 			}
 		}
-		int entity = CreateEntityByName("game_round_win"); //You loose.
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		ForcePlayerLoss();
 		CPrintToChatAll("{lightblue}God Arkantos{default}: No.. No No!! They are comming, prepare to fight together NOW!!!");
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		for(int i; i<32; i++)
