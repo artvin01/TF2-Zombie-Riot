@@ -434,19 +434,19 @@ public void RaidbossBladedance_NPCDeath(int entity)
 				CPrintToChat(client,"{default}This battle wasnt something that should have happend. You had little to no chance... This is... {red}''Bob's True fear.''{default}!");
 			}
 		}
-	}
-	for(int i; i < i_MaxcountNpcTotal; i++)
-	{
-		int entitynpc = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(IsValidEntity(entitynpc))
+		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
+			int entitynpc = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(IsValidEntity(entitynpc))
 			{
-				SmiteNpcToDeath(entitynpc);
+				if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
+				{
+					SmiteNpcToDeath(entitynpc);
+				}
 			}
 		}
+		ForcePlayerWin();
 	}
-	ForcePlayerWin();
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	
