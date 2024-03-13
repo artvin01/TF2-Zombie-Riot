@@ -3067,4 +3067,28 @@
 	{
 		"en" "Blood pact: Off"
 	}
+	"Tags & Author"
+	{
+		"en"		"Tags & Author"
+	}
+	"Created By"
+	{
+		"#format"	"{1:s}"
+		"en"		"Created by {1}"
+	}
+	"NPCs By"
+	{
+		"#format"	"{1:s}"
+		"en"		"NPCs by {1}"
+	}
+	"Format By"
+	{
+		"#format"	"{1:s}"
+		"en"		"Format by {1}"
+	}
+	"Raidboss By"
+	{
+		"#format"	"{1:s}"
+		"en"		"Raidboss by {1}"
+	}
 }

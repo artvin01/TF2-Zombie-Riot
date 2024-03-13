@@ -561,7 +561,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	
 	Waves_ClearWaves();
 	
-	char buffer[64], plugin[64];
+	char buffer[128], plugin[64];
 
 	b_SpecialGrigoriStore = view_as<bool>(kv.GetNum("grigori_special_shop_logic"));
 	f_ExtraDropChanceRarity = kv.GetFloat("gift_drop_chance_multiplier", 0.5);
@@ -742,6 +742,20 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 				break;
 			}
 		}
+	}
+	else
+	{
+		kv.GetString("author_format", buffer, sizeof(buffer));
+		if(buffer[0])
+			PrintToChatAll("%t", "Format by", buffer);
+		
+		kv.GetString("author_npcs", buffer, sizeof(buffer));
+		if(buffer[0])
+			PrintToChatAll("%t", "NPCs by", buffer);
+		
+		kv.GetString("author_raid", buffer, sizeof(buffer));
+		if(buffer[0])
+			PrintToChatAll("%t", "Raidboss by", buffer);
 	}
 
 	Waves_UpdateMvMStats();
