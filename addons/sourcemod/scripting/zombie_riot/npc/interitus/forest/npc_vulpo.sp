@@ -137,7 +137,7 @@ static void ClotThink(int iNPC)
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
-	npc.m_flNextThinkTime = gameTime + 0.1;
+	npc.m_flNextThinkTime = gameTime + 0.15;
 
 	int target = npc.m_iTarget;
 	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
@@ -181,7 +181,7 @@ static void ClotThink(int iNPC)
 				view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 				ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecTarget, false);
 
-				float damage = Rogue_Paradox_RedMoon() ? 40.0 : 20.0;
+				float damage = Rogue_Paradox_RedMoon() ? 100.0 : 50.0;
 				if(ShouldNpcDealBonusDamage(target))
 					damage *= Rogue_Paradox_RedMoon() ? 250.0 : 50.0;
 				
@@ -190,7 +190,7 @@ static void ClotThink(int iNPC)
 
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_BULLET, _, _, vecTarget);
 
-				npc.m_flNextMeleeAttack = gameTime + 0.15;
+				npc.m_flNextMeleeAttack = gameTime + 0.14;
 			}
 		}
 	}
