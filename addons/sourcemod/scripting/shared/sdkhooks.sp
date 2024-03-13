@@ -469,9 +469,10 @@ public void OnPostThink(int client)
 		Armour_Level_Current[client] = 0;
 		if(Saga_RegenHealth(client))
 		{
+			PrintToChatAll("test");
 			if(dieingstate[client] == 0)
 			{
-				int healing_Amount = HealEntityGlobal(client, client, 10.0, 0.0, 0.0, HEAL_SELFHEAL);	
+				int healing_Amount = HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL);	
 				ApplyHealEvent(client, healing_Amount);	
 			}
 		}
