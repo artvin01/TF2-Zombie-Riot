@@ -14,7 +14,7 @@ enum struct MusicEnum
 	{
 		if(kv.JumpToKey(key))
 		{
-			kv.GetString("Path", this.Path, sizeof(this.Path));
+			kv.GetString("file", this.Path, sizeof(this.Path));
 			kv.GetString("name", this.Name, sizeof(this.Name));
 			kv.GetString("artist", this.Artist, sizeof(this.Artist));
 			this.Time = kv.GetNum("time");
