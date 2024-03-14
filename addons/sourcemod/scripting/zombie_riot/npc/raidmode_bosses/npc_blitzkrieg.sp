@@ -384,7 +384,7 @@ methodmap Blitzkrieg < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
 
-		Music_SetRaidMusic(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], 228, true);
+		Music_SetRaidMusicSimple(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], 228, true);
 		
 		npc.m_bThisNpcIsABoss = true;
 		b_lost=false;

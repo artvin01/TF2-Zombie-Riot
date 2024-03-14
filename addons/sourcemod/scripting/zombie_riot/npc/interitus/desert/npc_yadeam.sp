@@ -115,6 +115,9 @@ methodmap DesertYadeam < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 280.0;
 		Is_a_Medic[npc.index] = true;
+
+		if(Rogue_Paradox_ExtremeHeat())
+			fl_Extra_Speed[npc.index] *= 1.2;
 		
 		
 		int skin = 1;

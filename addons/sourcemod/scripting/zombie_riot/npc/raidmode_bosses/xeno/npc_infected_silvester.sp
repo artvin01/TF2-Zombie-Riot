@@ -437,7 +437,7 @@ methodmap RaidbossSilvester < CClotBody
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
-		Music_SetRaidMusic("#zombiesurvival/silvester_raid/silvester.mp3", 117, true);
+		Music_SetRaidMusicSimple("#zombiesurvival/silvester_raid/silvester.mp3", 117, true);
 		
 		npc.Anger = false;
 		//IDLE

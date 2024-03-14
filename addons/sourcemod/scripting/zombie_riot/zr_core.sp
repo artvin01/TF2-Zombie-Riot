@@ -243,17 +243,9 @@ Handle g_hSDKMakeCarriedObjectSentry;
 float f_RingDelayGift[MAXENTITIES];
 
 //custom wave music.
-char char_MusicString1[256];
-int i_MusicLength1;
-bool b_MusicCustom1;
-float f_MusicVolume1;
-char char_MusicString2[256];
-int i_MusicLength2;
-bool b_MusicCustom2;
-float f_MusicVolume2;
-char char_RaidMusicSpecial1[256];
-int i_RaidMusicLength1;
-bool b_RaidMusicCustom1;
+MusicEnum MusicString1;
+MusicEnum MusicString2;
+MusicEnum RaidMusicSpecial1;
 //custom wave music.
 float f_DelaySpawnsForVariousReasons;
 int CurrentRound;
@@ -770,14 +762,8 @@ void ZR_MapStart()
 	CreateTimer(0.5, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	CreateTimer(0.2, GetTimerAndNullifyMusicMVM_Timer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
-	char_MusicString1[0] = 0;
-	char_MusicString2[0] = 0;
-	char_RaidMusicSpecial1[0] = 0;
-			
-	i_MusicLength1 = 0;
-	i_MusicLength2 = 0;
-	i_RaidMusicLength1 = 0;
-	b_RaidMusicCustom1 = false;
+	RemoveAllCustomMusic();
+	
 	ResetMapStartSensalWeapon();
 	//This enables the MVM money hud, looks way better.
 	//SetVariantString("ForceEnableUpgrades(2)");
@@ -2484,9 +2470,9 @@ void ForcePlayerWin()
 	cvarTimeScale.SetFloat(0.1);
 	CreateTimer(0.5, SetTimeBack);
 	
-	char_MusicString1[0] = 0;
-	char_MusicString2[0] = 0;
-	char_RaidMusicSpecial1[0] = 0;
+	MusicString1.Clear();
+	MusicString2.Clear();
+	RaidMusicSpecial1.Clear();
 
 	EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 

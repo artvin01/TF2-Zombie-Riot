@@ -2275,14 +2275,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					was_reviving[client] = true;
 					f_DelayLookingAtHud[client] = GameTime + 0.5;
 					was_reviving_this[client] = target;
-					if(i_CurrentEquippedPerk[client] == 1)
-					{
-						ticks = Citizen_ReviveTicks(target, 12 * Rogue_ReviveSpeed(), client);
-					}
-					else
-					{
-						ticks = Citizen_ReviveTicks(target, 6 * Rogue_ReviveSpeed(), client);
-					}
+					int speed = i_CurrentEquippedPerk[client] == 1 ? 12 : 6;
+					Rogue_ReviveSpeed(speed);
+					ticks = Citizen_ReviveTicks(target, speed, client);
 					
 					if(ticks <= 0)
 					{
@@ -3583,17 +3578,20 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0)
 		was_reviving_this[client] = target;
 
 	f_DisableDyingTimer[target] = GameTime + 0.15;
+
+	int speed = 3;
 	if(WasClientReviving && i_CurrentEquippedPerk[client] == 1)
 	{
-		dieingstate[target] -= 12 * Rogue_ReviveSpeed();
+		speed = 12;
 	}
 	else
 	{
 		if(WasClientReviving)
-			dieingstate[target] -= 6 * Rogue_ReviveSpeed();
-		else
-			dieingstate[target] -= 3 * Rogue_ReviveSpeed();
+			speed = 6;
 	}
+
+	Rogue_ReviveSpeed(speed);
+	dieingstate[target] -= speed;
 	
 	if(dieingstate[target] <= 0)
 	{

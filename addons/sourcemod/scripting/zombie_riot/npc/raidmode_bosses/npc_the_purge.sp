@@ -233,7 +233,7 @@ methodmap ThePurge < CClotBody
 		RaidModeScaling *= 5.0;
 		RaidModeScaling *= 1.65;
 
-		Music_SetRaidMusic("#zombiesurvival/internius/the_purge.mp3", 229, true, 1.5);
+		Music_SetRaidMusicSimple("#zombiesurvival/internius/the_purge.mp3", 229, true, 1.5);
 		
 		Citizen_MiniBossSpawn();
 		return npc;

@@ -355,7 +355,7 @@ methodmap Sensal < CClotBody
 		if(!cutscene)
 		{
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
-			Music_SetRaidMusic("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3", 218, true);
+			Music_SetRaidMusicSimple("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3", 218, true);
 		}
 		npc.m_iChanged_WalkCycle = -1;
 

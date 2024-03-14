@@ -163,7 +163,7 @@ static void ClotThink(int iNPC)
 
 	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-	int minhealth = maxhealth / 4;
+	int minhealth = maxhealth / (Rogue_Paradox_RedMoon() ? 8 : 4);
 	if(health < minhealth)
 		health = minhealth;
 	

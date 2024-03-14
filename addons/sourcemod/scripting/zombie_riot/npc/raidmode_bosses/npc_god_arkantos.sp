@@ -285,7 +285,7 @@ methodmap GodArkantos < CClotBody
 
 		Citizen_MiniBossSpawn();
 		
-		Music_SetRaidMusic("#zombiesurvival/medieval_raid/kazimierz_boss.mp3", 189, true);
+		Music_SetRaidMusicSimple("#zombiesurvival/medieval_raid/kazimierz_boss.mp3", 189, true);
 
 		float flPos[3]; // original
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);

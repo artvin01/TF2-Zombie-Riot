@@ -330,7 +330,7 @@ methodmap TheMessenger < CClotBody
 
 		RaidModeScaling *= 0.5;
 		
-		Music_SetRaidMusic("#zombiesurvival/internius/messenger.mp3", 219, true, 1.25);
+		Music_SetRaidMusicSimple("#zombiesurvival/internius/messenger.mp3", 219, true, 1.25);
 		npc.m_iChanged_WalkCycle = -1;
 
 		int skin = 1;

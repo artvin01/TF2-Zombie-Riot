@@ -208,7 +208,7 @@ static void ClotThink(int iNPC)
 							if(ShouldNpcDealBonusDamage(target))
 								damage *= 5.0;
 							
-							if(IsBehindAndFacingTarget(npc.index, target) && !NpcStats_IsEnemySilenced(npc.index))
+							if(Rogue_Paradox_RedMoon() || (IsBehindAndFacingTarget(npc.index, target) && !NpcStats_IsEnemySilenced(npc.index)))
 							{
 								npc.PlayMeleeBackstabSound(target);
 								npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");

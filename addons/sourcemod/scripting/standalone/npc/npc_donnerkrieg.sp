@@ -387,7 +387,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		
 		
-		//Music_SetRaidMusic("#zombiesurvival/seaborn/donner_schwert_5.mp3", 290, true);
+		//Music_SetRaidMusicSimple("#zombiesurvival/seaborn/donner_schwert_5.mp3", 290, true);
 		
 		b_thisNpcIsARaid[npc.index] = true;
 

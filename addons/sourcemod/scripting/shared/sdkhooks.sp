@@ -467,44 +467,49 @@ public void OnPostThink(int client)
 	if(Armor_regen_delay[client] < GameTime)
 	{
 		Armour_Level_Current[client] = 0;
+
+		int healing_Amount;
+		
+		if(!Rogue_Paradox_JesusBlessing(client, healing_Amount))
+		{
+			if(Jesus_Blessing[client] == 1)
+			{
+				if(dieingstate[client] > 0)
+				{
+					healing_Amount = HealEntityGlobal(client, client, 3.0, 0.5, 0.0, HEAL_SELFHEAL);	
+				}
+				else
+				{
+					healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 100.0, 0.5, 0.0, HEAL_SELFHEAL);	
+				}
+			}
+		}
+
 		if(Saga_RegenHealth(client))
 		{
 			if(dieingstate[client] == 0)
 			{
-				int healing_Amount = HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL);	
-				ApplyHealEvent(client, healing_Amount);	
+				healing_Amount += HealEntityGlobal(client, client, 10.0, 0.0, 0.0, HEAL_SELFHEAL);	
 			}
 		}
-		if (Jesus_Blessing[client] == 1)
-		{	
-			int healing_Amount;
-			
-			if(dieingstate[client] > 0)
-			{
-				healing_Amount = HealEntityGlobal(client, client, 3.0, 0.5, 0.0, HEAL_SELFHEAL);	
-			}
-			else
-			{
-				healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 100.0, 0.5, 0.0, HEAL_SELFHEAL);	
-			}
-
-			ApplyHealEvent(client, healing_Amount);
-		}
+		
 		if(dieingstate[client] == 0)
 		{
 			Rogue_HealingSalve(client);
 			Rogue_HandSupport_HealTick(client);
 			if(i_BadHealthRegen[client] == 1)
 			{
-				int healing_Amount = HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);		
-				ApplyHealEvent(client, healing_Amount);			
+				healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);
 			}
 			if(b_NemesisHeart[client])
 			{
-				int healing_Amount = HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);		
-				ApplyHealEvent(client, healing_Amount);			
+				healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);
 			}
 		}
+
+		if(healing_Amount)
+			ApplyHealEvent(client, healing_Amount);
+
 		Armor_regen_delay[client] = GameTime + 1.0;
 	}
 	if(Mana_Hud_Delay[client] < GameTime)
@@ -1903,7 +1908,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				SetEntityHealth(victim, 200);
 				if(!b_LeftForDead[victim])
 				{
-					dieingstate[victim] = 250 / Rogue_ReviveSpeed();
+					int speed = 10;
+					Rogue_ReviveSpeed(speed);
+					dieingstate[victim] = 2500 / speed;
 				}
 				else
 				{

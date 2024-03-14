@@ -1,12 +1,58 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+enum struct MusicEnum
+{
+	char Path[PLATFORM_MAX_PATH];
+	int Time;
+	float Volume;
+	bool Custom;
+	char Name[64];
+	char Artist[64];
+
+	bool SetupKv(const char[] key, KeyValues kv)
+	{
+		if(kv.JumpToKey(key))
+		{
+			kv.GetString("Path", this.Path, sizeof(this.Path));
+			kv.GetString("name", this.Name, sizeof(this.Name));
+			kv.GetString("artist", this.Artist, sizeof(this.Artist));
+			this.Time = kv.GetNum("time");
+			this.Volume = kv.GetFloat("volume", 2.0);
+			this.Custom = view_as<bool>(kv.GetNum("download"));
+
+			if(this.Custom)
+			{
+				PrecacheSoundCustom(this.Path);
+			}
+			else
+			{
+				PrecacheSound(this.Path);
+			}
+
+			kv.GoBack();
+			return true;
+		}
+		
+		this.Path[0] = 0;
+		return false;
+	}
+
+	void Clear()
+	{
+		this.Path[0] = 0;
+		this.Volume = 2.0;
+		this.Custom = false;
+		this.Name[0] = 0;
+		this.Artist[0] = 0;
+	}
+}
+
 static int Music_Timer[MAXTF2PLAYERS];
 static int Music_Timer_2[MAXTF2PLAYERS];
 static float Give_Cond_Timer[MAXTF2PLAYERS];
 static bool MusicDisabled;
 static bool XenoMapExtra;
-static float RaidMusicVolume;
 
 #define RANGE_FIRST_MUSIC 6250000
 #define RANGE_SECOND_MUSIC 1000000
@@ -16,7 +62,7 @@ Big thanks to backwards#8236 For pointing me towards GetTime and helping me with
 DO NOT USE GetEngineTime, its not good in this case
 */
 
-void Music_SetRaidMusic(const char[] MusicPath, int duration, bool isCustom, float volume = 2.0)
+stock void Music_SetRaidMusic(const MusicEnum music)
 {
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -26,10 +72,25 @@ void Music_SetRaidMusic(const char[] MusicPath, int duration, bool isCustom, flo
 			SetMusicTimer(client, GetTime() + 3);
 		}
 	}
-	RaidMusicVolume = volume;
-	strcopy(char_RaidMusicSpecial1, sizeof(char_RaidMusicSpecial1), MusicPath);
-	i_RaidMusicLength1 = duration;
-	b_RaidMusicCustom1 = isCustom;
+
+	RaidMusicSpecial1 = music;
+}
+
+stock void Music_SetRaidMusicSimple(const char[] MusicPath, int duration, bool isCustom, float volume = 2.0)
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			Music_Stop_All(client); //This is actually more expensive then i thought.
+			SetMusicTimer(client, GetTime() + 3);
+		}
+	}
+	RaidMusicSpecial1.Clear();
+	RaidMusicSpecial1.Volume = volume;
+	strcopy(RaidMusicSpecial1.Path, sizeof(RaidMusicSpecial1.Path), MusicPath);
+	RaidMusicSpecial1.Time = duration;
+	RaidMusicSpecial1.Custom = isCustom;
 
 }
 
@@ -155,11 +216,6 @@ void Music_RoundEnd(int victim, bool music = true)
 			TF2_RemoveCondition(client, TFCond_RuneHaste);
 			TF2_RemoveCondition(client, TFCond_CritCanteen);
 			Music_Stop_All(client);
-			char_MusicString1[0] = 0;
-			char_MusicString2[0] = 0;
-		
-			i_MusicLength1 = 1;
-			i_MusicLength2 = 1;
 
 			if(music)
 				EmitCustomToClient(client, "#zombiesurvival/music_lose.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -238,28 +294,28 @@ void Music_Stop_All(int client)
 	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/8.mp3");
 	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/9.mp3");
 	
-	if(char_MusicString1[0])
+	if(MusicString1.Path[0])
 	{
-		StopSound(client, SNDCHAN_STATIC, char_MusicString1);
-		StopSound(client, SNDCHAN_STATIC, char_MusicString1);
-		StopSound(client, SNDCHAN_STATIC, char_MusicString1);
-		StopSound(client, SNDCHAN_STATIC, char_MusicString1);
+		StopSound(client, SNDCHAN_STATIC, MusicString1.Path);
+		StopSound(client, SNDCHAN_STATIC, MusicString1.Path);
+		StopSound(client, SNDCHAN_STATIC, MusicString1.Path);
+		StopSound(client, SNDCHAN_STATIC, MusicString1.Path);
 	}
 		
-	if(char_MusicString2[0])
+	if(MusicString2.Path[0])
 	{
-		StopSound(client, SNDCHAN_STATIC, char_MusicString2);
-		StopSound(client, SNDCHAN_STATIC, char_MusicString2);
-		StopSound(client, SNDCHAN_STATIC, char_MusicString2);
-		StopSound(client, SNDCHAN_STATIC, char_MusicString2);
+		StopSound(client, SNDCHAN_STATIC, MusicString2.Path);
+		StopSound(client, SNDCHAN_STATIC, MusicString2.Path);
+		StopSound(client, SNDCHAN_STATIC, MusicString2.Path);
+		StopSound(client, SNDCHAN_STATIC, MusicString2.Path);
 	}
 
-	if(char_RaidMusicSpecial1[0])
+	if(RaidMusicSpecial1.Path[0])
 	{
-		StopSound(client, SNDCHAN_STATIC, char_RaidMusicSpecial1);
-		StopSound(client, SNDCHAN_STATIC, char_RaidMusicSpecial1);
-		StopSound(client, SNDCHAN_STATIC, char_RaidMusicSpecial1);
-		StopSound(client, SNDCHAN_STATIC, char_RaidMusicSpecial1);
+		StopSound(client, SNDCHAN_STATIC, RaidMusicSpecial1.Path);
+		StopSound(client, SNDCHAN_STATIC, RaidMusicSpecial1.Path);
+		StopSound(client, SNDCHAN_STATIC, RaidMusicSpecial1.Path);
+		StopSound(client, SNDCHAN_STATIC, RaidMusicSpecial1.Path);
 	}
 
 	if(XenoExtraLogic())
@@ -315,13 +371,13 @@ void Music_PostThink(int client)
 	{
 		bool RoundHasCustomMusic = false;
 		
-		if(char_MusicString1[0])
+		if(MusicString1.Path[0])
 			RoundHasCustomMusic = true;
 			
-		if(char_MusicString2[0])
+		if(MusicString2.Path[0])
 			RoundHasCustomMusic = true;
 
-		if(char_RaidMusicSpecial1[0])
+		if(RaidMusicSpecial1.Path[0])
 			RoundHasCustomMusic = true;
 		
 		if(LastMann)
@@ -331,79 +387,99 @@ void Music_PostThink(int client)
 		
 		if(RoundHasCustomMusic)
 		{
-			if(char_RaidMusicSpecial1[0])
+			if(RaidMusicSpecial1.Path[0])
 			{
-				if(b_RaidMusicCustom1)
+				if(RaidMusicSpecial1.Custom)
 				{
-					EmitCustomToClient(client, char_RaidMusicSpecial1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, RaidMusicVolume);
+					EmitCustomToClient(client, RaidMusicSpecial1.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, RaidMusicSpecial1.Volume);
 				}
 				else
 				{
-					EmitSoundToClient(client, char_RaidMusicSpecial1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-					EmitSoundToClient(client, char_RaidMusicSpecial1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					EmitSoundToClient(client, RaidMusicSpecial1.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					EmitSoundToClient(client, RaidMusicSpecial1.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				}
-				SetMusicTimer(client, GetTime() + i_RaidMusicLength1);
+				SetMusicTimer(client, GetTime() + RaidMusicSpecial1.Time);
+
+				if(RaidMusicSpecial1.Name[0] || RaidMusicSpecial1.Artist[0])
+					PrintToChatAll("%t", "Now Playing Song", RaidMusicSpecial1.Artist, RaidMusicSpecial1.Name);
+				
 				return;
 			}
 			switch(GetRandomInt(1,2))
 			{
 				case 1:
 				{
-					if(char_MusicString1[0])
+					if(MusicString1.Path[0])
 					{
-						if(b_MusicCustom1)
+						if(MusicString1.Custom)
 						{
-							EmitCustomToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, f_MusicVolume1);
+							EmitCustomToClient(client, MusicString1.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, MusicString1.Volume);
 						}
 						else
 						{
-							EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-							EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, MusicString1.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, MusicString1.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						}
-						SetMusicTimer(client, GetTime() + i_MusicLength1);
+
+						if(MusicString1.Name[0] || MusicString1.Artist[0])
+							PrintToChatAll("%t", "Now Playing Song", MusicString1.Artist, MusicString1.Name);
+						
+						SetMusicTimer(client, GetTime() + MusicString1.Time);
 					}
-					else if(char_MusicString2[0])
+					else if(MusicString2.Path[0])
 					{
-						if(b_MusicCustom2)
+						if(MusicString2.Custom)
 						{
-							EmitCustomToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, f_MusicVolume2);
+							EmitCustomToClient(client, MusicString2.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, MusicString2.Volume);
 						}
 						else
 						{
-							EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-							EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, MusicString2.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, MusicString2.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						}
-						SetMusicTimer(client, GetTime() + i_MusicLength2);				
+
+						if(MusicString2.Name[0] || MusicString2.Artist[0])
+							PrintToChatAll("%t", "Now Playing Song", MusicString2.Artist, MusicString2.Name);
+						
+						SetMusicTimer(client, GetTime() + MusicString2.Time);				
 					}
 					//Make checks to be sure.
 				}
 				case 2:
 				{
-					if(char_MusicString2[0])
+					if(MusicString2.Path[0])
 					{
-						if(b_MusicCustom2)
+						if(MusicString2.Custom)
 						{
-							EmitCustomToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+							EmitCustomToClient(client, MusicString2.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, MusicString2.Volume);
 						}
 						else
 						{
-							EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-							EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, MusicString2.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, MusicString2.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						}
-						SetMusicTimer(client, GetTime() + i_MusicLength2);
+
+						if(MusicString2.Name[0] || MusicString2.Artist[0])
+							PrintToChatAll("%t", "Now Playing Song", MusicString2.Artist, MusicString2.Name);
+
+						SetMusicTimer(client, GetTime() + MusicString2.Time);
 					}
-					else if(char_MusicString1[0])
+					else if(MusicString1.Path[0])
 					{
-						if(b_MusicCustom1)
+						if(MusicString1.Custom)
 						{
-							EmitCustomToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+							EmitCustomToClient(client, MusicString1.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, MusicString1.Volume);
 						}
 						else
 						{
-							EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-							EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, MusicString1.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, MusicString1.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						}
-						SetMusicTimer(client, GetTime() + i_MusicLength1);				
+
+						if(MusicString1.Name[0] || MusicString1.Artist[0])
+							PrintToChatAll("%t", "Now Playing Song", MusicString1.Artist, MusicString1.Name);
+						
+						SetMusicTimer(client, GetTime() + MusicString1.Time);				
 					}
 					//Make checks to be sure.
 				}
@@ -638,7 +714,7 @@ void Music_ClearAll()
 
 void RemoveAllCustomMusic()
 {
-	char_MusicString1[0] = 0;	
-	char_MusicString2[0] = 0;	
-	char_RaidMusicSpecial1[0] = 0;	
+	MusicString1.Clear();
+	MusicString2.Clear();
+	RaidMusicSpecial1.Clear();
 }

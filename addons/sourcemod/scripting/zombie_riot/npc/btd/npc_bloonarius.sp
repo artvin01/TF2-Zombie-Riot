@@ -277,7 +277,7 @@ methodmap Bloonarius < CClotBody
 		}
 
 		npc.PlaySpawnSound();
-		Music_SetRaidMusic("#zombie_riot/btd/musicbossbloonarius.mp3", 198, true);
+		Music_SetRaidMusicSimple("#zombie_riot/btd/musicbossbloonarius.mp3", 198, true);
 		
 		RaidModeTime = (elite ? 0.0 : GetGameTime() + 200.0);
 
