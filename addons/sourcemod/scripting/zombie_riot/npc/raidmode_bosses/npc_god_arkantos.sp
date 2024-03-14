@@ -285,7 +285,14 @@ methodmap GodArkantos < CClotBody
 
 		Citizen_MiniBossSpawn();
 		
-		Music_SetRaidMusicSimple("#zombiesurvival/medieval_raid/kazimierz_boss.mp3", 189, true);
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/kazimierz_boss.mp3");
+		music.Time = 189;
+		music.Volume = 2.0;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Arknights - Putrid");
+		strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+		Music_SetRaidMusic(music);
 
 		float flPos[3]; // original
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);

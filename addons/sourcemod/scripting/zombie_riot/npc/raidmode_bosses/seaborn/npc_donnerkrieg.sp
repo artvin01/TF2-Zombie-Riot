@@ -405,7 +405,14 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		
 		
-		Music_SetRaidMusicSimple("#zombiesurvival/seaborn/donner_schwert_5.mp3", 290, true);
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/seaborn/donner_schwert_5.mp3");
+		music.Time = 290;
+		music.Volume = 2.0;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Arknights - Martyr/Guiding Ahead Boss");
+		strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+		Music_SetRaidMusic(music);
 		
 		b_thisNpcIsARaid[npc.index] = true;
 

@@ -374,7 +374,14 @@ methodmap RaidbossBobTheFirst < CClotBody
 		{
 			strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), "You.");
 			WavesUpdateDifficultyName();
-			Music_SetRaidMusicSimple("#zombiesurvival/bob_raid/bob.mp3", 697, true, 1.99);
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/bob_raid/bob.mp3");
+			music.Time = 697;
+			music.Volume = 1.99;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Darkest Dungeon - The Final Combat (Added Narrator)");
+			strcopy(music.Artist, sizeof(music.Artist), "Music (Stuart Chatwood) Editor of Narrator (Liruox)");
+			Music_SetRaidMusic(music);
 			npc.StopPathing();
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -1097,8 +1104,8 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					WritePackFloat(data, vecMe[2]);
 					WritePackCell(data, 95.0); // Distance
 					WritePackFloat(data, 0.0); // nphi
-					WritePackCell(data, 250.0); // Range
-					WritePackCell(data, 1000.0); // Damge
+					WritePackFloat(data, 250.0); // Range
+					WritePackFloat(data, 1000.0); // Damge
 					WritePackCell(data, ref);
 					ResetPack(data);
 					TrueFusionwarrior_IonAttack(data);
@@ -1115,8 +1122,8 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							WritePackFloat(data, vecTarget[2]);
 							WritePackCell(data, 160.0); // Distance
 							WritePackFloat(data, 0.0); // nphi
-							WritePackCell(data, 250.0); // Range
-							WritePackCell(data, 1000.0); // Damge
+							WritePackFloat(data, 250.0); // Range
+							WritePackFloat(data, 1000.0); // Damge
 							WritePackCell(data, ref);
 							ResetPack(data);
 							TrueFusionwarrior_IonAttack(data);
@@ -1623,6 +1630,7 @@ Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &inflicto
 			SetEntityCollisionGroup(npc.index, 24);
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 			b_NpcIsInvulnerable[npc.index] = true;
+			int GetTeamOld = GetTeam(npc.index);
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(30.0);
 			damage = 0.0;
@@ -1634,7 +1642,7 @@ Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &inflicto
 				{
 					if(i_NpcInternalId[npc.index] == i_NpcInternalId[other])
 					{
-						if(GetTeam(npc.index) == GetTeam(other))
+						if(GetTeamOld == GetTeam(other))
 						{
 							SmiteNpcToDeath(other);
 						}

@@ -4240,7 +4240,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 
 					if(item.Author[0])
 					{
-						PrintToChat(client, "%t", "Created By", item.Author);
+						CPrintToChat(client, "%t", "Created By", item.Author);
 					}
 				}
 			}

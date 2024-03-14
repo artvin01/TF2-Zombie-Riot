@@ -16,7 +16,7 @@ enum struct MusicEnum
 		{
 			kv.GetString("file", this.Path, sizeof(this.Path));
 			kv.GetString("name", this.Name, sizeof(this.Name));
-			kv.GetString("artist", this.Artist, sizeof(this.Artist));
+			kv.GetString("author", this.Artist, sizeof(this.Artist));
 			this.Time = kv.GetNum("time");
 			this.Volume = kv.GetFloat("volume", 2.0);
 			this.Custom = view_as<bool>(kv.GetNum("download"));
@@ -401,7 +401,7 @@ void Music_PostThink(int client)
 				SetMusicTimer(client, GetTime() + RaidMusicSpecial1.Time);
 
 				if(RaidMusicSpecial1.Name[0] || RaidMusicSpecial1.Artist[0])
-					PrintToChatAll("%t", "Now Playing Song", RaidMusicSpecial1.Artist, RaidMusicSpecial1.Name);
+					CPrintToChatAll("%t", "Now Playing Song", RaidMusicSpecial1.Artist, RaidMusicSpecial1.Name);
 				
 				return;
 			}
@@ -422,7 +422,7 @@ void Music_PostThink(int client)
 						}
 
 						if(MusicString1.Name[0] || MusicString1.Artist[0])
-							PrintToChatAll("%t", "Now Playing Song", MusicString1.Artist, MusicString1.Name);
+							CPrintToChatAll("%t", "Now Playing Song", MusicString1.Artist, MusicString1.Name);
 						
 						SetMusicTimer(client, GetTime() + MusicString1.Time);
 					}
@@ -439,7 +439,7 @@ void Music_PostThink(int client)
 						}
 
 						if(MusicString2.Name[0] || MusicString2.Artist[0])
-							PrintToChatAll("%t", "Now Playing Song", MusicString2.Artist, MusicString2.Name);
+							CPrintToChatAll("%t", "Now Playing Song", MusicString2.Artist, MusicString2.Name);
 						
 						SetMusicTimer(client, GetTime() + MusicString2.Time);				
 					}
@@ -460,7 +460,7 @@ void Music_PostThink(int client)
 						}
 
 						if(MusicString2.Name[0] || MusicString2.Artist[0])
-							PrintToChatAll("%t", "Now Playing Song", MusicString2.Artist, MusicString2.Name);
+							CPrintToChatAll("%t", "Now Playing Song", MusicString2.Artist, MusicString2.Name);
 
 						SetMusicTimer(client, GetTime() + MusicString2.Time);
 					}
@@ -477,7 +477,7 @@ void Music_PostThink(int client)
 						}
 
 						if(MusicString1.Name[0] || MusicString1.Artist[0])
-							PrintToChatAll("%t", "Now Playing Song", MusicString1.Artist, MusicString1.Name);
+							CPrintToChatAll("%t", "Now Playing Song", MusicString1.Artist, MusicString1.Name);
 						
 						SetMusicTimer(client, GetTime() + MusicString1.Time);				
 					}

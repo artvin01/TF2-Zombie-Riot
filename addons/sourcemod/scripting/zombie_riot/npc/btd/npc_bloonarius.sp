@@ -277,7 +277,14 @@ methodmap Bloonarius < CClotBody
 		}
 
 		npc.PlaySpawnSound();
-		Music_SetRaidMusicSimple("#zombie_riot/btd/musicbossbloonarius.mp3", 198, true);
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombie_riot/btd/musicbossbloonarius.mp3");
+		music.Time = 198;
+		music.Volume = 2.0;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Primal One : Bloons Tower Defense 6");
+		strcopy(music.Artist, sizeof(music.Artist), "Tim Haywood");
+		Music_SetRaidMusic(music);
 		
 		RaidModeTime = (elite ? 0.0 : GetGameTime() + 200.0);
 

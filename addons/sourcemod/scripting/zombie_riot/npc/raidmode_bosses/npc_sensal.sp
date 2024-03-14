@@ -355,7 +355,14 @@ methodmap Sensal < CClotBody
 		if(!cutscene)
 		{
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
-			Music_SetRaidMusicSimple("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3", 218, true);
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
+			music.Time = 218;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Goukisan - Betrayal of Fear (TeslaX VIP remix)");
+			strcopy(music.Artist, sizeof(music.Artist), "Talurre/TeslaX11");
+			Music_SetRaidMusic(music);
 		}
 		npc.m_iChanged_WalkCycle = -1;
 

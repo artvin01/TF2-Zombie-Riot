@@ -3074,26 +3074,26 @@
 	"Created By"
 	{
 		"#format"	"{1:s}"
-		"en"		"Created by {1}"
+		"en"		"{darkgrey}Created by: {community}{1}"
 	}
 	"NPCs By"
 	{
 		"#format"	"{1:s}"
-		"en"		"NPCs by {1}"
+		"en"		"{darkgrey}NPCs by: {community}{1}"
 	}
 	"Format By"
 	{
 		"#format"	"{1:s}"
-		"en"		"Format by {1}"
+		"en"		"{darkgrey}Format by: {community}{1}"
 	}
 	"Raidboss By"
 	{
 		"#format"	"{1:s}"
-		"en"		"Raidboss by {1}"
+		"en"		"{darkgrey}Raidboss by: {community}{1}"
 	}
 	"Now Playing Song"
 	{
 		"#format"	"{1:s},{2:s}"
-		"en"		"Now Playing: {1} - {2}"
+		"en"		"{darkgrey}Now Playing: {community}{1} {default}| {lightgreen}{2}"
 	}
 }

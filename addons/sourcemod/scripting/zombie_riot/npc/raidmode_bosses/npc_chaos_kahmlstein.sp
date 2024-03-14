@@ -401,7 +401,14 @@ methodmap ChaosKahmlstein < CClotBody
 			else
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's fight!");
-				Music_SetRaidMusicSimple("#zombiesurvival/internius/khamlstein.mp3", 294, true, 1.5);
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/khamlstein.mp3");
+				music.Time = 294;
+				music.Volume = 1.5;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "Contra la Luna");
+				strcopy(music.Artist, sizeof(music.Artist), "P.T. Adamczyk");
+				Music_SetRaidMusic(music);
 			}
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -573,7 +580,14 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			}
 			else
 			{
-				Music_SetRaidMusicSimple("#zombiesurvival/internius/khamlstein.mp3", 294, true, 1.5);
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/khamlstein.mp3");
+				music.Time = 294;
+				music.Volume = 1.5;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "Contra la Luna");
+				strcopy(music.Artist, sizeof(music.Artist), "P.T. Adamczyk");
+				Music_SetRaidMusic(music);
 				i_khamlCutscene[npc.index] = 0;
 			}
 		}
@@ -677,7 +691,14 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's begin.");
 					RaidBossActive = EntIndexToEntRef(npc.index);
 					RaidAllowsBuildings = false;
-					Music_SetRaidMusicSimple("#zombiesurvival/internius/khamlstein.mp3", 294, true, 1.5);
+					MusicEnum music;
+					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/khamlstein.mp3");
+					music.Time = 294;
+					music.Volume = 1.5;
+					music.Custom = true;
+					strcopy(music.Name, sizeof(music.Name), "Contra la Luna");
+					strcopy(music.Artist, sizeof(music.Artist), "P.T. Adamczyk");
+					Music_SetRaidMusic(music);
 				}
 			}
 		}

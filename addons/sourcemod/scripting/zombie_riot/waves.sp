@@ -562,6 +562,22 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	kv.GetString("complete_item", buffer, sizeof(buffer));
 	WaveGiftItem = buffer[0] ? Items_NameToId(buffer) : -1;
 	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
+
+	int objective = GetObjectiveResource();
+	if(objective != -1)
+		SetEntProp(objective, Prop_Send, "m_iChallengeIndex", kv.GetNum("mvmdiff", -1));
+	
+	kv.GetString("author_format", buffer, sizeof(buffer));
+	if(buffer[0])
+		CPrintToChatAll("%t", "Format By", buffer);
+	
+	kv.GetString("author_npcs", buffer, sizeof(buffer));
+	if(buffer[0])
+		CPrintToChatAll("%t", "NPCs By", buffer);
+	
+	kv.GetString("author_raid", buffer, sizeof(buffer));
+	if(buffer[0])
+		CPrintToChatAll("%t", "Raidboss By", buffer);
 	
 	Enemy enemy;
 	Wave wave;
@@ -576,7 +592,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.Setup = kv.GetFloat("setup");
 
 		round.music_round_1.SetupKv("music_1", kv);
-		round.music_round_1.SetupKv("music_2", kv);
+		round.music_round_2.SetupKv("music_2", kv);
 		
 		kv.GetString("music_track_outro", round.music_round_outro, sizeof(round.music_round_outro));
 		round.music_custom_outro = view_as<bool>(kv.GetNum("music_download_outro"));
@@ -691,10 +707,6 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		Rounds.PushArray(round);
 	} while(kv.GotoNextKey());
 
-	int objective = GetObjectiveResource();
-	if(objective != -1)
-		SetEntProp(objective, Prop_Send, "m_iChallengeIndex", kv.GetNum("mvmdiff", -1));
-	
 	if(start)
 	{
 		for(int client=1; client<=MaxClients; client++)
@@ -705,20 +717,6 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 				break;
 			}
 		}
-	}
-	else
-	{
-		kv.GetString("author_format", buffer, sizeof(buffer));
-		if(buffer[0])
-			PrintToChatAll("%t", "Format by", buffer);
-		
-		kv.GetString("author_npcs", buffer, sizeof(buffer));
-		if(buffer[0])
-			PrintToChatAll("%t", "NPCs by", buffer);
-		
-		kv.GetString("author_raid", buffer, sizeof(buffer));
-		if(buffer[0])
-			PrintToChatAll("%t", "Raidboss by", buffer);
 	}
 
 	Waves_UpdateMvMStats();
