@@ -1901,6 +1901,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
 			//	SetVariantString("TLK_DIED");
 			//	AcceptEntityInput(victim, "SpeakResponseConcept");
+				i_CurrentEquippedPerkPreviously[victim] = i_CurrentEquippedPerk[victim];
 				if(!Rogue_Mode() && !SpecterCheckIfAutoRevive(victim))
 				{
 					i_CurrentEquippedPerk[victim] = 0;

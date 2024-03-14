@@ -4336,6 +4336,7 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	ApplyBuildingCollectCooldown(entity, client, 40.0);
 	
 	i_CurrentEquippedPerk[client] = what_perk;
+	i_CurrentEquippedPerkPreviously[client] = what_perk;
 	
 	if(!Rogue_Mode() && owner > 0 && owner != client)
 	{

@@ -68,7 +68,7 @@ void Flagellant_Enable(int client, int weapon)
 
 void Flagellant_DoSwingTrace(int client)
 {
-	TriggerSelfDamage(client, 0.05);
+	TriggerSelfDamage(client, 0.025);
 }
 
 void Flagellant_OnTakeDamage(int victim, float damage)
@@ -443,7 +443,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 	{
 		Rogue_OnAbilityUse(weapon);
 
-		TriggerSelfDamage(client, 0.15);
+		TriggerSelfDamage(client, 0.025);
 		
 		int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		float multi = Attributes_GetOnWeapon(client, secondary, 8, true);
@@ -711,6 +711,7 @@ static void TriggerDeathDoor(int client, int &healing)
 	if(dieingstate[client] > 0)
 	{
 		dieingstate[client] = 0;
+		i_CurrentEquippedPerk[client] = i_CurrentEquippedPerkPreviously[client];
 		ForcePlayerCrouch(client, false);
 		Store_ApplyAttribs(client);
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);

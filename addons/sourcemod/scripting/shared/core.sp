@@ -343,6 +343,7 @@ float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 int i_CurrentEquippedPerk[MAXENTITIES];
+int i_CurrentEquippedPerkPreviously[MAXENTITIES];
 int Building_Max_Health[MAXENTITIES]={0, ...};
 int Building_Repair_Health[MAXENTITIES]={0, ...};
 Handle SyncHud_Notifaction;
@@ -2621,6 +2622,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_Ocean_Buff_Weak_Buff[entity] = 0.0;
 #if defined ZR
 		i_CurrentEquippedPerk[entity] = 0;
+		i_CurrentEquippedPerkPreviously[entity] = 0;
 		i_WandIdNumber[entity] = -1;
 #endif
 		i_IsWandWeapon[entity] = false;
