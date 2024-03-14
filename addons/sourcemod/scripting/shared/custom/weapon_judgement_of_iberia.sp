@@ -33,6 +33,7 @@ static float f_TimeSinceLastStunHit[MAXENTITIES];
 static bool b_IreneNpcWasShotUp[MAXENTITIES];
 static int i_RefWeaponDelete[MAXTF2PLAYERS];
 static float f_WeaponDamageCalculated[MAXTF2PLAYERS];
+static bool b_SeabornDetected;
 
 static int LaserSprite;
 
@@ -137,7 +138,7 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 				{
 					switch(i_CustomWeaponEquipLogic[Active_weapon])
 					{
-						case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC:
+						case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC, WEAPON_OCEAN, WEAPON_SPECTER, WEAPON_GLADIIA:
 						{
 							ThereWasSeaborn = true;
 							break;
@@ -147,6 +148,8 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 			}
 		}
 	}
+
+	b_SeabornDetected = ThereWasSeaborn;
 
 	if(b_WeaponAttackSpeedModifiedSeaborn[weapon] && !ThereWasSeaborn)
 	{
@@ -215,13 +218,27 @@ public void Irene_Cooldown_Logic(int client, int weapon)
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			if(i_IreneHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
+			if(b_SeabornDetected)
 			{
-				PrintHintText(client,"Judgemet Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
+				if(i_IreneHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
+				{
+					PrintHintText(client,"Seaborn Detected.\nJudgemet Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
+				}
+				else
+				{
+					PrintHintText(client,"Seaborn Detected.\nJudgemet Of Iberia [READY!]");
+				}
 			}
 			else
-			{
-				PrintHintText(client,"Judgemet Of Iberia [READY!]");
+			{	
+				if(i_IreneHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
+				{
+					PrintHintText(client,"Judgemet Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
+				}
+				else
+				{
+					PrintHintText(client,"Judgemet Of Iberia [READY!]");
+				}
 			}
 			
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
