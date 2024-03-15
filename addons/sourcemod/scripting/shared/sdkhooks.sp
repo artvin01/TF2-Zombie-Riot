@@ -489,7 +489,7 @@ public void OnPostThink(int client)
 		{
 			if(dieingstate[client] == 0)
 			{
-				healing_Amount += HealEntityGlobal(client, client, 10.0, 0.0, 0.0, HEAL_SELFHEAL);	
+				healing_Amount += HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL);	
 			}
 		}
 		
