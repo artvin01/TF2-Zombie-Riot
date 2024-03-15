@@ -193,8 +193,8 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 				
 				value = Attributes_Get(weapon, 208, 0.0);	// Set DamageType Ignite
 
-				int itemdefindex = 0;
-				if(IsValidEntity(weapon))
+				int itemdefindex = -1;
+				if(IsValidEntity(weapon) && weapon >= MaxClients)
 				{
 					itemdefindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 				}

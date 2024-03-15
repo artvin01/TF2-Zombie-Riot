@@ -243,7 +243,14 @@ methodmap RaidbossBobTheFirst < CClotBody
 	}
 	property bool m_bFakeClone
 	{
-		public get()		{	return i_RaidGrantExtra[this.index] < 0;	}
+		public get()		
+		{
+			if(i_RaidGrantExtra[this.index] != -1)
+			{
+				return false;
+			}
+			return true;
+		}
 	}
 
 	public RaidbossBobTheFirst(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -506,7 +513,7 @@ static void Internal_ClotThink(int iNPC)
 			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			if(other != INVALID_ENT_REFERENCE && other != npc.index)
 			{
-				if(i_NpcInternalId[other] == BOB_THE_FIRST || i_NpcInternalId[other] == BOB_THE_FIRST_S)
+				if(i_NpcInternalId[other] == i_NpcInternalId[npc.index])
 				{
 					if(!view_as<RaidbossBobTheFirst>(other).m_bFakeClone && IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
 					{
@@ -564,6 +571,7 @@ static void Internal_ClotThink(int iNPC)
 			summon = NPC_CreateByName("npc_bob_the_first_last_savior", -1, pos, ang, GetTeam(npc.index), "fake");
 			if(summon > MaxClients)
 			{
+				i_RaidGrantExtra[summon] = -1;
 				fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index] * 0.5;
 				fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index] * 0.75;
 
@@ -573,6 +581,7 @@ static void Internal_ClotThink(int iNPC)
 			summon = NPC_CreateByName("npc_bob_the_first_last_savior", -1, pos, ang, GetTeam(npc.index), "fake");
 			if(summon > MaxClients)
 			{
+				i_RaidGrantExtra[summon] = -1;
 				fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index] * 0.5;
 				fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index] * 0.75;
 
@@ -582,6 +591,7 @@ static void Internal_ClotThink(int iNPC)
 			summon = NPC_CreateByName("npc_bob_the_first_last_savior", -1, pos, ang, GetTeam(npc.index), "fake");
 			if(summon > MaxClients)
 			{
+				i_RaidGrantExtra[summon] = -1;
 				fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index] * 0.5;
 				fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index] * 0.75;
 
@@ -614,11 +624,39 @@ static void Internal_ClotThink(int iNPC)
 			return;
 		}
 	}
-
-	if(npc.m_iTarget > 0 && healthPoints < 20)
+	
+	if(npc.m_iTarget > 0)
 	{
 		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		if(npc.m_flCharge_delay < GetGameTime(npc.index))
+		{
+			if(npc.IsOnGround())
+			{
+				float vPredictedPos[3];
+				PredictSubjectPosition(npc, npc.m_iTarget, _, _, vPredictedPos);
+				vPredictedPos = GetBehindTarget(npc.m_iTarget, 30.0 ,vPredictedPos);
+				static float hullcheckmaxs[3];
+				static float hullcheckmins[3];
+				hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+				hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+
+				float SelfPos[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
+				float AllyAng[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", AllyAng);
+				
+				bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, false);
+				if(Succeed)
+				{
+					ParticleEffectAt(SelfPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+					ParticleEffectAt(vPredictedPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+					float SpaceCenter[3]; WorldSpaceCenter(npc.m_iTarget, SpaceCenter);
+					npc.FaceTowards(SpaceCenter, 15000.0);
+					npc.m_flCharge_delay = GetGameTime(npc.index) + (GetRandomFloat(7.5, 15.0));
+				}
+			}
+		}
 
 		switch(npc.m_iAttackType)
 		{
