@@ -3072,11 +3072,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
+#if defined ZR
 		else if(!StrContains(classname, "func_regenerate"))
 		{
 			SDKHook(entity, SDKHook_StartTouch, SDKHook_Regenerate_StartTouch);
 			SDKHook(entity, SDKHook_Touch, SDKHook_Regenerate_Touch);
 		}
+#endif
 		else if(!StrContains(classname, "prop_vehicle"))
 		{
 #if defined ZR
