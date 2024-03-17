@@ -72,12 +72,56 @@ void Flagellant_Enable(int client, int weapon)
 	}
 }
 
+void Flagellant_MiniBossChance(int &chance)
+{
+	if(chance > 0)
+	{
+		int count;
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsPlayerAlive(client) && GetClientTeam(client) == TFTeam_Red)
+			{
+				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon != -1)
+				{
+					switch(i_CustomWeaponEquipLogic[weapon])
+					{
+						case WEAPON_FLAGELLANT_MELEE, WEAPON_FLAGELLANT_HEAL, WEAPON_FLAGELLANT_DAMAGE:
+						{
+							count++;
+						}
+					}
+				}
+			}
+		}
+
+		if(count)
+		{
+			int players = CountPlayersOnRed();
+			if(players < 4)
+				players = 4;
+
+			// Up to 5 extra chance
+			static float remainer;
+			float multi = (count * 5.0 / float(players)) + remainer;
+
+			while(multi > 1.0 && chance > 0)
+			{
+				multi -= 1.0;
+				chance--;
+			}
+
+			remainer = multi;
+		}
+	}
+}
+
 public Action Flagellant_EffectTimer(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 	{
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(weapon != INVALID_ENT_REFERENCE)
+		if(weapon != -1)
 		{
 			switch(i_CustomWeaponEquipLogic[weapon])
 			{

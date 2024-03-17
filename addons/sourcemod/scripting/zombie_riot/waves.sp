@@ -1306,6 +1306,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				else
 				{
 					panzer_chance--;
+					Flagellant_MiniBossChance(panzer_chance);
 				}
 			}
 			else
