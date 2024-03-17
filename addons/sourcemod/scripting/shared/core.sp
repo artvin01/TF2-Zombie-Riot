@@ -656,11 +656,17 @@ bool b_FaceStabber[MAXTF2PLAYERS];
 int g_particleMissText;
 int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 
 int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
+bool b_IsCannibal[MAXTF2PLAYERS];
+char g_GibEating[][] = {
+	"physics/flesh/flesh_squishy_impact_hard1.wav",
+	"physics/flesh/flesh_squishy_impact_hard2.wav",
+	"physics/flesh/flesh_squishy_impact_hard3.wav",
+	"physics/flesh/flesh_squishy_impact_hard4.wav",
+};
 #endif
 int i_WandOwner[MAXENTITIES]; //				//785
 
 
-bool b_IsCannibal[MAXTF2PLAYERS];
 
 float f_NpcImmuneToBleed[MAXENTITIES];
 bool b_NpcIsInvulnerable[MAXENTITIES];
@@ -676,19 +682,6 @@ float f_ClientMusicVolume[MAXTF2PLAYERS];
 bool b_FirstPersonUsesWorldModel[MAXTF2PLAYERS];
 float f_BegPlayerToSetDuckConvar[MAXTF2PLAYERS];
 float f_BegPlayerToSetRagdollFade[MAXTF2PLAYERS];
-
-#if defined RPG
-int Level[MAXENTITIES];
-bool b_DungeonContracts_BleedOnHit[MAXENTITIES];
-bool b_DungeonContracts_FlatDamageIncreace5[MAXTF2PLAYERS];
-bool b_DungeonContracts_ZombieSpeedTimes3[MAXENTITIES];
-bool b_DungeonContracts_ZombieFlatArmorMelee[MAXENTITIES];
-bool b_DungeonContracts_ZombieFlatArmorRanged[MAXENTITIES];
-bool b_DungeonContracts_ZombieFlatArmorMage[MAXENTITIES];
-bool b_DungeonContracts_ZombieArmorDebuffResistance[MAXENTITIES];
-bool b_DungeonContracts_35PercentMoreDamage[MAXENTITIES];
-bool b_DungeonContracts_25PercentMoreDamage[MAXENTITIES];
-#endif
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -919,12 +912,6 @@ char g_GibSound[][] = {
 	"physics/flesh/flesh_squishy_impact_hard3.wav",
 	"physics/flesh/flesh_squishy_impact_hard4.wav",
 	"physics/flesh/flesh_bloody_break.wav",
-};
-char g_GibEating[][] = {
-	"physics/flesh/flesh_squishy_impact_hard1.wav",
-	"physics/flesh/flesh_squishy_impact_hard2.wav",
-	"physics/flesh/flesh_squishy_impact_hard3.wav",
-	"physics/flesh/flesh_squishy_impact_hard4.wav",
 };
 
 char g_GibSoundMetal[][] = {
