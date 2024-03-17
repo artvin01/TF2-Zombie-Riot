@@ -241,6 +241,7 @@ ArrayList Loadouts[MAXTF2PLAYERS];
 Handle g_hSDKMakeCarriedObjectDispenser;
 Handle g_hSDKMakeCarriedObjectSentry;
 float f_RingDelayGift[MAXENTITIES];
+int i_IsAloneWeapon[MAXENTITIES];
 
 //custom wave music.
 MusicEnum MusicString1;

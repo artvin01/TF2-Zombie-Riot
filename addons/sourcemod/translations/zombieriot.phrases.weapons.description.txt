@@ -2416,7 +2416,7 @@
 	}
 	"Seaborn Infection Desc"
 	{
-		"en"	"Becoming a seaborn, yet resisting We Many.\nProvides an AOE long-range melee, an high-damage crossbow, and a stronger Medi-Kit.\nEffected by Ranged and Melee upgrades."
+		"en"	"Becoming a seaborn, yet resisting We Many.\nProvides an AOE long-range melee, an high-damage crossbow, and a stronger Medi-Kit.\nNot affected by weapon upgrades, only passives."
 	}
 	"Seaborn Claws Desc"
 	{
@@ -2456,7 +2456,7 @@
 	}
 	"The Flagellant Desc"
 	{
-		"en"	"Zealotry—an undying blight upon the soul.\nProvides extra health with the ability to heal but inflicts self-damage.\nEffected by Melee and Medigun upgrades."
+		"en"	"Zealotry—an undying blight upon the soul.\nProvides extra health with the ability to heal but inflicts self-damage.\nNot affected by weapon upgrades, only passives."
 	}
 	"The Flagellant Extra Desc"
 	{
@@ -2488,11 +2488,11 @@
 	}
 	"The Flagellant Pap 2"
 	{
-		"en"	"Gain +150 max health and increases healing given and received from abilities."
+		"en"	"Gain +200 max health and increases healing given and received from abilities."
 	}
 	"The Flagellant Pap 3"
 	{
-		"en"	"Gain +150 max health, increases healing given and received from abilities, and bleed effects last longer."
+		"en"	"Gain +350 max health, increases healing given and received from abilities, and bleed effects last longer."
 	}
 	"Impact Lance Desc 1"
 	{

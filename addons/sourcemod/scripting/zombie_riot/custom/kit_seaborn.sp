@@ -3,6 +3,11 @@
 
 static int MeleeLevel[MAXTF2PLAYERS];
 
+static float SpecialEffectFor[MAXTF2PLAYERS];
+static bool SpecialEffect[MAXTF2PLAYERS];
+static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
+static Handle EffectTimer[MAXTF2PLAYERS];
+
 public void Weapon_SeaMelee_M2(int client, int weapon, bool crit, int slot)
 {
 	if(dieingstate[client] != 0 || Ability_Check_Cooldown(client, slot) > 0.0)
@@ -21,6 +26,7 @@ public void Weapon_SeaMelee_M2(int client, int weapon, bool crit, int slot)
 
 	ApplyTempAttrib(weapon, 2, 0.75, 10.0);
 	ApplyTempAttrib(weapon, 6, 0.5, 10.0);
+	SpecialEffectFor[client] = GetGameTime() + 10.0;
 
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 10.0);
 /*
@@ -58,7 +64,87 @@ void SeaMelee_Enable(int client, int weapon)
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SEABORNMELEE)
 	{
 		MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
+
+		delete EffectTimer[client];
+		EffectTimer[client] = CreateTimer(0.2, SeaMelee_TimerEffect, client, TIMER_REPEAT);
 	}
+}
+
+bool SeaMelee_IsSeaborn(int client)
+{
+	return ParticleRef[client] != -1;
+}
+
+public Action SeaMelee_TimerEffect(Handle timer, int client)
+{
+	if(IsClientInGame(client))
+	{
+		if(!dieingstate[client])
+		{
+			int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+			if(weapon != INVALID_ENT_REFERENCE)
+			{
+				switch(i_CustomWeaponEquipLogic[weapon])
+				{
+					case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC:
+					{
+						bool special = SpecialEffectFor[client] > GetGameTime();
+
+						if(special ^ SpecialEffect[client])
+						{
+							if(ParticleRef[client] != -1)
+							{
+								int entity = EntRefToEntIndex(ParticleRef[client]);
+								if(entity > MaxClients)
+									RemoveEntity(entity);
+
+								ParticleRef[client] = -1;
+							}
+						}
+
+						if(ParticleRef[client] == -1)
+						{
+							float pos[3]; WorldSpaceCenter(client, pos);
+							pos[2] += 1.0;
+
+							int entity = ParticleEffectAt(pos, special ? "utaunt_fish_parent" : "utaunt_fish_base3", -1.0);
+							if(entity > MaxClients)
+							{
+								SetParent(client, entity);
+								ParticleRef[client] = EntIndexToEntRef(entity);
+								SpecialEffect[client] = special;
+							}
+						}
+						
+						return Plugin_Continue;
+					}
+				}
+			}
+		}
+		
+		if(ParticleRef[client] != -1)
+		{
+			int entity = EntRefToEntIndex(ParticleRef[client]);
+			if(entity > MaxClients)
+				RemoveEntity(entity);
+
+			ParticleRef[client] = -1;
+		}
+
+		return Plugin_Continue;
+	}
+		
+	if(ParticleRef[client] != -1)
+	{
+		int entity = EntRefToEntIndex(ParticleRef[client]);
+		if(entity > MaxClients)
+			RemoveEntity(entity);
+		
+		ParticleRef[client] = -1;
+	}
+
+	EffectTimer[client] = null;
+	return Plugin_Stop;
 }
 
 #define DEFAULT_MELEE_RANGE 64.0
@@ -168,6 +254,7 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 	ApplyTempAttrib(weapon, 2, 2.0, 10.0);
 	ApplyTempAttrib(weapon, 6, 1.333, 10.0);
 	ApplyTempAttrib(weapon, 97, 1.333, 10.0);
+	SpecialEffectFor[client] = GetGameTime() + 10.0;
 
 	float pos1[3], /*pos2[3], */ang[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
@@ -178,8 +265,7 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
 		if(entity > MaxClients)
 		{
-			int maxhealth = SDKCall_GetMaxHealth(client);
-			maxhealth = RoundFloat(float(maxhealth) * 0.5); //2x health cus no resistance.
+			int maxhealth = SDKCall_GetMaxHealth(client) / 2; //2x health cus no resistance.
 			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);

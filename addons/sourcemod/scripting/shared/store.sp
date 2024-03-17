@@ -54,6 +54,7 @@ enum struct ItemInfo
 
 	int IsWand;
 	bool IsWrench;
+	bool IsAlone;
 	bool InternalMeleeTrace;
 	
 	char Classname[36];
@@ -249,6 +250,9 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sis_a_wrench", prefix);
 		this.IsWrench	= view_as<bool>(kv.GetNum(buffer));
+
+		Format(buffer, sizeof(buffer), "%signore_upgrades", prefix);
+		this.IsAlone	= view_as<bool>(kv.GetNum(buffer));
 
 		Format(buffer, sizeof(buffer), "%sinternal_melee_trace", prefix);
 		this.InternalMeleeTrace	= view_as<bool>(kv.GetNum(buffer, 1));
@@ -5132,6 +5136,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				i_SemiAutoWeapon[entity] = false;
 				i_WeaponCannotHeadshot[entity] = false;
 				i_WeaponDamageFalloff[entity] = 1.0;
+				i_IsAloneWeapon[entity] = false;
 				i_IsWandWeapon[entity] = false;
 				i_IsWrench[entity] = false;
 				i_InternalMeleeTrace[entity] = true;
@@ -5203,6 +5208,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.IsWand > 0)
 					{
 						i_IsWandWeapon[entity] = info.IsWand;
+					}
+					if(info.IsAlone)
+					{
+						i_IsAloneWeapon[entity] = info.IsAlone;
 					}
 					if(info.IsWrench)
 					{
@@ -5441,41 +5450,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 					if(EntityIsAWeapon)
 					{
-						bool apply;
-						switch(info.Index)
-						{
-							case 0, 1, 2:
-							{
-								if(info.Index == slot && !i_IsWandWeapon[entity] && !i_IsWrench[entity])
-									apply = true;
-							}
-							case 6:
-							{
-								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !i_IsWandWeapon[entity] && !i_IsWrench[entity]))
-								{
-									apply = true;
-								}
-							}
-							case 7:
-							{
-								if(slot == TFWeaponSlot_Primary || slot == TFWeaponSlot_Secondary)
-									apply = true;
-							}
-							case 8:
-							{
-								if(i_IsWandWeapon[entity])
-									apply = true;
-							}
-							case 9:
-							{
-								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !i_IsWandWeapon[entity]))
-									apply = true;
-							}
-							case 10:
-							{
-								apply = true;
-							}
-						}
+						bool apply = CheckEntitySlotIndex(info.Index, slot, entity);
 						
 						if(apply)
 						{
@@ -5504,39 +5479,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 							}
 						}
 
-						apply = false;
-						switch(info.Index2)
-						{
-							case 0, 1, 2:
-							{
-								if(info.Index2 == slot && !i_IsWandWeapon[entity] && !i_IsWrench[entity])
-									apply = true;
-							}
-							case 6:
-							{
-								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !i_IsWandWeapon[entity] && !i_IsWrench[entity]))
-									apply = true;
-							}
-							case 7:
-							{
-								if(slot == TFWeaponSlot_Primary || slot == TFWeaponSlot_Secondary)
-									apply = true;
-							}
-							case 8:
-							{
-								if(i_IsWandWeapon[entity])
-									apply = true;
-							}
-							case 9:
-							{
-								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !i_IsWandWeapon[entity]))
-									apply = true;
-							}
-							case 10:
-							{
-								apply = true;
-							}
-						}
+						apply = CheckEntitySlotIndex(info.Index2, slot, entity);
 						
 						if(apply)
 						{
@@ -6295,4 +6238,57 @@ bool DisplayMenuAtCustom(Menu menu, int client, int item)
 	menu.ExitBackButton = false;
 	return menu.Display(client, MENU_TIME_FOREVER);
 	//return menu.DisplayAt(client, base, MENU_TIME_FOREVER);
+}
+
+static bool CheckEntitySlotIndex(int index, int slot, int entity)
+{
+	switch(index)
+	{
+		case 0, 1, 2:
+		{
+			if(i_IsAloneWeapon[entity])
+				return false;
+			
+			if(index == slot && !i_IsWandWeapon[entity] && !i_IsWrench[entity])
+				return true;
+		}
+		case 6:
+		{
+			if(i_IsAloneWeapon[entity])
+				return false;
+			
+			if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !i_IsWandWeapon[entity] && !i_IsWrench[entity]))
+				return true;
+		}
+		case 7:
+		{
+			if(i_IsAloneWeapon[entity])
+				return false;
+			
+			if(slot == TFWeaponSlot_Primary || slot == TFWeaponSlot_Secondary)
+				return true;
+		}
+		case 8:
+		{
+			if(i_IsAloneWeapon[entity])
+				return false;
+			
+			if(i_IsWandWeapon[entity])
+				return true;
+		}
+		case 9:
+		{
+			if(i_IsAloneWeapon[entity])
+				return false;
+			
+			if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !i_IsWandWeapon[entity]))
+				return true;
+		}
+		case 10:
+		{
+			return true;
+		}
+	}
+
+	return false;
 }

@@ -2624,6 +2624,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_CurrentEquippedPerk[entity] = 0;
 		i_CurrentEquippedPerkPreviously[entity] = 0;
 		i_WandIdNumber[entity] = -1;
+		i_IsAloneWeapon[entity] = false;
 #endif
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
