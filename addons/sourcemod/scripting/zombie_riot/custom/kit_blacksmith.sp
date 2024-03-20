@@ -32,8 +32,8 @@ void Blacksmith_Enable(int client, int weapon)
 	{
 		SmithLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 
-		if(SmithLevel[client] > sizeof(MetalGain))
-			SmithLevel[client] = 0;
+		if(SmithLevel[client] >= sizeof(MetalGain))
+			SmithLevel[client] = sizeof(MetalGain) - 1;
 
 		delete EffectTimer[client];
 		EffectTimer[client] = CreateTimer(0.5, Blacksmith_TimerEffect, client, TIMER_REPEAT);
