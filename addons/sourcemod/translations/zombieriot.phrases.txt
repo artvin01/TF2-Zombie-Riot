@@ -3096,4 +3096,20 @@
 		"#format"	"{1:s},{2:s}"
 		"en"		"{darkgrey}Now Playing: {community}{1} {default}| {lightgreen}{2}"
 	}
+	"Blacksmith Tooltip"
+	{
+		"en"		"Press RELOAD to apply a tinker effect to your active weapon"
+	}
+	"Blacksmith Used"
+	{
+		"en"		"Someone used your Tinker Station, you gain +20 Credits!"
+	}
+	"Blacksmith Maxed"
+	{
+		"en"		"Maximum amount of attributes applied to this weapon"
+	}
+	"Blacksmith Underleveled"
+	{
+		"en"		"Owner needs to upgrade this building before you can tinker this weapon"
+	}
 }

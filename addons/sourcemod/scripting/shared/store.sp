@@ -481,6 +481,7 @@ enum struct Item
 	bool IgnoreSlots;
 	char Tags[256];
 	char Author[128];
+	bool NoKit;
 	
 	ArrayList ItemInfos;
 	
@@ -971,7 +972,7 @@ void Store_ConfigSetup()
 	kv.GotoFirstSubKey();
 	do
 	{
-		ConfigSetup(-1, kv, 0, whitelist, whitecount, blacklist, blackcount);
+		ConfigSetup(-1, kv, 0, false, whitelist, whitecount, blacklist, blackcount);
 	} while(kv.GotoNextKey());
 
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
@@ -979,7 +980,7 @@ void Store_ConfigSetup()
 	StoreBalanceLog.ImportFromFile(buffer);
 }
 
-static void ConfigSetup(int section, KeyValues kv, int hiddenType, const char[][] whitelist, int whitecount, const char[][] blacklist, int blackcount)
+static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, const char[][] whitelist, int whitecount, const char[][] blacklist, int blackcount)
 {
 	int cost = hiddenType == 2 ? 0 : kv.GetNum("cost", -1);
 	bool isItem = cost >= 0;
@@ -1041,6 +1042,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, const char[][
 	item.WhiteOut = view_as<bool>(kv.GetNum("whiteout"));
 	item.ShouldThisCountSupportBuildings = view_as<bool>(kv.GetNum("count_support_buildings"));
 	item.IgnoreSlots = view_as<bool>(kv.GetNum("ignore_equip_region"));
+	item.NoKit = view_as<bool>(kv.GetNum("nokit", noKits ? 1 : 0));
 	kv.GetString("textstore", item.Name, sizeof(item.Name));
 	item.GiftId = item.Name[0] ? Items_NameToId(item.Name) : -1;
 	kv.GetSectionName(item.Name, sizeof(item.Name));
@@ -1091,7 +1093,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, const char[][
 				
 				do
 				{
-					ConfigSetup(sec, kv, 2, whitelist, 0, blacklist, 0);
+					ConfigSetup(sec, kv, 2, item.NoKit, whitelist, 0, blacklist, 0);
 				}
 				while(kv.GotoNextKey());
 				kv.GoBack();
@@ -1118,7 +1120,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, const char[][
 		
 		do
 		{
-			ConfigSetup(sec, kv, item.Hidden ? 1 : 0, whitelist, whitecount, blacklist, blackcount);
+			ConfigSetup(sec, kv, item.Hidden ? 1 : 0, item.NoKit, whitelist, whitecount, blacklist, blackcount);
 		}
 		while(kv.GotoNextKey());
 		kv.GoBack();
@@ -1714,14 +1716,14 @@ void Store_EquipSlotCheck(int client, Item mainItem)
 			
 			if(mainItem.ParentKit)
 			{
-				if(!subItem.ChildKit && info.Classname[0] && TF2_GetClassnameSlot(info.Classname) <= TFWeaponSlot_Melee)
+				if(subItem.NoKit || (!subItem.ChildKit && info.Classname[0] && TF2_GetClassnameSlot(info.Classname) <= TFWeaponSlot_Melee))
 				{
 					PrintToChat(client, "%s was unequipped", TranslateItemName(client, subItem.Name, ""));
 					Store_Unequip(client, i);
 					continue;
 				}
 			}
-			else if(isWeapon)
+			else if(mainItem.NoKit || isWeapon)
 			{
 				if(subItem.ParentKit)
 				{
@@ -1743,6 +1745,20 @@ void Store_EquipSlotCheck(int client, Item mainItem)
 			}
 		}
 	}
+}
+
+bool Store_HasWeaponKit(int client)
+{
+	static Item item;
+	int length = StoreItems.Length;
+	for(int i; i < length; i++)
+	{
+		StoreItems.GetArray(i, item);
+		if(item.ParentKit && item.Equipped[client])
+			return true;
+	}
+
+	return false;
 }
 
 void Store_BuyClientItem(int client, int index, Item item, const ItemInfo info)
@@ -3037,6 +3053,7 @@ static void MenuPage(int client, int section)
 	char buffer[64];
 	int length = StoreItems.Length;
 	int ClientLevel = Level[client];
+	bool hasKit = Store_HasWeaponKit(client);
 	
 	if(CvarInfiniteCash.BoolValue)
 	{
@@ -3259,12 +3276,17 @@ static void MenuPage(int client, int section)
 						FormatEx(buffer, sizeof(buffer), "%s [UNAVAIABLE]", TranslateItemName(client, item.Name, info.Custom_Name));
 						style = ITEMDRAW_DISABLED;
 					}
+					else if(hasKit && item.NoKit)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [WEAPON KIT EQUIPPED]", TranslateItemName(client, item.Name, info.Custom_Name));
+						style = ITEMDRAW_DISABLED;
+					}
 					else if(Rogue_Mode() && info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
 					{
 						FormatEx(buffer, sizeof(buffer), "%s%s [NOT ENOUGH UPGRADES]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
 						style = ITEMDRAW_DISABLED;
 					}
-					if(!Rogue_Mode() && info.BuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
+					else if(!Rogue_Mode() && info.BuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
 					{
 						FormatEx(buffer, sizeof(buffer), "%s%s [NOT ENOUGH UPGRADES]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
 						style = ITEMDRAW_DISABLED;
@@ -5625,6 +5647,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_HHH_Axe_Ability(client, entity);
 		Enable_Messenger_Launcher_Ability(client, entity);
 		WeaponNailgun_Enable(client, entity);
+		Blacksmith_Enable(client, entity);
 	}
 	return entity;
 }

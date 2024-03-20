@@ -2312,4 +2312,28 @@
 	{
 		"en"	"Energized Riot Gun"
 	}
+	"The Tinker"
+	{
+		"en"	"The Tinker"
+	}
+	"Tinker's Wrench"
+	{
+		"en"	"Tinker's Wrench"
+	}
+	"Tinker's Texan Mounter"
+	{
+		"en"	"Tinker's Texan Mounter"
+	}
+	"Buildable Tinker Workshop"
+	{
+		"en"	"Buildable Tinker Workshop"
+	}
+	"Tinker Research"
+	{
+		"en"	"Tinker Research"
+	}
+	"Tinker Ranger"
+	{
+		"en"	"Tinker Ranger"
+	}
 }

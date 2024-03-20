@@ -88,6 +88,8 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 				{
 					case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC:
 					{
+						b_IsCannibal[client] = true;
+
 						bool special = SpecialEffectFor[client] > GetGameTime();
 
 						if(special ^ SpecialEffect[client])
@@ -96,7 +98,10 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 							{
 								int entity = EntRefToEntIndex(ParticleRef[client]);
 								if(entity > MaxClients)
+								{
+									TeleportEntity(entity, OFF_THE_MAP);
 									RemoveEntity(entity);
+								}
 
 								ParticleRef[client] = -1;
 							}
@@ -126,7 +131,10 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 		{
 			int entity = EntRefToEntIndex(ParticleRef[client]);
 			if(entity > MaxClients)
+			{
+				TeleportEntity(entity, OFF_THE_MAP);
 				RemoveEntity(entity);
+			}
 
 			ParticleRef[client] = -1;
 		}
@@ -138,7 +146,10 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 	{
 		int entity = EntRefToEntIndex(ParticleRef[client]);
 		if(entity > MaxClients)
+		{
+			TeleportEntity(entity, OFF_THE_MAP);
 			RemoveEntity(entity);
+		}
 		
 		ParticleRef[client] = -1;
 	}

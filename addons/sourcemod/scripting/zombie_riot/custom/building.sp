@@ -66,7 +66,8 @@ enum
 	BuildingMortar = 9,
 	BuildingHealingStation = 10,
 	BuildingSummoner = 11,
-	BuildingVillage = 12
+	BuildingVillage = 12,
+	BuildingBlacksmith = 13
 }
 enum
 {
@@ -263,6 +264,7 @@ void Building_MapStart()
 	PrecacheModel(BARRICADE_MODEL);
 	PrecacheModel(ELEVATOR_MODEL);
 	PrecacheModel(SUMMONER_MODEL);
+	PrecacheModel("models/props_medieval/anvil.mdl");
 	
 	PrecacheSound("items/powerup_pickup_uber.wav");
 	PrecacheSound("player/mannpower_invulnerable.wav");
@@ -278,7 +280,7 @@ static int Building_Hidden_Prop_To_Building[MAXENTITIES]={-1, ...};
 
 static int i_HasSentryGunAlive[MAXTF2PLAYERS]={-1, ...};
 
-static bool Building_cannot_be_repaired[MAXENTITIES]={false, ...};
+bool Building_cannot_be_repaired[MAXENTITIES]={false, ...};
 
 static float Building_Sentry_Cooldown[MAXTF2PLAYERS];
 
@@ -1724,6 +1726,25 @@ void Building_ShowInteractionHud(int client, int entity)
 					SetGlobalTransTarget(client);
 					PrintCenterText(client, "%t", "Village Upgrade Tooltip");
 				}
+				else if(!StrContains(buffer, "zr_blacksmith"))
+				{
+					Hide_Hud = false;
+					if(Building_Collect_Cooldown[entity][client] > GetGameTime())
+					{
+						float Building_Picking_up_cd = Building_Collect_Cooldown[entity][client] - GetGameTime();
+						
+						if(Building_Picking_up_cd <= 0.0)
+							Building_Picking_up_cd = 0.0;
+							
+						SetGlobalTransTarget(client);
+						PrintCenterText(client, "%t","Object Cooldown",Building_Picking_up_cd);
+					}
+					else
+					{
+						SetGlobalTransTarget(client);
+						PrintCenterText(client, "%t", "Blacksmith Tooltip");						
+					}
+				}
 			}
 		}
 		else if(StrEqual(buffer, "obj_dispenser"))
@@ -1985,6 +2006,10 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			else if(!StrContains(buffer, "zr_summoner"))
 			{
 				buildingType = 9;
+			}
+			else if(!StrContains(buffer, "zr_blacksmith"))
+			{
+				buildingType = BuildingBlacksmith;
 			}
 		}
 		else if(StrEqual(buffer, "obj_dispenser"))
@@ -2580,6 +2605,10 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					{
 						OpenSummonerMenu(owner, client);
 					}
+				}
+				case BuildingBlacksmith:
+				{
+					Blacksmith_BuildingUsed(entity, client, owner);
 				}
 			}
 			return true;
@@ -6370,6 +6399,98 @@ void Dhook_FinishedBuilding_Post_Frame(int RefBuild)
 				}
 							
 			}
+			case BuildingBlacksmith:
+			{
+				npc.bBuildingIsPlaced = true;
+				Building_Constructed[Building_Index] = true;
+				SetEntProp(Building_Index, Prop_Send, "m_bCarried", true);
+				float vOrigin[3];
+				float vAngles[3];
+				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
+				int prop2 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][1]);
+				
+				if(IsValidEntity(prop1))
+				{
+					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] += 180.0;
+					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+				}
+				else
+				{
+					prop1 = CreateEntityByName("prop_dynamic_override");
+					if(IsValidEntity(prop1))
+					{
+						DispatchKeyValue(prop1, "model", "models/props_medieval/anvil.mdl");
+						DispatchKeyValue(prop1, "modelscale", "0.8");
+						DispatchKeyValue(prop1, "StartDisabled", "false");
+						DispatchKeyValue(prop1, "Solid", "0");
+						SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
+						DispatchSpawn(prop1);
+						SetEntityCollisionGroup(prop1, 1);
+						AcceptEntityInput(prop1, "DisableShadow");
+						AcceptEntityInput(prop1, "DisableCollision");
+						SetEntityMoveType(prop1, MOVETYPE_NONE);
+						SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
+						Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
+						Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
+						SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
+
+						GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+						GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+						vAngles[1] += 180.0;
+						TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+						SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
+					}
+				}
+				
+				if(IsValidEntity(prop2))
+				{
+					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] += 180.0;
+					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+				}
+				else
+				{
+					prop2 = CreateEntityByName("prop_dynamic_override");
+					if(IsValidEntity(prop2))
+					{
+						DispatchKeyValue(prop2, "model", "models/props_medieval/anvil.mdl");
+						DispatchKeyValue(prop2, "modelscale", "0.8");
+						DispatchKeyValue(prop2, "StartDisabled", "false");
+						DispatchKeyValue(prop2, "Solid", "0");
+						SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
+						DispatchSpawn(prop2);
+						SetEntityCollisionGroup(prop2, 1);
+						AcceptEntityInput(prop2, "DisableShadow");
+						AcceptEntityInput(prop2, "DisableCollision");
+						SetEntityMoveType(prop2, MOVETYPE_NONE);
+						SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
+						Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
+						Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
+						SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
+
+						GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+						GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+						vAngles[1] += 180.0;
+						TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+						SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
+					}
+				}
+				SetEntityModel(Building_Index, "models/props_medieval/anvil.mdl");
+				/*
+				static const float minbounds[3] = {-15.0, -15.0, 0.0};
+				static const float maxbounds[3] = {15.0, 15.0, 45.0};
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxs", maxbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
+				SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+				npc.UpdateCollisionBox();	
+				*/
+				//Do not override model collisions of sentries, they are wierd.
+
+			}
 		}
 		int client = GetEntPropEnt(Building_Index, Prop_Send, "m_hBuilder");
 		if(IsValidClient(client)) //Make sure that they dont trigger the building once its done and dont get stuck like idiotas
@@ -8252,6 +8373,106 @@ void BuildingVillageChangeModel(int owner, int entity)
 		i_VillageModelAppliance[entity] = 4;
 		SetEntityModel(entity, VILLAGE_MODEL);
 	}
+}
+
+public bool Building_Blacksmith(int client, int entity)
+{
+	i_WhatBuilding[entity] = BuildingBlacksmith;
+	i_HasSentryGunAlive[client] = EntIndexToEntRef(entity);
+	b_SentryIsCustom[entity] = true;
+//	SetEntProp(entity, Prop_Send, "m_bCarried", true);
+	Building_Constructed[entity] = false;
+	CreateTimer(0.2, Building_Set_HP_Colour_Sentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateTimer(0.2, Blacksmith_BuildingTimer, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	DataPack pack;
+	CreateDataTimer(0.21, Timer_DroppedBuildingWaitBlacksmith, pack, TIMER_REPEAT);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(entity);
+	pack.WriteCell(client); //Need original client index id please.
+//	SDKHook(entity, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmit);
+	
+	//This is so low because it has to update the animation very often, this is needed.
+	//i dont want to use an sdkhook for this as i already have this here, and i dont think buildings have think, and it wouldnt be needed here
+	//anyways as i have to reuse whats in there anyways.
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 712); //512 is max shown, then + 200 to have a nice number, abuse overflow :)
+	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
+	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.8);
+	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
+	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
+	Building_Repair_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	Building_Max_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	SetEntPropString(entity, Prop_Data, "m_iName", "zr_blacksmith");
+	Building_cannot_be_repaired[entity] = false;
+	Is_Elevator[entity] = false;
+	
+	if(!CvarInfiniteCash.BoolValue)
+		Building_Sentry_Cooldown[client] = GetGameTime() + 60.0;
+	
+	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		Building_Collect_Cooldown[entity][i] = 0.0;
+	}
+	Barracks_UpdateEntityUpgrades(client, entity, true);
+	return true;
+}
+
+public Action Timer_DroppedBuildingWaitBlacksmith(Handle htimer, DataPack pack)
+{
+	pack.Reset();
+	int entref = pack.ReadCell();
+	int original_entity = pack.ReadCell();
+	pack.ReadCell(); //Need original!
+	int obj=EntRefToEntIndex(entref);
+	if(!IsValidEntity(obj))
+	{
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			RemoveEntity(prop1);
+		}
+		if(IsValidEntity(prop2))
+		{
+			RemoveEntity(prop2);
+		}
+		return Plugin_Stop;
+	}
+	//Wait until full complete
+	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") >= 1.0)
+	{
+		if(Building_Constructed[obj])
+		{
+			SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") | EF_NODRAW);
+//			int iActivity = npc.LookupActivity("MORTAR_IDLE");
+//			if(iActivity > 0) npc.StartActivity(iActivity);
+//			npc.Update(); //SO THE ANIMATION PROPERLY LOOPS! CHECK THIS VERY OFTEN!
+		}
+		CClotBody npc = view_as<CClotBody>(obj);
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[obj] = true;
+		return Plugin_Continue;
+	}
+	else
+	{
+		SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") & ~EF_NODRAW);
+		
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[obj][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[obj][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			RemoveEntity(prop1);
+		}
+		if(IsValidEntity(prop2))
+		{
+			RemoveEntity(prop2);
+		}
+		Building_Constructed[obj] = false;
+	}
+	return Plugin_Continue;
 }
 
 float BuildingWeaponDamageModif(int Type)

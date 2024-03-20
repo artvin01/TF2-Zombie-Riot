@@ -149,7 +149,10 @@ public Action Flagellant_EffectTimer(Handle timer, int client)
 		{
 			int entity = EntRefToEntIndex(ParticleRef[client]);
 			if(entity > MaxClients)
+			{
+				TeleportEntity(entity, OFF_THE_MAP);
 				RemoveEntity(entity);
+			}
 
 			ParticleRef[client] = -1;
 		}
@@ -161,7 +164,10 @@ public Action Flagellant_EffectTimer(Handle timer, int client)
 	{
 		int entity = EntRefToEntIndex(ParticleRef[client]);
 		if(entity > MaxClients)
+		{
+			TeleportEntity(entity, OFF_THE_MAP);
 			RemoveEntity(entity);
+		}
 		
 		ParticleRef[client] = -1;
 	}
