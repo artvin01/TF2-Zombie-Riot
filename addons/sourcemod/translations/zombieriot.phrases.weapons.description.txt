@@ -2746,4 +2746,52 @@
 	{
 		"en" "You feel more confident in controlling chaos in this launcher\n Or is it consuming you? \n \n Increased clip, damage, and faster firerate. \n more cryo applied on Chaos mode and more afterburn damage."
 	}
+	"The Tinker Desc"
+	{
+		"en"	"A blacksmith builder, already including building upgrades and gear.\nProvides a custom building which allows players to tinker weapons.\nGenerates metal and able to tank more damage."
+	}
+	"Tinker Wrench Desc"
+	{
+		"en"	"Similar to a standard wrench, but swings slower, however has an ability to swing much master for a moment."
+	}
+	"Tinker's Texan Mounter"
+	{
+		"en"	"Similar to the Mounter but able to deal damage."
+	}
+	"Tinker Workshop Desc"
+	{
+		"en"	"A building that has a high health pool, can always be repaired, and allows players to tinker their weapons."
+	}
+	"Tinker Research Desc"
+	{
+		"en"	"Increases resistance of Tinker Workshop and generates metal while active"
+	}
+	"Tinker Ranger Desc"
+	{
+		"en"	"Fires bolt projectiles, able to repair buildings, has an ability to pickup buildings from a distance but costs 1000 metal."
+	}
+	"Tinker Pap 1 Desc"
+	{
+		"en"	"+65%% Building Health, +202% Weapon Damage, +100%% Repair Rate, +15 Metal Regen, +3 Support Buildings, and -30s Tinker Cooldown."
+	}
+	"Tinker Pap 2 Desc"
+	{
+		"en"	"+65%% Building Health, +75% Weapon Damage, +25 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\nTinker Tier 1: 80%% | Tinker Tier 2: 20%%"
+	}
+	"Tinker Pap 3 Desc"
+	{
+		"en"	"+70%% Building Health, +181.25% Weapon Damage, +50 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\nTinker Tier 1: 29%% | Tinker Tier 2: 57%% | Tinker Tier 3: 14%%"
+	}
+	"Tinker Pap 4 Desc"
+	{
+		"en"	"+40%% Building Health, +181.25% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown.\nTinker Tier 1: 40%% | Tinker Tier 2: 40%% | Tinker Tier 3: 20%%"
+	}
+	"Tinker Pap 5 Desc"
+	{
+		"en"	"+160% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown.\nTinker Tier 2: 67%% | Tinker Tier 3: 33%%"
+	}
+	"Tinker Pap 6 Desc"
+	{
+		"en"	"+70%% Building Health, +250% Weapon Damage, +100 Metal Regen, +1 Support Building, and -30s Tinker Cooldown.\nTinker Tier 2: 67%% | Tinker Tier 3: 33%%"
+	}
 }
