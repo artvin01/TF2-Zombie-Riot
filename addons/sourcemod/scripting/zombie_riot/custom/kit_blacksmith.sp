@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define TINKER_LIMIT	10
+#define TINKER_LIMIT	4
 
 enum struct TinkerEnum
 {
@@ -13,7 +13,7 @@ enum struct TinkerEnum
 
 static const int SupportBuildings[] = { 2, 5, 9, 14, 14, 15 };
 static const int MetalGain[] = { 10, 25, 50, 100, 200, 300 };
-static const float Cooldowns[] = { 360.0, 330.0, 300.0, 270.0, 240.0, 210.0 };
+static const float Cooldowns[] = { 180.0, 150.0, 120.0, 90.0, 60.0, 30.0 };
 static int SmithLevel[MAXTF2PLAYERS] = {-1, ...};
 
 static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
@@ -219,7 +219,6 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 	}
 
 	TinkerEnum tinker;
-	int pos;
 	int found = -1;
 	if(Tinkers)
 	{
@@ -229,25 +228,8 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 			Tinkers.GetArray(a, tinker);
 			if(tinker.AccountId == account && tinker.StoreIndex == StoreWeapon[weapon])
 			{
-				for(; pos < sizeof(tinker.Attrib); pos++)
-				{
-					if(!tinker.Attrib[pos])
-					{
-						found = a;
-						break;
-					}
-				}
-
-				if(found == -1)
-				{
-					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					SetDefaultHudPosition(client);
-					SetGlobalTransTarget(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Blacksmith Maxed");
-					
-					ApplyBuildingCollectCooldown(entity, client, 2.0);
-					return;
-				}
+				found = a;
+				break;
 			}
 		}
 	}
@@ -256,8 +238,9 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 	{
 		tinker.AccountId = account;
 		tinker.StoreIndex = StoreWeapon[weapon];
-		Zero(tinker.Attrib);
 	}
+	
+	Zero(tinker.Attrib);
 
 	int rarity;
 	switch(SmithLevel[owner])
@@ -314,85 +297,84 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 	{
 		case 0:
 		{
-			AddAttrib(list, weapon, 2, 1.05);
-			AddAttrib(list, weapon, 4, 1.1);
-			AddAttrib(list, weapon, 6, 0.97);
-			AddAttrib(list, weapon, 8, 1.05);
-			AddAttrib(list, weapon, 10, 1.1);
-			AddAttrib(list, weapon, 45, 1.1);
-			AddAttrib(list, weapon, 94, 1.1);
-			AddAttrib(list, weapon, 97, 0.95);
-			AddAttrib(list, weapon, 99, 1.05);
-			AddAttrib(list, weapon, 101, 1.05);
-			AddAttrib(list, weapon, 103, 1.05);
-			AddAttrib(list, weapon, 287, 1.05);
-			AddAttrib(list, weapon, 319, 1.1);
-			AddAttrib(list, weapon, 343, 0.97);
-			AddAttrib(list, weapon, 410, 1.05);
+			AddAttrib(list, weapon, 2, 0.95, 1.05);
+			AddAttrib(list, weapon, 4, 0.9, 1.1);
+			AddAttrib(list, weapon, 6, 0.97, 1.03);
+			AddAttrib(list, weapon, 8, 0.95, 1.05);
+			AddAttrib(list, weapon, 10, 0.9, 1.1);
+			AddAttrib(list, weapon, 45, 0.9, 1.1);
+			AddAttrib(list, weapon, 94, 0.9, 1.1);
+			AddAttrib(list, weapon, 97, 0.95, 1.05);
+			AddAttrib(list, weapon, 99, 0.95, 1.05);
+			AddAttrib(list, weapon, 101, 0.95, 1.05);
+			AddAttrib(list, weapon, 103, 0.95, 1.05);
+			AddAttrib(list, weapon, 287, 0.95, 1.05);
+			AddAttrib(list, weapon, 319, 0.9, 1.1);
+			AddAttrib(list, weapon, 343, 0.97, 1.03);
+			AddAttrib(list, weapon, 410, 0.95, 1.05);
 		}
 		case 1:
 		{
-			AddAttrib(list, weapon, 26, 1.05);
-			AddAttrib(list, 0, 205, 0.98);
-			AddAttrib(list, 0, 206, 0.98);
-			AddAttrib(list, weapon, 412, 0.98);
+			AddAttrib(list, weapon, 26, 0.9625, 1.05);
+			AddAttrib(list, 0, 205, 0.98, 1.015);
+			AddAttrib(list, 0, 206, 0.98, 1.015);
+			AddAttrib(list, weapon, 412, 0.98, 1.015);
 			
-			AddAttrib(list, weapon, 1, 1.1);
-			AddAttrib(list, weapon, 2, 1.1);
-			AddAttrib(list, weapon, 3, 1.2);
-			AddAttrib(list, weapon, 4, 1.2);
-			AddAttrib(list, weapon, 5, 0.96);
-			AddAttrib(list, weapon, 6, 0.96);
-			AddAttrib(list, weapon, 8, 1.1);
-			AddAttrib(list, weapon, 10, 1.2);
-			AddAttrib(list, weapon, 45, 1.2);
-			AddAttrib(list, weapon, 94, 1.2);
-			AddAttrib(list, weapon, 96, 0.9);
-			AddAttrib(list, weapon, 97, 0.9);
-			AddAttrib(list, weapon, 99, 1.1);
-			AddAttrib(list, weapon, 100, 1.1);
-			AddAttrib(list, weapon, 101, 1.1);
-			AddAttrib(list, weapon, 102, 1.1);
-			AddAttrib(list, weapon, 103, 1.1);
-			AddAttrib(list, weapon, 104, 1.1);
-			AddAttrib(list, weapon, 287, 1.1);
-			AddAttrib(list, weapon, 319, 1.2);
-			AddAttrib(list, weapon, 343, 0.94);
-			AddAttrib(list, weapon, 410, 1.1);
+			AddAttrib(list, weapon, 1, 0.925, 1.1);
+			AddAttrib(list, weapon, 2, 0.925, 1.1);
+			AddAttrib(list, weapon, 3, 0.85, 1.2);
+			AddAttrib(list, weapon, 4, 0.85, 1.2);
+			AddAttrib(list, weapon, 5, 0.96, 1.03);
+			AddAttrib(list, weapon, 6, 0.96, 1.03);
+			AddAttrib(list, weapon, 8, 0.925, 1.1);
+			AddAttrib(list, weapon, 10, 0.85, 1.2);
+			AddAttrib(list, weapon, 45, 0.85, 1.2);
+			AddAttrib(list, weapon, 94, 0.85, 1.2);
+			AddAttrib(list, weapon, 96, 0.9, 1.075);
+			AddAttrib(list, weapon, 97, 0.9, 1.075);
+			AddAttrib(list, weapon, 99, 0.925, 1.1);
+			AddAttrib(list, weapon, 100, 0.925, 1.1);
+			AddAttrib(list, weapon, 101, 0.925, 1.1);
+			AddAttrib(list, weapon, 102, 0.925, 1.1);
+			AddAttrib(list, weapon, 103, 0.925, 1.1);
+			AddAttrib(list, weapon, 104, 0.925, 1.1);
+			AddAttrib(list, weapon, 287, 0.925, 1.1);
+			AddAttrib(list, weapon, 319, 0.85, 1.2);
+			AddAttrib(list, weapon, 343, 0.97, 1.04);
+			AddAttrib(list, weapon, 410, 0.925, 1.1);
 		}
 		case 2:
 		{
-			AddAttrib(list, 0, 107, 1.01);
-			AddAttrib(list, weapon, 149, 1.5);
-			AddAttrib(list, 0, 208, 3.0);
+			AddAttrib(list, 0, 107, 0.99, 1.01);
+			AddAttrib(list, weapon, 149, 0.8, 1.5);
 
-			AddAttrib(list, weapon, 26, 1.1);
-			AddAttrib(list, 0, 205, 0.96);
-			AddAttrib(list, 0, 206, 0.96);
-			AddAttrib(list, weapon, 412, 0.96);
+			AddAttrib(list, weapon, 26, 0.9625, 1.05);
+			AddAttrib(list, 0, 205, 0.98, 1.015);
+			AddAttrib(list, 0, 206, 0.98, 1.015);
+			AddAttrib(list, weapon, 412, 0.98, 1.015);
 			
-			AddAttrib(list, weapon, 1, 1.1);
-			AddAttrib(list, weapon, 2, 1.1);
-			AddAttrib(list, weapon, 3, 1.2);
-			AddAttrib(list, weapon, 4, 1.2);
-			AddAttrib(list, weapon, 5, 0.96);
-			AddAttrib(list, weapon, 6, 0.96);
-			AddAttrib(list, weapon, 8, 1.1);
-			AddAttrib(list, weapon, 10, 1.2);
-			AddAttrib(list, weapon, 45, 1.2);
-			AddAttrib(list, weapon, 94, 1.2);
-			AddAttrib(list, weapon, 96, 0.9);
-			AddAttrib(list, weapon, 97, 0.9);
-			AddAttrib(list, weapon, 99, 1.1);
-			AddAttrib(list, weapon, 100, 1.1);
-			AddAttrib(list, weapon, 101, 1.1);
-			AddAttrib(list, weapon, 102, 1.1);
-			AddAttrib(list, weapon, 103, 1.1);
-			AddAttrib(list, weapon, 104, 1.1);
-			AddAttrib(list, weapon, 287, 1.1);
-			AddAttrib(list, weapon, 319, 1.2);
-			AddAttrib(list, weapon, 343, 0.94);
-			AddAttrib(list, weapon, 410, 1.1);
+			AddAttrib(list, weapon, 1, 0.95, 1.1);
+			AddAttrib(list, weapon, 2, 0.95, 1.1);
+			AddAttrib(list, weapon, 3, 0.875, 1.2);
+			AddAttrib(list, weapon, 4, 0.875, 1.2);
+			AddAttrib(list, weapon, 5, 0.96, 1.02);
+			AddAttrib(list, weapon, 6, 0.96, 1.02);
+			AddAttrib(list, weapon, 8, 0.95, 1.1);
+			AddAttrib(list, weapon, 10, 0.875, 1.2);
+			AddAttrib(list, weapon, 45, 0.875, 1.2);
+			AddAttrib(list, weapon, 94, 0.875, 1.2);
+			AddAttrib(list, weapon, 96, 0.925, 1.075);
+			AddAttrib(list, weapon, 97, 0.925, 1.075);
+			AddAttrib(list, weapon, 99, 0.95, 1.1);
+			AddAttrib(list, weapon, 100, 0.95, 1.1);
+			AddAttrib(list, weapon, 101, 0.95, 1.1);
+			AddAttrib(list, weapon, 102, 0.95, 1.1);
+			AddAttrib(list, weapon, 103, 0.95, 1.1);
+			AddAttrib(list, weapon, 104, 0.95, 1.1);
+			AddAttrib(list, weapon, 287, 0.95, 1.1);
+			AddAttrib(list, weapon, 319, 0.875, 1.2);
+			AddAttrib(list, weapon, 343, 0.96, 1.02);
+			AddAttrib(list, weapon, 410, 0.95, 1.1);
 		}
 	}
 
@@ -408,10 +390,46 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 		return;
 	}
 
-	any values[2];
-	list.GetArray(GetURandomInt() % list.Length, values);
-	tinker.Attrib[pos] = view_as<int>(values[0]);
-	tinker.Value[pos] = view_as<float>(values[1]);
+	any values[3];
+
+	for(int i = 0; i <= rarity; i++)
+	{
+		list.GetArray(GetURandomInt() % list.Length, values);
+		tinker.Attrib[i] = view_as<int>(values[0]);
+
+		float minVal = view_as<float>(values[1]);
+		float maxVal = view_as<float>(values[2]);
+
+		switch(i)
+		{
+			case 0:	// Always Good
+			{
+				if(AttribIsInverse(tinker.Attrib[i]))
+				{
+					maxVal = 0.99;
+				}
+				else
+				{
+					minVal = 1.01;
+				}
+			}
+			case 1:	// Always Bad
+			{
+				if(AttribIsInverse(tinker.Attrib[i]))
+				{
+					minVal = 1.01;
+				}
+				else
+				{
+					maxVal = 0.99;
+				}
+			}
+		}
+
+		tinker.Value[i] = GetRandomFloat(minVal, maxVal);
+
+		PrintAttribValue(client, tinker.Attrib[i], tinker.Value[i]);
+	}
 
 	delete list;
 
@@ -429,81 +447,6 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 
 	Store_ApplyAttribs(client);
 	Store_GiveAll(client, GetClientHealth(client));	
-
-	switch(tinker.Attrib[pos])
-	{
-		case 1:
-			PrintToChat(client, "+%d%% Physical Damage", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-		
-		case 2:
-			PrintToChat(client, "+%d%% Base Damage", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-		
-		case 3, 4:
-			PrintToChat(client, "+%d%% Clip Size", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-		
-		case 5, 6:
-			PrintToChat(client, "+%d%% Firing Speed", RoundFloat(((1.0 / tinker.Value[pos]) - 1.0) * 100.0));
-		
-		case 8:
-			PrintToChat(client, "+%d%% Healing Rate", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-		
-		case 10:
-			PrintToChat(client, "+%d%% ÜberCharge Rate", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-		
-		case 26:
-			PrintToChat(client, "+%d%% Max Health Bonus", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-		
-		case 45:
-			PrintToChat(client, "+%d%% Bullets Per Shot", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-		
-		case 94:
-			PrintToChat(client, "+%d%% Repair Rate", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-		
-		case 96, 97:
-			PrintToChat(client, "+%d%% Reload Speed", RoundFloat(((1.0 / tinker.Value[pos]) - 1.0) * 100.0));
-		
-		case 99, 100:
-			PrintToChat(client, "+%d%% Blast Radius", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-		
-		case 101, 102:
-			PrintToChat(client, "+%d%% Projectile Range", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-		
-		case 103, 104:
-			PrintToChat(client, "+%d%% Projectile Speed", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-		
-		case 107:
-			PrintToChat(client, "+%d%% Movement Speed", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-		
-		case 149:
-			PrintToChat(client, "+%d%% Bleed Duration", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-		
-		case 205:
-			PrintToChat(client, "+%d%% Ranged Damage Resistance", RoundFloat(((1.0 / tinker.Value[pos]) - 1.0) * 100.0));
-		
-		case 206:
-			PrintToChat(client, "+%d%% Melee Damage Resistance", RoundFloat(((1.0 / tinker.Value[pos]) - 1.0) * 100.0));
-		
-		case 287:
-			PrintToChat(client, "+%d%% Sentry Damage", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-		
-		case 319:
-			PrintToChat(client, "+%d%% Buff Duration", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-		
-		case 343:
-			PrintToChat(client, "+%d%% Sentry Firing Speed", RoundFloat(((1.0 / tinker.Value[pos]) - 1.0) * 100.0));
-		
-		case 410:
-			PrintToChat(client, "+%d%% Base Damage", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-		
-		case 412:
-			PrintToChat(client, "+%d%% Damage Resistance", RoundFloat(((1.0 / tinker.Value[pos]) - 1.0) * 100.0));
-		
-		default:
-		{
-			PrintToChat(client, "+%d%% Chaos", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
-			rarity = 3;
-		}
-	}
 
 	switch(rarity)
 	{
@@ -561,13 +504,111 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 	}
 }
 
-static void AddAttrib(ArrayList list, int entity, int attrib, float multi)
+static void AddAttrib(ArrayList list, int entity, int attrib, float low, float high)
 {
 	if(!entity || (Attributes_Has(entity, attrib) && Attributes_Get(entity, attrib, 1.0) > 0.0))
 	{
-		static any vals[2];
+		static any vals[3];
 		vals[0] = attrib;
-		vals[1] = multi;
+		vals[1] = low;
+		vals[2] = high;
 		list.PushArray(vals);
+	}
+}
+
+static bool AttribIsInverse(int attrib)
+{
+	switch(attrib)
+	{
+		case 5, 6, 96, 97, 205, 206, 343, 412:
+			return true;
+	}
+
+	return false;
+}
+
+static void PrintAttribValue(int client, int attrib, float value)
+{
+	bool inverse = AttribIsInverse(attrib);
+	
+	char num[16];
+	if(value < 1.0)
+	{
+		FormatEx(num, sizeof(num), " %d%% ", RoundFloat(((1.0 / value) - 1.0) * 100.0));
+	}
+	else
+	{
+		FormatEx(num, sizeof(num), " %d%% ", RoundFloat((value - 1.0) * 100.0));
+	}
+
+	num[0] = ((value < 1.0) ^ inverse) ? '-' : '+';
+
+	switch(attrib)
+	{
+		case 1:
+			PrintToChat(client, "%sPhysical Damage", num);
+		
+		case 2:
+			PrintToChat(client, "%sBase Damage", num);
+		
+		case 3, 4:
+			PrintToChat(client, "%sClip Size", num);
+		
+		case 5, 6:
+			PrintToChat(client, "%sFiring Speed", num);
+		
+		case 8:
+			PrintToChat(client, "%sHealing Rate", num);
+		
+		case 10:
+			PrintToChat(client, "%sÜberCharge Rate", num);
+		
+		case 26:
+			PrintToChat(client, "%sMax Health Bonus", num);
+		
+		case 45:
+			PrintToChat(client, "%sBullets Per Shot", num);
+		
+		case 94:
+			PrintToChat(client, "%sRepair Rate", num);
+		
+		case 96, 97:
+			PrintToChat(client, "%sReload Speed", num);
+		
+		case 99, 100:
+			PrintToChat(client, "%sBlast Radius", num);
+		
+		case 101, 102:
+			PrintToChat(client, "%sProjectile Range", num);
+		
+		case 103, 104:
+			PrintToChat(client, "%sProjectile Speed", num);
+		
+		case 107:
+			PrintToChat(client, "%sMovement Speed", num);
+		
+		case 149:
+			PrintToChat(client, "%sBleed Duration", num);
+		
+		case 205:
+			PrintToChat(client, "%sRanged Damage Resistance", num);
+		
+		case 206:
+			PrintToChat(client, "%sMelee Damage Resistance", num);
+		
+		case 287:
+			PrintToChat(client, "%sSentry Damage", num);
+		
+		case 319:
+			PrintToChat(client, "%sBuff Duration", num);
+		
+		case 343:
+			PrintToChat(client, "%sSentry Firing Speed", num);
+		
+		case 410:
+			PrintToChat(client, "%sBase Damage", num);
+		
+		case 412:
+			PrintToChat(client, "%sDamage Resistance", num);
 	}
 }

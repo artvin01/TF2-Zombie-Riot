@@ -2748,7 +2748,7 @@
 	}
 	"The Tinker Desc"
 	{
-		"en"	"A blacksmith builder, already including building upgrades and gear.\nProvides a custom building which allows players to tinker weapons.\nGenerates metal and able to tank more damage."
+		"en"	"A blacksmith builder, already including building upgrades and gear.\nProvides a custom building which allows players to tinker weapons.\nTinkers apply a random number of attributes to the weapon. Reusing rerolls these attributes.\nGenerates metal and able to tank more damage."
 	}
 	"Tinker Wrench Desc"
 	{
@@ -2760,7 +2760,7 @@
 	}
 	"Tinker Workshop Desc"
 	{
-		"en"	"A building that has a high health pool, can always be repaired, and allows players to tinker their weapons."
+		"en"	"A building that has a high health pool, can always be repaired, and allows players to tinker their weapons.\nTinkers apply a random number of attributes to the weapon. Reusing rerolls these attributes."
 	}
 	"Tinker Research Desc"
 	{

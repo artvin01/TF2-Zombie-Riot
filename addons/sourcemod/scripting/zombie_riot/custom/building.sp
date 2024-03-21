@@ -8433,12 +8433,12 @@ public bool Building_Blacksmith(int client, int entity)
 	Is_Elevator[entity] = false;
 	
 	if(!CvarInfiniteCash.BoolValue)
-		Building_Sentry_Cooldown[client] = GetGameTime() + 150.0;
+		Building_Sentry_Cooldown[client] = GetGameTime() + 60.0;
 	
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		Building_Collect_Cooldown[entity][i] = Building_Sentry_Cooldown[client] + 150.0;
+		Building_Collect_Cooldown[entity][i] = Building_Sentry_Cooldown[client] + 60.0;
 	}
 	Barracks_UpdateEntityUpgrades(client, entity, true);
 	return true;
