@@ -37,6 +37,8 @@ void Blacksmith_Enable(int client, int weapon)
 
 		delete EffectTimer[client];
 		EffectTimer[client] = CreateTimer(0.5, Blacksmith_TimerEffect, client, TIMER_REPEAT);
+
+		i_MaxSupportBuildingsLimit[client] = SupportBuildings[SmithLevel[client]];
 	}
 
 	if(Tinkers)
