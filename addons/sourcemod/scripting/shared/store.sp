@@ -4823,7 +4823,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
 	b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
-#endif
 
 	//stickies can stay, we delete any non spike stickies.
 	for( int i = 1; i <= MAXENTITIES; i++ ) 
@@ -5638,7 +5637,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Dimension_Wand(client, entity);
 		Enable_Management_Hell_Hoe(client, entity);
 		Enable_Kahml_Fist_Ability(client, entity);
-#endif
+		Enable_Messenger_Launcher_Ability(client, entity);
+		WeaponNailgun_Enable(client, entity);
+		Blacksmith_Enable(client, entity);
 	}
 	return entity;
 }

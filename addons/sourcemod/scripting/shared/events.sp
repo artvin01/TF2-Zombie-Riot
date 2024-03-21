@@ -219,25 +219,6 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
 			}
 		}
-		else
-		{
-			int entity = MaxClients+1;
-			while(TF2_GetWearable(client, entity))
-			{
-				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
-			}
-		}
-		/*
-		else
-		{
-			int entity = MaxClients+1;
-			while(TF2_GetWearable(client, entity))
-			{
-				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
-			}
-		}
-		*/
-		//doesnt work, can cause client crashes?
 #endif
 
 #if defined ZR
