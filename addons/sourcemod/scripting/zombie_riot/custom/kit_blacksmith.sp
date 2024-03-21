@@ -442,7 +442,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 			PrintToChat(client, "+%d%% Clip Size", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
 		
 		case 5, 6:
-			PrintToChat(client, "+%d%% Firing Speed", RoundFloat((1.0 / tinker.Value[pos]) * 100.0));
+			PrintToChat(client, "+%d%% Firing Speed", RoundFloat(((1.0 / tinker.Value[pos]) - 1.0) * 100.0));
 		
 		case 8:
 			PrintToChat(client, "+%d%% Healing Rate", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
@@ -460,7 +460,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 			PrintToChat(client, "+%d%% Repair Rate", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
 		
 		case 96, 97:
-			PrintToChat(client, "+%d%% Reload Speed", RoundFloat((1.0 / tinker.Value[pos]) * 100.0));
+			PrintToChat(client, "+%d%% Reload Speed", RoundFloat(((1.0 / tinker.Value[pos]) - 1.0) * 100.0));
 		
 		case 99, 100:
 			PrintToChat(client, "+%d%% Blast Radius", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
@@ -478,10 +478,10 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 			PrintToChat(client, "+%d%% Bleed Duration", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
 		
 		case 205:
-			PrintToChat(client, "+%d%% Ranged Damage Resistance", RoundFloat((1.0 / tinker.Value[pos]) * 100.0));
+			PrintToChat(client, "+%d%% Ranged Damage Resistance", RoundFloat(((1.0 / tinker.Value[pos]) - 1.0) * 100.0));
 		
 		case 206:
-			PrintToChat(client, "+%d%% Melee Damage Resistance", RoundFloat((1.0 / tinker.Value[pos]) * 100.0));
+			PrintToChat(client, "+%d%% Melee Damage Resistance", RoundFloat(((1.0 / tinker.Value[pos]) - 1.0) * 100.0));
 		
 		case 287:
 			PrintToChat(client, "+%d%% Sentry Damage", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
@@ -490,13 +490,13 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 			PrintToChat(client, "+%d%% Buff Duration", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
 		
 		case 343:
-			PrintToChat(client, "+%d%% Sentry Firing Speed", RoundFloat((1.0 / tinker.Value[pos]) * 100.0));
+			PrintToChat(client, "+%d%% Sentry Firing Speed", RoundFloat(((1.0 / tinker.Value[pos]) - 1.0) * 100.0));
 		
 		case 410:
 			PrintToChat(client, "+%d%% Base Damage", RoundFloat((tinker.Value[pos] - 1.0) * 100.0));
 		
 		case 412:
-			PrintToChat(client, "+%d%% Damage Resistance", RoundFloat((1.0 / tinker.Value[pos]) * 100.0));
+			PrintToChat(client, "+%d%% Damage Resistance", RoundFloat(((1.0 / tinker.Value[pos]) - 1.0) * 100.0));
 		
 		default:
 		{
