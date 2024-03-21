@@ -79,7 +79,7 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 	{
-		if(!dieingstate[client])
+		if(!dieingstate[client] && IsPlayerAlive(client))
 		{
 			int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			if(weapon != INVALID_ENT_REFERENCE)
@@ -109,7 +109,7 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 
 						if(ParticleRef[client] == -1)
 						{
-							float pos[3]; WorldSpaceCenter(client, pos);
+							float pos[3]; GetClientAbsOrigin(client, pos);
 							pos[2] += 1.0;
 
 							int entity = ParticleEffectAt(pos, special ? "utaunt_fish_parent" : "utaunt_fish_base3", -1.0);

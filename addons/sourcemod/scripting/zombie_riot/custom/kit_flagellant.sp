@@ -121,7 +121,7 @@ public Action Flagellant_EffectTimer(Handle timer, int client)
 	if(IsClientInGame(client))
 	{
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(weapon != -1)
+		if(weapon != -1 && IsPlayerAlive(client))
 		{
 			switch(i_CustomWeaponEquipLogic[weapon])
 			{
@@ -129,7 +129,7 @@ public Action Flagellant_EffectTimer(Handle timer, int client)
 				{
 					if(ParticleRef[client] == -1)
 					{
-						float pos[3]; WorldSpaceCenter(client, pos);
+						float pos[3]; GetClientAbsOrigin(client, pos);
 						pos[2] += 1.0;
 
 						int entity = ParticleEffectAt(pos, "utaunt_hands_floor2_green", -1.0);

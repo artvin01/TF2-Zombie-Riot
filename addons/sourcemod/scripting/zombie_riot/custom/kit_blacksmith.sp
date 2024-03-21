@@ -70,36 +70,39 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 	{
-		int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		if(weapon != -1)
+		if(!dieingstate[client] && IsPlayerAlive(client))
 		{
-			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BLACKSMITH)
+			int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+			if(weapon != -1)
 			{
-				if(!Waves_InSetup() && GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
+				if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BLACKSMITH)
 				{
-					SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalGain[SmithLevel[client]]);
-				}
-
-				i_MaxSupportBuildingsLimit[client] = SupportBuildings[SmithLevel[client]];
-
-				if(ParticleRef[client] == -1)
-				{
-					float pos[3]; WorldSpaceCenter(client, pos);
-					pos[2] += 1.0;
-
-					int entity = ParticleEffectAt(pos, "utaunt_hellpit_firering", -1.0);
-					if(entity > MaxClients)
+					if(!Waves_InSetup() && GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
 					{
-						SetParent(client, entity);
-						ParticleRef[client] = EntIndexToEntRef(entity);
+						SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalGain[SmithLevel[client]]);
 					}
-				}
-				
-				return Plugin_Continue;
-			}
-		}
 
-		SmithLevel[client] = -1;
+					i_MaxSupportBuildingsLimit[client] = SupportBuildings[SmithLevel[client]];
+
+					if(ParticleRef[client] == -1)
+					{
+						float pos[3]; GetClientAbsOrigin(client, pos);
+						pos[2] += 1.0;
+
+						int entity = ParticleEffectAt(pos, "utaunt_hellpit_firering", -1.0);
+						if(entity > MaxClients)
+						{
+							SetParent(client, entity);
+							ParticleRef[client] = EntIndexToEntRef(entity);
+						}
+					}
+					
+					return Plugin_Continue;
+				}
+			}
+
+			SmithLevel[client] = -1;
+		}
 		
 		if(ParticleRef[client] != -1)
 		{

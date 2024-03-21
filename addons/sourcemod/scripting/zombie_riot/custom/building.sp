@@ -8375,6 +8375,32 @@ void BuildingVillageChangeModel(int owner, int entity)
 	}
 }
 
+public Action Building_PlaceBlacksmith(int client, int weapon, const char[] classname, bool &result)
+{
+	int Sentrygun = EntRefToEntIndex(i_HasSentryGunAlive[client]);
+	if(!IsValidEntity(Sentrygun))
+	{
+		if(Building_Sentry_Cooldown[client] > GetGameTime())
+		{
+			result = false;
+			float Ability_CD = Building_Sentry_Cooldown[client] - GetGameTime();
+			
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+				
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		}
+		else
+		{
+			PlaceBuilding(client, weapon, Building_Blacksmith, TFObject_Sentry);
+		}
+	}
+	return Plugin_Continue;
+}
+
 public bool Building_Blacksmith(int client, int entity)
 {
 	i_WhatBuilding[entity] = BuildingBlacksmith;
@@ -8385,7 +8411,7 @@ public bool Building_Blacksmith(int client, int entity)
 	CreateTimer(0.2, Building_Set_HP_Colour_Sentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	CreateTimer(0.2, Blacksmith_BuildingTimer, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	DataPack pack;
-	CreateDataTimer(0.21, Timer_DroppedBuildingWaitBlacksmith, pack, TIMER_REPEAT);
+	CreateDataTimer(0.21, Timer_DroppedBuildingWaitHealingStation, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(entity);
 	pack.WriteCell(client); //Need original client index id please.
@@ -8416,63 +8442,6 @@ public bool Building_Blacksmith(int client, int entity)
 	}
 	Barracks_UpdateEntityUpgrades(client, entity, true);
 	return true;
-}
-
-public Action Timer_DroppedBuildingWaitBlacksmith(Handle htimer, DataPack pack)
-{
-	pack.Reset();
-	int entref = pack.ReadCell();
-	int original_entity = pack.ReadCell();
-	pack.ReadCell(); //Need original!
-	int obj=EntRefToEntIndex(entref);
-	if(!IsValidEntity(obj))
-	{
-		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][0]);
-		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][1]);
-		
-		if(IsValidEntity(prop1))
-		{
-			RemoveEntity(prop1);
-		}
-		if(IsValidEntity(prop2))
-		{
-			RemoveEntity(prop2);
-		}
-		return Plugin_Stop;
-	}
-	//Wait until full complete
-	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") >= 1.0)
-	{
-		if(Building_Constructed[obj])
-		{
-			SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") | EF_NODRAW);
-//			int iActivity = npc.LookupActivity("MORTAR_IDLE");
-//			if(iActivity > 0) npc.StartActivity(iActivity);
-//			npc.Update(); //SO THE ANIMATION PROPERLY LOOPS! CHECK THIS VERY OFTEN!
-		}
-		CClotBody npc = view_as<CClotBody>(obj);
-		npc.bBuildingIsPlaced = true;
-		Building_Constructed[obj] = true;
-		return Plugin_Continue;
-	}
-	else
-	{
-		SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") & ~EF_NODRAW);
-		
-		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[obj][0]);
-		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[obj][1]);
-		
-		if(IsValidEntity(prop1))
-		{
-			RemoveEntity(prop1);
-		}
-		if(IsValidEntity(prop2))
-		{
-			RemoveEntity(prop2);
-		}
-		Building_Constructed[obj] = false;
-	}
-	return Plugin_Continue;
 }
 
 float BuildingWeaponDamageModif(int Type)
