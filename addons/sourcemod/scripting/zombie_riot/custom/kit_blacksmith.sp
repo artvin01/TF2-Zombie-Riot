@@ -392,7 +392,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 
 	any values[3];
 
-	for(int i = 0; i <= rarity; i++)
+	for(int i = 0; i < (rarity + 2); i++)
 	{
 		list.GetArray(GetURandomInt() % list.Length, values);
 		tinker.Attrib[i] = view_as<int>(values[0]);
