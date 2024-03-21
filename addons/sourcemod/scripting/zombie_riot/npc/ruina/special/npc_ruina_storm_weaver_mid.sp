@@ -25,12 +25,22 @@ static int i_following_id[MAXENTITIES];
 
 void Ruina_Storm_Weaver_Mid_MapStart()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
 
 	PrecacheModel(RUINA_STORM_WEAVER_MODEL);
 
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Stellar Weaver");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_stellar_weaver_middle");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Storm_Weaver_Mid(client, vecPos, vecAng, ally , StringToFloat(data));
 }
 
 methodmap Storm_Weaver_Mid < CClotBody
@@ -70,7 +80,6 @@ methodmap Storm_Weaver_Mid < CClotBody
 	{
 		Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(CClotBody(vecPos, vecAng, RUINA_STORM_WEAVER_MODEL, RUINA_STORM_WEAVER_MODEL_SIZE, "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_STELLAR_WEAVER_MID;
 		i_NpcWeight[npc.index] = 999;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -81,7 +90,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 
 		if(ally != TFTeam_Red)
 		{
-			b_thisNpcIsABoss[npc.index] = true;
+			//b_thisNpcIsABoss[npc.index] = true;
 		}
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -90,13 +99,13 @@ methodmap Storm_Weaver_Mid < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		Ruina_Set_Heirarchy(npc.index, 2);
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);
 
 		Ruina_Set_No_Retreat(npc.index);
 
-		
-		
-		SDKHook(npc.index, SDKHook_Think, Storm_Weaver_Mid_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 
@@ -118,7 +127,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 
 //TODO 
 //Rewrite
-public void Storm_Weaver_Mid_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(iNPC);
 
@@ -184,7 +193,7 @@ public void Storm_Weaver_Mid_ClotThink(int iNPC)
 		if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 		{
 			float vecTarget[3];
-			vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 
 			if(GameTime > npc.m_flNextRangedAttack)
 			{
@@ -203,23 +212,27 @@ public void Storm_Weaver_Mid_ClotThink(int iNPC)
 
 
 }
-public Action Storm_Weaver_Mid_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+	
+	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 	if(!b_storm_weaver_solo)
 	{
 		Storm_Weaver_Share_With_Anchor_Damage(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
-		fl_ruina_battery[npc.index] += damage;	//turn damage taken into energy
+		Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health());
 	}
 	else if(b_stellar_weaver_true_solo)
 	{
 		Stellar_Weaver_Share_Damage_With_All(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health());
 	}
 
 	damage=0.0;	//storm weaver doesn't really take any damage, his "health bar" is just the combined health of all the towers
@@ -233,7 +246,7 @@ public Action Storm_Weaver_Mid_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-public void Storm_Weaver_Mid_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(entity);
 	if(!npc.m_bGib)
@@ -241,7 +254,6 @@ public void Storm_Weaver_Mid_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, Storm_Weaver_Mid_ClotThink);
+	Ruina_NPCDeath_Override(entity);
 
 }

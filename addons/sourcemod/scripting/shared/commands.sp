@@ -4,6 +4,7 @@
 #if defined ZR
 float f_MedicCallIngore[MAXTF2PLAYERS];
 bool b_HoldingInspectWeapon[MAXTF2PLAYERS];
+static bool BlockNext[MAXTF2PLAYERS];
 #endif
 
 void Commands_PluginStart()
@@ -27,11 +28,22 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
 	char buffer[64];
 	KvGetSectionName(kv, buffer, sizeof(buffer));
+
+#if defined ZR
+	if(BlockNext[client])
+	{
+		if(!StrEqual(buffer, "+inspect_server", false))
+			BlockNext[client] = false;
+		
+		return Plugin_Handled;
+	}
+#endif
+	
 	if(RTSCamera_ClientCommandKeyValues(client, buffer))
 	{
 		return Plugin_Handled;
 	}
-	else if(StrEqual(buffer, "+inspect_server", false))
+	else if(StrEqual(buffer, "+use_action_slot_item_server", false))
 	{
 #if defined ZR
 		b_HoldingInspectWeapon[client] = true;
@@ -44,15 +56,22 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 			Store_SwapItems(client);
 		}
 #endif
-
-#if defined RPG
-		TextStore_Inspect(client);
-#endif
-
 		return Plugin_Handled;
 	}
 #if defined ZR
-	else if(StrEqual(buffer, "-inspect_server", false))
+	else if(!StrContains(buffer, "MvM_UpgradesBegin", false))
+	{
+		//Remove MVM buy hud
+		BlockNext[client] = true;
+		ClientCommand(client, "+inspect");
+		ClientCommand(client, "-inspect");
+		return Plugin_Handled;
+	}
+	else if(!StrContains(buffer, "MvM_Upgrade", false))
+	{
+		return Plugin_Handled;
+	}
+	else if(StrEqual(buffer, "-use_action_slot_item_server", false))
 	{
 		b_HoldingInspectWeapon[client] = false;
 	}
@@ -70,7 +89,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	
 //	HINT: there is a - version, which is detected when letting go of the button, its basically a fancy onclientruncmd, although it shouldnt be used really.
 
-	else if(StrEqual(buffer, "+use_action_slot_item_server", false))
+	else if(StrEqual(buffer, "+inspect_server", false))
 	{
 		BuilderMenu(client);
 		//This is an extra slot, incase you want to use it for anything.
@@ -113,7 +132,7 @@ public Action OnAutoTeam(int client, const char[] command, int args)
 public Action OnBuildCmd(int client, const char[] command, int args)
 {
 #if defined ZR
-	if(client && (GameRules_GetProp("m_bInWaitingForPlayers") || !AllowBuildingCurrently()))
+	if(client && !AllowBuildingCurrently())
 		return Plugin_Handled;
 		
 	return Plugin_Continue;

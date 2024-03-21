@@ -1,0 +1,11 @@
+"Phrases"
+{
+	"Loom"
+	{
+		"en" 	"Loom"
+	}
+	"Loom Desc"
+	{
+		"en" 	"Loom Desc"
+	}
+}

@@ -54,6 +54,23 @@ static int MoabHealth(bool fortified)
 
 void Moab_MapStart()
 {
+	if(!IsFileInDownloads("models/zombie_riot/btd/boab.mdl"))
+		return;
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Massive Ornery Air Blimp");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_moab");
+	strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_BTD;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	for(int i; i<sizeof(SoundMoabHit); i++)
 	{
 		PrecacheSoundCustom(SoundMoabHit[i]);
@@ -67,6 +84,10 @@ void Moab_MapStart()
 	PrecacheModel("models/zombie_riot/btd/boab.mdl");
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Moab(client, vecPos, vecAng, ally, data);
+}
 methodmap Moab < CClotBody
 {
 	property bool m_bFortified
@@ -107,7 +128,6 @@ methodmap Moab < CClotBody
 		
 		Moab npc = view_as<Moab>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/boab.mdl", "1.0", buffer, ally, false, true));
 		
-		i_NpcInternalId[npc.index] = BTD_MOAB;
 		i_NpcWeight[npc.index] = 2;
 		KillFeed_SetKillIcon(npc.index, "vehicle");
 		
@@ -115,14 +135,18 @@ methodmap Moab < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_iBleedType = BLEEDTYPE_RUBBER;
-		npc.m_iStepNoiseType = NOTHING;	
-		npc.m_iNpcStepVariation = NOTHING;	
+		npc.m_iStepNoiseType = STEPTYPE_NONE;	
+		npc.m_iNpcStepVariation = STEPTYPE_NONE;	
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bisWalking = false;
 		
 		npc.m_flSpeed = MoabSpeed();
 		npc.m_bFortified = fortified;
 		
+		func_NPCDeath[npc.index] = Moab_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Moab_OnTakeDamage;
+		func_NPCThink[npc.index] = Moab_ClotThink;
+
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iState = 0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -133,7 +157,6 @@ methodmap Moab < CClotBody
 		
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Moab_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, Moab_ClotThink);
 		
 		npc.StartPathing();
 		
@@ -183,16 +206,18 @@ public void Moab_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 													
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			
-			NPC_SetGoalVector(npc.index, PredictSubjectPositionOld(npc, PrimaryThreatIndex));
+			
+			float VecPredictPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, VecPredictPos);
+			NPC_SetGoalVector(npc.index, VecPredictPos);
 		}
 		else
 		{
@@ -204,27 +229,27 @@ public void Moab_ClotThink(int iNPC)
 			if(npc.m_flNextMeleeAttack < gameTime)
 			{
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
-				
+				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				if(npc.m_bFortified)
 				{
 					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 30.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 30.0, DMG_CLUB, -1, _, WorldSpaceVec);
 					}
 					else
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 85.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 85.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
 					}
 				}
 				else
 				{
 					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 20.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 20.0, DMG_CLUB, -1, _, WorldSpaceVec);
 					}
 					else
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 65.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 65.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
 					}
 				}					
 			}
@@ -266,13 +291,11 @@ public void Moab_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Moab_ClotDamagedPost);
 	
-	SDKUnhook(npc.index, SDKHook_Think, Moab_ClotThink);
-	
 	float pos[3], angles[3];
 	GetEntPropVector(entity, Prop_Data, "m_angRotation", angles);
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	
-	int spawn_index = Npc_Create(BTD_BLOON, -1, pos, angles, GetTeam(entity), npc.m_bFortified ? "9f" : "9");
+	int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, angles, GetTeam(entity), npc.m_bFortified ? "9f" : "9");
 	if(spawn_index > MaxClients)
-		Zombies_Currently_Still_Ongoing += 1;
+		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 }

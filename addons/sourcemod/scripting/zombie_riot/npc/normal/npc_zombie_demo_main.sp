@@ -35,8 +35,21 @@ void DemoMain_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_charge_sound)); i++) { PrecacheSound(g_charge_sound[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Demoknight Main");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zombie_demo_main");
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return DemoMain(client, vecPos, vecAng, ally);
+}
 methodmap DemoMain < CClotBody
 {
 	public void PlayIdleAlertSound() {
@@ -83,7 +96,6 @@ methodmap DemoMain < CClotBody
 	{
 		DemoMain npc = view_as<DemoMain>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "12500", ally));
 		
-		i_NpcInternalId[npc.index] = DEMO_MAIN;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -99,8 +111,10 @@ methodmap DemoMain < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, DemoMain_ClotThink);		
+
+		func_NPCDeath[npc.index] = DemoMain_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = DemoMain_OnTakeDamage;
+		func_NPCThink[npc.index] = DemoMain_ClotThink;		
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -175,9 +189,10 @@ public void DemoMain_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			if(npc.m_flCharge_Duration < GetGameTime(npc.index))
 			{
@@ -187,7 +202,7 @@ public void DemoMain_ClotThink(int iNPC)
 					int Enemy_I_See;
 					Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 					//Target close enough to hit
-					if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
+					if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex && flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)
 					{
 						npc.PlayChargeSound();
 						npc.m_flCharge_delay = GetGameTime(npc.index) + 10.0;
@@ -204,7 +219,7 @@ public void DemoMain_ClotThink(int iNPC)
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
@@ -304,9 +319,6 @@ public Action DemoMain_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 public void DemoMain_NPCDeath(int entity)
 {
 	DemoMain npc = view_as<DemoMain>(entity);
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, DemoMain_ClotThink);		
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

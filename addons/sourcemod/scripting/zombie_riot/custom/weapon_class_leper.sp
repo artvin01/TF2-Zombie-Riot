@@ -268,14 +268,11 @@ public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
 	SetEntProp(client, Prop_Send, "m_bClientSideFrameReset", 0);	
 	SetEntProp(client, Prop_Send, "m_bForceLocalPlayerDraw", 0);
 //its too offset, clientside prediction makes this impossible
-	if(!b_IsPlayerNiko[client] || b_HideCosmeticsPlayer[client])
+	if(!b_IsPlayerNiko[client] && !b_HideCosmeticsPlayer[client])
 	{
 		int entity, i;
 		while(TF2U_GetWearable(client, entity, i))
 		{
-			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-				continue;
-
 			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 		}
 	}
@@ -390,7 +387,8 @@ int SetCameraEffectLeperHew(int client, int &ModelToDelete)
 	vabsAngles[0] = 0.0;
 	SetVariantInt(0);
 	AcceptEntityInput(client, "SetForcedTauntCam");	
-	int spawn_index = Npc_Create(WEAPON_LEPER_AFTERIMAGE, client, vabsOrigin, vabsAngles, GetTeam(client));
+	
+	int spawn_index = NPC_CreateByName("npc_allied_leper_visualiser", client, vabsOrigin, vabsAngles, GetTeam(client));
 	if(spawn_index > 0)
 	{
 		i_AttacksTillReload[spawn_index] = 0;
@@ -483,7 +481,7 @@ int SetCameraEffectLeperSolemny(int client, int &ModelToDelete)
 	vabsAngles[0] = 0.0;
 	SetVariantInt(0);
 	AcceptEntityInput(client, "SetForcedTauntCam");	
-	int spawn_index = Npc_Create(WEAPON_LEPER_AFTERIMAGE, client, vabsOrigin, vabsAngles, GetTeam(client));
+	int spawn_index = NPC_CreateByName("npc_allied_leper_visualiser", client, vabsOrigin, vabsAngles, GetTeam(client));
 	if(spawn_index > 0)
 	{
 		i_AttacksTillReload[spawn_index] = 1;

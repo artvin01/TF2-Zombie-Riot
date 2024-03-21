@@ -641,7 +641,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 		
 		if(npc.m_iTargetAlly > 0 && !passive)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
 			npc.m_iTargetRally = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo, _, _, vecTarget, command != Command_Aggressive);
 		}
 		else
@@ -710,7 +710,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 
 			if(flDistanceToTarget < canRetreat)
 			{
-				vecTarget = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vecTarget);
 				NPC_SetGoalVector(npc.index, vecTarget);
 				
 				npc.StartPathing();
@@ -739,7 +739,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			if(flDistanceToTarget < npc.GetLeadRadius())
 			{
 				//Predict their pos.
-				vecTarget = PredictSubjectPositionOld(npc, npc.m_iTargetRally);
+				PredictSubjectPosition(npc, npc.m_iTargetRally,_,_, vecTarget);
 				NPC_SetGoalVector(npc.index, vecTarget);
 
 				npc.StartPathing();
@@ -927,8 +927,10 @@ bool BarrackBody_Interact(int client, int entity)
 {
 	if(!IsValidClient(client))
 		return false;
-
-	if(i_NpcInternalId[entity] != BARRACKS_BUILDING)
+		
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	if(!StrEqual(npc_classname, "npc_barrack_building"))
 	{
 		BarrackBody npc = view_as<BarrackBody>(entity);
 		if(npc.OwnerUserId)
@@ -960,7 +962,7 @@ static void ShowMenu(int client, int entity)
 	SetGlobalTransTarget(client);
 
 	Menu menu = new Menu(BarrackBody_MenuH);
-	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", NPC_Names[i_NpcInternalId[entity]]);
+	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", c_NpcName[entity]);
 
 	char num[16];
 	IntToString(EntIndexToEntRef(entity), num, sizeof(num));
@@ -1062,7 +1064,10 @@ public int BarrackBody_MenuH(Menu menu, MenuAction action, int client, int choic
 					}
 					case 7:
 					{
-						if(i_NpcInternalId[npc.index] == BARRACKS_VILLAGER)
+						char npc_classname[60];
+						NPC_GetPluginById(i_NpcInternalId[npc.index], npc_classname, sizeof(npc_classname));
+						
+						if(StrEqual(npc_classname, "npc_barrack_villager"))
 						{
 							BarracksVillager_MenuSpecial(client, npc.index);
 							return 0;

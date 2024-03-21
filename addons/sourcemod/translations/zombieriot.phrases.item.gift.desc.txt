@@ -745,7 +745,7 @@
 	{
 		"en"		"Launches a high damaging spear that deals immensive damage to buildings\nHe attacks rapidly and can jump aswell."
 	}
-	"Medival Abalest Desc"
+	"Medival Arbalest Desc"
 	{
 		"en"		"Short range, faster attacking high damage archers."
 	}
@@ -1019,7 +1019,7 @@
 	}
 	"Barracks Basic Mage Desc"
 	{
-		"en"		"Basic unit to blar the enemy with"
+		"en"		"Basic unit to blast the enemy with"
 	}
 	"Barracks Intermediate Mage Desc"
 	{
@@ -1297,7 +1297,7 @@
 	{
 		"en"		"A more powerful Lanius, however lacks the ability to teleport on its own, and lacks the speed buffing abilitity\nHowever, damage taken in the last 5 seconds gets converted into AOE healing with a 2 dmg to 1 healing ratio\nThe healing cap is 10%% of the npc's health"
 	}
-	"Venium Desc"
+	"Valiant Desc"
 	{
 		"en"		"An engineer that builds Magia anchors, apart from that, not very special"
 	}	
@@ -1308,6 +1308,62 @@
 	"Storm Weaver Desc"
 	{
 		"en"		"A servant of The Scourge" 	//NEED DESC
+	}
+	"Daedalus Desc"
+	{
+		"en"	"Gives a shield to nearbly ruina alies"
+	}
+	"Malius Desc"
+	{
+		"en"	"Has the ability to boost nearby npc's battery"
+	}
+	"Laz Desc"
+	{
+		"en"	"A magical laser wielding mage"
+	}
+	"Laniun Desc"	//Need descs
+	{
+		"en"	"A stronger variant of Lanius"
+	}
+	"Magnium Desc"
+	{
+		"en"	"A stronger magia, has a special magic ICBM, very dangerous"
+	}
+	"Stellaria Desc"
+	{
+		"en"	"Aya"
+	}
+	"Astriana Desc"
+	{
+		"en"	"Aya"
+	}
+	"Europis Desc"
+	{
+		"en"	"Aya"
+	}
+	"Draedon Desc"
+	{
+		"en"	"Aya"
+	}
+	"Aetheria Desc"
+	{
+		"en"	"Aya"
+	}
+	"Maliana Desc"
+	{
+		"en"	"Aya"
+	}
+	"Ruianus Desc"
+	{
+		"en"	"Aya"
+	}
+	"Lazius Desc"
+	{
+		"en"	"Aya"
+	}
+	"Dronian Desc"
+	{
+		"en"	"Aya"
 	}
 	"Archosauria Desc"
 	{
@@ -1431,7 +1487,7 @@
 	}
 	"Hitman Desc" 
 	{
-		"en"	"Deals immensive damage and chaos to everything.\nIs extreamly fast and dodges every 2nd attack.\nHas low HP and takes 2.5x melee damage but takes 50%% less ranged damage."
+		"en"	"Deals immensive damage to everything.\nIs extreamly fast and dodges every 2nd attack.\nHas low HP and takes 2.5x melee damage but takes 50%% less ranged damage."
 	}
 	"Mad Doctor Desc"
 	{

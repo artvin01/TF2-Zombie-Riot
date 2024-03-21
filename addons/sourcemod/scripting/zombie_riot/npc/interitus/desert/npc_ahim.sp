@@ -49,8 +49,22 @@ void DesertAhim_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Ahim");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ahim");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_bat"); 	//leaderboard_class_(insert the name)
+	data.IconCustom = false;								//download needed?
+	data.Flags = 0;											//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return DesertAhim(client, vecPos, vecAng, ally);
+}
 
 methodmap DesertAhim < CClotBody
 {
@@ -98,7 +112,6 @@ methodmap DesertAhim < CClotBody
 	{
 		DesertAhim npc = view_as<DesertAhim>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "550", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_DESERT_AHIM;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -118,15 +131,18 @@ methodmap DesertAhim < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(DesertAhim_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertAhim_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(DesertAhim_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 400.0;
+
+		if(Rogue_Paradox_ExtremeHeat())
+			fl_Extra_Speed[npc.index] *= 1.2;
 		
 		
 		int skin = 1;
@@ -146,7 +162,7 @@ methodmap DesertAhim < CClotBody
 	}
 }
 
-public void DesertAhim_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	DesertAhim npc = view_as<DesertAhim>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -177,13 +193,14 @@ public void DesertAhim_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -200,7 +217,7 @@ public void DesertAhim_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public void DesertAhim_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static void Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	DesertAhim npc = view_as<DesertAhim>(victim);
 		
@@ -214,7 +231,7 @@ public void DesertAhim_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 }
 
-public void DesertAhim_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	DesertAhim npc = view_as<DesertAhim>(entity);
 	if(!npc.m_bGib)
@@ -258,7 +275,7 @@ void DesertAhimSelfDefense(DesertAhim npc, float gameTime, int target, float dis
 		if(npc.m_flNextRangedAttack < gameTime)
 		{
 			float EnemyPos[3];
-			EnemyPos = WorldSpaceCenterOld(npc.m_iTarget);
+			WorldSpaceCenter(npc.m_iTarget, EnemyPos);
 			npc.FaceTowards(EnemyPos, 15000.0);
 			npc.FireArrow(EnemyPos, 35.0, 1200.0, "models/workshop_partner/weapons/c_models/c_sd_cleaver/c_sd_cleaver.mdl");
 
@@ -289,7 +306,8 @@ void DesertAhimSelfDefense(DesertAhim npc, float gameTime, int target, float dis
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 			{
 							
@@ -317,7 +335,7 @@ void DesertAhimSelfDefense(DesertAhim npc, float gameTime, int target, float dis
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;
 								

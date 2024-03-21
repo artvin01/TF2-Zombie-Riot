@@ -54,8 +54,20 @@ void Soldier_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel("models/player/soldier.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Soldier Rocketeer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zombie_soldier_grave");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
-
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Soldier(client, vecPos, vecAng, ally);
+}
 methodmap Soldier < CClotBody
 {
 	public void PlayIdleSound() {
@@ -131,7 +143,6 @@ methodmap Soldier < CClotBody
 	{
 		Soldier npc = view_as<Soldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "2000", ally));
 		
-		i_NpcInternalId[npc.index] = SOLDIER_ROCKET_ZOMBIE;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -148,8 +159,10 @@ methodmap Soldier < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		
-		SDKHook(npc.index, SDKHook_Think, Soldier_ClotThink);
+
+		func_NPCDeath[npc.index] = Soldier_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Soldier_OnTakeDamage;
+		func_NPCThink[npc.index] = Soldier_ClotThink;		
 		
 		//IDLE
 		npc.m_flSpeed = 280.0;
@@ -218,14 +231,15 @@ public void Soldier_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				/*
 				int color[4];
 				color[0] = 255;
@@ -324,9 +338,6 @@ public void Soldier_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, Soldier_ClotThink);
-		
 	
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);

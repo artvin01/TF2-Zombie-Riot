@@ -31,9 +31,24 @@ void WinterSkinHunter_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Skin Hunter");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_skin_hunter");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper_camper_1");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	int id = NPC_Add(data);
+	Rogue_Paradox_AddWinterNPC(id);
 }
 
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return WinterSkinHunter(client, vecPos, vecAng, ally);
+}
 methodmap WinterSkinHunter < CClotBody
 {
 	public void PlayIdleAlertSound() 
@@ -72,7 +87,6 @@ methodmap WinterSkinHunter < CClotBody
 	{
 		WinterSkinHunter npc = view_as<WinterSkinHunter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "7000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_WINTER_SKIN_HUNTER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -180,15 +194,16 @@ public void WinterSkinHunter_ClotThink(int iNPC)
 		
 		if(npc.m_iTargetAlly > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			if(flDistanceToTarget > (100.0*100.0))
 			{
 				NPC_StartPathing(npc.index);
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTargetAlly);
+					float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_,vPredictedPos );
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
@@ -221,9 +236,10 @@ void WinterSkinHunterSelfDefense(WinterSkinHunter npc, float gameTime)
 	{
 		return;
 	}
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 30.0))
 	{
 		if(gameTime > npc.m_flNextMeleeAttack)
@@ -235,12 +251,8 @@ void WinterSkinHunterSelfDefense(WinterSkinHunter npc, float gameTime)
 				//after we fire, we will have a short delay beteween the actual laser, and when it happens
 				//This will predict as its relatively easy to dodge
 				float projectile_speed = 1200.0;
-				//lets pretend we have a projectile.
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
-				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-				{
-					vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
-				}
+
+				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 
 				npc.FaceTowards(vecTarget, 20000.0);
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.75;

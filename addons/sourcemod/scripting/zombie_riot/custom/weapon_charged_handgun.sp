@@ -419,10 +419,11 @@ public Action Event_Charged_Hand_OnHatTouch(int entity, int other)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 		//Code to do damage position and ragdolls
 		
-		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)
 		{
@@ -540,10 +541,10 @@ public Action Event_Wand_IEM_OnHatTouch(int entity, int other)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 		//Code to do damage position and ragdolls
-		
-		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 	}
 	else if(target == 0)
 	{
@@ -615,7 +616,7 @@ public Action Timer_Electric_Think_PAP(Handle timer, int ref)
 			{
 				if (GetTeam(client)!=GetTeam(baseboss_index)) 
 				{
-					targPos = WorldSpaceCenterOld(baseboss_index);
+					WorldSpaceCenter(baseboss_index, targPos);
 					if (GetVectorDistance(flCarrierPos, targPos) <= TORNADO_Radius[client])
 					{
 						//Code to do damage position and ragdolls
@@ -627,8 +628,8 @@ public Action Timer_Electric_Think_PAP(Handle timer, int ref)
 						
 						float damage_1 = Damage_Tornado[iCarrier];
 						damage_1 /= Damage_Reduction[iCarrier];
-						
-						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1, DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), targPos);
+						float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1, DMG_PLASMA, -1, Dmg_Force, targPos);
 						
 						//If the npc is gibbed at anytime, it will cause this to just go to the world origin...
 						/*			
@@ -803,7 +804,7 @@ public Action Timer_Electric_Think(Handle timer, int ref)
 			{
 				if (GetTeam(client)!=GetTeam(baseboss_index)) 
 				{
-					targPos = WorldSpaceCenterOld(baseboss_index);
+					WorldSpaceCenter(baseboss_index, targPos);
 					if (GetVectorDistance(flCarrierPos, targPos) <= TORNADO_Radius[client])
 					{
 						//Code to do damage position and ragdolls
@@ -815,8 +816,8 @@ public Action Timer_Electric_Think(Handle timer, int ref)
 						
 						float damage_1 = Damage_Tornado[iCarrier];		
 						damage_1 /= Damage_Reduction[iCarrier];
-						
-						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1, DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), targPos, _ , ZR_DAMAGE_LASER_NO_BLAST);
+						float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1, DMG_PLASMA, -1, Dmg_Force, targPos, _ , ZR_DAMAGE_LASER_NO_BLAST);
 						
 						//If the npc is gibbed at anytime, it will cause this to just go to the world origin...
 						/*			
@@ -1000,10 +1001,10 @@ public Action Event_Wand_Cutter_IEM_OnHatTouch(int entity, int other)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 		//Code to do damage position and ragdolls
-		
-		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 	}
 	else if(target == 0)
 	{
@@ -1145,7 +1146,7 @@ public bool IEM_Cutter_TraceUsers(int entity, int contentsMask, int carrier)
 		return false;
 		
 	SDKHooks_TakeDamage(entity, client, client, Damage_Reduction[carrier]*Damage_Tornado[carrier], DMG_PLASMA, -1);
-	Damage_Reduction[carrier] *= 0.9; // I don't want it to be underpower
+	Damage_Reduction[carrier] *= 0.75; // I don't want it to be underpower
 	
 	return false;
 }

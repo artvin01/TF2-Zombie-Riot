@@ -48,6 +48,20 @@ void MedicHealer_OnMapStart_NPC()
 	PrecacheModel("models/player/medic.mdl");
 	PrecacheSound("player/flow.wav");
 	PrecacheModel(LASERBEAM);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Medic Supporter");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medic_healer");
+	strcopy(data.Icon, sizeof(data.Icon), "medic");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedicHealer(client, vecPos, vecAng, ally);
 }
 
 methodmap MedicHealer < CClotBody
@@ -113,7 +127,6 @@ methodmap MedicHealer < CClotBody
 	{
 		MedicHealer npc = view_as<MedicHealer>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "3500", ally));
 		
-		i_NpcInternalId[npc.index] = MEDIC_HEALER;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -121,15 +134,17 @@ methodmap MedicHealer < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		
+
+		func_NPCDeath[npc.index] = MedicHealer_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedicHealer_OnTakeDamage;
+		func_NPCThink[npc.index] = MedicHealer_ClotThink;		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, MedicHealer_ClotThink);
+
 		
 		
 		//IDLE
@@ -241,58 +256,59 @@ public void MedicHealer_ClotThink(int iNPC)
 		int PrimaryThreatIndex = npc.m_iTarget;
 		if(IsValidAlly(npc.index, PrimaryThreatIndex))
 		{
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
-				
-				if(flDistanceToTarget < 250000)
+			if(flDistanceToTarget < 250000)
+			{
+				if(flDistanceToTarget < 62500)
 				{
-					if(flDistanceToTarget < 62500)
-					{
-						NPC_StopPathing(npc.index);
-					}
-					else
-					{
-						npc.StartPathing();	
-					}
-					if(!npc.m_bnew_target)
-					{
-						npc.StartHealing(PrimaryThreatIndex);
-						npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, PrimaryThreatIndex, 100, 100, 250, 3.0, 3.0, 1.35, LASERBEAM);
-						npc.Healing = true;
-						npc.m_bnew_target = true;
-					}
+					NPC_StopPathing(npc.index);
+				}
+				else
+				{
+					npc.StartPathing();	
+				}
+				if(!npc.m_bnew_target)
+				{
+					npc.StartHealing(PrimaryThreatIndex);
+					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, PrimaryThreatIndex, 100, 100, 250, 3.0, 3.0, 1.35, LASERBEAM);
+					npc.Healing = true;
+					npc.m_bnew_target = true;
+				}
 
-					if(!NpcStats_IsEnemySilenced(npc.index))
+				if(!NpcStats_IsEnemySilenced(npc.index))
+				{
+					if(IsValidEntity(npc.m_iWearable4))
 					{
-						if(IsValidEntity(npc.m_iWearable4))
-						{
-							SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-							SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
-						}
-						HealEntityGlobal(npc.index, PrimaryThreatIndex, 50.0, 1.0);
+						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+						SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
 					}
-					else
-					{
-						if(IsValidEntity(npc.m_iWearable4))
-						{
-							SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-							SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
-						}
-					}
-					
-					npc.FaceTowards(WorldSpaceCenterOld(PrimaryThreatIndex), 2000.0);
+					HealEntityGlobal(npc.index, PrimaryThreatIndex, 50.0, 1.0);
 				}
 				else
 				{
 					if(IsValidEntity(npc.m_iWearable4))
-						RemoveEntity(npc.m_iWearable4);
-						
-					npc.StartPathing();
-
-					npc.m_bnew_target = false;					
+					{
+						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+						SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
+					}
 				}
+				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
+				npc.FaceTowards(WorldSpaceVec, 2000.0);
+			}
+			else
+			{
+				if(IsValidEntity(npc.m_iWearable4))
+					RemoveEntity(npc.m_iWearable4);
+					
+				npc.StartPathing();
+
+				npc.m_bnew_target = false;					
+			}
 		}
 		else
 		{
@@ -338,93 +354,94 @@ public void MedicHealer_ClotThink(int iNPC)
 		
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 		{
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			//Predict their pos.
+			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				//Predict their pos.
-				if(flDistanceToTarget < npc.GetLeadRadius()) {
-					
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
-					
-				/*	int color[4];
-					color[0] = 255;
-					color[1] = 255;
-					color[2] = 0;
-					color[3] = 255;
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
-					int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
+			/*	int color[4];
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 0;
+				color[3] = 255;
+			
+				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
+			
+				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
+				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-					TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-					TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
-					
-					NPC_SetGoalVector(npc.index, vPredictedPos);
-				} else {
-					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-				}
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			} else {
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			}
+			
+			//Target close enough to hit
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
+			{
+				//Look at target so we hit.
+		//		npc.FaceTowards(vecTarget, 1000.0);
 				
-				//Target close enough to hit
-				if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+				//Can we attack right now?
+				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 				{
-					//Look at target so we hit.
-			//		npc.FaceTowards(vecTarget, 1000.0);
-					
-					//Can we attack right now?
-					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+					//Play attack ani
+					if (!npc.m_flAttackHappenswillhappen)
 					{
-						//Play attack ani
-						if (!npc.m_flAttackHappenswillhappen)
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+						npc.PlayMeleeSound();
+						npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
+						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
+						npc.m_flAttackHappenswillhappen = true;
+					}
+						
+					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					{
+						Handle swingTrace;
+						npc.FaceTowards(vecTarget, 20000.0);
+						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
 						{
-							npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-							npc.PlayMeleeSound();
-							npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
-							npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
-							npc.m_flAttackHappenswillhappen = true;
-						}
+							int target = TR_GetEntityIndex(swingTrace);	
 							
-						if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-						{
-							Handle swingTrace;
-							npc.FaceTowards(vecTarget, 20000.0);
-							if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
+							float vecHit[3];
+							TR_GetEndPosition(vecHit, swingTrace);
+							
+							if(target > 0) 
 							{
-								int target = TR_GetEntityIndex(swingTrace);	
 								
-								float vecHit[3];
-								TR_GetEndPosition(vecHit, swingTrace);
+								if(!ShouldNpcDealBonusDamage(target))
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
+								else
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 350.0, DMG_CLUB, -1, _, vecHit);
 								
-								if(target > 0) 
-								{
-									
-									if(!ShouldNpcDealBonusDamage(target))
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
-									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 350.0, DMG_CLUB, -1, _, vecHit);
-									
-									
-									
-									
-									// Hit sound
-									npc.PlayMeleeHitSound();
-									
-								} 
-							}
-							delete swingTrace;
-							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
-							npc.m_flAttackHappenswillhappen = false;
+								
+								
+								
+								// Hit sound
+								npc.PlayMeleeHitSound();
+								
+							} 
 						}
-						else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-						{
-							npc.m_flAttackHappenswillhappen = false;
-							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
-						}
+						delete swingTrace;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
+						npc.m_flAttackHappenswillhappen = false;
+					}
+					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					{
+						npc.m_flAttackHappenswillhappen = false;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
 					}
 				}
-				else
-				{
-					npc.StartPathing();
-					
-				}
+			}
+			else
+			{
+				npc.StartPathing();
+				
+			}
 		}
 		else
 		{
@@ -460,9 +477,6 @@ public void MedicHealer_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedicHealer_ClotThink);
 	
 	Is_a_Medic[npc.index] = false;
 	if(IsValidEntity(npc.m_iWearable1))

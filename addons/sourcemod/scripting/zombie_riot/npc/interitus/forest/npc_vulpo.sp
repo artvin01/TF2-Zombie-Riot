@@ -33,6 +33,24 @@ static const char g_MeleeHitSounds[][] =
 	"weapons/barret_arm_zap.wav"
 };
 
+void VulpoOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Vulpo");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vulpo");
+	strcopy(data.Icon, sizeof(data.Icon), "engineer");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Vulpo(client, vecPos, vecAng, ally);
+}
+
 methodmap Vulpo < CClotBody
 {
 	public void PlayIdleSound()
@@ -60,7 +78,6 @@ methodmap Vulpo < CClotBody
 	{
 		Vulpo npc = view_as<Vulpo>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "30000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_ENGINEER;
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_STUN_MIDDLE");
 		KillFeed_SetKillIcon(npc.index, "short_circuit");
@@ -81,7 +98,6 @@ methodmap Vulpo < CClotBody
 		npc.m_flRangedArmor = 0.75;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flAttackHappens = 0.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_dex_arm/c_dex_arm.mdl");
 
@@ -121,7 +137,7 @@ static void ClotThink(int iNPC)
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
-	npc.m_flNextThinkTime = gameTime + 0.1;
+	npc.m_flNextThinkTime = gameTime + 0.15;
 
 	int target = npc.m_iTarget;
 	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
@@ -138,12 +154,13 @@ static void ClotThink(int iNPC)
 	{
 		npc.SetActivity("ACT_MP_RUN_SECONDARY");
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, target);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -152,33 +169,6 @@ static void ClotThink(int iNPC)
 		}
 
 		npc.StartPathing();
-		
-		if(npc.m_flAttackHappens)
-		{
-			if(npc.m_flAttackHappens < gameTime)
-			{
-				npc.m_flAttackHappens = 0.0;
-				
-				Handle swingTrace;
-				npc.FaceTowards(vecTarget, 15000.0);
-				if(npc.DoSwingTrace(swingTrace, target, _, _, _, _))
-				{
-					target = TR_GetEntityIndex(swingTrace);
-					if(target > 0)
-					{
-						float damage = 150.0;
-						if(ShouldNpcDealBonusDamage(target))
-							damage *= 1.5;
-
-						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-						Sakratan_AddNeuralDamage(target, npc.index, 300);
-					}
-				}
-
-				delete swingTrace;
-			}
-		}
 
 		if(distance < 80000.0 && npc.m_flNextMeleeAttack < gameTime)
 		{
@@ -191,16 +181,16 @@ static void ClotThink(int iNPC)
 				view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 				ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecTarget, false);
 
-				float damage = 20.0;
+				float damage = Rogue_Paradox_RedMoon() ? 100.0 : 50.0;
 				if(ShouldNpcDealBonusDamage(target))
-					damage *= 50.0;
+					damage *= Rogue_Paradox_RedMoon() ? 250.0 : 50.0;
 				
 				npc.PlayMeleeHitSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_BULLET, _, _, vecTarget);
 
-				npc.m_flNextMeleeAttack = gameTime + 0.15;
+				npc.m_flNextMeleeAttack = gameTime + 0.14;
 			}
 		}
 	}

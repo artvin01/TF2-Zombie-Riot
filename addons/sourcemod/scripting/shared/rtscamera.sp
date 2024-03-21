@@ -22,6 +22,8 @@
 #define COLORR_GREEN				{  0, 255,   0, 255}
 #define COLORR_GRAY				{ 128,  128,  128, 255}
 
+#define FLAG_MODEL	"models/flag/flag.mdl"
+
 enum
 {
 	OBS_MODE_NONE = 0,	// not in spectator mode
@@ -211,6 +213,7 @@ static bool RTSEnabled[MAXTF2PLAYERS];
 static ArrayList Selected[MAXTF2PLAYERS];
 static int FocusRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static int CameraRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
+static int FlagRef[MAXTF2PLAYERS][6];
 static int LastFOV[MAXTF2PLAYERS];
 static int LastDefaultFOV[MAXTF2PLAYERS];
 static float MinZoom[MAXTF2PLAYERS];
@@ -253,10 +256,19 @@ void RTSCamera_PluginStart()
 	RegConsoleCmd("sm_rts", RTSCamera_CommandMenu, "RTS Camera Menu");
 	RegConsoleCmd("sm_rtstoggle", RTSCamera_CommandToggle, "Toggle RTS Camera");
 
+	PrecacheModel(FLAG_MODEL);
+
 	for(int i; i <= MAXENTITIES; i++)
 	{
 		if(i < MAXTF2PLAYERS)
+		{
 			SetDefaultValues(i);
+			
+			for(int a; a < sizeof(FlagRef[]); a++)
+			{
+				FlagRef[i][a] = INVALID_ENT_REFERENCE;
+			}
+		}
 		
 		for(int a; a < sizeof(BeamRef[]); a++)
 		{
@@ -537,18 +549,31 @@ public int RTSCamera_ShowMenuH(Menu menu, MenuAction action, int client, int cho
 					AspectRatio[client] = (RoundFloat(AspectRatio[client] * 9.0) + 1) / 9.0;
 					SaveMouseCookie(client);
 					option = 3;
+
+#if defined RTS
+					RTSMenu_FormatUpdate(client);
+#endif
+
 				}
 				case 32:
 				{
 					AspectRatio[client] = 1.777777;
 					SaveMouseCookie(client);
 					option = 3;
+
+#if defined RTS
+					RTSMenu_FormatUpdate(client);
+#endif
 				}
 				case 33:
 				{
 					AspectRatio[client] = (RoundFloat(AspectRatio[client] * 9.0) - 1) / 9.0;
 					SaveMouseCookie(client);
 					option = 3;
+
+#if defined RTS
+					RTSMenu_FormatUpdate(client);
+#endif
 				}
 				case 41:
 				{
@@ -880,7 +905,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 			int entity = EntRefToEntIndex(Selected[client].Get(i));
 
 #if defined RTS
-			if(entity != -1 && UnitBody_CanControl(client, entity))
+			if(entity != -1 && RTS_CanControl(client, entity))
 #else
 			if(entity != -1)
 #endif
@@ -897,8 +922,12 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 	HighlightSelectedUnits(client);
 
 #if defined RTS
-	if(pressed[Key_Delete] && Selected[client])
+	if((pressed[Key_Delete] && Selected[client]) ||
+	    pressed[Key_Ctrl] ||
+	   (previous[Key_Ctrl] && !holding[Key_Ctrl]))
+	{
 		RTSMenu_Update(client);
+	}
 #endif
 
 	if(holding[Key_ZoomIn] || holding[Key_ZoomOut] || holding[Key_AdjustCamera])
@@ -918,9 +947,9 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 				for(int b; b < length; b++)
 				{
 					int entity = EntRefToEntIndex(Selected[client].Get(b));
-					if(entity != -1 && UnitBody_CanControl(client, entity))
+					if(entity != -1 && RTS_CanControl(client, entity))
 					{
-						triggered = UnitBody_TriggerSkill(entity, client, a);
+						triggered = RTS_TriggerSkill(entity, client, a - Key_Skill1);
 						if(triggered)
 							break;
 					}
@@ -982,12 +1011,15 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 			ClearSelected(client);
 		
 #if defined ZR
+		char npc_classname[60];
 		for(int entity = MaxClients + 1; entity < MAXENTITIES; entity++)
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(!b_NpcHasDied[entity] && i_NpcInternalId[entity] == BARRACKS_VILLAGER && npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
+			if(!b_NpcHasDied[entity] && npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
 			{
-				SelectUnit(client, entity);
+				NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+				if(StrEqual(npc_classname, "npc_barrack_villager"))
+					SelectUnit(client, entity);
 			}
 		}
 #endif
@@ -1222,6 +1254,8 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 		}
 	}
 
+	RenderWaypoints(client);
+
 	if(!InSelectDrag[client])	// Not holding Left-Click
 	{
 		int color[4] = {255, 255, 255, 255};
@@ -1239,7 +1273,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 			cursor = CURSOR_SELECTABLE;
 
 #if defined RTS
-			if(UnitBody_CanControl(client, HoveringOver[client]))
+			if(RTS_CanControl(client, HoveringOver[client]))
 #endif
 			{
 				// Green, Your's
@@ -1247,7 +1281,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 				color[2] = 0;
 			}
 #if defined RTS
-			else if(IsObject(HoveringOver[client]) || UnitBody_IsEntAlly(client, HoveringOver[client]))
+			else if((IsObject(HoveringOver[client]) && TeamNumber[HoveringOver[client]] == 0) || RTS_IsEntAlly(client, HoveringOver[client]))
 			{
 				// Yellow, Ally's
 				color[2] = 0;
@@ -1263,50 +1297,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 		else if(Selected[client] && NextMoveType[client])	// Has selected units
 		{
 			cursor = CURSOR_MOVE;
-
-#if defined RTS
-			switch(NextMoveType[client])
-			{
-				case Command_Attack:
-				{
-					// Red
-					color[1] = 0;
-					color[2] = 0;
-				}
-				case Command_HoldPos:
-				{
-					// Yellow
-					color[2] = 0;
-				}
-				case Command_Patrol:
-				{
-					// Blue
-					color[0] = 0;
-					color[1] = 0;
-				}
-			}
-#elseif defined ZR
-			switch(NextMoveType[client])
-			{
-				case Move_Attack:
-				{
-					// Red
-					color[1] = 0;
-					color[2] = 0;
-				}
-				case Move_HoldPos:
-				{
-					// Yellow
-					color[2] = 0;
-				}
-				case Move_Patrol:
-				{
-					// Blue
-					color[0] = 0;
-					color[1] = 0;
-				}
-			}
-#endif
+			GetColor(NextMoveType[client], color);
 		}
 		else
 		{
@@ -1343,6 +1334,56 @@ static bool TraceEntityFilter_Units(int entity, int contentsMask, int client)
 	return IsSelectableUnitEntity(client, entity);
 }
 
+static void GetColor(int type, int color[4])
+{
+	switch(type)
+	{
+#if defined RTS
+		case Command_Move:
+		{
+			// Green
+			color[0] = 0;
+			color[2] = 0;
+		}
+		case Command_Attack:
+		{
+			// Red
+			color[1] = 0;
+			color[2] = 0;
+		}
+		case Command_HoldPos:
+		{
+			// Yellow
+			color[2] = 0;
+		}
+		case Command_Patrol:
+		{
+			// Blue
+			color[0] = 0;
+			color[1] = 0;
+		}
+#elseif defined ZR
+		case Move_Attack:
+		{
+			// Red
+			color[1] = 0;
+			color[2] = 0;
+		}
+		case Move_HoldPos:
+		{
+			// Yellow
+			color[2] = 0;
+		}
+		case Move_Patrol:
+		{
+			// Blue
+			color[0] = 0;
+			color[1] = 0;
+		}
+#endif
+	}
+}
+
 static void HighlightSelectedUnits(int client)
 {
 	if(Selected[client])
@@ -1377,7 +1418,7 @@ static stock void MoveSelectedUnits(int client, const float vecMovePos[3], int t
 			{
 				int entity = EntRefToEntIndex(Selected[client].Get(i));
 #if defined RTS
-				if(entity == -1 || !UnitBody_CanControl(client, entity))
+				if(entity == -1 || !RTS_CanControl(client, entity))
 #else
 				if(entity == -1)
 #endif
@@ -1386,17 +1427,17 @@ static stock void MoveSelectedUnits(int client, const float vecMovePos[3], int t
 					i--;
 					length--;
 				}
-				else
+				else if(!b_NpcHasDied[entity])
 				{
 #if defined RTS
 					int type = NextMoveType[client];
 					if(type < Command_Move)
 						type = Command_Move;
 					
-					UnitBody_AddCommand(entity, !HoldPress[client][Key_Ctrl], type, vecMovePos, target);
+					UnitBody_AddCommand(entity, HoldPress[client][Key_Ctrl] ? 0 : 1, type, vecMovePos, target);
 
 					if(!success)
-						UnitBody_PlaySound(entity, client, Sound_Move);
+						RTS_PlaySound(entity, client, Sound_Move);
 					
 #elseif defined ZR
 
@@ -1456,7 +1497,7 @@ static stock void MoveSelectedUnits(int client, const float vecMovePos[3], int t
 
 static void RemoveSelectBeams(int owner)
 {
-	for(int i; i < 4; i++)
+	for(int i; i < sizeof(BeamRef[]); i++)
 	{
 		if(BeamRef[owner][i] == INVALID_ENT_REFERENCE)
 			continue;
@@ -1467,6 +1508,98 @@ static void RemoveSelectBeams(int owner)
 
 		BeamRef[owner][i] = INVALID_ENT_REFERENCE;
 	}
+}
+
+// Call this only after validating Selected[]
+static stock void RenderWaypoints(int client)
+{
+#if defined RTS
+	if(Selected[client])
+	{
+		int entity = EntRefToEntIndex(Selected[client].Get(0));
+
+		if(RTS_CanControl(client, entity))
+		{
+			int type, target;
+			float pos[3];
+			for(int i; i < sizeof(FlagRef[]); i++)
+			{
+				if(IsObject(entity))
+				{
+
+				}
+				else if(UnitBody_GetCommand(entity, i, type, pos, target) && type >= Command_Move)
+				{
+					int color[4] = {255, 255, 255, 255};
+					GetColor(type, color);
+
+					int flag = -1;
+
+					if(FlagRef[client][i] != INVALID_ENT_REFERENCE)
+						flag = EntRefToEntIndex(FlagRef[client][i]);
+					
+					if(flag == -1)
+					{
+						if(target != -1)
+							GetAbsOrigin(target, pos);
+						
+						flag = CreateEntityByName("prop_dynamic");
+						if(flag == -1)
+							continue;
+						
+						DispatchKeyValueVector(flag, "origin", pos);
+						DispatchKeyValueVector(flag, "angles", {0.0, -135.0, 0.0});
+						DispatchKeyValue(flag, "model", FLAG_MODEL);
+						DispatchKeyValue(flag, "modelscale", "1.0");
+						DispatchKeyValue(flag, "skin", "2");
+						DispatchKeyValue(flag, "solid", "0");
+
+						SetEntPropEnt(flag, Prop_Data, "m_hOwnerEntity", client);
+
+						DispatchSpawn(flag);
+
+						SetEntityRenderMode(flag, RENDER_TRANSCOLOR);
+						SDKHook(flag, SDKHook_SetTransmit, SetTransmit_Beam);
+
+						FlagRef[client][i] = EntIndexToEntRef(flag);
+					}
+					else
+					{
+						if(target != -1)
+							GetAbsOrigin(target, pos);
+						
+						TeleportEntity(flag, pos, NULL_VECTOR, NULL_VECTOR);
+					}
+					
+					SetEntityRenderColor(flag, color[0], color[1], color[2], color[3]);
+				}
+				else if(FlagRef[client][i] != INVALID_ENT_REFERENCE)
+				{
+					int flag = EntRefToEntIndex(FlagRef[client][i]);
+					if(flag != -1)
+						RemoveEntity(flag);
+
+					FlagRef[client][i] = INVALID_ENT_REFERENCE;
+				}
+			}
+
+			return;
+		}
+
+	}
+	
+	for(int i; i < sizeof(FlagRef[]); i++)
+	{
+		if(FlagRef[client][i] == INVALID_ENT_REFERENCE)
+			continue;
+		
+		int entity = EntRefToEntIndex(FlagRef[client][i]);
+		if(entity != -1)
+			RemoveEntity(entity);
+
+		FlagRef[client][i] = INVALID_ENT_REFERENCE;
+	}
+#endif
 }
 
 /*
@@ -1525,7 +1658,7 @@ static bool CanBeInCamera(int client)
 		!TF2_IsPlayerInCondition(client, TFCond_Taunting));
 }
 
-static void GetCursorVector(int client, const float vecVector[3], const float mouse[2], float cursorVector[3])
+void GetCursorVector(int client, const float vecVector[3], const float mouse[2], float cursorVector[3])
 {
 	float maxX = ArcTangent2(DegToRad(LastDefaultFOV[client] * 0.5), 1.0);
 	float maxY = ArcTangent2(DegToRad(LastDefaultFOV[client] * 0.5 / AspectRatio[client]), 1.0);
@@ -1624,6 +1757,7 @@ static void DisableCamera(int client)
 
 	RemoveSelectBeams(client);
 	ClearSelected(client);
+	RenderWaypoints(client);
 	HoveringOver[client] = -1;
 
 	//SetEntProp(client, Prop_Send, "m_iFOV", LastFOV[client]);
@@ -1663,6 +1797,10 @@ static void LoadMouseCookie(int client)
 			MouseSensitivity[client] = StringToFloat(buffers[1]);
 			ScrollSpeed[client] = StringToFloat(buffers[2]);
 			ZoomSpeed[client] = StringToFloat(buffers[3]);
+			
+#if defined RTS
+			RTSMenu_FormatUpdate(client);
+#endif
 		}
 	}
 }
@@ -1964,6 +2102,31 @@ stock void RTSCamera_SetSelected(int client, ArrayList list)
 	Selected[client] = list;
 }
 
+stock int RTSCamera_GetCamera(int client)
+{
+	return EntRefToEntIndex(CameraRef[client]);
+}
+
+stock int RTSCamera_GetFocus(int client)
+{
+	return EntRefToEntIndex(FocusRef[client]);
+}
+
+stock void RTSCamera_GetVector(int client, float vec[3])
+{
+	vec = CameraVector[client];
+}
+
+stock float RTSCamera_GetAspectRatio(int client)
+{
+	return AspectRatio[client];
+}
+
+stock void RTSCamera_GetMousePos(int client, float mouse[2])
+{
+	mouse = LastMousePos[client];
+}
+
 static stock bool IsSelectableUnitEntity(int client, int entity)
 {
 	if(entity > MaxClients && entity < MAXENTITIES)
@@ -1998,8 +2161,8 @@ static void SelectUnit(int client, int entity)
 		Selected[client] = new ArrayList();
 
 #if defined RTS
-		if(UnitBody_CanControl(client, entity))
-			UnitBody_PlaySound(entity, client, Sound_Select);
+		if(RTS_CanControl(client, entity))
+			RTS_PlaySound(entity, client, Sound_Select);
 #endif
 
 	}
@@ -2013,12 +2176,12 @@ static stock bool UnitEntityIterator(int client, int &entity, bool villagers)
 	for(; entity < MAXENTITIES; entity++)
 	{
 #if defined RTS
-		if(!b_NpcHasDied[entity] && (RTS_IsSpectating(client) || UnitBody_CanControl(client, entity)))
+		if(!b_NpcHasDied[entity] && (RTS_IsSpectating(client) || RTS_CanControl(client, entity)))
 		{
-			if(UnitBody_HasFlag(entity, Flag_Structure))
+			if(RTS_HasFlag(entity, Flag_Structure))
 				continue;
 			
-			if(!villagers && UnitBody_HasFlag(entity, Flag_Worker))
+			if(!villagers && RTS_HasFlag(entity, Flag_Worker))
 				continue;
 			
 			return true;

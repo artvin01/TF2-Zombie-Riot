@@ -43,6 +43,24 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/machete_swing.wav",
 };
 
+void AslanOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Aslan");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aslan");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_stun");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Aslan(client, vecPos, vecAng, ally);
+}
+
 methodmap Aslan < CClotBody
 {
 	public void PlayIdleSound()
@@ -74,7 +92,6 @@ methodmap Aslan < CClotBody
 	{
 		Aslan npc = view_as<Aslan>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "25000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_SCOUT;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		KillFeed_SetKillIcon(npc.index, "prinny_machete");
@@ -148,12 +165,13 @@ static void ClotThink(int iNPC)
 
 	if(target > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, target);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -183,7 +201,7 @@ static void ClotThink(int iNPC)
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
 						if(target <= MaxClients)
-							TF2_StunPlayer(target, 0.6, 0.9, TF_STUNFLAG_SLOWDOWN);
+							TF2_StunPlayer(target, 0.6, 0.9, Rogue_Paradox_RedMoon() ? TF_STUNFLAGS_LOSERSTATE : TF_STUNFLAG_SLOWDOWN);
 					}
 				}
 
@@ -191,7 +209,7 @@ static void ClotThink(int iNPC)
 			}
 		}
 
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25) && npc.m_flNextMeleeAttack < gameTime)
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			target = Can_I_See_Enemy(npc.index, target);
 			if(IsValidEnemy(npc.index, target))

@@ -33,7 +33,25 @@ static const char g_MeleeHitSounds[][] =
 	"npc/fast_zombie/claw_strike3.wav"
 };
 
-methodmap SeaFounder < CClotBody
+void SeaFounder_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Nethersea Founder");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseafounder");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_founder");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return SeaFounder(client, vecPos, vecAng, ally, data);
+}
+
+methodmap SeaFounder < CSeaBody
 {
 	public void PlayIdleSound()
 	{
@@ -68,7 +86,7 @@ methodmap SeaFounder < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = carrier ? SEAFOUNDER_CARRIER : (elite ? SEAFOUNDER_ALT : SEAFOUNDER);
+		npc.SetElite(elite, carrier);
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_2");
 		KillFeed_SetKillIcon(npc.index, "fists");
@@ -77,8 +95,9 @@ methodmap SeaFounder < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, SeaFounder_ClotThink);
+		func_NPCDeath[npc.index] = SeaFounder_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SeaFounder_OnTakeDamage;
+		func_NPCThink[npc.index] = SeaFounder_ClotThink;
 		
 		npc.m_flSpeed = 250.0;	// 1.0 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -91,7 +110,7 @@ methodmap SeaFounder < CClotBody
 
 		if(carrier)
 		{
-			float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+			float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 			vecMe[2] += 100.0;
 
 			npc.m_iWearable1 = ParticleEffectAt(vecMe, "powerup_icon_resist", -1.0);
@@ -147,12 +166,13 @@ public void SeaFounder_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -179,7 +199,7 @@ public void SeaFounder_ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
-						float attack = i_NpcInternalId[npc.index] == SEAFOUNDER_ALT ? 90.0 : 67.5;
+						float attack = npc.m_bElite ? 90.0 : 67.5;
 						// 450 x 0.15
 						// 600 x 0.15
 						
@@ -189,7 +209,7 @@ public void SeaFounder_ClotThink(int iNPC)
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
 
-						SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack * (i_NpcInternalId[npc.index] == SEAFOUNDER_CARRIER ? 0.2 : 0.1)));
+						SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack * (npc.m_bCarrier ? 0.2 : 0.1)));
 						// 450 x 0.1 x 0.15
 						// 600 x 0.1 x 0.15
 						// 450 x 0.2 x 0.15
@@ -249,12 +269,9 @@ void SeaFounder_NPCDeath(int entity)
 	if(!NpcStats_IsEnemySilenced(npc.index))
 		SeaFounder_SpawnNethersea(pos);
 
-	if(i_NpcInternalId[npc.index] == SEAFOUNDER_CARRIER)
+	if(npc.m_bCarrier)
 		Remains_SpawnDrop(pos, Buff_Founder);
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeaFounder_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 

@@ -166,7 +166,7 @@ public void Sensal_Ability_R_Laser(int client, int weapon, bool crit, int slot) 
 			}
 			FinishLagCompensation_Base_boss();
 
-			int spawn_index = Npc_Create(WEAPON_SENSAL_AFTERIMAGE, client, flPos, fAng, GetTeam(client));
+			int spawn_index = NPC_CreateByName("npc_allied_sensal_afterimage", client, flPos, fAng, GetTeam(client));
 			if(spawn_index > 0)
 			{
 				//this is the damage
@@ -361,7 +361,7 @@ void SummonScytheSensalProjectile(int client, int weapon)
 	time *= Attributes_Get(weapon, 102, 1.0);
 
 	float Pos_player[3];
-	Pos_player = WorldSpaceCenterOld(client);
+	WorldSpaceCenter(client, Pos_player);
 	
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
@@ -500,11 +500,11 @@ public void Weapon_Sensal_WandTouch(int entity, int target)
 	{
 		//Code to do damage position and ragdolls
 		static float angles[3];
-		angles = GetRocketAngles(entity);
+		GetRocketAngles(entity, angles);
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
@@ -517,8 +517,9 @@ public void Weapon_Sensal_WandTouch(int entity, int target)
 			owner = 0;
 			
 		TE_Particle(b_ClientPossesBattery[owner] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position,_,ZR_DAMAGE_REFLECT_LOGIC);	// 2048 is DMG_NOGIB?
+		
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, Dmg_Force, Entity_Position,_,ZR_DAMAGE_REFLECT_LOGIC);	// 2048 is DMG_NOGIB?
 		
 		
 		if(IsValidEntity(particle))

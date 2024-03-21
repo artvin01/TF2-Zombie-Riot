@@ -50,8 +50,21 @@ void Ignitus_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel("models/player/pyro.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Ignitus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ignitus");
+	strcopy(data.Icon, sizeof(data.Icon), "pyro");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Ignitus(client, vecPos, vecAng, ally);
+}
 methodmap Ignitus < CClotBody
 {
 	public void PlayIdleSound() {
@@ -128,7 +141,6 @@ methodmap Ignitus < CClotBody
 	{
 		Ignitus npc = view_as<Ignitus>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "27500", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_IGNITUS;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -145,7 +157,9 @@ methodmap Ignitus < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, Ignitus_ClotThink);
+		func_NPCDeath[npc.index] = Ignitus_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Ignitus_OnTakeDamage;
+		func_NPCThink[npc.index] = Ignitus_ClotThink;
 		
 		
 		//IDLE
@@ -228,14 +242,15 @@ public void Ignitus_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -272,7 +287,8 @@ void IgnitusSelfdefense(Ignitus npc, float gameTime, int target, float distance)
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1))//Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
@@ -315,7 +331,7 @@ void IgnitusSelfdefense(Ignitus npc, float gameTime, int target, float distance)
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;
 								
@@ -358,9 +374,6 @@ public void Ignitus_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, Ignitus_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

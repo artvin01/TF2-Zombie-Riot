@@ -49,6 +49,20 @@ public void PoisonZombie_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 
 	PrecacheModel("models/zombie/poison.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Poison Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_poisonzombie");
+	strcopy(data.Icon, sizeof(data.Icon), "norm_poison_zombie");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return PoisonZombie(client, vecPos, vecAng, ally);
 }
 
 methodmap PoisonZombie < CClotBody
@@ -128,7 +142,6 @@ methodmap PoisonZombie < CClotBody
 	{
 		PoisonZombie npc = view_as<PoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.15", "700", ally));
 		
-		i_NpcInternalId[npc.index] = POISON_ZOMBIE;
 		i_NpcWeight[npc.index] = 2;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -138,9 +151,10 @@ methodmap PoisonZombie < CClotBody
 		
 		
 		
-		
-		
-		SDKHook(npc.index, SDKHook_Think, PoisonZombie_ClotThink);
+		func_NPCDeath[npc.index] = PoisonZombie_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = PoisonZombie_OnTakeDamage;
+		func_NPCThink[npc.index] = PoisonZombie_ClotThink;		
+	
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -201,14 +215,15 @@ public void PoisonZombie_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -227,7 +242,7 @@ public void PoisonZombie_ClotThink(int iNPC)
 			}
 			
 			//Target close enough to hit
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 20000.0);
@@ -338,9 +353,6 @@ public void PoisonZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, PoisonZombie_ClotThink);
 	
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

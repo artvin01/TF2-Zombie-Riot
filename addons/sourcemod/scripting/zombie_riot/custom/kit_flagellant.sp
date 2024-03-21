@@ -68,7 +68,7 @@ void Flagellant_Enable(int client, int weapon)
 
 void Flagellant_DoSwingTrace(int client)
 {
-	TriggerSelfDamage(client, 0.05);
+	TriggerSelfDamage(client, 0.025);
 }
 
 void Flagellant_OnTakeDamage(int victim, float damage)
@@ -116,7 +116,7 @@ public Action Flagellant_HealerTimer(Handle timer, DataPack pack)
 				color[0] = validAlly ? 50 : 200;
 
 				if(validAlly)
-					pos = GetAbsOriginOld(target);
+					GetAbsOrigin(target, pos );
 				
 				pos[2] += 10.0;
 
@@ -168,7 +168,7 @@ public Action Flagellant_DamagerTimer(Handle timer, DataPack pack)
 				color[1] = validEnemy ? 50 : 200;
 
 				if(validEnemy)
-					pos = GetAbsOriginOld(target);
+					GetAbsOrigin(target, pos );
 				
 				pos[2] += 10.0;
 
@@ -385,7 +385,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 				
 				if(target > MaxClients)
 				{
-					PrintHintText(client, "You Healed %t for %.0f HP!, you gain a %.0f healing cooldown.", NPC_Names[i_NpcInternalId[target]], healing, cooldown);
+					PrintHintText(client, "You Healed Ally for %.0f HP!, you gain a %.0f healing cooldown.", healing, cooldown);
 				}
 				else
 				{
@@ -396,7 +396,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 		}
 		else if(target > MaxClients)
 		{
-			PrintHintText(client, "%t Is already at full hp.", NPC_Names[i_NpcInternalId[target]]);
+			PrintHintText(client, "Ally Is already at full hp.");
 		}
 		else
 		{
@@ -443,7 +443,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 	{
 		Rogue_OnAbilityUse(weapon);
 
-		TriggerSelfDamage(client, 0.15);
+		TriggerSelfDamage(client, 0.025);
 		
 		int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		float multi = Attributes_GetOnWeapon(client, secondary, 8, true);
@@ -711,6 +711,7 @@ static void TriggerDeathDoor(int client, int &healing)
 	if(dieingstate[client] > 0)
 	{
 		dieingstate[client] = 0;
+		i_CurrentEquippedPerk[client] = i_CurrentEquippedPerkPreviously[client];
 		ForcePlayerCrouch(client, false);
 		Store_ApplyAttribs(client);
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);

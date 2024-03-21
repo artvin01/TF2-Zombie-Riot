@@ -24,6 +24,23 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/medic_battlecry04.mp3"
 };
 
+void LiberiOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Liberi");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_liberi");
+	strcopy(data.Icon, sizeof(data.Icon), "medic_uber");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Liberi(client, vecPos, vecAng, ally);
+}
 static float LiberiBuff[MAXENTITIES];
 
 methodmap Liberi < CClotBody
@@ -49,7 +66,6 @@ methodmap Liberi < CClotBody
 	{
 		Liberi npc = view_as<Liberi>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "35000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_MEDIC;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		
@@ -64,7 +80,7 @@ methodmap Liberi < CClotBody
 		func_NPCThink[npc.index] = ClotThink;
 		
 		Is_a_Medic[npc.index] = true;
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = Rogue_Paradox_RedMoon() ? 500.0 : 300.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_picket/c_picket.mdl");
 
@@ -122,16 +138,17 @@ static void ClotThink(int iNPC)
 
 	if(target > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < 40000.0)
 		{
 			npc.StopPathing();
 
-			LiberiBuff[target] = GetGameTime() + 0.2;
+			LiberiBuff[target] = GetGameTime() + (Rogue_Paradox_RedMoon() ? 3.0 : 0.2);
 
-			if(!NpcStats_IsEnemySilenced(npc.index))
+			if(Rogue_Paradox_RedMoon() || !NpcStats_IsEnemySilenced(npc.index))
 			{
 				b_NpcIsInvulnerable[target] = true;
 				SDKUnhook(target, SDKHook_ThinkPost, LiberiBuffThink);

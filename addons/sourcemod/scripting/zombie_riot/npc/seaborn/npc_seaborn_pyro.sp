@@ -36,6 +36,24 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/machete_swing.wav"
 };
 
+void SeabornPyro_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Seaborn Pyro");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_pyro");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_pyro");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SeabornPyro(client, vecPos, vecAng, ally);
+}
+
 methodmap SeabornPyro < CClotBody
 {
 	public void PlayIdleSound()
@@ -67,7 +85,6 @@ methodmap SeabornPyro < CClotBody
 	{
 		SeabornPyro npc = view_as<SeabornPyro>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "2225", ally));
 		
-		i_NpcInternalId[npc.index] = SEABORN_PYRO;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		KillFeed_SetKillIcon(npc.index, "lava_axe");
@@ -78,7 +95,9 @@ methodmap SeabornPyro < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		SDKHook(npc.index, SDKHook_Think, SeabornPyro_ClotThink);
+		func_NPCDeath[npc.index] = SeabornPyro_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		func_NPCThink[npc.index] = SeabornPyro_ClotThink;
 		
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flSpeed = 300.0;
@@ -130,12 +149,13 @@ public void SeabornPyro_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -231,6 +251,4 @@ void SeabornPyro_NPCDeath(int entity)
 		pack_boom.WriteCell(1);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 	}
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornPyro_ClotThink);
 }

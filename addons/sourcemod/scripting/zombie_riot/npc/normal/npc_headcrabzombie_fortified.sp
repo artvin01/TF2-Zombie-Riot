@@ -66,6 +66,20 @@ public void Fortified_HeadcrabZombie_OnMapStart_NPC()
 
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/zombie/classic.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Fortified Headcrab Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_headcrabzombie_fortified");
+	strcopy(data.Icon, sizeof(data.Icon), "norm_headcrab_zombie_forti");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return FortifiedHeadcrabZombie(client, vecPos, vecAng, ally);
 }
 
 methodmap FortifiedHeadcrabZombie < CClotBody
@@ -132,7 +146,6 @@ methodmap FortifiedHeadcrabZombie < CClotBody
 	{
 		FortifiedHeadcrabZombie npc = view_as<FortifiedHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "500", ally, false));
 		
-		i_NpcInternalId[npc.index] = FORTIFIED_HEADCRAB_ZOMBIE;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -146,8 +159,11 @@ methodmap FortifiedHeadcrabZombie < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, FortifiedHeadcrabZombie_ClotThink);
+
+		func_NPCDeath[npc.index] = FortifiedHeadcrabZombie_NPCDeath;
+		func_NPCThink[npc.index] = FortifiedHeadcrabZombie_ClotThink;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+
 		//IDLE
 		npc.m_flSpeed = 140.0;
 		if(EscapeModeForNpc)
@@ -210,14 +226,15 @@ public void FortifiedHeadcrabZombie_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
+		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -229,7 +246,7 @@ public void FortifiedHeadcrabZombie_ClotThink(int iNPC)
 		
 		//Target close enough to hit
 		
-		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 		{
 			//Look at target so we hit.
 		//	npc.FaceTowards(vecTarget, 20000.0);
@@ -311,6 +328,4 @@ public void FortifiedHeadcrabZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_Think, FortifiedHeadcrabZombie_ClotThink);
-	
 }

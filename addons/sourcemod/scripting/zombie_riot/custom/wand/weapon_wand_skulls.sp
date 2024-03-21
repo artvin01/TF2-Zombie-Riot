@@ -95,7 +95,13 @@ void Wand_Skulls_Precache()
 	PrecacheSound(SKULL_SOUND_EXPLODE_BONES);
 	PrecacheSound(SOUND_SKULL_IMPACT);
 }
-
+public void Reset_stats_Skullswand_Singular(int client)
+{
+	if (Skulls_ArrayStack[client] != null)
+	{
+		DeleteAllSkulls(client);
+	}
+}
 public void Skulls_EntityDestroyed(int ent)
 {
 	if (!IsValidEdict(ent))
@@ -593,7 +599,7 @@ void Skull_AutoFire(int ent, int target, int client)
 	float pos[3], ang[3], TargetLoc[3], DummyAngles[3];
 	GetEntPropVector(ent, Prop_Send, "m_vecOrigin", pos);
 	GetEntPropVector(target, Prop_Send, "m_angRotation", DummyAngles);
-	TargetLoc = WorldSpaceCenterOld(target);
+	WorldSpaceCenter(target, TargetLoc);
 
 
 	float dist = GetVectorDistance(pos, TargetLoc, true);
@@ -616,7 +622,7 @@ void Skull_AutoFire(int ent, int target, int client)
 	if(dist < (Skull_ShootRange[ent] * 0.5)) //If at half range, try to predict.
 	{
 		CClotBody npc = view_as<CClotBody>(ent);
-		TargetLoc = PredictSubjectPositionForProjectilesOld(npc, target, velocity);
+		PredictSubjectPositionForProjectiles(npc, target, velocity, _,TargetLoc);
 	}
 
 	GetAngleToPoint(ent, TargetLoc, DummyAngles, ang);
@@ -725,7 +731,7 @@ public int Skull_GetClosestTarget(int ent, float range)
 			
 		if(IsValidEnemy(owner, i, true, false))
 		{
-			TargetLoc = WorldSpaceCenterOld(i);
+			WorldSpaceCenter(i, TargetLoc);
 			float dist = GetVectorDistance(DroneLoc, TargetLoc, true);
 			if(dist <= range)
 			{	
@@ -1028,13 +1034,14 @@ public void Wand_Skulls_Touch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 		//Code to do damage position and ragdolls
 		
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -1067,7 +1074,6 @@ public void Wand_Skulls_Touch_Launched(int entity, int target)
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-	//SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
 	if(IsValidEntity(particle))
 	{
 		RemoveEntity(particle);

@@ -94,6 +94,20 @@ void MedivalAchilles_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	PrecacheModel("models/props_junk/harpoon002a.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Achilles");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_achilles");
+	strcopy(data.Icon, sizeof(data.Icon), "achilles");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalAchilles(client, vecPos, vecAng, ally);
 }
 
 methodmap MedivalAchilles < CClotBody
@@ -173,7 +187,6 @@ methodmap MedivalAchilles < CClotBody
 		MedivalAchilles npc = view_as<MedivalAchilles>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "100000", ally));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_ACHILLES;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -189,7 +202,10 @@ methodmap MedivalAchilles < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalAchilles_ClotThink);
+		func_NPCDeath[npc.index] = MedivalAchilles_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalAchilles_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalAchilles_ClotThink;
+		func_NPCAnimEvent[npc.index] = HandleAnimEvent_MedivalAchilles;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 330.0;
@@ -275,7 +291,8 @@ public void MedivalAchilles_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				float TargetVecPos[3]; WorldSpaceCenter(npc.m_iTarget, TargetVecPos);
+				npc.FaceTowards(TargetVecPos, 15000.0); 
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, { 80.0, 80.0, 80.0 }, { -80.0, -80.0, -80.0 })) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -319,7 +336,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 				float distance = GetVectorDistance( EntityLocation, TargetLocation, true );  
 					
 				float vecTarget[3];
-				vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+				WorldSpaceCenter(npc.m_iTarget, vecTarget);
 
 				if(distance <= (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
 				{
@@ -332,13 +349,14 @@ public void MedivalAchilles_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -482,7 +500,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 						AcceptEntityInput(npc.m_iWearable4, "Enable");
 						float vEnd[3];
 						
-						vEnd = GetAbsOriginOld(npc.m_iTarget);
+						GetAbsOrigin(npc.m_iTarget, vEnd);
 						Handle pack;
 						CreateDataTimer(ACHILLES_CHARGE_SPAN, Smite_Timer_achilles, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 						WritePackCell(pack, EntIndexToEntRef(npc.index));
@@ -550,9 +568,6 @@ public void MedivalAchilles_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalAchilles_ClotThink);
-		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

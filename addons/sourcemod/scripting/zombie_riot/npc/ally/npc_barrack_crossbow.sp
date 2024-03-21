@@ -4,18 +4,38 @@
 // Balanced around Early Combine
 // Construction Apprentice
 
+public void BarrackCrossbowOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Crossbow Man");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_crossbow");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackCrossbow(client, vecPos, vecAng, ally);
+}
+
 methodmap BarrackCrossbow < BarrackBody
 {
 	public BarrackCrossbow(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackCrossbow npc = view_as<BarrackCrossbow>(BarrackBody(client, vecPos, vecAng, "160",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
-		i_NpcInternalId[npc.index] = BARRACK_CROSSBOW;
 		i_NpcWeight[npc.index] = 1;
 		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackCrossbow_ClotThink);
-
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackCrossbow_NPCDeath;
+		func_NPCThink[npc.index] = BarrackCrossbow_ClotThink;
+		func_NPCAnimEvent[npc.index] = BarrackCrossbow_HandleAnimEvent;
+	
 		npc.m_flSpeed = 225.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_crusaders_crossbow/c_crusaders_crossbow.mdl");
@@ -39,8 +59,9 @@ public void BarrackCrossbow_ClotThink(int iNPC)
 
 		if(npc.m_iTarget > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			if(flDistanceToTarget < 170000.0)
 			{
@@ -77,7 +98,7 @@ void BarrackCrossbow_HandleAnimEvent(int entity, int event)
 		
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			float vecTarget[3]; vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1200.0);
+			float vecTarget[3]; PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0,_, vecTarget);
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSound();

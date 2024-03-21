@@ -815,6 +815,33 @@ static char g_RangedReloadSound[][] =
 	"weapons/shotgun/shotgun_reload3.wav",
 };
 
+static int NPCId;
+static int ThereCanBeOnlyOne = -1;
+static bool FirstBlood[MAXENTITIES];
+static int IsDowned[MAXENTITIES];
+static bool SeakingMedic[MAXENTITIES];
+static bool SeakingGeneric[MAXENTITIES];
+static int HasPerk[MAXENTITIES];
+static int ReviveTime[MAXENTITIES];
+static int GunType[MAXENTITIES];
+static int GunValue[MAXENTITIES];
+static int GunSeller[MAXENTITIES];
+static int PerkType[MAXENTITIES];
+static bool RebelAggressive[MAXENTITIES];
+static float GunDamage[MAXENTITIES];
+static float GunFireRate[MAXENTITIES];
+static float GunBonusFireRate[MAXENTITIES];
+static float GunBonusReload[MAXENTITIES];
+static float GunReload[MAXENTITIES];
+static int GunClip[MAXENTITIES];
+static float GunRangeBonus[MAXENTITIES];
+static float TalkCooldown[MAXENTITIES];
+static float TalkTurnPos[MAXENTITIES][3];
+static float TalkTurningFor[MAXENTITIES];
+static float HealingCooldown[MAXENTITIES];
+static bool IgnorePlayer[MAXTF2PLAYERS];
+static int ArmorErosion[MAXENTITIES];
+
 void Citizen_OnMapStart()
 {
 	PrecacheModel(BARNEY_MODEL);
@@ -853,33 +880,21 @@ void Citizen_OnMapStart()
 
 	PrecacheSound("weapons/rpg/rocketfire1.wav");
 	PrecacheSound("weapons/iceaxe/iceaxe_swing1.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Rebel");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_citizen");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
 }
 
-static int ThereCanBeOnlyOne = -1;
-static bool FirstBlood[MAXENTITIES];
-static int IsDowned[MAXENTITIES];
-static bool SeakingMedic[MAXENTITIES];
-static bool SeakingGeneric[MAXENTITIES];
-static int HasPerk[MAXENTITIES];
-static int ReviveTime[MAXENTITIES];
-static int GunType[MAXENTITIES];
-static int GunValue[MAXENTITIES];
-static int GunSeller[MAXENTITIES];
-static int PerkType[MAXENTITIES];
-static bool RebelAggressive[MAXENTITIES];
-static float GunDamage[MAXENTITIES];
-static float GunFireRate[MAXENTITIES];
-static float GunBonusFireRate[MAXENTITIES];
-static float GunBonusReload[MAXENTITIES];
-static float GunReload[MAXENTITIES];
-static int GunClip[MAXENTITIES];
-static float GunRangeBonus[MAXENTITIES];
-static float TalkCooldown[MAXENTITIES];
-static float TalkTurnPos[MAXENTITIES][3];
-static float TalkTurningFor[MAXENTITIES];
-static float HealingCooldown[MAXENTITIES];
-static bool IgnorePlayer[MAXTF2PLAYERS];
-static int ArmorErosion[MAXENTITIES];
+static any ClotSummon(int client, float vecPos[3], float vecAng[3],int ally, const char[] data)
+{
+	return Citizen(client, vecPos, vecAng, data);
+}
 
 methodmap Citizen < CClotBody
 {
@@ -909,7 +924,6 @@ methodmap Citizen < CClotBody
 		}
 		
 		Citizen npc = view_as<Citizen>(CClotBody(vecPos, vecAng, buffer, "1.15", "150", TFTeam_Red, true));
-		i_NpcInternalId[npc.index] = CITIZEN;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -924,7 +938,9 @@ methodmap Citizen < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TFTeam_Red);
 		
 		
-		SDKHook(npc.index, SDKHook_Think, Citizen_ClotThink);
+		func_NPCDeath[npc.index] = Citizen_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Citizen_OnTakeDamage;
+		func_NPCThink[npc.index] = Citizen_ClotThink;
 		
 		int glow = npc.m_iTeamGlow;
 		if(glow > 0)
@@ -1292,7 +1308,6 @@ methodmap Citizen < CClotBody
 			else if(client)
 			{
 				this.PlaySound(Cit_Found);
-				Items_GiveNPCKill(client, CITIZEN);
 			}
 
 			SetEntityRenderMode(this.index, RENDER_NORMAL);
@@ -1412,7 +1427,7 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		
-		entity = Npc_Create(CITIZEN, client, pos, ang, TFTeam_Red, data);
+		entity = NPC_CreateByName("npc_citizen", client, pos, ang, TFTeam_Red, data);
 		
 		if(IsValidEntity(entity))
 		{
@@ -1433,9 +1448,14 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 	return -1;
 }
 
+bool Citizen_IsIt(int entity)
+{
+	return (i_NpcInternalId[entity] == NPCId);
+}
+
 bool Citizen_ThatIsDowned(int entity)
 {
-	return (i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_nDowned);
+	return (i_NpcInternalId[entity] == NPCId && view_as<Citizen>(entity).m_nDowned);
 }
 
 int Citizen_ReviveTicks(int entity, int amount, int client)
@@ -1450,7 +1470,7 @@ int Citizen_ReviveTicks(int entity, int amount, int client)
 
 int Citizen_ShowInteractionHud(int entity, int client)
 {
-	if(i_NpcInternalId[entity] == CITIZEN)
+	if(i_NpcInternalId[entity] == NPCId)
 	{
 		Citizen npc = view_as<Citizen>(entity);
 		
@@ -1472,7 +1492,7 @@ int Citizen_ShowInteractionHud(int entity, int client)
 
 int Citizen_BuildingInteract(int entity)
 {
-	if(i_NpcInternalId[entity] == CITIZEN)
+	if(i_NpcInternalId[entity] == NPCId)
 	{
 		Citizen npc = view_as<Citizen>(entity);
 		
@@ -1486,7 +1506,7 @@ int Citizen_BuildingInteract(int entity)
 
 bool Citizen_Interact(int client, int entity)
 {
-	if(i_NpcInternalId[entity] == CITIZEN)
+	if(i_NpcInternalId[entity] == NPCId)
 	{
 		Citizen npc = view_as<Citizen>(entity);
 		
@@ -1597,7 +1617,12 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 		
 		for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 		{
-			if(i_NpcInternalId[i] == CITIZEN && i != npc.index && IsValidEntity(i))
+			if(!IsValidEntity(i))
+			{
+				continue;
+			}
+			
+			if(i_NpcInternalId[i] == NPCId && i != npc.index)
 			{
 				amount += view_as<Citizen>(i).m_iGunValue;
 				if(view_as<Citizen>(i).m_iBuildingType)
@@ -1659,7 +1684,8 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	if(info.Attrib[0] == 99999)
 	{
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_crowbar.mdl");
-		ParticleEffectAt_Parent(WorldSpaceCenterOld(npc.index), "raygun_projectile_red_crit", npc.index, "anim_attachment_RH");
+		float Vecself[3]; WorldSpaceCenter(npc.index, Vecself);
+		ParticleEffectAt_Parent(Vecself, "raygun_projectile_red_crit", npc.index, "anim_attachment_RH");
 	}
 	else
 	{
@@ -1704,21 +1730,21 @@ void Citizen_SetupStart()
 	int i = -1;
 	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
-		if(i_NpcInternalId[i] == CITIZEN)
+		if(i_NpcInternalId[i] == NPCId)
 		{
 			Citizen npc = view_as<Citizen>(i);
 			if(npc.m_bHero && !npc.m_nDowned && IsValidEntity(i))
 			{
 				int found;
 				float distance = FAR_FUTURE;
-				float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+				float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 				float vecTarget[3];
 				int entity = MaxClients + 1;
 				while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 				{
-					if(i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 7)
+					if(i_NpcInternalId[entity] == NPCId && view_as<Citizen>(entity).m_iBuildingType == 7)
 					{
-						vecTarget = WorldSpaceCenterOld(entity);
+						WorldSpaceCenter(entity, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(!found || dist < distance)
 						{
@@ -1735,7 +1761,7 @@ void Citizen_SetupStart()
 					GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 					if(!StrContains(buffer, "zr_packapunch"))
 					{
-						vecTarget = WorldSpaceCenterOld(entity);
+						WorldSpaceCenter(entity, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(!found || dist < distance)
 						{
@@ -1755,7 +1781,7 @@ void Citizen_SetupStart()
 							GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 							if(!StrContains(buffer, "zr_packapunch"))
 							{
-								vecTarget = WorldSpaceCenterOld(client);
+								WorldSpaceCenter(client, vecTarget );
 								float dist = GetVectorDistance(vecTarget, vecMe, true);
 								if(!found || dist < distance)
 								{
@@ -1833,7 +1859,8 @@ public void Citizen_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 2))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -1880,7 +1907,10 @@ public void Citizen_ClotThink(int iNPC)
 		else
 		{
 			if(IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo))
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 500.0);
+			{
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
+				npc.FaceTowards(WorldSpaceVec, 500.0);
+			}
 			
 			return;
 		}
@@ -1952,7 +1982,7 @@ public void Citizen_ClotThink(int iNPC)
 	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 	bool injured = (health < 60) || (health < (maxhealth / 5));
 	float distance = 100000000.0;
-	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 
 	int walkStatus;
 	int reloadStatus;
@@ -1986,11 +2016,11 @@ public void Citizen_ClotThink(int iNPC)
 		int entity = MaxClients + 1;
 		while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
-			if((i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 7) ||
-				i_NpcInternalId[entity] == BOB_THE_GOD_OF_GODS &&
+			if((i_NpcInternalId[entity] == NPCId && view_as<Citizen>(entity).m_iBuildingType == 7) /*||
+				i_NpcInternalId[entity] == BOB_THE_GOD_OF_GODS*/ &&
 				HealingCooldown[entity] < gameTime)
 			{
-				vecTarget = WorldSpaceCenterOld(entity);
+				WorldSpaceCenter(entity, vecTarget);
 				float dist = GetVectorDistance(vecTarget, vecMe, true);
 				if(dist < distance)
 				{
@@ -2008,7 +2038,7 @@ public void Citizen_ClotThink(int iNPC)
 				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 				if(!StrContains(buffer, "zr_healingstation"))
 				{
-					vecTarget = WorldSpaceCenterOld(entity);
+					WorldSpaceCenter(entity, vecTarget);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2029,7 +2059,7 @@ public void Citizen_ClotThink(int iNPC)
 					GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 					if(!StrContains(buffer, "zr_healingstation"))
 					{
-						vecTarget = WorldSpaceCenterOld(client);
+						WorldSpaceCenter(client, vecTarget );
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(dist < distance)
 						{
@@ -2045,7 +2075,7 @@ public void Citizen_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo))
 	{
 		npc.m_flidle_talk = FAR_FUTURE;
-		vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		distance = GetVectorDistance(vecTarget, vecMe, true);
 		//todo, rewrite npcs so itdoes this code outside of this, i filtered out invinceable enemies.
 		if(RunFromNPC(npc.m_iTarget) && view_as<SawRunner>(npc.m_iTarget).m_iTarget == npc.index && distance < 250000.0)
@@ -2141,7 +2171,7 @@ public void Citizen_ClotThink(int iNPC)
 						else	// Try to shoot
 						{
 							float npc_pos[3];
-							npc_pos = GetAbsOriginOld(npc.index);
+							GetAbsOrigin(npc.index, npc_pos);
 								
 							npc_pos[2] += 30.0;
 							
@@ -2251,7 +2281,7 @@ public void Citizen_ClotThink(int iNPC)
 						if(!cooldown)
 						{
 							float npc_pos[3];
-							npc_pos = GetAbsOriginOld(npc.index);
+							GetAbsOrigin(npc.index, npc_pos);
 								
 							npc_pos[2] += 30.0;
 							
@@ -2348,7 +2378,7 @@ public void Citizen_ClotThink(int iNPC)
 						if(!cooldown)
 						{
 							float npc_pos[3];
-							npc_pos = GetAbsOriginOld(npc.index);
+							GetAbsOrigin(npc.index, npc_pos);
 								
 							npc_pos[2] += 30.0;
 							
@@ -2439,7 +2469,7 @@ public void Citizen_ClotThink(int iNPC)
 						else	// Try to shoot
 						{
 							float npc_pos[3];
-							npc_pos = GetAbsOriginOld(npc.index);
+							GetAbsOrigin(npc.index, npc_pos);
 								
 							npc_pos[2] += 30.0;
 							
@@ -2540,7 +2570,7 @@ public void Citizen_ClotThink(int iNPC)
 						else	// Try to shoot
 						{
 							float npc_pos[3];
-							npc_pos = GetAbsOriginOld(npc.index);
+							GetAbsOrigin(npc.index, npc_pos);
 								
 							npc_pos[2] += 30.0;
 							
@@ -2641,7 +2671,7 @@ public void Citizen_ClotThink(int iNPC)
 		}
 		else if(npc.m_bSeakingMedic || npc.m_bSeakingGeneric)	// Go up to building
 		{
-			vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
+			WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
 
 			distance = GetVectorDistance(vecTarget, vecMe, true);
 			if(distance < 7000.0)
@@ -2675,7 +2705,7 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			npc.m_iTargetAlly = healingTarget;
 			npc.m_bSeakingMedic = true;
-			vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
+			WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
 			walkStatus = 5;	// Run to ally (activity handled)
 		}
 	}
@@ -2687,9 +2717,9 @@ public void Citizen_ClotThink(int iNPC)
 		int entity = MaxClients + 1;
 		while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
-			if(i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 5 && HealingCooldown[entity] < gameTime)
+			if(i_NpcInternalId[entity] == NPCId && view_as<Citizen>(entity).m_iBuildingType == 5 && HealingCooldown[entity] < gameTime)
 			{
-				vecTarget = WorldSpaceCenterOld(entity);
+				WorldSpaceCenter(entity, vecTarget);
 				float dist = GetVectorDistance(vecTarget, vecMe, true);
 				if(dist < distance)
 				{
@@ -2708,7 +2738,7 @@ public void Citizen_ClotThink(int iNPC)
 				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 				if(!StrContains(buffer, "zr_perkmachine"))
 				{
-					vecTarget = WorldSpaceCenterOld(entity);
+					WorldSpaceCenter(entity, vecTarget);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2730,7 +2760,7 @@ public void Citizen_ClotThink(int iNPC)
 					GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 					if(!StrContains(buffer, "zr_perkmachine"))
 					{
-						vecTarget = WorldSpaceCenterOld(client);
+						WorldSpaceCenter(client, vecTarget );
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(dist < distance)
 						{
@@ -2745,7 +2775,7 @@ public void Citizen_ClotThink(int iNPC)
 
 		if(npc.m_bSeakingGeneric)
 		{
-			vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
+			WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
 			walkStatus = 5;	// Run to ally (activity handled)
 			npc.m_iHasPerk = npc.m_iGunType;
 		}
@@ -2757,9 +2787,9 @@ public void Citizen_ClotThink(int iNPC)
 		int entity = MaxClients + 1;
 		while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
-			if(i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 1 && HealingCooldown[entity] < gameTime)
+			if(i_NpcInternalId[entity] == NPCId && view_as<Citizen>(entity).m_iBuildingType == 1 && HealingCooldown[entity] < gameTime)
 			{
-				vecTarget = WorldSpaceCenterOld(entity);
+				WorldSpaceCenter(entity, vecTarget);
 				float dist = GetVectorDistance(vecTarget, vecMe, true);
 				if(dist < distance)
 				{
@@ -2778,7 +2808,7 @@ public void Citizen_ClotThink(int iNPC)
 				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 				if(!StrContains(buffer, "zr_armortable"))
 				{
-					vecTarget = WorldSpaceCenterOld(entity);
+					WorldSpaceCenter(entity, vecTarget);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2800,7 +2830,7 @@ public void Citizen_ClotThink(int iNPC)
 					GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 					if(!StrContains(buffer, "zr_armortable"))
 					{
-						vecTarget = WorldSpaceCenterOld(client);
+						WorldSpaceCenter(client, vecTarget );
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(dist < distance)
 						{
@@ -2815,7 +2845,7 @@ public void Citizen_ClotThink(int iNPC)
 
 		if(npc.m_bSeakingGeneric)
 		{
-			vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
+			WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
 			walkStatus = 5;	// Run to ally (activity handled)
 			npc.m_iArmorErosion = 0;
 		}
@@ -2835,7 +2865,7 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				if(!IgnorePlayer[client] && IsClientInGame(client) && IsEntityAlive(client))
 				{
-					vecTarget = WorldSpaceCenterOld(client);
+					WorldSpaceCenter(client, vecTarget );
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2848,7 +2878,7 @@ public void Citizen_ClotThink(int iNPC)
 		
 		if(npc.m_iTargetAlly > 0)
 		{
-			vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
+			WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
 			distance = GetVectorDistance(vecTarget, vecMe, true);
 			if(distance > 200000.0 || (combat && distance > 60000.0))
 			{
@@ -2862,9 +2892,9 @@ public void Citizen_ClotThink(int iNPC)
 				float vecTarget2[3];
 				while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 				{
-					if(i_NpcInternalId[entity] == CITIZEN)
+					if(i_NpcInternalId[entity] == NPCId)
 					{
-						vecTarget2 = WorldSpaceCenterOld(entity);
+						WorldSpaceCenter(entity, vecTarget2);
 						distance = GetVectorDistance(vecTarget2, vecMe, true);
 						if(distance < 6000.0 && !combat)
 						{
@@ -2900,7 +2930,7 @@ public void Citizen_ClotThink(int iNPC)
 
 			npc.m_bAllowBackWalking = true;
 			
-			vecTarget = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+			BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vecTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
@@ -2984,7 +3014,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_flidle_talk = FAR_FUTURE;
 			npc.m_bAllowBackWalking = false;
 			
-			vecTarget = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+			BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vecTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
@@ -2995,7 +3025,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_flidle_talk = FAR_FUTURE;
 			npc.m_bAllowBackWalking = true;
 			
-			vecTarget = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+			BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vecTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
@@ -3012,7 +3042,7 @@ public void Citizen_ClotThink(int iNPC)
 			}
 			else
 			{
-				vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				PredictSubjectPosition(npc, npc.m_iTarget,_,_, vecTarget);
 				NPC_SetGoalVector(npc.index, vecTarget);
 			}
 			
@@ -3100,9 +3130,13 @@ public void Citizen_ClotThink(int iNPC)
 				
 				for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 				{
-					if(i_NpcInternalId[i] == CITIZEN && i != npc.index && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
+					if(!IsValidEntity(i))
 					{
-						vecTarget = WorldSpaceCenterOld(i);
+						continue;
+					}
+					if(i_NpcInternalId[i] == NPCId && i != npc.index && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE)
+					{
+						WorldSpaceCenter(i, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(dist < 60000.0)
 						{
@@ -3120,7 +3154,7 @@ public void Citizen_ClotThink(int iNPC)
 				int client = GetClosestAllyPlayer(npc.index);
 				if(client > 0)
 				{
-					vecTarget = WorldSpaceCenterOld(client);
+					WorldSpaceCenter(client, vecTarget );
 					if(GetVectorDistance(vecTarget, vecMe, true) < distance)
 						talkingTo = client;
 				}
@@ -3128,7 +3162,7 @@ public void Citizen_ClotThink(int iNPC)
 				if(talkingTo)
 				{
 					if(talkingTo > MaxClients)
-						vecTarget = WorldSpaceCenterOld(talkingTo);
+						WorldSpaceCenter(talkingTo, vecTarget);
 					
 					npc.SlowTurn(vecTarget);
 					
@@ -3175,7 +3209,11 @@ void Citizen_MiniBossSpawn()
 {
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 	{
-		if(i_NpcInternalId[i] == CITIZEN && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
+		if(!IsValidEntity(i))
+		{
+			continue;
+		}
+		if(i_NpcInternalId[i] == NPCId && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE)
 		{
 			view_as<Citizen>(i).PlaySound(Cit_MiniBoss);
 			view_as<Citizen>(i).m_flidle_talk += 15.0;
@@ -3189,13 +3227,13 @@ void Citizen_MiniBossDeath(int entity)
 	int talkingTo;
 	float distance;
 	
-	float vecMe[3]; vecMe = WorldSpaceCenterOld(entity);
+	float vecMe[3]; WorldSpaceCenter(entity, vecMe);
 	float vecTarget[3];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 	{
-		if(i_NpcInternalId[i] == CITIZEN && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
+		if(i_NpcInternalId[i] == NPCId && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
 		{
-			vecTarget = WorldSpaceCenterOld(i);
+			WorldSpaceCenter(i, vecTarget);
 			float dist = GetVectorDistance(vecTarget, vecMe, true);
 			if(!talkingTo || dist < distance)
 			{
@@ -3217,13 +3255,13 @@ void Citizen_LiveCitizenReaction(int entity)
 	int talkingTo;
 	float distance = 60000.0;
 	
-	float vecMe[3]; vecMe = WorldSpaceCenterOld(entity);
+	float vecMe[3]; WorldSpaceCenter(entity, vecMe);
 	float vecTarget[3];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 	{
-		if(i_NpcInternalId[i] == CITIZEN && i != entity && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
+		if(i_NpcInternalId[i] == NPCId && i != entity && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
 		{
-			vecTarget = WorldSpaceCenterOld(i);
+			WorldSpaceCenter(i, vecTarget);
 			float dist = GetVectorDistance(vecTarget, vecMe, true);
 			if(dist < 60000.0)
 			{
@@ -3241,7 +3279,7 @@ void Citizen_LiveCitizenReaction(int entity)
 	int client = GetClosestAllyPlayer(entity);
 	if(client > 0)
 	{
-		vecTarget = WorldSpaceCenterOld(client);
+		WorldSpaceCenter(client, vecTarget );
 		if(GetVectorDistance(vecTarget, vecMe, true) < distance)
 			talkingTo = client;
 	}
@@ -3250,7 +3288,7 @@ void Citizen_LiveCitizenReaction(int entity)
 	{
 		if(talkingTo > MaxClients)
 		{
-			vecTarget = WorldSpaceCenterOld(talkingTo);
+			WorldSpaceCenter(talkingTo, vecTarget);
 			view_as<Citizen>(talkingTo).SlowTurn(vecMe);
 			view_as<Citizen>(talkingTo).m_flidle_talk += 35.0;
 			CreateTimer(3.0, Citizen_ReactionTimer, EntIndexToEntRef(talkingTo), TIMER_FLAG_NO_MAPCHANGE);
@@ -3283,15 +3321,15 @@ void Citizen_PlayerDeath(int client)
 		int talker, talkingTo;
 		float distance = 10000000.0;
 		
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(client);
+		float vecMe[3]; WorldSpaceCenter(client, vecMe);
 		float vecTarget[3];
 		for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 		{
-			if(i_NpcInternalId[i] == CITIZEN && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
+			if(i_NpcInternalId[i] == NPCId && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
 			{
 				view_as<Citizen>(i).m_flidle_talk = FAR_FUTURE;
 				
-				vecTarget = WorldSpaceCenterOld(i);
+				WorldSpaceCenter(i, vecTarget);
 				float dist = GetVectorDistance(vecTarget, vecMe, true);
 				if(view_as<Citizen>(i).CanTalk() && dist < distance)
 				{
@@ -3313,9 +3351,24 @@ void Citizen_PlayerDeath(int client)
 
 static bool RunFromNPC(int entity)
 {
-	return (i_NpcInternalId[entity] == SAWRUNNER ||
-		(i_NpcInternalId[entity] == STALKER_COMBINE && b_StaticNPC[entity]) ||
-		(i_NpcInternalId[entity] == STALKER_FATHER && b_StaticNPC[entity] && !b_movedelay[entity]));
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	if(StrContains(npc_classname, "npc_sawrunner"))
+	{
+		return true;
+	}
+	else if(StrContains(npc_classname, "npc_stalker_combine") && b_StaticNPC[entity])
+	{
+		return true;
+	}
+	else if(StrContains(npc_classname, "npc_stalker_father") && b_StaticNPC[entity] && !b_movedelay[entity])
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -3398,7 +3451,6 @@ public void Citizen_NPCDeath(int entity)
 	Citizen npc = view_as<Citizen>(entity);
 	
 	
-	SDKUnhook(npc.index, SDKHook_Think, Citizen_ClotThink);
 	
 	if(npc.m_iWearable1 > 0 && IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

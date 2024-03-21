@@ -36,9 +36,24 @@ void SeaRunner_MapStart()
 	PrecacheSoundArray(g_HurtSound);
 
 	PrecacheModel("models/headcrabclassic.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Shell Sea Runner");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_searunner");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_runner");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
-methodmap SeaRunner < CClotBody
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return SeaRunner(client, vecPos, vecAng, ally, data);
+}
+
+methodmap SeaRunner < CSeaBody
 {
 	public void PlayIdleSound()
 	{
@@ -71,7 +86,7 @@ methodmap SeaRunner < CClotBody
 		// 3000 x 0.15
 		// 4000 x 0.15
 
-		i_NpcInternalId[npc.index] = data[0] ? SEARUNNER_ALT : SEARUNNER;
+		npc.SetElite(view_as<bool>(data[0]));
 		i_NpcWeight[npc.index] = 0;
 		npc.SetActivity("ACT_RUN");
 		KillFeed_SetKillIcon(npc.index, "bread_bite");
@@ -80,8 +95,9 @@ methodmap SeaRunner < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, SeaRunner_ClotThink);
+		func_NPCDeath[npc.index] = SeaRunner_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SeaRunner_OnTakeDamage;
+		func_NPCThink[npc.index] = SeaRunner_ClotThink;
 		
 		npc.m_flSpeed = data[0] ? 475.0 : 330.0;	// 1.9 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -128,12 +144,13 @@ public void SeaRunner_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -161,7 +178,7 @@ public void SeaRunner_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEARUNNER_ALT ? 41.0 : 32.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, npc.m_bElite ? 41.0 : 32.0, DMG_CLUB);
 						// 280 x 0.15
 						// 340 x 0.15
 					}
@@ -218,8 +235,6 @@ void SeaRunner_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeaRunner_ClotThink);
 }
 
 

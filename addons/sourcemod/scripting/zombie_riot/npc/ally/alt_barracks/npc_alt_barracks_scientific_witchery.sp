@@ -51,6 +51,21 @@ public void Barrack_Alt_Scientific_Witchery_MapStart()
 	Zero2(fl_trace_target_timeout);
 	
 	gLaser2 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Scientific Witchery");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_witch");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Barrack_Alt_Scientific_Witchery(client, vecPos, vecAng, ally);
 }
 
 methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
@@ -94,10 +109,11 @@ methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
 	{
 		Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(BarrackBody(client, vecPos, vecAng, "1300", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_crit.mdl"));
 		
-		i_NpcInternalId[npc.index] = ALT_BARRACK_SCIENTIFIC_WITCHERY;
 		i_NpcWeight[npc.index] = 1;
-		
-		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Scientific_Witchery_ClotThink);
+
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barrack_Alt_Scientific_Witchery_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Alt_Scientific_Witchery_ClotThink;
 
 		npc.m_flSpeed = 250.0;
 		
@@ -179,8 +195,9 @@ public void Barrack_Alt_Scientific_Witchery_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 
 			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
@@ -251,7 +268,6 @@ void Barrack_Alt_Scientific_Witchery_NPCDeath(int entity)
 {
 	Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, Barrack_Alt_Scientific_Witchery_ClotThink);
 	
 	SDKUnhook(npc.index, SDKHook_Think, Scientific_Witchery_TBB_Ability);
 	SDKUnhook(npc.index, SDKHook_Think, Scientific_Witchery_TBB_Ability_Two);
@@ -271,7 +287,7 @@ static float H_fl_current_vec[MAXENTITIES][H_SLICER_AMOUNT+2][3];
 static void Horizontal_Slicer(int client, float vecTarget[3], float Range)
 {
 	float Vec_offset[3]; Vec_offset = vecTarget;
-	float Npc_Vec[3]; Npc_Vec = WorldSpaceCenterOld(client);
+	float Npc_Vec[3]; WorldSpaceCenter(client, Npc_Vec);
 	
 	
 	H_fl_starting_vec[client] = Npc_Vec;
@@ -410,7 +426,7 @@ static float fl_current_vec[MAXENTITIES][3];
 static void Create_Laser_Hell(int client, float vecTarget[3])
 {
 	float Vec_offset[3]; Vec_offset = vecTarget;
-	float Npc_Vec[3]; Npc_Vec = WorldSpaceCenterOld(client);
+	float Npc_Vec[3]; WorldSpaceCenter(client, Npc_Vec);
 	
 	
 	fl_target_vec[client] = Vec_offset;

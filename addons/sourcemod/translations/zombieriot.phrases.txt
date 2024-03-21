@@ -111,34 +111,6 @@
 		"nl"		"Schild: {1}"
 		"chi"		"护甲: {1}"
 	}
-	"Wave"
-	{
-		"#format"	"{1:d},{2:d}"
-		"en"		"Wave: {1}-{2}"
-		"it"		"Ondata: {1}-{2}"
-		"ru"		"Волна: {1}-{2}"
-		"pl"		"Runda: {1}-{2}"
-		"es"		"Oleada: {1}-{2}"
-		"fr"		"Vague : {1}-{2}"
-		"de" 		"Welle : {1}-{2}"
-		"pt"		"Onda: {1}-{2}"
-		"nl"		"Golf: {1}-{2}"
-		"chi"		"波数: {1}-{2}"
-	}
-	"Zombies Left"
-	{
-		"#format"	"{1:d}"
-		"en"		"Zombies Left: {1}"
-		"it"		"Zombie Rimanenti: {1}"
-		"ru"		"Осталось зомби: {1}"
-		"pl"		"Nieumarłych pozostało: {1}"
-		"es"		"Zombies restantes: {1}"
-		"fr"		"Zombies Restants: {1}"
-		"de"		"Verbleibene Untote: {1}"
-		"pt"		"Zumbis Vivos: {1}"
-		"nl"		"Zombies over: {1}"
-		"chi"		"剩余僵尸: {1}"
-	}
 	"Medi-Kit Cooldown"
 	{
 		"#format"	"{1:.0f}"
@@ -1991,11 +1963,7 @@
 	}
 	"Press Button To Switch"
 	{
-		"en"		"Multiple Weapons: Press Inspect"
-		"ru"		"Много оружия: Нажмите клавишу осмотра оружия"
-		"pt"		"Multiplas Armas: Pressione o Botão de inspecionar"
-		"nl"		"Verschillende wapens: Druk op Inspectie"
-		"chi"       "该类型有多个武器:请按F切换"
+		"en"		"Multiple Weapons: Press Action Slot Key!"
 	}
 	"Cannot Build Here"
 	{
@@ -2270,12 +2238,7 @@
 	{
 		"en"		"Dont be on ladders too long or use them too much. you will receive this message every 0.5 seconds if you stay in it."
 	}
-	"Show Plugin Messages Hint"
-	{
-		"en"		"If you wish to see the wave counter in a better way, set ''cl_showpluginmessages'' to 1 in the console!"
-		"ru"		"Если вы хотите видеть счётчик волн в лучшем виде, установите «cl_showpluginmessages» на 1 в консоли!"
-		"chi"		"如果您希望以更好的方式查看回合波数计数器，请在控制台中输入“cl_showpluginmessages 1”!"
-	}
+
 	"Show Grigori Mute Hint Message"
 	{
 		"en"		"If you wish for Grigori to not half mute your game volume when he talks, set ''snd_ducktovolume'' to 1 in the console!"
@@ -2901,7 +2864,7 @@
 	}
 	"Pre Setup Cash Gain Hint"
 	{
-		"en"		"During setup, you gain half the cash from buildings, you will get this money back once the waves start!"
+		"en"		"During ready setup phases, you gain half the cash from buildings, it will be given to you once the waves start again."
 	}
 	"Extra Description"
 	{
@@ -3103,5 +3066,34 @@
 	"Evil hoe off"
 	{
 		"en" "Blood pact: Off"
+	}
+	"Tags & Author"
+	{
+		"en"		"Tags & Author"
+	}
+	"Created By"
+	{
+		"#format"	"{1:s}"
+		"en"		"{darkgrey}Created by: {community}{1}"
+	}
+	"NPCs By"
+	{
+		"#format"	"{1:s}"
+		"en"		"{darkgrey}NPCs by: {community}{1}"
+	}
+	"Format By"
+	{
+		"#format"	"{1:s}"
+		"en"		"{darkgrey}Format by: {community}{1}"
+	}
+	"Raidboss By"
+	{
+		"#format"	"{1:s}"
+		"en"		"{darkgrey}Raidboss by: {community}{1}"
+	}
+	"Now Playing Song"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"{darkgrey}Now Playing: {community}{1} {default}| {lightgreen}{2}"
 	}
 }

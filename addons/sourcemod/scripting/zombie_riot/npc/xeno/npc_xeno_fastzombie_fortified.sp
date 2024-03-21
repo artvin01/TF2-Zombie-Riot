@@ -65,6 +65,20 @@ public void XenoFortifiedFastZombie_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_PlayMeleeJumpSound));   i++) { PrecacheSound(g_PlayMeleeJumpSound[i]);   }
 	for (int i = 0; i < (sizeof(g_leap_scream));   i++) { PrecacheSound(g_leap_scream[i]);   }
 	for (int i = 0; i < (sizeof(g_leap_prepare));   i++) { PrecacheSound(g_leap_prepare[i]);   }
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Fortified Fast Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_fastzombie_fortified");
+	strcopy(data.Icon, sizeof(data.Icon), "norm_fast_zombie_forti");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoFortifiedFastZombie(client, vecPos, vecAng, ally);
 }
 
 methodmap XenoFortifiedFastZombie < CClotBody
@@ -183,7 +197,6 @@ methodmap XenoFortifiedFastZombie < CClotBody
 	{
 		XenoFortifiedFastZombie npc = view_as<XenoFortifiedFastZombie>(CClotBody(vecPos, vecAng, "models/zombie/fast.mdl", "1.15", "400", ally));
 		
-		i_NpcInternalId[npc.index] = XENO_FORTIFIED_FASTZOMBIE;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -201,7 +214,9 @@ methodmap XenoFortifiedFastZombie < CClotBody
 		
 		
 		
-		SDKHook(npc.index, SDKHook_Think, XenoFortifiedFastZombie_ClotThink);
+		func_NPCDeath[npc.index] = XenoFortifiedFastZombie_NPCDeath;
+		func_NPCThink[npc.index] = XenoFortifiedFastZombie_ClotThink;
+		func_NPCOnTakeDamage[npc.index] = XenoFortifiedFastZombie_OnTakeDamage;
 		
 		
 		
@@ -257,11 +272,12 @@ public void XenoFortifiedFastZombie_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);		
 		
-		if(npc.m_flJumpCooldown < GetGameTime(npc.index) && npc.m_flInJump < GetGameTime(npc.index) && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
+		if(npc.m_flJumpCooldown < GetGameTime(npc.index) && npc.m_flInJump < GetGameTime(npc.index) && flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)
 		{
 			int Enemy_I_See;
 			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
@@ -295,7 +311,7 @@ public void XenoFortifiedFastZombie_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}

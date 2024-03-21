@@ -19,6 +19,24 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/bow_shoot.wav"
 };
 
+void TidelinkedBishop_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Tidelinked Bishop");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_tidelinkedbishop");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_bishop");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return TidelinkedBishop(client, vecPos, vecAng, ally);
+}
+
 methodmap TidelinkedBishop < CClotBody
 {
 	public void PlayIdleSound()
@@ -46,7 +64,6 @@ methodmap TidelinkedBishop < CClotBody
 		SetVariantInt(6);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
-		i_NpcInternalId[npc.index] = TIDELINKED_BISHOP;
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_1");
 		KillFeed_SetKillIcon(npc.index, "huntsman");
@@ -54,8 +71,10 @@ methodmap TidelinkedBishop < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
-		
-		SDKHook(npc.index, SDKHook_Think, TidelinkedBishop_ClotThink);
+
+		func_NPCDeath[npc.index] = TidelinkedBishop_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = TidelinkedBishop_OnTakeDamage;
+		func_NPCThink[npc.index] = TidelinkedBishop_ClotThink;
 		
 		npc.m_flSpeed = 200.0;//100.0;	// 0.4 x 250
 		npc.m_flMeleeArmor = 1.25;
@@ -105,7 +124,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 5;
 		
-		int entity = Npc_Create(TIDELINKED_ARCHON, -1, pos, ang, GetTeam(npc.index));
+		int entity = NPC_CreateByName("npc_tidelinkedarchon", -1, pos, ang, GetTeam(npc.index));
 		if(entity > MaxClients)
 		{
 			i_TargetAlly[npc.index] = EntIndexToEntRef(entity);
@@ -167,8 +186,9 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec );
+		float distance = GetVectorDistance(vecTarget, npc_vec, true);
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -176,7 +196,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 				
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 900.0);
+				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 900.0, _, vecTarget);
 				npc.FaceTowards(vecTarget, 15000.0);
 
 				npc.PlayMeleeSound();
@@ -191,7 +211,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(entity, 100, 100, 255, 255);
 					
-					vecTarget = WorldSpaceCenterOld(entity);
+					WorldSpaceCenter(entity, vecTarget);
 					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "rockettrail_bubbles", 3.0);
 					SetParent(entity, f_ArrowTrailParticle[entity]);
 					f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
@@ -231,7 +251,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 		{
 			if(distance < npc.GetLeadRadius())
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget, _,_,vPredictedPos);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 
@@ -281,8 +301,6 @@ void TidelinkedBishop_NPCDeath(int entity)
 	TidelinkedBishop npc = view_as<TidelinkedBishop>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
-	
-	SDKUnhook(npc.index, SDKHook_Think, TidelinkedBishop_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

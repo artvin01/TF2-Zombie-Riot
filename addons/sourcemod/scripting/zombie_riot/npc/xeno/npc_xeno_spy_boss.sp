@@ -91,8 +91,21 @@ public void XenoSpyMainBoss_OnMapStart_NPC()
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno X10 Spy Main");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_spy_boss");
+	strcopy(data.Icon, sizeof(data.Icon), "spy_x10_main");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoSpyMainBoss(client, vecPos, vecAng, ally);
+}
 //should be alone only here!
 static int Allies_Alive;
 
@@ -210,7 +223,6 @@ methodmap XenoSpyMainBoss < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		i_NpcInternalId[npc.index] = XENO_SPY_MAIN_BOSS;
 		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -224,7 +236,11 @@ methodmap XenoSpyMainBoss < CClotBody
 		
 		
 		
-		SDKHook(npc.index, SDKHook_Think, XenoSpyMainBoss_ClotThink);	
+
+		func_NPCDeath[npc.index] = XenoSpyMainBoss_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoSpyMainBoss_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoSpyMainBoss_ClotThink;	
+			
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, XenoSpyMainBoss_ClotDamagedPost);
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -341,7 +357,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(Rogue_Mode())
+	if(Rogue_Mode() && GetTeam(npc.index) != TFTeam_Red)
 	{
 		if(Allies_Alive != 0)
 		{
@@ -430,8 +446,9 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 	
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if (npc.m_flReloadDelay < GetGameTime(npc.index) && flDistanceToTarget < 40000 || flDistanceToTarget > 90000 && npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime(npc.index))
 		{
 			if (!npc.m_bmovedelay)
@@ -439,7 +456,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 				npc.m_bmovedelay = true;
-				if(Rogue_Mode())
+				if(Rogue_Mode() && GetTeam(npc.index) != TFTeam_Red)
 				{
 					if(!npc.Anger)
 						npc.m_flSpeed = 310.0;
@@ -471,7 +488,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 				npc.m_bmovedelay_gun = true;
 					
-				if(Rogue_Mode())
+				if(Rogue_Mode() && GetTeam(npc.index) != TFTeam_Red)
 				{
 					if(!npc.Anger)
 						npc.m_flSpeed = 310.0;
@@ -502,7 +519,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 				
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 			
 			/*	int color[4];
 				color[0] = 255;
@@ -541,14 +558,15 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 			float vecDirShooting[3], vecRight[3], vecUp[3];
 			
 			vecTarget[2] += 15.0;
-			MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+			float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+			MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 			GetVectorAngles(vecDirShooting, vecDirShooting);
 			vecDirShooting[1] = eyePitch[1];
 			GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 			
 			float m_vecSrc[3];
 			
-			m_vecSrc = WorldSpaceCenterOld(npc.index);
+			WorldSpaceCenter(npc.index, m_vecSrc);
 			
 			float vecEnd[3];
 			vecEnd[0] = m_vecSrc[0] + vecDirShooting[0] * 9000; 
@@ -581,13 +599,14 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 			vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 			vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 			NormalizeVector(vecDir, vecDir);
-			if(Rogue_Mode())
+			float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
+			if(Rogue_Mode() && GetTeam(npc.index) != TFTeam_Red)
 			{
-				FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 30.0, 9000.0, DMG_BULLET, "bullet_tracer01_blue");
+				FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 30.0, 9000.0, DMG_BULLET, "bullet_tracer01_blue");
 			}
 			else
 			{
-				FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 60.0, 9000.0, DMG_BULLET, "bullet_tracer01_blue");
+				FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 60.0, 9000.0, DMG_BULLET, "bullet_tracer01_blue");
 			}
 			npc.PlayRangedSound();
 		}
@@ -595,7 +614,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 		{		
 			npc.FaceTowards(vecTarget, 20000.0);
 			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 			
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.3;
 			npc.m_iAttacksTillReload -= 1;
@@ -607,7 +626,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 				npc.m_iAttacksTillReload = 6;
 				npc.PlayRangedReloadSound();
 			}
-			if(Rogue_Mode())
+			if(Rogue_Mode() && GetTeam(npc.index) != TFTeam_Red)
 			{
 				npc.FireRocket(vPredictedPos, 30.0, 900.0);
 			}
@@ -784,7 +803,7 @@ public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflic
 		npc.m_flHalf_Life_Regen = false;
 		
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
-		if(Rogue_Mode())
+		if(Rogue_Mode() && GetTeam(npc.index) != TFTeam_Red)
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 ));
 			CreateTimer(0.1, XenoSpyMainBoss_Set_Spymain_HP, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
@@ -804,10 +823,10 @@ public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflic
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 				
-				int spawn_index = Npc_Create(XENO_SPY_TRICKSTABBER, -1, pos, ang, team);
+				int spawn_index = NPC_CreateByName("npc_xeno_spy_trickstabber", -1, pos, ang, team);
 				if(spawn_index > MaxClients)
 				{
-					Zombies_Currently_Still_Ongoing += 1;	// FIXME
+					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					XenoSpyMainBoss npc_minion = view_as<XenoSpyMainBoss>(spawn_index);
 					TeleportEntity(spawn_index, NULL_VECTOR, ang, NULL_VECTOR);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/10);
@@ -854,7 +873,6 @@ public void XenoSpyMainBoss_NPCDeath(int entity)
 	}
 	
 	
-	SDKUnhook(npc.index, SDKHook_Think, XenoSpyMainBoss_ClotThink);	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, XenoSpyMainBoss_ClotDamagedPost);
 
 	if(IsValidEntity(npc.m_iWearable1))

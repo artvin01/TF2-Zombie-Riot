@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
 #define SOUND_WAND_SHOT 	"weapons/capper_shoot.wav"
 #define SOUND_ZAP "misc/halloween/spell_lightning_ball_impact.wav"
 
@@ -117,12 +116,13 @@ public void Want_DefaultWandTouch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);

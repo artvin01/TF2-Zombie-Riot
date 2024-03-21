@@ -1154,8 +1154,7 @@
 	}
 	"First Class Squad Desc"
 	{
-		"en"	"{green}Alyx joins your adventure"
-		"ru"	"{green}Аликс присоединяется к вашему приключению"
+		"en"	"{green}Father Grigori will acompany you."
 	}
 	"Provoked Anger"
 	{
@@ -1590,7 +1589,7 @@
 	}
 	"Hand of Incredible Speeds Desc"
 	{
-		"en"	"Standing here, Jorato.\n{green}''Brawler'' and ''Single Pellet'' weapons gain +50%% firing speed and +50%% Faster Reload Speed."
+		"en"	"Standing here, Jorato.\n{green}''Brawler'' and ''Single Pellet'' weapons gain +25%% firing speed and +25%% Faster Reload Speed."
 	}
 	"Hand of Suprise"
 	{

@@ -93,8 +93,21 @@ void MedivalEagleWarrior_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Eagle Warrior");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_eagle_warrior");
+	strcopy(data.Icon, sizeof(data.Icon), "scout");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalEagleWarrior(client, vecPos, vecAng, ally);
+}
 methodmap MedivalEagleWarrior < CClotBody
 {
 	public void PlayIdleSound() {
@@ -171,8 +184,7 @@ methodmap MedivalEagleWarrior < CClotBody
 	{
 		MedivalEagleWarrior npc = view_as<MedivalEagleWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1200", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_EAGLE_WARRIOR;
+		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -188,7 +200,9 @@ methodmap MedivalEagleWarrior < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalEagleWarrior_ClotThink);
+		func_NPCDeath[npc.index] = MedivalEagleWarrior_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalEagleWarrior_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalEagleWarrior_ClotThink;
 	
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 //		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
@@ -267,15 +281,16 @@ public void MedivalEagleWarrior_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -294,7 +309,7 @@ public void MedivalEagleWarrior_ClotThink(int iNPC)
 			}
 	
 			//Target close enough to hit
-			if((flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
+			if((flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
 			{
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
@@ -383,9 +398,6 @@ public void MedivalEagleWarrior_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalEagleWarrior_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

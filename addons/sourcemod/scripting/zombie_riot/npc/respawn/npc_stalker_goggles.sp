@@ -9,8 +9,27 @@ void StalkerGoggles_OnMapStart()
 	PrecacheModel("models/bots/sniper/bot_sniper.mdl");
 	PrecacheSound("weapons/sniper_railgun_charged_shot_01.wav");
 	PrecacheSound("weapons/sniper_railgun_charged_shot_02.wav");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Spawned Blue Goggles");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stalker_goggles");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	PrecacheSoundCustom("#music/bluemelee.mp3");
 	PrecacheSoundCustom("#music/bluerange.wav");
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return StalkerGoggles(client, vecPos, vecAng, ally);
 }
 
 methodmap StalkerGoggles < StalkerShared
@@ -41,7 +60,6 @@ methodmap StalkerGoggles < StalkerShared
 	{
 		StalkerGoggles npc = view_as<StalkerGoggles>(CClotBody(vecPos, vecAng, "models/bots/sniper/bot_sniper.mdl", "1.0", "66666666", ally));
 		
-		i_NpcInternalId[npc.index] = STALKER_GOGGLES;
 		i_NpcWeight[npc.index] = 5;
 		fl_GetClosestTargetTimeTouch[npc.index] = 99999.9;
 		
@@ -57,7 +75,10 @@ methodmap StalkerGoggles < StalkerShared
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, StalkerGoggles_ClotThink);
+
+		func_NPCDeath[npc.index] = StalkerGoggles_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = StalkerGoggles_OnTakeDamage;
+		func_NPCThink[npc.index] = StalkerGoggles_ClotThink;
 		
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		Is_a_Medic[npc.index] = true;
@@ -251,7 +272,8 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			if(npc.m_iTarget > 0)
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -285,7 +307,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 
 		if(npc.m_bChaseAnger)
 		{
-			LastKnownPos = WorldSpaceCenterOld(npc.m_iTarget);
+			WorldSpaceCenter(npc.m_iTarget, LastKnownPos);
 			float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 
 			int state;
@@ -325,7 +347,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 						{
 							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 
-							float vecTarget[3]; vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 3500.0);
+							float vecTarget[3]; PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 3500.0, _,vecTarget);
 							npc.FaceTowards(vecTarget, 30000.0);
 							
 							npc.PlayRangedSound();
@@ -349,7 +371,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 						npc.StartPathing();
 						if(distance < npc.GetLeadRadius()) 
 						{
-							LastKnownPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+							PredictSubjectPosition(npc, npc.m_iTarget,_,_,LastKnownPos);
 							NPC_SetGoalVector(npc.index, LastKnownPos);
 						}
 						else
@@ -370,7 +392,8 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		else
 		{
 			// Stare at the target, confirm their real before chasing after
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 1000.0);
+			float Targ_Vec[3]; WorldSpaceCenter(npc.m_iTarget, Targ_Vec);
+			npc.FaceTowards(Targ_Vec, 1000.0);
 		}
 	}
 	else
@@ -383,7 +406,8 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		}
 
 		int state;
-		float distance = GetVectorDistance(LastKnownPos, WorldSpaceCenterOld(npc.index), true);
+		float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
+		float distance = GetVectorDistance(LastKnownPos, npc_vec, true);
 		if(npc.m_flDoingAnimation > gameTime)
 		{
 			state = -1;
@@ -579,9 +603,6 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 void StalkerGoggles_NPCDeath(int entity)
 {
 	StalkerGoggles npc = view_as<StalkerGoggles>(entity);
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, StalkerGoggles_ClotThink);
 
 	for(int i; i < 9; i++)
 	{

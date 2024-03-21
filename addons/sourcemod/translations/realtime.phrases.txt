@@ -202,15 +202,15 @@
 	}
 	"RTS Tooltip 1"
 	{
-		"en"		"TIP: With a combat unit, press A\nbefore right-clicking to make\nthem auto attack while moving"
+		"en"		"TIP: With a combat unit,\npress A before right-clicking\nto make them auto attack\nwhile moving"
 	}
 	"RTS Tooltip 2"
 	{
-		"en"		"TIP: With a combat unit, press S\nbefore right-clicking to make\nthem hold that position and don't move"
+		"en"		"TIP: With a combat unit,\npress S before right-clicking\nto make them hold that\nposition and don't move"
 	}
 	"RTS Tooltip 3"
 	{
-		"en"		"TIP: With a combat unit, press D\nbefore right-clicking to make\nthem patrol back and forth between two locations"
+		"en"		"TIP: With a combat unit,\npress D before right-clicking\nto make them patrol back\nand forth between two\nlocations"
 	}
 	"RTS Tooltip 4"
 	{
@@ -218,7 +218,7 @@
 	}
 	"RTS Tooltip 5"
 	{
-		"en"		"TIP: You can press drop item\nto delete a selected unit,\nhold crouch to delete all at once"
+		"en"		"TIP: You can press drop item\nto delete a selected unit,\nhold crouch to delete all\nat once"
 	}
 	"RTS Tooltip 6"
 	{
@@ -226,11 +226,11 @@
 	}
 	"RTS Tooltip 7"
 	{
-		"en"		"TIP: You can adjust your\ncamera with commands such as\n+moveup/down and special attack"
+		"en"		"TIP: You can adjust your\ncamera with commands such\nas +moveup/down and\nspecial attack"
 	}
 	"RTS Tooltip 8"
 	{
-		"en"		"TIP: Hold crouch and a number to\nset your selection to a control group,\nyou can later select this group\nby pressing the same number"
+		"en"		"TIP: Hold crouch and a\nnumber to set your selection\nto a control group, you\ncan later select this group\nby pressing the same number"
 	}
 	"Team Of"
 	{
@@ -246,6 +246,11 @@
 	{
 		"#format"	"{1:s}"
 		"en"		"Armor: {1}"
+	}
+	"Range Of"
+	{
+		"#format"	"{1:s}"
+		"en"		"Range: {1}"
 	}
 	"Damage Of"
 	{
@@ -265,5 +270,121 @@
 	{
 		"#format"	"{1:s}"
 		"en"		"Resource: {1}"
+	}
+	"Create Of"
+	{
+		"#format"	"{1:t}"
+		"en"		"Create {1}"
+	}
+	"Cancel Of"
+	{
+		"#format"	"{1:t}"
+		"en"		"Cancel {1}"
+	}
+	"Build Of"
+	{
+		"#format"	"{1:t}"
+		"en"		"Build {1}"
+	}
+	"Research Of"
+	{
+		"#format"	"{1:t}"
+		"en"		"Research {1}"
+	}
+	"Cancel All"
+	{
+		"en"		"Cancel All"
+	}
+	"Too many issued commands"
+	{
+		"en"		"Too many issued commands"
+	}
+	"Building queue is full"
+	{
+		"en"		"Building queue is full"
+	}
+	"Not enough supply"
+	{
+		"en"		"Not enough supply"
+	}
+	"At maximum supply"
+	{
+		"en"		"At maximum supply"
+	}
+	"Not enough resources"
+	{
+		"en"		"Not enough resources"
+	}
+	"Light"
+	{
+		"en"		"Light"
+	}
+	"Heavy"
+	{
+		"en"		"Heavy"
+	}
+	"Biological"
+	{
+		"en"		"Biological"
+	}
+	"Mechanical"
+	{
+		"en"		"Mechanical"
+	}
+	"Structure"
+	{
+		"en"		"Structure"
+	}
+	"Unique"
+	{
+		"en"		"Unique"
+	}
+	"Heroic"
+	{
+		"en"		"Heroic"
+	}
+	"Summoned"
+	{
+		"en"		"Summoned"
+	}
+	"Worker"
+	{
+		"en"		"Worker"
+	}
+	"Converted"
+	{
+		"en"		"Converted"
+	}
+	"Supply"
+	{
+		"en"		"Supply"
+	}
+	"Supply Short"
+	{
+		"en"		"S"
+	}
+	"Wood"
+	{
+		"en"		"Wood"
+	}
+	"Wood Short"
+	{
+		"en"		"W"
+	}
+	"Gold"
+	{
+		"en"		"Gold"
+	}
+	"Gold Short"
+	{
+		"en"		"G"
+	}
+	"Food"
+	{
+		"en"		"Food"
+	}
+	"Food Short"
+	{
+		"en"		"F"
 	}
 }

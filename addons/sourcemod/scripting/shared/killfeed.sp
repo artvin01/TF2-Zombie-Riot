@@ -172,6 +172,12 @@ int KillFeed_GetBotTeam(int client)
 	return ForceTeam[client];
 }
 
+void KillFeed_ForceClear()
+{
+	LowList.Clear();
+	HighList.Clear();
+}
+
 void KillFeed_SetBotTeam(int client, int team)
 {
 	int teamSet = team;
@@ -220,7 +226,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		
 		feed.userid = GetClientUserId(Bots[botNum]);
 		feed.victim_team = GetTeam(victim);
-		strcopy(feed.victim_name, sizeof(feed.victim_name), NPC_Names[i_NpcInternalId[victim]]);
+		NPC_GetNameById(i_NpcInternalId[victim], feed.victim_name, sizeof(feed.victim_name));
 		
 		botNum++;
 
@@ -281,7 +287,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 			
 			feed.attacker = GetClientUserId(Bots[botNum]);
 			feed.attacker_team = GetTeam(attacker);
-			strcopy(feed.attacker_name, sizeof(feed.attacker_name), NPC_Names[i_NpcInternalId[attacker]]);
+			NPC_GetNameById(i_NpcInternalId[attacker], feed.attacker_name, sizeof(feed.attacker_name));
 			
 			botNum++;
 		}
@@ -493,7 +499,7 @@ static void ShowNextFeed()
 			(!feed.attacker_name[0] || (feed.attacker_team == feedmain.attacker_team && StrEqual(feed.attacker_name, feedmain.attacker_name))));
 
 		// Need time to change the bot's display name
-		FeedTimer = CreateTimer(botUsed ? 0.2 : 0.0, KillFeed_ShowTimer, list, TIMER_DATA_HNDL_CLOSE);
+		FeedTimer = CreateTimer(botUsed ? 0.3 : 0.0, KillFeed_ShowTimer, list, TIMER_DATA_HNDL_CLOSE);
 	}
 }
 
@@ -535,7 +541,7 @@ public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
 		event.Cancel();
 	}
 
-	FeedTimer = CreateTimer(0.2, KillFeed_NextTimer);
+	FeedTimer = CreateTimer(0.3, KillFeed_NextTimer);
 	return Plugin_Continue;
 }
 

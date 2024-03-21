@@ -45,8 +45,21 @@ void AnarchyAbsoluteIncinirator_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Absolute Incinirator");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_absolute_incinirator");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_shotgun");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return AnarchyAbsoluteIncinirator(client, vecPos, vecAng, ally);
+}
 
 methodmap AnarchyAbsoluteIncinirator < CClotBody
 {
@@ -91,7 +104,6 @@ methodmap AnarchyAbsoluteIncinirator < CClotBody
 	{
 		AnarchyAbsoluteIncinirator npc = view_as<AnarchyAbsoluteIncinirator>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "7000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_ANARCHY_ABSOLUTE_INCINIRATOR;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -150,7 +162,10 @@ public void AnarchyAbsoluteIncinirator_ClotThink(int iNPC)
 	if(npc.m_bAllowBackWalking)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 150.0);
+		{
+			float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
+			npc.FaceTowards(WorldSpaceVec, 150.0);
+		}
 	}
 
 	if(npc.m_blPlayHurtAnimation)
@@ -174,9 +189,10 @@ public void AnarchyAbsoluteIncinirator_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int SetGoalVectorIndex = 0;
 		SetGoalVectorIndex = AnarchyAbsoluteInciniratorSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		switch(SetGoalVectorIndex)
@@ -188,7 +204,7 @@ public void AnarchyAbsoluteIncinirator_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3];
-					vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
@@ -200,7 +216,7 @@ public void AnarchyAbsoluteIncinirator_ClotThink(int iNPC)
 			{
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
-				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
 			}
 		}
@@ -263,7 +279,7 @@ int AnarchyAbsoluteInciniratorSelfDefense(AnarchyAbsoluteIncinirator npc, float 
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeHitSound();
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+				float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 				npc.FaceTowards(vecTarget, 20000.0);
 				Handle swingTrace;
 				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))

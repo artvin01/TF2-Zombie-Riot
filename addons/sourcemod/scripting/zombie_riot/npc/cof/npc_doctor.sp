@@ -30,8 +30,20 @@ void Doctor_MapStart()
 	PrecacheSoundCustom("cof/purnell/meleehit.mp3");
 
 	PrecacheModel("models/zombie_riot/cof/doctor_purnell.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "The Doctor");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_doctor_city");
+	strcopy(data.Icon, sizeof(data.Icon), "medic");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_COF;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
-
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Doctor(client, vecPos, vecAng, ally, data);
+}
 methodmap Doctor < CClotBody
 {
 	public void PlayHurtSound()
@@ -80,7 +92,7 @@ methodmap Doctor < CClotBody
 	public Doctor(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Doctor npc = view_as<Doctor>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/doctor_purnell.mdl", "1.15", data[0] == 'f' ? "200000" : "30000", ally, false, false, true));
-		i_NpcInternalId[npc.index] = THEDOCTOR;
+
 		i_NpcWeight[npc.index] = 3;
 		
 		npc.m_iState = -1;
@@ -99,8 +111,9 @@ methodmap Doctor < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
+		func_NPCDeath[npc.index] = Doctor_NPCDeath;
+		func_NPCThink[npc.index] = Doctor_ClotThink;
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Doctor_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, Doctor_ClotThink);
 		
 		npc.m_iInjuredLevel = 0;
 		npc.m_bThisNpcIsABoss = true;
@@ -173,7 +186,7 @@ public void Doctor_ClotThink(int iNPC)
 			if(!ally.m_bLostHalfHealth)
 			{
 				ally.m_bLostHalfHealth = true;
-				b_PernellBuff[target] = true;
+				f_PernellBuff[target] = GetGameTime() + 30.0;
 				npc.AddGesture("ACT_SIGNAL");
 			}
 		}
@@ -206,7 +219,8 @@ public void Doctor_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _, 1))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -237,8 +251,8 @@ public void Doctor_ClotThink(int iNPC)
 	{
 		if(npc.m_iTarget > 0)	// We have a target
 		{
-			float vecPos[3]; vecPos = WorldSpaceCenterOld(npc.index);
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float vecPos[3]; WorldSpaceCenter(npc.index, vecPos );
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 			
 			float distance = GetVectorDistance(vecTarget, vecPos, true);
 			if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)	// Close at any time: Melee
@@ -280,7 +294,7 @@ public void Doctor_ClotThink(int iNPC)
 							npc.m_flNextRangedAttack = gameTime + 1.0;
 							npc.m_iAttacksTillReload--;
 							
-							vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 700.0);
+							PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 700.0,_,vecTarget);
 							npc.FireRocket(vecTarget, 80.0, 700.0, "models/weapons/w_bullet.mdl", 2.0);
 							
 							npc.PlayShootSound();
@@ -371,7 +385,7 @@ public void Doctor_ClotThink(int iNPC)
 			if(!npc.m_flRangedSpecialDelay)	// Reload anyways timer
 				npc.m_flRangedSpecialDelay = gameTime + 4.0;
 			
-			float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+			float vBackoffPos[3]; BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
 			NPC_SetGoalVector(npc.index, vBackoffPos);
 			
 			if(!npc.m_bPathing)
@@ -412,7 +426,6 @@ public void Doctor_NPCDeath(int entity)
 	Doctor npc = view_as<Doctor>(entity);
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Doctor_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_Think, Doctor_ClotThink);
 	
 	NPC_StopPathing(npc.index);
 	npc.m_bPathing = false;

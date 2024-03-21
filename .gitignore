@@ -4,12 +4,12 @@
 *.inc
 *.vscode
 *.jpg
-*.png
 *.code-workspace
+mynpcs/
 [Cc]compiled/
 [Dd]esktop.ini
 [Tt]humbs.db
 !CBaseAnimatingOverlay.inc
 !PathFollower.inc
 !PathFollower_Nav.inc
-!textstore.inc
+!npc_framework.inc

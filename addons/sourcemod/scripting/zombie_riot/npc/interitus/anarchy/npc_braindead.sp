@@ -43,8 +43,21 @@ void AnarchyBraindead_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_ReloadSound)); i++) { PrecacheSound(g_ReloadSound[i]); }
 	PrecacheModel("models/player/sniper.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Braindead");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_braindead");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return AnarchyBraindead(client, vecPos, vecAng, ally);
+}
 
 methodmap AnarchyBraindead < CClotBody
 {
@@ -87,7 +100,6 @@ methodmap AnarchyBraindead < CClotBody
 	{
 		AnarchyBraindead npc = view_as<AnarchyBraindead>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "7000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_ANARCHY_BRAINDEAD;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -189,13 +201,14 @@ public void AnarchyBraindead_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -268,9 +281,10 @@ void AnarchyBraindeadSelfDefense(AnarchyBraindead npc, float gameTime)
 		}
 		return;
 	}
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+	float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.0))
 	{
 		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);

@@ -84,6 +84,7 @@ static const char g_WarCry[][] = {
 };
 
 static float f_GlobalSoundCD;
+static int NPCId;
 
 void MedivalHussar_OnMapStart_NPC()
 {
@@ -97,8 +98,21 @@ void MedivalHussar_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_WarCry));   i++) { PrecacheSound(g_WarCry[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	f_GlobalSoundCD = 0.0;
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Hussar");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_hussar");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_backup");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalHussar(client, vecPos, vecAng, ally);
+}
 static int i_ClosestAlly[MAXENTITIES];
 static float i_ClosestAllyCD[MAXENTITIES];
 static int i_ClosestAllyTarget[MAXENTITIES];
@@ -169,8 +183,7 @@ methodmap MedivalHussar < CClotBody
 	{
 		MedivalHussar npc = view_as<MedivalHussar>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "75000", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_HUSSAR;
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -186,7 +199,9 @@ methodmap MedivalHussar < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalHussar_ClotThink);
+		func_NPCDeath[npc.index] = MedivalHussar_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalHussar_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalHussar_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 350.0;
@@ -289,14 +304,15 @@ public void MedivalHussar_ClotThink(int iNPC)
 		{
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+				float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 					
 				//Predict their pos.
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+					float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
@@ -328,14 +344,15 @@ public void MedivalHussar_ClotThink(int iNPC)
 			}
 			if(IsValidEnemy(npc.index, i_ClosestAllyTarget[npc.index]))
 			{
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(i_ClosestAllyTarget[npc.index]);
+				float vecTarget[3]; WorldSpaceCenter(i_ClosestAllyTarget[npc.index], vecTarget );
 				
-				flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+				flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 					
 				//Predict their pos.
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, i_ClosestAllyTarget[npc.index]);
+					float vPredictedPos[3];  PredictSubjectPosition(npc, i_ClosestAllyTarget[npc.index],_,_,vPredictedPos);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
@@ -353,7 +370,9 @@ public void MedivalHussar_ClotThink(int iNPC)
 			}
 			else
 			{
-				flDistanceToTarget = GetVectorDistance(WorldSpaceCenterOld(i_ClosestAlly[npc.index]), WorldSpaceCenterOld(npc.index), true);
+				float WorldSpaceVec[3]; WorldSpaceCenter(i_ClosestAlly[npc.index], WorldSpaceVec);
+				float WorldSpaceVec2[3]; WorldSpaceCenter(npc.index, WorldSpaceVec2);
+				flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
 				if(flDistanceToTarget < (125.0* 125.0) && Can_I_See_Ally(npc.index, i_ClosestAlly[npc.index])) //make sure we can also see them for no unfair bs
 				{
 					if(npc.m_iChanged_WalkCycle != 5)
@@ -406,7 +425,7 @@ void HussarAOEBuff(MedivalHussar npc, float gameTime, bool mute = false)
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
 					if(GetVectorDistance(pos1, pos2, true) < (HUSSAR_BUFF_MAXRANGE * HUSSAR_BUFF_MAXRANGE))
 					{
-						if(i_NpcInternalId[entitycount] != MEDIVAL_HUSSAR) //Hussars cannot buff eachother.
+						if(i_NpcInternalId[entitycount] != NPCId) //Hussars cannot buff eachother.
 						{
 							f_HussarBuff[entitycount] = GetGameTime() + 5.0; //allow buffing of players too if on red.
 							//Buff this entity.
@@ -475,7 +494,8 @@ void HussarSelfDefense(MedivalHussar npc, float gameTime)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 0)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -514,9 +534,10 @@ void HussarSelfDefense(MedivalHussar npc, float gameTime)
 	{
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex)) 
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 			{
@@ -574,9 +595,6 @@ public void MedivalHussar_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalHussar_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

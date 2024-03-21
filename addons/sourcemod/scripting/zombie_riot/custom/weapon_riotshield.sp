@@ -388,10 +388,20 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 	if ((yawOffset >= MINYAW_RAID_SHIELD && yawOffset <= MAXYAW_RAID_SHIELD) || BlockAnyways)
 	{
 		float resist = (b_thisNpcIsARaid[attacker] || b_thisNpcIsABoss[attacker]) ? 0.65 : 0.45;
-		int halfArmor = MaxArmorCalculation(Armor_Level[victim], victim, 0.5);
-		if(Armor_Charge[victim] < halfArmor)
+		int HalfarmorValue = MaxArmorCalculation(Armor_Level[victim], victim, 0.5);
+		if(Armor_Charge[victim] < HalfarmorValue)
 		{
-			resist *= float(Armor_Charge[victim]) / float(halfArmor);
+			float ResistLeft = float(Armor_Charge[victim]) / float(HalfarmorValue);
+			//invert resistance.
+			resist *= -1.0;
+			resist += 1.0;
+			//do calcs
+			resist *= ResistLeft;
+
+			//invert it again.
+			resist *= -1.0;
+			resist += 1.0;
+
 		}
 
 		damage *= resist;

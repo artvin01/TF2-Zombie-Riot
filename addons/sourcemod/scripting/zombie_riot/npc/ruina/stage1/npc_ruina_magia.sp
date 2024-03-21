@@ -53,15 +53,28 @@ static char g_TeleportSounds[][] = {
 
 void Magia_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);  			}
+
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_TeleportSounds);
+
 	PrecacheModel("models/player/medic.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Magia");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_magia");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Magia(client, vecPos, vecAng, ally);
 }
 
 methodmap Magia < CClotBody
@@ -149,7 +162,6 @@ methodmap Magia < CClotBody
 	{
 		Magia npc = view_as<Magia>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_MAGIA;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -171,10 +183,10 @@ methodmap Magia < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
-		
-		
-		SDKHook(npc.index, SDKHook_Think, Magia_ClotThink);
+
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -210,7 +222,7 @@ methodmap Magia < CClotBody
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
-		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
 		
 		Magia_Create_Hand_Crest(npc.index);
 		
@@ -222,7 +234,7 @@ methodmap Magia < CClotBody
 
 //TODO 
 //Rewrite
-public void Magia_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Magia npc = view_as<Magia>(iNPC);
 	
@@ -232,7 +244,7 @@ public void Magia_ClotThink(int iNPC)
 		return;
 	}
 	
-	Ruina_Add_Battery(npc.index, 0.75);
+	
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -252,6 +264,8 @@ public void Magia_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
+	Ruina_Add_Battery(npc.index, 0.75);
+
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
 
@@ -270,9 +284,10 @@ public void Magia_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		if(flDistanceToTarget < 100000)
 		{
@@ -285,23 +300,27 @@ public void Magia_ClotThink(int iNPC)
 				if(flDistanceToTarget < (75000))
 				{
 					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
+					npc.m_bAllowBackWalking=true;
 				}
 				else
 				{
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
+					npc.m_bAllowBackWalking=false;
 				}
 			}
 			else
 			{
 				npc.StartPathing();
 				npc.m_bPathing = true;
+				npc.m_bAllowBackWalking=false;
 			}		
 		}
 		else
 		{
 			npc.StartPathing();
 			npc.m_bPathing = true;
+			npc.m_bAllowBackWalking=false;
 		}
 			
 		//Target close enough to hit
@@ -328,7 +347,7 @@ public void Magia_ClotThink(int iNPC)
 						
 					float projectile_speed = 1000.0;
 					float target_vec[3];
-					target_vec = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
+					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 		
 					npc.FireParticleRocket(target_vec, 50.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
 						
@@ -458,14 +477,16 @@ static void Delete_Hand_Crest(int client)
 	}
 }
 
-public Action Magia_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Magia npc = view_as<Magia>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	fl_ruina_battery[npc.index] += damage;	//turn damage taken into energy
+	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -476,17 +497,18 @@ public Action Magia_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 	return Plugin_Changed;
 }
 
-public void Magia_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Magia npc = view_as<Magia>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
+
+	Ruina_NPCDeath_Override(entity);
 	
 	Delete_Hand_Crest(entity);
-	
-	SDKUnhook(npc.index, SDKHook_Think, Magia_ClotThink);
+
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);

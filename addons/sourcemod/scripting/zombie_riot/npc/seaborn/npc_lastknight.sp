@@ -37,6 +37,24 @@ static const char g_MeleeAttackSounds[][] =
 
 static int PeaceKnight;
 
+void LastKnight_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "The Last Knight");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_lastknight");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_lastknight");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return LastKnight(client, vecPos, vecAng, ally, data);
+}
+
 methodmap LastKnight < CClotBody
 {
 	public void PlayIdleSound()
@@ -66,12 +84,14 @@ methodmap LastKnight < CClotBody
 	
 	public LastKnight(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		if(data[0] == 'R' || data[0] == 'F')
+		if(data[0] == 'N')
 		{
+			// Normal
 			PeaceKnight = -1;
 		}
-		else if(data[0])
+		else if(data[0] == 'F')
 		{
+			// Freeplay
 			PeaceKnight = 0;
 		}
 		else if(PeaceKnight > 0)
@@ -85,7 +105,6 @@ methodmap LastKnight < CClotBody
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = LASTKNIGHT;
 		i_NpcWeight[npc.index] = 5;
 		npc.SetActivity("ACT_LAST_KNIGHT_WALK");
 		KillFeed_SetKillIcon(npc.index, "spy_cicle");
@@ -94,7 +113,9 @@ methodmap LastKnight < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		SDKHook(npc.index, SDKHook_Think, LastKnight_ClotThink);
+		func_NPCDeath[npc.index] = LastKnight_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = LastKnight_OnTakeDamage;
+		func_NPCThink[npc.index] = LastKnight_ClotThink;
 		
 		npc.m_flSpeed = 150.0;	// 0.6 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -119,11 +140,19 @@ methodmap LastKnight < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 		vecMe[2] += 100.0;
 
 		npc.m_iWearable5 = ParticleEffectAt(vecMe, "powerup_icon_reflect", -1.0);
 		SetParent(npc.index, npc.m_iWearable5);
+
+		if(data[1] && ally != TFTeam_Red && !IsValidEntity(RaidBossActive))
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime() + 9000.0;
+			RaidModeScaling = 0.5;
+			RaidAllowsBuildings = true;
+		}
 		
 		return npc;
 	}
@@ -225,7 +254,7 @@ public void LastKnight_ClotThink(int iNPC)
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
-				int ally = Npc_Create(BARRACK_LASTKNIGHT, owner, pos, ang, TFTeam_Red);
+				int ally = NPC_CreateByName("npc_barrack_lastknight", owner, pos, ang, TFTeam_Red);
 				view_as<BarrackBody>(ally).BonusDamageBonus = 1.0;
 				view_as<BarrackBody>(ally).BonusFireRate = 1.0;
 				view_as<BarrackBody>(ally).m_iSupplyCount = 0;
@@ -247,7 +276,7 @@ public void LastKnight_ClotThink(int iNPC)
 		}
 
 		// Won't attack runners, find players
-		if(npc.m_iTarget < 1 || i_NpcInternalId[npc.m_iTarget] == CITIZEN_RUNNER)
+		if(npc.m_iTarget < 1)
 			npc.m_iTarget = GetClosestTarget(npc.index, npc.m_iPhase == 2, _, false, true);
 	}
 
@@ -259,8 +288,9 @@ public void LastKnight_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -352,7 +382,7 @@ public void LastKnight_ClotThink(int iNPC)
 		{
 			if(distance < npc.GetLeadRadius())
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 
@@ -371,7 +401,7 @@ public void LastKnight_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon)
+void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	LastKnight npc = view_as<LastKnight>(victim);
 
@@ -397,7 +427,11 @@ void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon
 		case 0:
 		{
 			if(ratio < 3)
+			{
 				npc.m_iPhase = 1;
+				if(RaidBossActive == EntRefToEntIndex(npc.index))
+					RaidModeScaling = 0.75;
+			}
 		}
 		case 1:
 		{
@@ -409,6 +443,9 @@ void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon
 				npc.AddGesture("ACT_LAST_KNIGHT_REVIVE");
 				npc.m_flNextThinkTime = gameTime + 8.3;
 				npc.StopPathing();
+
+				if(RaidBossActive == EntRefToEntIndex(npc.index))
+					RaidModeScaling = 1.0;
 			}
 		}
 	}
@@ -474,8 +511,6 @@ void LastKnight_NPCDeath(int entity)
 	if(!npc.m_bGib && !npc.m_bDissapearOnDeath)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_Think, LastKnight_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 

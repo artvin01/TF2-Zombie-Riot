@@ -138,13 +138,8 @@ enum struct Floor
 	char ArtifactKey[64];
 	int RoomCount;
 
-	char MusicNormal[PLATFORM_MAX_PATH];
-	int TimeNormal;
-	bool CustomNormal;
-
-	char MusicCurse[PLATFORM_MAX_PATH];
-	int TimeCurse;
-	bool CustomCurse;
+	MusicEnum MusicNormal;
+	MusicEnum MusicCurse;
 
 	ArrayList Encounters;
 	ArrayList Finals;
@@ -163,35 +158,8 @@ enum struct Floor
 		kv.GetString("skyname", this.Skyname, 64);
 		kv.GetString("key", this.ArtifactKey, 64);
 
-		kv.GetString("normal_path", this.MusicNormal, PLATFORM_MAX_PATH);
-		this.TimeNormal = kv.GetNum("normal_time");
-		this.CustomNormal = view_as<bool>(kv.GetNum("normal_download"));
-		if(this.MusicNormal[0])
-		{
-			if(this.CustomNormal)
-			{
-				PrecacheSoundCustom(this.MusicNormal);
-			}
-			else
-			{
-				PrecacheSound(this.MusicNormal);
-			}
-		}
-
-		kv.GetString("curse_path", this.MusicCurse, PLATFORM_MAX_PATH);
-		this.TimeCurse = kv.GetNum("curse_time");
-		this.CustomCurse = view_as<bool>(kv.GetNum("curse_download"));
-		if(this.MusicCurse[0])
-		{
-			if(this.CustomCurse)
-			{
-				PrecacheSoundCustom(this.MusicCurse);
-			}
-			else
-			{
-				PrecacheSound(this.MusicCurse);
-			}
-		}
+		this.MusicNormal.SetupKv("normal_music", kv);
+		this.MusicCurse.SetupKv("curse_music", kv);
 
 		Stage stage;
 
@@ -247,7 +215,14 @@ enum
 	State_Stage
 }
 
+enum
+{
+	BobChaos = 0,
+	BlueParadox = 1
+}
+
 static bool InRogueMode;
+static int RogueTheme;
 
 static ArrayList Voting;
 static float VoteEndTime;
@@ -274,6 +249,7 @@ static int CurrentIngots;
 static int BonusLives;
 static int BattleIngots;
 static bool RequiredBattle;
+static int CurrentChaos;
 
 static int CurseOne = -1;
 static int CurseTwo = -1;
@@ -363,8 +339,10 @@ bool Rogue_NoDiscount()
 
 void Rogue_MapStart()
 {
+	RogueTheme = 0;
 	InRogueMode = false;
 	Zero(f_ProvokedAngerCD);
+	Rogue_Paradox_MapStart();
 }
 
 void Rogue_SetupVote(KeyValues kv)
@@ -393,6 +371,8 @@ void Rogue_SetupVote(KeyValues kv)
 
 	kv.Rewind();
 	kv.JumpToKey("Rogue");
+
+	RogueTheme = kv.GetNum("roguestyle");
 
 	Floor floor;
 
@@ -473,13 +453,14 @@ void Rogue_SetupVote(KeyValues kv)
 
 	if(kv.JumpToKey("CustomSounds"))
 	{
+		char buffer[PLATFORM_MAX_PATH];
 		if(kv.GotoFirstSubKey(false))
 		{
 			do
 			{
-				kv.GetSectionName(floor.MusicNormal, sizeof(floor.MusicNormal));
-				if(floor.MusicNormal[0])
-					PrecacheSoundCustom(floor.MusicNormal, _, 15);
+				kv.GetSectionName(buffer, sizeof(buffer));
+				if(buffer[0])
+					PrecacheSoundCustom(buffer, _, 15);
 			}
 			while(kv.GotoNextKey(false));
 
@@ -693,6 +674,7 @@ void Rogue_RoundEnd()
 	delete CurrentExclude;
 	delete CurrentMissed;
 	CurrentIngots = 0;
+	CurrentChaos = 0;
 	BonusLives = 0;
 
 	if(CurrentCollection)
@@ -783,6 +765,7 @@ public Action Rogue_EndVote(Handle timer, float time)
 			{
 				Rogue_GiveNamedArtifact(vote.Name);
 				strcopy(StartingItem, sizeof(StartingItem), vote.Name);
+				Waves_SetReadyStatus(1);
 			}
 			else
 			{
@@ -800,7 +783,7 @@ public Action Rogue_RoundStartTimer(Handle timer)
 {
 	ProgressTimer = null;
 	
-	if(!Voting && !CvarNoRoundStart.BoolValue)
+	if(!Voting && !CvarNoRoundStart.BoolValue && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -812,7 +795,7 @@ public Action Rogue_RoundStartTimer(Handle timer)
 		}
 	}
 
-	ProgressTimer = CreateTimer(10.0, Rogue_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	ProgressTimer = CreateTimer(1.0, Rogue_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 	return Plugin_Stop;
 }
 
@@ -1064,34 +1047,7 @@ void Rogue_NextProgress()
 
 				if(victory)	// All the floors are done
 				{
-					for(int client = 1; client <= MaxClients; client++)
-					{
-						if(!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client))
-						{
-							Music_Stop_All(client);
-							SetMusicTimer(client, GetTime() + 33);
-							SendConVarValue(client, sv_cheats, "1");
-						}
-					}
-					ResetReplications();
-
-					cvarTimeScale.SetFloat(0.1);
-					CreateTimer(0.5, SetTimeBack);
-					
-					char_MusicString1[0] = 0;
-					char_MusicString2[0] = 0;
-					char_RaidMusicSpecial1[0] = 0;
-
-					CurrentFloor = 0;
-
-					EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
-
-					int entity = CreateEntityByName("game_round_win"); 
-					DispatchKeyValue(entity, "force_map_reset", "1");
-					SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
-					DispatchSpawn(entity);
-					AcceptEntityInput(entity, "RoundWin");
-					RemoveAllCustomMusic();
+					ForcePlayerWin();
 				}
 				else
 				{
@@ -1101,6 +1057,7 @@ void Rogue_NextProgress()
 
 					strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), floor.Name);
 					strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), floor.Name);
+					WavesUpdateDifficultyName();
 
 					bool cursed;
 					if(!(GetURandomInt() % 5))
@@ -1170,11 +1127,9 @@ void Rogue_NextProgress()
 
 					if(cursed)
 					{
-						strcopy(char_MusicString1, sizeof(char_MusicString1), "misc/halloween/gotohell.wav");
-						char_MusicString2[0] = 0;
-						char_RaidMusicSpecial1[0] = 0;
-						i_MusicLength1 = 9;
-						b_MusicCustom1 = false;
+						RemoveAllCustomMusic();
+						strcopy(MusicString1.Path, sizeof(MusicString1.Path), "misc/halloween/gotohell.wav");
+						MusicString1.Time = 9;
 					}
 					else
 					{
@@ -1254,8 +1209,8 @@ void Rogue_NextProgress()
 
 					TeleportToSpawn();
 
-					char_MusicString2[0] = 0;
-					char_RaidMusicSpecial1[0] = 0;
+					//MusicString2.Clear();
+					//RaidMusicSpecial1.Clear();
 				}
 				else	// We somehow ran out of normal rooms
 				{
@@ -1272,12 +1227,14 @@ void Rogue_NextProgress()
 			Rogue_NextProgress();
 		}
 	}
+
+	Waves_UpdateMvMStats();
 }
 
 static void SetFloorMusic(const Floor floor, bool stop)
 {
 	bool curse = CurseOne != -1 || CurseTwo != -1;
-	if(char_RaidMusicSpecial1[0] || !StrEqual(char_MusicString1, curse ? floor.MusicCurse : floor.MusicNormal))
+	if(RaidMusicSpecial1.Path[0] || !StrEqual(MusicString1.Path, curse ? floor.MusicCurse.Path : floor.MusicNormal.Path))
 	{
 		if(stop)
 		{
@@ -1291,20 +1248,15 @@ static void SetFloorMusic(const Floor floor, bool stop)
 			}
 		}
 
-		char_MusicString2[0] = 0;
-		char_RaidMusicSpecial1[0] = 0;
+		RemoveAllCustomMusic();
 
 		if(curse)
 		{
-			strcopy(char_MusicString1, sizeof(char_MusicString1), floor.MusicCurse);
-			i_MusicLength1 = floor.TimeCurse;
-			b_MusicCustom1 = floor.CustomCurse;
+			MusicString1 = floor.MusicCurse;
 		}
 		else
 		{
-			strcopy(char_MusicString1, sizeof(char_MusicString1), floor.MusicNormal);
-			i_MusicLength1 = floor.TimeNormal;
-			b_MusicCustom1 = floor.CustomNormal;
+			MusicString1 = floor.MusicNormal;
 		}
 	}
 }
@@ -1441,6 +1393,7 @@ static void SetNextStage(int id, bool type, const Stage stage, float time = 10.0
 
 	strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), stage.Name);
 	strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), stage.Name);
+	WavesUpdateDifficultyName();
 	if(stage.WaveSet[0])	// If a battle, give map over view for 10 seconds
 	{
 		GameState = State_Trans;
@@ -1451,6 +1404,8 @@ static void SetNextStage(int id, bool type, const Stage stage, float time = 10.0
 	{
 		StartStage(stage);
 	}
+
+	Waves_UpdateMvMStats();
 }
 
 void Rogue_StartThisBattle(float time = 10.0)
@@ -1493,9 +1448,7 @@ static void StartBattle(const Stage stage, float time = 3.0)
 		}
 	}
 
-	char_MusicString1[0] = 0;
-	char_MusicString2[0] = 0;
-	char_RaidMusicSpecial1[0] = 0;
+	RemoveAllCustomMusic();
 
 	Rogue_Curse_BattleStart();
 	WaveStart_SubWaveStart(GetGameTime());
@@ -1962,6 +1915,12 @@ void Rogue_EnemySpawned(int entity)
 	}
 }
 
+void Rogue_ReviveSpeed(int &amount)
+{
+	Rogue_StoryTeller_ReviveSpeed(amount);
+	Rogue_Paradox_ReviveSpeed(amount);
+}
+
 int Rogue_GetRandomArtfiact(Artifact artifact, bool blacklist, int forcePrice = -1)
 {
 	if(!CurrentMissed)
@@ -2138,6 +2097,7 @@ int Rogue_GetIngots()
 void Rogue_AddIngots(int amount)
 {
 	CurrentIngots += amount;
+	Waves_UpdateMvMStats();
 }
 
 void Rogue_SetBattleIngots(int amount)
@@ -2158,6 +2118,18 @@ stock int Rogue_GetBonusLife()
 void Rogue_AddBonusLife(int amount)
 {
 	BonusLives += amount;
+	Waves_UpdateMvMStats();
+}
+
+stock int Rogue_GetChaos()
+{
+	return CurrentChaos;
+}
+
+stock void Rogue_AddChaos(int amount)
+{
+	CurrentChaos += amount;
+	Waves_UpdateMvMStats();
 }
 
 bool Rogue_InSetup()	// Waves_InSetup()
@@ -2200,6 +2172,7 @@ int Rogue_GetRoundScale()
 void Rogue_AddExtraStage(int count)
 {
 	ExtraStageCount += count;
+	Waves_UpdateMvMStats();
 }
 
 void Rogue_SetRequiredBattle(bool value)
@@ -2230,6 +2203,63 @@ public void Rogue_Vote_NextStage(const Vote vote)
 	}
 
 	SetNextStage(id, false, stage);
+}
+
+bool Rogue_UpdateMvMStats(int mvm, int m_currentWaveStats, int m_runningTotalWaveStats)
+{
+	if(!Rogue_Mode() || !Rogue_InSetup())
+		return false;
+	
+	int objective = FindEntityByClassname(-1, "tf_objective_resource");
+	if(objective != -1)
+	{
+		SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", 0);
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", 0);
+
+		Floor floor;
+		Floors.GetArray(CurrentFloor, floor);
+
+		int maxRooms = floor.RoomCount + ExtraStageCount;
+
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentCount + 1);
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", maxRooms + 2);
+
+		for(int i; i < 24; i++)
+		{
+			switch(i)
+			{
+				case 0:
+				{
+					Waves_SetWaveClass(objective, i, BonusLives, "medic", MVM_CLASS_FLAG_MINIBOSS, true);
+					continue;
+				}
+				case 1:
+				{
+					Waves_SetWaveClass(objective, i, CurrentIngots, "rogue_ingots", MVM_CLASS_FLAG_NORMAL, true);
+					continue;
+				}
+				case 2:
+				{
+					if(RogueTheme == BlueParadox)
+					{
+						Waves_SetWaveClass(objective, i, CurrentChaos, "robo_extremethreat", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+						continue;
+					}
+				}
+			}
+
+			Waves_SetWaveClass(objective, i);
+		}
+	}
+
+	SetEntData(mvm, m_currentWaveStats + 4, 0, 4, true);	// nCreditsDropped
+	SetEntData(mvm, m_currentWaveStats + 8, 0, 4, true);	// nCreditsAcquired
+	SetEntData(mvm, m_currentWaveStats + 12, 0, 4, true);	// nCreditsBonus
+
+	SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
+	SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
+	SetEntData(mvm, m_runningTotalWaveStats + 12, GlobalExtraCash, 4, true);	// nCreditsBonus
+	return true;
 }
 
 //thanks to mikusch for showing me this.
@@ -2343,3 +2373,5 @@ bool IS_MusicReleasingRadio()
 #include "roguelike/shield_items.sp"
 #include "roguelike/on_ability_use.sp"
 #include "roguelike/hand_of_elder_mages.sp"
+
+#include "roguelike/paradox_theme.sp"

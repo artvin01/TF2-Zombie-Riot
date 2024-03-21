@@ -37,6 +37,24 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/machete_swing.wav",
 };
 
+void AegirOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Aegir");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aegir");
+	strcopy(data.Icon, sizeof(data.Icon), "pyro");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Aegir(client, vecPos, vecAng, ally);
+}
+
 methodmap Aegir < CClotBody
 {
 	public void PlayIdleSound()
@@ -68,7 +86,6 @@ methodmap Aegir < CClotBody
 	{
 		Aegir npc = view_as<Aegir>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "35000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_PYRO;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		KillFeed_SetKillIcon(npc.index, "annihilator");
@@ -145,12 +162,13 @@ static void ClotThink(int iNPC)
 
 	if(target > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, target);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -179,7 +197,7 @@ static void ClotThink(int iNPC)
 						
 						if(target <= MaxClients && (Armor_Charge[target] < 0 || TF2_IsPlayerInCondition(target, TFCond_Milked) || TF2_IsPlayerInCondition(target, TFCond_Jarated)))
 						{
-							damage *= 6.0;
+							damage *= Rogue_Paradox_RedMoon() ? 60.0 : 6.0;
 						}
 
 						npc.PlayMeleeHitSound();
@@ -191,7 +209,7 @@ static void ClotThink(int iNPC)
 			}
 		}
 
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25) && npc.m_flNextMeleeAttack < gameTime)
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			target = Can_I_See_Enemy(npc.index, target);
 			if(IsValidEnemy(npc.index, target))

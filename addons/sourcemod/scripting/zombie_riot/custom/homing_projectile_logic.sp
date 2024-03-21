@@ -9,10 +9,13 @@ static float RWI_RocketSpeed[MAXENTITIES];
 static bool RWI_AlterRocketActualAngle[MAXENTITIES];
 static float RWI_RocketRotation[MAXENTITIES][3];
 
-float[] GetRocketAngles(int entity)
+#if defined ZR
+void GetRocketAngles(int entity, float angles[3])
 {
-	return RWI_RocketRotation[entity];
+	angles = RWI_RocketRotation[entity];
 }
+#endif
+
 //Credits: Me (artvin) for rewriting it abit so its easier to read
 // Sarysa (sarysa pub 1 plugin)
 void Initiate_HomingProjectile(int projectile, int owner, float lockonAngleMax, float homingaSec, bool LockOnlyOnce, bool changeAngles, float AnglesInitiate[3], int initialTarget = -1)
@@ -125,7 +128,7 @@ void HomingProjectile_TurnToTarget_NonPerfect(int projectile, int Target)
 	GetEntPropVector(projectile, Prop_Send, "m_vecOrigin", rocketOrigin);
 
 	float pos1[3];
-	pos1 = WorldSpaceCenterOld(Target);
+	WorldSpaceCenter(Target, pos1);
 	GetRayAngles(rocketOrigin, pos1, tmpAngles);
 	
 	// Thanks to mikusch for pointing out this function to use instead
@@ -165,7 +168,7 @@ bool HomingProjectile_ValidTargetCheck(int projectile, int Target)
 	float pos1[3];
 	float pos2[3];
 	GetEntPropVector(projectile, Prop_Send, "m_vecOrigin", pos2);
-	pos1 = WorldSpaceCenterOld(Target);
+	WorldSpaceCenter(Target, pos1);
 	GetVectorAnglesTwoPoints(pos2, pos1, ang3);
 
 	// fix all angles

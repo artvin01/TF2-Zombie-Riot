@@ -194,11 +194,11 @@ public void Weapon_Heavy_Particle_Rifle(int entity, int target)
 	{
 		//Code to do damage position and ragdolls
 		static float angles[3];
-		angles = GetRocketAngles(entity);
+		GetRocketAngles(entity, angles);
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
@@ -211,8 +211,8 @@ public void Weapon_Heavy_Particle_Rifle(int entity, int target)
 			owner = 0;
 			
 		EmitSoundToAll(Spark_Sound[GetRandomInt(0, sizeof(Spark_Sound)-1)], 0, SNDCHAN_STATIC, 80, _, 1.0, SNDPITCH_NORMAL, -1, ProjectileLoc);
-
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		
 		if(IsValidEntity(particle))

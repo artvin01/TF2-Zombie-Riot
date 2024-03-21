@@ -138,7 +138,9 @@ public float Npc_OnTakeDamage_PaP_Fusion(int attacker, int victim, float damage,
 	
 	if(IsValidEntity(npc.m_iTarget))
 	{
-		if(i_NpcInternalId[npc.m_iTarget] == NEARL_SWORD)
+		char npc_classname[60];
+		NPC_GetPluginById(i_NpcInternalId[npc.m_iTarget], npc_classname, sizeof(npc_classname));
+		if(StrEqual(npc_classname, "npc_nearl_sword"))
 		{
 			damage *= 2.0;
 			DisplayCritAboveNpc(victim, attacker, false); //Display crit above head, false for no sound
@@ -365,7 +367,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 					ApplyTempAttrib(weapon, 412, 0.60, 10.0); //Less damage taken from all sources decreaced by 40%
 				}
 
-				int spawn_index = Npc_Create(NEARL_SWORD, -1, fPos, fAng, GetTeam(client));
+				int spawn_index = NPC_CreateByName("npc_nearl_sword", -1, fPos, fAng, GetTeam(client));
 				if(spawn_index > MaxClients)
 				{
 
@@ -1337,7 +1339,7 @@ void DrawBigSiccerinoSiccors(float Angles[3], int client, float belowBossEyes[3]
 			{
 				if(IsValidEntity(BEAM_BuildingHit[building]))
 				{
-					playerPos = WorldSpaceCenterOld(BEAM_BuildingHit[building]);
+					WorldSpaceCenter(BEAM_BuildingHit[building], playerPos);
 
 					f_SiccerinoExtraDamage[client][BEAM_BuildingHit[building]] += 0.35;
 					DataPack pack1;
@@ -1345,8 +1347,7 @@ void DrawBigSiccerinoSiccors(float Angles[3], int client, float belowBossEyes[3]
 					pack1.WriteCell(EntIndexToEntRef(client));
 					pack1.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));		
 					pack1.WriteFloat(0.35);	
-					float damage_force[3];
-					damage_force = CalculateDamageForceOld(vecForward, 10000.0);
+					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
 					DataPack pack = new DataPack();
 					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
 					pack.WriteCell(EntIndexToEntRef(client));

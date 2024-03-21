@@ -32,10 +32,25 @@ static char g_TeleportSounds[][] = {
 public void Barrack_Alt_Berserker_MapStart()
 {
 	PrecacheModel("models/player/medic.mdl");
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++)			{ PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_IdleSounds));   i++)					{ PrecacheSound(g_IdleSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));   i++) 			{ PrecacheSound(g_IdleAlertedSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);  			}
+	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_TeleportSounds);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks Berserker");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_berserker");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Barrack_Alt_Berserker(client, vecPos, vecAng, ally);
 }
 
 methodmap Barrack_Alt_Berserker < BarrackBody
@@ -81,10 +96,12 @@ methodmap Barrack_Alt_Berserker < BarrackBody
 	{
 		Barrack_Alt_Berserker npc = view_as<Barrack_Alt_Berserker>(BarrackBody(client, vecPos, vecAng, "600", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
-		i_NpcInternalId[npc.index] = ALT_BARRACKS_BERSERKER;
+		
 		i_NpcWeight[npc.index] = 2;
 		
-		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Berserker_ClotThink);
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barrack_Alt_Berserker_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Alt_Berserker_ClotThink;
 
 		npc.m_flSpeed = 250.0;
 		
@@ -139,10 +156,11 @@ public void Barrack_Alt_Berserker_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 1000.0);
@@ -208,5 +226,4 @@ void Barrack_Alt_Berserker_NPCDeath(int entity)
 	Barrack_Alt_Berserker npc = view_as<Barrack_Alt_Berserker>(entity);
 		
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, Barrack_Alt_Berserker_ClotThink);
 }

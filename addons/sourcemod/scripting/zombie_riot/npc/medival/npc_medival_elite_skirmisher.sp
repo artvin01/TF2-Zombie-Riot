@@ -71,8 +71,21 @@ void MedivalEliteSkirmisher_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Elite Skirmisher");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_elite_skirmisher");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_stun_armored");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalEliteSkirmisher(client, vecPos, vecAng, ally);
+}
 methodmap MedivalEliteSkirmisher < CClotBody
 {
 	public void PlayIdleSound() {
@@ -150,7 +163,6 @@ methodmap MedivalEliteSkirmisher < CClotBody
 		MedivalEliteSkirmisher npc = view_as<MedivalEliteSkirmisher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000", ally));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_ELITE_SKIRMISHER;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -170,7 +182,10 @@ methodmap MedivalEliteSkirmisher < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalEliteSkirmisher_ClotThink);
+		func_NPCDeath[npc.index] = MedivalEliteSkirmisher_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalEliteSkirmisher_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalEliteSkirmisher_ClotThink;
+		func_NPCAnimEvent[npc.index] = HandleAnimEvent_MedivalEliteSkirmisher;
 
 
 		npc.m_iWearable2 = npc.EquipItem("weapon_targe", "models/workshop/weapons/c_models/c_persian_shield/c_persian_shield_all.mdl");
@@ -248,9 +263,10 @@ public void MedivalEliteSkirmisher_ClotThink(int iNPC)
 				if(IsValidEntity(npc.m_iWearable1))
 					AcceptEntityInput(npc.m_iWearable1, "Enable");
 			}
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			if(flDistanceToTarget < 160000)
 			{
@@ -267,7 +283,7 @@ public void MedivalEliteSkirmisher_ClotThink(int iNPC)
 					{
 						float vBackoffPos[3];
 						
-						vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
+						BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 						
 						NPC_SetGoalVector(npc.index, vBackoffPos, true);
 					}
@@ -310,7 +326,7 @@ public void MedivalEliteSkirmisher_ClotThink(int iNPC)
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				/*
 				int color[4];
 				color[0] = 255;
@@ -354,7 +370,7 @@ public void HandleAnimEvent_MedivalEliteSkirmisher(int entity, int event)
 			if(IsValidEntity(npc.m_iWearable1))
 				AcceptEntityInput(npc.m_iWearable1, "Disable");
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				
 			npc.FaceTowards(vecTarget, 30000.0);
 			
@@ -397,8 +413,6 @@ public void MedivalEliteSkirmisher_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalEliteSkirmisher_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

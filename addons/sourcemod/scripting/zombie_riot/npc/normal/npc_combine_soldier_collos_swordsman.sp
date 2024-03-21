@@ -65,8 +65,22 @@ void CombineCollos_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Combine Golden Collos");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_collos_swordsman");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_gold");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return CombineCollos(client, vecPos, vecAng, ally);
+}
 methodmap CombineCollos < CClotBody
 {
 	
@@ -165,7 +179,6 @@ methodmap CombineCollos < CClotBody
 		
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");		
-		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_COLLOSS;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -192,7 +205,9 @@ methodmap CombineCollos < CClotBody
 		}
 		
 		
-		SDKHook(npc.index, SDKHook_Think, CombineCollos_ClotThink);
+		func_NPCDeath[npc.index] = CombineCollos_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = CombineCollos_OnTakeDamage;
+		func_NPCThink[npc.index] = CombineCollos_ClotThink;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 215, 0, 255);
@@ -266,15 +281,16 @@ public void CombineCollos_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -329,7 +345,8 @@ public void CombineCollos_ClotThink(int iNPC)
 					//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
 					
 					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+					MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -340,16 +357,16 @@ public void CombineCollos_ClotThink(int iNPC)
 					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
-					
+					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
 					if(EscapeModeForNpc)
 					{
-						FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 250.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 50.0, 250.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 					else
 					{
-						FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 35.0, 250.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 35.0, 250.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 				}
 			}
@@ -464,9 +481,6 @@ public void CombineCollos_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, CombineCollos_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

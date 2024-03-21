@@ -11,6 +11,21 @@ void MajorSteam_MapStart()
 	PrecacheSound(g_MeleeAttackSounds);
 	PrecacheSound("misc/halloween/hwn_dance_howl.wav");
 	PrecacheSound("weapons/barret_arm_zap.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Major Steam");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_majorsteam");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_major_crits");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MajorSteam(client, vecPos, vecAng, ally);
 }
 
 methodmap MajorSteam < CClotBody
@@ -32,7 +47,6 @@ methodmap MajorSteam < CClotBody
 	{
 		MajorSteam npc = view_as<MajorSteam>(CClotBody(vecPos, vecAng, "models/bots/soldier_boss/bot_soldier_boss.mdl", "2.0", "300000", ally, _, true));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_FOREST_BOSS;
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_MP_RUN_PRIMARY");
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
@@ -111,12 +125,13 @@ static void ClotThink(int iNPC)
 
 	if(target > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, target);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -130,8 +145,22 @@ static void ClotThink(int iNPC)
 		{
 			if(npc.m_flAttackHappens < gameTime)
 			{
+				if(Rogue_Paradox_RedMoon())
+				{
+					target = Can_I_See_Enemy(npc.index, target);
+					if(IsValidEnemy(npc.index, target))
+					{
+						npc.m_iTarget = target;
+						npc.m_flGetClosestTargetTime = gameTime + 0.45;
+					}
+					else
+					{
+						npc.m_flAttackHappens = 0.0;
+					}
+				}
+
 				if(npc.m_iOverlordComboAttack % 2)
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, target, (npc.m_iOverlordComboAttack % 3) ? 350.0 : 1100.0);
+					PredictSubjectPositionForProjectiles(npc, target, (npc.m_iOverlordComboAttack % 3) ? 350.0 : 1100.0, _,vecTarget);
 
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 				npc.PlayMeleeSound();
@@ -143,13 +172,17 @@ static void ClotThink(int iNPC)
 				}
 
 				npc.m_iOverlordComboAttack--;
-				if(npc.m_iOverlordComboAttack < 1)
+
+				if(!Rogue_Paradox_RedMoon())
 				{
-					npc.m_flAttackHappens = 0.0;
-				}
-				else
-				{
-					npc.m_flAttackHappens = gameTime + 0.15;
+					if(npc.m_iOverlordComboAttack < 1)
+					{
+						npc.m_flAttackHappens = 0.0;
+					}
+					else
+					{
+						npc.m_flAttackHappens = gameTime + 0.15;
+					}
 				}
 			}
 		}
@@ -204,7 +237,7 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 
 			func_NPCThink[npc.index] = MajorSteam_DownedThink;
 			
-			float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+			float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 			spawnRing_Vectors(vecMe, 450.0 * zr_smallmapbalancemulti.FloatValue * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 255, 1, 1.95, 5.0, 0.0, 1);
 			spawnRing_Vectors(vecMe, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 255, 1, 1.95, 5.0, 0.0, 1, 450.0 * zr_smallmapbalancemulti.FloatValue * 2.0);
 			
@@ -232,7 +265,7 @@ static void ClotDeath(int entity)
 {
 	MajorSteam npc = view_as<MajorSteam>(entity);
 
-	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 
 	npc.PlayDeathSound();
 	
@@ -248,7 +281,7 @@ static void ClotDeath(int entity)
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	
-	int other = Npc_Create(INTERITUS_FOREST_ENGINEER, -1, pos, ang, team, "EX");
+	int other = NPC_CreateByName("npc_vulpo", -1, pos, ang, team, "EX");
 	if(other > MaxClients)
 	{
 		if(team != TFTeam_Red)

@@ -787,8 +787,7 @@
 	}
 	"Hammer Pap 2"
 	{
-		"en"	"Increased damage and lower attackspeed.\nYour attacks are so strong that they cause explosions.\nArchetype changes to ''Crusher''"
-	    "ru"	"Увеличенный урон и сниженная скорость атаки.\nВаши атаки настолько сильны, что вызывают взрывы.\nАрхетип меняется на «Дробитель»"
+		"en"	"Increased damage and lower attackspeed.\nYour attacks are so strong that they cause explosions.\n1.15x dmg against bosses and 2x dmg against raids.\nArchetype changes to ''Crusher''"
 	}
 	"Hammer Pap 3"
 	{
@@ -867,7 +866,7 @@
 	}
 	"Fractured Ark Pap 4"
 	{
-		"en"	"Attacks are always ranged but with decreased fire rate.\nAbility changes to be able to pull, dealing 150%% of damage.\nArchetype changes to ''Abyssal Hunter''"
+		"en"	"Attacks are always ranged but with decreased fire rate.\nAbility changes to be able to pull, dealing 150%% of damage.\nYou count as a seaborn while wielding this weapon.\nArchetype changes to ''Abyssal Hunter''"
 	}
 	"Fractured Ark Pap 5"
 	{
@@ -1014,6 +1013,10 @@
 		"en"	"Will freeze enemies with enough dmg.\nM2 triggers a shockwave at your location\nWhich deals massively increased damage to frozen zombies.\nAnd freeze enemies if dealing enough damage, if frozen, damage buff is 2x as effective."
 		"ru"	"Замораживает врагов при достаточн. кол-ве урона.\nM2 - вызывает небольшую ударную волну,\nкоторая наносит замороженным зомби значительно больший урон.\nИ замораживает врагов, если нанести достаточно урона. По замороженным = 2x урон."
 	}
+	"Cryo Staff Pap 0"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
 	"Cryo Staff Pap 1"
 	{
 		"en"	"Increased damage and attackspeed, Debuff is stronger"
@@ -1070,14 +1073,7 @@
 		"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
 	}
-	
-	"Atomic Reconstructor Desc"
-	{
-		"en"	"Consumes mana with each shot, has 2 main attack, Use both in turns for maximum damage."
-		"ru"	"Потребляет ману с каждым выстрелом, имеет 2 основные атаки, используйте обе по очереди для максимального урона."
-		"chi"   "每次射击消耗法力值，有2种攻击模式，轮流使用两种攻击获得最大伤害。"
-	}
-	
+
 	"Necromancy Staff Desc"
 	{
 		"en"	"Consumes mana with each shot. M2 Summons 1 Combine DDT on your side.\nNot having your wand in your hand will disencurage your minion and half its damage."
@@ -1419,7 +1415,7 @@
 	}
 	"Compacted Rounds Desc"
 	{
-		"en"	"15%% faster attackspeed, reload speed and 25%% more max clip."
+		"en"	"20%% more weapon damage, 15%% faster attackspeed, reload speed and 25%% more max clip."
 	}
 	"Ammo Coat Elite Desc"
 	{
@@ -1938,7 +1934,7 @@
 		"ru"	"Улучшенный гвардеец подходит для брони комбайнов-воинов"
 		"chi"   "升级的高级战士"
 	}
-	"Medival Abalest Desc"
+	"Medival Arbalest Desc"
 	{
 		"en"	"Upgraded Crossbow Man suitable for takes downs from a safe distance"
 		"ru"	"Улучшенный арбалетчик подходит для поражения с безопасного расстояния"
@@ -1952,9 +1948,9 @@
 	}
 	"Medival Longbowmen Desc"
 	{
-		"en"	"Fire slower than Abalest but deals much more damage and a longer range"
+		"en"	"Fire slower than Arbalest but deals much more damage and a longer range"
 		"ru"	"Стреляет медленнее, чем арбалетчик, но наносит гораздо больше урона и имеет большую дальность"
-		"chi"   "射击速度比Abalest慢，但造成的伤害更大，射程更远"
+		"chi"   "射击速度比Arbalest慢，但造成的伤害更大，射程更远"
 	}
 	"Champion Desc"
 	{
@@ -1981,9 +1977,7 @@
 	}
 	"Fish Melee Desc"
 	{
-		"en" 	"Heals allies slowly around you and gives them a 10%% dmg buff.\nScales with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 25%% dmg buff to all allies for 15 sec."
-		"ru" 	"Медленно исцеляет союзников вокруг вас и даёт им 10%% усиление урона.\nУвеличивается с улучшением медицинской пушки.\nM1 - доп. исцеление на союзников.\nM2 - более сильное усиление урона на 25%% на всех союзников на 15 сек."
-		"chi"   "可以缓慢治疗你附近的队友，并给予他们10%%的伤害buff。\n收到医疗属性升级影响。\nM1对盟友施放额外治疗值。M2释放光波对所有队友添加25%%的伤害加成buff，持续15秒。"
+		"en" 	"Heals allies slowly around you and gives them a 10%% dmg buff.\nScales with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 25%% dmg buff to all allies for 15 sec.\nYou count as a seaborn while wielding this weapon."
 	}
 	"Lantean Staff Desc"
 	{
@@ -1999,7 +1993,7 @@
 	}
 	"Specter Pap 1"
 	{
-		"en"	"Attacks slower but hits two targets at once.\nDeals 25%% more damage againts raids.\nArchetype changes to ''Abyssal Hunter''"
+		"en"	"Attacks slower but hits two targets at once.\nDeals 25%% more damage againts raids.\nYou count as a seaborn while wielding this weapon.\nArchetype changes to ''Abyssal Hunter''"
 	}
 	"Specter Pap 2a"
 	{
@@ -2314,11 +2308,11 @@
 	}
 	"The Standchen Desc"
 	{
-		"en"	"Speichert bis zu drei Angriffe, unleash by letting go of attack. Stored shots deal bonus damage.\nAbility increases damage, fire rate, and stores another shot but, kann nur Elite- oder Riesengegner treffen, ability can be canceled."
+		"en"	"Saves upto 3 attacks, unleash by letting go of attack. Stored shots deal bonus damage.\nAbility increases damage, fire rate, and stores another shot but, can only hit giant or elite/elite+ enemies, ability can be canceled."
 	}
 	"The Standchen Desc Pap"
 	{
-		"en"	"Speichert bis zu vier Angriffe."
+		"en"	"Saves upto 4 attacks."
 	}
 	"Sensal Desc"
 	{
@@ -2743,5 +2737,13 @@
 	"Helena's Elite Medicine Desc"
 	{
 		"en"	"1.6x Medigun Hurt and Heal and 5%% melee resistance with Secondary/Medigun out"
+	}
+	"Messenger Launcher Desc"
+	{
+		"en" "You feel the power of the Chaos that once consumed the Messenger in your hands\n You lose the ability to deal aoe. Press M2 to change fire mode \n Fire Blaster: Ignites \n Chaos Blaster: short cryo debuff \n Chaos deals more damage on hit.\n Archetype changed into rapid fire"
+	}
+	"Messenger Launcher PAP Desc"
+	{
+		"en" "You feel more confident in controlling chaos in this launcher\n Or is it consuming you? \n \n Increased clip, damage, and faster firerate. \n more cryo applied on Chaos mode and more afterburn damage."
 	}
 }

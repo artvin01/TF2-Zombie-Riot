@@ -121,8 +121,21 @@ public void XenoFatherGrigori_OnMapStart_NPC()
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Father Grigori");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_last_survivor");
+	strcopy(data.Icon, sizeof(data.Icon), "grigori");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoFatherGrigori(client, vecPos, vecAng, ally);
+}
 methodmap XenoFatherGrigori < CClotBody
 {
 	public void PlayIdleSound() {
@@ -233,7 +246,6 @@ methodmap XenoFatherGrigori < CClotBody
 	{
 		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
 		
-		i_NpcInternalId[npc.index] = XENO_FATHER_GRIGORI;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -249,8 +261,11 @@ methodmap XenoFatherGrigori < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
+	
+		func_NPCDeath[npc.index] = XenoFatherGrigori_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoFatherGrigori_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoFatherGrigori_ClotThink;
 		
-		SDKHook(npc.index, SDKHook_Think, XenoFatherGrigori_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, XenoFatherGrigori_ClotDamagedPost);
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 					
@@ -305,7 +320,7 @@ methodmap XenoFatherGrigori < CClotBody
 			float vecForward[3], vecSwingStart[3], vecAngles[3];
 			this.GetVectors(vecForward, vecSwingStart, vecAngles);
 	
-			vecSwingStart = GetAbsOriginOld(this.index);
+			GetAbsOrigin(this.index, vecSwingStart);
 			vecSwingStart[2] += 90.0;
 	
 			MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
@@ -369,14 +384,15 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
+		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -399,7 +415,7 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 				
 				float projectile_speed = 800.0;
 				
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, closest, projectile_speed);
+				PredictSubjectPositionForProjectiles(npc, closest, projectile_speed,_, vecTarget);
 							
 				npc.PlayMeleeSound();
 				
@@ -414,7 +430,7 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");		
 				float projectile_speed = 800.0;
 				
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, closest, projectile_speed);
+				PredictSubjectPositionForProjectiles(npc, closest, projectile_speed,_, vecTarget);
 							
 				npc.PlayMeleeSound();
 				
@@ -489,7 +505,7 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 			}
 		}
 		//Target close enough to hit
-		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 		{
 			//Look at target so we hit.
 	//		npc.FaceTowards(vecTarget, 1000.0);
@@ -602,8 +618,8 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 		startPosition[2] = ReadPackFloat(data);
 		float Iondistance = ReadPackCell(data);
 		float nphi = ReadPackFloat(data);
-		int Ionrange = ReadPackCell(data);
-		int Iondamage = ReadPackCell(data);
+		float Ionrange = ReadPackFloat(data);
+		float Iondamage = ReadPackFloat(data);
 		int client = EntRefToEntIndex(ReadPackCell(data));
 		if(!IsValidEntity(client) || b_NpcHasDied[client])
 		{
@@ -696,8 +712,8 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 		WritePackFloat(nData, startPosition[2]);
 		WritePackCell(nData, Iondistance);
 		WritePackFloat(nData, nphi);
-		WritePackCell(nData, Ionrange);
-		WritePackCell(nData, Iondamage);
+		WritePackFloat(nData, Ionrange);
+		WritePackFloat(nData, Iondamage);
 		WritePackCell(nData, EntIndexToEntRef(client));
 		ResetPack(nData);
 		
@@ -778,8 +794,8 @@ public void XenoFatherGrigori_IOC_Invoke(int ref, int enemy)
 		WritePackFloat(data, vecTarget[2]);
 		WritePackCell(data, distance); // Distance
 		WritePackFloat(data, 0.0); // nphi
-		WritePackCell(data, IOCDist); // Range
-		WritePackCell(data, IOCdamage); // Damge
+		WritePackFloat(data, IOCDist); // Range
+		WritePackFloat(data, IOCdamage); // Damge
 		WritePackCell(data, ref);
 		ResetPack(data);
 		XenoFatherGrigori_IonAttack(data);
@@ -835,9 +851,7 @@ public void XenoFatherGrigori_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoFatherGrigori_ClotThink);
-	
+
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, XenoFatherGrigori_ClotDamagedPost);
 	
 	if(IsValidEntity(npc.m_iWearable1))

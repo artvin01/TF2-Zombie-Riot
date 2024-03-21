@@ -16,6 +16,31 @@ enum
 	Villager_Command_StandNearTower = 2,
 }
 
+static int NPCId;
+
+void BarrackVillagerOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks Assistant Villager");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_villager");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
+}
+
+int BarrackVillager_ID()
+{
+	return NPCId;
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackVillager(client, vecPos, vecAng, ally);
+}
+
 methodmap BarrackVillager < BarrackBody
 {
 	property float f_VillagerBuildCooldown
@@ -73,11 +98,13 @@ methodmap BarrackVillager < BarrackBody
 	{
 		BarrackVillager npc = view_as<BarrackVillager>(BarrackBody(client, vecPos, vecAng, "1000",_,_,_,_,"models/pickups/pickup_powerup_king.mdl"));
 		
-		i_NpcInternalId[npc.index] = BARRACKS_VILLAGER;
 		i_NpcWeight[npc.index] = 1;
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackVillager_ClotThink);
 
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackVillager_NPCDeath;
+		func_NPCThink[npc.index] = BarrackVillager_ClotThink;
+		
 		npc.m_flSpeed = 150.0;
 		npc.i_VillagerSpecialCommand = Villager_Command_Default;
 		npc.m_iTowerLinked = -1;
@@ -162,7 +189,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 				if(flDistanceToTarget < (50.0*50.0))
 				{
 					//We are close enough to build, lets build.
-					int spawn_index = Npc_Create(BARRACKS_BUILDING, client, VillagerDesiredBuildLocation[npc.index], {0.0,0.0,0.0}, GetTeam(npc.index));
+					int spawn_index = NPC_CreateByName("npc_barrack_building", client, VillagerDesiredBuildLocation[npc.index], {0.0,0.0,0.0}, GetTeam(npc.index));
 					if(spawn_index > MaxClients)
 					{
 						VillagerDesiredBuildLocation[npc.index][0] = 0.0;
@@ -177,7 +204,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 						player.m_iTowerLinked = spawn_index;
 						if(GetTeam(iNPC) != TFTeam_Red)
 						{
-							Zombies_Currently_Still_Ongoing += 1;
+							NpcAddedToZombiesLeftCurrently(iNPC, true);
 						}
 						i_AttacksTillMegahit[spawn_index] = 10;
 						SetEntProp(spawn_index, Prop_Data, "m_iHealth", 1); //only 1 health, the villager needs to first needs to build it up over time.
@@ -444,7 +471,6 @@ void BarrackVillager_NPCDeath(int entity)
 {
 	BarrackVillager npc = view_as<BarrackVillager>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, BarrackVillager_ClotThink);
 }
 
 bool BarracksVillager_RepairSelfTower(int entity, int tower)
@@ -563,7 +589,7 @@ void BarracksVillager_MenuSpecial(int client, int entity)
 	BarrackVillager npc = view_as<BarrackVillager>(entity);
 
 	Menu menu = new Menu(BarrackVillager_MenuH);
-	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", NPC_Names[i_NpcInternalId[entity]]);
+	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", c_NpcName[entity]);
 	BarrackVillager player = view_as<BarrackVillager>(client);
 	char num[16];
 	IntToString(EntIndexToEntRef(entity), num, sizeof(num));

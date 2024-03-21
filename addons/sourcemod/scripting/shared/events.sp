@@ -15,8 +15,10 @@ void Events_PluginStart()
 	HookEvent("deploy_buff_banner", OnBannerDeploy, EventHookMode_Pre);
 //	HookEvent("nav_blocked", NavBlocked, EventHookMode_Pre);
 #if defined ZR
-	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_Post);
-	HookEvent("teamplay_setup_finished", OnSetupFinished, EventHookMode_PostNoCopy);
+	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_Pre);
+	HookEvent("mvm_begin_wave", OnSetupFinished, EventHookMode_PostNoCopy);
+	HookEvent("mvm_wave_failed", OnWinPanel, EventHookMode_Pre);
+	HookEvent("mvm_mission_complete", OnWinPanel, EventHookMode_Pre);
 #endif
 	
 	HookUserMessage(GetUserMessageId("SayText2"), Hook_BlockUserMessageEx, true);
@@ -56,6 +58,8 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 		}	
 	}
 	
+	CreateMVMPopulator();
+	
 	if(RoundStartTime > GetGameTime())
 		return;
 	
@@ -65,17 +69,21 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Waves_RoundStart();
 #endif
 
-#if defined RPG
-	Zones_ResetAll();
-#endif
-	
+#if defined RTS
 	ServerCommand("mp_waitingforplayers_cancel 1");
+#endif
 }
 
 #if defined ZR
 public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 {
-	Escape_SetupEnd();
+	for(int client=1; client<=MaxClients; client++)
+	{
+		SetMusicTimer(client, 0);
+	}
+	BuildingVoteEndResetCD();
+	Waves_SetReadyStatus(0);
+	Waves_Progress();
 }
 #endif
 
@@ -135,11 +143,14 @@ public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast
 }
 
 #if defined ZR
-public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
+public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
+	MVMHud_Disable();
+	GameRules_SetProp("m_iRoundState", RoundState_TeamWin);
 	Store_RandomizeNPCStore(1);
 	f_FreeplayDamageExtra = 1.0;
 	b_GameOnGoing = false;
+	GlobalExtraCash = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
@@ -165,11 +176,12 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
 	CurrentGame = 0;
-	if(event.GetInt("team") == 3)
+	if(event != INVALID_HANDLE && event.GetInt("team") == 3)
 	{
 		//enemy team won due to timer or something else.
 		ZR_NpcTauntWin();
 	}
+	return Plugin_Continue;
 }
 #endif
 
@@ -430,7 +442,7 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		Waves_PlayerSpawn(client);
 #endif
 
-#if !defined RTS
+#if defined ZR
 		Thirdperson_PlayerSpawn(client);
 #endif
 
@@ -455,14 +467,12 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	if(!client)
 		return Plugin_Continue;
 	
-#if !defined RTS
+#if defined ZR
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #endif
 
 #if defined ZR
 	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), dieingstate[client] ? -69 : 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
-#else
-	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
 #endif
 
 #if defined ZR
@@ -492,6 +502,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 		i_CurrentEquippedPerk[client] = 0;
 		
 	i_HealthBeforeSuit[client] = 0;
+	f_HealthBeforeSuittime[client] = GetGameTime() + 0.25;
 	i_ClientHasCustomGearEquipped[client] = false;
 	UnequipQuantumSet(client);
 //	CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
@@ -509,7 +520,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	UpdateLevelAbovePlayerText(client, true);
 #endif
 
-#if !defined RTS
+#if defined ZR
 	Store_WeaponSwitch(client, -1);
 	RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
 #endif

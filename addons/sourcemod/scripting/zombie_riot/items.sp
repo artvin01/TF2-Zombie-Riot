@@ -267,11 +267,6 @@ bool Items_HasNamedItem(int client, const char[] name)
 	return false;
 }
 
-stock void Items_GiveNPCKill(int client, int id)
-{
-	//AddFlagOfLevel(client, -id, 1, true);
-}
-
 bool Items_GiveIdItem(int client, int id)
 {
 	return AddFlagOfLevel(client, IdToLevel(id), IdToFlag(id));
@@ -310,34 +305,36 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 
 	if(inPage)
 	{
+		NPCData data;
+		NPC_GetById(page, data);
+
 		char buffer[400];
-		FormatEx(buffer, sizeof(buffer), "%s Desc", NPC_Names[page]);
+		FormatEx(buffer, sizeof(buffer), "%s Desc", data.Name);
 		if(TranslationPhraseExists(buffer))
 		{
 			Format(buffer, sizeof(buffer), "%t", buffer);
 
 			/*if(Database_IsCached(client))
 			{
-				menu.SetTitle("%t\n \n%s\n%t\n ", NPC_Names[page], buffer, CategoryPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
+				menu.SetTitle("%t\n \n%s\n%t\n ", data.Name, buffer, CategoryPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
 			}
 			else*/
 			{
-				menu.SetTitle("%t\n \n%s\n ", NPC_Names[page], buffer);
+				menu.SetTitle("%t\n \n%s\n ", data.Name, buffer);
 			}
 		}
 		/*else if(Database_IsCached(client))
 		{
-			menu.SetTitle("%t\n \n%t\n ", NPC_Names[page], CategoryPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
+			menu.SetTitle("%t\n \n%t\n ", data.Name, CategoryPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
 		}*/
 		else
 		{
-			menu.SetTitle("%t\n ", NPC_Names[page]);
+			menu.SetTitle("%t\n ", data.Name);
 		}
 		
-		char data[16];
-		IntToString(page, data, sizeof(data));
+		IntToString(page, data.Plugin, sizeof(data.Plugin));
 		FormatEx(buffer, sizeof(buffer), "%t", "Back");
-		menu.AddItem(data, buffer);
+		menu.AddItem(data.Plugin, buffer);
 
 		menu.Display(client, MENU_TIME_FOREVER);
 	}
@@ -346,23 +343,20 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 		//int kills;
 		int pos;
 
-		char data[16], buffer[64];
-		for(int i; i < sizeof(NPC_Names); i++)
+		NPCData data;
+		int length = NPC_GetCount();
+		for(int i; i < length; i++)
 		{
-			if(NPCCategory[i] == CategoryPage[client])
+			NPC_GetById(i, data);
+			if(data.Plugin[0] && data.Category == CategoryPage[client])
 			{
-				IntToString(i, data, sizeof(data));
-				FormatEx(buffer, sizeof(buffer), "%t", NPC_Names[i]);
-				
+				IntToString(i, data.Plugin, sizeof(data.Plugin));
+				Format(data.Name, sizeof(data.Name), "%t", data.Name);
+
 				if(i == page)
-				{
-					menu.AddItem(data, buffer);
 					pos = menu.ItemCount;
-				}
-				else
-				{
-					menu.AddItem(data, buffer);
-				}
+				
+				menu.AddItem(data.Plugin, data.Name);
 
 				//kills += GetFlagsOfLevel(client, -i);
 			}

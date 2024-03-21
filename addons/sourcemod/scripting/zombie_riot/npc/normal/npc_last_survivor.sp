@@ -118,8 +118,21 @@ public void FatherGrigori_OnMapStart_NPC()
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Father Grigori");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_last_survivor");
+	strcopy(data.Icon, sizeof(data.Icon), "grigori");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return FatherGrigori(client, vecPos, vecAng, ally);
+}
 methodmap FatherGrigori < CClotBody
 {
 	public void PlayIdleSound() {
@@ -230,7 +243,6 @@ methodmap FatherGrigori < CClotBody
 	{
 		FatherGrigori npc = view_as<FatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
 		
-		i_NpcInternalId[npc.index] = FATHER_GRIGORI;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -244,8 +256,11 @@ methodmap FatherGrigori < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, FatherGrigori_ClotThink);	
+	
+		func_NPCDeath[npc.index] = FatherGrigori_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = FatherGrigori_OnTakeDamage;
+		func_NPCThink[npc.index] = FatherGrigori_ClotThink;
+
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, FatherGrigori_OnTakeDamagePost);
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 					
@@ -284,7 +299,7 @@ methodmap FatherGrigori < CClotBody
 			float vecForward[3], vecSwingStart[3], vecAngles[3];
 			this.GetVectors(vecForward, vecSwingStart, vecAngles);
 	
-			vecSwingStart = GetAbsOriginOld(this.index);
+			GetAbsOrigin(this.index, vecSwingStart);
 			vecSwingStart[2] += 90.0;
 	
 			MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
@@ -354,14 +369,15 @@ public void FatherGrigori_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest, true))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
+		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -375,7 +391,7 @@ public void FatherGrigori_ClotThink(int iNPC)
 		
 		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && npc.m_flDoingAnimation < GetGameTime(npc.index) && flDistanceToTarget < 202500)
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 			if (!npc.Anger)
 			{
 				npc.FaceTowards(vecTarget, 1000.0);
@@ -455,7 +471,7 @@ public void FatherGrigori_ClotThink(int iNPC)
 			}
 		}
 		//Target close enough to hit
-		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 		{
 			//Look at target so we hit.
 	//		npc.FaceTowards(vecTarget, 1000.0);
@@ -568,8 +584,8 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 		startPosition[2] = ReadPackFloat(data);
 		float Iondistance = ReadPackCell(data);
 		float nphi = ReadPackFloat(data);
-		int Ionrange = ReadPackCell(data);
-		int Iondamage = ReadPackCell(data);
+		float Ionrange = ReadPackFloat(data);
+		float Iondamage = ReadPackFloat(data);
 		int client = EntRefToEntIndex(ReadPackCell(data));
 		
 		if(!IsValidEntity(client) || b_NpcHasDied[client])
@@ -663,8 +679,8 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 		WritePackFloat(nData, startPosition[2]);
 		WritePackCell(nData, Iondistance);
 		WritePackFloat(nData, nphi);
-		WritePackCell(nData, Ionrange);
-		WritePackCell(nData, Iondamage);
+		WritePackFloat(nData, Ionrange);
+		WritePackFloat(nData, Iondamage);
 		WritePackCell(nData, EntIndexToEntRef(client));
 		ResetPack(nData);
 		
@@ -745,8 +761,8 @@ public void FatherGrigori_IOC_Invoke(int ref, int enemy)
 		WritePackFloat(data, vecTarget[2]);
 		WritePackCell(data, distance); // Distance
 		WritePackFloat(data, 0.0); // nphi
-		WritePackCell(data, IOCDist); // Range
-		WritePackCell(data, IOCdamage); // Damge
+		WritePackFloat(data, IOCDist); // Range
+		WritePackFloat(data, IOCdamage); // Damge
 		WritePackCell(data, ref);
 		ResetPack(data);
 		FatherGrigori_IonAttack(data);
@@ -804,9 +820,7 @@ public void FatherGrigori_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, FatherGrigori_ClotThink);	
+
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, FatherGrigori_OnTakeDamagePost);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

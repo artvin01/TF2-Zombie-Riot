@@ -29,8 +29,22 @@ void WinterFreezingCleaner_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	PrecacheSound("weapons/flame_thrower_loop.wav");
 	PrecacheSound("weapons/flame_thrower_pilot.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Freezing Cleaner");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_freezing_cleaner");
+	strcopy(data.Icon, sizeof(data.Icon), "pyro_freeze_1");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	int id = NPC_Add(data);
+	Rogue_Paradox_AddWinterNPC(id);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return WinterFreezingCleaner(client, vecPos, vecAng, ally);
+}
 
 methodmap WinterFreezingCleaner < CClotBody
 {
@@ -91,7 +105,6 @@ methodmap WinterFreezingCleaner < CClotBody
 	{
 		WinterFreezingCleaner npc = view_as<WinterFreezingCleaner>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "3000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_WINTER_FREEZING_CLEANER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -169,13 +182,14 @@ public void WinterFreezingCleaner_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -241,9 +255,10 @@ void WinterFreezingCleanerSelfDefense(WinterFreezingCleaner npc)
 	target = npc.m_iTarget;
 	//some Ranged units will behave differently.
 	//not this one.
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+	float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 	bool SpinSound = true;
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
 	{
 		npc.PlayMinigunSound(true);

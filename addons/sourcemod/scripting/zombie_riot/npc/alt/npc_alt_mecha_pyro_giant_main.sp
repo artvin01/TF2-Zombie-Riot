@@ -42,14 +42,30 @@ static const char g_MeleeMissSounds[][] = {
 
 void Mecha_PyroGiant_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeMissSounds);
+
 	PrecacheModel("models/bots/pyro/bot_pyro.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Mecha Giant Pyro");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_mecha_pyro_giant");
+	strcopy(data.Icon, sizeof(data.Icon), "pyro"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = false;													//download needed?
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;			
+	data.Category = Type_Alt;
+	data.Func = ClotSummon;													//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Mecha_PyroGiant(client, vecPos, vecAng, ally);
 }
 
 methodmap Mecha_PyroGiant < CClotBody
@@ -128,7 +144,6 @@ methodmap Mecha_PyroGiant < CClotBody
 	{
 		Mecha_PyroGiant npc = view_as<Mecha_PyroGiant>(CClotBody(vecPos, vecAng, "models/bots/pyro/bot_pyro.mdl", "1.35", "75000", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = ALT_MECHA_PYROGIANT;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -143,9 +158,10 @@ methodmap Mecha_PyroGiant < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
-		
-		
-		SDKHook(npc.index, SDKHook_Think, Mecha_PyroGiant_ClotThink);
+
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
 		
 		//IDLE
@@ -184,16 +200,18 @@ methodmap Mecha_PyroGiant < CClotBody
 
 //TODO 
 //Rewrite
-public void Mecha_PyroGiant_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	Mecha_PyroGiant npc = view_as<Mecha_PyroGiant>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
 	
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 			
@@ -204,32 +222,33 @@ public void Mecha_PyroGiant_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > GameTime)
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = GameTime + 0.1;
 
 	
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -254,19 +273,19 @@ public void Mecha_PyroGiant_ClotThink(int iNPC)
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
 				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+				if(npc.m_flNextMeleeAttack < GameTime)
 				{
 					//Play attack ani
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
-						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
+						npc.m_flAttackHappens = GameTime+0.4;
+						npc.m_flAttackHappens_bullshit = GameTime+0.54;
 						npc.m_flAttackHappenswillhappen = true;
 					}
 						
-					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -298,13 +317,13 @@ public void Mecha_PyroGiant_ClotThink(int iNPC)
 							} 
 						}
 						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.8;
+						npc.m_flNextMeleeAttack = GameTime + 0.8;
 						npc.m_flAttackHappenswillhappen = false;
 					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					else if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.8;
+						npc.m_flNextMeleeAttack = GameTime + 0.8;
 					}
 				}
 			}
@@ -324,7 +343,7 @@ public void Mecha_PyroGiant_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Mecha_PyroGiant_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Mecha_PyroGiant npc = view_as<Mecha_PyroGiant>(victim);
 		
@@ -340,16 +359,13 @@ public Action Mecha_PyroGiant_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-public void Mecha_PyroGiant_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	Mecha_PyroGiant npc = view_as<Mecha_PyroGiant>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, Mecha_PyroGiant_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -66,6 +66,21 @@ methodmap StalkerShared < CClotBody
 
 void StalkerCombine_MapStart()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Spawned Combine");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stalker_combine");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheModel("models/zombie/zombie_soldier.mdl");
 	static const char SoundList[][] =
 	{
 		"npc/zombine/zombine_idle1.wav",
@@ -87,17 +102,22 @@ void StalkerCombine_MapStart()
 		"npc/zombine/zombine_charge1.wav",
 		"npc/zombine/zombine_charge2.wav",
 		"npc/zombine/zombine_readygrenade2.wav",
-		"#music/vlvx_song11.mp3"
+		"#music/vlvx_song11.mp3",
+		"npc/zombine/gear1.wav",
+		"npc/zombine/gear2.wav",
+		"npc/zombine/gear3.wav"
 	};
 
 	for(int i; i < sizeof(SoundList); i++)
 	{
 		PrecacheSoundCustom(SoundList[i]);
 	}
-
-	PrecacheModel("models/zombie/zombie_soldier.mdl");
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return StalkerCombine(client, vecPos, vecAng, ally);
+}
 methodmap StalkerCombine < StalkerShared
 {
 	public void PlayIdleSound()
@@ -197,7 +217,6 @@ methodmap StalkerCombine < StalkerShared
 	{
 		StalkerCombine npc = view_as<StalkerCombine>(CClotBody(vecPos, vecAng, "models/zombie/zombie_soldier.mdl", "1.2", "6666", ally));
 		
-		i_NpcInternalId[npc.index] = STALKER_COMBINE;
 		i_NpcWeight[npc.index] = 5;
 	//	fl_GetClosestTargetTimeTouch[npc.index] = 99999.9;
 		
@@ -209,10 +228,14 @@ methodmap StalkerCombine < StalkerShared
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = NOTHING;
+		npc.m_iNpcStepVariation = STEPTYPE_NONE;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, StalkerCombine_ClotThink);
+		func_NPCDeath[npc.index] = StalkerCombine_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = StalkerCombine_OnTakeDamage;
+		func_NPCThink[npc.index] = StalkerCombine_ClotThink;
+		func_NPCAnimEvent[npc.index] = StalkerCombine_HandleAnimEvent;
+
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		Is_a_Medic[npc.index] = true;
@@ -277,7 +300,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTarget > 0 && (!npc.m_bmovedelay || i_NpcInternalId[npc.m_iTarget] != CURED_FATHER_GRIGORI || !IsValidEntity(npc.m_iTarget)) && !IsValidEnemy(npc.index, npc.m_iTarget, true))
+	if(npc.m_iTarget > 0 && (!npc.m_bmovedelay || i_NpcInternalId[npc.m_iTarget] != CuredFatherGrigori_ID() || !IsValidEntity(npc.m_iTarget)) && !IsValidEnemy(npc.index, npc.m_iTarget, true))
 	{
 		npc.m_iTarget = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -290,13 +313,13 @@ public void StalkerCombine_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index, !npc.m_bChaseAnger, _, true, _, _, _, true, FAR_FUTURE);
 		npc.m_flGetClosestTargetTime = gameTime + (npc.m_iTarget ? 2.5 : 0.5);
 
-		// Hunt down the Father on Wave 16
-		if(Waves_GetRound() > 14 && (npc.m_iTarget < 1 || i_NpcInternalId[npc.m_iTarget] != CURED_FATHER_GRIGORI))
+		// Hunt down the Father
+		if(npc.m_iTarget < 1 || i_NpcInternalId[npc.m_iTarget] != CuredFatherGrigori_ID())
 		{
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-				if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == CURED_FATHER_GRIGORI)
+				if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == CuredFatherGrigori_ID())
 				{
 					float EntityLocation[3], TargetLocation[3]; 
 					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", EntityLocation); 
@@ -344,7 +367,8 @@ public void StalkerCombine_ClotThink(int iNPC)
 			if(npc.m_iTarget > 0)
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -384,7 +408,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 
 		if(npc.m_bChaseAnger)
 		{
-			float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+			float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 			float engineTime = GetEngineTime();
 
 			for(int client = 1; client <= MaxClients; client++)
@@ -405,7 +429,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 			
 			npc.PlayMusicSound();
 
-			LastKnownPos = WorldSpaceCenterOld(npc.m_iTarget);
+			WorldSpaceCenter(npc.m_iTarget, LastKnownPos);
 			float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 
 			int state;
@@ -444,7 +468,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 					npc.StartPathing();
 					if(distance < npc.GetLeadRadius()) 
 					{
-						LastKnownPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+						PredictSubjectPosition(npc, npc.m_iTarget,_,_,LastKnownPos);
 						NPC_SetGoalVector(npc.index, LastKnownPos);
 					}
 					else
@@ -457,17 +481,17 @@ public void StalkerCombine_ClotThink(int iNPC)
 					if(npc.m_bmovedelay)
 					{
 						// Blow up Father, add the next stalker boss
-						if(i_NpcInternalId[npc.m_iTarget] == CURED_FATHER_GRIGORI)
+						if(i_NpcInternalId[npc.m_iTarget] == CuredFatherGrigori_ID())
 						{
 							Enemy enemy;
-							enemy.Index = STALKER_FATHER;
+							enemy.Index = NPC_GetByPlugin("npc_stalker_father");
 							enemy.Health = 666666;
 							enemy.Is_Immune_To_Nuke = true;
 							enemy.Is_Static = true;
 							enemy.ExtraMeleeRes = 1.0;
 							enemy.ExtraRangedRes = 1.0;
 							enemy.ExtraSpeed = 1.0;
-							enemy.ExtraDamage = 1.0;	
+							enemy.ExtraDamage = fl_ExtraDamage[npc.index];	
 							enemy.ExtraSize = 1.0;	
 							enemy.Team = GetTeam(npc.index);	
 							Waves_AddNextEnemy(enemy);
@@ -475,8 +499,8 @@ public void StalkerCombine_ClotThink(int iNPC)
 							TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
 
 							KillFeed_SetKillIcon(npc.index, "taunt_soldier");
-							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 99999999.9, DMG_DROWN);
-							SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9, DMG_DROWN);
+							SmiteNpcToDeath(npc.index);
+							SmiteNpcToDeath(npc.m_iTarget);
 						}
 					}
 					else
@@ -502,7 +526,8 @@ public void StalkerCombine_ClotThink(int iNPC)
 		else
 		{
 			// Stare at the target, confirm their real before chasing after
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 1000.0);
+			float targ_vec[3]; WorldSpaceCenter(npc.m_iTarget, targ_vec);
+			npc.FaceTowards(targ_vec, 1000.0);
 		}
 
 		npc.PlayIdleAlertSound();
@@ -526,7 +551,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 		}
 
 		int state;
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 		float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 		if(npc.m_flDoingAnimation > gameTime)
 		{
@@ -647,7 +672,7 @@ void StalkerCombine_HandleAnimEvent(int entity, int event)
 		};
 
 		StalkerCombine npc = view_as<StalkerCombine>(entity);
-		npc.PlayStepSound(RandomSound[GetURandomInt() % sizeof(RandomSound)], 1.0, npc.m_iStepNoiseType);
+		npc.PlayStepSound(RandomSound[GetURandomInt() % sizeof(RandomSound)], 1.0, npc.m_iStepNoiseType, true);
 	}
 }
 
@@ -674,8 +699,6 @@ void StalkerCombine_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, StalkerCombine_ClotThink);
 
 	for(gib = 0; gib < 9; gib++)
 	{

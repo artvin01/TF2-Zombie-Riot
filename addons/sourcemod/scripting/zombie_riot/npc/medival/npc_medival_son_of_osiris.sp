@@ -86,8 +86,21 @@ void MedivalSonOfOsiris_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Son Of Osiris");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_son_of_osiris");
+	strcopy(data.Icon, sizeof(data.Icon), "son_of_osiris");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalSonOfOsiris(client, vecPos, vecAng, ally);
+}
 static bool b_EntityHitByLightning[MAXENTITIES];
 
 methodmap MedivalSonOfOsiris < CClotBody
@@ -150,8 +163,7 @@ methodmap MedivalSonOfOsiris < CClotBody
 	{
 		MedivalSonOfOsiris npc = view_as<MedivalSonOfOsiris>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "750000", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_SON_OF_OSIRIS;
+		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		i_NpcWeight[npc.index] = 5;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -167,7 +179,9 @@ methodmap MedivalSonOfOsiris < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalSonOfOsiris_ClotThink);
+		func_NPCDeath[npc.index] = MedivalSonOfOsiris_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalSonOfOsiris_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalSonOfOsiris_ClotThink;
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
 		SetVariantString("1.15");
@@ -243,7 +257,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 			npc.FaceTowards(vecTarget, 20000.0);
 		}
 
@@ -266,7 +280,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 					GetEntPropVector( npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 					float distance = GetVectorDistance( EntityLocation, TargetLocation, true );  
 						
-					if(distance <= (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 9.5)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
+					if(distance <= (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.5)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
 					{
 						SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 550.0, GetTeam(npc.index) == TFTeam_Red);
 					}
@@ -277,13 +291,14 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -387,9 +402,6 @@ public void MedivalSonOfOsiris_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalSonOfOsiris_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -444,8 +456,8 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 
 	float vecTarget[3];
 	float vecTarget_2[3];
-	vecTarget = WorldSpaceCenterOld(target);
-	vecTarget_2 = WorldSpaceCenterOld(target);
+	WorldSpaceCenter(target, vecTarget );
+	WorldSpaceCenter(target, vecTarget_2);
 
 	bool first_target = true;
 	bool enemy_died = false;
@@ -486,7 +498,7 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 			{
 				if(!enemy_died)
 				{
-					vecTarget = WorldSpaceCenterOld(PreviousTarget);
+					WorldSpaceCenter(PreviousTarget, vecTarget);
 				}
 				else
 				{
@@ -496,7 +508,7 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 
 			first_target = false;
 			
-			vecTarget_2 = WorldSpaceCenterOld(enemy);
+			WorldSpaceCenter(enemy, vecTarget_2);
 			enemy_died = false;
 			float vehit_save[3];
 			GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vehit_save);

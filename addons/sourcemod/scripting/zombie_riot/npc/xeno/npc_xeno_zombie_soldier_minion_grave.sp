@@ -63,8 +63,21 @@ public void XenoSoldierMinion_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Soldier Minion");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_zombie_soldier_minion_grave");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoSoldierMinion(client, vecPos, vecAng, ally);
+}
 methodmap XenoSoldierMinion < CClotBody
 {
 	public void PlayIdleSound() {
@@ -146,7 +159,6 @@ methodmap XenoSoldierMinion < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
-		i_NpcInternalId[npc.index] = XENO_SOLDIER_ZOMBIE_MINION;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -156,11 +168,12 @@ methodmap XenoSoldierMinion < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		
-		
-		SDKHook(npc.index, SDKHook_Think, XenoSoldierMinion_ClotThink);
-		
 		npc.m_flNextMeleeAttack = 0.0;
 		
+		
+		func_NPCDeath[npc.index] = XenoSoldierMinion_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoSoldierMinion_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoSoldierMinion_ClotThink;		
 		
 		
 		//IDLE
@@ -231,14 +244,15 @@ public void XenoSoldierMinion_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -351,9 +365,6 @@ public void XenoSoldierMinion_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoSoldierMinion_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

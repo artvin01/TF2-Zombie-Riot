@@ -3,18 +3,37 @@
 
 // Balanced around Early Soldier
 
+public void BarrackArbelastOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Medival Arbalest");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_arbelast");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackArbelast(client, vecPos, vecAng, ally);
+}
+
 methodmap BarrackArbelast < BarrackBody
 {
 	public BarrackArbelast(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackArbelast npc = view_as<BarrackArbelast>(BarrackBody(client, vecPos, vecAng, "250",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
-		i_NpcInternalId[npc.index] = BARRACK_ARBELAST;
 		i_NpcWeight[npc.index] = 1;
 		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackArbelast_ClotThink);
-
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackArbelast_NPCDeath;
+		func_NPCThink[npc.index] = BarrackArbelast_ClotThink;
+		func_NPCAnimEvent[npc.index] = BarrackArbelast_HandleAnimEvent;
 		npc.m_flSpeed = 250.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_crusaders_crossbow/c_crusaders_crossbow.mdl");
@@ -42,8 +61,9 @@ public void BarrackArbelast_ClotThink(int iNPC)
 
 		if(npc.m_iTarget > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			if(flDistanceToTarget < 180000.0)
 			{
@@ -80,7 +100,7 @@ void BarrackArbelast_HandleAnimEvent(int entity, int event)
 		
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			float vecTarget[3]; vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1200.0);
+			float vecTarget[3]; PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0, _,vecTarget);
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSound();
@@ -93,5 +113,4 @@ void BarrackArbelast_NPCDeath(int entity)
 {
 	BarrackArbelast npc = view_as<BarrackArbelast>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, BarrackArbelast_ClotThink);
 }

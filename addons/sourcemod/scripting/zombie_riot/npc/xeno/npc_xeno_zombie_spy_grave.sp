@@ -56,8 +56,21 @@ public void XenoSpy_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Spy Facestabber");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_zombie_spy_grave");
+	strcopy(data.Icon, sizeof(data.Icon), "spy");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoSpy(client, vecPos, vecAng, ally);
+}
 methodmap XenoSpy < CClotBody
 {
 	public void PlayIdleSound() {
@@ -137,7 +150,6 @@ methodmap XenoSpy < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		i_NpcInternalId[npc.index] = XENO_SPY_FACESTABBER;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -148,7 +160,9 @@ methodmap XenoSpy < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		
 		
-		SDKHook(npc.index, SDKHook_Think, XenoSpy_ClotThink);		
+		func_NPCDeath[npc.index] = XenoSpy_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoSpy_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoSpy_ClotThink;		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -228,14 +242,15 @@ public void XenoSpy_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -256,7 +271,7 @@ public void XenoSpy_ClotThink(int iNPC)
 			npc.StartPathing();
 			
 			//Target close enough to hit
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
 				npc.FaceTowards(vecTarget, 1000.0);
@@ -346,10 +361,7 @@ public void XenoSpy_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoSpy_ClotThink);
-	
+
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))

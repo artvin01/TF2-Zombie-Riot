@@ -31,6 +31,24 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/capper_shoot.wav"
 };
 
+void SeabornSupporter_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Seaborn Supporter");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_supporter");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_supporter");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SeabornSupporter(client, vecPos, vecAng, ally);
+}
+
 methodmap SeabornSupporter < CClotBody
 {
 	public void PlayIdleSound()
@@ -61,7 +79,6 @@ methodmap SeabornSupporter < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = SEABORN_SUPPORTER;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN");
 		KillFeed_SetKillIcon(npc.index, "merasmus_zap");
@@ -70,7 +87,10 @@ methodmap SeabornSupporter < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_Think, SeabornSupporter_ClotThink);
+		func_NPCDeath[npc.index] = SeabornSupporter_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		func_NPCThink[npc.index] = SeabornSupporter_ClotThink;
+
 		b_ThisNpcIsSawrunner[npc.index] = true;
 		
 		npc.m_flSpeed = 240.0;
@@ -131,12 +151,13 @@ public void SeabornSupporter_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -152,7 +173,7 @@ public void SeabornSupporter_ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 				
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 700.0);
+				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 700.0, _,vecTarget);
 				npc.FaceTowards(vecTarget, 15000.0);
 
 				npc.PlayMeleeSound();
@@ -192,7 +213,7 @@ public void SeabornSupporter_ClotThink(int iNPC)
 			
 			if(MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
 			{
-				int entity = Npc_Create(SEARUNNER_ALT, -1, pos, ang, GetTeam(npc.index));
+				int entity = NPC_CreateByName("npc_searunner", -1, pos, ang, GetTeam(npc.index), "EX");
 				if(entity > MaxClients)
 				{
 					if(GetTeam(npc.index) != TFTeam_Red)
@@ -228,8 +249,6 @@ void SeabornSupporter_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornSupporter_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 

@@ -83,6 +83,7 @@ static const char g_WarCry[][] = {
 	"ambient/rottenburg/tunneldoor_open.wav",
 };
 
+static int NPCId;
 static float f3_PlaceLocated[MAXENTITIES][3];
 void MedivalMonk_OnMapStart_NPC()
 {
@@ -95,6 +96,20 @@ void MedivalMonk_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_WarCry));   i++) { PrecacheSound(g_WarCry[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Monk");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_monk");
+	strcopy(data.Icon, sizeof(data.Icon), "monk");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalMonk(client, vecPos, vecAng, ally);
 }
 
 static int i_ClosestAlly[MAXENTITIES];
@@ -161,8 +176,7 @@ methodmap MedivalMonk < CClotBody
 	{
 		MedivalMonk npc = view_as<MedivalMonk>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "75000", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_MONK;
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcWeight[npc.index] = 2;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -177,9 +191,11 @@ methodmap MedivalMonk < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, MedivalMonk_ClotThink);
+	
 
+		func_NPCDeath[npc.index] = MedivalMonk_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalMonk_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalMonk_ClotThink;
 		npc.m_iState = 0;
 		npc.m_flSpeed = 150.0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -277,14 +293,15 @@ public void MedivalMonk_ClotThink(int iNPC)
 		{
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+				float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 					
 				//Predict their pos.
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+					float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
@@ -316,14 +333,14 @@ public void MedivalMonk_ClotThink(int iNPC)
 			}
 			if(IsValidEnemy(npc.index, i_ClosestAllyTarget[npc.index]))
 			{
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(i_ClosestAllyTarget[npc.index]);
-				
-				flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+				float vecTarget[3]; WorldSpaceCenter(i_ClosestAllyTarget[npc.index], vecTarget );
+				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+				flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 					
 				//Predict their pos.
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, i_ClosestAllyTarget[npc.index]);
+					float vPredictedPos[3];  PredictSubjectPosition(npc, i_ClosestAllyTarget[npc.index],_,_,vPredictedPos);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
@@ -341,7 +358,9 @@ public void MedivalMonk_ClotThink(int iNPC)
 			}
 			else
 			{
-				flDistanceToTarget = GetVectorDistance(WorldSpaceCenterOld(i_ClosestAlly[npc.index]), WorldSpaceCenterOld(npc.index), true);
+				float vecTarget[3]; WorldSpaceCenter(i_ClosestAlly[npc.index], vecTarget );
+				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+				flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				if(flDistanceToTarget < (125.0* 125.0) && Can_I_See_Ally(npc.index, i_ClosestAlly[npc.index])) //make sure we can also see them for no unfair bs
 				{
 					if(npc.m_iChanged_WalkCycle != 5)
@@ -494,9 +513,10 @@ void MonkSelfDefense(MedivalMonk npc, float gameTime)
 	{
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex)) 
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			if(flDistanceToTarget <(NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 22.5))
 			{
@@ -586,9 +606,6 @@ public void MedivalMonk_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalMonk_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -627,13 +644,14 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 		{
 			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK && GetTeam(entity_close) != TFTeam_Red)
+			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != NPCId && GetTeam(entity_close) != TFTeam_Red)
 			{
 				static float pos2[3];
 				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
 				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE_ALLY * MONK_MAXRANGE_ALLY))
 				{
-					SDKHooks_TakeDamage(entity_close, Monk, GetClientOfUserId(npc.OwnerUserId), damage * 60.0, DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceCenterOld(entity_close));	
+					float WorldSpaceVec[3]; WorldSpaceCenter(entity_close, WorldSpaceVec);
+					SDKHooks_TakeDamage(entity_close, Monk, GetClientOfUserId(npc.OwnerUserId), damage * 60.0, DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceVec);	
 					damage *= 0.8;
 				}
 			}
@@ -647,7 +665,7 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 			{
 				int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-				if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK && i_NpcInternalId[entity_close] != RAIDMODE_GOD_ARKANTOS && GetTeam(entity_close) != TFTeam_Red)
+				if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != NPCId && !b_thisNpcIsARaid[entity_close] && GetTeam(entity_close) != TFTeam_Red)
 				{
 					bool regrow = true;
 					Building_CamoOrRegrowBlocker(entity_close, _, regrow);
@@ -671,7 +689,8 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos2);
 				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
 				{
-					SDKHooks_TakeDamage(client, Monk, Monk, damage, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceCenterOld(client));	
+					float WorldSpaceVec[3]; WorldSpaceCenter(client, WorldSpaceVec);
+					SDKHooks_TakeDamage(client, Monk, Monk, damage, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceVec);	
 				}
 			}
 		}
@@ -684,7 +703,8 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
 				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
 				{
-					SDKHooks_TakeDamage(entity_close, Monk, Monk, damage * 3.0, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceCenterOld(entity_close));	
+					float WorldSpaceVec[3]; WorldSpaceCenter(entity_close, WorldSpaceVec);
+					SDKHooks_TakeDamage(entity_close, Monk, Monk, damage * 3.0, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceVec);	
 				}
 			}
 		}
@@ -697,7 +717,8 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
 				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE) )
 				{
-					SDKHooks_TakeDamage(entity_close, Monk, Monk, damage, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceCenterOld(entity_close));	
+					float WorldSpaceVec[3]; WorldSpaceCenter(entity_close, WorldSpaceVec);
+					SDKHooks_TakeDamage(entity_close, Monk, Monk, damage, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceVec);	
 				}
 			}
 		}

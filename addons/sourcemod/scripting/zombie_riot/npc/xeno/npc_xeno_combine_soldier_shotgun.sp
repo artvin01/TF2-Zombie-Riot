@@ -79,6 +79,20 @@ public void XenoCombineSoldierShotgun_OnMapStart_NPC()
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Shotgunner");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_shotgun");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_shotgun");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoCombineSoldierShotgun(client, vecPos, vecAng, ally);
 }
 
 methodmap XenoCombineSoldierShotgun < CClotBody
@@ -174,7 +188,6 @@ methodmap XenoCombineSoldierShotgun < CClotBody
 	{
 		XenoCombineSoldierShotgun npc = view_as<XenoCombineSoldierShotgun>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "800", ally));
 		
-		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_SHOTGUN;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -189,8 +202,12 @@ methodmap XenoCombineSoldierShotgun < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		
-		SDKHook(npc.index, SDKHook_Think, XenoCombineSoldierShotgun_ClotThink);
+	
+
+		func_NPCDeath[npc.index] = XenoCombineSoldierShotgun_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoCombineSoldierShotgun_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoCombineSoldierShotgun_ClotThink;
+
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
@@ -259,14 +276,15 @@ public void XenoCombineSoldierShotgun_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -285,11 +303,11 @@ public void XenoCombineSoldierShotgun_ClotThink(int iNPC)
 			{
 				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index))
+			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				npc.m_fbGunout = true;
 				
-			//	float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+			//	float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.9;
 				npc.m_iAttacksTillReload += 1;
 				
@@ -322,7 +340,8 @@ public void XenoCombineSoldierShotgun_ClotThink(int iNPC)
 					//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
 					
 
-					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+					MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -334,13 +353,14 @@ public void XenoCombineSoldierShotgun_ClotThink(int iNPC)
 					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
 					
+					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
 					if(EscapeModeForNpc)
 					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 15.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 15.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 					else
 					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 10.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 10.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 				}
 				npc.PlayRangedSound();				
@@ -382,7 +402,6 @@ public void XenoCombineSoldierShotgun_NPCDeath(int entity)
 	}
 	
 	
-	SDKUnhook(npc.index, SDKHook_Think, XenoCombineSoldierShotgun_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -170,6 +170,23 @@ int Bloon_Health(bool fortified, int type)
 
 void Bloon_MapStart()
 {
+	if(!IsFileInDownloads("models/zombie_riot/btd/bloons_hitbox.mdl"))
+		return;
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Bloon");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bloon");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_BTD;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	char buffer[256];
 	for(int i; i<sizeof(SoundCeramicHit); i++)
 	{
@@ -215,6 +232,11 @@ void Bloon_MapStart()
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/bloons_hitbox.mdl");
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Bloon(client, vecPos, vecAng, ally, data);
 }
 
 static int BType[MAXENTITIES];
@@ -455,13 +477,12 @@ methodmap Bloon < CClotBody
 		
 		Bloon npc = view_as<Bloon>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloons_hitbox.mdl", "1.0", buffer, ally));
 		
-		i_NpcInternalId[npc.index] = BTD_BLOON;
 		i_NpcWeight[npc.index] = 1;
 		KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 		
 		npc.m_iBleedType = BLEEDTYPE_RUBBER;
-		npc.m_iStepNoiseType = NOTHING;	
-		npc.m_iNpcStepVariation = NOTHING;	
+		npc.m_iStepNoiseType = STEPTYPE_NONE;	
+		npc.m_iNpcStepVariation = STEPTYPE_NONE;	
 		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_bCamo = camo;
@@ -480,9 +501,11 @@ methodmap Bloon < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bDoNotGiveWaveDelay = true;
 		
+		func_NPCDeath[npc.index] = Bloon_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Bloon_OnTakeDamage;
+		func_NPCThink[npc.index] = Bloon_ClotThink;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bloon_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, Bloon_ClotThink);
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
@@ -564,27 +587,30 @@ public void Bloon_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 													
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			
-			NPC_SetGoalVector(npc.index, PredictSubjectPositionOld(npc, PrimaryThreatIndex));
+			
+			float VecPredictPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, VecPredictPos);
+			NPC_SetGoalVector(npc.index, VecPredictPos);
 		}
 		else
 		{
 			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		
-		if(flDistanceToTarget < 10000)
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 		{
 			if(npc.m_flNextMeleeAttack < gameTime)
 			{
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
+				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				
 				for(int i; i<9; i++)
 				{
@@ -594,22 +620,22 @@ public void Bloon_ClotThink(int iNPC)
 						{
 							if(npc.m_bFortified)
 							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 1.0 + float(i) * 1.4, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 1.0 + float(i) * 1.4, DMG_CLUB, -1, _, WorldSpaceVec);
 							}
 							else
 							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 1.0 + float(i), DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 1.0 + float(i), DMG_CLUB, -1, _, WorldSpaceVec);
 							}
 						}
 						else
 						{
 							if(npc.m_bFortified)
 							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, (2.0 + float(i) * 4.2) * 2.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, (2.0 + float(i) * 4.2) * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
 							}
 							else
 							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, (2.0 + float(i) * 3.0) * 2.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, (2.0 + float(i) * 3.0) * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
 							}
 						}
 						//delete swingTrace;
@@ -753,7 +779,6 @@ public void Bloon_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bloon_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_Think, Bloon_ClotThink);
 	
 	int sprite = npc.m_iSprite;
 	if(sprite > MaxClients && IsValidEntity(sprite))

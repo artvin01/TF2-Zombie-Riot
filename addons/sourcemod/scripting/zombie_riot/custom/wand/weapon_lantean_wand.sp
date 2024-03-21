@@ -502,7 +502,7 @@ public void lantean_Wand_Touch(int entity, int target)
 			float vecForward[3];
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			static float Entity_Position[3];
-			Entity_Position = WorldSpaceCenterOld(target);
+			WorldSpaceCenter(target, Entity_Position);
 
 			int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 			
@@ -515,8 +515,8 @@ public void lantean_Wand_Touch(int entity, int target)
 			{
 				dmg_penalty=(lantean_Wand_Drone_Count[owner]/10)*fl_lantean_overcharge_dmg_penalty[entity];
 			}
-			
-			SDKHooks_TakeDamage(target, entity, owner, (Wand_Dmg / dmg_penalty), DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+			float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+			SDKHooks_TakeDamage(target, entity, owner, (Wand_Dmg / dmg_penalty), DMG_PLASMA, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 			fl_targetshit[entity] *=fl_lantean_penetration_dmg_penatly[entity];
 			
 			switch(GetRandomInt(1,5)) 
@@ -606,7 +606,7 @@ static void LanternFindVecToBotTo(int client)
 	int target = TR_GetEntityIndex(swingTrace);	
 	if(IsValidEnemy(client, target))
 	{
-		vec = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, vec);
 	}
 	else
 	{

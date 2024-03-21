@@ -49,8 +49,23 @@ void WinterFrostHunter_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Frost Hunter");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_frost_hunter");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_fan");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	int id = NPC_Add(data);
+	Rogue_Paradox_AddWinterNPC(id);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return WinterFrostHunter(client, vecPos, vecAng, ally);
+}
 
 methodmap WinterFrostHunter < CClotBody
 {
@@ -98,7 +113,6 @@ methodmap WinterFrostHunter < CClotBody
 	{
 		WinterFrostHunter npc = view_as<WinterFrostHunter>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_WINTER_FROST_HUNTER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -181,9 +195,10 @@ public void WinterFrostHunter_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int SetGoalVectorIndex = 0;
 		SetGoalVectorIndex = WinterFrostHunterSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		switch(SetGoalVectorIndex)
@@ -195,7 +210,7 @@ public void WinterFrostHunter_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3];
-					vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
@@ -207,7 +222,7 @@ public void WinterFrostHunter_ClotThink(int iNPC)
 			{
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
-				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
 			}
 		}
@@ -279,7 +294,8 @@ int WinterFrostHunterSelfDefense(WinterFrostHunter npc, float gameTime, int targ
 				npc.m_flAttackHappens = 0.0;
 				
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 								
@@ -307,7 +323,7 @@ int WinterFrostHunterSelfDefense(WinterFrostHunter npc, float gameTime, int targ
 
 		if(gameTime > npc.m_flNextMeleeAttack)
 		{
-			if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+			if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 			{
 				int Enemy_I_See;
 									
@@ -338,7 +354,7 @@ int WinterFrostHunterSelfDefense(WinterFrostHunter npc, float gameTime, int targ
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayRangedSound();
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+				float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 				npc.FaceTowards(vecTarget, 20000.0);
 				Handle swingTrace;
 				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))

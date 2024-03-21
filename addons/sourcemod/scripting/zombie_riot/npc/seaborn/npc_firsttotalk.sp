@@ -35,6 +35,21 @@ void FirstToTalk_MapStart()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_AngerSounds);
 	LaserSprite = PrecacheModel(SPRITE_SPRITE);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "The First To Talk");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_firsttotalk");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_firsttotalk");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return FirstToTalk(client, vecPos, vecAng, ally);
 }
 
 methodmap FirstToTalk < CClotBody
@@ -68,7 +83,6 @@ methodmap FirstToTalk < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
-		i_NpcInternalId[npc.index] = FIRSTTOTALK;
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
 		KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
@@ -77,8 +91,8 @@ methodmap FirstToTalk < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, FirstToTalk_ClotThink);
+		func_NPCDeath[npc.index] = FirstToTalk_NPCDeath;
+		func_NPCThink[npc.index] = FirstToTalk_ClotThink;
 		
 		npc.m_flSpeed = 200.0;	// 0.8 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -96,7 +110,7 @@ methodmap FirstToTalk < CClotBody
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 100, 100, 255, 255);
 
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 		vecMe[2] += 500.0;
 		npc.m_iWearable1 = ParticleEffectAt(vecMe, "env_rain_128", -1.0);
 		SetParent(npc.index, npc.m_iWearable1);
@@ -131,8 +145,9 @@ public void FirstToTalk_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec );
+		float distance = GetVectorDistance(vecTarget, npc_vec, true);
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -140,7 +155,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 				
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1200.0);
+				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0, _,vecTarget);
 				npc.FaceTowards(vecTarget, 15000.0);
 
 				npc.PlayMeleeSound();
@@ -158,7 +173,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(entity, 100, 100, 255, 255);
 					
-					vecTarget = WorldSpaceCenterOld(entity);
+					WorldSpaceCenter(entity, vecTarget);
 					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "rockettrail_bubbles", 3.0);
 					SetParent(entity, f_ArrowTrailParticle[entity]);
 					f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
@@ -227,7 +242,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 		{
 			if(distance < npc.GetLeadRadius())
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 
@@ -258,7 +273,7 @@ public Action FirstToTalk_TimerShoot(Handle timer, DataPack pack)
 	FirstToTalk npc = view_as<FirstToTalk>(EntRefToEntIndex(pack.ReadCell()));
 	if(npc.index != INVALID_ENT_REFERENCE)
 	{
-		float vecPos[3]; vecPos = WorldSpaceCenterOld(npc.index);
+		float vecPos[3]; WorldSpaceCenter(npc.index, vecPos );
 		vecPos[2] += 100.0;
 
 		npc.PlayMeleeSound();
@@ -272,7 +287,7 @@ public Action FirstToTalk_TimerShoot(Handle timer, DataPack pack)
 			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(entity, 100, 100, 255, 255);
 			
-			vecPos = WorldSpaceCenterOld(entity);
+			WorldSpaceCenter(entity, vecPos);
 			f_ArrowTrailParticle[entity] = ParticleEffectAt(vecPos, "rockettrail_bubbles", 3.0);
 			SetParent(entity, f_ArrowTrailParticle[entity]);
 			f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
@@ -319,7 +334,7 @@ public Action FirstToTalk_TimerAttack(Handle timer, DataPack pack)
 
 		if(victim)
 		{
-			vecPos = WorldSpaceCenterOld(victim);
+			WorldSpaceCenter(victim, vecPos);
 			ParticleEffectAt(vecPos, "water_bulletsplash01", 3.0);
 
 			float vecPos2[3];
@@ -377,9 +392,6 @@ void FirstToTalk_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, FirstToTalk_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

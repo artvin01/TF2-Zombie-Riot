@@ -37,8 +37,21 @@ void EnegaKapus_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	PrecacheModel("models/player/engineer.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Enega Kapus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_enegakapus");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_stun_armored");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return EnegaKapus(client, vecPos, vecAng, ally);
+}
 methodmap EnegaKapus < CClotBody
 {
 	public void PlayIdleAlertSound() 
@@ -77,7 +90,6 @@ methodmap EnegaKapus < CClotBody
 	{
 		EnegaKapus npc = view_as<EnegaKapus>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1500", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_ENEGAKAPUS;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -88,7 +100,10 @@ methodmap EnegaKapus < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
-		
+
+		func_NPCDeath[npc.index] = EnegaKapus_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = EnegaKapus_OnTakeDamage;
+		func_NPCThink[npc.index] = EnegaKapus_ClotThink;		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = GetGameTime() + 10.0;
 		
@@ -96,7 +111,6 @@ methodmap EnegaKapus < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_Think, EnegaKapus_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -165,13 +179,14 @@ public void EnegaKapus_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -211,7 +226,6 @@ public void EnegaKapus_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_Think, EnegaKapus_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
@@ -236,7 +250,7 @@ void EnegaKapusSelfDefense(EnegaKapus npc, float gameTime, int target, float dis
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+				float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 				npc.FaceTowards(vecTarget, 20000.0);
 				Handle swingTrace;
 				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))

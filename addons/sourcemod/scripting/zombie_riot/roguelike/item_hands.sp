@@ -106,9 +106,9 @@ public void Rogue_HandleBrawler_Weapon(int entity)
 {
 	if(i_WeaponArchetype[entity] == 11 || i_WeaponArchetype[entity] == 5)	// Or Single Pellet
 	{
-		// +50% fire rate
-		Attributes_SetMulti(entity, 6, 0.5);
-		Attributes_SetMulti(entity, 97, 0.5);
+		// +25% fire rate
+		Attributes_SetMulti(entity, 6, 0.75);
+		Attributes_SetMulti(entity, 97, 0.75);
 	}
 }
 

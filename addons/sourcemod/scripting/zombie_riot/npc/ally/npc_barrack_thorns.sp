@@ -32,9 +32,22 @@ public void Barracks_Thorns()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsAbilityActivate));   i++)			{ PrecacheSound(g_RangedAttackSoundsAbilityActivate[i]);}
 	for (int i = 0; i < (sizeof(g_ThornsSpawn));   i++)			{ PrecacheSound(g_ThornsSpawn[i]);   }
 	for (int i = 0; i < (sizeof(g_ThornsDeath));   i++)			{ PrecacheSound(g_ThornsDeath[i]);   }
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Thorns");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_thorns");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 	
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackThorns(client, vecPos, vecAng, ally);
+}
 bool ThornsHasElite[MAXENTITIES];
 bool ThornsHasMaxPot[MAXENTITIES];
 
@@ -101,12 +114,14 @@ methodmap BarrackThorns < BarrackBody
 		ThornsHasElite[npc.index] = elite;
 		ThornsHasMaxPot[npc.index] = MaxPot;
 
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackThorns_NPCDeath;
+		func_NPCThink[npc.index] = BarrackThorns_ClotThink;
+
 		ThornsDelayTimerUpgrade[npc.index] = GetGameTime() + 5.0;
 
-		i_NpcInternalId[npc.index] = BARRACK_THORNS;
 		i_NpcWeight[npc.index] = 2;
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackThorns_ClotThink);
 		npc.PlayThornsSpawn();
 
 		npc.m_flSpeed = 250.0;
@@ -232,8 +247,9 @@ public void BarrackThorns_ClotThink(int iNPC)
 
 		if(EnemyToAttack > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(EnemyToAttack);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(EnemyToAttack, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 
 			if(ThornsAbilityAttackTimes[npc.index] >= 15)
@@ -358,9 +374,9 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAtta
 			ThornsDecidedOnAttack[npc.index] = 0;
 			if(IsValidEnemy(npc.index, EnemyToAttack))
 			{
-				npc.FaceTowards(WorldSpaceCenterOld(EnemyToAttack), 15000.0);
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(EnemyToAttack), 15000.0);
+				float SelfVecPos[3]; WorldSpaceCenter(EnemyToAttack, SelfVecPos);
+				npc.FaceTowards(SelfVecPos, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, EnemyToAttack, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 								
@@ -431,7 +447,8 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 	{
 		if(IsValidEnemy(npc.index, EnemyToAttack))
 		{
-			npc.FaceTowards(WorldSpaceCenterOld(EnemyToAttack), 15000.0);
+			float SelfVecPos[3]; WorldSpaceCenter(EnemyToAttack, SelfVecPos);
+			npc.FaceTowards(SelfVecPos, 15000.0);
 		}
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
 		{
@@ -463,7 +480,7 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 					GetAttachment(npc.index, "weapon_bone", flPos, flAng);
 					float vecTarget[3];
 					float speed = 2000.0;
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, EnemyToAttack, speed);
+					PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed,_, vecTarget);
 					npc.m_flSpeed = 0.0;
 					int rocket;
 					rocket = npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_trail", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
@@ -518,7 +535,8 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 	{
 		if(IsValidEnemy(npc.index, EnemyToAttack))
 		{
-			npc.FaceTowards(WorldSpaceCenterOld(EnemyToAttack), 15000.0);
+			float SelfVecPos[3]; WorldSpaceCenter(EnemyToAttack, SelfVecPos);
+			npc.FaceTowards(SelfVecPos, 15000.0);
 		}
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
 		{
@@ -556,7 +574,7 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 					GetAttachment(npc.index, "weapon_bone", flPos, flAng);
 					float vecTarget[3];
 					float speed = 2000.0;
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, EnemyToAttack, speed);
+					PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed,_,vecTarget);
 					npc.m_flSpeed = 0.0;
 					int rocket;
 					rocket = npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));

@@ -76,8 +76,22 @@ public void CombineSoldierAr2_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/combine_soldier.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Combine Rifler");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_ar2");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_rifle");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return CombineSoldierAr2(client, vecPos, vecAng, ally);
+}
 methodmap CombineSoldierAr2 < CClotBody
 {
 	public void PlayIdleSound() {
@@ -170,7 +184,6 @@ methodmap CombineSoldierAr2 < CClotBody
 	{
 		CombineSoldierAr2 npc = view_as<CombineSoldierAr2>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_AR2;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -194,8 +207,10 @@ methodmap CombineSoldierAr2 < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		
+		func_NPCDeath[npc.index] = CombineSoldierAr2_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = CombineSoldierAr2_OnTakeDamage;
+		func_NPCThink[npc.index] = CombineSoldierAr2_ClotThink;
 		
-		SDKHook(npc.index, SDKHook_Think, CombineSoldierAr2_ClotThink);
 		
 		if(EscapeModeForNpc)
 		{
@@ -270,7 +285,7 @@ public void CombineSoldierAr2_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			if (npc.m_fbGunout == false && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				if (!npc.m_bmovedelay)
@@ -292,12 +307,13 @@ public void CombineSoldierAr2_ClotThink(int iNPC)
 			}
 			
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -351,14 +367,15 @@ public void CombineSoldierAr2_ClotThink(int iNPC)
 					float vecDirShooting[3], vecRight[3], vecUp[3];
 					
 					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+					MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 					
 					float m_vecSrc[3];
 					
-					m_vecSrc = WorldSpaceCenterOld(npc.index);
+					WorldSpaceCenter(npc.index, m_vecSrc);
 					
 					float vecEnd[3];
 					vecEnd[0] = m_vecSrc[0] + vecDirShooting[0] * 9000; 
@@ -382,14 +399,15 @@ public void CombineSoldierAr2_ClotThink(int iNPC)
 					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
-					
+					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+
 					if(EscapeModeForNpc)
 					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					}
 					else
 					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenterOld(npc.index), vecDir, 3.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 3.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					}
 					npc.PlayRangedSound();
 				}
@@ -404,7 +422,7 @@ public void CombineSoldierAr2_ClotThink(int iNPC)
 			//	npc.FaceTowards(vecTarget);
 			//	npc.FaceTowards(vecTarget);
 				
-				if((npc.m_flNextMeleeAttack < GetGameTime(npc.index) && flDistanceToTarget < 10000) || npc.m_flAttackHappenswillhappen)
+				if((npc.m_flNextMeleeAttack < GetGameTime(npc.index) && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED) || npc.m_flAttackHappenswillhappen)
 				{
 				
 			//		npc.FaceTowards(vecTarget, 1000.0);
@@ -505,9 +523,6 @@ public void CombineSoldierAr2_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, CombineSoldierAr2_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -33,8 +33,21 @@ void AnarchyAbomination_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_charge_sound)); i++) { PrecacheSound(g_charge_sound[i]); }
 	PrecacheSound("weapons/flame_thrower_loop.wav");
 	PrecacheSound("weapons/flame_thrower_pilot.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Abomination");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_abomination");
+	strcopy(data.Icon, sizeof(data.Icon), "pyro_armored2_1");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return AnarchyAbomination(client, vecPos, vecAng, ally);
+}
 
 methodmap AnarchyAbomination < CClotBody
 {
@@ -100,7 +113,6 @@ methodmap AnarchyAbomination < CClotBody
 	{
 		AnarchyAbomination npc = view_as<AnarchyAbomination>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "500000", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_ANARCHY_ABOMINATION;
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -201,13 +213,14 @@ public void AnarchyAbomination_ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -216,7 +229,7 @@ public void AnarchyAbomination_ClotThink(int iNPC)
 		}
 		if(npc.m_flCharge_delay < GetGameTime(npc.index))
 		{
-			if(flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
+			if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)
 			{
 				npc.PlayChargeSound();
 				npc.m_flCharge_delay = GetGameTime(npc.index) + 5.0;
@@ -336,9 +349,10 @@ void AnarchyAbominationSelfDefense(AnarchyAbomination npc)
 	target = npc.m_iTarget;
 	//some Ranged units will behave differently.
 	//not this one.
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+	float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 	bool SpinSound = true;
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 	if(flDistanceToTarget < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
 	{
 		npc.PlayMinigunSound(true);

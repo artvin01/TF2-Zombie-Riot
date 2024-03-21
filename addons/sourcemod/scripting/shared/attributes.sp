@@ -23,7 +23,7 @@ void Attributes_EntityDestroyed(int entity)
 	delete WeaponAttributes[entity];
 }
 
-bool Attributes_RemoveAll(int entity)
+stock bool Attributes_RemoveAll(int entity)
 {
 	delete WeaponAttributes[entity];
 	return TF2Attrib_RemoveAll(entity);
@@ -136,6 +136,7 @@ stock void Attributes_SetString(int entity, int attrib, const char[] value)
 	WeaponAttributes[entity].SetString(buffer, value);
 }
 
+#if defined ZR
 bool Attributes_Fire(int weapon)
 {
 	int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");
@@ -154,6 +155,7 @@ bool Attributes_Fire(int weapon)
 	}
 	return false;
 }
+#endif
 
 #if defined RPG
 int Attributes_Airdashes(int client)
@@ -184,17 +186,15 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 				{
 					HealEntityGlobal(client, client, value, 1.0, 0.0, HEAL_SELFHEAL);
 				}
-					
-
-				value = float(i_BleedDurationWeapon[weapon]);	// bleeding duration
+				
+				value = Attributes_Get(weapon, 149, 0.0);	// bleeding duration
 				if(value)
 					StartBleedingTimer(victim, client, Attributes_Get(weapon, 2, 1.0) * 4.0, RoundFloat(value * 2.0), weapon, damagetype);
+				
+				value = Attributes_Get(weapon, 208, 0.0);	// Set DamageType Ignite
 
-					
-				value = float(i_BurnDurationWeapon[weapon]);	// Set DamageType Ignite
-
-				int itemdefindex = 0;
-				if(IsValidEntity(weapon))
+				int itemdefindex = -1;
+				if(IsValidEntity(weapon) && weapon >= MaxClients)
 				{
 					itemdefindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 				}
@@ -209,20 +209,18 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 						
 					NPC_Ignite(victim, client, value, weapon);
 				}	
-				value = float(i_ExtinquisherWeapon[weapon]);	// Extinquisher
-				if(value)
+				
+				if(Attributes_Get(weapon, 638, 0.0))	// Extinquisher
 				{
-					if(value == 1.0)
+					if(IgniteFor[victim] > 0)
 					{
-						if(IgniteFor[victim] > 0)
-						{
-							damage *= 1.5;
-							DisplayCritAboveNpc(victim, client, true);
-						}
+						damage *= 1.5;
+						DisplayCritAboveNpc(victim, client, true);
 					}
 					//dont actually extinquish, just give them more damage.
 				}
-				value = f_UberOnHitWeapon[weapon];
+				
+				value = Attributes_Get(weapon, 17, 0.0);
 				if(value)
 				{
 					if(!TF2_IsPlayerInCondition(client, TFCond_Ubercharged)) //No infinite uber chain.

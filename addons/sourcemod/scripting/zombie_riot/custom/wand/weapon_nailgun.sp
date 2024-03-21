@@ -49,6 +49,76 @@ public void Weapon_Nailgun(int client, int weapon, bool crit)
 	SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 }
 
+void WeaponNailgun_Enable(int client, int weapon)
+{
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_NAILGUN_SMG)
+	{
+		DataPack pack = new DataPack();
+		RequestFrame(Weapon_Nailgun_SMG, pack);
+		pack.WriteCell(EntIndexToEntRef(client));
+		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
+	else if(i_CustomWeaponEquipLogic[weapon] == WEAPON_NAILGUN_SHOTGUN)
+	{
+		DataPack pack = new DataPack();
+		RequestFrame(Weapon_Nailgun_Shotgun, pack);
+		pack.WriteCell(EntIndexToEntRef(client));
+		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
+}
+public void Weapon_Nailgun_SMG(DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidClient(client) && IsValidEntity(weapon))
+	{
+		//when the weapon is created.
+		float attack_speed;
+			
+		attack_speed = Attributes_GetOnPlayer(client, 343, true); //Sentry attack speed bonus
+		Attributes_Set(weapon, 6, attack_speed);
+		float Extra_Clip;
+			
+		Extra_Clip = 1.0 / Attributes_GetOnPlayer(client, 343, true); 
+		Extra_Clip *= 2.0;
+		Attributes_Set(weapon, 4, Extra_Clip);
+
+		float damage = Attributes_GetOnPlayer(client, 287, true);			//Sentry damage bonus
+		damage * 2.0;
+		//reduce
+		Attributes_Set(weapon, 2, damage);
+	}
+	delete pack;
+}
+
+public void Weapon_Nailgun_Shotgun(DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidClient(client) && IsValidEntity(weapon))
+	{
+		//when the weapon is created.
+		float attack_speed;
+			
+		attack_speed = Attributes_GetOnPlayer(client, 343, true); //Sentry attack speed bonus
+		Attributes_Set(weapon, 6, attack_speed);
+		Attributes_Set(weapon, 97, attack_speed);//reload speed too for shotgun
+		float Extra_Clip;
+		
+		Extra_Clip = 1.0 / Attributes_GetOnPlayer(client, 343, true); 
+		Attributes_Set(weapon, 4, Extra_Clip);
+
+		float damage = Attributes_GetOnPlayer(client, 287, true);			//Sentry damage bonus
+		damage *= 0.65;
+		//reduce
+		Attributes_Set(weapon, 2, damage);
+			
+	}
+	delete pack;
+}
+
 
 public void Gun_NailgunTouch(int entity, int target)
 {
@@ -61,12 +131,13 @@ public void Gun_NailgunTouch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		switch(GetRandomInt(1,5)) 
 		{
 			case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
