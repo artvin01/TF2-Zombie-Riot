@@ -1539,6 +1539,22 @@ void Store_SetClientItem(int client, int index, int owned, int scaled, int equip
 	item.Sell[client] = sell;
 	item.BuyWave[client] = -1;
 	
+	if(item.ParentKit)
+	{
+		static Item subItem;
+		int length = StoreItems.Length;
+		for(int i; i < length; i++)
+		{
+			StoreItems.GetArray(i, subItem);
+			if(subItem.Section == index)
+			{
+				subItem.Owned[client] = item.Equipped[client] ? owned : 0;
+				subItem.Equipped[client] = item.Equipped[client];
+				StoreItems.SetArray(i, subItem);
+			}
+		}
+	}
+	
 	StoreItems.SetArray(index, item);
 }
 
@@ -2391,7 +2407,7 @@ bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped
 	for(; i < length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.Owned[client] || item.Scaled[client] || item.Equipped[client])
+		if(!item.ChildKit && (item.Owned[client] || item.Scaled[client] || item.Equipped[client]))
 		{
 			owned = item.Owned[client];
 			scale = item.Scaled[client];
@@ -3971,6 +3987,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									if(subItem.Section == index)
 									{
 										Store_EquipSlotCheck(client, subItem);
+										subItem.Owned[client] = item.Owned[client];
 										subItem.Equipped[client] = true;
 										StoreItems.SetArray(i, subItem);
 									}
@@ -4143,6 +4160,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 										StoreItems.GetArray(i, subItem);
 										if(subItem.Section == index)
 										{
+											subItem.Owned[client] = 0;
 											subItem.Equipped[client] = false;
 											StoreItems.SetArray(i, subItem);
 										}
@@ -5746,6 +5764,7 @@ stock void Store_Unequip(int client, int index)
 			StoreItems.GetArray(i, item);
 			if(item.Section == index)
 			{
+				item.Owned[client] = 0;
 				item.Equipped[client] = false;
 				StoreItems.SetArray(i, item);
 			}
