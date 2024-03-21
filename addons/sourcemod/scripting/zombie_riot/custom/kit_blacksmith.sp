@@ -408,12 +408,12 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 		return;
 	}
 
-	delete list;
-
 	any values[2];
 	list.GetArray(GetURandomInt() % list.Length, values);
 	tinker.Attrib[pos] = view_as<int>(values[0]);
 	tinker.Value[pos] = view_as<float>(values[1]);
+
+	delete list;
 
 	if(found == -1)
 	{
