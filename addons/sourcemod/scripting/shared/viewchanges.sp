@@ -80,45 +80,8 @@ void ViewChange_MapStart()
 	PrecacheModel(NIKO_PLAYERMODEL);
 }
 
-void OverridePlayerModel(int client, int ModelIndex, bool DontShowCosmetics)
-{
-	b_HideCosmeticsPlayer[client] = DontShowCosmetics;
-	i_PlayerModelOverrideIndexWearable[client] = ModelIndex;
-	ViewChange_PlayerModel(client);
-	int entity;
-	if(DontShowCosmetics || b_IsPlayerNiko[client])
-	{
-		while(TF2_GetWearable(client, entity))
-		{
-			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-				continue;
-
-			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
-		}
-	}
-	else
-	{
-		if(b_IsPlayerNiko[client])
-			return;
-
-		while(TF2_GetWearable(client, entity))
-		{
-			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-				continue;
-
-			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
-		}
-	}
-}
-
 void ViewChange_PlayerModel(int client)
 {
-	int ViewmodelPlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
-	if(IsValidEntity(ViewmodelPlayerModel))
-	{
-		TF2_RemoveWearable(client, ViewmodelPlayerModel);
-	}
-
 	{
 #if defined ZR
 		if((b_IsPlayerNiko[client]) && TeutonType[client] == TEUTON_NONE)
@@ -129,22 +92,23 @@ void ViewChange_PlayerModel(int client)
 			SetVariantString(NIKO_PLAYERMODEL);
 			AcceptEntityInput(client, "SetCustomModel");
 			SetEntProp(client, Prop_Send, "m_bUseClassAnimations", true);
+
+#if defined RPG
+			Party_PlayerModel(client, NIKO_PLAYERMODEL);
+#endif		
 		}
 		else
 		{
 			int team = GetClientTeam(client);
 			int entity = CreateEntityByName("tf_wearable");
-			if(entity > MaxClients)	// playermodel
+			if(entity > MaxClients)	// Weapon viewmodel
 			{
 #if defined ZR
 				if(TeutonType[client] == TEUTON_NONE)
 				{
 					if(i_HealthBeforeSuit[client] == 0)
 					{
-						if(i_PlayerModelOverrideIndexWearable[client] > 0)
-							SetEntProp(entity, Prop_Send, "m_nModelIndex", i_PlayerModelOverrideIndexWearable[client]);
-						else
-							SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
+						SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
 					}
 					else
 					{
@@ -176,6 +140,10 @@ void ViewChange_PlayerModel(int client)
 				SDKCall_EquipWearable(client, entity);
 				SetEntProp(client, Prop_Send, "m_nRenderFX", 6);
 				i_Viewmodel_PlayerModel[client] = EntIndexToEntRef(entity);
+
+#if defined RPG
+				Party_PlayerModel(client, PlayerModels[CurrentClass[client]]);
+#endif
 
 			}
 		}
