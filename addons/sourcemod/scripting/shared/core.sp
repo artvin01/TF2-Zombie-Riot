@@ -1293,7 +1293,7 @@ public void OnPluginStart()
 	RegAdminCmd("sm_play_viewmodel_anim", Command_PlayViewmodelAnim, ADMFLAG_ROOT, "Testing viewmodel animation manually");
 
 #if defined ZR
-	RegConsoleCmd("sm_make_niko", Command_MakeNiko, "Turn This player into niko");
+	//RegConsoleCmd("sm_make_niko", Command_MakeNiko, "Turn This player into niko");
 #endif
 
 	RegAdminCmd("sm_toggle_fake_cheats", Command_ToggleCheats, ADMFLAG_GENERIC, "ToggleCheats");

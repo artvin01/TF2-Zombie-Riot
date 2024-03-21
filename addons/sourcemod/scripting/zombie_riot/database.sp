@@ -227,7 +227,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 		
 		if(results[2].FetchRow())
 		{
-			b_IsPlayerNiko[client] = view_as<bool>(results[2].FetchInt(1));
+			//b_IsPlayerNiko[client] = view_as<bool>(results[2].FetchInt(1));
 			f_ArmorHudOffsetX[client] = results[2].FetchFloat(2);
 			f_ArmorHudOffsetY[client] = results[2].FetchFloat(3);
 			f_HurtHudOffsetX[client] = results[2].FetchFloat(4);
