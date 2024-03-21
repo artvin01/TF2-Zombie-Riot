@@ -293,7 +293,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 		}
 	}
 
-	ArrayList list = new ArrayList(2);
+	ArrayList list = new ArrayList(3);
 	
 	switch(rarity)
 	{
@@ -511,9 +511,9 @@ static void AddAttrib(ArrayList list, int entity, int attrib, float low, float h
 	if(!entity || (Attributes_Has(entity, attrib) && Attributes_Get(entity, attrib, 1.0) > 0.0))
 	{
 		static any vals[3];
-		vals[0] = attrib;
-		vals[1] = low;
-		vals[2] = high;
+		vals[0] = view_as<any>(attrib);
+		vals[1] = view_as<any>(low);
+		vals[2] = view_as<any>(high);
 		list.PushArray(vals);
 	}
 }
@@ -536,11 +536,11 @@ static void PrintAttribValue(int client, int attrib, float value)
 	char num[16];
 	if(value < 1.0)
 	{
-		FormatEx(num, sizeof(num), " %d%% ", RoundFloat(((1.0 / value) - 1.0) * 100.0));
+		FormatEx(num, sizeof(num), " %d%% ", RoundToCeil(((1.0 / value) - 1.0) * 100.0));
 	}
 	else
 	{
-		FormatEx(num, sizeof(num), " %d%% ", RoundFloat((value - 1.0) * 100.0));
+		FormatEx(num, sizeof(num), " %d%% ", RoundToCeil((value - 1.0) * 100.0));
 	}
 
 	num[0] = ((value < 1.0) ^ inverse) ? '-' : '+';
