@@ -4100,6 +4100,7 @@ int MaxSupportBuildingsAllowed(int client, bool ingore_glass)
   	int Building_health_attribute = i_MaxSupportBuildingsLimit[client];
 	
 	maxAllowed += Building_health_attribute; 
+	maxAllowed += Blacksmith_Additional_SupportBuildings(client); 
 	
 	if(maxAllowed < 1)
 	{

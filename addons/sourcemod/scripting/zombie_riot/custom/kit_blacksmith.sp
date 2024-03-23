@@ -15,6 +15,7 @@ static const int SupportBuildings[] = { 2, 5, 9, 14, 14, 15 };
 static const int MetalGain[] = { 10, 25, 50, 100, 200, 300 };
 static const float Cooldowns[] = { 180.0, 150.0, 120.0, 90.0, 60.0, 30.0 };
 static int SmithLevel[MAXTF2PLAYERS] = {-1, ...};
+static int i_AdditionalSupportBuildings[MAXTF2PLAYERS] = {0, ...};
 
 static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
 static Handle EffectTimer[MAXTF2PLAYERS];
@@ -23,9 +24,14 @@ static ArrayList Tinkers;
 
 void Blacksmith_RoundStart()
 {
+	Zero(i_AdditionalSupportBuildings);
 	delete Tinkers;
 }
 
+int Blacksmith_Additional_SupportBuildings(int client)
+{
+	return i_AdditionalSupportBuildings[client];
+}
 void Blacksmith_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BLACKSMITH)
@@ -38,7 +44,7 @@ void Blacksmith_Enable(int client, int weapon)
 		delete EffectTimer[client];
 		EffectTimer[client] = CreateTimer(0.5, Blacksmith_TimerEffect, client, TIMER_REPEAT);
 
-		i_MaxSupportBuildingsLimit[client] = SupportBuildings[SmithLevel[client]];
+		i_AdditionalSupportBuildings[client] = SupportBuildings[SmithLevel[client]];
 	}
 
 	if(Tinkers)
@@ -84,7 +90,7 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 						SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalGain[SmithLevel[client]]);
 					}
 
-					i_MaxSupportBuildingsLimit[client] = SupportBuildings[SmithLevel[client]];
+					i_AdditionalSupportBuildings[client] = SupportBuildings[SmithLevel[client]];
 
 					if(ParticleRef[client] == -1)
 					{
@@ -134,7 +140,7 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 		
 		ParticleRef[client] = -1;
 	}
-
+	i_AdditionalSupportBuildings[client] = 0;
 	EffectTimer[client] = null;
 	return Plugin_Stop;
 }
