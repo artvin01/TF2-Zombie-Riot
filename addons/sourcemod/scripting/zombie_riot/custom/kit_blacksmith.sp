@@ -554,7 +554,7 @@ static void PrintAttribValue(int client, int attrib, float value)
 	char num[16];
 	if(value < 1.0)
 	{
-		FormatEx(num, sizeof(num), " %d%% ", RoundToCeil(((1.0 / value) - 1.0) * 100.0));
+		FormatEx(num, sizeof(num), " %d%% ", RoundToCeil((1.0 - value) * 100.0));
 	}
 	else
 	{
