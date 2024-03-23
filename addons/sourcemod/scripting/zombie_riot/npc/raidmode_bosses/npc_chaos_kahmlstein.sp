@@ -101,8 +101,11 @@ static bool b_khamlWeaponRage[MAXENTITIES];
 
 static int i_khamlCutscene[MAXENTITIES];
 static float f_khamlCutscene[MAXENTITIES];
+static bool b_angered_twice[MAXENTITIES];
 
 static float f_KahmlResTemp[MAXENTITIES];
+static float f_TalkDelayCheck;
+static int i_TalkDelayCheck;
 
 static int NPCId;
 
@@ -292,6 +295,9 @@ methodmap ChaosKahmlstein < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flMeleeArmor = 1.25;	
 		b_khamlWeaponRage[npc.index] = false;
+		b_angered_twice[npc.index] = false;
+		f_TalkDelayCheck = 0.0;
+		i_TalkDelayCheck = 0;
 
 
 
@@ -390,11 +396,19 @@ methodmap ChaosKahmlstein < CClotBody
 			if(final)
 			{
 				RaidModeTime += 45.0;
-				Music_SetRaidMusic("vo/null.mp3", 30, false, 0.5);
+				Music_SetRaidMusicSimple("vo/null.mp3", 30, false, 0.5);
 			}
 			else
 			{
-				Music_SetRaidMusic("#zombiesurvival/internius/khamlstein.mp3", 294, true, 1.5);
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's fight!");
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/khamlstein.mp3");
+				music.Time = 294;
+				music.Volume = 1.5;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "Contra la Luna");
+				strcopy(music.Artist, sizeof(music.Artist), "P.T. Adamczyk");
+				Music_SetRaidMusic(music);
 			}
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -430,7 +444,7 @@ methodmap ChaosKahmlstein < CClotBody
 			{
 				RaidModeScaling *= 0.7;
 			}
-			RaidModeScaling *= 0.7;
+			RaidModeScaling *= 0.6;
 		}
 
 		
@@ -506,6 +520,31 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+	if(b_angered_twice[npc.index])
+	{
+		BlockLoseSay = true;
+		npc.m_bisWalking = false;
+		npc.StopPathing();
+		switch(ChaosKahmlsteinTalk(iNPC))
+		{
+			case 1:
+			{
+				int closestTarget = GetClosestAllyPlayer(npc.index);
+				if(IsValidEntity(closestTarget))
+				{
+					float WorldSpaceVec[3]; WorldSpaceCenter(closestTarget, WorldSpaceVec);
+					npc.FaceTowards(WorldSpaceVec, 100.0);
+				}
+			}
+			case 2:
+			{
+				GiveProgressDelay(0.5);
+				npc.m_bDissapearOnDeath = true;
+				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+			}
+		}
+		return;
+	}
 
 	if(i_RaidGrantExtra[npc.index] == 1 && i_khamlCutscene[npc.index] != 0)
 	{
@@ -541,8 +580,14 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			}
 			else
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's fight!");
-				Music_SetRaidMusic("#zombiesurvival/internius/khamlstein.mp3", 294, true, 1.5);
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/khamlstein.mp3");
+				music.Time = 294;
+				music.Volume = 1.5;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "Contra la Luna");
+				strcopy(music.Artist, sizeof(music.Artist), "P.T. Adamczyk");
+				Music_SetRaidMusic(music);
 				i_khamlCutscene[npc.index] = 0;
 			}
 		}
@@ -646,7 +691,14 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's begin.");
 					RaidBossActive = EntIndexToEntRef(npc.index);
 					RaidAllowsBuildings = false;
-					Music_SetRaidMusic("#zombiesurvival/internius/khamlstein.mp3", 294, true, 1.5);
+					MusicEnum music;
+					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/khamlstein.mp3");
+					music.Time = 294;
+					music.Volume = 1.5;
+					music.Custom = true;
+					strcopy(music.Name, sizeof(music.Name), "Contra la Luna");
+					strcopy(music.Artist, sizeof(music.Artist), "P.T. Adamczyk");
+					Music_SetRaidMusic(music);
 				}
 			}
 		}
@@ -1129,6 +1181,30 @@ public Action ChaosKahmlstein_OnTakeDamage(int victim, int &attacker, int &infli
 	if(attacker <= 0)
 		return Plugin_Continue;
 
+	if(GetTeam(npc.index) != TFTeam_Red && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
+	{
+		if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+			b_angered_twice[npc.index] = true;
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+			b_NpcIsInvulnerable[npc.index] = true;
+			b_DoNotUnStuck[npc.index] = true;
+			b_CantCollidieAlly[npc.index] = true;
+			b_CantCollidie[npc.index] = true;
+			SetEntityCollisionGroup(npc.index, 24);
+			b_NpcIsInvulnerable[npc.index] = true;
+			RemoveNpcFromEnemyList(npc.index);
+			GiveProgressDelay(32.0);
+			damage = 0.0;
+			RaidModeTime += 60.0;
+			f_TalkDelayCheck = GetGameTime() + 0.0;
+			ReviveAll(true);
+			CPrintToChatAll("{darkblue}Kahmlstein{default}: Ughhh... My head");
+			Music_SetRaidMusicSimple("vo/null.mp3", 60, false, 0.5);
+			return Plugin_Handled;
+		}
+	}
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -1174,6 +1250,7 @@ public void ChaosKahmlstein_NPCDeath(int entity)
 
 	if(i_RaidGrantExtra[npc.index] >= 2)
 		return;
+
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();	
@@ -1182,22 +1259,7 @@ public void ChaosKahmlstein_NPCDeath(int entity)
 	if(BlockLoseSay)
 		return;
 
-	if(i_RaidGrantExtra[npc.index] == 1)
-	{
-		if(GameRules_GetRoundState() == RoundState_ZombieRiot)
-		{
-			for (int client = 0; client < MaxClients; client++)
-			{
-				if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
-				{
-					Items_GiveNamedItem(client, "Kahml's Contained Chaos");
-					CPrintToChat(client,"{default}Kahml thanks your.. efforts? You get: {red}''Kahml's Contained Chaos''{default}!");
-				}
-			}
-			CPrintToChatAll("{darkblue}Kahmlstein{default}: This sensation.. Did I... lose? Haha, I never felt like this for a long time now.");
-		}
-	}
-	else
+	if(i_RaidGrantExtra[npc.index] != 1)
 	{
 		CPrintToChatAll("{darkblue}Kahmlstein{default}: That was good, next time ill be sure to actually try, now factor in the chance i lied.");
 	}
@@ -1483,16 +1545,16 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	ChaosKahmlstein npc = view_as<ChaosKahmlstein>(victim);
-	if(npc.g_TimesSummoned < 150)
+	if(npc.g_TimesSummoned < 100)
 	{
-		int nextLoss = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 10) * (150 - npc.g_TimesSummoned) / 150;
+		int nextLoss = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 10) * (100 - npc.g_TimesSummoned) / 100;
 		if((GetEntProp(npc.index, Prop_Data, "m_iHealth") / 10) < nextLoss)
 		{
 			npc.g_TimesSummoned++;
 			if((npc.g_TimesSummoned % 25) == 0)
 			{
-				f_MessengerSpeedUp[npc.index] *= 1.02;
-				RaidModeScaling *= 1.035;
+				f_MessengerSpeedUp[npc.index] *= 1.05;
+				RaidModeScaling *= 1.05;
 				switch(GetRandomInt(0,3))
 				{
 					case 0:
@@ -1512,7 +1574,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 						CPrintToChatAll("{darkblue}Kahmlstein{default}: Keep running, that'll help.");
 					}
 				}
-				f_KahmlResTemp[npc.index] = GetGameTime() + 2.5;
+				f_KahmlResTemp[npc.index] = GetGameTime() + 3.5;
 			}
 			npc.m_flNextChargeSpecialAttack -= 0.25;
 			npc.m_flRangedSpecialDelay -= 0.25;
@@ -1874,4 +1936,124 @@ public void ChaosKahmlstein_Win(int entity)
 			CPrintToChatAll("{darkblue}Kahmlstein{default}: Chaos shall reign.");
 		}
 	}
+}
+
+
+int ChaosKahmlsteinTalk(int iNPC)
+{
+	ChaosKahmlstein npc = view_as<ChaosKahmlstein>(iNPC);
+	if(i_TalkDelayCheck == 15)
+	{
+		return 2;
+	}
+	if(f_TalkDelayCheck < GetGameTime())
+	{
+		f_TalkDelayCheck = GetGameTime() + 5.0;
+		RaidModeTime += 10.0; //cant afford to delete it, since duo.
+		GiveProgressDelay(10.0);
+		switch(i_TalkDelayCheck)
+		{
+			case 0:
+			{
+				npc.AddActivityViaSequence("taunt_heavy_workout_end");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.25);
+				npc.SetPlaybackRate(0.0);
+				i_TalkDelayCheck += 1;
+			}
+			case 1:
+			{
+				f_TalkDelayCheck = GetGameTime() + 2.3;
+				npc.SetPlaybackRate(0.5);
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: I feel like a great weight was lifted off my shoulders.");
+				i_TalkDelayCheck += 1;
+			}
+			case 2:
+			{
+				npc.SetActivity("ACT_MP_STAND_MELEE");
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: The chaos, it has left me completely it seems.");
+				i_TalkDelayCheck += 1;
+			}
+			case 3:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: But the knowledge of everything I did didn't.");
+				i_TalkDelayCheck += 1;
+			}
+			case 4:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: I can't turn back time now, however. What done is done.");
+				i_TalkDelayCheck += 1;
+			}
+			case 5:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: I made an awful mistake of trying to research it once.");
+				i_TalkDelayCheck += 1;
+			}
+			case 6:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: Looks like that made me a perfect specimen to make batshit insane.");
+				i_TalkDelayCheck += 1;
+			}
+			case 7:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: Curiosity killed the cat, like they say.");
+				i_TalkDelayCheck += 1;
+			}
+			case 8:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: You should heed my warning.");
+				i_TalkDelayCheck += 1;
+			}
+			case 9:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: Stay away from matters involving Chaos, or else you will be next.");
+				i_TalkDelayCheck += 1;
+			}
+			case 10:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: If you somehow wish to fight it, be my guest.");
+				i_TalkDelayCheck += 1;
+			}
+			case 11:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: One advice, just stay true to yourselves.");
+				i_TalkDelayCheck += 1;
+			}
+			case 12:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: Here, take this. It's going to be safe in your hands.");
+				i_TalkDelayCheck += 1;
+				for (int client = 0; client < MaxClients; client++)
+				{
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+					{
+						Items_GiveNamedItem(client, "Kahml's Contained Chaos");
+						CPrintToChat(client,"{default}You get: {red}''Kahml's Contained Chaos''{default}!");
+					}
+				}
+			}
+			case 13:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: I have something to attend to now, {crimson}some unfinished business.{default}");
+				i_TalkDelayCheck += 1;
+				npc.AddActivityViaSequence("taunt_cyoa_PDA_intro");
+				npc.SetCycle(0.05);
+				f_TalkDelayCheck = GetGameTime() + 1.5;
+				if(IsValidEntity(npc.m_iWearable1))
+				{
+					RemoveEntity(npc.m_iWearable1);
+				}
+				npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/cyoa_pda/cyoa_pda.mdl");
+			}
+			case 14:
+			{
+				i_TalkDelayCheck = 15;
+			}
+		}
+	}
+	if(i_TalkDelayCheck >= 2)
+	{
+		return 1;
+	}
+	return 0;
 }

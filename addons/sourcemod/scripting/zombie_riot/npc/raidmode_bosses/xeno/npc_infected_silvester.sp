@@ -437,7 +437,14 @@ methodmap RaidbossSilvester < CClotBody
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
-		Music_SetRaidMusic("#zombiesurvival/silvester_raid/silvester.mp3", 117, true);
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/silvester_raid/silvester.mp3");
+		music.Time = 117;
+		music.Volume = 2.0;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Arknights - Deepness Battle Theme");
+		strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+		Music_SetRaidMusic(music);
 		
 		npc.Anger = false;
 		//IDLE
@@ -538,13 +545,7 @@ static void Internal_ClotThink(int iNPC)
 	{
 		DeleteAndRemoveAllNpcs = 8.0;
 		mp_bonusroundtime.IntValue = (10 * 2);
-		ZR_NpcTauntWinClear();
-		int entity = CreateEntityByName("game_round_win"); 
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		SharedTimeLossSilvesterDuo(npc.index);
 		func_NPCThink[npc.index] = INVALID_FUNCTION;

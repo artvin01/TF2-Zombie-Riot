@@ -167,12 +167,13 @@ enum
 	WEAPON_HELL_HOE_3 = 88,
 	WEAPON_LUDO = 89,
 	WEAPON_KAHMLFIST = 90,
-	WEAPON_HHH_AXE = 91,
+	
 	WEAPON_MESSENGER_LAUNCHER = 92,
 	WEAPON_NAILGUN_SMG = 93,
 	WEAPON_NAILGUN_SHOTGUN = 94,
-	WEAPON_COSMIC_PILLAR = 95,
-	WEAPON_COSMIC_RAILCANNON = 96,
+	WEAPON_BLACKSMITH = 95,
+	WEAPON_COSMIC_PILLAR = 96,
+	WEAPON_COSMIC_RAILCANNON = 97
 }
 
 enum
@@ -243,19 +244,12 @@ ArrayList Loadouts[MAXTF2PLAYERS];
 Handle g_hSDKMakeCarriedObjectDispenser;
 Handle g_hSDKMakeCarriedObjectSentry;
 float f_RingDelayGift[MAXENTITIES];
+int i_IsAloneWeapon[MAXENTITIES];
 
 //custom wave music.
-char char_MusicString1[256];
-int i_MusicLength1;
-bool b_MusicCustom1;
-float f_MusicVolume1;
-char char_MusicString2[256];
-int i_MusicLength2;
-bool b_MusicCustom2;
-float f_MusicVolume2;
-char char_RaidMusicSpecial1[256];
-int i_RaidMusicLength1;
-bool b_RaidMusicCustom1;
+MusicEnum MusicString1;
+MusicEnum MusicString2;
+MusicEnum RaidMusicSpecial1;
 //custom wave music.
 float f_DelaySpawnsForVariousReasons;
 int CurrentRound;
@@ -277,8 +271,6 @@ int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 int i_MaxArmorTableUsed[MAXTF2PLAYERS];
-int i_PlayerModelOverrideIndexWearable[MAXTF2PLAYERS];
-bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -522,6 +514,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_hell_hoe.sp"
 #include "zombie_riot/custom/wand/weapon_ludo.sp"
 #include "zombie_riot/custom/weapon_messenger.sp"
+#include "zombie_riot/custom/kit_blacksmith.sp"
 
 void ZR_PluginLoad()
 {
@@ -638,8 +631,6 @@ void ZR_MapStart()
 	Zero2(Perk_Machine_money_limit);
 	Zero2(Pack_A_Punch_Machine_money_limit);
 	Zero2(fl_blitz_ioc_punish_timer);
-	Zero(i_PlayerModelOverrideIndexWearable);
-	Zero(b_HideCosmeticsPlayer);
 	CleanAllBuildingEscape();
 	KahmlFistMapStart();
 	M3_ClearAll();
@@ -772,14 +763,8 @@ void ZR_MapStart()
 	CreateTimer(0.5, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	CreateTimer(0.2, GetTimerAndNullifyMusicMVM_Timer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
-	char_MusicString1[0] = 0;
-	char_MusicString2[0] = 0;
-	char_RaidMusicSpecial1[0] = 0;
-			
-	i_MusicLength1 = 0;
-	i_MusicLength2 = 0;
-	i_RaidMusicLength1 = 0;
-	b_RaidMusicCustom1 = false;
+	RemoveAllCustomMusic();
+	
 	ResetMapStartSensalWeapon();
 	//This enables the MVM money hud, looks way better.
 	//SetVariantString("ForceEnableUpgrades(2)");
@@ -875,8 +860,6 @@ void ZR_ClientDisconnect(int client)
 	WoodAmount[client] = 0.0;
 	FoodAmount[client] = 0.0;
 	GoldAmount[client] = 0.0;
-	i_PlayerModelOverrideIndexWearable[client] = 0;
-	b_HideCosmeticsPlayer[client] = false;
 	
 	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 	{
@@ -2467,4 +2450,49 @@ stock void GetTimerAndNullifyMusicMVM()
 		return;
 	}
 	
+}
+
+
+void ForcePlayerWin()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client))
+		{
+			Music_Stop_All(client);
+			SetMusicTimer(client, GetTime() + 33);
+			SendConVarValue(client, sv_cheats, "1");
+		}
+	}
+	ResetReplications();
+
+	cvarTimeScale.SetFloat(0.1);
+	CreateTimer(0.5, SetTimeBack);
+	
+	MusicString1.Clear();
+	MusicString2.Clear();
+	RaidMusicSpecial1.Clear();
+
+	EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+
+	MVMHud_Disable();
+	int entity = CreateEntityByName("game_round_win"); 
+	DispatchKeyValue(entity, "force_map_reset", "1");
+	SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
+	DispatchSpawn(entity);
+	AcceptEntityInput(entity, "RoundWin");
+	RemoveAllCustomMusic();
+}
+
+void ForcePlayerLoss()
+{
+	MVMHud_Disable();
+	ZR_NpcTauntWinClear();
+	int entity = CreateEntityByName("game_round_win"); 
+	DispatchKeyValue(entity, "force_map_reset", "1");
+	SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+	DispatchSpawn(entity);
+	AcceptEntityInput(entity, "RoundWin");
+	Music_RoundEnd(entity);
+	RaidBossActive = INVALID_ENT_REFERENCE;
 }

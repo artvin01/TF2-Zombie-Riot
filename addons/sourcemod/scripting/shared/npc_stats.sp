@@ -2485,11 +2485,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
 		GetVectorAngles(vecAngles, vecAngles);
 
-
+		float speed = rocket_speed;
+#if defined ZR
+		Rogue_Paradox_ProjectileSpeed(this.index, speed);
+#endif
 		
-		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
-		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
-		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
+		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*speed;
+		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*speed;
+		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-speed;
 
 		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
@@ -2541,9 +2544,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
 		GetVectorAngles(vecAngles, vecAngles);
 
-		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
-		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
-		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
+		float speed = rocket_speed;
+#if defined ZR
+		Rogue_Paradox_ProjectileSpeed(this.index, speed);
+#endif
+		
+		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*speed;
+		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*speed;
+		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-speed;
 
 		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
@@ -2618,9 +2626,15 @@ methodmap CClotBody < CBaseCombatCharacter
 			vecSwingStart[1] += vecForward[1] * 64;
 			vecSwingStart[2] += vecForward[2] * 64;
 	
-			vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*grenadespeed;
-			vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*grenadespeed;
-			vecForward[2] = Sine(DegToRad(vecAngles[0]))*-grenadespeed;
+			float speed = grenadespeed;
+
+#if defined ZR
+			Rogue_Paradox_ProjectileSpeed(this.index, speed);
+#endif
+			
+			vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*speed;
+			vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*speed;
+			vecForward[2] = Sine(DegToRad(vecAngles[0]))*-speed;
 			
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntPropEnt(entity, Prop_Send, "m_hThrower", this.index);
@@ -2655,10 +2669,15 @@ methodmap CClotBody < CBaseCombatCharacter
 		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
 		GetVectorAngles(vecAngles, vecAngles);
 
+		float speed = rocket_speed;
 		
-		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
-		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
-		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
+#if defined ZR
+		Rogue_Paradox_ProjectileSpeed(this.index, speed);
+#endif
+		
+		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*speed;
+		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*speed;
+		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-speed;
 
 		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
@@ -6117,15 +6136,12 @@ int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, flo
 	return prop;
 }
 
-public void GibCollidePlayerInteraction(int gib, int player)
+#if defined ZR
+void GibCollidePlayerInteraction(int gib, int player)
 {
 	if(b_IsCannibal[player])
 	{
-		
-#if defined ZR
 		if(dieingstate[player] == 0)
-#endif
-		
 		{
 			int weapon = GetEntPropEnt(player, Prop_Send, "m_hActiveWeapon");
 			if(IsValidEntity(weapon)) //Must also hold melee out 
@@ -6136,9 +6152,7 @@ public void GibCollidePlayerInteraction(int gib, int player)
 					{
 						float Heal_Amount = 0.0;
 						
-#if !defined RTS
 						Heal_Amount = Attributes_Get(weapon, 180, 1.0);
-#endif
 						
 						float Heal_Amount_calc;
 						
@@ -6166,6 +6180,7 @@ public void GibCollidePlayerInteraction(int gib, int player)
 		}
 	}
 }
+#endif
 
 public Action Timer_RemoveEntity_Prop_Gib(Handle timer, any entid)
 {

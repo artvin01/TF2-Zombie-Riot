@@ -343,6 +343,7 @@ float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 int i_CurrentEquippedPerk[MAXENTITIES];
+int i_CurrentEquippedPerkPreviously[MAXENTITIES];
 int Building_Max_Health[MAXENTITIES]={0, ...};
 int Building_Repair_Health[MAXENTITIES]={0, ...};
 Handle SyncHud_Notifaction;
@@ -655,11 +656,17 @@ bool b_FaceStabber[MAXTF2PLAYERS];
 int g_particleMissText;
 int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 
 int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
+bool b_IsCannibal[MAXTF2PLAYERS];
+char g_GibEating[][] = {
+	"physics/flesh/flesh_squishy_impact_hard1.wav",
+	"physics/flesh/flesh_squishy_impact_hard2.wav",
+	"physics/flesh/flesh_squishy_impact_hard3.wav",
+	"physics/flesh/flesh_squishy_impact_hard4.wav",
+};
 #endif
 int i_WandOwner[MAXENTITIES]; //				//785
 
 
-bool b_IsCannibal[MAXTF2PLAYERS];
 
 float f_NpcImmuneToBleed[MAXENTITIES];
 bool b_NpcIsInvulnerable[MAXENTITIES];
@@ -675,19 +682,6 @@ float f_ClientMusicVolume[MAXTF2PLAYERS];
 bool b_FirstPersonUsesWorldModel[MAXTF2PLAYERS];
 float f_BegPlayerToSetDuckConvar[MAXTF2PLAYERS];
 float f_BegPlayerToSetRagdollFade[MAXTF2PLAYERS];
-
-#if defined RPG
-int Level[MAXENTITIES];
-bool b_DungeonContracts_BleedOnHit[MAXENTITIES];
-bool b_DungeonContracts_FlatDamageIncreace5[MAXTF2PLAYERS];
-bool b_DungeonContracts_ZombieSpeedTimes3[MAXENTITIES];
-bool b_DungeonContracts_ZombieFlatArmorMelee[MAXENTITIES];
-bool b_DungeonContracts_ZombieFlatArmorRanged[MAXENTITIES];
-bool b_DungeonContracts_ZombieFlatArmorMage[MAXENTITIES];
-bool b_DungeonContracts_ZombieArmorDebuffResistance[MAXENTITIES];
-bool b_DungeonContracts_35PercentMoreDamage[MAXENTITIES];
-bool b_DungeonContracts_25PercentMoreDamage[MAXENTITIES];
-#endif
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -918,12 +912,6 @@ char g_GibSound[][] = {
 	"physics/flesh/flesh_squishy_impact_hard3.wav",
 	"physics/flesh/flesh_squishy_impact_hard4.wav",
 	"physics/flesh/flesh_bloody_break.wav",
-};
-char g_GibEating[][] = {
-	"physics/flesh/flesh_squishy_impact_hard1.wav",
-	"physics/flesh/flesh_squishy_impact_hard2.wav",
-	"physics/flesh/flesh_squishy_impact_hard3.wav",
-	"physics/flesh/flesh_squishy_impact_hard4.wav",
 };
 
 char g_GibSoundMetal[][] = {
@@ -2275,14 +2263,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					was_reviving[client] = true;
 					f_DelayLookingAtHud[client] = GameTime + 0.5;
 					was_reviving_this[client] = target;
-					if(i_CurrentEquippedPerk[client] == 1)
-					{
-						ticks = Citizen_ReviveTicks(target, 12 * Rogue_ReviveSpeed(), client);
-					}
-					else
-					{
-						ticks = Citizen_ReviveTicks(target, 6 * Rogue_ReviveSpeed(), client);
-					}
+					int speed = i_CurrentEquippedPerk[client] == 1 ? 12 : 6;
+					Rogue_ReviveSpeed(speed);
+					ticks = Citizen_ReviveTicks(target, speed, client);
 					
 					if(ticks <= 0)
 					{
@@ -2626,7 +2609,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_Ocean_Buff_Weak_Buff[entity] = 0.0;
 #if defined ZR
 		i_CurrentEquippedPerk[entity] = 0;
+		i_CurrentEquippedPerkPreviously[entity] = 0;
 		i_WandIdNumber[entity] = -1;
+		i_IsAloneWeapon[entity] = false;
 #endif
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
@@ -3087,11 +3072,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
+#if defined ZR
 		else if(!StrContains(classname, "func_regenerate"))
 		{
 			SDKHook(entity, SDKHook_StartTouch, SDKHook_Regenerate_StartTouch);
 			SDKHook(entity, SDKHook_Touch, SDKHook_Regenerate_Touch);
 		}
+#endif
 		else if(!StrContains(classname, "prop_vehicle"))
 		{
 #if defined ZR
@@ -3383,27 +3370,25 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 			static char buffer[64];
 			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 			{
-
 				if (GetTeam(entity) != TFTeam_Red)
 					return false;
 					
 				if(Building_Interact(client, entity, Is_Reload_Button))
 					return true;
-					
+				
+				//shouldnt invalidate clicking, makes battle hard.
 				if(Store_Girogi_Interact(client, entity, buffer, Is_Reload_Button))
-					return true;
+					return false;
 
 				if (TeutonType[client] == TEUTON_WAITING)
 					return false;
 
 				if(Escape_Interact(client, entity))
 					return true;
-				
-				//if(Store_Interact(client, entity, buffer))
-				//	return true;
 
+				//interacting with citizens shouldnt invalidate clicking, it makes battle hard.
 				if(Citizen_Interact(client, entity))
-					return true;
+					return false;
 				
 				if(Is_Reload_Button && BarrackBody_Interact(client, entity))
 					return true;
@@ -3585,17 +3570,20 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0)
 		was_reviving_this[client] = target;
 
 	f_DisableDyingTimer[target] = GameTime + 0.15;
+
+	int speed = 3;
 	if(WasClientReviving && i_CurrentEquippedPerk[client] == 1)
 	{
-		dieingstate[target] -= 12 * Rogue_ReviveSpeed();
+		speed = 12;
 	}
 	else
 	{
 		if(WasClientReviving)
-			dieingstate[target] -= 6 * Rogue_ReviveSpeed();
-		else
-			dieingstate[target] -= 3 * Rogue_ReviveSpeed();
+			speed = 6;
 	}
+
+	Rogue_ReviveSpeed(speed);
+	dieingstate[target] -= speed;
 	
 	if(dieingstate[target] <= 0)
 	{

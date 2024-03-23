@@ -866,7 +866,7 @@
 	}
 	"Fractured Ark Pap 4"
 	{
-		"en"	"Attacks are always ranged but with decreased fire rate.\nAbility changes to be able to pull, dealing 150%% of damage.\nArchetype changes to ''Abyssal Hunter''"
+		"en"	"Attacks are always ranged but with decreased fire rate.\nAbility changes to be able to pull, dealing 150%% of damage.\nYou count as a seaborn while wielding this weapon.\nArchetype changes to ''Abyssal Hunter''"
 	}
 	"Fractured Ark Pap 5"
 	{
@@ -1977,9 +1977,7 @@
 	}
 	"Fish Melee Desc"
 	{
-		"en" 	"Heals allies slowly around you and gives them a 10%% dmg buff.\nScales with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 25%% dmg buff to all allies for 15 sec."
-		"ru" 	"Медленно исцеляет союзников вокруг вас и даёт им 10%% усиление урона.\nУвеличивается с улучшением медицинской пушки.\nM1 - доп. исцеление на союзников.\nM2 - более сильное усиление урона на 25%% на всех союзников на 15 сек."
-		"chi"   "可以缓慢治疗你附近的队友，并给予他们10%%的伤害buff。\n收到医疗属性升级影响。\nM1对盟友施放额外治疗值。M2释放光波对所有队友添加25%%的伤害加成buff，持续15秒。"
+		"en" 	"Heals allies slowly around you and gives them a 10%% dmg buff.\nScales with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 25%% dmg buff to all allies for 15 sec.\nYou count as a seaborn while wielding this weapon."
 	}
 	"Lantean Staff Desc"
 	{
@@ -1995,7 +1993,7 @@
 	}
 	"Specter Pap 1"
 	{
-		"en"	"Attacks slower but hits two targets at once.\nDeals 25%% more damage againts raids.\nArchetype changes to ''Abyssal Hunter''"
+		"en"	"Attacks slower but hits two targets at once.\nDeals 25%% more damage againts raids.\nYou count as a seaborn while wielding this weapon.\nArchetype changes to ''Abyssal Hunter''"
 	}
 	"Specter Pap 2a"
 	{
@@ -2418,7 +2416,7 @@
 	}
 	"Seaborn Infection Desc"
 	{
-		"en"	"Becoming a seaborn, yet resisting We Many.\nProvides an AOE long-range melee, an high-damage crossbow, and a stronger Medi-Kit.\nEffected by Ranged and Melee upgrades."
+		"en"	"Becoming a seaborn, yet resisting We Many.\nProvides an AOE long-range melee, an high-damage crossbow, and a stronger Medi-Kit."
 	}
 	"Seaborn Claws Desc"
 	{
@@ -2458,11 +2456,11 @@
 	}
 	"The Flagellant Desc"
 	{
-		"en"	"Zealotry—an undying blight upon the soul.\nProvides extra health with the ability to heal but inflicts self-damage.\nEffected by Melee and Medigun upgrades."
+		"en"	"Zealotry—an undying blight upon the soul.\nProvides extra health with the ability to heal but inflicts self-damage."
 	}
 	"The Flagellant Extra Desc"
 	{
-		"en"	"When using self-healing abilities while downed, self revive with a chance to ignore the downed limit. Using this kit may attract Death itself. You can read weapon specific abilities by using Inspect + Scoreboard on a weapon."
+		"en"	"When using self-healing abilities while downed, self revive with a chance to ignore the downed limit. Using this kit may attract more mini-bosses. You can read weapon specific abilities by using Inspect + Scoreboard on a weapon."
 	}
 	"Acid Rain Desc"
 	{
@@ -2490,11 +2488,11 @@
 	}
 	"The Flagellant Pap 2"
 	{
-		"en"	"Gain +150 max health and increases healing given and received from abilities."
+		"en"	"Gain +200 max health and increases healing given and received from abilities."
 	}
 	"The Flagellant Pap 3"
 	{
-		"en"	"Gain +150 max health, increases healing given and received from abilities, and bleed effects last longer."
+		"en"	"Gain +350 max health, increases healing given and received from abilities, and bleed effects last longer."
 	}
 	"Impact Lance Desc 1"
 	{
@@ -2747,5 +2745,53 @@
 	"Messenger Launcher PAP Desc"
 	{
 		"en" "You feel more confident in controlling chaos in this launcher\n Or is it consuming you? \n \n Increased clip, damage, and faster firerate. \n more cryo applied on Chaos mode and more afterburn damage."
+	}
+	"The Tinker Desc"
+	{
+		"en"	"A blacksmith builder, already including building upgrades and gear.\nProvides a custom building which allows players to tinker weapons.\nTinkers apply a random number of attributes to the weapon. Reusing rerolls these attributes.\nGenerates metal and able to tank more damage."
+	}
+	"Tinker Wrench Desc"
+	{
+		"en"	"Similar to a standard wrench, but swings slower, however has an ability to swing much master for a moment."
+	}
+	"Tinker's Texan Mounter"
+	{
+		"en"	"Similar to the Mounter but able to deal damage."
+	}
+	"Tinker Workshop Desc"
+	{
+		"en"	"A building that has a high health pool, can always be repaired, and allows players to tinker their weapons.\nTinkers apply a random number of attributes to the weapon. Reusing rerolls these attributes."
+	}
+	"Tinker Research Desc"
+	{
+		"en"	"Increases resistance of Tinker Workshop and generates metal while active"
+	}
+	"Tinker Ranger Desc"
+	{
+		"en"	"Fires bolt projectiles, able to repair buildings, has an ability to pickup buildings from a distance but costs 1000 metal."
+	}
+	"Tinker Pap 1 Desc"
+	{
+		"en"	"+65%% Building Health, +202% Weapon Damage, +100%% Repair Rate, +15 Metal Regen, +3 Support Buildings, and -30s Tinker Cooldown."
+	}
+	"Tinker Pap 2 Desc"
+	{
+		"en"	"+65%% Building Health, +75% Weapon Damage, +25 Metal Regen, +4 Support Buildings, -30s Tinker Cooldown, and Improved Tinker Attributes.\n2 Attributes: 80%% | 3 Attributes: 20%%"
+	}
+	"Tinker Pap 3 Desc"
+	{
+		"en"	"+70%% Building Health, +181.25% Weapon Damage, +50 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\n2 Attributes: 57%% | 3 Attributes: 29%% | 4 Attributes: 14%%"
+	}
+	"Tinker Pap 4 Desc"
+	{
+		"en"	"+40%% Building Health, +181.25% Weapon Damage, +100 Metal Regen, -30s Tinker Cooldown, and Improved Tinker Attributes.\n2 Attributes: 40%% | 3 Attributes: 40%% | 4 Attributes: 20%%"
+	}
+	"Tinker Pap 5 Desc"
+	{
+		"en"	"+160% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown.\n3 Attributes: 67%% | 4 Attributes: 33%%"
+	}
+	"Tinker Pap 6 Desc"
+	{
+		"en"	"+70%% Building Health, +250% Weapon Damage, +100 Metal Regen, +1 Support Building, and -30s Tinker Cooldown.\n3 Attributes: 67%% | 4 Attributes: 33%%"
 	}
 }

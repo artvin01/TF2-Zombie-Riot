@@ -80,7 +80,7 @@ methodmap Liberi < CClotBody
 		func_NPCThink[npc.index] = ClotThink;
 		
 		Is_a_Medic[npc.index] = true;
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = Rogue_Paradox_RedMoon() ? 500.0 : 300.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_picket/c_picket.mdl");
 
@@ -146,9 +146,9 @@ static void ClotThink(int iNPC)
 		{
 			npc.StopPathing();
 
-			LiberiBuff[target] = GetGameTime() + 0.2;
+			LiberiBuff[target] = GetGameTime() + (Rogue_Paradox_RedMoon() ? 3.0 : 0.2);
 
-			if(!NpcStats_IsEnemySilenced(npc.index))
+			if(Rogue_Paradox_RedMoon() || !NpcStats_IsEnemySilenced(npc.index))
 			{
 				b_NpcIsInvulnerable[target] = true;
 				SDKUnhook(target, SDKHook_ThinkPost, LiberiBuffThink);

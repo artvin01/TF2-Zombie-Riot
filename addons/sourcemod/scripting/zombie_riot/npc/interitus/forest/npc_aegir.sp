@@ -197,7 +197,7 @@ static void ClotThink(int iNPC)
 						
 						if(target <= MaxClients && (Armor_Charge[target] < 0 || TF2_IsPlayerInCondition(target, TFCond_Milked) || TF2_IsPlayerInCondition(target, TFCond_Jarated)))
 						{
-							damage *= 6.0;
+							damage *= Rogue_Paradox_RedMoon() ? 60.0 : 6.0;
 						}
 
 						npc.PlayMeleeHitSound();

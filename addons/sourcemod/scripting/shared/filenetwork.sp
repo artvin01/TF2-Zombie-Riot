@@ -138,6 +138,9 @@ void FileNetwork_ConfigSetup(KeyValues map)
 
 stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", int delay = 5)
 {
+	if(!sound[0])
+		ThrowError("Empty string");
+	
 	PrecacheSound(sound);
 
 #if defined UseDownloadTable

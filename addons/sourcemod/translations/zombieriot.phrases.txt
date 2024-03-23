@@ -3067,4 +3067,49 @@
 	{
 		"en" "Blood pact: Off"
 	}
+	"Tags & Author"
+	{
+		"en"		"Tags & Author"
+	}
+	"Created By"
+	{
+		"#format"	"{1:s}"
+		"en"		"{darkgrey}Created by: {community}{1}"
+	}
+	"NPCs By"
+	{
+		"#format"	"{1:s}"
+		"en"		"{darkgrey}NPCs by: {community}{1}"
+	}
+	"Format By"
+	{
+		"#format"	"{1:s}"
+		"en"		"{darkgrey}Format by: {community}{1}"
+	}
+	"Raidboss By"
+	{
+		"#format"	"{1:s}"
+		"en"		"{darkgrey}Raidboss by: {community}{1}"
+	}
+	"Now Playing Song"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"{darkgrey}Now Playing: {community}{1} {default}| {lightgreen}{2}"
+	}
+	"Blacksmith Tooltip"
+	{
+		"en"		"Press RELOAD to apply a tinker effect to your active weapon"
+	}
+	"Blacksmith Used"
+	{
+		"en"		"Someone used your Tinker Station, you gain +20 Credits!"
+	}
+	"Blacksmith Maxed"
+	{
+		"en"		"Maximum amount of attributes applied to this weapon"
+	}
+	"Blacksmith Underleveled"
+	{
+		"en"		"Owner needs to upgrade this building before you can tinker this weapon"
+	}
 }

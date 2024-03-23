@@ -56,14 +56,8 @@ enum struct Round
 	bool Custom_Refresh_Npc_Store;
 	int medival_difficulty;
 	
-	char music_round_1[255];
-	int music_duration_1;
-	bool music_custom_1;
-	float music_volume_1;
-	char music_round_2[255];
-	int music_duration_2;
-	bool music_custom_2;
-	float music_volume_2;
+	MusicEnum music_round_1;
+	MusicEnum music_round_2;
 	char music_round_outro[255];
 	bool music_custom_outro;
 	char Message[255];
@@ -561,13 +555,29 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	
 	Waves_ClearWaves();
 	
-	char buffer[64], plugin[64];
+	char buffer[128], plugin[64];
 
 	b_SpecialGrigoriStore = view_as<bool>(kv.GetNum("grigori_special_shop_logic"));
 	f_ExtraDropChanceRarity = kv.GetFloat("gift_drop_chance_multiplier", 0.5);
 	kv.GetString("complete_item", buffer, sizeof(buffer));
 	WaveGiftItem = buffer[0] ? Items_NameToId(buffer) : -1;
 	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
+
+	int objective = GetObjectiveResource();
+	if(objective != -1)
+		SetEntProp(objective, Prop_Send, "m_iChallengeIndex", kv.GetNum("mvmdiff", -1));
+	
+	kv.GetString("author_format", buffer, sizeof(buffer));
+	if(buffer[0])
+		CPrintToChatAll("%t", "Format By", buffer);
+	
+	kv.GetString("author_npcs", buffer, sizeof(buffer));
+	if(buffer[0])
+		CPrintToChatAll("%t", "NPCs By", buffer);
+	
+	kv.GetString("author_raid", buffer, sizeof(buffer));
+	if(buffer[0])
+		CPrintToChatAll("%t", "Raidboss By", buffer);
 	
 	Enemy enemy;
 	Wave wave;
@@ -580,40 +590,9 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.MapSetupRelay = view_as<bool>(kv.GetNum("map_setup_fake"));
 		round.Xp = kv.GetNum("xp");
 		round.Setup = kv.GetFloat("setup");
-	
-		kv.GetString("music_track_1", round.music_round_1, sizeof(round.music_round_1));
-		round.music_duration_1 = kv.GetNum("music_seconds_1");
-		round.music_custom_1 = view_as<bool>(kv.GetNum("music_download_1"));
-		round.music_volume_1 = kv.GetFloat("music_volume_1", 2.0);
-		
-		kv.GetString("music_track_2", round.music_round_2, sizeof(round.music_round_2));
-		round.music_duration_2 = kv.GetNum("music_seconds_2");
-		round.music_custom_2 = view_as<bool>(kv.GetNum("music_download_2"));
-		round.music_volume_2 = kv.GetFloat("music_volume_2", 2.0);
-		
-		if(round.music_round_1[0])
-		{
-			if(round.music_custom_1)
-			{
-				PrecacheSoundCustom(round.music_round_1);
-			}
-			else
-			{
-				PrecacheSound(round.music_round_1);
-			}
-		}
-		
-		if(round.music_round_2[0])
-		{
-			if(round.music_custom_2)
-			{
-				PrecacheSoundCustom(round.music_round_2);
-			}
-			else
-			{
-				PrecacheSound(round.music_round_2);
-			}
-		}
+
+		round.music_round_1.SetupKv("music_1", kv);
+		round.music_round_2.SetupKv("music_2", kv);
 		
 		kv.GetString("music_track_outro", round.music_round_outro, sizeof(round.music_round_outro));
 		round.music_custom_outro = view_as<bool>(kv.GetNum("music_download_outro"));
@@ -653,7 +632,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		{
 			do
 			{
-				if(kv.GetSectionName(buffer, sizeof(buffer)))
+				if(kv.GetSectionName(buffer, sizeof(buffer)) && StrContains(buffer, "music") != 0)
 				{
 					kv.GetString("plugin", plugin, sizeof(plugin));
 					if(plugin[0])
@@ -728,10 +707,6 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		Rounds.PushArray(round);
 	} while(kv.GotoNextKey());
 
-	int objective = GetObjectiveResource();
-	if(objective != -1)
-		SetEntProp(objective, Prop_Send, "m_iChallengeIndex", kv.GetNum("mvmdiff", -1));
-	
 	if(start)
 	{
 		for(int client=1; client<=MaxClients; client++)
@@ -1331,6 +1306,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				else
 				{
 					panzer_chance--;
+					Flagellant_MiniBossChance(panzer_chance);
 				}
 			}
 			else
@@ -1386,13 +1362,13 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			bool RoundHadCustomMusic = false;
 		
-			if(char_MusicString1[0])
+			if(MusicString1.Path[0])
 				RoundHadCustomMusic = true;
 					
-			if(char_MusicString2[0])
+			if(MusicString2.Path[0])
 				RoundHadCustomMusic = true;
 
-			if(char_RaidMusicSpecial1[0])
+			if(RaidMusicSpecial1.Path[0])
 			{
 				RoundHadCustomMusic = true;
 			}
@@ -1400,33 +1376,33 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			if(RoundHadCustomMusic) //only do it when there was actually custom music previously
 			{	
 				bool ReplaceMusic = false;
-				if(!round.music_round_1[0] && char_MusicString1[0])
+				if(!round.music_round_1.Path[0] && MusicString1.Path[0])
 				{
 					ReplaceMusic = true;
 				}
-				if(round.music_round_1[0])
+				if(round.music_round_1.Path[0])
 				{
-					if(!StrEqual(char_MusicString1, round.music_round_1))
+					if(!StrEqual(MusicString1.Path, round.music_round_1.Path))
 					{
 						ReplaceMusic = true;
 					}
 				}
 				//there was music the previous round, but there is none now.
-				if(!round.music_round_2[0] && char_MusicString2[0])
+				if(!round.music_round_2.Path[0] && MusicString2.Path[0])
 				{
 					ReplaceMusic = true;
 				}
 				//they are different, cancel out.
-				if(round.music_round_1[0])
+				if(round.music_round_1.Path[0])
 				{
-					if(!StrEqual(char_MusicString2, round.music_round_2))
+					if(!StrEqual(MusicString2.Path, round.music_round_2.Path))
 					{
 						ReplaceMusic = true;
 					}
 				}
 
 				//if it had raid music, replace anyways.
-				if(char_RaidMusicSpecial1[0])
+				if(RaidMusicSpecial1.Path[0])
 					ReplaceMusic = true;
 				
 				if(ReplaceMusic)
@@ -1445,17 +1421,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			//This should nullfy anyways if nothings in it
 			RemoveAllCustomMusic();
 
-			strcopy(char_MusicString1, sizeof(char_MusicString1), round.music_round_1);
-			strcopy(char_MusicString2, sizeof(char_MusicString2), round.music_round_2);
-			
-			i_MusicLength1 = round.music_duration_1;
-			i_MusicLength2 = round.music_duration_2;
-
-			b_MusicCustom1 = round.music_custom_1;
-			b_MusicCustom2 = round.music_custom_2;
-
-			f_MusicVolume1 = round.music_volume_1;
-			f_MusicVolume2 = round.music_volume_2;
+			MusicString1 = round.music_round_1;
+			MusicString2 = round.music_round_2;
 			
 			if(round.Setup > 1.0)
 			{
@@ -1469,7 +1436,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						}
 					}
 				}
-				else if(char_MusicString1[0] || char_MusicString2[0])
+				else if(MusicString1.Path[0] || MusicString2.Path[0])
 				{
 					for(int client=1; client<=MaxClients; client++)
 					{
@@ -1544,6 +1511,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						float last = roundtime.FloatValue;
 						roundtime.FloatValue = 20.0;
 
+						MVMHud_Disable();
 						int entity = CreateEntityByName("game_round_win"); 
 						DispatchKeyValue(entity, "force_map_reset", "1");
 						SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
@@ -1555,12 +1523,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					RemoveAllCustomMusic();
 				}
 				
-				char_MusicString1[0] = 0;
-				char_MusicString2[0] = 0;
-				char_RaidMusicSpecial1[0] = 0;
-
-				i_MusicLength1 = 1;
-				i_MusicLength2 = 1;
+				RemoveAllCustomMusic();
 
 				if(rogue)
 				{
@@ -1696,7 +1659,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
 			}
 			
-			char_RaidMusicSpecial1[0] = 0;
+			RaidMusicSpecial1.Clear();
 			
 			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
@@ -2252,27 +2215,30 @@ static void UpdateMvMStatsFrame()
 			}
 		}
 
-		Enemy enemy;
-		int length = Enemies.Length;
-		for(int a; a < length; a++)
+		if(Enemies)
 		{
-			Enemies.GetArray(a, enemy);
-			cashLeft += enemy.Credits;
-			activecount++;
-
-			for(int b; b < sizeof(id); b++)
+			Enemy enemy;
+			int length = Enemies.Length;
+			for(int a; a < length; a++)
 			{
-				if(!id[b] || id[b] == enemy.Index)
+				Enemies.GetArray(a, enemy);
+				cashLeft += enemy.Credits;
+				activecount++;
+
+				for(int b; b < sizeof(id); b++)
 				{
-					count[b]++;
-					
-					if(!id[b])
+					if(!id[b] || id[b] == enemy.Index)
 					{
-						id[b] = enemy.Index;
-						flags[b] = SetupFlags(enemy, !freeplay);
+						count[b]++;
+						
+						if(!id[b])
+						{
+							id[b] = enemy.Index;
+							flags[b] = SetupFlags(enemy, !freeplay);
+						}
+						
+						break;
 					}
-					
-					break;
 				}
 			}
 		}

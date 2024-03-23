@@ -126,6 +126,9 @@ methodmap DesertSakratan < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 
+		if(Rogue_Paradox_ExtremeHeat())
+			fl_Extra_Speed[npc.index] *= 1.2;
+
 		func_NPCDeath[npc.index] = view_as<Function>(DesertSakratan_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertSakratan_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(DesertSakratan_ClotThink);

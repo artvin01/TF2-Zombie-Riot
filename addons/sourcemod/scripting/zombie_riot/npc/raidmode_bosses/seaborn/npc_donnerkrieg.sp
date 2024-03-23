@@ -405,7 +405,14 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		
 		
-		Music_SetRaidMusic("#zombiesurvival/seaborn/donner_schwert_5.mp3", 290, true);
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/seaborn/donner_schwert_5.mp3");
+		music.Time = 290;
+		music.Volume = 2.0;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Arknights - Martyr/Guiding Ahead Boss");
+		strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+		Music_SetRaidMusic(music);
 		
 		b_thisNpcIsARaid[npc.index] = true;
 
@@ -884,12 +891,7 @@ public void Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(bool donner_alive)
 {
 	if(RaidModeTime < GetGameTime())
 	{
-		int entity = CreateEntityByName("game_round_win"); //You loose.
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		b_donner_said_win_line = true;
 		if(donner_alive)

@@ -1777,7 +1777,6 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		{
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%s", ExtraHudHurt, c_DmgDelt);
 		}
-			
 		ShowSyncHudText(attacker, SyncHud,"%s",ExtraHudHurt);
 	}
 #if defined ZR

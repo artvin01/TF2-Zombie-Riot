@@ -233,7 +233,14 @@ methodmap ThePurge < CClotBody
 		RaidModeScaling *= 5.0;
 		RaidModeScaling *= 1.65;
 
-		Music_SetRaidMusic("#zombiesurvival/internius/the_purge.mp3", 229, true, 1.5);
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/the_purge.mp3");
+		music.Time = 229;
+		music.Volume = 1.5;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Right Trigger Warning");
+		strcopy(music.Artist, sizeof(music.Artist), "Mick Gordon");
+		Music_SetRaidMusic(music);
 		
 		Citizen_MiniBossSpawn();
 		return npc;
