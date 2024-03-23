@@ -295,92 +295,100 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 
 	ArrayList list = new ArrayList(3);
 	
-	switch(rarity)
+	switch(SmithLevel[owner])
 	{
-		case 0:
+		case 0, 1:
 		{
-			AddAttrib(list, weapon, 2, 0.95, 1.05);
-			AddAttrib(list, weapon, 4, 0.9, 1.1);
-			AddAttrib(list, weapon, 6, 0.97, 1.03);
-			AddAttrib(list, weapon, 8, 0.95, 1.05);
-			AddAttrib(list, weapon, 10, 0.9, 1.1);
-			AddAttrib(list, weapon, 45, 0.9, 1.1);
-			AddAttrib(list, weapon, 94, 0.9, 1.1);
-			AddAttrib(list, weapon, 97, 0.95, 1.05);
-			AddAttrib(list, weapon, 99, 0.95, 1.05);
-			AddAttrib(list, weapon, 101, 0.95, 1.05);
-			AddAttrib(list, weapon, 103, 0.95, 1.05);
-			AddAttrib(list, weapon, 287, 0.95, 1.05);
-			AddAttrib(list, weapon, 319, 0.9, 1.1);
-			AddAttrib(list, weapon, 343, 0.97, 1.03);
-			AddAttrib(list, weapon, 410, 0.95, 1.05);
+			AddAttrib(list, weapon, 1, 0.8, 1.2);
+			AddAttrib(list, weapon, 2, 0.8, 1.2);
+			AddAttrib(list, weapon, 3, 0.7, 1.3);
+			AddAttrib(list, weapon, 4, 0.7, 1.3);
+			AddAttrib(list, weapon, 5, 0.95, 1.05);
+			AddAttrib(list, weapon, 6, 0.95, 1.05);
+			AddAttrib(list, weapon, 8, 0.8, 1.2);
+			AddAttrib(list, weapon, 10, 0.7, 1.3);
+			AddAttrib(list, weapon, 45, 0.7, 1.3);
+			AddAttrib(list, weapon, 94, 0.7, 1.3);
+			AddAttrib(list, weapon, 96, 0.7, 1.3);
+			AddAttrib(list, weapon, 97, 0.7, 1.3);
+			AddAttrib(list, weapon, 99, 0.7, 1.3);
+			AddAttrib(list, weapon, 100, 0.7, 1.3);
+			AddAttrib(list, weapon, 101, 0.7, 1.3);
+			AddAttrib(list, weapon, 102, 0.7, 1.3);
+			AddAttrib(list, weapon, 103, 0.7, 1.3);
+			AddAttrib(list, weapon, 104, 0.7, 1.3);
+			AddAttrib(list, weapon, 287, 0.8, 1.2);
+			AddAttrib(list, weapon, 319, 0.5, 1.5);
+			AddAttrib(list, weapon, 343, 0.95, 1.05);
+			AddAttrib(list, weapon, 410, 0.8, 1.2);
 		}
-		case 1:
+		case 2, 3:
 		{
 			AddAttrib(list, weapon, 26, 0.9625, 1.05);
 			AddAttrib(list, 0, 205, 0.98, 1.015);
 			AddAttrib(list, 0, 206, 0.98, 1.015);
 			AddAttrib(list, weapon, 412, 0.98, 1.015);
 			
-			AddAttrib(list, weapon, 1, 0.925, 1.1);
-			AddAttrib(list, weapon, 2, 0.925, 1.1);
-			AddAttrib(list, weapon, 3, 0.85, 1.2);
-			AddAttrib(list, weapon, 4, 0.85, 1.2);
-			AddAttrib(list, weapon, 5, 0.96, 1.03);
-			AddAttrib(list, weapon, 6, 0.96, 1.03);
-			AddAttrib(list, weapon, 8, 0.925, 1.1);
-			AddAttrib(list, weapon, 10, 0.85, 1.2);
-			AddAttrib(list, weapon, 45, 0.85, 1.2);
-			AddAttrib(list, weapon, 94, 0.85, 1.2);
-			AddAttrib(list, weapon, 96, 0.9, 1.075);
-			AddAttrib(list, weapon, 97, 0.9, 1.075);
-			AddAttrib(list, weapon, 99, 0.925, 1.1);
-			AddAttrib(list, weapon, 100, 0.925, 1.1);
-			AddAttrib(list, weapon, 101, 0.925, 1.1);
-			AddAttrib(list, weapon, 102, 0.925, 1.1);
-			AddAttrib(list, weapon, 103, 0.925, 1.1);
-			AddAttrib(list, weapon, 104, 0.925, 1.1);
-			AddAttrib(list, weapon, 287, 0.925, 1.1);
-			AddAttrib(list, weapon, 319, 0.85, 1.2);
-			AddAttrib(list, weapon, 343, 0.97, 1.04);
-			AddAttrib(list, weapon, 410, 0.925, 1.1);
+			AddAttrib(list, weapon, 1, 0.8, 1.3);
+			AddAttrib(list, weapon, 2, 0.8, 1.3);
+			AddAttrib(list, weapon, 3, 0.7, 1.45);
+			AddAttrib(list, weapon, 4, 0.7, 1.45);
+			AddAttrib(list, weapon, 5, 0.925, 1.05);
+			AddAttrib(list, weapon, 6, 0.925, 1.05);
+			AddAttrib(list, weapon, 8, 0.8, 1.3);
+			AddAttrib(list, weapon, 10, 0.7, 1.45);
+			AddAttrib(list, weapon, 45, 0.7, 1.45);
+			AddAttrib(list, weapon, 94, 0.7, 1.45);
+			AddAttrib(list, weapon, 96, 0.55, 1.3);
+			AddAttrib(list, weapon, 97, 0.55, 1.3);
+			AddAttrib(list, weapon, 99, 0.7, 1.45);
+			AddAttrib(list, weapon, 100, 0.7, 1.45);
+			AddAttrib(list, weapon, 101, 0.7, 1.45);
+			AddAttrib(list, weapon, 102, 0.7, 1.45);
+			AddAttrib(list, weapon, 103, 0.7, 1.45);
+			AddAttrib(list, weapon, 104, 0.7, 1.45);
+			AddAttrib(list, weapon, 287, 0.8, 1.3);
+			AddAttrib(list, weapon, 319, 0.5, 1.75);
+			AddAttrib(list, weapon, 343, 0.925, 1.05);
+			AddAttrib(list, weapon, 410, 0.8, 1.3);
 		}
-		case 2:
+		default:
 		{
-			AddAttrib(list, 0, 107, 0.99, 1.01);
-			AddAttrib(list, weapon, 149, 0.8, 1.5);
+			AddAttrib(list, 0, 107, 0.96, 1.04);
+			AddAttrib(list, weapon, 149, 0.3, 4.0);
 
-			AddAttrib(list, weapon, 26, 0.9625, 1.05);
-			AddAttrib(list, 0, 205, 0.98, 1.015);
-			AddAttrib(list, 0, 206, 0.98, 1.015);
-			AddAttrib(list, weapon, 412, 0.98, 1.015);
+			AddAttrib(list, weapon, 26, 0.95, 1.1);
+			AddAttrib(list, 0, 205, 0.95, 1.03);
+			AddAttrib(list, 0, 206, 0.95, 1.03);
+			AddAttrib(list, weapon, 412, 0.95, 1.03);
 			
-			AddAttrib(list, weapon, 1, 0.95, 1.1);
-			AddAttrib(list, weapon, 2, 0.95, 1.1);
-			AddAttrib(list, weapon, 3, 0.875, 1.2);
-			AddAttrib(list, weapon, 4, 0.875, 1.2);
-			AddAttrib(list, weapon, 5, 0.96, 1.02);
-			AddAttrib(list, weapon, 6, 0.96, 1.02);
-			AddAttrib(list, weapon, 8, 0.95, 1.1);
-			AddAttrib(list, weapon, 10, 0.875, 1.2);
-			AddAttrib(list, weapon, 45, 0.875, 1.2);
-			AddAttrib(list, weapon, 94, 0.875, 1.2);
-			AddAttrib(list, weapon, 96, 0.925, 1.075);
-			AddAttrib(list, weapon, 97, 0.925, 1.075);
-			AddAttrib(list, weapon, 99, 0.95, 1.1);
-			AddAttrib(list, weapon, 100, 0.95, 1.1);
-			AddAttrib(list, weapon, 101, 0.95, 1.1);
-			AddAttrib(list, weapon, 102, 0.95, 1.1);
-			AddAttrib(list, weapon, 103, 0.95, 1.1);
-			AddAttrib(list, weapon, 104, 0.95, 1.1);
-			AddAttrib(list, weapon, 287, 0.95, 1.1);
-			AddAttrib(list, weapon, 319, 0.875, 1.2);
-			AddAttrib(list, weapon, 343, 0.96, 1.02);
-			AddAttrib(list, weapon, 410, 0.95, 1.1);
+			AddAttrib(list, weapon, 1, 0.7, 1.5);
+			AddAttrib(list, weapon, 2, 0.7, 1.5);
+			AddAttrib(list, weapon, 3, 0.5, 2.0);
+			AddAttrib(list, weapon, 4, 0.5, 2.0);
+			AddAttrib(list, weapon, 5, 0.85, 1.1);
+			AddAttrib(list, weapon, 6, 0.85, 1.1);
+			AddAttrib(list, weapon, 8, 0.7, 1.5);
+			AddAttrib(list, weapon, 10, 0.5, 2.0);
+			AddAttrib(list, weapon, 45, 0.5, 2.0);
+			AddAttrib(list, weapon, 94, 0.5, 2.0);
+			AddAttrib(list, weapon, 96, 0.35, 1.5);
+			AddAttrib(list, weapon, 97, 0.35, 1.5);
+			AddAttrib(list, weapon, 99, 0.5, 2.0);
+			AddAttrib(list, weapon, 100, 0.5, 2.0);
+			AddAttrib(list, weapon, 101, 0.5, 2.0);
+			AddAttrib(list, weapon, 102, 0.5, 2.0);
+			AddAttrib(list, weapon, 103, 0.5, 2.0);
+			AddAttrib(list, weapon, 104, 0.5, 2.0);
+			AddAttrib(list, weapon, 287, 0.7, 1.5);
+			AddAttrib(list, weapon, 319, 0.3, 4.0);
+			AddAttrib(list, weapon, 343, 0.85, 1.1);
+			AddAttrib(list, weapon, 410, 0.7, 1.5);
 		}
 	}
 
-	if(list.Length == 0)
+	int length = list.Length;
+	if(length == 0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -394,9 +402,13 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 
 	any values[3];
 
-	for(int i = 0; i < (rarity + 2); i++)
+	for(int i = 0; i < (rarity + 2) && length > 0; i++)
 	{
-		list.GetArray(GetURandomInt() % list.Length, values);
+		int index = GetURandomInt() % length;
+		list.GetArray(index, values);
+		list.Erase(index);
+		length--;
+		
 		tinker.Attrib[i] = view_as<int>(values[0]);
 
 		float minVal = view_as<float>(values[1]);
