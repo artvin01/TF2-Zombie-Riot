@@ -4804,6 +4804,7 @@ void Store_ApplyAttribs(int client)
 
 	EnableSilvesterCosmetic(client);
 	EnableMagiaCosmetic(client);
+	Building_Check_ValidSupportcount(client);
 }
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
@@ -5010,7 +5011,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
 	Manual_Impulse_101(client, health);
-	Building_Check_ValidSupportcount(client);
 }
 
 void CheckInvalidSlots(int client)
