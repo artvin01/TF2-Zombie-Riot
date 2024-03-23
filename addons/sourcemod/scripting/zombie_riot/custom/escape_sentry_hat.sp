@@ -690,7 +690,11 @@ public Action Mount_Building_Timer(Handle sentryHud, DataPack pack)
 				else if (StrEqual(buffer, "zr_summoner"))
 				{
 					EquipDispenser(client, entity, 9);
-				}	
+				}
+				else if (StrEqual(buffer, "zr_blacksmith"))
+				{
+					EquipDispenser(client, entity, BuildingBlacksmith);
+				}
 				RemoveBuildingDependency(entity);				
 			}
 		}
@@ -778,6 +782,10 @@ stock void EquipDispenser(int client, int target, int building_variant)
 			case 8:
 			{
 				Building_particle[client] = EntIndexToEntRef(ParticleEffectAt_Building_Custom(flPos, "powerup_icon_reflect", client)); // Village
+			}
+			case BuildingBlacksmith:
+			{
+				Building_particle[client] = EntIndexToEntRef(ParticleEffectAt_Building_Custom(flPos, "powerup_icon_strength", client));
 			}
 			default:
 			{

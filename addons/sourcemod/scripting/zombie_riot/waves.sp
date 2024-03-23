@@ -1306,6 +1306,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				else
 				{
 					panzer_chance--;
+					Flagellant_MiniBossChance(panzer_chance);
 				}
 			}
 			else
@@ -2214,27 +2215,30 @@ static void UpdateMvMStatsFrame()
 			}
 		}
 
-		Enemy enemy;
-		int length = Enemies.Length;
-		for(int a; a < length; a++)
+		if(Enemies)
 		{
-			Enemies.GetArray(a, enemy);
-			cashLeft += enemy.Credits;
-			activecount++;
-
-			for(int b; b < sizeof(id); b++)
+			Enemy enemy;
+			int length = Enemies.Length;
+			for(int a; a < length; a++)
 			{
-				if(!id[b] || id[b] == enemy.Index)
+				Enemies.GetArray(a, enemy);
+				cashLeft += enemy.Credits;
+				activecount++;
+
+				for(int b; b < sizeof(id); b++)
 				{
-					count[b]++;
-					
-					if(!id[b])
+					if(!id[b] || id[b] == enemy.Index)
 					{
-						id[b] = enemy.Index;
-						flags[b] = SetupFlags(enemy, !freeplay);
+						count[b]++;
+						
+						if(!id[b])
+						{
+							id[b] = enemy.Index;
+							flags[b] = SetupFlags(enemy, !freeplay);
+						}
+						
+						break;
 					}
-					
-					break;
 				}
 			}
 		}

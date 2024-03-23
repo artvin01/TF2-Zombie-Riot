@@ -1194,6 +1194,17 @@ public void OnPostThink(int client)
 						Format(buffer, sizeof(buffer), "\nBA\n", Cooldowntocheck);
 					}
 				}
+				case BuildingBlacksmith:
+				{
+					if(Cooldowntocheck > 0.0)
+					{
+						Format(buffer, sizeof(buffer), "%.1f\nTI\n", Cooldowntocheck);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "\nTI\n", Cooldowntocheck);
+					}
+				}
 			}
 		}
 		else

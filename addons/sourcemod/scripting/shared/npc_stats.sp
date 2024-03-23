@@ -6136,15 +6136,12 @@ int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, flo
 	return prop;
 }
 
-public void GibCollidePlayerInteraction(int gib, int player)
+#if defined ZR
+void GibCollidePlayerInteraction(int gib, int player)
 {
 	if(b_IsCannibal[player])
 	{
-		
-#if defined ZR
 		if(dieingstate[player] == 0)
-#endif
-		
 		{
 			int weapon = GetEntPropEnt(player, Prop_Send, "m_hActiveWeapon");
 			if(IsValidEntity(weapon)) //Must also hold melee out 
@@ -6155,9 +6152,7 @@ public void GibCollidePlayerInteraction(int gib, int player)
 					{
 						float Heal_Amount = 0.0;
 						
-#if !defined RTS
 						Heal_Amount = Attributes_Get(weapon, 180, 1.0);
-#endif
 						
 						float Heal_Amount_calc;
 						
@@ -6185,6 +6180,7 @@ public void GibCollidePlayerInteraction(int gib, int player)
 		}
 	}
 }
+#endif
 
 public Action Timer_RemoveEntity_Prop_Gib(Handle timer, any entid)
 {
