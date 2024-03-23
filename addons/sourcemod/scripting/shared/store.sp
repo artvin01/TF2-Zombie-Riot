@@ -5551,7 +5551,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		//SPEED COLA!
 		if(i_CurrentEquippedPerk[client] == 4)
 		{
-			Attributes_SetMulti(entity, 97, 0.65);
+			//dont give it if it doesnt have it.
+			if(Attributes_Has(entity, 97))
+				Attributes_SetMulti(entity, 97, 0.65);
 		}
 
 		//DOUBLE TAP!
@@ -5563,8 +5565,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		//DEADSHOT!
 		if(i_CurrentEquippedPerk[client] == 5)
 		{	
-			Attributes_SetMulti(entity, 103, 1.2);
-			Attributes_SetMulti(entity, 106, 0.65);
+			//dont give it if it doesnt have it.
+			if(Attributes_Has(entity, 103))
+				Attributes_SetMulti(entity, 103, 1.2);
+				
+			Attributes_SetMulti(entity, 106, 1.2);
 		}
 
 		//QUICK REVIVE!
