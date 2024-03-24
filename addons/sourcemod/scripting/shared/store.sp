@@ -4732,7 +4732,13 @@ void Store_ApplyAttribs(int client)
 		{
 			if(!TF2_GetWearable(client, entity))
 				break;
-			
+
+			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
+			{
+				i--;
+				continue;
+			}
+
 			Attributes_RemoveAll(entity);
 			attribs++;
 		}
@@ -4841,6 +4847,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
 	b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
+	OverridePlayerModel(client, 0, false);
 
 	//stickies can stay, we delete any non spike stickies.
 	for( int i = 1; i <= MAXENTITIES; i++ ) 
@@ -5660,6 +5667,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Dimension_Wand(client, entity);
 		Enable_Management_Hell_Hoe(client, entity);
 		Enable_Kahml_Fist_Ability(client, entity);
+		Enable_HHH_Axe_Ability(client, entity);
 		Enable_Messenger_Launcher_Ability(client, entity);
 		WeaponNailgun_Enable(client, entity);
 		Blacksmith_Enable(client, entity);
