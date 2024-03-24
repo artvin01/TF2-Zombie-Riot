@@ -129,7 +129,7 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 	{
-		if(!dieingstate[client] && IsPlayerAlive(client))
+		if(!dieingstate[client] && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && i_HealthBeforeSuit[client] == 0)
 		{
 			int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 			if(weapon != -1)
