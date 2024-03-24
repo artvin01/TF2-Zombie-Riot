@@ -384,6 +384,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				AddAttrib(list, weapon, 6, 0.95, 1.05);
 				AddAttrib(list, weapon, 8, 0.8, 1.2);
 				AddAttrib(list, weapon, 10, 0.7, 1.3);
+				AddAttrib(list, weapon, 41, 0.7, 1.3);
 				AddAttrib(list, weapon, 45, 0.7, 1.3);
 				AddAttrib(list, weapon, 94, 0.7, 1.3);
 				AddAttrib(list, weapon, 96, 0.7, 1.3);
@@ -394,6 +395,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				AddAttrib(list, weapon, 102, 0.7, 1.3);
 				AddAttrib(list, weapon, 103, 0.7, 1.3);
 				AddAttrib(list, weapon, 104, 0.7, 1.3);
+				AddAttrib(list, weapon, 106, 0.7, 1.25);
 				AddAttrib(list, weapon, 287, 0.8, 1.2);
 				AddAttrib(list, weapon, 319, 0.5, 1.5);
 				AddAttrib(list, weapon, 343, 0.95, 1.05);
@@ -414,6 +416,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				AddAttrib(list, weapon, 6, 0.925, 1.05);
 				AddAttrib(list, weapon, 8, 0.8, 1.3);
 				AddAttrib(list, weapon, 10, 0.7, 1.45);
+				AddAttrib(list, weapon, 41, 0.7, 1.45);
 				AddAttrib(list, weapon, 45, 0.7, 1.45);
 				AddAttrib(list, weapon, 94, 0.7, 1.45);
 				AddAttrib(list, weapon, 96, 0.55, 1.3);
@@ -424,6 +427,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				AddAttrib(list, weapon, 102, 0.7, 1.45);
 				AddAttrib(list, weapon, 103, 0.7, 1.45);
 				AddAttrib(list, weapon, 104, 0.7, 1.45);
+				AddAttrib(list, weapon, 106, 0.65, 1.3);
 				AddAttrib(list, weapon, 287, 0.8, 1.3);
 				AddAttrib(list, weapon, 319, 0.5, 1.75);
 				AddAttrib(list, weapon, 343, 0.925, 1.05);
@@ -447,6 +451,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				AddAttrib(list, weapon, 6, 0.85, 1.1);
 				AddAttrib(list, weapon, 8, 0.7, 1.5);
 				AddAttrib(list, weapon, 10, 0.5, 2.0);
+				AddAttrib(list, weapon, 41, 0.6, 1.35);
 				AddAttrib(list, weapon, 45, 0.5, 2.0);
 				AddAttrib(list, weapon, 94, 0.5, 2.0);
 				AddAttrib(list, weapon, 96, 0.35, 1.5);
@@ -457,6 +462,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				AddAttrib(list, weapon, 102, 0.5, 2.0);
 				AddAttrib(list, weapon, 103, 0.5, 2.0);
 				AddAttrib(list, weapon, 104, 0.5, 2.0);
+				AddAttrib(list, weapon, 106, 0.6, 1.35);
 				AddAttrib(list, weapon, 287, 0.7, 1.5);
 				AddAttrib(list, weapon, 319, 0.3, 4.0);
 				AddAttrib(list, weapon, 343, 0.85, 1.1);
