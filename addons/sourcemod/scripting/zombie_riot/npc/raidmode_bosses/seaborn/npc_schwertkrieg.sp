@@ -1834,9 +1834,7 @@ static int Create_Blade(float Loc[3], char size[10])
 		
 		//SetEntProp(prop, Prop_Send, "m_fEffects", 32); //EF_NODRAW
 		
-		SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12);
-		SetEntProp(prop, Prop_Data, "m_nSolidType", 6);
-		SetEntProp(prop, Prop_Send, "m_CollisionGroup", 1);
+		MakeObjectIntangeable(prop);
 
 		TeleportEntity(prop, Loc, NULL_VECTOR, NULL_VECTOR);
 
@@ -2415,10 +2413,7 @@ static int Schwert_Create_Invis_Proj(Raidboss_Schwertkrieg npc, float rocket_spe
 
 
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
-		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 12);
-		
-		SetEntProp(entity, Prop_Data, "m_nSolidType", 6);
-		SetEntProp(entity, Prop_Send, "m_CollisionGroup", 1);
+		MakeObjectIntangeable(entity);
 
 		SetEntityMoveType(entity, MOVETYPE_NOCLIP);
 

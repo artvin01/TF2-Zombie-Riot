@@ -309,9 +309,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		else if(StrContains(data, "fake") != -1)
 		{
 			npc.m_bSecondPhase = false;
-			SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.
-			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12); 
-			SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6);
+			MakeObjectIntangeable(npc.index);
 			i_RaidGrantExtra[npc.index] = -1;
 			b_DoNotUnStuck[npc.index] = true;
 			b_ThisNpcIsImmuneToNuke[npc.index] = true;

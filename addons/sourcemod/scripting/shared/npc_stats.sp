@@ -2259,9 +2259,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			AcceptEntityInput(item, "SetParentAttachmentMaintainOffset"); 
 		}	
 		
-		SetEntityCollisionGroup(item, 1);
-		SetEntProp(item, Prop_Send, "m_usSolidFlags", 12); 
-		SetEntProp(item, Prop_Data, "m_nSolidType", 6); 
+		MakeObjectIntangeable(item);
 
 		return item;
 	}
@@ -2318,9 +2316,7 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		SetVariantString("!activator");
 		AcceptEntityInput(item, "SetParent", this.index);
-		SetEntityCollisionGroup(item, 1);
-		SetEntProp(item, Prop_Send, "m_usSolidFlags", 12); 
-		SetEntProp(item, Prop_Data, "m_nSolidType", 6); 
+		MakeObjectIntangeable(item);
 		return item;
 	} 
 	public bool DoSwingTrace(Handle &trace,
@@ -3318,9 +3314,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		func_NPCActorEmoted[pThis] = INVALID_FUNCTION;
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
-		SetEntityCollisionGroup(pThis, 1);
-		SetEntProp(pThis, Prop_Send, "m_usSolidFlags", 12); 
-		SetEntProp(pThis, Prop_Data, "m_nSolidType", 6); 
+		MakeObjectIntangeable(pThis);
 		b_ThisEntityIgnored[pThis] = true;
 	//	b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
 	//Do not remove pather here.
@@ -9771,4 +9765,12 @@ void IsEntityInvincible_ShieldRemove(int entity)
 
 	RemoveEntity(EntRefToEntIndex(i_InvincibleParticle[entity]));
 	i_InvincibleParticle[entity] = INVALID_ENT_REFERENCE;
+}
+
+
+void MakeObjectIntangeable(int entity)
+{
+	SetEntityCollisionGroup(entity, 1); //Dont Touch Anything.
+	SetEntProp(entity, Prop_Send, "m_usSolidFlags", 12); 
+	SetEntProp(entity, Prop_Data, "m_nSolidType", 6);
 }

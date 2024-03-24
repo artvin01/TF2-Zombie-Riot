@@ -244,9 +244,7 @@ public void Vamp_ThrowKnives(int client, int weapon, int BleedStacks, float DMG_
 			DispatchKeyValue(prop, "model", modelName);
 			DispatchKeyValue(prop, "modelscale", "2.0"); //comically large cleaver :)
 			DispatchSpawn(prop);
-			SetEntityCollisionGroup(prop, 1); //Do not collide. //0 doesnt work, use 1
-			SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
-			SetEntProp(prop, Prop_Data, "m_nSolidType", 6); 
+			MakeObjectIntangeable(prop);
 			
 			TeleportEntity(prop, loc, Angles, NULL_VECTOR);
 			SetParent(projectile, prop);
