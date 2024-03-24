@@ -322,6 +322,16 @@ public void Blitzkrieg_Kit_Primary_Fire_5(int client, int weapon, const char[] c
 {
 	Blitzkrieg_Kit_Rocket(client, weapon, 0.65, 7, 10.0);
 }
+public void Blitzkrieg_Kit_Primary_Fire_6(int client, int weapon, const char[] classname, bool &result)
+{
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.7, 7, 10.0);
+}
+public void Blitzkrieg_Kit_Primary_Fire_7(int client, int weapon, const char[] classname, bool &result)
+{
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.75, 9, 7.0);
+}
+
+
 
 
 static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int spread, float spacing)
@@ -561,6 +571,14 @@ public void Blitzkrieg_Kit_Seconadry_Ion_4(int client, int weapon, bool &result,
 public void Blitzkrieg_Kit_Seconadry_Ion_5(int client, int weapon, bool &result, int slot)
 {
 	Blitzkrieg_Kit_ion_trace(client, 7, weapon);
+}
+public void Blitzkrieg_Kit_Seconadry_Ion_6(int client, int weapon, bool &result, int slot)
+{
+	Blitzkrieg_Kit_ion_trace(client, 8, weapon);
+}
+public void Blitzkrieg_Kit_Seconadry_Ion_7(int client, int weapon, bool &result, int slot)
+{
+	Blitzkrieg_Kit_ion_trace(client, 9, weapon);
 }
 
 static void Blitzkrieg_Kit_ion_trace(int client, int patern, int weapon)
