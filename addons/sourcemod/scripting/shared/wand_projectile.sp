@@ -359,10 +359,8 @@ stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, f
 		TeleportEntity(entity, rocketOrigin, rocketang, NULL_VECTOR);
 		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", GetGameTime());
 		DispatchSpawn(entity);
-		SetEntityCollisionGroup(entity, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
 		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
-		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 12); 
-		SetEntProp(entity, Prop_Data, "m_nSolidType", 6); 
+		MakeObjectIntangeable(entity);
 		SetParent(rocket, entity);
 		iref_PropAppliedToRocket[rocket] = EntIndexToEntRef(entity);
 		

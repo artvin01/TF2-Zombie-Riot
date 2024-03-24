@@ -2872,7 +2872,7 @@ static void MenuPage(int client, int section)
 						}
 						else	// No Ammo
 						{
-							FormatEx(buffer, sizeof(buffer), "%s", "------");
+							FormatEx(buffer, sizeof(buffer), "%s", "-");
 							style = ITEMDRAW_DISABLED;
 						}
 					}
@@ -2934,7 +2934,7 @@ static void MenuPage(int client, int section)
 					else if(item.Equipped[client] || canSell)
 					{
 						Repeat_Filler ++;
-						menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 1
+						menu.AddItem(buffer2, "-", ITEMDRAW_DISABLED);	// 1
 					}
 
 					//We shall allow unequipping again.
@@ -2947,7 +2947,7 @@ static void MenuPage(int client, int section)
 					else if(canSell)
 					{
 						Repeat_Filler ++;
-						menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 2
+						menu.AddItem(buffer2, "-", ITEMDRAW_DISABLED);	// 2
 					}
 
 					if(canSell)
@@ -2959,24 +2959,27 @@ static void MenuPage(int client, int section)
 					else
 					{
 						Repeat_Filler ++;
-						menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 2
+						menu.AddItem(buffer2, "-", ITEMDRAW_DISABLED);	// 2
 					}
 
-					if(item.Tags[0] || info.ExtraDesc[0] || item.Author[0])
+					bool tinker = Blacksmith_HasTinker(client, section);
+					if(tinker || item.Tags[0] || info.ExtraDesc[0] || item.Author[0])
 					{
 						for(int Repeatuntill; Repeatuntill < 10; Repeatuntill++)
 						{
 							if(Repeat_Filler < 4)
 							{
 								Repeat_Filler ++;
-								menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 2
+								menu.AddItem(buffer2, "-", ITEMDRAW_DISABLED);	// 2
 							}
 							else
 							{
 								break;
 							}
 						}
-						FormatEx(buffer, sizeof(buffer), "%t", info.ExtraDesc[0] ? "Extra Description" : "Tags & Author");
+						FormatEx(buffer, sizeof(buffer), "%t", tinker ? "View Modifiers" : (info.ExtraDesc[0] ? "Extra Description" : "Tags & Author"));
+
+						
 						menu.AddItem(buffer2, buffer);
 					}
 				}
@@ -4286,6 +4289,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					{
 						CPrintToChat(client, "%t", "Created By", item.Author);
 					}
+
+					Blacksmith_ExtraDesc(client, index);
 				}
 			}
 			MenuPage(client, index);
@@ -4732,7 +4737,13 @@ void Store_ApplyAttribs(int client)
 		{
 			if(!TF2_GetWearable(client, entity))
 				break;
-			
+
+			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
+			{
+				i--;
+				continue;
+			}
+
 			Attributes_RemoveAll(entity);
 			attribs++;
 		}
@@ -4841,6 +4852,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
 	b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
+	OverridePlayerModel(client, 0, false);
 
 	//stickies can stay, we delete any non spike stickies.
 	for( int i = 1; i <= MAXENTITIES; i++ ) 
@@ -5660,6 +5672,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Dimension_Wand(client, entity);
 		Enable_Management_Hell_Hoe(client, entity);
 		Enable_Kahml_Fist_Ability(client, entity);
+		Enable_HHH_Axe_Ability(client, entity);
 		Enable_Messenger_Launcher_Ability(client, entity);
 		WeaponNailgun_Enable(client, entity);
 		Blacksmith_Enable(client, entity);

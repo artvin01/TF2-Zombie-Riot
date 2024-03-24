@@ -32,6 +32,57 @@ int Blacksmith_Additional_SupportBuildings(int client)
 {
 	return i_AdditionalSupportBuildings[client];
 }
+
+bool Blacksmith_HasTinker(int client, int index)
+{
+	if(Tinkers)
+	{
+		int account = GetSteamAccountID(client, false);
+		if(account)
+		{
+			static TinkerEnum tinker;
+			int length = Tinkers.Length;
+			for(int a; a < length; a++)
+			{
+				Tinkers.GetArray(a, tinker);
+				if(tinker.AccountId == account && tinker.StoreIndex == index)
+					return true;
+			}
+		}
+	}
+	
+	return false;
+}
+
+void Blacksmith_ExtraDesc(int client, int index)
+{
+	if(Tinkers)
+	{
+		int account = GetSteamAccountID(client, false);
+		if(account)
+		{
+			static TinkerEnum tinker;
+			int length = Tinkers.Length;
+			for(int a; a < length; a++)
+			{
+				Tinkers.GetArray(a, tinker);
+				if(tinker.AccountId == account && tinker.StoreIndex == index)
+				{
+					for(int b; b < sizeof(tinker.Attrib); b++)
+					{
+						if(!tinker.Attrib[b])
+							break;
+						
+						PrintAttribValue(client, tinker.Attrib[b], tinker.Value[b]);
+					}
+
+					break;
+				}
+			}
+		}
+	}
+}
+
 void Blacksmith_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BLACKSMITH)
@@ -78,7 +129,7 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 	{
-		if(!dieingstate[client] && IsPlayerAlive(client))
+		if(!dieingstate[client] && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && i_HealthBeforeSuit[client] == 0)
 		{
 			int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 			if(weapon != -1)
@@ -108,7 +159,7 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 					return Plugin_Continue;
 				}
 			}
-
+			i_AdditionalSupportBuildings[client] = 0;
 			SmithLevel[client] = -1;
 		}
 		
@@ -251,218 +302,239 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 	Zero(tinker.Attrib);
 
 	int rarity;
-	switch(SmithLevel[owner])
+	if(GetClientButtons(client) & IN_DUCK)
 	{
-		case 0, 1:
-		{
-			
-		}
-		case 2:
-		{
-			if((GetURandomInt() % 4) == 0)
-				rarity = 1;
-		}
-		case 3:
-		{
-			int rand = GetURandomInt();
-			if((rand % 7) == 0)
-			{
-				rarity = 2;
-			}
-			else if((rand % 3) == 0)
-			{
-				rarity = 1;
-			}
-		}
-		case 4:
-		{
-			int rand = GetURandomInt();
-			if((rand % 5) == 0)
-			{
-				rarity = 2;
-			}
-			else if((rand % 2) == 0)
-			{
-				rarity = 1;
-			}
-		}
-		default:
-		{
-			if((GetURandomInt() % 3) == 0)
-			{
-				rarity = 2;
-			}
-			else
-			{
-				rarity = 1;
-			}
-		}
-	}
-
-	ArrayList list = new ArrayList(3);
-	
-	switch(SmithLevel[owner])
-	{
-		case 0, 1:
-		{
-			AddAttrib(list, weapon, 1, 0.8, 1.2);
-			AddAttrib(list, weapon, 2, 0.8, 1.2);
-			AddAttrib(list, weapon, 3, 0.7, 1.3);
-			AddAttrib(list, weapon, 4, 0.7, 1.3);
-			AddAttrib(list, weapon, 5, 0.95, 1.05);
-			AddAttrib(list, weapon, 6, 0.95, 1.05);
-			AddAttrib(list, weapon, 8, 0.8, 1.2);
-			AddAttrib(list, weapon, 10, 0.7, 1.3);
-			AddAttrib(list, weapon, 45, 0.7, 1.3);
-			AddAttrib(list, weapon, 94, 0.7, 1.3);
-			AddAttrib(list, weapon, 96, 0.7, 1.3);
-			AddAttrib(list, weapon, 97, 0.7, 1.3);
-			AddAttrib(list, weapon, 99, 0.7, 1.3);
-			AddAttrib(list, weapon, 100, 0.7, 1.3);
-			AddAttrib(list, weapon, 101, 0.7, 1.3);
-			AddAttrib(list, weapon, 102, 0.7, 1.3);
-			AddAttrib(list, weapon, 103, 0.7, 1.3);
-			AddAttrib(list, weapon, 104, 0.7, 1.3);
-			AddAttrib(list, weapon, 287, 0.8, 1.2);
-			AddAttrib(list, weapon, 319, 0.5, 1.5);
-			AddAttrib(list, weapon, 343, 0.95, 1.05);
-			AddAttrib(list, weapon, 410, 0.8, 1.2);
-		}
-		case 2, 3:
-		{
-			AddAttrib(list, weapon, 26, 0.9625, 1.05);
-			AddAttrib(list, 0, 205, 0.98, 1.015);
-			AddAttrib(list, 0, 206, 0.98, 1.015);
-			AddAttrib(list, weapon, 412, 0.98, 1.015);
-			
-			AddAttrib(list, weapon, 1, 0.8, 1.3);
-			AddAttrib(list, weapon, 2, 0.8, 1.3);
-			AddAttrib(list, weapon, 3, 0.7, 1.45);
-			AddAttrib(list, weapon, 4, 0.7, 1.45);
-			AddAttrib(list, weapon, 5, 0.925, 1.05);
-			AddAttrib(list, weapon, 6, 0.925, 1.05);
-			AddAttrib(list, weapon, 8, 0.8, 1.3);
-			AddAttrib(list, weapon, 10, 0.7, 1.45);
-			AddAttrib(list, weapon, 45, 0.7, 1.45);
-			AddAttrib(list, weapon, 94, 0.7, 1.45);
-			AddAttrib(list, weapon, 96, 0.55, 1.3);
-			AddAttrib(list, weapon, 97, 0.55, 1.3);
-			AddAttrib(list, weapon, 99, 0.7, 1.45);
-			AddAttrib(list, weapon, 100, 0.7, 1.45);
-			AddAttrib(list, weapon, 101, 0.7, 1.45);
-			AddAttrib(list, weapon, 102, 0.7, 1.45);
-			AddAttrib(list, weapon, 103, 0.7, 1.45);
-			AddAttrib(list, weapon, 104, 0.7, 1.45);
-			AddAttrib(list, weapon, 287, 0.8, 1.3);
-			AddAttrib(list, weapon, 319, 0.5, 1.75);
-			AddAttrib(list, weapon, 343, 0.925, 1.05);
-			AddAttrib(list, weapon, 410, 0.8, 1.3);
-		}
-		default:
-		{
-			AddAttrib(list, 0, 107, 0.96, 1.04);
-			AddAttrib(list, weapon, 149, 0.3, 4.0);
-
-			AddAttrib(list, weapon, 26, 0.95, 1.1);
-			AddAttrib(list, 0, 205, 0.95, 1.03);
-			AddAttrib(list, 0, 206, 0.95, 1.03);
-			AddAttrib(list, weapon, 412, 0.95, 1.03);
-			
-			AddAttrib(list, weapon, 1, 0.7, 1.5);
-			AddAttrib(list, weapon, 2, 0.7, 1.5);
-			AddAttrib(list, weapon, 3, 0.5, 2.0);
-			AddAttrib(list, weapon, 4, 0.5, 2.0);
-			AddAttrib(list, weapon, 5, 0.85, 1.1);
-			AddAttrib(list, weapon, 6, 0.85, 1.1);
-			AddAttrib(list, weapon, 8, 0.7, 1.5);
-			AddAttrib(list, weapon, 10, 0.5, 2.0);
-			AddAttrib(list, weapon, 45, 0.5, 2.0);
-			AddAttrib(list, weapon, 94, 0.5, 2.0);
-			AddAttrib(list, weapon, 96, 0.35, 1.5);
-			AddAttrib(list, weapon, 97, 0.35, 1.5);
-			AddAttrib(list, weapon, 99, 0.5, 2.0);
-			AddAttrib(list, weapon, 100, 0.5, 2.0);
-			AddAttrib(list, weapon, 101, 0.5, 2.0);
-			AddAttrib(list, weapon, 102, 0.5, 2.0);
-			AddAttrib(list, weapon, 103, 0.5, 2.0);
-			AddAttrib(list, weapon, 104, 0.5, 2.0);
-			AddAttrib(list, weapon, 287, 0.7, 1.5);
-			AddAttrib(list, weapon, 319, 0.3, 4.0);
-			AddAttrib(list, weapon, 343, 0.85, 1.1);
-			AddAttrib(list, weapon, 410, 0.7, 1.5);
-		}
-	}
-
-	int length = list.Length;
-	if(length == 0)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Blacksmith Underleveled");
-
-		delete list;
-		ApplyBuildingCollectCooldown(entity, client, 2.0);
-		return;
-	}
-
-	any values[3];
-
-	for(int i = 0; i < (rarity + 2) && length > 0; i++)
-	{
-		int index = GetURandomInt() % length;
-		list.GetArray(index, values);
-		list.Erase(index);
-		length--;
 		
-		tinker.Attrib[i] = view_as<int>(values[0]);
-
-		float minVal = view_as<float>(values[1]);
-		float maxVal = view_as<float>(values[2]);
-
-		switch(i)
+		if(found == -1)
 		{
-			case 0:	// Always Good
-			{
-				if(AttribIsInverse(tinker.Attrib[i]))
-				{
-					maxVal = 0.99;
-				}
-				else
-				{
-					minVal = 1.01;
-				}
-			}
-			case 1:	// Always Bad
-			{
-				if(AttribIsInverse(tinker.Attrib[i]))
-				{
-					minVal = 1.01;
-				}
-				else
-				{
-					maxVal = 0.99;
-				}
-			}
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Blacksmith No Attribs");
+
+			ApplyBuildingCollectCooldown(entity, client, 2.0);
+			return;
 		}
 
-		tinker.Value[i] = GetRandomFloat(minVal, maxVal);
-
-		PrintAttribValue(client, tinker.Attrib[i], tinker.Value[i]);
-	}
-
-	delete list;
-
-	if(found == -1)
-	{
-		if(!Tinkers)
-			Tinkers = new ArrayList(sizeof(TinkerEnum));
-		
-		Tinkers.PushArray(tinker);
+		rarity = -1;
+		Tinkers.Erase(found);
+		PrintToChat(client, "%t", "Removed Tinker Attributes");
 	}
 	else
 	{
-		Tinkers.SetArray(found, tinker);
+		switch(SmithLevel[owner])
+		{
+			case 0, 1:
+			{
+				
+			}
+			case 2:
+			{
+				if((GetURandomInt() % 4) == 0)
+					rarity = 1;
+			}
+			case 3:
+			{
+				int rand = GetURandomInt();
+				if((rand % 7) == 0)
+				{
+					rarity = 2;
+				}
+				else if((rand % 3) == 0)
+				{
+					rarity = 1;
+				}
+			}
+			case 4:
+			{
+				int rand = GetURandomInt();
+				if((rand % 5) == 0)
+				{
+					rarity = 2;
+				}
+				else if((rand % 2) == 0)
+				{
+					rarity = 1;
+				}
+			}
+			default:
+			{
+				if((GetURandomInt() % 3) == 0)
+				{
+					rarity = 2;
+				}
+				else
+				{
+					rarity = 1;
+				}
+			}
+		}
+
+		ArrayList list = new ArrayList(3);
+		
+		switch(SmithLevel[owner])
+		{
+			case 0, 1:
+			{
+				AddAttrib(list, weapon, 1, 0.8, 1.2);
+				AddAttrib(list, weapon, 2, 0.8, 1.2);
+				AddAttrib(list, weapon, 3, 0.7, 1.3);
+				AddAttrib(list, weapon, 4, 0.7, 1.3);
+				AddAttrib(list, weapon, 5, 0.95, 1.05);
+				AddAttrib(list, weapon, 6, 0.95, 1.05);
+				AddAttrib(list, weapon, 8, 0.8, 1.2);
+				AddAttrib(list, weapon, 10, 0.7, 1.3);
+				AddAttrib(list, weapon, 45, 0.7, 1.3);
+				AddAttrib(list, weapon, 94, 0.7, 1.3);
+				AddAttrib(list, weapon, 96, 0.7, 1.3);
+				AddAttrib(list, weapon, 97, 0.7, 1.3);
+				AddAttrib(list, weapon, 99, 0.7, 1.3);
+				AddAttrib(list, weapon, 100, 0.7, 1.3);
+				AddAttrib(list, weapon, 101, 0.7, 1.3);
+				AddAttrib(list, weapon, 102, 0.7, 1.3);
+				AddAttrib(list, weapon, 103, 0.7, 1.3);
+				AddAttrib(list, weapon, 104, 0.7, 1.3);
+				AddAttrib(list, weapon, 287, 0.8, 1.2);
+				AddAttrib(list, weapon, 319, 0.5, 1.5);
+				AddAttrib(list, weapon, 343, 0.95, 1.05);
+				AddAttrib(list, weapon, 410, 0.8, 1.2);
+			}
+			case 2, 3:
+			{
+				AddAttrib(list, weapon, 26, 0.9625, 1.05);
+				AddAttrib(list, 0, 205, 0.98, 1.015);
+				AddAttrib(list, 0, 206, 0.98, 1.015);
+				AddAttrib(list, weapon, 412, 0.98, 1.015);
+				
+				AddAttrib(list, weapon, 1, 0.8, 1.3);
+				AddAttrib(list, weapon, 2, 0.8, 1.3);
+				AddAttrib(list, weapon, 3, 0.7, 1.45);
+				AddAttrib(list, weapon, 4, 0.7, 1.45);
+				AddAttrib(list, weapon, 5, 0.925, 1.05);
+				AddAttrib(list, weapon, 6, 0.925, 1.05);
+				AddAttrib(list, weapon, 8, 0.8, 1.3);
+				AddAttrib(list, weapon, 10, 0.7, 1.45);
+				AddAttrib(list, weapon, 45, 0.7, 1.45);
+				AddAttrib(list, weapon, 94, 0.7, 1.45);
+				AddAttrib(list, weapon, 96, 0.55, 1.3);
+				AddAttrib(list, weapon, 97, 0.55, 1.3);
+				AddAttrib(list, weapon, 99, 0.7, 1.45);
+				AddAttrib(list, weapon, 100, 0.7, 1.45);
+				AddAttrib(list, weapon, 101, 0.7, 1.45);
+				AddAttrib(list, weapon, 102, 0.7, 1.45);
+				AddAttrib(list, weapon, 103, 0.7, 1.45);
+				AddAttrib(list, weapon, 104, 0.7, 1.45);
+				AddAttrib(list, weapon, 287, 0.8, 1.3);
+				AddAttrib(list, weapon, 319, 0.5, 1.75);
+				AddAttrib(list, weapon, 343, 0.925, 1.05);
+				AddAttrib(list, weapon, 410, 0.8, 1.3);
+			}
+			default:
+			{
+				AddAttrib(list, 0, 107, 0.96, 1.04);
+				AddAttrib(list, weapon, 149, 0.3, 4.0);
+
+				AddAttrib(list, weapon, 26, 0.95, 1.1);
+				AddAttrib(list, 0, 205, 0.95, 1.03);
+				AddAttrib(list, 0, 206, 0.95, 1.03);
+				AddAttrib(list, weapon, 412, 0.95, 1.03);
+				
+				AddAttrib(list, weapon, 1, 0.7, 1.5);
+				AddAttrib(list, weapon, 2, 0.7, 1.5);
+				AddAttrib(list, weapon, 3, 0.5, 2.0);
+				AddAttrib(list, weapon, 4, 0.5, 2.0);
+				AddAttrib(list, weapon, 5, 0.85, 1.1);
+				AddAttrib(list, weapon, 6, 0.85, 1.1);
+				AddAttrib(list, weapon, 8, 0.7, 1.5);
+				AddAttrib(list, weapon, 10, 0.5, 2.0);
+				AddAttrib(list, weapon, 45, 0.5, 2.0);
+				AddAttrib(list, weapon, 94, 0.5, 2.0);
+				AddAttrib(list, weapon, 96, 0.35, 1.5);
+				AddAttrib(list, weapon, 97, 0.35, 1.5);
+				AddAttrib(list, weapon, 99, 0.5, 2.0);
+				AddAttrib(list, weapon, 100, 0.5, 2.0);
+				AddAttrib(list, weapon, 101, 0.5, 2.0);
+				AddAttrib(list, weapon, 102, 0.5, 2.0);
+				AddAttrib(list, weapon, 103, 0.5, 2.0);
+				AddAttrib(list, weapon, 104, 0.5, 2.0);
+				AddAttrib(list, weapon, 287, 0.7, 1.5);
+				AddAttrib(list, weapon, 319, 0.3, 4.0);
+				AddAttrib(list, weapon, 343, 0.85, 1.1);
+				AddAttrib(list, weapon, 410, 0.7, 1.5);
+			}
+		}
+
+		int length = list.Length;
+		if(length == 0)
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Blacksmith Underleveled");
+
+			delete list;
+			ApplyBuildingCollectCooldown(entity, client, 2.0);
+			return;
+		}
+
+		any values[3];
+
+		for(int i = 0; i < (rarity + 2) && length > 0; i++)
+		{
+			int index = GetURandomInt() % length;
+			list.GetArray(index, values);
+			list.Erase(index);
+			length--;
+			
+			tinker.Attrib[i] = view_as<int>(values[0]);
+
+			float minVal = view_as<float>(values[1]);
+			float maxVal = view_as<float>(values[2]);
+
+			switch(i)
+			{
+				case 0:	// Always Good
+				{
+					if(AttribIsInverse(tinker.Attrib[i]))
+					{
+						maxVal = 0.99;
+					}
+					else
+					{
+						minVal = 1.01;
+					}
+				}
+				case 1:	// Always Bad
+				{
+					if(AttribIsInverse(tinker.Attrib[i]))
+					{
+						minVal = 1.01;
+					}
+					else
+					{
+						maxVal = 0.99;
+					}
+				}
+			}
+
+			tinker.Value[i] = GetRandomFloat(minVal, maxVal);
+
+			PrintAttribValue(client, tinker.Attrib[i], tinker.Value[i]);
+		}
+
+		delete list;
+
+		if(found == -1)
+		{
+			if(!Tinkers)
+				Tinkers = new ArrayList(sizeof(TinkerEnum));
+			
+			Tinkers.PushArray(tinker);
+		}
+		else
+		{
+			Tinkers.SetArray(found, tinker);
+		}
 	}
 
 	Store_ApplyAttribs(client);
@@ -470,6 +542,10 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 
 	switch(rarity)
 	{
+		case -1:
+		{
+			ClientCommand(client, "playgamesound ui/quest_decode.wav");
+		}
 		case 0:
 		{
 			ClientCommand(client, "playgamesound ui/quest_status_tick_novice.wav");
@@ -554,81 +630,88 @@ static void PrintAttribValue(int client, int attrib, float value)
 	char num[16];
 	if(value < 1.0)
 	{
-		FormatEx(num, sizeof(num), " %d%% ", RoundToCeil((1.0 - value) * 100.0));
+		FormatEx(num, sizeof(num), "%d%% ", RoundToCeil((1.0 - value) * 100.0));
 	}
 	else
 	{
-		FormatEx(num, sizeof(num), " %d%% ", RoundToCeil((value - 1.0) * 100.0));
+		FormatEx(num, sizeof(num), "%d%% ", RoundToCeil((value - 1.0) * 100.0));
 	}
 
-	num[0] = ((value < 1.0) ^ inverse) ? '-' : '+';
+	if(((value < 1.0) ^ inverse))
+	{
+		Format(num, sizeof(num), "{crimson}-%s", num);
+	}
+	else
+	{
+		Format(num, sizeof(num), "{green}+%s", num);
+	}
 
 	switch(attrib)
 	{
 		case 1:
-			PrintToChat(client, "%sPhysical Damage", num);
+			CPrintToChat(client, "%sPhysical Damage", num);
 		
 		case 2:
-			PrintToChat(client, "%sBase Damage", num);
+			CPrintToChat(client, "%sBase Damage", num);
 		
 		case 3, 4:
-			PrintToChat(client, "%sClip Size", num);
+			CPrintToChat(client, "%sClip Size", num);
 		
 		case 5, 6:
-			PrintToChat(client, "%sFiring Speed", num);
+			CPrintToChat(client, "%sFiring Speed", num);
 		
 		case 8:
-			PrintToChat(client, "%sHealing Rate", num);
+			CPrintToChat(client, "%sHealing Rate", num);
 		
 		case 10:
-			PrintToChat(client, "%sÜberCharge Rate", num);
+			CPrintToChat(client, "%sÜberCharge Rate", num);
 		
 		case 26:
-			PrintToChat(client, "%sMax Health Bonus", num);
+			CPrintToChat(client, "%sMax Health Bonus", num);
 		
 		case 45:
-			PrintToChat(client, "%sBullets Per Shot", num);
+			CPrintToChat(client, "%sBullets Per Shot", num);
 		
 		case 94:
-			PrintToChat(client, "%sRepair Rate", num);
+			CPrintToChat(client, "%sRepair Rate", num);
 		
 		case 96, 97:
-			PrintToChat(client, "%sReload Speed", num);
+			CPrintToChat(client, "%sReload Speed", num);
 		
 		case 99, 100:
-			PrintToChat(client, "%sBlast Radius", num);
+			CPrintToChat(client, "%sBlast Radius", num);
 		
 		case 101, 102:
-			PrintToChat(client, "%sProjectile Range", num);
+			CPrintToChat(client, "%sProjectile Range", num);
 		
 		case 103, 104:
-			PrintToChat(client, "%sProjectile Speed", num);
+			CPrintToChat(client, "%sProjectile Speed", num);
 		
 		case 107:
-			PrintToChat(client, "%sMovement Speed", num);
+			CPrintToChat(client, "%sMovement Speed", num);
 		
 		case 149:
-			PrintToChat(client, "%sBleed Duration", num);
+			CPrintToChat(client, "%sBleed Duration", num);
 		
 		case 205:
-			PrintToChat(client, "%sRanged Damage Resistance", num);
+			CPrintToChat(client, "%sRanged Damage Resistance", num);
 		
 		case 206:
-			PrintToChat(client, "%sMelee Damage Resistance", num);
+			CPrintToChat(client, "%sMelee Damage Resistance", num);
 		
 		case 287:
-			PrintToChat(client, "%sSentry Damage", num);
+			CPrintToChat(client, "%sSentry Damage", num);
 		
 		case 319:
-			PrintToChat(client, "%sBuff Duration", num);
+			CPrintToChat(client, "%sBuff Duration", num);
 		
 		case 343:
-			PrintToChat(client, "%sSentry Firing Speed", num);
+			CPrintToChat(client, "%sSentry Firing Speed", num);
 		
 		case 410:
-			PrintToChat(client, "%sBase Damage", num);
+			CPrintToChat(client, "%sBase Damage", num);
 		
 		case 412:
-			PrintToChat(client, "%sDamage Resistance", num);
+			CPrintToChat(client, "%sDamage Resistance", num);
 	}
 }

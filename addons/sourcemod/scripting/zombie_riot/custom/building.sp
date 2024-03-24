@@ -1742,7 +1742,7 @@ void Building_ShowInteractionHud(int client, int entity)
 					else
 					{
 						SetGlobalTransTarget(client);
-						PrintCenterText(client, "%t", "Blacksmith Tooltip");						
+						PrintCenterText(client, "%t", "Blacksmith Tooltip");
 					}
 				}
 			}

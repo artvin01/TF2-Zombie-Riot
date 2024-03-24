@@ -385,12 +385,8 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					
 					SetEntityGravity(prop, 0.0);
 					SetEntityGravity(Drone, 0.0);
-					SetEntityCollisionGroup(Drone, COLLISION_GROUP_DEBRIS_TRIGGER);
-					SetEntityCollisionGroup(prop, COLLISION_GROUP_DEBRIS_TRIGGER);
-					SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
-					SetEntProp(prop, Prop_Data, "m_nSolidType", 6); 
-					SetEntProp(Drone, Prop_Send, "m_usSolidFlags", 12); 
-					SetEntProp(Drone, Prop_Data, "m_nSolidType", 6); 
+					MakeObjectIntangeable(Drone);
+					MakeObjectIntangeable(prop);
 								
 					switch(tier)
 					{
