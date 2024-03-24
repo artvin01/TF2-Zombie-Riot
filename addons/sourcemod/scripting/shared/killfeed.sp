@@ -54,7 +54,7 @@ void AdjustBotCount()
 	int botcount = 0;
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && IsFakeClient(client))
+		if(IsClientInGame(client) && IsFakeClient(client) && !IsClientSourceTV(client))
 		{
 			botcount += 1;
 			if(botcount > 2)
@@ -85,7 +85,7 @@ void KillFeed_PluginStart()
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && IsFakeClient(client))
+		if(IsClientInGame(client) && IsFakeClient(client) && !IsClientSourceTV(client))
 		{
 			for(int i; i < sizeof(Bots); i++)
 			{
@@ -101,7 +101,7 @@ void KillFeed_PluginStart()
 
 void KillFeed_ClientPutInServer(int client)
 {
-	if(IsFakeClient(client))
+	if(IsFakeClient(client) && !IsClientSourceTV(client))
 	{
 		ForceTeam[client] = 3;
 	
@@ -144,7 +144,7 @@ void KillFeed_ClientDisconnect(int client)
 						}
 					}
 
-					if(!found && IsClientInGame(target) && IsFakeClient(target))
+					if(!found && IsClientInGame(target) && IsFakeClient(target) && !IsClientSourceTV(client))
 					{
 						Bots[sizeof(Bots) - 1] = target;
 						break;
