@@ -142,7 +142,9 @@ void ViewChange_PlayerModel(int client)
 					if(i_HealthBeforeSuit[client] == 0)
 					{
 						if(i_PlayerModelOverrideIndexWearable[client] > 0)
+						{
 							SetEntProp(entity, Prop_Send, "m_nModelIndex", i_PlayerModelOverrideIndexWearable[client]);
+						}
 						else
 							SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
 					}
