@@ -10,7 +10,6 @@ static int i_patten_type[MAXPLAYERS+1];
 static float fl_ammo_efficiency[MAXPLAYERS+1];
 static int i_ion_effects[MAXPLAYERS+1];
 static float fl_ion_timer_recharge[MAXPLAYERS+1];
-static float fl_primary_dmg_amt[MAXTF2PLAYERS+1];
 
 static bool b_was_lastman[MAXPLAYERS+1];
 
@@ -94,7 +93,6 @@ public void Enable_Blitzkrieg_Kit(int client, int weapon)
 		{
 			b_primary_lock[client]=true;
 		}
-		fl_primary_dmg_amt[client] = 100.0;
 		i_patten_type[client]=0;
 		b_was_lastman[client]=false;
 	}
@@ -320,6 +318,10 @@ public void Blitzkrieg_Kit_Primary_Fire_4(int client, int weapon, const char[] c
 {
 	Blitzkrieg_Kit_Rocket(client, weapon, 0.55, 7, 10.0);
 }
+public void Blitzkrieg_Kit_Primary_Fire_5(int client, int weapon, const char[] classname, bool &result)
+{
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.65, 7, 10.0);
+}
 
 
 static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int spread, float spacing)
@@ -337,8 +339,6 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 	speedMult *= Attributes_Get(weapon, 104, 1.0);
 	
 	speedMult *= Attributes_Get(weapon, 475, 1.0);
-
-	fl_primary_dmg_amt[client] = dmgProjectile;
 
 	float fAng[3];
 	GetClientEyeAngles(client, fAng);
@@ -558,6 +558,10 @@ public void Blitzkrieg_Kit_Seconadry_Ion_4(int client, int weapon, bool &result,
 {
 	Blitzkrieg_Kit_ion_trace(client, 6, weapon);
 }
+public void Blitzkrieg_Kit_Seconadry_Ion_5(int client, int weapon, bool &result, int slot)
+{
+	Blitzkrieg_Kit_ion_trace(client, 7, weapon);
+}
 
 static void Blitzkrieg_Kit_ion_trace(int client, int patern, int weapon)
 {
@@ -761,10 +765,6 @@ public void Blitzkrieg_Kit_Custom_Melee_Logic(int client, float &CustomMeleeRang
 public void Blitzkrieg_Kit_OnHitEffect(int client, int weapon, float &damage)
 {
 	float GameTime = GetGameTime();
-
-	damage = fl_primary_dmg_amt[client];
-
-	damage *= Attributes_Get(weapon, 868, 1.0);
 
 	if(fl_primary_reloading[client]>GameTime)
 	{

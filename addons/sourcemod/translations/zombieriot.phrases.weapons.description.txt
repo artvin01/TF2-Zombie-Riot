@@ -2539,6 +2539,10 @@
 	{
 		"en" 	"Higher damage, more rockets per shot, higher ammo efficiency"
 	}
+	"Hurricane Blitz desc 3"
+	{
+		"en" 	"Simple Damage buff"
+	}
 	"Ion Blitz Desc 2"
 	{
 		"en"	"Higher Damage, More effects!"
