@@ -314,7 +314,7 @@ public void Wand_Base_StartTouch(int entity, int other)
 		case WEAPON_MESSENGER_LAUNCHER:
 		{
 			Gun_MessengerTouch(entity, target);
-		}	
+		}
 	}
 }
 #endif
