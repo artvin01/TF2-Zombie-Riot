@@ -167,7 +167,7 @@ enum
 	WEAPON_HELL_HOE_3 = 88,
 	WEAPON_LUDO = 89,
 	WEAPON_KAHMLFIST = 90,
-	
+	WEAPON_HHH_AXE = 91,
 	WEAPON_MESSENGER_LAUNCHER = 92,
 	WEAPON_NAILGUN_SMG = 93,
 	WEAPON_NAILGUN_SHOTGUN = 94,
@@ -269,6 +269,8 @@ int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 int i_MaxArmorTableUsed[MAXTF2PLAYERS];
+int i_PlayerModelOverrideIndexWearable[MAXTF2PLAYERS];
+bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -629,6 +631,8 @@ void ZR_MapStart()
 	Zero2(Perk_Machine_money_limit);
 	Zero2(Pack_A_Punch_Machine_money_limit);
 	Zero2(fl_blitz_ioc_punish_timer);
+	Zero(i_PlayerModelOverrideIndexWearable);
+	Zero(b_HideCosmeticsPlayer);
 	CleanAllBuildingEscape();
 	KahmlFistMapStart();
 	M3_ClearAll();
@@ -858,6 +862,8 @@ void ZR_ClientDisconnect(int client)
 	WoodAmount[client] = 0.0;
 	FoodAmount[client] = 0.0;
 	GoldAmount[client] = 0.0;
+	i_PlayerModelOverrideIndexWearable[client] = 0;
+	b_HideCosmeticsPlayer[client] = false;
 	
 	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 	{
