@@ -108,7 +108,7 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 					return Plugin_Continue;
 				}
 			}
-
+			i_AdditionalSupportBuildings[client] = 0;
 			SmithLevel[client] = -1;
 		}
 		
@@ -561,74 +561,81 @@ static void PrintAttribValue(int client, int attrib, float value)
 		FormatEx(num, sizeof(num), " %d%% ", RoundToCeil((value - 1.0) * 100.0));
 	}
 
-	num[0] = ((value < 1.0) ^ inverse) ? '-' : '+';
+	if(((value < 1.0) ^ inverse))
+	{
+		Format(num, sizeof(num), "{crimson}-%s", num);
+	}
+	else
+	{
+		Format(num, sizeof(num), "{green}+%s", num);
+	}
 
 	switch(attrib)
 	{
 		case 1:
-			PrintToChat(client, "%sPhysical Damage", num);
+			CPrintToChat(client, "%sPhysical Damage", num);
 		
 		case 2:
-			PrintToChat(client, "%sBase Damage", num);
+			CPrintToChat(client, "%sBase Damage", num);
 		
 		case 3, 4:
-			PrintToChat(client, "%sClip Size", num);
+			CPrintToChat(client, "%sClip Size", num);
 		
 		case 5, 6:
-			PrintToChat(client, "%sFiring Speed", num);
+			CPrintToChat(client, "%sFiring Speed", num);
 		
 		case 8:
-			PrintToChat(client, "%sHealing Rate", num);
+			CPrintToChat(client, "%sHealing Rate", num);
 		
 		case 10:
-			PrintToChat(client, "%sÜberCharge Rate", num);
+			CPrintToChat(client, "%sÜberCharge Rate", num);
 		
 		case 26:
-			PrintToChat(client, "%sMax Health Bonus", num);
+			CPrintToChat(client, "%sMax Health Bonus", num);
 		
 		case 45:
-			PrintToChat(client, "%sBullets Per Shot", num);
+			CPrintToChat(client, "%sBullets Per Shot", num);
 		
 		case 94:
-			PrintToChat(client, "%sRepair Rate", num);
+			CPrintToChat(client, "%sRepair Rate", num);
 		
 		case 96, 97:
-			PrintToChat(client, "%sReload Speed", num);
+			CPrintToChat(client, "%sReload Speed", num);
 		
 		case 99, 100:
-			PrintToChat(client, "%sBlast Radius", num);
+			CPrintToChat(client, "%sBlast Radius", num);
 		
 		case 101, 102:
-			PrintToChat(client, "%sProjectile Range", num);
+			CPrintToChat(client, "%sProjectile Range", num);
 		
 		case 103, 104:
-			PrintToChat(client, "%sProjectile Speed", num);
+			CPrintToChat(client, "%sProjectile Speed", num);
 		
 		case 107:
-			PrintToChat(client, "%sMovement Speed", num);
+			CPrintToChat(client, "%sMovement Speed", num);
 		
 		case 149:
-			PrintToChat(client, "%sBleed Duration", num);
+			CPrintToChat(client, "%sBleed Duration", num);
 		
 		case 205:
-			PrintToChat(client, "%sRanged Damage Resistance", num);
+			CPrintToChat(client, "%sRanged Damage Resistance", num);
 		
 		case 206:
-			PrintToChat(client, "%sMelee Damage Resistance", num);
+			CPrintToChat(client, "%sMelee Damage Resistance", num);
 		
 		case 287:
-			PrintToChat(client, "%sSentry Damage", num);
+			CPrintToChat(client, "%sSentry Damage", num);
 		
 		case 319:
-			PrintToChat(client, "%sBuff Duration", num);
+			CPrintToChat(client, "%sBuff Duration", num);
 		
 		case 343:
-			PrintToChat(client, "%sSentry Firing Speed", num);
+			CPrintToChat(client, "%sSentry Firing Speed", num);
 		
 		case 410:
-			PrintToChat(client, "%sBase Damage", num);
+			CPrintToChat(client, "%sBase Damage", num);
 		
 		case 412:
-			PrintToChat(client, "%sDamage Resistance", num);
+			CPrintToChat(client, "%sDamage Resistance", num);
 	}
 }

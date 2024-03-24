@@ -97,6 +97,7 @@ methodmap Isharmla < CClotBody
 		npc.m_iWearable2 = ParticleEffectAt(vecMe, "env_rain_512", -1.0);
 		SetParent(npc.index, npc.m_iWearable2);
 
+
 		return npc;
 	}
 	property int m_iPoints
@@ -147,9 +148,9 @@ public void Isharmla_ClotThink(int iNPC)
 		npc.m_bTeamGlowDefault = true;
 		b_IsEntityNeverTranmitted[npc.index] = false;
 		GiveNpcOutLineLastOrBoss(npc.index, true);
-		SetEntityCollisionGroup(npc.index, 8); //Dont Touch Anything.
-		SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 8);
-		SetEntProp(npc.index, Prop_Data,"m_nSolidType", 2);
+		SetEntityCollisionGroup(npc.index, 9);
+		SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 16);
+		SetEntProp(npc.index, Prop_Data, "m_nSolidType", 2);
 		i_RaidGrantExtra[npc.index] = -1;
 		b_DoNotUnStuck[npc.index] = false;
 		b_NoKnockbackFromSources[npc.index] = false;
