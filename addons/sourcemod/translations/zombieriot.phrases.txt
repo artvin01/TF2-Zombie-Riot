@@ -1601,7 +1601,7 @@
 	}
 	"TF2: Zombie Riot"
 	{
-		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold (H) press TAB to show current holding weapon!"
+		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold (H) + press TAB to show current weapon!"
 	}
 	"Father Grigori's Store"
 	{
@@ -3098,7 +3098,7 @@
 	}
 	"Blacksmith Tooltip"
 	{
-		"en"		"Press RELOAD to apply a tinker effect to your active weapon"
+		"en"		"Press RELOAD to apply a tinker effect to your active weapon\nCrouching removes attributes."
 	}
 	"Blacksmith Used"
 	{
@@ -3111,5 +3111,18 @@
 	"Blacksmith Underleveled"
 	{
 		"en"		"Owner needs to upgrade this building before you can tinker this weapon"
+	}
+	"Blacksmith No Attribs"
+	{
+		"en"		"Crouching removes attributes, but you don't have any"
+	}
+	"Removed Tinker Attributes"
+	{
+		"en"		"Removed Tinker Attributes"
+	}
+	"View Modifiers"
+	{
+		"en"	"View Modifiers"
+		"de" 	"oha ein deutscher!"
 	}
 }

@@ -2872,7 +2872,7 @@ static void MenuPage(int client, int section)
 						}
 						else	// No Ammo
 						{
-							FormatEx(buffer, sizeof(buffer), "%s", "------");
+							FormatEx(buffer, sizeof(buffer), "%s", "-");
 							style = ITEMDRAW_DISABLED;
 						}
 					}
@@ -2934,7 +2934,7 @@ static void MenuPage(int client, int section)
 					else if(item.Equipped[client] || canSell)
 					{
 						Repeat_Filler ++;
-						menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 1
+						menu.AddItem(buffer2, "-", ITEMDRAW_DISABLED);	// 1
 					}
 
 					//We shall allow unequipping again.
@@ -2947,7 +2947,7 @@ static void MenuPage(int client, int section)
 					else if(canSell)
 					{
 						Repeat_Filler ++;
-						menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 2
+						menu.AddItem(buffer2, "-", ITEMDRAW_DISABLED);	// 2
 					}
 
 					if(canSell)
@@ -2959,24 +2959,27 @@ static void MenuPage(int client, int section)
 					else
 					{
 						Repeat_Filler ++;
-						menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 2
+						menu.AddItem(buffer2, "-", ITEMDRAW_DISABLED);	// 2
 					}
 
-					if(item.Tags[0] || info.ExtraDesc[0] || item.Author[0])
+					bool tinker = Blacksmith_HasTinker(client, section);
+					if(tinker || item.Tags[0] || info.ExtraDesc[0] || item.Author[0])
 					{
 						for(int Repeatuntill; Repeatuntill < 10; Repeatuntill++)
 						{
 							if(Repeat_Filler < 4)
 							{
 								Repeat_Filler ++;
-								menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 2
+								menu.AddItem(buffer2, "-", ITEMDRAW_DISABLED);	// 2
 							}
 							else
 							{
 								break;
 							}
 						}
-						FormatEx(buffer, sizeof(buffer), "%t", info.ExtraDesc[0] ? "Extra Description" : "Tags & Author");
+						FormatEx(buffer, sizeof(buffer), "%t", tinker ? "View Modifiers" : (info.ExtraDesc[0] ? "Extra Description" : "Tags & Author"));
+
+						
 						menu.AddItem(buffer2, buffer);
 					}
 				}
@@ -4286,6 +4289,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					{
 						CPrintToChat(client, "%t", "Created By", item.Author);
 					}
+
+					Blacksmith_ExtraDesc(client, index);
 				}
 			}
 			MenuPage(client, index);
