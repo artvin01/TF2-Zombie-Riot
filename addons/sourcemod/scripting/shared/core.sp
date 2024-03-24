@@ -1872,6 +1872,14 @@ public void OnClientPutInServer(int client)
 #if !defined NOG
 	if(IsFakeClient(client))
 	{
+		if(IsClientSourceTV(client))
+		{
+			f_ClientMusicVolume[client] = 1.0;
+			f_ZombieVolumeSetting[client] = 0.0;
+			SetTeam(client, TFTeam_Spectator);
+			b_IsPlayerABot[client] = true;
+			return;
+		}
 		if(!SpawningBot)
 		{
 			KickClient(client);
