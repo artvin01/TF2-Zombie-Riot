@@ -580,6 +580,10 @@ public void Blitzkrieg_Kit_Seconadry_Ion_7(int client, int weapon, bool &result,
 {
 	Blitzkrieg_Kit_ion_trace(client, 9, weapon);
 }
+public void Blitzkrieg_Kit_Seconadry_Ion_8(int client, int weapon, bool &result, int slot)
+{
+	Blitzkrieg_Kit_ion_trace(client, 13, weapon);
+}
 
 static void Blitzkrieg_Kit_ion_trace(int client, int patern, int weapon)
 {
