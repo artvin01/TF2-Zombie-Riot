@@ -942,7 +942,7 @@ static Action Timer_Cosmic_Managment(Handle timer, DataPack pack)
 		{
 			case WEAPON_COSMIC_PILLAR:
 			{
-				Pillar_Logic(client, weapon);
+				//Pillar_Logic(client, weapon);
 			}
 			case WEAPON_COSMIC_RAILCANNON:
 			{
@@ -960,7 +960,7 @@ static Action Timer_Cosmic_Managment(Handle timer, DataPack pack)
 	{
 		if(i_CustomWeaponEquipLogic[weapon]==WEAPON_COSMIC_PILLAR)
 		{
-			Kill_Pillars(client);
+			//Kill_Pillars(client);
 		}
 		else if(i_CustomWeaponEquipLogic[weapon]==WEAPON_COSMIC_RAILCANNON)
 		{
@@ -970,10 +970,12 @@ static Action Timer_Cosmic_Managment(Handle timer, DataPack pack)
 
 	return Plugin_Continue;
 }
+/*
 static void Kill_Pillars(int client)
 {
 
 }
+*/
 static void Kill_Railgun(int client)
 {
 	SDKUnhook(client, SDKHook_PreThink, Railgun_Think);
@@ -1282,10 +1284,13 @@ static void Railcannon_Logic(int client, int weapon)
 			Show_Railcannon_Ammo(client, HUDText);
 
 			if(fl_Ammo_Gain_Timer[client] < GameTime)
-			{
-				fl_Ammo_Gain_Timer[client] = GameTime + 90.0;
+			{	
 				if(i_Railcannon_ammo[client]<RAILCANNON_MAX_AMMO)
 				{
+					float firerate_bonus = 1.0;
+					firerate_bonus *=Attributes_Get(weapon, 6, 1.0);
+					firerate_bonus *=Attributes_Get(weapon, 5, 1.0);
+					fl_Ammo_Gain_Timer[client] = GameTime + 90.0*firerate_bonus;
 					i_Railcannon_ammo[client]++;
 				}
 			}
@@ -1339,8 +1344,9 @@ public void Cosmic_Terror_Pillars(int client, int weapon, bool &result, int slot
 	}
 }
 
-
+/*
 static void Pillar_Logic(int client, int weapon)
 {
 	float GameTime = GetGameTime();
 }
+*/
