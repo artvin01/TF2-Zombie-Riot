@@ -2036,9 +2036,7 @@
 	}
 	"Preaching Sword Desc"
 	{
-		"en"	"A quick attacking cheap sword with increased sell back value.\nDealing lethal damage will inflict Critically Wounded on the enemy.\nKilled Critically Wounded enemies provide one second cooldown recharge."
-		"ru"	"Быстрый атакующий дешёвый меч с повышенной стоимостью при продаже.\nПри нанесении смерт. урона врагу наносится крит. ранение.\nУбитые критически раненые враги дают перезарядку времени восстановл. на 1 сек."
-		"chi"   "一个快速攻击的廉价剑，增加了卖回价值。造成致命伤害会对敌人造成重伤。杀死重伤的敌人提供1秒的冷却时间。"
+		"en"	"A quick attacking cheap.\nDealing lethal damage will inflict Critically Wounded on the enemy.\nKilled Critically Wounded enemies provide one second cooldown recharge."
 	}
 	"Preaching Sword Pap 1"
 	{
@@ -2160,8 +2158,7 @@
 	}
 	"Mlynar Sword Desc"
 	{
-		"en"	"Gain 30%% damage & 50%% less knockback, 10%% slower\nYou cannot attack normally and reflect damage onto enemies depending on your damage(deals true damage)\nYou charge damage by standing around, standing near enemies and being hurt.\nWeapon has no damage falloff with more enemies hit."
-		"ru"	"Урон на 30%% и на 50%% меньше, отдача на 10% медл.\nВы не можете нормально атаковать и отражаете урон во врагов в зависимости от своего урона.\nВы накапл. урон, стоя рядом с врагами и получая повреждения.\nУ оружия нет спада урона на расстоянии при большем кол-ве поражённых врагов."
+		"en"	"Gain 30%% damage & 50%% less knockback, 10%% slower\nCant Attack, reflect damage onto enemies depending on your damage(deals true damage)\nYou charge damage by standing around, standing near enemies and being hurt.\nWeapon has no damage falloff with more enemies hit."
 	}
 	"Mlynar Sword Desc pap"
 	{

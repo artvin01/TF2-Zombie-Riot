@@ -1645,14 +1645,15 @@ public Action Command_MakeNiko(int client, int args)
 {
 	if(b_IsPlayerNiko[client])
 	{
-		PrintToChat(client,"You are no longer niko, respawn to apply");
+		PrintToChat(client,"You are no longer niko.");
 		b_IsPlayerNiko[client] = false;
 	}
 	else
 	{
-		PrintToChat(client,"You are now niko, respawn to apply");
+		PrintToChat(client,"You are now niko.");
 		b_IsPlayerNiko[client] = true;
 	}
+	ForcePlayerSuicide(client);
 	return Plugin_Handled;
 }
 #endif
