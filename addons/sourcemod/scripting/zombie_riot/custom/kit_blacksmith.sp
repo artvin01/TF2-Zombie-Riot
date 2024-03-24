@@ -431,13 +431,13 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 			}
 			default:
 			{
-				AddAttrib(list, 0, 107, 0.96, 1.04);
+			//	AddAttrib(list, 0, 107, 0.96, 1.0); Do not give speed bonus. lol.
 				AddAttrib(list, weapon, 149, 0.3, 4.0);
 
 				AddAttrib(list, weapon, 26, 0.95, 1.1);
 				AddAttrib(list, 0, 205, 0.95, 1.03);
 				AddAttrib(list, 0, 206, 0.95, 1.03);
-				AddAttrib(list, weapon, 412, 0.95, 1.03);
+			//	AddAttrib(list, weapon, 412, 0.95, 1.03); //do not give this, it stacks onto all.
 				
 				AddAttrib(list, weapon, 1, 0.7, 1.5);
 				AddAttrib(list, weapon, 2, 0.7, 1.5);
