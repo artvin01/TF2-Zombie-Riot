@@ -376,11 +376,11 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 		{
 			case 0, 1:
 			{
-				AddAttrib(list, weapon, 1, 0.8, 1.2);
+			//	AddAttrib(list, weapon, 1, 0.8, 1.2);
 				AddAttrib(list, weapon, 2, 0.8, 1.2);
-				AddAttrib(list, weapon, 3, 0.7, 1.3);
+			//	AddAttrib(list, weapon, 3, 0.7, 1.3);
 				AddAttrib(list, weapon, 4, 0.7, 1.3);
-				AddAttrib(list, weapon, 5, 0.95, 1.05);
+			//	AddAttrib(list, weapon, 5, 0.95, 1.05);
 				AddAttrib(list, weapon, 6, 0.95, 1.05);
 				AddAttrib(list, weapon, 8, 0.8, 1.2);
 				AddAttrib(list, weapon, 10, 0.7, 1.3);
@@ -404,13 +404,13 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				AddAttrib(list, weapon, 26, 0.9625, 1.05);
 				AddAttrib(list, 0, 205, 0.98, 1.015);
 				AddAttrib(list, 0, 206, 0.98, 1.015);
-				AddAttrib(list, weapon, 412, 0.98, 1.015);
+			//	AddAttrib(list, weapon, 412, 0.98, 1.015);
 				
-				AddAttrib(list, weapon, 1, 0.8, 1.3);
+			//	AddAttrib(list, weapon, 1, 0.8, 1.3);
 				AddAttrib(list, weapon, 2, 0.8, 1.3);
-				AddAttrib(list, weapon, 3, 0.7, 1.45);
+			//	AddAttrib(list, weapon, 3, 0.7, 1.45);
 				AddAttrib(list, weapon, 4, 0.7, 1.45);
-				AddAttrib(list, weapon, 5, 0.925, 1.05);
+			//	AddAttrib(list, weapon, 5, 0.925, 1.05);
 				AddAttrib(list, weapon, 6, 0.925, 1.05);
 				AddAttrib(list, weapon, 8, 0.8, 1.3);
 				AddAttrib(list, weapon, 10, 0.7, 1.45);
@@ -439,11 +439,11 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				AddAttrib(list, 0, 206, 0.95, 1.03);
 			//	AddAttrib(list, weapon, 412, 0.95, 1.03); //do not give this, it stacks onto all.
 				
-				AddAttrib(list, weapon, 1, 0.7, 1.5);
+			//	AddAttrib(list, weapon, 1, 0.7, 1.5);
 				AddAttrib(list, weapon, 2, 0.7, 1.5);
-				AddAttrib(list, weapon, 3, 0.5, 2.0);
+			//	AddAttrib(list, weapon, 3, 0.5, 2.0);
 				AddAttrib(list, weapon, 4, 0.5, 2.0);
-				AddAttrib(list, weapon, 5, 0.85, 1.1);
+			//	AddAttrib(list, weapon, 5, 0.85, 1.1);
 				AddAttrib(list, weapon, 6, 0.85, 1.1);
 				AddAttrib(list, weapon, 8, 0.7, 1.5);
 				AddAttrib(list, weapon, 10, 0.5, 2.0);
