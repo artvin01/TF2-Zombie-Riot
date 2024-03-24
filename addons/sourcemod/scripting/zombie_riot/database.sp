@@ -26,8 +26,8 @@ void Database_PluginStart()
 	Database.Connect(Database_GlobalConnected, DATABASE_GLOBAL);
 
 	RegServerCmd("zr_convert_from_textstore", DBCommand);
-}
 
+}
 bool Database_Escape(char[] buffer, int length, int &bytes)
 {
 	if(!Global)
@@ -117,7 +117,7 @@ public void Database_GlobalConnected(Database db, const char[] error, any data)
 		... "tp INTEGER NOT NULL DEFAULT 0, "
 		... "zomvol FLOAT NOT NULL DEFAULT 0.0, "
 		... "tauntspeed INTEGER NOT NULL DEFAULT 1, "
-		... "battletimehud FLOAT NOT NULL DEFAULT 2.0);");
+		... "battletimehud FLOAT NOT NULL DEFAULT 0.0);");
 		
 		tr.AddQuery("CREATE TABLE IF NOT EXISTS " ... DATATABLE_GIFTITEM ... " ("
 		... "steamid INTEGER NOT NULL, "

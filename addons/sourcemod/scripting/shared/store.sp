@@ -1915,7 +1915,7 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-71", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%t", "Zombie In Battle Logic Setting", f_Data_InBattleHudDisableDelay[client]);
+	FormatEx(buffer, sizeof(buffer), "%t", "Zombie In Battle Logic Setting", f_Data_InBattleHudDisableDelay[client] + 2.0);
 	menu2.AddItem("-72", buffer);
 
 
@@ -2395,9 +2395,9 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 					
 					f_Data_InBattleHudDisableDelay[client] += 1.0;
 
-					if(f_Data_InBattleHudDisableDelay[client] > 5.0)
+					if(f_Data_InBattleHudDisableDelay[client] > 3.0)
 					{
-						f_Data_InBattleHudDisableDelay[client] = 0.0;
+						f_Data_InBattleHudDisableDelay[client] = -2.0;
 					}
 					ReShowSettingsHud(client);
 				}
