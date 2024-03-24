@@ -216,6 +216,8 @@ public void Un_ClaimBuildingLookedAt(int client)
 						pack.WriteCell(EntIndexToEntRef(entity));
 						pack.WriteCell(GetClientUserId(client));
 						Menu menu = new Menu(UnClaimBuildingMenu);
+						CancelClientMenu(client);
+						SetStoreMenuLogic(client, false);
 
 						SetGlobalTransTarget(client);
 						
@@ -258,6 +260,8 @@ public void DeleteBuildingLookedAt(int client)
 						pack.WriteCell(EntIndexToEntRef(entity));
 						pack.WriteCell(GetClientUserId(client));
 						Menu menu = new Menu(DeleteBuildingMenu);
+						CancelClientMenu(client);
+						SetStoreMenuLogic(client, false);
 
 						SetGlobalTransTarget(client);
 						
@@ -535,6 +539,7 @@ public int UnClaimBuildingMenu(Menu menu, MenuAction action, int client, int cho
 		{
 			if(IsValidClient(client))
 			{
+				ResetStoreMenuLogic(client);
 				i_BuildingSelectedToBeUnClaimed[client] = -1;		
 			}
 		}
@@ -542,11 +547,13 @@ public int UnClaimBuildingMenu(Menu menu, MenuAction action, int client, int cho
 		{
 			if(IsValidClient(client))
 			{
+				ResetStoreMenuLogic(client);
 				i_BuildingSelectedToBeUnClaimed[client] = -1;		
 			}
 		}
 		case MenuAction_Select:
 		{
+			ResetStoreMenuLogic(client);
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			int id = StringToInt(buffer);
@@ -594,6 +601,7 @@ public int DeleteBuildingMenu(Menu menu, MenuAction action, int client, int choi
 		{
 			if(IsValidClient(client))
 			{
+				ResetStoreMenuLogic(client);
 				i_BuildingSelectedToBeDeleted[client] = -1;		
 			}
 		}
@@ -601,11 +609,13 @@ public int DeleteBuildingMenu(Menu menu, MenuAction action, int client, int choi
 		{
 			if(IsValidClient(client))
 			{
+				ResetStoreMenuLogic(client);
 				i_BuildingSelectedToBeDeleted[client] = -1;		
 			}
 		}
 		case MenuAction_Select:
 		{
+			ResetStoreMenuLogic(client);
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			int id = StringToInt(buffer);

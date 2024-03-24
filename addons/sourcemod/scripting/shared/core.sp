@@ -296,6 +296,8 @@ float f_BackstabBossDmgPenalty[MAXENTITIES];
 float f_BackstabBossDmgPenaltyNpcTime[MAXENTITIES][MAXTF2PLAYERS];
 #endif
 
+float LastStoreMenu[MAXTF2PLAYERS];
+bool LastStoreMenu_Store[MAXTF2PLAYERS];
 bool i_HasBeenBackstabbed[MAXENTITIES];
 bool i_HasBeenHeadShotted[MAXENTITIES];
 
@@ -633,6 +635,9 @@ float f_WeaponHudOffsetY[MAXTF2PLAYERS];
 
 float f_NotifHudOffsetX[MAXTF2PLAYERS];
 float f_NotifHudOffsetY[MAXTF2PLAYERS];
+
+float f_Data_InBattleHudDisableDelay[MAXTF2PLAYERS];
+float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
 
 int Current_Mana[MAXTF2PLAYERS];
 float Mana_Regen_Delay[MAXTF2PLAYERS];
@@ -1536,6 +1541,7 @@ public void OnMapStart()
 	Zero(Mana_Hud_Delay);
 	Zero(Mana_Regen_Delay);
 	Zero(RollAngle_Regen_Delay);
+	Zero(f_InBattleHudDisableDelay);
 #endif
 
 	SDKHooks_ClearAll();
@@ -1963,6 +1969,7 @@ public void OnClientDisconnect(int client)
 	ReplicateClient_RollAngle[client] = -1;
 
 #if defined ZR
+	f_InBattleHudDisableDelay[client] = 0.0;
 	i_HealthBeforeSuit[client] = 0;
 	f_ClientArmorRegen[client] = 0.0;
 	b_HoldingInspectWeapon[client] = false;
@@ -3378,7 +3385,7 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 					return true;
 				
 				//shouldnt invalidate clicking, makes battle hard.
-				if(Store_Girogi_Interact(client, entity, buffer, Is_Reload_Button))
+				if(!PlayerIsInNpcBattle(client) && Store_Girogi_Interact(client, entity, buffer, Is_Reload_Button))
 					return false;
 
 				if (TeutonType[client] == TEUTON_WAITING)
@@ -3388,7 +3395,7 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 					return true;
 
 				//interacting with citizens shouldnt invalidate clicking, it makes battle hard.
-				if(Citizen_Interact(client, entity))
+				if(!PlayerIsInNpcBattle(client) && Citizen_Interact(client, entity))
 					return false;
 				
 				if(Is_Reload_Button && BarrackBody_Interact(client, entity))

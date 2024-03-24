@@ -559,7 +559,6 @@ static bool UsingChoosenTags[MAXTF2PLAYERS];
 static int LastMenuPage[MAXTF2PLAYERS];
 static int CurrentMenuPage[MAXTF2PLAYERS];
 static int CurrentMenuItem[MAXTF2PLAYERS];
-static float LastStoreMenu[MAXTF2PLAYERS];
 
 static bool HasMultiInSlot[MAXTF2PLAYERS][6];
 static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
@@ -1163,6 +1162,8 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 				if(count > 0)
 				{
 					Menu menu = new Menu(Store_PackMenuH);
+					CancelClientMenu(client);
+					SetStoreMenuLogic(client, false);
 
 					SetGlobalTransTarget(client);
 					int cash = CurrentCash-CashSpent[client];
@@ -1224,8 +1225,13 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 		{
 			delete menu;
 		}
+		case MenuAction_Cancel:
+		{
+			ResetStoreMenuLogic(client);
+		}
 		case MenuAction_Select:
 		{
+			ResetStoreMenuLogic(client);
 			char buffer[64];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			
@@ -1908,6 +1914,11 @@ public void ReShowSettingsHud(int client)
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-71", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Zombie In Battle Logic Setting", f_Data_InBattleHudDisableDelay[client]);
+	menu2.AddItem("-72", buffer);
+
+
 	
 	FormatEx(buffer, sizeof(buffer), "%t", "Back");
 	menu2.AddItem("-999", buffer);
@@ -2379,6 +2390,17 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 					}
 					ReShowSettingsHud(client);
 				}
+				case -72: 
+				{
+					
+					f_Data_InBattleHudDisableDelay[client] += 1.0;
+
+					if(f_Data_InBattleHudDisableDelay[client] > 5.0)
+					{
+						f_Data_InBattleHudDisableDelay[client] = 0.0;
+					}
+					ReShowSettingsHud(client);
+				}
 				case -55: //Show Volume Hud
 				{
 					ReShowVolumeHud(client);
@@ -2685,7 +2707,7 @@ void Store_Menu(int client)
 	{
 		CancelClientMenu(client);
 		ClientCommand(client, "slot10");
-		LastStoreMenu[client] = 0.0;
+		ResetStoreMenuLogic(client);
 	}
 	else if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
 	{
@@ -2987,7 +3009,9 @@ static void MenuPage(int client, int section)
 			
 			menu.ExitBackButton = true;
 			if(menu.Display(client, MENU_TIME_FOREVER))
-				LastStoreMenu[client] = GetGameTime();
+			{
+				SetStoreMenuLogic(client);
+			}
 			
 			return;
 		}
@@ -3371,7 +3395,9 @@ static void MenuPage(int client, int section)
 		
 		menu.ExitBackButton = true;
 		if(DisplayMenuAtCustom(menu, client, CurrentMenuPage[client]))
-			LastStoreMenu[client] = GetGameTime();
+		{
+			SetStoreMenuLogic(client);
+		}
 		
 		return;
 	}
@@ -3436,7 +3462,9 @@ static void MenuPage(int client, int section)
 		menu.Pagination = 0;
 		menu.ExitButton = false;
 		if(menu.Display(client, MENU_TIME_FOREVER))
-			LastStoreMenu[client] = GetGameTime();
+		{
+			SetStoreMenuLogic(client);
+		}
 	}
 	else
 	{
@@ -3448,7 +3476,9 @@ static void MenuPage(int client, int section)
 
 		menu.ExitBackButton = section != -1;
 		if(DisplayMenuAtCustom(menu, client, CurrentMenuPage[client]))
-			LastStoreMenu[client] = GetGameTime();
+		{
+			SetStoreMenuLogic(client);
+		}
 	}
 }
 /*
@@ -3478,11 +3508,11 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
-			LastStoreMenu[client] = 0.0;
+			ResetStoreMenuLogic(client);
 		}
 		case MenuAction_Select:
 		{
-			LastStoreMenu[client] = 0.0;
+			ResetStoreMenuLogic(client);
 			
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));
@@ -3798,7 +3828,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
-			LastStoreMenu[client] = 0.0;
+			ResetStoreMenuLogic(client);
 
 			if(choice == MenuCancel_ExitBack)
 			{
@@ -3816,7 +3846,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
-			LastStoreMenu[client] = 0.0;
+			ResetStoreMenuLogic(client);
 			
 			if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
 			{
@@ -6171,7 +6201,7 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 
 void Store_TryRefreshMenu(int client)
 {
-	if(LastStoreMenu[client] && (LastStoreMenu[client] + 0.5) < GetGameTime())
+	if(LastStoreMenu[client] && LastStoreMenu_Store[client] && (LastStoreMenu[client] + 0.5) < GetGameTime())
 	{
 		MenuPage(client, CurrentMenuItem[client]);
 	}
@@ -6343,4 +6373,22 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 	}
 
 	return false;
+}
+
+
+void ResetStoreMenuLogic(int client)
+{
+	LastStoreMenu[client] = 0.0;
+}
+
+void SetStoreMenuLogic(int client, bool store = true)
+{
+	RequestFrame(SetStoreMenuLogicDelay, client);
+	LastStoreMenu[client] = GetGameTime();
+	LastStoreMenu_Store[client] = store;
+}
+
+void SetStoreMenuLogicDelay(int client)
+{
+	LastStoreMenu[client] = GetGameTime();
 }

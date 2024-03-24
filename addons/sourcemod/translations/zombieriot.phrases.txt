@@ -2749,6 +2749,15 @@
 		"en"		"Zombie Volume: [{1}%%]"
 		"chi"       "僵尸音量: [{1}%%]"
 	}
+	"Zombie In Battle Show"
+	{
+		"en"		"Zombie In Battle Time"
+	}
+	"Zombie In Battle Logic Setting"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"In Battle Time: [{1}]"
+	}
 	"Turn up volume"
 	{
 		"en"		"Turn up volume"

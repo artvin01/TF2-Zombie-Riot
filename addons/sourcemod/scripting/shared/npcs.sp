@@ -1093,6 +1093,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif
 	}
 
+	if(inflictor > 0 && inflictor < MaxClients)
+	{
+		if(f_Data_InBattleHudDisableDelay[inflictor] != 0.0)
+		{
+			f_InBattleHudDisableDelay[inflictor] = GetGameTime() + f_Data_InBattleHudDisableDelay[inflictor];
+		}
+	}
+	
 	OnTakeDamageBleedNpc(victim, attacker, inflictor, damage, damagetype, weapon, damagePosition, GameTime);
 
 	npcBase.m_vecpunchforce(damageForce, true);
@@ -1254,6 +1262,14 @@ stock void Generic_OnTakeDamage(int victim, int attacker)
 	}
 }
 
+bool PlayerIsInNpcBattle(int client)
+{
+	bool InBattle = false;
+	if(f_InBattleHudDisableDelay[client] > GetGameTime())
+		InBattle = true;
+
+	return InBattle;
+}
 
 void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damagePosition[3], float GameTime)
 {

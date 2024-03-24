@@ -1973,6 +1973,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 	*/
 	if(IsValidEntity(entity))
 	{
+		bool BuildingWasMounted = false;
 		if(entity <= MaxClients)
 		{
 			if(dieingstate[entity] > 0)
@@ -1983,6 +1984,10 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			if(!IsValidEntity(entity))
 			{
 				return false;
+			}
+			else
+			{
+				BuildingWasMounted = true;
 			}
 		}
 		
@@ -1999,11 +2004,11 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			{
 				buildingType = 7;
 			}
-			else if(!StrContains(buffer, "zr_village"))
+			else if((!PlayerIsInNpcBattle(client) || !BuildingWasMounted || client == owner)  && !StrContains(buffer, "zr_village"))
 			{
 				buildingType = 8;
 			}
-			else if(!StrContains(buffer, "zr_summoner"))
+			else if((!PlayerIsInNpcBattle(client) || !BuildingWasMounted || client == owner) && !StrContains(buffer, "zr_summoner"))
 			{
 				buildingType = 9;
 			}
@@ -2129,16 +2134,16 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			{
 				buildingType = 4;
 			}	
-			else if (StrEqual(buffer, "zr_perkmachine"))
+			else if (((!PlayerIsInNpcBattle(client) || !BuildingWasMounted) || i_CurrentEquippedPerk[client] == 0 || client == owner)  && StrEqual(buffer, "zr_perkmachine"))
 			{
 				buildingType = 5;
 			}					
-			else if (StrEqual(buffer, "zr_packapunch"))
+			else if ((!PlayerIsInNpcBattle(client) || !BuildingWasMounted || client == owner)  && StrEqual(buffer, "zr_packapunch"))
 			{
 				buildingType = 6;
 			}
 		}
-		else if(Is_Reload_Button && StrEqual(buffer, "zr_base_npc"))
+		else if(!PlayerIsInNpcBattle(client) && Is_Reload_Button && StrEqual(buffer, "zr_base_npc"))
 		{
 			buildingType = Citizen_BuildingInteract(entity);
 			int temp_owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
@@ -2500,6 +2505,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						{
 							i_MachineJustClickedOn[client] = EntIndexToEntRef(entity);
 							
+							CancelClientMenu(client);
+							SetStoreMenuLogic(client, false);
 							SetGlobalTransTarget(client);
 							
 							Menu menu2 = new Menu(Building_ConfirmMountedAction);
@@ -4142,8 +4149,13 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 		{
 			delete menu;
 		}
+		case MenuAction_Cancel:
+		{
+			ResetStoreMenuLogic(client);
+		}
 		case MenuAction_Select:
 		{
+			ResetStoreMenuLogic(client);
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			int id = StringToInt(buffer);
@@ -7302,6 +7314,8 @@ static void SummonerMenu(int client, int viewer)
 	int itemsAddedToList = 0;
 	
 	Menu menu = new Menu(SummonerMenuH);
+	CancelClientMenu(client);
+	SetStoreMenuLogic(client, false);
 
 	SetGlobalTransTarget(viewer);
 	if(!(GetEntityFlags(viewer) & FL_DUCKING))
@@ -7717,10 +7731,12 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
+			ResetStoreMenuLogic(client);
 			InMenu[client] = 0;
 		}
 		case MenuAction_Select:
 		{
+			ResetStoreMenuLogic(client);
 			if(choice)
 			{
 				char buffer[16];
@@ -8433,7 +8449,7 @@ public bool Building_Blacksmith(int client, int entity)
 	Building_cannot_be_repaired[entity] = false;
 	Is_Elevator[entity] = false;
 	
-	if(!CvarInfiniteCash.BoolValue)
+	if(!CvarInfiniteCash.BoolValue && !Rogue_Mode())
 		Building_Sentry_Cooldown[client] = GetGameTime() + 60.0;
 	
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
