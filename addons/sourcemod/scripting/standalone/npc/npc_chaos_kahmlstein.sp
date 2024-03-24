@@ -306,7 +306,7 @@ methodmap ChaosKahmlstein < CClotBody
 
 		if(StrContains(data, "fake_2") != -1)
 		{
-			MakeObjectIntangeable(item);
+			MakeObjectIntangeable(npc.index);
 			i_RaidGrantExtra[npc.index] = 2;
 			b_DoNotUnStuck[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
@@ -317,7 +317,7 @@ methodmap ChaosKahmlstein < CClotBody
 		}
 		else if(StrContains(data, "fake_3") != -1)
 		{
-			MakeObjectIntangeable(item);
+			MakeObjectIntangeable(npc.index);
 			i_RaidGrantExtra[npc.index] = 3;
 			b_DoNotUnStuck[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
