@@ -341,6 +341,13 @@
 				"linux"		"@_ZN24CTeamplayRoundBasedRules28ResetPlayerAndTeamReadyStateEv"
 				"windows"	"\x55\x8B\xEC\x51\x56\x57\x8B\xF9\xC6\x45\xFF\x00\x33\xF6"
 			}
+			"CTFGCServerSystem::PreClientUpdate"
+			{
+				// "You must set maxplayers to 32 to host Mann vs. Machine\n"
+				"library"	"server"
+				"linux"		"@_ZN17CTFGCServerSystem15PreClientUpdateEv"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x20\x53\x56\x8B\xD9\x57\x89\x5D\xF4\xE8\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A"
+			}
 		}
 		"Functions"
 		{

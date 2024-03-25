@@ -107,6 +107,7 @@ void DHook_Setup()
 
 	DHook_CreateDetour(gamedata, "CTFWeaponBaseMelee::DoSwingTraceInternal", DHook_DoSwingTracePre, _);
 	DHook_CreateDetour(gamedata, "CWeaponMedigun::CreateMedigunShield", DHook_CreateMedigunShieldPre, _);
+	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", DHook_PreClientUpdatePre, DHook_PreClientUpdatePost);
 
 //	DHook_CreateDetour(gamedata, "EconEntity_OnOwnerKillEaterEventNoPartner", DHook_BlockEcon);
 //	DHook_CreateDetour(gamedata, "EconItemInterface_OnOwnerKillEaterEventNoPartner", DHook_BlockEcon);
@@ -269,6 +270,24 @@ public MRESReturn DHook_DoSwingTracePre(int entity, DHookReturn returnHook, DHoo
 public MRESReturn DHook_CreateMedigunShieldPre(int entity, DHookReturn returnHook)
 {
 	return MRES_Supercede;
+}
+
+static bool wasMvM;
+public MRESReturn DHook_PreClientUpdatePre()
+{
+	wasMvM = GameRules_GetProp("m_bPlayingMannVsMachine");
+	if(wasMvM)
+		GameRules_SetProp("m_bPlayingMannVsMachine", false);
+	
+	return MRES_Ignored;
+}
+
+public MRESReturn DHook_PreClientUpdatePost()
+{
+	if(wasMvM)
+		GameRules_SetProp("m_bPlayingMannVsMachine", wasMvM);
+	
+	return MRES_Ignored;
 }
 
 #if defined ZR
