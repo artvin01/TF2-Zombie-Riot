@@ -296,8 +296,6 @@ float f_BackstabBossDmgPenalty[MAXENTITIES];
 float f_BackstabBossDmgPenaltyNpcTime[MAXENTITIES][MAXTF2PLAYERS];
 #endif
 
-float LastStoreMenu[MAXTF2PLAYERS];
-bool LastStoreMenu_Store[MAXTF2PLAYERS];
 bool i_HasBeenBackstabbed[MAXENTITIES];
 bool i_HasBeenHeadShotted[MAXENTITIES];
 
@@ -635,9 +633,6 @@ float f_WeaponHudOffsetY[MAXTF2PLAYERS];
 
 float f_NotifHudOffsetX[MAXTF2PLAYERS];
 float f_NotifHudOffsetY[MAXTF2PLAYERS];
-
-float f_Data_InBattleHudDisableDelay[MAXTF2PLAYERS];
-float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
 
 int Current_Mana[MAXTF2PLAYERS];
 float Mana_Regen_Delay[MAXTF2PLAYERS];

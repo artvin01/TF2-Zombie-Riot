@@ -1093,6 +1093,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif
 	}
 
+#if defined ZR
 	if(inflictor > 0 && inflictor < MaxClients)
 	{
 		if(f_Data_InBattleHudDisableDelay[inflictor] + 2.0 != 0.0)
@@ -1100,6 +1101,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			f_InBattleHudDisableDelay[inflictor] = GetGameTime() + f_Data_InBattleHudDisableDelay[inflictor];
 		}
 	}
+#endif
 	
 	OnTakeDamageBleedNpc(victim, attacker, inflictor, damage, damagetype, weapon, damagePosition, GameTime);
 
@@ -1260,15 +1262,6 @@ stock void Generic_OnTakeDamage(int victim, int attacker)
 			npc.m_blPlayHurtAnimation = true;
 		}
 	}
-}
-
-bool PlayerIsInNpcBattle(int client)
-{
-	bool InBattle = false;
-	if(f_InBattleHudDisableDelay[client] > GetGameTime())
-		InBattle = true;
-
-	return InBattle;
 }
 
 void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damagePosition[3], float GameTime)
