@@ -2301,8 +2301,7 @@ static void UpdateMvMStatsFrame()
 						continue;
 					}
 
-					if(!data.Icon[0])
-						strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
+					strcopy(data.Icon, sizeof(data.Icon), "steamhappy");
 					
 					if(!data.Flags)
 						data.Flags = flags[i];
