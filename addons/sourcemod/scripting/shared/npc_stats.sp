@@ -30,8 +30,11 @@ int i_Headshots[MAXTF2PLAYERS];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int i_NpcOverrideAttacker[MAXENTITIES];
-int TeamFreeForAll = 50;
 bool b_thisNpcHasAnOutline[MAXENTITIES];
+#endif
+
+#if !defined RTS
+int TeamFreeForAll = 50;
 #endif
 
 int i_TeamGlow[MAXENTITIES]={-1, ...};

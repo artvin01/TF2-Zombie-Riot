@@ -274,6 +274,9 @@ int i_MaxArmorTableUsed[MAXTF2PLAYERS];
 int i_PlayerModelOverrideIndexWearable[MAXTF2PLAYERS];
 bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
 
+float f_Data_InBattleHudDisableDelay[MAXTF2PLAYERS];
+float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
+
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
 #define SF2_PLAYER_VIEWBOB_SCALE_Y 0.0
@@ -306,6 +309,8 @@ int Armor_DebuffType[MAXENTITIES];
 
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
+float LastStoreMenu[MAXTF2PLAYERS];
+bool LastStoreMenu_Store[MAXTF2PLAYERS];
 int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
 
 //We kinda check these almost 24/7, its better to put them into an array!
@@ -2466,6 +2471,15 @@ stock void GetTimerAndNullifyMusicMVM()
 		return;
 	}
 	
+}
+
+bool PlayerIsInNpcBattle(int client)
+{
+	bool InBattle = false;
+	if(f_InBattleHudDisableDelay[client] > GetGameTime())
+		InBattle = true;
+
+	return InBattle;
 }
 
 

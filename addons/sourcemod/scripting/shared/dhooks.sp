@@ -275,7 +275,7 @@ public MRESReturn DHook_CreateMedigunShieldPre(int entity, DHookReturn returnHoo
 static bool wasMvM;
 public MRESReturn DHook_PreClientUpdatePre()
 {
-	wasMvM = GameRules_GetProp("m_bPlayingMannVsMachine");
+	wasMvM = view_as<bool>(GameRules_GetProp("m_bPlayingMannVsMachine"));
 	if(wasMvM)
 		GameRules_SetProp("m_bPlayingMannVsMachine", false);
 	
