@@ -373,7 +373,15 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		b_NpcIgnoresbuildings[npc] = IgnoreBuildings;
 #elseif !defined RTS
-		SetTeam(npc, Ally);
+		if(Ally == 999)
+		{
+			//setting it to 999 will just keep adding 1 so its a free for all!
+			SetTeam(npc, TeamFreeForAll++);
+		}
+		else
+		{
+			SetTeam(npc, Ally);	
+		}
 		b_NpcIgnoresbuildings[npc] = IgnoreBuildings;
 #endif
 		AddEntityToLagCompList(npc);
