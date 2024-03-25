@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "SteamHappy/eye"
+	"$surfaceprop" "flesh"
+	"$blendtintbybasealpha" "1"
+ 	"$blendtintcoloroverbase" "0"
+}

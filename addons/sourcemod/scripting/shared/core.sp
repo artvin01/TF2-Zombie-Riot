@@ -852,6 +852,8 @@ enum
 #define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_219.mdl"
 #define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1.mdl"
 
+#define STEAM_HAPPY_APRIL_FOOLS 		"models/steamhappy.mdl"
+
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.0//0.0151 //Make it 0 for now
 
 #define DEFAULT_HURTDELAY 0.35 //Make it 0 for now
@@ -1528,8 +1530,23 @@ public void OnMapStart()
 	PrecacheSound(")weapons/pipe_bomb2.wav");
 	PrecacheSound(")weapons/pipe_bomb3.wav");
 
+	PrecacheSound("sound/zombie_riot/yippe.mp3");
+	AddFileToDownloadsTable("sound/zombie_riot/yippe.mp3");
+
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	PrecacheModel(STEAM_HAPPY_APRIL_FOOLS);
 	PrecacheModel(WEAPON_CUSTOM_WEAPONRY_1);
+	AddFileToDownloadsTable("models/steamhappy.mdl");
+	AddFileToDownloadsTable("models/steamhappy.dx80.vtx");
+	AddFileToDownloadsTable("models/steamhappy.dx90.vtx");
+	AddFileToDownloadsTable("models/steamhappy.phy");
+	AddFileToDownloadsTable("models/steamhappy.sw.vtx");
+	AddFileToDownloadsTable("materials/steamhappy/eye.vmt");
+	AddFileToDownloadsTable("materials/steamhappy/eye.vtf");
+	AddFileToDownloadsTable("materials/steamhappy/happycolorable.vmt");
+	AddFileToDownloadsTable("materials/steamhappy/happycolorable.vtf");
+	AddFileToDownloadsTable("materials/steamhappy/happycolors.vmt");
+	AddFileToDownloadsTable("materials/steamhappy/happycolors.vtf");
 	
 #if defined ZR
 	Zero(i_CustomWeaponEquipLogic);

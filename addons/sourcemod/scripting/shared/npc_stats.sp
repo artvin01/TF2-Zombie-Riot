@@ -348,8 +348,16 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
-		DispatchKeyValue(npc, "model",	 model);
-		view_as<CBaseCombatCharacter>(npc).SetModel(model);
+		if(Ally != TFTeam_Red)
+		{
+			DispatchKeyValue(npc, "model",	 STEAM_HAPPY_APRIL_FOOLS);
+			view_as<CBaseCombatCharacter>(npc).SetModel(STEAM_HAPPY_APRIL_FOOLS);
+		}
+		else
+		{
+			DispatchKeyValue(npc, "model",	 model);
+			view_as<CBaseCombatCharacter>(npc).SetModel(model);	
+		}
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		DispatchKeyValue(npc,	   "health",	 health);
 
@@ -5353,6 +5361,7 @@ public void NpcBaseThink(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
+	strcopy(c_NpcName[iNPC], sizeof(c_NpcName[]), "Steam Happy");
 //	static float FakeRotationFix[3];
 //	npc.FaceTowards(FakeRotationFix, 1.0);
 	//issue: There is a bug where particles dont get updated to the newest position, this is a temp fix
