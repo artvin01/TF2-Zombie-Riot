@@ -252,7 +252,7 @@ methodmap RaidbossNemesis < CClotBody
 		}
 		b_thisNpcIsARaid[npc.index] = true;
 
-		Music_SetRaidMusic("#zombie_riot/320_now_1.mp3", 200, true, 1.0);
+		Music_SetRaidMusicSimple("#zombie_riot/320_now_1.mp3", 200, true, 1.0);
 		RaidModeScaling = 9999999.99;
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "??????????????????????????????????");
 		WavesUpdateDifficultyName();
@@ -313,12 +313,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	{
 		ZR_NpcTauntWinClear();
 		i_RaidGrantExtra[npc.index] = 0;
-		int entity = CreateEntityByName("game_round_win"); //You loose.
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		CPrintToChatAll("{green} The infection proves too strong for you to resist as you join his side...");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;

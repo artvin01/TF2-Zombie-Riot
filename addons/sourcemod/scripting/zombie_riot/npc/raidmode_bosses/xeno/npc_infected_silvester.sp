@@ -319,6 +319,7 @@ methodmap RaidbossSilvester < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+		i_TimesSummoned[npc.index] = 0;
 
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -436,7 +437,14 @@ methodmap RaidbossSilvester < CClotBody
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
-		Music_SetRaidMusic("#zombiesurvival/silvester_raid/silvester.mp3", 117, true);
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/silvester_raid/silvester.mp3");
+		music.Time = 117;
+		music.Volume = 2.0;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Arknights - Deepness Battle Theme");
+		strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+		Music_SetRaidMusic(music);
 		
 		npc.Anger = false;
 		//IDLE
@@ -537,13 +545,7 @@ static void Internal_ClotThink(int iNPC)
 	{
 		DeleteAndRemoveAllNpcs = 8.0;
 		mp_bonusroundtime.IntValue = (10 * 2);
-		ZR_NpcTauntWinClear();
-		int entity = CreateEntityByName("game_round_win"); 
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		SharedTimeLossSilvesterDuo(npc.index);
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
@@ -1166,8 +1168,9 @@ static void Internal_ClotThink(int iNPC)
 					MaxCount = 1;
 				}
 				Silvester_TE_Used = 0;
-				if(ZR_GetWaveCount()+1 >= 60)
+				if(ZR_GetWaveCount()+1 >= 60 && i_TimesSummoned[npc.index] >= 3)
 				{
+					i_TimesSummoned[npc.index] = 0;
 					ang_Look[1] -= 30.0;
 					for(int Repeat; Repeat <= 1; Repeat++)
 					{
@@ -1186,6 +1189,7 @@ static void Internal_ClotThink(int iNPC)
 					ang_Look[1] -= 30.0;
 				}
 
+				i_TimesSummoned[npc.index] += 1;
 				Silvester_Damaging_Pillars_Ability(npc.index,
 				25.0 * RaidModeScaling,				 	//damage
 				MaxCount, 	//how many

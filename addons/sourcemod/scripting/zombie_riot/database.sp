@@ -26,8 +26,8 @@ void Database_PluginStart()
 	Database.Connect(Database_GlobalConnected, DATABASE_GLOBAL);
 
 	RegServerCmd("zr_convert_from_textstore", DBCommand);
-}
 
+}
 bool Database_Escape(char[] buffer, int length, int &bytes)
 {
 	if(!Global)
@@ -116,7 +116,8 @@ public void Database_GlobalConnected(Database db, const char[] error, any data)
 		... "hitmarker INTEGER NOT NULL DEFAULT 1, "
 		... "tp INTEGER NOT NULL DEFAULT 0, "
 		... "zomvol FLOAT NOT NULL DEFAULT 0.0, "
-		... "tauntspeed INTEGER NOT NULL DEFAULT 1);");
+		... "tauntspeed INTEGER NOT NULL DEFAULT 1, "
+		... "battletimehud FLOAT NOT NULL DEFAULT 0.0);");
 		
 		tr.AddQuery("CREATE TABLE IF NOT EXISTS " ... DATATABLE_GIFTITEM ... " ("
 		... "steamid INTEGER NOT NULL, "
@@ -242,6 +243,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			thirdperson[client] = view_as<bool>(results[2].FetchInt(13));
 			f_ZombieVolumeSetting[client] = results[2].FetchFloat(14);
 			b_TauntSpeedIncreace[client] = view_as<bool>(results[2].FetchFloat(15));
+			f_Data_InBattleHudDisableDelay[client] = results[2].FetchFloat(16);
 		}
 		else if(!results[2].MoreRows)
 		{
@@ -309,7 +311,8 @@ void DataBase_ClientDisconnect(int client)
 			... "hitmarker = %d, "
 			... "tp = %d, "
 			... "zomvol = %.3f, "
-			... "tauntspeed = %d "
+			... "tauntspeed = %d, "
+			... "battletimehud = %.3f "
 			... "WHERE steamid = %d;",
 			b_IsPlayerNiko[client],
 			f_ArmorHudOffsetX[client],
@@ -326,6 +329,7 @@ void DataBase_ClientDisconnect(int client)
 			thirdperson[client],
 			f_ZombieVolumeSetting[client],
 			b_TauntSpeedIncreace[client],
+			f_Data_InBattleHudDisableDelay[client],
 			id);
 
 			tr.AddQuery(buffer);

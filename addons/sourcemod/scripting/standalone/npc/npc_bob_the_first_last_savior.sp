@@ -243,7 +243,14 @@ methodmap RaidbossBobTheFirst < CClotBody
 	}
 	property bool m_bFakeClone
 	{
-		public get()		{	return i_RaidGrantExtra[this.index] < 0;	}
+		public get()		
+		{
+			if(i_RaidGrantExtra[this.index] != -1)
+			{
+				return false;
+			}
+			return true;
+		}
 	}
 
 	public RaidbossBobTheFirst(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -282,9 +289,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		}
 		else if(StrContains(data, "fake") != -1)
 		{
-			SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.
-			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12); 
-			SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6);
+			MakeObjectIntangeable(npc.index);
 			i_RaidGrantExtra[npc.index] = -1;
 			b_DoNotUnStuck[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
@@ -506,7 +511,7 @@ static void Internal_ClotThink(int iNPC)
 			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			if(other != INVALID_ENT_REFERENCE && other != npc.index)
 			{
-				if(i_NpcInternalId[other] == BOB_THE_FIRST || i_NpcInternalId[other] == BOB_THE_FIRST_S)
+				if(i_NpcInternalId[other] == i_NpcInternalId[npc.index])
 				{
 					if(!view_as<RaidbossBobTheFirst>(other).m_bFakeClone && IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
 					{
@@ -564,6 +569,7 @@ static void Internal_ClotThink(int iNPC)
 			summon = NPC_CreateByName("npc_bob_the_first_last_savior", -1, pos, ang, GetTeam(npc.index), "fake");
 			if(summon > MaxClients)
 			{
+				i_RaidGrantExtra[summon] = -1;
 				fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index] * 0.5;
 				fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index] * 0.75;
 
@@ -573,6 +579,7 @@ static void Internal_ClotThink(int iNPC)
 			summon = NPC_CreateByName("npc_bob_the_first_last_savior", -1, pos, ang, GetTeam(npc.index), "fake");
 			if(summon > MaxClients)
 			{
+				i_RaidGrantExtra[summon] = -1;
 				fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index] * 0.5;
 				fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index] * 0.75;
 
@@ -582,6 +589,7 @@ static void Internal_ClotThink(int iNPC)
 			summon = NPC_CreateByName("npc_bob_the_first_last_savior", -1, pos, ang, GetTeam(npc.index), "fake");
 			if(summon > MaxClients)
 			{
+				i_RaidGrantExtra[summon] = -1;
 				fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index] * 0.5;
 				fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index] * 0.75;
 
@@ -614,11 +622,39 @@ static void Internal_ClotThink(int iNPC)
 			return;
 		}
 	}
-
-	if(npc.m_iTarget > 0 && healthPoints < 20)
+	
+	if(npc.m_iTarget > 0)
 	{
 		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		if(npc.m_flCharge_delay < GetGameTime(npc.index))
+		{
+			if(npc.IsOnGround())
+			{
+				float vPredictedPos[3];
+				PredictSubjectPosition(npc, npc.m_iTarget, _, _, vPredictedPos);
+				vPredictedPos = GetBehindTarget(npc.m_iTarget, 30.0 ,vPredictedPos);
+				static float hullcheckmaxs[3];
+				static float hullcheckmins[3];
+				hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+				hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+
+				float SelfPos[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
+				float AllyAng[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", AllyAng);
+				
+				bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, false);
+				if(Succeed)
+				{
+					ParticleEffectAt(SelfPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+					ParticleEffectAt(vPredictedPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+					float SpaceCenter[3]; WorldSpaceCenter(npc.m_iTarget, SpaceCenter);
+					npc.FaceTowards(SpaceCenter, 15000.0);
+					npc.m_flCharge_delay = GetGameTime(npc.index) + (GetRandomFloat(7.5, 15.0));
+				}
+			}
+		}
 
 		switch(npc.m_iAttackType)
 		{
@@ -1146,7 +1182,7 @@ static void Internal_ClotThink(int iNPC)
 }
 
 
-static Action Internal_OnTakeDamage(int victim, int &attacker, float &damage)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker < 1)
@@ -1638,8 +1674,8 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 		startPosition[2] = ReadPackFloat(data);
 		float Iondistance = ReadPackCell(data);
 		float nphi = ReadPackFloat(data);
-		int Ionrange = ReadPackCell(data);
-		int Iondamage = ReadPackCell(data);
+		float Ionrange = ReadPackFloat(data);
+		float Iondamage = ReadPackFloat(data);
 		int client = EntRefToEntIndex(ReadPackCell(data));
 		
 		if(!IsValidEntity(client) || b_NpcHasDied[client])
@@ -1733,8 +1769,8 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 		WritePackFloat(nData, startPosition[2]);
 		WritePackCell(nData, Iondistance);
 		WritePackFloat(nData, nphi);
-		WritePackCell(nData, Ionrange);
-		WritePackCell(nData, Iondamage);
+		WritePackFloat(nData, Ionrange);
+		WritePackFloat(nData, Iondamage);
 		WritePackCell(nData, EntIndexToEntRef(client));
 		ResetPack(nData);
 		
@@ -1744,10 +1780,10 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 		{
 			startPosition[2] += 25.0;
 			if(!b_Anger[client])
-				makeexplosion(client, client, startPosition, "", Iondamage, 100);
+				makeexplosion(client, client, startPosition, "", RoundToCeil(Iondamage), 100);
 				
 			else if(b_Anger[client])
-				makeexplosion(client, client, startPosition, "", RoundToCeil(float(Iondamage) * 1.25), 120);
+				makeexplosion(client, client, startPosition, "", RoundToCeil(Iondamage * 1.25), 120);
 				
 			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
@@ -1823,8 +1859,8 @@ public void TrueFusionwarrior_IOC_Invoke(int ref, int enemy)
 		WritePackFloat(data, vecTarget[2]);
 		WritePackCell(data, distance); // Distance
 		WritePackFloat(data, 0.0); // nphi
-		WritePackCell(data, IOCDist); // Range
-		WritePackCell(data, IOCdamage); // Damge
+		WritePackFloat(data, IOCDist); // Range
+		WritePackFloat(data, IOCdamage); // Damge
 		WritePackCell(data, ref);
 		ResetPack(data);
 		TrueFusionwarrior_IonAttack(data);

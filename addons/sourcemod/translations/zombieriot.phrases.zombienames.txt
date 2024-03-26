@@ -707,6 +707,14 @@
 		"pt"		"Milícia"
 		"nl"		"Militie"
 	}
+	"Barracks Militia"
+	{
+		"en" 		"Militia"
+	}
+	"Barracks Militia Desc"
+	{
+		"en"		"Basic unit of basic melee needs."
+	}
 	"Archer"
 	{
 		"en" 		"Archer"

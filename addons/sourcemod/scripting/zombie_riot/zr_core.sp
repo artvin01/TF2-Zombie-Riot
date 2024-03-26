@@ -84,7 +84,7 @@ enum
 	WEAPON_CRIPPLEMOAB = 5,
 	WEAPON_IRENE = 6,
 	WEAPON_7 = 7,
-	WEAPON_8 = 8,
+	WEAPON_COSMIC_TERROR = 8,
 	WEAPON_9 = 9,
 	WEAPON_10 = 10,
 	WEAPON_OCEAN = 11,
@@ -171,6 +171,9 @@ enum
 	WEAPON_MESSENGER_LAUNCHER = 92,
 	WEAPON_NAILGUN_SMG = 93,
 	WEAPON_NAILGUN_SHOTGUN = 94,
+	WEAPON_BLACKSMITH = 95,
+	WEAPON_COSMIC_PILLAR = 96,
+	WEAPON_COSMIC_RAILCANNON = 97
 }
 
 enum
@@ -241,19 +244,12 @@ ArrayList Loadouts[MAXTF2PLAYERS];
 Handle g_hSDKMakeCarriedObjectDispenser;
 Handle g_hSDKMakeCarriedObjectSentry;
 float f_RingDelayGift[MAXENTITIES];
+int i_IsAloneWeapon[MAXENTITIES];
 
 //custom wave music.
-char char_MusicString1[256];
-int i_MusicLength1;
-bool b_MusicCustom1;
-float f_MusicVolume1;
-char char_MusicString2[256];
-int i_MusicLength2;
-bool b_MusicCustom2;
-float f_MusicVolume2;
-char char_RaidMusicSpecial1[256];
-int i_RaidMusicLength1;
-bool b_RaidMusicCustom1;
+MusicEnum MusicString1;
+MusicEnum MusicString2;
+MusicEnum RaidMusicSpecial1;
 //custom wave music.
 float f_DelaySpawnsForVariousReasons;
 int CurrentRound;
@@ -277,6 +273,9 @@ float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 int i_MaxArmorTableUsed[MAXTF2PLAYERS];
 int i_PlayerModelOverrideIndexWearable[MAXTF2PLAYERS];
 bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
+
+float f_Data_InBattleHudDisableDelay[MAXTF2PLAYERS];
+float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -310,6 +309,8 @@ int Armor_DebuffType[MAXENTITIES];
 
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
+float LastStoreMenu[MAXTF2PLAYERS];
+bool LastStoreMenu_Store[MAXTF2PLAYERS];
 int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
 
 //We kinda check these almost 24/7, its better to put them into an array!
@@ -329,6 +330,7 @@ bool Is_Elevator[MAXENTITIES]={false, ...};
 
 int StoreWeapon[MAXENTITIES];
 int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
+float f_HealthBeforeSuittime[MAXTF2PLAYERS]={0.0, ...};
 
 int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
@@ -519,6 +521,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_hell_hoe.sp"
 #include "zombie_riot/custom/wand/weapon_ludo.sp"
 #include "zombie_riot/custom/weapon_messenger.sp"
+#include "zombie_riot/custom/kit_blacksmith.sp"
 
 void ZR_PluginLoad()
 {
@@ -604,6 +607,7 @@ void ZR_MapStart()
 	WaveStart_SubWaveStart(GetGameTime());
 	Reset_stats_starshooter();
 	Zero(f_RingDelayGift);
+	Zero(f_HealthBeforeSuittime);
 	Music_ClearAll();
 	Building_ClearAll();
 	Medigun_ClearAll();
@@ -768,14 +772,8 @@ void ZR_MapStart()
 	CreateTimer(0.5, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	CreateTimer(0.2, GetTimerAndNullifyMusicMVM_Timer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
-	char_MusicString1[0] = 0;
-	char_MusicString2[0] = 0;
-	char_RaidMusicSpecial1[0] = 0;
-			
-	i_MusicLength1 = 0;
-	i_MusicLength2 = 0;
-	i_RaidMusicLength1 = 0;
-	b_RaidMusicCustom1 = false;
+	RemoveAllCustomMusic();
+	
 	ResetMapStartSensalWeapon();
 	//This enables the MVM money hud, looks way better.
 	//SetVariantString("ForceEnableUpgrades(2)");
@@ -791,6 +789,16 @@ public Action GlobalTimer(Handle timer)
 	{
 		if(IsClientInGame(client))
 		{
+			if(IsFakeClient(client))
+			{
+				if(IsClientSourceTV(client) && !b_IsPlayerABot[client])
+				{
+					f_ClientMusicVolume[client] = 1.0;
+					f_ZombieVolumeSetting[client] = 0.0;
+					SetTeam(client, TFTeam_Spectator);
+					b_IsPlayerABot[client] = true;
+				}
+			}
 			PlayerApplyDefaults(client);
 			Spawns_CheckBadClient(client);
 		}
@@ -2450,6 +2458,9 @@ stock bool isPlayerMad(int client) {
 
 stock void GetTimerAndNullifyMusicMVM()
 {
+	if(FindEntityByClassname(-1, "tf_gamerules") == -1)
+		return;
+	
 	int Time = RoundToNearest(GameRules_GetPropFloat("m_flRestartRoundTime") - GetGameTime());
 	if(Time > 8 && Time <= 12)
 	{
@@ -2460,4 +2471,58 @@ stock void GetTimerAndNullifyMusicMVM()
 		return;
 	}
 	
+}
+
+bool PlayerIsInNpcBattle(int client)
+{
+	bool InBattle = false;
+	if(f_InBattleHudDisableDelay[client] > GetGameTime())
+		InBattle = true;
+
+	return InBattle;
+}
+
+
+void ForcePlayerWin()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client))
+		{
+			Music_Stop_All(client);
+			SetMusicTimer(client, GetTime() + 33);
+			SendConVarValue(client, sv_cheats, "1");
+		}
+	}
+	ResetReplications();
+
+	cvarTimeScale.SetFloat(0.1);
+	CreateTimer(0.5, SetTimeBack);
+	
+	MusicString1.Clear();
+	MusicString2.Clear();
+	RaidMusicSpecial1.Clear();
+
+	EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+
+	MVMHud_Disable();
+	int entity = CreateEntityByName("game_round_win"); 
+	DispatchKeyValue(entity, "force_map_reset", "1");
+	SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
+	DispatchSpawn(entity);
+	AcceptEntityInput(entity, "RoundWin");
+	RemoveAllCustomMusic();
+}
+
+void ForcePlayerLoss()
+{
+	MVMHud_Disable();
+	ZR_NpcTauntWinClear();
+	int entity = CreateEntityByName("game_round_win"); 
+	DispatchKeyValue(entity, "force_map_reset", "1");
+	SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+	DispatchSpawn(entity);
+	AcceptEntityInput(entity, "RoundWin");
+	Music_RoundEnd(entity);
+	RaidBossActive = INVALID_ENT_REFERENCE;
 }

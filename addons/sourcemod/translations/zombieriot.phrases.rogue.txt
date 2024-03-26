@@ -621,6 +621,10 @@
 		"en"	"Boons"
 		"ru"	"Блага"
 	}
+	"Uncertain Goals"
+	{
+		"en"	"Uncertain Goals"
+	}
 	"Water Fountain"
 	{
 		"en"	"Water Fountain"
@@ -1589,7 +1593,7 @@
 	}
 	"Hand of Incredible Speeds Desc"
 	{
-		"en"	"Standing here, Jorato.\n{green}''Brawler'' and ''Single Pellet'' weapons gain +50%% firing speed and +50%% Faster Reload Speed."
+		"en"	"Standing here, Jorato.\n{green}''Brawler'' and ''Single Pellet'' weapons gain +25%% firing speed and +25%% Faster Reload Speed."
 	}
 	"Hand of Suprise"
 	{

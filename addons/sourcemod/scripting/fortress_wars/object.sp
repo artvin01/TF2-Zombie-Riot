@@ -264,9 +264,7 @@ methodmap UnitObject < CBaseAnimating
 
 		SetVariantString("!activator");
 		AcceptEntityInput(item, "SetParent", this.index);
-		SetEntityCollisionGroup(item, 1);
-		SetEntProp(item, Prop_Send, "m_usSolidFlags", 12); 
-		SetEntProp(item, Prop_Data, "m_nSolidType", 6); 
+		MakeObjectIntangeable(item);
 		return item;
 	}
 	

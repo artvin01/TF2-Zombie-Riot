@@ -67,6 +67,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	
 	Escape_RoundStart();
 	Waves_RoundStart();
+	Blacksmith_RoundStart();
 #endif
 
 #if defined RTS
@@ -81,7 +82,7 @@ public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 	{
 		SetMusicTimer(client, 0);
 	}
-	
+	BuildingVoteEndResetCD();
 	Waves_SetReadyStatus(0);
 	Waves_Progress();
 }
@@ -218,25 +219,6 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 			}
 		}
-		else
-		{
-			int entity = MaxClients+1;
-			while(TF2_GetWearable(client, entity))
-			{
-				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
-			}
-		}
-		/*
-		else
-		{
-			int entity = MaxClients+1;
-			while(TF2_GetWearable(client, entity))
-			{
-				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
-			}
-		}
-		*/
-		//doesnt work, can cause client crashes?
 #endif
 
 #if defined ZR
@@ -502,6 +484,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 		i_CurrentEquippedPerk[client] = 0;
 		
 	i_HealthBeforeSuit[client] = 0;
+	f_HealthBeforeSuittime[client] = GetGameTime() + 0.25;
 	i_ClientHasCustomGearEquipped[client] = false;
 	UnequipQuantumSet(client);
 //	CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!

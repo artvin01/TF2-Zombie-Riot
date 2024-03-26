@@ -2122,9 +2122,7 @@ static int Ruina_Create_Entity(float Loc[3], float duration)
 		
 		SetEntProp(prop, Prop_Send, "m_fEffects", 32); //EF_NODRAW
 		
-		SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12);
-		SetEntProp(prop, Prop_Data, "m_nSolidType", 6);
-		SetEntProp(prop, Prop_Send, "m_CollisionGroup", 1);
+		MakeObjectIntangeable(prop);
 
 		TeleportEntity(prop, Loc, NULL_VECTOR, NULL_VECTOR);
 		

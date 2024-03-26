@@ -40,7 +40,8 @@ void WinterSkinHunter_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Interitus;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	int id = NPC_Add(data);
+	Rogue_Paradox_AddWinterNPC(id);
 }
 
 
@@ -250,12 +251,8 @@ void WinterSkinHunterSelfDefense(WinterSkinHunter npc, float gameTime)
 				//after we fire, we will have a short delay beteween the actual laser, and when it happens
 				//This will predict as its relatively easy to dodge
 				float projectile_speed = 1200.0;
-				//lets pretend we have a projectile.
-				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
-				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-				{
-					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
-				}
+
+				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 
 				npc.FaceTowards(vecTarget, 20000.0);
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.75;

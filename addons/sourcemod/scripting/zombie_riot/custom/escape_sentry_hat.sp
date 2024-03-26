@@ -216,6 +216,8 @@ public void Un_ClaimBuildingLookedAt(int client)
 						pack.WriteCell(EntIndexToEntRef(entity));
 						pack.WriteCell(GetClientUserId(client));
 						Menu menu = new Menu(UnClaimBuildingMenu);
+						CancelClientMenu(client);
+						SetStoreMenuLogic(client, false);
 
 						SetGlobalTransTarget(client);
 						
@@ -258,6 +260,8 @@ public void DeleteBuildingLookedAt(int client)
 						pack.WriteCell(EntIndexToEntRef(entity));
 						pack.WriteCell(GetClientUserId(client));
 						Menu menu = new Menu(DeleteBuildingMenu);
+						CancelClientMenu(client);
+						SetStoreMenuLogic(client, false);
 
 						SetGlobalTransTarget(client);
 						
@@ -535,6 +539,7 @@ public int UnClaimBuildingMenu(Menu menu, MenuAction action, int client, int cho
 		{
 			if(IsValidClient(client))
 			{
+				ResetStoreMenuLogic(client);
 				i_BuildingSelectedToBeUnClaimed[client] = -1;		
 			}
 		}
@@ -542,11 +547,13 @@ public int UnClaimBuildingMenu(Menu menu, MenuAction action, int client, int cho
 		{
 			if(IsValidClient(client))
 			{
+				ResetStoreMenuLogic(client);
 				i_BuildingSelectedToBeUnClaimed[client] = -1;		
 			}
 		}
 		case MenuAction_Select:
 		{
+			ResetStoreMenuLogic(client);
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			int id = StringToInt(buffer);
@@ -594,6 +601,7 @@ public int DeleteBuildingMenu(Menu menu, MenuAction action, int client, int choi
 		{
 			if(IsValidClient(client))
 			{
+				ResetStoreMenuLogic(client);
 				i_BuildingSelectedToBeDeleted[client] = -1;		
 			}
 		}
@@ -601,11 +609,13 @@ public int DeleteBuildingMenu(Menu menu, MenuAction action, int client, int choi
 		{
 			if(IsValidClient(client))
 			{
+				ResetStoreMenuLogic(client);
 				i_BuildingSelectedToBeDeleted[client] = -1;		
 			}
 		}
 		case MenuAction_Select:
 		{
+			ResetStoreMenuLogic(client);
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			int id = StringToInt(buffer);
@@ -690,7 +700,11 @@ public Action Mount_Building_Timer(Handle sentryHud, DataPack pack)
 				else if (StrEqual(buffer, "zr_summoner"))
 				{
 					EquipDispenser(client, entity, 9);
-				}	
+				}
+				else if (StrEqual(buffer, "zr_blacksmith"))
+				{
+					EquipDispenser(client, entity, BuildingBlacksmith);
+				}
 				RemoveBuildingDependency(entity);				
 			}
 		}
@@ -778,6 +792,10 @@ stock void EquipDispenser(int client, int target, int building_variant)
 			case 8:
 			{
 				Building_particle[client] = EntIndexToEntRef(ParticleEffectAt_Building_Custom(flPos, "powerup_icon_reflect", client)); // Village
+			}
+			case BuildingBlacksmith:
+			{
+				Building_particle[client] = EntIndexToEntRef(ParticleEffectAt_Building_Custom(flPos, "powerup_icon_strength", client));
 			}
 			default:
 			{

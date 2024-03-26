@@ -145,6 +145,20 @@ static void ClotThink(int iNPC)
 		{
 			if(npc.m_flAttackHappens < gameTime)
 			{
+				if(Rogue_Paradox_RedMoon())
+				{
+					target = Can_I_See_Enemy(npc.index, target);
+					if(IsValidEnemy(npc.index, target))
+					{
+						npc.m_iTarget = target;
+						npc.m_flGetClosestTargetTime = gameTime + 0.45;
+					}
+					else
+					{
+						npc.m_flAttackHappens = 0.0;
+					}
+				}
+
 				if(npc.m_iOverlordComboAttack % 2)
 					PredictSubjectPositionForProjectiles(npc, target, (npc.m_iOverlordComboAttack % 3) ? 350.0 : 1100.0, _,vecTarget);
 
@@ -158,13 +172,17 @@ static void ClotThink(int iNPC)
 				}
 
 				npc.m_iOverlordComboAttack--;
-				if(npc.m_iOverlordComboAttack < 1)
+
+				if(!Rogue_Paradox_RedMoon())
 				{
-					npc.m_flAttackHappens = 0.0;
-				}
-				else
-				{
-					npc.m_flAttackHappens = gameTime + 0.15;
+					if(npc.m_iOverlordComboAttack < 1)
+					{
+						npc.m_flAttackHappens = 0.0;
+					}
+					else
+					{
+						npc.m_flAttackHappens = gameTime + 0.15;
+					}
 				}
 			}
 		}

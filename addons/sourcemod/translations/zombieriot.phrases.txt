@@ -1601,7 +1601,7 @@
 	}
 	"TF2: Zombie Riot"
 	{
-		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!"
+		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold (H) + press TAB to show current weapon!"
 	}
 	"Father Grigori's Store"
 	{
@@ -2749,6 +2749,15 @@
 		"en"		"Zombie Volume: [{1}%%]"
 		"chi"       "僵尸音量: [{1}%%]"
 	}
+	"Zombie In Battle Show"
+	{
+		"en"		"Zombie In Battle Time"
+	}
+	"Zombie In Battle Logic Setting"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"In Battle Time: [{1}]"
+	}
 	"Turn up volume"
 	{
 		"en"		"Turn up volume"
@@ -2864,7 +2873,7 @@
 	}
 	"Pre Setup Cash Gain Hint"
 	{
-		"en"		"During ready setup phases, all the money you gain from buidlings is given after the round has started."
+		"en"		"During ready setup phases, you gain half the cash from buildings, it will be given to you once the waves start again."
 	}
 	"Extra Description"
 	{
@@ -3066,5 +3075,63 @@
 	"Evil hoe off"
 	{
 		"en" "Blood pact: Off"
+	}
+	"Tags & Author"
+	{
+		"en"		"Tags & Author"
+	}
+	"Created By"
+	{
+		"#format"	"{1:s}"
+		"en"		"{darkgrey}Created by: {community}{1}"
+	}
+	"NPCs By"
+	{
+		"#format"	"{1:s}"
+		"en"		"{darkgrey}NPCs by: {community}{1}"
+	}
+	"Format By"
+	{
+		"#format"	"{1:s}"
+		"en"		"{darkgrey}Format by: {community}{1}"
+	}
+	"Raidboss By"
+	{
+		"#format"	"{1:s}"
+		"en"		"{darkgrey}Raidboss by: {community}{1}"
+	}
+	"Now Playing Song"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"{darkgrey}Now Playing: {community}{1} {default}| {lightgreen}{2}"
+	}
+	"Blacksmith Tooltip"
+	{
+		"en"		"Press RELOAD to apply a tinker effect to your active weapon\nCrouching removes attributes."
+	}
+	"Blacksmith Used"
+	{
+		"en"		"Someone used your Tinker Station, you gain +20 Credits!"
+	}
+	"Blacksmith Maxed"
+	{
+		"en"		"Maximum amount of attributes applied to this weapon"
+	}
+	"Blacksmith Underleveled"
+	{
+		"en"		"Owner needs to upgrade this building before you can tinker this weapon"
+	}
+	"Blacksmith No Attribs"
+	{
+		"en"		"Crouching removes attributes, but you don't have any"
+	}
+	"Removed Tinker Attributes"
+	{
+		"en"		"Removed Tinker Attributes"
+	}
+	"View Modifiers"
+	{
+		"en"	"View Modifiers"
+		"de" 	"oha ein deutscher!"
 	}
 }
