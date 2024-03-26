@@ -12,13 +12,14 @@ public void Weapon_Magic_Restore(int client, int weapon, const char[] classname,
 		{
 			Give_bomb_back[client] = CreateTimer(60.0, Give_Back_Magic_Restore, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(60.0, Give_Back_Magic_Restore_Ammo, client, TIMER_FLAG_NO_MAPCHANGE);
+			GrenadeApplyCooldownHud(client, 60.0);
 			if(Handle_on[client])
 			{
 				delete Give_bomb_back[client];
 			}
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Drank Mana Regen Potion");
+		//	SetDefaultHudPosition(client);
+		//	SetGlobalTransTarget(client);
+		//	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Drank Mana Regen Potion");
 			SetAmmo(client, Ammo_Potion_Supply, 0); //Give ammo back that they just spend like an idiot
 			CurrentAmmo[client][Ammo_Potion_Supply] = GetAmmo(client, Ammo_Potion_Supply);
 			Handle_on[client] = true;
@@ -80,10 +81,10 @@ public Action Give_Back_Magic_Restore(Handle cut_timer, int ref)
 		//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 		SetAmmo(client, Ammo_Potion_Supply, 1); //Give ammo back that they just spend like an idiot
 		CurrentAmmo[client][Ammo_Potion_Supply] = GetAmmo(client, Ammo_Potion_Supply);
-		ClientCommand(client, "playgamesound items/gunpickup2.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Mana Regen Potion Back");
+	//	ClientCommand(client, "playgamesound items/gunpickup2.wav");
+	//	SetDefaultHudPosition(client);
+	//	SetGlobalTransTarg77et(client);
+	//	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Mana Regen Potion Back");
 		Handle_on[client] = false;
 	}
 	return Plugin_Handled;

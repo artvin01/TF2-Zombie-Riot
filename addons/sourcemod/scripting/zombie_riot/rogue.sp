@@ -870,6 +870,8 @@ bool Rogue_BattleLost()
 
 		Waves_RoundEnd();
 		Store_RogueEndFightReset();
+		TeleportToSpawn();
+		Waves_ClearWave();
 
 		Rogue_SetProgressTime(5.0, false, true);
 		
@@ -1507,7 +1509,7 @@ static void StartStage(const Stage stage)
 		entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
-			if(GetTeam(entity) == TFTeam_Red)
+			if(GetTeam(entity) == TFTeam_Red && i_NpcInternalId[entity] != Remain_ID())
 			{
 				TeleportEntity(entity, pos, ang, NULL_VECTOR);
 			}
@@ -1586,7 +1588,7 @@ static void TeleportToSpawn()
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
-			if(GetTeam(entity) == TFTeam_Red)
+			if(GetTeam(entity) == TFTeam_Red && i_NpcInternalId[entity] != Remain_ID())
 			{
 				TeleportEntity(entity, pos, ang, NULL_VECTOR);
 			}

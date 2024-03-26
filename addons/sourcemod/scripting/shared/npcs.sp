@@ -2896,6 +2896,8 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 #if defined ZR
 	else if(b_IsABow[weapon])
 	{
+		//arrows ignore inflictor?
+		f_InBattleHudDisableDelay[attacker] = GetGameTime() + f_Data_InBattleHudDisableDelay[attacker];
 		if(damagetype & DMG_CRIT)
 		{		
 			damage *= 1.35;
