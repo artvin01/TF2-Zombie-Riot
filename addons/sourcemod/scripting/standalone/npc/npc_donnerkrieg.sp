@@ -3,7 +3,7 @@
 
 static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
 static float fl_normal_attack_duration[MAXENTITIES];
-
+/*
 static const char g_nightmare_cannon_core_sound[][] = {
 	"ambient_mp3/halloween/thunder_01.mp3",
 	"ambient_mp3/halloween/thunder_02.mp3",
@@ -15,7 +15,7 @@ static const char g_nightmare_cannon_core_sound[][] = {
 	"ambient_mp3/halloween/thunder_08.mp3",
 	"ambient_mp3/halloween/thunder_09.mp3",
 	"ambient_mp3/halloween/thunder_10.mp3",
-};
+};*/
 
 
 static const char g_heavens_fall_strike_sound[][] = {
@@ -154,7 +154,7 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	PrecacheSoundArray(g_heavens_fall_strike_sound);
 
 	
-	PrecacheSoundArray(g_nightmare_cannon_core_sound);
+	//PrecacheSoundArray(g_nightmare_cannon_core_sound);
 
 	//for (int i = 0; i < (sizeof(g_nightmare_cannon_core_sound));   i++) { PrecacheSoundCustom(g_nightmare_cannon_core_sound[i]);	}
 
@@ -226,7 +226,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		public get()							{ return b_InKame[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_InKame[this.index] = TempValueForProperty; }
 	}
-	public void PlayNightmareSound() {
+	/*public void PlayNightmareSound() {
 		if(fl_nightmare_cannon_core_sound_timer[this.index] > GetGameTime())
 			return;
 
@@ -236,7 +236,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayNightmareSound()");
 		#endif
-	}
+	}*/
 
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -2340,7 +2340,7 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 					Donnerkrieg_Invoke_Crstaline_Reflection(npc.index, endPoint, hover, speed);
 			}
 
-			npc.PlayNightmareSound();
+			//npc.PlayNightmareSound();
 
 			Donnerkrieg_Laser_Trace(npc, Start_Loc, endPoint, radius*0.75, 75.0*RaidModeScaling);	//this technically finds the LOC of the crystal.
 
