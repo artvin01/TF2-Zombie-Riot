@@ -1609,6 +1609,13 @@ public void OnMapStart()
 public void OnMapEnd()
 {
 #if defined ZR
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsFakeClient(client) && IsClientSourceTV(client))
+		{
+			KickClient(client);
+		}
+	}
 	Store_RandomizeNPCStore(1);
 	OnRoundEnd(null, NULL_STRING, false);
 	Waves_MapEnd();

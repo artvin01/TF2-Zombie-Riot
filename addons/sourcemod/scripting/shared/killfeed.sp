@@ -68,7 +68,8 @@ void AdjustBotCount()
 	{
 		if(botcount < 2)
 		{
-			SpawnBotCustom("bot1", true);
+			int botadded = SpawnBotCustom("bot1", true);
+			SetTeam(botadded, TFTeam_Blue);
 			botcount++;	
 		}
 		else
