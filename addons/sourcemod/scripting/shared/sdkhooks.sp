@@ -2138,11 +2138,6 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		if(entity > 0 && entity <= MaxClients)
 		{
 			bool ChangedSound = false;
-			if(GetTeam(entity) != TFTeam_Red)
-			{
-				ChangedSound = true;
-				strcopy(sample, sizeof(sample), "sound/zombie_riot/yippe.mp3");
-			}
 			if(f_WeaponVolumeStiller[entity] != 1.0)
 			{
 				ChangedSound = true;

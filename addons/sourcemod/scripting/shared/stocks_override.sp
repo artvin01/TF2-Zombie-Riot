@@ -457,8 +457,17 @@ void Edited_EmitSoundToAll(const char[] sample,
 				{
 					volumeedited *= (f_ZombieVolumeSetting[client] + 1.0);
 				}
-				if(volumeedited > 0.0)
-					EmitSoundToClient(client, sample,entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
+				
+				if(entity > 0 && GetTeam(entity) != TFTeam_Red)
+				{
+					if(volumeedited > 0.0)
+						EmitSoundToClient(client, "zombie_riot/yippe.mp3",entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
+				}
+				else
+				{
+					if(volumeedited > 0.0)
+						EmitSoundToClient(client, sample,entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
+				}
 			}
 		}		
 	}

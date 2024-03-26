@@ -1530,7 +1530,7 @@ public void OnMapStart()
 	PrecacheSound(")weapons/pipe_bomb2.wav");
 	PrecacheSound(")weapons/pipe_bomb3.wav");
 
-	PrecacheSound("sound/zombie_riot/yippe.mp3");
+	PrecacheSound("zombie_riot/yippe.mp3");
 	AddFileToDownloadsTable("sound/zombie_riot/yippe.mp3");
 
 	PrecacheModel(COMBINE_CUSTOM_MODEL);

@@ -2279,6 +2279,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		}	
 		
 		MakeObjectIntangeable(item);
+		Hook_DHook_UpdateTransmitState(item);
+		b_IsEntityNeverTranmitted[item] = true;
 
 		return item;
 	}
@@ -5360,8 +5362,16 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 public void NpcBaseThink(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
-
+	if(!b_DissapearOnDeath[iNPC])
+	{
+		SetEntProp(iNPC, Prop_Send, "m_nSkin", 1);
+		SetEntityRenderColor(iNPC, GetRandomInt(0, 255), GetRandomInt(0, 255), GetRandomInt(0, 255), 255);
+		SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", GetRandomFloat(1.2, 2.5));
+	}
 	strcopy(c_NpcName[iNPC], sizeof(c_NpcName[]), "Steam Happy");
+	b_DissapearOnDeath[iNPC] = true;
+	
+
 //	static float FakeRotationFix[3];
 //	npc.FaceTowards(FakeRotationFix, 1.0);
 	//issue: There is a bug where particles dont get updated to the newest position, this is a temp fix
