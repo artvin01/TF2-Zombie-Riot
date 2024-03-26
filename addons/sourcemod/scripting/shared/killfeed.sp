@@ -475,6 +475,7 @@ static void ShowNextFeed()
 			event.SetInt("inflictor_entindex", feed.inflictor_entindex);
 			event.SetInt("customkill", feed.customkill);
 			event.SetBool("silent_kill", (!priority || feed.silent_kill));
+			
 
 			list.Push(event);
 
@@ -511,14 +512,13 @@ public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
 	for(int i; i < length; i++)
 	{
 		Event event = list.Get(i);
+		int victim = GetClientOfUserId(event.GetInt("userid"));
+		int attacker = GetClientOfUserId(event.GetInt("attacker"));
+		int assister = GetClientOfUserId(event.GetInt("assister"));
 
 		if(event.GetBool("silent_kill"))
 		{
 			event.SetBool("silent_kill", false);
-
-			int victim = GetClientOfUserId(event.GetInt("userid"));
-			int attacker = GetClientOfUserId(event.GetInt("attacker"));
-			int assister = GetClientOfUserId(event.GetInt("assister"));
 
 			if(victim)
 				event.FireToClient(victim);
@@ -537,7 +537,18 @@ public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
 					event.FireToClient(client);
 			}
 		}
-
+		if(IsValidClient(victim) && IsFakeClient(victim) && !IsClientSourceTV(victim))
+		{
+			KillFeed_SetBotTeam(victim, TFTeam_Blue);
+		}
+		if(IsValidClient(attacker) && IsFakeClient(attacker) && !IsClientSourceTV(attacker))
+		{
+			KillFeed_SetBotTeam(attacker, TFTeam_Blue);
+		}
+		if(IsValidClient(assister) && IsFakeClient(assister) && !IsClientSourceTV(assister))
+		{
+			KillFeed_SetBotTeam(assister, TFTeam_Blue);
+		}
 		event.Cancel();
 	}
 
