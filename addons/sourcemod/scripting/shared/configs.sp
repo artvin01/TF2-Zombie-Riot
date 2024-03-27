@@ -190,8 +190,8 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 	int i;
 	int val = WeaponList.Length;
 
-	float damage_Calc;
-	float firerate_Calc;
+// 	float damage_Calc;
+//	float firerate_Calc;
 	for(; i<val; i++)
 	{
 		WeaponList.GetArray(i, data);
@@ -203,6 +203,7 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 		return;
 	
 	// Damage and Pellets
+	/*
 	if(data.Damage > 0)
 	{
 		float defaul = data.Damage;
@@ -221,7 +222,7 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 					data.Damage *= value[i];
 			}
 		}
-
+		
 		if(data.Damage > 0)
 		{
 			if(data.Damage < 100.0)
@@ -248,6 +249,7 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 			damage_Calc = data.Damage * data.Pellets;
 		}
 	}
+	*/
 	
 	// Fire Rate
 	if(data.FireRate)
@@ -259,7 +261,7 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 		}
 		
 		Format(buffer, length, "%s\nFire Rate: %.3fs", buffer, data.FireRate);
-		firerate_Calc = data.FireRate;
+	//	firerate_Calc = data.FireRate;
 	}
 	
 	// Clip and Ammo
@@ -462,7 +464,7 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 		
 		Format(buffer, length, "%s\nRange: x%.2f", buffer, data.Range);
 	}*/
-
+	/*
 	if(damage_Calc)
 	{
 		float damagepersecond;
@@ -492,6 +494,7 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 
 		Format(buffer, length, "%s\nDPS: %1.f", buffer, damagepersecond);
 	}
+	*/
 	if(Archetype[0])
 		Format(buffer, length, "%s\n%t", buffer, Archetype);
 }

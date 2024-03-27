@@ -797,6 +797,25 @@ public void OnPostThink(int client)
 					}
 				}
 			}
+			if(ClientHasUseableGrenadeOrDrink(client))
+			{
+				if(GetGameTime() > GrenadeApplyCooldownReturn(client))
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [◈]", buffer);
+				}
+				else
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [◈ %.1fs]", buffer, GrenadeApplyCooldownReturn(client) - GetGameTime());
+				}
+			}
+			static int TaurusInt;
+			TaurusInt = TaurusExistant(client);
+			if(TaurusInt > 0)
+			{
+				int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+				int ammo = GetEntData(TaurusInt, iAmmoTable, 4);//Get ammo clip
+				FormatEx(buffer, sizeof(buffer), "%s [T %i/%i]",buffer, ammo, TaurusMaxAmmo());
+			}
 		}
 		 
 		int red = 200;
@@ -1192,6 +1211,17 @@ public void OnPostThink(int client)
 					else
 					{
 						Format(buffer, sizeof(buffer), "\nBA\n", Cooldowntocheck);
+					}
+				}
+				case BuildingBlacksmith:
+				{
+					if(Cooldowntocheck > 0.0)
+					{
+						Format(buffer, sizeof(buffer), "%.1f\nTI\n", Cooldowntocheck);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "\nTI\n", Cooldowntocheck);
 					}
 				}
 			}

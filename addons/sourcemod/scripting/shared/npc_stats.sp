@@ -30,8 +30,11 @@ int i_Headshots[MAXTF2PLAYERS];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int i_NpcOverrideAttacker[MAXENTITIES];
-int TeamFreeForAll = 50;
 bool b_thisNpcHasAnOutline[MAXENTITIES];
+#endif
+
+#if !defined RTS
+int TeamFreeForAll = 50;
 #endif
 
 int i_TeamGlow[MAXENTITIES]={-1, ...};
@@ -373,7 +376,15 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		b_NpcIgnoresbuildings[npc] = IgnoreBuildings;
 #elseif !defined RTS
-		SetTeam(npc, Ally);
+		if(Ally == 999)
+		{
+			//setting it to 999 will just keep adding 1 so its a free for all!
+			SetTeam(npc, TeamFreeForAll++);
+		}
+		else
+		{
+			SetTeam(npc, Ally);	
+		}
 		b_NpcIgnoresbuildings[npc] = IgnoreBuildings;
 #endif
 		AddEntityToLagCompList(npc);
@@ -2259,9 +2270,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			AcceptEntityInput(item, "SetParentAttachmentMaintainOffset"); 
 		}	
 		
-		SetEntityCollisionGroup(item, 1);
-		SetEntProp(item, Prop_Send, "m_usSolidFlags", 12); 
-		SetEntProp(item, Prop_Data, "m_nSolidType", 6); 
+		MakeObjectIntangeable(item);
 
 		return item;
 	}
@@ -2318,9 +2327,7 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		SetVariantString("!activator");
 		AcceptEntityInput(item, "SetParent", this.index);
-		SetEntityCollisionGroup(item, 1);
-		SetEntProp(item, Prop_Send, "m_usSolidFlags", 12); 
-		SetEntProp(item, Prop_Data, "m_nSolidType", 6); 
+		MakeObjectIntangeable(item);
 		return item;
 	} 
 	public bool DoSwingTrace(Handle &trace,
@@ -3318,9 +3325,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		func_NPCActorEmoted[pThis] = INVALID_FUNCTION;
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
-		SetEntityCollisionGroup(pThis, 1);
-		SetEntProp(pThis, Prop_Send, "m_usSolidFlags", 12); 
-		SetEntProp(pThis, Prop_Data, "m_nSolidType", 6); 
+		MakeObjectIntangeable(pThis);
 		b_ThisEntityIgnored[pThis] = true;
 	//	b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
 	//Do not remove pather here.
@@ -6136,15 +6141,12 @@ int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, flo
 	return prop;
 }
 
-public void GibCollidePlayerInteraction(int gib, int player)
+#if defined ZR
+void GibCollidePlayerInteraction(int gib, int player)
 {
 	if(b_IsCannibal[player])
 	{
-		
-#if defined ZR
 		if(dieingstate[player] == 0)
-#endif
-		
 		{
 			int weapon = GetEntPropEnt(player, Prop_Send, "m_hActiveWeapon");
 			if(IsValidEntity(weapon)) //Must also hold melee out 
@@ -6155,9 +6157,7 @@ public void GibCollidePlayerInteraction(int gib, int player)
 					{
 						float Heal_Amount = 0.0;
 						
-#if !defined RTS
 						Heal_Amount = Attributes_Get(weapon, 180, 1.0);
-#endif
 						
 						float Heal_Amount_calc;
 						
@@ -6185,6 +6185,7 @@ public void GibCollidePlayerInteraction(int gib, int player)
 		}
 	}
 }
+#endif
 
 public Action Timer_RemoveEntity_Prop_Gib(Handle timer, any entid)
 {
@@ -9378,6 +9379,10 @@ void TeleportBackToLastSavePosition(int entity)
 		CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		f_GameTimeTeleportBackSave_OutOfBounds[entity] = GetGameTime() + 2.0; //was stuck, lets just chill.
 		TeleportEntity(entity, f3_VecTeleportBackSave_OutOfBounds[entity], NULL_VECTOR ,{0.0,0.0,0.0});
+		if(b_ThisWasAnNpc[entity])
+		{
+			FreezeNpcInTime(entity, 0.5);
+		}
 	}
 }
 
@@ -9775,4 +9780,12 @@ void IsEntityInvincible_ShieldRemove(int entity)
 
 	RemoveEntity(EntRefToEntIndex(i_InvincibleParticle[entity]));
 	i_InvincibleParticle[entity] = INVALID_ENT_REFERENCE;
+}
+
+
+void MakeObjectIntangeable(int entity)
+{
+	SetEntityCollisionGroup(entity, 1); //Dont Touch Anything.
+	SetEntProp(entity, Prop_Send, "m_usSolidFlags", 12); 
+	SetEntProp(entity, Prop_Data, "m_nSolidType", 6);
 }

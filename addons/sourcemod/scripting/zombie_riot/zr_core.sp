@@ -84,7 +84,7 @@ enum
 	WEAPON_CRIPPLEMOAB = 5,
 	WEAPON_IRENE = 6,
 	WEAPON_7 = 7,
-	WEAPON_8 = 8,
+	WEAPON_COSMIC_TERROR = 8,
 	WEAPON_9 = 9,
 	WEAPON_10 = 10,
 	WEAPON_OCEAN = 11,
@@ -171,6 +171,10 @@ enum
 	WEAPON_MESSENGER_LAUNCHER = 92,
 	WEAPON_NAILGUN_SMG = 93,
 	WEAPON_NAILGUN_SHOTGUN = 94,
+	WEAPON_BLACKSMITH = 95,
+	WEAPON_COSMIC_PILLAR = 96,
+	WEAPON_COSMIC_RAILCANNON = 97,
+	WEAPON_GRENADEHUD = 98
 }
 
 enum
@@ -241,6 +245,7 @@ ArrayList Loadouts[MAXTF2PLAYERS];
 Handle g_hSDKMakeCarriedObjectDispenser;
 Handle g_hSDKMakeCarriedObjectSentry;
 float f_RingDelayGift[MAXENTITIES];
+int i_IsAloneWeapon[MAXENTITIES];
 
 //custom wave music.
 MusicEnum MusicString1;
@@ -269,6 +274,9 @@ float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 int i_MaxArmorTableUsed[MAXTF2PLAYERS];
 int i_PlayerModelOverrideIndexWearable[MAXTF2PLAYERS];
 bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
+
+float f_Data_InBattleHudDisableDelay[MAXTF2PLAYERS];
+float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -302,6 +310,8 @@ int Armor_DebuffType[MAXENTITIES];
 
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
+float LastStoreMenu[MAXTF2PLAYERS];
+bool LastStoreMenu_Store[MAXTF2PLAYERS];
 int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
 
 //We kinda check these almost 24/7, its better to put them into an array!
@@ -512,6 +522,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_hell_hoe.sp"
 #include "zombie_riot/custom/wand/weapon_ludo.sp"
 #include "zombie_riot/custom/weapon_messenger.sp"
+#include "zombie_riot/custom/kit_blacksmith.sp"
 
 void ZR_PluginLoad()
 {
@@ -779,6 +790,13 @@ public Action GlobalTimer(Handle timer)
 	{
 		if(IsClientInGame(client))
 		{
+			if(IsFakeClient(client))
+			{
+				if(IsClientSourceTV(client) || b_IsPlayerABot[client])
+				{
+					MoveBotToSpectator(client);
+				}
+			}
 			PlayerApplyDefaults(client);
 			Spawns_CheckBadClient(client);
 		}
@@ -2451,6 +2469,15 @@ stock void GetTimerAndNullifyMusicMVM()
 		return;
 	}
 	
+}
+
+bool PlayerIsInNpcBattle(int client)
+{
+	bool InBattle = false;
+	if(f_InBattleHudDisableDelay[client] > GetGameTime())
+		InBattle = true;
+
+	return InBattle;
 }
 
 

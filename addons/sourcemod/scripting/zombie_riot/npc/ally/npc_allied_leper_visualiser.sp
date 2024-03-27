@@ -147,9 +147,7 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
-		SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.
-		SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12); 
-		SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6); 
+		MakeObjectIntangeable(npc.index);
 		if(IsValidEntity(npc.m_iTeamGlow))
 			RemoveEntity(npc.m_iTeamGlow);
 
