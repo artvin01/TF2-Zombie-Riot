@@ -9381,7 +9381,12 @@ void TeleportBackToLastSavePosition(int entity)
 		TeleportEntity(entity, f3_VecTeleportBackSave_OutOfBounds[entity], NULL_VECTOR ,{0.0,0.0,0.0});
 		if(b_ThisWasAnNpc[entity])
 		{
+			//freeze the NPC so they can repath their logic, and also not constantly fall off.
+			f_DelayComputingOfPath[entity] = 0.0;
 			FreezeNpcInTime(entity, 0.5);
+			CClotBody npcBase = view_as<CClotBody>(entity);
+			npcBase.m_iTarget = 0;
+			//make them lose their target.
 		}
 	}
 }
