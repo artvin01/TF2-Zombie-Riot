@@ -5362,14 +5362,17 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 public void NpcBaseThink(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
-	if(!b_DissapearOnDeath[iNPC])
+	if(GetTeam(iNPC) != TFTeam_Red)
 	{
-		SetEntProp(iNPC, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderColor(iNPC, GetRandomInt(0, 255), GetRandomInt(0, 255), GetRandomInt(0, 255), 255);
-		SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", GetRandomFloat(1.2, 2.5));
+		if(!b_DissapearOnDeath[iNPC])
+		{
+			SetEntProp(iNPC, Prop_Send, "m_nSkin", 1);
+			SetEntityRenderColor(iNPC, GetRandomInt(0, 255), GetRandomInt(0, 255), GetRandomInt(0, 255), 255);
+			SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", GetRandomFloat(1.2, 2.5));
+		}
+		strcopy(c_NpcName[iNPC], sizeof(c_NpcName[]), "Steam Happy");
+		b_DissapearOnDeath[iNPC] = true;
 	}
-	strcopy(c_NpcName[iNPC], sizeof(c_NpcName[]), "Steam Happy");
-	b_DissapearOnDeath[iNPC] = true;
 	
 
 //	static float FakeRotationFix[3];
