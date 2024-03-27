@@ -117,6 +117,16 @@ void KillFeed_ClientPutInServer(int client)
 	}
 }
 
+void MoveBotToSpectator(int client)
+{
+	if(FeedTimer == null && GetTeam(client) == TFTeam_Red)
+	{
+		f_ClientMusicVolume[client] = 1.0;
+		f_ZombieVolumeSetting[client] = 0.0;
+		SetTeam(client, TFTeam_Spectator);
+		b_IsPlayerABot[client] = true;
+	}
+}
 void KillFeed_ClientDisconnect(int client)
 {
 	for(int i; i < sizeof(Bots); i++)

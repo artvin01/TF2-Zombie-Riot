@@ -792,12 +792,9 @@ public Action GlobalTimer(Handle timer)
 		{
 			if(IsFakeClient(client))
 			{
-				if(IsClientSourceTV(client) && !b_IsPlayerABot[client])
+				if(IsClientSourceTV(client) || b_IsPlayerABot[client])
 				{
-					f_ClientMusicVolume[client] = 1.0;
-					f_ZombieVolumeSetting[client] = 0.0;
-					SetTeam(client, TFTeam_Spectator);
-					b_IsPlayerABot[client] = true;
+					MoveBotToSpectator(client);
 				}
 			}
 			PlayerApplyDefaults(client);
