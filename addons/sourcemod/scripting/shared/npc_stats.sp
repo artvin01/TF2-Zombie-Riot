@@ -2242,7 +2242,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			skin,
 			model_size);
 		}
-		DispatchKeyValue(item, "model", "model/empty.mdl");
+		DispatchKeyValue(item, "model", "models/empty.mdl");
 
 		if(model_size == 1.0)
 		{
