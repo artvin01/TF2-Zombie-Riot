@@ -621,6 +621,10 @@
 		"en"	"Boons"
 		"ru"	"Блага"
 	}
+	"Uncertain Goals"
+	{
+		"en"	"Uncertain Goals"
+	}
 	"Water Fountain"
 	{
 		"en"	"Water Fountain"

@@ -306,9 +306,7 @@ methodmap ChaosKahmlstein < CClotBody
 
 		if(StrContains(data, "fake_2") != -1)
 		{
-			SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.
-			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12); 
-			SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6);
+			MakeObjectIntangeable(npc.index);
 			i_RaidGrantExtra[npc.index] = 2;
 			b_DoNotUnStuck[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
@@ -319,9 +317,7 @@ methodmap ChaosKahmlstein < CClotBody
 		}
 		else if(StrContains(data, "fake_3") != -1)
 		{
-			SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.
-			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12); 
-			SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6);
+			MakeObjectIntangeable(npc.index);
 			i_RaidGrantExtra[npc.index] = 3;
 			b_DoNotUnStuck[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
@@ -333,9 +329,7 @@ methodmap ChaosKahmlstein < CClotBody
 		}
 		else if(StrContains(data, "fake_4") != -1)
 		{
-			SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.
-			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12); 
-			SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6);
+			MakeObjectIntangeable(npc.index);
 			i_RaidGrantExtra[npc.index] = 4;
 			b_DoNotUnStuck[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
@@ -1320,9 +1314,8 @@ void CreateCloneTempKahmlsteinFakeout(int entity, int TypeOfFake, float SelfPos[
 	}
 	if(IsValidEntity(KamlcloneSpawn))
 	{
-		SetEntityCollisionGroup(KamlcloneSpawn, 1); //Dont Touch Anything.
-		SetEntProp(KamlcloneSpawn, Prop_Send, "m_usSolidFlags", 12); 
-		SetEntProp(KamlcloneSpawn, Prop_Data, "m_nSolidType", 6);
+		MakeObjectIntangeable(KamlcloneSpawn);
+
 		b_DoNotUnStuck[KamlcloneSpawn] = true;
 		b_NoKnockbackFromSources[KamlcloneSpawn] = true;
 		b_ThisEntityIgnored[KamlcloneSpawn] = true;

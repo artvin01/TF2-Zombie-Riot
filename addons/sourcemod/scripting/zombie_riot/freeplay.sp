@@ -130,7 +130,14 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 
 bool Freeplay_ShouldMiniBoss()
 {
-	return (MiniBossChance > GetURandomFloat());
+	float chance = MiniBossChance;
+	int decrease = 10;
+	Flagellant_MiniBossChance(decrease);
+	if(decrease < 1)
+		return true;
+	
+	chance *= float(10 / decrease);
+	return (chance > GetURandomFloat());
 }
 
 void Freeplay_SpawnEnemy(int entity)
