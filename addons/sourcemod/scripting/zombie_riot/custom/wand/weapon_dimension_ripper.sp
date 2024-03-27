@@ -234,20 +234,26 @@ void Npc_OnTakeDamage_DimensionalRipper(int attacker)
  
 public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result, int slot, int pap_logic)
 {
-	switch(GetRandomInt(1, 6))
+	switch(GetRandomInt(1, 8))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_headcrabzombie_fortified",weapon, 1.1, 1.0, "ghost_appearation");
+			Dimension_Summon_Npc(client, "npc_headcrabzombie_fortified",weapon, 1.4, 1.0, "ghost_appearation");
 		case 2:
-			Dimension_Summon_Npc(client, "npc_fastzombie_fortified" ,weapon, 1.0, 1.1, "ghost_appearation");
+			Dimension_Summon_Npc(client, "npc_xeno_zombie_scout_grave" ,weapon, 1.5, 1.1, "ghost_appearation");
 		case 3:
-			Dimension_Summon_Npc(client, "npc_poisonzombie_fortified_giant" ,weapon, 1.4, 1.2, "ghost_appearation");
+			Dimension_Summon_Npc(client, "npc_medival_man_at_arms" ,weapon, 1.4, 1.2, "ghost_appearation");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_poisonzombie_fortified" ,weapon, 1.25, 1.1, "ghost_appearation");
+			Dimension_Summon_Npc(client, "npc_seacrawler" ,weapon, 1.4, 1.1, "ghost_appearation");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_headcrabzombie_fortified",weapon, 1.1, 1.0, "ghost_appearation");
+			Dimension_Summon_Npc(client, "npc_bloon",weapon, 2.0, 1.0, "ghost_appearation");
 		case 6:
-			Dimension_Summon_Npc(client, "npc_last_survivor" ,weapon, 1.8, 1.5, "ghost_appearation");
+			Dimension_Summon_Npc(client, "npc_ahim" ,weapon, 1.3, 1.2, "ghost_appearation");
+		case 7:
+			Dimension_Summon_Npc(client, "npc_pental" ,weapon, 1.3, 1.2, "ghost_appearation");
+		case 8:
+			Dimension_Summon_Npc(client, "npc_alt_combine_soldier_mage" ,weapon, 1.2, 1.3, "ghost_appearation");
+		case 9:
+			Dimension_Summon_Npc(client, "npc_xeno_fastzombie_fortified" ,weapon, 1.2, 1.2, "ghost_appearation");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -260,23 +266,23 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 	switch(GetRandomInt(1, 9))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_combine_police_smg" ,weapon, 1.1, 1.2, "ghost_appearation");
+			Dimension_Summon_Npc(client, "npc_combine_police_smg" ,weapon, 2.0, 1.2, "ghost_appearation");
 		case 2:
-			Dimension_Summon_Npc(client, "npc_combine_soldier_ar2" ,weapon, 1.2, 1.2, "ghost_appearation");
+			Dimension_Summon_Npc(client, "npc_combine_soldier_ar2" ,weapon, 2.2, 1.2, "ghost_appearation");
 		case 3:
-			Dimension_Summon_Npc(client, "npc_combine_soldier_shotgun" ,weapon, 1.2, 1.4, "ghost_appearation");	
+			Dimension_Summon_Npc(client, "npc_combine_soldier_shotgun" ,weapon, 2.2, 1.4, "ghost_appearation");	
 		case 4:
-			Dimension_Summon_Npc(client, "npc_combine_soldier_swordsman" ,weapon, 1.3, 1.2, "ghost_appearation");
+			Dimension_Summon_Npc(client, "npc_combine_soldier_swordsman" ,weapon, 2.3, 1.2, "ghost_appearation");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_combine_soldier_elite" ,weapon, 1.3, 1.2, "ghost_appearation");
+			Dimension_Summon_Npc(client, "npc_combine_soldier_elite" ,weapon, 2.3, 1.2, "ghost_appearation");
 		case 6:
-			Dimension_Summon_Npc(client, "npc_combine_soldier_giant_swordsman" ,weapon, 1.5, 1.2, "ghost_appearation");
+			Dimension_Summon_Npc(client, "npc_combine_soldier_giant_swordsman" ,weapon, 2.5, 1.2, "ghost_appearation");
 		case 7:
-			Dimension_Summon_Npc(client, "npc_combine_soldier_swordsman_ddt" ,weapon, 1.2, 1.1, "ghost_appearation");	
+			Dimension_Summon_Npc(client, "npc_combine_soldier_swordsman_ddt" ,weapon, 2.2, 1.1, "ghost_appearation");	
 		case 8:
-			Dimension_Summon_Npc(client, "npc_combine_soldier_collos_swordsman" ,weapon, 1.6, 1.3, "ghost_appearation");
+			Dimension_Summon_Npc(client, "npc_combine_soldier_collos_swordsman" ,weapon, 2.4, 1.3, "ghost_appearation");
 		case 9:
-			Dimension_Summon_Npc(client, "npc_combine_soldier_overlord" ,weapon, 1.7, 1.2, "ghost_appearation");
+			Dimension_Summon_Npc(client, "npc_combine_soldier_overlord" ,weapon, 2.4, 1.2, "ghost_appearation");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -286,37 +292,35 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 
 public void Weapon_Dimension_Summon_Normal_PAP_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
 {
-	switch(GetRandomInt(1, 15))
+	switch(GetRandomInt(1, 14))
 	{
 		case 1:
 			Dimension_Summon_Npc(client, "npc_panzer" ,weapon, 1.5, 1.0, "ghost_appearation");
 		case 2:
 			Dimension_Summon_Npc(client, "npc_beheaded_kamikaze" ,weapon, 0.25, 1.0, "ghost_appearation");
 		case 3:
-			Dimension_Summon_Npc(client, "npc_doctor" ,weapon, 0.6, 1.1, "ghost_appearation");	
+			Dimension_Summon_Npc(client, "npc_doctor" ,weapon, 0.6, 1.3, "ghost_appearation");	
 		case 4:
 			Dimension_Summon_Npc(client, "npc_l4d2_tank" ,weapon,0.8, 1.0, "ghost_appearation");
 		case 5:
 			Dimension_Summon_Npc(client, "npc_phantom_knight" ,weapon, 1.1, 1.2, "ghost_appearation");
 		case 6:
-			Dimension_Summon_Npc(client, "npc_bloon" ,weapon, 3.0, 1.0, "ghost_appearation");
-		case 7:
 			Dimension_Summon_Npc(client, "npc_true_fusion_warrior" ,weapon, 0.8, 1.0, "ghost_appearation");	
-		case 8:
+		case 7:
 			Dimension_Summon_Npc(client, "npc_blitzkrieg" ,weapon, 0.75, 0.8, "ghost_appearation");
-		case 9:
+		case 8:
 			Dimension_Summon_Npc(client, "npc_god_arkantos" ,weapon, 0.75, 1.2, "ghost_appearation");
-		case 10:
+		case 9:
 			Dimension_Summon_Npc(client, "npc_citizen_runner" ,weapon, 3.0, 1.1, "ghost_appearation");
-		case 11:
+		case 10:
 			Dimension_Summon_Npc(client, "npc_medival_villager" ,weapon, 1.2, 1.2, "ghost_appearation");	
-		case 12:
+		case 11:
 			Dimension_Summon_Npc(client, "npc_sensal" ,weapon, 0.75, 1.0, "ghost_appearation");
-		case 13:
+		case 12:
 			Dimension_Summon_Npc(client, "npc_overlord_rogue" ,weapon, 1.0, 1.1, "ghost_appearation");
-		case 14:
+		case 13:
 			Dimension_Summon_Npc(client, "npc_bladedance" ,weapon, 1.0, 0.75, "ghost_appearation");
-		case 15:
+		case 14:
 			Dimension_Summon_Npc(client, "npc_the_purge" ,weapon, 1.2, 1.3, "ghost_appearation");	
 		default: //This should not happen
 		{
