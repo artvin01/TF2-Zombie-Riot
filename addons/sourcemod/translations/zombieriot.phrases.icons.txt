@@ -134,85 +134,104 @@
 	{
 		"en" 		"Calamity of the Crimson Troupe, codename Phantom."
 		"ru" 		"Надвигается бедствие из Багровой Труппы, кодовое имя «Фантом»."
+		"pt"		"Calamidade da Trupe Carmesim, codinome Fantasma."
 		"chi"       "深红剧团的灾难，代号幽灵"
 	}
 	"A caped Crimson warrior with Ominous Apparitions is appearing..."
 	{
 		"en" 		"An caped Crimson warrior with Ominous Apparitions is apearing..."
 		"ru" 		"Появляется багровый воин в плаще со зловещими духами..."
+		"pt"		"Um guerreiro Carmesim com capa e aparições sinistras está aparecendo..."
 		"chi"       "一个披着斗篷、带着不祥幻影的深红战士出现了……"
 	}
 	"A patch of shadow. It has never once left, nor has it ever truly existed."
 	{
 		"en" 		"A patch of shadow. It has never once left, nor has it ever truly existed."
 		"ru" 		"Тень. Оно ни разу не покидало нас и никогда по-настоящему не существовало."
+		"pt"		"Um pedaço de sombra. Nunca saiu, nem nunca existiu verdadeiramente."
 		"chi"       "一片阴影。它从未离开过，也从未真正存在过。"
 	}
 	"Medival Speech 1"
 	{
 		"en" 		"A king wants to Conquer this land!"
 		"ru" 		"Король хочет покорить эту землю!"
+		"pt"		"Um rei quer conquistar esta terra!"
 		"chi" 		"有位国王进军了！"
 	}
 	"Medival Speech 2"
 	{
 		"en" 		"A stray villager has appeared, stop them!"
 		"ru" 		"Появился бродячий житель, остановите его!"
+		"pt"		"Um aldeão perdido apareceu, pare-o!"
 		"chi" 		"有村民出现了，快阻止他们！"
 	}
 	"Medival Speech 3"
 	{
 		"en" 		"An invasion of the past is accuring!"
+		"pt"		"Uma invasão do passado está ocorrendo!"
 		"ru" 		"Надвигается вторжение прошлого!"
 		"chi" 		"历史正在回潮！"
 	}
 	"Beheaded Kami 1"
 	{
 		"en" 		"Maybe its best to leave it alone..."
+		"pt"		"Talvez seja melhor deixar isso em paz..."
 		"chi" 		"我们最好不要管这个东西..."
 	}
 	"Beheaded Kami 2"
 	{
 		"en" 		"Dont take this lightly."
+		"pt"		"Não leve isso de ânimo leve."
 		"chi" 		"不要掉以轻心。"
 	}
 	"Beheaded Kami 3"
 	{
 		"en" 		"Screaming..."
+		"pt"		"Gritaria..."
 		"chi" 		"尖叫声..."
 	}
 	"The golden bloon is valueable..."
 	{
 		"en"		"The golden bloon is valueable..."
+		"pt"		"O balão dourado é valioso..."
 		"ru"		"Золотой шар имеет ценность..."
 		"chi"		"黄金气球很值钱哦..."
 	}
 	"The golden bloon is said to be rich..."
 	{
 		"en"		"The golden bloon is said to be rich..."
+		"pt"		"Dizem que o bloon dourado é rico..."
 		"ru"		"Говорят, что золотой шар ведёт к богатству..."
 		"chi"		"听说，黄金气球格外富有..."
 	}
 	"The golden bloon is what all monkeys wish to pop..."
 	{
 		"en"		"The golden bloon is what all monkeys wish to pop..."
+		"pt"		"O balão dourado é o que todos os macacos desejam estourar..."
 		"ru"		"Золотой шар - это то, о чём мечтают все обезьяны..."
 		"chi"		"黄金气球是所有猴子梦中击破的东西..."
 	}
 	"Donnerkrieg And Schwertkrieg Spawn"
 	{
 		"en"	"Donnerkrieg And Schwertkrieg Have Returned"	//no clue if this is gonna be the actuall line, mostly just here for translations to work within the plugin
+		"pt"	"Donnerkrieg e Schwertkrieg retornaram."
 		"chi"	"Donnerkrieg和Schwertkrieg回来了。"
 	}
 	"Diversionistico Spawn"
 	{
 		"en"	"Diversionistico Spawn"
+		"pt"	"Diversionistico Apareceu."
 		"chi"	"Diversionistico Spawn."
+	}
+	"Snipers Appear"
+	{
+		"en"	"Snipers Appear."
+		"chi"	"狙击手出现。"
 	}
 	"The Doctor Speech 1"
 	{
 		"en" 		"Take him out before its too late!"
-		"chi"		"在为时已晚值钱击败他！"
+		"chi"		"在为时已晚之前击败他！"
 	}
 	"The Doctor Speech 2"
 	{
