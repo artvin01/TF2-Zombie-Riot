@@ -294,6 +294,8 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 		int animation = 10;
 		SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
 	}
+
+	ClipSaveSingle(client, weapon);
 }
 public void Blitzkrieg_Kit_Switch_Mode(int client, int weapon, const char[] classname, bool &result)
 {

@@ -7314,8 +7314,8 @@ static void SummonerMenu(int client, int viewer)
 	int itemsAddedToList = 0;
 	
 	Menu menu = new Menu(SummonerMenuH);
-	CancelClientMenu(client);
-	SetStoreMenuLogic(client, false);
+	CancelClientMenu(viewer);
+	SetStoreMenuLogic(viewer, false);
 
 	SetGlobalTransTarget(viewer);
 	if(!(GetEntityFlags(viewer) & FL_DUCKING))

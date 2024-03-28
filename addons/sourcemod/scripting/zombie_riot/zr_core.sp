@@ -173,7 +173,8 @@ enum
 	WEAPON_NAILGUN_SHOTGUN = 94,
 	WEAPON_BLACKSMITH = 95,
 	WEAPON_COSMIC_PILLAR = 96,
-	WEAPON_COSMIC_RAILCANNON = 97
+	WEAPON_COSMIC_RAILCANNON = 97,
+	WEAPON_GRENADEHUD = 98
 }
 
 enum
@@ -791,12 +792,9 @@ public Action GlobalTimer(Handle timer)
 		{
 			if(IsFakeClient(client))
 			{
-				if(IsClientSourceTV(client) && !b_IsPlayerABot[client])
+				if(IsClientSourceTV(client) || b_IsPlayerABot[client])
 				{
-					f_ClientMusicVolume[client] = 1.0;
-					f_ZombieVolumeSetting[client] = 0.0;
-					SetTeam(client, TFTeam_Spectator);
-					b_IsPlayerABot[client] = true;
+					MoveBotToSpectator(client);
 				}
 			}
 			PlayerApplyDefaults(client);

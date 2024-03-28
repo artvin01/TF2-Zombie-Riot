@@ -4944,7 +4944,7 @@ stock void SetTeam(int entity, int teamSet)
 #endif
 
 			{
-				SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+				SetEntProp(entity, Prop_Data, "m_iTeamNum", 4);
 			}
 		}
 	}
