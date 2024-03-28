@@ -571,19 +571,19 @@ public void Weapon_Dimension_Summon_Interitus(int client, int weapon, bool &resu
 	switch(GetRandomInt(1, 7))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_medival_archer" ,weapon, 1.1, 1.25, "teleporter_blue_exit");
+			Dimension_Summon_Npc(client, "npc_medival_archer" ,weapon, 1.0, 1.25, "teleporter_blue_exit");
 		case 2:
-			Dimension_Summon_Npc(client, "npc_medival_crossbow" ,weapon, 0.9, 1.4, "teleporter_blue_exit");
+			Dimension_Summon_Npc(client, "npc_medival_crossbow" ,weapon, 1.0, 1.4, "teleporter_blue_exit");
 		case 3:
-			Dimension_Summon_Npc(client, "npc_medival_longbowmen" ,weapon, 1.2, 1.6, "teleporter_blue_exit");
+			Dimension_Summon_Npc(client, "npc_medival_longbowmen" ,weapon, 1.0, 1.4, "teleporter_blue_exit");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_medival_arbalest" ,weapon, 1.2, 1.2, "teleporter_blue_exit");
+			Dimension_Summon_Npc(client, "npc_medival_arbalest" ,weapon, 1.0, 1.4, "teleporter_blue_exit");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_alt_sniper_railgunner" ,weapon, 1.75, 1.1, "teleporter_blue_exit");
+			Dimension_Summon_Npc(client, "npc_alt_sniper_railgunner" ,weapon, 1.0, 1.4, "teleporter_blue_exit");
 		case 6:
-			Dimension_Summon_Npc(client, "npc_qanaas" ,weapon, 1.2, 1.3, "teleporter_blue_exit");
+			Dimension_Summon_Npc(client, "npc_qanaas" ,weapon, 1.0, 1.3, "teleporter_blue_exit");
 		case 7:
-			Dimension_Summon_Npc(client, "npc_winter_sniper" ,weapon, 1.3, 1.2, "teleporter_blue_exit");
+			Dimension_Summon_Npc(client, "npc_winter_sniper" ,weapon, 1.0, 1.4, "teleporter_blue_exit");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -596,9 +596,9 @@ public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &
 	switch(GetRandomInt(1, 5))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_medival_elite_longbowmen" ,weapon, 0.75, 1.3, "teleporter_blue_exit");
+			Dimension_Summon_Npc(client, "npc_medival_elite_longbowmen" ,weapon, 0.75, 1.5, "teleporter_blue_exit");
 		case 2:
-			Dimension_Summon_Npc(client, "npc_medival_crossbow_giant" ,weapon, 0.8, 1.3, "teleporter_blue_exit");
+			Dimension_Summon_Npc(client, "npc_medival_crossbow_giant" ,weapon, 0.9, 1.4, "teleporter_blue_exit");
 		case 3:
 			Dimension_Summon_Npc(client, "npc_enforcer" , weapon, 0.8, 1.5, "teleporter_blue_exit");
 		case 4:

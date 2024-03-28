@@ -2409,7 +2409,7 @@
 	}
 	"Dim pap1"
 	{
-		"en" "Spawn Stronger Npcs. Also slight increase in damage"
+		"en" "Are you sure this will work? \n\nI have NO IDEA!"
 	}
 	"Seaborn Infection Desc"
 	{
