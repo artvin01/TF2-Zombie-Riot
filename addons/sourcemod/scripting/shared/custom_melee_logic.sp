@@ -264,34 +264,34 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 	float vecSwingEndHull[3];
 	float vecSwingEndHullHeadshot[3];
 	
-
+	float ExtraMeeeRange = Attributes_Get(weapon, 4001, 1.0);
 	if(CustomMeleeRange)
 	{
-		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * CustomMeleeRange;
-		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * CustomMeleeRange;
-		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * CustomMeleeRange;
+		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * ExtraMeeeRange);
+		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * ExtraMeeeRange);
+		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * ExtraMeeeRange);
 
-		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.75);
-		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.75);
-		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2.75);
+		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.75 * ExtraMeeeRange);
+		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.75 * ExtraMeeeRange);
+		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2.75 * ExtraMeeeRange);
 	
-		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.1);
-		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.1);
-		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2.1);
+		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.1 * ExtraMeeeRange);
+		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.1 * ExtraMeeeRange);
+		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2.1 * ExtraMeeeRange);
 	}
 	else
 	{
-		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * MELEE_RANGE;
-		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * MELEE_RANGE;
-		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * MELEE_RANGE;
+		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * ExtraMeeeRange);
+		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * ExtraMeeeRange);
+		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * ExtraMeeeRange);
 
-		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.75);
-		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.75);
-		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.75);
+		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.75 * ExtraMeeeRange);
+		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.75 * ExtraMeeeRange);
+		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.75 * ExtraMeeeRange);
 
-		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.1);
-		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.1);
-		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.1);
+		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.1 * ExtraMeeeRange);
+		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.1 * ExtraMeeeRange);
+		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.1 * ExtraMeeeRange);
 	}
 
 	i_EntitiesHitAtOnceMax = enemies_hit_aoe;

@@ -380,37 +380,77 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 		GetEntityClassname(weapon, classname, sizeof(classname));
 		int slot = TF2_GetClassnameSlot(classname);
 		
-		if(slot == TFWeaponSlot_Melee)
+		if(Attributes_Has(weapon, 8)) //any medic weapon
 		{
-			if(i_IsWrench[entity])
+
+		}
+		else if(slot == TFWeaponSlot_Melee)
+		{
+			if(i_IsWrench[weapon])
 			{
 				// Wrench Weapon
 			}
-			else if(i_IsWandWeapon[entity])
+			else if(i_IsWandWeapon[weapon])
 			{
 				// Mage Weapon
+				switch(GetURandomInt() % 4)
+				{
+					case 0:
+						TinkerHastyMage(rarity, tinker);
+					case 1:
+						TinkerHeavyMage(rarity, tinker);
+					case 2:
+						TinkerConcentrationMage(rarity, tinker);
+					case 3:
+						TinkerTankMage(rarity, tinker);
+				}
 			}
 			else
 			{
 				// Melee Weapon
-				switch(GetURandomInt() % 2)
+				switch(GetURandomInt() % 4)
 				{
 					case 0:
-						TinkerGlassy(rarity, tinker);
+						TinkerMeleeGlassy(rarity, tinker);
 					
 					case 1:
-						TinkerGlassy(rarity, tinker);
+						TinkerMeleeRapidSwing(rarity, tinker);
+
+					case 2:
+						TinkerMeleeHeavySwing(rarity, tinker);
+
+					case 3:
+						TinkerMeleeLongSwing(rarity, tinker);
 				}
 			}
 		}
+
 		else if(slot < TFWeaponSlot_Melee)
 		{
 			if(Attributes_Has(weapon, 101) || Attributes_Has(weapon, 102) || Attributes_Has(weapon, 103) || Attributes_Has(weapon, 104))
 			{
+				//infinite fire
+				if(Attributes_Has(weapon, 303))
+				{
+
+				}
+				else
+				{
+					
+				}
 				// Projectile Weapon
 			}
 			else
 			{
+				//infinite fire
+				if(Attributes_Has(weapon, 303))
+				{
+
+				}
+				else
+				{
+					
+				}
 				// Hitscan Weapon
 			}
 		}
@@ -520,7 +560,7 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 {
 	bool inverse = AttribIsInverse(attrib);
 	
-	char buffer[16];
+	char buffer[64];
 	if(value < 1.0)
 	{
 		FormatEx(buffer, sizeof(buffer), "%d%% ", RoundToCeil((1.0 - value) * 100.0));
@@ -530,13 +570,34 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 		FormatEx(buffer, sizeof(buffer), "%d%% ", RoundToCeil((value - 1.0) * 100.0));
 	}
 
+	//inverse the inverse!
+	bool inverse_color = false;
+	if(attrib == 733)
+	{
+		inverse_color = true;
+	}
+
 	if(((value < 1.0) ^ inverse))
 	{
-		Format(buffer, sizeof(buffer), "{crimson}-%s", buffer);
+		if(!inverse_color)
+		{
+			Format(buffer, sizeof(buffer), "{crimson}-%s", buffer);
+		}
+		else
+		{
+			Format(buffer, sizeof(buffer), "{green}-%s", buffer);
+		}
 	}
 	else
 	{
-		Format(buffer, sizeof(buffer), "{green}+%s", buffer);
+		if(!inverse_color)
+		{
+			Format(buffer, sizeof(buffer), "{green}+%s", buffer);
+		}
+		else
+		{
+			Format(buffer, sizeof(buffer), "{crimson}+%s", buffer);
+		}
 	}
 
 	switch(attrib)
@@ -606,81 +667,262 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 		
 		case 412:
 			Format(buffer, sizeof(buffer), "%sDamage Resistance", buffer);
+
+		case 733:
+			Format(buffer, sizeof(buffer), "%sMagic Shot Cost", buffer);
+
+		case 4001:
+			Format(buffer, sizeof(buffer), "%sExtra Melee Range", buffer);
 	}
 
 	CPrintToChat(client, "%s {yellow}(%d%%)", buffer, RoundToCeil(luck * 100.0));
 }
 
-static void TinkerGlassy(int rarity, TinkerEnum tinker)
+static void TinkerMeleeGlassy(int rarity, TinkerEnum tinker)
 {
 	tinker.Attrib[0] = 2;
 	tinker.Attrib[1] = 205;
 	tinker.Attrib[2] = 206;
+	float DamageLuck = (0.1 * (tinker.Luck[0]));
+	float RangedDmgVulLuck = (0.05 * (1.0 + (-1.0*(tinker.Luck[1]))));
+	float MeleeDmgVulLuck = (0.05 * (1.0 + (-1.0*(tinker.Luck[2]))));
 
 	switch(rarity)
 	{
 		case 0:
 		{
-			tinker.Value[0] = 1.1 + (0.1 * tinker.Luck[0]);
-			tinker.Value[1] = 1.05 + (0.05 * tinker.Luck[1]);
-			tinker.Value[2] = 1.05 + (0.05 * tinker.Luck[2]);
+			tinker.Value[0] = 1.1 + DamageLuck;
+			tinker.Value[1] = 1.05 + RangedDmgVulLuck;
+			tinker.Value[2] = 1.05 + MeleeDmgVulLuck;
 		}
 		case 1:
 		{
-			tinker.Value[0] = 1.15 + (0.1 * tinker.Luck[0]);
-			tinker.Value[1] = 1.05 + (0.05 * tinker.Luck[1]);
-			tinker.Value[2] = 1.05 + (0.05 * tinker.Luck[2]);
+			tinker.Value[0] = 1.15 + DamageLuck;
+			tinker.Value[1] = 1.05 + RangedDmgVulLuck;
+			tinker.Value[2] = 1.05 + MeleeDmgVulLuck;
 		}
 		case 2:
 		{
-			tinker.Value[0] = 1.2 + (0.1 * tinker.Luck[0]);
-			tinker.Value[1] = 1.05 + (0.05 * tinker.Luck[1]);
-			tinker.Value[2] = 1.05 + (0.05 * tinker.Luck[2]);
+			tinker.Value[0] = 1.2 + DamageLuck;
+			tinker.Value[1] = 1.05 + RangedDmgVulLuck;
+			tinker.Value[2] = 1.05 + MeleeDmgVulLuck;
 		}
 	}
 }
-/*
-void TinkerStatsApply()
+
+
+static void TinkerMeleeRapidSwing(int rarity, TinkerEnum tinker)
 {
-	int TinkerPapStrength = 0;
-	int WeaponType = 0;
-	// 0 = No type
-	// 1 = Mage //detect via is magic weapon
-	// 2 = Melee //detect via if its just a melee lol
-	// 3 = Hitscan, mostly //detect if it doesnt have projectile speed
-	// 4 = Projectile Weapons, mostly. //opesite of above
-	switch(WeaponType)
+	tinker.Attrib[0] = 2; //damage
+	tinker.Attrib[1] = 6; //attackspeed
+	//less damage
+	//but faster attackspeed
+	//inverts the luck
+	float DamageLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[0]))));
+	float AttackspeedLuck = (0.1 * (tinker.Luck[1]));
+
+	switch(rarity)
 	{
 		case 0:
 		{
-			printtochat(client, "Your weapon has no tickerable stats.")
+			tinker.Value[0] = 0.95 - DamageLuck;
+			tinker.Value[1] = 0.9 - AttackspeedLuck;
 		}
 		case 1:
 		{
-			switch(GetRandomInt(0,3))
-			{
-				case 0:
-				{
-					Tinker_Melee_LustingRage(client, weapon, TinkerPapStrength);
-				}
-			}
+			tinker.Value[0] = 0.85 - DamageLuck;
+			tinker.Value[1] = 0.8 - AttackspeedLuck;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 0.8 - DamageLuck;
+			tinker.Value[1] = 0.7 - AttackspeedLuck;
 		}
 	}
 }
 
-void Tinker_Melee_LustingRage(int client, int weapon, int TinkerPapStrength)
+static void TinkerMeleeHeavySwing(int rarity, TinkerEnum tinker)
 {
-	float Base_DamageBonus_Min = 1.1;
-	float Base_DamageBonus_Max = 1.1;
-	switch(TinkerPapStrength)
+	tinker.Attrib[0] = 2; //damage
+	tinker.Attrib[1] = 6; //attackspeed
+	//less damage
+	//but faster attackspeed
+	//inverts the luck
+	float DamageLuck = (0.1 * (tinker.Luck[0]));
+	float AttackspeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
+
+	switch(rarity)
 	{
+		case 0:
+		{
+			tinker.Value[0] = 1.25 + DamageLuck;
+			tinker.Value[1] = 1.15 + AttackspeedLuck;
+		}
 		case 1:
 		{
-			Base_DamageBonus_Min *= 1.1
-			Base_DamageBonus_Max *= 1.1
+			tinker.Value[0] = 1.3 + DamageLuck;
+			tinker.Value[1] = 1.2 + AttackspeedLuck;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 1.4 + DamageLuck;
+			tinker.Value[1] = 1.25 + AttackspeedLuck;
 		}
 	}
-	Apply Stats i guess
 }
 
-*/
+static void TinkerMeleeLongSwing(int rarity, TinkerEnum tinker)
+{
+	tinker.Attrib[0] = 2; //damage
+	tinker.Attrib[1] = 6; //attackspeed
+	tinker.Attrib[2] = 4001; //ExtraMeleeRange
+	
+	float DamageLuck = (0.1 * (tinker.Luck[0]));
+	float AttackspeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
+	float ExtraRangeLuck = (0.1 * (tinker.Luck[2]));
+
+	switch(rarity)
+	{
+		case 0:
+		{
+			tinker.Value[0] = 1.10 + DamageLuck;
+			tinker.Value[1] = 1.15 + AttackspeedLuck;
+			tinker.Value[2] = 1.15 + ExtraRangeLuck;
+		}
+		case 1:
+		{
+			tinker.Value[0] = 1.15 + DamageLuck;
+			tinker.Value[1] = 1.2 + AttackspeedLuck;
+			tinker.Value[2] = 1.2 + ExtraRangeLuck;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 1.20 + DamageLuck;
+			tinker.Value[1] = 1.25 + AttackspeedLuck;
+			tinker.Value[2] = 1.35 + ExtraRangeLuck;
+		}
+	}
+}
+
+static void TinkerHastyMage(int rarity, TinkerEnum tinker)
+{
+	tinker.Attrib[0] = 6;
+	tinker.Attrib[1] = 733;
+	float AttackspeedLuck = (0.1 * (tinker.Luck[1]));
+	float MageShootExtraCost = (0.15 * (1.0 + (-1.0*(tinker.Luck[1]))));
+
+	switch(rarity)
+	{
+		case 0:
+		{
+			tinker.Value[0] = 0.8 - AttackspeedLuck;
+			tinker.Value[1] = 1.25 + MageShootExtraCost;
+		}
+		case 1:
+		{
+			tinker.Value[0] = 0.75 - AttackspeedLuck;
+			tinker.Value[1] = 1.35 + MageShootExtraCost;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 0.7 - AttackspeedLuck;
+			tinker.Value[1] = 1.45 + MageShootExtraCost;
+		}
+	}
+}
+static void TinkerHeavyMage(int rarity, TinkerEnum tinker)
+{
+	tinker.Attrib[0] = 6;
+	tinker.Attrib[1] = 733;
+	tinker.Attrib[2] = 410;
+	float AttackspeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
+	float MageShootExtraCost = (0.15 * (1.0 + (-1.0*(tinker.Luck[1]))));
+	float DamageLuck = (0.1 * (tinker.Luck[2]));
+
+	switch(rarity)
+	{
+		case 0:
+		{
+			tinker.Value[0] = 1.1 + AttackspeedLuck;
+			tinker.Value[1] = 1.55 + MageShootExtraCost;
+			tinker.Value[2] = 1.25 + DamageLuck;
+		}
+		case 1:
+		{
+			tinker.Value[0] = 1.15 + AttackspeedLuck;
+			tinker.Value[1] = 1.65 + MageShootExtraCost;
+			tinker.Value[2] = 1.3 + DamageLuck;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 1.2 + AttackspeedLuck;
+			tinker.Value[1] = 1.75 + MageShootExtraCost;
+			tinker.Value[2] = 1.35 + DamageLuck;
+		}
+	}
+}
+
+static void TinkerConcentrationMage(int rarity, TinkerEnum tinker)
+{
+	tinker.Attrib[0] = 103;
+	tinker.Attrib[1] = 410;
+	float ProjectileSpeed = (0.1 * (tinker.Luck[0]));
+	float DamageLuck = (0.1 * (tinker.Luck[1]));
+
+	switch(rarity)
+	{
+		case 0:
+		{
+			tinker.Value[0] = 0.4 + ProjectileSpeed;
+			tinker.Value[1] = 1.15 + DamageLuck;
+		}
+		case 1:
+		{
+			tinker.Value[0] = 0.45 + ProjectileSpeed;
+			tinker.Value[1] = 1.2 + DamageLuck;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 0.5 + ProjectileSpeed;
+			tinker.Value[1] = 1.25 + DamageLuck;
+		}
+	}
+}
+
+
+static void TinkerTankMage(int rarity, TinkerEnum tinker)
+{
+	tinker.Attrib[0] = 733;
+	tinker.Attrib[1] = 410;
+	tinker.Attrib[2] = 205;
+	tinker.Attrib[3] = 206;
+	float MageShotCost = (0.1 * (1.0 + (-1.0*(tinker.Luck[0]))));
+	float DamageLuck = (0.1 * (tinker.Luck[1]));
+	float RangedDmgLuck = (0.05 * (tinker.Luck[2]));
+	float MeleeDmgLuck = (0.05 * (tinker.Luck[3]));
+
+	switch(rarity)
+	{
+		case 0:
+		{
+			tinker.Value[0] = 1.15 + MageShotCost;
+			tinker.Value[1] = 0.95 + DamageLuck;
+			tinker.Value[2] = 0.95 - RangedDmgLuck;
+			tinker.Value[3] = 0.95 - MeleeDmgLuck;
+		}
+		case 1:
+		{
+			tinker.Value[0] = 1.2 + MageShotCost;
+			tinker.Value[1] = 0.93 + DamageLuck;
+			tinker.Value[2] = 0.93 - RangedDmgLuck;
+			tinker.Value[3] = 0.93 - MeleeDmgLuck;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 1.25 + MageShotCost;
+			tinker.Value[1] = 0.92 + DamageLuck;
+			tinker.Value[2] = 0.9 - RangedDmgLuck;
+			tinker.Value[3] = 0.9 - MeleeDmgLuck;
+		}
+	}
+}
