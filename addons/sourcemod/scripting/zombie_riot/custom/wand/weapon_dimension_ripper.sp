@@ -491,7 +491,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 		case 4:
 			Dimension_Summon_Npc(client, "npc_netherseareefbreaker" ,weapon, 1.4, 1.2, "utaunt_constellations_blue_base");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_firsttotalk" ,weapon, 1.75, 1.2, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, "npc_firsttotalk" ,weapon, 1.75, 1.5, "utaunt_constellations_blue_base");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
