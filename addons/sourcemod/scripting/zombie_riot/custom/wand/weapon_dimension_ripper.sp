@@ -359,7 +359,7 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 		case 4:
 			Dimension_Summon_Npc(client, "npc_alt_mecha_pyro_giant_main" ,weapon, 1.4, 1.2, "eyeboss_tp_player");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_alt_the_shit_slapper" ,weapon, 1.3, 1.2, "eyeboss_tp_player");
+			Dimension_Summon_Npc(client, "npc_alt_the_shit_slapper" ,weapon, 1.3, 1.1, "eyeboss_tp_player");
 		case 6:
 			Dimension_Summon_Npc(client, "npc_alt_ikunagae" ,weapon, 1.8, 1.7, "eyeboss_tp_player");
 		case 7:
