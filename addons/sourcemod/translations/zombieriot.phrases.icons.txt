@@ -12,23 +12,42 @@
 	{
 		"en" 		"Silvester And Blue Goggles Arrived."
 		"ru" 		"Сильвестр и Блу Гогглз прибыли."
+		"pt"		"Silvester e Blue Goggles chegou."
 		"chi" 		"西尔维斯特与Blue Goggles已来。" 
 	}
 	"Nemesis Arrived."
 	{
 		"en" 		"Nemesis, the original Xeno infector arrived."
 		"ru" 		"Прибыл Немезид, изначальный ксенозаразитель."
+		"pt"		"Nemesis, o Xeno infector original chegou."
 		"chi" 		"复仇女神已来。"
 	}
 	"Arkantos Arrived"
 	{
 		"en" 		"The Atlantean and great leader Arkantos arrived."
 		"ru" 		"Прибыл Атлант и великий лидер Аркантос."
+		"pt"		"The Atlantean and great leader Arkantos chegou."
 		"chi" 		"亚特兰蒂斯之王 ,阿尔坎托斯到达。"
 	}
 	"Sensal Arrived"
 	{
 		"en" 		"The Expidonsan Sensal reaps."
+		"pt"		"O Expidonsan Sensal colhe."
+	}
+	"The Messanger Arrived"
+	{
+		"en" 		"The Messenger has accumulated chaos."
+		"chi"		"代言者已积攒混沌。"
+	}
+	"Chaos Kahmlstein Arrived"
+	{
+		"en" 		"Kahmlstein, the rebellious chaos inflicted leader will annihilate you."
+		"chi"		"混沌之首，卡姆斯坦因前来歼灭你。"
+	}
+	"The Purge Arrived"
+	{
+		"en" 		"The Purge has accumulated chaos."
+		"chi"		"扫荡者出现了。"
 	}
 	"Blitzkrieg Spawn"
 	{
@@ -145,7 +164,7 @@
 	{
 		"en" 		"An invasion of the past is accuring!"
 		"ru" 		"Надвигается вторжение прошлого!"
-		"chi" 		"历史正在回潮..."
+		"chi" 		"历史正在回潮！"
 	}
 	"Beheaded Kami 1"
 	{
