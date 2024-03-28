@@ -2405,11 +2405,11 @@
 	}
 	"Dim pap0"
 	{
-		"en" "Disrupt the peace in the multiverse. Bring the Chaos\nMouse 1 attack to deal ranged magic damage.\nMouse 2 when full charge to summon helpful summons"
+		"en" "BRING CHAOS \nMouse 1 attack to deal ranged magic damage.\nMouse 2 when full charge to summon helpful summons"
 	}
 	"Dim pap1"
 	{
-		"en" "Spawn Stronger Npcs. Also slight increase in damage"
+		"en" "Beep, are you sure this will work? \n\nHAHA, I have NO IDEA!"
 	}
 	"Seaborn Infection Desc"
 	{
