@@ -2371,27 +2371,26 @@
 	"Tinker's Wrench"
 	{
 		"en"	"Tinker's Wrench"
-		"chi	"匠工扳手"
+		"chi"	"匠工扳手"
 	}
 	"Tinker's Texan Mounter"
 	{
 		"en"	"Tinker's Texan Mounter"
-		"chi	"多功能扳手"
-		
+		"chi"	"多功能扳手"
 	}
 	"Buildable Tinker Workshop"
 	{
 		"en"	"Buildable Tinker Workshop"
-		"chi	"匠工工作台"
+		"chi"	"匠工工作台"
 	}
 	"Tinker Research"
 	{
 		"en"	"Tinker Research"
-		"chi	"匠工研究"
+		"chi"	"匠工研究"
 	}
 	"Tinker Ranger"
 	{
 		"en"	"Tinker Ranger"
-		"chi	"匠工射手"
+		"chi"	"匠工射手"
 	}
 }

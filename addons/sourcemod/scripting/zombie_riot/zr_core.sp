@@ -390,7 +390,7 @@ bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
 
 float Building_Collect_Cooldown[MAXENTITIES][MAXTF2PLAYERS];
 
-bool b_SpecialGrigoriStore;
+bool b_SpecialGrigoriStore = true;
 float f_ExtraDropChanceRarity = 1.0;
 bool applied_lastmann_buffs_once = false;
 
@@ -1615,7 +1615,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			}
 		}
 
-		if(rogue)
+		if(Rogue_NoLastman())
 		{
 			LastMann = false;
 		}
@@ -2386,13 +2386,6 @@ public Action DeployBannerIconBuff(Handle timer, DataPack pack)
 		}
 	}
 	return Plugin_Stop;
-}
-
-void GrantAllPlayersCredits_Rogue(int cash)
-{
-	cash *= (Rogue_GetRound()+1);
-	CPrintToChatAll("{green}%t","Cash Gained!", cash);
-	CurrentCash += cash;
 }
 
 stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)

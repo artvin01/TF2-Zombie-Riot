@@ -9505,6 +9505,9 @@ int i_SpeechEndingScroll_ScrollingPart[MAXENTITIES];
 float f_SpeechTickDelay[MAXENTITIES];
 float f_SpeechDeleteAfter[MAXENTITIES];
 
+/**
+ * @param endingtextscroll	Is end text that loops "" -> "." -> ".." -> "..." -> ""
+ */
 stock void NpcSpeechBubble(int entity, const char[] speechtext, int fontsize, int colour[4], float extra_offset[3], const char[] endingtextscroll)
 {
 	int Text_Entity;

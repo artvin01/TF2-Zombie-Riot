@@ -96,7 +96,7 @@ public void Rogue_HeavyRain_Ally(int entity, StringMap map)
 	{
 		float value;
 
-		// +20% move speed
+		// -20% move speed
 		map.GetValue("107", value);
 		map.SetValue("107", value * 0.8);
 	}
