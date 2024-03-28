@@ -1507,6 +1507,7 @@ static void StartStage(const Stage stage)
 		Rogue_SetProgressTime(time, false);
 	}
 
+	GogglesFollower_StartStage(stage.Name);
 	Waves_SetSkyName(stage.Skyname);
 
 	float pos[3], ang[3];
@@ -2225,6 +2226,11 @@ stock void Rogue_RemoveChaos(int amount)
 
 	Waves_UpdateMvMStats();
 	CPrintToChatAll("%t", "Losted Chaos", change);
+}
+
+stock bool Rogue_CurseActive()
+{
+	return (CurseOne != -1 || CurseTwo != -1);
 }
 
 bool Rogue_InSetup()	// Waves_InSetup()

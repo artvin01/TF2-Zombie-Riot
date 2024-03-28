@@ -469,6 +469,7 @@ void NPC_ConfigSetup()
 	OverlordRogue_OnMapStart_NPC();
 	RaidbossBladedance_MapStart();
 	RogueCondition_Setup();
+	GogglesFollower_Setup();
 }
 
 stock int NPC_Add(NPCData data)
@@ -1182,3 +1183,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/forest/npc_majorsteam.sp"
 
 #include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
+#include "zombie_riot/npc/rogue/npc_goggles_follower.sp"

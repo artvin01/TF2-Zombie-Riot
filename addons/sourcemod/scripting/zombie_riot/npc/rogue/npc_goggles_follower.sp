@@ -6,6 +6,8 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/bow_shoot.wav"
 };
 
+static int NPCId;
+
 void GogglesFollower_Setup()
 {
 	NPCData data;
@@ -16,7 +18,7 @@ void GogglesFollower_Setup()
 	data.Flags = 0;
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
@@ -24,11 +26,534 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 	return GogglesFollower(client, vecPos, vecAng);
 }
 
+static Action GogglesFollower_SpeechTimer(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(entity != -1)
+	{
+		char speechtext[128], endingtextscroll[10];
+		pack.ReadString(speechtext, sizeof(speechtext));
+		pack.ReadString(endingtextscroll, sizeof(endingtextscroll));
+		view_as<GogglesFollower>(entity).Speech(speechtext, endingtextscroll);
+	}
+	return Plugin_Stop;
+}
+
 methodmap GogglesFollower < CClotBody
 {
 	public void PlayMeleeSound()
  	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);
+	}
+	public void SpeechEncounter(const char[] name)
+	{
+		int lv = Rogue_GetChaosLevel();
+		if(lv == 4)
+			return;
+		
+		bool chaos = lv == 3;
+
+		if(StrContains(name, "Shop", false) != -1)
+		{
+			if(chaos)
+			{
+				switch(GetURandomInt() % 2)
+				{
+					case 0:
+						this.Speech("Just steal it.");
+					
+					case 1:
+						this.Speech("Let's just leave.");
+				}
+			}
+			else
+			{
+				switch(GetURandomInt() % 3)
+				{
+					case 0:
+						this.Speech("You still have to pay?");
+					
+					case 1:
+						this.Speech("We're going to be here forever", "...");
+					
+					case 2:
+						this.Speech("How would these items help?");
+				}
+			}
+		}
+
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
+	}
+	public void SpeechTalk(int client)
+	{
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
+			return;
+		
+		if(GetEntityFlags(client) & FL_FROZEN)
+			return;
+
+		switch(Rogue_GetChaosLevel())
+		{
+			case 3:
+			{
+				switch(GetURandomInt() % 34)
+				{
+					case 0:
+					{
+						this.Speech("Haha", "...");
+					}
+					case 1:
+					{
+						this.Speech("Hehe", "...");
+					}
+					case 2:
+					{
+						this.Speech("I really like spiders.");
+					}
+					case 3:
+					{
+						this.Speech("God my head hurts.");
+					}
+					case 4:
+					{
+						this.Speech("What are we doing again?");
+					}
+					case 5:
+					{
+						this.Speech("Wildingen ", "is fine.");
+					}
+					case 6:
+					{
+						this.Speech("What's making my headache flare up?");
+					}
+					case 7:
+					{
+						this.Speech("I hope you aren't doing something stupid.");
+					}
+					case 8:
+					{
+						this.Speech("Gahh", "...");
+					}
+					case 9:
+					{
+						this.Speech("Feels like something is stabbing me.");
+					}
+					case 10:
+					{
+						this.Speech("I really can't focus right now.");
+					}
+					case 11:
+					{
+						this.Speech("Shut up.");
+					}
+					case 12:
+					{
+						this.Speech("...");
+					}
+					case 13:
+					{
+						this.Speech("..?");
+					}
+					case 14:
+					{
+						this.Speech("Good grief.");
+					}
+					case 15:
+					{
+						this.Speech("Let's take a break.");
+					}
+					case 16:
+					{
+						this.Speech("Something isn't right.");
+					}
+					case 17:
+					{
+						this.Speech("S", "ilvester");
+					}
+					case 18:
+					{
+						this.Speech("I feel like I'm going insane.");
+					}
+					case 19:
+					{
+						this.Speech("These fights are healthy.");
+					}
+					case 20:
+					{
+						if(Rogue_CurseActive())
+							this.Speech("You look hot.");
+					}
+					case 21:
+					{
+						if(Rogue_CurseActive())
+							this.Speech("I don't need this weather right now.");
+					}
+					case 22:
+					{
+						this.Speech("You aren't helping.");
+					}
+					case 23:
+					{
+						this.Speech("Why am I sticking with you again?");
+					}
+					case 24:
+					{
+						if(Rogue_GetIngots() > 49)
+							this.Speech("Stop greeding!");
+					}
+					case 25:
+					{
+						this.Speech("Nuh-uh.");
+					}
+					case 26:
+					{
+						this.Speech("Buy something else.");
+					}
+					case 27:
+					{
+						this.Speech("You tried that before.");
+					}
+					case 28:
+					{
+						this.Speech("Do you even know where you're going?");
+					}
+					case 29:
+					{
+						this.Speech("I hate this.");
+					}
+					case 30:
+					{
+						this.Speech("Sigh", "...");
+					}
+					case 31:
+					{
+						this.Speech("Hahahaha", "hahaha");
+					}
+					case 32:
+					{
+						this.Speech("I need help, Silvester.");
+					}
+					case 33:
+					{
+						if(Rogue_GetIngots() > 99)
+							this.Speech(":3");
+					}
+				}
+			}
+			case 4:
+			{
+				this.Speech("...");
+			}
+			default:
+			{
+				switch(GetURandomInt() % 53)
+				{
+					case 0:
+					{
+						this.Speech("How did you even find me anyways?");
+					}
+					case 1:
+					{
+						this.Speech("Chaos right?");
+						this.SpeechDelay(5.0, "I wish I knew before I left Wildingen.");
+					}
+					case 2:
+					{
+						this.Speech("Silvester is fine right now.");
+					}
+					case 3:
+					{
+						this.Speech("I'm sorry about beating up you guys before", "...");
+						this.SpeechDelay(5.0, "...you know, Xeno.");
+					}
+					case 4:
+					{
+						this.Speech("Heh, you guys taking out Xeno and Seaborn.");
+						this.SpeechDelay(5.0, "Chaos shouldn't be hard for you.");
+					}
+					case 5:
+					{
+						this.Speech("All this traveling makes me tired.");
+					}
+					case 6:
+					{
+						this.Speech("You know I'm a fox?");
+						this.SpeechDelay(5.0, "Don't call me a furry you got cats with you.");
+					}
+					case 7:
+					{
+						this.Speech("I thought for sure Seaborn would get you back there.");
+					}
+					case 8:
+					{
+						this.Speech("Why you like spray painting everywhere?");
+					}
+					case 9:
+					{
+						if(Rogue_CurseActive())
+							this.Speech("Just your normal weather out here.");
+					}
+					case 10:
+					{
+						if(Rogue_CurseActive())
+							this.Speech("Red moons seems to piss everyone off, except me", "...");
+					}
+					case 11:
+					{
+						if(Rogue_GetIngots() > 49)
+							this.Speech("I hope you aren't doing this for the money", "...");
+					}
+					case 12:
+					{
+						if(Rogue_GetIngots() > 99)
+							this.Speech("Why are you hoarding all that australium?");
+					}
+					case 13:
+					{
+						this.Speech("How do you even get your weapons like that?");
+					}
+					case 14:
+					{
+						this.Speech("How heavy are those buildings you carry?");
+					}
+					case 15:
+					{
+						this.Speech("Does... my gun work on your", "...");
+						this.SpeechDelay(5.0, "Nevermind.");
+					}
+					case 16:
+					{
+						this.Speech("You mean you can just see what enemies are out?");
+					}
+					case 17:
+					{
+						this.Speech("No I won't make Bob the Second my god.");
+					}
+					case 18:
+					{
+						this.Speech("You people are crazy", "...");
+					}
+					case 19:
+					{
+						this.Speech("So how does one just, make units out of that tower?");
+					}
+					case 20:
+					{
+						this.Speech("Funny enough, I have a phobia of water.");
+						this.SpeechDelay(5.0, "and Seaborn", "...");
+					}
+					case 21:
+					{
+						this.Speech("I like seafood but can't have that anymore.");
+					}
+					case 22:
+					{
+						this.Speech("What is this 'chat' your refering to?");
+					}
+					case 23:
+					{
+						this.Speech("Discord? Is this what you call chaos?");
+					}
+					case 24:
+					{
+						this.Speech("Don't start a cult, not now.");
+					}
+					case 25:
+					{
+						this.Speech("I used to be an engineer for Wildingen.");
+						this.SpeechDelay(5.0, "Those were the days", "...");
+					}
+					case 26:
+					{
+						this.Speech("Have you ever noticed there's just gold on the ground?");
+					}
+					case 27:
+					{
+						this.Speech("You really think the solution is to beat people up?");
+					}
+					case 28:
+					{
+						this.Speech("Mmm", "...");
+					}
+					case 29:
+					{
+						this.Speech("Hmm", "...");
+					}
+					case 30:
+					{
+						this.Speech("I'm cold.");
+					}
+					case 31:
+					{
+						this.Speech("I get nightmares about Wildingen", "...");
+						this.SpeechDelay(5.0, "It wants me there, for the wrong reason", "...");
+					}
+					case 32:
+					{
+						this.Speech("I'm tired of fighting", "...");
+					}
+					case 33:
+					{
+						this.Speech("All this chaos stuff makes my head hurt.");
+					}
+					case 34:
+					{
+						this.Speech("I miss Silvester.");
+					}
+					case 35:
+					{
+						this.Speech("Silvester was actually the one who gave me this halo.");
+					}
+					case 36:
+					{
+						this.Speech("I worry about the Wildingen and Expidonsa alliance.");
+					}
+					case 37:
+					{
+						this.Speech("I hate those Mediveal guys.");
+					}
+					case 38:
+					{
+						this.Speech("I still wonder how did Chaos get into Wildingen.");
+					}
+					case 39:
+					{
+						this.Speech("You wouldn't have happen to", "...");
+						this.SpeechDelay(5.0, "Nevermind.");
+					}
+					case 40:
+					{
+						this.Speech("I remember Seaborn crawling through the water supply.");
+						this.SpeechDelay(5.0, "Wildingen had to trap down all the rivers, heh.");
+					}
+					case 41:
+					{
+						this.Speech("Wildingen really likes to set up traps everywhere by the way.");
+						this.SpeechDelay(5.0, "You started coming here without me you know.");
+					}
+					case 42:
+					{
+						this.Speech("You started coming here without me you know.");
+					}
+					case 43:
+					{
+						this.Speech("Luckily Xeno wasn't a problem at the time for Wildingen.");
+					}
+					case 44:
+					{
+						this.Speech("Funny that Xeno and Seaborn hated each other so much.");
+					}
+					case 45:
+					{
+						this.Speech("Funny that my grief was Seaborn and Xeno was Silvester's");
+						this.SpeechDelay(5.0, "Sorry shouldn't joke like that.");
+					}
+					case 46:
+					{
+						this.Speech("I heard that chaos just stops us from leaving the planet.");
+					}
+					case 47:
+					{
+						this.Speech("How did you even wind up here in the first place?");
+					}
+					case 48:
+					{
+						this.Speech("Yeah I heard Boss vs Boss, a video game right?");
+					}
+					case 49:
+					{
+						this.Speech("You have fun fighting people?");
+						this.SpeechDelay(5.0, "You guys really are insane.");
+					}
+					case 50:
+					{
+						this.Speech("I wonder what Silvester is doing now", "...");
+					}
+					case 51:
+					{
+						this.Speech("I already know the zombies are rioting.");
+					}
+					case 52:
+					{
+						this.Speech("I can read some ancient texts, probably in the desert.");
+					}
+				}
+			}
+		}
+		
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
+	}
+	public void SpeechRevive()
+	{
+		if((this.m_flNextIdleSound + 14.0) > GetGameTime(this.index))
+			return;
+		
+		if(Rogue_GetChaosLevel() > 2)
+		{
+			switch(GetURandomInt() % 5)
+			{
+				case 0:
+					this.Speech("Die later.");
+				
+				case 1:
+					this.Speech("Enough slacking around.");
+				
+				case 2:
+					this.Speech("I don't have time for this.");
+				
+				case 3:
+					this.Speech("Go on, keep shooting.");
+				
+				case 4:
+					this.Speech("You ain't living forever.");
+			}
+		}
+		else
+		{
+			switch(GetURandomInt() % 6)
+			{
+				case 0:
+					this.Speech("Don't die on me", "...");
+				
+				case 1:
+					this.Speech("I got more people to save.");
+				
+				case 2:
+					this.Speech("Enough dead people around.");
+				
+				case 3:
+					this.Speech("Come on, get up.");
+				
+				case 4:
+					this.Speech("You're going to be ok.");
+				
+				case 5:
+					this.Speech("It's gonna be alright.");
+			}
+		}
+		
+		this.m_flNextIdleSound = GetGameTime(this.index) + 35.0;
+	}
+	public void SpeechDelay(float time, const char[] speechtext, const char[] endingtextscroll = "")
+	{
+		DataPack pack;
+		CreateDataTimer(time, GogglesFollower_SpeechTimer, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(this.index));
+		pack.WriteString(speechtext);
+		pack.WriteString(endingtextscroll);
+	}
+	public void Speech(const char[] speechtext, const char[] endingtextscroll = "")
+	{
+		static int color[4] = {255, 255, 255, 255};
+		int chaos = Rogue_GetChaosLevel();
+		if(chaos < 1)
+			chaos = 1;
+		
+		color[1] = 295 - (chaos * 40);
+		color[2] = 335 - (chaos * 80);
+
+		NpcSpeechBubble(this.index, speechtext, 5, color, {0.0,0.0,60.0}, endingtextscroll);
 	}
 	
 	public GogglesFollower(int client, float vecPos[3], float vecAng[3])
@@ -52,6 +577,8 @@ methodmap GogglesFollower < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
+
+		SetEntPropString(npc.index, Prop_Data, "m_iName", "blue_goggles");
 		
 		/*
 			Cosmetics
@@ -79,7 +606,22 @@ methodmap GogglesFollower < CClotBody
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
+		npc.Speech("What? Where am I?");
+
 		return npc;
+	}
+}
+
+void GogglesFollower_StartStage(const char[] name)
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == NPCId && IsEntityAlive(entity))
+		{
+			view_as<GogglesFollower>(entity).SpeechEncounter(name);
+			break;
+		}
 	}
 }
 
@@ -93,13 +635,6 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-
-	if(npc.m_blPlayHurtAnimation)
-	{
-		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
-		npc.PlayHurtSound();
-		npc.m_blPlayHurtAnimation = false;
-	}
 	
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
@@ -164,6 +699,7 @@ static void ClotThink(int iNPC)
 				//slowly revive
 				ReviveClientFromOrToEntity(npc.m_iTargetWalkTo, npc.index, 1);
 				
+				npc.SpeechRevive();
 				npc.StopPathing();
 				crouching = true;
 			}
@@ -182,6 +718,9 @@ static void ClotThink(int iNPC)
 			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
 			npc.StartPathing();
 		}
+
+		if(target < 1)
+			npc.SpeechTalk(ally);
 	}
 	else
 	{
@@ -192,8 +731,7 @@ static void ClotThink(int iNPC)
 	if(target > 0)
 	{
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-		float distance = GetVectorDistance(vecTarget, vecSelf, true);
-
+		
 		if(npc.m_flAttackHappens)
 		{
 			if(npc.m_flAttackHappens < gameTime)
