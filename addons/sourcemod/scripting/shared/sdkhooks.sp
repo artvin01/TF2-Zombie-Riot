@@ -1925,7 +1925,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 			
 			i_AmountDowned[victim] += 1;
-			Rogue_PlayerDowned(victim);
+			Rogue_PlayerDowned();
 			
 			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
 			{

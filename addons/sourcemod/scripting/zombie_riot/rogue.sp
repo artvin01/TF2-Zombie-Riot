@@ -1956,7 +1956,7 @@ void Rogue_ReviveSpeed(int &amount)
 	Rogue_Paradox_ReviveSpeed(amount);
 }
 
-void Rogue_PlayerDowned(int client)
+void Rogue_PlayerDowned()
 {
 	if(RogueTheme == BlueParadox)
 	{
