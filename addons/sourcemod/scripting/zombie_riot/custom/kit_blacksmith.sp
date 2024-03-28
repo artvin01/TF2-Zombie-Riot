@@ -721,3 +721,48 @@ static void PrintAttribValue(int client, int attrib, float value)
 			CPrintToChat(client, "%sDamage Resistance", num);
 	}
 }
+/*
+void TinkerStatsApply()
+{
+	int TinkerPapStrength = 0;
+	int WeaponType = 0;
+	// 0 = No type
+	// 1 = Mage //detect via is magic weapon
+	// 2 = Melee //detect via if its just a melee lol
+	// 3 = Hitscan, mostly //detect if it doesnt have projectile speed
+	// 4 = Projectile Weapons, mostly. //opesite of above
+	switch(WeaponType)
+	{
+		case 0:
+		{
+			printtochat(client, "Your weapon has no tickerable stats.")
+		}
+		case 1:
+		{
+			switch(GetRandomInt(0,3))
+			{
+				case 0:
+				{
+					Tinker_Melee_LustingRage(client, weapon, TinkerPapStrength);
+				}
+			}
+		}
+	}
+}
+
+void Tinker_Melee_LustingRage(int client, int weapon, int TinkerPapStrength)
+{
+	float Base_DamageBonus_Min = 1.1;
+	float Base_DamageBonus_Max = 1.1;
+	switch(TinkerPapStrength)
+	{
+		case 1:
+		{
+			Base_DamageBonus_Min *= 1.1
+			Base_DamageBonus_Max *= 1.1
+		}
+	}
+	Apply Stats i guess
+}
+
+*/
