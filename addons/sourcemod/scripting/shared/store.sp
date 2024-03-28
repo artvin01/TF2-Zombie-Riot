@@ -145,11 +145,7 @@ enum struct ItemInfo
 			return false;
 
 		Format(buffer, sizeof(buffer), "%scost_unlock", prefix);
-		this.Cost_Unlock = kv.GetNum(buffer, -1);
-		if(this.Cost_Unlock == -1)
-		{
-			this.Cost_Unlock = this.Cost;
-		}
+		this.Cost_Unlock = kv.GetNum(buffer, this.Cost);
 		
 		Format(buffer, sizeof(buffer), "%sdesc", prefix);
 		kv.GetString(buffer, this.Desc, 256);
@@ -1607,8 +1603,12 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 
 				if(info.Cost > 0 && free)
 					return;
-
-				if(info.Cost > 1000 && info.Cost_Unlock > CurrentCash)
+				
+				if(info.Cost > 1000 && Rogue_UnlockStore() && !item.NPCSeller)
+				{
+					break;
+				}
+				else if(info.Cost > 1000 && !Rogue_UnlockStore() && info.Cost_Unlock > CurrentCash)
 				{
 					break;
 				}
@@ -2453,6 +2453,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave 
 	int amount;
 	int length = StoreItems.Length;
 	int[] indexes = new int[length];
+	bool unlock = Rogue_UnlockStore();
 	
 	static Item item;
 	static ItemInfo info;
@@ -2477,6 +2478,26 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave 
 				}
 				
 				StoreItems.SetArray(i, item);
+			}
+			else if(unlock && !ResetStore)
+			{
+				if(addItem == 0 && item.NPCSeller_First)
+				{
+					item.NPCSeller = false;
+					item.NPCSeller_First = false;
+				}
+				else if(addItem == 99 && item.NPCSeller_WaveStart > 0 && subtract_wave > 0)
+				{
+					item.NPCSeller_WaveStart--;
+					StoreItems.SetArray(i, item);
+				}
+
+				if(!item.NPCSeller)
+				{
+					item.GetItemInfo(0, info);
+					if(info.Cost > 999 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost_Unlock < CurrentCash)
+						indexes[amount++] = i;
+				}
 			}
 			else if(ResetStore != 2)
 			{
@@ -2506,56 +2527,72 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave 
 			}
 		}
 	}
-	if(subtract_wave != 0)
+	if(subtract_wave != 0 || ResetStore)
 		return;
-
+	
 	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
 	{
-		if(!ResetStore)
+		if(addItem == 0)
+			CPrintToChatAll("{green}Father Grigori{default}: My child, I'm offering new wares!");
+		else
+			CPrintToChatAll("{green}Father Grigori{default}: My child, I'm offering extra for a limited time!");
+
+		bool OneSuperSale = true;
+		SortIntegers(indexes, amount, Sort_Random);
+		int SellsMax = GrigoriMaxSells;
+		if(addItem != 0)
+			SellsMax = addItem;
+		
+		for(int i; i<SellsMax && i<amount; i++) //amount of items to sell
 		{
-			if(addItem == 0)
-				CPrintToChatAll("{green}Father Grigori{default}: My child, I'm offering new wares!");
-			else
-				CPrintToChatAll("{green}Father Grigori{default}: My child, I'm offering extra for a limited time!");
-
-			bool OneSuperSale = true;
-			SortIntegers(indexes, amount, Sort_Random);
-			int SellsMax = GrigoriMaxSells;
-			if(addItem != 0)
-				SellsMax = addItem;
-			
-			for(int i; i<SellsMax && i<amount; i++) //amount of items to sell
+			StoreItems.GetArray(indexes[i], item);
+			if(item.NPCSeller_First)
 			{
-				StoreItems.GetArray(indexes[i], item);
-				if(item.NPCSeller_First)
-				{
-					SellsMax++;
-					continue;
-				}
-
-				if(item.NPCSeller)
-				{
-					SellsMax++;
-					continue;
-				}
-				if(addItem != 0 && item.NPCSeller_WaveStart <= 0)
-				{
-					item.NPCSeller_WaveStart = 3;
-					CPrintToChatAll("{green}%s [$$]{default}",item.Name);
-				}
-				else if(OneSuperSale)
-				{
-					CPrintToChatAll("{green}%s [$$]{default}",item.Name);
-					item.NPCSeller_First = true;
-					OneSuperSale = false;
-				}
-				else if(item.NPCSeller_WaveStart <= 0)
-				{
-					CPrintToChatAll("{palegreen}%s [$]{default}",item.Name);
-				}
-				item.NPCSeller = true;
-				StoreItems.SetArray(indexes[i], item);
+				SellsMax++;
+				continue;
 			}
+
+			if(item.NPCSeller)
+			{
+				SellsMax++;
+				continue;
+			}
+			if(addItem != 0 && item.NPCSeller_WaveStart <= 0)
+			{
+				item.NPCSeller_WaveStart = 3;
+				CPrintToChatAll("{green}%s [%s]",item.Name, unlock ? "$" : "$$");
+			}
+			else if(OneSuperSale)
+			{
+				CPrintToChatAll("{green}%s [%s]",item.Name, unlock ? "$" : "$$");
+				item.NPCSeller_First = true;
+				OneSuperSale = false;
+			}
+			else if(item.NPCSeller_WaveStart <= 0)
+			{
+				CPrintToChatAll("{palegreen}%s%s",item.Name, unlock ? "" : " [$]");
+			}
+			item.NPCSeller = true;
+			StoreItems.SetArray(indexes[i], item);
+		}
+	}
+	else if(unlock)
+	{
+		CPrintToChatAll("{green}Recovered Items:");
+
+		SortIntegers(indexes, amount, Sort_Random);
+		int SellsMax = GrigoriMaxSells;
+		if(addItem != 0)
+			SellsMax = addItem;
+		
+		for(int i; i<SellsMax && i<amount; i++) //amount of items to sell
+		{
+			StoreItems.GetArray(indexes[i], item);
+
+			CPrintToChatAll("{palegreen}%s",item.Name);
+
+			item.NPCSeller = true;
+			StoreItems.SetArray(indexes[i], item);
 		}
 	}
 }
@@ -3219,7 +3256,19 @@ static void MenuPage(int client, int section)
 				{
 					ItemCost(client, item, info.Cost);
 					FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost - npcwallet);
-					if(item.NPCSeller_First)
+					
+					if(Rogue_UnlockStore())
+					{
+						if(item.NPCSeller_First)
+						{
+							FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$}");
+						}	
+						else if(item.NPCSeller_WaveStart > 0)
+						{
+							FormatEx(buffer, sizeof(buffer), "%s%s [Waves Left:%i]", buffer, "{$}", item.NPCSeller_WaveStart);
+						}
+					}
+					else if(item.NPCSeller_First)
 					{
 						FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$$}");
 					}	
@@ -3306,7 +3355,12 @@ static void MenuPage(int client, int section)
 				{
 					continue;
 				}
-				else if(info.Cost > 1000 && info.Cost_Unlock > CurrentCash)
+				else if(info.Cost > 1000 && Rogue_UnlockStore() && !item.NPCSeller)
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [NOT FOUND]", TranslateItemName(client, item.Name, info.Custom_Name));
+					style = ITEMDRAW_DISABLED;
+				}
+				else if(info.Cost > 1000 && !Rogue_UnlockStore() && info.Cost_Unlock > CurrentCash)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [%.0f%%]", TranslateItemName(client, item.Name, info.Custom_Name), float(CurrentCash) * 100.0 / float(info.Cost_Unlock));
 					style = ITEMDRAW_DISABLED;
@@ -3366,7 +3420,18 @@ static void MenuPage(int client, int section)
 				//if(!item.BuildingExistName[0] && !item.ShouldThisCountSupportBuildings)
 				Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 
-				if(item.NPCSeller_First)
+				if(Rogue_UnlockStore())
+				{
+					if(item.NPCSeller_First)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s {$}", buffer);
+					}	
+					else if(item.NPCSeller_WaveStart > 0)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s {$ Waves Left: %d}", buffer, item.NPCSeller_WaveStart);
+					}
+				}
+				else if(item.NPCSeller_First)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s {$$}", buffer);
 				}	
@@ -3378,6 +3443,7 @@ static void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s {$}", buffer);
 				}
+
 				menu.AddItem(info.Classname, buffer, style);
 				found = true;
 			}
@@ -5638,7 +5704,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			Attributes_Set(entity, 49, 1.0);
 		}
 
-		Rogue_GiveItem(entity);
+		Rogue_GiveItem(client, entity);
 
 		/*
 			Attributes to Arrays Here
@@ -5924,9 +5990,7 @@ char[] TranslateItemDescription(int client, const char Desc[256], const char Rog
 
 static void ItemCost(int client, Item item, int &cost)
 {
-	//
-//	bool noSetup = (Rogue_NoDiscount() && !Waves_InSetup());
-	bool Setup = Waves_InSetup();
+	bool Setup = !Rogue_NoDiscount() && Waves_InSetup();
 	bool GregSale = false;
 
 	//these should account for selling.
@@ -5944,7 +6008,18 @@ static void ItemCost(int client, Item item, int &cost)
 	{
 		if(b_SpecialGrigoriStore) //during maps where he alaways sells, always sell!
 		{
-			if(item.NPCSeller_WaveStart > 0)
+			if(Rogue_Mode())
+			{
+				if(item.NPCSeller_WaveStart > 0)
+				{
+					cost = RoundToCeil(float(cost) * 0.8);
+				}
+				else if(item.NPCSeller_First)
+				{
+					cost = RoundToCeil(float(cost) * 0.9);
+				}
+			}
+			else if(item.NPCSeller_WaveStart > 0)
 			{
 				cost = RoundToCeil(float(cost) * 0.7);
 			}
@@ -5981,47 +6056,26 @@ static void ItemCost(int client, Item item, int &cost)
 		}
 		else
 		{
-			if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
-			{
-				if(item.NPCSeller_WaveStart > 0)
-				{
-					cost = RoundToCeil(float(cost) * 0.7);
-				}
-				else if(item.NPCSeller_First)
-				{
-					cost = RoundToCeil(float(cost) * 0.7);
-				}
-				else if(item.NPCSeller)
-				{
-					cost = RoundToCeil(float(cost) * 0.8);
-				}
-				else
-				{
-					cost = RoundToCeil(float(cost) * 0.9);	
-				}
-			}
-			else
-			{
-				cost = RoundToCeil(float(cost) * 0.9);	
-			}
+			cost = RoundToCeil(float(cost) * 0.9);
 		}
-
 	}
 	
 	if(!Rogue_Mode() && (CurrentRound != 0 || CurrentWave != -1) && cost)
 	{
-		if(!CurrentPlayers)
-			CheckAlivePlayers();
-		
-		if(CurrentPlayers == 1)
-			cost = RoundToNearest(float(cost) * 0.7);
+		switch(CurrentPlayers)
+		{
+			case 0:
+				CheckAlivePlayers();
 			
-		if(CurrentPlayers == 2)
-			cost = RoundToNearest(float(cost) * 0.8);
+			case 1:
+				cost = RoundToNearest(float(cost) * 0.7);
 			
-		else if(CurrentPlayers == 3)
-			cost = RoundToNearest(float(cost) * 0.9);
+			case 2:
+				cost = RoundToNearest(float(cost) * 0.8);
 			
+			case 3:
+				cost = RoundToNearest(float(cost) * 0.9);
+		}
 	}
 	
 	//Keep this here, both of these make sure that the item doesnt go into infinite cost, and so it doesnt go below the sell value, no inf money bug!

@@ -372,9 +372,9 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 
 		ArrayList list = new ArrayList(3);
 		
-		switch(SmithLevel[owner])
+		//switch(SmithLevel[owner])
 		{
-			case 0, 1:
+		///	case 0, 1:
 			{
 			//	AddAttrib(list, weapon, 1, 0.8, 1.2);
 				AddAttrib(list, weapon, 2, 0.8, 1.2);
@@ -401,7 +401,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				AddAttrib(list, weapon, 343, 0.95, 1.05);
 				AddAttrib(list, weapon, 410, 0.8, 1.2);
 			}
-			case 2, 3:
+		/*	case 2, 3:
 			{
 				AddAttrib(list, weapon, 26, 0.9625, 1.05);
 				AddAttrib(list, 0, 205, 0.98, 1.015);
@@ -467,7 +467,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				AddAttrib(list, weapon, 319, 0.3, 4.0);
 				AddAttrib(list, weapon, 343, 0.85, 1.1);
 				AddAttrib(list, weapon, 410, 0.7, 1.5);
-			}
+			}*/
 		}
 
 		int length = list.Length;

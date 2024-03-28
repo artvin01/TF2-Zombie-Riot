@@ -2777,7 +2777,7 @@
 	}
 	"Tinker Pap 2 Desc"
 	{
-		"en"	"+65%% Building Health, +75% Weapon Damage, +25 Metal Regen, +4 Support Buildings, -30s Tinker Cooldown, and Improved Tinker Attributes.\n2 Attributes: 80%% | 3 Attributes: 20%%"
+		"en"	"+65%% Building Health, +75% Weapon Damage, +25 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\n2 Attributes: 80%% | 3 Attributes: 20%%"
 	}
 	"Tinker Pap 3 Desc"
 	{
@@ -2785,7 +2785,7 @@
 	}
 	"Tinker Pap 4 Desc"
 	{
-		"en"	"+40%% Building Health, +181.25% Weapon Damage, +100 Metal Regen, -30s Tinker Cooldown, and Improved Tinker Attributes.\n2 Attributes: 40%% | 3 Attributes: 40%% | 4 Attributes: 20%%"
+		"en"	"+40%% Building Health, +181.25% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown.\n2 Attributes: 40%% | 3 Attributes: 40%% | 4 Attributes: 20%%"
 	}
 	"Tinker Pap 5 Desc"
 	{
