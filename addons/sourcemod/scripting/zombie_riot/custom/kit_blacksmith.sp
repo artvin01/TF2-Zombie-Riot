@@ -380,14 +380,70 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 		GetEntityClassname(weapon, classname, sizeof(classname));
 		int slot = TF2_GetClassnameSlot(classname);
 		
-		if(Attributes_Has(weapon, 8)) //any medic weapon
+		if(Attributes_Has(weapon, 8) && !i_IsWrench[weapon]) //any medic weapon
 		{
+			//mediguns, they work uniqurely
+			if(StrEqual(classname, "tf_weapon_medigun"))
+			{
+				switch(GetURandomInt() % 3)
+				{
+					case 0:
+						TinkerMedigun_FastHeal(rarity, tinker);
+					case 1:
+						TinkerMedigun_Overhealer(rarity, tinker);
+					case 2:
+						TinkerMedigun_Uberer(rarity, tinker);
+				}
+			}
+			else
+			{
+				if(slot == TFWeaponSlot_Melee)
+				{
+					TinkerMedicWeapon_GlassyMedic(rarity, tinker);
+				}
+				else
+				{
+					switch(GetURandomInt() % 2)
+					{
+						case 0:
+							TinkerMedicWeapon_GlassyMedic(rarity, tinker);
+						case 1:
+							TinkerMedicWeapon_BurstHealMedic(rarity, tinker);
+					}					
+				}
 
+				//anything else.
+			}
+		}
+		else if(i_IsWrench[weapon] && slot != TFWeaponSlot_Melee)
+		{
+			//any wrench weapon that isnt melee?
+			TinkerBuilderRepairMaster(rarity, tinker);
 		}
 		else if(slot == TFWeaponSlot_Melee)
 		{
 			if(i_IsWrench[weapon])
 			{
+				if(Attributes_Get(weapon, 264, 0.0) != 0.0)
+				{
+					switch(GetURandomInt() % 2)
+					{
+						case 0:
+							TinkerBuilderRepairMaster(rarity, tinker);
+						case 1:
+							TinkerBuilderLongSwing(rarity, tinker);
+					}
+				}
+				else
+				{
+					switch(GetURandomInt() % 2)
+					{
+						case 0:
+							TinkerBuilderRepairMaster(rarity, tinker);
+						case 1:
+							TinkerBuilderLongSwing(rarity, tinker);
+					}					
+				}
 				// Wrench Weapon
 			}
 			else if(i_IsWandWeapon[weapon])
@@ -412,13 +468,10 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				{
 					case 0:
 						TinkerMeleeGlassy(rarity, tinker);
-					
 					case 1:
 						TinkerMeleeRapidSwing(rarity, tinker);
-
 					case 2:
 						TinkerMeleeHeavySwing(rarity, tinker);
-
 					case 3:
 						TinkerMeleeLongSwing(rarity, tinker);
 				}
@@ -432,11 +485,29 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				//infinite fire
 				if(Attributes_Has(weapon, 303))
 				{
-
+					switch(GetURandomInt() % 4)
+					{
+						case 0:
+							TinkerMeleeRapidSwing(rarity, tinker);
+						case 1:
+							TinkerRangedSlowHeavyProj(rarity, tinker);
+						case 2:
+							TinkerRangedFastProj(rarity, tinker);
+					}
 				}
 				else
 				{
-					
+					switch(GetURandomInt() % 4)
+					{
+						case 0:
+							TinkerMeleeRapidSwing(rarity, tinker);
+						case 1:
+							TinkerRangedSlowHeavyProj(rarity, tinker);
+						case 2:
+							TinkerRangedFastProj(rarity, tinker);
+						case 3:
+							TinkerIntensiveClip(rarity, tinker);
+					}
 				}
 				// Projectile Weapon
 			}
@@ -445,11 +516,22 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				//infinite fire
 				if(Attributes_Has(weapon, 303))
 				{
-
+					switch(GetURandomInt() % 4)
+					{
+						case 0:
+							TinkerMeleeRapidSwing(rarity, tinker);
+					}
 				}
 				else
 				{
-					
+					switch(GetURandomInt() % 4)
+					{
+						case 0:
+							TinkerMeleeRapidSwing(rarity, tinker);
+							
+						case 1:
+							TinkerIntensiveClip(rarity, tinker);
+					}
 				}
 				// Hitscan Weapon
 			}
@@ -673,6 +755,10 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 
 		case 4001:
 			Format(buffer, sizeof(buffer), "%sExtra Melee Range", buffer);
+
+		case 4002:
+			Format(buffer, sizeof(buffer), "%sMore Medigun Overheal", buffer);
+
 	}
 
 	CPrintToChat(client, "%s {yellow}(%d%%)", buffer, RoundToCeil(luck * 100.0));
@@ -925,4 +1011,329 @@ static void TinkerTankMage(int rarity, TinkerEnum tinker)
 			tinker.Value[3] = 0.9 - MeleeDmgLuck;
 		}
 	}
+}
+
+
+static void TinkerMedigun_FastHeal(int rarity, TinkerEnum tinker)
+{
+	tinker.Attrib[0] = 8; //more heal rate
+	tinker.Attrib[1] = 10; //Less uber rate
+	tinker.Attrib[2] = 4002; //Less Overheal
+	float MoreHealRateLuck = (0.1 * (tinker.Luck[0]));
+	float LessUberRateLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
+	float LessOverhealRateLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[2]))));
+
+	switch(rarity)
+	{
+		case 0:
+		{
+			tinker.Value[0] = 1.15 + MoreHealRateLuck;
+			tinker.Value[1] = 0.95 - LessUberRateLuck;
+			tinker.Value[2] = 0.95 - LessOverhealRateLuck;
+		}
+		case 1:
+		{
+			tinker.Value[0] = 1.25 + MoreHealRateLuck;
+			tinker.Value[1] = 0.92 - LessUberRateLuck;
+			tinker.Value[2] = 0.92 - LessOverhealRateLuck;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 1.35 + MoreHealRateLuck;
+			tinker.Value[1] = 0.88 - LessUberRateLuck;
+			tinker.Value[2] = 0.88 - LessOverhealRateLuck;
+		}
+	}
+}
+static void TinkerMedigun_Overhealer(int rarity, TinkerEnum tinker)
+{
+	tinker.Attrib[0] = 8;
+	tinker.Attrib[1] = 4002; 
+	float LessHealRateLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[0]))));
+	float MoreOverhealLuck = (0.1 * (tinker.Luck[1]));
+
+	switch(rarity)
+	{
+		case 0:
+		{
+			tinker.Value[0] = 1.05 - LessHealRateLuck;
+			tinker.Value[1] = 1.1 + MoreOverhealLuck;
+		}
+		case 1:
+		{
+			tinker.Value[0] = 1.0 - LessHealRateLuck;
+			tinker.Value[1] = 1.15 + MoreOverhealLuck;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 0.95 - LessHealRateLuck;
+			tinker.Value[1] = 1.15 + MoreOverhealLuck;
+		}
+	}
+}
+
+
+static void TinkerMedigun_Uberer(int rarity, TinkerEnum tinker)
+{
+	tinker.Attrib[0] = 8;
+	tinker.Attrib[1] = 10;
+	float LessHealRate = (0.1 * (1.0 + (-1.0*(tinker.Luck[0]))));
+	float MoreUberRate = (0.1 * (tinker.Luck[1]));
+
+	switch(rarity)
+	{
+		case 0:
+		{
+			tinker.Value[0] = 0.9 - LessHealRate;
+			tinker.Value[1] = 1.15 + MoreUberRate;
+		}
+		case 1:
+		{
+			tinker.Value[0] = 0.85 - LessHealRate;
+			tinker.Value[1] = 1.2 + MoreUberRate;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 0.8 - LessHealRate;
+			tinker.Value[1] = 1.3 + MoreUberRate;
+		}
+	}
+}
+
+
+static void TinkerMedicWeapon_GlassyMedic(int rarity, TinkerEnum tinker)
+{
+	tinker.Attrib[0] = 8; //more heal rate
+	tinker.Attrib[1] = 6; 
+	tinker.Attrib[2] = 205;
+	tinker.Attrib[3] = 206;
+	float HealRateLuck = (0.1 * (tinker.Luck[0]));
+	float AttackRateLuck = (0.1 * (tinker.Luck[1]));
+	float RangedDmgVulLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[2]))));
+	float MeleeDmgVulLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[3]))));
+
+	switch(rarity)
+	{
+		case 0:
+		{
+			tinker.Value[0] = 1.05 + HealRateLuck;
+			tinker.Value[1] = 0.9 - AttackRateLuck;
+			tinker.Value[2] = 1.05 + RangedDmgVulLuck;
+			tinker.Value[3] = 1.05 + MeleeDmgVulLuck;
+		}
+		case 1:
+		{
+			tinker.Value[0] = 1.1 + HealRateLuck;
+			tinker.Value[1] = 0.86 - AttackRateLuck;
+			tinker.Value[2] = 1.075 + RangedDmgVulLuck;
+			tinker.Value[3] = 1.075 + MeleeDmgVulLuck;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 1.15 + HealRateLuck;
+			tinker.Value[1] = 0.84 - AttackRateLuck;
+			tinker.Value[2] = 1.10 + RangedDmgVulLuck;
+			tinker.Value[3] = 1.10 + MeleeDmgVulLuck;
+		}
+	}
+}
+
+
+static void TinkerMedicWeapon_BurstHealMedic(int rarity, TinkerEnum tinker)
+{
+	tinker.Attrib[0] = 8; //more heal rate
+	tinker.Attrib[1] = 6; 
+	tinker.Attrib[2] = 97; 
+	float HealRateLuck = (0.2 * (tinker.Luck[0]));
+	float AttackRateLuck = (0.12 * (tinker.Luck[1]));
+	float ReloadRateLuck = (0.12 * (tinker.Luck[2]));
+
+	switch(rarity)
+	{
+		case 0:
+		{
+			tinker.Value[0] = 1.75 + HealRateLuck;
+			tinker.Value[1] = 1.6 + AttackRateLuck;
+			tinker.Value[2] = 1.6 + ReloadRateLuck;
+		}
+		case 1:
+		{
+			tinker.Value[0] = 1.9 + HealRateLuck;
+			tinker.Value[1] = 1.75 + AttackRateLuck;
+			tinker.Value[2] = 1.75 + ReloadRateLuck;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 2.1 + HealRateLuck;
+			tinker.Value[1] = 1.85 + AttackRateLuck;
+			tinker.Value[2] = 1.85 + ReloadRateLuck;
+		}
+	}
+}
+
+
+static void TinkerBuilderLongSwing(int rarity, TinkerEnum tinker)
+{
+	tinker.Attrib[0] = 6; //attackspeed
+	tinker.Attrib[1] = 264; //ExtraMeleeRange
+	tinker.Attrib[2] = 4001; //ExtraMeleeRange
+	
+	float AttackspeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[0]))));
+	float ExtraRangeLuck = (0.1 * (tinker.Luck[1]));
+
+	tinker.Luck[2] = tinker.Luck[1];
+
+	switch(rarity)
+	{
+		case 0:
+		{
+			tinker.Value[0] = 1.25 + AttackspeedLuck;
+			tinker.Value[1] = 1.5 + ExtraRangeLuck;
+			tinker.Value[2] = 1.5 + ExtraRangeLuck;
+		}
+		case 1:
+		{
+			tinker.Value[0] = 1.35 + AttackspeedLuck;
+			tinker.Value[1] = 1.5 + ExtraRangeLuck;
+			tinker.Value[2] = 1.75 + ExtraRangeLuck;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 1.4 + AttackspeedLuck;
+			tinker.Value[1] = 1.5 + ExtraRangeLuck;
+			tinker.Value[2] = 2.0 + ExtraRangeLuck;
+		}
+	}
+}
+
+
+static void TinkerBuilderRepairMaster(int rarity, TinkerEnum tinker)
+{
+	tinker.Attrib[0] = 95; //RepairRate
+	tinker.Attrib[1] = 107; //movementspeed
+	
+	float RepairRate = (0.1 * (tinker.Luck[0]));
+	float MovementSpeed = (0.05 * (1.0 + (-1.0*(tinker.Luck[1]))));
+
+	switch(rarity)
+	{
+		case 0:
+		{
+			tinker.Value[0] = 1.25 + RepairRate;
+			tinker.Value[1] = 0.98 - MovementSpeed;
+		}
+		case 1:
+		{
+			tinker.Value[0] = 1.3 + RepairRate;
+			tinker.Value[1] = 0.98 - MovementSpeed;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 1.4 + RepairRate;
+			tinker.Value[1] = 0.98 - MovementSpeed;
+		}
+	}
+}
+
+
+
+static void TinkerRangedSlowHeavyProj(int rarity, TinkerEnum tinker)
+{
+	tinker.Attrib[0] = 2; //damage
+	tinker.Attrib[1] = 103; //ProjectileSpeed
+	tinker.Attrib[2] = 6; //attackspeed
+	
+	float DamageLuck = (0.1 * (tinker.Luck[0]));
+	float ProjectileSpeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
+	float AttackspeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
+
+	switch(rarity)
+	{
+		case 0:
+		{
+			tinker.Value[0] = 1.15 + DamageLuck;
+			tinker.Value[1] = 0.7 - ProjectileSpeedLuck;
+			tinker.Value[2] = 1.05 + AttackspeedLuck;
+		}
+		case 1:
+		{
+			tinker.Value[0] = 1.20 + DamageLuck;
+			tinker.Value[1] = 0.65 - ProjectileSpeedLuck;
+			tinker.Value[2] = 1.1 + AttackspeedLuck;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 1.3 + DamageLuck;
+			tinker.Value[1] = 0.6 - ProjectileSpeedLuck;
+			tinker.Value[2] = 1.12 + AttackspeedLuck;
+		}
+	}
+}
+
+static void TinkerRangedFastProj(int rarity, TinkerEnum tinker)
+{
+	tinker.Attrib[0] = 2; //damage
+	tinker.Attrib[1] = 103; //ProjectileSpeed
+	tinker.Attrib[2] = 6; //attackspeed
+	
+	float DamageLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[0]))));
+	float ProjectileSpeedLuck = (0.1 * (tinker.Luck[1]));
+	float AttackspeedLuck = (0.1 * (tinker.Luck[1]));
+
+	switch(rarity)
+	{
+		case 0:
+		{
+			tinker.Value[0] = 0.9 - DamageLuck;
+			tinker.Value[1] = 1.35 + ProjectileSpeedLuck;
+			tinker.Value[2] = 0.95 - AttackspeedLuck;
+		}
+		case 1:
+		{
+			tinker.Value[0] = 0.9 - DamageLuck;
+			tinker.Value[1] = 1.5 + ProjectileSpeedLuck;
+			tinker.Value[2] = 0.93 - AttackspeedLuck;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 0.85 - DamageLuck;
+			tinker.Value[1] = 1.65 + ProjectileSpeedLuck;
+			tinker.Value[2] = 0.9 - AttackspeedLuck;
+		}
+	}
+}
+
+
+static void TinkerIntensiveClip(int rarity, TinkerEnum tinker)
+{
+	tinker.Attrib[0] = 6; //attackspeed
+	tinker.Attrib[1] = 4; //Clipsize
+	tinker.Attrib[2] = 97; //ReloadSpeed
+	
+	float AttackSpeedLuck = (0.07 * (tinker.Luck[0]));
+	float ClipSizeLuck = (0.15 * (tinker.Luck[1]));
+	float ReloadSpeedLuck = (0.3 * (1.0 + (-1.0*(tinker.Luck[2]))));
+
+	switch(rarity)
+	{
+		case 0:
+		{
+			tinker.Value[0] = 0.95 - AttackSpeedLuck;
+			tinker.Value[1] = 1.5 + ClipSizeLuck;
+			tinker.Value[2] = 1.8 + ReloadSpeedLuck;
+		}
+		case 1:
+		{
+			tinker.Value[0] = 0.93 - AttackSpeedLuck;
+			tinker.Value[1] = 1.65 + ClipSizeLuck;
+			tinker.Value[2] = 1.9 + ReloadSpeedLuck;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 0.92 - AttackSpeedLuck;
+			tinker.Value[1] = 1.75 + ClipSizeLuck;
+			tinker.Value[2] = 2.0 + ReloadSpeedLuck;
+		}
+	}
+
 }
