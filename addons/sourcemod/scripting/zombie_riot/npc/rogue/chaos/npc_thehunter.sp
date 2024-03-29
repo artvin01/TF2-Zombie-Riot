@@ -68,8 +68,7 @@ methodmap TheHunter < CClotBody
 		i_NpcWeight[npc.index] = 2;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.SetActivity("ACT_MP_RUN_PRIMARY");
 
 		KillFeed_SetKillIcon(npc.index, "machina");
 
@@ -81,15 +80,6 @@ methodmap TheHunter < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(TheHunter_ClotThink);
 		
 		npc.m_iChanged_WalkCycle = 0;
-
-		if(npc.m_iChanged_WalkCycle != 1)
-		{
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 1;
-			npc.SetActivity("ACT_MP_RUN_PRIMARY");
-			npc.StartPathing();
-			npc.m_flSpeed = 100.0;
-		}
 
 		npc.m_flNextMeleeAttack = GetGameTime() + 20.0;
 		

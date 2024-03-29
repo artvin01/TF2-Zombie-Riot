@@ -365,6 +365,7 @@ void Rogue_SetupVote(KeyValues kv)
 	do
 	{
 		kv.GetSectionName(vote.Name, sizeof(vote.Name));
+		vote.Level = kv.GetNum(NULL_STRING);
 		Voting.PushArray(vote);
 	}
 	while(kv.GotoNextKey(false));
@@ -503,12 +504,14 @@ bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 			Format(vote.Name, sizeof(vote.Name), "%t", "No Vote");
 			menu.AddItem(NULL_STRING, vote.Name);
 
+			bool cached = Database_IsCached(client);
+
 			int length = Voting.Length;
 			for(int i; i < length; i++)
 			{
 				Voting.GetArray(i, vote);
-				Format(vote.Config, sizeof(vote.Config), "%t%s", vote.Name, vote.Append);
-				menu.AddItem(vote.Name, vote.Config);
+				Format(vote.Config, sizeof(vote.Config), "%t (Lv %d)", vote.Name, vote.Level);
+				menu.AddItem(vote.Name, vote.Config, (i && cached && Level[client] < vote.Level) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			}
 			
 			menu.ExitButton = false;
@@ -1129,6 +1132,8 @@ void Rogue_NextProgress()
 							}
 						}
 					}
+
+					Rogue_Paradox_OnNewFloor();
 
 					SetHudTextParamsEx(-1.0, -1.0, 8.0, {255, 255, 255, 255}, {255, 200, 155, 255}, 2, 0.1, 0.1);
 					for(int client = 1; client <= MaxClients; client++)
@@ -1968,7 +1973,7 @@ void Rogue_PlayerDowned()
 
 bool Rogue_NoLastman()
 {
-	return Rogue_Mode();
+	return Rogue_Mode() && !Rogue_Paradox_Lastman();
 }
 
 bool Rogue_UnlockStore()
