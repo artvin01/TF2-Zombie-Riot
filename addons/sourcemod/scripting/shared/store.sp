@@ -342,6 +342,9 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sint_ability_onequip", prefix);
 		this.CustomWeaponOnEquip 		= kv.GetNum(buffer);
 
+		
+
+
 		Format(buffer, sizeof(buffer), "%soverride_weapon_slot", prefix);
 		this.Weapon_Override_Slot 		= kv.GetNum(buffer, -1);
 
@@ -4760,7 +4763,7 @@ void Store_ApplyAttribs(int client)
 			{
 				item.GetItemInfo(item.Owned[client]-1, info);
 				if(!info.Classname[0])
-				{
+				{	
 					if((info.Index<0 || info.Index>2) && info.Index<6)
 					{
 						for(int a; a<info.Attribs; a++)
@@ -5667,7 +5670,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		//DOUBLE TAP!
 		if(i_CurrentEquippedPerk[client] == 3)
 		{
-			Attributes_SetMulti(entity, 6, 0.85);
+			if(Attributes_Has(entity, 6))
+				Attributes_SetMulti(entity, 6, 0.85);
 		}
 
 		//DEADSHOT!
@@ -5677,7 +5681,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			if(Attributes_Has(entity, 103))
 				Attributes_SetMulti(entity, 103, 1.2);
 				
-			Attributes_SetMulti(entity, 106, 1.2);
+			if(Attributes_Has(entity, 106))
+				Attributes_SetMulti(entity, 106, 1.2);
 		}
 
 		//QUICK REVIVE!
@@ -5691,7 +5696,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			
 			if(Attributes_Has(client, 8)) //set it for client too if existant.
 			{
-				Attributes_SetMulti(entity, 8, 1.5);
+				Attributes_SetMulti(client, 8, 1.5);
 			}
 
 			// Note: This can stack with multi weapons :|

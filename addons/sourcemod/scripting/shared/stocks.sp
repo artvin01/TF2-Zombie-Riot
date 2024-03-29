@@ -4902,7 +4902,7 @@ stock int GetTeam(int entity)
 			return GetClientTeam(entity);
 #endif
 
-		if(TeamNumber[entity] == -1 || b_NpcHasDied[entity])
+		if(TeamNumber[entity] == -1)
 		{
 			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
 		}
@@ -4917,7 +4917,7 @@ stock void SetTeam(int entity, int teamSet)
 	if(entity > 0 && entity <= MAXENTITIES)
 	{
 		TeamNumber[entity] = teamSet;
-		if(teamSet <= TFTeam_Red)
+		if(teamSet <= TFTeam_Blue)
 		{
 
 #if !defined RTS
@@ -4932,7 +4932,7 @@ stock void SetTeam(int entity, int teamSet)
 				SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
 			}
 		}
-		else if(teamSet > TFTeam_Red)
+		else if(teamSet > TFTeam_Blue)
 		{
 
 #if !defined RTS
