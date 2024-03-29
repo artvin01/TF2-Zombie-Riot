@@ -470,6 +470,7 @@ void NPC_ConfigSetup()
 	RaidbossBladedance_MapStart();
 	RogueCondition_Setup();
 	GogglesFollower_Setup();
+	TheHunter_Setup();
 }
 
 stock int NPC_Add(NPCData data)

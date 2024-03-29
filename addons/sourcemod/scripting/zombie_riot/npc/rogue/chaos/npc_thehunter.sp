@@ -22,7 +22,7 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/sniper_railgun_single_crit_02.wav"
 };
 
-void TheHunterOnMapStart()
+void TheHunter_Setup()
 {
 	PrecacheSoundArray(g_MeleeAttackSounds);
 
