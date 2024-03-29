@@ -175,6 +175,7 @@ enum
 	WEAPON_COSMIC_PILLAR = 96,
 	WEAPON_COSMIC_RAILCANNON = 97,
 	WEAPON_GRENADEHUD = 98
+	WEAPON_BLOODY_EDGE = 99,
 }
 
 enum
@@ -523,6 +524,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_ludo.sp"
 #include "zombie_riot/custom/weapon_messenger.sp"
 #include "zombie_riot/custom/kit_blacksmith.sp"
+#include "zombie_riot/custom/weapon_bloody_edge.sp"
 
 void ZR_PluginLoad()
 {
