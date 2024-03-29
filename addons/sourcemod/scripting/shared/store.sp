@@ -342,6 +342,9 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sint_ability_onequip", prefix);
 		this.CustomWeaponOnEquip 		= kv.GetNum(buffer);
 
+		
+
+
 		Format(buffer, sizeof(buffer), "%soverride_weapon_slot", prefix);
 		this.Weapon_Override_Slot 		= kv.GetNum(buffer, -1);
 
@@ -4760,7 +4763,7 @@ void Store_ApplyAttribs(int client)
 			{
 				item.GetItemInfo(item.Owned[client]-1, info);
 				if(!info.Classname[0])
-				{
+				{	
 					if((info.Index<0 || info.Index>2) && info.Index<6)
 					{
 						for(int a; a<info.Attribs; a++)
