@@ -5682,6 +5682,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_HHH_Axe_Ability(client, entity);
 		Enable_Messenger_Launcher_Ability(client, entity);
 		WeaponNailgun_Enable(client, entity);
+		Enable_Bloody_Edge(client, entity);
 	}
 	return entity;
 }

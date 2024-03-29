@@ -2293,6 +2293,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			return Player_OnTakeDamage_Heavy_Particle_Rifle(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
+		case WEAPON_BLOODY_EDGE:
+		{
+			Player_OnTakeDamage_Bloody_Edge(victim, attacker, damage);
+		}
 	}
 	return damage;
 }

@@ -171,6 +171,7 @@ enum
 	WEAPON_MESSENGER_LAUNCHER = 92,
 	WEAPON_NAILGUN_SMG = 93,
 	WEAPON_NAILGUN_SHOTGUN = 94,
+	WEAPON_BLOODY_EDGE = 95,
 }
 
 enum
@@ -512,6 +513,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_hell_hoe.sp"
 #include "zombie_riot/custom/wand/weapon_ludo.sp"
 #include "zombie_riot/custom/weapon_messenger.sp"
+#include "zombie_riot/custom/weapon_bloody_edge.sp"
 
 void ZR_PluginLoad()
 {
