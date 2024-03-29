@@ -470,6 +470,7 @@ void NPC_ConfigSetup()
 	RaidbossBladedance_MapStart();
 	RogueCondition_Setup();
 	GogglesFollower_Setup();
+	TheHunter_Setup();
 }
 
 stock int NPC_Add(NPCData data)
@@ -1183,4 +1184,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/forest/npc_majorsteam.sp"
 
 #include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
-#include "zombie_riot/npc/rogue/npc_goggles_follower.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_thehunter.sp"

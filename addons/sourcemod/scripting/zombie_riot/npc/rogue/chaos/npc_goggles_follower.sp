@@ -13,7 +13,7 @@ void GogglesFollower_Setup()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Blue Goggles");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_goggles_follower");
-	strcopy(data.Icon, sizeof(data.Icon), "sniper");
+	strcopy(data.Icon, sizeof(data.Icon), "goggles");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Hidden;
@@ -46,9 +46,17 @@ methodmap GogglesFollower < CClotBody
  	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);
 	}
+	public int ChaosLevel()
+	{
+		int chaos = Rogue_GetChaosLevel();
+		if(chaos < 3 && Rogue_Paradox_RedMoon())
+			chaos = 3;
+		
+		return chaos;
+	}
 	public void SpeechEncounter(const char[] name)
 	{
-		int lv = Rogue_GetChaosLevel();
+		int lv = this.ChaosLevel();
 		if(lv == 4)
 			return;
 		
@@ -93,7 +101,7 @@ methodmap GogglesFollower < CClotBody
 		if(GetEntityFlags(client) & FL_FROZEN)
 			return;
 
-		switch(Rogue_GetChaosLevel())
+		switch(this.ChaosLevel())
 		{
 			case 3:
 			{
@@ -489,7 +497,7 @@ methodmap GogglesFollower < CClotBody
 		if((this.m_flNextIdleSound + 14.0) > GetGameTime(this.index))
 			return;
 		
-		if(Rogue_GetChaosLevel() > 2)
+		if(this.ChaosLevel() > 2)
 		{
 			switch(GetURandomInt() % 5)
 			{
@@ -546,7 +554,7 @@ methodmap GogglesFollower < CClotBody
 	public void Speech(const char[] speechtext, const char[] endingtextscroll = "")
 	{
 		static int color[4] = {255, 255, 255, 255};
-		int chaos = Rogue_GetChaosLevel();
+		int chaos = this.ChaosLevel();
 		if(chaos < 1)
 			chaos = 1;
 		
@@ -606,6 +614,7 @@ methodmap GogglesFollower < CClotBody
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
+		npc.m_flNextIdleSound = GetGameTime(npc.index) + 60.0;
 		npc.Speech("What? Where am I?");
 
 		return npc;
@@ -643,7 +652,7 @@ static void ClotThink(int iNPC)
 
 	int target = npc.m_iTarget;
 	int ally = npc.m_iTargetWalkTo;
-	int chaos = Rogue_GetChaosLevel();
+	int chaos = npc.ChaosLevel();
 	b_NpcIsTeamkiller[npc.index] = chaos == 4;
 
 	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))

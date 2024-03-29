@@ -1735,7 +1735,7 @@ void Store_EquipSlotCheck(int client, Item mainItem)
 	for(int i; i < length; i++)
 	{
 		StoreItems.GetArray(i, subItem);
-		if(subItem.Equipped[client] && !subItem.IgnoreSlots)
+		if(subItem.Equipped[client] && !subItem.IgnoreSlots && !subItem.ChildKit)
 		{
 			subItem.GetItemInfo(0, info);
 			
@@ -1803,11 +1803,10 @@ void Store_BuyClientItem(int client, int index, Item item, const ItemInfo info)
 		for(int i; i < length; i++)
 		{
 			StoreItems.GetArray(i, subItem);
-			if(subItem.Section == index && !subItem.Owned[client])
+			if(subItem.Section == index)
 			{
-				static ItemInfo subInfo;
-				subItem.GetItemInfo(0, subInfo);
-				Store_BuyClientItem(client, i, subItem, subInfo);
+				subItem.Owned[client] = 1;
+				subItem.Equipped[client] = true;
 				StoreItems.SetArray(i, subItem);
 			}
 		}
@@ -4253,34 +4252,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							GetEntityClassname(active_weapon, buffer, sizeof(buffer));
 							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
 							{
-								if(item.ParentKit)
-								{
-									static Item subItem;
-									int length = StoreItems.Length;
-									for(int i; i < length; i++)
-									{
-										StoreItems.GetArray(i, subItem);
-										if(subItem.Section == index)
-										{
-											subItem.Owned[client] = 0;
-											subItem.Equipped[client] = false;
-											StoreItems.SetArray(i, subItem);
-										}
-									}
-								}
-								else
-								{
-									item.GetItemInfo(item.Owned[client]-1, info);
-									if(info.Cost <= 0) //make sure it even can be sold.
-									{
-										item.Owned[client] = false;
-										if(item.Scaled[client] > 0)
-											item.Scaled[client]--;
-									}
-								}
-
-								item.Equipped[client] = false;
-								StoreItems.SetArray(index, item);
+								Store_Unequip(client, index);
 								
 								Store_ApplyAttribs(client);
 								Store_GiveAll(client, GetClientHealth(client));	
@@ -5866,15 +5838,13 @@ stock void Store_Unequip(int client, int index)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);
+	
 	ItemInfo info;
-	item.GetItemInfo(0, info);
+	if(item.GetItemInfo(0, info) && info.Cost <= 0)
+		item.Owned[client] = 0;
+	
 	item.Equipped[client] = false;
 
-	ItemCost(client, item, info.Cost);
-	if(info.Cost <= 0)
-	{
-		item.Owned[client] = 0;
-	}
 	StoreItems.SetArray(index, item);
 
 	if(item.ParentKit)
