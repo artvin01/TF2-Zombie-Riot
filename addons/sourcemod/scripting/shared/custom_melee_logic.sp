@@ -264,7 +264,11 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 	float vecSwingEndHull[3];
 	float vecSwingEndHullHeadshot[3];
 	
-	float ExtraMeleeRange = Attributes_Get(weapon, 4001, 1.0);
+	float ExtraMeleeRange = 1.0;
+	if(weapon > 0)
+	{
+		ExtraMeleeRange = Attributes_Get(weapon, 4001, 1.0);
+	}
 	if(CustomMeleeRange)
 	{
 		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * ExtraMeleeRange);
