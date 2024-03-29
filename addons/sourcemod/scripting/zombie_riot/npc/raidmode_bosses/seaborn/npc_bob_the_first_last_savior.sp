@@ -309,9 +309,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		else if(StrContains(data, "fake") != -1)
 		{
 			npc.m_bSecondPhase = false;
-			SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.
-			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12); 
-			SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6);
+			MakeObjectIntangeable(npc.index);
 			i_RaidGrantExtra[npc.index] = -1;
 			b_DoNotUnStuck[npc.index] = true;
 			b_ThisNpcIsImmuneToNuke[npc.index] = true;
@@ -374,7 +372,14 @@ methodmap RaidbossBobTheFirst < CClotBody
 		{
 			strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), "You.");
 			WavesUpdateDifficultyName();
-			Music_SetRaidMusic("#zombiesurvival/bob_raid/bob.mp3", 697, true, 1.99);
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/bob_raid/bob.mp3");
+			music.Time = 697;
+			music.Volume = 1.99;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Darkest Dungeon - The Final Combat (Added Narrator)");
+			strcopy(music.Artist, sizeof(music.Artist), "Music (Stuart Chatwood) Editor of Narrator (Liruox)");
+			Music_SetRaidMusic(music);
 			npc.StopPathing();
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -432,7 +437,9 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	{
 		b_NpcIsInvulnerable[npc.index] = true;
 	}
-
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+		return;
+		
 	int healthPoints = 20;
 
 	if(npc.m_bFakeClone)
@@ -515,14 +522,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		{
 			if(IsValidEntity(RaidBossActive))
 			{
-				ZR_NpcTauntWinClear();
-				int entity = CreateEntityByName("game_round_win"); 
-				DispatchKeyValue(entity, "force_map_reset", "1");
-				SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-				DispatchSpawn(entity);
-				AcceptEntityInput(entity, "RoundWin");
-				Music_RoundEnd(entity);
-				RaidBossActive = INVALID_ENT_REFERENCE;
+				ForcePlayerLoss();
 			}
 
 			for(int client = 1; client <= MaxClients; client++)
@@ -550,32 +550,6 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		}
 		else
 		{
-			for(int client = 1; client <= MaxClients; client++)
-			{
-				if(!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client))
-				{
-					Music_Stop_All(client);
-					SetMusicTimer(client, GetTime() + 33);
-					SendConVarValue(client, sv_cheats, "1");
-				}
-			}
-			ResetReplications();
-
-			cvarTimeScale.SetFloat(0.1);
-			CreateTimer(0.5, SetTimeBack);
-			
-			char_MusicString1[0] = 0;
-			char_MusicString2[0] = 0;
-			char_RaidMusicSpecial1[0] = 0;
-
-			EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
-
-			int entity = CreateEntityByName("game_round_win"); 
-			DispatchKeyValue(entity, "force_map_reset", "1");
-			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "RoundWin");
-			RemoveAllCustomMusic();
 
 			CPrintToChatAll("{white}%s{default}: I guess you werent infected, i'm sorry.", c_NpcName[npc.index]);
 			
@@ -583,6 +557,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			NPC_StopPathing(npc.index);
 			npc.m_flNextThinkTime = FAR_FUTURE;
 			GivePlayerItems(1);
+			ForcePlayerWin();
 		}
 
 	}
@@ -771,22 +746,9 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 	if(npc.Anger)	// Waiting for enemies to die off
 	{
-		float enemies = float(Zombies_Currently_Still_Ongoing);
-
-		for(int i; i < i_MaxcountNpcTotal; i++)
-		{
-			int victim = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(victim != INVALID_ENT_REFERENCE && victim != npc.index && IsEntityAlive(victim) && GetTeam(victim) != TFTeam_Red)
-			{
-				int maxhealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
-				if(maxhealth)
-					enemies += float(GetEntProp(victim, Prop_Data, "m_iHealth")) / float(maxhealth);
-			}
-		}
-
 		if(!Waves_IsEmpty())
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * (enemies + 1.0) / 485.0));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 17 / 20);
 			return;
 		}
 
@@ -1127,8 +1089,8 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					WritePackFloat(data, vecMe[2]);
 					WritePackCell(data, 95.0); // Distance
 					WritePackFloat(data, 0.0); // nphi
-					WritePackCell(data, 250.0); // Range
-					WritePackCell(data, 1000.0); // Damge
+					WritePackFloat(data, 250.0); // Range
+					WritePackFloat(data, 1000.0); // Damge
 					WritePackCell(data, ref);
 					ResetPack(data);
 					TrueFusionwarrior_IonAttack(data);
@@ -1145,8 +1107,8 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							WritePackFloat(data, vecTarget[2]);
 							WritePackCell(data, 160.0); // Distance
 							WritePackFloat(data, 0.0); // nphi
-							WritePackCell(data, 250.0); // Range
-							WritePackCell(data, 1000.0); // Damge
+							WritePackFloat(data, 250.0); // Range
+							WritePackFloat(data, 1000.0); // Damge
 							WritePackCell(data, ref);
 							ResetPack(data);
 							TrueFusionwarrior_IonAttack(data);
@@ -1596,8 +1558,8 @@ static void SetupMidWave(int entity)
 	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", 10);
 	AddBobEnemy(entity, "npc_combine_soldier_shotgun", 10);
 	AddBobEnemy(entity, "npc_combine_soldier_ar2", 10);
-	AddBobEnemy(entity, "npc_combine_soldier_smg", 10);
-	AddBobEnemy(entity, "npc_combine_soldier_pistol", 10);
+	AddBobEnemy(entity, "npc_combine_police_smg", 10);
+	AddBobEnemy(entity, "npc_combine_police_pistol", 10);
 }
 
 static void AddBobEnemy(int bobindx, const char[] plugin, int count, int boss = 0)
@@ -1620,7 +1582,7 @@ static void AddBobEnemy(int bobindx, const char[] plugin, int count, int boss = 
 	}
 }
 
-Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, float &damage)
+Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker < 1)
@@ -1641,7 +1603,7 @@ Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, float &damage
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
 			
-			Music_SetRaidMusic("vo/null.mp3", 30, false, 0.5);
+			Music_SetRaidMusicSimple("vo/null.mp3", 30, false, 0.5);
 			npc.StopPathing();
 
 			RaidBossActive = -1;
@@ -1653,6 +1615,7 @@ Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, float &damage
 			SetEntityCollisionGroup(npc.index, 24);
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 			b_NpcIsInvulnerable[npc.index] = true;
+			int GetTeamOld = GetTeam(npc.index);
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(30.0);
 			damage = 0.0;
@@ -1664,7 +1627,7 @@ Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, float &damage
 				{
 					if(i_NpcInternalId[npc.index] == i_NpcInternalId[other])
 					{
-						if(GetTeam(npc.index) == GetTeam(other))
+						if(GetTeamOld == GetTeam(other))
 						{
 							SmiteNpcToDeath(other);
 						}
@@ -2164,6 +2127,6 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 public void Raidmode_BobFirst_Win(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
-	SDKUnhook(entity, SDKHook_Think, RaidbossBobTheFirst_ClotThink);
+	func_NPCThink[entity] = INVALID_FUNCTION;
 	CPrintToChatAll("{white}Bob the First{default}: Deep sea threat cleaned, finally at peace...");
 }

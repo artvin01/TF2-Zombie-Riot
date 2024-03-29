@@ -313,8 +313,8 @@ public void IsharMlarWaterAttack_Invoke(int ref, int enemy)
 		WritePackFloat(data, vecTarget[0]);
 		WritePackFloat(data, vecTarget[1]);
 		WritePackFloat(data, vecTarget[2]);
-		WritePackCell(data, Range); // Range
-		WritePackCell(data, Dmg); // Damge
+		WritePackFloat(data, Range); // Range
+		WritePackFloat(data, Dmg); // Damge
 		WritePackCell(data, ref);
 		
 		spawnRing_Vectors(vecTarget, Range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 65, 65, 255, 200, 1, Time, 6.0, 0.1, 1, 1.0);
@@ -330,8 +330,8 @@ public Action Smite_Timer_IsharMlar(Handle Smite_Logic, DataPack data)
 	startPosition[0] = ReadPackFloat(data);
 	startPosition[1] = ReadPackFloat(data);
 	startPosition[2] = ReadPackFloat(data);
-	float Ionrange = ReadPackCell(data);
-	float Iondamage = ReadPackCell(data);
+	float Ionrange = ReadPackFloat(data);
+	float Iondamage = ReadPackFloat(data);
 	int client = EntRefToEntIndex(ReadPackCell(data));
 	
 	if (!IsValidEntity(client))

@@ -330,7 +330,15 @@ methodmap TheMessenger < CClotBody
 
 		RaidModeScaling *= 0.5;
 		
-		Music_SetRaidMusic("#zombiesurvival/internius/messenger.mp3", 219, true, 1.25);
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/messenger.mp3");
+		music.Time = 219;
+		music.Volume = 1.25;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Brutality -Rebuild-");
+		strcopy(music.Artist, sizeof(music.Artist), "Chihiro Aoki");
+		Music_SetRaidMusic(music);
+		
 		npc.m_iChanged_WalkCycle = -1;
 
 		int skin = 1;
@@ -409,13 +417,7 @@ public void TheMessenger_ClotThink(int iNPC)
 */
 	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
-		ZR_NpcTauntWinClear();
-		int entity = CreateEntityByName("game_round_win"); //You loose.
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		BlockLoseSay = true;
 		if(ZR_GetWaveCount()+1 <= 15)

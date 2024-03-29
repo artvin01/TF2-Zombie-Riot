@@ -543,6 +543,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						else
 							flMaxHealth = 1.45;
 					}
+					flMaxHealth *= Attributes_Get(medigun, 4002, 1.0);
 
 					if(What_type_Heal == 6.0)
 					{

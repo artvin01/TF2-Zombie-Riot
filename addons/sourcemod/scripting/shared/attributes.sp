@@ -11,7 +11,7 @@ bool Attribute_ServerSide(int attribute)
 		{
 			return true;
 		}
-		case 218, 366, 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122,225, 224,205,206, 412:
+		case 218, 366, 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122,225, 224,205,206, 412, 4001, 4002:
 		{
 			return true;
 		}
@@ -193,8 +193,8 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 				
 				value = Attributes_Get(weapon, 208, 0.0);	// Set DamageType Ignite
 
-				int itemdefindex = 0;
-				if(IsValidEntity(weapon))
+				int itemdefindex = -1;
+				if(IsValidEntity(weapon) && weapon >= MaxClients)
 				{
 					itemdefindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 				}

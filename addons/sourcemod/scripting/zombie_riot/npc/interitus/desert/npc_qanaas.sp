@@ -113,6 +113,9 @@ methodmap DesertQanaas < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+
+		if(Rogue_Paradox_ExtremeHeat())
+			fl_Extra_Speed[npc.index] *= 1.2;
 		
 		
 		//IDLE
@@ -328,6 +331,7 @@ int DesertQanaasSelfDefense(DesertQanaas npc, float gameTime)
 			{
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}
+			delete hTrace;
 		}
 	}
 	if(npc.m_flAttackHappens)

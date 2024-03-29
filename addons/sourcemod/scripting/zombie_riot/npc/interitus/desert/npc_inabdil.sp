@@ -133,6 +133,9 @@ methodmap DesertInabdil < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 200.0;
 		npc.m_flNextRangedAttack = GetGameTime();
+
+		if(Rogue_Paradox_ExtremeHeat())
+			fl_Extra_Speed[npc.index] *= 1.2;
 		
 		
 		int skin = 1;

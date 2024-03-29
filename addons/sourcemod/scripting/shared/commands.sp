@@ -92,6 +92,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	else if(StrEqual(buffer, "+inspect_server", false))
 	{
 		BuilderMenu(client);
+		
 		//This is an extra slot, incase you want to use it for anything.
 	}
 	

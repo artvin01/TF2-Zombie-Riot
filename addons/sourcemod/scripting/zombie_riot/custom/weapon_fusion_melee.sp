@@ -347,7 +347,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 					int viewmodelModel;
 					viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 
-					if(!IsValidEntity(viewmodelModel))
+					if(IsValidEntity(viewmodelModel))
 					{
 						GetAttachment(viewmodelModel, "head", flPos, flAng);
 						flPos[2] += 10.0;

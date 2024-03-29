@@ -290,7 +290,14 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
 							//This gives 35% armor
-							GiveArmorViaPercentage(target, 0.075, 1.0);
+							if(f_TimeUntillNormalHeal[target] > GetGameTime())
+							{
+								GiveArmorViaPercentage(target, 0.075 * 0.5, 1.0);
+							}
+							else
+							{
+								GiveArmorViaPercentage(target, 0.075, 1.0);
+							}
 						}
 					}
 				}
@@ -532,6 +539,8 @@ public void BuilderMenu(int client)
 {
 	if(dieingstate[client] == 0)
 	{	
+		CancelClientMenu(client);
+		SetStoreMenuLogic(client, false);
 		static char buffer[64];
 		Menu menu = new Menu(BuilderMenuM);
 
@@ -550,12 +559,17 @@ public void BuilderMenu(int client)
 	}
 }
 
+/*
+	SetStoreMenuLogic(client, false);
+	sResetStoreMenuLogic(client);
+*/
 public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
 		case MenuAction_Select:
 		{
+			ResetStoreMenuLogic(client);
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			int id = StringToInt(buffer);
@@ -580,6 +594,10 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 					delete menu;
 				}
 			}
+		}
+		case MenuAction_Cancel:
+		{
+			ResetStoreMenuLogic(client);
 		}
 	}
 	return 0;
@@ -727,6 +745,7 @@ public Action QuantumDeactivate(Handle cut_timer, int ref)
 		int health = i_HealthBeforeSuit[client];
 
 		i_HealthBeforeSuit[client] = 0;
+		f_HealthBeforeSuittime[client] = GetGameTime() + 0.25;
 	//	SetEntityMoveType(client, MOVETYPE_WALK);
 		UnequipQuantumSet(client);
 		//Remove both just in case.

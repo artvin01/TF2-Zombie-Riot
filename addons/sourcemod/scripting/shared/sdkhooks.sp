@@ -467,44 +467,49 @@ public void OnPostThink(int client)
 	if(Armor_regen_delay[client] < GameTime)
 	{
 		Armour_Level_Current[client] = 0;
+
+		int healing_Amount;
+		
+		if(!Rogue_Paradox_JesusBlessing(client, healing_Amount))
+		{
+			if(Jesus_Blessing[client] == 1)
+			{
+				if(dieingstate[client] > 0)
+				{
+					healing_Amount = HealEntityGlobal(client, client, 3.0, 0.5, 0.0, HEAL_SELFHEAL);	
+				}
+				else
+				{
+					healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 100.0, 0.5, 0.0, HEAL_SELFHEAL);	
+				}
+			}
+		}
+
 		if(Saga_RegenHealth(client))
 		{
 			if(dieingstate[client] == 0)
 			{
-				int healing_Amount = HealEntityGlobal(client, client, 10.0, 0.0, 0.0, HEAL_SELFHEAL);	
-				ApplyHealEvent(client, healing_Amount);	
+				healing_Amount += HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL);	
 			}
 		}
-		if (Jesus_Blessing[client] == 1)
-		{	
-			int healing_Amount;
-			
-			if(dieingstate[client] > 0)
-			{
-				healing_Amount = HealEntityGlobal(client, client, 3.0, 0.5, 0.0, HEAL_SELFHEAL);	
-			}
-			else
-			{
-				healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 100.0, 0.5, 0.0, HEAL_SELFHEAL);	
-			}
-
-			ApplyHealEvent(client, healing_Amount);
-		}
+		
 		if(dieingstate[client] == 0)
 		{
 			Rogue_HealingSalve(client);
 			Rogue_HandSupport_HealTick(client);
 			if(i_BadHealthRegen[client] == 1)
 			{
-				int healing_Amount = HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);		
-				ApplyHealEvent(client, healing_Amount);			
+				healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);
 			}
 			if(b_NemesisHeart[client])
 			{
-				int healing_Amount = HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);		
-				ApplyHealEvent(client, healing_Amount);			
+				healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);
 			}
 		}
+
+		if(healing_Amount)
+			ApplyHealEvent(client, healing_Amount);
+
 		Armor_regen_delay[client] = GameTime + 1.0;
 	}
 	if(Mana_Hud_Delay[client] < GameTime)
@@ -791,6 +796,25 @@ public void OnPostThink(int client)
 						FormatEx(buffer, sizeof(buffer), "%s [⚐ %.0f%%]", buffer, GetEntPropFloat(client, Prop_Send, "m_flRageMeter"));
 					}
 				}
+			}
+			if(ClientHasUseableGrenadeOrDrink(client))
+			{
+				if(GetGameTime() > GrenadeApplyCooldownReturn(client))
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [◈]", buffer);
+				}
+				else
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [◈ %.1fs]", buffer, GrenadeApplyCooldownReturn(client) - GetGameTime());
+				}
+			}
+			static int TaurusInt;
+			TaurusInt = TaurusExistant(client);
+			if(TaurusInt > 0)
+			{
+				int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+				int ammo = GetEntData(TaurusInt, iAmmoTable, 4);//Get ammo clip
+				FormatEx(buffer, sizeof(buffer), "%s [T %i/%i]",buffer, ammo, TaurusMaxAmmo());
 			}
 		}
 		 
@@ -1187,6 +1211,17 @@ public void OnPostThink(int client)
 					else
 					{
 						Format(buffer, sizeof(buffer), "\nBA\n", Cooldowntocheck);
+					}
+				}
+				case BuildingBlacksmith:
+				{
+					if(Cooldowntocheck > 0.0)
+					{
+						Format(buffer, sizeof(buffer), "%.1f\nTI\n", Cooldowntocheck);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "\nTI\n", Cooldowntocheck);
 					}
 				}
 			}
@@ -1682,8 +1717,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #if defined ZR
 		if(RaidbossIgnoreBuildingsLogic(1) && i_HealthBeforeSuit[victim] > 0)
 		{
-			Replicated_Damage *= 5.0; //when a raid is alive, make quantum armor 8x as bad at tanking.
-			damage *= 5.0;	
+			Replicated_Damage *= 3.0; //when a raid is alive, make quantum armor 8x as bad at tanking.
+			damage *= 3.0;	
 		}
 #endif
 		if(f_EmpowerStateOther[victim] > GameTime) //Allow stacking.
@@ -1886,16 +1921,19 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				CheckAlivePlayers(_, victim);
 
 				// Die in Rogue, there's no lastman
-				return Rogue_Mode() ? Plugin_Continue : Plugin_Handled;
+				return Rogue_NoLastman() ? Plugin_Continue : Plugin_Handled;
 			}
 			
 			i_AmountDowned[victim] += 1;
+			Rogue_PlayerDowned();
+			
 			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
 			{
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
 			//	SetVariantString("TLK_DIED");
 			//	AcceptEntityInput(victim, "SpeakResponseConcept");
+				i_CurrentEquippedPerkPreviously[victim] = i_CurrentEquippedPerk[victim];
 				if(!Rogue_Mode() && !SpecterCheckIfAutoRevive(victim))
 				{
 					i_CurrentEquippedPerk[victim] = 0;
@@ -1903,7 +1941,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				SetEntityHealth(victim, 200);
 				if(!b_LeftForDead[victim])
 				{
-					dieingstate[victim] = 250 / Rogue_ReviveSpeed();
+					int speed = 10;
+					Rogue_ReviveSpeed(speed);
+					dieingstate[victim] = 2500 / speed;
 				}
 				else
 				{

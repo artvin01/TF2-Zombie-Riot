@@ -273,10 +273,12 @@ methodmap Ikunagae < CClotBody
 		
 		npc.StartPathing();
 		
-		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
+		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 5.0;
+		i_Severity_Barrage[npc.index] = 6;
 
 		if(GetTeam(npc.index)!=TFTeam_Red)
 		{
+			npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
 			fl_Scaramouche_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(15.0, 30.0);
 
 			fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(10.0, 30.0);

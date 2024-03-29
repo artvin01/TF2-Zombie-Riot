@@ -355,7 +355,14 @@ methodmap Sensal < CClotBody
 		if(!cutscene)
 		{
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
-			Music_SetRaidMusic("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3", 218, true);
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
+			music.Time = 218;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Goukisan - Betrayal of Fear (TeslaX VIP remix)");
+			strcopy(music.Artist, sizeof(music.Artist), "Talurre/TeslaX11");
+			Music_SetRaidMusic(music);
 		}
 		npc.m_iChanged_WalkCycle = -1;
 
@@ -484,12 +491,7 @@ static void Internal_ClotThink(int iNPC)
 		DeleteAndRemoveAllNpcs = 10.0;
 		mp_bonusroundtime.IntValue = (12 * 2);
 		ZR_NpcTauntWinClear();
-		int entity = CreateEntityByName("game_round_win"); //You loose.
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		ForcePlayerLoss();
 		npc.AddActivityViaSequence("selectionMenu_Idle");
 		npc.SetCycle(0.01);
 		RaidBossActive = INVALID_ENT_REFERENCE;

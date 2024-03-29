@@ -192,11 +192,11 @@ static void ClotThink(int iNPC)
 					{
 						float damage = 75.0;
 						if(ShouldNpcDealBonusDamage(target))
-							damage *= 1.5;
+							damage *= Rogue_Paradox_RedMoon() ? 30.0 : 1.5;
 
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-						Sakratan_AddNeuralDamage(target, npc.index, 300);
+						Sakratan_AddNeuralDamage(target, npc.index, Rogue_Paradox_RedMoon() ? 450 : 300);
 					}
 				}
 

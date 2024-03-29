@@ -91,6 +91,7 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		i_WandOwner[entity] = EntIndexToEntRef(client);
 		if(IsValidEntity(weapon))
 			i_WandWeapon[entity] = EntIndexToEntRef(weapon);
+			
 		f_WandDamage[entity] = damage;
 		i_WandIdNumber[entity] = WandId;
 		b_EntityIsArrow[entity] = true;
@@ -313,7 +314,7 @@ public void Wand_Base_StartTouch(int entity, int other)
 		case WEAPON_MESSENGER_LAUNCHER:
 		{
 			Gun_MessengerTouch(entity, target);
-		}	
+		}
 	}
 }
 #endif
@@ -358,10 +359,8 @@ stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, f
 		TeleportEntity(entity, rocketOrigin, rocketang, NULL_VECTOR);
 		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", GetGameTime());
 		DispatchSpawn(entity);
-		SetEntityCollisionGroup(entity, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
 		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
-		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 12); 
-		SetEntProp(entity, Prop_Data, "m_nSolidType", 6); 
+		MakeObjectIntangeable(entity);
 		SetParent(rocket, entity);
 		iref_PropAppliedToRocket[rocket] = EntIndexToEntRef(entity);
 		
