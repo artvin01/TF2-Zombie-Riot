@@ -607,3 +607,10 @@ public void Rogue_Vote_BrokenBridge(const Vote vote, int index)
 			Rogue_GiveNamedArtifact(artifact.Name);
 	}
 }
+
+static void GrantAllPlayersCredits_Rogue(int cash)
+{
+	cash *= (Rogue_GetRound()+1);
+	CPrintToChatAll("{green}%t","Cash Gained!", cash);
+	CurrentCash += cash;
+}

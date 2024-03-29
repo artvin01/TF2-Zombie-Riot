@@ -54,7 +54,7 @@ void AdjustBotCount()
 	int botcount = 0;
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && IsFakeClient(client))
+		if(IsClientInGame(client) && IsFakeClient(client) && !IsClientSourceTV(client))
 		{
 			botcount += 1;
 			if(botcount > 2)
@@ -68,7 +68,8 @@ void AdjustBotCount()
 	{
 		if(botcount < 2)
 		{
-			SpawnBotCustom("bot1", true);
+			int botadded = SpawnBotCustom("bot1", true);
+			SetTeam(botadded, TFTeam_Blue);
 			botcount++;	
 		}
 		else
@@ -85,7 +86,7 @@ void KillFeed_PluginStart()
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && IsFakeClient(client))
+		if(IsClientInGame(client) && IsFakeClient(client) && !IsClientSourceTV(client))
 		{
 			for(int i; i < sizeof(Bots); i++)
 			{
@@ -101,7 +102,7 @@ void KillFeed_PluginStart()
 
 void KillFeed_ClientPutInServer(int client)
 {
-	if(IsFakeClient(client))
+	if(IsFakeClient(client) && !IsClientSourceTV(client))
 	{
 		ForceTeam[client] = 3;
 	
@@ -116,6 +117,16 @@ void KillFeed_ClientPutInServer(int client)
 	}
 }
 
+void MoveBotToSpectator(int client)
+{
+	if(FeedTimer == null && GetTeam(client) == TFTeam_Red)
+	{
+		f_ClientMusicVolume[client] = 1.0;
+		f_ZombieVolumeSetting[client] = 0.0;
+		SetTeam(client, TFTeam_Spectator);
+		b_IsPlayerABot[client] = true;
+	}
+}
 void KillFeed_ClientDisconnect(int client)
 {
 	for(int i; i < sizeof(Bots); i++)
@@ -144,7 +155,7 @@ void KillFeed_ClientDisconnect(int client)
 						}
 					}
 
-					if(!found && IsClientInGame(target) && IsFakeClient(target))
+					if(!found && IsClientInGame(target) && IsFakeClient(target) && !IsClientSourceTV(client))
 					{
 						Bots[sizeof(Bots) - 1] = target;
 						break;
@@ -511,14 +522,13 @@ public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
 	for(int i; i < length; i++)
 	{
 		Event event = list.Get(i);
+		int victim = GetClientOfUserId(event.GetInt("userid"));
+		int attacker = GetClientOfUserId(event.GetInt("attacker"));
+		int assister = GetClientOfUserId(event.GetInt("assister"));
 
 		if(event.GetBool("silent_kill"))
 		{
 			event.SetBool("silent_kill", false);
-
-			int victim = GetClientOfUserId(event.GetInt("userid"));
-			int attacker = GetClientOfUserId(event.GetInt("attacker"));
-			int assister = GetClientOfUserId(event.GetInt("assister"));
 
 			if(victim)
 				event.FireToClient(victim);
@@ -537,10 +547,20 @@ public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
 					event.FireToClient(client);
 			}
 		}
-
+		if(IsValidClient(victim) && IsFakeClient(victim) && !IsClientSourceTV(victim))
+		{
+			KillFeed_SetBotTeam(victim, TFTeam_Blue);
+		}
+		if(IsValidClient(attacker) && IsFakeClient(attacker) && !IsClientSourceTV(attacker))
+		{
+			KillFeed_SetBotTeam(attacker, TFTeam_Blue);
+		}
+		if(IsValidClient(assister) && IsFakeClient(assister) && !IsClientSourceTV(assister))
+		{
+			KillFeed_SetBotTeam(assister, TFTeam_Blue);
+		}
 		event.Cancel();
 	}
-
 	FeedTimer = CreateTimer(0.3, KillFeed_NextTimer);
 	return Plugin_Continue;
 }

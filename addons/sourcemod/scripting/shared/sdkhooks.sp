@@ -797,6 +797,25 @@ public void OnPostThink(int client)
 					}
 				}
 			}
+			if(ClientHasUseableGrenadeOrDrink(client))
+			{
+				if(GetGameTime() > GrenadeApplyCooldownReturn(client))
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [◈]", buffer);
+				}
+				else
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [◈ %.1fs]", buffer, GrenadeApplyCooldownReturn(client) - GetGameTime());
+				}
+			}
+			static int TaurusInt;
+			TaurusInt = TaurusExistant(client);
+			if(TaurusInt > 0)
+			{
+				int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+				int ammo = GetEntData(TaurusInt, iAmmoTable, 4);//Get ammo clip
+				FormatEx(buffer, sizeof(buffer), "%s [T %i/%i]",buffer, ammo, TaurusMaxAmmo());
+			}
 		}
 		 
 		int red = 200;
@@ -1192,6 +1211,17 @@ public void OnPostThink(int client)
 					else
 					{
 						Format(buffer, sizeof(buffer), "\nBA\n", Cooldowntocheck);
+					}
+				}
+				case BuildingBlacksmith:
+				{
+					if(Cooldowntocheck > 0.0)
+					{
+						Format(buffer, sizeof(buffer), "%.1f\nTI\n", Cooldowntocheck);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "\nTI\n", Cooldowntocheck);
 					}
 				}
 			}
@@ -1891,10 +1921,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				CheckAlivePlayers(_, victim);
 
 				// Die in Rogue, there's no lastman
-				return Rogue_Mode() ? Plugin_Continue : Plugin_Handled;
+				return Rogue_NoLastman() ? Plugin_Continue : Plugin_Handled;
 			}
 			
 			i_AmountDowned[victim] += 1;
+			Rogue_PlayerDowned();
+			
 			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
 			{
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
