@@ -309,9 +309,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		else if(StrContains(data, "fake") != -1)
 		{
 			npc.m_bSecondPhase = false;
-			SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.
-			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12); 
-			SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6);
+			MakeObjectIntangeable(npc.index);
 			i_RaidGrantExtra[npc.index] = -1;
 			b_DoNotUnStuck[npc.index] = true;
 			b_ThisNpcIsImmuneToNuke[npc.index] = true;
@@ -748,22 +746,9 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 	if(npc.Anger)	// Waiting for enemies to die off
 	{
-		float enemies = float(Zombies_Currently_Still_Ongoing);
-
-		for(int i; i < i_MaxcountNpcTotal; i++)
-		{
-			int victim = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(victim != INVALID_ENT_REFERENCE && victim != npc.index && IsEntityAlive(victim) && GetTeam(victim) != TFTeam_Red)
-			{
-				int maxhealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
-				if(maxhealth)
-					enemies += float(GetEntProp(victim, Prop_Data, "m_iHealth")) / float(maxhealth);
-			}
-		}
-
 		if(!Waves_IsEmpty())
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * (enemies + 1.0) / 485.0));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 17 / 20);
 			return;
 		}
 

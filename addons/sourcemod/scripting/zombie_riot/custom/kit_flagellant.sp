@@ -34,6 +34,9 @@ static int MoreMoreCap[MAXTF2PLAYERS];
 static int LastSepsis[MAXTF2PLAYERS];
 static bool LastSepsisRaid[MAXTF2PLAYERS];
 
+static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
+static Handle EffectTimer[MAXTF2PLAYERS];
+
 void Flagellant_MapStart()
 {
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
@@ -46,6 +49,9 @@ void Flagellant_Enable(int client, int weapon)
 		case WEAPON_FLAGELLANT_MELEE:
 		{
 			MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
+
+			delete EffectTimer[client];
+			EffectTimer[client] = CreateTimer(0.5, Flagellant_EffectTimer, client, TIMER_REPEAT);
 		}
 		case WEAPON_FLAGELLANT_HEAL:
 		{
@@ -64,6 +70,110 @@ void Flagellant_Enable(int client, int weapon)
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
 	}
+}
+
+void Flagellant_MiniBossChance(int &chance)
+{
+	if(chance > 0)
+	{
+		int count;
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsPlayerAlive(client) && GetClientTeam(client) == TFTeam_Red)
+			{
+				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon != -1)
+				{
+					switch(i_CustomWeaponEquipLogic[weapon])
+					{
+						case WEAPON_FLAGELLANT_MELEE, WEAPON_FLAGELLANT_HEAL, WEAPON_FLAGELLANT_DAMAGE:
+						{
+							count++;
+						}
+					}
+				}
+			}
+		}
+
+		if(count)
+		{
+			int players = CountPlayersOnRed();
+			if(players < 4)
+				players = 4;
+
+			// Up to 5 extra chance
+			static float remainer;
+			float multi = (count * 5.0 / float(players)) + remainer;
+
+			while(multi > 1.0 && chance > 0)
+			{
+				multi -= 1.0;
+				chance--;
+			}
+
+			remainer = multi;
+		}
+	}
+}
+
+public Action Flagellant_EffectTimer(Handle timer, int client)
+{
+	if(IsClientInGame(client))
+	{
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon != -1 && IsPlayerAlive(client))
+		{
+			switch(i_CustomWeaponEquipLogic[weapon])
+			{
+				case WEAPON_FLAGELLANT_MELEE, WEAPON_FLAGELLANT_HEAL, WEAPON_FLAGELLANT_DAMAGE:
+				{
+					if(ParticleRef[client] == -1)
+					{
+						float pos[3]; GetClientAbsOrigin(client, pos);
+						pos[2] += 1.0;
+
+						int entity = ParticleEffectAt(pos, "utaunt_hands_floor2_green", -1.0);
+						if(entity > MaxClients)
+						{
+							SetParent(client, entity);
+							ParticleRef[client] = EntIndexToEntRef(entity);
+						}
+					}
+					
+					return Plugin_Continue;
+				}
+			}
+		}
+		
+		if(ParticleRef[client] != -1)
+		{
+			int entity = EntRefToEntIndex(ParticleRef[client]);
+			if(entity > MaxClients)
+			{
+				TeleportEntity(entity, OFF_THE_MAP);
+				RemoveEntity(entity);
+			}
+
+			ParticleRef[client] = -1;
+		}
+
+		return Plugin_Continue;
+	}
+		
+	if(ParticleRef[client] != -1)
+	{
+		int entity = EntRefToEntIndex(ParticleRef[client]);
+		if(entity > MaxClients)
+		{
+			TeleportEntity(entity, OFF_THE_MAP);
+			RemoveEntity(entity);
+		}
+		
+		ParticleRef[client] = -1;
+	}
+
+	EffectTimer[client] = null;
+	return Plugin_Stop;
 }
 
 void Flagellant_DoSwingTrace(int client)
@@ -326,7 +436,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 		
 		if(health < maxhealth)
 		{
-			float multi = Attributes_GetOnWeapon(client, weapon, 8, true);
+			float multi = Attributes_Get(weapon, 2, 1.0);
 			
 			float base = 30.0 + (HealLevel[client] * 7.5);
 			float cost = 1.0 - (HealLevel[client] * 0.1);
@@ -446,7 +556,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 		TriggerSelfDamage(client, 0.025);
 		
 		int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		float multi = Attributes_GetOnWeapon(client, secondary, 8, true);
+		float multi = Attributes_Get(weapon, 2, 1.0);
 
 		int flags = i_ExplosiveProjectileHexArray[client];
 		i_ExplosiveProjectileHexArray[client] = EP_DEALS_PLASMA_DAMAGE|EP_GIBS_REGARDLESS;
@@ -469,7 +579,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 
 public void Flagellant_AcidHitPost(int attacker, int victim, float damage, int weapon)
 {
-	float multi = Attributes_GetOnWeapon(attacker, weapon, 8, true);
+	float multi = Attributes_Get(weapon, 2, 1.0);
 	StartBleedingTimer(victim, attacker, multi * 4.0, HealLevel[attacker] > 1 ? 15 : 10, weapon, DMG_PLASMA);
 }
 
@@ -664,7 +774,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 		}
 		
 		int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		float multi = Attributes_GetOnWeapon(client, secondary, 8, true);
+		float multi = Attributes_Get(weapon, 2, 1.0);
 		if(HealLevel[client] > 1)
 			multi *= 1.2;
 		

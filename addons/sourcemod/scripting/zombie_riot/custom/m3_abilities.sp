@@ -539,6 +539,8 @@ public void BuilderMenu(int client)
 {
 	if(dieingstate[client] == 0)
 	{	
+		CancelClientMenu(client);
+		SetStoreMenuLogic(client, false);
 		static char buffer[64];
 		Menu menu = new Menu(BuilderMenuM);
 
@@ -557,12 +559,17 @@ public void BuilderMenu(int client)
 	}
 }
 
+/*
+	SetStoreMenuLogic(client, false);
+	sResetStoreMenuLogic(client);
+*/
 public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
 		case MenuAction_Select:
 		{
+			ResetStoreMenuLogic(client);
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			int id = StringToInt(buffer);
@@ -587,6 +594,10 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 					delete menu;
 				}
 			}
+		}
+		case MenuAction_Cancel:
+		{
+			ResetStoreMenuLogic(client);
 		}
 	}
 	return 0;
