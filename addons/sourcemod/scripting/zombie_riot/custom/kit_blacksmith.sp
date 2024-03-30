@@ -863,7 +863,7 @@ static void TinkerMeleeGlassy(int rarity, TinkerEnum tinker)
 
 static void TinkerMeleeRapidSwing(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "");
+	strcopy(tinker.Name, sizeof(tinker.Name), "Rapid Haste");
 	tinker.Attrib[0] = 2; //damage
 	tinker.Attrib[1] = 6; //attackspeed
 	//less damage
@@ -894,7 +894,7 @@ static void TinkerMeleeRapidSwing(int rarity, TinkerEnum tinker)
 
 static void TinkerMeleeHeavySwing(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "");
+	strcopy(tinker.Name, sizeof(tinker.Name), "Heavy Swings");
 	tinker.Attrib[0] = 2; //damage
 	tinker.Attrib[1] = 6; //attackspeed
 	//less damage
@@ -925,7 +925,7 @@ static void TinkerMeleeHeavySwing(int rarity, TinkerEnum tinker)
 
 static void TinkerMeleeLongSwing(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "");
+	strcopy(tinker.Name, sizeof(tinker.Name), "Extended Hands");
 	tinker.Attrib[0] = 2; //damage
 	tinker.Attrib[1] = 6; //attackspeed
 	tinker.Attrib[2] = 4001; //ExtraMeleeRange
@@ -959,7 +959,7 @@ static void TinkerMeleeLongSwing(int rarity, TinkerEnum tinker)
 
 static void TinkerHastyMage(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "");
+	strcopy(tinker.Name, sizeof(tinker.Name), "Hasty Mage");
 	tinker.Attrib[0] = 6;
 	tinker.Attrib[1] = 733;
 	float AttackspeedLuck = (0.1 * (tinker.Luck[1]));
@@ -986,7 +986,7 @@ static void TinkerHastyMage(int rarity, TinkerEnum tinker)
 }
 static void TinkerHeavyMage(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "");
+	strcopy(tinker.Name, sizeof(tinker.Name), "Heavy Mage");
 	tinker.Attrib[0] = 6;
 	tinker.Attrib[1] = 733;
 	tinker.Attrib[2] = 410;
@@ -1019,7 +1019,7 @@ static void TinkerHeavyMage(int rarity, TinkerEnum tinker)
 
 static void TinkerConcentrationMage(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "");
+	strcopy(tinker.Name, sizeof(tinker.Name), "Concentrated Magic");
 	tinker.Attrib[0] = 103;
 	tinker.Attrib[1] = 410;
 	float ProjectileSpeed = (0.1 * (tinker.Luck[0]));
@@ -1048,7 +1048,7 @@ static void TinkerConcentrationMage(int rarity, TinkerEnum tinker)
 
 static void TinkerTankMage(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "");
+	strcopy(tinker.Name, sizeof(tinker.Name), "Resistive Mage");
 	tinker.Attrib[0] = 733;
 	tinker.Attrib[1] = 410;
 	tinker.Attrib[2] = 205;
@@ -1087,7 +1087,7 @@ static void TinkerTankMage(int rarity, TinkerEnum tinker)
 
 static void TinkerMedigun_FastHeal(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "");
+	strcopy(tinker.Name, sizeof(tinker.Name), "Healing Overdrive");
 	tinker.Attrib[0] = 8; //more heal rate
 	tinker.Attrib[1] = 10; //Less uber rate
 	tinker.Attrib[2] = 4002; //Less Overheal
@@ -1119,7 +1119,7 @@ static void TinkerMedigun_FastHeal(int rarity, TinkerEnum tinker)
 }
 static void TinkerMedigun_Overhealer(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "");
+	strcopy(tinker.Name, sizeof(tinker.Name), "Omega Overheal");
 	tinker.Attrib[0] = 8;
 	tinker.Attrib[1] = 4002; 
 	float LessHealRateLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[0]))));
@@ -1148,7 +1148,7 @@ static void TinkerMedigun_Overhealer(int rarity, TinkerEnum tinker)
 
 static void TinkerMedigun_Uberer(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "");
+	strcopy(tinker.Name, sizeof(tinker.Name), "Pure Uberer");
 	tinker.Attrib[0] = 8;
 	tinker.Attrib[1] = 10;
 	float LessHealRate = (0.1 * (1.0 + (-1.0*(tinker.Luck[0]))));
@@ -1216,7 +1216,7 @@ static void TinkerMedicWeapon_GlassyMedic(int rarity, TinkerEnum tinker)
 
 static void TinkerMedicWeapon_BurstHealMedic(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "");
+	strcopy(tinker.Name, sizeof(tinker.Name), "Burst Heal");
 	tinker.Attrib[0] = 8; //more heal rate
 	tinker.Attrib[1] = 6; 
 	tinker.Attrib[2] = 97; 
@@ -1250,7 +1250,7 @@ static void TinkerMedicWeapon_BurstHealMedic(int rarity, TinkerEnum tinker)
 
 static void TinkerBuilderLongSwing(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "");
+	strcopy(tinker.Name, sizeof(tinker.Name), "Building Extention");
 	tinker.Attrib[0] = 6; //attackspeed
 	tinker.Attrib[1] = 264; //ExtraMeleeRange
 	tinker.Attrib[2] = 4001; //ExtraMeleeRange
@@ -1286,7 +1286,7 @@ static void TinkerBuilderLongSwing(int rarity, TinkerEnum tinker)
 
 static void TinkerBuilderRepairMaster(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "");
+	strcopy(tinker.Name, sizeof(tinker.Name), "Repair Master");
 	tinker.Attrib[0] = 95; //RepairRate
 	tinker.Attrib[1] = 107; //movementspeed
 	
@@ -1317,7 +1317,7 @@ static void TinkerBuilderRepairMaster(int rarity, TinkerEnum tinker)
 
 static void TinkerRangedSlowHeavyProj(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "");
+	strcopy(tinker.Name, sizeof(tinker.Name), "Slow Heavy Energy");
 	tinker.Attrib[0] = 2; //damage
 	tinker.Attrib[1] = 103; //ProjectileSpeed
 	tinker.Attrib[2] = 6; //attackspeed
@@ -1351,7 +1351,7 @@ static void TinkerRangedSlowHeavyProj(int rarity, TinkerEnum tinker)
 
 static void TinkerRangedFastProj(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "");
+	strcopy(tinker.Name, sizeof(tinker.Name), "Speeding Bullets");
 	tinker.Attrib[0] = 2; //damage
 	tinker.Attrib[1] = 103; //ProjectileSpeed
 	tinker.Attrib[2] = 6; //attackspeed
