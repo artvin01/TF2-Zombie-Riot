@@ -468,6 +468,9 @@ void NPC_ConfigSetup()
 	// Rogue Mode Low Prio
 	OverlordRogue_OnMapStart_NPC();
 	RaidbossBladedance_MapStart();
+	RogueCondition_Setup();
+	GogglesFollower_Setup();
+	TheHunter_Setup();
 }
 
 stock int NPC_Add(NPCData data)
@@ -538,20 +541,20 @@ static void PrecacheNPC(int i, NPCData data)
 	}
 }
 
-stock int NPC_CreateByName(const char[] name, int client, float vecPos[3], float vecAng[3], int team, const char[] data = "")
+stock int NPC_CreateByName(const char[] name, int client, float vecPos[3], float vecAng[3], int team, const char[] data = "", bool ignoreSetup = false)
 {
 	static NPCData npcdata;
 	int id = NPC_GetByPlugin(name, npcdata);
 	if(id == -1)
 	{
-		PrintToChatAll("\"%s\" is not a valid NPC or is using old method!", name);
+		PrintToChatAll("\"%s\" is not a valid NPC!", name);
 		return -1;
 	}
 
-	return CreateNPC(npcdata, id, client, vecPos, vecAng, team, data);
+	return CreateNPC(npcdata, id, client, vecPos, vecAng, team, data, ignoreSetup);
 }
 
-int NPC_CreateById(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], int team, const char[] data = "")
+int NPC_CreateById(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], int team, const char[] data = "", bool ignoreSetup = false)
 {
 	if(Index_Of_Npc < 1 || Index_Of_Npc >= NPCList.Length)
 	{
@@ -561,10 +564,10 @@ int NPC_CreateById(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3
 
 	static NPCData npcdata;
 	NPC_GetById(Index_Of_Npc, npcdata);
-	return CreateNPC(npcdata, Index_Of_Npc, client, vecPos, vecAng, team, data);
+	return CreateNPC(npcdata, Index_Of_Npc, client, vecPos, vecAng, team, data, ignoreSetup);
 }
 
-static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float vecAng[3], int team, const char[] data, bool ignoreSetup)
 {
 	PrecacheNPC(id, npcdata);
 
@@ -586,16 +589,19 @@ static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float
 		if(!i_NpcInternalId[entity])
 			i_NpcInternalId[entity] = id;
 		
-		if(GetTeam(entity) == 2)
+		if(!ignoreSetup)
 		{
-			Rogue_AllySpawned(entity);
-		}
-		else
-		{
-			Rogue_EnemySpawned(entity);
-		}
+			if(GetTeam(entity) == 2)
+			{
+				Rogue_AllySpawned(entity);
+			}
+			else
+			{
+				Rogue_EnemySpawned(entity);
+			}
 
-		Waves_UpdateMvMStats();
+			Waves_UpdateMvMStats();
+		}
 	}
 
 	return entity;
@@ -1176,3 +1182,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/forest/npc_cautus.sp"
 #include "zombie_riot/npc/interitus/forest/npc_vulpo.sp"
 #include "zombie_riot/npc/interitus/forest/npc_majorsteam.sp"
+
+#include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_thehunter.sp"

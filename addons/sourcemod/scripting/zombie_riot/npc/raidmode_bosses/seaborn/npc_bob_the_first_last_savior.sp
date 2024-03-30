@@ -101,7 +101,6 @@ static const char g_BobSuperMeleeCharge_Hit[][] =
 	"player/taunt_yeti_standee_break.wav",
 };
 
-//static int BobHitDetected[MAXENTITIES];
 
 void RaidbossBobTheFirst_OnMapStart()
 {
@@ -475,6 +474,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	}
 	if(npc.m_bFakeClone)
 	{
+		bool FellowBobFound = false;
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
@@ -486,11 +486,15 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					{
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(other, Prop_Data, "m_iHealth"));
 						SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", GetEntProp(other, Prop_Data, "m_iMaxHealth"));
-						
+						FellowBobFound = true;
 						break;
 					}
 				}
 			}
+		}
+		if(!FellowBobFound)
+		{
+			SmiteNpcToDeath(npc.index);
 		}
 	}
 	if(!npc.m_bFakeClone && LastMann)
@@ -1664,6 +1668,7 @@ void RaidbossBobTheFirst_NPCDeath(int entity)
 			}
 		}
 	}
+	
 }
 
 static Action Bob_DeathCutsceneCheck(Handle timer)
