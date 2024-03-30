@@ -4108,6 +4108,10 @@ int MaxSupportBuildingsAllowed(int client, bool ingore_glass)
 	
 	maxAllowed += Building_health_attribute; 
 	maxAllowed += Blacksmith_Additional_SupportBuildings(client); 
+	if(CvarInfiniteCash.BoolValue)
+	{
+		maxAllowed += 999;
+	}
 	
 	if(maxAllowed < 1)
 	{
