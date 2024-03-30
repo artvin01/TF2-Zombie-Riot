@@ -388,7 +388,7 @@ public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, i
 
 public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
 {
-	switch(GetRandomInt(1, 10))
+	switch(GetRandomInt(1, 9))
 	{
 		case 1:
 			Dimension_Summon_Npc(client, "npc_seaborn_medic" ,weapon, 1.2, 1.3, "utaunt_smoke_floor1_green");
