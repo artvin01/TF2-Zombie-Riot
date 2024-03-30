@@ -2263,12 +2263,12 @@ bool Rogue_InSetup()	// Waves_InSetup()
 {
 	return (GameState == State_Setup || ProgressTimer);
 }
-
+/*
 bool Rogue_CanRegen()
 {
 	return Rogue_Mode() && RogueTheme == BlueParadox && !Rogue_InSetup();
 }
-
+*/
 bool Rogue_Started()	// Waves_Started()
 {
 	return GameState != State_Setup;
