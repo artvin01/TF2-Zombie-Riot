@@ -657,8 +657,8 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	property float m_flExtraDamage
 	{
-		public get()							{ return fl_ExtraDamage[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_ExtraDamage[this.index] = TempValueForProperty; }
+		public get()							{ return fl_Extra_Damage[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_Extra_Damage[this.index] = TempValueForProperty; }
 	}
 	property float m_flHurtie
 	{

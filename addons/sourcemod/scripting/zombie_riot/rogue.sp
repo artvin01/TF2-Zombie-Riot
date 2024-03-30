@@ -95,6 +95,7 @@ enum struct Stage
 	Function FuncStart;
 	char WaveSet[PLATFORM_MAX_PATH];
 	char ArtifactKey[64];
+	bool InverseKey;
 
 	void SetupKv(KeyValues kv)
 	{
@@ -127,6 +128,7 @@ enum struct Stage
 		}
 
 		kv.GetString("key", this.ArtifactKey, 64);
+		this.InverseKey = view_as<bool>(kv.GetNum("keyinverse"));
 	}
 }
 
@@ -587,7 +589,7 @@ static void DisplayHintVote()
 				{
 					count++;
 
-					if(VotedFor[client] > 0)
+					if(VotedFor[client] > 0 && VotedFor[client] <= length)
 						votes[VotedFor[client] - 1]++;
 				}
 			}
@@ -639,6 +641,10 @@ static void DisplayHintVote()
 
 			PrintHintTextToAll(buffer);
 		}
+	}
+	else
+	{
+		PrintHintTextToAll("No Vote, %ds left", RoundFloat(VoteEndTime - GetGameTime()));
 	}
 }
 
@@ -1684,7 +1690,7 @@ static int GetRandomStage(const Floor floor, Stage stage, int type)
 			list.GetArray(i, stage);
 			if(stage.ArtifactKey[0])
 			{
-				if(Rogue_HasNamedArtifact(stage.ArtifactKey))
+				if(Rogue_HasNamedArtifact(stage.ArtifactKey) != stage.InverseKey)
 					return i;
 			}
 			else if(choosen == -1)
@@ -1712,12 +1718,16 @@ static int GetRandomStage(const Floor floor, Stage stage, int type)
 			}
 			
 			list.GetArray(i, stage);
-			if(!stage.ArtifactKey[0] || Rogue_HasNamedArtifact(stage.ArtifactKey))	// Key
+
+			if(!Voting || Voting.FindString(stage.Name, Vote::Config) == -1)
 			{
-				if(!type || (stage.WaveSet[0] && stage.FuncStart == INVALID_FUNCTION))	// If Type 1, Normal Battles Only
+				if(!stage.ArtifactKey[0] || Rogue_HasNamedArtifact(stage.ArtifactKey) != stage.InverseKey)	// Key
 				{
-					if(!CurrentExclude || CurrentExclude.FindString(stage.Name) == -1)	// Exclude List
-						return i;
+					if(!type || (stage.WaveSet[0] && stage.FuncStart == INVALID_FUNCTION))	// If Type 1, Normal Battles Only
+					{
+						if(!CurrentExclude || CurrentExclude.FindString(stage.Name) == -1)	// Exclude List
+							return i;
+					}
 				}
 			}
 

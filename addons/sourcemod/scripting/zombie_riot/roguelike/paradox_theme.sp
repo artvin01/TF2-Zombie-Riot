@@ -98,6 +98,34 @@ void Rogue_Paradox_ProjectileSpeed(int owner, float &speed)
 	}
 }
 
+public void Rogue_CompassMap_Enemy(int entity)
+{
+	fl_Extra_Speed[entity] *= 0.9;
+	fl_Extra_MeleeArmor[entity] *= 1.25;
+	fl_Extra_RangedArmor[entity] *= 1.25;
+	fl_Extra_Damage[entity] *= 0.75;
+}
+
+public void Rogue_Lastman_Collect()
+{
+	StartLastman = true;
+}
+
+public void Rogue_Lastman_Remove()
+{
+	StartLastman = false;
+}
+
+public void Rogue_Camping_Collect()
+{
+	StartCamping = true;
+}
+
+public void Rogue_Camping_Remove()
+{
+	StartCamping = false;
+}
+
 public void Rogue_HeavyWind_Weapon(int entity)
 {
 	Attributes_SetMulti(entity, 103, 0.67);
