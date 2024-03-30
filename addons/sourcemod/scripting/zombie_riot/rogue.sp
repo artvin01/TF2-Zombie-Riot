@@ -95,6 +95,7 @@ enum struct Stage
 	Function FuncStart;
 	char WaveSet[PLATFORM_MAX_PATH];
 	char ArtifactKey[64];
+	bool InverseKey;
 
 	void SetupKv(KeyValues kv)
 	{
@@ -127,6 +128,7 @@ enum struct Stage
 		}
 
 		kv.GetString("key", this.ArtifactKey, 64);
+		this.InverseKey = view_as<bool>(kv.GetNum("keyinverse"));
 	}
 }
 
@@ -587,7 +589,7 @@ static void DisplayHintVote()
 				{
 					count++;
 
-					if(VotedFor[client] > 0)
+					if(VotedFor[client] > 0 && VotedFor[client] <= length)
 						votes[VotedFor[client] - 1]++;
 				}
 			}
@@ -639,6 +641,10 @@ static void DisplayHintVote()
 
 			PrintHintTextToAll(buffer);
 		}
+	}
+	else
+	{
+		PrintHintTextToAll("No Vote, %ds left", RoundFloat(VoteEndTime - GetGameTime()));
 	}
 }
 
@@ -830,8 +836,7 @@ void Rogue_BattleVictory()
 		if(Rogue_HasFriendship())
 			BattleIngots += BattleIngots > 4 ? 2 : 1;
 		
-		CurrentIngots += BattleIngots;
-		CPrintToChatAll("%t", "Gained Ingots", BattleIngots);
+		Rogue_AddIngots(BattleIngots);
 	}
 
 	int chaos = RoundToFloor(BattleChaos);
@@ -959,7 +964,7 @@ void Rogue_NextProgress()
 				startingIngots = 16;
 			}
 
-			CurrentIngots += startingIngots;
+			Rogue_AddIngots(startingIngots, true);
 
 			Floor floor;
 			Floors.GetArray(CurrentFloor, floor);
@@ -1684,7 +1689,7 @@ static int GetRandomStage(const Floor floor, Stage stage, int type)
 			list.GetArray(i, stage);
 			if(stage.ArtifactKey[0])
 			{
-				if(Rogue_HasNamedArtifact(stage.ArtifactKey))
+				if(Rogue_HasNamedArtifact(stage.ArtifactKey) != stage.InverseKey)
 					return i;
 			}
 			else if(choosen == -1)
@@ -1712,12 +1717,16 @@ static int GetRandomStage(const Floor floor, Stage stage, int type)
 			}
 			
 			list.GetArray(i, stage);
-			if(!stage.ArtifactKey[0] || Rogue_HasNamedArtifact(stage.ArtifactKey))	// Key
+
+			if(!Voting || Voting.FindString(stage.Name, Vote::Config) == -1)
 			{
-				if(!type || (stage.WaveSet[0] && stage.FuncStart == INVALID_FUNCTION))	// If Type 1, Normal Battles Only
+				if(!stage.ArtifactKey[0] || Rogue_HasNamedArtifact(stage.ArtifactKey) != stage.InverseKey)	// Key
 				{
-					if(!CurrentExclude || CurrentExclude.FindString(stage.Name) == -1)	// Exclude List
-						return i;
+					if(!type || (stage.WaveSet[0] && stage.FuncStart == INVALID_FUNCTION))	// If Type 1, Normal Battles Only
+					{
+						if(!CurrentExclude || CurrentExclude.FindString(stage.Name) == -1)	// Exclude List
+							return i;
+					}
 				}
 			}
 
@@ -2154,10 +2163,22 @@ int Rogue_GetIngots()
 	return CurrentIngots;
 }
 
-void Rogue_AddIngots(int amount)
+void Rogue_AddIngots(int amount, bool silent = false)
 {
 	CurrentIngots += amount;
 	Waves_UpdateMvMStats();
+
+	if(!silent)
+	{
+		if(amount < 0)
+		{
+			CPrintToChatAll("%t", "Losted Ingots", -amount);
+		}
+		else
+		{
+			CPrintToChatAll("%t", "Gained Ingots", amount);
+		}
+	}
 }
 
 void Rogue_SetBattleIngots(int amount)
@@ -2241,6 +2262,11 @@ stock bool Rogue_CurseActive()
 bool Rogue_InSetup()	// Waves_InSetup()
 {
 	return (GameState == State_Setup || ProgressTimer);
+}
+
+bool Rogue_CanRegen()
+{
+	return Rogue_Mode() && RogueTheme == BlueParadox && !Rogue_InSetup();
 }
 
 bool Rogue_Started()	// Waves_Started()
