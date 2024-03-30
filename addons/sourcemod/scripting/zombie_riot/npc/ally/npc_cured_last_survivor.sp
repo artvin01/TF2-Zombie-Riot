@@ -790,9 +790,7 @@ public void CuredFatherGrigori_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-
-
-static int GetClosestAllyPlayerGreg(int entity)
+int GetClosestAllyPlayerGreg(int entity)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 

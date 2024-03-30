@@ -6,6 +6,7 @@
 Handle h_TimerJudgeManagement[MAXPLAYERS+1] = {null, ...};
 static float f_JudgeHudDelay[MAXTF2PLAYERS];
 static bool b_JudgeFullAmmoSound[MAXTF2PLAYERS];
+static int i_TraurusJudge[MAXTF2PLAYERS];
 
 void Judge_Map_Precache() //Anything that needs to be precaced like sounds or something.
 {
@@ -23,7 +24,15 @@ void Reset_stats_Judge_Singular(int client) //This is on disconnect/connect
 	h_TimerJudgeManagement[client] = null;
 }
 
-
+public int TaurusExistant(int client)
+{
+	if(h_TimerJudgeManagement[client] != null)
+	{
+		int weapon = EntRefToEntIndex(i_TraurusJudge[client]);
+		return weapon;
+	}
+	return -1;
+}
 public void Enable_Judge(int client, int weapon) 
 {
 	if (h_TimerJudgeManagement[client] != null)
@@ -39,6 +48,8 @@ public void Enable_Judge(int client, int weapon)
 			h_TimerJudgeManagement[client] = CreateDataTimer(0.1, Timer_Management_Judge, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
+			
+			i_TraurusJudge[client] = EntIndexToEntRef(weapon);
 		}
 		return;
 	}
@@ -49,6 +60,7 @@ public void Enable_Judge(int client, int weapon)
 		h_TimerJudgeManagement[client] = CreateDataTimer(0.1, Timer_Management_Judge, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
+		i_TraurusJudge[client] = EntIndexToEntRef(weapon);
 	}
 }
 
@@ -131,13 +143,17 @@ void Add_Back_One_Clip_Judge(int entity, int client)
 	IsAmmoFullJudgeWeapon(ammo, client);
 }
 
+int TaurusMaxAmmo()
+{
+	return 5;
+}
 bool IsAmmoFullJudgeWeapon(int ammo, int client)
 {
-	if(ammo > 4)
+	if(ammo >= TaurusMaxAmmo())
 	{
 		if(!b_JudgeFullAmmoSound[client])
 		{
-			EmitSoundToClient(client, "player/recharged.wav", client, SNDCHAN_AUTO, 75,_,1.0,100);
+		//	EmitSoundToClient(client, "player/recharged.wav", client, SNDCHAN_AUTO, 75,_,1.0,100);
 			b_JudgeFullAmmoSound[client] = true;
 		}
 		return true;

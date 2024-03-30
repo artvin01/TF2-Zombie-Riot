@@ -1,6 +1,8 @@
 static bool HeavyWind;
 static bool ExtremeHeat;
 static bool RedMoon;
+static bool StartLastman;
+static bool StartCamping;
 static Handle FrostTimer;
 static ArrayList WinterTheme;
 
@@ -17,6 +19,17 @@ bool Rogue_Paradox_RedMoon()
 void Rogue_Paradox_MapStart()
 {
 	delete WinterTheme;
+}
+
+bool Rogue_Paradox_Lastman()
+{
+	return StartLastman;
+}
+
+void Rogue_Paradox_OnNewFloor()
+{
+	if(StartCamping)
+		Rogue_AddExtraStage(1);
 }
 
 void Rogue_Paradox_AddWinterNPC(int id)
@@ -96,7 +109,7 @@ public void Rogue_HeavyRain_Ally(int entity, StringMap map)
 	{
 		float value;
 
-		// +20% move speed
+		// -20% move speed
 		map.GetValue("107", value);
 		map.SetValue("107", value * 0.8);
 	}

@@ -173,7 +173,8 @@ enum
 	WEAPON_NAILGUN_SHOTGUN = 94,
 	WEAPON_BLACKSMITH = 95,
 	WEAPON_COSMIC_PILLAR = 96,
-	WEAPON_COSMIC_RAILCANNON = 97
+	WEAPON_COSMIC_RAILCANNON = 97,
+	WEAPON_GRENADEHUD = 98
 }
 
 enum
@@ -190,7 +191,8 @@ enum
 	Type_COF,
 	Type_Seaborn,
 	Type_Expidonsa,
-	Type_Interitus
+	Type_Interitus,
+	Type_BlueParadox
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -389,7 +391,7 @@ bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
 
 float Building_Collect_Cooldown[MAXENTITIES][MAXTF2PLAYERS];
 
-bool b_SpecialGrigoriStore;
+bool b_SpecialGrigoriStore = true;
 float f_ExtraDropChanceRarity = 1.0;
 bool applied_lastmann_buffs_once = false;
 
@@ -791,12 +793,9 @@ public Action GlobalTimer(Handle timer)
 		{
 			if(IsFakeClient(client))
 			{
-				if(IsClientSourceTV(client) && !b_IsPlayerABot[client])
+				if(IsClientSourceTV(client) || b_IsPlayerABot[client])
 				{
-					f_ClientMusicVolume[client] = 1.0;
-					f_ZombieVolumeSetting[client] = 0.0;
-					SetTeam(client, TFTeam_Spectator);
-					b_IsPlayerABot[client] = true;
+					MoveBotToSpectator(client);
 				}
 			}
 			PlayerApplyDefaults(client);
@@ -1617,7 +1616,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			}
 		}
 
-		if(rogue)
+		if(Rogue_NoLastman())
 		{
 			LastMann = false;
 		}
@@ -2388,13 +2387,6 @@ public Action DeployBannerIconBuff(Handle timer, DataPack pack)
 		}
 	}
 	return Plugin_Stop;
-}
-
-void GrantAllPlayersCredits_Rogue(int cash)
-{
-	cash *= (Rogue_GetRound()+1);
-	CPrintToChatAll("{green}%t","Cash Gained!", cash);
-	CurrentCash += cash;
 }
 
 stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)

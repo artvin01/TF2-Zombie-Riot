@@ -3119,7 +3119,7 @@
 	}
 	"Blacksmith Underleveled"
 	{
-		"en"		"Owner needs to upgrade this building before you can tinker this weapon"
+		"en"		"You can not tinker this weapon"
 	}
 	"Blacksmith No Attribs"
 	{

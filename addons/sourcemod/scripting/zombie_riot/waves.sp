@@ -82,7 +82,8 @@ enum struct Vote
 	char Config[64];
 	int Level;
 	char Desc[256];
-	char Append[16];
+	char Append[64];
+	bool Locked;
 }
 
 static ArrayList Enemies;
@@ -143,6 +144,7 @@ bool Waves_InSetup()
 
 void Waves_MapStart()
 {
+	delete Rounds;
 	delete g_AllocPooledStringCache;
 	FogEntity = INVALID_ENT_REFERENCE;
 	SkyNameRestore[0] = 0;
@@ -150,6 +152,8 @@ void Waves_MapStart()
 	int objective = GetObjectiveResource();
 	if(objective != -1)
 		SetEntProp(objective, Prop_Send, "m_iChallengeIndex", -1);
+	
+	Waves_UpdateMvMStats();
 }
 
 void Waves_PlayerSpawn(int client)
@@ -557,7 +561,6 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	
 	char buffer[128], plugin[64];
 
-	b_SpecialGrigoriStore = view_as<bool>(kv.GetNum("grigori_special_shop_logic"));
 	f_ExtraDropChanceRarity = kv.GetFloat("gift_drop_chance_multiplier", 0.5);
 	kv.GetString("complete_item", buffer, sizeof(buffer));
 	WaveGiftItem = buffer[0] ? Items_NameToId(buffer) : -1;
@@ -806,6 +809,9 @@ void Waves_RoundEnd()
 	CurrentRound = 0;
 	CurrentWave = -1;
 	Medival_Difficulty_Level = 0.0; //make sure to set it to 0 othrerwise waves will become impossible
+
+	if(Rogue_Mode())
+		delete Rounds;
 }
 
 public Action Waves_RoundStartTimer(Handle timer)

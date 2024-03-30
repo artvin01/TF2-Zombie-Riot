@@ -9401,6 +9401,15 @@ void TeleportBackToLastSavePosition(int entity)
 		CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		f_GameTimeTeleportBackSave_OutOfBounds[entity] = GetGameTime() + 2.0; //was stuck, lets just chill.
 		TeleportEntity(entity, f3_VecTeleportBackSave_OutOfBounds[entity], NULL_VECTOR ,{0.0,0.0,0.0});
+		if(b_ThisWasAnNpc[entity])
+		{
+			//freeze the NPC so they can repath their logic, and also not constantly fall off.
+			f_DelayComputingOfPath[entity] = 0.0;
+			FreezeNpcInTime(entity, 0.5);
+			CClotBody npcBase = view_as<CClotBody>(entity);
+			npcBase.m_iTarget = 0;
+			//make them lose their target.
+		}
 	}
 }
 
@@ -9518,6 +9527,9 @@ int i_SpeechEndingScroll_ScrollingPart[MAXENTITIES];
 float f_SpeechTickDelay[MAXENTITIES];
 float f_SpeechDeleteAfter[MAXENTITIES];
 
+/**
+ * @param endingtextscroll	Is end text that loops "" -> "." -> ".." -> "..." -> ""
+ */
 stock void NpcSpeechBubble(int entity, const char[] speechtext, int fontsize, int colour[4], float extra_offset[3], const char[] endingtextscroll)
 {
 	int Text_Entity;
