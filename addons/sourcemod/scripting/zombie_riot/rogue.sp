@@ -836,8 +836,7 @@ void Rogue_BattleVictory()
 		if(Rogue_HasFriendship())
 			BattleIngots += BattleIngots > 4 ? 2 : 1;
 		
-		CurrentIngots += BattleIngots;
-		CPrintToChatAll("%t", "Gained Ingots", BattleIngots);
+		Rogue_AddIngots(BattleIngots);
 	}
 
 	int chaos = RoundToFloor(BattleChaos);
@@ -965,7 +964,7 @@ void Rogue_NextProgress()
 				startingIngots = 16;
 			}
 
-			CurrentIngots += startingIngots;
+			Rogue_AddIngots(startingIngots, true);
 
 			Floor floor;
 			Floors.GetArray(CurrentFloor, floor);
@@ -2164,10 +2163,22 @@ int Rogue_GetIngots()
 	return CurrentIngots;
 }
 
-void Rogue_AddIngots(int amount)
+void Rogue_AddIngots(int amount, bool silent = false)
 {
 	CurrentIngots += amount;
 	Waves_UpdateMvMStats();
+
+	if(!silent)
+	{
+		if(amount < 0)
+		{
+			CPrintToChatAll("%t", "Losted Ingots", -amount);
+		}
+		else
+		{
+			CPrintToChatAll("%t", "Gained Ingots", amount);
+		}
+	}
 }
 
 void Rogue_SetBattleIngots(int amount)
@@ -2251,6 +2262,11 @@ stock bool Rogue_CurseActive()
 bool Rogue_InSetup()	// Waves_InSetup()
 {
 	return (GameState == State_Setup || ProgressTimer);
+}
+
+bool Rogue_CanRegen()
+{
+	return Rogue_Mode() && RogueTheme == BlueParadox && !Rogue_InSetup();
 }
 
 bool Rogue_Started()	// Waves_Started()

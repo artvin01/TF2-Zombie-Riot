@@ -20,7 +20,7 @@ public void Rogue_HandGrenade_Weapon(int entity)
 	}
 }
 
-public void Rogue_HandSupport_HealTick(int client)
+public void Rogue_HandSupport_HealTick(int client, int &healing_Amount)
 {
 	if(!b_SupportHealHandPassive)
 		return;
@@ -32,8 +32,7 @@ public void Rogue_HandSupport_HealTick(int client)
 		if(i_WeaponArchetype[weapon] == 9 || i_WeaponArchetype[weapon] == 25 || i_WeaponArchetype[weapon] == 24 ||i_WeaponArchetype[weapon] == 22)	// Team Support and vamp knives
 		{
 			// +10 health regen
-			int healing_Amount = HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL);		
-			ApplyHealEvent(client, healing_Amount);	
+			healing_Amount += HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL);
 		}
 	}
 }
