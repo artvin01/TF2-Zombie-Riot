@@ -101,7 +101,6 @@ static const char g_BobSuperMeleeCharge_Hit[][] =
 	"player/taunt_yeti_standee_break.wav",
 };
 
-static bool BobOwnsMe[MAXENTITIES];
 
 void RaidbossBobTheFirst_OnMapStart()
 {
