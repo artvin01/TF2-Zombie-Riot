@@ -577,7 +577,7 @@ public void Weapon_Dimension_Summon_Interitus(int client, int weapon, bool &resu
 
 public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
 {
-	switch(GetRandomInt(1, 6))
+	switch(GetRandomInt(1,7))
 	{
 		case 1:
 			Dimension_Summon_Npc(client, "npc_medival_elite_longbowmen" ,weapon, 0.75, 1.4, "teleporter_blue_exit");
@@ -591,6 +591,8 @@ public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &
 			Dimension_Summon_Npc(client, "npc_infected_goggles" ,weapon, 0.5, 1.1, "teleporter_blue_exit");
 		case 6:
 			Dimension_Summon_Npc(client, "npc_medival_handcannoneer" ,weapon, 0.5, 2.0, "teleporter_blue_exit");
+		case 7:
+			Dimension_Summon_Npc(client, "npc_ripper_goggles" ,weapon, 1.0, 1.0, "teleporter_blue_exit");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none

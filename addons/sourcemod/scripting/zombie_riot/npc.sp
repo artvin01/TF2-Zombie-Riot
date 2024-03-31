@@ -456,6 +456,7 @@ void NPC_ConfigSetup()
 	StalkerCombine_MapStart();
 	StalkerFather_MapStart();
 	StalkerGoggles_OnMapStart();
+	RipperGoggles_OnMapStart();
 
 	// COF Low Prio
 	Addiction_OnMapStart_NPC();
@@ -1186,3 +1187,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_thehunter.sp"
+
+#include "zombie_riot/npc/dimension_ripper/npc_ripper_goggles.sp"
