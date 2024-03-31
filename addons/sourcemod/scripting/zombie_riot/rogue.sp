@@ -853,6 +853,13 @@ void Rogue_BattleVictory()
 		Rogue_AddChaos(chaos);
 	}
 
+	int chaos = RoundToFloor(BattleChaos);
+	if(chaos > 0)
+	{
+		BattleChaos -= float(chaos);
+		Rogue_AddChaos(chaos);
+	}
+
 	if(CurrentType)
 	{
 		Rogue_NextProgress();
