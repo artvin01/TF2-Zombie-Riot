@@ -2229,4 +2229,8 @@
 	{
 		"en"	"Bob the Second"
 	}
+	"Forest Hitman"
+	{
+		"en"	"Forest Hitman"
+	}
 }

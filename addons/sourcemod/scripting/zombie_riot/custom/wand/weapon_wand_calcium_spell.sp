@@ -125,5 +125,5 @@ public void Spawn_Calcium(int client)
 	GetClientAbsAngles(client, flAng);
 	
 	int npc = NPC_CreateByName("npc_necromancy_calcium", client, flPos, flAng, TFTeam_Red);
-	fl_ExtraDamage[npc] = Necro_Damage[client];
+	fl_Extra_Damage[npc] = Necro_Damage[client];
 }

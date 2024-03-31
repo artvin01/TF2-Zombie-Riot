@@ -966,7 +966,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		CvarNoRoundStart.BoolValue ? 0 : 1,
 		GameRules_GetRoundState() == RoundState_BetweenRounds ? 0 : 1,
 		Cooldown > GetGameTime() ? 0 : 1);
-*/
+	*/
 	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime())
 		return;
 
@@ -985,6 +985,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 	if(CurrentRound < length)
 	{
+		LogStackTrace("Waves_Progress %d-%d", CurrentRound, CurrentWave);
+
 		Rounds.GetArray(CurrentRound, round);
 		if(++CurrentWave < round.Waves.Length)
 		{
@@ -1841,7 +1843,7 @@ void Waves_AddNextEnemy(const Enemy enemy)
 
 void Waves_ClearWave()
 {
-	if(CurrentRound >= 0 && CurrentRound < Rounds.Length)
+	if(Rounds && CurrentRound >= 0 && CurrentRound < Rounds.Length)
 	{
 		Round round;
 		Rounds.GetArray(CurrentRound, round);
@@ -1849,7 +1851,7 @@ void Waves_ClearWave()
 	}
 	else
 	{
-		CurrentWave = 999;
+		CurrentWave = -1;
 	}
 }
 
