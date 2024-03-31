@@ -5,8 +5,11 @@
 #define SOUND_DIM_IMPACT "weapons/cow_mangler_explosion_normal_01.wav"
 #define SOUND_ABILITY "misc/rd_points_return01.wav"
 #define MAX_DIMENSION_CHARGE 30
+#define MAX_DIMENSION_CHARGE_SUPER 50
+static bool Change[MAXPLAYERS];
 static Handle h_TimerDimensionWeaponManagement[MAXPLAYERS+1]={null, ...};
 static int how_many_times_swinged[MAXTF2PLAYERS];
+static int how_many_times_swinged_super[MAXTF2PLAYERS];
 static float f_DIMAbilityActive[MAXPLAYERS+1]={0.0, ...};
 static float f_DIMhuddelay[MAXPLAYERS+1]={0.0, ...};
 
@@ -59,6 +62,7 @@ public Action Timer_Management_Dimension(Handle timer, DataPack pack)
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		h_TimerDimensionWeaponManagement[client] = null;
+		Change[client] = false;
 		return Plugin_Stop;
 	}
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -76,15 +80,32 @@ public void Dimension_Cooldown_Logic(int client, int weapon)
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			if(f_DIMAbilityActive[client] < GetGameTime())
+			if (Change[client] == true )
 			{
-				if(how_many_times_swinged[client] < MAX_DIMENSION_CHARGE)
+				if(f_DIMAbilityActive[client] < GetGameTime())
 				{
-					PrintHintText(client,"Dimension power [%i%/%i]", how_many_times_swinged[client], MAX_DIMENSION_CHARGE);
+					if(how_many_times_swinged_super[client] < MAX_DIMENSION_CHARGE)
+					{
+						PrintHintText(client,"Double Summon: Dimension power [%i%/%i]", how_many_times_swinged_super[client], MAX_DIMENSION_CHARGE_SUPER);
+					}
+					else
+					{
+						PrintHintText(client,"Summon Ready");
+					}
 				}
-				else
+			}
+			else if (Change[client] == false)
+			{
+				if(f_DIMAbilityActive[client] < GetGameTime())
 				{
-					PrintHintText(client,"Summon Ready");
+					if(how_many_times_swinged[client] < MAX_DIMENSION_CHARGE)
+					{
+						PrintHintText(client,"Single Summon: Dimension power [%i%/%i]", how_many_times_swinged[client], MAX_DIMENSION_CHARGE);
+					}
+					else
+					{
+						PrintHintText(client,"Summon Ready");
+					}
 				}
 			}
 			else
@@ -127,6 +148,19 @@ public void Weapon_Dimension_Wand(int client, int weapon, bool crit)
 		
 		time *= Attributes_Get(weapon, 102, 1.0);
 		
+		if(IsValidEnemy(client, target))
+		{
+			if(Can_I_See_Enemy_Only(target,projectile)) //Insta home!
+			{
+				HomingProjectile_TurnToTarget(target, projectile);
+			}
+
+			DataPack pack;
+			CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+			pack.WriteCell(EntIndexToEntRef(projectile)); //projectile
+			pack.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
+			//We have found a victim.
+		}
 
 		EmitSoundToAll(SOUND_WAND_SHOT_DIM, client, SNDCHAN_WEAPON, 65, _, 0.4, 100);
 		//This spawns the projectile, this is a return int, if you want, you can do extra stuff with it, otherwise, it can be used as a void.
@@ -210,80 +244,254 @@ public Action Dimension_KillNPC(Handle timer, int ref)
 	return Plugin_Stop;
 }
 
-
+public void Dimension_Modechange(int client, int weapon, bool crit, int slot)
+{
+	if(IsValidEntity(client))
+	{
+		if (Ability_Check_Cooldown(client, slot) < 0.0)
+		{
+			Rogue_OnAbilityUse(weapon);
+			Ability_Apply_Cooldown(client, slot, 7.5);
+			EmitSoundToAll(SOUND_MES_CHANGE, client, SNDCHAN_AUTO, 65, _, 0.45, 115);
+			if(Change[client])
+			{
+				Change[client]=false;
+			}
+			else
+			{
+				Change[client]=true;
+			}
+		}
+		else
+		{
+			float Ability_CD = Ability_Check_Cooldown(client, slot);
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+		
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		}
+	}
+}
 
 void Npc_OnTakeDamage_DimensionalRipper(int attacker)
 {
 	/*
 		++ add charge code xd
 	*/
-	if(how_many_times_swinged[attacker] <= MAX_DIMENSION_CHARGE)
+	if (Change[client] == true )
 	{
-		how_many_times_swinged[attacker] += 1;
+		if(how_many_times_swinged_super[attacker] <= MAX_DIMENSION_CHARGE_SUPER)
+		{
+			how_many_times_swinged_super[attacker] += 1;
+		}
+		if(how_many_times_swinged_super[attacker] >= MAX_DIMENSION_CHARGE_SUPER)
+		{
+			how_many_times_swinged_super[attacker] = MAX_DIMENSION_CHARGE_SUPER;
+		}
 	}
+	else if (Change[client] == false )
+	{
+		if(how_many_times_swinged[attacker] <= MAX_DIMENSION_CHARGE)
+		{
+			how_many_times_swinged[attacker] += 1;
+		}
+		if(how_many_times_swinged[attacker] >= MAX_DIMENSION_CHARGE)
+		{
+			how_many_times_swinged[attacker] = MAX_DIMENSION_CHARGE;
+		}
+	}
+
 	//if(b_thisNpcIsARaid[victim])
 	//{
 	//	how_many_times_swinged[attacker] += 1;
 	//}
-	if(how_many_times_swinged[attacker] >= MAX_DIMENSION_CHARGE)
-	{
-		how_many_times_swinged[attacker] = MAX_DIMENSION_CHARGE;
-	}
 }
 
  
 public void Weapon_Dimension_Summon_Normal(int client, int weapon, bool &result, int slot, int pap_logic)
 {
-	switch(GetRandomInt(1, 4))
+	if (Change[client] == true )
 	{
-		case 1:
-			Dimension_Summon_Npc(client, "npc_headcrabzombie_fortified",weapon, 1.1, 1.0, "ghost_appearation");
-		case 2:
-			Dimension_Summon_Npc(client, "npc_last_survivor" ,weapon, 1.8, 1.5, "ghost_appearation");
-		case 3:
-			Dimension_Summon_Npc(client, "npc_combine_police_pistol" ,weapon, 1.0, 1.2, "ghost_appearation");
-		case 4:
-			Dimension_Summon_Npc(client, "npc_combine_soldier_swordsman" ,weapon, 1.2, 1.2, "ghost_appearation");
-		default: //This should not happen
+		for(int i; i < 2; i++)
 		{
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+			switch(GetRandomInt(1, 7))
+			{
+				case 1:
+					Dimension_Summon_Npc(client, "npc_headcrabzombie_fortified",weapon, 1.2, 1.2, "ghost_appearation");
+				case 2:
+					Dimension_Summon_Npc(client, "npc_xeno_headcrabzombie_fortified" ,weapon, 1.2, 1.2, "ghost_appearation");
+				case 3:
+					Dimension_Summon_Npc(client, "npc_alt_combine_soldier_mage" ,weapon, 1.2, 1.2, "ghost_appearation");
+				case 4:
+					Dimension_Summon_Npc(client, "npc_medival_man_at_arms" ,weapon, 1.2, 1.2, "ghost_appearation");
+				case 5:
+					Dimension_Summon_Npc(client, "npc_seaslider" ,weapon, 1.2, 1.2, "ghost_appearation");
+				case 6:
+					Dimension_Summon_Npc(client, "npc_pental" ,weapon, 1.2, 1.2, "ghost_appearation");
+				case 7:
+					Dimension_Summon_Npc(client, "npc_atilla" ,weapon, 1.2, 1.2, "ghost_appearation");
+				default: //This should not happen
+				{
+					ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+				}
+			}
 		}
+	}
+	else if (Change[client] == false)
+	{
+		switch(GetRandomInt(1, 7))
+		{
+			case 1:
+				Dimension_Summon_Npc(client, "npc_headcrabzombie_fortified",weapon, 1.2, 1.2, "ghost_appearation");
+			case 2:
+				Dimension_Summon_Npc(client, "npc_xeno_headcrabzombie_fortified" ,weapon, 1.2, 1.2, "ghost_appearation");
+			case 3:
+				Dimension_Summon_Npc(client, "npc_alt_combine_soldier_mage" ,weapon, 1.2, 1.2, "ghost_appearation");
+			case 4:
+				Dimension_Summon_Npc(client, "npc_medival_man_at_arms" ,weapon, 1.2, 1.2, "ghost_appearation");
+			case 5:
+				Dimension_Summon_Npc(client, "npc_seaslider" ,weapon, 1.2, 1.2, "ghost_appearation");
+			case 6:
+				Dimension_Summon_Npc(client, "npc_pental" ,weapon, 1.2, 1.2, "ghost_appearation");
+			case 7:
+				Dimension_Summon_Npc(client, "npc_atilla" ,weapon, 1.2, 1.2, "ghost_appearation");
+			default: //This should not happen
+			{
+				ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+			}
+		}		
 	}
 }
 
 public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
 {
-	switch(GetRandomInt(1, 4))
+	if (Change[client] == true )
 	{
-		case 1:
-			Dimension_Summon_Npc(client, "npc_spy_boss" ,weapon, 1.75, 1.2, "ghost_appearation");
-		case 2:
-			Dimension_Summon_Npc(client, "npc_spy_trickstabber" ,weapon, 1.2, 1.1, "ghost_appearation");
-		case 3:
-			Dimension_Summon_Npc(client, "npc_combine_soldier_elite" ,weapon, 1.2, 1.4, "ghost_appearation");	
-		case 4:
-			Dimension_Summon_Npc(client, "npc_combine_soldier_collos_swordsman" ,weapon, 1.4, 1.2, "ghost_appearation");
-		default: //This should not happen
+		for(int i; i < 2; i++)
 		{
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+			switch(GetRandomInt(1, 4))
+			{
+				case 1:
+					Dimension_Summon_Npc(client, "npc_combine_police_smg" ,weapon, 1.2, 1.2, "ghost_appearation");
+				case 2:
+					Dimension_Summon_Npc(client, "npc_combine_soldier_swordsman" ,weapon, 1.3, 1.2, "ghost_appearation");
+				case 3:
+					Dimension_Summon_Npc(client, "npc_combine_soldier_elite" ,weapon, 1.2, 1.4, "ghost_appearation");	
+				case 4:
+					Dimension_Summon_Npc(client, "npc_combine_soldier_overlord" ,weapon, 1.75, 1.2, "ghost_appearation");
+				default: //This should not happen
+				{
+					ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+				}
+			}
+		}
+	}
+	else if (Change[client] == false)
+	{
+		switch(GetRandomInt(1, 4))
+		{
+			case 1:
+				Dimension_Summon_Npc(client, "npc_combine_police_smg" ,weapon, 1.2, 1.2, "ghost_appearation");
+			case 2:
+				Dimension_Summon_Npc(client, "npc_combine_soldier_swordsman" ,weapon, 1.3, 1.2, "ghost_appearation");
+			case 3:
+				Dimension_Summon_Npc(client, "npc_combine_soldier_elite" ,weapon, 1.2, 1.4, "ghost_appearation");	
+			case 4:
+				Dimension_Summon_Npc(client, "npc_combine_soldier_overlord" ,weapon, 1.75, 1.2, "ghost_appearation");
+			default: //This should not happen
+			{
+				ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+			}
+		}	
+	}
+}
+
+public void Weapon_Dimension_Summon_Normal_PAP_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
+{
+	if (Change[client] == true )
+	{
+		for(int i; i < 2; i++)
+		{
+			switch(GetRandomInt(1, 4))
+			{
+				case 1:
+					Dimension_Summon_Npc(client, "npc_kamikaze_demo" ,weapon, 0.5, 2.5, "ghost_appearation");
+				case 2:
+					Dimension_Summon_Npc(client, "npc_sniper_main" ,weapon, 1.3, 1.3, "ghost_appearation");
+				case 3:
+					Dimension_Summon_Npc(client, "npc_combine_soldier_deutsch_ritter" ,weapon, 1.2, 1.3, "ghost_appearation");	
+				case 4:
+					Dimension_Summon_Npc(client, "npc_spy_boss" ,weapon, 1.75, 1.2, "ghost_appearation");
+				default: //This should not happen
+				{
+					ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+				}
+			}
+		}
+	}
+	else if (Change[client] == false)
+	{
+		switch(GetRandomInt(1, 4))
+		{
+			case 1:
+				Dimension_Summon_Npc(client, "npc_kamikaze_demo" ,weapon, 0.5, 2.5, "ghost_appearation");
+			case 2:
+				Dimension_Summon_Npc(client, "npc_sniper_main" ,weapon, 1.3, 1.3, "ghost_appearation");
+			case 3:
+				Dimension_Summon_Npc(client, "npc_combine_soldier_deutsch_ritter" ,weapon, 1.2, 1.3, "ghost_appearation");	
+			case 4:
+				Dimension_Summon_Npc(client, "npc_spy_boss" ,weapon, 1.75, 1.2, "ghost_appearation");
+			default: //This should not happen
+			{
+				ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+			}
 		}
 	}
 }
 
+
 public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, int slot, int pap_logic)
 {
-	
-	switch(GetRandomInt(1, 3))
+	if (Change[client] == true )
 	{
-		case 1:
-			Dimension_Summon_Npc(client, "npc_alt_combine_soldier_mage" ,weapon, 1.1, 1.15, "eyeboss_tp_player");
-		case 2:
-			Dimension_Summon_Npc(client, "npc_alt_medic_charger" ,weapon, 1.3, 1.2, "eyeboss_tp_player");
-		case 3:
-			Dimension_Summon_Npc(client, "npc_alt_soldier_barrager" ,weapon, 1.1, 1.3, "eyeboss_tp_player");
-		default: //This should not happen
+		for(int i; i < 2; i++)
 		{
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+			switch(GetRandomInt(1, 4))
+			{
+				case 1:
+					Dimension_Summon_Npc(client, "npc_alt_mecha_soldier_barrager" ,weapon, 1.2, 1.3, "eyeboss_tp_player");
+				case 2:
+					Dimension_Summon_Npc(client, "npc_alt_medic_charger" ,weapon, 1.3, 1.2, "eyeboss_tp_player");
+				case 3:
+					Dimension_Summon_Npc(client, "npc_alt_sniper_railgunner" ,weapon, 1.0, 1.5, "eyeboss_tp_player");
+				case 4:
+					Dimension_Summon_Npc(client, "npc_alt_medic_supperior_mage" ,weapon, 1.5, 1.3, "eyeboss_tp_player");
+				default: //This should not happen
+				{
+					ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+				}
+			}
+		}
+	}
+	else if (Change[client] == false)
+	{
+		switch(GetRandomInt(1, 4))
+		{
+			case 1:
+				Dimension_Summon_Npc(client, "npc_alt_mecha_soldier_barrager" ,weapon, 1.2, 1.3, "eyeboss_tp_player");
+			case 2:
+				Dimension_Summon_Npc(client, "npc_alt_medic_charger" ,weapon, 1.3, 1.2, "eyeboss_tp_player");
+			case 3:
+				Dimension_Summon_Npc(client, "npc_alt_sniper_railgunner" ,weapon, 1.0, 1.5, "eyeboss_tp_player");
+			case 4:
+				Dimension_Summon_Npc(client, "npc_alt_medic_supperior_mage" ,weapon, 1.5, 1.3, "eyeboss_tp_player");
+			default: //This should not happen
+			{
+				ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+			}
 		}
 	}
 }
@@ -495,12 +703,19 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 	
 	if(weapon >= MaxClients)
 	{
-		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE)
+		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE || how_many_times_swinged_super[client] >= MAX_DIMENSION_CHARGE_SUPER)
 		{
 			int mana_cost = 150;
 			if(mana_cost <= Current_Mana[client])
 			{
-				how_many_times_swinged[client] = 0;
+				if (Change[client] == true )
+				{
+					how_many_times_swinged_super[client] = 0;
+				}
+				else if (Change[client] == false )
+				{
+					how_many_times_swinged[client] = 0;
+				}
 				Rogue_OnAbilityUse(weapon);
 				Current_Mana[client] -= mana_cost;
 				float pos1[3], ang[3];
@@ -535,7 +750,7 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 					b_IsCamoNPC[entity] = false;
 
 					CreateTimer(60.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(4.0, Dimension_GiveStrength, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(3.0, Dimension_GiveStrength, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 					i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 					b_thisNpcIsABoss[entity] = false;
 					b_thisNpcIsARaid[entity] = false;
@@ -573,7 +788,11 @@ public Action Dimension_GiveStrength(Handle timer, int ref)
 			fl_Extra_Damage[entity] *= 1.2;
 		}	
 	}
-
+	if (Change[client] == true )
+	{
+		fl_MeleeArmor[entity] = 0.9;
+		fl_RangedArmor[entity] = 0.9;		
+	}
 	
 	return Plugin_Stop;
 }
