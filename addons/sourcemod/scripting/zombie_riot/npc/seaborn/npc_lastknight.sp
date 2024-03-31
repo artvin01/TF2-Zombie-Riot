@@ -196,7 +196,8 @@ public void LastKnight_ClotThink(int iNPC)
 		KillFeed_SetKillIcon(npc.index, "vehicle");
 		npc.m_flNextThinkTime = gameTime + 0.4;
 		b_NpcIgnoresbuildings[npc.index] = true;
-
+		npc.m_iTarget = 0;
+		
 		if(!IsValidEntity(npc.m_iWearable6))
 		{
 			npc.m_iWearable6 = npc.EquipItem("partyhat", "models/workshop/player/items/engineer/hwn2022_pony_express/hwn2022_pony_express.mdl");
