@@ -771,7 +771,7 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 		case 45:
 			Format(buffer, sizeof(buffer), "%sBullets Per Shot", buffer);
 		
-		case 94:
+		case 95:
 			Format(buffer, sizeof(buffer), "%sRepair Rate", buffer);
 		
 		case 96, 97:

@@ -2763,6 +2763,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
 		else*/
+		PrintToChatAll("%s",classname);
 		if(!StrContains(classname, "tf_objective_resource"))
 		{
 			b_ThisEntityIgnored[entity] = true;
@@ -2905,9 +2906,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			
-			//SDKHook_SpawnPost doesnt work
 			b_IsAProjectile[entity] = true;
 		}
 #endif
@@ -3156,12 +3154,21 @@ public Action SDKHook_Regenerate_Touch(int entity, int target)
 
 void Set_Projectile_Collision(int entity)
 {
-	if(IsValidEntity(entity) && GetTeam(entity) != view_as<int>(TFTeam_Blue))
+	//needs to be delayed by frame, team setting in tf2 happens after its spawned.
+	RequestFrame(Set_Projectile_CollisionFrame, EntRefToEntIndex(entity));
+}
+
+void Set_Projectile_CollisionFrame(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(!IsValidEntity(entity))
+		return;
+
+	if(GetTeam(entity) != view_as<int>(TFTeam_Blue))
 	{
 		SetEntityCollisionGroup(entity, 27);
 	}
 }
-
 public void Delete_instantly(int entity)
 {
 	RemoveEntity(entity);
