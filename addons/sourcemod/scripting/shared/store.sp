@@ -5965,7 +5965,7 @@ char[] TranslateItemDescription(int client, const char Desc[256], const char Rog
 
 static void ItemCost(int client, Item item, int &cost)
 {
-	bool Setup = !Rogue_NoDiscount() && Waves_InSetup();
+	bool Setup = !Waves_Started() || (!Rogue_NoDiscount() && Waves_InSetup());
 	bool GregSale = false;
 
 	//these should account for selling.
@@ -6208,7 +6208,7 @@ void Clip_GiveAllWeaponsClipSizes(int client)
 void Clip_GiveWeaponClipBack(int client, int weapon)
 {
 	static Item item;
-	if(StoreWeapon[weapon] < 1)
+	if(StoreWeapon[weapon] < 1 || item.Owned[client] < 1)
 		return;
 		
 	if(client < 1)

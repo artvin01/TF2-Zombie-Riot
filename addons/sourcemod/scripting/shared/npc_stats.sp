@@ -2114,7 +2114,9 @@ methodmap CClotBody < CBaseCombatCharacter
 				if(this.m_bPathing && this.IsOnGround())
 				{
 					if(i_WasPathingToHere[this.index] == target)
+					{
 						return;
+					}
 
 					i_WasPathingToHere[this.index] = target;
 				}
@@ -2934,7 +2936,7 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		//increace the size of the avoid box by 2x
 
-		if(!b_AvoidObstacleType[this.index])
+		if(!b_AvoidObstacleType[this.index] && !(VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red))
 		{
 			float ModelSize = GetEntPropFloat(this.index, Prop_Send, "m_flModelScale");
 			//avoid obstacle code scales with modelsize, we dont want that.
@@ -2958,6 +2960,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		else
 		{
+			//if in tower defense, never avoid.
 			this.GetBaseNPC().SetBodyMaxs({1.0,1.0,1.0});
 			this.GetBaseNPC().SetBodyMins({0.0,0.0,0.0});
 		}
@@ -4020,7 +4023,16 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 	{
 		return false;
 	}
-	
+
+#if defined ZR
+	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
+	if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
+	{
+		//during tower defense, pretend all enemies are non collideable.
+		return true;
+	}
+#endif
+
 	if(b_is_a_brush[other_entidx])
 	{
 		return false;
@@ -4030,7 +4042,8 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 	{
 		return true;
 	}
-	
+
+
 #if defined RTS
 	if(IsObject(other_entidx))
 	{
@@ -4045,7 +4058,7 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 	}
 
 #if defined ZR
-	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
+
 
 	if(GetTeam(bot_entidx) == TFTeam_Red) //ally!
 	{
@@ -4075,7 +4088,6 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 		return true;
 	}
 
-	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
 #endif
 
 	if(other_entidx > 0 && other_entidx <= MaxClients)
@@ -8987,6 +8999,11 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 						npc.m_iTarget = target;
 						npc.m_flGetClosestTargetTime = GetGameTime(entity) + GetRandomRetargetTime();
 						f_DelayComputingOfPath[entity] = 0.0;
+						//for tower defense.
+						f3_WasPathingToHere[entity][0] = 0.0;
+						f3_WasPathingToHere[entity][1] = 0.0;
+						f3_WasPathingToHere[entity][2] = 0.0;
+						i_WasPathingToHere[entity] = target;
 					}
 				}
 			}
