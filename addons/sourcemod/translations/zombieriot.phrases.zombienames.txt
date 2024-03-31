@@ -19,6 +19,10 @@
 		"pt"		"Zumbi de Headcrab Fortificado"
 		"nl"		"Versterkte Hoofdkrab Zombie"
 	}
+	"Steam Happy"
+	{
+		"en"		"Steam Happy"
+	}
 	"Fast Zombie"
 	{
 		"en" 		"Fast Zombie"

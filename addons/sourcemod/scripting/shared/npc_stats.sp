@@ -348,8 +348,16 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
-		DispatchKeyValue(npc, "model",	 model);
-		view_as<CBaseCombatCharacter>(npc).SetModel(model);
+		if(Ally != TFTeam_Red)
+		{
+			DispatchKeyValue(npc, "model",	 STEAM_HAPPY_APRIL_FOOLS);
+			view_as<CBaseCombatCharacter>(npc).SetModel(STEAM_HAPPY_APRIL_FOOLS);
+		}
+		else
+		{
+			DispatchKeyValue(npc, "model",	 model);
+			view_as<CBaseCombatCharacter>(npc).SetModel(model);	
+		}
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		DispatchKeyValue(npc,	   "health",	 health);
 
@@ -2234,7 +2242,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			skin,
 			model_size);
 		}
-		DispatchKeyValue(item, "model", model);
+		DispatchKeyValue(item, "model", "models/empty.mdl");
 
 		if(model_size == 1.0)
 		{
@@ -2271,6 +2279,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		}	
 		
 		MakeObjectIntangeable(item);
+		Hook_DHook_UpdateTransmitState(item);
+		b_IsEntityNeverTranmitted[item] = true;
 
 		return item;
 	}
@@ -5352,6 +5362,18 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 public void NpcBaseThink(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
+	if(GetTeam(iNPC) != TFTeam_Red)
+	{
+		if(!b_DissapearOnDeath[iNPC])
+		{
+			SetEntProp(iNPC, Prop_Send, "m_nSkin", 1);
+			SetEntityRenderColor(iNPC, GetRandomInt(0, 255), GetRandomInt(0, 255), GetRandomInt(0, 255), 255);
+			SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", GetRandomFloat(1.2, 2.5));
+		}
+		strcopy(c_NpcName[iNPC], sizeof(c_NpcName[]), "Steam Happy");
+		b_DissapearOnDeath[iNPC] = true;
+	}
+	
 
 //	static float FakeRotationFix[3];
 //	npc.FaceTowards(FakeRotationFix, 1.0);
