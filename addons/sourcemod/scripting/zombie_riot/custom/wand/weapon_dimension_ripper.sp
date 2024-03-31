@@ -456,8 +456,12 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 	{
 		case 1:
 			Dimension_Summon_Npc(client, "npc_medival_ram" ,weapon, 1.0, 0.2, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, "npc_seaborn_vanguard" ,weapon, 0.5, 1.1, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, "npc_seaborn_vanguard" ,weapon, 0.5, 1.1, "utaunt_constellations_blue_base");
 		case 2:
 			Dimension_Summon_Npc(client, "npc_medival_ram" ,weapon, 0.2, 0.75, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, "npc_seaborn_vanguard" ,weapon, 0.5, 1.1, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, "npc_seaborn_vanguard" ,weapon, 0.5, 1.1, "utaunt_constellations_blue_base");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -486,19 +490,15 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 }
 public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
 {
-	switch(GetRandomInt(1, 6))
+	switch(GetRandomInt(1, 2))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_seaborn_vanguard" ,weapon, 1.3, 1.3, "utaunt_constellations_blue_base");
-		case 2:
+			Dimension_Summon_Npc(client, "npc_seaborn_vanguard" ,weapon, 1.0, 0.9, "utaunt_constellations_blue_base");
 			Dimension_Summon_Npc(client, "npc_seaborn_kazimersch_beserker" ,weapon, 1.6, 1.2, "utaunt_constellations_blue_base");
-		case 3:
-			Dimension_Summon_Npc(client, "npc_seaborn_guard" ,weapon, 1.2, 1.1, "utaunt_constellations_blue_base");
-		case 4:
-			Dimension_Summon_Npc(client, "npc_seaborn_caster" ,weapon, 1.1, 1.2, "utaunt_constellations_blue_base");
-		case 5:
+			Dimension_Summon_Npc(client, "npc_seaborn_guard" ,weapon, 1.0, 1.0, "utaunt_constellations_blue_base");
+			Dimension_Summon_Npc(client, "npc_seaborn_caster" ,weapon, 0.7, 1.1, "utaunt_constellations_blue_base");
+		case 2:
 			Dimension_Summon_Npc(client, "npc_lastknight" ,weapon, 1.5, 1.0, "utaunt_constellations_blue_base");
-		case 6:
 			Dimension_Summon_Npc(client, "npc_saintcarmen" ,weapon, 1.0, 1.0, "utaunt_constellations_blue_base");
 		default: //This should not happen
 		{
