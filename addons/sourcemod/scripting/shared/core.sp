@@ -2763,7 +2763,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
 		else*/
-		PrintToChatAll("%s",classname);
 		if(!StrContains(classname, "tf_objective_resource"))
 		{
 			b_ThisEntityIgnored[entity] = true;

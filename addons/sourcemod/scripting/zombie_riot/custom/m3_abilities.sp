@@ -908,6 +908,11 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 	   			TE_SendToAll();
 				bool Repaired_Building = false;
 				float RepairRateBonus = Attributes_GetOnPlayer(client, 95, true, true);
+				if(RepairRateBonus == 1.0)
+				{
+					//try to get it from weapons instead now.
+					RepairRateBonus = Attributes_GetOnPlayer(client, 95, true, false);
+				}
 				int healing_Amount = RoundToCeil(200.0 * RepairRateBonus);
 				int CurrentMetal = GetAmmo(client, 3);
 

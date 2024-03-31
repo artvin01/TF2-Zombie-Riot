@@ -703,8 +703,12 @@ static bool AttribIsInverse(int attrib)
 
 static void PrintAttribValue(int client, int attrib, float value, float luck)
 {
+	if(attrib == 264)
+	{
+		return;
+	}
 	bool inverse = AttribIsInverse(attrib);
-	
+
 	char buffer[64];
 	if(value < 1.0)
 	{
@@ -823,7 +827,7 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 			Format(buffer, sizeof(buffer), "%sMore Medigun Overheal", buffer);
 
 	}
-
+	
 	CPrintToChat(client, "%s {yellow}(%d%%)", buffer, RoundToCeil(luck * 100.0));
 }
 
