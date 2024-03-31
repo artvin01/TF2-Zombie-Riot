@@ -795,14 +795,21 @@ public Action Rogue_RoundStartTimer(Handle timer)
 {
 	ProgressTimer = null;
 	
-	if(!Voting && !CvarNoRoundStart.BoolValue && GameRules_GetRoundState() == RoundState_ZombieRiot)
+	if(!Voting && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
-		for(int client=1; client<=MaxClients; client++)
+		if(CvarNoRoundStart.BoolValue)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) == 2 && !IsFakeClient(client))
+			PrintToChatAll("zr_noroundstart is enabled");
+		}
+		else
+		{
+			for(int client=1; client<=MaxClients; client++)
 			{
-				Rogue_NextProgress();
-				return Plugin_Stop;
+				if(IsClientInGame(client) && GetClientTeam(client) == 2 && !IsFakeClient(client))
+				{
+					Rogue_NextProgress();
+					return Plugin_Stop;
+				}
 			}
 		}
 	}
@@ -896,7 +903,6 @@ bool Rogue_BattleLost()
 		Waves_RoundEnd();
 		Store_RogueEndFightReset();
 		TeleportToSpawn();
-		Waves_ClearWave();
 
 		Rogue_SetProgressTime(5.0, false, true);
 		
@@ -1248,7 +1254,7 @@ void Rogue_NextProgress()
 				{
 					SetFloorMusic(floor, true);
 
-					Rogue_StartGenericVote();
+					Rogue_StartGenericVote(10.0);
 					GameState = State_Vote;
 
 					TeleportToSpawn();
@@ -2273,7 +2279,7 @@ bool Rogue_InSetup()	// Waves_InSetup()
 
 bool Rogue_CanRegen()
 {
-	return Rogue_Mode() && RogueTheme == BlueParadox && !Rogue_InSetup();
+	return !Rogue_Mode() || RogueTheme != BlueParadox || !Rogue_InSetup();
 }
 
 bool Rogue_Started()	// Waves_Started()
