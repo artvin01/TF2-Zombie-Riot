@@ -379,7 +379,7 @@ public void OnPostThink(int client)
 		}
 	}
 
-	if(Mana_Regen_Delay[client] < GameTime || (b_AggreviatedSilence[client] && Mana_Regen_Delay_Aggreviated[client] < GameTime))
+	if(Rogue_CanRegen() && (Mana_Regen_Delay[client] < GameTime || (b_AggreviatedSilence[client] && Mana_Regen_Delay_Aggreviated[client] < GameTime)))
 	{
 		Mana_Regen_Delay[client] = GameTime + 0.4;
 		Mana_Regen_Delay_Aggreviated[client] = GameTime + 0.4;
@@ -464,7 +464,7 @@ public void OnPostThink(int client)
 		has_mage_weapon[client] = true;	//now force the mana hud even if your not a mage. this only applies to non mages if you got overmana, and the only way you can get overmana without a mage weapon is if you got hit by ruina's debuff.
 	}
 
-	if(Armor_regen_delay[client] < GameTime)
+	if(Rogue_CanRegen() && Armor_regen_delay[client] < GameTime)
 	{
 		Armour_Level_Current[client] = 0;
 
@@ -485,6 +485,18 @@ public void OnPostThink(int client)
 			}
 		}
 
+		float attrib = Attributes_GetOnPlayer(client, 57, false) +
+				Attributes_GetOnPlayer(client, 190, false) +
+				Attributes_GetOnPlayer(client, 191, false);
+		
+		if(attrib)
+		{
+			if(dieingstate[client] == 0)
+			{
+				healing_Amount += HealEntityGlobal(client, client, attrib, 1.0, 0.0, HEAL_SELFHEAL);	
+			}
+		}
+
 		if(Saga_RegenHealth(client))
 		{
 			if(dieingstate[client] == 0)
@@ -495,8 +507,8 @@ public void OnPostThink(int client)
 		
 		if(dieingstate[client] == 0)
 		{
-			Rogue_HealingSalve(client);
-			Rogue_HandSupport_HealTick(client);
+			Rogue_HealingSalve(client, healing_Amount);
+			Rogue_HandSupport_HealTick(client, healing_Amount);
 			if(i_BadHealthRegen[client] == 1)
 			{
 				healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);

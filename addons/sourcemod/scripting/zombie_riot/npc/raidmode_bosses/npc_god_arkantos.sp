@@ -369,7 +369,7 @@ public void GodArkantos_ClotThink(int iNPC)
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
-				fl_ExtraDamage[spawn_index] = 25.0;
+				fl_Extra_Damage[spawn_index] = 25.0;
 				fl_Extra_Speed[spawn_index] = 1.5;
 			}
 		}
@@ -387,7 +387,7 @@ public void GodArkantos_ClotThink(int iNPC)
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", 100000000);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 100000000);
-			fl_ExtraDamage[spawn_index] = 25.0;
+			fl_Extra_Damage[spawn_index] = 25.0;
 			fl_Extra_Speed[spawn_index] = 1.5;
 		}
 		npc.m_bDissapearOnDeath = true;

@@ -132,8 +132,6 @@ static int Fantasy_Blade_Get_Pap(int weapon)
 	return pap;
 }
 
-#define DEFAULT_MELEE_RANGE 64.0
-#define DEFAULT_MELEE_BOUNDS 22.0
 void Angelic_Shotgun_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMeleeWide, bool &ignore_walls, int &enemies_hit_aoe)
 {
 	switch(i_Current_Pap[client])

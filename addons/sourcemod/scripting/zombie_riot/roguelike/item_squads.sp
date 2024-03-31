@@ -18,7 +18,7 @@ public void Rogue_Gathering_Collect()
 public void Rogue_Support_Collect()
 {
 	Rogue_AddBonusLife(1);
-	Rogue_AddIngots(20);
+	Rogue_AddIngots(20, true);
 
 	GlobalExtraCash += 250;
 	

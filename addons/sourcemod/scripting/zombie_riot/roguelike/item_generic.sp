@@ -81,7 +81,7 @@ public void Rogue_Item_Malfunction_ShieldRemove()
 public void Rogue_Item_Bob_Exchange_Money()
 {
 	//give 18 dollars
-	Rogue_AddIngots(18);
+	Rogue_AddIngots(18, true);
 }
 
 public void Rogue_Item_ReleasingRadio()
@@ -129,13 +129,10 @@ public void Rogue_Item_HealingSalveRemove()
 	b_HealingSalve = false;
 }
 
-void Rogue_HealingSalve(int client)
+void Rogue_HealingSalve(int client, int &healing_Amount)
 {
 	if(b_HealingSalve)
-	{
-		int healing_Amount = HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);		
-		ApplyHealEvent(client, healing_Amount);
-	}
+		healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);
 }
 
 public void Rogue_SteelRazor_Weapon(int entity)
@@ -428,7 +425,7 @@ public void Rogue_Item_GoldenCoin()
 	CurrentCash += 2000;
 	GlobalExtraCash += 2000;
 		
-	Rogue_AddIngots(10);
+	Rogue_AddIngots(10, true);
 }
 
 public void Rogue_Item_NickelInjectedPack()

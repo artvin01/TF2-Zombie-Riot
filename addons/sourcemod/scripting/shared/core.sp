@@ -1121,7 +1121,6 @@ int i_MedkitAnnoyance[MAXENTITIES];
 float fl_idle_talk[MAXENTITIES];
 float fl_heal_cooldown[MAXENTITIES];
 float fl_Hurtie[MAXENTITIES];
-float fl_ExtraDamage[MAXENTITIES];
 int i_Changed_WalkCycle[MAXENTITIES];
 bool b_WasSadAlready[MAXENTITIES];
 int i_TargetAlly[MAXENTITIES];
