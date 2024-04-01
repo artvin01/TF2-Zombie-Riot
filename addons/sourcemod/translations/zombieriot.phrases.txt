@@ -2129,6 +2129,14 @@
 		"ru"		"Меню доп. снаряж. строителя"
 		"chi"		"建造者额外装备菜单"
 	}
+	"Destroy all your non-Mounted Buildings"
+	{
+		"en"		"Destroy all your non-Mounted Buildings"
+	}
+	"UnClaim Current Marked Building Sure"
+	{
+		"en"		"Are you sure that you want to delete all your own non mounted buildings?"
+	}
 	"Final_wave_message"
 	{
 		"en"		"This is the final wave, Prepare."
