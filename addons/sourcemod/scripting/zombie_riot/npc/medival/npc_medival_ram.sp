@@ -123,7 +123,10 @@ public void MedivalRam_ClotThink(int iNPC)
 {
 	MedivalRam npc = view_as<MedivalRam>(iNPC);
 	
-	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 10.0);
+	if(GetTeam(npc.index) != TFTeam_Red)
+	{
+		ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 10.0);
+	}
 
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
