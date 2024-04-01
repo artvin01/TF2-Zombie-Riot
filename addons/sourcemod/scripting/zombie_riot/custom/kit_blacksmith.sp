@@ -789,6 +789,9 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 		
 		case 103, 104:
 			Format(buffer, sizeof(buffer), "%sProjectile Speed", buffer);
+
+		case 106:
+			Format(buffer, sizeof(buffer), "%sBullet Spread", buffer);
 		
 		case 107:
 			Format(buffer, sizeof(buffer), "%sMovement Speed", buffer);
