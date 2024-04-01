@@ -985,7 +985,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 	if(CurrentRound < length)
 	{
-		LogStackTrace("Waves_Progress %d-%d", CurrentRound, CurrentWave);
 
 		Rounds.GetArray(CurrentRound, round);
 		if(++CurrentWave < round.Waves.Length)
