@@ -1530,7 +1530,17 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	i_WasInMarkedForDeath[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
 	if(TeutonType[victim])
-		return Plugin_Handled;
+	{
+		//do not protect them.
+		if(!(damagetype & DMG_CRUSH))
+		{
+			return Plugin_Handled;
+		}
+		else
+		{
+			return Plugin_Continue;
+		}
+	}
 #endif
 
 	float GameTime = GetGameTime();
