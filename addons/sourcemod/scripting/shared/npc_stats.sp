@@ -8934,14 +8934,17 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage)
 		}
 		
 		SDKHooks_TakeDamage(b_TouchedEntity[entity_traced], iNPC, iNPC, damage, DMG_CRUSH, -1, _);
-		if(b_NpcHasDied[b_TouchedEntity[entity_traced]])
+		if(GetTeam(npc.index) != TFTeam_Red)
 		{
-			Custom_SetAbsVelocity(b_TouchedEntity[entity_traced], vDirection);
-		}
-		else
-		{
-			CClotBody npc = view_as<CClotBody>(b_TouchedEntity[entity_traced]);
-			npc.SetVelocity(vDirection);
+			if(b_NpcHasDied[b_TouchedEntity[entity_traced]])
+			{
+				Custom_SetAbsVelocity(b_TouchedEntity[entity_traced], vDirection);
+			}
+			else
+			{
+				CClotBody npc = view_as<CClotBody>(b_TouchedEntity[entity_traced]);
+				npc.SetVelocity(vDirection);
+			}
 		}
 	}
 
