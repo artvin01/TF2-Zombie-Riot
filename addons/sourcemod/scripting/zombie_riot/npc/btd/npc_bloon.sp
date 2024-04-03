@@ -170,9 +170,6 @@ int Bloon_Health(bool fortified, int type)
 
 void Bloon_MapStart()
 {
-	if(!IsFileInDownloads("models/zombie_riot/btd/bloons_hitbox.mdl"))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bloon");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bloon");

@@ -54,9 +54,6 @@ static int MoabHealth(bool fortified)
 
 void Moab_MapStart()
 {
-	if(!IsFileInDownloads("models/zombie_riot/btd/boab.mdl"))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Massive Ornery Air Blimp");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_moab");

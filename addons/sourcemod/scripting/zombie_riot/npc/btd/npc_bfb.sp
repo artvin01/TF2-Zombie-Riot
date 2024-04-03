@@ -54,9 +54,6 @@ static int MoabHealth(bool fortified)
 
 void Bfb_MapStart()
 {
-	if(!IsFileInDownloads("models/zombie_riot/btd/bfb.mdl"))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Brutal Floating Behemoth");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bfb");
