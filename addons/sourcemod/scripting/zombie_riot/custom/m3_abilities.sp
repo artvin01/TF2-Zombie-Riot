@@ -670,7 +670,10 @@ public int DestroyAllSelfBuildings_Menu(Menu menu, MenuAction action, int client
 							{
 								if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client && mountedentity != entity)
 								{
-									RemoveEntity(entity);	
+									if(!Can_I_See_Enemy_Only(client, entity))
+									{
+										RemoveEntity(entity);	
+									}
 								}
 							}
 						}

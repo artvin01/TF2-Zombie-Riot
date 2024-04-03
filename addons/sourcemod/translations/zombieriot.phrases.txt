@@ -2131,11 +2131,11 @@
 	}
 	"Destroy all your non-Mounted Buildings"
 	{
-		"en"		"Destroy all your non-Mounted Buildings"
+		"en"		"Destroy all your non-Mounted, non-Visible Buildings"
 	}
-	"UnClaim Current Marked Building Sure"
+	"Destroy all your non-Mounted Buildings Sure"
 	{
-		"en"		"Are you sure that you want to delete all your own non mounted buildings?"
+		"en"		"Are you sure that you want to delete all your own non mounted buildings?\nThis will not delete buildings that are in your line of sight."
 	}
 	"Final_wave_message"
 	{
