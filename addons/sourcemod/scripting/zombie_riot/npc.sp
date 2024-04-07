@@ -648,21 +648,6 @@ void NPCDeath(int entity)
 		{
 			f_FactionCreditGain += CreditsOnKill;
 
-			for(int client=1; client<=MaxClients; client++)
-			{
-				if(!b_IsPlayerABot[client] && IsClientInGame(client))
-				{
-					if(GetClientTeam(client) != 2)
-					{
-						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.2;
-					}
-					else if (TeutonType[client] == TEUTON_WAITING)
-					{
-						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.1;
-					}
-				}
-			}		
-
 			if(f_FactionCreditGain >= 1.0)
 			{
 				f_FactionCreditGain -= 1.0;
@@ -674,21 +659,6 @@ void NPCDeath(int entity)
 			GiveMoney = RoundToFloor(CreditsOnKill);
 			float Decimal_MoneyGain = FloatFraction(CreditsOnKill);	
 			f_FactionCreditGain += Decimal_MoneyGain;
-			
-			for(int client=1; client<=MaxClients; client++)
-			{
-				if(!b_IsPlayerABot[client] && IsClientInGame(client))
-				{
-					if(GetClientTeam(client) != 2)
-					{
-						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.2);
-					}
-					else if (TeutonType[client] == TEUTON_WAITING)
-					{
-						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.1);
-					}
-				}
-			}
 
 			if(f_FactionCreditGain >= 1.0)
 			{
