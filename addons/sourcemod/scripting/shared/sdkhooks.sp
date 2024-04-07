@@ -1530,7 +1530,17 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	i_WasInMarkedForDeath[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
 	if(TeutonType[victim])
-		return Plugin_Handled;
+	{
+		//do not protect them.
+		if(!(damagetype & DMG_CRUSH))
+		{
+			return Plugin_Handled;
+		}
+		else
+		{
+			return Plugin_Continue;
+		}
+	}
 #endif
 
 	float GameTime = GetGameTime();
@@ -1840,7 +1850,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 
 			if(Armor_Charge[armorEnt] > 0)
 			{
-				int dmg_through_armour = RoundToCeil(Replicated_Damage * 0.1);
+				int dmg_through_armour = RoundToCeil(Replicated_Damage * ZR_ARMOR_DAMAGE_REDUCTION_INVRERTED);
 				switch(GetRandomInt(1,3))
 				{
 					case 1:
@@ -1852,7 +1862,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					case 3:
 						EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet3.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
 				}						
-				if(RoundToCeil(Replicated_Damage * 0.9) >= Armor_Charge[armorEnt])
+				if(RoundToCeil(Replicated_Damage * ZR_ARMOR_DAMAGE_REDUCTION) >= Armor_Charge[armorEnt])
 				{
 					int damage_recieved_after_calc;
 					damage_recieved_after_calc = RoundToCeil(Replicated_Damage) - Armor_Charge[armorEnt];
@@ -1862,7 +1872,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				}
 				else
 				{
-					Armor_Charge[armorEnt] -= RoundToCeil(Replicated_Damage * 0.9);
+					Armor_Charge[armorEnt] -= RoundToCeil(Replicated_Damage * ZR_ARMOR_DAMAGE_REDUCTION);
 					damage = 0.0;
 					damage += float(dmg_through_armour);
 					Replicated_Damage = 0.0;

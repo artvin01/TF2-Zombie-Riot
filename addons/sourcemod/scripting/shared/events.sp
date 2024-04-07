@@ -284,7 +284,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			
 			if(TeutonType[client] == TEUTON_WAITING)
 			{
-				damage *= 0.33;
+				damage *= 0.65;
 			}
 			
 	   		Attributes_Set(weapon_index, 2, damage);

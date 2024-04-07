@@ -553,6 +553,9 @@ public void BuilderMenu(int client)
 
 		FormatEx(buffer, sizeof(buffer), "%t", "Un-Claim Building");
 		menu.AddItem("-2", buffer);
+
+		FormatEx(buffer, sizeof(buffer), "%t", "Destroy all your non-Mounted Buildings");
+		menu.AddItem("-3", buffer);
 									
 		menu.ExitButton = true;
 		menu.Display(client, MENU_TIME_FOREVER);
@@ -589,6 +592,13 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 						Un_ClaimBuildingLookedAt(client);
 					}
 				}
+				case -3:
+				{
+					if(IsValidClient(client))
+					{
+						DestroyAllBuildings_ClientSelf(client);
+					}
+				}
 				default:
 				{
 					delete menu;
@@ -598,6 +608,85 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_Cancel:
 		{
 			ResetStoreMenuLogic(client);
+		}
+	}
+	return 0;
+}
+
+public void DestroyAllBuildings_ClientSelf(int client)
+{
+	Menu menu = new Menu(DestroyAllSelfBuildings_Menu);
+	CancelClientMenu(client);
+	SetStoreMenuLogic(client, false);
+	SetGlobalTransTarget(client);
+
+	static char buffer[64];
+	menu.SetTitle("%t", "UnClaim Current Marked Building Sure");
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Yes");
+	menu.AddItem("-1", buffer);
+	
+	FormatEx(buffer, sizeof(buffer), "%t", "No");
+	menu.AddItem("-2", buffer);
+				
+	menu.ExitButton = true;
+	menu.Display(client, MENU_TIME_FOREVER);
+}
+public int DestroyAllSelfBuildings_Menu(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			if(IsValidClient(client))
+			{
+				ResetStoreMenuLogic(client);	
+			}
+		}
+		case MenuAction_Cancel:
+		{
+			if(IsValidClient(client))
+			{
+				ResetStoreMenuLogic(client);		
+			}
+		}
+		case MenuAction_Select:
+		{
+			ResetStoreMenuLogic(client);
+			char buffer[24];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			int id = StringToInt(buffer);
+			switch(id)
+			{
+				case -1:
+				{
+					if(IsValidClient(client))
+					{
+						int mountedentity = EntRefToEntIndex(Building_Mounted[client]);
+						for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+						{
+							int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+							if(IsValidEntity(entity) && entity != 0)
+							{
+								if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client && mountedentity != entity)
+								{
+									if(!Can_I_See_Enemy_Only(client, entity))
+									{
+										RemoveEntity(entity);	
+									}
+								}
+							}
+						}
+					}
+				}
+				default:
+				{
+					if(IsValidClient(client))
+					{
+						ResetStoreMenuLogic(client);
+					}
+				}
+			}
 		}
 	}
 	return 0;
@@ -908,6 +997,11 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 	   			TE_SendToAll();
 				bool Repaired_Building = false;
 				float RepairRateBonus = Attributes_GetOnPlayer(client, 95, true, true);
+				if(RepairRateBonus == 1.0)
+				{
+					//try to get it from weapons instead now.
+					RepairRateBonus = Attributes_GetOnPlayer(client, 95, true, false);
+				}
 				int healing_Amount = RoundToCeil(200.0 * RepairRateBonus);
 				int CurrentMetal = GetAmmo(client, 3);
 

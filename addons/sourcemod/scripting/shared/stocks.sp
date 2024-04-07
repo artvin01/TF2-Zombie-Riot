@@ -4907,7 +4907,6 @@ stock int GetTeam(int entity)
 			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
 		}
 		return TeamNumber[entity];
-			
 	}
 	return GetEntProp(entity, Prop_Data, "m_iTeamNum");
 }

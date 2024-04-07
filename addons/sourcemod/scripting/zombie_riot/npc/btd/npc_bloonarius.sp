@@ -143,9 +143,6 @@ static int i_PlayMusicSound;
 
 void Bloonarius_MapStart()
 {
-	if(!IsFileInDownloads("models/zombie_riot/btd/bloonarius.mdl"))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bloonarius");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bloonarius");
