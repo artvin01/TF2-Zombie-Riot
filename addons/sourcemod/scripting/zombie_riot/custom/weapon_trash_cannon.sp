@@ -7,8 +7,8 @@
 //FLIMSY ROCKET: The default roll. If all other rolls fail, this is what gets launched. A rocket that flops out of the barrel and explodes on impact.
 int i_FlimsyMaxTargets[3] = { 4, 5, 6 };				//Max targets hit by the blast.
 
-float f_FlimsyDMG[3] = { 600.0, 1000.0, 1200.0 };		//Flimsy Rocket base damage.
-float f_FlimsyRadius[3] = { 200.0, 250.0, 300.0 };		//Flimsy Rocket explosion radius.
+float f_FlimsyDMG[3] = { 600.0, 1500.0, 2000.0 };		//Flimsy Rocket base damage.
+float f_FlimsyRadius[3] = { 200.0, 150.0, 200.0 };		//Flimsy Rocket explosion radius.
 float f_FlimsyVelocity[3] = { 600.0, 800.0, 1200.0 };	//Flimsy Rocket projectile velocity.
 
 //SHOCK STOCK: An electric orb, affected by gravity. Explodes into Passanger's Device-esque chain lightning on impact.
@@ -16,8 +16,8 @@ int i_ShockMaxHits[3] = { 6, 7, 8 };					//Max number of zombies hit by the shoc
 
 float f_ShockChance[3] = { 0.1, 0.12, 0.14 };			//Chance for Shock Stock to be fired.
 float f_ShockVelocity[3] = { 600.0, 800.0, 1200.0 };	//Shock Stock projectile velocity.
-float f_ShockDMG[3] = { 800.0, 1250.0, 1500.0 };		//Base damage dealt.
-float f_ShockRadius[3] = { 200.0, 250.0, 300.0 };		//Initial blast radius.
+float f_ShockDMG[3] = { 1200.0, 2000.0, 3000.0 };		//Base damage dealt.
+float f_ShockRadius[3] = { 100.0, 150.0, 200.0 };		//Initial blast radius.
 float f_ShockChainRadius[3] = { 400.0, 600.0, 800.0 };	//Chain lightning radius.
 float f_ShockDMGReductionPerHit[3] = { 0.65, 0.75, 0.85 };	//Amount to multiply damage dealt for each zombie shocked.
 float f_ShockPassangerTime[3] = { 0.2, 0.25, 0.3 };			//Duration to apply the Passanger's Device debuff to zombies hit by Shock Stock chain lightning.
@@ -41,7 +41,7 @@ bool b_ArrowsEnabled[3] = { true, true, true };			//Is Bundle of Arrows enabled 
 
 //PYRE: A fireball which is affected by gravity.
 float f_PyreChance[3] = { 0.06, 0.1, 0.14 };			//Chance for Pyre to be fired.
-float f_PyreDMG[3] = { 1000.0, 1500.0, 2000.0 };		//Damage dealt by fireballs.
+float f_PyreDMG[3] = { 1000.0, 2500.0, 4000.0 };		//Damage dealt by fireballs.
 float f_PyreVel[3] = { 600.0, 800.0, 1200.0 };			//Fireball velocity.
 float f_PyreGravity[3] = { 1.0, 1.0, 1.0 };				//Fireball gravity multiplier.
 
@@ -75,10 +75,10 @@ int i_TrashMaxExtras[3] = { 8, 12, 16 };				//Maximum number of extra projectile
 float f_TrashChance[3] = { 0.04, 0.08, 0.12 };			//Chance for Trash to be fired.
 float f_TrashVelocity[3] = { 600.0, 1000.0, 1400.00 };	//Projectile velocity for the trash bag.
 float f_TrashMiniVelocity[3] = { 400.0, 450.0, 500.00 };	//Projectile velocity for the extra projectiles created when the trash bag explodes.
-float f_TrashDMG[3] = { 800.0, 1000.0, 1200.0 };			//Base damage for the trash bag.
-float f_TrashMiniDMG[3] = { 400.0, 500.0, 600.0 };			//Base damage for the extra projectiles created when the trash bag explodes.
-float f_TrashRadius[3] = { 400.0, 450.0, 500.0 };			//Blast radius for the trash bag.
-float f_TrashMiniRadius[3] = { 200.0, 225.0, 250.0 };		//Blast radius for the extra projectiles created when the trash bag explodes.
+float f_TrashDMG[3] = { 800.0, 1500.0, 2000.0 };			//Base damage for the trash bag.
+float f_TrashMiniDMG[3] = { 400.0, 750.0, 1000.0 };			//Base damage for the extra projectiles created when the trash bag explodes.
+float f_TrashRadius[3] = { 400.0, 250.0, 350.0 };			//Blast radius for the trash bag.
+float f_TrashMiniRadius[3] = { 200.0, 150.0, 175.0 };		//Blast radius for the extra projectiles created when the trash bag explodes.
 
 bool b_TrashEnabled[3] = { true, true, true };			//Is Trash enabled on this pap tier?
 
@@ -88,9 +88,9 @@ int i_MissilesMaxTargets[3] = { 4, 5, 6 };					//The max number of zombies hit b
 int i_MissilesNumWaves[3] = { 6, 3, 6 };					//Number of sets of micro-missiles to be fired.
 
 float f_MissilesChance[3] = { 0.00, 0.00, 0.05 };			//The chance for Micro-Missiles to be fired.
-float f_MissilesDMG[3] = { 400.0, 600.0, 800.0 };			//Base missile damage.
+float f_MissilesDMG[3] = { 400.0, 800.0, 1200.0 };			//Base missile damage.
 float f_MissilesVelocity[3] = { 1600.0, 1800.0, 2000.0 };	//Base missile velocity.
-float f_MissilesRadius[3] = { 200.0, 250.0, 300.0 };		//Base blast radius.
+float f_MissilesRadius[3] = { 200.0, 150.0, 200.0 };		//Base blast radius.
 float f_MissilesSpread[3] = { 6.0, 6.0, 6.0 };				//Micro-Missile initial projectile spread.
 float f_MissilesHomingStartTime[3] = { 0.2, 0.15, 0.1 };	//Delay after firing before micro-missiles begin to home.
 float f_MissilesWaveDelay[3] = { 0.1, 0.2, 0.1 };			//Delay between sets.
