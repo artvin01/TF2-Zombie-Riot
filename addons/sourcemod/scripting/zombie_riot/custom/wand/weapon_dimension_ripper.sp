@@ -498,20 +498,43 @@ public void Weapon_Dimension_Summon_Blitz(int client, int weapon, bool &result, 
 
 public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
 {
-	
-	switch(GetRandomInt(1, 4))
+	if (Change[client] == true )
 	{
-		case 1:
-			Dimension_Summon_Npc(client, "npc_alt_medic_berserker" ,weapon, 1.4, 1.2, "eyeboss_tp_player");
-		case 2:
-			Dimension_Summon_Npc(client, "npc_alt_medic_supperior_mage" ,weapon, 1.5, 1.2, "eyeboss_tp_player");
-		case 3:
-			Dimension_Summon_Npc(client, "npc_alt_sniper_railgunner" ,weapon, 0.7, 1.65, "eyeboss_tp_player");
-		case 4:
-			Dimension_Summon_Npc(client, "npc_alt_ikunagae" ,weapon, 1.8, 1.7, "eyeboss_tp_player");
-		default: //This should not happen
+		for(int i; i < 2; i++)
 		{
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+			switch(GetRandomInt(1, 4))
+			{
+				case 1:
+					Dimension_Summon_Npc(client, "npc_alt_medic_berserker" ,weapon, 1.2, 1.2, "eyeboss_tp_player");
+				case 2:
+					Dimension_Summon_Npc(client, "npc_alt_soldier_barrager" ,weapon, 1.1, 1.4, "eyeboss_tp_player");
+				case 3:
+					Dimension_Summon_Npc(client, "npc_alt_combine_soldier_deutsch_ritter" ,weapon, 1.3, 1.2, "eyeboss_tp_player");
+				case 4:
+					Dimension_Summon_Npc(client, "npc_alt_ikunagae" ,weapon, 2.0, 1.7, "eyeboss_tp_player");
+				default: //This should not happen
+				{
+					ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+				}
+			}
+		}
+	}
+	else if (Change[client] == false)
+	{
+		switch(GetRandomInt(1, 4))
+		{
+			case 1:
+				Dimension_Summon_Npc(client, "npc_alt_medic_berserker" ,weapon, 1.2, 1.2, "eyeboss_tp_player");
+			case 2:
+				Dimension_Summon_Npc(client, "npc_alt_soldier_barrager" ,weapon, 1.1, 1.4, "eyeboss_tp_player");
+			case 3:
+				Dimension_Summon_Npc(client, "npc_alt_combine_soldier_deutsch_ritter" ,weapon, 1.3, 1.2, "eyeboss_tp_player");
+			case 4:
+				Dimension_Summon_Npc(client, "npc_alt_ikunagae" ,weapon, 2.0, 1.7, "eyeboss_tp_player");
+			default: //This should not happen
+			{
+				ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+			}
 		}
 	}
 }
