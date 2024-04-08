@@ -11,7 +11,7 @@ static int i_West_NPC[MAXPLAYERS+1];
 void ResetMapStartWest()
 {
 	West_Map_Precache();
-    Zero(f_West_Aim_Duration);
+	Zero(f_West_Aim_Duration);
 }
 void West_Map_Precache()
 {
@@ -102,7 +102,7 @@ public void Revolver_Fang_PAP1(int client, int weapon, bool crit, int slot)
 			EmitSoundToAll(SOUND_REVOLVER_FANG, client, SNDCHAN_AUTO, 90, _, 0.6);
 			ApplyTempAttrib(weapon, 6, 0.3, 2.0);
 
-            static float anglesB[3];
+			static float anglesB[3];
 			GetClientEyeAngles(client, anglesB);
 			static float velocity[3];
 			GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
@@ -110,13 +110,13 @@ public void Revolver_Fang_PAP1(int client, int weapon, bool crit, int slot)
 			// knockback is the overall force with which you be pushed, don't touch other stuff
 			ScaleVector(velocity, knockback);
 			if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
-            {
-                velocity[2] = fmax(velocity[2], 300.0);
-            }	
+			{
+				velocity[2] = fmax(velocity[2], 300.0);
+			}	
 			else
-            {
-				velocity[2] += 100.0;    // a little boost to alleviate arcing issues
-            }
+			{
+				velocity[2] += 100.0;	// a little boost to alleviate arcing issues
+			}
 		}
 		else
 		{
@@ -141,20 +141,20 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot)
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 60.0);
 			EmitSoundToAll(SOUND_REVOLVER_NOON, client, SNDCHAN_AUTO, 110, _, 0.6);
-            ApplyTempAttrib(weapon, 6, 0.1, 2.0);
-            MakePlayerGiveResponseVoice(client, 1);
+			ApplyTempAttrib(weapon, 6, 0.1, 2.0);
+			MakePlayerGiveResponseVoice(client, 1);
 
-            float flPos[3]; // original
-            float flAng[3]; // original	
-            GetAttachment(client, "bip_head", flPos, flAng);
-                    
-            int particler = ParticleEffectAt(flPos, "utaunt_sun_sand_rays_sun1", 3.0);
-                    
-            SetParent(client, particler, "bip_head");
+			float flPos[3]; // original
+			float flAng[3]; // original	
+			GetAttachment(client, "bip_head", flPos, flAng);
+					
+			int particler = ParticleEffectAt(flPos, "utaunt_sun_sand_rays_sun1", 3.0);
+					
+			SetParent(client, particler, "bip_head");
 
-            i_West_NPC[client] = EntIndexToEntRef(target);
-            TF2_AddCondition(client, TFCond_HalloweenCritCandy, 2.0, client);
-            f_West_Aim_Duration[client] = GetGameTime() + 2.0;
+			i_West_NPC[client] = EntIndexToEntRef(target);
+			TF2_AddCondition(client, TFCond_HalloweenCritCandy, 2.0, client);
+			f_West_Aim_Duration[client] = GetGameTime() + 2.0;
 		}
 		else
 		{
@@ -180,7 +180,7 @@ void REVOLER_AIM(int client, int weapon, float &damage)
 			if(TF2_IsPlayerInCondition(client, TFCond_HalloweenCritCandy))
 			{
 				LookAtTarget(client, ChargeEnemy);
-                damage *= 2.00;
+				damage *= 2.00;
 			}
 		}
 	}
