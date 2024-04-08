@@ -3,6 +3,7 @@
 
 static Handle h_TimerWestWeaponManagement[MAXPLAYERS+1] = {null, ...};
 static float f_West_Aim_Duration[MAXPLAYERS+1];
+static int i_West_Target[MAXPLAYERS+1];
 
 #define SOUND_REVOLVER_FANG 	"items/powerup_pickup_agility.wav"
 #define SOUND_REVOLVER_NOON 	"ambient/medieval_falcon.wav"
@@ -60,7 +61,7 @@ public Action Timer_Management_Revolver_West(Handle timer, DataPack pack)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		REVOLER_AIM(client, weapon, damage);
+		REVOLER_AIM(client, weapon);
 	}
 		
 	return Plugin_Continue;
@@ -141,7 +142,24 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 			Ability_Apply_Cooldown(client, slot, 60.0);
 			EmitSoundToAll(SOUND_REVOLVER_NOON, client, SNDCHAN_AUTO, 110, _, 0.6);
 			ApplyTempAttrib(weapon, 6, 0.1, 2.0);
+			ApplyTempAttrib(weapon, 2, 2.0, 2.0);
 			MakePlayerGiveResponseVoice(client, 1);
+
+			Handle swingTrace;
+			float vecSwingForward[3];
+			StartLagCompensation_Base_Boss(client);
+			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 1500.0, false, 45.0, true); //infinite range, and ignore walls!
+			FinishLagCompensation_Base_boss();
+
+			int target = TR_GetEntityIndex(swingTrace);	
+			delete swingTrace;
+			if(!IsValidEnemy(client, target, true))
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				return;
+			}
+			i_West_Target[client] = EntIndexToEntRef(target);
+
 
 			float flPos[3]; // original
 			float flAng[3]; // original	
@@ -168,14 +186,21 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 	}
 }
 
-void REVOLER_AIM(int client, int weapon, float &damage)
+void REVOLER_AIM(int client, int weapon)
 {
 	if(f_West_Aim_Duration[client] > GetGameTime())
 	{
-		if(TF2_IsPlayerInCondition(client, TFCond_HalloweenCritCandy))
+		int ChargeEnemy = EntRefToEntIndex(i_West_Target[client]);
+		if(IsValidEnemy(client, ChargeEnemy, true))
 		{
-			LookAtTarget(client, ChargeEnemy);
-			damage *= 2.00;
+			if(TF2_IsPlayerInCondition(client, TFCond_HalloweenCritCandy))
+			{
+				LookAtTarget(client, ChargeEnemy);
+			}
+		}
+		else if(!TF2_IsPlayerInCondition(client, TFCond_Charging))
+		{
+			f_RedBladeChargeDuration[client] = 0.0;
 		}
 	}
 	else
