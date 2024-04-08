@@ -151,7 +151,7 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot)
 			int particler = ParticleEffectAt(flPos, "utaunt_sun_sand_rays_sun1", 3.0);
 					
 			SetParent(client, particler, "bip_head");
-
+			int target = TR_GetEntityIndex(swingTrace);	
 			i_West_NPC[client] = EntIndexToEntRef(target);
 			TF2_AddCondition(client, TFCond_HalloweenCritCandy, 2.0, client);
 			f_West_Aim_Duration[client] = GetGameTime() + 2.0;
