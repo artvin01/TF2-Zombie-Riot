@@ -3,7 +3,6 @@
 
 static Handle h_TimerWestWeaponManagement[MAXPLAYERS+1] = {null, ...};
 static float f_West_Aim_Duration[MAXPLAYERS+1];
-static int i_West_NPC[MAXPLAYERS+1];
 
 #define SOUND_REVOLVER_FANG 	"items/powerup_pickup_agility.wav"
 #define SOUND_REVOLVER_NOON 	"ambient/medieval_falcon.wav"
@@ -61,7 +60,7 @@ public Action Timer_Management_Revolver_West(Handle timer, DataPack pack)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		REVOLER_AIM(client, weapon);
+		REVOLER_AIM(client, weapon, damage);
 	}
 		
 	return Plugin_Continue;
@@ -152,8 +151,6 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 					
 			SetParent(client, particler, "bip_head");
 
-			int target = TR_GetEntityIndex(victim);
-			i_West_NPC[client] = EntIndexToEntRef(target);
 			TF2_AddCondition(client, TFCond_HalloweenCritCandy, 2.0, client);
 			f_West_Aim_Duration[client] = GetGameTime() + 2.0;
 		}
@@ -175,14 +172,10 @@ void REVOLER_AIM(int client, int weapon, float &damage)
 {
 	if(f_West_Aim_Duration[client] > GetGameTime())
 	{
-		int ChargeEnemy = EntRefToEntIndex(i_West_NPC[client]);
-		if(IsValidEnemy(client, ChargeEnemy, true))
+		if(TF2_IsPlayerInCondition(client, TFCond_HalloweenCritCandy))
 		{
-			if(TF2_IsPlayerInCondition(client, TFCond_HalloweenCritCandy))
-			{
-				LookAtTarget(client, ChargeEnemy);
-				damage *= 2.00;
-			}
+			LookAtTarget(client, ChargeEnemy);
+			damage *= 2.00;
 		}
 	}
 	else
