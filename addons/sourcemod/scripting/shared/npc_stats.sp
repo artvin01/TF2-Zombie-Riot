@@ -2954,7 +2954,11 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		//increace the size of the avoid box by 2x
 
+#if defined ZR
 		if(!b_AvoidObstacleType[this.index] && !(VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red))
+#else
+		if(!b_AvoidObstacleType[this.index] && GetTeam(this.index) != TFTeam_Red)
+#endif
 		{
 			float ModelSize = GetEntPropFloat(this.index, Prop_Send, "m_flModelScale");
 			//avoid obstacle code scales with modelsize, we dont want that.
@@ -4043,9 +4047,9 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 	{
 		return false;
 	}
+	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
 
 #if defined ZR
-	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
 	if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
 	{
 		//during tower defense, pretend all enemies are non collideable.
