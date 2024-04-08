@@ -491,7 +491,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 							enemy.ExtraMeleeRes = 1.0;
 							enemy.ExtraRangedRes = 1.0;
 							enemy.ExtraSpeed = 1.0;
-							enemy.ExtraDamage = fl_ExtraDamage[npc.index];	
+							enemy.ExtraDamage = fl_Extra_Damage[npc.index];	
 							enemy.ExtraSize = 1.0;	
 							enemy.Team = GetTeam(npc.index);	
 							Waves_AddNextEnemy(enemy);

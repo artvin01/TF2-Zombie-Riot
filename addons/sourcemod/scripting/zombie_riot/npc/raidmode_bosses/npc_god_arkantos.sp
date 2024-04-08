@@ -94,6 +94,7 @@ static bool b_angered_twice[MAXENTITIES];
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
 
+int ArkantoSpeedint[MAXENTITIES];
 methodmap GodArkantos < CClotBody
 {
 	property float m_flArkantosBuffEffect
@@ -196,6 +197,7 @@ methodmap GodArkantos < CClotBody
 		npc.m_iChanged_WalkCycle = 4;
 		npc.SetActivity("ACT_WALK");
 		npc.m_flSpeed = 320.0;
+		ArkantoSpeedint[npc.index] = 320;
 	
 		npc.m_flMeleeArmor = 1.25;
 		
@@ -369,7 +371,7 @@ public void GodArkantos_ClotThink(int iNPC)
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
-				fl_ExtraDamage[spawn_index] = 25.0;
+				fl_Extra_Damage[spawn_index] = 25.0;
 				fl_Extra_Speed[spawn_index] = 1.5;
 			}
 		}
@@ -387,7 +389,7 @@ public void GodArkantos_ClotThink(int iNPC)
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", 100000000);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 100000000);
-			fl_ExtraDamage[spawn_index] = 25.0;
+			fl_Extra_Damage[spawn_index] = 25.0;
 			fl_Extra_Speed[spawn_index] = 1.5;
 		}
 		npc.m_bDissapearOnDeath = true;
@@ -420,20 +422,24 @@ public void GodArkantos_ClotThink(int iNPC)
 		}
 		return;
 	}
-	if(npc.m_flSpeed == 320.0)
+	//float point impresicion...
+	if(ArkantoSpeedint[npc.index] == 320)
 	{
 		if(f_GodArkantosBuff[npc.index] > gameTime)
 		{
 			npc.m_flSpeed = 220.0;
+			ArkantoSpeedint[npc.index] = 220;
 		}
 	}
-	else if(npc.m_flSpeed == 220.0)
+	else if(ArkantoSpeedint[npc.index] == 220)
 	{
 		if(f_GodArkantosBuff[npc.index] < gameTime)
 		{
+			ArkantoSpeedint[npc.index] = 320;
 			npc.m_flSpeed = 320.0;
 		}		
 	}
+
 	if(npc.m_flNextDelayTime > gameTime)
 	{
 		return;
@@ -658,6 +664,7 @@ public void GodArkantos_ClotThink(int iNPC)
 				npc.SetVelocity({0.0,0.0,0.0});
 				PluginBot_Jump(npc.index, flPos);
 				
+				ArkantoSpeedint[npc.index] = 0;
 				npc.m_flSpeed = 0.0;
 				if(npc.m_bPathing)
 				{
@@ -1373,6 +1380,7 @@ void GodArkantosJumpSpecial(GodArkantos npc, float gameTime)
 				npc.m_iChanged_WalkCycle = 4;
 				npc.SetActivity("ACT_WALK");
 				npc.StartPathing();
+				ArkantoSpeedint[npc.index] = 320;
 				npc.m_flSpeed = 320.0;
 				npc.m_bisWalking = true;
 			}

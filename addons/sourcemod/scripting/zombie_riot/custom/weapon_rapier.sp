@@ -38,8 +38,6 @@ void Weapon_RapierMapChange()
 	PrecacheSound("player/crit_hit_mini5.wav");
 }
 
-#define DEFAULT_MELEE_RANGE 64.0
-#define DEFAULT_MELEE_BOUNDS 22.0
 void Rapier_DoSwingTrace(float &CustomMeleeRange, float &CustomMeleeWide)
 {
 	bool raidboss_active = false;

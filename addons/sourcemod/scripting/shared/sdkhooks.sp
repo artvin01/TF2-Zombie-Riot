@@ -379,7 +379,7 @@ public void OnPostThink(int client)
 		}
 	}
 
-	if(Mana_Regen_Delay[client] < GameTime || (b_AggreviatedSilence[client] && Mana_Regen_Delay_Aggreviated[client] < GameTime))
+	if(Rogue_CanRegen() && (Mana_Regen_Delay[client] < GameTime || (b_AggreviatedSilence[client] && Mana_Regen_Delay_Aggreviated[client] < GameTime)))
 	{
 		Mana_Regen_Delay[client] = GameTime + 0.4;
 		Mana_Regen_Delay_Aggreviated[client] = GameTime + 0.4;
@@ -464,7 +464,7 @@ public void OnPostThink(int client)
 		has_mage_weapon[client] = true;	//now force the mana hud even if your not a mage. this only applies to non mages if you got overmana, and the only way you can get overmana without a mage weapon is if you got hit by ruina's debuff.
 	}
 
-	if(Armor_regen_delay[client] < GameTime)
+	if(Rogue_CanRegen() && Armor_regen_delay[client] < GameTime)
 	{
 		Armour_Level_Current[client] = 0;
 
@@ -485,6 +485,18 @@ public void OnPostThink(int client)
 			}
 		}
 
+		float attrib = Attributes_GetOnPlayer(client, 57, false) +
+				Attributes_GetOnPlayer(client, 190, false) +
+				Attributes_GetOnPlayer(client, 191, false);
+		
+		if(attrib)
+		{
+			if(dieingstate[client] == 0)
+			{
+				healing_Amount += HealEntityGlobal(client, client, attrib, 1.0, 0.0, HEAL_SELFHEAL);	
+			}
+		}
+
 		if(Saga_RegenHealth(client))
 		{
 			if(dieingstate[client] == 0)
@@ -495,8 +507,8 @@ public void OnPostThink(int client)
 		
 		if(dieingstate[client] == 0)
 		{
-			Rogue_HealingSalve(client);
-			Rogue_HandSupport_HealTick(client);
+			Rogue_HealingSalve(client, healing_Amount);
+			Rogue_HandSupport_HealTick(client, healing_Amount);
 			if(i_BadHealthRegen[client] == 1)
 			{
 				healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);
@@ -796,6 +808,25 @@ public void OnPostThink(int client)
 						FormatEx(buffer, sizeof(buffer), "%s [⚐ %.0f%%]", buffer, GetEntPropFloat(client, Prop_Send, "m_flRageMeter"));
 					}
 				}
+			}
+			if(ClientHasUseableGrenadeOrDrink(client))
+			{
+				if(GetGameTime() > GrenadeApplyCooldownReturn(client))
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [◈]", buffer);
+				}
+				else
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [◈ %.1fs]", buffer, GrenadeApplyCooldownReturn(client) - GetGameTime());
+				}
+			}
+			static int TaurusInt;
+			TaurusInt = TaurusExistant(client);
+			if(TaurusInt > 0)
+			{
+				int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+				int ammo = GetEntData(TaurusInt, iAmmoTable, 4);//Get ammo clip
+				FormatEx(buffer, sizeof(buffer), "%s [T %i/%i]",buffer, ammo, TaurusMaxAmmo());
 			}
 		}
 		 
@@ -1499,7 +1530,17 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	i_WasInMarkedForDeath[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
 	if(TeutonType[victim])
-		return Plugin_Handled;
+	{
+		//do not protect them.
+		if(!(damagetype & DMG_CRUSH))
+		{
+			return Plugin_Handled;
+		}
+		else
+		{
+			return Plugin_Continue;
+		}
+	}
 #endif
 
 	float GameTime = GetGameTime();
@@ -1809,7 +1850,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 
 			if(Armor_Charge[armorEnt] > 0)
 			{
-				int dmg_through_armour = RoundToCeil(Replicated_Damage * 0.1);
+				int dmg_through_armour = RoundToCeil(Replicated_Damage * ZR_ARMOR_DAMAGE_REDUCTION_INVRERTED);
 				switch(GetRandomInt(1,3))
 				{
 					case 1:
@@ -1821,7 +1862,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					case 3:
 						EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet3.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
 				}						
-				if(RoundToCeil(Replicated_Damage * 0.9) >= Armor_Charge[armorEnt])
+				if(RoundToCeil(Replicated_Damage * ZR_ARMOR_DAMAGE_REDUCTION) >= Armor_Charge[armorEnt])
 				{
 					int damage_recieved_after_calc;
 					damage_recieved_after_calc = RoundToCeil(Replicated_Damage) - Armor_Charge[armorEnt];
@@ -1831,7 +1872,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				}
 				else
 				{
-					Armor_Charge[armorEnt] -= RoundToCeil(Replicated_Damage * 0.9);
+					Armor_Charge[armorEnt] -= RoundToCeil(Replicated_Damage * ZR_ARMOR_DAMAGE_REDUCTION);
 					damage = 0.0;
 					damage += float(dmg_through_armour);
 					Replicated_Damage = 0.0;
@@ -1902,10 +1943,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				CheckAlivePlayers(_, victim);
 
 				// Die in Rogue, there's no lastman
-				return Rogue_Mode() ? Plugin_Continue : Plugin_Handled;
+				return Rogue_NoLastman() ? Plugin_Continue : Plugin_Handled;
 			}
 			
 			i_AmountDowned[victim] += 1;
+			Rogue_PlayerDowned();
+			
 			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
 			{
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp

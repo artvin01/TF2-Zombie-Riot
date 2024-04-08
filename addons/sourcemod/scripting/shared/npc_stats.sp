@@ -657,8 +657,8 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	property float m_flExtraDamage
 	{
-		public get()							{ return fl_ExtraDamage[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_ExtraDamage[this.index] = TempValueForProperty; }
+		public get()							{ return fl_Extra_Damage[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_Extra_Damage[this.index] = TempValueForProperty; }
 	}
 	property float m_flHurtie
 	{
@@ -1873,6 +1873,24 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
+	property int m_iWearable8
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_Wearable[this.index][7]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_Wearable[this.index][7] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_Wearable[this.index][7] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	property int m_iFreezeWearable
 	{
 		public get()		 
@@ -2114,7 +2132,9 @@ methodmap CClotBody < CBaseCombatCharacter
 				if(this.m_bPathing && this.IsOnGround())
 				{
 					if(i_WasPathingToHere[this.index] == target)
+					{
 						return;
+					}
 
 					i_WasPathingToHere[this.index] = target;
 				}
@@ -2934,7 +2954,11 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		//increace the size of the avoid box by 2x
 
-		if(!b_AvoidObstacleType[this.index])
+#if defined ZR
+		if(!b_AvoidObstacleType[this.index] && !(VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red))
+#else
+		if(!b_AvoidObstacleType[this.index] && GetTeam(this.index) != TFTeam_Red)
+#endif
 		{
 			float ModelSize = GetEntPropFloat(this.index, Prop_Send, "m_flModelScale");
 			//avoid obstacle code scales with modelsize, we dont want that.
@@ -2958,6 +2982,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		else
 		{
+			//if in tower defense, never avoid.
 			this.GetBaseNPC().SetBodyMaxs({1.0,1.0,1.0});
 			this.GetBaseNPC().SetBodyMins({0.0,0.0,0.0});
 		}
@@ -3198,6 +3223,8 @@ static void OnDestroy(CClotBody body)
 		RemoveEntity(body.m_iWearable6);
 	if(IsValidEntity(body.m_iWearable7))
 		RemoveEntity(body.m_iWearable7);
+	if(IsValidEntity(body.m_iWearable8))
+		RemoveEntity(body.m_iWearable8);
 
 }
 
@@ -4020,7 +4047,16 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 	{
 		return false;
 	}
-	
+	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
+
+#if defined ZR
+	if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
+	{
+		//during tower defense, pretend all enemies are non collideable.
+		return true;
+	}
+#endif
+
 	if(b_is_a_brush[other_entidx])
 	{
 		return false;
@@ -4030,7 +4066,8 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 	{
 		return true;
 	}
-	
+
+
 #if defined RTS
 	if(IsObject(other_entidx))
 	{
@@ -4045,7 +4082,7 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 	}
 
 #if defined ZR
-	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
+
 
 	if(GetTeam(bot_entidx) == TFTeam_Red) //ally!
 	{
@@ -4075,7 +4112,6 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 		return true;
 	}
 
-	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
 #endif
 
 	if(other_entidx > 0 && other_entidx <= MaxClients)
@@ -7582,6 +7618,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Wearable[entity][4] = -1;
 	i_Wearable[entity][5] = -1;
 	i_Wearable[entity][6] = -1;
+	i_Wearable[entity][7] = -1;
 	i_OverlordComboAttack[entity] = 0;
 	i_FreezeWearable[entity] = -1;
 	i_InvincibleParticle[entity] = -1;
@@ -7825,7 +7862,7 @@ public void ArrowStartTouch(int arrow, int entity)
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
 		if(IsValidEntity(arrow_particle))
 		{
-			DispatchKeyValue(arrow_particle, "parentname", "none");
+		//	DispatchKeyValue(arrow_particle, "parentname", "none");
 			AcceptEntityInput(arrow_particle, "ClearParent");
 			float f3_PositionTemp[3];
 			GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
@@ -7839,7 +7876,7 @@ public void ArrowStartTouch(int arrow, int entity)
 		EmitSoundToAll(g_ArrowHitSoundMiss[GetRandomInt(0, sizeof(g_ArrowHitSoundMiss) - 1)], arrow, _, 80, _, 0.8, 100);
 		if(IsValidEntity(arrow_particle))
 		{
-			DispatchKeyValue(arrow_particle, "parentname", "none");
+		//	DispatchKeyValue(arrow_particle, "parentname", "none");
 			AcceptEntityInput(arrow_particle, "ClearParent");
 			float f3_PositionTemp[3];
 			GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
@@ -8922,14 +8959,17 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage)
 		}
 		
 		SDKHooks_TakeDamage(b_TouchedEntity[entity_traced], iNPC, iNPC, damage, DMG_CRUSH, -1, _);
-		if(b_NpcHasDied[b_TouchedEntity[entity_traced]])
+		if(GetTeam(iNPC) != TFTeam_Red)
 		{
-			Custom_SetAbsVelocity(b_TouchedEntity[entity_traced], vDirection);
-		}
-		else
-		{
-			CClotBody npc = view_as<CClotBody>(b_TouchedEntity[entity_traced]);
-			npc.SetVelocity(vDirection);
+			if(b_NpcHasDied[b_TouchedEntity[entity_traced]])
+			{
+				Custom_SetAbsVelocity(b_TouchedEntity[entity_traced], vDirection);
+			}
+			else
+			{
+				CClotBody npc = view_as<CClotBody>(b_TouchedEntity[entity_traced]);
+				npc.SetVelocity(vDirection);
+			}
 		}
 	}
 
@@ -8987,6 +9027,11 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 						npc.m_iTarget = target;
 						npc.m_flGetClosestTargetTime = GetGameTime(entity) + GetRandomRetargetTime();
 						f_DelayComputingOfPath[entity] = 0.0;
+						//for tower defense.
+						f3_WasPathingToHere[entity][0] = 0.0;
+						f3_WasPathingToHere[entity][1] = 0.0;
+						f3_WasPathingToHere[entity][2] = 0.0;
+						i_WasPathingToHere[entity] = target;
 					}
 				}
 			}
@@ -9379,6 +9424,15 @@ void TeleportBackToLastSavePosition(int entity)
 		CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		f_GameTimeTeleportBackSave_OutOfBounds[entity] = GetGameTime() + 2.0; //was stuck, lets just chill.
 		TeleportEntity(entity, f3_VecTeleportBackSave_OutOfBounds[entity], NULL_VECTOR ,{0.0,0.0,0.0});
+		if(b_ThisWasAnNpc[entity])
+		{
+			//freeze the NPC so they can repath their logic, and also not constantly fall off.
+			f_DelayComputingOfPath[entity] = 0.0;
+			FreezeNpcInTime(entity, 0.5);
+			CClotBody npcBase = view_as<CClotBody>(entity);
+			npcBase.m_iTarget = 0;
+			//make them lose their target.
+		}
 	}
 }
 
@@ -9496,6 +9550,9 @@ int i_SpeechEndingScroll_ScrollingPart[MAXENTITIES];
 float f_SpeechTickDelay[MAXENTITIES];
 float f_SpeechDeleteAfter[MAXENTITIES];
 
+/**
+ * @param endingtextscroll	Is end text that loops "" -> "." -> ".." -> "..." -> ""
+ */
 stock void NpcSpeechBubble(int entity, const char[] speechtext, int fontsize, int colour[4], float extra_offset[3], const char[] endingtextscroll)
 {
 	int Text_Entity;

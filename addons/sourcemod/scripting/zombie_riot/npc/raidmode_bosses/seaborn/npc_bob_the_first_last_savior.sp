@@ -101,7 +101,6 @@ static const char g_BobSuperMeleeCharge_Hit[][] =
 	"player/taunt_yeti_standee_break.wav",
 };
 
-//static int BobHitDetected[MAXENTITIES];
 
 void RaidbossBobTheFirst_OnMapStart()
 {
@@ -475,6 +474,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	}
 	if(npc.m_bFakeClone)
 	{
+		bool FellowBobFound = false;
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
@@ -486,11 +486,15 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					{
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(other, Prop_Data, "m_iHealth"));
 						SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", GetEntProp(other, Prop_Data, "m_iMaxHealth"));
-						
+						FellowBobFound = true;
 						break;
 					}
 				}
 			}
+		}
+		if(!FellowBobFound)
+		{
+			SmiteNpcToDeath(npc.index);
 		}
 	}
 	if(!npc.m_bFakeClone && LastMann)
@@ -746,22 +750,9 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 	if(npc.Anger)	// Waiting for enemies to die off
 	{
-		float enemies = float(Zombies_Currently_Still_Ongoing);
-
-		for(int i; i < i_MaxcountNpcTotal; i++)
-		{
-			int victim = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(victim != INVALID_ENT_REFERENCE && victim != npc.index && IsEntityAlive(victim) && GetTeam(victim) != TFTeam_Red)
-			{
-				int maxhealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
-				if(maxhealth)
-					enemies += float(GetEntProp(victim, Prop_Data, "m_iHealth")) / float(maxhealth);
-			}
-		}
-
 		if(!Waves_IsEmpty())
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * (enemies + 1.0) / 485.0));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 17 / 20);
 			return;
 		}
 
@@ -1677,6 +1668,7 @@ void RaidbossBobTheFirst_NPCDeath(int entity)
 			}
 		}
 	}
+	
 }
 
 static Action Bob_DeathCutsceneCheck(Handle timer)

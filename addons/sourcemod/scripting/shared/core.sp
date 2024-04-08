@@ -512,7 +512,7 @@ bool i_EntityRenderOverride[MAXENTITIES]={false, ...};
 
 bool b_RocketBoomEffect[MAXENTITIES]={false, ...};
 //6 wearables
-int i_Wearable[MAXENTITIES][7];
+int i_Wearable[MAXENTITIES][8];
 int i_FreezeWearable[MAXENTITIES];
 int i_InvincibleParticle[MAXENTITIES];
 float f_WidowsWineDebuff[MAXENTITIES];
@@ -1119,7 +1119,6 @@ int i_MedkitAnnoyance[MAXENTITIES];
 float fl_idle_talk[MAXENTITIES];
 float fl_heal_cooldown[MAXENTITIES];
 float fl_Hurtie[MAXENTITIES];
-float fl_ExtraDamage[MAXENTITIES];
 int i_Changed_WalkCycle[MAXENTITIES];
 bool b_WasSadAlready[MAXENTITIES];
 int i_TargetAlly[MAXENTITIES];
@@ -1609,6 +1608,13 @@ public void OnMapStart()
 public void OnMapEnd()
 {
 #if defined ZR
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsFakeClient(client) && IsClientSourceTV(client))
+		{
+			KickClient(client);
+		}
+	}
 	Store_RandomizeNPCStore(1);
 	OnRoundEnd(null, NULL_STRING, false);
 	Waves_MapEnd();
@@ -2899,9 +2905,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			
-			//SDKHook_SpawnPost doesnt work
 			b_IsAProjectile[entity] = true;
 		}
 #endif
@@ -3150,12 +3153,21 @@ public Action SDKHook_Regenerate_Touch(int entity, int target)
 
 void Set_Projectile_Collision(int entity)
 {
-	if(IsValidEntity(entity) && GetTeam(entity) != view_as<int>(TFTeam_Blue))
+	//needs to be delayed by frame, team setting in tf2 happens after its spawned.
+	RequestFrame(Set_Projectile_CollisionFrame, EntRefToEntIndex(entity));
+}
+
+void Set_Projectile_CollisionFrame(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(!IsValidEntity(entity))
+		return;
+
+	if(GetTeam(entity) != view_as<int>(TFTeam_Blue))
 	{
 		SetEntityCollisionGroup(entity, 27);
 	}
 }
-
 public void Delete_instantly(int entity)
 {
 	RemoveEntity(entity);

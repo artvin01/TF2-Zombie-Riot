@@ -4108,6 +4108,10 @@ int MaxSupportBuildingsAllowed(int client, bool ingore_glass)
 	
 	maxAllowed += Building_health_attribute; 
 	maxAllowed += Blacksmith_Additional_SupportBuildings(client); 
+	if(CvarInfiniteCash.BoolValue)
+	{
+		maxAllowed += 999;
+	}
 	
 	if(maxAllowed < 1)
 	{
@@ -7314,8 +7318,8 @@ static void SummonerMenu(int client, int viewer)
 	int itemsAddedToList = 0;
 	
 	Menu menu = new Menu(SummonerMenuH);
-	CancelClientMenu(client);
-	SetStoreMenuLogic(client, false);
+	CancelClientMenu(viewer);
+	SetStoreMenuLogic(viewer, false);
 
 	SetGlobalTransTarget(viewer);
 	if(!(GetEntityFlags(viewer) & FL_DUCKING))
@@ -8538,7 +8542,11 @@ void BuildingVoteEndResetCD()
 
 void ApplyBuildingCollectCooldown(int building, int client, float Duration, bool IgnoreVotingExtraCD = false)
 {
-	if(GameRules_GetRoundState() == RoundState_BetweenRounds && !IgnoreVotingExtraCD)
+	if(CvarInfiniteCash.BoolValue)
+	{
+		Building_Collect_Cooldown[building][client] = 0.0;
+	}
+	else if(GameRules_GetRoundState() == RoundState_BetweenRounds && !IgnoreVotingExtraCD)
 	{
 		Building_Collect_Cooldown[building][client] = FAR_FUTURE;
 	}
