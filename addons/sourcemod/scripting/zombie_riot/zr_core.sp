@@ -527,6 +527,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_ludo.sp"
 #include "zombie_riot/custom/weapon_messenger.sp"
 #include "zombie_riot/custom/kit_blacksmith.sp"
+#include "zombie_riot/custom/weapon_deagle_west.sp"
 
 void ZR_PluginLoad()
 {
