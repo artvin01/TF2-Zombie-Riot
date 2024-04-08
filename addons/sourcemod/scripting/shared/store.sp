@@ -5750,7 +5750,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Messenger_Launcher_Ability(client, entity);
 		WeaponNailgun_Enable(client, entity);
 		Blacksmith_Enable(client, entity);
-		Enable_West_Weapon(int client, int weapon);
+		Enable_West_Weapon(client, entity);
 		//Activate_Cosmic_Weapons(client, entity);
 	}
 	return entity;
