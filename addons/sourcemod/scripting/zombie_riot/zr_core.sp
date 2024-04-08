@@ -402,6 +402,7 @@ bool applied_lastmann_buffs_once = false;
 
 #include "zombie_riot/buildonbuilding.sp"
 #include "zombie_riot/database.sp"
+#include "zombie_riot/elemental.sp"
 #include "zombie_riot/escape.sp"
 #include "zombie_riot/freeplay.sp"
 #include "zombie_riot/items.sp"

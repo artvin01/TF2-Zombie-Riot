@@ -7843,7 +7843,7 @@ public void ArrowStartTouch(int arrow, int entity)
 		if(i_NervousImpairmentArrowAmount[arrow] > 0)
 		{
 #if defined ZR
-			SeaSlider_AddNeuralDamage(entity, owner, i_NervousImpairmentArrowAmount[arrow]);
+			Elemental_AddNervousDamage(entity, owner, i_NervousImpairmentArrowAmount[arrow]);
 #elseif defined RPG
 			Stats_AddNeuralDamage(entity, owner, i_NervousImpairmentArrowAmount[arrow]);
 #endif
@@ -7851,7 +7851,7 @@ public void ArrowStartTouch(int arrow, int entity)
 #if defined ZR
 		if(i_ChaosArrowAmount[arrow] > 0)
 		{
-			Sakratan_AddNeuralDamage(entity, owner, i_ChaosArrowAmount[arrow]);
+			Elemental_AddChaosDamage(entity, owner, i_ChaosArrowAmount[arrow]);
 		}
 #endif
 

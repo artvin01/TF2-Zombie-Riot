@@ -197,7 +197,7 @@ public void SeaSwarmcaller_ClotThink(int iNPC)
 
 public void SeaSwarmcaller_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
-	SeaSlider_AddNeuralDamage(victim, attacker, view_as<SeaSwarmcaller>(attacker).m_bCarrier ? 3 : 2);
+	Elemental_AddNervousDamage(victim, attacker, view_as<SeaSwarmcaller>(attacker).m_bCarrier ? 3 : 2);
 	// 140 x 0.05 x 0.15
 	// 160 x 0.05 x 0.15
 	// 140 x 0.1 x 0.15

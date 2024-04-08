@@ -293,7 +293,7 @@ void AnarchyMadDoctorSelfDefense(AnarchyMadDoctor npc, float gameTime, int targe
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					if(npc.m_iOverlordComboAttack >= 3)
 					{
-						Sakratan_AddNeuralDamage(target, npc.index, 50, true);
+						Elemental_AddChaosDamage(target, npc.index, 50, true);
 					}
 
 					// Hit sound
