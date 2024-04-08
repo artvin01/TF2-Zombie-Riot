@@ -140,17 +140,17 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot)
 		{
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 60.0);
-			EmitSoundToAll(SOUND_REVOLVER_NOON, client, SNDCHAN_AUTO, 90, _, 0.6);
+			EmitSoundToAll(SOUND_REVOLVER_NOON, client, SNDCHAN_AUTO, 110, _, 0.6);
             ApplyTempAttrib(weapon, 6, 0.1, 2.0);
             MakePlayerGiveResponseVoice(client, 1);
 
             float flPos[3]; // original
             float flAng[3]; // original	
-            GetAttachment(client, "effect_hand_r", flPos, flAng);
+            GetAttachment(client, "bip_head", flPos, flAng);
                     
-            int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 1.0);
+            int particler = ParticleEffectAt(flPos, "utaunt_sun_sand_rays_sun1", 3.0);
                     
-            SetParent(client, particler, "effect_hand_r");
+            SetParent(client, particler, "bip_head");
 
             i_West_NPC[client] = EntIndexToEntRef(target);
             TF2_AddCondition(client, TFCond_HalloweenCritCandy, 2.0, client);
