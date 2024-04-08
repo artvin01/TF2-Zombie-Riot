@@ -175,6 +175,7 @@ enum
 	WEAPON_COSMIC_PILLAR = 96,
 	WEAPON_COSMIC_RAILCANNON = 97,
 	WEAPON_GRENADEHUD = 98
+	WEAPON_WEST_REVOLVER = 99
 }
 
 enum
@@ -766,6 +767,7 @@ void ZR_MapStart()
 	ResetMapStartDimWeapon();
 	Hell_Hoe_MapStart();
 	ResetMapStartMessengerWeapon();
+	ResetMapStartWest();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;
