@@ -8,7 +8,7 @@
 		"pl"    "Bob drugi"
 		"pt"	"Bob o 2°"
 		"nl"	"Bob De Tweede"
-		"chi"	"鲍勃"
+		"chi"	"鲍勃二代"
 	}
 	"Bob The Second:"
 	{
@@ -18,7 +18,7 @@
 		"pl"    "Bob drugi:"
 		"pt"	"Bob o 2°:"
 		"nl"	"Bob De Tweede:"
-		"chi"	"鲍勃:"
+		"chi"	"鲍勃二代:"
 	}
 	"Pistol Ammo"
 	{
@@ -38,8 +38,7 @@
 		"pl"    "Bob drugi nie jest przyjazny i podąża za tobą!"
 		"pt"	"Bob o 2° não é amigável e te segue!"
 		"nl"	"Bob De Tweede is niet vriendelijk en volgt je!"
-		"chi"	"鲍勃会攻击敌人并跟着你"
-	}
+		"chi"	"鲍勃二代是友好的，并会跟着你！"
 	"Use voice Commands to command him!"
 	{
 		"en"	"Use voice Commands to command him!"
@@ -58,7 +57,7 @@
 		"pl"    "Bob drugi jest przyjazny i podąża za tobą!"
 		"pt"	"Bob o 2° é amigável e te segue!"
 		"nl"	"Bob De Tweede is vriendelijk en volgt je!"
-		"chi"	"鲍勃不会攻击敌人且跟着你"
+		"chi"	"鲍勃二代不是友好的，但会跟着你！"
 	}
 	"Bob The Second is not friendly and doesn't follow you!"
 	{
@@ -68,7 +67,7 @@
 		"pl"    "Bob drugi nie jest przyjazny i nie podąża za tobą!"
 		"pt"	"Bob o 2° não é amigável e não te segue!"
 		"nl"	"Bob De Tweede is niet vriendelijk en volgt je niet!"
-		"chi"	"鲍勃会攻击敌人但不会跟着你"
+		"chi"	"鲍勃二代不是友好的，也不会跟着你！"
 	}
 	"Bob The Second is friendly and doesn't follow you!"
 	{
@@ -78,7 +77,7 @@
 		"pl"    "Bob drugi jest przyjazny i nie podąża za tobą!"
 		"pt"	"Bob o 2° é amigável e não te segue!"
 		"nl"	"Bob De Tweede is vriendelijk en volgt je niet!"
-		"chi"	"鲍勃不会攻击敌人也不会跟着你"
+		"chi"	"鲍勃二代是友好的，但不会跟着你！"
 	}
 	"Bob The Second is not friendly and follows you! BUT stands still."
 	{
@@ -88,7 +87,7 @@
 		"pl"    "Bob drugi nie jest przyjazny i podąża za tobą! Ale stoi w miejscu."
 		"pt"	"Bob o 2° não é amigável e te segue! MAS está parado."
 		"nl"	"Bob De Tweede is niet vriendelijk en volgt je! MAAR staat stil."
-		"chi"	"鲍勃会攻击敌人并跟着你，但会先坚守此地"
+		"chi"	"鲍勃二代不是友好的，会跟着你，并且坚守此地！"
 	}
 	"Bob The Second is friendly and follows you! BUT stands still"
 	{
@@ -98,7 +97,7 @@
 		"pl"    "Bob drugi jest przyjazny is podąża za tobą! Ale stoi w miejscu."
 		"pt"	"Bob o 2° é amigável e te segue! MAS está parado."
 		"nl"	"Bob De Tweede is vriendelijk en volgt je! MAAR staat stil."
-		"chi"	"鲍勃不会攻击敌人但会跟着你！但是会先坚守此地"
+		"chi"	"鲍勃二代是友好的，会跟着你，并且坚守此地！"
 	}
 	"Bob The Second is not friendly and doesn't follow you! BUT stands still"
 	{
@@ -108,7 +107,7 @@
 		"pl"    "Bob drugi nie jest przyjazny i nie podąża za tobą! Ale stoi w miejscu."
 		"pt"	"Bob o 2° não é amigável e não te segue! MAS está parado."
 		"nl"	"Bob De Tweede is niet vriendelijk en volgt je niet! MAAR staat stil."
-		"chi"	"鲍勃会攻击敌人但不会跟着你！但会先坚守此地"
+		"chi"	"鲍勃二代不是友好的，不会跟着你，但会坚守此地！"
 	}
 	"Bob The Second is friendly and doesn't follow you! BUT stands still"
 	{
@@ -118,7 +117,7 @@
 		"pl"    "Bob drugi jest przyjazny i nie podąża za tobą! Ale stoi w miejscu."
 		"pt"	"Bob o 2° é amigável e não te segue! MAS está parado."
 		"nl"	"Bob De Tweede is vriendelijk en volgt je niet! MAAR staat stil."
-		"chi"	"鲍勃不会攻击敌人也不会跟着你！会先坚守此地"
+		"chi"	"鲍勃二代是友好的，不会跟着你，但会坚守此地！"
 	}
 
 
@@ -130,7 +129,7 @@
 		"pl"    "Mam ich!"
 		"pt"	"Eu peguei eles!"
 		"nl"	"Ik heb ze!"
-		"chi"   "我搞定它们了！"
+		"chi"   "解决了！"
 	}
 	"Take This!"
 	{
@@ -140,7 +139,7 @@
 		"pl"    "A Masz!"
 		"pt"	"Toma essa!"
 		"nl"	"Pak aan!"
-		"chi"   "拿着这个!"
+		"chi"   "接招！"
 	}
 	"I'll stand beside you, sir!"
 	{
@@ -150,7 +149,7 @@
 		"pl"    "Będę stał obok ciebie!"
 		"pt"	"Estarei bem ao seu lado, senhor!"
 		"nl"	"Ik sta naast je, heer!"
-		"chi"   "我会支持你的，先生!"
+		"chi"   "放心，我会在你身边的！"
 	}
 	"I'll guard you, sir!"
 	{
@@ -170,7 +169,7 @@
 		"pl"    "jestem dość znudzony..."
 		"pt"	"Tem nada pra fazer..."
 		"nl"	"Ik verveel me..."
-		"chi"   "我很无聊......"
+		"chi"   "好无聊..."
 	}
 	"Reloading near you, sir!"
 	{
@@ -180,7 +179,7 @@
 		"pl"    "Przeładowuje obok ciebie!"
 		"pt"	"Recarregando próximo a você, senhor!"
 		"nl"	"Ik herlaad dicht bij je, heer!"
-		"chi"   "在你附近装填弹药，长官!"
+		"chi"   "装弹中!"
 	}
 	"I hope your day is going well!"
 	{
@@ -200,7 +199,7 @@
 		"pl"	"Czasami się zastanawiam dlaczego ta wojna istnieje."
 		"pt"	"As vezes me pergunto porque essa guerra existe."
 		"nl"	"Soms vraag ik me af waarom deze oorlog bestaat."
-		"chi"   "有时我想知道这场战争为什么会存在。"
+		"chi"   "有时我想知道这场战争的意义。"
 	}
 	"Just saying, never give up!"
 	{
@@ -210,7 +209,7 @@
 		"pl"	"Pamiętaj nigdy się nie poddawaj!"
 		"pt"	"So pra constar, nunca desista!"
 		"nl"	"Ik zeg maar, geef niet op!"
-		"chi"   "我只想说，永远不要放弃!"
+		"chi"   "永不放弃!"
 	}
 	"Could i borrow your gun perhaps?"
 	{
@@ -220,7 +219,7 @@
 		"pl"    "Czy mógłbym porzyczyć twoją broń?"
 		"pt"	"Talvez você poderia me emprestar sua arma?"
 		"nl"	"Mag ik je wapen lenen misschien?"
-		"chi"   "我能借用一下你的枪吗?"
+		"chi"   "我能借下你的枪吗?"
 	}
 	"Im pretty confident in my abilities!"
 	{
@@ -240,7 +239,7 @@
 		"pl"    "Podnieś tą puszkę."
 		"pt"	"Pegue aquela latinha."
 		"nl"	"Pak dat blik op."
-		"chi"   "接,可以。"
+		"chi"   "捡起那个罐子。"
 	}
 	"On my way, sir!"
 	{
@@ -250,7 +249,7 @@
 		"pl"    "Już jestem w drodze!"
 		"pt"	"Estou indo, senhor!"
 		"nl"	"Ik kom eraan, heer!"
-		"chi"   "马上来，先生!"
+		"chi"   "马上来!"
 	}
 	"Im watching there, dont worry!"
 	{
@@ -270,7 +269,7 @@
 		"pl"    "Szpieg? Będę trzymał tam oko."
 		"pt"	"Spy? Eu vou prestar atenção ali."
 		"nl"	"Spion? Ik hou mijn ogen daar wel op."
-		"chi"   "间谍?我会一直盯着那里的!"
+		"chi"   "间谍?我会盯着那里的!"
 	}
 	"Sentry here? Its better to wait for teammates to engage so i'll look."
 	{
@@ -559,7 +558,7 @@
 		"pl"    "To nie może być..."
 		"pt"	"Não pode ser!..."
 		"nl"	"Dit kan niet waar zijn..."
-		"chi"   "这不可能...你怎么这么菜...."
+		"chi"   "怎么会这样..."
 	}
 	"I will protect you!"
 	{
