@@ -200,7 +200,7 @@ void REVOLER_AIM(int client, int weapon)
 		}
 		else if(!TF2_IsPlayerInCondition(client, TFCond_Charging))
 		{
-			f_RedBladeChargeDuration[client] = 0.0;
+			f_West_Aim_Duration[client] = 0.0;
 		}
 	}
 	else
