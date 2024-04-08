@@ -61,7 +61,7 @@ public Action Timer_Management_Revolver_West(Handle timer, DataPack pack)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		REVOLER_AIM(client, weapon);
+		REVOLER_AIM(client);
 	}
 		
 	return Plugin_Continue;
@@ -186,7 +186,7 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 	}
 }
 
-void REVOLER_AIM(int client, int weapon)
+void REVOLER_AIM(int client)
 {
 	if(f_West_Aim_Duration[client] > GetGameTime())
 	{
