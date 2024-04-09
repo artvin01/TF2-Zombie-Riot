@@ -144,9 +144,9 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 60.0);
 			EmitSoundToAll(SOUND_REVOLVER_NOON, client, SNDCHAN_AUTO, 140, _, 0.6);
-			ApplyTempAttrib(weapon, 6, 0.1, 1.75);
-			ApplyTempAttrib(weapon, 2, 1.75, 1.75);
-			ApplyTempAttrib(weapon, 97, 0.01, 1.75);
+			ApplyTempAttrib(weapon, 6, 0.1, 1.5);
+			ApplyTempAttrib(weapon, 2, 1.75, 1.5);
+			ApplyTempAttrib(weapon, 97, 0.01, 1.5);
 			MakePlayerGiveResponseVoice(client, 1);
 
 			Handle swingTrace;
