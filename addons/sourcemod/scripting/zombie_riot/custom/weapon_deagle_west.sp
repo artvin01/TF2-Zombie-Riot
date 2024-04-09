@@ -112,7 +112,7 @@ public void Revolver_Fang_PAP1(int client, int weapon, bool crit, int slot)
 			ScaleVector(velocity, knockback);
 			if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 			{
-				velocity[2] = fmax(velocity[2], 250.0);
+				velocity[2] = fmax(velocity[2], 300.0);
 			}	
 			else
 			{
@@ -144,8 +144,9 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 60.0);
 			EmitSoundToAll(SOUND_REVOLVER_NOON, client, SNDCHAN_AUTO, 140, _, 0.6);
-			ApplyTempAttrib(weapon, 6, 0.1, 2.0);
-			ApplyTempAttrib(weapon, 2, 1.75, 2.0);
+			ApplyTempAttrib(weapon, 6, 0.1, 1.75);
+			ApplyTempAttrib(weapon, 2, 1.75, 1.75);
+			ApplyTempAttrib(weapon, 97, 0.01, 1.75);
 			MakePlayerGiveResponseVoice(client, 1);
 
 			Handle swingTrace;
