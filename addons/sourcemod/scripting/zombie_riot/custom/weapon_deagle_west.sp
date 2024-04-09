@@ -106,6 +106,7 @@ public void Revolver_Fang_PAP1(int client, int weapon, bool crit, int slot)
 			GetClientEyeAngles(client, anglesB);
 			static float velocity[3];
 			GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
+			NormalizeVector(velocity, velocity);
 			float knockback = -800.0;
 			// knockback is the overall force with which you be pushed, don't touch other stuff
 			ScaleVector(velocity, knockback);
@@ -119,6 +120,7 @@ public void Revolver_Fang_PAP1(int client, int weapon, bool crit, int slot)
 				velocity[2] += 150.0;	// a little boost to alleviate arcing issues
 				ShowSyncHudText(client,  SyncHud_Notifaction, "Yeet Yeet");//none
 			}
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 		}
 		else
 		{
@@ -145,7 +147,7 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 			Ability_Apply_Cooldown(client, slot, 60.0);
 			EmitSoundToAll(SOUND_REVOLVER_NOON, client, SNDCHAN_AUTO, 140, _, 0.6);
 			ApplyTempAttrib(weapon, 6, 0.1, 2.0);
-			ApplyTempAttrib(weapon, 2, 2.0, 2.0);
+			ApplyTempAttrib(weapon, 2, 1.75, 2.0);
 			MakePlayerGiveResponseVoice(client, 1);
 
 			Handle swingTrace;
