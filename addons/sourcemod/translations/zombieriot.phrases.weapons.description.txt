@@ -2797,7 +2797,7 @@
 	}
 	"West Pap 1 Desc"
 	{
-		"en"	"A weapon from Wild West. \nSlower fire rate, but more damage.\nNew abiity: M2 for rapid fire."
+		"en"	"A weapon from Wild West. \nSlower fire rate, but more damage.\nYou gain damage resistance but the weapon's dmg falloff is increased\nNew abiity: M2 for rapid fire."
 	}
 	"West Pap 2 Desc"
 	{

@@ -112,22 +112,25 @@ public void Revolver_Fang_PAP1(int client, int weapon, bool crit, int slot)
 			if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 			{
 				velocity[2] = fmax(velocity[2], 300.0);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "Yeet");//none
 			}	
 			else
 			{
-				velocity[2] += 100.0;	// a little boost to alleviate arcing issues
+				velocity[2] += 150.0;	// a little boost to alleviate arcing issues
+				ShowSyncHudText(client,  SyncHud_Notifaction, "Yeet Yeet");//none
 			}
 		}
 		else
 		{
 			float Ability_CD = Ability_Check_Cooldown(client, slot);
+	
 			if(Ability_CD <= 0.0)
 				Ability_CD = 0.0;
 		
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability in cooldown", Ability_CD);	
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		}
 	}
 }
@@ -148,7 +151,7 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 			Handle swingTrace;
 			float vecSwingForward[3];
 			StartLagCompensation_Base_Boss(client);
-			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 1500.0, false, 45.0, true); //infinite range, and ignore walls!
+			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9900.0, false, 9900.0, false); //infinite range, and does not ignore walls!
 			FinishLagCompensation_Base_boss();
 
 			int target = TR_GetEntityIndex(swingTrace);	
