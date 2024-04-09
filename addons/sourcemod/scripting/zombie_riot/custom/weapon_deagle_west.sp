@@ -100,7 +100,7 @@ public void Revolver_Fang_PAP1(int client, int weapon, bool crit, int slot)
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 25.0);
 			EmitSoundToAll(SOUND_REVOLVER_FANG, client, SNDCHAN_AUTO, 90, _, 0.6);
-			ApplyTempAttrib(weapon, 6, 0.3, 2.0);
+			ApplyTempAttrib(weapon, 6, 0.3, 2.5);
 
 			static float anglesB[3];
 			GetClientEyeAngles(client, anglesB);
@@ -112,13 +112,11 @@ public void Revolver_Fang_PAP1(int client, int weapon, bool crit, int slot)
 			ScaleVector(velocity, knockback);
 			if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 			{
-				velocity[2] = fmax(velocity[2], 300.0);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "Yeet");//none
+				velocity[2] = fmax(velocity[2], 200.0);
 			}	
 			else
 			{
-				velocity[2] += 150.0;	// a little boost to alleviate arcing issues
-				ShowSyncHudText(client,  SyncHud_Notifaction, "Yeet Yeet");//none
+				velocity[2] += 100.0;	// a little boost to alleviate arcing issues
 			}
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 		}
@@ -180,13 +178,14 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 		else
 		{
 			float Ability_CD = Ability_Check_Cooldown(client, slot);
+	
 			if(Ability_CD <= 0.0)
 				Ability_CD = 0.0;
 		
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability in cooldown", Ability_CD);	
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		}
 	}
 }
