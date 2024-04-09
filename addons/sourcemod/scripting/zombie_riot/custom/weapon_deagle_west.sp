@@ -146,7 +146,7 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 			EmitSoundToAll(SOUND_REVOLVER_NOON, client, SNDCHAN_AUTO, 140, _, 0.6);
 			ApplyTempAttrib(weapon, 6, 0.1, 2.0);
 			ApplyTempAttrib(weapon, 2, 1.75, 2.0);
-			ApplyTempAttrib(weapon, 134, 704, 2.25);
+			ApplyTempAttrib(weapon, 134, 704.0, 2.25);
 			MakePlayerGiveResponseVoice(client, 1);
 
 			Handle swingTrace;
