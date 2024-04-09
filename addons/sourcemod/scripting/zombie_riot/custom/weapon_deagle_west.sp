@@ -143,7 +143,7 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 		{
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 60.0);
-			EmitSoundToAll(SOUND_REVOLVER_NOON, client, SNDCHAN_AUTO, 110, _, 0.6);
+			EmitSoundToAll(SOUND_REVOLVER_NOON, client, SNDCHAN_AUTO, 140, _, 0.6);
 			ApplyTempAttrib(weapon, 6, 0.1, 2.0);
 			ApplyTempAttrib(weapon, 2, 2.0, 2.0);
 			MakePlayerGiveResponseVoice(client, 1);
