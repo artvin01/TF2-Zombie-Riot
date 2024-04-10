@@ -152,9 +152,10 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 			Handle swingTrace;
 			float vecSwingForward[3];
 			StartLagCompensation_Base_Boss(client);
-			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9900.0, false, 9900.0, false); //infinite range, and does not ignore walls!
+			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9900.0, false, 9900.0, true); //infinite range, and does not ignore walls!
 			FinishLagCompensation_Base_boss();
 
+				
 			int target = TR_GetEntityIndex(swingTrace);	
 			delete swingTrace;
 			if(!IsValidEnemy(client, target, true))
