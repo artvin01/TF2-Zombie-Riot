@@ -621,7 +621,7 @@ public void DestroyAllBuildings_ClientSelf(int client)
 	SetGlobalTransTarget(client);
 
 	static char buffer[64];
-	menu.SetTitle("%t", "UnClaim Current Marked Building Sure");
+	menu.SetTitle("%t", "Destroy all your non-Mounted Buildings Sure");
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Yes");
 	menu.AddItem("-1", buffer);
