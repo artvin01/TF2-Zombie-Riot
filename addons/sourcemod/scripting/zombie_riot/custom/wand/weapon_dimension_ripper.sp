@@ -9,6 +9,7 @@
 static bool Change[MAXPLAYERS];
 static Handle h_TimerDimensionWeaponManagement[MAXPLAYERS+1]={null, ...};
 static int how_many_times_swinged[MAXTF2PLAYERS];
+static int cluster_summon_how_much[MAXTF2PLAYERS];
 static int how_many_times_swinged_super[MAXTF2PLAYERS];
 static float f_DIMAbilityActive[MAXPLAYERS+1]={0.0, ...};
 static float f_DIMhuddelay[MAXPLAYERS+1]={0.0, ...};
@@ -17,6 +18,9 @@ static float f_DIMhuddelay[MAXPLAYERS+1]={0.0, ...};
 void ResetMapStartDimWeapon()
 {
 	Zero(f_DIMhuddelay);
+	Zero(cluster_summon_how_much);
+	Zero(how_many_times_swinged);
+	Zero(how_many_times_swinged_super);
 	Wand_Dimension_Map_Precache();
 }
 void Wand_Dimension_Map_Precache()
@@ -150,7 +154,7 @@ public void Weapon_Dimension_Wand(int client, int weapon, bool crit)
 		
 		Handle swingTrace;
 		float vecSwingForward[3];
-		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 50.0, true); //infinite range, and ignore walls!
+		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 100.0, true); //infinite range, and ignore walls!
 					
 		int target = TR_GetEntityIndex(swingTrace);	
 		delete swingTrace;
@@ -938,17 +942,16 @@ public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &
 	{
 		for(int i; i < 2; i++)
 		{
-			PrintToChatAll("Test. it spawned");
 			switch(GetRandomInt(1, 4))
 			{
 				case 1:
-					Dimension_Summon_Npc(client, "npc_hitman" ,weapon, 0.8, 0.8, "teleported_blue");
+					Dimension_Summon_Npc(client, "npc_hitman" ,weapon, 0.8, 0.9, "teleported_blue");
 				case 2:
 					Dimension_Summon_Npc(client, "npc_ancient_demon" ,weapon, 1.8, 1.5, "teleported_blue");
 				case 3:
 					Dimension_Summon_Npc(client, "npc_enforcer" ,weapon, 0.8, 1.4, "teleported_blue");
 				case 4:
-					Dimension_Summon_Npc(client, "npc_behemoth" ,weapon, 1.3, 1.2, "teleported_blue");
+					Dimension_Summon_Npc(client, "npc_behemoth" ,weapon, 1.3, 0.9, "teleported_blue");
 				default: //This should not happen
 				{
 					ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -958,17 +961,16 @@ public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &
 	}
 	else if (Change[client] == false)
 	{
-		PrintToChatAll("Test. single spawn");
 		switch(GetRandomInt(1, 4))
 		{
 			case 1:
-				Dimension_Summon_Npc(client, "npc_hitman" ,weapon, 1.0, 0.8, "teleported_blue");
+				Dimension_Summon_Npc(client, "npc_hitman" ,weapon, 1.0, 0.9, "teleported_blue");
 			case 2:
 				Dimension_Summon_Npc(client, "npc_ancient_demon" ,weapon, 2.0, 1.5, "teleported_blue");
 			case 3:
 				Dimension_Summon_Npc(client, "npc_enforcer" ,weapon, 1.0, 1.6, "teleported_blue");
 			case 4:
-				Dimension_Summon_Npc(client, "npc_behemoth" ,weapon, 1.5, 1.2, "teleported_blue");
+				Dimension_Summon_Npc(client, "npc_behemoth" ,weapon, 1.5, 0.9, "teleported_blue");
 			default: //This should not happen
 			{
 				ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -984,13 +986,21 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 	{
 		if(Change[client] == true && how_many_times_swinged_super[client] >= MAX_DIMENSION_CHARGE_SUPER)
 		{
-			int mana_cost = 300;
+			int mana_cost = 300;		
 			if(mana_cost <= Current_Mana[client])
 			{
-				PrintToChatAll("Cluster spawn");
-				how_many_times_swinged_super[client] = 0;
 				Rogue_OnAbilityUse(weapon);
-				Current_Mana[client] -= mana_cost;
+				if(cluster_summon_how_much[client] < 2)
+				{
+					cluster_summon_how_much[client] += 1;
+				}
+				else if(cluster_summon_how_much[client] >= 2)
+				{
+					how_many_times_swinged_super[client] = 0;
+					cluster_summon_how_much[client] = 0;
+					Current_Mana[client] -= mana_cost;
+				}
+				
 				float pos1[3], ang[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
@@ -998,7 +1008,7 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
 				if(ParticleEffect[0])
 					ParticleEffectAt(Dimension_Loc, ParticleEffect, 1.5);
-				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.2);
+				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 100, _, 1.2);
 				
 				int entity = NPC_CreateByName(NpcName, client, pos1, ang, TFTeam_Red);
 				if(entity > MaxClients)
@@ -1045,7 +1055,6 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 			int mana_cost = 150;
 			if(mana_cost <= Current_Mana[client])
 			{
-				PrintToChatAll("Single spawn");
 				how_many_times_swinged[client] = 0;
 				Rogue_OnAbilityUse(weapon);
 				Current_Mana[client] -= mana_cost;
