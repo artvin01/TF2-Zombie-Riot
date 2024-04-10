@@ -299,13 +299,13 @@ stock void Buccaneer_GiveCosmetics(CClotBody npc, bool buffed)
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 1.0);
 		
+		int iActivity = npc.LookupActivity("ACT_MP_STAND_SECONDARY");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+		
 		DispatchKeyValue(npc.m_iWearable1, "skin", "1");
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_demo_cannon/c_demo_cannon.mdl");
 		npc.m_iWearable3 = npc.EquipItem("pelvis", "models/zombie_riot/the_bone_zone/basic_bones.mdl");
 		DispatchKeyValue(npc.m_iWearable3, "skin", BONES_BUCCANEER_SKIN);
-		
-		int iActivity = npc.LookupActivity("ACT_MP_STAND_PRIMARY");
-		if(iActivity > 0) npc.StartActivity(iActivity);
 	}
 }
 
@@ -387,6 +387,7 @@ public void BuccaneerBones_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.StartPathing();
 	}
 	
 	int closest = npc.m_iTarget;
@@ -399,13 +400,12 @@ public void BuccaneerBones_ClotThink(int iNPC)
 			
 		float flDistanceToTarget = GetVectorDistance(targPos, pos);
 		
-		npc.StartPathing();
 		NPC_SetGoalEntity(npc.index, closest);
 		npc.FaceTowards(targPos, 15000.0);
 		
 		if (!b_BonesBuffed[npc.index] && !running[npc.index])
 		{
-			int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+			int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			running[npc.index] = true;
 		}
@@ -419,7 +419,7 @@ public void BuccaneerBones_ClotThink(int iNPC)
 		
 		if (!b_BonesBuffed[npc.index] && running[npc.index])
 		{
-			int iActivity = npc.LookupActivity("ACT_MP_STAND_PRIMARY");
+			int iActivity = npc.LookupActivity("ACT_MP_STAND_SECONDARY");
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			running[npc.index] = false;
 		}
