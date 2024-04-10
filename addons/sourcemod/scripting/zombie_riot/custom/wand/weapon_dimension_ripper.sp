@@ -148,8 +148,17 @@ public void Weapon_Dimension_Wand(int client, int weapon, bool crit)
 		
 		time *= Attributes_Get(weapon, 102, 1.0);
 		
+		Handle swingTrace;
+		float vecSwingForward[3];
+		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, true); //infinite range, and ignore walls!
+					
+		int target = TR_GetEntityIndex(swingTrace);	
+		delete swingTrace;
+		
 		if(IsValidEnemy(client, target))
 		{
+			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 3, weapon, "raygun_projectile_blue_crit");
+
 			if(Can_I_See_Enemy_Only(target,projectile)) //Insta home!
 			{
 				HomingProjectile_TurnToTarget(target, projectile);
@@ -161,32 +170,34 @@ public void Weapon_Dimension_Wand(int client, int weapon, bool crit)
 			pack.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
 			//We have found a victim.
 		}
-
-		EmitSoundToAll(SOUND_WAND_SHOT_DIM, client, SNDCHAN_WEAPON, 65, _, 0.4, 100);
-		//This spawns the projectile, this is a return int, if you want, you can do extra stuff with it, otherwise, it can be used as a void.
-		switch(GetRandomInt(1, 4))
+		else
 		{
-			case 1:
+			switch(GetRandomInt(1, 4))
 			{
-				Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_blue_trail");
-			}
-			case 2:
-			{
-				Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_blue_crit_trail");
-			}
-			case 3:
-			{
-				Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_red_trail");
-			}
-			case 4:
-			{
-				Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_red_crit_trail");
-			}
-			default: //This should not happen
-			{
-				ShowSyncHudText(client,  SyncHud_Notifaction, "An error occured. Scream at devs");//none
+				case 1:
+				{
+					Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_blue_trail");
+				}
+				case 2:
+				{
+					Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_blue_crit_trail");
+				}
+				case 3:
+				{
+					Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_red_trail");
+				}
+				case 4:
+				{
+					Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_red_crit_trail");
+				}
+				default: //This should not happen
+				{
+					ShowSyncHudText(client,  SyncHud_Notifaction, "An error occured. Scream at devs");//none
+				}
 			}
 		}
+		EmitSoundToAll(SOUND_WAND_SHOT_DIM, client, SNDCHAN_WEAPON, 65, _, 0.4, 100);
+		//This spawns the projectile, this is a return int, if you want, you can do extra stuff with it, otherwise, it can be used as a void.
 
 	}
 	else
@@ -252,7 +263,6 @@ public void Dimension_Modechange(int client, int weapon, bool crit, int slot)
 		{
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 7.5);
-			EmitSoundToAll(SOUND_MES_CHANGE, client, SNDCHAN_AUTO, 65, _, 0.45, 115);
 			if(Change[client])
 			{
 				Change[client]=false;
@@ -281,7 +291,7 @@ void Npc_OnTakeDamage_DimensionalRipper(int attacker)
 	/*
 		++ add charge code xd
 	*/
-	if (Change[client] == true )
+	if (Change[attacker] == true )
 	{
 		if(how_many_times_swinged_super[attacker] <= MAX_DIMENSION_CHARGE_SUPER)
 		{
@@ -292,7 +302,7 @@ void Npc_OnTakeDamage_DimensionalRipper(int attacker)
 			how_many_times_swinged_super[attacker] = MAX_DIMENSION_CHARGE_SUPER;
 		}
 	}
-	else if (Change[client] == false )
+	else if (Change[attacker] == false )
 	{
 		if(how_many_times_swinged[attacker] <= MAX_DIMENSION_CHARGE)
 		{
@@ -1044,7 +1054,7 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 	}
 }
 
-public Action Dimension_GiveStrength(Handle timer, int ref)
+public Action Dimension_GiveStrength(Handle timer, int ref, int client)
 {
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity) && !b_NpcHasDied[entity])
