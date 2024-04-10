@@ -424,6 +424,8 @@ enum
 	BONEZONE_BUFFED_SAINTBONES		= 372,
 	BONEZONE_NECROMANCER			= 373,
 	BONEZONE_BUFFED_NECROMANCER		= 374,
+	BONEZONE_BUCCANEER				= 375,
+	BONEZONE_BUFFED_BUCCANEER 		= 376,
 
 
 	MAX_NPC_TYPES	// Add entries above this line
@@ -831,8 +833,9 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Profaned Priest",
 	"Skeletal Saint",
 	"Novice Necromancer",
-	"Bringer of Bones"
-
+	"Bringer of Bones",
+	"Buccaneer Bones",
+	"Brigadier Bones"
 };
 
 // See items.sp for IDs to names
@@ -1612,7 +1615,9 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_skeletalsaint",
 	"npc_skeletalsaint",
 	"npc_necromancer",
-	"npc_necromancer"
+	"npc_necromancer",
+	"npc_buccaneerbones",
+	"npc_buccaneerbones"
 };
 
 void NPC_MapStart()
@@ -1754,6 +1759,8 @@ void NPC_MapStart()
 	ArchmageBones_OnMapStart_NPC();
 	SaintBones_OnMapStart_NPC();
 	BigBones_OnMapStart_NPC();
+	BuccaneerBones_OnMapStart_NPC();
+	
 	Itstilives_MapStart();
 	AlliedLeperVisualiserAbility_OnMapStart_NPC();
 	
@@ -2374,6 +2381,12 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			
 		case BONEZONE_BUFFED_NECROMANCER:
 			entity = NecromancerBones(client, vecPos, vecAng, ally, true);
+			
+		case BONEZONE_BUCCANEER:
+			entity = BuccaneerBones(client, vecPos, vecAng, ally, false);
+			
+		case BONEZONE_BUFFED_BUCCANEER:
+			entity = BuccaneerBones(client, vecPos, vecAng, ally, true);
 		
 		case ITSTILIVES:
 			entity = Itstilives(client, vecPos, vecAng);
@@ -3469,6 +3482,12 @@ public void NPCDeath(int entity)
 			
 		case BONEZONE_BUFFED_NECROMANCER:
 			NecromancerBones_NPCDeath(entity);
+			
+		case BONEZONE_BUCCANEER:
+			BuccaneerBones_NPCDeath(entity);
+			
+		case BONEZONE_BUFFED_BUCCANEER:
+			BuccaneerBones_NPCDeath(entity);
 		
 		case ALT_MECHA_ENGINEER:
 			Mecha_Engineer_NPCDeath(entity);
@@ -4501,6 +4520,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			
 		case BONEZONE_BUFFED_NECROMANCER:
 			NecromancerBones_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+			
+		case BONEZONE_BUCCANEER:
+			BuccaneerBones_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+			
+		case BONEZONE_BUFFED_BUCCANEER:
+			BuccaneerBones_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case ALT_MECHA_ENGINEER:
 			Mecha_Engineer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -5124,6 +5149,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/bonezone/npc_archmage.sp"
 #include "zombie_riot/npc/bonezone/npc_skeletalsaint.sp"
 #include "zombie_riot/npc/bonezone/npc_necromancer.sp"
+#include "zombie_riot/npc/bonezone/npc_buccaneerbones.sp"
 
 /*
 #include "zombie_riot/npc/bunker/npc_gambler.sp"

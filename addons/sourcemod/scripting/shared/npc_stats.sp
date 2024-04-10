@@ -2246,6 +2246,10 @@ methodmap CClotBody < CBaseCombatCharacter
 				return true;
 			case BONEZONE_BUFFED_NECROMANCER:
 				return true;
+			case BONEZONE_BUCCANEER:
+				return true;
+			case BONEZONE_BUFFED_BUCCANEER:
+				return true;
 		}
 		
 		return false;
@@ -2279,6 +2283,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			case BONEZONE_BUFFED_SAINTBONES:
 				return true;
 			case BONEZONE_BUFFED_NECROMANCER:
+				return true;
+			case BONEZONE_BUFFED_BUCCANEER:
 				return true;
 		}
 		
@@ -2374,6 +2380,10 @@ methodmap CClotBody < CBaseCombatCharacter
 					NecromancerBones_SetBuffed(this.index, buffed);
 				case BONEZONE_BUFFED_NECROMANCER:
 					NecromancerBones_SetBuffed(this.index, buffed);
+				case BONEZONE_BUCCANEER:
+					BuccaneerBones_SetBuffed(this.index, buffed);
+				case BONEZONE_BUFFED_BUCCANEER:
+					BuccaneerBones_SetBuffed(this.index, buffed);
 			}
 			
 			//Don't let skeletons keep excess health when they lose their buffed state.
