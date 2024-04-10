@@ -1288,7 +1288,7 @@
 	{
 		"en"	"You get 2 free barricades each fight, you can only place 2 at once due to this."
 		"ru"	"Вы получаете 2 бесплатные баррикады в каждом бою, но из-за этого вы можете поставить только 2 баррикады одновременно."
-		"chi"	"每局获得两个免费路障，上限两个。""
+		"chi"	"每局获得两个免费路障，上限两个。"
 	}
 	
 	"Buildable Armortable Desc"
@@ -2627,12 +2627,12 @@
 	"Leper Sword Desc Pap 2"
 	{
 		"en"	"Gain more Max Health, damage and resistance.\nSolemny Gives you more health and armor."
-		"chi:	"增加血量上限，伤害，抗性。\nM2技能赋予更多血量和盔甲。"
+		"chi"	"增加血量上限，伤害，抗性。\nM2技能赋予更多血量和盔甲。"
 	}
 	"The Flagellant Desc"
 	{
 		"en"	"Zealotry—an undying blight upon the soul.\nProvides extra health with the ability to heal but inflicts self-damage."
-		"chi:	"狂热 - 对灵魂不朽的摧残。\n更多血量，可以自疗，但是会对自己造成伤害。"
+		"chi"	"狂热 - 对灵魂不朽的摧残。\n更多血量，可以自疗，但是会对自己造成伤害。"
 	}
 	"The Flagellant Extra Desc"
 	{
@@ -2647,7 +2647,7 @@
 	"Deathless Desc"
 	{
 		"en"	"When targeting an ally, heals them at the cost of your own health, Medigun upgrades increases healing and reduces self-damage."
-		"chi:	"锁定队友是哦，消耗自身血量治疗他们。医疗升级提升治疗，降低自伤。"
+		"chi"	"锁定队友是哦，消耗自身血量治疗他们。医疗升级提升治疗，降低自伤。"
 	}
 	"Punish Desc"
 	{
