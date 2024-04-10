@@ -1054,9 +1054,10 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 	}
 }
 
-public Action Dimension_GiveStrength(Handle timer, int ref, int client)
+public Action Dimension_GiveStrength(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
+	int client = pack.ReadCell();
 	if(IsValidEntity(entity) && !b_NpcHasDied[entity])
 	{	
 		fl_Extra_Damage[entity] *= 1.25;
