@@ -107,7 +107,7 @@ public void Revolver_Fang_PAP1(int client, int weapon, bool crit, int slot)
 			static float velocity[3];
 			GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
 			NormalizeVector(velocity, velocity);
-			float knockback = -800.0;
+			float knockback = -750.0;
 			// knockback is the overall force with which you be pushed, don't touch other stuff
 			ScaleVector(velocity, knockback);
 			if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
