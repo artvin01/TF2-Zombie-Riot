@@ -938,7 +938,7 @@ public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &
 	{
 		for(int i; i < 2; i++)
 		{
-			PrintHintText(client,"Test. it spawned");
+			PrintToChatAll("Test. it spawned");
 			switch(GetRandomInt(1, 4))
 			{
 				case 1:
@@ -958,6 +958,7 @@ public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &
 	}
 	else if (Change[client] == false)
 	{
+		PrintToChatAll("Test. single spawn");
 		switch(GetRandomInt(1, 4))
 		{
 			case 1:
@@ -986,7 +987,7 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 			int mana_cost = 300;
 			if(mana_cost <= Current_Mana[client])
 			{
-				PrintHintText(client,"Cluster spawn");
+				PrintToChatAll(client,"Cluster spawn");
 				how_many_times_swinged_super[client] = 0;
 				Rogue_OnAbilityUse(weapon);
 				Current_Mana[client] -= mana_cost;
@@ -1044,7 +1045,7 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 			int mana_cost = 150;
 			if(mana_cost <= Current_Mana[client])
 			{
-				PrintHintText(client,"Single spawn");
+				PrintToChatAll("Single spawn");
 				how_many_times_swinged[client] = 0;
 				Rogue_OnAbilityUse(weapon);
 				Current_Mana[client] -= mana_cost;
