@@ -1097,8 +1097,6 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 			}
 		}
-		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE || how_many_times_swinged_super[client] >= MAX_DIMENSION_CHARGE_SUPER)
-
 		else
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
