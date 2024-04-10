@@ -84,7 +84,7 @@ public void Dimension_Cooldown_Logic(int client, int weapon)
 			{
 				if(f_DIMAbilityActive[client] < GetGameTime())
 				{
-					if(how_many_times_swinged_super[client] < MAX_DIMENSION_CHARGE)
+					if(how_many_times_swinged_super[client] < MAX_DIMENSION_CHARGE_SUPER)
 					{
 						PrintHintText(client,"Double Summon: Dimension power [%i%/%i]", how_many_times_swinged_super[client], MAX_DIMENSION_CHARGE_SUPER);
 					}
@@ -938,6 +938,7 @@ public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &
 	{
 		for(int i; i < 2; i++)
 		{
+			PrintHintText(client,"Test. it spawned");
 			switch(GetRandomInt(1, 4))
 			{
 				case 1:
@@ -980,13 +981,13 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 	
 	if(weapon >= MaxClients)
 	{
-		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE || how_many_times_swinged_super[client] >= MAX_DIMENSION_CHARGE_SUPER)
+		if(Change[client] == true && how_many_times_swinged_super[client] >= MAX_DIMENSION_CHARGE_SUPER)
 		{
-			int mana_cost = 150;
+			int mana_cost = 300;
 			if(mana_cost <= Current_Mana[client])
 			{
+				PrintHintText(client,"Cluster spawn");
 				how_many_times_swinged_super[client] = 0;
-				how_many_times_swinged[client] = 0;
 				Rogue_OnAbilityUse(weapon);
 				Current_Mana[client] -= mana_cost;
 				float pos1[3], ang[3];
@@ -1038,6 +1039,66 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 			}
 		}
+		else if(Change[client] == false && how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE)
+		{
+			int mana_cost = 150;
+			if(mana_cost <= Current_Mana[client])
+			{
+				PrintHintText(client,"Single spawn");
+				how_many_times_swinged[client] = 0;
+				Rogue_OnAbilityUse(weapon);
+				Current_Mana[client] -= mana_cost;
+				float pos1[3], ang[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
+				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
+				float Dimension_Loc[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Dimension_Loc);
+				if(ParticleEffect[0])
+					ParticleEffectAt(Dimension_Loc, ParticleEffect, 1.5);
+				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.2);
+				
+				int entity = NPC_CreateByName(NpcName, client, pos1, ang, TFTeam_Red);
+				if(entity > MaxClients)
+				{
+					//30 as a starting value.
+					//fl_MeleeArmor[entity] = 1.0;
+					//fl_RangedArmor[entity] = 1.0;
+					//Reset resistances.
+					
+					float f_MaxHealth = 30.0;
+					f_MaxHealth *= Attributes_Get(weapon, 410, 1.0);
+					f_MaxHealth *= HealthMulti;
+					SetEntProp(entity, Prop_Data, "m_iHealth", RoundToNearest(f_MaxHealth));
+					SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToNearest(f_MaxHealth));
+					
+					float ExtraDamage = Attributes_Get(weapon, 410, 1.0);
+					ExtraDamage *= DamageMulti;
+					ExtraDamage *= 1.25;
+					fl_Extra_Damage[entity] *= ExtraDamage;
+					fl_MeleeArmor[entity] = 0.95;
+					fl_RangedArmor[entity] = 0.95;
+					b_IsCamoNPC[entity] = false;
+
+					CreateTimer(60.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(3.0, Dimension_GiveStrength, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+					i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
+					b_thisNpcIsABoss[entity] = false;
+					b_thisNpcIsARaid[entity] = false;
+					b_ShowNpcHealthbar[entity] = true;
+					if(EntRefToEntIndex(RaidBossActive) == entity)
+						RaidBossActive = INVALID_ENT_REFERENCE;
+				}
+			}
+			else
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+			}
+		}
+		if (how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE || how_many_times_swinged_super[client] >= MAX_DIMENSION_CHARGE_SUPER)
+
 		else
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
