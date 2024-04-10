@@ -987,7 +987,7 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 			int mana_cost = 300;
 			if(mana_cost <= Current_Mana[client])
 			{
-				PrintToChatAll(client,"Cluster spawn");
+				PrintToChatAll("Cluster spawn");
 				how_many_times_swinged_super[client] = 0;
 				Rogue_OnAbilityUse(weapon);
 				Current_Mana[client] -= mana_cost;
