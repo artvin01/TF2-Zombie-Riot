@@ -8,11 +8,36 @@
 static float BONES_BUCCANEER_SPEED =  240.0;
 static float BONES_BUCCANEER_SPEED_BUFFED = 140.0;
 
-#define BONES_BUCCANEER_HP				"3000"
-#define BONES_BUCCANEER_HP_BUFFED			"50000"
+#define BONES_BUCCANEER_HP				"6000"
+#define BONES_BUCCANEER_HP_BUFFED			"60000"
 
-static float BONES_BUCCANEER_ATTACKINTERVAL = 0.5;
-static float BONES_BUCCANEER_ATTACKINTERVAL_BUFFED = 1.0;
+//BONY BOMBERS (NON-BUFFED VARIANT):
+//Walks around holding a Loose Cannon, which it fires at survivors within a given range.
+//As this is a ranged unit, it will try to back off if the nearest enemy is too close.
+static float BONES_BUCCANEER_ATTACKINTERVAL = 3.5;	//Time between non-buffed variant's shots.
+static float BUCCANEER_RANGE = 800.0;	//Maximum distance in which the non-buffed variant can shoot.
+static float BUCCANEER_DAMAGE = 120.0;	//Non-buffed variant's projectile damage.
+static float BUCCANEER_RADIUS = 100.0;	//Non-buffed variant's projectile blast radius.
+static float BUCCANEER_FALLOFF_MULTIHIT = 0.8;	//Multi-hit falloff for non-buffed variant.
+static float BUCCANEER_FALLOFF_RADIUS = 0.8;	//Radius-based falloff for non-buffed variant.
+static float BUCCANEER_ENTITY_MULT = 5.0;		//Amount to multiply damage dealt to non-building entities (mainly just NPCs).
+static float BUCCANEER_BUILDING_MULT = 10.0;	//Amount to multiply damage dealt to buildings.
+
+//BRIGADIER BONES (BUFFED VARIANT):
+//Rides very slowly on a very large wheeled cannon.
+//Will occasionally stop and initiate an animation where it commands the cannon to fire. If not killed before this animation ends,
+//the cannon will fire an ENORMOUS cannonball which deals massive damage within a decently large radius. Takes self-knockback upon firing.
+//This unit will NOT try to back off if enemies get too close. Instead, it will simply run people over like a Capped Ram.
+static float BONES_BUCCANEER_ATTACKINTERVAL_BUFFED = 8.0;	//Time between shots.
+static float BUFFED_RANGE = 1600.0;	//Range in which shots can be fired.
+static float BUFFED_DAMAGE = 1200.0;	//Damage dealt by cannonballs.
+static float BUFFED_RADIUS = 350.0;		//Cannonball blast radius.
+static float BUFFED_FALLOFF_MULTIHIT = 0.9;	//Multi-hit falloff for cannonballs.
+static float BUFFED_FALLOFF_RADIUS = 0.66;	//Radius falloff for cannonballs.
+static float BUFFED_ENTITY_MULT = 3.0;	//Amount to multiply damage dealt to non-building entities (mainly just NPCs).
+static float BUFFED_BUILDING_MULT = 5.0;	//Amount to multiply damage dealt to buildings.
+static float BUFFED_DELAY_MULT = 5.0; //Amount to multiply the duration of the delay before the cannon fires once its animation begins.
+static float BUFFED_SELF_KNOCKBACK = 400.0;	//Self-knockback taken when the cannon fires.
 
 #define BONES_BUCCANEER_SCALE					"1.0"
 #define BONES_BUCCANEER_BUFFED_SCALE			"1.2"
