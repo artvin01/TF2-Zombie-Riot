@@ -1057,7 +1057,6 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 public Action Dimension_GiveStrength(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
-	int client = pack.ReadCell();
 	if(IsValidEntity(entity) && !b_NpcHasDied[entity])
 	{	
 		fl_Extra_Damage[entity] *= 1.25;
@@ -1065,11 +1064,6 @@ public Action Dimension_GiveStrength(Handle timer, int ref)
 		{
 			fl_Extra_Damage[entity] *= 1.2;
 		}	
-	}
-	if (Change[client] == true )
-	{
-		fl_MeleeArmor[entity] = 0.9;
-		fl_RangedArmor[entity] = 0.9;		
 	}
 	
 	return Plugin_Stop;
