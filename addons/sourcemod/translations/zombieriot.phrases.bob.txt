@@ -39,6 +39,7 @@
 		"pt"	"Bob o 2° não é amigável e te segue!"
 		"nl"	"Bob De Tweede is niet vriendelijk en volgt je!"
 		"chi"	"鲍勃二代是友好的，并会跟着你！"
+	}
 	"Use voice Commands to command him!"
 	{
 		"en"	"Use voice Commands to command him!"
