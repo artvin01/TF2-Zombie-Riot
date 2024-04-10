@@ -541,36 +541,86 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 
 public void Weapon_Dimension_Summon_Xeno(int client, int weapon, bool &result, int slot, int pap_logic)
 {
-	switch(GetRandomInt(1, 3))
+	if (Change[client] == true )
 	{
-		case 1:
-			Dimension_Summon_Npc(client, "npc_xeno_headcrabzombie_fortified" ,weapon, 1.1, 1.0, "utaunt_smoke_floor1_green");
-		case 2:
-			Dimension_Summon_Npc(client, "npc_xeno_combine_soldier_shotgun" ,weapon, 1.2, 1.2, "utaunt_smoke_floor1_green");
-		case 3:
-			Dimension_Summon_Npc(client, "npc_xeno_combine_soldier_giant_swordsman" ,weapon, 1.5, 1.2, "utaunt_smoke_floor1_green");
-		default: //This should not happen
+		for(int i; i < 2; i++)
 		{
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+			switch(GetRandomInt(1, 4))
+			{
+				case 1:
+					Dimension_Summon_Npc(client, "npc_xeno_combine_soldier_shotgun" ,weapon, 1.2, 1.2, "eyeboss_tp_player");
+				case 2:
+					Dimension_Summon_Npc(client, "npc_xeno_combine_soldier_giant_swordsman" ,weapon, 1.5, 1.2, "eyeboss_tp_player");
+				case 3:
+					Dimension_Summon_Npc(client, "npc_xeno_zombie_soldier_grave" ,weapon, 1.1, 1.2, "eyeboss_tp_player");
+				case 4:
+					Dimension_Summon_Npc(client, "npc_xeno_last_survivor" ,weapon, 1.75, 1.6, "eyeboss_tp_player");
+				default: //This should not happen
+				{
+					ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+				}
+			}
+		}
+	}
+	else if (Change[client] == false)
+	{
+		switch(GetRandomInt(1, 4))
+		{
+			case 1:
+				Dimension_Summon_Npc(client, "npc_xeno_combine_soldier_shotgun" ,weapon, 1.2, 1.2, "eyeboss_tp_player");
+			case 2:
+				Dimension_Summon_Npc(client, "npc_xeno_combine_soldier_giant_swordsman" ,weapon, 1.5, 1.2, "eyeboss_tp_player");
+			case 3:
+				Dimension_Summon_Npc(client, "npc_xeno_zombie_soldier_grave" ,weapon, 1.1, 1.2, "eyeboss_tp_player");
+			case 4:
+				Dimension_Summon_Npc(client, "npc_xeno_last_survivor" ,weapon, 1.75, 1.6, "eyeboss_tp_player");
+			default: //This should not happen
+			{
+				ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+			}
 		}
 	}
 }
 
 public void Weapon_Dimension_Summon_Xeno_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
 {
-	switch(GetRandomInt(1, 4))
+		if (Change[client] == true )
 	{
-		case 1:
-			Dimension_Summon_Npc(client, "npc_xeno_medic_main" ,weapon, 0.9, 1.1, "utaunt_smoke_floor1_green");
-		case 2:
-			Dimension_Summon_Npc(client, "npc_xeno_spy_boss" ,weapon, 1.7, 1.2, "utaunt_smoke_floor1_green");
-		case 3:
-			Dimension_Summon_Npc(client, "npc_xeno_zombie_soldier_grave" ,weapon, 1.2, 1.4, "utaunt_smoke_floor1_green");
-		case 4:
-			Dimension_Summon_Npc(client, "npc_xeno_kamikaze_demo" ,weapon, 0.5, 2.0, "utaunt_smoke_floor1_green");
-		default: //This should not happen
+		for(int i; i < 2; i++)
 		{
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+			switch(GetRandomInt(1, 4))
+			{
+				case 1:
+					Dimension_Summon_Npc(client, "npc_xeno_medic_main" ,weapon, 1.0, 1.1, "eyeboss_tp_player");
+				case 2:
+					Dimension_Summon_Npc(client, "npc_xeno_combine_soldier_elite" ,weapon, 1.3, 1.5, "eyeboss_tp_player");
+				case 3:
+					Dimension_Summon_Npc(client, "npc_xeno_spy_trickstabber" ,weapon, 1.3, 1.2, "eyeboss_tp_player");
+				case 4:
+					Dimension_Summon_Npc(client, "npc_xeno_spy_boss" ,weapon, 1.5, 1.2, "eyeboss_tp_player");
+				default: //This should not happen
+				{
+					ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+				}
+			}
+		}
+	}
+	else if (Change[client] == false)
+	{
+		switch(GetRandomInt(1, 4))
+		{
+			case 1:
+				Dimension_Summon_Npc(client, "npc_xeno_combine_soldier_shotgun" ,weapon, 1.2, 1.2, "eyeboss_tp_player");
+			case 2:
+				Dimension_Summon_Npc(client, "npc_xeno_combine_soldier_giant_swordsman" ,weapon, 1.5, 1.2, "eyeboss_tp_player");
+			case 3:
+				Dimension_Summon_Npc(client, "npc_xeno_zombie_soldier_grave" ,weapon, 1.1, 1.2, "eyeboss_tp_player");
+			case 4:
+				Dimension_Summon_Npc(client, "npc_xeno_last_survivor" ,weapon, 1.75, 1.6, "eyeboss_tp_player");
+			default: //This should not happen
+			{
+				ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
+			}
 		}
 	}
 }
