@@ -3,36 +3,48 @@
 
 // TODO: enum list of elements instead of each one being it's own variable
 
-static int NervousDamage[MAXENTITES];
-static int ChaosDamage[MAXENTITES];
-static int CyroDamage[MAXENTITES];
+enum
+{
+	Element_Nervous,
+	Element_Chaos,
+	Element_Cyro,
+
+	Element_MAX
+}
+
+static int ElementDamage[MAXENTITES][Element_MAX];
 
 // OnEntityCreated
 void Elemental_ClearDamage(int entity)
 {
-	NervousDamage[entity] = 0;
-	CyroDamage[entity] = 0;
-	ChaosDamage[entity] = 0;
+	for(int i; i < Element_MAX; i++)
+	{
+		ElementDamage[entity][i] = 0;
+	}
 }
 
 stock bool Elemental_HasDamage(int entity)
 {
-	return (NervousDamage[entity] || ChaosDamage[entity] || CyroDamage[entity]);
+	for(int i; i < Element_MAX; i++)
+	{
+		if(ElementDamage[entity][i])
+			return true;
+	}
+	
+	return false;
 }
 
 stock void Elemental_RemoveDamage(int entity, int amount)
 {
-	NervousDamage[entity] -= amount;
-	if(NervousDamage[entity] < 0)
-		NervousDamage[entity] = 0;
-	
-	ChaosDamage[entity] -= amount;
-	if(ChaosDamage[entity] < 0)
-		ChaosDamage[entity] = 0;
-	
-	CyroDamage[entity] -= amount;
-	if(CyroDamage[entity] < 0)
-		CyroDamage[entity] = 0;
+	for(int i; i < Element_MAX; i++)
+	{
+		if(ElementDamage[entity][i] > 0)
+		{
+			ElementDamage[entity][i] -= amount;
+			if(ElementDamage[entity][i] < 0)
+				ElementDamage[entity][i] = 0;
+		}
+	}
 }
 
 static int TriggerDamage(int entity)
