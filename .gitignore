@@ -10,3 +10,4 @@ mynpcs/
 [Dd]esktop.ini
 [Tt]humbs.db
 !npc_framework.inc
+!textstore.inc
