@@ -738,7 +738,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 				case 3:
 					Dimension_Summon_Npc(client, "npc_netherseaspewer" ,weapon, 0.9, 1.5, "utaunt_spirit_winter_rings");
 				case 4:
-					Dimension_Summon_Npc(client, "npc_seaborn_kazimersch_beserker" ,weapon, 1.8, 1.5, "utaunt_spirit_winter_rings");
+					Dimension_Summon_Npc(client, "npc_seaborn_kazimersch_beserker" ,weapon, 1.5, 1.5, "utaunt_spirit_winter_rings");
 				default: //This should not happen
 				{
 					ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -757,7 +757,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 			case 3:
 				Dimension_Summon_Npc(client, "npc_netherseaspewer" ,weapon, 1.0, 1.5, "utaunt_spirit_winter_rings");
 			case 4:
-				Dimension_Summon_Npc(client, "npc_seaborn_kazimersch_beserker" ,weapon, 2.0, 1.6, "utaunt_spirit_winter_rings");
+				Dimension_Summon_Npc(client, "npc_seaborn_kazimersch_beserker" ,weapon, 1.75, 1.6, "utaunt_spirit_winter_rings");
 			default: //This should not happen
 			{
 				ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -799,7 +799,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 			case 3:
 				Dimension_Summon_Npc(client, "npc_seaborn_kazimersch_knight" ,weapon, 1.2, 1.3, "utaunt_spirit_winter_rings");
 			case 4:
-				Dimension_Summon_Npc(client, "npc_firsttotalk" ,weapon, 2.0, 1.5, "utaunt_spirit_winter_rings");
+				Dimension_Summon_Npc(client, "npc_firsttotalk" ,weapon, 1.9, 1.5, "utaunt_spirit_winter_rings");
 			default: //This should not happen
 			{
 				ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -841,7 +841,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 			case 3:
 				Dimension_Summon_Npc(client, "npc_rifal_manu" ,weapon, 1.0, 1.3, "eyeboss_death_vortex");
 			case 4:
-				Dimension_Summon_Npc(client, "npc_seargent_ideal" ,weapon, 2.5, 1.3, "eyeboss_death_vortex");
+				Dimension_Summon_Npc(client, "npc_seargent_ideal" ,weapon, 2.2, 1.3, "eyeboss_death_vortex");
 			default: //This should not happen
 			{
 				ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -990,11 +990,11 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 			if(mana_cost <= Current_Mana[client])
 			{
 				Rogue_OnAbilityUse(weapon);
-				if(cluster_summon_how_much[client] < 2)
+				if(cluster_summon_how_much[client] < 1)
 				{
 					cluster_summon_how_much[client] += 1;
 				}
-				else if(cluster_summon_how_much[client] >= 2)
+				else if(cluster_summon_how_much[client] >= 1)
 				{
 					how_many_times_swinged_super[client] = 0;
 					cluster_summon_how_much[client] = 0;
