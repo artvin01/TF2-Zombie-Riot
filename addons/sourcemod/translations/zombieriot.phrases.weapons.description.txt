@@ -3049,4 +3049,16 @@
 		"en"	"+70%% Building Health, +250% Weapon Damage, +100 Metal Regen, +1 Support Building, and -30s Tinker Cooldown.\n3 Attributes: 67%% | 4 Attributes: 33%%"
 		"chi"	"+70%%建筑血量，+250%武器伤害，+100金属回复，+1辅助建筑，-30s工作台冷却，加强了可给的属性。\n3属性：67%% ｜ 4属性：33%%"
 	}
+	"West Pap 1 Desc"
+	{
+		"en"	"A weapon from Wild West. \nSlower fire rate, but more damage.\nYou gain damage resistance but the weapon's dmg falloff is increased\nNew abiity: M2 for rapid fire."
+	}
+	"West Pap 2 Desc"
+	{
+		"en"	" Increased damage,\nM2 ability will make you jump backwards on usage\nNew abiity: M3 Your aim will be fixed to nearby enemy and damage and firerate will increase dramatically."
+	}
+	"West Pap 3 Desc"
+	{
+		"en"	"Increased damage, reload speed, and firerate"
+	}
 }

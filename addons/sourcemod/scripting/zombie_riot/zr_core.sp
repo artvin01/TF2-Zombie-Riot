@@ -174,7 +174,8 @@ enum
 	WEAPON_BLACKSMITH = 95,
 	WEAPON_COSMIC_PILLAR = 96,
 	WEAPON_COSMIC_RAILCANNON = 97,
-	WEAPON_GRENADEHUD = 98
+	WEAPON_GRENADEHUD = 98,
+	WEAPON_WEST_REVOLVER = 99
 }
 
 enum
@@ -527,6 +528,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_ludo.sp"
 #include "zombie_riot/custom/weapon_messenger.sp"
 #include "zombie_riot/custom/kit_blacksmith.sp"
+#include "zombie_riot/custom/weapon_deagle_west.sp"
 
 void ZR_PluginLoad()
 {
@@ -767,6 +769,7 @@ void ZR_MapStart()
 	ResetMapStartDimWeapon();
 	Hell_Hoe_MapStart();
 	ResetMapStartMessengerWeapon();
+	ResetMapStartWest();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;
