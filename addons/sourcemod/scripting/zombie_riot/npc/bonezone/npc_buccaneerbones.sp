@@ -1,10 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//TODO
-//To use this template, just replace "BUCCANEER" with whatever your NPC is named.
-//Attack logic and custom movement logic are not included in this template.
-
 static float BONES_BUCCANEER_SPEED =  240.0;
 static float BONES_BUCCANEER_SPEED_BUFFED = 140.0;
 
@@ -16,12 +12,16 @@ static float BONES_BUCCANEER_SPEED_BUFFED = 140.0;
 //As this is a ranged unit, it will try to back off if the nearest enemy is too close.
 static float BONES_BUCCANEER_ATTACKINTERVAL = 3.5;	//Time between non-buffed variant's shots.
 static float BUCCANEER_RANGE = 800.0;	//Maximum distance in which the non-buffed variant can shoot.
+static float BUCCANEER_PREDICT_RANGE = 300.0;	//Range in which the non-buffed variant will predict enemy positions when it shoots.
 static float BUCCANEER_DAMAGE = 120.0;	//Non-buffed variant's projectile damage.
 static float BUCCANEER_RADIUS = 100.0;	//Non-buffed variant's projectile blast radius.
+static float BUCCANEER_PROJECTILE_SPEED = 1200.0;	//The speed of non-buffed projectiles.
 static float BUCCANEER_FALLOFF_MULTIHIT = 0.8;	//Multi-hit falloff for non-buffed variant.
 static float BUCCANEER_FALLOFF_RADIUS = 0.8;	//Radius-based falloff for non-buffed variant.
-static float BUCCANEER_ENTITY_MULT = 5.0;		//Amount to multiply damage dealt to non-building entities (mainly just NPCs).
-static float BUCCANEER_BUILDING_MULT = 10.0;	//Amount to multiply damage dealt to buildings.
+static float BUCCANEER_ENTITY_MULT = 6.0;		//Amount to multiply damage dealt to buildings.
+static float BUCCANEER_TOO_CLOSE = 200.0;		//Proximity at which Bony Bombers begin to back off.
+static float BUCCANEER_TOO_FAR = 600.0;			//Distance at which Bony Bombers begin to give chase.
+static float BUCCANEER_GRAVITY = 0.66;			//Gravity applied to Bony Bomber projectiles.
 
 //BRIGADIER BONES (BUFFED VARIANT):
 //Rides very slowly on a very large wheeled cannon.
@@ -32,10 +32,10 @@ static float BONES_BUCCANEER_ATTACKINTERVAL_BUFFED = 8.0;	//Time between shots.
 static float BUFFED_RANGE = 1600.0;	//Range in which shots can be fired.
 static float BUFFED_DAMAGE = 1200.0;	//Damage dealt by cannonballs.
 static float BUFFED_RADIUS = 350.0;		//Cannonball blast radius.
+static float BUFFED_PROJECTILE_SPEED = 1800.0;	//Projectile speed.
 static float BUFFED_FALLOFF_MULTIHIT = 0.9;	//Multi-hit falloff for cannonballs.
 static float BUFFED_FALLOFF_RADIUS = 0.66;	//Radius falloff for cannonballs.
-static float BUFFED_ENTITY_MULT = 3.0;	//Amount to multiply damage dealt to non-building entities (mainly just NPCs).
-static float BUFFED_BUILDING_MULT = 5.0;	//Amount to multiply damage dealt to buildings.
+static float BUFFED_ENTITY_MULT = 3.0;	//Amount to multiply damage dealt to buildings.
 static float BUFFED_DELAY_MULT = 5.0; //Amount to multiply the duration of the delay before the cannon fires once its animation begins.
 static float BUFFED_SELF_KNOCKBACK = 400.0;	//Self-knockback taken when the cannon fires.
 
@@ -107,6 +107,16 @@ static char g_GibSounds[][] = {
 static bool b_BonesBuffed[MAXENTITIES];
 static bool running[MAXENTITIES];
 
+static float f_CannonballRadius[MAXENTITIES];
+static float f_CannonballDMG[MAXENTITIES];
+static float f_CannonballFalloff_MultiHit[MAXENTITIES];
+static float f_CannonballFalloff_Radius[MAXENTITIES];
+static float f_Cannonball_EntMult[MAXENTITIES];
+
+#define SOUND_CANNONBALL_SHOOT		")weapons/loose_cannon_shoot.wav"
+#define SOUND_CANNONBALL_EXPLODE	")weapons/loose_cannon_explode.wav"
+#define PARTICLE_CANNONBALL_EXPLODE	"ExplosionCore_MidAir_underwater"
+
 public void BuccaneerBones_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -121,6 +131,8 @@ public void BuccaneerBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 
 	PrecacheModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
+	PrecacheSound(SOUND_CANNONBALL_SHOOT);
+	PrecacheSound(SOUND_CANNONBALL_EXPLODE);
 }
 
 methodmap BuccaneerBones < CClotBody
@@ -229,6 +241,7 @@ methodmap BuccaneerBones < CClotBody
 		DispatchKeyValue(npc.index, "skin", buffed ? BONES_BUCCANEER_BUFFED_SKIN : BONES_BUCCANEER_SKIN);
 
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextRangedAttack = (buffed ? BONES_BUCCANEER_ATTACKINTERVAL_BUFFED : BONES_BUCCANEER_ATTACKINTERVAL);
 		
 		npc.m_iBleedType = BLEEDTYPE_SKELETON;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -264,11 +277,6 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		npc.m_flSpeed = BONES_BUCCANEER_SPEED_BUFFED;
 		Buccaneer_GiveCosmetics(npc, true);
 		DispatchKeyValue(index, "skin", BONES_BUCCANEER_BUFFED_SKIN);
-		
-		//Apply buffed particle:
-		/*TE_SetupParticleEffect(BONES_BUCCANEER_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, index);
-		TE_WriteNum("m_bControlPoint1", index);	
-		TE_SendToAll();*/
 	}
 	else if (b_BonesBuffed[index] && !buffed)
 	{
@@ -283,13 +291,6 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		npc.m_flSpeed = BONES_BUCCANEER_SPEED;
 		Buccaneer_GiveCosmetics(npc, false);
 		DispatchKeyValue(index, "skin", BONES_BUCCANEER_SKIN);
-		
-		//Remove buffed particle:
-		/*TE_Start("EffectDispatch");
-		TE_WriteNum("entindex", index);
-		TE_WriteNum("m_nHitBox", GetParticleEffectIndex(BONES_BUCCANEER_BUFFPARTICLE));
-		TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
-		TE_SendToAll();*/
 	}
 	
 	running[npc.index] = false;
@@ -297,16 +298,20 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 
 stock void Buccaneer_GiveCosmetics(CClotBody npc, bool buffed)
 {
-	//TODO: The non-buffed variant should be bonemerged to an invisible demoman and use demo animations
 	npc.RemoveAllWearables();
-	
-	npc.m_iWearable1 = npc.EquipItem("hat", "models/player/items/demo/drinking_hat.mdl");
 	
 	if (buffed)
 	{
-		DispatchKeyValue(npc.m_iWearable1, "skin", "0");
-		SetVariantString("1.15");
+		npc.m_iWearable1 = npc.EquipItem("hat", "models/player/items/demo/drinking_hat.mdl");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		
+		npc.m_iWearable2 = npc.EquipItem("hat", "models/player/items/sniper/summer_shades.mdl");
+		
+		float pos[3];
+		GetEntPropVector(npc.m_iWearable2, Prop_Data, "m_vecAbsOrigin", pos);
+		pos[2] += 10.0;
+		TeleportEntity(npc.m_iWearable2, pos);
 		
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 9999.0);
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 9999.0);
@@ -317,7 +322,7 @@ stock void Buccaneer_GiveCosmetics(CClotBody npc, bool buffed)
 		int iActivity = npc.LookupActivity("ACT_WIZARD_IDLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	}
-	else	//TODO: Hat is too small on the non-buffed variant, find a way to shift it
+	else
 	{
 		DispatchKeyValue(npc.index, "model", "models/player/demo.mdl");
 		view_as<CBaseCombatCharacter>(npc).SetModel("models/player/demo.mdl");
@@ -326,6 +331,10 @@ stock void Buccaneer_GiveCosmetics(CClotBody npc, bool buffed)
 		
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+		
+		npc.m_iWearable1 = npc.EquipItem("hat", "models/player/items/demo/drinking_hat.mdl");
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		DispatchKeyValue(npc.m_iWearable1, "skin", "1");
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_demo_cannon/c_demo_cannon.mdl");
@@ -419,20 +428,13 @@ public void BuccaneerBones_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float pos[3], targPos[3], optimalPos[3]; 
-		WorldSpaceCenter(npc.index, pos);
-		WorldSpaceCenter(closest, targPos);
-			
-		float flDistanceToTarget = GetVectorDistance(targPos, pos);
-		
-		NPC_SetGoalEntity(npc.index, closest);
-		npc.FaceTowards(targPos, 15000.0);
-		
-		if (!b_BonesBuffed[npc.index] && !running[npc.index])
+		if (b_BonesBuffed[npc.index])
 		{
-			int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
-			if(iActivity > 0) npc.StartActivity(iActivity);
-			running[npc.index] = true;
+			//TODO: Buffed logic
+		}
+		else
+		{
+			Buccaneer_NonBuffedLogic(npc, closest);
 		}
 	}
 	else
@@ -451,6 +453,157 @@ public void BuccaneerBones_ClotThink(int iNPC)
 	}
 	
 	npc.PlayIdleSound();
+}
+
+public void Buccaneer_NonBuffedLogic(BuccaneerBones npc, int closest)
+{
+	float pos[3], targPos[3], optimalPos[3]; 
+	WorldSpaceCenter(npc.index, pos);
+	WorldSpaceCenter(closest, targPos);
+			
+	float flDistanceToTarget = GetVectorDistance(targPos, pos);
+		
+	if (flDistanceToTarget <= BUCCANEER_TOO_CLOSE)
+	{
+		BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
+		NPC_SetGoalVector(npc.index, optimalPos, true);
+		npc.StartPathing();
+	}
+	else if (flDistanceToTarget >= BUCCANEER_TOO_FAR)
+	{
+		NPC_SetGoalEntity(npc.index, closest);
+		npc.StartPathing();
+	}
+	else
+	{
+		npc.StopPathing();
+	}
+	
+	npc.FaceTowards(targPos, 15000.0);
+	
+	int iPitch = npc.LookupPoseParameter("body_pitch");
+	if(iPitch > 0)
+	{				
+		//Body pitch
+		float v[3], ang[3];
+		SubtractVectors(WorldSpaceCenterOld(npc.index), targPos, v); 
+		NormalizeVector(v, v);
+		GetVectorAngles(v, ang); 
+									
+		float flPitch = npc.GetPoseParameter(iPitch);
+									
+		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+	}
+		
+	if (!running[npc.index])
+	{
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+		running[npc.index] = true;
+	}
+	
+	float gt = GetGameTime(npc.index);
+	if (gt >= npc.m_flNextRangedAttack && flDistanceToTarget <= BUCCANEER_RANGE && Can_I_See_Enemy(npc.index, closest))
+	{
+		if (flDistanceToTarget <= BUCCANEER_PREDICT_RANGE)
+		{
+			PredictSubjectPositionForProjectiles(npc, closest, BUCCANEER_PROJECTILE_SPEED, _, targPos);
+		}
+		
+		Buccaneer_ShootProjectile(npc, targPos, BUCCANEER_PROJECTILE_SPEED, BUCCANEER_DAMAGE);
+		npc.m_flNextRangedAttack = gt + BONES_BUCCANEER_ATTACKINTERVAL;
+	}
+}
+
+public void Buccaneer_ShootProjectile(BuccaneerBones npc, float vicLoc[3], float vel, float damage)
+{
+	int entity = CreateEntityByName("zr_projectile_base");
+			
+	if (IsValidEntity(entity))
+	{
+		float vecForward[3], vecSwingStart[3], vecAngles[3];
+		npc.GetVectors(vecForward, vecSwingStart, vecAngles);
+
+		GetAbsOrigin(npc.index, vecSwingStart);
+		vecSwingStart[2] += 54.0;
+
+		MakeVectorFromPoints(vecSwingStart, vicLoc, vecAngles);
+		GetVectorAngles(vecAngles, vecAngles);
+		
+		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*vel;
+		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*vel;
+		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-vel;
+		
+		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
+		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
+		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+		
+		TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
+		DispatchSpawn(entity);
+		
+		int g_ProjectileModelRocket = PrecacheModel("models/weapons/w_models/w_cannonball.mdl");
+		for(int i; i<4; i++)
+		{
+			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
+		}
+		
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
+		SetEntityCollisionGroup(entity, 24);
+		Set_Projectile_Collision(entity);
+		See_Projectile_Team(entity);
+		
+		SetEntProp(entity, Prop_Send, "m_nSkin", GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue) ? 0 : 1);
+		
+		if (b_BonesBuffed[npc.index])
+		{
+			//g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Archmage_Explode);
+			//Archmage_AttachParticle(entity, PARTICLE_ARCHMAGE_FIREBALL_BUFFED, _, "");
+			DispatchKeyValueFloat(entity, "modelscale", 4.0);
+			
+			f_CannonballRadius[entity] = BUFFED_RADIUS;
+			f_CannonballDMG[entity] = BUFFED_DAMAGE;
+			f_CannonballFalloff_MultiHit[entity] = BUFFED_FALLOFF_MULTIHIT;
+			f_CannonballFalloff_Radius[entity] = BUFFED_FALLOFF_RADIUS;
+			f_Cannonball_EntMult[entity] = BUFFED_ENTITY_MULT;
+		}
+		else
+		{
+			SDKHook(entity, SDKHook_Touch, Buccaneer_CannonballTouch);
+			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Buccaneer_DontExplode);
+			SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
+			SetEntityGravity(entity, BUCCANEER_GRAVITY);
+			EmitSoundToAll(SOUND_CANNONBALL_SHOOT, entity);
+			npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
+			
+			f_CannonballRadius[entity] = BUCCANEER_RADIUS;
+			f_CannonballDMG[entity] = BUCCANEER_DAMAGE;
+			f_CannonballFalloff_MultiHit[entity] = BUCCANEER_FALLOFF_MULTIHIT;
+			f_CannonballFalloff_Radius[entity] = BUCCANEER_FALLOFF_RADIUS;
+			f_Cannonball_EntMult[entity] = BUCCANEER_ENTITY_MULT;
+		}
+	}
+}
+
+public Action Buccaneer_CannonballTouch(int entity, int other)
+{
+	float position[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	ParticleEffectAt(position, PARTICLE_CANNONBALL_EXPLODE, 2.0);
+	EmitSoundToAll(SOUND_CANNONBALL_EXPLODE, entity, _);
+	
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+	Explode_Logic_Custom(f_CannonballDMG[entity], IsValidEntity(owner) ? owner : entity, entity, entity, position, f_CannonballRadius[entity], f_CannonballFalloff_MultiHit[entity], f_CannonballFalloff_Radius[entity], isBlue, _, _, f_Cannonball_EntMult[entity]);
+	
+	RemoveEntity(entity);
+	return Plugin_Handled; //DONT.
+}
+
+public MRESReturn Buccaneer_DontExplode(int entity)
+{
+	RemoveEntity(entity);
+	return MRES_Supercede; //DONT.
 }
 
 public Action BuccaneerBones_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

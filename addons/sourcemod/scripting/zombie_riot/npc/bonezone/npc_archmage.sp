@@ -255,7 +255,7 @@ methodmap ArchmageBones < CClotBody
 
 		DispatchKeyValue(npc.index, "skin", buffed ? BONES_ARCHMAGE_BUFFED_SKIN : BONES_ARCHMAGE_SKIN);
 
-		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (buffed ? BONES_ARCHMAGE_ATTACKINTERVAL_BUFFED : BONES_ARCHMAGE_ATTACKINTERVAL);
 		
 		npc.m_iBleedType = BLEEDTYPE_SKELETON;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
