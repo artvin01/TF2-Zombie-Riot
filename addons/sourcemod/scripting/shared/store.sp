@@ -6166,7 +6166,6 @@ void GrantCreditsBack(int client)
 
 void Clip_SaveAllWeaponsClipSizes(int client)
 {
-	
 	int iea, weapon;
 	while(TF2_GetItem(client, weapon, iea))
 	{
@@ -6207,14 +6206,18 @@ void Clip_GiveAllWeaponsClipSizes(int client)
 
 void Clip_GiveWeaponClipBack(int client, int weapon)
 {
-	static Item item;
-	if(StoreWeapon[weapon] < 1 || item.Owned[client] < 1)
+	if(StoreWeapon[weapon] < 1)
 		return;
-		
+
 	if(client < 1)
 		return;
 	
+	static Item item;
 	StoreItems.GetArray(StoreWeapon[weapon], item);
+	
+	if(!item.Owned[client])
+		return;
+
 	ItemInfo info;
 	if(item.GetItemInfo(item.Owned[client]-1, info))
 	{

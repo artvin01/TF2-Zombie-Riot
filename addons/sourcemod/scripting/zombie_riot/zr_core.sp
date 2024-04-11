@@ -278,6 +278,7 @@ bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
 
 float f_Data_InBattleHudDisableDelay[MAXTF2PLAYERS];
 float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
+float f_InBattleDelay[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05

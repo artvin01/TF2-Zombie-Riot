@@ -1536,6 +1536,7 @@ public void OnMapStart()
 	Zero(Mana_Regen_Delay);
 	Zero(RollAngle_Regen_Delay);
 	Zero(f_InBattleHudDisableDelay);
+	Zero(f_InBattleDelay);
 #endif
 
 	SDKHooks_ClearAll();
@@ -1979,6 +1980,7 @@ public void OnClientDisconnect(int client)
 
 #if defined ZR
 	f_InBattleHudDisableDelay[client] = 0.0;
+	f_InBattleDelay[client] = 0.0;
 	i_HealthBeforeSuit[client] = 0;
 	f_ClientArmorRegen[client] = 0.0;
 	b_HoldingInspectWeapon[client] = false;

@@ -2123,11 +2123,9 @@
 	{
 		"en"		"Un-Claim the current marked building?"
 	}
-	"Builder Extra Gear Menu"
+	"Extra Menu"
 	{
-		"en"		"Builder extra gear menu"
-		"ru"		"Меню доп. снаряж. строителя"
-		"chi"		"建造者额外装备菜单"
+		"en"		"Extra Menu"
 	}
 	"Destroy all your non-Mounted Buildings"
 	{
@@ -3141,5 +3139,9 @@
 	{
 		"en"	"View Modifiers"
 		"de" 	"oha ein deutscher!"
+	}
+	"Bring up Class Change Menu"
+	{
+		"en"	"Bring up Class Change Menu"
 	}
 }

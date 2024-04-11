@@ -12,6 +12,7 @@ void Commands_PluginStart()
 	AddCommandListener(OnNavCommand);
 	AddCommandListener(OnAutoTeam, "autoteam");
 	AddCommandListener(OnAutoTeam, "jointeam");
+	AddCommandListener(OnJoinClass, "joinclass");
 	AddCommandListener(OnBuildCmd, "build");
 	AddCommandListener(OnDropItem, "dropitem");
 	AddCommandListener(OnTaunt, "taunt");
@@ -28,7 +29,6 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
 	char buffer[64];
 	KvGetSectionName(kv, buffer, sizeof(buffer));
-
 #if defined ZR
 	if(BlockNext[client])
 	{
@@ -109,6 +109,66 @@ public Action OnNavCommand(int client, const char[] command, int args)
 	return Plugin_Continue;
 }
 
+public Action OnJoinClass(int client, const char[] command, int args)
+{
+	bool FailedInstachange = false;
+	if(!client)
+		return Plugin_Continue;
+
+	if(TeutonType[client] != TEUTON_NONE)
+		FailedInstachange = true;
+
+	if(dieingstate[client] != 0)
+		FailedInstachange = true;
+	
+	if(!IsPlayerAlive(client))
+		FailedInstachange = true;
+	
+	if(f_TimeUntillNormalHeal[client] > GetGameTime())
+		FailedInstachange = true;
+		
+	if(f_InBattleHudDisableDelay[client] > GetGameTime())
+		FailedInstachange = true;
+	
+	char Bufferlol[32];
+	GetCmdArgString(Bufferlol,sizeof(Bufferlol));
+	TFClassType ClassChangeTo = TF2_GetClass(Bufferlol);
+	
+	if(FailedInstachange)
+	{
+		CurrentClass[client] = ClassChangeTo;
+		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", ClassChangeTo);
+		PrintToChat(client, "You are unable to change classes instantly, itll be changed later when you respawn.");
+		return Plugin_Continue;
+	}
+	//save clips to not insta reload. lol.
+	Clip_SaveAllWeaponsClipSizes(client);
+	int Health = GetClientHealth(client);
+	float SubjectAbsVelocity[3];
+	float clientvec[3];
+	float clientveceye[3];
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", clientvec);
+	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+	GetClientEyeAngles(client,clientveceye);
+	TF2_SetPlayerClass_ZR(client, ClassChangeTo);
+	CurrentClass[client] = ClassChangeTo;
+	DHook_RespawnPlayer(client);
+	Store_GiveAll(client, Health);
+	TeleportEntity(client, clientvec, clientveceye, SubjectAbsVelocity);
+	RemoveInvul(client);
+	RequestFrames(Removeinvul1frame, 10, EntIndexToEntRef(client));
+	PrintToChat(client, "You changed classes immedietly!");
+	return Plugin_Handled;
+}
+
+public void Removeinvul1frame(int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(IsValidClient(client))
+	{
+		RemoveInvul(client);
+	}
+}
 public Action OnAutoTeam(int client, const char[] command, int args)
 {
 	if(client)
