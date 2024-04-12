@@ -289,7 +289,7 @@ public void Weapon_Dimension_Summon_Normal_PAP(int client, int weapon, bool &res
 	switch(GetRandomInt(1, 4))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_combine_police_smg" ,weapon, 1.2, 1.4 "utaunt_arcane_yellow_lights");
+			Dimension_Summon_Npc(client, "npc_combine_police_smg" ,weapon, 1.2, 1.4, "utaunt_arcane_yellow_lights");
 		case 2:
 			Dimension_Summon_Npc(client, "npc_combine_soldier_swordsman" ,weapon, 1.3, 1.2, "utaunt_arcane_yellow_lights");
 		case 3:
