@@ -58,6 +58,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/quests.sp"
 #include "rpg_fortress/spawns.sp"
 #include "rpg_fortress/stats.sp"
+#include "rpg_fortress/store.sp"
 #include "rpg_fortress/textstore.sp"
 #include "rpg_fortress/tinker.sp"
 #include "rpg_fortress/traffic.sp"
