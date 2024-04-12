@@ -209,17 +209,6 @@ void RPG_ClientCookiesCached(int client)
 	HudSettings_ClientCookiesCached(client);
 	Stats_ClientCookiesCached(client);
 	ThirdPerson_OnClientCookiesCached(client);
-
-	char buffer[4];
-	Niko_Cookies.Get(client, buffer, sizeof(buffer));
-	if(StringToInt(buffer) == 1)
-	{
-	 	b_IsPlayerNiko[client] = true;
-	}
-	else
-	{
-		b_IsPlayerNiko[client] = false;
-	}
 }
 
 void RPG_ClientDisconnect(int client)
@@ -234,14 +223,7 @@ void RPG_ClientDisconnect(int client)
 
 	DisabledDownloads[client] = false;
 
-	int niko_int = 0;
-		
-	if(b_IsPlayerNiko[client])
-		niko_int = 1;
-
 	char buffer[128];		
-	IntToString(niko_int, buffer, sizeof(buffer));
-	Niko_Cookies.Set(client, buffer);
 
 	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client], f_NotifHudOffsetX[client], f_NotifHudOffsetY[client]);
 	HudSettings_Cookies.Set(client, buffer);

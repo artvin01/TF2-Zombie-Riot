@@ -211,7 +211,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		ViewChange_UpdateHands(client, CurrentClass[client]);
 		TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
-		if(b_IsPlayerNiko[client] || b_HideCosmeticsPlayer[client])
+		if(b_HideCosmeticsPlayer[client])
 		{
 		  	int entity = MaxClients+1;
 			while(TF2_GetWearable(client, entity))

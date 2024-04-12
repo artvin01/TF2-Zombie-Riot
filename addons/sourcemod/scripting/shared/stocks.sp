@@ -4329,8 +4329,6 @@ void PrecachePlayerGiveGiveResponseVoice()
 
 void MakePlayerGiveResponseVoice(int client, int status)
 {
-	if(b_IsPlayerNiko[client])
-		return;
 	
 	int ClassShown = view_as<int>(CurrentClass[client]);
 

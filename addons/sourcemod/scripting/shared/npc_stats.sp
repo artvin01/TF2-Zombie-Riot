@@ -1475,13 +1475,7 @@ methodmap CClotBody < CBaseCombatCharacter
 				}	
 			}
 			speed_for_return *= slowdown_amount;
-		}
-#if defined RPG
-		if (b_DungeonContracts_ZombieSpeedTimes3[this.index])
-		{
-			speed_for_return *= 3.0;
-		}	
-#endif				
+		}		
 
 		return speed_for_return;
 	}

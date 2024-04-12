@@ -356,7 +356,7 @@ bool b_IsAloneOnServer = false;
 ConVar cvarTimeScale;
 float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
-bool b_IsPlayerNiko[MAXTF2PLAYERS];
+
 int i_HowManyBombsHud[MAXENTITIES];
 bool b_TauntSpeedIncreace[MAXTF2PLAYERS] = {true, ...};
 #endif
@@ -1295,10 +1295,6 @@ public void OnPluginStart()
 	RegServerCmd("zr_update_blocked_nav", OnReloadBlockNav, "Reload Nav Blocks");
 	RegAdminCmd("sm_play_viewmodel_anim", Command_PlayViewmodelAnim, ADMFLAG_ROOT, "Testing viewmodel animation manually");
 
-#if defined ZR
-	RegConsoleCmd("sm_make_niko", Command_MakeNiko, "Turn This player into niko");
-#endif
-
 	RegAdminCmd("sm_toggle_fake_cheats", Command_ToggleCheats, ADMFLAG_GENERIC, "ToggleCheats");
 	RegAdminCmd("zr_reload_plugin", Command_ToggleReload, ADMFLAG_GENERIC, "Reload plugin on map change");
 	
@@ -1654,24 +1650,6 @@ public Action OnReloadBlockNav(int args)
 	return Plugin_Handled;
 }
 
-#if defined ZR
-public Action Command_MakeNiko(int client, int args)
-{
-	if(b_IsPlayerNiko[client])
-	{
-		PrintToChat(client,"You are no longer niko.");
-		b_IsPlayerNiko[client] = false;
-	}
-	else
-	{
-		PrintToChat(client,"You are now niko.");
-		b_IsPlayerNiko[client] = true;
-	}
-	ForcePlayerSuicide(client);
-	return Plugin_Handled;
-}
-#endif
-
 public void OnGameFrame()
 {
 #if defined ZR
@@ -2000,7 +1978,6 @@ public void OnClientDisconnect(int client)
 
 #if defined ZR
 	WeaponClass[client] = TFClass_Scout;
-	b_IsPlayerNiko[client] = false;
 #endif
 
 #if defined RPG

@@ -2167,10 +2167,6 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 				}
 				
 			}
-			if(b_IsPlayerNiko[entity])
-			{
-				return Plugin_Handled;
-			}
 #endif
 		
 		}
