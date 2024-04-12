@@ -1093,6 +1093,17 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif
 	}
 
+#if defined ZR
+	if(inflictor > 0 && inflictor < MaxClients)
+	{
+		if(f_Data_InBattleHudDisableDelay[inflictor] + 2.0 != 0.0)
+		{
+			f_InBattleHudDisableDelay[inflictor] = GetGameTime() + f_Data_InBattleHudDisableDelay[inflictor];
+			f_InBattleDelay[inflictor] = GetGameTime() + 3.0;
+		}
+	}
+#endif
+	
 	OnTakeDamageBleedNpc(victim, attacker, inflictor, damage, damagetype, weapon, damagePosition, GameTime);
 
 	npcBase.m_vecpunchforce(damageForce, true);
@@ -1253,7 +1264,6 @@ stock void Generic_OnTakeDamage(int victim, int attacker)
 		}
 	}
 }
-
 
 void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damagePosition[3], float GameTime)
 {
@@ -2887,6 +2897,9 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 #if defined ZR
 	else if(b_IsABow[weapon])
 	{
+		//arrows ignore inflictor?
+		f_InBattleHudDisableDelay[attacker] = GetGameTime() + f_Data_InBattleHudDisableDelay[attacker];
+		f_InBattleDelay[attacker] = GetGameTime() + 3.0;
 		if(damagetype & DMG_CRIT)
 		{		
 			damage *= 1.35;

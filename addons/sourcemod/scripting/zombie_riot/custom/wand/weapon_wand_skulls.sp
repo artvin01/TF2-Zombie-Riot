@@ -245,47 +245,45 @@ public void Skulls_LaunchSkull(int ent, int weapon, int client, int tier)
 		}
 	}
 	
-	int projectile = Wand_Projectile_Spawn(client, velocity, 15.0, damage, 18, weapon, particle, ang, false);
+	int projectile = Wand_Projectile_Spawn(client, velocity, 15.0, damage, 18, weapon, particle, ang);
 	
 	if (IsValidEdict(projectile))
 	{	
 		TeleportEntity(projectile, pos, NULL_VECTOR, NULL_VECTOR);
-		
-		SetEntityModel(projectile, SKULL_MODEL);
-		DispatchKeyValue(projectile, "modelscale", "1.25");
+		int ModelApply = ApplyCustomModelToWandProjectile(projectile, SKULL_MODEL, 1.25, "");
 		
 		switch(tier)
 		{
 			case 0:
 			{
-				SetEntityRenderColor(projectile, 100, 255, 180, 255);
+				SetEntityRenderColor(ModelApply, 100, 255, 180, 255);
 			}
 			case 1:
 			{
-				SetEntityRenderColor(projectile, 255, 140, 70, 255);
+				SetEntityRenderColor(ModelApply, 255, 140, 70, 255);
 			}
 			case 2:
 			{
-				SetEntityRenderColor(projectile, 120, 200, 255, 255);
+				SetEntityRenderColor(ModelApply, 120, 200, 255, 255);
 			}
 		}
 		
-		SetEntityRenderFx(projectile, RENDERFX_GLOWSHELL);
+		SetEntityRenderFx(ModelApply, RENDERFX_GLOWSHELL);
 		
-		EmitSoundToAll(SKULL_SOUND_LAUNCH, projectile);
+		EmitSoundToAll(SKULL_SOUND_LAUNCH, ModelApply);
 		switch(GetRandomInt(1, 3))
 		{
 			case 1:
 			{
-				EmitSoundToAll(SKULL_SOUND_LAUNCH_LAUGH_1, projectile);
+				EmitSoundToAll(SKULL_SOUND_LAUNCH_LAUGH_1, ModelApply);
 			}
 			case 2:
 			{
-				EmitSoundToAll(SKULL_SOUND_LAUNCH_LAUGH_2, projectile);
+				EmitSoundToAll(SKULL_SOUND_LAUNCH_LAUGH_2, ModelApply);
 			}
 			case 3:
 			{
-				EmitSoundToAll(SKULL_SOUND_LAUNCH_LAUGH_3, projectile);
+				EmitSoundToAll(SKULL_SOUND_LAUNCH_LAUGH_3, ModelApply);
 			}
 		}
 	}
@@ -1065,25 +1063,50 @@ public void Wand_Skulls_Touch(int entity, int target)
 
 public void Wand_Skulls_Touch_Launched(int entity, int target)
 {
-	int particle = EntRefToEntIndex(i_WandParticle[entity]);
-		
-	int owner = EntRefToEntIndex(i_WandOwner[entity]);
-	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-
-	if(IsValidEntity(particle))
+	if (target > 0)	
 	{
-		RemoveEntity(particle);
-	}
-	float position[3];
-	
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-	ParticleEffectAt(position, SKULL_PARTICLE_EXPLOSION, 1.0);
-	EmitSoundToAll(SKULL_SOUND_EXPLODE, entity, SNDCHAN_STATIC, 80, _, 1.0);
-	EmitSoundToAll(SKULL_SOUND_EXPLODE_BONES, entity, SNDCHAN_STATIC, 80, _, 1.0);
-	
-	Explode_Logic_Custom(f_WandDamage[entity], owner, owner, weapon, position, 280.0, _, _, false);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+			
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		float position[3];
 		
-	RemoveEntity(entity);
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+		ParticleEffectAt(position, SKULL_PARTICLE_EXPLOSION, 1.0);
+		EmitSoundToAll(SKULL_SOUND_EXPLODE, entity, SNDCHAN_STATIC, 80, _, 1.0);
+		EmitSoundToAll(SKULL_SOUND_EXPLODE_BONES, entity, SNDCHAN_STATIC, 80, _, 1.0);
+		
+		Explode_Logic_Custom(f_WandDamage[entity], owner, owner, weapon, position, 280.0, _, _, false);
+			
+		RemoveEntity(entity);
+	}
+	else if(target == 0)
+	{
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+			
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		float position[3];
+		
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+		ParticleEffectAt(position, SKULL_PARTICLE_EXPLOSION, 1.0);
+		EmitSoundToAll(SKULL_SOUND_EXPLODE, entity, SNDCHAN_STATIC, 80, _, 1.0);
+		EmitSoundToAll(SKULL_SOUND_EXPLODE_BONES, entity, SNDCHAN_STATIC, 80, _, 1.0);
+		
+		Explode_Logic_Custom(f_WandDamage[entity], owner, owner, weapon, position, 280.0, _, _, false);
+			
+		RemoveEntity(entity);
+	}
 }
 
 

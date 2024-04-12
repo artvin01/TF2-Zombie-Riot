@@ -62,9 +62,6 @@ static int MoabHealth(bool fortified)
 
 void DDT_MapStart()
 {
-	if(!IsFileInDownloads("models/zombie_riot/btd/ddt.mdl"))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Dark Dirigible Titan");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ddt");
@@ -79,6 +76,18 @@ void DDT_MapStart()
 
 static void ClotPrecache()
 {
+	for(int i; i<sizeof(SoundMoabHit); i++)
+	{
+		PrecacheSoundCustom(SoundMoabHit[i]);
+	}
+	for(int i; i<sizeof(SoundLead); i++)
+	{
+		PrecacheSoundCustom(SoundLead[i]);
+	}
+	for(int i; i<sizeof(SoundMoabPop); i++)
+	{
+		PrecacheSoundCustom(SoundMoabPop[i]);
+	}
 	PrecacheModel("models/zombie_riot/btd/ddt.mdl");
 }
 

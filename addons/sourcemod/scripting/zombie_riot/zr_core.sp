@@ -173,7 +173,9 @@ enum
 	WEAPON_NAILGUN_SHOTGUN = 94,
 	WEAPON_BLACKSMITH = 95,
 	WEAPON_COSMIC_PILLAR = 96,
-	WEAPON_COSMIC_RAILCANNON = 97
+	WEAPON_COSMIC_RAILCANNON = 97,
+	WEAPON_GRENADEHUD = 98,
+	WEAPON_WEST_REVOLVER = 99
 }
 
 enum
@@ -190,7 +192,8 @@ enum
 	Type_COF,
 	Type_Seaborn,
 	Type_Expidonsa,
-	Type_Interitus
+	Type_Interitus,
+	Type_BlueParadox
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -274,11 +277,17 @@ int i_MaxArmorTableUsed[MAXTF2PLAYERS];
 int i_PlayerModelOverrideIndexWearable[MAXTF2PLAYERS];
 bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
 
+float f_Data_InBattleHudDisableDelay[MAXTF2PLAYERS];
+float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
+float f_InBattleDelay[MAXTF2PLAYERS];
+
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
 #define SF2_PLAYER_VIEWBOB_SCALE_Y 0.0
 #define SF2_PLAYER_VIEWBOB_SCALE_Z 0.0
 #define RAID_MAX_ARMOR_TABLE_USE 20
+#define ZR_ARMOR_DAMAGE_REDUCTION 0.75
+#define ZR_ARMOR_DAMAGE_REDUCTION_INVRERTED 0.25
 
 float Armor_regen_delay[MAXTF2PLAYERS];
 
@@ -306,6 +315,8 @@ int Armor_DebuffType[MAXENTITIES];
 
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
+float LastStoreMenu[MAXTF2PLAYERS];
+bool LastStoreMenu_Store[MAXTF2PLAYERS];
 int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
 
 //We kinda check these almost 24/7, its better to put them into an array!
@@ -384,7 +395,7 @@ bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
 
 float Building_Collect_Cooldown[MAXENTITIES][MAXTF2PLAYERS];
 
-bool b_SpecialGrigoriStore;
+bool b_SpecialGrigoriStore = true;
 float f_ExtraDropChanceRarity = 1.0;
 bool applied_lastmann_buffs_once = false;
 
@@ -517,6 +528,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_ludo.sp"
 #include "zombie_riot/custom/weapon_messenger.sp"
 #include "zombie_riot/custom/kit_blacksmith.sp"
+#include "zombie_riot/custom/weapon_deagle_west.sp"
 
 void ZR_PluginLoad()
 {
@@ -757,6 +769,7 @@ void ZR_MapStart()
 	ResetMapStartDimWeapon();
 	Hell_Hoe_MapStart();
 	ResetMapStartMessengerWeapon();
+	ResetMapStartWest();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;
@@ -784,6 +797,13 @@ public Action GlobalTimer(Handle timer)
 	{
 		if(IsClientInGame(client))
 		{
+			if(IsFakeClient(client))
+			{
+				if(IsClientSourceTV(client) || b_IsPlayerABot[client])
+				{
+					MoveBotToSpectator(client);
+				}
+			}
 			PlayerApplyDefaults(client);
 			Spawns_CheckBadClient(client);
 		}
@@ -1602,7 +1622,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			}
 		}
 
-		if(rogue)
+		if(Rogue_NoLastman())
 		{
 			LastMann = false;
 		}
@@ -2375,13 +2395,6 @@ public Action DeployBannerIconBuff(Handle timer, DataPack pack)
 	return Plugin_Stop;
 }
 
-void GrantAllPlayersCredits_Rogue(int cash)
-{
-	cash *= (Rogue_GetRound()+1);
-	CPrintToChatAll("{green}%t","Cash Gained!", cash);
-	CurrentCash += cash;
-}
-
 stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)
 {
 	float vecOrigin[3], vecAngles[3], vecEndOrigin[3];
@@ -2456,6 +2469,15 @@ stock void GetTimerAndNullifyMusicMVM()
 		return;
 	}
 	
+}
+
+bool PlayerIsInNpcBattle(int client)
+{
+	bool InBattle = false;
+	if(f_InBattleHudDisableDelay[client] > GetGameTime())
+		InBattle = true;
+
+	return InBattle;
 }
 
 

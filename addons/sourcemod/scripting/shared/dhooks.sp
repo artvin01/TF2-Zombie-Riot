@@ -107,6 +107,7 @@ void DHook_Setup()
 
 	DHook_CreateDetour(gamedata, "CTFWeaponBaseMelee::DoSwingTraceInternal", DHook_DoSwingTracePre, _);
 	DHook_CreateDetour(gamedata, "CWeaponMedigun::CreateMedigunShield", DHook_CreateMedigunShieldPre, _);
+	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", DHook_PreClientUpdatePre, DHook_PreClientUpdatePost);
 
 //	DHook_CreateDetour(gamedata, "EconEntity_OnOwnerKillEaterEventNoPartner", DHook_BlockEcon);
 //	DHook_CreateDetour(gamedata, "EconItemInterface_OnOwnerKillEaterEventNoPartner", DHook_BlockEcon);
@@ -269,6 +270,24 @@ public MRESReturn DHook_DoSwingTracePre(int entity, DHookReturn returnHook, DHoo
 public MRESReturn DHook_CreateMedigunShieldPre(int entity, DHookReturn returnHook)
 {
 	return MRES_Supercede;
+}
+
+static bool wasMvM;
+public MRESReturn DHook_PreClientUpdatePre()
+{
+	wasMvM = view_as<bool>(GameRules_GetProp("m_bPlayingMannVsMachine"));
+	if(wasMvM)
+		GameRules_SetProp("m_bPlayingMannVsMachine", false);
+	
+	return MRES_Ignored;
+}
+
+public MRESReturn DHook_PreClientUpdatePost()
+{
+	if(wasMvM)
+		GameRules_SetProp("m_bPlayingMannVsMachine", wasMvM);
+	
+	return MRES_Ignored;
 }
 
 #if defined ZR
@@ -950,7 +969,12 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-			else if(b_IsAProjectile[entity2] && GetTeam(entity2) == GetTeam(entity1) && !b_ProjectileCollideWithPlayerOnly[entity1])
+			else if(b_IsAProjectile[entity2])
+			{
+				return false;
+			}
+			//dont colldide with wsame team if its
+			else if(GetTeam(entity2) == GetTeam(entity1) && !b_ProjectileCollideWithPlayerOnly[entity1])
 			{
 				return false;
 			}
@@ -968,11 +992,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			}
 			//ignores everything else if it only collides with players
 			else if(entity2 > MaxClients && b_ProjectileCollideWithPlayerOnly[entity1])
-			{
-				return false;
-			}
-			//ingore all on the same team, in this case red
-			else if(GetTeam(entity2) == TFTeam_Red && !b_ProjectileCollideWithPlayerOnly[entity1])
 			{
 				return false;
 			}

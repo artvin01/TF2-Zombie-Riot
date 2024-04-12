@@ -3368,6 +3368,13 @@ public void GiveCompleteInvul(int client, float time)
 	TF2_AddCondition(client, TFCond_MegaHeal, time);
 }
 
+public void RemoveInvul(int client)
+{
+	f_ClientInvul[client] = 0.0;
+	TF2_RemoveCondition(client, TFCond_UberchargedCanteen);
+	TF2_RemoveCondition(client, TFCond_MegaHeal);
+}
+
 stock int SpawnFormattedWorldText(const char[] format, float origin[3], int textSize = 10, const int colour[4] = {255,255,255,255}, int entity_parent = -1, bool rainbow = false, bool teleport = false)
 {
 	int worldtext = CreateEntityByName("point_worldtext");
@@ -4902,12 +4909,11 @@ stock int GetTeam(int entity)
 			return GetClientTeam(entity);
 #endif
 
-		if(TeamNumber[entity] == -1 || b_NpcHasDied[entity])
+		if(TeamNumber[entity] == -1)
 		{
 			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
 		}
 		return TeamNumber[entity];
-			
 	}
 	return GetEntProp(entity, Prop_Data, "m_iTeamNum");
 }
@@ -4917,7 +4923,7 @@ stock void SetTeam(int entity, int teamSet)
 	if(entity > 0 && entity <= MAXENTITIES)
 	{
 		TeamNumber[entity] = teamSet;
-		if(teamSet <= TFTeam_Red)
+		if(teamSet <= TFTeam_Blue)
 		{
 
 #if !defined RTS
@@ -4932,7 +4938,7 @@ stock void SetTeam(int entity, int teamSet)
 				SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
 			}
 		}
-		else if(teamSet > TFTeam_Red)
+		else if(teamSet > TFTeam_Blue)
 		{
 
 #if !defined RTS
@@ -4944,7 +4950,7 @@ stock void SetTeam(int entity, int teamSet)
 #endif
 
 			{
-				SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+				SetEntProp(entity, Prop_Data, "m_iTeamNum", 4);
 			}
 		}
 	}

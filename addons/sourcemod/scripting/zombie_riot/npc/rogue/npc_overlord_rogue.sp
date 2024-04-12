@@ -245,7 +245,7 @@ methodmap OverlordRogue < CClotBody
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("0.7");
+		SetVariantString("1.75");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 2);

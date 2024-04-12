@@ -512,7 +512,7 @@ bool i_EntityRenderOverride[MAXENTITIES]={false, ...};
 
 bool b_RocketBoomEffect[MAXENTITIES]={false, ...};
 //6 wearables
-int i_Wearable[MAXENTITIES][7];
+int i_Wearable[MAXENTITIES][8];
 int i_FreezeWearable[MAXENTITIES];
 int i_InvincibleParticle[MAXENTITIES];
 float f_WidowsWineDebuff[MAXENTITIES];
@@ -1119,7 +1119,6 @@ int i_MedkitAnnoyance[MAXENTITIES];
 float fl_idle_talk[MAXENTITIES];
 float fl_heal_cooldown[MAXENTITIES];
 float fl_Hurtie[MAXENTITIES];
-float fl_ExtraDamage[MAXENTITIES];
 int i_Changed_WalkCycle[MAXENTITIES];
 bool b_WasSadAlready[MAXENTITIES];
 int i_TargetAlly[MAXENTITIES];
@@ -1536,6 +1535,8 @@ public void OnMapStart()
 	Zero(Mana_Hud_Delay);
 	Zero(Mana_Regen_Delay);
 	Zero(RollAngle_Regen_Delay);
+	Zero(f_InBattleHudDisableDelay);
+	Zero(f_InBattleDelay);
 #endif
 
 	SDKHooks_ClearAll();
@@ -1608,6 +1609,13 @@ public void OnMapStart()
 public void OnMapEnd()
 {
 #if defined ZR
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsFakeClient(client) && IsClientSourceTV(client))
+		{
+			KickClient(client);
+		}
+	}
 	Store_RandomizeNPCStore(1);
 	OnRoundEnd(null, NULL_STRING, false);
 	Waves_MapEnd();
@@ -1866,6 +1874,14 @@ public void OnClientPutInServer(int client)
 #if !defined NOG
 	if(IsFakeClient(client))
 	{
+		if(IsClientSourceTV(client))
+		{
+			f_ClientMusicVolume[client] = 1.0;
+			f_ZombieVolumeSetting[client] = 0.0;
+			SetTeam(client, TFTeam_Spectator);
+			b_IsPlayerABot[client] = true;
+			return;
+		}
 		if(!SpawningBot)
 		{
 			KickClient(client);
@@ -1963,6 +1979,8 @@ public void OnClientDisconnect(int client)
 	ReplicateClient_RollAngle[client] = -1;
 
 #if defined ZR
+	f_InBattleHudDisableDelay[client] = 0.0;
+	f_InBattleDelay[client] = 0.0;
 	i_HealthBeforeSuit[client] = 0;
 	f_ClientArmorRegen[client] = 0.0;
 	b_HoldingInspectWeapon[client] = false;
@@ -2889,9 +2907,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			
-			//SDKHook_SpawnPost doesnt work
 			b_IsAProjectile[entity] = true;
 		}
 #endif
@@ -3140,12 +3155,21 @@ public Action SDKHook_Regenerate_Touch(int entity, int target)
 
 void Set_Projectile_Collision(int entity)
 {
-	if(IsValidEntity(entity) && GetTeam(entity) != view_as<int>(TFTeam_Blue))
+	//needs to be delayed by frame, team setting in tf2 happens after its spawned.
+	RequestFrame(Set_Projectile_CollisionFrame, EntRefToEntIndex(entity));
+}
+
+void Set_Projectile_CollisionFrame(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(!IsValidEntity(entity))
+		return;
+
+	if(GetTeam(entity) != view_as<int>(TFTeam_Blue))
 	{
 		SetEntityCollisionGroup(entity, 27);
 	}
 }
-
 public void Delete_instantly(int entity)
 {
 	RemoveEntity(entity);
@@ -3378,7 +3402,7 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 					return true;
 				
 				//shouldnt invalidate clicking, makes battle hard.
-				if(Store_Girogi_Interact(client, entity, buffer, Is_Reload_Button))
+				if(!PlayerIsInNpcBattle(client) && Store_Girogi_Interact(client, entity, buffer, Is_Reload_Button))
 					return false;
 
 				if (TeutonType[client] == TEUTON_WAITING)
@@ -3388,7 +3412,7 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 					return true;
 
 				//interacting with citizens shouldnt invalidate clicking, it makes battle hard.
-				if(Citizen_Interact(client, entity))
+				if(!PlayerIsInNpcBattle(client) && Citizen_Interact(client, entity))
 					return false;
 				
 				if(Is_Reload_Button && BarrackBody_Interact(client, entity))
