@@ -2150,8 +2150,6 @@ methodmap CClotBody < CBaseCombatCharacter
 				float DistanceCheck[3];
 				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", DistanceCheck);
 				AddDelayPather(this.index, DistanceCheck);
-				static int Checklol;
-				PrintToChatAll("Test %i",Checklol++);
 			}
 		}
 	}
