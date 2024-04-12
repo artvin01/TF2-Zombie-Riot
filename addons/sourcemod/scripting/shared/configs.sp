@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#if defined ZR
+#if defined ZR || defined RPG
 enum struct WeaponData
 {
 	char Classname[36];
@@ -74,7 +74,7 @@ void Configs_ConfigsExecuted()
 
 	delete kv;
 
-#if defined ZR
+#if defined ZR || defined RPG
 	delete WeaponList;
 	WeaponList = new ArrayList(sizeof(WeaponData));
 	
@@ -112,7 +112,7 @@ void Configs_ConfigsExecuted()
 	}
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 stock float Config_GetDPSOfEntity(int entity)
 {
 	static char classname[36];

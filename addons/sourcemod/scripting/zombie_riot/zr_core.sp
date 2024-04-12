@@ -411,6 +411,8 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/natives.sp"
 #include "zombie_riot/queue.sp"
 #include "zombie_riot/spawns.sp"
+#include "zombie_riot/store.sp"
+#include "zombie_riot/teuton_sound_override.sp"
 #include "zombie_riot/tutorial.sp"
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"

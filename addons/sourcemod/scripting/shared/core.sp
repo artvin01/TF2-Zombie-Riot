@@ -6,7 +6,7 @@
 #include <collisionhook>
 #include <clientprefs>
 #include <dhooks>
-#if defined ZR
+#if defined ZR || defined RPG
 #include <tf2items>
 #include <tf_econ_data>
 #endif
@@ -36,8 +36,8 @@
 #define TFTeam_Spectator 	1
 #define TFTeam_Red 		2
 #define TFTeam_Blue		3
-#define TF2_GetClientTeam	PLZUSE_GetClientTeam
-#define TF2_ChangeClientTeam	PLZUSE_ChangeClientTeam
+#define TF2_GetClientTeam	PLZUSE_GetTeam
+#define TF2_ChangeClientTeam	PLZUSE_SetTeam
 
 #define RoundState_ZombieRiot view_as<RoundState>(11)
 
@@ -1182,6 +1182,10 @@ int Armor_Wearable[MAXTF2PLAYERS];
 #include "zombie_riot/zr_core.sp"
 #endif
 
+#if defined RPG
+#include "rpg_fortress/rpg_core.sp"
+#endif
+
 #if defined RTS
 #include "fortress_wars/rts_core.sp"
 #endif
@@ -1194,19 +1198,29 @@ int Armor_Wearable[MAXTF2PLAYERS];
 	Below Are Non-Shared Variables/Defines
 */
 
-#if defined ZR
+#if defined ZR || defined RPG
 #include "shared/custom_melee_logic.sp"
 #include "shared/killfeed.sp"
 #include "shared/thirdperson.sp"
 #include "shared/viewchanges.sp"
-#include "shared/store.sp"
-#include "shared/teuton_sound_override.sp"
 #endif
 
 #if !defined RTS
 #include "shared/attributes.sp"
 #endif
 
+#if !defined NOG
+#include "shared/commands.sp"
+#include "shared/convars.sp"
+#include "shared/dhooks.sp"
+#include "shared/events.sp"
+#endif
+
+#if defined ZR || defined RTS
+#include "shared/rtscamera.sp"
+#endif
+
+#include "shared/baseboss_lagcompensation.sp"
 #include "shared/configs.sp"
 #include "shared/filenetwork.sp"
 #include "shared/npccamera.sp"
@@ -1215,16 +1229,6 @@ int Armor_Wearable[MAXTF2PLAYERS];
 #include "shared/sdkhooks.sp"
 #include "shared/stocks.sp"
 #include "shared/wand_projectile.sp"
-
-#if !defined NOG
-#include "shared/commands.sp"
-#include "shared/convars.sp"
-#include "shared/dhooks.sp"
-#include "shared/events.sp"
-#include "shared/rtscamera.sp"
-#endif
-
-#include "shared/baseboss_lagcompensation.sp"
 
 public Plugin myinfo =
 {
@@ -1354,7 +1358,9 @@ public void OnPluginStart()
 
 #if defined NOG
 	NOG_PluginStart();
-#else
+#endif
+
+#if defined RTS_CAMERA
 	RTSCamera_PluginStart();
 #endif
 	
@@ -1451,7 +1457,7 @@ public void OnPluginEnd()
 		}
 	}
 
-#if !defined NOG
+#if defined RTS_CAMERA
 	RTSCamera_PluginEnd();
 #endif
 	
@@ -1589,7 +1595,7 @@ public void OnMapStart()
 	RTS_MapStart();
 #endif
 
-#if !defined NOG
+#if defined RTS_CAMERA
 	RTSCamera_MapStart();
 #endif
 
@@ -1950,7 +1956,7 @@ public void OnClientCookiesCached(int client)
 	RPG_ClientCookiesCached(client);
 #endif
 
-#if !defined NOG
+#if defined RTS_CAMERA
 	RTSCamera_ClientCookiesCached(client);
 #endif
 }
@@ -1968,7 +1974,7 @@ public void OnClientDisconnect(int client)
 	RTS_ClientDisconnect(client);
 #endif
 
-#if !defined NOG
+#if defined RTS_CAMERA
 	RTSCamera_ClientDisconnect(client);
 #endif
 
@@ -2019,7 +2025,7 @@ public void OnClientDisconnect_Post(int client)
 #endif
 }
 
-#if !defined NOG
+#if defined RTS_CAMERA
 public void OnPlayerRunCmdPre(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
 {
 	RTSCamera_PlayerRunCmdPre(client, buttons, impulse, vel, weapon, mouse);

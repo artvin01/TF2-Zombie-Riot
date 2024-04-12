@@ -39,11 +39,14 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	}
 #endif
 	
+#if defined RTS_CAMERA
 	if(RTSCamera_ClientCommandKeyValues(client, buffer))
 	{
 		return Plugin_Handled;
 	}
-	else if(StrEqual(buffer, "+use_action_slot_item_server", false))
+#endif
+
+	if(StrEqual(buffer, "+use_action_slot_item_server", false))
 	{
 #if defined ZR
 		b_HoldingInspectWeapon[client] = true;

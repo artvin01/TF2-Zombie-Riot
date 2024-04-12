@@ -3354,8 +3354,11 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		CleanAllAppliedEffects_BombImplanter(pThis, true);
 #endif
 
-#if !defined RTS
+#if defined EXPIDONSA_BASE
 		VausMagicaRemoveShield(pThis);
+#endif
+
+#if !defined RTS
 		NPC_DeadEffects(pThis); //Do kill attribute stuff
 #endif
 
@@ -7621,7 +7624,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_AvoidObstacleNavTime[entity] = 0.0;
 #endif
 
-#if !defined RTS
+#if defined EXPIDONSA_BASE
 	Expidonsa_SetToZero(entity);
 #endif
 
