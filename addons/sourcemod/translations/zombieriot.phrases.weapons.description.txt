@@ -2738,6 +2738,10 @@
 		"en" 	"Simple Damage buff"
 		"chi"	"加伤害。没了。"
 	}
+	"Hurricane Blitz desc 3"
+	{
+		"en" 	"Simple Damage buff"
+	}
 	"Ion Blitz Desc 2"
 	{
 		"en"	"Higher Damage, More effects!"
