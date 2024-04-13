@@ -12,7 +12,6 @@ void Commands_PluginStart()
 	AddCommandListener(OnNavCommand);
 	AddCommandListener(OnAutoTeam, "autoteam");
 	AddCommandListener(OnAutoTeam, "jointeam");
-	AddCommandListener(OnJoinClass, "joinclass");
 	AddCommandListener(OnBuildCmd, "build");
 	AddCommandListener(OnDropItem, "dropitem");
 	AddCommandListener(OnTaunt, "taunt");
@@ -21,6 +20,7 @@ void Commands_PluginStart()
 	AddCommandListener(OnSayCommand, "say_team");
 
 #if defined ZR
+	AddCommandListener(OnJoinClass, "joinclass");
 	AddCommandListener(Command_Voicemenu, "voicemenu");
 #endif
 }
@@ -109,6 +109,7 @@ public Action OnNavCommand(int client, const char[] command, int args)
 	return Plugin_Continue;
 }
 
+#if defined ZR
 public Action OnJoinClass(int client, const char[] command, int args)
 {
 	bool FailedInstachange = false;
@@ -160,6 +161,8 @@ public Action OnJoinClass(int client, const char[] command, int args)
 	PrintToChat(client, "You changed classes immedietly!");
 	return Plugin_Handled;
 }
+
+#endif
 
 public void Removeinvul1frame(int ref)
 {
