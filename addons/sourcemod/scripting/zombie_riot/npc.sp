@@ -834,8 +834,8 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Skeletal Saint",
 	"Novice Necromancer",
 	"Bringer of Bones",
-	"Bony Bomber",
-	"Brigadier Bones"
+	"Brigadier Bones",
+	"Boner Bomber"
 };
 
 // See items.sp for IDs to names

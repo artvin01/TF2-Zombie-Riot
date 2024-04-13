@@ -233,8 +233,11 @@ methodmap BuccaneerBones < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_WIZARD_IDLE");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		if (b_BonesBuffed[npc.index])
+		{
+			int iActivity = npc.LookupActivity("ACT_CANNON_IDLE");
+			if(iActivity > 0) npc.StartActivity(iActivity);
+		}
 		
 		//npc.m_bDoSpawnGesture = true;
 
@@ -319,7 +322,7 @@ stock void Buccaneer_GiveCosmetics(CClotBody npc, bool buffed)
 		DispatchKeyValue(npc.index, "model", "models/zombie_riot/the_bone_zone/basic_bones.mdl");
 		view_as<CBaseCombatCharacter>(npc).SetModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
 		
-		int iActivity = npc.LookupActivity("ACT_WIZARD_IDLE");
+		int iActivity = npc.LookupActivity("ACT_CANNON_IDLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	}
 	else
