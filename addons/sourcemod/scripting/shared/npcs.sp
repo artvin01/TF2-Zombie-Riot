@@ -1552,11 +1552,13 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added = true;
 		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "⍋%s", Debuff_Adder_right);
 	}
+#if defined ZR
 	if(VausMagicaShieldLeft(victim) > 0)
 	{
 		Debuff_added = true;
 		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "S(%i)%s",VausMagicaShieldLeft(victim),Debuff_Adder_right);
 	}
+#endif
 	if(f_HussarBuff[victim] > GameTime) //hussar!
 	{
 		Debuff_added = true;
@@ -1649,6 +1651,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		}
 		if(weapon > 0 && attacker > 0)
 			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
+
 #endif
 		if(VausMagicaShieldLogicEnabled(victim))
 			percentage *= 0.25;

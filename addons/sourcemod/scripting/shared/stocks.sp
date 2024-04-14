@@ -2662,19 +2662,23 @@ void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vec
 	vecForce[2] *= -1.0;
 }
 
-#if defined ZR
 int CountPlayersOnRed(int alive = 0)
 {
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
+#if defined ZR
 		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+#else
+		if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client)==2)
+#endif
 		{
 			if(alive == 0)
 			{
 				amount++;
 				continue;
 			}
+#if defined ZR
 			else
 			{
 				if(alive == 1) //check if just not teuton
@@ -2694,13 +2698,14 @@ int CountPlayersOnRed(int alive = 0)
 					}
 				}
 			}
+#endif
 		}
 	}
 	
 	return amount;
 	
 }
-#endif
+
 
 int CountPlayersOnServer()
 {

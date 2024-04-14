@@ -341,7 +341,6 @@ float i_WeaponDamageFalloff[MAXENTITIES];
 float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
-int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 int i_CurrentEquippedPerk[MAXENTITIES];
 int i_CurrentEquippedPerkPreviously[MAXENTITIES];
 int Building_Max_Health[MAXENTITIES]={0, ...};
@@ -360,6 +359,7 @@ int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 int i_HowManyBombsHud[MAXENTITIES];
 bool b_TauntSpeedIncreace[MAXTF2PLAYERS] = {true, ...};
 #endif
+int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 
 //only used in zr, however, can also be used for other gamemodes incase theres a limit.
 bool b_EnemyNpcWasIndexed[MAXENTITIES][2];
@@ -562,6 +562,18 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
+float f_ArmorHudOffsetX[MAXTF2PLAYERS];
+float f_ArmorHudOffsetY[MAXTF2PLAYERS];
+
+float f_HurtHudOffsetX[MAXTF2PLAYERS];
+float f_HurtHudOffsetY[MAXTF2PLAYERS];
+
+float f_WeaponHudOffsetX[MAXTF2PLAYERS];
+float f_WeaponHudOffsetY[MAXTF2PLAYERS];
+
+float f_NotifHudOffsetX[MAXTF2PLAYERS];
+float f_NotifHudOffsetY[MAXTF2PLAYERS];
+
 #if defined ZR
 int Armor_Level[MAXPLAYERS + 1]={0, ...}; 				//701
 int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
@@ -622,17 +634,6 @@ float f_SemiAutoStats_FireRate[MAXENTITIES];
 int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
 float f_SemiAutoStats_ReloadTime[MAXENTITIES];
 
-float f_ArmorHudOffsetX[MAXTF2PLAYERS];
-float f_ArmorHudOffsetY[MAXTF2PLAYERS];
-
-float f_HurtHudOffsetX[MAXTF2PLAYERS];
-float f_HurtHudOffsetY[MAXTF2PLAYERS];
-
-float f_WeaponHudOffsetX[MAXTF2PLAYERS];
-float f_WeaponHudOffsetY[MAXTF2PLAYERS];
-
-float f_NotifHudOffsetX[MAXTF2PLAYERS];
-float f_NotifHudOffsetY[MAXTF2PLAYERS];
 
 int Current_Mana[MAXTF2PLAYERS];
 float Mana_Regen_Delay[MAXTF2PLAYERS];
