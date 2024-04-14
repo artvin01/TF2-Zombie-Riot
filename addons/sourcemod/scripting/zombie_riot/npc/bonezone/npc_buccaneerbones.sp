@@ -570,6 +570,7 @@ public void Buccaneer_BuffedLogic(BuccaneerBones npc, int closest)
 				
 				f_BuccaneerIntroEnd[npc.index] = gt + 0.5;
 				
+				npc.StopPathing();
 				npc.FaceTowards(targPos, 15000.0);
 			}
 		}
@@ -636,6 +637,7 @@ public void Buccaneer_BuffedLogic(BuccaneerBones npc, int closest)
 				buccaneer_BuffedState[npc.index] = BUCCANEER_IDLE;
 				int iActivity = npc.LookupActivity("ACT_CANNON_IDLE");
 				if(iActivity > 0) npc.StartActivity(iActivity);
+				npc.StartPathing();
 			}
 		}
 	}
@@ -766,7 +768,7 @@ void Buccaneer_ShootProjectile(BuccaneerBones npc, float vicLoc[3], float vel, b
 		Set_Projectile_Collision(entity);
 		See_Projectile_Team(entity);
 		
-		SetEntProp(entity, Prop_Send, "m_nSkin", GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue) ? 0 : 1);
+		SetEntProp(entity, Prop_Send, "m_nSkin", GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue) ? 1 : 0);
 		
 		if (b_BonesBuffed[npc.index])
 		{

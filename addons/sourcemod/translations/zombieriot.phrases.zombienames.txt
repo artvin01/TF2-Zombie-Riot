@@ -938,6 +938,14 @@
 	{
 		"en"		"Bringer of Bones"
 	}
+	"Brigadier Bones"
+	{
+		"en"		"Brigadier Bones"
+	}
+	"Boner Bomber"
+	{
+		"en"		"Boner Bomber"
+	}
 	"Mecha Engineer"
 	{
 		"en"		"Mecha Engineer"
