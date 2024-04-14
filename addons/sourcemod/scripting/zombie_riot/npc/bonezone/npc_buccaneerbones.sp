@@ -1,10 +1,13 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+//TODO: It's really easy to get stuck in the buffed variant, this is probably because the cannon is not part of its bounding box.
+//Figure out a workaround so players can never actually touch the buffed variant.
+
 static float BONES_BUCCANEER_SPEED =  240.0;
 static float BONES_BUCCANEER_SPEED_BUFFED = 140.0;
 static float BUCCANEER_NATURAL_BUFF_CHANCE = 0.05;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
-static float BUCCANEER_NATURAL_BUFF_LEVEL_MODIFIER = 0.2;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
+static float BUCCANEER_NATURAL_BUFF_LEVEL_MODIFIER = 0.15;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float BUCCANEER_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
 #define BONES_BUCCANEER_HP				"6000"
@@ -42,6 +45,7 @@ static float BUFFED_ENTITY_MULT = 3.0;	//Amount to multiply damage dealt to buil
 static float BUFFED_DELAY_MULT = 1.0; //Duration to delay firing the cannon once the firing sequence begins.
 static float BUFFED_SELF_KNOCKBACK = 400.0;	//Self-knockback taken when the cannon fires.
 static float BUFFED_GRAVITY = 0.2;	//Gravity for cannonballs.
+static float BUFFED_RUN_OVER_DAMAGE = 10.0;	//Damage dealt per tick while the cannon is colliding with someone.
 
 #define BONES_BUCCANEER_SCALE					"1.0"
 #define BONES_BUCCANEER_BUFFED_SCALE			"1.2"
@@ -288,6 +292,8 @@ methodmap BuccaneerBones < CClotBody
 		{
 			int iActivity = npc.LookupActivity("ACT_CANNON_IDLE");
 			if(iActivity > 0) npc.StartActivity(iActivity);
+			
+			SDKHook(npc.index, SDKHook_Touch, Cannon_RunOver);
 		}
 		
 		//npc.m_bDoSpawnGesture = true;
@@ -332,6 +338,7 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		Buccaneer_GiveCosmetics(npc, true);
 		DispatchKeyValue(index, "skin", BONES_BUCCANEER_BUFFED_SKIN);
 		npc.m_flNextRangedAttack = GetGameTime() + BONES_BUCCANEER_ATTACKINTERVAL_BUFFED;
+		SDKHook(npc.index, SDKHook_Touch, Cannon_RunOver);
 	}
 	else if (b_BonesBuffed[index] && !buffed)
 	{
@@ -348,9 +355,18 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		DispatchKeyValue(index, "skin", BONES_BUCCANEER_SKIN);
 		buccaneer_BuffedState[npc.index] = BUCCANEER_IDLE;
 		npc.m_flNextRangedAttack = GetGameTime() + BONES_BUCCANEER_ATTACKINTERVAL_BUFFED;
+		SDKUnhook(npc.index, SDKHook_Touch, Cannon_RunOver);
 	}
 	
 	running[npc.index] = false;
+}
+
+public void Cannon_RunOver(int entity, int other)
+{
+	if(IsValidEnemy(entity, other, true, true) && (buccaneer_BuffedState[entity] == BUCCANEER_IDLE || buccaneer_BuffedState[entity] == BUCCANEER_FLYING))
+	{
+		SDKHooks_TakeDamage(other, entity, entity, BUFFED_RUN_OVER_DAMAGE, DMG_CRUSH, -1, _);
+	}
 }
 
 stock void Buccaneer_GiveCosmetics(CClotBody npc, bool buffed)
@@ -591,7 +607,7 @@ public void Buccaneer_BuffedLogic(BuccaneerBones npc, int closest)
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 				GetEntPropVector(npc.index, Prop_Data, "m_vecOrigin", pos);
 				
-				Buccaneer_ShootProjectile(npc, pos, BUFFED_PROJECTILE_SPEED, BUFFED_DAMAGE, true, ang);
+				Buccaneer_ShootProjectile(npc, pos, BUFFED_PROJECTILE_SPEED, true, ang);
 				
 				ang[1] += 180.0;
 				
@@ -674,12 +690,12 @@ public void Buccaneer_NonBuffedLogic(BuccaneerBones npc, int closest)
 			PredictSubjectPositionForProjectiles(npc, closest, BUCCANEER_PROJECTILE_SPEED, _, targPos);
 		}
 		
-		Buccaneer_ShootProjectile(npc, targPos, BUCCANEER_PROJECTILE_SPEED, BUCCANEER_DAMAGE);
+		Buccaneer_ShootProjectile(npc, targPos, BUCCANEER_PROJECTILE_SPEED);
 		npc.m_flNextRangedAttack = gt + BONES_BUCCANEER_ATTACKINTERVAL;
 	}
 }
 
-void Buccaneer_ShootProjectile(BuccaneerBones npc, float vicLoc[3], float vel, float damage, bool useoverride = false, float angoverride[3] = NULL_VECTOR)
+void Buccaneer_ShootProjectile(BuccaneerBones npc, float vicLoc[3], float vel, bool useoverride = false, float angoverride[3] = NULL_VECTOR)
 {
 	int entity = CreateEntityByName("zr_projectile_base");
 			
