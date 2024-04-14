@@ -294,6 +294,11 @@ float f_BackstabHealOverThisDuration[MAXENTITIES];
 float f_BackstabHealTotal[MAXENTITIES];
 float f_BackstabBossDmgPenalty[MAXENTITIES];
 float f_BackstabBossDmgPenaltyNpcTime[MAXENTITIES][MAXTF2PLAYERS];
+float f_HudCooldownAntiSpam[MAXTF2PLAYERS];
+float Damage_dealt_in_total[MAXTF2PLAYERS];
+int Animation_Setting[MAXTF2PLAYERS];
+int Animation_Index[MAXTF2PLAYERS];
+int Animation_Retry[MAXTF2PLAYERS];
 #endif
 
 bool i_HasBeenBackstabbed[MAXENTITIES];
@@ -322,10 +327,9 @@ int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
 
 //bool Wand_Fired;
 
-#if !defined RTS
-float f_HudCooldownAntiSpam[MAXTF2PLAYERS];
-float Damage_dealt_in_total[MAXTF2PLAYERS];
-#endif
+float f_Data_InBattleHudDisableDelay[MAXTF2PLAYERS];
+float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
+float f_InBattleDelay[MAXTF2PLAYERS];
 
 #if defined ZR
 int i_Damage_dealt_in_total[MAXTF2PLAYERS];
@@ -345,8 +349,6 @@ int i_CurrentEquippedPerk[MAXENTITIES];
 int i_CurrentEquippedPerkPreviously[MAXENTITIES];
 int Building_Max_Health[MAXENTITIES]={0, ...};
 int Building_Repair_Health[MAXENTITIES]={0, ...};
-Handle SyncHud_Notifaction;
-Handle SyncHud_WandMana;
 bool IsInsideManageRegularWeapons;
 float DeleteAndRemoveAllNpcs = 5.0;
 
@@ -357,8 +359,10 @@ float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 
 int i_HowManyBombsHud[MAXENTITIES];
-bool b_TauntSpeedIncreace[MAXTF2PLAYERS] = {true, ...};
 #endif
+bool b_TauntSpeedIncreace[MAXTF2PLAYERS] = {true, ...};
+Handle SyncHud_Notifaction;
+Handle SyncHud_WandMana;
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 
 //only used in zr, however, can also be used for other gamemodes incase theres a limit.
@@ -391,12 +395,6 @@ float f_EmpowerStateOther[MAXENTITIES];
 //This is for going through things via lag comp or other reasons to teleport things away.
 //bool Do_Not_Regen_Mana[MAXTF2PLAYERS];;
 bool i_ClientHasCustomGearEquipped[MAXTF2PLAYERS]={false, ...};
-
-#if !defined RTS
-int Animation_Setting[MAXTF2PLAYERS];
-int Animation_Index[MAXTF2PLAYERS];
-int Animation_Retry[MAXTF2PLAYERS];
-#endif
 
 float delay_hud[MAXTF2PLAYERS];
 float f_DelayBuildNotif[MAXTF2PLAYERS];
@@ -614,14 +612,8 @@ int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever e
 bool i_InternalMeleeTrace[MAXENTITIES]; 
 char c_WeaponSoundOverrideString[MAXENTITIES][255];
 float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
-int i_Viewmodel_PlayerModel[MAXENTITIES];
-int i_Worldmodel_WeaponModel[MAXTF2PLAYERS];
 int WeaponRef_viewmodel[MAXTF2PLAYERS];
 int HandRef[MAXTF2PLAYERS];
-int i_OverrideWeaponSlot[MAXENTITIES]={-1, ...};
-int i_MeleeAttackFrameDelay[MAXENTITIES]={12, ...};
-bool b_MeleeCanHeadshot[MAXENTITIES]={false, ...};
-int i_MeleeHitboxHit[MAXENTITIES]={false, ...};
 //float Check_Standstill_Delay[MAXTF2PLAYERS];
 //bool Check_Standstill_Applied[MAXTF2PLAYERS];
 
@@ -664,6 +656,12 @@ char g_GibEating[][] = {
 	"physics/flesh/flesh_squishy_impact_hard4.wav",
 };
 #endif
+int i_Viewmodel_PlayerModel[MAXENTITIES];
+int i_Worldmodel_WeaponModel[MAXTF2PLAYERS];
+int i_OverrideWeaponSlot[MAXENTITIES]={-1, ...};
+int i_MeleeAttackFrameDelay[MAXENTITIES]={12, ...};
+bool b_MeleeCanHeadshot[MAXENTITIES]={false, ...};
+int i_MeleeHitboxHit[MAXENTITIES]={false, ...};
 float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
 int i_WandOwner[MAXENTITIES]; //				//785
 
@@ -1361,9 +1359,9 @@ public void OnPluginStart()
 	RTSCamera_PluginStart();
 #endif
 	
-#if defined ZR
 	SyncHud_Notifaction = CreateHudSynchronizer();
 	SyncHud_WandMana = CreateHudSynchronizer();
+#if defined ZR
 	ZR_PluginStart();
 	KillFeed_PluginStart();
 	Thirdperson_PluginStart();
