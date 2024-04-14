@@ -353,7 +353,6 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 				}
 				
 				Level[entity] = spawn.Level[LOW] + strength;
-				i_CreditsOnKill[entity] = GetScaledRate(spawn.Cash, strength, diff);
 				XP[entity] = GetScaledRate(spawn.XP, strength, diff);
 				b_thisNpcIsABoss[entity] = spawn.Boss;
 
@@ -441,7 +440,7 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 					if((level - 3) < Level[entity] && (level + 3) > Level[entity])
 						GiveXP(client, XP[entity]);
 				}
-
+				/*
 				if(i_CreditsOnKill[entity])
 				{
 					if(i_CreditsOnKill[entity] > 49)
@@ -458,6 +457,7 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 						TextStore_DropCash(target, pos, i_CreditsOnKill[entity] * 5);
 					}
 				}
+				*/
 				
 				spawn.DoAllDrops(target, pos, Level[entity]);
 			}

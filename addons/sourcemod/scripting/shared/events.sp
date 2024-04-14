@@ -377,12 +377,13 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		
 		SetAmmo(client, 1, 9999);
 		SetAmmo(client, 2, 9999);
-		SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
+		SetAmmo(client, Ammo_Metal, 9999);
 		SetAmmo(client, Ammo_Jar, 1);
 		for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
 		{
-			SetAmmo(client, i, CurrentAmmo[client][i]);
+			SetAmmo(client, i, 9999);
 		}
+		//In RPG Ammo is infinite and used in a different way.
 		UpdateLevelAbovePlayerText(client);
 
 		RequestFrame(UpdateHealthFrame, userid);

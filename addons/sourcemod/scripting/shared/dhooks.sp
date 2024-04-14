@@ -11,9 +11,9 @@ enum struct RawHooks
 static DynamicHook ForceRespawn;
 static int ForceRespawnHook[MAXTF2PLAYERS];
 
+static bool IsRespawning;
 #if defined ZR
 static int GetChargeEffectBeingProvided;
-static bool IsRespawning;
 //static bool Disconnecting;
 static DynamicHook g_WrenchSmack;
 //DynamicHook g_ObjStartUpgrading;
@@ -1450,7 +1450,7 @@ void DHook_ClientDisconnectPost()
 }
 */
 
-#if defined ZR
+#if defined ZR || defined RPG
 void DHook_RespawnPlayer(int client)
 {
 	IsRespawning = true;

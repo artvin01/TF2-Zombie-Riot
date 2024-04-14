@@ -1492,7 +1492,6 @@ public Action Dungeon_Timer(Handle timer)
 							if(entity != -1)
 							{
 								Level[entity] = wave.Level;
-								i_CreditsOnKill[entity] = 0;
 								XP[entity] = 0; //No xp will be given on kill.
 								b_thisNpcIsABoss[entity] = wave.Boss;
 								b_NpcIsInADungeon[entity] = true;

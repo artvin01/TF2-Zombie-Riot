@@ -980,7 +980,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			//Decide Damage falloff ourselves.
 #endif
 
-#if !defined RTS
+#if defined ZR || defined NOG
 			OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, _,weapon);
 			VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage, damagetype,i_HexCustomDamageTypes[victim]);
 #endif
@@ -1652,11 +1652,11 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		if(weapon > 0 && attacker > 0)
 			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
 
-#endif
 		if(VausMagicaShieldLogicEnabled(victim))
 			percentage *= 0.25;
 		
 
+#endif
 		
 		if(percentage < 10.0)
 		{
@@ -2346,14 +2346,7 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 #if defined RPG
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_STUNSTICK:
-		{
-			Weapon_TakeDamage_StunStick(victim, damagetype);
-		}
-		case WEAPON_SILENCESTICK:
-		{
-			Weapon_TakeDamage_SilenceStick(victim, attacker, damagetype);
-		}
+
 	}
 #endif
 
@@ -2957,12 +2950,6 @@ bool OnTakeDamageBuildingBonusDamage(int &attacker, int &inflictor, float &damag
 	{
 		if(i_IsABuilding[inflictor])
 		{
-#if defined RPG
-			if(RpgHasSentry(attacker)) //BUFF SENTRIES DUE TO NO PERKS IN ESCAPE!!!
-			{
-				damage = SentryDamageRpg(attacker);
-			}
-#endif
 			if(Increaced_Sentry_damage_Low[inflictor] > GameTime)
 			{
 				damage *= 1.15;

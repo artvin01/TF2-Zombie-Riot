@@ -331,12 +331,13 @@ float f_Data_InBattleHudDisableDelay[MAXTF2PLAYERS];
 float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
 float f_InBattleDelay[MAXTF2PLAYERS];
 
-#if defined ZR
-int i_Damage_dealt_in_total[MAXTF2PLAYERS];
 ConVar CvarRPGInfiniteLevelAndAmmo;
 ConVar CvarXpMultiplier;
 TFClassType CurrentClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 TFClassType WeaponClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
+
+#if defined ZR
+int i_Damage_dealt_in_total[MAXTF2PLAYERS];
 int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
 int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXENTITIES];
@@ -353,13 +354,13 @@ bool IsInsideManageRegularWeapons;
 float DeleteAndRemoveAllNpcs = 5.0;
 
 float f_ModifThirdPersonAttackspeed[MAXENTITIES]={1.0, ...};
-bool b_IsAloneOnServer = false;
 ConVar cvarTimeScale;
 float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 
 int i_HowManyBombsHud[MAXENTITIES];
 #endif
+bool b_IsAloneOnServer = false;
 bool b_TauntSpeedIncreace[MAXTF2PLAYERS] = {true, ...};
 Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;

@@ -118,11 +118,13 @@ public Action OnJoinClass(int client, const char[] command, int args)
 	if(!client)
 		return Plugin_Continue;
 
+#if defined ZR
 	if(TeutonType[client] != TEUTON_NONE)
 		FailedInstachange = true;
 
 	if(dieingstate[client] != 0)
 		FailedInstachange = true;
+#endif
 	
 	if(!IsPlayerAlive(client))
 		FailedInstachange = true;

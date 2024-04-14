@@ -38,6 +38,7 @@ bool b_DungeonContracts_LongerCooldown[MAXTF2PLAYERS];
 bool b_DungeonContracts_SlowerAttackspeed[MAXTF2PLAYERS];
 bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 //bool b_DungeonContracts_BleedOnHit[MAXTF2PLAYERS]; Global inside core.sp
+int i_NpcIsUnderSpawnProtectionInfluence[MAXTF2PLAYERS];
 
 Cookie Niko_Cookies;
 Cookie HudSettings_Cookies;
@@ -45,7 +46,6 @@ Cookie HudSettingsExtra_Cookies;
 
 #include "rpg_fortress/npc.sp"	// Global NPC List
 
-#include "rpg_fortress/ammo.sp"
 #include "rpg_fortress/crafting.sp"
 #include "rpg_fortress/dungeon.sp"
 #include "rpg_fortress/fishing.sp"
@@ -94,7 +94,6 @@ void RPG_PluginStart()
 	HudSettingsExtra_Cookies = new Cookie("zr_hudsettingextra", "hud settings Extra", CookieAccess_Protected);
 	Niko_Cookies = new Cookie("zr_niko", "Are you a niko", CookieAccess_Protected);
 
-	Ammo_PluginStart();
 	Dungeon_PluginStart();
 	Fishing_PluginStart();
 	Games_PluginStart();
@@ -211,7 +210,6 @@ public void OnQueryFinished(QueryCookie cookie, int client, ConVarQueryResult re
 
 void RPG_ClientCookiesCached(int client)
 {
-	Ammo_ClientCookiesCached(client);
 	HudSettings_ClientCookiesCached(client);
 	Stats_ClientCookiesCached(client);
 	ThirdPerson_OnClientCookiesCached(client);
@@ -238,7 +236,6 @@ void RPG_ClientDisconnect(int client)
 	HudSettingsExtra_Cookies.Set(client, buffer);
 
 	UpdateLevelAbovePlayerText(client, true);
-	Ammo_ClientDisconnect(client);
 	Dungeon_ClientDisconnect(client);
 	Fishing_ClientDisconnect(client);
 	Music_ClientDisconnect(client);
