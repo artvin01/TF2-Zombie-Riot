@@ -23,6 +23,9 @@
 
 static float BONES_SAINT_SPEED = 350.0;
 static float BONES_SAINT_SPEED_BUFFED = 400.0;
+static float SAINT_NATURAL_BUFF_CHANCE = 0.00;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
+static float SAINT_NATURAL_BUFF_LEVEL_MODIFIER = 0.0;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
+static float SAINT_NATURAL_BUFF_LEVEL = 0.0;	//The average level at which level_modifier reaches its max.
 
 static float SAINTBONES_HEAL_RANGE = 300.0;
 static float SAINTBONES_HEAL_RANGE_BUFFED = 450.0;
@@ -249,6 +252,33 @@ methodmap SaintBones < CClotBody
 	
 	public SaintBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
 	{
+		if (!buffed)
+		{
+			float chance = SAINT_NATURAL_BUFF_CHANCE;
+			if (SAINT_NATURAL_BUFF_LEVEL_MODIFIER > 0.0)
+			{
+				float total;
+				float players;
+				for (int i = 0; i <= MaxClients; i++)
+				{
+					if (IsClientInGame(i))
+					{
+						total += float(Level[i]);
+						players += 1.0;
+					}
+				}
+				
+				float average = total / players;
+				float mult = average / SAINT_NATURAL_BUFF_LEVEL;
+				if (mult > 1.0)
+					mult = 1.0;
+					
+				chance += (mult * SAINT_NATURAL_BUFF_LEVEL_MODIFIER);
+			}
+			
+			buffed = (GetRandomFloat() <= chance);
+		}
+			
 		SaintBones npc = view_as<SaintBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_SAINT_SCALE_BUFFED : BONES_SAINT_SCALE, buffed ? BONES_SAINT_HP_BUFFED : BONES_SAINT_HP, ally, false));
 		
 		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_SAINTBONES : BONEZONE_SAINTBONES;

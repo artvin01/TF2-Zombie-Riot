@@ -3,6 +3,9 @@
 
 static float BONES_BIG_SPEED = 200.0;
 static float BONES_BIG_SPEED_BUFFED = 250.0;
+static float BIG_NATURAL_BUFF_CHANCE = 0.1;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
+static float BIG_NATURAL_BUFF_LEVEL_MODIFIER = 0.1;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
+static float BIG_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
 #define BONES_BIG_HP		"3000"
 #define BONES_BIG_HP_BUFFED	"15000"
@@ -164,6 +167,33 @@ methodmap BigBones < CClotBody
 	
 	public BigBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
 	{
+		if (!buffed)
+		{
+			float chance = BIG_NATURAL_BUFF_CHANCE;
+			if (BIG_NATURAL_BUFF_LEVEL_MODIFIER > 0.0)
+			{
+				float total;
+				float players;
+				for (int i = 0; i <= MaxClients; i++)
+				{
+					if (IsClientInGame(i))
+					{
+						total += float(Level[i]);
+						players += 1.0;
+					}
+				}
+				
+				float average = total / players;
+				float mult = average / BIG_NATURAL_BUFF_LEVEL;
+				if (mult > 1.0)
+					mult = 1.0;
+					
+				chance += (mult * BIG_NATURAL_BUFF_LEVEL_MODIFIER);
+			}
+			
+			buffed = (GetRandomFloat() <= chance);
+		}
+			
 		BigBones npc = view_as<BigBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BIG_SCALE_BUFFED : BONES_BIG_SCALE, buffed ? BONES_BIG_HP_BUFFED : BONES_BIG_HP, ally, false, true));
 		
 		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_BIGBONES : BONEZONE_BIGBONES;

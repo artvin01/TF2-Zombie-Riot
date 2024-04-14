@@ -3,6 +3,9 @@
 
 static float BONES_BRITTLE_SPEED = 520.0;
 static float BONES_BRITTLE_SPEED_BUFFED = 750.0;
+static float BRITTLE_NATURAL_BUFF_CHANCE = 0.15;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
+static float BRITTLE_NATURAL_BUFF_LEVEL_MODIFIER = 0.15;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
+static float BRITTLE_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
 #define BONES_BRITTLE_HP			"200"
 #define BONES_BRITTLE_HP_BUFFED		"600"
@@ -201,6 +204,33 @@ methodmap BrittleBones < CClotBody
 	
 	public BrittleBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
 	{
+		if (!buffed)
+		{
+			float chance = BRITTLE_NATURAL_BUFF_CHANCE;
+			if (BRITTLE_NATURAL_BUFF_LEVEL_MODIFIER > 0.0)
+			{
+				float total;
+				float players;
+				for (int i = 0; i <= MaxClients; i++)
+				{
+					if (IsClientInGame(i))
+					{
+						total += float(Level[i]);
+						players += 1.0;
+					}
+				}
+				
+				float average = total / players;
+				float mult = average / BRITTLE_NATURAL_BUFF_LEVEL;
+				if (mult > 1.0)
+					mult = 1.0;
+					
+				chance += (mult * BRITTLE_NATURAL_BUFF_LEVEL_MODIFIER);
+			}
+			
+			buffed = (GetRandomFloat() <= chance);
+		}
+			
 		BrittleBones npc = view_as<BrittleBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BRITTLE_SCALE, buffed ? BONES_BRITTLE_HP_BUFFED : BONES_BRITTLE_HP, ally, false));
 		
 		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_BRITTLEBONES : BONEZONE_BRITTLEBONES;

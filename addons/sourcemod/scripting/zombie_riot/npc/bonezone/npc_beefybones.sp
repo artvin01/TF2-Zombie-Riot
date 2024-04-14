@@ -3,6 +3,9 @@
 
 static float BONES_BEEFY_SPEED = 240.0;
 static float BONES_BEEFY_SPEED_BUFFED = 300.0;
+static float BEEFY_NATURAL_BUFF_CHANCE = 0.1;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
+static float BEEFY_NATURAL_BUFF_LEVEL_MODIFIER = 0.15;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
+static float BEEFY_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
 #define BONES_BEEFY_HP			"1500"
 #define BONES_BEEFY_HP_BUFFED	"3000"
@@ -164,6 +167,33 @@ methodmap BeefyBones < CClotBody
 	
 	public BeefyBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
 	{
+		if (!buffed)
+		{
+			float chance = BEEFY_NATURAL_BUFF_CHANCE;
+			if (BEEFY_NATURAL_BUFF_LEVEL_MODIFIER > 0.0)
+			{
+				float total;
+				float players;
+				for (int i = 0; i <= MaxClients; i++)
+				{
+					if (IsClientInGame(i))
+					{
+						total += float(Level[i]);
+						players += 1.0;
+					}
+				}
+				
+				float average = total / players;
+				float mult = average / BEEFY_NATURAL_BUFF_LEVEL;
+				if (mult > 1.0)
+					mult = 1.0;
+					
+				chance += (mult * BEEFY_NATURAL_BUFF_LEVEL_MODIFIER);
+			}
+			
+			buffed = (GetRandomFloat() <= chance);
+		}
+			
 		BeefyBones npc = view_as<BeefyBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BEEFY_SCALE_BUFFED : BONES_BEEFY_SCALE, buffed ? BONES_BEEFY_HP_BUFFED : BONES_BEEFY_HP, ally, false));
 		
 		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_BEEFYBONES : BONEZONE_BEEFYBONES;
