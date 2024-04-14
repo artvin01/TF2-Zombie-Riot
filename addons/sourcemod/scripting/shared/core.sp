@@ -644,7 +644,6 @@ float RollAngle_Regen_Delay[MAXTF2PLAYERS];
 float Mana_Hud_Delay[MAXTF2PLAYERS];
 int i_WandIdNumber[MAXENTITIES]; //This is to see what wand is even used. so it does its own logic and so on.
 
-float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
 int i_NoBonusRange[MAXENTITIES]={0, ...}; 				//410
 int i_BuffBannerPassively[MAXENTITIES]={0, ...}; 				//786
 bool b_BackstabLaugh[MAXENTITIES];
@@ -665,6 +664,7 @@ char g_GibEating[][] = {
 	"physics/flesh/flesh_squishy_impact_hard4.wav",
 };
 #endif
+float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
 int i_WandOwner[MAXENTITIES]; //				//785
 
 

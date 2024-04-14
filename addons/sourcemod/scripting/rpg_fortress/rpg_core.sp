@@ -64,7 +64,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/traffic.sp"
 #include "rpg_fortress/zones.sp"
 #include "rpg_fortress/npc_despawn_zone.sp"
-
+/*
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_lightning_wand.sp"
@@ -80,10 +80,13 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/ground_pound_melee.sp"
 #include "rpg_fortress/custom/weapon_boom_stick.sp"
 #include "rpg_fortress/custom/accesorry_mudrock_shield.sp"
+*/
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
+/*
 #include "rpg_fortress/custom/wand/weapon_arts_wand.sp"
 #include "rpg_fortress/custom/weapon_semi_auto.sp"
 #include "rpg_fortress/custom/wand/weapon_sword_wand.sp"
+*/
 
 void RPG_PluginStart()
 {
@@ -146,9 +149,10 @@ void RPG_PluginEnd()
 
 void RPG_MapStart()
 {
+	Zero2(f3_SpawnPosition);
+	/*
 	HealingPotion_Map_Start();
 	Fishing_OnMapStart();
-	Zero2(f3_SpawnPosition);
 	Wand_Map_Precache();
 	Wand_Fire_Map_Precache();
 	Wand_Lightning_Map_Precache();
@@ -167,6 +171,7 @@ void RPG_MapStart()
 	QuickReflex_MapStart();
 	BeserkerRageGain_Map_Precache();
 	AirCutter_Map_Precache();
+	*/
 
 	
 	CreateTimer(2.0, CheckClientConvars, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -240,8 +245,8 @@ void RPG_ClientDisconnect(int client)
 	Party_ClientDisconnect(client);
 	Stats_ClientDisconnect(client);
 	TextStore_ClientDisconnect(client);
-	MudrockShieldDisconnect(client);
-	BeserkHealthArmorDisconnect(client);
+//	MudrockShieldDisconnect(client);
+//	BeserkHealthArmorDisconnect(client);
 }
 
 void RPG_ClientDisconnect_Post()

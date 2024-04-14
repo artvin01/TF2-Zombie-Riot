@@ -431,11 +431,12 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 stock bool ShouldNpcJumpAtThisClient(int client)
 {
 	bool AllowJump = true;
-
+	/*
 	if(AbilityGroundPoundReturnFloat(client) > GetGameTime())
 	{
 		AllowJump = false;
 	}
+	*/
 	return AllowJump;
 }
 
