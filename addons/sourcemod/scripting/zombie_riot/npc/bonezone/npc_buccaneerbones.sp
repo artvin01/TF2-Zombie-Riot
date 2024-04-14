@@ -13,7 +13,7 @@ static float BUCCANEER_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which 
 #define BONES_BUCCANEER_HP				"6000"
 #define BONES_BUCCANEER_HP_BUFFED			"60000"
 
-//BONY BOMBERS (NON-BUFFED VARIANT):
+//BRIGADIER BONES (NON-BUFFED VARIANT):
 //Walks around holding a Loose Cannon, which it fires at survivors within a given range.
 //As this is a ranged unit, it will try to back off if the nearest enemy is too close.
 static float BONES_BUCCANEER_ATTACKINTERVAL = 3.5;	//Time between non-buffed variant's shots.
@@ -25,16 +25,16 @@ static float BUCCANEER_PROJECTILE_SPEED = 1200.0;	//The speed of non-buffed proj
 static float BUCCANEER_FALLOFF_MULTIHIT = 0.8;	//Multi-hit falloff for non-buffed variant.
 static float BUCCANEER_FALLOFF_RADIUS = 0.8;	//Radius-based falloff for non-buffed variant.
 static float BUCCANEER_ENTITY_MULT = 6.0;		//Amount to multiply damage dealt to buildings.
-static float BUCCANEER_TOO_CLOSE = 200.0;		//Proximity at which Bony Bombers begin to back off.
-static float BUCCANEER_TOO_FAR = 600.0;			//Distance at which Bony Bombers begin to give chase.
-static float BUCCANEER_GRAVITY = 0.66;			//Gravity applied to Bony Bomber projectiles.
+static float BUCCANEER_TOO_CLOSE = 200.0;		//Proximity at which Brigadier Bones begin to back off.
+static float BUCCANEER_TOO_FAR = 600.0;			//Distance at which Brigadier Bones begin to give chase.
+static float BUCCANEER_GRAVITY = 0.66;			//Gravity applied to projectiles.
 
-//BRIGADIER BONES (BUFFED VARIANT):
-//Rides very slowly on a very large wheeled cannon.
+//BONER BOMBER (BUFFED VARIANT):
+//Rides very slowly on a large wheeled cannon.
 //Will occasionally stop and initiate an animation where it commands the cannon to fire. If not killed before this animation ends,
 //the cannon will fire an ENORMOUS cannonball which deals massive damage within a decently large radius. Takes self-knockback upon firing.
 //This unit will NOT try to back off if enemies get too close. Instead, it will simply run people over like a Capped Ram.
-static float BONES_BUCCANEER_ATTACKINTERVAL_BUFFED = 8.0;	//Time between shots.
+static float BONES_BUCCANEER_ATTACKINTERVAL_BUFFED = 5.0;	//Time between shots.
 static float BUFFED_RANGE = 1600.0;	//Range in which shots can be fired.
 static float BUFFED_DAMAGE = 1200.0;	//Damage dealt by cannonballs.
 static float BUFFED_RADIUS = 350.0;		//Cannonball blast radius.
@@ -46,6 +46,7 @@ static float BUFFED_DELAY_MULT = 1.0; //Duration to delay firing the cannon once
 static float BUFFED_SELF_KNOCKBACK = 400.0;	//Self-knockback taken when the cannon fires.
 static float BUFFED_GRAVITY = 0.2;	//Gravity for cannonballs.
 static float BUFFED_RUN_OVER_DAMAGE = 10.0;	//Damage dealt per tick while the cannon is colliding with someone.
+static float BUFFED_RUN_OVER_FLYING = 50.0;	//Damage dealt per tick while the cannon is colliding with someone while flying through the air from self-knockback.
 
 #define BONES_BUCCANEER_SCALE					"1.0"
 #define BONES_BUCCANEER_BUFFED_SCALE			"1.2"
@@ -365,7 +366,7 @@ public void Cannon_RunOver(int entity, int other)
 {
 	if(IsValidEnemy(entity, other, true, true) && (buccaneer_BuffedState[entity] == BUCCANEER_IDLE || buccaneer_BuffedState[entity] == BUCCANEER_FLYING))
 	{
-		SDKHooks_TakeDamage(other, entity, entity, BUFFED_RUN_OVER_DAMAGE, DMG_CRUSH, -1, _);
+		SDKHooks_TakeDamage(other, entity, entity, (buccaneer_BuffedState[entity] == BUCCANEER_FLYING ? BUFFED_RUN_OVER_FLYING : BUFFED_RUN_OVER_DAMAGE), DMG_CRUSH|DMG_ALWAYSGIB, -1, _);
 	}
 }
 
@@ -545,12 +546,15 @@ public void Buccaneer_BuffedLogic(BuccaneerBones npc, int closest)
 		NPC_SetGoalEntity(npc.index, closest);
 		npc.StartPathing();
 		
-		npc.FaceTowards(targPos, 15000.0);
+		//npc.FaceTowards(targPos, 15000.0);
 	}
 	else
 		npc.StopPathing();
 	
 	float gt = GetGameTime(npc.index);
+	
+	//if (buccaneer_BuffedState[npc.index] != BUCCANEER_IDLE && buccaneer_BuffedState[npc.index] != BUCCANEER_FLYING)
+	//	npc.FaceTowards(targPos, 15000.0);
 	
 	switch (buccaneer_BuffedState[npc.index])
 	{
@@ -565,6 +569,8 @@ public void Buccaneer_BuffedLogic(BuccaneerBones npc, int closest)
 				EmitSoundToAll(SOUND_BIGBALL_PREPARE, npc.index, _, 120); 
 				
 				f_BuccaneerIntroEnd[npc.index] = gt + 0.5;
+				
+				npc.FaceTowards(targPos, 15000.0);
 			}
 		}
 		case BUCCANEER_INTRO:
@@ -651,15 +657,25 @@ public void Buccaneer_NonBuffedLogic(BuccaneerBones npc, int closest)
 	}
 	else if (flDistanceToTarget >= BUCCANEER_TOO_FAR)
 	{
-		NPC_SetGoalEntity(npc.index, closest);
-		npc.StartPathing();
+		if (flDistanceToTarget < npc.GetLeadRadius())
+		{
+			float vPredictedPos[3];
+			PredictSubjectPosition(npc, npc.m_iTarget, _, _, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
+		}
+		else
+		{
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.StartPathing();
+		}
 	}
 	else
 	{
 		npc.StopPathing();
+		npc.FaceTowards(targPos, 15000.0);
 	}
 	
-	npc.FaceTowards(targPos, 15000.0);
+	//npc.FaceTowards(targPos, 15000.0);
 	
 	int iPitch = npc.LookupPoseParameter("body_pitch");
 	if(iPitch > 0)
@@ -689,6 +705,8 @@ public void Buccaneer_NonBuffedLogic(BuccaneerBones npc, int closest)
 		{
 			PredictSubjectPositionForProjectiles(npc, closest, BUCCANEER_PROJECTILE_SPEED, _, targPos);
 		}
+		
+		npc.FaceTowards(targPos, 15000.0);
 		
 		Buccaneer_ShootProjectile(npc, targPos, BUCCANEER_PROJECTILE_SPEED);
 		npc.m_flNextRangedAttack = gt + BONES_BUCCANEER_ATTACKINTERVAL;
@@ -846,11 +864,8 @@ public void BuccaneerBones_NPCDeath(int entity)
 		
 	npc.RemoveAllWearables();
 	
-	if (!b_BonesBuffed[npc.index])
-	{
-		DispatchKeyValue(npc.index, "model", "models/zombie_riot/the_bone_zone/basic_bones.mdl");
-		view_as<CBaseCombatCharacter>(npc).SetModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
-	}
+	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
+	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
 	
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

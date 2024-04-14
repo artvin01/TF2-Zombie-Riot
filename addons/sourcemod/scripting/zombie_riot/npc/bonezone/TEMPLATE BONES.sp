@@ -400,9 +400,9 @@ public void NecromancerBones_ClotThink(int iNPC)
 			
 		float flDistanceToTarget = GetVectorDistance(targPos, pos);
 		
-		npc.StartPathing();
+		/*npc.StartPathing();
 		NPC_SetGoalEntity(npc.index, closest);
-		npc.FaceTowards(targPos, 15000.0);
+		npc.FaceTowards(targPos, 15000.0);*/
 	}
 	else
 	{

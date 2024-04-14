@@ -449,7 +449,6 @@ public void Priest_RemoveThunderParticles(int index)
 		RemoveEntity(particle);
 }
 
-//TODO 
 //Skeletal Saints are buff providers and healers.
 //Profaned Priests (the non-buffed variant) heal a single target. They will prioritize non-buffed skeletons who do not already have a healer. Skeletons being healed by a Profaned Priest are transformed into their buffed variant, and will revert to their normal variant when the healing stops, unless they naturally spawned buffed.
 //Skeletal Saints (the buffed variant) provide healing in a radius. All skeletons being healed by this effect are transformed into their buffed counterpart.
@@ -557,6 +556,7 @@ public void Priest_AttemptCast(SaintBones npc, int closest)
 		Priest_GetAngleToPoint(npc.index, start, target, dummy, Priest_BoltAngles[npc.index]);
 	}
 	
+	npc.FaceTowards(otherLoc, 15000.0);
 	npc.m_flAttackHappens = GetGameTime(npc.index) + 0.4;
 	castState[npc.index] = CASTSTATE_INTRO;
 	npc.m_flAttackHappenswillhappen = true;
@@ -981,10 +981,11 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 	}
 	
 	//Only rotate and allow movement if we are not casting our lightning spell.
-	if (castState[npc.index] == CASTSTATE_INACTIVE)
-		npc.FaceTowards(vecTarget, 7500.0);
-	else
+	if (castState[npc.index] != CASTSTATE_INACTIVE)
+	{
 		npc.StopPathing();
+		//npc.FaceTowards(vecTarget, 15000.0);
+	}
 }
 
 public void SaintBones_SaintLogic(SaintBones npc, int closest)
@@ -1142,9 +1143,7 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 	}
 	
 	//Only rotate and allow movement if we are not casting our lightning spell.
-	if (castState[npc.index] == CASTSTATE_INACTIVE)
-		npc.FaceTowards(vecTarget, 7500.0);
-	else
+	if (castState[npc.index] != CASTSTATE_INACTIVE)
 		npc.StopPathing();
 }
 
@@ -1193,6 +1192,9 @@ public void SaintBones_NPCDeath(int entity)
 	npc.RemoveAllWearables();
 	Priest_RemoveThunderParticles(entity);
 	Priest_IsHealing[entity] = false;
+	
+	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
+	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
 	
 	//	AcceptEntityInput(npc.index, "KillHierarchy");
 }

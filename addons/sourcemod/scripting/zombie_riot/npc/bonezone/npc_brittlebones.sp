@@ -519,6 +519,9 @@ public void BrittleBones_NPCDeath(int entity)
 	int particle = EntRefToEntIndex(Brittle_Particle[entity]);
 	if (IsValidEntity(particle))
 		RemoveEntity(particle);
+		
+	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
+	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
 }
 
 

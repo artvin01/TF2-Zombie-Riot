@@ -437,6 +437,9 @@ public void BeefyBones_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	SDKUnhook(entity, SDKHook_Think, BeefyBones_ClotThink);
+	
+	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
+	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
 

@@ -621,7 +621,8 @@ public void NecromancerBones_ClotThink(int iNPC)
 			npc.StopPathing();
 		}
 		
-		npc.FaceTowards(targPos, 15000.0);
+		if (NecroCastState[npc.index] != NECRO_CASTSTATE_INACTIVE)
+			npc.FaceTowards(targPos, 15000.0);
 	}
 	else
 	{
@@ -684,6 +685,9 @@ public void NecromancerBones_NPCDeath(int entity)
 	Necro_DeleteCastParticle(entity);
 		
 	npc.RemoveAllWearables();
+	
+	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
+	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
 

@@ -761,19 +761,20 @@ public void ArchmageBones_ClotThink(int iNPC)
 		case THROWSTATE_INTRO:
 		{
 			Archmage_EndIntro(npc, closest);
+			Archmage_LookAtPoint(npc, closest);
 		}
 		case THROWSTATE_CHARGING:
 		{
 			Archmage_ChargeUp(npc, closest);
+			Archmage_LookAtPoint(npc, closest);
 		}
 		case THROWSTATE_THROWING:
 		{
 			Archmage_CheckLaunch(npc, closest);
 			Archmage_EndThrow(npc, closest);
+			Archmage_LookAtPoint(npc, closest);
 		}
 	}
-	
-	Archmage_LookAtPoint(npc, closest);
 	
 	npc.PlayIdleSound();
 }
@@ -843,6 +844,9 @@ public void ArchmageBones_NPCDeath(int entity)
 		RemoveEntity(particle);
 		
 	npc.RemoveAllWearables();
+	
+	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
+	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
 
