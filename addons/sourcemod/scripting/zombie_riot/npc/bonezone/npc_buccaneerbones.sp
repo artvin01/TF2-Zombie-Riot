@@ -36,8 +36,9 @@ static float BUFFED_PROJECTILE_SPEED = 1800.0;	//Projectile speed.
 static float BUFFED_FALLOFF_MULTIHIT = 0.9;	//Multi-hit falloff for cannonballs.
 static float BUFFED_FALLOFF_RADIUS = 0.66;	//Radius falloff for cannonballs.
 static float BUFFED_ENTITY_MULT = 3.0;	//Amount to multiply damage dealt to buildings.
-static float BUFFED_DELAY_MULT = 5.0; //Amount to multiply the duration of the delay before the cannon fires once its animation begins.
+static float BUFFED_DELAY_MULT = 1.0; //Duration to delay firing the cannon once the firing sequence begins.
 static float BUFFED_SELF_KNOCKBACK = 400.0;	//Self-knockback taken when the cannon fires.
+static float BUFFED_GRAVITY = 0.2;	//Gravity for cannonballs.
 
 #define BONES_BUCCANEER_SCALE					"1.0"
 #define BONES_BUCCANEER_BUFFED_SCALE			"1.2"
@@ -104,6 +105,14 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode3.wav",
 };
 
+enum BuccaneerState {
+	BUCCANEER_IDLE = 0,
+	BUCCANEER_INTRO,
+	BUCCANEER_LOOP,
+	BUCCANEER_FIRING,
+	BUCCANEER_FLYING
+}
+
 static bool b_BonesBuffed[MAXENTITIES];
 static bool running[MAXENTITIES];
 
@@ -113,9 +122,17 @@ static float f_CannonballFalloff_MultiHit[MAXENTITIES];
 static float f_CannonballFalloff_Radius[MAXENTITIES];
 static float f_Cannonball_EntMult[MAXENTITIES];
 
+static BuccaneerState buccaneer_BuffedState[MAXENTITIES];
+
 #define SOUND_CANNONBALL_SHOOT		")weapons/loose_cannon_shoot.wav"
 #define SOUND_CANNONBALL_EXPLODE	")weapons/loose_cannon_explode.wav"
 #define PARTICLE_CANNONBALL_EXPLODE	"ExplosionCore_MidAir_underwater"
+
+#define PARTICLE_BIGBALL_EXPLODE	"hightower_explosion"
+#define SOUND_BIGBALL_EXPLODE	")misc/doomsday_missile_explosion.wav"
+#define SOUND_BUFFEDBOMB_LAUNCH	")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
+#define SOUND_BIGBALL_PREPARE	")vo/halloween_boss/knight_alert02.mp3"
+#define SOUND_BIGBALL_FIRE		")vo/halloween_boss/knight_attack01.mp3"
 
 public void BuccaneerBones_OnMapStart_NPC()
 {
@@ -133,6 +150,10 @@ public void BuccaneerBones_OnMapStart_NPC()
 	PrecacheModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
 	PrecacheSound(SOUND_CANNONBALL_SHOOT);
 	PrecacheSound(SOUND_CANNONBALL_EXPLODE);
+	PrecacheSound(SOUND_BIGBALL_EXPLODE);
+	PrecacheSound(SOUND_BUFFEDBOMB_LAUNCH);
+	PrecacheSound(SOUND_BIGBALL_PREPARE);
+	PrecacheSound(SOUND_BIGBALL_FIRE);
 }
 
 methodmap BuccaneerBones < CClotBody
@@ -280,6 +301,7 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		npc.m_flSpeed = BONES_BUCCANEER_SPEED_BUFFED;
 		Buccaneer_GiveCosmetics(npc, true);
 		DispatchKeyValue(index, "skin", BONES_BUCCANEER_BUFFED_SKIN);
+		npc.m_flNextRangedAttack = GetGameTime() + BONES_BUCCANEER_ATTACKINTERVAL_BUFFED;
 	}
 	else if (b_BonesBuffed[index] && !buffed)
 	{
@@ -294,6 +316,8 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		npc.m_flSpeed = BONES_BUCCANEER_SPEED;
 		Buccaneer_GiveCosmetics(npc, false);
 		DispatchKeyValue(index, "skin", BONES_BUCCANEER_SKIN);
+		buccaneer_BuffedState[npc.index] = BUCCANEER_IDLE;
+		npc.m_flNextRangedAttack = GetGameTime() + BONES_BUCCANEER_ATTACKINTERVAL_BUFFED;
 	}
 	
 	running[npc.index] = false;
@@ -433,7 +457,7 @@ public void BuccaneerBones_ClotThink(int iNPC)
 	{
 		if (b_BonesBuffed[npc.index])
 		{
-			//TODO: Buffed logic
+			Buccaneer_BuffedLogic(npc, closest);
 		}
 		else
 		{
@@ -456,6 +480,113 @@ public void BuccaneerBones_ClotThink(int iNPC)
 	}
 	
 	npc.PlayIdleSound();
+}
+
+static float f_BuccaneerIntroEnd[MAXENTITIES];
+static float f_BuccaneerLoopEnd[MAXENTITIES];
+static float f_BuccaneerFireEnd[MAXENTITIES];
+
+public void Buccaneer_BuffedLogic(BuccaneerBones npc, int closest)
+{
+	float pos[3], targPos[3]; 
+	WorldSpaceCenter(npc.index, pos);
+	WorldSpaceCenter(closest, targPos);
+			
+	float flDistanceToTarget = GetVectorDistance(targPos, pos);
+		
+	if (buccaneer_BuffedState[npc.index] == BUCCANEER_IDLE)
+	{
+		NPC_SetGoalEntity(npc.index, closest);
+		npc.StartPathing();
+		
+		npc.FaceTowards(targPos, 15000.0);
+	}
+	else
+		npc.StopPathing();
+	
+	float gt = GetGameTime(npc.index);
+	
+	switch (buccaneer_BuffedState[npc.index])
+	{
+		case BUCCANEER_IDLE:
+		{
+			if (gt >= npc.m_flNextRangedAttack && flDistanceToTarget <= BUFFED_RANGE && Can_I_See_Enemy(npc.index, closest) && GetEntityFlags(npc.index) & FL_ONGROUND != 0)
+			{
+				int iActivity = npc.LookupActivity("ACT_CANNON_FIRE_INTRO");
+				if(iActivity > 0) npc.StartActivity(iActivity);
+				
+				buccaneer_BuffedState[npc.index] = BUCCANEER_INTRO;
+				EmitSoundToAll(SOUND_BIGBALL_PREPARE, npc.index, _, 120); 
+				
+				f_BuccaneerIntroEnd[npc.index] = gt + 0.5;
+			}
+		}
+		case BUCCANEER_INTRO:
+		{
+			if (gt >= f_BuccaneerIntroEnd[npc.index])
+			{
+				if (BUFFED_DELAY_MULT > 0.0)
+				{
+					f_BuccaneerLoopEnd[npc.index] = gt + BUFFED_DELAY_MULT;
+					int iActivity = npc.LookupActivity("ACT_CANNON_FIRE_LOOP");
+					if(iActivity > 0) npc.StartActivity(iActivity);
+					buccaneer_BuffedState[npc.index] = BUCCANEER_LOOP;
+				}
+				else
+				{
+					f_BuccaneerFireEnd[npc.index] = gt + 0.5;
+					int iActivity = npc.LookupActivity("ACT_CANNON_FIRE_ACTIVATION");
+					if(iActivity > 0) npc.StartActivity(iActivity);
+					buccaneer_BuffedState[npc.index] = BUCCANEER_FIRING;
+				}
+			}
+		}
+		case BUCCANEER_LOOP:
+		{
+			if (gt >= f_BuccaneerLoopEnd[npc.index])
+			{
+				npc.RemoveGesture("ACT_CANNON_FIRE_LOOP");
+				f_BuccaneerFireEnd[npc.index] = gt + 0.5;
+				int iActivity = npc.LookupActivity("ACT_CANNON_FIRE_ACTIVATION");
+				if(iActivity > 0) npc.StartActivity(iActivity);
+				buccaneer_BuffedState[npc.index] = BUCCANEER_FIRING;
+				EmitSoundToAll(SOUND_BIGBALL_FIRE, npc.index, _, 140); 
+			}
+		}
+		case BUCCANEER_FIRING:
+		{
+			if (gt >= f_BuccaneerFireEnd[npc.index])
+			{	
+				float ang[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+				GetEntPropVector(npc.index, Prop_Data, "m_vecOrigin", pos);
+				
+				Buccaneer_ShootProjectile(npc, pos, BUFFED_PROJECTILE_SPEED, BUFFED_DAMAGE, true, ang);
+				
+				ang[1] += 180.0;
+				
+				GetPointFromAngles(pos, ang, BUFFED_SELF_KNOCKBACK, pos, Priest_IgnoreAll, MASK_SHOT);
+				
+				PluginBot_Jump(npc.index, pos);
+				
+				int iActivity = npc.LookupActivity("ACT_CANNON_KB_POSE");
+				if(iActivity > 0) npc.StartActivity(iActivity);
+				buccaneer_BuffedState[npc.index] = BUCCANEER_FLYING;
+				npc.m_flNextRangedAttack = gt + BONES_BUCCANEER_ATTACKINTERVAL_BUFFED;
+				
+				EmitSoundToAll(SOUND_BUFFEDBOMB_LAUNCH, npc.index, _, 120);
+			}
+		}
+		case BUCCANEER_FLYING:
+		{
+			if (GetEntityFlags(npc.index) & FL_ONGROUND != 0)
+			{
+				buccaneer_BuffedState[npc.index] = BUCCANEER_IDLE;
+				int iActivity = npc.LookupActivity("ACT_CANNON_IDLE");
+				if(iActivity > 0) npc.StartActivity(iActivity);
+			}
+		}
+	}
 }
 
 public void Buccaneer_NonBuffedLogic(BuccaneerBones npc, int closest)
@@ -518,7 +649,7 @@ public void Buccaneer_NonBuffedLogic(BuccaneerBones npc, int closest)
 	}
 }
 
-public void Buccaneer_ShootProjectile(BuccaneerBones npc, float vicLoc[3], float vel, float damage)
+void Buccaneer_ShootProjectile(BuccaneerBones npc, float vicLoc[3], float vel, float damage, bool useoverride = false, float angoverride[3] = NULL_VECTOR)
 {
 	int entity = CreateEntityByName("zr_projectile_base");
 			
@@ -529,13 +660,28 @@ public void Buccaneer_ShootProjectile(BuccaneerBones npc, float vicLoc[3], float
 
 		GetAbsOrigin(npc.index, vecSwingStart);
 		vecSwingStart[2] += 54.0;
-
-		MakeVectorFromPoints(vecSwingStart, vicLoc, vecAngles);
-		GetVectorAngles(vecAngles, vecAngles);
 		
-		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*vel;
-		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*vel;
-		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-vel;
+		if (useoverride)
+			vecAngles = angoverride;
+
+		if (!b_BonesBuffed[npc.index])
+		{
+			MakeVectorFromPoints(vecSwingStart, vicLoc, vecAngles);
+			GetVectorAngles(vecAngles, vecAngles);
+		
+			vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*vel;
+			vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*vel;
+			vecForward[2] = Sine(DegToRad(vecAngles[0]))*-vel;
+		}
+		else
+		{
+			float buffer[3];
+			GetAngleVectors(vecAngles, buffer, NULL_VECTOR, NULL_VECTOR);
+			
+			vecForward[0] = buffer[0] * vel;
+			vecForward[1] = buffer[1] * vel;
+			vecForward[2] = buffer[2] * vel;
+		}
 		
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
@@ -560,9 +706,11 @@ public void Buccaneer_ShootProjectile(BuccaneerBones npc, float vicLoc[3], float
 		
 		if (b_BonesBuffed[npc.index])
 		{
-			//g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Archmage_Explode);
-			//Archmage_AttachParticle(entity, PARTICLE_ARCHMAGE_FIREBALL_BUFFED, _, "");
-			DispatchKeyValueFloat(entity, "modelscale", 4.0);
+			SDKHook(entity, SDKHook_Touch, Buccaneer_BigBallTouch);
+			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Buccaneer_DontExplode);
+			DispatchKeyValueFloat(entity, "modelscale", 1.75);
+			SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
+			SetEntityGravity(entity, BUFFED_GRAVITY);
 			
 			f_CannonballRadius[entity] = BUFFED_RADIUS;
 			f_CannonballDMG[entity] = BUFFED_DAMAGE;
@@ -594,6 +742,21 @@ public Action Buccaneer_CannonballTouch(int entity, int other)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 	ParticleEffectAt(position, PARTICLE_CANNONBALL_EXPLODE, 2.0);
 	EmitSoundToAll(SOUND_CANNONBALL_EXPLODE, entity, _);
+	
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+	Explode_Logic_Custom(f_CannonballDMG[entity], IsValidEntity(owner) ? owner : entity, entity, entity, position, f_CannonballRadius[entity], f_CannonballFalloff_MultiHit[entity], f_CannonballFalloff_Radius[entity], isBlue, _, _, f_Cannonball_EntMult[entity]);
+	
+	RemoveEntity(entity);
+	return Plugin_Handled; //DONT.
+}
+
+public Action Buccaneer_BigBallTouch(int entity, int other)
+{
+	float position[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	ParticleEffectAt(position, PARTICLE_BIGBALL_EXPLODE, 2.0);
+	EmitSoundToAll(SOUND_BIGBALL_EXPLODE, entity, _, 120);
 	
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
