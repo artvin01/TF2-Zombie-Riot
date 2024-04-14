@@ -174,7 +174,7 @@ methodmap BeefyBones < CClotBody
 			{
 				float total;
 				float players;
-				for (int i = 0; i <= MaxClients; i++)
+				for (int i = 1; i <= MaxClients; i++)
 				{
 					if (IsClientInGame(i))
 					{
