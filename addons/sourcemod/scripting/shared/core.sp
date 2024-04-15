@@ -348,8 +348,6 @@ float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 int i_CurrentEquippedPerk[MAXENTITIES];
 int i_CurrentEquippedPerkPreviously[MAXENTITIES];
-int Building_Max_Health[MAXENTITIES]={0, ...};
-int Building_Repair_Health[MAXENTITIES]={0, ...};
 bool IsInsideManageRegularWeapons;
 float DeleteAndRemoveAllNpcs = 5.0;
 
@@ -360,6 +358,10 @@ int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 
 int i_HowManyBombsHud[MAXENTITIES];
 #endif
+
+int Building_Max_Health[MAXENTITIES]={0, ...};
+int Building_Repair_Health[MAXENTITIES]={0, ...};
+
 bool b_IsAloneOnServer = false;
 bool b_TauntSpeedIncreace[MAXTF2PLAYERS] = {true, ...};
 Handle SyncHud_Notifaction;
@@ -611,7 +613,6 @@ float f_WandDamage[MAXENTITIES]; //
 int i_WandWeapon[MAXENTITIES]; //
 int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever ever. lag max otherwise.
 bool i_InternalMeleeTrace[MAXENTITIES]; 
-char c_WeaponSoundOverrideString[MAXENTITIES][255];
 float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
 //float Check_Standstill_Delay[MAXTF2PLAYERS];
 //bool Check_Standstill_Applied[MAXTF2PLAYERS];
@@ -655,6 +656,7 @@ char g_GibEating[][] = {
 	"physics/flesh/flesh_squishy_impact_hard4.wav",
 };
 #endif
+char c_WeaponSoundOverrideString[MAXENTITIES][255];
 int WeaponRef_viewmodel[MAXTF2PLAYERS];
 int HandRef[MAXTF2PLAYERS];
 int i_Viewmodel_PlayerModel[MAXENTITIES];
@@ -793,7 +795,7 @@ Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
 Handle g_hGetAttachment;
 Handle g_hResetSequenceInfo;
-#if defined ZR
+#if defined ZR || defined RPG
 Handle g_hLookupBone;
 Handle g_hGetBonePosition;
 DynamicHook g_DHookMedigunPrimary; 
