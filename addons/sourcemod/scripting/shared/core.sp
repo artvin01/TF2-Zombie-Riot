@@ -1494,6 +1494,7 @@ public void OnMapStart()
 	PrecacheSound("physics/metal/metal_box_impact_bullet1.wav");
 	PrecacheSound("physics/metal/metal_box_impact_bullet2.wav");
 	PrecacheSound("physics/metal/metal_box_impact_bullet3.wav");
+	PrecacheSound("npc/assassin/ball_zap1.wav");
 	PrecacheSound("misc/halloween/spell_overheal.wav");
 	PrecacheSound("weapons/gauss/fire1.wav");
 	PrecacheSound("items/powerup_pickup_knockout_melee_hit.wav");

@@ -312,6 +312,7 @@ int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...};
 int Armour_Level_Current[MAXTF2PLAYERS];
 int Armor_Charge[MAXENTITIES];
 int Armor_DebuffType[MAXENTITIES];
+float f_Armor_BreakSoundDelay[MAXENTITIES];
 
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
@@ -842,6 +843,7 @@ void ZR_ClientPutInServer(int client)
 	i_Backstabs[client] = 0;
 	i_Headshots[client] = 0;
 	Armor_Charge[client] = 0;
+	f_Armor_BreakSoundDelay[client] = 0.0;
 	Doing_Handle_Mount[client] = false;
 	b_Doing_Buildingpickup_Handle[client] = false;
 	g_CarriedDispenser[client] = INVALID_ENT_REFERENCE;
