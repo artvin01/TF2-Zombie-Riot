@@ -394,6 +394,7 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 
 	static char buffer[64];
 	item.GetString("type", buffer, sizeof(buffer));
+	/*
 	if(!StrContains(buffer, "ammo", false))
 	{
 		int type = item.GetNum("ammo");
@@ -403,7 +404,7 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 		CurrentAmmo[client][type] = ammo;
 		return Item_Used;
 	}
-
+	*/
 	if(!StrContains(buffer, "custom", false))
 	{
 		ItemResult result = Item_None;
@@ -521,7 +522,7 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 					value[i] = StringToFloat(buffers[i*2+1]);
 				}
 				
-				Ammo_DescItem(kv, desc);
+			//	Ammo_DescItem(kv, desc);
 				Mining_DescItem(kv, desc, attrib, value, count);
 				Fishing_DescItem(kv, desc, attrib, value, count);
 				Stats_DescItem(desc, attrib, value, count);

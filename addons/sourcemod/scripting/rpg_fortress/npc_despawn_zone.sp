@@ -3,7 +3,7 @@
 
 void NPC_Despawn_Zone(int entity, const char[] name)
 {
-	if(!b_IsAlliedNpc[entity])
+	if(GetTeam(entity) != TFTeam_Red)
 	{
 		if(StrEqual("rpg_despawn_zombie", name))
 		{

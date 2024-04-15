@@ -622,8 +622,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					}
 					
 				}
+#if defined ZR
 				SetAmmo(owner, 21, new_ammo);
 				CurrentAmmo[owner][21] = GetAmmo(owner, 21);
+#endif
 			}
 			if(medigun_hud_delay[owner] < GetGameTime())
 			{
@@ -691,8 +693,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				}
 				new_ammo -= 6;
 
+#if defined ZR
 				SetAmmo(owner, 22, new_ammo);
 				CurrentAmmo[owner][22] = GetAmmo(owner, 22);
+#endif				
 				if(medigun_hud_delay[owner] < GetGameTime())
 				{
 					if(!gb_medigun_on_reload[owner])

@@ -339,12 +339,7 @@ TFClassType WeaponClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 #if defined ZR
 int i_Damage_dealt_in_total[MAXTF2PLAYERS];
 int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
-int i_SemiAutoWeapon[MAXENTITIES];
-int i_SemiAutoWeapon_AmmoCount[MAXENTITIES];
-bool i_WeaponCannotHeadshot[MAXENTITIES];
-float i_WeaponDamageFalloff[MAXENTITIES];
 float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
-float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 int i_CurrentEquippedPerk[MAXENTITIES];
 int i_CurrentEquippedPerkPreviously[MAXENTITIES];
@@ -358,7 +353,14 @@ int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 
 int i_HowManyBombsHud[MAXENTITIES];
 #endif
-
+bool i_WeaponCannotHeadshot[MAXENTITIES];
+float i_WeaponDamageFalloff[MAXENTITIES];
+int i_SemiAutoWeapon[MAXENTITIES];
+int i_SemiAutoWeapon_AmmoCount[MAXENTITIES];
+ConVar CvarInfiniteCash;
+float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
+int i_PlayerModelOverrideIndexWearable[MAXTF2PLAYERS];
+bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
 int Building_Max_Health[MAXENTITIES]={0, ...};
 int Building_Repair_Health[MAXENTITIES]={0, ...};
 
@@ -602,17 +604,9 @@ bool b_BobsTrueFear[MAXTF2PLAYERS];
 float f_ArmorCurrosionImmunity[MAXENTITIES];
 int i_nm_body_client[MAXTF2PLAYERS];
 Handle g_hRecalculatePlayerBodygroups;
-float Mana_Regen_Level[MAXPLAYERS]={0.0, ...};				//405
-int i_SurvivalKnifeCount[MAXENTITIES]={0, ...}; 				//33
-int i_GlitchedGun[MAXENTITIES]={0, ...}; 				//731
-int i_AresenalTrap[MAXENTITIES]={0, ...}; 				//719
-int i_ArsenalBombImplanter[MAXENTITIES]={0, ...}; 				//544
-int i_LowTeslarStaff[MAXENTITIES]={0, ...}; 				//3002
-int i_HighTeslarStaff[MAXENTITIES]={0, ...}; 				//3000
 float f_WandDamage[MAXENTITIES]; //
 int i_WandWeapon[MAXENTITIES]; //
 int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever ever. lag max otherwise.
-bool i_InternalMeleeTrace[MAXENTITIES]; 
 float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
 //float Check_Standstill_Delay[MAXTF2PLAYERS];
 //bool Check_Standstill_Applied[MAXTF2PLAYERS];
@@ -620,11 +614,7 @@ float f_CooldownForHurtHud_Ally[MAXPLAYERS];
 float max_mana[MAXTF2PLAYERS];
 float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
-int i_StickyAccessoryLogicItem[MAXTF2PLAYERS]; //Item for stickies like "no bounce"
 
-float f_SemiAutoStats_FireRate[MAXENTITIES];
-int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
-float f_SemiAutoStats_ReloadTime[MAXENTITIES];
 
 
 int Current_Mana[MAXTF2PLAYERS];
@@ -636,10 +626,6 @@ float RollAngle_Regen_Delay[MAXTF2PLAYERS];
 float Mana_Hud_Delay[MAXTF2PLAYERS];
 int i_WandIdNumber[MAXENTITIES]; //This is to see what wand is even used. so it does its own logic and so on.
 
-int i_NoBonusRange[MAXENTITIES]={0, ...}; 				//410
-int i_BuffBannerPassively[MAXENTITIES]={0, ...}; 				//786
-bool b_BackstabLaugh[MAXENTITIES];
-float played_headshotsound_already [MAXTF2PLAYERS];
 
 int played_headshotsound_already_Case [MAXTF2PLAYERS];
 int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
@@ -656,6 +642,23 @@ char g_GibEating[][] = {
 	"physics/flesh/flesh_squishy_impact_hard4.wav",
 };
 #endif
+float f_SemiAutoStats_FireRate[MAXENTITIES];
+int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
+float f_SemiAutoStats_ReloadTime[MAXENTITIES];
+float Mana_Regen_Level[MAXPLAYERS]={0.0, ...};				//405
+int i_SurvivalKnifeCount[MAXENTITIES]={0, ...}; 				//33
+int i_GlitchedGun[MAXENTITIES]={0, ...}; 				//731
+int i_AresenalTrap[MAXENTITIES]={0, ...}; 				//719
+int i_ArsenalBombImplanter[MAXENTITIES]={0, ...}; 				//544
+int i_LowTeslarStaff[MAXENTITIES]={0, ...}; 				//3002
+int i_HighTeslarStaff[MAXENTITIES]={0, ...}; 				//3000
+int i_NoBonusRange[MAXENTITIES]={0, ...}; 				//410
+int i_BuffBannerPassively[MAXENTITIES]={0, ...}; 				//786
+bool b_BackstabLaugh[MAXENTITIES];
+float played_headshotsound_already [MAXTF2PLAYERS];
+int i_IsAloneWeapon[MAXENTITIES];
+bool i_InternalMeleeTrace[MAXENTITIES]; 
+int i_StickyAccessoryLogicItem[MAXTF2PLAYERS]; //Item for stickies like "no bounce"
 char c_WeaponSoundOverrideString[MAXENTITIES][255];
 int WeaponRef_viewmodel[MAXTF2PLAYERS];
 int HandRef[MAXTF2PLAYERS];

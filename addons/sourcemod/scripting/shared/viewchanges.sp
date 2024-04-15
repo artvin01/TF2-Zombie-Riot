@@ -391,6 +391,8 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 		entity = CreateEntityByName("tf_wearable_vm");
 		if(entity > MaxClients)
 		{
+			int hand_index = view_as<int>(class);
+			
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[hand_index]);
 			SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", GetClientTeam(client));

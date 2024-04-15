@@ -1195,7 +1195,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		return;
 	}
 
-	MudrockShieldUnequip(client);
 	OverridePlayerModel(client, 0, false);
 
 	//stickies can stay, we delete any non spike stickies.

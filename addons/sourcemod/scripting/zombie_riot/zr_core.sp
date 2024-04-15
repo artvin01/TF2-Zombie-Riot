@@ -208,7 +208,6 @@ ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
 ConVar zr_smallmapbalancemulti;
 ConVar CvarNoRoundStart;
-ConVar CvarInfiniteCash;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_spawnprotectiontime;
 ConVar zr_viewshakeonlowhealth;
@@ -274,8 +273,6 @@ int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 int i_MaxArmorTableUsed[MAXTF2PLAYERS];
-int i_PlayerModelOverrideIndexWearable[MAXTF2PLAYERS];
-bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
 
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
