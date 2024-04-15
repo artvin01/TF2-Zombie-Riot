@@ -369,6 +369,16 @@ stock void KvGetTranslation(KeyValues kv, const char[] string, char[] buffer, in
 	}
 }
 
+stock Function KvGetFunction(KeyValues kv, const char[] string, Function defaul = INVALID_FUNCTION)
+{
+	char buffer[64];
+	kv.GetString(string, buffer, sizeof(buffer));
+	if(buffer[0])
+		return GetFunctionByName(null, buffer);
+
+	return defaul;
+}
+
 static bool i_PreviousInteractedEntityDo[MAXENTITIES];
 
 stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool ignore_allied_npc = false, bool mask_shot = false, float vecEndOrigin[3] = {0.0, 0.0, 0.0}, int repeatsretry = 2)

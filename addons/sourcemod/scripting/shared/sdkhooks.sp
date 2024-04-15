@@ -56,7 +56,7 @@ void SDKHook_MapStart()
 	Armor_WearableModelIndex = PrecacheModel("models/effects/resist_shield/resist_shield.mdl", true);
 #endif
 
-#if defined ZR
+#if defined ZR || defined RPG
 	int entity = FindEntityByClassname(-1, "tf_player_manager");
 	if(entity != -1)
 		SDKHook(entity, SDKHook_ThinkPost, SDKHook_ScoreThink);
@@ -64,7 +64,7 @@ void SDKHook_MapStart()
 }
 
 
-#if defined ZR
+#if defined ZR || defined RPG
 public void SDKHook_ScoreThink(int entity)
 {
 	static int offset = -1;
@@ -132,7 +132,7 @@ public void SDKHook_ScoreThink(int entity)
 
 stock void SDKHook_HookClient(int client)
 {
-#if defined ZR
+#if defined ZR || defined RPG
 	SDKUnhook(client, SDKHook_PreThinkPost, OnPreThinkPost);
 	SDKHook(client, SDKHook_PreThinkPost, OnPreThinkPost);
 	SDKUnhook(client, SDKHook_PostThink, OnPostThink);
@@ -157,7 +157,7 @@ stock void SDKHook_HookClient(int client)
 #endif
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 public void OnPreThinkPost(int client)
 {
 	if(b_NetworkedCrouch[client])
@@ -218,7 +218,7 @@ public void OnPostThink_OnlyHurtHud(int client)
 
 #endif
 
-#if defined ZR
+#if defined ZR || defined RPG
 public void OnPostThink(int client)
 {
 	float GameTime = GetGameTime();
@@ -648,7 +648,7 @@ public void OnPostThink(int client)
 				had_An_ability = true;
 				IsReady = false;
 			}
-			
+#if defined ZR
 			if(GetAbilitySlotCount(client) > 0)
 			{
 				cooldown_time = GetAbilityCooldownM3(client);
@@ -709,18 +709,21 @@ public void OnPostThink(int client)
 				HudY -= 0.035;
 				Format(buffer, sizeof(buffer), "%s\n", buffer);
 			}
-
+#endif
 			float percentage = 100.0;
 			float percentage_Global = 1.0;
 			float value = 1.0;
 
+#if defined ZR
 			percentage_Global *= ArmorPlayerReduction(client);
 			percentage_Global *= Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(client, weapon);
+#endif
 			
 			if(IsInvuln(client, true) || f_ClientInvul[client] > GetGameTime())
 			{
 				percentage_Global = 0.0;
 			}
+#if defined ZR
 			else if(RaidbossIgnoreBuildingsLogic(1))
 			{
 				if(TF2_IsPlayerInCondition(client, TFCond_Ubercharged))
@@ -728,6 +731,7 @@ public void OnPostThink(int client)
 					percentage_Global *= 0.5;
 				}
 			}
+#endif
 			else
 			{
 				if(TF2_IsPlayerInCondition(client, TFCond_Ubercharged))
@@ -817,6 +821,7 @@ public void OnPostThink(int client)
 				Format(buffer, sizeof(buffer), "%s\n", buffer);
 			}
 			had_An_ability = false;
+#if defined ZR
 			switch(ClientHasBannersWithCD(client))
 			{
 				case BuffBanner,Battilons,AncientBanner:
@@ -851,13 +856,16 @@ public void OnPostThink(int client)
 				int ammo = GetEntData(TaurusInt, iAmmoTable, 4);//Get ammo clip
 				FormatEx(buffer, sizeof(buffer), "%s [T %i/%i]",buffer, ammo, TaurusMaxAmmo());
 			}
+#endif
 		}
 		 
 		int red = 200;
 		int green = 200;
 		int blue = 200;
-		
+
+#if defined ZR
 		if(has_mage_weapon[client])
+#endif
 		{
 			red = 255;
 			green = 0;
@@ -867,7 +875,7 @@ public void OnPostThink(int client)
 				HudY -= 0.035;
 				Format(buffer, sizeof(buffer), "%s\n", buffer);
 			}
-			
+#if defined ZR
 			if(Current_Mana[client] < max_mana[client])
 			{
 				red = Current_Mana[client] * 255  / (RoundToFloor(max_mana[client]) + 1); //DO NOT DIVIDE BY 0
@@ -895,7 +903,6 @@ public void OnPostThink(int client)
 				green 	= 200;
 				blue	= 200;
 
-				#if defined ZR
 				float OverMana_Ratio = Current_Mana[client]/max_mana[client];
 
 				if(OverMana_Ratio > 1.05)
@@ -922,11 +929,10 @@ public void OnPostThink(int client)
 						blue	= 0;
 					}
 				}
-				#endif	//ZR
 
 			}
-			
-			
+#endif
+
 			for(int i=1; i<21; i++)
 			{
 				if(Current_Mana[client] >= max_mana[client]*(i*0.05))
@@ -949,13 +955,18 @@ public void OnPostThink(int client)
 				
 			SetGlobalTransTarget(client);
 			
+#if defined ZR
 			Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
+#elseif defined RPG
+			Format(buffer, sizeof(buffer), "%t\n%s", "Capacity", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
+#endif
 		}
 
 		had_An_ability = false;
 		char bufferbuffs[64];
 		//BUFFS!
 
+#if defined ZR
 		if(Wands_Potions_HasBuff(client))
 		{
 			had_An_ability = true;
@@ -1000,6 +1011,7 @@ public void OnPostThink(int client)
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "i%s", bufferbuffs);
 		}
+#endif
 
 		if(Increaced_Overall_damage_Low[client] > GameTime)
 		{
@@ -1070,6 +1082,7 @@ public void OnPostThink(int client)
 		RPG_UpdateHud(client);
 #endif
 
+#if defined ZR
 		UpdatePlayerPoints(client);
 
 		if(LastMann || dieingstate[client] > 0)
@@ -1382,7 +1395,9 @@ public void OnPostThink(int client)
 		SetEntProp(client, Prop_Send, "m_iHideHUD", GetEntProp(client, Prop_Send, "m_iHideHUD") | HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN);
 		if(HudBuffer[0])
 			PrintKeyHintText(client,"%s", HudBuffer);
+#endif
 	}
+#if defined ZR
 	else if(f_DelayLookingAtHud[client] < GameTime)
 	{
 		//Reuse uhh
@@ -1405,6 +1420,7 @@ public void OnPostThink(int client)
 	}
 	
 	Music_PostThink(client);
+#endif
 }
 
 public void OnPostThinkPost(int client)
@@ -2144,7 +2160,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 #endif
 	}
 
-#if defined ZR
+#if defined ZR || defined RPG
 	Store_WeaponSwitch(client, weapon);
 	RequestFrame(OnWeaponSwitchFrame, GetClientUserId(client));
 #endif
@@ -2156,7 +2172,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 public void OnWeaponSwitchFrame(int userid)
 {
 	int client = GetClientOfUserId(userid);

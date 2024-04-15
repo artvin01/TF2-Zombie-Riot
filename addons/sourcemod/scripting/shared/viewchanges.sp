@@ -48,7 +48,7 @@ static const char RobotModels[][] =
 };
 
 
-static int HandIndex[11];
+static int HandIndex[10];
 static int PlayerIndex[10];
 static int RobotIndex[10];
 
@@ -58,17 +58,17 @@ static int TeutonModelIndex;
 
 void ViewChange_MapStart()
 {
-	for(int i; i<11; i++)
+	for(int i; i<sizeof(HandIndex); i++)
 	{
 		HandIndex[i] = PrecacheModel(HandModels[i], true);
 	}
 
-	for(int i; i<10; i++)
+	for(int i; i<sizeof(PlayerModels); i++)
 	{
 		PlayerIndex[i] = PrecacheModel(PlayerModels[i], true);
 	}
 
-	for(int i; i<10; i++)
+	for(int i; i<sizeof(RobotIndex); i++)
 	{
 		RobotIndex[i] = PrecacheModel(RobotModels[i], true);
 	}
@@ -76,8 +76,6 @@ void ViewChange_MapStart()
 #if defined ZR
 	TeutonModelIndex = PrecacheModel(COMBINE_CUSTOM_MODEL, true);
 #endif
-
-	PrecacheModel(NIKO_PLAYERMODEL);
 }
 
 void OverridePlayerModel(int client, int ModelIndex, bool DontShowCosmetics)

@@ -20,16 +20,7 @@
 int i_TransformationLevel[MAXTF2PLAYERS];
 int i_TransformationProgress[MAXTF2PLAYERS][5]; //secondary is for sub forms, bur we dont have them yet, but we should prepare just incase.
 float f_TransformationDelay[MAXTF2PLAYERS]; 	//if he takess too long and cancels it, itll just drop the progress.
-static const float RaceStatBonuses[][] =
-{
-	//race, its a blank space 	STAT_STRENGTH	STAT_PRECISION	STAT_ARTIFICE		STAT_ENDURANCE	STAT_STRUCTURE	STAT_INTELLIGENCE	STAT_CAPACITY
-	{ 0.0 /*defaults!*/ 		, 1.0			, 1.0			, 1.0				, 1.0			, 10.0			, 1.0				, 5.0},
-	{ 0.0 /*RACE_MERC_HUMAN */ 	, 1.1			, 1.1			, 1.1				, 1.1			, 11.0			, 1.0				, 5.5}, 				//RACE_MERC_HUMAN
-	{ 0.0 /*RACE_EXPIDONSAN	*/	, 1.2			, 1.0			, 0.8				, 1.2			, 13.0			, 1.2				, 4.5},			 		//RACE_EXPIDONSAN
-	{ 0.0 /*RACE_RUANIANS	*/	, 0.9			, 0.9			, 1.25				, 0.9			, 9.0			, 1.1				, 7.5},			 	//RACE_RUANIANS
-	{ 0.0 /*RACE_IBERIANS	*/	, 1.075			, 1.22			, 1.0				, 1.0			, 11.5			, 1.15				, 7.5}			 	//RACE_IBERIANS
-};					
-
+			
 
 /*
 	this defineswhat stats get multiplied by what.
@@ -51,60 +42,12 @@ static const float RaceStatBonuses[][] =
 
 	etc etc
 */
-static const float MercHumanTransformationMulti[][] =
-{
-	//Drain from Capacity!		STAT_STRENGTH	STAT_PRECISION	STAT_ARTIFICE		STAT_ENDURANCE	STAT_STRUCTURE	STAT_INTELLIGENCE	STAT_CAPACITY	STAT_LUCK++,	STAT_AGILITY++
-	{ 0.0 /*defaults!*/ 		, 1.0			, 1.0			, 1.0				, 1.0			, 1.0			, 1.0				, 1.0			,0.0			,0.0},
-	
-	{ 10.0 /*Respawn Spirit!*/	, 2.0			, 2.0			, 2.0				, 2.0			, 2.0			, 1.0				, 1.0			,0.0			,0.0},
-	{ 7.0 /*Mastered ^^!*/		, 3.0			, 3.0			, 3.0				, 3.0			, 3.0			, 1.0				, 1.0			,0.0			,0.0},
-
-	{ 15.0 /*Halloween Magic!*/	, 3.5			, 3.5			, 3.5				, 3.5			, 3.5			, 1.0				, 1.0			,0.0			,0.0},
-	{ 7.0 /*Mastered ^^!*/		, 4.5			, 4.5			, 4.5				, 4.5			, 4.5			, 1.0				, 1.0			,0.0			,0.0}
-};	
-
-static const float ExpidonsanTransformationMulti[][] =
-{
-	//Drain from Capacity!		STAT_STRENGTH	STAT_PRECISION	STAT_ARTIFICE		STAT_ENDURANCE	STAT_STRUCTURE	STAT_INTELLIGENCE	STAT_CAPACITY	STAT_LUCK++,	STAT_AGILITY++
-	{ 0.0 /*defaults!*/ 		, 1.0			, 1.0			, 1.0				, 1.0			, 1.0			, 1.0				, 1.0			,0.0			,0.0},
-	
-	{ 12.0 /*Halo activation!*/	, 2.0			, 2.0			, 2.0				, 2.0			, 2.0			, 1.0				, 1.0			,0.0			,0.0},
-	{ 8.0 /*Mastered ^^!*/		, 3.0			, 3.0			, 3.0				, 3.0			, 3.0			, 1.0				, 1.0			,0.0			,0.0},
-
-	{ 18.0 /*Exponential Tech!*/, 3.5			, 3.5			, 3.5				, 3.5			, 3.5			, 1.0				, 1.0			,0.0			,0.0},
-	{ 5.0 /*Mastered ^^!*/		, 4.5			, 4.5			, 4.5				, 4.5			, 4.5			, 1.0				, 1.0			,0.0			,0.0}
-};	
-
-static const float IberianTransformationMulti[][] =
-{
-	//Drain from Capacity!		STAT_STRENGTH	STAT_PRECISION	STAT_ARTIFICE		STAT_ENDURANCE	STAT_STRUCTURE	STAT_INTELLIGENCE	STAT_CAPACITY	STAT_LUCK ++,	STAT_AGILITY++
-	{ 0.0 /*defaults!*/ 		, 1.0			, 1.0			, 1.0				, 1.0			, 1.0			, 1.0				, 1.0			,0.0			,0.0},
-	
-	{ 5.0 /*Super senses!*/		, 2.0			, 2.0			, 2.0				, 2.0			, 2.0			, 1.0				, 1.0			,0.0			,0.0},
-	{ 4.0 /*Mastered ^^!*/		, 3.0			, 3.0			, 3.0				, 3.0			, 3.0			, 1.0				, 1.0			,0.0			,0.0},
-
-	{ 15.0/*Immensive Resolve*/ , 3.5			, 3.5			, 3.5				, 3.5			, 3.5			, 1.0				, 1.0			,0.0			,0.0},
-	{ 5.0 /*Mastered ^^!*/		, 4.5			, 4.5			, 4.5				, 4.5			, 4.5			, 1.0				, 1.0			,0.0			,0.0}
-};	
-
-static const float RuianianTransformationMulti[][] =
-{
-	//Drain from Capacity!		STAT_STRENGTH	STAT_PRECISION	STAT_ARTIFICE		STAT_ENDURANCE	STAT_STRUCTURE	STAT_INTELLIGENCE	STAT_CAPACITY	STAT_LUCK ++,	STAT_AGILITY++
-	{ 0.0 /*defaults!*/ 		, 1.0			, 1.0			, 1.0				, 1.0			, 1.0			, 1.0				, 1.0			,0.0			,0.0},
-	
-	{ 5.0 /*Celestial Compass!*/, 2.0			, 2.0			, 2.0				, 2.0			, 2.0			, 1.0				, 1.0			,0.0			,0.0},
-	{ 4.0 /*Mastered ^^!*/		, 3.0			, 3.0			, 3.0				, 3.0			, 3.0			, 1.0				, 1.0			,0.0			,0.0},
-
-	{ 15.0/*Stellar Magnifier*/ , 3.5			, 3.5			, 3.5				, 3.5			, 3.5			, 1.0				, 1.0			,0.0			,0.0},
-	{ 5.0 /*Mastered ^^!*/		, 4.5			, 4.5			, 4.5				, 4.5			, 4.5			, 1.0				, 1.0			,0.0			,0.0}
-};
-
 enum struct Form
 {
 	char Name[64];
 	int Level;
-	int Mastery;
 	int Upgrade;
+	int Mastery;
 	Function Func;
 	float DrainRate[2];
 
@@ -114,38 +57,44 @@ enum struct Form
 	float EnduranceMulti[2];
 	float StructureMulti[2];
 	float IntelligenceMulti[2];
-	float LuckMulti[2];
-	float AgilityMulti[2];
+	int LuckAdd[2];
+	int AgilityAdd[2];
 
 	void SetupKV(KeyValues kv)
 	{
 		kv.GetSectionName(this.Name, sizeof(this.Name));
 
+		this.Level = kv.GetNum("Form Level");
+		this.Upgrade = kv.GetNum("Form Upgrade Cost");
+		this.Mastery = kv.GetNum("Mastery Max Level");
+		this.Func = KvGetFunction(kv, "Form Function Requirement");
+
+		this.DrainRate[0] = kv.GetFloat("Min Capacity Drain");
+		this.DrainRate[1] = kv.GetFloat("Max Capacity Drain");
+
 		this.StrengthMulti[0] = kv.GetFloat("Min_Strength", 1.0);
 		this.StrengthMulti[1] = kv.GetFloat("Max_Strength", 1.0);
 
-		this.PrecisionMulti[0] = kv.GetFloat("Min_Strength", 1.0);
-		this.PrecisionMulti[1] = kv.GetFloat("Max_Strength", 1.0);
+		this.PrecisionMulti[0] = kv.GetFloat("Min_Precision", 1.0);
+		this.PrecisionMulti[1] = kv.GetFloat("Max_Precision", 1.0);
 
-		this.AtrificeMulti[0] = kv.GetFloat("Min_Strength", 1.0);
-		this.AtrificeMulti[1] = kv.GetFloat("Max_Strength", 1.0);
+		this.AtrificeMulti[0] = kv.GetFloat("Min_Atrifice", 1.0);
+		this.AtrificeMulti[1] = kv.GetFloat("Max_Atrifice", 1.0);
 
-		this.EnduranceMulti[0] = kv.GetFloat("Min_Strength", 1.0);
-		this.EnduranceMulti[1] = kv.GetFloat("Max_Strength", 1.0);
+		this.EnduranceMulti[0] = kv.GetFloat("Min_Endurance", 1.0);
+		this.EnduranceMulti[1] = kv.GetFloat("Max_Endurance", 1.0);
 
-		this.StructureMulti[0] = kv.GetFloat("Min_Strength", 1.0);
-		this.StructureMulti[1] = kv.GetFloat("Max_Strength", 1.0);
+		this.StructureMulti[0] = kv.GetFloat("Min_Structure", 1.0);
+		this.StructureMulti[1] = kv.GetFloat("Max_Structure", 1.0);
 
-		this.IntelligenceMulti[0] = kv.GetFloat("Min_Strength", 1.0);
-		this.IntelligenceMulti[1] = kv.GetFloat("Max_Strength", 1.0);
+		this.IntelligenceMulti[0] = kv.GetFloat("Min_Intelligence", 1.0);
+		this.IntelligenceMulti[1] = kv.GetFloat("Max_Intelligence", 1.0);
 
-		this.LuckMulti[0] = kv.GetFloat("Min_Strength", 1.0);
-		this.LuckMulti[1] = kv.GetFloat("Max_Strength", 1.0);
+		this.LuckAdd[0] = kv.GetNum("Min_Luck");
+		this.LuckAdd[1] = kv.GetNum("Max_Luck");
 
-		this.AgilityMulti[0] = kv.GetFloat("Min_Strength", 1.0);
-		this.AgilityMulti[1] = kv.GetFloat("Max_Strength", 1.0);
-		
-		kv.GoBack();
+		this.AgilityAdd[0] = kv.GetNum("Min_Agility");
+		this.AgilityAdd[1] = kv.GetNum("Max_Agility");
 	}
 }
 
@@ -168,18 +117,36 @@ enum struct Race
 	{
 		kv.GetSectionName(this.Name, sizeof(this.Name));
 
+		if(kv.JumpToKey("Stat Multi"))
+		{
+			this.StrengthMulti = kv.GetFloat("Strength", 1.0);
+			this.PrecisionMulti = kv.GetFloat("Precision", 1.0);
+			this.AtrificeMulti = kv.GetFloat("Atrifice", 1.0);
+			this.EnduranceMulti = kv.GetFloat("Endurance", 1.0);
+			this.StructureMulti = kv.GetFloat("Structure", 1.0);
+			this.IntelligenceMulti = kv.GetFloat("Intelligence", 1.0);
+			this.CapacityMulti = kv.GetFloat("Capacity", 1.0);
+			this.LuckMulti = kv.GetFloat("Luck", 1.0);
+			this.AgilityMulti = kv.GetFloat("Agility", 1.0);
+			kv.GoBack();
+		}
+
 		this.Forms = new ArrayList(sizeof(Form));
 
-		if(kv.GotoFirstSubKey())
+		if(kv.JumpToKey("Forms"))
 		{
-			Form form;
-
-			do
+			if(kv.GotoFirstSubKey())
 			{
-				form.SetupKV(kv);
-				this.Forms.PushArray(form);
+				Form form;
+
+				do
+				{
+					form.SetupKV(kv);
+					this.Forms.PushArray(form);
+				}
+				while(kv.GotoNextKey());
+				kv.GoBack();
 			}
-			while(kv.GotoNextKey());
 			kv.GoBack();
 		}
 	}
@@ -214,7 +181,30 @@ void Races_ConfigSetup()
 	KeyValues kv = new KeyValues("Races");
 	kv.ImportFromFile(buffer);
 
+	if(kv.JumpToKey("Base Stating Stats"))
+	{
+		BaseStrength = kv.GetNum("Strength");
+		BasePrecision = kv.GetNum("Precision");
+		BaseAtrifice = kv.GetNum("Atrifice");
+		BaseEndurance = kv.GetNum("Endurance");
+		BaseStructure = kv.GetNum("Structure");
+		BaseIntelligence = kv.GetNum("Intelligence");
+		BaseCapacity = kv.GetNum("Capacity");
+		BaseLuck = kv.GetNum("Luck");
+		BaseAgility = kv.GetNum("Agility");
+		BaseUpgradeCost = kv.GetNum("Base Experience Upgrade Cost");
+		BaseUpgradeScale = kv.GetNum("Experience Cost Increace Per Level");
+		BaseUpdateStats = kv.GetNum("Stats Into Level Needed");
+		BaseMaxLevel = kv.GetNum("Max Level");
+		BaseMaxExperience = kv.GetNum("Max Experience At Once Allowed");
+		BaseMaxExperiencePerLevel = kv.GetNum("Max Experience At Once Allowed Per Level Increace");
+
+		kv.GoBack();
+	}
+
+	kv.JumpToKey("Classes");
 	kv.GotoFirstSubKey();
+
 	do
 	{
 		race.SetupKV(kv);
@@ -229,5 +219,3 @@ void Races_GetRaceByIndex(int index, Race race)
 {
 	Races.GetArray(index, race);
 }
-
-void Races_GetTransformation

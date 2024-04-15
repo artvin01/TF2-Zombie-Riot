@@ -331,6 +331,12 @@ float f_Data_InBattleHudDisableDelay[MAXTF2PLAYERS];
 float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
 float f_InBattleDelay[MAXTF2PLAYERS];
 
+int Healing_done_in_total[MAXTF2PLAYERS];
+int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
+int i_PlayerDamaged[MAXTF2PLAYERS];
+int Resupplies_Supplied[MAXTF2PLAYERS];
+int PlayerPoints[MAXTF2PLAYERS];
+bool b_PlayerWasAirbornKnockbackReduction[MAXTF2PLAYERS];
 ConVar CvarRPGInfiniteLevelAndAmmo;
 ConVar CvarXpMultiplier;
 TFClassType CurrentClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
@@ -854,7 +860,6 @@ enum
 }
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
-#define NIKO_PLAYERMODEL		 	"models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
 #define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_219.mdl"
 #define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1.mdl"
 

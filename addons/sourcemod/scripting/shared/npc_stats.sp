@@ -24,14 +24,14 @@ bool b_NpcHasBeenAddedToZombiesLeft[MAXENTITIES];
 int Zombies_Currently_Still_Ongoing;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 float Medival_Difficulty_Level = 0.0;
-int i_KillsMade[MAXTF2PLAYERS];
-int i_Backstabs[MAXTF2PLAYERS];
-int i_Headshots[MAXTF2PLAYERS];	
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int i_NpcOverrideAttacker[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 #endif
+int i_KillsMade[MAXTF2PLAYERS];
+int i_Backstabs[MAXTF2PLAYERS];
+int i_Headshots[MAXTF2PLAYERS];	
 
 #if !defined RTS
 int TeamFreeForAll = 50;
@@ -7865,8 +7865,6 @@ public void ArrowStartTouch(int arrow, int entity)
 		{
 #if defined ZR
 			SeaSlider_AddNeuralDamage(entity, owner, i_NervousImpairmentArrowAmount[arrow]);
-#elseif defined RPG
-			Stats_AddNeuralDamage(entity, owner, i_NervousImpairmentArrowAmount[arrow]);
 #endif
 		}
 #if defined ZR

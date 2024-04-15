@@ -1,48 +1,33 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define MACRO_SHOWDIFF(%1)	if(oldAmount != newAmount) { FormatEx(buffer, sizeof(buffer), %1 ... " (%d -> %d)", oldAmount, newAmount); menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED); }
-
-#define ORIGINIUM_INFECTED 200
-#define ORIGINIUM_UNSTABLE 600
-#define NERVOUS_IMPAIRMENT 500
+//#define MACRO_SHOWDIFF(%1)	if(oldAmount != newAmount) { FormatEx(buffer, sizeof(buffer), %1 ... " (%d -> %d)", oldAmount, newAmount); menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED); }
 
 static Cookie CookieInfection;
 static bool HasKeyHintHud[MAXTF2PLAYERS];
 static int BackpackBonus[MAXENTITIES];
 static int Strength[MAXENTITIES];
-static int Dexterity[MAXENTITIES];
+static int Precision[MAXENTITIES];
+static int Atrifice[MAXENTITIES];
+static int Endurance[MAXENTITIES];
+static int Structure[MAXENTITIES];
 static int Intelligence[MAXENTITIES];
+static int Capacity[MAXENTITIES];
 static int Agility[MAXENTITIES];
 static int Luck[MAXENTITIES];
-static int Originium[MAXENTITIES];
-static int NeuralDamage[MAXTF2PLAYERS];
 
 void Stats_PluginStart()
 {
 	RegConsoleCmd("rpg_stats", Stats_ShowStats, "Shows your RPG stats");
 	RegConsoleCmd("sm_stats", Stats_ShowStats, "Shows your RPG stats", FCVAR_HIDDEN);
-
-	CookieInfection = new Cookie("rpg_originium", "Originium Infection Amount", CookieAccess_Protected);
 }
 
 void Stats_ClientCookiesCached(int client)
 {
-	char buffer[12];
-	CookieInfection.Get(client, buffer, sizeof(buffer));
-	Originium[client] = StringToInt(buffer);
 }
 
 void Stats_ClientDisconnect(int client)
 {
-	if(AreClientCookiesCached(client))
-	{
-		char buffer[12];
-		IntToString(Originium[client], buffer, sizeof(buffer));
-		CookieInfection.Set(client, buffer);
-	}
-
-	Originium[client] = 0;
 	HasKeyHintHud[client] = false;
 }
 
@@ -52,28 +37,6 @@ void Stats_UpdateHud(int client)
 
 	if(IsPlayerAlive(client))
 	{
-		int originium = Stats_BaseOriginium(client);
-		if(originium > ORIGINIUM_UNSTABLE)
-		{
-			int rand = 50 + ORIGINIUM_UNSTABLE + originium;
-			if(rand < 2)
-				rand = 2;
-			
-			FormatEx(buffer, sizeof(buffer), "Originium Stability: %d％", (GetURandomInt() % rand ? 0 : (originium - ORIGINIUM_INFECTED) * 100 / (ORIGINIUM_UNSTABLE - ORIGINIUM_INFECTED)));
-		}
-		else if(originium >= ORIGINIUM_INFECTED)
-		{
-			FormatEx(buffer, sizeof(buffer), "Originium Stability: %d％", 100 - (originium - ORIGINIUM_INFECTED) * 100 / (ORIGINIUM_UNSTABLE - ORIGINIUM_INFECTED));
-		}
-		else if(originium > 1)
-		{
-			FormatEx(buffer, sizeof(buffer), "Originium Infection: %d％", originium * 100 / ORIGINIUM_INFECTED);
-		}
-
-		if(NeuralDamage[client] > 0)
-		{
-			Format(buffer, sizeof(buffer), "Nervous Impairment: %d％", NeuralDamage[client] * 100 / NERVOUS_IMPAIRMENT);
-		}
 	}
 
 	if(buffer[0] || HasKeyHintHud[client])
@@ -86,86 +49,14 @@ void Stats_ClearCustomStats(int entity)
 {
 	BackpackBonus[entity] = 0;
 	Strength[entity] = 0;
-	Dexterity[entity] = 0;
+	Precision[entity] = 0;
+	Atrifice[entity] = 0;
+	Endurance[entity] = 0;
+	Structure[entity] = 0;
 	Intelligence[entity] = 0;
+	Capacity[entity] = 0;
 	Agility[entity] = 0;
 	Luck[entity] = 0;
-
-	if(entity <= MaxClients)
-	{
-		NeuralDamage[entity] = 0;
-	}
-	else
-	{
-		Originium[entity] = 0;
-	}
-}
-
-void Stats_AddNeuralDamage(int client, int attacker, int damage)
-{
-	if(NeuralDamage[client] || !TF2_IsPlayerInCondition(client, TFCond_Dazed))
-	{
-		NeuralDamage[client] += damage;
-		if(NeuralDamage[client] >= NERVOUS_IMPAIRMENT)
-		{
-			NeuralDamage[client] = 0;
-			TF2_StunPlayer(client, 5.0, 1.0, TF_STUNFLAGS_BIGBONK, client);
-
-			int health = GetClientHealth(client);
-			if(health > 500)
-			{
-				SetEntityHealth(client, health - 500);
-			}
-			else
-			{
-				SDKHooks_TakeDamage(client, attacker, attacker, 5000.0, DMG_DROWN);
-			}
-		}
-	}
-}
-
-stock void Stats_AddOriginium(int entity, int amount)
-{
-	Originium[entity] += amount;
-}
-
-public ItemResult Stats_Custom_OriginiumMend(int client)
-{
-	if(Originium[client] > 1)
-	{
-		ClientCommand(client, "items/medshot4.wav");
-		Originium[client] -= 10;
-		return Item_Used;
-	}
-	
-	ClientCommand(client, "items/medshotno1.wav");
-	return Item_None;
-}
-
-stock float Stats_OriginiumPower(int client)
-{
-	int originium = Stats_BaseOriginium(client);
-	if(originium > ORIGINIUM_UNSTABLE)
-		return 3.0 - (float(originium - ORIGINIUM_UNSTABLE) / float(ORIGINIUM_UNSTABLE * 3));
-	
-	if(originium >= ORIGINIUM_INFECTED)
-		return float(originium) / float(ORIGINIUM_INFECTED);	// x1.0 - x3.0
-	
-	return float(originium / 2) / float(ORIGINIUM_INFECTED);	// x0.0 - x1.0
-}
-
-static int OriginiumHealth(int client)
-{
-	int originium = Stats_BaseOriginium(client);
-
-	int health;
-	if(originium >= ORIGINIUM_INFECTED)
-		health -= originium / 4;
-	
-	if(originium > ORIGINIUM_UNSTABLE)
-		health -= originium - ORIGINIUM_UNSTABLE;
-	
-	return health;
 }
 
 void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
@@ -179,21 +70,30 @@ void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
 			
 			case -2:
 				Format(desc, 512, "%s\n%s Strength", desc, CharInt(RoundFloat(value[i])));
-			
+		
 			case -3:
-				Format(desc, 512, "%s\n%s Dexterity", desc, CharInt(RoundFloat(value[i])));
+				Format(desc, 512, "%s\n%s Precision", desc, CharInt(RoundFloat(value[i])));
 			
 			case -4:
-				Format(desc, 512, "%s\n%s Intelligence", desc, CharInt(RoundFloat(value[i])));
+				Format(desc, 512, "%s\n%s Atrifice", desc, CharInt(RoundFloat(value[i])));
 			
 			case -5:
+				Format(desc, 512, "%s\n%s Endurance", desc, CharInt(RoundFloat(value[i])));
+			
+			case -6:
+				Format(desc, 512, "%s\n%s Structure", desc, CharInt(RoundFloat(value[i])));
+			
+			case -7:
+				Format(desc, 512, "%s\n%s Intelligence", desc, CharInt(RoundFloat(value[i])));
+			
+			case -8:
+				Format(desc, 512, "%s\n%s Capacity", desc, CharInt(RoundFloat(value[i])));
+			
+			case -9:
 				Format(desc, 512, "%s\n%s Luck", desc, CharInt(RoundFloat(value[i])));
 
-			case -6:
+			case -10:
 				Format(desc, 512, "%s\n%s Agility", desc, CharInt(RoundFloat(value[i])));
-		
-			case -7:
-				Format(desc, 512, "%s\n%s Originium", desc, CharInt(RoundFloat(value[i])));
 
 			case 140:
 				Format(desc, 512, "%s\n%s Max Health", desc, CharInt(RoundFloat(value[i])));
@@ -219,19 +119,28 @@ void Stats_GetCustomStats(int entity, int attrib, float value)
 			Strength[entity] += RoundFloat(value);
 		
 		case -3:
-			Dexterity[entity] += RoundFloat(value);
+			Precision[entity] += RoundFloat(value);
 		
 		case -4:
-			Intelligence[entity] += RoundFloat(value);
+			Atrifice[entity] += RoundFloat(value);
 		
 		case -5:
+			Endurance[entity] += RoundFloat(value);
+		
+		case -6:
+			Structure[entity] += RoundFloat(value);
+		
+		case -7:
+			Intelligence[entity] += RoundFloat(value);
+		
+		case -8:
+			Capacity[entity] += RoundFloat(value);
+		
+		case -9:
 			Luck[entity] += RoundFloat(value);
 
-		case -6:
+		case -10:
 			Agility[entity] += RoundFloat(value);
-
-		case -7:
-			Originium[entity] += RoundFloat(value);
 	}
 }
 
@@ -253,7 +162,7 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 
 	if(slot < TFWeaponSlot_Melee || i_IsWrench[entity])
 	{
-		int stat = Stats_Dexterity(client);
+		int stat = 0;//Stats_Dexterity(client);
 		if(stat)
 		{
 			Attributes_SetMulti(entity, 2, 1.0 + (stat / 50.0));
@@ -283,41 +192,21 @@ void Stats_SetBodyStats(int client, TFClassType class, StringMap map)
 	map.SetValue("252", Stats_KnockbackResist(client));
 }
 
-int Stats_BaseOriginium(int client, int &base = 0, int &bonus = 0)
+int Stats_BaseHealth(int client, int &base = 0, int &bonus = 0)
 {
-	base = Originium[client];
+	base = 50;
 	bonus = 0;
 
-	int i, entity;
-	while(TF2_GetItem(client, entity, i))
-	{
-		bonus += Originium[entity];
-	}
-
 	return base + bonus;
 }
 
-int Stats_BaseHealth(int client, int &base = 0, int &bonus = 0, int level = -1, int tier = -1)
+int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0)
 {
-	int lv = level == -1 ? Level[client] : level;
-	int ti = tier == -1 ? Tier[client] : tier;
-
-	base = 50 + (lv * 5) + (ti * 20);
-	bonus = OriginiumHealth(client);
-
-	return base + bonus;
-}
-
-int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0, int level = -1, int tier = -1)
-{
-	int lv = level == -1 ? Level[client] : level;
-	int ti = tier == -1 ? Tier[client] : tier;
-
-	int strength = 9 + lv / 2;
+	int strength = 5;
 	if(strength > 20)
 		strength = 20;
 	
-	base = strength + (ti * 10);
+	base = strength;
 	bonus = BackpackBonus[client];
 
 	int i, entity;
@@ -329,13 +218,14 @@ int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0, int level = -1, i
 	return base + bonus;
 }
 
-int Stats_Strength(int client, int &base = 0, int &bonus = 0, int level = -1, int tier = -1)
+int Stats_Strength(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 {
-	int lv = level == -1 ? Level[client] : level;
-	int ti = tier == -1 ? Tier[client] : tier;
+	static Race race;
+	Races_GetRaceByIndex(RaceIndex[client], race);
 
-	base = lv / 2 + (ti * 5);
-	bonus = Strength[client];
+	base = BaseStrength + Strength[client];
+	bonus = 0;
+	multi = race.StrengthMulti;
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
@@ -343,33 +233,89 @@ int Stats_Strength(int client, int &base = 0, int &bonus = 0, int level = -1, in
 		bonus += Strength[entity];
 	}
 
-	return base + bonus;
+	return bonus + RoundFloat(base * multi);
 }
 
-int Stats_Dexterity(int client, int &base = 0, int &bonus = 0, int level = -1, int tier = -1)
+int Stats_Precision(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 {
-	int lv = level == -1 ? Level[client] : level;
-	int ti = tier == -1 ? Tier[client] : tier;
+	static Race race;
+	Races_GetRaceByIndex(RaceIndex[client], race);
 
-	base = lv / 2 + (ti * 5);
-	bonus = Dexterity[client];
+	base = BasePrecision + Precision[client];
+	bonus = 0;
+	multi = race.PrecisionMulti;
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
-		bonus += Dexterity[entity];
+		bonus += Precision[entity];
 	}
 
-	return base + bonus;
+	return bonus + RoundFloat(base * multi);
 }
 
-int Stats_Intelligence(int client, int &base = 0, int &bonus = 0, int level = -1, int tier = -1)
+int Stats_Atrifice(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 {
-	int lv = level == -1 ? Level[client] : level;
-	int ti = tier == -1 ? Tier[client] : tier;
+	static Race race;
+	Races_GetRaceByIndex(RaceIndex[client], race);
 
-	base = lv / 2 + (ti * 5);
-	bonus = Intelligence[client];
+	base = BaseAtrifice + Atrifice[client];
+	bonus = 0;
+	multi = race.AtrificeMulti;
+
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
+	{
+		bonus += Atrifice[entity];
+	}
+
+	return bonus + RoundFloat(base * multi);
+}
+
+int Stats_Endurance(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
+{
+	static Race race;
+	Races_GetRaceByIndex(RaceIndex[client], race);
+
+	base = BaseEndurance + Endurance[client];
+	bonus = 0;
+	multi = race.EnduranceMulti;
+
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
+	{
+		bonus += Endurance[entity];
+	}
+
+	return bonus + RoundFloat(base * multi);
+}
+
+int Stats_Structure(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
+{
+	static Race race;
+	Races_GetRaceByIndex(RaceIndex[client], race);
+
+	base = BaseStructure + Structure[client];
+	bonus = 0;
+	multi = race.StructureMulti;
+
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
+	{
+		bonus += Structure[entity];
+	}
+
+	return bonus + RoundFloat(base * multi);
+}
+
+int Stats_Intelligence(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
+{
+	static Race race;
+	Races_GetRaceByIndex(RaceIndex[client], race);
+
+	base = BaseIntelligence + Intelligence[client];
+	bonus = 0;
+	multi = race.IntelligenceMulti;
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
@@ -377,12 +323,35 @@ int Stats_Intelligence(int client, int &base = 0, int &bonus = 0, int level = -1
 		bonus += Intelligence[entity];
 	}
 
-	return base + bonus;
+	return bonus + RoundFloat(base * multi);
 }
 
-int Stats_Agility(int client)
+int Stats_Capacity(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 {
-	int bonus = Agility[client];
+	static Race race;
+	Races_GetRaceByIndex(RaceIndex[client], race);
+
+	base = BaseCapacity + Capacity[client];
+	bonus = 0;
+	multi = race.CapacityMulti;
+
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
+	{
+		bonus += Capacity[entity];
+	}
+
+	return bonus + RoundFloat(base * multi);
+}
+
+int Stats_Agility(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
+{
+	static Race race;
+	Races_GetRaceByIndex(RaceIndex[client], race);
+
+	base = BaseAgility + Agility[client];
+	bonus = 0;
+	multi = race.AgilityMulti;
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
@@ -390,12 +359,17 @@ int Stats_Agility(int client)
 		bonus += Agility[entity];
 	}
 
-	return bonus;
+	return bonus + RoundFloat(base * multi);
 }
 
-int Stats_Luck(int client)
+int Stats_Luck(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 {
-	int bonus = Luck[client];
+	static Race race;
+	Races_GetRaceByIndex(RaceIndex[client], race);
+
+	base = BaseLuck + Luck[client];
+	bonus = 0;
+	multi = race.LuckMulti;
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
@@ -403,19 +377,23 @@ int Stats_Luck(int client)
 		bonus += Luck[entity];
 	}
 
-	return bonus;
+	return bonus + RoundFloat(base * multi);
 }
 
-float Stats_KnockbackResist(int client, int level = -1, int tier = -1)
+float Stats_KnockbackResist(int client)
 {
+	/*
 	float lv = float(level == -1 ? Level[client] : level);
 	float ti = float(tier == -1 ? Tier[client] : tier);
 
 	return 1.0 / (0.5 + ti + (lv * 0.05));
+	*/
+	return 1.0;
 }
 
 void Stats_ShowLevelUp(int client, int oldLevel, int oldTier)
 {
+	/*
 	Menu menu = new Menu(Stats_ShowLevelUpH, MenuAction_End);
 
 	if(Tier[client])
@@ -460,6 +438,7 @@ void Stats_ShowLevelUp(int client, int oldLevel, int oldTier)
 	Tinker_StatsLevelUp(client, oldLevel, menu);
 
 	menu.Display(client, MENU_TIME_FOREVER);
+	*/
 }
 
 public int Stats_ShowLevelUpH(Menu menu, MenuAction action, int client, int choice)
@@ -491,24 +470,41 @@ public Action Stats_ShowStats(int client, int args)
 		FormatEx(buffer, sizeof(buffer), "Backpack Storage: %d + %d (%d weight per item)", amount, bonus, Tier[client] + 1);
 		menu.AddItem(NULL_STRING, buffer);
 
-		int total = Stats_Strength(client, amount, bonus);
-		FormatEx(buffer, sizeof(buffer), "Strength: %d + %d (+%.0f%% melee damage)", amount, bonus, total * 2.0);
+		float multi;
+		int total = Stats_Strength(client, amount, bonus, multi);
+		FormatEx(buffer, sizeof(buffer), "Strength: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
 		menu.AddItem(NULL_STRING, buffer);
 
-		total = Stats_Dexterity(client, amount, bonus);
-		FormatEx(buffer, sizeof(buffer), "Dexterity: %d + %d (+%.0f%% ranged damage)", amount, bonus, total * 2.0);
+		total = Stats_Precision(client, amount, bonus, multi);
+		FormatEx(buffer, sizeof(buffer), "Precision: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
 		menu.AddItem(NULL_STRING, buffer);
 
-		total = Stats_Intelligence(client, amount, bonus);
-		FormatEx(buffer, sizeof(buffer), "Intelligence: %d + %d (+%.0f%% magic damage)", amount, bonus, total * 2.0);
+		total = Stats_Atrifice(client, amount, bonus, multi);
+		FormatEx(buffer, sizeof(buffer), "Atrifice: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
 		menu.AddItem(NULL_STRING, buffer);
 
-		total = Stats_Agility(client);
-		FormatEx(buffer, sizeof(buffer), "Agility: %d (+%.0f%% attack speed)", total, 1.0 / AgilityMulti(total));
+		total = Stats_Endurance(client, amount, bonus, multi);
+		FormatEx(buffer, sizeof(buffer), "Endurance: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
 		menu.AddItem(NULL_STRING, buffer);
 
-		total = Stats_Luck(client);
-		FormatEx(buffer, sizeof(buffer), "Luck: %d (+%.0f%% item drops)", total, total / 3.0);
+		total = Stats_Structure(client, amount, bonus, multi);
+		FormatEx(buffer, sizeof(buffer), "Structure: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
+		menu.AddItem(NULL_STRING, buffer);
+
+		total = Stats_Intelligence(client, amount, bonus, multi);
+		FormatEx(buffer, sizeof(buffer), "Intelligence: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
+		menu.AddItem(NULL_STRING, buffer);
+
+		total = Stats_Capacity(client, amount, bonus, multi);
+		FormatEx(buffer, sizeof(buffer), "Capacity: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
+		menu.AddItem(NULL_STRING, buffer);
+
+		total = Stats_Agility(client, amount, bonus, multi);
+		FormatEx(buffer, sizeof(buffer), "Agility: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
+		menu.AddItem(NULL_STRING, buffer);
+
+		total = Stats_Luck(client, amount, bonus, multi);
+		FormatEx(buffer, sizeof(buffer), "Luck: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
 		menu.AddItem(NULL_STRING, buffer);
 
 		menu.ExitBackButton = true;

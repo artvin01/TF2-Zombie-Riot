@@ -7,17 +7,28 @@
 #define MIN_FADE_DISTANCE 3000.0
 #define MAX_FADE_DISTANCE 3700.0
 
-enum
-{
-	WEAPON_STUNSTICK = 1,
-	WEAPON_SILENCESTICK = 2
-}
+int BaseStrength;
+int BasePrecision;
+int BaseAtrifice;
+int BaseEndurance;
+int BaseStructure;
+int BaseIntelligence;
+int BaseCapacity;
+int BaseLuck;
+int BaseAgility;
+int BaseUpgradeCost;
+int BaseUpgradeScale;
+int BaseUpdateStats;
+int BaseMaxLevel;
+int BaseMaxExperience;
+int BaseMaxExperiencePerLevel;
 
 bool DisabledDownloads[MAXTF2PLAYERS];
 
 int Tier[MAXTF2PLAYERS];
 int Level[MAXENTITIES];
 int XP[MAXENTITIES];
+int RaceIndex[MAXTF2PLAYERS];
 
 char StoreWeapon[MAXENTITIES][48];
 int i_TagColor[MAXTF2PLAYERS][4];
@@ -97,6 +108,8 @@ void RPG_PluginStart()
 	HudSettings_Cookies = new Cookie("zr_hudsetting", "hud settings", CookieAccess_Protected);
 	HudSettingsExtra_Cookies = new Cookie("zr_hudsettingextra", "hud settings Extra", CookieAccess_Protected);
 	
+	LoadTranslations("rpgfortress.phrases");
+
 	Dungeon_PluginStart();
 	Fishing_PluginStart();
 	Games_PluginStart();
@@ -220,6 +233,7 @@ void RPG_ConfigSetup(const char[] mapname)
 	Mining_ConfigSetup();
 	Music_ConfigSetup();
 	Quests_ConfigSetup();
+	Races_ConfigSetup();
 	Spawns_ConfigSetup();
 	Tinker_ConfigSetup();
 	

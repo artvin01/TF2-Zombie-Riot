@@ -266,7 +266,6 @@ float FoodAmount[MAXTF2PLAYERS];
 float GoldAmount[MAXTF2PLAYERS];
 int SupplyRate[MAXTF2PLAYERS];
 int i_PreviousBuildingCollision[MAXENTITIES];
-bool b_PlayerWasAirbornKnockbackReduction[MAXTF2PLAYERS];
 bool b_ArkantosBuffItem[MAXENTITIES];
 int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
@@ -333,14 +332,9 @@ float f_HealthBeforeSuittime[MAXTF2PLAYERS]={0.0, ...};
 
 int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
-int PlayerPoints[MAXTF2PLAYERS];
 int i_ExtraPlayerPoints[MAXTF2PLAYERS];
 int i_PreviousPointAmount[MAXTF2PLAYERS];
 
-int Healing_done_in_total[MAXTF2PLAYERS];
-int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
-int i_PlayerDamaged[MAXTF2PLAYERS];
-int Resupplies_Supplied[MAXTF2PLAYERS];
 bool WaitingInQueue[MAXTF2PLAYERS];
 
 int Armor_table_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
