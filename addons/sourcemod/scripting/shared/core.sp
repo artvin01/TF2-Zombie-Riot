@@ -613,8 +613,6 @@ int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever e
 bool i_InternalMeleeTrace[MAXENTITIES]; 
 char c_WeaponSoundOverrideString[MAXENTITIES][255];
 float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
-int WeaponRef_viewmodel[MAXTF2PLAYERS];
-int HandRef[MAXTF2PLAYERS];
 //float Check_Standstill_Delay[MAXTF2PLAYERS];
 //bool Check_Standstill_Applied[MAXTF2PLAYERS];
 
@@ -657,6 +655,8 @@ char g_GibEating[][] = {
 	"physics/flesh/flesh_squishy_impact_hard4.wav",
 };
 #endif
+int WeaponRef_viewmodel[MAXTF2PLAYERS];
+int HandRef[MAXTF2PLAYERS];
 int i_Viewmodel_PlayerModel[MAXENTITIES];
 int i_Worldmodel_WeaponModel[MAXTF2PLAYERS];
 int i_OverrideWeaponSlot[MAXENTITIES]={-1, ...};
