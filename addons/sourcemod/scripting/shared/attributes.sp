@@ -136,7 +136,7 @@ stock void Attributes_SetString(int entity, int attrib, const char[] value)
 	WeaponAttributes[entity].SetString(buffer, value);
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 bool Attributes_Fire(int weapon)
 {
 	int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");

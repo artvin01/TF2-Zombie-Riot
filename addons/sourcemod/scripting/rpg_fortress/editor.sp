@@ -1,0 +1,97 @@
+#pragma semicolon 1
+#pragma newdecls required
+
+static Function EditorMenu[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
+
+methodmap EditMenu < Menu
+{
+	public EditMenu(MenuAction actions = MENU_ACTIONS_DEFAULT)
+	{
+		return view_as<EditMenu>(new Menu(EditorMenuH, actions));
+	}
+	public bool Display(int client, int time, Function callback)
+	{
+		EditorMenu[client] = callback;
+		bool result = view_as<Menu>(this).Display(client, time);
+		if(!result)
+			EditorMenu[client] = INVALID_FUNCTION;
+		
+		return result;
+	}
+	public bool DisplayAt(int client, int first_item, int time, Function callback)
+	{
+		EditorMenu[client] = callback;
+		bool result = view_as<Menu>(this).DisplayAt(client, first_item, time);
+		if(!result)
+			EditorMenu[client] = INVALID_FUNCTION;
+		
+		return result;
+	}
+}
+
+void Editor_PluginStart()
+{
+	RegAdminCmd("rpg_editor", Editor_Command, ADMFLAG_ROOT, "Enter editing mode");
+}
+
+static Action Editor_Command(int client, int args)
+{
+	if(client)
+	{
+		MainMenu(client);
+	}
+	return Plugin_Handled;
+}
+
+static int EditorMenuH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(EditorMenu[client] != INVALID_FUNCTION)
+			{
+				Function func = EditorMenu[client];
+				EditorMenu[client] = INVALID_FUNCTION;
+
+				if(choice == MenuCancel_ExitBack)
+				{
+					Call_StartFunc(null, func);
+					Call_PushCell(client);
+					Call_PushString("back");
+					Call_Finish();
+				}
+			}
+		}
+		case MenuAction_Select:
+		{
+			if(EditorMenu[client] != INVALID_FUNCTION)
+			{
+				Function func = EditorMenu[client];
+				EditorMenu[client] = INVALID_FUNCTION;
+
+				char buffer[256];
+				menu.GetItem(choice, buffer, sizeof(buffer));
+
+				Call_StartFunc(null, func);
+				Call_PushCell(client);
+				Call_PushString(buffer);
+				Call_Finish();
+			}
+		}
+	}
+	
+	return 0;
+}
+
+static void MainMenu(int client)
+{
+	EditMenu menu = new EditMenu();
+	menu.SetTitle("RPG Fortress: Game Editor\nChat messages are overriden while this menu is up\n ");
+
+	menu.AddItem("", "zones.cfg");
+}

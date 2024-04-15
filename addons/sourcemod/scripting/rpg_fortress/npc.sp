@@ -100,10 +100,7 @@ stock int NPC_GetByPlugin(const char[] plugin, NPCData data = {})
 	{
 		NPCList.GetArray(i, data);
 		if(StrEqual(plugin, data.Plugin))
-		{
-			PrecacheNPC(i, data);
 			return i;
-		}
 	}
 	return -1;
 }
@@ -305,7 +302,7 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 			float fl_DistanceToOriginalSpawn = GetVectorDistance(vecTarget, f3_SpawnPosition[npc.index], true);
 			if(fl_DistanceToOriginalSpawn > (80.0 * 80.0)) //We are too far away from our home! return!
 			{
-				NPC_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
+				npc.SetGoalVector(f3_SpawnPosition[npc.index]);
 				npc.m_bisWalking = true;
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
@@ -411,11 +408,8 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 		{
 			npc.m_flSpeed = 0.0;
 		}
-		if(npc.m_bPathing)
-		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;	
-		}
+		
+		npc.StopPathing();
 	}
 	else
 	{
@@ -423,8 +417,8 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 		{
 			npc.m_flSpeed = walkspeedback;
 		}
-		if(!npc.m_bPathing)
-			npc.StartPathing();
+		
+		npc.StartPathing();
 	}
 }
 
@@ -440,7 +434,7 @@ stock bool ShouldNpcJumpAtThisClient(int client)
 	return AllowJump;
 }
 
-bool AllyNpcInteract(int client, int entity, int weapon)
+stock bool AllyNpcInteract(int client, int entity, int weapon)
 {
 	bool result;
 /*

@@ -83,6 +83,7 @@ enum struct ItemInfo
 	Function FuncReload4;
 	Function FuncOnDeploy;
 	Function FuncOnHolster;
+	Function FuncOnBuy;
 	int WeaponSoundIndexOverride;
 	int WeaponModelIndexOverride;
 	float WeaponSizeOverride;
@@ -113,6 +114,7 @@ enum struct ItemInfo
 	int Store;
 	int Owner;
 	float Cooldown[3];
+	int CurrentClipSaved;
 	
 	void Self(ItemInfo info)
 	{
@@ -274,8 +276,6 @@ enum struct ItemInfo
 }
 
 static ArrayList EquippedItems;
-
-static bool HasMultiInSlot[MAXTF2PLAYERS][6];
 static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 
 void RpgPluginStart_Store()
@@ -363,19 +363,16 @@ void Store_WeaponSwitch(int client, int weapon)
 			static ItemInfo info;
 			EquippedItems.GetArray(pos, info);
 
-			if(item.Owned[client] > 0 && item.GetItemInfo(item.Owned[client] - 1, info))
+			if(info.FuncOnDeploy != INVALID_FUNCTION)
 			{
-				if(info.FuncOnDeploy != INVALID_FUNCTION)
-				{
-					Call_StartFunction(null, info.FuncOnDeploy);
-					Call_PushCell(client);
-					Call_PushCell(weapon);
-					Call_PushCell(info.Store);
-					Call_Finish();
-				}
-
-				HolsterFunc[client] = info.FuncOnHolster;
+				Call_StartFunction(null, info.FuncOnDeploy);
+				Call_PushCell(client);
+				Call_PushCell(weapon);
+				Call_PushCell(info.Store);
+				Call_Finish();
 			}
+
+			HolsterFunc[client] = info.FuncOnHolster;
 		}
 	}
 }
@@ -989,15 +986,9 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				{
 					ReShowVolumeHud(client);
 				}
-
 				case -1: //Move Armor Hud right
 				{
 					ReShowSettingsHud(client);
-				}
-				default:
-				{
-					LastMenuPage[client] = 0;
-					MenuPage(client, -1);
 				}
 			}
 		}
@@ -1285,8 +1276,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 
 	TextStore_GiveAll(client);
 	
-	CheckMultiSlots(client);
-	
 	Manual_Impulse_101(client, health);
 }
 
@@ -1568,7 +1557,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 					if(use)
 					{
-						Store_SwapToItem(client, entity);
+						TF2Util_SetPlayerActiveWeapon(client, entity);
 						use = false;
 					}
 				}
@@ -1625,7 +1614,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 			if(use)
 			{
-				Store_SwapToItem(client, entity);
+				TF2Util_SetPlayerActiveWeapon(client, entity);
 				use = false;
 			}
 		}
@@ -1780,31 +1769,29 @@ void Clip_SaveAllWeaponsClipSizes(int client)
 		ClipSaveSingle(client, weapon);
 	}
 }
-void ClipSaveSingle(int client, int weapon)
+stock void ClipSaveSingle(int client, int weapon)
 {
-	static Item item;
-	if(StoreWeapon[weapon] < 1)
+	int index = EquippedItems.FindValue(EntIndexToEntRef(weapon), ItemInfo::EntRef);
+	if(index != -1)
 	{
-		return;
+		ItemInfo info;
+		EquippedItems.GetArray(index, info);
+		if(info.CurrentClipSaved == -5)
+		{
+			info.CurrentClipSaved = 0;
+		}
+		else
+		{
+			int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+			int GetClip = GetEntData(weapon, iAmmoTable, 4);
+			info.CurrentClipSaved = GetClip;
+		}
+		EquippedItems.SetArray(index, info);
 	}
-
-	StoreItems.GetArray(StoreWeapon[weapon], item);
-	if(item.CurrentClipSaved[client] == -5)
-	{
-		item.CurrentClipSaved[client] = 0;
-	}
-	else
-	{
-		int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
-		int GetClip = GetEntData(weapon, iAmmoTable, 4);
-		item.CurrentClipSaved[client] = GetClip;
-	}
-	StoreItems.SetArray(StoreWeapon[weapon], item);
 }
 
 void Clip_GiveAllWeaponsClipSizes(int client)
-{
-	
+{	
 	int iea, weapon;
 	while(TF2_GetItem(client, weapon, iea))
 	{
@@ -1814,31 +1801,26 @@ void Clip_GiveAllWeaponsClipSizes(int client)
 
 void Clip_GiveWeaponClipBack(int client, int weapon)
 {
-	if(StoreWeapon[weapon] < 1)
-		return;
-
 	if(client < 1)
 		return;
 	
-	static Item item;
-	StoreItems.GetArray(StoreWeapon[weapon], item);
-	
-	if(!item.Owned[client])
-		return;
-
-	ItemInfo info;
-	if(item.GetItemInfo(item.Owned[client]-1, info))
+	int index = EquippedItems.FindValue(EntIndexToEntRef(weapon), ItemInfo::EntRef);
+	if(index != -1)
 	{
+		ItemInfo info;
+		EquippedItems.GetArray(index, info);
+
 		if(info.HasNoClip)
 		{
 			return;
 		}
-	}
-	int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
-	
-	SetEntData(weapon, iAmmoTable, item.CurrentClipSaved[client]);
 
-	SetEntProp(weapon, Prop_Send, "m_iClip1", item.CurrentClipSaved[client]); // weapon clip amount bullets
+		int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+		
+		SetEntData(weapon, iAmmoTable, info.CurrentClipSaved);
+
+		SetEntProp(weapon, Prop_Send, "m_iClip1", info.CurrentClipSaved); // weapon clip amount bullets
+	}
 }
 
 static bool CheckEntitySlotIndex(int index, int slot, int entity)

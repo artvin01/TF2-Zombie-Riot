@@ -124,7 +124,7 @@ void Stats_AddNeuralDamage(int client, int attacker, int damage)
 	}
 }
 
-void Stats_AddOriginium(int entity, int amount)
+stock void Stats_AddOriginium(int entity, int amount)
 {
 	Originium[entity] += amount;
 }

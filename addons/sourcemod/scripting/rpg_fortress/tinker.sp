@@ -292,24 +292,13 @@ static ArrayList AutoMultiList;
 static int CurrentWeapon[MAXTF2PLAYERS];
 static bool ChatListen[MAXTF2PLAYERS];
 
-void Tinker_ConfigSetup(KeyValues map)
+void Tinker_ConfigSetup()
 {
-	KeyValues kv = map;
-	if(kv)
-	{
-		kv.Rewind();
-		if(!kv.JumpToKey("Tinker"))
-			kv = null;
-	}
-	
 	char buffer[PLATFORM_MAX_PATH];
-	if(!kv)
-	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "tinker");
-		kv = new KeyValues("Tinker");
-		kv.SetEscapeSequences(true);
-		kv.ImportFromFile(buffer);
-	}
+	RPG_BuildPath(buffer, sizeof(buffer), "tinker");
+	KeyValues kv = new KeyValues("Tinker");
+	kv.SetEscapeSequences(true);
+	kv.ImportFromFile(buffer);
 
 	Tinker_ResetAll();
 
@@ -402,8 +391,7 @@ void Tinker_ConfigSetup(KeyValues map)
 		kv.GoBack();
 	}
 
-	if(kv != map)
-		delete kv;
+	delete kv;
 }
 
 void Tinker_ResetAll()

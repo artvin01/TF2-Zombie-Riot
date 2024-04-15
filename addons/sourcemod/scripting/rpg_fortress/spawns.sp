@@ -48,7 +48,7 @@ enum struct SpawnEnum
 
 		this.Index = StringToInt(this.Item1);
 		if(!this.Index)
-			this.Index = GetIndexByPluginName(this.Item1);
+			this.Index = NPC_GetByPlugin(this.Item1);
 		
 		this.Angle = kv.GetFloat("angle", -1.0);
 		this.Count = kv.GetNum("count", 1);
@@ -106,6 +106,7 @@ enum struct SpawnEnum
 	}
 }
 
+static int hFromSpawnerIndex[MAXENTITIES];
 static ArrayList SpawnList;
 static Handle h_SpawnTimer;
 static int SpawnCycle;
@@ -115,23 +116,12 @@ void Spawns_PluginStart()
 	RegConsoleCmd("rpg_spawns", Spawns_Command);
 }
 
-void Spawns_ConfigSetup(KeyValues map)
+void Spawns_ConfigSetup()
 {
-	KeyValues kv = map;
-	if(kv)
-	{
-		kv.Rewind();
-		if(!kv.JumpToKey("Spawns"))
-			kv = null;
-	}
-	
 	char buffer[PLATFORM_MAX_PATH];
-	if(!kv)
-	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "spawns");
-		kv = new KeyValues("Spawns");
-		kv.ImportFromFile(buffer);
-	}
+	RPG_BuildPath(buffer, sizeof(buffer), "spawns");
+	KeyValues kv = new KeyValues("Spawns");
+	kv.ImportFromFile(buffer);
 	
 	delete SpawnList;
 	SpawnList = new ArrayList(sizeof(SpawnEnum));
@@ -156,8 +146,7 @@ void Spawns_ConfigSetup(KeyValues map)
 	}
 	while(kv.GotoNextKey());
 
-	if(kv != map)
-		delete kv;
+	delete kv;
 	
 	if(!h_SpawnTimer && SpawnList.Length)
 		h_SpawnTimer = CreateTimer(0.1, Spawner_Timer, _, TIMER_REPEAT);
@@ -336,7 +325,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 				if(ang[1] < 0.0)
 					ang[1] = GetURandomFloat() * 360.0;
 				
-				int entity = Npc_Create(spawn.Index, 0, spawn.Pos, ang, false);
+				int entity = NPC_CreateById(spawn.Index, 0, spawn.Pos, ang, false);
 				if(entity == -1)
 					break;
 				
@@ -388,8 +377,8 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 void Apply_Text_Above_Npc(int entity,int strength, int health)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
-	char String[128];
-	GetDisplayString(Level[entity], String, sizeof(String), true);
+	char buffer[128];
+	GetDisplayString(Level[entity], buffer, sizeof(buffer), true);
 
 	int color[4];
 		
@@ -403,16 +392,16 @@ void Apply_Text_Above_Npc(int entity,int strength, int health)
 	OffsetFromHead[2] = 95.0;
 	OffsetFromHead[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 
+	NPC_GetNameById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+	OffsetFromHead[2] += 10.0;
+	npc.m_iTextEntity1 = SpawnFormattedWorldText(buffer, OffsetFromHead, 10,color, entity);
 				
 	OffsetFromHead[2] += 10.0;
-	npc.m_iTextEntity1 = SpawnFormattedWorldText(NPC_Names[i_NpcInternalId[entity]], OffsetFromHead, 10,color, entity);
-				
-	OffsetFromHead[2] += 10.0;
-	npc.m_iTextEntity2 = SpawnFormattedWorldText(String, OffsetFromHead, 10,color, entity);
+	npc.m_iTextEntity2 = SpawnFormattedWorldText(buffer, OffsetFromHead, 10,color, entity);
 
-	Format(String, sizeof(String), "%d / %d", health, health);
+	Format(buffer, sizeof(buffer), "%d / %d", health, health);
 	OffsetFromHead[2] -= 20.0;
-	npc.m_iTextEntity3 = SpawnFormattedWorldText(String, OffsetFromHead, 10,color, entity);
+	npc.m_iTextEntity3 = SpawnFormattedWorldText(buffer, OffsetFromHead, 10,color, entity);
 }
 
 static int GetScaledRate(const int rates[2], int power, int maxpower)
@@ -496,7 +485,8 @@ public Action Spawns_Command(int client, int args)
 				list.Push(spawn.Index);
 
 				static char buffer[256];
-				Format(buffer, sizeof(buffer), "%s\n ", NPC_Names[spawn.Index]);
+				NPC_GetNameById(spawn.Index, buffer, sizeof(buffer));
+				Format(buffer, sizeof(buffer), "%s\n ", buffer);
 				
 				if(spawn.Item1[0])
 					Format(buffer, sizeof(buffer), "%s%s - %.2f%% ~ %.2f%%\n ", buffer, spawn.Item1, spawn.Chance1 * luck, spawn.Chance1 * luck * spawn.DropMulti);

@@ -117,6 +117,7 @@ void KillFeed_ClientPutInServer(int client)
 	}
 }
 
+#if defined ZR
 void MoveBotToSpectator(int client)
 {
 	if(FeedTimer == null && GetTeam(client) == TFTeam_Red)
@@ -127,6 +128,8 @@ void MoveBotToSpectator(int client)
 		b_IsPlayerABot[client] = true;
 	}
 }
+#endif
+
 void KillFeed_ClientDisconnect(int client)
 {
 	for(int i; i < sizeof(Bots); i++)
@@ -183,7 +186,7 @@ int KillFeed_GetBotTeam(int client)
 	return ForceTeam[client];
 }
 
-void KillFeed_ForceClear()
+stock void KillFeed_ForceClear()
 {
 	LowList.Clear();
 	HighList.Clear();

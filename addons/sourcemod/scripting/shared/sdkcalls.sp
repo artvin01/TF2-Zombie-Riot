@@ -18,7 +18,7 @@ static Handle g_hCTFCreateArrow;
 //static Handle g_hSDKPlaySpecificSequence;
 //static Handle g_hDoAnimationEvent;
 
-#if defined ZR
+#if defined ZR || defined RPG
 static Handle g_hSDKStartLagComp;
 static Handle g_hSDKEndLagComp;
 #endif
@@ -63,7 +63,7 @@ void SDKCall_Setup()
 	if(!g_hSetLocalOrigin)
 		LogError("[Gamedata] Could not find CBaseEntity::SetLocalOrigin");
 
-#if defined ZR
+#if defined ZR || defined RPG
 	//CBaseAnimating::LookupBone( const char *szName )
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetLocalOrigin");
@@ -131,7 +131,7 @@ void SDKCall_Setup()
 	if(!g_hImpulse)
 		LogError("[Gamedata] Could not find CBasePlayer::CheatImpulseCommands");
 
-#if defined ZR
+#if defined ZR || defined RPG
 	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFPlayerShared::RecalculatePlayerBodygroups");
 	if((g_hRecalculatePlayerBodygroups = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CTFPlayerShared::RecalculatePlayerBodygroups");
@@ -235,7 +235,7 @@ stock void SDKCall_GetShootSound(int entity, int index, char[] buffer, int lengt
 
 //( const Vector &vecOrigin, const QAngle &vecAngles, const float fSpeed, const float fGravity, ProjectileType_t projectileType, CBaseEntity *pOwner, CBaseEntity *pScorer )
 
-#if defined ZR
+#if defined ZR || defined RPG
 int SDKCall_CTFCreateArrow(float VecOrigin[3], float VecAngles[3], const float fSpeed, const float fGravity, int projectileType, int Owner, int Scorer)
 {
 	if(g_hCTFCreateArrow)
@@ -300,7 +300,7 @@ void SDKCall_SetAbsAngle(int index, float AbsAngle[3])
 }
 */
 
-#if defined ZR
+#if defined ZR || defined RPG
 void SDKCall_RecalculatePlayerBodygroups(int index)
 {
 	if(g_hRecalculatePlayerBodygroups)
@@ -372,7 +372,7 @@ void GetVectors(int client, float pForward[3], float pRight[3], float pUp[3])
 	SDKCall(g_hGetVectors, client, pForward, pRight, pUp);
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 void GetBoneAnglesAndPos(int client, char[] BoneName, float origin[3], float angles[3])
 {
 	int iBone = SDKCall(g_hLookupBone, client, BoneName);
@@ -388,7 +388,7 @@ void SDKCall_BecomeRagdollOnClient(int entity, const float vec[3])
 	SDKCall(SDKBecomeRagdollOnClient, entity, vec);
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 {
 	if(g_GottenAddressesForLagComp)
@@ -442,7 +442,7 @@ stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 
 //BIG thanks to backwards#8236 on discord for helping me out, YOU ARE MY HERO.
 
-#if defined ZR
+#if defined ZR || defined RPG
 void Sdkcall_Load_Lagcomp()
 {
 	if(!g_GottenAddressesForLagComp)

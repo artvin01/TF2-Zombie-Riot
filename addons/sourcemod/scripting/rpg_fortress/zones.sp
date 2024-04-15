@@ -5,45 +5,109 @@ static ArrayList ActiveZones;
 
 void Zones_PluginStart()
 {
-	// Fixes crash when reloading the plugin
-	RequestFrame(Zones_PluginStartFrame);
+	CEntityFactory factory = new CEntityFactory("trigger_rpgzone", OnCreate, OnDestroy);
+	factory.DeriveFromClass("trigger_multiple");
+	factory.BeginDataMapDesc()
+	.DefineVectorField("m_vecTelePos")
+	.DefineVectorField("m_vecTeleAng")
+	.DefineStringField("m_nItemKey")
+	.EndDataMapDesc();
+	factory.Install();
 }
 
-public void Zones_PluginStartFrame()
+static void OnCreate(int entity)
 {
-	HookEntityOutput("trigger_multiple", "OnStartTouch", Zones_StartTouch);
-	HookEntityOutput("trigger_multiple", "OnStartTouchAll", Zones_StartTouchAll);
-	HookEntityOutput("trigger_multiple", "OnEndTouch", Zones_EndTouch);
-	HookEntityOutput("trigger_multiple", "OnEndTouchAll", Zones_EndTouchAll);
+	HookSingleEntityOutput(entity, "OnStartTouch", Zones_StartTouch, false);
+	HookSingleEntityOutput(entity, "OnStartTouchAll", Zones_StartTouchAll, false);
+	HookSingleEntityOutput(entity, "OnEndTouch", Zones_EndTouch, false);
+	HookSingleEntityOutput(entity, "OnEndTouchAll", Zones_EndTouchAll, false);
+}
 
-	char name[32];
-	int entity = -1;
-	while((entity = FindEntityByClassname(entity, "trigger_teleport")) != -1)
-	{
-		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "rpg_teleport", false))
-		{
-			SDKHook(entity, SDKHook_StartTouch, Zones_TeleportTouch);
-			SDKHook(entity, SDKHook_Touch, Zones_TeleportTouch);
-		}
-	}
+static void OnDestroy(int entity)
+{
+	UnhookSingleEntityOutput(entity, "OnStartTouch", Zones_StartTouch);
+	UnhookSingleEntityOutput(entity, "OnStartTouchAll", Zones_StartTouchAll);
+	UnhookSingleEntityOutput(entity, "OnEndTouch", Zones_EndTouch);
+	UnhookSingleEntityOutput(entity, "OnEndTouchAll", Zones_EndTouchAll);
 }
 
 void Zones_ResetAll()
 {
+	Zones_ConfigSetup();
+}
+
+void Zones_RoundStart()
+{
+	Zones_ConfigSetup();
+}
+
+void Zones_ConfigSetup()
+{
 	delete ActiveZones;
 	ActiveZones = new ArrayList(ByteCountToCells(32));
 	
-	/*char name[32];
-	HookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouchAll);
-	
-	int entity = -1;
-	while((entity = FindEntityByClassname(entity, "trigger_multiple")) != -1)
+	char buffer[PLATFORM_MAX_PATH];
+	RPG_BuildPath(buffer, sizeof(buffer), "zones");
+	KeyValues kv = new KeyValues("Zones");
+	kv.ImportFromFile(buffer);
+
+	while((entity=FindEntityByClassname(entity, "trigger_rpgzone")) != -1)
 	{
-		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "rpg_", false))
-			AcceptEntityInput(entity, "TouchTest", entity, entity);
+		RemoveEntity(entity);
 	}
 	
-	UnhookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouchAll);*/
+	if(kv.GotoFirstSubKey())
+	{
+		char name[32];
+		float pos[3], vec[3];
+		
+		do
+		{
+			if(kv.GetSectionName(name, sizeof(name)))
+			{
+				int entity = CreateEntityByName("trigger_rpgzone");
+				if(entity != -1)
+				{
+					kv.GetVector("origin", pos);
+					DispatchKeyValueVector(entity, "origin", pos);
+					DispatchKeyValue(entity, "spawnflags", "3");
+					DispatchKeyValue(entity, "targetname", "rpg_fortress");
+
+					DispatchSpawn(entity);
+					ActivateEntity(entity);    
+
+					SetEntityModel(entity, "models/error.mdl");
+					SetEntProp(entity, Prop_Send, "m_nSolidType", 2);
+					SetEntityCollisionGroup(entity, 5);
+					
+					kv.GetVector("mins", vec);
+					SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", vec);
+					SetEntPropVector(entity, Prop_Send, "m_vecMins", vec);
+					
+					kv.GetVector("maxs", vec);
+					SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", vec);
+					SetEntPropVector(entity, Prop_Send, "m_vecMaxs", vec);
+
+					kv.GetVector("telepos", vec);
+					SetEntPropVector(entity, Prop_Data, "m_vecTelePos", vec);
+
+					kv.GetVector("teleang", vec);
+					SetEntPropVector(entity, Prop_Data, "m_vecTeleAng", vec);
+
+					kv.GetString("item", buffer, sizeof(buffer));
+					SetEntPropString(entity, Prop_Data, "m_nItemKey", buffer);
+
+					view_as<CClotBody>(entity).UpdateCollisionBox();
+
+					SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW); 
+					TeleportEntity(entity, pos, NULL_VECTOR, NULL_VECTOR);
+				}
+			}
+		}
+		while(kv.GotoNextKey());
+	}
+
+	delete kv;
 }
 
 static void OnEnter(int entity, const char[] name)
@@ -63,6 +127,13 @@ static void OnEnter(int entity, const char[] name)
 		Spawns_ClientEnter(entity, name);
 		TextStore_ZoneEnter(entity, name);		
 	}
+
+	float pos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecTelePos");
+	if(pos[0])
+	{
+		
+	}
 }
 
 static void OnLeave(int entity, const char[] name)
@@ -79,7 +150,7 @@ static void OnLeave(int entity, const char[] name)
 	}
 }
 
-static void OnActive(int entity, const char[] name)
+static void OnEnable(int entity, const char[] name)
 {
 	/*if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
@@ -144,7 +215,7 @@ public Action Zones_StartTouchAll(const char[] output, int entity, int caller, f
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 		{
 			ActiveZones.PushString(name);
-			OnActive(entity, name);
+			OnEnable(entity, name);
 		}
 	}
 	return Plugin_Continue;
@@ -195,7 +266,7 @@ public Action Zones_TeleportTouch(int entity, int target)
 		{
 			if(DisabledDownloads[target])
 			{
-				ShowGameText(target, _, 0, "cl_allowdownload or cl_downloadfilter was disabled");
+				PrintCenterText(target, "You need cl_allowdownload 1 and cl_downloadfilter all");
 				return Plugin_Handled;
 			}
 

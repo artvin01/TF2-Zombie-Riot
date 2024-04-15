@@ -1,5 +1,6 @@
 #include <sourcemod>
 #include <morecolors>
+#include <loadsoundscript>
 #include <textstore>
 
 #define RPG

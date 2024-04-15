@@ -337,22 +337,16 @@ TFClassType CurrentClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 TFClassType WeaponClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 
 #if defined ZR
-int i_Damage_dealt_in_total[MAXTF2PLAYERS];
 int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
-float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
-float f_DelayAttackspeedPanicAttack[MAXENTITIES];
-int i_CurrentEquippedPerk[MAXENTITIES];
-int i_CurrentEquippedPerkPreviously[MAXENTITIES];
-bool IsInsideManageRegularWeapons;
 float DeleteAndRemoveAllNpcs = 5.0;
 
-float f_ModifThirdPersonAttackspeed[MAXENTITIES]={1.0, ...};
 ConVar cvarTimeScale;
 float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 
 int i_HowManyBombsHud[MAXENTITIES];
 #endif
+
 bool i_WeaponCannotHeadshot[MAXENTITIES];
 float i_WeaponDamageFalloff[MAXENTITIES];
 int i_SemiAutoWeapon[MAXENTITIES];
@@ -376,8 +370,8 @@ int EnemyNpcAlive = 0;
 int EnemyNpcAliveStatic = 0;
 
 float f_ClientReviveDelay[MAXENTITIES];
-aws3e45ß21
- #define MAXSTICKYCOUNTTONPC 12
+
+#define MAXSTICKYCOUNTTONPC 12
 const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
 int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
 
@@ -577,7 +571,13 @@ float f_WeaponHudOffsetY[MAXTF2PLAYERS];
 float f_NotifHudOffsetX[MAXTF2PLAYERS];
 float f_NotifHudOffsetY[MAXTF2PLAYERS];
 
-#if defined ZR
+#if defined ZR || defined RPG
+int i_Damage_dealt_in_total[MAXTF2PLAYERS];
+float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
+float f_DelayAttackspeedPanicAttack[MAXENTITIES];
+int i_CurrentEquippedPerk[MAXENTITIES];
+int i_CurrentEquippedPerkPreviously[MAXENTITIES];
+bool IsInsideManageRegularWeapons;
 int Armor_Level[MAXPLAYERS + 1]={0, ...}; 				//701
 int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
 int i_BadHealthRegen[MAXENTITIES]={0, ...}; 				//805
@@ -758,7 +758,7 @@ bool b_Dont_Move_Building[MAXENTITIES];
 bool b_Dont_Move_Allied_Npc[MAXENTITIES];
 #endif
 
-#if defined ZR
+#if defined ZR || defined RPG
 bool g_GottenAddressesForLagComp;
 Address g_hSDKStartLagCompAddress;
 Address g_hSDKEndLagCompAddress;
@@ -802,6 +802,7 @@ Handle g_hResetSequenceInfo;
 Handle g_hLookupBone;
 Handle g_hGetBonePosition;
 DynamicHook g_DHookMedigunPrimary; 
+float f_ModifThirdPersonAttackspeed[MAXENTITIES]={1.0, ...};
 #endif
 //Death
 
@@ -1253,8 +1254,11 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	MarkNativeAsOptional("FuncToVal");
 	CreateNative("FuncToVal", Native_FuncToVal);
 	
-#if defined ZR
+#if defined ZR || defined RPG
 	Thirdperson_PluginLoad();
+#endif
+
+#if defined ZR
 	ZR_PluginLoad();
 #endif
 	
@@ -1369,9 +1373,17 @@ public void OnPluginStart()
 	SyncHud_WandMana = CreateHudSynchronizer();
 #if defined ZR
 	ZR_PluginStart();
+#endif
+	
+#if defined RPG
+	RPG_PluginStart();
+#endif
+
+#if defined ZR || defined RPG
 	KillFeed_PluginStart();
 	Thirdperson_PluginStart();
 #endif
+
 	WandProjectile_GamedataInit();
 	
 #if defined RTS
@@ -1460,6 +1472,10 @@ public void OnPluginEnd()
 
 #if defined RTS_CAMERA
 	RTSCamera_PluginEnd();
+#endif
+	
+#if defined RPG
+	RPG_PluginEnd();
 #endif
 	
 #if defined RTS
@@ -1585,11 +1601,21 @@ public void OnMapStart()
 	Zero(f_EmpowerStateSelf);
 	Zero(f_EmpowerStateOther);
 	
+#if defined VIEW_CHANGES
+	ViewChange_MapStart();
+#endif
+
 #if defined ZR
 	ZR_MapStart();
-	ViewChange_MapStart();
-	WandStocks_Map_Precache();
+#endif
+
+#if defined RPG
+	RPG_MapStart();
+#endif
+
+#if defined ZR || defined RPG
 	MapStart_CustomMeleePrecache();
+	WandStocks_Map_Precache();
 #endif
 
 #if defined RTS
@@ -1855,7 +1881,7 @@ public void OnClientPostAdminCheck(int client)
 				
 public void OnClientPutInServer(int client)
 {
-#if defined ZR
+#if defined ZR || defined RPG
 	KillFeed_ClientPutInServer(client);
 #endif
 
@@ -1948,7 +1974,7 @@ public void OnClientDisconnect(int client)
 {
 	FileNetwork_ClientDisconnect(client);
 
-#if defined ZR
+#if defined ZR || defined RPG
 	KillFeed_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
 #endif
@@ -2037,14 +2063,19 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	
 	//tutorial stuff.
 	Tutorial_MakeClientNotMove(client);
+#endif
 
+#if defined ZR || defined RPG
 	if(buttons & IN_ATTACK)
 	{
 		int entity = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(entity > MaxClients)
 		{
+
+#if defined ZR
 			f_Actualm_flNextPrimaryAttack[entity] = GetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack");
-			
+#endif
+
 			bool cancel_attack = false;
 			cancel_attack = Attributes_Fire(entity);
 			
@@ -2094,7 +2125,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		holding[client] |= IN_ATTACK2;
 		
+#if defined ZR
 		b_IgnoreWarningForReloadBuidling[client] = false;
+#endif
 
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding != -1)
@@ -2112,6 +2145,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				Call_Finish(action);
 			}
 
+#if defined ZR
 			char classname[36];
 			GetEntityClassname(weapon_holding, classname, sizeof(classname));
 			
@@ -2123,6 +2157,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					Pickup_Building_M2(client, weapon, false);
 				}
 			}
+#endif
+
 		}
 		
 		StartPlayerOnlyLagComp(client, true);
@@ -2144,6 +2180,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		holding[client] |= IN_RELOAD;
 
+#if defined ZR
 	//	CheckAlivePlayers(0, 0, true);
 		
 		if(angles[0] < -70.0)
@@ -2155,6 +2192,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 		}
 		else
+#endif
+
 		{
 			int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			
@@ -2194,6 +2233,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		holding[client] |= IN_SCORE;
 		
+#if defined ZR
 		if(dieingstate[client] == 0)
 		{
 			if(WaitingInQueue[client])
@@ -2210,8 +2250,14 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 
 		}
+#endif
+
+#if defined RPG
+		FakeClientCommandEx(client, "sm_store");
+#endif
 	}
 	
+#if defined ZR
 	if(holding[client] & IN_ATTACK3)
 	{
 		if(!(buttons & IN_ATTACK3))
@@ -2311,8 +2357,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 		}
 	}
-	
 #endif	// ZR
+
 	return Plugin_Continue;
 }
 
@@ -2727,9 +2773,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Armor_Charge[entity] = 0;
 		i_EntityRecievedUpgrades[entity]	 	= ZR_UNIT_UPGRADES_NONE;
 		i_EntityRecievedUpgrades_2[entity] 		= ZR_UNIT_UPGRADES_NONE;
-		KillFeed_EntityCreated(entity);
 #endif
 
+#if defined ZR || defined RPG
+		KillFeed_EntityCreated(entity);
+#endif
 
 #if defined ZR
 		BarracksEntityCreated(entity);
@@ -2768,7 +2816,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
-#if defined ZR
+#if defined ZR || defined RPG
 		else if(!StrContains(classname, "tf_ammo_pack"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
@@ -2778,7 +2826,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
 #endif
-#if defined RTS
+#if defined RPG
 		else if(!StrContains(classname, "phys_bone_follower"))
 		{
 			//every prop_Dynamic that spawns these  can make upto 16 entities, holy fuck
@@ -2790,7 +2838,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			b_is_a_brush[entity] = true;
 		}
-#if defined ZR
+#if defined ZR || defined RPG
 		else if(!StrContains(classname, "tf_projectile_energy_ring"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
@@ -2844,7 +2892,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_OnTakeDamagePost, Func_Breakable_Post);
 		}
-#if defined ZR
+#if defined ZR || defined RPG
 		else if(!StrContains(classname, "tf_projectile_syringe"))
 		{
 			//This can only be on red anyways.
@@ -2949,7 +2997,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
-#if defined ZR
+#if defined ZR || defined RPG
 		else if(!StrContains(classname, "tf_projectile_pipe"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
@@ -2960,11 +3008,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, PipeApplyDamageCustom);
 			b_IsAProjectile[entity] = true;
 			
+#if defined ZR
 			SDKHook(entity, SDKHook_SpawnPost, Is_Pipebomb);
-			
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			
-			//SDKHook_SpawnPost doesnt work
+#endif
+
 		}
 		else if(!StrContains(classname, "tf_projectile_rocket"))
 		{
@@ -2989,7 +3036,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			b_IsAProjectile[entity] = true;
 			
 		}
-#if defined ZR
+#if defined ZR || defined RPG
 		else if (!StrContains(classname, "tf_weapon_handgun_scout_primary")) 
 		{
 			ScatterGun_Prevent_M2_OnEntityCreated(entity);
@@ -2998,7 +3045,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if (!StrContains(classname, "tf_weapon_medigun")) 
 		{
 			b_IsAMedigun[entity] = true;
-#if defined ZR
+#if defined ZR || defined RPG
 			Medigun_OnEntityCreated(entity);
 #endif
 		}
@@ -3303,7 +3350,7 @@ for(int entitycount; entitycount<i_MaxcountHomingMagicShot; entitycount++)
 }
 */
 
-#if defined ZR
+#if defined ZR || defined RPG
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
 	if(condition == TFCond_Cloaked)
@@ -3380,6 +3427,19 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 		int entity = GetClientPointVisible(client, _, _, _, vecEndOrigin); //So you can also correctly interact with players holding shit.
 		if(entity > 0)
 		{
+
+#if defined RPG
+			if(b_is_a_brush[entity]) //THIS is for brushes that act as collision boxes for NPCS inside quests.sp
+			{
+				int entityfrombrush = BrushToEntity(entity);
+				if(entityfrombrush != -1)
+				{
+					entity = entityfrombrush;
+				}
+			}
+#endif
+
+#if defined ZR
 			static char buffer[64];
 			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 			{
@@ -3409,13 +3469,39 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				if (GetTeam(entity) != TFTeam_Red)
 					return false;
 			}
+#endif
+					
+#if defined RPG
+			if(TextStore_Interact(client, entity, Is_Reload_Button))
+				return true;
+			
+			if(Tinker_Interact(client, entity, weapon))
+				return true;
+
+			if(Quests_Interact(client, entity))
+				return true;
+			
+			if(Dungeon_Interact(client, entity))
+				return true;
+
+			if(AllyNpcInteract(client, entity, weapon))
+				return true;
+#endif
 		
 		}
+
+#if defined RPG
+		else
+		{
+			if(Garden_Interact(client, vecEndOrigin))
+				return true;
+		}
+#endif
 		
 	}
 	return false;
 }
-#endif
+#endif	// ZR & RPG
 
 /*
 public void Frame_OffCheats()

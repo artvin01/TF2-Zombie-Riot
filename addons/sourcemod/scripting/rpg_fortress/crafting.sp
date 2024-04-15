@@ -9,23 +9,12 @@ enum struct CraftEnum
 
 static ArrayList CraftList;
 
-void Crafting_ConfigSetup(KeyValues map)
+void Crafting_ConfigSetup()
 {
-	KeyValues kv = map;
-	if(kv)
-	{
-		kv.Rewind();
-		if(!kv.JumpToKey("Crafting"))
-			kv = null;
-	}
-	
 	char buffer[PLATFORM_MAX_PATH];
-	if(!kv)
-	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "crafting");
-		kv = new KeyValues("Crafting");
-		kv.ImportFromFile(buffer);
-	}
+	RPG_BuildPath(buffer, sizeof(buffer), "crafting");
+	KeyValues kv = new KeyValues("Crafting");
+	kv.ImportFromFile(buffer);
 	
 	delete CraftList;
 	CraftList = new ArrayList(sizeof(CraftEnum));
@@ -50,8 +39,7 @@ void Crafting_ConfigSetup(KeyValues map)
 		while(kv.GotoNextKey());
 	}
 
-	if(kv != map)
-		delete kv;
+	delete kv;
 }
 
 void Crafting_ClientEnter(int client, const char[] zone)

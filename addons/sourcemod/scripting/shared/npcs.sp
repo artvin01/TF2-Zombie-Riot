@@ -1854,6 +1854,31 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 	}
 #endif
+
+#if defined RPG
+	char level[32];
+	GetDisplayString(Level[victim], level, sizeof(level));
+
+	if(IsValidEntity(npc.m_iTextEntity3))
+	{
+		char HealthString[512];
+		Format(HealthString, sizeof(HealthString), "%i / %i", Health, MaxHealth);
+			
+		DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
+	}
+	float HudY = -1.0;
+	float HudOffset = 0.05;
+
+	HudY += f_HurtHudOffsetY[attacker];
+	HudOffset += f_HurtHudOffsetX[attacker];
+
+	SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+		
+	//RPG cannot support translations! due to test and its used everywhere.
+	char buffer[64];
+	NPC_GetNameById(i_NpcInternalId[victim], buffer, sizeof(buffer));
+	ShowSyncHudText(attacker, SyncHud, "%s\n%s\n%d / %d\n%s-%0.f", level, buffer, Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
+#endif
 }
 
 stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 0)
@@ -2150,6 +2175,11 @@ void NPC_DeadEffects(int entity)
 			Saga_DeadEffects(entity, client, WeaponLastHit);
 #endif
 			
+#if defined RPG
+			Quests_AddKill(client, entity);
+			Spawns_NPCDeath(entity, client, WeaponLastHit);
+#endif
+
 			Attributes_OnKill(client, WeaponLastHit);
 		}
 	}

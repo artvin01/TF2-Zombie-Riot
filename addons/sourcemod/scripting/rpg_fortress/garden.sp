@@ -31,23 +31,12 @@ void Garden_ResetAll()
 	}
 }
 
-void Garden_ConfigSetup(KeyValues map)
+void Garden_ConfigSetup()
 {
-	KeyValues kv = map;
-	if(kv)
-	{
-		kv.Rewind();
-		if(!kv.JumpToKey("Garden"))
-			kv = null;
-	}
-	
 	char buffer[PLATFORM_MAX_PATH];
-	if(!kv)
-	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "garden");
-		kv = new KeyValues("Garden");
-		kv.ImportFromFile(buffer);
-	}
+	RPG_BuildPath(buffer, sizeof(buffer), "garden");
+	KeyValues kv = new KeyValues("Garden");
+	kv.ImportFromFile(buffer);
 	
 	delete GardenList;
 	GardenList = new ArrayList(sizeof(GardenEnum));
@@ -75,8 +64,7 @@ void Garden_ConfigSetup(KeyValues map)
 		while(kv.GotoNextKey());
 	}
 
-	if(kv != map)
-		delete kv;
+	delete kv;
 }
 
 static int GetNearestGarden(const char[] zone, const float pos[3])

@@ -16,6 +16,7 @@ enum
 bool DisabledDownloads[MAXTF2PLAYERS];
 
 int Tier[MAXTF2PLAYERS];
+int Level[MAXENTITIES];
 int XP[MAXENTITIES];
 
 char StoreWeapon[MAXENTITIES][48];
@@ -40,7 +41,8 @@ bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 //bool b_DungeonContracts_BleedOnHit[MAXTF2PLAYERS]; Global inside core.sp
 int i_NpcIsUnderSpawnProtectionInfluence[MAXTF2PLAYERS];
 
-Cookie Niko_Cookies;
+static char MapConfig[64];
+
 Cookie HudSettings_Cookies;
 Cookie HudSettingsExtra_Cookies;
 
@@ -48,6 +50,7 @@ Cookie HudSettingsExtra_Cookies;
 
 #include "rpg_fortress/crafting.sp"
 #include "rpg_fortress/dungeon.sp"
+#include "rpg_fortress/editor.sp"
 #include "rpg_fortress/fishing.sp"
 #include "rpg_fortress/games.sp"
 #include "rpg_fortress/garden.sp"
@@ -92,8 +95,7 @@ void RPG_PluginStart()
 {
 	HudSettings_Cookies = new Cookie("zr_hudsetting", "hud settings", CookieAccess_Protected);
 	HudSettingsExtra_Cookies = new Cookie("zr_hudsettingextra", "hud settings Extra", CookieAccess_Protected);
-	Niko_Cookies = new Cookie("zr_niko", "Are you a niko", CookieAccess_Protected);
-
+	
 	Dungeon_PluginStart();
 	Fishing_PluginStart();
 	Games_PluginStart();
@@ -108,6 +110,7 @@ void RPG_PluginStart()
 
 	CountPlayersOnRed();
 	Medigun_PluginStart();
+	RpgPluginStart_Store();
 }
 
 void RPG_PluginEnd()
@@ -149,9 +152,13 @@ void RPG_PluginEnd()
 void RPG_MapStart()
 {
 	Zero2(f3_SpawnPosition);
+	Fishing_OnMapStart();
+	Medigun_PersonOnMapStart();
+
+	CreateTimer(2.0, CheckClientConvars, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+
 	/*
 	HealingPotion_Map_Start();
-	Fishing_OnMapStart();
 	Wand_Map_Precache();
 	Wand_Fire_Map_Precache();
 	Wand_Lightning_Map_Precache();
@@ -160,11 +167,9 @@ void RPG_MapStart()
 	Wand_Short_Teleport_Map_Precache();
 	Mortar_MapStart();
 	BoomStick_MapPrecache();
-	Medigun_PersonOnMapStart();
 	Abiltity_Mudrock_Shield_Shield_PluginStart();
 	Wand_Arts_MapStart();
 
-	RpgPluginStart_Store();
 	Wand_IcicleShard_Map_Precache();
 	SentryThrow_MapStart();
 	QuickReflex_MapStart();
@@ -173,12 +178,64 @@ void RPG_MapStart()
 	*/
 
 	
-	CreateTimer(2.0, CheckClientConvars, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 }
 
 void RPG_MapEnd()
 {
 	Spawns_MapEnd();
+}
+
+void RPG_ConfigSetup(const char[] mapname)
+{
+	bool found;
+	char buffer[PLATFORM_MAX_PATH];
+	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG);
+	DirectoryListing dir = OpenDirectory(buffer);
+	if(dir != INVALID_HANDLE)
+	{
+		FileType file;
+		while(dir.GetNext(MapConfig, sizeof(MapConfig), file))
+		{
+			if(file != FileType_Directory)
+				continue;
+			
+			if(StrContains(mapname, MapConfig, false) == -1)
+				continue;
+			
+			found = true;
+			break;
+		}
+		delete dir;
+	}
+
+	if(!found)
+		SetFailState("Can not find folder in '%s' for map '%s'", buffer, mapname);
+
+	Crafting_ConfigSetup();
+	Dungeon_ConfigSetup();
+	Fishing_ConfigSetup();
+	Games_ConfigSetup();
+	Garden_ConfigSetup();
+	Mining_ConfigSetup();
+	Music_ConfigSetup();
+	Quests_ConfigSetup();
+	Spawns_ConfigSetup();
+	Tinker_ConfigSetup();
+	
+	TextStore_ConfigSetup();
+
+	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/%s/soundscript.txt", MapConfig);
+	LoadSoundScript(buffer);
+}
+
+stock bool RPG_IsMap(const char[] name)
+{
+	return StrContains(MapConfig, name, false) != -1;
+}
+
+void RPG_BuildPath(char[] buffer, int length, const char[] name)
+{
+	BuildPath(Path_SM, buffer, length, CONFIG ... "/%s/%s.cfg", MapConfig, name);
 }
 
 void RPG_PutInServer(int client)

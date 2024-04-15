@@ -192,23 +192,12 @@ public void AntiTouchStuckMine(int entity, int other)
 static ArrayList MineList;
 static int MineDamage[MAXTF2PLAYERS];
 
-void Mining_ConfigSetup(KeyValues map)
+void Mining_ConfigSetup()
 {
-	KeyValues kv = map;
-	if(kv)
-	{
-		kv.Rewind();
-		if(!kv.JumpToKey("Mining"))
-			kv = null;
-	}
-	
 	char buffer[PLATFORM_MAX_PATH];
-	if(!kv)
-	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "mining");
-		kv = new KeyValues("Mining");
-		kv.ImportFromFile(buffer);
-	}
+	RPG_BuildPath(buffer, sizeof(buffer), "mining");
+	KeyValues kv = new KeyValues("Mining");
+	kv.ImportFromFile(buffer);
 	
 	delete MineList;
 	MineList = new ArrayList(sizeof(MineEnum));
@@ -234,8 +223,7 @@ void Mining_ConfigSetup(KeyValues map)
 	}
 	while(kv.GotoNextKey());
 
-	if(kv != map)
-		delete kv;
+	delete kv;
 }
 
 void Mining_EnableZone(const char[] name)

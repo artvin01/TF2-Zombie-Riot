@@ -49,13 +49,24 @@ void FileNetwork_ClientDisconnect(int client)
 	ExtraLevel[client] = 0;
 }
 
+#if defined RPG
+void FileNetwork_ConfigSetup()
+#else
 void FileNetwork_ConfigSetup(KeyValues map)
+#endif
 {
 	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "downloads");
+
 	KeyValues kv = new KeyValues("Downloads");
 	kv.ImportFromFile(buffer);
 
+	
+#if defined RPG
+	RPG_BuildPath(buffer, sizeof(buffer), "downloads");
+	KeyValues enabled = new KeyValues("Packages");
+	enabled.ImportFromFile(buffer);
+#else
 	KeyValues enabled;
 	if(map)
 	{
@@ -81,6 +92,7 @@ void FileNetwork_ConfigSetup(KeyValues map)
 			enabled.JumpToKey("Default");
 		}
 	}
+#endif
 
 	ArrayList list = new ArrayList(ByteCountToCells(sizeof(buffer)));
 
@@ -130,6 +142,13 @@ void FileNetwork_ConfigSetup(KeyValues map)
 		while(kv.GotoNextKey());
 
 		LockStringTables(save);
+	}
+
+#if !defined RPG
+	if(enabled != map && enabled != kv)
+#endif
+	{
+		delete enabled;
 	}
 
 	delete list;

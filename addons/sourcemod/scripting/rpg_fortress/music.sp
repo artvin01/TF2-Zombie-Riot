@@ -41,23 +41,12 @@ static int OverrideTime[MAXTF2PLAYERS];
 static bool OverrideCustom[MAXTF2PLAYERS];
 static float OverrideVolume[MAXTF2PLAYERS];
 
-void Music_ConfigSetup(KeyValues map)
+void Music_ConfigSetup()
 {
-	KeyValues kv = map;
-	if(kv)
-	{
-		kv.Rewind();
-		if(!kv.JumpToKey("Music"))
-			kv = null;
-	}
-	
 	char buffer[PLATFORM_MAX_PATH];
-	if(!kv)
-	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "music");
-		kv = new KeyValues("Music");
-		kv.ImportFromFile(buffer);
-	}
+	RPG_BuildPath(buffer, sizeof(buffer), "music");
+	KeyValues kv = new KeyValues("Music");
+	kv.ImportFromFile(buffer);
 
 	delete MusicList;
 	MusicList = new StringMap();
@@ -75,8 +64,7 @@ void Music_ConfigSetup(KeyValues map)
 		while(kv.GotoNextKey());
 	}
 
-	if(kv != map)
-		delete kv;
+	delete kv;
 }
 
 void Music_ZoneEnter(int client, const char[] name)

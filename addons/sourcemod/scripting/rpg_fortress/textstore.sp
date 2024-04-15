@@ -256,7 +256,7 @@ static void SaveMarket(int client)
 	TextStore_ClientSave(client);
 
 	static char buffer[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "stores_savedata");
+	RPG_BuildPath(buffer, sizeof(buffer), "stores_savedata");
 	MarketKv.Rewind();
 	MarketKv.ExportToFile(buffer);
 }
@@ -333,23 +333,12 @@ public Action TextStore_GiveMeAllCommand(int client, int args)
 	return Plugin_Handled;
 }
 
-void TextStore_ConfigSetup(KeyValues map)
+void TextStore_ConfigSetup()
 {
-	KeyValues kv = map;
-	if(kv)
-	{
-		kv.Rewind();
-		if(!kv.JumpToKey("Stores"))
-			kv = null;
-	}
-	
 	char buffer[PLATFORM_MAX_PATH];
-	if(!kv)
-	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "stores");
-		kv = new KeyValues("Stores");
-		kv.ImportFromFile(buffer);
-	}
+	RPG_BuildPath(buffer, sizeof(buffer), "stores");
+	KeyValues kv = new KeyValues("Stores");
+	kv.ImportFromFile(buffer);
 	
 	delete StoreList;
 	StoreList = new StringMap();
@@ -366,11 +355,10 @@ void TextStore_ConfigSetup(KeyValues map)
 	}
 	while(kv.GotoNextKey());
 
-	if(kv != map)
-		delete kv;
+	delete kv;
 	
 	delete MarketKv;
-	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "stores_savedata");
+	RPG_BuildPath(buffer, sizeof(buffer), "stores_savedata");
 	MarketKv = new KeyValues("MarketData");
 	MarketKv.ImportFromFile(buffer);
 	
@@ -2163,7 +2151,7 @@ public int TextStore_WeaponMenu(Menu menu, MenuAction action, int client, int ch
 
 				int entity = EntRefToEntIndex(StringToInt(num));
 				if(entity != INVALID_ENT_REFERENCE)
-					Store_SwapToItem(client, entity);
+					TF2Util_SetPlayerActiveWeapon(client, entity);
 			}
 
 			ShowMenu(client);
@@ -2190,7 +2178,7 @@ public int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int 
 					FakeClientCommandEx(client, "sm_inv");
 				
 				case MenuCancel_Exit:
-					Store_SwapToItem(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
+					TF2Util_SetPlayerActiveWeapon(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
 			}
 		}
 		case MenuAction_Select:

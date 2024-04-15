@@ -74,23 +74,12 @@ void Fishing_OnMapStart()
 	g_FishCaughtText = PrecacheParticleSystem("hit_text");
 }
 
-void Fishing_ConfigSetup(KeyValues map)
+void Fishing_ConfigSetup()
 {
-	KeyValues kv = map;
-	if(kv)
-	{
-		kv.Rewind();
-		if(!kv.JumpToKey("Fishing"))
-			kv = null;
-	}
-	
 	char buffer[PLATFORM_MAX_PATH];
-	if(!kv)
-	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "fishing");
-		kv = new KeyValues("Fishing");
-		kv.ImportFromFile(buffer);
-	}
+	RPG_BuildPath(buffer, sizeof(buffer), "fishing");
+	KeyValues kv = new KeyValues("Fishing");
+	kv.ImportFromFile(buffer);
 	
 	delete FishList;
 	FishList = new StringMap();
@@ -187,8 +176,7 @@ void Fishing_ConfigSetup(KeyValues map)
 		while(kv.GotoNextKey());
 	}
 
-	if(kv != map)
-		delete kv;
+	delete kv;
 }
 
 void Fishing_ClientDisconnect(int client)

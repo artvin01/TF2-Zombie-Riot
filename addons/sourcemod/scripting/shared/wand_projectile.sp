@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#if defined ZR
+#if defined ZR || defined RPG
 static int i_ProjectileIndex;
 
 void WandStocks_Map_Precache()
@@ -27,7 +27,7 @@ void WandProjectile_GamedataInit()
 	EntityFactory.Install();
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 int Wand_Projectile_Spawn(int client,
 float speed,
 float time,
@@ -316,6 +316,13 @@ public void Wand_Base_StartTouch(int entity, int other)
 			Gun_MessengerTouch(entity, target);
 		}
 	}
+}
+#endif
+
+#if defined RPG
+public void Wand_Base_StartTouch(int entity, int other)
+{
+	//int target = Target_Hit_Wand_Detection(entity, other);
 }
 #endif
 

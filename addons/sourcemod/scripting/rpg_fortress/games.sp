@@ -101,23 +101,12 @@ public Action Games_Command(int client, int args)
 	return Plugin_Handled;
 }
 
-void Games_ConfigSetup(KeyValues map)
+void Games_ConfigSetup()
 {
-	KeyValues kv = map;
-	if(kv)
-	{
-		kv.Rewind();
-		if(!kv.JumpToKey("Games"))
-			kv = null;
-	}
-	
 	char buffer[PLATFORM_MAX_PATH];
-	if(!kv)
-	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "games");
-		kv = new KeyValues("Games");
-		kv.ImportFromFile(buffer);
-	}
+	RPG_BuildPath(buffer, sizeof(buffer), "games");
+	KeyValues kv = new KeyValues("Games");
+	kv.ImportFromFile(buffer);
 	
 	delete GameList;
 	GameList = new StringMap();
@@ -132,8 +121,7 @@ void Games_ConfigSetup(KeyValues map)
 	}
 	while(kv.GotoNextKey(false));
 
-	if(kv != map)
-		delete kv;
+	delete kv;
 }
 
 void Games_ClientEnter(int client, const char[] name)

@@ -21,6 +21,7 @@ static ArrayList WeaponList;
 
 void Configs_ConfigsExecuted()
 {
+	char mapname[64];
 	char buffer[PLATFORM_MAX_PATH];
 	KeyValues kv;
 	
@@ -28,7 +29,6 @@ void Configs_ConfigsExecuted()
 	if(!zr_ignoremapconfig.BoolValue)
 #endif
 	{
-		char mapname[64];
 		GetCurrentMap(mapname, sizeof(mapname));
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/maps");
 		DirectoryListing dir = OpenDirectory(buffer);
@@ -58,14 +58,23 @@ void Configs_ConfigsExecuted()
 		}
 	}
 	
+#if defined RPG
+	FileNetwork_ConfigSetup();
+	NPC_ConfigSetup();
+#else
 	FileNetwork_ConfigSetup(kv);
 	NPC_ConfigSetup();
+#endif
 	
 #if defined ZR
 	Items_SetupConfig();
 	Store_ConfigSetup();
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
+#endif
+	
+#if defined RPG
+	RPG_ConfigSetup(mapname);
 #endif
 
 #if defined RTS

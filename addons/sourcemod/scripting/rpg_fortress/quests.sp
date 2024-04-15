@@ -19,7 +19,7 @@ static int b_OwnerToParticle[MAXENTITIES];
 static void ForceSave(int client)
 {
 	static char buffer[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "quests_savedata");
+	RPG_BuildPath(buffer, sizeof(buffer), "quests_savedata");
 
 	SaveKv.Rewind();
 	SaveKv.ExportToFile(buffer);
@@ -27,30 +27,16 @@ static void ForceSave(int client)
 	TextStore_ClientSave(client);
 }
 
-void Quests_ConfigSetup(KeyValues map)
+void Quests_ConfigSetup()
 {
 	delete QuestKv;
 	delete SaveKv;
 
-	if(map)
-	{
-		map.Rewind();
-		if(map.JumpToKey("Quests"))
-		{
-			QuestKv = new KeyValues("Quests");
-			QuestKv.SetEscapeSequences(true);
-			QuestKv.Import(map);
-		}
-	}
-	
 	char buffer[PLATFORM_MAX_PATH];
-	if(!QuestKv)
-	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "quests");
-		QuestKv = new KeyValues("Quests");
-		QuestKv.SetEscapeSequences(true);
-		QuestKv.ImportFromFile(buffer);
-	}
+	RPG_BuildPath(buffer, sizeof(buffer), "quests");
+	QuestKv = new KeyValues("Quests");
+	QuestKv.SetEscapeSequences(true);
+	QuestKv.ImportFromFile(buffer);
 
 	QuestKv.GotoFirstSubKey();
 	do
@@ -100,7 +86,7 @@ void Quests_ConfigSetup(KeyValues map)
 	}
 	while(QuestKv.GotoNextKey());
 
-	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "quests_savedata");
+	RPG_BuildPath(buffer, sizeof(buffer), "quests_savedata");
 	SaveKv = new KeyValues("SaveData");
 	SaveKv.ImportFromFile(buffer);
 }
@@ -257,8 +243,11 @@ void Quests_DisableZone(const char[] name)
 	while(QuestKv.GotoNextKey());
 }
 
-void Quests_AddKill(int client, const char[] name)
+void Quests_AddKill(int client, int entity)
 {
+	char name[64];
+	NPC_GetNameById(i_NpcInternalId[entity], name, sizeof(name));
+
 	SaveKv.Rewind();
 	SaveKv.JumpToKey("_kills", true);
 	SaveKv.JumpToKey(name, true);
@@ -948,11 +937,11 @@ public int Quests_BookHandle(Menu menu, MenuAction action, int client, int choic
 		case MenuAction_Cancel:
 		{
 			if(choice != MenuCancel_Disconnected)
-				Store_SwapToItem(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
+				TF2Util_SetPlayerActiveWeapon(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
 		}
 		case MenuAction_Select:
 		{
-			Store_SwapToItem(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
+			TF2Util_SetPlayerActiveWeapon(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
 		}
 	}
 	return 0;

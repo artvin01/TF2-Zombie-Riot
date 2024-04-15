@@ -710,7 +710,6 @@ void ZR_MapStart()
 	Wand_Calcium_Map_Precache();
 //	Wand_Black_Fire_Map_Precache();
 	Wand_Chlorophite_Map_Precache();
-	MapStart_CustomMeleePrecache();
 	MagicRestore_MapStart();
 	Wind_Staff_MapStart();
 	Nailgun_Map_Precache();

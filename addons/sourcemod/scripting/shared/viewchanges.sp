@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define VIEW_CHANGES
 
 static const char HandModels[][] =
 {
@@ -161,6 +162,10 @@ void ViewChange_PlayerModel(int client)
 		SDKCall_EquipWearable(client, entity);
 		SetEntProp(client, Prop_Send, "m_nRenderFX", 6);
 		i_Viewmodel_PlayerModel[client] = EntIndexToEntRef(entity);
+
+#if defined RPG
+		Party_PlayerModel(client, PlayerModels[CurrentClass[client]]);
+#endif
 
 	}
 }

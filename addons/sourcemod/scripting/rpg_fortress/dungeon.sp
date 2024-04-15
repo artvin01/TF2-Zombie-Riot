@@ -104,7 +104,7 @@ enum struct WaveEnum
 		kv.GetString("name", buffer, length);
 		this.Index = StringToInt(buffer);
 		if(!this.Index)
-			this.Index = GetIndexByPluginName(buffer);
+			this.Index = NPC_GetByPlugin(buffer);
 
 		kv.GetVector("pos", this.Pos);
 		this.Angle = kv.GetFloat("angle", -1.0);
@@ -576,27 +576,16 @@ void Dungeon_PluginStart()
 	mp_disable_respawn_times = FindConVar("mp_disable_respawn_times");
 }
 
-void Dungeon_ConfigSetup(KeyValues map)
+void Dungeon_ConfigSetup()
 {
 	PrecacheSound("misc/your_team_won.mp3");
 	PrecacheSound("misc/your_team_lost.mp3");
 
-	KeyValues kv = map;
-	if(kv)
-	{
-		kv.Rewind();
-		if(!kv.JumpToKey("Dungeon"))
-			kv = null;
-	}
-	
 	char buffer[PLATFORM_MAX_PATH];
-	if(!kv)
-	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "dungeon");
-		kv = new KeyValues("Dungeon");
-		kv.SetEscapeSequences(true);
-		kv.ImportFromFile(buffer);
-	}
+	RPG_BuildPath(buffer, sizeof(buffer), "dungeon");
+	KeyValues kv = new KeyValues("Dungeon");
+	kv.SetEscapeSequences(true);
+	kv.ImportFromFile(buffer);
 
 	delete DungeonTimer;
 
@@ -634,12 +623,10 @@ void Dungeon_ConfigSetup(KeyValues map)
 		while(kv.GotoNextKey());
 	}
 
-	if(kv != map)
-		delete kv;
-	
+	delete kv;
 	delete SaveKv;
 
-	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "dungeon_savedata");
+	RPG_BuildPath(buffer, sizeof(buffer), "dungeon_savedata");
 	SaveKv = new KeyValues("SaveDData");
 	SaveKv.ImportFromFile(buffer);
 }
@@ -1123,7 +1110,6 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 
 void Dungeon_ResetEntity(int entity)
 {
-	ClearDungeonStats(entity);
 	InDungeon[entity][0] = 0;
 }
 
@@ -1164,7 +1150,6 @@ void Dungeon_ClientDisconnect(int client, bool alive = false)
 			mp_disable_respawn_times.ReplicateToClient(client, "0");
 
 		InDungeon[client][0] = 0;
-		ClearDungeonStats(client);
 		Dungeon_CheckAlivePlayers(client);
 	}
 }
@@ -1331,7 +1316,6 @@ static void CleanDungeon(const char[] name, bool victory)
 					{
 						clients[amount++] = client;
 						InDungeon[client][0] = 0;
-						ClearDungeonStats(client);
 						f3_SpawnPosition[client] = dungeon.RespawnPos;
 						CreateTimer(8.25, Dungeon_EndMusicTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 						CreateTimer(8.25, Dungeon_RespawnTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -1361,7 +1345,7 @@ static void CleanDungeon(const char[] name, bool victory)
 				if(amount)
 					stage.DoAllDrops(clients, amount, tier);
 				
-				BuildPath(Path_SM, mod.Desc, sizeof(mod.Desc), CONFIG_CFG, "dungeon_savedata");
+				RPG_BuildPath(mod.Desc, sizeof(mod.Desc), "dungeon_savedata");
 
 				SaveKv.Rewind();
 				SaveKv.ExportToFile(mod.Desc);
@@ -1488,7 +1472,7 @@ public Action Dungeon_Timer(Handle timer)
 							if(ang[1] < 0.0)
 								ang[1] = GetURandomFloat() * 360.0;
 
-							entity = Npc_Create(wave.Index, 0, wave.Pos, ang, false);
+							entity = NPC_CreateById(wave.Index, 0, wave.Pos, ang, false);
 							if(entity != -1)
 							{
 								Level[entity] = wave.Level;

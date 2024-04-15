@@ -3841,6 +3841,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	return MRES_Ignored;
 }
 
+#if defined ZR
 void NPC_StartPathing(int entity)
 {
 	view_as<CClotBody>(entity).StartPathing();
@@ -3869,6 +3870,7 @@ void NPC_SetGoalEntity(int entity, int target)
 		view_as<CClotBody>(entity).SetGoalEntity(target);
 	}
 }
+#endif
 
 stock bool IsLengthGreaterThan(float vector[3], float length)
 {
