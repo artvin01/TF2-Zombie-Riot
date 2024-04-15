@@ -44,7 +44,7 @@ void Zones_RoundStart()
 void Zones_ConfigSetup()
 {
 	delete ActiveZones;
-	ActiveZones = new ArrayList(ByteCountToCells(32));
+	ActiveZones = new ArrayList(ByteCountToCells(64));
 	
 	char buffer[PLATFORM_MAX_PATH];
 	RPG_BuildPath(buffer, sizeof(buffer), "zones");
@@ -59,7 +59,7 @@ void Zones_ConfigSetup()
 	
 	if(kv.GotoFirstSubKey())
 	{
-		char name[32];
+		char name[64];
 		float pos[3], vec[3];
 		
 		do
@@ -128,13 +128,6 @@ static void OnEnter(int entity, const char[] name)
 		Spawns_ClientEnter(entity, name);
 		TextStore_ZoneEnter(entity, name);		
 	}
-
-	float pos[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecTelePos", pos);
-	if(pos[0])
-	{
-		
-	}
 }
 
 static void OnLeave(int entity, const char[] name)
@@ -190,9 +183,18 @@ public Action Zones_StartTouch(const char[] output, int entity, int caller, floa
 {
 	if(caller > 0 && caller <= MAXENTITIES)
 	{
-		char name[32];
+		char name[64];
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 			OnEnter(caller, name);
+
+		float pos[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecTelePos", pos);
+		if(pos[0])
+		{
+			float ang[3];
+			GetEntPropVector(entity, Prop_Data, "m_vecTeleAng", ang);
+			TeleportEntity(caller, pos, ang, {0.0, 0.0, 0.0});
+		}
 	}
 	return Plugin_Continue;
 }
@@ -201,7 +203,7 @@ public Action Zones_EndTouch(const char[] output, int entity, int caller, float 
 {
 	if(caller > 0 && caller <= MaxClients)
 	{
-		char name[32];
+		char name[64];
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 			OnLeave(caller, name);
 	}
@@ -212,7 +214,7 @@ public Action Zones_StartTouchAll(const char[] output, int entity, int caller, f
 {
 	if(ActiveZones)
 	{
-		char name[32];
+		char name[64];
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 		{
 			ActiveZones.PushString(name);
@@ -226,7 +228,7 @@ public Action Zones_EndTouchAll(const char[] output, int entity, int caller, flo
 {
 	if(ActiveZones)
 	{
-		char name[32];
+		char name[64];
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 		{
 			int pos = ActiveZones.FindString(name);
@@ -250,7 +252,7 @@ void Zones_EntityCreated(int entity, const char[] classname)
 
 public void Zones_TeleportSpawn(int entity)
 {
-	char name[32];
+	char name[64];
 	if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "rpg_teleport_", false))
 	{
 		SDKHook(entity, SDKHook_StartTouch, Zones_TeleportTouch);
@@ -262,7 +264,7 @@ public Action Zones_TeleportTouch(int entity, int target)
 {
 	if(target > 0 && target < sizeof(Level))
 	{
-		static char name[32];
+		static char name[64];
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "rpg_teleport_", false))
 		{
 			if(DisabledDownloads[target])

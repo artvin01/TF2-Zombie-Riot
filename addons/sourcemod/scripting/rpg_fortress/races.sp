@@ -97,6 +97,137 @@ static const float RuianianTransformationMulti[][] =
 
 	{ 15.0/*Stellar Magnifier*/ , 3.5			, 3.5			, 3.5				, 3.5			, 3.5			, 1.0				, 1.0			,0.0			,0.0},
 	{ 5.0 /*Mastered ^^!*/		, 4.5			, 4.5			, 4.5				, 4.5			, 4.5			, 1.0				, 1.0			,0.0			,0.0}
-};	
+};
 
+enum struct Form
+{
+	char Name[64];
+	int Level;
+	int Mastery;
+	int Upgrade;
+	Function Func;
+	float DrainRate[2];
 
+	float StrengthMulti[2];
+	float PrecisionMulti[2];
+	float AtrificeMulti[2];
+	float EnduranceMulti[2];
+	float StructureMulti[2];
+	float IntelligenceMulti[2];
+	float LuckMulti[2];
+	float AgilityMulti[2];
+
+	void SetupKV(KeyValues kv)
+	{
+		kv.GetSectionName(this.Name, sizeof(this.Name));
+
+		this.StrengthMulti[0] = kv.GetFloat("Min_Strength", 1.0);
+		this.StrengthMulti[1] = kv.GetFloat("Max_Strength", 1.0);
+
+		this.PrecisionMulti[0] = kv.GetFloat("Min_Strength", 1.0);
+		this.PrecisionMulti[1] = kv.GetFloat("Max_Strength", 1.0);
+
+		this.AtrificeMulti[0] = kv.GetFloat("Min_Strength", 1.0);
+		this.AtrificeMulti[1] = kv.GetFloat("Max_Strength", 1.0);
+
+		this.EnduranceMulti[0] = kv.GetFloat("Min_Strength", 1.0);
+		this.EnduranceMulti[1] = kv.GetFloat("Max_Strength", 1.0);
+
+		this.StructureMulti[0] = kv.GetFloat("Min_Strength", 1.0);
+		this.StructureMulti[1] = kv.GetFloat("Max_Strength", 1.0);
+
+		this.IntelligenceMulti[0] = kv.GetFloat("Min_Strength", 1.0);
+		this.IntelligenceMulti[1] = kv.GetFloat("Max_Strength", 1.0);
+
+		this.LuckMulti[0] = kv.GetFloat("Min_Strength", 1.0);
+		this.LuckMulti[1] = kv.GetFloat("Max_Strength", 1.0);
+
+		this.AgilityMulti[0] = kv.GetFloat("Min_Strength", 1.0);
+		this.AgilityMulti[1] = kv.GetFloat("Max_Strength", 1.0);
+		
+		kv.GoBack();
+	}
+}
+
+enum struct Race
+{
+	char Name[64];
+	ArrayList Forms;
+
+	float StrengthMulti;
+	float PrecisionMulti;
+	float AtrificeMulti;
+	float EnduranceMulti;
+	float StructureMulti;
+	float IntelligenceMulti;
+	float CapacityMulti;
+	float LuckMulti;
+	float AgilityMulti;
+
+	void SetupKV(KeyValues kv)
+	{
+		kv.GetSectionName(this.Name, sizeof(this.Name));
+
+		this.Forms = new ArrayList(sizeof(Form));
+
+		if(kv.GotoFirstSubKey())
+		{
+			Form form;
+
+			do
+			{
+				form.SetupKV(kv);
+				this.Forms.PushArray(form);
+			}
+			while(kv.GotoNextKey());
+			kv.GoBack();
+		}
+	}
+	void Delete()
+	{
+		delete this.Forms;
+	}
+}
+
+static ArrayList Races;
+
+void Races_ConfigSetup()
+{
+	Race race;
+
+	if(Races)
+	{
+		int length = Races.Length;
+		for(int i; i < length; i++)
+		{
+			Races.GetArray(i, race);
+			race.Delete();
+		}
+
+		delete Races;
+	}
+	
+	Races = new ArrayList(sizeof(Race));
+
+	char buffer[PLATFORM_MAX_PATH];
+	RPG_BuildPath(buffer, sizeof(buffer), "races");
+	KeyValues kv = new KeyValues("Races");
+	kv.ImportFromFile(buffer);
+
+	kv.GotoFirstSubKey();
+	do
+	{
+		race.SetupKV(kv);
+		Races.PushArray(race);
+	}
+	while(kv.GotoNextKey());
+
+	delete kv;
+}
+
+void Races_GetRaceByIndex(int index, Race race)
+{
+	Races.GetArray(index, race);
+}
+
+void Races_GetTransformation
