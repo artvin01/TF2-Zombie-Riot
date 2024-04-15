@@ -17,11 +17,13 @@ static int GetChargeEffectBeingProvided;
 //static bool Disconnecting;
 static DynamicHook g_WrenchSmack;
 //DynamicHook g_ObjStartUpgrading;
-static Address CTeamplayRoundBasedRules = Address_Null;
 static DynamicHook g_DhookCheckUpgradeOnHit; 
 static DynamicHook g_DHookScoutSecondaryFire; 
 #endif
 
+#if defined ZR
+static Address CTeamplayRoundBasedRules = Address_Null;
+#endif
 static DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited

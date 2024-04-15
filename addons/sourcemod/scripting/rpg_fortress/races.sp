@@ -17,6 +17,9 @@
 #define STAT_LUCK			8 // -> random crit? idk lol, but increaced chance based shit
 #define STAT_AGILITY		9 // -> more movesmentspeed attackspeed reload speed, all speed things speedy.
 
+int i_TransformationLevel[MAXTF2PLAYERS];
+int i_TransformationProgress[MAXTF2PLAYERS][5]; //secondary is for sub forms, bur we dont have them yet, but we should prepare just incase.
+float f_TransformationDelay[MAXTF2PLAYERS]; 	//if he takess too long and cancels it, itll just drop the progress.
 static const float RaceStatBonuses[][] =
 {
 	//race, its a blank space 	STAT_STRENGTH	STAT_PRECISION	STAT_ARTIFICE		STAT_ENDURANCE	STAT_STRUCTURE	STAT_INTELLIGENCE	STAT_CAPACITY
@@ -24,7 +27,7 @@ static const float RaceStatBonuses[][] =
 	{ 0.0 /*RACE_MERC_HUMAN */ 	, 1.1			, 1.1			, 1.1				, 1.1			, 11.0			, 1.0				, 5.5}, 				//RACE_MERC_HUMAN
 	{ 0.0 /*RACE_EXPIDONSAN	*/	, 1.2			, 1.0			, 0.8				, 1.2			, 13.0			, 1.2				, 4.5},			 		//RACE_EXPIDONSAN
 	{ 0.0 /*RACE_RUANIANS	*/	, 0.9			, 0.9			, 1.25				, 0.9			, 9.0			, 1.1				, 7.5},			 	//RACE_RUANIANS
-	{ 0.0 /*RACE_IBERIANS	*/	, 1.075			, 1.22			, 1.0				, 1.0			, 11.5			, 1.15				, 7.5},			 	//RACE_IBERIANS
+	{ 0.0 /*RACE_IBERIANS	*/	, 1.075			, 1.22			, 1.0				, 1.0			, 11.5			, 1.15				, 7.5}			 	//RACE_IBERIANS
 };					
 
 
@@ -57,8 +60,8 @@ static const float MercHumanTransformationMulti[][] =
 	{ 7.0 /*Mastered ^^!*/		, 3.0			, 3.0			, 3.0				, 3.0			, 3.0			, 1.0				, 1.0			,0.0			,0.0},
 
 	{ 15.0 /*Halloween Magic!*/	, 3.5			, 3.5			, 3.5				, 3.5			, 3.5			, 1.0				, 1.0			,0.0			,0.0},
-	{ 7.0 /*Mastered ^^!*/		, 4.5			, 4.5			, 4.5				, 4.5			, 4.5			, 1.0				, 1.0			,0.0			,0.0},
-}
+	{ 7.0 /*Mastered ^^!*/		, 4.5			, 4.5			, 4.5				, 4.5			, 4.5			, 1.0				, 1.0			,0.0			,0.0}
+};	
 
 static const float ExpidonsanTransformationMulti[][] =
 {
@@ -69,8 +72,8 @@ static const float ExpidonsanTransformationMulti[][] =
 	{ 8.0 /*Mastered ^^!*/		, 3.0			, 3.0			, 3.0				, 3.0			, 3.0			, 1.0				, 1.0			,0.0			,0.0},
 
 	{ 18.0 /*Exponential Tech!*/, 3.5			, 3.5			, 3.5				, 3.5			, 3.5			, 1.0				, 1.0			,0.0			,0.0},
-	{ 5.0 /*Mastered ^^!*/		, 4.5			, 4.5			, 4.5				, 4.5			, 4.5			, 1.0				, 1.0			,0.0			,0.0},
-}
+	{ 5.0 /*Mastered ^^!*/		, 4.5			, 4.5			, 4.5				, 4.5			, 4.5			, 1.0				, 1.0			,0.0			,0.0}
+};	
 
 static const float IberianTransformationMulti[][] =
 {
@@ -81,8 +84,8 @@ static const float IberianTransformationMulti[][] =
 	{ 4.0 /*Mastered ^^!*/		, 3.0			, 3.0			, 3.0				, 3.0			, 3.0			, 1.0				, 1.0			,0.0			,0.0},
 
 	{ 15.0/*Immensive Resolve*/ , 3.5			, 3.5			, 3.5				, 3.5			, 3.5			, 1.0				, 1.0			,0.0			,0.0},
-	{ 5.0 /*Mastered ^^!*/		, 4.5			, 4.5			, 4.5				, 4.5			, 4.5			, 1.0				, 1.0			,0.0			,0.0},
-}
+	{ 5.0 /*Mastered ^^!*/		, 4.5			, 4.5			, 4.5				, 4.5			, 4.5			, 1.0				, 1.0			,0.0			,0.0}
+};	
 
 static const float RuianianTransformationMulti[][] =
 {
@@ -93,5 +96,7 @@ static const float RuianianTransformationMulti[][] =
 	{ 4.0 /*Mastered ^^!*/		, 3.0			, 3.0			, 3.0				, 3.0			, 3.0			, 1.0				, 1.0			,0.0			,0.0},
 
 	{ 15.0/*Stellar Magnifier*/ , 3.5			, 3.5			, 3.5				, 3.5			, 3.5			, 1.0				, 1.0			,0.0			,0.0},
-	{ 5.0 /*Mastered ^^!*/		, 4.5			, 4.5			, 4.5				, 4.5			, 4.5			, 1.0				, 1.0			,0.0			,0.0},
-}
+	{ 5.0 /*Mastered ^^!*/		, 4.5			, 4.5			, 4.5				, 4.5			, 4.5			, 1.0				, 1.0			,0.0			,0.0}
+};	
+
+

@@ -615,7 +615,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 	{
 		f_TraceAttackWasTriggeredSameFrame[victim] = GetGameTime();
 		i_HasBeenHeadShotted[victim] = false;
-#if defined ZR
+#if defined ZR || defined RPG
 		if(damagetype & DMG_BULLET)
 		{
 			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
@@ -676,10 +676,12 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			}
 			if((hitgroup == HITGROUP_HEAD && !b_CannotBeHeadshot[victim]) || Blitzed_By_Riot)
 			{
+#if defined ZR 
 				if(b_ThisNpcIsSawrunner[victim])
 				{
 					damage *= 2.0;
 				}
+#endif	// ZR
 
 				damage *= f_HeadshotDamageMultiNpc[victim];
 				if(i_HeadshotAffinity[attacker] == 1)
@@ -722,6 +724,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					played_headshotsound_already_Pitch[attacker] = pitch;
 				}
 				
+#if defined ZR 
 				if(i_ArsenalBombImplanter[weapon] > 0)
 				{
 					float damage_save = 50.0;
@@ -745,6 +748,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					Apply_Particle_Teroriser_Indicator(victim);
 					damage = 0.0;
 				}
+#endif	// ZR
 				played_headshotsound_already[attacker] = GetGameTime();
 
 				if(!Blitzed_By_Riot) //dont play headshot sound if blized.
@@ -777,6 +781,8 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				return Plugin_Changed;
 			}
+#endif	// ZR
+#if defined ZR
 			else
 			{
 				if(i_ArsenalBombImplanter[weapon] > 0)
@@ -811,8 +817,8 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				return Plugin_Changed;
 			}
-		}
 #endif	// ZR
+		}
 	}
 	return Plugin_Changed;
 }

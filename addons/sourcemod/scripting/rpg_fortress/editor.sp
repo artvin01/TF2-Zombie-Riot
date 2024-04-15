@@ -60,7 +60,7 @@ static int EditorMenuH(Menu menu, MenuAction action, int client, int choice)
 
 				if(choice == MenuCancel_ExitBack)
 				{
-					Call_StartFunc(null, func);
+					Call_StartFunction(null, func);
 					Call_PushCell(client);
 					Call_PushString("back");
 					Call_Finish();
@@ -77,7 +77,7 @@ static int EditorMenuH(Menu menu, MenuAction action, int client, int choice)
 				char buffer[256];
 				menu.GetItem(choice, buffer, sizeof(buffer));
 
-				Call_StartFunc(null, func);
+				Call_StartFunction(null, func);
 				Call_PushCell(client);
 				Call_PushString(buffer);
 				Call_Finish();

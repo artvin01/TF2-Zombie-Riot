@@ -51,6 +51,7 @@ void Zones_ConfigSetup()
 	KeyValues kv = new KeyValues("Zones");
 	kv.ImportFromFile(buffer);
 
+	int entity;
 	while((entity=FindEntityByClassname(entity, "trigger_rpgzone")) != -1)
 	{
 		RemoveEntity(entity);
@@ -65,7 +66,7 @@ void Zones_ConfigSetup()
 		{
 			if(kv.GetSectionName(name, sizeof(name)))
 			{
-				int entity = CreateEntityByName("trigger_rpgzone");
+				entity = CreateEntityByName("trigger_rpgzone");
 				if(entity != -1)
 				{
 					kv.GetVector("origin", pos);
@@ -129,7 +130,7 @@ static void OnEnter(int entity, const char[] name)
 	}
 
 	float pos[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecTelePos");
+	GetEntPropVector(entity, Prop_Data, "m_vecTelePos", pos);
 	if(pos[0])
 	{
 		
