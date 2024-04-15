@@ -520,7 +520,7 @@ public void Weapon_Dimension_Summon_Interitus(int client, int weapon, bool &resu
 		case 3:
 			Dimension_Summon_Npc(client, "npc_freezing_cleaner" ,weapon, 1.1, 1.3, "teleported_blue");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_mad_doctor" ,weapon, 1.5, 1.2, "teleported_blue");
+			Dimension_Summon_Npc(client, "npc_braindead" ,weapon, 1.3, 1.3, "teleported_blue");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
