@@ -376,8 +376,8 @@ int EnemyNpcAlive = 0;
 int EnemyNpcAliveStatic = 0;
 
 float f_ClientReviveDelay[MAXENTITIES];
-
-#define MAXSTICKYCOUNTTONPC 12
+aws3e45ß21
+ #define MAXSTICKYCOUNTTONPC 12
 const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
 int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
 
