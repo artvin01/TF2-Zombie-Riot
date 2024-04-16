@@ -65,7 +65,7 @@ public void Shell_VictorianTouch(int entity, int target)
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
-		EmitAmbientSound(SOUND_VIC_IMPACT, entity, , 120, _,0.7, GetRandomInt(55, 80));
+		EmitAmbientSound(SOUND_VIC_IMPACT, entity, _, 120, _,0.7, GetRandomInt(55, 80));
 		
 		DataPack pack_boom = new DataPack();
         pack_boom.WriteFloat(spawnLoc[0]);
@@ -83,7 +83,7 @@ public void Shell_VictorianTouch(int entity, int target)
 	else if(target == 0)
 	{	
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
-		EmitAmbientSound(SOUND_VIC_IMPACT, entity, , 120, _,0.7, GetRandomInt(55, 80));
+		EmitAmbientSound(SOUND_VIC_IMPACT, entity, _, 120, _,0.7, GetRandomInt(55, 80));
 		DataPack pack_boom = new DataPack();
         pack_boom.WriteFloat(spawnLoc[0]);
         pack_boom.WriteFloat(spawnLoc[1]);
