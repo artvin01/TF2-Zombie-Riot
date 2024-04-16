@@ -4,6 +4,11 @@
 static KeyValues SaveKv;
 static char CharacterName[MAXTF2PLAYERS][64];
 
+void Saves_PluginStart()
+{
+	RegConsoleCmd("rpg_character", Saves_Command, "View your characters");
+}
+
 void Saves_ConfigSetup()
 {
 	delete SaveKv;

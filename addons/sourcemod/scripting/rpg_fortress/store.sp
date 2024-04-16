@@ -1871,6 +1871,14 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 
 void RPGStore_SetWeaponDamageToDefault(int weapon, int client, int damageType = 0)
 {
+	/*
+		Todo:
+		use Stats_SetWeaponStats for this
+		Make sure it can be constantly updated with itself without using other attributes,
+		i.e. saving the old attribute and then adding new by comparing new stats to the old ones.
+		hard but needed, im very unsure how to do this though.
+
+	*/
 	float damageBase = RpgConfig_GetWeaponDamage(weapon);
 	if(i_IsWandWeapon[weapon])
 	{
