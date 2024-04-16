@@ -102,14 +102,12 @@ public void Shell_VictorianTouch(int entity, int target)
 		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		static float Entity_Position[3];
-		WorldSpaceCenter(target, Entity_Position);
 		float position[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 
-		float BaseDMG = 650.0;
+		float BaseDMG = 100.0;
 		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
 
 		float Radius = EXPLOSION_RADIUS;
@@ -153,8 +151,8 @@ void CreateVictoriaEffect(int client)
 	{
 		float flPos[3]; 
 		float flAng[3];
-		int particle = ParticleEffectAt(flPos, "raygun_projectile_blue", 0.0);
 		GetAttachment(viewmodelModel, "eyeglow_R", flPos, flAng);
+		int particle = ParticleEffectAt(flPos, "raygun_projectile_blue", 0.0);
 		SetParent(viewmodelModel, particle, "eyeglow_R");
 		i_VictoriaParticle[client][0] = EntIndexToEntRef(particle);
 		PrintToChatAll("Particle created");
