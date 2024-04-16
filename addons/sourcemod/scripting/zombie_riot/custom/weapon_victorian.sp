@@ -23,6 +23,8 @@ void ResetMapStartVictoria()
 	Victoria_Map_Precache();
 	Zero(f_VIChuddelay);
 	Zero(how_many_times_fired);
+	Zero(how_many_supercharge_left);
+	Zero(how_many_shots_reserved);
 }
 void Victoria_Map_Precache()
 {
@@ -217,7 +219,7 @@ public void Shell_VictorianTouch(int entity, int target)
 		else if(how_many_supercharge_left > 0 && !Mega_Burst);
 		{
 			BaseDMG *= 1.25;
-			if(how_many_supercharge_left =< 5);
+			if(how_many_supercharge_left <= 5)
 			{
 				BaseDMG *= 1.2;
 			}
