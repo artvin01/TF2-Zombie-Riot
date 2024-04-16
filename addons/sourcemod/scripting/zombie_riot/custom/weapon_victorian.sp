@@ -158,6 +158,7 @@ void CreateVictoriaEffect(int client)
 		GetAttachment(viewmodelModel, "eyeglow_R", flPos, flAng);
 		SetParent(viewmodelModel, particle, "eyeglow_R");
 		i_VictoriaParticle[client][0] = EntIndexToEntRef(particle);
+		PrintToChatAll("Particle created");
 	}
 }
 void DestroyVictoriaEffect(int client)
