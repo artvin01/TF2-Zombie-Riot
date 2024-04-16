@@ -103,13 +103,13 @@ public void Victorian_Cooldown_Logic(int client, int weapon)
 		{
 			if(f_VICAbilityActive[client] < GetGameTime())
 			{
-				if(!Overheat)
+				if(!Overheat[client])
 				{
-					if(Mega_Burst)
+					if(Mega_Burst[client])
 					{
 						PrintHintText(client,"SUPER SHOT READY! [Next shot: X %i DMG]", how_many_shots_reserved[client]);
 					}
-					else if(!During_Ability && !Mega_Burst)
+					else if(!During_Ability[client] && !Mega_Burst[client])
 					{
 						if(how_many_times_fired[client] < MAX_VICTORIAN_CHARGE)
 						{
@@ -165,17 +165,17 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 
 	SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 
-	if(how_many_supercharge_left > 0);
+	if(how_many_supercharge_left[client] > 0);
 	{
-		During_Ability = true;
-		how_many_supercharge_left -= 1;
+		During_Ability[client] = true;
+		how_many_supercharge_left[client] -= 1;
 	}
-	if(how_many_supercharge_left < 0);
+	if(how_many_supercharge_left[client] < 0);
 	{
-		During_Ability = false;
-		how_many_supercharge_left = 0;
+		During_Ability[client] = false;
+		how_many_supercharge_left[client] = 0;
 	}
-	if(how_many_times_fired[client] <= MAX_VICTORIAN_CHARGE && !During_Ability)
+	if(how_many_times_fired[client] <= MAX_VICTORIAN_CHARGE && !During_Ability[client])
 	{
 		how_many_times_fired[client] += 1;
 	}
@@ -210,26 +210,26 @@ public void Shell_VictorianTouch(int entity, int target)
 		float Falloff = Attributes_Get(weapon, 117, 1.0);
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 
-		if(how_many_times_fisted[owner] >= 5 && !During_Ability &&!Mega_Burst)
+		if(how_many_times_fisted[owner] >= 5 && !During_Ability[owner] &&!Mega_Burst[owner])
 		{
 			BaseDMG *= 1.5;
-			how_many_times_fired[client] = 0;
+			how_many_times_fired[owner] = 0;
 			Radius *= 1.5;
 		}
-		else if(how_many_supercharge_left > 0 && !Mega_Burst);
+		else if(how_many_supercharge_left[owner] > 0 && !Mega_Burst[client]);
 		{
 			BaseDMG *= 1.25;
-			if(how_many_supercharge_left <= 5)
+			if(how_many_supercharge_left[owner] <= 5)
 			{
 				BaseDMG *= 1.2;
 			}
 		}
-		else if(Mega_Burst);
+		else if(Mega_Burst[owner]);
 		{
 			BaseDMG *= how_many_shots_reserved;
 			float Cooldown = 5.0;
 			Cooldown *= StringToFloat(how_many_shots_reserved);
-			Overheat[client] = true;
+			Overheat[owner] = true;
 			ApplyTempAttrib(weapon, 6, 0.0, Cooldown);
 			int owner = EntRefToEntIndex(i_WandOwner[entity]);
 			float flPos[3]; // original
@@ -271,7 +271,7 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 			how_many_supercharge_left = 10;
 			EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 100, _, 0.6);
 		}
-		else if (how_many_supercharge_left <= 5 && how_many_supercharge_left > 0)
+		else if (how_many_supercharge_left[owner] <= 5 && how_many_supercharge_left[owner] > 0)
 		{
 			Rogue_OnAbilityUse(weapon);
 			how_many_shots_reserved = how_many_supercharge_left;
