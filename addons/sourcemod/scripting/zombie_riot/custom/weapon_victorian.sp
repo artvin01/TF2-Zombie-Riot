@@ -165,7 +165,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 
 	SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 
-	if(how_many_supercharge_left[client] > 0);
+	if(how_many_supercharge_left[client] > 0)
 	{
 		During_Ability[client] = true;
 		how_many_supercharge_left[client] -= 1;
