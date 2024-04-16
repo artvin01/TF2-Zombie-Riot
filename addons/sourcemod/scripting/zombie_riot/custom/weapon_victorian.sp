@@ -53,7 +53,7 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		h_TimerVictorianLauncherManagement[client] = null;
-		DestroyVictoriaEffect(client)
+		DestroyVictoriaEffect(client);
 		return Plugin_Stop;
 	}	
 
