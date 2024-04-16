@@ -30,7 +30,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 	time *= Attributes_Get(weapon, 102, 1.0);
 
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "rockettrail",_,false);
-	EmitSoundToAll(SOUND_VIC_SHOT, client, SNDCHAN_AUTO, 140, _, 1.0, 0.7);
+	EmitSoundToAll(SOUND_VIC_SHOT, client, SNDCHAN_AUTO, 140, _, 1.0, 70);
 
 	SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 }
@@ -62,11 +62,12 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		float Falloff = Attributes_Get(weapon, 117, 1.0);
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-
-		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
-		EmitAmbientSound(SOUND_VIC_IMPACT, entity, _, 120, _,0.7, GetRandomInt(55, 80));
-
+		
 		float spawnLoc[3];
+		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
+		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 120, _,0.7, GetRandomInt(55, 80));
+
+
 
 		DataPack pack_boom = new DataPack();
 		pack_boom.WriteFloat(spawnLoc[0]);
@@ -85,7 +86,7 @@ public void Shell_VictorianTouch(int entity, int target)
 	{	
 		float position[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-		
+
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 		float BaseDMG = 600.0;
@@ -97,10 +98,11 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		float Falloff = Attributes_Get(weapon, 117, 1.0);
 
-		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
-		EmitAmbientSound(SOUND_VIC_IMPACT, entity, _, 120, _,0.7, GetRandomInt(55, 80));
-
 		float spawnLoc[3];
+		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
+		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 120, _,0.7, GetRandomInt(55, 80));
+
+		
 		DataPack pack_boom = new DataPack();
 		pack_boom.WriteFloat(spawnLoc[0]);
 		pack_boom.WriteFloat(spawnLoc[1]);
