@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 #define SOUND_VIC_SHOT 	"weapons/doom_rocket_launcher.wav"
-#define SOUND_VIC_IMPACT "weapons/cow_mangler_explode.wav"
+#define SOUND_VIC_IMPACT "weapons/explode1.wav"
 
 void ResetMapStartVictoria()
 {
@@ -20,7 +20,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 	damage *= 0.8; //Reduction
 	damage *= Attributes_Get(weapon, 2, 1.0);	
 
-	float speed = 1300.0;
+	float speed = 1100.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
 
 	speed *= Attributes_Get(weapon, 104, 1.0);
@@ -69,7 +69,7 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		float spawnLoc[3];
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
-		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 120, _,0.7, GetRandomInt(55, 80));
+		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 100, _,0.6, GetRandomInt(55, 80));
 
 
 
@@ -104,7 +104,7 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		float spawnLoc[3];
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
-		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 120, _,0.7, GetRandomInt(55, 80));
+		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 100, _,0.7, GetRandomInt(55, 80));
 
 		
 		DataPack pack_boom = new DataPack();
