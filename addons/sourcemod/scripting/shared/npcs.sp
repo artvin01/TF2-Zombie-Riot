@@ -518,9 +518,12 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				{
 					value *= Attributes_FindOnWeapon(attacker, weapon, 2, true, 1.0);	  //For normal weapons
 					
+					value *= Attributes_FindOnWeapon(attacker, weapon, 1000, true, 1.0); //For any
+					
 					value *= Attributes_FindOnWeapon(attacker, weapon, 410, true, 1.0); //For wand
 					
 					value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //For wand
+
 				}
 				else
 #endif
@@ -1760,7 +1763,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 		float HudY = -1.0;
 
-#if defined ZR
+#if defined ZR || defined RPG
 		HudY += f_HurtHudOffsetY[attacker];
 		HudOffset += f_HurtHudOffsetX[attacker];
 #endif	// ZR
@@ -1779,8 +1782,11 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		ThousandString(c_Health[offset], sizeof(c_Health) - offset);
 		offset = MaxHealth < 0 ? 1 : 0;
 		ThousandString(c_MaxHealth[offset], sizeof(c_MaxHealth) - offset);
-
+#if defined RPG
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s / %s",c_NpcName[victim], c_Health, c_MaxHealth);
+#else
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%s / %s",c_NpcName[victim], c_Health, c_MaxHealth);
+#endif
 		
 		//add debuff
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
@@ -1863,7 +1869,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 #if defined RPG
 	char level[32];
-	GetDisplayString(Level[victim], level, sizeof(level));
+	Format(level, sizeof(level), "Level %d", Level[victim]);
 
 	if(IsValidEntity(npc.m_iTextEntity3))
 	{

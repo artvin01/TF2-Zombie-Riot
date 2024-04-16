@@ -3,7 +3,6 @@
 
 #define ITEM_CASH	"Credits"
 #define ITEM_XP		"XP"
-#define ITEM_TIER	"Elite Promotion"
 #define MIN_FADE_DISTANCE 3000.0
 #define MAX_FADE_DISTANCE 3700.0
 
@@ -25,10 +24,11 @@ int BaseMaxExperiencePerLevel;
 
 bool DisabledDownloads[MAXTF2PLAYERS];
 
-int Tier[MAXTF2PLAYERS];
 int Level[MAXENTITIES];
 int XP[MAXENTITIES];
 int RaceIndex[MAXTF2PLAYERS];
+int i_TransformationLevel[MAXTF2PLAYERS];
+float f_TransformationDelay[MAXTF2PLAYERS]; 	//if he takess too long and cancels it, itll just drop the progress.
 
 char StoreWeapon[MAXENTITIES][48];
 int i_TagColor[MAXTF2PLAYERS][4];
@@ -64,7 +64,6 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/fishing.sp"
 #include "rpg_fortress/games.sp"
 #include "rpg_fortress/garden.sp"
-#include "rpg_fortress/levels.sp"
 #include "rpg_fortress/mining.sp"
 #include "rpg_fortress/music.sp"
 #include "rpg_fortress/party.sp"
@@ -105,6 +104,7 @@ void RPG_PluginStart()
 {
 	HudSettings_Cookies = new Cookie("zr_hudsetting", "hud settings", CookieAccess_Protected);
 	HudSettingsExtra_Cookies = new Cookie("zr_hudsettingextra", "hud settings Extra", CookieAccess_Protected);
+	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
 	
 	LoadTranslations("rpgfortress.phrases");
 
@@ -112,7 +112,6 @@ void RPG_PluginStart()
 	Fishing_PluginStart();
 	Games_PluginStart();
 	Store_Reset();
-	Levels_PluginStart();
 	Party_PluginStart();
 	Spawns_PluginStart();
 	Stats_PluginStart();
@@ -355,7 +354,6 @@ void CheckAlivePlayers(int killed = 0)
 	Dungeon_CheckAlivePlayers(killed);
 }
 
-
 public Action CheckClientConvars(Handle timer)
 {
 	for(int client=1; client<=MaxClients; client++)
@@ -431,4 +429,52 @@ static void HudSettings_ClientCookiesCached(int client)
 		b_HudLowHealthShake[client] = true;
 		b_HudHitMarker[client] = true;
 	}
+}
+
+void GiveXP(int client, int xp)
+{
+	TextStore_AddXP(client, RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue));
+}
+
+public Action Command_GiveXp(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_give_xp <target> <cash>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[12];
+	GetCmdArg(2, buf, sizeof(buf));
+	int money = StringToInt(buf); 
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		if(money > 0)
+		{
+			PrintToChat(targets[target], "You got %i XP from the admin %N!", money, client);
+			GiveXP(targets[target], money);
+		}
+		else
+		{
+			PrintToChat(targets[target], "You lost %i XP due to the admin %N!", money, client);
+			GiveXP(targets[target], money);
+		}
+	}
+	
+	return Plugin_Handled;
 }

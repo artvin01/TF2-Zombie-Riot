@@ -1696,7 +1696,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 		}
 		else
 		{
-			int level = Levels_GetSpawnPoint(client);
+			int level = 0;
 			int entity = -1;
 			while((entity=FindEntityByClassname(entity, "info_player_teamspawn")) != -1)
 			{

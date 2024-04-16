@@ -17,10 +17,6 @@
 #define STAT_LUCK			8 // -> random crit? idk lol, but increaced chance based shit
 #define STAT_AGILITY		9 // -> more movesmentspeed attackspeed reload speed, all speed things speedy.
 
-int i_TransformationLevel[MAXTF2PLAYERS];
-float f_TransformationDelay[MAXTF2PLAYERS]; 	//if he takess too long and cancels it, itll just drop the progress.
-			
-
 /*
 	this defineswhat stats get multiplied by what.
 	It should really never multiply the stats such as stat capacity and stat intelligence.
@@ -94,6 +90,70 @@ enum struct Form
 
 		this.AgilityAdd[0] = kv.GetNum("Min_Agility");
 		this.AgilityAdd[1] = kv.GetNum("Max_Agility");
+	}
+	float GetFloatStat(int stat, int mastery)
+	{
+		float minval = GetItemInArray(this, stat);
+		float maxval = GetItemInArray(this, stat + 1);
+		
+		if(this.Mastery < 1)
+			return maxval;
+		
+		float percent = float(mastery) / float(this.Mastery);
+		if(percent > 1.0)
+			percent = 1.0;
+		
+		return minval + ((maxval - minval) * percent);
+	}
+	int GetIntStat(int stat, int mastery)
+	{
+		int minval = GetItemInArray(this, stat);
+		int maxval = GetItemInArray(this, stat + 1);
+
+		if(this.Mastery < 1)
+			return maxval;
+		
+		float percent = float(mastery) / float(this.Mastery);
+		if(percent > 1.0)
+			percent = 1.0;
+
+		return minval + RoundFloat(float(maxval - minval) * percent);
+	}
+	void Default()
+	{
+		strcopy(this.Name, sizeof(this.Name), "Base");
+
+		this.Level = 0;
+		this.Upgrade = 0;
+		this.Mastery = 0;
+		this.Func = INVALID_FUNCTION;
+
+		this.DrainRate[0] = 0.0;
+		this.DrainRate[1] = 0.0;
+
+		this.StrengthMulti[0] = 1.0;
+		this.StrengthMulti[1] = 1.0;
+
+		this.PrecisionMulti[0] = 1.0;
+		this.PrecisionMulti[1] = 1.0;
+
+		this.ArtificeMulti[0] = 1.0;
+		this.ArtificeMulti[1] = 1.0;
+
+		this.EnduranceMulti[0] = 1.0;
+		this.EnduranceMulti[1] = 1.0;
+
+		this.StructureMulti[0] = 1.0;
+		this.StructureMulti[1] = 1.0;
+
+		this.IntelligenceMulti[0] = 1.0;
+		this.IntelligenceMulti[1] = 1.0;
+
+		this.LuckAdd[0] = 0;
+		this.LuckAdd[1] = 0;
+
+		this.AgilityAdd[0] = 0;
+		this.AgilityAdd[1] = 0;
 	}
 }
 
@@ -217,4 +277,18 @@ void Races_ConfigSetup()
 void Races_GetRaceByIndex(int index, Race race)
 {
 	Races.GetArray(index, race);
+}
+
+bool Races_GetClientInfo(int client, Race race = {}, Form form = {})
+{
+	Races.GetArray(RaceIndex[client], race);
+
+	if(i_TransformationLevel[client] < 1 || i_TransformationLevel[client] > race.Forms.Length)
+	{
+		form.Default();
+		return false;
+	}
+	
+	race.Forms.GetArray(i_TransformationLevel[client] - 1, form);
+	return true;
 }

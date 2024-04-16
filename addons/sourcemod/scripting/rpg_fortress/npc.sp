@@ -30,6 +30,7 @@ void NPC_ConfigSetup()
 	data.Func = INVALID_FUNCTION;
 	NPCList.PushArray(data);
 
+	StartChicken_OnMapStart_NPC();
 
 /*
 	MadChicken_OnMapStart_NPC();
@@ -450,8 +451,8 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 	return result;
 }
 
-/*
 #include "rpg_fortress/npc/normal/npc_chicken_2.sp"
+/*
 #include "rpg_fortress/npc/normal/npc_chicken_mad.sp"
 #include "rpg_fortress/npc/normal/npc_roost_mad.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_bear.sp"

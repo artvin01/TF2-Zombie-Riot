@@ -3554,14 +3554,7 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 	if(IsValidEntity(textentity))
 	{
 		static char buffer[128];
-		if(Tier[client])
-		{
-			Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
-		}
-		else
-		{
-			Format(buffer, sizeof(buffer), "Level %d", Level[client]);
-		}
+		Format(buffer, sizeof(buffer), "Level %d", Level[client]);
 		DispatchKeyValue(textentity, "message", buffer);
 	}
 	else
@@ -3570,14 +3563,7 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 
 		OffsetFromHead[2] = 120.0;
 		static char buffer[128];
-		if(Tier[client])
-		{
-			Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
-		}
-		else
-		{
-			Format(buffer, sizeof(buffer), "Level %d", Level[client]);
-		}
+		Format(buffer, sizeof(buffer), "Level %d", Level[client]);
 		int textentityMade = SpawnFormattedWorldText(buffer, OffsetFromHead, 10, {255,255,255,255}, client);
 		i_TextEntity[client][0] = EntIndexToEntRef(textentityMade);
 	//	b_TextEntityToOwner[textentityMade] = client;
@@ -4980,4 +4966,9 @@ stock bool FailTranslation(const char[] phrase)
 	
 	LogError("Translation '%s' does not exist", phrase);
 	return true;
+}
+
+any GetItemInArray(any[] array, int pos)
+{
+	return array[pos];
 }

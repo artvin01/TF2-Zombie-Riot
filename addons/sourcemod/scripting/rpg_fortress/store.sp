@@ -321,10 +321,7 @@ bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name, boo
 			int level = kv.GetNum("level");
 			if(level > Level[client])
 			{
-				char buffer[32];
-				GetDisplayString(level, buffer, sizeof(buffer));
-
-				SPrintToChat(client, "You must be %s to use this.", buffer);
+				SPrintToChat(client, "You must be Level %d to use this.", level);
 				return false;
 			}
 		}
@@ -1630,83 +1627,81 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		i_BuffBannerPassively[entity] = 0;
 	}
 
+	for(int i; i<length; i++)
 	{
-		for(int i; i<length; i++)
+		EquippedItems.GetArray(i, info);
+		if(info.Owner == client)
 		{
-			EquippedItems.GetArray(i, info);
-			if(info.Owner == client)
+			if(!info.Classname[0])
 			{
-				if(!info.Classname[0])
+				if(EntityIsAWeapon)
 				{
-					if(EntityIsAWeapon)
+					bool apply = CheckEntitySlotIndex(info.Index, slot, entity);
+					
+					if(apply)
 					{
-						bool apply = CheckEntitySlotIndex(info.Index, slot, entity);
-						
-						if(apply)
+						for(int a; a<info.Attribs; a++)
 						{
-							for(int a; a<info.Attribs; a++)
+							if(info.Attrib[a] < 0)
 							{
-								if(info.Attrib[a] < 0)
-								{
-									Stats_GetCustomStats(entity, info.Attrib[a], info.Value[a]);
-									continue;
-								}
+								Stats_GetCustomStats(entity, info.Attrib[a], info.Value[a]);
+								continue;
+							}
 
-								bool ignore_rest = false;
-								if(!Attributes_Has(entity, info.Attrib[a]))
+							bool ignore_rest = false;
+							if(!Attributes_Has(entity, info.Attrib[a]))
+							{
+								if(info.SpecialAttribRules == 1)
 								{
-									if(info.SpecialAttribRules == 1)
-									{
-										ignore_rest = true;
-									}
-									else
-									{
-										Attributes_Set(entity, info.Attrib[a], info.Value[a]);
-									}
+									ignore_rest = true;
 								}
-								else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
+								else
 								{
-									Attributes_SetAdd(entity, info.Attrib[a], info.Value[a]);
-								}
-								else if(!ignore_rest)
-								{
-									Attributes_SetMulti(entity, info.Attrib[a], info.Value[a]);
+									Attributes_Set(entity, info.Attrib[a], info.Value[a]);
 								}
 							}
-						}
-
-						apply = CheckEntitySlotIndex(info.Index2, slot, entity);
-						
-						if(apply)
-						{
-							for(int a; a<info.Attribs2; a++)
+							else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
 							{
-								if(info.Attrib2[a] < 0)
-								{
-									Stats_GetCustomStats(entity, info.Attrib2[a], info.Value2[a]);
-									continue;
-								}
+								Attributes_SetAdd(entity, info.Attrib[a], info.Value[a]);
+							}
+							else if(!ignore_rest)
+							{
+								Attributes_SetMulti(entity, info.Attrib[a], info.Value[a]);
+							}
+						}
+					}
 
-								bool ignore_rest = false;
-								if(!Attributes_Has(entity, info.Attrib2[a]))
+					apply = CheckEntitySlotIndex(info.Index2, slot, entity);
+					
+					if(apply)
+					{
+						for(int a; a<info.Attribs2; a++)
+						{
+							if(info.Attrib2[a] < 0)
+							{
+								Stats_GetCustomStats(entity, info.Attrib2[a], info.Value2[a]);
+								continue;
+							}
+
+							bool ignore_rest = false;
+							if(!Attributes_Has(entity, info.Attrib2[a]))
+							{
+								if(info.SpecialAttribRules_2 == 1)
 								{
-									if(info.SpecialAttribRules_2 == 1)
-									{
-										ignore_rest = true;
-									}
-									else
-									{
-										Attributes_Set(entity, info.Attrib2[a], info.Value2[a]);
-									}
+									ignore_rest = true;
 								}
-								else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
+								else
 								{
-									Attributes_SetAdd(entity, info.Attrib2[a], info.Value2[a]);
+									Attributes_Set(entity, info.Attrib2[a], info.Value2[a]);
 								}
-								else if(!ignore_rest)
-								{
-									Attributes_SetMulti(entity, info.Attrib2[a], info.Value2[a]);
-								}
+							}
+							else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
+							{
+								Attributes_SetAdd(entity, info.Attrib2[a], info.Value2[a]);
+							}
+							else if(!ignore_rest)
+							{
+								Attributes_SetMulti(entity, info.Attrib2[a], info.Value2[a]);
 							}
 						}
 					}
@@ -1717,6 +1712,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 	if(EntityIsAWeapon)
 	{
+		RPGStore_SetWeaponDamageToDefault(entity, client);
+		
 		if(b_DungeonContracts_SlowerAttackspeed[client])
 		{
 			Attributes_SetMulti(entity, 6, 1.3);
@@ -1875,12 +1872,49 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 void RPGStore_SetWeaponDamageToDefault(int weapon, int client, int damageType = 0)
 {
 	float damageBase = RpgConfig_GetWeaponDamage(weapon);
-
+	if(i_IsWandWeapon[weapon])
+	{
+		damageType = 3;
+		damageBase = 65.0;
+	}
+	else
+	{
+		char classname[36];
+		GetEntityClassname(weapon, classname, sizeof(classname));
+			
+		if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)	
+		{
+			damageType = 1;
+		}	
+		else
+		{
+			damageType = 2;
+		}
+	}
 	float DecimalForDamage = 1.0 / damageBase;
 	
+
 	float DamageFlat = RPGStats_FlatDamageSetStats(client, damageType);
 
-	Attributes_SetMulti(weapon, 2, DecimalForDamage * DamageFlat);
+	int check = 10;	// Any
+	switch(damageType)
+	{
+		case 1:
+			check = 2;	// Melee
 
-	//this sets all weapons idealy to the damage shown in the stats screen. Then just give extra damage and other shit to balance it out!
+		case 2:
+			check = 7;	// Primary / Secondary
+
+		case 3:
+			check = 8;	// Mage
+	}
+
+	char classname[36];
+	GetEntityClassname(weapon, classname, sizeof(classname));
+	if(CheckEntitySlotIndex(check, TF2_GetClassnameSlot(classname), weapon))
+	{
+		Attributes_Set(weapon, 1000, DecimalForDamage * DamageFlat);
+
+		//this sets all weapons idealy to the damage shown in the stats screen. Then just give extra damage and other shit to balance it out!
+	}
 }

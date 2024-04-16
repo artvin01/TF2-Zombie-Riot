@@ -268,7 +268,7 @@ enum struct WeaponEnum
 
 	int Tier()
 	{
-		int tier = XpToLevel(this.XP * 5);
+		int tier = RoundToFloor(Pow(this.XP / 20.0, 0.5));
 		if(tier >= sizeof(TierName))
 			tier = sizeof(TierName) - 1;
 		
@@ -276,11 +276,11 @@ enum struct WeaponEnum
 	}
 	int XpToNextTier()
 	{
-		int tier = XpToLevel(this.XP * 5) + 1;
+		int tier = RoundToFloor(Pow(this.XP / 20.0, 0.5)) + 1;
 		if(tier >= sizeof(TierName))
 			return 0;
 		
-		return LevelToXp(tier) / 5;
+		return tier * tier * 20;
 	}
 }
 
@@ -784,7 +784,7 @@ void Tinker_DescItem(int client, int index, char[] desc)
 	}
 	else
 	{
-		int limit = XpToLevel(xp * 5);
+		int limit = RoundToFloor(Pow(xp / 20.0, 0.5));
 		if(limit >= sizeof(TierName))
 			limit = sizeof(TierName) - 1;
 		
@@ -1124,9 +1124,7 @@ static void ShowMenu(int client, int page)
 
 							if(tinker.Levels)
 							{
-								GetDisplayString(level, tinker.Cost1, sizeof(tinker.Cost1));
-								GetDisplayString(level + tinker.Levels, tinker.Cost2, sizeof(tinker.Cost2));
-								Format(buffer, sizeof(buffer), "%s\n%s -> %s", buffer, tinker.Cost1, tinker.Cost2);
+								Format(buffer, sizeof(buffer), "%s\nLevel %d -> Level %d", buffer, level, level + tinker.Levels);
 
 								if(!failed)
 									failed = Level[client] < (level + tinker.Levels);
@@ -1451,7 +1449,7 @@ static float GetAutoMulti(int baseLevel, int playerLevel, int xp)
 	float base = AutoMultiList.Get(baseLv);
 	float player = AutoMultiList.Get(playerLv);
 
-	int rank = XpToLevel(xp * 5);
+	int rank = RoundToFloor(Pow(xp / 20.0, 0.5));
 
 	return (1.0 + (rank * 0.125)) * (player / base);
 }

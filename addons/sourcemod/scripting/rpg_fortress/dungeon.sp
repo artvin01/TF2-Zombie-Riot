@@ -363,7 +363,7 @@ enum struct StageEnum
 
 			TextStore_AddItemCount(clients[i], ITEM_CASH, this.Cash * (10 + tier) / 10);
 
-			if(XpToLevel(XP[clients[i]]) <= this.MaxLevel)
+			if(Level[clients[i]] <= this.MaxLevel)
 				TextStore_AddItemCount(clients[i], ITEM_XP, this.XP * (10 + tier) / 10);
 		}
 
@@ -754,7 +754,7 @@ static void ShowMenu(int client, int page)
 
 				if(AltMenu[client] ==  2)
 				{
-					int level = XpToLevel(XP[client]);
+					int level = Level[client];
 					int luck;
 					for(int target = 1; target <= MaxClients; target++)
 					{
@@ -884,8 +884,7 @@ static void ShowMenu(int client, int page)
 					{
 						if(client == leader)
 						{
-							GetDisplayString(stage.Level, dungeon.CurrentStage, sizeof(dungeon.CurrentStage));
-							Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "Enter Queue (%s)\n ", dungeon.CurrentStage);
+							Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "Enter Queue (Level %d)\n ", stage.Level);
 							menu.InsertItem(0, NULL_STRING, dungeon.CurrentStage, stage.Level > Level[client] ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 						}
 						else
@@ -954,8 +953,7 @@ static void ShowMenu(int client, int page)
 
 				if(dungeon.StageList.GetArray(name, stage, sizeof(stage)))
 				{
-					GetDisplayString(stage.Level, stage.MusicEasy, sizeof(stage.MusicEasy));
-					Format(stage.MusicEasy, sizeof(stage.MusicEasy), "%s (%s)", name, stage.MusicEasy);
+					Format(stage.MusicEasy, sizeof(stage.MusicEasy), "%s (Level %d)", name, stage.Level);
 					menu.AddItem(name, stage.MusicEasy, (stage.Level > Level[client] || client != leader) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 				}
 			}

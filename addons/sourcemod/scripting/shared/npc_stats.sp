@@ -3841,7 +3841,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	return MRES_Ignored;
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 void NPC_StartPathing(int entity)
 {
 	view_as<CClotBody>(entity).StartPathing();

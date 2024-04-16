@@ -962,10 +962,17 @@ public void OnPostThink(int client)
 #if defined ZR
 			Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
 #elseif defined RPG
+			static Form form;
+			Races_GetClientInfo(client, _, form);
+
+			// form.Name
 			red = 200;
 			green = 200;
 			blue = 255;
-			Format(buffer, sizeof(buffer), "%t\n%s", "Capacity", Current_Mana[client], buffer);
+			if(form.Name[0])
+				Format(buffer, sizeof(buffer), "%s: %d\n%s", form.Name, Current_Mana[client], buffer);
+			else
+				Format(buffer, sizeof(buffer), "%t\n%s", "Capacity", Current_Mana[client], buffer);
 #endif
 		}
 
@@ -2204,12 +2211,6 @@ public void OnWeaponSwitchFrame(int userid)
 			ViewChange_Switch(client, weapon, buffer);
 			// We delay ViewChange_Switch by a frame so it doesn't mess with the regenerate process
 		}
-
-#if defined RPG
-		TextStore_WeaponSwitch(client, weapon);
-		Quests_WeaponSwitch(client, weapon);
-#endif
-
 	}
 }
 

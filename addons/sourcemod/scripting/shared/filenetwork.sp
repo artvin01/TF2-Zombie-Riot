@@ -317,8 +317,8 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 		{
 			static char filecheck[PLATFORM_MAX_PATH];
 			Format(filecheck, sizeof(filecheck), "download/%s", file);
-			if(!DeleteFile(filecheck))
-				LogError("Failed to delete file \"%s\"", file);
+			DeleteFile(filecheck);
+				//LogError("Failed to delete file \"%s\"", file);
 		}
 	}
 
@@ -376,8 +376,8 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success,
 			if(!FileNet_SendFile(client, filecheck, FileNetwork_SendFileCheck))
 			{
 				LogError("Failed to queue file \"%s\" to client", filecheck);
-				if(!DeleteFile(filecheck))
-					LogError("Failed to delete file \"%s\"", filecheck);
+				DeleteFile(filecheck);
+					//LogError("Failed to delete file \"%s\"", filecheck);
 			}
 #endif
 			pack.Reset();
@@ -408,8 +408,8 @@ public void FileNetwork_SendFileCheck(int client, const char[] file, bool succes
 	if(StartedQueue[client] && !success)
 		LogError("Failed to send file \"%s\" to client", file);
 	
-	if(!DeleteFile(file))
-		LogError("Failed to delete file \"%s\"", file);
+	DeleteFile(file);
+		//LogError("Failed to delete file \"%s\"", file);
 }
 
 stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)

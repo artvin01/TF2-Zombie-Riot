@@ -582,14 +582,14 @@ bool b_ProximityAmmo[MAXTF2PLAYERS];
 int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 
 int i_nm_body_client[MAXTF2PLAYERS];
 int i_CurrentEquippedPerk[MAXENTITIES];
+float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
+float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 
 #if defined ZR 
 int Resupplies_Supplied[MAXTF2PLAYERS];
 bool b_LeftForDead[MAXTF2PLAYERS];
 int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
 int i_CurrentEquippedPerkPreviously[MAXENTITIES];
-float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
-float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 float Mana_Regen_Delay[MAXTF2PLAYERS];
 float Mana_Regen_Delay_Aggreviated[MAXTF2PLAYERS];
 float Mana_Regen_Block_Timer[MAXTF2PLAYERS];
@@ -2394,6 +2394,8 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 #endif
 }
 
+#if defined ZR || defined RPG
+
 #if defined ZR
 public void Update_Ammo(DataPack pack)
 {
@@ -2426,10 +2428,11 @@ public void Update_Ammo(DataPack pack)
 	}
 	delete pack;
 }
+#endif
 
-#if defined ZR
 public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname, bool &result)
 {
+#if defined ZR
 	if(i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
 	{
 		DataPack pack = new DataPack();
@@ -2437,7 +2440,11 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		RequestFrame(Update_Ammo, pack);
 	}
+#endif
 
+#if defined RPG
+	RPGStore_SetWeaponDamageToDefault(weapon, client);
+#endif
 	Action action = Plugin_Continue;
 	Function func = EntityFuncAttack[weapon];
 	if(func && func!=INVALID_FUNCTION)
@@ -2567,7 +2574,6 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	}
 	return action;
 }
-#endif	// Non-RTS
 #endif	// Non-RTS
 
 #if defined ZR
@@ -3647,8 +3653,8 @@ stock void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons
 {
 	if(classType < TFClass_Scout || classType > TFClass_Engineer)
 	{
+		LogStackTrace("Invalid class %d", classType);
 		classType = TFClass_Scout;
-		LogError("Invalid class %d", classType);
 	}
 	
 	TF2_SetPlayerClass(client, classType, weapons, persistent);

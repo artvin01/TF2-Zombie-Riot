@@ -411,8 +411,7 @@ static void MainMenu(int client)
 			QuestKv.GetSectionName(name, sizeof(name));
 			
 			int level = QuestKv.GetNum("level");
-			GetDisplayString(level, buffer, sizeof(buffer));
-			Format(buffer, sizeof(buffer), "%s (%s)", name, buffer);
+			Format(buffer, sizeof(buffer), "%s (Level %d)", name, level);
 
 			if(Level[client] >= level)
 			{
@@ -868,62 +867,59 @@ public int Quests_QuestHandle(Menu menu2, MenuAction action, int client, int cho
 	return 0;
 }
 
-void Quests_WeaponSwitch(int client, int weapon)
+bool Quests_BookMenu(int client)
 {
-	if(weapon != -1 && StrEqual(StoreWeapon[weapon], "Quest Book"))
+	Menu menu = new Menu(Quests_BookHandle);
+	menu.SetTitle("RPG Fortress\n \n");
+	
+	static char steamid[64], name[64], buffer[512];
+	if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
 	{
-		Menu menu = new Menu(Quests_BookHandle);
-		menu.SetTitle("RPG Fortress\n \n");
-		
-		static char steamid[64], name[64], buffer[512];
-		if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
+		QuestKv.Rewind();
+		QuestKv.GotoFirstSubKey();
+		do
 		{
-			QuestKv.Rewind();
-			QuestKv.GotoFirstSubKey();
-			do
+			QuestKv.GetSectionName(name, sizeof(name));
+			if(QuestKv.GotoFirstSubKey())
 			{
-				QuestKv.GetSectionName(name, sizeof(name));
-				if(QuestKv.GotoFirstSubKey())
+				do
 				{
-					do
+					SaveKv.Rewind();
+					if(SaveKv.JumpToKey(name))
 					{
-						SaveKv.Rewind();
-						if(SaveKv.JumpToKey(name))
+						QuestKv.GetSectionName(buffer, sizeof(buffer));
+						if(SaveKv.JumpToKey(buffer))
 						{
-							QuestKv.GetSectionName(buffer, sizeof(buffer));
-							if(SaveKv.JumpToKey(buffer))
+							if(SaveKv.GetNum(steamid) == Status_InProgress)
 							{
-								if(SaveKv.GetNum(steamid) == Status_InProgress)
-								{
-									Format(buffer, sizeof(buffer), "%s - %s", name, buffer);
-									CanTurnInQuest(client, steamid, buffer);
-									Format(buffer, sizeof(buffer), "%s\n ", buffer);
-									menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
-								}
+								Format(buffer, sizeof(buffer), "%s - %s", name, buffer);
+								CanTurnInQuest(client, steamid, buffer);
+								Format(buffer, sizeof(buffer), "%s\n ", buffer);
+								menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 							}
 						}
 					}
-					while(QuestKv.GotoNextKey());
-
-					QuestKv.GoBack();
 				}
+				while(QuestKv.GotoNextKey());
+
+				QuestKv.GoBack();
 			}
-			while(QuestKv.GotoNextKey());
 		}
-
-		if(menu.ItemCount)
-		{
-			menu.Pagination = 2;
-			menu.ExitButton = true;
-		}
-		else
-		{
-			menu.AddItem(NULL_STRING, "  No active quests, talk to", ITEMDRAW_DISABLED);
-			menu.AddItem(NULL_STRING, "a NPC with an icon above them.", ITEMDRAW_DISABLED);
-		}
-
-		menu.Display(client, MENU_TIME_FOREVER);
+		while(QuestKv.GotoNextKey());
 	}
+
+	if(menu.ItemCount)
+	{
+		menu.Pagination = 2;
+		menu.ExitButton = true;
+	}
+	else
+	{
+		menu.AddItem(NULL_STRING, "  No active quests, talk to", ITEMDRAW_DISABLED);
+		menu.AddItem(NULL_STRING, "a NPC with an icon above them.", ITEMDRAW_DISABLED);
+	}
+
+	return menu.Display(client, MENU_TIME_FOREVER);
 }
 
 public int Quests_BookHandle(Menu menu, MenuAction action, int client, int choice)
@@ -937,11 +933,11 @@ public int Quests_BookHandle(Menu menu, MenuAction action, int client, int choic
 		case MenuAction_Cancel:
 		{
 			if(choice != MenuCancel_Disconnected)
-				TF2Util_SetPlayerActiveWeapon(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
+				TextStore_Inspect(client);
 		}
 		case MenuAction_Select:
 		{
-			TF2Util_SetPlayerActiveWeapon(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
+			Quests_BookMenu(client);
 		}
 	}
 	return 0;

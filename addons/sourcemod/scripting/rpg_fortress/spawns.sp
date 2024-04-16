@@ -378,7 +378,7 @@ void Apply_Text_Above_Npc(int entity,int strength, int health)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
 	char buffer[128];
-	GetDisplayString(Level[entity], buffer, sizeof(buffer), true);
+	Format(buffer, sizeof(buffer), "Level %d", Level[entity]);
 
 	int color[4];
 		
@@ -425,7 +425,7 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 			{
 				if(XP[entity] > 0)
 				{
-					int level = XpToLevel(XP[client]);	// -2, -1, 0, +1, +2
+					int level = Level[client];	// -2, -1, 0, +1, +2
 					if((level - 3) < Level[entity] && (level + 3) > Level[entity])
 						GiveXP(client, XP[entity]);
 				}
