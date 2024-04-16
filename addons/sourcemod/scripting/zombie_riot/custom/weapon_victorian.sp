@@ -172,11 +172,11 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 	}
 	if(!During_Ability[client])
 	{
-		else if(how_many_times_fired[client] <= MAX_VICTORIAN_CHARGE)
+		if(how_many_times_fired[client] <= MAX_VICTORIAN_CHARGE)
 		{
 			how_many_times_fired[client] += 1;
 		}
-		else if (how_many_times_fired[client] >= MAX_VICTORIAN_CHARGE)
+		else
 		{
 			how_many_times_fired[client] = MAX_VICTORIAN_CHARGE;
 		}
@@ -220,7 +220,7 @@ public void Shell_VictorianTouch(int entity, int target)
 			how_many_times_fired[owner] = 0;
 			Radius *= 1.5;
 		}
-		else if(how_many_supercharge_left[owner] > 0 && !Mega_Burst[client]);
+		else if(how_many_supercharge_left[owner] > 0 && !Mega_Burst[client])
 		{
 			BaseDMG *= 1.25;
 			if(how_many_supercharge_left[owner] <= 5)
@@ -228,7 +228,7 @@ public void Shell_VictorianTouch(int entity, int target)
 				BaseDMG *= 1.2;
 			}
 		}
-		else if(Mega_Burst[owner]);
+		else if(Mega_Burst[owner])
 		{
 			BaseDMG *= how_many_shots_reserved;
 			float Cooldown = 5.0;
