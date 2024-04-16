@@ -68,11 +68,11 @@ public void Shell_VictorianTouch(int entity, int target)
 		EmitAmbientSound(SOUND_VIC_IMPACT, entity, _, 120, _,0.7, GetRandomInt(55, 80));
 		
 		DataPack pack_boom = new DataPack();
-        pack_boom.WriteFloat(spawnLoc[0]);
-        pack_boom.WriteFloat(spawnLoc[1]);
-        pack_boom.WriteFloat(spawnLoc[2]);
-        pack_boom.WriteCell(0);
-        RequestFrame(MakeExplosionFrameLater, pack_boom);
+		pack_boom.WriteFloat(spawnLoc[0]);
+		pack_boom.WriteFloat(spawnLoc[1]);
+		pack_boom.WriteFloat(spawnLoc[2]);
+		pack_boom.WriteCell(0);
+		RequestFrame(MakeExplosionFrameLater, pack_boom);
 
 		if(IsValidEntity(particle))
 		{
@@ -85,11 +85,11 @@ public void Shell_VictorianTouch(int entity, int target)
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
 		EmitAmbientSound(SOUND_VIC_IMPACT, entity, _, 120, _,0.7, GetRandomInt(55, 80));
 		DataPack pack_boom = new DataPack();
-        pack_boom.WriteFloat(spawnLoc[0]);
-        pack_boom.WriteFloat(spawnLoc[1]);
-        pack_boom.WriteFloat(spawnLoc[2]);
-        pack_boom.WriteCell(0);
-        RequestFrame(MakeExplosionFrameLater, pack_boom);
+		pack_boom.WriteFloat(spawnLoc[0]);
+		pack_boom.WriteFloat(spawnLoc[1]);
+		pack_boom.WriteFloat(spawnLoc[2]);
+		pack_boom.WriteCell(0);
+		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		switch(GetRandomInt(1,4)) 
 		{
 			case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 1.0);
