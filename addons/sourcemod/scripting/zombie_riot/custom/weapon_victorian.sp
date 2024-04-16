@@ -45,6 +45,8 @@ public void Shell_VictorianTouch(int entity, int target)
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
 		WorldSpaceCenter(target, Entity_Position);
+		float position[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 
 		float BaseDMG = 600.0
 		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
@@ -60,8 +62,8 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 
-		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, target, Radius, Falloff);
-		EmitAmbientSound(ExplosiveBulletsSFX[GetRandomInt(0, 2)], spawnLoc, , 120, _,0.7, GetRandomInt(55, 80));
+		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
+		EmitAmbientSound(ExplosiveBulletsSFX[GetRandomInt(0, 2)], position, , 120, _,0.7, GetRandomInt(55, 80));
 		
 		DataPack pack_boom = new DataPack();
         pack_boom.WriteFloat(spawnLoc[0]);
@@ -78,8 +80,8 @@ public void Shell_VictorianTouch(int entity, int target)
 	}
 	else if(target == 0)
 	{	
-		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, target, Radius, Falloff);
-		EmitAmbientSound(ExplosiveBulletsSFX[GetRandomInt(0, 2)], spawnLoc, , 120, _,0.7, GetRandomInt(55, 80));
+		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
+		EmitAmbientSound(ExplosiveBulletsSFX[GetRandomInt(0, 2)], position, , 120, _,0.7, GetRandomInt(55, 80));
 		DataPack pack_boom = new DataPack();
         pack_boom.WriteFloat(spawnLoc[0]);
         pack_boom.WriteFloat(spawnLoc[1]);
