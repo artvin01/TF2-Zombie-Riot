@@ -4,6 +4,7 @@
 //#define MACRO_SHOWDIFF(%1)	if(oldAmount != newAmount) { FormatEx(buffer, sizeof(buffer), %1 ... " (%d -> %d)", oldAmount, newAmount); menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED); }
 
 static bool HasKeyHintHud[MAXTF2PLAYERS];
+static int SkillPoints[MAXTF2PLAYERS];
 static int BackpackBonus[MAXENTITIES];
 static int Strength[MAXENTITIES];
 static int Precision[MAXENTITIES];
@@ -23,6 +24,7 @@ void Stats_PluginStart()
 
 void Stats_ClientCookiesCached(int client)
 {
+	SkillPoints[client] = 30;// TEST TEST
 }
 
 void Stats_ClientDisconnect(int client)
@@ -454,63 +456,69 @@ public int Stats_ShowLevelUpH(Menu menu, MenuAction action, int client, int choi
 	return 0;
 }
 
+static int SkillPointsLeft(int client)
+{
+	int points = SkillPoints[client];
+	points -= Strength[client];
+	points -= Precision[client];
+	points -= Artifice[client];
+	points -= Endurance[client];
+	points -= Structure[client];
+	points -= Intelligence[client];
+	points -= Capacity[client];
+	points -= Agility[client];
+	points -= Luck[client];
+	return points;
+}
+
 public Action Stats_ShowStats(int client, int args)
 {
 	if(client)
 	{
+		int skills = SkillPointsLeft(client);
+
 		Menu menu = new Menu(Stats_ShowStatsH);
-		menu.SetTitle("RPG Fortress\n \nPlayer Stats:");
+		menu.SetTitle("RPG Fortress\n \nSkill Points: %d\nPlayer Stats:", skills);
 
 		char buffer[64];
-		
 		int amount;
-		Stats_BaseHealth(client, amount);
-		int bonus = SDKCall_GetMaxHealth(client) - amount;
-		/*
-		FormatEx(buffer, sizeof(buffer), "Max Health: %d + %d (%.0f%% melee dmg, %.0f%% ranged dmg)", amount, bonus, vuln * Attributes_FindOnPlayerZR(client, 206, true, 1.0, true, true), vuln * Attributes_FindOnPlayerZR(client, 205, true, 1.0, true, true));
-		menu.AddItem(NULL_STRING, buffer);
-		*/
-		/*
-		Stats_BaseCarry(client, amount, bonus);
-		FormatEx(buffer, sizeof(buffer), "Backpack Storage: %d + %d (%d weight per item)", amount, bonus, Tier[client] + 1);
-		menu.AddItem(NULL_STRING, buffer);
-		*/
 		float multi;
+
 		int total = Stats_Strength(client, amount, bonus, multi);
 		FormatEx(buffer, sizeof(buffer), "Strength: [%d x%.1f] + %d = [%d] (%.0f Melee DMG)", amount, multi, bonus, total, RPGStats_FlatDamageSetStats(client, 1));
-		menu.AddItem(NULL_STRING, buffer);
+		menu.AddItem(NULL_STRING, buffer, skills ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		total = Stats_Precision(client, amount, bonus, multi);
 		FormatEx(buffer, sizeof(buffer), "Precision: [%d x%.1f] + %d = [%d] (%.0f Ranged DMG)", amount, multi, bonus, total, RPGStats_FlatDamageSetStats(client, 2));
-		menu.AddItem(NULL_STRING, buffer);
+		menu.AddItem(NULL_STRING, buffer, skills ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		total = Stats_Artifice(client, amount, bonus, multi);
 		FormatEx(buffer, sizeof(buffer), "Artifice: [%d x%.1f] + %d = [%d] (%.0f Mage DMG)", amount, multi, bonus, total, RPGStats_FlatDamageSetStats(client, 3));
-		menu.AddItem(NULL_STRING, buffer);
+		menu.AddItem(NULL_STRING, buffer, skills ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		total = Stats_Endurance(client, amount, bonus, multi);
 		FormatEx(buffer, sizeof(buffer), "Endurance: [%d x%.1f] + %d = [%d] (-%.0f Flat Res)", amount, multi, bonus, total, RPGStats_FlatDamageResistance(client));
-		menu.AddItem(NULL_STRING, buffer);
+		menu.AddItem(NULL_STRING, buffer, skills ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		total = Stats_Structure(client, amount, bonus, multi);
 		FormatEx(buffer, sizeof(buffer), "Structure: [%d x%.1f] + %d = [%d]", amount, multi, bonus, total);
-		menu.AddItem(NULL_STRING, buffer);
+		menu.AddItem(NULL_STRING, buffer, skills ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		total = Stats_Intelligence(client, amount, bonus, multi);
 		FormatEx(buffer, sizeof(buffer), "Intelligence: [%d x%.1f] + %d = [%d]", amount, multi, bonus, total);
-		menu.AddItem(NULL_STRING, buffer);
+		menu.AddItem(NULL_STRING, buffer, skills ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		total = Stats_Capacity(client, amount, bonus, multi);
 		FormatEx(buffer, sizeof(buffer), "Capacity: [%d x%.1f] + %d = [%d]", amount, multi, bonus, total);
-		menu.AddItem(NULL_STRING, buffer);
+		menu.AddItem(NULL_STRING, buffer, skills ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		total = Stats_Agility(client, amount, bonus, multi);
 		FormatEx(buffer, sizeof(buffer), "Agility: [%d x%.1f] + %d = [%d]", amount, multi, bonus, total);
-		menu.AddItem(NULL_STRING, buffer);
+		menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 
 		total = Stats_Luck(client, amount, bonus, multi);
 		FormatEx(buffer, sizeof(buffer), "Luck: [%d x%.1f] + %d = [%d]", amount, multi, bonus, total);
-		menu.AddItem(NULL_STRING, buffer);
+		menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 
 		menu.ExitBackButton = true;
 		menu.Display(client, MENU_TIME_FOREVER);
@@ -534,7 +542,33 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 		}
 		case MenuAction_Select:
 		{
-			FakeClientCommandEx(client, "sm_store");
+			int skills = SkillPointsLeft(client);
+			if(skills > 0)
+			{
+				switch(choice)
+				{
+					case 0:
+						Strength[client]++;
+					
+					case 1:
+						Precision[client]++;
+					
+					case 2:
+						Artifice[client]++;
+					
+					case 3:
+						Endurance[client]++;
+					
+					case 4:
+						Structure[client]++;
+					
+					case 5:
+						Intelligence[client]++;
+					
+					case 6:
+						Capacity[client]++;
+				}
+			}
 		}
 	}
 	return 0;

@@ -18,7 +18,6 @@
 #define STAT_AGILITY		9 // -> more movesmentspeed attackspeed reload speed, all speed things speedy.
 
 int i_TransformationLevel[MAXTF2PLAYERS];
-int i_TransformationProgress[MAXTF2PLAYERS][5]; //secondary is for sub forms, bur we dont have them yet, but we should prepare just incase.
 float f_TransformationDelay[MAXTF2PLAYERS]; 	//if he takess too long and cancels it, itll just drop the progress.
 			
 
