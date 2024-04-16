@@ -170,18 +170,22 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 		During_Ability[client] = true;
 		how_many_supercharge_left[client] -= 1;
 	}
-	if(how_many_supercharge_left[client] < 0);
+	if(!During_Ability[client])
+	{
+		else if(how_many_times_fired[client] <= MAX_VICTORIAN_CHARGE)
+		{
+			how_many_times_fired[client] += 1;
+		}
+		else if (how_many_times_fired[client] >= MAX_VICTORIAN_CHARGE)
+		{
+			how_many_times_fired[client] = MAX_VICTORIAN_CHARGE;
+		}
+	}
+	else
 	{
 		During_Ability[client] = false;
 		how_many_supercharge_left[client] = 0;
-	}
-	if(how_many_times_fired[client] <= MAX_VICTORIAN_CHARGE && !During_Ability[client])
-	{
-		how_many_times_fired[client] += 1;
-	}
-	if(how_many_times_fired[client] >= MAX_VICTORIAN_CHARGE)
-	{
-		how_many_times_fired[client] = MAX_VICTORIAN_CHARGE;
+		how_many_times_fired[client] = 0;
 	}
 }
 
