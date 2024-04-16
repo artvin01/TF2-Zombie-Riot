@@ -50,6 +50,9 @@ public void Shell_VictorianTouch(int entity, int target)
 		float position[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
 		float BaseDMG = 600.0;
 		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
 
@@ -58,15 +61,13 @@ public void Shell_VictorianTouch(int entity, int target)
 		Radius *= Attributes_Get(weapon, 100, 1.0);
 
 		float Falloff = Attributes_Get(weapon, 117, 1.0);
-
-		int owner = EntRefToEntIndex(i_WandOwner[entity]);
-		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
 		EmitAmbientSound(SOUND_VIC_IMPACT, entity, _, 120, _,0.7, GetRandomInt(55, 80));
-		
+
+		float spawnLoc[3]
+
 		DataPack pack_boom = new DataPack();
 		pack_boom.WriteFloat(spawnLoc[0]);
 		pack_boom.WriteFloat(spawnLoc[1]);
@@ -82,24 +83,27 @@ public void Shell_VictorianTouch(int entity, int target)
 	}
 	else if(target == 0)
 	{	
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+		float BaseDMG = 600.0;
+		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
+
+		float Radius = EXPLOSION_RADIUS;
+		Radius *= Attributes_Get(weapon, 99, 1.0);
+		Radius *= Attributes_Get(weapon, 100, 1.0);
+
+		float Falloff = Attributes_Get(weapon, 117, 1.0);
+
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
 		EmitAmbientSound(SOUND_VIC_IMPACT, entity, _, 120, _,0.7, GetRandomInt(55, 80));
+
+		float spawnLoc[3]
 		DataPack pack_boom = new DataPack();
 		pack_boom.WriteFloat(spawnLoc[0]);
 		pack_boom.WriteFloat(spawnLoc[1]);
 		pack_boom.WriteFloat(spawnLoc[2]);
 		pack_boom.WriteCell(0);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
-		switch(GetRandomInt(1,4)) 
-		{
-			case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 1.0);
-				
-			case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_2, entity, SNDCHAN_STATIC, 80, _, 1.0);
-				
-			case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_3, entity, SNDCHAN_STATIC, 80, _, 1.0);
-			
-			case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 1.0);
-		}
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
