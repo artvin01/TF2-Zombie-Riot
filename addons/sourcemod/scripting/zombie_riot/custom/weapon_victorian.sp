@@ -1,24 +1,13 @@
 #pragma semicolon 1
 #pragma newdecls required
+#define SOUND_VIC_SHOT 	"weapons/doom_rocket_launcher.wav"
 
-#define SYRINGE_MODEL	"models/weapons/w_models/w_nail.mdl"
-
-void Nailgun_Map_Precache()
+void Victoria_Map_Precache()
 {
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_FLESH_1);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_FLESH_2);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_FLESH_3);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_FLESH_4);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_FLESH_5);
-	
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_CONCRETE_1);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_CONCRETE_2);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_CONCRETE_3);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_CONCRETE_4);
-	PrecacheModel(SYRINGE_MODEL);
+	PrecacheSound(SOUND_VIC_SHOT);
 }
 
-public void Weapon_Nailgun(int client, int weapon, bool crit)
+public void Weapon_Victoria(int client, int weapon, bool crit)
 {
 	float damage = 500.0;
 	damage *= 0.8; //Reduction
@@ -37,12 +26,13 @@ public void Weapon_Nailgun(int client, int weapon, bool crit)
 
 	time *= Attributes_Get(weapon, 102, 1.0);
 
-	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "furious_flyer_activated",_,false);
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "rockettrail",_,false);
+	EmitSoundToAll(SOUND_VIC_SHOT, client, SNDCHAN_AUTO, 140, _, 1.0, 0.7);
 
 	SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 }
 
-public void Gun_NailgunTouch(int entity, int target)
+public void Shell_VictorianTouch(int entity, int target)
 {
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if (target > 0)	
@@ -67,9 +57,16 @@ public void Gun_NailgunTouch(int entity, int target)
 
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 
-		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, spawnLoc, Radius, Falloff);
-		EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
+		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, target, Radius, Falloff);
+		EmitAmbientSound(ExplosiveBulletsSFX[GetRandomInt(0, 2)], spawnLoc, , 120, _,0.7, GetRandomInt(55, 80));
+		
+		DataPack pack_boom = new DataPack();
+        pack_boom.WriteFloat(spawnLoc[0]);
+        pack_boom.WriteFloat(spawnLoc[1]);
+        pack_boom.WriteFloat(spawnLoc[2]);
+        pack_boom.WriteCell(0);
+        RequestFrame(MakeExplosionFrameLater, pack_boom);
+
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -77,16 +74,24 @@ public void Gun_NailgunTouch(int entity, int target)
 		RemoveEntity(entity);
 	}
 	else if(target == 0)
-	{
+	{	
+		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, target, Radius, Falloff);
+		EmitAmbientSound(ExplosiveBulletsSFX[GetRandomInt(0, 2)], spawnLoc, , 120, _,0.7, GetRandomInt(55, 80));
+		DataPack pack_boom = new DataPack();
+        pack_boom.WriteFloat(spawnLoc[0]);
+        pack_boom.WriteFloat(spawnLoc[1]);
+        pack_boom.WriteFloat(spawnLoc[2]);
+        pack_boom.WriteCell(0);
+        RequestFrame(MakeExplosionFrameLater, pack_boom);
 		switch(GetRandomInt(1,4)) 
 		{
-			case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 1.0);
 				
-			case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_2, entity, SNDCHAN_STATIC, 80, _, 1.0);
 				
-			case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_3, entity, SNDCHAN_STATIC, 80, _, 1.0);
 			
-			case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 1.0);
 		}
 		if(IsValidEntity(particle))
 		{
