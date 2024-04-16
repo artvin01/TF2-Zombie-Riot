@@ -70,7 +70,11 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Blacksmith_RoundStart();
 #endif
 
-#if defined RTS
+#if defined RPG
+	Zones_RoundStart();
+#endif
+
+#if defined RPG || defined RTS
 	ServerCommand("mp_waitingforplayers_cancel 1");
 #endif
 }

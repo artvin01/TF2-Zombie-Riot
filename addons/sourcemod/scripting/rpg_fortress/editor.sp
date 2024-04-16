@@ -9,19 +9,19 @@ methodmap EditMenu < Menu
 	{
 		return view_as<EditMenu>(new Menu(EditorMenuH, actions));
 	}
-	public bool Display(int client, int time, Function callback)
+	public bool Display(int client, Function callback)
 	{
 		EditorMenu[client] = callback;
-		bool result = view_as<Menu>(this).Display(client, time);
+		bool result = view_as<Menu>(this).Display(client, MENU_TIME_FOREVER);
 		if(!result)
 			EditorMenu[client] = INVALID_FUNCTION;
 		
 		return result;
 	}
-	public bool DisplayAt(int client, int first_item, int time, Function callback)
+	public bool DisplayAt(int client, int first_item, Function callback)
 	{
 		EditorMenu[client] = callback;
-		bool result = view_as<Menu>(this).DisplayAt(client, first_item, time);
+		bool result = view_as<Menu>(this).DisplayAt(client, first_item, MENU_TIME_FOREVER);
 		if(!result)
 			EditorMenu[client] = INVALID_FUNCTION;
 		
@@ -38,7 +38,7 @@ static Action Editor_Command(int client, int args)
 {
 	if(client)
 	{
-		MainMenu(client);
+		Editor_MainMenu(client);
 	}
 	return Plugin_Handled;
 }
@@ -88,10 +88,25 @@ static int EditorMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-static void MainMenu(int client)
+void Editor_MainMenu(int client)
 {
 	EditMenu menu = new EditMenu();
 	menu.SetTitle("RPG Fortress: Game Editor\nChat messages are overriden while this menu is up\n ");
 
-	menu.AddItem("", "zones.cfg");
+	menu.AddItem("zones", "Zones");
+
+	menu.Display(client, MainMenuHandler);
+}
+
+static void MainMenuHandler(int client, const char[] buffer)
+{
+	if(StrContains(buffer, "zones") != -1)
+	{
+		Zones_EditorMenu(client);
+	}
+}
+
+static void ZoneMenu(int client)
+{
+
 }

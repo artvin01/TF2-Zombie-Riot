@@ -111,6 +111,70 @@ void Zones_ConfigSetup()
 	delete kv;
 }
 
+void Zones_EditorMenu(int client, const char[] name = "")
+{
+	char buffer[PLATFORM_MAX_PATH];
+	RPG_BuildPath(buffer, sizeof(buffer), "zones");
+	KeyValues kv = new KeyValues("Zones");
+	kv.ImportFromFile(buffer);
+
+	EditMenu menu = new EditMenu();
+
+	if(name[0])
+	{
+		menu.SetTitle("Zones\nType in chat to create a new zone\n ");
+		
+		if(kv.GotoFirstSubKey())
+		{
+			char name[64];
+			float pos[3], vec[3];
+			
+			do
+			{
+				kv.GetSectionName(name, sizeof(name));
+				menu.AddItem(name, name);
+			}
+			while(kv.GotoNextKey());
+		}
+		else
+		{
+			menu.AddItem("", "None", ITEMDRAW_DISABLED);
+		}
+
+		menu.Display(client, NamePicker);
+	}
+	else
+	{
+		menu.SetTitle("Zones\nType in chat to create a new zone\n ");
+		
+		if(kv.GotoFirstSubKey())
+		{
+			char name[64];
+			float pos[3], vec[3];
+			
+			do
+			{
+				kv.GetSectionName(name, sizeof(name));
+				menu.AddItem(name, name);
+			}
+			while(kv.GotoNextKey());
+		}
+		else
+		{
+			menu.AddItem("", "None", ITEMDRAW_DISABLED);
+		}
+
+		menu.Display(client, NamePicker);
+	}
+
+	delete kv;
+}
+
+static void NamePicker(int client, const char[] buffer)
+{
+
+}
+
 static void OnEnter(int entity, const char[] name)
 {
 	if(!b_NpcHasDied[entity]) //An npc just touched it!
