@@ -22,7 +22,7 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 	if (h_TimerVictorianLauncherManagement[client] != null)
 	{
 		//This timer already exists.
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_WEST_REVOLVER)
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VICTORIAN_LAUNCHER)
 		{
 			//Is the weapon it again?
 			//Yes?
