@@ -83,6 +83,9 @@ public void Shell_VictorianTouch(int entity, int target)
 	}
 	else if(target == 0)
 	{	
+		float position[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+		
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 		float BaseDMG = 600.0;
