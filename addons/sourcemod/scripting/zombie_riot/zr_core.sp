@@ -773,6 +773,7 @@ void ZR_MapStart()
 	Hell_Hoe_MapStart();
 	ResetMapStartMessengerWeapon();
 	ResetMapStartWest();
+	ResetMapStartVictoria();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;

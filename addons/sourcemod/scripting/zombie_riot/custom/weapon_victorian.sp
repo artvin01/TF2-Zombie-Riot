@@ -4,6 +4,10 @@
 #define SOUND_VIC_SHOT 	"weapons/doom_rocket_launcher.wav"
 #define SOUND_VIC_IMPACT "weapons/cow_mangler_explode.wav"
 
+void ResetMapStartVictoria()
+{
+	Victoria_Map_Precache()
+}
 void Victoria_Map_Precache()
 {
 	PrecacheSound(SOUND_VIC_SHOT);
@@ -62,7 +66,7 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		float Falloff = Attributes_Get(weapon, 117, 1.0);
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		
+
 		float spawnLoc[3];
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
 		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 120, _,0.7, GetRandomInt(55, 80));
