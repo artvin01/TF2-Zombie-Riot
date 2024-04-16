@@ -1027,13 +1027,7 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("465", 999.0);	// instant build
 	map.SetValue("464", 999.0);	// instant build
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
-//	map.SetValue("397", 50.0);	// Ignore ally with shooting
 	map.SetValue("169", 0.0);	// Complete sentrygun Immunity
-//	map.SetValue("49", 0.0);	// Completly disable double jump as we dont even use this, client prediction babyyyy!!!
-					//... doesnt work on player, must be on weapon...
-//	map.SetValue("124", 1.0);	// Make sentries minisentries (only works on melee's that are wrenches...)
-//	map.SetValue("345", 0.0);	// No dispenser range
-//	map.SetValue("732", 0.0);	// No dispenser metal gain
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
 
 	float value;

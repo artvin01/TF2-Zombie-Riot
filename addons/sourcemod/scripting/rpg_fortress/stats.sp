@@ -37,6 +37,12 @@ void Stats_UpdateHud(int client)
 
 	if(IsPlayerAlive(client))
 	{
+		float total = float(Stats_Capacity(client));
+		if(Current_Mana[client] > total)
+		{
+			Current_Mana[client] = RoundToNearest(max_mana[client]);
+		}
+		max_mana[client] = total;
 	}
 
 	if(buffer[0] || HasKeyHintHud[client])
@@ -188,7 +194,7 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 
 void Stats_SetBodyStats(int client, TFClassType class, StringMap map)
 {
-	map.SetValue("26", RemoveExtraHealth(class, float(Stats_BaseHealth(client))));
+	map.SetValue("26", RemoveExtraHealth(class, float(Stats_Structure(client))));
 	map.SetValue("252", Stats_KnockbackResist(client));
 }
 
@@ -463,48 +469,50 @@ public Action Stats_ShowStats(int client, int args)
 		int amount;
 		Stats_BaseHealth(client, amount);
 		int bonus = SDKCall_GetMaxHealth(client) - amount;
+		/*
 		FormatEx(buffer, sizeof(buffer), "Max Health: %d + %d (%.0f%% melee dmg, %.0f%% ranged dmg)", amount, bonus, vuln * Attributes_FindOnPlayerZR(client, 206, true, 1.0, true, true), vuln * Attributes_FindOnPlayerZR(client, 205, true, 1.0, true, true));
 		menu.AddItem(NULL_STRING, buffer);
-
+		*/
+		
 		Stats_BaseCarry(client, amount, bonus);
 		FormatEx(buffer, sizeof(buffer), "Backpack Storage: %d + %d (%d weight per item)", amount, bonus, Tier[client] + 1);
 		menu.AddItem(NULL_STRING, buffer);
 
 		float multi;
 		int total = Stats_Strength(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Strength: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
+		FormatEx(buffer, sizeof(buffer), "Strength: %d x%.1f + %d", amount, multi, bonus);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Precision(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Precision: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
+		FormatEx(buffer, sizeof(buffer), "Precision: %d x%.1f + %d", amount, multi, bonus);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Atrifice(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Atrifice: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
+		FormatEx(buffer, sizeof(buffer), "Atrifice: %d x%.1f + %d", amount, multi, bonus);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Endurance(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Endurance: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
+		FormatEx(buffer, sizeof(buffer), "Endurance: %d x%.1f + %d", amount, multi, bonus);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Structure(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Structure: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
+		FormatEx(buffer, sizeof(buffer), "Structure: %d x%.1f + %d", amount, multi, bonus);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Intelligence(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Intelligence: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
+		FormatEx(buffer, sizeof(buffer), "Intelligence: %d x%.1f + %d", amount, multi, bonus);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Capacity(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Capacity: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
+		FormatEx(buffer, sizeof(buffer), "Capacity: %d x%.1f + %d", amount, multi, bonus);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Agility(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Agility: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
+		FormatEx(buffer, sizeof(buffer), "Agility: %d x%.1f + %d", amount, multi, bonus);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Luck(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Luck: %d x%.1f + %d (+%.0f%% melee damage)", amount, multi, bonus, total);
+		FormatEx(buffer, sizeof(buffer), "Luck: %d x%.1f + %d", amount, multi, bonus);
 		menu.AddItem(NULL_STRING, buffer);
 
 		menu.ExitBackButton = true;

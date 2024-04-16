@@ -958,7 +958,10 @@ public void OnPostThink(int client)
 #if defined ZR
 			Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
 #elseif defined RPG
-			Format(buffer, sizeof(buffer), "%t\n%s", "Capacity", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
+			red = 200;
+			green = 200;
+			blue = 255;
+			Format(buffer, sizeof(buffer), "%t\n%s", "Capacity", Current_Mana[client], buffer);
 #endif
 		}
 

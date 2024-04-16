@@ -3,7 +3,7 @@
 {
 	"Capacity"
 	{
-		"#format"	"{1:d},{2:.0f},{3:.0f}"
-		"en" 		"Capacity: [{1}/{2}] (+{3})"
+		"#format"	"{1:d}}"
+		"en" 		"Capacity: [{1}]"
 	}
 }
