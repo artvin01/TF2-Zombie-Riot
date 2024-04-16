@@ -8,7 +8,7 @@ static bool HasKeyHintHud[MAXTF2PLAYERS];
 static int BackpackBonus[MAXENTITIES];
 static int Strength[MAXENTITIES];
 static int Precision[MAXENTITIES];
-static int Atrifice[MAXENTITIES];
+static int Artifice[MAXENTITIES];
 static int Endurance[MAXENTITIES];
 static int Structure[MAXENTITIES];
 static int Intelligence[MAXENTITIES];
@@ -56,7 +56,7 @@ void Stats_ClearCustomStats(int entity)
 	BackpackBonus[entity] = 0;
 	Strength[entity] = 0;
 	Precision[entity] = 0;
-	Atrifice[entity] = 0;
+	Artifice[entity] = 0;
 	Endurance[entity] = 0;
 	Structure[entity] = 0;
 	Intelligence[entity] = 0;
@@ -81,7 +81,7 @@ void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
 				Format(desc, 512, "%s\n%s Precision", desc, CharInt(RoundFloat(value[i])));
 			
 			case -4:
-				Format(desc, 512, "%s\n%s Atrifice", desc, CharInt(RoundFloat(value[i])));
+				Format(desc, 512, "%s\n%s Artifice", desc, CharInt(RoundFloat(value[i])));
 			
 			case -5:
 				Format(desc, 512, "%s\n%s Endurance", desc, CharInt(RoundFloat(value[i])));
@@ -128,7 +128,7 @@ void Stats_GetCustomStats(int entity, int attrib, float value)
 			Precision[entity] += RoundFloat(value);
 		
 		case -4:
-			Atrifice[entity] += RoundFloat(value);
+			Artifice[entity] += RoundFloat(value);
 		
 		case -5:
 			Endurance[entity] += RoundFloat(value);
@@ -260,19 +260,19 @@ int Stats_Precision(int client, int &base = 0, int &bonus = 0, float &multi = 0.
 	return bonus + RoundFloat(base * multi);
 }
 
-int Stats_Atrifice(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
+int Stats_Artifice(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 {
 	static Race race;
 	Races_GetRaceByIndex(RaceIndex[client], race);
 
-	base = BaseAtrifice + Atrifice[client];
+	base = BaseArtifice + Artifice[client];
 	bonus = 0;
-	multi = race.AtrificeMulti;
+	multi = race.ArtificeMulti;
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
-		bonus += Atrifice[entity];
+		bonus += Artifice[entity];
 	}
 
 	return bonus + RoundFloat(base * multi);
@@ -473,46 +473,46 @@ public Action Stats_ShowStats(int client, int args)
 		FormatEx(buffer, sizeof(buffer), "Max Health: %d + %d (%.0f%% melee dmg, %.0f%% ranged dmg)", amount, bonus, vuln * Attributes_FindOnPlayerZR(client, 206, true, 1.0, true, true), vuln * Attributes_FindOnPlayerZR(client, 205, true, 1.0, true, true));
 		menu.AddItem(NULL_STRING, buffer);
 		*/
-		
+		/*
 		Stats_BaseCarry(client, amount, bonus);
 		FormatEx(buffer, sizeof(buffer), "Backpack Storage: %d + %d (%d weight per item)", amount, bonus, Tier[client] + 1);
 		menu.AddItem(NULL_STRING, buffer);
-
+		*/
 		float multi;
 		int total = Stats_Strength(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Strength: %d x%.1f + %d", amount, multi, bonus);
+		FormatEx(buffer, sizeof(buffer), "Strength: [%d x%.1f] + %d = [%d] (%.0f Melee DMG)", amount, multi, bonus, total, RPGStats_FlatDamageSetStats(client, 1));
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Precision(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Precision: %d x%.1f + %d", amount, multi, bonus);
+		FormatEx(buffer, sizeof(buffer), "Precision: [%d x%.1f] + %d = [%d] (%.0f Ranged DMG)", amount, multi, bonus, total, RPGStats_FlatDamageSetStats(client, 2));
 		menu.AddItem(NULL_STRING, buffer);
 
-		total = Stats_Atrifice(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Atrifice: %d x%.1f + %d", amount, multi, bonus);
+		total = Stats_Artifice(client, amount, bonus, multi);
+		FormatEx(buffer, sizeof(buffer), "Artifice: [%d x%.1f] + %d = [%d] (%.0f Mage DMG)", amount, multi, bonus, total, RPGStats_FlatDamageSetStats(client, 3));
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Endurance(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Endurance: %d x%.1f + %d", amount, multi, bonus);
+		FormatEx(buffer, sizeof(buffer), "Endurance: [%d x%.1f] + %d = [%d] (-%.0f Flat Res)", amount, multi, bonus, total, RPGStats_FlatDamageResistance(client));
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Structure(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Structure: %d x%.1f + %d", amount, multi, bonus);
+		FormatEx(buffer, sizeof(buffer), "Structure: [%d x%.1f] + %d = [%d]", amount, multi, bonus, total);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Intelligence(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Intelligence: %d x%.1f + %d", amount, multi, bonus);
+		FormatEx(buffer, sizeof(buffer), "Intelligence: [%d x%.1f] + %d = [%d]", amount, multi, bonus, total);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Capacity(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Capacity: %d x%.1f + %d", amount, multi, bonus);
+		FormatEx(buffer, sizeof(buffer), "Capacity: [%d x%.1f] + %d = [%d]", amount, multi, bonus, total);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Agility(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Agility: %d x%.1f + %d", amount, multi, bonus);
+		FormatEx(buffer, sizeof(buffer), "Agility: [%d x%.1f] + %d = [%d]", amount, multi, bonus, total);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Luck(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Luck: %d x%.1f + %d", amount, multi, bonus);
+		FormatEx(buffer, sizeof(buffer), "Luck: [%d x%.1f] + %d = [%d]", amount, multi, bonus, total);
 		menu.AddItem(NULL_STRING, buffer);
 
 		menu.ExitBackButton = true;
@@ -520,6 +520,7 @@ public Action Stats_ShowStats(int client, int args)
 	}
 	return Plugin_Handled;
 }
+
 
 public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice)
 {
@@ -540,4 +541,38 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 		}
 	}
 	return 0;
+}
+
+
+float RPGStats_FlatDamageSetStats(int client, int damageType = 0)
+{
+	int total;
+	switch(damageType)
+	{
+		case 1:
+		{
+			total = Stats_Strength(client);
+		}
+		case 2:
+		{
+			total = Stats_Precision(client);
+		}
+		case 3:
+		{
+			total = Stats_Artifice(client);
+		}
+	}
+	return (float(total) * 3.0);
+}
+
+float RPGStats_FlatDamageResistance(int client)
+{
+	int total;
+	total = Stats_Endurance(client);
+	return (float(total) * 0.5);
+}
+
+void SetWeaponDamageToDefault(int client, int damageType = 0)
+{
+	float DamageFlat = RPGStats_FlatDamageSetStats(client, damageType);
 }

@@ -9,7 +9,7 @@
 
 int BaseStrength;
 int BasePrecision;
-int BaseAtrifice;
+int BaseArtifice;
 int BaseEndurance;
 int BaseStructure;
 int BaseIntelligence;

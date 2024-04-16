@@ -1869,3 +1869,39 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 
 	return false;
 }
+
+
+
+void RPGStore_SetWeaponDamageToDefault(int weapon, int client, int damageType = 0)
+{
+	static char classname[36];
+	GetEntityClassname(weapon, classname, sizeof(classname));
+	
+	static WeaponData data;
+
+	int i;
+	int val = WeaponList.Length;
+
+	for(; i<val; i++)
+	{
+		WeaponList.GetArray(i, data);
+		if(StrEqual(classname, data.Classname))
+			break;
+	}
+	if(i == val)
+		return;
+
+	if(!data.Damage)
+	{
+		return 0;
+	}
+	float damageBase = data.Damage;
+
+	float DecimalForDamage = 1.0 / damageBase;
+	
+	float DamageFlat = RPGStats_FlatDamageSetStats(client, damageType);
+
+	Attributes_SetMulti(weapon, 2, DecimalForDamage * DamageFlat);
+
+	//this sets all weapons idealy to the damage shown in the stats screen. Then just give extra damage and other shit to balance it out!
+}

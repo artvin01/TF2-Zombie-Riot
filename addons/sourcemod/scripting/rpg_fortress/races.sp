@@ -53,7 +53,7 @@ enum struct Form
 
 	float StrengthMulti[2];
 	float PrecisionMulti[2];
-	float AtrificeMulti[2];
+	float ArtificeMulti[2];
 	float EnduranceMulti[2];
 	float StructureMulti[2];
 	float IntelligenceMulti[2];
@@ -78,8 +78,8 @@ enum struct Form
 		this.PrecisionMulti[0] = kv.GetFloat("Min_Precision", 1.0);
 		this.PrecisionMulti[1] = kv.GetFloat("Max_Precision", 1.0);
 
-		this.AtrificeMulti[0] = kv.GetFloat("Min_Atrifice", 1.0);
-		this.AtrificeMulti[1] = kv.GetFloat("Max_Atrifice", 1.0);
+		this.ArtificeMulti[0] = kv.GetFloat("Min_Artifice", 1.0);
+		this.ArtificeMulti[1] = kv.GetFloat("Max_Artifice", 1.0);
 
 		this.EnduranceMulti[0] = kv.GetFloat("Min_Endurance", 1.0);
 		this.EnduranceMulti[1] = kv.GetFloat("Max_Endurance", 1.0);
@@ -105,7 +105,7 @@ enum struct Race
 
 	float StrengthMulti;
 	float PrecisionMulti;
-	float AtrificeMulti;
+	float ArtificeMulti;
 	float EnduranceMulti;
 	float StructureMulti;
 	float IntelligenceMulti;
@@ -121,7 +121,7 @@ enum struct Race
 		{
 			this.StrengthMulti = kv.GetFloat("Strength", 1.0);
 			this.PrecisionMulti = kv.GetFloat("Precision", 1.0);
-			this.AtrificeMulti = kv.GetFloat("Atrifice", 1.0);
+			this.ArtificeMulti = kv.GetFloat("Artifice", 1.0);
 			this.EnduranceMulti = kv.GetFloat("Endurance", 1.0);
 			this.StructureMulti = kv.GetFloat("Structure", 1.0);
 			this.IntelligenceMulti = kv.GetFloat("Intelligence", 1.0);
@@ -185,7 +185,7 @@ void Races_ConfigSetup()
 	{
 		BaseStrength = kv.GetNum("Strength");
 		BasePrecision = kv.GetNum("Precision");
-		BaseAtrifice = kv.GetNum("Atrifice");
+		BaseArtifice = kv.GetNum("Artifice");
 		BaseEndurance = kv.GetNum("Endurance");
 		BaseStructure = kv.GetNum("Structure");
 		BaseIntelligence = kv.GetNum("Intelligence");

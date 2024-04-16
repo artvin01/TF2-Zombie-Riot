@@ -1982,6 +1982,7 @@ public void OnClientDisconnect(int client)
 #if defined ZR || defined RPG
 	KillFeed_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
+	Current_Mana[client] = 0;
 #endif
 
 #if defined RTS

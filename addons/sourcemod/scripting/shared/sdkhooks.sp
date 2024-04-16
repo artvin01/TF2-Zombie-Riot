@@ -559,7 +559,9 @@ public void OnPostThink(int client)
 
 		Mana_Hud_Delay[client] = GameTime + 0.4;
 		static bool had_An_ability;
-
+#if defined RPG
+		RPGRegenerateResource(client);
+#endif
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		
 		if(IsValidEntity(weapon))
@@ -1624,6 +1626,16 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 
+#if defined RPG
+	float FlatDamageResistance = RPGStats_FlatDamageResistance(victim);
+	float damageMinimum = (damage * 0.05);
+	damage -= FlatDamageResistance;
+	if(damage < damageMinimum)
+	{
+		damage = damageMinimum;
+	}
+#endif
+
 	if(Medival_Difficulty_Level != 0.0)
 	{
 		float difficulty_math = Medival_Difficulty_Level;
@@ -2640,5 +2652,35 @@ void ArmorDisplayClientColor(int client, int armor)
 
 	SetEntityRenderMode(armor, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(armor, green, green, blue, Alpha);
+}
+#endif
+
+#if defined RPG
+void RPGRegenerateResource(int client, bool ignoreRequirements = false)
+{
+	if((f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)
+	{
+		//if outside of battle and not in transformations that drain resource, regenerate resource.
+		if(Current_Mana[client] < max_mana[client])
+		{
+			Current_Mana[client] += RoundToCeil(max_mana[client] / 40.0);
+			if(Current_Mana[client] > RoundToCeil(max_mana[client]))
+			{
+				Current_Mana[client] = RoundToCeil(max_mana[client]);
+			}
+		}
+	}
+	else
+	{
+		//if they are in battle, regenerate resource much slower.
+		if(Current_Mana[client] < max_mana[client])
+		{
+			Current_Mana[client] += RoundToCeil(max_mana[client] / 200.0);
+			if(Current_Mana[client] > RoundToCeil(max_mana[client]))
+			{
+				Current_Mana[client] = RoundToCeil(max_mana[client]);
+			}
+		}
+	}
 }
 #endif
