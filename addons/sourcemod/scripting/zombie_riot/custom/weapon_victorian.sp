@@ -6,7 +6,7 @@
 
 void ResetMapStartVictoria()
 {
-	Victoria_Map_Precache()
+	Victoria_Map_Precache();
 }
 void Victoria_Map_Precache()
 {
