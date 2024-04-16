@@ -231,15 +231,15 @@ public void Shell_VictorianTouch(int entity, int target)
 		}
 		else if(Mega_Burst[owner])
 		{
-			BaseDMG *= how_many_shots_reserved;
+			BaseDMG *= IntToString(how_many_shots_reserved);
 			float Cooldown = 5.0;
-			Cooldown *= StringToFloat(how_many_shots_reserved);
+			Cooldown *= IntToString(how_many_shots_reserved);
 			Overheat[owner] = true;
 			ApplyTempAttrib(weapon, 6, 0.0, Cooldown);
 			float flPos[3]; // original
 			float flAng[3]; // original
 			GetAttachment(owner, "effect_hand_r", flPos, flAng);
-			int particler = ParticleEffectAt(flPos, "raygun_projectile_red_crit", Cooldown);
+			ParticleEffectAt(flPos, "raygun_projectile_red_crit", Cooldown);
 		}
 		else
 		{
@@ -268,23 +268,23 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 {
 	if(IsValidEntity(client))
 	{
-		if (Ability_Check_Cooldown(client, slot) < 0.0 && how_many_supercharge_left > 5)
+		if (Ability_Check_Cooldown(client, slot) < 0.0 && how_many_supercharge_left > 5.0)
 		{
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 50.0);
-			how_many_supercharge_left += 10;
+			how_many_supercharge_left += 10.0;
 			EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 100, _, 0.6);
 		}
 		else if (how_many_supercharge_left[client] <= 5 && how_many_supercharge_left[client] > 0)
 		{
 			Rogue_OnAbilityUse(weapon);
 			how_many_shots_reserved = how_many_supercharge_left;
-			how_many_supercharge_left = 0;
+			how_many_supercharge_left = 0.0;
 			int flMaxHealth = SDKCall_GetMaxHealth(client);
 			int flHealth = GetClientHealth(client);
 			Mega_Burst[client] = true;
 			
-			int health = flMaxHealth / how_many_supercharge_left;
+			int health = flMaxHealth / IntToString(how_many_supercharge_left);
 			flHealth = health;
 			if((flHealth) < 1)
 			{
