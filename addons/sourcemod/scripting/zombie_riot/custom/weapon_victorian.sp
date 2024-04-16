@@ -248,7 +248,7 @@ public void Shell_VictorianTouch(int entity, int target)
 		float spawnLoc[3];
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
 		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 100, _,0.6, GetRandomInt(55, 80));
-		PrintToChatAll("Boom")
+		PrintToChatAll("Boom");
 
 		ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
 
@@ -290,7 +290,7 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 			{
 				flHealth = 1;
 			}
-			SetEntityHealth(client, flHealth)
+			SetEntityHealth(client, flHealth);
 		}
 		else
 		{
