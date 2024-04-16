@@ -125,11 +125,12 @@ public void Victorian_Cooldown_Logic(int client, int weapon)
 						PrintHintText(client,"Charged Rockets [%i%/%i]", how_many_supercharge_left[client], MAX_VICTORIAN_SUPERCHARGE);
 					}
 				}
+				else
+				{
+					PrintHintText(client,"OVERHEATED!");
+				}
 			}
-			else if(Overheat)
-			{
-				PrintHintText(client,"OVERHEATED!");
-			}
+
 			else
 			{
 				PrintHintText(client,"Hi ;D");
@@ -271,7 +272,7 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 		{
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 50.0);
-			how_many_supercharge_left = 10;
+			how_many_supercharge_left += 10;
 			EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 100, _, 0.6);
 		}
 		else if (how_many_supercharge_left[client] <= 5 && how_many_supercharge_left[client] > 0)
