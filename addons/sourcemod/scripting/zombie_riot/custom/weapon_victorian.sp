@@ -114,7 +114,6 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		float Radius = EXPLOSION_RADIUS;
 		Radius *= Attributes_Get(weapon, 99, 1.0);
-		Radius *= Attributes_Get(weapon, 100, 1.0);
 
 		float Falloff = Attributes_Get(weapon, 117, 1.0);
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
