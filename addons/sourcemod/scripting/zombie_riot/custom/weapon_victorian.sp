@@ -1,5 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
+
 #define SOUND_VIC_SHOT 	"weapons/doom_rocket_launcher.wav"
 
 void Victoria_Map_Precache()
@@ -51,6 +52,8 @@ public void Shell_VictorianTouch(int entity, int target)
 		float Radius = EXPLOSION_RADIUS;
 		Radius *= Attributes_Get(weapon, 99, 1.0);
 		Radius *= Attributes_Get(weapon, 100, 1.0);
+
+		float Falloff = Attributes_Get(weapon, 117, 1.0);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
