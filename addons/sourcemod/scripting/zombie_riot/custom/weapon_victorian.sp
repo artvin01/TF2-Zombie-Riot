@@ -2,10 +2,12 @@
 #pragma newdecls required
 
 #define SOUND_VIC_SHOT 	"weapons/doom_rocket_launcher.wav"
+#define SOUND_VIC_IMPACT "weapons/cow_mangler_explode.wav"
 
 void Victoria_Map_Precache()
 {
 	PrecacheSound(SOUND_VIC_SHOT);
+	PrecacheSound(SOUND_VIC_IMPACT);
 }
 
 public void Weapon_Victoria(int client, int weapon, bool crit)
@@ -63,7 +65,7 @@ public void Shell_VictorianTouch(int entity, int target)
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
-		EmitAmbientSound(ExplosiveBulletsSFX[GetRandomInt(0, 2)], position, , 120, _,0.7, GetRandomInt(55, 80));
+		EmitAmbientSound(SOUND_VIC_IMPACT, position, , 120, _,0.7, GetRandomInt(55, 80));
 		
 		DataPack pack_boom = new DataPack();
         pack_boom.WriteFloat(spawnLoc[0]);
