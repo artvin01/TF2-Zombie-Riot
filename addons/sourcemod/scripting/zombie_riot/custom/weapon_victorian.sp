@@ -214,13 +214,13 @@ public void Shell_VictorianTouch(int entity, int target)
 		float Falloff = Attributes_Get(weapon, 117, 1.0);
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 
-		if(how_many_times_fisted[owner] >= 5 && !During_Ability[owner] &&!Mega_Burst[owner])
+		if(how_many_times_fired[owner] >= 5 && !During_Ability[owner] &&!Mega_Burst[owner])
 		{
 			BaseDMG *= 1.5;
 			how_many_times_fired[owner] = 0;
 			Radius *= 1.5;
 		}
-		else if(how_many_supercharge_left[owner] > 0 && !Mega_Burst[client])
+		else if(how_many_supercharge_left[owner] > 0 && !Mega_Burst[owner])
 		{
 			BaseDMG *= 1.25;
 			if(how_many_supercharge_left[owner] <= 5)
@@ -235,7 +235,6 @@ public void Shell_VictorianTouch(int entity, int target)
 			Cooldown *= StringToFloat(how_many_shots_reserved);
 			Overheat[owner] = true;
 			ApplyTempAttrib(weapon, 6, 0.0, Cooldown);
-			int owner = EntRefToEntIndex(i_WandOwner[entity]);
 			float flPos[3]; // original
 			float flAng[3]; // original
 			GetAttachment(owner, "effect_hand_r", flPos, flAng);
@@ -275,7 +274,7 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 			how_many_supercharge_left = 10;
 			EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 100, _, 0.6);
 		}
-		else if (how_many_supercharge_left[owner] <= 5 && how_many_supercharge_left[owner] > 0)
+		else if (how_many_supercharge_left[client] <= 5 && how_many_supercharge_left[client] > 0)
 		{
 			Rogue_OnAbilityUse(weapon);
 			how_many_shots_reserved = how_many_supercharge_left;
