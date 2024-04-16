@@ -16,7 +16,7 @@ void Victoria_Map_Precache()
 
 public void Weapon_Victoria(int client, int weapon, bool crit)
 {
-	float damage = 500.0;
+	float damage = 300.0;
 	damage *= 0.8; //Reduction
 	damage *= Attributes_Get(weapon, 2, 1.0);	
 
@@ -71,7 +71,7 @@ public void Shell_VictorianTouch(int entity, int target)
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
 		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 100, _,0.6, GetRandomInt(55, 80));
 
-
+		ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
 
 		DataPack pack_boom = new DataPack();
 		pack_boom.WriteFloat(spawnLoc[0]);
@@ -106,6 +106,7 @@ public void Shell_VictorianTouch(int entity, int target)
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
 		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 100, _,0.7, GetRandomInt(55, 80));
 
+		ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
 		
 		DataPack pack_boom = new DataPack();
 		pack_boom.WriteFloat(spawnLoc[0]);
