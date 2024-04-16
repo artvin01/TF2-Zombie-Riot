@@ -332,9 +332,7 @@ float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
 float f_InBattleDelay[MAXTF2PLAYERS];
 
 int Healing_done_in_total[MAXTF2PLAYERS];
-int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
 int i_PlayerDamaged[MAXTF2PLAYERS];
-int Resupplies_Supplied[MAXTF2PLAYERS];
 int PlayerPoints[MAXTF2PLAYERS];
 bool b_PlayerWasAirbornKnockbackReduction[MAXTF2PLAYERS];
 ConVar CvarRPGInfiniteLevelAndAmmo;
@@ -579,11 +577,26 @@ float f_NotifHudOffsetY[MAXTF2PLAYERS];
 
 #if defined ZR || defined RPG
 int i_Damage_dealt_in_total[MAXTF2PLAYERS];
+bool IsInsideManageRegularWeapons;
+bool b_ProximityAmmo[MAXTF2PLAYERS];
+int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 
+int i_nm_body_client[MAXTF2PLAYERS];
+int i_CurrentEquippedPerk[MAXENTITIES];
+
+#if defined ZR 
+int Resupplies_Supplied[MAXTF2PLAYERS];
+bool b_LeftForDead[MAXTF2PLAYERS];
+int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
+int i_CurrentEquippedPerkPreviously[MAXENTITIES];
 float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
-int i_CurrentEquippedPerk[MAXENTITIES];
-int i_CurrentEquippedPerkPreviously[MAXENTITIES];
-bool IsInsideManageRegularWeapons;
+float Mana_Regen_Delay[MAXTF2PLAYERS];
+float Mana_Regen_Delay_Aggreviated[MAXTF2PLAYERS];
+float Mana_Regen_Block_Timer[MAXTF2PLAYERS];
+float Mana_Loss_Delay[MAXTF2PLAYERS];
+float RollAngle_Regen_Delay[MAXTF2PLAYERS];
+int i_BarbariansMind[MAXPLAYERS + 1]={0, ...}; 				//830
+bool b_FaceStabber[MAXTF2PLAYERS];
 int Armor_Level[MAXPLAYERS + 1]={0, ...}; 				//701
 int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
 int i_BadHealthRegen[MAXENTITIES]={0, ...}; 				//805
@@ -591,54 +604,24 @@ bool b_HasGlassBuilder[MAXTF2PLAYERS];
 bool b_HasMechanic[MAXTF2PLAYERS];
 int i_MaxSupportBuildingsLimit[MAXTF2PLAYERS];
 bool b_AggreviatedSilence[MAXTF2PLAYERS];
-bool b_ProximityAmmo[MAXTF2PLAYERS];
-bool b_LeftForDead[MAXTF2PLAYERS];
+int Building_Hidden_Prop[MAXENTITIES][2];
+bool b_ArmorVisualiser[MAXENTITIES];
+bool b_BobsCuringHand[MAXTF2PLAYERS];
+int b_BobsCuringHand_Revived[MAXTF2PLAYERS];
 bool b_StickyExtraGrenades[MAXTF2PLAYERS];
 bool FinalBuilder[MAXENTITIES];
 bool GlassBuilder[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
 bool b_ExpertTrapper[MAXENTITIES];
 bool b_RaptureZombie[MAXENTITIES];
-bool b_ArmorVisualiser[MAXENTITIES];
-int Building_Hidden_Prop[MAXENTITIES][2];
 float f_ClientArmorRegen[MAXENTITIES];
-bool b_BobsCuringHand[MAXTF2PLAYERS];
-int b_BobsCuringHand_Revived[MAXTF2PLAYERS];
 bool b_NemesisHeart[MAXTF2PLAYERS];
 bool b_OverlordsFinalWish[MAXTF2PLAYERS];
 bool b_BobsTrueFear[MAXTF2PLAYERS];
 float f_ArmorCurrosionImmunity[MAXENTITIES];
-int i_nm_body_client[MAXTF2PLAYERS];
-Handle g_hRecalculatePlayerBodygroups;
-float f_WandDamage[MAXENTITIES]; //
-int i_WandWeapon[MAXENTITIES]; //
-int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever ever. lag max otherwise.
 float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
-//float Check_Standstill_Delay[MAXTF2PLAYERS];
-//bool Check_Standstill_Applied[MAXTF2PLAYERS];
-
-float max_mana[MAXTF2PLAYERS];
 float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
-
-
-
-int Current_Mana[MAXTF2PLAYERS];
-float Mana_Regen_Delay[MAXTF2PLAYERS];
-float Mana_Regen_Delay_Aggreviated[MAXTF2PLAYERS];
-float Mana_Regen_Block_Timer[MAXTF2PLAYERS];
-float Mana_Loss_Delay[MAXTF2PLAYERS];
-float RollAngle_Regen_Delay[MAXTF2PLAYERS];
-float Mana_Hud_Delay[MAXTF2PLAYERS];
-int i_WandIdNumber[MAXENTITIES]; //This is to see what wand is even used. so it does its own logic and so on.
-
-
-int played_headshotsound_already_Case [MAXTF2PLAYERS];
-int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
-int i_BarbariansMind[MAXPLAYERS + 1]={0, ...}; 				//830
-bool b_FaceStabber[MAXTF2PLAYERS];
-int g_particleMissText;
-int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 
 int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
 bool b_IsCannibal[MAXTF2PLAYERS];
 char g_GibEating[][] = {
@@ -648,6 +631,26 @@ char g_GibEating[][] = {
 	"physics/flesh/flesh_squishy_impact_hard4.wav",
 };
 #endif
+#endif
+Handle g_hRecalculatePlayerBodygroups;
+float f_WandDamage[MAXENTITIES]; //
+int i_WandWeapon[MAXENTITIES]; //
+int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever ever. lag max otherwise.
+//float Check_Standstill_Delay[MAXTF2PLAYERS];
+//bool Check_Standstill_Applied[MAXTF2PLAYERS];
+
+float max_mana[MAXTF2PLAYERS];
+
+
+
+int Current_Mana[MAXTF2PLAYERS];
+float Mana_Hud_Delay[MAXTF2PLAYERS];
+int i_WandIdNumber[MAXENTITIES]; //This is to see what wand is even used. so it does its own logic and so on.
+
+
+int played_headshotsound_already_Case [MAXTF2PLAYERS];
+int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
+int g_particleMissText;
 float f_SemiAutoStats_FireRate[MAXENTITIES];
 int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
 float f_SemiAutoStats_ReloadTime[MAXENTITIES];
@@ -3068,7 +3071,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			i_IsABuilding[entity] = true;
 			b_NoKnockbackFromSources[entity] = true;
 
-#if defined ZR
+#if defined ZR || defined RPG
 			Upgrade_Check_OnEntityCreated(entity);
 #endif
 

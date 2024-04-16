@@ -696,3 +696,31 @@ bool Config_CreateNPCStats(const char[] classname, const int[] attrib, const flo
 	return true;
 }
 #endif	// ZR
+
+#if defined RPG
+float RpgConfig_GetWeaponDamage(int weapon)
+{
+	static char classname[36];
+	GetEntityClassname(weapon, classname, sizeof(classname));
+	
+	static WeaponData data;
+
+	int i;
+	int val = WeaponList.Length;
+
+	for(; i<val; i++)
+	{
+		WeaponList.GetArray(i, data);
+		if(StrEqual(classname, data.Classname))
+			break;
+	}
+	if(i == val)
+		return 0.0;
+
+	if(!data.Damage)
+	{
+		return 0.0;
+	}
+	return data.Damage;
+}
+#endif

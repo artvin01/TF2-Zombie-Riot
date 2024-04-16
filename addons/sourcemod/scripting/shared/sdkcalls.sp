@@ -236,7 +236,7 @@ stock void SDKCall_GetShootSound(int entity, int index, char[] buffer, int lengt
 //( const Vector &vecOrigin, const QAngle &vecAngles, const float fSpeed, const float fGravity, ProjectileType_t projectileType, CBaseEntity *pOwner, CBaseEntity *pScorer )
 
 #if defined ZR || defined RPG
-int SDKCall_CTFCreateArrow(float VecOrigin[3], float VecAngles[3], const float fSpeed, const float fGravity, int projectileType, int Owner, int Scorer)
+stock int SDKCall_CTFCreateArrow(float VecOrigin[3], float VecAngles[3], const float fSpeed, const float fGravity, int projectileType, int Owner, int Scorer)
 {
 	if(g_hCTFCreateArrow)
 		return SDKCall(g_hCTFCreateArrow, VecOrigin, VecAngles, fSpeed, fGravity, projectileType, Owner, Scorer);
@@ -301,7 +301,7 @@ void SDKCall_SetAbsAngle(int index, float AbsAngle[3])
 */
 
 #if defined ZR || defined RPG
-void SDKCall_RecalculatePlayerBodygroups(int index)
+stock void SDKCall_RecalculatePlayerBodygroups(int index)
 {
 	if(g_hRecalculatePlayerBodygroups)
 	{
@@ -373,7 +373,7 @@ void GetVectors(int client, float pForward[3], float pRight[3], float pUp[3])
 }
 
 #if defined ZR || defined RPG
-void GetBoneAnglesAndPos(int client, char[] BoneName, float origin[3], float angles[3])
+stock void GetBoneAnglesAndPos(int client, char[] BoneName, float origin[3], float angles[3])
 {
 	int iBone = SDKCall(g_hLookupBone, client, BoneName);
 	if(iBone == -1)

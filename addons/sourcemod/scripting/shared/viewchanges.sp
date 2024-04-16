@@ -144,6 +144,8 @@ void ViewChange_PlayerModel(int client)
 			SetEntProp(entity, Prop_Send, "m_nBody", 9);
 		}
 #else
+		UpdatePlayerFakeModel(client);
+		MedicAdjustModel(client);
 		SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
 #endif
 		

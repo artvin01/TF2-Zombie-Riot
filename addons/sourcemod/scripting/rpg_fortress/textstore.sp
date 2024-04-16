@@ -1391,7 +1391,7 @@ void TextStore_EntityCreated(int entity)
 	ItemCount[entity] = 0;
 }
 
-void TextStore_DropCash(int client, float pos[3], int amount)
+stock void TextStore_DropCash(int client, float pos[3], int amount)
 {
 	DropItem(client, -1, pos, amount);
 }
@@ -2297,7 +2297,7 @@ public int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 	return 0;
 }
 
-void TextStore_Inspect(int client)
+stock void TextStore_Inspect(int client)
 {
 	switch(MenuType[client])
 	{

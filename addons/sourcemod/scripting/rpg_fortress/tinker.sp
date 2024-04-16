@@ -1396,7 +1396,7 @@ static void RollRandomAttribs(int level, WeaponEnum weapon, int tool)
 	}
 }
 
-void Tinker_StatsLevelUp(int client, int oldLevel, Menu menu)
+stock void Tinker_StatsLevelUp(int client, int oldLevel, Menu menu)
 {
 	int count;
 	int length = TinkerList.Length;

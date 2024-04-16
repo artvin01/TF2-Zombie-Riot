@@ -42,8 +42,6 @@ int i_NpcFightOwner[MAXENTITIES];
 float f_NpcFightTime[MAXENTITIES];
 float f_SingerBuffedFor[MAXENTITIES];
 
-float f_HealingPotionDuration[MAXTF2PLAYERS];
-int f_HealingPotionEffect[MAXTF2PLAYERS];
 
 //CC CONTRACT DIFFICULTIES!
 bool b_DungeonContracts_LongerCooldown[MAXTF2PLAYERS];

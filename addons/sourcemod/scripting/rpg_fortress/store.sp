@@ -1784,7 +1784,7 @@ stock void ClipSaveSingle(int client, int weapon)
 	}
 }
 
-void Clip_GiveAllWeaponsClipSizes(int client)
+stock void Clip_GiveAllWeaponsClipSizes(int client)
 {	
 	int iea, weapon;
 	while(TF2_GetItem(client, weapon, iea))
@@ -1793,7 +1793,7 @@ void Clip_GiveAllWeaponsClipSizes(int client)
 	}
 }
 
-void Clip_GiveWeaponClipBack(int client, int weapon)
+stock void Clip_GiveWeaponClipBack(int client, int weapon)
 {
 	if(client < 1)
 		return;
@@ -1874,28 +1874,7 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 
 void RPGStore_SetWeaponDamageToDefault(int weapon, int client, int damageType = 0)
 {
-	static char classname[36];
-	GetEntityClassname(weapon, classname, sizeof(classname));
-	
-	static WeaponData data;
-
-	int i;
-	int val = WeaponList.Length;
-
-	for(; i<val; i++)
-	{
-		WeaponList.GetArray(i, data);
-		if(StrEqual(classname, data.Classname))
-			break;
-	}
-	if(i == val)
-		return;
-
-	if(!data.Damage)
-	{
-		return 0;
-	}
-	float damageBase = data.Damage;
+	float damageBase = RpgConfig_GetWeaponDamage(weapon);
 
 	float DecimalForDamage = 1.0 / damageBase;
 	

@@ -11,8 +11,7 @@ enum struct RawHooks
 static DynamicHook ForceRespawn;
 static int ForceRespawnHook[MAXTF2PLAYERS];
 
-#if !defined RTS
-static bool IsRespawning;
+#if !defined RENDER_TRANSCOLOR
 static int GetChargeEffectBeingProvided;
 //static bool Disconnecting;
 static DynamicHook g_WrenchSmack;
@@ -22,6 +21,7 @@ static DynamicHook g_DHookScoutSecondaryFire;
 #endif
 
 #if defined ZR
+static bool IsRespawning;
 static Address CTeamplayRoundBasedRules = Address_Null;
 #endif
 static DynamicDetour gH_MaintainBotQuota = null;
@@ -1459,12 +1459,12 @@ void DHook_ClientDisconnectPost()
 
 void DHook_RespawnPlayer(int client)
 {
-#if !defined RTS
+#if defined ZR
 	IsRespawning = true;
 	TF2_RespawnPlayer(client);
 	SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", 0.0); //No cloak regen at all. Very important to set here!
 	IsRespawning = false;
-#elseif defined RPG
+#elseif !defined RTS
 	TF2_RespawnPlayer(client);
 	SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", 0.0); //No cloak regen at all. Very important to set here!
 #endif

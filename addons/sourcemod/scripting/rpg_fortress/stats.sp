@@ -3,7 +3,6 @@
 
 //#define MACRO_SHOWDIFF(%1)	if(oldAmount != newAmount) { FormatEx(buffer, sizeof(buffer), %1 ... " (%d -> %d)", oldAmount, newAmount); menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED); }
 
-static Cookie CookieInfection;
 static bool HasKeyHintHud[MAXTF2PLAYERS];
 static int BackpackBonus[MAXENTITIES];
 static int Strength[MAXENTITIES];
@@ -463,9 +462,7 @@ public Action Stats_ShowStats(int client, int args)
 		menu.SetTitle("RPG Fortress\n \nPlayer Stats:");
 
 		char buffer[64];
-
-		float vuln = Attributes_FindOnPlayerZR(client, 412, true, 1.0) * 100.0;
-
+		
 		int amount;
 		Stats_BaseHealth(client, amount);
 		int bonus = SDKCall_GetMaxHealth(client) - amount;
@@ -569,10 +566,5 @@ float RPGStats_FlatDamageResistance(int client)
 {
 	int total;
 	total = Stats_Endurance(client);
-	return (float(total) * 0.5);
-}
-
-void SetWeaponDamageToDefault(int client, int damageType = 0)
-{
-	float DamageFlat = RPGStats_FlatDamageSetStats(client, damageType);
+	return (float(total) * 1.85);
 }

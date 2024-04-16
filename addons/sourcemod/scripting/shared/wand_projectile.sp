@@ -28,7 +28,7 @@ void WandProjectile_GamedataInit()
 }
 
 #if defined ZR || defined RPG
-int Wand_Projectile_Spawn(int client,
+stock int Wand_Projectile_Spawn(int client,
 float speed,
 float time,
 float damage,

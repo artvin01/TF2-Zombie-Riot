@@ -71,7 +71,9 @@ public void SDKHook_ScoreThink(int entity)
 	
 	static int offset_Damage = -1;
 	static int offset_Damage_Boss = -1;
+#if defined ZR
 	static int offset_Cash = -1;
+#endif
 	static int offset_Healing = -1;
 
 
@@ -560,7 +562,7 @@ public void OnPostThink(int client)
 		Mana_Hud_Delay[client] = GameTime + 0.4;
 		static bool had_An_ability;
 #if defined RPG
-		RPGRegenerateResource(client);
+		RPGRegenerateResource(client, false,true);
 #endif
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		
@@ -2325,20 +2327,6 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 	return 1.0;
 }
 
-//problem: tf2 code lazily made it only work for clients, the server doesnt get this information updated all the time now.
-#define SKIN_ZOMBIE			5
-#define SKIN_ZOMBIE_SPY		SKIN_ZOMBIE + 18
-
-void UpdatePlayerFakeModel(int client)
-{
-	int PlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
-	if(PlayerModel > 0)
-	{	
-		SDKCall_RecalculatePlayerBodygroups(client);
-		i_nm_body_client[client] = GetEntProp(client, Prop_Data, "m_nBody");
-		SetEntProp(PlayerModel, Prop_Send, "m_nBody", i_nm_body_client[client]);
-	}
-}
 
 void NpcStuckZoneWarning(int client, float &damage, int TypeOfAbuse = 0)
 {
@@ -2452,6 +2440,21 @@ public Action Timer_CauseFadeInAndFadeDelete(Handle timer)
 	return Plugin_Stop;
 }
 #endif	// ZR
+//problem: tf2 code lazily made it only work for clients, the server doesnt get this information updated all the time now.
+#define SKIN_ZOMBIE			5
+#define SKIN_ZOMBIE_SPY		SKIN_ZOMBIE + 18
+
+void UpdatePlayerFakeModel(int client)
+{
+	int PlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(PlayerModel > 0)
+	{	
+		SDKCall_RecalculatePlayerBodygroups(client);
+		i_nm_body_client[client] = GetEntProp(client, Prop_Data, "m_nBody");
+		SetEntProp(PlayerModel, Prop_Send, "m_nBody", i_nm_body_client[client]);
+	}
+}
+
 
 stock void IncreaceEntityDamageTakenBy(int entity, float amount, float duration, bool Flat = false)
 {
@@ -2656,8 +2659,25 @@ void ArmorDisplayClientColor(int client, int armor)
 #endif
 
 #if defined RPG
-void RPGRegenerateResource(int client, bool ignoreRequirements = false)
+void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool DrainForm = false)
 {
+	if(DrainForm)
+	{
+		if(i_TransformationLevel[client] > 0)
+		{
+			//They are in a transformation!
+			//do drain logic here!
+			float Drain = 0.0;
+
+			//if it isnt 0, do nothing
+			//some forms may have generation! who knows.
+			if(Drain != 0.0)
+			{
+
+			}
+		}
+	}
+
 	if((f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)
 	{
 		//if outside of battle and not in transformations that drain resource, regenerate resource.
