@@ -85,27 +85,6 @@ methodmap StartChicken < CClotBody
 		func_NPCOnTakeDamage[npc.index] = StartChicken_OnTakeDamage;
 		func_NPCThink[npc.index] = StartChicken_ClotThink;
 		
-		int skin = GetRandomInt(0, 1);
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/scout/sf14_nugget_noggin/sf14_nugget_noggin.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/scout/sf14_fowl_fists/sf14_fowl_fists.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/sf14_talon_trotters/sf14_talon_trotters.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		
 		npc.StartPathing();
 		
 		return npc;
@@ -240,16 +219,6 @@ public Action StartChicken_OnTakeDamage(int victim, int &attacker, int &inflicto
 public void StartChicken_NPCDeath(int entity)
 {
 	StartChicken npc = view_as<StartChicken>(entity);
-
-	SDKUnhook(entity, SDKHook_OnTakeDamage, StartChicken_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, StartChicken_ClotThink);
-
-	if(IsValidEntity(npc.m_iWearable1))
-		RemoveEntity(npc.m_iWearable1);
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
 }
 
 
