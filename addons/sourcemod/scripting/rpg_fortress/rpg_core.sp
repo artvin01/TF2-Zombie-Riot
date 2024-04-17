@@ -42,6 +42,30 @@ int i_NpcFightOwner[MAXENTITIES];
 float f_NpcFightTime[MAXENTITIES];
 float f_SingerBuffedFor[MAXENTITIES];
 
+int BackpackBonus[MAXENTITIES];
+int Strength[MAXENTITIES];
+int Precision[MAXENTITIES];
+int Artifice[MAXENTITIES];
+int Endurance[MAXENTITIES];
+int Structure[MAXENTITIES];
+int Intelligence[MAXENTITIES];
+int Capacity[MAXENTITIES];
+int Agility[MAXENTITIES];
+int Luck[MAXENTITIES];
+
+//This is for keeping track of what weapons have what stats already applied to them.
+int BackpackBonus2[MAXENTITIES];
+int Strength2[MAXENTITIES];
+int Precision2[MAXENTITIES];
+int Artifice2[MAXENTITIES];
+int Endurance2[MAXENTITIES];
+int Structure2[MAXENTITIES];
+int Intelligence2[MAXENTITIES];
+int Capacity2[MAXENTITIES];
+int Agility2[MAXENTITIES];
+int Luck2[MAXENTITIES];
+float f_DamageMultiWeaponApplied[MAXENTITIES];
+
 
 //CC CONTRACT DIFFICULTIES!
 bool b_DungeonContracts_LongerCooldown[MAXTF2PLAYERS];

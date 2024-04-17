@@ -595,6 +595,8 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		}
 
 		float damage = 65.0;
+		PrintToChatAll("1Damage %f",damage);
+		damage *= Attributes_Get(weapon, 1000, 1.0); //For any
 		if(!StrContains(classname, "tf_weapon_bat"))
 		{
 			damage = 35.0;
@@ -604,7 +606,6 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			damage = 40.0;
 		}
 
-		PrintToChatAll("0Damage %f",damage);
 		if(Item_Index != 155)
 		{
 			damage *= Attributes_Get(weapon, 2, 1.0);
@@ -624,8 +625,6 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 
 		}
 		
-		PrintToChatAll("1Damage %f",damage);
-		damage *= Attributes_Get(weapon, 1000, 1.0); //For any
 		PrintToChatAll("2Damage %f",damage);
 		damage *= Attributes_Get(weapon, 1, 1.0);
 		PrintToChatAll("3Damage %f",damage);

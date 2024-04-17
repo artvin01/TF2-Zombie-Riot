@@ -4,16 +4,7 @@
 //#define MACRO_SHOWDIFF(%1)	if(oldAmount != newAmount) { FormatEx(buffer, sizeof(buffer), %1 ... " (%d -> %d)", oldAmount, newAmount); menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED); }
 
 static bool HasKeyHintHud[MAXTF2PLAYERS];
-static int BackpackBonus[MAXENTITIES];
-static int Strength[MAXENTITIES];
-static int Precision[MAXENTITIES];
-static int Artifice[MAXENTITIES];
-static int Endurance[MAXENTITIES];
-static int Structure[MAXENTITIES];
-static int Intelligence[MAXENTITIES];
-static int Capacity[MAXENTITIES];
-static int Agility[MAXENTITIES];
-static int Luck[MAXENTITIES];
+
 static StringMap Mastery[MAXTF2PLAYERS];
 
 void Stats_PluginStart()
@@ -71,6 +62,19 @@ void Stats_ClearCustomStats(int entity)
 	Agility[entity] = 0;
 	Luck[entity] = 0;
 	Level[entity] = 0;
+
+	
+	BackpackBonus2[entity] = 0;
+	Strength2[entity] = 0;
+	Precision2[entity] = 0;
+	Artifice2[entity] = 0;
+	Endurance2[entity] = 0;
+	Structure2[entity] = 0;
+	Intelligence2[entity] = 0;
+	Capacity2[entity] = 0;
+	Agility2[entity] = 0;
+	Luck2[entity] = 0;
+	f_DamageMultiWeaponApplied[entity] = 0.0;
 }
 
 void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
@@ -608,22 +612,24 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 }
 
 
-float RPGStats_FlatDamageSetStats(int client, int damageType = 0)
+float RPGStats_FlatDamageSetStats(int client, int damageType = 0, int total = -999999)
 {
-	int total;
-	switch(damageType)
+	if(total == -999999)
 	{
-		case 1:
+		switch(damageType)
 		{
-			total = Stats_Strength(client);
-		}
-		case 2:
-		{
-			total = Stats_Precision(client);
-		}
-		case 3:
-		{
-			total = Stats_Artifice(client);
+			case 1:
+			{
+				total = Stats_Strength(client);
+			}
+			case 2:
+			{
+				total = Stats_Precision(client);
+			}
+			case 3:
+			{
+				total = Stats_Artifice(client);
+			}
 		}
 	}
 	return (float(total) * 3.0);

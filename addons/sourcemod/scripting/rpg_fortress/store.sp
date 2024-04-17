@@ -1867,8 +1867,6 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 	return false;
 }
 
-
-
 void RPGStore_SetWeaponDamageToDefault(int weapon, int client, int damageType = 0)
 {
 	/*
@@ -1901,28 +1899,54 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, int damageType = 
 	}
 	float DecimalForDamage = 1.0 / damageBase;
 	
-
-	float DamageFlat = RPGStats_FlatDamageSetStats(client, damageType);
-
+	
+	Attributes_Set(weapon, 1000, DecimalForDamage);
+	//weapon starts out with excatly 1 damage.
+	int StattDifference;
 	int check = 10;	// Any
 	switch(damageType)
 	{
 		case 1:
+		{
+			StattDifference = Stats_Strength(client) - Strength2[weapon];
 			check = 2;	// Melee
+		}
 
 		case 2:
+		{
+			StattDifference = Stats_Precision(client) - Precision2[weapon];
 			check = 7;	// Primary / Secondary
+		}
 
 		case 3:
+		{
+			StattDifference = Stats_Artifice(client) - Artifice2[weapon];
 			check = 8;	// Mage
+		}
 	}
-
+	PrintToChatAll("StattDifference %i",StattDifference);
+	if(StattDifference == 0)
+	{
+		return;
+	}
 	char classname[36];
 	GetEntityClassname(weapon, classname, sizeof(classname));
 	if(CheckEntitySlotIndex(check, TF2_GetClassnameSlot(classname), weapon))
 	{
-		Attributes_Set(weapon, 1000, DecimalForDamage * DamageFlat);
+		float AttributeDifferenceToApply;
+		AttributeDifferenceToApply = RPGStats_FlatDamageSetStats(client, damageType, StattDifference);
+		PrintToChatAll("AttributeDifferenceToApply %f",AttributeDifferenceToApply);
+		if(f_DamageMultiWeaponApplied[weapon] != 0.0)
+		{
 
+		}
+		f_DamageMultiWeaponApplied[weapon] = AttributeDifferenceToApply;
+		PrintToChatAll("AttributeDifferenceToApply %f",AttributeDifferenceToApply);
+		Attributes_SetMulti(weapon, 2, AttributeDifferenceToApply);
 		//this sets all weapons idealy to the damage shown in the stats screen. Then just give extra damage and other shit to balance it out!
 	}
+	Strength2[weapon] = Stats_Strength(client);
+	Precision2[weapon] = Stats_Precision(client);
+	Artifice2[weapon] = Stats_Artifice(client);
+	Agility2[weapon] = Stats_Agility(client);
 }
