@@ -4442,7 +4442,10 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 #else
 			if(!b_NpcIsTeamkiller[index] && GetTeam(index) == GetTeam(enemy))
 			{
-				return false;
+#if defined RPG
+				if(!RPGCore_PlayerCanPVP(index, enemy))
+#endif
+					return false;
 			}
 #endif
 

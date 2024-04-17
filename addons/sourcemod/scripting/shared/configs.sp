@@ -212,9 +212,11 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 		return;
 	
 	// Damage and Pellets
-	/*
+#if defined RPG
 	if(data.Damage > 0)
 	{
+		bool magic;
+
 		float defaul = data.Damage;
 		for(i=0; i<attribs; i++)
 		{
@@ -228,12 +230,34 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 			for(i=0; i<attribs; i++)
 			{
 				if(attrib[i] == 410)
+				{
 					data.Damage *= value[i];
+					magic = true;
+				}
 			}
 		}
+
+#if defined RPG
+		data.Damage /= 65.0;
+#endif
 		
 		if(data.Damage > 0)
 		{
+
+#if defined RPG
+			if(magic)
+			{
+				Format(buffer, length, "%s\nDamage: %.0f%% Magic", buffer, data.Damage * 100.0);
+			}
+			else if(data.Range)
+			{
+				Format(buffer, length, "%s\nDamage: %.0f%% Melee", buffer, data.Damage * 100.0);
+			}
+			else
+			{
+				Format(buffer, length, "%s\nDamage: %.0f%% Ranged", buffer, data.Damage * 100.0);
+			}
+#else
 			if(data.Damage < 100.0)
 			{
 				Format(buffer, length, "%s\nDamage: %.1f", buffer, data.Damage);
@@ -242,7 +266,7 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 			{
 				Format(buffer, length, "%s\nDamage: %d", buffer, RoundFloat(data.Damage));
 			}
-
+#endif
 			
 			for(i=0; i<attribs; i++)
 			{
@@ -253,13 +277,12 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 			i = RoundFloat(data.Pellets);
 			if(i != 1)
 				Format(buffer, length, "%sx%d", buffer, i);
-
-
-			damage_Calc = data.Damage * data.Pellets;
+			
+			//damage_Calc = data.Damage * data.Pellets;
 		}
 	}
-	*/
-	
+#endif
+
 	// Fire Rate
 	if(data.FireRate)
 	{

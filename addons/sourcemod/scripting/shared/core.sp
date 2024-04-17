@@ -359,8 +359,9 @@ int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 int i_HowManyBombsHud[MAXENTITIES];
 #endif
 
-#if defined ZR || defined RTS
+#if defined ZR || defined RTS || defined RPG
 ConVar CvarInfiniteCash;
+Handle SyncHud_ArmorCounter;
 #endif
 
 bool i_WeaponCannotHeadshot[MAXENTITIES];

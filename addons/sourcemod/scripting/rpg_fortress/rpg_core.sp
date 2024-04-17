@@ -37,6 +37,10 @@ int b_BrushToOwner[MAXENTITIES];
 int b_OwnerToBrush[MAXENTITIES];
 float Animal_Happy[MAXTF2PLAYERS][10][3];
 
+bool b_PlayerIsPVP[MAXENTITIES];
+int i_CurrentStamina[MAXTF2PLAYERS];
+int i_MaxStamina[MAXTF2PLAYERS];
+
 bool b_NpcIsInADungeon[MAXENTITIES];
 int i_NpcFightOwner[MAXENTITIES];
 float f_NpcFightTime[MAXENTITIES];
@@ -321,6 +325,7 @@ void RPG_ClientDisconnect(int client)
 	}
 
 	DisabledDownloads[client] = false;
+	b_PlayerIsPVP[client] = false;
 
 	char buffer[128];		
 
@@ -506,6 +511,42 @@ public Action Command_GiveXp(int client, int args)
 }
 
 
+void WeaponAttackResourceReduction(int client, int weapon)
+{
+	float ResourceCostAttack = Attributes_Get(weapon, 4003, 0.0);
+	float StaminaCostAttack = Attributes_Get(weapon, 4004, 0.0);
+	if(ResourceCostAttack != 0.0)
+	{
+
+	}
+	if(StaminaCostAttack != 0.0)
+	{
+
+	}
+}
+
+
+void RPGCore_StaminaReduction(int weapon, int client, int amount)
+{
+	i_CurrentStamina[client] -= amount;
+	if(i_CurrentStamina[client] <= 0)
+	{
+		i_CurrentStamina[client] = 0;
+		//Give them a huge attack delay.
+		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 5.0); 
+	}
+}
+
+
+void RPGCore_StaminaAddition(int client, int amount)
+{
+	i_CurrentStamina[client] += amount;
+	if(i_CurrentStamina[client] > i_MaxStamina[client])
+	{
+		i_CurrentStamina[client] = i_MaxStamina[client];
+	}
+}
+
 void RPGCore_ResourceReduction(int client, int amount)
 {
 	Current_Mana[client] -= amount;
@@ -513,6 +554,14 @@ void RPGCore_ResourceReduction(int client, int amount)
 	{
 		Current_Mana[client] = 0;
 		//De-Transform logic.
+		TF2_StunPlayer(client, 5.0, 0.25, TF_STUNFLAG_SLOWDOWN);
+		int i, entity;
+		while(TF2_GetItem(client, entity, i))
+		{
+			ApplyTempAttrib(entity, 6, 4.0, 5.0);
+			ApplyTempAttrib(entity, 2, 0.25, 5.0);
+			ApplyTempAttrib(entity, 410, 0.25, 5.0);
+		}
 	}
 }
 
@@ -524,4 +573,14 @@ void RPGCore_ResourceAddition(int client, int amount)
 	{
 		Current_Mana[client] = RoundToCeil(max_mana[client]);
 	}
+}
+
+
+bool RPGCore_PlayerCanPVP(int attacker, int victim)
+{
+	if(b_PlayerIsPVP[attacker] && b_PlayerIsPVP[victim])
+	{
+		return true;
+	}
+	return false;
 }

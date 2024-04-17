@@ -1331,13 +1331,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				if(slot == TFWeaponSlot_Melee)
 					found = true;
 				
-				/*if(info.SniperBugged && CurrentClass[client] == TFClass_Sniper)
-				{
-					CurrentClass[client] = TFClass_Soldier;
-					TF2_RegeneratePlayer(client);
-					return -1;
-				}*/
-				
 				if(slot == TFWeaponSlot_Grenade)
 				{
 					entity = GetPlayerWeaponSlot(client, TFWeaponSlot_Grenade);
@@ -1879,7 +1872,7 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, const char[] clas
 	*/
 	int damageType;
 
-	float damageBase = RpgConfig_GetWeaponDamage(weapon);
+	float damageBase = 65.0;//RpgConfig_GetWeaponDamage(weapon);
 	if(i_IsWandWeapon[weapon])
 	{
 		damageType = 3;
@@ -1903,14 +1896,17 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, const char[] clas
 	// Set a new value if we changed
 	if(first || value != PreviousValue[weapon])
 	{
-		if(!first)
+		if(first)
+		{
+			Attributes_SetMulti(weapon, 2, value);
+		}
+		else
 		{
 			// Second time we modified, remove what we previously had
-			value /= PreviousValue[weapon];
+			Attributes_SetMulti(weapon, 2, value / PreviousValue[weapon]);
 		}
 
-		Attributes_SetMulti(weapon, 2, value);
-		PreviousValue[client] = value;
+		PreviousValue[weapon] = value;
 		PrintToChatAll("New Damage Multi: %f", value);
 	}
 

@@ -74,13 +74,21 @@ static Action Saves_Command(int client, int args)
 void Saves_MainMenu(int client)
 {
 	return;
-	
+
 	Race race;
+
+	char buffer1[32];
 
 	KeyValues kv = Saves_KV("characters");
 	if(CharacterId[client][0] && kv.JumpToKey(CharacterId[client]))
 	{
+		kv.GetString("title", buffer1, sizeof(buffer1), "Normal");
 
+		Menu menu = new Menu(CharacterInfoH);
+		menu.SetTitle("RPG Fortress\n \nCharacter:\n \n" ...
+		"Level %d\nUnspent XP %d\nTrait: %s", Level[client], XP[client], buffer1);
+
+		menu.Display(client, MENU_TIME_FOREVER);
 	}
 	else
 	{
@@ -89,7 +97,7 @@ void Saves_MainMenu(int client)
 
 		int chars;
 
-		char buffer1[32], buffer2[32], steamid[32];
+		char buffer2[32], steamid[32];
 		if(GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid)) && strlen(steamid) > 9)
 		{
 			if(kv.GotoFirstSubKey())
@@ -137,6 +145,33 @@ void Saves_MainMenu(int client)
 			menu.Display(client, 2);
 		}
 	}
+}
+
+static int CharacterInfoH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Select:
+		{
+			char id[32];
+			menu.GetItem(choice, id, sizeof(id));
+
+			if(id[0])
+			{
+				CharacterMenu(client, id);
+			}
+			else
+			{
+				CreateCharacter(client);
+			}
+		}
+	}
+
+	return 0;
 }
 
 static int CharacterSelectH(Menu menu, MenuAction action, int client, int choice)
@@ -288,48 +323,265 @@ static void CreateCharacter(int client)
 			case TFClass_Spy:
 				kv.SetString("model", "Spy");
 			
-			case TFClass_Medic:
+			default:
 				kv.SetString("model", "Medic");
 		}
 
 		kv.SetNum("lastsave", time);
+		kv.SetString("title", "Alpha-Build");
 
 		ModifiyCharacter(client, id);
 	}
 }
 
-static void ModifiyCharacter(int client, const char[] id)
+static void ModifiyCharacter(int client, const char[] id, int submenu = -1)
 {
 	KeyValues kv = Saves_KV("characters");
 	if(kv.JumpToKey(id))
 	{
 		char buffer1[32], buffer2[32], buffer3[32];
 
-		Race race;
-		Races_GetRaceByIndex(kv.GetNum("race"), race);
-		kv.GetString("title", buffer1, sizeof(buffer1), "Normal");
-		kv.GetString("model", buffer2, sizeof(buffer2), "N/A");
-		FormatTime(buffer3, sizeof(buffer3), NULL_STRING, kv.GetNum("lastsave"));
+		switch(submenu)
+		{
+			case 0:
+			{
+				Menu menu = new Menu(ModifiyCharacterRaceH);
 
-		Menu menu = new Menu(CharacterMenuH);
+				menu.SetTitle("RPG Fortress\n \nCharacter Creation:\nRace\n ");
 
-		menu.SetTitle("RPG Fortress\n \nCharacter Creation:\n ");
+				Race race;
+				for(int i; Races_GetRaceByIndex(i, race); i++)
+				{
+					menu.AddItem(id, race.Name);
+				}
 
-		Format(buffer1, sizeof(buffer1), "Level %d", kv.GetNum("level"));
-		menu.AddItem(NULL_STRING, buffer1, ITEMDRAW_DISABLED);
+				menu.ExitBackButton = true;
+				menu.ExitButton = false;
+				menu.Display(client, MENU_TIME_FOREVER);
+			}
+			case 1:
+			{
+				Menu menu = new Menu(ModifiyCharacterModelH);
 
-		menu.AddItem(NULL_STRING, "Race");
-		menu.AddItem(NULL_STRING, "Outfit");
-		menu.AddItem(NULL_STRING, "3");
-		menu.AddItem(NULL_STRING, "4");
-		menu.AddItem(NULL_STRING, "5");
-		menu.AddItem(NULL_STRING, "6");
-		menu.AddItem(NULL_STRING, "7");
-		menu.AddItem(NULL_STRING, buffer1, ITEMDRAW_SPACER);
+				menu.SetTitle("RPG Fortress\n \nCharacter Creation:\nOutfit\n ");
 
-		menu.AddItem(NULL_STRING, "Finish Character");
+				menu.AddItem(id, "Scout");
+				menu.AddItem(id, "Soldier");
+				menu.AddItem(id, "Pyro");
+				menu.AddItem(id, "Demoman");
+				menu.AddItem(id, "Heavy");
+				menu.AddItem(id, "Engineer");
+				menu.AddItem(id, "Medic");
+				menu.AddItem(id, "Sniper");
+				menu.AddItem(id, "Spy");
 
-		menu.Pagination = 0;
-		menu.Display(client, MENU_TIME_FOREVER);
+				menu.ExitBackButton = true;
+				menu.ExitButton = false;
+				menu.Display(client, MENU_TIME_FOREVER);
+			}
+			default:
+			{
+				Race race;
+				Races_GetRaceByIndex(kv.GetNum("race"), race);
+				FormatTime(buffer3, sizeof(buffer3), NULL_STRING, kv.GetNum("lastsave"));
+
+				Menu menu = new Menu(ModifiyCharacterH);
+
+				menu.SetTitle("RPG Fortress\n \nCharacter Creation:\n ");
+
+				FormatEx(buffer1, sizeof(buffer1), "Race: %s", race.Name);
+				menu.AddItem(id, buffer1);
+
+				kv.GetString("model", buffer2, sizeof(buffer2));
+				FormatEx(buffer1, sizeof(buffer1), "Outfit: %s", buffer2);
+				menu.AddItem(id, buffer1);
+
+				kv.GetString("title", buffer2, sizeof(buffer2), "Normal");
+				FormatEx(buffer1, sizeof(buffer1), "Trait: %s", buffer2);
+				menu.AddItem(id, buffer1, ITEMDRAW_DISABLED);
+
+				Format(buffer1, sizeof(buffer1), "Level: %d", kv.GetNum("level"));
+				menu.AddItem(id, buffer1, ITEMDRAW_DISABLED);
+
+				menu.AddItem(id, "", ITEMDRAW_DISABLED);
+				menu.AddItem(id, "", ITEMDRAW_DISABLED);
+				menu.AddItem(id, "", ITEMDRAW_DISABLED);
+				menu.AddItem(id, buffer1, ITEMDRAW_SPACER);
+
+				menu.AddItem(id, "Finish Character");
+
+				menu.Pagination = 0;
+				menu.Display(client, MENU_TIME_FOREVER);
+			}
+		}
 	}
+}
+
+static int ModifiyCharacterH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Select:
+		{
+			char id[32];
+			menu.GetItem(choice, id, sizeof(id));
+			
+			if(choice == 8)
+			{
+				CharacterMenu(client, id);
+			}
+			else
+			{
+				ModifiyCharacter(client, id, choice);
+			}
+		}
+	}
+
+	return 0;
+}
+
+static int ModifiyCharacterRaceH(Menu menuaaaa, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menuaaaa;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+			{
+				char id[32];
+				menuaaaa.GetItem(0, id, sizeof(id));
+				ModifiyCharacter(client, id);
+			}
+		}
+		case MenuAction_Select:
+		{
+			char id[32];
+			menuaaaa.GetItem(choice, id, sizeof(id));
+			
+			Race race;
+			if(Races_GetRaceByIndex(choice, race))
+			{
+				Menu menu = new Menu(ModifiyCharacterRaceInfoH);
+
+				ReplaceString(race.Desc, sizeof(race.Desc), "\\n", "\n");
+				menu.SetTitle("RPG Fortress\n \n%s\n%s\n ", race.Name, race.Desc);
+
+				menu.AddItem(id, "Select Race\n ");
+
+				char buffer1[32], buffer2[16];
+				IntToString(choice, buffer2, sizeof(buffer2));
+
+				FormatEx(buffer1, sizeof(buffer1), "Strength: x%.1f", race.StrengthMulti);
+				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
+
+				FormatEx(buffer1, sizeof(buffer1), "Precision: x%.1f", race.PrecisionMulti);
+				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
+
+				FormatEx(buffer1, sizeof(buffer1), "Artifice: x%.1f", race.ArtificeMulti);
+				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
+
+				FormatEx(buffer1, sizeof(buffer1), "Endurance: x%.1f", race.EnduranceMulti);
+				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
+
+				FormatEx(buffer1, sizeof(buffer1), "Structure: x%.1f", race.StructureMulti);
+				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
+
+				FormatEx(buffer1, sizeof(buffer1), "Intelligence: x%.1f", race.IntelligenceMulti);
+				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
+
+				FormatEx(buffer1, sizeof(buffer1), "Capacity: x%.1f", race.CapacityMulti);
+				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
+
+				FormatEx(buffer1, sizeof(buffer1), "Luck: x%.1f", race.LuckMulti);
+				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
+
+				FormatEx(buffer1, sizeof(buffer1), "Agility: x%.1f", race.AgilityMulti);
+				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
+
+				menu.Pagination = 5;
+				menu.ExitBackButton = true;
+				menu.ExitButton = false;
+				menu.Display(client, MENU_TIME_FOREVER);
+			}
+		}
+	}
+
+	return 0;
+}
+
+static int ModifiyCharacterRaceInfoH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+			{
+				char id[32];
+				menu.GetItem(0, id, sizeof(id));
+				ModifiyCharacter(client, id, 0);
+			}
+		}
+		case MenuAction_Select:
+		{
+			char id[32], buffer[16];
+			menu.GetItem(0, id, sizeof(id));
+			menu.GetItem(1, buffer, sizeof(buffer));
+			
+			KeyValues kv = Saves_KV("characters");
+			if(kv.JumpToKey(id))
+			{
+				kv.SetNum("race", StringToInt(buffer));
+				ModifiyCharacter(client, id);
+			}
+		}
+	}
+
+	return 0;
+}
+
+static int ModifiyCharacterModelH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+			{
+				char id[32];
+				menu.GetItem(0, id, sizeof(id));
+				ModifiyCharacter(client, id);
+			}
+		}
+		case MenuAction_Select:
+		{
+			char id[32], model[32];
+			menu.GetItem(choice, id, sizeof(id), _, model, sizeof(model));
+			
+			KeyValues kv = Saves_KV("characters");
+			if(kv.JumpToKey(id))
+			{
+				kv.SetString("model", model);
+				ModifiyCharacter(client, id);
+			}
+		}
+	}
+
+	return 0;
 }

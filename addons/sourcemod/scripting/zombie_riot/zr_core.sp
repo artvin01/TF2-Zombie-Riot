@@ -287,7 +287,6 @@ float Armor_regen_delay[MAXTF2PLAYERS];
 ConVar CvarSvRollagle; // sv_rollangle
 int i_SvRollAngle[MAXTF2PLAYERS];
 
-Handle SyncHud_ArmorCounter;
 	
 int CashSpent[MAXTF2PLAYERS];
 int CashSpentGivePostSetup[MAXTF2PLAYERS];

@@ -160,6 +160,7 @@ enum struct Form
 enum struct Race
 {
 	char Name[64];
+	char Desc[256];
 	ArrayList Forms;
 
 	float StrengthMulti;
@@ -175,6 +176,7 @@ enum struct Race
 	void SetupKV(KeyValues kv)
 	{
 		kv.GetSectionName(this.Name, sizeof(this.Name));
+		kv.GetString("desc", this.Desc, sizeof(this.Desc));
 
 		if(kv.JumpToKey("Stat Multi"))
 		{

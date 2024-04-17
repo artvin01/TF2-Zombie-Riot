@@ -34,7 +34,7 @@ void SDKHooks_ClearAll()
 
 void SDKHook_PluginStart()
 {
-#if defined ZR
+#if defined ZR || defined RPG
 	/*
 	g_offsPlayerPunchAngleVel = FindSendPropInfo("CBasePlayer", "m_vecPunchAngleVel");
 	if (g_offsPlayerPunchAngleVel == -1) LogError("Couldn't find CBasePlayer offset for m_vecPunchAngleVel!");
@@ -1409,6 +1409,9 @@ public void OnPostThink(int client)
 		SetEntProp(client, Prop_Send, "m_iHideHUD", GetEntProp(client, Prop_Send, "m_iHideHUD") | HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN);
 		if(HudBuffer[0])
 			PrintKeyHintText(client,"%s", HudBuffer);
+#elseif defined RPG
+		RPG_Sdkhooks_StaminaBar(client);
+
 #endif
 	}
 #if defined ZR
@@ -1612,7 +1615,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 	else if(attacker <= MaxClients && attacker > 0 && attacker != 0)
 	{
-		return Plugin_Handled;	
+#if defined RPG
+		if(!(PlayerCanPVP(attacker,victim)))
+#endif
+			return Plugin_Handled;	
 	}
 	else if (attacker != 0)
 	{
@@ -2693,5 +2699,41 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 			}
 		}
 	}
+}
+
+
+void RPG_Sdkhooks_StaminaBar(int client)
+{
+	char buffer[32];
+	int Stamina = i_CurrentStamina[client];
+	for(int i=6; i>0; i--)
+	{
+		if(Stamina >= i_MaxStamina[client]*(i*0.1666))
+		{
+			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+		}
+		else if(Stamina > i_MaxStamina[client]*(i*0.1666 - 1.0/60.0))
+		{
+			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+		}
+		else if(Stamina > i_MaxStamina[client]*(i*0.1666 - 1.0/30.0))
+		{
+			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+		}
+		else
+		{
+			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+		}
+		
+		if((i % 2) == 1)
+		{
+			Format(buffer, sizeof(buffer), "%s\n", buffer);
+		}
+	}
+	int red = 200;
+	int green = 80;
+	int blue = 80;
+	SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.925 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
+	ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
 }
 #endif
