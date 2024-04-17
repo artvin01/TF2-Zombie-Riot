@@ -595,8 +595,6 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		}
 
 		float damage = 65.0;
-		PrintToChatAll("1Damage %f",damage);
-		damage *= Attributes_Get(weapon, 1000, 1.0); //For any
 		if(!StrContains(classname, "tf_weapon_bat"))
 		{
 			damage = 35.0;
@@ -608,26 +606,18 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 
 		if(Item_Index != 155)
 		{
-			damage *= Attributes_Get(weapon, 2, 1.0);
+			damage *= WeaponDamageAttributeMultipliers(weapon);
 		}
 		else
 		{
-			damage = 30.0;
-			float attack_speed;		
-			attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
-						
-			damage = attack_speed * damage * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
+			damage = 30.0;	
+			damage *= WeaponDamageAttributeMultipliers(weapon, MULTIDMG_BUILDER);
 
 #if defined ZR
 			damage *= BuildingWeaponDamageModif(1);
 			damage *= 0.5;
 #endif
-
 		}
-		
-		PrintToChatAll("2Damage %f",damage);
-		damage *= Attributes_Get(weapon, 1, 1.0);
-		PrintToChatAll("3Damage %f",damage);
 
 #if defined ZR
 		switch(i_CustomWeaponEquipLogic[weapon])
