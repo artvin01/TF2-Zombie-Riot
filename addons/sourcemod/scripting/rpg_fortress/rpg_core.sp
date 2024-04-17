@@ -101,6 +101,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/traffic.sp"
 #include "rpg_fortress/zones.sp"
 #include "rpg_fortress/npc_despawn_zone.sp"
+#include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 /*
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
@@ -193,9 +194,9 @@ void RPG_MapStart()
 
 	CreateTimer(2.0, CheckClientConvars, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 
+	Wand_Map_Precache();
 	/*
 	HealingPotion_Map_Start();
-	Wand_Map_Precache();
 	Wand_Fire_Map_Precache();
 	Wand_Lightning_Map_Precache();
 	GroundSlam_Map_Precache();
@@ -502,4 +503,25 @@ public Action Command_GiveXp(int client, int args)
 	}
 	
 	return Plugin_Handled;
+}
+
+
+void RPGCore_ResourceReduction(int client, int amount)
+{
+	Current_Mana[client] -= amount;
+	if(Current_Mana[client] <= 0)
+	{
+		Current_Mana[client] = 0;
+		//De-Transform logic.
+	}
+}
+
+
+void RPGCore_ResourceAddition(int client, int amount)
+{
+	Current_Mana[client] += amount;
+	if(Current_Mana[client] > RoundToCeil(max_mana[client]))
+	{
+		Current_Mana[client] = RoundToCeil(max_mana[client]);
+	}
 }

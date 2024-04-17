@@ -2662,6 +2662,18 @@ void ArmorDisplayClientColor(int client, int armor)
 #if defined RPG
 void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool DrainForm = false)
 {
+	//firstly regen any resource!
+	if((f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)
+	{
+		//if outside of battle and not in transformations that drain resource, regenerate resource.
+		RPGCore_ResourceAddition(client, RoundToCeil(max_mana[client] / 40.0));
+	}
+	else
+	{
+		//if they are in battle, regenerate resource much slower.
+		RPGCore_ResourceAddition(client, RoundToCeil(max_mana[client] / 200.0));
+	}
+
 	if(DrainForm)
 	{
 		if(i_TransformationLevel[client] > 0)
@@ -2674,32 +2686,10 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 			//some forms may have generation! who knows.
 			if(Drain != 0.0)
 			{
-
-			}
-		}
-	}
-
-	if((f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)
-	{
-		//if outside of battle and not in transformations that drain resource, regenerate resource.
-		if(Current_Mana[client] < max_mana[client])
-		{
-			Current_Mana[client] += RoundToCeil(max_mana[client] / 40.0);
-			if(Current_Mana[client] > RoundToCeil(max_mana[client]))
-			{
-				Current_Mana[client] = RoundToCeil(max_mana[client]);
-			}
-		}
-	}
-	else
-	{
-		//if they are in battle, regenerate resource much slower.
-		if(Current_Mana[client] < max_mana[client])
-		{
-			Current_Mana[client] += RoundToCeil(max_mana[client] / 200.0);
-			if(Current_Mana[client] > RoundToCeil(max_mana[client]))
-			{
-				Current_Mana[client] = RoundToCeil(max_mana[client]);
+				if(Drain > 0.0)
+					RPGCore_ResourceReduction(client, RoundToNearest(Drain));
+				else
+					RPGCore_ResourceAddition(client, RoundToNearest(Drain * -1.0)); //the drain actually gives resource! inverse!
 			}
 		}
 	}

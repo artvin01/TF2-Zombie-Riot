@@ -1879,11 +1879,11 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, const char[] clas
 	*/
 	int damageType;
 
-	//float damageBase = RpgConfig_GetWeaponDamage(weapon);
+	float damageBase = RpgConfig_GetWeaponDamage(weapon);
 	if(i_IsWandWeapon[weapon])
 	{
 		damageType = 3;
-		//damageBase = 65.0;
+		damageBase = 65.0;
 	}
 	else
 	{
@@ -1898,7 +1898,7 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, const char[] clas
 	}
 	
 	static float PreviousValue[MAXENTITIES];
-	float value = RPGStats_FlatDamageSetStats(client, damageType);
+	float value = RPGStats_FlatDamageSetStats(client, damageType) / damageBase;
 
 	// Set a new value if we changed
 	if(first || value != PreviousValue[weapon])

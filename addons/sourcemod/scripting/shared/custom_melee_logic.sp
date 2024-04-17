@@ -611,7 +611,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		else
 		{
 			damage = 30.0;	
-			damage *= WeaponDamageAttributeMultipliers(weapon, MULTIDMG_BUILDER);
+			damage *= WeaponDamageAttributeMultipliers(weapon, MULTIDMG_BUILDER, client);
 
 #if defined ZR
 			damage *= BuildingWeaponDamageModif(1);

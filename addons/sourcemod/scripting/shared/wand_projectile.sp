@@ -3,10 +3,16 @@
 
 #if defined ZR || defined RPG
 static int i_ProjectileIndex;
+Function func_WandOnTouch[MAXENTITIES];
 
 void WandStocks_Map_Precache()
 {
 	i_ProjectileIndex = PrecacheModel(ENERGY_BALL_MODEL);
+}
+
+void WandProjectile_ApplyFunctionToEntity(int projectile, Function Function)
+{
+	func_WandOnTouch[projectile] = Function;
 }
 #endif
 
@@ -179,10 +185,22 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 	return Plugin_Stop; 
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 public void Wand_Base_StartTouch(int entity, int other)
 {
 	int target = Target_Hit_Wand_Detection(entity, other);
+	
+	Function func = func_WandOnTouch[entity];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(entity);
+		Call_PushCell(target);
+		Call_Finish();
+		//todo: convert all on death and on take damage to this.
+		return;
+	}
+#if defined ZR
 	switch(i_WandIdNumber[entity])
 	{
 		case 0:
@@ -316,13 +334,7 @@ public void Wand_Base_StartTouch(int entity, int other)
 			Gun_MessengerTouch(entity, target);
 		}
 	}
-}
 #endif
-
-#if defined RPG
-public void Wand_Base_StartTouch(int entity, int other)
-{
-	//int target = Target_Hit_Wand_Detection(entity, other);
 }
 #endif
 
@@ -342,6 +354,7 @@ static void OnDestroy_Proj(CClotBody body)
 		RemoveEntity(extra_index);
 
 	iref_PropAppliedToRocket[body.index] = INVALID_ENT_REFERENCE;
+	func_WandOnTouch[body.index] = INVALID_FUNCTION;
 	return;
 }
 

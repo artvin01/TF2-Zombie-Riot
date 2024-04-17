@@ -173,6 +173,11 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 #define HIDEHUD_METAL        ( 1<<15 )    
 #define HIDEHUD_TARGET_ID        ( 1<<16 )    
 
+#define MULTIDMG_NONE 		 ( 1<<0 )
+#define MULTIDMG_MAGIC_WAND  ( 1<<1 )
+#define MULTIDMG_BLEED 		 ( 1<<2 )
+#define MULTIDMG_BUILDER 	 ( 1<<3 )
+
 #define CONFIG_CFG	CONFIG ... "/%s.cfg"
 
 #define DISPENSER_BLUEPRINT	"models/buildables/dispenser_blueprint.mdl"

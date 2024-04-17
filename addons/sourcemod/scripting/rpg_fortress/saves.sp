@@ -73,6 +73,8 @@ static Action Saves_Command(int client, int args)
 
 void Saves_MainMenu(int client)
 {
+	return;
+	
 	Race race;
 
 	KeyValues kv = Saves_KV("characters");

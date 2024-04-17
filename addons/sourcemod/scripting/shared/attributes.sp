@@ -495,35 +495,42 @@ stock float Attributes_FindOnPlayerZR(int client, int index, bool multi=false, f
 	return Attributes_GetOnPlayer(client, index, multi, IgnoreWeaponsEquipped);
 }
 
+/*
+
 #define MULTIDMG_NONE 		 ( 1<<0 )
 #define MULTIDMG_MAGIC_WAND  ( 1<<1 )
 #define MULTIDMG_BLEED 		 ( 1<<2 )
 #define MULTIDMG_BUILDER 	 ( 1<<3 )
-float WeaponDamageAttributeMultipliers(int weapon, int Flags)
+
+*/
+float WeaponDamageAttributeMultipliers(int weapon, int Flags = MULTIDMG_NONE, int client = 0)
 {
 	float DamageBonusLogic = 1.0;
 	if((Flags & MULTIDMG_BLEED))
 	{
-		float attack_speed;		
-		attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
-						
-		damage = attack_speed * damage * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
-		return damage;
+		if(client > 0)
+		{
+			float attack_speed;		
+			attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
+							
+			DamageBonusLogic = attack_speed * DamageBonusLogic * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
+			return DamageBonusLogic;	
+		}
 	}
-	damage *= Attributes_Get(weapon, 1000, 1.0); //global dmg multi
-	damage *= Attributes_Get(weapon, 476, 1.0); //global dmg multi
+	DamageBonusLogic *= Attributes_Get(weapon, 1000, 1.0); //global dmg multi
+	DamageBonusLogic *= Attributes_Get(weapon, 476, 1.0); //global dmg multi
 
 	if(!(Flags & MULTIDMG_BLEED))
 	{
-		damage *= Attributes_Get(weapon, 1, 1.0); //only base damage
+		DamageBonusLogic *= Attributes_Get(weapon, 1, 1.0); //only base damage
 	}
 	if((Flags & MULTIDMG_MAGIC_WAND))
 	{
-		damage *= Attributes_Get(weapon, 410, 1.0); //wand damage multi
+		DamageBonusLogic *= Attributes_Get(weapon, 410, 1.0); //wand damage multi
 	}
 	else
 	{
-		damage *= Attributes_Get(weapon, 2, 1.0); //non wand dmg multi
+		DamageBonusLogic *= Attributes_Get(weapon, 2, 1.0); //non wand dmg multi
 	}
-	return damage;
+	return DamageBonusLogic;
 }

@@ -17,14 +17,11 @@ public void Weapon_Default_Wand(int client, int weapon, bool crit)
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 0.0));
 	if(mana_cost <= Current_Mana[client])
 	{
-		float damage = 65.0 * Attributes_Get(weapon, 410, 1.0);
-		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-		Mana_Hud_Delay[client] = 0.0;
-		
-		Current_Mana[client] -= mana_cost;
-		
-		delay_hud[client] = 0.0;
+		float damage = 65.0;
+
+		damage *= WeaponDamageAttributeMultipliers(weapon, MULTIDMG_MAGIC_WAND);
+
+		RPGCore_ResourceReduction(client, mana_cost);
 		
 		float speed = 1100.0;
 		speed *= Attributes_Get(weapon, 103, 1.0);
@@ -41,7 +38,8 @@ public void Weapon_Default_Wand(int client, int weapon, bool crit)
 
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 		//This spawns the projectile, this is a return int, if you want, you can do extra stuff with it, otherwise, it can be used as a void.
-		Wand_Projectile_Spawn(client, speed, time, damage, 1/*Default wand*/, weapon, particle);
+		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 1/*Default wand*/, weapon, particle);
+		WandProjectile_ApplyFunctionToEntity(projectile, Want_DefaultWandTouch);
 
 	}
 	else
@@ -58,15 +56,11 @@ public void Weapon_Default_Wand_pap2(int client, int weapon, bool crit)
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 0.0));
 	if(mana_cost <= Current_Mana[client])
 	{
-		float damage = 65.0 * Attributes_Get(weapon, 410, 1.0);
+		float damage = 65.0;
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-		Mana_Hud_Delay[client] = 0.0;
-		
-		Current_Mana[client] -= mana_cost;
-		
-		delay_hud[client] = 0.0;
-			
+		damage *= WeaponDamageAttributeMultipliers(weapon, MULTIDMG_MAGIC_WAND);
+
+		RPGCore_ResourceReduction(client, mana_cost);
 		float speed = 1100.0;
 		speed *= Attributes_Get(weapon, 103, 1.0);
 		speed *= Attributes_Get(weapon, 104, 1.0);
@@ -81,7 +75,8 @@ public void Weapon_Default_Wand_pap2(int client, int weapon, bool crit)
 		Format(particle, sizeof(particle), "%s","drg_cow_rockettrail_normal_blue");
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 		//This spawns the projectile, this is a return int, if you want, you can do extra stuff with it, otherwise, it can be used as a void.
-		Wand_Projectile_Spawn(client, speed, time, damage, 1/*Default wand*/, weapon, particle);
+		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 1/*Default wand*/, weapon, particle);
+		WandProjectile_ApplyFunctionToEntity(projectile, Want_DefaultWandTouch);
 	}
 	else
 	{
@@ -103,12 +98,14 @@ public void Want_DefaultWandTouch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		float PushforceDamage[3];
+		CalculateDamageForce(vecForward, 10000.0, PushforceDamage);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, PushforceDamage, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
