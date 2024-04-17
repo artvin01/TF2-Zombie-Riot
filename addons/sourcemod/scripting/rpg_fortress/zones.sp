@@ -126,13 +126,12 @@ void Zones_EditorMenu(int client, const char[] name = "")
 		
 		if(kv.GotoFirstSubKey())
 		{
-			char name[64];
 			float pos[3], vec[3];
 			
 			do
 			{
-				kv.GetSectionName(name, sizeof(name));
-				menu.AddItem(name, name);
+				kv.GetSectionName(buffer, sizeof(buffer));
+				menu.AddItem(buffer, buffer);
 			}
 			while(kv.GotoNextKey());
 		}
@@ -149,13 +148,10 @@ void Zones_EditorMenu(int client, const char[] name = "")
 		
 		if(kv.GotoFirstSubKey())
 		{
-			char name[64];
-			float pos[3], vec[3];
-			
 			do
 			{
-				kv.GetSectionName(name, sizeof(name));
-				menu.AddItem(name, name);
+				kv.GetSectionName(buffer, sizeof(buffer));
+				menu.AddItem(buffer, buffer);
 			}
 			while(kv.GotoNextKey());
 		}

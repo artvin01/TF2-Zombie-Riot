@@ -1562,7 +1562,7 @@ public Action Dungeon_Timer(Handle timer)
 	return Plugin_Stop;
 }
 
-static int RandomStaticSeed(int seed, int rand)
+static stock int RandomStaticSeed(int seed, int rand)
 {
 	if(rand < 0)
 		rand = -rand;

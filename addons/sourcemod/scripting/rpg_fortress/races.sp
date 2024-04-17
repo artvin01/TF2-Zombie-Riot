@@ -274,12 +274,12 @@ void Races_ConfigSetup()
 	delete kv;
 }
 
-void Races_GetRaceByIndex(int index, Race race)
+stock void Races_GetRaceByIndex(int index, Race race)
 {
 	Races.GetArray(index, race);
 }
 
-bool Races_GetClientInfo(int client, Race race = {}, Form form = {})
+stock bool Races_GetClientInfo(int client, Race race = {}, Form form = {})
 {
 	Races.GetArray(RaceIndex[client], race);
 
