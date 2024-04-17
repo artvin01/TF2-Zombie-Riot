@@ -721,7 +721,7 @@ bool Config_CreateNPCStats(const char[] classname, const int[] attrib, const flo
 #endif	// ZR
 
 #if defined RPG
-float RpgConfig_GetWeaponDamage(int weapon)
+stock float RpgConfig_GetWeaponDamage(int weapon)
 {
 	static char classname[36];
 	GetEntityClassname(weapon, classname, sizeof(classname));

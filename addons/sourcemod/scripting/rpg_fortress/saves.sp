@@ -423,6 +423,8 @@ static int DeleteCharacterH(Menu menu, MenuAction action, int client, int choice
 			}
 		}
 	}
+
+	return 0;
 }
 
 static void CreateCharacter(int client)
@@ -509,7 +511,15 @@ static void ModifiyCharacter(int client, const char[] id, int submenu = -1)
 				Race race;
 				for(int i; Races_GetRaceByIndex(i, race); i++)
 				{
-					menu.AddItem(id, race.Name);
+					if(!race.Key[0] || TextStore_GetItemCount(client, race.Key))
+					{
+						menu.AddItem(id, race.Name);
+					}
+					else
+					{
+						FormatEx(buffer1, sizeof(buffer1), "%s (Unlock \"%s\")", race.Name, race.Key);
+						menu.AddItem(id, buffer1, ITEMDRAW_DISABLED);
+					}
 				}
 
 				menu.ExitBackButton = true;
