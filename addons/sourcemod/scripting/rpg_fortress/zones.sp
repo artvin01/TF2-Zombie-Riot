@@ -1,8 +1,5 @@
 #pragma semicolon 1
 #pragma newdecls required
-
-static Handle TimerZoneEditing[MAXTF2PLAYERS];
-static char CurrentZoneEditing[MAXTF2PLAYERS][64];
 static ArrayList ActiveZones;
 
 void Zones_PluginStart()
@@ -300,6 +297,9 @@ public Action Zones_TeleportTouch(int entity, int target)
 	return Plugin_Continue;
 }
 
+static Handle TimerZoneEditing[MAXTF2PLAYERS];
+static char CurrentZoneEditing[MAXTF2PLAYERS][64];
+
 void Zones_EditorMenu(int client)
 {
 	char buffer[PLATFORM_MAX_PATH];
@@ -359,7 +359,7 @@ void Zones_EditorMenu(int client)
 
 			vec2[i] = pos2[i];
 
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 0);
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {255, 255, 255, 255}, 0);
 			TE_SendToClient(client);
 
 			vec1 = pos2;
@@ -367,7 +367,7 @@ void Zones_EditorMenu(int client)
 
 			vec2[i] = pos1[i];
 
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 0);
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {255, 255, 255, 255}, 0);
 			TE_SendToClient(client);
 
 			/*
@@ -378,7 +378,7 @@ void Zones_EditorMenu(int client)
 
 			vec2[i] += 5.0;
 
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {255, 0, 255, 255}, 0);
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {255, 0, 255, 255}, 0);
 			TE_SendToClient(client);
 
 			vec1 = pos1;
@@ -386,7 +386,7 @@ void Zones_EditorMenu(int client)
 
 			vec2[i] -= 5.0;
 
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {255, 0, 255, 255}, 0);
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {255, 0, 255, 255}, 0);
 			TE_SendToClient(client);
 
 			/*
@@ -397,7 +397,7 @@ void Zones_EditorMenu(int client)
 
 			vec2[i] += 5.0;
 
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {0, 255, 255, 255}, 0);
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {0, 255, 255, 255}, 0);
 			TE_SendToClient(client);
 
 			vec1 = pos2;
@@ -405,7 +405,7 @@ void Zones_EditorMenu(int client)
 
 			vec2[i] -= 5.0;
 
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {0, 255, 255, 255}, 0);
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {0, 255, 255, 255}, 0);
 			TE_SendToClient(client);
 
 			/*
@@ -508,11 +508,15 @@ static void AdjustZone(int client, const char[] buffer)
 	{
 		if(StrEqual(buffer, "point1"))
 		{
-			
+			float pos[3];
+			GetClientPointVisible(client, _, _, _, pos);
+			kv.SetVector("point1", pos);
 		}
 		else if(StrEqual(buffer, "point2"))
 		{
-			
+			float pos[3];
+			GetClientPointVisible(client, _, _, _, pos);
+			kv.SetVector("point2", pos);
 		}
 		else if(StrEqual(buffer, "telepos"))
 		{
@@ -554,5 +558,6 @@ static void AdjustZone(int client, const char[] buffer)
 	kv.ExportToFile(filepath);
 	delete kv;
 
+	Zones_ConfigSetup();
 	Zones_EditorMenu(client);
 }
