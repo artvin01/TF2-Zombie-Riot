@@ -2301,49 +2301,55 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	
 	//Turns a non-buffed skeleton into a buffed one, or vice-versa.
-	//TODO: The max health set by this will need to account for later waves where skeletons have higher HP.
-	public void BoneZone_SetBuffedState(bool buffed, int buffer)
+	//TODO: The max health set by this will need to account for later waves where skeletons have higher HP. Probably do this by comparing
+	//its current max health to its actual max health, and then multiply the target max health accordingly.
+	public void BoneZone_SetBuffedState(bool buffed, int buffer = -1)
 	{
 		//Skeletons which are already buffed when they spawn are completely ignored by this so that we don't accidentally remove their natural buff.
 		//Maybe we can change this in the future so players can remove buffs via Silence, but that may be way too strong, so for now it stays like this.
 		if (this.m_bBoneZoneNaturallyBuffed)
 			return;
 		
-		bool AllBuffersGone = false;
-		//Add the buffer to the list if we are applying the buffed form: 		
-		if (buffed)
+		//If buffer is a valid entity, add it to the list of buffers or remove it.
+		//This way, we can force the buffed state without specifying a buffer if we so choose.
+		if (IsValidEntity(buffer))
 		{
-			if (this.g_BoneZoneBuffers == null)
-				this.g_BoneZoneBuffers = CreateArray(16);
-			
-			bool DoNotAdd = false;
-			for (int i = 0; i < GetArraySize(this.g_BoneZoneBuffers) && !DoNotAdd; i++)
+			bool AllBuffersGone = false;
+			//Add the buffer to the list if we are applying the buffed form: 		
+			if (buffed)
 			{
-				int index = EntRefToEntIndex(GetArrayCell(this.g_BoneZoneBuffers, i));
-				if (index == buffer)
+				if (this.g_BoneZoneBuffers == null)
+					this.g_BoneZoneBuffers = CreateArray(16);
+				
+				bool DoNotAdd = false;
+				for (int i = 0; i < GetArraySize(this.g_BoneZoneBuffers) && !DoNotAdd; i++)
 				{
-					DoNotAdd = true;
+					int index = EntRefToEntIndex(GetArrayCell(this.g_BoneZoneBuffers, i));
+					if (index == buffer)
+					{
+						DoNotAdd = true;
+					}
 				}
+				
+				if (!DoNotAdd)
+					PushArrayCell(this.g_BoneZoneBuffers, EntIndexToEntRef(buffer));
 			}
-			
-			if (!DoNotAdd)
-				PushArrayCell(this.g_BoneZoneBuffers, EntIndexToEntRef(buffer));
-		}
-		else if (this.g_BoneZoneBuffers != null)	//Remove the buffer from the list if we are removing the buffed form, and then delete the list if it is empty:
-		{
-			for (int i = 0; i < GetArraySize(this.g_BoneZoneBuffers); i++)
+			else if (this.g_BoneZoneBuffers != null)	//Remove the buffer from the list if we are removing the buffed form, and then delete the list if it is empty:
 			{
-				int index = EntRefToEntIndex(GetArrayCell(this.g_BoneZoneBuffers, i));
-				if (index == buffer)
+				for (int i = 0; i < GetArraySize(this.g_BoneZoneBuffers); i++)
 				{
-					RemoveFromArray(this.g_BoneZoneBuffers, i);
+					int index = EntRefToEntIndex(GetArrayCell(this.g_BoneZoneBuffers, i));
+					if (index == buffer)
+					{
+						RemoveFromArray(this.g_BoneZoneBuffers, i);
+					}
 				}
-			}
-			
-			if (GetArraySize(this.g_BoneZoneBuffers) < 1)
-			{
-				AllBuffersGone = true;
-				delete this.g_BoneZoneBuffers;
+				
+				if (GetArraySize(this.g_BoneZoneBuffers) < 1)
+				{
+					AllBuffersGone = true;
+					delete this.g_BoneZoneBuffers;
+				}
 			}
 		}
 		
