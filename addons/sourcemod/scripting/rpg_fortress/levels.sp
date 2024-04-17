@@ -151,7 +151,7 @@ void GetDisplayString(int base, char[] buffer, int length, bool short = false)
 
 void GiveXP(int client, int xp, bool silent = false)
 {
-	TextStore_AddXP(client, RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue));
+	Stats_GiveXP(client, RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue));
 
 	int levelCap = GetLevelCap(Tier[client]);
 	if(levelCap < Level[client])

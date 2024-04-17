@@ -14,7 +14,7 @@ static const char RarityName[][] =
 enum struct StoreEnum
 {
 	char Tag[16];
-	char Key[48];
+	char Key[64];
 	
 	char Model[PLATFORM_MAX_PATH];
 	char Intro[64];
@@ -39,7 +39,7 @@ enum struct StoreEnum
 	void SetupEnum(KeyValues kv)
 	{
 		kv.GetString("tag", this.Tag, 16);
-		kv.GetString("key", this.Key, 48);
+		kv.GetString("key", this.Key, 64);
 		
 		kv.GetString("model", this.Model, PLATFORM_MAX_PATH);
 		if(this.Model[0])
@@ -206,7 +206,7 @@ enum struct SpellEnum
 {
 	bool Active;
 	int Owner;
-	char Name[48];
+	char Name[64];
 	char Display[64];
 	Function Func;
 	float Cooldown;
@@ -230,8 +230,6 @@ enum
 	MENU_BUILDING = 4
 }
 
-static int ItemXP = -1;
-static int ItemTier = -1;
 static KeyValues HashKey;
 static KeyValues MarketKv;
 static ArrayList Backpack;
@@ -271,9 +269,6 @@ static void HashCheck()
 		{
 			if(kv != HashKey)
 			{
-				ItemXP = -1;
-				ItemTier = -1;
-
 				delete Backpack;
 				Backpack = new ArrayList(sizeof(BackpackEnum));
 
@@ -379,6 +374,19 @@ static void TextStore_ConfigSetupFrame()
 
 public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int index, const char[] name, int &count, bool auto)
 {
+	if(auto)
+		return Item_None;
+	
+	if(!equipped && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
+	{
+		int level = item.GetNum("level");
+		if(level > Level[client])
+		{
+			SPrintToChat(client, "You must be Level %d to use this.", level);
+			return Item_None;
+		}
+	}
+
 	HashCheck();
 
 	static char buffer[64];
@@ -428,14 +436,14 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 		spell.Owner = client;
 		spell.Store = index;
 		spell.Active = false;
-		strcopy(spell.Name, 48, name);
+		strcopy(spell.Name, 64, name);
 		
 		item.GetString("func", buffer, sizeof(buffer), "Ammo_HealingSpell");
 		spell.Func = GetFunctionByName(null, buffer);
 
 		SpellList.PushArray(spell);
 	}
-	else if(!Store_EquipItem(client, item, index, name, auto))
+	else if(!Store_EquipItem(client, item, index, name))
 	{
 		return Item_None;
 	}
@@ -569,10 +577,11 @@ static void TextStore_LoadFrame(int userid)
 
 static void LoadItems(int client)
 {
+/*
 	int length = TextStore_GetItems();
 	for(int i; i < length; i++)
 	{
-		static char buffer[48];
+		static char buffer[64];
 		TextStore_GetItemName(i, buffer, sizeof(buffer));
 		if(StrEqual(buffer, ITEM_XP, false))
 		{
@@ -580,20 +589,8 @@ static void LoadItems(int client)
 			ItemXP = i;
 		}
 	}
-
-	Stats_LoadItems(client);
+*/
 	Traffic_LoadItems(client);
-}
-
-void TextStore_AddXP(int client, int xp)
-{
-	HashCheck();
-	if(ItemXP != -1)
-	{
-		TextStore_GetInv(client, ItemXP, XP[client]);
-		XP[client] += xp;
-		TextStore_SetInv(client, ItemXP, XP[client]);
-	}
 }
 
 int TextStore_GetItemCount(int client, const char[] name)
@@ -606,7 +603,7 @@ int TextStore_GetItemCount(int client, const char[] name)
 	int length = TextStore_GetItems();
 	for(int i; i < length; i++)
 	{
-		static char buffer[48];
+		static char buffer[64];
 		TextStore_GetItemName(i, buffer, sizeof(buffer));
 		if(StrEqual(buffer, name, false))
 		{
@@ -628,7 +625,7 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 	}
 	else if(StrEqual(name, ITEM_XP, false))
 	{
-		TextStore_AddXP(client, amount);
+		Stats_GiveXP(client, amount);
 		if(amount > 0)
 			SPrintToChat(client, "You gained %d XP", amount);
 	}
@@ -637,7 +634,7 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 		int length = TextStore_GetItems();
 		for(int i; i < length; i++)
 		{
-			static char buffer[48];
+			static char buffer[64];
 			TextStore_GetItemName(i, buffer, sizeof(buffer));
 			if(StrEqual(buffer, name, false))
 			{
@@ -1373,7 +1370,7 @@ void TextStore_DropNamedItem(int client, const char[] name, float pos[3], int am
 	int length = TextStore_GetItems();
 	for(int i; i < length; i++)
 	{
-		static char buffer[48];
+		static char buffer[64];
 		if(TextStore_GetItemName(i, buffer, sizeof(buffer)) && StrEqual(buffer, name, false))
 		{
 			DropItem(client, i, pos, amount);

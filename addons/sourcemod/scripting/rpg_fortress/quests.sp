@@ -10,27 +10,14 @@ enum
 }
 
 static KeyValues QuestKv;
-static KeyValues SaveKv;
 static char CurrentNPC[MAXTF2PLAYERS][64];
 static bool b_NpcHasQuestForPlayer[MAXENTITIES][MAXTF2PLAYERS];
 static int b_ParticleToOwner[MAXENTITIES];
 static int b_OwnerToParticle[MAXENTITIES];
 
-static void ForceSave(int client)
-{
-	static char buffer[PLATFORM_MAX_PATH];
-	RPG_BuildPath(buffer, sizeof(buffer), "quests_savedata");
-
-	SaveKv.Rewind();
-	SaveKv.ExportToFile(buffer);
-
-	TextStore_ClientSave(client);
-}
-
 void Quests_ConfigSetup()
 {
 	delete QuestKv;
-	delete SaveKv;
 
 	char buffer[PLATFORM_MAX_PATH];
 	RPG_BuildPath(buffer, sizeof(buffer), "quests");
@@ -85,10 +72,6 @@ void Quests_ConfigSetup()
 		}
 	}
 	while(QuestKv.GotoNextKey());
-
-	RPG_BuildPath(buffer, sizeof(buffer), "quests_savedata");
-	SaveKv = new KeyValues("SaveData");
-	SaveKv.ImportFromFile(buffer);
 }
 
 void Quests_EnableZone(int client, const char[] name)
@@ -248,17 +231,17 @@ void Quests_AddKill(int client, int entity)
 	char name[64];
 	NPC_GetNameById(i_NpcInternalId[entity], name, sizeof(name));
 
-	SaveKv.Rewind();
-	SaveKv.JumpToKey("_kills", true);
-	SaveKv.JumpToKey(name, true);
+	KeyValues kv = Saves_Kv("quests");
+	kv.JumpToKey("_kills", true);
+	kv.JumpToKey(name, true);
 
 	for(int target = 1; target <= MaxClients; target++)
 	{
 		if(client == target || Party_IsClientMember(client, target))
 		{
-			static char steamid[64];
-			if(GetClientAuthId(target, AuthId_Steam3, steamid, sizeof(steamid)))
-				SaveKv.SetNum(steamid, SaveKv.GetNum(steamid) + 1);
+			static char id[64];
+			if(Saves_ClientCharId(target, id, sizeof(id)))
+				kv.SetNum(id, kv.GetNum(id) + 1);
 		}
 	}
 }
@@ -284,7 +267,7 @@ static bool ShouldShowPointerKv(int client)
 	QuestKv.GetSectionName(name, sizeof(name));
 	
 	bool result;
-	if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
+	if(Saves_ClientCharId(client, steamid, sizeof(steamid)))
 	{
 		if(QuestKv.GotoFirstSubKey())
 		{
@@ -295,11 +278,11 @@ static bool ShouldShowPointerKv(int client)
 				{
 					QuestKv.GetSectionName(buffer, sizeof(buffer));
 
-					SaveKv.Rewind();
-					SaveKv.JumpToKey(name, true);
-					if(SaveKv.JumpToKey(buffer, true))
+					KeyValues kv = Saves_Kv("quests");
+					kv.JumpToKey(name, true);
+					if(kv.JumpToKey(buffer, true))
 					{
-						switch(SaveKv.GetNum(steamid))
+						switch(kv.GetNum(steamid))
 						{
 							case Status_NotStarted, Status_Canceled:
 							{
@@ -382,14 +365,14 @@ static void MainMenu(int client)
 {
 	TextStore_DepositBackpack(client, false);
 	
-	SaveKv.Rewind();
-	SaveKv.JumpToKey(CurrentNPC[client], true);
+	KeyValues kv = Saves_Kv("quests");
+	kv.JumpToKey(CurrentNPC[client], true);
 	
 	Menu menu = new Menu(Quests_MenuHandle);
 	menu.SetTitle("%s\n ", CurrentNPC[client]);
 
 	static char steamid[64], name[64], buffer[96];
-	if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
+	if(Saves_ClientCharId(client, steamid, sizeof(steamid)))
 	{
 		QuestKv.GotoFirstSubKey();
 		do
@@ -398,10 +381,10 @@ static void MainMenu(int client)
 			if(buffer[0])
 			{
 				int progress;
-				if(SaveKv.JumpToKey(buffer))
+				if(kv.JumpToKey(buffer))
 				{
-					progress = SaveKv.GetNum(steamid);
-					SaveKv.GoBack();
+					progress = kv.GetNum(steamid);
+					kv.GoBack();
 				}
 
 				if(progress != Status_Completed)
@@ -415,9 +398,9 @@ static void MainMenu(int client)
 
 			if(Level[client] >= level)
 			{
-				if(SaveKv.JumpToKey(name, true))
+				if(kv.JumpToKey(name, true))
 				{
-					switch(SaveKv.GetNum(steamid))
+					switch(kv.GetNum(steamid))
 					{
 						case Status_NotStarted, Status_Canceled, Status_InProgress:
 						{
@@ -434,7 +417,7 @@ static void MainMenu(int client)
 						}
 					}
 
-					SaveKv.GoBack();
+					kv.GoBack();
 				}
 			}
 			else
@@ -532,8 +515,8 @@ static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "
 
 	if(QuestKv.JumpToKey("kill"))
 	{
-		SaveKv.Rewind();
-		SaveKv.JumpToKey("_kills", true);
+		KeyValues kv = Saves_Kv("quests");
+		kv.JumpToKey("_kills", true);
 
 		if(!book)
 			Format(title, sizeof(title), "%s\n \nKill:", title);
@@ -546,10 +529,10 @@ static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "
 				int need = QuestKv.GetNum(NULL_STRING, 1);
 
 				int count;
-				if(SaveKv.JumpToKey(buffer, true))
+				if(kv.JumpToKey(buffer, true))
 				{
-					count = SaveKv.GetNum(steamid);
-					SaveKv.GoBack();
+					count = kv.GetNum(steamid);
+					kv.GoBack();
 				}
 
 				if(book)
@@ -647,7 +630,7 @@ public int Quests_MenuHandle(Menu menu2, MenuAction action, int client, int choi
 		{
 			static char name[64], steamid[64];
 			menu2.GetItem(choice, name, sizeof(name));
-			if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
+			if(Saves_ClientCharId(client, steamid, sizeof(steamid)))
 			{
 				QuestKv.Rewind();
 				if(QuestKv.JumpToKey(CurrentNPC[client]) && QuestKv.JumpToKey(name))
@@ -658,10 +641,10 @@ public int Quests_MenuHandle(Menu menu2, MenuAction action, int client, int choi
 
 					bool canTurnIn = CanTurnInQuest(client, steamid, title);
 
-					SaveKv.Rewind();
-					SaveKv.JumpToKey(CurrentNPC[client], true);
-					SaveKv.JumpToKey(name, true);
-					int progress = SaveKv.GetNum(steamid);
+					KeyValues kv = Saves_Kv("quests");
+					kv.JumpToKey(CurrentNPC[client], true);
+					kv.JumpToKey(name, true);
+					int progress = kv.GetNum(steamid);
 
 					if(QuestKv.JumpToKey("reward"))
 					{
@@ -739,7 +722,7 @@ public int Quests_QuestHandle(Menu menu2, MenuAction action, int client, int cho
 		{
 			static char name[64], steamid[64];
 			menu2.GetItem(choice, name, sizeof(name));
-			if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
+			if(Saves_ClientCharId(client, steamid, sizeof(steamid)))
 			{
 				QuestKv.Rewind();
 				if(QuestKv.JumpToKey(CurrentNPC[client]))
@@ -747,11 +730,11 @@ public int Quests_QuestHandle(Menu menu2, MenuAction action, int client, int cho
 					int entity = EntRefToEntIndex(QuestKv.GetNum("_entref", INVALID_ENT_REFERENCE));
 					if(QuestKv.JumpToKey(name))
 					{
-						SaveKv.Rewind();
-						SaveKv.JumpToKey(CurrentNPC[client], true);
-						SaveKv.JumpToKey(name, true);
+						KeyValues kv = Saves_Kv("quests");
+						kv.JumpToKey(CurrentNPC[client], true);
+						kv.JumpToKey(name, true);
 						
-						int progress = SaveKv.GetNum(steamid);
+						int progress = kv.GetNum(steamid);
 						switch(progress)
 						{
 							case Status_NotStarted, Status_Completed:
@@ -759,7 +742,7 @@ public int Quests_QuestHandle(Menu menu2, MenuAction action, int client, int cho
 								if(entity != INVALID_ENT_REFERENCE)
 									MakeInteraction(client, entity, "sound_start", "anim_start");
 								
-								SaveKv.SetNum(steamid, Status_InProgress);
+								kv.SetNum(steamid, Status_InProgress);
 
 								if(QuestKv.JumpToKey("start"))
 								{
@@ -773,7 +756,7 @@ public int Quests_QuestHandle(Menu menu2, MenuAction action, int client, int cho
 										while(QuestKv.GotoNextKey(false));
 									}
 
-									ForceSave(client);
+									Saves_SaveClient(client);
 								}
 							}
 							case Status_Canceled:
@@ -781,13 +764,13 @@ public int Quests_QuestHandle(Menu menu2, MenuAction action, int client, int cho
 								if(entity != INVALID_ENT_REFERENCE)
 									MakeInteraction(client, entity, "sound_start", "anim_start");
 								
-								SaveKv.SetNum(steamid, Status_InProgress);
+								kv.SetNum(steamid, Status_InProgress);
 							}
 							case Status_InProgress:
 							{
 								if(choice)
 								{
-									SaveKv.SetNum(steamid, Status_Canceled);
+									kv.SetNum(steamid, Status_Canceled);
 									Quests_MainMenu(client, CurrentNPC[client]);
 								}
 								else if(CanTurnInQuest(client, steamid))
@@ -795,10 +778,10 @@ public int Quests_QuestHandle(Menu menu2, MenuAction action, int client, int cho
 									if(entity != INVALID_ENT_REFERENCE)
 										MakeInteraction(client, entity, "sound_turnin", "anim_turnin");
 									
-									SaveKv.Rewind();
-									SaveKv.JumpToKey(CurrentNPC[client], true);
-									SaveKv.JumpToKey(name, true);
-									SaveKv.SetNum(steamid, Status_Completed);
+									kv = Saves_Kv("quests");
+									kv.JumpToKey(CurrentNPC[client], true);
+									kv.JumpToKey(name, true);
+									kv.SetNum(steamid, Status_Completed);
 
 									if(QuestKv.JumpToKey("give"))
 									{
@@ -819,18 +802,18 @@ public int Quests_QuestHandle(Menu menu2, MenuAction action, int client, int cho
 
 									if(QuestKv.JumpToKey("kill"))
 									{
-										SaveKv.Rewind();
-										SaveKv.JumpToKey("_kills", true);
+										kv = Saves_Kv("quests");
+										kv.JumpToKey("_kills", true);
 
 										if(QuestKv.GotoFirstSubKey(false))
 										{
 											do
 											{
 												QuestKv.GetSectionName(name, sizeof(name));
-												if(SaveKv.JumpToKey(name))
+												if(kv.JumpToKey(name))
 												{
-													SaveKv.SetNum(steamid, SaveKv.GetNum(steamid) - QuestKv.GetNum(NULL_STRING, 1));
-													SaveKv.GoBack();
+													kv.SetNum(steamid, kv.GetNum(steamid) - QuestKv.GetNum(NULL_STRING, 1));
+													kv.GoBack();
 												}
 											}
 											while(QuestKv.GotoNextKey(false));
@@ -854,7 +837,7 @@ public int Quests_QuestHandle(Menu menu2, MenuAction action, int client, int cho
 										}
 									}
 
-									ForceSave(client);
+									Saves_SaveClient(client);
 								}
 							}
 						}
@@ -873,7 +856,7 @@ bool Quests_BookMenu(int client)
 	menu.SetTitle("RPG Fortress\n \n");
 	
 	static char steamid[64], name[64], buffer[512];
-	if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
+	if(Saves_ClientCharId(client, steamid, sizeof(steamid)))
 	{
 		QuestKv.Rewind();
 		QuestKv.GotoFirstSubKey();
@@ -884,13 +867,13 @@ bool Quests_BookMenu(int client)
 			{
 				do
 				{
-					SaveKv.Rewind();
-					if(SaveKv.JumpToKey(name))
+					KeyValues kv = Saves_Kv("quests");
+					if(kv.JumpToKey(name))
 					{
 						QuestKv.GetSectionName(buffer, sizeof(buffer));
-						if(SaveKv.JumpToKey(buffer))
+						if(kv.JumpToKey(buffer))
 						{
-							if(SaveKv.GetNum(steamid) == Status_InProgress)
+							if(kv.GetNum(steamid) == Status_InProgress)
 							{
 								Format(buffer, sizeof(buffer), "%s - %s", name, buffer);
 								CanTurnInQuest(client, steamid, buffer);

@@ -564,7 +564,6 @@ static ConVar mp_disable_respawn_times;
 static Handle SyncHud;
 static Handle DungeonTimer;
 static StringMap DungeonList;
-static KeyValues SaveKv;
 static char DungeonMenu[MAXTF2PLAYERS][64];
 static int AltMenu[MAXTF2PLAYERS];
 static char InDungeon[MAXENTITIES][64];
@@ -624,23 +623,18 @@ void Dungeon_ConfigSetup()
 	}
 
 	delete kv;
-	delete SaveKv;
-
-	RPG_BuildPath(buffer, sizeof(buffer), "dungeon_savedata");
-	SaveKv = new KeyValues("SaveDData");
-	SaveKv.ImportFromFile(buffer);
 }
 
 int Dungeon_GetClientRank(int client, const char[] name, const char[] stage)
 {
 	int rank;
 
-	SaveKv.Rewind();
-	if(SaveKv.JumpToKey(name) && SaveKv.JumpToKey(stage))
+	KeyValues kv = Saves_Kv("dungeon");
+	if(kv.JumpToKey(name) && kv.JumpToKey(stage))
 	{
-		static char steamid[64];
-		if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
-			rank = SaveKv.GetNum(steamid, -1);
+		static char id[64];
+		if(Saves_ClientCharId(client, id, sizeof(id)))
+			rank = kv.GetNum(id, -1);
 	}
 
 	return rank;
@@ -1300,9 +1294,9 @@ static void CleanDungeon(const char[] name, bool victory)
 				}
 			}
 
-			SaveKv.Rewind();
-			SaveKv.JumpToKey(name, true);
-			SaveKv.JumpToKey(dungeon.CurrentStage, true);
+			KeyValues kv = Saves_Kv("dungeon");
+			kv.JumpToKey(name, true);
+			kv.JumpToKey(dungeon.CurrentStage, true);
 
 			int amount;
 			int[] clients = new int[MaxClients];
@@ -1326,8 +1320,8 @@ static void CleanDungeon(const char[] name, bool victory)
 							if(IsPlayerAlive(client))
 								TF2_AddCondition(client, TFCond_HalloweenCritCandy, 8.1);
 
-							if(GetClientAuthId(client, AuthId_Steam3, mod.Desc, sizeof(mod.Desc)))
-								SaveKv.SetNum(mod.Desc, tier);
+							if(Saves_ClientCharId(client, mod.Desc, sizeof(mod.Desc)))
+								kv.SetNum(mod.Desc, tier);
 						}
 						else
 						{
@@ -1343,10 +1337,7 @@ static void CleanDungeon(const char[] name, bool victory)
 				if(amount)
 					stage.DoAllDrops(clients, amount, tier);
 				
-				RPG_BuildPath(mod.Desc, sizeof(mod.Desc), "dungeon_savedata");
-
-				SaveKv.Rewind();
-				SaveKv.ExportToFile(mod.Desc);
+				Saves_SaveClient(0);
 			}
 
 			int i = MaxClients + 1;

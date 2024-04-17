@@ -4,7 +4,7 @@
 //#define MACRO_SHOWDIFF(%1)	if(oldAmount != newAmount) { FormatEx(buffer, sizeof(buffer), %1 ... " (%d -> %d)", oldAmount, newAmount); menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED); }
 
 static bool HasKeyHintHud[MAXTF2PLAYERS];
-
+static int SaveIn[MAXTF2PLAYERS];
 static StringMap Mastery[MAXTF2PLAYERS];
 
 void Stats_PluginStart()
@@ -15,14 +15,61 @@ void Stats_PluginStart()
 	RegConsoleCmd("sm_stat", Stats_ShowStats, "Shows your RPG stats", FCVAR_HIDDEN);
 }
 
-void Stats_ClientCookiesCached(int client)
+void Stats_EnableCharacter(int client)
 {
-	XP[client] = 100000;// TEST TEST
+	KeyValues kv = Saves_Kv("stats");
+
+	char buffer[32];
+	if(Saves_ClientCharId(client, buffer, sizeof(buffer)))
+		kv.JumpToKey(buffer);
+
+	BackpackBonus[client] = 0;
+	Agility[client] = 0;
+	Luck[client] = 0;
+
+	Strength[client] = kv.GetNum("strength");
+	Precision[client] = kv.GetNum("precision");
+	Artifice[client] = kv.GetNum("artifice");
+	Endurance[client] = kv.GetNum("endurnace");
+	Structure[client] = kv.GetNum("structure");
+	Intelligence[client] = kv.GetNum("intelligence");
+	Capacity[client] = kv.GetNum("capacity");
+	XP[client] = kv.GetNum("xp");
 }
 
-void Stats_LoadItems(int client)
+void Stats_GiveXP(int client, int xp)
 {
-	
+	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
+
+	if(XP[client] > SaveIn[client])
+	{
+		SaveClientStats(client);
+		SaveIn[client] = BaseUpgradeCost + (Level[client] * BaseUpgradeScale);
+	}
+	else
+	{
+		SaveIn[client] -= XP[client];
+	}
+}
+
+static void SaveClientStats(int client)
+{
+	KeyValues kv = Saves_Kv("stats");
+
+	char buffer[32];
+	if(Saves_ClientCharId(client, buffer, sizeof(buffer)))
+	{
+		kv.JumpToKey(buffer, true);
+
+		kv.SetNum("strength", Strength[client]);
+		kv.SetNum("precision", Precision[client]);
+		kv.SetNum("artifice", Artifice[client]);
+		kv.SetNum("endurnace", Endurance[client]);
+		kv.SetNum("structure", Structure[client]);
+		kv.SetNum("intelligence", Intelligence[client]);
+		kv.SetNum("capacity", Capacity[client]);
+		kv.SetNum("xp", XP[client]);
+	}
 }
 
 void Stats_ClientDisconnect(int client)
@@ -64,18 +111,6 @@ void Stats_ClearCustomStats(int entity)
 	Agility[entity] = 0;
 	Luck[entity] = 0;
 	Level[entity] = 0;
-/*OLD CODE
-	BackpackBonus2[entity] = 0;
-	Strength2[entity] = 0;
-	Precision2[entity] = 0;
-	Artifice2[entity] = 0;
-	Endurance2[entity] = 0;
-	Structure2[entity] = 0;
-	Intelligence2[entity] = 0;
-	Capacity2[entity] = 0;
-	Agility2[entity] = 0;
-	Luck2[entity] = 0;
-*/
 }
 
 void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
@@ -436,64 +471,6 @@ float Stats_KnockbackResist(int client)
 	return 1.0;
 }
 
-void Stats_ShowLevelUp(int client, int oldLevel, int oldTier)
-{
-	/*
-	Menu menu = new Menu(Stats_ShowLevelUpH, MenuAction_End);
-
-	if(Tier[client])
-	{
-		menu.SetTitle("You are now Elite %d Level %d!\n ", Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
-	}
-	else
-	{
-		menu.SetTitle("You are now Level %d!\n ", Level[client]);
-	}
-	
-	char buffer[64];
-
-	int oldAmount, newAmount;
-	Stats_BaseHealth(client, oldAmount, _, oldLevel, oldTier);
-	Stats_BaseHealth(client, newAmount);
-	MACRO_SHOWDIFF("Max Health")
-
-	Stats_BaseCarry(client, oldAmount, _, oldLevel, oldTier);
-	Stats_BaseCarry(client, newAmount);
-	MACRO_SHOWDIFF("Backpack Storage")
-
-	if(Tier[client] > oldTier)
-	{
-		oldAmount = 1 + oldTier;
-		newAmount = 1 + Tier[client];
-		MACRO_SHOWDIFF("Weight Per Equippment")
-	}
-
-	Stats_Strength(client, oldAmount, _, oldLevel, oldTier);
-	Stats_Strength(client, newAmount);
-	MACRO_SHOWDIFF("Strength")
-
-	Stats_Dexterity(client, oldAmount, _, oldLevel, oldTier);
-	Stats_Dexterity(client, newAmount);
-	MACRO_SHOWDIFF("Dexterity")
-
-	Stats_Intelligence(client, oldAmount, _, oldLevel, oldTier);
-	Stats_Intelligence(client, newAmount);
-	MACRO_SHOWDIFF("Intelligence")
-
-	Tinker_StatsLevelUp(client, oldLevel, menu);
-
-	menu.Display(client, MENU_TIME_FOREVER);
-	*/
-}
-
-public int Stats_ShowLevelUpH(Menu menu, MenuAction action, int client, int choice)
-{
-	if(action == MenuAction_End)
-		delete menu;
-	
-	return 0;
-}
-
 static int UpgradeCost(int client)
 {
 	return BaseUpgradeCost + (Level[client] * BaseUpgradeScale);
@@ -577,7 +554,7 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 				if(XP[client] < cost)
 					break;
 				
-				TextStore_AddXP(client, -cost);
+				Stats_GiveXP(client, -cost);
 
 				switch(choice)
 				{
@@ -606,6 +583,7 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 				UpdateLevel(client);
 			}
 
+			SaveClientStats(client);
 			Stats_ShowStats(client, 0);
 		}
 	}

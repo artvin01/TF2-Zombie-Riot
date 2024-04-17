@@ -303,7 +303,7 @@ int Store_GetStoreOfEntity(int entity)
 	return info.Store;
 }
 
-bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name, bool auto)
+bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name)
 {
 	static ItemInfo info;
 	int length = EquippedItems.Length;
@@ -314,23 +314,9 @@ bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name, boo
 			return false;
 	}
 
-	if(!auto)
-	{
-		if(!CvarRPGInfiniteLevelAndAmmo.BoolValue)
-		{
-			int level = kv.GetNum("level");
-			if(level > Level[client])
-			{
-				SPrintToChat(client, "You must be Level %d to use this.", level);
-				return false;
-			}
-		}
-	}
-
 	info.SetupKV(kv, name);
 
-	if(!auto)
-		Store_EquipSlotCheck(client, info.Slot);
+	Store_EquipSlotCheck(client, info.Slot);
 	
 	info.Owner = client;
 	info.Store = index;
@@ -1099,8 +1085,6 @@ void Store_ApplyAttribs(int client)
 			}
 		}
 	}
-	
-	Stats_ClearCustomStats(client);
 
 	StringMapSnapshot snapshot = map.Snapshot();
 	int entity = client;

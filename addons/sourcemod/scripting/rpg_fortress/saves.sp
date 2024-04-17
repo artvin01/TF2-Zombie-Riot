@@ -42,10 +42,11 @@ void Saves_SaveClient(int client)
 	SaveKv.Rewind();
 	SaveKv.ExportToFile(buffer);
 
-	TextStore_ClientSave(client);
+	if(client)
+		TextStore_ClientSave(client);
 }
 
-KeyValues Saves_KV(const char[] section)
+KeyValues Saves_Kv(const char[] section)
 {
 	SaveKv.Rewind();
 	SaveKv.JumpToKey(section, true);
@@ -62,6 +63,110 @@ int Saves_ClientCharId(int client, char[] buffer, int length)
 	return strcopy(buffer, length, CharacterId[client]);
 }
 
+void Saves_ClientDisconnect(int client)
+{
+	SaveCharacter(client, true);
+}
+
+static void EnableCharacter(int client, const char[] id)
+{
+	if(!CharacterId[client][0])
+	{
+		KeyValues kv = Saves_Kv("characters");
+		if(kv.JumpToKey(id))
+		{
+			char buffer1[64], buffer2[64];
+
+			int uniques, count;
+			int length = TextStore_GetItems(uniques);
+
+			if(kv.JumpToKey("equipped"))
+			{
+				if(kv.GotoFirstSubKey(false))
+				{
+					do
+					{
+						kv.GetSectionName(buffer1, sizeof(buffer1));
+
+						for(int i = -uniques; i < length; i++)
+						{
+							if(!TextStore_GetInv(client, i, count) && count)
+							{
+								TextStore_GetItemName(i, buffer2, sizeof(buffer2));
+								if(StrEqual(buffer1, buffer2, false))
+								{
+									TextStore_UseItem(client, i);
+								}
+							}
+						}
+					}
+					while(kv.GotoNextKey(false));
+
+					kv.GoBack();
+				}
+
+				kv.GoBack();
+			}
+
+			strcopy(CharacterId[client], sizeof(CharacterId[]), id);
+
+			Stats_EnableCharacter(client);
+		}
+	}
+}
+
+static void SaveCharacter(int client, bool remove)
+{
+	if(CharacterId[client][0])
+	{
+		KeyValues kv = Saves_Kv("characters");
+		if(kv.JumpToKey(CharacterId[client]))
+		{
+			kv.SetNum("lastsave", GetTime());
+
+			kv.DeleteKey("equipped");
+			kv.JumpToKey("equipped", true);
+
+			char buffer[64];
+
+			int uniques;
+			int length = TextStore_GetItems(uniques);
+			for(int i = -uniques; i < length; i++)
+			{
+				KeyValues item = TextStore_GetItemKv(i);
+				if(item)
+				{
+					item.GetString("plugin", buffer, sizeof(buffer));
+					if(StrEqual(buffer, "rpg_fortress", false))
+					{
+						TextStore_GetItemName(i, buffer, sizeof(buffer));
+						if(TextStore_GetInv(client, i))
+						{
+							kv.SetNum(buffer, 1);
+
+							if(remove)
+								TextStore_SetInv(client, i, _, false);
+						}
+					}
+				}
+			}
+
+			kv.GoBack();
+
+			Saves_SaveClient(client);
+		}
+
+		if(remove)
+			CharacterId[client][0] = 0;
+	}
+
+	if(remove)
+	{
+		if(IsPlayerAlive(client))
+			ForcePlayerSuicide(client);
+	}
+}
+
 static Action Saves_Command(int client, int args)
 {
 	if(client)
@@ -73,13 +178,11 @@ static Action Saves_Command(int client, int args)
 
 void Saves_MainMenu(int client)
 {
-	return;
-
 	Race race;
 
 	char buffer1[32];
 
-	KeyValues kv = Saves_KV("characters");
+	KeyValues kv = Saves_Kv("characters");
 	if(CharacterId[client][0] && kv.JumpToKey(CharacterId[client]))
 	{
 		kv.GetString("title", buffer1, sizeof(buffer1), "Normal");
@@ -87,6 +190,9 @@ void Saves_MainMenu(int client)
 		Menu menu = new Menu(CharacterInfoH);
 		menu.SetTitle("RPG Fortress\n \nCharacter:\n \n" ...
 		"Level %d\nUnspent XP %d\nTrait: %s", Level[client], XP[client], buffer1);
+
+		menu.AddItem(NULL_STRING, "Change Characters", ITEMDRAW_SPACER);
+		menu.AddItem(NULL_STRING, "Change Characters");
 
 		menu.Display(client, MENU_TIME_FOREVER);
 	}
@@ -157,16 +263,9 @@ static int CharacterInfoH(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
-			char id[32];
-			menu.GetItem(choice, id, sizeof(id));
-
-			if(id[0])
+			if(choice == 1)
 			{
-				CharacterMenu(client, id);
-			}
-			else
-			{
-				CreateCharacter(client);
+				SaveCharacter(client, true);
 			}
 		}
 	}
@@ -203,7 +302,7 @@ static int CharacterSelectH(Menu menu, MenuAction action, int client, int choice
 
 static void CharacterMenu(int client, const char[] id)
 {
-	KeyValues kv = Saves_KV("characters");
+	KeyValues kv = Saves_Kv("characters");
 	if(kv.JumpToKey(id))
 	{
 		char buffer1[32], buffer2[32], buffer3[32];
@@ -250,9 +349,7 @@ static int CharacterMenuH(Menu menu, MenuAction action, int client, int choice)
 			{
 				case 0:	// Select
 				{
-					strcopy(CharacterId[client], sizeof(CharacterId[]), id);
-
-					// TODO: Initialize Stats, Etc.
+					EnableCharacter(client, id);
 
 					if(!IsPlayerAlive(client))
 					{
@@ -287,7 +384,7 @@ static void CreateCharacter(int client)
 	GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid));
 	FormatEx(id, sizeof(id), "%d-%s", timestamp, steamid);
 
-	KeyValues kv = Saves_KV("characters");
+	KeyValues kv = Saves_Kv("characters");
 	if(kv.JumpToKey(id))
 	{
 		PrintToChat(client, "You already recently created a character, delete that character or try again in %d minutes!", (((time / Cooldown) - timestamp + 1) * Cooldown) / 60);
@@ -336,7 +433,7 @@ static void CreateCharacter(int client)
 
 static void ModifiyCharacter(int client, const char[] id, int submenu = -1)
 {
-	KeyValues kv = Saves_KV("characters");
+	KeyValues kv = Saves_Kv("characters");
 	if(kv.JumpToKey(id))
 	{
 		char buffer1[32], buffer2[32], buffer3[32];
@@ -540,7 +637,7 @@ static int ModifiyCharacterRaceInfoH(Menu menu, MenuAction action, int client, i
 			menu.GetItem(0, id, sizeof(id));
 			menu.GetItem(1, buffer, sizeof(buffer));
 			
-			KeyValues kv = Saves_KV("characters");
+			KeyValues kv = Saves_Kv("characters");
 			if(kv.JumpToKey(id))
 			{
 				kv.SetNum("race", StringToInt(buffer));
@@ -574,7 +671,7 @@ static int ModifiyCharacterModelH(Menu menu, MenuAction action, int client, int 
 			char id[32], model[32];
 			menu.GetItem(choice, id, sizeof(id), _, model, sizeof(model));
 			
-			KeyValues kv = Saves_KV("characters");
+			KeyValues kv = Saves_Kv("characters");
 			if(kv.JumpToKey(id))
 			{
 				kv.SetString("model", model);

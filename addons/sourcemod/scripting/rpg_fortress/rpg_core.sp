@@ -143,6 +143,7 @@ void RPG_PluginStart()
 	Games_PluginStart();
 	Store_Reset();
 	Party_PluginStart();
+	Saves_PluginStart();
 	Spawns_PluginStart();
 	Stats_PluginStart();
 	TextStore_PluginStart();
@@ -261,6 +262,7 @@ void RPG_ConfigSetup(const char[] mapname)
 	Music_ConfigSetup();
 	Quests_ConfigSetup();
 	Races_ConfigSetup();
+	Saves_ConfigSetup();
 	Spawns_ConfigSetup();
 	Tinker_ConfigSetup();
 	
@@ -310,7 +312,6 @@ public void OnQueryFinished(QueryCookie cookie, int client, ConVarQueryResult re
 void RPG_ClientCookiesCached(int client)
 {
 	HudSettings_ClientCookiesCached(client);
-	Stats_ClientCookiesCached(client);
 	ThirdPerson_OnClientCookiesCached(client);
 }
 
@@ -340,6 +341,7 @@ void RPG_ClientDisconnect(int client)
 	Fishing_ClientDisconnect(client);
 	Music_ClientDisconnect(client);
 	Party_ClientDisconnect(client);
+	Saves_ClientDisconnect(client);
 	Stats_ClientDisconnect(client);
 	TextStore_ClientDisconnect(client);
 //	MudrockShieldDisconnect(client);
@@ -462,11 +464,6 @@ static void HudSettings_ClientCookiesCached(int client)
 	}
 }
 
-void GiveXP(int client, int xp)
-{
-	TextStore_AddXP(client, RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue));
-}
-
 public Action Command_GiveXp(int client, int args)
 {
 	//What are you.
@@ -498,12 +495,12 @@ public Action Command_GiveXp(int client, int args)
 		if(money > 0)
 		{
 			PrintToChat(targets[target], "You got %i XP from the admin %N!", money, client);
-			GiveXP(targets[target], money);
+			Stats_GiveXP(targets[target], money);
 		}
 		else
 		{
 			PrintToChat(targets[target], "You lost %i XP due to the admin %N!", money, client);
-			GiveXP(targets[target], money);
+			Stats_GiveXP(targets[target], money);
 		}
 	}
 	
