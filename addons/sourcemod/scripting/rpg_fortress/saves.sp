@@ -327,13 +327,13 @@ static void CharacterMenu(int client, const char[] id)
 	}
 }
 
-static int CharacterMenuH(Menu menu, MenuAction action, int client, int choice)
+static int CharacterMenuH(Menu menuaaaa, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
 		case MenuAction_End:
 		{
-			delete menu;
+			delete menuaaaa;
 		}
 		case MenuAction_Cancel:
 		{
@@ -343,7 +343,7 @@ static int CharacterMenuH(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_Select:
 		{
 			char id[32];
-			menu.GetItem(choice, id, sizeof(id));
+			menuaaaa.GetItem(choice, id, sizeof(id));
 
 			switch(choice)
 			{
@@ -365,13 +365,64 @@ static int CharacterMenuH(Menu menu, MenuAction action, int client, int choice)
 				}
 				case 1:	// Delete
 				{
-					// TODO: Are you sure? menu
+					Menu menu = new Menu(DeleteCharacterH);
+
+					menu.SetTitle("RPG Fortress\n \nAre you sure you want to delete this character?\nThis action can not be undone.\n ");
+
+					menu.AddItem("", "", ITEMDRAW_SPACER);
+					menu.AddItem("", "", ITEMDRAW_SPACER);
+					menu.AddItem("", "", ITEMDRAW_SPACER);
+					menu.AddItem("", "Yes, delete");
+					menu.AddItem("", "", ITEMDRAW_SPACER);
+					menu.AddItem("", "No, keep");
+
+					menu.ExitBackButton = true;
+					menu.ExitButton = false;
+					menu.Display(client, MENU_TIME_FOREVER);
 				}
 			}
 		}
 	}
 
 	return 0;
+}
+
+static int DeleteCharacterH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+			{
+				char id[32];
+				menu.GetItem(0, id, sizeof(id));
+				CharacterMenu(client, id);
+			}
+		}
+		case MenuAction_Select:
+		{
+			char id[32];
+			menu.GetItem(choice, id, sizeof(id));
+
+			if(choice == 3)
+			{
+				KeyValues kv = Saves_Kv("characters");
+				if(kv.JumpToKey(id))
+					kv.SetString("owner", "DELETED");
+
+				Saves_MainMenu(client);
+			}
+			else
+			{
+				CharacterMenu(client, id);
+			}
+		}
+	}
 }
 
 static void CreateCharacter(int client)
@@ -387,7 +438,16 @@ static void CreateCharacter(int client)
 	KeyValues kv = Saves_Kv("characters");
 	if(kv.JumpToKey(id))
 	{
-		PrintToChat(client, "You already recently created a character, delete that character or try again in %d minutes!", (((time / Cooldown) - timestamp + 1) * Cooldown) / 60);
+		kv.GetString("owner", steamid, sizeof(steamid));
+		if(StrContains(steamid, "delete", false) == -1)
+		{
+			PrintToChat(client, "You already recently created a character, delete that character or try again in %d minutes!", (((time / Cooldown) - timestamp + 1) * Cooldown) / 60);
+		}
+		else
+		{
+			kv.DeleteThis();
+			CreateCharacter(client);
+		}
 	}
 	else
 	{
